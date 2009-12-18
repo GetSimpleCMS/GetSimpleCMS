@@ -1,0 +1,19 @@
+/*
+    A separte CSS file dedicated to rules that involve
+    URLs. This makes it easy to configure where your
+    images are without having to edit the main facyBox
+    stylesheet.
+*/
+
+#facybox .n       { background-image: url('images/fancy_shadow_n.png');  }               
+#facybox .s       { background-image: url('images/fancy_shadow_s.png');  }
+#facybox .w       { background-image: url('images/fancy_shadow_w.png');  }
+#facybox .e       { background-image: url('images/fancy_shadow_e.png');  }
+#facybox .nw      { background-image: url('images/fancy_shadow_nw.png'); }
+#facybox .ne      { background-image: url('images/fancy_shadow_ne.png'); }
+#facybox .sw      { background-image: url('images/fancy_shadow_sw.png'); }
+#facybox .se      { background-image: url('images/fancy_shadow_se.png'); }
+#facybox a.next   { background-image: url('images/fancy_right.png');     }
+#facybox a.prev   { background-image: url('images/fancy_left.png');      }
+#facybox .close   { background-image: url('images/fancy_closebox.png');  }
+#facybox .loading { background-image: url('images/loading.gif');         }
