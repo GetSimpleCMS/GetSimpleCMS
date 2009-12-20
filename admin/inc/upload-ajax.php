@@ -1,8 +1,5 @@
 <?php
 
-if (basename($_SERVER['PHP_SELF']) == 'upload-ajax.php') { 
-	die('You cannot load this page directly.'); 
-} 
 
 if (!empty($_FILES)) {
 	$tempFile = $_FILES['Filedata']['tmp_name'];
