@@ -339,7 +339,7 @@ $i18n = array(
 "SIDE_VIEW_SITEMAP"	=>	"<em>V</em>iew Sitemap",
 "SIDE_GEN_SITEMAP"	=>	"<em>G</em>enerate Sitemap",
 "SIDE_COMPONENTS"		=>	"<em>E</em>dit Components",
-"SIDE_EDIT_THEME"		=>	"Edit T<em>h</em>heme",
+"SIDE_EDIT_THEME"		=>	"Edit T<em>h</em>eme",
 "SIDE_CHOOSE_THEME"	=>	"Choose <em>T</em>heme",
 
 /* 
