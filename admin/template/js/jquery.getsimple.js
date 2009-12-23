@@ -68,7 +68,7 @@ jQuery(document).ready(function() {
 		},
 		onAllComplete: function() {
 		  $('#loader').fadeOut(500);
-		  $("#imageTable").load(location.href+" #imageTable>*","");
+		  $("#imageTable").load(location.href+" #imageTable","");
 		}	
 	});
 	$("#imageFilter").change(function(){
