@@ -135,7 +135,7 @@
 					echo '</td><td><a title="'.$i18n['VIEW_FILE'].': '. $upload['name'] .'?" href="'. $pathlink .'" class="primarylink">'.$upload['name'] .'</a></td>';
 					echo '<td style="width:70px;text-align:right;" ><span><b>'. $upload['size'] .'</span></td>';
 					echo '<td style="width:70px;text-align:right;" ><span>'. $upload['date'] .'</span></td>';
-					echo '<td class="delete" ><a class="delconfirm" title="'.$i18n['DELETE_FILE'].': '. $upload['name'] .'?" href="inc/deletefile.php?file='. $upload['name'] .'">X</a></td>';
+					echo '<td class="delete" ><a class="delconfirm" title="'.$i18n['DELETE_FILE'].': '. $upload['name'] .'?" href="deletefile.php?file='. $upload['name'] .'">X</a></td>';
 					echo '</tr>';
 				}
 				echo '</table>';

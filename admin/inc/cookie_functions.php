@@ -58,6 +58,7 @@ require_once('inc/configuration.php');
 		} else {
 			// If the cookie has expired, redirect back to login page
 			header("Location: ". $cookie_login);
+			exit;
 		}
 	}
 

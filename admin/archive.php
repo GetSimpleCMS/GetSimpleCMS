@@ -78,7 +78,7 @@
 					echo '<tr>
 							<td><a title="Download Archive: '. $name .'?" href="'. $path . $file .'">'.$name .'</a></td>
 							<td style="width:70px;text-align:right;" ><span>'.$size.'</span></td>
-							<td class="delete" ><a class="delconfirm" title="Delete Archive: '. $name .'?" href="inc/deletefile.php?zip='. $file .'">X</a></td>
+							<td class="delete" ><a class="delconfirm" title="Delete Archive: '. $name .'?" href="deletefile.php?zip='. $file .'">X</a></td>
 						  </tr>';
 					$count++;
 				}

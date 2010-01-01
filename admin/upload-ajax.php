@@ -1,5 +1,14 @@
 <?php
 
+	require_once('inc/functions.php');
+	$path = tsl('../data/other/');
+	$bakpath = tsl('../backups/other/');
+	$file = 'website.xml';
+	$data = getXML($path . $file);
+	global $SITENAME;
+	global $SITEURL;
+	
+	$userid = login_cookie_check();
 
 if (!empty($_FILES)) {
 	$tempFile = $_FILES['Filedata']['tmp_name'];
@@ -43,15 +52,15 @@ if (!empty($_FILES)) {
 		    switch(strtolower(substr($targetFile, -3))){
 		        case "jpg":
 		            header("Content-Type: image/jpeg");
-		            $bool2 = imagejpeg($picture,"../../data/thumbs/thumbnail.".$_FILES['Filedata']['name'],85);
+		            $bool2 = imagejpeg($picture,"../data/thumbs/thumbnail.".$_FILES['Filedata']['name'],85);
 		        break;
 		        case "png":
 		            header("Content-Type: image/png");
-		            imagepng($picture,"../../data/thumbs/thumbnail.".$_FILES['Filedata']['name']);
+		            imagepng($picture,"../data/thumbs/thumbnail.".$_FILES['Filedata']['name']);
 		        break;
 		        case "gif":
 		            header("Content-Type: image/gif");
-		            imagegif($picture,"../../data/thumbs/thumbnail.".$_FILES['Filedata']['name']);
+		            imagegif($picture,"../data/thumbs/thumbnail.".$_FILES['Filedata']['name']);
 		        break;
 		    }
 		}
@@ -77,15 +86,15 @@ if (!empty($_FILES)) {
 		    switch(strtolower(substr($targetFile, -3))){
 		        case "jpg":
 		            header("Content-Type: image/jpeg");
-		            $bool2 = imagejpeg($picture,"../../data/thumbs/thumbsm.".$_FILES['Filedata']['name'],85);
+		            $bool2 = imagejpeg($picture,"../data/thumbs/thumbsm.".$_FILES['Filedata']['name'],85);
 		        break;
 		        case "png":
 		            header("Content-Type: image/png");
-		            imagepng($picture,"../../data/thumbs/thumbsm.".$_FILES['Filedata']['name']);
+		            imagepng($picture,"../data/thumbs/thumbsm.".$_FILES['Filedata']['name']);
 		        break;
 		        case "gif":
 		            header("Content-Type: image/gif");
-		            imagegif($picture,"../../data/thumbs/thumbsm.".$_FILES['Filedata']['name']);
+		            imagegif($picture,"../data/thumbs/thumbsm.".$_FILES['Filedata']['name']);
 		        break;
 		    }
 		}

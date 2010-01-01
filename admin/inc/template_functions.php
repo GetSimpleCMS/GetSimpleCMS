@@ -65,8 +65,8 @@ function get_filename_id() {
  *
 */
 function delete_file($uri) {
-	$bakfile = "../../backups/pages/". $uri .".bak.xml";
-	$file = "../../data/pages/". $uri .".xml";
+	$bakfile = "../backups/pages/". $uri .".bak.xml";
+	$file = "../data/pages/". $uri .".xml";
 	copy($file, $bakfile);
 	unlink($file);
 }
@@ -94,7 +94,7 @@ function check_perms($path) {
  *
 */
 function delete_zip($uri) { 
-	unlink("../../backups/zip/". $uri);
+	unlink("../backups/zip/". $uri);
 	return 'success';
 } 
 /******************************************************/
@@ -106,12 +106,12 @@ function delete_zip($uri) {
  *
 */
 function delete_upload($uri) { 
-	unlink("../../data/uploads/". $uri);
-	if (file_exists("../../data/thumbs/thumbnail.". $uri)) {
-		unlink("../../data/thumbs/thumbnail.". $uri);
+	unlink("../data/uploads/". $uri);
+	if (file_exists("../data/thumbs/thumbnail.". $uri)) {
+		unlink("../data/thumbs/thumbnail.". $uri);
 	}
-	if (file_exists("../../data/thumbs/thumbsm.". $uri)) {
-		unlink("../../data/thumbs/thumbsm.". $uri);
+	if (file_exists("../data/thumbs/thumbsm.". $uri)) {
+		unlink("../data/thumbs/thumbsm.". $uri);
 	}
 	return 'success';
 } 
