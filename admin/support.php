@@ -60,7 +60,7 @@
 	
 	<?php 
 	if (isset($_GET['err'])) {
-		echo '<div class="error"><b>Error:</b> '.$_GET['err'].'</div>';
+		echo '<div class="error"><b>'.$i18n['ERROR'].':</b> '.$_GET['err'].'</div>';
 	} elseif (isset($_GET['success'])) {
 		echo '<div class="updated">'.$_GET['success'].'</div>';
 	} elseif (isset($success)) {

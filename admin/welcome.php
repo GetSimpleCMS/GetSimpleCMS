@@ -26,18 +26,18 @@
 	
 	<div id="maincontent">
 		<div class="main">
-			<p><strong>Thank you for choosing GetSimple as your CMS!</strong></p> 
-			<p>GetSimple makes managing your website as simple as possible with its top-of-the-class user interface and the easiest templating system around.  </p>
+			<p><strong><?php echo $i18n['WELCOME_MSG']; ?></strong></p> 
+			<p><?php echo $i18n['WELCOME_P']; ?></p>
 			
-			<h3>Getting Started</h3>
+			<h3></h3>
 			<ul>
-				<li><a href="pages.php">Create a New Page</a></li>
-				<li><a href="upload.php">Upload Files</a></li>
-				<li><a href="settings.php">Change my Settings</a></li>
-				<li><a href="theme.php">Change my Theme</a></li>
+				<li><a href="pages.php"><?php echo $i18n['CREATE_NEW_PAGE']; ?></a></li>
+				<li><a href="upload.php"><?php echo $i18n['FILE_MANAGEMENT']; ?></a></li>
+				<li><a href="settings.php"><?php echo $i18n['GENERAL_SETTINGS']; ?></a></li>
+				<li><a href="theme.php"><?php echo $i18n['THEME_MANAGEMENT']; ?></a></li>
 			</ul>
 			<ul>
-				<li><a href="http://get-simple.info/docs/">GetSimple Documentation</a></li>
+				<li><a href="http://get-simple.info/docs/"><?php echo $i18n['SIDE_DOCUMENTATION']; ?></a></li>
 			</ul>
 		</div>
 		

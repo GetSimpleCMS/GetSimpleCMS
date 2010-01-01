@@ -36,15 +36,15 @@
 	list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($src_folder . urlencode($src));
 	if (file_exists($thumb_folder . 'thumbnail.' . $src)) {
 		list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . urlencode('thumbnail.'.$src));
-		$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder . 'thumbnail.'. $src .'" rel="facybox" >Current Thumbnail</a> (<a href="#jcrop_open">recreate</a>) - '.$thwidth.' x '.$thheight;
+		$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder . 'thumbnail.'. $src .'" rel="facybox" >'.$i18n['CURRENT_THUMBNAIL'].'</a> (<a href="#jcrop_open">'.$i18n['RECREATE'].'</a>) - '.$thwidth.' x '.$thheight;
 	} else {
-		$thumb_exists = ' &nbsp; | &nbsp; <a href="#jcrop_open">create one</a>';
+		$thumb_exists = ' &nbsp; | &nbsp; <a href="#jcrop_open">'.$i18n['CREATE_ONE'].'</a>';
 	}
 ?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['FILE_MANAGEMENT'].' &raquo; Image'); ?>
+<?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['FILE_MANAGEMENT'].' &raquo; '.$i18n['IMAGES']); ?>
 	
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $i18n['FILE_MANAGEMENT'];?> <span>&raquo;</span> Image</h1>
+	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $i18n['FILE_MANAGEMENT'];?> <span>&raquo;</span> <?php echo $i18n['IMAGES'];?></h1>
 	<?php include('template/include-nav.php'); ?>
 	<?php include('template/error_checking.php'); ?>
 
@@ -52,19 +52,19 @@
 	<div id="maincontent">
 			
 		<div class="main">
-		<h3>Image Control Panel</h3>
+		<h3><?php echo $i18n['IMG_CONTROL_PANEL'];?></h3>
 	
-			<?php echo '<p><a href="'.$src_folder . $src .'" rel="facybox" >Original Image</a> - '.$imgwidth.' x '.$imgheight . $thumb_exists .'</p>'; ?>
+			<?php echo '<p><a href="'.$src_folder . $src .'" rel="facybox" >'.$i18n['ORIGINAL_IMG'].'</a> - '.$imgwidth.' x '.$imgheight . $thumb_exists .'</p>'; ?>
 
 			<form><select class="text" id="img-info">
-				<option selected="selected" value="code-img-html" >Original Image HTML</option>
-				<option value="code-img-link" >Original Image Link</option>
-				<option value="code-thumb-html" >Thumbnail HTML</option>
-				<option value="code-thumb-link" >Thumbnail Link</option>
-				<option value="code-imgthumb-html" >Thumbnail-to-Image HTML</option>
+				<option selected="selected" value="code-img-html" ><?php echo $i18n['HTML_ORIG_IMG'];?></option>
+				<option value="code-img-link" ><?php echo $i18n['LINK_ORIG_IMG'];?></option>
+				<option value="code-thumb-html" ><?php echo $i18n['HTML_THUMBNAIL'];?></option>
+				<option value="code-thumb-link" ><?php echo $i18n['LINK_THUMBNAIL'];?></option>
+				<option value="code-imgthumb-html" ><?php echo $i18n['HTML_THUMB_ORIG'];?></option>
 			</select>
 			<textarea class="copykit" >&lt;img src="<?php echo tsl($SITEURL) .'data/uploads/'. $src; ?>" class="gs_image" alt=""></textarea>
-			<p style="color:#666;font-size:11px;margin:-10px 0 0 0">Copy to clipboard: <a href="#" class="select-all" >Select All</a> then <em>ctrl-c</em> or <em>command-c</em></p>
+			<p style="color:#666;font-size:11px;margin:-10px 0 0 0"><?php echo $i18n['CLIPBOARD_COPY'];?>: <a href="#" class="select-all" ><?php echo $i18n['CLIPBOARD_INSTR'];?></a></p>
 		</form>
 			<div class="toggle">
 				<p id="code-img-html">&lt;img src="<?php echo tsl($SITEURL) .'data/uploads/'. $src; ?>" class="gs_image" alt=""></p>
@@ -80,7 +80,7 @@
     <img src="<?php echo $src_folder . $src; ?>" id="cropbox" />
     
 
-		<div id="handw" class="toggle" >Selection Dimentions<br /><span id="picw"></span> x <span id="pich"></span></div>
+		<div id="handw" class="toggle" ><?php echo $i18n['SELECT_DIMENTIONS']; ?><br /><span id="picw"></span> x <span id="pich"></span></div>
  
     <!-- This is the form that our event handler fills -->
     <form id="jcropform" action="image.php?i=<?php echo $src; ?>" method="post" onsubmit="return checkCoords();">
@@ -88,7 +88,7 @@
       <input type="hidden" id="y" name="y" />
       <input type="hidden" id="w" name="w" />
       <input type="hidden" id="h" name="h" />
-      <input type="submit" class="submit" value="Create Thumbnail" /> &nbsp; <span style="color:#666;font-size:11px;"><em>ctrl-Q</em> or <em>command-Q</em> for square</span>
+      <input type="submit" class="submit" value="<?php echo $i18n['CREATE_THUMBNAIL'];?>" /> &nbsp; <span style="color:#666;font-size:11px;"><?php echo $i18n['CROP_INSTR'];?></span>
 
     </form>
 

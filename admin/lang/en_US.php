@@ -409,7 +409,65 @@ $i18n = array(
 /* 
  * For: Date Format
 */
-"DATE_FORMAT"				=>	"M j, Y" //please keep short
+"DATE_FORMAT"				=>	"M j, Y", //please keep short
+
+
+
+/***********************************************************************************
+ * SINCE Version 2.0
+***********************************************************************************/
+
+
+/* 
+ * For: welcome.php
+*/
+"WELCOME_MSG"				=>	"Thank you for choosing GetSimple as your CMS!",
+"WELCOME_P"					=>	"GetSimple makes managing your website as simple as possible with its top-of-the-class user interface and the easiest templating system around.",
+"GETTING_STARTED"		=>	"Getting Started",
+
+/* 
+ * For: install.php
+*/
+
+"SELECT_LANG" 			=> "Select your language",
+"CONTINUE_SETUP" 		=> "Continue with Setup",
+
+/* 
+ * For: image.php
+*/
+
+"CURRENT_THUMBNAIL" => "Current Thumbnail",
+"RECREATE" 					=> "recreate",
+"CREATE_ONE" 				=> "create one",
+"IMG_CONTROl_PANEL" => "Image Control Panel",
+"ORIGINAL_IMG" 			=> "Original Image",
+"CLIPBOARD_COPY" 		=> "Copy to clipboard",
+"CLIPBOARD_INSTR" 	=> "Select All then <em>ctrl-c</em> or <em>command-c</em>",
+"CREATE_THUMBNAIL" 	=> "Current Thumbnail",
+"CROP_INSTR" 				=> "<em>ctrl-Q</em> or <em>command-Q</em> for square",
+"SELECT_DIMENTIONS" => "Selection Dimentions",
+"HTML_ORIG_IMG" 		=> "Original Image HTML",
+"LINK_ORIG_IMG" 		=> "Original Image Link",
+"HTML_THUMBNAIL" 		=> "Thumbnail HTML",
+"LINK_THUMBNAIL" 		=> "Thumbnail Link",
+"HTML_THUMB_ORIG" 	=> "Thumbnail-to-Image HTML",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"" => "not translated"
+
 
 
 );

@@ -209,12 +209,12 @@
 			?>
 			</table>
 			<form action="setup.php" method="post" accept-charset="utf-8" >
-				<p><b>Select Your <?php echo $i18n['LANGUAGE'];?>:</b><br />
+				<p><b><?php echo $i18n['SELECT_LANGUAGE'];?>:</b><br />
 				<select name="lang" class="text">
 					<?php echo $langs; ?>
 				</select>
 				</p>
-				<p><input class="submit" type="submit" name="continue" value="Continue with Setup &raquo;" /></p>
+				<p><input class="submit" type="submit" name="continue" value="<?php echo $i18n['CONTINUE_SETUP'];?> &raquo;" /></p>
 			</form>
 	</div>
 </div>
