@@ -29,7 +29,7 @@
 			<p><strong><?php echo $i18n['WELCOME_MSG']; ?></strong></p> 
 			<p><?php echo $i18n['WELCOME_P']; ?></p>
 			
-			<h3></h3>
+			<h3><?php echo $i18n['GETTING_STARTED']; ?></h3>
 			<ul>
 				<li><a href="pages.php"><?php echo $i18n['CREATE_NEW_PAGE']; ?></a></li>
 				<li><a href="upload.php"><?php echo $i18n['FILE_MANAGEMENT']; ?></a></li>
