@@ -40,7 +40,7 @@
 	if(isset($_POST['submitted'])) {
 		
 		if(isset($_POST['sitename'])) { 
-			$SITENAME = cl($_POST['sitename']); 
+			$SITENAME = htmlentities(cl($_POST['sitename'])); 
 		}
 		
 		if(isset($_POST['siteurl'])) { 
