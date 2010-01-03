@@ -93,7 +93,7 @@
 	if (in_arrayi('curl', $php_modules)) {
 		$api_file = '../data/other/authorization.xml';
 		if (! file_exists($api_file)) {
-			$curl_URL = 'http://gs.api.cagintranet.com/api.php?r=true&v='.$site_version_no;
+			$curl_URL = $api_url .'?r=true&v='.$site_version_no;
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_TIMEOUT, 2);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
