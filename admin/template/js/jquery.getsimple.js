@@ -202,7 +202,7 @@ jQuery(document).ready(function() {
   }
 	$('#editftp').uploadify({
   	'uploader'	: 'template/js/uploadify/uploadify.swf',
-  	'script'		: 'inc/upload-ajax.php',
+  	'script'		: 'upload-ajax.php',
   	'multi'			: true,
   	'auto'			: true,
   	'height'		:	'17',
