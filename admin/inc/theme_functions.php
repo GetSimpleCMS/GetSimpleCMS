@@ -215,6 +215,7 @@ function menu_data($id = null,$xml=false) {
                     $slug = (string)$page['url'];
                     $menuStatus = (string)$page['menuStatus'];
                     $private = (string)$page['private'];
+										$pubDate = (string)$page['pubDate'];
                     
                     if ($PRETTYURLS == '1') {
                         if ($parent != '') {$parent = tsl($parent); } 
@@ -224,7 +225,7 @@ function menu_data($id = null,$xml=false) {
                         $url = $SITEURL .'index.php?id='.$slugs; 
                     }
                     
-                    $specific = array("slug"=>$slugs,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private);
+                    $specific = array("slug"=>$slugs,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
                     
                     if ($id == $slug) { 
                         return $specific; 
@@ -256,7 +257,7 @@ function menu_data($id = null,$xml=false) {
                     
                     $xml.="<item>";
                     $xml.="<slug><![CDATA[".$slugs."]]></slug>";
-                    $xml.="<pubdate><![CDATA[".$pubDate."]]></pubdate>";
+                    $xml.="<pubDate><![CDATA[".$pubDate."]]></pubDate>";
                     $xml.="<url><![CDATA[".$url."]]></url>";
                     $xml.="<parent><![CDATA[".$parent."]]></parent>";
                     $xml.="<title><![CDATA[".$title."]]></title>";
