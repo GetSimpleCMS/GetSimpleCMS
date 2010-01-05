@@ -9,6 +9,7 @@
 *****************************************************/
 
 	require_once('inc/functions.php');
+	require_once('inc/plugin_functions.php');
 	$file = 'user.xml';
 	$path = tsl('../data/other/');
 	if (file_exists($path . $file)) {

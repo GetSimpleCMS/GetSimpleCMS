@@ -9,7 +9,8 @@
 
 	require_once('inc/functions.php'); 	
 	require_once('inc/login_functions.php');
-
+	require_once('inc/plugin_functions.php');
+	
 	// if install.php exists, delete it	
 	if (file_exists('admin/install.php')) {
 		unlink('admin/install.php');

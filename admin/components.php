@@ -9,6 +9,7 @@
 *****************************************************/
  
 	require_once('inc/functions.php');
+	require_once('inc/plugin_functions.php');
 	$userid = login_cookie_check();
 	$file = "components.xml";
 	$path = tsl("../data/other/");

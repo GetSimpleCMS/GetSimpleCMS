@@ -8,6 +8,7 @@
 *****************************************************/
 
 	require_once('inc/functions.php');
+	require_once('inc/plugin_functions.php');
 	$theme_options = ''; $TEMPLATE_FILE = ''; $template = ''; $theme_templates = '';
 	
 	$userid = login_cookie_check();

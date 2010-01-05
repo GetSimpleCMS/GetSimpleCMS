@@ -8,6 +8,8 @@
 *****************************************************/
  	
  	require_once('admin/inc/basic.php');
+ 	require_once('admin/inc/plugin_functions.php');
+ 	
  	
 	if (file_exists('data/other/website.xml')) {
 		$thisfile = 'data/other/website.xml';
@@ -73,9 +75,14 @@
 		include("theme/".$TEMPLATE."/functions.php");	
 	}
 	
+	// call pretemplate Hook
+	exec_action('index-pretemplate');
+	
 	// include the template and template file set within theme.php and each page
 	if ( (!file_exists("theme/".$TEMPLATE."/".$template_file)) || ($template_file == '') ) { $template_file = "template.php"; }
 	include("theme/".$TEMPLATE."/".$template_file);
 	
+	// call posttemplate Hook
+	exec_action('index-posttemplate');
 	
 ?>

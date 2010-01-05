@@ -40,7 +40,7 @@ font-weight:bold;
 *****************************************************/
 
 	require_once('inc/functions.php');
-	
+	require_once('inc/plugin_functions.php');
 	// get pages
 	$path = "../data/pages";
 	$dir_handle = @opendir($path) or die("Unable to open $path");

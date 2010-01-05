@@ -9,6 +9,7 @@
 
 
 	require_once('inc/functions.php');
+	require_once('inc/plugin_functions.php');
 	$path = tsl('../data/other/');
 	$bakpath = tsl('../backups/other/');
 	$file = 'website.xml';

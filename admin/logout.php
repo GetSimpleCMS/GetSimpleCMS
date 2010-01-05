@@ -8,6 +8,7 @@
 *****************************************************/
 
 	require_once('inc/functions.php');
+	require_once('inc/plugin_functions.php');
 	kill_cookie($cookie_name);
 ?>
 

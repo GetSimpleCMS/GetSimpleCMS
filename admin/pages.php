@@ -8,6 +8,7 @@
 *****************************************************/
 
 	require_once('inc/functions.php');
+	require_once('inc/plugin_functions.php');
 	$userid = login_cookie_check();
 	$id 		= @$_GET['id'];
 	$ptype 	= @$_GET['type'];
