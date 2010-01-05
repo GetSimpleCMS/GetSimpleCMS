@@ -73,7 +73,7 @@
 	
 	foreach ($parents as $fi) {
 		if( isFile($fi, $path, 'xml') ) {
-			$goodname = ereg_replace(".xml", "", $fi);
+			$goodname = str_replace(".xml", "", $fi);
 			if ($parent == $goodname) { $sel="selected"; } else { $sel=""; };
 			if ($goodname != $uri ) {
 				$tmpData = getXML($path . $fi);
