@@ -429,7 +429,7 @@ $i18n = array(
  * For: install.php
 */
 
-"SELECT_LANG" 			=> "Select your language",
+"SELECT_LANGUAGE"		=> "Select your language",
 "CONTINUE_SETUP" 		=> "Continue with Setup",
 
 /* 
