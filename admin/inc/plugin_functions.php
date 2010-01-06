@@ -34,7 +34,7 @@ foreach ($pluginfiles as $fi) {
 }
 /* show plugins menu tab
 * if ($pluginsLoaded==true){
-*	add_action('nav-thumb','createNavTab',array('plugins.php','Plugins')); 
+*	add_action('nav-tab','createNavTab',array('plugins.php','Plugins')); 
 * }
 */
 

@@ -17,6 +17,12 @@
 	<li><a class="files" href="upload.php" accesskey="f" ><?php echo $i18n['TAB_FILES'];?></a></li>
 	<li><a class="theme" href="theme.php" accesskey="t" ><?php echo $i18n['TAB_THEME'];?></a></li>
 	<li><a class="backups" href="backups.php" accesskey="b" ><?php echo $i18n['TAB_BACKUPS'];?></a></li>
+	
+	<?php 
+	exec_hook('nav-tab');
+	?>
+	
+	
 	<li><img class="toggle" id="loader" src="template/images/ajax.gif" alt=""/></li>
 	<li class="rightnav" ><a class="settings first" href="settings.php" accesskey="s" ><?php echo $i18n['TAB_SETTINGS'];?></a></li>
 	<li class="rightnav" ><a class="support last" href="support.php" accesskey="o" ><?php echo $i18n['TAB_SUPPORT'];?></a></li>
