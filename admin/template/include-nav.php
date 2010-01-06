@@ -19,7 +19,7 @@
 	<li><a class="backups" href="backups.php" accesskey="b" ><?php echo $i18n['TAB_BACKUPS'];?></a></li>
 	
 	<?php 
-	exec_hook('nav-tab');
+	exec_action('nav-tab');
 	?>
 	
 	
