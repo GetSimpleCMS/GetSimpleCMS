@@ -150,7 +150,7 @@
 				</tr>
 				<tr>
 					<td colspan="2">
-						<b><?php echo $i18n['META_DESC']; ?>Meta Description:</b><br />
+						<b><?php echo $i18n['META_DESC']; ?>:</b><br />
 						<input class="text" id="post-metad" name="post-metad" type="text" value="<?php echo @$metad; ?>" />
 					</td>
 				</tr>

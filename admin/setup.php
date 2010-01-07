@@ -12,7 +12,7 @@
 	if(isset($_POST['lang'])) { $LANG = $_POST['lang']; }	else { $LANG = 'en_US'; }
 	global $i18n;
 	
-	$kill = ''; $TIMEZONE = ''; $PASSWD = '';
+	$kill = ''; $PASSWD = ''; $status=''; $err=null; $message=null; $random=null;
 	$file = 'user.xml';
 	$path = tsl('../data/other/');
 	if (file_exists($path . $file)) {

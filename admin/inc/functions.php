@@ -23,6 +23,7 @@
 	require_once('inc/cookie_functions.php');
 	require_once('inc/template_functions.php');
 	
+	
 	//get website data
 	if (file_exists('../data/other/website.xml')) {
 		$thisfilew = '../data/other/website.xml';
@@ -32,6 +33,9 @@
 		$TEMPLATE = $dataw->TEMPLATE;
 		$TIMEZONE = $dataw->TIMEZONE;
 		$LANG = $dataw->LANG;
+	} else {
+		$TIMEZONE = 'America/New_York';
+		$LANG = 'en_US';
 	}
 	if (file_exists('../data/other/cp_settings.xml')) {
 		$thisfilec = '../data/other/cp_settings.xml';
@@ -44,6 +48,15 @@
 	if (file_exists('../data/other/user.xml')) {
 		$datau = getXML('../data/other/user.xml');
 		$USR = stripslashes($datau->USR);
+	} else {
+		$USR = null;	
+	}
+	
+	if (file_exists('../data/other/authorization.xml')) {
+		$dataa = getXML('../data/other/authorization.xml');
+		$SALT = stripslashes($dataa->apikey);
+	} else {
+		$SALT = sha1($USR);
 	}
 		
 	// if there is no siteurl set, redirect user to install setup

@@ -35,7 +35,7 @@
 	$MSG = "";
 	
 	// If the login cookie is already set, redirect user to secure panel
-	if(isset($_COOKIE[$cookie_name])) {
+	if(cookie_check()) {
   	header("Location: ". $cookie_redirect);                                             
 	}
 	
@@ -83,16 +83,8 @@
 			// Was there a Successful Logon attempt?
 			if( $authenticated == 'TRUE' ) {
 				
-				//keep me logged in checkbox
-				if (isset($_POST['extended'])) {
-					$cookie_time = $cookie_extended_time;
-					create_cookie('GetSimpleLoginType','Extended');
-				} else {
-					create_cookie('GetSimpleLoginType','Normal');
-				}
-				
 				// Set the login cookie, then redirect user to secure panel		
-  			setcookie($cookie_name, $userid, time() + $cookie_time);
+  			create_cookie();
 				header("Location: ". $cookie_redirect); 
 			} else {
 				$MSG .= '<b>'.$i18n['ERROR'].':</b> '.$i18n['LOGIN_FAILED'].'.';

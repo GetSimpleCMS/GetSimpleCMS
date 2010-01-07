@@ -385,6 +385,7 @@ $i18n = array(
  * For: changedata.php
 */
 "CANNOT_SAVE_EMPTY"	=>	"You cannot save an empty page",
+"META_DESC" 				=> "Meta Description",
 
 /* 
  * For: template_functions.php
@@ -452,13 +453,17 @@ $i18n = array(
 "LINK_THUMBNAIL" 		=> "Thumbnail Link",
 "HTML_THUMB_ORIG" 	=> "Thumbnail-to-Image HTML",
 
+/* 
+ * For: plugins.php
+*/
 
-
-
-
-
-
-
+"PLUGINS_MANAGEMENT"=> "Plugin Management",
+"PLUGINS_INSTALLED" => "Plugins Installed",
+"SHOW_PLUGINS"			=> "Installed Plugi<em>n</em>s",
+"PLUGINS_NAV" 			=> "Plugins",
+"PLUGIN_NAME" 			=> "Name",
+"PLUGIN_DESC" 			=> "Description",
+"PLUGIN_VER" 				=> "Version",
 
 
 

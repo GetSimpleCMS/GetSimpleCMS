@@ -134,7 +134,7 @@
 			<table class="highlight healthcheck">
 			<?php
 			if (in_arrayi('curl', $php_modules)) {
-				$curl_URL = 'http://gs.api.cagintranet.com/api.php?k='.$APIKEY.'&v='.$site_version_no;
+				$curl_URL = $api_url .'?k='.$APIKEY.'&v='.$site_version_no;
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_TIMEOUT, 2);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

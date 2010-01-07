@@ -7,23 +7,28 @@
 *
 *****************************************************/
 
-if (basename($_SERVER['PHP_SELF']) == 'cookie_functions.php') { 
-	die('You cannot load this page directly.'); 
-} 
+if (basename($_SERVER['PHP_SELF']) == 'cookie_functions.php') {
+	die('You cannot load this page directly.');
+}
 
 
-require_once('inc/configuration.php'); 
+require_once('inc/configuration.php');
 
 
 //****************************************************//
 //** FUNCTION: create_cookie();  *********************//
 //**                                                **//
-//** Creates given cookie                           **//
+//** Creates login cookie                           **//
 //****************************************************//
-	function create_cookie($identifier, $value) {
-		global $cookie_extended_time;
-		setcookie($identifier, $value, time() + $cookie_extended_time);
-	}	
+	function create_cookie() {
+		global $USR;
+		global $SALT;
+		global $cookie_time;
+		global $cookie_name;
+		$saltUSR = $USR.$SALT;
+		$saltCOOKIE = $cookie_name.$SALT;
+		setcookie($saltCOOKIE, sha1($saltUSR), time() + $cookie_time);
+	}
 
 
 
@@ -35,32 +40,6 @@ require_once('inc/configuration.php');
 	function kill_cookie($identifier) {
 		setcookie($identifier, "", time() - 1);
 	}
-	
-	
-	
-//****************************************************//
-//** FUNCTION: login_cookie_check();  ****************//
-//**                                                **//
-//** Checks to see if a user is logged in. if they  **// 
-//** are, it returns their userid, otherwise it     **//
-//** redirects them back to the login page.         **//
-//****************************************************//	
-	function login_cookie_check() {
-		global $USR;
-		global $cookie_time;
-		global $cookie_name;
-		global $cookie_login;
-		global $cookie_extended_time;
-		if(isset($_COOKIE[$cookie_name])) { 	
-			// If the cookie is set, pull username and reset the cookie
-			setcookie($cookie_name, $USR, time() + $cookie_time);
-			return $USR;
-		} else {
-			// If the cookie has expired, redirect back to login page
-			header("Location: ". $cookie_login);
-			exit;
-		}
-	}
 
 
 
@@ -69,17 +48,45 @@ require_once('inc/configuration.php');
 //**                                                **//
 //** Checks to see if a cookie is set, if it is, it **// 
 //** returns it's value, otherwise it returns FALSE **//
+//** When no cookie name is given it checks the     **//
+//** login cookie and returns true when the user is **//
+//** logged in.                                     **//
 //****************************************************//
-	function cookie_check($cookie_name) {
-		global $cookie_time;
-		if(isset($_COOKIE[$cookie_name])) { 	
-			// If the cookie is set, reset it
-			$cookie_value = $_COOKIE[$cookie_name]; 
-			//setcookie($cookie_name, $cookie_value, time() + $cookie_time);
-			return $cookie_value;
+	function cookie_check($cookie_name=FALSE) {
+		if($cookie_name==FALSE) { // Assume login cookie.
+			global $USR;
+			global $SALT;
+			global $cookie_name;
+			$saltUSR = $USR.$SALT;
+			$saltCOOKIE = $cookie_name.$SALT;
+			if(isset($_COOKIE[$saltCOOKIE])&&$_COOKIE[$saltCOOKIE]==sha1($saltUSR)) {
+				return TRUE; // Cookie proves logged in status.
+			} else { return FALSE; }
+		}
+		else if(isset($_COOKIE[$cookie_name])) {
+			return TRUE; // Old versions returned the cookie value, use get_cookie() for that!
+		}
+		else {
+			return FALSE;
+		}
+	}
+
+
+
+//****************************************************//
+//** FUNCTION: login_cookie_check();  ****************//
+//**                                                **//
+//** Checks to see if a user is logged in. if they  **// 
+//** are, it returns their userid, otherwise it     **//
+//** redirects them back to the login page.         **//
+//****************************************************//	
+	function login_cookie_check() {
+		global $cookie_login;
+		if(cookie_check()) {
+			create_cookie();
 		} else {
-			// Cookie has expired or is not set
-			return 'FALSE';
+			header("Location: ". $cookie_login);
+			exit;
 		}
 	}
 
@@ -88,12 +95,11 @@ require_once('inc/configuration.php');
 //****************************************************//
 //** FUNCTION: get_cookie();  ************************//
 //**                                                **//
-//** Echos a cookie's contents, if any              **//
+//** Returns a cookie's contents, if any            **//
 //****************************************************//
 	function get_cookie($cookie_name) {
-		$result = cookie_check($cookie_name);
-		if ($result != 'FALSE') { 
-			return $result; 
+		if(cookie_check($cookie_name)==TRUE) { 
+			return $_COOKIE[$cookie_name];
 		}
 	}
 	

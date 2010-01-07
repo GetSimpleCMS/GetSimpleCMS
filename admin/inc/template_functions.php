@@ -216,6 +216,7 @@ function get_FileType($ext) {
  *
 */
 function createBak($file, $filepath, $bakpath) {
+	$bakfile = '';
 	if ( file_exists(tsl($filepath) . $file) ) {
 		$bakfile = $file .".bak";
 		copy($filepath . $file, $bakpath . $bakfile);

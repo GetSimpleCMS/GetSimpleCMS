@@ -8,8 +8,8 @@
 *****************************************************/
 ?>
 
-<?php if (cookie_check($cookie_name) != 'FALSE') { 
-		echo '<ul id="pill"><li class="leftnav"><a href="logout.php" accesskey="l" >'.$i18n['TAB_LOGOUT'].'</a></li><li class="rightnav" ><a href="settings.php#profile">'.$i18n['WELCOME'].' <b>'.cookie_check($cookie_name).'</b>!</a></li></ul>'; 
+<?php if (cookie_check()) { 
+		echo '<ul id="pill"><li class="leftnav"><a href="logout.php" accesskey="l" >'.$i18n['TAB_LOGOUT'].'</a></li><li class="rightnav" ><a href="settings.php#profile">'.$i18n['WELCOME'].' <b>'.$USR.'</b>!</a></li></ul>'; 
 } ?>
 
 <ul class="nav">

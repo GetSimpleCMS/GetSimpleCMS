@@ -35,7 +35,7 @@ foreach ($pluginfiles as $fi) {
 }
 // show plugins menu tab
 if ($pluginsLoaded==true){
-	add_action('nav-tab','createNavTab',array('plugins.php?plugin=main','Plugins (beta)')); 
+	add_action('nav-tab','createNavTab',array('plugins.php?plugin=main', $i18n['PLUGINS_NAV'])); 
  }
 
 

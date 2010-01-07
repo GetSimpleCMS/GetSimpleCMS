@@ -12,7 +12,7 @@
 	$userid = login_cookie_check();
 	$path = tsl('plugins');
 	$counter = '0';
-	$table = '<tr><th>Name</th><th>Description</th><th>Version</th></tr>';
+	$table = '<tr><th>'.$i18n['PLUGIN_NAME'].'</th><th>'.$i18n['PLUGIN_DESC'].'</th><th>'.$i18n['PLUGIN_VER'].'</th></tr>';
 	
 	$pluginfiles = getFiles($path);
 	foreach ($pluginfiles as $fi) {
@@ -29,9 +29,9 @@
 	}	
 ?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['BAK_MANAGEMENT']); ?>
+<?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['PLUGINS_MANAGEMENT']); ?>
 	
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> Plugin Management</h1>
+	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $i18n['PLUGINS_MANAGEMENT']; ?></h1>
 	
 	<?php include('template/include-nav.php'); ?>
 	<?php include('template/error_checking.php'); ?>
@@ -48,12 +48,13 @@
 			$page = $_GET['page'];
 			include "plugins/".$pluginname."/".$page.".php";
 		} else { ?>
-		<label>Plugin Management</label>
-		<table class="highlight paginate">
+		<h3><?php echo $i18n['PLUGINS_MANAGEMENT']; ?></h3>
+		
+		<table class="edittable highlight paginate">
 			<?php echo $table; ?>
 			
 		</table>
-		<p><em><b><?php echo $counter; ?></b> Plugins Installed</em></p>
+		<p><em><b><?php echo $counter; ?></b> <?php echo $i18n['PLUGINS_INSTALLED']; ?></em></p>
 		<?php 
 		}
 		?>	
