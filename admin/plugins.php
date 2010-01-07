@@ -12,26 +12,21 @@
 	$userid = login_cookie_check();
 	$path = tsl('plugins');
 	$counter = '0';
-	$table = '';
+	$table = '<tr><th>Name</th><th>Description</th><th>Version</th></tr>';
 	
 	$pluginfiles = getFiles($path);
 	foreach ($pluginfiles as $fi) {
 		$pathExt = pathinfo($fi,PATHINFO_EXTENSION );
 		$pathName= pathinfo($fi,PATHINFO_FILENAME );
 		if ($pathExt=="php"){
-
-		$counter++;
-		$table .= '<tr id="tr-'.$counter.'" >';
-		$table .= '<td><a>'.$pathName .'</a></td>';
-		$table .= '<td style="width:170px;text-align:right;" ><span>Ver1.0</span></td>';
-		$table .= '</tr>';	
-			
-		}
-	
-		
-	}
-	
-	
+			$table .= '<tr id="tr-'.$counter.'" >';
+			$table .= '<td>'.$plugin_info[$pathName]['pi_name'] .'</td>';
+			$table .= '<td>'.$plugin_info[$pathName]['pi_description'] .'</td>';
+			$table .= '<td style="width:70px;" ><span>'.$plugin_info[$pathName]['pi_version'].'</span></td>';
+			$table .= '</tr>';
+			$counter++;
+		}	
+	}	
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['BAK_MANAGEMENT']); ?>
@@ -45,12 +40,24 @@
 	
 	<div id="maincontent">
 		<div class="main" >
-			<label>Plugin Management</label>
-			<table class="highlight paginate">
-				<?php echo $table; ?>
-				
-			</table>
-			<p><em><b><?php echo $counter; ?></b> Plugins Installed</em></p>
+			
+		<?php 
+		
+		if (isset($_GET['plugin']) && isset($_GET['page'])) { 
+			$pluginname = $_GET['plugin'];
+			$page = $_GET['page'];
+			include "plugins/".$pluginname."/".$page.".php";
+		} else { ?>
+		<label>Plugin Management</label>
+		<table class="highlight paginate">
+			<?php echo $table; ?>
+			
+		</table>
+		<p><em><b><?php echo $counter; ?></b> Plugins Installed</em></p>
+		<?php 
+		}
+		?>	
+			
 		</div>
 	</div>
 	
