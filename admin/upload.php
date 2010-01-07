@@ -154,5 +154,4 @@
 	
 	<div class="clear"></div>
 	</div>
-	<script type="text/javascript" src="template/js/clip/jquery.clipboard.js"></script>
 <?php get_template('footer'); ?>
