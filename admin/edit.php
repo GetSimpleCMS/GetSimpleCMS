@@ -127,7 +127,7 @@
 			<div class="clear" ></div>
 		</div>	
 			
-		<form class="largeform" id="editform" action="inc/changedata.php" method="post" accept-charset="utf-8" >
+		<form class="largeform" id="editform" action="changedata.php" method="post" accept-charset="utf-8" >
 			
 			<!-- page title toggle screen -->
 			<p id="edit_window">
@@ -185,7 +185,9 @@
 							</select></div>
 					</td>
 				</tr>
-							
+			<?php 
+			exec_action('edit-extras');
+			?>		
 			</table>
 
 			</div>	

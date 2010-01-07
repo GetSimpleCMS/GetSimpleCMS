@@ -9,25 +9,27 @@
 *
 *****************************************************/
 
-	require_once('template_functions.php'); 
-
-	if (file_exists('../../data/other/website.xml')) {
-		$dataw = getXML('../../data/other/website.xml');
+	require_once('inc/template_functions.php'); 
+	require_once('inc/plugin_functions.php');
+	
+	
+	if (file_exists('../data/other/website.xml')) {
+		$dataw = getXML('../data/other/website.xml');
 		$TIMEZONE = $dataw->TIMEZONE;
 		$LANG = $dataw->LANG;
 	}
 	
 	//set internationalization
 	if($LANG != '') {
-		include('../lang/'.$LANG.'.php');
+		include('lang/'.$LANG.'.php');
 	} else {
-		include('../lang/en_US.php');
+		include('lang/en_US.php');
 	}
 	
 	if (isset($_POST['submitted'])) {
 	
 	  if ( ($_POST['post-title'] == '') && ($_POST['post-uri'] == '') && ($_POST['post-content'] == '')  ) {
-			header("Location: ../edit.php?upd=edit-err&type=".$i18n['CANNOT_SAVE_EMPTY']);
+			header("Location: edit.php?upd=edit-err&type=".$i18n['CANNOT_SAVE_EMPTY']);
 			exit;
 	  } else {
 			
@@ -54,19 +56,19 @@
 					// dont change the index page's slug
 					if ($_POST['existing-url'] == 'index') {
 						$url = $_POST['existing-url'];
-						header("Location: ../edit.php?uri=". $_POST['existing-url'] ."&upd=edit-index&type=edit");
+						header("Location: edit.php?uri=". $_POST['existing-url'] ."&upd=edit-index&type=edit");
 						exit;
 					} else {
-						$file = "../../data/pages/". @$url .".xml";
-						$existing = "../../data/pages/". $_POST['existing-url'] .".xml";
-						$bakfile = "../../backups/pages/". $_POST['existing-url'] .".bak.xml";
+						$file = "../data/pages/". @$url .".xml";
+						$existing = "../data/pages/". $_POST['existing-url'] .".xml";
+						$bakfile = "../backups/pages/". $_POST['existing-url'] .".bak.xml";
 						copy($existing, $bakfile);
 						unlink($existing);
 					} 
 				} 
 			}
 			
-			$file = "../../data/pages/". @$url .".xml";
+			$file = "../data/pages/". @$url .".xml";
 			
 			// format and clean the responses
 			if(isset($_POST['post-title'])) { $title = htmlentities($_POST['post-title'], ENT_QUOTES, 'UTF-8'); }
@@ -88,10 +90,10 @@
 			//check to make sure we dont overwrite any good files upon create
 			if ( file_exists($file) && ($_POST['post-uri'] != $_POST['existing-url']) ) {
 				$count = "1";
-				$file = "../../data/pages/". $url ."-".$count.".xml";
+				$file = "../data/pages/". $url ."-".$count.".xml";
 				while ( file_exists($file) ) {
 					$count++;
-					$file = "../../data/pages/". $url ."-".$count.".xml";
+					$file = "../data/pages/". $url ."-".$count.".xml";
 				}
 				$url = $url .'-'. $count;
 			}
@@ -99,7 +101,7 @@
 			
 			// if we are editing an existing page, create a backup
 			if ( file_exists($file) ) {
-				$bakfile = "../../backups/pages/". $url .".bak.xml";
+				$bakfile = "../backups/pages/". $url .".bak.xml";
 				copy($file, $bakfile);
 			}
 			
@@ -128,10 +130,17 @@
 			$note->addCData(@$content);
 			$note = $xml->addChild('private');
 			$note->addCData(@$private);
+			
+		
+			// call changedata-save hook
+			exec_action('changedata-save');
+
+			
+			
 			$xml->asXML($file);
 			
 			// redirect user back to edit page 
-			header("Location: ../edit.php?uri=". $url ."&upd=edit-success&type=edit");
+			header("Location: edit.php?uri=". $url ."&upd=edit-success&type=edit");
 		}
 	}
 ?>

@@ -8,6 +8,7 @@
 *****************************************************/
 
 	require_once('inc/functions.php');
+	require_once('inc/plugin_functions.php');
 	$path = tsl('../data/other/');
 	$ref = $_SERVER['SERVER_NAME'];
 	$data = @getXML('../data/other/authorization.xml');
