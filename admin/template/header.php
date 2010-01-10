@@ -16,7 +16,7 @@ $LANG = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $LANG; ?>" lang="<?php echo $LANG; ?>">
 
 <head>
-	<meta http-equiv="Content-Type" value="text/html; charset=UTF-8"  />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"  />
 	<title><?php echo $title ?></title>
 	
 	<!-- Javascript -->
