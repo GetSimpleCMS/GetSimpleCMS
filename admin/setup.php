@@ -44,7 +44,8 @@
 		}
 		
 		if($_POST['user'] != '') { 
-			$USR1 = $_POST['user']; 
+			$USR1 = $_POST['user'];
+			$USR = $_POST['user'];
 		} else {
 			$err .= $i18n['USERNAME_ERROR'] .'<br />'; 
 		}
@@ -137,7 +138,7 @@
 			$status   = sendmail($EMAIL1,$subject,$message);
 			
 			// Set the login cookie, then redirect user to secure panel		
-  		setcookie($cookie_name, $USR1, time() + $cookie_time);
+  		create_cookie();
 			header("Location: welcome.php"); 
 			
 		}

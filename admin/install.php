@@ -209,13 +209,16 @@
 			?>
 			</table>
 			<form action="setup.php" method="post" accept-charset="utf-8" >
-				<p><b><?php echo $i18n['SELECT_LANGUAGE'];?>:</b><br />
+				<p><b><?php echo $i18n['SELECT_LANGUAGE'];?></b>:<br />
 				<select name="lang" class="text">
 					<?php echo $langs; ?>
 				</select>
 				</p>
 				<p><input class="submit" type="submit" name="continue" value="<?php echo $i18n['CONTINUE_SETUP'];?> &raquo;" /></p>
 			</form>
+			
+			<small class="hint"><a href="http://get-simple.info/download/languages"><?php echo $i18n['DOWNLOAD_LANG'];?></a></small>
+			
 	</div>
 </div>
 

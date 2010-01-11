@@ -38,7 +38,9 @@ require_once('inc/configuration.php');
 //** Kills given cookie                             **//
 //****************************************************//	
 	function kill_cookie($identifier) {
-		setcookie($identifier, "", time() - 1);
+		global $SALT;
+		$saltCOOKIE = $identifier.$SALT;
+		setcookie($saltCOOKIE, "", time() - 1);
 	}
 
 

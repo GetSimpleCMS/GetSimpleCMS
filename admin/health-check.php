@@ -13,7 +13,7 @@
 	$ref = $_SERVER['SERVER_NAME'];
 	$data = @getXML('../data/other/authorization.xml');
 	$APIKEY = $data->apikey;
-	$userid = login_cookie_check();
+	login_cookie_check();
 	$php_modules = get_loaded_extensions();
 ?>
 
@@ -30,7 +30,7 @@
 			<h3><?php echo $site_full_name; ?> <?php echo $i18n['VERSION'];?></h3>
 			<table class="highlight healthcheck">
 				<?php
-				if (in_array  ('curl', get_loaded_extensions())) {
+				if (in_arrayi('curl', $php_modules)) {
 					$curl_URL = $api_url .'?k='.$APIKEY.'&v='.$site_version_no;
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_TIMEOUT, 2);
