@@ -215,10 +215,12 @@
 			?></small>
 		</form>
 		
+
 		<?php if ($HTMLEDITOR != '') { ?>
 		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 
 			<script type="text/javascript">
+
 				var editor = CKEDITOR.replace( 'post-content', {
 	        //toolbar : 'basic',
 	        skin : 'getsimple',

@@ -22,6 +22,7 @@
 	//include other function files
 	require_once('inc/cookie_functions.php');
 	require_once('inc/template_functions.php');
+	require_once('inc/common.php');
 	
 	
 	//get website data

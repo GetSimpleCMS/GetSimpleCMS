@@ -8,5 +8,9 @@
 *
 *****************************************************/
 
+global $SALT;
+global $SITENAME;
 
+// for Uploadify security
+$SESSIONHASH = md5($SALT . $SITENAME);
 

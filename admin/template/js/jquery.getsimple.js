@@ -63,6 +63,7 @@ jQuery(document).ready(function() {
   	'buttonImg' : 'template/images/browse.png',
   	'cancelImg' : 'template/images/cancel.png',
 		'folder'    : '../data/uploads/',
+		'scriptData': { 'sessionHash' : $('#hash').val() },
 		onProgress: function() {
 		  $('#loader').show();
 		},
@@ -210,6 +211,7 @@ jQuery(document).ready(function() {
   	'buttonImg' : 'template/images/browse.png',
   	'cancelImg' : 'template/images/cancel.png',
 		'folder'    : '../data/uploads/',
+		'scriptData': { 'sessionHash' : $('#hash').val() },
 		onProgress: function() {
 		  $('#loader').show();
 		},

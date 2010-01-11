@@ -151,7 +151,7 @@
 		<div id="sidebar" >
 		<?php include('template/sidebar-files.php'); ?>
 		</div>	
-	
+
 	<div class="clear"></div>
 	</div>
 <?php get_template('footer'); ?>
