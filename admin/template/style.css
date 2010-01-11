@@ -288,9 +288,10 @@ html {
 
 /* basic default table style */
 .wrapper table {border-collapse:collapse;margin:0 0 20px 0;width:585px;}
-.wrapper table td {padding:4px;border-bottom:1px solid #eee;border-top:1px solid #eee;line-height:20px !important;}
-.wrapper table th {font-size:12px;text-shadow: #fff 1px 1px 1px;border-top:1px solid #ccc;border-bottom:1px solid #bbb;padding:2px 4px;color:#333;font-weight:bold;background:#E2E2E2 url(images/gray.png) top left repeat-x;line-height:20px !important;}
-.wrapper table td span {font-size:11px;color:#777;}
+.wrapper table td {vertical-align:top;padding:4px;border-bottom:1px solid #eee;border-top:1px solid #eee;line-height:20px !important;}
+.wrapper table th {padding:2px 4px;font-size:12px;text-shadow: #fff 1px 1px 1px;border-top:1px solid #ccc;border-bottom:1px solid #bbb;color:#333;font-weight:bold;background:#E2E2E2 url(images/gray.png) top left repeat-x;line-height:20px !important;}
+.wrapper table tr.head {}
+.wrapper table td span {font-size:11px;color:#777;line-height:14px !important;}
 .wrapper table tr.trodd { background:#f9f9f9;}
 .wrapper table tr#tr-index a { font-weight:bold !important;}
 .wrapper table tr.activeedit {background:#FFFFE8 !important; }
