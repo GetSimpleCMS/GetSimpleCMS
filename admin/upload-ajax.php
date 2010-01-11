@@ -19,14 +19,8 @@ if ($SESSIONHASH == $_REQUEST['sessionHash']) {
 		$targetPath = $_SERVER['DOCUMENT_ROOT'] . $_REQUEST['folder'] . '/';
 		$targetFile =  str_replace('//','/',$targetPath) . $name;
 		
-		$ccc = $_REQUEST['sessionHash'];
-		$handle = fopen('request.txt', 'wx+');
-		fwrite($handle, $ccc);
-		fclose($handle);
-		
 		move_uploaded_file($tempFile,$targetFile);
-		$ext = strtolower(substr($name, strrpos($name, '.') + 1));
-		
+		$ext = strtolower(substr($name, strrpos($name, '.') + 1));	
 		
 		if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' ) {
 			//thumbnail for post
