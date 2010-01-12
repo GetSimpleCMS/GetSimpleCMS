@@ -467,4 +467,29 @@ if (in_array(strtolower($word), $stopwords)) {
 	}
 }
 /******************************************************/
+
+
+/*******************************************************
+ * @function generate_salt
+ * @returns new salt value
+ *
+*/
+function generate_salt() {
+	
+	global $api_url;
+	global $site_version_no;
+	
+	$curl_URL = $api_url .'?r=true&v='.$site_version_no;
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_URL, $curl_URL);
+	$datac = curl_exec($ch);
+	curl_close($ch);
+	$apikey = json_decode($datac);
+	return $apikey;
+}
+/******************************************************/
+
+
 ?>

@@ -4,5 +4,5 @@
 	<?php if(@$_GET['uri'] != '') { ?><li><a href="#" class="current"><?php echo $i18n['EDITPAGE_TITLE']; ?></a></li><?php } ?>
 	<?php if(@$_GET['uri'] != '') { ?><li class="upload"><span id="editftp" ></span><input type="hidden" name="hash" id="hash" value="<?php echo $SESSIONHASH; ?>" /></li><?php } ?>
 	<?php if(@$_GET['uri'] != '') { ?><li style="float:right;"><small><?php echo $i18n['MAX_FILE_SIZE']; ?>: <b><?php echo ini_get('upload_max_filesize'); ?>B</small></li><?php } ?>
-
+	<?php exec_action("pages-sidebar"); ?>
 </ul>

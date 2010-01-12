@@ -6,6 +6,7 @@
 	<?php if (file_exists('../sitemap.xml')) { ?>
 		<li><a href="../sitemap.xml" accesskey="v" ><?php echo $i18n['SIDE_VIEW_SITEMAP']; ?></a></li>
 	<?php } ?>
+	<?php exec_action("theme-sidebar"); ?>
 </ul>
 
 
