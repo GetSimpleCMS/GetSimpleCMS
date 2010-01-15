@@ -233,10 +233,10 @@
 	          '/',
 	          ['Styles','Format','Font','FontSize']
 	        ],
-	        filebrowserBrowseUrl : '/browser/browse.php',
-	        filebrowserImageBrowseUrl : '/browser/browse.php?type=Images',
-	        filebrowserWindowWidth : '640',
-	        filebrowserWindowHeight : '480'
+	        //filebrowserBrowseUrl : '/browser/browse.php',
+	        //filebrowserImageBrowseUrl : '/browser/browse.php?type=Images',
+	        //filebrowserWindowWidth : '640',
+	        //filebrowserWindowHeight : '480'
     		});
    		
     		CKEDITOR.editorConfig = function( config ) {
