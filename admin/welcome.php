@@ -32,13 +32,13 @@
 			
 			<h3><?php echo $i18n['GETTING_STARTED']; ?></h3>
 			<ul>
-				<li><a href="pages.php"><?php echo $i18n['CREATE_NEW_PAGE']; ?></a></li>
+				<li><a href="edit.php"><?php echo $i18n['CREATE_NEW_PAGE']; ?></a></li>
 				<li><a href="upload.php"><?php echo $i18n['FILE_MANAGEMENT']; ?></a></li>
 				<li><a href="settings.php"><?php echo $i18n['GENERAL_SETTINGS']; ?></a></li>
 				<li><a href="theme.php"><?php echo $i18n['THEME_MANAGEMENT']; ?></a></li>
 			</ul>
 			<ul>
-				<li><a href="http://get-simple.info/docs/"><?php echo $i18n['SIDE_DOCUMENTATION']; ?></a></li>
+				<li><a href="http://get-simple.info/docs/"><?php echo str_replace(array("<em>","</em>"), '', $i18n['SIDE_DOCUMENTATION']; ?></a></li>
 			</ul>
 		</div>
 		

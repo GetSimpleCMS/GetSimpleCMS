@@ -185,9 +185,7 @@
 							</select></div>
 					</td>
 				</tr>
-			<?php 
-			exec_action('edit-extras');
-			?>		
+			<?php exec_action('edit-extras'); ?>		
 			</table>
 
 			</div>	
