@@ -38,7 +38,7 @@
 				<li><a href="theme.php"><?php echo $i18n['THEME_MANAGEMENT']; ?></a></li>
 			</ul>
 			<ul>
-				<li><a href="http://get-simple.info/docs/"><?php echo str_replace(array("<em>","</em>"), '', $i18n['SIDE_DOCUMENTATION']; ?></a></li>
+				<li><a href="http://get-simple.info/docs/"><?php echo str_replace(array("<em>","</em>"), '', $i18n['SIDE_DOCUMENTATION']); ?></a></li>
 			</ul>
 		</div>
 		
