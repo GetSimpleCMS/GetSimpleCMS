@@ -45,6 +45,8 @@ $LANG = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	--></script>
 	<noscript><style type="text/css">#metadata_window {display:block !important} </style></noscript>
 	
+	<?php exec_action('header'); ?>
+	
 </head>
 
 <body <?php filename_id(); ?> >	
