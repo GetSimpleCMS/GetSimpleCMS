@@ -42,11 +42,11 @@
 		<div class="main" >
 			
 		<?php 
-		
+		exec_action('plugin-hook');
 		if (isset($_GET['plugin']) && isset($_GET['page'])) { 
 			$pluginname = $_GET['plugin'];
 			$page = $_GET['page'];
-			include "plugins/".$pluginname."/".$page.".php";
+			require_once "plugins/".$pluginname."/".$page.".php";
 		} else { ?>
 		<h3><?php echo $i18n['PLUGINS_MANAGEMENT']; ?></h3>
 		
