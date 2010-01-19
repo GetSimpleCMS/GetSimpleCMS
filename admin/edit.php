@@ -240,6 +240,7 @@
     		CKEDITOR.editorConfig = function( config ) {
 				config.forcePasteAsPlainText = true;
 	    		config.baseHref = '<?php echo $SITEURL; ?>';
+	    		config.language = 'en';
 	    		config.defaultLanguage = 'en';
 	    		config.entities = true;
 	    	};
