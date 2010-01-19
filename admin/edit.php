@@ -227,10 +227,10 @@
 					height: '500px',	
 	        toolbar :
 	        [
-	          ['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'RemoveFormat', 'Source'],
+	          ['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink','RemoveFormat', 'Source'],
 	          '/',
 	          ['Styles','Format','Font','FontSize']
-	        ],
+	        ]
 	        //filebrowserBrowseUrl : '/browser/browse.php',
 	        //filebrowserImageBrowseUrl : '/browser/browse.php?type=Images',
 	        //filebrowserWindowWidth : '640',
@@ -238,9 +238,9 @@
     		});
    		
     		CKEDITOR.editorConfig = function( config ) {
-					config.forcePasteAsPlainText = true;
+				config.forcePasteAsPlainText = true;
 	    		config.baseHref = '<?php echo $SITEURL; ?>';
-	    		config.defaultLanguage = 'it';
+	    		config.defaultLanguage = 'en';
 	    		config.entities = true;
 	    	};
 			</script>
