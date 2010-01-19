@@ -132,7 +132,7 @@
 			<!-- page title toggle screen -->
 			<p id="edit_window">
 				<label for="post-title" style="display:none;"><?php echo $i18n['PAGE_TITLE']; ?></label>
-				<input class="text title set-example-text" id="post-title" name="post-title" type="text" value="<?php echo @$title; ?>" />
+				<input class="text title set-example-text" id="post-title" name="post-title" rel="<?php echo $i18n['PAGE_TITLE']; ?>" type="text" value="<?php echo @$title; ?>" />
 			</p>
 				
 
@@ -194,7 +194,7 @@
 			<!-- page body -->
 			<p>
 				<label for="post-content" style="display:none;"><?php echo $i18n['LABEL_PAGEBODY']; ?></label>
-				<textarea class="set-example-text" id="post-content" name="post-content"><?php echo @$content; ?></textarea>
+				<textarea class="set-example-text" id="post-content"  rel="<?php echo $i18n['LABEL_PAGEBODY']; ?>" name="post-content"><?php echo @$content; ?></textarea>
 			</p>
 			
 			<?php if(isset($data_edit)) { 

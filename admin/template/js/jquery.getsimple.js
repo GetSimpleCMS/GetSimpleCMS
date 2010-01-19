@@ -220,7 +220,7 @@ jQuery(document).ready(function() {
 		}	
 	});
 	$('.set-example-text').example(function() {
-		return $(this).attr('title');
+		return $(this).attr('rel');
 	}, {className: 'example-text'});  
   
   
