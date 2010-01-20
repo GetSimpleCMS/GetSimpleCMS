@@ -223,8 +223,12 @@
 	        //toolbar : 'basic',
 	        skin : 'getsimple',
 	        //language : 'en',
+	        forcePasteAsPlainText:true,
+			language : 'en',
+			defaultLanguage : 'en',
+			entities : true,
 	        uiColor : '#FFFFFF',
-					height: '500px',	
+			height: '500px',	
 	        toolbar :
 	        [
 	          ['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink','RemoveFormat', 'Source'],
@@ -236,14 +240,6 @@
 	        //filebrowserWindowWidth : '640',
 	        //filebrowserWindowHeight : '480'
     		});
-   		
-    		CKEDITOR.editorConfig = function( config ) {
-				config.forcePasteAsPlainText = true;
-	    		config.baseHref = '<?php echo $SITEURL; ?>';
-	    		config.language = 'en';
-	    		config.defaultLanguage = 'en';
-	    		config.entities = true;
-	    	};
 			</script>
 		
 		<?php } ?>
