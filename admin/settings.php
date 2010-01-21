@@ -93,6 +93,7 @@
 			$xml->addChild('USR', @$USR);
 			$xml->addChild('PWD', @$PASSWD);
 			$xml->addChild('EMAIL', @$EMAIL);
+			exec_action('settings-user');
 			$xml->asXML($path . $ufile);
 			
 			// create new site data file
@@ -104,6 +105,7 @@
 			$xmls->addChild('TEMPLATE', @$TEMPLATE);
 			$xmls->addChild('TIMEZONE', @$TIMEZONE);
 			$xmls->addChild('LANG', @$LANG);
+			exec_action('settings-website');
 			$xmls->asXML($path . $ufile);
 			
 			//see new language file immediately
@@ -116,6 +118,7 @@
 			$xmlc->addChild('HTMLEDITOR', @$HTMLEDITOR);
 			$xmlc->addChild('PRETTYURLS', @$PRETTYURLS);
 			$xmlc->addChild('FOUR04MONITOR', @$FOUR04MONITOR);
+			exec_action('settings-cpsettings');
 			$xmlc->asXML($path . $ufile);
 			
 			$err = "false";
@@ -186,7 +189,7 @@
 		
 		<p><input name="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<?php echo $i18n['USE_FANCY_URLS'];?>.</p>
 		<p><input name="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<?php echo $i18n['ENABLE_HTML_ED'];?></p>
-		
+		<?php exec_action('settings-website-extras'); ?>
 		<p><input class="submit" type="submit" name="submitted" value="<?php echo $i18n['BTN_SAVESETTINGS'];?>" /></p>
 		
 		</div>
@@ -201,7 +204,7 @@
 		<p style="margin:20px 0 5px 0;font-size:12px;color:#999;" ><?php echo $i18n['ONLY_NEW_PASSWORD'];?>:</p>
 		<p><b><?php echo $i18n['NEW_PASSWORD'];?>:</b><br /><input autocomplete="off" class="text" name="sitepwd" type="password" value="" /></p>
 		<p><b><?php echo $i18n['CONFIRM_PASSWORD'];?>:</b><br /><input autocomplete="off" class="text" name="sitepwd_confirm" type="password" value="" /></p>
-
+		<?php exec_action('settings-user-extras'); ?>
 		<p><input class="submit" type="submit" name="submitted" value="<?php echo $i18n['BTN_SAVESETTINGS'];?>" /></p>
 	</form>
 </div>

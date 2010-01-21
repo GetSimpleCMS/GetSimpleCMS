@@ -10,6 +10,7 @@
 	require_once('inc/functions.php');
 	require_once('inc/plugin_functions.php');
 	kill_cookie($cookie_name);
+	exec_action('logout');
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['LOGGED_OUT']); ?>

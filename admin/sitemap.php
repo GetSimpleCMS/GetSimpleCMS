@@ -73,10 +73,12 @@ if (count($pagesSorted) != 0) {
 			$url_item->addChild('lastmod', $pageLastMod);
 			$url_item->addChild('changefreq', $pageChangeFreq);
 			$url_item->addChild('priority', $pagePriority);
+			exec_action('sitemap-additem');
 		}
 		
 		//create xml file
 		$file = '../sitemap.xml';
+		exec_action('save-sitemap');
 		$xml->asXML($file);
 	}
 }

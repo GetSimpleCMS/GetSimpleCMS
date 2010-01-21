@@ -36,16 +36,18 @@
 				<li><a href="upload.php"><?php echo $i18n['FILE_MANAGEMENT']; ?></a></li>
 				<li><a href="settings.php"><?php echo $i18n['GENERAL_SETTINGS']; ?></a></li>
 				<li><a href="theme.php"><?php echo $i18n['THEME_MANAGEMENT']; ?></a></li>
+				<?php exec_action('welcome-link'); ?>
 			</ul>
 			<ul>
 				<li><a href="http://get-simple.info/docs/"><?php echo str_replace(array("<em>","</em>"), '', $i18n['SIDE_DOCUMENTATION']); ?></a></li>
+				<?php exec_action('welcome-doc-link'); ?>
 			</ul>
 		</div>
 		
 	</div>
 	
 	<div id="sidebar" >
-
+		
 	</div>	
 	
 	<div class="clear"></div>

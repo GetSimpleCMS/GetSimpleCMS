@@ -297,7 +297,7 @@
 					}
 				?>
 				</td></tr>
-
+				<?php exec_action('healthcheck-extras'); ?>
 			</table>
 	</div>
 		

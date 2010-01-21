@@ -23,6 +23,7 @@
 		$file="inc/zip-files.php";
 		$newfile="../zip.php";
 		copy($file, $newfile);
+		exec_action('archive-backup');
 		header('Location: ../zip.php');	
 	}
 	

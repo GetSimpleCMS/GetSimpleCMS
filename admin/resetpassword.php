@@ -47,8 +47,10 @@
 			$message .= "<br>". $i18n['NEW_PASSWORD'].": ". $random;
 			$message .= '<br><br>'. $i18n['EMAIL_LOGIN'] .': <a href="'.$SITEURL.'admin/">'.$SITEURL.'admin/</a>';
 			$status = sendmail($EMAIL,$subject,$message);
+			exec_action('resetpw-success');
 			header("Location: resetpassword.php?upd=pwd-".$status);
 		} else {
+			exec_action('resetpw-error');
 			header("Location: resetpassword.php?upd=pwd-error");
 		} 
 	}	else {

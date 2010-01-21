@@ -113,9 +113,9 @@
 		<form action="<?php echo $_SERVER['PHP_SELF']; ?>?t=<?php echo $TEMPLATE; ?>&f=<?php echo $TEMPLATE_FILE; ?>" method="post" >
 			<p><textarea name="content" id="codetext" ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea></p>
 			<input type="hidden" value="<?php echo tsl($TEMPLATE) . $TEMPLATE_FILE; ?>" name="edited_file" />
+			<?php exec_action('theme-edit-extras'); ?>
 			<p><input class="submit" type="submit" name="submitsave" value="<?php echo $i18n['BTN_SAVECHANGES']; ?>" /> &nbsp;&nbsp;<?php echo $i18n['OR']; ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php echo $i18n['CANCEL']; ?></a></p>
 		</form>
-		
 		</div>
 	
 	</div>

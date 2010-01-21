@@ -34,7 +34,7 @@
 	    
 	    //create file
 	    move_uploaded_file($_FILES["file"]["tmp_name"], $file_loc);
-	    
+	    exec_action('file-uploaded');
 	    //successfull message
 	    $success = $i18n['FILE_SUCCESS_MSG'].': <a href="'. $SITEURL .'data/uploads/'.$base.'">'. $SITEURL .'data/uploads/'.$base.'</a>';
 		}
@@ -139,6 +139,7 @@
 					echo '<td class="delete" ><a class="delconfirm" title="'.$i18n['DELETE_FILE'].': '. $upload['name'] .'?" href="deletefile.php?file='. $upload['name'] .'">X</a></td>';
 					echo '</tr>';
 				}
+				exec_action('files-extras');
 				echo '</table>';
 				echo '<p><em><b>'. $counter .'</b> '.$i18n['TOTAL_FILES'].' ('. fSize($totalsize) .')</em></p>';
 			}

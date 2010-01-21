@@ -42,6 +42,7 @@
 		$xmlc->addChild('HTMLEDITOR', @$HTMLEDITOR);
 		$xmlc->addChild('PRETTYURLS', @$PRETTYURLS);
 		$xmlc->addChild('FOUR04MONITOR', @$FOUR04MONITOR);
+		exec_action('support-save');
 		$xmlc->asXML($path . $ufile);
 
 		$success = $i18n['SETTINGS_UPDATED'].'. <a href="support.php?undo">'.$i18n['UNDO'].'</a>';
@@ -77,6 +78,7 @@
 		<h3><?php echo $i18n['SUPPORT'];?> <?php echo $i18n['SETTINGS'];?></h3>
 		<p><input name="fouro4monitoring" type="checkbox" value="1" <?php echo $four04chck; ?>  /> &nbsp;<?php echo $i18n['EMAIL_ON_404'];?>.</p>
 		<p><input class="submit" type="submit" name="submitted" value="<?php echo $i18n['BTN_SAVESETTINGS'];?>" /></p>
+		<?php exec_action('support-extras'); ?>
 	</form>
 	</div>
 		

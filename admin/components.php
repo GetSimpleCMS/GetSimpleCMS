@@ -60,6 +60,7 @@
 				$count++;
 			}
 		}
+		exec_action('component-save');
 		$xml->asXML($path . $file);
 		header('Location: components.php?upd=comp-success');
 	}
@@ -82,7 +83,9 @@
 			$table .= '<textarea name="val[]">'. stripslashes(@$component->value) .'</textarea>';
 			$table .= '<input type="hidden" class="compslug" name="slug[]" value="'. @$component->slug .'" />';
 			$table .= '<input type="hidden" class="comptitle" name="title[]" value="'. @stripslashes($component->title) .'" />';
-			$table .= '<input type="hidden" name="id[]" value="'. @$count .'" /></div>';
+			$table .= '<input type="hidden" name="id[]" value="'. @$count .'" />';
+			exec_action('component-extras');
+			$table .= '</div>';
 			$count++;
 		}
 	}

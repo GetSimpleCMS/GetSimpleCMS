@@ -130,13 +130,10 @@
 			$note->addCData(@$content);
 			$note = $xml->addChild('private');
 			$note->addCData(@$private);
-			
-		
+
 			// call changedata-save hook
 			exec_action('changedata-save');
 
-			
-			
 			$xml->asXML($file);
 			
 			// redirect user back to edit page 

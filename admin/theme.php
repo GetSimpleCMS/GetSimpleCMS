@@ -90,6 +90,8 @@
 				echo 'src="template/images/screenshot.jpg"';
 			}
 			echo ' alt="'.$i18n['THEME_SCREENSHOT'].'" /></p>';
+		
+		exec_action('theme-extras');
 		?>
 			
 		</div>

@@ -22,6 +22,7 @@
 	
 	if (@$_GET['action'] == 'delete') {
 		unlink($log_file);
+		exec_action('logfile_delete');
 		header('Location: support.php?success=Log '.$log_name . $i18n['MSG_HAS_BEEN_CLR']);
 		exit;
 	}
