@@ -1,39 +1,24 @@
 <?php
 /****************************************************
 *
-* @File: 		zip-files.php
+* @File: 		zip.php
 * @Package:	GetSimple
 * @Action:	Creates an archive for the website 	
 *
 *****************************************************/
 
-/****************************************************
-* @Function ListDir()
-*****************************************************/
-function ListDir($dir_handle,$path) {
-	global $listing;
-	global $zipfile;
-	$listing .= "<ol>";
-	while (false !== ($file = readdir($dir_handle))) {
-	  $dir =$path.'/'.$file;
-	  if(is_dir($dir) && $file != '.' && $file !='..' ) {
-			$handle = @opendir($dir) or die("Unable to open file $file");
-			$listing .= "<li>".$dir."</li>";
-			$zipfile->add_dir($dir);
-			ListDir($handle, $dir);
-	  } elseif($file != '.' && $file !='..') {
-			$listing .= "<li>".$dir."</li>";
-			$filedata = file_get_contents($dir);
-			$zipfile->add_file($filedata, $dir);
-	  }
-	}
-	$listing .= "</ol>";
-	closedir($dir_handle);
-}
-/***************************************************/
+// Setup inclusions
+$load['plugin'] = true;
+
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+
 
 		//disable or enable error reporting
-		if (file_exists('data/other/debug.xml')) 
+		if (file_exists($relative. 'data/other/debug.xml')) 
 		{
 			error_reporting(E_ALL | E_STRICT);
 			ini_set('display_errors', 1);
@@ -44,15 +29,15 @@ function ListDir($dir_handle,$path) {
 			@ini_set('display_errors', 0);
 		}
 		
-		require_once('admin/inc/zip.class.php');
+		require_once('inc/zip.class.php');
 		
 		$zipfile = new zipfile();
 		$timestamp = date('Y-m-d-Hi');
 		ini_set("memory_limit","600M"); 
 		
 		// paths and files to backup
-		$paths = array("data","theme"); //no trailing slash
-		$files = array(".htaccess", "index.php");	
+		$paths = array(GSROOTPATH. 'data', GSROOTPATH. 'theme'); //no trailing slash
+		$files = array(GSROOTPATH. '.htaccess', GSROOTPATH. 'index.php');	
 		
 		// cycle thru each path and file and add to zip file
 		foreach ($paths as $path) 
@@ -71,12 +56,12 @@ function ListDir($dir_handle,$path) {
 		//echo $listing;
 
 		// create the final zip file
-		$file = 'backups/zip/'. $timestamp .'_archive.zip';
+		$file = $relative. 'backups/zip/'. $timestamp .'_archive.zip';
 		$fh = fopen($file, 'w') or die('Could not open file for writing!');	
 	
 		fwrite($fh, $zipfile->file()) or die('Could not write to file');
 		fclose($fh);
 		
 		// redirect back to archive page with a success
-		header('Location: admin/archive.php?done');
+		header('Location: archive.php?done');
 ?> 

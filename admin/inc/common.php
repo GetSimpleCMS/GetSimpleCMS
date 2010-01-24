@@ -149,6 +149,8 @@ if(isset($load['plugin']) && $load['plugin']){ 	include('plugin_functions.php');
 define('GSADMINPATH', get_admin_path());
 define('GSROOTPATH', get_root_path());
 
+// Uncomment & change below to be your specific language for PHP
+# setlocale(LC_ALL, 'xx_XX');
 
 
 ?>

@@ -235,3 +235,28 @@ function in_arrayi($needle, $haystack) {
     return in_array(strtolower($needle), array_map('strtolower', $haystack));
 }
 /******************************************************/
+
+
+/*******************************************************
+ * @function ListDir
+ * @param $dir_handle - directory handle
+ * @param $path - starting path
+ *
+*/
+function ListDir($dir_handle,$path) {
+	global $zipfile;
+	while (false !== ($file = readdir($dir_handle))) {
+	  $dir =$path.'/'.$file;
+	  if(is_dir($dir) && $file != '.' && $file !='..' ) {
+			$handle = @opendir($dir) or die("Unable to open file $file");
+			$zipfile->add_dir($dir);
+			ListDir($handle, $dir);
+	  } elseif($file != '.' && $file !='..') {
+			$filedata = file_get_contents($dir);
+			$zipfile->add_file($filedata, $dir);
+	  }
+	}
+	closedir($dir_handle);
+}
+/***************************************************/
+

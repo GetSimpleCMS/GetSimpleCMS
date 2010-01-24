@@ -17,35 +17,20 @@ $relative = '../';
 include('inc/common.php');
 
 // Variable Settings
-$userid = login_cookie_check();
+login_cookie_check();
 $table = '';
 
-// if zip.php exists, delete it	
-if (file_exists('../zip.php'))
-{
-	unlink('../zip.php');
-}
-
 // if a backup needs to be created
-if(isset($_GET['do']))
-{
-	$file = "inc/zip-files.php";
-	$newfile = "../zip.php";
-	copy($file, $newfile);
+if(isset($_GET['do'])) {
 	exec_action('archive-backup');
-	header('Location: ../zip.php');	
+	header('Location: zip.php');	
 }
 
 // if a backup has just been created
-if(isset($_GET['done'])) 
-{
-	if (file_exists("../zip.php")) 
-	{
-		unlink("../zip.php");
-		
-		$success = $i18n['SUCC_WEB_ARCHIVE'];
-	}
+if(isset($_GET['done'])) {
+	$success = $i18n['SUCC_WEB_ARCHIVE'];
 }
+
 ?> 
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['BAK_MANAGEMENT'].' &raquo; '.$i18n['WEBSITE_ARCHIVES']); ?>

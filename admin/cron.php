@@ -25,15 +25,12 @@ curl_close($cURL);
 
 // to make site backup 
 $cURL = curl_init();
-$file = 'admin/inc/zip-files.php';
-$newfile = 'zip.php';
-copy($file, $newfile);
+$newfile = $SITEURL .'/admin/zip.php';
 curl_setopt($cURL, CURLOPT_URL, $SITEURL .'/'.$newfile);
 curl_setopt($cURL, CURLOPT_HEADER, 1);
 curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
 $res = curl_exec($cURL);
 curl_close($cURL);
-unlink('zip.php');
 
 //complete
 return true;
