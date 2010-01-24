@@ -5,8 +5,8 @@
 * @Package:			GetSimple
 * @Subject:			US English language file
 * @Date:				01 Sept 2009
-* @Revision:		01 Sept 2009
-* @Version:			GetSimple 1.6
+* @Revision:		23 Jan 2010
+* @Version:			GetSimple 2.0
 * @Status:			Final
 * @Traductors: 	Chris Cagle 	
 *

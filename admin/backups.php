@@ -7,55 +7,76 @@
 *
 *****************************************************/
  
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$userid = login_cookie_check();
-	$path = tsl('../backups/pages/');
-	$counter = '0';
-	$table = '';
+// Setup inclusions
+$load['plugin'] = true;
+
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
 	
-	//delete all backup files if the ?deleteall session parameter is set
-	if (isset($_GET['deleteall'])) {
-		$filenames = getFiles($path);
-		foreach ($filenames as $file) {
-			if (file_exists($path . $file) ) {
-				if (isFile($file, $path, 'bak')) {
-						unlink($path . $file);
-					}
-			}
-		}
-	}
+// Variable settings
+$userid = login_cookie_check();
+$path = tsl($relative . 'backups/pages/');
+$counter = '0';
+$table = '';
 
-
-  //display all page backups
+//delete all backup files if the ?deleteall session parameter is set
+if (isset($_GET['deleteall']))
+{
 	$filenames = getFiles($path);
 	
-	$count="0";
-	$pagesArray = array();
-	if (count($filenames) != 0) { 
-		foreach ($filenames as $file) {
-			if (isFile($file, $path, 'bak')) {
-				$data = getXML($path .$file);
-				$status = $data->menuStatus;
-				$pagesArray[$count]['title'] = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
-				$pagesArray[$count]['url'] = $data->url;
-				$pagesArray[$count]['date'] = $data->pubDate;
-				$count++;
+	foreach ($filenames as $file) 
+	{
+		if (file_exists($path . $file) ) 
+		{
+			if (isFile($file, $path, 'bak')) 
+			{
+				unlink($path . $file);
 			}
 		}
-		$pagesSorted = subval_sort($pagesArray,'title');
 	}
-	if (count($pagesSorted) != 0) { 
-		foreach ($pagesSorted as $page) {					
-			$counter++;
-			$table .= '<tr id="tr-'.$page['url'] .'" >';
-			if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
-			$table .= '<td><a title="'.$i18n['VIEWPAGE_TITLE'].': '. cl($page['title']) .'" href="backup-edit.php?p=view&uri='. $page['url'] .'">'. cl($page['title']) .'</a></td>';
-			$table .= '<td style="width:70px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
-			$table .= '<td class="delete" ><a class="delconfirm" title="'.$i18n['DELETEPAGE_TITLE'].': '. cl($page['title']) .'?" href="backup-edit.php?p=delete&uri='. $page['url'] .'">X</a></td>';
-			$table .= '</tr>';
+}
+
+
+//display all page backups
+$filenames = getFiles($path);
+$count="0";
+$pagesArray = array();
+
+if (count($filenames) != 0) 
+{ 
+	foreach ($filenames as $file) 
+	{
+		if (isFile($file, $path, 'bak')) 
+		{
+			$data = getXML($path .$file);
+			$status = $data->menuStatus;
+			$pagesArray[$count]['title'] = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
+			$pagesArray[$count]['url'] = $data->url;
+			$pagesArray[$count]['date'] = $data->pubDate;
+			$count++;
 		}
-	}	
+	}
+	$pagesSorted = subval_sort($pagesArray,'title');
+}
+
+if (count($pagesSorted) != 0) 
+{ 
+	foreach ($pagesSorted as $page) 
+	{					
+		$counter++;
+		$table .= '<tr id="tr-'.$page['url'] .'" >';
+		
+		if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
+		
+		$table .= '<td><a title="'.$i18n['VIEWPAGE_TITLE'].': '. cl($page['title']) .'" href="backup-edit.php?p=view&uri='. $page['url'] .'">'. cl($page['title']) .'</a></td>';
+		$table .= '<td style="width:70px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
+		$table .= '<td class="delete" ><a class="delconfirm" title="'.$i18n['DELETEPAGE_TITLE'].': '. cl($page['title']) .'?" href="backup-edit.php?p=delete&uri='. $page['url'] .'">X</a></td>';
+		$table .= '</tr>';
+	}
+}	
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['BAK_MANAGEMENT']); ?>
@@ -70,7 +91,7 @@
 	<div id="maincontent">
 		<div class="main" >
 			<label><?php echo $i18n['PAGE_BACKUPS'];?></label>
-			<div class="edit-nav" ><a href="backups.php?deleteall" class="delconfirm" title="<?php echo $i18n['DELETE_ALL_BAK'];?>" accesskey="d" ><?php echo $i18n['ASK_DELETE_ALL'];?></a><div class="clear" ></div></div>
+			<div class="edit-nav" ><a href="backups.php?deleteall" title="<?php echo $i18n['DELETE_ALL_BAK'];?>" accesskey="d" ><?php echo $i18n['ASK_DELETE_ALL'];?></a><div class="clear" ></div></div>
 			<table class="highlight paginate">
 				<?php echo $table; ?>
 			</table>

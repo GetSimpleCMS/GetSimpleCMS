@@ -7,10 +7,18 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	kill_cookie($cookie_name);
-	exec_action('logout');
+// Setup inclusions
+$load['plugin'] = true;
+
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+
+// end it all :'(
+kill_cookie($cookie_name);
+exec_action('logout');
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['LOGGED_OUT']); ?>

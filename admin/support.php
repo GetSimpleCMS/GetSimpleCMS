@@ -7,51 +7,60 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$path = tsl('../data/other/');
-	$bakpath = tsl('../backups/other/');
-	$file = 'website.xml';
-	$data = getXML($path . $file);
-	global $SITENAME;
-	global $SITEURL;
+// Setup inclusions
+$load['plugin'] = true;
+
+// Relative
+$relative = '../';
+$path = $relative. 'data/other/';
+$bakpath = $relative. 'backups/other/';
+
+// Include common.php
+include('inc/common.php');
 	
-	$userid = login_cookie_check();
+// Variable settings
+login_cookie_check();
+
+// if the undo command was invoked
+if (isset($_GET['undo']))
+{ 
+	$ufile = 'cp_settings.xml';
+	undo($ufile, $path, $bakpath);
 	
-	// if the undo command was invoked
-	if (isset($_GET['undo'])) { 
-		$ufile = 'cp_settings.xml';
-		undo($ufile, $path, $bakpath);
-		header('Location: support.php?rest=true');
-	}
-	
-	if (isset($_GET['restored'])) { 
-		$restored = 'true'; 
-	} else {
-		$restored = 'false';
-	}
+	header('Location: support.php?rest=true');
+}
 
-	// were changes submitted?
-	if(isset($_POST['submitted'])) {
-		$FOUR04MONITOR = @$_POST['fouro4monitoring'];
+if (isset($_GET['restored']))
+{ 
+	$restored = 'true'; 
+} 
+else 
+{
+	$restored = 'false';
+}
 
-		// create new cpsettings data file
-		$ufile = 'cp_settings.xml';
-		createBak($ufile, $path, $bakpath);
-		$xmlc = @new SimpleXMLElement('<item></item>');
-		$xmlc->addChild('HTMLEDITOR', @$HTMLEDITOR);
-		$xmlc->addChild('PRETTYURLS', @$PRETTYURLS);
-		$xmlc->addChild('FOUR04MONITOR', @$FOUR04MONITOR);
-		exec_action('support-save');
-		$xmlc->asXML($path . $ufile);
+// were changes submitted?
+if(isset($_POST['submitted']))
+{
+	$FOUR04MONITOR = @$_POST['fouro4monitoring'];
 
-		$success = $i18n['SETTINGS_UPDATED'].'. <a href="support.php?undo">'.$i18n['UNDO'].'</a>';
-	}
+	// create new cpsettings data file
+	$ufile = 'cp_settings.xml';
+	createBak($ufile, $path, $bakpath);
+	$xmlc = @new SimpleXMLElement('<item></item>');
+	$xmlc->addChild('HTMLEDITOR', @$HTMLEDITOR);
+	$xmlc->addChild('PRETTYURLS', @$PRETTYURLS);
+	$xmlc->addChild('FOUR04MONITOR', @$FOUR04MONITOR);
+	exec_action('support-save');
+	$xmlc->asXML($path . $ufile);
 
-	//are any of the control panel checkboxes checked?
-	$four04chck = '';
-	if ($FOUR04MONITOR != '' ) { $four04chck = 'checked'; }
+	$success = $i18n['SETTINGS_UPDATED'].'. <a href="support.php?undo">'.$i18n['UNDO'].'</a>';
+}
 
+//are any of the control panel checkboxes checked?
+$four04chck = '';
+
+if ($FOUR04MONITOR != '' ) { $four04chck = 'checked'; }
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['SUPPORT']); ?>

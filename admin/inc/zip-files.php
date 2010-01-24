@@ -32,16 +32,20 @@ function ListDir($dir_handle,$path) {
 }
 /***************************************************/
 
-	//disable or enable error reporting
-	if (file_exists('data/other/debug.xml')) {
-		error_reporting(E_ALL | E_STRICT);
-		ini_set('display_errors', 1);
-	} else {
-		error_reporting(0);
-		@ini_set('display_errors', 0);
-	}
+		//disable or enable error reporting
+		if (file_exists('data/other/debug.xml')) 
+		{
+			error_reporting(E_ALL | E_STRICT);
+			ini_set('display_errors', 1);
+		} 
+		else 
+		{
+			error_reporting(0);
+			@ini_set('display_errors', 0);
+		}
 		
 		require_once('admin/inc/zip.class.php');
+		
 		$zipfile = new zipfile();
 		$timestamp = date('Y-m-d-Hi');
 		ini_set("memory_limit","600M"); 
@@ -51,11 +55,14 @@ function ListDir($dir_handle,$path) {
 		$files = array(".htaccess", "index.php");	
 		
 		// cycle thru each path and file and add to zip file
-		foreach ($paths as $path) {
+		foreach ($paths as $path) 
+		{
 			$dir_handle = @opendir($path) or die("Unable to open $path");
 			ListDir($dir_handle,$path);
 		}
-		foreach ($files as $fl) {
+		
+		foreach ($files as $fl) 
+		{
 			$filedata = file_get_contents($fl);
 			$zipfile->add_file($filedata, $fl);
 		}

@@ -7,47 +7,67 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$userid = login_cookie_check();
+// Setup inclusions
+$load['plugin'] = true;
 
-	// get page url to display
-	if ($_GET['uri'] != '') {
-		$uri = $_GET['uri'];
-		$file = $uri .".bak.xml";
-		$path = "../backups/pages/";
-		
-		$data = getXML($path . $file);
-			$title = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
-			$pubDate = $data->pubDate;
-			$parent = $data->parent;
-			$metak = html_entity_decode($data->meta, ENT_QUOTES, 'UTF-8');
-			$metad = html_entity_decode($data->metad, ENT_QUOTES, 'UTF-8');
-			$url = $data->url;
-			$content = html_entity_decode($data->content, ENT_QUOTES, 'UTF-8');
-			$private = $data->private;
-			$template = $data->template;
-			$menu = html_entity_decode($data->menu, ENT_QUOTES, 'UTF-8');
-			$menuStatus = $data->menuStatus;
-			$menuOrder = $data->menuOrder;
-	} else {
-		header('Location: backups.php?upd=bak-err');
-	}
-	if ($private != '' ) { $private = '('.$i18n['PRIVATE_SUBTITLE'].')'; } else { $private = ''; }
-	if ($menuStatus == '' ) { $menuStatus = $i18n['NO']; } else { $menuStatus = $i18n['YES']; }
-	// are we going to do anything with this backup?
-	if ($_GET['p'] != '') {
-		$p = $_GET['p'];
-	} else {
-		header('Location: backups.php?upd=bak-err');
-	}
-	if ($p == 'delete') {
-		delete_bak($uri);
-		header("Location: backups.php?upd=bak-success&uri=".$uri);
-	} elseif ($p == 'restore') {
-		restore_bak($uri);
-		header("Location: edit.php?uri=". $uri ."&upd=edit-success&type=restore");
-	}
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+
+// Variable Settings
+$userid = login_cookie_check();
+
+// get page url to display
+if ($_GET['uri'] != '') 
+{
+	$uri = $_GET['uri'];
+	$file = $uri .".bak.xml";
+	$path = "../backups/pages/";
+	
+	$data = getXML($path . $file);
+	$title = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
+	$pubDate = $data->pubDate;
+	$parent = $data->parent;
+	$metak = html_entity_decode($data->meta, ENT_QUOTES, 'UTF-8');
+	$metad = html_entity_decode($data->metad, ENT_QUOTES, 'UTF-8');
+	$url = $data->url;
+	$content = html_entity_decode($data->content, ENT_QUOTES, 'UTF-8');
+	$private = $data->private;
+	$template = $data->template;
+	$menu = html_entity_decode($data->menu, ENT_QUOTES, 'UTF-8');
+	$menuStatus = $data->menuStatus;
+	$menuOrder = $data->menuOrder;
+} 
+else 
+{
+	header('Location: backups.php?upd=bak-err');
+}
+
+if ($private != '' ) { $private = '('.$i18n['PRIVATE_SUBTITLE'].')'; } else { $private = ''; }
+if ($menuStatus == '' ) { $menuStatus = $i18n['NO']; } else { $menuStatus = $i18n['YES']; }
+
+// are we going to do anything with this backup?
+if ($_GET['p'] != '') 
+{
+	$p = $_GET['p'];
+} 
+else 
+{
+	header('Location: backups.php?upd=bak-err');
+}
+
+if ($p == 'delete') 
+{
+	delete_bak($uri);
+	header("Location: backups.php?upd=bak-success&uri=".$uri);
+} 
+elseif ($p == 'restore') 
+{
+	restore_bak($uri);
+	header("Location: edit.php?uri=". $uri ."&upd=edit-success&type=restore");
+}
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '. $i18n['BAK_MANAGEMENT'].' &raquo; '.$i18n['VIEWPAGE_TITLE']); ?>

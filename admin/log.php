@@ -7,30 +7,33 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$file = 'website.xml';
-	$path = tsl('../data/other/');
-	global $SITENAME;
-	global $SITEURL;
-	
-	$userid = login_cookie_check();
 
-	$log_name = $_GET['log'];
-	$log_path = tsl('../data/other/logs/');
-	$log_file = $log_path . $log_name;
-	
-	if (@$_GET['action'] == 'delete') {
-		unlink($log_file);
-		exec_action('logfile_delete');
-		header('Location: support.php?success=Log '.$log_name . $i18n['MSG_HAS_BEEN_CLR']);
-		exit;
-	}
-	
-	if(file_exists($log_file)) {
-		$log_data = getXML($log_file);
-	}
+// Setup inclusions
+$load['plugin'] = true;
 
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+
+// Variable Settings
+login_cookie_check();
+
+$log_name = $_GET['log'];
+$log_path = tsl('../data/other/logs/');
+$log_file = $log_path . $log_name;
+	
+if (@$_GET['action'] == 'delete') {
+	unlink($log_file);
+	exec_action('logfile_delete');
+	header('Location: support.php?success=Log '.$log_name . $i18n['MSG_HAS_BEEN_CLR']);
+	exit;
+}
+
+if(file_exists($log_file)) {
+	$log_data = getXML($log_file);
+}
 
 ?>
 
@@ -46,7 +49,7 @@
 		<div class="main">
 			<label><?php echo $i18n['VIEWING'];?> <?php echo $i18n['LOG_FILE'];?>: &lsquo;<em><?php echo @$log_name; ?></em>&rsquo;</label>
 			<div class="edit-nav" >
-				<a href="log.php?log=<?php echo $log_name; ?>&action=delete" accesskey="c" class="delconfirm" title="<?php echo $i18n['CLEAR_ALL_DATA'];?> <?php echo $log_name; ?>?" /><?php echo $i18n['CLEAR_THIS_LOG'];?></a>
+				<a href="log.php?log=<?php echo $log_name; ?>&action=delete" accesskey="c" title="<?php echo $i18n['CLEAR_ALL_DATA'];?> <?php echo $log_name; ?>?" /><?php echo $i18n['CLEAR_THIS_LOG'];?></a>
 				<div class="clear"></div>
 			</div>
 			<ol class="more" >

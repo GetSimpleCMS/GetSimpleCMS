@@ -7,155 +7,196 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$file = 'user.xml';
-	$path = tsl('../data/other/');
-	$bakpath = tsl('../backups/other/');
-	$data = getXML($path . $file);
-	$USR = stripslashes($data->USR);
-	$PASSWD = $data->PWD;
-	$EMAIL = $data->EMAIL;
+// Setup inclusions
+$load['plugin'] = true;
+
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+
+// Variable settings
+login_cookie_check();
+$file		= 'user.xml';
+$path 		= $relative. 'data/other/';
+$bakpath 	= $relative. 'backups/other/';
+$data 		= getXML($path . $file);
+$USR 		= stripslashes($data->USR);
+$PASSWD 	= $data->PWD;
+$EMAIL 		= $data->EMAIL;
+$err 		= '';
+
+// if the undo command was invoked
+if (isset($_GET['undo']))
+{ 
+	$ufile = 'user.xml';
+	undo($ufile, $path, $bakpath);
 	
-	$userid = login_cookie_check();
-	$err ='';
+	$ufile = 'website.xml';
+	undo($ufile, $path, $bakpath);
 	
-	// if the undo command was invoked
-	if (isset($_GET['undo'])) { 
+	$ufile = 'cp_settings.xml';
+	undo($ufile, $path, $bakpath);
+	
+	// Redirect
+	header('Location: settings.php?restored=true');
+}
+
+if (isset($_GET['restored']))
+{ 
+	$restored = 'true'; 
+} 
+else 
+{
+	$restored = 'false';
+}
+
+// were changes submitted?
+if(isset($_POST['submitted']))
+{
+	
+	if(isset($_POST['sitename'])) { 
+		$SITENAME = htmlentities(cl($_POST['sitename'])); 
+	}
+	
+	if(isset($_POST['siteurl'])) { 
+		$SITEURL = tsl($_POST['siteurl']); 
+	}
+	
+	if(isset($_POST['user'])) { 
+		$USR = $_POST['user']; 
+	} 
+	
+	if(isset($_POST['email'])) { 
+		$EMAIL = $_POST['email']; 
+	} 
+	
+	if(isset($_POST['template'])) { 
+		$TEMPLATE = $_POST['template']; 
+	}
+	
+	if(isset($_POST['timezone'])) { 
+		$TIMEZONE = $_POST['timezone']; 
+	}
+	
+	if(isset($_POST['lang'])) { 
+		$LANG = $_POST['lang']; 
+	}
+
+	$HTMLEDITOR = @$_POST['show_htmleditor']; 
+	$PRETTYURLS = @$_POST['prettyurls']; 
+	
+	// Update passwords
+	$pwd1 = '';
+	$pwd2 = '';
+	
+	if(isset($_POST['sitepwd'])) { $pwd1 = $_POST['sitepwd']; }
+	if(isset($_POST['sitepwd_confirm'])) { $pwd2 = $_POST['sitepwd_confirm']; }
+	
+	// are we resetting the password?
+	if ($pwd1 != $pwd2)
+	{ 
+		$err = "true";
+		$msg = $i18n['PASSWORD_NO_MATCH'];
+	} 
+	else 
+	{
+		
+		// password cannot be null
+		if ( $pwd1 != '' )
+		{ 
+			$PASSWD = sha1($pwd1); 
+		}	
+		
+		// create new user data file
 		$ufile = 'user.xml';
-		undo($ufile, $path, $bakpath);
+		createBak($ufile, $path, $bakpath);
+		if (file_exists($bakpath . 'user.xml.reset')) { unlink($bakpath . 'user.xml.reset'); }	
+
+		$xml = @new SimpleXMLElement('<item></item>');
+		$xml->addChild('USR', @$USR);
+		$xml->addChild('PWD', @$PASSWD);
+		$xml->addChild('EMAIL', @$EMAIL);
+		exec_action('settings-user');
+		$xml->asXML($path . $ufile);
+		
+		// create new site data file
 		$ufile = 'website.xml';
-		undo($ufile, $path, $bakpath);
+		createBak($ufile, $path, $bakpath);
+		$xmls = @new SimpleXMLElement('<item></item>');
+		$xmls->addChild('SITENAME', $SITENAME);
+		$xmls->addChild('SITEURL', @$SITEURL);
+		$xmls->addChild('TEMPLATE', @$TEMPLATE);
+		$xmls->addChild('TIMEZONE', @$TIMEZONE);
+		$xmls->addChild('LANG', @$LANG);
+		exec_action('settings-website');
+		$xmls->asXML($path . $ufile);
+		
+		//see new language file immediately
+		include('lang/'.$LANG.'.php');
+
+		// create new cpsettings data file
 		$ufile = 'cp_settings.xml';
-		undo($ufile, $path, $bakpath);
-		header('Location: settings.php?restored=true');
+		createBak($ufile, $path, $bakpath);
+		$xmlc = @new SimpleXMLElement('<item></item>');
+		$xmlc->addChild('HTMLEDITOR', @$HTMLEDITOR);
+		$xmlc->addChild('PRETTYURLS', @$PRETTYURLS);
+		$xmlc->addChild('FOUR04MONITOR', @$FOUR04MONITOR);
+		exec_action('settings-cpsettings');
+		$xmlc->asXML($path . $ufile);
+		
+		$err = "false";
 	}
+}
+
+//are any of the control panel checkboxes checked?
+$editorchck = ''; $prettychck = '';
+
+if ($HTMLEDITOR != '' ) { $editorchck = 'checked'; }
+if ($PRETTYURLS != '' ) { $prettychck = 'checked'; }
+
+// get what we think the 'website base url' should be
+$path_parts = pathinfo($_SERVER['PHP_SELF']);
+$path_parts = str_replace("/admin", "", $path_parts['dirname']);
+$fullpath = tsl("http://". $_SERVER['SERVER_NAME'] . $path_parts);
+
+// get available language files
+$lang_path = "lang/";
+$lang_handle = @opendir($lang_path) or die("Unable to open $lang_path");
+if ($LANG == ''){ $LANG = 'en_US'; }
+
+while ($lfile = readdir($lang_handle))
+{
+	if( is_file($lang_path . $lfile) && $lfile != "." && $lfile != ".." )
+	{
+		$lang_array[] = basename($lfile, ".php");
+	}
+}
+
+if (count($lang_array) != 0)
+{
+	sort($lang_array);
+	$count	= '0'; 
+	$sel 	= ''; 
+	$langs 	= '';
 	
-	if (isset($_GET['restored'])) { 
-		$restored = 'true'; 
-	} else {
-		$restored = 'false';
+	foreach ($lang_array as $larray)
+	{
+		if ($LANG == $larray)
+		{ 
+			$sel="selected";
+		}
+		
+		$langs .= '<option '.@$sel.' value="'.$larray.'" >'.$larray.'</option>';
+		$sel = '';
+		$count++;
 	}
-
-	// were changes submitted?
-	if(isset($_POST['submitted'])) {
-		
-		if(isset($_POST['sitename'])) { 
-			$SITENAME = htmlentities(cl($_POST['sitename'])); 
-		}
-		
-		if(isset($_POST['siteurl'])) { 
-			$SITEURL = tsl($_POST['siteurl']); 
-		}
-		
-		if(isset($_POST['user'])) { 
-			$USR = $_POST['user']; 
-		} 
-		if(isset($_POST['email'])) { 
-			$EMAIL = $_POST['email']; 
-		} 
-		if(isset($_POST['template'])) { 
-			$TEMPLATE = $_POST['template']; 
-		}
-		if(isset($_POST['timezone'])) { 
-			$TIMEZONE = $_POST['timezone']; 
-		}
-		if(isset($_POST['lang'])) { 
-			$LANG = $_POST['lang']; 
-		}
-
-		$HTMLEDITOR = @$_POST['show_htmleditor']; 
-		$PRETTYURLS = @$_POST['prettyurls']; 
-		
-		
-		$pwd1 = '';
-		$pwd2 = '';
-		if(isset($_POST['sitepwd'])) { $pwd1 = $_POST['sitepwd']; }
-		if(isset($_POST['sitepwd_confirm'])) { $pwd2 = $_POST['sitepwd_confirm']; }
-		
-		// are we resetting the password?
-		if ($pwd1 != $pwd2) { 
-			$err = "true";
-			$msg = $i18n['PASSWORD_NO_MATCH'];
-		} else {
-			
-			// password cannot be null
-			if ( $pwd1 != '' ) { 
-				$PASSWD = sha1($pwd1); 
-			}	
-			
-			// create new user data file
-			$ufile = 'user.xml';
-			createBak($ufile, $path, $bakpath);
-			if (file_exists($bakpath . 'user.xml.reset')) { unlink($bakpath . 'user.xml.reset'); }	
-
-			$xml = @new SimpleXMLElement('<item></item>');
-			$xml->addChild('USR', @$USR);
-			$xml->addChild('PWD', @$PASSWD);
-			$xml->addChild('EMAIL', @$EMAIL);
-			exec_action('settings-user');
-			$xml->asXML($path . $ufile);
-			
-			// create new site data file
-			$ufile = 'website.xml';
-			createBak($ufile, $path, $bakpath);
-			$xmls = @new SimpleXMLElement('<item></item>');
-			$xmls->addChild('SITENAME', $SITENAME);
-			$xmls->addChild('SITEURL', @$SITEURL);
-			$xmls->addChild('TEMPLATE', @$TEMPLATE);
-			$xmls->addChild('TIMEZONE', @$TIMEZONE);
-			$xmls->addChild('LANG', @$LANG);
-			exec_action('settings-website');
-			$xmls->asXML($path . $ufile);
-			
-			//see new language file immediately
-			include('lang/'.$LANG.'.php');
-
-			// create new cpsettings data file
-			$ufile = 'cp_settings.xml';
-			createBak($ufile, $path, $bakpath);
-			$xmlc = @new SimpleXMLElement('<item></item>');
-			$xmlc->addChild('HTMLEDITOR', @$HTMLEDITOR);
-			$xmlc->addChild('PRETTYURLS', @$PRETTYURLS);
-			$xmlc->addChild('FOUR04MONITOR', @$FOUR04MONITOR);
-			exec_action('settings-cpsettings');
-			$xmlc->asXML($path . $ufile);
-			
-			$err = "false";
-		}
-	}
-
-	//are any of the control panel checkboxes checked?
-	$editorchck = ''; $prettychck = '';
-	if ($HTMLEDITOR != '' ) { $editorchck = 'checked'; }
-	if ($PRETTYURLS != '' ) { $prettychck = 'checked'; }
-	
-	// get what we think the 'website base url' should be
-	$path_parts = pathinfo($_SERVER['PHP_SELF']);
-	$path_parts = str_replace("/admin", "", $path_parts['dirname']);
-	$fullpath = tsl("http://". $_SERVER['SERVER_NAME'] . $path_parts);
-	
-	// get available language files
-	$lang_path = "lang/";
-	$lang_handle = @opendir($lang_path) or die("Unable to open $lang_path");
-	if ($LANG == '') { $LANG = 'en_US'; }
-	while ($lfile = readdir($lang_handle)) {
-		if( is_file($lang_path . $lfile) && $lfile != "." && $lfile != ".." ) {
-			$lang_array[] = basename($lfile, ".php");
-		}
-	}
-	if (count($lang_array) != 0) {
-		sort($lang_array);
-		$count="0"; $sel = ''; $langs = '';
-		foreach ($lang_array as $larray) {
-			if ($LANG == $larray) { $sel="selected";}
-			$langs .= '<option '.@$sel.' value="'.$larray.'" >'.$larray.'</option>';
-			$sel = '';
-			$count++;
-		}
-	} else {
-		$langs = '<option value="" selected="selected" >-- '.$i18n['NONE'].' --</option>';
-	}
+} 
+else 
+{
+	$langs = '<option value="" selected="selected" >-- '.$i18n['NONE'].' --</option>';
+}
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['GENERAL_SETTINGS']); ?>
@@ -190,6 +231,7 @@
 		<p><input name="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<?php echo $i18n['USE_FANCY_URLS'];?>.</p>
 		<p><input name="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<?php echo $i18n['ENABLE_HTML_ED'];?></p>
 		<?php exec_action('settings-website-extras'); ?>
+		
 		<p><input class="submit" type="submit" name="submitted" value="<?php echo $i18n['BTN_SAVESETTINGS'];?>" /></p>
 		
 		</div>

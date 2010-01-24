@@ -7,47 +7,64 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$path = "../data/other/"; 
-	$file = "website.xml"; 
-	$theme_options = '';
-	
-	$userid = login_cookie_check();
+// Setup inclusions
+$load['plugin'] = true;
 
-	// were changes submitted?
-	if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
-		
-		$TEMPLATE = $_POST['template'];
-		
-		// create new site data file
-		$bakpath = "../backups/other/";
-		createBak($file, $path, $bakpath);
-		
-		
-		$xml = @new SimpleXMLElement('<item></item>');
-		$xml->addChild('SITENAME', @$SITENAME);
-		$xml->addChild('SITEURL', @$SITEURL);
-		$xml->addChild('TEMPLATE', @$TEMPLATE);
-		$xml->addChild('TIMEZONE', @$TIMEZONE);
-		$xml->addChild('LANG', @$LANG);
-		$xml->asXML($path . $file);
-		$success = $i18n['THEME_CHANGED'];
-	}
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+
+// Variable settings
+login_cookie_check();
+$path 			= $relative. 'data/other/'; 
+$file 			= "website.xml"; 
+$theme_options 	= '';
+
+// were changes submitted?
+if( (isset($_POST['submitted'])) && (isset($_POST['template'])) )
+{
+	$TEMPLATE = $_POST['template'];
 	
-	// get available themes (only look for folders)
-	$themes_path = "../theme";
-	$themes_handle = @opendir($themes_path) or die("Unable to open $themes_path");
-	while ($file = readdir($themes_handle)) {
-		$curpath = $themes_path .'/'. $file;
-		if( is_dir($curpath) && $file != "." && $file != ".." ) {
-			$sel="";
-			if (file_exists($curpath.'/template.php')) {
-				if ($TEMPLATE == $file) { $sel="selected";}
-				$theme_options .= '<option '.@$sel.' value="'.$file.'" >'.$file.'</option>';
+	// create new site data file
+	$bakpath = $relative. 'backups/other/';
+	createBak($file, $path, $bakpath);
+	
+	// Update changes
+	$xml = @new SimpleXMLElement('<item></item>');
+	$xml->addChild('SITENAME', @$SITENAME);
+	$xml->addChild('SITEURL', @$SITEURL);
+	$xml->addChild('TEMPLATE', @$TEMPLATE);
+	$xml->addChild('TIMEZONE', @$TIMEZONE);
+	$xml->addChild('LANG', @$LANG);
+	$xml->asXML($path . $file);
+	$success = $i18n['THEME_CHANGED'];
+}
+
+// get available themes (only look for folders)
+$themes_path = $relative. 'theme';
+$themes_handle = @opendir($themes_path) or die("Unable to open $themes_path");
+
+while ($file = readdir($themes_handle))
+{
+	$curpath = $themes_path .'/'. $file;
+	
+	if( is_dir($curpath) && $file != "." && $file != ".." )
+	{
+		$sel="";
+		
+		if (file_exists($curpath.'/template.php'))
+		{
+			if ($TEMPLATE == $file)
+			{ 
+				$sel="selected";
 			}
+			
+			$theme_options .= '<option '.@$sel.' value="'.$file.'" >'.$file.'</option>';
 		}
-  	}
+	}
+}
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['ACTIVATE_THEME']); ?>
@@ -90,8 +107,8 @@
 				echo 'src="template/images/screenshot.jpg"';
 			}
 			echo ' alt="'.$i18n['THEME_SCREENSHOT'].'" /></p>';
-		
-		exec_action('theme-extras');
+			
+			exec_action('theme-extras');
 		?>
 			
 		</div>

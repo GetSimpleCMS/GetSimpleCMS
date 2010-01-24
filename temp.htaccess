@@ -1,0 +1,10 @@
+AddDefaultCharset UTF-8
+RewriteEngine on
+
+# Usually it RewriteBase is just '/', but 
+# replace it with your subdirectory path
+RewriteBase /
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule /?([A-Za-z0-9-]+)/?$ index.php?id=$1 [L]

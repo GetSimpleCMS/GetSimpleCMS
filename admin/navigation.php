@@ -1,35 +1,3 @@
-<html>
-<head>
-<style>
-#navlist {
-font-family:arial;
-font-size:13px;
-border-collapse:collapse;
-width:250px;
-}
-#navlist tr {border:1px solid #eee;}
-#navlist tr td, #navlist tr th {padding:6px;}
-#navlist tr th {text-align:left;background:#f9f9f9;}
-a:link, a:visited {
-color:#415A66;
-text-decoration:underline;
-font-weight:bold;
-}
-	h3 {
-		font-size:16px;
-		font-family:georgia;
-		font-weight:normal;
-		color:#CF3805;
-		margin:0 0 10px 0;
-		}
-a:hover {
-color:#333;
-text-decoration:underline;
-font-weight:bold;
-}
-</style>
-</head>
-<body>
 <?php 
 /****************************************************
 *
@@ -39,10 +7,20 @@ font-weight:bold;
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	// get pages
-	$path = "../data/pages";
+// Setup inclusions
+$load['plugin'] = true;
+
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+
+// Variable settings
+login_cookie_check();
+
+	$path = $relative. 'data/pages';
+	
 	$dir_handle = @opendir($path) or die("Unable to open $path");
 	$filenames = array();
 	while ($filename = readdir($dir_handle)) {
@@ -53,10 +31,10 @@ font-weight:bold;
 	$pagesArray = array();
 	if (count($filenames) != 0) {
 		foreach ($filenames as $file) {
-			if ($file == "." || $file == ".." || is_dir("../data/pages/".$file) || $file == ".htaccess"  ) {
+			if ($file == "." || $file == ".." || is_dir($path . '/' . $file) || $file == ".htaccess"  ) {
 				// not a page data file
 			} else {
-					$thisfile = @file_get_contents('../data/pages/'.$file);
+					$thisfile = @file_get_contents($path . '/' . $file);
 					$data = simplexml_load_string($thisfile);
 				if ($data->private != 'Y') {
 					$pagesArray[$count]['menuStatus'] = $data->menuStatus;
@@ -94,5 +72,3 @@ font-weight:bold;
 	closedir($dir_handle);
 					
 ?>
-</body>
-</html>

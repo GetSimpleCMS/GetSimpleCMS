@@ -210,13 +210,13 @@ li.cke_panel_listItem {
 }
 
 .cke_panel_listItem.cke_selected a {
-	border:1px solid #eee;
-	background-color:#f9f9f9;
+	border:1px solid #ccc;
+	background-color:#eee;
 }
 
 .cke_panel_listItem a:hover, .cke_panel_listItem a:focus, .cke_panel_listItem a:active {
-	border-color:#ccc;
-	background-color:#f9f9f9;
+	border-color:#aaa;
+	background-color:#e0e0e0;
 }
 
 .cke_panel_grouptitle {
@@ -380,8 +380,8 @@ a:hover.cke_colorauto, a:hover.cke_colormore, a:focus.cke_colorauto, a:focus.cke
 	outline:none;
 	padding:4px;
 	margin-right:3px;
-	border:1px solid #eee;
-	background:#f9f9f9;
+	border:1px solid #ccc;
+	background:#eee;
 	height:18px;
 	display:inline-block;
 	cursor:default;
@@ -397,8 +397,8 @@ a:hover.cke_colorauto, a:hover.cke_colormore, a:focus.cke_colorauto, a:focus.cke
 	height:18px;
 	display:inline-block;
 	cursor:default;
-	border:1px solid #ccc;
-	background:#eee;
+	border:1px solid #aaa;
+	background:#e0e0e0;
 }
 
 .cke_skin_getsimple .cke_button a, .cke_skin_getsimple .cke_button a.cke_off {
@@ -441,11 +441,11 @@ a:hover.cke_colorauto, a:hover.cke_colormore, a:focus.cke_colorauto, a:focus.cke
 
 
 .cke_skin_getsimple .cke_button a:hover.cke_on, .cke_skin_getsimple .cke_button a:focus.cke_on, .cke_skin_getsimple .cke_button a:active.cke_on {
-	background-color:#eee;
+	background-color:#e0e0e0;
 }
 
 .cke_skin_getsimple .cke_button a:hover.cke_off, .cke_skin_getsimple .cke_button a:focus.cke_off, .cke_skin_getsimple .cke_button a:active.cke_off {
-	background-color:#eee;
+	background-color:#e0e0e0;
 }
 
 .cke_skin_getsimple .cke_hc .cke_button a:hover.cke_on, .cke_skin_getsimple .cke_hc .cke_button a:focus.cke_on, .cke_skin_getsimple .cke_hc .cke_button a:active.cke_on, .cke_skin_getsimple .cke_hc .cke_button a:hover.cke_off, .cke_skin_getsimple .cke_hc .cke_button a:focus.cke_off, .cke_skin_getsimple .cke_hc .cke_button a:active.cke_off {
@@ -719,9 +719,9 @@ a:hover.cke_colorauto, a:hover.cke_colormore, a:focus.cke_colorauto, a:focus.cke
 
 .cke_skin_getsimple .cke_rcombo a, .cke_skin_getsimple .cke_rcombo a:active, .cke_skin_getsimple .cke_rcombo a:hover, .cke_skin_getsimple .cke_rcombo a:link, .cke_skin_getsimple .cke_rcombo a:visited {
 	background-image:none;
-	border:1px solid #eee;
-	background:#f9f9f9;
-	color:#666;
+	border:1px solid #ccc;
+	background:#eee;
+	color:#333;
 	float:left;
 	padding:2px;
 	height:21px;
@@ -735,8 +735,8 @@ a:hover.cke_colorauto, a:hover.cke_colormore, a:focus.cke_colorauto, a:focus.cke
 }
 
 .cke_skin_getsimple .cke_rcombo a:hover {
-	border:1px solid #ccc;
-	background:#eee;
+	border:1px solid #aaa;
+	background:#e0e0e0;
 }
 .cke_skin_getsimple .cke_hc .cke_rcombo a {
 	filter:alpha(opacity=100);
@@ -786,13 +786,13 @@ a:hover.cke_colorauto, a:hover.cke_colormore, a:focus.cke_colorauto, a:focus.cke
 
 
 .cke_skin_getsimple .cke_rcombo .cke_openbutton {
-	background:#fefefe url('images/bullet_arrow_down.png') center center no-repeat;
+	background:#f1f1f1 url('images/bullet_arrow_down.png') center center no-repeat;
 	display:inline-block;
 	height:16px;
 	width:16px;
 	padding:0;
 	margin:1px 2px;
-	border:1px solid #eee;
+	border:1px solid #ccc;
 }
 
 .cke_skin_getsimple .cke_browser_iequirks .cke_rcombo .cke_openbutton {
@@ -800,19 +800,19 @@ a:hover.cke_colorauto, a:hover.cke_colormore, a:focus.cke_colorauto, a:focus.cke
 }
 
 .cke_skin_getsimple .cke_rcombo .cke_off a:hover .cke_text, .cke_skin_getsimple .cke_rcombo .cke_off a:focus .cke_text, .cke_skin_getsimple .cke_rcombo .cke_off a:active .cke_text, .cke_skin_getsimple .cke_rcombo .cke_on .cke_text {
-	border-color:#ccc;
+	border-color:#aaa;
 	filter:alpha(opacity=100);
 	opacity:1;
 }
 
 .cke_skin_getsimple .cke_rcombo .cke_off a:hover .cke_openbutton, .cke_skin_getsimple .cke_rcombo .cke_off a:focus .cke_openbutton, .cke_skin_getsimple .cke_rcombo .cke_off a:active .cke_openbutton, .cke_skin_getsimple .cke_rcombo .cke_on .cke_openbutton {
-	border-color:#ccc;
-	background-color:#eee;
+	border-color:#aaa;
+	background-color:#e0e0e0;
 }
 
 .cke_skin_getsimple .cke_editor .cke_rcombo a:hover .cke_openbutton {
-border:1px solid #ccc;
-background:#fcfcfc url('images/bullet_arrow_down.png') center center no-repeat;
+border:1px solid #aaa;
+background:#f1f1f1 url('images/bullet_arrow_down.png') center center no-repeat;
 }
 
 .cke_skin_getsimple .cke_rcombo .cke_disabled .cke_label {

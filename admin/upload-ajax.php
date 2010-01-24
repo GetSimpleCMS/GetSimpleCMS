@@ -1,31 +1,33 @@
 <?php
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$path = tsl('../data/other/');
-	$bakpath = tsl('../backups/other/');
-	$file = 'website.xml';
-	$data = getXML($path . $file);
-	global $SITENAME;
-	global $SITEURL;
-	global $SESSIONHASH;
+// Setup inclusions
+$load['plugin'] = true;
+
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
 	
-	//login_cookie_check();
-	
-if ($SESSIONHASH == $_REQUEST['sessionHash']) {
-	if (!empty($_FILES)) {
+if ($SESSIONHASH == $_REQUEST['sessionHash'])
+{
+	if (!empty($_FILES))
+	{
 		$tempFile = $_FILES['Filedata']['tmp_name'];
 		$name = $_FILES['Filedata']['name'];
 		$targetPath = $_SERVER['DOCUMENT_ROOT'] . $_REQUEST['folder'] . '/';
 		$targetFile =  str_replace('//','/',$targetPath) . $name;
 		
-		move_uploaded_file($tempFile,$targetFile);
+		move_uploaded_file($tempFile, $targetFile);
 		$ext = strtolower(substr($name, strrpos($name, '.') + 1));	
 		
-		if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' ) {
+		if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' )
+		{
 			//thumbnail for post
 			$imgsize = getimagesize($targetFile);
-			switch(strtolower(substr($targetFile, -3))){
+			
+			switch(strtolower(substr($targetFile, -3)))
+			{
 			    case "jpg":
 			        $image = imagecreatefromjpeg($targetFile);    
 			    break;
@@ -51,8 +53,10 @@ if ($SESSIONHASH == $_REQUEST['sessionHash']) {
 			imagesavealpha($picture, true);
 			$bool = imagecopyresampled($picture, $image, 0, 0, 0, 0, $width, $height, $src_w, $src_h); 
 			
-			if($bool){
-			    switch(strtolower(substr($targetFile, -3))){
+			if($bool)
+			{
+			    switch(strtolower(substr($targetFile, -3)))
+				{
 			        case "jpg":
 			            header("Content-Type: image/jpeg");
 			            $bool2 = imagejpeg($picture,"../data/thumbs/thumbnail.".$_FILES['Filedata']['name'],85);
@@ -85,8 +89,10 @@ if ($SESSIONHASH == $_REQUEST['sessionHash']) {
 			imagesavealpha($picture, true);
 			$bool = imagecopyresampled($picture, $image, 0, 0, 0, 0, $width, $height, $src_w, $src_h); 
 			
-			if($bool){
-			    switch(strtolower(substr($targetFile, -3))){
+			if($bool)
+			{
+			    switch(strtolower(substr($targetFile, -3)))
+				{
 			        case "jpg":
 			            header("Content-Type: image/jpeg");
 			            $bool2 = imagejpeg($picture,"../data/thumbs/thumbsm.".$_FILES['Filedata']['name'],85);
@@ -107,7 +113,9 @@ if ($SESSIONHASH == $_REQUEST['sessionHash']) {
 		}	
 		echo "1";
 	}
-} else {
+} 
+else 
+{
 	echo "0";	
 }
 ?>

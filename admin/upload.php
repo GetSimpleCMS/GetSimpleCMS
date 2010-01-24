@@ -7,39 +7,50 @@
 *
 *****************************************************/
  
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$userid = login_cookie_check();
-	$path = tsl("../data/uploads/");
-	
-	// if a file was uploaded
-	if (isset($_FILES["file"])) {
-		
-		
-		if ($_FILES["file"]["error"] > 0) {
-		  $error = $i18n['ERROR_UPLOAD'];
-		} else {
-		
+// Setup inclusions
+$load['plugin'] = true;
+
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+
+// Variable settings
+login_cookie_check();
+$path = tsl("../data/uploads/");
+
+// if a file was uploaded
+if (isset($_FILES["file"]))
+{
+	if ($_FILES["file"]["error"] > 0)
+	{
+		$error = $i18n['ERROR_UPLOAD'];
+	} 
+	else 
+	{
 		//set variables
-	    $count = '1';
-	    $file_loc = $path . $_FILES["file"]["name"];
-	    $base = $_FILES["file"]["name"];
-	    
-	    //prevent overwriting
-	    while ( file_exists($file_loc) ) {
+		$count = '1';
+		$file_loc = $path . $_FILES["file"]["name"];
+		$base = $_FILES["file"]["name"];
+		
+		//prevent overwriting
+		while ( file_exists($file_loc) )
+		{
 			$file_loc = $path . $count.'-'. $_FILES["file"]["name"];
 			$base = $count.'-'. $_FILES["file"]["name"];
 			$count++;
 		}
-	    
-	    //create file
-	    move_uploaded_file($_FILES["file"]["tmp_name"], $file_loc);
-	    exec_action('file-uploaded');
-	    //successfull message
-	    $success = $i18n['FILE_SUCCESS_MSG'].': <a href="'. $SITEURL .'data/uploads/'.$base.'">'. $SITEURL .'data/uploads/'.$base.'</a>';
-		}
+		
+		//create file
+		move_uploaded_file($_FILES["file"]["tmp_name"], $file_loc);
+		exec_action('file-uploaded');
+		
+		//successfull message
+		$success = $i18n['FILE_SUCCESS_MSG'].': <a href="'. $SITEURL .'data/uploads/'.$base.'">'. $SITEURL .'data/uploads/'.$base.'</a>';
 	}
-	
+}
+
 
 ?>
 
@@ -138,8 +149,8 @@
 					echo '<td style="width:70px;text-align:right;" ><span>'. $upload['date'] .'</span></td>';
 					echo '<td class="delete" ><a class="delconfirm" title="'.$i18n['DELETE_FILE'].': '. $upload['name'] .'?" href="deletefile.php?file='. $upload['name'] .'">X</a></td>';
 					echo '</tr>';
+					exec_action('file-extras');
 				}
-				exec_action('files-extras');
 				echo '</table>';
 				echo '<p><em><b>'. $counter .'</b> '.$i18n['TOTAL_FILES'].' ('. fSize($totalsize) .')</em></p>';
 			}

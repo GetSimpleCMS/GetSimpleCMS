@@ -7,14 +7,17 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$file = 'website.xml';
-	$path = tsl('../data/other/');
-	global $SITENAME;
-	global $SITEURL;
+// Setup inclusions
+$load['plugin'] = true;
+
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
 	
-	$userid = login_cookie_check();
+// Variable settings
+login_cookie_check();
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['WELCOME']); ?>
@@ -47,7 +50,7 @@
 	</div>
 	
 	<div id="sidebar" >
-		
+
 	</div>	
 	
 	<div class="clear"></div>

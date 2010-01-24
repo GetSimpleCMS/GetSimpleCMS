@@ -7,19 +7,15 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php'); 	
-	require_once('inc/login_functions.php');
-	require_once('inc/plugin_functions.php');
-	
-	// if install.php exists, delete it	
-	if (file_exists('admin/install.php')) {
-		unlink('admin/install.php');
-	}
-	
-	// if there is no password set, then we assume it is a 
-	// new website, and redirect to the installation screen
-	if ($PASSWD == '') { header('Location: install.php'); }	
+// Setup inclusions
+$load['login'] = true;
+$load['plugin'] = true;
 
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
 ?> 
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['LOGIN']); ?>

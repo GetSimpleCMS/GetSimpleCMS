@@ -7,14 +7,22 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$path = tsl('../data/other/');
-	$ref = $_SERVER['SERVER_NAME'];
-	$data = @getXML('../data/other/authorization.xml');
-	$APIKEY = $data->apikey;
-	login_cookie_check();
-	$php_modules = get_loaded_extensions();
+// Setup inclusions
+$load['plugin'] = true;
+
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+	
+// Variable settings
+$path = tsl('../data/other/');
+$ref = $_SERVER['SERVER_NAME'];
+$data = @getXML('../data/other/authorization.xml');
+$APIKEY = $data->apikey;
+login_cookie_check();
+$php_modules = get_loaded_extensions();
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['SUPPORT'].' &raquo; '.$i18n['WEB_HEALTH_CHECK']); ?>
@@ -30,7 +38,8 @@
 			<h3><?php echo $site_full_name; ?> <?php echo $i18n['VERSION'];?></h3>
 			<table class="highlight healthcheck">
 				<?php
-				if (in_arrayi('curl', $php_modules)) {
+				if (in_arrayi('curl', $php_modules))
+				{
 					$curl_URL = $api_url .'?k='.$APIKEY.'&v='.$site_version_no;
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_TIMEOUT, 2);
@@ -40,17 +49,26 @@
 					curl_close($ch);
 					$apikey = json_decode($data);
 					$verstatus = $apikey->status;
-				} else {
+				} 
+				else 
+				{
 					$verstatus = '10';
 				}
 				
-				if ($verstatus == '0') {
+				if ($verstatus == '0') 
+				{
 					$ver = '<span class="ERRmsg" >'. $i18n['UPG_NEEDED'].' <b>'.$apikey->latest .'</b><br /><a href="http://get-simple.info/download">'. $i18n['DOWNLOAD'].'</a></span>';
-				} elseif ($verstatus == '1') {
+				} 
+				elseif ($verstatus == '1') 
+				{
 					$ver = '<span class="OKmsg" ><b>'.$site_version_no.'</b> - '. $i18n['LATEST_VERSION'].'</span>';
-				} elseif ($verstatus == '2') {
+				} 
+				elseif ($verstatus == '2') 
+				{
 					$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - Beta / Bleeding Edge</span>';
-				} else {
+				} 
+				else 
+				{
 					$ver = '<span class="WARNmsg" >'. $i18n['CANNOT_CHECK'].' <b>'.$site_version_no.'</b><br /><a href="http://get-simple.info/download">'. $i18n['DOWNLOAD'].'</a></span>';
 				}
 				?>

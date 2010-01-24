@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /****************************************************
 *
 * @File: 	basic.php
@@ -6,10 +6,6 @@
 * @Action:	Functions used to help create the cp pages	
 *
 *****************************************************/
-
-if (basename($_SERVER['PHP_SELF']) == 'basic.php') { 
-	die('You cannot load this page directly.'); 
-} 
 
 /*******************************************************
  * @function clean_url

@@ -7,89 +7,142 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$userid = login_cookie_check();
+// Setup inclusions
+$load['plugin'] = true;
 
-	// get passed variables
-	$uri 		= @$_GET['uri'];
-	$id 		= @$_GET['id'];
-	$ptype 	= @$_GET['type'];
-	$path = '../data/pages/';
-	$theme_templates = ''; 	$parents_list = ''; 	$keytags = '';
-	$parent = ''; $template = ''; $menuStatus = '';  $private = '';  $menu = '';  $content = '';  $title = ''; $url = '';
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+
+// Variable settings
+$userid = login_cookie_check();
+
+// Get passed variables
+$uri 		= @$_GET['uri'];
+$id 		= @$_GET['id'];
+$ptype 		= @$_GET['type'];
+$path 		= '../data/pages/';
+
+// Page variables reset
+$theme_templates = ''; 
+$parents_list = ''; 
+$keytags = '';
+$parent = '';
+$template = '';
+$menuStatus = ''; 
+$private = ''; 
+$menu = ''; 
+$content = '';
+$title = '';
+$url = '';
+
+if ($uri)
+{
+	// get saved page data
+	$file = $uri .'.xml';
 	
-	if ($uri) {
-		// get saved page data
-		$file = $uri .'.xml';
+	if (!file_exists($path . $file))
+	{ 
+		header('Location: pages.php?error='.$i18n['PAGE_NOTEXIST']);
+		exit;
+	}
+
+	$data_edit = getXML($path . $file);
+	$title = stripslashes($data_edit->title);
+	$pubDate = $data_edit->pubDate;
+	$metak = stripslashes($data_edit->meta);
+	$metad = stripslashes($data_edit->metad);
+	$url = $data_edit->url;
+	$content = stripslashes($data_edit->content);
+	$template = $data_edit->template;
+	$parent = $data_edit->parent;
+	$menu = stripslashes($data_edit->menu);
+	$private = $data_edit->private;
+	$menuStatus = $data_edit->menuStatus;
+	$menuOrder = $data_edit->menuOrder;
+	$buttonname = $i18n['BTN_SAVEUPDATES'];
+} 
+else 
+{
+	$buttonname = $i18n['BTN_SAVEPAGE'];
+}
+
+
+// MAKE SELECT BOX OF AVAILABLE TEMPLATES
+if ($template == '') { $template = 'template.php'; }
+$themes_path = "../theme/". $TEMPLATE;
+
+$themes_handle = @opendir($themes_path) or die("Unable to open $themes_path");
+while ($file = readdir($themes_handle))
+{
+	if( isFile($file, $themes_path, 'php') ) 
+	{
+		$templates[] = $file;
+	}
+}
+
+sort($templates);
+
+foreach ($templates as $file)
+{
+	if ($template == $file)
+	{ 
+		$sel="selected"; 
+	} 
+	else
+	{ 
+		$sel=""; 
+	}
+	
+	if ($file == 'template.php')
+	{ 
+		$templatename=$i18n['DEFAULT_TEMPLATE']; 
+	} 
+	else 
+	{ 
+		$templatename=$file;
+	}
+	
+	$theme_templates .= '<option '.@$sel.' value="'.$file.'" >'.$templatename.'</option>';
+}
+
+
+// MAKE SELECT BOX FOR PARENT PAGES
+$parents = getFiles($path);
+sort($parents);
+
+// Selected?
+if ($parent == null) { $none="selected"; } else { $none=""; }
+
+// Create base option
+$parents_list .= '<option '.@$none.' value="" >-- '.$i18n['NONE'].' --</option>';
+
+foreach ($parents as $fi)
+{
+	if( isFile($fi, $path, 'xml') )
+	{
+		$goodname = str_replace(".xml", "", $fi);
 		
-		if (!file_exists($path . $file)) { 
-			header('Location: pages.php?error='.$i18n['PAGE_NOTEXIST']);
-			exit;
-		}
-
-		$data_edit = getXML($path . $file);
-			$title = stripslashes($data_edit->title);
-			$pubDate = $data_edit->pubDate;
-			$metak = stripslashes($data_edit->meta);
-			$metad = stripslashes($data_edit->metad);
-			$url = $data_edit->url;
-			$content = stripslashes($data_edit->content);
-			$template = $data_edit->template;
-			$parent = $data_edit->parent;
-			$menu = stripslashes($data_edit->menu);
-			$private = $data_edit->private;
-			$menuStatus = $data_edit->menuStatus;
-			$menuOrder = $data_edit->menuOrder;
-		$buttonname = $i18n['BTN_SAVEUPDATES'];
-	} else {
-		$buttonname = $i18n['BTN_SAVEPAGE'];
-	}
-	
-
-	// MAKE SELECT BOX OF AVAILABLE TEMPLATES
-	if ($template == '') { $template = 'template.php'; }
-	$themes_path = "../theme/". $TEMPLATE;
-	
-	$themes_handle = @opendir($themes_path) or die("Unable to open $themes_path");
-	while ($file = readdir($themes_handle)) {
-		if( isFile($file, $themes_path, 'php') ) {
-			$templates[] = $file;
-		}
-	}
-
-	sort($templates);
-	foreach ($templates as $file) {
-		if ($template == $file) { $sel="selected"; } else { $sel=""; };
-		if ($file == 'template.php') { $templatename=$i18n['DEFAULT_TEMPLATE']; } else { $templatename=$file; }
-		$theme_templates .= '<option '.@$sel.' value="'.$file.'" >'.$templatename.'</option>';
-  	}
-	
-	
-	// MAKE SELECT BOX FOR PARENT PAGES
-	$parents = getFiles($path);
-	sort($parents);
-	if ($parent == null) { $none="selected"; } else { $none=""; };
-	$parents_list .= '<option '.@$none.' value="" >-- '.$i18n['NONE'].' --</option>';
-	
-	foreach ($parents as $fi) {
-		if( isFile($fi, $path, 'xml') ) {
-			$goodname = str_replace(".xml", "", $fi);
-			if ($parent == $goodname) { $sel="selected"; } else { $sel=""; };
-			if ($goodname != $uri ) {
-				$tmpData = getXML($path . $fi);
-				if ($tmpData->parent == '') { 
-					$parents_list .= '<option '.@$sel.' value="'.$goodname.'" >'.$goodname.'</option>';
-				}
+		if ($parent == $goodname) { $sel="selected"; } else { $sel=""; }
+		
+		if ($goodname != $uri )
+		{
+			$tmpData = getXML($path . $fi);
+			
+			if ($tmpData->parent == '')
+			{ 
+				$parents_list .= '<option '.@$sel.' value="'.$goodname.'" >'.$goodname.'</option>';
 			}
-  		}
-  	}
-  	
-	// SETUP CHECKBOXES
-	if ($menuStatus != '') { $sel = 'checked';	}
-	if ($private != '') { $sel_p = 'checked';	}
-	if ($menu == '') { $menu = @$title; } 
+		}
+	}
+}
 
+// SETUP CHECKBOXES
+if ($menuStatus != '') { $sel = 'checked';	}
+if ($private != '') { $sel_p = 'checked';	}
+if ($menu == '') { $menu = @$title; } 
 ?>		
 
 
@@ -194,7 +247,7 @@
 			<!-- page body -->
 			<p>
 				<label for="post-content" style="display:none;"><?php echo $i18n['LABEL_PAGEBODY']; ?></label>
-				<textarea class="set-example-text" id="post-content"  rel="<?php echo $i18n['LABEL_PAGEBODY']; ?>" name="post-content"><?php echo @$content; ?></textarea>
+				<textarea class="set-example-text" id="post-content" rel="<?php echo $i18n['LABEL_PAGEBODY']; ?>" name="post-content"><?php echo @$content; ?></textarea>
 			</p>
 			
 			<?php if(isset($data_edit)) { 
@@ -220,18 +273,16 @@
 			<script type="text/javascript">
 
 				var editor = CKEDITOR.replace( 'post-content', {
-	        //toolbar : 'basic',
 	        skin : 'getsimple',
-	        //language : 'en',
-	        forcePasteAsPlainText:true,
-			language : 'en',
-			defaultLanguage : 'en',
-			entities : true,
+	        forcePasteAsPlainText : true,
+	        language : 'en',
+	        defaultLanguage : 'en',
+	        entities : true,
 	        uiColor : '#FFFFFF',
-			height: '500px',	
+					height: '500px',	
 	        toolbar :
 	        [
-	          ['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink','RemoveFormat', 'Source'],
+	          ['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'RemoveFormat', 'Source'],
 	          '/',
 	          ['Styles','Format','Font','FontSize']
 	        ]
@@ -240,6 +291,7 @@
 	        //filebrowserWindowWidth : '640',
 	        //filebrowserWindowHeight : '480'
     		});
+
 			</script>
 		
 		<?php } ?>

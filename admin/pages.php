@@ -7,68 +7,77 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$userid = login_cookie_check();
-	$id 		= @$_GET['id'];
-	$ptype 	= @$_GET['type'];
-	$path 	= tsl('../data/pages/');
-	$counter = '0';
-	$table = '';
+// Setup inclusions
+$load['plugin'] = true;
 
-	//display all pages
-	$filenames = getFiles($path);
-	
-	$count="0";
-	$pagesArray = array();
-	if (count($filenames) != 0) { 
-		foreach ($filenames as $file) {
-			if (isFile($file, $path, 'xml')) {
-				$data = getXML($path .$file);
-				$status = $data->menuStatus;
-				//$pagesArray[$count]['title'] = $data->title;
-				$pagesArray[$count]['title'] = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
-				$pagesArray[$count]['parent'] = $data->parent;
-				$pagesArray[$count]['menuStatus'] = $data->menuStatus;
-				$pagesArray[$count]['private'] = $data->private;
-				if ($data->parent != '') { 
-					$parentdata = getXML($path . $data->parent .'.xml');
-					$parentTitle = $parentdata->title;
-					$pagesArray[$count]['sort'] = $parentTitle .' '. $data->title;
-				} else {
-					$pagesArray[$count]['sort'] = $data->title;
-				}
-				$pagesArray[$count]['url'] = $data->url;
-				$pagesArray[$count]['date'] = $data->pubDate;
-				$parentTitle = '';
-				$count++;
-			}
-		}
-	}
-	$pagesSorted = subval_sort($pagesArray,'sort');
-	$counter = "0";
-	if (count($pagesSorted) != 0) { 
-		foreach ($pagesSorted as $page) {	
-			$counter++;
-			if ($page['parent'] != '') {$page['parent'] = $page['parent']."/"; $dash = '<span>&nbsp;&nbsp;&lfloor;&nbsp;&nbsp;&nbsp;</span>'; } else { $dash = ""; }
-			$table .= '<tr id="tr-'.$page['url'] .'" >';
-			if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
-			if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <sup>['.$i18n['MENUITEM_SUBTITLE'].']</sup>'; } else { $page['menuStatus'] = ''; }
-			if ($page['private'] != '' ) { $page['private'] = ' <sup>['.$i18n['PRIVATE_SUBTITLE'].']</sup>'; } else { $page['private'] = ''; }
-			if ($page['url'] == 'index' ) { $homepage = ' <sup>['.$i18n['HOMEPAGE_SUBTITLE'].']</sup>'; } else { $homepage = ''; }
-			$table .= '<td>'. @$dash .'<a title="'.$i18n['EDITPAGE_TITLE'].': '. cl($page['title']) .'" href="edit.php?uri='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
-			$table .= '<td style="width:70px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
-			$table .= '<td class="secondarylink" >';
-			if ($PRETTYURLS == '1') {  
-				$table .= '<a title="'.$i18n['VIEWPAGE_TITLE'].': '. cl($page['title']) .'" target="_blank" href="'. $SITEURL . @$page['parent'] . $page['url'] .'">#</a>'; 
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+
+// Variable settings
+login_cookie_check();
+$id 		= @$_GET['id'];
+$ptype 		= @$_GET['type'];
+$path 		= tsl('../data/pages/');
+$counter 	= '0';
+$table 		= '';
+
+//display all pages
+$filenames = getFiles($path);
+
+$count="0";
+$pagesArray = array();
+if (count($filenames) != 0) { 
+	foreach ($filenames as $file) {
+		if (isFile($file, $path, 'xml')) {
+			$data = getXML($path .$file);
+			$status = $data->menuStatus;
+			//$pagesArray[$count]['title'] = $data->title;
+			$pagesArray[$count]['title'] = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
+			$pagesArray[$count]['parent'] = $data->parent;
+			$pagesArray[$count]['menuStatus'] = $data->menuStatus;
+			$pagesArray[$count]['private'] = $data->private;
+			if ($data->parent != '') { 
+				$parentdata = getXML($path . $data->parent .'.xml');
+				$parentTitle = $parentdata->title;
+				$pagesArray[$count]['sort'] = $parentTitle .' '. $data->title;
 			} else {
-				$table .= '<a title="'.$i18n['VIEWPAGE_TITLE'].': '. cl($page['title']) .'" target="_blank" href="'. $SITEURL .'index.php?id='.$page['url'].'" >#</a>'; 
+				$pagesArray[$count]['sort'] = $data->title;
 			}
-			$table .= '</td>';
-			$table .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'" title="'.$i18n['DELETEPAGE_TITLE'].': '. stripslashes(strip_tags(html_entity_decode($page['title']))) .'?" >X</a></td></tr>';
-			
+			$pagesArray[$count]['url'] = $data->url;
+			$pagesArray[$count]['date'] = $data->pubDate;
+			$parentTitle = '';
+			$count++;
 		}
 	}
+}
+
+$pagesSorted = subval_sort($pagesArray,'sort');
+$counter = "0";
+if (count($pagesSorted) != 0) { 
+	foreach ($pagesSorted as $page) {	
+		$counter++;
+		if ($page['parent'] != '') {$page['parent'] = $page['parent']."/"; $dash = '<span>&nbsp;&nbsp;&lfloor;&nbsp;&nbsp;&nbsp;</span>'; } else { $dash = ""; }
+		$table .= '<tr id="tr-'.$page['url'] .'" >';
+		if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
+		if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <sup>['.$i18n['MENUITEM_SUBTITLE'].']</sup>'; } else { $page['menuStatus'] = ''; }
+		if ($page['private'] != '' ) { $page['private'] = ' <sup>['.$i18n['PRIVATE_SUBTITLE'].']</sup>'; } else { $page['private'] = ''; }
+		if ($page['url'] == 'index' ) { $homepage = ' <sup>['.$i18n['HOMEPAGE_SUBTITLE'].']</sup>'; } else { $homepage = ''; }
+		$table .= '<td>'. @$dash .'<a title="'.$i18n['EDITPAGE_TITLE'].': '. cl($page['title']) .'" href="edit.php?uri='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
+		$table .= '<td style="width:70px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
+		$table .= '<td class="secondarylink" >';
+		if ($PRETTYURLS == '1') {  
+			$table .= '<a title="'.$i18n['VIEWPAGE_TITLE'].': '. cl($page['title']) .'" target="_blank" href="'. $SITEURL . @$page['parent'] . $page['url'] .'">#</a>'; 
+		} else {
+			$table .= '<a title="'.$i18n['VIEWPAGE_TITLE'].': '. cl($page['title']) .'" target="_blank" href="'. $SITEURL .'index.php?id='.$page['url'].'" >#</a>'; 
+		}
+		$table .= '</td>';
+		$table .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'" title="'.$i18n['DELETEPAGE_TITLE'].': '. stripslashes(strip_tags(html_entity_decode($page['title']))) .'?" >X</a></td></tr>';
+		
+	}
+}
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['PAGE_MANAGEMENT']); ?>

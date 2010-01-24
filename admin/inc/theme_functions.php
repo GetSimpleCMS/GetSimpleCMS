@@ -1,4 +1,4 @@
-<?php 
+<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /****************************************************
 *
 * @File: 	theme_functions.php
@@ -6,10 +6,6 @@
 * @Action:	Functions used by themes. 	
 *
 *****************************************************/
-
-if (basename($_SERVER['PHP_SELF']) == 'theme_functions.php') { 
-	die('You cannot load this page directly.'); 
-} 
 
 $thisfile = file_get_contents('data/other/cp_settings.xml');
 $datac = simplexml_load_string($thisfile);

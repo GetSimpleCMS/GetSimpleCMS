@@ -1,5 +1,4 @@
 <?php
-
 /****************************************************
 *
 * @File: 	sitemap.php
@@ -8,24 +7,36 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
+// Setup inclusions
+$load['plugin'] = true;
 
-// get pages
-$path = tsl("../data/pages/");
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+
+// Variable settings
+$path = $relative. 'data/pages/';
 $count="0";
 
 $filenames = getFiles($path);
 
-if (count($filenames) != 0) { 
-	foreach ($filenames as $file) {
-		if (isFile($file, $path, 'xml')) {
+if (count($filenames) != 0)
+{ 
+	foreach ($filenames as $file)
+	{
+		if (isFile($file, $path, 'xml'))
+		{
 			$data = getXML($path . $file);
 			$status = $data->menuStatus;
 			$pagesArray[$count]['url'] = $data->url;
-			if ($data->url == 'index') {
+			
+			if ($data->url == 'index')
+			{
 				$pagesArray[$count]['url'] = '';
 			}
+			
 			$pagesArray[$count]['parent'] = $data->parent;
 			$pagesArray[$count]['date'] = $data->pubDate;
 			$pagesArray[$count]['private'] = $data->private;
@@ -34,22 +45,28 @@ if (count($filenames) != 0) {
 		}
 	}
 }
+
 $pagesSorted = subval_sort($pagesArray,'menuStatus');
 
-if (count($pagesSorted) != 0) { 
-
+if (count($pagesSorted) != 0)
+{ 
 	$xml = @new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset></urlset>');
 	$xml->addAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd', 'http://www.w3.org/2001/XMLSchema-instance');
 	$xml->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 	
-	foreach ($pagesSorted as $page) {	
-
-		if ($page['private'] != 'Y') {
+	foreach ($pagesSorted as $page)
+	{	
+		if ($page['private'] != 'Y')
+		{
 			// set <loc>
-			if ($PRETTYURLS == '1') {
+			if ($PRETTYURLS == '1')
+			{
 				if ($page['parent'] != '') { $page['parent'] = tsl($page['parent']); }  
+				
 				$pageLoc = tsl($SITEURL . @$page['parent'] . $page['url']);
-			} else {
+			} 
+			else 
+			{
 				$pageLoc = $SITEURL .'index.php?id='. $page['url'];
 			}
 			
@@ -83,27 +100,31 @@ if (count($pagesSorted) != 0) {
 	}
 }
 
+// Variables for website
+$spath 		= "../data/other/";
+$sfile 		= "website.xml";
+$data 		= getXML($spath . $sfile);
+$SITEURL 	= $data->SITEURL;
 
-$spath = "../data/other/";
-$sfile = "website.xml";
-$data = getXML($spath . $sfile);
-$SITEURL = $data->SITEURL;
-
-if (file_exists('../sitemap.xml')) {
-	if( 200 === ($status=pingGoogleSitemaps($SITEURL.'sitemap.xml'))) {
+if (file_exists('../sitemap.xml'))
+{
+	if( 200 === ($status=pingGoogleSitemaps($SITEURL.'sitemap.xml')))
+	{
 		$response = $i18n['SITEMAP_CREATED'];
-		header('location: theme.php?success='.$response);
+		header('location: theme.php?success=' . $response);
 		exit;
-	} else {
+	} 
+	else 
+	{
 		$response = $i18n['SITEMAP_ERRORPING'];
-		header('location: theme.php?err='.$response);
+		header('location: theme.php?err=' . $response);
 		exit;
 	}
-	
-} else {
+} 
+else 
+{
 	$response = $i18n['SITEMAP_ERROR'];
-	header('location: theme.php?err='.$response);	
+	header('location: theme.php?err=' . $response);	
 	exit;
 }
-
 ?>

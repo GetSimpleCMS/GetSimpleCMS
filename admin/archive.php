@@ -7,33 +7,45 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$userid = login_cookie_check();
-	$table = '';
-	
-	
-	// if zip.php exists, delete it	
-	if (file_exists('../zip.php')) {
-		unlink('../zip.php');
-	}
+// Setup inclusions
+$load['plugin'] = true;
 
-	// if a backup needs to be created
-	if(isset($_GET['do'])) {
-		$file="inc/zip-files.php";
-		$newfile="../zip.php";
-		copy($file, $newfile);
-		exec_action('archive-backup');
-		header('Location: ../zip.php');	
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+
+// Variable Settings
+$userid = login_cookie_check();
+$table = '';
+
+// if zip.php exists, delete it	
+if (file_exists('../zip.php'))
+{
+	unlink('../zip.php');
+}
+
+// if a backup needs to be created
+if(isset($_GET['do']))
+{
+	$file = "inc/zip-files.php";
+	$newfile = "../zip.php";
+	copy($file, $newfile);
+	exec_action('archive-backup');
+	header('Location: ../zip.php');	
+}
+
+// if a backup has just been created
+if(isset($_GET['done'])) 
+{
+	if (file_exists("../zip.php")) 
+	{
+		unlink("../zip.php");
+		
+		$success = $i18n['SUCC_WEB_ARCHIVE'];
 	}
-	
-	// if a backup has just been created
-	if(isset($_GET['done'])) {
-		if (file_exists("../zip.php")) {
-			unlink("../zip.php");
-			$success = $i18n['SUCC_WEB_ARCHIVE'];
-		}	
-	}
+}
 ?> 
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['BAK_MANAGEMENT'].' &raquo; '.$i18n['WEBSITE_ARCHIVES']); ?>

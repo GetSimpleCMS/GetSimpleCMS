@@ -8,29 +8,40 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$file = 'user.xml';
-	$path = tsl('../data/other/');
-	if (file_exists($path . $file)) {
-		$data = getXML($path . $file);
-		$USR = $data->USR;
-		$PASSWD = $data->PWD;
-		$EMAIL = $data->EMAIL;
-	}
-	
-	if(isset($_POST['submitted'])) {
-	if(isset($_POST['email'])) {
-		if($_POST['email'] == $EMAIL) {
-			
+// Setup inclusions
+$load['plugin'] = true;
+
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+
+// Variable settings
+$file = 'user.xml';
+$path = tsl($relative. 'data/other/');
+
+if (file_exists($path . $file))
+{
+	$data = getXML($path . $file);
+	$USR = $data->USR;
+	$EMAIL = $data->EMAIL;
+}
+
+if(isset($_POST['submitted']))
+{
+	if(isset($_POST['email']))
+	{
+		if($_POST['email'] == $EMAIL)
+		{
 			// create new random password
 			$random = createRandomPassword();
 			
 			// create new users.xml file
-			$bakpath = "../backups/other/";
+			$bakpath = $relative. "backups/other/";
 			createBak($file, $path, $bakpath);
 			
-			$flagfile = "../backups/other/user.xml.reset";
+			$flagfile = $relative. "backups/other/user.xml.reset";
 			copy($path . $file, $flagfile);
 			
 			$xml = @new SimpleXMLElement('<item></item>');
@@ -38,7 +49,7 @@
 			$xml->addChild('PWD', sha1($random));
 			$xml->addChild('EMAIL', @$EMAIL);
 			$xml->asXML($path . $file);
-	
+			
 			// send the email with the new password
 			$subject = $site_full_name .' '. $i18n['RESET_PASSWORD'] .' '. $i18n['ATTEMPT'];
 			$message = "'". cl($SITENAME) ."' ". $i18n['RESET_PASSWORD'] ." ". $i18n['ATTEMPT'];
@@ -46,14 +57,19 @@
 			$message .= "<br>". $i18n['LABEL_USERNAME'].": ". $USR;
 			$message .= "<br>". $i18n['NEW_PASSWORD'].": ". $random;
 			$message .= '<br><br>'. $i18n['EMAIL_LOGIN'] .': <a href="'.$SITEURL.'admin/">'.$SITEURL.'admin/</a>';
-			$status = sendmail($EMAIL,$subject,$message);
 			exec_action('resetpw-success');
+			$status = sendmail($EMAIL,$subject,$message);
+			
 			header("Location: resetpassword.php?upd=pwd-".$status);
-		} else {
+		}
+		else
+		{
 			exec_action('resetpw-error');
 			header("Location: resetpassword.php?upd=pwd-error");
 		} 
-	}	else {
+	}
+	else 
+	{
 		header("Location: resetpassword.php?upd=pwd-error");
 	}
 } 

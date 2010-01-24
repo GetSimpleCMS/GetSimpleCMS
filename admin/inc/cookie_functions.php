@@ -1,4 +1,4 @@
-<?php 
+<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /****************************************************
 *
 * @File: 		cookie_functions.php
@@ -6,12 +6,6 @@
 * @Action:	Functions to create and read cookies.	
 *
 *****************************************************/
-
-if (basename($_SERVER['PHP_SELF']) == 'cookie_functions.php') {
-	die('You cannot load this page directly.');
-}
-
-
 require_once('inc/configuration.php');
 
 

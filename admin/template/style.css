@@ -299,7 +299,15 @@ html {
 .wrapper table tr {border-bottom:1px solid #eee;border-top:1px solid #eee;}
 table td a {font-weight:normal !important;}
 .wrapper table.healthcheck tr td {font-size:11px;}
-
+.popup table td {padding:4px;}
+.popup table a:link, .popup table a:visited {
+	color:#415A66;
+	text-decoration:underline;
+	}
+.popup table a:hover {
+	color:#333;
+	text-decoration:underline;
+}
 
 
 /* default form css */

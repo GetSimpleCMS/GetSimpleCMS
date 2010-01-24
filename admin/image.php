@@ -7,40 +7,51 @@
 *
 *****************************************************/
 
-	require_once('inc/functions.php');
-	require_once('inc/plugin_functions.php');
-	$file = 'website.xml';
-	$path = tsl('../data/other/');
-	global $SITENAME;
-	global $SITEURL;
-	
-	$userid = login_cookie_check();
+// Setup inclusions
+$load['plugin'] = true;
 
-	$src = $_GET['i'];
-	$thumb_folder = '../data/thumbs/';
-	$src_folder = '../data/uploads/';
+// Relative
+$relative = '../';
 
-	if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-		
-		require('inc/imagemanipulation.php');
-		
-		$objImage = new ImageManipulation($src_folder . $src);
-		if ( $objImage->imageok ) {
-			$objImage->setCrop($_POST['x'], $_POST['y'], $_POST['w'], $_POST['h']);
-			//$objImage->show();
-			$objImage->save($thumb_folder . 'thumbnail.' .$src);
-		} else {
-			echo 'Error!';
-		}
-	}
+// Include common.php
+include('inc/common.php');
+
+// Variable Settings
+login_cookie_check();
+
+$src = $_GET['i'];
+$thumb_folder = '../data/thumbs/';
+$src_folder = '../data/uploads/';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST')
+{
 	
-	list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($src_folder . urlencode($src));
-	if (file_exists($thumb_folder . 'thumbnail.' . $src)) {
-		list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . urlencode('thumbnail.'.$src));
-		$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder . 'thumbnail.'. $src .'" rel="facybox" >'.$i18n['CURRENT_THUMBNAIL'].'</a> (<a href="#jcrop_open">'.$i18n['RECREATE'].'</a>) - '.$thwidth.' x '.$thheight;
-	} else {
-		$thumb_exists = ' &nbsp; | &nbsp; <a href="#jcrop_open">'.$i18n['CREATE_ONE'].'</a>';
+	require('inc/imagemanipulation.php');
+	
+	$objImage = new ImageManipulation($src_folder . $src);
+	if ( $objImage->imageok ) 
+	{
+		$objImage->setCrop($_POST['x'], $_POST['y'], $_POST['w'], $_POST['h']);
+		//$objImage->show();
+		$objImage->save($thumb_folder . 'thumbnail.' .$src);
+	} 
+	else 
+	{
+		echo 'Error!';
 	}
+}
+
+list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($src_folder . urlencode($src));
+
+if (file_exists($thumb_folder . 'thumbnail.' . $src)) 
+{
+	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . urlencode('thumbnail.'.$src));
+	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder . 'thumbnail.'. $src .'" rel="facybox" >'.$i18n['CURRENT_THUMBNAIL'].'</a> (<a href="#jcrop_open">'.$i18n['RECREATE'].'</a>) - '.$thwidth.' x '.$thheight;
+} 
+else 
+{
+	$thumb_exists = ' &nbsp; | &nbsp; <a href="#jcrop_open">'.$i18n['CREATE_ONE'].'</a>';
+}
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['FILE_MANAGEMENT'].' &raquo; '.$i18n['IMAGES']); ?>

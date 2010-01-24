@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /****************************************************
 *
 * @File: 	template_functions.php
@@ -6,17 +6,8 @@
 * @Action:	Functions used to help create the cp pages	
 *
 *****************************************************/
-
-if (basename($_SERVER['PHP_SELF']) == 'template_functions.php') { 
-	die('You cannot load this page directly.'); 
-} 
-
-	require_once('basic.php');
 	
-	global $i18n;
 	
-
-
 /*******************************************************
  * @function get_template
  * @param $name - name of template
@@ -73,7 +64,6 @@ function delete_file($uri) {
 /******************************************************/
 
 
-
 /*******************************************************
  * @function check_perms
  * @param $path - path to get file permissions for
@@ -85,7 +75,6 @@ function check_perms($path) {
 	return $configmod;
 } 
 /******************************************************/
-
 
 
 /*******************************************************

@@ -7,104 +7,141 @@
 *
 *****************************************************/
 
-	$LANG = "en_US";
-	require_once('inc/functions.php');
-	$kill = ''; $TIMEZONE = ''; $PASSWD = '';
-	global $i18n;
-	$file = 'user.xml';
-	$path = tsl('../data/other/');
-	if (file_exists($path . $file)) {
-		$data = getXML($path . $file);
-		$USR = stripslashes($data->USR);
-		$PASSWD = $data->PWD;
-		$EMAIL = $data->EMAIL;
-	}
+// Setup inclusions
+$load['plugin'] = true;
+
+// Relative
+$relative = '../';
+
+// Include common.php
+include('inc/common.php');
+
+// Load user.xml
+$file = 'user.xml';
+$path = tsl('../data/other/');
+if (file_exists($path . $file)) 
+{
+	$data = getXML($path . $file);
+	$USR = stripslashes($data->USR);
+	$PASSWD = $data->PWD;
+	$EMAIL = $data->EMAIL;
+}
+
+// If there is a password set, we assume this site is already setup
+if (isset($PASSWD) && $PASSWD != '') { header('Location: index.php'); exit; }
+
+$php_modules = get_loaded_extensions();
+
+// attempt to fix permissions issues
+$dirsArray = array(
+	'../data/', 
+	'../data/other/', 
+	'../data/other/logs/', 
+	'../data/pages/', 
+	'../data/uploads/', 
+	'../data/thumbs/', 
+	'../backups/', 
+	'../backups/other/', 
+	'../backups/pages/',
+	'../backups/zip/' 
+);
+
+foreach ($dirsArray as $dir) 
+{
+	$tmpfile = 'inc/tmp/tmp-403.xml';
 	
-	// If there is a password set, we assume this site is already setup
-	if ($PASSWD != '') { header('Location: index.php'); exit; }
-	
-	$php_modules = get_loaded_extensions();
-	
-	// attempt to fix permissions issues
-	$dirsArray = array(
-		'../data/', 
-		'../data/other/', 
-		'../data/other/logs/', 
-		'../data/pages/', 
-		'../data/uploads/', 
-		'../data/thumbs/', 
-		'../backups/', 
-		'../backups/other/', 
-		'../backups/pages/',
-		'../backups/zip/' 
-	);
-	
-	foreach ($dirsArray as $dir) {
-		$tmpfile = 'inc/tmp/tmp-403.xml';
-		if (file_exists($dir)) {
-			chmod($dir, 0755);
-			$result_755 = copy($tmpfile, $dir .'tmp.tmp');
-			if (!$result_755) {
-				chmod($dir, 0777);
-				$result_777 = copy($tmpfile, $dir .'tmp.tmp');
-				if (!$result_777) {
-					$kill = $i18n['CHMOD_ERROR'];
-				}
-			}
-		} else {
-			mkdir($dir, 0755);
-			$result_755 = copy($tmpfile, $dir .'tmp.tmp');
-			if (!$result_755) {
-				chmod($dir, 0777);
-				$result_777 = copy($tmpfile, $dir .'tmp.tmp');
-				if (!$result_777) {
-					$kill = $i18n['CHMOD_ERROR'];
-				}
+	if (file_exists($dir)) 
+	{
+		chmod($dir, 0755);
+		$result_755 = copy($tmpfile, $dir .'tmp.tmp');
+		
+		if (!$result_755) 
+		{
+			chmod($dir, 0777);
+			$result_777 = copy($tmpfile, $dir .'tmp.tmp');
+			
+			if (!$result_777) 
+			{
+				$kill = $i18n['CHMOD_ERROR'];
 			}
 		}
-		if (file_exists($dir .'tmp.tmp')) {
-			unlink($dir .'tmp.tmp');
+	} 
+	else 
+	{
+		mkdir($dir, 0755);
+		$result_755 = copy($tmpfile, $dir .'tmp.tmp');
+		if (!$result_755) 
+		{
+			chmod($dir, 0777);
+			$result_777 = copy($tmpfile, $dir .'tmp.tmp');
+			
+			if (!$result_777) 
+			{
+				$kill = $i18n['CHMOD_ERROR'];
+			}
 		}
 	}
+	
+	if (file_exists($dir .'tmp.tmp')) 
+	{
+		unlink($dir .'tmp.tmp');
+	}
+}
 
 
-	// get available language files
-	$lang_path = "lang/";
-	$lang_handle = @opendir($lang_path) or die("Unable to open $lang_path");
-	if ($LANG == '') { $LANG = 'en_US'; }
-	while ($lfile = readdir($lang_handle)) {
-		if( is_file($lang_path . $lfile) && $lfile != "." && $lfile != ".." ) {
-			$lang_array[] = basename($lfile, ".php");
-		}
+// get available language files
+$lang_path = "lang/";
+$lang_handle = @opendir($lang_path) or die("Unable to open $lang_path");
+
+if ($LANG == '') { $LANG = 'en_US'; }
+
+while ($lfile = readdir($lang_handle)) 
+{
+	if( is_file($lang_path . $lfile) && $lfile != "." && $lfile != ".." ) 
+	{
+		$lang_array[] = basename($lfile, ".php");
 	}
-	if (count($lang_array) != 0) {
-		sort($lang_array);
-		$count="0"; $sel = ''; $langs = '';
-		foreach ($lang_array as $larray) {
-			if ($LANG == $larray) { $sel="selected";}
-			$langs .= '<option '.@$sel.' value="'.$larray.'" >'.$larray.'</option>';
-			$sel = '';
-			$count++;
-		}
-	} else {
-		$langs = '<option value="" selected="selected" >-- '.$i18n['NONE'].' --</option>';
-	}
+}
+
+if (count($lang_array) != 0) 
+{
+	sort($lang_array);
+	$count="0"; $sel = ''; $langs = '';
 	
-	if (in_arrayi('curl', $php_modules)) {
-		$api_file = '../data/other/authorization.xml';
-		if (! file_exists($api_file)) {
-			$apikey = generate_salt();
-			if ($apikey->status == '6' && $apikey->api_key != '') {
-				$xml = @new SimpleXMLExtended('<item></item>');
-				$note = $xml->addChild('apikey');
-				$note->addCData($apikey->api_key);
-				$xml->asXML($api_file);
-			}
+	foreach ($lang_array as $larray) 
+	{
+		if ($LANG == $larray) { $sel="selected";}
+		
+		$langs .= '<option '.@$sel.' value="'.$larray.'" >'.$larray.'</option>';
+		$sel = '';
+		$count++;
+	}
+} 
+else 
+{
+	$langs = '<option value="" selected="selected" >-- '.$i18n['NONE'].' --</option>';
+}
+
+if (in_arrayi('curl', $php_modules)) 
+{
+	$api_file = '../data/other/authorization.xml';
+	
+	if (! file_exists($api_file)) 
+	{
+		$apikey = generate_salt();
+		
+		if ($apikey->status == '6' && $apikey->api_key != '') 
+		{
+			$xml = @new SimpleXMLExtended('<item></item>');
+			$note = $xml->addChild('apikey');
+			$note->addCData($apikey->api_key);
+			$xml->asXML($api_file);
 		}
 	}
-	
-	$data = @getXML('../data/other/authorization.xml');
-	$APIKEY = $data->apikey;
+}
+
+$data = @getXML('../data/other/authorization.xml');
+$APIKEY = @$data->apikey;
 ?>
 
 <?php get_template('header', $site_full_name.' &raquo; '. $i18n['INSTALLATION']); ?>
@@ -115,7 +152,7 @@
 <div class="wrapper">
 	
 <?php
-	if ($kill != '') {
+	if (@$kill != '') {
 		echo '<div class="error">'. $kill .'</div>';
 	}	
 ?>
@@ -159,7 +196,7 @@
 					echo 'PHP '.$i18n['VERSION'].'</td><td><span class="OKmsg" ><b>'. phpversion().'</b> - '.$i18n['OK'].'</span></td></tr>';
 				}
 				
-				if ($kill == '') {
+				if (@$kill == '') {
 					echo '<tr><td>Folder Permissions</td><td><span class="OKmsg" >'.$i18n['OK'].' - '.$i18n['WRITABLE'].'</span></td></tr>';
 				}	else {
 					echo '<tr><td>Folder Permissions</td><td><span class="ERRmsg" >'.$i18n['ERROR'].' - '.$i18n['NOT_WRITABLE'].'</span></td></tr>';
