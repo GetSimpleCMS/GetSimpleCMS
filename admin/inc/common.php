@@ -146,8 +146,15 @@ if(isset($load['login']) && $load['login']){ 	include('login_functions.php'); }
 if(isset($load['plugin']) && $load['plugin']){ 	include('plugin_functions.php'); }
 
 // Define some constants
-define('GSADMINPATH', get_admin_path());
 define('GSROOTPATH', get_root_path());
+define('GSADMINPATH', get_admin_path());
+define('GSADMININCPATH', get_admin_path(). 'inc/');
+define('GSDATAOTHERPATH', get_root_path(). 'data/other/');
+define('GSDATAPAGESPATH', get_root_path(). 'data/pages/');
+define('GSDATAUPLOADPATH', get_root_path(). 'data/uploads/');
+define('GSBACKUPSPATH', get_root_path(). 'backups/');
+define('GSTHEMEPATH', get_root_path(). 'theme/');
+
 
 // Uncomment & change below to be your specific language for PHP
 # setlocale(LC_ALL, 'xx_XX');
