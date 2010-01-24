@@ -153,7 +153,7 @@ define('GSDATAOTHERPATH', get_root_path(). 'data/other/');
 define('GSDATAPAGESPATH', get_root_path(). 'data/pages/');
 define('GSDATAUPLOADPATH', get_root_path(). 'data/uploads/');
 define('GSBACKUPSPATH', get_root_path(). 'backups/');
-define('GSTHEMEPATH', get_root_path(). 'theme/');
+define('GSTHEMESPATH', get_root_path(). 'theme/');
 
 
 // Uncomment & change below to be your specific language for PHP
