@@ -481,4 +481,41 @@ function generate_salt() {
 /******************************************************/
 
 
+/*******************************************************
+ * @function get_admin_path
+ * @returns path to admin folder
+ *
+*/
+function get_admin_path() {
+  $path = dirname(__FILE__) . '/';
+  $segments = explode('/', $path);
+  foreach($segments as $k => $segment) {
+      if($segment === 'admin') {
+          $new_segments = array_slice($segments, 0, $k+1);
+          break;
+      }
+  }
+  return implode('/', $new_segments) . '/';
+}
+/******************************************************/
+
+
+/*******************************************************
+ * @function get_root_path
+ * @returns path to root install folder
+ *
+*/
+function get_root_path() {
+  $path = dirname(__FILE__) . '/';
+  $segments = explode('/', $path);
+  foreach($segments as $k => $segment) {
+      if($segment === 'admin') {
+          $new_segments = array_slice($segments, 0, $k);
+          break;
+      }
+  }
+  return implode('/', $new_segments) . '/';
+}
+/******************************************************/
+
 ?>

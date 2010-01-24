@@ -10,6 +10,7 @@
 // Define GS
 define('IN_GS', TRUE);
 
+
 // Variable check to prevent debugging going off
 $relative = (isset($relative)) ? $relative : '';
 $admin_relative = (isset($admin_relative)) ? $admin_relative : '';
@@ -143,5 +144,11 @@ else
 // Include other files
 if(isset($load['login']) && $load['login']){ 	include('login_functions.php'); }
 if(isset($load['plugin']) && $load['plugin']){ 	include('plugin_functions.php'); }
+
+// Define some constants
+define('GSADMINPATH', get_admin_path());
+define('GSROOTPATH', get_root_path());
+
+
 
 ?>
