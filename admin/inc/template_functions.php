@@ -487,8 +487,8 @@ function generate_salt() {
  *
 */
 function get_admin_path() {
-  $path = dirname(__FILE__) . '/';
-  $segments = explode('/', $path);
+  $path = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+  $segments = explode(DIRECTORY_SEPARATOR, $path);
   foreach($segments as $k => $segment) {
       if($segment === 'admin') {
           $new_segments = array_slice($segments, 0, $k+1);
@@ -506,15 +506,15 @@ function get_admin_path() {
  *
 */
 function get_root_path() {
-  $path = dirname(__FILE__) . '/';
-  $segments = explode('/', $path);
+  $path = dirname(__FILE__) . DIRECTORY_SEPARATOR ;
+  $segments = explode(DIRECTORY_SEPARATOR , $path);
   foreach($segments as $k => $segment) {
       if($segment === 'admin') {
           $new_segments = array_slice($segments, 0, $k);
           break;
       }
   }
-  return implode('/', $new_segments) . '/';
+  return implode('/' , $new_segments) . '/' ;
 }
 /******************************************************/
 
