@@ -94,37 +94,37 @@ if (count($pagesSorted) != 0)
 		}
 		
 		//create xml file
-		$file = '../sitemap.xml';
+		$file = $relative .'sitemap.xml';
 		exec_action('save-sitemap');
 		$xml->asXML($file);
 	}
 }
 
 // Variables for website
-$spath 		= "../data/other/";
+$spath 		= $relative .'data/other/';
 $sfile 		= "website.xml";
 $data 		= getXML($spath . $sfile);
 $SITEURL 	= $data->SITEURL;
 
-if (file_exists('../sitemap.xml'))
-{
-	if( 200 === ($status=pingGoogleSitemaps($SITEURL.'sitemap.xml')))
-	{
-		$response = $i18n['SITEMAP_CREATED'];
-		header('location: theme.php?success=' . $response);
-		exit;
-	} 
-	else 
-	{
-		$response = $i18n['SITEMAP_ERRORPING'];
-		header('location: theme.php?err=' . $response);
+if (defined('GSPINGSITEMAP')) {
+	if (file_exists($relative .'sitemap.xml') && defined('GSPINGSITEMAP')){
+		if( 200 === ($status=pingGoogleSitemaps($SITEURL.'sitemap.xml')))	{
+			$response = $i18n['SITEMAP_CREATED'];
+			header('location: theme.php?success=' . $response);
+			exit;
+		} else {
+			$response = $i18n['SITEMAP_ERRORPING'];
+			header('location: theme.php?err=' . $response);
+			exit;
+		}
+	} else {
+		$response = $i18n['SITEMAP_ERROR'];
+		header('location: theme.php?err=' . $response);	
 		exit;
 	}
-} 
-else 
-{
-	$response = $i18n['SITEMAP_ERROR'];
-	header('location: theme.php?err=' . $response);	
+} else {
+	$response = $i18n['SITEMAP_ERRORPING'];
+	header('location: theme.php?success=' . $response);
 	exit;
 }
 ?>
