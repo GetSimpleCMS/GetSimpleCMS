@@ -9,7 +9,11 @@
 ?>
 
 <?php if (cookie_check()) { 
-		echo '<ul id="pill"><li class="leftnav"><a href="logout.php" accesskey="l" >'.$i18n['TAB_LOGOUT'].'</a></li><li class="rightnav" ><a href="settings.php#profile">'.$i18n['WELCOME'].' <b>'.$USR.'</b>!</a></li></ul>'; 
+		echo '<ul id="pill"><li class="leftnav"><a href="logout.php" accesskey="l" >'.$i18n['TAB_LOGOUT'].'</a></li>';
+		if (defined('GSDEBUG')) {
+			echo '<li class="debug"><a href="http://get-simple.info/theme-developer-tips" target="_blank">DEBUG MODE</a></li>';
+		}
+		echo '<li class="rightnav" ><a href="settings.php#profile">'.$i18n['WELCOME'].' <b>'.$USR.'</b>!</a></li></ul>'; 
 } ?>
 
 <ul class="nav">

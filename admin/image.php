@@ -20,8 +20,8 @@ include('inc/common.php');
 login_cookie_check();
 
 $src = $_GET['i'];
-$thumb_folder = '../data/thumbs/';
-$src_folder = '../data/uploads/';
+$thumb_folder = $relative.'data/thumbs/';
+$src_folder = $relative.'data/uploads/';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {

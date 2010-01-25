@@ -7,8 +7,37 @@
 *
 *****************************************************/
 
-// Define GS
 define('IN_GS', TRUE);
+
+// Basic functionality
+include('basic.php');
+include('template_functions.php');
+
+// Define some constants
+define('GSROOTPATH', get_root_path());
+define('GSADMINPATH', get_admin_path());
+define('GSADMININCPATH', get_admin_path(). 'inc/');
+define('GSDATAOTHERPATH', get_root_path(). 'data/other/');
+define('GSDATAPAGESPATH', get_root_path(). 'data/pages/');
+define('GSDATAUPLOADPATH', get_root_path(). 'data/uploads/');
+define('GSBACKUPSPATH', get_root_path(). 'backups/');
+define('GSTHEMESPATH', get_root_path(). 'theme/');
+
+if (file_exists(GSROOTPATH . 'gsconfig.php')) {
+	include(GSROOTPATH . 'gsconfig.php');
+}
+
+// Debugging
+if (defined('GSDEBUG')){
+	error_reporting(E_ALL | E_STRICT);
+	ini_set('display_errors', 1);
+} else {
+	error_reporting(0);
+	@ini_set('display_errors', 0);
+}
+
+ini_set('log_errors', 1);
+ini_set('error_log', $relative . 'data/other/logs/errorlog.txt');
 
 
 // Variable check to prevent debugging going off
@@ -18,23 +47,8 @@ $lang_relative = (isset($lang_relative)) ? $lang_relative : '';
 $load['login'] = (isset($load['login'])) ? $load['login'] : '';
 $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
 
-// Debugging
-if (file_exists($relative . 'data/other/debug.xml'))
-{
-	error_reporting(E_ALL | E_STRICT);
-	ini_set('display_errors', 1);
-} 
-else 
-{
-	error_reporting(0);
-	@ini_set('display_errors', 0);
-}
 
-ini_set('log_errors', 1);
-ini_set('error_log', $relative . 'data/other/logs/errorlog.txt');
 
-// Basic functionality
-include('basic.php');
 
 // Website Data
 if (file_exists($relative . 'data/other/website.xml')) {
@@ -101,14 +115,10 @@ else
 global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR;
 
 // Check for main
-if(!isset($base))
-{
+if(!isset($base)) {
 	// Admin base files
 	include('cookie_functions.php');
 }
-
-// Template functions
-include('template_functions.php');
 
 // Check if site is installed?
 if (get_filename_id() != 'install' && get_filename_id() != 'setup')
@@ -144,20 +154,6 @@ else
 // Include other files
 if(isset($load['login']) && $load['login']){ 	include('login_functions.php'); }
 if(isset($load['plugin']) && $load['plugin']){ 	include('plugin_functions.php'); }
-
-// Define some constants
-define('GSROOTPATH', get_root_path());
-define('GSADMINPATH', get_admin_path());
-define('GSADMININCPATH', get_admin_path(). 'inc/');
-define('GSDATAOTHERPATH', get_root_path(). 'data/other/');
-define('GSDATAPAGESPATH', get_root_path(). 'data/pages/');
-define('GSDATAUPLOADPATH', get_root_path(). 'data/uploads/');
-define('GSBACKUPSPATH', get_root_path(). 'backups/');
-define('GSTHEMESPATH', get_root_path(). 'theme/');
-
-
-// Uncomment & change below to be your specific language for PHP
-# setlocale(LC_ALL, 'xx_XX');
 
 
 ?>

@@ -16,19 +16,6 @@ $relative = '../';
 // Include common.php
 include('inc/common.php');
 
-
-		//disable or enable error reporting
-		if (file_exists($relative. 'data/other/debug.xml')) 
-		{
-			error_reporting(E_ALL | E_STRICT);
-			ini_set('display_errors', 1);
-		} 
-		else 
-		{
-			error_reporting(0);
-			@ini_set('display_errors', 0);
-		}
-		
 		require_once('inc/zip.class.php');
 		
 		$zipfile = new zipfile();

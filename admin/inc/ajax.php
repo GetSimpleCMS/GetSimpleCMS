@@ -1,12 +1,13 @@
 <?php
-//disable or enable error reporting
-if (file_exists('../../data/other/debug.xml'))
-{
+if (file_exists('../../gsconfig.php')) {
+	include('../../gsconfig.php');
+}
+
+// Debugging
+if (defined('GSDEBUG')){
 	error_reporting(E_ALL | E_STRICT);
 	ini_set('display_errors', 1);
-} 
-else 
-{
+} else {
 	error_reporting(0);
 	@ini_set('display_errors', 0);
 }

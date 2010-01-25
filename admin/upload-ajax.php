@@ -8,6 +8,12 @@ $relative = '../';
 
 // Include common.php
 include('inc/common.php');
+
+if (!defined('GSIMAGEWIDTH')) {
+	$width = 200; //New width of image  	
+} else {
+	$width = GSIMAGEWIDTH;
+}
 	
 if ($SESSIONHASH == $_REQUEST['sessionHash'])
 {
@@ -41,8 +47,7 @@ if ($SESSIONHASH == $_REQUEST['sessionHash'])
 			        exit;
 			    break;
 			}
-			
-			$width = 200; //New width of image    
+			  
 			$height = $imgsize[1]/$imgsize[0]*$width; //This maintains proportions
 			
 			$src_w = $imgsize[0];
