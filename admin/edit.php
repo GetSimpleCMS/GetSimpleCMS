@@ -266,7 +266,22 @@ if ($menu == '') { $menu = @$title; }
 			?></small>
 		</form>
 		
-
+		<?php 
+			if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
+			if (defined('GSEDITORLANG')) { $EDLANG = GSEDITORLANG; } else {	$EDLANG = 'en'; }
+			if (defined('GSEDITORTOOL')) { $EDTOOL = GSEDITORTOOL; } else {	$EDTOOL = 'basic'; }
+			
+			
+			if ($EDTOOL == 'advanced') {
+				$toolbar = "
+						['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'RemoveFormat', 'Source'],
+	          '/',
+	          ['Styles','Format','Font','FontSize']
+	      ";
+			} else {
+				$toolbar = "['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'RemoveFormat', 'Source']";
+			}
+		?>
 		<?php if ($HTMLEDITOR != '') { ?>
 		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 
@@ -275,17 +290,15 @@ if ($menu == '') { $menu = @$title; }
 				var editor = CKEDITOR.replace( 'post-content', {
 	        skin : 'getsimple',
 	        forcePasteAsPlainText : true,
-	        language : 'en',
-	        defaultLanguage : 'en',
+	        language : '<?php echo $EDLANG; ?>',
+	        defaultLanguage : '<?php echo $EDLANG; ?>',
 	        entities : true,
 	        uiColor : '#FFFFFF',
-					height: '500px',	
-	        toolbar :
+					height: '<?php echo $EDHEIGHT; ?>',	
+	        toolbar : 
 	        [
-	          ['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'RemoveFormat', 'Source'],
-	          '/',
-	          ['Styles','Format','Font','FontSize']
-	        ]
+	        	<?php echo $toolbar; ?>
+					]
 	        //filebrowserBrowseUrl : '/browser/browse.php',
 	        //filebrowserImageBrowseUrl : '/browser/browse.php?type=Images',
 	        //filebrowserWindowWidth : '640',
