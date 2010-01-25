@@ -12,7 +12,10 @@
 define('GSIMAGEWIDTH', '200');
 
 # Ping search engines upon sitemap generation?
-define('GSPINGSITEMAP', TRUE);
+#define('GSDONOTPING', 1);
+
+# Use Uploadify to upload files?
+#define('GSNOUPLOADIFY', 1);
 
 # WYSIWYG editor height (default 500)
 #define('GSEDITORHEIGHT', '400');
