@@ -1,9 +1,14 @@
 <?php
 
 /*
- * Config file for GetSimple
+ * Configuration file for GetSimple
  * @since 2.0
  */
+
+if (basename($_SERVER['PHP_SELF']) == 'gsconfig.php') { 
+	die('You cannot load this page directly.');
+}; 
+
 
 # Turn on debug mode
 #define('GSDEBUG', TRUE);
@@ -25,6 +30,9 @@ define('GSIMAGEWIDTH', '200');
 
 # WYSIWYG editor language (default en)
 #define('GSEDITORLANG', 'en');
+
+# Turn off auto-generation of SALT and use a custom value
+#define('GSUSECUSTOMSALT', 'your_new_salt_value_here');
 
 # Set PHP locale
 # http://php.net/manual/en/function.setlocale.php

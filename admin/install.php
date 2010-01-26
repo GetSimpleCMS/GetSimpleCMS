@@ -122,26 +122,30 @@ else
 	$langs = '<option value="" selected="selected" >-- '.$i18n['NONE'].' --</option>';
 }
 
-if (in_arrayi('curl', $php_modules)) 
-{
-	$api_file = '../data/other/authorization.xml';
-	
-	if (! file_exists($api_file)) 
-	{
-		$apikey = generate_salt();
-		
-		if ($apikey->status == '6' && $apikey->api_key != '') 
-		{
-			$xml = @new SimpleXMLExtended('<item></item>');
-			$note = $xml->addChild('apikey');
-			$note->addCData($apikey->api_key);
-			$xml->asXML($api_file);
+# salt value generation
+$api_file = $relative. 'data/other/authorization.xml';
+
+if (! file_exists($api_file)) {
+	if (defined('GSUSECUSTOMSALT')) {
+		$saltval = md5(GSUSECUSTOMSALT);
+	} else {
+		if (in_arrayi('curl', $php_modules)) {
+			$apikey = generate_salt();
+			if ($apikey->status == '6' && $apikey->api_key != '') {
+				$saltval = $apikey->api_key;
+			}
 		}
 	}
+	$xml = @new SimpleXMLExtended('<item></item>');
+	$note = $xml->addChild('apikey');
+	$note->addCData($saltval);
+	$xml->asXML($api_file);
 }
 
-$data = @getXML('../data/other/authorization.xml');
+# get salt value
+$data = @getXML($api_file);
 $APIKEY = @$data->apikey;
+
 ?>
 
 <?php get_template('header', $site_full_name.' &raquo; '. $i18n['INSTALLATION']); ?>
