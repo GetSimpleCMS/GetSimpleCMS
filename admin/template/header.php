@@ -20,7 +20,7 @@ $LANG = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	<title><?php echo $title ?></title>
 	
 	<!-- Javascript -->
-	<script type="text/javascript" src="template/js/jquery-1.4.min.js"></script>
+	<script type="text/javascript" src="template/js/jquery-1.4.1.min.js"></script>
 	<script type="text/javascript" src="template/js/uploadify/swfobject.js"></script>
 	<script type="text/javascript" src="template/js/uploadify/jquery.uploadify.js"></script>
 	<script type="text/javascript" src="template/js/facybox/jquery.facybox.js"></script>
