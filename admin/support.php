@@ -81,8 +81,11 @@ if ($FOUR04MONITOR != '' ) { $four04chck = 'checked'; }
 <div class="bodycontent">
 	
 	<div id="maincontent">
-
-		<div class="main">		
+<?php 
+		if (isset($_GET['plugin']) && isset($_GET['page'])) { 
+			include "plugins/".$_GET['plugin']."/".$_GET['page'].".php";
+		} else { ?>	
+		<div class="main">	
 		<form class="largeform" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" >
 		<h3><?php echo $i18n['SUPPORT'];?> <?php echo $i18n['SETTINGS'];?></h3>
 		<p><input name="fouro4monitoring" type="checkbox" value="1" <?php echo $four04chck; ?>  /> &nbsp;<?php echo $i18n['EMAIL_ON_404'];?>.</p>
@@ -109,6 +112,7 @@ if ($FOUR04MONITOR != '' ) { $four04chck = 'checked'; }
 			<?php } ?>
 		</ol>
 		</div>
+		<?php } ?>
 	</div>
 
 

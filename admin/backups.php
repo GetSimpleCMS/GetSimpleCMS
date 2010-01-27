@@ -90,12 +90,17 @@ if (count($pagesSorted) != 0)
 	
 	<div id="maincontent">
 		<div class="main" >
+		<?php 
+		if (isset($_GET['plugin']) && isset($_GET['page'])) { 
+			include "plugins/".$_GET['plugin']."/".$_GET['page'].".php";
+		} else { ?>
 			<label><?php echo $i18n['PAGE_BACKUPS'];?></label>
 			<div class="edit-nav" ><a href="backups.php?deleteall" title="<?php echo $i18n['DELETE_ALL_BAK'];?>" accesskey="d" ><?php echo $i18n['ASK_DELETE_ALL'];?></a><div class="clear" ></div></div>
 			<table class="highlight paginate">
 				<?php echo $table; ?>
 			</table>
 			<p><em><b><?php echo $counter; ?></b> <?php echo $i18n['TOTAL_BACKUPS'];?></em></p>
+			<?php } ?>
 		</div>
 	</div>
 	

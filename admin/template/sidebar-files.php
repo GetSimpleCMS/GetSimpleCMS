@@ -1,5 +1,5 @@
 <ul class="snav">
-	<li><a href="upload.php" <?php if(get_filename_id()==='upload') {echo 'class="current"'; } ?>><?php echo $i18n['FILE_MANAGEMENT'];?></a></li>
+	<li><a href="upload.php" <?php check_menu('upload');  ?>><?php echo $i18n['FILE_MANAGEMENT'];?></a></li>
 	<?php if(@$_GET['i'] != '') { ?><li><a href="#" class="current">Image Control Panel</a></li><?php } ?>
 	
 	<?php exec_action("files-sidebar"); ?>

@@ -105,7 +105,7 @@ function createSideMenu($plugin,$page,$txt)
 		$class="class='current'";
 	}
 	
-	echo "<li><a href='plugins.php?plugin=".$plugin."&page=".$page."' ".$class." >";
+	echo "<li><a href='".$_PHP_SELF."?plugin=".$plugin."&page=".$page."' ".$class." >";
 	echo $txt;
 	echo "</a></li>";
 }

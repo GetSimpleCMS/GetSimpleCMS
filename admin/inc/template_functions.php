@@ -502,7 +502,7 @@ function get_admin_path() {
 
 /*******************************************************
  * @function get_root_path
- * @returns path to root install folder
+ * @return path to root install folder
  *
 */
 function get_root_path() {
@@ -517,5 +517,21 @@ function get_root_path() {
   return implode('/' , $new_segments) . '/' ;
 }
 /******************************************************/
+
+
+/*******************************************************
+ * @function check_menu
+ * @param $text - text to check
+ * @return echos class='current' if current filename==$txt
+ *
+*/
+function check_menu($text) {
+	if(get_filename_id()===$text && $_GET['plugin']==""){
+		echo 'class="current"';
+	}
+}
+
+
+
 
 ?>

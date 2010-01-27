@@ -208,6 +208,10 @@ else
 	<div id="maincontent">
 		<form class="largeform" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" accept-charset="utf-8" >
 		<div class="main">
+		<?php 
+		if (isset($_GET['plugin']) && isset($_GET['page'])) { 
+			include "plugins/".$_GET['plugin']."/".$_GET['page'].".php";
+		} else { ?>	
 		<h3><?php echo $i18n['WEBSITE_SETTINGS'];?></h3>
 
 		<p><b><?php echo $i18n['LABEL_WEBSITE'];?>:</b><br /><input class="text" name="sitename" type="text" value="<?php if(isset($SITENAME1)) { echo cl($SITENAME1); } else { echo cl($SITENAME); } ?>" /></p>
@@ -249,6 +253,7 @@ else
 		<?php exec_action('settings-user-extras'); ?>
 		<p><input class="submit" type="submit" name="submitted" value="<?php echo $i18n['BTN_SAVESETTINGS'];?>" /></p>
 	</form>
+	<?php } ?>
 </div>
 	</div>
 
