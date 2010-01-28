@@ -41,8 +41,8 @@ global $plugin_info;
 		<div class="main">
 
 		<?php 
-			//print_r($plugin_info[$plugin_id]);
-			call_user_func_array($plugin_info[$plugin_id]['load_data'],''); 
+			print_r($plugin_info[$plugin_id]);
+			call_user_func_array($plugin_info[$plugin_id]['load_data'],array()); 
 		?>
 
 		</div>
