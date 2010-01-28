@@ -28,6 +28,7 @@ if (get_filename_id() == 'load') {
 	<li><a class="files" href="upload.php" accesskey="f" ><?php echo $i18n['TAB_FILES'];?></a></li>
 	<li><a class="theme" href="theme.php" accesskey="t" ><?php echo $i18n['TAB_THEME'];?></a></li>
 	<li><a class="backups" href="backups.php" accesskey="b" ><?php echo $i18n['TAB_BACKUPS'];?></a></li>
+	<li><a class="plugins" href="plugins.php" ><?php echo $i18n['PLUGINS_NAV'];?></a></li>
 	
 	<?php exec_action('nav-tab');	?>
 	

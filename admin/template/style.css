@@ -333,6 +333,14 @@ table td a {font-weight:normal !important;}
 	border:1px solid #c3c3c3;
 	margin:0 0 30px 0;
 }
+#maincontent .main pre {
+	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; 
+	line-height:18px;
+	font-size:12px;
+	display:block;
+}
+
+
 form p {margin:0 0 10px 0;}
 form input.text, form select.text {
 	color:#333;

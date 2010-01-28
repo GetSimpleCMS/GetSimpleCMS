@@ -52,13 +52,6 @@ foreach ($pluginfiles as $fi)
 	<div id="maincontent">
 		<div class="main" >
 			
-		<?php 
-		
-		if (isset($_GET['plugin']) && isset($_GET['page'])) { 
-			$pluginname = $_GET['plugin'];
-			$page = $_GET['page'];
-			include "plugins/".$pluginname."/".$page.".php";
-		} else { ?>
 		<h3><?php echo $i18n['PLUGINS_MANAGEMENT']; ?></h3>
 		
 		<table class="edittable highlight paginate">
@@ -66,9 +59,6 @@ foreach ($pluginfiles as $fi)
 			
 		</table>
 		<p><em><b><?php echo $counter; ?></b> <?php echo $i18n['PLUGINS_INSTALLED']; ?></em></p>
-		<?php 
-		}
-		?>	
 			
 		</div>
 	</div>
