@@ -86,10 +86,6 @@ while ($file = readdir($themes_handle))
 	
 	<div id="maincontent">
 		<div class="main">
-		<?php 
-		if (isset($_GET['plugin']) && isset($_GET['page'])) { 
-			include "plugins/".$_GET['plugin']."/".$_GET['page'].".php";
-		} else { ?>
 		<h3><?php echo $i18n['CHOOSE_THEME'];?></h3>
 		<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" accept-charset="utf-8" >
 		<p style="display:none" id="waiting" ><?php echo $i18n['SITEMAP_WAIT'];?></p>
@@ -111,7 +107,6 @@ while ($file = readdir($themes_handle))
 			echo ' alt="'.$i18n['THEME_SCREENSHOT'].'" /></p>';
 			
 			exec_action('theme-extras');
-		}
 		?>
 			
 		</div>

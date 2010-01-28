@@ -526,7 +526,7 @@ function get_root_path() {
  *
 */
 function check_menu($text) {
-	if(get_filename_id()===$text && $_GET['plugin']==""){
+	if(get_filename_id()===$text){
 		echo 'class="current"';
 	}
 }

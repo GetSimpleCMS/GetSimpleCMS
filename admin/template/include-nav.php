@@ -14,18 +14,22 @@
 			echo '<li class="debug"><a href="http://get-simple.info/theme-developer-tips" target="_blank">DEBUG MODE</a></li>';
 		}
 		echo '<li class="rightnav" ><a href="settings.php#profile">'.$i18n['WELCOME'].' <b>'.$USR.'</b>!</a></li></ul>'; 
-} ?>
+} 
 
-<ul class="nav">
+//determine page type if plugin is being shown
+if (get_filename_id() == 'load') {
+	$plugin_class = $plugin_info[$plugin_id]['page_type'];
+}
+
+?>
+
+<ul class="nav <?php echo @$plugin_class; ?>">
 	<li><a class="pages" href="pages.php" accesskey="p" ><?php echo $i18n['TAB_PAGES'];?></a></li>
 	<li><a class="files" href="upload.php" accesskey="f" ><?php echo $i18n['TAB_FILES'];?></a></li>
 	<li><a class="theme" href="theme.php" accesskey="t" ><?php echo $i18n['TAB_THEME'];?></a></li>
 	<li><a class="backups" href="backups.php" accesskey="b" ><?php echo $i18n['TAB_BACKUPS'];?></a></li>
 	
-	<?php 
-	exec_action('nav-tab');
-	?>
-	
+	<?php exec_action('nav-tab');	?>
 	
 	<li><img class="toggle" id="loader" src="template/images/ajax.gif" alt=""/></li>
 	<li class="rightnav" ><a class="settings first" href="settings.php" accesskey="s" ><?php echo $i18n['TAB_SETTINGS'];?></a></li>
@@ -35,5 +39,4 @@
 </div>
 </div>
 	
-</ul>
 <div class="wrapper">

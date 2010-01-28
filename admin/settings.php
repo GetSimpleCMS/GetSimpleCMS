@@ -206,10 +206,6 @@ else
 <div class="bodycontent">
 	
 	<div id="maincontent">
-	<?php 
-		if (isset($_GET['plugin']) && isset($_GET['page'])) { 
-			include "plugins/".$_GET['plugin']."/".$_GET['page'].".php";
-		} else { ?>	
 		<form class="largeform" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" accept-charset="utf-8" >
 		<div class="main">
 		<h3><?php echo $i18n['WEBSITE_SETTINGS'];?></h3>
@@ -254,7 +250,6 @@ else
 		<p><input class="submit" type="submit" name="submitted" value="<?php echo $i18n['BTN_SAVESETTINGS'];?>" /></p>
 	</form>
 	</div>
-	<?php } ?>
 	</div>
 
 

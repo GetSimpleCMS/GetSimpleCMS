@@ -144,13 +144,6 @@ $theme_templates .= "</select></span>";
 		
 		
 		<div class="main">
-			<?php 
-		
-		if (isset($_GET['plugin']) && isset($_GET['page'])) { 
-			$pluginname = $_GET['plugin'];
-			$page = $_GET['page'];
-			include "plugins/".$pluginname."/".$page.".php";
-		} else { ?>
 		<h3><?php echo $i18n['EDIT_THEME']; ?></h3>
 		<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="get" accept-charset="utf-8" >
 		<p><?php echo $theme_options; ?><?php echo $theme_templates; ?>&nbsp;&nbsp;&nbsp;<input class="submit" type="submit" name="s" value="<?php echo $i18n['EDIT']; ?>" /></p>
@@ -165,7 +158,6 @@ $theme_templates .= "</select></span>";
 			<?php exec_action('theme-edit-extras'); ?>
 			<p><input class="submit" type="submit" name="submitsave" value="<?php echo $i18n['BTN_SAVECHANGES']; ?>" /> &nbsp;&nbsp;<?php echo $i18n['OR']; ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php echo $i18n['CANCEL']; ?></a></p>
 		</form>
-		<?php } ?>
 		</div>
 	
 	</div>

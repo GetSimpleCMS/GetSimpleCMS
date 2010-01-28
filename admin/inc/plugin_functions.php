@@ -74,14 +74,11 @@ function add_action($hook_name, $added_funcion, $args = null)
  * @param $a - name of Hook 
  *
 */
-function exec_action($a) 
-{
+function exec_action($a) {
 	global $plugins;
 	
-	foreach ($plugins as $hook) 
-	{
-		if ($hook['hook'] == $a) 
-		{
+	foreach ($plugins as $hook)	{
+		if ($hook['hook'] == $a) {
 			call_user_func_array($hook['function'], $hook['args']);
 			// http://us3.php.net/call_user_func_array
 		}
@@ -96,18 +93,13 @@ function exec_action($a)
  * @param $txt     - text to display on link 
  *
 */
-function createSideMenu($plugin,$page,$txt)
-{
+function createSideMenu($id,$txt){
 	$class="";
-	
-	if($_GET['plugin']==$plugin) 
-	{
-		$class="class='current'";
+	if ($_GET['id'] == $id) {
+		$class='class="current"';
 	}
-	
-	echo "<li><a href='".$_PHP_SELF."?plugin=".$plugin."&page=".$page."' ".$class." >";
-	echo $txt;
-	echo "</a></li>";
+
+	echo '<li><a href="load.php?id='.$id.'" '.$class.' >'.$txt.'</a></li>';
 }
 
 /*******************************************************
@@ -115,10 +107,28 @@ function createSideMenu($plugin,$page,$txt)
  * @param $url - URL for link
  * @param $txt - text to display on link
 */
-function createNavTab($url,$txt)
-{
+function createNavTab($url,$txt) {
 	echo "<li><a href='".$url."' class='plugins' />";
 	echo $txt;
 	echo "</a></li>";
 }
+
+
+
+function register_plugin($id, $name, $ver, $auth, $auth_url, $desc, $type, $loaddata) {
+	global $plugin_info;
+	
+	$plugin_info[$id] = array(
+	  'name' => $name,
+	  'version' => $ver,
+	  'author' => $auth,
+	  'author_url' => $auth_url,
+	  'description' => $desc,
+	  'page_type' => $type,
+	  'load_data' => $loaddata
+	);
+
+}
+
+
 ?>

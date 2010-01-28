@@ -31,9 +31,9 @@ foreach ($pluginfiles as $fi)
 	if ($pathExt=="php")
 	{
 		$table .= '<tr id="tr-'.$counter.'" >';
-		$table .= '<td><b>'.$plugin_info[$pathName]['pi_name'] .'</b></td>';
-		$table .= '<td><span>'.$plugin_info[$pathName]['pi_description'] .'<br />';
-		$table .= $i18n['PLUGIN_VER'] .' '. $plugin_info[$pathName]['pi_version'].' &nbsp;|&nbsp; By <a href="'.$plugin_info[$pathName]['pi_author_url'].'" target="_blank">'.$plugin_info[$pathName]['pi_author'].'</a></span></td>';
+		$table .= '<td><b>'.$plugin_info[$pathName]['name'] .'</b></td>';
+		$table .= '<td><span>'.$plugin_info[$pathName]['description'] .'<br />';
+		$table .= $i18n['PLUGIN_VER'] .' '. $plugin_info[$pathName]['version'].' &nbsp;|&nbsp; By <a href="'.$plugin_info[$pathName]['author_url'].'" target="_blank">'.$plugin_info[$pathName]['author'].'</a></span></td>';
 		$table .= "</tr>\n";
 		$counter++;
 	}	

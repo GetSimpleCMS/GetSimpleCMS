@@ -52,10 +52,6 @@ if(isset($_GET['done'])) {
 	
 	<div id="maincontent">
 		<div class="main" >
-		<?php 
-		if (isset($_GET['plugin']) && isset($_GET['page'])) { 
-			include "plugins/".$_GET['plugin']."/".$_GET['page'].".php";
-		} else { ?>
 		<label><?php echo $i18n['WEBSITE_ARCHIVES'];?></label>
 		<div class="edit-nav" >
 		<a id="waittrigger" href="archive.php?do" accesskey="c" title="<?php echo $i18n['CREATE_NEW_ARC'];?>" ><?php echo $i18n['ASK_CREATE_ARC'];?></a>
@@ -90,7 +86,6 @@ if(isset($_GET['done'])) {
 		?>
 		</table>
 		<p><em><b><?php echo $count; ?></b> <?php echo $i18n['TOTAL_ARCHIVES'];?></em></p>
-		<?php } ?>
 		</div>
 	</div>
 	

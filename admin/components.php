@@ -130,10 +130,6 @@ if($count > 3)
 	
 	<div id="maincontent">
 	<div class="main">
-	<?php 
-		if (isset($_GET['plugin']) && isset($_GET['page'])) { 
-			include "plugins/".$_GET['plugin']."/".$_GET['page'].".php";
-		} else { ?>
 	<label><?php echo $i18n['EDIT'];?> <?php echo $i18n['COMPONENTS'];?></label>
 	<div class="edit-nav" >
 		<a href="#" id="addcomponent" accesskey="a" ><?php echo $i18n['ADD_COMPONENT'];?></a>
@@ -150,7 +146,6 @@ if($count > 3)
 		<?php echo $table; ?>
 		<p><input type="submit" class="submit" name="submitted" id="button" value="<?php echo $i18n['SAVE_COMPONENTS'];?>" /> &nbsp;&nbsp;<?php echo $i18n['OR']; ?>&nbsp;&nbsp; <a class="cancel" href="components.php?cancel"><?php echo $i18n['CANCEL']; ?></a></p>
 	</form>
-	<?php } ?>
 	</div>
 	</div>
 	

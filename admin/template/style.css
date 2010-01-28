@@ -73,7 +73,14 @@ html {
 	#log .wrapper .nav li a.support,
 	#health-check .wrapper .nav li a.support,
 	#backup-edit .wrapper .nav li a.backups,
-	#archive .wrapper .nav li a.backups {
+	#archive .wrapper .nav li a.backups, 
+	#load .wrapper .pages li a.pages,
+	#load .wrapper .plugins li a.plugins,
+	#load .wrapper .settings li a.settings,
+	#load .wrapper .theme li a.theme,
+	#load .wrapper .files li a.files,
+	#load .wrapper .backups li a.backups,
+	#load	.wrapper .support li a.support {
 		color:#182227;
 		background:#f9f9f9;
 		font-weight:bold !important;
