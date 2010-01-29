@@ -89,7 +89,7 @@ function exec_action($a) {
 */
 function createSideMenu($id,$txt){
 	$class="";
-	if ($_GET['id'] == $id) {
+	if (@$_GET['id'] == @$id) {
 		$class='class="current"';
 	}
 

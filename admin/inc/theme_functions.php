@@ -19,7 +19,9 @@ $PRETTYURLS = $datac->PRETTYURLS;
 	
 	function get_page_content() {
 		global $content;
+		exec_action('content-top');
 		echo stripslashes(htmlspecialchars_decode($content, ENT_QUOTES));
+		exec_action('content-bottom');
 	}
 
 	function get_page_meta_keywords() {
@@ -35,6 +37,11 @@ $PRETTYURLS = $datac->PRETTYURLS;
 	function get_page_title() {
 		global $title;
 		echo stripslashes(htmlspecialchars_decode($title, ENT_QUOTES));
+	}
+	
+	function return_page_title() {
+		global $title;
+		return stripslashes(htmlspecialchars_decode($title, ENT_QUOTES));
 	}
 	
 	function get_page_clean_title() {
@@ -129,6 +136,9 @@ $PRETTYURLS = $datac->PRETTYURLS;
 		echo '	<meta name="keywords" content="'.$keywords.'" />'."\n";
 		echo '	<link rel="canonical" href="'. get_page_url(true) .'" />'."\n";
 		echo '	<meta name="generator" content="'. $site_full_name .' - '. $site_version_no .'" />'."\n";
+		
+		exec_action('theme-head');
+	
 	}
 	
 	function get_site_url() {

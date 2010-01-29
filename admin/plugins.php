@@ -20,7 +20,8 @@ include('inc/common.php');
 login_cookie_check();
 $path = tsl('plugins');
 $counter = '0';
-$table = '<tr class="head"><th width="25%" >'.$i18n['PLUGIN_NAME'].'</th><th>'.$i18n['PLUGIN_DESC'].'</th></tr>' . "\n";
+$table = '';
+#$table = '<tr class="head"><th width="25%" >'.$i18n['PLUGIN_NAME'].'</th><th>'.$i18n['PLUGIN_DESC'].'</th></tr>' . "\n";
 
 $pluginfiles = getFiles($path);
 foreach ($pluginfiles as $fi)
@@ -31,7 +32,7 @@ foreach ($pluginfiles as $fi)
 	if ($pathExt=="php")
 	{
 		$table .= '<tr id="tr-'.$counter.'" >';
-		$table .= '<td><b>'.$plugin_info[$pathName]['name'] .'</b></td>';
+		$table .= '<td width="25%" ><b>'.$plugin_info[$pathName]['name'] .'</b></td>';
 		$table .= '<td><span>'.$plugin_info[$pathName]['description'] .'<br />';
 		$table .= $i18n['PLUGIN_VER'] .' '. $plugin_info[$pathName]['version'].' &nbsp;|&nbsp; By <a href="'.$plugin_info[$pathName]['author_url'].'" target="_blank">'.$plugin_info[$pathName]['author'].'</a></span></td>';
 		$table .= "</tr>\n";
