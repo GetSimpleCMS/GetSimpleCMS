@@ -32,6 +32,7 @@ include('inc/common.php');
 	<div id="maincontent">
 		<div class="main" >
 	<h3><?php echo $i18n['CONTROL_PANEL']; ?> <?php echo $i18n['LOGIN']; ?></h3>
+	<?php exec_action('index-login'); ?>
 	<form class="login" action="<?php echo $cookie_login; ?>" method="post">
 		<p><b><?php echo $i18n['USERNAME']; ?>:</b><br /><input type="text" class="text" id="userid" name="userid" /></p>
 		<p><b><?php echo $i18n['PASSWORD']; ?>:</b><br /><input type="password" class="text" id="pwd" name="pwd" /></p>

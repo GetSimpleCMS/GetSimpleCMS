@@ -137,10 +137,14 @@ $PRETTYURLS = $datac->PRETTYURLS;
 		echo '	<link rel="canonical" href="'. get_page_url(true) .'" />'."\n";
 		echo '	<meta name="generator" content="'. $site_full_name .' - '. $site_version_no .'" />'."\n";
 		
-		exec_action('theme-head');
+		exec_action('theme-header');
 	
 	}
-	
+
+	function get_footer() {
+		exec_action('theme-footer');
+	}
+
 	function get_site_url() {
 		global $SITEURL;
 		echo $SITEURL;

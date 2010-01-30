@@ -107,7 +107,7 @@ $data 		= getXML($spath . $sfile);
 $SITEURL 	= $data->SITEURL;
 
 if (!defined('GSDONOTPING')) {
-	if (file_exists($relative .'sitemap.xml') && defined('GSPINGSITEMAP')){
+	if (file_exists($relative .'sitemap.xml')){
 		if( 200 === ($status=pingGoogleSitemaps($SITEURL.'sitemap.xml')))	{
 			$response = $i18n['SITEMAP_CREATED'];
 			header('location: theme.php?success=' . $response);
