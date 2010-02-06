@@ -92,12 +92,7 @@ elseif ($p == 'restore')
 		<tr><td><b><?php echo $i18n['BACKUP_OF'];?>:</b></td><td>
 			<?php 
 			if(isset($uri)) {
-				if ($PRETTYURLS == '1') { 
-					if ($parent != '') { $parent = tsl($parent); }  
-					echo '<a target="_blank" href="'. $SITEURL . @$parent . $uri .'">'. $SITEURL . @$parent . $uri .'</a>'; 
-				} else {
-					echo '<a target="_blank" href="'. $SITEURL .'index.php?id='.$uri.'">'. $SITEURL .'index.php?id='.$uri.'</a>'; 
-				}
+					echo '<a target="_blank" href="'. find_url($url, $parent) .'">'. find_url($url, $parent) .'</a>'; 
 			} 
 			?>
 			

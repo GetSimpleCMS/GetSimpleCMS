@@ -168,12 +168,7 @@ if ($menu == '') { $menu = @$title; }
 		<div class="edit-nav" >
 			<?php 
 			if( (isset($uri)) && ($private != 'Y' )) {
-				if ($PRETTYURLS == '1') {
-					if ($parent != '') {$parent = tsl($parent);}
-					echo '<a href="'. $SITEURL . @$parent . $uri .'" target="_blank" accesskey="v" >'.$i18n['VIEW'].'</a>'; 
-				} else {
-					echo '<a href="'. $SITEURL .'index.php?id='.$uri.'" target="_blank" accesskey="v" >'.$i18n['VIEW'].'</a>'; 
-				}
+				echo '<a href="'. find_url($url, $parent) .'" target="_blank" accesskey="v" >'.$i18n['VIEW'].'</a>'; 
 			} 
 			?>
 			<a href="#" id="metadata_toggle" accesskey="o" ><?php echo $i18n['PAGE_OPTIONS']; ?></a>

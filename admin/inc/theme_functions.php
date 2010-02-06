@@ -70,31 +70,17 @@ $PRETTYURLS = $datac->PRETTYURLS;
 		echo date($i, strtotime($date));
 	}
 	
+
 	function get_page_url($a=false) {
 		global $url;
 		global $SITEURL;
 		global $PRETTYURLS;
 		global $parent;
-		if ($parent != '' ) { $parent = tsl($parent); } 
-		if ($url == 'index' ) { $urls = ''; } else { $urls = $url; }
-		
-		if ($PRETTYURLS == '1') {
-			if (!$a) {
-				echo $SITEURL . $parent . $urls;
-			} else {
-				return $SITEURL . $parent . $urls;
-			}
+
+		if (!$a) {
+			echo find_url($url, $parent);
 		} else {
-			if (!$a) {
-				if ($urls != '') {
-					$inter = 'index.php?id=';
-				} else {
-					$inter = '';
-				}
-				echo $SITEURL . $inter . $urls; 
-				} else {
-				return $SITEURL . $inter . $urls;
-			}
+			return find_url($url, $parent);
 		}
 		
 	}
@@ -227,13 +213,7 @@ function menu_data($id = null,$xml=false) {
                     $private = (string)$page['private'];
 										$pubDate = (string)$page['pubDate'];
                     
-                    if ($PRETTYURLS == '1') {
-                        if ($parent != '') {$parent = tsl($parent); } 
-                        if ($slug == 'index' ) { $slugs = ''; } else { $slugs = $slug; } 
-                        $url = $SITEURL . @$parent . $slugs;
-                    } else {
-                        $url = $SITEURL .'index.php?id='.$slugs; 
-                    }
+                    $url = find_url($slug,$parent);
                     
                     $specific = array("slug"=>$slugs,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
                     
@@ -257,13 +237,8 @@ function menu_data($id = null,$xml=false) {
                     $pubDate = $page['pubDate'];
                     $menuStatus = $page['menuStatus'];
                     $private = $page['private'];
-                    if ($PRETTYURLS == '1') {
-                        if ($parent != '') {$parent = tsl($parent); } 
-                        if ($slug == 'index' ) { $slugs = ''; } else { $slugs = $slug; }  
-                        $url = $SITEURL . @$parent . $slugs;
-                    } else {
-                        $url = $SITEURL .'index.php?id='.$slugs; 
-                    }
+                   	
+                    $url = find_url($slug,$parent);
                     
                     $xml.="<item>";
                     $xml.="<slug><![CDATA[".$slugs."]]></slug>";
@@ -353,13 +328,7 @@ function menu_data($id = null,$xml=false) {
 					if ("$currentpage" == "$url_nav") { $classes = "current ". $url_nav; } else { $classes = $url_nav; }
 					if ($page['menu'] == '') { $page['menu'] = $page['title']; }
 					if ($page['title'] == '') { $page['title'] = $page['menu']; }
-					if ($PRETTYURLS == '1') { 
-						if ($page['parent'] != '' ) { $page['parent'] = tsl($page['parent']); } 
-						if ($url_nav == 'index' ) { $url_nav = ''; }
-						$menu .= '<li class="'. $classes .'" ><a href="'. $SITEURL . @$page['parent'] . $url_nav .'" title="'. $page['title'] .'">'.$page['menu'] .'</a></li>'."\n";
-					} else {
-						$menu .= '<li class="'. $classes .'" ><a href="'. $SITEURL .'index.php?id='.$url_nav.'" title="'. $page['title'] .'">'.$page['menu'].'</a></li>'."\n";
-					}
+					$menu .= '<li class="'. $classes .'" ><a href="'. find_url($page['url'],$page['parent']) . '" title="'. $page['title'] .'">'.$page['menu'].'</a></li>'."\n";
 				}
 			}
 			

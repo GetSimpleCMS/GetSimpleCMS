@@ -59,16 +59,7 @@ if (count($pagesSorted) != 0)
 		if ($page['private'] != 'Y')
 		{
 			// set <loc>
-			if ($PRETTYURLS == '1')
-			{
-				if ($page['parent'] != '') { $page['parent'] = tsl($page['parent']); }  
-				
-				$pageLoc = tsl($SITEURL . @$page['parent'] . $page['url']);
-			} 
-			else 
-			{
-				$pageLoc = $SITEURL .'index.php?id='. $page['url'];
-			}
+			$pageLoc = find_url($page['url'], $page['parent']);
 			
 			// set <lastmod>
 			$tmpDate = date("Y-m-d H:i:s", strtotime($page['date']));
