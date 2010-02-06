@@ -46,7 +46,7 @@ list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($src_folder . url
 if (file_exists($thumb_folder . 'thumbnail.' . $src)) 
 {
 	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . urlencode('thumbnail.'.$src));
-	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder . 'thumbnail.'. $src .'" rel="facybox" >'.$i18n['CURRENT_THUMBNAIL'].'</a> (<a href="#jcrop_open">'.$i18n['RECREATE'].'</a>) - '.$thwidth.' x '.$thheight;
+	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder . 'thumbnail.'. $src .'" rel="facybox" >'.$i18n['CURRENT_THUMBNAIL'].'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 } 
 else 
 {
@@ -64,9 +64,9 @@ else
 	<div id="maincontent">
 			
 		<div class="main">
-		<h3><?php echo $i18n['IMG_CONTROL_PANEL'];?></h3>
+		<h3><?php echo $i18n['IMG_CONTROl_PANEL'];?></h3>
 	
-			<?php echo '<p><a href="'.$src_folder . $src .'" rel="facybox" >'.$i18n['ORIGINAL_IMG'].'</a> - '.$imgwidth.' x '.$imgheight . $thumb_exists .'</p>'; ?>
+			<?php echo '<p><a href="'.$src_folder . $src .'" rel="facybox" >'.$i18n['ORIGINAL_IMG'].'</a> <code>'.$imgwidth.'x'.$imgheight .'</code>'. $thumb_exists .'</p>'; ?>
 
 			<form><select class="text" id="img-info">
 				<option selected="selected" value="code-img-html" ><?php echo $i18n['HTML_ORIG_IMG'];?></option>
