@@ -18,9 +18,6 @@ $base = true;
 
 // Include common.php
 include('admin/inc/common.php');
-	
-// redirect to ignore homepage called as /index/
-if (tsl($_SERVER['PHP_SELF']) == '/index/' ) { header('Location: '. $SITEURL ); exit; }
 
 // get page id (url slug) that is being passed via .htaccess mod_rewrite
 if (isset($_GET['id']))
