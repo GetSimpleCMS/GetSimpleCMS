@@ -31,12 +31,6 @@ if (count($filenames) != 0)
 			$data = getXML($path . $file);
 			$status = $data->menuStatus;
 			$pagesArray[$count]['url'] = $data->url;
-			
-			if ($data->url == 'index')
-			{
-				$pagesArray[$count]['url'] = '';
-			}
-			
 			$pagesArray[$count]['parent'] = $data->parent;
 			$pagesArray[$count]['date'] = $data->pubDate;
 			$pagesArray[$count]['private'] = $data->private;
