@@ -65,6 +65,7 @@ if (isset($_POST['submitted']))
 				} 
 				else 
 				{
+					exec_action('changedata-updateslug');
 					$file = "../data/pages/". @$url .".xml";
 					$existing = "../data/pages/". $_POST['existing-url'] .".xml";
 					$bakfile = "../backups/pages/". $_POST['existing-url'] .".bak.xml";
