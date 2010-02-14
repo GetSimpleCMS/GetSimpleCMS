@@ -18,6 +18,7 @@ include('inc/common.php');
 
 // Variable settings
 login_cookie_check();
+if(defined('GSLOGINSALT')) { $logsalt = GSLOGINSALT;} else { $logsalt = null; }
 $file		= 'user.xml';
 $path 		= $relative. 'data/other/';
 $bakpath 	= $relative. 'backups/other/';
@@ -106,7 +107,7 @@ if(isset($_POST['submitted']))
 		// password cannot be null
 		if ( $pwd1 != '' )
 		{ 
-			$PASSWD = sha1($pwd1); 
+			$PASSWD = sha1($pwd1 . $logsalt); 
 		}	
 		
 		// create new user data file

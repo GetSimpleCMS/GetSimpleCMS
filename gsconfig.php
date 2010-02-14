@@ -9,12 +9,14 @@ if (basename($_SERVER['PHP_SELF']) == 'gsconfig.php') {
 	die('You cannot load this page directly.');
 }; 
 
-
-# Turn on debug mode
-#define('GSDEBUG', TRUE);
+# Extra salt to secure your password with. Default is empty for backwards compatibility.
+define('GSLOGINSALT', '');
 
 # Default thumbnail width of uploaded image
 define('GSIMAGEWIDTH', '200');
+
+# Turn on debug mode
+#define('GSDEBUG', TRUE);
 
 # Ping search engines upon sitemap generation?
 #define('GSDONOTPING', 1);

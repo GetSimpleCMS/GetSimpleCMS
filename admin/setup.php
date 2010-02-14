@@ -17,6 +17,7 @@ $relative = '../';
 include('inc/common.php');
 	
 // Variables
+if(defined('GSLOGINSALT')) { $logsalt = GSLOGINSALT;} else { $logsalt = null; }
 $kill = ''; 
 $PASSWD = ''; 
 $status = ''; 
@@ -88,7 +89,7 @@ if(isset($_POST['submitted']))
 	if ($err == '') 
 	{
 		$random = createRandomPassword();
-		$PASSWD1 = sha1($random);
+		$PASSWD1 = sha1($random . $logsalt);
 		
 		// create new users.xml file
 		$bakpath = $relative. "backups/other/";
