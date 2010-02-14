@@ -17,17 +17,24 @@ $relative = '../';
 
 // Include common.php
 include('inc/common.php');
+
+// check form referrer - needs siteurl and edit.php in it. 
+if (isset($_SERVER['HTTP_REFERER'])) {
+	if ( (!ereg($SITEURL, $_SERVER['HTTP_REFERER'])) || (!ereg("edit.php", $_SERVER['HTTP_REFERER'])) ){
+		echo "<b>Invalid Referer</b><br />-------<br />"; 
+		echo 'Invalid Referer: ' . $_SERVER['HTTP_REFERER'];
+		die;
+	}
+}
+
 login_cookie_check();
 	
 if (isset($_POST['submitted']))
 {
-	if ( ($_POST['post-title'] == '') && ($_POST['post-uri'] == '') && ($_POST['post-content'] == '')  )
-	{
+	if ( ($_POST['post-title'] == '') )	{
 		header("Location: edit.php?upd=edit-err&type=".$i18n['CANNOT_SAVE_EMPTY']);
 		exit;
-	} 
-	else 
-	{
+	}	else {
 		
 		$url="";$title="";$metad=""; $metak="";	$cont="";
 		
