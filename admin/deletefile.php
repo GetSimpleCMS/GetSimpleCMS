@@ -16,9 +16,7 @@ $relative = '../';
 
 // Include common.php
 include('inc/common.php');
-
-// Variable settings
-$userid = login_cookie_check();
+login_cookie_check();
 
 
 // are we deleting pages?

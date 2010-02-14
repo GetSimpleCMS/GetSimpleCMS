@@ -20,12 +20,11 @@ $base = true;
 include('admin/inc/common.php');
 
 // get page id (url slug) that is being passed via .htaccess mod_rewrite
-if (isset($_GET['id']))
-{ 
-	$id = strtolower($_GET['id']);
-} 
-else 
-{
+if (isset($_GET['id'])){ 
+	$id = str_replace ('..','',$_GET['id']);
+	$id = str_replace ('/','',$id);
+	$id = strtolower($id);
+} else {
 	$id = "index";
 }
 

@@ -15,6 +15,7 @@ $relative = '../';
 
 // Include common.php
 include('inc/common.php');
+login_cookie_check();
 	
 // Variable settings
 $path = tsl('../data/other/');

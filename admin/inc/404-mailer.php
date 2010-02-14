@@ -99,7 +99,7 @@ if ($FOUR04MONITOR == '1')
 }
 
 //404 logging
-$xmlfile = "data/other/logs/404monitoring.log";
+$xmlfile = "data/other/logs/404monitoring.log.xml";
 if ( ! file_exists($xmlfile) ) 
 { 
 	$xml = new SimpleXMLExtended('<channel></channel>');

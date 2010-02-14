@@ -45,7 +45,7 @@ if(isset($_POST['submitted']))
 {
 	if($_POST['sitename'] != '') 
 	{ 
-		$SITENAME1 = cl($_POST['sitename']); 
+		$SITENAME1 = htmlentities($_POST['sitename'], ENT_QUOTES, 'UTF-8'); 
 	} 
 	else 
 	{ 

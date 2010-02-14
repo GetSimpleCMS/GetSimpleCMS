@@ -57,7 +57,7 @@ if(isset($_POST['submitted']))
 {
 	
 	if(isset($_POST['sitename'])) { 
-		$SITENAME = htmlentities(cl($_POST['sitename'])); 
+		$SITENAME = htmlentities($_POST['sitename'], ENT_QUOTES, 'UTF-8'); 
 	}
 	
 	if(isset($_POST['siteurl'])) { 

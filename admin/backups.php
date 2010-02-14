@@ -17,7 +17,7 @@ $relative = '../';
 include('inc/common.php');
 	
 // Variable settings
-$userid = login_cookie_check();
+login_cookie_check();
 $path = tsl($relative . 'backups/pages/');
 $counter = '0';
 $table = '';

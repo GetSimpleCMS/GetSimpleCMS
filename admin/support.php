@@ -17,8 +17,6 @@ $bakpath = $relative. 'backups/other/';
 
 // Include common.php
 include('inc/common.php');
-	
-// Variable settings
 login_cookie_check();
 
 // if the undo command was invoked

@@ -17,6 +17,7 @@ $relative = '../';
 
 // Include common.php
 include('inc/common.php');
+login_cookie_check();
 	
 if (isset($_POST['submitted']))
 {
