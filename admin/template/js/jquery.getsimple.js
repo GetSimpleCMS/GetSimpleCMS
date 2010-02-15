@@ -8,6 +8,9 @@ function DeleteComp(id) {
   $('#loader').show();
   if (answer){
   	$("#section-" + id).slideToggle('40000').remove();
+  	if($("#divlist-" + id).length) {
+  		$("#divlist-" + id).remove();
+  	}  	
   }
   $('#loader').fadeOut(1000);
 	return false;

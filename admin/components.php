@@ -110,7 +110,7 @@ if (count($componentsec) != 0) {
 	if($count > 3) {
 		$item = 0;
 		foreach($componentsec as $component) {
-			$listc .= '<a href="#section-' . @$item . '" class="component">' . @$component->title . '</a>';
+			$listc .= '<a id="divlist-' . @$item . '" href="#section-' . @$item . '" class="component">' . @$component->title . '</a>';
 			$item++;
 		}
 	}
