@@ -71,6 +71,9 @@
 		<p class="left-footer"><?php echo date('Y'); ?> <strong><?php get_site_name(); ?></strong></p>
 		<p class="right-footer"><?php get_site_credits(); ?><br /><a href="http://www.cagintranet.com" title="GetSimple Creators" >Theme by Cagintranet</a></p>
 		<div class="clear"></div>
+		
+		<?php get_footer(); ?>
+		
 	</div><!-- end div#footer -->
 
 </div><!-- end div.wrapper -->

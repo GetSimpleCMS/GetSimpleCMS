@@ -77,6 +77,8 @@
 	
 	<div class="clear"></div>
 	
+	<?php get_footer(); ?>
+	
 </div><!-- end wrapper -->
 </body>
 </html>

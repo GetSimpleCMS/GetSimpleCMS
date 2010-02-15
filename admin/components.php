@@ -106,8 +106,8 @@ if (count($componentsec) != 0) {
 	}
 }
 	// Create list for easy access
+	$listc = '';
 	if($count > 3) {
-		$listc = "";
 		$item = 0;
 		foreach($componentsec as $component) {
 			$listc .= '<a href="#section-' . @$item . '" class="component">' . @$component->title . '</a>';
@@ -144,7 +144,7 @@ if (count($componentsec) != 0) {
 	
 	<div id="sidebar">
 		<?php include('template/sidebar-theme.php'); ?>
-		<div class="compdivlist"><?php echo $listc; ?></div>
+		<?php if ($listc != '') { echo '<div class="compdivlist">'.$listc .'</div>'; } ?>
 	</div>
 
 	
