@@ -150,11 +150,11 @@ function restore_bak($uri) {
  *
 */
 function createRandomPassword() {
-    $chars = "ABCDEFGHIJKMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+    $chars = "Ayz23mFGHBxPQefgnopRScdqrTU4CXYZabstuDEhijkIJKMNVWvw56789";
     srand((double)microtime()*1000000);
     $i = 0;
     $pass = '' ;
-    while ($i <= 6) {
+    while ($i <= 8) {
         $num = rand() % 33;
         $tmp = substr($chars, $num, 1);
         $pass = $pass . $tmp;

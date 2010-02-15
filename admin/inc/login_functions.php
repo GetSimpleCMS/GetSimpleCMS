@@ -12,14 +12,12 @@ $MSG = "";
 
 
 // If the login cookie is already set, redirect user to secure panel
-if(cookie_check()) 
-{
+if(cookie_check()) {
 	header("Location: ". $cookie_redirect);                                             
 }
 
 	if (file_exists('../data/other/user.xml')) {
-		$thisfile = file_get_contents('../data/other/user.xml');
-		$data = simplexml_load_string($thisfile);
+		$data = getXML('../data/other/user.xml');
 		$PASSWD = $data->PWD;
 	}
 
@@ -39,8 +37,7 @@ if(isset($_POST['submitted']))
 	} 
 	
 	// If both Username & Password are populated, continue...
-	if ( ! $error ) 
-	{
+	if ( ! $error ) {
 		// Are the Username and Password both correct?
 		if ( ($userid == $USR) && ($password == $PASSWD) ) {
 			$authenticated = true;  // Successful Login
@@ -67,14 +64,11 @@ if(isset($_POST['submitted']))
 		}
 		
 		// Was there a Successful Logon attempt?
-		if( $authenticated ) 
-		{
+		if( $authenticated ) {
 			// Set the login cookie, then redirect user to secure panel		
 			create_cookie();
 			header("Location: ". $cookie_redirect); 
-		} 
-		else 
-		{
+		} else {
 			$MSG .= '<b>'.$i18n['ERROR'].':</b> '.$i18n['LOGIN_FAILED'].'.';
 		}
 	}
