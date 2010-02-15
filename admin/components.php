@@ -105,20 +105,15 @@ if (count($componentsec) != 0) {
 		$count++;
 	}
 }
-
-// Create list for easy access
-if($count > 3)
-{
-	$list = "";
-	$item = 0;
-	
-	foreach($componentsec as $component)
-	{
-		$list .= '<a href="#section-' . @$item . '" class="component">' . @$component->title . '</a>';
-		
-		$item++;
+	// Create list for easy access
+	if($count > 3) {
+		$listc = "";
+		$item = 0;
+		foreach($componentsec as $component) {
+			$listc .= '<a href="#section-' . @$item . '" class="component">' . @$component->title . '</a>';
+			$item++;
+		}
 	}
-}
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['COMPONENTS']); ?>
@@ -138,10 +133,8 @@ if($count > 3)
 	
 	<form class="manyinputs" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" accept-charset="utf-8" >
 		<input type="hidden" id="id" value="<?php echo @$count; ?>" />
-		<div id="divCmpLst"><?php echo $list; ?></div>
 		<p><input type="submit" class="submit" name="submitted" id="button" value="<?php echo $i18n['SAVE_COMPONENTS'];?>" /> &nbsp;&nbsp;<?php echo $i18n['OR']; ?>&nbsp;&nbsp; <a class="cancel" href="theme.php"><?php echo $i18n['CANCEL']; ?></a></p>
-		<br clear="both" />
-		
+
 		<div id="divTxt"></div> 
 		<?php echo $table; ?>
 		<p><input type="submit" class="submit" name="submitted" id="button" value="<?php echo $i18n['SAVE_COMPONENTS'];?>" /> &nbsp;&nbsp;<?php echo $i18n['OR']; ?>&nbsp;&nbsp; <a class="cancel" href="components.php?cancel"><?php echo $i18n['CANCEL']; ?></a></p>
@@ -151,6 +144,7 @@ if($count > 3)
 	
 	<div id="sidebar">
 		<?php include('template/sidebar-theme.php'); ?>
+		<div class="compdivlist"><?php echo $listc; ?></div>
 	</div>
 
 	
