@@ -18,7 +18,6 @@ $relative = '../';
 include('inc/common.php');
 
 // Variable settings
-if(defined('GSLOGINSALT')) { $logsalt = GSLOGINSALT;} else { $logsalt = null; }
 $file = 'user.xml';
 $path = tsl($relative. 'data/other/');
 
@@ -47,7 +46,7 @@ if(isset($_POST['submitted']))
 			
 			$xml = @new SimpleXMLElement('<item></item>');
 			$xml->addChild('USR', @$USR);
-			$xml->addChild('PWD', sha1($random . $logsalt));
+			$xml->addChild('PWD', passhash($random));
 			$xml->addChild('EMAIL', @$EMAIL);
 			$xml->asXML($path . $file);
 			

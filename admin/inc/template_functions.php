@@ -534,7 +534,19 @@ function check_menu($text) {
 	}
 }
 
-
-
+/*******************************************************
+ * @function passhash
+ * @returns returns a hashed password
+ *
+*/
+function passhash($p) {
+	if(defined('GSLOGINSALT') && GSLOGINSALT != '') { 
+		$logsalt = sha1(GSLOGINSALT);
+	} else { 
+		$logsalt = null; 
+	}
+	
+	return sha1($p . $logsalt);
+}
 
 ?>

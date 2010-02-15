@@ -9,7 +9,7 @@
 
 $MSG = "";
 
-if(defined('GSLOGINSALT')) { $logsalt = GSLOGINSALT;} else { $logsalt = null; }
+
 
 // If the login cookie is already set, redirect user to secure panel
 if(cookie_check()) 
@@ -28,7 +28,7 @@ if(isset($_POST['submitted']))
 { 
 	// Initial variable setup
 	$userid = $_POST['userid'];
-	$password = sha1($_POST['pwd'] . $logsalt);
+	$password = passhash($_POST['pwd']);
 	$error = '';
 
 	// Is either the Username or Password field empty?
