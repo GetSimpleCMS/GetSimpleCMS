@@ -106,7 +106,7 @@ elseif ($p == 'restore')
 		<tr><td><b><?php echo $i18n['ADD_TO_MENU'];?>?</b></td><td><?php echo @$menuStatus; ?></td></tr>
 		</table>
 		
-		<textarea style="width:575px;height:400px;font-size:11px;color:#444;line-height:13px;background:#fafafa;padding:4px;border:1px solid #ccc;" ><?php echo stripslashes(htmlspecialchars_decode(@$content, ENT_QUOTES)); ?></textarea>
+		<textarea id="codetext" style="background:#fefefe;width:570px;height:400px;padding:4px;border:1px solid #ccc;" ><?php echo stripslashes(htmlspecialchars_decode(@$content, ENT_QUOTES)); ?></textarea>
 
 		</div>
 	</div>

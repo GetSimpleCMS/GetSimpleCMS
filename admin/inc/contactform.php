@@ -22,9 +22,9 @@ if (defined('GSDEBUG')){
 	
 	//set internationalization
 	if($LANG != '') {
-		include('admin/lang/'.$LANG.'.php');
+		include_once('admin/lang/'.$LANG.'.php');
 	} else {
-		include('admin/lang/en_US.php');
+		include_once('admin/lang/en_US.php');
 	}
 	
 	if( function_exists('date_default_timezone_set') ) { 

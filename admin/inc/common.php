@@ -52,8 +52,8 @@ $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
 
 
 // Website Data
-if (file_exists($relative . 'data/other/website.xml')) {
-	$thisfilew = $relative . 'data/other/website.xml';
+$thisfilew = $relative . 'data/other/website.xml';
+if (file_exists($thisfilew)) {
 	$dataw = getXML($thisfilew);
 	$SITENAME = stripslashes($dataw->SITENAME);
 	$SITEURL = $dataw->SITEURL;
@@ -65,8 +65,7 @@ if (file_exists($relative . 'data/other/website.xml')) {
 	$LANG = 'en_US';
 }
 
-if(!isset($base))
-{
+if(!isset($base)) {
 	// Settings
 	if (file_exists($relative . 'data/other/cp_settings.xml')) {
 		$thisfilec = $relative . 'data/other/cp_settings.xml';
@@ -83,18 +82,18 @@ if(!isset($base))
 	} else {
 		$USR = null;	
 	}
-
-	// Authorization data
-	if (file_exists($relative . 'data/other/authorization.xml'))
-	{
-		$dataa = getXML($relative . 'data/other/authorization.xml');
-		$SALT = stripslashes($dataa->apikey);
-	}
-	else
-	{
-		$SALT = sha1($USR);
-	}
 }
+
+// Authorization data
+if (file_exists($relative . 'data/other/authorization.xml')) {
+	$dataa = getXML($relative . 'data/other/authorization.xml');
+	$SALT = stripslashes($dataa->apikey);
+}	else {
+	$SALT = sha1($SITEURL);
+}
+// for form and file security
+$SESSIONHASH = md5($SALT . $SITENAME);
+
 
 // Set correct timestamp if available.
 if( function_exists('date_default_timezone_set') && ($TIMEZONE != '' || stripos($TIMEZONE, '--')) )
@@ -103,13 +102,10 @@ if( function_exists('date_default_timezone_set') && ($TIMEZONE != '' || stripos(
 }
 
 // Language control
-if($LANG != '')
-{
-	include($lang_relative . 'lang/' . $LANG . '.php');
-} 
-else 
-{
-	include($lang_relative . 'lang/en_US.php');
+if($LANG != ''){
+	include_once($lang_relative . 'lang/' . $LANG . '.php');
+} else {
+	include_once($lang_relative . 'lang/en_US.php');
 }
 
 // Globalization
@@ -118,7 +114,7 @@ global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR;
 // Check for main
 if(!isset($base)) {
 	// Admin base files
-	include('cookie_functions.php');
+	include_once('cookie_functions.php');
 }
 
 // Check if site is installed?
@@ -140,21 +136,15 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup')
 		unlink($relative . 'admin/setup.php');
 	}
 }
-	
+
 // Check for main
-if(!isset($base))
-{
-	// for Uploadify security
-	$SESSIONHASH = md5($SALT . $SITENAME);
-}
-else
-{
-	include('theme_functions.php');
+if(isset($base)) {
+	include_once('theme_functions.php');
 }
 
 // Include other files
-if(isset($load['login']) && $load['login']){ 	include('login_functions.php'); }
-if(isset($load['plugin']) && $load['plugin']){ 	include('plugin_functions.php'); }
+if(isset($load['login']) && $load['login']){ 	include_once('login_functions.php'); }
+if(isset($load['plugin']) && $load['plugin']){ 	include_once('plugin_functions.php'); }
 
 
 ?>

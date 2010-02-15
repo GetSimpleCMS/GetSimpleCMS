@@ -23,7 +23,7 @@ $table = '';
 // if a backup needs to be created
 if(isset($_GET['do'])) {
 	exec_action('archive-backup');
-	header('Location: zip.php');	
+	header('Location: zip.php?s='.$SESSIONHASH);	
 }
 
 // if a backup has just been created
@@ -75,7 +75,7 @@ if(isset($_GET['done'])) {
 					$ss = @stat($path . $file);
 					$size = fSize($ss['size']);
 					echo '<tr>
-							<td><a title="Download Archive: '. $name .'?" href="'. $path . $file .'">'.$name .'</a></td>
+							<td><a title="Download Archive: '. $name .'?" target="_blank" href="download.php?type=zip&file='. $path . $file .'">'.$name .'</a></td>
 							<td style="width:70px;text-align:right;" ><span>'.$size.'</span></td>
 							<td class="delete" ><a class="delconfirm" title="Delete Archive: '. $name .'?" href="deletefile.php?zip='. $file .'">X</a></td>
 						  </tr>';

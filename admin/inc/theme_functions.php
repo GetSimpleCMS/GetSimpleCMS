@@ -7,10 +7,6 @@
 *
 *****************************************************/
 
-$thisfile = file_get_contents('data/other/cp_settings.xml');
-$datac = simplexml_load_string($thisfile);
-$PRETTYURLS = $datac->PRETTYURLS;
-
 //****************************************************//
 //** PAGE SPECIFIC FUNCTIONS                        **//
 //**                                                **//
@@ -101,7 +97,7 @@ $PRETTYURLS = $datac->PRETTYURLS;
 		global $title;
 		global $content;
 		global $parent;
-		require_once('configuration.php');
+		include_once('configuration.php');
 		if (function_exists('mb_substr')) { 
 			$description = trim(mb_substr(strip_tags(stripslashes(htmlspecialchars_decode(@$content, ENT_QUOTES))), 0, 160));
 		} else {
@@ -344,13 +340,10 @@ function menu_data($id = null,$xml=false) {
 //**                                                **//
 //** Includes the setup for a contact page.         **//
 //****************************************************//
-	function set_contact_page() {
+	function set_contact_page($cpage = 'contactform.php') {
 		global $EMAIL;
-		$style='
-			<style>.pot {display:none;}</style>
-		';
+		$style='<style>.pot {display:none;}</style>';
 		echo $style;
-		include('contactform.php');
+		include_once($cpage);
 	}
-
 ?>

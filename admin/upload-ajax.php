@@ -15,8 +15,7 @@ if (!defined('GSIMAGEWIDTH')) {
 	$width = GSIMAGEWIDTH;
 }
 	
-if ($SESSIONHASH == $_REQUEST['sessionHash'])
-{
+if ($_REQUEST['sessionHash'] === $SESSIONHASH) {
 	if (!empty($_FILES))
 	{
 		$tempFile = $_FILES['Filedata']['tmp_name'];

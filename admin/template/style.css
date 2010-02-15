@@ -369,7 +369,8 @@ form input[readonly] {
 }
 
 
-form textarea#codetext { height:600px; font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; line-height:18px;font-size:12px;}
+textarea#codetext { height:600px; font-family: Consolas, Monaco, "Courier New", Courier, monospace;
+	font-size: 12px;line-height:18px;}
 
 label {
 	font-size:16px;	
@@ -430,7 +431,7 @@ form.manyinputs p {margin:0 0 25px 0;}
 .compdiv {padding:10px 0 35px 0;}
 table.comptable {margin:0px !important;width:585px;background:#fff;border:none;padding:0;}
 table.comptable tr td {font-size:12px;border: none;padding:0;}
-table.comptable tr td code {font-size:11px;color:#666;padding:0 4px 0 0;display:block;}
+table.comptable tr td code {font-size:11px;color:#666;padding:0 4px 0 0;display:block;font-family: Consolas, Monaco, "Courier New", Courier, monospace;}
 table.comptable tr {border:none;border:none !important;}
 table.comptable tr td input.newtitle {margin-bottom:2px !important;}
 .wrapper a.component { float:left;font-weight:800; margin:0 5px 5px 0; padding:3px 10px; text-decoration:none; border-radius: 3px; -moz-border-radius: 3px; -khtml-border-radius: 3px; -webkit-border-radius: 3px; }
