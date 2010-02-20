@@ -89,7 +89,7 @@ if(isset($_POST['submitted']))
 	if ($err == '') 
 	{
 		$random = createRandomPassword();
-		$PASSWD1 = sha1($random . $logsalt);
+		$PASSWD1 = passhash($random);
 		
 		// create new users.xml file
 		$bakpath = $relative. "backups/other/";

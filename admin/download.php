@@ -21,11 +21,11 @@ if(isset($_GET['type']) && isset($_GET['file'])) {
 	
 	# set content headers
 	if ($_GET['type'] == 'zip') {
-		header('Content-disposition: attachment; filename='.$_GET['file']);
-	  header('Content-type: application/octet-stream');
+		header("Content-disposition: attachment; filename=".$_GET['file']);
+	  header("Content-type: application/octet-stream");
 	} elseif ($_GET['type'] == 'mpg') {
-		header('Content-disposition: attachment; filename='.$_GET['file']);
-		header('Content-type: video/mpeg');
+		header("Content-disposition: attachment; filename=".$_GET['file']);
+		header("Content-type: video/mpeg");
 	}
 	
 	# plugin hook

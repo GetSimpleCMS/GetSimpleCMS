@@ -65,16 +65,9 @@ if (file_exists($thisfilew)) {
 	$LANG = 'en_US';
 }
 
-if(!isset($base)) {
-	// Settings
-	if (file_exists($relative . 'data/other/cp_settings.xml')) {
-		$thisfilec = $relative . 'data/other/cp_settings.xml';
-		$datac = getXML($thisfilec);
-		$HTMLEDITOR = $datac->HTMLEDITOR;
-		$PRETTYURLS = $datac->PRETTYURLS;
-		$FOUR04MONITOR = $datac->FOUR04MONITOR;
-	}
 
+
+if(!isset($base)) {
 	// User Data
 	if (file_exists($relative . 'data/other/user.xml')) {
 		$datau = getXML($relative . 'data/other/user.xml');
@@ -94,6 +87,14 @@ if (file_exists($relative . 'data/other/authorization.xml')) {
 // for form and file security
 $SESSIONHASH = md5($SALT . $SITENAME);
 
+// Settings
+if (file_exists($relative . 'data/other/cp_settings.xml')) {
+	$thisfilec = $relative . 'data/other/cp_settings.xml';
+	$datac = getXML($thisfilec);
+	$HTMLEDITOR = $datac->HTMLEDITOR;
+	$PRETTYURLS = $datac->PRETTYURLS;
+	$FOUR04MONITOR = $datac->FOUR04MONITOR;
+}
 
 // Set correct timestamp if available.
 if( function_exists('date_default_timezone_set') && ($TIMEZONE != '' || stripos($TIMEZONE, '--')) )

@@ -26,15 +26,16 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 	ini_set("memory_limit","600M"); 
 	
 	// paths and files to backup
-	$paths = array(GSROOTPATH. 'data', GSROOTPATH. 'theme'); //no trailing slash
-	$files = array(GSROOTPATH. '.htaccess', GSROOTPATH. 'index.php', GSROOTPATH. 'gsconfig.php');	
+	$paths = array($relative.'data', $relative.'theme'); //no trailing slash
+	$files = array($relative.'.htaccess', $relative.'index.php', $relative.'gsconfig.php');	
 	
 	// cycle thru each path and file and add to zip file
-	foreach ($paths as $path) 
-	{
+	foreach ($paths as $path) {
 		$dir_handle = @opendir($path) or die("Unable to open $path");
 		ListDir($dir_handle,$path);
 	}
+	
+	$zipfile->add_dir('getsimple');
 	
 	foreach ($files as $fl) 
 	{
