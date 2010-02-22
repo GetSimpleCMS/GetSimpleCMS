@@ -138,8 +138,8 @@ function getFiles($path) {
 	while ($file = readdir($handle)) {
 		$file_arr[] = $file;
 	}
-	return $file_arr;
 	closedir($handle);
+	return $file_arr;
 }
 /******************************************************/
 

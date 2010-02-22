@@ -18,12 +18,10 @@ include('inc/common.php');
 
 // Variable settings
 login_cookie_check();
-$path = tsl('plugins');
 $counter = '0';
 $table = '';
-#$table = '<tr class="head"><th width="25%" >'.$i18n['PLUGIN_NAME'].'</th><th>'.$i18n['PLUGIN_DESC'].'</th></tr>' . "\n";
 
-$pluginfiles = getFiles($path);
+$pluginfiles = getFiles(GSPLUGINPATH);
 foreach ($pluginfiles as $fi)
 {
 	$pathExt = pathinfo($fi,PATHINFO_EXTENSION );

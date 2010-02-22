@@ -17,7 +17,7 @@ include('template_functions.php');
 define('GSROOTPATH', get_root_path());
 define('GSADMINPATH', get_admin_path());
 define('GSADMININCPATH', get_admin_path(). 'inc/');
-define('GSPLUGINPATH', get_admin_path(). 'plugins/');
+define('GSPLUGINPATH', get_root_path(). 'plugins/');
 define('GSDATAOTHERPATH', get_root_path(). 'data/other/');
 define('GSDATAPAGESPATH', get_root_path(). 'data/pages/');
 define('GSDATAUPLOADPATH', get_root_path(). 'data/uploads/');

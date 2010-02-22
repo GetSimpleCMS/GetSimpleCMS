@@ -328,10 +328,12 @@ function menu_data($id = null,$xml=false) {
 				}
 			}
 			
-			echo $menu;
+			
 		}
 		
 		closedir($dir_handle);
+		
+		echo $menu;
 	}	
 
 

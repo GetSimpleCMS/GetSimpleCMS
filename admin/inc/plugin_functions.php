@@ -14,21 +14,9 @@ $plugins_info = array();
 // include any plugins, depending on where the referring file that calls it we need to 
 // set the correct paths. 
 
-if (file_exists('admin/plugins/'))
-{
-	$dir='admin/';
-	$pluginfiles = getFiles($dir.'plugins/');
+if (file_exists(GSPLUGINPATH)){
+	$pluginfiles = getFiles(GSPLUGINPATH);
 } 
-elseif (file_exists('../admin/plugins/')) 
-{
-	$dir="../admin/";
-	$pluginfiles = getFiles($dir.'plugins/');
-} 
-else 
-{
-	$dir="";
-	$pluginfiles = getFiles('plugins/');
-}
 
 $pluginsLoaded=false;
 
@@ -39,7 +27,7 @@ foreach ($pluginfiles as $fi)
 	if ($pathExt=="php")
 	{
 		$pluginsLoaded=true;
-		require_once($dir.'plugins/'.$fi);
+		require_once(GSPLUGINPATH . $fi);
 	}
 }
 
@@ -51,14 +39,14 @@ foreach ($pluginfiles as $fi)
  * @param $args - arguments for function
 */
 
-function add_action($hook_name, $added_funcion, $args = null) 
+function add_action($hook_name, $added_funcion, $args = array()) 
 {
 	global $plugins;
 
 	$plugins[] = array(
 		'hook' => $hook_name,
 		'function' => $added_funcion,
-		'args' => $args
+		'args' => (array) $args
 	);
 
 }
