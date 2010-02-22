@@ -150,7 +150,7 @@ jQuery(document).ready(function() {
 		function() {$(this).removeClass('activeedit'); 
 	});
 	zebraRows('table.highlight tr:odd', 'trodd'); 
-	$('table.paginate tr').quickpaginate( { perpage: 15, showcounter: true } );
+	$('table.paginate tr').quickpaginate( { perpage: 15, showcounter: true, pager : $("#page_counter") } );
 	
 
 

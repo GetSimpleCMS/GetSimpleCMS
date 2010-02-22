@@ -99,7 +99,8 @@ if (count($pagesSorted) != 0) {
 			<div class="edit-nav" ><p><?php echo $i18n['TOGGLE_STATUS']; ?> &nbsp;<input type="checkbox" id="show-characters" value="" /></p><div class="clear" ></div></div>
 			<table id="editpages" class="edittable highlight paginate">
 				<?php echo $table; ?>
-			</table>	
+			</table>
+			<div id="page_counter" class="qc_pager"></div> 	
 			<p><em><b><?php echo $counter; ?></b> <?php echo $i18n['TOTAL_PAGES']; ?></em></p>
 		</div>
 	</div><!-- end maincontent -->

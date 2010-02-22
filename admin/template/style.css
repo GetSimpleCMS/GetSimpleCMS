@@ -599,7 +599,7 @@ textarea.copykit {
 	#handw span {font-size:15px;font-weight:bold;}
 	#jcropform .submit {margin:20px 0 0 0;}
 	#jcrop_open {}
-	.qc_pager {padding:20px 0 0 0;}
+	.qc_pager {padding:0 0 15px 0;}
 	.qc_pager a {padding:5px;margin:0 10px 0 0;}
 	.qc_pager a:link,	.qc_pager a:visited {}
 	.qc_pager a:hover, .qc_pager a:focus {}
