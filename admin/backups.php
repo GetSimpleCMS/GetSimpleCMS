@@ -95,7 +95,8 @@ if (count($pagesSorted) != 0)
 			<table class="highlight paginate">
 				<?php echo $table; ?>
 			</table>
-			<p><em><b><?php echo $counter; ?></b> <?php echo $i18n['TOTAL_BACKUPS'];?></em></p>
+			<div id="page_counter" class="qc_pager"></div> 
+			<p><em><b><span id="pg_counter"><?php echo $counter; ?></b></span> <?php echo $i18n['TOTAL_BACKUPS'];?></em></p>
 		</div>
 	</div>
 	

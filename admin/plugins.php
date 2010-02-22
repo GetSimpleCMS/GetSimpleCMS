@@ -57,7 +57,8 @@ foreach ($pluginfiles as $fi)
 			<?php echo $table; ?>
 			
 		</table>
-		<p><em><b><?php echo $counter; ?></b> <?php echo $i18n['PLUGINS_INSTALLED']; ?></em></p>
+		<div id="page_counter" class="qc_pager"></div> 
+		<p><em><b><span id="pg_counter"><?php echo $counter; ?></b></span> <?php echo $i18n['PLUGINS_INSTALLED']; ?></em></p>
 			
 		</div>
 	</div>

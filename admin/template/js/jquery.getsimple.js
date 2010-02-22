@@ -162,15 +162,21 @@ jQuery(document).ready(function() {
 		var message = $(this).attr("title");
 		var dlink = $(this).attr("href");
 	    var answer = confirm(message);
+	    var id=$(this).parents("tr").attr("id");
+	    
 	    if (answer){
 	    	$('#loader').show();
-	    	$(this).parents("tr").addClass('deletedrow');
-	    	$(this).parents("tr").fadeOut(500, function(){
+	    	$("#"+id).addClass('deletedrow');
+	    	$("#"+id).fadeOut(500, function(){
 					$.ajax({
 			       type: "GET",
 			       url: dlink,
 			       success: function(response){
-			          $(this).parents("tr").remove();
+			          $("#"+id).remove();
+			          $("#page_counter").html("");
+			          counter=$("#pg_counter").html();
+			          $("#pg_counter").html(counter-1);
+			          $('table.paginate tr').quickpaginate( { perpage: 15, showcounter: true, pager : $("#page_counter") } );
 			          //return false;
 				     }
 				  });
