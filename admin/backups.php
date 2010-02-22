@@ -96,7 +96,7 @@ if (count($pagesSorted) != 0)
 				<?php echo $table; ?>
 			</table>
 			<div id="page_counter" class="qc_pager"></div> 
-			<p><em><b><span id="pg_counter"><?php echo $counter; ?></b></span> <?php echo $i18n['TOTAL_BACKUPS'];?></em></p>
+			<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php echo $i18n['TOTAL_BACKUPS'];?></em></p>
 		</div>
 	</div>
 	
