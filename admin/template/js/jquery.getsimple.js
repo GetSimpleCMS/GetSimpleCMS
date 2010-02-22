@@ -174,8 +174,10 @@ jQuery(document).ready(function() {
 			       success: function(response){
 			          $("#"+id).remove();
 			          $("#page_counter").html("");
-			          counter=$("#pg_counter").html();
-			          $("#pg_counter").html(counter-1);
+			          if($("#pg_counter").length) {
+			        	  counter=$("#pg_counter").html();
+				          $("#pg_counter").html(counter-1);
+				      }
 			          $('table.paginate tr').quickpaginate( { perpage: 15, showcounter: true, pager : $("#page_counter") } );
 			          //return false;
 				     }
