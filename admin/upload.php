@@ -18,7 +18,7 @@ include('inc/common.php');
 
 // Variable settings
 login_cookie_check();
-$path = GSDATAUPLOADPATH;
+$path = tsl("../data/uploads/");
 
 // if a file was uploaded
 if (isset($_FILES["file"]))
