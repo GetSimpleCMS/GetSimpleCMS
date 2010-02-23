@@ -152,7 +152,7 @@ function getFiles($path) {
 */
 function getXML($file) {
 	$xml = @file_get_contents($file);
-	$data = simplexml_load_string($xml, NULL, LIBXML_NOCDATA);
+	$data = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA);
 	return $data;
 }
 /******************************************************/
