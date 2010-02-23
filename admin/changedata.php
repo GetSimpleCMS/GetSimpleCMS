@@ -39,9 +39,9 @@ if (isset($_POST['submitted']))
 		$url="";$title="";$metad=""; $metak="";	$cont="";
 		
 		// is a slug provided?
-		if ($_POST['post-uri']) 
+		if ($_POST['post-id']) 
 		{ 
-			$url = $_POST['post-uri'];
+			$url = $_POST['post-id'];
 		} 
 		else 
 		{
@@ -62,13 +62,13 @@ if (isset($_POST['submitted']))
 		// was the slug changed on an existing page?
 		if ( isset($_POST['existing-url']) ) 
 		{
-			if ($_POST['post-uri'] != $_POST['existing-url'])
+			if ($_POST['post-id'] != $_POST['existing-url'])
 			{
 				// dont change the index page's slug
 				if ($_POST['existing-url'] == 'index') 
 				{
 					$url = $_POST['existing-url'];
-					header("Location: edit.php?uri=". $_POST['existing-url'] ."&upd=edit-index&type=edit");
+					header("Location: edit.php?id=". $_POST['existing-url'] ."&upd=edit-index&type=edit");
 					exit;
 				} 
 				else 
@@ -108,7 +108,7 @@ if (isset($_POST['submitted']))
 			}
 		}		
 		//check to make sure we dont overwrite any good files upon create
-		if ( file_exists($file) && ($_POST['post-uri'] != $_POST['existing-url']) ) 
+		if ( file_exists($file) && ($_POST['post-id'] != $_POST['existing-url']) ) 
 		{
 			$count = "1";
 			$file = "../data/pages/". $url ."-".$count.".xml";
@@ -172,7 +172,7 @@ if (isset($_POST['submitted']))
 		$xml->asXML($file);
 		
 		// redirect user back to edit page 
-		header("Location: edit.php?uri=". $url ."&upd=edit-success&type=edit");
+		header("Location: edit.php?id=". $url ."&upd=edit-success&type=edit");
 	}
 }
 ?>

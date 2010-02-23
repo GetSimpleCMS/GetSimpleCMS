@@ -17,16 +17,37 @@ include('inc/common.php');
 login_cookie_check();
 
 # check if all variables are set
-if(isset($_GET['type']) && isset($_GET['file'])) {
+if(isset($_GET['file'])) {
 	
+	# get file extention (type)
+	$extention = substr($_GET['file'], strrpos($_GET['file'], '.') + 1);
+
 	# set content headers
-	if ($_GET['type'] == 'zip') {
+	if ($extention == 'zip') {
 		header("Content-disposition: attachment; filename=".$_GET['file']);
 	  header("Content-type: application/octet-stream");
-	} elseif ($_GET['type'] == 'mpg') {
+	} elseif ($extention == 'mpg') {
 		header("Content-disposition: attachment; filename=".$_GET['file']);
 		header("Content-type: video/mpeg");
-	}
+	} elseif ($extention == 'jpg' || $extention == 'jpeg' ) {
+		header("Content-disposition: attachment; filename=".$_GET['file']);
+		header("Content-type: image/jpeg");
+	} elseif ($extention == 'txt' || $extention == 'log' ) {
+		header("Content-disposition: attachment; filename=".$_GET['file']);
+		header("Content-type: text/plain");
+	} elseif ($extention == 'xml' ) {
+		header("Content-disposition: attachment; filename=".$_GET['file']);
+		header("Content-type: text/xml");
+	} elseif ($extention == 'js' ) {
+		header("Content-disposition: attachment; filename=".$_GET['file']);
+		header("Content-type: text/javascript");
+	} elseif ($extention == 'pdf' ) {
+		header("Content-disposition: attachment; filename=".$_GET['file']);
+		header("Content-type: text/pdf");
+	} elseif ($extention == 'css' ) {
+		header("Content-disposition: attachment; filename=".$_GET['file']);
+		header("Content-type: text/css");
+	} 
 	
 	# plugin hook
 	exec_action('download-file');

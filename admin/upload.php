@@ -18,7 +18,7 @@ include('inc/common.php');
 
 // Variable settings
 login_cookie_check();
-$path = tsl("../data/uploads/");
+$path = GSDATAUPLOADPATH;
 
 // if a file was uploaded
 if (isset($_FILES["file"]))
@@ -153,6 +153,8 @@ if (isset($_FILES["file"]))
 				}
 				echo '</table>';
 				echo '<p><em><b>'. $counter .'</b> '.$i18n['TOTAL_FILES'].' ('. fSize($totalsize) .')</em></p>';
+			} else {
+				echo '<div id="imageTable"></div>';
 			}
 		?>	
 		</div>

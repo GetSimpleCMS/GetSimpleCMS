@@ -55,12 +55,12 @@ function get_filename_id() {
 
 /*******************************************************
  * @function delete_file
- * @param $uri - page to delete
+ * @param $id - page to delete
  *
 */
-function delete_file($uri) {
-	$bakfile = "../backups/pages/". $uri .".bak.xml";
-	$file = "../data/pages/". $uri .".xml";
+function delete_file($id) {
+	$bakfile = "../backups/pages/". $id .".bak.xml";
+	$file = "../data/pages/". $id .".xml";
 	copy($file, $bakfile);
 	unlink($file);
 }
@@ -82,11 +82,11 @@ function check_perms($path) {
 
 /*******************************************************
  * @function delete_zip
- * @param $uri - zip to delete
+ * @param $id - zip to delete
  *
 */
-function delete_zip($uri) { 
-	unlink("../backups/zip/". $uri);
+function delete_zip($id) { 
+	unlink("../backups/zip/". $id);
 	return 'success';
 } 
 /******************************************************/
@@ -94,16 +94,16 @@ function delete_zip($uri) {
 
 /*******************************************************
  * @function delete_upload
- * @param $uri - upload file to delete
+ * @param $id - upload file to delete
  *
 */
-function delete_upload($uri) { 
-	unlink("../data/uploads/". $uri);
-	if (file_exists("../data/thumbs/thumbnail.". $uri)) {
-		unlink("../data/thumbs/thumbnail.". $uri);
+function delete_upload($id) { 
+	unlink("../data/uploads/". $id);
+	if (file_exists("../data/thumbs/thumbnail.". $id)) {
+		unlink("../data/thumbs/thumbnail.". $id);
 	}
-	if (file_exists("../data/thumbs/thumbsm.". $uri)) {
-		unlink("../data/thumbs/thumbsm.". $uri);
+	if (file_exists("../data/thumbs/thumbsm.". $id)) {
+		unlink("../data/thumbs/thumbsm.". $id);
 	}
 	return 'success';
 } 
@@ -112,11 +112,11 @@ function delete_upload($uri) {
 
 /*******************************************************
  * @function delete_bak
- * @param $uri - page backup to delete
+ * @param $id - page backup to delete
  *
 */
-function delete_bak($uri) { 
-	unlink("../backups/pages/". $uri .".bak.xml");
+function delete_bak($id) { 
+	unlink("../backups/pages/". $id .".bak.xml");
 	return 'success';
 } 
 /******************************************************/
@@ -124,13 +124,13 @@ function delete_bak($uri) {
 
 /*******************************************************
  * @function restore_bak
- * @param $uri - page backup to restore to
+ * @param $id - page backup to restore to
  *
 */
-function restore_bak($uri) { 
-	$file = "../backups/pages/". $uri .".bak.xml";
-	$newfile = "../data/pages/". $uri .".xml";
-	$tmpfile = "../backups/pages/". $uri .".tmp.xml";
+function restore_bak($id) { 
+	$file = "../backups/pages/". $id .".bak.xml";
+	$newfile = "../data/pages/". $id .".xml";
+	$tmpfile = "../backups/pages/". $id .".tmp.xml";
 	if ( !file_exists($newfile) ) { 
 		copy($file, $newfile);
 		unlink($file);

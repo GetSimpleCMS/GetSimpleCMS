@@ -38,10 +38,10 @@ $content = '';
 $title = '';
 $url = '';
 
-if ($uri)
+if ($id)
 {
 	// get saved page data
-	$file = $uri .'.xml';
+	$file = $id .'.xml';
 	
 	if (!file_exists($path . $file))
 	{ 
@@ -127,7 +127,7 @@ foreach ($parents as $fi)
 		
 		if ($parent == $goodname) { $sel="selected"; } else { $sel=""; }
 		
-		if ($goodname != $uri )
+		if ($goodname != $id )
 		{
 			$tmpData = getXML($path . $fi);
 			
@@ -167,7 +167,7 @@ if ($menu == '') { $menu = @$title; }
 		<!-- pill edit navigation -->
 		<div class="edit-nav" >
 			<?php 
-			if( (isset($uri)) && ($private != 'Y' )) {
+			if( (isset($id)) && ($private != 'Y' )) {
 				echo '<a href="'. find_url($url, $parent) .'" target="_blank" accesskey="v" >'.$i18n['VIEW'].'</a>'; 
 			} 
 			?>
@@ -190,7 +190,7 @@ if ($menu == '') { $menu = @$title; }
 
 				<tr>
 					<td><b><?php echo $i18n['SLUG_URL']; ?>:</b><br />
-          <input class="text short" type="text" id="post-uri" name="post-uri" value="<?php echo @$url; ?>" <?php echo (@$url=='index'?'readonly="readonly" ':''); ?>/></td>
+          <input class="text short" type="text" id="post-id" name="post-id" value="<?php echo @$url; ?>" <?php echo (@$url=='index'?'readonly="readonly" ':''); ?>/></td>
 
 					<td><b><?php echo $i18n['TAG_KEYWORDS']; ?>:</b><br />
 					<input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo @$metak; ?>" /></td>
@@ -256,7 +256,7 @@ if ($menu == '') { $menu = @$title; }
 						echo $i18n['LAST_SAVED'].': '. lngDate(@$pubDate).'&nbsp; ';
 					}
 					if ( file_exists('../backups/pages/'.@$url.'.bak.xml') ) {	
-						echo '-&nbsp; <a href="backup-edit.php?p=view&uri='.@$url.'" target="_blank" >'.$i18n['BACKUP_AVAILABLE'].'</a>';
+						echo '-&nbsp; <a href="backup-edit.php?p=view&id='.@$url.'" target="_blank" >'.$i18n['BACKUP_AVAILABLE'].'</a>';
 					} 
 			?></small>
 		</form>

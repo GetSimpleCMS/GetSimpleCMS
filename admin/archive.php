@@ -60,7 +60,7 @@ if(isset($_GET['done'])) {
 		<table class="highlight paginate">	
 		<?php
 			$count="0";
-			$path = tsl("../backups/zip/");
+			$path = tsl(GSBACKUPSPATH .'zip/');
 			
 			$filenames = getFiles($path);
 
@@ -75,7 +75,7 @@ if(isset($_GET['done'])) {
 					$ss = @stat($path . $file);
 					$size = fSize($ss['size']);
 					echo '<tr>
-							<td><a title="Download Archive: '. $name .'?" target="_blank" href="download.php?type=zip&file='. $path . $file .'">'.$name .'</a></td>
+							<td><a title="Download Archive: '. $name .'?" target="_blank" href="download.php?file='. $path . $file .'">'.$name .'</a></td>
 							<td style="width:70px;text-align:right;" ><span>'.$size.'</span></td>
 							<td class="delete" ><a class="delconfirm" title="Delete Archive: '. $name .'?" href="deletefile.php?zip='. $file .'">X</a></td>
 						  </tr>';

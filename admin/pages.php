@@ -65,7 +65,7 @@ if (count($pagesSorted) != 0) {
 		if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <sup>['.$i18n['MENUITEM_SUBTITLE'].']</sup>'; } else { $page['menuStatus'] = ''; }
 		if ($page['private'] != '' ) { $page['private'] = ' <sup>['.$i18n['PRIVATE_SUBTITLE'].']</sup>'; } else { $page['private'] = ''; }
 		if ($page['url'] == 'index' ) { $homepage = ' <sup>['.$i18n['HOMEPAGE_SUBTITLE'].']</sup>'; } else { $homepage = ''; }
-		$table .= '<td>'. @$dash .'<a title="'.$i18n['EDITPAGE_TITLE'].': '. cl($page['title']) .'" href="edit.php?uri='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
+		$table .= '<td>'. @$dash .'<a title="'.$i18n['EDITPAGE_TITLE'].': '. cl($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
 		$table .= '<td style="width:70px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
 		$table .= '<td class="secondarylink" >';
 		if ($PRETTYURLS == '1') {  

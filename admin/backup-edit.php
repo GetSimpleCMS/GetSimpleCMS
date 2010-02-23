@@ -20,10 +20,10 @@ include('inc/common.php');
 $userid = login_cookie_check();
 
 // get page url to display
-if ($_GET['uri'] != '') 
+if ($_GET['id'] != '') 
 {
-	$uri = $_GET['uri'];
-	$file = $uri .".bak.xml";
+	$id = $_GET['id'];
+	$file = $id .".bak.xml";
 	$path = "../backups/pages/";
 	
 	$data = getXML($path . $file);
@@ -60,13 +60,13 @@ else
 
 if ($p == 'delete') 
 {
-	delete_bak($uri);
-	header("Location: backups.php?upd=bak-success&uri=".$uri);
+	delete_bak($id);
+	header("Location: backups.php?upd=bak-success&id=".$id);
 } 
 elseif ($p == 'restore') 
 {
-	restore_bak($uri);
-	header("Location: edit.php?uri=". $uri ."&upd=edit-success&type=restore");
+	restore_bak($id);
+	header("Location: edit.php?id=". $id ."&upd=edit-success&type=restore");
 }
 ?>
 
@@ -83,7 +83,7 @@ elseif ($p == 'restore')
 		<label><?php echo $i18n['BACKUP_OF'];?> &lsquo;<em><?php echo @$url; ?></em>&rsquo;</label>
 		
 		<div class="edit-nav" >
-			 <a href="backups.php" accesskey="c" ><?php echo $i18n['ASK_CANCEL'];?></a> <a href="backup-edit.php?p=restore&uri=<?php echo $uri; ?>" accesskey="r" ><?php echo $i18n['ASK_RESTORE'];?></a> <a href="backup-edit.php?p=delete&uri=<?php echo $uri; ?>" title="<?php echo $i18n['DELETEPAGE_TITLE']; ?>: <?php echo $title; ?>?" accesskey="d" class="delconfirm" ><?php echo $i18n['ASK_DELETE'];?></a>
+			 <a href="backups.php" accesskey="c" ><?php echo $i18n['ASK_CANCEL'];?></a> <a href="backup-edit.php?p=restore&id=<?php echo $id; ?>" accesskey="r" ><?php echo $i18n['ASK_RESTORE'];?></a> <a href="backup-edit.php?p=delete&id=<?php echo $id; ?>" title="<?php echo $i18n['DELETEPAGE_TITLE']; ?>: <?php echo $title; ?>?" accesskey="d" class="delconfirm" ><?php echo $i18n['ASK_DELETE'];?></a>
 			<div class="clear"></div>
 		</div>
 		
@@ -91,7 +91,7 @@ elseif ($p == 'restore')
 		<tr><td style="width:105px;" ><b><?php echo $i18n['PAGE_TITLE'];?>:</b></td><td><b><?php echo cl(@$title); ?></b> <?php echo $private; ?></td></tr>
 		<tr><td><b><?php echo $i18n['BACKUP_OF'];?>:</b></td><td>
 			<?php 
-			if(isset($uri)) {
+			if(isset($id)) {
 					echo '<a target="_blank" href="'. find_url($url, $parent) .'">'. find_url($url, $parent) .'</a>'; 
 			} 
 			?>
