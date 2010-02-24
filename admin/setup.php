@@ -111,10 +111,17 @@ if(isset($_POST['submitted']))
 		// create new website.xml file
 		$file = 'website.xml';
 		$xmls = @new SimpleXMLExtended('<item></item>');
-		$xmls->addChild('SITENAME', @$SITENAME1);
-		$xmls->addChild('SITEURL', @$SITEURL1);
-		$xmls->addChild('TEMPLATE', 'Default_Simple');
-		$xmls->addChild('LANG', $LANG);
+		$note = $xmls->addChild('SITENAME');
+		$note->addCData($SITENAME1);
+		$note = $xmls->addChild('SITEURL');
+		$note->addCData(@$SITEURL1);
+		$note = $xmls->addChild('TEMPLATE');
+		$note->addCData('Default_Simple');
+		$note = $xmls->addChild('TIMEZONE');
+		$note->addCData(@$TIMEZONE);
+		$note = $xmls->addChild('TIMEZONE');
+		$note->addCData(@$LANG);
+
 		$xmls->asXML($path . $file);
 		
 		// create new cp_settings.xml file

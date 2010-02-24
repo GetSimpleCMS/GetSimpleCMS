@@ -32,12 +32,17 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) )
 	createBak($file, $path, $bakpath);
 	
 	// Update changes
-	$xml = @new SimpleXMLElement('<item></item>');
-	$xml->addChild('SITENAME', @$SITENAME);
-	$xml->addChild('SITEURL', @$SITEURL);
-	$xml->addChild('TEMPLATE', @$TEMPLATE);
-	$xml->addChild('TIMEZONE', @$TIMEZONE);
-	$xml->addChild('LANG', @$LANG);
+	$xmls = @new SimpleXMLExtended('<item></item>');
+	$note = $xml->addChild('SITENAME');
+	$note->addCData($SITENAME);
+	$note = $xml->addChild('SITEURL');
+	$note->addCData(@$SITEURL);
+	$note = $xml->addChild('TEMPLATE');
+	$note->addCData(@$TEMPLATE);
+	$note = $xml->addChild('TIMEZONE');
+	$note->addCData(@$TIMEZONE);
+	$note = $xml->addChild('TIMEZONE');
+	$note->addCData(@$LANG);
 	$xml->asXML($path . $file);
 	$success = $i18n['THEME_CHANGED'];
 }

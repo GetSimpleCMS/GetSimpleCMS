@@ -123,12 +123,18 @@ if(isset($_POST['submitted']))
 		// create new site data file
 		$ufile = 'website.xml';
 		createBak($ufile, $path, $bakpath);
-		$xmls = @new SimpleXMLElement('<item></item>');
-		$xmls->addChild('SITENAME', $SITENAME);
-		$xmls->addChild('SITEURL', @$SITEURL);
-		$xmls->addChild('TEMPLATE', @$TEMPLATE);
-		$xmls->addChild('TIMEZONE', @$TIMEZONE);
-		$xmls->addChild('LANG', @$LANG);
+		$xmls = @new SimpleXMLExtended('<item></item>');
+		$note = $xmls->addChild('SITENAME');
+		$note->addCData($SITENAME);
+		$note = $xmls->addChild('SITEURL');
+		$note->addCData(@$SITEURL);
+		$note = $xmls->addChild('TEMPLATE');
+		$note->addCData(@$TEMPLATE);
+		$note = $xmls->addChild('TIMEZONE');
+		$note->addCData(@$TIMEZONE);
+		$note = $xmls->addChild('TIMEZONE');
+		$note->addCData(@$LANG);
+
 		exec_action('settings-website');
 		$xmls->asXML($path . $ufile);
 		
@@ -209,7 +215,7 @@ else
 		<div class="main">
 		<h3><?php echo $i18n['WEBSITE_SETTINGS'];?></h3>
 
-		<p><b><?php echo $i18n['LABEL_WEBSITE'];?>:</b><br /><input class="text" name="sitename" type="text" value="<?php if(isset($SITENAME1)) { echo cl($SITENAME1); } else { echo cl($SITENAME); } ?>" /></p>
+		<p><b><?php echo $i18n['LABEL_WEBSITE'];?>:</b><br /><input class="text" name="sitename" type="text" value="<?php if(isset($SITENAME1)) { echo stripslashes($SITENAME1); } else { echo stripslashes($SITENAME); } ?>" /></p>
 
 		<p><b><?php echo $i18n['LABEL_BASEURL'];?>:</b><br /><input class="text" name="siteurl" type="text" value="<?php if(isset($SITEURL1)) { echo $SITEURL1; } else { echo $SITEURL; } ?>" /></p>
 		<?php	if ( $fullpath != $SITEURL ) {	echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.$i18n['LABEL_SUGGESTION'].': &nbsp; <code>'.$fullpath.'</code></p>';	}	?>

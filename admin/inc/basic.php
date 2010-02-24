@@ -201,8 +201,8 @@ function shtDate($dt) {
  * @returns - cleaned data
  *
 */
-function cl($data) {
-	$data = stripslashes(strip_tags(html_entity_decode($data, ENT_QUOTES)));
+function cl($data){
+	$data = stripslashes(strip_tags(html_entity_decode($data, ENT_QUOTES, 'UTF-8')));
 	return $data;
 }
 /******************************************************/
