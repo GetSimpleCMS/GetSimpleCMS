@@ -16,7 +16,9 @@
 	function get_page_content() {
 		global $content;
 		exec_action('content-top');
-		echo stripslashes(htmlspecialchars_decode($content, ENT_QUOTES));
+		$content = stripslashes(htmlspecialchars_decode($content, ENT_QUOTES));
+		$content = exec_filter('content',$content);
+		echo $content;
 		exec_action('content-bottom');
 	}
 

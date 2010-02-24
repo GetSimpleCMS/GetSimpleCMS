@@ -9,7 +9,7 @@
 
 $plugins = array();  // used for option names
 $plugins_info = array();
-
+$filters = array();
 
 // include any plugins, depending on where the referring file that calls it we need to 
 // set the correct paths. 
@@ -84,6 +84,8 @@ function createSideMenu($id,$txt){
 	echo '<li><a href="load.php?id='.$id.'" '.$class.' >'.$txt.'</a></li>';
 }
 
+
+
 /*******************************************************
  * @function createNavTab
  * @param $url - URL for link
@@ -96,7 +98,9 @@ function createNavTab($url,$txt) {
 }
 
 
-
+/*******************************************************
+ * @function register_plugin
+*/
 function register_plugin($id, $name, $ver, $auth, $auth_url, $desc, $type, $loaddata) {
 	global $plugin_info;
 	
@@ -111,6 +115,35 @@ function register_plugin($id, $name, $ver, $auth, $auth_url, $desc, $type, $load
 	);
 
 }
+
+
+/*******************************************************
+ * @function add_filter
+*/
+function add_filter($filter_name, $added_function) {
+	global $filters;
+	$filters[] = array(
+		'filter' => $filter_name,
+		'function' => $added_function
+	);
+}
+
+
+/*******************************************************
+ * @function exec_filter
+*/
+function exec_filter($script,$data) {
+	global $filters;
+	foreach ($filters as $filter)	{
+		if ($filter['filter'] == $script) {
+			$data = call_user_func_array($filter['function'], $data);
+		}
+	}
+	return $data;
+}
+
+
+
 
 
 ?>
