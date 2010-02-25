@@ -16,7 +16,7 @@
 	if(!isset($restored)) { $restored = ''; }
 	
 	if ($update == 'bak-success') { 
-		echo '<div class="updated">'. sprintf($i18n['ER_BAKUP_DELETED'], $_GET['uri']) .'</div>';
+		echo '<div class="updated">'. sprintf($i18n['ER_BAKUP_DELETED'], $_GET['id']) .'</div>';
 	} elseif (isset($error)) { 
 		echo '<div class="error"><b>'.$i18n['ERROR'].':</b> '. @$error .'</div>';
 	} elseif ($update == 'bak-err') { 
@@ -24,11 +24,11 @@
 	} elseif ($update == 'edit-success') { 
 		echo '<div class="updated">';
 		if ($ptype == 'edit') { 
-			echo sprintf($i18n['ER_YOUR_CHANGES'], $uri) .'. <a href="backup-edit.php?p=restore&uri='. $uri .'">'.$i18n['UNDO'].'</a>';
+			echo sprintf($i18n['ER_YOUR_CHANGES'], $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'">'.$i18n['UNDO'].'</a>';
 		} elseif ($ptype == 'restore') {
-			echo sprintf($i18n['ER_HASBEEN_REST'], $uri) .'. <a href="backup-edit.php?p=restore&uri='. $uri .'">'.$i18n['UNDO'].'</a>';
+			echo sprintf($i18n['ER_HASBEEN_REST'], $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'">'.$i18n['UNDO'].'</a>';
 		} elseif ($ptype == 'delete') {
-			echo sprintf($i18n['ER_HASBEEN_DEL'], $_GET['id']) .'. <a href="backup-edit.php?p=restore&uri='. $_GET['id'] .'">'.$i18n['UNDO'].'</a>';
+			echo sprintf($i18n['ER_HASBEEN_DEL'], $_GET['id']) .'. <a href="backup-edit.php?p=restore&id='. $_GET['id'] .'">'.$i18n['UNDO'].'</a>';
 		}
 		echo '</div>';
 	} elseif ($update == 'edit-index') { 
