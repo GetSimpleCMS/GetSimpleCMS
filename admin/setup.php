@@ -119,7 +119,7 @@ if(isset($_POST['submitted']))
 		$note->addCData('Default_Simple');
 		$note = $xmls->addChild('TIMEZONE');
 		$note->addCData(@$TIMEZONE);
-		$note = $xmls->addChild('TIMEZONE');
+		$note = $xmls->addChild('LANG');
 		$note->addCData(@$LANG);
 
 		$xmls->asXML($path . $file);

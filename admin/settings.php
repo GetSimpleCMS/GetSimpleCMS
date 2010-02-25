@@ -132,7 +132,7 @@ if(isset($_POST['submitted']))
 		$note->addCData(@$TEMPLATE);
 		$note = $xmls->addChild('TIMEZONE');
 		$note->addCData(@$TIMEZONE);
-		$note = $xmls->addChild('TIMEZONE');
+		$note = $xmls->addChild('LANG');
 		$note->addCData(@$LANG);
 
 		exec_action('settings-website');
