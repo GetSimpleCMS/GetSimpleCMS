@@ -52,6 +52,16 @@
 		echo $url;
 	}
 	
+	function get_parent() {
+		global $parent;
+		echo @$parent;
+	}
+	
+	function return_parent() {
+		global $parent;
+		return @$parent;
+	}
+	
 	function return_page_slug() {
 		global $url;
 		return $url;

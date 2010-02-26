@@ -165,10 +165,12 @@ function getXML($file) {
  *
 */
 function lngDate($dt) {
+	global $i18n;
+	
 	if (!$dt) {
-		$data = date("F jS, Y - g:i A");
+		$data = date($i18n['DATE_AND_TIME_FORMAT']);
 	} else {
-		$data = date("F jS, Y - g:i A", strtotime($dt));
+		$data = date($i18n['DATE_AND_TIME_FORMAT'], strtotime($dt));
 	}
 	return $data;
 }
