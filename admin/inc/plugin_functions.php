@@ -101,7 +101,7 @@ function createNavTab($url,$txt) {
 /*******************************************************
  * @function register_plugin
 */
-function register_plugin($id, $name, $ver, $auth, $auth_url, $desc, $type, $loaddata) {
+function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $desc=null, $type=null, $loaddata=null) {
 	global $plugin_info;
 	
 	$plugin_info[$id] = array(
