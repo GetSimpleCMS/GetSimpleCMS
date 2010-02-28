@@ -176,7 +176,7 @@ function menu_data($id = null,$xml=false) {
         global $PRETTYURLS;
         global $SITEURL;
         
-        $path = "data/pages";
+        $path = GSDATAPAGESPATH;
         $dir_handle = @opendir($path) or die("Unable to open $path");
         $filenames = array();
         while ($filename = readdir($dir_handle)) {
@@ -187,10 +187,10 @@ function menu_data($id = null,$xml=false) {
         $pagesArray = array();
         if (count($filenames) != 0) {
             foreach ($filenames as $file) {
-                if ($file == "." || $file == ".." || is_dir("data/pages/".$file) || $file == ".htaccess"  ) {
+                if ($file == "." || $file == ".." || is_dir(GSDATAPAGESPATH . $file) || $file == ".htaccess"  ) {
                     // not a page data file
                 } else {
-										$data = getXML('data/pages/'.$file);
+										$data = getXML(GSDATAPAGESPATH . $file);
                     if ($data->private != 'Y') {
                         $pagesArray[$count]['menuStatus'] = $data->menuStatus;
                         $pagesArray[$count]['menuOrder'] = $data->menuOrder;
@@ -269,8 +269,8 @@ function menu_data($id = null,$xml=false) {
     }
 
 	function get_component($id) {
-		if (file_exists('data/other/components.xml')) {
-			$data = getXML("data/other/components.xml");
+		if (file_exists(GSDATAOTHERPATH.'components.xml')) {
+			$data = getXML(GSDATAOTHERPATH.'components.xml');
 			$components = $data->item;
 			
 			if (count($components) != 0) {
@@ -295,7 +295,7 @@ function menu_data($id = null,$xml=false) {
 		global $SITEURL;
 		$menu = '';
 
-		$path = "data/pages";
+		$path = GSDATAPAGESPATH;
 		$dir_handle = @opendir($path) or die("Unable to open $path");
 		$filenames = array();
 		while ($filename = readdir($dir_handle)) {
@@ -306,10 +306,10 @@ function menu_data($id = null,$xml=false) {
 		$pagesArray = array();
 		if (count($filenames) != 0) {
 			foreach ($filenames as $file) {
-				if ($file == "." || $file == ".." || is_dir("data/pages/".$file) || $file == ".htaccess"  ) {
+				if ($file == "." || $file == ".." || is_dir(GSDATAPAGESPATH . $file) || $file == ".htaccess"  ) {
 					// not a page data file
 				} else {
-					$data = getXML('data/pages/'.$file);
+					$data = getXML(GSDATAPAGESPATH . $file);
 					if ($data->private != 'Y') {
 						$pagesArray[$count]['menuStatus'] = $data->menuStatus;
 						$pagesArray[$count]['menuOrder'] = $data->menuOrder;

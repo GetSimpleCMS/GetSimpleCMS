@@ -14,8 +14,8 @@ if (defined('GSDEBUG')){
 	
 	$err = '';
 	
-	if (file_exists('data/other/website.xml')) {
-		$dataw = getXML('data/other/website.xml');
+	if (file_exists(GSDATAOTHERPATH.'website.xml')) {
+		$dataw = getXML(GSDATAOTHERPATH.'website.xml');
 		$TIMEZONE = $dataw->TIMEZONE;
 		$LANG = $dataw->LANG;
 	}
@@ -31,8 +31,8 @@ if (defined('GSDEBUG')){
 		date_default_timezone_set(@$TIMEZONE);
 	}
 	
-	if (file_exists('data/other/user.xml')) {
-		$data = getXML('data/other/user.xml');
+	if (file_exists(GSDATAOTHERPATH.'user.xml')) {
+		$data = getXML(GSDATAOTHERPATH.'user.xml');
 		$EMAIL = $data->EMAIL;
 	}
 	

@@ -1,6 +1,6 @@
 <?php
 
-	if (file_exists(GSDATAOTHERPATH."/user.xml.reset")) {
+	if (file_exists(GSDATAOTHERPATH."user.xml.reset")) {
 		echo '<div class="error">'.$i18n['ER_PWD_CHANGE'].'</div>';
 	}
 	if(isset($_GET['error'])) {

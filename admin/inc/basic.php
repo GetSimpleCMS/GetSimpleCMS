@@ -54,11 +54,17 @@ function to7bit($text,$from_enc) {
  *
 */
 function sendmail($to,$subject,$message) {
+
+	if (defined('GSFROMEMAIL')){
+		$fromemail = GSFROMEMAIL; 
+	} else {
+		$fromemail = 'noreply@get-simple.info';
+	}
 	
 	global $EMAIL;
-	$headers  = "From: noreply@get-simple.info\r\n";
-	$headers .= "Reply-To: noreply@get-simple.info\r\n";
-	$headers .= "Return-Path: noreply@get-simple.info\r\n";
+	$headers  = "From: ".$fromemail."\r\n";
+	$headers .= "Reply-To: ".$fromemail."\r\n";
+	$headers .= "Return-Path: ".$fromemail."\r\n";
 	$headers .= "Content-type: text/html\r\n";
 	
 	if( mail($to,$subject,"$message",$headers) ) {
@@ -81,7 +87,6 @@ function sendmail($to,$subject,$message) {
 function subval_sort($a,$subkey) {
 	if (count($a) != 0 || (!empty($a))) { 
 		foreach($a as $k=>$v) {
-			//$b[$k] = strtolower($v[$subkey]);
 			$b[$k] = function_exists('mb_strtolower') ? mb_strtolower($v[$subkey]) : strtolower($v[$subkey]);
 		}
 		asort($b);

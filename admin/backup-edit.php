@@ -24,7 +24,7 @@ if ($_GET['id'] != '')
 {
 	$id = $_GET['id'];
 	$file = $id .".bak.xml";
-	$path = "../backups/pages/";
+	$path = GSBACKUPSPATH .'pages/';
 	
 	$data = getXML($path . $file);
 	$title = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');

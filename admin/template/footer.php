@@ -13,7 +13,7 @@ global $i18n;
 ?>
 		<div id="footer">
       	<?php 
-      		include("inc/configuration.php");
+      		include(GSADMININCPATH ."configuration.php");
       		if (cookie_check()) { 
       			echo '<p><a href="pages.php">'.$i18n['PAGE_MANAGEMENT'].'</a> &nbsp;&bull;&nbsp; <a href="upload.php">'.$i18n['FILE_MANAGEMENT'].'</a> &nbsp;&bull;&nbsp; <a href="theme.php">'.$i18n['THEME_MANAGEMENT'].'</a> &nbsp;&bull;&nbsp; <a href="backups.php">'.$i18n['BAK_MANAGEMENT'].'</a> &nbsp;&bull;&nbsp; <a href="plugins.php">'.$i18n['PLUGINS_MANAGEMENT'].'</a> &nbsp;&bull;&nbsp; <a href="settings.php">'.$i18n['GENERAL_SETTINGS'].'</a> &nbsp;&bull;&nbsp; <a href="support.php">'.$i18n['SUPPORT'].'</a></p>';
       		}

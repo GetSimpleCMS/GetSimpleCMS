@@ -18,7 +18,7 @@ include('inc/common.php');
 	
 // Variable settings
 login_cookie_check();
-$path = tsl($relative . 'backups/pages/');
+$path = GSBACKUPSPATH.'pages/';
 $counter = '0';
 $table = '';
 

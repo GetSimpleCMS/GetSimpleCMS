@@ -18,9 +18,11 @@ define('GSROOTPATH', get_root_path());
 define('GSADMINPATH', get_admin_path());
 define('GSADMININCPATH', get_admin_path(). 'inc/');
 define('GSPLUGINPATH', get_root_path(). 'plugins/');
+define('GSLANGPATH', get_admin_path(). 'lang/');
 define('GSDATAOTHERPATH', get_root_path(). 'data/other/');
 define('GSDATAPAGESPATH', get_root_path(). 'data/pages/');
 define('GSDATAUPLOADPATH', get_root_path(). 'data/uploads/');
+define('GSTHUMBNAILPATH', get_root_path(). 'data/thumbs/');
 define('GSBACKUPSPATH', get_root_path(). 'backups/');
 define('GSTHEMESPATH', get_root_path(). 'theme/');
 
@@ -38,7 +40,7 @@ if (defined('GSDEBUG')){
 }
 
 ini_set('log_errors', 1);
-ini_set('error_log', $relative . 'data/other/logs/errorlog.txt');
+ini_set('error_log', GSDATAOTHERPATH .'/logs/errorlog.txt');
 
 
 // Variable check to prevent debugging going off
@@ -52,7 +54,7 @@ $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
 
 
 // Website Data
-$thisfilew = $relative . 'data/other/website.xml';
+$thisfilew = GSDATAOTHERPATH .'website.xml';
 if (file_exists($thisfilew)) {
 	$dataw = getXML($thisfilew);
 	$SITENAME = stripslashes($dataw->SITENAME);
@@ -69,8 +71,8 @@ if (file_exists($thisfilew)) {
 
 if(!isset($base)) {
 	// User Data
-	if (file_exists($relative . 'data/other/user.xml')) {
-		$datau = getXML($relative . 'data/other/user.xml');
+	if (file_exists(GSDATAOTHERPATH .'user.xml')) {
+		$datau = getXML(GSDATAOTHERPATH .'user.xml');
 		$USR = stripslashes($datau->USR);
 	} else {
 		$USR = null;	
@@ -78,8 +80,8 @@ if(!isset($base)) {
 }
 
 // Authorization data
-if (file_exists($relative . 'data/other/authorization.xml')) {
-	$dataa = getXML($relative . 'data/other/authorization.xml');
+if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
+	$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
 	$SALT = stripslashes($dataa->apikey);
 }	else {
 	$SALT = sha1($SITEURL);
@@ -88,8 +90,8 @@ if (file_exists($relative . 'data/other/authorization.xml')) {
 $SESSIONHASH = md5($SALT . $SITENAME);
 
 // Settings
-if (file_exists($relative . 'data/other/cp_settings.xml')) {
-	$thisfilec = $relative . 'data/other/cp_settings.xml';
+if (file_exists(GSDATAOTHERPATH .'cp_settings.xml')) {
+	$thisfilec = GSDATAOTHERPATH .'cp_settings.xml';
 	$datac = getXML($thisfilec);
 	$HTMLEDITOR = $datac->HTMLEDITOR;
 	$PRETTYURLS = $datac->PRETTYURLS;
@@ -104,9 +106,9 @@ if( function_exists('date_default_timezone_set') && ($TIMEZONE != '' || stripos(
 
 // Language control
 if($LANG != ''){
-	include_once($lang_relative . 'lang/' . $LANG . '.php');
+	include_once(GSLANGPATH . $LANG . '.php');
 } else {
-	include_once($lang_relative . 'lang/en_US.php');
+	include_once(GSLANGPATH .'en_US.php');
 }
 
 // Globalization
@@ -115,7 +117,7 @@ global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR;
 // Check for main
 if(!isset($base)) {
 	// Admin base files
-	include_once('cookie_functions.php');
+	include_once(GSADMININCPATH.'cookie_functions.php');
 }
 
 // Check if site is installed?
@@ -127,25 +129,25 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup')
 		exit; 
 	}
 	
-	if (file_exists($relative . 'admin/install.php'))
+	if (file_exists(GSADMINPATH.'install.php'))
 	{
-		unlink($relative . 'admin/install.php');
+		unlink(GSADMINPATH.'install.php');
 	}
 	
-	if (file_exists($relative . 'admin/setup.php'))
+	if (file_exists(GSADMINPATH.'setup.php'))
 	{
-		unlink($relative . 'admin/setup.php');
+		unlink(GSADMINPATH.'setup.php');
 	}
 }
 
 // Check for main
 if(isset($base)) {
-	include_once('theme_functions.php');
+	include_once(GSADMININCPATH.'theme_functions.php');
 }
 
 // Include other files
-if(isset($load['login']) && $load['login']){ 	include_once('login_functions.php'); }
-if(isset($load['plugin']) && $load['plugin']){ 	include_once('plugin_functions.php'); }
+if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login_functions.php'); }
+if(isset($load['plugin']) && $load['plugin']){ 	include_once(GSADMININCPATH.'plugin_functions.php'); }
 
 
 ?>

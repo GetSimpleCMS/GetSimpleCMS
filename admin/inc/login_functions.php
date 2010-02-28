@@ -16,8 +16,8 @@ if(cookie_check()) {
 	header("Location: ". $cookie_redirect);                                             
 }
 
-	if (file_exists('../data/other/user.xml')) {
-		$data = getXML('../data/other/user.xml');
+	if (file_exists(GSDATAOTHERPATH.'user.xml')) {
+		$data = getXML(GSDATAOTHERPATH.'user.xml');
 		$PASSWD = $data->PWD;
 	}
 
@@ -43,7 +43,7 @@ if(isset($_POST['submitted']))
 			$authenticated = true;  // Successful Login
 		} else {
 			
-			$xmlfile = "../data/other/logs/failedlogins.log";
+			$xmlfile = GSDATAOTHERPATH.'logs/failedlogins.log';
 			
 			if ( ! file_exists($xmlfile) ) 	{ 
 				$xml = new SimpleXMLExtended('<channel></channel>');

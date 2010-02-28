@@ -410,8 +410,8 @@ $i18n = array(
 /* 
  * For: Date Format
 */
-"DATE_FORMAT"				=>	"M j, Y", //please keep short
-
+"DATE_FORMAT"									=>	"M j, Y", //please keep short
+"DATE_AND_TIME_FORMAT"				=>	"F jS, Y - g:i A", //date and time
 
 
 /***********************************************************************************

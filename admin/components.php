@@ -20,8 +20,8 @@ include('inc/common.php');
 // Variable settings
 $userid 	= login_cookie_check();
 $file 		= "components.xml";
-$path 		= tsl("../data/other/");
-$bakpath 	= tsl("../backups/other/");
+$path 		= GSDATAOTHERPATH;
+$bakpath 	= GSBACKUPSPATH .'other/';
 $update 	= ''; $table = ''; $list='';
 
 // if the components are being saved...

@@ -59,8 +59,8 @@ function get_filename_id() {
  *
 */
 function delete_file($id) {
-	$bakfile = "../backups/pages/". $id .".bak.xml";
-	$file = "../data/pages/". $id .".xml";
+	$bakfile = GSBACKUPSPATH."pages/". $id .".bak.xml";
+	$file = GSDATAPAGESPATH . $id .".xml";
 	copy($file, $bakfile);
 	unlink($file);
 }
@@ -86,7 +86,7 @@ function check_perms($path) {
  *
 */
 function delete_zip($id) { 
-	unlink("../backups/zip/". $id);
+	unlink(GSBACKUPSPATH."zip/". $id);
 	return 'success';
 } 
 /******************************************************/
@@ -98,12 +98,12 @@ function delete_zip($id) {
  *
 */
 function delete_upload($id) { 
-	unlink("../data/uploads/". $id);
-	if (file_exists("../data/thumbs/thumbnail.". $id)) {
-		unlink("../data/thumbs/thumbnail.". $id);
+	unlink(GSDATAUPLOADPATH . $id);
+	if (file_exists(GSTHUMBNAILPATH."thumbnail.". $id)) {
+		unlink(GSTHUMBNAILPATH."thumbnail.". $id);
 	}
-	if (file_exists("../data/thumbs/thumbsm.". $id)) {
-		unlink("../data/thumbs/thumbsm.". $id);
+	if (file_exists(GSTHUMBNAILPATH."thumbsm.". $id)) {
+		unlink(GSTHUMBNAILPATH."thumbsm.". $id);
 	}
 	return 'success';
 } 
@@ -116,7 +116,7 @@ function delete_upload($id) {
  *
 */
 function delete_bak($id) { 
-	unlink("../backups/pages/". $id .".bak.xml");
+	unlink(GSBACKUPSPATH."pages/". $id .".bak.xml");
 	return 'success';
 } 
 /******************************************************/
@@ -128,9 +128,9 @@ function delete_bak($id) {
  *
 */
 function restore_bak($id) { 
-	$file = "../backups/pages/". $id .".bak.xml";
-	$newfile = "../data/pages/". $id .".xml";
-	$tmpfile = "../backups/pages/". $id .".tmp.xml";
+	$file = GSBACKUPSPATH."pages/". $id .".bak.xml";
+	$newfile = GSDATAPAGESPATH . $id .".xml";
+	$tmpfile = GSBACKUPSPATH."pages/". $id .".tmp.xml";
 	if ( !file_exists($newfile) ) { 
 		copy($file, $newfile);
 		unlink($file);

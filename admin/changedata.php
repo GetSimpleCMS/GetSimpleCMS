@@ -74,16 +74,16 @@ if (isset($_POST['submitted']))
 				else 
 				{
 					exec_action('changedata-updateslug');
-					$file = "../data/pages/". @$url .".xml";
-					$existing = "../data/pages/". $_POST['existing-url'] .".xml";
-					$bakfile = "../backups/pages/". $_POST['existing-url'] .".bak.xml";
+					$file = GSDATAPAGESPATH . @$url .".xml";
+					$existing = GSDATAPAGESPATH . $_POST['existing-url'] .".xml";
+					$bakfile = GSBACKUPSPATH."pages/". $_POST['existing-url'] .".bak.xml";
 					copy($existing, $bakfile);
 					unlink($existing);
 				} 
 			} 
 		}
 		
-		$file = "../data/pages/". @$url .".xml";
+		$file = GSDATAPAGESPATH . @$url .".xml";
 		
 		// format and clean the responses
 		if(isset($_POST['post-title'])) { $title = htmlentities($_POST['post-title'], ENT_QUOTES, 'UTF-8'); }
@@ -111,12 +111,12 @@ if (isset($_POST['submitted']))
 		if ( file_exists($file) && ($_POST['post-id'] != $_POST['existing-url']) ) 
 		{
 			$count = "1";
-			$file = "../data/pages/". $url ."-".$count.".xml";
+			$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
 			
 			while ( file_exists($file) ) 
 			{
 				$count++;
-				$file = "../data/pages/". $url ."-".$count.".xml";
+				$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
 			}
 			
 			$url = $url .'-'. $count;
@@ -126,7 +126,7 @@ if (isset($_POST['submitted']))
 		// if we are editing an existing page, create a backup
 		if ( file_exists($file) ) 
 		{
-			$bakfile = "../backups/pages/". $url .".bak.xml";
+			$bakfile = GSBACKUPSPATH."pages/". $url .".bak.xml";
 			copy($file, $bakfile);
 		}
 		
