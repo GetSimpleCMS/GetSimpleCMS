@@ -34,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 		$objImage->setCrop($_POST['x'], $_POST['y'], $_POST['w'], $_POST['h']);
 		//$objImage->show();
 		$objImage->save($thumb_folder . 'thumbnail.' .$src);
+		$success = "Thumbnail Saved";
 	} 
 	else 
 	{

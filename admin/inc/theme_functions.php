@@ -270,8 +270,7 @@ function menu_data($id = null,$xml=false) {
 
 	function get_component($id) {
 		if (file_exists('data/other/components.xml')) {
-			$thisfile = file_get_contents("data/other/components.xml");
-			$data = simplexml_load_string($thisfile, NULL, LIBXML_NOCDATA);
+			$data = getXML("data/other/components.xml");
 			$components = $data->item;
 			
 			if (count($components) != 0) {
@@ -310,8 +309,7 @@ function menu_data($id = null,$xml=false) {
 				if ($file == "." || $file == ".." || is_dir("data/pages/".$file) || $file == ".htaccess"  ) {
 					// not a page data file
 				} else {
-					$thisfile = @file_get_contents('data/pages/'.$file);
-					$data = simplexml_load_string($thisfile);
+					$data = getXML('data/pages/'.$file);
 					if ($data->private != 'Y') {
 						$pagesArray[$count]['menuStatus'] = $data->menuStatus;
 						$pagesArray[$count]['menuOrder'] = $data->menuOrder;
