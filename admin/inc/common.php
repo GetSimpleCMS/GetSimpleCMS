@@ -40,7 +40,7 @@ if (defined('GSDEBUG')){
 }
 
 ini_set('log_errors', 1);
-ini_set('error_log', GSDATAOTHERPATH .'/logs/errorlog.txt');
+ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
 
 
 // Variable check to prevent debugging going off
