@@ -61,5 +61,9 @@
 		echo '<div class="error">'.$error.'</div>';
 	}	elseif (isset($success)) {
 		echo '<div class="updated">'.$success.'</div>';
+	} elseif (isset($_GET['err'])) {
+		echo '<div class="error"><b>'.$i18n['ERROR'].':</b> '.$_GET['err'].'</div>';
+	} elseif (isset($_GET['success'])) {
+		echo '<div class="updated">'.$_GET['success'].'</div>';
 	} 
 	?>

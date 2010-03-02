@@ -77,16 +77,7 @@ while ($file = readdir($themes_handle))
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $i18n['THEME_MANAGEMENT'];?></h1>
 	<?php include('template/include-nav.php'); ?>
 	<?php include('template/error_checking.php'); ?>
-	
-	<?php 
-	if (isset($_GET['err'])) {
-		echo '<div class="error"><b>'.$i18n['ERROR'].':</b> '.$_GET['err'].'</div>';
-	} elseif (isset($_GET['success'])) {
-		echo '<div class="updated">'.$_GET['success'].'</div>';
-	} elseif (isset($success)) {
-		echo '<div class="updated">'.$success.'</div>';
-	}
-	?>
+
 <div class="bodycontent">
 	
 	<div id="maincontent">

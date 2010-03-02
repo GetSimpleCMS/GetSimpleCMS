@@ -74,7 +74,7 @@ if (count($pagesSorted) != 0) {
 			$table .= '<a title="'.$i18n['VIEWPAGE_TITLE'].': '. cl($page['title']) .'" target="_blank" href="'. $SITEURL .'index.php?id='.$page['url'].'" >#</a>'; 
 		}
 		$table .= '</td>';
-		$table .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'" title="'.$i18n['DELETEPAGE_TITLE'].': '. stripslashes(strip_tags(html_entity_decode($page['title']))) .'?" >X</a></td></tr>';
+		$table .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'" title="'.$i18n['DELETEPAGE_TITLE'].': '. stripslashes(strip_tags(html_entity_decode($page['title']))) .'" >X</a></td></tr>';
 		
 	}
 }

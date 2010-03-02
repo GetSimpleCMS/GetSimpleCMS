@@ -132,12 +132,7 @@ $theme_templates .= "</select></span>";
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $i18n['THEME_MANAGEMENT']; ?> <span>&raquo;</span> <?php echo $i18n['EDIT_THEME']; ?></h1>
 	<?php include('template/include-nav.php'); ?>
 	<?php include('template/error_checking.php'); ?>
-	
-	<?php 
-	if (isset($success)) {
-		echo '<div class="updated">'.$success.'</div>';
-	}
-	?>
+
 <div class="bodycontent">
 	
 	<div id="maincontent">

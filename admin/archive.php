@@ -38,15 +38,7 @@ if(isset($_GET['done'])) {
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $i18n['BAK_MANAGEMENT']; ?> <span>&raquo;</span> <?php echo $i18n['WEBSITE_ARCHIVES']; ?></h1>
 	
 	<?php include('template/include-nav.php'); ?>
-	<?php 
-	if (isset($success)) {
-		echo '<div class="updated">'.$success.'</div>';
-	} elseif (isset($err)) {
-		echo '<div class="error"><b>'.$i18n['ERROR'].':</b> '.$err.'</div>';
-	} elseif (@$_GET['upd'] == 'del-success' ) {
-		echo '<div class="updated">'.$i18n['SUCC_WEB_ARC_DEL'].': <b>'.$_GET['id'].'</b></div>';
-	}
-	?>
+	<?php include('template/error_checking.php'); ?>
 
 	<div class="bodycontent">
 	
