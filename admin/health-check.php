@@ -18,9 +18,8 @@ include('inc/common.php');
 login_cookie_check();
 	
 // Variable settings
-$path = tsl('../data/other/');
 $ref = $_SERVER['SERVER_NAME'];
-$data = @getXML('../data/other/authorization.xml');
+$data = @getXML(GSDATAOTHERPATH.'authorization.xml');
 $APIKEY = $data->apikey;
 login_cookie_check();
 $php_modules = get_loaded_extensions();

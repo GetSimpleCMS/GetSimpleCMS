@@ -17,11 +17,9 @@ $relative = '../';
 include('inc/common.php');
 
 // Load user.xml
-$file = 'user.xml';
-$path = tsl('../data/other/');
-if (file_exists($path . $file)) 
-{
-	$data = getXML($path . $file);
+$file = GSDATAOTHERPATH.'user.xml';
+if (file_exists($file)) {
+	$data = getXML($file);
 	$USR = stripslashes($data->USR);
 	$PASSWD = $data->PWD;
 	$EMAIL = $data->EMAIL;
@@ -34,16 +32,16 @@ $php_modules = get_loaded_extensions();
 
 // attempt to fix permissions issues
 $dirsArray = array(
-	'../data/', 
-	'../data/other/', 
-	'../data/other/logs/', 
-	'../data/pages/', 
-	'../data/uploads/', 
-	'../data/thumbs/', 
-	'../backups/', 
-	'../backups/other/', 
-	'../backups/pages/',
-	'../backups/zip/' 
+	GSDATAPATH, 
+	GSDATAOTHERPATH, 
+	GSDATAOTHERPATH.'logs/', 
+	GSDATAPAGESPATH, 
+	GSDATAUPLOADPATH, 
+	GSTHUMBNAILPATH, 
+	GSBACKUPSPATH, 
+	GSBACKUPSPATH.'other/', 
+	GSBACKUPSPATH.'pages/',
+	GSBACKUPSPATH.'zip/'
 );
 
 foreach ($dirsArray as $dir) 
@@ -90,14 +88,13 @@ foreach ($dirsArray as $dir)
 
 
 // get available language files
-$lang_path = "lang/";
-$lang_handle = @opendir($lang_path) or die("Unable to open $lang_path");
+$lang_handle = @opendir(GSLANGPATH) or die("Unable to open ".GSLANGPATH);
 
 if ($LANG == '') { $LANG = 'en_US'; }
 
 while ($lfile = readdir($lang_handle)) 
 {
-	if( is_file($lang_path . $lfile) && $lfile != "." && $lfile != ".." ) 
+	if( is_file(GSLANGPATH . $lfile) && $lfile != "." && $lfile != ".." ) 
 	{
 		$lang_array[] = basename($lfile, ".php");
 	}
@@ -123,7 +120,7 @@ else
 }
 
 # salt value generation
-$api_file = $relative. 'data/other/authorization.xml';
+$api_file = GSDATAOTHERPATH.'authorization.xml';
 
 if (! file_exists($api_file)) {
 	if (defined('GSUSECUSTOMSALT')) {

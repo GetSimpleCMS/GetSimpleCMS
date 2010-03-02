@@ -35,6 +35,7 @@ login_cookie_check();
 			
 			<h3><?php echo $i18n['GETTING_STARTED']; ?></h3>
 			<ul>
+				<li><a href="health-check.php"><?php echo $i18n['WEB_HEALTH_CHECK']; ?></a></li>
 				<li><a href="edit.php"><?php echo $i18n['CREATE_NEW_PAGE']; ?></a></li>
 				<li><a href="upload.php"><?php echo $i18n['FILE_MANAGEMENT']; ?></a></li>
 				<li><a href="settings.php"><?php echo $i18n['GENERAL_SETTINGS']; ?></a></li>
