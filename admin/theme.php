@@ -18,7 +18,7 @@ include('inc/common.php');
 
 // Variable settings
 login_cookie_check();
-$path 			= $relative. 'data/other/'; 
+$path 			= GSDATAOTHERPATH; 
 $file 			= "website.xml"; 
 $theme_options 	= '';
 
@@ -28,7 +28,7 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) )
 	$TEMPLATE = $_POST['template'];
 	
 	// create new site data file
-	$bakpath = $relative. 'backups/other/';
+	$bakpath = GSBACKUPSPATH.'other/';
 	createBak($file, $path, $bakpath);
 	
 	// Update changes
@@ -48,12 +48,11 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) )
 }
 
 // get available themes (only look for folders)
-$themes_path = $relative. 'theme';
-$themes_handle = @opendir($themes_path) or die("Unable to open $themes_path");
+$themes_handle = @opendir(GSTHEMESPATH) or die("Unable to open ".GSTHEMESPATH);
 
 while ($file = readdir($themes_handle))
 {
-	$curpath = $themes_path .'/'. $file;
+	$curpath = GSTHEMESPATH . $file;
 	
 	if( is_dir($curpath) && $file != "." && $file != ".." )
 	{

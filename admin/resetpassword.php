@@ -19,11 +19,10 @@ include('inc/common.php');
 
 // Variable settings
 $file = 'user.xml';
-$path = tsl($relative. 'data/other/');
 
-if (file_exists($path . $file))
+if (file_exists(GSDATAOTHERPATH . $file))
 {
-	$data = getXML($path . $file);
+	$data = getXML(GSDATAOTHERPATH . $file);
 	$USR = $data->USR;
 	$EMAIL = $data->EMAIL;
 }
@@ -38,17 +37,17 @@ if(isset($_POST['submitted']))
 			$random = createRandomPassword();
 			
 			// create new users.xml file
-			$bakpath = $relative. "backups/other/";
-			createBak($file, $path, $bakpath);
+			$bakpath = GSBACKUPSPATH."other/";
+			createBak($file, GSDATAOTHERPATH, $bakpath);
 			
-			$flagfile = $relative. "backups/other/user.xml.reset";
-			copy($path . $file, $flagfile);
+			$flagfile = GSBACKUPSPATH."other/user.xml.reset";
+			copy(GSDATAOTHERPATH . $file, $flagfile);
 			
 			$xml = @new SimpleXMLElement('<item></item>');
 			$xml->addChild('USR', @$USR);
 			$xml->addChild('PWD', passhash($random));
 			$xml->addChild('EMAIL', @$EMAIL);
-			$xml->asXML($path . $file);
+			$xml->asXML(GSDATAOTHERPATH . $file);
 			
 			// send the email with the new password
 			$subject = $site_full_name .' '. $i18n['RESET_PASSWORD'] .' '. $i18n['ATTEMPT'];

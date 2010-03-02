@@ -18,10 +18,8 @@ include('inc/common.php');
 
 // Variable settings
 login_cookie_check();
-
-	$path = $relative. 'data/pages';
 	
-	$dir_handle = @opendir($path) or die("Unable to open $path");
+	$dir_handle = @opendir(GSDATAPAGESPATH) or die("Unable to open ". GSDATAPAGESPATH);
 	$filenames = array();
 	while ($filename = readdir($dir_handle)) {
 		$filenames[] = $filename;
@@ -31,11 +29,10 @@ login_cookie_check();
 	$pagesArray = array();
 	if (count($filenames) != 0) {
 		foreach ($filenames as $file) {
-			if ($file == "." || $file == ".." || is_dir($path . '/' . $file) || $file == ".htaccess"  ) {
+			if ($file == "." || $file == ".." || is_dir(GSDATAPAGESPATH . $file) || $file == ".htaccess"  ) {
 				// not a page data file
 			} else {
-					$thisfile = @file_get_contents($path . '/' . $file);
-					$data = simplexml_load_string($thisfile);
+					$data = getXML(GSDATAPAGESPATH . $file);
 				if ($data->private != 'Y') {
 					$pagesArray[$count]['menuStatus'] = $data->menuStatus;
 					$pagesArray[$count]['menuOrder'] = $data->menuOrder;

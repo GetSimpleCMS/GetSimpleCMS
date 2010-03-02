@@ -23,7 +23,7 @@ $userid = login_cookie_check();
 $uri 		= @$_GET['uri'];
 $id 		= @$_GET['id'];
 $ptype 		= @$_GET['type'];
-$path 		= '../data/pages/';
+$path 		= GSDATAPAGESPATH;
 
 // Page variables reset
 $theme_templates = ''; 
@@ -72,7 +72,7 @@ else
 
 // MAKE SELECT BOX OF AVAILABLE TEMPLATES
 if ($template == '') { $template = 'template.php'; }
-$themes_path = "../theme/". $TEMPLATE;
+$themes_path = GSTHEMESPATH . $TEMPLATE;
 
 $themes_handle = @opendir($themes_path) or die("Unable to open $themes_path");
 while ($file = readdir($themes_handle))
@@ -255,7 +255,7 @@ if ($menu == '') { $menu = @$title; }
 					if (isset($pubDate)) { 
 						echo $i18n['LAST_SAVED'].': '. lngDate(@$pubDate).'&nbsp; ';
 					}
-					if ( file_exists('../backups/pages/'.@$url.'.bak.xml') ) {	
+					if ( file_exists(GSBACKUPSPATH.'pages/'.@$url.'.bak.xml') ) {	
 						echo '-&nbsp; <a href="backup-edit.php?p=view&id='.@$url.'" target="_blank" >'.$i18n['BACKUP_AVAILABLE'].'</a>';
 					} 
 			?></small>

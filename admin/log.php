@@ -21,7 +21,7 @@ include('inc/common.php');
 login_cookie_check();
 
 $log_name = $_GET['log'];
-$log_path = tsl('../data/other/logs/');
+$log_path = GSDATAOTHERPATH.'logs/';
 $log_file = $log_path . $log_name;
 	
 if (@$_GET['action'] == 'delete') {
