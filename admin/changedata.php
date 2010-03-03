@@ -83,7 +83,7 @@ if (isset($_POST['submitted']))
 			} 
 		}
 		
-		$file = GSDATAPAGESPATH . @$url .".xml";
+		$file = GSDATAPAGESPATH . $url .".xml";
 		
 		// format and clean the responses
 		if(isset($_POST['post-title'])) { $title = htmlentities($_POST['post-title'], ENT_QUOTES, 'UTF-8'); }
@@ -108,11 +108,10 @@ if (isset($_POST['submitted']))
 			}
 		}		
 		//check to make sure we dont overwrite any good files upon create
-		if ( file_exists($file) && ($_POST['post-id'] != $_POST['existing-url']) ) 
+		if ( file_exists($file) && ($url != $_POST['existing-url']) ) 
 		{
 			$count = "1";
 			$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
-			
 			while ( file_exists($file) ) 
 			{
 				$count++;

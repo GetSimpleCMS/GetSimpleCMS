@@ -13,8 +13,10 @@ $load['plugin'] = true;
 // Relative
 $relative = '../';
 
+if(isset($_POST['lang'])) { $LANG = $_POST['lang']; }	else { $LANG = 'en_US'; }
 // Include common.php
 include('inc/common.php');
+if(isset($_POST['lang'])) { $LANG = $_POST['lang']; }	else { $LANG = 'en_US'; }
 	
 // Variables
 if(defined('GSLOGINSALT')) { $logsalt = GSLOGINSALT;} else { $logsalt = null; }

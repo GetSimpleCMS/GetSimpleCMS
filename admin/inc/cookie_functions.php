@@ -6,7 +6,7 @@
 * @Action:	Functions to create and read cookies.	
 *
 *****************************************************/
-require_once(GSADMININCPATH.'configuration.php');
+require_once('inc/configuration.php');
 
 //****************************************************//
 //** FUNCTION: create_cookie();  *********************//
