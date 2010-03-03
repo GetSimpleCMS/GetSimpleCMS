@@ -248,7 +248,7 @@ function menu_data($id = null,$xml=false) {
                     $url = find_url($slug,$parent);
                     
                     $xml.="<item>";
-                    $xml.="<slug><![CDATA[".$slugs."]]></slug>";
+                    $xml.="<slug><![CDATA[".$slug."]]></slug>";
                     $xml.="<pubDate><![CDATA[".$pubDate."]]></pubDate>";
                     $xml.="<url><![CDATA[".$url."]]></url>";
                     $xml.="<parent><![CDATA[".$parent."]]></parent>";
