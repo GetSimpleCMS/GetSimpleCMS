@@ -71,9 +71,9 @@ if (count($pagesSorted) != 0)
 		
 		if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
 		
-		$table .= '<td><a title="'.$i18n['VIEWPAGE_TITLE'].': '. cl($page['title']) .'" href="backup-edit.php?p=view&id='. $page['url'] .'">'. cl($page['title']) .'</a></td>';
+		$table .= '<td><a title="'.$i18n['VIEWPAGE_TITLE'].' '. cl($page['title']) .'" href="backup-edit.php?p=view&id='. $page['url'] .'">'. cl($page['title']) .'</a></td>';
 		$table .= '<td style="width:70px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
-		$table .= '<td class="delete" ><a class="delconfirm" title="'.$i18n['DELETEPAGE_TITLE'].': '. cl($page['title']) .'?" href="backup-edit.php?p=delete&id='. $page['url'] .'">X</a></td>';
+		$table .= '<td class="delete" ><a class="delconfirm" title="'.$i18n['DELETEPAGE_TITLE'].' '. cl($page['title']) .'?" href="backup-edit.php?p=delete&id='. $page['url'] .'">X</a></td>';
 		$table .= '</tr>';
 	}
 }	

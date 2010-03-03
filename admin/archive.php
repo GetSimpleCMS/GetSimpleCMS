@@ -67,9 +67,9 @@ if(isset($_GET['done'])) {
 					$ss = @stat($path . $file);
 					$size = fSize($ss['size']);
 					echo '<tr>
-							<td><a title="Download Archive: '. $name .'?" target="_blank" href="download.php?file='. $path . $file .'">'.$name .'</a></td>
+							<td><a title="Download Archive '. $name .'" target="_blank" href="download.php?file='. $path . $file .'">'.$name .'</a></td>
 							<td style="width:70px;text-align:right;" ><span>'.$size.'</span></td>
-							<td class="delete" ><a class="delconfirm" title="Delete Archive: '. $name .'?" href="deletefile.php?zip='. $file .'">X</a></td>
+							<td class="delete" ><a class="delconfirm" title="Delete Archive '. $name .'?" href="deletefile.php?zip='. $file .'">X</a></td>
 						  </tr>';
 					$count++;
 				}

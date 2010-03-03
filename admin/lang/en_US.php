@@ -281,7 +281,7 @@ $i18n = array(
  * For: footer.php
 */
 "POWERED_BY"				=>	"Powered by",
-"PRODUCTION"				=>	"Production",
+"PRODUCTION"				=>	"A %s Production",
 "SUBMIT_TICKET"			=>	"Submit Ticket",
 
 /* 

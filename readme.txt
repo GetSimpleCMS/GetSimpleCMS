@@ -6,7 +6,8 @@ fast and efficient and has the best UI around.
 Official Website - http://get-simple.info/
 
 GetSimple CMS was developed by Chris Cagle at 
-Cagintranet Web Design - http://www.cagintranet.com/
+Cagintranet Web Design - http://www.cagintranet.com/, but  
+now passionately supported and developed by a lovely community.
 
 
 
@@ -34,3 +35,27 @@ Hosting Server Requirements:
 Administrator's Browser/Computer Requirements:
  - Flash 8 Installed		(File Uploads)
  - Javascript Enabled		(Will make life much easier)
+
+
+
+===========================================================
+ INSTALL & UPGRADE PROCEDURE
+===========================================================
+http://get-simple.info/docs/installation
+
+
+
+===========================================================
+ DISCLAIMER
+===========================================================
+While GetSimple strives to be a secure and stable application, 
+we simply cannot be held liable for any information loss,
+corruption or anything else that may happen to your site while 
+it is using the our software. If you find a bug or security 
+hole, please contact someone in the forums at 
+http://get-simple.info/forum
+
+
+
+-----------------------------------------------------------
+<end>

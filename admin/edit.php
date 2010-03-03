@@ -180,7 +180,7 @@ if ($menu == '') { $menu = @$title; }
 			<!-- page title toggle screen -->
 			<p id="edit_window">
 				<label for="post-title" style="display:none;"><?php echo $i18n['PAGE_TITLE']; ?></label>
-				<input class="text title set-example-text" id="post-title" name="post-title" type="text" value="<?php echo @$title; ?>" />
+				<input class="text title" id="post-title" name="post-title" type="text" value="<?php echo @$title; ?>" />
 			</p>
 				
 
