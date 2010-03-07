@@ -346,11 +346,10 @@ function menu_data($id = null,$xml=false) {
 	}	
 
 
-//****************************************************//
-//** FUNCTION: set_contact_page()                   **//
-//**                                                **//
-//** Includes the setup for a contact page.         **//
-//****************************************************//
+/* FUNCTION: set_contact_page()                   
+ * @status: depreciated 
+*/
+
 	function set_contact_page($cpage = 'contactform.php') {
 		global $EMAIL;
 		$style='<style>.pot {display:none;}</style>';
