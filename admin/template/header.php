@@ -9,11 +9,11 @@
 *****************************************************/
 
 global $LANG;
-$LANG = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
+$LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $LANG; ?>" lang="<?php echo $LANG; ?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $LANG_header; ?>" lang="<?php echo $LANG_header; ?>">
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"  />

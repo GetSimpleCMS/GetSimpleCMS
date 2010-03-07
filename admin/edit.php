@@ -220,7 +220,7 @@ if ($menu == '') { $menu = @$title; }
 					
 					<td>
 							<b><a href="navigation.php" style="display:inline;font-weight:bold !important;" rel="facybox" ><?php echo $i18n['ADD_TO_MENU']; ?></a>?</b> &nbsp;&nbsp;&nbsp;<input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo @$sel; ?> /><br />
-							<div id="menu-items"><span><?php echo strtolower($i18n['MENU_TEXT']); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo strtolower($i18n['PRIORITY']); ?></span><input class="text" style="width:175px;" id="post-menu" name="post-menu" type="text" value="<?php echo @$menu; ?>" />&nbsp
+							<div id="menu-items"><span><?php echo $i18n['MENU_TEXT']; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $i18n['PRIORITY']; ?></span><input class="text" style="width:175px;" id="post-menu" name="post-menu" type="text" value="<?php echo @$menu; ?>" />&nbsp
 							<select class="text"  style="width:50px;" id="post-menu-order" name="post-menu-order" >
 								<?php if($menuOrder) { 
 									if($menuOrder == 0) {

@@ -13,10 +13,12 @@ $load['plugin'] = true;
 // Relative
 $relative = '../';
 
-if(isset($_POST['lang'])) { $LANG = $_POST['lang']; }	else { $LANG = 'en_US'; }
+if($_POST['lang'] != '') { 	
+	$LANG = $_POST['lang'];
+}
+
 // Include common.php
 include('inc/common.php');
-if(isset($_POST['lang'])) { $LANG = $_POST['lang']; }	else { $LANG = 'en_US'; }
 	
 // Variables
 if(defined('GSLOGINSALT')) { $logsalt = GSLOGINSALT;} else { $logsalt = null; }
@@ -88,8 +90,7 @@ if(isset($_POST['submitted']))
 
 	
 	// if there were no errors, setup the site
-	if ($err == '') 
-	{
+	if ($err == '')	{
 		$random = createRandomPassword();
 		$PASSWD1 = passhash($random);
 		
@@ -122,7 +123,7 @@ if(isset($_POST['submitted']))
 		$note = $xmls->addChild('TIMEZONE');
 		$note->addCData(@$TIMEZONE);
 		$note = $xmls->addChild('LANG');
-		$note->addCData(@$LANG);
+		$note->addCData($LANG);
 
 		$xmls->asXML($path . $file);
 		
@@ -234,9 +235,8 @@ if(isset($_POST['submitted']))
 
 	<form action="setup.php" method="post" accept-charset="utf-8" >
 		<p><b><?php echo $i18n['LABEL_WEBSITE']; ?>:</b><br /><input class="text" name="sitename" type="text" value="<?php if(isset($_POST['sitename'])) { echo $_POST['sitename']; } ?>" /></p>
-		<!-- p><b><?php echo $i18n['LABEL_BASEURL']; ?>:</b><br /><input class="text" name="siteurl" type="text" value="<?php if(isset($_POST['siteurl'])) { echo $_POST['siteurl']; } else { echo $fullpath;} ?>" /><br />
-		<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" ><?php echo $i18n['LABEL_SUGGESTION']; ?>: &nbsp; <code><?php echo @$fullpath; ?></code></p -->
 		<input name="siteurl" type="hidden" value="<?php if(isset($_POST['siteurl'])) { echo $_POST['siteurl']; } else { echo $fullpath;} ?>" />
+		<input name="lang" type="hidden" value="<?php echo $LANG; ?>" />
 		<p><b><?php echo $i18n['LABEL_USERNAME']; ?>:</b><br /><input class="text" name="user" type="text" value="<?php if(isset($_POST['user'])) { echo $_POST['user']; } ?>" /></p>
 		<p><b><?php echo $i18n['LABEL_EMAIL']; ?>:</b><br /><input class="text" name="email" type="text" value="<?php if(isset($_POST['email'])) { echo $_POST['email']; } ?>" /></p>
 		<p><input class="submit" type="submit" name="submitted" value="<?php echo $i18n['LABEL_INSTALL']; ?>" /></p>

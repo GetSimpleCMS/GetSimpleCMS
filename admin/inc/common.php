@@ -65,7 +65,6 @@ if (file_exists($thisfilew)) {
 	$LANG = $dataw->LANG;
 } else {
 	$TIMEZONE = 'America/New_York';
-	$LANG = 'en_US';
 }
 
 
@@ -106,11 +105,12 @@ if( function_exists('date_default_timezone_set') && ($TIMEZONE != '' || stripos(
 }
 
 // Language control
-if($LANG != ''){
-	include_once(GSLANGPATH . $LANG . '.php');
-} else {
-	include_once(GSLANGPATH .'en_US.php');
+if($LANG == '') {
+	$LANG = 'en_US';
 }
+include_once(GSLANGPATH . $LANG . '.php');
+
+
 
 // Globalization
 global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR;
