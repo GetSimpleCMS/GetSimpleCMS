@@ -179,7 +179,14 @@ jQuery(document).ready(function() {
 				          $("#pg_counter").html(counter-1);
 				      }
 			          $('table.paginate tr').quickpaginate( { perpage: 15, showcounter: true, pager : $("#page_counter") } );
-			          //return false;
+			          
+			          //added by dniesel
+                if($(response).find('div.error').html()) {
+                  $('div.bodycontent').before('<div class="error">'+ $(response).find('div.error').html() + '</div>'); 
+                }
+                if($(response).find('div.updated').html()) {
+                  $('div.bodycontent').before('<div class="updated">'+ $(response).find('div.updated').html() + '</div>'); 
+                }
 				     }
 				  });
 					$('#loader').fadeOut(500);
