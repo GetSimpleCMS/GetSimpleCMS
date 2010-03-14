@@ -182,6 +182,7 @@ function menu_data($id = null,$xml=false) {
         while ($filename = readdir($dir_handle)) {
             $filenames[] = $filename;
         }
+        closedir($dir_handle);
         
         $count="0";
         $pagesArray = array();
@@ -264,8 +265,6 @@ function menu_data($id = null,$xml=false) {
             return $xml;
             }
         }
-        
-        closedir($dir_handle);
     }
 
 	function get_component($id) {
