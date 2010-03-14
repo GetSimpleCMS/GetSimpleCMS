@@ -222,7 +222,7 @@ function menu_data($id = null,$xml=false) {
                     
                     $url = find_url($slug,$parent);
                     
-                    $specific = array("slug"=>$slugs,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
+                    $specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
                     
                     if ($id == $slug) { 
                         return $specific; 
