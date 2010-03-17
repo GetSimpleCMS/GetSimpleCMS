@@ -20,7 +20,7 @@ if ($_REQUEST['sessionHash'] === $SESSIONHASH) {
 	{
 		$tempFile = $_FILES['Filedata']['tmp_name'];
 		$name = $_FILES['Filedata']['name'];
-		$targetPath = $_SERVER['DOCUMENT_ROOT'] . $_REQUEST['folder'] . '/';
+		$targetPath = GSDATAUPLOADPATH;
 		$targetFile =  str_replace('//','/',$targetPath) . $name;
 		
 		move_uploaded_file($tempFile, $targetFile);
