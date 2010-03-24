@@ -52,7 +52,7 @@ if (isset($_POST['submitted']))
 					$slug_tmp = '';
 				}
 				
-				$coArray[$ct]['id'] = $id[$ct];
+				$coArray[$ct]['id'] = $ids[$ct];
 				$coArray[$ct]['title'] = htmlentities($title[$ct], ENT_QUOTES, 'UTF-8');
 				$coArray[$ct]['slug'] = $slug[$ct];
 				$coArray[$ct]['value'] = htmlentities($value[$ct], ENT_QUOTES, 'UTF-8');
