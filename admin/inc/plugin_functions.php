@@ -132,7 +132,7 @@ function add_filter($filter_name, $added_function) {
 /*******************************************************
  * @function exec_filter
 */
-function exec_filter($script,$data) {
+function exec_filter($script,$data=array()) {
 	global $filters;
 	foreach ($filters as $filter)	{
 		if ($filter['filter'] == $script) {
