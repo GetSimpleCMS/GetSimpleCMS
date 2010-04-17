@@ -82,7 +82,7 @@ while ($file = readdir($themes_handle))
 	<div id="maincontent">
 		<div class="main">
 		<h3><?php echo $i18n['CHOOSE_THEME'];?></h3>
-		<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" accept-charset="utf-8" >
+		<form action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" accept-charset="utf-8" >
 		<p style="display:none" id="waiting" ><?php echo $i18n['SITEMAP_WAIT'];?></p>
 
 		<p><select class="text" style="width:250px;" name="template" >

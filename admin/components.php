@@ -131,7 +131,7 @@ if (count($componentsec) != 0) {
 		<div class="clear"></div>
 	</div>
 	
-	<form class="manyinputs" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" accept-charset="utf-8" >
+	<form class="manyinputs" action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" accept-charset="utf-8" >
 		<input type="hidden" id="id" value="<?php echo @$count; ?>" />
 		<p><input type="submit" class="submit" name="submitted" id="button" value="<?php echo $i18n['SAVE_COMPONENTS'];?>" /> &nbsp;&nbsp;<?php echo $i18n['OR']; ?>&nbsp;&nbsp; <a class="cancel" href="theme.php"><?php echo $i18n['CANCEL']; ?></a></p>
 

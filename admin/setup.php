@@ -41,9 +41,9 @@ if (file_exists($path . $file))
 }
 
 // get suggestion for website base url
-$path_parts = pathinfo($_SERVER['PHP_SELF']);
+$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
 $path_parts = str_replace("/admin", "", $path_parts['dirname']);
-$fullpath = "http://". $_SERVER['SERVER_NAME'] . $path_parts ."/";	
+$fullpath = "http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts ."/";	
 
 // if the form was submitted...	
 if(isset($_POST['submitted']))

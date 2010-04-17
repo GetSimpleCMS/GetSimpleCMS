@@ -20,9 +20,9 @@ include('inc/common.php');
 
 // check form referrer - needs siteurl and edit.php in it. 
 if (isset($_SERVER['HTTP_REFERER'])) {
-	if ( !(strpos(str_replace('http://www.', '', $SITEURL), $_SERVER['HTTP_REFERER']) === false) || !(strpos("edit.php", $_SERVER['HTTP_REFERER']) === false)) ){
+	if ( !(strpos(str_replace('http://www.', '', $SITEURL), $_SERVER['HTTP_REFERER']) === false) || !(strpos("edit.php", $_SERVER['HTTP_REFERER']) === false)) {
 		echo "<b>Invalid Referer</b><br />-------<br />"; 
-		echo 'Invalid Referer: ' . $_SERVER['HTTP_REFERER'];
+		echo 'Invalid Referer: ' . htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES);
 		die;
 	}
 }

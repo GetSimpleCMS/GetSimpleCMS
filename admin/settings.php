@@ -162,9 +162,9 @@ if ($HTMLEDITOR != '' ) { $editorchck = 'checked'; }
 if ($PRETTYURLS != '' ) { $prettychck = 'checked'; }
 
 // get what we think the 'website base url' should be
-$path_parts = pathinfo($_SERVER['PHP_SELF']);
+$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
 $path_parts = str_replace("/admin", "", $path_parts['dirname']);
-$fullpath = tsl("http://". $_SERVER['SERVER_NAME'] . $path_parts);
+$fullpath = tsl("http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts);
 
 // get available language files
 $lang_path = "lang/";
@@ -211,7 +211,7 @@ else
 <div class="bodycontent">
 	
 	<div id="maincontent">
-		<form class="largeform" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" accept-charset="utf-8" >
+		<form class="largeform" action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" accept-charset="utf-8" >
 		<div class="main">
 		<h3><?php echo $i18n['WEBSITE_SETTINGS'];?></h3>
 

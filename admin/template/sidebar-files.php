@@ -5,7 +5,7 @@
 	<?php exec_action("files-sidebar"); ?>
 	
 	<?php if (defined('GSNOUPLOADIFY')) { $ftpid=null; } else { $ftpid='id="mainftp"'; } ?>
-	<li class="upload">	<form <?php echo $ftpid; ?> class="fullform" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
+	<li class="upload">	<form <?php echo $ftpid; ?> class="fullform" action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" enctype="multipart/form-data">
 		<p><input type="file" class="text" name="file" id="file" /></p>
 		<input type="hidden" name="hash" id="hash" value="<?php echo $SESSIONHASH; ?>" />
 		<p><input type="submit" class="submit" name="submit" value="<?php echo $i18n['UPLOAD']; ?>" /></p>

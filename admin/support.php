@@ -75,7 +75,7 @@ if ($FOUR04MONITOR != '' ) { $four04chck = 'checked'; }
 			include "plugins/".$_GET['plugin']."/".$_GET['page'].".php";
 		} else { ?>	
 		<div class="main">	
-		<form class="largeform" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" >
+		<form class="largeform" action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" >
 		<h3><?php echo $i18n['SUPPORT'];?> <?php echo $i18n['SETTINGS'];?></h3>
 		<p><input name="fouro4monitoring" type="checkbox" value="1" <?php echo $four04chck; ?>  /> &nbsp;<?php echo $i18n['EMAIL_ON_404'];?>.</p>
 		<p><input class="submit" type="submit" name="submitted" value="<?php echo $i18n['BTN_SAVESETTINGS'];?>" /></p>

@@ -18,7 +18,7 @@ include('inc/common.php');
 login_cookie_check();
 	
 // Variable settings
-$ref = $_SERVER['SERVER_NAME'];
+$ref = htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES);
 $data = @getXML(GSDATAOTHERPATH.'authorization.xml');
 $APIKEY = $data->apikey;
 login_cookie_check();

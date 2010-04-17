@@ -30,7 +30,7 @@ function get_template($name, $title='** Change Me - Default Page Title **') {
  *
 */
 function filename_id() {
-	$path = $_SERVER['PHP_SELF'];
+	$path = htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES);
 	$file = basename($path,".php");	
 	echo "id=\"". $file ."\"";	
 }
@@ -43,7 +43,7 @@ function filename_id() {
  *
 */
 function get_filename_id() {
-	$path = $_SERVER['PHP_SELF'];
+	$path = htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES);
 	$file = basename($path,".php");	
 	return $file;	
 }
