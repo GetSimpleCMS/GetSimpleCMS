@@ -68,11 +68,7 @@ if (count($pagesSorted) != 0) {
 		$table .= '<td>'. @$dash .'<a title="'.$i18n['EDITPAGE_TITLE'].': '. cl($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
 		$table .= '<td style="width:70px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
 		$table .= '<td class="secondarylink" >';
-		if ($PRETTYURLS == '1') {  
-			$table .= '<a title="'.$i18n['VIEWPAGE_TITLE'].': '. cl($page['title']) .'" target="_blank" href="'. $SITEURL . @$page['parent'] . $page['url'] .'">#</a>'; 
-		} else {
-			$table .= '<a title="'.$i18n['VIEWPAGE_TITLE'].': '. cl($page['title']) .'" target="_blank" href="'. $SITEURL .'index.php?id='.$page['url'].'" >#</a>'; 
-		}
+		$table .= '<a title="'.$i18n['VIEWPAGE_TITLE'].': '. cl($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
 		$table .= '</td>';
 		$table .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'" title="'.$i18n['DELETEPAGE_TITLE'].': '. stripslashes(strip_tags(html_entity_decode($page['title']))) .'" >X</a></td></tr>';
 		
