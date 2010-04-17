@@ -329,7 +329,7 @@ function menu_data($id = null,$xml=false) {
 				$url_nav = $page['url'];
 				
 				if ($page['menuStatus'] == 'Y') { 
-					if ("$currentpage" == "$url_nav") { $classes = "current ". $url_nav; } else { $classes = $url_nav; }
+					if ("$currentpage" == "$url_nav") { $classes = "current ". $page['parent'] ." ". $url_nav; } else { $classes = $page['parent'] ." ". $url_nav; }
 					if ($page['menu'] == '') { $page['menu'] = $page['title']; }
 					if ($page['title'] == '') { $page['title'] = $page['menu']; }
 					$menu .= '<li class="'. $classes .'" ><a href="'. find_url($page['url'],$page['parent']) . '" title="'. $page['title'] .'">'.$page['menu'].'</a></li>'."\n";

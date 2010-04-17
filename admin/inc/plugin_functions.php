@@ -136,7 +136,7 @@ function exec_filter($script,$data=array()) {
 	global $filters;
 	foreach ($filters as $filter)	{
 		if ($filter['filter'] == $script) {
-			$data = call_user_func_array($filter['function'], $data);
+			$data = call_user_func_array($filter['function'], array($data));
 		}
 	}
 	return $data;
