@@ -274,22 +274,28 @@ function ListDir($dir_handle,$path) {
  * @returns returns the url of a page
  *
 */
-function find_url($slug, $parent) {
+function find_url($slug, $parent, $full=TRUE) {
 	global $PRETTYURLS;
 	global $SITEURL;
+	
+	if ($full) {
+		$full = $SITEURL;
+	} else {
+		$full = '/';
+	}
 	
   if ($PRETTYURLS == '1') {      
     if ($slug != 'index'){ 
     	if ($parent != '') {$parent = tsl($parent); } 
-    	$url = $SITEURL . @$parent . $slug;
+    	$url = $full . @$parent . $slug;
     } else {
-    	$url = $SITEURL;
+    	$url = $full;
     }   
   } else {
 		if ($slug != 'index'){ 
-    	$url = $SITEURL .'index.php?id='.$slug;
+    	$url = $full .'index.php?id='.$slug;
     } else {
-    	$url = $SITEURL;
+    	$url = $full;
     }
   }
 	
