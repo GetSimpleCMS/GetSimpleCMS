@@ -63,8 +63,10 @@ if ($url == '403') {
 }
 
 # check for correctly formed url
-if ($_SERVER['REQUEST_URI'] != find_url($url, $parent, FALSE)) {
-	header('Location: '. find_url($url, $parent));
+if (!defined('GSNOCANONICAL')) {
+	if ($_SERVER['REQUEST_URI'] != find_url($url, $parent, FALSE)) {
+		header('Location: '. find_url($url, $parent));
+	}
 }
 
 # include the functions.php page if it exists within the theme

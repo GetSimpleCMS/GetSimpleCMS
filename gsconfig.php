@@ -21,6 +21,9 @@ define('GSIMAGEWIDTH', '200');
 # Ping search engines upon sitemap generation?
 #define('GSDONOTPING', 1);
 
+# Disable Canonical Redirects?
+#define('GSNOCANONICAL', 1);
+
 # Use Uploadify to upload files?
 #define('GSNOUPLOADIFY', 1);
 
