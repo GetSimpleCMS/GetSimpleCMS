@@ -241,6 +241,13 @@ jQuery(document).ready(function() {
 		return $(this).attr('rel');
 	}, {className: 'example-text'});  
   
+  var edit_line = $('#submit_line').html();
+  $('#js_submit_line').html(edit_line);
+  $("#js_submit_line input.submit").live("click", function() {
+      //$("#editform").submit();
+      $("#submit_line input.submit").trigger('click');
+	});
+  
   
   // pages.php
   $("#show-characters").live("click", function() {

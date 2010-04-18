@@ -4,3 +4,7 @@
 	<?php if(@$_GET['id'] != '') { ?><li><a href="#" class="current"><?php echo $i18n['EDITPAGE_TITLE']; ?></a></li><?php } ?>
 	<?php exec_action("pages-sidebar"); ?>
 </ul>
+
+<?php if(get_filename_id()==='edit') { ?>
+<p id="js_submit_line" ></p>
+<?php } ?>

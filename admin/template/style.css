@@ -235,7 +235,7 @@ html {
 #sidebar .snav ul {list-style:none;margin:0;}
 #sidebar .snav li {margin:0 0 3px 0;}
 #sidebar .snav li ul li {margin:0 0 3px 0;}
-
+#sidebar #js_submit_line {margin:0 0 0 12px;}
 #sidebar .snav li a {font-weight:800;display:block;padding:5px 15px 5px 15px;text-decoration:none;
 	border-radius: 4px;
 	-moz-border-radius: 4px;
@@ -406,7 +406,7 @@ table.cleantable tr {border:none;}
 table.cleantable tr td {border:none;}
 
 /* form submit button style */
-form input.submit {
+input.submit {
 	padding:5px 10px;
 	font-family:Arial, Helvetica Neue, Helvetica, sans-serif;
 	font-weight:bold;

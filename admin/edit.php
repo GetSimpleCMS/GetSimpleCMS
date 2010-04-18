@@ -249,7 +249,7 @@ if ($menu == '') { $menu = @$title; }
 				echo '<input type="hidden" name="existing-url" value="'. @$url .'" />'; 
 			} ?>	
 			
-			<p><input class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" /> &nbsp;&nbsp;<?php echo $i18n['OR']; ?>&nbsp;&nbsp; <a class="cancel" href="pages.php?cancel"><?php echo $i18n['CANCEL']; ?></a></p>
+			<p id="submit_line" ><input class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" /> &nbsp;&nbsp;<?php echo $i18n['OR']; ?>&nbsp;&nbsp; <a class="cancel" href="pages.php?cancel"><?php echo $i18n['CANCEL']; ?></a></p>
 			
 			<small><?php 
 					if (isset($pubDate)) { 
