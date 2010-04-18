@@ -245,6 +245,8 @@ if ($menu == '') { $menu = @$title; }
 				<textarea class="set-example-text" id="post-content" rel="<?php echo $i18n['LABEL_PAGEBODY']; ?>" name="post-content"><?php echo @$content; ?></textarea>
 			</p>
 			
+			<?php exec_action('edit-content'); ?> 
+			
 			<?php if(isset($data_edit)) { 
 				echo '<input type="hidden" name="existing-url" value="'. @$url .'" />'; 
 			} ?>	
