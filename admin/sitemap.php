@@ -84,7 +84,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 			//create xml file
 			$file = $relative .'sitemap.xml';
 			exec_action('save-sitemap');
-			$xml->asXML($file);
+			XMLsave($xml, $file);
 		}
 	}
 	

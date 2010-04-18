@@ -95,7 +95,7 @@ if (defined('GSDEBUG')){
 			}
 			$result = mail($EMAIL,$subject,$body,$headers);
 			
-			$xml->asXML($xmlfile);
+			XMLsave($xml, $xmlfile);
 		
 			//results
 			if ($result) {

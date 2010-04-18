@@ -163,6 +163,19 @@ function getXML($file) {
 }
 /******************************************************/
 
+/*******************************************************
+ * @function XMLsave
+ * @param $file - file to save
+ * @param $xml - data to save
+ *
+*/
+function XMLsave($xml, $file) {
+	# this will eventually replace all calls of $xml->asXML($file) to help prevent chmod/chown problems
+	$xml->asXML($file);
+}
+/******************************************************/
+
+
 
 /*******************************************************
  * @function lngDate

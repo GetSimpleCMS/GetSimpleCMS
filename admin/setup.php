@@ -103,7 +103,7 @@ if(isset($_POST['submitted']))
 		$xml->addChild('PWD', @$PASSWD1);
 		$xml->addChild('EMAIL', @$EMAIL1);
 		
-		if (! $xml->asXML($path . $file)) 
+		if (! XMLsave($xml, $path . $file) ) 
 		{
 			$kill = $i18n['CHMOD_ERROR'];
 		}
@@ -124,8 +124,7 @@ if(isset($_POST['submitted']))
 		$note->addCData(@$TIMEZONE);
 		$note = $xmls->addChild('LANG');
 		$note->addCData($LANG);
-
-		$xmls->asXML($path . $file);
+		XMLsave($xmls, $path . $file);
 		
 		// create new cp_settings.xml file
 		$file = 'cp_settings.xml';
@@ -133,15 +132,13 @@ if(isset($_POST['submitted']))
 		$xmlc->addChild('HTMLEDITOR', '1');
 		$xmlc->addChild('HELPSECTIONS', '1');
 		$xmlc->addChild('PRETTYURLS', '');
-		$xmlc->asXML($path . $file);
-		
+		XMLsave($xmlc, $path . $file);
 		
 		// create index.xml page
 		$init = $relative. "data/pages/index.xml"; 
 		$temp = "inc/tmp/tmp-index.xml";
 		
-		if (! file_exists($init)) 
-		{
+		if (! file_exists($init))	{
 			copy($temp,$init);
 		}
 

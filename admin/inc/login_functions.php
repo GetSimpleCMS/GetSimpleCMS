@@ -59,7 +59,7 @@ if(isset($_POST['submitted']))
 			$cdata = $thislog->addChild('IP_Address');
 			$ip = getenv ("REMOTE_ADDR"); 
 			$cdata->addCData($ip);
-			$xml->asXML($xmlfile);
+			XMLsave($xml, $xmlfile);
 			
 		}
 		

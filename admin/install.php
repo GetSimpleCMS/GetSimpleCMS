@@ -136,7 +136,7 @@ if (! file_exists($api_file)) {
 	$xml = @new SimpleXMLExtended('<item></item>');
 	$note = $xml->addChild('apikey');
 	$note->addCData($saltval);
-	$xml->asXML($api_file);
+	XMLsave($xml, $api_file);
 }
 
 # get salt value

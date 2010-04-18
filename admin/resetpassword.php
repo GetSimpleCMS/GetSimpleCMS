@@ -47,7 +47,7 @@ if(isset($_POST['submitted']))
 			$xml->addChild('USR', @$USR);
 			$xml->addChild('PWD', passhash($random));
 			$xml->addChild('EMAIL', @$EMAIL);
-			$xml->asXML(GSDATAOTHERPATH . $file);
+			XMLsave($xml, GSDATAOTHERPATH . $file);
 			
 			// send the email with the new password
 			$subject = $site_full_name .' '. $i18n['RESET_PASSWORD'] .' '. $i18n['ATTEMPT'];

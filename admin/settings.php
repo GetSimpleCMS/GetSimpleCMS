@@ -18,14 +18,14 @@ include('inc/common.php');
 
 // Variable settings
 login_cookie_check();
-$file		= 'user.xml';
+$file			= 'user.xml';
 $path 		= $relative. 'data/other/';
 $bakpath 	= $relative. 'backups/other/';
 $data 		= getXML($path . $file);
-$USR 		= stripslashes($data->USR);
+$USR 			= stripslashes($data->USR);
 $PASSWD 	= $data->PWD;
 $EMAIL 		= $data->EMAIL;
-$err 		= '';
+$err 			= '';
 
 // if the undo command was invoked
 if (isset($_GET['undo']))
@@ -118,7 +118,7 @@ if(isset($_POST['submitted']))
 		$xml->addChild('PWD', @$PASSWD);
 		$xml->addChild('EMAIL', @$EMAIL);
 		exec_action('settings-user');
-		$xml->asXML($path . $ufile);
+		XMLsave($xml, $path . $ufile);
 		
 		// create new site data file
 		$ufile = 'website.xml';
@@ -134,9 +134,8 @@ if(isset($_POST['submitted']))
 		$note->addCData(@$TIMEZONE);
 		$note = $xmls->addChild('LANG');
 		$note->addCData(@$LANG);
-
 		exec_action('settings-website');
-		$xmls->asXML($path . $ufile);
+		XMLsave($xmls, $path . $ufile);
 		
 		//see new language file immediately
 		include('lang/'.$LANG.'.php');
@@ -148,7 +147,7 @@ if(isset($_POST['submitted']))
 		$xmlc->addChild('HTMLEDITOR', @$HTMLEDITOR);
 		$xmlc->addChild('PRETTYURLS', @$PRETTYURLS);
 		exec_action('settings-cpsettings');
-		$xmlc->asXML($path . $ufile);
+		XMLsave($xmlc, $path . $ufile);
 		
 		$err = "false";
 	}

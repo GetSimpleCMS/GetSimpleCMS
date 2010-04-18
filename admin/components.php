@@ -76,7 +76,7 @@ if (isset($_POST['submitted']))
 		}
 	}
 	exec_action('component-save');
-	$xml->asXML($path . $file);
+	XMLsave($xml, $path . $file);
 	header('Location: components.php?upd=comp-success');
 }
 

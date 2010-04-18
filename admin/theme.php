@@ -43,7 +43,7 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) )
 	$note->addCData(@$TIMEZONE);
 	$note = $xml->addChild('LANG');
 	$note->addCData(@$LANG);
-	$xml->asXML($path . $file);
+	XMLsave($xml, $path . $file);
 	$success = $i18n['THEME_CHANGED'];
 }
 

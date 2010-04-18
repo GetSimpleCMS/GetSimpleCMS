@@ -167,8 +167,8 @@ if (isset($_POST['submitted']))
 		$note->addCData(@$private);
 
 		exec_action('changedata-save');
-
-		$xml->asXML($file);
+		
+		XMLsave($xml, $file);
 		
 		// redirect user back to edit page 
 		header("Location: edit.php?id=". $url ."&upd=edit-success&type=edit");
