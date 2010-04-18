@@ -170,8 +170,13 @@ function getXML($file) {
  *
 */
 function XMLsave($xml, $file) {
-	# this will eventually replace all calls of $xml->asXML($file) to help prevent chmod/chown problems
 	$xml->asXML($file);
+	
+	if (defined('GSCHMOD')) {
+		chmod($file, GSCHMOD);
+	} else {
+		chmod($file, 0755);
+	}
 }
 /******************************************************/
 
