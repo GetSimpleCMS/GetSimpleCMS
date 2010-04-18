@@ -1,3 +1,3 @@
 <?php 
 
-# this file was replaced in version 2.0
+# this file was removed since version 2.0

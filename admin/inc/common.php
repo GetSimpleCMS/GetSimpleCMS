@@ -95,7 +95,6 @@ if (file_exists(GSDATAOTHERPATH .'cp_settings.xml')) {
 	$datac = getXML($thisfilec);
 	$HTMLEDITOR = $datac->HTMLEDITOR;
 	$PRETTYURLS = $datac->PRETTYURLS;
-	$FOUR04MONITOR = $datac->FOUR04MONITOR;
 }
 
 // Set correct timestamp if available.

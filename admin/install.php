@@ -46,7 +46,7 @@ $dirsArray = array(
 
 foreach ($dirsArray as $dir) 
 {
-	$tmpfile = 'inc/tmp/tmp-403.xml';
+	$tmpfile = 'inc/tmp/tmp-404.xml';
 	
 	if (file_exists($dir)) 
 	{

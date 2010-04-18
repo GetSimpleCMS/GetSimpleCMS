@@ -29,13 +29,12 @@ if (isset($_GET['id'])){
 }
 
 # define page, spit out 404 if it doesn't exist
-# it was a long night and I accidently set the 404 error as 403. Forgive me
 $file = "data/pages/". $id .".xml";
-$file_404 = "data/other/403.xml";
+$file_404 = "data/other/404.xml";
 if (! file_exists($file)) {
 	if (file_exists($file_404))	{
 		$file = $file_404;
-		include($admin_relative. '404-mailer.php');
+		exec_action('error-404');
 	}
 }
 

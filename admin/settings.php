@@ -147,7 +147,6 @@ if(isset($_POST['submitted']))
 		$xmlc = @new SimpleXMLElement('<item></item>');
 		$xmlc->addChild('HTMLEDITOR', @$HTMLEDITOR);
 		$xmlc->addChild('PRETTYURLS', @$PRETTYURLS);
-		$xmlc->addChild('FOUR04MONITOR', @$FOUR04MONITOR);
 		exec_action('settings-cpsettings');
 		$xmlc->asXML($path . $ufile);
 		

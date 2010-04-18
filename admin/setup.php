@@ -156,9 +156,9 @@ if(isset($_POST['submitted']))
 		}
 
 		
-		// create 403.xml page
-		$init = $relative. "data/other/403.xml";
-		$temp = "inc/tmp/tmp-403.xml"; 
+		// create 404.xml page
+		$init = $relative. "data/other/404.xml";
+		$temp = "inc/tmp/tmp-404.xml"; 
 		
 		if (! file_exists($init)) 
 		{

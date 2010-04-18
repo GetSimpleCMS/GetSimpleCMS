@@ -20,45 +20,22 @@ include('inc/common.php');
 login_cookie_check();
 
 // if the undo command was invoked
-if (isset($_GET['undo']))
-{ 
+if (isset($_GET['undo'])) { 
 	$ufile = 'cp_settings.xml';
 	undo($ufile, $path, $bakpath);
-	
 	header('Location: support.php?rest=true');
 }
 
-if (isset($_GET['restored']))
-{ 
+if (isset($_GET['restored'])) { 
 	$restored = 'true'; 
-} 
-else 
-{
+} else {
 	$restored = 'false';
 }
 
 // were changes submitted?
-if(isset($_POST['submitted']))
-{
-	$FOUR04MONITOR = @$_POST['fouro4monitoring'];
-
-	// create new cpsettings data file
-	$ufile = 'cp_settings.xml';
-	createBak($ufile, $path, $bakpath);
-	$xmlc = @new SimpleXMLElement('<item></item>');
-	$xmlc->addChild('HTMLEDITOR', @$HTMLEDITOR);
-	$xmlc->addChild('PRETTYURLS', @$PRETTYURLS);
-	$xmlc->addChild('FOUR04MONITOR', @$FOUR04MONITOR);
-	exec_action('support-save');
-	$xmlc->asXML($path . $ufile);
-
+if(isset($_POST['submitted'])) {
 	$success = $i18n['SETTINGS_UPDATED'].'. <a href="support.php?undo">'.$i18n['UNDO'].'</a>';
 }
-
-//are any of the control panel checkboxes checked?
-$four04chck = '';
-
-if ($FOUR04MONITOR != '' ) { $four04chck = 'checked'; }
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['SUPPORT']); ?>
@@ -70,20 +47,6 @@ if ($FOUR04MONITOR != '' ) { $four04chck = 'checked'; }
 <div class="bodycontent">
 	
 	<div id="maincontent">
-<?php 
-		if (isset($_GET['plugin']) && isset($_GET['page'])) { 
-			include "plugins/".$_GET['plugin']."/".$_GET['page'].".php";
-		} else { ?>	
-		<div class="main">	
-		<form class="largeform" action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" >
-		<h3><?php echo $i18n['SUPPORT'];?> <?php echo $i18n['SETTINGS'];?></h3>
-		<p><input name="fouro4monitoring" type="checkbox" value="1" <?php echo $four04chck; ?>  /> &nbsp;<?php echo $i18n['EMAIL_ON_404'];?>.</p>
-		<p><input class="submit" type="submit" name="submitted" value="<?php echo $i18n['BTN_SAVESETTINGS'];?>" /></p>
-		<?php exec_action('support-extras'); ?>
-	</form>
-	</div>
-		
-		
 		<div class="main">
 		<h3><?php echo $i18n['SIDE_VIEW_LOG'];?></h3>
 		<ol>
@@ -99,9 +62,9 @@ if ($FOUR04MONITOR != '' ) { $four04chck = 'checked'; }
 			<?php if (file_exists($path . 'logs/tickets.log')) { ?>
 				<li><p><a href="log.php?log=tickets.log"><?php echo $i18n['VIEW_TICKETS'];?></a></p></li>
 			<?php } ?>
+			<?php exec_action('support-extras'); ?>
 		</ol>
 		</div>
-		<?php } ?>
 	</div>
 
 
