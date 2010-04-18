@@ -21,6 +21,24 @@
 		echo $content;
 		exec_action('content-bottom');
 	}
+	
+	function get_page_excerpt($n=200, $html=false) {
+		global $content;
+		$content_e = stripslashes(htmlspecialchars_decode($content, ENT_QUOTES));
+		$content_e = exec_filter('content',$content_e);
+		
+		if (!$html) {
+			$content_e = strip_tags($content_e);
+		}
+		
+		if (function_exists('mb_substr')) { 
+			$content_e = trim(mb_substr($content_e, 0, $n)) . '...';
+		} else {
+			$content_e = trim(substr($content_e, 0, $n)) . '...';
+		}
+
+		echo $content_e;
+	}
 
 	function get_page_meta_keywords() {
 		global $metak;
