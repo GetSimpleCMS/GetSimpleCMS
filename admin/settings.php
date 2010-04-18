@@ -233,8 +233,8 @@ else
 		</select>
 		</p>
 		
-		<p><input name="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<?php echo $i18n['USE_FANCY_URLS'];?>.</p>
-		<p><input name="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<?php echo $i18n['ENABLE_HTML_ED'];?></p>
+		<p><input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<label class="clean" for="prettyurls" ><?php echo $i18n['USE_FANCY_URLS'];?>.</label></p>
+		<p><input name="show_htmleditor" id="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<label class="clean" for="show_htmleditor" ><?php echo $i18n['ENABLE_HTML_ED'];?></label></p>
 		<?php exec_action('settings-website-extras'); ?>
 		
 		<p><input class="submit" type="submit" name="submitted" value="<?php echo $i18n['BTN_SAVESETTINGS'];?>" /></p>

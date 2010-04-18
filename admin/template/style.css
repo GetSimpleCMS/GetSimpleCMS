@@ -383,6 +383,16 @@ label {
 	margin:0 0 5px 0;
 }
 
+label.clean {
+	font-size:12px;	
+	font-family:arial;
+	padding:0 0 0 0;
+	color:#000;
+	float:none;
+	display:inline;
+	margin:0 0 0 0;
+}
+
 /* meta dropdown style */
 #metadata_window {margin:10px 0 10px 0;}
 form #metadata_window table.formtable input.text, form table.formtable select {

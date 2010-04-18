@@ -215,7 +215,7 @@ if ($menu == '') { $menu = @$title; }
 				</tr>
 
 				<tr>
-					<td><b><?php echo $i18n['KEEP_PRIVATE']; ?></b> &nbsp;&nbsp;&nbsp;<input type="checkbox" id="post-private" name="post-private" <?php echo @$sel_p; ?> />
+					<td><label class="clean" for="post-private" ><b><?php echo $i18n['KEEP_PRIVATE']; ?></b> &nbsp;&nbsp;&nbsp;</label><input type="checkbox" id="post-private" name="post-private" <?php echo @$sel_p; ?> />
 					</td>
 					
 					<td>
