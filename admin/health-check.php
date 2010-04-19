@@ -263,7 +263,26 @@ $php_modules = get_loaded_extensions();
 					}
 				?>
 				</td></tr>
-
+				
+				<tr><td>../plugins/</td><td>
+				<?php	
+					$file = "../plugins/.htaccess";
+					if (! file_exists($file)) {
+						copy ('inc/tmp/tmp.deny.htaccess', $file);
+					} 
+					if (! file_exists($file)) {
+						echo ' <span class="WARNmsg" >'.$i18n['MISSING_FILE'].' - '.$i18n['WARNING'].'</span>';
+					} else {
+						$res = @file_get_contents($file);
+						if ( !strstr($res, 'Deny from all')) {
+							echo ' <span class="WARNmsg" >'.$i18n['BAD_FILE'].' - '.$i18n['WARNING'].'</span>';
+						} else {
+							echo ' <span class="OKmsg" >'.$i18n['GOOD_D_FILE'].' - '.$i18n['OK'].'</span>';
+						}
+					}
+				?>
+				</td></tr>
+				
 				<tr><td>../data/other/</td><td> 
 				<?php	
 					$file = "../data/other/.htaccess";
