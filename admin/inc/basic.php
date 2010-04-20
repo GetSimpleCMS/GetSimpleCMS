@@ -292,12 +292,16 @@ function ListDir($dir_handle,$path) {
  * @returns returns the url of a page
  *
 */
-function find_url($slug, $parent, $full=TRUE) {
+function find_url($slug, $parent, $type='full') {
 	global $PRETTYURLS;
 	global $SITEURL;
 	
-	if ($full) {
+	if ($type == 'full') {
 		$full = $SITEURL;
+	} elseif($type == 'relative') {
+		$s = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
+		$full = $s['dirname'] .'/';
+		$full = str_replace('//', '/', $full);
 	} else {
 		$full = '/';
 	}
