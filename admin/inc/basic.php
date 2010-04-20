@@ -295,7 +295,7 @@ function ListDir($dir_handle,$path) {
 function find_url($slug, $parent, $type='full') {
 	global $PRETTYURLS;
 	global $SITEURL;
-	
+				
 	if ($type == 'full') {
 		$full = $SITEURL;
 	} elseif($type == 'relative') {
@@ -306,10 +306,13 @@ function find_url($slug, $parent, $type='full') {
 		$full = '/';
 	}
 	
+	if ($parent != '') {
+		$parent = tsl($parent); 
+	}	
+
   if ($PRETTYURLS == '1') {      
-    if ($slug != 'index'){ 
-    	if ($parent != '') {$parent = tsl($parent); } 
-    	$url = $full . @$parent . $slug;
+    if ($slug != 'index'){  
+    	$url = $full . $parent . $slug . '/';
     } else {
     	$url = $full;
     }   
@@ -320,7 +323,14 @@ function find_url($slug, $parent, $type='full') {
     	$url = $full;
     }
   }
-	
+  
+  if (defined('GSPERMALINKS')) {
+		$permalink = str_replace('%parent%/', $parent, GSPERMALINKS);
+		$permalink = str_replace('%parent%', $parent, $permalink);
+		$permalink = str_replace('%slug%', $slug, $permalink);
+		$url = $full . $permalink;
+	}
+
 	return $url;
 }
 /******************************************************/

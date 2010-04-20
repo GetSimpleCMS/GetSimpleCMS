@@ -27,6 +27,10 @@ define('GSIMAGEWIDTH', '200');
 # Disable Canonical Redirects?
 #define('GSNOCANONICAL', 1);
 
+# Define permalink structure. Two most common variations listed below
+#define('GSPERMALINKS', '?id=%slug%');
+#define('GSPERMALINKS', 'subdir/%parent%/%slug%/');
+
 # Use Uploadify to upload files?
 #define('GSNOUPLOADIFY', 1);
 
