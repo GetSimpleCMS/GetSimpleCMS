@@ -95,6 +95,7 @@ if (file_exists(GSDATAOTHERPATH .'cp_settings.xml')) {
 	$datac = getXML($thisfilec);
 	$HTMLEDITOR = $datac->HTMLEDITOR;
 	$PRETTYURLS = $datac->PRETTYURLS;
+	$PERMALINK = $datac->PERMALINK;
 }
 
 // Set correct timestamp if available.
@@ -112,7 +113,7 @@ include_once(GSLANGPATH . $LANG . '.php');
 
 
 // Globalization
-global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR;
+global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR, $PERMALINK;
 
 // Check for main
 if(!isset($base)) {

@@ -467,9 +467,9 @@ $i18n = array(
 "PLUGIN_VER" 				=> "Version",
 
 
-
-
-
+"PERMALINK" => "Custom Permalink Structure",
+"MORE" => "more",
+"HELP" => "help",
 
 
 "" => "not translated"

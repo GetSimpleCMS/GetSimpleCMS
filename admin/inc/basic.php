@@ -295,6 +295,7 @@ function ListDir($dir_handle,$path) {
 function find_url($slug, $parent, $type='full') {
 	global $PRETTYURLS;
 	global $SITEURL;
+	global $PERMALINK;
 				
 	if ($type == 'full') {
 		$full = $SITEURL;
@@ -324,11 +325,11 @@ function find_url($slug, $parent, $type='full') {
     }
   }
   
-  if (defined('GSPERMALINKS')) {
-		$permalink = str_replace('%parent%/', $parent, GSPERMALINKS);
-		$permalink = str_replace('%parent%', $parent, $permalink);
-		$permalink = str_replace('%slug%', $slug, $permalink);
-		$url = $full . $permalink;
+  if ($PERMALINK != '') {
+		$plink = str_replace('%parent%/', $parent, $PERMALINK);
+		$plink = str_replace('%parent%', $parent, $plink);
+		$plink = str_replace('%slug%', $slug, $plink);
+		$url = $full . $plink;
 	}
 
 	return $url;

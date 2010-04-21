@@ -83,6 +83,10 @@ if(isset($_POST['submitted']))
 	if(isset($_POST['lang'])) { 
 		$LANG = $_POST['lang']; 
 	}
+	
+	if(isset($_POST['permalink'])) { 
+		$PERMALINK = $_POST['permalink']; 
+	}
 
 	$HTMLEDITOR = @$_POST['show_htmleditor']; 
 	$PRETTYURLS = @$_POST['prettyurls']; 
@@ -146,6 +150,7 @@ if(isset($_POST['submitted']))
 		$xmlc = @new SimpleXMLElement('<item></item>');
 		$xmlc->addChild('HTMLEDITOR', @$HTMLEDITOR);
 		$xmlc->addChild('PRETTYURLS', @$PRETTYURLS);
+		$xmlc->addChild('PERMALINK', @$PERMALINK);
 		exec_action('settings-cpsettings');
 		XMLsave($xmlc, $path . $ufile);
 		
@@ -228,11 +233,15 @@ else
 		<p><b><?php echo $i18n['LANGUAGE'];?>:</b><br />
 		<select name="lang" class="text">
 			<?php echo $langs; ?>
-		</select>
+		</select> &nbsp;<a href="http://get-simple.info/download/languages/" style="font-size:11px;" ><?php echo $i18n['MORE'];?></a>
 		</p>
 		
-		<p><input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<label class="clean" for="prettyurls" ><?php echo $i18n['USE_FANCY_URLS'];?>.</label></p>
-		<p><input name="show_htmleditor" id="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<label class="clean" for="show_htmleditor" ><?php echo $i18n['ENABLE_HTML_ED'];?></label></p>
+		<p><b><?php echo $i18n['PERMALINK'];?>:</b><br /><input class="text" name="permalink" type="text" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /> &nbsp;<a href="http://get-simple.info/docs/permalinks/" style="font-size:11px;" ><?php echo $i18n['HELP'];?></a></p>
+
+		
+		<p><input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<label class="clean" for="prettyurls" ><?php echo $i18n['USE_FANCY_URLS'];?>.</label><br />
+		<input name="show_htmleditor" id="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<label class="clean" for="show_htmleditor" ><?php echo $i18n['ENABLE_HTML_ED'];?></label></p>
+		
 		<?php exec_action('settings-website-extras'); ?>
 		
 		<p><input class="submit" type="submit" name="submitted" value="<?php echo $i18n['BTN_SAVESETTINGS'];?>" /></p>

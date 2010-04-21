@@ -433,7 +433,7 @@ form input.example-text, textarea.example-text {
   font-weight:normal !important;
 }
 form.input#post-metad {width:513px;}
-
+form input.secondary {width:250px;}
 /* components css */
 form.manyinputs input.text { width:200px; }
 form.manyinputs textarea { width:572px; height:150px; }
