@@ -60,7 +60,7 @@ if(file_exists($log_file)) {
 					echo '<li><p style="font-size:11px;line-height:15px;" ><b style="line-height:20px;" >'.$i18n['LOG_FILE_ENTRY'].'</b><br />';
 					foreach($log->children() as $child) {
 					  $name = $child->getName();
-					  echo '<b>'. ucwords($name) .'</b>: ';
+					  echo '<b>'. stripslashes(ucwords($name)) .'</b>: ';
 					  
 					  $d = $log->$name;
 					  $n = strtolower($child->getName());
@@ -92,7 +92,7 @@ if(file_exists($log_file)) {
 					  	$d = lngDate($d);
 					  }
 					  	
-					  echo $d;
+					  echo stripslashes($d);
 					  echo ' <br />';
 					}
 					echo "</p></li>";

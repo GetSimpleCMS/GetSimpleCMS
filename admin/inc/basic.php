@@ -23,6 +23,7 @@ function clean_url($text)  {
 	$code_entities_replace = array('','-','-','','','','','','','','','','','','','','','','','','','','','','','',''); 
 	$text = str_replace($code_entities_match, $code_entities_replace, $text); 
 	$text = urlencode($text);
+	$text = rtrim($text, "-");
 	return $text; 
 } 
 /******************************************************/
