@@ -55,10 +55,10 @@ if(isset($_POST['submitted']))
 			$thislog = $xml->addChild('entry');
 			$thislog->addChild('date', date('r'));
 			$cdata = $thislog->addChild('Username');
-			$cdata->addCData($userid);
+			$cdata->addCData(htmlentities($userid, ENT_QUOTES));
 			$cdata = $thislog->addChild('IP_Address');
-			$ip = getenv ("REMOTE_ADDR"); 
-			$cdata->addCData($ip);
+			$ip = getenv("REMOTE_ADDR"); 
+			$cdata->addCData(htmlentities($ip, ENT_QUOTES));
 			XMLsave($xml, $xmlfile);
 			
 		}
