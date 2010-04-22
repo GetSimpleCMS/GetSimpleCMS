@@ -48,15 +48,15 @@ if (isset($_POST['submitted']))
 			if ($_POST['post-title'])
 			{ 
 				$url = $_POST['post-title'];
+				$url = to7bit($url, "UTF-8");
+				$url = clean_url($url); //old way
 			} 
 			else 
 			{
 				$url = "temp";
 			}
 		}
-		
-		$url = to7bit($url, "UTF-8");
-		$url = clean_url($url); //old way
+	
 		
 		
 		// was the slug changed on an existing page?
