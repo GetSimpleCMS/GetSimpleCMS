@@ -298,7 +298,8 @@ if ($menu == '') { $menu = @$title; }
 	        defaultLanguage : '<?php echo $EDLANG; ?>',
 	        entities : true,
 	        uiColor : '#FFFFFF',
-					height: '<?php echo $EDHEIGHT; ?>',	
+					height: '<?php echo $EDHEIGHT; ?>',
+					baseHref : '<?php echo $SITEURL; ?>',
 	        toolbar : 
 	        [
 	        	<?php echo $toolbar; ?>
