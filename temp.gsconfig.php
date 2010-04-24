@@ -33,7 +33,7 @@ define('GSIMAGEWIDTH', '200');
 # WYSIWYG editor height (default 500)
 #define('GSEDITORHEIGHT', '400');
 
-# WYSIWYG toolbars (advanced or basic) 
+# WYSIWYG toolbars (advanced, basic or [custom config]) 
 #define('GSEDITORTOOL', 'advanced');
 
 # WYSIWYG editor language (default en)

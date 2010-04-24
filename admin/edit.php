@@ -280,8 +280,10 @@ if ($menu == '') { $menu = @$title; }
 	          '/',
 	          ['Styles','Format','Font','FontSize']
 	      ";
-			} else {
+			} elseif ($EDTOOL == 'basic') {
 				$toolbar = "['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']";
+			} else {
+				$toolbar = GSEDITORTOOL;
 			}
 		?>
 		<?php if ($HTMLEDITOR != '') { ?>
