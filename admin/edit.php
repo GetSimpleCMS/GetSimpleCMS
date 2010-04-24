@@ -242,7 +242,7 @@ if ($menu == '') { $menu = @$title; }
 			<!-- page body -->
 			<p>
 				<label for="post-content" style="display:none;"><?php echo $i18n['LABEL_PAGEBODY']; ?></label>
-				<textarea class="set-example-text" id="post-content" rel="<?php echo $i18n['LABEL_PAGEBODY']; ?>" name="post-content"><?php echo @$content; ?></textarea>
+				<textarea id="post-content" name="post-content"><?php echo @$content; ?></textarea>
 			</p>
 			
 			<?php exec_action('edit-content'); ?> 

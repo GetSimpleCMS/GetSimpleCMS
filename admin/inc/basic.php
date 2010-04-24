@@ -100,6 +100,19 @@ function subval_sort($a,$subkey) {
 }
 /******************************************************/
 
+/*******************************************************
+ * @function json_decode
+ * @returns the API response in the form of an object
+ * @about - This is to temporarily fix issues with PHP versions < 5.2.0
+ *
+*/
+if(!function_exists('json_decode')) {
+    function json_decode($api_data) {
+        preg_match('/(?P<status>[^"]+)","((api_key":"(?P<api_key>[^"]+))|(latest":"(?P<latest>[^"]+)))/',$api_data,$api_data);
+        return (object)$api_data;
+    }
+}
+/******************************************************/
 
 /*******************************************************
  * @class SimpleXMLExtended
