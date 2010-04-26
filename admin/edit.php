@@ -254,8 +254,7 @@ if ($menu == '') { $menu = @$title; }
 			<p id="submit_line" >
 				<span><input class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" /></span>&nbsp;&nbsp;
 				<?php echo $i18n['OR']; ?>&nbsp;&nbsp;
-				<a class="cancel" href="pages.php?cancel" title="<?php echo $i18n['CANCEL']; ?>"><?php echo $i18n['CANCEL']; ?></a>
-				<?php if($url) { ?>&nbsp;<a class="cancel" href="deletefile.php?id=<?php echo $url; ?>" title="<?php echo $i18n['DELETEPAGE_TITLE']; ?>" >X</a><?php } ?>
+				<a class="cancel" href="pages.php?cancel" title="<?php echo $i18n['CANCEL']; ?>"><?php echo $i18n['CANCEL']; ?></a><?php if($url) { ?>&nbsp;/&nbsp;<a class="cancel" href="deletefile.php?id=<?php echo $url; ?>" title="<?php echo $i18n['DELETEPAGE_TITLE']; ?>" ><?php echo $i18n['ASK_DELETE']; ?></a><?php } ?>
 			</p>
 			
 			<small><?php 

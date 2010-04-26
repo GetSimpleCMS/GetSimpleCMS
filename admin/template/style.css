@@ -493,6 +493,7 @@ table td.delete {width:17px;text-align:center;font-size:11px;}
 
 a.cancel:link, a.cancel:visited { font-weight:100; color:#D94136 !important;text-decoration:underline;padding: 2px;background:none !important;}
 a.cancel:hover { font-weight:100; background:#D94136 !important; color:#fff !important;text-decoration:none !important;padding: 2px;}
+a.cancel em {font-style:normal}
 
 .wrapper .secondarylink {width:17px;text-align:center;font-size:11px;}
 .wrapper .secondarylink a:link, .wrapper .secondarylink a:visited {color:#aaa;text-decoration:none;	font-weight:normal;padding: 1px;display:block;}
