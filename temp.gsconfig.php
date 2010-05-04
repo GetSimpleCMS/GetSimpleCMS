@@ -24,8 +24,8 @@ define('GSIMAGEWIDTH', '200');
 # Set override CHMOD mode
 #define('GSCHMOD', 0777);
 
-# Disable Canonical Redirects?
-#define('GSNOCANONICAL', 1);
+# Enable Canonical Redirects?
+#define('GSCANONICAL', 1);
 
 # Use Uploadify to upload files?
 #define('GSNOUPLOADIFY', 1);

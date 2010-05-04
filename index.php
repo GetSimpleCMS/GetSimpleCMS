@@ -62,7 +62,7 @@ if ($url == '403') {
 }
 
 # check for correctly formed url
-if (!defined('GSNOCANONICAL')) {
+if (defined('GSCANONICAL')) {
 	if ($_SERVER['REQUEST_URI'] != find_url($url, $parent, 'relative')) {
 		header('Location: '. find_url($url, $parent));
 	}
