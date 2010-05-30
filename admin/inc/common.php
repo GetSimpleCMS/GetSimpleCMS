@@ -87,7 +87,7 @@ if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
 	$SALT = sha1($SITEURL);
 }
 // for form and file security
-$SESSIONHASH = md5($SALT . $SITENAME);
+$SESSIONHASH = md5($SALT . @$SITENAME);
 
 // Settings
 if (file_exists(GSDATAOTHERPATH .'cp_settings.xml')) {
@@ -105,7 +105,7 @@ if( function_exists('date_default_timezone_set') && ($TIMEZONE != '' || stripos(
 }
 
 // Language control
-if($LANG == '') {
+if(!isset($LANG) || $LANG == '') {
 	$LANG = 'en_US';
 }
 include_once(GSLANGPATH . $LANG . '.php');

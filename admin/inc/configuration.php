@@ -17,5 +17,5 @@
 	$cookie_login = 'index.php';
 	$cookie_time = '7200';  // 2 hours 
 	$api_url = 'http://get-simple.info/api/start/';
-	define('GSVERSION', $site_version_no);
+	if (!defined('GSVERSION')) define('GSVERSION', $site_version_no);
 ?>
