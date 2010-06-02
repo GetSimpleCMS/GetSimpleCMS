@@ -361,16 +361,4 @@ function menu_data($id = null,$xml=false) {
 		
 		echo $menu;
 	}	
-
-
-/* FUNCTION: set_contact_page()                   
- * @status: depreciated 
-*/
-
-	function set_contact_page($cpage = 'contactform.php') {
-		global $EMAIL;
-		$style='<style>.pot {display:none;}</style>';
-		echo $style;
-		include_once($cpage);
-	}
 ?>

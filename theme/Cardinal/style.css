@@ -107,24 +107,3 @@ letter-spacing:-2px;
 .credits p {margin:0 0 0 0;line-height:16px;padding:5px 0 0 0;}
 .credits a:link, .credits a:visited {color:#666;}
 .credits a:hover {color:#333}
-
-.contact {padding-top:25px;border-top:1px dotted #ccc;}
-#sidebar .section form p {margin: 0 0 0 0;}
-#sidebar .section label {font-size:11px;color:#666;display:block;}
-#sidebar .section input.text, #sidebar .section textarea.text {
-	font-size:13px;
-	font-family:arial;
-	border:1px solid #999;
-	padding:4px;
-	background:#fff;
-	width:250px;
-	margin:0 0 7px 0;
-}
-
-#sidebar .section input.text:focus, #sidebar .section textarea.text:focus {background:#ffffcc}
-#sidebar .section textarea.text {height:100px}
-#sidebar .section input.submit {padding:5px 10px;font-weight:bold;float:right;background:#111;border:1px solid #000;color:#eee;}
-#sidebar .section input.submit:focus, #sidebar .section input.submit:hover {color:#FFF;background:#BA0000;}
-
-
-#

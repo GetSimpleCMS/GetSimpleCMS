@@ -165,20 +165,6 @@ body {
 	}
 
 
-/* CONTACT FORM */
-
-.contactform {margin:0 0 20px 0;}
-.contactform b {display:block;}
-.contactform input.text, .contactform textarea, .contactform select {width:250px;padding:4px;font-family:arial;font-size:13px;margin:2px 0 7px 0;}
-.contactform textarea {height:150px;width:350px;}
-.contactform input#contact-submit {padding:4px;width:150px;font-weight:bold;}
-.contactform p.contactmsg {padding:4px;border:1px solid #ccc;background:#f9f9f9;font-weight:bold;}
-.contactform p.success {color:#00CC33;}
-.contactform p.error {color:#CC0000;}
-.pot {display:none;}
-
-
-
 /* SIDEBAR */
 
 #sidebar {

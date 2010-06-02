@@ -54,18 +54,6 @@
 		<div class="section">
 			<?php get_component('sidebar');	?>
 		</div>
-		<div class="section contact">
-			<h2>Contact Me</h2>
-			<form action="<?php get_page_url(); ?>" method="post" class="contactform" >
-				<?php set_contact_page(); ?>
-				<p><label>Name:</label><input type="text" class="text" name="contact[name]" /></p>
-				<p><label>Email:</label><input type="text" class="text" name="contact[email]" /></p>
-				<p><label>Message:</label><textarea class="text" name="contact[message]" ></textarea></p>
-				<div class="pot" ><input class="text" type="text" value="" name="contact[pot]" /></div>
-				<p><input type="submit" class="submit" value="Send Email" id="contact-submit" name="contact-submit" /></p>
-				<div class="clear"></div>
-			</form>
-		</div>
 		<div class="section credits">
 			<p><?php echo date('Y'); ?> - <strong><?php get_site_name(); ?></strong></p>
 			<p>

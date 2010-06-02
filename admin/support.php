@@ -53,9 +53,6 @@ if(isset($_POST['submitted'])) {
 			<?php if (file_exists($path . 'logs/404monitoring.log')) { ?>
 				<li><p><a href="log.php?log=404monitoring.log"><?php echo $i18n['VIEW_404'];?></a></p></li>
 			<?php } ?>
-			<?php if (file_exists($path . 'logs/contactform.log')) { ?>
-				<li><p><a href="log.php?log=contactform.log"><?php echo $i18n['VIEW_CONTACT_FORM'];?></a></p></li>
-			<?php } ?>			
 			<?php if (file_exists($path . 'logs/failedlogins.log')) { ?>
 				<li><p><a href="log.php?log=failedlogins.log"><?php echo $i18n['VIEW_FAILED_LOGIN'];?></a></p></li>
 			<?php } ?>

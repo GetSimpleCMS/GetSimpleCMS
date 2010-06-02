@@ -147,7 +147,6 @@ $i18n = array(
 "EMAIL_ON_404" 			=> 	"Email administrator on 404 errors",
 "VIEW_404" 					=> 	"View 404 Errors",
 "VIEW_FAILED_LOGIN"	=> 	"View Failed Login Attempts",
-"VIEW_CONTACT_FORM"	=> 	"View Contact Form Submissions",
 "VIEW_TICKETS" 			=> 	"View Your Submitted Tickets",
 
 /* 
@@ -226,15 +225,6 @@ $i18n = array(
 "NEW_PASSWORD"			=>	"New Password",
 "CONFIRM_PASSWORD"	=>	"Confirm Password",
 "PASSWORD_NO_MATCH"	=>	"Passwords do not match",
-
-/* 
- * For: contactform.php
-*/
-"MSG_CAPTCHA_FAILED"=>	"Captcha failed, we think you are a spam bot",
-"CONTACT_FORM_SUB"	=>	"Contact Form Submission",
-"FROM"							=>	"from",
-"MSG_CONTACTSUC"		=>	"Your email has successfully been sent",
-"MSG_CONTACTERR"		=>	"There was an error sending your email",
 
 /* 
  * For: 404-mailer.php

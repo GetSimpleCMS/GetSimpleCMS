@@ -27,14 +27,14 @@ I just ask that you link back to our site if you use it.
  REQUIREMENTS
 ===========================================================
 Hosting Server Requirements:
- - PHP 5.1.3+    			http://www.gophp5.org/
-	(i) 		SimpleXML		(All files are saved as XML)
-	(ii.) 	SMTP Server	(for Reset Password Option)
-	(iii.) 	mod_write		(for url creeation)
+ - PHP 5.1.3+               http://www.gophp5.org/
+	(i)     SimpleXML       (All files are saved as XML)
+	(ii.)   SMTP Server     (for Reset Password Option)
+	(iii.)  mod_write       (for url creation)
 
 Administrator's Browser/Computer Requirements:
- - Flash 8 Installed		(File Uploads)
- - Javascript Enabled		(Will make life much easier)
+ - Flash 8 Installed        (File Uploads)
+ - Javascript Enabled       (Will make life much easier)
 
 
 
