@@ -81,7 +81,7 @@ else
 		</form>
 			<div class="toggle">
 				<p id="code-img-html">&lt;img src="<?php echo tsl($SITEURL) .'data/uploads/'. $src; ?>" class="gs_image" alt=""></p>
-				<p id="code-img-link"><?php echo tsl($SITEURL) .'data/uploads/'. $src; ?></textarea></span>
+				<p id="code-img-link"><?php echo tsl($SITEURL) .'data/uploads/'. $src; ?></p>
 				<p id="code-thumb-html">&lt;img src="<?php echo tsl($SITEURL) .'data/thumbs/thumbnail.'.$src; ?>" class="gs_image gs_thumb" alt=""></p>
 				<p id="code-thumb-link"><?php echo tsl($SITEURL) .'data/thumbs/thumbnail.'.$src; ?></p>
 				<p id="code-imgthumb-html">&lt;a href="<?php echo tsl($SITEURL) .'data/uploads/'. $src; ?>" class="gs_image_link" >&lt;img src="<?php echo tsl($SITEURL) .'data/thumbs/thumbnail.'.$src; ?>" class="gs_thumb" alt="" />&lt;/a></p>
