@@ -286,14 +286,15 @@ function in_arrayi($needle, $haystack) {
 function ListDir($dir_handle,$path) {
 	global $zipfile;
 	while (false !== ($file = readdir($dir_handle))) {
-	  $dir =$path.'/'.$file;
+	  $dir = $path.'/'.$file;
+	  $zippath = substr_replace($dir, 'getsimple' , 0, 2);
 	  if(is_dir($dir) && $file != '.' && $file !='..' ) {
 			$handle = @opendir($dir) or die("Unable to open file $file");
-			$zipfile->add_dir($dir);
+			$zipfile->add_dir($zippath);
 			ListDir($handle, $dir);
 	  } elseif($file != '.' && $file !='..') {
 			$filedata = file_get_contents($dir);
-			$zipfile->add_file($filedata, $dir);
+			$zipfile->add_file($filedata, $zippath);
 	  }
 	}
 	closedir($dir_handle);

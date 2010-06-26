@@ -29,18 +29,18 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 	$paths = array($relative.'data', $relative.'theme'); //no trailing slash
 	$files = array($relative.'.htaccess', $relative.'index.php', $relative.'gsconfig.php');	
 	
+	$zipfile->add_dir('getsimple');
+	
 	// cycle thru each path and file and add to zip file
 	foreach ($paths as $path) {
 		$dir_handle = @opendir($path) or die("Unable to open $path");
 		ListDir($dir_handle,$path);
 	}
 	
-	$zipfile->add_dir('getsimple');
-	
 	foreach ($files as $fl) 
 	{
 		$filedata = file_get_contents($fl);
-		$zipfile->add_file($filedata, $fl);
+		$zipfile->add_file($filedata, substr_replace($fl, 'getsimple', 0, 2));
 	}
 	
 	// $listing is the list of all files and folders that were added to the backup
