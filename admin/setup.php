@@ -173,6 +173,15 @@ if(isset($_POST['submitted']))
 		fwrite($fp, $temp_data);
 		fclose($fp);
 		
+		// create gsconfig.php if it doesn't exist yet.
+		$init = $relative."gsconfig.php";
+		$temp = $relative."temp.gsconfig.php";
+		if (file_exists($init)) {
+			unlink($temp);
+		} else {
+			rename($temp, $init);
+		}
+		
 		// send email to new administrator
 		$subject  = $site_full_name .' '. $i18n['EMAIL_COMPLETE'];
 		$message .= $i18n['EMAIL_USERNAME'] . ': '. stripslashes($_POST['user']);

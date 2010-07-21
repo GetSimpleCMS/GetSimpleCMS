@@ -49,3 +49,5 @@ define('GSIMAGEWIDTH', '200');
 # Set PHP locale
 # http://php.net/manual/en/function.setlocale.php
 #setlocale(LC_ALL, 'en_US');
+
+?>
