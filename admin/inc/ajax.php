@@ -12,12 +12,20 @@ if (defined('GSDEBUG')){
 	@ini_set('display_errors', 0);
 }
 
+// Make sure register globals don't make this hackable again.
+if (isset($TEMPLATE)) unset($TEMPLATE);
 
+// Sanitise first
+if (isset($_GET['dir'])) {
+	$TEMPLATE = '';
+	$segments = explode('/',implode('/',explode('\\',$_GET['dir'])));
+	foreach ($segments as $part) if ($part !== '..') $TEMPLATE .= $part.'/';
+	$TEMPLATE = preg_replace('/\/+/','/',$TEMPLATE);
+	if (strlen($TEMPLATE)<=0||$TEMPLATE=='/') unset($TEMPLATE);
+}
 
-// send back list of theme files from a certain directory for theme-edit.php
-if (isset($_GET['dir']))
-{
-	$TEMPLATE = $_GET['dir'];
+// Send back list of theme files from a certain directory for theme-edit.php
+if (isset($TEMPLATE)) {
 	$TEMPLATE_FILE = ''; $template = ''; $theme_templates = '';
 
 	if ($template == '') { $template = 'template.php'; }
