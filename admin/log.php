@@ -59,48 +59,50 @@ if (!isset($log_data)) $log_data = getXML($log_file);
 				<?php 
 				$count = 1;
 
-				foreach ($log_data as $log) {
-					echo '<li><p style="font-size:11px;line-height:15px;" ><b style="line-height:20px;" >'.$i18n['LOG_FILE_ENTRY'].'</b><br />';
-					foreach($log->children() as $child) {
-					  $name = $child->getName();
-					  echo '<b>'. stripslashes(ucwords($name)) .'</b>: ';
-					  
-					  $d = $log->$name;
-					  $n = strtolower($child->getName());
-					  $ip_regex = '/^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:[.](?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/';
-					  $url_regex = @"((https?|ftp|gopher|telnet|file|notes|ms-help):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)";
-					  
-					  
-					  //check if its an url address
-					  if (do_reg($d, $url_regex)) {
-					  	$d = '<a href="'. $d .'" target="_blank" >'.$d.'</a>';
-					  }
-					  
-					  //check if its an ip address
-					  if (do_reg($d, $ip_regex)) {
-					  	if ($d == $_SERVER['REMOTE_ADDR']) {
-					  		$d = $i18n['THIS_COMPUTER'].' (<a href="http://ws.arin.net/whois/?queryinput='. $d.'" target="_blank" >'.$d.'</a>)';
-					  	} else {
-					  		$d = '<a href="http://ws.arin.net/whois/?queryinput='. $d.'" target="_blank" >'.$d.'</a>';
-					  	}
-					  }
-					  
-					  //check if its an email address
-					  if (check_email_address($d)) {
-					  	$d = '<a href="mailto:'.$d.'">'.$d.'</a>';
-					  }
-					  
-					  //check if its a date
-					  if ($n === 'date') {
-					  	$d = lngDate($d);
-					  }
-					  	
-					  echo stripslashes($d);
-					  echo ' <br />';
+				if ($log_data) {
+					foreach ($log_data as $log) {
+						echo '<li><p style="font-size:11px;line-height:15px;" ><b style="line-height:20px;" >'.$i18n['LOG_FILE_ENTRY'].'</b><br />';
+						foreach($log->children() as $child) {
+						  $name = $child->getName();
+						  echo '<b>'. stripslashes(ucwords($name)) .'</b>: ';
+						  
+						  $d = $log->$name;
+						  $n = strtolower($child->getName());
+						  $ip_regex = '/^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:[.](?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/';
+						  $url_regex = @"((https?|ftp|gopher|telnet|file|notes|ms-help):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)";
+						  
+						  
+						  //check if its an url address
+						  if (do_reg($d, $url_regex)) {
+							$d = '<a href="'. $d .'" target="_blank" >'.$d.'</a>';
+						  }
+						  
+						  //check if its an ip address
+						  if (do_reg($d, $ip_regex)) {
+							if ($d == $_SERVER['REMOTE_ADDR']) {
+								$d = $i18n['THIS_COMPUTER'].' (<a href="http://ws.arin.net/whois/?queryinput='. $d.'" target="_blank" >'.$d.'</a>)';
+							} else {
+								$d = '<a href="http://ws.arin.net/whois/?queryinput='. $d.'" target="_blank" >'.$d.'</a>';
+							}
+						  }
+						  
+						  //check if its an email address
+						  if (check_email_address($d)) {
+							$d = '<a href="mailto:'.$d.'">'.$d.'</a>';
+						  }
+						  
+						  //check if its a date
+						  if ($n === 'date') {
+							$d = lngDate($d);
+						  }
+							
+						  echo stripslashes($d);
+						  echo ' <br />';
+						}
+						echo "</p></li>";
+						$count++;
 					}
-					echo "</p></li>";
-					$count++;
-				}				
+				}
 				
 				?>
 			</ol>
