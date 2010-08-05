@@ -271,7 +271,7 @@ if ($menu == '') { $menu = @$title; }
 			if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
 			if (defined('GSEDITORLANG')) { $EDLANG = GSEDITORLANG; } else {	$EDLANG = 'en'; }
 			if (defined('GSEDITORTOOL')) { $EDTOOL = GSEDITORTOOL; } else {	$EDTOOL = 'basic'; }
-			
+			if (defined('GSEDITOROPTIONS') && trim(GSEDITOROPTIONS)!="") { $EDOPTIONS = ", ".GSEDITOROPTIONS; } else {	$EDOPTIONS = ''; }
 			
 			if ($EDTOOL == 'advanced') {
 				$toolbar = "
@@ -290,19 +290,20 @@ if ($menu == '') { $menu = @$title; }
 
 			<script type="text/javascript">
 
-				var editor = CKEDITOR.replace( 'post-content', {
+			var editor = CKEDITOR.replace( 'post-content', {
 	        skin : 'getsimple',
 	        forcePasteAsPlainText : true,
 	        language : '<?php echo $EDLANG; ?>',
 	        defaultLanguage : '<?php echo $EDLANG; ?>',
 	        entities : true,
 	        uiColor : '#FFFFFF',
-					height: '<?php echo $EDHEIGHT; ?>',
-					baseHref : '<?php echo $SITEURL; ?>',
+			height: '<?php echo $EDHEIGHT; ?>',
+			baseHref : '<?php echo $SITEURL; ?>',
 	        toolbar : 
 	        [
-	        	<?php echo $toolbar; ?>
-					]
+	        <?php echo $toolbar; ?>
+			]
+			<?php echo $EDOPTIONS; ?>
 	        //filebrowserBrowseUrl : '/browser/browse.php',
 	        //filebrowserImageBrowseUrl : '/browser/browse.php?type=Images',
 	        //filebrowserWindowWidth : '640',

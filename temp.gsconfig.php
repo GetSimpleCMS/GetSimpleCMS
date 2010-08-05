@@ -39,6 +39,9 @@ define('GSIMAGEWIDTH', '200');
 # WYSIWYG editor language (default en)
 #define('GSEDITORLANG', 'en');
 
+# WYSIWYG Editor Options
+#define('GSEDITOROPTIONS', '');
+
 # Turn off auto-generation of SALT and use a custom value. Used for cookies & upload security.
 #define('GSUSECUSTOMSALT', 'your_new_salt_value_here');
 
