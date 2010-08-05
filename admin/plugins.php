@@ -39,6 +39,8 @@ foreach ($pluginfiles as $fi)
 }	
 ?>
 
+<?php exec_action('plugin-hook');?>
+
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['PLUGINS_MANAGEMENT']); ?>
 	
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $i18n['PLUGINS_MANAGEMENT']; ?></h1>
@@ -55,7 +57,6 @@ foreach ($pluginfiles as $fi)
 		
 		<table class="edittable highlight paginate">
 			<?php echo $table; ?>
-			
 		</table>
 		<div id="page_counter" class="qc_pager"></div> 
 		<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php echo $i18n['PLUGINS_INSTALLED']; ?></em></p>
