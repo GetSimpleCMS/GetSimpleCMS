@@ -489,15 +489,12 @@ function generate_salt() {
  *
 */
 function get_admin_path() {
-  $path = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-  $segments = explode(DIRECTORY_SEPARATOR, $path);
-  foreach($segments as $k => $segment) {
-      if($segment === 'admin') {
-          $new_segments = array_slice($segments, 0, $k+1);
-          break;
-      }
-  }
-  return implode('/', $new_segments) . '/';
+	$path = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+	$segments = explode(DIRECTORY_SEPARATOR, $path);
+	$cut = array_keys($segments,'admin');
+	rsort($cut);
+	$new_segments = array_slice($segments, 0, $cut[0]+1);
+	return implode('/', $new_segments) . '/';
 }
 /******************************************************/
 
@@ -508,15 +505,12 @@ function get_admin_path() {
  *
 */
 function get_root_path() {
-  $path = dirname(__FILE__) . DIRECTORY_SEPARATOR ;
-  $segments = explode(DIRECTORY_SEPARATOR , $path);
-  foreach($segments as $k => $segment) {
-      if($segment === 'admin') {
-          $new_segments = array_slice($segments, 0, $k);
-          break;
-      }
-  }
-  return implode('/' , $new_segments) . '/' ;
+	$path = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+	$segments = explode(DIRECTORY_SEPARATOR, $path);
+	$cut = array_keys($segments,'admin');
+	rsort($cut);
+	$new_segments = array_slice($segments, 0, $cut[0]);
+	return implode('/', $new_segments) . '/';
 }
 /******************************************************/
 
