@@ -24,8 +24,8 @@ $template 			= '';
 $theme_templates 	= '';
 
 // Were changes submitted?
-if(isset($_GET['f'])){ $TEMPLATE_FILE = $_GET['f']; }
-if(isset($_GET['t'])){ $TEMPLATE = $_GET['t']; }
+if(isset($_GET['t'])&&file_exists($relative.'theme/'.$_GET['t'].'/')){ $TEMPLATE = $_GET['t']; }
+if(isset($_GET['f'])&&file_exists($relative.'theme/'.$TEMPLATE.'/'.$_GET['f'])){ $TEMPLATE_FILE = $_GET['f']; }
 
 // Save?
 if((isset($_POST['submitsave'])))

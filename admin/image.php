@@ -23,6 +23,8 @@ $src = $_GET['i'];
 $thumb_folder = $relative.'data/thumbs/';
 $src_folder = $relative.'data/uploads/';
 
+if (!file_exists($src_folder . $src)) header("Location: upload.php");
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
 	

@@ -20,20 +20,23 @@ include('inc/common.php');
 // Variable Settings
 login_cookie_check();
 
-$log_name = $_GET['log'];
+$log_name = @$_GET['log'];
 $log_path = GSDATAOTHERPATH.'logs/';
 $log_file = $log_path . $log_name;
-	
-if (@$_GET['action'] == 'delete') {
+
+if (!file_exists($log_file)) {
+	$log_name = '';
+	$log_data = false;
+}
+
+if (@$_GET['action'] == 'delete' && strlen($log_name)>0) {
 	unlink($log_file);
 	exec_action('logfile_delete');
 	header('Location: support.php?success=Log '.$log_name . $i18n['MSG_HAS_BEEN_CLR']);
 	exit;
 }
 
-if(file_exists($log_file)) {
-	$log_data = getXML($log_file);
-}
+if (!isset($log_data)) $log_data = getXML($log_file);
 
 ?>
 
