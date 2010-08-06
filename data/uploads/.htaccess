@@ -1,3 +1,4 @@
+Options -Indexes
 Allow from all
 
 <Files *.xls>
