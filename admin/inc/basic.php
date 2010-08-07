@@ -350,4 +350,21 @@ if ($PERMALINK != '' && $slug != 'index'){
 	return $url;
 }
 /******************************************************/
+
+
+/*******************************************************
+ * @function strippatch
+ * @param $path - path supplied by user input
+ * @returns returns same path without it going up in the folder structure
+ *
+*/
+function strippath($path) {
+	$segments = explode('/',implode('/',explode('\\',$path)));
+	$path = '';
+	foreach ($segments as $part) if ($part !== '..') $path .= trim($part).'/';
+	$path = preg_replace('/\/+/','/',substr($path, 0, -1));
+	if (strlen($path)<=0||$path=='/') return false;
+	return $path;
+}
+/******************************************************/
 ?>

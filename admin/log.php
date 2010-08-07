@@ -20,11 +20,11 @@ include('inc/common.php');
 // Variable Settings
 login_cookie_check();
 
-$log_name = @$_GET['log'];
+$log_name = strippath(@$_GET['log']);
 $log_path = GSDATAOTHERPATH.'logs/';
 $log_file = $log_path . $log_name;
 
-if (!file_exists($log_file)) {
+if (!is_file($log_file)) {
 	$log_name = '';
 	$log_data = false;
 }
