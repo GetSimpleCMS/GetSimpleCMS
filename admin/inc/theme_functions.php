@@ -144,8 +144,8 @@
 			$description = preg_replace('/ +/', " ", $description);
 		}
 		$keywords = stripslashes(htmlspecialchars_decode(@$metak, ENT_QUOTES));
-		echo '<meta name="description" content="'.$description.'" />'."\n";
-		echo '	<meta name="keywords" content="'.$keywords.'" />'."\n";
+		echo '<meta name="description" content="'.strip_quotes($description).'" />'."\n";
+		echo '	<meta name="keywords" content="'.strip_quotes($keywords).'" />'."\n";
 		echo '	<link rel="canonical" href="'. get_page_url(true) .'" />'."\n";
 		echo '	<meta name="generator" content="'. $site_full_name .' - '. $site_version_no .'" />'."\n";
 		
@@ -350,7 +350,7 @@ function menu_data($id = null,$xml=false) {
 					if ("$currentpage" == "$url_nav") { $classes = "current ". $page['parent'] ." ". $url_nav; } else { $classes = $page['parent'] ." ". $url_nav; }
 					if ($page['menu'] == '') { $page['menu'] = $page['title']; }
 					if ($page['title'] == '') { $page['title'] = $page['menu']; }
-					$menu .= '<li class="'. $classes .'" ><a href="'. find_url($page['url'],$page['parent']) . '" title="'. $page['title'] .'">'.$page['menu'].'</a></li>'."\n";
+					$menu .= '<li class="'. $classes .'" ><a href="'. find_url($page['url'],$page['parent']) . '" title="'. strip_quotes($page['title']) .'">'.$page['menu'].'</a></li>'."\n";
 				}
 			}
 			

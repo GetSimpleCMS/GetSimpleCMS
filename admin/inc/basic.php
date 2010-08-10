@@ -367,4 +367,17 @@ function strippath($path) {
 	return $path;
 }
 /******************************************************/
+
+function strip_quotes($text)  { 
+	if (function_exists('mb_strtolower')) {
+		$text = strip_tags(mb_strtolower($text)); 
+	} else {
+		$text = strip_tags(strtolower($text)); 
+	}
+	$code_entities_match = array('"','\'','&quot;'); 
+	$code_entities_replace = array('','',''); 
+	$text = str_replace($code_entities_match, $code_entities_replace, $text); 
+	return trim($text); 
+} 
+/******************************************************/
 ?>
