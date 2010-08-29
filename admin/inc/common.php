@@ -9,6 +9,10 @@
 
 define('IN_GS', TRUE);
 
+// Anti-XSS, highly experimental
+include_once('xss.php');
+foreach ($_GET as &$xss) $xss = antixss($xss);
+
 // Basic functionality
 include('basic.php');
 include('template_functions.php');
