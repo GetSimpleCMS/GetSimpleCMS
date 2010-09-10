@@ -368,15 +368,17 @@ function strippath($path) {
 }
 /******************************************************/
 
+
+/*******************************************************
+ * @function strip_quotes
+ * @param $text - text needing to have all quotes and html stripped out
+ * @returns returns same text without quotes and HTML
+ *
+*/
 function strip_quotes($text)  { 
-	if (function_exists('mb_strtolower')) {
-		$text = strip_tags(mb_strtolower($text)); 
-	} else {
-		$text = strip_tags(strtolower($text)); 
-	}
+	$text = strip_tags($text); 
 	$code_entities_match = array('"','\'','&quot;'); 
-	$code_entities_replace = array('','',''); 
-	$text = str_replace($code_entities_match, $code_entities_replace, $text); 
+	$text = str_replace($code_entities_match, '', $text); 
 	return trim($text); 
 } 
 /******************************************************/

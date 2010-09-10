@@ -60,9 +60,9 @@ class zipfile
         // no "file data" segment for path 
 
         // "data descriptor" segment (optional but necessary if archive is not served as file) 
-        $fr .= pack("V",$crc); //crc32 
-        $fr .= pack("V",$c_len); //compressed filesize 
-        $fr .= pack("V",$unc_len); //uncompressed filesize 
+        $fr .= pack("V",$this->crc); //crc32 
+        $fr .= pack("V",$this->c_len); //compressed filesize 
+        $fr .= pack("V",$this->unc_len); //uncompressed filesize 
 
         // add this entry to array 
         $this -> datasec[] = $fr;  

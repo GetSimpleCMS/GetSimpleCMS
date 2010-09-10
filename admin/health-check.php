@@ -43,12 +43,20 @@ $php_modules = get_loaded_extensions();
 					$curl_URL = $api_url .'?k='.$APIKEY.'&v='.$site_version_no;
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_TIMEOUT, 2);
-					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 					curl_setopt($ch, CURLOPT_URL, $curl_URL);
 					$data = curl_exec($ch);
 					curl_close($ch);
-					$apikey = json_decode($data);
-					$verstatus = $apikey->status;
+					if ($data !== false)
+					{
+						$apikey = json_decode($data);
+						$verstatus = $apikey->status;
+					}
+					else
+					{
+						$apikey = null;
+						$verstatus = null;
+					}
 				} 
 				else 
 				{

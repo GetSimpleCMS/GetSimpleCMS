@@ -26,7 +26,7 @@ if(isset($_POST['submitted']))
 { 
 	// Initial variable setup
 	$userid = $_POST['userid'];
-	$password = passhash($_POST['pwd']);
+	$password = $_POST['pwd'];
 	$error = '';
 
 	// Is either the Username or Password field empty?
@@ -38,10 +38,13 @@ if(isset($_POST['submitted']))
 	
 	// If both Username & Password are populated, continue...
 	if ( ! $error ) {
+		$password = passhash($password);
+
 		// Are the Username and Password both correct?
 		if ( ($userid == $USR) && ($password == $PASSWD) ) {
 			$authenticated = true;  // Successful Login
 		} else {
+			$authenticated = false;  // Unsuccessful Login
 			
 			$xmlfile = GSDATAOTHERPATH.'logs/failedlogins.log';
 			
