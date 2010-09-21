@@ -25,6 +25,11 @@ $theme_options 	= '';
 // were changes submitted?
 if( (isset($_POST['submitted'])) && (isset($_POST['template'])) )
 {
+	$nonce = $_POST['nonce'];	
+
+	if(!check_nonce($nonce, "activate"))
+		die("CSRF detected!");
+
 	$TEMPLATE = $_POST['template'];
 	
 	// create new site data file
@@ -83,6 +88,7 @@ while ($file = readdir($themes_handle))
 		<div class="main">
 		<h3><?php echo $i18n['CHOOSE_THEME'];?></h3>
 		<form action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" accept-charset="utf-8" >
+		<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("activate"); ?>" />			
 		<p style="display:none" id="waiting" ><?php echo $i18n['SITEMAP_WAIT'];?></p>
 
 		<p><select class="text" style="width:250px;" name="template" >

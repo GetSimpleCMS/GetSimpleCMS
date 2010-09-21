@@ -23,6 +23,7 @@ $userid = login_cookie_check();
 $uri 		= @$_GET['uri'];
 $id 		= @$_GET['id'];
 $ptype 		= @$_GET['type'];
+$nonce		= @$_GET['nonce'];
 $path 		= GSDATAPAGESPATH;
 
 // Page variables reset
@@ -177,7 +178,9 @@ if ($menu == '') { $menu = @$title; }
 		</div>	
 			
 		<form class="largeform" id="editform" action="changedata.php" method="post" accept-charset="utf-8" >
-			
+			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("edit", "edit.php"); ?>" />			
+
+
 			<!-- page title toggle screen -->
 			<p id="edit_window">
 				<label for="post-title" style="display:none;"><?php echo $i18n['PAGE_TITLE']; ?></label>
@@ -255,7 +258,7 @@ if ($menu == '') { $menu = @$title; }
 			<p id="submit_line" >
 				<span><input class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" /></span>&nbsp;&nbsp;
 				<?php echo $i18n['OR']; ?>&nbsp;&nbsp;
-				<a class="cancel" href="pages.php?cancel" title="<?php echo $i18n['CANCEL']; ?>"><?php echo $i18n['CANCEL']; ?></a><?php if($url) { ?>&nbsp;/&nbsp;<a class="cancel" href="deletefile.php?id=<?php echo $url; ?>" title="<?php echo $i18n['DELETEPAGE_TITLE']; ?>" ><?php echo $i18n['ASK_DELETE']; ?></a><?php } ?>
+				<a class="cancel" href="pages.php?cancel" title="<?php echo $i18n['CANCEL']; ?>"><?php echo $i18n['CANCEL']; ?></a><?php if($url) { ?>&nbsp;/&nbsp;<a class="cancel" href="deletefile.php?id=<?php echo $url; ?>&nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" title="<?php echo $i18n['DELETEPAGE_TITLE']; ?>" ><?php echo $i18n['ASK_DELETE']; ?></a><?php } ?>
 			</p>
 			
 			<small><?php 

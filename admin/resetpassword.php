@@ -29,6 +29,10 @@ if (file_exists(GSDATAOTHERPATH . $file))
 
 if(isset($_POST['submitted']))
 {
+	$nonce = $_POST['nonce'];
+	if(!check_nonce($nonce, "reset_password"))
+		die("CSRF detected!");
+
 	if(isset($_POST['email']))
 	{
 		if($_POST['email'] == $EMAIL)
@@ -89,6 +93,7 @@ if(isset($_POST['submitted']))
 	<p><?php echo $i18n['MSG_PLEASE_EMAIL']; ?>.</p>
 	
 	<form class="fullform" action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" accept-charset="utf-8" >
+		<input name="nonce" id="nonce" type="hidden" value="<?php echo get_nonce("reset_password");?>"/>
 		<p><b><?php echo $i18n['LABEL_EMAIL']; ?>:</b><br /><input class="text" name="email" type="text" value="" /></p>
 		<p><input class="submit" type="submit" name="submitted" value="<?php echo $i18n['SEND_NEW_PWD']; ?>" /></p>
 	</form><p><a href="index.php"><?php echo $i18n['LOGIN']; ?></a></p>

@@ -30,6 +30,10 @@ $err 			= '';
 // if the undo command was invoked
 if (isset($_GET['undo']))
 { 
+	$nonce = $_GET['undo'];
+	if(!check_nonce($nonce, "undo"))
+		die("CSRF detected!");
+
 	$ufile = 'user.xml';
 	undo($ufile, $path, $bakpath);
 	
@@ -55,7 +59,11 @@ else
 // were changes submitted?
 if(isset($_POST['submitted']))
 {
-	
+	$nonce = $_POST['nonce'];
+	if(!check_nonce($nonce, "save_settings"))
+		die("CSRF detected!");	
+
+
 	if(isset($_POST['sitename'])) { 
 		$SITENAME = htmlentities($_POST['sitename'], ENT_QUOTES, 'UTF-8'); 
 	}
@@ -215,6 +223,7 @@ else
 	
 	<div id="maincontent">
 		<form class="largeform" action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" accept-charset="utf-8" >
+		<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save_settings"); ?>" />
 		<div class="main">
 		<h3><?php echo $i18n['WEBSITE_SETTINGS'];?></h3>
 

@@ -22,6 +22,9 @@ $table = '';
 
 // if a backup needs to be created
 if(isset($_GET['do'])) {
+	$nonce = $_GET['nonce'];
+	if(!check_nonce($nonce, "create"))
+		die("CSRF detected!");	
 	exec_action('archive-backup');
 	header('Location: zip.php?s='.$SESSIONHASH);	
 }
@@ -46,7 +49,7 @@ if(isset($_GET['done'])) {
 		<div class="main" >
 		<label><?php echo $i18n['WEBSITE_ARCHIVES'];?></label>
 		<div class="edit-nav" >
-		<a id="waittrigger" href="archive.php?do" accesskey="c" title="<?php echo $i18n['CREATE_NEW_ARC'];?>" ><?php echo $i18n['ASK_CREATE_ARC'];?></a>
+		<a id="waittrigger" href="archive.php?do&nonce=<?php echo get_nonce("create"); ?>" accesskey="c" title="<?php echo $i18n['CREATE_NEW_ARC'];?>" ><?php echo $i18n['ASK_CREATE_ARC'];?></a>
 		<div class="clear"></div></div>
 		<p style="display:none" id="waiting" ><?php echo $i18n['CREATE_ARC_WAIT'];?></p>
 		<table class="highlight paginate">	
@@ -67,9 +70,9 @@ if(isset($_GET['done'])) {
 					$ss = @stat($path . $file);
 					$size = fSize($ss['size']);
 					echo '<tr>
-							<td><a title="Download Archive '. $name .'" target="_blank" href="download.php?file='. $path . $file .'">'.$name .'</a></td>
+							<td><a title="Download Archive '. $name .'" target="_blank" href="download.php?file='. $path . $file .'&nonce='.get_nonce("archive", "download.php").'">'.$name .'</a></td>
 							<td style="width:70px;text-align:right;" ><span>'.$size.'</span></td>
-							<td class="delete" ><a class="delconfirm" title="Delete Archive '. $name .'?" href="deletefile.php?zip='. $file .'">X</a></td>
+							<td class="delete" ><a class="delconfirm" title="Delete Archive '. $name .'?" href="deletefile.php?zip='. $file .'&nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>
 						  </tr>';
 					$count++;
 				}

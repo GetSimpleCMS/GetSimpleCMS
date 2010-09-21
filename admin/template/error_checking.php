@@ -24,11 +24,11 @@
 	} elseif ($update == 'edit-success') { 
 		echo '<div class="updated">';
 		if ($ptype == 'edit') { 
-			echo sprintf($i18n['ER_YOUR_CHANGES'], $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'">'.$i18n['UNDO'].'</a>';
+			echo sprintf($i18n['ER_YOUR_CHANGES'], $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.$i18n['UNDO'].'</a>';
 		} elseif ($ptype == 'restore') {
-			echo sprintf($i18n['ER_HASBEEN_REST'], $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'">'.$i18n['UNDO'].'</a>';
+			echo sprintf($i18n['ER_HASBEEN_REST'], $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.$i18n['UNDO'].'</a>';
 		} elseif ($ptype == 'delete') {
-			echo sprintf($i18n['ER_HASBEEN_DEL'], $_GET['id']) .'. <a href="backup-edit.php?p=restore&id='. $_GET['id'] .'">'.$i18n['UNDO'].'</a>';
+			echo sprintf($i18n['ER_HASBEEN_DEL'], $_GET['id']) .'. <a href="backup-edit.php?p=restore&id='. $_GET['id'] .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.$i18n['UNDO'].'</a>';
 		}
 		echo '</div>';
 	} elseif ($update == 'edit-index') { 
@@ -36,11 +36,11 @@
 	} elseif ($update == 'edit-err') { 
 		echo '<div class="error"><b>'.$i18n['ERROR'].':</b> '. @$ptype .'.</div>';
 	} elseif ($err == 'false') {
-		echo '<div class="updated">'.$i18n['ER_SETTINGS_UPD'].'. <a href="settings.php?undo">'.$i18n['UNDO'].'</a></div>';
+		echo '<div class="updated">'.$i18n['ER_SETTINGS_UPD'].'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.$i18n['UNDO'].'</a></div>';
 	} elseif ($restored == 'true') { 
-		echo '<div class="updated">'.$i18n['ER_OLD_RESTORED'].'. <a href="settings.php?undo">'.$i18n['UNDO'].'</a></div>';
+		echo '<div class="updated">'.$i18n['ER_OLD_RESTORED'].'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.$i18n['UNDO'].'</a></div>';
 	} elseif (@$_GET['rest'] == 'true') { 
-		echo '<div class="updated">'.$i18n['ER_OLD_RESTORED'].'. <a href="support.php?undo">'.$i18n['UNDO'].'</a></div>';
+		echo '<div class="updated">'.$i18n['ER_OLD_RESTORED'].'. <a href="support.php?undo&nonce='.get_nonce("undo", "support.php").'">'.$i18n['UNDO'].'</a></div>';
 	} elseif ($err == 'true') { 
 		echo '<div class="error"><b>'.$i18n['ERROR'].':</b> '. @$msg .'</div>';
 	} elseif ($update == 'pwd-success') {
@@ -52,9 +52,9 @@
 	} elseif ($update == 'del-error') {
 		echo '<div class="error"><b>'.$i18n['ERROR'].':</b> '.$i18n['ER_PROBLEM_DEL'].'.</div>';
 	} elseif ($update == 'comp-success') {
-		echo '<div class="updated">'.$i18n['ER_COMPONENT_SAVE'].'. <a href="components.php?undo">'.$i18n['UNDO'].'</a></div>';
+		echo '<div class="updated">'.$i18n['ER_COMPONENT_SAVE'].'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.$i18n['UNDO'].'</a></div>';
 	} elseif ($update == 'comp-restored') {
-		echo '<div class="updated">'.$i18n['ER_COMPONENT_REST'].'. <a href="components.php?undo">'.$i18n['UNDO'].'</a></div>';
+		echo '<div class="updated">'.$i18n['ER_COMPONENT_REST'].'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.$i18n['UNDO'].'</a></div>';
 	} elseif (isset($_GET['cancel'])) {
 		echo '<div class="error">'.$i18n['ER_CANCELLED_FAIL'].'</div>';
 	}	elseif (isset($error)) {

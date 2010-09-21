@@ -40,6 +40,10 @@ if (isset($_GET['f'])) {
 // Save?
 if((isset($_POST['submitsave'])))
 {
+	$nonce = $_POST['nonce'];
+	if(!check_nonce($nonce, "save"))
+		die("CSRF detected!");
+
 	$SavedFile = $_POST['edited_file'];
 	$FileContents = stripslashes(htmlspecialchars_decode($_POST['content'], ENT_QUOTES));
 
@@ -158,6 +162,7 @@ $theme_templates .= "</select></span>";
 		<?php $content = file_get_contents($relative. 'theme/'. tsl($TEMPLATE) . $TEMPLATE_FILE); ?>
 		
 		<form action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>?t=<?php echo $TEMPLATE; ?>&f=<?php echo $TEMPLATE_FILE; ?>" method="post" >
+			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
 			<p><textarea name="content" id="codetext" ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea></p>
 			<input type="hidden" value="<?php echo tsl($TEMPLATE) . $TEMPLATE_FILE; ?>" name="edited_file" />
 			<?php exec_action('theme-edit-extras'); ?>

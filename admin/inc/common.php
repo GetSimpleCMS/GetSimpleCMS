@@ -9,6 +9,9 @@
 
 define('IN_GS', TRUE);
 
+// Anti-CSRF, highly experimental
+include_once('nonce.php');
+
 // Anti-XSS, highly experimental
 include_once('xss.php');
 foreach ($_GET as &$xss) $xss = antixss($xss);

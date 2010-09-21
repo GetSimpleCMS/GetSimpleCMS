@@ -60,11 +60,19 @@ else
 
 if ($p == 'delete') 
 {
+	$nonce = $_GET['nonce'];
+	if(!check_nonce($nonce, "delete", "backup-edit.php"))
+		die("CSRF detected!");	
+
 	delete_bak($id);
 	header("Location: backups.php?upd=bak-success&id=".$id);
 } 
 elseif ($p == 'restore') 
 {
+	$nonce = $_GET['nonce'];
+	if(!check_nonce($nonce, "restore", "backup-edit.php"))
+		die("CSRF detected!");	
+
 	restore_bak($id);
 	header("Location: edit.php?id=". $id ."&upd=edit-success&type=restore");
 }
@@ -83,7 +91,7 @@ elseif ($p == 'restore')
 		<label><?php echo $i18n['BACKUP_OF'];?> &lsquo;<em><?php echo @$url; ?></em>&rsquo;</label>
 		
 		<div class="edit-nav" >
-			 <a href="backups.php" accesskey="c" ><?php echo $i18n['ASK_CANCEL'];?></a> <a href="backup-edit.php?p=restore&id=<?php echo $id; ?>" accesskey="r" ><?php echo $i18n['ASK_RESTORE'];?></a> <a href="backup-edit.php?p=delete&id=<?php echo $id; ?>" title="<?php echo $i18n['DELETEPAGE_TITLE']; ?>: <?php echo $title; ?>?" accesskey="d" class="delconfirm" ><?php echo $i18n['ASK_DELETE'];?></a>
+			 <a href="backups.php" accesskey="c" ><?php echo $i18n['ASK_CANCEL'];?></a> <a href="backup-edit.php?p=restore&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" accesskey="r" ><?php echo $i18n['ASK_RESTORE'];?></a> <a href="backup-edit.php?p=delete&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" title="<?php echo $i18n['DELETEPAGE_TITLE']; ?>: <?php echo $title; ?>?" accesskey="d" class="delconfirm" ><?php echo $i18n['ASK_DELETE'];?></a>
 			<div class="clear"></div>
 		</div>
 		

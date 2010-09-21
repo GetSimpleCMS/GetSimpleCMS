@@ -31,7 +31,11 @@ if (isset($_POST['submitted']))
 	$slug = $_POST['slug'];
 	$title = $_POST['title'];
 	$ids = $_POST['id'];
-	
+	$nonce = $_POST['nonce'];	
+
+	if(!check_nonce($nonce, "modify_components"))
+		die("CSRF detected!");
+
 	// create backup file for undo           
 	createBak($file, $path, $bakpath);
 	
@@ -83,6 +87,10 @@ if (isset($_POST['submitted']))
 // if undo was invoked
 if (isset($_GET['undo']))
 { 
+	$nonce = $_GET['nonce'];	
+	if(!check_nonce($nonce, "undo"))
+		die("CSRF detected!");
+
 	undo($file, $path, $bakpath);
 	header('Location: components.php?upd=comp-restored');
 }
@@ -133,6 +141,7 @@ if (count($componentsec) != 0) {
 	
 	<form class="manyinputs" action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" accept-charset="utf-8" >
 		<input type="hidden" id="id" value="<?php echo @$count; ?>" />
+		<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_components"); ?>" />
 		<p><input type="submit" class="submit" name="submitted" id="button" value="<?php echo $i18n['SAVE_COMPONENTS'];?>" /> &nbsp;&nbsp;<?php echo $i18n['OR']; ?>&nbsp;&nbsp; <a class="cancel" href="theme.php"><?php echo $i18n['CANCEL']; ?></a></p>
 
 		<div id="divTxt"></div> 

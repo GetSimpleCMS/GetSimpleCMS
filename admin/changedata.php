@@ -31,6 +31,10 @@ login_cookie_check();
 	
 if (isset($_POST['submitted']))
 {
+	$nonce = $_POST['nonce'];
+	if(!check_nonce($nonce, "edit", "edit.php"))
+		die("CSRF detected!");	
+
 	if ( ($_POST['post-title'] == '') )	{
 		header("Location: edit.php?upd=edit-err&type=".$i18n['CANNOT_SAVE_EMPTY']);
 		exit;

@@ -30,6 +30,10 @@ if (!is_file($log_file)) {
 }
 
 if (@$_GET['action'] == 'delete' && strlen($log_name)>0) {
+	$nonce = $_GET['nonce'];
+	if(!check_nonce($nonce, "delete"))
+		die("CSRF detected!");	
+
 	unlink($log_file);
 	exec_action('logfile_delete');
 	header('Location: support.php?success=Log '.$log_name . $i18n['MSG_HAS_BEEN_CLR']);
@@ -52,7 +56,7 @@ if (!isset($log_data)) $log_data = getXML($log_file);
 		<div class="main">
 			<label><?php echo $i18n['VIEWING'];?> <?php echo $i18n['LOG_FILE'];?>: &lsquo;<em><?php echo @$log_name; ?></em>&rsquo;</label>
 			<div class="edit-nav" >
-				<a href="log.php?log=<?php echo $log_name; ?>&action=delete" accesskey="c" title="<?php echo $i18n['CLEAR_ALL_DATA'];?> <?php echo $log_name; ?>?" /><?php echo $i18n['CLEAR_THIS_LOG'];?></a>
+				<a href="log.php?log=<?php echo $log_name; ?>&action=delete&nonce=<?php echo get_nonce("delete"); ?>" accesskey="c" title="<?php echo $i18n['CLEAR_ALL_DATA'];?> <?php echo $log_name; ?>?" /><?php echo $i18n['CLEAR_THIS_LOG'];?></a>
 				<div class="clear"></div>
 			</div>
 			<ol class="more" >

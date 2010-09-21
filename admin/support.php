@@ -21,6 +21,10 @@ login_cookie_check();
 
 // if the undo command was invoked
 if (isset($_GET['undo'])) { 
+	$nonce = $_GET['nonce'];
+	if(!check_nonce($nonce, "undo", "support.php"))
+		die("CSRF detected!");	
+
 	$ufile = 'cp_settings.xml';
 	undo($ufile, $path, $bakpath);
 	header('Location: support.php?rest=true');
@@ -34,7 +38,7 @@ if (isset($_GET['restored'])) {
 
 // were changes submitted?
 if(isset($_POST['submitted'])) {
-	$success = $i18n['SETTINGS_UPDATED'].'. <a href="support.php?undo">'.$i18n['UNDO'].'</a>';
+	$success = $i18n['SETTINGS_UPDATED'].'. <a href="support.php?undo&nonce='.get_nonce("restore", "support.php").'">'.$i18n['UNDO'].'</a>';
 }
 ?>
 
