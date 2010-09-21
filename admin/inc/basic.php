@@ -19,14 +19,38 @@ function clean_url($text)  {
 	} else {
 		$text = strip_tags(strtolower($text)); 
 	}
-	$code_entities_match = array(' ?',' ','--','&quot;','!','@','#','$','%','^','&','*','(',')','_','+','{','}','|',':','"','<','>','?','[',']','\\',';',"'",',','.','/','*','+','~','`','='); 
+	$code_entities_match = array(' ?',' ','--','&quot;','!','@','#','$','%','^','&','*','(',')','_','+','{','}','|',':','"','<','>','?','[',']','\\',';',"'",',','/','*','+','~','`','=','.'); 
 	$code_entities_replace = array('','-','-','','','','','','','','','','','','','','','','','','','','','','','',''); 
 	$text = str_replace($code_entities_match, $code_entities_replace, $text); 
 	$text = urlencode($text);
+	$text = str_replace('--','-',$text);
 	$text = rtrim($text, "-");
 	return $text; 
 } 
 /******************************************************/
+
+/*******************************************************
+ * @function clean_img_name
+ * @param $text - image name you want to turn encode into a URL
+ * @returns valid encoded url
+ * @ same as clean_url except it keeps the . in there
+*/
+function clean_img_name($text)  { 
+	if (function_exists('mb_strtolower')) {
+		$text = strip_tags(mb_strtolower($text)); 
+	} else {
+		$text = strip_tags(strtolower($text)); 
+	}
+	$code_entities_match = array(' ?',' ','--','&quot;','!','@','#','$','%','^','&','*','(',')','_','+','{','}','|',':','"','<','>','?','[',']','\\',';',"'",',','/','*','+','~','`','='); 
+	$code_entities_replace = array('','-','-','','','','','','','','','','','','','','','','','','','','','','',''); 
+	$text = str_replace($code_entities_match, $code_entities_replace, $text); 
+	$text = urlencode($text);
+	$text = str_replace('--','-',$text);
+	$text = rtrim($text, "-");
+	return $text; 
+} 
+/******************************************************/
+
 
 /*******************************************************
  * @function to7bit

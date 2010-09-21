@@ -19,7 +19,7 @@ if ($_REQUEST['sessionHash'] === $SESSIONHASH) {
 	if (!empty($_FILES))
 	{
 		$tempFile = $_FILES['Filedata']['tmp_name'];
-		$name = $_FILES['Filedata']['name'];
+		$name = clean_img_name($_FILES['Filedata']['name']);
 		$targetPath = GSDATAUPLOADPATH;
 		$targetFile =  str_replace('//','/',$targetPath) . $name;
 		
@@ -63,15 +63,15 @@ if ($_REQUEST['sessionHash'] === $SESSIONHASH) {
 				{
 			        case "jpg":
 			            header("Content-Type: image/jpeg");
-			            $bool2 = imagejpeg($picture,"../data/thumbs/thumbnail.".$_FILES['Filedata']['name'],85);
+			            $bool2 = imagejpeg($picture,"../data/thumbs/thumbnail.".$name,85);
 			        break;
 			        case "png":
 			            header("Content-Type: image/png");
-			            imagepng($picture,"../data/thumbs/thumbnail.".$_FILES['Filedata']['name']);
+			            imagepng($picture,"../data/thumbs/thumbnail.".$name);
 			        break;
 			        case "gif":
 			            header("Content-Type: image/gif");
-			            imagegif($picture,"../data/thumbs/thumbnail.".$_FILES['Filedata']['name']);
+			            imagegif($picture,"../data/thumbs/thumbnail.".$name);
 			        break;
 			    }
 			}
@@ -99,15 +99,15 @@ if ($_REQUEST['sessionHash'] === $SESSIONHASH) {
 				{
 			        case "jpg":
 			            header("Content-Type: image/jpeg");
-			            $bool2 = imagejpeg($picture,"../data/thumbs/thumbsm.".$_FILES['Filedata']['name'],85);
+			            $bool2 = imagejpeg($picture,"../data/thumbs/thumbsm.".$name,85);
 			        break;
 			        case "png":
 			            header("Content-Type: image/png");
-			            imagepng($picture,"../data/thumbs/thumbsm.".$_FILES['Filedata']['name']);
+			            imagepng($picture,"../data/thumbs/thumbsm.".$name);
 			        break;
 			        case "gif":
 			            header("Content-Type: image/gif");
-			            imagegif($picture,"../data/thumbs/thumbsm.".$_FILES['Filedata']['name']);
+			            imagegif($picture,"../data/thumbs/thumbsm.".$name);
 			        break;
 			    }
 			}

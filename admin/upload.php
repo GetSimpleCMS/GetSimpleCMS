@@ -31,14 +31,14 @@ if (isset($_FILES["file"]))
 	{
 		//set variables
 		$count = '1';
-		$file_loc = $path . $_FILES["file"]["name"];
+		$file_loc = $path . clean_img_name($_FILES["file"]["name"]);
 		$base = $_FILES["file"]["name"];
 		
 		//prevent overwriting
 		while ( file_exists($file_loc) )
 		{
-			$file_loc = $path . $count.'-'. $_FILES["file"]["name"];
-			$base = $count.'-'. $_FILES["file"]["name"];
+			$file_loc = $path . $count.'-'. clean_img_name($_FILES["file"]["name"]);
+			$base = $count.'-'. clean_img_name($_FILES["file"]["name"]);
 			$count++;
 		}
 		
