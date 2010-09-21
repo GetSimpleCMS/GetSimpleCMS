@@ -359,6 +359,7 @@ function menu_data($id = null,$xml=false) {
 		
 		closedir($dir_handle);
 		
-		echo $menu;
+		echo exec_filter('menuitems',$menu);
+		#echo $menu;
 	}	
 ?>
