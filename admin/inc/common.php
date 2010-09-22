@@ -39,7 +39,7 @@ if (file_exists(GSROOTPATH . 'gsconfig.php')) {
 }
 
 // Debugging
-if (defined('GSDEBUG')){
+if ( defined('GSDEBUG') && (GSDEBUG == TRUE) ){
 	error_reporting(E_ALL | E_STRICT);
 	ini_set('display_errors', 1);
 } else {
