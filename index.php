@@ -57,7 +57,7 @@ if ($private == 'Y') {
 }
 
 # if page does not exist, throw 404 error
-if ($url == '403') {
+if ($url == '404') {
 	header('HTTP/1.0 404 Not Found');
 }
 
