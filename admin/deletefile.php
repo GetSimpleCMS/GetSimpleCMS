@@ -30,12 +30,12 @@ if (isset($_GET['id']))
 	
 	if ($id == 'index') 
 	{
-		header('Location: pages.php?upd=edit-err&type=You cannot delete your homepage');
+		redirect('pages.php?upd=edit-err&type='.urlencode($i18n['HOMEPAGE_DELETE_ERROR']));
 	} 
 	else 
 	{
 		delete_file($id);
-		header("Location: pages.php?upd=edit-success&id=". $id ."&type=delete");
+		redirect("pages.php?upd=edit-success&id=". $id ."&type=delete");
 	}
 } 
 
@@ -45,7 +45,7 @@ if (isset($_GET['zip']))
 	$zip = $_GET['zip'];
 	$status = delete_zip($zip);
 	
-	header("Location: archive.php?upd=del-". $status ."&id=". $zip);
+	redirect("archive.php?upd=del-". $status ."&id=". $zip);
 } 
 
 // are we deleting uploads?
@@ -54,7 +54,7 @@ if (isset($_GET['file']))
 	$file = $_GET['file'];
 	delete_upload($file);
 	
-	header("Location: upload.php?upd=del-success&id=". $file);
+	redirect("upload.php?upd=del-success&id=". $file);
 } 
 
 

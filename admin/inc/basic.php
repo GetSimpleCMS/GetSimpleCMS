@@ -205,15 +205,16 @@ function getXML($file) {
  * @function XMLsave
  * @param $file - file to save
  * @param $xml - data to save
+ * @return - true on success
  *
 */
 function XMLsave($xml, $file) {
-	$xml->asXML($file);
+	$success = $xml->asXML($file) === TRUE;
 	
 	if (defined('GSCHMOD')) {
-		chmod($file, GSCHMOD);
+		return $success && chmod($file, GSCHMOD);
 	} else {
-		chmod($file, 0755);
+		return $success && chmod($file, 0755);
 	}
 }
 /******************************************************/
@@ -404,6 +405,23 @@ function strip_quotes($text)  {
 	$code_entities_match = array('"','\'','&quot;'); 
 	$text = str_replace($code_entities_match, '', $text); 
 	return trim($text); 
+} 
+/******************************************************/
+
+
+/*******************************************************
+ * @function redirect
+ * @param $url - text needing to have all quotes and html stripped out
+ * @returns returns same text without quotes and HTML
+ *
+*/
+function redirect($url) {
+	global $i18n;
+	header('Location: '.$url);
+	echo "<html><head><title>Relocate</title></head><body>";
+	printf("If your browser does not redirect you, click <a href=\"%s\">here</a>.", $url);
+	echo "</body></html>";
+	exit();
 } 
 /******************************************************/
 ?>

@@ -50,21 +50,27 @@ $parent = $data_index->parent;
 $template_file = $data_index->template;
 $private = $data_index->private;
 
-# if page is private, send to 404 error page
+# if page is private, check user
 if ($private == 'Y') {
-	header('Location: 403');
-	exit;
+	if (file_exists(GSDATAOTHERPATH .'user.xml')) {
+		$datau = getXML(GSDATAOTHERPATH .'user.xml');
+		$USR = stripslashes($datau->USR);
+	} else {
+		$USR = null;	
+	}
+	include_once(GSADMININCPATH.'cookie_functions.php');
+	login_cookie_check();
 }
 
 # if page does not exist, throw 404 error
 if ($url == '404') {
-	header('HTTP/1.0 404 Not Found');
+	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 }
 
 # check for correctly formed url
 if (defined('GSCANONICAL')) {
 	if ($_SERVER['REQUEST_URI'] != find_url($url, $parent, 'relative')) {
-		header('Location: '. find_url($url, $parent));
+		redirect(find_url($url, $parent));
 	}
 }
 

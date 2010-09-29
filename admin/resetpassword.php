@@ -63,17 +63,17 @@ if(isset($_POST['submitted']))
 			exec_action('resetpw-success');
 			$status = sendmail($EMAIL,$subject,$message);
 			
-			header("Location: resetpassword.php?upd=pwd-".$status);
+			redirect("resetpassword.php?upd=pwd-".$status);
 		}
 		else
 		{
 			exec_action('resetpw-error');
-			header("Location: resetpassword.php?upd=pwd-error");
+			redirect("resetpassword.php?upd=pwd-error");
 		} 
 	}
 	else 
 	{
-		header("Location: resetpassword.php?upd=pwd-error");
+		redirect("resetpassword.php?upd=pwd-error");
 	}
 } 
 ?>

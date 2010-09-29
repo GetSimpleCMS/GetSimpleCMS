@@ -26,7 +26,7 @@ if (file_exists($file)) {
 }
 
 // If there is a password set, we assume this site is already setup
-if (isset($PASSWD) && $PASSWD != '') { header('Location: index.php'); exit; }
+if (isset($PASSWD) && $PASSWD != '') { redirect('index.php'); }
 
 $php_modules = get_loaded_extensions();
 
@@ -124,7 +124,7 @@ $api_file = GSDATAOTHERPATH.'authorization.xml';
 
 if (! file_exists($api_file)) {
 	if (defined('GSUSECUSTOMSALT')) {
-		$saltval = md5(GSUSECUSTOMSALT);
+		$saltval = sha1(GSUSECUSTOMSALT);
 	} else {
 		if (in_arrayi('curl', $php_modules)) {
 			$apikey = generate_salt();

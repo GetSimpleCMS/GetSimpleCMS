@@ -127,6 +127,8 @@
 		global $title;
 		global $content;
 		global $parent;
+		global $site_full_name;
+		global $site_version_no;
 		include_once('configuration.php');
 		if (function_exists('mb_substr')) { 
 			$description = trim(mb_substr(strip_tags(stripslashes(htmlspecialchars_decode(@$content, ENT_QUOTES))), 0, 160));

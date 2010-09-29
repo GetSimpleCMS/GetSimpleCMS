@@ -489,12 +489,9 @@ function generate_salt() {
  *
 */
 function get_admin_path() {
-	$path = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-	$segments = explode(DIRECTORY_SEPARATOR, $path);
-	$cut = array_keys($segments,'admin');
-	rsort($cut);
-	$new_segments = array_slice($segments, 0, $cut[0]+1);
-	return implode('/', $new_segments) . '/';
+	$pos = strrpos(__FILE__,'admin');
+	if ($pos === FALSE) die('Admin directory name changed!');
+	return substr(__FILE__, 0, $pos+6);
 }
 /******************************************************/
 
@@ -505,12 +502,9 @@ function get_admin_path() {
  *
 */
 function get_root_path() {
-	$path = dirname(__FILE__) . DIRECTORY_SEPARATOR;
-	$segments = explode(DIRECTORY_SEPARATOR, $path);
-	$cut = array_keys($segments,'admin');
-	rsort($cut);
-	$new_segments = array_slice($segments, 0, $cut[0]);
-	return implode('/', $new_segments) . '/';
+	$pos = strrpos(__FILE__,'admin');
+	if ($pos === FALSE) die('Admin directory name changed!');
+	return substr(__FILE__, 0, $pos);
 }
 /******************************************************/
 

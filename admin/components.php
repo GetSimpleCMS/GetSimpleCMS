@@ -81,7 +81,7 @@ if (isset($_POST['submitted']))
 	}
 	exec_action('component-save');
 	XMLsave($xml, $path . $file);
-	header('Location: components.php?upd=comp-success');
+	redirect('components.php?upd=comp-success');
 }
 
 // if undo was invoked
@@ -92,7 +92,7 @@ if (isset($_GET['undo']))
 		die("CSRF detected!");
 
 	undo($file, $path, $bakpath);
-	header('Location: components.php?upd=comp-restored');
+	redirect('components.php?upd=comp-restored');
 }
 
 //create list of components for html

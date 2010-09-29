@@ -466,6 +466,23 @@ $i18n = array(
 "MORE" => "more",
 "HELP" => "help",
 
+/***********************************************************************************
+ * SINCE Version 2.04
+***********************************************************************************/
+
+/* 
+ * For: setup.php
+ */
+
+"ROOT_HTACCESS_ERROR" => "Failed to create .htaccess in root! Please copy it from %s to .htaccess and change %s to %s",
+"REMOVE_TEMPCONFIG_ERROR" => "Failed to remove %s! Please do it manually.",
+"MOVE_TEMPCONFIG_ERROR" => "Failed to rename %s to %s! Please do it manually.",
+
+/*
+ * For: deletefile.php
+ */
+
+"HOMEPAGE_DELETE_ERROR" => "You cannot delete your homepage",
 
 "" => "not translated"
 

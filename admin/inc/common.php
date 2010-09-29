@@ -94,7 +94,7 @@ if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
 	$SALT = sha1($SITEURL);
 }
 // for form and file security
-$SESSIONHASH = md5($SALT . @$SITENAME);
+$SESSIONHASH = sha1($SALT . @$SITENAME);
 
 // Settings
 if (file_exists(GSDATAOTHERPATH .'cp_settings.xml')) {
@@ -133,8 +133,7 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup')
 {
 	if ($SITEURL == '')
 	{ 
-		header('Location: ' . $relative . 'admin/install.php'); 
-		exit; 
+		redirect($relative . 'admin/install.php');
 	}
 	
 	if (file_exists(GSADMINPATH.'install.php'))

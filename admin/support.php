@@ -27,7 +27,7 @@ if (isset($_GET['undo'])) {
 
 	$ufile = 'cp_settings.xml';
 	undo($ufile, $path, $bakpath);
-	header('Location: support.php?rest=true');
+	redirect('support.php?rest=true');
 }
 
 if (isset($_GET['restored'])) { 

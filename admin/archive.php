@@ -26,7 +26,7 @@ if(isset($_GET['do'])) {
 	if(!check_nonce($nonce, "create"))
 		die("CSRF detected!");	
 	exec_action('archive-backup');
-	header('Location: zip.php?s='.$SESSIONHASH);	
+	redirect('zip.php?s='.$SESSIONHASH);	
 }
 
 // if a backup has just been created
@@ -63,7 +63,7 @@ if(isset($_GET['done'])) {
 			rsort($filenames);
 			
 			foreach ($filenames as $file) {
-				if($file != "." && $file != ".." && $file != ".htaccess" ) {
+				if($file[0] != "." ) {
 					$timestamp = explode('_', $file);
 					$name = shtDate($timestamp[0]);
 					clearstatcache();

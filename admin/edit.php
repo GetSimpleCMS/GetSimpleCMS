@@ -46,8 +46,7 @@ if ($id)
 	
 	if (!file_exists($path . $file))
 	{ 
-		header('Location: pages.php?error='.$i18n['PAGE_NOTEXIST']);
-		exit;
+		redirect('pages.php?error='.urlencode($i18n['PAGE_NOTEXIST']));
 	}
 
 	$data_edit = getXML($path . $file);

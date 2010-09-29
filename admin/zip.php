@@ -54,7 +54,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 	fclose($fh);
 	
 	// redirect back to archive page with a success
-	header('Location: archive.php?done');
+	redirect('archive.php?done');
 
 } else {
 	die('You do not have permission to execute this page');

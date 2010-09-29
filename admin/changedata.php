@@ -36,8 +36,7 @@ if (isset($_POST['submitted']))
 		die("CSRF detected!");	
 
 	if ( ($_POST['post-title'] == '') )	{
-		header("Location: edit.php?upd=edit-err&type=".$i18n['CANNOT_SAVE_EMPTY']);
-		exit;
+		redirect("edit.php?upd=edit-err&type=".urlencode($i18n['CANNOT_SAVE_EMPTY']));
 	}	else {
 		
 		$url="";$title="";$metad=""; $metak="";	$cont="";
@@ -72,8 +71,7 @@ if (isset($_POST['submitted']))
 				if ($_POST['existing-url'] == 'index') 
 				{
 					$url = $_POST['existing-url'];
-					header("Location: edit.php?id=". $_POST['existing-url'] ."&upd=edit-index&type=edit");
-					exit;
+					redirect("edit.php?id=". urlencode($_POST['existing-url']) ."&upd=edit-index&type=edit");
 				} 
 				else 
 				{

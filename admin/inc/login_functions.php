@@ -13,7 +13,7 @@ $MSG = "";
 
 // If the login cookie is already set, redirect user to secure panel
 if(cookie_check()) {
-	header("Location: ". $cookie_redirect);                                             
+	redirect($cookie_redirect);                                             
 }
 
 	if (file_exists(GSDATAOTHERPATH.'user.xml')) {
@@ -70,7 +70,7 @@ if(isset($_POST['submitted']))
 		if( $authenticated ) {
 			// Set the login cookie, then redirect user to secure panel		
 			create_cookie();
-			header("Location: ". $cookie_redirect); 
+			redirect($cookie_redirect); 
 		} else {
 			$MSG .= '<b>'.$i18n['ERROR'].':</b> '.$i18n['LOGIN_FAILED'].'.';
 		}

@@ -36,8 +36,7 @@ if (@$_GET['action'] == 'delete' && strlen($log_name)>0) {
 
 	unlink($log_file);
 	exec_action('logfile_delete');
-	header('Location: support.php?success=Log '.$log_name . $i18n['MSG_HAS_BEEN_CLR']);
-	exit;
+	redirect('support.php?success='.urlencode('Log '.$log_name . $i18n['MSG_HAS_BEEN_CLR']));
 }
 
 if (!isset($log_data)) $log_data = getXML($log_file);

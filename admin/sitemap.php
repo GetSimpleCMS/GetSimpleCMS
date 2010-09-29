@@ -98,21 +98,21 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		if (file_exists($relative .'sitemap.xml')){
 			if( 200 === ($status=pingGoogleSitemaps($SITEURL.'sitemap.xml')))	{
 				$response = $i18n['SITEMAP_CREATED'];
-				header('location: theme.php?success=' . $response);
+				redirect('theme.php?success=' . urlencode($response));
 				exit;
 			} else {
 				$response = $i18n['SITEMAP_ERRORPING'];
-				header('location: theme.php?err=' . $response);
+				redirect('theme.php?err=' . urlencode($response));
 				exit;
 			}
 		} else {
 			$response = $i18n['SITEMAP_ERROR'];
-			header('location: theme.php?err=' . $response);	
+			redirect('theme.php?err=' . urlencode($response));	
 			exit;
 		}
 	} else {
 		$response = $i18n['SITEMAP_ERRORPING'];
-		header('location: theme.php?success=' . $response);
+		redirect('theme.php?success=' . urlencode($response));
 		exit;
 	}
 } else {

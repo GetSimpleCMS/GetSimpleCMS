@@ -19,7 +19,7 @@ require_once(GSADMININCPATH.'configuration.php');
     global $cookie_time;
     global $cookie_name;
     $saltUSR = $USR.$SALT;
-    $saltCOOKIE = $cookie_name.$SALT;
+    $saltCOOKIE = sha1($cookie_name.$SALT);
     if ( defined('GSCOOKIEISSITEWIDE') && (GSCOOKIEISSITEWIDE == TRUE) ) {
       setcookie($saltCOOKIE, sha1($saltUSR), time() + $cookie_time,'/');    
     } else {
@@ -36,7 +36,7 @@ require_once(GSADMININCPATH.'configuration.php');
 //****************************************************//	
 	function kill_cookie($identifier) {
     global $SALT;
-    $saltCOOKIE = $identifier.$SALT;
+    $saltCOOKIE = sha1($identifier.$SALT);
     if ( defined('GSCOOKIEISSITEWIDE') && (GSCOOKIEISSITEWIDE == TRUE) ) {
        $_COOKIE[$saltCOOKIE] = FALSE;
        setcookie($saltCOOKIE, FALSE, time() - 3600,'/');    
@@ -63,7 +63,7 @@ require_once(GSADMININCPATH.'configuration.php');
 			global $SALT;
 			global $cookie_name;
 			$saltUSR = $USR.$SALT;
-			$saltCOOKIE = $cookie_name.$SALT;
+			$saltCOOKIE = sha1($cookie_name.$SALT);
 			if(isset($_COOKIE[$saltCOOKIE])&&$_COOKIE[$saltCOOKIE]==sha1($saltUSR)) {
 				return TRUE; // Cookie proves logged in status.
 			} else { return FALSE; }
@@ -90,8 +90,7 @@ require_once(GSADMININCPATH.'configuration.php');
 		if(cookie_check()) {
 			create_cookie();
 		} else {
-			header("Location: ". $cookie_login);
-			exit;
+			redirect($cookie_login);
 		}
 	}
 

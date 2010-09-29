@@ -23,7 +23,7 @@ $src = strippath($_GET['i']);
 $thumb_folder = $relative.'data/thumbs/';
 $src_folder = $relative.'data/uploads/';
 
-if (!is_file($src_folder . $src)) header("Location: upload.php");
+if (!is_file($src_folder . $src)) redirect("upload.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {

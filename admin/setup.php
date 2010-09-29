@@ -172,14 +172,23 @@ if(isset($_POST['submitted']))
 		
 		fwrite($fp, $temp_data);
 		fclose($fp);
+		if (!file_exists($init)) {
+			$kill .= sprintf($i18n['ROOT_HTACCESS_ERROR'], 'admin/inc/tmp/tmp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
+		}
 		
 		// create gsconfig.php if it doesn't exist yet.
 		$init = $relative."gsconfig.php";
 		$temp = $relative."temp.gsconfig.php";
 		if (file_exists($init)) {
 			unlink($temp);
+			if (file_exists($temp)) {
+				$kill .= sprintf($i18n['REMOVE_TEMPCONFIG_ERROR'], $temp) . '<br />';
+			}
 		} else {
 			rename($temp, $init);
+			if (!file_exists($init)) {
+				$kill .= sprintf($i18n['MOVE_TEMPCONFIG_ERROR'], $temp, $init) . '<br />';
+			}
 		}
 		
 		// send email to new administrator
@@ -193,7 +202,9 @@ if(isset($_POST['submitted']))
 		// Set the login cookie, then redirect user to secure panel		
 		create_cookie();
 		
-		header("Location: welcome.php"); 
+		if ($kill == '') {
+			redirect("welcome.php");
+		}
 	}
 }
 ?>
@@ -230,7 +241,7 @@ if(isset($_POST['submitted']))
 	
 	if ($random != '') 
 	{
-		echo '<div class="updated">'.$i18n['NOTE_USERNAME'].' <b>'. stripslashes($_POST['user']) .'</b> '.$i18n['NOTE_PASSWORD'].' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="index.php">'.$i18n['EMAIL_LOGIN'].'</a></div>';
+		echo '<div class="updated">'.$i18n['NOTE_USERNAME'].' <b>'. stripslashes($_POST['user']) .'</b> '.$i18n['NOTE_PASSWORD'].' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="welcome.php">'.$i18n['EMAIL_LOGIN'].'</a></div>';
 	}
 	
 ?>

@@ -44,7 +44,7 @@ if (isset($_GET['undo']))
 	undo($ufile, $path, $bakpath);
 	
 	// Redirect
-	header('Location: settings.php?restored=true');
+	redirect('settings.php?restored=true');
 }
 
 if (isset($_GET['restored']))

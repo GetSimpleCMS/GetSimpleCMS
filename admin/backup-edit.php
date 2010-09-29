@@ -42,7 +42,7 @@ if ($_GET['id'] != '')
 } 
 else 
 {
-	header('Location: backups.php?upd=bak-err');
+	redirect('backups.php?upd=bak-err');
 }
 
 if ($private != '' ) { $private = '('.$i18n['PRIVATE_SUBTITLE'].')'; } else { $private = ''; }
@@ -55,7 +55,7 @@ if ($_GET['p'] != '')
 } 
 else 
 {
-	header('Location: backups.php?upd=bak-err');
+	redirect('backups.php?upd=bak-err');
 }
 
 if ($p == 'delete') 
@@ -65,7 +65,7 @@ if ($p == 'delete')
 		die("CSRF detected!");	
 
 	delete_bak($id);
-	header("Location: backups.php?upd=bak-success&id=".$id);
+	redirect("backups.php?upd=bak-success&id=".$id);
 } 
 elseif ($p == 'restore') 
 {
@@ -74,7 +74,7 @@ elseif ($p == 'restore')
 		die("CSRF detected!");	
 
 	restore_bak($id);
-	header("Location: edit.php?id=". $id ."&upd=edit-success&type=restore");
+	redirect("edit.php?id=". $id ."&upd=edit-success&type=restore");
 }
 ?>
 
