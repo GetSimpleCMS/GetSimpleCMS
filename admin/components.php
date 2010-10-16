@@ -57,9 +57,16 @@ if (isset($_POST['submitted']))
 				}
 				
 				$coArray[$ct]['id'] = $ids[$ct];
-				$coArray[$ct]['title'] = htmlentities($title[$ct], ENT_QUOTES, 'UTF-8');
 				$coArray[$ct]['slug'] = $slug[$ct];
-				$coArray[$ct]['value'] = htmlentities($value[$ct], ENT_QUOTES, 'UTF-8');
+
+				if (get_magic_quotes_gpc()==0) {
+					$coArray[$ct]['title'] = addslashes(htmlentities($title[$ct], ENT_QUOTES, 'UTF-8');
+					$coArray[$ct]['value'] = addslashes(htmlentities($value[$ct], ENT_QUOTES, 'UTF-8');
+				} else {
+					$coArray[$ct]['title'] = htmlentities($title[$ct], ENT_QUOTES, 'UTF-8');
+					$coArray[$ct]['value'] = htmlentities($value[$ct], ENT_QUOTES, 'UTF-8');
+				}
+
 			}
 			$ct++;
 		}

@@ -5,8 +5,8 @@
 * @Package:			GetSimple
 * @Subject:			US English language file
 * @Date:				01 Sept 2009
-* @Revision:		23 Jan 2010
-* @Version:			GetSimple 2.0
+* @Revision:		16 Oct 2010
+* @Version:			GetSimple 2.04
 * @Status:			Final
 * @Traductors: 	Chris Cagle 	
 *
@@ -144,10 +144,8 @@ $i18n = array(
 "SETTINGS" 					=> 	"Settings",
 "ERROR" 						=> 	"Error",
 "BTN_SAVESETTINGS" 	=> 	"Save Settings",
-"EMAIL_ON_404" 			=> 	"Email administrator on 404 errors",
-"VIEW_404" 					=> 	"View 404 Errors",
 "VIEW_FAILED_LOGIN"	=> 	"View Failed Login Attempts",
-"VIEW_TICKETS" 			=> 	"View Your Submitted Tickets",
+
 
 /* 
  * For: log.php
@@ -226,19 +224,6 @@ $i18n = array(
 "CONFIRM_PASSWORD"	=>	"Confirm Password",
 "PASSWORD_NO_MATCH"	=>	"Passwords do not match",
 
-/* 
- * For: 404-mailer.php
-*/
-"404_ENCOUNTERED"		=>	"Auto: 404 Error Encountered on",
-"404_AUTO_MSG"			=>	"This is an automated message from your website",
-"PAGE_CANNOT_FOUND"	=>	"A 'page not found' error was encountered on the",
-"DOMAIN"						=>	"domain",
-"DETAILS"						=>	"DETAILS",
-"WHEN"							=>	"When",
-"WHO"								=>	"Who",
-"FAILED_PAGE"				=>	"Failed Page",
-"REFERRER"					=>	"Referrer",
-"BROWSER"						=>	"Browser",
 
 /* 
  * For: health-check.php
@@ -271,8 +256,6 @@ $i18n = array(
  * For: footer.php
 */
 "POWERED_BY"				=>	"Powered by",
-"PRODUCTION"				=>	"A %s Production",
-"SUBMIT_TICKET"			=>	"Submit Ticket",
 
 /* 
  * For: backups.php
@@ -320,7 +303,6 @@ $i18n = array(
 "SIDE_SUPPORT_LOG"	=>	"Supp<em>o</em>rt Settings &amp; Logs",
 "SIDE_VIEW_LOG"			=>	"View Log",
 "SIDE_HEALTH_CHK"		=>	"Website <em>H</em>ealth Check",
-"SIDE_SUBMIT_TICKET"=>	"Submit Tic<em>k</em>et",
 "SIDE_DOCUMENTATION"=>	"<em>D</em>ocumentation",
 
 /* 
