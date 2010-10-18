@@ -655,28 +655,24 @@ function get_navigation($currentpage) {
  * @depreciated as of 2.04
  */
 function return_page_title() {
-	global $title;
-	return stripslashes(htmlspecialchars_decode($title, ENT_QUOTES));
+	get_page_title(FALSE);
 }
 /**
  * @depreciated as of 2.04
  */
 function return_parent() {
-	global $parent;
-	return @$parent;
+	get_parent(FALSE);
 }
 /**
  * @depreciated as of 2.04
  */
 function return_page_slug() {
-	global $url;
-	return $url;
+	get_page_slug(FALSE);
 }
 /**
  * @depreciated as of 2.04
  */
 function return_site_ver() {
-	include('configuration.php');
-	echo $site_version_no;
+	get_site_version(FALSE);
 }	
 ?>
