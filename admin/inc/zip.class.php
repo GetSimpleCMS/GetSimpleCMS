@@ -1,28 +1,14 @@
-<?php  
-/* 
-Zip file creation class 
-makes zip files on the fly... 
+<?php 
+/**
+ * Zip File Creation Class
+ *
+ * @link http://www.themepark.com
+ * @author Eric Mueller
+ *
+ * @package GetSimple
+ * @subpackage Zip
+ */ 
 
-use the functions add_dir() and add_file() to build the zip file; 
-see example code below 
-
-by Eric Mueller 
-http://www.themepark.com 
-
-v1.1 9-20-01 
-  - added comments to example 
-
-v1.0 2-5-01 
-
-initial version with: 
-  - class appearance 
-  - add_file() and file() methods 
-  - gzcompress() output hacking 
-by Denis O.Philippov, webmaster@atlant.ru, http://www.atlant.ru 
-
-*/  
-
-// official ZIP file format: http://www.pkware.com/appnote.txt 
 
 class zipfile   
 {   

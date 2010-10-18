@@ -1,31 +1,33 @@
 <?php
-
-###############################################################
-# Thumbnail Image Generator 1.3
-###############################################################
-# Visit http://www.zubrag.com/scripts/ for updates
-############################################################### 
-
-// REQUIREMENTS:
-// PHP 4.0.6 and GD 2.0.1 or later
-// May not work with GIFs if GD2 library installed on your server 
-// does not support GIF functions in full
-
-// Parameters:
-// src - path to source image
-// dest - path to thumb (where to save it)
-// x - max width
-// y - max height
-// q - quality (applicable only to JPG, 1 to 100, 100 - best)
-// t - thumb type. "-1" - same as source, 1 = GIF, 2 = JPG, 3 = PNG
-// f - save to file (1) or output to browser (0).
-
-// Sample usage: 
-// 1. save thumb on server
-// http://www.zubrag.com/thumb.php?src=test.jpg&dest=thumb.jpg&x=100&y=50
-// 2. output thumb to browser
-// http://www.zubrag.com/thumb.php?src=test.jpg&x=50&y=50&f=0
-
+/**
+ * Thumbnail Image Generator
+ *
+ * REQUIREMENTS:
+ * - PHP 4.0.6 and GD 2.0.1 or later
+ * - May not work with GIFs if GD2 library installed on your server 
+ * - does not support GIF functions in full
+ *
+ * Parameters:
+ * - src - path to source image
+ * - dest - path to thumb (where to save it)
+ * - x - max width
+ * - y - max height
+ * - q - quality (applicable only to JPG, 1 to 100, 100 - best)
+ * - t - thumb type. "-1" - same as source, 1 = GIF, 2 = JPG, 3 = PNG
+ * - f - save to file (1) or output to browser (0).
+ *
+ * Sample usage: 
+ * 1. save thumb on server: 
+ * http://www.zubrag.com/thumb.php?src=test.jpg&dest=thumb.jpg&x=100&y=50
+ * 2. output thumb to browser:
+ * http://www.zubrag.com/thumb.php?src=test.jpg&x=50&y=50&f=0
+ *
+ * @link //www.zubrag.com/scripts/
+ * @version 1.3
+ *
+ * @package GetSimple
+ * @subpackage Thumbnails
+ */ 
 
 // Below are default values (if parameter is not passed)
 
