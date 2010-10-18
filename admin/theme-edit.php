@@ -45,7 +45,12 @@ if((isset($_POST['submitsave'])))
 		die("CSRF detected!");
 
 	$SavedFile = $_POST['edited_file'];
-	$FileContents = stripslashes(htmlspecialchars_decode($_POST['content'], ENT_QUOTES));
+	
+	if (get_magic_quotes_gpc()==0) { 
+		$FileContents = htmlspecialchars_decode($_POST['content'], ENT_QUOTES);
+	} else {
+		$FileContents = stripslashes(htmlspecialchars_decode($_POST['content'], ENT_QUOTES));
+	}
 
 	$fh = fopen($relative. 'theme/'. $SavedFile, 'w') or die("can't open file");
 	fwrite($fh, $FileContents);

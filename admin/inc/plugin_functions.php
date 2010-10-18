@@ -52,7 +52,7 @@ function add_action($hook_name, $added_funcion, $args = array())
 }
 
 /*******************************************************
- * @function get_template
+ * @function exec_action
  * @param $a - name of Hook 
  *
 */
