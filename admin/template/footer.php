@@ -1,12 +1,9 @@
 <?php
-/****************************************************
-*
-* @File: 	footer.php
-* @Package:	GetSimple
-* @Action:	Template file for inserting the 
-*			footer into the control panel. 	
-*
-*****************************************************/
+/**
+ * Footer Admin Template
+ *
+ * @package GetSimple
+ */
 
 global $i18n;
 

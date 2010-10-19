@@ -1,17 +1,16 @@
 <?php
-/****************************************************
-*
-* @File: 		backups.php
-* @Package:	GetSimple
-* @Action:	Displays all available page backups. 	
-*
-*****************************************************/
+/**
+ * All Backups
+ *
+ * Displays all available page backups. 	
+ *
+ * @package GetSimple
+ * @subpackage Backups
+ * @link http://get-simple.info/docs/restore-page-backup
+ */
  
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

@@ -1,17 +1,15 @@
 <?php
-/****************************************************
-*
-* @File: 		backup-edit.php
-* @Package:	GetSimple
-* @Action:	View the current backup of a given page. 	
-*
-*****************************************************/
-
+/**
+ * Edit Backups
+ *
+ * View the current backup of a given page
+ *
+ * @package GetSimple
+ * @subpackage Backups
+ */
+ 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

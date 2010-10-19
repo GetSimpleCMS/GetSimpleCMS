@@ -1,24 +1,24 @@
 <?php
-/****************************************************
-*
-* @File: 		upload.php
-* @Package:	GetSimple
-* @Action:	Displays and uploads files to the website 	
-*
-*****************************************************/
+/**
+ * Upload Files
+ *
+ * Displays and uploads files to the website
+ *
+ * @package GetSimple
+ * @subpackage Files
+ * @todo Remove relative paths
+ */
+
  
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');
 
 // Variable settings
 login_cookie_check();
-$path = tsl("../data/uploads/");
+$path = tsl("../data/uploads/"); #needs to stay a relative path
 
 // if a file was uploaded
 if (isset($_FILES["file"]))

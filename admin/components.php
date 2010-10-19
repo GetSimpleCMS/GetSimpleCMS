@@ -1,18 +1,16 @@
 <?php
-/****************************************************
-*
-* @File: 		components.php
-* @Package:	GetSimple
-* @Action:	Displays and creates static components 
-*						of the website. 	
-*
-*****************************************************/
+/**
+ * Components
+ *
+ * Displays and creates static components 	
+ *
+ * @package GetSimple
+ * @subpackage Components
+ * @link http://get-simple.info/docs/what-are-components
+ */
  
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');
@@ -60,8 +58,8 @@ if (isset($_POST['submitted']))
 				$coArray[$ct]['slug'] = $slug[$ct];
 
 				if (get_magic_quotes_gpc()==0) {
-					$coArray[$ct]['title'] = addslashes(htmlentities($title[$ct], ENT_QUOTES, 'UTF-8');
-					$coArray[$ct]['value'] = addslashes(htmlentities($value[$ct], ENT_QUOTES, 'UTF-8');
+					$coArray[$ct]['title'] = addslashes(htmlentities($title[$ct], ENT_QUOTES, 'UTF-8'));
+					$coArray[$ct]['value'] = addslashes(htmlentities($value[$ct], ENT_QUOTES, 'UTF-8'));
 				} else {
 					$coArray[$ct]['title'] = htmlentities($title[$ct], ENT_QUOTES, 'UTF-8');
 					$coArray[$ct]['value'] = htmlentities($value[$ct], ENT_QUOTES, 'UTF-8');

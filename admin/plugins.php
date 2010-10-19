@@ -1,11 +1,12 @@
 <?php
-/****************************************************
-*
-* @File: 	plugins.php
-* @Package:	GetSimple
-* @Action:	Displays all installed plugins. 	
-*
-*****************************************************/
+/**
+ * All Plugins
+ *
+ * Displays all installed plugins 
+ *
+ * @package GetSimple
+ * @subpackage Plugins
+ */
  
 // Setup inclusions
 $load['plugin'] = true;

@@ -1,17 +1,13 @@
 <?php 
-/****************************************************
-*
-* @File: 		theme.php
-* @Package:	GetSimple
-* @Action:	Displays and changes website settings 	
-*
-*****************************************************/
+/**
+ * Theme
+ *
+ * @package GetSimple
+ * @subpackage Theme
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

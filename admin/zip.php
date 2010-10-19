@@ -1,17 +1,19 @@
 <?php
-/****************************************************
-*
-* @File: 		zip.php
-* @Package:	GetSimple
-* @Action:	Creates an archive for the website 	
-*
-*****************************************************/
+/**
+ * Zip Archive
+ *
+ * Creates a zip archive of the site
+ *
+ * @package GetSimple
+ * @subpackage Backups
+ * @todo Remove relative paths
+ */
 
 	// Setup inclusions
 	$load['plugin'] = true;
 	
 	// Relative
-	$relative = '../';
+	$relative = '../'; # leaving this relative for now so the zip file doesnt end up with a file structure like /var/www/c/a/g/public_html/getsimple-path/
 	
 	// Include common.php
 	include('inc/common.php');

@@ -1,17 +1,15 @@
 <?php 
-/****************************************************
-*
-* @File: 		setup.php
-* @Package:	GetSimple
-* @Action:	Installs the website if it has never been setup before. 	
-*
-*****************************************************/
+/**
+ * Setup
+ *
+ * Second step of installation (install.php). Sets up initial files & structure
+ *
+ * @package GetSimple
+ * @subpackage Installation
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 if($_POST['lang'] != '') { 	
 	$LANG = $_POST['lang'];
@@ -31,9 +29,8 @@ $random = null;
 
 // Get user data
 $file = 'user.xml';
-$path = $relative. 'data/other/';
-if (file_exists($path . $file)) 
-{
+$path = GSDATAOTHERPATH;
+if (file_exists($path . $file)) {
 	$data = getXML($path . $file);
 	$USR = stripslashes($data->USR);
 	$PASSWD = $data->PWD;
@@ -95,7 +92,7 @@ if(isset($_POST['submitted']))
 		$PASSWD1 = passhash($random);
 		
 		// create new users.xml file
-		$bakpath = $relative. "backups/other/";
+		$bakpath = GSBACKUPSPATH."other/";
 		createBak($file, $path, $bakpath);
 		
 		$xml = @new SimpleXMLElement('<item></item>');
@@ -108,7 +105,7 @@ if(isset($_POST['submitted']))
 			$kill = $i18n['CHMOD_ERROR'];
 		}
 		
-		$flagfile = $relative. "backups/other/user.xml.reset";
+		$flagfile = $bakpath."user.xml.reset";
 		copy($path . $file, $flagfile);
 		
 		// create new website.xml file
@@ -135,8 +132,8 @@ if(isset($_POST['submitted']))
 		XMLsave($xmlc, $path . $file);
 		
 		// create index.xml page
-		$init = $relative. "data/pages/index.xml"; 
-		$temp = "inc/tmp/tmp-index.xml";
+		$init = GSDATAPAGESPATH."index.xml"; 
+		$temp = GSADMININCPATH."tmp/tmp-index.xml";
 		
 		if (! file_exists($init))	{
 			copy($temp,$init);
@@ -144,8 +141,8 @@ if(isset($_POST['submitted']))
 
 		
 		// create components.xml page
-		$init = $relative. "data/other/components.xml";
-		$temp = "inc/tmp/tmp-components.xml"; 
+		$init = $path."components.xml";
+		$temp = GSADMININCPATH."tmp/tmp-components.xml"; 
 		
 		if (! file_exists($init)) 
 		{
@@ -154,8 +151,8 @@ if(isset($_POST['submitted']))
 
 		
 		// create 404.xml page
-		$init = $relative. "data/other/404.xml";
-		$temp = "inc/tmp/tmp-404.xml"; 
+		$init = $path."404.xml";
+		$temp = GSADMININCPATH."tmp/tmp-404.xml"; 
 		
 		if (! file_exists($init)) 
 		{
@@ -164,8 +161,8 @@ if(isset($_POST['submitted']))
 
 		
 		// create root .htaccess page
-		$init = $relative. ".htaccess";
-		$temp_data = file_get_contents("inc/tmp/tmp.htaccess");
+		$init = GSROOTPATH. ".htaccess";
+		$temp_data = file_get_contents(GSADMININCPATH."tmp/tmp.htaccess");
 		$temp_data = str_replace('**REPLACE**',tsl($path_parts), $temp_data);
 		
 		$fp = fopen($init, 'w');
@@ -177,8 +174,8 @@ if(isset($_POST['submitted']))
 		}
 		
 		// create gsconfig.php if it doesn't exist yet.
-		$init = $relative."gsconfig.php";
-		$temp = $relative."temp.gsconfig.php";
+		$init = GSROOTPATH."gsconfig.php";
+		$temp = GSROOTPATH."temp.gsconfig.php";
 		if (file_exists($init)) {
 			unlink($temp);
 			if (file_exists($temp)) {

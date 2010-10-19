@@ -1,16 +1,15 @@
 <?php 
-/****************************************************
-*
-* @File: 		download.php
-* @Package:	GetSimple
-* @Action:	downloads files 	
-*
-*****************************************************/
+/**
+ * Download Files
+ *
+ * Forces the download of file types
+ *
+ * @package GetSimple
+ * @subpackage Download
+ */
+ 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

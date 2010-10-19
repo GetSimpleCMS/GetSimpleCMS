@@ -1,23 +1,20 @@
 <?php 
-/****************************************************
-*
-* @File: 		support.php
-* @Package:	GetSimple
-* @Action:	Displays and changes website settings 	
-*
-*****************************************************/
+/**
+ * Support
+ *
+ * @package GetSimple
+ * @subpackage Support
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
 
-// Relative
-$relative = '../';
-$path = $relative. 'data/other/';
-$bakpath = $relative. 'backups/other/';
-
 // Include common.php
 include('inc/common.php');
 login_cookie_check();
+
+$path = GSDATAOTHERPATH;
+$bakpath = GSBACKUPSPATH.'other/';
 
 // if the undo command was invoked
 if (isset($_GET['undo'])) { 

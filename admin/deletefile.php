@@ -1,18 +1,15 @@
 <?php 
-/****************************************************
-*
-* @File: 		deletefile.php
-* @Package:	GetSimple
-* @Action:	Delete files across the control panel. 	
-*
-*****************************************************/
-
+/**
+ * Delete File
+ *
+ * Deletes Files based on what is passed to it 	
+ *
+ * @package GetSimple
+ * @subpackage Delete-Files
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

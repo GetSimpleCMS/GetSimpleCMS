@@ -1,7 +1,13 @@
 <?php
-/* 
-* GetSimple cron.php
-*/
+/**
+ * Cron
+ *
+ * Allows websites to cron certain items of their installation 	
+ *
+ * @package GetSimple
+ * @subpackage Scheduling
+ * @link http://get-simple.info/docs/cron-setup
+ */
 
 if (basename($_SERVER['PHP_SELF']) == 'cron.php') { 
 	die('You cannot load this page directly.');

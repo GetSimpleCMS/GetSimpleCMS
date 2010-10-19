@@ -1,10 +1,15 @@
 <?php
-
+/**
+ * Upload Files Ajax
+ *
+ * Ajax action file for jQuery uploader
+ *
+ * @package GetSimple
+ * @subpackage Files
+ */
+ 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

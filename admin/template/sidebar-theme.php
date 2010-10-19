@@ -1,3 +1,10 @@
+<?php
+/**
+ * Sidebar Themes Template
+ *
+ * @package GetSimple
+ */
+?>
 <ul class="snav">
 	<li><a href="theme.php"  <?php check_menu('theme');  ?> accesskey="t" ><?php echo $i18n['SIDE_CHOOSE_THEME']; ?></a></li>
 	<li><a href="theme-edit.php"  <?php check_menu('theme-edit'); ?> accesskey="h" ><?php echo $i18n['SIDE_EDIT_THEME']; ?></a></li>

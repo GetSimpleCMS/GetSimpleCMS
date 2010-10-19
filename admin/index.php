@@ -1,18 +1,16 @@
 <?php
-/****************************************************
-*
-* @File: 	index.php
-* @Package:	GetSimple
-* @Action:	Login screen for the control panel. 	
-*
-*****************************************************/
+/**
+ * Login
+ *
+ * Allows access to the GetSimple control panel
+ *
+ * @package GetSimple
+ * @subpackage Login
+ */
 
 // Setup inclusions
 $load['login'] = true;
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

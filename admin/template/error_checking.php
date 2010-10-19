@@ -1,5 +1,12 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
-
+/**
+ * Error Checking
+ *
+ * Displays error and success messages	
+ *
+ * @package GetSimple
+ */
+ 
 	if (file_exists(GSBACKUPSPATH."other/user.xml.reset")) {
 		echo '<div class="error">'.$i18n['ER_PWD_CHANGE'].'</div>';
 	}

@@ -245,17 +245,15 @@ function createBak($file, $filepath, $bakpath) {
 		return false;
 	} 
 }
-/******************************************************/
 
-
-
-
-/*******************************************************
- * @function makeIso8601TimeStamp
- * @param $dateTime - date to create iso timestamp from
- * @returns - iso timestamp
+/**
+ * ISO Timestamp
  *
-*/
+ * @since 1.0
+ *
+ * @param string $dateTime
+ * @return string
+ */
 function makeIso8601TimeStamp($dateTime) {
     if (!$dateTime) {
         $dateTime = date('Y-m-d H:i:s');
@@ -267,15 +265,15 @@ function makeIso8601TimeStamp($dateTime) {
     }
     return $isoTS;
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function pingGoogleSitemaps
- * @param $url_xml - xml file to ping to Google
- * @returns - status
+/**
+ * Ping Sitemaps
  *
-*/
+ * @since 1.0
+ *
+ * @param string $url_xml XML sitemap
+ * @return bool
+ */
 function pingGoogleSitemaps($url_xml) {
    $status = 0;
    $google = 'www.google.com';
@@ -352,16 +350,18 @@ function pingGoogleSitemaps($url_xml) {
    
    return( $status );
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function undo
- * @param $file - filename to undo changes to
- * @param $filepath - file location
- * @param $bakpath - backup file location
+/**
+ * Undo
  *
-*/
+ * @since 1.0
+ * @uses tsl
+ *
+ * @param string $file
+ * @param string $filepath
+ * @param string $bakpath
+ * @return bool
+ */
 function undo($file, $filepath, $bakpath) {
 	$old_file = $filepath . $file;
 	$new_file = tsl($bakpath) . $file .".bak";
@@ -377,16 +377,15 @@ function undo($file, $filepath, $bakpath) {
 		return true;
 	}
 }
-/******************************************************/
 
-
-
-/*******************************************************
- * @function fSize
- * @param $s - filesize
- * @returns formated file size
+/**
+ * File Size
  *
-*/
+ * @since 1.0
+ *
+ * @param string $s 
+ * @return string
+ */
 function fSize($s) {
 	$size = '<b>'. ceil(round(($s / 1024), 1)) .'</b> KB'; // in kb
 	if ($s >= "1000000") {
@@ -398,15 +397,15 @@ function fSize($s) {
 	
 	return $size;
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function check_email_address
- * @param $email - email address to check
- * @returns true or false validation check
+/**
+ * Validate Email Address
  *
-*/
+ * @since 1.0
+ *
+ * @param string $email 
+ * @return bool
+ */
 function check_email_address($email) {
     if (!preg_match("/[^@]{1,64}@[^@]{1,255}$/", $email)) {
         return false;
@@ -432,14 +431,15 @@ function check_email_address($email) {
     return true;
 }
 
-
-/*******************************************************
- * @function do_reg
- * @param $text - text to check
- * @param $regrex - regrex to check with
- * @returns true or false validation check
+/**
+ * Do Regex
  *
-*/
+ * @since 1.0
+ *
+ * @param string $text Text to perform regex on
+ * @param string $regex Regex format to use
+ * @return bool
+ */
 function do_reg($text, $regex) {
 	if (preg_match($regex, $text)) {
 		return true;
@@ -447,15 +447,17 @@ function do_reg($text, $regex) {
 		return false;
 	}
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function valid_xml
- * @param $file - file to validate
- * @returns true or false validation check
+/**
+ * Validate XML
  *
-*/
+ * @since 1.0
+ * @uses $i18n
+ * @uses getXML
+ *
+ * @param string $file File to validate
+ * @return string
+ */
 function valid_xml($file) {
 	$xmlv = @getXML($file);
 	global $i18n;
@@ -465,31 +467,18 @@ function valid_xml($file) {
 		return '<span class="ERRmsg" >XML Invalid - '.$i18n['ERROR'].'!</span>';
 	}
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function is_ignore_word
- * @param $word - file to validate
- * @returns true if word should be ignored
+/**
+ * Generate Salt
  *
-*/
-function is_ignore_word($word) {
-$stopwords = array("a","about","above","above","across","after","afterwards","again","against","all","almost","alone","along","already","also","although","always","am","among","amongst","amoungst","amount","an","and","another","any","anyhow","anyone","anything","anyway","anywhere","are","around","as",  "at","back","be","became","because","become","becomes","becoming","been","before","beforehand","behind","being","below","beside","besides","between","beyond","bill","both","bottom","but","by","call","can","cannot","cant","co","con","could","couldnt","cry","de","describe","detail","do","done","down","due","during","each","eg","eight","either","eleven","else","elsewhere","empty","enough","etc","even","ever","every","everyone","everything","everywhere","except","few","fifteen","fify","fill","find","fire","first","five","for","former","formerly","forty","found","four","from","front","full","further","get","give","go","had","has","hasnt","have","he","hence","her","here","hereafter","hereby","herein","hereupon","hers","herself","him","himself","his","how","however","hundred","ie","if","in","inc","indeed","interest","into","is","it","its","itself","keep","last","latter","latterly","least","less","ltd","made","many","may","me","meanwhile","might","mill","mine","more","moreover","most","mostly","move","much","must","my","myself","name","namely","neither","never","nevertheless","next","nine","no","nobody","none","noone","nor","not","nothing","now","nowhere","of","off","often","on","once","one","only","onto","or","other","others","otherwise","our","ours","ourselves","out","over","own","part","per","perhaps","please","put","rather","re","same","see","seem","seemed","seeming","seems","serious","several","she","should","show","side","since","sincere","six","sixty","so","some","somehow","someone","something","sometime","sometimes","somewhere","still","such","system","take","ten","than","that","the","their","them","themselves","then","thence","there","thereafter","thereby","therefore","therein","thereupon","these","they","thickv","thin","third","this","those","though","three","through","throughout","thru","thus","to","together","too","top","toward","towards","twelve","twenty","two","un","under","until","up","upon","us","very","via","was","we","well","were","what","whatever","when","whence","whenever","where","whereafter","whereas","whereby","wherein","whereupon","wherever","whether","which","while","whither","who","whoever","whole","whom","whose","why","will","with","within","without","would","yet","you","your","yours","yourself","yourselves","the");	
-if (in_array(strtolower($word), $stopwords)) {
-		return true;
-	} else {
-		return false;	
-	}
-}
-/******************************************************/
-
-
-/*******************************************************
- * @function generate_salt
- * @returns new salt value
+ * Contacts the GetSimple API and returns a new unique API key
  *
-*/
+ * @since 1.0
+ * @uses $api_url
+ * @uses $site_version_no
+ *
+ * @return string
+ */
 function generate_salt() {
 	
 	global $api_url;
@@ -505,52 +494,64 @@ function generate_salt() {
 	$apikey = json_decode($datac);
 	return $apikey;
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function get_admin_path
- * @returns path to admin folder
+/**
+ * Get Admin Path
  *
-*/
+ * Gets the path of the admin directory
+ *
+ * @since 1.0
+ *
+ * @return string
+ */
 function get_admin_path() {
 	$pos = strrpos(__FILE__,'admin');
 	if ($pos === FALSE) die('Admin directory name changed!');
 	return substr(__FILE__, 0, $pos+6);
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function get_root_path
- * @return path to root install folder
+/**
+ * Get Root Install Path
  *
-*/
+ * Gets the path of the root installation directory
+ *
+ * @since 1.0
+ *
+ * @return string
+ */
 function get_root_path() {
 	$pos = strrpos(__FILE__,'admin');
 	if ($pos === FALSE) die('Admin directory name changed!');
 	return substr(__FILE__, 0, $pos);
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function check_menu
- * @param $text - text to check
- * @return echos class='current' if current filename==$txt
+/**
+ * Check Current Menu
  *
-*/
+ * Checks to see if a menu item matches the current page
+ *
+ * @since 1.0
+ *
+ * @param string $text
+ * @return string
+ */
 function check_menu($text) {
 	if(get_filename_id()===$text){
 		echo 'class="current"';
 	}
 }
 
-/*******************************************************
- * @function passhash
- * @returns returns a hashed password
+/**
+ * Password Hashing
  *
-*/
+ * Default function to create a hashed password for GetSimple
+ *
+ * @since 2.0
+ * @uses GSLOGINSALT
+ *
+ * @param string $p 
+ * @return string
+ */
 function passhash($p) {
 	if(defined('GSLOGINSALT') && GSLOGINSALT != '') { 
 		$logsalt = sha1(GSLOGINSALT);

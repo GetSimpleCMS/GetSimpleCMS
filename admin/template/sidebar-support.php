@@ -1,3 +1,10 @@
+<?php
+/**
+ * Sidebar Support Template
+ *
+ * @package GetSimple
+ */
+?>
 <ul class="snav">
 	<li><a href="support.php"  <?php check_menu('support');  ?> accesskey="o" ><?php echo $i18n['SIDE_SUPPORT_LOG']; ?></a></li>
 	<?php if(get_filename_id()==='log') { ?><li><a href="#"  class="current" ><?php echo $i18n['SIDE_VIEW_LOG']; ?></a></li><?php } ?>

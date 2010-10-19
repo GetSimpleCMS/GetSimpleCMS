@@ -1,17 +1,15 @@
 <?php
-/****************************************************
-*
-* @File: 	pages.php
-* @Package:	GetSimple
-* @Action:	Edit or create new pages for the website. 	
-*
-*****************************************************/
+/**
+ * All Pages
+ *
+ * Displays all pages 
+ *
+ * @package GetSimple
+ * @subpackage Page-Edit
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');
@@ -20,7 +18,7 @@ include('inc/common.php');
 login_cookie_check();
 $id 		= @$_GET['id'];
 $ptype 		= @$_GET['type'];
-$path 		= tsl('../data/pages/');
+$path 		= GSDATAPAGESPATH;
 $counter 	= '0';
 $table 		= '';
 

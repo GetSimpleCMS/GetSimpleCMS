@@ -1,17 +1,15 @@
 <?php 
-/****************************************************
-*
-* @File: 		settings.php
-* @Package:	GetSimple
-* @Action:	Displays and changes website settings 	
-*
-*****************************************************/
+/**
+ * Settings
+ *
+ * Displays and changes website settings 
+ *
+ * @package GetSimple
+ * @subpackage Settings
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');
@@ -19,8 +17,8 @@ include('inc/common.php');
 // Variable settings
 login_cookie_check();
 $file			= 'user.xml';
-$path 		= $relative. 'data/other/';
-$bakpath 	= $relative. 'backups/other/';
+$path 		= GSDATAOTHERPATH;
+$bakpath 	= GSBACKUPSPATH.'other/';
 $data 		= getXML($path . $file);
 $USR 			= stripslashes($data->USR);
 $PASSWD 	= $data->PWD;

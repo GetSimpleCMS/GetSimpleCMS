@@ -1,18 +1,16 @@
 <?php 
-/****************************************************
-*
-* @File: 		load.php
-* @Package:	GetSimple
-* @Action:	Displays the plugin file passed to it 	
-*
-*****************************************************/
+/**
+ * Load Plugin
+ *
+ * Displays the plugin file passed to it 
+ *
+ * @package GetSimple
+ * @subpackage Plugins
+ */
 
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

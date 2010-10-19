@@ -1,19 +1,16 @@
 <?php 
-/****************************************************
-*
-* @File: 		changedata.php
-* @Package:	GetSimple
-* @Action:	Code to either create or edit a page.
-*						This is the action page for the form on 
-*						edit.php
-*
-*****************************************************/
+/**
+ * Page Edit Action
+ *
+ * Code to either create or edit a page. This is the action page  
+ * for the form on edit.php	
+ *
+ * @package GetSimple
+ * @subpackage Page-Edit
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');
@@ -90,25 +87,25 @@ if (isset($_POST['submitted']))
 		// format and clean the responses
 		if(isset($_POST['post-title'])) {
 			if (get_magic_quotes_gpc()==0) {
-				$content = addslashes(htmlentities($_POST['post-title'], ENT_QUOTES, 'UTF-8'));
+				$title = addslashes(htmlentities($_POST['post-title'], ENT_QUOTES, 'UTF-8'));
 			} else {
-				$content = htmlentities($_POST['post-title'], ENT_QUOTES, 'UTF-8');
+				$title = htmlentities($_POST['post-title'], ENT_QUOTES, 'UTF-8');
 			}
 		}
 		
 		if(isset($_POST['post-metak'])) {
 			if (get_magic_quotes_gpc()==0) {
-				$content = addslashes(htmlentities($_POST['post-metak'], ENT_QUOTES, 'UTF-8'));
+				$metak = addslashes(htmlentities($_POST['post-metak'], ENT_QUOTES, 'UTF-8'));
 			} else {
-				$content = htmlentities($_POST['post-metak'], ENT_QUOTES, 'UTF-8');
+				$metak = htmlentities($_POST['post-metak'], ENT_QUOTES, 'UTF-8');
 			}
 		}
 		
 		if(isset($_POST['post-metad'])) {
 			if (get_magic_quotes_gpc()==0) {
-				$content = addslashes(htmlentities($_POST['post-metad'], ENT_QUOTES, 'UTF-8'));
+				$metad = addslashes(htmlentities($_POST['post-metad'], ENT_QUOTES, 'UTF-8'));
 			} else {
-				$content = htmlentities($_POST['post-metad'], ENT_QUOTES, 'UTF-8');
+				$metad = htmlentities($_POST['post-metad'], ENT_QUOTES, 'UTF-8');
 			}
 		}
 		
@@ -116,9 +113,9 @@ if (isset($_POST['submitted']))
 		if(isset($_POST['post-parent'])) { $parent = $_POST['post-parent']; }
 		if(isset($_POST['post-menu'])) {
 			if (get_magic_quotes_gpc()==0) {
-				$content = addslashes(htmlentities($_POST['post-menu'], ENT_QUOTES, 'UTF-8'));
+				$menu = addslashes(htmlentities($_POST['post-menu'], ENT_QUOTES, 'UTF-8'));
 			} else {
-				$content = htmlentities($_POST['post-menu'], ENT_QUOTES, 'UTF-8');
+				$menu = htmlentities($_POST['post-menu'], ENT_QUOTES, 'UTF-8');
 			}
 		}
 		if(isset($_POST['post-menu-enable'])) { $menuStatus = "Y"; } else { $menuStatus = ""; }

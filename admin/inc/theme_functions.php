@@ -669,7 +669,8 @@ function return_parent() {
  * @depreciated as of 2.04
  */
 function return_page_slug() {
-	get_page_slug(FALSE);
+	global $url;
+  return $url;
 }
 /**
  * @depreciated as of 2.04

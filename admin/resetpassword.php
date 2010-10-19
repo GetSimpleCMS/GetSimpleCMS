@@ -1,18 +1,15 @@
 <?php 
-/****************************************************
-*
-* @File: 		resetpassword.php
-* @Package:	GetSimple
-* @Action:	Resets and then emails a new password 
-*						to the admin of the website 	
-*
-*****************************************************/
+/**
+ * Reset Password
+ *
+ * Resets the password for GetSimple control panel access
+ *
+ * @package GetSimple
+ * @subpackage Login
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

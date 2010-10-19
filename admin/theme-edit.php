@@ -1,17 +1,15 @@
 <?php 
-/****************************************************
-*
-* @File: 		theme-edit.php
-* @Package:	GetSimple
-* @Action:	Displays and changes website settings 	
-*
-*****************************************************/
+/**
+ * Edit Theme
+ *
+ * Allows you to edit a theme file
+ *
+ * @package GetSimple
+ * @subpackage Theme
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');
@@ -26,13 +24,13 @@ $theme_templates 	= '';
 // Were changes submitted?
 if (isset($_GET['t'])) {
 	$_GET['t'] = strippath($_GET['t']);
-	if ($_GET['t']&&is_dir($relative.'theme/'.$_GET['t'].'/')) {
+	if ($_GET['t']&&is_dir(GSTHEMESPATH . $_GET['t'].'/')) {
 		$TEMPLATE = $_GET['t'];
 	}
 }
 if (isset($_GET['f'])) {
 	$_GET['f'] = strippath($_GET['f']);
-	if ($_GET['f']&&is_file($relative.'theme/'.$TEMPLATE.'/'.$_GET['f'])) {
+	if ($_GET['f']&&is_file(GSTHEMESPATH . $TEMPLATE.'/'.$_GET['f'])) {
 		$TEMPLATE_FILE = $_GET['f'];
 	}
 }
@@ -52,7 +50,7 @@ if((isset($_POST['submitsave'])))
 		$FileContents = stripslashes(htmlspecialchars_decode($_POST['content'], ENT_QUOTES));
 	}
 
-	$fh = fopen($relative. 'theme/'. $SavedFile, 'w') or die("can't open file");
+	$fh = fopen(GSTHEMESPATH . $SavedFile, 'w') or die("can't open file");
 	fwrite($fh, $FileContents);
 	fclose($fh);
 	$success = sprintf($i18n['TEMPLATE_FILE'], $SavedFile);
@@ -67,7 +65,7 @@ if (! $TEMPLATE_FILE)
 
 
 // Setup
-$themes_path = $relative. 'theme';
+$themes_path = GSTHEMESPATH;
 $themes_handle = @opendir($themes_path);
 $theme_options .= '<select class="text" style="width:225px;" name="t" id="theme-folder" >';	
 
@@ -103,7 +101,7 @@ if (count($theme_dir_array) == 1)
 if ($template == '') { $template = 'template.php'; }
 
 // Theme location
-$themes_path = $relative. 'theme/'. $TEMPLATE .'/';
+$themes_path = GSTHEMESPATH . $TEMPLATE .'/';
 
 // Get files
 $themes_handle = @opendir($themes_path);
@@ -164,7 +162,7 @@ $theme_templates .= "</select></span>";
 		</form>
 		
 		<p><b><?php echo $i18n['EDITING_FILE']; ?>:</b> <code><?php echo $SITEURL.'theme/'. tsl($TEMPLATE) .'<b>'. $TEMPLATE_FILE; ?></b></code></p>
-		<?php $content = file_get_contents($relative. 'theme/'. tsl($TEMPLATE) . $TEMPLATE_FILE); ?>
+		<?php $content = file_get_contents(GSTHEMESPATH . tsl($TEMPLATE) . $TEMPLATE_FILE); ?>
 		
 		<form action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>?t=<?php echo $TEMPLATE; ?>&f=<?php echo $TEMPLATE_FILE; ?>" method="post" >
 			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />

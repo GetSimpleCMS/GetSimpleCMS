@@ -1,12 +1,9 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
-/****************************************************
-*
-* @File: 		header.php
-* @Package:	GetSimple
-* @Action:	Template file for inserting the 
-*						header into the control panel. 	
-*
-*****************************************************/
+/**
+ * Header Admin Template
+ *
+ * @package GetSimple
+ */
 
 global $LANG;
 $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
@@ -35,14 +32,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	<link rel="stylesheet" type="text/css" href="template/js/facybox/jquery.facybox.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="template/js/jcrop/jquery.Jcrop.css" media="screen" />
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/ie6.css" media="screen" /><![endif]-->
-	
-	<!-- IE Fixes -->
-	<script type="text/javascript"><!--
-		try {
-			document.execCommand("BackgroundImageCache", false, true);
-		} catch(err) {}
-		/* IE6 flicker hack from http://dean.edwards.name/my/flicker.html */
-	--></script>
+
 	<noscript><style type="text/css">#metadata_window {display:block !important} </style></noscript>
 	
 	<?php exec_action('header'); ?>

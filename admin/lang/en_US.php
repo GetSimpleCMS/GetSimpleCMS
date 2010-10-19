@@ -1,16 +1,16 @@
 <?php
-/****************************************************
-*
-* @File: 				us_US.php
-* @Package:			GetSimple
-* @Subject:			US English language file
-* @Date:				01 Sept 2009
-* @Revision:		16 Oct 2010
-* @Version:			GetSimple 2.04
-* @Status:			Final
-* @Traductors: 	Chris Cagle 	
-*
-*****************************************************/
+/**
+ * English Language File
+ *
+ * Date:				16 Oct 2010
+ * Revision:		16 Oct 2010
+ * Version:			GetSimple 2.04
+ * Traductors: 	Chris Cagle 
+ *
+ * @package GetSimple
+ * @subpackage Backups
+ */
+
 
 $i18n = array(
 

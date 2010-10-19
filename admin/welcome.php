@@ -1,17 +1,15 @@
 <?php 
-/****************************************************
-*
-* @File: 		welcome.php
-* @Package:	GetSimple
-* @Action:	Displays a welcome message	
-*
-*****************************************************/
+/**
+ * Welcome
+ *
+ * Welcome Message Screen
+ *
+ * @package GetSimple
+ * @subpackage Installation
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

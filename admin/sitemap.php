@@ -1,17 +1,15 @@
 <?php
-/****************************************************
-*
-* @File: 	sitemap.php
-* @Package:	GetSimple
-* @Action:	Creates sitemap.xml in the site's root. 	
-*
-*****************************************************/
+/**
+ * Sitemap
+ *
+ * Creates sitemap.xml in the site's root.
+ *
+ * @package GetSimple
+ * @subpackage Sitemap
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');
@@ -20,7 +18,7 @@ include('inc/common.php');
 if ($_REQUEST['s'] === $SESSIONHASH) {
 
 	// Variable settings
-	$path = $relative. 'data/pages/';
+	$path = GSDATAPAGESPATH;
 	$count="0";
 	
 	$filenames = getFiles($path);
@@ -82,20 +80,20 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 			}
 			
 			//create xml file
-			$file = $relative .'sitemap.xml';
+			$file = GSROOTPATH .'sitemap.xml';
 			exec_action('save-sitemap');
 			XMLsave($xml, $file);
 		}
 	}
 	
 	// Variables for website
-	$spath 		= $relative .'data/other/';
+	$spath 		= GSDATAOTHERPATH;
 	$sfile 		= "website.xml";
 	$data 		= getXML($spath . $sfile);
 	$SITEURL 	= $data->SITEURL;
 	
 	if (!defined('GSDONOTPING')) {
-		if (file_exists($relative .'sitemap.xml')){
+		if (file_exists(GSROOTPATH .'sitemap.xml')){
 			if( 200 === ($status=pingGoogleSitemaps($SITEURL.'sitemap.xml')))	{
 				$response = $i18n['SITEMAP_CREATED'];
 				redirect('theme.php?success=' . urlencode($response));

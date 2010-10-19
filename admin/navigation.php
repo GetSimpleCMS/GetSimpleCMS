@@ -1,17 +1,15 @@
 <?php 
-/****************************************************
-*
-* @File: 	navigation.php
-* @Package:	GetSimple
-* @Action:	Displays and changes website settings 	
-*
-*****************************************************/
+/**
+ * Menu Preview
+ *
+ * Previews the current main menu hierarchy  
+ *
+ * @package GetSimple
+ * @subpackage Page-Edit
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

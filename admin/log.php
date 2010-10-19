@@ -1,18 +1,16 @@
 <?php 
-/****************************************************
-*
-* @File: 		log.php
-* @Package:	GetSimple
-* @Action:	Displays the log file passed to it 	
-*
-*****************************************************/
+/**
+ * View Log
+ *
+ * Displays the log file passed to it 
+ *
+ * @package GetSimple
+ * @subpackage Support
+ */
 
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

@@ -1,19 +1,16 @@
 <?php
-/****************************************************
-*
-* @File: 		include-nav.php
-* @Package:	GetSimple
-* @Action:	Template file for inserting the top navigation into the control panel. 	
-*
-*****************************************************/
-?>
-
-<?php if (cookie_check()) { 
-		echo '<ul id="pill"><li class="leftnav"><a href="logout.php" accesskey="l" >'.$i18n['TAB_LOGOUT'].'</a></li>';
-		if (defined('GSDEBUG')) {
-			echo '<li class="debug"><a href="http://get-simple.info/theme-developer-tips" target="_blank">DEBUG MODE</a></li>';
-		}
-		echo '<li class="rightnav" ><a href="settings.php#profile">'.$i18n['WELCOME'].' <b>'.$USR.'</b>!</a></li></ul>'; 
+/**
+ * Navigation Include Template
+ *
+ * @package GetSimple
+ */
+ 
+if (cookie_check()) { 
+	echo '<ul id="pill"><li class="leftnav"><a href="logout.php" accesskey="l" >'.$i18n['TAB_LOGOUT'].'</a></li>';
+	if (defined('GSDEBUG')) {
+		echo '<li class="debug"><a href="http://get-simple.info/theme-developer-tips" target="_blank">DEBUG MODE</a></li>';
+	}
+	echo '<li class="rightnav" ><a href="settings.php#profile">'.$i18n['WELCOME'].' <b>'.$USR.'</b>!</a></li></ul>'; 
 } 
 
 //determine page type if plugin is being shown

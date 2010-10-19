@@ -1,17 +1,15 @@
 <?php 
-/****************************************************
-*
-* @File: 		archive.php
-* @Package:	GetSimple
-* @Action:	Displays and starts the website archives 	
-*
-*****************************************************/
+/**
+ * Archive
+ *
+ * Displays and starts the website archives 	
+ *
+ * @package GetSimple
+ * @subpackage Backups
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

@@ -1,17 +1,15 @@
 <?php
-/****************************************************
-*
-* @File: 		logout.php
-* @Package:	GetSimple
-* @Action:	Logs the current user out of the cp 	
-*
-*****************************************************/
+/**
+ * Logout
+ *
+ * Logs the user out of the GetSimple control panel
+ *
+ * @package GetSimple
+ * @subpackage Login
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

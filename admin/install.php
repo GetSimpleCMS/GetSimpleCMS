@@ -1,17 +1,16 @@
 <?php 
-/****************************************************
-*
-* @File: 	install.php
-* @Package:	GetSimple
-* @Action:	Installs the website if it has never been setup before. 	
-*
-*****************************************************/
+/**
+ * Install
+ *
+ * Initial step of installation. Redirects to setup.php if everything checks out OK
+ *
+ * @package GetSimple
+ * @subpackage Installation
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
 
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

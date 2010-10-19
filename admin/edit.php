@@ -1,17 +1,15 @@
 <?php
-/****************************************************
-*
-* @File: 		edit.php
-* @Package:	GetSimple
-* @Action:	Edit or create new pages for the website. 	
-*
-*****************************************************/
+/**
+ * Page Edit
+ *
+ * Edit or create new pages for the website.	
+ *
+ * @package GetSimple
+ * @subpackage Page-Edit
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');

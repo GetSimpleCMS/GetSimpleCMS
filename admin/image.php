@@ -1,17 +1,15 @@
 <?php 
-/****************************************************
-*
-* @File: 		log.php
-* @Package:	GetSimple
-* @Action:	Displays the log file passed to it 	
-*
-*****************************************************/
+/**
+ * Images
+ *
+ * Displays information on the passed image
+ *
+ * @package GetSimple
+ * @subpackage Images
+ */
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Relative
-$relative = '../';
 
 // Include common.php
 include('inc/common.php');
@@ -20,8 +18,8 @@ include('inc/common.php');
 login_cookie_check();
 
 $src = strippath($_GET['i']);
-$thumb_folder = $relative.'data/thumbs/';
-$src_folder = $relative.'data/uploads/';
+$thumb_folder = GSTHUMBNAILPATH;
+$src_folder = GSDATAUPLOADPATH;
 
 if (!is_file($src_folder . $src)) redirect("upload.php");
 

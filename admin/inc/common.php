@@ -67,7 +67,6 @@ ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
 /**
  * Variable check to prevent debugging going off
  */
-$relative = (isset($relative)) ? $relative : '';
 $admin_relative = (isset($admin_relative)) ? $admin_relative : '';
 $lang_relative = (isset($lang_relative)) ? $lang_relative : '';
 $load['login'] = (isset($load['login'])) ? $load['login'] : '';
@@ -164,8 +163,11 @@ if(!isset($base)) {
  * Check to make sure site is already installed
  */
 if (get_filename_id() != 'install' && get_filename_id() != 'setup') {
-	if ($SITEURL == '')	{ 
-		redirect($relative . 'admin/install.php');
+	if ($SITEURL == '')	{
+		$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
+		$path_parts = str_replace("/admin", "", $path_parts['dirname']);
+		$fullpath = "http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts ."/";	
+		redirect($fullpath.'admin/install.php');
 	}
 	if (file_exists(GSADMINPATH.'install.php'))	{
 		unlink(GSADMINPATH.'install.php');
