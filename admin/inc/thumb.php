@@ -26,7 +26,7 @@
  * @version 1.3
  *
  * @package GetSimple
- * @subpackage Thumbnails
+ * @subpackage Images
  */ 
 
 // Below are default values (if parameter is not passed)

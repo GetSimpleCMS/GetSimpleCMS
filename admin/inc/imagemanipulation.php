@@ -1,22 +1,14 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /**
  * ImageManipulation
- * 
- * For more information on this file and how to use the class please visit
- * http://www.talkincode.com/
  *
  * @author 	  Tech @ Talk In Code
+ * @link http://www.talkincode.com/
  * @version   1.0
  * @copyright 2009 Talk In Code
- */
-
-/**
- * Image Resizer and Cropper. This class takes a reference to an image and
- * allows resizing and cropping of that image. This class is designed to
- * work independently of other classes.
- * You must have GD installed to utilise this class.
  *
- * @package    ImageManipulation
+ * @package GetSimple
+ * @subpackage Images
  */
 class ImageManipulation {
 

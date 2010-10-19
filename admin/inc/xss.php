@@ -40,4 +40,5 @@ function antixss($str){
 	}
 	return $str;
 }
+
 ?>

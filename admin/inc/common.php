@@ -1,26 +1,33 @@
 <?php
-/****************************************************
-*
-* @File: 	common.php
-* @Package:	GetSimple
-* @Action:	Initialize needed functions for cp. 	
-*
-*****************************************************/
+/**
+ * Common Setup File
+ * 
+ * This file initializes up most variables for the site. It is also where most files
+ * are included from. It also reads and stores certain variables.
+ *
+ * @package GetSimple
+ * @subpackage init
+ */
 
+/**
+ * Bad stuff protection
+ */
 define('IN_GS', TRUE);
-
-// Anti-CSRF, highly experimental
 include_once('nonce.php');
-
-// Anti-XSS, highly experimental
 include_once('xss.php');
 foreach ($_GET as &$xss) $xss = antixss($xss);
 
-// Basic functionality
+
+/**
+ * Basic file inclusions
+ */
 include('basic.php');
 include('template_functions.php');
 
-// Define some constants
+
+/**
+ * Define some constants
+ */
 define('GSROOTPATH', get_root_path());
 define('GSADMINPATH', get_admin_path());
 define('GSADMININCPATH', get_admin_path(). 'inc/');
@@ -34,11 +41,18 @@ define('GSTHUMBNAILPATH', get_root_path(). 'data/thumbs/');
 define('GSBACKUPSPATH', get_root_path(). 'backups/');
 define('GSTHEMESPATH', get_root_path(). 'theme/');
 
+
+/**
+ * Include gsconfig file if it exists
+ */
 if (file_exists(GSROOTPATH . 'gsconfig.php')) {
 	include(GSROOTPATH . 'gsconfig.php');
 }
 
-// Debugging
+
+/**
+ * Debugging
+ */
 if ( defined('GSDEBUG') && (GSDEBUG == TRUE) ) {
 	error_reporting(E_ALL | E_STRICT);
 	ini_set('display_errors', 1);
@@ -46,12 +60,13 @@ if ( defined('GSDEBUG') && (GSDEBUG == TRUE) ) {
 	error_reporting(0);
 	@ini_set('display_errors', 0);
 }
-
 ini_set('log_errors', 1);
 ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
 
 
-// Variable check to prevent debugging going off
+/**
+ * Variable check to prevent debugging going off
+ */
 $relative = (isset($relative)) ? $relative : '';
 $admin_relative = (isset($admin_relative)) ? $admin_relative : '';
 $lang_relative = (isset($lang_relative)) ? $lang_relative : '';
@@ -59,9 +74,9 @@ $load['login'] = (isset($load['login'])) ? $load['login'] : '';
 $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
 
 
-
-
-// Website Data
+/**
+ * Grab website data
+ */
 $thisfilew = GSDATAOTHERPATH .'website.xml';
 if (file_exists($thisfilew)) {
 	$dataw = getXML($thisfilew);
@@ -75,9 +90,10 @@ if (file_exists($thisfilew)) {
 }
 
 
-
+/**
+ * Sets up user data
+ */
 if(!isset($base)) {
-	// User Data
 	if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 		$datau = getXML(GSDATAOTHERPATH .'user.xml');
 		$USR = stripslashes($datau->USR);
@@ -86,17 +102,22 @@ if(!isset($base)) {
 	}
 }
 
-// Authorization data
+
+/**
+ * Authorization and security setup
+ */
 if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
 	$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
 	$SALT = stripslashes($dataa->apikey);
 }	else {
 	$SALT = sha1($SITEURL);
 }
-// for form and file security
 $SESSIONHASH = sha1($SALT . @$SITENAME);
 
-// Settings
+
+/**
+ * Sitewide settings
+ */
 if (file_exists(GSDATAOTHERPATH .'cp_settings.xml')) {
 	$thisfilec = GSDATAOTHERPATH .'cp_settings.xml';
 	$datac = getXML($thisfilec);
@@ -105,54 +126,59 @@ if (file_exists(GSDATAOTHERPATH .'cp_settings.xml')) {
 	$PERMALINK = $datac->PERMALINK;
 }
 
-// Set correct timestamp if available.
-if( function_exists('date_default_timezone_set') && ($TIMEZONE != '' || stripos($TIMEZONE, '--')) )
-{ 
+
+/**
+ * Timezone setup
+ */
+if( function_exists('date_default_timezone_set') && ($TIMEZONE != '' || stripos($TIMEZONE, '--')) ) { 
 	date_default_timezone_set(@$TIMEZONE);
 }
 
-// Language control
+
+/**
+ * Language control
+ */
 if(!isset($LANG) || $LANG == '') {
 	$LANG = 'en_US';
 }
 include_once(GSLANGPATH . $LANG . '.php');
 
 
-
-// Globalization
+/**
+ * Variable Globalization
+ */
 global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR, $PERMALINK;
 
-// Check for main
+
+/**
+ * $base is if the site is being viewed from the front-end
+ */
 if(!isset($base)) {
-	// Admin base files
 	include_once(GSADMININCPATH.'cookie_functions.php');
+} else {
+	include_once(GSADMININCPATH.'theme_functions.php');
 }
 
-// Check if site is installed?
-if (get_filename_id() != 'install' && get_filename_id() != 'setup')
-{
-	if ($SITEURL == '')
-	{ 
+
+/**
+ * Check to make sure site is already installed
+ */
+if (get_filename_id() != 'install' && get_filename_id() != 'setup') {
+	if ($SITEURL == '')	{ 
 		redirect($relative . 'admin/install.php');
 	}
-	
-	if (file_exists(GSADMINPATH.'install.php'))
-	{
+	if (file_exists(GSADMINPATH.'install.php'))	{
 		unlink(GSADMINPATH.'install.php');
 	}
-	
-	if (file_exists(GSADMINPATH.'setup.php'))
-	{
+	if (file_exists(GSADMINPATH.'setup.php'))	{
 		unlink(GSADMINPATH.'setup.php');
 	}
 }
 
-// Check for main
-if(isset($base)) {
-	include_once(GSADMININCPATH.'theme_functions.php');
-}
 
-// Include other files
+/**
+ * Include other files depending if they are needed or not
+ */
 if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login_functions.php'); }
 if(isset($load['plugin']) && $load['plugin']){ 	include_once(GSADMININCPATH.'plugin_functions.php'); }
 

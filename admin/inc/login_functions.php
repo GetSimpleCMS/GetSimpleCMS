@@ -1,11 +1,10 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
-/****************************************************
-*
-* @File: 	  login_functions.php
-* @Package:	GetSimple
-* @Action:	Functions needed for cp login page. 	
-*
-*****************************************************/
+/**
+ * Login Functions
+ *
+ * @package GetSimple
+ * @subpackage Login
+ */
 
 $MSG = "";
 

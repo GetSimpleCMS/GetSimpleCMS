@@ -1,11 +1,13 @@
 <?php
-
-###############################################################
-# Thumbnail Image Class for Thumbnail Generator
-###############################################################
-# For updates visit http://www.zubrag.com/scripts/
-############################################################### 
-
+/**
+ * Thumbnail Class for Image Generator
+ *
+ * @link //www.zubrag.com/scripts/
+ * @version 1.3
+ *
+ * @package GetSimple
+ * @subpackage Images
+ */ 
 
 class Zubrag_image {
 

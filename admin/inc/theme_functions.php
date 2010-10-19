@@ -1,6 +1,8 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /**
- * Functions that GetSimple Themes Use
+ * Theme Functions
+ *
+ * These functions are used within the front-end of a GetSimple installation
  *
  * @link http://get-simple.info/docs/theme-codex/
  *
@@ -12,7 +14,7 @@
  * Get Page Content
  *
  * @since 1.0
- * @uses $content
+ * @uses $content 
  * @uses exec_action
  * @uses exec_filter
  *
@@ -34,8 +36,8 @@ function get_page_content() {
  * @uses $content
  * @uses exec_filter
  *
- * @param $n Optional, default is 200.
- * @param $html Optional, default is false.  
+ * @param string $n Optional, default is 200.
+ * @param bool $html Optional, default is false.  
  * 				If this is true, it will strip out html from $content
  * @return string Echos.
  */
@@ -63,7 +65,7 @@ function get_page_excerpt($n=200, $html=false) {
  * @since 2.0
  * @uses $metak
  *
- * @param $echo Optional, default is true. False will 'return' value
+ * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_page_meta_keywords($echo=true) {
@@ -83,7 +85,7 @@ function get_page_meta_keywords($echo=true) {
  * @since 2.0
  * @uses $metad
  *
- * @param $echo Optional, default is true. False will 'return' value
+ * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_page_meta_desc($echo=true) {
@@ -103,7 +105,7 @@ function get_page_meta_desc($echo=true) {
  * @since 1.0
  * @uses $title
  *
- * @param $echo Optional, default is true. False will 'return' value
+ * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_page_title($echo=true) {
@@ -125,7 +127,7 @@ function get_page_title($echo=true) {
  * @since 1.0
  * @uses $title
  *
- * @param $echo Optional, default is true. False will 'return' value
+ * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_page_clean_title($echo=true) {
@@ -147,7 +149,7 @@ function get_page_clean_title($echo=true) {
  * @since 1.0
  * @uses $url
  *
- * @param $echo Optional, default is true. False will 'return' value
+ * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_page_slug($echo=true) {
@@ -169,7 +171,7 @@ function get_page_slug($echo=true) {
  * @since 1.0
  * @uses $parent
  *
- * @param $echo Optional, default is true. False will 'return' value
+ * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_parent($echo=true) {
@@ -192,8 +194,8 @@ function get_parent($echo=true) {
  * @uses $date
  * @uses $TIMEZONE
  *
- * @param $i Optional, default is "l, F jS, Y - g:i A"
- * @param $echo Optional, default is true. False will 'return' value
+ * @param string $i Optional, default is "l, F jS, Y - g:i A"
+ * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
@@ -226,7 +228,7 @@ function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
  * @uses $PRETTYURLS
  * @uses find_url
  *
- * @param $echo Optional, default is false. True will 'return' value
+ * @param bool $echo Optional, default is false. True will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_page_url($echo=false) {
@@ -319,7 +321,7 @@ function get_footer() {
  * @since 1.0
  * @uses $SITEURL
  *
- * @param $echo Optional, default is true. False will 'return' value
+ * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_site_url($echo=true) {
@@ -341,7 +343,7 @@ function get_site_url($echo=true) {
  * @uses $SITEURL
  * @uses $TEMPLATE
  *
- * @param $echo Optional, default is true. False will 'return' value
+ * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_theme_url($echo=true) {
@@ -364,7 +366,7 @@ function get_theme_url($echo=true) {
  * @since 1.0
  * @uses $SITENAME
  *
- * @param $echo Optional, default is true. False will 'return' value
+ * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_site_name($echo=true) {
@@ -386,7 +388,7 @@ function get_site_name($echo=true) {
  * @since 1.0
  * @uses $EMAIL
  *
- * @param $echo Optional, default is true. False will 'return' value
+ * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_site_email($echo=true) {
@@ -408,7 +410,7 @@ function get_site_email($echo=true) {
  * @since 1.0
  * @uses GSVERSION
  *
- * @param $echo Optional, default is true. False will 'return' value
+ * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_site_version($echo=true) {
@@ -431,7 +433,7 @@ function get_site_version($echo=true) {
  * @uses $site_full_name from configuration.php
  * @uses GSVERSION
  *
- * @param $text Optional, default is 'Powered by'
+ * @param string $text Optional, default is 'Powered by'
  * @return string 
  */
 function get_site_credits($text ='Powered by ') {
@@ -452,7 +454,7 @@ function get_site_credits($text ='Powered by ') {
  * @uses getXML
  * @uses subval_sort
  *
- * @param $xml Optional, default is false. 
+ * @param bool $xml Optional, default is false. 
  *				True will return value in XML format. False will return an array
  * @return array|string Type 'string' in this case will be XML 
  */
@@ -558,7 +560,7 @@ function menu_data($id = null,$xml=false) {
  * @uses GSDATAOTHERPATH
  * @uses getXML
  *
- * @param $id This is the ID of the component you want to display
+ * @param string $id This is the ID of the component you want to display
  *				True will return value in XML format. False will return an array
  * @return string 
  */
@@ -591,7 +593,7 @@ function get_component($id) {
  * @uses strip_quotes 
  * @uses exec_filter 
  *
- * @param $currentpage This is the ID of the current page the visitor is on
+ * @param string $currentpage This is the ID of the current page the visitor is on
  * @return string 
  */	
 function get_navigation($currentpage) {

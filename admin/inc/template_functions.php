@@ -1,18 +1,23 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
-/****************************************************
-*
-* @File: 	template_functions.php
-* @Package:	GetSimple
-* @Action:	Functions used to help create the cp pages	
-*
-*****************************************************/
-	
-	
-/*******************************************************
- * @function get_template
- * @param $name - name of template
+/**
+ * Template Functions
  *
-*/
+ * These functions are used within the back-end of a GetSimple installation
+ *
+ * @package GetSimple
+ * @subpackage Zip
+ */ 
+	
+	
+/**
+ * Get Template
+ *
+ * @since 1.0
+ *
+ * @param string $name Name of template file to get
+ * @param string $title Title to place on page
+ * @return string
+ */
 function get_template($name, $title='** Change Me - Default Page Title **') {
 	ob_start();
 	$file = "template/" . $name . ".php";
@@ -21,82 +26,94 @@ function get_template($name, $title='** Change Me - Default Page Title **') {
 	ob_end_clean(); 
 	echo $template;
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function filename_id
- * @returns returns the basename of the admin page in id=""
+/**
+ * Filename ID
  *
-*/
+ * Generates HTML code to place on the body tag of a page
+ *
+ * @since 1.0
+ *
+ * @return string
+ */
 function filename_id() {
 	$path = htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES);
 	$file = basename($path,".php");	
 	echo "id=\"". $file ."\"";	
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function get_filename_id
- * @returns returns the basename of the admin page
+/**
+ * Get Filename ID
  *
-*/
+ * Returns the filename of the current file, minus .php
+ *
+ * @since 1.0
+ *
+ * @return string
+ */
 function get_filename_id() {
 	$path = htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES);
 	$file = basename($path,".php");	
 	return $file;	
 }
-/******************************************************/
 
-
-
-
-
-/*******************************************************
- * @function delete_file
- * @param $id - page to delete
+/**
+ * Delete Pages File
  *
-*/
+ * Generates HTML code to place on the body tag of a page
+ *
+ * @since 1.0
+ * @uses GSBACKUPSPATH
+ * @uses GSDATAPAGESPATH
+ *
+ * @param string $id File ID to delete
+ */
 function delete_file($id) {
 	$bakfile = GSBACKUPSPATH."pages/". $id .".bak.xml";
 	$file = GSDATAPAGESPATH . $id .".xml";
 	copy($file, $bakfile);
 	unlink($file);
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function check_perms
- * @param $path - path to get file permissions for
+/**
+ * Check Permissions
  *
-*/
+ * Returns the CHMOD value of a particular file or path
+ *
+ * @since 2.0
+ *
+ * @param string $path File and/or path
+ */
 function check_perms($path) { 
   clearstatcache(); 
   $configmod = substr(sprintf('%o', fileperms($path)), -4);  
 	return $configmod;
 } 
-/******************************************************/
 
-
-/*******************************************************
- * @function delete_zip
- * @param $id - zip to delete
+/**
+ * Delete Zip File
  *
-*/
+ * @since 1.0
+ * @uses GSBACKUPSPATH
+ *
+ * @param string $id Zip filename to delete
+ * @return string
+ */
 function delete_zip($id) { 
 	unlink(GSBACKUPSPATH."zip/". $id);
 	return 'success';
 } 
-/******************************************************/
 
-
-/*******************************************************
- * @function delete_upload
- * @param $id - upload file to delete
+/**
+ * Delete Uploaded File
  *
-*/
+ * @since 1.0
+ * @uses GSTHUMBNAILPATH
+ * @uses GSDATAUPLOADPATH
+ *
+ * @param string $id Uploaded filename to delete
+ * @return string
+ */
 function delete_upload($id) { 
 	unlink(GSDATAUPLOADPATH . $id);
 	if (file_exists(GSTHUMBNAILPATH."thumbnail.". $id)) {
@@ -107,26 +124,30 @@ function delete_upload($id) {
 	}
 	return 'success';
 } 
-/******************************************************/
 
-
-/*******************************************************
- * @function delete_bak
- * @param $id - page backup to delete
+/**
+ * Delete Pages Backup File
  *
-*/
+ * @since 1.0
+ * @uses GSBACKUPSPATH
+ *
+ * @param string $id File ID to delete
+ * @return string
+ */
 function delete_bak($id) { 
 	unlink(GSBACKUPSPATH."pages/". $id .".bak.xml");
 	return 'success';
 } 
-/******************************************************/
 
-
-/*******************************************************
- * @function restore_bak
- * @param $id - page backup to restore to
+/**
+ * Restore Pages Backup File
  *
-*/
+ * @since 1.0
+ * @uses GSBACKUPSPATH
+ * @uses GSDATAPAGESPATH
+ *
+ * @param string $id File ID to restore
+ */
 function restore_bak($id) { 
 	$file = GSBACKUPSPATH."pages/". $id .".bak.xml";
 	$newfile = GSDATAPAGESPATH . $id .".xml";
@@ -141,14 +162,14 @@ function restore_bak($id) {
 		unlink($tmpfile);
 	}
 } 
-/******************************************************/
 
-
-/*******************************************************
- * @function createRandomPassword
- * @returns random 6 character password
+/**
+ * Create Random Password
  *
-*/
+ * @since 1.0
+ *
+ * @return string
+ */
 function createRandomPassword() {
     $chars = "Ayz23mFGHBxPQefgnopRScdqrTU4CXYZabstuDEhijkIJKMNVWvw56789";
     srand((double)microtime()*1000000);
@@ -162,16 +183,18 @@ function createRandomPassword() {
     }
     return $pass;
 }
-/******************************************************/
 
-
-
-/*******************************************************
- * @function get_FileType
- * @param $ext - extension of the file
- * @returns file type
+/**
+ * File Type Category
  *
-*/
+ * Returns the category of an file based on it's extension
+ *
+ * @since 1.0
+ * @uses $i18n
+ *
+ * @param string $ext
+ * @return string
+ */
 function get_FileType($ext) {
 	global $i18n;
 	$ext = strtolower($ext);
@@ -197,16 +220,18 @@ function get_FileType($ext) {
 		return $i18n['FTYPE_MISC'];
 	}
 }
-/******************************************************/
 
-
-
-/*******************************************************
- * @function createBak
- * @param $file - file to backup
- * @param $filepath - path to backup file at
+/**
+ * Create Backup Pages File
  *
-*/
+ * @since 1.0
+ * @uses tsl
+ *
+ * @param string $file
+ * @param string $filepath
+ * @param string $bakpath
+ * @return bool
+ */
 function createBak($file, $filepath, $bakpath) {
 	$bakfile = '';
 	if ( file_exists(tsl($filepath) . $file) ) {

@@ -1,18 +1,21 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
-/****************************************************
-*
-* @File: 	basic.php
-* @Package:	GetSimple
-* @Action:	Functions used to help create the cp pages	
-*
-*****************************************************/
-
-/*******************************************************
- * @function clean_url
- * @param $text - text you want to turn encode into a URL
- * @returns valid encoded url
+/**
+ * Basic Functions 
  *
-*/
+ * These functions are used throughout the installation of GetSimple.
+ *
+ * @package GetSimple
+ * @subpackage Basic-Functions
+ */
+
+/**
+ * Clean URL
+ *
+ * @since 1.0
+ *
+ * @param string $text
+ * @return string
+ */
 function clean_url($text)  { 
 	if (function_exists('mb_strtolower')) {
 		$text = strip_tags(mb_strtolower($text)); 
@@ -27,14 +30,17 @@ function clean_url($text)  {
 	$text = rtrim($text, "-");
 	return $text; 
 } 
-/******************************************************/
 
-/*******************************************************
- * @function clean_img_name
- * @param $text - image name you want to turn encode into a URL
- * @returns valid encoded url
- * @ same as clean_url except it keeps the . in there
-*/
+/**
+ * Clean Image Name
+ *
+ * Mirror image of Clean URL, but it allows periods so file extentions still work
+ *
+ * @since 2.0
+ *
+ * @param string $text
+ * @return string
+ */
 function clean_img_name($text)  { 
 	if (function_exists('mb_strtolower')) {
 		$text = strip_tags(mb_strtolower($text)); 
@@ -49,15 +55,18 @@ function clean_img_name($text)  {
 	$text = rtrim($text, "-");
 	return $text; 
 } 
-/******************************************************/
 
-
-/*******************************************************
- * @function to7bit
- * @param $text - text you want to turn encode from UTF8
- * @returns valid encoded string
+/**
+ * 7bit Text Converter
  *
-*/
+ * Converts a string to a different encoding format
+ *
+ * @since 1.0
+ *
+ * @param string $text
+ * @param string $from_enc
+ * @return string 
+ */
 function to7bit($text,$from_enc) {
 		if (function_exists('mb_convert_encoding')) {
    		$text = mb_convert_encoding($text,'HTML-ENTITIES',$from_enc);
@@ -69,15 +78,19 @@ function to7bit($text,$from_enc) {
         $text);
     return $text;
 }
-/******************************************************/
 
-/*******************************************************
- * @function sendmail
- * @param $to - email address of recipient
- * @param $subject - subject of email
- * @param $message - body of email
+/**
+ * Send Email
  *
-*/
+ * @since 1.0
+ * @uses GSFROMEMAIL
+ * @uses $EMAIL
+ *
+ * @param string $to
+ * @param string $subject
+ * @param string $message
+ * @return string
+ */
 function sendmail($to,$subject,$message) {
 
 	if (defined('GSFROMEMAIL')){
@@ -94,22 +107,23 @@ function sendmail($to,$subject,$message) {
 	$headers .= "Content-type: text/html; charset=UTF-8\r\n";
 	
 	if( mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',"$message",$headers) ) {
-		//mail sent
 		return 'success';
 	} else {
-		//mail failed
 		return 'error';
 	}
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function subval_sort
- * @param $a - array to sort
- * @param $subkey - key to sort on
+/**
+ * Sub-Array Sort
  *
-*/
+ * Sorts the passed array by a subkey
+ *
+ * @since 1.0
+ *
+ * @param array $a
+ * @param string $subkey Key within the array passed you want to sort by
+ * @return array
+ */
 function subval_sort($a,$subkey) {
 	if (count($a) != 0 || (!empty($a))) { 
 		foreach($a as $k=>$v) {
@@ -122,28 +136,34 @@ function subval_sort($a,$subkey) {
 		return $c;
 	}
 }
-/******************************************************/
 
-/*******************************************************
- * @function json_decode
- * @returns the API response in the form of an object
- * @about - This is to temporarily fix issues with PHP versions < 5.2.0
+/**
+ * JSON Decode
  *
-*/
+ * Allows backward compatibility for servers that do not have the JSON decoder installed
+ *
+ * @since 2.0
+ *
+ * @param string $api_data
+ * @return object
+ */
 if(!function_exists('json_decode')) {
-    function json_decode($api_data) {
-        preg_match('/(?P<status>[^"]+)","((api_key":"(?P<api_key>[^"]+))|(latest":"(?P<latest>[^"]+)))/',$api_data,$api_data);
-        return (object)$api_data;
-    }
+  function json_decode($api_data) {
+    preg_match('/(?P<status>[^"]+)","((api_key":"(?P<api_key>[^"]+))|(latest":"(?P<latest>[^"]+)))/',$api_data,$api_data);
+    return (object)$api_data;
+  }
 }
-/******************************************************/
 
-/*******************************************************
- * @class SimpleXMLExtended
- * @extends SimpleXMLElement
- * @adds cdata functionality to simplexml
+/**
+ * SimpleXMLExtended Class
  *
-*/
+ * Extends the default PHP SimpleXMLElement class by 
+ * allowing the addition of cdata
+ *
+ * @since 1.0
+ *
+ * @param string $cdata_text
+ */
 class SimpleXMLExtended extends SimpleXMLElement{   
   public function addCData($cdata_text){   
    $node= dom_import_simplexml($this);   
@@ -151,15 +171,18 @@ class SimpleXMLExtended extends SimpleXMLElement{
    $node->appendChild($no->createCDATASection($cdata_text));   
   } 
 } 
-/******************************************************/ 
 
-
-/*******************************************************
- * @function isFile
- * @param $file - file you are checking for
- * @param $type - type of file to look for. Default is xml
+/**
+ * Is File
  *
-*/
+ * @since 1.0
+ * @uses tsl
+ *
+ * @param string $file
+ * @param string $path
+ * @param string $type Optiona, default is 'xml'
+ * @return bool
+ */
 function isFile($file, $path, $type = 'xml') {
 	if( is_file(tsl($path) . $file) && $file != "." && $file != ".." && (strstr($file, $type))  ) {
 		return true;
@@ -167,15 +190,17 @@ function isFile($file, $path, $type = 'xml') {
 		return false;
 	}
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function getFiles
- * @param $path - path to get array of files from
- * @return - array of files within that path
+/**
+ * Get Files
  *
-*/
+ * Returns an array of files from the passed path
+ *
+ * @since 1.0
+ *
+ * @param string $path
+ * @return array
+ */
 function getFiles($path) {
 	$handle = @opendir($path) or die("Unable to open $path");
 	$file_arr = array();
@@ -185,29 +210,32 @@ function getFiles($path) {
 	closedir($handle);
 	return $file_arr;
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function getXML
- * @param $file - file to pull xml data from
- * @return - xml data from file
+/**
+ * Get XML Data
  *
-*/
+ * Turns the XML file into an object 
+ *
+ * @since 1.0
+ *
+ * @param string $file
+ * @return object
+ */
 function getXML($file) {
 	$xml = @file_get_contents($file);
 	$data = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA);
 	return $data;
 }
-/******************************************************/
 
-/*******************************************************
- * @function XMLsave
- * @param $file - file to save
- * @param $xml - data to save
- * @return - true on success
+/**
+ * XML Save
  *
-*/
+ * @since 2.0
+ *
+ * @param object $xml
+ * @param string $file Filename that it will be saved as
+ * @return bool
+ */
 function XMLsave($xml, $file) {
 	$success = $xml->asXML($file) === TRUE;
 	
@@ -217,16 +245,16 @@ function XMLsave($xml, $file) {
 		return $success && chmod($file, 0755);
 	}
 }
-/******************************************************/
 
-
-
-/*******************************************************
- * @function lngDate
- * @param $dt - date to convert, optional
- * @returns - date in standard SM long format
+/**
+ * Long Date Output
  *
-*/
+ * @since 1.0
+ * @uses $i18n
+ *
+ * @param string $dt Date/Time format, default is $i18n['DATE_AND_TIME_FORMAT']
+ * @return string
+ */
 function lngDate($dt) {
 	global $i18n;
 	
@@ -237,15 +265,16 @@ function lngDate($dt) {
 	}
 	return $data;
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function shtDate
- * @param $dt - date to convert, optional
- * @returns - date in standard SM short format
+/**
+ * Short Date Output
  *
-*/
+ * @since 1.0
+ * @uses $i18n
+ *
+ * @param string $dt Date/Time format, default is $i18n['DATE_FORMAT']
+ * @return string
+ */
 function shtDate($dt) {
 	global $i18n;
 	
@@ -256,58 +285,62 @@ function shtDate($dt) {
 	}
 	return $data;
 }
-/******************************************************/
 
-
-
-/*******************************************************
- * @function cl
- * @param $data - data to strip html crap from
- * @returns - cleaned data
+/**
+ * Clean Utility
  *
-*/
+ * @since 1.0
+ *
+ * @param string $data
+ * @return string
+ */
 function cl($data){
 	$data = stripslashes(strip_tags(html_entity_decode($data, ENT_QUOTES, 'UTF-8')));
 	return $data;
 }
-/******************************************************/
 
-
-
-/*******************************************************
- * @function tsl
- * @param $path - path to add training slash to
+/**
+ * Add Trailing Slash
  *
-*/
+ * @since 1.0
+ *
+ * @param string $path
+ * @return string
+ */
 function tsl($path) {
 	if( substr($path, strlen($path) - 1) != '/' ) {
 		$path .= '/';
 	}
 	return $path;
 }
-/******************************************************/
 
-
-
-/*******************************************************
- * @function in_arrayi
- * @param $needle - look for
- * @param $haystack - look in
- * @about - case insensitive in_array replacement
+/**
+ * Case-Insensitve In-Array
  *
-*/
-function in_arrayi($needle, $haystack) {
-    return in_array(strtolower($needle), array_map('strtolower', $haystack));
+ * Creates a function that PHP should already have, but doesnt
+ *
+ * @since 1.0
+ *
+ * @param string $path
+ * @return string
+ */
+if(!function_exists('in_arrayi')) {
+	function in_arrayi($needle, $haystack) {
+	    return in_array(strtolower($needle), array_map('strtolower', $haystack));
+	}
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function ListDir
- * @param $dir_handle - directory handle
- * @param $path - starting path
+/**
+ * List Directory
  *
-*/
+ * Adds files and directory structure to a backup Zip file
+ *
+ * @since 1.0
+ * @uses $zipfile
+ *
+ * @param object $dir_handle
+ * @param string $path
+ */
 function ListDir($dir_handle,$path) {
 	global $zipfile;
 	while (false !== ($file = readdir($dir_handle))) {
@@ -324,14 +357,23 @@ function ListDir($dir_handle,$path) {
 	}
 	closedir($dir_handle);
 }
-/***************************************************/
 
-
-/*******************************************************
- * @function find_url
- * @returns returns the url of a page
+/**
+ * Creates Standard URL for Pages
  *
-*/
+ * Default function to create the correct url structure for each front-end page
+ *
+ * @since 2.0
+ * @uses $PRETTYURLS
+ * @uses $SITEURL
+ * @uses $PERMALINK
+ * @uses tsl
+ *
+ * @param string $slug
+ * @param string $parent
+ * @param string $type Default is 'full', alternative is 'relative'
+ * @return string
+ */
 function find_url($slug, $parent, $type='full') {
 	global $PRETTYURLS;
 	global $SITEURL;
@@ -374,15 +416,16 @@ if ($PERMALINK != '' && $slug != 'index'){
 
 	return $url;
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function strippatch
- * @param $path - path supplied by user input
- * @returns returns same path without it going up in the folder structure
+/**
+ * Strip Path
  *
-*/
+ * @since 2.0
+ * @author Martijn van der Ven
+ *
+ * @param string $path
+ * @return string
+ */
 function strippath($path) {
 	$segments = explode('/',implode('/',explode('\\',$path)));
 	$path = '';
@@ -391,30 +434,30 @@ function strippath($path) {
 	if (strlen($path)<=0||$path=='/') return false;
 	return $path;
 }
-/******************************************************/
 
-
-/*******************************************************
- * @function strip_quotes
- * @param $text - text needing to have all quotes and html stripped out
- * @returns returns same text without quotes and HTML
+/**
+ * Strip Quotes
  *
-*/
+ * @since 2.0
+ *
+ * @param string $text
+ * @return string
+ */
 function strip_quotes($text)  { 
 	$text = strip_tags($text); 
 	$code_entities_match = array('"','\'','&quot;'); 
 	$text = str_replace($code_entities_match, '', $text); 
 	return trim($text); 
 } 
-/******************************************************/
 
-
-/*******************************************************
- * @function redirect
- * @param $url - text needing to have all quotes and html stripped out
- * @returns returns same text without quotes and HTML
+/**
+ * Redirect URL
  *
-*/
+ * @since 2.04
+ * @author schlex
+ *
+ * @param string $url
+ */
 function redirect($url) {
 	global $i18n;
 	header('Location: '.$url);
@@ -423,5 +466,5 @@ function redirect($url) {
 	echo "</body></html>";
 	exit();
 } 
-/******************************************************/
+
 ?>
