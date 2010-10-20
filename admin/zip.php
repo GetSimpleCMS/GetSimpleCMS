@@ -59,7 +59,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		$archiv->close();
 
 	} else {
-		echo 'ZipArchive extension is not installed. Unable to continue.';	
+		redirect('archive.php?nozip');	
 	}
 	// redirect back to archive page with a success
 	redirect('archive.php?done');

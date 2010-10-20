@@ -32,6 +32,11 @@ if(isset($_GET['done'])) {
 	$success = $i18n['SUCC_WEB_ARCHIVE'];
 }
 
+if(isset($_GET['nozip'])) {
+	$error = $i18n['NO_ZIPARCHIVE'];
+}
+
+
 ?> 
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['BAK_MANAGEMENT'].' &raquo; '.$i18n['WEBSITE_ARCHIVES']); ?>

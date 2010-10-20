@@ -187,7 +187,7 @@ $APIKEY = @$data->apikey;
 			} elseif ($verstatus == '1') {
 				$ver = '<span class="OKmsg" ><b>'.$site_version_no.'</b> - '. $i18n['LATEST_VERSION'].'</span>';
 			} elseif ($verstatus == '2') {
-				$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - Beta / Bleeding Edge</span>';
+				$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - '. $i18n['BETA'].'</span>';
 			} else {
 				$ver = '<span class="WARNmsg" >'. $i18n['CANNOT_CHECK'].' <b>'.$site_version_no.'</b><br /><a href="http://get-simple.info/download">'. $i18n['DOWNLOAD'].'</a></span>';
 			}
@@ -243,6 +243,9 @@ $APIKEY = @$data->apikey;
 
 			?>
 			</table>
+			<?php if (@$kill != '') { ?>
+				echo '<p><?php echo $i18n['KILL_CANT_CONTINUE'];?> <a href="./" ><?php echo $i18n['REFRESH'];?></a></p>';
+			<?php } else {?>
 			<form action="setup.php" method="post" accept-charset="utf-8" >
 				<p><b><?php echo $i18n['SELECT_LANGUAGE'];?></b>:<br />
 				<select name="lang" class="text">
@@ -253,7 +256,7 @@ $APIKEY = @$data->apikey;
 			</form>
 			
 			<small class="hint"><a href="http://get-simple.info/download/languages"><?php echo $i18n['DOWNLOAD_LANG'];?></a></small>
-			
+			<?php } ?>
 	</div>
 </div>
 

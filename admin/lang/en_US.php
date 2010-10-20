@@ -459,12 +459,23 @@ $i18n = array(
 "ROOT_HTACCESS_ERROR" => "Failed to create .htaccess in root! Please copy it from %s to .htaccess and change %s to %s",
 "REMOVE_TEMPCONFIG_ERROR" => "Failed to remove %s! Please do it manually.",
 "MOVE_TEMPCONFIG_ERROR" => "Failed to rename %s to %s! Please do it manually.",
+"KILL_CANT_CONTINUE" => "Cannot continue. Please fix errors and try again.",
+"REFRESH" => "Refresh",
+"BETA"=> "Beta / Bleeding Edge",
 
 /*
  * For: deletefile.php
  */
 
 "HOMEPAGE_DELETE_ERROR" => "You cannot delete your homepage",
+
+/*
+ * For: archive.php
+ */
+
+"NO_ZIPARCHIVE" => "ZipArchive extension is not installed. Unable to continue",
+
+
 
 "" => "not translated"
 
