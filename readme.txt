@@ -36,6 +36,7 @@ Module Requirements
 SimpleXML
 SMTP Server
 mod_rewrite
+ZipArchive
 
 Browser Requirements
 ----------------------

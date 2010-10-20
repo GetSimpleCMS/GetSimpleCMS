@@ -6,55 +6,61 @@
  *
  * @package GetSimple
  * @subpackage Backups
- * @todo Remove relative paths
  */
 
 	// Setup inclusions
 	$load['plugin'] = true;
 	
-	// Relative
-	$relative = '../'; # leaving this relative for now so the zip file doesnt end up with a file structure like /var/www/c/a/g/public_html/getsimple-path/
-	
+
 	// Include common.php
 	include('inc/common.php');
 
 // check validity of request
 if ($_REQUEST['s'] === $SESSIONHASH) {
-
-	require_once('inc/zip.class.php');
 	
-	$zipfile = new zipfile();
 	$timestamp = date('Y-m-d-Hi');
 	ini_set("memory_limit","600M"); 
-	
-	// paths and files to backup
-	$paths = array($relative.'data', $relative.'theme'); //no trailing slash
-	$files = array($relative.'.htaccess', $relative.'index.php', $relative.'gsconfig.php');	
-	
-	$zipfile->add_dir('getsimple');
-	
-	// cycle thru each path and file and add to zip file
-	foreach ($paths as $path) {
-		$dir_handle = @opendir($path) or die("Unable to open $path");
-		ListDir($dir_handle,$path);
-	}
-	
-	foreach ($files as $fl) 
-	{
-		$filedata = file_get_contents($fl);
-		$zipfile->add_file($filedata, substr_replace($fl, 'getsimple', 0, 2));
-	}
-	
-	// $listing is the list of all files and folders that were added to the backup
-	//echo $listing;
 
-	// create the final zip file
-	$file = $relative. 'backups/zip/'. $timestamp .'_archive.zip';
-	$fh = fopen($file, 'w') or die('Could not open file for writing!');	
-
-	fwrite($fh, $zipfile->file()) or die('Could not write to file');
-	fclose($fh);
+	$saved_zip_file = GSBACKUPSPATH.'zip/'. $timestamp .'_archive.zip';	
 	
+	$sourcePath = GSROOTPATH;
+	
+	if (class_exists ( 'ZipArchive' , false)) {
+	
+		$archiv = new ZipArchive();
+		$archiv->open($saved_zip_file, ZipArchive::CREATE);
+		$dirIter = new RecursiveDirectoryIterator($sourcePath);
+		$iter = new RecursiveIteratorIterator($dirIter);
+		
+		foreach($iter as $element) {
+		    /* @var $element SplFileInfo */
+		    $dir = str_replace($sourcePath, '', $element->getPath()) . '/';
+		    if ( strstr($dir, 'admin/') || strstr($dir, 'backups/') ) {
+		    	#don't archive these folders
+		  	} else {
+			    if ($element->isDir()) {
+				     $archiv->addEmptyDir($dir);
+			    } elseif ($element->isFile()) {
+			        $file         = $element->getPath() .
+			                        '/' . $element->getFilename();
+			        $fileInArchiv = $dir . $element->getFilename();
+			        // add file to archive 
+			        $archiv->addFile($file, $fileInArchiv);
+			    }
+			  }
+		}
+		
+		$archiv->addFile(GSROOTPATH.'.htaccess', '.htaccess' );
+		$archiv->addFile(GSROOTPATH.'gsconfig.php', 'gsconfig.php' );
+		
+		// Save a comment
+		$archiv->setArchiveComment('Backup ' . $absolutePath);
+		// save and close 
+		$archiv->close();
+
+	} else {
+		echo 'ZipArchive extension is not installed. Unable to continue.';	
+	}
 	// redirect back to archive page with a success
 	redirect('archive.php?done');
 

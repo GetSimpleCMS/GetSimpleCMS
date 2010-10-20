@@ -678,4 +678,12 @@ function return_page_slug() {
 function return_site_ver() {
 	get_site_version(FALSE);
 }	
+/**
+ * @depreciated as of 2.03
+ */
+if(!function_exists('set_contact_page')) {
+	function set_contact_page() {
+		#removed functionality	
+	}
+}
 ?>
