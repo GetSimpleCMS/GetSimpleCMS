@@ -218,6 +218,12 @@ $APIKEY = @$data->apikey;
 				} else{
 					echo '<tr><td>GD Library</td><td><span class="WARNmsg" >'.$i18n['NOT_INSTALLED'].' - '.$i18n['WARNING'].'</span></td></tr>';
 				}
+				
+				if  (in_arrayi('zip', $php_modules) ) {
+					echo '<tr><td>ZipArchive</td><td><span class="OKmsg" >'.$i18n['INSTALLED'].' - '.$i18n['OK'].'</span></td></tr>';
+				} else{
+					echo '<tr><td>ZipArchive</td><td><span class="WARNmsg" >'.$i18n['NOT_INSTALLED'].' - '.$i18n['WARNING'].'</span></td></tr>';
+				}
 
 				if (! in_arrayi('SimpleXML', $php_modules) ) {
 					echo '<tr><td>SimpleXML Module</td><td><span class="ERRmsg" >'.$i18n['NOT_INSTALLED'].' - '.$i18n['ERROR'].'</span></td></tr>';
