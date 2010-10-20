@@ -1,8 +1,11 @@
 <?php
-
-/*
- * Configuration file for GetSimple
- * @since 2.0
+/**
+ * GSConfig
+ *
+ * Configuration File for GetSimple	
+ *
+ * @package GetSimple
+ * @subpackage init
  */
 
 if (basename($_SERVER['PHP_SELF']) == 'gsconfig.php') { 

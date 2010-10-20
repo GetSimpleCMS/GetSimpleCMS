@@ -1,11 +1,12 @@
 <?php
-/****************************************************
-*
-* @File: 	index.php
-* @Package:	GetSimple
-* @Action:	Where it all starts. 	
-*
-*****************************************************/
+/**
+ * Index
+ *
+ * Where it all starts	
+ *
+ * @package GetSimple
+ * @subpackage FrontEnd
+ */
  	
 # Setup inclusions
 $load['plugin'] = true;
