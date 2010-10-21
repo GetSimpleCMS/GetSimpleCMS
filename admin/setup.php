@@ -11,13 +11,14 @@
 // Setup inclusions
 $load['plugin'] = true;
 
-if($_POST['lang'] != '') { 	
+if($_POST['lang'] != '') {
 	$LANG = $_POST['lang'];
 }
 
 // Include common.php
 include('inc/common.php');
-	
+
+
 // Variables
 if(defined('GSLOGINSALT')) { $logsalt = GSLOGINSALT;} else { $logsalt = null; }
 $kill = ''; 
@@ -51,7 +52,7 @@ if(isset($_POST['submitted']))
 	} 
 	else 
 	{ 
-		$err .= $i18n['WEBSITENAME_ERROR'] .'<br />'; 
+		$err .= i18n('WEBSITENAME_ERROR', false) .'<br />'; 
 	}
 	
 	$urls = $_POST['siteurl']; 
@@ -62,7 +63,7 @@ if(isset($_POST['submitted']))
 	} 
 	else 
 	{
-		$err .= $i18n['WEBSITEURL_ERROR'] .'<br />'; 
+		$err .= i18n('WEBSITEURL_ERROR', false) .'<br />'; 
 	}
 	
 	if($_POST['user'] != '') 
@@ -72,13 +73,13 @@ if(isset($_POST['submitted']))
 	} 
 	else 
 	{
-		$err .= $i18n['USERNAME_ERROR'] .'<br />'; 
+		$err .= i18n('USERNAME_ERROR', false) .'<br />'; 
 	}
 	
 	$email = $_POST['email'];
 	if(!preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9.\+=_-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9._-]+)+$/", $email)) 
 	{
-		$err .= $i18n['EMAIL_ERROR'] .'<br />'; 
+		$err .= i18n('EMAIL_ERROR', false) .'<br />'; 
 	} 
 	else 
 	{
@@ -102,7 +103,7 @@ if(isset($_POST['submitted']))
 		
 		if (! XMLsave($xml, $path . $file) ) 
 		{
-			$kill = $i18n['CHMOD_ERROR'];
+			$kill = i18n('CHMOD_ERROR', false);
 		}
 		
 		$flagfile = $bakpath."user.xml.reset";
@@ -170,7 +171,7 @@ if(isset($_POST['submitted']))
 		fwrite($fp, $temp_data);
 		fclose($fp);
 		if (!file_exists($init)) {
-			$kill .= sprintf($i18n['ROOT_HTACCESS_ERROR'], 'admin/inc/tmp/tmp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
+			$kill .= sprintf(i18n('ROOT_HTACCESS_ERROR', false), 'admin/inc/tmp/tmp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
 		}
 		
 		// create gsconfig.php if it doesn't exist yet.
@@ -179,21 +180,21 @@ if(isset($_POST['submitted']))
 		if (file_exists($init)) {
 			unlink($temp);
 			if (file_exists($temp)) {
-				$kill .= sprintf($i18n['REMOVE_TEMPCONFIG_ERROR'], $temp) . '<br />';
+				$kill .= sprintf(i18n('REMOVE_TEMPCONFIG_ERROR', false), $temp) . '<br />';
 			}
 		} else {
 			rename($temp, $init);
 			if (!file_exists($init)) {
-				$kill .= sprintf($i18n['MOVE_TEMPCONFIG_ERROR'], $temp, $init) . '<br />';
+				$kill .= sprintf(i18n('MOVE_TEMPCONFIG_ERROR', false), $temp, $init) . '<br />';
 			}
 		}
 		
 		// send email to new administrator
-		$subject  = $site_full_name .' '. $i18n['EMAIL_COMPLETE'];
-		$message .= $i18n['EMAIL_USERNAME'] . ': '. stripslashes($_POST['user']);
-		$message .= '<br>'. $i18n['EMAIL_PASSWORD'] .': '. $random;
-		$message .= '<br>'. $i18n['EMAIL_LOGIN'] .': <a href="'.$SITEURL1.'admin/">'.$SITEURL1.'admin/</a>';
-		$message .= '<br>'. $i18n['EMAIL_THANKYOU'] .' '.$site_full_name.'!';
+		$subject  = $site_full_name .' '. i18n('EMAIL_COMPLETE', false);
+		$message .= i18n('EMAIL_USERNAME', false) . ': '. stripslashes($_POST['user']);
+		$message .= '<br>'. i18n('EMAIL_PASSWORD', false) .': '. $random;
+		$message .= '<br>'. i18n('EMAIL_LOGIN', false) .': <a href="'.$SITEURL1.'admin/">'.$SITEURL1.'admin/</a>';
+		$message .= '<br>'. i18n('EMAIL_THANKYOU', false) .' '.$site_full_name.'!';
 		$status   = sendmail($EMAIL1,$subject,$message);
 		
 		// Set the login cookie, then redirect user to secure panel		
@@ -206,9 +207,9 @@ if(isset($_POST['submitted']))
 }
 ?>
 
-<?php get_template('header', $site_full_name.' &raquo; '. $i18n['INSTALLATION']); ?>
+<?php get_template('header', $site_full_name.' &raquo; '. i18n('INSTALLATION', false)); ?>
 	
-	<h1><?php echo $site_full_name; ?> <span>&raquo;</span> <?php echo $i18n['INSTALLATION']; ?></h1>
+	<h1><?php echo $site_full_name; ?> <span>&raquo;</span> <?php i18n('INSTALLATION'); ?></h1>
 </div>
 </div>
 <div class="wrapper">
@@ -219,11 +220,11 @@ if(isset($_POST['submitted']))
 	// display errors or success messages 
 	if ($status == 'success') 
 	{
-		echo '<div class="updated">'. $i18n['NOTE_REGISTRATION'] .' '. $_POST['email'] .'</div>';
+		echo '<div class="updated">'. i18n('NOTE_REGISTRATION', false) .' '. $_POST['email'] .'</div>';
 	} 
 	elseif ($status == 'error') 
 	{
-		echo '<div class="error">'. $i18n['NOTE_REGERROR'] .'.</div>';
+		echo '<div class="error">'. i18n('NOTE_REGERROR', false) .'.</div>';
 	}
 	
 	if ($kill != '') 
@@ -238,22 +239,22 @@ if(isset($_POST['submitted']))
 	
 	if ($random != '') 
 	{
-		echo '<div class="updated">'.$i18n['NOTE_USERNAME'].' <b>'. stripslashes($_POST['user']) .'</b> '.$i18n['NOTE_PASSWORD'].' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="welcome.php">'.$i18n['EMAIL_LOGIN'].'</a></div>';
+		echo '<div class="updated">'.i18n('NOTE_USERNAME', false).' <b>'. stripslashes($_POST['user']) .'</b> '.i18n('NOTE_PASSWORD', false).' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="welcome.php">'.i18n('EMAIL_LOGIN', false).'</a></div>';
 	}
 	
 ?>
 	<div id="maincontent">
 <?php if ($kill == '') { ?>
 		<div class="main" >
-	<h3><?php echo $site_full_name .' '. $i18n['INSTALLATION']; ?></h3>
+	<h3><?php echo $site_full_name .' '. i18n('INSTALLATION', false); ?></h3>
 
 	<form action="setup.php" method="post" accept-charset="utf-8" >
-		<p><b><?php echo $i18n['LABEL_WEBSITE']; ?>:</b><br /><input class="text" name="sitename" type="text" value="<?php if(isset($_POST['sitename'])) { echo $_POST['sitename']; } ?>" /></p>
+		<p><b><?php i18n('LABEL_WEBSITE'); ?>:</b><br /><input class="text" name="sitename" type="text" value="<?php if(isset($_POST['sitename'])) { echo $_POST['sitename']; } ?>" /></p>
 		<input name="siteurl" type="hidden" value="<?php if(isset($_POST['siteurl'])) { echo $_POST['siteurl']; } else { echo $fullpath;} ?>" />
 		<input name="lang" type="hidden" value="<?php echo $LANG; ?>" />
-		<p><b><?php echo $i18n['LABEL_USERNAME']; ?>:</b><br /><input class="text" name="user" type="text" value="<?php if(isset($_POST['user'])) { echo $_POST['user']; } ?>" /></p>
-		<p><b><?php echo $i18n['LABEL_EMAIL']; ?>:</b><br /><input class="text" name="email" type="text" value="<?php if(isset($_POST['email'])) { echo $_POST['email']; } ?>" /></p>
-		<p><input class="submit" type="submit" name="submitted" value="<?php echo $i18n['LABEL_INSTALL']; ?>" /></p>
+		<p><b><?php i18n('LABEL_USERNAME'); ?>:</b><br /><input class="text" name="user" type="text" value="<?php if(isset($_POST['user'])) { echo $_POST['user']; } ?>" /></p>
+		<p><b><?php i18n('LABEL_EMAIL'); ?>:</b><br /><input class="text" name="email" type="text" value="<?php if(isset($_POST['email'])) { echo $_POST['email']; } ?>" /></p>
+		<p><input class="submit" type="submit" name="submitted" value="<?php echo i18n('LABEL_INSTALL'); ?>" /></p>
 	</form>
 	</div>
 <?php } ?>

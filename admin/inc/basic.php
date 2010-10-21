@@ -465,6 +465,44 @@ function redirect($url) {
 	printf("If your browser does not redirect you, click <a href=\"%s\">here</a>.", $url);
 	echo "</body></html>";
 	exit();
+}
+
+/**
+ * Display i18n
+ *
+ * Displays the default language's tranlation, but if it 
+ * does not exist, it falls back to the en_US one.
+ *
+ * @since 2.04
+ * @author ccagle8
+ * @uses GSLANGPATH
+ * @uses $i18n
+ * @uses $LANG
+ *
+ * @param string $name
+ * @param bool $echo Optional, default is true
+ */
+function i18n($name, $echo=true) {
+	global $i18n;
+	global $LANG;
+
+	if (array_key_exists($name, $i18n)) {
+		$myVar = $i18n[$name];
+	} else {
+		# this messes with the global $i18n
+		//include_once(GSLANGPATH . 'en_US.php');
+		if (array_key_exists($name, $i18n)) {
+			$myVar = $i18n[$name];
+		} else {
+			$myVar = '{missing: '.$name.'}';
+		}
+	}
+	
+	if (!$echo) {
+		return $myVar;
+	} else {
+		echo $myVar;
+	}
 } 
 
 ?>

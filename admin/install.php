@@ -11,6 +11,9 @@
 // Setup inclusions
 $load['plugin'] = true;
 
+if(isset($_GET['lang'])) {
+	$LANG = $_GET['lang'];
+}
 
 // Include common.php
 include('inc/common.php');
@@ -59,7 +62,7 @@ foreach ($dirsArray as $dir)
 			
 			if (!$result_777) 
 			{
-				$kill = $i18n['CHMOD_ERROR'];
+				$kill = i18n('CHMOD_ERROR', false);
 			}
 		}
 	} 
@@ -74,7 +77,7 @@ foreach ($dirsArray as $dir)
 			
 			if (!$result_777) 
 			{
-				$kill = $i18n['CHMOD_ERROR'];
+				$kill = i18n('CHMOD_ERROR', false);
 			}
 		}
 	}
@@ -115,7 +118,7 @@ if (count($lang_array) != 0)
 } 
 else 
 {
-	$langs = '<option value="" selected="selected" >-- '.$i18n['NONE'].' --</option>';
+	$langs = '<option value="" selected="selected" >-- '.i18n('NONE', false).' --</option>';
 }
 
 # salt value generation
@@ -144,9 +147,9 @@ $APIKEY = @$data->apikey;
 
 ?>
 
-<?php get_template('header', $site_full_name.' &raquo; '. $i18n['INSTALLATION']); ?>
+<?php get_template('header', $site_full_name.' &raquo; '. i18n('INSTALLATION', false) ); ?>
 	
-	<h1><?php echo $site_full_name; ?> <span>&raquo;</span> <?php echo $i18n['INSTALLATION']; ?></h1>
+	<h1><?php echo $site_full_name; ?> <span>&raquo;</span> <?php i18n('INSTALLATION'); ?></h1>
 </div>
 </div>
 <div class="wrapper">
@@ -159,7 +162,7 @@ $APIKEY = @$data->apikey;
 
 	<div id="maincontent">
 	<div class="main" >
-	<h3><?php echo $site_full_name .' '. $i18n['INSTALLATION']; ?></h3>
+	<h3><?php echo $site_full_name .' '. i18n('INSTALLATION', false); ?></h3>
 
 			<table class="highlight healthcheck">
 			<?php
@@ -183,85 +186,85 @@ $APIKEY = @$data->apikey;
 			}
 			
 			if ($verstatus == '0') {
-				$ver = '<span class="ERRmsg" >'. $i18n['UPG_NEEDED'].' <b>'.$apikey->latest .'</b><br /><a href="http://get-simple.info/download">'. $i18n['DOWNLOAD'].'</a></span>';
+				$ver = '<span class="ERRmsg" >'. i18n('UPG_NEEDED', false) .' <b>'.$apikey->latest .'</b><br /><a href="http://get-simple.info/download">'. i18n('DOWNLOAD', false).'</a></span>';
 			} elseif ($verstatus == '1') {
-				$ver = '<span class="OKmsg" ><b>'.$site_version_no.'</b> - '. $i18n['LATEST_VERSION'].'</span>';
+				$ver = '<span class="OKmsg" ><b>'.$site_version_no.'</b> - '. i18n('LATEST_VERSION', false).'</span>';
 			} elseif ($verstatus == '2') {
-				$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - '. $i18n['BETA'].'</span>';
+				$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - '. i18n('BETA', false).'</span>';
 			} else {
-				$ver = '<span class="WARNmsg" >'. $i18n['CANNOT_CHECK'].' <b>'.$site_version_no.'</b><br /><a href="http://get-simple.info/download">'. $i18n['DOWNLOAD'].'</a></span>';
+				$ver = '<span class="WARNmsg" >'. i18n('CANNOT_CHECK', false) .' <b>'.$site_version_no.'</b><br /><a href="http://get-simple.info/download">'. i18n('DOWNLOAD', false).'</a></span>';
 			}
 			?>
-			<tr><td style="width:345px;" ><?php echo $site_full_name; ?> <?php echo $i18n['VERSION'];?></td><td><?php echo $ver; ?></td></tr>
+			<tr><td style="width:345px;" ><?php echo $site_full_name; ?> <?php i18n('VERSION'); ?></td><td><?php echo $ver; ?></td></tr>
 			<tr><td>
 			<?php
 				if (version_compare(phpversion(), "5.1.3", "<")) {
-					echo 'PHP '.$i18n['VERSION'].'</td><td><span class="ERRmsg" ><b>'. phpversion().'</b> - PHP 5.1.3 '.$i18n['OR_GREATER_REQ'].' - '.$i18n['ERROR'].'</span></td></tr>';
+					echo 'PHP '.i18n('VERSION', false) .'</td><td><span class="ERRmsg" ><b>'. phpversion().'</b> - PHP 5.1.3 '.i18n('OR_GREATER_REQ', false) .' - '.i18n('ERROR', false) .'</span></td></tr>';
 				} else {
-					echo 'PHP '.$i18n['VERSION'].'</td><td><span class="OKmsg" ><b>'. phpversion().'</b> - '.$i18n['OK'].'</span></td></tr>';
+					echo 'PHP '.i18n('VERSION', false) .'</td><td><span class="OKmsg" ><b>'. phpversion().'</b> - '.i18n('OK', false) .'</span></td></tr>';
 				}
 				
 				if (@$kill == '') {
-					echo '<tr><td>Folder Permissions</td><td><span class="OKmsg" >'.$i18n['OK'].' - '.$i18n['WRITABLE'].'</span></td></tr>';
+					echo '<tr><td>Folder Permissions</td><td><span class="OKmsg" >'.i18n('OK', false) .' - '.i18n('WRITABLE', false) .'</span></td></tr>';
 				}	else {
-					echo '<tr><td>Folder Permissions</td><td><span class="ERRmsg" >'.$i18n['ERROR'].' - '.$i18n['NOT_WRITABLE'].'</span></td></tr>';
+					echo '<tr><td>Folder Permissions</td><td><span class="ERRmsg" >'.i18n('ERROR', false) .' - '.i18n('NOT_WRITABLE', false) .'</span></td></tr>';
 				}
 				
 				if  (in_arrayi('curl', $php_modules) ) {
-					echo '<tr><td>cURL Module</td><td><span class="OKmsg" >'.$i18n['INSTALLED'].' - '.$i18n['OK'].'</span></td></tr>';
+					echo '<tr><td>cURL Module</td><td><span class="OKmsg" >'.i18n('INSTALLED', false) .' - '.i18n('OK', false) .'</span></td></tr>';
 				} else{
-					echo '<tr><td>cURL Module</td><td><span class="WARNmsg" >'.$i18n['NOT_INSTALLED'].' - '.$i18n['WARNING'].'</span></td></tr>';
+					echo '<tr><td>cURL Module</td><td><span class="WARNmsg" >'.i18n('NOT_INSTALLED', false) .' - '.i18n('WARNING', false) .'</span></td></tr>';
 				}
 				
 				if  (in_arrayi('gd', $php_modules) ) {
-					echo '<tr><td>GD Library</td><td><span class="OKmsg" >'.$i18n['INSTALLED'].' - '.$i18n['OK'].'</span></td></tr>';
+					echo '<tr><td>GD Library</td><td><span class="OKmsg" >'.i18n('INSTALLED', false).' - '.i18n('OK', false) .'</span></td></tr>';
 				} else{
-					echo '<tr><td>GD Library</td><td><span class="WARNmsg" >'.$i18n['NOT_INSTALLED'].' - '.$i18n['WARNING'].'</span></td></tr>';
+					echo '<tr><td>GD Library</td><td><span class="WARNmsg" >'.i18n('NOT_INSTALLED', false).' - '.i18n('WARNING', false) .'</span></td></tr>';
 				}
 				
 				if  (in_arrayi('zip', $php_modules) ) {
-					echo '<tr><td>ZipArchive</td><td><span class="OKmsg" >'.$i18n['INSTALLED'].' - '.$i18n['OK'].'</span></td></tr>';
+					echo '<tr><td>ZipArchive</td><td><span class="OKmsg" >'.i18n('INSTALLED', false).' - '.i18n('OK', false).'</span></td></tr>';
 				} else{
-					echo '<tr><td>ZipArchive</td><td><span class="WARNmsg" >'.$i18n['NOT_INSTALLED'].' - '.$i18n['WARNING'].'</span></td></tr>';
+					echo '<tr><td>ZipArchive</td><td><span class="WARNmsg" >'.i18n('NOT_INSTALLED', false).' - '.i18n('WARNING', false).'</span></td></tr>';
 				}
 
 				if (! in_arrayi('SimpleXML', $php_modules) ) {
-					echo '<tr><td>SimpleXML Module</td><td><span class="ERRmsg" >'.$i18n['NOT_INSTALLED'].' - '.$i18n['ERROR'].'</span></td></tr>';
+					echo '<tr><td>SimpleXML Module</td><td><span class="ERRmsg" >'.i18n('NOT_INSTALLED', false).' - '.i18n('ERROR', false).'</span></td></tr>';
 				} else {
-					echo '<tr><td>SimpleXML Module</td><td><span class="OKmsg" >'.$i18n['INSTALLED'].' - '.$i18n['OK'].'</span></td></tr>';
+					echo '<tr><td>SimpleXML Module</td><td><span class="OKmsg" >'.i18n('INSTALLED', false).' - '.i18n('OK', false).'</span></td></tr>';
 				}
 				
 				if (! function_exists('date_default_timezone_set') ) {
-					echo '<tr><td>Default Timezone Function</td><td><span class="WARNmsg" >'.$i18n['NOT_INSTALLED'].' - '.$i18n['WARNING'].'</span></td></tr>';
+					echo '<tr><td>Default Timezone Function</td><td><span class="WARNmsg" >'.i18n('NOT_INSTALLED', false).' - '.i18n('WARNING', false).'</span></td></tr>';
 				} else {
-					echo '<tr><td>Default Timezone Function</td><td><span class="OKmsg" >'.$i18n['INSTALLED'].' - '.$i18n['OK'].'</span></td></tr>';
+					echo '<tr><td>Default Timezone Function</td><td><span class="OKmsg" >'.i18n('INSTALLED', false).' - '.i18n('OK', false).'</span></td></tr>';
 				}
 
 				if ( function_exists('apache_get_modules') ) {
 					if(! in_arrayi('mod_rewrite',apache_get_modules())) {
-						echo '<tr><td>Apache Mod Rewrite</td><td><span class="WARNmsg" >'.$i18n['NOT_INSTALLED'].' - '.$i18n['WARNING'].'</span></td></tr>';
+						echo '<tr><td>Apache Mod Rewrite</td><td><span class="WARNmsg" >'.i18n('NOT_INSTALLED', false).' - '.i18n('WARNING', false).'</span></td></tr>';
 					} else {
-						echo '<tr><td>Apache Mod Rewrite</td><td><span class="OKmsg" >'.$i18n['INSTALLED'].' - '.$i18n['OK'].'</span></td></tr>';
+						echo '<tr><td>Apache Mod Rewrite</td><td><span class="OKmsg" >'.i18n('INSTALLED', false).' - '.i18n('OK', false).'</span></td></tr>';
 					}
 				} else {
-					echo '<tr><td>Apache Mod Rewrite</td><td><span class="OKmsg" >'.$i18n['INSTALLED'].' - '.$i18n['OK'].'</span></td></tr>';
+					echo '<tr><td>Apache Mod Rewrite</td><td><span class="OKmsg" >'.i18n('INSTALLED', false).' - '.i18n('OK', false).'</span></td></tr>';
 				}
 
 			?>
 			</table>
 			<?php if (@$kill != '') { ?>
-				echo '<p><?php echo $i18n['KILL_CANT_CONTINUE'];?> <a href="./" ><?php echo $i18n['REFRESH'];?></a></p>';
+				echo '<p><?php i18n('KILL_CANT_CONTINUE');?> <a href="./" ><?php i18n('REFRESH');?></a></p>';
 			<?php } else {?>
 			<form action="setup.php" method="post" accept-charset="utf-8" >
-				<p><b><?php echo $i18n['SELECT_LANGUAGE'];?></b>:<br />
-				<select name="lang" class="text">
+				<p><b><?php i18n('SELECT_LANGUAGE');?></b>:<br />
+				<select name="lang" id="lang" class="text">
 					<?php echo $langs; ?>
-				</select>
+				</select> <small class="hint">&nbsp;<a href="install.php?lang=" id="refreshlanguage" ><?php i18n('REFRESH');?></a></small>
 				</p>
-				<p><input class="submit" type="submit" name="continue" value="<?php echo $i18n['CONTINUE_SETUP'];?> &raquo;" /></p>
+				<p><input class="submit" type="submit" name="continue" value="<?php i18n('CONTINUE_SETUP');?> &raquo;" /></p>
 			</form>
 			
-			<small class="hint"><a href="http://get-simple.info/download/languages"><?php echo $i18n['DOWNLOAD_LANG'];?></a></small>
+			<small class="hint"><a href="http://get-simple.info/download/languages"><?php i18n('DOWNLOAD_LANG');?></a></small>
 			<?php } ?>
 	</div>
 </div>

@@ -110,6 +110,14 @@ jQuery(document).ready(function() {
     $('textarea.copykit').focus().select();
     return false;
   });
+  
+  $("a#refreshlanguage").live("click", function($e) {
+    var begin = $(this).attr('href');
+    var ending = $("#lang option:selected").val();
+    var page = begin + ending;
+    $e.preventDefault();
+	  document.location.href = page;
+  });
 		
 	
 	// components.php
