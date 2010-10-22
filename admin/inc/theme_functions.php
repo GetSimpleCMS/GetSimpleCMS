@@ -657,26 +657,25 @@ function get_navigation($currentpage) {
  * @depreciated as of 2.04
  */
 function return_page_title() {
-	get_page_title(FALSE);
+	return get_page_title(FALSE);
 }
 /**
  * @depreciated as of 2.04
  */
 function return_parent() {
-	get_parent(FALSE);
+	return get_parent(FALSE);
 }
 /**
  * @depreciated as of 2.04
  */
 function return_page_slug() {
-	global $url;
-  return $url;
+  return get_page_slug(FALSE);
 }
 /**
  * @depreciated as of 2.04
  */
 function return_site_ver() {
-	get_site_version(FALSE);
+	return get_site_version(FALSE);
 }	
 /**
  * @depreciated as of 2.03

@@ -494,4 +494,22 @@ function i18n_r($name) {
 	return i18n($name, false);
 }
 
+/**
+ * Safe AddSlashes HTML
+ *
+ * @since 2.04
+ * @author ccagle8
+ *
+ * @param string $text
+ * @return string
+ */
+function safeslash($text) {
+	if (get_magic_quotes_gpc()==0) {
+		$text = addslashes(htmlentities($text, ENT_QUOTES, 'UTF-8'));
+	} else {
+		$text = htmlentities($text, ENT_QUOTES, 'UTF-8');
+	}
+	
+	return $text;
+}
 ?>
