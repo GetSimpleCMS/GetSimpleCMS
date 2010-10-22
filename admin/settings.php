@@ -172,7 +172,7 @@ if ($PRETTYURLS != '' ) { $prettychck = 'checked'; }
 
 // get what we think the 'website base url' should be
 $path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
-$path_parts = str_replace("/admin", "", $path_parts['dirname']);
+$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
 $fullpath = tsl("http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts);
 
 // get available language files

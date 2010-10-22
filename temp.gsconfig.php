@@ -18,7 +18,7 @@ if (basename($_SERVER['PHP_SELF']) == 'gsconfig.php') {
 # Default thumbnail width of uploaded image
 define('GSIMAGEWIDTH', '200');
 
-# Administrative panel folder name
+# Change the administrative panel folder name
 #define('GSADMIN', 'admin');
 
 # Turn on debug mode

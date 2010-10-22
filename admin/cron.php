@@ -12,20 +12,26 @@
 if (basename($_SERVER['PHP_SELF']) == 'cron.php') { 
 	die('You cannot load this page directly.');
 }; 
-
+if (file_exists('gsconfig.php')) {
+	require_once('gsconfig.php');
+}
 // Relative
-$relative = '';
-$admin_relative = 'admin/inc/';
-$lang_relative = 'admin/';
+if (defined('GSADMIN')) {
+	$GSADMIN = GSADMIN;
+} else {
+	$GSADMIN = 'admin';
+}
+$admin_relative = $GSADMIN.'/inc/';
+$lang_relative = $GSADMIN.'/';
 $base = true;
 
 // Include common.php
-include('admin/inc/common.php');
+include($GSADMIN.'/inc/common.php');
 global $SITEURL;
 global $SESSIONHASH;
 
 //to regenerate the sitemap
-$cURL = curl_init($SITEURL.'/admin/sitemap.php');
+$cURL = curl_init($SITEURL.'/'.$GSADMIN.'/sitemap.php');
 curl_setopt($cURL, CURLOPT_POST, 1);
 curl_setopt($cURL, CURLOPT_POSTFIELDS, "s=".$SESSIONHASH);
 curl_setopt($cURL, CURLOPT_HEADER, 0);
@@ -37,7 +43,7 @@ curl_close($cURL);
 
 // to make site backup
 # this no longer works with the addition of nonce to the archive screen.  
-#$cURL = curl_init($SITEURL.'/admin/zip.php');
+#$cURL = curl_init($SITEURL.'/'.$GSADMIN.'/zip.php');
 #curl_setopt($cURL, CURLOPT_POST, 1);
 #curl_setopt($cURL, CURLOPT_POSTFIELDS, "s=".$SESSIONHASH);
 #curl_setopt($cURL, CURLOPT_HEADER, 0);

@@ -10,9 +10,11 @@
  	
 # Setup inclusions
 $load['plugin'] = true;
+if (file_exists('gsconfig.php')) {
+	require_once('gsconfig.php');
+}
 
 # Relative
-$relative = '';
 if (defined('GSADMIN')) {
 	$GSADMIN = GSADMIN;
 } else {

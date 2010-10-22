@@ -40,7 +40,7 @@ if (file_exists($path . $file)) {
 
 // get suggestion for website base url
 $path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
-$path_parts = str_replace("/admin", "", $path_parts['dirname']);
+$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
 $fullpath = "http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts ."/";	
 
 // if the form was submitted...	
@@ -171,7 +171,7 @@ if(isset($_POST['submitted']))
 		fwrite($fp, $temp_data);
 		fclose($fp);
 		if (!file_exists($init)) {
-			$kill .= sprintf(i18n_r('ROOT_HTACCESS_ERROR'), 'admin/inc/tmp/tmp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
+			$kill .= sprintf(i18n_r('ROOT_HTACCESS_ERROR'), $GSADMIN.'/inc/tmp/tmp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
 		}
 		
 		// create gsconfig.php if it doesn't exist yet.
@@ -193,7 +193,7 @@ if(isset($_POST['submitted']))
 		$subject  = $site_full_name .' '. i18n_r('EMAIL_COMPLETE');
 		$message .= i18n_r('EMAIL_USERNAME') . ': '. stripslashes($_POST['user']);
 		$message .= '<br>'. i18n_r('EMAIL_PASSWORD') .': '. $random;
-		$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL1.'admin/">'.$SITEURL1.'admin/</a>';
+		$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL1.$GSADMIN.'/">'.$SITEURL1.$GSADMIN.'/</a>';
 		$message .= '<br>'. i18n_r('EMAIL_THANKYOU') .' '.$site_full_name.'!';
 		$status   = sendmail($EMAIL1,$subject,$message);
 		

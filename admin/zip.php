@@ -35,7 +35,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		foreach($iter as $element) {
 		    /* @var $element SplFileInfo */
 		    $dir = str_replace($sourcePath, '', $element->getPath()) . '/';
-		    if ( strstr($dir, 'admin/') || strstr($dir, 'backups/') ) {
+		    if ( strstr($dir, $GSADMIN.'/') || strstr($dir, 'backups/') ) {
 		    	#don't archive these folders
 		  	} else {
 			    if ($element->isDir()) {

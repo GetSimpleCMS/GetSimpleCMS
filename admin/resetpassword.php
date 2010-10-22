@@ -56,7 +56,7 @@ if(isset($_POST['submitted']))
 			$message .= '<br>-------------------------------------------------------<br>';
 			$message .= "<br>". i18n_r('LABEL_USERNAME').": ". $USR;
 			$message .= "<br>". i18n_r('NEW_PASSWORD').": ". $random;
-			$message .= '<br><br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL.'admin/">'.$SITEURL.'admin/</a>';
+			$message .= '<br><br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL.'.'$GSADMIN.'/">'.$SITEURL . $GSADMIN.'/</a>';
 			exec_action('resetpw-success');
 			$status = sendmail($EMAIL,$subject,$message);
 			
