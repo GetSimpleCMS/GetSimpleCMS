@@ -13,12 +13,17 @@ $load['plugin'] = true;
 
 # Relative
 $relative = '';
-$admin_relative = 'admin/inc/';
-$lang_relative = 'admin/';
+if (defined('GSADMIN')) {
+	$GSADMIN = GSADMIN;
+} else {
+	$GSADMIN = 'admin';
+}
+$admin_relative = $GSADMIN.'/inc/';
+$lang_relative = $GSADMIN.'/';
 $base = true;
 
 # Include common.php
-include('admin/inc/common.php');
+include($GSADMIN.'/inc/common.php');
 
 # get page id (url slug) that is being passed via .htaccess mod_rewrite
 if (isset($_GET['id'])){ 

@@ -501,11 +501,13 @@ function generate_salt() {
  * Gets the path of the admin directory
  *
  * @since 1.0
+ * @uses $GSADMIN
  *
  * @return string
  */
 function get_admin_path() {
-	$pos = strrpos(__FILE__,'admin');
+	global $GSADMIN;
+	$pos = strrpos(__FILE__,$GSADMIN);
 	if ($pos === FALSE) die('Admin directory name changed!');
 	return substr(__FILE__, 0, $pos+6);
 }
@@ -516,11 +518,13 @@ function get_admin_path() {
  * Gets the path of the root installation directory
  *
  * @since 1.0
+ * @uses $GSADMIN
  *
  * @return string
  */
 function get_root_path() {
-	$pos = strrpos(__FILE__,'admin');
+	global $GSADMIN;
+	$pos = strrpos(__FILE__,$GSADMIN);
 	if ($pos === FALSE) die('Admin directory name changed!');
 	return substr(__FILE__, 0, $pos);
 }

@@ -23,7 +23,15 @@ foreach ($_GET as &$xss) $xss = antixss($xss);
  */
 include('basic.php');
 include('template_functions.php');
+if (file_exists(GSROOTPATH . 'gsconfig.php')) {
+	include(GSROOTPATH . 'gsconfig.php');
+}
 
+if (defined('GSADMIN')) {
+	$GSADMIN = GSADMIN;
+} else {
+	$GSADMIN = 'admin';
+}
 
 /**
  * Define some constants
@@ -40,14 +48,6 @@ define('GSDATAUPLOADPATH', get_root_path(). 'data/uploads/');
 define('GSTHUMBNAILPATH', get_root_path(). 'data/thumbs/');
 define('GSBACKUPSPATH', get_root_path(). 'backups/');
 define('GSTHEMESPATH', get_root_path(). 'theme/');
-
-
-/**
- * Include gsconfig file if it exists
- */
-if (file_exists(GSROOTPATH . 'gsconfig.php')) {
-	include(GSROOTPATH . 'gsconfig.php');
-}
 
 
 /**
@@ -146,7 +146,7 @@ include_once(GSLANGPATH . $LANG . '.php');
 /**
  * Variable Globalization
  */
-global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR, $PERMALINK;
+global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR, $PERMALINK, $GSADMIN;
 
 
 /**
@@ -165,9 +165,9 @@ if(!isset($base)) {
 if (get_filename_id() != 'install' && get_filename_id() != 'setup') {
 	if ($SITEURL == '')	{
 		$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
-		$path_parts = str_replace("/admin", "", $path_parts['dirname']);
+		$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
 		$fullpath = "http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts ."/";	
-		redirect($fullpath.'admin/install.php');
+		redirect($fullpath . $GSADMIN.'/install.php');
 	}
 	if (file_exists(GSADMINPATH.'install.php'))	{
 		unlink(GSADMINPATH.'install.php');

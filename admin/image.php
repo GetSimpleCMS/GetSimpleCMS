@@ -19,7 +19,7 @@ login_cookie_check();
 
 $src = strippath($_GET['i']);
 $thumb_folder = GSTHUMBNAILPATH;
-$src_folder = GSDATAUPLOADPATH;
+$src_folder = '../data/uploads/';
 
 if (!is_file($src_folder . $src)) redirect("upload.php");
 

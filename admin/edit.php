@@ -148,7 +148,7 @@ if ($menu == '') { $menu = @$title; }
 <?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); ?>
 	
 	<h1 align="right">
-		<a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('PAGE_MANAGEMENT'); ?> <span>&raquo;</span> <?php if(isset($data_edit)) { echo i18n_r('PAGE').' &lsquo;<span class="filename" >'. @$url .'</span>&rsquo;'; } else { echo i18n_r'NEW_PAGE'); } ?>		
+		<a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('PAGE_MANAGEMENT'); ?> <span>&raquo;</span> <?php if(isset($data_edit)) { echo i18n_r('PAGE').' &lsquo;<span class="filename" >'. @$url .'</span>&rsquo;'; } else { echo i18n_r('NEW_PAGE'); } ?>		
 	</h1>
 	
 	<?php 

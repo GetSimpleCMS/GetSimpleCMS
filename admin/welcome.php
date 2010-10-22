@@ -28,10 +28,10 @@ login_cookie_check();
 	
 	<div id="maincontent">
 		<div class="main">
-			<p><strong><?php i18n('WELCOME_MSG']; ?></strong></p> 
-			<p><?php i18n('WELCOME_P']; ?></p>
+			<p><strong><?php i18n('WELCOME_MSG'); ?></strong></p> 
+			<p><?php i18n('WELCOME_P'); ?></p>
 			
-			<h3><?php i18n('GETTING_STARTED']; ?></h3>
+			<h3><?php i18n('GETTING_STARTED'); ?></h3>
 			<ul>
 				<li><a href="health-check.php"><?php i18n('WEB_HEALTH_CHECK'); ?></a></li>
 				<li><a href="edit.php"><?php i18n('CREATE_NEW_PAGE'); ?></a></li>
