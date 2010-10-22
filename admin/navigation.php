@@ -45,8 +45,8 @@ login_cookie_check();
 	
 	$pagesSorted = subval_sort($pagesArray,'menuOrder');
 	if (count($pagesSorted) != 0) { 
-		echo '<h3>'.$i18n['CURRENT_MENU'].'</h3><table id="navlist">';
-		echo '<tr ><th style="width:60px;">'.$i18n['PRIORITY'].'</th><th>'.$i18n['MENU_TEXT'].'</th></tr>';
+		echo '<h3>'.i18n_r('CURRENT_MENU').'</h3><table id="navlist">';
+		echo '<tr ><th style="width:60px;">'.i18n_r('PRIORITY').'</th><th>'.i18n_r('MENU_TEXT').'</th></tr>';
 		foreach ($pagesSorted as $page) {
 			$sel = '';
 			if ($page['menuStatus'] != '') { 
@@ -62,7 +62,7 @@ login_cookie_check();
 		}
 		echo '</table>';
 	} else {
-		echo '<p>'.$i18n['NO_MENU_PAGES'].'.</p>';	
+		echo '<p>'.i18n_r('NO_MENU_PAGES').'.</p>';	
 	}
 	closedir($dir_handle);
 					

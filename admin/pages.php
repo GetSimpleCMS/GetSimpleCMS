@@ -60,24 +60,24 @@ if (count($pagesSorted) != 0) {
 		if ($page['parent'] != '') {$page['parent'] = $page['parent']."/"; $dash = '<span>&nbsp;&nbsp;&lfloor;&nbsp;&nbsp;&nbsp;</span>'; } else { $dash = ""; }
 		$table .= '<tr id="tr-'.$page['url'] .'" >';
 		if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
-		if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <sup>['.$i18n['MENUITEM_SUBTITLE'].']</sup>'; } else { $page['menuStatus'] = ''; }
-		if ($page['private'] != '' ) { $page['private'] = ' <sup>['.$i18n['PRIVATE_SUBTITLE'].']</sup>'; } else { $page['private'] = ''; }
-		if ($page['url'] == 'index' ) { $homepage = ' <sup>['.$i18n['HOMEPAGE_SUBTITLE'].']</sup>'; } else { $homepage = ''; }
-		$table .= '<td>'. @$dash .'<a title="'.$i18n['EDITPAGE_TITLE'].': '. cl($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
+		if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <sup>['.i18n_r('MENUITEM_SUBTITLE').']</sup>'; } else { $page['menuStatus'] = ''; }
+		if ($page['private'] != '' ) { $page['private'] = ' <sup>['.i18n_r('PRIVATE_SUBTITLE'].']</sup>'; } else { $page['private'] = ''; }
+		if ($page['url'] == 'index' ) { $homepage = ' <sup>['.i18n_r('HOMEPAGE_SUBTITLE').']</sup>'; } else { $homepage = ''; }
+		$table .= '<td>'. @$dash .'<a title="'.i18n_r('EDITPAGE_TITLE'].': '. cl($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
 		$table .= '<td style="width:70px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
 		$table .= '<td class="secondarylink" >';
-		$table .= '<a title="'.$i18n['VIEWPAGE_TITLE'].': '. cl($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
+		$table .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. cl($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
 		$table .= '</td>';
-		$table .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&nonce='.get_nonce("delete", "deletefile.php").'" title="'.$i18n['DELETEPAGE_TITLE'].': '. stripslashes(strip_tags(html_entity_decode($page['title']))) .'" >X</a></td></tr>';
+		$table .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. stripslashes(strip_tags(html_entity_decode($page['title']))) .'" >X</a></td></tr>';
 		
 	}
 }
 ?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['PAGE_MANAGEMENT']); ?>
+<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); ?>
 	
 	<h1>
-		<a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $i18n['PAGE_MANAGEMENT']; ?> <span>&raquo;</span> <?php echo $i18n['ALL_PAGES']; ?>		
+		<a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('PAGE_MANAGEMENT'); ?> <span>&raquo;</span> <?php i18n('ALL_PAGES'); ?>		
 	</h1>
 	
 	<?php 
@@ -89,13 +89,13 @@ if (count($pagesSorted) != 0) {
 	
 	<div id="maincontent">
 		<div class="main">
-			<label><?php echo $i18n['PAGE_MANAGEMENT']; ?></label>
-			<div class="edit-nav" ><p><?php echo $i18n['TOGGLE_STATUS']; ?> &nbsp;<input type="checkbox" id="show-characters" value="" /></p><div class="clear" ></div></div>
+			<label><?php i18n('PAGE_MANAGEMENT'); ?></label>
+			<div class="edit-nav" ><p><?php i18n('TOGGLE_STATUS'); ?> &nbsp;<input type="checkbox" id="show-characters" value="" /></p><div class="clear" ></div></div>
 			<table id="editpages" class="edittable highlight paginate">
 				<?php echo $table; ?>
 			</table>
 			<div id="page_counter" class="qc_pager"></div> 	
-			<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php echo $i18n['TOTAL_PAGES']; ?></em></p>
+			<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php i18n('TOTAL_PAGES'); ?></em></p>
 		</div>
 	</div><!-- end maincontent -->
 	

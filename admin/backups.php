@@ -74,17 +74,17 @@ if (count($pagesSorted) != 0)
 		
 		if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
 		
-		$table .= '<td><a title="'.$i18n['VIEWPAGE_TITLE'].' '. cl($page['title']) .'" href="backup-edit.php?p=view&id='. $page['url'] .'">'. cl($page['title']) .'</a></td>';
+		$table .= '<td><a title="'.i18n_r('VIEWPAGE_TITLE').' '. cl($page['title']) .'" href="backup-edit.php?p=view&id='. $page['url'] .'">'. cl($page['title']) .'</a></td>';
 		$table .= '<td style="width:70px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
-		$table .= '<td class="delete" ><a class="delconfirm" title="'.$i18n['DELETEPAGE_TITLE'].' '. cl($page['title']) .'?" href="backup-edit.php?p=delete&id='. $page['url'] .'&nonce='.get_nonce("delete", "backup-edit.php").'">X</a></td>';
+		$table .= '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETEPAGE_TITLE').' '. cl($page['title']) .'?" href="backup-edit.php?p=delete&id='. $page['url'] .'&nonce='.get_nonce("delete", "backup-edit.php").'">X</a></td>';
 		$table .= '</tr>';
 	}
 }	
 ?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['BAK_MANAGEMENT']); ?>
+<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT')); ?>
 	
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $i18n['BAK_MANAGEMENT']; ?> <span>&raquo;</span> <?php echo $i18n['ALL_PAGES']; ?></h1>
+	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('BAK_MANAGEMENT'); ?> <span>&raquo;</span> <?php i18n('ALL_PAGES'); ?></h1>
 	
 	<?php include('template/include-nav.php'); ?>
 	<?php include('template/error_checking.php'); ?>
@@ -93,13 +93,13 @@ if (count($pagesSorted) != 0)
 	
 	<div id="maincontent">
 		<div class="main" >
-			<label><?php echo $i18n['PAGE_BACKUPS'];?></label>
-			<div class="edit-nav" ><a href="backups.php?deleteall&nonce=<?php echo get_nonce("deleteall"); ?>" title="<?php echo $i18n['DELETE_ALL_BAK'];?>" accesskey="d" ><?php echo $i18n['ASK_DELETE_ALL'];?></a><div class="clear" ></div></div>
+			<label><?php i18n('PAGE_BACKUPS');?></label>
+			<div class="edit-nav" ><a href="backups.php?deleteall&nonce=<?php echo get_nonce("deleteall"); ?>" title="<?php i18n('DELETE_ALL_BAK');?>" accesskey="d" ><?php i18n('ASK_DELETE_ALL');?></a><div class="clear" ></div></div>
 			<table class="highlight paginate">
 				<?php echo $table; ?>
 			</table>
 			<div id="page_counter" class="qc_pager"></div> 
-			<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php echo $i18n['TOTAL_BACKUPS'];?></em></p>
+			<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php i18n('TOTAL_BACKUPS');?></em></p>
 		</div>
 	</div>
 	

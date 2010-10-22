@@ -32,7 +32,7 @@ if(isset($_POST['submitted']))
 	if ( !$userid || !$password ) 
 	{
 		$error = 'TRUE';
-		$MSG .= '<b>'.$i18n['ERROR'].':</b> '.$i18n['FILL_IN_REQ_FIELD'].'.<br />';
+		$MSG .= '<b>'.i18n_r('ERROR').':</b> '.i18n_r('FILL_IN_REQ_FIELD').'.<br />';
 	} 
 	
 	// If both Username & Password are populated, continue...
@@ -71,7 +71,7 @@ if(isset($_POST['submitted']))
 			create_cookie();
 			redirect($cookie_redirect); 
 		} else {
-			$MSG .= '<b>'.$i18n['ERROR'].':</b> '.$i18n['LOGIN_FAILED'].'.';
+			$MSG .= '<b>'.i18n_r('ERROR').':</b> '.i18n_r('LOGIN_FAILED').'.';
 		}
 	}
 }

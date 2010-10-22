@@ -34,16 +34,16 @@ if (@$_GET['action'] == 'delete' && strlen($log_name)>0) {
 
 	unlink($log_file);
 	exec_action('logfile_delete');
-	redirect('support.php?success='.urlencode('Log '.$log_name . $i18n['MSG_HAS_BEEN_CLR']));
+	redirect('support.php?success='.urlencode('Log '.$log_name . i18n_r('MSG_HAS_BEEN_CLR')));
 }
 
 if (!isset($log_data)) $log_data = getXML($log_file);
 
 ?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['SUPPORT'].' &raquo; '.$i18n['LOGS']); ?>
+<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i18n_r('LOGS')); ?>
 	
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $i18n['SUPPORT'];?> <span>&raquo;</span> <?php echo $i18n['VIEWING'];?> &lsquo;<span class="filename" ><?php echo @$log_name; ?></span>&rsquo;</h1>
+	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('SUPPORT');?> <span>&raquo;</span> <?php i18n('VIEWING');?> &lsquo;<span class="filename" ><?php echo @$log_name; ?></span>&rsquo;</h1>
 	<?php include('template/include-nav.php'); ?>
 	<?php include('template/error_checking.php'); ?>
 
@@ -51,9 +51,9 @@ if (!isset($log_data)) $log_data = getXML($log_file);
 	
 	<div id="maincontent">
 		<div class="main">
-			<label><?php echo $i18n['VIEWING'];?> <?php echo $i18n['LOG_FILE'];?>: &lsquo;<em><?php echo @$log_name; ?></em>&rsquo;</label>
+			<label><?php i18n('VIEWING');?> <?php i18n('LOG_FILE');?>: &lsquo;<em><?php echo @$log_name; ?></em>&rsquo;</label>
 			<div class="edit-nav" >
-				<a href="log.php?log=<?php echo $log_name; ?>&action=delete&nonce=<?php echo get_nonce("delete"); ?>" accesskey="c" title="<?php echo $i18n['CLEAR_ALL_DATA'];?> <?php echo $log_name; ?>?" /><?php echo $i18n['CLEAR_THIS_LOG'];?></a>
+				<a href="log.php?log=<?php echo $log_name; ?>&action=delete&nonce=<?php echo get_nonce("delete"); ?>" accesskey="c" title="<?php i18n('CLEAR_ALL_DATA');?> <?php echo $log_name; ?>?" /><?php i18n('CLEAR_THIS_LOG');?></a>
 				<div class="clear"></div>
 			</div>
 			<ol class="more" >
@@ -62,7 +62,7 @@ if (!isset($log_data)) $log_data = getXML($log_file);
 
 				if ($log_data) {
 					foreach ($log_data as $log) {
-						echo '<li><p style="font-size:11px;line-height:15px;" ><b style="line-height:20px;" >'.$i18n['LOG_FILE_ENTRY'].'</b><br />';
+						echo '<li><p style="font-size:11px;line-height:15px;" ><b style="line-height:20px;" >'.i18n('LOG_FILE_ENTRY').'</b><br />';
 						foreach($log->children() as $child) {
 						  $name = $child->getName();
 						  echo '<b>'. stripslashes(ucwords($name)) .'</b>: ';
@@ -81,7 +81,7 @@ if (!isset($log_data)) $log_data = getXML($log_file);
 						  //check if its an ip address
 						  if (do_reg($d, $ip_regex)) {
 							if ($d == $_SERVER['REMOTE_ADDR']) {
-								$d = $i18n['THIS_COMPUTER'].' (<a href="http://ws.arin.net/whois/?queryinput='. $d.'" target="_blank" >'.$d.'</a>)';
+								$d = i18n_r('THIS_COMPUTER').' (<a href="http://ws.arin.net/whois/?queryinput='. $d.'" target="_blank" >'.$d.'</a>)';
 							} else {
 								$d = '<a href="http://ws.arin.net/whois/?queryinput='. $d.'" target="_blank" >'.$d.'</a>';
 							}

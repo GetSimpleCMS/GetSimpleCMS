@@ -106,9 +106,9 @@ $componentsec = $data->item;
 $count= 0;
 if (count($componentsec) != 0) {
 	foreach ($componentsec as $component) {
-		$table .= '<div class="compdiv" id="section-'.@$count.'"><table class="comptable" ><tr><td><b title="Double Click to Edit" class="editable">'. stripslashes(@$component->title) .'</b></td>';
+		$table .= '<div class="compdiv" id="section-'.@$count.'"><table class="comptable" ><tr><td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="editable">'. stripslashes(@$component->title) .'</b></td>';
 		$table .= '<td style="text-align:right;" ><code>&lt;?php get_component(<span class="compslugcode">\''.@$component->slug.'\'</span>); ?&gt;</code></td><td class="delete" >';
-		$table .= '<a href="#" title="'.$i18n['DELETE_COMPONENT'].': '. cl(@$component->title).'?" id="del-'.$count.'" onClick="DeleteComp(\''.$count.'\'); return false;" >X</a></td></tr></table>';
+		$table .= '<a href="#" title="'.i18n_r('DELETE_COMPONENT').': '. cl(@$component->title).'?" id="del-'.$count.'" onClick="DeleteComp(\''.$count.'\'); return false;" >X</a></td></tr></table>';
 		$table .= '<textarea name="val[]">'. stripslashes(@$component->value) .'</textarea>';
 		$table .= '<input type="hidden" class="compslug" name="slug[]" value="'. @$component->slug .'" />';
 		$table .= '<input type="hidden" class="comptitle" name="title[]" value="'. @stripslashes($component->title) .'" />';
@@ -129,29 +129,29 @@ if (count($componentsec) != 0) {
 	}
 ?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['COMPONENTS']); ?>
+<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('COMPONENTS')); ?>
 
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $i18n['THEME_MANAGEMENT'];?> <span>&raquo;</span> <?php echo $i18n['COMPONENTS'];?></h1>
+	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('THEME_MANAGEMENT');?> <span>&raquo;</span> <?php i18n('COMPONENTS');?></h1>
 	<?php include('template/include-nav.php'); ?>
 	<?php include('template/error_checking.php'); ?>
 <div class="bodycontent">
 	
 	<div id="maincontent">
 	<div class="main">
-	<label><?php echo $i18n['EDIT'];?> <?php echo $i18n['COMPONENTS'];?></label>
+	<label><?php i18n('EDIT');?> <?php echo i18n('COMPONENTS');?></label>
 	<div class="edit-nav" >
-		<a href="#" id="addcomponent" accesskey="a" ><?php echo $i18n['ADD_COMPONENT'];?></a>
+		<a href="#" id="addcomponent" accesskey="a" ><?php i18n('ADD_COMPONENT');?></a>
 		<div class="clear"></div>
 	</div>
 	
 	<form class="manyinputs" action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" accept-charset="utf-8" >
 		<input type="hidden" id="id" value="<?php echo @$count; ?>" />
 		<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_components"); ?>" />
-		<p><input type="submit" class="submit" name="submitted" id="button" value="<?php echo $i18n['SAVE_COMPONENTS'];?>" /> &nbsp;&nbsp;<?php echo $i18n['OR']; ?>&nbsp;&nbsp; <a class="cancel" href="theme.php"><?php echo $i18n['CANCEL']; ?></a></p>
+		<p><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_COMPONENTS');?>" /> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme.php"><?php i18n('CANCEL'); ?></a></p>
 
 		<div id="divTxt"></div> 
 		<?php echo $table; ?>
-		<p><input type="submit" class="submit" name="submitted" id="button" value="<?php echo $i18n['SAVE_COMPONENTS'];?>" /> &nbsp;&nbsp;<?php echo $i18n['OR']; ?>&nbsp;&nbsp; <a class="cancel" href="components.php?cancel"><?php echo $i18n['CANCEL']; ?></a></p>
+		<p><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_COMPONENTS');?>" /> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="components.php?cancel"><?php i18n('CANCEL'); ?></a></p>
 	</form>
 	</div>
 	</div>

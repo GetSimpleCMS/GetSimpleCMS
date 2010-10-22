@@ -473,11 +473,13 @@ $i18n = array(
  * Misc Cleanup Work
  */
 
-"NO_ZIPARCHIVE" => "ZipArchive extension is not installed. Unable to continue",
-"REDIRECT_MSG"=> "If your browser does not redirect you, click <a href=\"%s\">here</a>",
-"REDIRECT"=> "Redirect",
-"DENIED"=> "Denied",
-"DEBUG_MODE"=> "DEBUG MODE",
+"NO_ZIPARCHIVE" => "ZipArchive extension is not installed. Unable to continue", //zip
+"REDIRECT_MSG"=> "If your browser does not redirect you, click <a href=\"%s\">here</a>", //basic
+"REDIRECT"=> "Redirect", //basic
+"DENIED"=> "Denied", //sitemap
+"DEBUG_MODE"=> "DEBUG MODE", //nav-include
+"DOUBLE_CLICK_EDIT"=> "Double Click to Edit", //components
+"THUMB_SAVED"=> "Thumbnail Saved", //image
 
 "" => "not translated"
 

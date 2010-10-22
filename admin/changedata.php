@@ -33,7 +33,7 @@ if (isset($_POST['submitted']))
 		die("CSRF detected!");	
 
 	if ( ($_POST['post-title'] == '') )	{
-		redirect("edit.php?upd=edit-err&type=".urlencode($i18n['CANNOT_SAVE_EMPTY']));
+		redirect("edit.php?upd=edit-err&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
 	}	else {
 		
 		$url="";$title="";$metad=""; $metak="";	$cont="";

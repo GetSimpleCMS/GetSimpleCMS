@@ -53,7 +53,7 @@ if((isset($_POST['submitsave'])))
 	$fh = fopen(GSTHEMESPATH . $SavedFile, 'w') or die("can't open file");
 	fwrite($fh, $FileContents);
 	fclose($fh);
-	$success = sprintf($i18n['TEMPLATE_FILE'], $SavedFile);
+	$success = sprintf(i18n_r('TEMPLATE_FILE'), $SavedFile);
 }
 
 
@@ -131,7 +131,7 @@ foreach ($templates as $file)
 	
 	if ($file == 'template.php')
 	{ 
-		$templatename=$i18n['DEFAULT_TEMPLATE']; 
+		$templatename=i18n_r('DEFAULT_TEMPLATE'); 
 	} 
 	else 
 	{ 
@@ -144,9 +144,9 @@ foreach ($templates as $file)
 $theme_templates .= "</select></span>";
 ?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['THEME_MANAGEMENT']); ?>
+<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); ?>
 	
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $i18n['THEME_MANAGEMENT']; ?> <span>&raquo;</span> <?php echo $i18n['EDIT_THEME']; ?></h1>
+	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('THEME_MANAGEMENT'); ?> <span>&raquo;</span> <?php i18n('EDIT_THEME'); ?></h1>
 	<?php include('template/include-nav.php'); ?>
 	<?php include('template/error_checking.php'); ?>
 
@@ -156,12 +156,12 @@ $theme_templates .= "</select></span>";
 		
 		
 		<div class="main">
-		<h3><?php echo $i18n['EDIT_THEME']; ?></h3>
+		<h3><?php i18n('EDIT_THEME'); ?></h3>
 		<form action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="get" accept-charset="utf-8" >
-		<p><?php echo $theme_options; ?><?php echo $theme_templates; ?>&nbsp;&nbsp;&nbsp;<input class="submit" type="submit" name="s" value="<?php echo $i18n['EDIT']; ?>" /></p>
+		<p><?php echo $theme_options; ?><?php echo $theme_templates; ?>&nbsp;&nbsp;&nbsp;<input class="submit" type="submit" name="s" value="<?php i18n('EDIT'); ?>" /></p>
 		</form>
 		
-		<p><b><?php echo $i18n['EDITING_FILE']; ?>:</b> <code><?php echo $SITEURL.'theme/'. tsl($TEMPLATE) .'<b>'. $TEMPLATE_FILE; ?></b></code></p>
+		<p><b><?php i18n('EDITING_FILE'); ?>:</b> <code><?php echo $SITEURL.'theme/'. tsl($TEMPLATE) .'<b>'. $TEMPLATE_FILE; ?></b></code></p>
 		<?php $content = file_get_contents(GSTHEMESPATH . tsl($TEMPLATE) . $TEMPLATE_FILE); ?>
 		
 		<form action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>?t=<?php echo $TEMPLATE; ?>&f=<?php echo $TEMPLATE_FILE; ?>" method="post" >
@@ -169,7 +169,7 @@ $theme_templates .= "</select></span>";
 			<p><textarea name="content" id="codetext" ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea></p>
 			<input type="hidden" value="<?php echo tsl($TEMPLATE) . $TEMPLATE_FILE; ?>" name="edited_file" />
 			<?php exec_action('theme-edit-extras'); ?>
-			<p><input class="submit" type="submit" name="submitsave" value="<?php echo $i18n['BTN_SAVECHANGES']; ?>" /> &nbsp;&nbsp;<?php echo $i18n['OR']; ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php echo $i18n['CANCEL']; ?></a></p>
+			<p><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a></p>
 		</form>
 		</div>
 	

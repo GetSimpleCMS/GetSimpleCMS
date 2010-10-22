@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 		$objImage->setCrop($_POST['x'], $_POST['y'], $_POST['w'], $_POST['h']);
 		//$objImage->show();
 		$objImage->save($thumb_folder . 'thumbnail.' .$src);
-		$success = "Thumbnail Saved";
+		$success = i18n_r('THUMB_SAVED');
 	} 
 	else 
 	{
@@ -47,17 +47,17 @@ list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($src_folder . url
 if (file_exists($thumb_folder . 'thumbnail.' . $src)) 
 {
 	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . urlencode('thumbnail.'.$src));
-	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder . 'thumbnail.'. $src .'" rel="facybox" >'.$i18n['CURRENT_THUMBNAIL'].'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
+	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder . 'thumbnail.'. $src .'" rel="facybox" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 } 
 else 
 {
-	$thumb_exists = ' &nbsp; | &nbsp; <a href="#jcrop_open">'.$i18n['CREATE_ONE'].'</a>';
+	$thumb_exists = ' &nbsp; | &nbsp; <a href="#jcrop_open">'.i18n_r('CREATE_ONE').'</a>';
 }
 ?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['FILE_MANAGEMENT'].' &raquo; '.$i18n['IMAGES']); ?>
+<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT').' &raquo; '.i18n_r('IMAGES')); ?>
 	
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $i18n['FILE_MANAGEMENT'];?> <span>&raquo;</span> <?php echo $i18n['IMAGES'];?></h1>
+	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('FILE_MANAGEMENT');?> <span>&raquo;</span> <?php i18n('IMAGES');?></h1>
 	<?php include('template/include-nav.php'); ?>
 	<?php include('template/error_checking.php'); ?>
 
@@ -65,19 +65,19 @@ else
 	<div id="maincontent">
 			
 		<div class="main">
-		<h3><?php echo $i18n['IMG_CONTROl_PANEL'];?></h3>
+		<h3><?php i18n('IMG_CONTROl_PANEL');?></h3>
 	
-			<?php echo '<p><a href="'.$src_folder . $src .'" rel="facybox" >'.$i18n['ORIGINAL_IMG'].'</a> <code>'.$imgwidth.'x'.$imgheight .'</code>'. $thumb_exists .'</p>'; ?>
+			<?php echo '<p><a href="'.$src_folder . $src .'" rel="facybox" >'.i18n_r('ORIGINAL_IMG').'</a> <code>'.$imgwidth.'x'.$imgheight .'</code>'. $thumb_exists .'</p>'; ?>
 
 			<form><select class="text" id="img-info">
-				<option selected="selected" value="code-img-html" ><?php echo $i18n['HTML_ORIG_IMG'];?></option>
-				<option value="code-img-link" ><?php echo $i18n['LINK_ORIG_IMG'];?></option>
-				<option value="code-thumb-html" ><?php echo $i18n['HTML_THUMBNAIL'];?></option>
-				<option value="code-thumb-link" ><?php echo $i18n['LINK_THUMBNAIL'];?></option>
-				<option value="code-imgthumb-html" ><?php echo $i18n['HTML_THUMB_ORIG'];?></option>
+				<option selected="selected" value="code-img-html" ><?php i18n('HTML_ORIG_IMG');?></option>
+				<option value="code-img-link" ><?php i18n('LINK_ORIG_IMG');?></option>
+				<option value="code-thumb-html" ><?php i18n('HTML_THUMBNAIL');?></option>
+				<option value="code-thumb-link" ><?php i18n('LINK_THUMBNAIL');?></option>
+				<option value="code-imgthumb-html" ><?php i18n('HTML_THUMB_ORIG');?></option>
 			</select>
 			<textarea class="copykit" >&lt;img src="<?php echo tsl($SITEURL) .'data/uploads/'. $src; ?>" class="gs_image" alt=""></textarea>
-			<p style="color:#666;font-size:11px;margin:-10px 0 0 0"><?php echo $i18n['CLIPBOARD_COPY'];?>: <a href="#" class="select-all" ><?php echo $i18n['CLIPBOARD_INSTR'];?></a></p>
+			<p style="color:#666;font-size:11px;margin:-10px 0 0 0"><?php i18n('CLIPBOARD_COPY');?>: <a href="#" class="select-all" ><?php i18n('CLIPBOARD_INSTR');?></a></p>
 		</form>
 			<div class="toggle">
 				<p id="code-img-html">&lt;img src="<?php echo tsl($SITEURL) .'data/uploads/'. $src; ?>" class="gs_image" alt=""></p>
@@ -93,7 +93,7 @@ else
     <img src="<?php echo $src_folder . $src; ?>" id="cropbox" />
     
 
-		<div id="handw" class="toggle" ><?php echo $i18n['SELECT_DIMENTIONS']; ?><br /><span id="picw"></span> x <span id="pich"></span></div>
+		<div id="handw" class="toggle" ><?php i18n('SELECT_DIMENTIONS'); ?><br /><span id="picw"></span> x <span id="pich"></span></div>
  
     <!-- This is the form that our event handler fills -->
     <form id="jcropform" action="image.php?i=<?php echo $src; ?>" method="post" onsubmit="return checkCoords();">
@@ -101,7 +101,7 @@ else
       <input type="hidden" id="y" name="y" />
       <input type="hidden" id="w" name="w" />
       <input type="hidden" id="h" name="h" />
-      <input type="submit" class="submit" value="<?php echo $i18n['CREATE_THUMBNAIL'];?>" /> &nbsp; <span style="color:#666;font-size:11px;"><?php echo $i18n['CROP_INSTR'];?></span>
+      <input type="submit" class="submit" value="<?php i18n('CREATE_THUMBNAIL');?>" /> &nbsp; <span style="color:#666;font-size:11px;"><?php i18n('CROP_INSTR');?></span>
 
     </form>
 

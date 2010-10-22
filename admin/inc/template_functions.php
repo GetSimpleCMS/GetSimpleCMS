@@ -190,34 +190,34 @@ function createRandomPassword() {
  * Returns the category of an file based on it's extension
  *
  * @since 1.0
- * @uses $i18n
+ * @uses i18n_r
  *
  * @param string $ext
  * @return string
  */
 function get_FileType($ext) {
-	global $i18n;
+
 	$ext = strtolower($ext);
 	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'pct' || $ext == 'gif' || $ext == 'bmp' || $ext == 'png' ) {
-		return $i18n['IMAGES'];
+		return i18n_r('IMAGES');
 	} elseif ( $ext == 'zip' || $ext == 'gz' || $ext == 'rar' || $ext == 'tar' || $ext == 'z' || $ext == '7z' || $ext == 'pkg' ) {
-		return $i18n['FTYPE_COMPRESSED'];
+		return i18n_r('FTYPE_COMPRESSED');
 	} elseif ( $ext == 'ai' || $ext == 'psd' || $ext == 'eps' || $ext == 'dwg' || $ext == 'tif' || $ext == 'tiff' || $ext == 'svg' ) {
-		return $i18n['FTYPE_VECTOR'];
+		return i18n_r('FTYPE_VECTOR');
 	} elseif ( $ext == 'swf' || $ext == 'fla' ) {
-		return $i18n['FTYPE_FLASH'];	
+		return i18n_r('FTYPE_FLASH');	
 	} elseif ( $ext == 'mov' || $ext == 'mpg' || $ext == 'avi' || $ext == 'mpeg' || $ext == 'rm' || $ext == 'wmv' ) {
-		return $i18n['FTYPE_VIDEO'];
+		return i18n_r('FTYPE_VIDEO');
 	} elseif ( $ext == 'mp3' || $ext == 'wav' || $ext == 'wma' || $ext == 'midi' || $ext == 'mid' || $ext == 'm3u' || $ext == 'ra' || $ext == 'aif' ) {
-		return $i18n['FTYPE_AUDIO'];
+		return i18n_r('FTYPE_AUDIO');
 	} elseif ( $ext == 'php' || $ext == 'phps' || $ext == 'asp' || $ext == 'xml' || $ext == 'js' || $ext == 'jsp' || $ext == 'sql' || $ext == 'css' || $ext == 'htm' || $ext == 'html' || $ext == 'xhtml' || $ext == 'shtml' ) {
-		return $i18n['FTYPE_WEB'];
+		return i18n_r('FTYPE_WEB');
 	} elseif ( $ext == 'mdb' || $ext == 'accdb' || $ext == 'pdf' || $ext == 'xls' || $ext == 'xlsx' || $ext == 'csv' || $ext == 'tsv' || $ext == 'ppt' || $ext == 'pps' || $ext == 'pptx' || $ext == 'txt' || $ext == 'log' || $ext == 'dat' || $ext == 'text' || $ext == 'doc' || $ext == 'docx' || $ext == 'rtf' || $ext == 'wks' ) {
-		return $i18n['FTYPE_DOCUMENTS'];
+		return i18n_r('FTYPE_DOCUMENTS');
 	} elseif ( $ext == 'exe' || $ext == 'msi' || $ext == 'bat' || $ext == 'download' || $ext == 'dll' || $ext == 'ini' || $ext == 'cab' || $ext == 'cfg' || $ext == 'reg' || $ext == 'cmd' || $ext == 'sys' ) {
-		return $i18n['FTYPE_SYSTEM'];
+		return i18n_r('FTYPE_SYSTEM');
 	} else {
-		return $i18n['FTYPE_MISC'];
+		return i18n_r('FTYPE_MISC');
 	}
 }
 
@@ -452,7 +452,7 @@ function do_reg($text, $regex) {
  * Validate XML
  *
  * @since 1.0
- * @uses $i18n
+ * @uses i18n_r
  * @uses getXML
  *
  * @param string $file File to validate
@@ -462,9 +462,9 @@ function valid_xml($file) {
 	$xmlv = @getXML($file);
 	global $i18n;
 	if ($xmlv) {
-		return '<span class="OKmsg" >XML Valid - '.$i18n['OK'].'</span>';
+		return '<span class="OKmsg" >XML Valid - '.i18n_r('OK').'</span>';
 	} else {
-		return '<span class="ERRmsg" >XML Invalid - '.$i18n['ERROR'].'!</span>';
+		return '<span class="ERRmsg" >XML Invalid - '.i18n_r('ERROR').'!</span>';
 	}
 }
 

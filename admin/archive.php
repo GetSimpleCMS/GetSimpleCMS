@@ -29,19 +29,19 @@ if(isset($_GET['do'])) {
 
 // if a backup has just been created
 if(isset($_GET['done'])) {
-	$success = $i18n['SUCC_WEB_ARCHIVE'];
+	$success = i18n_r('SUCC_WEB_ARCHIVE');
 }
 
 if(isset($_GET['nozip'])) {
-	$error = $i18n['NO_ZIPARCHIVE'];
+	$error = i18n_r('NO_ZIPARCHIVE');
 }
 
 
 ?> 
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.$i18n['BAK_MANAGEMENT'].' &raquo; '.$i18n['WEBSITE_ARCHIVES']); ?>
+<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT').' &raquo; '.i18n_r('WEBSITE_ARCHIVES')); ?>
 	
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $i18n['BAK_MANAGEMENT']; ?> <span>&raquo;</span> <?php echo $i18n['WEBSITE_ARCHIVES']; ?></h1>
+	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('BAK_MANAGEMENT'); ?> <span>&raquo;</span> <?php i18n('WEBSITE_ARCHIVES'); ?></h1>
 	
 	<?php include('template/include-nav.php'); ?>
 	<?php include('template/error_checking.php'); ?>
@@ -50,11 +50,11 @@ if(isset($_GET['nozip'])) {
 	
 	<div id="maincontent">
 		<div class="main" >
-		<label><?php echo $i18n['WEBSITE_ARCHIVES'];?></label>
+		<label><?php i18n('WEBSITE_ARCHIVES');?></label>
 		<div class="edit-nav" >
-		<a id="waittrigger" href="archive.php?do&nonce=<?php echo get_nonce("create"); ?>" accesskey="c" title="<?php echo $i18n['CREATE_NEW_ARC'];?>" ><?php echo $i18n['ASK_CREATE_ARC'];?></a>
+		<a id="waittrigger" href="archive.php?do&nonce=<?php echo get_nonce("create"); ?>" accesskey="c" title="<?php i18n('CREATE_NEW_ARC');?>" ><?php i18n('ASK_CREATE_ARC');?></a>
 		<div class="clear"></div></div>
-		<p style="display:none" id="waiting" ><?php echo $i18n['CREATE_ARC_WAIT'];?></p>
+		<p style="display:none" id="waiting" ><?php i18n('CREATE_ARC_WAIT');?></p>
 		<table class="highlight paginate">	
 		<?php
 			$count="0";
@@ -73,9 +73,9 @@ if(isset($_GET['nozip'])) {
 					$ss = @stat($path . $file);
 					$size = fSize($ss['size']);
 					echo '<tr>
-							<td><a title="Download Archive '. $name .'" target="_blank" href="download.php?file='. $path . $file .'&nonce='.get_nonce("archive", "download.php").'">'.$name .'</a></td>
+							<td><a title="'.i18n_r('DOWNLOAD').' '. $name .'" target="_blank" href="download.php?file='. $path . $file .'&nonce='.get_nonce("archive", "download.php").'">'.$name .'</a></td>
 							<td style="width:70px;text-align:right;" ><span>'.$size.'</span></td>
-							<td class="delete" ><a class="delconfirm" title="Delete Archive '. $name .'?" href="deletefile.php?zip='. $file .'&nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>
+							<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_ARCHIVE').' '. $name .'?" href="deletefile.php?zip='. $file .'&nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>
 						  </tr>';
 					$count++;
 				}
@@ -83,7 +83,7 @@ if(isset($_GET['nozip'])) {
 
 		?>
 		</table>
-		<p><em><b><?php echo $count; ?></b> <?php echo $i18n['TOTAL_ARCHIVES'];?></em></p>
+		<p><em><b><?php echo $count; ?></b> <?php i18n('TOTAL_ARCHIVES');?></em></p>
 		</div>
 	</div>
 	

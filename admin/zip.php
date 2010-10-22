@@ -65,7 +65,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 	redirect('archive.php?done');
 
 } else {
-	die('You do not have permission to execute this page');
+	die(i18n_r('DENIED'));
 }
 
 exit;
