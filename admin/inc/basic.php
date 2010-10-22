@@ -143,6 +143,7 @@ function subval_sort($a,$subkey) {
  * Allows backward compatibility for servers that do not have the JSON decoder installed
  *
  * @since 2.0
+ * @author Martijn van der Ven
  *
  * @param string $api_data
  * @return object
@@ -251,6 +252,7 @@ function XMLsave($xml, $file) {
  *
  * @since 1.0
  * @uses $i18n
+ * @uses i18n_r
  *
  * @param string $dt Date/Time format, default is $i18n['DATE_AND_TIME_FORMAT']
  * @return string
@@ -259,9 +261,9 @@ function lngDate($dt) {
 	global $i18n;
 	
 	if (!$dt) {
-		$data = date($i18n['DATE_AND_TIME_FORMAT']);
+		$data = date(i18n_r('DATE_AND_TIME_FORMAT'));
 	} else {
-		$data = date($i18n['DATE_AND_TIME_FORMAT'], strtotime($dt));
+		$data = date(i18n_r('DATE_AND_TIME_FORMAT'), strtotime($dt));
 	}
 	return $data;
 }
@@ -271,6 +273,7 @@ function lngDate($dt) {
  *
  * @since 1.0
  * @uses $i18n
+ * @uses i18n_r
  *
  * @param string $dt Date/Time format, default is $i18n['DATE_FORMAT']
  * @return string
@@ -279,9 +282,9 @@ function shtDate($dt) {
 	global $i18n;
 	
 	if (!$dt) {
-		$data = date($i18n['DATE_FORMAT']);
+		$data = date(i18n_r('DATE_FORMAT'));
 	} else {
-		$data = date($i18n['DATE_FORMAT'], strtotime($dt));
+		$data = date(i18n_r('DATE_FORMAT'), strtotime($dt));
 	}
 	return $data;
 }
@@ -328,34 +331,6 @@ if(!function_exists('in_arrayi')) {
 	function in_arrayi($needle, $haystack) {
 	    return in_array(strtolower($needle), array_map('strtolower', $haystack));
 	}
-}
-
-/**
- * List Directory
- *
- * Adds files and directory structure to a backup Zip file
- *
- * @since 1.0
- * @uses $zipfile
- *
- * @param object $dir_handle
- * @param string $path
- */
-function ListDir($dir_handle,$path) {
-	global $zipfile;
-	while (false !== ($file = readdir($dir_handle))) {
-	  $dir = $path.'/'.$file;
-	  $zippath = substr_replace($dir, 'getsimple' , 0, 2);
-	  if(is_dir($dir) && $file != '.' && $file !='..' ) {
-			$handle = @opendir($dir) or die("Unable to open file $file");
-			$zipfile->add_dir($zippath);
-			ListDir($handle, $dir);
-	  } elseif($file != '.' && $file !='..') {
-			$filedata = file_get_contents($dir);
-			$zipfile->add_file($filedata, $zippath);
-	  }
-	}
-	closedir($dir_handle);
 }
 
 /**
@@ -461,8 +436,8 @@ function strip_quotes($text)  {
 function redirect($url) {
 	global $i18n;
 	header('Location: '.$url);
-	echo "<html><head><title>Relocate</title></head><body>";
-	printf("If your browser does not redirect you, click <a href=\"%s\">here</a>.", $url);
+	echo "<html><head><title>".i18n_r('REDIRECT')."</title></head><body>";
+	printf(i18n_r('REDIRECT_MSG'), $url);
 	echo "</body></html>";
 	exit();
 }
@@ -504,5 +479,19 @@ function i18n($name, $echo=true) {
 		echo $myVar;
 	}
 } 
+
+/**
+ * Return i18n
+ *
+ * Same as i18n, but returns instead of echos
+ *
+ * @since 2.04
+ * @author ccagle8
+ *
+ * @param string $name
+ */
+function i18n_r($name) {
+	return i18n($name, false);
+}
 
 ?>

@@ -95,26 +95,26 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 	if (!defined('GSDONOTPING')) {
 		if (file_exists(GSROOTPATH .'sitemap.xml')){
 			if( 200 === ($status=pingGoogleSitemaps($SITEURL.'sitemap.xml')))	{
-				$response = $i18n['SITEMAP_CREATED'];
+				$response = i18n_r('SITEMAP_CREATED');
 				redirect('theme.php?success=' . urlencode($response));
 				exit;
 			} else {
-				$response = $i18n['SITEMAP_ERRORPING'];
+				$response = i18n_r('SITEMAP_ERRORPING');
 				redirect('theme.php?err=' . urlencode($response));
 				exit;
 			}
 		} else {
-			$response = $i18n['SITEMAP_ERROR'];
+			$response = i18n_r('SITEMAP_ERROR');
 			redirect('theme.php?err=' . urlencode($response));	
 			exit;
 		}
 	} else {
-		$response = $i18n['SITEMAP_ERRORPING'];
+		$response = i18n_r('SITEMAP_ERRORPING');
 		redirect('theme.php?success=' . urlencode($response));
 		exit;
 	}
 } else {
-	die('You do not have permission to execute this page');
+	die(i18n_r('DENIED'));
 }
 
 exit;

@@ -470,12 +470,14 @@ $i18n = array(
 "HOMEPAGE_DELETE_ERROR" => "You cannot delete your homepage",
 
 /*
- * For: archive.php
+ * Misc Cleanup Work
  */
 
 "NO_ZIPARCHIVE" => "ZipArchive extension is not installed. Unable to continue",
-
-
+"REDIRECT_MSG"=> "If your browser does not redirect you, click <a href=\"%s\">here</a>",
+"REDIRECT"=> "Redirect",
+"DENIED"=> "Denied",
+"DEBUG_MODE"=> "DEBUG MODE",
 
 "" => "not translated"
 

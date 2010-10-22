@@ -35,15 +35,16 @@ echo 'Sitemap: '.$res .'<br />';
 curl_close($cURL);
 
 
-// to make site backup 
-$cURL = curl_init($SITEURL.'/admin/zip.php');
-curl_setopt($cURL, CURLOPT_POST, 1);
-curl_setopt($cURL, CURLOPT_POSTFIELDS, "s=".$SESSIONHASH);
-curl_setopt($cURL, CURLOPT_HEADER, 0);
-curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
-$res = curl_exec($cURL);
-echo 'Archive: '.$res .'<br />';
-curl_close($cURL);
+// to make site backup
+# this no longer works with the addition of nonce to the archive screen.  
+#$cURL = curl_init($SITEURL.'/admin/zip.php');
+#curl_setopt($cURL, CURLOPT_POST, 1);
+#curl_setopt($cURL, CURLOPT_POSTFIELDS, "s=".$SESSIONHASH);
+#curl_setopt($cURL, CURLOPT_HEADER, 0);
+#curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
+#$res = curl_exec($cURL);
+#echo 'Archive: '.$res .'<br />';
+#curl_close($cURL);
 
 //complete
 echo "Cron Completed at ".date('M-d-Y H:i') .'<br />---------------<br />';
