@@ -85,48 +85,18 @@ if (isset($_POST['submitted']))
 		$file = GSDATAPAGESPATH . $url .".xml";
 		
 		// format and clean the responses
-		if(isset($_POST['post-title'])) {
-			if (get_magic_quotes_gpc()==0) {
-				$title = addslashes(htmlentities($_POST['post-title'], ENT_QUOTES, 'UTF-8'));
-			} else {
-				$title = htmlentities($_POST['post-title'], ENT_QUOTES, 'UTF-8');
-			}
-		}
+		if(isset($_POST['post-title'])) {	$title = safe_slash_html($_POST['post-title']);	}
 		
-		if(isset($_POST['post-metak'])) {
-			if (get_magic_quotes_gpc()==0) {
-				$metak = addslashes(htmlentities($_POST['post-metak'], ENT_QUOTES, 'UTF-8'));
-			} else {
-				$metak = htmlentities($_POST['post-metak'], ENT_QUOTES, 'UTF-8');
-			}
-		}
+		if(isset($_POST['post-metak'])) {	$metak = safe_slash_html($_POST['post-metak']);	}
 		
-		if(isset($_POST['post-metad'])) {
-			if (get_magic_quotes_gpc()==0) {
-				$metad = addslashes(htmlentities($_POST['post-metad'], ENT_QUOTES, 'UTF-8'));
-			} else {
-				$metad = htmlentities($_POST['post-metad'], ENT_QUOTES, 'UTF-8');
-			}
-		}
+		if(isset($_POST['post-metad'])) {	$metad = safe_slash_html($_POST['post-metad']);	}
 		
 		if(isset($_POST['post-template'])) { $template = $_POST['post-template']; }
 		if(isset($_POST['post-parent'])) { $parent = $_POST['post-parent']; }
-		if(isset($_POST['post-menu'])) {
-			if (get_magic_quotes_gpc()==0) {
-				$menu = addslashes(htmlentities($_POST['post-menu'], ENT_QUOTES, 'UTF-8'));
-			} else {
-				$menu = htmlentities($_POST['post-menu'], ENT_QUOTES, 'UTF-8');
-			}
-		}
+		if(isset($_POST['post-menu'])) {$menu = safe_slash_html($_POST['post-menu']); }
 		if(isset($_POST['post-menu-enable'])) { $menuStatus = "Y"; } else { $menuStatus = ""; }
 		if(isset($_POST['post-private'])) { $private = "Y"; } else { $private = ""; }
-		if(isset($_POST['post-content'])) {
-			if (get_magic_quotes_gpc()==0) {
-				$content = addslashes(htmlentities($_POST['post-content'], ENT_QUOTES, 'UTF-8'));
-			} else {
-				$content = htmlentities($_POST['post-content'], ENT_QUOTES, 'UTF-8');
-			}
-		}
+		if(isset($_POST['post-content'])) {	$content = safe_slash_html($_POST['post-content']);	}
 		
 		if(isset($_POST['post-menu-order'])) 
 		{ 

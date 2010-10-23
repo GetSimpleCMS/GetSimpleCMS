@@ -435,11 +435,25 @@ function strip_quotes($text)  {
  */
 function redirect($url) {
 	global $i18n;
-	header('Location: '.$url);
-	echo "<html><head><title>".i18n_r('REDIRECT')."</title></head><body>";
-	printf(i18n_r('REDIRECT_MSG'), $url);
-	echo "</body></html>";
-	exit();
+
+	if (!headers_sent($filename, $linenum)) {
+    header('Location: '.$url);
+  } else {
+    echo "<html><head><title>".i18n_r('REDIRECT')."</title></head><body>";
+    if ( !defined('GSDEBUG') || (GSDEBUG != TRUE) ) {
+	    echo '<script type="text/javascript">';
+	    echo 'window.location.href="'.$url.'";';
+	    echo '</script>';
+	    echo '<noscript>';
+	    echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
+	    echo '</noscript>';
+	  }
+    echo i18n_r('ERROR').": Headers already sent in ".$filename." on line ".$linenum."\n";
+    printf(i18n_r('REDIRECT_MSG'), $url);
+		echo "</body></html>";
+	}
+	
+	exit;
 }
 
 /**
@@ -469,7 +483,7 @@ function i18n($name, $echo=true) {
 		if (array_key_exists($name, $i18n)) {
 			$myVar = $i18n[$name];
 		} else {
-			$myVar = '{missing: '.$name.'}';
+			$myVar = '{'.$name.'}';
 		}
 	}
 	
@@ -503,13 +517,61 @@ function i18n_r($name) {
  * @param string $text
  * @return string
  */
-function safeslash($text) {
+function safe_slash_html($text) {
 	if (get_magic_quotes_gpc()==0) {
 		$text = addslashes(htmlentities($text, ENT_QUOTES, 'UTF-8'));
 	} else {
 		$text = htmlentities($text, ENT_QUOTES, 'UTF-8');
 	}
-	
 	return $text;
+}
+
+
+/**
+ * Safe StripSlashes HTML Decode
+ *
+ * @since 2.04
+ * @author ccagle8
+ *
+ * @param string $text
+ * @return string
+ */
+function safe_strip_decode($text) {
+	if (get_magic_quotes_gpc()==0) {
+		$text = htmlspecialchars_decode($text, ENT_QUOTES);
+	} else {
+		$text = stripslashes(htmlspecialchars_decode($text, ENT_QUOTES));
+	}
+	return $text;
+}
+
+/**
+ * StripSlashes HTML Decode
+ *
+ * @since 2.04
+ * @author ccagle8
+ *
+ * @param string $text
+ * @return string
+ */
+function strip_decode($text) {
+	$text = stripslashes(htmlspecialchars_decode($text, ENT_QUOTES));
+	return $text;
+}
+
+/**
+ * Safe Pathinfo Filename
+ *
+ * for backwards compatibility for before PHP 5.2
+ *
+ * @since 2.04
+ * @author ccagle8
+ *
+ * @param string $file
+ * @return string
+ */
+function pathinfo_filename($file) { //file.name.ext, returns file.name
+   if (defined('PATHINFO_FILENAME')) return pathinfo($file,PATHINFO_FILENAME);
+   if (strstr($file, '.')) return substr($file,0,strrpos($file,'.'));
 }
 ?>

@@ -44,11 +44,7 @@ if((isset($_POST['submitsave'])))
 
 	$SavedFile = $_POST['edited_file'];
 	
-	if (get_magic_quotes_gpc()==0) { 
-		$FileContents = htmlspecialchars_decode($_POST['content'], ENT_QUOTES);
-	} else {
-		$FileContents = stripslashes(htmlspecialchars_decode($_POST['content'], ENT_QUOTES));
-	}
+	$FileContents = safe_strip_decode($_POST['content']);
 
 	$fh = fopen(GSTHEMESPATH . $SavedFile, 'w') or die("can't open file");
 	fwrite($fh, $FileContents);

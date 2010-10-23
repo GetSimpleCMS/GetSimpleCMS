@@ -56,15 +56,9 @@ if (isset($_POST['submitted']))
 				
 				$coArray[$ct]['id'] = $ids[$ct];
 				$coArray[$ct]['slug'] = $slug[$ct];
-
-				if (get_magic_quotes_gpc()==0) {
-					$coArray[$ct]['title'] = addslashes(htmlentities($title[$ct], ENT_QUOTES, 'UTF-8'));
-					$coArray[$ct]['value'] = addslashes(htmlentities($value[$ct], ENT_QUOTES, 'UTF-8'));
-				} else {
-					$coArray[$ct]['title'] = htmlentities($title[$ct], ENT_QUOTES, 'UTF-8');
-					$coArray[$ct]['value'] = htmlentities($value[$ct], ENT_QUOTES, 'UTF-8');
-				}
-
+				$coArray[$ct]['title'] = safe_slash_html($title[$ct]);
+				$coArray[$ct]['value'] = safe_slash_html($value[$ct]);
+				
 			}
 			$ct++;
 		}
@@ -106,10 +100,10 @@ $componentsec = $data->item;
 $count= 0;
 if (count($componentsec) != 0) {
 	foreach ($componentsec as $component) {
-		$table .= '<div class="compdiv" id="section-'.@$count.'"><table class="comptable" ><tr><td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="editable">'. stripslashes(@$component->title) .'</b></td>';
+		$table .= '<div class="compdiv" id="section-'.@$count.'"><table class="comptable" ><tr><td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="editable">'. @stripslashes($component->title) .'</b></td>';
 		$table .= '<td style="text-align:right;" ><code>&lt;?php get_component(<span class="compslugcode">\''.@$component->slug.'\'</span>); ?&gt;</code></td><td class="delete" >';
 		$table .= '<a href="#" title="'.i18n_r('DELETE_COMPONENT').': '. cl(@$component->title).'?" id="del-'.$count.'" onClick="DeleteComp(\''.$count.'\'); return false;" >X</a></td></tr></table>';
-		$table .= '<textarea name="val[]">'. stripslashes(@$component->value) .'</textarea>';
+		$table .= '<textarea name="val[]">'. @stripslashes($component->value) .'</textarea>';
 		$table .= '<input type="hidden" class="compslug" name="slug[]" value="'. @$component->slug .'" />';
 		$table .= '<input type="hidden" class="comptitle" name="title[]" value="'. @stripslashes($component->title) .'" />';
 		$table .= '<input type="hidden" name="id[]" value="'. @$count .'" />';

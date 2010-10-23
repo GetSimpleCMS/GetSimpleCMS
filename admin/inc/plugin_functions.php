@@ -22,7 +22,7 @@ $pluginsLoaded=false;
 
 foreach ($pluginfiles as $fi) {
 	$pathExt = pathinfo($fi,PATHINFO_EXTENSION );
-	$pathName= pathinfo($fi,PATHINFO_FILENAME );
+	$pathName= pathinfo_filename($fi);
 	if ($pathExt=="php")
 	{
 		$pluginsLoaded=true;

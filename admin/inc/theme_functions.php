@@ -17,13 +17,14 @@
  * @uses $content 
  * @uses exec_action
  * @uses exec_filter
+ * @uses strip_decode
  *
  * @return string Echos.
  */
 function get_page_content() {
 	global $content;
 	exec_action('content-top');
-	$content = stripslashes(htmlspecialchars_decode($content, ENT_QUOTES));
+	$content = strip_decode($content);
 	$content = exec_filter('content',$content);
 	echo $content;
 	exec_action('content-bottom');
@@ -35,6 +36,7 @@ function get_page_content() {
  * @since 2.0
  * @uses $content
  * @uses exec_filter
+ * @uses strip_decode
  *
  * @param string $n Optional, default is 200.
  * @param bool $html Optional, default is false.  
@@ -43,7 +45,7 @@ function get_page_content() {
  */
 function get_page_excerpt($n=200, $html=false) {
 	global $content;
-	$content_e = stripslashes(htmlspecialchars_decode($content, ENT_QUOTES));
+	$content_e = strip_decode($content);
 	$content_e = exec_filter('content',$content_e);
 	
 	if (!$html) {
@@ -64,13 +66,14 @@ function get_page_excerpt($n=200, $html=false) {
  *
  * @since 2.0
  * @uses $metak
+ * @uses strip_decode
  *
  * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_page_meta_keywords($echo=true) {
 	global $metak;
-	$myVar = stripslashes(htmlspecialchars_decode(@$metak, ENT_QUOTES));
+	$myVar = strip_decode(@$metak);
 	
 	if ($echo) {
 		echo $myVar;
@@ -84,13 +87,14 @@ function get_page_meta_keywords($echo=true) {
  *
  * @since 2.0
  * @uses $metad
+ * @uses strip_decode
  *
  * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_page_meta_desc($echo=true) {
 	global $metad;
-	$myVar = stripslashes(htmlspecialchars_decode(@$metad, ENT_QUOTES));
+	$myVar = strip_decode(@$metad);
 	
 	if ($echo) {
 		echo $myVar;
@@ -110,7 +114,7 @@ function get_page_meta_desc($echo=true) {
  */
 function get_page_title($echo=true) {
 	global $title;
-	$myVar = stripslashes(htmlspecialchars_decode($title, ENT_QUOTES));
+	$myVar = strip_decode($title);
 	
 	if ($echo) {
 		echo $myVar;
@@ -132,7 +136,7 @@ function get_page_title($echo=true) {
  */
 function get_page_clean_title($echo=true) {
 	global $title;
-	$myVar = strip_tags(stripslashes(htmlspecialchars_decode($title, ENT_QUOTES)));
+	$myVar = strip_tags(strip_decode($title));
 	
 	if ($echo) {
 		echo $myVar;
@@ -270,9 +274,9 @@ function get_header() {
 	include_once('configuration.php');
 	
 	if (function_exists('mb_substr')) { 
-		$description = trim(mb_substr(strip_tags(stripslashes(htmlspecialchars_decode(@$content, ENT_QUOTES))), 0, 160));
+		$description = trim(mb_substr(strip_tags(strip_decode($content)), 0, 160));
 	} else {
-		$description = trim(substr(strip_tags(stripslashes(htmlspecialchars_decode(@$content, ENT_QUOTES))), 0, 160));
+		$description = trim(substr(strip_tags(strip_decode($content)), 0, 160));
 	}
 	
 	if ($metad != '') {
@@ -572,7 +576,7 @@ function get_component($id) {
 		if (count($components) != 0) {
 			foreach ($components as $component) {
 				if ($id == $component->slug) { 
-					eval("?>" . stripslashes(htmlspecialchars_decode($component->value, ENT_QUOTES)) . "<?php "); 
+					eval("?>" . strip_decode($component->value) . "<?php "); 
 				}
 			}
 		}
@@ -618,9 +622,9 @@ function get_navigation($currentpage) {
 				if ($data->private != 'Y') {
 					$pagesArray[$count]['menuStatus'] = $data->menuStatus;
 					$pagesArray[$count]['menuOrder'] = $data->menuOrder;
-					$pagesArray[$count]['menu'] = stripslashes(htmlspecialchars_decode($data->menu, ENT_QUOTES));
+					$pagesArray[$count]['menu'] = strip_decode($data->menu);
 					$pagesArray[$count]['url'] = $data->url;
-					$pagesArray[$count]['title'] = stripslashes(htmlspecialchars_decode($data->title, ENT_QUOTES));
+					$pagesArray[$count]['title'] = v($data->title);
 					$pagesArray[$count]['parent'] = $data->parent;
 					$count++;
 				}
