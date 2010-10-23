@@ -232,6 +232,7 @@ function getXML($file) {
  * XML Save
  *
  * @since 2.0
+ * @todo create and chmod file before ->asXML call (if it doesnt exist already, if so, then just chmod it.)
  *
  * @param object $xml
  * @param string $file Filename that it will be saved as

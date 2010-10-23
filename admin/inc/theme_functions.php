@@ -624,7 +624,7 @@ function get_navigation($currentpage) {
 					$pagesArray[$count]['menuOrder'] = $data->menuOrder;
 					$pagesArray[$count]['menu'] = strip_decode($data->menu);
 					$pagesArray[$count]['url'] = $data->url;
-					$pagesArray[$count]['title'] = v($data->title);
+					$pagesArray[$count]['title'] = strip_decode($data->title);
 					$pagesArray[$count]['parent'] = $data->parent;
 					$count++;
 				}
