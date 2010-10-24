@@ -38,10 +38,7 @@ if (file_exists($path . $file)) {
 	$EMAIL = $data->EMAIL;
 }
 
-// get suggestion for website base url
-$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
-$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
-$fullpath = "http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts ."/";	
+$fullpath = suggest_site_path();	
 
 // if the form was submitted...	
 if(isset($_POST['submitted']))
@@ -248,7 +245,7 @@ if(isset($_POST['submitted']))
 		<div class="main" >
 	<h3><?php echo $site_full_name .' '. i18n_r('INSTALLATION'); ?></h3>
 
-	<form action="setup.php" method="post" accept-charset="utf-8" >
+	<form action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 		<p><b><?php i18n('LABEL_WEBSITE'); ?>:</b><br /><input class="text" name="sitename" type="text" value="<?php if(isset($_POST['sitename'])) { echo $_POST['sitename']; } ?>" /></p>
 		<input name="siteurl" type="hidden" value="<?php if(isset($_POST['siteurl'])) { echo $_POST['siteurl']; } else { echo $fullpath;} ?>" />
 		<input name="lang" type="hidden" value="<?php echo $LANG; ?>" />

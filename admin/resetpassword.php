@@ -89,7 +89,7 @@ if(isset($_POST['submitted']))
 	<h3><?php i18n('RESET_PASSWORD'); ?></h3>
 	<p><?php i18n('MSG_PLEASE_EMAIL'); ?>.</p>
 	
-	<form class="fullform" action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" accept-charset="utf-8" >
+	<form class="fullform" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 		<input name="nonce" id="nonce" type="hidden" value="<?php echo get_nonce("reset_password");?>"/>
 		<p><b><?php i18n('LABEL_EMAIL'); ?>:</b><br /><input class="text" name="email" type="text" value="" /></p>
 		<p><input class="submit" type="submit" name="submitted" value="<?php echo i18n('SEND_NEW_PWD'); ?>" /></p>

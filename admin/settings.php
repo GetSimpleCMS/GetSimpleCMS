@@ -170,10 +170,7 @@ $editorchck = ''; $prettychck = '';
 if ($HTMLEDITOR != '' ) { $editorchck = 'checked'; }
 if ($PRETTYURLS != '' ) { $prettychck = 'checked'; }
 
-// get what we think the 'website base url' should be
-$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
-$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
-$fullpath = tsl("http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts);
+$fullpath = suggest_site_path();
 
 // get available language files
 $lang_path = "lang/";
@@ -220,7 +217,7 @@ else
 <div class="bodycontent">
 	
 	<div id="maincontent">
-		<form class="largeform" action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" accept-charset="utf-8" >
+		<form class="largeform" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 		<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save_settings"); ?>" />
 		<div class="main">
 		<h3><?php i18n('WEBSITE_SETTINGS');?></h3>

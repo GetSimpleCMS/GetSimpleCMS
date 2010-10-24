@@ -575,4 +575,38 @@ function pathinfo_filename($file) { //file.name.ext, returns file.name
    if (defined('PATHINFO_FILENAME')) return pathinfo($file,PATHINFO_FILENAME);
    if (strstr($file, '.')) return substr($file,0,strrpos($file,'.'));
 }
+
+/**
+ * Suggest Site Path
+ *
+ * Suggestion function for SITEURL variable
+ *
+ * @since 2.04
+ * @uses $GSAMIN
+ * @author ccagle8
+ *
+ * @return string
+ */
+function suggest_site_path() {
+	global $GSADMIN;
+	$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
+	$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
+	$fullpath = "http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts ."/";
+
+	return $fullpath;
+}
+
+/**
+ * Myself 
+ *
+ * Returns the page itself 
+ *
+ * @since 2.04
+ * @author ccagle8
+ *
+ * @return string
+ */
+function myself() {
+	echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES);
+}
 ?>
