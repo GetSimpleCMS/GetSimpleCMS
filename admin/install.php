@@ -46,9 +46,8 @@ $dirsArray = array(
 	GSBACKUPSPATH.'zip/'
 );
 
-foreach ($dirsArray as $dir) 
-{
-	$tmpfile = 'inc/tmp/tmp-404.xml';
+foreach ($dirsArray as $dir) {
+	$tmpfile = GSADMININCPATH.'tmp/tmp-404.xml';
 	
 	if (file_exists($dir)) 
 	{
@@ -198,8 +197,8 @@ $APIKEY = @$data->apikey;
 			<tr><td style="width:345px;" ><?php echo $site_full_name; ?> <?php i18n_r('VERSION'); ?></td><td><?php echo $ver; ?></td></tr>
 			<tr><td>
 			<?php
-				if (version_compare(phpversion(), "5.1.3", "<")) {
-					echo 'PHP '.i18n_r('VERSION') .'</td><td><span class="ERRmsg" ><b>'. phpversion().'</b> - PHP 5.1.3 '.i18n_r('OR_GREATER_REQ') .' - '.i18n_r('ERROR') .'</span></td></tr>';
+				if (version_compare(phpversion(), "5.2", "<")) {
+					echo 'PHP '.i18n_r('VERSION') .'</td><td><span class="ERRmsg" ><b>'. phpversion().'</b> - PHP 5.2 '.i18n_r('OR_GREATER_REQ') .' - '.i18n_r('ERROR') .'</span></td></tr>';
 				} else {
 					echo 'PHP '.i18n_r('VERSION') .'</td><td><span class="OKmsg" ><b>'. phpversion().'</b> - '.i18n_r('OK') .'</span></td></tr>';
 				}

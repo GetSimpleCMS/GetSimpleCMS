@@ -37,8 +37,8 @@ if (isset($_GET['id'])){
 }
 
 # define page, spit out 404 if it doesn't exist
-$file = "data/pages/". $id .".xml";
-$file_404 = "data/other/404.xml";
+$file = GSDATAPAGESPATH . $id .'.xml';
+$file_404 = GSDATAOTHERPATH . '404.xml';
 if (! file_exists($file)) {
 	if (file_exists($file_404))	{
 		$file = $file_404;
@@ -83,16 +83,16 @@ if (defined('GSCANONICAL')) {
 }
 
 # include the functions.php page if it exists within the theme
-if ( file_exists("theme/".$TEMPLATE."/functions.php") ) {
-	include("theme/".$TEMPLATE."/functions.php");	
+if ( file_exists(GSTHEMESPATH .$TEMPLATE."/functions.php") ) {
+	include(GSTHEMESPATH .$TEMPLATE."/functions.php");	
 }
 
 # call pretemplate Hook
 exec_action('index-pretemplate');
 
 # include the template and template file set within theme.php and each page
-if ( (!file_exists("theme/".$TEMPLATE."/".$template_file)) || ($template_file == '') ) { $template_file = "template.php"; }
-include("theme/".$TEMPLATE."/".$template_file);
+if ( (!file_exists(GSTHEMESPATH .$TEMPLATE."/".$template_file)) || ($template_file == '') ) { $template_file = "template.php"; }
+include(GSTHEMESPATH .$TEMPLATE."/".$template_file);
 
 # call posttemplate Hook
 exec_action('index-posttemplate');

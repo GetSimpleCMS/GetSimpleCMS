@@ -33,11 +33,12 @@ function get_template($name, $title='** Change Me - Default Page Title **') {
  * Generates HTML code to place on the body tag of a page
  *
  * @since 1.0
+ * @uses myself
  *
  * @return string
  */
 function filename_id() {
-	$path = htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES);
+	$path = myself(FALSE);
 	$file = basename($path,".php");	
 	echo "id=\"". $file ."\"";	
 }
@@ -48,11 +49,12 @@ function filename_id() {
  * Returns the filename of the current file, minus .php
  *
  * @since 1.0
+ * @uses myself
  *
  * @return string
  */
 function get_filename_id() {
-	$path = htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES);
+	$path = myself(FALSE);
 	$file = basename($path,".php");	
 	return $file;	
 }
@@ -475,16 +477,15 @@ function valid_xml($file) {
  *
  * @since 1.0
  * @uses $api_url
- * @uses $site_version_no
+ * @uses GSVERSION
  *
  * @return string
  */
 function generate_salt() {
 	
 	global $api_url;
-	global $site_version_no;
 	
-	$curl_URL = $api_url .'?r=true&v='.$site_version_no;
+	$curl_URL = $api_url .'?r=true&v='.GSVERSION;
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_TIMEOUT, 2);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

@@ -18,28 +18,25 @@ include('inc/common.php');
 $userid = login_cookie_check();
 
 // get page url to display
-if ($_GET['id'] != '') 
-{
+if ($_GET['id'] != '') {
 	$id = $_GET['id'];
 	$file = $id .".bak.xml";
 	$path = GSBACKUPSPATH .'pages/';
 	
 	$data = getXML($path . $file);
-	$title = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
+	$title = htmldecode($data->title);
 	$pubDate = $data->pubDate;
 	$parent = $data->parent;
-	$metak = html_entity_decode($data->meta, ENT_QUOTES, 'UTF-8');
-	$metad = html_entity_decode($data->metad, ENT_QUOTES, 'UTF-8');
+	$metak = htmldecode($data->meta);
+	$metad = htmldecode($data->metad);
 	$url = $data->url;
-	$content = html_entity_decode($data->content, ENT_QUOTES, 'UTF-8');
+	$content = htmldecode($data->content);
 	$private = $data->private;
 	$template = $data->template;
-	$menu = html_entity_decode($data->menu, ENT_QUOTES, 'UTF-8');
+	$menu = htmldecode($data->menu);
 	$menuStatus = $data->menuStatus;
 	$menuOrder = $data->menuOrder;
-} 
-else 
-{
+} else {
 	redirect('backups.php?upd=bak-err');
 }
 
@@ -47,30 +44,27 @@ if ($private != '' ) { $private = '('.i18n_r('RIVATE_SUBTITLE').')'; } else { $p
 if ($menuStatus == '' ) { $menuStatus = i18n_r('NO'); } else { $menuStatus = i18n_r('YES'); }
 
 // are we going to do anything with this backup?
-if ($_GET['p'] != '') 
-{
+if ($_GET['p'] != '') {
 	$p = $_GET['p'];
-} 
-else 
-{
+} else {
 	redirect('backups.php?upd=bak-err');
 }
 
-if ($p == 'delete') 
-{
+if ($p == 'delete') {
 	$nonce = $_GET['nonce'];
-	if(!check_nonce($nonce, "delete", "backup-edit.php"))
-		die("CSRF detected!");	
+	if(!check_nonce($nonce, "delete", "backup-edit.php")) {
+		die("CSRF detected!");
+	}
 
 	delete_bak($id);
 	redirect("backups.php?upd=bak-success&id=".$id);
 } 
-elseif ($p == 'restore') 
-{
-	$nonce = $_GET['nonce'];
-	if(!check_nonce($nonce, "restore", "backup-edit.php"))
-		die("CSRF detected!");	
 
+elseif ($p == 'restore') {
+	$nonce = $_GET['nonce'];
+	if(!check_nonce($nonce, "restore", "backup-edit.php")) {
+		die("CSRF detected!");	
+	}
 	restore_bak($id);
 	redirect("edit.php?id=". $id ."&upd=edit-success&type=restore");
 }
@@ -78,7 +72,7 @@ elseif ($p == 'restore')
 
 <?php get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &raquo; '.i18n_r('VIEWPAGE_TITLE')); ?>
 	
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('BAK_MANAGEMENT'); ?> <span>&raquo;</span> <?php i18n('VIEWING');?> &lsquo;<span class="filename" ><?php echo @$url; ?></span>&rsquo;</h1>
+	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('BAK_MANAGEMENT'); ?> <span>&raquo;</span> <?php i18n('VIEWING');?> &lsquo;<span class="filename" ><?php echo $url; ?></span>&rsquo;</h1>
 	
 	<?php include('template/include-nav.php'); ?>
 	<?php include('template/error_checking.php'); ?>
@@ -86,7 +80,7 @@ elseif ($p == 'restore')
 	
 	<div id="maincontent">
 		<div class="main" >
-		<label><?php i18n('BACKUP_OF');?> &lsquo;<em><?php echo @$url; ?></em>&rsquo;</label>
+		<label><?php i18n('BACKUP_OF');?> &lsquo;<em><?php echo $url; ?></em>&rsquo;</label>
 		
 		<div class="edit-nav" >
 			 <a href="backups.php" accesskey="c" ><?php i18n('ASK_CANCEL');?></a> <a href="backup-edit.php?p=restore&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" accesskey="r" ><?php i18n('ASK_RESTORE');?></a> <a href="backup-edit.php?p=delete&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" title="<?php i18n('DELETEPAGE_TITLE'); ?>: <?php echo $title; ?>?" accesskey="d" class="delconfirm" ><?php i18n('ASK_DELETE');?></a>
@@ -94,7 +88,7 @@ elseif ($p == 'restore')
 		</div>
 		
 		<table class="simple" >
-		<tr><td style="width:105px;" ><b><?php i18n('PAGE_TITLE');?>:</b></td><td><b><?php echo cl(@$title); ?></b> <?php echo $private; ?></td></tr>
+		<tr><td style="width:105px;" ><b><?php i18n('PAGE_TITLE');?>:</b></td><td><b><?php echo cl($title); ?></b> <?php echo $private; ?></td></tr>
 		<tr><td><b><?php i18n('BACKUP_OF');?>:</b></td><td>
 			<?php 
 			if(isset($id)) {
@@ -112,7 +106,7 @@ elseif ($p == 'restore')
 		<tr><td><b><?php i18n('ADD_TO_MENU');?>?</b></td><td><?php echo @$menuStatus; ?></td></tr>
 		</table>
 		
-		<textarea id="codetext" style="background:#fefefe;width:570px;height:400px;padding:4px;border:1px solid #ccc;" ><?php echo stripslashes(htmlspecialchars_decode(@$content, ENT_QUOTES)); ?></textarea>
+		<textarea id="codetext" style="background:#fefefe;width:570px;height:400px;padding:4px;border:1px solid #ccc;" ><?php echo strip_decode($content); ?></textarea>
 
 		</div>
 	</div>

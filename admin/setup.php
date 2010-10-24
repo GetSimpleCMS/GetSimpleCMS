@@ -191,7 +191,7 @@ if(isset($_POST['submitted']))
 		$message .= i18n_r('EMAIL_USERNAME') . ': '. stripslashes($_POST['user']);
 		$message .= '<br>'. i18n_r('EMAIL_PASSWORD') .': '. $random;
 		$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL1.$GSADMIN.'/">'.$SITEURL1.$GSADMIN.'/</a>';
-		$message .= '<br>'. i18n_r('EMAIL_THANKYOU') .' '.$site_full_name.'!';
+		$message .= '<br><br>'. i18n_r('EMAIL_THANKYOU') .' '.$site_full_name.'!';
 		$status   = sendmail($EMAIL1,$subject,$message);
 		
 		// Set the login cookie, then redirect user to secure panel		

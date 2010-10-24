@@ -23,17 +23,17 @@ $bakpath 	= GSBACKUPSPATH .'other/';
 $update 	= ''; $table = ''; $list='';
 
 // if the components are being saved...
-if (isset($_POST['submitted']))
-{
+if (isset($_POST['submitted'])){
 	$value = $_POST['val'];
 	$slug = $_POST['slug'];
 	$title = $_POST['title'];
 	$ids = $_POST['id'];
 	$nonce = $_POST['nonce'];	
 
-	if(!check_nonce($nonce, "modify_components"))
+	if(!check_nonce($nonce, "modify_components")) {
 		die("CSRF detected!");
-
+	}
+	
 	// create backup file for undo           
 	createBak($file, $path, $bakpath);
 	

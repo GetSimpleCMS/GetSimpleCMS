@@ -68,7 +68,7 @@ if (count($pagesSorted) != 0) {
 		$table .= '<td class="secondarylink" >';
 		$table .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. cl($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
 		$table .= '</td>';
-		$table .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. stripslashes(strip_tags(html_entity_decode($page['title']))) .'" >X</a></td></tr>';
+		$table .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. cl($page['title']) .'" >X</a></td></tr>';
 		
 	}
 }

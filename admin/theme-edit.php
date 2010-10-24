@@ -96,21 +96,7 @@ if (count($theme_dir_array) == 1)
 // No template?
 if ($template == '') { $template = 'template.php'; }
 
-// Theme location
-$themes_path = GSTHEMESPATH . $TEMPLATE .'/';
-
-// Get files
-$themes_handle = @opendir($themes_path);
-while ($file = readdir($themes_handle))
-{
-	if( is_file($themes_path . $file) && $file != "." && $file != ".." )
-	{
-		$templates[] = $file;
-	}
-}
-
-// Sort them
-sort($templates);
+$templates = get_themes($TEMPLATE);
 
 $theme_templates .= '<span id="themefiles"><select class="text" id="theme_files" style="width:225px;" name="f" >';
 

@@ -47,18 +47,7 @@ if (isset($TEMPLATE)) {
 	$TEMPLATE_FILE = ''; $template = ''; $theme_templates = '';
 
 	if ($template == '') { $template = 'template.php'; }
-	$themes_path = "../../theme/". $TEMPLATE ."/";
-	
-	$themes_handle = @opendir($themes_path) or die("Unable to open $themes_path");
-	
-	while ($file = readdir($themes_handle)) {
-		if( is_file($themes_path . $file) && $file != "." && $file != ".." ) 
-		{
-			$templates[] = $file;
-		}
-	}
-
-	sort($templates);
+	$templates = get_themes($TEMPLATE);
 	
 	$theme_templates .= '<select class="text" id="theme_files" style="width:225px;" name="f" >';
 	

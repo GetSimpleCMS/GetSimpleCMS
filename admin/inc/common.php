@@ -130,7 +130,7 @@ if (file_exists(GSDATAOTHERPATH .'cp_settings.xml')) {
  * Timezone setup
  */
 if( function_exists('date_default_timezone_set') && ($TIMEZONE != '' || stripos($TIMEZONE, '--')) ) { 
-	date_default_timezone_set(@$TIMEZONE);
+	date_default_timezone_set($TIMEZONE);
 }
 
 
@@ -164,9 +164,7 @@ if(!isset($base)) {
  */
 if (get_filename_id() != 'install' && get_filename_id() != 'setup') {
 	if ($SITEURL == '')	{
-		$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
-		$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
-		$fullpath = "http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts ."/";	
+		$fullpath = suggest_site_path();	
 		redirect($fullpath . $GSADMIN.'/install.php');
 	}
 	if (file_exists(GSADMINPATH.'install.php'))	{

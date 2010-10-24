@@ -18,7 +18,7 @@
  *
  * @param string $action Id of current page
  * @param string $file Optional, default is empty string
- * @param bool $last Text to add to tabbed link
+ * @param bool $last 
  * @return string
  */
 function get_nonce($action, $file = "", $last = false) {

@@ -15,11 +15,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 	
-// Variable settings
-$ref = htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES);
 $data = @getXML(GSDATAOTHERPATH.'authorization.xml');
 $APIKEY = $data->apikey;
-login_cookie_check();
 $php_modules = get_loaded_extensions();
 
 ?>
@@ -46,19 +43,14 @@ $php_modules = get_loaded_extensions();
 					curl_setopt($ch, CURLOPT_URL, $curl_URL);
 					$data = curl_exec($ch);
 					curl_close($ch);
-					if ($data !== false)
-					{
+					if ($data !== false) {
 						$apikey = json_decode($data);
 						$verstatus = $apikey->status;
-					}
-					else
-					{
+					} else {
 						$apikey = null;
 						$verstatus = null;
 					}
-				} 
-				else 
-				{
+				} else {
 					$verstatus = '10';
 				}
 				
@@ -86,8 +78,8 @@ $php_modules = get_loaded_extensions();
 			<table class="highlight healthcheck">
 				<tr><td style="width:345px;" >
 				<?php
-					if (version_compare(phpversion(), "5.1.3", "<")) {
-						echo 'PHP '.i18n_r('VERSION').'</td><td><span class="ERRmsg" ><b>'. phpversion().'</b> - PHP 5.1.3 '.i18n_r('OR_GREATER_REQ').' - '.i18n_r('ERROR').'</span></td></tr>';
+					if (version_compare(phpversion(), "5.2", "<")) {
+						echo 'PHP '.i18n_r('VERSION').'</td><td><span class="ERRmsg" ><b>'. phpversion().'</b> - PHP 5.2 '.i18n_r('OR_GREATER_REQ').' - '.i18n_r('ERROR').'</span></td></tr>';
 					} else {
 						echo 'PHP '.i18n_r('VERSION').'</td><td><span class="OKmsg" ><b>'. phpversion().'</b> - '.i18n_r('OK').'</span></td></tr>';
 					}
@@ -135,51 +127,48 @@ $php_modules = get_loaded_extensions();
 			<h3><?php i18n('DATA_FILE_CHECK');?></h3>
 			<table class="highlight healthcheck">
 				<?php 
-						$base_path = '../data/';
-						$path = $base_path .'pages';
+						$path = GSDATAPAGESPATH;
 						$data = getFiles($path);
 						sort($data);
 						foreach($data as $file) {
 							if( isFile($file, $path) ) {
-								echo '<tr><td style="width:345px;" >'. tsl($path) . $file .'</td><td>' . @valid_xml(tsl($path) . $file) .'</td></tr>';
+								echo '<tr><td style="width:345px;" >/data/pages/' . $file .'</td><td>' . valid_xml($path . $file) .'</td></tr>';
 							}							
 						}
 
-						$base_path = '../data/';
-						$path = $base_path .'other';
+						$path = GSDATAOTHERPATH;
 						$data = getFiles($path);
 						sort($data);
 						foreach($data as $file) {
 							if( isFile($file, $path) ) {
-								echo '<tr><td>'. tsl($path) . $file .'</td><td>' . @valid_xml(tsl($path) . $file) .'</td></tr>';
+								echo '<tr><td>/data/other/' . $file .'</td><td>' . valid_xml($path . $file) .'</td></tr>';
 							}							
 						}
 
-						$base_path = '../data/';
-						$path = $base_path .'other/logs';
+						$path = GSDATAOTHERPATH.'logs/';
 						$data = getFiles($path);
 						sort($data);
 						foreach($data as $file) {
 							if( isFile($file, $path, '.log') ) {
-								echo '<tr><td>'. tsl($path) . $file .'</td><td>' . @valid_xml(tsl($path) . $file) .'</td></tr>';
+								echo '<tr><td>/data/other/logs/' . $file .'</td><td>' . valid_xml($path . $file) .'</td></tr>';
 							}							
 						}
 
-						$path = '../backups/other';
+						$path = GSBACKUPSPATH.'other/';
 						$data = getFiles($path);
 						sort($data);
 						foreach($data as $file) {
 							if( isFile($file, $path) ) {
-								echo '<tr><td>'. tsl($path) . $file .'</td><td>' . @valid_xml(tsl($path) . $file) .'</td></tr>';
+								echo '<tr><td>/backups/other/' . $file .'</td><td>' . valid_xml($path . $file) .'</td></tr>';
 							}							
 						}
 
-						$path = '../backups/pages';
+						$path = GSBACKUPSPATH.'pages/';
 						$data = getFiles($path);
 						sort($data);
 						foreach($data as $file) {
 							if( isFile($file, $path) ) {
-								echo '<tr><td>'. tsl($path) . $file .'</td><td>' . @valid_xml(tsl($path) . $file) .'</td></tr>';
+								echo '<tr><td>/backups/pages/' . $file .'</td><td>' . valid_xml($path . $file) .'</td></tr>';
 							}							
 						}
 				?>
@@ -187,24 +176,24 @@ $php_modules = get_loaded_extensions();
 			
 			<h3><?php i18n('DIR_PERMISSIONS');?></h3>
 			<table class="highlight healthcheck">
-				<tr><td style="width:345px;" >../data/pages/</td><td><?php if( check_perms("../data/pages/") >= '0755' ) { echo '<span class="OKmsg" >'. check_perms("../data/pages/") .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. check_perms("../data/pages/") .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
-				<tr><td>../data/other/</td><td><?php if( check_perms("../data/other/") >= '0755' ) { echo '<span class="OKmsg" >'. check_perms("../data/other/") .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. check_perms("../data/other/") .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
-				<tr><td>../data/other/logs/</td><td><?php if( check_perms("../data/other/logs/") >= '0755' ) { echo '<span class="OKmsg" >'. check_perms("../data/other/logs/") .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. check_perms("../data/other/logs/") .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
-				<tr><td>../data/thumbs/</td><td><?php if( check_perms("../data/thumbs/") >= '0755' ) { echo '<span class="OKmsg" >'. check_perms("../data/thumbs/") .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. check_perms("../data/thumbs/") .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
-				<tr><td>../data/uploads/</td><td><?php if( check_perms("../data/uploads/") >= '0755' ) { echo '<span class="OKmsg" >'. check_perms("../data/uploads/") .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. check_perms("../data/uploads/") .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
-				<tr><td>../backups/zip/</td><td><?php if( check_perms("../backups/zip/") >= '0755' ) { echo '<span class="OKmsg" >'. check_perms("../backups/zip/") .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. check_perms("../backups/zip/") .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
-				<tr><td>../backups/pages/</td><td><?php if( check_perms("../backups/pages/") >= '0755' ) { echo '<span class="OKmsg" >'. check_perms("../backups/pages/") .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. check_perms("../backups/pages/") .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
-				<tr><td>../backups/other/</td><td><?php if( check_perms("../backups/other/") >= '0755' ) { echo '<span class="OKmsg" >'. check_perms("../backups/other/") .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. check_perms("../backups/other/") .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
+				<?php $me = check_perms(GSDATAPAGESPATH); ?><tr><td style="width:345px;" >/data/pages/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
+				<?php $me = check_perms(GSDATAOTHERPATH); ?><tr><td>/data/other/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
+				<?php $me = check_perms(GSDATAOTHERPATH.'logs/'); ?><tr><td>/data/other/logs/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
+				<?php $me = check_perms(GSTHUMBNAILPATH); ?><tr><td>/data/thumbs/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
+				<?php $me = check_perms(GSDATAUPLOADPATH); ?><tr><td>/data/uploads/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
+				<?php $me = check_perms(GSBACKUPSPATH.'zip/'); ?><tr><td>/backups/zip/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
+				<?php $me = check_perms(GSBACKUPSPATH.'pages/'); ?><tr><td>/backups/pages/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
+				<?php $me = check_perms(GSBACKUPSPATH.'other/'); ?><tr><td>/backups/other/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
 			</table>
 
 			
 			<h3><?php echo sprintf(i18n_r('EXISTANCE'), '.htaccess');?></h3>
 			<table class="highlight healthcheck">
-				<tr><td style="width:345px;" >../data/</td><td> 
+				<tr><td style="width:345px;" >/data/</td><td> 
 				<?php	
-					$file = "../data/.htaccess";
+					$file = GSDATAPATH.".htaccess";
 					if (! file_exists($file)) {
-						copy ('inc/tmp/tmp.deny.htaccess', $file);
+						copy (GSADMININCPATH.'tmp/tmp.deny.htaccess', $file);
 					} 
 					if (! file_exists($file)) {
 						echo '<span class="WARNmsg" >'.i18n_r('MISSING_FILE').' - '.i18n_r('WARNING').'</span>';
@@ -219,11 +208,11 @@ $php_modules = get_loaded_extensions();
 				?>
 			</td></tr>
 
-				<tr><td>../data/uploads/</td><td>
+				<tr><td>/data/uploads/</td><td>
 				<?php	
-					$file = "../data/uploads/.htaccess";
+					$file = GSDATAUPLOADPATH.".htaccess";
 					if (! file_exists($file)) {
-						copy ('inc/tmp/tmp.allow.htaccess', $file);
+						copy (GSADMININCPATH.'tmp/tmp.allow.htaccess', $file);
 					} 
 					if (! file_exists($file)) {
 						echo ' <span class="WARNmsg" >'.i18n_r('MISSING_FILE').' - '.i18n_r('WARNING').'</span>';
@@ -238,11 +227,11 @@ $php_modules = get_loaded_extensions();
 				?>
 				</td></tr>
 				
-				<tr><td>../data/thumbs/</td><td> 
+				<tr><td>/data/thumbs/</td><td> 
 				<?php	
-					$file = "../data/thumbs/.htaccess";
+					$file = GSTHUMBNAILPATH.".htaccess";
 					if (! file_exists($file)) {
-						copy ('inc/tmp/tmp.allow.htaccess', $file);
+						copy (GSADMININCPATH.'tmp/tmp.allow.htaccess', $file);
 					} 
 					if (! file_exists($file)) {
 						echo ' <span class="WARNmsg" >'.i18n_r('MISSING_FILE').' - '.i18n_r('WARNING').'</span>';
@@ -257,11 +246,11 @@ $php_modules = get_loaded_extensions();
 				?>
 				</td></tr>
 				
-				<tr><td>../data/pages/</td><td>
+				<tr><td>/data/pages/</td><td>
 				<?php	
-					$file = "../data/pages/.htaccess";
+					$file = GSDATAPAGESPATH.".htaccess";
 					if (! file_exists($file)) {
-						copy ('inc/tmp/tmp.deny.htaccess', $file);
+						copy (GSADMININCPATH.'tmp/tmp.deny.htaccess', $file);
 					} 
 					if (! file_exists($file)) {
 						echo ' <span class="WARNmsg" >'.i18n_r('MISSING_FILE').' - '.i18n_r('WARNING').'</span>';
@@ -276,11 +265,11 @@ $php_modules = get_loaded_extensions();
 				?>
 				</td></tr>
 				
-				<tr><td>../plugins/</td><td>
+				<tr><td>/plugins/</td><td>
 				<?php	
-					$file = "../plugins/.htaccess";
+					$file = GSPLUGINPATH.".htaccess";
 					if (! file_exists($file)) {
-						copy ('inc/tmp/tmp.deny.htaccess', $file);
+						copy (GSADMININCPATH.'tmp/tmp.deny.htaccess', $file);
 					} 
 					if (! file_exists($file)) {
 						echo ' <span class="WARNmsg" >'.i18n_r('MISSING_FILE').' - '.i18n_r('WARNING').'</span>';
@@ -295,11 +284,11 @@ $php_modules = get_loaded_extensions();
 				?>
 				</td></tr>
 				
-				<tr><td>../data/other/</td><td> 
+				<tr><td>/data/other/</td><td> 
 				<?php	
-					$file = "../data/other/.htaccess";
+					$file = GSDATAOTHERPATH.".htaccess";
 					if (! file_exists($file)) {
-						copy ('inc/tmp/tmp.deny.htaccess', $file);
+						copy (GSADMININCPATH.'tmp/tmp.deny.htaccess', $file);
 					} 
 					if (! file_exists($file)) {
 						echo ' <span class="WARNmsg" >'.i18n_r('MISSING_FILE').' - '.i18n_r('WARNING').'</span>';
@@ -314,11 +303,11 @@ $php_modules = get_loaded_extensions();
 				?>
 				</td></tr>
 
-				<tr><td>../data/other/logs/</td><td>
+				<tr><td>/data/other/logs/</td><td>
 				<?php	
-					$file = "../data/other/logs/.htaccess";
+					$file = GSDATAOTHERPATH."logs/.htaccess";
 					if (! file_exists($file)) {
-						copy ('inc/tmp/tmp.deny.htaccess', $file);
+						copy (GSADMININCPATH.'tmp/tmp.deny.htaccess', $file);
 					} 
 					if (! file_exists($file)) {
 						echo ' <span class="WARNmsg" >'.i18n_r('MISSING_FILE').' - '.i18n_r('WARNING').'</span>';
@@ -333,9 +322,9 @@ $php_modules = get_loaded_extensions();
 				?>
 				</td></tr>
 				
-				<tr><td>../theme/</td><td>
+				<tr><td>/theme/</td><td>
 				<?php	
-					$file = "../theme/.htaccess";
+					$file = GSTHEMESPATH.".htaccess";
 					if (file_exists($file)) {
 						unlink($file);
 					} 

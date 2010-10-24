@@ -264,6 +264,7 @@ function get_page_url($echo=false) {
  * @uses $title
  * @uses $content
  * @uses $site_full_name from configuration.php
+ * @uses GSADMININCPATH
  *
  * @return string HTML for template header
  */
@@ -271,7 +272,7 @@ function get_header() {
 	global $metad;
 	global $title;
 	global $content;
-	include_once('configuration.php');
+	include_once(GSADMININCPATH.'configuration.php');
 	
 	if (function_exists('mb_substr')) { 
 		$description = trim(mb_substr(strip_tags(strip_decode($content)), 0, 160));
@@ -436,12 +437,13 @@ function get_site_version($echo=true) {
  * @uses $site_link_back_url from configuration.php
  * @uses $site_full_name from configuration.php
  * @uses GSVERSION
+ * @uses GSADMININCPATH
  *
  * @param string $text Optional, default is 'Powered by'
  * @return string 
  */
 function get_site_credits($text ='Powered by ') {
-	include('configuration.php');
+	include(GSADMININCPATH.'configuration.php');
 	
 	$site_credit_link = '<a href="'.$site_link_back_url.'" title="Open Source and Free CMS" >'.$text.' '.$site_full_name.'</a> Version '. GSVERSION;
 	echo stripslashes($site_credit_link);

@@ -604,9 +604,49 @@ function suggest_site_path() {
  * @since 2.04
  * @author ccagle8
  *
+ * @param bool $echo
  * @return string
  */
-function myself() {
-	echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES);
+function myself($echo=true) {
+	if ($echo) {
+		echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES);
+	} else {
+		return htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES);
+	}
+}
+
+/**
+ * Get Available Themes 
+ *
+ * @since 2.04
+ * @uses GSTHEMESPATH
+ * @author ccagle8
+ *
+ * @param string $temp
+ * @return array
+ */
+function get_themes($temp) {
+	$themes_path = GSTHEMESPATH . $temp .'/';
+	$themes_handle = @opendir($themes_path);
+	while ($file = readdir($themes_handle))	{
+		if( is_file($themes_path . $file) && $file != "." && $file != ".." ) {
+			$templates[] = $file;
+		}
+	}
+	sort($templates);	
+	return $templates;
+}
+
+/**
+ * HTML Decode 
+ *
+ * @since 2.04
+ * @author ccagle8
+ *
+ * @param string $text
+ * @return string
+ */
+function htmldecode($text) {
+	return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
 }
 ?>

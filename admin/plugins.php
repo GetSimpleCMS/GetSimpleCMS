@@ -11,9 +11,6 @@
 // Setup inclusions
 $load['plugin'] = true;
 
-// Relative
-$relative = '../';
-
 // Include common.php
 include('inc/common.php');
 
@@ -26,7 +23,7 @@ $pluginfiles = getFiles(GSPLUGINPATH);
 foreach ($pluginfiles as $fi)
 {
 	$pathExt = pathinfo($fi,PATHINFO_EXTENSION );
-	$pathName= pathinfo($fi,PATHINFO_FILENAME );
+	$pathName = pathinfo_filename($fi);
 	
 	if ($pathExt=="php")
 	{

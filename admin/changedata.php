@@ -29,9 +29,9 @@ login_cookie_check();
 if (isset($_POST['submitted']))
 {
 	$nonce = $_POST['nonce'];
-	if(!check_nonce($nonce, "edit", "edit.php"))
+	if(!check_nonce($nonce, "edit", "edit.php")) {
 		die("CSRF detected!");	
-
+	}
 	if ( ($_POST['post-title'] == '') )	{
 		redirect("edit.php?upd=edit-err&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
 	}	else {
