@@ -644,7 +644,7 @@ function get_navigation($currentpage) {
 				if ("$currentpage" == "$url_nav") { $classes = "current ". $page['parent'] ." ". $url_nav; } else { $classes = trim($page['parent'] ." ". $url_nav); }
 				if ($page['menu'] == '') { $page['menu'] = $page['title']; }
 				if ($page['title'] == '') { $page['title'] = $page['menu']; }
-				$menu .= '<li class="'. $classes .'" ><a href="'. find_url($page['url'],$page['parent']) . '" title="'. strip_quotes($page['title']) .'">'.$page['menu'].'</a></li>'."\n";
+				$menu .= '<li class="'. $classes .'"><a href="'. find_url($page['url'],$page['parent']) . '" title="'. strip_quotes($page['title']) .'">'.$page['menu'].'</a></li>'."\n";
 			}
 		}
 		

@@ -369,8 +369,15 @@ form input[readonly] {
 }
 
 
-textarea#codetext { height:600px; font-family: Consolas, Monaco, "Courier New", Courier, monospace;
-	font-size: 12px;line-height:18px;}
+textarea#codetext { 
+	height:600px; 
+	font-family: Consolas, Monaco, "Courier New", Courier, monospace;
+	font-size: 12px;line-height:18px;
+	overflow: scroll; 
+	overflow-y: scroll; 
+	overflow-x: scroll; 
+	overflow:-moz-scrollbars-vertical;
+}
 #menu-items span {text-transform:lowercase}
 label {
 	font-size:16px;	

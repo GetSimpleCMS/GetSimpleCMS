@@ -23,6 +23,9 @@ foreach ($_GET as &$xss) $xss = antixss($xss);
  */
 include('basic.php');
 include('template_functions.php');
+
+define('GSROOTPATH', get_root_path());
+
 if (file_exists(GSROOTPATH . 'gsconfig.php')) {
 	include(GSROOTPATH . 'gsconfig.php');
 }
@@ -36,7 +39,7 @@ if (defined('GSADMIN')) {
 /**
  * Define some constants
  */
-define('GSROOTPATH', get_root_path());
+
 define('GSADMINPATH', get_admin_path());
 define('GSADMININCPATH', get_admin_path(). 'inc/');
 define('GSPLUGINPATH', get_root_path(). 'plugins/');

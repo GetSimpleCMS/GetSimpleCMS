@@ -148,7 +148,7 @@ $theme_templates .= "</select></span>";
 		
 		<form action="<?php myself(); ?>?t=<?php echo $TEMPLATE; ?>&f=<?php echo $TEMPLATE_FILE; ?>" method="post" >
 			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
-			<p><textarea name="content" id="codetext" ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea></p>
+			<p><textarea name="content" id="codetext" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea></p>
 			<input type="hidden" value="<?php echo tsl($TEMPLATE) . $TEMPLATE_FILE; ?>" name="edited_file" />
 			<?php exec_action('theme-edit-extras'); ?>
 			<p><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a></p>

@@ -519,15 +519,14 @@ function get_admin_path() {
  * Gets the path of the root installation directory
  *
  * @since 1.0
- * @uses $GSADMIN
  *
  * @return string
  */
 function get_root_path() {
-	global $GSADMIN;
-	$pos = strrpos(__FILE__,$GSADMIN);
-	if ($pos === FALSE) die('Admin directory name changed!');
-	return substr(__FILE__, 0, $pos);
+	$pos = strrpos(dirname(__FILE__),'/inc');
+	$adm = substr(dirname(__FILE__), 0, $pos);
+	$pos2 = strrpos($adm,'/');
+	return tsl(substr(__FILE__, 0, $pos2));
 }
 
 /**
