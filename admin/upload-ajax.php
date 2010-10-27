@@ -29,14 +29,14 @@ if ($_REQUEST['sessionHash'] === $SESSIONHASH) {
 		$targetFile =  str_replace('//','/',$targetPath) . $name;
 		
 		move_uploaded_file($tempFile, $targetFile);
-		$ext = strtolower(substr($name, strrpos($name, '.') + 1));	
+		$ext = lowercase(substr($name, strrpos($name, '.') + 1));	
 		
 		if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' )
 		{
 			//thumbnail for post
 			$imgsize = getimagesize($targetFile);
 			
-			switch(strtolower(substr($targetFile, -3)))
+			switch(lowercase(substr($targetFile, -3)))
 			{
 			    case "jpg":
 			        $image = imagecreatefromjpeg($targetFile);    
@@ -64,7 +64,7 @@ if ($_REQUEST['sessionHash'] === $SESSIONHASH) {
 			
 			if($bool)
 			{
-			    switch(strtolower(substr($targetFile, -3)))
+			    switch(lowercase(substr($targetFile, -3)))
 				{
 			        case "jpg":
 			            header("Content-Type: image/jpeg");
@@ -100,7 +100,7 @@ if ($_REQUEST['sessionHash'] === $SESSIONHASH) {
 			
 			if($bool)
 			{
-			    switch(strtolower(substr($targetFile, -3)))
+			    switch(lowercase(substr($targetFile, -3)))
 				{
 			        case "jpg":
 			            header("Content-Type: image/jpeg");

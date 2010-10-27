@@ -68,7 +68,7 @@ if (!isset($log_data)) $log_data = getXML($log_file);
 						  echo '<b>'. stripslashes(ucwords($name)) .'</b>: ';
 						  
 						  $d = $log->$name;
-						  $n = strtolower($child->getName());
+						  $n = lowercase($child->getName());
 						  $ip_regex = '/^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)(?:[.](?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d)){3}$/';
 						  $url_regex = @"((https?|ftp|gopher|telnet|file|notes|ms-help):((//)|(\\\\))+[\w\d:#@%/;$()~_?\+-=\\\.&]*)";
 						  

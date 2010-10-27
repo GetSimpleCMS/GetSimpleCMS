@@ -17,11 +17,7 @@
  * @return string
  */
 function clean_url($text)  { 
-	if (function_exists('mb_strtolower')) {
-		$text = strip_tags(mb_strtolower($text)); 
-	} else {
-		$text = strip_tags(strtolower($text)); 
-	}
+	$text = strip_tags(lowercase($text)); 
 	$code_entities_match = array(' ?',' ','--','&quot;','!','@','#','$','%','^','&','*','(',')','_','+','{','}','|',':','"','<','>','?','[',']','\\',';',"'",',','/','*','+','~','`','=','.'); 
 	$code_entities_replace = array('','-','-','','','','','','','','','','','','','','','','','','','','','','','',''); 
 	$text = str_replace($code_entities_match, $code_entities_replace, $text); 
@@ -42,11 +38,7 @@ function clean_url($text)  {
  * @return string
  */
 function clean_img_name($text)  { 
-	if (function_exists('mb_strtolower')) {
-		$text = strip_tags(mb_strtolower($text)); 
-	} else {
-		$text = strip_tags(strtolower($text)); 
-	}
+	$text = strip_tags(lowercase($text)); 
 	$code_entities_match = array(' ?',' ','--','&quot;','!','@','#','$','%','^','&','*','(',')','+','{','}','|',':','"','<','>','?','[',']','\\',';',"'",',','/','*','+','~','`','='); 
 	$code_entities_replace = array('','-','-','','','','','','','','','','','','','','','','','','','','','','',''); 
 	$text = str_replace($code_entities_match, $code_entities_replace, $text); 
@@ -127,7 +119,7 @@ function sendmail($to,$subject,$message) {
 function subval_sort($a,$subkey) {
 	if (count($a) != 0 || (!empty($a))) { 
 		foreach($a as $k=>$v) {
-			$b[$k] = function_exists('mb_strtolower') ? mb_strtolower($v[$subkey]) : strtolower($v[$subkey]);
+			$b[$k] = lowercase($v[$subkey]);
 		}
 		asort($b);
 		foreach($b as $key=>$val) {
@@ -330,7 +322,7 @@ function tsl($path) {
  */
 if(!function_exists('in_arrayi')) {
 	function in_arrayi($needle, $haystack) {
-	    return in_array(strtolower($needle), array_map('strtolower', $haystack));
+	    return in_array(lowercase($needle), array_map('lowercase', $haystack));
 	}
 }
 
@@ -648,5 +640,24 @@ function get_themes($temp) {
  */
 function htmldecode($text) {
 	return html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+}
+
+/**
+ * Safe to LowerCase 
+ *
+ * @since 2.04
+ * @author ccagle8
+ *
+ * @param string $text
+ * @return string
+ */
+function lowercase($text) {
+	if (function_exists('mb_strtolower')) {
+		$text = mb_strtolower($text); 
+	} else {
+		$text = strtolower($text); 
+	}
+	
+	return $text;
 }
 ?>

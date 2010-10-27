@@ -18,22 +18,31 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	
 	<!-- Javascript -->
 	<script type="text/javascript" src="template/js/jquery.min.js"></script>
+
+	<?php if( (get_filename_id()=='upload') && (!defined('GSNOUPLOADIFY')) ) { ?>
 	<script type="text/javascript" src="template/js/uploadify/swfobject.js"></script>
 	<script type="text/javascript" src="template/js/uploadify/jquery.uploadify.js"></script>
-	<script type="text/javascript" src="template/js/facybox/jquery.facybox.js"></script>
+	<?php } ?>
+	<?php if(get_filename_id()=='log') { ?>
 	<script type="text/javascript" src="template/js/jquery.reverseorder.js"></script>
+	<?php } ?>
+	<?php if(defined('GSPAGER')) { ?>
 	<script type="text/javascript" src="template/js/jquery.quickpaginate.js"></script>
-	<script type="text/javascript" src="template/js/jquery.example.min.js"></script>
+	<?php } ?>	
+	<?php if(get_filename_id()=='image') { ?>
 	<script type="text/javascript" src="template/js/jcrop/jquery.Jcrop.min.js"></script>
-	<script type="text/javascript" src="template/js/jquery.getsimple.js"></script>
-	
-	<!-- CSS Stylesheets -->
-	<link rel="stylesheet" type="text/css" href="template/style.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="template/js/facybox/jquery.facybox.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="template/js/jcrop/jquery.Jcrop.css" media="screen" />
-	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/ie6.css" media="screen" /><![endif]-->
-
+	<?php } ?>
+	<?php if(get_filename_id()=='edit') { ?>
 	<noscript><style type="text/css">#metadata_window {display:block !important} </style></noscript>
+	<?php } ?>
+
+	<script type="text/javascript" src="template/js/facybox/jquery.facybox.js"></script>
+	<link rel="stylesheet" type="text/css" href="template/js/facybox/jquery.facybox.css" media="screen" />		
+
+	<script type="text/javascript" src="template/js/jquery.getsimple.js"></script>
+	<link rel="stylesheet" type="text/css" href="template/style.css" media="screen" />
+	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/ie6.css" media="screen" /><![endif]-->
 	
 	<?php exec_action('header'); ?>
 	

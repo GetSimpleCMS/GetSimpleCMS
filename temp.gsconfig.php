@@ -30,6 +30,9 @@ define('GSIMAGEWIDTH', '200');
 # Ping search engines upon sitemap generation?
 #define('GSDONOTPING', 1);
 
+# Turn on paging for long lists of pages
+#define('GSPAGER', TRUE);
+
 # Set override CHMOD mode
 #define('GSCHMOD', 0777);
 

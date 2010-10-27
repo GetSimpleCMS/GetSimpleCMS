@@ -32,7 +32,6 @@ if (count($filenames) != 0) {
 		if (isFile($file, $path, 'xml')) {
 			$data = getXML($path .$file);
 			$status = $data->menuStatus;
-			//$pagesArray[$count]['title'] = $data->title;
 			$pagesArray[$count]['title'] = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
 			$pagesArray[$count]['parent'] = $data->parent;
 			$pagesArray[$count]['menuStatus'] = $data->menuStatus;
@@ -94,7 +93,7 @@ if (count($pagesSorted) != 0) {
 			<table id="editpages" class="edittable highlight paginate">
 				<?php echo $table; ?>
 			</table>
-			<div id="page_counter" class="qc_pager"></div> 	
+			<?php if(defined('GSPAGER')) { ?><div id="page_counter" class="qc_pager"></div><?php } ?>	
 			<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php i18n('TOTAL_PAGES'); ?></em></p>
 		</div>
 	</div><!-- end maincontent -->

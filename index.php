@@ -31,7 +31,7 @@ include($GSADMIN.'/inc/common.php');
 if (isset($_GET['id'])){ 
 	$id = str_replace ('..','',$_GET['id']);
 	$id = str_replace ('/','',$id);
-	$id = strtolower($id);
+	$id = lowercase($id);
 } else {
 	$id = "index";
 }

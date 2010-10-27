@@ -54,27 +54,7 @@ jQuery.fn.wait = function(time, type) {
 
 jQuery(document).ready(function() { 
 	
-	
-	// upload.php
-	$('#mainftp').uploadify({
-  	'uploader'	: 'template/js/uploadify/uploadify.swf',
-  	'script'		: 'upload-ajax.php',
-  	'multi'			: true,
-  	'auto'			: true,
-  	'height'		:	'17',
-  	'width'			:	'190',
-  	'buttonImg' : 'template/images/browse.png',
-  	'cancelImg' : 'template/images/cancel.png',
-		'folder'    : '../data/uploads/',
-		'scriptData': { 'sessionHash' : $('#hash').val() },
-		onProgress: function() {
-		  $('#loader').show();
-		},
-		onAllComplete: function() {
-		  $('#loader').fadeOut(500);
-		  $("#imageTable").load(location.href+" #imageTable","");
-		}	
-	});
+
 	$("#imageFilter").change(function(){
 		$('#loader').show();
 		var filterx = $(this).val();
@@ -158,8 +138,9 @@ jQuery(document).ready(function() {
 		function() {$(this).removeClass('activeedit'); 
 	});
 	zebraRows('table.highlight tr:odd', 'trodd'); 
-	$('table.paginate tr').quickpaginate( { perpage: 15, showcounter: true, pager : $("#page_counter") } );
-	
+	if(jQuery().quickpaginate) {
+		$('table.paginate tr').quickpaginate( { perpage: 15, showcounter: true, pager : $("#page_counter") } );
+	}
 
 
 	// other general functions
@@ -186,8 +167,9 @@ jQuery(document).ready(function() {
 			        	  counter=$("#pg_counter").html();
 				          $("#pg_counter").html(counter-1);
 				      }
-			          $('table.paginate tr').quickpaginate( { perpage: 15, showcounter: true, pager : $("#page_counter") } );
-			          
+				      	if(jQuery().quickpaginate) {
+				          $('table.paginate tr').quickpaginate( { perpage: 15, showcounter: true, pager : $("#page_counter") } );
+				        }
 			          //added by dniesel
                 if($(response).find('div.error').html()) {
                   $('div.bodycontent').before('<div class="error">'+ $(response).find('div.error').html() + '</div>'); 
@@ -211,8 +193,9 @@ jQuery(document).ready(function() {
 	});
 	$(".updated").fadeOut(500).fadeIn(500);
 	$(".error").fadeOut(500).fadeIn(500);
-	$('a[rel*=facybox]').facybox()
-
+	if(jQuery().facybox) {
+		$('a[rel*=facybox]').facybox()
+	}
 	
 	// edit.php
 	$("#metadata_toggle").live("click", function() {
@@ -227,28 +210,29 @@ jQuery(document).ready(function() {
   } else {
      $("#menu-items").css("display","none");
   }
-	$('#editftp').uploadify({
-  	'uploader'	: 'template/js/uploadify/uploadify.swf',
-  	'script'		: 'upload-ajax.php',
-  	'multi'			: true,
-  	'auto'			: true,
-  	'height'		:	'17',
-  	'width'			:	'190',
-  	'buttonImg' : 'template/images/browse.png',
-  	'cancelImg' : 'template/images/cancel.png',
-		'folder'    : '../data/uploads/',
-		'scriptData': { 'sessionHash' : $('#hash').val() },
-		onProgress: function() {
-		  $('#loader').show();
-		},
-		onAllComplete: function() {
-		  $('#loader').fadeOut(500);
-		}	
-	});
-	$('.set-example-text').example(function() {
-		return $(this).attr('rel');
-	}, {className: 'example-text'});  
   
+  if(jQuery().uploadify) {
+		// upload.php
+		$('#mainftp').uploadify({
+	  	'uploader'	: 'template/js/uploadify/uploadify.swf',
+	  	'script'		: 'upload-ajax.php',
+	  	'multi'			: true,
+	  	'auto'			: true,
+	  	'height'		:	'17',
+	  	'width'			:	'190',
+	  	'buttonImg' : 'template/images/browse.png',
+	  	'cancelImg' : 'template/images/cancel.png',
+			'folder'    : '../data/uploads/',
+			'scriptData': { 'sessionHash' : $('#hash').val() },
+			onProgress: function() {
+			  $('#loader').show();
+			},
+			onAllComplete: function() {
+			  $('#loader').fadeOut(500);
+			  $("#imageTable").load(location.href+" #imageTable","");
+			}	
+		});
+	}
   var edit_line = $('#submit_line span').html();
   $('#js_submit_line').html(edit_line);
   $("#js_submit_line input.submit").live("click", function() {
@@ -264,7 +248,9 @@ jQuery(document).ready(function() {
   
   
   // log.php
-  $('ol.more li').reverseOrder();  
+  if(jQuery().reverseOrder) {
+	  $('ol.more li').reverseOrder(); 
+	} 
   $("ol.more").each(function() {
     $("li:gt(4)", this).hide(); /* :gt() is zero-indexed */
     $("li:nth-child(5)", this).after("<li class='more'><a href='#'>More...</a></li>"); /* :nth-child() is one-indexed */
