@@ -503,14 +503,14 @@ function generate_salt() {
  *
  * @since 1.0
  * @uses $GSADMIN
+ * @uses GSROOTPATH
+ * @uses tsl
  *
  * @return string
  */
 function get_admin_path() {
 	global $GSADMIN;
-	$pos = strrpos(__FILE__,$GSADMIN);
-	if ($pos === FALSE) die('Admin directory name changed!');
-	return substr(__FILE__, 0, $pos+6);
+	return tsl(GSROOTPATH . $GSADMIN);
 }
 
 /**
