@@ -19,7 +19,7 @@ kill_cookie($cookie_name);
 exec_action('logout');
 ?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n)('LOGGED_OUT')); ?>
+<?php get_template('header', cl($SITENAME).' &raquo; '.i18n('LOGGED_OUT')); ?>
 	
 <h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('LOGGED_OUT');?></h1>
 </div>
