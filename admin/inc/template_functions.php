@@ -529,11 +529,13 @@ function get_admin_path() {
  * @return string
  */
 function get_root_path() {
-	$pos = strrpos(dirname(__FILE__),'/inc');
-	$adm = substr(dirname(__FILE__), 0, $pos);
-	$pos2 = strrpos($adm,'/');
-	return tsl(substr(__FILE__, 0, $pos2));
+  $pos = strrpos(dirname(__FILE__),DIRECTORY_SEPARATOR.'inc');
+  $adm = substr(dirname(__FILE__), 0, $pos);
+  $pos2 = strrpos($adm,DIRECTORY_SEPARATOR);
+  return tsl(substr(__FILE__, 0, $pos2));
 }
+
+
 
 /**
  * Check Current Menu
