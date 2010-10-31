@@ -73,6 +73,7 @@ if (isset($_POST['submitted']))
 				else 
 				{
 					exec_action('changedata-updateslug');
+					updateSlugs();
 					$file = GSDATAPAGESPATH . @$url .".xml";
 					$existing = GSDATAPAGESPATH . $_POST['existing-url'] .".xml";
 					$bakfile = GSBACKUPSPATH."pages/". $_POST['existing-url'] .".bak.xml";
