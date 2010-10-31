@@ -681,4 +681,46 @@ function get_available_pages($id = null,$xml=false) {
         }
     }
 }
+
+  
+/**
+ * Update Slugs
+ *
+ * @since 2.04
+ * @uses $url
+ *
+ */
+function updateSlugs(){
+      global $url;
+
+      $path = GSDATAPAGESPATH;
+      $dir_handle = @opendir($path) or die("Unable to open $path");
+      $filenames = array();
+      while ($filename = readdir($dir_handle)) {
+        $ext = substr($filename, strrpos($filename, '.') + 1);
+        if ($ext=="xml"){
+          $filenames[] = $filename;
+        }
+      }
+      
+      $existingUrl=$_POST['existing-url'];
+
+      if (count($filenames) != 0) {
+        foreach ($filenames as $file) {
+          
+          if ($file == "." || $file == ".." || is_dir(GSDATAPAGESPATH.$file) || $file == ".htaccess"  ) {
+            // not a page data file
+          } else {
+            $thisfile = @file_get_contents(GSDATAPAGESPATH.$file);
+            $data = simplexml_load_string($thisfile);
+            if ($data->parent==$existingUrl){
+              $data->parent=$url;
+              $data->asXML(GSDATAPAGESPATH.$file);
+            }   
+          } 
+        }
+      }
+} 
+
+
 ?>
