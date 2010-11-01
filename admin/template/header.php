@@ -19,7 +19,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	<!-- Javascript -->
 	<script type="text/javascript" src="template/js/jquery.min.js"></script>
 
-	<?php if( (get_filename_id()=='upload') && (!defined('GSNOUPLOADIFY')) ) { ?>
+	<?php if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!defined('GSNOUPLOADIFY')) ) { ?>
 	<script type="text/javascript" src="template/js/uploadify/swfobject.js"></script>
 	<script type="text/javascript" src="template/js/uploadify/jquery.uploadify.js"></script>
 	<?php } ?>
