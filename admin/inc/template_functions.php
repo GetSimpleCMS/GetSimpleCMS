@@ -688,6 +688,8 @@ function get_available_pages($id = null,$xml=false) {
  *
  * @since 2.04
  * @uses $url
+ * @uses GSDATAPAGESPATH
+ * @uses XMLsave
  *
  */
 function updateSlugs(){
@@ -715,7 +717,7 @@ function updateSlugs(){
             $data = simplexml_load_string($thisfile);
             if ($data->parent==$existingUrl){
               $data->parent=$url;
-              $data->asXML(GSDATAPAGESPATH.$file);
+              XMLsave($data, GSDATAPAGESPATH.$file);
             }   
           } 
         }

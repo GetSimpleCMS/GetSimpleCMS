@@ -577,15 +577,20 @@ function pathinfo_filename($file) { //file.name.ext, returns file.name
  * @uses $GSAMIN
  * @author ccagle8
  *
+ * @param bool $parts 
  * @return string
  */
-function suggest_site_path() {
+function suggest_site_path($parts=false) {
 	global $GSADMIN;
 	$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
 	$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
 	$fullpath = "http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts ."/";
-
-	return $fullpath;
+	
+	if ($parts) {
+		return $path_parts;
+	} else {
+		return $fullpath;
+	}
 }
 
 /**
