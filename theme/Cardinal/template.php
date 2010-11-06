@@ -7,22 +7,15 @@
 *
 *****************************************************/
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head profile="http://gmpg.org/xfn/11">
+<!DOCTYPE html>
+<html>
+<head>
 
 	<!-- Site Title -->
 	<title><?php get_page_clean_title(); ?> &lt; <?php get_site_name(); ?></title>
 	<?php get_header(); ?>
 	<meta name="robots" content="index, follow" />
 	<link rel="stylesheet" type="text/css" href="<?php get_theme_url(); ?>/style.css" media="all" />
-
-	<script type="text/javascript"><!--
-		try {
-			document.execCommand("BackgroundImageCache", false, true);
-		} catch(err) {}
-		/* IE6 flicker hack from http://dean.edwards.name/my/flicker.html */
-	--></script>
 
 </head>
 <body id="<?php get_page_slug(); ?>" >

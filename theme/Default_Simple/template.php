@@ -7,21 +7,16 @@
 *
 *****************************************************/
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
+	
 	<title><?php get_page_clean_title(); ?> | <?php get_site_name(); ?>, <?php get_component('tagline'); ?></title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	<?php get_header(); ?>
 	<meta name="robots" content="index, follow" />
 	<link rel="stylesheet" type="text/css" href="<?php get_theme_url(); ?>/default.css" media="all" />
 
-	<script type="text/javascript"><!--
-		try {
-			document.execCommand("BackgroundImageCache", false, true);
-		} catch(err) {}
-		/* IE6 flicker hack from http://dean.edwards.name/my/flicker.html */
-	--></script>
 </head>
 
 <body id="<?php get_page_slug(); ?>" >
