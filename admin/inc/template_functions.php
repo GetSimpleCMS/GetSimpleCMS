@@ -411,7 +411,7 @@ function fSize($s) {
 function check_email_address($email) {
     if (function_exists('filter_var')) {
     	// PHP 5.2 or higher
-    	return (!filter_var($email,FILTER_VALIDATE_EMAIL)) ? false: true;
+    	return (!filter_var((string)$email,FILTER_VALIDATE_EMAIL)) ? false: true;
     } else {
     	// old way
 	    if (!preg_match("/[^@]{1,64}@[^@]{1,255}$/", $email)) {
