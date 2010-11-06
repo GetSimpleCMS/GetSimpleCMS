@@ -18,7 +18,7 @@ include('inc/common.php');
 // Variable Settings
 login_cookie_check();
 
-$log_name = strippath(@$_GET['log']);
+$log_name = strippath($_GET['log']);
 $log_path = GSDATAOTHERPATH.'logs/';
 $log_file = $log_path . $log_name;
 
@@ -27,7 +27,7 @@ if (!is_file($log_file)) {
 	$log_data = false;
 }
 
-if (@$_GET['action'] == 'delete' && strlen($log_name)>0) {
+if ($_GET['action'] == 'delete' && strlen($log_name)>0) {
 	$nonce = $_GET['nonce'];
 	if(!check_nonce($nonce, "delete"))
 		die("CSRF detected!");	
@@ -43,7 +43,7 @@ if (!isset($log_data)) $log_data = getXML($log_file);
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i18n_r('LOGS')); ?>
 	
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('SUPPORT');?> <span>&raquo;</span> <?php i18n('VIEWING');?> &lsquo;<span class="filename" ><?php echo @$log_name; ?></span>&rsquo;</h1>
+	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('SUPPORT');?> <span>&raquo;</span> <?php i18n('VIEWING');?> &lsquo;<span class="filename" ><?php echo $log_name; ?></span>&rsquo;</h1>
 	<?php include('template/include-nav.php'); ?>
 	<?php include('template/error_checking.php'); ?>
 
@@ -51,7 +51,7 @@ if (!isset($log_data)) $log_data = getXML($log_file);
 	
 	<div id="maincontent">
 		<div class="main">
-			<label><?php i18n('VIEWING');?> <?php i18n('LOG_FILE');?>: &lsquo;<em><?php echo @$log_name; ?></em>&rsquo;</label>
+			<label><?php i18n('VIEWING');?> <?php i18n('LOG_FILE');?>: &lsquo;<em><?php echo $log_name; ?></em>&rsquo;</label>
 			<div class="edit-nav" >
 				<a href="log.php?log=<?php echo $log_name; ?>&action=delete&nonce=<?php echo get_nonce("delete"); ?>" accesskey="c" title="<?php i18n('CLEAR_ALL_DATA');?> <?php echo $log_name; ?>?" /><?php i18n('CLEAR_THIS_LOG');?></a>
 				<div class="clear"></div>

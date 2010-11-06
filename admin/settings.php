@@ -94,8 +94,8 @@ if(isset($_POST['submitted']))
 		$PERMALINK = $_POST['permalink']; 
 	}
 
-	$HTMLEDITOR = @$_POST['show_htmleditor']; 
-	$PRETTYURLS = @$_POST['prettyurls']; 
+	$HTMLEDITOR = $_POST['show_htmleditor']; 
+	$PRETTYURLS = $_POST['prettyurls']; 
 	
 	// Update passwords
 	$pwd1 = '';
@@ -123,27 +123,27 @@ if(isset($_POST['submitted']))
 		createBak($ufile, $path, $bakpath);
 		if (file_exists($bakpath . 'user.xml.reset')) { unlink($bakpath . 'user.xml.reset'); }	
 
-		$xml = @new SimpleXMLElement('<item></item>');
-		$xml->addChild('USR', @$USR);
-		$xml->addChild('PWD', @$PASSWD);
-		$xml->addChild('EMAIL', @$EMAIL);
+		$xml = new SimpleXMLElement('<item></item>');
+		$xml->addChild('USR', $USR);
+		$xml->addChild('PWD', $PASSWD);
+		$xml->addChild('EMAIL', $EMAIL);
 		exec_action('settings-user');
 		XMLsave($xml, $path . $ufile);
 		
 		// create new site data file
 		$ufile = 'website.xml';
 		createBak($ufile, $path, $bakpath);
-		$xmls = @new SimpleXMLExtended('<item></item>');
+		$xmls = new SimpleXMLExtended('<item></item>');
 		$note = $xmls->addChild('SITENAME');
 		$note->addCData($SITENAME);
 		$note = $xmls->addChild('SITEURL');
-		$note->addCData(@$SITEURL);
+		$note->addCData($SITEURL);
 		$note = $xmls->addChild('TEMPLATE');
-		$note->addCData(@$TEMPLATE);
+		$note->addCData($TEMPLATE);
 		$note = $xmls->addChild('TIMEZONE');
-		$note->addCData(@$TIMEZONE);
+		$note->addCData($TIMEZONE);
 		$note = $xmls->addChild('LANG');
-		$note->addCData(@$LANG);
+		$note->addCData($LANG);
 		exec_action('settings-website');
 		XMLsave($xmls, $path . $ufile);
 		
@@ -153,10 +153,10 @@ if(isset($_POST['submitted']))
 		// create new cpsettings data file
 		$ufile = 'cp_settings.xml';
 		createBak($ufile, $path, $bakpath);
-		$xmlc = @new SimpleXMLElement('<item></item>');
-		$xmlc->addChild('HTMLEDITOR', @$HTMLEDITOR);
-		$xmlc->addChild('PRETTYURLS', @$PRETTYURLS);
-		$xmlc->addChild('PERMALINK', @$PERMALINK);
+		$xmlc = new SimpleXMLElement('<item></item>');
+		$xmlc->addChild('HTMLEDITOR', $HTMLEDITOR);
+		$xmlc->addChild('PRETTYURLS', $PRETTYURLS);
+		$xmlc->addChild('PERMALINK', $PERMALINK);
 		exec_action('settings-cpsettings');
 		XMLsave($xmlc, $path . $ufile);
 		
@@ -174,7 +174,7 @@ $fullpath = suggest_site_path();
 
 // get available language files
 $lang_path = "lang/";
-$lang_handle = @opendir($lang_path) or die("Unable to open $lang_path");
+$lang_handle = opendir($lang_path) or die("Unable to open $lang_path");
 if ($LANG == ''){ $LANG = 'en_US'; }
 
 while ($lfile = readdir($lang_handle))
@@ -199,7 +199,7 @@ if (count($lang_array) != 0)
 			$sel="selected";
 		}
 		
-		$langs .= '<option '.@$sel.' value="'.$larray.'" >'.$larray.'</option>';
+		$langs .= '<option '.$sel.' value="'.$larray.'" >'.$larray.'</option>';
 		$sel = '';
 		$count++;
 	}

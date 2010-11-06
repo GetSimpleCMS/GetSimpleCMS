@@ -18,10 +18,10 @@ include('inc/common.php');
 $userid = login_cookie_check();
 
 // Get passed variables
-$uri 		= @$_GET['uri'];
-$id 		= @$_GET['id'];
-$ptype 		= @$_GET['type'];
-$nonce		= @$_GET['nonce'];
+$uri 		= $_GET['uri'];
+$id 		= $_GET['id'];
+$ptype 		= $_GET['type'];
+$nonce		= $_GET['nonce'];
 $path 		= GSDATAPAGESPATH;
 
 // Page variables reset
@@ -73,7 +73,7 @@ if ($template == '') { $template = 'template.php'; }
 
 $themes_path = GSTHEMESPATH . $TEMPLATE;
 $templates = get_themes($TEMPLATE);
-$themes_handle = @opendir($themes_path) or die("Unable to open $themes_path");		
+$themes_handle = opendir($themes_path) or die("Unable to open $themes_path");		
 while ($file = readdir($themes_handle))	{		
 	if( isFile($file, $themes_path, 'php') ) {		
 		if ($file != 'functions.php') {		
@@ -104,7 +104,7 @@ foreach ($templates as $file)
 		$templatename=$file;
 	}
 	
-	$theme_templates .= '<option '.@$sel.' value="'.$file.'" >'.$templatename.'</option>';
+	$theme_templates .= '<option '.$sel.' value="'.$file.'" >'.$templatename.'</option>';
 }
 
 
@@ -116,7 +116,7 @@ sort($parents);
 if ($parent == null) { $none="selected"; } else { $none=""; }
 
 // Create base option
-$parents_list .= '<option '.@$none.' value="" >-- '.i18n_r('NONE').' --</option>';
+$parents_list .= '<option '.$none.' value="" >-- '.i18n_r('NONE').' --</option>';
 
 foreach ($parents as $fi)
 {
@@ -132,7 +132,7 @@ foreach ($parents as $fi)
 			
 			if ($tmpData->parent == '')
 			{ 
-				$parents_list .= '<option '.@$sel.' value="'.$goodname.'" >'.$goodname.'</option>';
+				$parents_list .= '<option '.$sel.' value="'.$goodname.'" >'.$goodname.'</option>';
 			}
 		}
 	}
@@ -141,14 +141,14 @@ foreach ($parents as $fi)
 // SETUP CHECKBOXES
 if ($menuStatus != '') { $sel = 'checked';	}
 if ($private != '') { $sel_p = 'checked';	}
-if ($menu == '') { $menu = @$title; } 
+if ($menu == '') { $menu = $title; } 
 ?>		
 
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); ?>
 	
 	<h1 align="right">
-		<a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('PAGE_MANAGEMENT'); ?> <span>&raquo;</span> <?php if(isset($data_edit)) { echo i18n_r('PAGE').' &lsquo;<span class="filename" >'. @$url .'</span>&rsquo;'; } else { echo i18n_r('NEW_PAGE'); } ?>		
+		<a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('PAGE_MANAGEMENT'); ?> <span>&raquo;</span> <?php if(isset($data_edit)) { echo i18n_r('PAGE').' &lsquo;<span class="filename" >'. $url .'</span>&rsquo;'; } else { echo i18n_r('NEW_PAGE'); } ?>		
 	</h1>
 	
 	<?php 
@@ -181,7 +181,7 @@ if ($menu == '') { $menu = @$title; }
 			<!-- page title toggle screen -->
 			<p id="edit_window">
 				<label for="post-title" style="display:none;"><?php i18n('PAGE_TITLE'); ?></label>
-				<input class="text title" id="post-title" name="post-title" type="text" value="<?php echo @$title; ?>" />
+				<input class="text title" id="post-title" name="post-title" type="text" value="<?php echo $title; ?>" />
 			</p>
 				
 
@@ -191,22 +191,22 @@ if ($menu == '') { $menu = @$title; }
 
 				<tr>
 					<td><b><?php i18n('SLUG_URL'); ?>:</b><br />
-          <input class="text short" type="text" id="post-id" name="post-id" value="<?php echo @$url; ?>" <?php echo (@$url=='index'?'readonly="readonly" ':''); ?>/></td>
+          <input class="text short" type="text" id="post-id" name="post-id" value="<?php echo $url; ?>" <?php echo ($url=='index'?'readonly="readonly" ':''); ?>/></td>
 
 					<td><b><?php i18n('TAG_KEYWORDS'); ?>:</b><br />
-					<input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo @$metak; ?>" /></td>
+					<input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" /></td>
 
 				</tr>
 				<tr>
 					<td colspan="2">
 						<b><?php i18n('META_DESC'); ?>:</b><br />
-						<input class="text" id="post-metad" name="post-metad" type="text" value="<?php echo @$metad; ?>" />
+						<input class="text" id="post-metad" name="post-metad" type="text" value="<?php echo $metad; ?>" />
 					</td>
 				</tr>
 				<tr>
 					<td><b><?php i18n('PARENT_PAGE'); ?>:</b><br />
 					<select class="text short" id="post-parent" name="post-parent" >
-						<?php echo @$parents_list; ?>
+						<?php echo $parents_list; ?>
 					</select></td>
 					
 					<td><b><?php i18n('TEMPLATE'); ?>:</b><br />
@@ -216,12 +216,12 @@ if ($menu == '') { $menu = @$title; }
 				</tr>
 
 				<tr>
-					<td><label class="clean" for="post-private" ><b><?php i18n('KEEP_PRIVATE'); ?></b> &nbsp;&nbsp;&nbsp;</label><input type="checkbox" id="post-private" name="post-private" <?php echo @$sel_p; ?> />
+					<td><label class="clean" for="post-private" ><b><?php i18n('KEEP_PRIVATE'); ?></b> &nbsp;&nbsp;&nbsp;</label><input type="checkbox" id="post-private" name="post-private" <?php echo $sel_p; ?> />
 					</td>
 					
 					<td>
-							<b><a href="navigation.php" style="display:inline;font-weight:bold !important;" rel="facybox" ><?php i18n('ADD_TO_MENU'); ?></a>?</b> &nbsp;&nbsp;&nbsp;<input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo @$sel; ?> /><br />
-							<div id="menu-items"><span><?php i18n('MENU_TEXT'); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php i18n('PRIORITY'); ?></span><input class="text" style="width:175px;" id="post-menu" name="post-menu" type="text" value="<?php echo @$menu; ?>" />&nbsp
+							<b><a href="navigation.php" style="display:inline;font-weight:bold !important;" rel="facybox" ><?php i18n('ADD_TO_MENU'); ?></a>?</b> &nbsp;&nbsp;&nbsp;<input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel; ?> /><br />
+							<div id="menu-items"><span><?php i18n('MENU_TEXT'); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php i18n('PRIORITY'); ?></span><input class="text" style="width:175px;" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />&nbsp
 							<select class="text"  style="width:50px;" id="post-menu-order" name="post-menu-order" >
 								<?php if(isset($menuOrder)) { 
 									if($menuOrder == 0) {
@@ -250,13 +250,13 @@ if ($menu == '') { $menu = @$title; }
 			<!-- page body -->
 			<p>
 				<label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
-				<textarea id="post-content" name="post-content"><?php echo @$content; ?></textarea>
+				<textarea id="post-content" name="post-content"><?php echo $content; ?></textarea>
 			</p>
 			
 			<?php exec_action('edit-content'); ?> 
 			
 			<?php if(isset($data_edit)) { 
-				echo '<input type="hidden" name="existing-url" value="'. @$url .'" />'; 
+				echo '<input type="hidden" name="existing-url" value="'. $url .'" />'; 
 			} ?>	
 			
 			<p id="submit_line" >
@@ -267,10 +267,10 @@ if ($menu == '') { $menu = @$title; }
 			
 			<small><?php 
 					if (isset($pubDate)) { 
-						echo i18n_r('LAST_SAVED').': '. lngDate(@$pubDate).'&nbsp; ';
+						echo i18n_r('LAST_SAVED').': '. lngDate($pubDate).'&nbsp; ';
 					}
-					if ( file_exists(GSBACKUPSPATH.'pages/'.@$url.'.bak.xml') ) {	
-						echo '-&nbsp; <a href="backup-edit.php?p=view&id='.@$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
+					if ( file_exists(GSBACKUPSPATH.'pages/'.$url.'.bak.xml') ) {	
+						echo '-&nbsp; <a href="backup-edit.php?p=view&id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
 					} 
 			?></small>
 		</form>

@@ -33,23 +33,23 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) )
 	createBak($file, $path, $bakpath);
 	
 	// Update changes
-	$xml = @new SimpleXMLExtended('<item></item>');
+	$xml = new SimpleXMLExtended('<item></item>');
 	$note = $xml->addChild('SITENAME');
 	$note->addCData($SITENAME);
 	$note = $xml->addChild('SITEURL');
-	$note->addCData(@$SITEURL);
+	$note->addCData($SITEURL);
 	$note = $xml->addChild('TEMPLATE');
-	$note->addCData(@$TEMPLATE);
+	$note->addCData($TEMPLATE);
 	$note = $xml->addChild('TIMEZONE');
-	$note->addCData(@$TIMEZONE);
+	$note->addCData($TIMEZONE);
 	$note = $xml->addChild('LANG');
-	$note->addCData(@$LANG);
+	$note->addCData($LANG);
 	XMLsave($xml, $path . $file);
 	$success = i18n_r('THEME_CHANGED');
 }
 
 // get available themes (only look for folders)
-$themes_handle = @opendir(GSTHEMESPATH) or die("Unable to open ".GSTHEMESPATH);
+$themes_handle = opendir(GSTHEMESPATH) or die("Unable to open ".GSTHEMESPATH);
 
 while ($file = readdir($themes_handle))
 {
@@ -66,7 +66,7 @@ while ($file = readdir($themes_handle))
 				$sel="selected";
 			}
 			
-			$theme_options .= '<option '.@$sel.' value="'.$file.'" >'.$file.'</option>';
+			$theme_options .= '<option '.$sel.' value="'.$file.'" >'.$file.'</option>';
 		}
 	}
 }

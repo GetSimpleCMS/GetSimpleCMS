@@ -73,7 +73,7 @@ function get_page_excerpt($n=200, $html=false) {
  */
 function get_page_meta_keywords($echo=true) {
 	global $metak;
-	$myVar = strip_decode(@$metak);
+	$myVar = strip_decode($metak);
 	
 	if ($echo) {
 		echo $myVar;
@@ -94,7 +94,7 @@ function get_page_meta_keywords($echo=true) {
  */
 function get_page_meta_desc($echo=true) {
 	global $metad;
-	$myVar = strip_decode(@$metad);
+	$myVar = strip_decode($metad);
 	
 	if ($echo) {
 		echo $myVar;
@@ -468,7 +468,7 @@ function menu_data($id = null,$xml=false) {
     $menu_extract = '';
     
     $path = GSDATAPAGESPATH;
-    $dir_handle = @opendir($path) or die("Unable to open $path");
+    $dir_handle = opendir($path) or die("Unable to open $path");
     $filenames = array();
     while ($filename = readdir($dir_handle)) {
         $filenames[] = $filename;
@@ -607,7 +607,7 @@ function get_navigation($currentpage) {
 	$menu = '';
 
 	$path = GSDATAPAGESPATH;
-	$dir_handle = @opendir($path) or die("Unable to open $path");
+	$dir_handle = opendir($path) or die("Unable to open $path");
 	$filenames = array();
 	while ($filename = readdir($dir_handle)) {
 		$filenames[] = $filename;

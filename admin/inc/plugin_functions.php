@@ -81,7 +81,7 @@ function exec_action($a) {
  */
 function createSideMenu($id,$txt){
 	$class=null;
-	if (@$_GET['id'] == @$id) {
+	if ($_GET['id'] == $id) {
 		$class='class="current"';
 	}
 	echo '<li><a href="load.php?id='.$id.'" '.$class.' >'.$txt.'</a></li>';

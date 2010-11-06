@@ -17,23 +17,19 @@ include('inc/common.php');
 // Variable settings
 $file = 'user.xml';
 
-if (file_exists(GSDATAOTHERPATH . $file))
-{
+if (file_exists(GSDATAOTHERPATH . $file)) {
 	$data = getXML(GSDATAOTHERPATH . $file);
 	$USR = $data->USR;
 	$EMAIL = $data->EMAIL;
 }
 
-if(isset($_POST['submitted']))
-{
+if(isset($_POST['submitted'])){
 	$nonce = $_POST['nonce'];
-	if(!check_nonce($nonce, "reset_password"))
+	if(!check_nonce($nonce, "reset_password")) {
 		die("CSRF detected!");
-
-	if(isset($_POST['email']))
-	{
-		if($_POST['email'] == $EMAIL)
-		{
+	}
+	if(isset($_POST['email']))	{
+		if($_POST['email'] == $EMAIL)		{
 			// create new random password
 			$random = createRandomPassword();
 			
@@ -44,10 +40,10 @@ if(isset($_POST['submitted']))
 			$flagfile = GSBACKUPSPATH."other/user.xml.reset";
 			copy(GSDATAOTHERPATH . $file, $flagfile);
 			
-			$xml = @new SimpleXMLElement('<item></item>');
-			$xml->addChild('USR', @$USR);
+			$xml = new SimpleXMLElement('<item></item>');
+			$xml->addChild('USR', $USR);
 			$xml->addChild('PWD', passhash($random));
-			$xml->addChild('EMAIL', @$EMAIL);
+			$xml->addChild('EMAIL', $EMAIL);
 			XMLsave($xml, GSDATAOTHERPATH . $file);
 			
 			// send the email with the new password

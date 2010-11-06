@@ -195,7 +195,7 @@ function isFile($file, $path, $type = 'xml') {
  * @return array
  */
 function getFiles($path) {
-	$handle = @opendir($path) or die("Unable to open $path");
+	$handle = opendir($path) or die("Unable to open $path");
 	$file_arr = array();
 	while ($file = readdir($handle)) {
 		$file_arr[] = $file;
@@ -215,7 +215,7 @@ function getFiles($path) {
  * @return object
  */
 function getXML($file) {
-	$xml = @file_get_contents($file);
+	$xml = file_get_contents($file);
 	$data = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA);
 	return $data;
 }
@@ -624,7 +624,7 @@ function myself($echo=true) {
  */
 function get_themes($temp) {
 	$themes_path = GSTHEMESPATH . $temp .'/';
-	$themes_handle = @opendir($themes_path);
+	$themes_handle = opendir($themes_path);
 	while ($file = readdir($themes_handle))	{
 		if( is_file($themes_path . $file) && $file != "." && $file != ".." ) {
 			$templates[] = $file;

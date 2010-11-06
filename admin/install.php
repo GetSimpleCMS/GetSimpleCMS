@@ -89,7 +89,7 @@ foreach ($dirsArray as $dir) {
 
 
 // get available language files
-$lang_handle = @opendir(GSLANGPATH) or die("Unable to open ".GSLANGPATH);
+$lang_handle = opendir(GSLANGPATH) or die("Unable to open ".GSLANGPATH);
 
 if ($LANG == '') { $LANG = 'en_US'; }
 
@@ -110,7 +110,7 @@ if (count($lang_array) != 0)
 	{
 		if ($LANG == $larray) { $sel="selected";}
 		
-		$langs .= '<option '.@$sel.' value="'.$larray.'" >'.$larray.'</option>';
+		$langs .= '<option '.$sel.' value="'.$larray.'" >'.$larray.'</option>';
 		$sel = '';
 		$count++;
 	}
@@ -134,15 +134,15 @@ if (! file_exists($api_file)) {
 			}
 		}
 	}
-	$xml = @new SimpleXMLExtended('<item></item>');
+	$xml = new SimpleXMLExtended('<item></item>');
 	$note = $xml->addChild('apikey');
 	$note->addCData($saltval);
 	XMLsave($xml, $api_file);
 }
 
 # get salt value
-$data = @getXML($api_file);
-$APIKEY = @$data->apikey;
+$data = getXML($api_file);
+$APIKEY = $data->apikey;
 
 ?>
 
@@ -154,7 +154,7 @@ $APIKEY = @$data->apikey;
 <div class="wrapper">
 	
 <?php
-	if (@$kill != '') {
+	if ($kill != '') {
 		echo '<div class="error">'. $kill .'</div>';
 	}	
 ?>
@@ -203,7 +203,7 @@ $APIKEY = @$data->apikey;
 					echo 'PHP '.i18n_r('VERSION') .'</td><td><span class="OKmsg" ><b>'. PHP_VERSION.'</b> - '.i18n_r('OK') .'</span></td></tr>';
 				}
 				
-				if (@$kill == '') {
+				if ($kill == '') {
 					echo '<tr><td>Folder Permissions</td><td><span class="OKmsg" >'.i18n_r('OK') .' - '.i18n_r('WRITABLE') .'</span></td></tr>';
 				}	else {
 					echo '<tr><td>Folder Permissions</td><td><span class="ERRmsg" >'.i18n_r('ERROR') .' - '.i18n_r('NOT_WRITABLE') .'</span></td></tr>';
@@ -251,7 +251,7 @@ $APIKEY = @$data->apikey;
 
 			?>
 			</table>
-			<?php if (@$kill != '') { ?>
+			<?php if ($kill != '') { ?>
 				<p><?php i18n('KILL_CANT_CONTINUE');?> <a href="./" ><?php i18n('REFRESH');?></a></p>
 			<?php } else {?>
 			<form action="setup.php" method="post" accept-charset="utf-8" >

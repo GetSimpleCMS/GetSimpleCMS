@@ -70,7 +70,7 @@ if(isset($_GET['nozip'])) {
 					$timestamp = explode('_', $file);
 					$name = shtDate($timestamp[0]);
 					clearstatcache();
-					$ss = @stat($path . $file);
+					$ss = stat($path . $file);
 					$size = fSize($ss['size']);
 					echo '<tr>
 							<td><a title="'.i18n_r('DOWNLOAD').' '. $name .'" target="_blank" href="download.php?file='. $path . $file .'&nonce='.get_nonce("archive", "download.php").'">'.$name .'</a></td>

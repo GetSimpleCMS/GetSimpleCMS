@@ -20,7 +20,7 @@ if (get_filename_id() == 'load') {
 
 ?>
 
-<ul class="nav <?php echo @$plugin_class; ?>">
+<ul class="nav <?php echo $plugin_class; ?>">
 	<li><a class="pages" href="pages.php" accesskey="p" ><?php i18n('TAB_PAGES');?></a></li>
 	<li><a class="files" href="upload.php" accesskey="f" ><?php i18n('TAB_FILES');?></a></li>
 	<li><a class="theme" href="theme.php" accesskey="t" ><?php i18n('TAB_THEME');?></a></li>

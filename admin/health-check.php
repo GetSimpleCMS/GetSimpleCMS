@@ -15,7 +15,7 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 	
-$data = @getXML(GSDATAOTHERPATH.'authorization.xml');
+$data = getXML(GSDATAOTHERPATH.'authorization.xml');
 $APIKEY = $data->apikey;
 $php_modules = get_loaded_extensions();
 
@@ -198,7 +198,7 @@ $php_modules = get_loaded_extensions();
 					if (! file_exists($file)) {
 						echo '<span class="WARNmsg" >'.i18n_r('MISSING_FILE').' - '.i18n_r('WARNING').'</span>';
 					} else {
-						$res = @file_get_contents($file);
+						$res = file_get_contents($file);
 						if ( !strstr($res, 'Deny from all')) {
 							echo '<span class="WARNmsg" >'.i18n_r('BAD_FILE').' - '.i18n_r('WARNING').'</span>';
 						} else {
@@ -217,7 +217,7 @@ $php_modules = get_loaded_extensions();
 					if (! file_exists($file)) {
 						echo ' <span class="WARNmsg" >'.i18n_r('MISSING_FILE').' - '.i18n_r('WARNING').'</span>';
 					} else {
-						$res = @file_get_contents($file);
+						$res = file_get_contents($file);
 						if ( !strstr($res, 'Allow from all')) {
 							echo ' <span class="WARNmsg" >'.i18n_r('BAD_FILE').' - '.i18n_r('WARNING').'</span>';
 						} else {
@@ -236,7 +236,7 @@ $php_modules = get_loaded_extensions();
 					if (! file_exists($file)) {
 						echo ' <span class="WARNmsg" >'.i18n_r('MISSING_FILE').' - '.i18n_r('WARNING').'</span>';
 					} else {
-						$res = @file_get_contents($file);
+						$res = file_get_contents($file);
 						if ( !strstr($res, 'Allow from all')) {
 							echo ' <span class="WARNmsg" >'.i18n_r('BAD_FILE').' - '.i18n_r('WARNING').'</span>';
 						} else {
@@ -255,7 +255,7 @@ $php_modules = get_loaded_extensions();
 					if (! file_exists($file)) {
 						echo ' <span class="WARNmsg" >'.i18n_r('MISSING_FILE').' - '.i18n_r('WARNING').'</span>';
 					} else {
-						$res = @file_get_contents($file);
+						$res = file_get_contents($file);
 						if ( !strstr($res, 'Deny from all')) {
 							echo ' <span class="WARNmsg" >'.i18n_r('BAD_FILE').' - '.i18n_r('WARNING').'</span>';
 						} else {
@@ -274,7 +274,7 @@ $php_modules = get_loaded_extensions();
 					if (! file_exists($file)) {
 						echo ' <span class="WARNmsg" >'.i18n_r('MISSING_FILE').' - '.i18n_r('WARNING').'</span>';
 					} else {
-						$res = @file_get_contents($file);
+						$res = file_get_contents($file);
 						if ( !strstr($res, 'Deny from all')) {
 							echo ' <span class="WARNmsg" >'.i18n_r('BAD_FILE').' - '.i18n_r('WARNING').'</span>';
 						} else {
@@ -293,7 +293,7 @@ $php_modules = get_loaded_extensions();
 					if (! file_exists($file)) {
 						echo ' <span class="WARNmsg" >'.i18n_r('MISSING_FILE').' - '.i18n_r('WARNING').'</span>';
 					} else {
-						$res = @file_get_contents($file);
+						$res = file_get_contents($file);
 						if ( !strstr($res, 'Deny from all')) {
 							echo ' <span class="WARNmsg" >'.i18n_r('BAD_FILE').' - '.i18n_r('WARNING').'</span>';
 						} else {
@@ -312,7 +312,7 @@ $php_modules = get_loaded_extensions();
 					if (! file_exists($file)) {
 						echo ' <span class="WARNmsg" >'.i18n_r('MISSING_FILE').' - '.i18n_r('WARNING').'</span>';
 					} else {
-						$res = @file_get_contents($file);
+						$res = file_get_contents($file);
 						if ( !strstr($res, 'Deny from all')) {
 							echo ' <span class="WARNmsg" >'.i18n_r('BAD_FILE').' - '.i18n_r('WARNING').'</span>';
 						} else {

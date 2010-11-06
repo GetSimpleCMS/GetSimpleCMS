@@ -94,10 +94,10 @@ if(isset($_POST['submitted']))
 		$bakpath = GSBACKUPSPATH."other/";
 		createBak($file, $path, $bakpath);
 		
-		$xml = @new SimpleXMLElement('<item></item>');
-		$xml->addChild('USR', @$USR1);
-		$xml->addChild('PWD', @$PASSWD1);
-		$xml->addChild('EMAIL', @$EMAIL1);
+		$xml = new SimpleXMLElement('<item></item>');
+		$xml->addChild('USR', $USR1);
+		$xml->addChild('PWD', $PASSWD1);
+		$xml->addChild('EMAIL', $EMAIL1);
 		
 		if (! XMLsave($xml, $path . $file) ) {
 			$kill = i18n_r('CHMOD_ERROR');
@@ -108,22 +108,22 @@ if(isset($_POST['submitted']))
 		
 		// create new website.xml file
 		$file = 'website.xml';
-		$xmls = @new SimpleXMLExtended('<item></item>');
+		$xmls = new SimpleXMLExtended('<item></item>');
 		$note = $xmls->addChild('SITENAME');
 		$note->addCData($SITENAME1);
 		$note = $xmls->addChild('SITEURL');
-		$note->addCData(@$SITEURL1);
+		$note->addCData($SITEURL1);
 		$note = $xmls->addChild('TEMPLATE');
 		$note->addCData('Default_Simple');
 		$note = $xmls->addChild('TIMEZONE');
-		$note->addCData(@$TIMEZONE);
+		$note->addCData($TIMEZONE);
 		$note = $xmls->addChild('LANG');
 		$note->addCData($LANG);
 		XMLsave($xmls, $path . $file);
 		
 		// create new cp_settings.xml file
 		$file = 'cp_settings.xml';
-		$xmlc = @new SimpleXMLElement('<item></item>');
+		$xmlc = new SimpleXMLElement('<item></item>');
 		$xmlc->addChild('HTMLEDITOR', '1');
 		$xmlc->addChild('HELPSECTIONS', '1');
 		$xmlc->addChild('PRETTYURLS', '');

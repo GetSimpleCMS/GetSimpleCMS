@@ -87,8 +87,8 @@ if (isset($_FILES["file"]))
 						$extention = get_FileType($ext);
 						$filesArray[$count]['type'] = $extention;
 						clearstatcache();
-						$ss = @stat($path . $file);
-						$filesArray[$count]['date'] = @date('M j, Y',$ss['ctime']);
+						$ss = stat($path . $file);
+						$filesArray[$count]['date'] = date('M j, Y',$ss['ctime']);
 						$filesArray[$count]['size'] = fSize($ss['size']);
 						$totalsize = $totalsize + $ss['size'];
 						$count++;

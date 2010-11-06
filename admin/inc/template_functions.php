@@ -467,7 +467,7 @@ function do_reg($text, $regex) {
  * @return string
  */
 function valid_xml($file) {
-	$xmlv = @getXML($file);
+	$xmlv = getXML($file);
 	global $i18n;
 	if ($xmlv) {
 		return '<span class="OKmsg" >XML Valid - '.i18n_r('OK').'</span>';

@@ -36,12 +36,11 @@ if (isset($_GET['f'])) {
 }
 
 // Save?
-if((isset($_POST['submitsave'])))
-{
+if((isset($_POST['submitsave']))){
 	$nonce = $_POST['nonce'];
-	if(!check_nonce($nonce, "save"))
+	if(!check_nonce($nonce, "save")) {
 		die("CSRF detected!");
-
+	}
 	$SavedFile = $_POST['edited_file'];
 	
 	$FileContents = safe_strip_decode($_POST['content']);
@@ -54,15 +53,14 @@ if((isset($_POST['submitsave'])))
 
 
 // No template file?
-if (! $TEMPLATE_FILE)
-{
+if (! $TEMPLATE_FILE) {
 	$TEMPLATE_FILE = 'template.php';
 }
 
 
 // Setup
 $themes_path = GSTHEMESPATH;
-$themes_handle = @opendir($themes_path);
+$themes_handle = opendir($themes_path);
 $theme_options .= '<select class="text" style="width:225px;" name="t" id="theme-folder" >';	
 
 while ($file = readdir($themes_handle))
@@ -80,7 +78,7 @@ while ($file = readdir($themes_handle))
 				$sel="selected"; 
 			}
 			
-			$theme_options .= '<option '.@$sel.' value="'.$file.'" >'.$file.'</option>';
+			$theme_options .= '<option '.$sel.' value="'.$file.'" >'.$file.'</option>';
 		}
 	}
 }
@@ -120,7 +118,7 @@ foreach ($templates as $file)
 		$templatename=$file; 
 	}
 	
-	$theme_templates .= '<option '.@$sel.' value="'.$file.'" >'.$templatename.'</option>';
+	$theme_templates .= '<option '.$sel.' value="'.$file.'" >'.$templatename.'</option>';
 }
 
 $theme_templates .= "</select></span>";

@@ -74,7 +74,7 @@ if (isset($_POST['submitted']))
 				{
 					exec_action('changedata-updateslug');
 					updateSlugs();
-					$file = GSDATAPAGESPATH . @$url .".xml";
+					$file = GSDATAPAGESPATH . $url .".xml";
 					$existing = GSDATAPAGESPATH . $_POST['existing-url'] .".xml";
 					$bakfile = GSBACKUPSPATH."pages/". $_POST['existing-url'] .".bak.xml";
 					copy($existing, $bakfile);
@@ -133,41 +133,41 @@ if (isset($_POST['submitted']))
 		}
 		
 		
-		$xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
+		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
 		$xml->addChild('pubDate', date('r'));
 
 		$note = $xml->addChild('title');
-		$note->addCData(@$title);
+		$note->addCData($title);
 		
 		$note = $xml->addChild('url');
-		$note->addCData(@$url);
+		$note->addCData($url);
 		
 		$note = $xml->addChild('meta');
-		$note->addCData(@$metak);
+		$note->addCData($metak);
 		
 		$note = $xml->addChild('metad');
-		$note->addCData(@$metad);
+		$note->addCData($metad);
 		
 		$note = $xml->addChild('menu');
-		$note->addCData(@$menu);
+		$note->addCData($menu);
 		
 		$note = $xml->addChild('menuOrder');
-		$note->addCData(@$menuOrder);
+		$note->addCData($menuOrder);
 		
 		$note = $xml->addChild('menuStatus');
-		$note->addCData(@$menuStatus);
+		$note->addCData($menuStatus);
 		
 		$note = $xml->addChild('template');
-		$note->addCData(@$template);
+		$note->addCData($template);
 		
 		$note = $xml->addChild('parent');
-		$note->addCData(@$parent);
+		$note->addCData($parent);
 		
 		$note = $xml->addChild('content');
-		$note->addCData(@$content);
+		$note->addCData($content);
 		
 		$note = $xml->addChild('private');
-		$note->addCData(@$private);
+		$note->addCData($private);
 
 		exec_action('changedata-save');
 		

@@ -45,7 +45,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 	
 	if (count($pagesSorted) != 0)
 	{ 
-		$xml = @new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset></urlset>');
+		$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset></urlset>');
 		$xml->addAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd', 'http://www.w3.org/2001/XMLSchema-instance');
 		$xml->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 		

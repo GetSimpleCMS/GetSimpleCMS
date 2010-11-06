@@ -17,7 +17,7 @@ include('inc/common.php');
 // Variable settings
 login_cookie_check();
 	
-	$dir_handle = @opendir(GSDATAPAGESPATH) or die("Unable to open ". GSDATAPAGESPATH);
+	$dir_handle = opendir(GSDATAPAGESPATH) or die("Unable to open ". GSDATAPAGESPATH);
 	$filenames = array();
 	while ($filename = readdir($dir_handle)) {
 		$filenames[] = $filename;

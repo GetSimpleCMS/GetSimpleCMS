@@ -25,7 +25,7 @@
 	if ($update == 'bak-success') { 
 		echo '<div class="updated">'. sprintf(i18n_r('ER_BAKUP_DELETED'), $_GET['id']) .'</div>';
 	} elseif (isset($error)) { 
-		echo '<div class="error"><b>'.i18n_r('ERROR').':</b> '. @$error .'</div>';
+		echo '<div class="error"><b>'.i18n_r('ERROR').':</b> '. $error .'</div>';
 	} elseif ($update == 'bak-err') { 
 		echo '<div class="error"><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_REQ_PROC_FAIL').'</div>';
 	} elseif ($update == 'edit-success') { 
@@ -41,15 +41,15 @@
 	} elseif ($update == 'edit-index') { 
 		echo '<div class="error"><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_CANNOT_INDEX').'.</div>';
 	} elseif ($update == 'edit-err') { 
-		echo '<div class="error"><b>'.i18n_r('ERROR').':</b> '. @$ptype .'.</div>';
+		echo '<div class="error"><b>'.i18n_r('ERROR').':</b> '. $ptype .'.</div>';
 	} elseif ($err == 'false') {
 		echo '<div class="updated">'.i18n_r('ER_SETTINGS_UPD').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a></div>';
 	} elseif ($restored == 'true') { 
 		echo '<div class="updated">'.i18n_r('ER_OLD_RESTORED').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a></div>';
-	} elseif (@$_GET['rest'] == 'true') { 
+	} elseif ($_GET['rest'] == 'true') { 
 		echo '<div class="updated">'.i18n_r('ER_OLD_RESTORED').'. <a href="support.php?undo&nonce='.get_nonce("undo", "support.php").'">'.i18n_r('UNDO').'</a></div>';
 	} elseif ($err == 'true') { 
-		echo '<div class="error"><b>'.i18n_r('ERROR').':</b> '. @$msg .'</div>';
+		echo '<div class="error"><b>'.i18n_r('ERROR').':</b> '. $msg .'</div>';
 	} elseif ($update == 'pwd-success') {
 		echo '<div class="updated">'.i18n_r('ER_NEW_PWD_SENT').'. <a href="index.php">'.i18n_r('LOGIN').'</a></div>';
 	} elseif ($update == 'pwd-error') {

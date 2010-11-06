@@ -99,11 +99,11 @@ elseif ($p == 'restore') {
 			
 		</td></tr>
 		<tr><td><b><?php i18n('DATE');?>:</b></td><td><?php echo lngDate($pubDate); ?></td></tr>
-		<tr><td><b><?php i18n('TAG_KEYWORDS');?>:</b></td><td><em><?php echo @$metak; ?></em></td></tr>
-		<tr><td><b><?php i18n('META_DESC');?>:</b></td><td><em><?php echo @$metad; ?></em></td></tr>
-		<tr><td><b><?php i18n('MENU_TEXT');?>:</b></td><td><?php echo @$menu; ?></td></tr>
-		<tr><td><b><?php i18n('PRIORITY');?>:</b></td><td><?php echo @$menuOrder; ?></td></tr>
-		<tr><td><b><?php i18n('ADD_TO_MENU');?>?</b></td><td><?php echo @$menuStatus; ?></td></tr>
+		<tr><td><b><?php i18n('TAG_KEYWORDS');?>:</b></td><td><em><?php echo $metak; ?></em></td></tr>
+		<tr><td><b><?php i18n('META_DESC');?>:</b></td><td><em><?php echo $metad; ?></em></td></tr>
+		<tr><td><b><?php i18n('MENU_TEXT');?>:</b></td><td><?php echo $menu; ?></td></tr>
+		<tr><td><b><?php i18n('PRIORITY');?>:</b></td><td><?php echo $menuOrder; ?></td></tr>
+		<tr><td><b><?php i18n('ADD_TO_MENU');?>?</b></td><td><?php echo $menuStatus; ?></td></tr>
 		</table>
 		
 		<textarea id="codetext" style="background:#fefefe;width:570px;height:400px;padding:4px;border:1px solid #ccc;" ><?php echo strip_decode($content); ?></textarea>

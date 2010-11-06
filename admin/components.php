@@ -38,7 +38,7 @@ if (isset($_POST['submitted'])){
 	createBak($file, $path, $bakpath);
 	
 	//top of xml file
-	$xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
+	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
 	if (count($ids) != 0)
 	{ 
 		
@@ -71,10 +71,10 @@ if (isset($_POST['submitted'])){
 			//body of xml file
 			$components = $xml->addChild('item');
 			$c_note = $components->addChild('title');
-			$c_note->addCData(@$comp['title']);
-			$components->addChild('slug', @$comp['slug']);
+			$c_note->addCData($comp['title']);
+			$components->addChild('slug', $comp['slug']);
 			$c_note = $components->addChild('value');
-			$c_note->addCData(@$comp['value']);
+			$c_note->addCData($comp['value']);
 			$count++;
 		}
 	}
@@ -100,13 +100,13 @@ $componentsec = $data->item;
 $count= 0;
 if (count($componentsec) != 0) {
 	foreach ($componentsec as $component) {
-		$table .= '<div class="compdiv" id="section-'.@$count.'"><table class="comptable" ><tr><td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="editable">'. @stripslashes($component->title) .'</b></td>';
-		$table .= '<td style="text-align:right;" ><code>&lt;?php get_component(<span class="compslugcode">\''.@$component->slug.'\'</span>); ?&gt;</code></td><td class="delete" >';
-		$table .= '<a href="#" title="'.i18n_r('DELETE_COMPONENT').': '. cl(@$component->title).'?" id="del-'.$count.'" onClick="DeleteComp(\''.$count.'\'); return false;" >X</a></td></tr></table>';
-		$table .= '<textarea name="val[]">'. @stripslashes($component->value) .'</textarea>';
-		$table .= '<input type="hidden" class="compslug" name="slug[]" value="'. @$component->slug .'" />';
-		$table .= '<input type="hidden" class="comptitle" name="title[]" value="'. @stripslashes($component->title) .'" />';
-		$table .= '<input type="hidden" name="id[]" value="'. @$count .'" />';
+		$table .= '<div class="compdiv" id="section-'.$count.'"><table class="comptable" ><tr><td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="editable">'. stripslashes($component->title) .'</b></td>';
+		$table .= '<td style="text-align:right;" ><code>&lt;?php get_component(<span class="compslugcode">\''.$component->slug.'\'</span>); ?&gt;</code></td><td class="delete" >';
+		$table .= '<a href="#" title="'.i18n_r('DELETE_COMPONENT').': '. cl($component->title).'?" id="del-'.$count.'" onClick="DeleteComp(\''.$count.'\'); return false;" >X</a></td></tr></table>';
+		$table .= '<textarea name="val[]">'. stripslashes($component->value) .'</textarea>';
+		$table .= '<input type="hidden" class="compslug" name="slug[]" value="'. $component->slug .'" />';
+		$table .= '<input type="hidden" class="comptitle" name="title[]" value="'. stripslashes($component->title) .'" />';
+		$table .= '<input type="hidden" name="id[]" value="'. $count .'" />';
 		exec_action('component-extras');
 		$table .= '</div>';
 		$count++;
@@ -117,7 +117,7 @@ if (count($componentsec) != 0) {
 	if($count > 3) {
 		$item = 0;
 		foreach($componentsec as $component) {
-			$listc .= '<a id="divlist-' . @$item . '" href="#section-' . @$item . '" class="component">' . @$component->title . '</a>';
+			$listc .= '<a id="divlist-' . $item . '" href="#section-' . $item . '" class="component">' . $component->title . '</a>';
 			$item++;
 		}
 	}
@@ -139,7 +139,7 @@ if (count($componentsec) != 0) {
 	</div>
 	
 	<form class="manyinputs" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
-		<input type="hidden" id="id" value="<?php echo @$count; ?>" />
+		<input type="hidden" id="id" value="<?php echo $count; ?>" />
 		<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_components"); ?>" />
 		<p><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_COMPONENTS');?>" /> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme.php"><?php i18n('CANCEL'); ?></a></p>
 
