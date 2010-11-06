@@ -39,6 +39,7 @@ if (file_exists($path . $file)) {
 }
 
 $fullpath = suggest_site_path();	
+$path_parts = suggest_site_path(true);   
 
 // if the form was submitted...	
 if(isset($_POST['submitted']))
@@ -98,8 +99,7 @@ if(isset($_POST['submitted']))
 		$xml->addChild('PWD', @$PASSWD1);
 		$xml->addChild('EMAIL', @$EMAIL1);
 		
-		if (! XMLsave($xml, $path . $file) ) 
-		{
+		if (! XMLsave($xml, $path . $file) ) {
 			$kill = i18n_r('CHMOD_ERROR');
 		}
 		
