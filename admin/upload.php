@@ -44,6 +44,7 @@ if (isset($_FILES["file"]))
 		
 		//create file
 		move_uploaded_file($_FILES["file"]["tmp_name"], $file_loc);
+		chmod($targetFile, 0644);   
 		exec_action('file-uploaded');
 		
 		//successfull message
