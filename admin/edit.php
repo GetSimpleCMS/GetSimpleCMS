@@ -18,10 +18,7 @@ include('inc/common.php');
 $userid = login_cookie_check();
 
 // Get passed variables
-$uri 		= $_GET['uri'];
-$id 		= $_GET['id'];
-$ptype 		= $_GET['type'];
-$nonce		= $_GET['nonce'];
+$id 		=  isset($_GET['id']) ? $_GET['id'] : null;
 $path 		= GSDATAPAGESPATH;
 
 // Page variables reset
