@@ -66,7 +66,7 @@ if (isset($_FILES["file"]))
 	
 	<div id="maincontent">
 		<div class="main" >
-		<label><?php i18n('UPLOADED_FILES'); ?><span id="filetypetoggle">&nbsp;&nbsp;/&nbsp;&nbsp;<?php i18n('SHOW_ALL'); ?></span></label>
+		<h3 class="floated"><?php i18n('UPLOADED_FILES'); ?><span id="filetypetoggle">&nbsp;&nbsp;/&nbsp;&nbsp;<?php i18n('SHOW_ALL'); ?></span></h3>
 		
 		<div id="file_load">
 		<?php
@@ -140,8 +140,8 @@ if (isset($_FILES["file"]))
 					}
 
 					echo '</td><td><a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';
-					echo '<td style="width:70px;text-align:right;" ><span><b>'. $upload['size'] .'</span></td>';
-					echo '<td style="width:70px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
+					echo '<td style="width:80px;text-align:right;" ><span><b>'. $upload['size'] .'</span></td>';
+					echo '<td style="width:80px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
 					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] .'&nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>';
 					echo '</tr>';
 					exec_action('file-extras');

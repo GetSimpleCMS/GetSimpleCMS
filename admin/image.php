@@ -20,7 +20,7 @@ login_cookie_check();
 $src = strippath($_GET['i']);
 $thumb_folder = GSTHUMBNAILPATH;
 $src_folder = '../data/uploads/';
-
+$thumb_folder_rel = '../data/thumbs/';
 if (!is_file($src_folder . $src)) redirect("upload.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -47,7 +47,7 @@ list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($src_folder . url
 if (file_exists($thumb_folder . 'thumbnail.' . $src)) 
 {
 	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . urlencode('thumbnail.'.$src));
-	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder . 'thumbnail.'. $src .'" rel="facybox" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
+	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder_rel . 'thumbnail.'. $src .'" rel="facybox" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 } 
 else 
 {
@@ -69,16 +69,17 @@ else
 	
 			<?php echo '<p><a href="'.$src_folder . $src .'" rel="facybox" >'.i18n_r('ORIGINAL_IMG').'</a> <code>'.$imgwidth.'x'.$imgheight .'</code>'. $thumb_exists .'</p>'; ?>
 
-			<form><select class="text" id="img-info">
-				<option selected="selected" value="code-img-html" ><?php i18n('HTML_ORIG_IMG');?></option>
-				<option value="code-img-link" ><?php i18n('LINK_ORIG_IMG');?></option>
-				<option value="code-thumb-html" ><?php i18n('HTML_THUMBNAIL');?></option>
-				<option value="code-thumb-link" ><?php i18n('LINK_THUMBNAIL');?></option>
-				<option value="code-imgthumb-html" ><?php i18n('HTML_THUMB_ORIG');?></option>
-			</select>
-			<textarea class="copykit" >&lt;img src="<?php echo tsl($SITEURL) .'data/uploads/'. $src; ?>" class="gs_image" alt=""></textarea>
-			<p style="color:#666;font-size:11px;margin:-10px 0 0 0"><?php i18n('CLIPBOARD_COPY');?>: <a href="#" class="select-all" ><?php i18n('CLIPBOARD_INSTR');?></a></p>
-		</form>
+			<form>
+				<select class="text" id="img-info" style="width:50%" >
+					<option selected="selected" value="code-img-html" ><?php i18n('HTML_ORIG_IMG');?></option>
+					<option value="code-img-link" ><?php i18n('LINK_ORIG_IMG');?></option>
+					<option value="code-thumb-html" ><?php i18n('HTML_THUMBNAIL');?></option>
+					<option value="code-thumb-link" ><?php i18n('LINK_THUMBNAIL');?></option>
+					<option value="code-imgthumb-html" ><?php i18n('HTML_THUMB_ORIG');?></option>
+				</select>
+				<textarea class="copykit" >&lt;img src="<?php echo tsl($SITEURL) .'data/uploads/'. $src; ?>" class="gs_image" alt=""></textarea>
+				<p style="color:#666;font-size:11px;margin:-10px 0 0 0"><a href="#" class="select-all" ><?php i18n('CLIPBOARD_INSTR');?></a></p>
+			</form>
 			<div class="toggle">
 				<p id="code-img-html">&lt;img src="<?php echo tsl($SITEURL) .'data/uploads/'. $src; ?>" class="gs_image" alt=""></p>
 				<p id="code-img-link"><?php echo tsl($SITEURL) .'data/uploads/'. $src; ?></p>

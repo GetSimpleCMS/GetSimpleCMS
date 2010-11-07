@@ -220,51 +220,72 @@ else
 		<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save_settings"); ?>" />
 		<div class="main">
 		<h3><?php i18n('WEBSITE_SETTINGS');?></h3>
-
-		<p><b><?php i18n('LABEL_WEBSITE');?>:</b><br /><input class="text" name="sitename" type="text" value="<?php if(isset($SITENAME1)) { echo stripslashes($SITENAME1); } else { echo stripslashes($SITENAME); } ?>" /></p>
-
-		<p><b><?php i18n('LABEL_BASEURL');?>:</b><br /><input class="text" name="siteurl" type="text" value="<?php if(isset($SITEURL1)) { echo $SITEURL1; } else { echo $SITEURL; } ?>" /></p>
-		<?php	if ( $fullpath != $SITEURL ) {	echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.i18n_r('LABEL_SUGGESTION').': &nbsp; <code>'.$fullpath.'</code></p>';	}	?>
 		
-		<p><b><?php i18n('LOCAL_TIMEZONE');?>:</b><br />
-		<? if( (isset($_POST['timezone'])) ) { $TIMEZONE = $_POST['timezone']; } ?>
-		<select class="text" name="timezone"> 
-		<?php if ($TIMEZONE == '') { echo '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>'; } else { echo '<option selected="selected"  value="'. $TIMEZONE .'">'. $TIMEZONE .'</option>'; } ?>
-		<?php include('inc/timezone_options.txt'); ?>
-		</select>
-		</p>
+		<div class="leftsec">
+			<p><label for="sitename" ><?php i18n('LABEL_WEBSITE');?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php if(isset($SITENAME1)) { echo stripslashes($SITENAME1); } else { echo stripslashes($SITENAME); } ?>" /></p>
+		</div>
+		<div class="rightsec">
+			<p><label for="siteurl" ><?php i18n('LABEL_BASEURL');?>:</label><input class="text" id="siteurl" name="siteurl" type="text" value="<?php if(isset($SITEURL1)) { echo $SITEURL1; } else { echo $SITEURL; } ?>" /></p>
+			<?php	if ( $fullpath != $SITEURL ) {	echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.i18n_r('LABEL_SUGGESTION').': &nbsp; <code>'.$fullpath.'</code></p>';	}	?>
+		</div>
+		<div class="clear"></div>
 		
-		<p><b><?php i18n('LANGUAGE');?>:</b><br />
-		<select name="lang" class="text">
-			<?php echo $langs; ?>
-		</select> &nbsp;<a href="http://get-simple.info/download/languages/" style="font-size:11px;" ><?php i18n('MORE');?></a>
-		</p>
+		<div class="leftsec">
+			<p><label for="timezone" ><?php i18n('LOCAL_TIMEZONE');?>:</label>
+			<? if( (isset($_POST['timezone'])) ) { $TIMEZONE = $_POST['timezone']; } ?>
+			<select class="text" id="timezone" name="timezone"> 
+			<?php if ($TIMEZONE == '') { echo '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>'; } else { echo '<option selected="selected"  value="'. $TIMEZONE .'">'. $TIMEZONE .'</option>'; } ?>
+			<?php include('inc/timezone_options.txt'); ?>
+			</select>
+			</p>
+		</div>
+		<div class="rightsec">
+			<p><label for="lang" ><?php i18n('LANGUAGE');?>:</label>
+			<select name="lang" id="lang" class="text">
+				<?php echo $langs; ?>
+			</select><br /><a href="http://get-simple.info/download/languages/" style="font-size:11px;" ><?php i18n('MORE');?></a>
+			</p>
+		</div>
+		<div class="clear"></div>
 		
-		<p><b><?php i18n('PERMALINK');?>:</b><br /><input class="text" name="permalink" type="text" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /> &nbsp;<a href="http://get-simple.info/docs/permalinks/" style="font-size:11px;" ><?php i18n('HELP');?></a></p>
-
+		<div class="leftsec">
+			<p><label for="permalink" ><?php i18n('PERMALINK');?>:</label><input class="text" name="permalink" id="permalink" type="text" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /><br /><a href="http://get-simple.info/docs/permalinks/" style="font-size:11px;" ><?php i18n('MORE');?></a></p>
+		</div>
+		<div class="clear"></div>
 		
-		<p><input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<label class="clean" for="prettyurls" ><?php i18n('USE_FANCY_URLS');?>.</label><br />
-		<input name="show_htmleditor" id="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<label class="clean" for="show_htmleditor" ><?php i18n('ENABLE_HTML_ED');?></label></p>
+		<p class="inline" ><input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<label for="prettyurls" ><?php i18n('USE_FANCY_URLS');?>.</label><br />
+		<input name="show_htmleditor" id="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<label for="show_htmleditor" ><?php i18n('ENABLE_HTML_ED');?></label></p>
 		
 		<?php exec_action('settings-website-extras'); ?>
 		
-		<p><input class="submit" type="submit" name="submitted" value="<?php i18n('BTN_SAVESETTINGS');?>" /></p>
+	
 		
+		<div id="profile" class="section" >
+		<h3><?php i18n('SIDE_USER_PROFILE');?></h3>
+		<div class="leftsec">
+			<p><label for="user" ><?php i18n('LABEL_USERNAME');?>:</label><input class="text" id="user" name="user" type="text" value="<?php if(isset($USR1)) { echo $USR1; } else { echo $USR; } ?>" /></p>
 		</div>
-		
-		<div id="profile" class="main">
-		<h3><?php i18n('USER_SETTINGS');?></h3>
-		<p><b><?php i18n('LABEL_USERNAME');?>:</b><br /><input class="text" name="user" type="text" value="<?php if(isset($USR1)) { echo $USR1; } else { echo $USR; } ?>" /></p>
-		<p><b><?php i18n('LABEL_EMAIL');?>:</b><br /><input class="text" name="email" type="text" value="<?php if(isset($EMAIL1)) { echo $EMAIL1; } else { echo $EMAIL; } ?>" /></p>
-		<?php if (! check_email_address($EMAIL)) {
-			echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.i18n_r('WARN_EMAILINVALID').'</p>';
-		}?>
+		<div class="rightsec">
+			<p><label for="email" ><?php i18n('LABEL_EMAIL');?>:</label><input class="text" id="email" name="email" type="text" value="<?php if(isset($EMAIL1)) { echo $EMAIL1; } else { echo $EMAIL; } ?>" /></p>
+			<?php if (! check_email_address($EMAIL)) {
+				echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.i18n_r('WARN_EMAILINVALID').'</p>';
+			}?>
+		</div>
+		<div class="clear"></div>
 		<p style="margin:20px 0 5px 0;font-size:12px;color:#999;" ><?php i18n('ONLY_NEW_PASSWORD');?>:</p>
-		<p><b><?php i18n('NEW_PASSWORD');?>:</b><br /><input autocomplete="off" class="text" name="sitepwd" type="password" value="" /></p>
-		<p><b><?php i18n('CONFIRM_PASSWORD');?>:</b><br /><input autocomplete="off" class="text" name="sitepwd_confirm" type="password" value="" /></p>
+		<div class="leftsec">
+			<p><label for="sitepwd" ><?php i18n('NEW_PASSWORD');?>:</label><input autocomplete="off" class="text" id="sitepwd" name="sitepwd" type="password" value="" /></p>
+		</div>
+		<div class="rightsec">
+			<p><label for="sitepwd_confirm" ><?php i18n('CONFIRM_PASSWORD');?>:</label><input autocomplete="off" class="text" id="sitepwd_confirm" name="sitepwd_confirm" type="password" value="" /></p>
+		</div>
+		<div class="clear"></div>
 		<?php exec_action('settings-user-extras'); ?>
-		<p><input class="submit" type="submit" name="submitted" value="<?php i18n('BTN_SAVESETTINGS');?>" /></p>
+		<p id="submit_line" >
+			<span><input class="submit" type="submit" name="submitted" value="<?php i18n('BTN_SAVESETTINGS');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="settings.php?cancel"><?php i18n('CANCEL'); ?></a>
+		</p>
 	</form>
+	</div>
 	</div>
 	</div>
 

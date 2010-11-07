@@ -191,10 +191,10 @@ $APIKEY = $data->apikey;
 			} elseif ($verstatus == '2') {
 				$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - '. i18n_r('BETA').'</span>';
 			} else {
-				$ver = '<span class="WARNmsg" >'. i18n_r('CANNOT_CHECK') .' <b>'.$site_version_no.'</b><br /><a href="http://get-simple.info/download">'. i18n_r('DOWNLOAD').'</a></span>';
+				$ver = '<span class="WARNmsg" >'. i18n_r('CANNOT_CHECK') .' <b>'.$site_version_no.'</b><br /><a href="http://get-simple.info/download/">'. i18n_r('DOWNLOAD').'</a></span>';
 			}
 			?>
-			<tr><td style="width:345px;" ><?php echo $site_full_name; ?> <?php i18n_r('VERSION'); ?></td><td><?php echo $ver; ?></td></tr>
+			<tr><td style="width:445px;" ><?php echo $site_full_name; ?> <?php i18n_r('VERSION'); ?></td><td><?php echo $ver; ?></td></tr>
 			<tr><td>
 			<?php
 				if (version_compare(PHP_VERSION, "5.2", "<")) {
@@ -255,15 +255,19 @@ $APIKEY = $data->apikey;
 				<p><?php i18n('KILL_CANT_CONTINUE');?> <a href="./" ><?php i18n('REFRESH');?></a></p>
 			<?php } else {?>
 			<form action="setup.php" method="post" accept-charset="utf-8" >
-				<p><b><?php i18n('SELECT_LANGUAGE');?></b>:<br />
-				<select name="lang" id="lang" class="text">
-					<?php echo $langs; ?>
-				</select> <small class="hint">&nbsp;<a href="install.php?lang=" id="refreshlanguage" ><?php i18n('REFRESH');?></a></small>
-				</p>
+				<div class="leftsec">
+					<label for="lang" ><?php i18n('SELECT_LANGUAGE');?>:</label>
+					<select name="lang" id="lang" class="text">
+						<?php echo $langs; ?>
+					</select><br />
+					<a href="install.php?lang=" id="refreshlanguage" ><?php i18n('REFRESH');?></a> &nbsp;|&nbsp; <a href="http://get-simple.info/download/languages/"><?php i18n('DOWNLOAD_LANG');?></a>
+					</p>
+				</div>
+				<div class="clear"></div>
 				<p><input class="submit" type="submit" name="continue" value="<?php i18n('CONTINUE_SETUP');?> &raquo;" /></p>
 			</form>
 			
-			<small class="hint"><a href="http://get-simple.info/download/languages"><?php i18n('DOWNLOAD_LANG');?></a></small>
+			<small class="hint"></small>
 			<?php } ?>
 	</div>
 </div>

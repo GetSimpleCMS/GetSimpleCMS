@@ -132,7 +132,7 @@ if (count($componentsec) != 0) {
 	
 	<div id="maincontent">
 	<div class="main">
-	<label><?php echo i18n('EDIT_COMPONENTS');?></label>
+	<h3 class="floated"><?php echo i18n('EDIT_COMPONENTS');?></h3>
 	<div class="edit-nav" >
 		<a href="#" id="addcomponent" accesskey="<?php echo find_accesskey(i18n_r('ADD_COMPONENT'));?>" ><?php i18n('ADD_COMPONENT');?></a>
 		<div class="clear"></div>
@@ -141,11 +141,12 @@ if (count($componentsec) != 0) {
 	<form class="manyinputs" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 		<input type="hidden" id="id" value="<?php echo $count; ?>" />
 		<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_components"); ?>" />
-		<p><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_COMPONENTS');?>" /> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme.php"><?php i18n('CANCEL'); ?></a></p>
 
 		<div id="divTxt"></div> 
 		<?php echo $table; ?>
-		<p><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_COMPONENTS');?>" /> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="components.php?cancel"><?php i18n('CANCEL'); ?></a></p>
+		<p id="submit_line" >
+			<span><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_COMPONENTS');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="components.php?cancel"><?php i18n('CANCEL'); ?></a>
+		</p>
 	</form>
 	</div>
 	</div>

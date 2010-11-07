@@ -40,7 +40,7 @@ if ($_GET['id'] != '') {
 	redirect('backups.php?upd=bak-err');
 }
 
-if ($private != '' ) { $private = '('.i18n_r('RIVATE_SUBTITLE').')'; } else { $private = ''; }
+if ($private != '' ) { $private = '<span style="color:#cc0000">('.i18n_r('PRIVATE_SUBTITLE').')</span>'; } else { $private = ''; }
 if ($menuStatus == '' ) { $menuStatus = i18n_r('NO'); } else { $menuStatus = i18n_r('YES'); }
 
 // are we going to do anything with this backup?
@@ -80,15 +80,15 @@ elseif ($p == 'restore') {
 	
 	<div id="maincontent">
 		<div class="main" >
-		<label><?php i18n('BACKUP_OF');?> &lsquo;<em><?php echo $url; ?></em>&rsquo;</label>
+		<h3 class="floated"><?php i18n('BACKUP_OF');?> &lsquo;<em><?php echo $url; ?></em>&rsquo;</h3>
 		
 		<div class="edit-nav" >
-			 <a href="backups.php" accesskey="<?php echo find_accesskey(i18n_r('ASK_CANCEL'));?>" ><?php i18n('ASK_CANCEL');?></a> <a href="backup-edit.php?p=restore&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_RESTORE'));?>" ><?php i18n('ASK_RESTORE');?></a> <a href="backup-edit.php?p=delete&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" title="<?php i18n('DELETEPAGE_TITLE'); ?>: <?php echo $title; ?>?" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE'));?>" class="delconfirm" ><?php i18n('ASK_DELETE');?></a>
+			 <a href="backup-edit.php?p=restore&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_RESTORE'));?>" ><?php i18n('ASK_RESTORE');?></a> <a href="backup-edit.php?p=delete&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" title="<?php i18n('DELETEPAGE_TITLE'); ?>: <?php echo $title; ?>?" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE'));?>" class="delconfirm" ><?php i18n('ASK_DELETE');?></a>
 			<div class="clear"></div>
 		</div>
 		
 		<table class="simple" >
-		<tr><td style="width:105px;" ><b><?php i18n('PAGE_TITLE');?>:</b></td><td><b><?php echo cl($title); ?></b> <?php echo $private; ?></td></tr>
+		<tr><td style="width:125px;" ><b><?php i18n('PAGE_TITLE');?>:</b></td><td><b><?php echo cl($title); ?></b> <?php echo $private; ?></td></tr>
 		<tr><td><b><?php i18n('BACKUP_OF');?>:</b></td><td>
 			<?php 
 			if(isset($id)) {
@@ -103,10 +103,10 @@ elseif ($p == 'restore') {
 		<tr><td><b><?php i18n('META_DESC');?>:</b></td><td><em><?php echo $metad; ?></em></td></tr>
 		<tr><td><b><?php i18n('MENU_TEXT');?>:</b></td><td><?php echo $menu; ?></td></tr>
 		<tr><td><b><?php i18n('PRIORITY');?>:</b></td><td><?php echo $menuOrder; ?></td></tr>
-		<tr><td><b><?php i18n('ADD_TO_MENU');?>?</b></td><td><?php echo $menuStatus; ?></td></tr>
+		<tr><td><b><?php i18n('ADD_TO_MENU');?></b></td><td><?php echo $menuStatus; ?></td></tr>
 		</table>
 		
-		<textarea id="codetext" style="background:#fefefe;width:570px;height:400px;padding:4px;border:1px solid #ccc;" ><?php echo strip_decode($content); ?></textarea>
+		<textarea id="codetext" style="background:#fefefe;width:635px;height:550px;padding:4px;border:1px solid #ccc;" ><?php echo strip_decode($content); ?></textarea>
 
 		</div>
 	</div>

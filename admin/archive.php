@@ -50,7 +50,7 @@ if(isset($_GET['nozip'])) {
 	
 	<div id="maincontent">
 		<div class="main" >
-		<label><?php i18n('WEBSITE_ARCHIVES');?></label>
+		<h3 class="floated"><?php i18n('WEBSITE_ARCHIVES');?></h3>
 		<div class="edit-nav" >
                     <a id="waittrigger" href="archive.php?do&nonce=<?php echo get_nonce("create"); ?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_CREATE_ARC'));?>" title="<?php i18n('CREATE_NEW_ARC');?>" ><?php i18n('ASK_CREATE_ARC');?></a>
 		<div class="clear"></div></div>

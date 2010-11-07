@@ -51,7 +51,7 @@ if (!isset($log_data)) $log_data = getXML($log_file);
 	
 	<div id="maincontent">
 		<div class="main">
-			<label><?php i18n('VIEWING');?> <?php i18n('LOG_FILE');?>: &lsquo;<em><?php echo $log_name; ?></em>&rsquo;</label>
+			<h3 class="floated"><?php i18n('VIEWING');?> <?php i18n('LOG_FILE');?>: &lsquo;<em><?php echo $log_name; ?></em>&rsquo;</h3>
 			<div class="edit-nav" >
 				<a href="log.php?log=<?php echo $log_name; ?>&action=delete&nonce=<?php echo get_nonce("delete"); ?>" accesskey="<?php echo find_accesskey(i18n_r('CLEAR_ALL_DATA'));?>" title="<?php i18n('CLEAR_ALL_DATA');?> <?php echo $log_name; ?>?" /><?php i18n('CLEAR_THIS_LOG');?></a>
 				<div class="clear"></div>

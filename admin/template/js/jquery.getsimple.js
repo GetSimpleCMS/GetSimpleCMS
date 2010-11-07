@@ -203,6 +203,18 @@ jQuery(document).ready(function() {
 		$(this).toggleClass('current');
 		return false;
 	});
+	$("#post-private").change(function(){
+	  if ($("#post-private").is(":checked")) { 
+	  	$("#post-private-wrap label").css("color", '#cc0000');
+	  } else {
+	    $("#post-private-wrap label").css("color", '#333333'); 
+	  }
+	});
+	if ($("#post-private").is(":checked")) { 
+  	$("#post-private-wrap label").css("color", '#cc0000');
+  } else {
+    $("#post-private-wrap label").css("color", '#333333'); 
+  }
 	$("#post-menu-enable").live("click", function() {
       $("#menu-items").slideToggle("fast");
 	});

@@ -43,6 +43,7 @@ html {
 		-webkit-border-top-left-radius: 5px;
 		-moz-border-radius-topright:5px;
 		-webkit-border-top-right-radius: 5px;
+		
 	}
 	.wrapper .nav li a:link, .wrapper .nav li a:visited, .wrapper #pill li a:link, .wrapper #pill li a:visited {
 		color:#AFC5CF;
@@ -86,6 +87,9 @@ html {
 		background:#f9f9f9;
 		font-weight:bold !important;
 		text-shadow: 1px 1px 0px #fff;
+		box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;  
+	-moz-box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;  
+	-webkit-box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;
 		}
 	.wrapper .nav li a:active, .wrapper .nav li a:focus, .wrapper .nav li a:hover, .wrapper #pill li a:hover, .wrapper #pill li a:focus {
 		color:#FFF;background:#0E1316;
@@ -226,6 +230,17 @@ html {
 		color:#CF3805;
 		margin:0 0 20px 0;
 		}
+	h3 em {font-style:normal;}
+	h3.floated {
+		font-size:16px;	
+		font-weight:normal;
+		font-family:Georgia, Times, Times New Roman, serif ;
+		padding:2px 0 0 0;
+		color:#CF3805;
+		float:left;
+		display:block;
+		margin:0 0 5px 0;
+	}
 	.bodycontent ul, .bodycontent ol {margin:0 0 20px 30px;}
 	.bodycontent ul p, .bodycontent ol p {margin:0 0 10px 0;}
 
@@ -278,13 +293,14 @@ html {
 	padding:3px 10px;
 	float:right;
 	margin:0 0 0 5px;
-	border-radius: 8px;
-	-moz-border-radius: 8px;
-	-khtml-border-radius: 8px;
-	-webkit-border-radius: 8px;
+	border-radius: 15px;
+	-moz-border-radius: 15px;
+	-khtml-border-radius: 15px;
+	-webkit-border-radius: 15px;
 }
-.edit-nav select {float:right;padding:2px;border:1px solid #999;font-size:11px;}
-.edit-nav p {float:right;font-size:11px;padding:2px;margin:0;}
+.edit-nav select {margin-top:-3px;float:right;padding:1px;border:1px solid #999;font-size:11px;}
+.edit-nav p {float:right;font-size:11px;margin:0;}
+.edit-nav label {font-weight:100;display:inline;font-size:11px;color:#666;margin:0;padding:0;}
 
 .edit-nav {height:1%;}
 .edit-nav a:link, .edit-nav a:visited {
@@ -314,14 +330,14 @@ html {
 .wrapper table td {vertical-align:top;padding:4px;border-bottom:1px solid #eee;border-top:1px solid #eee;line-height:20px !important;}
 .wrapper table th {padding:2px 4px;font-size:12px;text-shadow: #fff 1px 1px 1px;border-top:1px solid #ccc;border-bottom:1px solid #bbb;color:#333;font-weight:bold;background:#E2E2E2 url(images/gray.png) top left repeat-x;line-height:20px !important;}
 .wrapper table tr.head {}
-.wrapper table td span {font-size:11px;color:#777;line-height:14px !important;}
+.wrapper table td span {font-size:12px;color:#777;}
 .wrapper table tr.trodd { background:#f9f9f9;}
 .wrapper table tr#tr-index a { font-weight:bold !important;}
 .wrapper table tr.activeedit {background:#FFFFE8 !important; }
 .wrapper table tr.currentpage{ background:#FFFFD1;}
 .wrapper table tr {border-bottom:1px solid #eee;border-top:1px solid #eee;}
 table td a {font-weight:normal !important;}
-.wrapper table.healthcheck tr td {font-size:11px;}
+.wrapper table.healthcheck tr td {font-size:12px;}
 .popup table td {padding:4px;}
 .popup table a:link, .popup table a:visited {
 	color:#415A66;
@@ -331,7 +347,14 @@ table td a {font-weight:normal !important;}
 	color:#333;
 	text-decoration:underline;
 }
-
+sup {
+		color:#666;
+		font-weight:100 !important;
+    vertical-align: baseline;
+    font-size: 0.8em;
+    position: relative;
+    top: -0.4em;
+}
 
 /* default form css */
 #maincontent .main {
@@ -339,10 +362,11 @@ table td a {font-weight:normal !important;}
 	background:#fff;
 	border:1px solid #c3c3c3;
 	margin:0 0 30px 0;
-	box-shadow: rgba(46,60,63, 0.08) 0px 0px 6px;  
-	-moz-box-shadow: rgba(46,60,63, 0.08) 0px 0px 6px;  
-	-webkit-box-shadow: rgba(46,60,63, 0.08) 0px 0px 6px;
+	box-shadow: rgba(46,60,63, 0.07) 0px 0px 5px;  
+	-moz-box-shadow: rgba(46,60,63, 0.07) 0px 0px 5px;  
+	-webkit-box-shadow: rgba(46,60,63, 0.07) 0px 0px 5px;
 }
+#maincontent .main .section {padding-top:30px;}
 #maincontent .main pre {
 	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; 
 	line-height:18px;
@@ -364,11 +388,10 @@ form input.text, form select.text {
 	-khtml-border-radius: 2px;
 	-webkit-border-radius: 2px;
 }
-form select.text { width:521px; }
-
+form select.text { width:521px;padding:4px 5px; }
 input:focus, select:focus, textarea:focus {
 	outline:none;
-	border:1px solid #666;
+	border:1px solid #666 !important;
 	box-shadow: rgba(46,60,63, 0.15) 0px 0px 6px;  
 	-moz-box-shadow: rgba(46,60,63, 0.15) 0px 0px 6px;  
 	-webkit-box-shadow: rgba(46,60,63, 0.15) 0px 0px 6px;
@@ -398,40 +421,29 @@ textarea#codetext {
 }
 #menu-items span {text-transform:lowercase}
 label {
-	font-size:16px;	
-	font-weight:normal;
-	font-family:Georgia, Times, Times New Roman, serif ;
-	padding:2px 0 0 0;
-	color:#CF3805;
-	float:left;
+	padding:0;
+	margin:0;
+	color:#222;
 	display:block;
-	margin:0 0 5px 0;
+	font-size:12px;
+	font-weight:bold;
+	font-family:arial, helvetica, sans-serif
 }
-
-label.clean {
-	font-size:12px;	
-	font-family:arial;
-	padding:0 0 0 0;
-	color:#000;
-	float:none;
-	display:inline;
-	margin:0 0 0 0;
-}
+.inline label {display:inline;}
 
 /* meta dropdown style */
 #metadata_window {margin:0 15px 30px 0;}
 #metadata_window .rightopt {float:right;width:48%;}
 #metadata_window .leftopt {float:left;width:48%;}
-#metadata_window p {margin:0 0 13px 0;}
+#metadata_window p {margin:0 0 15px 0;}
 #metadata_window input, #metadata_window select, #metadata_window textarea {
 	width:98%;
 	font-size:11px;
 	padding:3px;	
+	margin:0 !important;
 }
-#metadata_window textarea { height:75px;}
+#metadata_window textarea { height:74px;}
 #metadata_window select { width:100%;}
-#metadata_window label {padding:0;margin:0;color:#222;display:block;font-size:12px;font-weight:bold;font-family:arial, helvetica, sans-serif}
-#metadata_window p.inline label {display:inline;}
 #metadata_window p.inline input {width:25px;padding:0;margin:0;}
 #metadata_window #menu-items span label {display:inline;font-size:11px;color:#777;font-weight:normal;}
 #metadata_window #menu-items select {padding:2px 3px;}
@@ -442,11 +454,18 @@ table.cleantable tr td {border:none;}
 
 /* form submit button style */
 input.submit {
-	padding:5px 10px;
+	padding:6px 12px;
 	font-family:Arial, Helvetica Neue, Helvetica, sans-serif;
 	font-weight:bold;
 }
-		
+.leftsec {float:left;width:50%;padding-bottom:5px;}
+.rightsec {float:left;width:50%;padding-bottom:5px;}
+.rightsec input.text, .leftsec input.text {
+	width:92%;
+}	
+.rightsec select.text,  .leftsec select.text {
+	width:96%;
+}
 /* login css */
 form.login input.text { width:250px; }
 
@@ -461,7 +480,7 @@ form input#post-metad {width:573px !important}
 form input.secondary {width:280px;}
 /* components css */
 form.manyinputs input.text { width:230px; }
-form.manyinputs textarea { width:632px; height:150px; }
+form.manyinputs textarea { width:632px; height:200px; }
 form.manyinputs p {margin:0 0 25px 0;}
 .compdiv {padding:10px 0 35px 0;}
 table.comptable {margin:0px !important;width:645px;background:#fff;border:none;padding:0;}
@@ -507,27 +526,29 @@ a.button {
 }
 a.button:link, a.button:visited {background:#6CA2D1;color:#fff;}
 a.button:hover {background:#CF3805;color:#fff;}
+
+
 /* file listing table style */
 #filetypetoggle { color:#999; font-size:12px;}
-table td.delete {width:17px;text-align:center;font-size:11px;}
-.view {width:45px;text-align:center;}
+table td.delete {width:20px;text-align:center;font-size:12px;}
+.view {width:48px;text-align:center;}
 .editl {width:40px;text-align:center;}
 .editlw {width:220px;text-align:left;}
-.delete a:link, .delete a:visited {color:#aaa !important; text-decoration:none !important; padding: 1px;display:block;font-size:11px;font-weight:normal;}
-.delete a:hover {background:#D94136 !important; color:#fff !important; text-decoration:none !important;padding: 1px;display:block;font-size:11px;font-weight:normal; }
+.delete a:link, .delete a:visited {color:#aaa !important; text-decoration:none !important; padding: 1px;display:block;line-height:16px;font-size:12px;font-weight:normal;}
+.delete a:hover {background:#D94136 !important; color:#fff !important; text-decoration:none !important;padding: 1px;line-height:16px;display:block;font-size:12px;font-weight:normal; }
 
-a.cancel:link, a.cancel:visited { font-weight:100; color:#D94136 !important;text-decoration:underline;padding: 2px;background:none !important;}
-a.cancel:hover { font-weight:100; background:#D94136 !important; color:#fff !important;text-decoration:none !important;padding: 2px;}
+a.cancel:link, a.cancel:visited { font-weight:100; color:#D94136 !important;text-decoration:underline;padding: 1px;background:none !important;line-height:16px;}
+a.cancel:hover { font-weight:100; background:#D94136 !important; color:#fff !important;text-decoration:none !important;padding: 1px;line-height:16px;}
 a.cancel em {font-style:normal}
 
-.wrapper .secondarylink {width:17px;text-align:center;font-size:11px;}
-.wrapper .secondarylink a:link, .wrapper .secondarylink a:visited {color:#aaa;text-decoration:none;	font-weight:normal;padding: 1px;display:block;}
-.wrapper .secondarylink a:hover {background:#415A66;color:#FFF;text-decoration:none;font-weight:normal;padding: 1px;display:block;}
+.wrapper .secondarylink {width:20px;text-align:center;font-size:12px;line-height:14px;}
+.wrapper .secondarylink a:link, .wrapper .secondarylink a:visited {color:#aaa;text-decoration:none;	font-weight:normal;padding: 1px;display:block;line-height:16px;}
+.wrapper .secondarylink a:hover {background:#415A66;color:#FFF;text-decoration:none;font-weight:normal;padding: 1px;display:block;line-height:16px;}
 
 
 /* backup info display */
 table.simple td {border:1px solid #eee;border-collapse:collapse;color:#555;font-size:12px;padding:4px 10px 4px 4px;}
-table.simple {width:575px;border:1px solid #aaa;}
+table.simple {width:100%;border:1px solid #aaa;}
 
 
 /* footer */
@@ -535,11 +556,11 @@ table.simple {width:575px;border:1px solid #aaa;}
 	border-top:1px solid #ccc;
 	margin:40px 0 0 0;
 	padding:10px 0;
-	font-size:12px;
+	font-size:11px;
 	color:#777;
 }
-#footer p {margin:0 0 10px 0;}
-	
+#footer p {margin:0 0 8px 0;}
+#footer a {font-weight:100;}	
 
 .toggle {display:none;}
 

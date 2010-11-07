@@ -63,7 +63,7 @@ if (count($pagesSorted) != 0) {
 		if ($page['private'] != '' ) { $page['private'] = ' <sup>['.i18n_r('PRIVATE_SUBTITLE').']</sup>'; } else { $page['private'] = ''; }
 		if ($page['url'] == 'index' ) { $homepage = ' <sup>['.i18n_r('HOMEPAGE_SUBTITLE').']</sup>'; } else { $homepage = ''; }
 		$table .= '<td>'. $dash .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. cl($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
-		$table .= '<td style="width:70px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
+		$table .= '<td style="width:80px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
 		$table .= '<td class="secondarylink" >';
 		$table .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. cl($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
 		$table .= '</td>';
@@ -88,8 +88,8 @@ if (count($pagesSorted) != 0) {
 	
 	<div id="maincontent">
 		<div class="main">
-			<label><?php i18n('PAGE_MANAGEMENT'); ?></label>
-			<div class="edit-nav" ><p><?php i18n('TOGGLE_STATUS'); ?> &nbsp;<input type="checkbox" id="show-characters" value="" /></p><div class="clear" ></div></div>
+			<h3 class="floated"><?php i18n('PAGE_MANAGEMENT'); ?></h3>
+			<div class="edit-nav" ><p><label for="show-characters" ><?php i18n('TOGGLE_STATUS'); ?></label> &nbsp;<input type="checkbox" name="show-characters" id="show-characters" value="" style="vertical-align:text-bottom" /></p><div class="clear" ></div></div>
 			<table id="editpages" class="edittable highlight paginate">
 				<?php echo $table; ?>
 			</table>

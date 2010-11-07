@@ -10,3 +10,7 @@
 <li><a href="settings.php#profile" accesskey="<?php echo find_accesskey(i18n_r('SIDE_USER_PROFILE'));?>" ><?php i18n('SIDE_USER_PROFILE'); ?></a></li>
 <?php exec_action("settings-sidebar"); ?>
 </ul>
+
+<?php if(get_filename_id()==='settings') { ?>
+<p id="js_submit_line" ></p>
+<?php } ?>

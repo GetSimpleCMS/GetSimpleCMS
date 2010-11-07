@@ -44,7 +44,7 @@ $i18n = array(
 "LABEL_INSTALL"			=>	"Install Now!",
 "SELECT_LANGUAGE"		=> "Select your language",
 "CONTINUE_SETUP" 		=> "Continue with Setup",
-"DOWNLOAD_LANG" 		=> "Download additional languages",
+"DOWNLOAD_LANG" 		=> "Download Languages",
 
 /* 
  * For: pages.php
@@ -219,15 +219,14 @@ $i18n = array(
 "LANGUAGE"					=>	"Language",
 "USE_FANCY_URLS"		=>	"<b>Use Fancy URLs</b> - Requires that your host has mod_rewrite enabled",
 "ENABLE_HTML_ED"		=>	"<b>Enable the HTML editor</b>",
-"USER_SETTINGS"			=>	"User Login Settings",
 "WARN_EMAILINVALID"	=>	"WARNING: This email address does not look valid!",
 "ONLY_NEW_PASSWORD"	=>	"Only provide a password below if you want to change your current one",
 "NEW_PASSWORD"			=>	"New Password",
 "CONFIRM_PASSWORD"	=>	"Confirm Password",
 "PASSWORD_NO_MATCH"	=>	"Passwords do not match",
-"PERMALINK" => "Custom Permalink Structure",
-"MORE" => "more",
-"HELP" => "help",
+"PERMALINK" 				=> 	"Custom Permalink Structure",
+"MORE" 							=> 	"Learn More...",
+"HELP" 							=> 	"help",
 
 /* 
  * For: health-check.php
@@ -356,7 +355,7 @@ $i18n = array(
 "ER_PROBLEM_DEL"		=>	"There was a problem deleting the file",
 "ER_COMPONENT_SAVE"	=>	"Your components have been saved",
 "ER_COMPONENT_REST"	=>	"Your components have been restored",
-"ER_CANCELLED_FAIL"	=>	"<b>Cancelled:</b> The update to this file has been cancelled",
+"ER_CANCELLED_FAIL"	=>	"<b>Cancelled:</b> This update has been cancelled",
 
 /* 
  * For: changedata.php
@@ -406,8 +405,7 @@ $i18n = array(
 "CREATE_ONE" 				=> "create one",
 "IMG_CONTROl_PANEL" => "Image Control Panel",
 "ORIGINAL_IMG" 			=> "Original Image",
-"CLIPBOARD_COPY" 		=> "Copy to clipboard",
-"CLIPBOARD_INSTR" 	=> "Select All then <em>ctrl-c</em> or <em>command-c</em>",
+"CLIPBOARD_INSTR" 	=> "Select All",
 "CREATE_THUMBNAIL" 	=> "Create Thumbnail",
 "CROP_INSTR" 				=> "<em>ctrl-Q</em> or <em>command-Q</em> for square",
 "SELECT_DIMENTIONS" => "Selection Dimentions",

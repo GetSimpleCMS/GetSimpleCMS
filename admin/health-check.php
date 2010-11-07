@@ -56,7 +56,7 @@ $php_modules = get_loaded_extensions();
 				
 				if ($verstatus == '0') 
 				{
-					$ver = '<span class="ERRmsg" >'. i18n_r('UPG_NEEDED').' <b>'.$apikey->latest .'</b><br /><a href="http://get-simple.info/download">'. i18n_r('DOWNLOAD').'</a></span>';
+					$ver = '<span class="ERRmsg" >'. i18n_r('UPG_NEEDED').' <b>'.$apikey->latest .'</b><br /><a href="http://get-simple.info/download/">'. i18n_r('DOWNLOAD').'</a></span>';
 				} 
 				elseif ($verstatus == '1') 
 				{
@@ -71,12 +71,12 @@ $php_modules = get_loaded_extensions();
 					$ver = '<span class="WARNmsg" >'. i18n_r('CANNOT_CHECK').' <b>'.$site_version_no.'</b><br /><a href="http://get-simple.info/download">'. i18n_r('DOWNLOAD').'</a></span>';
 				}
 				?>
-				<tr><td style="width:345px;" ><?php echo $site_full_name; ?> <?php i18n('VERSION');?></td><td><?php echo $ver; ?></td></tr>
+				<tr><td style="width:445px;" ><?php echo $site_full_name; ?> <?php i18n('VERSION');?></td><td><?php echo $ver; ?></td></tr>
 			</table>
 			
 			<h3><?php i18n('SERVER_SETUP');?></h3>
 			<table class="highlight healthcheck">
-				<tr><td style="width:345px;" >
+				<tr><td style="width:445px;" >
 				<?php
 					if (version_compare(PHP_VERSION, "5.2", "<")) {
 						echo 'PHP '.i18n_r('VERSION').'</td><td><span class="ERRmsg" ><b>'. PHP_VERSION.'</b> - PHP 5.2 '.i18n_r('OR_GREATER_REQ').' - '.i18n_r('ERROR').'</span></td></tr>';
@@ -132,7 +132,7 @@ $php_modules = get_loaded_extensions();
 						sort($data);
 						foreach($data as $file) {
 							if( isFile($file, $path) ) {
-								echo '<tr><td style="width:345px;" >/data/pages/' . $file .'</td><td>' . valid_xml($path . $file) .'</td></tr>';
+								echo '<tr><td style="width:445px;" >/data/pages/' . $file .'</td><td>' . valid_xml($path . $file) .'</td></tr>';
 							}							
 						}
 
@@ -176,7 +176,7 @@ $php_modules = get_loaded_extensions();
 			
 			<h3><?php i18n('DIR_PERMISSIONS');?></h3>
 			<table class="highlight healthcheck">
-				<?php $me = check_perms(GSDATAPAGESPATH); ?><tr><td style="width:345px;" >/data/pages/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
+				<?php $me = check_perms(GSDATAPAGESPATH); ?><tr><td style="width:445px;" >/data/pages/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
 				<?php $me = check_perms(GSDATAOTHERPATH); ?><tr><td>/data/other/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
 				<?php $me = check_perms(GSDATAOTHERPATH.'logs/'); ?><tr><td>/data/other/logs/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
 				<?php $me = check_perms(GSTHUMBNAILPATH); ?><tr><td>/data/thumbs/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
@@ -189,7 +189,7 @@ $php_modules = get_loaded_extensions();
 			
 			<h3><?php echo sprintf(i18n_r('EXISTANCE'), '.htaccess');?></h3>
 			<table class="highlight healthcheck">
-				<tr><td style="width:345px;" >/data/</td><td> 
+				<tr><td style="width:445px;" >/data/</td><td> 
 				<?php	
 					$file = GSDATAPATH.".htaccess";
 					if (! file_exists($file)) {

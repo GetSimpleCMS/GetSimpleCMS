@@ -115,7 +115,7 @@ sort($parents);
 if ($parent == null) { $none="selected"; } else { $none=""; }
 
 // Create base option
-$parents_list .= '<option '.$none.' value="" >-- '.i18n_r('NONE').' --</option>';
+$parents_list .= '<option '.$none.' value="" ></option>';
 
 foreach ($parents as $fi)
 {
@@ -160,7 +160,7 @@ if ($menu == '') { $menu = $title; }
 	<div id="maincontent">
 		<div class="main">
 		
-		<label><?php if(isset($data_edit)) { i18n('PAGE_EDIT_MODE'); } else { i18n('CREATE_NEW_PAGE'); } ?></label>	
+		<h3 class="floated"><?php if(isset($data_edit)) { i18n('PAGE_EDIT_MODE'); } else { i18n('CREATE_NEW_PAGE'); } ?></h3>	
 
 		<!-- pill edit navigation -->
 		<div class="edit-nav" >
@@ -208,9 +208,9 @@ if ($menu == '') { $menu = $title; }
 					<label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label> &nbsp;&nbsp;&nbsp;<input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel; ?> /><br />
 				</p>
 				<div id="menu-items">
-					<span style="float:left;width:83%" ><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span><span style="float:left;width:10%;" ><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>
+					<span style="float:left;width:84%" ><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span><span style="float:left;width:10%;" ><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>
 					<div class="clear"></div>
-					<input class="text" style="width:80%;" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />&nbsp<select class="text"  style="width:15%" id="post-menu-order" name="post-menu-order" >
+					<input class="text" style="width:79.5%;" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />&nbsp <select class="text"  style="width:16%" id="post-menu-order" name="post-menu-order" >
 					<?php if(isset($menuOrder)) { 
 						if($menuOrder == 0) {
 							echo '<option value="" selected>-</option>'; 
@@ -239,7 +239,7 @@ if ($menu == '') { $menu = $title; }
 					<label for="post-metad"><?php i18n('META_DESC'); ?>:</label>
 					<textarea class="text" id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
 				</p>
-				<p class="inline" >
+				<p class="inline" id="post-private-wrap" >
 					<label for="post-private" ><?php i18n('KEEP_PRIVATE'); ?></label> &nbsp;&nbsp;&nbsp;</label><input type="checkbox" id="post-private" name="post-private" <?php echo $sel_p; ?> />
 				</p>
 
