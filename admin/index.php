@@ -29,7 +29,7 @@ include('inc/common.php');
 	
 	<div id="maincontent">
 		<div class="main" >
-	<h3><?php i18n('CONTROL_PANEL'); ?> <?php i18n('LOGIN'); ?></h3>
+	<h3><?php i18n('CONTROL_PANEL'); ?></h3>
 	<?php exec_action('index-login'); ?>
 	<form class="login" action="<?php echo $cookie_login; ?>" method="post">
 		<p><b><?php i18n('USERNAME'); ?>:</b><br /><input type="text" class="text" id="userid" name="userid" /></p>

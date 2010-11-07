@@ -114,7 +114,7 @@ $i18n = array(
 "USERNAME"					=>	"Username",
 "PASSWORD"					=>	"Password",
 "FORGOT_PWD"				=>	"Forgot your password?",
-"CONTROL_PANEL"			=>	"Control Panel",
+"CONTROL_PANEL"			=>	"Control Panel Login",
 "LOGIN_REQUIREMENT"	=>	"Login Requirements",
 "WARN_JS_COOKIES"		=>	"Cookies and javascript need to be enabled in your browser to work properly",
 "WARN_IE6"					=>	"Internet Explorer 6 may work, but it is not supported",
@@ -480,6 +480,7 @@ $i18n = array(
 "DEBUG_MODE"=> "DEBUG MODE", //nav-include
 "DOUBLE_CLICK_EDIT"=> "Double Click to Edit", //components
 "THUMB_SAVED"=> "Thumbnail Saved", //image
+"EDIT_COMPONENTS"		=>	"Edit Components", //components
 
 "" => "not translated"
 

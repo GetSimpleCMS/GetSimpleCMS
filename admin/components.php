@@ -132,7 +132,7 @@ if (count($componentsec) != 0) {
 	
 	<div id="maincontent">
 	<div class="main">
-	<label><?php i18n('EDIT');?> <?php echo i18n('COMPONENTS');?></label>
+	<label><?php echo i18n('EDIT_COMPONENTS');?></label>
 	<div class="edit-nav" >
 		<a href="#" id="addcomponent" accesskey="a" ><?php i18n('ADD_COMPONENT');?></a>
 		<div class="clear"></div>
