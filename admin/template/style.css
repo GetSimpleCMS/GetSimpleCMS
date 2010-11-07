@@ -49,6 +49,10 @@ html {
 		color:#AFC5CF;
 		background:#182227;
 		text-shadow: 1px 1px 0px #0E1316;
+		-webkit-transition: all .3s ease-in-out;
+		-moz-transition: all .3s ease-in-out;
+		-o-transition: all .3s ease-in-out;
+		transition: all .3s ease-in-out;
 	}
 	.wrapper #pill li.debug a:link, .wrapper #pill li.debug a:visited, .wrapper #pill li.debug a:hover {
 		color:#fff;
@@ -58,6 +62,10 @@ html {
 		text-decoration:none !important;
 		display:block;
 		border-left:1px solid #415A66;
+		-webkit-transition: all .3s ease-in-out;
+		-moz-transition: all .3s ease-in-out;
+		-o-transition: all .3s ease-in-out;
+		transition: all .3s ease-in-out;
 	}
 	 
 	#edit .wrapper .nav li a.pages,
@@ -261,7 +269,14 @@ html {
 	-khtml-border-radius: 4px;
 	-webkit-border-radius: 4px;
 		}
-#sidebar .snav li a:link, #sidebar .snav li a:visited {margin-left:13px;color:#AFC5CF;background:#182227;text-shadow: 1px 1px 0px #0E1316;}
+#sidebar .snav li a:link, #sidebar .snav li a:visited {
+	margin-left:13px;color:#AFC5CF;background:#182227;
+	text-shadow: 1px 1px 0px #0E1316;
+	-webkit-transition: all .3s ease-in-out;
+	-moz-transition: all .3s ease-in-out;
+	-o-transition: all .3s ease-in-out;
+	transition: all .3s ease-in-out;
+	}
 #sidebar .snav li a.current {
 	margin-left:0px;
 	cursor:default;
@@ -310,6 +325,10 @@ html {
 	font-weight:bold;
 	text-decoration:none;
 	text-shadow: 1px 1px 0px #0E1316;
+	-webkit-transition: all .15s ease-in-out;
+	-moz-transition: all .15s ease-in-out;
+	-o-transition: all .15s ease-in-out;
+	transition: all .15s ease-in-out;
 }
 
 .edit-nav a:hover, #sidebar .edit-nav a:hover, .edit-nav a.current {
@@ -335,7 +354,12 @@ html {
 .wrapper table tr#tr-index a { font-weight:bold !important;}
 .wrapper table tr.activeedit {background:#FFFFE8 !important; }
 .wrapper table tr.currentpage{ background:#FFFFD1;}
-.wrapper table tr {border-bottom:1px solid #eee;border-top:1px solid #eee;}
+.wrapper table tr {border-bottom:1px solid #eee;border-top:1px solid #eee;
+	-webkit-transition: background-color .3s ease-in-out;
+		-moz-transition: background-color .3s ease-in-out;
+		-o-transition: background-color .3s ease-in-out;
+		transition: background-color .3s ease-in-out;
+		}
 table td a {font-weight:normal !important;}
 .wrapper table.healthcheck tr td {font-size:12px;}
 .popup table td {padding:4px;}
@@ -366,7 +390,7 @@ sup {
 	-moz-box-shadow: rgba(46,60,63, 0.07) 0px 0px 5px;  
 	-webkit-box-shadow: rgba(46,60,63, 0.07) 0px 0px 5px;
 }
-#maincontent .main .section {padding-top:30px;}
+#maincontent .main .section {padding-top:40px;}
 #maincontent .main pre {
 	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; 
 	line-height:18px;
@@ -534,10 +558,24 @@ table td.delete {width:20px;text-align:center;font-size:12px;}
 .view {width:48px;text-align:center;}
 .editl {width:40px;text-align:center;}
 .editlw {width:220px;text-align:left;}
-.delete a:link, .delete a:visited {color:#aaa !important; text-decoration:none !important; padding: 1px;display:block;line-height:16px;font-size:12px;font-weight:normal;}
+.delete a:link, .delete a:visited {
+	color:#aaa !important; text-decoration:none !important; padding: 1px;
+	display:block;line-height:16px;font-size:12px;font-weight:normal;
+	-webkit-transition: all .3s ease-in-out;
+	-moz-transition: all .3s ease-in-out;
+	-o-transition: all .3s ease-in-out;
+	transition: all .3s ease-in-out;
+	}
 .delete a:hover {background:#D94136 !important; color:#fff !important; text-decoration:none !important;padding: 1px;line-height:16px;display:block;font-size:12px;font-weight:normal; }
 
-a.cancel:link, a.cancel:visited { font-weight:100; color:#D94136 !important;text-decoration:underline;padding: 1px;background:none !important;line-height:16px;}
+a.cancel:link, a.cancel:visited { 
+	font-weight:100; color:#D94136 !important;text-decoration:underline;
+	padding: 1px;background:none !important;line-height:16px;
+	-webkit-transition: all .3s ease-in-out;
+	-moz-transition: all .3s ease-in-out;
+	-o-transition: all .3s ease-in-out;
+	transition: all .3s ease-in-out;
+	}
 a.cancel:hover { font-weight:100; background:#D94136 !important; color:#fff !important;text-decoration:none !important;padding: 1px;line-height:16px;}
 a.cancel em {font-style:normal}
 
@@ -564,8 +602,15 @@ table.simple {width:100%;border:1px solid #aaa;}
 
 .toggle {display:none;}
 
-.editable {padding: 3px 1px; cursor:pointer}
-.editable:hover { background:#FFFFD1; }
+.editable {
+	padding: 3px 1px; 
+	cursor:pointer;
+	-webkit-transition: background-color .3s ease-in-out;
+	-moz-transition: background-color .3s ease-in-out;
+	-o-transition: background-color .3s ease-in-out;
+	transition: background-color .3s ease-in-out;
+	}
+.editable:hover { background:#FCFBB8; }
 
 .wrapper table td span.ERRmsg {color:#D94136;font-color:12px;}
 .wrapper table td span.OKmsg {color:#308000;font-color:12px;}
