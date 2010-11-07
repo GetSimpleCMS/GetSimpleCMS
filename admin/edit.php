@@ -186,64 +186,68 @@ if ($menu == '') { $menu = $title; }
 
 			<!-- metadata toggle screen -->
 			<div style="display:none;" id="metadata_window" >
-				<table class="formtable">
-
-				<tr>
-					<td><b><?php i18n('SLUG_URL'); ?>:</b><br />
+			<div class="leftopt">
+				<p>
+					<label for="post-id"><?php i18n('SLUG_URL'); ?>:</label>
           <input class="text short" type="text" id="post-id" name="post-id" value="<?php echo $url; ?>" <?php echo ($url=='index'?'readonly="readonly" ':''); ?>/></td>
-
-					<td><b><?php i18n('TAG_KEYWORDS'); ?>:</b><br />
-					<input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" /></td>
-
-				</tr>
-				<tr>
-					<td colspan="2">
-						<b><?php i18n('META_DESC'); ?>:</b><br />
-						<input class="text" id="post-metad" name="post-metad" type="text" value="<?php echo $metad; ?>" />
-					</td>
-				</tr>
-				<tr>
-					<td><b><?php i18n('PARENT_PAGE'); ?>:</b><br />
+				</p>
+				<p>
+					<label for="post-parent"><?php i18n('PARENT_PAGE'); ?>:</label>
 					<select class="text short" id="post-parent" name="post-parent" >
 						<?php echo $parents_list; ?>
-					</select></td>
-					
-					<td><b><?php i18n('TEMPLATE'); ?>:</b><br />
+					</select>
+				</p>			
+				<p>
+					<label for="post-template"><?php i18n('TEMPLATE'); ?>:</label>
 					<select class="text short" id="post-template" name="post-template" >
 						<?php echo $theme_templates; ?>
-					</select></td>
-				</tr>
+					</select>
+				</p>
+				
+				<p class="inline" style="margin-bottom:0;padding-bottom:0;" >
+					<label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label> &nbsp;&nbsp;&nbsp;<input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel; ?> /><br />
+				</p>
+				<div id="menu-items">
+					<span style="float:left;width:83%" ><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span><span style="float:left;width:10%;" ><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>
+					<div class="clear"></div>
+					<input class="text" style="width:80%;" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />&nbsp<select class="text"  style="width:15%" id="post-menu-order" name="post-menu-order" >
+					<?php if(isset($menuOrder)) { 
+						if($menuOrder == 0) {
+							echo '<option value="" selected>-</option>'; 
+						} else {
+							echo '<option value="'.$menuOrder.'" selected>'.$menuOrder.'</option>'; 
+						}
+					} ?>
+						<option value="">-</option>
+						<?php
+						$i = 1;
+						while ($i <= 20) { 
+							echo '<option value="'.$i.'">'.$i.'</option>';
+							$i++;
+						}
+						?>
+					</select>
+				</div>				
+			</div>
+			
+			<div class="rightopt">
+				<p>
+					<label for="post-metak"><?php i18n('TAG_KEYWORDS'); ?>:</label>
+					<input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" /></td>
+				</p>
+				<p>
+					<label for="post-metad"><?php i18n('META_DESC'); ?>:</label>
+					<textarea class="text" id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
+				</p>
+				<p class="inline" >
+					<label for="post-private" ><?php i18n('KEEP_PRIVATE'); ?></label> &nbsp;&nbsp;&nbsp;</label><input type="checkbox" id="post-private" name="post-private" <?php echo $sel_p; ?> />
+				</p>
 
-				<tr>
-					<td><label class="clean" for="post-private" ><b><?php i18n('KEEP_PRIVATE'); ?></b> &nbsp;&nbsp;&nbsp;</label><input type="checkbox" id="post-private" name="post-private" <?php echo $sel_p; ?> />
-					</td>
-					
-					<td>
-							<b><a href="navigation.php" style="display:inline;font-weight:bold !important;" rel="facybox" ><?php i18n('ADD_TO_MENU'); ?></a>?</b> &nbsp;&nbsp;&nbsp;<input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel; ?> /><br />
-							<div id="menu-items"><span><?php i18n('MENU_TEXT'); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php i18n('PRIORITY'); ?></span><input class="text" style="width:175px;" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />&nbsp
-							<select class="text"  style="width:50px;" id="post-menu-order" name="post-menu-order" >
-								<?php if(isset($menuOrder)) { 
-									if($menuOrder == 0) {
-										echo '<option value="" selected>-</option>'; 
-									} else {
-										echo '<option value="'.$menuOrder.'" selected>'.$menuOrder.'</option>'; 
-									}
-								} ?>
-									<option value="">-</option>
-									<?php
-									$i = 1;
-									while ($i <= 20) { 
-										echo '<option value="'.$i.'">'.$i.'</option>';
-										$i++;
-									}
-									?>
-							</select></div>
-					</td>
-				</tr>
+			</div>
+			<div class="clear"></div>
 			<?php exec_action('edit-extras'); ?>		
-			</table>
 
-			</div>	
+			</div>	<!-- / metadata toggle screen -->
 				
 		
 			<!-- page body -->
