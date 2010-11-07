@@ -42,6 +42,9 @@ $i18n = array(
 "LABEL_USERNAME"		=>	"Username",
 "LABEL_EMAIL"				=>	"Email Address",
 "LABEL_INSTALL"			=>	"Install Now!",
+"SELECT_LANGUAGE"		=> "Select your language",
+"CONTINUE_SETUP" 		=> "Continue with Setup",
+"DOWNLOAD_LANG" 		=> "Download additional languages",
 
 /* 
  * For: pages.php
@@ -69,9 +72,8 @@ $i18n = array(
 "NEW_PAGE"					=>	"New Page",
 "PAGE_EDIT_MODE"		=>	"Page Editing Mode",
 "CREATE_NEW_PAGE"		=>	"Create New Page",
-"VIEW"							=>	"<em>V</em>iew", // 'v' is the accesskey identifier
-"PAGE_OPTIONS"			=>	"Page <em>O</em>ptions", // 'o' is the accesskey identifier
-"TOGGLE_EDITOR"			=>	"To<em>g</em>gle Editor", // 'g' is the accesskey identifier
+"VIEW"							=>	"<em>V</em>iew",
+"PAGE_OPTIONS"			=>	"Page Optio<em>n</em>s",
 "SLUG_URL"					=>	"Slug/URL",
 "TAG_KEYWORDS"			=>	"Tags &amp; Keywords",
 "PARENT_PAGE"				=>	"Parent Page",
@@ -155,7 +157,7 @@ $i18n = array(
 "VIEWING" 					=> 	"Viewing",
 "LOG_FILE" 					=> 	"Log File",
 "CLEAR_ALL_DATA" 		=> 	"Clear all data from",
-"CLEAR_THIS_LOG" 		=> 	"<em>C</em>lear This Log", // 'c' is the accesskey identifier
+"CLEAR_THIS_LOG" 		=> 	"<em>C</em>lear This Log",
 "LOG_FILE_ENTRY" 		=> 	"LOG FILE ENTRY",
 "THIS_COMPUTER"			=>	"This Computer",
 
@@ -223,7 +225,9 @@ $i18n = array(
 "NEW_PASSWORD"			=>	"New Password",
 "CONFIRM_PASSWORD"	=>	"Confirm Password",
 "PASSWORD_NO_MATCH"	=>	"Passwords do not match",
-
+"PERMALINK" => "Custom Permalink Structure",
+"MORE" => "more",
+"HELP" => "help",
 
 /* 
  * For: health-check.php
@@ -287,6 +291,7 @@ $i18n = array(
 "TAB_FILES"					=>	"<em>F</em>iles",
 "TAB_THEME"					=>	"<em>T</em>heme",
 "TAB_BACKUPS"				=>	"<em>B</em>ackups",
+"PLUGINS_NAV" 			=>  "Plu<em>g</em>ins",
 "TAB_SETTINGS"			=>	"<em>S</em>ettings",
 "TAB_SUPPORT"				=>	"Supp<em>o</em>rt",
 "TAB_LOGOUT"				=>	"<em>L</em>ogout",
@@ -309,7 +314,7 @@ $i18n = array(
  * For: sidebar-theme.php
 */
 "SIDE_VIEW_SITEMAP"	=>	"<em>V</em>iew Sitemap",
-"SIDE_GEN_SITEMAP"	=>	"<em>G</em>enerate Sitemap",
+"SIDE_GEN_SITEMAP"	=>	"Generate Site<em>m</em>ap",
 "SIDE_COMPONENTS"		=>	"<em>E</em>dit Components",
 "SIDE_EDIT_THEME"		=>	"Edit T<em>h</em>eme",
 "SIDE_CHOOSE_THEME"	=>	"Choose <em>T</em>heme",
@@ -321,13 +326,13 @@ $i18n = array(
 "SIDE_VIEW_PAGES"		=>	"View All <em>P</em>ages",
 
 /* 
- * For: sidebar-pages.php
+ * For: sidebar-settings.php
 */
 "SIDE_GEN_SETTINGS"	=>	"General <em>S</em>ettings",
 "SIDE_USER_PROFILE"	=>	"<em>U</em>ser Profile",
 
 /* 
- * For: sidebar-pages.php
+ * For: sidebar-backups.php
 */
 "SIDE_VIEW_BAK"			=>	"View Page Backup",
 "SIDE_WEB_ARCHIVES"	=>	"<em>W</em>ebsite Archives",
@@ -385,26 +390,12 @@ $i18n = array(
 "DATE_FORMAT"									=>	"M j, Y", //please keep short
 "DATE_AND_TIME_FORMAT"				=>	"F jS, Y - g:i A", //date and time
 
-
-/***********************************************************************************
- * SINCE Version 2.0
-***********************************************************************************/
-
-
 /* 
  * For: welcome.php
 */
 "WELCOME_MSG"				=>	"Thank you for choosing GetSimple as your CMS!",
 "WELCOME_P"					=>	"GetSimple makes managing your website as simple as possible with its top-of-the-class user interface and the easiest templating system around.",
 "GETTING_STARTED"		=>	"Getting Started",
-
-/* 
- * For: install.php
-*/
-
-"SELECT_LANGUAGE"		=> "Select your language",
-"CONTINUE_SETUP" 		=> "Continue with Setup",
-"DOWNLOAD_LANG" 		=> "Download additional languages",
 
 /* 
  * For: image.php
@@ -432,21 +423,13 @@ $i18n = array(
 
 "PLUGINS_MANAGEMENT"=> "Plugin Management",
 "PLUGINS_INSTALLED" => "Plugins Installed",
-"SHOW_PLUGINS"			=> "Installed Plugi<em>n</em>s",
-"PLUGINS_NAV" 			=> "Plugins",
+"SHOW_PLUGINS"			=> "Installed Plu<em>g</em>ins",
 "PLUGIN_NAME" 			=> "Name",
 "PLUGIN_DESC" 			=> "Description",
 "PLUGIN_VER" 				=> "Version",
 
 
-/***********************************************************************************
- * SINCE Version 2.02
-***********************************************************************************/
 
-
-"PERMALINK" => "Custom Permalink Structure",
-"MORE" => "more",
-"HELP" => "help",
 
 /***********************************************************************************
  * SINCE Version 2.04
@@ -464,15 +447,10 @@ $i18n = array(
 "BETA"=> "Beta / Bleeding Edge",
 
 /*
- * For: deletefile.php
- */
-
-"HOMEPAGE_DELETE_ERROR" => "You cannot delete your homepage",
-
-/*
  * Misc Cleanup Work
  */
-
+ 
+"HOMEPAGE_DELETE_ERROR" => "You cannot delete your homepage", //deletefile
 "NO_ZIPARCHIVE" => "ZipArchive extension is not installed. Unable to continue", //zip
 "REDIRECT_MSG"=> "If your browser does not redirect you, click <a href=\"%s\">here</a>", //basic
 "REDIRECT"=> "Redirect", //basic
@@ -482,7 +460,11 @@ $i18n = array(
 "THUMB_SAVED"=> "Thumbnail Saved", //image
 "EDIT_COMPONENTS"		=>	"Edit Components", //components
 
-"" => "not translated"
+
+
+
+
+"X" => "not translated"
 
 
 

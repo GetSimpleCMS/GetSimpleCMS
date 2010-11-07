@@ -72,7 +72,7 @@ else
 if ($template == '') { $template = 'template.php'; }
 
 $themes_path = GSTHEMESPATH . $TEMPLATE;
-$themes_handle = opendir($themes_path) or die("Unable to open $themes_path");		
+$themes_handle = opendir($themes_path) or die("Unable to open ". GSTHEMESPATH);		
 while ($file = readdir($themes_handle))	{		
 	if( isFile($file, $themes_path, 'php') ) {		
 		if ($file != 'functions.php') {		
@@ -166,10 +166,10 @@ if ($menu == '') { $menu = $title; }
 		<div class="edit-nav" >
 			<?php 
 			if( (isset($id)) && ($private != 'Y' )) {
-				echo '<a href="'. find_url($url, $parent) .'" target="_blank" accesskey="v" >'.i18n_r('VIEW').'</a>'; 
+				echo '<a href="', find_url($url, $parent) ,'" target="_blank" accesskey="', find_accesskey(i18n_r('VIEW')), '" >', i18n_r('VIEW'), '</a>';
 			} 
 			?>
-			<a href="#" id="metadata_toggle" accesskey="o" ><?php i18n('PAGE_OPTIONS'); ?></a>
+			<a href="#" id="metadata_toggle" accesskey="<?php echo find_accesskey(i18n_r('PAGE_OPTIONS'));?>" ><?php i18n('PAGE_OPTIONS'); ?></a>
 			<div class="clear" ></div>
 		</div>	
 			

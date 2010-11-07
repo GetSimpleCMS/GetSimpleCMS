@@ -665,4 +665,22 @@ function lowercase($text) {
 	
 	return $text;
 }
+
+/**
+ * Provides a simple way to find the accesskey defined by translators as
+ * accesskeys are language dependent.
+ * 
+ * @param String $string, text from the i18n array
+ * @return String
+ */
+function find_accesskey($string) {
+
+    $found = array();
+    $matched = preg_match('/<em>([a-zA-Z])<\/em>/', $string, $found);
+
+    if ($matched != 1)
+        return null;
+
+    return strtolower($found[1]);
+}
 ?>

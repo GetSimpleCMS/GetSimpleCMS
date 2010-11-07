@@ -83,7 +83,7 @@ elseif ($p == 'restore') {
 		<label><?php i18n('BACKUP_OF');?> &lsquo;<em><?php echo $url; ?></em>&rsquo;</label>
 		
 		<div class="edit-nav" >
-			 <a href="backups.php" accesskey="c" ><?php i18n('ASK_CANCEL');?></a> <a href="backup-edit.php?p=restore&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" accesskey="r" ><?php i18n('ASK_RESTORE');?></a> <a href="backup-edit.php?p=delete&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" title="<?php i18n('DELETEPAGE_TITLE'); ?>: <?php echo $title; ?>?" accesskey="d" class="delconfirm" ><?php i18n('ASK_DELETE');?></a>
+			 <a href="backups.php" accesskey="<?php echo find_accesskey(i18n_r('ASK_CANCEL'));?>" ><?php i18n('ASK_CANCEL');?></a> <a href="backup-edit.php?p=restore&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_RESTORE'));?>" ><?php i18n('ASK_RESTORE');?></a> <a href="backup-edit.php?p=delete&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" title="<?php i18n('DELETEPAGE_TITLE'); ?>: <?php echo $title; ?>?" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE'));?>" class="delconfirm" ><?php i18n('ASK_DELETE');?></a>
 			<div class="clear"></div>
 		</div>
 		
