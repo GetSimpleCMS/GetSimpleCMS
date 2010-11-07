@@ -45,7 +45,6 @@ include('inc/common.php');
 		<div class="section">
 			<h3><?php i18n('LOGIN_REQUIREMENT'); ?></h3>
 			<p>&bull;&nbsp; <?php i18n('WARN_JS_COOKIES'); ?></p>
-			<p>&bull;&nbsp; <?php i18n('WARN_IE6'); ?></p>
 			<?php exec_action('login-reqs'); ?>
 		</div>
 		</div>	

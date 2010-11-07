@@ -7,7 +7,7 @@ For licensing,  see LICENSE.html or http://ckeditor.com/license
 	margin:0;
 	padding:0;
 	border:0;
-	background:transparent;
+	background:#FFF;
 	text-decoration:none;
 	font:normal normal normal 100% Sans-Serif;
 	width:auto;
@@ -18,6 +18,7 @@ For licensing,  see LICENSE.html or http://ckeditor.com/license
 	white-space:nowrap;
 	cursor:auto;
 	color:#000;
+	outline:none !important;
 	font-size:12px;
 	font-family:Arial, Helvetica, Tahoma, Verdana, Sans-Serif;
 }
@@ -58,8 +59,8 @@ For licensing,  see LICENSE.html or http://ckeditor.com/license
 
 
 .cke_skin_getsimple .cke_wrapper {
-	background-color:#d3d3d3;
-	background-image:url(images/sprites.png);
+	background-color:#fff;
+	background-image:none;
 	background-repeat:repeat-x;
 	background-position:0 -1950px;
 	display:block;
@@ -105,7 +106,6 @@ For licensing,  see LICENSE.html or http://ckeditor.com/license
 }
 
 .cke_skin_getsimple .cke_focus {
-	outline:auto 5px -webkit-focus-ring-color;
 }
 
 .cke_skin_getsimple textarea.cke_source {
@@ -358,7 +358,7 @@ a:hover.cke_colorauto, a:hover.cke_colormore, a:focus.cke_colorauto, a:focus.cke
 
 .cke_skin_getsimple .cke_toolgroup {
 	border:none;
-	backround-image:none;
+	background-image:none;
 	background: #FFF;
 	float:left;
 	margin-right:6px;
@@ -372,7 +372,7 @@ a:hover.cke_colorauto, a:hover.cke_colormore, a:focus.cke_colorauto, a:focus.cke
 	margin-right:0;
 	margin-left:6px;
 }
-
+.cke_skin_getsimple .cke_editor_post-content {}
 .cke_skin_getsimple .cke_button a, 
 .cke_skin_getsimple .cke_button a:link, 
 .cke_skin_getsimple .cke_button a:visited, 

@@ -119,7 +119,6 @@ $i18n = array(
 "CONTROL_PANEL"			=>	"Control Panel Login",
 "LOGIN_REQUIREMENT"	=>	"Login Requirements",
 "WARN_JS_COOKIES"		=>	"Cookies and javascript need to be enabled in your browser to work properly",
-"WARN_IE6"					=>	"Internet Explorer 6 may work, but it is not supported",
 
 /* 
  * For: navigation.php

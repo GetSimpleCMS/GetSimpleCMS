@@ -93,6 +93,8 @@ html {
 	#load	.wrapper .support li a.support {
 		color:#182227;
 		background:#f9f9f9;
+		background: -moz-linear-gradient(top, #FFF 3%, #F9F9F9 100%); /* firefox */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(3%,#FFF), color-stop(100%,#F9F9F9)); /* webkit */
 		font-weight:bold !important;
 		text-shadow: 1px 1px 0px #fff;
 		box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;  
@@ -521,7 +523,9 @@ table.comptable tr td input.newtitle {margin-bottom:2px !important;}
 /* alert styles */
 .updated, .error {
 	margin:0 0 20px 0;
-	background:#FCFBB8; 
+	background:#FCFBB8;
+	background: -moz-linear-gradient(top, #F7F7C3 5%, #F9F8B3 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#F7F7C3), color-stop(100%,#F9F8B3)); /* webkit */
 	line-height:30px;
 	padding:0 10px;
 	border:1px solid #F9CF51;
@@ -561,26 +565,33 @@ table td.delete {width:20px;text-align:center;font-size:12px;}
 .delete a:link, .delete a:visited {
 	color:#aaa !important; text-decoration:none !important; padding: 1px;
 	display:block;line-height:16px;font-size:12px;font-weight:normal;
-	-webkit-transition: all .3s ease-in-out;
-	-moz-transition: all .3s ease-in-out;
-	-o-transition: all .3s ease-in-out;
-	transition: all .3s ease-in-out;
+	-webkit-transition: all .15s ease-in-out;
+	-moz-transition: all .15s ease-in-out;
+	-o-transition: all .15s ease-in-out;
+	transition: all .15s ease-in-out;
 	}
 .delete a:hover {background:#D94136 !important; color:#fff !important; text-decoration:none !important;padding: 1px;line-height:16px;display:block;font-size:12px;font-weight:normal; }
 
 a.cancel:link, a.cancel:visited { 
 	font-weight:100; color:#D94136 !important;text-decoration:underline;
-	padding: 1px;background:none !important;line-height:16px;
-	-webkit-transition: all .3s ease-in-out;
-	-moz-transition: all .3s ease-in-out;
-	-o-transition: all .3s ease-in-out;
-	transition: all .3s ease-in-out;
+	padding: 1px 3px;background:none !important;line-height:16px;
+	-webkit-transition: all .15s ease-in-out;
+	-moz-transition: all .15s ease-in-out;
+	-o-transition: all .15s ease-in-out;
+	transition: all .15s ease-in-out;
 	}
-a.cancel:hover { font-weight:100; background:#D94136 !important; color:#fff !important;text-decoration:none !important;padding: 1px;line-height:16px;}
+a.cancel:hover { font-weight:100; background:#D94136 !important; color:#fff !important;text-decoration:none !important;padding: 1px 3px;line-height:16px;}
 a.cancel em {font-style:normal}
 
 .wrapper .secondarylink {width:20px;text-align:center;font-size:12px;line-height:14px;}
-.wrapper .secondarylink a:link, .wrapper .secondarylink a:visited {color:#aaa;text-decoration:none;	font-weight:normal;padding: 1px;display:block;line-height:16px;}
+.wrapper .secondarylink a:link, .wrapper .secondarylink a:visited {
+	color:#aaa;text-decoration:none;	font-weight:normal;
+	padding: 1px;display:block;line-height:16px;
+	-webkit-transition: all .15s ease-in-out;
+	-moz-transition: all .15s ease-in-out;
+	-o-transition: all .15s ease-in-out;
+	transition: all .15s ease-in-out;
+	}
 .wrapper .secondarylink a:hover {background:#415A66;color:#FFF;text-decoration:none;font-weight:normal;padding: 1px;display:block;line-height:16px;}
 
 
@@ -599,7 +610,18 @@ table.simple {width:100%;border:1px solid #aaa;}
 }
 #footer p {margin:0 0 8px 0;}
 #footer a {font-weight:100;}	
-
+#footer .gslogo a {
+float:right;width:60px;text-align:right;
+opacity:.10;	
+}
+#footer .gslogo a:link,#footer .gslogo a:visited  {
+	
+	-webkit-transition: opacity .3s ease-in-out;
+	-moz-transition: opacity .3s ease-in-out;
+	-o-transition: opacity .3s ease-in-out;
+	transition: opacity .3s ease-in-out;
+}
+#footer .gslogo a:hover  {opacity:1}
 .toggle {display:none;}
 
 .editable {
