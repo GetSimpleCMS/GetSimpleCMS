@@ -46,7 +46,7 @@
 		echo '<div class="updated">'.i18n_r('ER_SETTINGS_UPD').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a></div>';
 	} elseif ($restored == 'true') { 
 		echo '<div class="updated">'.i18n_r('ER_OLD_RESTORED').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a></div>';
-	} elseif ($_GET['rest'] == 'true') { 
+	} elseif (isset($_GET['rest']) && $_GET['rest']=='true') { 
 		echo '<div class="updated">'.i18n_r('ER_OLD_RESTORED').'. <a href="support.php?undo&nonce='.get_nonce("undo", "support.php").'">'.i18n_r('UNDO').'</a></div>';
 	} elseif ($err == 'true') { 
 		echo '<div class="error"><b>'.i18n_r('ERROR').':</b> '. $msg .'</div>';

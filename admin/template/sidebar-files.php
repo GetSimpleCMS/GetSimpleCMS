@@ -7,7 +7,7 @@
 ?>
 <ul class="snav">
 	<li><a href="upload.php" <?php check_menu('upload');  ?>><?php i18n('FILE_MANAGEMENT');?></a></li>
-	<?php if($_GET['i'] != '') { ?><li><a href="#" class="current"><?php i18n('IMG_CONTROl_PANEL');?></a></li><?php } ?>
+	<?php if(isset($_GET['i']) && $_GET['i'] != '') { ?><li><a href="#" class="current"><?php i18n('IMG_CONTROl_PANEL');?></a></li><?php } ?>
 	
 	<?php exec_action("files-sidebar"); ?>
 	
