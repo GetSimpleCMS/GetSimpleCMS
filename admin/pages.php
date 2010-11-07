@@ -16,6 +16,8 @@ include('inc/common.php');
 
 // Variable settings
 login_cookie_check();
+$id     =  isset($_GET['id']) ? $_GET['id'] : null;
+$ptype    = isset($_GET['type']) ? $_GET['type'] : null; 
 $path 		= GSDATAPAGESPATH;
 $counter 	= '0';
 $table 		= '';

@@ -19,6 +19,9 @@ $userid = login_cookie_check();
 
 // Get passed variables
 $id 		=  isset($_GET['id']) ? $_GET['id'] : null;
+$uri    = isset($_GET['uri']) ? $_GET['uri'] : null; 
+$ptype    = isset($_GET['type']) ? $_GET['type'] : null;    
+$nonce    = isset($_GET['nonce']) ? $_GET['nonce'] : null;
 $path 		= GSDATAPAGESPATH;
 
 // Page variables reset
@@ -33,6 +36,8 @@ $menu = '';
 $content = '';
 $title = '';
 $url = '';
+$metak = '';
+$metad = '';
 
 if ($id)
 {
@@ -136,7 +141,8 @@ foreach ($parents as $fi)
 
 // SETUP CHECKBOXES
 if ($menuStatus != '') { $sel = 'checked';	}
-if ($private != '') { $sel_p = 'checked';	}
+$sel_p = ($private != '') ? 'checked' : '' ;
+//if ($private != '') { $sel_p = 'checked';	}
 if ($menu == '') { $menu = $title; } 
 ?>		
 
