@@ -72,7 +72,6 @@ else
 if ($template == '') { $template = 'template.php'; }
 
 $themes_path = GSTHEMESPATH . $TEMPLATE;
-$templates = get_themes($TEMPLATE);
 $themes_handle = opendir($themes_path) or die("Unable to open $themes_path");		
 while ($file = readdir($themes_handle))	{		
 	if( isFile($file, $themes_path, 'php') ) {		

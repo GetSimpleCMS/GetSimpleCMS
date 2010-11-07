@@ -15,7 +15,7 @@
 define('IN_GS', TRUE);
 include_once('nonce.php');
 include_once('xss.php');
-if (version_compare(PHP_VERSION, "5.2")  >= 0) {
+if (version_compare(PHP_VERSION, "5")  >= 0) {
 	foreach ($_GET as &$xss) $xss = antixss($xss);
 }
 

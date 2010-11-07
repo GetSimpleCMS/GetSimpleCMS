@@ -173,13 +173,12 @@ if ($PRETTYURLS != '' ) { $prettychck = 'checked'; }
 $fullpath = suggest_site_path();
 
 // get available language files
-$lang_path = "lang/";
-$lang_handle = opendir($lang_path) or die("Unable to open $lang_path");
+$lang_handle = opendir(GSLANGPATH) or die("Unable to open ". GSLANGPATH);
 if ($LANG == ''){ $LANG = 'en_US'; }
 
 while ($lfile = readdir($lang_handle))
 {
-	if( is_file($lang_path . $lfile) && $lfile != "." && $lfile != ".." )
+	if( is_file(GSLANGPATH . $lfile) && $lfile != "." && $lfile != ".." )
 	{
 		$lang_array[] = basename($lfile, ".php");
 	}

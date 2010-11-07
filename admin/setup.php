@@ -125,7 +125,6 @@ if(isset($_POST['submitted']))
 		$file = 'cp_settings.xml';
 		$xmlc = new SimpleXMLElement('<item></item>');
 		$xmlc->addChild('HTMLEDITOR', '1');
-		$xmlc->addChild('HELPSECTIONS', '1');
 		$xmlc->addChild('PRETTYURLS', '');
 		XMLsave($xmlc, $path . $file);
 		
