@@ -3,7 +3,7 @@ RewriteEngine on
 
 # Usually it RewriteBase is just '/', but 
 # replace it with your subdirectory path
-RewriteBase /
+RewriteBase **REPLACE**
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

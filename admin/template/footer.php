@@ -20,7 +20,7 @@
       	?>
       	</div>
       	<div class="gslogo" >
-	      	<a href="http://get-simple.info/" title="GetSimple Content Management System"><img src="template/images/getsimple_logo.png" /></a>
+	      	<a href="http://get-simple.info/" title="GetSimple Content Management System"><img src="template/images/getsimple_logo.gif" /></a>
 	      </div>
       	<div class="clear"></div>
       	<?php exec_action('footer'); ?>

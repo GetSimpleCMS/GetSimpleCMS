@@ -83,7 +83,7 @@ elseif ($p == 'restore') {
 		<h3 class="floated"><?php i18n('BACKUP_OF');?> &lsquo;<em><?php echo $url; ?></em>&rsquo;</h3>
 		
 		<div class="edit-nav" >
-			 <a href="backup-edit.php?p=restore&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_RESTORE'));?>" ><?php i18n('ASK_RESTORE');?></a> <a href="backup-edit.php?p=delete&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" title="<?php i18n('DELETEPAGE_TITLE'); ?>: <?php echo $title; ?>?" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE'));?>" class="delconfirm" ><?php i18n('ASK_DELETE');?></a>
+			 <a href="backup-edit.php?p=restore&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_RESTORE'));?>" ><?php i18n('ASK_RESTORE');?></a> <a href="backup-edit.php?p=delete&id=<?php echo $id; ?>&nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" title="<?php i18n('DELETEPAGE_TITLE'); ?>: <?php echo $title; ?>?" id="delback" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE'));?>" class="delconfirm" ><?php i18n('ASK_DELETE');?></a>
 			<div class="clear"></div>
 		</div>
 		
@@ -106,7 +106,7 @@ elseif ($p == 'restore') {
 		<tr><td><b><?php i18n('ADD_TO_MENU');?></b></td><td><?php echo $menuStatus; ?></td></tr>
 		</table>
 		
-		<textarea id="codetext" style="background:#fefefe;width:635px;height:550px;padding:4px;border:1px solid #ccc;" ><?php echo strip_decode($content); ?></textarea>
+		<textarea id="codetext" wrap='off' style="background:#f4f4f4;padding:4px;width:635px;color:#444;border:1px solid #666;" readonly ><?php echo strip_decode($content); ?></textarea>
 
 		</div>
 	</div>

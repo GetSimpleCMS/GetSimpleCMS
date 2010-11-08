@@ -94,7 +94,7 @@ if (count($pagesSorted) != 0)
 	<div id="maincontent">
 		<div class="main" >
 			<h3 class="floated"><?php i18n('PAGE_BACKUPS');?></h3>
-			<div class="edit-nav" ><a href="backups.php?deleteall&nonce=<?php echo get_nonce("deleteall"); ?>" title="<?php i18n('DELETE_ALL_BAK');?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE_ALL'));?>" ><?php i18n('ASK_DELETE_ALL');?></a><div class="clear" ></div></div>
+			<div class="edit-nav" ><a href="backups.php?deleteall&nonce=<?php echo get_nonce("deleteall"); ?>" title="<?php i18n('DELETE_ALL_BAK');?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE_ALL'));?>" class="delconfirm"  ><?php i18n('ASK_DELETE_ALL');?></a><div class="clear" ></div></div>
 			<table class="highlight paginate">
 				<?php echo $table; ?>
 			</table>

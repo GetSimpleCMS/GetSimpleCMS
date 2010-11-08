@@ -140,7 +140,7 @@ if (isset($_FILES["file"]))
 					}
 
 					echo '</td><td><a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';
-					echo '<td style="width:80px;text-align:right;" ><span><b>'. $upload['size'] .'</span></td>';
+					echo '<td style="width:80px;text-align:right;" ><span>'. $upload['size'] .'</span></td>';
 					echo '<td style="width:80px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
 					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] .'&nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>';
 					echo '</tr>';

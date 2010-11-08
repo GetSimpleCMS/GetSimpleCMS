@@ -389,12 +389,12 @@ function undo($file, $filepath, $bakpath) {
  * @return string
  */
 function fSize($s) {
-	$size = '<b>'. ceil(round(($s / 1024), 1)) .'</b> KB'; // in kb
+	$size = '<span>'. ceil(round(($s / 1024), 1)) .'</span> KB'; // in kb
 	if ($s >= "1000000") {
-		$size = '<b>'. round(($s / 1048576), 1) .'</b> MB'; // in mb
+		$size = '<span>'. round(($s / 1048576), 1) .'</span> MB'; // in mb
 	}
 	if ($s <= "999") {
-		$size = '<b>< 1</b> KB'; // in kb
+		$size = '<span>< 1</span> KB'; // in kb
 	}
 	
 	return $size;

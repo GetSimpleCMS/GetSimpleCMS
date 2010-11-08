@@ -169,7 +169,7 @@ if ($menu == '') { $menu = $title; }
 		<div class="edit-nav" >
 			<?php 
 			if( (isset($id)) && ($private != 'Y' )) {
-				echo '<a href="', find_url($url, $parent) ,'" target="_blank" accesskey="', find_accesskey(i18n_r('VIEW')), '" >', i18n_r('VIEW'), '</a>';
+				echo '<a href="', find_url($url, $parent) ,'" target="_blank" accesskey="', find_accesskey(i18n_r('VIEW')), '" >', i18n_r('VIEW'), ' </a>';
 			} 
 			?>
 			<a href="#" id="metadata_toggle" accesskey="<?php echo find_accesskey(i18n_r('PAGE_OPTIONS'));?>" ><?php i18n('PAGE_OPTIONS'); ?></a>
@@ -213,7 +213,7 @@ if ($menu == '') { $menu = $title; }
 				<div id="menu-items">
 					<span style="float:left;width:84%" ><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span><span style="float:left;width:10%;" ><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>
 					<div class="clear"></div>
-					<input class="text" style="width:79.5%;" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />&nbsp <select class="text"  style="width:16%" id="post-menu-order" name="post-menu-order" >
+					<input class="text" style="width:79%;" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />&nbsp <select class="text"  style="width:16%" id="post-menu-order" name="post-menu-order" >
 					<?php if(isset($menuOrder)) { 
 						if($menuOrder == 0) {
 							echo '<option value="" selected>-</option>'; 

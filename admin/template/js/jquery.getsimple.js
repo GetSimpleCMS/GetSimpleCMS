@@ -124,11 +124,21 @@ jQuery(document).ready(function() {
 	});
 	$("b.editable").dblclick(function () {
 		var t = $(this).html();
-		$(this).parents('.compdiv').find(".compslugcode").remove();
-		$(this).parents('.compdiv').find("input.comptitle").remove();
-		$(this).after('<b>Title: </b><input class="text newtitle titlesaver" name="title[]" value="'+t+'" />');
-		$(this).parents('.compdiv').find("input.compslug").attr({ value: '' });
-		$(this).remove();
+		$(this).parents('.compdiv').find("input.comptitle").hide();
+		$(this).after('<div id="changetitle"><b>Title: </b><input class="text newtitle titlesaver" name="title[]" value="'+t+'" /></div>');
+		$(this).parents('.compdiv').find("input.compslug").val('');
+		$(this).hide();
+	});
+	$("input.titlesaver").live("keydown", function () {
+		var myval = $(this).val();
+		$(this).parents('.compdiv').find(".compslugcode").html("'"+myval.toLowerCase()+"'");
+		$(this).parents('.compdiv').find("b.editable").html(myval);
+	}).live("focusout", function () {
+		var myval = $(this).val();
+		$(this).parents('.compdiv').find(".compslugcode").html("'"+myval.toLowerCase()+"'");
+		$(this).parents('.compdiv').find("b.editable").html(myval);
+		$("b.editable").show();
+		$('#changetitle').remove();
 	});
 
 		

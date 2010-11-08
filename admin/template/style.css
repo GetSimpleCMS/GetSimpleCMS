@@ -98,9 +98,9 @@ html {
 		font-weight:bold !important;
 		text-shadow: 1px 1px 0px #fff;
 		box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;  
-	-moz-box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;  
-	-webkit-box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;
-		}
+		-moz-box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;  
+		-webkit-box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;
+	}
 	.wrapper .nav li a:active, .wrapper .nav li a:focus, .wrapper .nav li a:hover, .wrapper #pill li a:hover, .wrapper #pill li a:focus {
 		color:#FFF;background:#0E1316;
 		text-shadow: 1px 1px 0px #000;
@@ -301,7 +301,7 @@ html {
 #sidebar .snav li a:hover {color:#FFF;background:#0E1316;margin-left:13px;text-shadow: 1px 1px 0px #000;}
 #sidebar .snav li a em  {font-style:normal;border-bottom:1px dotted #666;}
 #sidebar .snav li a.current em {font-style:normal;border-bottom:1px dotted #fff;}
-
+#sidebar .snav small {color:#666;}
 .edit-nav {margin:0 0 15px 0;}
 .edit-nav a {
 	font-size:10px;
@@ -314,15 +314,20 @@ html {
 	-moz-border-radius: 15px;
 	-khtml-border-radius: 15px;
 	-webkit-border-radius: 15px;
+	background-repeat:no-repeat;
+	background-position: 94% center;
 }
 .edit-nav select {margin-top:-3px;float:right;padding:1px;border:1px solid #999;font-size:11px;}
 .edit-nav p {float:right;font-size:11px;margin:0;}
 .edit-nav label {font-weight:100;display:inline;font-size:11px;color:#666;margin:0;padding:0;}
+.edit-nav a#metadata_toggle {background-image: url('images/plus.png'); padding-right:20px;}
+.edit-nav a#metadata_toggle.current {background-image: url('images/minus.png'); padding-right:20px;}
+
 
 .edit-nav {height:1%;}
 .edit-nav a:link, .edit-nav a:visited {
 	line-height:14px !important;
-	background:#182227;
+	background-color:#182227;
 	color:#ccc;
 	font-weight:bold;
 	text-decoration:none;
@@ -334,7 +339,7 @@ html {
 }
 
 .edit-nav a:hover, #sidebar .edit-nav a:hover, .edit-nav a.current {
-	background:#CF3805;
+	background-color:#CF3805;
 	color:#FFF;
 	font-weight:bold;
 	text-decoration:none;
@@ -415,7 +420,7 @@ form input.text, form select.text {
 	-webkit-border-radius: 2px;
 }
 form select.text { width:521px;padding:4px 5px; }
-input:focus, select:focus, textarea:focus {
+input.text:focus, select.text:focus, textarea.text:focus {
 	outline:none;
 	border:1px solid #666 !important;
 	box-shadow: rgba(46,60,63, 0.15) 0px 0px 6px;  
@@ -471,7 +476,8 @@ label {
 #metadata_window textarea { height:74px;}
 #metadata_window select { width:100%;}
 #metadata_window p.inline input {width:25px;padding:0;margin:0;}
-#metadata_window #menu-items span label {display:inline;font-size:11px;color:#777;font-weight:normal;}
+#metadata_window #menu-items {height:75px;}
+#metadata_window #menu-items span label {display:inline;font-size:11px;color:#777;font-weight:normal;margin:0;padding:0;}
 #metadata_window #menu-items select {padding:2px 3px;}
 form table.formtable select { width:275px;padding:3px 4px; } 
 table.cleantable {border-collapse:collapse;margin:0 0 0 0;}
@@ -480,7 +486,7 @@ table.cleantable tr td {border:none;}
 
 /* form submit button style */
 input.submit {
-	padding:6px 12px;
+	padding:5px 12px;
 	font-family:Arial, Helvetica Neue, Helvetica, sans-serif;
 	font-weight:bold;
 }
@@ -732,5 +738,4 @@ textarea.copykit {
 	.qc_pager a.qp_disabled:visited,
 	.qc_pager a.qp_disabled:hover,
 	.qc_pager a.qp_disabled:focus {color:#ccc;cursor:text !important;}
-	
 	
