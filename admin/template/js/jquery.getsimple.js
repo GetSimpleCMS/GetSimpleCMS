@@ -16,11 +16,6 @@ function DeleteComp(id) {
 	return false;
 };
 			
-function zebraRows(selector, className) {
-	$(selector).parents('table').children().removeClass(className); 
-  $(selector).addClass(className);  
-};
-			
 function updateCoords(c) {
 	$('#handw').show();
   $('#x').val(c.x);
@@ -143,11 +138,6 @@ jQuery(document).ready(function() {
 
 		
 	// table functions
-	$('table.highlight tr').hover( 
-		function() {$(this).addClass('activeedit');}, 
-		function() {$(this).removeClass('activeedit'); 
-	});
-	zebraRows('table.highlight tr:odd', 'trodd'); 
 	if(jQuery().quickpaginate) {
 		$('table.paginate tr').quickpaginate( { perpage: 15, showcounter: true, pager : $("#page_counter") } );
 	}

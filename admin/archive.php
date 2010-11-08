@@ -33,7 +33,7 @@ if(isset($_GET['done'])) {
 }
 
 if(isset($_GET['nozip'])) {
-	$error = i18n_r('NO_ZIPARCHIVE');
+	$error = i18n_r('NO_ZIPARCHIVE'). ' - <a href="health-check.php">'.i18n_r('WEB_HEALTH_CHECK').'</a>';
 }
 
 

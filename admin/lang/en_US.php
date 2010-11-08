@@ -436,9 +436,9 @@ $i18n = array(
  * For: setup.php
  */
 
-"ROOT_HTACCESS_ERROR" => "Failed to create .htaccess in root! Please copy it from %s to .htaccess and change %s to %s",
-"REMOVE_TEMPCONFIG_ERROR" => "Failed to remove %s! Please do it manually.",
-"MOVE_TEMPCONFIG_ERROR" => "Failed to rename %s to %s! Please do it manually.",
+"ROOT_HTACCESS_ERROR" => "Failed to create .htaccess in root! Please copy <b>%s</b> to <b>.htaccess</b> and change <code>%s</code> to <code>%s</code>",
+"REMOVE_TEMPCONFIG_ERROR" => "Failed to remove <b>%s</b>! Please do it manually.",
+"MOVE_TEMPCONFIG_ERROR" => "Failed to rename <b>%s</b> to <b>%s</b>! Please do it manually.",
 "KILL_CANT_CONTINUE" => "Cannot continue. Please fix errors and try again.",
 "REFRESH" => "Refresh",
 "BETA"=> "Beta / Bleeding Edge",
@@ -456,7 +456,7 @@ $i18n = array(
 "DOUBLE_CLICK_EDIT"=> "Double Click to Edit", //components
 "THUMB_SAVED"=> "Thumbnail Saved", //image
 "EDIT_COMPONENTS"		=>	"Edit Components", //components
-
+"REQS_MORE_INFO"=> "For more information on the required modules, visit the <a href=\"%s\" target=\"_blank\" >requirements page</a>.", //install & health-check
 
 
 

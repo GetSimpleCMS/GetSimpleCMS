@@ -104,12 +104,6 @@ $php_modules = get_loaded_extensions();
 					} else {
 						echo '<tr><td>SimpleXML Module</td><td><span class="OKmsg" >'.i18n_r('INSTALLED').' - '.i18n_r('OK').'</span></td></tr>';
 					}
-					
-					if (! function_exists('date_default_timezone_set') ) {
-						echo '<tr><td>Default Timezone Function</td><td><span class="WARNmsg" >'.i18n_r('NOT_INSTALLED').' - '.i18n_r('WARNING').'</span></td></tr>';
-					} else {
-						echo '<tr><td>Default Timezone Function</td><td><span class="OKmsg" >'.i18n_r('INSTALLED').' - '.i18n_r('OK').'</span></td></tr>';
-					}
 
 					if ( function_exists('apache_get_modules') ) {
 						if(! in_arrayi('mod_rewrite',apache_get_modules())) {
@@ -123,6 +117,7 @@ $php_modules = get_loaded_extensions();
 
 	?>
 			</table>
+			<p class="hint"><?php echo sprintf(i18n_r('REQS_MORE_INFO'), "http://get-simple.info/download/requirements/"); ?></p>
 			
 			<h3><?php i18n('DATA_FILE_CHECK');?></h3>
 			<table class="highlight healthcheck">
