@@ -168,6 +168,8 @@ if(isset($_POST['submitted']))
 		fclose($fp);
 		if (!file_exists($init)) {
 			$kill .= sprintf(i18n_r('ROOT_HTACCESS_ERROR'), '/temp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
+		} else {
+			unlink(GSROOTPATH .'temp.htaccess');
 		}
 		
 		// create gsconfig.php if it doesn't exist yet.
