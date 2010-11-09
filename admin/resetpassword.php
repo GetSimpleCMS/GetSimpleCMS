@@ -22,7 +22,7 @@ if(isset($_POST['submitted'])){
 	if(isset($_POST['username']))	{
 
 		// Variable settings
-		$file = _id($_POST['username'])'.xml';
+		$file = _id($_POST['username']).'.xml';
 		
 		if (file_exists(GSDATAOTHERPATH . $file)) {
 			$data = getXML(GSDATAOTHERPATH . $file);
