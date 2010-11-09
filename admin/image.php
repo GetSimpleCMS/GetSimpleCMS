@@ -102,7 +102,7 @@ else
       <input type="hidden" id="y" name="y" />
       <input type="hidden" id="w" name="w" />
       <input type="hidden" id="h" name="h" />
-      <input type="submit" class="submit" value="<?php i18n('CREATE_THUMBNAIL');?>" /> &nbsp; <span style="color:#666;font-size:11px;"><?php i18n('CROP_INSTR');?></span>
+      <input type="submit" class="submit" value="<?php i18n('CREATE_THUMBNAIL');?>" /> &nbsp; <span style="color:#666;font-size:11px;"><?php i18n('CROP_INSTR_NEW');?></span>
 
     </form>
 
@@ -133,7 +133,7 @@ else
 				if(e.which == 17) isCtrl=false;
 			}).keydown(function (e) {
 				if(e.which == 17) isCtrl=true;
-				if(e.which == 81 && isCtrl == true) {
+				if(e.which == 66 && isCtrl == true) {
 					api.setOptions({ aspectRatio: 1 });
 					api.focus();
 				}

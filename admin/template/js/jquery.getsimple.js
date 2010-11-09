@@ -26,8 +26,7 @@ function updateCoords(c) {
   $('#picw').html(c.w);
 };
 
-function checkCoords()
-{
+function checkCoords() {
   if (parseInt($('#x').val())) return true;
   alert('Please select a crop region then press submit.');
   return false;
@@ -60,11 +59,7 @@ jQuery(document).ready(function() {
 			$("#imageTable tr .imgthumb").hide();
 		}		
 		$("#filetypetoggle").html('&nbsp;&nbsp;/&nbsp;&nbsp;' + filterx);
-		$("#imageTable tr." + filterx)
-			.removeClass('trodd')
-			.show()
-   		.filter(':odd')
-   		.addClass('trodd');
+		$("#imageTable tr." + filterx).show()
    	$("#imageTable tr.deletedrow").hide();
    	$('#loader').fadeOut(500);
 	});
