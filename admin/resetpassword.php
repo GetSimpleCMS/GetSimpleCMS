@@ -14,22 +14,23 @@ $load['plugin'] = true;
 // Include common.php
 include('inc/common.php');
 
-// Variable settings
-$file = 'user.xml';
-
-if (file_exists(GSDATAOTHERPATH . $file)) {
-	$data = getXML(GSDATAOTHERPATH . $file);
-	$USR = $data->USR;
-	$EMAIL = $data->EMAIL;
-}
-
 if(isset($_POST['submitted'])){
 	$nonce = $_POST['nonce'];
 	if(!check_nonce($nonce, "reset_password")) {
 		die("CSRF detected!");
 	}
-	if(isset($_POST['email']))	{
-		if($_POST['email'] == $EMAIL)		{
+	if(isset($_POST['username']))	{
+
+		// Variable settings
+		$file = _id($_POST['username'])'.xml';
+		
+		if (file_exists(GSDATAOTHERPATH . $file)) {
+			$data = getXML(GSDATAOTHERPATH . $file);
+			$USR = $data->USR;
+			$EMAIL = $data->EMAIL;
+		}
+		
+		if($_POST['username'] == $USR) {
 			// create new random password
 			$random = createRandomPassword();
 			
@@ -37,7 +38,7 @@ if(isset($_POST['submitted'])){
 			$bakpath = GSBACKUPSPATH."other/";
 			createBak($file, GSDATAOTHERPATH, $bakpath);
 			
-			$flagfile = GSBACKUPSPATH."other/user.xml.reset";
+			$flagfile = GSBACKUPSPATH."other/"._id($USR).".xml.reset";
 			copy(GSDATAOTHERPATH . $file, $flagfile);
 			
 			$xml = new SimpleXMLElement('<item></item>');
@@ -87,7 +88,7 @@ if(isset($_POST['submitted'])){
 	
 	<form class="fullform" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 		<input name="nonce" id="nonce" type="hidden" value="<?php echo get_nonce("reset_password");?>"/>
-		<p><b><?php i18n('LABEL_EMAIL'); ?>:</b><br /><input class="text" name="email" type="text" value="" /></p>
+		<p><b><?php i18n('LABEL_USERNAME'); ?>:</b><br /><input class="text" name="username" type="text" value="" /></p>
 		<p><input class="submit" type="submit" name="submitted" value="<?php echo i18n('SEND_NEW_PWD'); ?>" /></p>
 	</form><p><a href="index.php"><?php i18n('LOGIN'); ?></a></p>
 	</div>

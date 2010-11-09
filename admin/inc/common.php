@@ -97,9 +97,13 @@ if (file_exists($thisfilew)) {
  * Sets up user data
  */
 if(!isset($base)) {
-	if (file_exists(GSDATAOTHERPATH .'user.xml')) {
-		$datau = getXML(GSDATAOTHERPATH .'user.xml');
-		$USR = stripslashes($datau->USR);
+	if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
+		if (file_exists(GSDATAOTHERPATH . $_COOKIE['GS_ADMIN_USERNAME'].'.xml')) {
+			$datau = getXML(GSDATAOTHERPATH  . $_COOKIE['GS_ADMIN_USERNAME'].'.xml');
+			$USR = stripslashes($datau->USR);
+		} else {
+			$USR = null;	
+		}
 	} else {
 		$USR = null;	
 	}

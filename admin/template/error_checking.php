@@ -7,7 +7,7 @@
  * @package GetSimple
  */
  
-	if (file_exists(GSBACKUPSPATH."other/user.xml.reset")) {
+	if (file_exists(GSBACKUPSPATH."other/"._id($USR).".xml.reset")) {
 		echo '<div class="error">'.i18n_r('ER_PWD_CHANGE').'</div>';
 	}
 	if(isset($_GET['error'])) {

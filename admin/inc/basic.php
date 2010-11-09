@@ -667,20 +667,34 @@ function lowercase($text) {
 }
 
 /**
+ * Find AccessKey
+ *
  * Provides a simple way to find the accesskey defined by translators as
  * accesskeys are language dependent.
  * 
- * @param String $string, text from the i18n array
- * @return String
+ * @param string $string, text from the i18n array
+ * @return string
  */
 function find_accesskey($string) {
+  $found = array();
+  $matched = preg_match('/<em>([a-zA-Z])<\/em>/', $string, $found);
+  if ($matched != 1) {
+     return null;
+	}
+  return strtolower($found[1]);
+}
 
-    $found = array();
-    $matched = preg_match('/<em>([a-zA-Z])<\/em>/', $string, $found);
-
-    if ($matched != 1)
-        return null;
-
-    return strtolower($found[1]);
+/**
+ * Clean ID
+ *
+ * Femoves characters that don't work in URLs or IDs
+ * 
+ * @param string $text
+ * @return string
+ */
+function _id($text) {
+	$text = to7bit($text, "UTF-8");
+	$text = clean_url($text);
+	return lowercase($text);
 }
 ?>

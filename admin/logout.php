@@ -16,6 +16,7 @@ include('inc/common.php');
 
 // end it all :'(
 kill_cookie($cookie_name);
+kill_cookie('GS_ADMIN_USERNAME');
 exec_action('logout');
 ?>
 

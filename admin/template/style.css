@@ -434,9 +434,10 @@ form textarea { width:635px; height:420px;line-height:18px;text-align:left;	colo
 	padding:5px;
 	font-family:Arial, Helvetica Neue, Helvetica, sans-serif;
 	font-size:12px;}
-form input[readonly] {
-  background:#f9f9f9;
-  color:#ccc;
+form input[readonly], form select[readonly], form textarea[readonly] {
+  background:#dddddd;
+  border:1px solid #666;
+  color:#555;
   cursor:default;
 }
 

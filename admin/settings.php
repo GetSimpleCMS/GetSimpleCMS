@@ -16,7 +16,9 @@ include('inc/common.php');
 
 // Variable settings
 login_cookie_check();
-$file			= 'user.xml';
+$file			= _id($USR) .'.xml';
+$cfile 		= 'cp_settings.xml';
+$wfile 		= 'website.xml';
 $path 		= GSDATAOTHERPATH;
 $bakpath 	= GSBACKUPSPATH.'other/';
 $data 		= getXML($path . $file);
@@ -26,41 +28,31 @@ $EMAIL 		= $data->EMAIL;
 $err 			= '';
 
 // if the undo command was invoked
-if (isset($_GET['undo']))
-{ 
+if (isset($_GET['undo'])) { 
 	$nonce = $_GET['undo'];
-	if(!check_nonce($nonce, "undo"))
+	if(!check_nonce($nonce, "undo")) {
 		die("CSRF detected!");
-
-	$ufile = 'user.xml';
-	undo($ufile, $path, $bakpath);
-	
-	$ufile = 'website.xml';
-	undo($ufile, $path, $bakpath);
-	
-	$ufile = 'cp_settings.xml';
-	undo($ufile, $path, $bakpath);
+	}
+	undo($file, $path, $bakpath);
+	undo($wfile, $path, $bakpath);
+	undo($cfile, $path, $bakpath);
 	
 	// Redirect
 	redirect('settings.php?restored=true');
 }
 
-if (isset($_GET['restored']))
-{ 
+if (isset($_GET['restored'])) { 
 	$restored = 'true'; 
-} 
-else 
-{
+} else {
 	$restored = 'false';
 }
 
 // were changes submitted?
-if(isset($_POST['submitted']))
-{
+if(isset($_POST['submitted'])) {
 	$nonce = $_POST['nonce'];
-	if(!check_nonce($nonce, "save_settings"))
+	if(!check_nonce($nonce, "save_settings")) {
 		die("CSRF detected!");	
-
+	}
 
 	if(isset($_POST['sitename'])) { 
 		$SITENAME = htmlentities($_POST['sitename'], ENT_QUOTES, 'UTF-8'); 
@@ -105,13 +97,10 @@ if(isset($_POST['submitted']))
 	if(isset($_POST['sitepwd_confirm'])) { $pwd2 = $_POST['sitepwd_confirm']; }
 	
 	// are we resetting the password?
-	if ($pwd1 != $pwd2)
-	{ 
+	if ($pwd1 != $pwd2)	{ 
 		$err = "true";
 		$msg = i18n_r('PASSWORD_NO_MATCH');
-	} 
-	else 
-	{
+	} else {
 		
 		// password cannot be null
 		if ( $pwd1 != '' ) { 
@@ -119,20 +108,18 @@ if(isset($_POST['submitted']))
 		}	
 		
 		// create new user data file
-		$ufile = 'user.xml';
-		createBak($ufile, $path, $bakpath);
-		if (file_exists($bakpath . 'user.xml.reset')) { unlink($bakpath . 'user.xml.reset'); }	
-
+		createBak($file, $path, $bakpath);
+		if (file_exists($bakpath . _id($USR).'.xml.reset')) { unlink($bakpath . _id($USR).'.xml.reset'); }	
+		
 		$xml = new SimpleXMLElement('<item></item>');
 		$xml->addChild('USR', $USR);
 		$xml->addChild('PWD', $PASSWD);
 		$xml->addChild('EMAIL', $EMAIL);
 		exec_action('settings-user');
-		XMLsave($xml, $path . $ufile);
+		XMLsave($xml, $path . $file);
 		
 		// create new site data file
-		$ufile = 'website.xml';
-		createBak($ufile, $path, $bakpath);
+		createBak($wfile, $path, $bakpath);
 		$xmls = new SimpleXMLExtended('<item></item>');
 		$note = $xmls->addChild('SITENAME');
 		$note->addCData($SITENAME);
@@ -145,20 +132,19 @@ if(isset($_POST['submitted']))
 		$note = $xmls->addChild('LANG');
 		$note->addCData($LANG);
 		exec_action('settings-website');
-		XMLsave($xmls, $path . $ufile);
+		XMLsave($xmls, $path . $wfile);
 		
 		//see new language file immediately
 		include('lang/'.$LANG.'.php');
 
 		// create new cpsettings data file
-		$ufile = 'cp_settings.xml';
-		createBak($ufile, $path, $bakpath);
+		createBak($cfile, $path, $bakpath);
 		$xmlc = new SimpleXMLElement('<item></item>');
 		$xmlc->addChild('HTMLEDITOR', $HTMLEDITOR);
 		$xmlc->addChild('PRETTYURLS', $PRETTYURLS);
 		$xmlc->addChild('PERMALINK', $PERMALINK);
 		exec_action('settings-cpsettings');
-		XMLsave($xmlc, $path . $ufile);
+		XMLsave($xmlc, $path . $cfile);
 		
 		$err = "false";
 	}
@@ -176,25 +162,20 @@ $fullpath = suggest_site_path();
 $lang_handle = opendir(GSLANGPATH) or die("Unable to open ". GSLANGPATH);
 if ($LANG == ''){ $LANG = 'en_US'; }
 
-while ($lfile = readdir($lang_handle))
-{
-	if( is_file(GSLANGPATH . $lfile) && $lfile != "." && $lfile != ".." )
-	{
+while ($lfile = readdir($lang_handle)) {
+	if( is_file(GSLANGPATH . $lfile) && $lfile != "." && $lfile != ".." )	{
 		$lang_array[] = basename($lfile, ".php");
 	}
 }
 
-if (count($lang_array) != 0)
-{
+if (count($lang_array) != 0) {
 	sort($lang_array);
 	$count	= '0'; 
 	$sel 	= ''; 
 	$langs 	= '';
 	
-	foreach ($lang_array as $larray)
-	{
-		if ($LANG == $larray)
-		{ 
+	foreach ($lang_array as $larray){
+		if ($LANG == $larray)	{ 
 			$sel="selected";
 		}
 		
@@ -202,9 +183,7 @@ if (count($lang_array) != 0)
 		$sel = '';
 		$count++;
 	}
-} 
-else 
-{
+} else {
 	$langs = '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>';
 }
 ?>
@@ -263,7 +242,7 @@ else
 		<div id="profile" class="section" >
 		<h3><?php i18n('SIDE_USER_PROFILE');?></h3>
 		<div class="leftsec">
-			<p><label for="user" ><?php i18n('LABEL_USERNAME');?>:</label><input class="text" id="user" name="user" type="text" value="<?php if(isset($USR1)) { echo $USR1; } else { echo $USR; } ?>" /></p>
+			<p><label for="user" ><?php i18n('LABEL_USERNAME');?>:</label><input class="text" id="user" name="user" type="text" readonly value="<?php if(isset($USR1)) { echo $USR1; } else { echo $USR; } ?>" /></p>
 		</div>
 		<div class="rightsec">
 			<p><label for="email" ><?php i18n('LABEL_EMAIL');?>:</label><input class="text" id="email" name="email" type="text" value="<?php if(isset($EMAIL1)) { echo $EMAIL1; } else { echo $EMAIL; } ?>" /></p>
