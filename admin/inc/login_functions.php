@@ -6,93 +6,87 @@
  * @subpackage Login
  */
 
-$MSG = "";
+$MSG = null;
 
-/* check for legacy version of user.xml */
-if (file_exists(GSDATAOTHERPATH .'user.xml')) {
-	$datau = getXML(GSDATAOTHERPATH .'user.xml');
-	$USR = stripslashes($datau->USR);
-	$PASSWD = stripslashes($datau->PWD);
-	$EMAIL = stripslashes($datau->EMAIL);
-	
-	$xml = new SimpleXMLElement('<item></item>');
-	$xml->addChild('USR', $USR);
-	$xml->addChild('PWD', $PASSWD);
-	$xml->addChild('EMAIL', $EMAIL);
-	$status = XMLsave($xml, GSDATAOTHERPATH . _id($USR) .'.xml');	
-	if ($status) {
-		rename(GSDATAOTHERPATH .'user.xml', GSDATAOTHERPATH .'_legacy_user_file.xml');
-	}
-}
-
-
-// If the login cookie is already set, redirect user to secure panel
+# if the login cookie is already set, redirect user to control panel
 if(cookie_check()) {
 	redirect($cookie_redirect);                                             
 }
 
-
-
-// Was the login form button pressed? If so, continue...
+# was the form submitted?
 if(isset($_POST['submitted'])) { 
+	
+	# initial variable setup
 	// Initial variable setup
 	$user_xml = GSDATAOTHERPATH . _id($_POST['userid']).'.xml';
+	$user_xml = GSUSERSPATH . _id($_POST['userid']).'.xml';
 	$userid = $_POST['userid'];
+	$userid = lowercase($_POST['userid']);
 	$password = $_POST['pwd'];
 	$error = null;
 	
-	// Is either the Username or Password field empty?
+	# check the username or password fields
 	if ( !$userid || !$password ) {
 		$error = true;
 		$MSG .= '<b>'.i18n_r('ERROR').':</b> '.i18n_r('FILL_IN_REQ_FIELD').'.<br />';
 	} 
 	
-	// If both Username & Password are populated, continue...
+	# check for any errors
 	if ( !$error ) {
+		
+		# hash the given password
 		$password = passhash($password);
 		
+		# does this user exist?
 		if (file_exists($user_xml)) {
+
+			# pull the data from the user's data file
 			$data = getXML($user_xml);
 			$PASSWD = $data->PWD;
 			$USR = $data->USR;
-		} 
 		
-		// Are the Username and Password both correct?
-		if ( ($userid == $USR) && ($password == $PASSWD) ) {
-			$authenticated = true;  // Successful Login
-		} else {
-			$authenticated = false;  // Unsuccessful Login
-			
-			$xmlfile = GSDATAOTHERPATH.'logs/failedlogins_'._id($USR).'.log';
-			
-			if ( ! file_exists($xmlfile) ) 	{ 
-				$xml = new SimpleXMLExtended('<channel></channel>');
+			# do the username and password match?
+			if ( ($userid == $USR) && ($password == $PASSWD) ) {
+				$authenticated = true;
 			} else {
-				$xmldata = file_get_contents($xmlfile);
-				$xml = new SimpleXMLExtended($xmldata);
-			}
+				$authenticated = false;
+				
+				# add login failure to failed logins page
+				$xmlfile = GSDATAOTHERPATH.'logs/failedlogins_'._id($USR).'.log';
+				if ( ! file_exists($xmlfile) ) 	{ 
+					$xml = new SimpleXMLExtended('<channel></channel>');
+				} else {
+					$xmldata = file_get_contents($xmlfile);
+					$xml = new SimpleXMLExtended($xmldata);
+				}
+				$thislog = $xml->addChild('entry');
+				$thislog->addChild('date', date('r'));
+				$cdata = $thislog->addChild('Username');
+				$cdata->addCData(htmlentities($userid, ENT_QUOTES));
+				$cdata = $thislog->addChild('IP_Address');
+				$ip = getenv("REMOTE_ADDR"); 
+				$cdata->addCData(htmlentities($ip, ENT_QUOTES));
+				XMLsave($xml, $xmlfile);
+				
+			} # end password match check
 			
-			$thislog = $xml->addChild('entry');
-			$thislog->addChild('date', date('r'));
-			$cdata = $thislog->addChild('Username');
-			$cdata->addCData(htmlentities($userid, ENT_QUOTES));
-			$cdata = $thislog->addChild('IP_Address');
-			$ip = getenv("REMOTE_ADDR"); 
-			$cdata->addCData(htmlentities($ip, ENT_QUOTES));
-			XMLsave($xml, $xmlfile);
-			
-		}
+		} else {
+			# user doesnt exist in this system
+			$authenticated = false;
+		}		
 		
-		// Was there a Successful Logon attempt?
+		# is this successful?
 		if( $authenticated ) {
-			// Set the login cookie, then redirect user to secure panel		
+			# YES - set the login cookie, then redirect user to secure panel		
 			create_cookie();
 			setcookie('GS_ADMIN_USERNAME', _id($USR));
 			redirect($cookie_redirect); 
 		} else {
+			# NO - show error message
 			$MSG .= '<b>'.i18n_r('ERROR').':</b> '.i18n_r('LOGIN_FAILED').'.';
-		}
-	}
-}
+		} # end authenticated check
+		
+	} # end error check
 	
+} # end submission check
 ?>

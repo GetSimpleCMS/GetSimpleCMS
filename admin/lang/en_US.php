@@ -206,7 +206,7 @@ $i18n = array(
 "YOUR_NEW"					=>	"Your new",
 "PASSWORD_IS"				=>	"password is",
 "ATTEMPT"						=>	"Attempt",
-"MSG_PLEASE_EMAIL"	=>	"Please enter the email address registered on this system, and a new password will be sent to you",
+"MSG_PLEASE_EMAIL"	=>	"Please enter the username registered on this system, and a new password will be sent to it's email address.",
 "SEND_NEW_PWD"			=>	"Send New Password",
 
 /* 
@@ -457,7 +457,7 @@ $i18n = array(
 "THUMB_SAVED"=> "Thumbnail Saved", //image
 "EDIT_COMPONENTS"		=>	"Edit Components", //components
 "REQS_MORE_INFO"=> "For more information on the required modules, visit the <a href=\"%s\" target=\"_blank\" >requirements page</a>.", //install & health-check
-
+"SYSTEM_UPDATE" => "System Update", // update.php
 
 
 

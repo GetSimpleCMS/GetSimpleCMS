@@ -40,7 +40,6 @@ if (defined('GSADMIN')) {
 /**
  * Define some constants
  */
-
 define('GSADMINPATH', get_admin_path());
 define('GSADMININCPATH', get_admin_path(). 'inc/');
 define('GSPLUGINPATH', get_root_path(). 'plugins/');
@@ -52,7 +51,8 @@ define('GSDATAUPLOADPATH', get_root_path(). 'data/uploads/');
 define('GSTHUMBNAILPATH', get_root_path(). 'data/thumbs/');
 define('GSBACKUPSPATH', get_root_path(). 'backups/');
 define('GSTHEMESPATH', get_root_path(). 'theme/');
-
+define('GSUSERSPATH', get_root_path(). 'data/users/');
+define('GSBACKUSERSPATH', get_root_path(). 'backups/users/');
 
 /**
  * Debugging
@@ -86,11 +86,9 @@ if (file_exists($thisfilew)) {
 	$SITENAME = stripslashes($dataw->SITENAME);
 	$SITEURL = $dataw->SITEURL;
 	$TEMPLATE = $dataw->TEMPLATE;
-	$TIMEZONE = $dataw->TIMEZONE;
-	$LANG = $dataw->LANG;
-} else {
-	$TIMEZONE = 'America/New_York';
-}
+	$PRETTYURLS = $dataw->PRETTYURLS;
+	$PERMALINK = $dataw->PERMALINK;
+} 
 
 
 /**
@@ -98,14 +96,19 @@ if (file_exists($thisfilew)) {
  */
 if(!isset($base)) {
 	if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
-		if (file_exists(GSDATAOTHERPATH . $_COOKIE['GS_ADMIN_USERNAME'].'.xml')) {
-			$datau = getXML(GSDATAOTHERPATH  . $_COOKIE['GS_ADMIN_USERNAME'].'.xml');
+		if (file_exists(GSUSERSPATH . $_COOKIE['GS_ADMIN_USERNAME'].'.xml')) {
+			$datau = getXML(GSUSERSPATH  . $_COOKIE['GS_ADMIN_USERNAME'].'.xml');
 			$USR = stripslashes($datau->USR);
+			$HTMLEDITOR = $datau->HTMLEDITOR;
+			$TIMEZONE = $datau->TIMEZONE;
+			$LANG = $datau->LANG;
 		} else {
-			$USR = null;	
+			$USR = null;
+			$TIMEZONE = 'America/New_York';	
 		}
 	} else {
-		$USR = null;	
+		$USR = null;
+		$TIMEZONE = 'America/New_York';
 	}
 }
 
@@ -120,18 +123,6 @@ if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
 	$SALT = sha1($SITEURL);
 }
 $SESSIONHASH = sha1($SALT . $SITENAME);
-
-
-/**
- * Sitewide settings
- */
-if (file_exists(GSDATAOTHERPATH .'cp_settings.xml')) {
-	$thisfilec = GSDATAOTHERPATH .'cp_settings.xml';
-	$datac = getXML($thisfilec);
-	$HTMLEDITOR = $datac->HTMLEDITOR;
-	$PRETTYURLS = $datac->PRETTYURLS;
-	$PERMALINK = $datac->PERMALINK;
-}
 
 
 /**
@@ -170,16 +161,30 @@ if(!isset($base)) {
 /**
  * Check to make sure site is already installed
  */
-if (get_filename_id() != 'install' && get_filename_id() != 'setup') {
-	if ($SITEURL == '')	{
-		$fullpath = suggest_site_path();	
-		redirect($fullpath . $GSADMIN.'/install.php');
+if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update') {
+	$fullpath = suggest_site_path();
+	
+	# if an update file was included in the install package, redirect there first	
+	if (file_exists(GSDATAOTHERPATH .'user.xml')) {
+		if (file_exists(GSADMINPATH.'update.php'))	{
+			redirect($fullpath . $GSADMIN.'/update.php');
+		}
 	}
+	
+	# if there is no SITEURL set, then it's a fresh install. Start installation process
+	if ($SITEURL == '')	{
+		redirect($fullpath . $GSADMIN.'/install.php');
+	} 
+	
+	# if you've made it this far, the site is already installed so remove the installation files
 	if (file_exists(GSADMINPATH.'install.php'))	{
 		unlink(GSADMINPATH.'install.php');
 	}
 	if (file_exists(GSADMINPATH.'setup.php'))	{
 		unlink(GSADMINPATH.'setup.php');
+	}
+	if (file_exists(GSADMINPATH.'update.php'))	{
+		unlink(GSADMINPATH.'update.php');
 	}
 }
 

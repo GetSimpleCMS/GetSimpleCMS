@@ -15,58 +15,71 @@ $load['plugin'] = true;
 include('inc/common.php');
 
 if(isset($_POST['submitted'])){
+	
+	# check for csrf
 	$nonce = $_POST['nonce'];
 	if(!check_nonce($nonce, "reset_password")) {
 		die("CSRF detected!");
 	}
+	
 	if(isset($_POST['username']))	{
 
-		// Variable settings
+		# user filename
 		$file = _id($_POST['username']).'.xml';
 		
-		if (file_exists(GSDATAOTHERPATH . $file)) {
-			$data = getXML(GSDATAOTHERPATH . $file);
+		# get user information from existing XML file
+		if (file_exists(GSUSERSPATH . $file)) {
+			$data = getXML(GSUSERSPATH . $file);
 			$USR = $data->USR;
 			$EMAIL = $data->EMAIL;
+			
+			if($_POST['username'] == $USR) {
+				# create new random password
+				$random = createRandomPassword();
+				
+				# create backup
+				createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
+				
+				# create password change trigger file
+				$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
+				copy(GSUSERSPATH . $file, $flagfile);
+				
+				# resave new user xml file
+				$xml = new SimpleXMLElement('<item></item>');
+				$xml->addChild('USR', $data->USR);
+				$xml->addChild('PWD', passhash($random));
+				$xml->addChild('EMAIL', $data->EMAIL);
+				$xml->addChild('HTMLEDITOR', $data->HTMLEDITOR);
+				$xml->addChild('PRETTYURLS', $data->PRETTYURLS);
+				$xml->addChild('PERMALINK', $data->PERMALINK);
+				$xml->addChild('TIMEZONE', $data->TIMEZONE);
+				$xml->addChild('LANG', $data->LANG);
+				XMLsave($xml, GSUSERSPATH . $file);
+				
+				# send the email with the new password
+				$subject = $site_full_name .' '. i18n_r('RESET_PASSWORD') .' '. i18n_r('ATTEMPT');
+				$message = "'". cl($SITENAME) ."' ". i18n_r('RESET_PASSWORD') ." ". i18n_r('ATTEMPT');
+				$message .= '<br>-------------------------------------------------------<br>';
+				$message .= "<br>". i18n_r('LABEL_USERNAME').": ". $USR;
+				$message .= "<br>". i18n_r('NEW_PASSWORD').": ". $random;
+				$message .= '<br><br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL . $GSADMIN.'/">'.$SITEURL . $GSADMIN.'/</a>';
+				exec_action('resetpw-success');
+				$status = sendmail($EMAIL,$subject,$message);
+				
+				# show the result of the reset attempt
+				redirect("resetpassword.php?upd=pwd-".$status);
+			} else{
+				
+				# username doesnt match listed xml username
+				exec_action('resetpw-error');
+				redirect("resetpassword.php?upd=pwd-error");
+			} 
+		} else {
+			# no user exists for this username, but do not show this to the submitter		
 		}
+	} else {
 		
-		if($_POST['username'] == $USR) {
-			// create new random password
-			$random = createRandomPassword();
-			
-			// create new users.xml file
-			$bakpath = GSBACKUPSPATH."other/";
-			createBak($file, GSDATAOTHERPATH, $bakpath);
-			
-			$flagfile = GSBACKUPSPATH."other/"._id($USR).".xml.reset";
-			copy(GSDATAOTHERPATH . $file, $flagfile);
-			
-			$xml = new SimpleXMLElement('<item></item>');
-			$xml->addChild('USR', $USR);
-			$xml->addChild('PWD', passhash($random));
-			$xml->addChild('EMAIL', $EMAIL);
-			XMLsave($xml, GSDATAOTHERPATH . $file);
-			
-			// send the email with the new password
-			$subject = $site_full_name .' '. i18n_r('RESET_PASSWORD') .' '. i18n_r('ATTEMPT');
-			$message = "'". cl($SITENAME) ."' ". i18n_r('RESET_PASSWORD') ." ". i18n_r('ATTEMPT');
-			$message .= '<br>-------------------------------------------------------<br>';
-			$message .= "<br>". i18n_r('LABEL_USERNAME').": ". $USR;
-			$message .= "<br>". i18n_r('NEW_PASSWORD').": ". $random;
-			$message .= '<br><br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL . $GSADMIN.'/">'.$SITEURL . $GSADMIN.'/</a>';
-			exec_action('resetpw-success');
-			$status = sendmail($EMAIL,$subject,$message);
-			
-			redirect("resetpassword.php?upd=pwd-".$status);
-		}
-		else
-		{
-			exec_action('resetpw-error');
-			redirect("resetpassword.php?upd=pwd-error");
-		} 
-	}
-	else 
-	{
+		# no username was submitted
 		redirect("resetpassword.php?upd=pwd-error");
 	}
 } 

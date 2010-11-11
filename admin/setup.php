@@ -8,162 +8,114 @@
  * @subpackage Installation
  */
 
-// Setup inclusions
+# setup inclusions
 $load['plugin'] = true;
-
-if($_POST['lang'] != '') {
-	$LANG = $_POST['lang'];
-}
-
-// Include common.php
+if($_POST['lang'] != '') { $LANG = $_POST['lang']; }
 include('inc/common.php');
 
-
-// Variables
+# default variables
 if(defined('GSLOGINSALT')) { $logsalt = GSLOGINSALT;} else { $logsalt = null; }
 $kill = ''; 
-$PASSWD = ''; 
 $status = ''; 
 $err = null; 
 $message = null; 
 $random = null;
-
-// Get user data
-$file = 'user.xml';
-$path = GSDATAOTHERPATH;
-if (file_exists($path . $file)) {
-	$data = getXML($path . $file);
-	$USR = stripslashes($data->USR);
-	$PASSWD = $data->PWD;
-	$EMAIL = $data->EMAIL;
-}
-
 $fullpath = suggest_site_path();	
 $path_parts = suggest_site_path(true);   
 
-// if the form was submitted...	
-if(isset($_POST['submitted']))
-{
-	if($_POST['sitename'] != '') 
-	{ 
-		$SITENAME1 = htmlentities($_POST['sitename'], ENT_QUOTES, 'UTF-8'); 
-	} 
-	else 
-	{ 
+# if the form was submitted, continue
+if(isset($_POST['submitted'])) {
+	if($_POST['sitename'] != '') { 
+		$SITENAME = htmlentities($_POST['sitename'], ENT_QUOTES, 'UTF-8'); 
+	} else { 
 		$err .= i18n_r('WEBSITENAME_ERROR') .'<br />'; 
 	}
 	
 	$urls = $_POST['siteurl']; 
-	
-	if(preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $urls)) 
-	{
-		$SITEURL1 = tsl($_POST['siteurl']); 
-	} 
-	else 
-	{
+	if(preg_match('|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i', $urls)) {
+		$SITEURL = tsl($_POST['siteurl']); 
+	} else {
 		$err .= i18n_r('WEBSITEURL_ERROR') .'<br />'; 
 	}
 	
-	if($_POST['user'] != '') 
-	{ 
-		$USR1 = $_POST['user'];
+	if($_POST['user'] != '') { 
 		$USR = $_POST['user'];
-	} 
-	else 
-	{
+	} else {
 		$err .= i18n_r('USERNAME_ERROR') .'<br />'; 
 	}
 	
-	$email = $_POST['email'];
-	if(!preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9.\+=_-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9._-]+)+$/", $email)) 
-	{
+	if (! check_email_address($_POST['email'])) {
 		$err .= i18n_r('EMAIL_ERROR') .'<br />'; 
-	} 
-	else 
-	{
-		$EMAIL1 = $_POST['email'];
+	} else {
+		$EMAIL = $_POST['email'];
 	}
 
-	
-	// if there were no errors, setup the site
+	# if there were no errors, continue setting up the site
 	if ($err == '')	{
+		
+		# create new password
 		$random = createRandomPassword();
-		$PASSWD1 = passhash($random);
+		$PASSWD = passhash($random);
 		
-		// create new users.xml file
-		$bakpath = GSBACKUPSPATH."other/";
-		createBak($file, $path, $bakpath);
-		
+		# create user xml file
+		$file = _id($USR).'.xml';
+		createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
 		$xml = new SimpleXMLElement('<item></item>');
-		$xml->addChild('USR', $USR1);
-		$xml->addChild('PWD', $PASSWD1);
-		$xml->addChild('EMAIL', $EMAIL1);
-		
-		if (! XMLsave($xml, $path . $file) ) {
+		$xml->addChild('USR', $USR);
+		$xml->addChild('PWD', $PASSWD);
+		$xml->addChild('EMAIL', $EMAIL);
+		$xml->addChild('HTMLEDITOR', '1');
+		$xml->addChild('TIMEZONE', $TIMEZONE);
+		$xml->addChild('LANG', $LANG);
+		if (! XMLsave($xml, GSUSERSPATH . $file) ) {
 			$kill = i18n_r('CHMOD_ERROR');
 		}
 		
-		$flagfile = $bakpath."user.xml.reset";
-		copy($path . $file, $flagfile);
+		# create password change trigger file
+		$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
+		copy(GSUSERSPATH . $file, $flagfile);
 		
-		// create new website.xml file
+		# create new website.xml file
 		$file = 'website.xml';
 		$xmls = new SimpleXMLExtended('<item></item>');
 		$note = $xmls->addChild('SITENAME');
-		$note->addCData($SITENAME1);
+		$note->addCData($SITENAME);
 		$note = $xmls->addChild('SITEURL');
-		$note->addCData($SITEURL1);
-		$note = $xmls->addChild('TEMPLATE');
-		$note->addCData('Default_Simple');
-		$note = $xmls->addChild('TIMEZONE');
-		$note->addCData($TIMEZONE);
-		$note = $xmls->addChild('LANG');
-		$note->addCData($LANG);
-		XMLsave($xmls, $path . $file);
+		$note->addCData($SITEURL);
+		$xmls->addChild('TEMPLATE', 'Default_Simple');
+		$xmls->addChild('PRETTYURLS', '');
+		$xmls->addChild('PERMALINK', '');
+		if (! XMLsave($xmls, GSDATAOTHERPATH . $file) ) {
+			$kill = i18n_r('CHMOD_ERROR');
+		}
 		
-		// create new cp_settings.xml file
-		$file = 'cp_settings.xml';
-		$xmlc = new SimpleXMLElement('<item></item>');
-		$xmlc->addChild('HTMLEDITOR', '1');
-		$xmlc->addChild('PRETTYURLS', '');
-		XMLsave($xmlc, $path . $file);
-		
-		// create index.xml page
-		$init = GSDATAPAGESPATH."index.xml"; 
-		$temp = GSADMININCPATH."tmp/tmp-index.xml";
-		
+		# create default index.xml page
+		$init = GSDATAPAGESPATH.'index.xml'; 
+		$temp = GSADMININCPATH.'tmp/tmp-index.xml';
 		if (! file_exists($init))	{
 			copy($temp,$init);
 		}
 
-		
-		// create components.xml page
-		$init = $path."components.xml";
-		$temp = GSADMININCPATH."tmp/tmp-components.xml"; 
-		
-		if (! file_exists($init)) 
-		{
+		# create default components.xml page
+		$init = GSDATAOTHERPATH.'components.xml';
+		$temp = GSADMININCPATH.'tmp/tmp-components.xml'; 
+		if (! file_exists($init)) {
 			copy($temp,$init);
 		}
 
 		
-		// create 404.xml page
-		$init = $path."404.xml";
-		$temp = GSADMININCPATH."tmp/tmp-404.xml"; 
-		
-		if (! file_exists($init)) 
-		{
+		# create default 404.xml page
+		$init = GSDATAOTHERPATH.'404.xml';
+		$temp = GSADMININCPATH.'tmp/tmp-404.xml'; 
+		if (! file_exists($init)) {
 			copy($temp,$init);
 		}
 
-		
-		// create root .htaccess page
-		$init = GSROOTPATH. ".htaccess";
+		# create root .htaccess file
+		$init = GSROOTPATH.'.htaccess';
 		$temp_data = file_get_contents(GSROOTPATH .'temp.htaccess');
 		$temp_data = str_replace('**REPLACE**',tsl($path_parts), $temp_data);
-		
 		$fp = fopen($init, 'w');
-		
 		fwrite($fp, $temp_data);
 		fclose($fp);
 		if (!file_exists($init)) {
@@ -172,32 +124,34 @@ if(isset($_POST['submitted']))
 			unlink(GSROOTPATH .'temp.htaccess');
 		}
 		
-		// create gsconfig.php if it doesn't exist yet.
-		$init = GSROOTPATH."gsconfig.php";
-		$temp = GSROOTPATH."temp.gsconfig.php";
+		# create gsconfig.php if it doesn't exist yet.
+		$init = GSROOTPATH.'gsconfig.php';
+		$temp = GSROOTPATH.'temp.gsconfig.php';
 		if (file_exists($init)) {
 			unlink($temp);
 			if (file_exists($temp)) {
-				$kill .= sprintf(i18n_r('REMOVE_TEMPCONFIG_ERROR'), "temp.gsconfig.php") . '<br />';
+				$kill .= sprintf(i18n_r('REMOVE_TEMPCONFIG_ERROR'), 'temp.gsconfig.php') . '<br />';
 			}
 		} else {
 			rename($temp, $init);
 			if (!file_exists($init)) {
-				$kill .= sprintf(i18n_r('MOVE_TEMPCONFIG_ERROR'), "temp.gsconfig.php", "gsconfig.php") . '<br />';
+				$kill .= sprintf(i18n_r('MOVE_TEMPCONFIG_ERROR'), 'temp.gsconfig.php', 'gsconfig.php') . '<br />';
 			}
 		}
 		
-		// send email to new administrator
+		# send email to new administrator
 		$subject  = $site_full_name .' '. i18n_r('EMAIL_COMPLETE');
 		$message .= i18n_r('EMAIL_USERNAME') . ': '. stripslashes($_POST['user']);
 		$message .= '<br>'. i18n_r('EMAIL_PASSWORD') .': '. $random;
-		$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL1.$GSADMIN.'/">'.$SITEURL1.$GSADMIN.'/</a>';
+		$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL.$GSADMIN.'/">'.$SITEURL.$GSADMIN.'/</a>';
 		$message .= '<br><br>'. i18n_r('EMAIL_THANKYOU') .' '.$site_full_name.'!';
-		$status   = sendmail($EMAIL1,$subject,$message);
+		$status   = sendmail($EMAIL,$subject,$message);
 		
-		// Set the login cookie, then redirect user to secure panel		
+		# set the login cookie, then redirect user to secure panel		
+		setcookie('GS_ADMIN_USERNAME', _id($USR));
 		create_cookie();
 		
+		# check for fatal errors, if none, redirect to 
 		if ($kill == '') {
 			redirect("welcome.php");
 		}
@@ -207,58 +161,49 @@ if(isset($_POST['submitted']))
 
 <?php get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION')); ?>
 	
-	<h1><?php echo $site_full_name; ?> <span>&raquo;</span> <?php i18n('INSTALLATION'); ?></h1>
-</div>
+		<h1><?php echo $site_full_name; ?> <span>&raquo;</span> <?php i18n('INSTALLATION'); ?></h1>
+	</div>
 </div>
 <div class="wrapper">
 	
-
-	<?php
+<?php
 	
-	// display errors or success messages 
-	if ($status == 'success') 
-	{
+	# display error or success messages 
+	if ($status == 'success') {
 		echo '<div class="updated">'. i18n_r('NOTE_REGISTRATION') .' '. $_POST['email'] .'</div>';
 	} 
-	elseif ($status == 'error') 
-	{
+	elseif ($status == 'error') {
 		echo '<div class="error">'. i18n_r('NOTE_REGERROR') .'.</div>';
 	}
 	
-	if ($kill != '') 
-	{
+	if ($kill != '') {
 		echo '<div class="error">'. $kill .'</div>';
 	}	
 	
-	if ($err != '') 
-	{
+	if ($err != '') {
 		echo '<div class="error">'. $err .'</div>';
 	}
 	
-	if ($random != '') 
-	{
+	if ($random != ''){
 		echo '<div class="updated">'.i18n_r('NOTE_USERNAME').' <b>'. stripslashes($_POST['user']) .'</b> '.i18n_r('NOTE_PASSWORD').' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="welcome.php">'.i18n_r('EMAIL_LOGIN').'</a></div>';
 	}
-	
 ?>
 	<div id="maincontent">
-<?php if ($kill == '') { ?>
 		<div class="main" >
-	<h3><?php echo $site_full_name .' '. i18n_r('INSTALLATION'); ?></h3>
-
-	<form action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
-		<div class="leftsec">
-			<label for="sitename" ><?php i18n('LABEL_WEBSITE'); ?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php if(isset($_POST['sitename'])) { echo $_POST['sitename']; } ?>" /></p>
-			<input name="siteurl" type="hidden" value="<?php if(isset($_POST['siteurl'])) { echo $_POST['siteurl']; } else { echo $fullpath;} ?>" />
-			<input name="lang" type="hidden" value="<?php echo $LANG; ?>" />
-			<label for="user" ><?php i18n('LABEL_USERNAME'); ?>:</label><input class="text" name="user" id="user" type="text" value="<?php if(isset($_POST['user'])) { echo $_POST['user']; } ?>" /></p>
-			<label for="email" ><?php i18n('LABEL_EMAIL'); ?>:</label><input class="text" name="email" id="email" type="text" value="<?php if(isset($_POST['email'])) { echo $_POST['email']; } ?>" /></p>
-		</div>
-		<div class="clear"></div>
-		<p><input class="submit" type="submit" name="submitted" value="<?php i18n('LABEL_INSTALL'); ?>" /></p>
-	</form>
+			<h3><?php echo $site_full_name .' '. i18n_r('INSTALLATION'); ?></h3>
+			<form action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
+				<div class="leftsec">
+					<label for="sitename" ><?php i18n('LABEL_WEBSITE'); ?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php if(isset($_POST['sitename'])) { echo $_POST['sitename']; } ?>" /></p>
+					<input name="siteurl" type="hidden" value="<?php if(isset($_POST['siteurl'])) { echo $_POST['siteurl']; } else { echo $fullpath;} ?>" />
+					<input name="lang" type="hidden" value="<?php echo $LANG; ?>" />
+					<label for="user" ><?php i18n('LABEL_USERNAME'); ?>:</label><input class="text" name="user" id="user" type="text" value="<?php if(isset($_POST['user'])) { echo $_POST['user']; } ?>" /></p>
+					<label for="email" ><?php i18n('LABEL_EMAIL'); ?>:</label><input class="text" name="email" id="email" type="text" value="<?php if(isset($_POST['email'])) { echo $_POST['email']; } ?>" /></p>
+				</div>
+				<div class="clear"></div>
+				<p><input class="submit" type="submit" name="submitted" value="<?php i18n('LABEL_INSTALL'); ?>" /></p>
+			</form>
 	</div>
-<?php } ?>
+	
 </div>
 
 <div class="clear"></div>

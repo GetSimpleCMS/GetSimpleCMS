@@ -8,28 +8,12 @@
  * @subpackage Installation
  */
 
-// Setup inclusions
+# setup inclusions
 $load['plugin'] = true;
-
-if(isset($_GET['lang'])) {
-	$LANG = $_GET['lang'];
-}
-
-// Include common.php
+if(isset($_GET['lang'])) {$LANG = $_GET['lang'];}
 include('inc/common.php');
 
-// Load user.xml
-$file = GSDATAOTHERPATH.'user.xml';
-if (file_exists($file)) {
-	$data = getXML($file);
-	$USR = stripslashes($data->USR);
-	$PASSWD = $data->PWD;
-	$EMAIL = $data->EMAIL;
-}
-
-// If there is a password set, we assume this site is already setup
-if (isset($PASSWD) && $PASSWD != '') { redirect('index.php'); }
-
+# variable setup
 $php_modules = get_loaded_extensions();
 
 // attempt to fix permissions issues
@@ -43,7 +27,9 @@ $dirsArray = array(
 	GSBACKUPSPATH, 
 	GSBACKUPSPATH.'other/', 
 	GSBACKUPSPATH.'pages/',
-	GSBACKUPSPATH.'zip/'
+	GSBACKUPSPATH.'zip/',
+	GSBACKUSERSPATH,
+	GSUSERSPATH
 );
 
 foreach ($dirsArray as $dir) {

@@ -60,14 +60,7 @@ $private = $data_index->private;
 
 # if page is private, check user
 if ($private == 'Y') {
-	if (file_exists(GSDATAOTHERPATH .'user.xml')) {
-		$datau = getXML(GSDATAOTHERPATH .'user.xml');
-		$USR = stripslashes($datau->USR);
-	} else {
-		$USR = null;	
-	}
-	include_once(GSADMININCPATH.'cookie_functions.php');
-	login_cookie_check();
+	redirect('404');
 }
 
 # if page does not exist, throw 404 error

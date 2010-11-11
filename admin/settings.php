@@ -8,118 +8,111 @@
  * @subpackage Settings
  */
 
-// Setup inclusions
+# setup inclusions
 $load['plugin'] = true;
-
-// Include common.php
 include('inc/common.php');
 
-// Variable settings
+# variable settings
 login_cookie_check();
+$fullpath = suggest_site_path();
 $file			= _id($USR) .'.xml';
-$cfile 		= 'cp_settings.xml';
 $wfile 		= 'website.xml';
-$path 		= GSDATAOTHERPATH;
-$bakpath 	= GSBACKUPSPATH.'other/';
-$data 		= getXML($path . $file);
+$data 		= getXML(GSUSERSPATH . $file);
 $USR 			= stripslashes($data->USR);
 $PASSWD 	= $data->PWD;
 $EMAIL 		= $data->EMAIL;
-$err 			= '';
+$err = '';$pwd1 = '';$pwd2 = '';$editorchck = ''; $prettychck = '';
 
-// if the undo command was invoked
+# if the undo command was invoked
 if (isset($_GET['undo'])) { 
-	$nonce = $_GET['undo'];
+	# first check for csrf
+	$nonce = $_GET['nonce'];
 	if(!check_nonce($nonce, "undo")) {
 		die("CSRF detected!");
 	}
-	undo($file, $path, $bakpath);
-	undo($wfile, $path, $bakpath);
-	undo($cfile, $path, $bakpath);
+	# perform undo
+	undo($file, GSUSERSPATH, GSBACKUSERSPATH);
+	undo($wfile, GSDATAOTHERPATH, GSBACKUPSPATH.'other/');
 	
-	// Redirect
+	# redirect back to yourself to show the new restored data
 	redirect('settings.php?restored=true');
 }
 
+# was this page restored?
 if (isset($_GET['restored'])) { 
 	$restored = 'true'; 
 } else {
 	$restored = 'false';
 }
 
-// were changes submitted?
+# was the form submitted?
 if(isset($_POST['submitted'])) {
+	
+	# first check for csrf
 	$nonce = $_POST['nonce'];
 	if(!check_nonce($nonce, "save_settings")) {
 		die("CSRF detected!");	
 	}
 
+	# website-specific fields
 	if(isset($_POST['sitename'])) { 
 		$SITENAME = htmlentities($_POST['sitename'], ENT_QUOTES, 'UTF-8'); 
 	}
-	
 	if(isset($_POST['siteurl'])) { 
 		$SITEURL = tsl($_POST['siteurl']); 
 	}
-	
-	if(isset($_POST['user'])) { 
-		$USR = $_POST['user']; 
-	} 
-	
-	if(isset($_POST['email'])) { 
-		$EMAIL = $_POST['email']; 
-	} 
-	
+	if(isset($_POST['permalink'])) { 
+		$PERMALINK = $_POST['permalink']; 
+	}	
 	if(isset($_POST['template'])) { 
 		$TEMPLATE = $_POST['template']; 
 	}
+	$PRETTYURLS = $_POST['prettyurls']; 
 	
+	# user-specific fields
+	if(isset($_POST['user'])) { 
+		$USR = $_POST['user']; 
+	} 
+	if(isset($_POST['email'])) { 
+		$EMAIL = $_POST['email']; 
+	} 
 	if(isset($_POST['timezone'])) { 
 		$TIMEZONE = $_POST['timezone']; 
 	}
-	
 	if(isset($_POST['lang'])) { 
 		$LANG = $_POST['lang']; 
 	}
-	
-	if(isset($_POST['permalink'])) { 
-		$PERMALINK = $_POST['permalink']; 
-	}
-
 	$HTMLEDITOR = $_POST['show_htmleditor']; 
-	$PRETTYURLS = $_POST['prettyurls']; 
 	
-	// Update passwords
-	$pwd1 = '';
-	$pwd2 = '';
 	
+	# check to see if passwords are changing
 	if(isset($_POST['sitepwd'])) { $pwd1 = $_POST['sitepwd']; }
 	if(isset($_POST['sitepwd_confirm'])) { $pwd2 = $_POST['sitepwd_confirm']; }
-	
-	// are we resetting the password?
-	if ($pwd1 != $pwd2)	{ 
-		$err = "true";
+	if ($pwd1 != $pwd2)	{
+		#passwords do not match 
 		$msg = i18n_r('PASSWORD_NO_MATCH');
 	} else {
-		
-		// password cannot be null
+		# password cannot be null
 		if ( $pwd1 != '' ) { 
 			$PASSWD = passhash($pwd1); 
 		}	
 		
-		// create new user data file
-		createBak($file, $path, $bakpath);
-		if (file_exists($bakpath . _id($USR).'.xml.reset')) { unlink($bakpath . _id($USR).'.xml.reset'); }	
-		
+		# create user xml file
+		createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
+		if (file_exists(GSUSERSPATH . _id($USR).'.xml.reset')) { unlink(GSUSERSPATH . _id($USR).'.xml.reset'); }	
 		$xml = new SimpleXMLElement('<item></item>');
 		$xml->addChild('USR', $USR);
 		$xml->addChild('PWD', $PASSWD);
 		$xml->addChild('EMAIL', $EMAIL);
-		exec_action('settings-user');
-		XMLsave($xml, $path . $file);
+		$xml->addChild('HTMLEDITOR', $HTMLEDITOR);
+		$xml->addChild('TIMEZONE', $TIMEZONE);
+		$xml->addChild('LANG', $LANG);
+		if (! XMLsave($xml, GSUSERSPATH . $file) ) {
+			$error = i18n_r('CHMOD_ERROR');
+		}
 		
-		// create new site data file
-		createBak($wfile, $path, $bakpath);
+		# create website xml file
+		createBak($wfile, GSDATAOTHERPATH, GSBACKUPSPATH.'other/');
 		$xmls = new SimpleXMLExtended('<item></item>');
 		$note = $xmls->addChild('SITENAME');
 		$note->addCData($SITENAME);
@@ -127,58 +120,35 @@ if(isset($_POST['submitted'])) {
 		$note->addCData($SITEURL);
 		$note = $xmls->addChild('TEMPLATE');
 		$note->addCData($TEMPLATE);
-		$note = $xmls->addChild('TIMEZONE');
-		$note->addCData($TIMEZONE);
-		$note = $xmls->addChild('LANG');
-		$note->addCData($LANG);
-		exec_action('settings-website');
-		XMLsave($xmls, $path . $wfile);
-		
-		//see new language file immediately
-		include('lang/'.$LANG.'.php');
+		$xmls->addChild('PRETTYURLS', $PRETTYURLS);
+		$xmls->addChild('PERMALINK', $PERMALINK);
+		if (! XMLsave($xmls, GSDATAOTHERPATH . $wfile) ) {
+			$error = i18n_r('CHMOD_ERROR');
+		}
 
-		// create new cpsettings data file
-		createBak($cfile, $path, $bakpath);
-		$xmlc = new SimpleXMLElement('<item></item>');
-		$xmlc->addChild('HTMLEDITOR', $HTMLEDITOR);
-		$xmlc->addChild('PRETTYURLS', $PRETTYURLS);
-		$xmlc->addChild('PERMALINK', $PERMALINK);
-		exec_action('settings-cpsettings');
-		XMLsave($xmlc, $path . $cfile);
-		
-		$err = "false";
+		# see new language file immediately
+		include(GSLANGPATH.$LANG.'.php');
+
 	}
 }
 
-//are any of the control panel checkboxes checked?
-$editorchck = ''; $prettychck = '';
-
+# are any of the control panel checkboxes checked?
 if ($HTMLEDITOR != '' ) { $editorchck = 'checked'; }
 if ($PRETTYURLS != '' ) { $prettychck = 'checked'; }
 
-$fullpath = suggest_site_path();
-
-// get available language files
+# get all available language files
 $lang_handle = opendir(GSLANGPATH) or die("Unable to open ". GSLANGPATH);
 if ($LANG == ''){ $LANG = 'en_US'; }
-
 while ($lfile = readdir($lang_handle)) {
 	if( is_file(GSLANGPATH . $lfile) && $lfile != "." && $lfile != ".." )	{
 		$lang_array[] = basename($lfile, ".php");
 	}
 }
-
 if (count($lang_array) != 0) {
 	sort($lang_array);
-	$count	= '0'; 
-	$sel 	= ''; 
-	$langs 	= '';
-	
+	$count = '0'; $sel = ''; $langs = '';
 	foreach ($lang_array as $larray){
-		if ($LANG == $larray)	{ 
-			$sel="selected";
-		}
-		
+		if ($LANG == $larray)	{ $sel="selected"; }
 		$langs .= '<option '.$sel.' value="'.$larray.'" >'.$larray.'</option>';
 		$sel = '';
 		$count++;
@@ -210,30 +180,11 @@ if (count($lang_array) != 0) {
 		<div class="clear"></div>
 		
 		<div class="leftsec">
-			<p><label for="timezone" ><?php i18n('LOCAL_TIMEZONE');?>:</label>
-			<? if( (isset($_POST['timezone'])) ) { $TIMEZONE = $_POST['timezone']; } ?>
-			<select class="text" id="timezone" name="timezone"> 
-			<?php if ($TIMEZONE == '') { echo '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>'; } else { echo '<option selected="selected"  value="'. $TIMEZONE .'">'. $TIMEZONE .'</option>'; } ?>
-			<?php include('inc/timezone_options.txt'); ?>
-			</select>
-			</p>
-		</div>
-		<div class="rightsec">
-			<p><label for="lang" ><?php i18n('LANGUAGE');?>:</label>
-			<select name="lang" id="lang" class="text">
-				<?php echo $langs; ?>
-			</select><br /><a href="http://get-simple.info/download/languages/" style="font-size:11px;" ><?php i18n('MORE');?></a>
-			</p>
-		</div>
-		<div class="clear"></div>
-		
-		<div class="leftsec">
 			<p><label for="permalink" ><?php i18n('PERMALINK');?>:</label><input class="text" name="permalink" id="permalink" type="text" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /><br /><a href="http://get-simple.info/docs/permalinks/" style="font-size:11px;" ><?php i18n('MORE');?></a></p>
 		</div>
 		<div class="clear"></div>
 		
-		<p class="inline" ><input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<label for="prettyurls" ><?php i18n('USE_FANCY_URLS');?>.</label><br />
-		<input name="show_htmleditor" id="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<label for="show_htmleditor" ><?php i18n('ENABLE_HTML_ED');?></label></p>
+		<p class="inline" ><input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<label for="prettyurls" ><?php i18n('USE_FANCY_URLS');?>.</label></p>
 		
 		<?php exec_action('settings-website-extras'); ?>
 		
@@ -251,6 +202,25 @@ if (count($lang_array) != 0) {
 			}?>
 		</div>
 		<div class="clear"></div>
+		<div class="leftsec">
+			<p><label for="timezone" ><?php i18n('LOCAL_TIMEZONE');?>:</label>
+			<? if( (isset($_POST['timezone'])) ) { $TIMEZONE = $_POST['timezone']; } ?>
+			<select class="text" id="timezone" name="timezone"> 
+			<?php if ($TIMEZONE == '') { echo '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>'; } else { echo '<option selected="selected"  value="'. $TIMEZONE .'">'. $TIMEZONE .'</option>'; } ?>
+			<?php include('inc/timezone_options.txt'); ?>
+			</select>
+			</p>
+		</div>
+		<div class="rightsec">
+			<p><label for="lang" ><?php i18n('LANGUAGE');?>:</label>
+			<select name="lang" id="lang" class="text">
+				<?php echo $langs; ?>
+			</select><br /><a href="http://get-simple.info/download/languages/" style="font-size:11px;" ><?php i18n('MORE');?></a>
+			</p>
+		</div>
+		<div class="clear"></div>
+		<p class="inline" ><input name="show_htmleditor" id="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<label for="show_htmleditor" ><?php i18n('ENABLE_HTML_ED');?></label></p>
+		
 		<p style="margin:0px 0 5px 0;font-size:12px;color:#999;" ><?php i18n('ONLY_NEW_PASSWORD');?>:</p>
 		<div class="leftsec">
 			<p><label for="sitepwd" ><?php i18n('NEW_PASSWORD');?>:</label><input autocomplete="off" class="text" id="sitepwd" name="sitepwd" type="password" value="" /></p>
