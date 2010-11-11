@@ -42,11 +42,16 @@ foreach ($pluginfiles as $fi) {
  */
 function add_action($hook_name, $added_function, $args = array()) {
 	global $plugins;
-
+	
+	$bt = debug_backtrace();
+  $caller = array_shift($bt);
+  
 	$plugins[] = array(
 		'hook' => $hook_name,
 		'function' => $added_function,
-		'args' => (array) $args
+		'args' => (array) $args,
+		'file' => $caller['file'],
+    'line' => $caller['line']
 	);
 }
 

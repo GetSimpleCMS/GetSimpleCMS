@@ -34,6 +34,8 @@ if(isset($_POST['submitted'])) {
 	# check for any errors
 	if ( !$error ) {
 		
+		exec_action('successful-login-start');
+		
 		# hash the given password
 		$password = passhash($password);
 		
@@ -52,7 +54,7 @@ if(isset($_POST['submitted'])) {
 				$authenticated = false;
 				
 				# add login failure to failed logins page
-				$xmlfile = GSDATAOTHERPATH.'logs/failedlogins_'._id($USR).'.log';
+				$xmlfile = GSDATAOTHERPATH.'logs/failedlogins.log';
 				if ( ! file_exists($xmlfile) ) 	{ 
 					$xml = new SimpleXMLExtended('<channel></channel>');
 				} else {
@@ -80,7 +82,7 @@ if(isset($_POST['submitted'])) {
 			# YES - set the login cookie, then redirect user to secure panel		
 			create_cookie();
 			setcookie('GS_ADMIN_USERNAME', $USR);
-			<?php exec_action('successful-login'); ?>
+			exec_action('successful-login-end');
 			redirect($cookie_redirect); 
 		} else {
 			# NO - show error message
