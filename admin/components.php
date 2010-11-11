@@ -9,46 +9,41 @@
  * @link http://get-simple.info/docs/what-are-components
  */
  
-// Setup inclusions
+# setup inclusions
 $load['plugin'] = true;
-
-// Include common.php
 include('inc/common.php');
 
-// Variable settings
+# variable settings
 $userid 	= login_cookie_check();
 $file 		= "components.xml";
 $path 		= GSDATAOTHERPATH;
 $bakpath 	= GSBACKUPSPATH .'other/';
 $update 	= ''; $table = ''; $list='';
 
-// if the components are being saved...
+# check to see if form was submitted
 if (isset($_POST['submitted'])){
 	$value = $_POST['val'];
 	$slug = $_POST['slug'];
 	$title = $_POST['title'];
 	$ids = $_POST['id'];
+	
+	# check for csrf
 	$nonce = $_POST['nonce'];	
-
 	if(!check_nonce($nonce, "modify_components")) {
 		die("CSRF detected!");
 	}
 	
-	// create backup file for undo           
+	# create backup file for undo           
 	createBak($file, $path, $bakpath);
 	
-	//top of xml file
+	# start creation of top of components.xml file
 	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
-	if (count($ids) != 0)
-	{ 
+	if (count($ids) != 0) { 
 		
 		$ct = 0; $coArray = array();
-		foreach ($ids as $id)
-		{
-			if ( ($title[$ct] != null) && ($value[$ct] != null) )
-			{
-				if ( $slug[$ct] == null )
-				{
+		foreach ($ids as $id)		{
+			if ( ($title[$ct] != null) && ($value[$ct] != null) )	{
+				if ( $slug[$ct] == null )	{
 					$slug_tmp = to7bit($title[$ct], 'UTF-8');
 					$slug[$ct] = clean_url($slug_tmp); 
 					$slug_tmp = '';
@@ -66,9 +61,8 @@ if (isset($_POST['submitted'])){
 		$ids = subval_sort($coArray,'title');
 		
 		$count = 0;
-		foreach ($ids as $comp)
-		{
-			//body of xml file
+		foreach ($ids as $comp)	{
+			# create the body of components.xml file
 			$components = $xml->addChild('item');
 			$c_note = $components->addChild('title');
 			$c_note->addCData($comp['title']);
@@ -83,18 +77,21 @@ if (isset($_POST['submitted'])){
 	redirect('components.php?upd=comp-success');
 }
 
-// if undo was invoked
-if (isset($_GET['undo']))
-{ 
+# if undo was invoked
+if (isset($_GET['undo'])) { 
+	
+	# check for csrf
 	$nonce = $_GET['nonce'];	
-	if(!check_nonce($nonce, "undo"))
+	if(!check_nonce($nonce, "undo")) {
 		die("CSRF detected!");
-
+	}
+	
+	# perform the undo
 	undo($file, $path, $bakpath);
 	redirect('components.php?upd=comp-restored');
 }
 
-//create list of components for html
+# create components form html
 $data = getXML($path . $file);
 $componentsec = $data->item;
 $count= 0;
@@ -112,14 +109,17 @@ if (count($componentsec) != 0) {
 		$count++;
 	}
 }
-	// Create list for easy access
-	$listc = '';
+	# create list to show on sidebar for easy access
+	$listc = ''; $submitclass = '';
 	if($count > 3) {
 		$item = 0;
 		foreach($componentsec as $component) {
 			$listc .= '<a id="divlist-' . $item . '" href="#section-' . $item . '" class="component">' . $component->title . '</a>';
 			$item++;
 		}
+	} elseif ($count == 0) {
+		$submitclass = 'hidden';
+		
 	}
 ?>
 
@@ -144,7 +144,7 @@ if (count($componentsec) != 0) {
 
 		<div id="divTxt"></div> 
 		<?php echo $table; ?>
-		<p id="submit_line" >
+		<p id="submit_line" class="<?php echo $submitclass; ?>" >
 			<span><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_COMPONENTS');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="components.php?cancel"><?php i18n('CANCEL'); ?></a>
 		</p>
 	</form>

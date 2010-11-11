@@ -14,6 +14,7 @@ a img,:link img,:visited img {border:none}
 #help {display:none;}
 .imgthumb {display:none;width:70px;}
 .imgthumb img {border:1px solid #555;}
+.hidden {display:none;}
 html {
 	overflow-y: scroll;
 }

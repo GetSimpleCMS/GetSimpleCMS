@@ -157,6 +157,15 @@ $php_modules = get_loaded_extensions();
 								echo '<tr><td>/backups/other/' . $file .'</td><td>' . valid_xml($path . $file) .'</td></tr>';
 							}							
 						}
+						
+						$path = GSBACKUPSPATH.'users/';
+						$data = getFiles($path);
+						sort($data);
+						foreach($data as $file) {
+							if( isFile($file, $path) ) {
+								echo '<tr><td>/backups/users/' . $file .'</td><td>' . valid_xml($path . $file) .'</td></tr>';
+							}							
+						}
 
 						$path = GSBACKUPSPATH.'pages/';
 						$data = getFiles($path);
@@ -176,9 +185,11 @@ $php_modules = get_loaded_extensions();
 				<?php $me = check_perms(GSDATAOTHERPATH.'logs/'); ?><tr><td>/data/other/logs/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
 				<?php $me = check_perms(GSTHUMBNAILPATH); ?><tr><td>/data/thumbs/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
 				<?php $me = check_perms(GSDATAUPLOADPATH); ?><tr><td>/data/uploads/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
+				<?php $me = check_perms(GSUSERSPATH); ?><tr><td>/data/users/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
 				<?php $me = check_perms(GSBACKUPSPATH.'zip/'); ?><tr><td>/backups/zip/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
 				<?php $me = check_perms(GSBACKUPSPATH.'pages/'); ?><tr><td>/backups/pages/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
 				<?php $me = check_perms(GSBACKUPSPATH.'other/'); ?><tr><td>/backups/other/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
+				<?php $me = check_perms(GSBACKUSERSPATH); ?><tr><td>/backups/users/</td><td><?php if( $me >= '0755' ) { echo '<span class="OKmsg" >'. $me .' '.i18n_r('WRITABLE').' - '.i18n_r('OK').'</span>'; } else { echo '<span class="ERRmsg" >'. $me .' '.i18n_r('NOT_WRITABLE').' - '.i18n_r('ERROR').'!</span>'; } ?></td></tr>
 			</table>
 
 			

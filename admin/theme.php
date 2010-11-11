@@ -6,33 +6,33 @@
  * @subpackage Theme
  */
 
-// Setup inclusions
+# setup inclusions
 $load['plugin'] = true;
-
-// Include common.php
 include('inc/common.php');
 
-// Variable settings
+# variable settings
 login_cookie_check();
 $path 			= GSDATAOTHERPATH; 
 $file 			= "website.xml"; 
 $theme_options 	= '';
 
-// were changes submitted?
-if( (isset($_POST['submitted'])) && (isset($_POST['template'])) )
-{
+# was the form submitted?
+if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
+	
+	# check for csrf
 	$nonce = $_POST['nonce'];	
-
-	if(!check_nonce($nonce, "activate"))
+	if(!check_nonce($nonce, "activate")) {
 		die("CSRF detected!");
-
+	}
+	
+	# get passed value from form
 	$TEMPLATE = $_POST['template'];
 	
-	// create new site data file
+	# backup old website.xml file
 	$bakpath = GSBACKUPSPATH.'other/';
 	createBak($file, $path, $bakpath);
 	
-	// Update changes
+	# udpate website.xml file with new theme
 	$xml = new SimpleXMLExtended('<item></item>');
 	$note = $xml->addChild('SITENAME');
 	$note->addCData($SITENAME);
@@ -40,32 +40,22 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) )
 	$note->addCData($SITEURL);
 	$note = $xml->addChild('TEMPLATE');
 	$note->addCData($TEMPLATE);
-	$note = $xml->addChild('TIMEZONE');
-	$note->addCData($TIMEZONE);
-	$note = $xml->addChild('LANG');
-	$note->addCData($LANG);
+	$xml->addChild('PRETTYURLS', $PRETTYURLS);
+	$xml->addChild('PERMALINK', $PERMALINK);
 	XMLsave($xml, $path . $file);
 	$success = i18n_r('THEME_CHANGED');
 }
 
-// get available themes (only look for folders)
+# get available themes (only look for folders)
 $themes_handle = opendir(GSTHEMESPATH) or die("Unable to open ".GSTHEMESPATH);
-
-while ($file = readdir($themes_handle))
-{
+while ($file = readdir($themes_handle)) {
 	$curpath = GSTHEMESPATH . $file;
-	
-	if( is_dir($curpath) && $file != "." && $file != ".." )
-	{
+	if( is_dir($curpath) && $file != "." && $file != ".." ) {
 		$sel="";
-		
-		if (file_exists($curpath.'/template.php'))
-		{
-			if ($TEMPLATE == $file)
-			{ 
+		if (file_exists($curpath.'/template.php')){
+			if ($TEMPLATE == $file)	{ 
 				$sel="selected";
 			}
-			
 			$theme_options .= '<option '.$sel.' value="'.$file.'" >'.$file.'</option>';
 		}
 	}

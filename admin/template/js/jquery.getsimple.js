@@ -110,6 +110,7 @@ jQuery(document).ready(function() {
 		id = (id - 1) + 2;
 		$("#id").val(id);
 		$('#loader').fadeOut(500);
+		$('#submit_line').fadeIn();
 		return false;
 	});
 	$("b.editable").dblclick(function () {

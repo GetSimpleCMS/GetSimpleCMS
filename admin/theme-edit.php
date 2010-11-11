@@ -8,20 +8,18 @@
  * @subpackage Theme
  */
 
-// Setup inclusions
+# setup inclusions
 $load['plugin'] = true;
-
-// Include common.php
 include('inc/common.php');
 
-// Variable settings
+# variable settings
 login_cookie_check();
 $theme_options 		= ''; 
 $TEMPLATE_FILE 		= ''; 
 $template 			= ''; 
 $theme_templates 	= '';
 
-// Were changes submitted?
+# were changes submitted?
 if (isset($_GET['t'])) {
 	$_GET['t'] = strippath($_GET['t']);
 	if ($_GET['t']&&is_dir(GSTHEMESPATH . $_GET['t'].'/')) {
@@ -35,36 +33,34 @@ if (isset($_GET['f'])) {
 	}
 }
 
-// Save?
+# check for form submission
 if((isset($_POST['submitsave']))){
+	
+	# check for csrf
 	$nonce = $_POST['nonce'];
 	if(!check_nonce($nonce, "save")) {
 		die("CSRF detected!");
 	}
-	$SavedFile = $_POST['edited_file'];
 	
+	# save edited template file
+	$SavedFile = $_POST['edited_file'];
 	$FileContents = safe_strip_decode($_POST['content']);
-
 	$fh = fopen(GSTHEMESPATH . $SavedFile, 'w') or die("can't open file");
 	fwrite($fh, $FileContents);
 	fclose($fh);
 	$success = sprintf(i18n_r('TEMPLATE_FILE'), $SavedFile);
 }
 
-
-// No template file?
+# if no template is selected, use the default
 if (! $TEMPLATE_FILE) {
 	$TEMPLATE_FILE = 'template.php';
 }
 
-
-// Setup
+# create themes dropdown
 $themes_path = GSTHEMESPATH;
 $themes_handle = opendir($themes_path);
 $theme_options .= '<select class="text" style="width:225px;" name="t" id="theme-folder" >';	
-
-while ($file = readdir($themes_handle))
-{
+while ($file = readdir($themes_handle)) {
 	$curpath = $themes_path .'/'. $file;
 	if( is_dir($curpath) && $file != "." && $file != ".." ) 
 	{
@@ -82,16 +78,14 @@ while ($file = readdir($themes_handle))
 		}
 	}
 }
-
 $theme_options .= '</select> ';
 
-// Set options to none
-if (count($theme_dir_array) == 1)
-{
+# check to see how many themes are available
+if (count($theme_dir_array) == 1){
 	$theme_options = '';
 }
 
-// No template?
+# if no template is selected, use the default
 if ($template == '') { $template = 'template.php'; }
 
 $templates = get_themes($TEMPLATE);
