@@ -57,9 +57,15 @@ define('GSIMAGEWIDTH', '200');
 # Turn off auto-generation of SALT and use a custom value. Used for cookies & upload security.
 #define('GSUSECUSTOMSALT', 'your_new_salt_value_here');
 
-# set email from address
+# Set email from address
 #define('GSFROMEMAIL', 'noreply@get-simple.info');
 
+# Data saving method. Default is XML
+#define('GSSAVE', 'mysql');
+	#define('DB_HOST', 'localhost');
+	#define('DB_USER', 'username');
+	#define('DB_PASS', 'password');
+	#define('DB_DATABASE', 'database');
 
 # Set PHP locale
 # http://php.net/manual/en/function.setlocale.php
