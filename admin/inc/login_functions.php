@@ -79,7 +79,8 @@ if(isset($_POST['submitted'])) {
 		if( $authenticated ) {
 			# YES - set the login cookie, then redirect user to secure panel		
 			create_cookie();
-			setcookie('GS_ADMIN_USERNAME', _id($USR));
+			setcookie('GS_ADMIN_USERNAME', $USR);
+			<?php exec_action('successful-login'); ?>
 			redirect($cookie_redirect); 
 		} else {
 			# NO - show error message

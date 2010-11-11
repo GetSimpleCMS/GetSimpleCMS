@@ -96,8 +96,9 @@ if (file_exists($thisfilew)) {
  */
 if(!isset($base)) {
 	if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
-		if (file_exists(GSUSERSPATH . $_COOKIE['GS_ADMIN_USERNAME'].'.xml')) {
-			$datau = getXML(GSUSERSPATH  . $_COOKIE['GS_ADMIN_USERNAME'].'.xml');
+		$cookie_user_id = _id($_COOKIE['GS_ADMIN_USERNAME']);
+		if (file_exists(GSUSERSPATH . $cookie_user_id.'.xml')) {
+			$datau = getXML(GSUSERSPATH  . $cookie_user_id.'.xml');
 			$USR = stripslashes($datau->USR);
 			$HTMLEDITOR = $datau->HTMLEDITOR;
 			$TIMEZONE = $datau->TIMEZONE;
