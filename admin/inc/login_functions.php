@@ -36,7 +36,7 @@ if(cookie_check()) {
 // Was the login form button pressed? If so, continue...
 if(isset($_POST['submitted'])) { 
 	// Initial variable setup
-	$user_xml = GSDATAUSERSPATH . _id($_POST['userid']).'.xml';
+	$user_xml = GSDATAOTHERPATH . _id($_POST['userid']).'.xml';
 	$userid = $_POST['userid'];
 	$password = $_POST['pwd'];
 	$error = null;
