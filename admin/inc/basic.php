@@ -687,7 +687,7 @@ function find_accesskey($string) {
 /**
  * Clean ID
  *
- * Femoves characters that don't work in URLs or IDs
+ * Removes characters that don't work in URLs or IDs
  * 
  * @param string $text
  * @return string
@@ -696,5 +696,24 @@ function _id($text) {
 	$text = to7bit($text, "UTF-8");
 	$text = clean_url($text);
 	return lowercase($text);
+}
+
+/**
+ * Defined Array
+ *
+ * Checks an array of PHP constants and verifies they are defined
+ * 
+ * @param array $constants
+ * @return bool
+ */
+function defined_array($constants) {
+	$defined = true;
+	foreach ($constants as $constant) {
+		if (!defined($constant)) {
+			$defined = false;
+			break;
+		}
+	}
+	return $defined;
 }
 ?>

@@ -84,12 +84,9 @@ $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
  */
 define('GSSAVETYPE', 'XML');
 	/** mysql */
-	if ( defined('GSSTORAGE') && (lowercase(GSDEBUG) == 'mysql') 
-														 && defined('DB_HOST')
-														 && defined('DB_PASS')
-														 && defined('DB_USER')
-														 && defined('DB_DATABASE') ) {
-		include('mysql_functions.php');
+	$mysql_constants = array('GSSTORAGE','DB_HOST','DB_PASS','DB_USER','DB_DATABASE');
+	if (defined_array($mysql_constants) && lowercase(GSSTORAGE) == 'mysql') {
+		include_once('mysql_functions.php');
 		if (storage_connect()) {
 			define('GSSAVETYPE', 'MYSQL');
 		}
@@ -97,7 +94,7 @@ define('GSSAVETYPE', 'XML');
 
 
 /**
- * Pull data from XML if XML is the database engine
+ * Pull data from storage
  */
  
 /** grab website data */
