@@ -64,7 +64,7 @@ define('GSIMAGEWIDTH', '200');
 #define('GSFROMEMAIL', 'noreply@get-simple.info');
 
 # Data saving method. Default is XML
-#define('GSDATABASE', 'mysql');
+#define('GSSTORAGE', 'mysql');
 	#define('DB_HOST', 'localhost');
 	#define('DB_USER', 'username_here');
 	#define('DB_PASS', 'password_here');

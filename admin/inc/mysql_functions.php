@@ -19,7 +19,7 @@
  *
  * @return bool
  */
-function connect_database() {
+function storage_connect() {
 	$status_connect = mysql_connect(DB_HOST, DB_USER, DB_PASS) or die(mysql_error());
   $status_select = mysql_select_db(DB_DATABASE);
   if (mysql_error()) {
@@ -42,7 +42,7 @@ function connect_database() {
  * @param string $html Optional, default is FALSE. FALSE does not strip HTML from $data
  * @return string
  */
-function escape_data($data, $db=true, $html=false) {
+function storage_escape($data, $db=true, $html=false) {
 	$data = trim($data);
   if (get_magic_quotes_gpc()) { $data = stripslashes($data); } // if get magic quotes is on, stripslashes
   if ($html) { $data = strip_tags($data); } // no html wanted
@@ -60,7 +60,18 @@ function escape_data($data, $db=true, $html=false) {
 }
 
 
+function storage_save_page() {}
+function storage_save_userdata() {}
+function storage_save_components() {}
+function storage_save_settings() {}
+function storage_save_option() {}
 
+
+function storage_get_page() {}
+function storage_get_userdata() {}
+function storage_get_components() {}
+function storage_get_settings() {}
+function storage_get_option() {}
 
 
 ?>

@@ -43,11 +43,10 @@ if(isset($_POST['submitted'])) {
 		if (file_exists($user_xml)) {
 
 			# pull the data from the user's data file
-			if (GSSAVETYPE == 'XML') {
-				$data = getXML($user_xml);
-				$PASSWD = $data->PWD;
-				$USR = $data->USR;
-			}
+			$data = getXML($user_xml);
+			$PASSWD = $data->PWD;
+			$USR = $data->USR;
+
 			
 			# do the username and password match?
 			if ( ($userid == $USR) && ($password == $PASSWD) ) {
