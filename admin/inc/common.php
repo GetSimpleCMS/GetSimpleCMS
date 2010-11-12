@@ -70,6 +70,7 @@ ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
 
 /**
  * Variable check to prevent debugging going off
+ * @todo some of these may not even be needed anymore
  */
 $admin_relative = (isset($admin_relative)) ? $admin_relative : '';
 $lang_relative = (isset($lang_relative)) ? $lang_relative : '';
@@ -78,52 +79,69 @@ $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
 
 
 /**
- * Grab website data
+ * Check to see what database engine to use
+ * XML is the default
  */
-$thisfilew = GSDATAOTHERPATH .'website.xml';
-if (file_exists($thisfilew)) {
-	$dataw = getXML($thisfilew);
-	$SITENAME = stripslashes($dataw->SITENAME);
-	$SITEURL = $dataw->SITEURL;
-	$TEMPLATE = $dataw->TEMPLATE;
-	$PRETTYURLS = $dataw->PRETTYURLS;
-	$PERMALINK = $dataw->PERMALINK;
-} 
+define('GSSAVETYPE', 'XML');
+	/** mysql */
+	if ( defined('GSDATABASE') && (lowercase(GSDEBUG) == 'mysql') 
+														 && defined('DB_HOST')
+														 && defined('DB_PASS')
+														 && defined('DB_USER')
+														 && defined('DB_DATABASE') ) {
+		include('mysql_functions.php');
+		if (connect_mysql()) {
+			define('GSSAVETYPE', 'MYSQL');
+		}
+	}
 
 
 /**
- * Sets up user data
+ * Pull data from XML if XML is the database engine
  */
-if(!isset($base)) {
-	if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
-		$cookie_user_id = _id($_COOKIE['GS_ADMIN_USERNAME']);
-		if (file_exists(GSUSERSPATH . $cookie_user_id.'.xml')) {
-			$datau = getXML(GSUSERSPATH  . $cookie_user_id.'.xml');
-			$USR = stripslashes($datau->USR);
-			$HTMLEDITOR = $datau->HTMLEDITOR;
-			$TIMEZONE = $datau->TIMEZONE;
-			$LANG = $datau->LANG;
+if (GSSAVETYPE == 'XML') {
+	/** grab website data */
+	$thisfilew = GSDATAOTHERPATH .'website.xml';
+	if (file_exists($thisfilew)) {
+		$dataw = getXML($thisfilew);
+		$SITENAME = stripslashes($dataw->SITENAME);
+		$SITEURL = $dataw->SITEURL;
+		$TEMPLATE = $dataw->TEMPLATE;
+		$PRETTYURLS = $dataw->PRETTYURLS;
+		$PERMALINK = $dataw->PERMALINK;
+	} 
+	
+	/** grab user data */
+	if(!isset($base)) {
+		if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
+			$cookie_user_id = _id($_COOKIE['GS_ADMIN_USERNAME']);
+			if (file_exists(GSUSERSPATH . $cookie_user_id.'.xml')) {
+				$datau = getXML(GSUSERSPATH  . $cookie_user_id.'.xml');
+				$USR = stripslashes($datau->USR);
+				$HTMLEDITOR = $datau->HTMLEDITOR;
+				$TIMEZONE = $datau->TIMEZONE;
+				$LANG = $datau->LANG;
+			} else {
+				$USR = null;
+				$TIMEZONE = 'America/New_York';	
+			}
 		} else {
 			$USR = null;
-			$TIMEZONE = 'America/New_York';	
+			$TIMEZONE = 'America/New_York';
 		}
-	} else {
-		$USR = null;
-		$TIMEZONE = 'America/New_York';
 	}
-}
 
+	/** grab authorization and security data */
+	if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
+		$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
+		$SALT = stripslashes($dataa->apikey);
+	}	else {
+		$SALT = sha1($SITEURL);
+	}
+	$SESSIONHASH = sha1($SALT . $SITENAME);
+	
+} # end of XML method
 
-/**
- * Authorization and security setup
- */
-if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
-	$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
-	$SALT = stripslashes($dataa->apikey);
-}	else {
-	$SALT = sha1($SITEURL);
-}
-$SESSIONHASH = sha1($SALT . $SITENAME);
 
 
 /**

@@ -181,7 +181,7 @@ if (count($lang_array) != 0) {
 		<div class="clear"></div>
 		
 		<div class="leftsec">
-			<p><label for="permalink" ><?php i18n('PERMALINK');?>:</label><input class="text" name="permalink" id="permalink" type="text" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /><br /><a href="http://get-simple.info/docs/permalinks/" style="font-size:11px;" ><?php i18n('MORE');?></a></p>
+			<p><label for="permalink" ><?php i18n('PERMALINK');?>:</label><input class="text" name="permalink" id="permalink" type="text" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /><br /><a href="http://get-simple.info/docs/permalinks/" style="font-size:11px;" target="_blank" ><?php i18n('MORE');?></a></p>
 		</div>
 		<div class="clear"></div>
 		
@@ -216,7 +216,7 @@ if (count($lang_array) != 0) {
 			<p><label for="lang" ><?php i18n('LANGUAGE');?>:</label>
 			<select name="lang" id="lang" class="text">
 				<?php echo $langs; ?>
-			</select><br /><a href="http://get-simple.info/download/languages/" style="font-size:11px;" ><?php i18n('MORE');?></a>
+			</select><br /><a href="http://get-simple.info/download/languages/" style="font-size:11px;" target="_blank" ><?php i18n('MORE');?></a>
 			</p>
 		</div>
 		<div class="clear"></div>

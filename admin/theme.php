@@ -32,17 +32,19 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 	$bakpath = GSBACKUPSPATH.'other/';
 	createBak($file, $path, $bakpath);
 	
-	# udpate website.xml file with new theme
-	$xml = new SimpleXMLExtended('<item></item>');
-	$note = $xml->addChild('SITENAME');
-	$note->addCData($SITENAME);
-	$note = $xml->addChild('SITEURL');
-	$note->addCData($SITEURL);
-	$note = $xml->addChild('TEMPLATE');
-	$note->addCData($TEMPLATE);
-	$xml->addChild('PRETTYURLS', $PRETTYURLS);
-	$xml->addChild('PERMALINK', $PERMALINK);
-	XMLsave($xml, $path . $file);
+	if (GSSAVETYPE == 'XML') {
+		# udpate website.xml file with new theme
+		$xml = new SimpleXMLExtended('<item></item>');
+		$note = $xml->addChild('SITENAME');
+		$note->addCData($SITENAME);
+		$note = $xml->addChild('SITEURL');
+		$note->addCData($SITEURL);
+		$note = $xml->addChild('TEMPLATE');
+		$note->addCData($TEMPLATE);
+		$xml->addChild('PRETTYURLS', $PRETTYURLS);
+		$xml->addChild('PERMALINK', $PERMALINK);
+		XMLsave($xml, $path . $file);
+	}
 	$success = i18n_r('THEME_CHANGED');
 }
 

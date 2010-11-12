@@ -2,15 +2,18 @@
 /**
  * GSConfig
  *
- * Configuration File for GetSimple	
+ * The base configurations for GetSimple	
  *
  * @package GetSimple
- * @subpackage init
  */
 
+/** Prevent direct access */
 if (basename($_SERVER['PHP_SELF']) == 'gsconfig.php') { 
 	die('You cannot load this page directly.');
 }; 
+
+/*****************************************************************************/
+/** Below are constants that you can use to customize how GetSimple operates */ 
 
 # Extra salt to secure your password with. Default is empty for backwards compatibility.
 #define('GSLOGINSALT', 'your_unique_phrase');
@@ -61,12 +64,14 @@ define('GSIMAGEWIDTH', '200');
 #define('GSFROMEMAIL', 'noreply@get-simple.info');
 
 # Data saving method. Default is XML
-#define('GSSAVE', 'mysql');
+#define('GSDATABASE', 'mysql');
 	#define('DB_HOST', 'localhost');
-	#define('DB_USER', 'username');
-	#define('DB_PASS', 'password');
-	#define('DB_DATABASE', 'database');
-
+	#define('DB_USER', 'username_here');
+	#define('DB_PASS', 'password_here');
+	#define('DB_DATABASE', 'database_name_here');
+	#define('DB_CHARSET', 'utf8');
+	#define('DB_COLLATE', '');
+	
 # Set PHP locale
 # http://php.net/manual/en/function.setlocale.php
 #setlocale(LC_ALL, 'en_US');

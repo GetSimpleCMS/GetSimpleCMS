@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `gs_users` (
   `timezone` varchar(100),
   `lang` varchar(15),
   PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 -- Website Table
 CREATE TABLE IF NOT EXISTS `gs_website` (
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `gs_website` (
   `prettyurls` varchar(1),
   `permalink` varchar(100),
   PRIMARY KEY (`website_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 -- Pages Table
 CREATE TABLE IF NOT EXISTS `gs_pages` (
@@ -36,6 +36,21 @@ CREATE TABLE IF NOT EXISTS `gs_pages` (
   `menu_text` varchar(100),
   `menu_priority` varchar(2),
   PRIMARY KEY (`page_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 -- Components Table
+CREATE TABLE IF NOT EXISTS `gs_components` (
+  `component_id` int(2) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(100),
+  `slug` varchar(45),
+  `content` mediumtext,
+  PRIMARY KEY (`component_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+-- Settings/Options Table
+CREATE TABLE IF NOT EXISTS `gs_settings` (
+  `setting_id` int(5) unsigned NOT NULL AUTO_INCREMENT,
+  `key` varchar(100),
+  `value` mediumtext,
+  PRIMARY KEY (`component_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;

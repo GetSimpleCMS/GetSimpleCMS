@@ -57,60 +57,62 @@ if(isset($_POST['submitted'])) {
 		$random = createRandomPassword();
 		$PASSWD = passhash($random);
 		
-		# create user xml file
-		$file = _id($USR).'.xml';
-		createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
-		$xml = new SimpleXMLElement('<item></item>');
-		$xml->addChild('USR', $USR);
-		$xml->addChild('PWD', $PASSWD);
-		$xml->addChild('EMAIL', $EMAIL);
-		$xml->addChild('HTMLEDITOR', '1');
-		$xml->addChild('TIMEZONE', $TIMEZONE);
-		$xml->addChild('LANG', $LANG);
-		if (! XMLsave($xml, GSUSERSPATH . $file) ) {
-			$kill = i18n_r('CHMOD_ERROR');
+		if (GSSAVETYPE == 'XML') {
+			# create user xml file
+			$file = _id($USR).'.xml';
+			createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
+			$xml = new SimpleXMLElement('<item></item>');
+			$xml->addChild('USR', $USR);
+			$xml->addChild('PWD', $PASSWD);
+			$xml->addChild('EMAIL', $EMAIL);
+			$xml->addChild('HTMLEDITOR', '1');
+			$xml->addChild('TIMEZONE', $TIMEZONE);
+			$xml->addChild('LANG', $LANG);
+			if (! XMLsave($xml, GSUSERSPATH . $file) ) {
+				$kill = i18n_r('CHMOD_ERROR');
+			}
+			
+			# create password change trigger file
+			$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
+			copy(GSUSERSPATH . $file, $flagfile);
+			
+			# create new website.xml file
+			$file = 'website.xml';
+			$xmls = new SimpleXMLExtended('<item></item>');
+			$note = $xmls->addChild('SITENAME');
+			$note->addCData($SITENAME);
+			$note = $xmls->addChild('SITEURL');
+			$note->addCData($SITEURL);
+			$xmls->addChild('TEMPLATE', 'Default_Simple');
+			$xmls->addChild('PRETTYURLS', '');
+			$xmls->addChild('PERMALINK', '');
+			if (! XMLsave($xmls, GSDATAOTHERPATH . $file) ) {
+				$kill = i18n_r('CHMOD_ERROR');
+			}
+			
+			# create default index.xml page
+			$init = GSDATAPAGESPATH.'index.xml'; 
+			$temp = GSADMININCPATH.'tmp/tmp-index.xml';
+			if (! file_exists($init))	{
+				copy($temp,$init);
+			}
+	
+			# create default components.xml page
+			$init = GSDATAOTHERPATH.'components.xml';
+			$temp = GSADMININCPATH.'tmp/tmp-components.xml'; 
+			if (! file_exists($init)) {
+				copy($temp,$init);
+			}
+	
+			
+			# create default 404.xml page
+			$init = GSDATAOTHERPATH.'404.xml';
+			$temp = GSADMININCPATH.'tmp/tmp-404.xml'; 
+			if (! file_exists($init)) {
+				copy($temp,$init);
+			}
 		}
 		
-		# create password change trigger file
-		$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
-		copy(GSUSERSPATH . $file, $flagfile);
-		
-		# create new website.xml file
-		$file = 'website.xml';
-		$xmls = new SimpleXMLExtended('<item></item>');
-		$note = $xmls->addChild('SITENAME');
-		$note->addCData($SITENAME);
-		$note = $xmls->addChild('SITEURL');
-		$note->addCData($SITEURL);
-		$xmls->addChild('TEMPLATE', 'Default_Simple');
-		$xmls->addChild('PRETTYURLS', '');
-		$xmls->addChild('PERMALINK', '');
-		if (! XMLsave($xmls, GSDATAOTHERPATH . $file) ) {
-			$kill = i18n_r('CHMOD_ERROR');
-		}
-		
-		# create default index.xml page
-		$init = GSDATAPAGESPATH.'index.xml'; 
-		$temp = GSADMININCPATH.'tmp/tmp-index.xml';
-		if (! file_exists($init))	{
-			copy($temp,$init);
-		}
-
-		# create default components.xml page
-		$init = GSDATAOTHERPATH.'components.xml';
-		$temp = GSADMININCPATH.'tmp/tmp-components.xml'; 
-		if (! file_exists($init)) {
-			copy($temp,$init);
-		}
-
-		
-		# create default 404.xml page
-		$init = GSDATAOTHERPATH.'404.xml';
-		$temp = GSADMININCPATH.'tmp/tmp-404.xml'; 
-		if (! file_exists($init)) {
-			copy($temp,$init);
-		}
-
 		# create root .htaccess file
 		$init = GSROOTPATH.'.htaccess';
 		$temp_data = file_get_contents(GSROOTPATH .'temp.htaccess');
