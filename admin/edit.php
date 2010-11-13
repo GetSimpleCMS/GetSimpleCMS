@@ -309,6 +309,9 @@ if ($menu == '') { $menu = $title; }
 	        forcePasteAsPlainText : true,
 	        language : '<?php echo $EDLANG; ?>',
 	        defaultLanguage : '<?php echo $EDLANG; ?>',
+	        <?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")): ?>
+            contentsCss: '/theme/<?php echo $TEMPLATE; ?>/editor.css',
+          <?php endif; ?>
 	        entities : true,
 	        uiColor : '#FFFFFF',
 			height: '<?php echo $EDHEIGHT; ?>',
