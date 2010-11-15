@@ -2,14 +2,14 @@
 /**
  * MySQL Functions 
  *
- * These functions are used for GetSimple installations that use MySQL
+ * These functions are used for GetSimple installations that use MySQL as it's storage engine
  *
  * @package GetSimple
- * @subpackage MySQL-Functions
+ * @subpackage Storage
  */
 
 /**
- * Connect to MySQL Database
+ * Database Connection (MySQL)
  *
  * @since 3.0
  * @uses DB_HOST
@@ -29,7 +29,7 @@ function storage_connect() {
 }
 
 /**
- * Escape Data for Use in MySQL Queries
+ * Escape Data (MySQL)
  *
  * @since 3.0
  * @uses DB_HOST
@@ -59,19 +59,126 @@ function storage_escape($data, $db=true, $html=false) {
  }
 }
 
+/**
+ * Save Page (MySQL)
+ *
+ * @since 3.0
+ *
+ * @param string $id ID of the page being saved
+ * @param array $data Page data in multidimential array
+ * @return bool
+ */
+function storage_save_page($id, $data) {
 
-function storage_save_page() {}
-function storage_save_userdata() {}
-function storage_save_components() {}
-function storage_save_settings() {}
-function storage_save_option() {}
+}
 
+/**
+ * Save User Data (MySQL)
+ *
+ * @since 3.0
+ *
+ * @param string $id ID of the user
+ * @param array $data User data in multidimential array
+ * @return bool
+ */
+function storage_save_userdata($id, $data) {
 
-function storage_get_page() {}
-function storage_get_userdata() {}
-function storage_get_components() {}
-function storage_get_settings() {}
-function storage_get_option() {}
+}
+
+/**
+ * Save Components (MySQL)
+ *
+ * @since 3.0
+ *
+ * @todo Not sure how to do this. All components at once like with XML, or one at a time in their own table
+ */
+function storage_save_components() {
+
+}
+
+/**
+ * Save Website Settings (MySQL)
+ *
+ * @since 3.0
+ *
+ * @param array $data
+ * @return bool
+ */
+function storage_save_settings($data) {
+	
+}
+
+/**
+ * Save General Option (MySQL)
+ *
+ * @since 3.0
+ *
+ * @param string $key
+ * @param string $meta
+ * @return bool
+ */
+function storage_save_option($key, $meta) {
+
+}
+
+/**
+ * Get Page Data (MySQL)
+ *
+ * @since 3.0
+ *
+ * @param string $id
+ * @return array
+ */
+function storage_get_page($id) {
+
+}
+
+/**
+ * Get User Data (MySQL)
+ *
+ * @since 3.0
+ *
+ * @param string $id
+ * @return array
+ */
+function storage_get_userdata($id) {
+	
+}
+
+/**
+ * Get Components (MySQL)
+ *
+ * @since 3.0
+ *
+ * @param string $id Optional
+ * @return array
+ */
+function storage_get_components($id=null) {
+	
+}
+
+/**
+ * Get Settings (MySQL)
+ *
+ * @since 3.0
+ *
+ * @return array
+ */
+function storage_get_settings() {
+	
+}
+
+/**
+ * Get Option (MySQL)
+ *
+ * @since 3.0
+ *
+ * @param string $key
+ * @return string
+ */
+function storage_get_option($key) {
+	
+}
 
 
 ?>

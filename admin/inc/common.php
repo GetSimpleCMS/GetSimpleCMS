@@ -92,6 +92,8 @@ define('GSSAVETYPE', 'XML');
 		}
 	}
 
+/** if xml is still the storage method, include it's storage functions */
+if(GSSAVETYPE == 'XML') include_once('xml_functions.php');
 
 /**
  * Pull data from storage
