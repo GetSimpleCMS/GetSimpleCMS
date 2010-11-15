@@ -23,7 +23,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	
 	
 	# make two new users folder
-	if (!file_exists(GSUSERSPATH) {
+	if (!file_exists(GSUSERSPATH)) {
 		$status = mkdir(GSUSERSPATH, 0777);
 		chmod(GSUSERSPATH, 0777);
 		if (!$status) { 
@@ -34,7 +34,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	}
 
 	# make two new backup users folder
-	if (!file_exists(GSBACKUSERSPATH) {
+	if (!file_exists(GSBACKUSERSPATH)) {
 		$status = mkdir(GSBACKUSERSPATH, 0777);
 		chmod(GSBACKUSERSPATH, 0777);
 		if (!$status) {
@@ -79,7 +79,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	
 	
 	# rename old wesbite.xml
-	if (!file_exists(GSDATAOTHERPATH .'_legacy_website.xml') {
+	if (!file_exists(GSDATAOTHERPATH .'_legacy_website.xml')) {
 		$status = rename(GSDATAOTHERPATH .'website.xml', GSDATAOTHERPATH .'_legacy_website.xml');
 		if (!$status) {
 			$error .= 'Unable to rename website.xml to _legacy_website.xml<br />';	
@@ -104,7 +104,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	
 	
 	# rename old user.xml
-	if (!file_exists(GSDATAOTHERPATH .'_legacy_user.xml') {
+	if (!file_exists(GSDATAOTHERPATH .'_legacy_user.xml')) {
 		$status = rename(GSDATAOTHERPATH .'user.xml', GSDATAOTHERPATH .'_legacy_user.xml');
 		if (!$status) {
 			$error .= 'Unable to rename user.xml to _legacy_user.xml<br />';	
@@ -114,7 +114,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	}
 
 	# rename old cp_settings.xml
-	if (!file_exists(GSDATAOTHERPATH .'_legacy_cp_settings.xml') {
+	if (!file_exists(GSDATAOTHERPATH .'_legacy_cp_settings.xml')) {
 		$status = rename(GSDATAOTHERPATH .'cp_settings.xml', GSDATAOTHERPATH .'_legacy_cp_settings.xml');
 		if (!$status) {
 			$error .= 'Unable to rename cp_settings.xml to _legacy_cp_settings.xml<br />';	
