@@ -17,10 +17,7 @@ if(cookie_check()) {
 if(isset($_POST['submitted'])) { 
 	
 	# initial variable setup
-	// Initial variable setup
-	$user_xml = GSDATAOTHERPATH . _id($_POST['userid']).'.xml';
 	$user_xml = GSUSERSPATH . _id($_POST['userid']).'.xml';
-	$userid = $_POST['userid'];
 	$userid = lowercase($_POST['userid']);
 	$password = $_POST['pwd'];
 	$error = null;
