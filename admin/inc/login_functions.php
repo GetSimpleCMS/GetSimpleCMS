@@ -18,7 +18,7 @@ if(isset($_POST['submitted'])) {
 	
 	# initial variable setup
 	$user_xml = GSUSERSPATH . _id($_POST['userid']).'.xml';
-	$userid = lowercase($_POST['userid']);
+	$userid = $_POST['userid'];
 	$password = $_POST['pwd'];
 	$error = null;
 	

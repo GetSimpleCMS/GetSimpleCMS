@@ -11,6 +11,7 @@ $plugins_info = array();
 $filters = array();
 $live_plugins = array();  // used for enablie/disable functions
 
+
 /**
  * Include any plugins, depending on where the referring 
  * file that calls it we need to set the correct paths. 
@@ -153,7 +154,7 @@ function add_action($hook_name, $added_function, $args = array()) {
 		'hook' => $hook_name,
 		'function' => $added_function,
 		'args' => (array) $args,
-		'file' => $caller['file'],
+		'file' => $pathName.'.php',
     'line' => $caller['line']
 	);
   }
