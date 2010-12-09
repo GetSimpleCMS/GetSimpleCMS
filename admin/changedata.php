@@ -42,6 +42,8 @@ if (isset($_POST['submitted']))
 		if ($_POST['post-id']) 
 		{ 
 			$url = $_POST['post-id'];
+      $url = to7bit($url, "UTF-8");
+      $url = clean_url($url); //old way
 		} 
 		else 
 		{
