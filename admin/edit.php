@@ -309,9 +309,11 @@ if ($menu == '') { $menu = $title; }
 	        forcePasteAsPlainText : true,
 	        language : '<?php echo $EDLANG; ?>',
 	        defaultLanguage : '<?php echo $EDLANG; ?>',
-	        <?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")): ?>
-            contentsCss: '/theme/<?php echo $TEMPLATE; ?>/editor.css',
-          <?php endif; ?>
+	        <?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
+	        	$fullpath = suggest_site_path();
+	        ?>
+            contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
+          <?php } ?>
 	        entities : true,
 	        uiColor : '#FFFFFF',
 			height: '<?php echo $EDHEIGHT; ?>',

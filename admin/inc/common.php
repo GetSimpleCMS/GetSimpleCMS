@@ -28,7 +28,7 @@ include('template_functions.php');
 define('GSROOTPATH', get_root_path());
 
 if (file_exists(GSROOTPATH . 'gsconfig.php')) {
-	include(GSROOTPATH . 'gsconfig.php');
+	require_once(GSROOTPATH . 'gsconfig.php');
 }
 
 if (defined('GSADMIN')) {
