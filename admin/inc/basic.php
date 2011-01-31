@@ -584,8 +584,17 @@ function suggest_site_path($parts=false) {
 	global $GSADMIN;
 	$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
 	$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
-	$fullpath = "http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts ."/";
 	
+	if($path_parts == '/') {
+	
+		$fullpath = "http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . "/";
+	
+	} else {
+		
+		$fullpath = "http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts ."/";
+		
+	}
+		
 	if ($parts) {
 		return $path_parts;
 	} else {
