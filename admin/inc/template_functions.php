@@ -479,27 +479,13 @@ function valid_xml($file) {
 /**
  * Generate Salt
  *
- * Contacts the GetSimple API and returns a new unique API key
- *
- * @since 1.0
- * @uses $api_url
- * @uses GSVERSION
+ * Returns a new unique salt
+ * @updated 3.0
  *
  * @return string
  */
 function generate_salt() {
-	
-	global $api_url;
-	
-	$curl_URL = $api_url .'?r=true&v='.GSVERSION;
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_TIMEOUT, 2);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_URL, $curl_URL);
-	$datac = curl_exec($ch);
-	curl_close($ch);
-	$apikey = json_decode($datac);
-	return $apikey;
+	return substr(sha1(mt_rand()),0,22);
 }
 
 /**

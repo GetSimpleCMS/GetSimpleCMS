@@ -113,12 +113,7 @@ if (! file_exists($api_file)) {
 	if (defined('GSUSECUSTOMSALT')) {
 		$saltval = sha1(GSUSECUSTOMSALT);
 	} else {
-		if (in_arrayi('curl', $php_modules)) {
-			$apikey = generate_salt();
-			if ($apikey->status == '6' && $apikey->api_key != '') {
-				$saltval = $apikey->api_key;
-			}
-		}
+		$saltval = generate_salt();
 	}
 	$xml = new SimpleXMLExtended('<item></item>');
 	$note = $xml->addChild('apikey');
