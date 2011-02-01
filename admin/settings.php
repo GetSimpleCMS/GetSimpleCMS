@@ -168,6 +168,7 @@ if (count($lang_array) != 0) {
 	<div id="maincontent">
 		<form class="largeform" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 		<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save_settings"); ?>" />
+		
 		<div class="main">
 		<h3><?php i18n('WEBSITE_SETTINGS');?></h3>
 		
@@ -188,7 +189,6 @@ if (count($lang_array) != 0) {
 		<p class="inline" ><input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<label for="prettyurls" ><?php i18n('USE_FANCY_URLS');?>.</label></p>
 		
 		<?php exec_action('settings-website-extras'); ?>
-		
 	
 		
 		<div id="profile" class="section" >
@@ -236,10 +236,13 @@ if (count($lang_array) != 0) {
 		<p id="submit_line" >
 			<span><input class="submit" type="submit" name="submitted" value="<?php i18n('BTN_SAVESETTINGS');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="settings.php?cancel"><?php i18n('CANCEL'); ?></a>
 		</p>
+
+		</div><!-- /section -->
+		</div><!-- /main -->
 	</form>
+	
 	</div>
-	</div>
-	</div>
+
 
 
 

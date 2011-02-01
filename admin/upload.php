@@ -131,7 +131,7 @@ if (isset($_FILES["file"]))
 						if (file_exists('../data/thumbs/thumbsm.'.$upload['name'])) {
 							echo '<a href="'. $path . $upload['name'] .'" title="'. $upload['name'] .'" rel="facybox" ><img src="../data/thumbs/thumbsm.'.$upload['name'].'" /></a>';
 						} else {
-							echo '<a href="'. $path . $upload['name'] .'" title="'. $upload['name'] .'" rel="facybox" ><img src="inc/thumb.php?src='. $upload['name'] .'&dest=thumbsm.'. $upload['name'] .'&x=65&f=1" /></a>';
+							echo '<a href="'. $path . $upload['name'] .'" title="'. $upload['name'] .'" rel="facybox" ><img src="inc/thumb.php?src='. $upload['name'] .'&amp;dest=thumbsm.'. $upload['name'] .'&amp;x=65&amp;f=1" /></a>';
 						}
 					} else {
 						$gallery = '';
@@ -142,7 +142,7 @@ if (isset($_FILES["file"]))
 					echo '</td><td><a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';
 					echo '<td style="width:80px;text-align:right;" ><span>'. $upload['size'] .'</span></td>';
 					echo '<td style="width:80px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
-					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] .'&nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>';
+					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>';
 					echo '</tr>';
 					exec_action('file-extras');
 				}
