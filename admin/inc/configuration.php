@@ -7,7 +7,7 @@
  */
 
 $site_full_name = 'GetSimple';
-$site_version_no = '2.04&beta;';
+$site_version_no = '3.0&beta;';
 $name_url_clean = lowercase(str_replace(' ','-',$site_full_name));
 $site_link_back_url = 'http://get-simple.info/';
 $ver_no_clean = str_replace('.','',$site_version_no);
