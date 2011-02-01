@@ -149,7 +149,7 @@ if ($menu == '') { $menu = $title; }
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); ?>
 	
-	<h1 align="right">
+	<h1>
 		<a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('PAGE_MANAGEMENT'); ?> <span>&raquo;</span> <?php if(isset($data_edit)) { echo i18n_r('PAGE').' &lsquo;<span class="filename" >'. $url .'</span>&rsquo;'; } else { echo i18n_r('NEW_PAGE'); } ?>		
 	</h1>
 	
@@ -192,7 +192,7 @@ if ($menu == '') { $menu = $title; }
 			<div class="leftopt">
 				<p>
 					<label for="post-id"><?php i18n('SLUG_URL'); ?>:</label>
-          <input class="text short" type="text" id="post-id" name="post-id" value="<?php echo $url; ?>" <?php echo ($url=='index'?'readonly="readonly" ':''); ?>/></td>
+          <input class="text short" type="text" id="post-id" name="post-id" value="<?php echo $url; ?>" <?php echo ($url=='index'?'readonly="readonly" ':''); ?>/>
 				</p>
 				<p>
 					<label for="post-parent"><?php i18n('PARENT_PAGE'); ?>:</label>
@@ -213,7 +213,7 @@ if ($menu == '') { $menu = $title; }
 				<div id="menu-items">
 					<span style="float:left;width:84%" ><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span><span style="float:left;width:10%;" ><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>
 					<div class="clear"></div>
-					<input class="text" style="width:79%;" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />&nbsp <select class="text"  style="width:16%" id="post-menu-order" name="post-menu-order" >
+					<input class="text" style="width:79%;" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />&nbsp; <select class="text"  style="width:16%" id="post-menu-order" name="post-menu-order" >
 					<?php if(isset($menuOrder)) { 
 						if($menuOrder == 0) {
 							echo '<option value="" selected>-</option>'; 
@@ -236,14 +236,14 @@ if ($menu == '') { $menu = $title; }
 			<div class="rightopt">
 				<p>
 					<label for="post-metak"><?php i18n('TAG_KEYWORDS'); ?>:</label>
-					<input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" /></td>
+					<input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" />
 				</p>
 				<p>
 					<label for="post-metad"><?php i18n('META_DESC'); ?>:</label>
 					<textarea class="text" id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
 				</p>
 				<p class="inline" id="post-private-wrap" >
-					<label for="post-private" ><?php i18n('KEEP_PRIVATE'); ?></label> &nbsp;&nbsp;&nbsp;</label><input type="checkbox" id="post-private" name="post-private" <?php echo $sel_p; ?> />
+					<label for="post-private" ><?php i18n('KEEP_PRIVATE'); ?></label> &nbsp;&nbsp;&nbsp; <input type="checkbox" id="post-private" name="post-private" <?php echo $sel_p; ?> />
 				</p>
 
 			</div>
@@ -268,7 +268,7 @@ if ($menu == '') { $menu = $title; }
 			<p id="submit_line" >
 				<span><input class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" /></span>&nbsp;&nbsp;
 				<?php i18n('OR'); ?>&nbsp;&nbsp;
-				<a class="cancel" href="pages.php?cancel" title="<?php i18n('CANCEL'); ?>"><?php i18n('CANCEL'); ?></a><?php if($url) { ?>&nbsp;/&nbsp;<a class="cancel" href="deletefile.php?id=<?php echo $url; ?>&nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" title="<?php i18n('DELETEPAGE_TITLE'); ?>" ><?php i18n('ASK_DELETE'); ?></a><?php } ?>
+				<a class="cancel" href="pages.php?cancel" title="<?php i18n('CANCEL'); ?>"><?php i18n('CANCEL'); ?></a><?php if($url) { ?>&nbsp;/&nbsp;<a class="cancel" href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" title="<?php i18n('DELETEPAGE_TITLE'); ?>" ><?php i18n('ASK_DELETE'); ?></a><?php } ?>
 			</p>
 			
 			<small><?php 

@@ -34,7 +34,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	<link rel="stylesheet" type="text/css" href="template/js/jcrop/jquery.Jcrop.css" media="screen" />
 	<?php } ?>
 	<?php if(get_filename_id()=='edit') { ?>
-	<noscript><style type="text/css">#metadata_window {display:block !important} </style></noscript>
+	<noscript><style>#metadata_window {display:block !important} </style></noscript>
 	<?php } ?>
 
 	<script type="text/javascript" src="template/js/facybox/jquery.facybox.js"></script>
