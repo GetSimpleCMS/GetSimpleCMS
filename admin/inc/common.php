@@ -41,18 +41,18 @@ if (defined('GSADMIN')) {
  * Define some constants
  */
 define('GSADMINPATH', get_admin_path());
-define('GSADMININCPATH', get_admin_path(). 'inc/');
-define('GSPLUGINPATH', get_root_path(). 'plugins/');
-define('GSLANGPATH', get_admin_path(). 'lang/');
-define('GSDATAPATH', get_root_path(). 'data/');
-define('GSDATAOTHERPATH', get_root_path(). 'data/other/');
-define('GSDATAPAGESPATH', get_root_path(). 'data/pages/');
-define('GSDATAUPLOADPATH', get_root_path(). 'data/uploads/');
-define('GSTHUMBNAILPATH', get_root_path(). 'data/thumbs/');
-define('GSBACKUPSPATH', get_root_path(). 'backups/');
-define('GSTHEMESPATH', get_root_path(). 'theme/');
-define('GSUSERSPATH', get_root_path(). 'data/users/');
-define('GSBACKUSERSPATH', get_root_path(). 'backups/users/');
+define('GSADMININCPATH', GSADMINPATH. 'inc/');
+define('GSPLUGINPATH', GSROOTPATH. 'plugins/');
+define('GSLANGPATH', GSADMINPATH. 'lang/');
+define('GSDATAPATH', GSROOTPATH). 'data/');
+define('GSDATAOTHERPATH', GSROOTPATH. 'data/other/');
+define('GSDATAPAGESPATH', GSROOTPATH. 'data/pages/');
+define('GSDATAUPLOADPATH', GSROOTPATH. 'data/uploads/');
+define('GSTHUMBNAILPATH', GSROOTPATH. 'data/thumbs/');
+define('GSBACKUPSPATH', GSROOTPATH. 'backups/');
+define('GSTHEMESPATH', GSROOTPATH. 'theme/');
+define('GSUSERSPATH', GSROOTPATH. 'data/users/');
+define('GSBACKUSERSPATH', GSROOTPATH. 'backups/users/');
 
 /**
  * Debugging
