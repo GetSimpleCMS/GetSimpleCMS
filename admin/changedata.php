@@ -88,21 +88,16 @@ if (isset($_POST['submitted']))
 		$file = GSDATAPAGESPATH . $url .".xml";
 		
 		// format and clean the responses
-		if(isset($_POST['post-title'])) {	$title = safe_slash_html($_POST['post-title']);	}
-		
-		if(isset($_POST['post-metak'])) {	$metak = safe_slash_html($_POST['post-metak']);	}
-		
-		if(isset($_POST['post-metad'])) {	$metad = safe_slash_html($_POST['post-metad']);	}
-		
-		if(isset($_POST['post-template'])) { $template = $_POST['post-template']; }
-		if(isset($_POST['post-parent'])) { $parent = $_POST['post-parent']; }
-		if(isset($_POST['post-menu'])) {$menu = safe_slash_html($_POST['post-menu']); }
+		if(isset($_POST['post-title'])) 			{	$title = safe_slash_html($_POST['post-title']);	}
+		if(isset($_POST['post-metak'])) 			{	$metak = safe_slash_html($_POST['post-metak']);	}
+		if(isset($_POST['post-metad'])) 			{	$metad = safe_slash_html($_POST['post-metad']);	}
+		if(isset($_POST['post-template'])) 		{ $template = $_POST['post-template']; }
+		if(isset($_POST['post-parent'])) 			{ $parent = $_POST['post-parent']; }
+		if(isset($_POST['post-menu'])) 				{ $menu = safe_slash_html($_POST['post-menu']); }
 		if(isset($_POST['post-menu-enable'])) { $menuStatus = "Y"; } else { $menuStatus = ""; }
-		if(isset($_POST['post-private'])) { $private = "Y"; } else { $private = ""; }
-		if(isset($_POST['post-content'])) {	$content = safe_slash_html($_POST['post-content']);	}
-		
-		if(isset($_POST['post-menu-order'])) 
-		{ 
+		if(isset($_POST['post-private'])) 		{ $private = "Y"; } else { $private = ""; }
+		if(isset($_POST['post-content'])) 		{	$content = safe_slash_html($_POST['post-content']);	}
+		if(isset($_POST['post-menu-order'])) 	{ 
 			if (is_numeric($_POST['post-menu-order'])) 
 			{
 				$menuOrder = $_POST['post-menu-order']; 
@@ -176,7 +171,7 @@ if (isset($_POST['submitted']))
 		XMLsave($xml, $file);
 		
 		// redirect user back to edit page 
-		header("Location: edit.php?id=". $url ."&upd=edit-success&type=edit");
+		redirect("edit.php?id=". $url ."&upd=edit-success&type=edit");
 	}
 }
 ?>

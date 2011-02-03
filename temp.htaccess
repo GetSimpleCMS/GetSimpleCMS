@@ -1,4 +1,5 @@
 AddDefaultCharset UTF-8
+Options -Indexes
 RewriteEngine on
 
 # Usually it RewriteBase is just '/', but 
