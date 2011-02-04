@@ -1,3 +1,11 @@
+/* reverseOrder : jQuery order reverser plugin
+ * Written by Corey H Maass for Arc90
+ * (c) Arc90, Inc.
+ * 
+ * Licensed under:Creative Commons Attribution-Share Alike 3.0 http://creativecommons.org/licenses/by-sa/3.0/us/
+ */
+(function($){$.fn.reverseOrder=function(){return this.each(function(){$(this).prependTo($(this).parent())})}})(jQuery);
+
 /*
  * GetSimple js file	
  */
@@ -91,7 +99,8 @@ jQuery(document).ready(function() {
 		
 	
 	// components.php
-	$(".delconfirmcomp").live("click", function() {
+	$(".delconfirmcomp").live("click", function($e) {
+		$e.preventDefault();
 		$('#loader').show();
 		var message = $(this).attr("title");
 		var answer = confirm(message);
@@ -100,9 +109,9 @@ jQuery(document).ready(function() {
 	    	$(compid).slideToggle(500).remove();
 	    }
 	  $('#loader').fadeOut(500);
-	  return false;
 	});
-	$("#addcomponent").live("click", function() {
+	$("#addcomponent").live("click", function($e) {
+		$e.preventDefault();
 		$('#loader').show();
 		var id = $("#id").val();
 		$("#divTxt").append('<div style="display:none;" class="compdiv" id="section-' + id + '"><table class="comptable"><tr><td><b>Title: </b><input type="text" class="text newtitle" name="title[]" value="" /></td><td class="delete"><a href="#" title="Delete Component:?" id="del-'+ id +'" onclick="DeleteComp('+ id +'); return false;" >X</a></td></tr></table><textarea name="val[]"></textarea><input type="hidden" name="slug[]" value="" /><input type="hidden" name="id[]" value="' + id + '" /><div>');
@@ -111,7 +120,6 @@ jQuery(document).ready(function() {
 		$("#id").val(id);
 		$('#loader').fadeOut(500);
 		$('#submit_line').fadeIn();
-		return false;
 	});
 	$("b.editable").dblclick(function () {
 		var t = $(this).html();
@@ -140,8 +148,8 @@ jQuery(document).ready(function() {
 
 
 	// other general functions
-	$(".snav a.current").live("click", function() {
-		return false;
+	$(".snav a.current").live("click", function($e) {
+		$e.preventDefault();
 	});
 	$(".delconfirm").live("click", function() {
 		var message = $(this).attr("title");
@@ -194,10 +202,10 @@ jQuery(document).ready(function() {
 	}
 	
 	// edit.php
-	$("#metadata_toggle").live("click", function() {
+	$("#metadata_toggle").live("click", function($e) {
+		$e.preventDefault();
 		$("#metadata_window").slideToggle('fast');
 		$(this).toggleClass('current');
-		return false;
 	});
 	$("#post-private").change(function(){
 	  if ($("#post-private").is(":checked")) { 
@@ -263,11 +271,11 @@ jQuery(document).ready(function() {
     $("li:gt(4)", this).hide(); /* :gt() is zero-indexed */
     $("li:nth-child(5)", this).after("<li class='more'><a href='#'>More...</a></li>"); /* :nth-child() is one-indexed */
   });
-  $("li.more a").live("click", function() {
+  $("li.more a").live("click", function($e) {
+    $e.preventDefault();
     var li = $(this).parents("li:first");
     li.parent().children().show();
     li.remove();
-    return false;
   });
   
   

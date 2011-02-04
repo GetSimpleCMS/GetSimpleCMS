@@ -183,7 +183,7 @@ if ($menu == '') { $menu = $title; }
 			<!-- page title toggle screen -->
 			<p id="edit_window">
 				<label for="post-title" style="display:none;"><?php i18n('PAGE_TITLE'); ?></label>
-				<input class="text title" id="post-title" name="post-title" type="text" value="<?php echo $title; ?>" />
+				<input class="text title" id="post-title" name="post-title" type="text" value="<?php echo $title; ?>" placeholder="Page Title" />
 			</p>
 				
 
@@ -207,7 +207,7 @@ if ($menu == '') { $menu = $title; }
 					</select>
 				</p>
 				
-				<p class="inline" style="margin-bottom:0;padding-bottom:0;" >
+				<p class="inline">
 					<label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label> &nbsp;&nbsp;&nbsp;<input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel; ?> /><br />
 				</p>
 				<div id="menu-items">

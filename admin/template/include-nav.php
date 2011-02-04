@@ -29,7 +29,7 @@ if (get_filename_id() == 'load') {
 	
 	<?php exec_action('nav-tab');	?>
 	
-	<li><img class="toggle" id="loader" src="template/images/ajax.gif" alt=""/></li>
+	<li><img class="toggle" id="loader" src="template/images/ajax.gif" alt="" /></li>
 	<li class="rightnav" ><a class="settings first" href="settings.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SETTINGS'));?>" ><?php i18n('TAB_SETTINGS');?></a></li>
 	<li class="rightnav" ><a class="support last" href="support.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SUPPORT'));?>" ><?php i18n('TAB_SUPPORT');?></a></li>
 </ul>

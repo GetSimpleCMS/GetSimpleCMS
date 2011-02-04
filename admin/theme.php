@@ -86,14 +86,12 @@ while ($file = readdir($themes_handle)) {
 			if ( $SITEURL ) {	
 				echo '<p><b>'.i18n_r('THEME_PATH').': &nbsp;</b> <code>'.$SITEURL.'theme/'.$TEMPLATE.'/</code></p>';
 			}
-			echo '<p><img style="border:2px solid #333;" ';
 		 	if (file_exists('../theme/'.$TEMPLATE.'/images/screenshot.png')) { 
-				echo 'src="../theme/'.$TEMPLATE.'/images/screenshot.png"';
+				echo '<p><img style="border:2px solid #333;" src="../theme/'.$TEMPLATE.'/images/screenshot.png" alt="'.i18n_r('THEME_SCREENSHOT').'" /></p>';
 			} else {
-				echo 'src="template/images/screenshot.jpg"';
+				# theme preview image available
 			}
-			echo ' alt="'.i18n_r('THEME_SCREENSHOT').'" /></p>';
-			
+
 			exec_action('theme-extras');
 		?>
 			

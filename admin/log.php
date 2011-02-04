@@ -62,7 +62,7 @@ if (!isset($log_data)) $log_data = getXML($log_file);
 
 				if ($log_data) {
 					foreach ($log_data as $log) {
-						echo '<li><p style="font-size:11px;line-height:15px;" ><b style="line-height:20px;" >'.i18n('LOG_FILE_ENTRY').'</b><br />';
+						echo '<li><p style="font-size:11px;line-height:15px;" ><b style="line-height:20px;" >'.i18n_r('LOG_FILE_ENTRY').'</b><br />';
 						foreach($log->children() as $child) {
 						  $name = $child->getName();
 						  echo '<b>'. stripslashes(ucwords($name)) .'</b>: ';
