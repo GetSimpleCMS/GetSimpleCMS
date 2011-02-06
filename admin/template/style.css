@@ -110,7 +110,7 @@ html {
 		color:#FFF;background:#0E1316;
 		text-shadow: 1px 1px 0px #000;
 		}	
-	.wrapper .nav li {float:left; margin:0 5px 0 0;}
+	.wrapper .nav li {float:left; margin:0 5px 0 0;position:relative;}
 	.wrapper .nav li.rightnav { float:right; margin:0 0 0 0; font-size:11px; }
 	.wrapper .nav li.rightnav a.first {
 		padding:4px 10px;
@@ -149,8 +149,26 @@ html {
 		-moz-border-radius-bottomright:0;
 		-webkit-border-bottom-right-radius: 0;
 	}
+	
+	/* warning alert on tab */
+	.nav li .warning {
+		position:absolute;
+		top:-5px;left:-5px;
+		font-size:10px;
+		color:#000;
+		text-shadow: 1px 1px 0px rgba(255,255,255,.5);
+		font-weight:bold;
+		text-align:center;
+		border-radius:5px;
+		display:block;
+		width:11px;
+		border:1px solid #D5AF00;
+		background:#F2C800;
+		background: -moz-linear-gradient(top, #F2C800 0%, #D5AF00 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#F2C800), color-stop(100%,#D5AF00));
+	}
+	
 	.wrapper .nav li a em, .wrapper #pill li a em {font-style:normal;border-bottom:1px dotted #666;}
-
 	.wrapper #pill {list-style:none;position:absolute;top:0px;right:0;font-size:11px;}
 	.wrapper #pill li {float:right;}
 	.wrapper #pill li.leftnav a {
