@@ -128,6 +128,9 @@ if(!isset($base)) {
 		$USR = null;
 		$TIMEZONE = 'America/New_York';
 	}
+} else {
+	$USR = null;
+	$TIMEZONE = 'America/New_York';
 }
 
 /** grab authorization and security data */
