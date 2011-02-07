@@ -44,7 +44,7 @@ define('GSADMINPATH', get_admin_path());
 define('GSADMININCPATH', GSADMINPATH. 'inc/');
 define('GSPLUGINPATH', GSROOTPATH. 'plugins/');
 define('GSLANGPATH', GSADMINPATH. 'lang/');
-define('GSDATAPATH', GSROOTPATH). 'data/');
+define('GSDATAPATH', GSROOTPATH. 'data/');
 define('GSDATAOTHERPATH', GSROOTPATH. 'data/other/');
 define('GSDATAPAGESPATH', GSROOTPATH. 'data/pages/');
 define('GSDATAUPLOADPATH', GSROOTPATH. 'data/uploads/');
