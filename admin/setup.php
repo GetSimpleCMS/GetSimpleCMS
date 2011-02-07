@@ -82,7 +82,7 @@ if(isset($_POST['submitted'])) {
 		$note->addCData($SITENAME);
 		$note = $xmls->addChild('SITEURL');
 		$note->addCData($SITEURL);
-		$xmls->addChild('TEMPLATE', 'Default_Simple');
+		$xmls->addChild('TEMPLATE', 'Innovation');
 		$xmls->addChild('PRETTYURLS', '');
 		$xmls->addChild('PERMALINK', '');
 		if (! XMLsave($xmls, GSDATAOTHERPATH . $file) ) {

@@ -1,0 +1,69 @@
+<?php
+/****************************************************
+*
+* @File: 			header.php
+* @Package:		GetSimple
+* @Action:		Innovation theme for the GetSimple CMS
+*
+*****************************************************/
+?><!DOCTYPE html>
+<!--[if lt IE 7 ]> <html lang="en" class="ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" > <!--<![endif]-->
+<head>
+<meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title><?php get_page_clean_title(); ?> - <?php get_site_name(); ?></title>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="index, follow">
+	<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
+
+	<link href="<?php get_theme_url(); ?>/assets/css/reset.css" rel="stylesheet">
+	<link href="<?php get_theme_url(); ?>/assets/css/style.css?v=<?php echo get_site_version(); ?>" rel="stylesheet">
+	
+	
+	<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]--> 
+	
+	<!--[if lt IE 7 ]>
+    <script src="<?php get_theme_url(); ?>/assets/js/dd_belatedpng.js"></script>
+    <script> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
+  <![endif]-->
+ 
+ 	<!-- Base Javascript -->
+ 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>
+	<script type="text/javascript" src="<?php get_theme_url(); ?>/assets/js/custom.js?v=<?php echo get_site_version(); ?>"></script>
+	<?php get_header(); ?>
+	
+</head> 
+<body id="<?php get_page_slug(); ?>" >
+	
+	<!-- site header -->
+	<header>
+		<div class="header">
+			<div class="wrapper">
+				
+				<!-- logo/sitename -->
+				<a href="<?php get_site_url(); ?>" id="logo" ><?php get_site_name(); ?></a>
+				
+				<!-- main navigation -->
+				<nav id="main-nav">
+					<ul>
+						<?php get_navigation(get_page_slug(FALSE)); ?>
+					</ul>
+				</nav>
+			</div>
+		</div>
+		<!-- breadcrumbs: only show when NOT homepage -->
+		<p class="breadcrumbs" >
+			<span class="wrapper">
+				<a href="<?php get_site_url(); ?>">Home</a> &nbsp;&nbsp;&#149;&nbsp;&nbsp; <a href="<?php get_site_url() . get_parent(); ?>/"><?php get_parent(); ?></a> &nbsp;&nbsp;&#149;&nbsp;&nbsp; <b><?php get_page_clean_title(); ?></b>
+			</span>
+		</p>
+		
+  </header>
