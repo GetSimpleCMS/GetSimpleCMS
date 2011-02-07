@@ -1,4 +1,7 @@
-<?php include('header.php'); ?>
+<?php 
+Innovation_Settings();
+include('header.php'); 
+?>
 	
 	<div class="wrapper clearfix">
 		<!-- page content -->

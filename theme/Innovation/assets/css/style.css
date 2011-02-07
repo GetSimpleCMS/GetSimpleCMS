@@ -1,5 +1,5 @@
 body {
-	background:#EFEFEF;	
+	background:#EFEFEF;
 }
 .wrapper {
 	width:950px;
@@ -72,16 +72,18 @@ header nav ul {
 header nav li {
 	display:block;
 	float:right;
-	margin:0 0 0 20px;
+	margin:0 0 0 10px;
 }
 header nav li a {
 	display:block;
-	font-size:15px;
+	font-size:13px;
+	padding:5px 15px;
+	text-transform:uppercase;
+	font-weight:bold;
 }
 
 header nav li a:link, header nav li a:visited {
 	color:#eee;
-	color:rgba(255,255,255.8);
 	text-decoration:none;
 }	
 header nav li a:hover, header nav li a:focus {
@@ -90,14 +92,23 @@ header nav li a:hover, header nav li a:focus {
 }
 header nav li.current a {
 	color:#FFF;
-	text-decoration:underline;
+	background:#7096B6;
+	background:rgba(255,255,255,.2);
+	text-decoration:none;
+	border-radius:40px;
+	-moz-border-radius:40px;
+	-khtml-border-radius:40px;
+	-webkit-border-radius:40px;
 }
 
 article {
 	float:left;
-	width:75%;
+	width:688px;
 	min-height:500px;
 	background:#fff;
+	border-bottom:1px solid #c8c8c8;
+	border-left:1px solid #e4e4e4;
+	border-right:1px solid #c8c8c8;
 	-moz-box-shadow: 10px 1px 10px rgba(0,0,0, .07);
 	-webkit-box-shadow: 10px 1px 10px rgba(0,0,0, .07);
 	box-shadow: 10px 1px 10px rgba(0,0,0, .07);
@@ -107,6 +118,37 @@ article h1 {
 	margin:0 0 45px 0;
 	color: #275176;
 	font-size:37px;
+}
+article h2 {
+	font-family: 'Yanone Kaffeesatz', arial, serif;
+	margin:0 0 10px 0;
+	color: #222222;
+	font-size:30px;
+}
+article h3 {
+	font-family: 'Yanone Kaffeesatz', arial, serif;
+	margin:0 0 15px 0;
+	color: #275176;
+	font-size:25px;
+}
+article h4 {
+	font-family: 'Yanone Kaffeesatz', arial, serif;
+	margin:0 0 10px 0;
+	color: #555;
+	font-size:20px;
+	font-weight:100;
+}
+article h5 {
+	font-family: arial, serif;
+	margin:0 0 10px 0;
+	color: #333;
+	font-size:15px;
+}
+article h6 {
+	font-family: arial, serif;
+	margin:0 0 10px 0;
+	color: #666;
+	font-size:14px;
 }
 article section {
 	padding:40px;
@@ -120,8 +162,15 @@ article section ul ul,
 article section ol ol,
 article section ul ol, 
 article section ol ul {margin:0 0 0 25px;}
-article section code {border:1px solid #ccc;background:#f6f6f6;font-size:13px;padding:1px;}
-article section pre {border:1px solid #ccc;background:#f6f6f6;padding:15px;margin:0 0 25px 0;line-height:18px;font-size:13px;color:#555;text-shadow: 1px 1px 0px #fff;}
+article section code {border:1px solid #ccc;background:#f6f6f6;font-size:12px;padding:1px;}
+article section pre {
+	border:1px solid #ccc;background:#f6f6f6;padding:15px;margin:0 0 25px 0;line-height:16px;
+	font-size:13px;color:#555;text-shadow: 1px 1px 0px #fff;
+	border-radius:0 4px 4px 0;
+	-moz-border-radius:0 4px 4px 0;
+	-khtml-border-radius:0 4px 4px 0;
+	-webkit-border-radius:0 4px 4px 0;
+}
 article section pre code {border:none;background:none;padding:none;}
 article section blockquote {margin:0 0 25px 20px;color:#555;line-height:20px;font-family:georgia, garamond;font-style:italic;padding:0 0 0 15px;border-left:1px solid #ccc;}
 article section .footer {
@@ -135,7 +184,7 @@ article section .footer p {margin:0 0 10px 0;}
 
 aside {
 	float:right;
-	width:25%;
+	width:260px;
 	margin:40px 0 0 0;
 }
 
@@ -153,17 +202,19 @@ aside .section p {margin:0 0 15px 0;}
 aside .section ul, aside .section ol {margin:0 0 15px 20px;}
 aside .section h2 {
 	background:#333;
+	border-top:1px solid rgba(255,255,255,.4);
 	text-shadow: 1px 1px 0px rgba(0,0,0,.5);
 	text-transform:uppercase;
 	background: -moz-linear-gradient(top, #444 0%, #222 100%); /* firefox */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#444), color-stop(100%,#222)); /* webkit */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#444', endColorstr='#222',GradientType=0 ); /* ie */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#444444', endColorstr='#222222',GradientType=0 ); /* ie */
 	font-family: 'Yanone Kaffeesatz', arial, serif;
 	font-weight:100;
 	color:#fff;
 	font-size:19px;
+	line-height:19px;
 	margin:0 0 20px -31px;
-	padding:7px 0 7px 25px;
+	padding:5px 0 7px 25px;
 	border-radius:0 4px 4px 0;
 	-moz-border-radius:0 4px 4px 0;
 	-khtml-border-radius:0 4px 4px 0;
@@ -189,18 +240,18 @@ aside #socialmedia .icons {
 
 footer {
 	padding:20px 0;
-	text-shadow: 1px 1px 0px rgba(255,255,255,.5);;
-	color:#999;
+	text-shadow: 1px 1px 0px rgba(255,255,255,.8);
+	color:#888;
 	font-size:11px;
 }
 
 footer .left {float:left;width:40%;text-align:left;}
 footer .right {float:right;width:60%;text-align:right;}
 footer a:link, footer a:visited {
-	color:#999;
+	color:#888;
 	text-decoration:underline;
 }
 footer a:hover, footer a:focus {
-	color:#666;
+	color:#555;
 	text-decoration:underline;
 }
