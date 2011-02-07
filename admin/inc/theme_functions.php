@@ -419,6 +419,7 @@ function get_site_email($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_site_version($echo=true) {
+	include(GSADMININCPATH.'configuration.php');
 	if ($echo) {
 		echo GSVERSION;
 	} else {
