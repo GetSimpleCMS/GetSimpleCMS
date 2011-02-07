@@ -40,7 +40,7 @@ if (file_exists($innovation_file)) {
 
 
 function innovation_show() {
-	global $innovation_file, $facebook, $twitter, $linkedin;
+	global $innovation_file, $facebook, $twitter, $linkedin,$success,$error;
 	
 	// submitted form
 	if (isset($_POST['submit'])) {
