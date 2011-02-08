@@ -1,5 +1,9 @@
-<?php 
+<?php
+# Get this theme's settings based on what was entered within it's plugin. 
+# This function is in functions.php 
 Innovation_Settings();
+
+# Include the header template
 include('header.php'); 
 ?>
 	
@@ -8,18 +12,21 @@ include('header.php');
 		<article>
 			<section>
 				
+				<!-- title and content -->
 				<h1><?php get_page_title(); ?></h1>
 				<?php get_page_content(); ?>
 				
 				<!-- page footer -->
 				<div class="footer">
-					<p>Published on <b><?php get_page_date('F jS, Y'); ?></b></p>
+					<p>Published on <time datetime="<?php get_page_date('Y-m-d'); ?>" pubdate><?php get_page_date('F jS, Y'); ?></time></p>
 				</div>
 			</section>
 			
 		</article>
-	
+		
+		<!-- include the sidebar template -->
 		<?php include('sidebar.php'); ?>
 	</div>
-	
+
+<!-- include the footer template -->
 <?php include('footer.php'); ?>

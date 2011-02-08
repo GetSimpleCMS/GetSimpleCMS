@@ -1,3 +1,4 @@
+/* GENERAL */
 body {
 	background:#EFEFEF;
 }
@@ -7,7 +8,6 @@ body {
 	position:relative;
 	display:block;
 }
-
 a:link, a:visited {
 	color:#316594;
 	text-decoration:underline;
@@ -18,16 +18,19 @@ a:hover, a:focus {
 }	
 
 
+/* HEADER */
 .header {
-	background: #6B94B4; /* old browsers */
-	background: -moz-linear-gradient(top, #6B94B4 0%, #316594 100%); /* firefox */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#6B94B4), color-stop(100%,#316594)); /* webkit */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6B94B4', endColorstr='#316594',GradientType=0 ); /* ie */
+	background: #6B94B4;
+	background: -moz-linear-gradient(top, #6B94B4 0%, #316594 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#6B94B4), color-stop(100%,#316594)); 
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6B94B4', endColorstr='#316594',GradientType=0 );
 	height:80px;
 	border-bottom:#2B5780 1px solid;
 }
+
+/* HEADER: breadcrumbs */
 header .breadcrumbs {
-	text-shadow: 1px 1px 0px rgba(255,255,255,.5);;
+	text-shadow: 1px 1px 0px rgba(255,255,255,.5);
 	border-top:#FFF 1px solid;
 	border-bottom:#ccc 1px solid;
 	font-size:11px;
@@ -37,28 +40,44 @@ header .breadcrumbs {
 	color:#666;
 	text-transform:uppercase;
 	width:100%;
-	background: #eee; /* old browsers */
-	background: -moz-linear-gradient(top, #EDEDED 0%, #D5D5D5 100%); /* firefox */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#EDEDED), color-stop(100%,#D5D5D5)); /* webkit */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#EDEDED', endColorstr='#D5D5D5',GradientType=0 ); /* ie */
+	background: #eee;
+	background: -moz-linear-gradient(top, #EDEDED 0%, #D5D5D5 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#EDEDED), color-stop(100%,#D5D5D5));
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#EDEDED', endColorstr='#D5D5D5',GradientType=0 ); 
 }
-header .breadcrumbs a:link, header .breadcrumbs a:visited {color:#666;text-decoration:underline;}
-header .breadcrumbs a:focus, header .breadcrumbs a:hover {color:#316594;text-decoration:underline;}
-#index header .breadcrumbs {display:none;}
+header .breadcrumbs a:link, 
+header .breadcrumbs a:visited {
+	color:#666;
+	text-decoration:underline;
+}
+header .breadcrumbs a:focus, 
+header .breadcrumbs a:hover {
+	color:#316594;
+	text-decoration:underline;
+}
+#index header .breadcrumbs {
+	display:none; /* no reason to have breadcrumbs on homepage */
+} 
 
-
-
+/* HEADER: logo */
 header #logo {
 	position:absolute;
 	top:20px;
 	left:0;
 	font-size:35px;
 	color:#fff;
-	font-family: 'Yanone Kaffeesatz', arial, serif;
+	font-family: 'Yanone Kaffeesatz', arial, helvetica, sans-serif;
 	text-transform:uppercase;
 	text-shadow: 1px 1px 0px rgba(0,0,0, .4);
 }
-header #logo:link, header #logo:visited, header #logo:hover, header #logo:focus {text-decoration:none;}
+header #logo:link, 
+header #logo:visited, 
+header #logo:hover, 
+header #logo:focus {
+	text-decoration:none;
+}
+
+/* HEADER: navigation */
 header nav {
 	position:absolute;
 	top:30px;
@@ -68,7 +87,6 @@ header nav {
 header nav ul {
 	list-style:none;
 }	
-
 header nav li {
 	display:block;
 	float:right;
@@ -81,12 +99,13 @@ header nav li a {
 	text-transform:uppercase;
 	font-weight:bold;
 }
-
-header nav li a:link, header nav li a:visited {
+header nav li a:link, 
+header nav li a:visited {
 	color:#eee;
 	text-decoration:none;
 }	
-header nav li a:hover, header nav li a:focus {
+header nav li a:hover, 
+header nav li a:focus {
 	color:#FFF;
 	text-decoration:none;
 }
@@ -101,6 +120,8 @@ header nav li.current a {
 	-webkit-border-radius:40px;
 }
 
+
+/* BODY CONTENT */
 article {
 	float:left;
 	width:688px;
@@ -114,25 +135,25 @@ article {
 	box-shadow: 10px 1px 10px rgba(0,0,0, .07);
 }
 article h1 {
-	font-family: 'Yanone Kaffeesatz', arial, serif;
+	font-family: 'Yanone Kaffeesatz', arial, helvetica, sans-serif;
 	margin:0 0 45px 0;
 	color: #275176;
 	font-size:37px;
 }
 article h2 {
-	font-family: 'Yanone Kaffeesatz', arial, serif;
+	font-family: 'Yanone Kaffeesatz', arial, helvetica, sans-serif;
 	margin:0 0 10px 0;
 	color: #222222;
 	font-size:30px;
 }
 article h3 {
-	font-family: 'Yanone Kaffeesatz', arial, serif;
+	font-family: 'Yanone Kaffeesatz', arial, helvetica, sans-serif;
 	margin:0 0 15px 0;
 	color: #275176;
 	font-size:25px;
 }
 article h4 {
-	font-family: 'Yanone Kaffeesatz', arial, serif;
+	font-family: 'Yanone Kaffeesatz', arial, helvetica, sans-serif;
 	margin:0 0 10px 0;
 	color: #555;
 	font-size:20px;
@@ -157,22 +178,50 @@ article section {
 	color:#333;	
 }
 article section p {margin:0 0 25px 0;}
-article section ul, article section ol {margin:0 0 25px 30px;}
+article section ul, 
+article section ol {
+	margin:0 0 25px 30px;
+}
 article section ul ul, 
 article section ol ol,
 article section ul ol, 
-article section ol ul {margin:0 0 0 25px;}
-article section code {border:1px solid #ccc;background:#f6f6f6;font-size:12px;padding:1px;}
+article section ol ul {
+	margin:0 0 0 25px;
+}
+article section code {
+	border:1px solid #ccc;
+	background:#f6f6f6;
+	font-size:12px;
+	padding:1px;
+}
 article section pre {
-	border:1px solid #ccc;background:#f6f6f6;padding:15px;margin:0 0 25px 0;line-height:16px;
-	font-size:13px;color:#555;text-shadow: 1px 1px 0px #fff;
+	border:1px solid #ccc;
+	background:#f6f6f6;
+	padding:15px;
+	margin:0 0 25px 0;
+	line-height:16px;
+	font-size:13px;
+	color:#555;
+	text-shadow: 1px 1px 0px #fff;
 	border-radius:0 4px 4px 0;
 	-moz-border-radius:0 4px 4px 0;
 	-khtml-border-radius:0 4px 4px 0;
 	-webkit-border-radius:0 4px 4px 0;
 }
-article section pre code {border:none;background:none;padding:none;}
-article section blockquote {margin:0 0 25px 20px;color:#555;line-height:20px;font-family:georgia, garamond;font-style:italic;padding:0 0 0 15px;border-left:1px solid #ccc;}
+article section pre code {
+	border:none;
+	background:none;
+	padding:none;
+}
+article section blockquote {
+	margin:0 0 25px 20px;
+	color:#555;
+	line-height:20px;
+	font-family:georgia, garamond, serif;
+	font-style:italic;
+	padding:0 0 0 15px;
+	border-left:1px solid #ccc;
+}
 article section .footer {
 	color:#888;
 	font-size:11px;
@@ -180,14 +229,17 @@ article section .footer {
 	border-top:1px dotted #ccc;
 	padding-top:15px;
 }
-article section .footer p {margin:0 0 10px 0;}
+article section .footer p {
+	margin:0 0 10px 0;
+}
 
+
+/* SIDEBAR */
 aside {
 	float:right;
 	width:260px;
 	margin:40px 0 0 0;
 }
-
 aside .section {
 	padding:0 0 0 30px;	
 }
@@ -198,17 +250,22 @@ aside .section {
 	color:#555;
 	text-shadow: 1px 1px 0px #fff;
 }
-aside .section p {margin:0 0 15px 0;}
-aside .section ul, aside .section ol {margin:0 0 15px 20px;}
+aside .section p {
+	margin:0 0 15px 0;
+}
+aside .section ul, 
+aside .section ol {
+	margin:0 0 15px 20px;
+}
 aside .section h2 {
 	background:#333;
 	border-top:1px solid rgba(255,255,255,.4);
 	text-shadow: 1px 1px 0px rgba(0,0,0,.5);
 	text-transform:uppercase;
-	background: -moz-linear-gradient(top, #444 0%, #222 100%); /* firefox */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#444), color-stop(100%,#222)); /* webkit */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#444444', endColorstr='#222222',GradientType=0 ); /* ie */
-	font-family: 'Yanone Kaffeesatz', arial, serif;
+	background: -moz-linear-gradient(top, #444 0%, #222 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#444), color-stop(100%,#222));
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#444444', endColorstr='#222222',GradientType=0 ); 
+	font-family: 'Yanone Kaffeesatz', arial, helvetica, sans-serif;
 	font-weight:100;
 	color:#fff;
 	font-size:19px;
@@ -220,15 +277,17 @@ aside .section h2 {
 	-khtml-border-radius:0 4px 4px 0;
 	-webkit-border-radius:0 4px 4px 0;
 }
+
+/* SIDEBAR: socialmedia */
 aside #socialmedia {
 	position:relative;
 }
 aside #socialmedia h2 {
 	width:65px;
-	background: #316594; /* old browsers */
-	background: -moz-linear-gradient(top, #316594 0%, #2C5983 100%); /* firefox */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#316594), color-stop(100%,#2C5983)); /* webkit */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#316594', endColorstr='#2C5983',GradientType=0 ); /* ie */	
+	background: #316594;
+	background: -moz-linear-gradient(top, #316594 0%, #2C5983 100%); 
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#316594), color-stop(100%,#2C5983));
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#316594', endColorstr='#2C5983',GradientType=0 ); 
 }
 aside #socialmedia .icons {
 	position:absolute;
@@ -237,16 +296,23 @@ aside #socialmedia .icons {
 }
 
 
-
+/* FOOTER */
 footer {
 	padding:20px 0;
 	text-shadow: 1px 1px 0px rgba(255,255,255,.8);
 	color:#888;
 	font-size:11px;
 }
-
-footer .left {float:left;width:40%;text-align:left;}
-footer .right {float:right;width:60%;text-align:right;}
+footer .left {
+	float:left;
+	width:40%;
+	text-align:left;
+}
+footer .right {
+	float:right;
+	width:60%;
+	text-align:right;
+}
 footer a:link, footer a:visited {
 	color:#888;
 	text-decoration:underline;

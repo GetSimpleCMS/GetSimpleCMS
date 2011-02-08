@@ -3,7 +3,7 @@
 *
 * @File: 			header.php
 * @Package:		GetSimple
-* @Action:		Innovation theme for the GetSimple CMS
+* @Action:		Innovation theme for the GetSimple 3.0
 *
 *****************************************************/
 ?><!DOCTYPE html>
@@ -33,10 +33,7 @@
     <script src="<?php get_theme_url(); ?>/assets/js/dd_belatedpng.js"></script>
     <script> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
   <![endif]-->
- 
- 	<!-- Base Javascript -->
- 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>
-	<script type="text/javascript" src="<?php get_theme_url(); ?>/assets/js/custom.js?v=<?php echo get_site_version(); ?>"></script>
+
 	<?php get_header(); ?>
 	
 </head> 
@@ -58,7 +55,8 @@
 				</nav>
 			</div>
 		</div>
-		<!-- breadcrumbs: only show when NOT homepage -->
+		
+		<!-- breadcrumbs: only show when NOT on homepage -->
 		<p class="breadcrumbs" >
 			<span class="wrapper">
 				<a href="<?php get_site_url(); ?>">Home</a> &nbsp;&nbsp;&#149;&nbsp;&nbsp; <?php Innovation_Parent_Link(get_parent(FALSE)); ?> <b><?php get_page_clean_title(); ?></b>

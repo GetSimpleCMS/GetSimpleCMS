@@ -1,4 +1,12 @@
-<aside id="sidebar">
+<?php
+/****************************************************
+*
+* @File: 			sidebar.php
+* @Package:		GetSimple
+* @Action:		Innovation theme for the GetSimple 3.0
+*
+*****************************************************/
+?><aside id="sidebar">
 
 	<div class="section" id="socialmedia" >
 		<h2>Connect</h2>
@@ -15,8 +23,9 @@
 				<a href="<?php echo LINKEDIN; ?>"><img src="<?php get_theme_url(); ?>/assets/images/linkedin.png" /></a>
 			<?php } ?>
 			
-			
 			<img src="<?php get_theme_url(); ?>/assets/images/break.png" />
+			
+			<!-- addthis popup - you can add your username if you want analytics: http://www.addthis.com/help/customizing-addthis -->
 			<div class="addthis_toolbox" style="display:inline;width:24px;" >
 				<a href="http://www.addthis.com/bookmark.php?v=250" class="addthis_button_compact"><img src="<?php get_theme_url(); ?>/assets/images/share.png" /></a>
 			</div>
@@ -24,6 +33,8 @@
 		</div>
 	</div>
 	
+	
+	<!-- wrap each sidebar section like this -->
 	<div class="section">
 		<?php get_component('sidebar');	?>
 	</div>

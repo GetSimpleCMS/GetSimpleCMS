@@ -10,7 +10,7 @@
 		-->
 	 	<div class="wrapper">
 			<div class="left"><?php echo date('Y'); ?> <a href="<?php get_site_url(); ?>" ><?php get_site_name(); ?></a></div>
-			<div class="right">Innovation Theme by <a href="http://www.cagintranet.com" >Cagintranet</a> &middot; <?php get_site_credits(); ?>
+			<div class="right">Innovation Theme by <a href="http://www.cagintranet.com" >Cagintranet</a> &middot; <?php get_site_credits(); ?></div>
 		</div>
 	</footer>
 	 

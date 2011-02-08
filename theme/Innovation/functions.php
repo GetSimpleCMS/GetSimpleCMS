@@ -1,5 +1,20 @@
 <?php
+/****************************************************
+*
+* @File: 			functions.php
+* @Package:		GetSimple
+* @Action:		Innovation theme for the GetSimple 3.0
+*
+*****************************************************/
 
+/**
+ * Innovation Parent Link
+ *
+ * This creates a link for a parent for the breadcrumb feature of this theme
+ *
+ * @param string $name - This is the slug of the link you want to create
+ * @return string
+ */
 function Innovation_Parent_Link($name) {
 	$file = GSDATAPAGESPATH . $name .'.xml';
 	if (file_exists($file)) {
@@ -11,6 +26,13 @@ function Innovation_Parent_Link($name) {
 	}
 }
 
+/**
+ * Innovation Settings
+ *
+ * This defines variables based on the theme plugin's settings
+ *
+ * @return bool
+ */
 function Innovation_Settings() {
 	$file = GSDATAOTHERPATH . 'InnovationSettings.xml';
 	if (file_exists($file)) {
