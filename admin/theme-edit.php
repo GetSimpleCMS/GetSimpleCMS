@@ -44,7 +44,7 @@ if((isset($_POST['submitsave']))){
 	
 	# save edited template file
 	$SavedFile = $_POST['edited_file'];
-	$FileContents = safe_strip_decode($_POST['content']);
+	$FileContents = stripslashes($_POST['content']);
 	$fh = fopen(GSTHEMESPATH . $SavedFile, 'w') or die("can't open file");
 	fwrite($fh, $FileContents);
 	fclose($fh);

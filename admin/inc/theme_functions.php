@@ -272,7 +272,7 @@ function get_header() {
 	global $metad;
 	global $title;
 	global $content;
-	include_once(GSADMININCPATH.'configuration.php');
+	include(GSADMININCPATH.'configuration.php');
 	
 	if (function_exists('mb_substr')) { 
 		$description = trim(mb_substr(strip_tags(strip_decode($content)), 0, 160));

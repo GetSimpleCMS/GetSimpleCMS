@@ -67,8 +67,11 @@ if(isset($_POST['submitted'])) {
 	if(isset($_POST['template'])) { 
 		$TEMPLATE = $_POST['template']; 
 	}
-  $PRETTYURLS = $_POST['prettyurls'];
-  
+	if(isset($_POST['prettyurls'])) {
+	  $PRETTYURLS = $_POST['prettyurls'];
+	} else {
+		$PRETTYURLS = '';
+	}
    
 	# user-specific fields
 	if(isset($_POST['user'])) { 
@@ -83,7 +86,11 @@ if(isset($_POST['submitted'])) {
 	if(isset($_POST['lang'])) { 
 		$LANG = $_POST['lang']; 
 	}
-	$HTMLEDITOR = $_POST['show_htmleditor']; 
+	if(isset($_POST['show_htmleditor'])) {
+	  $HTMLEDITOR = $_POST['show_htmleditor']; 
+	} else {
+		$HTMLEDITOR = '';
+	}
 	
 	
 	# check to see if passwords are changing
