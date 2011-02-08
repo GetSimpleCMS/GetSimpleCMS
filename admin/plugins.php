@@ -28,13 +28,13 @@ foreach ($pluginfiles as $fi)
 	if ($pathExt=="php")
 	{
 		$table .= '<tr id="tr-'.$counter.'" >';
-		$table .= '<td width="25%" ><b>'.$plugin_info[$pathName]['name'] .'</b></td>';
+		$table .= '<td><b>'.$plugin_info[$pathName]['name'] .'</b></td>';
 		$table .= '<td><span>'.$plugin_info[$pathName]['description'] .'<br />';
-		$table .= i18n_r('PLUGIN_VER') .' '. $plugin_info[$pathName]['version'].' &nbsp;|&nbsp; By <a href="'.$plugin_info[$pathName]['author_url'].'" target="_blank">'.$plugin_info[$pathName]['author'].'</a></span></td>';
+		$table .= i18n_r('PLUGIN_VER') .' '. $plugin_info[$pathName]['version'].' &mdash; '.i18n_r('AUTHOR').': <a href="'.$plugin_info[$pathName]['author_url'].'" target="_blank">'.$plugin_info[$pathName]['author'].'</a></span></td>';
 		if ($live_plugins[$fi]=='true'){
-	    $table.= '<td><a href="plugins.php?set='.$fi.'">Disable</a></td>';	  
+	    $table.= '<td style="width:60px;" ><a href="plugins.php?set='.$fi.'" class="cancel" >'.i18n_r('DISABLE').'</a></td>';	  
 		} else {
-		  $table.= '<td><a href="plugins.php?set='.$fi.'">Enable</a></td>';
+		  $table.= '<td style="width:60px;" ><a href="plugins.php?set='.$fi.'">'.i18n_r('ENABLE').'</a></td>';
 		}		
 		$table .= "</tr>\n";
 		$counter++;

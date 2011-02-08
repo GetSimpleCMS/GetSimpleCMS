@@ -89,7 +89,7 @@ while ($file = readdir($themes_handle)) {
 		 	if (file_exists('../theme/'.$TEMPLATE.'/images/screenshot.png')) { 
 				echo '<p><img style="border:2px solid #333;" src="../theme/'.$TEMPLATE.'/images/screenshot.png" alt="'.i18n_r('THEME_SCREENSHOT').'" /></p>';
 			} else {
-				# theme preview image available
+				echo '<p><em>'.i18n_r('NO_THEME_SCREENSHOT').'</em></p>';
 			}
 
 			exec_action('theme-extras');

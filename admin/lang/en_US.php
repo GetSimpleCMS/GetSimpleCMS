@@ -419,7 +419,7 @@ $i18n = array(
 */
 
 "PLUGINS_MANAGEMENT"=> "Plugin Management",
-"PLUGINS_INSTALLED" => "Plugins Installed",
+"PLUGINS_INSTALLED" => "plugins installed",
 "SHOW_PLUGINS"			=> "Installed Plu<em>g</em>ins",
 "PLUGIN_NAME" 			=> "Name",
 "PLUGIN_DESC" 			=> "Description",
@@ -429,7 +429,7 @@ $i18n = array(
 
 
 /***********************************************************************************
- * SINCE Version 2.04
+ * SINCE Version 3.0
 ***********************************************************************************/
 
 /* 
@@ -458,7 +458,11 @@ $i18n = array(
 "EDIT_COMPONENTS"		=>	"Edit Components", //components
 "REQS_MORE_INFO"=> "For more information on the required modules, visit the <a href=\"%s\" target=\"_blank\" >requirements page</a>.", //install & health-check
 "SYSTEM_UPDATE" => "System Update", // update.php
-
+"AUTHOR" 				=> "Author", //plugins.php
+"ENABLE" 				=> "Enable", //plugins.php
+"DISABLE" 				=> "Disable", //plugins.php
+"NO_THEME_SCREENSHOT" => "No theme screenshot available",
+"UNSAVED_INFORMATION" => "You are about to leave this page and will lose any unsaved information.", //edit.php
 
 
 "X" => "not translated"

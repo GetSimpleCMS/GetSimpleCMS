@@ -67,9 +67,9 @@ if(isset($_POST['submitted'])) {
 	if(isset($_POST['template'])) { 
 		$TEMPLATE = $_POST['template']; 
 	}
-  if(isset($_POST['prettyurls'])) { 
-	  $PRETTYURLS = $_POST['prettyurls']; 
-	}
+  $PRETTYURLS = $_POST['prettyurls'];
+  
+   
 	# user-specific fields
 	if(isset($_POST['user'])) { 
 		$USR = $_POST['user']; 

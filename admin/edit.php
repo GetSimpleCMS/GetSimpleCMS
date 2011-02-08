@@ -266,7 +266,7 @@ if ($menu == '') { $menu = $title; }
 			} ?>	
 			
 			<p id="submit_line" >
-				<span><input class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" /></span>&nbsp;&nbsp;
+				<span><input class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" onclick="warnme=false;" /></span>&nbsp;&nbsp;
 				<?php i18n('OR'); ?>&nbsp;&nbsp;
 				<a class="cancel" href="pages.php?cancel" title="<?php i18n('CANCEL'); ?>"><?php i18n('CANCEL'); ?></a><?php if($url) { ?>&nbsp;/&nbsp;<a class="cancel" href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" title="<?php i18n('DELETEPAGE_TITLE'); ?>" ><?php i18n('ASK_DELETE'); ?></a><?php } ?>
 			</p>
@@ -303,7 +303,7 @@ if ($menu == '') { $menu = $title; }
 		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 
 			<script type="text/javascript">
-
+			
 			var editor = CKEDITOR.replace( 'post-content', {
 	        skin : 'getsimple',
 	        forcePasteAsPlainText : true,
@@ -328,10 +328,27 @@ if ($menu == '') { $menu = $title; }
 	        //filebrowserWindowWidth : '640',
 	        //filebrowserWindowHeight : '480'
     		});
-
 			</script>
 		
 		<?php } ?>
+		
+		
+		
+		<script type="text/javascript">
+			/* Warning for unsaved Data */
+    	var warnme = false;	
+			window.onbeforeunload = function () {
+		    if (warnme) {
+		      return "<?php i18n('UNSAVED_INFORMATION'); ?>";
+		    }
+			}
+			
+			jQuery(document).ready(function() { 
+				$('input,textarea,select').change(function(){
+	    		warnme = true;
+	    	});	
+			});
+		</script>
 	</div>
 	</div><!-- end maincontent -->
 	
