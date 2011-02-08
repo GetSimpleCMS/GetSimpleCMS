@@ -131,7 +131,7 @@ $i18n = array(
 */
 "TEMPLATE_FILE" 		=> 	"Template file <b>%s</b> has successfully been updated!",
 "THEME_MANAGEMENT" 	=> 	"Theme Management",
-"EDIT_THEME" 				=> 	"Edit Theme",
+"EDIT_THEME" 				=> 	"Theme Editor",
 "EDITING_FILE" 			=> 	"Editing File",
 "BTN_SAVECHANGES" 	=> 	"Save Changes",
 "EDIT" 							=> 	"Edit",

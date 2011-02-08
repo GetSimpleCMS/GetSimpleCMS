@@ -9,23 +9,8 @@
  * @subpackage Available-Themes
  */
 
-/**
- * Include gsconfig file if it exists
- */
-if (file_exists('../../gsconfig.php')) {
-	include('../../gsconfig.php');
-}
-
-/**
- * Debugging
- */
-if (defined('GSDEBUG')){
-	error_reporting(E_ALL | E_STRICT);
-	ini_set('display_errors', 1);
-} else {
-	error_reporting(0);
-	@ini_set('display_errors', 0);
-}
+// Include common.php
+include('common.php');
 
 // Make sure register globals don't make this hackable again.
 if (isset($TEMPLATE)) unset($TEMPLATE);

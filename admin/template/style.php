@@ -1,8 +1,40 @@
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Title : GetSimple CMS CSS File
-Author : Chris Cagle
-URL : http://www.cagintranet.com/
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+<?php 
+/**
+ * Admin Stylesheet
+ * 
+ * @package GetSimple
+ * @subpackage init
+ */
+
+header("Content-type: text/css");
+
+include('../inc/common.php');
+if (file_exists(GSTHEMESPATH.'admin.xml')) {
+	#load admin theme xml file
+	$theme = getXML(GSTHEMESPATH.'admin.xml');
+	$primary_0 = $theme->primary->darkest;
+	$primary_1 = $theme->primary->darker;
+	$primary_2 = $theme->primary->dark;
+	$primary_3 = $theme->primary->middle;
+	$primary_4 = $theme->primary->light;
+	$primary_5 = $theme->primary->lighter;
+	$primary_6 = $theme->primary->lightest;
+	$secondary_0 = $theme->secondary->darkest;
+	$secondary_1 = $theme->secondary->lightest;
+} else {
+	# set default colors
+	$primary_0 = '#0E1316'; # darkest
+	$primary_1 = '#182227';
+	$primary_2 = '#283840';
+	$primary_3 = '#415A66';
+	$primary_4 = '#618899';
+	$primary_5 = '#E8EDF0';
+	$primary_6 = '#AFC5CF'; # lightest
+	
+	$secondary_0 = '#9F2C04'; # darkest
+	$secondary_1 = '#CF3805'; # lightest
+}
+?>
 
 /** GLOBAL RESETS **/
 :link,:visited {text-decoration:none}
@@ -21,11 +53,11 @@ html {
 /** HEADER / NAVIGATION **/
 .header {
 	color:#FFF;
-	border-top:1px solid #2A3C44;
-	background: #618899; /* old browsers */
-	background: -moz-linear-gradient(top, #618899 0%, #283840 100%); /* firefox */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#618899), color-stop(100%,#283840)); /* webkit */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#618899', endColorstr='#283840',GradientType=0 ); /* ie */
+	border-top:1px solid <?php echo $primary_1; ?>;
+	background: <?php echo $primary_4; ?>; /* old browsers */
+	background: -moz-linear-gradient(top, <?php echo $primary_4; ?> 0%, <?php echo $primary_2; ?> 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,<?php echo $primary_4; ?>), color-stop(100%,<?php echo $primary_2; ?>)); /* webkit */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='<?php echo $primary_4; ?>', endColorstr='<?php echo $primary_2; ?>',GradientType=0 ); /* ie */
 	margin:0 0 25px 0;
 	}
 	.header .wrapper {height:115px;position:relative;border:none;}
@@ -51,9 +83,9 @@ html {
 		
 	}
 	.wrapper .nav li a:link, .wrapper .nav li a:visited, .wrapper #pill li a:link, .wrapper #pill li a:visited {
-		color:#AFC5CF;
-		background:#182227;
-		text-shadow: 1px 1px 0px #0E1316;
+		color:<?php echo $primary_6; ?>;
+		background:<?php echo $primary_1; ?>;
+		text-shadow: 1px 1px 0px <?php echo $primary_0; ?>;
 		-webkit-transition: all .3s ease-in-out;
 		-moz-transition: all .3s ease-in-out;
 		-o-transition: all .3s ease-in-out;
@@ -66,7 +98,7 @@ html {
 		font-weight:700 !important;
 		text-decoration:none !important;
 		display:block;
-		border-left:1px solid #415A66;
+		border-left:1px solid <?php echo $primary_3; ?>;
 		-webkit-transition: all .3s ease-in-out;
 		-moz-transition: all .3s ease-in-out;
 		-o-transition: all .3s ease-in-out;
@@ -96,7 +128,7 @@ html {
 	#load .wrapper .files li a.files,
 	#load .wrapper .backups li a.backups,
 	#load	.wrapper .support li a.support {
-		color:#182227;
+		color:<?php echo $primary_1; ?>;
 		background:#f6f6f6;
 		background: -moz-linear-gradient(top, #FFF 3%, #F6F6F6 100%); /* firefox */
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(3%,#FFF), color-stop(100%,#F6F6F6)); /* webkit */
@@ -107,7 +139,7 @@ html {
 		-webkit-box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;
 	}
 	.wrapper .nav li a:active, .wrapper .nav li a:focus, .wrapper .nav li a:hover, .wrapper #pill li a:hover, .wrapper #pill li a:focus {
-		color:#FFF;background:#0E1316;
+		color:#FFF;background:<?php echo $primary_0; ?>;
 		text-shadow: 1px 1px 0px #000;
 		}	
 	.wrapper .nav li {float:left; margin:0 5px 0 0;position:relative;}
@@ -129,7 +161,7 @@ html {
 		-webkit-border-top-left-radius: 0;
 		-moz-border-radius-bottomleft:0;
 		-webkit-border-bottom-left-radius: 0;
-		border-left:1px solid #415A66;
+		border-left:1px solid <?php echo $primary_3; ?>;
 	}
 		.wrapper .nav li.rightnav a.last {
 		padding:4px 10px;
@@ -182,7 +214,7 @@ html {
 		border-bottom-left-radius:0;
 		-moz-border-radius-bottomleft:0;
 		-webkit-border-bottom-left-radius: 0;
-		border-left:1px solid #415A66;
+		border-left:1px solid <?php echo $primary_3; ?>;
 	}
 		.wrapper #pill li.rightnav a {
 		padding:4px 10px;
@@ -215,7 +247,7 @@ html {
 	margin:0 0 20px 30px;
 	}
 .wrapper a:link, .wrapper a:visited {
-	color:#415A66;
+	color:<?php echo $primary_3; ?>;
 	text-decoration:underline;
 	font-weight:bold;
 	}
@@ -229,19 +261,19 @@ html {
 	font-size:20px;
 	font-family:Georgia, Times, Times New Roman, serif;
 	position:absolute;
-	text-shadow: 1px 1px 0px #374B55;
+	text-shadow: 1px 1px 0px <?php echo $primary_2; ?>;
 	top:30px;
 	left:0;
 	}
 	.header h1 a:link, .header h1 a:visited, .header h1 a:hover {
 		font-weight:normal;
-		color:#E8EDF0;
+		color:<?php echo $primary_5; ?>;
 		text-decoration:none;
 		font-size:24px;
 		}
 	.header h1 a:hover  {color:#FFF;}
 	.header h1 span {
-		color:#AFC5CF;
+		color:<?php echo $primary_6; ?>;
 		}
 	.header h1 span.filename {
 		font-style:italic;
@@ -260,7 +292,7 @@ html {
 		font-size:17px;
 		font-family:Georgia, Times, Times New Roman, serif;
 		font-weight:normal;
-		color:#CF3805;
+		color:<?php echo $secondary_1; ?>;
 		margin:0 0 20px 0;
 		}
 	h3 em {font-style:normal;}
@@ -269,7 +301,7 @@ html {
 		font-weight:normal;
 		font-family:Georgia, Times, Times New Roman, serif ;
 		padding:2px 0 0 0;
-		color:#CF3805;
+		color:<?php echo $secondary_1; ?>;
 		float:left;
 		display:block;
 		margin:0 0 5px 0;
@@ -301,8 +333,10 @@ html {
 	-webkit-border-radius: 4px;
 		}
 #sidebar .snav li a:link, #sidebar .snav li a:visited {
-	margin-left:13px;color:#AFC5CF;background:#182227;
-	text-shadow: 1px 1px 0px #0E1316;
+	margin-left:13px;
+	color:<?php echo $primary_6; ?>;
+	background:<?php echo $primary_1; ?>;
+	text-shadow: 1px 1px 0px <?php echo $primary_0; ?>;
 	-webkit-transition: all .3s ease-in-out;
 	-moz-transition: all .3s ease-in-out;
 	-o-transition: all .3s ease-in-out;
@@ -312,8 +346,8 @@ html {
 	margin-left:0px;
 	cursor:default;
 	color:#FFF;
-	background:#CF3805 url('images/active.png') center left no-repeat !important;
-	text-shadow: 1px 1px 0px #9F2C04;
+	background:<?php echo $secondary_1; ?> url('images/active.png') center left no-repeat !important;
+	text-shadow: 1px 1px 0px <?php echo $secondary_0; ?>;
 	padding-left:28px;
 	border-radius: 0;
 	-moz-border-radius: 0;
@@ -326,8 +360,19 @@ html {
 	-moz-border-radius-topright: 4px;
 	-webkit-border-top-right-radius: 4px;
 	}
-#sidebar .snav li a.current:hover {text-shadow: 1px 1px 0px #9F2C04;margin-left:0px;cursor:default;color:#FFF;background:#CF3805 url('images/active.png') center left no-repeat !important;padding-left:28px;}
-#sidebar .snav li a:hover {color:#FFF;background:#0E1316;margin-left:13px;text-shadow: 1px 1px 0px #000;}
+#sidebar .snav li a.current:hover {
+	text-shadow: 1px 1px 0px <?php echo $secondary_0; ?>;
+	margin-left:0px;
+	cursor:default;
+	color:#FFF;
+	background:<?php echo $secondary_1; ?> url('images/active.png') center left no-repeat !important;
+	padding-left:28px;
+}
+#sidebar .snav li a:hover {
+	color:#FFF;background:<?php echo $primary_0; ?>;
+	margin-left:13px;
+	text-shadow: 1px 1px 0px #000;
+}
 #sidebar .snav li a em  {font-style:normal;border-bottom:1px dotted #666;}
 #sidebar .snav li a.current em {font-style:normal;border-bottom:1px dotted #fff;}
 #sidebar .snav small {color:#666;}
@@ -357,11 +402,11 @@ html {
 .edit-nav {height:1%;}
 .edit-nav a:link, .edit-nav a:visited {
 	line-height:14px !important;
-	background-color:#182227;
+	background-color:<?php echo $primary_1; ?>;
 	color:#ccc;
 	font-weight:bold;
 	text-decoration:none;
-	text-shadow: 1px 1px 0px #0E1316;
+	text-shadow: 1px 1px 0px <?php echo $primary_0; ?>;
 	-webkit-transition: all .15s ease-in-out;
 	-moz-transition: all .15s ease-in-out;
 	-o-transition: all .15s ease-in-out;
@@ -369,15 +414,15 @@ html {
 }
 
 .edit-nav a:hover, #sidebar .edit-nav a:hover, .edit-nav a.current {
-	background-color:#CF3805;
+	background-color:<?php echo $secondary_1; ?>;
 	color:#FFF;
 	font-weight:bold;
 	text-decoration:none;
 	line-height:14px !important;
-	text-shadow: 1px 1px 0px #9F2C04;
+	text-shadow: 1px 1px 0px <?php echo $secondary_0; ?>;
 }
 .edit-nav a:link em, .edit-nav a:visited em {font-style:normal;border-bottom:1px dotted #999;}
-.edit-nav a.current em, .edit-nav a:hover em {font-style:normal;border-bottom:1px dotted #FED3C5;}
+.edit-nav a.current em, .edit-nav a:hover em {font-style:normal;border-bottom:1px dotted #FFF;}
 
 
 
@@ -401,7 +446,7 @@ table td a {font-weight:normal !important;}
 .wrapper table.healthcheck tr td {font-size:12px;}
 .popup table td {padding:4px;}
 .popup table a:link, .popup table a:visited {
-	color:#415A66;
+	color:<?php echo $primary_3; ?>;
 	text-decoration:underline;
 	}
 .popup table a:hover {
@@ -453,9 +498,9 @@ form select.text { width:521px;padding:4px 5px; }
 input.text:focus, select.text:focus, textarea.text:focus {
 	outline:none;
 	border:1px solid #666 !important;
-	box-shadow: rgba(46,60,63, 0.15) 0px 0px 6px;  
-	-moz-box-shadow: rgba(46,60,63, 0.15) 0px 0px 6px;  
-	-webkit-box-shadow: rgba(46,60,63, 0.15) 0px 0px 6px;
+	box-shadow: rgba(0,0,0, 0.15) 0px 0px 6px;  
+	-moz-box-shadow: rgba(0,0,0, 0.15) 0px 0px 6px;  
+	-webkit-box-shadow: rgba(0,0,0, 0.15) 0px 0px 6px;
 	background-image:none;
 }
 
@@ -547,7 +592,7 @@ table.comptable tr {border:none;border:none !important;}
 table.comptable tr td input.newtitle {margin-bottom:2px !important;}
 .wrapper a.component { float:left;font-weight:800; margin:0 5px 5px 0; padding:3px 10px; text-decoration:none; border-radius: 3px; -moz-border-radius: 3px; -khtml-border-radius: 3px; -webkit-border-radius: 3px; }
 .wrapper a.component:link, .wrapper a.component:visited { color:#777; background:#eee; text-decoration: none; border-bottom: 0px solid #fff; }
-.wrapper a.component:hover { color:#FFF; background:#0E1316; }
+.wrapper a.component:hover { color:#FFF; background:<?php echo $primary_0; ?>; }
 .compdivlist {border:1px solid #eee;background:#fff;padding:15px 15px 10px 15px;text-align:center;margin:0 0 0 15px;overflow:auto;}
 
 
@@ -593,7 +638,7 @@ a.button {
 	font-size:11px;
 }
 a.button:link, a.button:visited {background:#6CA2D1;color:#fff;}
-a.button:hover {background:#CF3805;color:#fff;}
+a.button:hover {background:<?php echo $secondary_1; ?>;color:#fff;}
 
 
 /* file listing table style */
@@ -632,7 +677,7 @@ a.cancel em {font-style:normal}
 	-o-transition: all .15s ease-in-out;
 	transition: all .15s ease-in-out;
 	}
-.wrapper .secondarylink a:hover {background:#415A66;color:#FFF;text-decoration:none;font-weight:normal;padding: 1px;display:block;line-height:16px;}
+.wrapper .secondarylink a:hover {background:<?php echo $primary_3; ?>;color:#FFF;text-decoration:none;font-weight:normal;padding: 1px;display:block;line-height:16px;}
 
 
 /* backup info display */
@@ -698,6 +743,7 @@ opacity:.10;
 	padding:0 !important;
 	margin:0 4px 0 0 !important;
 	width:11px !important;
+	opacity:.8;
 	background: transaparent !important;
 }
 .uploadifyProgress {
@@ -706,7 +752,7 @@ opacity:.10;
 	width: 97%;
 }
 .uploadifyProgressBar {
-	background-color: #AFC5CF;
+	background-color: <?php echo $primary_6; ?>;
 	width: 1px;
 	height: 4px;
 }
@@ -719,20 +765,8 @@ opacity:.10;
 	-webkit-border-radius: 4px;
 	margin-left:13px;
 	color:#FFF;
-	background:#182227;
+	background:<?php echo $primary_1; ?>;
 	font-weight:100;
-}
-span.tagMatches {
-	margin-left: 0px;
-	display:block;
-}
-
-span.tagMatches span {
-	padding: 1px 2px;
-	margin-right: 2px;
-	background-color: #CF3805;
-	color: #FFFFFF !important;
-	cursor: pointer;
 }
 
 .wrapper table.highlight tr.img-highlight {

@@ -42,7 +42,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	<link rel="stylesheet" type="text/css" href="template/js/facybox/jquery.facybox.css" media="screen" />		
 
 	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>
-	<link rel="stylesheet" type="text/css" href="template/style.css?v=<?php echo GSVERSION; ?>" media="screen" />
+	<link rel="stylesheet" type="text/css" href="template/style.php" media="screen" />
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
 	
 	<?php exec_action('header'); ?>
