@@ -274,6 +274,12 @@ html {
 		display:block;
 		margin:0 0 5px 0;
 	}
+	h5 {
+		margin:10px 0 5px 0;font-size:14px;
+	}
+	h5 a {text-decoration:none !important;}
+	h5 img {vertical-align:middle; margin:0 5px 0 0;opacity:.5;}
+	h5:hover img {opacity:1;}
 	.bodycontent ul, .bodycontent ol {margin:0 0 20px 30px;}
 	.bodycontent ul p, .bodycontent ol p {margin:0 0 10px 0;}
 
