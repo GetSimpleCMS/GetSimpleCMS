@@ -1,4 +1,13 @@
 <?php
+/****************************************************
+*
+* @File: 			tempate.php
+* @Package:		GetSimple
+* @Action:		Innovation theme for the GetSimple 3.0
+*
+*****************************************************/
+
+
 # Get this theme's settings based on what was entered within it's plugin. 
 # This function is in functions.php 
 Innovation_Settings();
