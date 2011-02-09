@@ -18,7 +18,7 @@ if(isset($_POST['submitted'])) {
 	
 	# initial variable setup
 	$user_xml = GSUSERSPATH . _id($_POST['userid']).'.xml';
-	$userid = $_POST['userid'];
+	$userid = strtolower($_POST['userid']);
 	$password = $_POST['pwd'];
 	$error = null;
 	
@@ -42,7 +42,7 @@ if(isset($_POST['submitted'])) {
 			# pull the data from the user's data file
 			$data = getXML($user_xml);
 			$PASSWD = $data->PWD;
-			$USR = $data->USR;
+			$USR = strtolower($data->USR);
 
 			
 			# do the username and password match?

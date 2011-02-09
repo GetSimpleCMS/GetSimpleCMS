@@ -75,7 +75,7 @@ if(isset($_POST['submitted'])) {
    
 	# user-specific fields
 	if(isset($_POST['user'])) { 
-		$USR = $_POST['user']; 
+		$USR = strtolower($_POST['user']); 
 	} 
 	if(isset($_POST['email'])) { 
 		$EMAIL = $_POST['email']; 

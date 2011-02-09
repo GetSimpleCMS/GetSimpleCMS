@@ -39,7 +39,7 @@ if(isset($_POST['submitted'])) {
 	}
 	
 	if($_POST['user'] != '') { 
-		$USR = $_POST['user'];
+		$USR = strtolower($_POST['user']);
 	} else {
 		$err .= i18n_r('USERNAME_ERROR') .'<br />'; 
 	}
