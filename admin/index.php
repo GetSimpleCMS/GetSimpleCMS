@@ -35,7 +35,7 @@ include('inc/common.php');
 					<p><b><?php i18n('PASSWORD'); ?>:</b><br /><input type="password" class="text" id="pwd" name="pwd" /></p>
 					<p><input type="submit" name="submitted" class="submit" value="<?php i18n('LOGIN'); ?>" /></p>
 				</form>
-				<p class="cta" ><b>&laquo;</b> <a href="<?php echo $SITEURL; ?>">Back to Website</a> &nbsp; | &nbsp; <a href="resetpassword.php"><?php i18n('FORGOT_PWD'); ?></a></p>
+				<p class="cta" ><b>&laquo;</b> <a href="<?php echo $SITEURL; ?>"><?php i18n('BACK_TO_WEBSITE'); ?></a> &nbsp; | &nbsp; <a href="resetpassword.php"><?php i18n('FORGOT_PWD'); ?></a></p>
 				<?php exec_action('login-reqs'); ?>
 			</div>
 		</div>

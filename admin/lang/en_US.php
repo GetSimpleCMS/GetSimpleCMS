@@ -3,12 +3,12 @@
  * English Language File
  *
  * Date:				16 Oct 2010
- * Revision:		16 Oct 2010
- * Version:			GetSimple 2.04
+ * Revision:		Feb 2011
+ * Version:			GetSimple 3.0
  * Traductors: 	Chris Cagle 
  *
  * @package GetSimple
- * @subpackage Backups
+ * @subpackage Language
  */
 
 
@@ -105,9 +105,7 @@ $i18n = array(
 /* 
  * For: logout.php
 */
-"LOGGED_OUT"				=>	"Logged Out",
 "MSG_LOGGEDOUT"			=>	"You are now logged out.",
-"MSG_PLEASE"				=>	"Please log back in if you need to re-access your account", 
 
 /* 
  * For: index.php
@@ -117,8 +115,6 @@ $i18n = array(
 "PASSWORD"					=>	"Password",
 "FORGOT_PWD"				=>	"Forgot your password?",
 "CONTROL_PANEL"			=>	"Control Panel Login",
-"LOGIN_REQUIREMENT"	=>	"Login Requirements",
-"WARN_JS_COOKIES"		=>	"Cookies and javascript need to be enabled in your browser to work properly",
 
 /* 
  * For: navigation.php
@@ -461,8 +457,9 @@ $i18n = array(
 "AUTHOR" 				=> "Author", //plugins.php
 "ENABLE" 				=> "Enable", //plugins.php
 "DISABLE" 				=> "Disable", //plugins.php
-"NO_THEME_SCREENSHOT" => "No theme screenshot available",
+"NO_THEME_SCREENSHOT" => "No theme screenshot available", //theme.php
 "UNSAVED_INFORMATION" => "You are about to leave this page and will lose any unsaved information.", //edit.php
+"BACK_TO_WEBSITE" => "Back to Website", //index & resetpassword
 
 
 "X" => "not translated"
