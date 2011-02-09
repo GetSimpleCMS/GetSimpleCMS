@@ -65,6 +65,7 @@ header #logo {
 	top:20px;
 	left:0;
 	font-size:35px;
+	white-space:nowrap;
 	color:#fff;
 	font-family: 'Yanone Kaffeesatz', arial, helvetica, sans-serif;
 	text-transform:uppercase;
@@ -321,3 +322,8 @@ footer a:hover, footer a:focus {
 	color:#555;
 	text-decoration:underline;
 }
+
+
+#index .header {display:none;}
+#index #maincontent {text-align:center;}
+#index #maincontent #main {width:300px;}

@@ -8,10 +8,8 @@
  * @subpackage Login
  */
 
-// Setup inclusions
+# setup inclusions
 $load['plugin'] = true;
-
-// Include common.php
 include('inc/common.php');
 
 if(isset($_POST['submitted'])){
@@ -30,10 +28,10 @@ if(isset($_POST['submitted'])){
 		# get user information from existing XML file
 		if (file_exists(GSUSERSPATH . $file)) {
 			$data = getXML(GSUSERSPATH . $file);
-			$USR = $data->USR;
+			$USR = strtolower($data->USR);
 			$EMAIL = $data->EMAIL;
 			
-			if($_POST['username'] == $USR) {
+			if(strtolower($_POST['username']) == $USR) {
 				# create new random password
 				$random = createRandomPassword();
 				
@@ -86,7 +84,6 @@ if(isset($_POST['submitted'])){
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('RESET_PASSWORD')); ?>
-<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('RESET_PASSWORD'); ?></h1>
 </div>
 </div>
 <div class="wrapper">
@@ -97,13 +94,14 @@ if(isset($_POST['submitted'])){
 	<div class="main" >
 	
 	<h3><?php i18n('RESET_PASSWORD'); ?></h3>
-	<p><?php i18n('MSG_PLEASE_EMAIL'); ?>.</p>
+	<p class="desc"><?php i18n('MSG_PLEASE_EMAIL'); ?></p>
 	
-	<form class="fullform" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
+	<form class="login" action="<?php myself(); ?>" method="post" >
 		<input name="nonce" id="nonce" type="hidden" value="<?php echo get_nonce("reset_password");?>"/>
 		<p><b><?php i18n('LABEL_USERNAME'); ?>:</b><br /><input class="text" name="username" type="text" value="" /></p>
 		<p><input class="submit" type="submit" name="submitted" value="<?php echo i18n('SEND_NEW_PWD'); ?>" /></p>
-	</form><p><a href="index.php"><?php i18n('LOGIN'); ?></a></p>
+	</form>
+	<p class="cta" ><b>&laquo;</b> <a href="<?php echo $SITEURL; ?>">Back to Website</a> &nbsp; | &nbsp; <a href="index.php"><?php i18n('CONTROL_PANEL'); ?></a></p>
 	</div>
 	
 </div>

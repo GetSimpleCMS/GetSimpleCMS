@@ -276,7 +276,7 @@ if ($menu == '') { $menu = $title; }
 						echo i18n_r('LAST_SAVED').': '. lngDate($pubDate).'&nbsp; ';
 					}
 					if ( file_exists(GSBACKUPSPATH.'pages/'.$url.'.bak.xml') ) {	
-						echo '-&nbsp; <a href="backup-edit.php?p=view&id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
+						echo '-&nbsp; <a href="backup-edit.php?p=view&id='.$url.'" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
 					} 
 			?></small>
 		</form>

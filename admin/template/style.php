@@ -468,9 +468,9 @@ sup {
 	background:#fff;
 	border:1px solid #c3c3c3;
 	margin:0 0 30px 0;
-	box-shadow: rgba(46,60,63, 0.06) 0px 0px 4px;  
-	-moz-box-shadow: rgba(46,60,63, 0.06) 0px 0px 4px;  
-	-webkit-box-shadow: rgba(46,60,63, 0.06) 0px 0px 4px;
+	box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;  
+	-moz-box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;  
+	-webkit-box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;
 }
 #maincontent .main .section {padding-top:40px;}
 #maincontent .main pre {
@@ -699,6 +699,7 @@ table.simple {width:100%;border:1px solid #aaa;}
 float:right;width:60px;text-align:right;
 opacity:.10;	
 }
+#footer .footer-left {float:left;width:85% }
 #footer .gslogo a:link,#footer .gslogo a:visited  {
 	
 	-webkit-transition: opacity .3s ease-in-out;
@@ -806,4 +807,33 @@ textarea.copykit {
 	.qc_pager a.qp_disabled:visited,
 	.qc_pager a.qp_disabled:hover,
 	.qc_pager a.qp_disabled:focus {color:#ccc;cursor:text !important;}
-	
+
+
+/* logged out specific styles */	
+#index .header,
+#resetpassword .header {display:none;}
+#index #maincontent,
+#resetpassword #maincontent {width:100%;}
+#index #maincontent .main,
+#resetpassword #maincontent .main {margin:50px auto 0 auto;width:270px;float:none;text-align:left;
+	border-radius: 8px;
+	-moz-border-radius: 8px;
+	-khtml-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	box-shadow: rgba(0,0,0, 0.2) 0px 0px 8px;  
+	-moz-box-shadow: rgba(0,0,0, 0.2) 0px 0px 8px;  
+	-webkit-box-shadow: rgba(0,0,0, 0.2) 0px 0px 8px;
+}
+#index p.cta,
+#resetpassword p.cta {font-size:11px;margin:0 0 0 0;color:#999;}
+#index p.cta a,
+#resetpassword p.cta a {font-weight:100;}
+#index .error, #index .updated,
+#resetpassword .error, #resetpassword .updated {margin:30px auto -20px auto;width:400px;line-height:18px;padding:5px 10px;}
+#index #footer,
+#resetpassword #footer {width:270px;border-top:none;margin:0 auto 20px auto;text-align:center;opacity:.7}
+#footer .footer-left,
+#resetpassword .footer-left  {float:none;width:100%;}
+#index .gslogo,
+#resetpassword .gslogo {display:none;}
+.desc {font-size:12px;line-height:17px;border-bottom:1px dotted #ccc;padding:0 0 15px 0;margin:0 0 5px 0;}

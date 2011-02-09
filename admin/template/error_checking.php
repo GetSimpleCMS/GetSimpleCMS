@@ -7,7 +7,7 @@
  * @package GetSimple
  */
  
-	if (file_exists(GSUSERSPATH._id($USR).".xml.reset")) {
+	if ( file_exists(GSUSERSPATH._id($USR).".xml.reset") && get_filename_id()!='index' && get_filename_id()!='resetpassword' ) {
 		echo '<div class="error">'.i18n_r('ER_PWD_CHANGE').'</div>';
 	}
 	if(isset($_GET['error'])) {

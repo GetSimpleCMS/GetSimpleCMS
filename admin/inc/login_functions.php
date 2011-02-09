@@ -24,8 +24,7 @@ if(isset($_POST['submitted'])) {
 	
 	# check the username or password fields
 	if ( !$userid || !$password ) {
-		$error = true;
-		$MSG .= '<b>'.i18n_r('ERROR').':</b> '.i18n_r('FILL_IN_REQ_FIELD').'.<br />';
+		$error = i18n_r('FILL_IN_REQ_FIELD');
 	} 
 	
 	# check for any errors
@@ -84,7 +83,7 @@ if(isset($_POST['submitted'])) {
 			redirect($cookie_redirect); 
 		} else {
 			# NO - show error message
-			$MSG .= '<b>'.i18n_r('ERROR').':</b> '.i18n_r('LOGIN_FAILED').'.';
+			$error = i18n_r('LOGIN_FAILED');
 		} # end authenticated check
 		
 	} # end error check
