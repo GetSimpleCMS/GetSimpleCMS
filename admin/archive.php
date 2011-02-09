@@ -73,7 +73,7 @@ if(isset($_GET['nozip'])) {
 					$ss = stat($path . $file);
 					$size = fSize($ss['size']);
 					echo '<tr>
-							<td><a title="'.i18n_r('DOWNLOAD').' '. $name .'" target="_blank" href="download.php?file='. $path . $file .'&amp;nonce='.get_nonce("archive", "download.php").'">'.$name .'</a></td>
+							<td><a title="'.i18n_r('DOWNLOAD').' '. $name .'" href="download.php?file='. $path . $file .'&amp;nonce='.get_nonce("archive", "download.php").'">'.$name .'</a></td>
 							<td style="width:70px;text-align:right;" ><span>'.$size.'</span></td>
 							<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_ARCHIVE').' '. $name .'?" href="deletefile.php?zip='. $file .'&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>
 						  </tr>';
