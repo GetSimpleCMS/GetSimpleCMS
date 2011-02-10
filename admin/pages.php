@@ -56,7 +56,7 @@ $counter = "0";
 if (count($pagesSorted) != 0) { 
 	foreach ($pagesSorted as $page) {	
 		$counter++;
-		if ($page['parent'] != '') {$page['parent'] = $page['parent']."/"; $dash = '<span>&nbsp;&nbsp;&lfloor;&nbsp;&nbsp;&nbsp;</span>'; } else { $dash = ""; }
+		if ($page['parent'] != '') {$page['parent'] = $page['parent']."/"; $dash = '<span>&nbsp;&nbsp;&ndash;&nbsp;&nbsp;&nbsp;</span>'; } else { $dash = ""; }
 		$table .= '<tr id="tr-'.$page['url'] .'" >';
 		if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
 		if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <sup>['.i18n_r('MENUITEM_SUBTITLE').']</sup>'; } else { $page['menuStatus'] = ''; }

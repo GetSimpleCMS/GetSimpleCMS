@@ -11,8 +11,6 @@
 
 // Setup inclusions
 $load['plugin'] = true;
-
-// Include common.php
 include('inc/common.php');
 
 // Variable Settings
@@ -27,7 +25,7 @@ if (!is_file($log_file)) {
 	$log_data = false;
 }
 
-if ($_GET['action'] == 'delete' && strlen($log_name)>0) {
+if (isset($_GET['action']) && $_GET['action'] == 'delete' && strlen($log_name)>0) {
 	$nonce = $_GET['nonce'];
 	if(!check_nonce($nonce, "delete"))
 		die("CSRF detected!");	

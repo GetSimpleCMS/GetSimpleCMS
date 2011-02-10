@@ -6,22 +6,20 @@
  * @subpackage Support
  */
 
-// Setup inclusions
+# Setup inclusions
 $load['plugin'] = true;
-
-// Include common.php
 include('inc/common.php');
 login_cookie_check();
 
 $path = GSDATAOTHERPATH;
 $bakpath = GSBACKUPSPATH.'other/';
 
-// if the undo command was invoked
+# if the undo command was invoked
 if (isset($_GET['undo'])) { 
 	$nonce = $_GET['nonce'];
-	if(!check_nonce($nonce, "undo", "support.php"))
+	if(!check_nonce($nonce, "undo", "support.php")) {
 		die("CSRF detected!");	
-
+	}
 	$ufile = 'cp_settings.xml';
 	undo($ufile, $path, $bakpath);
 	redirect('support.php?rest=true');
@@ -33,10 +31,41 @@ if (isset($_GET['restored'])) {
 	$restored = 'false';
 }
 
-// were changes submitted?
+# were changes submitted?
 if(isset($_POST['submitted'])) {
 	$success = i18n_r('SETTINGS_UPDATED').'. <a href="support.php?undo&nonce='.get_nonce("restore", "support.php").'">'.i18n_r('UNDO').'</a>';
 }
+
+$php_modules = get_loaded_extensions();
+if (in_arrayi('curl', $php_modules)){
+	$curl_URL = $api_url .'?v='.$site_version_no;
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_URL, $curl_URL);
+	$data = curl_exec($ch);
+	curl_close($ch);
+	if ($data !== false) {
+		$apikey = json_decode($data);
+		$verstatus = $apikey->status;
+	} else {
+		$apikey = null;
+		$verstatus = null;
+	}
+} else {
+	$verstatus = '10';
+}
+$verstatus = '0';
+if ($verstatus == '0') {
+	$ver = i18n_r('WARNING').': '.$site_full_name.' '.i18n_r('UPG_NEEDED').' <b>'.$apikey->latest .'</b> &ndash; <a href="http://get-simple.info/download/">'. i18n_r('DOWNLOAD').'</a>';
+} elseif ($verstatus == '1') {
+	$ver = null;
+} elseif ($verstatus == '2') {
+	$ver = null;
+} else {
+	$ver = i18n_r('WARNING').': '.i18n_r('CANNOT_CHECK').': <b>'.$site_version_no.'</b> &ndash; <a href="http://get-simple.info/download">'. i18n_r('DOWNLOAD').'</a>';
+}
+			
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT') ); ?>
@@ -49,19 +78,24 @@ if(isset($_POST['submitted'])) {
 	
 	<div id="maincontent">
 		<div class="main">
-		<h3><?php i18n('SIDE_VIEW_LOG');?></h3>
+
+		<h3><?php i18n('SUPPORT');?></h3>
+		<p>
+			<a href="welcome.php" class="button" ><?php i18n('GETTING_STARTED'); ?></a><a href="http://get-simple.info/docs/" class="button" target="_blank" ><?php i18n('SIDE_DOCUMENTATION'); ?></a><a href="http://get-simple.info/forum/" class="button" target="_blank" ><?php i18n('SUPPORT_FORUM'); ?></a><?php if ($LANG = 'en_US') { ?><a href="http://get-simple.info/commercial-support/" class="button" target="_blank" >Commercial Support</a><?php } ?>
+		</p>
+
 		<ol>
-			<?php if (file_exists($path . 'logs/404monitoring.log')) { ?>
-				<li><p><a href="log.php?log=404monitoring.log"><?php i18n('VIEW_404');?></a></p></li>
-			<?php } ?>
+			<?php 
+				if ($ver) {
+					echo '<li style="color:#cc0000;" ><p>'.$ver.'</p></li>';
+				} 
+			?>
 			<?php if (file_exists($path . 'logs/failedlogins.log')) { ?>
 				<li><p><a href="log.php?log=failedlogins.log"><?php i18n('VIEW_FAILED_LOGIN');?></a></p></li>
 			<?php } ?>
-			<?php if (file_exists($path . 'logs/tickets.log')) { ?>
-				<li><p><a href="log.php?log=tickets.log"><?php i18n('VIEW_TICKETS');?></a></p></li>
-			<?php } ?>
 			<?php exec_action('support-extras'); ?>
 		</ol>
+
 		</div>
 	</div>
 

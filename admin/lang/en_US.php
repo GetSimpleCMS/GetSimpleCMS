@@ -299,10 +299,9 @@ $i18n = array(
 /* 
  * For: sidebar-support.php
 */
-"SIDE_SUPPORT_LOG"	=>	"Supp<em>o</em>rt Settings &amp; Logs",
-"SIDE_VIEW_LOG"			=>	"View Log",
+"SIDE_SUPPORT_LOG"	=>	"Supp<em>o</em>rt",
 "SIDE_HEALTH_CHK"		=>	"Website <em>H</em>ealth Check",
-"SIDE_DOCUMENTATION"=>	"<em>D</em>ocumentation",
+"SIDE_DOCUMENTATION"=>	"Documentation",
 
 /* 
  * For: sidebar-theme.php
@@ -460,6 +459,8 @@ $i18n = array(
 "NO_THEME_SCREENSHOT" => "No theme screenshot available", //theme.php
 "UNSAVED_INFORMATION" => "You are about to leave this page and will lose any unsaved information.", //edit.php
 "BACK_TO_WEBSITE" => "Back to Website", //index & resetpassword
+"SUPPORT_FORUM" => "Support Forum", //support.php
+
 
 
 "X" => "not translated"

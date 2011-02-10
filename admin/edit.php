@@ -142,7 +142,6 @@ foreach ($parents as $fi)
 // SETUP CHECKBOXES
 if ($menuStatus != '') { $sel = 'checked';	}
 $sel_p = ($private != '') ? 'checked' : '' ;
-//if ($private != '') { $sel_p = 'checked';	}
 if ($menu == '') { $menu = $title; } 
 ?>		
 

@@ -5,22 +5,24 @@
  * @package GetSimple
  * @subpackage init
  */
-
 header("Content-type: text/css");
+header("Expires: ".date("D, d M Y H:i:s", time() + 3600) ); # cache for an hour
+header("Pragma: cache");
+header("Cache-Control: maxage=$seconds_to_cache");
 
 include('../inc/common.php');
 if (file_exists(GSTHEMESPATH.'admin.xml')) {
 	#load admin theme xml file
 	$theme = getXML(GSTHEMESPATH.'admin.xml');
-	$primary_0 = $theme->primary->darkest;
-	$primary_1 = $theme->primary->darker;
-	$primary_2 = $theme->primary->dark;
-	$primary_3 = $theme->primary->middle;
-	$primary_4 = $theme->primary->light;
-	$primary_5 = $theme->primary->lighter;
-	$primary_6 = $theme->primary->lightest;
-	$secondary_0 = $theme->secondary->darkest;
-	$secondary_1 = $theme->secondary->lightest;
+	$primary_0 = trim($theme->primary->darkest);
+	$primary_1 = trim($theme->primary->darker);
+	$primary_2 = trim($theme->primary->dark);
+	$primary_3 = trim($theme->primary->middle);
+	$primary_4 = trim($theme->primary->light);
+	$primary_5 = trim($theme->primary->lighter);
+	$primary_6 = trim($theme->primary->lightest);
+	$secondary_0 = trim($theme->secondary->darkest);
+	$secondary_1 = trim($theme->secondary->lightest);
 } else {
 	# set default colors
 	$primary_0 = '#0E1316'; # darkest
@@ -80,16 +82,15 @@ html {
 		-webkit-border-top-left-radius: 5px;
 		-moz-border-radius-topright:5px;
 		-webkit-border-top-right-radius: 5px;
-		
+		-webkit-transition: all .3s ease-in-out;
+		-moz-transition: all .3s ease-in-out;
+		-o-transition: all .3s ease-in-out;
+		transition: all .3s ease-in-out;
 	}
 	.wrapper .nav li a:link, .wrapper .nav li a:visited, .wrapper #pill li a:link, .wrapper #pill li a:visited {
 		color:<?php echo $primary_6; ?>;
 		background:<?php echo $primary_1; ?>;
 		text-shadow: 1px 1px 0px <?php echo $primary_0; ?>;
-		-webkit-transition: all .3s ease-in-out;
-		-moz-transition: all .3s ease-in-out;
-		-o-transition: all .3s ease-in-out;
-		transition: all .3s ease-in-out;
 	}
 	.wrapper #pill li.debug a:link, .wrapper #pill li.debug a:visited, .wrapper #pill li.debug a:hover {
 		color:#fff;
@@ -99,10 +100,6 @@ html {
 		text-decoration:none !important;
 		display:block;
 		border-left:1px solid <?php echo $primary_3; ?>;
-		-webkit-transition: all .3s ease-in-out;
-		-moz-transition: all .3s ease-in-out;
-		-o-transition: all .3s ease-in-out;
-		transition: all .3s ease-in-out;
 	}
 	 
 	#edit .wrapper .nav li a.pages,
@@ -627,18 +624,37 @@ table.comptable tr td input.newtitle {margin-bottom:2px !important;}
 
 /* button link style */
 a.button {
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-khtml-border-radius: 5px;
-	-webkit-border-radius: 5px;
 	padding:5px 10px;
+	margin:0 0 0 0;
 	font-weight:100;
 	text-decoration:none !important;
 	text-transform:uppercase;
 	font-size:11px;
+	border-right:1px solid <?php echo $primary_3; ?>;
 }
-a.button:link, a.button:visited {background:#6CA2D1;color:#fff;}
-a.button:hover {background:<?php echo $secondary_1; ?>;color:#fff;}
+a.button:last-child {
+	border-radius: 0 5px 5px 0;
+	-moz-border-radius: 0 5px 5px 0;
+	-khtml-border-radius: 0 5px 5px 0;
+	-webkit-border-radius: 0 5px 5px 0;
+	border-right:none;
+}
+a.button:first-child {
+	border-radius: 5px 0 0 5px;
+	-moz-border-radius: 5px 0 0 5px;
+	-khtml-border-radius: 5px 0 0 5px;
+	-webkit-border-radius: 5px 0 0 5px;
+}
+a.button:link, a.button:visited {
+	color:<?php echo $primary_6; ?>;
+	background:<?php echo $primary_1; ?>;
+	text-shadow: 1px 1px 0px <?php echo $primary_0; ?>;
+}
+a.button:hover {
+	color:#FFF;
+	background:<?php echo $primary_0; ?>;
+	text-shadow: 1px 1px 0px #000;
+}
 
 
 /* file listing table style */
@@ -723,9 +739,14 @@ opacity:.10;
 .wrapper table td span.ERRmsg {color:#D94136;font-color:12px;}
 .wrapper table td span.OKmsg {color:#308000;font-color:12px;}
 .wrapper table td span.WARNmsg {color:#FFCC33;font-color:12px;}
+.wrapper table.highlight tr.img-highlight {
+	background:#FFFFD1 !important;
+}
+.wrapper table.highlight tr.img-highlight td a.primarylink {
+	font-weight:bold !important;
+}
 
-/* JQuery File upload Plugin v1.4.3 by RonnieSan - (C)2009 by Ronnie Garcia */
-
+/* JQuery Uploadify Styles */
 .uploadifyQueueItem {
 	font-size: 10px;
 	padding:8px 0;
@@ -770,14 +791,8 @@ opacity:.10;
 	font-weight:100;
 }
 
-.wrapper table.highlight tr.img-highlight {
-	background:#FFFFD1 !important;
-}
-.wrapper table.highlight tr.img-highlight td {
-}
-.wrapper table.highlight tr.img-highlight td a.primarylink {
-	font-weight:bold !important;
-}
+
+/* Image Editor Styles */
 textarea.copykit {
 	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; 
 	font-size:12px;
@@ -793,23 +808,26 @@ textarea.copykit {
 	width:98%;
 	height:70px;
 	margin-bottom:10px;
-	}
-	#handw {z-index:1;padding:8px;background:#000;opacity:.80;color:#fff;font-size:11px;width:150px;text-align:center;margin:-50px 0 0 0;}
-	#handw span {font-size:15px;font-weight:bold;}
-	#jcropform .submit {margin:20px 0 0 0;}
-	#jcrop_open {}
-	.qc_pager {padding:0 0 15px 0;}
-	.qc_pager a {padding:5px;margin:0 10px 0 0;}
-	.qc_pager a:link,	.qc_pager a:visited {}
-	.qc_pager a:hover, .qc_pager a:focus {}
-	.qc_pager .qp_counter {margin:0 10px 0 0;font-size:11px;}
-	.qc_pager a.qp_disabled:link,
-	.qc_pager a.qp_disabled:visited,
-	.qc_pager a.qp_disabled:hover,
-	.qc_pager a.qp_disabled:focus {color:#ccc;cursor:text !important;}
+}
+#handw {z-index:1;padding:8px;background:#000;opacity:.80;color:#fff;font-size:11px;width:150px;text-align:center;margin:-50px 0 0 0;}
+#handw span {font-size:15px;font-weight:bold;}
+#jcropform .submit {margin:20px 0 0 0;}
+#jcrop_open {}
 
 
-/* logged out specific styles */	
+/* jQuery Pagination Styles */
+.qc_pager {padding:0 0 15px 0;}
+.qc_pager a {padding:5px;margin:0 10px 0 0;}
+.qc_pager a:link,	.qc_pager a:visited {}
+.qc_pager a:hover, .qc_pager a:focus {}
+.qc_pager .qp_counter {margin:0 10px 0 0;font-size:11px;}
+.qc_pager a.qp_disabled:link,
+.qc_pager a.qp_disabled:visited,
+.qc_pager a.qp_disabled:hover,
+.qc_pager a.qp_disabled:focus {color:#ccc;cursor:text !important;}
+
+
+/* Logged out specific styles */	
 #index .header,
 #resetpassword .header {display:none;}
 #index #maincontent,

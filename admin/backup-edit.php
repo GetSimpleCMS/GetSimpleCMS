@@ -8,16 +8,12 @@
  * @subpackage Backups
  */
  
-// Setup inclusions
+# setup
 $load['plugin'] = true;
-
-// Include common.php
 include('inc/common.php');
-
-// Variable Settings
 $userid = login_cookie_check();
 
-// get page url to display
+# get page url to display
 if ($_GET['id'] != '') {
 	$id = $_GET['id'];
 	$file = $id .".bak.xml";
@@ -87,7 +83,7 @@ elseif ($p == 'restore') {
 			<div class="clear"></div>
 		</div>
 		
-		<table class="simple" >
+		<table class="simple highlight" >
 		<tr><td style="width:125px;" ><b><?php i18n('PAGE_TITLE');?>:</b></td><td><b><?php echo cl($title); ?></b> <?php echo $private; ?></td></tr>
 		<tr><td><b><?php i18n('BACKUP_OF');?>:</b></td><td>
 			<?php 
@@ -95,8 +91,6 @@ elseif ($p == 'restore') {
 					echo '<a target="_blank" href="'. find_url($url, $parent) .'">'. find_url($url, $parent) .'</a>'; 
 			} 
 			?>
-			
-			
 		</td></tr>
 		<tr><td><b><?php i18n('DATE');?>:</b></td><td><?php echo lngDate($pubDate); ?></td></tr>
 		<tr><td><b><?php i18n('TAG_KEYWORDS');?>:</b></td><td><em><?php echo $metak; ?></em></td></tr>

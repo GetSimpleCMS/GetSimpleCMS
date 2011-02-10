@@ -14,9 +14,6 @@ $load['plugin'] = true;
 // Include common.php
 include('inc/common.php');
 login_cookie_check();
-	
-$data = getXML(GSDATAOTHERPATH.'authorization.xml');
-$APIKEY = $data->apikey;
 $php_modules = get_loaded_extensions();
 
 ?>
@@ -36,7 +33,7 @@ $php_modules = get_loaded_extensions();
 				<?php
 				if (in_arrayi('curl', $php_modules))
 				{
-					$curl_URL = $api_url .'?k='.$APIKEY.'&v='.$site_version_no;
+					$curl_URL = $api_url .'?v='.$site_version_no;
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_TIMEOUT, 2);
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -54,20 +51,13 @@ $php_modules = get_loaded_extensions();
 					$verstatus = '10';
 				}
 				
-				if ($verstatus == '0') 
-				{
+				if ($verstatus == '0') {
 					$ver = '<span class="ERRmsg" >'. i18n_r('UPG_NEEDED').' <b>'.$apikey->latest .'</b><br /><a href="http://get-simple.info/download/">'. i18n_r('DOWNLOAD').'</a></span>';
-				} 
-				elseif ($verstatus == '1') 
-				{
+				} elseif ($verstatus == '1') {
 					$ver = '<span class="OKmsg" ><b>'.$site_version_no.'</b> - '. i18n_r('LATEST_VERSION').'</span>';
-				} 
-				elseif ($verstatus == '2') 
-				{
+				} elseif ($verstatus == '2') {
 					$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - '. i18n_r('BETA').'</span>';
-				} 
-				else 
-				{
+				} else {
 					$ver = '<span class="WARNmsg" >'. i18n_r('CANNOT_CHECK').' <b>'.$site_version_no.'</b><br /><a href="http://get-simple.info/download">'. i18n_r('DOWNLOAD').'</a></span>';
 				}
 				?>

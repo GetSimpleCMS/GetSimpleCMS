@@ -53,8 +53,6 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		$archiv->addFile(GSROOTPATH.'.htaccess', '.htaccess' );
 		$archiv->addFile(GSROOTPATH.'gsconfig.php', 'gsconfig.php' );
 		
-		// Save a comment
-		$archiv->setArchiveComment('Backup ' . $absolutePath);
 		// save and close 
 		$archiv->close();
 

@@ -16,6 +16,8 @@ if (cookie_check()) {
 //determine page type if plugin is being shown
 if (get_filename_id() == 'load') {
 	$plugin_class = $plugin_info[$plugin_id]['page_type'];
+} else {
+	$plugin_class = '';
 }
 
 ?>
