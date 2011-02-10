@@ -322,8 +322,3 @@ footer a:hover, footer a:focus {
 	color:#555;
 	text-decoration:underline;
 }
-
-
-#index .header {display:none;}
-#index #maincontent {text-align:center;}
-#index #maincontent #main {width:300px;}
