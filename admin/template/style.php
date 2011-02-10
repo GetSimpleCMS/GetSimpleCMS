@@ -10,7 +10,12 @@ header("Expires: ".date("D, d M Y H:i:s", time() + 3600) ); # cache for an hour
 header("Pragma: cache");
 header("Cache-Control: maxage=$seconds_to_cache");
 
-include('../inc/common.php');
+function getXML($file) {
+	$xml = file_get_contents($file);
+	$data = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA);
+	return $data;
+}
+
 if (file_exists(GSTHEMESPATH.'admin.xml')) {
 	#load admin theme xml file
 	$theme = getXML(GSTHEMESPATH.'admin.xml');
