@@ -293,8 +293,35 @@ jQuery(document).ready(function() {
 	});
 
 
-
-
-
+	//title filtering on pages.php
+	$('#filtertable').live("click", function($e) {
+		$e.preventDefault();
+		$("#filter-search").slideToggle();
+	});
+	$("#filter-search #q").keydown(function($e){
+		if($e.keyCode == 13) {
+			$e.preventDefault();
+		}
+	});
+	$("#editpages tr:has(td.pagetitle)").each(function(){
+   var t = $(this).find('td.pagetitle').text().toLowerCase();
+   $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
+ 	});
+ 	
+	$("#filter-search #q").keyup(function(){
+		var s = $(this).val().toLowerCase().split(" ");
+		$("#editpages tr:hidden").show();
+		$.each(s, function(){
+    	$("#editpages tr:visible .indexColumn:not(:contains('" + this + "'))").parent().hide();
+ 		});
+	});
+	$("#filter-search .cancel").live("click", function($e) {
+		$e.preventDefault();
+		$("#editpages tr").show();
+		$("#filter-search #q").val('');
+		$("#filter-search").slideUp();
+	});
+	
+	
 //end of javascript for getsimple
 }); 

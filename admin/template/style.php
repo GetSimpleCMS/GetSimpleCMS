@@ -860,3 +860,6 @@ textarea.copykit {
 #index .gslogo,
 #resetpassword .gslogo {display:none;}
 .desc {font-size:12px;line-height:17px;border-bottom:1px dotted #ccc;padding:0 0 15px 0;margin:0 0 5px 0;}
+
+#filter-search {margin:0 0 10px 0;display:none;}
+#filter-search input {width:250px;font-size:11px;padding:3px;}

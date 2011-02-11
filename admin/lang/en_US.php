@@ -460,8 +460,7 @@ $i18n = array(
 "UNSAVED_INFORMATION" => "You are about to leave this page and will lose any unsaved information.", //edit.php
 "BACK_TO_WEBSITE" => "Back to Website", //index & resetpassword
 "SUPPORT_FORUM" => "Support Forum", //support.php
-
-
+"FILTER" => "Filter", //pages.php
 
 "X" => "not translated"
 
