@@ -302,6 +302,7 @@ $i18n = array(
 "SIDE_SUPPORT_LOG"	=>	"Supp<em>o</em>rt",
 "SIDE_HEALTH_CHK"		=>	"Website <em>H</em>ealth Check",
 "SIDE_DOCUMENTATION"=>	"Documentation",
+"SIDE_VIEW_LOG"=>	"<em>V</em>iew Log",
 
 /* 
  * For: sidebar-theme.php
