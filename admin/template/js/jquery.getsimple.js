@@ -297,6 +297,7 @@ jQuery(document).ready(function() {
 	$('#filtertable').live("click", function($e) {
 		$e.preventDefault();
 		$("#filter-search").slideToggle();
+		$('#filter-search #q').focus();
 	});
 	$("#filter-search #q").keydown(function($e){
 		if($e.keyCode == 13) {

@@ -112,7 +112,7 @@ if (isset($_FILES["file"]))
      $pathParts=explode("/",$subPath);
      $urlPath="/";
      
-     echo '<h5><img src="template/images/folder.png" /> <a href="?">uploads</a> / ';
+     echo '<h5><img src="template/images/folder.png" width="13px" /> <a href="?">uploads</a> / ';
      //echo "</td></tr>";
      foreach ($pathParts as $pathPart){
        if ($pathPart!=''){
@@ -173,7 +173,7 @@ if (isset($_FILES["file"]))
           echo '</span></td>';
 			  
 			 */
-					echo '<td style="width:70px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
+					echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
 					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>';
 					echo '</tr>';
 					exec_action('file-extras');

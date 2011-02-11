@@ -81,7 +81,7 @@ if ($verstatus == '0') {
 
 		<h3><?php i18n('SUPPORT');?></h3>
 		<p>
-			<a href="welcome.php" class="button" ><?php i18n('GETTING_STARTED'); ?></a><a href="http://get-simple.info/docs/" class="button" target="_blank" ><?php i18n('SIDE_DOCUMENTATION'); ?></a><a href="http://get-simple.info/forum/" class="button" target="_blank" ><?php i18n('SUPPORT_FORUM'); ?></a><?php if ($LANG = 'en_US') { ?><a href="http://get-simple.info/commercial-support/" class="button" target="_blank" >Commercial Support</a><?php } ?>
+			<a href="welcome.php" class="button" ><?php i18n('GETTING_STARTED'); ?></a><a href="http://get-simple.info/docs/" class="button" target="_blank" ><?php i18n('SIDE_DOCUMENTATION'); ?></a><a href="http://get-simple.info/forum/" class="button" target="_blank" ><?php i18n('SUPPORT_FORUM'); ?></a>
 		</p>
 
 		<ol>
