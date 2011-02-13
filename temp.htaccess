@@ -1,5 +1,12 @@
 AddDefaultCharset UTF-8
 Options -Indexes
+
+<Files ~ "\.xml$">
+    Order allow,deny
+    Deny from all
+    Satisfy All
+</Files>
+
 RewriteEngine on
 
 # Usually it RewriteBase is just '/', but 

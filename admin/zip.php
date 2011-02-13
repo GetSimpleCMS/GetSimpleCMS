@@ -24,7 +24,9 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 	$saved_zip_file = GSBACKUPSPATH.'zip/'. $timestamp .'_archive.zip';	
 	
 	$sourcePath = GSROOTPATH;
-	
+	if (!class_exists ( 'ZipArchive' , false)) {
+		include('inc/ZipArchive.php');
+	}
 	if (class_exists ( 'ZipArchive' , false)) {
 	
 		$archiv = new ZipArchive();
@@ -54,8 +56,11 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		$archiv->addFile(GSROOTPATH.'gsconfig.php', 'gsconfig.php' );
 		
 		// save and close 
-		$archiv->close();
-
+		$status = $archiv->close();
+		if (!$status) {
+			redirect('archive.php?nozip');
+		}
+		
 	} else {
 		redirect('archive.php?nozip');	
 	}
