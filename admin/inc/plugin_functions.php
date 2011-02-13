@@ -6,10 +6,10 @@
  * @subpackage Plugin-Functions
  */
 
-$plugins = array();  // used for option names
-$plugins_info = array();
-$filters = array();
-$live_plugins = array();  // used for enablie/disable functions
+$plugins          = array();  // used for option names
+$plugins_info     = array();
+$filters          = array();
+$live_plugins     = array();  // used for enablie/disable functions
 
 
 /**
@@ -145,19 +145,32 @@ function add_action($hook_name, $added_function, $args = array()) {
 	global $live_plugins; 
   
 	$bt = debug_backtrace();
-  $caller = array_shift($bt);
-  
-  $pathName= pathinfo_filename($caller['file']);
+	$shift=count($bt) - 4;	// plugin name should be  
+  	$caller = array_shift($bt);
+	$realPathName=pathinfo_filename($caller['file']);
+	$realLineNumber=$caller['line'];
+	while ($shift > 0) {
+		 $caller = array_shift($bt);
+		 $shift--;
+	}
+  	$pathName= pathinfo_filename($caller['file']);
 
-  if ($live_plugins[$pathName.'.php']=='true'){
-	$plugins[] = array(
-		'hook' => $hook_name,
-		'function' => $added_function,
-		'args' => (array) $args,
-		'file' => $pathName.'.php',
-    'line' => $caller['line']
-	);
-  }
+	if ((isset ($live_plugins[$pathName.'.php']) && $live_plugins[$pathName.'.php']=='true') || $shift<0 ){
+		if ($realPathName!=$pathName) {
+			$pathName=$realPathName;
+			$lineNumber=$realLineNumber;
+		} else {
+			$lineNumber=$caller['line'];
+		}
+		
+		$plugins[] = array(
+			'hook' => $hook_name,
+			'function' => $added_function,
+			'args' => (array) $args,
+			'file' => $pathName.'.php',
+	    	'line' => $caller['line']
+		);
+	  } 
 }
 
 /**
@@ -257,16 +270,13 @@ function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $des
 function add_filter($filter_name, $added_function) {
 	global $filters;
   global $live_plugins;   
-  
   $bt = debug_backtrace();
   $caller = array_shift($bt);
   $pathName= pathinfo_filename($caller['file']);
-    if ($live_plugins[$pathName.'.php']=='true'){
   	$filters[] = array(
   		'filter' => $filter_name,
   		'function' => $added_function
   	);
-  }
 }
 
 /**
