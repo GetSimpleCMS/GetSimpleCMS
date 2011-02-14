@@ -322,6 +322,10 @@ if ($menu == '') { $menu = $title; }
 	        <?php echo $toolbar; ?>
 			]
 			<?php echo $EDOPTIONS; ?>
+			,filebrowserBrowseUrl : 'template/js/ckeditor/plugins/fm/index.html'
+			//filebrowserImageBrowseUrl : '/pdw_file_browser/index.php?editor=ckeditor&filter=image',
+			//filebrowserFlashBrowseUrl : '/pdw_file_browser/index.php?editor=ckeditor&filter=flash'
+	        //filebrowserBrowseUrl : '/browser/browse.php',
 	        //filebrowserBrowseUrl : '/browser/browse.php',
 	        //filebrowserImageBrowseUrl : '/browser/browse.php?type=Images',
 	        //filebrowserWindowWidth : '640',
