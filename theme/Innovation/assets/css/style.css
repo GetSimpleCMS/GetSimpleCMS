@@ -86,11 +86,12 @@ header nav {
 	text-shadow: 1px 1px 0px rgba(0,0,0, .3);
 }
 header nav ul {
-	list-style:none;
+	list-style:none;	
+	float:right;
 }	
 header nav li {
 	display:block;
-	float:right;
+	float:left;
 	margin:0 0 0 10px;
 }
 header nav li a {
