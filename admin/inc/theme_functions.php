@@ -268,7 +268,7 @@ function get_page_url($echo=false) {
  *
  * @return string HTML for template header
  */
-function get_header() {
+function get_header($full=true) {
 	global $metad;
 	global $title;
 	global $content;
@@ -295,9 +295,10 @@ function get_header() {
 	
 	echo '<meta name="description" content="'.strip_quotes($description).'" />'."\n";
 	echo '<meta name="keywords" content="'.strip_quotes($keywords).'" />'."\n";
-	echo '<meta name="generator" content="'. $site_full_name .'" />'."\n";
-	echo '<link rel="canonical" href="'. get_page_url(true) .'" />'."\n";
-	
+	if ($full) {
+		echo '<meta name="generator" content="'. $site_full_name .'" />'."\n";
+		echo '<link rel="canonical" href="'. get_page_url(true) .'" />'."\n";
+	}
 	exec_action('theme-header');
 }
 
