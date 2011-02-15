@@ -295,7 +295,7 @@ function get_header() {
 	
 	echo '<meta name="description" content="'.strip_quotes($description).'" />'."\n";
 	echo '<meta name="keywords" content="'.strip_quotes($keywords).'" />'."\n";
-	echo '<meta name="generator" content="'. $site_full_name .' - '. GSVERSION .'" />'."\n";
+	echo '<meta name="generator" content="'. $site_full_name .'" />'."\n";
 	echo '<link rel="canonical" href="'. get_page_url(true) .'" />'."\n";
 	
 	exec_action('theme-header');
@@ -446,7 +446,7 @@ function get_site_version($echo=true) {
 function get_site_credits($text ='Powered by ') {
 	include(GSADMININCPATH.'configuration.php');
 	
-	$site_credit_link = '<a href="'.$site_link_back_url.'" title="Open Source and Free CMS" >'.$text.' '.$site_full_name.'</a> Version '. GSVERSION;
+	$site_credit_link = '<a href="'.$site_link_back_url.'" >'.$text.' '.$site_full_name.'</a>';
 	echo stripslashes($site_credit_link);
 }
 
