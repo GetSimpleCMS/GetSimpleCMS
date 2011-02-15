@@ -43,12 +43,14 @@ function create_cookie() {
 function kill_cookie($identifier) {
   global $SALT;
   $saltCOOKIE = sha1($identifier.$SALT);
-  if ( defined('GSCOOKIEISSITEWIDE') && (GSCOOKIEISSITEWIDE == TRUE) ) {
-     $_COOKIE[$saltCOOKIE] = FALSE;
-     setcookie($saltCOOKIE, FALSE, time() - 3600,'/');    
-  } else {
-     $_COOKIE[$saltCOOKIE] = FALSE;
-     setcookie($saltCOOKIE, FALSE, time() - 3600);
+  if (isset($_COOKIE[$saltCOOKIE])) {
+	  if ( defined('GSCOOKIEISSITEWIDE') && (GSCOOKIEISSITEWIDE == TRUE) ) {
+	     $_COOKIE[$saltCOOKIE] = FALSE;
+	     setcookie($saltCOOKIE, FALSE, time() - 3600,'/');    
+	  } else {
+	     $_COOKIE[$saltCOOKIE] = FALSE;
+	     setcookie($saltCOOKIE, FALSE, time() - 3600);
+	  }
   }
 }
 
