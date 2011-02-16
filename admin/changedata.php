@@ -32,48 +32,42 @@ if (isset($_POST['submitted']))
 	if(!check_nonce($nonce, "edit", "edit.php")) {
 		die("CSRF detected!");	
 	}
-	if ( ($_POST['post-title'] == '') )	{
+	if ( $_POST['post-title'] == '' )	{
 		redirect("edit.php?upd=edit-err&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
 	}	else {
 		
 		$url="";$title="";$metad=""; $metak="";	$cont="";
 		
 		// is a slug provided?
-		if ($_POST['post-id']) 
-		{ 
+		if ($_POST['post-id']) { 
 			$url = $_POST['post-id'];
       $url = to7bit($url, "UTF-8");
       $url = clean_url($url); //old way
-		} 
-		else 
-		{
-			if ($_POST['post-title'])
-			{ 
+		} else {
+			if ($_POST['post-title'])	{ 
 				$url = $_POST['post-title'];
 				$url = to7bit($url, "UTF-8");
 				$url = clean_url($url); //old way
-			} 
-			else 
-			{
+			} else {
 				$url = "temp";
 			}
 		}
 	
+	
+		//check again to see if the URL is empty
+		if ( $url == '' )	{
+			redirect("edit.php?upd=edit-err&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
+		}
 		
 		
 		// was the slug changed on an existing page?
-		if ( isset($_POST['existing-url']) ) 
-		{
-			if ($_POST['post-id'] != $_POST['existing-url'])
-			{
+		if ( isset($_POST['existing-url']) ) {
+			if ($_POST['post-id'] != $_POST['existing-url']){
 				// dont change the index page's slug
-				if ($_POST['existing-url'] == 'index') 
-				{
+				if ($_POST['existing-url'] == 'index') {
 					$url = $_POST['existing-url'];
 					redirect("edit.php?id=". urlencode($_POST['existing-url']) ."&upd=edit-index&type=edit");
-				} 
-				else 
-				{
+				} else {
 					exec_action('changedata-updateslug');
 					updateSlugs();
 					$file = GSDATAPAGESPATH . $url .".xml";
