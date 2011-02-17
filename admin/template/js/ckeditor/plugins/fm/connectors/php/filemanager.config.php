@@ -11,7 +11,9 @@
  *	@author		Simon Georget <simon (at) linea21 (dot) com>
  *	@copyright	Authors
  */
-
+$load['plugin'] = true;
+ 
+include('../../../../../../../inc/common.php');
 
 /**
  *	Check if user is authorized
@@ -21,7 +23,9 @@
 function auth() {
   // You can insert your own code over here to check if the user is authorized.
   // If you use a session variable, you've got to start the session first (session_start())
-  return true;
+  	$ret = cookie_check();
+	
+  	return $ret;
 }
 
 /**
