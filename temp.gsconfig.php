@@ -64,13 +64,7 @@ define('GSIMAGEWIDTH', '200');
 #define('GSFROMEMAIL', 'noreply@get-simple.info');
 
 # Data saving method. Default is XML
-#define('GSSTORAGE', 'mysql');
-	#define('DB_HOST', 'localhost');
-	#define('DB_USER', 'username_here');
-	#define('DB_PASS', 'password_here');
-	#define('DB_DATABASE', 'database_name_here');
-	#define('DB_CHARSET', 'utf8');
-	#define('DB_COLLATE', '');
+#define('GSSTORAGE', 'xml');
 	
 # Set PHP locale
 # http://php.net/manual/en/function.setlocale.php

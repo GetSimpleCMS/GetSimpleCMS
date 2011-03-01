@@ -711,4 +711,172 @@ function updateSlugs(){
 } 
 
 
+/**
+ * List Pages Json
+ *
+ * This is used by the CKEditor link-local plguin function: ckeditor_add_page_link()
+ *
+ * @author Joshas: mailto:joshas@gmail.com
+ *
+ * @since 3.0
+ * @uses subval_sort
+ * @uses GSDATAPAGESPATH
+ * @uses getXML
+ *
+ * @returns array
+ */
+function list_pages_json() {
+	// get local pages list for ckeditor local page link selector
+	$path = GSDATAPAGESPATH;
+	$filenames = getFiles($path);
+	$count="0";
+	$pagesArray = array();
+	if (count($filenames) != 0) { 
+		foreach ($filenames as $file) {
+			if (isFile($file, $path, 'xml')) {
+				$data = getXML($path .$file);
+				$pagesArray[$count]['title'] = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
+				$pagesArray[$count]['parent'] = $data->parent;
+			if ($data->parent != '') { 
+				$parentdata = getXML($path . $data->parent .'.xml');
+				$parentTitle = $parentdata->title;
+				$pagesArray[$count]['sort'] = $parentTitle .' '. $data->title;
+			} else {
+				$pagesArray[$count]['sort'] = $data->title;
+			}
+			$pagesArray[$count]['url'] = $data->url;
+			$parentTitle = '';
+			$count++;
+			}
+		}
+	}
+	$pagesSorted = subval_sort($pagesArray,'sort');
+	$pageList = array();
+	if (count($pagesSorted) != 0) { 
+		foreach ($pagesSorted as $page) {
+			if ($page['parent'] != '') {$page['parent'] = $page['parent']."/"; $dash = '- '; } else { $dash = ""; }
+			if ($page['title'] == '' ) { $page['title'] = '[No Title] '.$page['url']; }
+			array_push($pageList, array( $dash . $page['title'], find_url($page['url'],$page['parent'])));
+		}
+	}
+	return json_encode($pageList);
+}
+
+/**
+ * CKEditor Add Local Page Link
+ *
+ * This is used by the CKEditor to link to internal pages
+ *
+ * @author Joshas: mailto:joshas@gmail.com
+ *
+ * @since 3.0
+ * @uses list_pages_json
+ *
+ * @returns array
+ */
+function ckeditor_add_page_link(){
+	echo "
+	<script type=\"text/javascript\">
+	//<![CDATA[
+	// Get a CKEDITOR.dialog.contentDefinition object by its ID.
+	var getById = function(array, id, recurse) {
+		for (var i = 0, item; (item = array[i]); i++) {
+			if (item.id == id) return item;
+				if (recurse && item[recurse]) {
+					var retval = getById(item[recurse], id, recurse);
+					if (retval) return retval;
+				}
+		}
+		return null;
+	};
+
+	// modify existing Link dialog
+	CKEDITOR.on( 'dialogDefinition', function( ev )	{
+		if ((ev.editor != editor) || (ev.data.name != 'link')) return;
+
+		// Overrides definition.
+		var definition = ev.data.definition;
+		definition.onFocus = CKEDITOR.tools.override(definition.onFocus, function(original) {
+			return function() {
+				original.call(this);
+					if (this.getValueOf('info', 'linkType') == 'localPage') {
+						this.getContentElement('info', 'localPage_path').select();
+					}
+			};
+		});
+
+		// Overrides linkType definition.
+		var infoTab = definition.getContents('info');
+		var content = getById(infoTab.elements, 'linkType');
+
+		content.items.unshift(['Link to local page', 'localPage']);
+		content['default'] = 'localPage';
+		infoTab.elements.push({
+			type: 'vbox',
+			id: 'localPageOptions',
+			children: [{
+				type: 'select',
+				id: 'localPage_path',
+				label: 'Select page:',
+				required: true,
+				items: " . list_pages_json() . ",
+				setup: function(data) {
+					if ( data.localPage )
+						this.setValue( data.localPage );
+				}
+			}]
+		});
+		content.onChange = CKEDITOR.tools.override(content.onChange, function(original) {
+			return function() {
+				original.call(this);
+				var dialog = this.getDialog();
+				var element = dialog.getContentElement('info', 'localPageOptions').getElement().getParent().getParent();
+				if (this.getValue() == 'localPage') {
+					element.show();
+					if (editor.config.linkShowTargetTab) {
+						dialog.showPage('target');
+					}
+					var uploadTab = dialog.definition.getContents('upload');
+					if (uploadTab && !uploadTab.hidden) {
+						dialog.hidePage('upload');
+					}
+				}
+				else {
+					element.hide();
+				}
+			};
+		});
+		content.setup = function(data) {
+			if (!data.type || (data.type == 'url') && !data.url) {
+				data.type = 'localPage';
+			}
+			else if (data.url && !data.url.protocol && data.url.url) {
+				if (path) {
+					data.type = 'localPage';
+					data.localPage_path = path;
+					delete data.url;
+				}
+			}
+			this.setValue(data.type);
+		};
+		content.commit = function(data) {
+			data.type = this.getValue();
+			if (data.type == 'localPage') {
+				data.type = 'url';
+				var dialog = this.getDialog();
+				dialog.setValueOf('info', 'protocol', '');
+				dialog.setValueOf('info', 'url', dialog.getValueOf('info', 'localPage_path'));
+			}
+		};
+	});
+	//]]>
+	</script>";
+}
+
+
+
+
+
+
+
 ?>

@@ -330,7 +330,13 @@ if ($menu == '') { $menu = $title; }
 	        //filebrowserWindowHeight : '480'
     		});
 			</script>
-		
+			
+			<?php
+				# CKEditor setup functions
+				ckeditor_add_page_link();
+				exec_action('html-editor-init'); 
+			?>
+			
 		<?php } ?>
 		
 		
