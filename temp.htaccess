@@ -1,9 +1,15 @@
 AddDefaultCharset UTF-8
 Options -Indexes
 
+# blocks direct access to the XML files - they hold all the data!
 <Files ~ "\.xml$">
     Order allow,deny
     Deny from all
+    Satisfy All
+</Files>
+<Files sitemap.xml>
+		Order allow,deny
+    Allow from all
     Satisfy All
 </Files>
 
