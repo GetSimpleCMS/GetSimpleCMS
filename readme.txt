@@ -47,7 +47,7 @@ Javascript Enabled
 ================================================================================
 INSTALLATION:
 
-Please see: http://get-simple.info/docs/installation
+Please see: http://get-simple.info/wiki/installation
 
 
 

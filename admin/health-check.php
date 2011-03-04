@@ -107,7 +107,7 @@ $php_modules = get_loaded_extensions();
 
 	?>
 			</table>
-			<p class="hint"><?php echo sprintf(i18n_r('REQS_MORE_INFO'), "http://get-simple.info/download/requirements/"); ?></p>
+			<p class="hint"><?php echo sprintf(i18n_r('REQS_MORE_INFO'), "http://get-simple.info/wiki/installation:requirements"); ?></p>
 			
 			<h3><?php i18n('DATA_FILE_CHECK');?></h3>
 			<table class="highlight healthcheck">

@@ -226,7 +226,7 @@ $APIKEY = $data->apikey;
 
 			?>
 			</table>
-			<p class="hint"><?php echo sprintf(i18n_r('REQS_MORE_INFO'), "http://get-simple.info/download/requirements/"); ?></p>
+			<p class="hint"><?php echo sprintf(i18n_r('REQS_MORE_INFO'), "http://get-simple.info/wiki/installation:requirements"); ?></p>
 			<?php if ($kill != '') { ?>
 				<p><?php i18n('KILL_CANT_CONTINUE');?> <a href="./" ><?php i18n('REFRESH');?></a></p>
 			<?php } else {?>
@@ -236,7 +236,7 @@ $APIKEY = $data->apikey;
 					<select name="lang" id="lang" class="text">
 						<?php echo $langs; ?>
 					</select><br />
-					<a href="install.php?lang=" id="refreshlanguage" ><?php i18n('REFRESH');?></a> &nbsp;|&nbsp; <a href="http://get-simple.info/download/languages/" target="_blank" ><?php i18n('DOWNLOAD_LANG');?></a>
+					<a href="install.php?lang=" id="refreshlanguage" ><?php i18n('REFRESH');?></a> &nbsp;|&nbsp; <a href="http://get-simple.info/wiki/languages" target="_blank" ><?php i18n('DOWNLOAD_LANG');?></a>
 					</p>
 				</div>
 				<div class="clear"></div>
