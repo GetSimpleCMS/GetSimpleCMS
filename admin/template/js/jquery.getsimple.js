@@ -297,6 +297,7 @@ jQuery(document).ready(function() {
 	$('#filtertable').live("click", function($e) {
 		$e.preventDefault();
 		$("#filter-search").slideToggle();
+		$(this).toggleClass('current');
 		$('#filter-search #q').focus();
 	});
 	$("#filter-search #q").keydown(function($e){
@@ -319,6 +320,7 @@ jQuery(document).ready(function() {
 	$("#filter-search .cancel").live("click", function($e) {
 		$e.preventDefault();
 		$("#editpages tr").show();
+		$('#filtertable').toggleClass('current');
 		$("#filter-search #q").val('');
 		$("#filter-search").slideUp();
 	});
