@@ -201,7 +201,7 @@ function get_FileType($ext) {
 
 	$ext = lowercase($ext);
 	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'pct' || $ext == 'gif' || $ext == 'bmp' || $ext == 'png' ) {
-		return i18n_r('IMAGES');
+		return i18n_r('IMAGES') .' Images';
 	} elseif ( $ext == 'zip' || $ext == 'gz' || $ext == 'rar' || $ext == 'tar' || $ext == 'z' || $ext == '7z' || $ext == 'pkg' ) {
 		return i18n_r('FTYPE_COMPRESSED');
 	} elseif ( $ext == 'ai' || $ext == 'psd' || $ext == 'eps' || $ext == 'dwg' || $ext == 'tif' || $ext == 'tiff' || $ext == 'svg' ) {

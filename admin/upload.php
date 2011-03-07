@@ -100,7 +100,17 @@ if (isset($_FILES["file"]))
 					$filterArray = array_unique($filterArr);
 					$filterArray = subval_sort($filterArray,'type');
 					foreach ($filterArray as $type) {
-						echo '<option value="'.$type.'">'.$type.'</option>';
+						
+						# check for image type
+						if (strstr($type, ' Images')) { 
+							$typeCleaned = 'Images';
+							$typeCleaned_2 = str_replace(' Images', '', $type);
+						} else {
+							$typeCleaned = $type;
+							$typeCleaned_2 = $type;
+						}
+						 
+						echo '<option value="'.$typeCleaned.'">'.$typeCleaned_2.'</option>';
 					}
 				}
 			echo '</select><div class="clear" ></div></div>';
@@ -137,14 +147,14 @@ if (isset($_FILES["file"]))
 			if (count($filesSorted) != 0) { 			
 				foreach ($filesSorted as $upload) {
 					$counter++;
-					if ($upload['type'] == i18n_r('IMAGES')) {
+					if ($upload['type'] == i18n_r('IMAGES') .' Images') {
 						$cclass = 'iimage';
 					} else {
 						$cclass = '';
 					}
 					echo '<tr class="All '.$upload['type'].' '.$cclass.'" >';
 					echo '<td class="imgthumb" >';
-					if ($upload['type'] == i18n_r('IMAGES')) {
+					if ($upload['type'] == i18n_r('IMAGES') .' Images') {
 						$gallery = 'rel="facybox"';
 						$pathlink = 'image.php?i='.$upload['name'].'&path='.$subPath;
 						if (file_exists('../data/thumbs/thumbsm.'.$upload['name'])) {
