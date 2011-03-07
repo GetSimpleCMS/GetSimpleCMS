@@ -41,7 +41,7 @@ login_cookie_check();
 				<?php exec_action('welcome-link'); ?>
 			</ul>
 			<ul>
-				<li><a href="http://get-simple.info/docs/"><?php echo str_replace(array("<em>","</em>"), '', i18n_r('SIDE_DOCUMENTATION') ); ?></a></li>
+				<li><a href="http://get-simple.info/wiki/"><?php echo str_replace(array("<em>","</em>"), '', i18n_r('SIDE_DOCUMENTATION') ); ?></a></li>
 				<?php exec_action('welcome-doc-link'); ?>
 			</ul>
 		</div>
