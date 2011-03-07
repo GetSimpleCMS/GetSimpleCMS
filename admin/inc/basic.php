@@ -382,7 +382,7 @@ function find_url($slug, $parent, $type='full') {
 		$url = $full . $plink;
 	}
 
-	return $url;
+	return (string)$url;
 }
 
 /**
