@@ -23,7 +23,7 @@
 
 	<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
 	<link href="<?php get_theme_url(); ?>/assets/css/reset.css" rel="stylesheet">
-	<link href="<?php get_theme_url(); ?>/assets/css/style.css?v=<?php echo get_site_version(); ?>" rel="stylesheet">
+	<link href="<?php get_theme_url(); ?>/style.css?v=<?php echo get_site_version(); ?>" rel="stylesheet">
 	
 	<!--[if lt IE 9]>
 		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
