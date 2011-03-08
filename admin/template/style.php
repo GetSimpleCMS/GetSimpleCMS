@@ -526,7 +526,6 @@ textarea#codetext {
 	overflow: scroll; 
 	overflow-y: scroll; 
 	overflow-x: scroll; 
-	overflow:-moz-scrollbars-vertical;
 }
 #menu-items span {text-transform:lowercase}
 label {
