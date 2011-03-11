@@ -874,6 +874,55 @@ function ckeditor_add_page_link(){
 }
 
 
+/**
+ * Recursive list of pages
+ *
+ * Returns a recursive list of items for the main page
+ *
+ * @author Mike
+ *
+ * @since 3.0
+ * @uses $pagesSorted
+ *
+ * @returns string
+ */
+function get_pages_menu($parent, $menu,$level) {
+	global $pagesSorted;
+	$items=array();
+	foreach ($pagesSorted as $page) {
+		if ($page['parent']==$parent){
+			$items[(string)$page['url']]=$page;
+		}	
+	}	
+	if (count($items)>0){
+		$menu .= "<ul>\n";
+		foreach ($items as $page) {
+		  	$dash="";
+	  		$page['parent'] = $page['parent']."/"; 
+			for ($i=0;$i<=$level-1;$i++){
+				if ($i!=$level-1){
+	  				$dash .= '<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>';
+				} else {
+					$dash .= '<span>&nbsp;&nbsp;&ndash;&nbsp;&nbsp;&nbsp;</span>';
+				}
+			} 
+			$menu .= '<tr id="tr-'.$page['url'] .'" >';
+			if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
+			if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <sup>['.i18n_r('MENUITEM_SUBTITLE').']</sup>'; } else { $page['menuStatus'] = ''; }
+			if ($page['private'] != '' ) { $page['private'] = ' <sup>['.i18n_r('PRIVATE_SUBTITLE').']</sup>'; } else { $page['private'] = ''; }
+			if ($page['url'] == 'index' ) { $homepage = ' <sup>['.i18n_r('HOMEPAGE_SUBTITLE').']</sup>'; } else { $homepage = ''; }
+			$menu .= '<td class="pagetitle">'. $dash .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. cl($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
+			$menu .= '<td style="width:80px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
+			$menu .= '<td class="secondarylink" >';
+			$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. cl($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
+			$menu .= '</td>';
+			$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. cl($page['title']) .'" >X</a></td></tr>';
+			$menu = get_pages_menu((string)$page['url'], $menu,$level+1);	  	
+		}
+		$menu .= "</ul>\n";
+	}
+	return $menu;
+}
 
 
 

@@ -131,10 +131,10 @@ foreach ($parents as $fi)
 		{
 			$tmpData = getXML($path . $fi);
 			
-			if ($tmpData->parent == '')
-			{ 
+			//if ($tmpData->parent == '')
+			//{ 
 				$parents_list .= '<option '.$sel.' value="'.$goodname.'" >'.$goodname.'</option>';
-			}
+			//}
 		}
 	}
 }

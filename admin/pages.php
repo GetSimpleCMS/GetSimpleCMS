@@ -52,25 +52,8 @@ if (count($filenames) != 0) {
 }
 
 $pagesSorted = subval_sort($pagesArray,'sort');
-$counter = "0";
-if (count($pagesSorted) != 0) { 
-	foreach ($pagesSorted as $page) {	
-		$counter++;
-		if ($page['parent'] != '') {$page['parent'] = $page['parent']."/"; $dash = '<span>&nbsp;&nbsp;&ndash;&nbsp;&nbsp;&nbsp;</span>'; } else { $dash = ""; }
-		$table .= '<tr id="tr-'.$page['url'] .'" >';
-		if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
-		if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <sup>['.i18n_r('MENUITEM_SUBTITLE').']</sup>'; } else { $page['menuStatus'] = ''; }
-		if ($page['private'] != '' ) { $page['private'] = ' <sup>['.i18n_r('PRIVATE_SUBTITLE').']</sup>'; } else { $page['private'] = ''; }
-		if ($page['url'] == 'index' ) { $homepage = ' <sup>['.i18n_r('HOMEPAGE_SUBTITLE').']</sup>'; } else { $homepage = ''; }
-		$table .= '<td class="pagetitle">'. $dash .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. cl($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
-		$table .= '<td style="width:80px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
-		$table .= '<td class="secondarylink" >';
-		$table .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. cl($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
-		$table .= '</td>';
-		$table .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. cl($page['title']) .'" >X</a></td></tr>';
-		
-	}
-}
+$table = get_pages_menu('','',0);
+
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); ?>
