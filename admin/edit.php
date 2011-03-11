@@ -321,12 +321,10 @@ if ($menu == '') { $menu = $title; }
 	        [
 	        <?php echo $toolbar; ?>
 			]
-			<?php echo $EDOPTIONS; ?>
-	        //filebrowserBrowseUrl : '/browser/browse.php',
-	        //filebrowserBrowseUrl : '/browser/browse.php',
-	        //filebrowserImageBrowseUrl : '/browser/browse.php?type=Images',
-	        //filebrowserWindowWidth : '640',
-	        //filebrowserWindowHeight : '480'
+			<?php echo $EDOPTIONS; ?>,
+	        filebrowserBrowseUrl : 'filebrowser.php?type=images',
+	        filebrowserWindowWidth : '730',
+	        filebrowserWindowHeight : '500'
     		});
 			</script>
 			

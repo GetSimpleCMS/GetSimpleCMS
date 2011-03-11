@@ -862,8 +862,11 @@ textarea.copykit {
 .qc_pager a.qp_disabled:hover,
 .qc_pager a.qp_disabled:focus {color:#ccc;cursor:text !important;}
 
+/* File Browser Styles */
+#filebrowser .header {display:none;}
+#filebrowser {background:#fff;}
 
-/* Logged out specific styles */	
+/* Logged out specific styles */
 #index .header,
 #resetpassword .header {display:none;}
 #index #maincontent,
