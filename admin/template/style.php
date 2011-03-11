@@ -750,10 +750,14 @@ opacity:.10;
 	font-weight:bold !important;
 }
 
+#sidebar .uploadform {
+	padding:5px 15px;
+}
+
 /* JQuery Uploadify Styles */
 .uploadifyQueueItem {
 	font-size: 10px;
-	padding:8px 0;
+	padding:8px 15px;
 	width:190px;
 }
 .uploadifyError {
@@ -784,7 +788,6 @@ opacity:.10;
 }
 #sidebar .snav li.upload {
 	display:block;
-	padding:5px 15px 5px 15px;
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-khtml-border-radius: 4px;
@@ -793,6 +796,35 @@ opacity:.10;
 	color:#FFF;
 	background:<?php echo $primary_1; ?>;
 	font-weight:100;
+}
+.uploadifyButton {
+	width:100%;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	display: block;
+	font-weight: 800;
+	color: #AFC5CF;
+	background: #182227;
+	text-shadow: 1px 1px 0px #0E1316;
+	-webkit-transition: all .3s ease-in-out;
+	-moz-transition: all .3s ease-in-out;
+	-o-transition: all .3s ease-in-out;
+	transition: all .3s ease-in-out;
+}
+.uploadify:hover .uploadifyButton {
+	background-color: #0e1316;
+	color: #ffffff;
+	text-shadow: 1px 1px 0px #000;
+}
+.uploadifyButtonText{
+	padding: 5px 15px 5px 15px;
+	display: block;
+}
+#uploadify object { 
+	position:absolute;
+	left:0; right:0;
+	cursor: pointer;
 }
 
 

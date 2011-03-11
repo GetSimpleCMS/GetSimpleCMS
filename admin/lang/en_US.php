@@ -462,6 +462,8 @@ $i18n = array(
 "BACK_TO_WEBSITE" => "Back to Website", //index & resetpassword
 "SUPPORT_FORUM" => "Support Forum", //support.php
 "FILTER" => "Filter", //pages.php
+"UPLOADIFY_BUTTON" => "Upload files and/or images...", //upload.php
+
 
 "X" => "not translated"
 

@@ -227,28 +227,6 @@ jQuery(document).ready(function() {
      $("#menu-items").css("display","none");
   }
   
-  if(jQuery().uploadify) {
-		// upload.php
-		$('#mainftp').uploadify({
-	  	'uploader'	: 'template/js/uploadify/uploadify.swf',
-	  	'script'		: 'upload-ajax.php',
-	  	'multi'			: true,
-	  	'auto'			: true,
-	  	'height'		:	'17',
-	  	'width'			:	'190',
-	  	'buttonImg' : 'template/images/browse.png',
-	  	'cancelImg' : 'template/images/cancel.png',
-			'folder'    : '../data/uploads/',
-			'scriptData': { 'sessionHash' : $('#hash').val() },
-			onProgress: function() {
-			  $('#loader').show();
-			},
-			onAllComplete: function() {
-			  $('#loader').fadeOut(500);
-			  $("#imageTable").load(location.href+" #imageTable","");
-			}	
-		});
-	}
   var edit_line = $('#submit_line span').html();
   $('#js_submit_line').html(edit_line);
   $("#js_submit_line input.submit").live("click", function() {

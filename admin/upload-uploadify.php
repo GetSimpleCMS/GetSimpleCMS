@@ -7,7 +7,7 @@
  * @package GetSimple
  * @subpackage Files
  */
- 
+
 // Setup inclusions
 $load['plugin'] = true;
 
@@ -20,12 +20,13 @@ if (!defined('GSIMAGEWIDTH')) {
 	$width = GSIMAGEWIDTH;
 }
 	
-if ($_REQUEST['sessionHash'] === $SESSIONHASH) {
+if ($_POST['sessionHash'] === $SESSIONHASH) {
 	if (!empty($_FILES))
 	{
 		$tempFile = $_FILES['Filedata']['tmp_name'];
 		$name = clean_img_name($_FILES['Filedata']['name']);
-		$targetPath = GSDATAUPLOADPATH;
+		$targetPath = (isset($_POST['path'])) ? GSDATAUPLOADPATH.$_POST['path']."/" : GSDATAUPLOADPATH;
+
 		$targetFile =  str_replace('//','/',$targetPath) . $name;
 		
 		move_uploaded_file($tempFile, $targetFile);
@@ -34,6 +35,17 @@ if ($_REQUEST['sessionHash'] === $SESSIONHASH) {
 		
 		if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' )
 		{
+			
+			$path = (isset($_POST['path'])) ? $_POST['path']."/" : "";
+			//$thumbsPath = "../data/thumbs/".$path;
+			$thumbsPath = GSTHUMBNAILPATH.$path;
+			
+			if (!(file_exists($thumbsPath))) {
+				mkdir($thumbsPath, 0755);
+			}
+			echo $path;
+			echo " ".$thumbsPath;
+			
 			//thumbnail for post
 			$imgsize = getimagesize($targetFile);
 			
@@ -64,20 +76,22 @@ if ($_REQUEST['sessionHash'] === $SESSIONHASH) {
 			$bool = imagecopyresampled($picture, $image, 0, 0, 0, 0, $width, $height, $src_w, $src_h); 
 			
 			if($bool)
-			{
+			{	
+				$thumbnailFile = $thumbsPath . "thumbnail." . $name;
+				
 			    switch(lowercase(substr($targetFile, -3)))
 				{
 			        case "jpg":
 			            header("Content-Type: image/jpeg");
-			            $bool2 = imagejpeg($picture,"../data/thumbs/thumbnail.".$name,85);
+			            $bool2 = imagejpeg($picture,$thumbnailFile,85);
 			        break;
 			        case "png":
 			            header("Content-Type: image/png");
-			            imagepng($picture,"../data/thumbs/thumbnail.".$name);
+			            imagepng($picture,$thumbnailFile);
 			        break;
 			        case "gif":
 			            header("Content-Type: image/gif");
-			            imagegif($picture,"../data/thumbs/thumbnail.".$name);
+			            imagegif($picture,$thumbnailFile);
 			        break;
 			    }
 			}
@@ -101,19 +115,21 @@ if ($_REQUEST['sessionHash'] === $SESSIONHASH) {
 			
 			if($bool)
 			{
+				$thumbsmFile = $thumbsPath . "thumbsm." . $name;
+				
 			    switch(lowercase(substr($targetFile, -3)))
 				{
 			        case "jpg":
 			            header("Content-Type: image/jpeg");
-			            $bool2 = imagejpeg($picture,"../data/thumbs/thumbsm.".$name,85);
+			            $bool2 = imagejpeg($picture,$thumbsmFile,85);
 			        break;
 			        case "png":
 			            header("Content-Type: image/png");
-			            imagepng($picture,"../data/thumbs/thumbsm.".$name);
+			            imagepng($picture,$thumbsmFile);
 			        break;
 			        case "gif":
 			            header("Content-Type: image/gif");
-			            imagegif($picture,"../data/thumbs/thumbsm.".$name);
+			            imagegif($picture,$thumbsmFile);
 			        break;
 			    }
 			}
@@ -121,11 +137,14 @@ if ($_REQUEST['sessionHash'] === $SESSIONHASH) {
 			imagedestroy($picture);
 			imagedestroy($image);
 		}	
-		echo "1";
+		echo '1';
+	}
+	else {
+		echo 'Invalid file type.';
 	}
 } 
 else 
 {
-	echo "0";	
+	echo 'Wrong session hash!';
 }
 ?>
