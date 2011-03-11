@@ -884,6 +884,10 @@ function ckeditor_add_page_link(){
  * @since 3.0
  * @uses $pagesSorted
  *
+ * @param string $parent
+ * @param string $menu
+ * @param int $level
+ * 
  * @returns string
  */
 function get_pages_menu($parent, $menu,$level) {
