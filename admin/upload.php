@@ -122,7 +122,7 @@ if (isset($_FILES["file"]))
      $pathParts=explode("/",$subPath);
      $urlPath="/";
      
-     echo '<h5><img src="template/images/folder.png" width="13px" /> <a href="?">uploads</a> / ';
+     echo '<h5><img src="template/images/folder.png" width="13px" /> <a href="upload.php">uploads</a> / ';
      //echo "</td></tr>";
      foreach ($pathParts as $pathPart){
        if ($pathPart!=''){
@@ -135,10 +135,10 @@ if (isset($_FILES["file"]))
 
         foreach ($dirsSorted as $upload) {
           echo '<tr class="All" >';  
-          echo '<td class="" colspan="5">';
+          echo '<td class="folder" colspan="5">';
         
           $adm = substr($path . $upload['name'] ,  16); 
-          echo '<a href="upload.php?path='.$adm.'" title="'. $upload['name'] .'"  ><strong>'.$upload['name'].'</strong></a>';
+          echo '<img src="template/images/folder.png" width="11px" /> <a href="upload.php?path='.$adm.'" ><strong>'.$upload['name'].'</strong></a>';
                    
           echo '</td>';
           echo '</tr>';

@@ -312,7 +312,7 @@ html {
 		margin:10px 0 5px 0;font-size:14px;
 	}
 	h5 a {text-decoration:none !important;}
-	h5 img {vertical-align:middle; margin:0 5px 0 0;opacity:.5;}
+	h5 img, td.folder img {vertical-align:middle; margin:0 5px 0 0;opacity:.5;}
 	h5:hover img {opacity:1;}
 	.bodycontent ul, .bodycontent ol {margin:0 0 20px 30px;}
 	.bodycontent ul p, .bodycontent ol p {margin:0 0 10px 0;}
@@ -886,7 +886,7 @@ textarea.copykit {
 #resetpassword .error, #resetpassword .updated {margin:30px auto -20px auto;width:400px;line-height:18px;padding:5px 10px;}
 #index #footer,
 #resetpassword #footer {width:270px;border-top:none;margin:0 auto 20px auto;text-align:center;opacity:.7}
-#footer .footer-left,
+#index .footer-left,
 #resetpassword .footer-left  {float:none;width:100%;}
 #index .gslogo,
 #resetpassword .gslogo {display:none;}
