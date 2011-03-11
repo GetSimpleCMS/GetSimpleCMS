@@ -29,8 +29,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	<script type="text/javascript" src="template/js/jquery.min.js?v=1.5"></script>
 	<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 	<?php if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!defined('GSNOUPLOADIFY')) ) { ?>
-	<script type="text/javascript" src="template/js/uploadify/swfobject.js"></script>
-	<script type="text/javascript" src="template/js/uploadify/jquery.uploadify.js"></script>
+	<script type="text/javascript" src="template/js/uploadify/jquery.uploadify.js?v=3.0"></script>
 	<?php } ?>
 	<?php if(defined('GSPAGER')) { ?>
 	<script type="text/javascript" src="template/js/jquery.quickpaginate.js"></script>
