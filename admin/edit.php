@@ -322,7 +322,8 @@ if ($menu == '') { $menu = $title; }
 	        <?php echo $toolbar; ?>
 			]
 			<?php echo $EDOPTIONS; ?>,
-	        filebrowserBrowseUrl : 'filebrowser.php?type=images',
+	        filebrowserBrowseUrl : 'filebrowser.php?type=all',
+			filebrowserImageBrowseUrl : 'filebrowser.php?type=images',
 	        filebrowserWindowWidth : '730',
 	        filebrowserWindowHeight : '500'
     		});

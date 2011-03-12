@@ -463,7 +463,8 @@ $i18n = array(
 "SUPPORT_FORUM" => "Support Forum", //support.php
 "FILTER" => "Filter", //pages.php
 "UPLOADIFY_BUTTON" => "Upload files and/or images...", //upload.php
-
+"FILE_BROWSER" => "File Browser", //filebrowser.php
+"SELECT_FILE" => "Select file", //filebrowser.php
 
 "X" => "not translated"
 

@@ -158,7 +158,7 @@ if (isset($_FILES["file"]))
 						$pathlink = 'image.php?i='.$upload['name'].'&path='.$subPath;
 						$thumbLink = $urlPath.'thumbsm.'.$upload['name'];
 						if (file_exists('../data/thumbs/'.$thumbLink)) {
-							$imgSrc='<img src="../data/thumbs/'. $thumbLink .'" /></a>';
+							$imgSrc='<img src="../data/thumbs/'. $thumbLink .'" />';
 						} else {
 							$imgSrc='<img src="inc/thumb.php?src='. $urlPath . $upload['name'] .'&amp;dest='. $thumbLink .'&amp;x=65&amp;f=1" />';
 						}
