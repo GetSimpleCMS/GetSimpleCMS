@@ -35,12 +35,13 @@ $path = tsl($path);
 		<div id="file_load">
 		<?php
 			$count="0";
-      $dircount="0";
+      		$dircount="0";
 			$counter = "0";
 			$totalsize = 0;
 			$filesArray = array();
       		$dirsArray = array();
-      
+
+      		
 			$filenames = getFiles($path);
 			if (count($filenames) != 0) { 
 				foreach ($filenames as $file) {
@@ -107,7 +108,7 @@ $path = tsl($path);
 						} else {
 							echo '<a href="'. $path . $upload['name'] .'" title="'. $upload['name'] .'" ><img src="inc/thumb.php?src='. $upload['name'] .'&amp;dest=thumbsm.'. $upload['name'] .'&amp;x=65&amp;f=1" /></a>';
 						}
-						echo '</td><td><a title="'.i18n_r('INSERT_FILE').': '. htmlspecialchars($upload['name']) .'" href="javascript:void(0);" class="primarylink" onclick="insertFile(\'/data/uploads/'. $SubPath . $upload['name'] .'\');">'.htmlspecialchars($upload['name']) .'</a></td>';
+						echo '</td><td><a title="'.i18n_r('INSERT_FILE').': '. htmlspecialchars($upload['name']) .'" href="javascript:void(0);" class="primarylink" onclick="insertFile(\'/data/uploads/'. $subPath . $upload['name'] .'\');">'.htmlspecialchars($upload['name']) .'</a></td>';
 						echo '<td style="width:80px;text-align:right;" ><span>'. $upload['size'] .'</span></td>';
 	             
 						echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
