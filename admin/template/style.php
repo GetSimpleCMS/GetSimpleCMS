@@ -54,9 +54,10 @@ a img,:link img,:visited img {border:none}
 .imgthumb {display:none;width:70px;}
 .imgthumb img {border:1px solid #555;}
 .hidden {display:none;}
-html {
-	overflow-y: scroll;
-}
+html {overflow-y: scroll;}
+.clearfix:before, .clearfix:after { content: "\0020"; display: block; height: 0; visibility: hidden; }
+.clearfix:after { clear: both; }
+
 /** HEADER / NAVIGATION **/
 .header {
 	color:#FFF;
@@ -753,6 +754,7 @@ opacity:.10;
 #sidebar .uploadform {
 	padding:5px 15px;
 }
+#createfolder {float:right;font-weight:100;font-size:11px;}
 
 /* JQuery Uploadify Styles */
 .uploadifyQueueItem {
@@ -863,7 +865,6 @@ textarea.copykit {
 .qc_pager a.qp_disabled:focus {color:#ccc;cursor:text !important;}
 
 /* File Browser Styles */
-#filebrowser .header {display:none;}
 #filebrowser {background:#fff;}
 
 /* Logged out specific styles */
@@ -895,5 +896,6 @@ textarea.copykit {
 #resetpassword .gslogo {display:none;}
 .desc {font-size:12px;line-height:17px;border-bottom:1px dotted #ccc;padding:0 0 15px 0;margin:0 0 5px 0;}
 
-#filter-search {margin:0 0 10px 0;display:none;}
-#filter-search input {width:250px;font-size:11px;padding:3px;}
+#new-folder, #filter-search  {margin:0 0 10px 0;display:none;}
+#new-folder input.text, #filter-search input.text {width:250px;font-size:11px;padding:3px;}
+#new-folder input.submit {font-size:11px;padding:3px;}

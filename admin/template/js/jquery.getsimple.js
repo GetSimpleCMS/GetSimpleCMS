@@ -304,5 +304,17 @@ jQuery(document).ready(function() {
 	});
 	
 	
+	//create new folder in upload.php
+	$('#createfolder').live("click", function($e) {
+		$e.preventDefault();
+		$("#new-folder").slideToggle();
+		$('#new-folder #foldername').focus();
+	});
+	$("#new-folder .cancel").live("click", function($e) {
+		$e.preventDefault();
+		$("#new-folder #foldername").val('');
+		$("#new-folder").slideUp();
+	});
+	
 //end of javascript for getsimple
 }); 

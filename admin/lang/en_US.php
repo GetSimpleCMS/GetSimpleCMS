@@ -465,6 +465,10 @@ $i18n = array(
 "UPLOADIFY_BUTTON" => "Upload files and/or images...", //upload.php
 "FILE_BROWSER" => "File Browser", //filebrowser.php
 "SELECT_FILE" => "Select file", //filebrowser.php
+"CREATE_FOLDER" => "Create Folder", //upload.php
+
+
+
 
 "X" => "not translated"
 

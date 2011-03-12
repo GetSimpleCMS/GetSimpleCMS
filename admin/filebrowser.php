@@ -46,10 +46,10 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	}
 	</script>
 </head>
-<body>	
+<body id="filebrowser" >	
  <div class="wrapper">
   <div id="maincontent">
-	<div class="main">
+	<div class="main" style="border:none;">
 		<h3><?php echo i18n('UPLOADED_FILES'); ?><span id="filetypetoggle">&nbsp;&nbsp;/&nbsp;&nbsp;<?php echo ($type == 'images' ? i18n('IMAGES') : i18n('SHOW_ALL') ); ?></span></h3>
 <?php
 	$count="0";
@@ -102,7 +102,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 			echo '<tr class="All" >';  
 			echo '<td class="" colspan="5">';
 			$adm = substr($path . $upload['name'] ,  16); 
-			echo '<a href="filebrowser.php?path='.$adm.'&amp;CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.'" title="'. $upload['name'] .'"  ><strong>'.$upload['name'].'</strong></a>';
+			echo '<img src="template/images/folder.png" width="11px" /> <a href="filebrowser.php?path='.$adm.'&amp;CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.'" title="'. $upload['name'] .'"  ><strong>'.$upload['name'].'</strong></a>';
 			echo '</td>';
 			echo '</tr>';
 		}
