@@ -57,13 +57,13 @@ if (in_arrayi('curl', $php_modules)){
 }
 $verstatus = '0';
 if ($verstatus == '0') {
-	$ver = i18n_r('WARNING').': '.$site_full_name.' '.i18n_r('UPG_NEEDED').' <b>'.$apikey->latest .'</b> &ndash; <a href="http://get-simple.info/download/">'. i18n_r('DOWNLOAD').'</a>';
+	$ver = i18n_r('WARNING').': '.$site_full_name.' '.i18n_r('UPG_NEEDED').' <b>'.$apikey->latest .'</b> &ndash; <a href="http://get-simple.info/download/" target="_blank" >'. i18n_r('DOWNLOAD').'</a>';
 } elseif ($verstatus == '1') {
 	$ver = null;
 } elseif ($verstatus == '2') {
 	$ver = null;
 } else {
-	$ver = i18n_r('WARNING').': '.i18n_r('CANNOT_CHECK').': <b>'.$site_version_no.'</b> &ndash; <a href="http://get-simple.info/download">'. i18n_r('DOWNLOAD').'</a>';
+	$ver = i18n_r('WARNING').': '.i18n_r('CANNOT_CHECK').': <b>'.$site_version_no.'</b> &ndash; <a href="http://get-simple.info/download" target="_blank" >'. i18n_r('DOWNLOAD').'</a>';
 }
 			
 ?>

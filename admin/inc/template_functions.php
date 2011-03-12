@@ -903,7 +903,9 @@ function get_pages_menu($parent, $menu,$level) {
 		$menu .= "<ul>\n";
 		foreach ($items as $page) {
 		  	$dash="";
-	  		$page['parent'] = $page['parent']."/"; 
+		  	if ($page['parent'] != '') {
+	  			$page['parent'] = $page['parent']."/";
+	  		}
 			for ($i=0;$i<=$level-1;$i++){
 				if ($i!=$level-1){
 	  				$dash .= '<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>';
