@@ -197,8 +197,8 @@ jQuery(document).ready(function() {
 	});
 	$(".updated").fadeOut(500).fadeIn(500);
 	$(".error").fadeOut(500).fadeIn(500);
-	if(jQuery().facybox) {
-		$('a[rel*=facybox]').facybox()
+	if(jQuery().fancybox) {
+		$('a[rel*=facybox]').fancybox();
 	}
 	
 	// edit.php

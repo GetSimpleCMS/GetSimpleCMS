@@ -432,7 +432,7 @@ html {overflow-y: scroll;}
 /* basic default table style */
 .wrapper table {border-collapse:collapse;margin:0 0 20px 0;width:645px;}
 .wrapper table td {vertical-align:top;padding:4px;border-bottom:1px solid #eee;border-top:1px solid #eee;line-height:20px !important;}
-.wrapper table th {padding:2px 4px;font-size:12px;text-shadow: #fff 1px 1px 1px;border-top:1px solid #ccc;border-bottom:1px solid #bbb;color:#333;font-weight:bold;line-height:20px !important;}
+.wrapper table th {background:#fff !important;padding:2px 4px;font-size:11px;text-shadow: #fff 1px 1px 1px;border-bottom:1px solid #bbb;color:#666;font-weight:bold;text-transform:uppercase;line-height:20px !important;}
 .wrapper table tr.head {}
 .wrapper table td span {font-size:12px;color:#777;}
 .wrapper table.highlight tr:nth-child(odd) { background:#f7f7f7;}
