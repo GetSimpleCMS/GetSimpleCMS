@@ -43,11 +43,12 @@ if (isset($_GET['zip'])) {
 } 
 
 // are we deleting uploads?
-if (isset($_GET['file'])) { 
+if (isset($_GET['file'])) {
+	$path = (isset($_GET['path'])) ? $_GET['path'] : "";
 	$file = $_GET['file'];
-	delete_upload($file);
+	delete_upload($file, $path);
 	
-	redirect("upload.php?upd=del-success&id=". $file);
+	redirect("upload.php?upd=del-success&id=". $file . "&path=" . $path);
 } 
 
 

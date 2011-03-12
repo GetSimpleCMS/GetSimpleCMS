@@ -120,7 +120,7 @@ if (isset($_FILES["file"]))
      //echo "<tr><td>";     
      
      $pathParts=explode("/",$subPath);
-     $urlPath="/";
+     $urlPath="";
      
      echo '<h5><img src="template/images/folder.png" width="13px" /> <a href="upload.php">uploads</a> / ';
      //echo "</td></tr>";
@@ -131,10 +131,9 @@ if (isset($_FILES["file"]))
        }
      }
       echo "</h5>";
-     if (count($dirsSorted) != 0) {       
-
+     if (count($dirsSorted) != 0) {
         foreach ($dirsSorted as $upload) {
-          echo '<tr class="All" >';  
+          echo '<tr class="All" >';
           echo '<td class="folder" colspan="5">';
         
           $adm = substr($path . $upload['name'] ,  16); 
@@ -157,11 +156,13 @@ if (isset($_FILES["file"]))
 					if ($upload['type'] == i18n_r('IMAGES') .' Images') {
 						$gallery = 'rel="facybox"';
 						$pathlink = 'image.php?i='.$upload['name'].'&path='.$subPath;
-						if (file_exists('../data/thumbs/thumbsm.'.$upload['name'])) {
-							echo '<a href="'. $path . $upload['name'] .'" title="'. $upload['name'] .'" rel="facybox" ><img src="../data/thumbs/thumbsm.'.$upload['name'].'" /></a>';
+						$thumbLink = $urlPath.'thumbsm.'.$upload['name'];
+						if (file_exists('../data/thumbs/'.$thumbLink)) {
+							$imgSrc='<img src="../data/thumbs/'. $thumbLink .'" /></a>';
 						} else {
-							echo '<a href="'. $path . $upload['name'] .'" title="'. $upload['name'] .'" rel="facybox" ><img src="inc/thumb.php?src='. $upload['name'] .'&amp;dest=thumbsm.'. $upload['name'] .'&amp;x=65&amp;f=1" /></a>';
+							$imgSrc='<img src="inc/thumb.php?src='. $urlPath . $upload['name'] .'&amp;dest='. $thumbLink .'&amp;x=65&amp;f=1" />';
 						}
+						echo '<a href="'. $path . $upload['name'] .'" title="'. $upload['name'] .'" rel="facybox" >'.$imgSrc.'</a>';
 					} else {
 						$gallery = '';
 						$controlpanel = '';
@@ -184,7 +185,7 @@ if (isset($_FILES["file"]))
 			  
 			 */
 					echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
-					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>';
+					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] . '&path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>';
 					echo '</tr>';
 					exec_action('file-extras');
 				}

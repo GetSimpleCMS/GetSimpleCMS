@@ -114,15 +114,16 @@ function delete_zip($id) {
  * @uses GSDATAUPLOADPATH
  *
  * @param string $id Uploaded filename to delete
+ * @param string $path Path to uploaded file folder
  * @return string
  */
-function delete_upload($id) { 
-	unlink(GSDATAUPLOADPATH . $id);
-	if (file_exists(GSTHUMBNAILPATH."thumbnail.". $id)) {
-		unlink(GSTHUMBNAILPATH."thumbnail.". $id);
+function delete_upload($id, $path = "") { 
+	unlink(GSDATAUPLOADPATH . $path . $id);
+	if (file_exists(GSTHUMBNAILPATH.$path."thumbnail.". $id)) {
+		unlink(GSTHUMBNAILPATH.$path."thumbnail.". $id);
 	}
-	if (file_exists(GSTHUMBNAILPATH."thumbsm.". $id)) {
-		unlink(GSTHUMBNAILPATH."thumbsm.". $id);
+	if (file_exists(GSTHUMBNAILPATH.$path."thumbsm.". $id)) {
+		unlink(GSTHUMBNAILPATH.$path."thumbsm.". $id);
 	}
 	return 'success';
 } 
