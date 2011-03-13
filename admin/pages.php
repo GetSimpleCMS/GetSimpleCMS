@@ -72,7 +72,7 @@ $table = get_pages_menu('','',0);
 	<div id="maincontent">
 		<div class="main">
 			<h3 class="floated"><?php i18n('PAGE_MANAGEMENT'); ?></h3>
-			<div class="edit-nav" ><p><a href="#" id="filtertable" ><?php i18n('FILTER'); ?></a><label for="show-characters" ><?php i18n('TOGGLE_STATUS'); ?></label> &nbsp;<input type="checkbox" name="show-characters" id="show-characters" value="" style="vertical-align:text-bottom" /></p><div class="clear" ></div></div>
+			<div class="edit-nav clearfix" ><p><a href="#" id="filtertable" ><?php i18n('FILTER'); ?></a><a href=#" id="show-characters" ><?php i18n('TOGGLE_STATUS'); ?></a></div>
 			<div id="filter-search">
 				<form><input type="text" autocomplete="off" class="text" id="q" placeholder="<?php echo lowercase(i18n_r('FILTER')); ?>..." /> &nbsp; <a href="pages.php" class="cancel"><?php i18n('CANCEL'); ?></a></form>
 			</div>

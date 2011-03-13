@@ -8,7 +8,7 @@
 header("Content-type: text/css");
 header("Expires: ".date("D, d M Y H:i:s", time() + 3600) ); # cache for an hour
 header("Pragma: cache");
-header("Cache-Control: maxage=$seconds_to_cache");
+header("Cache-Control: maxage=3600");
 
 function getXML($file) {
 	$xml = file_get_contents($file);
@@ -57,12 +57,13 @@ a img,:link img,:visited img {border:none}
 html {overflow-y: scroll;}
 .clearfix:before, .clearfix:after { content: "\0020"; display: block; height: 0; visibility: hidden; }
 .clearfix:after { clear: both; }
+.clearfix {zoom:1;}
 
 /** HEADER / NAVIGATION **/
 .header {
 	color:#FFF;
 	border-top:1px solid <?php echo $primary_1; ?>;
-	background: <?php echo $primary_4; ?>; /* old browsers */
+	background: <?php echo $primary_3; ?>; /* old browsers */
 	background: -moz-linear-gradient(top, <?php echo $primary_4; ?> 0%, <?php echo $primary_2; ?> 100%); /* firefox */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,<?php echo $primary_4; ?>), color-stop(100%,<?php echo $primary_2; ?>)); /* webkit */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='<?php echo $primary_4; ?>', endColorstr='<?php echo $primary_2; ?>',GradientType=0 ); /* ie */
@@ -442,7 +443,7 @@ html {overflow-y: scroll;}
 /* basic default table style */
 .wrapper table {border-collapse:collapse;margin:0 0 20px 0;width:645px;}
 .wrapper table td {vertical-align:top;padding:4px;border-bottom:1px solid #eee;border-top:1px solid #eee;line-height:20px !important;}
-.wrapper table th {background:#FFF !important;padding:2px 4px;font-size:11px;border-bottom:1px dotted #ccc;border-top:1px solid #FFF;color:#222;font-weight:bold;text-transform:uppercase;line-height:20px !important;}
+.wrapper table th {background:#FFF !important;padding:2px 4px;font-size:11px;border-top:1px solid #FFF;color:#222;font-weight:bold;text-transform:uppercase;line-height:20px !important;}
 .wrapper table tr.head {}
 .wrapper table td span {font-size:12px;color:#777;}
 .wrapper table.highlight tr:nth-child(odd) { background:#f7f7f7;}
