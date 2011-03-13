@@ -39,11 +39,15 @@ if (isset($_GET['id'])){
 # define page, spit out 404 if it doesn't exist
 $file = GSDATAPAGESPATH . $id .'.xml';
 $file_404 = GSDATAOTHERPATH . '404.xml';
+$user_created_404 = GSDATAPAGESPATH . '404.xml';
 if (! file_exists($file)) {
-	if (file_exists($file_404))	{
+	if (file_exists($user_created_404)) {
+		//user created their own 404 page, which overrides the default 404 message
+		$file = $user_created_404;
+	} elseif (file_exists($file_404))	{
 		$file = $file_404;
-		exec_action('error-404');
 	}
+	exec_action('error-404');
 }
 
 # get data from page

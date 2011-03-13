@@ -237,6 +237,7 @@ jQuery(document).ready(function() {
   // pages.php
   $("#show-characters").live("click", function() {
   	 $(".showstatus").toggle();
+  	 $(this).toggleClass('current');
   });
   
   

@@ -21,4 +21,4 @@ RewriteBase **REPLACE**
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule /?([A-Za-z0-9-]+)/?$ index.php?id=$1 [QSA,L]
+RewriteRule /?([A-Za-z0-9_-]+)/?$ index.php?id=$1 [QSA,L]
