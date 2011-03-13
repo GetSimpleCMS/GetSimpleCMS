@@ -74,7 +74,7 @@ if (count($pagesSorted) != 0)
 		
 		if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
 		
-		$table .= '<td><a title="'.i18n_r('VIEWPAGE_TITLE').' '. cl($page['title']) .'" href="backup-edit.php?p=view&amp;id='. $page['url'] .'">'. cl($page['title']) .'</a></td>';
+		$table .= '<td class="pagetitle"><a title="'.i18n_r('VIEWPAGE_TITLE').' '. cl($page['title']) .'" href="backup-edit.php?p=view&amp;id='. $page['url'] .'">'. cl($page['title']) .'</a></td>';
 		$table .= '<td style="width:80px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
 		$table .= '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETEPAGE_TITLE').' '. cl($page['title']) .'?" href="backup-edit.php?p=delete&amp;id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "backup-edit.php").'">X</a></td>';
 		$table .= '</tr>';
@@ -94,8 +94,12 @@ if (count($pagesSorted) != 0)
 	<div id="maincontent">
 		<div class="main" >
 			<h3 class="floated"><?php i18n('PAGE_BACKUPS');?></h3>
-			<div class="edit-nav" ><a href="backups.php?deleteall&amp;nonce=<?php echo get_nonce("deleteall"); ?>" title="<?php i18n('DELETE_ALL_BAK');?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE_ALL'));?>" class="delconfirm"  ><?php i18n('ASK_DELETE_ALL');?></a><div class="clear" ></div></div>
-			<table class="highlight paginate">
+			
+			<div class="edit-nav" ><a href="#" id="filtertable" ><?php i18n('FILTER'); ?></a> <a href="backups.php?deleteall&amp;nonce=<?php echo get_nonce("deleteall"); ?>" title="<?php i18n('DELETE_ALL_BAK');?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE_ALL'));?>" class="delconfirm"  ><?php i18n('ASK_DELETE_ALL');?></a><div class="clear" ></div></div>
+			<div id="filter-search">
+				<form><input type="text" autocomplete="off" class="text" id="q" placeholder="<?php echo lowercase(i18n_r('FILTER')); ?>..." /> &nbsp; <a href="pages.php" class="cancel"><?php i18n('CANCEL'); ?></a></form>
+			</div>
+			<table id="editpages" class="highlight paginate">
 				<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th></tr>
 				<?php echo $table; ?>
 			</table>
