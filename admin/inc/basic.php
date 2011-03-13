@@ -416,6 +416,20 @@ function strip_quotes($text)  {
 	$code_entities_match = array('"','\'','&quot;'); 
 	$text = str_replace($code_entities_match, '', $text); 
 	return trim($text); 
+}
+
+/**
+ * Encode Quotes
+ *
+ * @since 3.0
+ *
+ * @param string $text
+ * @return string
+ */
+function encode_quotes($text)  { 
+	$text = strip_tags($text); 
+	$text = htmlspecialchars($text, ENT_QUOTES); 
+	return trim($text); 
 } 
 
 /**
