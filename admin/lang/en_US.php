@@ -466,7 +466,7 @@ $i18n = array(
 "FILE_BROWSER" => "File Browser", //filebrowser.php
 "SELECT_FILE" => "Select file", //filebrowser.php
 "CREATE_FOLDER" => "Create Folder", //upload.php
-
+"THUMBNAIL" => "Thumbnail", //filebrowser.php
 
 
 

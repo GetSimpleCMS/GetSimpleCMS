@@ -20,7 +20,8 @@ $path = tsl($path);
 // check if host uses Linux (used for displaying permissions
 $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 $CKEditorFuncNum = $_GET['CKEditorFuncNum'];
-$fullPath = suggest_site_path() . "data/uploads/";
+$sitepath = suggest_site_path();
+$fullPath = $sitepath . "data/uploads/";
 $type = $_GET['type'];
 
 if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
@@ -110,22 +111,29 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 
 	if (count($filesSorted) != 0) { 			
 		foreach ($filesSorted as $upload) {
-			$thumb = '';
+			$thumb = null; $thumbnailLink = null;
 			$subDir = ($subPath == '' ? '' : $subPath.'/');
 			$selectLink = 'title="'.i18n_r('SELECT_FILE').': '. htmlspecialchars($upload['name']) .'" href="javascript:void(0)" onclick="submitLink('.$CKEditorFuncNum.',\''.$fullPath.$subDir.$upload['name'].'\')"';
 
 			if ($type == 'images') {
 				if ($upload['type'] == i18n_r('IMAGES') .' Images') {
+					
+					# get internal thumbnail to show beside link in table
 					$thumb = '<td class="imgthumb" style="display:table-cell" >';
 					$thumbLink = $urlPath.'thumbsm.'.$upload['name'];
-						if (file_exists('../data/thumbs/'.$thumbLink)) {
-							$imgSrc='<img src="../data/thumbs/'. $thumbLink .'" />';
-						} else {
-							$imgSrc='<img src="inc/thumb.php?src='. $urlPath . $upload['name'] .'&amp;dest='. $thumbLink .'&amp;x=65&amp;f=1" />';
-						}
-						$thumb .= '<a '.$selectLink.' >'.$imgSrc.'</a>';
+					if (file_exists('../data/thumbs/'.$thumbLink)) {
+						$imgSrc='<img src="../data/thumbs/'. $thumbLink .'" />';
+					} else {
+						$imgSrc='<img src="inc/thumb.php?src='. $urlPath . $upload['name'] .'&amp;dest='. $thumbLink .'&amp;x=65&amp;f=1" />';
+					}
+					$thumb .= '<a '.$selectLink.' >'.$imgSrc.'</a>';
 					$thumb .= '</td>';
 					
+					# get external thumbnail link
+					$thumbLinkExternal = 'data/thumbs/thumbnail.'.$upload['name'];
+					if (file_exists('../'.$thumbLinkExternal)) {
+					$thumbnailLink = '<span>&nbsp;&ndash;&nbsp;&nbsp;</span><a href="javascript:void(0)" onclick="submitLink('.$CKEditorFuncNum.',\''.$sitepath.$thumbLinkExternal.'\')">'.i18n_r('THUMBNAIL').'</a>';
+					}
 				}
 				else { break; }
 			}
@@ -134,7 +142,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 
 			echo '<tr class="All '.$upload['type'].'" >';
 			echo ($thumb=='' ? '<td style="display: none"></td>' : $thumb);
-			echo '<td><a '.$selectLink.' class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';
+			echo '<td><a '.$selectLink.' class="primarylink">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
 			echo '<td style="width:80px;text-align:right;" ><span>'. $upload['size'] .'</span></td>';
 
 			// get the file permissions.
