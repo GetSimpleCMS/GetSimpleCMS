@@ -471,6 +471,10 @@ $i18n = array(
 "FOLDER_CREATED" => "The new folder was successfully created: <strong>%s</strong>", //upload.php
 "ERROR_CREATING_FOLDER" => "There was an error creating the new folder", //upload.php
 "DELETE_FOLDER" => "Delete Folder", //upload.php
+"FILE_NAME" => "File Name", //multiple tr header rows
+"FILE_SIZE" => "Size", //multiple tr header rows
+"ARCHIVE_DATE" => "Archive Date", //archive.php
+
 
 "X" => "not translated"
 

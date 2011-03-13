@@ -88,7 +88,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	$pathParts=explode("/",$subPath);
 	$urlPath="";
 
-	echo '<h5><img src="template/images/folder.png"/> <a href="?CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.'">uploads</a> / ';
+	echo '<h5>/ <a href="?CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.'">uploads</a> / ';
 	foreach ($pathParts as $pathPart){
 		if ($pathPart!=''){
 			$urlPath.=$pathPart."/";
@@ -98,6 +98,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	echo "</h5>";
 
 	echo '<table class="highlight" id="imageTable">';
+
 	if (count($dirsSorted) != 0) {       
 		foreach ($dirsSorted as $upload) {
 			echo '<tr class="All" >';  

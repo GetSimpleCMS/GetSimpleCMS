@@ -140,7 +140,7 @@ if (isset($_GET['newfolder'])) {
       $pathParts = explode("/",$subPath);
       $urlPath = null;
      
-      echo '<h5 class="clearfix"><img src="template/images/folder.png" width="13px" /> <a href="upload.php">uploads</a> / ';
+      echo '<h5 class="clearfix"><div class="crumbs">/ <a href="upload.php">uploads</a> / ';
 
       foreach ($pathParts as $pathPart){
 	       if ($pathPart!=''){
@@ -149,15 +149,15 @@ if (isset($_GET['newfolder'])) {
 	          echo '<a href="?path='.$urlPath.'">'.$pathPart.'</a> / ';
 	       }
       }
-      echo ' <a href="#" id="createfolder">'.i18n_r('CREATE_FOLDER').'</a></h5>';
+      echo '</div> <div id="new-folder">
+      	<a href="#" id="createfolder">'.i18n_r('CREATE_FOLDER').'</a>
+				<form action="upload.php">&nbsp;<input type="hidden" name="path" value="'.$subPath.'" /><input type="text" class="text" name="newfolder" id="foldername" /> <input type="submit" class="submit" value="'.i18n_r('CREATE_FOLDER').'" />&nbsp; <a href="#" class="cancel">'.i18n_r('CANCEL').'</a></form>
+			</div></h5>';
       
-      echo '
-      <div id="new-folder">
-				<form action="upload.php"><input type="hidden" name="path" value="'.$subPath.'" /><input type="text" class="text" name="newfolder" id="foldername" /> <input type="submit" class="submit" value="'.i18n_r('CREATE_FOLDER').'" />&nbsp; <a href="#" class="cancel">'.i18n_r('CANCEL').'</a></form>
-			</div>';
 			
 			
-     echo '<table class="highlight" id="imageTable">';   
+     echo '<table class="highlight" id="imageTable">'; 
+     echo '<tr><th>'.i18n_r('FILE_NAME').'</th><th style="text-align:right;">'.i18n_r('FILE_SIZE').'</th><th style="text-align:right;">'.i18n_r('DATE').'</th><th></th></tr>';  
      if (count($dirsSorted) != 0) {
         foreach ($dirsSorted as $upload) {
         	

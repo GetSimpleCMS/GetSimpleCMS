@@ -310,7 +310,17 @@ html {overflow-y: scroll;}
 		margin:0 0 5px 0;
 	}
 	h5 {
-		margin:10px 0 5px 0;font-size:14px;
+		margin:10px 0 10px 0;font-size:14px;
+		line-height:28px;
+		padding:3px 10px;
+		background:#f9f9f9;
+		border:1px solid #eee;
+		text-shadow:1px 1px 0 #fff;
+		-moz-border-radius: 3px;
+		-khtml-border-radius: 3px;
+		-webkit-border-radius: 3px;
+		border-radius:3px;
+		color:#999;
 	}
 	h5 a {text-decoration:none !important;}
 	h5 img, td.folder img {vertical-align:middle; margin:0 5px 0 0;opacity:.5;}
@@ -432,7 +442,7 @@ html {overflow-y: scroll;}
 /* basic default table style */
 .wrapper table {border-collapse:collapse;margin:0 0 20px 0;width:645px;}
 .wrapper table td {vertical-align:top;padding:4px;border-bottom:1px solid #eee;border-top:1px solid #eee;line-height:20px !important;}
-.wrapper table th {background:#fff !important;padding:2px 4px;font-size:11px;text-shadow: #fff 1px 1px 1px;border-bottom:1px solid #bbb;color:#666;font-weight:bold;text-transform:uppercase;line-height:20px !important;}
+.wrapper table th {background:#FFF !important;padding:2px 4px;font-size:11px;border-bottom:1px dotted #ccc;border-top:1px solid #FFF;color:#222;font-weight:bold;text-transform:uppercase;line-height:20px !important;}
 .wrapper table tr.head {}
 .wrapper table td span {font-size:12px;color:#777;}
 .wrapper table.highlight tr:nth-child(odd) { background:#f7f7f7;}
@@ -754,7 +764,6 @@ opacity:.10;
 #sidebar .uploadform {
 	padding:5px 15px;
 }
-#createfolder {float:right;font-weight:100;font-size:11px;}
 
 /* JQuery Uploadify Styles */
 .uploadifyQueueItem {
@@ -896,6 +905,13 @@ textarea.copykit {
 #resetpassword .gslogo {display:none;}
 .desc {font-size:12px;line-height:17px;border-bottom:1px dotted #ccc;padding:0 0 15px 0;margin:0 0 5px 0;}
 
-#new-folder, #filter-search  {margin:0 0 10px 0;display:none;}
-#new-folder input.text, #filter-search input.text {width:250px;font-size:11px;padding:3px;}
+#filter-search  {margin:0 0 10px 0;display:none;}
+#filter-search input.text {width:250px;font-size:11px;padding:3px;}
+
+#createfolder {font-weight:100;font-size:11px;text-decoration:underline !important;}
+h5 .crumbs {float:left;}
+#new-folder {float:left;padding-left:5px;}
+#new-folder form {display:none;}
+#new-folder .cancel {font-size:11px;text-shadow:none !important;}
 #new-folder input.submit {font-size:11px;padding:3px;}
+#new-folder input.text {width:120px;font-size:11px;padding:3px;}
