@@ -47,6 +47,28 @@ if (isset($_FILES["file"]))
 		$success = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$base.'">'. $SITEURL .'data/uploads/'.$base.'</a>';
 	}
 }
+
+// if creating new folder
+if (isset($_GET['newfolder'])) {
+	$newfolder = $_GET['newfolder'];
+	// check for invalid chars
+	$cleanname = str_replace(array('\\', '/', ':', '*', '?', '"', '<', '>', '|'), '', $newfolder);
+    if ($newfolder != $cleanname) {
+		$error = "Folder name contains invalid characters.";
+	}
+	else {
+		if (file_exists($path.$newfolder)) {
+			$error = "Folder already exists.";
+		}
+		else
+		{
+			if (mkdir($path . $newfolder, 0755)) {
+				$success = "Folder created: "  . $newfolder;
+			}
+			else { $error = "Unable to create folder."; }
+		}
+	}
+}
 ?>
 <?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT')); ?>
 
@@ -132,7 +154,7 @@ if (isset($_FILES["file"]))
       
       echo '
       <div id="new-folder">
-				<form><input type="hidden" name="parentfolder" value="'.$path.'" /><input type="text" class="text" name="foldername" id="foldername" /> <input type="submit" name="createsubmit" class="submit" value="'.i18n_r('CREATE_FOLDER').'" />&nbsp; <a href="#" class="cancel">'.i18n_r('CANCEL').'</a></form>
+				<form action="upload.php"><input type="hidden" name="path" value="'.$subPath.'" /><input type="text" class="text" name="newfolder" id="foldername" /> <input type="submit" class="submit" value="'.i18n_r('CREATE_FOLDER').'" />&nbsp; <a href="#" class="cancel">'.i18n_r('CANCEL').'</a></form>
 			</div>';
 			
 			
