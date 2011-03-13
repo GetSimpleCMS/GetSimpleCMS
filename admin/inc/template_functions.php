@@ -898,7 +898,6 @@ function get_pages_menu($parent, $menu,$level) {
 		}	
 	}	
 	if (count($items)>0){
-		$menu .= "<ul>\n";
 		foreach ($items as $page) {
 		  	$dash="";
 		  	if ($page['parent'] != '') {
@@ -921,10 +920,14 @@ function get_pages_menu($parent, $menu,$level) {
 			$menu .= '<td class="secondarylink" >';
 			$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. cl($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
 			$menu .= '</td>';
-			$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. cl($page['title']) .'" >X</a></td></tr>';
+			if ($page['url'] != 'index' ) {
+				$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. cl($page['title']) .'" >X</a></td>';
+			} else {
+				$menu .= '<td class="delete" ></td>';
+			}
+			$menu .= '</tr>';
 			$menu = get_pages_menu((string)$page['url'], $menu,$level+1);	  	
 		}
-		$menu .= "</ul>\n";
 	}
 	return $menu;
 }
