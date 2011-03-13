@@ -53,5 +53,14 @@ if (isset($_GET['file'])) {
 } 
 
 
+// are we deleting a folder?
+if (isset($_GET['folder'])) {
+	$folder = $_GET['folder'];
+	if (file_exists($folder)) {
+		rmdir($folder);
+		redirect("upload.php?upd=del-success&id=". $folder);
+	}
+} 
+
 
 ?>

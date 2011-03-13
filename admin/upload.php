@@ -52,20 +52,19 @@ if (isset($_FILES["file"]))
 if (isset($_GET['newfolder'])) {
 	$newfolder = $_GET['newfolder'];
 	// check for invalid chars
-	$cleanname = str_replace(array('\\', '/', ':', '*', '?', '"', '<', '>', '|'), '', $newfolder);
-    if ($newfolder != $cleanname) {
-		$error = "Folder name contains invalid characters.";
-	}
-	else {
-		if (file_exists($path.$newfolder)) {
-			$error = "Folder already exists.";
+	$cleanname = clean_url(to7bit($newfolder, "UTF-8"));
+	if (file_exists($path.$cleanname)) {
+			$error = i18n_r('ERROR_FOLDER_EXISTS');
+	} else {
+		if (defined('GSCHMOD')) { 
+			$chmod_value = GSCHMOD; 
+		} else {
+			$chmod_value = 0755;
 		}
-		else
-		{
-			if (mkdir($path . $newfolder, 0755)) {
-				$success = "Folder created: "  . $newfolder;
-			}
-			else { $error = "Unable to create folder."; }
+		if (mkdir($path . $cleanname, $chmod_value)) {
+			$success = sprintf(i18n_r('FOLDER_CREATED'), $cleanname);
+		}	else { 
+			$error = i18n_r('ERROR_CREATING_FOLDER'); 
 		}
 	}
 }
@@ -161,13 +160,21 @@ if (isset($_GET['newfolder'])) {
      echo '<table class="highlight" id="imageTable">';   
      if (count($dirsSorted) != 0) {
         foreach ($dirsSorted as $upload) {
+        	
+        	# check to see if folder is empty
+        	$directory_delete = null;
+        	if ( check_empty_folder($path.$upload['name']) ) {  
+						$directory_delete = '<a class="delconfirm" title="'.i18n_r('DELETE_FOLDER').': '. $upload['name'] .'" href="deletefile.php?folder='. $path.$upload['name'] . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a>';
+					}
+        	
           echo '<tr class="All" >';
-          echo '<td class="folder" colspan="5">';
+          echo '<td class="folder" colspan="3">';
         
           $adm = substr($path . $upload['name'] ,  16); 
           echo '<img src="template/images/folder.png" width="11px" /> <a href="upload.php?path='.$adm.'" ><strong>'.$upload['name'].'</strong></a>';
                    
           echo '</td>';
+          echo '<td class="delete" >'.$directory_delete.'</td>';
           echo '</tr>';
         }
      }

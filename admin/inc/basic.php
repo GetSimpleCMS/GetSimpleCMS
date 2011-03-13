@@ -739,4 +739,27 @@ function defined_array($constants) {
 	}
 	return $defined;
 }
+
+
+/**
+ * Is Folder Empty
+ *
+ * Check to see if a folder is empty or not
+ * 
+ * @param string #folder
+ * @return bool
+ */
+function check_empty_folder($folder) {
+	$files = array ();
+	if ( $handle = opendir ( $folder ) ) {
+		while ( false !== ( $file = readdir ( $handle ) ) ) {
+			if ( $file != "." && $file != ".." ) {
+				$files [] = $file;
+			}
+		}
+		closedir ( $handle );
+	}
+	return ( count ( $files ) > 0 ) ? FALSE : TRUE;
+}
+
 ?>

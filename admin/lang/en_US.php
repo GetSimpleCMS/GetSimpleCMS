@@ -467,8 +467,10 @@ $i18n = array(
 "SELECT_FILE" => "Select file", //filebrowser.php
 "CREATE_FOLDER" => "Create Folder", //upload.php
 "THUMBNAIL" => "Thumbnail", //filebrowser.php
-
-
+"ERROR_FOLDER_EXISTS" => "The folder you are trying to create already exists", //upload.php
+"FOLDER_CREATED" => "The new folder was successfully created: <strong>%s</strong>", //upload.php
+"ERROR_CREATING_FOLDER" => "There was an error creating the new folder", //upload.php
+"DELETE_FOLDER" => "Delete Folder", //upload.php
 
 "X" => "not translated"
 
