@@ -21,7 +21,7 @@ $data 		= getXML(GSUSERSPATH . $file);
 $USR 			= stripslashes($data->USR);
 $PASSWD 	= $data->PWD;
 $EMAIL 		= $data->EMAIL;
-$err = '';$pwd1 = '';$pwd2 = '';$editorchck = ''; $prettychck = '';
+$pwd1 = '';$pwd2 = '';$editorchck = ''; $prettychck = '';
 
 # if the undo command was invoked
 if (isset($_GET['undo'])) { 
@@ -98,7 +98,7 @@ if(isset($_POST['submitted'])) {
 	if(isset($_POST['sitepwd_confirm'])) { $pwd2 = $_POST['sitepwd_confirm']; }
 	if ($pwd1 != $pwd2)	{
 		#passwords do not match 
-		$msg = i18n_r('PASSWORD_NO_MATCH');
+		$error = i18n_r('PASSWORD_NO_MATCH');
 	} else {
 		# password cannot be null
 		if ( $pwd1 != '' ) { 
@@ -136,7 +136,11 @@ if(isset($_POST['submitted'])) {
 
 		# see new language file immediately
 		include(GSLANGPATH.$LANG.'.php');
-
+		
+		if (!$error) {
+			$success = i18n_r('ER_SETTINGS_UPD').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>';
+		}
+		
 	}
 }
 
