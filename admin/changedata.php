@@ -69,7 +69,7 @@ if (isset($_POST['submitted']))
 					redirect("edit.php?id=". urlencode($_POST['existing-url']) ."&upd=edit-index&type=edit");
 				} else {
 					exec_action('changedata-updateslug');
-					updateSlugs();
+					updateSlugs($_POST['existing-url']);
 					$file = GSDATAPAGESPATH . $url .".xml";
 					$existing = GSDATAPAGESPATH . $_POST['existing-url'] .".xml";
 					$bakfile = GSBACKUPSPATH."pages/". $_POST['existing-url'] .".bak.xml";

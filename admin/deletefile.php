@@ -29,6 +29,7 @@ if (isset($_GET['id'])) {
 		redirect('pages.php?upd=edit-err&type='.urlencode(i18n_r('HOMEPAGE_DELETE_ERROR')));
 	} else {
 		exec_action('page-delete');
+		updateSlugs($id);
 		delete_file($id);
 		redirect("pages.php?upd=edit-success&id=". $id ."&type=delete");
 	}

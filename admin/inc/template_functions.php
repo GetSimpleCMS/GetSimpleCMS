@@ -679,7 +679,7 @@ function get_available_pages($id = null,$xml=false) {
  * @uses XMLsave
  *
  */
-function updateSlugs(){
+function updateSlugs($existingUrl){
       global $url;
 
       $path = GSDATAPAGESPATH;
@@ -691,8 +691,6 @@ function updateSlugs(){
           $filenames[] = $filename;
         }
       }
-      
-      $existingUrl=$_POST['existing-url'];
 
       if (count($filenames) != 0) {
         foreach ($filenames as $file) {
