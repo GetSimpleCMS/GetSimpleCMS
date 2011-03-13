@@ -130,7 +130,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 					$thumb .= '</td>';
 					
 					# get external thumbnail link
-					$thumbLinkExternal = 'data/thumbs/thumbnail.'.$upload['name'];
+					$thumbLinkExternal = 'data/thumbs/'.$urlPath.'thumbnail.'.$upload['name'];
 					if (file_exists('../'.$thumbLinkExternal)) {
 					$thumbnailLink = '<span>&nbsp;&ndash;&nbsp;&nbsp;</span><a href="javascript:void(0)" onclick="submitLink('.$CKEditorFuncNum.',\''.$sitepath.$thumbLinkExternal.'\')">'.i18n_r('THUMBNAIL').'</a>';
 					}
