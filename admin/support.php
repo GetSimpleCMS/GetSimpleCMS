@@ -57,7 +57,8 @@ if (in_arrayi('curl', $php_modules)){
 }
 $verstatus = '0';
 if ($verstatus == '0') {
-	$ver = i18n_r('WARNING').': '.$site_full_name.' '.i18n_r('UPG_NEEDED').' <b>'.$apikey->latest .'</b> &ndash; <a href="http://get-simple.info/download/" target="_blank" >'. i18n_r('DOWNLOAD').'</a>';
+	$latest    = isset($apikey) ? $apikey->latest : '';  
+	$ver = i18n_r('WARNING').': '.$site_full_name.' '.i18n_r('UPG_NEEDED').' <b>'.$latest .'</b> &ndash; <a href="http://get-simple.info/download/" target="_blank" >'. i18n_r('DOWNLOAD').'</a>';
 } elseif ($verstatus == '1') {
 	$ver = null;
 } elseif ($verstatus == '2') {
