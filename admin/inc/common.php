@@ -82,8 +82,9 @@ $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
  * Check to see what database engine to use
  * XML is the default
  */
+ /*
 define('GSSAVETYPE', 'XML');
-	/** mysql */
+	# mysql 
 	$mysql_constants = array('GSSTORAGE','DB_HOST','DB_PASS','DB_USER','DB_DATABASE');
 	if (defined_array($mysql_constants) && lowercase(GSSTORAGE) == 'mysql') {
 		include_once('mysql_functions.php');
@@ -92,8 +93,10 @@ define('GSSAVETYPE', 'XML');
 		}
 	}
 
-/** if xml is still the storage method, include it's storage functions */
+# if xml is still the storage method, include it's storage functions
 if(GSSAVETYPE == 'XML') include_once('xml_functions.php');
+*/
+
 
 /**
  * Pull data from storage

@@ -21,7 +21,7 @@ $data 		= getXML(GSUSERSPATH . $file);
 $USR 			= stripslashes($data->USR);
 $PASSWD 	= $data->PWD;
 $EMAIL 		= $data->EMAIL;
-$pwd1 = '';$pwd2 = '';$editorchck = ''; $prettychck = '';
+$pwd1 =null;$error =null;$success=null;$pwd2 =null;$editorchck =null; $prettychck =null;
 
 # if the undo command was invoked
 if (isset($_GET['undo'])) { 

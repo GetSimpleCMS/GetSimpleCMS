@@ -67,7 +67,9 @@ jQuery(document).ready(function() {
 			$("#imageTable tr .imgthumb").hide();
 		}		
 		$("#filetypetoggle").html('&nbsp;&nbsp;/&nbsp;&nbsp;' + filterx);
-		$("#imageTable tr." + filterx).show()
+		$("#imageTable tr." + filterx).show();
+		$("#imageTable tr.folder").show();
+		$("#imageTable tr:first-child").show();
    	$("#imageTable tr.deletedrow").hide();
    	$('#loader').fadeOut(500);
 	});

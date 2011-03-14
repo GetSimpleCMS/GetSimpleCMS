@@ -314,8 +314,8 @@ html {overflow-y: scroll;}
 		margin:10px 0 10px 0;font-size:14px;
 		line-height:28px;
 		padding:3px 10px;
-		background:#f9f9f9;
-		border:1px solid #eee;
+		background:#eee;
+		border:1px solid #e1e1e1;
 		text-shadow:1px 1px 0 #fff;
 		-moz-border-radius: 3px;
 		-khtml-border-radius: 3px;

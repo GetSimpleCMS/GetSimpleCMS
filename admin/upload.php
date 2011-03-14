@@ -157,7 +157,7 @@ if (isset($_GET['newfolder'])) {
 			
 			
      echo '<table class="highlight" id="imageTable">'; 
-     echo '<tr><th>'.i18n_r('FILE_NAME').'</th><th style="text-align:right;">'.i18n_r('FILE_SIZE').'</th><th style="text-align:right;">'.i18n_r('DATE').'</th><th></th></tr>';  
+     echo '<tr><th class="imgthumb" ></th><th>'.i18n_r('FILE_NAME').'</th><th style="text-align:right;">'.i18n_r('FILE_SIZE').'</th><th style="text-align:right;">'.i18n_r('DATE').'</th><th></th></tr>';  
      if (count($dirsSorted) != 0) {
         foreach ($dirsSorted as $upload) {
         	
@@ -167,8 +167,8 @@ if (isset($_GET['newfolder'])) {
 						$directory_delete = '<a class="delconfirm" title="'.i18n_r('DELETE_FOLDER').': '. $upload['name'] .'" href="deletefile.php?folder='. $path.$upload['name'] . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a>';
 					}
         	
-          echo '<tr class="All" >';
-          echo '<td class="folder" colspan="3">';
+          echo '<tr class="All folder" >';
+          echo '<td class="imgthumb" ></td><td colspan="3">';
         
           $adm = substr($path . $upload['name'] ,  16); 
           echo '<img src="template/images/folder.png" width="11px" /> <a href="upload.php?path='.$adm.'" ><strong>'.$upload['name'].'</strong></a>';
