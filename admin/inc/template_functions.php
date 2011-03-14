@@ -932,7 +932,53 @@ function get_pages_menu($parent, $menu,$level) {
 	return $menu;
 }
 
-
+/**
+ * Recursive list of pages for Dropdown menu
+ *
+ * Returns a recursive list of items for the main page
+ *
+ * @author Mike
+ *
+ * @since 3.0
+ * @uses $pagesSorted
+ *
+ * @param string $parent
+ * @param string $menu
+ * @param int $level
+ * 
+ * @returns string
+ */
+function get_pages_menu_dropdown($parentitem, $menu,$level) {
+	
+	global $pagesSorted;
+	global $parent; 
+	
+	$items=array();
+	foreach ($pagesSorted as $page) {
+		if ($page['parent']==$parentitem){
+			$items[(string)$page['url']]=$page;
+		}	
+	}	
+	if (count($items)>0){
+		foreach ($items as $page) {
+		  	$dash="";
+		  	if ($page['parent'] != '') {
+	  			$page['parent'] = $page['parent']."/";
+	  		}
+			for ($i=0;$i<=$level-1;$i++){
+				if ($i!=$level-1){
+	  				$dash .= '<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>';
+				} else {
+					$dash .= '<span>&nbsp;&nbsp;&ndash;&nbsp;&nbsp;&nbsp;</span>';
+				}
+			} 
+			if ($parent == (string)$page['url']) { $sel="selected"; } else { $sel=""; }
+			$menu .= '<option '.$sel.' value="'.$page['url'] .'" >'.$dash.$page['url'].'</option>';
+			$menu = get_pages_menu_dropdown((string)$page['url'], $menu,$level+1);	  	
+		}
+	}
+	return $menu;
+}
 
 
 

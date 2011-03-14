@@ -108,37 +108,6 @@ foreach ($templates as $file)
 	$theme_templates .= '<option '.$sel.' value="'.$file.'" >'.$templatename.'</option>';
 }
 
-
-// MAKE SELECT BOX FOR PARENT PAGES
-$parents = getFiles($path);
-sort($parents);
-
-// Selected?
-if ($parent == null) { $none="selected"; } else { $none=""; }
-
-// Create base option
-$parents_list .= '<option '.$none.' value="" ></option>';
-
-foreach ($parents as $fi)
-{
-	if( isFile($fi, $path, 'xml') )
-	{
-		$goodname = str_replace(".xml", "", $fi);
-		
-		if ($parent == $goodname) { $sel="selected"; } else { $sel=""; }
-		
-		if ($goodname != $id )
-		{
-			$tmpData = getXML($path . $fi);
-			
-			//if ($tmpData->parent == '')
-			//{ 
-				$parents_list .= '<option '.$sel.' value="'.$goodname.'" >'.$goodname.'</option>';
-			//}
-		}
-	}
-}
-
 // SETUP CHECKBOXES
 if ($menuStatus != '') { $sel = 'checked';	}
 $sel_p = ($private != '') ? 'checked' : '' ;
@@ -195,8 +164,44 @@ if ($menu == '') { $menu = $title; }
 				</p>
 				<p>
 					<label for="post-parent"><?php i18n('PARENT_PAGE'); ?>:</label>
-					<select class="text short" id="post-parent" name="post-parent" >
-						<?php echo $parents_list; ?>
+					<select class="text short" id="post-parent" name="post-parent"> 
+						<?php 
+						$path 		= GSDATAPAGESPATH;
+						$counter 	= '0';
+						
+						//get all pages
+						$filenames = getFiles($path);
+						
+						$count="0";
+						$pagesArray = array();
+						if (count($filenames) != 0) { 
+							foreach ($filenames as $file) {
+								if (isFile($file, $path, 'xml')) {
+									$data = getXML($path .$file);
+									$status = $data->menuStatus;
+									$pagesArray[$count]['parent'] = $data->parent;
+									if ($data->parent != '') { 
+										$parentdata = getXML($path . $data->parent .'.xml');
+										$parentTitle = $parentdata->title;
+										$pagesArray[$count]['sort'] = $parentTitle .' '. $data->title;
+									} else {
+										$pagesArray[$count]['sort'] = $data->title;
+									}
+									$pagesArray[$count]['url'] = $data->url;
+									$parentTitle = '';
+									$count++;
+								}
+							}
+						}
+						$pagesSorted = subval_sort($pagesArray,'sort');
+						$ret=get_pages_menu_dropdown('','',0);
+						
+						if ($parent == null) { $none="selected"; } else { $none=""; }
+						
+						// Create base option
+						echo '<option '.$none.' value="" ></option>';
+						echo $ret;
+						?>
 					</select>
 				</p>			
 				<p>
