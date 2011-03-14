@@ -18,8 +18,6 @@ login_cookie_check();
 $path = (isset($_GET['path'])) ? "../data/uploads/".$_GET['path'] : "../data/uploads/";
 $subPath = (isset($_GET['path'])) ? $_GET['path'] : "";
 $path = tsl($path);
-// check if host uses Linux (used for displaying permissions
-$isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 
 // if a file was uploaded
 if (isset($_FILES["file"]))
@@ -207,14 +205,6 @@ if (isset($_GET['newfolder'])) {
 					}
 					echo '</td><td><a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';
 					echo '<td style="width:80px;text-align:right;" ><span>'. $upload['size'] .'</span></td>';
-             
-		            // get the file permissions.
-					if ($isUnixHost) {
-						$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
-						if ($filePerms){
-							echo '<td style="width:70px;text-align:right;"><span>'.$filePerms.'</span></td>';
-						}
-					}
 					echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
 					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] . '&path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>';
 					echo '</tr>';
