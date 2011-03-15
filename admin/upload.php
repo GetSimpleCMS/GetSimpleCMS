@@ -55,7 +55,7 @@ if (isset($_GET['newfolder'])) {
 	$newfolder = $_GET['newfolder'];
 	// check for invalid chars
 	$cleanname = clean_url(to7bit($newfolder, "UTF-8"));
-	if (file_exists($path.$cleanname)) {
+	if (file_exists($path.$cleanname) || $cleanname='') {
 			$error = i18n_r('ERROR_FOLDER_EXISTS');
 	} else {
 		if (defined('GSCHMOD')) { 
@@ -142,7 +142,7 @@ if (isset($_GET['newfolder'])) {
       $pathParts = explode("/",$subPath);
       $urlPath = null;
      
-      echo '<h5 class="clearfix"><div class="crumbs">/ <a href="upload.php">uploads</a> / ';
+      echo '<div class="h5 clearfix"><div class="crumbs">/ <a href="upload.php">uploads</a> / ';
 
       foreach ($pathParts as $pathPart){
 	       if ($pathPart!=''){
@@ -154,7 +154,7 @@ if (isset($_GET['newfolder'])) {
       echo '</div> <div id="new-folder">
       	<a href="#" id="createfolder">'.i18n_r('CREATE_FOLDER').'</a>
 				<form action="upload.php">&nbsp;<input type="hidden" name="path" value="'.$subPath.'" /><input type="text" class="text" name="newfolder" id="foldername" /> <input type="submit" class="submit" value="'.i18n_r('CREATE_FOLDER').'" />&nbsp; <a href="#" class="cancel">'.i18n_r('CANCEL').'</a></form>
-			</div></h5>';
+			</div></div>';
       
 			
 			

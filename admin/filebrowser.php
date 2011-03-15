@@ -88,14 +88,14 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	$pathParts=explode("/",$subPath);
 	$urlPath="";
 
-	echo '<h5>/ <a href="?CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.'">uploads</a> / ';
+	echo '<div class="h5">/ <a href="?CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.'">uploads</a> / ';
 	foreach ($pathParts as $pathPart){
 		if ($pathPart!=''){
 			$urlPath.=$pathPart."/";
 			echo '<a href="?path='.$urlPath.'&amp;CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.'">'.$pathPart.'</a> / ';
 		}
 	}
-	echo "</h5>";
+	echo "</div>";
 
 	echo '<table class="highlight" id="imageTable">';
 

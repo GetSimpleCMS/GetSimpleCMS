@@ -310,12 +310,15 @@ html {overflow-y: scroll;}
 		display:block;
 		margin:0 0 5px 0;
 	}
-	h5 {
+	h5,div.h5 {
 		margin:10px 0 10px 0;font-size:14px;
 		line-height:28px;
+		display:block;
 		padding:3px 10px;
-		background:#eee;
-		border:1px solid #e1e1e1;
+		background:#EEEEEE;
+		background: -moz-linear-gradient(top, #f6f6f6 3%, #EEEEEE 100%); /* firefox */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(3%,#f6f6f6), color-stop(100%,#EEEEEE)); /* webkit */
+		border:1px solid #cccccc;
 		text-shadow:1px 1px 0 #fff;
 		-moz-border-radius: 3px;
 		-khtml-border-radius: 3px;
@@ -910,7 +913,7 @@ textarea.copykit {
 #filter-search input.text {width:250px;font-size:11px;padding:3px;}
 
 #createfolder {font-weight:100;font-size:11px;text-decoration:underline !important;}
-h5 .crumbs {float:left;}
+h5 .crumbs, div.h5 .crumbs {float:left;}
 #new-folder {float:left;padding-left:5px;}
 #new-folder form {display:none;}
 #new-folder .cancel {font-size:11px;text-shadow:none !important;}
