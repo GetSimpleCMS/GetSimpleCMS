@@ -114,6 +114,7 @@ jQuery(document).ready(function() {
 	    }
 	  $('#loader').fadeOut(500);
 	});
+	
 	$("#addcomponent").live("click", function($e) {
 		$e.preventDefault();
 		$('#loader').show();
@@ -154,6 +155,16 @@ jQuery(document).ready(function() {
 	// other general functions
 	$(".snav a.current").live("click", function($e) {
 		$e.preventDefault();
+	});
+	$(".confirmation").live("click", function($e) {
+		$('#loader').show();
+		var message = $(this).attr("title");
+		var answer = confirm(message);
+	    if (!answer){
+	    	$('#loader').fadeOut(500);
+	    	return false;
+	    }
+	  $('#loader').fadeOut(500);
 	});
 	$(".delconfirm").live("click", function() {
 		var message = $(this).attr("title");

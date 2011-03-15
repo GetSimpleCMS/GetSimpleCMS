@@ -21,25 +21,25 @@ $path = GSBACKUPSPATH.'pages/';
 $counter = '0';
 $table = '';
 
-//delete all backup files if the ?deleteall session parameter is set
-if (isset($_GET['deleteall']))
-{
-	$nonce = $_GET['nonce'];
-	if(!check_nonce($nonce, "deleteall"))
-		die("CSRF detected!");	
 
+// delete all backup files if the ?deleteall session parameter is set
+if (isset($_GET['deleteall'])){
+	$nonce = $_GET['nonce'];
+	if(!check_nonce($nonce, "deleteall")) {
+		die("CSRF detected!");	
+	}
+	
 	$filenames = getFiles($path);
 	
-	foreach ($filenames as $file) 
-	{
-		if (file_exists($path . $file) ) 
-		{
-			if (isFile($file, $path, 'bak')) 
-			{
+	foreach ($filenames as $file) {
+		if (file_exists($path . $file) ) {
+			if (isFile($file, $path, 'bak')) {
 				unlink($path . $file);
 			}
 		}
 	}
+	
+	$success = i18n_r('ER_FILE_DEL_SUC');
 }
 
 
@@ -95,7 +95,7 @@ if (count($pagesSorted) != 0)
 		<div class="main" >
 			<h3 class="floated"><?php i18n('PAGE_BACKUPS');?></h3>
 			
-			<div class="edit-nav" ><a href="#" id="filtertable" ><?php i18n('FILTER'); ?></a> <a href="backups.php?deleteall&amp;nonce=<?php echo get_nonce("deleteall"); ?>" title="<?php i18n('DELETE_ALL_BAK');?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE_ALL'));?>" class="delconfirm"  ><?php i18n('ASK_DELETE_ALL');?></a><div class="clear" ></div></div>
+			<div class="edit-nav clearfix" ><a href="#" id="filtertable" ><?php i18n('FILTER'); ?></a> <a href="backups.php?deleteall&amp;nonce=<?php echo get_nonce("deleteall"); ?>" title="<?php i18n('DELETE_ALL_BAK');?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE_ALL'));?>" class="confirmation"  ><?php i18n('ASK_DELETE_ALL');?></a></div>
 			<div id="filter-search">
 				<form><input type="text" autocomplete="off" class="text" id="q" placeholder="<?php echo lowercase(i18n_r('FILTER')); ?>..." /> &nbsp; <a href="pages.php" class="cancel"><?php i18n('CANCEL'); ?></a></form>
 			</div>
