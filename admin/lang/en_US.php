@@ -168,6 +168,7 @@ $i18n = array(
 "YES"								=>	"Yes",
 "NO"								=>	"No",
 "DATE"							=>	"Date",
+"PERMS"							=>  "Perms",
 
 /* 
  * For: components.php

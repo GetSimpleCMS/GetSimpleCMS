@@ -147,7 +147,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 			echo '<td style="width:80px;text-align:right;" ><span>'. $upload['size'] .'</span></td>';
 
 			// get the file permissions.
-			if ($isUnixHost) {
+			if ($isUnixHost && defined('GSDEBUG')) {
 				$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
 				if ($filePerms){
 					echo '<td style="width:70px;text-align:right;"><span>'.$filePerms.'</span></td>';
