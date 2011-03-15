@@ -62,7 +62,7 @@
 			},
 			onUploadComplete: function() {
 				$('#loader').fadeOut(500);
-				$('#imageTable').load(location.href+' #imageTable','');
+				$('#maincontent').load(location.href+' #maincontent','');
 			},
 			onSelectError: function(file,errorCode,errorMsg) {
 				//alert(file + ' Error ' + errorCode +':'+errorMsg);
