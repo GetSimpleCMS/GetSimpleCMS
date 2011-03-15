@@ -746,7 +746,7 @@ function defined_array($constants) {
  *
  * Check to see if a folder is empty or not
  * 
- * @param string #folder
+ * @param string $folder
  * @return bool
  */
 function check_empty_folder($folder) {
@@ -760,6 +760,17 @@ function check_empty_folder($folder) {
 		closedir ( $handle );
 	}
 	return ( count ( $files ) > 0 ) ? FALSE : TRUE;
+}
+
+
+/**
+ * Validate a URL String
+ * 
+ * @param string $u
+ * @return bool
+ */
+function validate_url($u) {
+	return filter_var($u,FILTER_VALIDATE_URL);
 }
 
 ?>

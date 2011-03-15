@@ -44,23 +44,49 @@ function innovation_show() {
 	
 	// submitted form
 	if (isset($_POST['submit'])) {
-		$facebook = $_POST['facebook'];
-		$twitter = $_POST['twitter'];
-		$linkedin = $_POST['linkedin'];
+		$facebook=null;	$twitter=null; $linkedin=null;
 		
-		$xml = @new SimpleXMLElement('<item></item>');
-		$xml->addChild('facebook', $facebook);
-		$xml->addChild('twitter', $twitter);
-		$xml->addChild('linkedin', $linkedin);
+		# check to see if the URLs provided are valid
+		if ($_POST['facebook'] != '') {
+			if (validate_url($_POST['facebook'])) {
+				$facebook = $_POST['facebook'];
+			} else {
+				$error .= 'Facebook URL is not valid. ';
+			}
+		}
 		
-		if (! $xml->asXML($innovation_file)) {
-			$error = i18n_r('CHMOD_ERROR');
-		} else {
-			$x = getXML($innovation_file);
-			$facebook = $x->facebook;
-			$twitter = $x->twitter;
-			$linkedin = $x->linkedin;
-			$success = i18n_r('SETTINGS_UPDATED');
+		if ($_POST['twitter'] != '') {
+			if (validate_url($_POST['twitter'])) {
+				$twitter = $_POST['twitter'];
+			} else {
+				$error .= 'Twitter URL is not valid. ';
+			}
+		}
+		
+		if ($_POST['linkedin'] != '') {
+			if (validate_url($_POST['linkedin'])) {
+				$linkedin = $_POST['linkedin'];
+			} else {
+				$error .= 'LinkedIn URL is not valid.';
+			}
+		}
+		
+		# if there are no errors, dave data
+		if (!$error) {
+			$xml = @new SimpleXMLElement('<item></item>');
+			$xml->addChild('facebook', $facebook);
+			$xml->addChild('twitter', $twitter);
+			$xml->addChild('linkedin', $linkedin);
+			
+			if (! $xml->asXML($innovation_file)) {
+				$error = i18n_r('CHMOD_ERROR');
+			} else {
+				$x = getXML($innovation_file);
+				$facebook = $x->facebook;
+				$twitter = $x->twitter;
+				$linkedin = $x->linkedin;
+				$success = i18n_r('SETTINGS_UPDATED');
+			}
 		}
 	}
 	
