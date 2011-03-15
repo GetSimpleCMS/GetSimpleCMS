@@ -69,7 +69,7 @@ if(isset($_GET['nozip'])) {
 			foreach ($filenames as $file) {
 				if($file[0] != "." ) {
 					$timestamp = explode('_', $file);
-					$name = shtDate($timestamp[0]);
+					$name = lngDate($timestamp[0]);
 					clearstatcache();
 					$ss = stat($path . $file);
 					$size = fSize($ss['size']);
