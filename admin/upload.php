@@ -173,7 +173,7 @@ if (isset($_GET['newfolder'])) {
         	# check to see if folder is empty
         	$directory_delete = null;
         	if ( check_empty_folder($path.$upload['name']) ) {  
-						$directory_delete = '<a class="delconfirm" title="'.i18n_r('DELETE_FOLDER').': '. $upload['name'] .'" href="deletefile.php?folder='. $path.$upload['name'] . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a>';
+						$directory_delete = '<a class="delconfirm" title="'.i18n_r('DELETE_FOLDER').': '. $upload['name'] .'" href="deletefile.php?path='.$urlPath.'&folder='. $upload['name'] . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a>';
 					}
         	
           echo '<tr class="All folder" >';
