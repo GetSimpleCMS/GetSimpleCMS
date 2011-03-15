@@ -54,9 +54,7 @@ jQuery.fn.wait = function(time, type) {
   });
 };
 
-jQuery(document).ready(function() { 
-	
-
+function attachFilterChangeEvent() {
 	$("#imageFilter").change(function(){
 		$('#loader').show();
 		var filterx = $(this).val();
@@ -73,8 +71,12 @@ jQuery(document).ready(function() {
    	$("#imageTable tr.deletedrow").hide();
    	$('#loader').fadeOut(500);
 	});
+}
 
-    	
+jQuery(document).ready(function() { 
+	// upload.php
+	attachFilterChangeEvent();
+
 	//image.php	
 	$("select#img-info").change(function() {
 		var codetype = $(this).val();

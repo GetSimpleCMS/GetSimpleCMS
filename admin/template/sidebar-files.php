@@ -62,7 +62,9 @@
 			},
 			onUploadComplete: function() {
 				$('#loader').fadeOut(500);
-				$('#maincontent').load(location.href+' #maincontent','');
+				$('#maincontent').load(location.href+' #maincontent', function() {
+					attachFilterChangeEvent();
+				});
 			},
 			onSelectError: function(file,errorCode,errorMsg) {
 				//alert(file + ' Error ' + errorCode +':'+errorMsg);
