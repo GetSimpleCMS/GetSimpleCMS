@@ -189,7 +189,9 @@ jQuery(document).ready(function() {
 				      	if(jQuery().quickpaginate) {
 				          $('table.paginate tr').quickpaginate( { perpage: 15, showcounter: true, pager : $("#page_counter") } );
 				        }
-			          //added by dniesel
+				        
+				        $('div.wrapper .updated').remove();
+				        $('div.wrapper .error').remove();
                 if($(response).find('div.error').html()) {
                   $('div.bodycontent').before('<div class="error">'+ $(response).find('div.error').html() + '</div>'); 
                 }
