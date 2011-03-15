@@ -173,7 +173,7 @@ if (isset($_GET['newfolder'])) {
         	# check to see if folder is empty
         	$directory_delete = null;
         	if ( check_empty_folder($path.$upload['name']) ) {  
-						$directory_delete = '<a class="delconfirm" title="'.i18n_r('DELETE_FOLDER').': '. $upload['name'] .'" href="deletefile.php?path='.$urlPath.'&folder='. $upload['name'] . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a>';
+						$directory_delete = '<a class="delconfirm" title="'.i18n_r('DELETE_FOLDER').': '. $upload['name'] .'" href="deletefile.php?path='.$urlPath.'&amp;folder='. $upload['name'] . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a>';
 					}
         	
           echo '<tr class="All folder" >';
@@ -199,7 +199,7 @@ if (isset($_GET['newfolder'])) {
 					echo '<td class="imgthumb" >';
 					if ($upload['type'] == i18n_r('IMAGES') .' Images') {
 						$gallery = 'rel="facybox"';
-						$pathlink = 'image.php?i='.$upload['name'].'&path='.$subPath;
+						$pathlink = 'image.php?i='.$upload['name'].'&amp;path='.$subPath;
 						$thumbLink = $urlPath.'thumbsm.'.$upload['name'];
 						if (file_exists('../data/thumbs/'.$thumbLink)) {
 							$imgSrc='<img src="../data/thumbs/'. $thumbLink .'" />';
@@ -224,7 +224,7 @@ if (isset($_GET['newfolder'])) {
 					}
 					
 					echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
-					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] . '&path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>';
+					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>';
 					echo '</tr>';
 					exec_action('file-extras');
 				}

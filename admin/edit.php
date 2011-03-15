@@ -109,7 +109,7 @@ foreach ($templates as $file)
 }
 
 // SETUP CHECKBOXES
-if ($menuStatus != '') { $sel = 'checked';	}
+if ($menuStatus != '') { $sel_m = 'checked';	}
 $sel_p = ($private != '') ? 'checked' : '' ;
 if ($menu == '') { $menu = $title; } 
 ?>		
@@ -212,7 +212,7 @@ if ($menu == '') { $menu = $title; }
 				</p>
 				
 				<p class="inline">
-					<label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label> &ndash; <span><a href="navigation.php" rel="facybox" ><?php echo strip_tags(i18n_r('VIEW')); ?></a></span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel; ?> /><br />
+					<label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label> &ndash; <span><a href="navigation.php" rel="facybox" ><?php echo strip_tags(i18n_r('VIEW')); ?></a></span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> /><br />
 				</p>
 				<div id="menu-items">
 					<span style="float:left;width:84%" ><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span><span style="float:left;width:10%;" ><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>
@@ -280,7 +280,7 @@ if ($menu == '') { $menu = $title; }
 						echo i18n_r('LAST_SAVED').': '. lngDate($pubDate).'&nbsp; ';
 					}
 					if ( file_exists(GSBACKUPSPATH.'pages/'.$url.'.bak.xml') ) {	
-						echo '-&nbsp; <a href="backup-edit.php?p=view&id='.$url.'" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
+						echo '-&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
 					} 
 			?></small>
 		</form>
