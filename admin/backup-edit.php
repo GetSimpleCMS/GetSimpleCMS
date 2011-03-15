@@ -103,6 +103,43 @@ elseif ($p == 'restore') {
 		<textarea id="codetext" wrap='off' style="background:#f4f4f4;padding:4px;width:635px;color:#444;border:1px solid #666;" readonly ><?php echo strip_decode($content); ?></textarea>
 
 		</div>
+		
+		<?php if ($HTMLEDITOR != '') { 
+			if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
+			if (defined('GSEDITORLANG')) { $EDLANG = GSEDITORLANG; } else {	$EDLANG = 'en'; }
+		?>
+		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
+		<script type="text/javascript">
+		var editor = CKEDITOR.replace( 'codetext', {
+			skin : 'getsimple',
+			language : '<?php echo $EDLANG; ?>',
+			defaultLanguage : '<?php echo $EDLANG; ?>',
+			<?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
+				$fullpath = suggest_site_path();
+			?>
+			contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
+			<?php } ?>
+			entities : true,
+			uiColor : '#FFFFFF',
+			height: '<?php echo $EDHEIGHT; ?>',
+			baseHref : '<?php echo $SITEURL; ?>',
+			toolbar : [['Source']],
+			removePlugins: 'image,link,elementspath,resize'
+		});
+		// set editor to read only mode
+		editor.on('mode', function (ev) {
+			if (ev.editor.mode == 'source') {
+				$('#cke_contents_codetext .cke_source').attr("readonly", "readonly");
+			}
+			else {
+				var bodyelement = ev.editor.document.$.body;
+				bodyelement.setAttribute("contenteditable", false);
+			}		
+		});
+		</script>
+		
+		<?php } ?>
+		
 	</div>
 	
 	<div id="sidebar" >
