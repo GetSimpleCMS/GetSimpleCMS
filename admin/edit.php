@@ -109,7 +109,7 @@ foreach ($templates as $file)
 }
 
 // SETUP CHECKBOXES
-if ($menuStatus != '') { $sel_m = 'checked';	}
+$sel_m = ($menuStatus != '') ? 'checked' : '' ;
 $sel_p = ($private != '') ? 'checked' : '' ;
 if ($menu == '') { $menu = $title; } 
 ?>		
