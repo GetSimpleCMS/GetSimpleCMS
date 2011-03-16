@@ -233,10 +233,10 @@ $APIKEY = $data->apikey;
 			<form action="setup.php" method="post" accept-charset="utf-8" >
 				<div class="leftsec">
 					<label for="lang" ><?php i18n('SELECT_LANGUAGE');?>:</label>
-					<select name="lang" id="lang" class="text">
+					<select name="lang" id="lang" class="text" onchange="window.location='install.php?lang=' + this.value;">
 						<?php echo $langs; ?>
 					</select><br />
-					<a href="install.php?lang=" id="refreshlanguage" ><?php i18n('REFRESH');?></a> &nbsp;|&nbsp; <a href="http://get-simple.info/wiki/languages" target="_blank" ><?php i18n('DOWNLOAD_LANG');?></a>
+					<a href="http://get-simple.info/wiki/languages" target="_blank" ><?php i18n('DOWNLOAD_LANG');?></a>
 					</p>
 				</div>
 				<div class="clear"></div>

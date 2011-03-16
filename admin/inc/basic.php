@@ -435,7 +435,7 @@ function encode_quotes($text)  {
 /**
  * Redirect URL
  *
- * @since 2.04
+ * @since 3.0
  * @author schlex
  *
  * @param string $url
@@ -469,7 +469,7 @@ function redirect($url) {
  * Displays the default language's tranlation, but if it 
  * does not exist, it falls back to the en_US one.
  *
- * @since 2.04
+ * @since 3.0
  * @author ccagle8
  * @uses GSLANGPATH
  * @uses $i18n
@@ -506,13 +506,62 @@ function i18n($name, $echo=true) {
  *
  * Same as i18n, but returns instead of echos
  *
- * @since 2.04
+ * @since 3.0
  * @author ccagle8
  *
  * @param string $name
  */
 function i18n_r($name) {
 	return i18n($name, false);
+}
+
+/**
+ * i18n Merge
+ *
+ * Merges a plugin's language file with the global $i18n language
+ * This is the function that plugin developers will call to initiate the language merge
+ *
+ * @since 3.0
+ * @author mvlcek
+ * @uses i18n_merge_impl
+ * @uses $i18n
+ * @uses $LANG
+ *
+ * @param string $plugin
+ * @param string $language, default=null
+ * @return bool
+ */
+function i18n_merge($plugin, $language=null) {
+  global $i18n, $LANG;
+  return i18n_merge_impl($plugin, $language ? $language : $LANG, $i18n);
+}
+
+/**
+ * i18n Merge Implementation
+ *
+ * Does the merging of a plugin's language file with the global $i18n language
+ *
+ * @since 3.0
+ * @author mvlcek
+ * @uses GSPLUGINPATH
+ *
+ * @param string $plugin
+ * @param string $lang
+ * @param string $globali18n
+ * @return bool
+ */
+function i18n_merge_impl($plugin, $lang, &$globali18n) { 
+  $i18n = array();
+  if (!file_exists(GSPLUGINPATH.$plugin.'/lang/'.$lang.'.php')) {
+  	return false;
+  }
+  @include(GSPLUGINPATH.$plugin.'/lang/'.$lang.'.php'); 
+  if (count($i18n) > 0) foreach ($i18n as $code => $text) {
+    if (!array_key_exists($plugin.'/'.$code, $globali18n)) {
+    	$globali18n[$plugin.'/'.$code] = $text;
+    }
+  }
+  return true;
 }
 
 /**
@@ -772,5 +821,6 @@ function check_empty_folder($folder) {
 function validate_url($u) {
 	return filter_var($u,FILTER_VALIDATE_URL);
 }
+
 
 ?>
