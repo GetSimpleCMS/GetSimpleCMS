@@ -446,7 +446,7 @@ html {overflow-y: scroll;}
 /* basic default table style */
 .wrapper table {border-collapse:collapse;margin:0 0 20px 0;width:645px;}
 .wrapper table td {vertical-align:top;padding:4px;border-bottom:1px solid #eee;border-top:1px solid #eee;line-height:20px !important;}
-.wrapper table th {background:#FFF !important;padding:2px 4px;font-size:11px;border-top:1px solid #FFF;color:#222;font-weight:bold;text-transform:uppercase;line-height:20px !important;}
+.wrapper table th {background:#FFF !important;padding:2px 4px;font-size:11px;border-top:1px solid #FFF;color:#222;font-weight:bold;text-transform:uppercase;line-height:20px !important;text-align:left;}
 .wrapper table tr.head {}
 .wrapper table td span {font-size:12px;color:#777;}
 .wrapper table.highlight tr:nth-child(odd) { background:#f7f7f7;}
