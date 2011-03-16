@@ -118,7 +118,6 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 
 			if ($type == 'images') {
 				if ($upload['type'] == i18n_r('IMAGES') .' Images') {
-					
 					# get internal thumbnail to show beside link in table
 					$thumb = '<td class="imgthumb" style="display:table-cell" >';
 					$thumbLink = $urlPath.'thumbsm.'.$upload['name'];
@@ -136,7 +135,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 					$thumbnailLink = '<span>&nbsp;&ndash;&nbsp;&nbsp;</span><a href="javascript:void(0)" onclick="submitLink('.$CKEditorFuncNum.',\''.$sitepath.$thumbLinkExternal.'\')">'.i18n_r('THUMBNAIL').'</a>';
 					}
 				}
-				else { break; }
+				else { continue; }
 			}
 
 			$counter++;	
