@@ -149,8 +149,9 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 			// get the file permissions.
 			if ($isUnixHost && defined('GSDEBUG')) {
 				$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
-				if ($filePerms){
-					echo '<td style="width:70px;text-align:right;"><span>'.$filePerms.'</span></td>';
+				$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
+				if (($filePerms) && ($fileOwner['name'])){
+					echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 				}
 			}
 

@@ -218,8 +218,9 @@ if (isset($_GET['newfolder'])) {
 		            
 					if ($isUnixHost && defined('GSDEBUG')) {
 						$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
-						if ($filePerms){
-							echo '<td style="width:70px;text-align:right;"><span>'.$filePerms.'</span></td>';
+						$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
+						if (($filePerms) && ($fileOwner['name'])){
+							echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 						}
 					}
 					
