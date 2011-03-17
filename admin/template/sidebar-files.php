@@ -4,6 +4,8 @@
  *
  * @package GetSimple
  */
+ 
+$path = (isset($_GET['path'])) ? $_GET['path'] : "";
 ?>
 <ul class="snav">
 	<li><a href="upload.php" <?php check_menu('upload');  ?>><?php i18n('FILE_MANAGEMENT');?></a></li>
@@ -13,7 +15,7 @@
 	
 	<li class="upload">
 	<?php if (defined('GSNOUPLOADIFY')) { ?>
-	<form class="uploadform" action="<?php myself(); ?>" method="post" enctype="multipart/form-data">
+	<form class="uploadform" action="upload.php?path=<?php echo $path; ?>" method="post" enctype="multipart/form-data">
 		<p><input type="file" name="file" id="file" /></p>
 		<input type="hidden" name="hash" id="hash" value="<?php echo $SESSIONHASH; ?>" />
 		<p><input type="submit" class="submit" name="submit" value="<?php i18n('UPLOAD'); ?>" /></p>
@@ -33,7 +35,6 @@
 	}
 	// create Uploadify uploader
 	$debug = (GSDEBUG == 1) ? 'true' : 'false';
-	$path = (isset($_GET['path'])) ? $_GET['path'] : "";
 	$fileSizeLimit = toBytes(ini_get('upload_max_filesize'))/1024;
 	echo "
 	<script type=\"text/javascript\">

@@ -60,6 +60,8 @@ if (isset($_GET['folder'])) {
 	$target = GSDATAUPLOADPATH . $path . $folder;
 	if (file_exists($target)) {
 		rmdir($target);
+		// delete thumbs folder
+		rmdir(GSTHUMBNAILPATH . $path . $folder);
 		redirect("upload.php?upd=del-success&id=". $folder . "&path=".$path);
 	}
 } 

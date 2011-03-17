@@ -17,6 +17,7 @@ login_cookie_check();
 
 $path = (isset($_GET['path'])) ? "../data/uploads/".$_GET['path'] : "../data/uploads/";
 $subPath = (isset($_GET['path'])) ? $_GET['path'] : "";
+$subFolder = (empty($subPath)) ? "" : $subPath."/";
 $path = tsl($path);
 // check if host uses Linux (used for displaying permissions
 $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
@@ -46,7 +47,7 @@ if (isset($_FILES["file"]))
 		move_uploaded_file($_FILES["file"]["tmp_name"], $file_loc);
 		exec_action('file-uploaded');
 		//successfull message
-		$success = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$base.'">'. $SITEURL .'data/uploads/'.$base.'</a>';
+		$success = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$subFolder.$base.'">'. $SITEURL .'data/uploads/'.$subFolder.$base.'</a>';
 	}
 }
 
@@ -64,6 +65,9 @@ if (isset($_GET['newfolder'])) {
 			$chmod_value = 0755;
 		}
 		if (mkdir($path . $cleanname, $chmod_value)) {
+			//create folder for thumbnails
+			$thumbFolder = '../data/thumbs/'.$subFolder.$cleanname;
+			if (!(file_exists($thumbFolder))) { mkdir($thumbFolder, $chmod_value); }
 			$success = sprintf(i18n_r('FOLDER_CREATED'), $cleanname);
 		}	else { 
 			$error = i18n_r('ERROR_CREATING_FOLDER'); 
