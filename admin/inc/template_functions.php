@@ -395,7 +395,7 @@ function fSize($s) {
 		$size = '<span>'. round(($s / 1048576), 1) .'</span> MB'; // in mb
 	}
 	if ($s <= "999") {
-		$size = '<span>< 1</span> KB'; // in kb
+		$size = '<span>&lt; 1</span> KB'; // in kb
 	}
 	
 	return $size;

@@ -116,6 +116,7 @@ if (isset($_GET['newfolder'])) {
 			echo '<div class="edit-nav" >';
 			echo '<select id="imageFilter">';
 			echo '<option value="All">'.i18n_r('SHOW_ALL').'</option>';
+			if (count($filesSorted) > 0) {
 				foreach ($filesSorted as $filter) {
 					$filterArr[] = $filter['type'];
 				}
@@ -136,6 +137,7 @@ if (isset($_GET['newfolder'])) {
 						echo '<option value="'.$typeCleaned.'">'.$typeCleaned_2.'</option>';
 					}
 				}
+			}
 			echo '</select><div class="clear" ></div></div>';
 
      
@@ -180,7 +182,7 @@ if (isset($_GET['newfolder'])) {
           echo '<td class="imgthumb" ></td><td colspan="'.$cols.'">';
         
           $adm = substr($path . $upload['name'] ,  16); 
-          echo '<img src="template/images/folder.png" width="11px" /> <a href="upload.php?path='.$adm.'" ><strong>'.$upload['name'].'</strong></a>';
+          echo '<img src="template/images/folder.png" width="11" /> <a href="upload.php?path='.$adm.'" ><strong>'.$upload['name'].'</strong></a>';
                    
           echo '</td>';
           echo '<td class="delete" >'.$directory_delete.'</td>';
@@ -229,8 +231,6 @@ if (isset($_GET['newfolder'])) {
 					echo '</tr>';
 					exec_action('file-extras');
 				}
-			} else {
-				echo '<div id="imageTable"></div>';
 			}
 			echo '</table>';
 			echo '<p><em><b>'. $counter .'</b> '.i18n_r('TOTAL_FILES').' ('. fSize($totalsize) .')</em></p>';
