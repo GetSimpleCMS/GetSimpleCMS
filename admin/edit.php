@@ -287,7 +287,7 @@ if ($menu == '') { $menu = $title; }
 		
 		<?php 
 			if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
-			if (defined('GSEDITORLANG')) { $EDLANG = GSEDITORLANG; } else {	$EDLANG = 'en'; }
+			if (defined('GSEDITORLANG')) { $EDLANG = GSEDITORLANG; } else {	$EDLANG = i18n_r('CKEDITOR_LANG'); }
 			if (defined('GSEDITORTOOL')) { $EDTOOL = GSEDITORTOOL; } else {	$EDTOOL = 'basic'; }
 			if (defined('GSEDITOROPTIONS') && trim(GSEDITOROPTIONS)!="") { $EDOPTIONS = ", ".GSEDITOROPTIONS; } else {	$EDOPTIONS = ''; }
 			
@@ -312,7 +312,7 @@ if ($menu == '') { $menu = $title; }
 	        skin : 'getsimple',
 	        forcePasteAsPlainText : true,
 	        language : '<?php echo $EDLANG; ?>',
-	        defaultLanguage : '<?php echo $EDLANG; ?>',
+	        defaultLanguage : 'en',
 	        <?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
 	        	$fullpath = suggest_site_path();
 	        ?>

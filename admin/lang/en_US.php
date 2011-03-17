@@ -475,7 +475,7 @@ $i18n = array(
 "FILE_NAME" => "File Name", //multiple tr header rows
 "FILE_SIZE" => "Size", //multiple tr header rows
 "ARCHIVE_DATE" => "Archive Date", //archive.php
-
+"CKEDITOR_LANG" => "en", // edit.php ; set CKEditor language, don't forget to include CKEditor language file in translation zip
 
 "X" => "not translated"
 
