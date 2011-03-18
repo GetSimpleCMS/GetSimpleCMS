@@ -31,7 +31,7 @@ if (isset($_FILES["file"])) {
 		//set variables
 		$count = '1';
 		$file_loc = $path . clean_img_name(to7bit($_FILES["file"]["name"]));
-		$base = $_FILES["file"]["name"];
+		$base = clean_img_name(to7bit($_FILES["file"]["name"]));
 		
 		//prevent overwriting
 		while ( file_exists($file_loc) ) {
