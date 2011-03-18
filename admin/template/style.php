@@ -327,7 +327,7 @@ html {overflow-y: scroll;}
 		color:#999;
 	}
 	h5 a {text-decoration:none !important;}
-	h5 img, td.folder img {vertical-align:middle; margin:0 5px 0 0;opacity:.5;}
+	h5 img, tr.folder img {vertical-align:middle; margin:0 5px 0 0;opacity:.5;}
 	h5:hover img {opacity:1;}
 	.bodycontent ul, .bodycontent ol {margin:0 0 20px 30px;}
 	.bodycontent ul p, .bodycontent ol p {margin:0 0 10px 0;}
