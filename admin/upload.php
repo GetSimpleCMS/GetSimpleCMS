@@ -23,29 +23,29 @@ $path = tsl($path);
 $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 
 // if a file was uploaded
-if (isset($_FILES["file"]))
-{
-	if ($_FILES["file"]["error"] > 0)
-	{
+if (isset($_FILES["file"])) {
+	if ($_FILES["file"]["error"] > 0)	{
 		$error = i18n_r('ERROR_UPLOAD');
-	} 
-	else 
-	{
+	} else {
+		
 		//set variables
 		$count = '1';
-		$file_loc = $path . clean_img_name($_FILES["file"]["name"]);
+		$file_loc = $path . clean_img_name(to7bit($_FILES["file"]["name"]));
 		$base = $_FILES["file"]["name"];
 		
 		//prevent overwriting
-		while ( file_exists($file_loc) )
-		{
-			$file_loc = $path . $count.'-'. clean_img_name($_FILES["file"]["name"]);
-			$base = $count.'-'. clean_img_name($_FILES["file"]["name"]);
+		while ( file_exists($file_loc) ) {
+			$file_loc = $path . $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"]));
+			$base = $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"]));
 			$count++;
 		}
+		
 		//create file
 		move_uploaded_file($_FILES["file"]["tmp_name"], $file_loc);
+		
+		//run file upload hook
 		exec_action('file-uploaded');
+		
 		//successfull message
 		$success = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$subFolder.$base.'">'. $SITEURL .'data/uploads/'.$subFolder.$base.'</a>';
 	}
@@ -66,7 +66,7 @@ if (isset($_GET['newfolder'])) {
 		}
 		if (mkdir($path . $cleanname, $chmod_value)) {
 			//create folder for thumbnails
-			$thumbFolder = '../data/thumbs/'.$subFolder.$cleanname;
+			$thumbFolder = GSTHUMBNAILPATH.$subFolder.$cleanname;
 			if (!(file_exists($thumbFolder))) { mkdir($thumbFolder, $chmod_value); }
 			$success = sprintf(i18n_r('FOLDER_CREATED'), $cleanname);
 		}	else { 

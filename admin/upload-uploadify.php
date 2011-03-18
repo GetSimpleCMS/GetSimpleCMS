@@ -21,10 +21,10 @@ if (!defined('GSIMAGEWIDTH')) {
 }
 	
 if ($_POST['sessionHash'] === $SESSIONHASH) {
-	if (!empty($_FILES))
-	{
+	if (!empty($_FILES)){
+		
 		$tempFile = $_FILES['Filedata']['tmp_name'];
-		$name = clean_img_name($_FILES['Filedata']['name']);
+		$name = clean_img_name(to7bit($_FILES['Filedata']['name']));
 		$targetPath = (isset($_POST['path'])) ? GSDATAUPLOADPATH.$_POST['path']."/" : GSDATAUPLOADPATH;
 
 		$targetFile =  str_replace('//','/',$targetPath) . $name;
@@ -33,11 +33,9 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 		chmod($targetFile, 0644);   
 		$ext = lowercase(substr($name, strrpos($name, '.') + 1));	
 		
-		if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' )
-		{
+		if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' )	{
 			
 			$path = (isset($_POST['path'])) ? $_POST['path']."/" : "";
-			//$thumbsPath = "../data/thumbs/".$path;
 			$thumbsPath = GSTHUMBNAILPATH.$path;
 			
 			if (!(file_exists($thumbsPath))) {
@@ -49,8 +47,7 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 			//thumbnail for post
 			$imgsize = getimagesize($targetFile);
 			
-			switch(lowercase(substr($targetFile, -3)))
-			{
+			switch(lowercase(substr($targetFile, -3))){
 			    case "jpg":
 			        $image = imagecreatefromjpeg($targetFile);    
 			    break;
@@ -75,12 +72,10 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 			imagesavealpha($picture, true);
 			$bool = imagecopyresampled($picture, $image, 0, 0, 0, 0, $width, $height, $src_w, $src_h); 
 			
-			if($bool)
-			{	
+			if($bool)	{	
 				$thumbnailFile = $thumbsPath . "thumbnail." . $name;
 				
-			    switch(lowercase(substr($targetFile, -3)))
-				{
+			    switch(lowercase(substr($targetFile, -3))) {
 			        case "jpg":
 			            header("Content-Type: image/jpeg");
 			            $bool2 = imagejpeg($picture,$thumbnailFile,85);
@@ -113,12 +108,10 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 			imagesavealpha($picture, true);
 			$bool = imagecopyresampled($picture, $image, 0, 0, 0, 0, $width, $height, $src_w, $src_h); 
 			
-			if($bool)
-			{
+			if($bool)	{
 				$thumbsmFile = $thumbsPath . "thumbsm." . $name;
 				
-			    switch(lowercase(substr($targetFile, -3)))
-				{
+			    switch(lowercase(substr($targetFile, -3))) {
 			        case "jpg":
 			            header("Content-Type: image/jpeg");
 			            $bool2 = imagejpeg($picture,$thumbsmFile,85);
@@ -138,13 +131,10 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 			imagedestroy($image);
 		}	
 		echo '1';
-	}
-	else {
+	} else {
 		echo 'Invalid file type.';
 	}
-} 
-else 
-{
+} else {
 	echo 'Wrong session hash!';
 }
 ?>
