@@ -20,7 +20,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	if ( !(strpos(str_replace('http://www.', '', $SITEURL), $_SERVER['HTTP_REFERER']) === false) || !(strpos("edit.php", $_SERVER['HTTP_REFERER']) === false)) {
 		echo "<b>Invalid Referer</b><br />-------<br />"; 
 		echo 'Invalid Referer: ' . htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES);
-		die;
+		die('Invalid Referer');
 	}
 }
 
@@ -167,5 +167,7 @@ if (isset($_POST['submitted']))
 		// redirect user back to edit page 
 		redirect("edit.php?id=". $url ."&upd=edit-success&type=edit");
 	}
+} else {
+	redirect('pages.php');
 }
 ?>
