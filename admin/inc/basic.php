@@ -620,15 +620,21 @@ function strip_decode($text) {
  *
  * for backwards compatibility for before PHP 5.2
  *
- * @since 2.04
- * @author ccagle8
+ * @since 3.0
+ * @author madvic
  *
  * @param string $file
  * @return string
  */
-function pathinfo_filename($file) { //file.name.ext, returns file.name
-   if (defined('PATHINFO_FILENAME')) return pathinfo($file,PATHINFO_FILENAME);
-   if (strstr($file, '.')) return substr($file,0,strrpos($file,'.'));
+function pathinfo_filename($file) {
+	if (defined('PATHINFO_FILENAME')) return pathinfo($file,PATHINFO_FILENAME);
+	$path_parts = pathinfo($file);
+
+	if(isset($path_parts['extension']) && ($file!='..')){
+	  return substr($path_parts['basename'],0 ,strlen($path_parts['basename'])-strlen($path_parts['extension'])-1);
+	} else{
+	  return $path_parts['basename'];
+	}
 }
 
 /**
