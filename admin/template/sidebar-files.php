@@ -91,7 +91,7 @@ if (defined('GSNOUPLOADIFY')) { ?>
 	<!-- show normal upload form if javascript is turned off -->
 	<noscript>
 		<form class="uploadform" action="upload.php?path=<?php echo $path; ?>" method="post" enctype="multipart/form-data">
-			<p><input type="file" name="file[]" id="file" style="width:220px;" /></p>
+			<p><input type="file" name="file[]" id="file" style="width:220px;" multiple /></p>
 			<input type="hidden" name="hash" id="hash" value="<?php echo $SESSIONHASH; ?>" />
 			<input type="submit" class="submit" name="submit" value="<?php i18n('UPLOAD'); ?>" />
 		</form>
