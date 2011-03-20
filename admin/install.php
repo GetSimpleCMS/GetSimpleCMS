@@ -232,6 +232,7 @@ $APIKEY = $data->apikey;
 			<?php } else {?>
 			<form action="setup.php" method="post" accept-charset="utf-8" >
 				<div class="leftsec">
+					<p>
 					<label for="lang" ><?php i18n('SELECT_LANGUAGE');?>:</label>
 					<select name="lang" id="lang" class="text" onchange="window.location='install.php?lang=' + this.value;">
 						<?php echo $langs; ?>
