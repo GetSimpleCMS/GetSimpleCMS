@@ -216,7 +216,7 @@ if (count($lang_array) != 0) {
 		<div class="clear"></div>
 		<div class="leftsec">
 			<p><label for="timezone" ><?php i18n('LOCAL_TIMEZONE');?>:</label>
-			<? if( (isset($_POST['timezone'])) ) { $TIMEZONE = $_POST['timezone']; } ?>
+			<?php if( (isset($_POST['timezone'])) ) { $TIMEZONE = $_POST['timezone']; } ?>
 			<select class="text" id="timezone" name="timezone"> 
 			<?php if ($TIMEZONE == '') { echo '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>'; } else { echo '<option selected="selected"  value="'. $TIMEZONE .'">'. $TIMEZONE .'</option>'; } ?>
 			<?php include('inc/timezone_options.txt'); ?>
