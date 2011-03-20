@@ -23,31 +23,47 @@ $path = tsl($path);
 $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 
 // if a file was uploaded
-if (isset($_FILES["file"])) {
-	if ($_FILES["file"]["error"] > 0)	{
-		$error = i18n_r('ERROR_UPLOAD');
+$uploadsCount = count($_FILES['file']['name']);
+if($uploadsCount > 0) {
+ $errors = array();
+ $messages = array();
+ for ($i=0; $i < $uploadsCount; $i++) {
+	if ($_FILES["file"]["error"][$i] > 0)	{
+		$errors[] = i18n_r('ERROR_UPLOAD');
 	} else {
 		
 		//set variables
 		$count = '1';
-		$file_loc = $path . clean_img_name(to7bit($_FILES["file"]["name"]));
-		$base = clean_img_name(to7bit($_FILES["file"]["name"]));
+		$file_loc = $path . clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+		$base = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
 		
 		//prevent overwriting
 		while ( file_exists($file_loc) ) {
-			$file_loc = $path . $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"]));
-			$base = $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"]));
+			$file_loc = $path . $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+			$base = $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
 			$count++;
 		}
 		
 		//create file
-		move_uploaded_file($_FILES["file"]["tmp_name"], $file_loc);
+		move_uploaded_file($_FILES["file"]["tmp_name"][$i], $file_loc);
 		
 		//run file upload hook
 		exec_action('file-uploaded');
 		
 		//successfull message
-		$success = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$subFolder.$base.'">'. $SITEURL .'data/uploads/'.$subFolder.$base.'</a>';
+		$messages[] = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$subFolder.$base.'">'. $SITEURL .'data/uploads/'.$subFolder.$base.'</a>';
+	}
+ }
+ // after uploading all files process messages
+	if(sizeof($messages) != 0) { 
+		foreach($messages as $msg) {
+			$success .= $msg.'<br />';
+		}
+	}
+	if(sizeof($errors) != 0) {
+		foreach($errors as $msg) {
+			$error .= $msg.'<br />';
+		}
 	}
 }
 
