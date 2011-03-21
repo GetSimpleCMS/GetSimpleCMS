@@ -151,7 +151,7 @@ if ($menu == '') { $menu = $title; }
 			<!-- page title toggle screen -->
 			<p id="edit_window">
 				<label for="post-title" style="display:none;"><?php i18n('PAGE_TITLE'); ?></label>
-				<input class="text title" id="post-title" name="post-title" type="text" value="<?php echo $title; ?>" placeholder="Page Title" />
+				<input class="text title" id="post-title" name="post-title" type="text" value="<?php echo $title; ?>" placeholder="<?php i18n('PAGE_TITLE'); ?>" />
 			</p>
 				
 
