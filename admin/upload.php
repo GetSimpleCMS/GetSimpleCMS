@@ -23,50 +23,51 @@ $path = tsl($path);
 $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 
 // if a file was uploaded
-$uploadsCount = count($_FILES['file']['name']);
-if($uploadsCount > 0) {
- $errors = array();
- $messages = array();
- for ($i=0; $i < $uploadsCount; $i++) {
-	if ($_FILES["file"]["error"][$i] > 0)	{
-		$errors[] = i18n_r('ERROR_UPLOAD');
-	} else {
-		
-		//set variables
-		$count = '1';
-		$file_loc = $path . clean_img_name(to7bit($_FILES["file"]["name"][$i]));
-		$base = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
-		
-		//prevent overwriting
-		while ( file_exists($file_loc) ) {
-			$file_loc = $path . $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
-			$base = $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
-			$count++;
+if (isset($_FILES['file'])) {
+	$uploadsCount = count($_FILES['file']['name']);
+	if($uploadsCount > 0) {
+	 $errors = array();
+	 $messages = array();
+	 for ($i=0; $i < $uploadsCount; $i++) {
+		if ($_FILES["file"]["error"][$i] > 0)	{
+			$errors[] = i18n_r('ERROR_UPLOAD');
+		} else {
+			
+			//set variables
+			$count = '1';
+			$file_loc = $path . clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+			$base = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+			
+			//prevent overwriting
+			while ( file_exists($file_loc) ) {
+				$file_loc = $path . $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+				$base = $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+				$count++;
+			}
+			
+			//create file
+			move_uploaded_file($_FILES["file"]["tmp_name"][$i], $file_loc);
+			
+			//run file upload hook
+			exec_action('file-uploaded');
+			
+			//successfull message
+			$messages[] = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$subFolder.$base.'">'. $SITEURL .'data/uploads/'.$subFolder.$base.'</a>';
 		}
-		
-		//create file
-		move_uploaded_file($_FILES["file"]["tmp_name"][$i], $file_loc);
-		
-		//run file upload hook
-		exec_action('file-uploaded');
-		
-		//successfull message
-		$messages[] = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$subFolder.$base.'">'. $SITEURL .'data/uploads/'.$subFolder.$base.'</a>';
-	}
- }
- // after uploading all files process messages
-	if(sizeof($messages) != 0) { 
-		foreach($messages as $msg) {
-			$success .= $msg.'<br />';
+	 }
+	 // after uploading all files process messages
+		if(sizeof($messages) != 0) { 
+			foreach($messages as $msg) {
+				$success .= $msg.'<br />';
+			}
 		}
-	}
-	if(sizeof($errors) != 0) {
-		foreach($errors as $msg) {
-			$error .= $msg.'<br />';
+		if(sizeof($errors) != 0) {
+			foreach($errors as $msg) {
+				$error .= $msg.'<br />';
+			}
 		}
 	}
 }
-
 // if creating new folder
 if (isset($_GET['newfolder'])) {
 	$newfolder = $_GET['newfolder'];
@@ -240,7 +241,10 @@ if (isset($_GET['newfolder'])) {
 		            
 					if ($isUnixHost && defined('GSDEBUG')) {
 						$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
-						$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
+						$fileOwner = null;
+						if (function_exists('posix_getpwuid')) {
+							$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
+						}
 						if (($filePerms) && ($fileOwner['name'])){
 							echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 						}

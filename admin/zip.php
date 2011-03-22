@@ -18,7 +18,12 @@
 // check validity of request
 if ($_REQUEST['s'] === $SESSIONHASH) {
 	
-	$timestamp = date('Y-m-d-Hi');
+	
+	# fix from hameau 
+	//$timestamp = date('Y-m-d-Hi');
+	$timestamp = gmdate('Y-m-d-Hi') .'_'. date('O');
+	
+	
 	ini_set("memory_limit","600M"); 
 
 	$saved_zip_file = GSBACKUPSPATH.'zip/'. $timestamp .'_archive.zip';	
@@ -68,7 +73,8 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 	redirect('archive.php?done');
 
 } else {
-	die(i18n_r('DENIED'));
+	# page accessed directly - send back to archives page
+	redirect('archive.php');
 }
 
 exit;
