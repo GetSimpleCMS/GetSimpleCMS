@@ -21,7 +21,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 	
 	# fix from hameau 
 	//$timestamp = date('Y-m-d-Hi');
-	$timestamp = gmdate('Y-m-d-Hi') .'_'. date('O');
+	$timestamp = gmdate('Y-m-d-Hi_s');
 	
 	
 	ini_set("memory_limit","600M"); 
