@@ -40,7 +40,9 @@ create_pluginsxml();      // check that plugins have not been removed or added t
 // load each of the plugins
 foreach ($live_plugins as $file=>$en) {
   $pluginsLoaded=true;
-  require_once(GSPLUGINPATH . $file);
+  if (file_exists(GSPLUGINPATH . $file)){
+  	require_once(GSPLUGINPATH . $file);
+  }
 }
 
 
