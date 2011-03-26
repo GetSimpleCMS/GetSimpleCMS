@@ -7,7 +7,7 @@
  */
 
 $site_full_name = 'GetSimple';
-$site_version_no = '3.0B';
+$site_version_no = '3.0';
 $name_url_clean = lowercase(str_replace(' ','-',$site_full_name));
 $site_link_back_url = 'http://get-simple.info/';
 $ver_no_clean = str_replace('.','',$site_version_no);
@@ -19,7 +19,7 @@ if (isset($_GET['redirect'])){
 }
 $cookie_login = 'index.php';
 $cookie_time = '7200';  // 2 hours 
-$api_url = 'http://get-simple.info/api/start/';
+$api_url = 'http://get-simple.info/api/start/v3.php';
 if (!defined('GSVERSION')) define('GSVERSION', $site_version_no);
 
 ?>
