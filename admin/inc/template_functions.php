@@ -471,9 +471,9 @@ function valid_xml($file) {
 	$xmlv = getXML($file);
 	global $i18n;
 	if ($xmlv) {
-		return '<span class="OKmsg" >XML Valid - '.i18n_r('OK').'</span>';
+		return '<span class="OKmsg" >'.i18n_r('XML_VALID').' - '.i18n_r('OK').'</span>';
 	} else {
-		return '<span class="ERRmsg" >XML Invalid - '.i18n_r('ERROR').'!</span>';
+		return '<span class="ERRmsg" >'.i18n_r('XML_INVALID').' - '.i18n_r('ERROR').'!</span>';
 	}
 }
 

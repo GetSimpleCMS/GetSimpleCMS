@@ -443,7 +443,8 @@ $i18n = array(
 /*
  * Misc Cleanup Work
  */
- 
+
+# new to 3.0 
 "HOMEPAGE_DELETE_ERROR" => "You cannot delete your homepage", //deletefile
 "NO_ZIPARCHIVE" => "ZipArchive extension is not installed. Unable to continue", //zip
 "REDIRECT_MSG"=> "If your browser does not redirect you, click <a href=\"%s\">here</a>", //basic
@@ -476,6 +477,16 @@ $i18n = array(
 "FILE_SIZE" => "Size", //multiple tr header rows
 "ARCHIVE_DATE" => "Archive Date", //archive.php
 "CKEDITOR_LANG" => "en", // edit.php ; set CKEditor language, don't forget to include CKEditor language file in translation zip
+
+# new to 3.1 
+"XML_INVALID" => "XML Invalid", //template-functions.php
+"XML_VALID" => "XML Valid",
+
+
+
+
+
+
 
 "X" => "not translated"
 
