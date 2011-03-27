@@ -58,6 +58,16 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 		exec_action('header'); 
 	?>
 	
+	<script>
+		// check to see if core update is needed
+		jQuery(document).ready(function() { 
+			var obj = jQuery.parseJSON('<?php echo get_api_details(); ?>');
+			if(obj.status != 1) {
+				$('a.support').parent('li').append('<span class="warning">!</span>');
+			}
+		});
+	</script>
+	
 </head>
 
 <body <?php filename_id(); ?> >	

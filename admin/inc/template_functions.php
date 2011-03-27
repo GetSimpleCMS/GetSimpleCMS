@@ -980,6 +980,63 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
 	return $menu;
 }
 
+/**
+ * Get API Details
+ *
+ * Returns the contents of an API url request
+ *
+ * This is needed because of the "XmlHttpRequest error: Origin null is not allowed by Access-Control-Allow-Origin"
+ * error that javascript gets when trying to access outside domains sometimes. 
+ *
+ * @since 3.1
+ * @uses GSADMININCPATH
+ * @uses GSVERSION
+ *
+ * @param string $type, default is 'core'
+ * @param array $args, default is empty
+ * 
+ * @returns string
+ */
+function get_api_details($type='core', $args=array()) {
+	include(GSADMININCPATH.'configuration.php');
+	
+	# core api details
+	if ($type=='core') {
+		$curl_URL = $api_url .'?v='.GSVERSION;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_URL, $curl_URL);
+		$data = curl_exec($ch);
+		curl_close($ch);
+		return $data;
+	}
+	
+	# plugin api details. requires a passed plugin id
+	if ($type=='plugin' && $args['plugin_id']!='') {
+		
+	}
+	
+	# custom api details. requires a passed url
+	if ($type=='custom' && $args['url']!='') {
+		
+	}
+}
 
+/**
+ * Get GetSimple Version
+ *
+ * Returns the version of this GetSimple installation
+ *
+ * @since 3.1
+ * @uses GSADMININCPATH
+ * @uses GSVERSION
+ * 
+ * @returns string
+ */
+function get_gs_version() {
+	include(GSADMININCPATH.'configuration.php');
+	return GSVERSION;
+}
 
 ?>

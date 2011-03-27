@@ -31,15 +31,8 @@ $php_modules = get_loaded_extensions();
 			<h3><?php echo $site_full_name; ?> <?php i18n('VERSION');?></h3>
 			<table class="highlight healthcheck">
 				<?php
-				if (in_arrayi('curl', $php_modules))
-				{
-					$curl_URL = $api_url .'?v='.$site_version_no;
-					$ch = curl_init();
-					curl_setopt($ch, CURLOPT_TIMEOUT, 2);
-					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-					curl_setopt($ch, CURLOPT_URL, $curl_URL);
-					$data = curl_exec($ch);
-					curl_close($ch);
+				if (in_arrayi('curl', $php_modules)) {
+					$data = get_api_details();
 					if ($data !== false) {
 						$apikey = json_decode($data);
 						$verstatus = $apikey->status;

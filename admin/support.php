@@ -38,13 +38,7 @@ if(isset($_POST['submitted'])) {
 
 $php_modules = get_loaded_extensions();
 if (in_arrayi('curl', $php_modules)){
-	$curl_URL = $api_url .'?v='.$site_version_no;
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_TIMEOUT, 2);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_URL, $curl_URL);
-	$data = curl_exec($ch);
-	curl_close($ch);
+	$data = get_api_details();
 	if ($data !== false) {
 		$apikey = json_decode($data);
 		$verstatus = $apikey->status;
@@ -55,7 +49,7 @@ if (in_arrayi('curl', $php_modules)){
 } else {
 	$verstatus = '10';
 }
-$verstatus = '0';
+
 if ($verstatus == '0') {
 	$latest    = isset($apikey) ? $apikey->latest : '';  
 	$ver = i18n_r('WARNING').': '.$site_full_name.' '.i18n_r('UPG_NEEDED').' <b>'.$latest .'</b> &ndash; <a href="http://get-simple.info/download/" target="_blank" >'. i18n_r('DOWNLOAD').'</a>';
