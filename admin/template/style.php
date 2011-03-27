@@ -115,6 +115,7 @@ html {overflow-y: scroll;}
 	#settings .wrapper .nav li a.settings,
 	#components .wrapper .nav li a.theme,
 	#theme .wrapper .nav li a.theme,
+	#sitemap .wrapper .nav li a.theme,
 	#theme-edit .wrapper .nav li a.theme,
 	#navigation .wrapper .nav li a.theme,
 	#upload .wrapper .nav li a.files,

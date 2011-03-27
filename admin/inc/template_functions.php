@@ -1136,15 +1136,19 @@ function generate_sitemap() {
 	if (!defined('GSDONOTPING')) {
 		if (file_exists(GSROOTPATH .'sitemap.xml')){
 			if( 200 === ($status=pingGoogleSitemaps($SITEURL.'sitemap.xml')))	{
-				#error_log(i18n_r('SITEMAP_CREATED'));
+				#sitemap successfully created & pinged
+				return true;
 			} else {
 				error_log(i18n_r('SITEMAP_ERRORPING'));
+				return i18n_r('SITEMAP_ERRORPING');
 			}
 		} else {
 			error_log(i18n_r('SITEMAP_ERROR'));
+			return i18n_r('SITEMAP_ERROR');
 		}
 	} else {
-		error_log(i18n_r('SITEMAP_ERRORPING'));
+		#sitemap successfully created - did not ping
+		return true;
 	}
 }
 

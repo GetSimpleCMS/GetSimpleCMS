@@ -12,8 +12,8 @@
 $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
-if (!file_exists('../sitemap.xml')) {
-	generate_sitemap();
+if (!generate_sitemap()) {
+	$error = generate_sitemap();
 }
 ?>
 <?php get_template('header', cl($SITENAME).' &raquo; '.strip_tags(i18n_r('SIDE_VIEW_SITEMAP'))); ?>
