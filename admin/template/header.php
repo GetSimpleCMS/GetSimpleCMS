@@ -64,6 +64,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 			var obj = jQuery.parseJSON('<?php echo get_api_details(); ?>');
 			if(obj.status != 1) {
 				$('a.support').parent('li').append('<span class="warning">!</span>');
+				$('a.support').attr('href', 'health-check.php');
 			}
 		});
 	</script>

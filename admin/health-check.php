@@ -31,17 +31,14 @@ $php_modules = get_loaded_extensions();
 			<h3><?php echo $site_full_name; ?> <?php i18n('VERSION');?></h3>
 			<table class="highlight healthcheck">
 				<?php
-				if (in_arrayi('curl', $php_modules)) {
-					$data = get_api_details();
-					if ($data !== false) {
-						$apikey = json_decode($data);
-						$verstatus = $apikey->status;
-					} else {
-						$apikey = null;
-						$verstatus = null;
-					}
-				} else {
-					$verstatus = '10';
+				
+				# check to see if there is a core update needed
+				$data = get_api_details();
+				if ($data)	{
+					$apikey = json_decode($data);
+					$verstatus = $apikey->status;
+				}	else {
+					$verstatus = null;
 				}
 				
 				if ($verstatus == '0') {

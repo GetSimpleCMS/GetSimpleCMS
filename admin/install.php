@@ -146,17 +146,14 @@ $APIKEY = $data->apikey;
 
 			<table class="highlight healthcheck">
 			<?php
-			if (in_arrayi('curl', $php_modules)) {
-				$data = get_api_details();
-				if ($data !== false)	{
-					$apikey = json_decode($data);
-					$verstatus = $apikey->status;
-				}	else {
-					$apikey = null;
-					$verstatus = null;
-				}
-			} else {
-				$verstatus = '10';
+			
+			# check to see if there is a core update needed
+			$data = get_api_details();
+			if ($data)	{
+				$apikey = json_decode($data);
+				$verstatus = $apikey->status;
+			}	else {
+				$verstatus = null;
 			}
 			
 			if ($verstatus == '0') {

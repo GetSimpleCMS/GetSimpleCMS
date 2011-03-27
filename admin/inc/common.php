@@ -53,6 +53,15 @@ define('GSBACKUPSPATH', GSROOTPATH. 'backups/');
 define('GSTHEMESPATH', GSROOTPATH. 'theme/');
 define('GSUSERSPATH', GSROOTPATH. 'data/users/');
 define('GSBACKUSERSPATH', GSROOTPATH. 'backups/users/');
+define('GSCACHEPATH', GSROOTPATH. 'data/cache/');
+if (!file_exists(GSCACHEPATH)) {
+	if (defined('GSCHMOD')) { 
+		$chmod_value = GSCHMOD; 
+	} else {
+		$chmod_value = 0755;
+	}
+	mkdir(GSCACHEPATH, $chmod_value);
+}
 
 /**
  * Debugging

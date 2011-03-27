@@ -164,6 +164,7 @@ function restore_bak($id) {
 		copy($tmpfile, $newfile);
 		unlink($tmpfile);
 	}
+	generate_sitemap();
 } 
 
 /**
@@ -990,7 +991,7 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
  *
  * @since 3.1
  * @uses GSADMININCPATH
- * @uses GSVERSION
+ * @uses GSCACHEPATH
  *
  * @param string $type, default is 'core'
  * @param array $args, default is empty
@@ -1002,25 +1003,40 @@ function get_api_details($type='core', $args=array()) {
 	
 	# core api details
 	if ($type=='core') {
-		$curl_URL = $api_url .'?v='.GSVERSION;
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_TIMEOUT, 2);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_URL, $curl_URL);
-		$data = curl_exec($ch);
-		curl_close($ch);
-		return $data;
+		$fetch_this_api = $api_url .'?v='.GSVERSION;
 	}
 	
 	# plugin api details. requires a passed plugin id
 	if ($type=='plugin' && $args['plugin_id']!='') {
-		
+		$fetch_this_api = '';
 	}
 	
 	# custom api details. requires a passed url
 	if ($type=='custom' && $args['url']!='') {
-		
+		$fetch_this_api = '';
 	}
+	
+	# check to see if cache is available for this
+	$cachefile = md5($fetch_this_api).'.txt';
+	if (file_exists($cachefile) && time() - 600 < filemtime($cachefile)) {
+		# grab the api request from the cache
+		$data = file_get_contents(GSCACHEPATH.$cachefile);
+	} else {	
+		# make the api call
+		if (function_exists('curl_exec')) {
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_URL, $fetch_this_api);
+			$data = curl_exec($ch);
+			curl_close($ch);
+		} else {
+			$data = file_get_contents($fetch_this_api);
+		}
+		file_put_contents(GSCACHEPATH.$cachefile, $data);
+  	chmod(GSCACHEPATH.$cachefile, 0644);
+	}
+	return $data;
 }
 
 /**
@@ -1037,6 +1053,99 @@ function get_api_details($type='core', $args=array()) {
 function get_gs_version() {
 	include(GSADMININCPATH.'configuration.php');
 	return GSVERSION;
+}
+
+
+/**
+ * Creates Sitemap
+ *
+ * Creates sitemap.xml in the site's root.
+ */
+function generate_sitemap() {
+	
+	// Variable settings
+	global $SITEURL;
+	$path = GSDATAPAGESPATH;
+	$count="0";
+	
+	$filenames = getFiles($path);
+	
+	if (count($filenames) != 0)
+	{ 
+		foreach ($filenames as $file)
+		{
+			if (isFile($file, $path, 'xml'))
+			{
+				$data = getXML($path . $file);
+				$status = $data->menuStatus;
+				$pagesArray[$count]['url'] = $data->url;
+				$pagesArray[$count]['parent'] = $data->parent;
+				$pagesArray[$count]['date'] = $data->pubDate;
+				$pagesArray[$count]['private'] = $data->private;
+				$pagesArray[$count]['menuStatus'] = $data->menuStatus;
+				$count++;
+			}
+		}
+	}
+	
+	$pagesSorted = subval_sort($pagesArray,'menuStatus');
+	
+	if (count($pagesSorted) != 0)
+	{ 
+		$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset></urlset>');
+		$xml->addAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd', 'http://www.w3.org/2001/XMLSchema-instance');
+		$xml->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+		
+		foreach ($pagesSorted as $page)
+		{	
+			if ($page['private'] != 'Y')
+			{
+				// set <loc>
+				$pageLoc = find_url($page['url'], $page['parent']);
+				
+				// set <lastmod>
+				$tmpDate = date("Y-m-d H:i:s", strtotime($page['date']));
+				$pageLastMod = makeIso8601TimeStamp($tmpDate);
+				
+				// set <changefreq>
+				$pageChangeFreq = 'weekly';
+				
+				// set <priority>
+				if ($page['menuStatus'] == 'Y') {
+					$pagePriority = '1.0';
+				} else {
+					$pagePriority = '0.5';
+				}
+				
+				//add to sitemap
+				$url_item = $xml->addChild('url');
+				$url_item->addChild('loc', $pageLoc);
+				$url_item->addChild('lastmod', $pageLastMod);
+				$url_item->addChild('changefreq', $pageChangeFreq);
+				$url_item->addChild('priority', $pagePriority);
+				exec_action('sitemap-additem');
+			}
+			
+			//create xml file
+			$file = GSROOTPATH .'sitemap.xml';
+			exec_action('save-sitemap');
+			XMLsave($xml, $file);
+		}
+	}
+	
+	if (!defined('GSDONOTPING')) {
+		if (file_exists(GSROOTPATH .'sitemap.xml')){
+			if( 200 === ($status=pingGoogleSitemaps($SITEURL.'sitemap.xml')))	{
+				#error_log(i18n_r('SITEMAP_CREATED'));
+			} else {
+				error_log(i18n_r('SITEMAP_ERRORPING'));
+			}
+		} else {
+			error_log(i18n_r('SITEMAP_ERROR'));
+		}
+	} else {
+		error_log(i18n_r('SITEMAP_ERRORPING'));
+	}
 }
 
 ?>

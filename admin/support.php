@@ -10,57 +10,6 @@
 $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
-
-$path = GSDATAOTHERPATH;
-$bakpath = GSBACKUPSPATH.'other/';
-
-# if the undo command was invoked
-if (isset($_GET['undo'])) { 
-	$nonce = $_GET['nonce'];
-	if(!check_nonce($nonce, "undo", "support.php")) {
-		die("CSRF detected!");	
-	}
-	$ufile = 'cp_settings.xml';
-	undo($ufile, $path, $bakpath);
-	redirect('support.php?rest=true');
-}
-
-if (isset($_GET['restored'])) { 
-	$restored = 'true'; 
-} else {
-	$restored = 'false';
-}
-
-# were changes submitted?
-if(isset($_POST['submitted'])) {
-	$success = i18n_r('SETTINGS_UPDATED').'. <a href="support.php?undo&nonce='.get_nonce("restore", "support.php").'">'.i18n_r('UNDO').'</a>';
-}
-
-$php_modules = get_loaded_extensions();
-if (in_arrayi('curl', $php_modules)){
-	$data = get_api_details();
-	if ($data !== false) {
-		$apikey = json_decode($data);
-		$verstatus = $apikey->status;
-	} else {
-		$apikey = null;
-		$verstatus = null;
-	}
-} else {
-	$verstatus = '10';
-}
-
-if ($verstatus == '0') {
-	$latest    = isset($apikey) ? $apikey->latest : '';  
-	$ver = i18n_r('WARNING').': '.$site_full_name.' '.i18n_r('UPG_NEEDED').' <b>'.$latest .'</b> &ndash; <a href="http://get-simple.info/download/" target="_blank" >'. i18n_r('DOWNLOAD').'</a>';
-} elseif ($verstatus == '1') {
-	$ver = null;
-} elseif ($verstatus == '2') {
-	$ver = null;
-} else {
-	$ver = i18n_r('WARNING').': '.i18n_r('CANNOT_CHECK').': <b>'.$site_version_no.'</b> &ndash; <a href="http://get-simple.info/download" target="_blank" >'. i18n_r('DOWNLOAD').'</a>';
-}
-			
 ?>
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT') ); ?>
@@ -80,11 +29,6 @@ if ($verstatus == '0') {
 		</p>
 
 		<ol>
-			<?php 
-				if ($ver) {
-					echo '<li style="color:#cc0000;" ><p>'.$ver.'</p></li>';
-				} 
-			?>
 			<?php if (file_exists($path . 'logs/failedlogins.log')) { ?>
 				<li><p><a href="log.php?log=failedlogins.log"><?php i18n('VIEW_FAILED_LOGIN');?></a></p></li>
 			<?php } ?>
