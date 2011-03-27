@@ -31,6 +31,7 @@ if (isset($_GET['id'])) {
 		exec_action('page-delete');
 		updateSlugs($id);
 		delete_file($id);
+		generate_sitemap();
 		redirect("pages.php?upd=edit-success&id=". $id ."&type=delete");
 	}
 } 

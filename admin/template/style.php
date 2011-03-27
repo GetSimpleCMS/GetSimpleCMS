@@ -492,9 +492,12 @@ sup {
 #maincontent .main .section {padding-top:40px;}
 #maincontent .main pre {
 	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; 
-	line-height:18px;
-	font-size:12px;
+	line-height:15px;
+	font-size:11px;
 	display:block;
+	padding-bottom:15px;
+	color:#555;
+	overflow:auto;
 }
 
 

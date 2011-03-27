@@ -44,8 +44,6 @@
 		echo '<div class="error"><b>'.i18n_r('ERROR').':</b> '. $ptype .'.</div>';
 	} elseif ($restored == 'true') { 
 		echo '<div class="updated">'.i18n_r('ER_OLD_RESTORED').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a></div>';
-	} elseif (isset($_GET['rest']) && $_GET['rest']=='true') { 
-		echo '<div class="updated">'.i18n_r('ER_OLD_RESTORED').'. <a href="support.php?undo&nonce='.get_nonce("undo", "support.php").'">'.i18n_r('UNDO').'</a></div>';
 	} elseif ($update == 'pwd-success') {
 		echo '<div class="updated">'.i18n_r('ER_NEW_PWD_SENT').'. <a href="index.php">'.i18n_r('LOGIN').'</a></div>';
 	} elseif ($update == 'pwd-error') {

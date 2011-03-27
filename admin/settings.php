@@ -33,6 +33,7 @@ if (isset($_GET['undo'])) {
 	# perform undo
 	undo($file, GSUSERSPATH, GSBACKUSERSPATH);
 	undo($wfile, GSDATAOTHERPATH, GSBACKUPSPATH.'other/');
+	generate_sitemap();
 	
 	# redirect back to yourself to show the new restored data
 	redirect('settings.php?restored=true');
@@ -139,6 +140,7 @@ if(isset($_POST['submitted'])) {
 		
 		if (!$error) {
 			$success = i18n_r('ER_SETTINGS_UPD').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>';
+			generate_sitemap();
 		}
 		
 	}

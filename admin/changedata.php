@@ -165,6 +165,7 @@ if (isset($_POST['submitted']))
 		XMLsave($xml, $file);
 		
 		// redirect user back to edit page 
+		generate_sitemap();
 		redirect("edit.php?id=". $url ."&upd=edit-success&type=edit");
 	}
 } else {

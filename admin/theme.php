@@ -63,7 +63,7 @@ while ($file = readdir($themes_handle)) {
 }
 ?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('ACTIVATE_THEME')); ?>
+<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); ?>
 	
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('THEME_MANAGEMENT');?></h1>
 	<?php include('template/include-nav.php'); ?>
@@ -76,7 +76,6 @@ while ($file = readdir($themes_handle)) {
 		<h3><?php i18n('CHOOSE_THEME');?></h3>
 		<form action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" accept-charset="utf-8" >
 		<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("activate"); ?>" />			
-		<p style="display:none" id="waiting" ><?php i18n('SITEMAP_WAIT');?></p>
 
 		<p><select class="text" style="width:250px;" name="template" >
 					<?php echo $theme_options; ?>
