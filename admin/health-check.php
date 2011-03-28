@@ -129,30 +129,12 @@ $php_modules = get_loaded_extensions();
 							}							
 						}
 
-						$path = GSBACKUPSPATH.'other/';
-						$data = getFiles($path);
-						sort($data);
-						foreach($data as $file) {
-							if( isFile($file, $path) ) {
-								echo '<tr><td>/backups/other/' . $file .'</td><td>' . valid_xml($path . $file) .'</td></tr>';
-							}							
-						}
-						
-						$path = GSBACKUPSPATH.'users/';
+						$path = GSUSERSPATH;
 						$data = getFiles($path);
 						sort($data);
 						foreach($data as $file) {
 							if( isFile($file, $path) ) {
 								echo '<tr><td>/backups/users/' . $file .'</td><td>' . valid_xml($path . $file) .'</td></tr>';
-							}							
-						}
-
-						$path = GSBACKUPSPATH.'pages/';
-						$data = getFiles($path);
-						sort($data);
-						foreach($data as $file) {
-							if( isFile($file, $path) ) {
-								echo '<tr><td>/backups/pages/' . $file .'</td><td>' . valid_xml($path . $file) .'</td></tr>';
 							}							
 						}
 				?>

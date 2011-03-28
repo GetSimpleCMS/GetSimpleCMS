@@ -20,22 +20,27 @@ $counter = '0';
 $table = '';
 
 $pluginfiles = getFiles(GSPLUGINPATH);
-foreach ($pluginfiles as $fi)
-{
+sort($pluginfiles);
+foreach ($pluginfiles as $fi){
 	$pathExt = pathinfo($fi,PATHINFO_EXTENSION );
 	$pathName = pathinfo_filename($fi);
 	
-	if ($pathExt=="php")
-	{
+	if ($pathExt=="php") {
 		$table .= '<tr id="tr-'.$counter.'" >';
 		$table .= '<td><b>'.$plugin_info[$pathName]['name'] .'</b></td>';
 		$table .= '<td><span>'.$plugin_info[$pathName]['description'] .'<br />';
 		$table .= i18n_r('PLUGIN_VER') .' '. $plugin_info[$pathName]['version'].' &mdash; '.i18n_r('AUTHOR').': <a href="'.$plugin_info[$pathName]['author_url'].'" target="_blank">'.$plugin_info[$pathName]['author'].'</a></span></td>';
 		if ($live_plugins[$fi]=='true'){
-	    $table.= '<td style="width:60px;" ><a href="plugins.php?set='.$fi.'" class="cancel" >'.i18n_r('DISABLE').'</a></td>';	  
+			$cls_Enabled = 'hidden';
+			$cls_Disabled = '';
 		} else {
-		  $table.= '<td style="width:60px;" ><a href="plugins.php?set='.$fi.'">'.i18n_r('ENABLE').'</a></td>';
-		}		
+			$cls_Enabled = '';
+			$cls_Disabled = 'hidden';
+		}
+	  $table.= '<td style="width:60px;" class="status" >
+	  	<a href="plugins.php?set='.$fi.'" class="toggleEnable '.$cls_Enabled.'" title="'.i18n_r('ENABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('ENABLE').'</a>
+	  	<a href="plugins.php?set='.$fi.'" class="cancel toggleEnable '.$cls_Disabled.'" title="'.i18n_r('DISABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('DISABLE').'</a>
+	  </td>';	  
 		$table .= "</tr>\n";
 		$counter++;
 	}	
@@ -60,7 +65,7 @@ foreach ($pluginfiles as $fi)
 		<table class="edittable highlight paginate">
 			<?php echo $table; ?>
 		</table>
-		<div id="page_counter" class="qc_pager"></div> 
+
 		<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php i18n('PLUGINS_INSTALLED'); ?></em></p>
 			
 		</div>

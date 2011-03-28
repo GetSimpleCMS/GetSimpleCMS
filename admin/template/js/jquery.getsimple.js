@@ -159,6 +159,27 @@ jQuery(document).ready(function() {
 	    }
 	  $('#loader').fadeOut(500);
 	});
+	
+	$(".toggleEnable").live("click", function($e) {
+		$e.preventDefault();
+		var message = $(this).attr("title");
+		var dlink = $(this).attr("href");
+		var mytd=$(this).parents("td");
+		//var answer = confirm(message);
+	    //if (!answer){
+	    //	return false;
+	    //} else {
+	    	mytd.find('a').toggleClass('hidden');
+	    	$.ajax({
+		       type: "GET",
+		       url: dlink,
+		       success: function(response){
+			        //successful
+			     }
+			  });
+	    //}
+	});
+	
 	$(".delconfirm").live("click", function() {
 		var message = $(this).attr("title");
 		var dlink = $(this).attr("href");
