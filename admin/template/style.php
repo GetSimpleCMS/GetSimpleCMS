@@ -6,19 +6,26 @@
  * @subpackage init
  */
 header("Content-type: text/css");
-header("Expires: ".date("D, d M Y H:i:s", time() + 3600) ); # cache for an hour
-header("Pragma: cache");
-header("Cache-Control: maxage=3600");
+
+# check to see if cache is available for this
+$cacheme = FALSE;
+$cachefile = '../../data/cache/stylesheet.txt';
+if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && $cacheme) {
+	echo file_get_contents($cachefile);
+	echo "/* Cached copy, generated ".date('H:i', filemtime($cachefile))." '".$cachefile."' */\n";
+	exit;
+} 
+ob_start();
 
 function getXML($file) {
 	$xml = file_get_contents($file);
-	$data = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA);
+	$data = simplexml_load_string($xml);
 	return $data;
 }
 
-if (file_exists(GSTHEMESPATH.'admin.xml')) {
+if (file_exists('../../theme/admin.xml')) {
 	#load admin theme xml file
-	$theme = getXML(GSTHEMESPATH.'admin.xml');
+	$theme = getXML('../../theme/admin.xml');
 	$primary_0 = trim($theme->primary->darkest);
 	$primary_1 = trim($theme->primary->darker);
 	$primary_2 = trim($theme->primary->dark);
@@ -196,13 +203,15 @@ html {overflow-y: scroll;}
 		text-shadow: 1px 1px 0px rgba(255,255,255,.5);
 		font-weight:bold;
 		text-align:center;
-		border-radius:5px;
+		-moz-border-radius: 2px;
+		-khtml-border-radius: 2px;
+		-webkit-border-radius: 2px;
 		display:block;
 		width:11px;
-		border:1px solid #D5AF00;
-		background:#F2C800;
-		background: -moz-linear-gradient(top, #F2C800 0%, #D5AF00 100%);
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#F2C800), color-stop(100%,#D5AF00));
+		border:1px solid #FFCC33;
+		background:#FFFF66;
+		background: -moz-linear-gradient(top, #FFFF66 0%, #FFCC33 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFF66), color-stop(100%,#FFCC33));
 	}
 	
 	.wrapper .nav li a em, .wrapper #pill li a em {font-style:normal;border-bottom:1px dotted #666;}
@@ -923,3 +932,8 @@ h5 .crumbs, div.h5 .crumbs {float:left;}
 #new-folder .cancel {font-size:11px;text-shadow:none !important;}
 #new-folder input.submit {font-size:11px;padding:3px;}
 #new-folder input.text {width:120px;font-size:11px;padding:3px;}
+
+<?php
+file_put_contents($cachefile, ob_get_contents());
+chmod($cachefile, 0644);
+ob_end_flush();
