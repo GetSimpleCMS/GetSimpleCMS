@@ -198,7 +198,9 @@ function getFiles($path) {
 	$handle = opendir($path) or die("Unable to open $path");
 	$file_arr = array();
 	while ($file = readdir($handle)) {
-		$file_arr[] = $file;
+		if ($file != '.' && $file != '..') {
+			$file_arr[] = $file;
+		}
 	}
 	closedir($handle);
 	return $file_arr;

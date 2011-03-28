@@ -134,15 +134,15 @@ if(!isset($base)) {
 			$LANG = $datau->LANG;
 		} else {
 			$USR = null;
-			$TIMEZONE = 'America/New_York';	
+			$TIMEZONE = null;	
 		}
 	} else {
 		$USR = null;
-		$TIMEZONE = 'America/New_York';
+		$TIMEZONE = null;
 	}
 } else {
 	$USR = null;
-	$TIMEZONE = 'America/New_York';
+	$TIMEZONE = null;
 }
 
 /** grab authorization and security data */
@@ -158,7 +158,7 @@ $SESSIONHASH = sha1($SALT . $SITENAME);
 /**
  * Timezone setup
  */
-if( function_exists('date_default_timezone_set') && ($TIMEZONE != '' || stripos($TIMEZONE, '--')) ) { 
+if( function_exists('date_default_timezone_set') && ($TIMEZONE != null || stripos($TIMEZONE, '--')) ) { 
 	date_default_timezone_set($TIMEZONE);
 }
 
@@ -167,7 +167,13 @@ if( function_exists('date_default_timezone_set') && ($TIMEZONE != '' || stripos(
  * Language control
  */
 if(!isset($LANG) || $LANG == '') {
-	$LANG = 'en_US';
+	$filenames = getFiles(GSLANGPATH);
+	$cntlang = count($filenames);
+	if ($cntlang == 1) {
+		$LANG = basename($filenames[0], ".php");
+	} elseif($cntlang > 1) {
+		$LANG = 'en_US';
+	}
 }
 include_once(GSLANGPATH . $LANG . '.php');
 

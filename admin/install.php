@@ -19,6 +19,7 @@ $php_modules = get_loaded_extensions();
 // attempt to fix permissions issues
 $dirsArray = array(
 	GSDATAPATH, 
+	GSCACHEPATH,
 	GSDATAOTHERPATH, 
 	GSDATAOTHERPATH.'logs/', 
 	GSDATAPAGESPATH, 
@@ -75,35 +76,32 @@ foreach ($dirsArray as $dir) {
 
 
 // get available language files
-$lang_handle = opendir(GSLANGPATH) or die("Unable to open ".GSLANGPATH);
+$filenames = getFiles(GSLANGPATH);
 
 if ($LANG == '') { $LANG = 'en_US'; }
 
-while ($lfile = readdir($lang_handle)) 
-{
-	if( is_file(GSLANGPATH . $lfile) && $lfile != "." && $lfile != ".." ) 
-	{
+foreach ($filenames as $lfile) {
+	if( is_file(GSLANGPATH . $lfile) && $lfile != "." && $lfile != ".." ) {
 		$lang_array[] = basename($lfile, ".php");
 	}
 }
 
-if (count($lang_array) != 0) 
-{
+if (count($lang_array) == 1) {
+	$langs = '<b>'.$lang_array[0].' &mdash; ';
+} elseif (count($lang_array) > 1) {
 	sort($lang_array);
-	$count="0"; $sel = ''; $langs = '';
+	$count="0"; $sel = ''; 
+	$langs = '<select name="lang" id="lang" class="text" onchange="window.location=\'install.php?lang=\' + this.value;">';
 	
-	foreach ($lang_array as $larray) 
-	{
+	foreach ($lang_array as $larray) {
 		if ($LANG == $larray) { $sel="selected";}
-		
 		$langs .= '<option '.$sel.' value="'.$larray.'" >'.$larray.'</option>';
 		$sel = '';
 		$count++;
 	}
-} 
-else 
-{
-	$langs = '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>';
+	$langs .= '</select><br />';
+} else {
+	$langs = '<b>'.i18n_r('NONE').'</b> &mdash; ';
 }
 
 # salt value generation
@@ -225,10 +223,9 @@ $APIKEY = $data->apikey;
 				<div class="leftsec">
 					<p>
 					<label for="lang" ><?php i18n('SELECT_LANGUAGE');?>:</label>
-					<select name="lang" id="lang" class="text" onchange="window.location='install.php?lang=' + this.value;">
-						<?php echo $langs; ?>
-					</select><br />
-					<a href="http://get-simple.info/wiki/languages" target="_blank" ><?php i18n('DOWNLOAD_LANG');?></a>
+						<?php echo $langs; ?> 
+						<noscript><a href="install.php?lang=" id="refreshlanguage" ><?php i18n('REFRESH');?></a> &nbsp;|&nbsp;</noscript> 
+						<a href="http://get-simple.info/wiki/languages" target="_blank" ><?php i18n('DOWNLOAD_LANG');?></a>
 					</p>
 				</div>
 				<div class="clear"></div>
