@@ -145,13 +145,6 @@ jQuery(document).ready(function() {
 		$('#changetitle').remove();
 	});
 
-		
-	// table functions
-	if(jQuery().quickpaginate) {
-		$('table.paginate tr').quickpaginate( { perpage: 15, showcounter: true, pager : $("#page_counter") } );
-	}
-
-
 	// other general functions
 	$(".snav a.current").live("click", function($e) {
 		$e.preventDefault();
@@ -167,6 +160,7 @@ jQuery(document).ready(function() {
 	  $('#loader').fadeOut(500);
 	});
 	$(".delconfirm").live("click", function() {
+		//$e.preventDefault();
 		var message = $(this).attr("title");
 		var dlink = $(this).attr("href");
 	    var answer = confirm(message);
@@ -181,15 +175,6 @@ jQuery(document).ready(function() {
 			       url: dlink,
 			       success: function(response){
 			          $("#"+id).remove();
-			          $("#page_counter").html("");
-			          if($("#pg_counter").length) {
-			        	  counter=$("#pg_counter").html();
-				          $("#pg_counter").html(counter-1);
-				      }
-				      	if(jQuery().quickpaginate) {
-				          $('table.paginate tr').quickpaginate( { perpage: 15, showcounter: true, pager : $("#page_counter") } );
-				        }
-				        
 				        $('div.wrapper .updated').remove();
 				        $('div.wrapper .error').remove();
                 if($(response).find('div.error').html()) {

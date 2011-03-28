@@ -103,7 +103,6 @@ if (count($pagesSorted) != 0)
 				<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th></tr>
 				<?php echo $table; ?>
 			</table>
-			<div id="page_counter" class="qc_pager"></div> 
 			<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php i18n('TOTAL_BACKUPS');?></em></p>
 		</div>
 	</div>
