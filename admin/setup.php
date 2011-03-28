@@ -191,14 +191,12 @@ if(isset($_POST['submitted'])) {
 		<div class="main" >
 			<h3><?php echo $site_full_name .' '. i18n_r('INSTALLATION'); ?></h3>
 			<form action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
+				<input name="siteurl" type="hidden" value="<?php echo $fullpath; ?>" />
+				<input name="lang" type="hidden" value="<?php echo $LANG; ?>" />
 				<div class="leftsec">
 					<p><label for="sitename" ><?php i18n('LABEL_WEBSITE'); ?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php if(isset($_POST['sitename'])) { echo $_POST['sitename']; } ?>" /></p>
-					<input name="siteurl" type="hidden" value="<?php if(isset($_POST['siteurl'])) { echo $_POST['siteurl']; } else { echo $fullpath;} ?>" />
-					<input name="lang" type="hidden" value="<?php echo $LANG; ?>" />
-					<p>
-					<label for="user" ><?php i18n('LABEL_USERNAME'); ?>:</label><input class="text" name="user" id="user" type="text" value="<?php if(isset($_POST['user'])) { echo $_POST['user']; } ?>" />
-					<label for="email" ><?php i18n('LABEL_EMAIL'); ?>:</label><input class="text" name="email" id="email" type="text" value="<?php if(isset($_POST['email'])) { echo $_POST['email']; } ?>" />
-					</p>
+					<p><label for="user" ><?php i18n('LABEL_USERNAME'); ?>:</label><input class="text" name="user" id="user" type="text" value="<?php if(isset($_POST['user'])) { echo $_POST['user']; } ?>" /></p>
+					<p><label for="email" ><?php i18n('LABEL_EMAIL'); ?>:</label><input class="text" name="email" id="email" type="text" value="<?php if(isset($_POST['email'])) { echo $_POST['email']; } ?>" /></p>
 				</div>
 				<div class="clear"></div>
 				<p><input class="submit" type="submit" name="submitted" value="<?php i18n('LABEL_INSTALL'); ?>" /></p>

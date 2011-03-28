@@ -80,7 +80,7 @@ $table = get_pages_menu('','',0);
 				<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th><th></th></tr>
 				<?php echo $table; ?>
 			</table>
-			<!-- p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php i18n('TOTAL_PAGES'); ?></em></p -->
+			<p><em><b><span id="pg_counter"><?php echo $count; ?></span></b> <?php i18n('TOTAL_PAGES'); ?></em></p>
 			
 		</div>
 	</div><!-- end maincontent -->

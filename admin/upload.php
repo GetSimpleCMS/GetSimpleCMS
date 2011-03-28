@@ -257,7 +257,12 @@ if (isset($_GET['newfolder'])) {
 				}
 			}
 			echo '</table>';
-			echo '<p><em><b>'. $counter .'</b> '.i18n_r('TOTAL_FILES').' ('. fSize($totalsize) .')</em></p>';
+			if ($counter > 0) { 
+				$sizedesc = '('. fSize($totalsize) .')';
+			} else {
+				$sizedesc = '';
+			}
+			echo '<p><em><b><span id="pg_counter">'. $counter .'</span></b> '.i18n_r('TOTAL_FILES').' '.$sizedesc.'</em></p>';
 		?>	
 		</div>
 		</div>

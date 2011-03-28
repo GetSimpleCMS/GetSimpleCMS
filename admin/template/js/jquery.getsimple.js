@@ -160,21 +160,25 @@ jQuery(document).ready(function() {
 	  $('#loader').fadeOut(500);
 	});
 	$(".delconfirm").live("click", function() {
-		//$e.preventDefault();
 		var message = $(this).attr("title");
 		var dlink = $(this).attr("href");
 	    var answer = confirm(message);
-	    var id=$(this).parents("tr").attr("id");
-	    
+	    var mytr=$(this).parents("tr");
+	   
 	    if (answer){
 	    	$('#loader').show();
-	    	$("#"+id).addClass('deletedrow');
-	    	$("#"+id).fadeOut(500, function(){
+	    	mytr.addClass('deletedrow');
+	    	mytr.fadeOut(500, function(){
 					$.ajax({
 			       type: "GET",
 			       url: dlink,
 			       success: function(response){
-			          $("#"+id).remove();
+			          mytr.remove();
+			          if($("#pg_counter").length) {
+			        	  counter=$("#pg_counter").html();
+				          $("#pg_counter").html(counter-1);
+					      }
+				        
 				        $('div.wrapper .updated').remove();
 				        $('div.wrapper .error').remove();
                 if($(response).find('div.error').html()) {
@@ -192,7 +196,7 @@ jQuery(document).ready(function() {
 	    }
 	    return false;
 	});
-	//$("input[type='text']:first", document.forms[0]).focus();
+
 	$("#waittrigger").click(function(){
 		$('#loader').fadeIn();
 		$("#waiting").fadeIn(1000).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);

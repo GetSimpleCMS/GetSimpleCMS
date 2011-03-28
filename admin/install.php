@@ -36,40 +36,32 @@ $dirsArray = array(
 foreach ($dirsArray as $dir) {
 	$tmpfile = GSADMININCPATH.'tmp/tmp-404.xml';
 	
-	if (file_exists($dir)) 
-	{
+	if (file_exists($dir)) {
 		chmod($dir, 0755);
 		$result_755 = copy($tmpfile, $dir .'tmp.tmp');
 		
-		if (!$result_755) 
-		{
+		if (!$result_755) {
 			chmod($dir, 0777);
 			$result_777 = copy($tmpfile, $dir .'tmp.tmp');
 			
-			if (!$result_777) 
-			{
+			if (!$result_777) {
 				$kill = i18n_r('CHMOD_ERROR');
 			}
 		}
-	} 
-	else 
-	{
+	} else {
 		mkdir($dir, 0755);
 		$result_755 = copy($tmpfile, $dir .'tmp.tmp');
-		if (!$result_755) 
-		{
+		if (!$result_755) {
 			chmod($dir, 0777);
 			$result_777 = copy($tmpfile, $dir .'tmp.tmp');
 			
-			if (!$result_777) 
-			{
+			if (!$result_777) {
 				$kill = i18n_r('CHMOD_ERROR');
 			}
 		}
 	}
 	
-	if (file_exists($dir .'tmp.tmp')) 
-	{
+	if (file_exists($dir .'tmp.tmp')) {
 		unlink($dir .'tmp.tmp');
 	}
 }
@@ -87,11 +79,12 @@ foreach ($filenames as $lfile) {
 }
 
 if (count($lang_array) == 1) {
-	$langs = '<b>'.$lang_array[0].' &mdash; ';
+	$langs = '<b>'.i18n_r('LANGUAGE').'</b>: &nbsp;'.$lang_array[0];
 } elseif (count($lang_array) > 1) {
 	sort($lang_array);
 	$count="0"; $sel = ''; 
-	$langs = '<select name="lang" id="lang" class="text" onchange="window.location=\'install.php?lang=\' + this.value;">';
+	$langs = '<label for="lang" >'.i18n_r('SELECT_LANGUAGE').':</label>';
+	$langs .= '<select name="lang" id="lang" class="text" onchange="window.location=\'install.php?lang=\' + this.value;">';
 	
 	foreach ($lang_array as $larray) {
 		if ($LANG == $larray) { $sel="selected";}
@@ -99,9 +92,9 @@ if (count($lang_array) == 1) {
 		$sel = '';
 		$count++;
 	}
-	$langs .= '</select><br />';
+	$langs .= '</select>';
 } else {
-	$langs = '<b>'.i18n_r('NONE').'</b> &mdash; ';
+	$langs = '<b>'.i18n_r('LANGUAGE').'</b>: &nbsp;'.i18n_r('NONE');
 }
 
 # salt value generation
@@ -221,9 +214,8 @@ $APIKEY = $data->apikey;
 			<?php } else {?>
 			<form action="setup.php" method="post" accept-charset="utf-8" >
 				<div class="leftsec">
-					<p>
-					<label for="lang" ><?php i18n('SELECT_LANGUAGE');?>:</label>
-						<?php echo $langs; ?> 
+					<p>			
+						<?php echo $langs; ?><br />
 						<noscript><a href="install.php?lang=" id="refreshlanguage" ><?php i18n('REFRESH');?></a> &nbsp;|&nbsp;</noscript> 
 						<a href="http://get-simple.info/wiki/languages" target="_blank" ><?php i18n('DOWNLOAD_LANG');?></a>
 					</p>

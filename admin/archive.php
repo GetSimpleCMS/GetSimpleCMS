@@ -84,7 +84,7 @@ if(isset($_GET['nozip'])) {
 
 		?>
 		</table>
-		<p><em><b><?php echo $count; ?></b> <?php i18n('TOTAL_ARCHIVES');?></em></p>
+		<p><em><b><span id="pg_counter"><?php echo $count; ?></span></b> <?php i18n('TOTAL_ARCHIVES');?></em></p>
 		</div>
 	</div>
 	
