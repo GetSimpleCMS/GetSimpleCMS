@@ -134,15 +134,15 @@ if(!isset($base)) {
 			$LANG = $datau->LANG;
 		} else {
 			$USR = null;
-			$TIMEZONE = null;	
+			$TIMEZONE = "";	
 		}
 	} else {
 		$USR = null;
-		$TIMEZONE = null;
+		$TIMEZONE = "";
 	}
 } else {
 	$USR = null;
-	$TIMEZONE = null;
+	$TIMEZONE = "";
 }
 
 /** grab authorization and security data */
@@ -158,7 +158,7 @@ $SESSIONHASH = sha1($SALT . $SITENAME);
 /**
  * Timezone setup
  */
-if( function_exists('date_default_timezone_set') && ($TIMEZONE != null || stripos($TIMEZONE, '--')) ) { 
+if( function_exists('date_default_timezone_set') && ($TIMEZONE != "" || stripos($TIMEZONE, '--')) ) { 
 	date_default_timezone_set($TIMEZONE);
 }
 
