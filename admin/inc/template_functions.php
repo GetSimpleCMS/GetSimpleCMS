@@ -998,7 +998,7 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
  * 
  * @returns string
  */
-function get_api_details($type='core', $args=array()) {
+function get_api_details($type='core', $args=null) {
 	include(GSADMININCPATH.'configuration.php');
 	
 	# core api details
@@ -1007,13 +1007,14 @@ function get_api_details($type='core', $args=array()) {
 	}
 	
 	# plugin api details. requires a passed plugin id
-	if ($type=='plugin' && $args['plugin_id']!='') {
-		$fetch_this_api = '';
+	if ($type=='plugin' && $args) {
+		$apiurl = 'http://get-simple.info/api/extend/?file=';
+		$fetch_this_api = $apiurl.$args;
 	}
 	
 	# custom api details. requires a passed url
-	if ($type=='custom' && $args['url']!='') {
-		$fetch_this_api = '';
+	if ($type=='custom' && $args) {
+		$fetch_this_api = $args;
 	}
 	
 	# check to see if cache is available for this

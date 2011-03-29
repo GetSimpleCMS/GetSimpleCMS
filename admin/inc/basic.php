@@ -131,24 +131,6 @@ function subval_sort($a,$subkey, $order='asc') {
 }
 
 /**
- * JSON Decode
- *
- * Allows backward compatibility for servers that do not have the JSON decoder installed
- *
- * @since 2.0
- * @author Martijn van der Ven
- *
- * @param string $api_data
- * @return object
- */
-if(!function_exists('json_decode')) {
-  function json_decode($api_data) {
-    preg_match('/(?P<status>[^"]+)","((api_key":"(?P<api_key>[^"]+))|(latest":"(?P<latest>[^"]+)))/',$api_data,$api_data);
-    return (object)$api_data;
-  }
-}
-
-/**
  * SimpleXMLExtended Class
  *
  * Extends the default PHP SimpleXMLElement class by 

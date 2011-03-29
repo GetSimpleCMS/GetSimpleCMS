@@ -27,7 +27,14 @@ foreach ($pluginfiles as $fi){
 	
 	if ($pathExt=="php") {
 		$table .= '<tr id="tr-'.$counter.'" >';
-		$table .= '<td><b>'.$plugin_info[$pathName]['name'] .'</b></td>';
+		$table .= '<td><b>'.$plugin_info[$pathName]['name'] .'</b>';
+		$api_data = json_decode(get_api_details('plugin', $fi));
+		if ($api_data->status == 'successful') {
+			if ($api_data->version != $plugin_info[$pathName]['version']) {
+				$table .= '<br /><a class="updatelink" href="'.$api_data->path.'" target="_blank">'.i18n_r('UPDATE_AVAILABLE').' '.$api_data->version.'</a>';
+			}
+		}
+		$table .= '</td>';
 		$table .= '<td><span>'.$plugin_info[$pathName]['description'] .'<br />';
 		$table .= i18n_r('PLUGIN_VER') .' '. $plugin_info[$pathName]['version'].' &mdash; '.i18n_r('AUTHOR').': <a href="'.$plugin_info[$pathName]['author_url'].'" target="_blank">'.$plugin_info[$pathName]['author'].'</a></span></td>';
 		if ($live_plugins[$fi]=='true'){

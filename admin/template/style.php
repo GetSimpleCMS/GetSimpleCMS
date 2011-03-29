@@ -879,16 +879,8 @@ textarea.copykit {
 #jcrop_open {}
 
 
-/* jQuery Pagination Styles */
-.qc_pager {padding:0 0 15px 0;}
-.qc_pager a {padding:5px;margin:0 10px 0 0;}
-.qc_pager a:link,	.qc_pager a:visited {}
-.qc_pager a:hover, .qc_pager a:focus {}
-.qc_pager .qp_counter {margin:0 10px 0 0;font-size:11px;}
-.qc_pager a.qp_disabled:link,
-.qc_pager a.qp_disabled:visited,
-.qc_pager a.qp_disabled:hover,
-.qc_pager a.qp_disabled:focus {color:#ccc;cursor:text !important;}
+a.updatelink:link, a.updatelink:visited {color:#888;}
+a.updatelink:hover, a.updatelink:focus {color:#333;}
 
 /* File Browser Styles */
 #filebrowser {background:#fff;}

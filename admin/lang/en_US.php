@@ -481,7 +481,7 @@ $i18n = array(
 # new to 3.1 
 "XML_INVALID" => "XML Invalid", //template-functions.php
 "XML_VALID" => "XML Valid",
-
+"UPDATE_AVAILABLE" => "Update to", //plugins.php
 
 
 
