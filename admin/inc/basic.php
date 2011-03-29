@@ -114,14 +114,15 @@ function sendmail($to,$subject,$message) {
  *
  * @param array $a
  * @param string $subkey Key within the array passed you want to sort by
+ * @param string $order - order 'asc' ascending or 'desc' descending
  * @return array
  */
-function subval_sort($a,$subkey) {
+function subval_sort($a,$subkey, $order='asc') {
 	if (count($a) != 0 || (!empty($a))) { 
 		foreach($a as $k=>$v) {
 			$b[$k] = lowercase($v[$subkey]);
 		}
-		asort($b);
+		($order=='asc')? asort($b) : arsort($b);
 		foreach($b as $key=>$val) {
 			$c[] = $a[$key];
 		}
