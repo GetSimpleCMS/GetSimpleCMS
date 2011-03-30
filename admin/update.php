@@ -48,7 +48,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	$datau = getXML(GSDATAOTHERPATH .'user.xml');
 	$datac = getXML(GSDATAOTHERPATH .'cp_settings.xml');
 	$dataw = getXML(GSDATAOTHERPATH .'website.xml');
-	$USR = stripslashes($datau->USR);
+	$USR = _id(stripslashes($datau->USR));
 	$EMAIL = $datau->EMAIL;
 	$PASSWD = $datau->PWD;
 	$HTMLEDITOR = $datac->HTMLEDITOR;

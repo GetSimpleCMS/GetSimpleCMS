@@ -100,7 +100,7 @@ $i18n = array(
 "SHOW_ALL"					=>	"Show All",
 "VIEW_FILE"					=>	"View File",
 "DELETE_FILE"				=>	"Delete File",
-"TOTAL_FILES"				=>	"total files",
+"TOTAL_FILES"				=>	"total files / folders",
 
 /* 
  * For: logout.php

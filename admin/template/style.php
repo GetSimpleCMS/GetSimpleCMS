@@ -195,9 +195,13 @@ html {overflow-y: scroll;}
 	}
 	
 	/* warning alert on tab */
-	.nav li .warning {
+	.nav li.rightnav .warning {
 		position:absolute;
 		top:-5px;left:-5px;
+	}
+	.nav li .warning {
+		position:absolute;
+		top:-5px;right:-5px;
 		font-size:10px;
 		color:#000;
 		text-shadow: 1px 1px 0px rgba(255,255,255,.5);
@@ -459,9 +463,10 @@ html {overflow-y: scroll;}
 .wrapper table th {background:#FFF !important;padding:2px 4px;font-size:11px;border-top:1px solid #FFF;color:#222;font-weight:bold;text-transform:uppercase;line-height:20px !important;text-align:left;}
 .wrapper table tr.head {}
 .wrapper table td span {font-size:12px;color:#777;}
+.wrapper table.highlight {text-shadow:1px 1px 0 #fff;}
 .wrapper table.highlight tr:nth-child(odd) { background:#f7f7f7;}
 .wrapper table tr#tr-index a { font-weight:bold !important;}
-.wrapper table.highlight tr:hover {background:#FFFFD5 !important; }
+.wrapper table.highlight tr:hover {background:#FFFFD5 !important;text-shadow:none; }
 .wrapper table tr.currentpage{ background:#FFFFD1;}
 .wrapper table tr {border-bottom:1px solid #eee;border-top:1px solid #eee;
 	-webkit-transition: background-color .3s ease-in-out;
@@ -736,6 +741,7 @@ table.simple {width:100%;border:1px solid #aaa;}
 /* footer */
 #footer {
 	border-top:1px solid #ccc;
+	text-shadow:1px 1px 0 #fff;
 	margin:40px 0 0 0;
 	padding:10px 0;
 	font-size:11px;

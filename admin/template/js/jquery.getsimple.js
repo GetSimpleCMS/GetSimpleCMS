@@ -39,20 +39,6 @@ function checkCoords() {
   alert('Please select a crop region then press submit.');
   return false;
 };
-jQuery.fn.fadeToggle = function(speed, easing, callback) { 
-   return this.animate({opacity: 'toggle'}, speed, easing, callback); 
-};
-
-jQuery.fn.wait = function(time, type) {
-  time = time || 10000;
-  type = type || "fx";
-  return this.queue(type, function() {
-    var self = this;
-    setTimeout(function() {
-       $(self).dequeue();
-    }, time);
-  });
-};
 
 function attachFilterChangeEvent() {
 	$("#imageFilter").change(function(){
@@ -344,6 +330,29 @@ jQuery(document).ready(function() {
 		$("#new-folder #foldername").val('');
 		$("#new-folder form").hide();
 		$('#createfolder').show();
+	});
+	// upload.php ajax folder creation
+	$('#new-folder form').submit(function() {
+		var dataString = $(this).serialize();
+		var newfolder = $('#foldername').val();
+		var hrefaction = $(this).attr('action');
+	  $.ajax({
+       type: "GET",
+       data: dataString,
+       url: hrefaction,
+       success: function(response){
+       		$('#imageTable').load(location.href+' #imageTable', function() {
+						attachFilterChangeEvent();
+						$("#new-folder #foldername").val('');
+						$("#new-folder form").hide();
+						$('#createfolder').show();
+        	  counter=parseInt($("#pg_counter").text());
+		        $("#pg_counter").html(counter++);
+						$("tr."+newfolder+" td").css("background-color", "#F9F8B6");
+					});
+       }
+    });
+		return false;
 	});
 	
 //end of javascript for getsimple

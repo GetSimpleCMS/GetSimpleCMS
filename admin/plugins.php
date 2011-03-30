@@ -24,7 +24,7 @@ sort($pluginfiles);
 foreach ($pluginfiles as $fi){
 	$pathExt = pathinfo($fi,PATHINFO_EXTENSION );
 	$pathName = pathinfo_filename($fi);
-	
+	$needsupdate = false;
 	if ($pathExt=="php") {
 		$table .= '<tr id="tr-'.$counter.'" >';
 		$table .= '<td><b>'.$plugin_info[$pathName]['name'] .'</b>';
@@ -32,6 +32,7 @@ foreach ($pluginfiles as $fi){
 		if ($api_data->status == 'successful') {
 			if ($api_data->version != $plugin_info[$pathName]['version']) {
 				$table .= '<br /><a class="updatelink" href="'.$api_data->path.'" target="_blank">'.i18n_r('UPDATE_AVAILABLE').' '.$api_data->version.'</a>';
+				$needsupdate = true;
 			}
 		}
 		$table .= '</td>';
@@ -45,12 +46,21 @@ foreach ($pluginfiles as $fi){
 			$cls_Disabled = 'hidden';
 		}
 	  $table.= '<td style="width:60px;" class="status" >
-	  	<a href="plugins.php?set='.$fi.'" class="toggleEnable '.$cls_Enabled.'" title="'.i18n_r('ENABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('ENABLE').'</a>
+	  	<a href="plugins.php?set='.$fi.'" class="toggleEnable '.$cls_Enabled.'" style="padding: 1px 3px;" title="'.i18n_r('ENABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('ENABLE').'</a>
 	  	<a href="plugins.php?set='.$fi.'" class="cancel toggleEnable '.$cls_Disabled.'" title="'.i18n_r('DISABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('DISABLE').'</a>
 	  </td>';	  
 		$table .= "</tr>\n";
 		$counter++;
 	}	
+}
+
+# set trigger for plugin update notification
+if ($needsupdate) {
+	touch(GSCACHEPATH.'plugin-update.trigger');	
+} else {
+	if (file_exists(GSCACHEPATH.'plugin-update.trigger')) {
+		unlink(GSCACHEPATH.'plugin-update.trigger');
+	}
 }	
 ?>
 

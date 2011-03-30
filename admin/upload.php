@@ -191,6 +191,7 @@ if (isset($_GET['newfolder'])) {
      }
      echo '<th style="text-align:right;">'.i18n_r('DATE').'</th><th></th></tr>';  
      if (count($dirsSorted) != 0) {
+     		$foldercount = 0;
         foreach ($dirsSorted as $upload) {
         	
         	# check to see if folder is empty
@@ -199,7 +200,7 @@ if (isset($_GET['newfolder'])) {
 						$directory_delete = '<a class="delconfirm" title="'.i18n_r('DELETE_FOLDER').': '. $upload['name'] .'" href="deletefile.php?path='.$urlPath.'&amp;folder='. $upload['name'] . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a>';
 					}
         	
-          echo '<tr class="All folder" >';
+          echo '<tr class="All folder '.$upload['name'].'" >';
           echo '<td class="imgthumb" ></td><td colspan="'.$cols.'">';
         
           $adm = substr($path . $upload['name'] ,  16); 
@@ -208,6 +209,7 @@ if (isset($_GET['newfolder'])) {
           echo '</td>';
           echo '<td class="delete" >'.$directory_delete.'</td>';
           echo '</tr>';
+          $foldercount++;
         }
      }
 			if (count($filesSorted) != 0) { 			
@@ -262,7 +264,8 @@ if (isset($_GET['newfolder'])) {
 			} else {
 				$sizedesc = '';
 			}
-			echo '<p><em><b><span id="pg_counter">'. $counter .'</span></b> '.i18n_r('TOTAL_FILES').' '.$sizedesc.'</em></p>';
+			$totalcount = (int)$counter+(int)$foldercount;
+			echo '<p><em><b><span id="pg_counter">'. $totalcount .'</span></b> '.i18n_r('TOTAL_FILES').' '.$sizedesc.'</em></p>';
 		?>	
 		</div>
 		</div>

@@ -56,7 +56,12 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 				$('a.support').parent('li').append('<span class="warning">!</span>');
 				$('a.support').attr('href', 'health-check.php');
 			}
+			
+			<?php if (file_exists(GSCACHEPATH.'plugin-update.trigger')) { ?>
+				$('a.plugins').parent('li').append('<span class="warning">!</span>');
+			<?php  } ?>
 		});
+		
 	</script>
 	
 </head>
