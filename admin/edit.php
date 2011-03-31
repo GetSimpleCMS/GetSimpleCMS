@@ -320,7 +320,7 @@ if ($menu == '') { $menu = $title; }
 	        ?>
             contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
           <?php } ?>
-	        entities : true,
+	        entities : false,
 	        uiColor : '#FFFFFF',
 			height: '<?php echo $EDHEIGHT; ?>',
 			baseHref : '<?php echo $SITEURL; ?>',

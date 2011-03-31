@@ -892,6 +892,7 @@ a.updatelink:hover, a.updatelink:focus {color:#333;}
 #filebrowser {background:#fff;}
 
 /* Logged out specific styles */
+body#index {background:#fafafa;}
 #index .header,
 #resetpassword .header {display:none;}
 #index #maincontent,
@@ -902,9 +903,13 @@ a.updatelink:hover, a.updatelink:focus {color:#333;}
 	-moz-border-radius: 8px;
 	-khtml-border-radius: 8px;
 	-webkit-border-radius: 8px;
-	box-shadow: rgba(0,0,0, 0.2) 0px 0px 8px;  
-	-moz-box-shadow: rgba(0,0,0, 0.2) 0px 0px 8px;  
-	-webkit-box-shadow: rgba(0,0,0, 0.2) 0px 0px 8px;
+	box-shadow: rgba(0,0,0, 0.1) 0px 0px 5px;  
+	-moz-box-shadow: rgba(0,0,0, 0.1) 0px 0px 5px;  
+	-webkit-box-shadow: rgba(0,0,0, 0.1) 0px 0px 5px;
+	background:#FFF;
+	text-shadow:1px 1px 0 #fff;
+	background: -moz-linear-gradient(top, #FFFFFF 5%, #f7f7f7 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#FFFFFF), color-stop(100%,#f7f7f7)); /* webkit */
 }
 #index p.cta,
 #resetpassword p.cta {font-size:11px;margin:0 0 0 0;color:#999;}
