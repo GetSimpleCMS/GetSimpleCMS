@@ -18,10 +18,7 @@ require_once(GSADMININCPATH.'configuration.php');
  * @uses GSCOOKIEISSITEWIDE
  */
 function create_cookie() {
-	global $USR;
-  global $SALT;
-  global $cookie_time;
-  global $cookie_name;
+	global $USR,$SALT,$cookie_time,$cookie_name;
   $saltUSR = $USR.$SALT;
   $saltCOOKIE = sha1($cookie_name.$SALT);
   if ( defined('GSCOOKIEISSITEWIDE') && (GSCOOKIEISSITEWIDE == TRUE) ) {
@@ -44,7 +41,7 @@ function kill_cookie($identifier) {
   global $SALT;
   $saltCOOKIE = sha1($identifier.$SALT);
   
- 	setcookie('GS_ADMIN_USERNAME', 'null', time() + 3600);  
+ 	setcookie('GS_ADMIN_USERNAME', 'null', time() - 3600);  
   if (isset($_COOKIE[$saltCOOKIE])) {
 	  if ( defined('GSCOOKIEISSITEWIDE') && (GSCOOKIEISSITEWIDE == TRUE) ) {
 	     $_COOKIE[$saltCOOKIE] = FALSE;
@@ -65,24 +62,16 @@ function kill_cookie($identifier) {
  * @uses $cookie_name
  * @uses GSCOOKIEISSITEWIDE
  *
- * @params bool $cookie_name Default value is false. Name of the cookie to check
+ * @return bool
  */
-function cookie_check($cookie_name=FALSE) {
-	if($cookie_name==FALSE) { // Assume login cookie.
-		global $USR;
-		global $SALT;
-		global $cookie_name;
-		$saltUSR = $USR.$SALT;
-		$saltCOOKIE = sha1($cookie_name.$SALT);
-		if(isset($_COOKIE[$saltCOOKIE])&&$_COOKIE[$saltCOOKIE]==sha1($saltUSR)) {
-			return TRUE; // Cookie proves logged in status.
-		} else { return FALSE; }
-	}
-	else if(isset($_COOKIE[$cookie_name])) {
-		return TRUE; // Old versions returned the cookie value, use get_cookie() for that!
-	}
-	else {
-		return FALSE;
+function cookie_check() {
+	global $USR,$SALT,$cookie_name;
+	$saltUSR = $USR.$SALT;
+	$saltCOOKIE = sha1($cookie_name.$SALT);
+	if(isset($_COOKIE[$saltCOOKIE])&&$_COOKIE[$saltCOOKIE]==sha1($saltUSR)) {
+		return TRUE; // Cookie proves logged in status.
+	} else { 
+		return FALSE; 
 	}
 }
 
