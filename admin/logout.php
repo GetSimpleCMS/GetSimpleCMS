@@ -17,5 +17,5 @@ kill_cookie($cookie_name);
 exec_action('logout');
 
 # send back to login screen
-redirect('index.php?success='.i18n_r('MSG_LOGGEDOUT'));
+redirect('index.php?logout');
 ?>

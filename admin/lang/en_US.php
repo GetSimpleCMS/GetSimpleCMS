@@ -418,7 +418,7 @@ $i18n = array(
 "PLUGINS_MANAGEMENT"=> "Plugin Management",
 "PLUGINS_INSTALLED" => "plugins installed",
 "SHOW_PLUGINS"			=> "Installed Plu<em>g</em>ins",
-"PLUGIN_NAME" 			=> "Name",
+"PLUGIN_NAME" 			=> "Plugin",
 "PLUGIN_DESC" 			=> "Description",
 "PLUGIN_VER" 				=> "Version",
 
@@ -457,8 +457,8 @@ $i18n = array(
 "REQS_MORE_INFO"=> "For more information on the required modules, visit the <a href=\"%s\" target=\"_blank\" >requirements page</a>.", //install & health-check
 "SYSTEM_UPDATE" => "System Update", // update.php
 "AUTHOR" 				=> "Author", //plugins.php
-"ENABLE" 				=> "Enable", //plugins.php
-"DISABLE" 				=> "Disable", //plugins.php
+"ENABLE" 				=> "Activate", //plugins.php
+"DISABLE" 				=> "Deactivate", //plugins.php
 "NO_THEME_SCREENSHOT" => "No theme screenshot available", //theme.php
 "UNSAVED_INFORMATION" => "You are about to leave this page and will lose any unsaved information.", //edit.php
 "BACK_TO_WEBSITE" => "Back to Website", //index & resetpassword
@@ -482,7 +482,7 @@ $i18n = array(
 "XML_INVALID" => "XML Invalid", //template-functions.php
 "XML_VALID" => "XML Valid",
 "UPDATE_AVAILABLE" => "Update to", //plugins.php
-
+"STATUS" => "Status", //plugins.php
 
 
 

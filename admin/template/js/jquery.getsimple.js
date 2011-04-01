@@ -148,30 +148,30 @@ jQuery(document).ready(function() {
 	
 	$(".toggleEnable").live("click", function($e) {
 		$e.preventDefault();
+		$('#loader').show();
 		var message = $(this).attr("title");
 		var dlink = $(this).attr("href");
 		var mytd=$(this).parents("td");
-		//var answer = confirm(message);
-	    //if (!answer){
-	    //	return false;
-	    //} else {
-	    	mytd.find('a').toggleClass('hidden');
-	    	$.ajax({
-		       type: "GET",
-		       url: dlink,
-		       success: function(response){
-			        //successful
-			     }
-			  });
-	    //}
+		var mytr=$(this).parents("tr");
+  	mytd.find('a').toggleClass('hidden');
+  	mytr.toggleClass('enabled');
+  	mytr.toggleClass('disabled');
+  	$.ajax({
+       type: "GET",
+       url: dlink,
+       success: function(response){
+	        //successful
+	     }
+	  });
+	  $('#loader').fadeOut();
 	});
 	
 	$(".delconfirm").live("click", function() {
 		var message = $(this).attr("title");
 		var dlink = $(this).attr("href");
+		var mytr=$(this).parents("tr");
+	  mytr.css("font-style", "italic");
 	    var answer = confirm(message);
-	    var mytr=$(this).parents("tr");
-	   
 	    if (answer){
 	    	$('#loader').show();
 	    	mytr.addClass('deletedrow');
@@ -199,6 +199,7 @@ jQuery(document).ready(function() {
 					$('#loader').fadeOut(500);
 				});
 	    } else {
+	    	mytr.css('font-style', 'normal');
 	    	return false;
 	    }
 	    return false;
@@ -333,6 +334,7 @@ jQuery(document).ready(function() {
 	});
 	// upload.php ajax folder creation
 	$('#new-folder form').submit(function() {
+		$('#loader').show();
 		var dataString = $(this).serialize();
 		var newfolder = $('#foldername').val();
 		var hrefaction = $(this).attr('action');
@@ -349,6 +351,7 @@ jQuery(document).ready(function() {
         	  counter=parseInt($("#pg_counter").text());
 		        $("#pg_counter").html(counter++);
 						$("tr."+newfolder+" td").css("background-color", "#F9F8B6");
+						$('#loader').fadeOut();
 					});
        }
     });

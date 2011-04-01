@@ -58,6 +58,8 @@
 		echo '<div class="updated">'.i18n_r('ER_COMPONENT_REST').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a></div>';
 	} elseif (isset($_GET['cancel'])) {
 		echo '<div class="error">'.i18n_r('ER_CANCELLED_FAIL').'</div>';
+	} elseif (isset($_GET['logout'])) {
+		echo '<div class="updated">'.i18n_r('MSG_LOGGEDOUT').'</div>';
 	}	elseif (isset($error)) {
 		echo '<div class="error">'.$error.'</div>';
 	}	elseif (isset($success)) {

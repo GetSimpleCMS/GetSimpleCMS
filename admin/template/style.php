@@ -8,7 +8,7 @@
 header("Content-type: text/css");
 
 # check to see if cache is available for this
-$cacheme = TRUE;
+$cacheme = FALSE;
 $cachefile = '../../data/cache/stylesheet.txt';
 if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && $cacheme) {
 	echo file_get_contents($cachefile);
@@ -608,8 +608,6 @@ input.submit {
 .rightsec select.text,  .leftsec select.text {
 	width:96%;
 }
-/* login css */
-form.login input.text { width:250px; }
 
 /* edit css */
 form input.title {font-size:18px;border-color:#000; width:635px; }
@@ -633,21 +631,27 @@ table.comptable tr td input.newtitle {margin-bottom:2px !important;}
 /* alert styles */
 .updated, .error {
 	margin:0 0 20px 0;
-	background:#FCFBB8;
-	background: -moz-linear-gradient(top, #F7F7C3 5%, #F9F8B3 100%); /* firefox */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#F7F7C3), color-stop(100%,#F9F8B3)); /* webkit */
 	line-height:30px;
 	padding:0 10px;
 	border:1px solid #F9CF51;
+	background:#FCFBB8;
+	background: -moz-linear-gradient(top, #F7F7C3 0%, #F9F8B3 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#F7F7C3), color-stop(100%,#F9F8B3)); /* webkit */
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-khtml-border-radius: 5px;
 	-webkit-border-radius: 5px;
 }
-.error {color:#D94136;}
+.error {
+	color:#990000;
+	border:1px solid #cc0000;
+	background:#F6D3D0;
+	background: -moz-linear-gradient(top, #F9DFDD 0%, #F4CDCA 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#F9DFDD), color-stop(100%,#F4CDCA)); /* webkit */
+}
 .deletedrow {background-color:#FFB19B}
 .error code {
-	color:#000;
+	color:#990000;
 	font-size:11px;
 	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; 
 	line-height:14px;
@@ -891,34 +895,52 @@ a.updatelink:hover, a.updatelink:focus {color:#333;}
 /* File Browser Styles */
 #filebrowser {background:#fff;}
 
+/* plugin styles */
+table tr.enabled {background:#fff;}
+#maincontent table tr.enabled td span {color:#333;}
+table tr.disabled {background:#f6f6f6;}
+
 /* Logged out specific styles */
-body#index {background:#fafafa;}
+body#index {background:#f9f9f9;}
 #index .header,
 #resetpassword .header {display:none;}
 #index #maincontent,
 #resetpassword #maincontent {width:100%;}
+index #maincontent h3,
+#resetpassword #maincontent h3 {
+	text-shadow:1px 1px 0 #fff;
+}
 #index #maincontent .main,
 #resetpassword #maincontent .main {margin:50px auto 0 auto;width:270px;float:none;text-align:left;
 	border-radius: 8px;
 	-moz-border-radius: 8px;
 	-khtml-border-radius: 8px;
 	-webkit-border-radius: 8px;
-	box-shadow: rgba(0,0,0, 0.1) 0px 0px 5px;  
-	-moz-box-shadow: rgba(0,0,0, 0.1) 0px 0px 5px;  
-	-webkit-box-shadow: rgba(0,0,0, 0.1) 0px 0px 5px;
+	box-shadow: rgba(0,0,0, 0.1) 0px 0px 10px;  
+	-moz-box-shadow: rgba(0,0,0, 0.1) 0px 0px 10px;  
+	-webkit-box-shadow: rgba(0,0,0, 0.1) 0px 0px 10px;
+	border-bottom:1px solid #999;
+	border-right:1px solid #999;
 	background:#FFF;
 	text-shadow:1px 1px 0 #fff;
-	background: -moz-linear-gradient(top, #FFFFFF 5%, #f7f7f7 100%); /* firefox */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#FFFFFF), color-stop(100%,#f7f7f7)); /* webkit */
+	background: -moz-linear-gradient(top, #f9f9f9 5%, #eeeeee 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#f9f9f9), color-stop(100%,#eeeeee)); /* webkit */
 }
+#resetpassword form input.text,
+#index form input.text { width:255px;font-size:18px;padding:5px;margin-top:2px; }
+#index form input.submit {}
 #index p.cta,
-#resetpassword p.cta {font-size:11px;margin:0 0 0 0;color:#999;}
+#resetpassword p.cta {font-size:11px;margin:0 0 0 0;color:#999;text-align:center;}
+#index form p,
+#resetpassword form p {margin-bottom:15px;}
 #index p.cta a,
 #resetpassword p.cta a {font-weight:100;}
 #index .error, #index .updated,
-#resetpassword .error, #resetpassword .updated {margin:30px auto -20px auto;width:400px;line-height:18px;padding:5px 10px;}
+#resetpassword .error, #resetpassword .updated {margin:25px auto -35px auto;width:290px;line-height:18px;padding:5px 10px;}
 #index #footer,
 #resetpassword #footer {width:270px;border-top:none;margin:0 auto 20px auto;text-align:center;opacity:.7}
+#index #footer:hover,
+#resetpassword #footer:hover {opacity:1}
 #index .footer-left,
 #resetpassword .footer-left  {float:none;width:100%;}
 #index .gslogo,

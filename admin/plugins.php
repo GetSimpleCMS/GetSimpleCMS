@@ -26,7 +26,16 @@ foreach ($pluginfiles as $fi){
 	$pathName = pathinfo_filename($fi);
 	$needsupdate = false;
 	if ($pathExt=="php") {
-		$table .= '<tr id="tr-'.$counter.'" >';
+		if ($live_plugins[$fi]=='true'){
+			$cls_Enabled = 'hidden';
+			$cls_Disabled = '';
+			$trclass='enabled';
+		} else {
+			$cls_Enabled = '';
+			$cls_Disabled = 'hidden';
+			$trclass='disabled';
+		}
+		$table .= '<tr id="tr-'.$counter.'" class="'.$trclass.'" >';
 		$table .= '<td><b>'.$plugin_info[$pathName]['name'] .'</b>';
 		$api_data = json_decode(get_api_details('plugin', $fi));
 		if ($api_data->status == 'successful') {
@@ -36,15 +45,8 @@ foreach ($pluginfiles as $fi){
 			}
 		}
 		$table .= '</td>';
-		$table .= '<td><span>'.$plugin_info[$pathName]['description'] .'<br />';
-		$table .= i18n_r('PLUGIN_VER') .' '. $plugin_info[$pathName]['version'].' &mdash; '.i18n_r('AUTHOR').': <a href="'.$plugin_info[$pathName]['author_url'].'" target="_blank">'.$plugin_info[$pathName]['author'].'</a></span></td>';
-		if ($live_plugins[$fi]=='true'){
-			$cls_Enabled = 'hidden';
-			$cls_Disabled = '';
-		} else {
-			$cls_Enabled = '';
-			$cls_Disabled = 'hidden';
-		}
+		$table .= '<td><span>'.$plugin_info[$pathName]['description'] .'<br /><b>';
+		$table .= i18n_r('PLUGIN_VER') .' '. $plugin_info[$pathName]['version'].'</b> &mdash; '.i18n_r('AUTHOR').': <a href="'.$plugin_info[$pathName]['author_url'].'" target="_blank">'.$plugin_info[$pathName]['author'].'</a></span></td>';
 	  $table.= '<td style="width:60px;" class="status" >
 	  	<a href="plugins.php?set='.$fi.'" class="toggleEnable '.$cls_Enabled.'" style="padding: 1px 3px;" title="'.i18n_r('ENABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('ENABLE').'</a>
 	  	<a href="plugins.php?set='.$fi.'" class="cancel toggleEnable '.$cls_Disabled.'" title="'.i18n_r('DISABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('DISABLE').'</a>
@@ -79,7 +81,8 @@ if ($needsupdate) {
 		<div class="main" >
 		<h3><?php i18n('PLUGINS_MANAGEMENT'); ?></h3>
 		
-		<table class="edittable highlight paginate">
+		<table class="edittable">
+			<tr><th><?php i18n('PLUGIN_NAME'); ?></th><th><?php i18n('PLUGIN_DESC'); ?></th><th><?php i18n('STATUS'); ?></th></tr>
 			<?php echo $table; ?>
 		</table>
 

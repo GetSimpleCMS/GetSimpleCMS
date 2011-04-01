@@ -48,6 +48,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 		exec_action('header'); 
 	?>
 	
+	<?php if( get_filename_id()!='resetpassword' && get_filename_id()!='index' ) { ?>
 	<script>
 		// check to see if core update is needed
 		jQuery(document).ready(function() { 
@@ -61,8 +62,9 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 				$('a.plugins').parent('li').append('<span class="warning">!</span>');
 			<?php  } ?>
 		});
-		
 	</script>
+	<?php } ?>
+	
 	
 </head>
 
