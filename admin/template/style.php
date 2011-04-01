@@ -5,17 +5,25 @@
  * @package GetSimple
  * @subpackage init
  */
-header("Content-type: text/css");
+header('Content-type: text/css');
+header ('Cache-Control: max-age=' . $offset . ', must-revalidate');
+header ('Expires: ' . gmdate ("D, d M Y H:i:s", time() + $offset) . ' GMT');
 
 # check to see if cache is available for this
-$cacheme = FALSE;
+$cacheme = TRUE;
 $cachefile = '../../data/cache/stylesheet.txt';
 if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && $cacheme) {
 	echo file_get_contents($cachefile);
 	echo "/* Cached copy, generated ".date('H:i', filemtime($cachefile))." '".$cachefile."' */\n";
 	exit;
 } 
-ob_start();
+ob_start("compress");
+
+function compress($buffer) {
+  $buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer); /* remove comments */
+  $buffer = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $buffer); /* remove tabs, spaces, newlines, etc. */
+  return $buffer;
+}
 
 function getXML($file) {
 	$xml = file_get_contents($file);
@@ -740,7 +748,7 @@ a.cancel em {font-style:normal}
 /* backup info display */
 table.simple td {border:1px solid #eee;border-collapse:collapse;color:#555;font-size:12px;padding:4px 10px 4px 4px;}
 table.simple {width:100%;border:1px solid #aaa;}
-
+table.simple td.title {width:125px;color:#222;font-weight:bold;}
 
 /* footer */
 #footer {
@@ -899,6 +907,7 @@ a.updatelink:hover, a.updatelink:focus {color:#333;}
 table tr.enabled {background:#fff;}
 #maincontent table tr.enabled td span {color:#333;}
 table tr.disabled {background:#f6f6f6;}
+table tr.disabled td b {color:#666;}
 
 /* Logged out specific styles */
 body#index {background:#f9f9f9;}

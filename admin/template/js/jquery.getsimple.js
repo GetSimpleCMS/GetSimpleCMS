@@ -60,7 +60,7 @@ function attachFilterChangeEvent() {
 }
 
 jQuery(document).ready(function() { 
-	// upload.php
+	//upload.php
 	attachFilterChangeEvent();
 
 	//image.php	
@@ -79,14 +79,11 @@ jQuery(document).ready(function() {
     return false;
   });
   
-  $("a#refreshlanguage").live("click", function($e) {
-    var begin = $(this).attr('href');
-    var ending = $("#lang option:selected").val();
-    var page = begin + ending;
-    $e.preventDefault();
-	  document.location.href = page;
-  });
-		
+  
+	//autofocus index.php & resetpassword.php fields on pageload
+	$("#index input#userid").focus();
+	$("#resetpassword input[name='username']").focus();
+	
 	
 	// components.php
 	$(".delconfirmcomp").live("click", function($e) {
@@ -100,7 +97,6 @@ jQuery(document).ready(function() {
 	    }
 	  $('#loader').fadeOut(500);
 	});
-	
 	$("#addcomponent").live("click", function($e) {
 		$e.preventDefault();
 		$('#loader').show();
@@ -131,6 +127,7 @@ jQuery(document).ready(function() {
 		$('#changetitle').remove();
 	});
 
+
 	// other general functions
 	$(".snav a.current").live("click", function($e) {
 		$e.preventDefault();
@@ -145,27 +142,6 @@ jQuery(document).ready(function() {
 	    }
 	  $('#loader').fadeOut(500);
 	});
-	
-	$(".toggleEnable").live("click", function($e) {
-		$e.preventDefault();
-		$('#loader').show();
-		var message = $(this).attr("title");
-		var dlink = $(this).attr("href");
-		var mytd=$(this).parents("td");
-		var mytr=$(this).parents("tr");
-  	mytd.find('a').toggleClass('hidden');
-  	mytr.toggleClass('enabled');
-  	mytr.toggleClass('disabled');
-  	$.ajax({
-       type: "GET",
-       url: dlink,
-       success: function(response){
-	        //successful
-	     }
-	  });
-	  $('#loader').fadeOut();
-	});
-	
 	$(".delconfirm").live("click", function() {
 		var message = $(this).attr("title");
 		var dlink = $(this).attr("href");
@@ -204,7 +180,6 @@ jQuery(document).ready(function() {
 	    }
 	    return false;
 	});
-
 	$("#waittrigger").click(function(){
 		$('#loader').fadeIn();
 		$("#waiting").fadeIn(1000).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
@@ -214,8 +189,34 @@ jQuery(document).ready(function() {
 	if(jQuery().fancybox) {
 		$('a[rel*=facybox]').fancybox();
 	}
+
 	
+	//plugins.php
+	$(".toggleEnable").live("click", function($e) {
+		$e.preventDefault();
+		$('#loader').show();
+		var message = $(this).attr("title");
+		var dlink = $(this).attr("href");
+		var mytd=$(this).parents("td");
+		var mytr=$(this).parents("tr");
+  	mytd.find('a').toggleClass('hidden');
+  	mytr.toggleClass('enabled');
+  	mytr.toggleClass('disabled');
+  	$.ajax({
+       type: "GET",
+       url: dlink,
+       success: function(response){
+	        //successful
+	     }
+	  });
+	  $('#loader').fadeOut();
+	});
+	
+		
 	// edit.php
+	if ( $("#edit input#post-title:empty").val() == '' ) {
+		$("#edit input#post-title").focus();
+	}
 	$("#metadata_toggle").live("click", function($e) {
 		$e.preventDefault();
 		$("#metadata_window").slideToggle('fast');
@@ -255,7 +256,6 @@ jQuery(document).ready(function() {
   });
   
   
-  
   // log.php
   if(jQuery().reverseOrder) {
 	  $('ol.more li').reverseOrder(); 
@@ -271,8 +271,7 @@ jQuery(document).ready(function() {
     li.remove();
   });
   
-  
-  
+   
   // theme-edit.php
  	$("#theme-folder").change(function(){
     var thmfld = $(this).val();
@@ -286,7 +285,7 @@ jQuery(document).ready(function() {
 	});
 
 
-	//title filtering on pages.php
+	//title filtering on pages.php & backups.php
 	$('#filtertable').live("click", function($e) {
 		$e.preventDefault();
 		$("#filter-search").slideToggle();
@@ -302,7 +301,6 @@ jQuery(document).ready(function() {
    var t = $(this).find('td.pagetitle').text().toLowerCase();
    $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
  	});
- 	
 	$("#filter-search #q").keyup(function(){
 		var s = $(this).val().toLowerCase().split(" ");
 		$("#editpages tr:hidden").show();
@@ -332,6 +330,7 @@ jQuery(document).ready(function() {
 		$("#new-folder form").hide();
 		$('#createfolder').show();
 	});
+	
 	// upload.php ajax folder creation
 	$('#new-folder form').submit(function() {
 		$('#loader').show();

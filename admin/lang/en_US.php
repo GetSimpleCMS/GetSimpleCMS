@@ -267,8 +267,8 @@ $i18n = array(
 /* 
  * For: archive.php
 */
-"SUCC_WEB_ARCHIVE"	=>	"Successful website archive!",
-"SUCC_WEB_ARC_DEL"	=>	"Website archive successfully deleted",
+"SUCC_WEB_ARCHIVE"	=>	"An archive of your website has been successfully created",
+"SUCC_WEB_ARC_DEL"	=>	"The seleted archive has been successfully deleted",
 "WEBSITE_ARCHIVES"	=>	"Website Archives",
 "ARCHIVE_DELETED"		=>	"Archive deleted successfully",
 "CREATE_NEW_ARC"		=>	"Create a New Archive",

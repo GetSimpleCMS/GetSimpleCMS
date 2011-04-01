@@ -84,20 +84,20 @@ elseif ($p == 'restore') {
 		</div>
 		
 		<table class="simple highlight" >
-		<tr><td style="width:125px;" ><b><?php i18n('PAGE_TITLE');?>:</b></td><td><b><?php echo cl($title); ?></b> <?php echo $private; ?></td></tr>
-		<tr><td><b><?php i18n('BACKUP_OF');?>:</b></td><td>
+		<tr><td class="title" ><?php i18n('PAGE_TITLE');?>:</td><td><b><?php echo cl($title); ?></b> <?php echo $private; ?></td></tr>
+		<tr><td class="title" ><?php i18n('BACKUP_OF');?>:</td><td>
 			<?php 
 			if(isset($id)) {
 					echo '<a target="_blank" href="'. find_url($url, $parent) .'">'. find_url($url, $parent) .'</a>'; 
 			} 
 			?>
 		</td></tr>
-		<tr><td><b><?php i18n('DATE');?>:</b></td><td><?php echo lngDate($pubDate); ?></td></tr>
-		<tr><td><b><?php i18n('TAG_KEYWORDS');?>:</b></td><td><em><?php echo $metak; ?></em></td></tr>
-		<tr><td><b><?php i18n('META_DESC');?>:</b></td><td><em><?php echo $metad; ?></em></td></tr>
-		<tr><td><b><?php i18n('MENU_TEXT');?>:</b></td><td><?php echo $menu; ?></td></tr>
-		<tr><td><b><?php i18n('PRIORITY');?>:</b></td><td><?php echo $menuOrder; ?></td></tr>
-		<tr><td><b><?php i18n('ADD_TO_MENU');?></b></td><td><?php echo $menuStatus; ?></td></tr>
+		<tr><td class="title" ><?php i18n('DATE');?>:</td><td><?php echo lngDate($pubDate); ?></td></tr>
+		<tr><td class="title" ><?php i18n('TAG_KEYWORDS');?>:</td><td><em><?php echo $metak; ?></em></td></tr>
+		<tr><td class="title" ><?php i18n('META_DESC');?>:</td><td><em><?php echo $metad; ?></em></td></tr>
+		<tr><td class="title" ><?php i18n('MENU_TEXT');?>:</td><td><?php echo $menu; ?></td></tr>
+		<tr><td class="title" ><?php i18n('PRIORITY');?>:</td><td><?php echo $menuOrder; ?></td></tr>
+		<tr><td class="title" ><?php i18n('ADD_TO_MENU');?></td><td><?php echo $menuStatus; ?></td></tr>
 		</table>
 		
 		<textarea id="codetext" wrap='off' style="background:#f4f4f4;padding:4px;width:635px;color:#444;border:1px solid #666;" readonly ><?php echo strip_decode($content); ?></textarea>
