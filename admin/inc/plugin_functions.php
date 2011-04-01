@@ -222,11 +222,12 @@ function createSideMenu($id,$txt){
  *
  * @param string $id Id of current page
  * @param string $txt Text to add to tabbed link
+ * @param string $klass class to add to a element
  */
-function createNavTab($url,$txt) {
-	echo "<li><a href='".$url."' class='plugins' />";
+function createNavTab($url, $txt, $klass = 'plugins') {
+	echo '<li><a href="'.$url.'" class="'.$klass.'" >';
 	echo $txt;
-	echo "</a></li>";
+	echo '</a></li>';
 }
 
 /**
