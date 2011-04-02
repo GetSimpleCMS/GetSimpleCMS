@@ -6,11 +6,12 @@
  * @subpackage init
  */
 header('Content-type: text/css');
-header ('Cache-Control: max-age=' . $offset . ', must-revalidate');
-header ('Expires: ' . gmdate ("D, d M Y H:i:s", time() + $offset) . ' GMT');
+$offset = 30000;
+#header ('Cache-Control: max-age=' . $offset . ', must-revalidate');
+#header ('Expires: ' . gmdate ("D, d M Y H:i:s", time() + $offset) . ' GMT');
 
 # check to see if cache is available for this
-$cacheme = TRUE;
+$cacheme = FALSE;
 $cachefile = '../../data/cache/stylesheet.txt';
 if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && $cacheme) {
 	echo file_get_contents($cachefile);
@@ -708,7 +709,8 @@ a.button:hover {
 
 /* file listing table style */
 #filetypetoggle { color:#999; font-size:12px;}
-table td.delete {width:20px;text-align:center;font-size:12px;}
+table td.delete {width:20px;text-align:center;}
+table td.delete a {font-size:18px !important;line-height:16px;}
 .view {width:48px;text-align:center;}
 .editl {width:40px;text-align:center;}
 .editlw {width:220px;text-align:left;}

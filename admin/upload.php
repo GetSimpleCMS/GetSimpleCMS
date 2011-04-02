@@ -197,7 +197,7 @@ if (isset($_GET['newfolder'])) {
         	# check to see if folder is empty
         	$directory_delete = null;
         	if ( check_empty_folder($path.$upload['name']) ) {  
-						$directory_delete = '<a class="delconfirm" title="'.i18n_r('DELETE_FOLDER').': '. $upload['name'] .'" href="deletefile.php?path='.$urlPath.'&amp;folder='. $upload['name'] . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a>';
+						$directory_delete = '<a class="delconfirm" title="'.i18n_r('DELETE_FOLDER').': '. $upload['name'] .'" href="deletefile.php?path='.$urlPath.'&amp;folder='. $upload['name'] . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a>';
 					}
         	
           echo '<tr class="All folder '.$upload['name'].'" >';
@@ -253,7 +253,7 @@ if (isset($_GET['newfolder'])) {
 					}
 					
 					echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
-					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">X</a></td>';
+					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a></td>';
 					echo '</tr>';
 					exec_action('file-extras');
 				}

@@ -76,7 +76,7 @@ if (count($pagesSorted) != 0)
 		
 		$table .= '<td class="pagetitle"><a title="'.i18n_r('VIEWPAGE_TITLE').' '. cl($page['title']) .'" href="backup-edit.php?p=view&amp;id='. $page['url'] .'">'. cl($page['title']) .'</a></td>';
 		$table .= '<td style="width:80px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
-		$table .= '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETEPAGE_TITLE').' '. cl($page['title']) .'?" href="backup-edit.php?p=delete&amp;id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "backup-edit.php").'">X</a></td>';
+		$table .= '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETEPAGE_TITLE').' '. cl($page['title']) .'?" href="backup-edit.php?p=delete&amp;id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "backup-edit.php").'">&times;</a></td>';
 		$table .= '</tr>';
 	}
 }	

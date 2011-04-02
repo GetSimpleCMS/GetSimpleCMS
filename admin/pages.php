@@ -22,7 +22,26 @@ $path 		= GSDATAPAGESPATH;
 $counter 	= '0';
 $table 		= '';
 
-//display all pages
+# clone attempt happening
+if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone') {
+	
+	$nonce = $_GET['nonce'];
+	if(!check_nonce($nonce, "clone", "pages.php")) {
+		die("CSRF detected!");	
+	}
+	
+	$status = copy($path.$_GET['id'].'.xml', $path.$_GET['id'].'-1.xml');
+	if ($status) {
+		#TODO: change slug & title [copy] within new file: $path.$_GET['id'].'-1.xml'
+		#TODO: i18n this thing when it's all done
+		$success = 'Successfully copied '.$_GET['id'].' to '.$_GET['id'].'-1';
+	} else {
+		$error = 'There was a problem trying to clone '.$_GET['id'];
+	}
+}
+
+
+# display all pages
 $filenames = getFiles($path);
 
 $count="0";
@@ -50,6 +69,8 @@ if (count($filenames) != 0) {
 		}
 	}
 }
+
+
 
 $pagesSorted = subval_sort($pagesArray,'sort');
 $table = get_pages_menu('','',0);

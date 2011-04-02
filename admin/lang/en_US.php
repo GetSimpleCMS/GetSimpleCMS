@@ -483,7 +483,7 @@ $i18n = array(
 "XML_VALID" => "XML Valid",
 "UPDATE_AVAILABLE" => "Update to", //plugins.php
 "STATUS" => "Status", //plugins.php
-
+"CLONE" => "Clone", //edit.php
 
 
 
