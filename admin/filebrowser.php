@@ -47,11 +47,9 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 			}
 		}
 		<?php if (isset($_GET['returnid'])){ ?>
-		if ($funcNum=="1"){
 			if(window.opener){
 				window.opener.document.getElementById('<?php echo $returnid; ?>').value=$url;
 			}
-		}
 		<?php } ?>	
 		window.close();
 	}
@@ -114,7 +112,12 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 			echo '<tr class="All" >';  
 			echo '<td class="" colspan="5">';
 			$adm = substr($path . $upload['name'] ,  16); 
-			echo '<img src="template/images/folder.png" width="11" /> <a href="filebrowser.php?path='.$adm.'&amp;CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.'" title="'. $upload['name'] .'"  ><strong>'.$upload['name'].'</strong></a>';
+			if ($returnid!='') {
+				$returnlink = '&returnid='.$returnid;
+			} else {
+				$returnlink='';
+			}
+			echo '<img src="template/images/folder.png" width="11" /> <a href="filebrowser.php?path='.$adm.'&amp;CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.$returnlink.'" title="'. $upload['name'] .'"  ><strong>'.$upload['name'].'</strong></a>';
 			echo '</td>';
 			echo '</tr>';
 		}
