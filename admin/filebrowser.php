@@ -16,6 +16,7 @@ login_cookie_check();
 
 $path = (isset($_GET['path'])) ? "../data/uploads/".$_GET['path'] : "../data/uploads/";
 $subPath = (isset($_GET['path'])) ? $_GET['path'] : "";
+$returnid = (isset($_GET['returnid'])) ? $_GET['returnid'] : "";
 $path = tsl($path);
 // check if host uses Linux (used for displaying permissions
 $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
@@ -40,9 +41,16 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	</style>
 	<script type='text/javascript'>
 	function submitLink($funcNum, $url) {
-		if(window.opener){
-			window.opener.CKEDITOR.tools.callFunction($funcNum, $url);
+		if ($funcNum=="2"){
+			if(window.opener){
+				window.opener.CKEDITOR.tools.callFunction($funcNum, $url);
+			}
 		}
+		<?php if (isset($_GET['returnid'])){ ?>
+			if(window.opener){
+				window.opener.document.getElementById('<?php echo $returnid; ?>').value=$url;
+			}
+		<?php } ?>	
 		window.close();
 	}
 	</script>
