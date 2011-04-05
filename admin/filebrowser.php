@@ -47,9 +47,11 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 			}
 		}
 		<?php if (isset($_GET['returnid'])){ ?>
+		if ($funcNum=="1"){
 			if(window.opener){
 				window.opener.document.getElementById('<?php echo $returnid; ?>').value=$url;
 			}
+		}
 		<?php } ?>	
 		window.close();
 	}
