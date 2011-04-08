@@ -25,7 +25,7 @@ $thumb_folder = GSTHUMBNAILPATH.$subPath;
 $src_folder = '../data/uploads/';
 $thumb_folder_rel = '../data/thumbs/'.$subPath;
 if (!is_file($src_folder . $subPath .$src)) redirect("upload.php");
-
+$src = rawurlencode($src);
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
 	
@@ -45,10 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	}
 }
 
-list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($src_folder .$subPath. urlencode($src));
+list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($src_folder .$subPath. rawurldecode($src));
 
 if (file_exists($thumb_folder . 'thumbnail.' . $src)) {
-	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . urlencode('thumbnail.'.$src));
+	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . 'thumbnail.'.$src);
 	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder_rel . 'thumbnail.'. $src .'" rel="facybox" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 }
 ?>
@@ -65,7 +65,7 @@ if (file_exists($thumb_folder . 'thumbnail.' . $src)) {
 		<div class="main">
 		<h3><?php i18n('IMG_CONTROl_PANEL');?></h3>
 	
-			<?php echo '<p><a href="'.$src_folder . $subPath .$src .'" rel="facybox" >'.i18n_r('ORIGINAL_IMG').'</a> <code>'.$imgwidth.'x'.$imgheight .'</code>'. $thumb_exists .'</p>'; ?>
+			<?php echo '<p><a href="'.$src_folder . $subPath .$src.'" rel="facybox" >'.i18n_r('ORIGINAL_IMG').'</a> <code>'.$imgwidth.'x'.$imgheight .'</code>'. $thumb_exists .'</p>'; ?>
 
 			<form>
 				<select class="text" id="img-info" style="width:50%" >

@@ -194,6 +194,8 @@ if (isset($_GET['newfolder'])) {
      		$foldercount = 0;
         foreach ($dirsSorted as $upload) {
         	
+        	$upload['name'] = rawurlencode($upload['name']);
+        	
         	# check to see if folder is empty
         	$directory_delete = null;
         	if ( check_empty_folder($path.$upload['name']) ) {  

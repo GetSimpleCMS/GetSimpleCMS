@@ -125,6 +125,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 
 	if (count($filesSorted) != 0) { 			
 		foreach ($filesSorted as $upload) {
+			$upload['name'] = rawurlencode($upload['name']);
 			$thumb = null; $thumbnailLink = null;
 			$subDir = ($subPath == '' ? '' : $subPath.'/');
 			$selectLink = 'title="'.i18n_r('SELECT_FILE').': '. htmlspecialchars($upload['name']) .'" href="javascript:void(0)" onclick="submitLink('.$CKEditorFuncNum.',\''.$fullPath.$subDir.$upload['name'].'\')"';
