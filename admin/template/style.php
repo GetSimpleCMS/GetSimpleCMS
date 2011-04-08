@@ -602,6 +602,8 @@ form table.formtable select { width:275px;padding:3px 4px; }
 table.cleantable {border-collapse:collapse;margin:0 0 0 0;}
 table.cleantable tr {border:none;}
 table.cleantable tr td {border:none;}
+#autosavenotify {padding:15px 0 0 13px;color:#666;text-shadow:1px 1px 0 #fff;font-size:11px;}
+
 
 /* form submit button style */
 input.submit {

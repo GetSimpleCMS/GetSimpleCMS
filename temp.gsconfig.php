@@ -62,6 +62,9 @@ define('GSIMAGEWIDTH', '200');
 
 # Data saving method. Default is XML
 #define('GSSTORAGE', 'xml');
+
+# Autosave within edit.php. Value is the autosave interval 
+#define('GSAUTOSAVE', 30000);
 	
 # Set PHP locale
 # http://php.net/manual/en/function.setlocale.php

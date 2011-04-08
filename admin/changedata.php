@@ -26,8 +26,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 
 login_cookie_check();
 	
-if (isset($_POST['submitted']))
-{
+if (isset($_POST['submitted'])) {
 	$nonce = $_POST['nonce'];
 	if(!check_nonce($nonce, "edit", "edit.php")) {
 		die("CSRF detected!");	
@@ -166,7 +165,11 @@ if (isset($_POST['submitted']))
 		
 		// redirect user back to edit page 
 		generate_sitemap();
-		redirect("edit.php?id=". $url ."&upd=edit-success&type=edit");
+		if ($_POST['autosave'] == 'true') {
+			echo 'OK';
+		} else {
+			redirect("edit.php?id=". $url ."&upd=edit-success&type=edit");
+		}
 	}
 } else {
 	redirect('pages.php');

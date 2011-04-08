@@ -341,6 +341,27 @@ if ($menu == '') { $menu = $title; }
 	        filebrowserWindowWidth : '730',
 	        filebrowserWindowHeight : '500'
     		});
+    		CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
+    	
+				<?php if (defined('GSAUTOSAVE')) { 
+		    	# IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP
+		    ?>
+					var yourText = $('#post-content').val();
+					function InstanceReadyEvent() {
+					  this.document.on("keyup", function () {
+					  		warnme = true;
+					      yourText = CKEDITOR.instances["post-content"].getData();
+					  });
+					}
+				<?php } else { 
+					# AUTOSAVE IS NOT TURNED ON
+				?>
+					function InstanceReadyEvent() {
+					  this.document.on("keyup", function () {
+					  		warnme = true;
+					  });
+					}
+				<?php } ?>	
 			</script>
 			
 			<?php
@@ -355,6 +376,7 @@ if ($menu == '') { $menu = $title; }
 		
 		<script type="text/javascript">
 			/* Warning for unsaved Data */
+			var yourText = null;
     	var warnme = false;	
 			window.onbeforeunload = function () {
 		    if (warnme) {
@@ -363,9 +385,49 @@ if ($menu == '') { $menu = $title; }
 			}
 			
 			jQuery(document).ready(function() { 
-				$('input,textarea,select').change(function(){
-	    		warnme = true;
-	    	});	
+	    
+		    <?php if (defined('GSAUTOSAVE')) { 
+		    	# IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP
+		    ?>	
+		    	function autoSave() {
+		    		$('input[type=submit]').attr('disabled', 'disabled');
+		    		if (!yourText) {
+			    		$('#post-content').val(yourText);
+			    	}
+		    		var dataString = $("#editform").serialize();
+		    		
+						var currentTime = new Date();
+						var hours = currentTime.getHours();
+						var minutes = currentTime.getMinutes();
+						if (minutes < 10){ minutes = "0" + minutes; }
+						if(hours > 11){ daypart = "PM";	} else {	daypart = "AM";	}
+						$.ajax({
+							type: "POST",
+							url: "changedata.php",
+							data: dataString+'&autosave=true&submitted=true',
+							success: function(msg) {
+								if (msg.toString()=='OK') {
+									$('#autosavenotify').text("<?php i18n('AUTOSAVE_NOTIFY'); ?> "+ hours +":"+minutes+" "+daypart);
+									$('input[type=submit]').attr('disabled', '');
+									warnme = false;
+								}
+							}
+						});	
+		    	}
+		    	
+		    	$('#editform').change(function(){
+						warnme = true;
+							clearTimeout($.data(this, 'timer'));
+						  var wait = setTimeout(autoSave, <?php echo (int)GSAUTOSAVE; ?>);
+						  $(this).data('timer', wait);
+		    	});
+	    	<?php } else { 
+					# AUTOSAVE IS NOT TURNED ON
+				?>
+		    	$('#editform').change(function(){
+						warnme = true;
+		    	});
+				<?php } ?>
 			});
 		</script>
 	</div>
