@@ -15,6 +15,7 @@
 define('IN_GS', TRUE);
 include_once('nonce.php');
 include_once('xss.php');
+
 if (version_compare(PHP_VERSION, "5")  >= 0) {
 	foreach ($_GET as &$xss) $xss = antixss($xss);
 }
@@ -229,6 +230,9 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
  * Include other files depending if they are needed or not
  */
 if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login_functions.php'); }
-if(isset($load['plugin']) && $load['plugin']){ 	include_once(GSADMININCPATH.'plugin_functions.php'); }
+if(isset($load['plugin']) && $load['plugin']){ 	
+	include_once(GSADMININCPATH.'plugin_functions.php'); 
+	include_once('api.plugin.php');
+}
 
 ?>

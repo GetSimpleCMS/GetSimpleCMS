@@ -565,8 +565,7 @@ function passhash($p) {
 /**
  * Get Available Pages
  *
- * Lists all available pages for plugin use
- * same exact code as menu_data();
+ * Lists all available pages for plugin/api use
  *
  * @since 2.0
  * @uses GSDATAPAGESPATH
@@ -574,11 +573,9 @@ function passhash($p) {
  * @uses getXML
  * @uses subval_sort
  *
- * @param bool $xml Optional, default is false. 
- *				True will return value in XML format. False will return an array
  * @return array|string Type 'string' in this case will be XML 
  */
-function get_available_pages($id = null,$xml=false) {
+function get_available_pages() {
     $menu_extract = '';
     
     $path = GSDATAPAGESPATH;
@@ -600,9 +597,9 @@ function get_available_pages($id = null,$xml=false) {
                 if ($data->private != 'Y') {
                     $pagesArray[$count]['menuStatus'] = $data->menuStatus;
                     $pagesArray[$count]['menuOrder'] = $data->menuOrder;
-                    $pagesArray[$count]['menu'] = $data->menu;
+                    $pagesArray[$count]['menu'] = strip_decode($data->menu);
                     $pagesArray[$count]['parent'] = $data->parent;
-                    $pagesArray[$count]['title'] = $data->title;
+                    $pagesArray[$count]['title'] = strip_decode($data->title);
                     $pagesArray[$count]['url'] = $data->url;
                     $pagesArray[$count]['private'] = $data->private;
                     $pagesArray[$count]['pubDate'] = $data->pubDate;
@@ -612,61 +609,26 @@ function get_available_pages($id = null,$xml=false) {
         }
     }
     
-    $pagesSorted = subval_sort($pagesArray,'menuOrder');
+    $pagesSorted = subval_sort($pagesArray,'title');
     if (count($pagesSorted) != 0) { 
       $count = 0;
-      if (!$xml){
-        foreach ($pagesSorted as $page) {
-          $text = (string)$page['menu'];
-          $pri = (string)$page['menuOrder'];
-          $parent = (string)$page['parent'];
-          $title = (string)$page['title'];
-          $slug = (string)$page['url'];
-          $menuStatus = (string)$page['menuStatus'];
-          $private = (string)$page['private'];
-					$pubDate = (string)$page['pubDate'];
-          
-          $url = find_url($slug,$parent);
-          
-          $specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
-          
-          if ($id == $slug) { 
-              return $specific; 
-              exit; 
-          } else {
-              $menu_extract[] = $specific;
-          }
-        } 
-        return $menu_extract;
-      } else {
-        $xml = '<?xml version="1.0" encoding="UTF-8"?><channel>';    
-	        foreach ($pagesSorted as $page) {
-            $text = $page['menu'];
-            $pri = $page['menuOrder'];
-            $parent = $page['parent'];
-            $title = $page['title'];
-            $slug = $page['url'];
-            $pubDate = $page['pubDate'];
-            $menuStatus = $page['menuStatus'];
-            $private = $page['private'];
-           	
-            $url = find_url($slug,$parent);
-            
-            $xml.="<item>";
-            $xml.="<slug><![CDATA[".$slug."]]></slug>";
-            $xml.="<pubDate><![CDATA[".$pubDate."]]></pubDate>";
-            $xml.="<url><![CDATA[".$url."]]></url>";
-            $xml.="<parent><![CDATA[".$parent."]]></parent>";
-            $xml.="<title><![CDATA[".$title."]]></title>";
-            $xml.="<menuOrder><![CDATA[".$pri."]]></menuOrder>";
-            $xml.="<menu><![CDATA[".$text."]]></menu>";
-            $xml.="<menuStatus><![CDATA[".$menuStatus."]]></menuStatus>";
-            $xml.="<private><![CDATA[".$private."]]></private>";
-            $xml.="</item>";
-	        }
-	        $xml.="</channel>";
-	        return $xml;
-        }
+      foreach ($pagesSorted as $page) {
+        $text = (string)$page['menu'];
+        $pri = (string)$page['menuOrder'];
+        $parent = (string)$page['parent'];
+        $title = (string)$page['title'];
+        $slug = (string)$page['url'];
+        $menuStatus = (string)$page['menuStatus'];
+        $private = (string)$page['private'];
+				$pubDate = (string)$page['pubDate'];
+        
+        $url = find_url($slug,$parent);
+        
+        $specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
+        
+        $extract[] = $specific;
+      } 
+      return $extract;
     }
 }
 
