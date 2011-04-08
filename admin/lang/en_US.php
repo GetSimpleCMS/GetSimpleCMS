@@ -484,6 +484,24 @@ $i18n = array(
 "UPDATE_AVAILABLE" => "Update to", //plugins.php
 "STATUS" => "Status", //plugins.php
 "CLONE" => "Clone", //edit.php
+"AUTOSAVE_NOTIFY" => 'Page autosaved at', //edit.php
+"MENU_MANAGER" => 'Menu Manager', //edit.php
+
+/* 
+ * For: api related pages
+ */
+ 
+"API_ERR_MISSINGPARAM" => 'parameter data does not exist',
+"API_ERR_BADMETHOD" => 'method %s does not exist',
+"API_ERR_AUTHFAILED" => 'authentication failed',
+"API_ERR_AUTHDISABLED" => 'authentication disabled',
+"API_ERR_NOPAGE" => 'requested page %s does not exist',
+"API_CONFIGURATION" => 'API Configuration',
+"API_ENABLE" => 'Enable the API',
+"API_REGENKEY" => 'Regenerate Key',
+"API_DISCLAIMER" => "By enabling this API you are allowing any external application that has a copy of your key to have access to your website's data. <b>Only share this key with applications you trust.</b>",
+"API_REGEN_DISCLAIMER" => "When you regenerate your API Key, you will need to enter the new key into any external application using this API to connect to your website.",
+"API_CONFIRM" => "ARE YOU SURE?",
 
 
 
