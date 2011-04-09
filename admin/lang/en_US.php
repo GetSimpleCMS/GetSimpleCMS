@@ -485,7 +485,7 @@ $i18n = array(
 "STATUS" => "Status", //plugins.php
 "CLONE" => "Clone", //edit.php
 "AUTOSAVE_NOTIFY" => 'Page autosaved at', //edit.php
-"MENU_MANAGER" => 'Menu Manager', //edit.php
+"MENU_MANAGER" => '<em>M</em>enu Manager', //edit.php
 "GET_PLUGINS_LINK" => 'Download <em>M</em>ore Plugins',
 /* 
  * For: api related pages
