@@ -15,17 +15,12 @@ require_once(GSADMININCPATH.'configuration.php');
  * @uses $SALT
  * @uses $cookie_time
  * @uses $cookie_name
- * @uses GSCOOKIEISSITEWIDE
  */
 function create_cookie() {
 	global $USR,$SALT,$cookie_time,$cookie_name;
   $saltUSR = $USR.$SALT;
   $saltCOOKIE = sha1($cookie_name.$SALT);
-  if ( defined('GSCOOKIEISSITEWIDE') && (GSCOOKIEISSITEWIDE == TRUE) ) {
-    setcookie($saltCOOKIE, sha1($saltUSR), time() + $cookie_time,'/');    
-  } else {
-    setcookie($saltCOOKIE, sha1($saltUSR), time() + $cookie_time);        
-  }
+  setcookie($saltCOOKIE, sha1($saltUSR), time() + $cookie_time,'/');    
 }
 
 /**
@@ -33,23 +28,16 @@ function create_cookie() {
  *
  * @since 1.0
  * @uses $SALT
- * @uses GSCOOKIEISSITEWIDE
  *
  * @params string $identifier Name of the cookie to kill
  */
 function kill_cookie($identifier) {
   global $SALT;
   $saltCOOKIE = sha1($identifier.$SALT);
-  
- 	setcookie('GS_ADMIN_USERNAME', 'null', time() - 3600);  
+ 	setcookie('GS_ADMIN_USERNAME', 'null', time() - 3600,'/');  
   if (isset($_COOKIE[$saltCOOKIE])) {
-	  if ( defined('GSCOOKIEISSITEWIDE') && (GSCOOKIEISSITEWIDE == TRUE) ) {
-	     $_COOKIE[$saltCOOKIE] = FALSE;
-	     setcookie($saltCOOKIE, FALSE, time() - 3600,'/');    
-	  } else {
-	     $_COOKIE[$saltCOOKIE] = FALSE;
-	     setcookie($saltCOOKIE, FALSE, time() - 3600);
-	  }
+		$_COOKIE[$saltCOOKIE] = FALSE;
+		setcookie($saltCOOKIE, FALSE, time() - 3600,'/');
   }
 }
 

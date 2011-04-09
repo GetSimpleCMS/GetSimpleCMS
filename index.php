@@ -64,7 +64,11 @@ $private = $data_index->private;
 
 # if page is private, check user
 if ($private == 'Y') {
-	redirect('404');
+	if (isset($USR) && $USR == get_cookie('GS_ADMIN_USERNAME')) {
+		//ok, allow the person to see it then
+	} else {
+		redirect('404');
+	}
 }
 
 # if page does not exist, throw 404 error

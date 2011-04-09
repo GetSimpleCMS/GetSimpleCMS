@@ -27,9 +27,6 @@ define('GSIMAGEWIDTH', '200');
 # Turn on debug mode
 #define('GSDEBUG', TRUE);
 
-# Make login cookie available sitewide.
-#define('GSCOOKIEISSITEWIDE', TRUE);
-
 # Ping search engines upon sitemap generation?
 #define('GSDONOTPING', 1);
 

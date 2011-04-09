@@ -124,27 +124,23 @@ if (file_exists($thisfilew)) {
 } 
 
 /** grab user data */
-if(!isset($base)) {
-	if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
-		$cookie_user_id = _id($_COOKIE['GS_ADMIN_USERNAME']);
-		if (file_exists(GSUSERSPATH . $cookie_user_id.'.xml')) {
-			$datau = getXML(GSUSERSPATH  . $cookie_user_id.'.xml');
-			$USR = stripslashes($datau->USR);
-			$HTMLEDITOR = $datau->HTMLEDITOR;
-			$TIMEZONE = $datau->TIMEZONE;
-			$LANG = $datau->LANG;
-		} else {
-			$USR = null;
-			$TIMEZONE = "";	
-		}
+if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
+	$cookie_user_id = _id($_COOKIE['GS_ADMIN_USERNAME']);
+	if (file_exists(GSUSERSPATH . $cookie_user_id.'.xml')) {
+		$datau = getXML(GSUSERSPATH  . $cookie_user_id.'.xml');
+		$USR = stripslashes($datau->USR);
+		$HTMLEDITOR = $datau->HTMLEDITOR;
+		$TIMEZONE = $datau->TIMEZONE;
+		$LANG = $datau->LANG;
 	} else {
 		$USR = null;
-		$TIMEZONE = "";
+		$TIMEZONE = "";	
 	}
 } else {
 	$USR = null;
 	$TIMEZONE = "";
 }
+
 
 /** grab authorization and security data */
 if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
@@ -188,9 +184,7 @@ global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR, $PE
 /**
  * $base is if the site is being viewed from the front-end
  */
-if(!isset($base)) {
-	include_once(GSADMININCPATH.'cookie_functions.php');
-} else {
+if(isset($base)) {
 	include_once(GSADMININCPATH.'theme_functions.php');
 }
 
@@ -229,6 +223,7 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
 /**
  * Include other files depending if they are needed or not
  */
+include_once(GSADMININCPATH.'cookie_functions.php');
 if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login_functions.php'); }
 if(isset($load['plugin']) && $load['plugin']){ 	
 	include_once(GSADMININCPATH.'plugin_functions.php'); 

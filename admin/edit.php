@@ -138,7 +138,7 @@ if ($menu == '') { $menu = $title; }
 		<!-- pill edit navigation -->
 		<div class="edit-nav" >
 			<?php 
-			if( (isset($id)) && ($private != 'Y' )) {
+			if(isset($id)) {
 				echo '<a href="', find_url($url, $parent) ,'" target="_blank" accesskey="', find_accesskey(i18n_r('VIEW')), '" >', i18n_r('VIEW'), ' </a>';
 			} 
 			?>
