@@ -56,7 +56,7 @@ $i18n = array(
 "VIEWPAGE_TITLE"		=>	"View Page",
 "DELETEPAGE_TITLE"	=>	"Delete Page",
 "PAGE_MANAGEMENT"		=>	"Page Management",
-"TOGGLE_STATUS"			=>	"Toggle Status",
+"TOGGLE_STATUS"			=>	"Toggle Stat<em>u</em>s",
 "TOTAL_PAGES"				=>	"total pages",
 "ALL_PAGES"					=>	"All Pages",
 
@@ -463,7 +463,7 @@ $i18n = array(
 "UNSAVED_INFORMATION" => "You are about to leave this page and will lose any unsaved information.", //edit.php
 "BACK_TO_WEBSITE" => "Back to Website", //index & resetpassword
 "SUPPORT_FORUM" => "Support Forum", //support.php
-"FILTER" => "Filter", //pages.php
+"FILTER" => "Filte<em>r</em>", //pages.php
 "UPLOADIFY_BUTTON" => "Upload files and/or images...", //upload.php
 "FILE_BROWSER" => "File Browser", //filebrowser.php
 "SELECT_FILE" => "Select file", //filebrowser.php
@@ -486,7 +486,7 @@ $i18n = array(
 "CLONE" => "Clone", //edit.php
 "AUTOSAVE_NOTIFY" => 'Page autosaved at', //edit.php
 "MENU_MANAGER" => 'Menu Manager', //edit.php
-
+"GET_PLUGINS_LINK" => 'Download <em>M</em>ore Plugins',
 /* 
  * For: api related pages
  */

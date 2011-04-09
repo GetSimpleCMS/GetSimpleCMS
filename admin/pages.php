@@ -93,9 +93,9 @@ $table = get_pages_menu('','',0);
 	<div id="maincontent">
 		<div class="main">
 			<h3 class="floated"><?php i18n('PAGE_MANAGEMENT'); ?></h3>
-			<div class="edit-nav clearfix" ><p><a href="#" id="filtertable" ><?php i18n('FILTER'); ?></a><a href="#" id="show-characters" ><?php i18n('TOGGLE_STATUS'); ?></a></div>
+			<div class="edit-nav clearfix" ><p><a href="#" id="filtertable" accesskey="<?php echo find_accesskey(i18n_r('FILTER'));?>" ><?php i18n('FILTER'); ?></a><a href="#" id="show-characters" accesskey="<?php echo find_accesskey(i18n_r('TOGGLE_STATUS'));?>" ><?php i18n('TOGGLE_STATUS'); ?></a></div>
 			<div id="filter-search">
-				<form><input type="text" autocomplete="off" class="text" id="q" placeholder="<?php echo lowercase(i18n_r('FILTER')); ?>..." /> &nbsp; <a href="pages.php" class="cancel"><?php i18n('CANCEL'); ?></a></form>
+				<form><input type="text" autocomplete="off" class="text" id="q" placeholder="<?php echo strip_tags(lowercase(i18n_r('FILTER'))); ?>..." /> &nbsp; <a href="pages.php" class="cancel"><?php i18n('CANCEL'); ?></a></form>
 			</div>
 			<table id="editpages" class="edittable highlight paginate">
 				<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th><th></th></tr>
