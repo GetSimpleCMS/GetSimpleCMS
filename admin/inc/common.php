@@ -226,8 +226,12 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
 include_once(GSADMININCPATH.'cookie_functions.php');
 if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login_functions.php'); }
 if(isset($load['plugin']) && $load['plugin']){ 	
-	include_once(GSADMININCPATH.'plugin_functions.php'); 
-	include_once('api.plugin.php');
+	include_once(GSADMININCPATH.'plugin_functions.php');
+	if(get_filename_id()=='settings' || get_filename_id()=='load') {
+		/* this core plugin only needs to be visible when you are viewing the 
+		settings page since that is where it's sidebar item is. */
+		include_once('api.plugin.php');
+	}
 }
 
 ?>

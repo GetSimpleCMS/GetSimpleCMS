@@ -8,12 +8,12 @@ Author URI: http://www.cagintranet.com/
 */
 
 # get correct id for plugin
-$thisfile=basename(__FILE__, ".php");
+$thisfileapi=basename(__FILE__, ".php");
 
 
 # register plugin
 register_plugin(
-	$thisfile,
+	$thisfileapi,
 	'GetSimple API',
 	'0.1',
 	'Chris Cagle',
@@ -24,7 +24,7 @@ register_plugin(
 );
 
 # activate hooks
-add_action('settings-sidebar','createSideMenu',array($thisfile, i18n_r('API_CONFIGURATION'))); 
+add_action('settings-sidebar','createSideMenu',array($thisfileapi, i18n_r('API_CONFIGURATION'))); 
 
 function gsapi_display_cp() {
 	$thisdatafile = GSDATAOTHERPATH.'appid.xml';
