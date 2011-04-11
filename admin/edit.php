@@ -66,6 +66,14 @@ if ($id)
 } 
 else 
 {
+	// prefill fields is provided
+	$title 		=  isset($_GET['title']) ? $_GET['title'] : '';
+	$template 	=  isset($_GET['template']) ? $_GET['template'] : '';
+	$parent 	=  isset($_GET['parent']) ? $_GET['parent'] : '';
+	$menu		=  isset($_GET['menu']) ? $_GET['menu'] : '';
+	$private 	=  isset($_GET['private']) ? $_GET['private'] : '';
+	$menuStatus =  isset($_GET['menuStatus']) ? $_GET['menuStatus'] : '';
+	$menuOrder =  isset($_GET['menuOrder']) ? $_GET['menuOrder'] : '';
 	$buttonname = i18n_r('BTN_SAVEPAGE');
 }
 
