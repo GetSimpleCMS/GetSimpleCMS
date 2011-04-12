@@ -14,18 +14,29 @@ include('inc/common.php');
 login_cookie_check();
 if (!generate_sitemap()) {
 	$error = generate_sitemap();
+} else {
+	if (isset($_GET['refresh'])) {
+		$success = i18n_r('SITEMAP_REFRESHED');
+	}
 }
 ?>
 <?php get_template('header', cl($SITENAME).' &raquo; '.strip_tags(i18n_r('SIDE_VIEW_SITEMAP'))); ?>
 
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo strip_tags(i18n_r('SIDE_VIEW_SITEMAP')); ?></h1>
+	<h1>
+		<a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo strip_tags(i18n_r('SIDE_VIEW_SITEMAP')); ?>
+	</h1>
+	
 	<?php include('template/include-nav.php');?>
 	<?php include('template/error_checking.php');?>
 	<div class="bodycontent">
 	<div id="maincontent">
 		<div class="main" >
-			<h3><?php echo i18n('SIDE_VIEW_SITEMAP'); ?></h3>
-			
+			<h3 class="floated"><?php echo i18n('SIDE_VIEW_SITEMAP'); ?></h3>
+			<div class="edit-nav clearfix" >
+				<a href="../sitemap.xml" target="_blank" accesskey="<?php echo find_accesskey(i18n_r('VIEW'));?>" ><?php i18n('VIEW'); ?></a>
+				<a href="sitemap.php?refresh" accesskey="<?php echo find_accesskey(i18n_r('REFRESH'));?>" ><?php i18n('REFRESH'); ?></a>
+			</div>
+					
 			<pre><code><?php echo htmlentities(formatXmlString(file_get_contents('../sitemap.xml')));?></code></pre>
 		
 		</div>

@@ -487,10 +487,12 @@ $i18n = array(
 "AUTOSAVE_NOTIFY" => 'Page autosaved at', //edit.php
 "MENU_MANAGER" => '<em>M</em>enu Manager', //edit.php
 "GET_PLUGINS_LINK" => 'Download <em>M</em>ore Plugins',
+"SITEMAP_REFRESHED" => "Your sitemap has been refreshed", //edit.php
+
+
 /* 
  * For: api related pages
  */
- 
 "API_ERR_MISSINGPARAM" => 'parameter data does not exist',
 "API_ERR_BADMETHOD" => 'method %s does not exist',
 "API_ERR_AUTHFAILED" => 'authentication failed',
