@@ -629,6 +629,7 @@ function pathinfo_filename($file) {
  *
  * @since 2.04
  * @uses $GSAMIN
+ * @uses http_protocol
  * @author ccagle8
  *
  * @param bool $parts 
@@ -636,16 +637,17 @@ function pathinfo_filename($file) {
  */
 function suggest_site_path($parts=false) {
 	global $GSADMIN;
+	$protocol = http_protocol();
 	$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
 	$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
 	
 	if($path_parts == '/') {
 	
-		$fullpath = "http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . "/";
+		$fullpath = $protocol."://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . "/";
 	
 	} else {
 		
-		$fullpath = "http://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts ."/";
+		$fullpath = $protocol."://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts ."/";
 		
 	}
 		
@@ -814,6 +816,12 @@ function validate_url($u) {
 }
 
 
+/**
+ * Format XML to Formatted String
+ * 
+ * @param string $xml
+ * @return string
+ */
 function formatXmlString($xml) {  
   
   // add marker linefeeds to aid the pretty-tokeniser (adds a linefeed between all tag-end boundaries)
@@ -853,5 +861,21 @@ function formatXmlString($xml) {
   
   return $result;
 }
+
+/**
+ * Check Server Protocol
+ * 
+ * Checks to see if the website should be served using HTTP or HTTPS
+ *
+ * @return string
+ */
+function http_protocol() {
+	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
+	  return 'https';
+	} else {
+		return 'http';
+	}
+}
+
 
 ?>

@@ -337,11 +337,11 @@ $i18n = array(
  * For: error_checking.php
 */
 "ER_PWD_CHANGE"			=>	"Don't forget to <a href=\"settings.php#profile\">change your password</a> from that random generated one you have now...",
-"ER_BAKUP_DELETED"	=>	"The backup has been deleted for %s",
+"ER_BAKUP_DELETED"	=>	"The backup has been deleted for <b>%s</b>",
 "ER_REQ_PROC_FAIL"	=>	"The requested process failed",
-"ER_YOUR_CHANGES"		=>	"Your changes to %s have been saved",
-"ER_HASBEEN_REST"		=>	"%s has been restored",
-"ER_HASBEEN_DEL"		=>	"%s has been deleted",
+"ER_YOUR_CHANGES"		=>	"Your changes to <b>%s</b> have been saved",
+"ER_HASBEEN_REST"		=>	"<b>%s</b> has been restored",
+"ER_HASBEEN_DEL"		=>	"<b>%s</b> has been deleted",
 "ER_CANNOT_INDEX"		=>	"You cannot change the URL of the index page",
 "ER_SETTINGS_UPD"		=>	"Your settings have been updated",
 "ER_OLD_RESTORED"		=>	"Your old settings have been restored",
@@ -470,7 +470,7 @@ $i18n = array(
 "CREATE_FOLDER" => "Create Folder", //upload.php
 "THUMBNAIL" => "Thumbnail", //filebrowser.php
 "ERROR_FOLDER_EXISTS" => "The folder you are trying to create already exists", //upload.php
-"FOLDER_CREATED" => "The new folder was successfully created: <strong>%s</strong>", //upload.php
+"FOLDER_CREATED" => "The new folder was successfully created: <b>%s</b>", //upload.php
 "ERROR_CREATING_FOLDER" => "There was an error creating the new folder", //upload.php
 "DELETE_FOLDER" => "Delete Folder", //upload.php
 "FILE_NAME" => "File Name", //multiple tr header rows
@@ -484,11 +484,13 @@ $i18n = array(
 "UPDATE_AVAILABLE" => "Update to", //plugins.php
 "STATUS" => "Status", //plugins.php
 "CLONE" => "Clone", //edit.php
+"CLONE_SUCCESS" => "Successfully copied page <b>%s</b>", //pages.php
+"COPY" => "Copy", //pages.php
+"CLONE_ERROR" => "There was a problem trying to clone <b>%s</b>",  //pages.php
 "AUTOSAVE_NOTIFY" => 'Page autosaved at', //edit.php
 "MENU_MANAGER" => '<em>M</em>enu Manager', //edit.php
 "GET_PLUGINS_LINK" => 'Download <em>M</em>ore Plugins',
 "SITEMAP_REFRESHED" => "Your sitemap has been refreshed", //edit.php
-
 
 /* 
  * For: api related pages

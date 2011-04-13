@@ -25,18 +25,33 @@ $table 		= '';
 # clone attempt happening
 if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone') {
 	
+	# check nonce
 	$nonce = $_GET['nonce'];
 	if(!check_nonce($nonce, "clone", "pages.php")) {
 		die("CSRF detected!");	
 	}
 	
-	$status = copy($path.$_GET['id'].'.xml', $path.$_GET['id'].'-1.xml');
+	# check to not overwrite
+	$count = 1;
+	$newfile = GSDATAPAGESPATH . $_GET['id'] ."-".$count.".xml";
+	if (file_exists($newfile)) {
+		while ( file_exists($newfile) ) {
+			$count++;
+			$newfile = GSDATAPAGESPATH . $_GET['id'] ."-".$count.".xml";
+		}
+	}
+	$newurl = $_GET['id'] .'-'. $count;
+	
+	# do the copy
+	$status = copy($path.$_GET['id'].'.xml', $path.$newurl.'.xml');
 	if ($status) {
-		#TODO: change slug & title [copy] within new file: $path.$_GET['id'].'-1.xml'
-		#TODO: i18n this thing when it's all done
-		$success = 'Successfully copied '.$_GET['id'].' to '.$_GET['id'].'-1';
+		$newxml = getXML($path.$newurl.'.xml');
+		$newxml->url = $newurl;
+		$newxml->title = $newxml->title.' ['.i18n_r('COPY').']';
+		XMLsave($newxml, $path.$newurl.'.xml');
+		$success = sprintf(i18n_r('CLONE_SUCCESS'), $_GET['id']);
 	} else {
-		$error = 'There was a problem trying to clone '.$_GET['id'];
+		$error = sprintf(i18n_r('CLONE_ERROR'), $_GET['id']);
 	}
 }
 

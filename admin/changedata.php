@@ -101,16 +101,13 @@ if (isset($_POST['submitted'])) {
 			}
 		}		
 		//check to make sure we dont overwrite any good files upon create
-		if ( file_exists($file) && ($url != $_POST['existing-url']) ) 
-		{
+		if ( file_exists($file) && ($url != $_POST['existing-url']) ) {
 			$count = "1";
 			$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
-			while ( file_exists($file) ) 
-			{
+			while ( file_exists($file) ) {
 				$count++;
 				$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
 			}
-			
 			$url = $url .'-'. $count;
 		}
 
