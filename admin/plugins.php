@@ -21,10 +21,11 @@ $table = '';
 
 $pluginfiles = getFiles(GSPLUGINPATH);
 sort($pluginfiles);
+$needsupdate = false;
 foreach ($pluginfiles as $fi){
 	$pathExt = pathinfo($fi,PATHINFO_EXTENSION );
 	$pathName = pathinfo_filename($fi);
-	$needsupdate = false;
+	
 	if ($pathExt=="php") {
 		if ($live_plugins[$fi]=='true'){
 			$cls_Enabled = 'hidden';

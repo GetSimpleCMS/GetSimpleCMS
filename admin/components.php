@@ -27,12 +27,14 @@ if (isset($_POST['submitted'])){
 	$title = $_POST['title'];
 	$ids = $_POST['id'];
 	
-	# check for csrf
-	$nonce = $_POST['nonce'];	
-	if(!check_nonce($nonce, "modify_components")) {
-		die("CSRF detected!");
+	// check for csrf
+	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
+		$nonce = $_POST['nonce'];	
+		if(!check_nonce($nonce, "modify_components")) {
+			die("CSRF detected!");
+		}
 	}
-	
+
 	# create backup file for undo           
 	createBak($file, $path, $bakpath);
 	

@@ -39,13 +39,11 @@ $url = '';
 $metak = '';
 $metad = '';
 
-if ($id)
-{
+if ($id){
 	// get saved page data
 	$file = $id .'.xml';
 	
-	if (!file_exists($path . $file))
-	{ 
+	if (!file_exists($path . $file)){ 
 		redirect('pages.php?error='.urlencode(i18n_r('PAGE_NOTEXIST')));
 	}
 
@@ -63,9 +61,7 @@ if ($id)
 	$menuStatus = $data_edit->menuStatus;
 	$menuOrder = $data_edit->menuOrder;
 	$buttonname = i18n_r('BTN_SAVEUPDATES');
-} 
-else 
-{
+} else {
 	// prefill fields is provided
 	$title 		=  isset($_GET['title']) ? $_GET['title'] : '';
 	$template 	=  isset($_GET['template']) ? $_GET['template'] : '';
@@ -93,23 +89,16 @@ while ($file = readdir($themes_handle))	{
 		
 sort($templates);
 
-foreach ($templates as $file)
-{
-	if ($template == $file)
-	{ 
+foreach ($templates as $file){
+	if ($template == $file)	{ 
 		$sel="selected"; 
-	} 
-	else
-	{ 
+	} else{ 
 		$sel=""; 
 	}
 	
-	if ($file == 'template.php')
-	{ 
+	if ($file == 'template.php'){ 
 		$templatename=i18n_r('DEFAULT_TEMPLATE'); 
-	} 
-	else 
-	{ 
+	} else { 
 		$templatename=$file;
 	}
 	
@@ -285,9 +274,9 @@ if ($menu == '') { $menu = $title; }
 				<a class="cancel" href="pages.php?cancel" title="<?php i18n('CANCEL'); ?>"><?php i18n('CANCEL'); ?></a>
 				<?php if($url != '') { ?>
 					<?php if($url != 'index') { ?>
-						&nbsp;/&nbsp;<a class="cancel" href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" title="<?php i18n('DELETEPAGE_TITLE'); ?>" ><?php i18n('ASK_DELETE'); ?></a>
+						&nbsp;/&nbsp; <a class="cancel" href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" title="<?php i18n('DELETEPAGE_TITLE'); ?>" ><?php i18n('ASK_DELETE'); ?></a>
 					<?php } ?>
-					&nbsp;/&nbsp;<a class="cancel" href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" title="<?php i18n('CLONE'); ?>" ><?php i18n('CLONE'); ?></a>
+					  &nbsp;/&nbsp; <a class="cancel" href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" title="<?php i18n('CLONE'); ?>" ><?php i18n('CLONE'); ?></a>
 				<?php } ?>
 			</p>
 			

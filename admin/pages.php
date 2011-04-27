@@ -25,12 +25,14 @@ $table 		= '';
 # clone attempt happening
 if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone') {
 	
-	# check nonce
-	$nonce = $_GET['nonce'];
-	if(!check_nonce($nonce, "clone", "pages.php")) {
-		die("CSRF detected!");	
+	// check for csrf
+	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
+		$nonce = $_GET['nonce'];
+		if(!check_nonce($nonce, "clone", "pages.php")) {
+			die("CSRF detected!");	
+		}
 	}
-	
+
 	# check to not overwrite
 	$count = 1;
 	$newfile = GSDATAPAGESPATH . $_GET['id'] ."-".$count.".xml";
@@ -48,8 +50,13 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 		$newxml = getXML($path.$newurl.'.xml');
 		$newxml->url = $newurl;
 		$newxml->title = $newxml->title.' ['.i18n_r('COPY').']';
-		XMLsave($newxml, $path.$newurl.'.xml');
-		$success = sprintf(i18n_r('CLONE_SUCCESS'), $_GET['id']);
+		$newxml->pubDate = date('r');
+		$status = XMLsave($newxml, $path.$newurl.'.xml');
+		if ($status) {
+			$success = sprintf(i18n_r('CLONE_SUCCESS'), $_GET['id']);
+		} else {
+			$error = sprintf(i18n_r('CLONE_ERROR'), $_GET['id']);
+		}
 	} else {
 		$error = sprintf(i18n_r('CLONE_ERROR'), $_GET['id']);
 	}
@@ -84,8 +91,6 @@ if (count($filenames) != 0) {
 		}
 	}
 }
-
-
 
 $pagesSorted = subval_sort($pagesArray,'sort');
 $table = get_pages_menu('','',0);

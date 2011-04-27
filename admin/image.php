@@ -26,22 +26,18 @@ $src_folder = '../data/uploads/';
 $thumb_folder_rel = '../data/thumbs/'.$subPath;
 if (!is_file($src_folder . $subPath .$src)) redirect("upload.php");
 $src = rawurlencode($src);
-if ($_SERVER['REQUEST_METHOD'] == 'POST')
-{
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	
 	require('inc/imagemanipulation.php');
 	
 	$objImage = new ImageManipulation($src_folder . $subPath .$src);
-	if ( $objImage->imageok ) 
-	{
+	if ( $objImage->imageok ) {
 		$objImage->setCrop($_POST['x'], $_POST['y'], $_POST['w'], $_POST['h']);
 		//$objImage->show();
 		$objImage->save($thumb_folder . 'thumbnail.' .$src);
 		$success = i18n_r('THUMB_SAVED');
-	} 
-	else 
-	{
-		echo 'Error!';
+	} else {
+		i18n('ERROR');
 	}
 }
 

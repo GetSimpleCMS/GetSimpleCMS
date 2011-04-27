@@ -15,7 +15,7 @@ class API_Request {
 	 * @param string
 	 * @return bool
 	 */	
-	public function auth() {
+	private function auth() {
 		$appid_file = getXML(GSDATAOTHERPATH.'appid.xml');
 		if ($appid_file->status == 'true') {
 			if ( (string)$appid_file->key == (string)$this->xml->key) {
@@ -104,7 +104,27 @@ class API_Request {
 	 */
 	public function page_save() {
 		if($this->auth()) {
-		
+			$id = (string)$this->xml->data->slug;
+			$thisfile = GSDATAPAGESPATH.$id.'.xml';
+			if (file_exists($thisfile)) {
+				$page = getXML($thisfile);
+				$page->content = safe_slash_html($this->xml->data->content);
+				$page->title = safe_slash_html($this->xml->data->title);
+				$page->pubDate = date('r');
+				$bakfile = GSBACKUPSPATH."pages/". $id .".bak.xml";
+				copy($thisfile, $bakfile);
+				$status = XMLsave($page, $thisfile);
+				if ($status) {
+					touch($thisfile);
+					$wrapper = array('status' => 'success', 'message' => 'page_save ok', 'response' => $page);
+				} else {
+					$wrapper = array('status' => 'error', 'message' => 'There was an error saving your page');
+				}
+				return json_encode($wrapper);
+			} else {
+				$error = array('status' => 'error', 'message' => sprintf(i18n_r('API_ERR_NOPAGE'), $id));
+				return json_encode($error);
+			}
 		}
 	}
 	

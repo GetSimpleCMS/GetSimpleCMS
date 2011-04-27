@@ -32,6 +32,20 @@ if (file_exists(GSROOTPATH . 'gsconfig.php')) {
 	require_once(GSROOTPATH . 'gsconfig.php');
 }
 
+/**
+ * Debugging
+ */
+if ( defined('GSDEBUG') && (GSDEBUG == TRUE) ) {
+	error_reporting(E_ALL | E_STRICT);
+	ini_set('display_errors', 1);
+} else {
+	error_reporting(0);
+	ini_set('display_errors', 0);
+}
+ini_set('log_errors', 1);
+ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
+
+
 if (defined('GSADMIN')) {
 	$GSADMIN = GSADMIN;
 } else {
@@ -63,20 +77,6 @@ if (!file_exists(GSCACHEPATH)) {
 	}
 	mkdir(GSCACHEPATH, $chmod_value);
 }
-
-/**
- * Debugging
- */
-if ( defined('GSDEBUG') && (GSDEBUG == TRUE) ) {
-	error_reporting(E_ALL | E_STRICT);
-	ini_set('display_errors', 1);
-} else {
-	error_reporting(0);
-	ini_set('display_errors', 0);
-}
-ini_set('log_errors', 1);
-ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
-
 
 /**
  * Variable check to prevent debugging going off

@@ -20,9 +20,11 @@ $theme_options 	= '';
 if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 	
 	# check for csrf
-	$nonce = $_POST['nonce'];	
-	if(!check_nonce($nonce, "activate")) {
-		die("CSRF detected!");
+	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
+		$nonce = $_POST['nonce'];	
+		if(!check_nonce($nonce, "activate")) {
+			die("CSRF detected!");
+		}
 	}
 	
 	# get passed value from form

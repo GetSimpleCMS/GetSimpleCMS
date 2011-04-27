@@ -15,12 +15,16 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
-$nonce = $_GET['nonce'];
 
-if(!check_nonce($nonce, "delete", "deletefile.php")) {
-	die("CSRF detected!");
+
+// check for csrf
+if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
+	$nonce = $_GET['nonce'];
+	if(!check_nonce($nonce, "delete", "deletefile.php")) {
+		die("CSRF detected!");
+	}
 }
-
+	
 // are we deleting pages?
 if (isset($_GET['id'])) { 
 	$id = $_GET['id'];

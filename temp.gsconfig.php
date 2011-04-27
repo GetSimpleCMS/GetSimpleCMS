@@ -30,6 +30,9 @@ define('GSIMAGEWIDTH', '200');
 # Ping search engines upon sitemap generation?
 #define('GSDONOTPING', 1);
 
+# Turn off CSRF protection. Not reccomended
+#define('GSNOCSRF', TRUE);
+
 # Set override CHMOD mode
 #define('GSCHMOD', 0777);
 

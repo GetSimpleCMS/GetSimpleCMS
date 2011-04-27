@@ -27,10 +27,15 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 login_cookie_check();
 	
 if (isset($_POST['submitted'])) {
-	$nonce = $_POST['nonce'];
-	if(!check_nonce($nonce, "edit", "edit.php")) {
-		die("CSRF detected!");	
+	
+	// check for csrf
+	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
+		$nonce = $_POST['nonce'];
+		if(!check_nonce($nonce, "edit", "edit.php")) {
+			die("CSRF detected!");	
+		}
 	}
+	
 	if ( $_POST['post-title'] == '' )	{
 		redirect("edit.php?upd=edit-err&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
 	}	else {

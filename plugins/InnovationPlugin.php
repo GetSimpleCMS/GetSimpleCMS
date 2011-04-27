@@ -2,7 +2,7 @@
 /*
 Plugin Name: Innovation Theme Settings
 Description: Settings for the default GetSimple 3.0 Theme: Innovation
-Version: 1.0
+Version: 1.1
 Author: Chris Cagle
 Author URI: http://www.cagintranet.com/
 */
@@ -18,7 +18,7 @@ i18n_merge($thisfile_innov,'en_US');
 register_plugin(
 	$thisfile_innov, 													# ID of plugin, should be filename minus php
 	i18n_r($thisfile_innov.'/INNOVATION_TITLE'), 				# Title of plugin
-	'1.0', 															# Version of plugin
+	'1.1', 															# Version of plugin
 	'Chris Cagle',											# Author of plugin
 	'http://www.cagintranet.com/', 			# Author URL
 	i18n_r($thisfile_innov.'/INNOVATION_DESC'), 					# Plugin Description

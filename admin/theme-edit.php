@@ -37,9 +37,11 @@ if (isset($_GET['f'])) {
 if((isset($_POST['submitsave']))){
 	
 	# check for csrf
-	$nonce = $_POST['nonce'];
-	if(!check_nonce($nonce, "save")) {
-		die("CSRF detected!");
+	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
+		$nonce = $_POST['nonce'];
+		if(!check_nonce($nonce, "save")) {
+			die("CSRF detected!");
+		}
 	}
 	
 	# save edited template file
@@ -62,15 +64,12 @@ $themes_handle = opendir($themes_path);
 $theme_options .= '<select class="text" style="width:225px;" name="t" id="theme-folder" >';	
 while ($file = readdir($themes_handle)) {
 	$curpath = $themes_path .'/'. $file;
-	if( is_dir($curpath) && $file != "." && $file != ".." ) 
-	{
+	if( is_dir($curpath) && $file != "." && $file != ".." ) {
 		$theme_dir_array[] = $file;
 		$sel="";
 		
-		if (file_exists($curpath.'/template.php'))
-		{
-			if ($TEMPLATE == $file)
-			{ 
+		if (file_exists($curpath.'/template.php')){
+			if ($TEMPLATE == $file){ 
 				$sel="selected"; 
 			}
 			
@@ -81,34 +80,23 @@ while ($file = readdir($themes_handle)) {
 $theme_options .= '</select> ';
 
 # check to see how many themes are available
-if (count($theme_dir_array) == 1){
-	$theme_options = '';
-}
+if (count($theme_dir_array) == 1){ $theme_options = ''; }
 
 # if no template is selected, use the default
 if ($template == '') { $template = 'template.php'; }
-
 $templates = get_themes($TEMPLATE);
-
 $theme_templates .= '<span id="themefiles"><select class="text" id="theme_files" style="width:225px;" name="f" >';
 
-foreach ($templates as $file)
-{
-	if ($TEMPLATE_FILE == $file) 
-	{ 
+foreach ($templates as $file){
+	if ($TEMPLATE_FILE == $file){ 
 		$sel="selected"; 
-	} 
-	else 
-	{ 
+	} else { 
 		$sel="";
 	}
 	
-	if ($file == 'template.php')
-	{ 
+	if ($file == 'template.php'){ 
 		$templatename=i18n_r('DEFAULT_TEMPLATE'); 
-	} 
-	else 
-	{ 
+	} else { 
 		$templatename=$file; 
 	}
 	

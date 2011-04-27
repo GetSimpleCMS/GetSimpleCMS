@@ -25,10 +25,13 @@ $pwd1 =null;$error =null;$success=null;$pwd2 =null;$editorchck =null; $prettychc
 
 # if the undo command was invoked
 if (isset($_GET['undo'])) { 
+	
 	# first check for csrf
-	$nonce = $_GET['nonce'];
-	if(!check_nonce($nonce, "undo")) {
-		die("CSRF detected!");
+	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
+		$nonce = $_GET['nonce'];
+		if(!check_nonce($nonce, "undo")) {
+			die("CSRF detected!");
+		}
 	}
 	# perform undo
 	undo($file, GSUSERSPATH, GSBACKUSERSPATH);
@@ -50,11 +53,13 @@ if (isset($_GET['restored'])) {
 if(isset($_POST['submitted'])) {
 	
 	# first check for csrf
-	$nonce = $_POST['nonce'];
-	if(!check_nonce($nonce, "save_settings")) {
-		die("CSRF detected!");	
+	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
+		$nonce = $_POST['nonce'];
+		if(!check_nonce($nonce, "save_settings")) {
+			die("CSRF detected!");	
+		}
 	}
-
+	
 	# website-specific fields
 	if(isset($_POST['sitename'])) { 
 		$SITENAME = htmlentities($_POST['sitename'], ENT_QUOTES, 'UTF-8'); 
