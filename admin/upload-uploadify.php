@@ -29,8 +29,17 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 
 		$targetFile =  str_replace('//','/',$targetPath) . $name;
 		
-		move_uploaded_file($tempFile, $targetFile);
-		chmod($targetFile, 0644);   
+		//validate file
+		if (validate_safe_file($tempFile, $_FILES["Filedata"]["name"], $_FILES["Filedata"]["type"])) {
+			move_uploaded_file($tempFile, $targetFile);
+			chmod($targetFile, 0644);
+			exec_action('file-uploaded');
+		} else {
+			i18n('ERROR_UPLOAD');
+			exit;
+		}
+		
+		   
 		$ext = lowercase(substr($name, strrpos($name, '.') + 1));	
 		
 		if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' )	{

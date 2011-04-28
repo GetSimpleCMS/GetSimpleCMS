@@ -30,7 +30,7 @@ $file_ext_blacklist = array(
 	# PHP scripts may execute arbitrary code on the server
 	'php', 'phtml', 'php3', 'php4', 'php5', 'phps',
 	# Other types that may be interpreted by some servers
-	'shtml', 'jhtml', 'pl', 'py', 'cgi',
+	'shtml', 'jhtml', 'pl', 'py', 'cgi', 'sh', 'ksh', 'bsh', 'c', 'htaccess', 'htpasswd',
 	# May contain harmful executables for Windows victims
 	'exe', 'scr', 'dll', 'msi', 'vbs', 'bat', 'com', 'pif', 'cmd', 'vxd', 'cpl' 
 );
@@ -115,6 +115,35 @@ function get_nonce($action, $file = "", $last = false) {
  */	
 function check_nonce($nonce, $action, $file = ""){
 	return ( $nonce === get_nonce($action, $file) || $nonce === get_nonce($action, $file, true) );
+}
+
+/*
+ * Validate Safe File
+ *
+ * @since 3.1
+ * @uses file_mime_type
+ * @uses $mime_type_blacklist
+ * @uses $file_ext_blacklist
+ *
+ * @param string $file, absolute path
+ * @param string $name, default null
+ * @param string $type, default 'upload'
+ * @return bool
+ */	
+function validate_safe_file($file, $name, $mime){
+	global $mime_type_blacklist;
+	global $file_ext_blacklist;
+
+	$file_extention = substr($name, strrpos($name, '.') + 1);
+	$file_mime_type = $mime;
+	
+	if (in_arrayi($file_mime_type, $mime_type_blacklist)) {
+		return false;	
+	} elseif (in_arrayi($file_extention, $file_ext_blacklist)) {
+		return false;	
+	} else {
+		return true;	
+	}
 }
 
 ?>

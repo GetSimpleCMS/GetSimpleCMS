@@ -867,6 +867,7 @@ function formatXmlString($xml) {
  * 
  * Checks to see if the website should be served using HTTP or HTTPS
  *
+ * @since 3.1
  * @return string
  */
 function http_protocol() {
@@ -877,5 +878,32 @@ function http_protocol() {
 	}
 }
 
+/**
+ * Get File Mime-Type
+ *
+ * @since 3.1
+ * @param $file, absolute path
+ * @return string/bool
+ */
+function file_mime_type($file) {
+	if (!file_exists($file)) {
+		return false;
+		exit;
+	}
+	if(function_exists('finfo_open')) {
+		# http://www.php.net/manual/en/function.finfo-file.php
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		$mimetype = finfo_file($finfo, $file);
+		finfo_close($finfo);
+		
+	} elseif(function_exists('mime_content_type')) {
+		# Depreciated: http://php.net/manual/en/function.mime-content-type.php
+		$mimetype = mime_content_type($file);
+	} else {
+		return false;
+		exit;	
+	}
+	return $mimetype;
+}
 
 ?>
