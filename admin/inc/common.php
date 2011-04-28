@@ -13,8 +13,7 @@
  * Bad stuff protection
  */
 define('IN_GS', TRUE);
-include_once('nonce.php');
-include_once('xss.php');
+include_once('security_functions.php');
 
 if (version_compare(PHP_VERSION, "5")  >= 0) {
 	foreach ($_GET as &$xss) $xss = antixss($xss);
@@ -31,8 +30,6 @@ define('GSROOTPATH', get_root_path());
 if (file_exists(GSROOTPATH . 'gsconfig.php')) {
 	require_once(GSROOTPATH . 'gsconfig.php');
 }
-
-
 
 if (defined('GSADMIN')) {
 	$GSADMIN = GSADMIN;
@@ -67,7 +64,6 @@ if (!file_exists(GSCACHEPATH)) {
 }
 
 
-
 /**
  * Variable check to prevent debugging going off
  * @todo some of these may not even be needed anymore
@@ -90,27 +86,6 @@ if ( defined('GSDEBUG') && (GSDEBUG == TRUE) ) {
 }
 ini_set('log_errors', 1);
 ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
-
-
-
-/**
- * Check to see what database engine to use
- * XML is the default
- */
- /*
-define('GSSAVETYPE', 'XML');
-	# mysql 
-	$mysql_constants = array('GSSTORAGE','DB_HOST','DB_PASS','DB_USER','DB_DATABASE');
-	if (defined_array($mysql_constants) && lowercase(GSSTORAGE) == 'mysql') {
-		include_once('mysql_functions.php');
-		if (storage_connect()) {
-			define('GSSAVETYPE', 'MYSQL');
-		}
-	}
-
-# if xml is still the storage method, include it's storage functions
-if(GSSAVETYPE == 'XML') include_once('xml_functions.php');
-*/
 
 
 /**
