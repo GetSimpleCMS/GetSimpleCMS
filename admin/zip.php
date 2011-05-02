@@ -22,7 +22,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 	# fix from hameau 
 	//$timestamp = date('Y-m-d-Hi');
 	$timestamp = gmdate('Y-m-d-Hi_s');
-	
+	$zipcreated = true;
 	
 	ini_set("memory_limit","600M"); 
 
@@ -63,12 +63,19 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		// save and close 
 		$status = $archiv->close();
 		if (!$status) {
-			redirect('archive.php?nozip');
+			$zipcreated = false;
 		}
 		
 	} else {
-		redirect('archive.php?nozip');	
+		$zipcreated = false;	
 	}
+	if (!$zipcreated) {
+		$zipcreated = archive_targz();
+	}
+	if (!$zipcreated) {
+		redirect('archive.php?nozip');
+	} 
+	
 	// redirect back to archive page with a success
 	redirect('archive.php?done');
 
