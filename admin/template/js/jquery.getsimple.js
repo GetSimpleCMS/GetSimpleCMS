@@ -206,7 +206,8 @@ jQuery(document).ready(function() {
        type: "GET",
        url: dlink,
        success: function(response){
-	        //successful
+	        $('#header').load(location.href+' #header');
+	        $('#sidebar').load(location.href+' #sidebar');
 	     }
 	  });
 	  $('#loader').fadeOut();
