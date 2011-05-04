@@ -342,8 +342,8 @@ $php_modules = get_loaded_extensions();
 					}
 				?>
 				</td></tr>
-				<?php exec_action('healthcheck-extras'); ?>
 			</table>
+			<?php exec_action('healthcheck-extras'); ?>
 	</div>
 		
 	</div>
