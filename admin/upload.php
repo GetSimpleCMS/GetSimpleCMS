@@ -74,6 +74,15 @@ if (isset($_FILES['file'])) {
 }
 // if creating new folder
 if (isset($_GET['newfolder'])) {
+	
+	// check for csrf
+	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
+		$nonce = $_GET['nonce'];
+		if(!check_nonce($nonce, "createfolder")) {
+			die("CSRF detected!");
+		}
+	}
+	
 	$newfolder = $_GET['newfolder'];
 	// check for invalid chars
 	$cleanname = clean_url(to7bit($newfolder, "UTF-8"));
@@ -180,7 +189,7 @@ if (isset($_GET['newfolder'])) {
       }
       echo '</div> <div id="new-folder">
       	<a href="#" id="createfolder">'.i18n_r('CREATE_FOLDER').'</a>
-				<form action="upload.php">&nbsp;<input type="hidden" name="path" value="'.$subPath.'" /><input type="text" class="text" name="newfolder" id="foldername" /> <input type="submit" class="submit" value="'.i18n_r('CREATE_FOLDER').'" />&nbsp; <a href="#" class="cancel">'.i18n_r('CANCEL').'</a></form>
+				<form action="upload.php">&nbsp;<input type="hidden" name="path" value="'.$subPath.'" /><input type="hidden" name="nonce" value="'. get_nonce("createfolder") .'" /><input type="text" class="text" name="newfolder" id="foldername" /> <input type="submit" class="submit" value="'.i18n_r('CREATE_FOLDER').'" />&nbsp; <a href="#" class="cancel">'.i18n_r('CANCEL').'</a></form>
 			</div></div>';
       
 			
