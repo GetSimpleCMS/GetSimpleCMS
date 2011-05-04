@@ -9,16 +9,17 @@
  */
 
 
-// Setup inclusions
+# Setup inclusions
 $load['plugin'] = true;
-
-// Include common.php
 include('inc/common.php');
-
-// Variable Settings
 login_cookie_check();
 
-// Setup this plugin
+# verify a plugin was passed to this page
+if (!isset($_GET['id'])) {
+	redirect('plugins.php');
+}
+
+# include the plugin
 $plugin_id = $_GET['id'];
 global $plugin_info;
 

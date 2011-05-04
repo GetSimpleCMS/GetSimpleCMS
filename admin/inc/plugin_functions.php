@@ -32,7 +32,7 @@ read_pluginsxml();        // get the live plugins into $live_plugins array
 
 if (isset($_GET['set'])){
   change_plugin($_GET['set']);
-  header('Location: plugins.php');
+  redirect('plugins.php');
 }
 
 create_pluginsxml();      // check that plugins have not been removed or added to the directory

@@ -8,12 +8,11 @@
  * @subpackage Login
  */
 
-// Setup inclusions
+# Setup inclusions
 $load['login'] = true;
 $load['plugin'] = true;
-
-// Include common.php
 include('inc/common.php');
+
 ?> 
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('LOGIN')); ?>
@@ -36,7 +35,7 @@ include('inc/common.php');
 					<p><input type="submit" name="submitted" class="submit" value="<?php i18n('LOGIN'); ?>" /></p>
 				</form>
 				<p class="cta" ><b>&laquo;</b> <a href="<?php echo $SITEURL; ?>"><?php i18n('BACK_TO_WEBSITE'); ?></a> &nbsp; | &nbsp; <a href="resetpassword.php"><?php i18n('FORGOT_PWD'); ?></a> &raquo;</p>
-				<?php exec_action('login-reqs'); ?>
+				<div class="reqs" ><?php exec_action('login-reqs'); ?></div>
 			</div>
 		</div>
 		

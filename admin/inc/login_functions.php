@@ -7,7 +7,6 @@
  */
 
 $MSG = null;
-include('plugin_functions.php');
 # if the login cookie is already set, redirect user to control panel
 if(cookie_check()) {
 	redirect($cookie_redirect);                                             
