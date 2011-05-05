@@ -642,8 +642,13 @@ function get_available_pages() {
  * @uses XMLsave
  *
  */
-function updateSlugs($existingUrl){
-      global $url;
+function updateSlugs($existingUrl, $newurl=null){
+      
+      if (!$newurl){
+      	global $url;
+      } else {
+      	$url = $newurl;
+      }
 
       $path = GSDATAPAGESPATH;
       $dir_handle = @opendir($path) or die("Unable to open $path");

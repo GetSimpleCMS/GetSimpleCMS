@@ -54,7 +54,6 @@ if ($p == 'delete') {
 			die("CSRF detected!");
 		}
 	}
-	
 	delete_bak($id);
 	redirect("backups.php?upd=bak-success&id=".$id);
 } 
@@ -67,8 +66,20 @@ elseif ($p == 'restore') {
 			die("CSRF detected!");	
 		}
 	}
-	restore_bak($id);
-	redirect("edit.php?id=". $id ."&upd=edit-success&type=restore");
+	if (isset($_GET['new'])) {
+		updateSlugs($_GET['new'], $id);
+		restore_bak($id);
+		$existing = GSDATAPAGESPATH . $_GET['new'] .".xml";
+		$bakfile = GSBACKUPSPATH."pages/". $_GET['new'] .".bak.xml";
+		copy($existing, $bakfile);
+		unlink($existing);
+		redirect("edit.php?id=". $id ."&old=".$_GET['new']."&upd=edit-success&type=restore");
+	} else {
+		restore_bak($id);
+		redirect("edit.php?id=". $id ."&upd=edit-success&type=restore");
+	}
+	
+	
 }
 ?>
 

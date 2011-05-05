@@ -30,10 +30,14 @@
 		echo '<div class="error"><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_REQ_PROC_FAIL').'</div>';
 	} elseif ($update == 'edit-success') { 
 		echo '<div class="updated">';
-		if ($ptype == 'edit') { 
+		if ($ptype == 'edit' && !isset($_GET['old'])) { 
 			echo sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>';
-		} elseif ($ptype == 'restore') {
+		} elseif ($ptype == 'edit' && isset($_GET['old'])) { 
+			echo sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="backup-edit.php?p=restore&id='. $_GET['old'] .'&new='.$id.'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>';
+		} elseif ($ptype == 'restore' && !isset($_GET['old'])) {
 			echo sprintf(i18n_r('ER_HASBEEN_REST'), $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>';
+		} elseif ($ptype == 'restore' && isset($_GET['old'])) {
+			echo sprintf(i18n_r('ER_HASBEEN_REST'), $id) .'. <a href="backup-edit.php?p=restore&id='. $_GET['old'] .'&new='.$id.'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>';
 		} elseif ($ptype == 'delete') {
 			echo sprintf(i18n_r('ER_HASBEEN_DEL'), $_GET['id']) .'. <a href="backup-edit.php?p=restore&id='. $_GET['id'] .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>';
 		}

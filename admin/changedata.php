@@ -170,7 +170,11 @@ if (isset($_POST['submitted'])) {
 		if ($_POST['autosave'] == 'true') {
 			echo 'OK';
 		} else {
-			redirect("edit.php?id=". $url ."&upd=edit-success&type=edit");
+			if ($url == $_POST['existing-url']) {
+				redirect("edit.php?id=". $url ."&upd=edit-success&type=edit");
+			} else {
+				redirect("edit.php?id=". $url ."&old=".$_POST['existing-url']."&upd=edit-success&type=edit");
+			}
 		}
 	}
 } else {
