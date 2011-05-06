@@ -204,7 +204,6 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
  * Include other files depending if they are needed or not
  */
 include_once(GSADMININCPATH.'cookie_functions.php');
-if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login_functions.php'); }
 if(isset($load['plugin']) && $load['plugin']){ 	
 	include_once(GSADMININCPATH.'plugin_functions.php');
 	if(get_filename_id()=='settings' || get_filename_id()=='load') {
@@ -213,5 +212,5 @@ if(isset($load['plugin']) && $load['plugin']){
 		include_once('api.plugin.php');
 	}
 }
-
+if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login_functions.php'); }
 ?>
