@@ -41,7 +41,7 @@ class ImageManipulation {
 	public function ImageManipulation($imgfile)
 	{
 		//detect image format
-		$this->image["format"] = ereg_replace(".*\.(.*)$", "\\1", $imgfile);
+		$this->image["format"] = preg_replace("/.*\.(.*)$/", "\\1", $imgfile);
 		$this->image["format"] = strtoupper($this->image["format"]);
 		
 		// convert image into usable format.
