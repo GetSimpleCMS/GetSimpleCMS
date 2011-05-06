@@ -165,6 +165,8 @@ if (isset($_POST['submitted'])) {
 		
 		XMLsave($xml, $file);
 		
+		exec_action('changedata-aftersave');
+		
 		// redirect user back to edit page 
 		generate_sitemap();
 		if ($_POST['autosave'] == 'true') {
