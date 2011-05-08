@@ -1,8 +1,9 @@
 <?php 
 /****************************************************
 *
-* @File:  pages.php
+* @File:  caching_functions.php
 * @Package: GetSimple
+* @since 3.1
 * @Action:  Plugin to create pages.xml and new functions  
 *
 *****************************************************/
@@ -35,7 +36,7 @@ function getPageContent($page){
  *
  * Retrieve and display the requested field from the given page. 
  *
- * @since 2.0
+ * @since 3.1
  * @param $page - slug of the page to retrieve content
  * @param $field - the Field to display
  * 
@@ -54,7 +55,7 @@ function getPageField($page,$field){
  *
  * Retrieve and display the requested field from the given page. 
  *
- * @since 2.0
+ * @since 3.1
  * @param $page - slug of the page to retrieve content
  * @param $field - the Field to display
  * 
@@ -69,7 +70,7 @@ function echoPageField($page,$field){
  * Return the content of the requested page. 
  * As the Content is not cahed the file is read in.
  *
- * @since 2.0
+ * @since 3.1
  * @param $page - slug of the page to retrieve content
  *
  */
@@ -87,7 +88,7 @@ function returnPageContent($page){
  * Retrieve and display the requested field from the given page. 
  * If the field is "content" it will call returnPageContent()
  *
- * @since 2.0
+ * @since 3.1
  * @param $page - slug of the page to retrieve content
  * @param $field - the Field to display
  * 
@@ -108,7 +109,7 @@ function returnPageField($page,$field){
  *
  * Return an Array of pages that are children of the requested page/slug
  *
- * @since 2.0
+ * @since 3.1
  * @param $page - slug of the page to retrieve content
  * 
  * @returns - Array of slug names 
@@ -131,7 +132,7 @@ function getChildren($page){
  * Loads the Cached XML data into the Array $pagesArray
  * If the file does not exist it is created the first time. 
  *
- * @since 2.0
+ * @since 3.1
  *  
  */
 function getPagesXmlValues(){
@@ -164,10 +165,8 @@ function getPagesXmlValues(){
  *
  * Reads in each page of the site and creates a single XML file called 
  * data/pages/pages.array 
- * 
- * If Customefields is installed they are also added. 
  *
- * @since 2.0
+ * @since 3.1
  *  
  */
 function create_pagesxml($flag){
