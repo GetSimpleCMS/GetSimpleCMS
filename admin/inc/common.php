@@ -25,6 +25,7 @@ if (version_compare(PHP_VERSION, "5")  >= 0) {
 include('basic.php');
 include('template_functions.php');
 
+
 define('GSROOTPATH', get_root_path());
 
 if (file_exists(GSROOTPATH . 'gsconfig.php')) {
@@ -204,13 +205,19 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
  * Include other files depending if they are needed or not
  */
 include_once(GSADMININCPATH.'cookie_functions.php');
-if(isset($load['plugin']) && $load['plugin']){ 	
+if(isset($load['plugin']) && $load['plugin']){
+	# remove the pages.php plugin if it exists. 	
+	if (file_exists(GSPLUGINPATH.'pages.php'))	{
+		unlink(GSPLUGINPATH.'pages.php');
+	}
 	include_once(GSADMININCPATH.'plugin_functions.php');
 	if(get_filename_id()=='settings' || get_filename_id()=='load') {
 		/* this core plugin only needs to be visible when you are viewing the 
 		settings page since that is where it's sidebar item is. */
 		include_once('api.plugin.php');
 	}
+	# include core plugin for page caching
+	include_once('caching_functions.php');
 }
 if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login_functions.php'); }
 ?>
