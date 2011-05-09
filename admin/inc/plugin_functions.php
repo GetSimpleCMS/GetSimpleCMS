@@ -30,8 +30,11 @@ if (!file_exists(GSDATAOTHERPATH."plugins.xml")){
 
 read_pluginsxml();        // get the live plugins into $live_plugins array
 
-if (isset($_GET['set'])){
-  change_plugin($_GET['set']);
+$pluginid 		=  isset($_GET['st']) ? $_GET['st'] : null;
+
+if ($pluginid){
+  $plugin=antixss($pluginid);	
+  change_plugin($pluginid);
   redirect('plugins.php');
 }
 
