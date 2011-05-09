@@ -30,7 +30,7 @@ if (!file_exists(GSDATAOTHERPATH."plugins.xml")){
 
 read_pluginsxml();        // get the live plugins into $live_plugins array
 
-$pluginid 		=  isset($_GET['st']) ? $_GET['st'] : null;
+$pluginid 		=  isset($_GET['set']) ? $_GET['set'] : null;
 
 if ($pluginid){
   $plugin=antixss($pluginid);	
@@ -61,13 +61,14 @@ foreach ($live_plugins as $file=>$en) {
  */
 function change_plugin($name){
   global $live_plugins;   
-  
-  if ($live_plugins[$name]=="true"){
-    $live_plugins[$name]="false";
-  } else {
-    $live_plugins[$name]="true";
-  }
-  create_pluginsxml();
+	 if (isset($live_plugins[$name])){
+	  if ($live_plugins[$name]=="true"){
+	    $live_plugins[$name]="false";
+	  } else {
+	    $live_plugins[$name]="true";
+	  }
+	  create_pluginsxml();
+	}
 }
 
 
