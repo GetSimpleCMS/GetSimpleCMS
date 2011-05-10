@@ -174,7 +174,7 @@ function create_pagesxml($flag){
 global $pagesArray;
 global $plugin_info;
 
-if (isset($_GET['upd']) && $_GET['upd']=="edit-success"){
+if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=true){
 
   $menu = '';
   $filem=GSDATAPAGESPATH."pages.array";
