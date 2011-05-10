@@ -4,12 +4,9 @@
  *
  * @package GetSimple
  */
-
-global $LANG;
-$LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo $LANG_header; ?>">
+<html lang="<?php echo get_site_lang(true); ?>">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"  />
 	<title><?php echo $title ?></title>

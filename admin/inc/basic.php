@@ -906,4 +906,60 @@ function file_mime_type($file) {
 	return $mimetype;
 }
 
+
+/**
+ * Check Is FrontEnd
+ * 
+ * Checks to see if the you are on the frontend or not
+ *
+ * @since 3.1
+ * @return bool
+ */
+function is_frontend() {
+	if(isset($base)) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+/**
+ * Get Installed GetSimple Version
+ *
+ * This will return the version of GetSimple that is installed
+ *
+ * @since 1.0
+ * @uses GSVERSION
+ *
+ * @param bool $echo Optional, default is true. False will 'return' value
+ * @return string Echos or returns based on param $echo
+ */
+function get_site_version($echo=true) {
+	include(GSADMININCPATH.'configuration.php');
+	if ($echo) {
+		echo GSVERSION;
+	} else {
+		return GSVERSION;
+	}
+}
+
+
+/**
+ * Get GetSimple Language
+ *
+ * @since 3.1
+ * @uses $LANG
+ *
+ * @param string
+ */
+function get_site_lang($short=false) {
+	global $LANG;
+	if ($short) {
+		$LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
+		return $LANG_header;
+	} else {
+		return $LANG;
+	}
+}
+
 ?>

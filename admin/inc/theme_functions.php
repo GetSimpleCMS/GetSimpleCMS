@@ -408,25 +408,6 @@ function get_site_email($echo=true) {
 	}
 }
 
-/**
- * Get Installed GetSimple Version
- *
- * This will return the version of GetSimple that is installed
- *
- * @since 1.0
- * @uses GSVERSION
- *
- * @param bool $echo Optional, default is true. False will 'return' value
- * @return string Echos or returns based on param $echo
- */
-function get_site_version($echo=true) {
-	include(GSADMININCPATH.'configuration.php');
-	if ($echo) {
-		echo GSVERSION;
-	} else {
-		return GSVERSION;
-	}
-}
 
 /**
  * Get Site Credits
