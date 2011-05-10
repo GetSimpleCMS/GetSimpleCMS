@@ -49,8 +49,8 @@ foreach ($pluginfiles as $fi){
 		$table .= '<td><span>'.$plugin_info[$pathName]['description'] .'<br /><b>';
 		$table .= i18n_r('PLUGIN_VER') .' '. $plugin_info[$pathName]['version'].'</b> &mdash; '.i18n_r('AUTHOR').': <a href="'.$plugin_info[$pathName]['author_url'].'" target="_blank">'.$plugin_info[$pathName]['author'].'</a></span></td>';
 	  $table.= '<td style="width:60px;" class="status" >
-	  	<a href="plugins.php?set='.$fi.'" class="toggleEnable '.$cls_Enabled.'" style="padding: 1px 3px;" title="'.i18n_r('ENABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('ENABLE').'</a>
-	  	<a href="plugins.php?set='.$fi.'" class="cancel toggleEnable '.$cls_Disabled.'" title="'.i18n_r('DISABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('DISABLE').'</a>
+	  	<a href="plugins.php?st='.$fi.'" class="toggleEnable '.$cls_Enabled.'" style="padding: 1px 3px;" title="'.i18n_r('ENABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('ENABLE').'</a>
+	  	<a href="plugins.php?st='.$fi.'" class="cancel toggleEnable '.$cls_Disabled.'" title="'.i18n_r('DISABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('DISABLE').'</a>
 	  </td>';	  
 		$table .= "</tr>\n";
 		$counter++;
