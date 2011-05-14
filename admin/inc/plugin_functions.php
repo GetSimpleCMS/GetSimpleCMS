@@ -43,11 +43,14 @@ create_pluginsxml();      // check that plugins have not been removed or added t
 // load each of the plugins
 foreach ($live_plugins as $file=>$en) {
   $pluginsLoaded=true;
-  if (file_exists(GSPLUGINPATH . $file)){
+  if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
   	require_once(GSPLUGINPATH . $file);
+  } else {
+  	register_plugin( pathinfo_filename($file), $file, '', 'Unknown', '', 'Disabled Plugin', '', '');
   }
 }
 
+create_pluginsxml();      // check that plugins have not been removed or added to the directory
 
 /**
  * change_plugin
