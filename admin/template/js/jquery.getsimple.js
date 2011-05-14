@@ -208,6 +208,7 @@ jQuery(document).ready(function() {
        success: function(response){
 	        $('#header').load(location.href+' #header');
 	        $('#sidebar').load(location.href+' #sidebar');
+	        $('#maincontent').load(location.href+' #maincontent');
 	     }
 	  });
 	  $('#loader').fadeOut();
