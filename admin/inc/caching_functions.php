@@ -200,52 +200,53 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=true){
         $data = simplexml_load_string($thisfile);
         $count++;   
         $id=$data->url;
+        
         $components = $xml->addChild('item');
         $components->addChild('url', $id);
         $pagesArray[(string)$id]['url']=(string)$id;
+        
         $note = $components->addChild('meta');
         $note->addCData($data->meta);
-        
         $pagesArray[(string)$id]['meta']=(string)$data->meta;
+   
         $note = $components->addChild('metad'); 
-        $note->addCData($data->metad);
-        
+        $note->addCData($data->metad);     
         $pagesArray[(string)$id]['metad']=(string)$data->metad;
+		
         $note = $components->addChild('menu');
         $note->addCData($data->menu);
-        
         $pagesArray[(string)$id]['menu']=(string)$data->menu;
+
         $note = $components->addChild('title'); 
-        $note->addCData($data->title);
-        
+        $note->addCData($data->title);        
         $pagesArray[(string)$id]['title']=(string)$data->title;
+        
         $note = $components->addChild('menuOrder'); 
-        $note->addCData($data->menuOrder);
-        
+        $note->addCData($data->menuOrder);        
         $pagesArray[(string)$id]['menuOrder']=(string)$data->menuOrder;
+		
         $note = $components->addChild('menuStatus'); 
-        $note->addCData($data->menuStatus);
-        
+        $note->addCData($data->menuStatus);        
         $pagesArray[(string)$id]['menuStatus']=(string)$data->menuStatus;
+		
         $note = $components->addChild('template');
-        $note->addCData($data->template);
-        
+        $note->addCData($data->template);        
         $pagesArray[(string)$id]['template']=(string)$data->template;
+		
         $note = $components->addChild('parent');
-        $note->addCData($data->parent);
-        
+        $note->addCData($data->parent);        
         $pagesArray[(string)$id]['parent']=(string)$data->parent;
+		
         $note = $components->addChild('private'); 
-        $note->addCData($data->private);
-        
+        $note->addCData($data->private);        
         $pagesArray[(string)$id]['private']=(string)$data->private;
+		
         $note = $components->addChild('pubDate');
-        $note->addCData($data->pubDate);
-        
-        $pagesArray[(string)$id]['pubDate']=(string)$data->pubdate;
+        $note->addCData($data->pubDate);        
+        $pagesArray[(string)$id]['pubDate']=(string)$data->pubDate;
+		
         $note = $components->addChild('slug');
         $note->addCData($id);
-        
         $pagesArray[(string)$id]['slug']=(string)$data->slug;
         
         $pagesArray[(string)$id]['filename']=$file;
