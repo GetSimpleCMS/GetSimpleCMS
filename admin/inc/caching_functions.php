@@ -11,7 +11,8 @@
 $pagesArray = array();
 
 add_action('index-pretemplate','getPagesXmlValues',array('false'));           		// make $pagesArray available to the theme 
-add_action('header', 'create_pagesxml',array('true'));            					// add hook to save  $tags values 
+add_action('header', 'create_pagesxml',array('false'));            					// add hook to save  $tags values 
+add_action('page-delete', 'create_pagesxml',array('true'));            				// Create pages.array if file deleted
 
 
 /**
@@ -174,8 +175,7 @@ function create_pagesxml($flag){
 global $pagesArray;
 global $plugin_info;
 
-if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=true){
-
+if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=='true'){
   $menu = '';
   $filem=GSDATAPAGESPATH."pages.array";
 
