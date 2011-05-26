@@ -15,10 +15,17 @@ include('inc/common.php');
 login_cookie_check();
 
 
-$path = (isset($_GET['path'])) ? "../data/uploads/".$_GET['path'] : "../data/uploads/";
-$subPath = (isset($_GET['path'])) ? $_GET['path'] : "";
-$subFolder = (empty($subPath)) ? "" : $subPath."/";
-$path = tsl($path);
+if (isset($_GET['path'])) {
+	$path = str_replace('../','', $_GET['path']);
+	$path = tsl("../data/uploads/".$path);
+	$subPath = str_replace('../','', $_GET['path']);
+	$subFolder = tsl($subPath);
+} else { 
+	$path = "../data/uploads/";
+	$subPath = ''; 
+	$subFolder = '';
+}
+
 // check if host uses Linux (used for displaying permissions
 $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 
