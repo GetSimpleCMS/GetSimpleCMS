@@ -1040,20 +1040,19 @@ function generate_sitemap() {
 	
 	$filenames = getFiles($path);
 	
-	if (count($filenames) != 0)
-	{ 
-		foreach ($filenames as $file)
-		{
-			if (isFile($file, $path, 'xml'))
-			{
+	if (count($filenames) != 0)	{ 
+		foreach ($filenames as $file)	{
+			if ( isFile($file, $path, 'xml')) {
 				$data = getXML($path . $file);
-				$status = $data->menuStatus;
-				$pagesArray[$count]['url'] = $data->url;
-				$pagesArray[$count]['parent'] = $data->parent;
-				$pagesArray[$count]['date'] = $data->pubDate;
-				$pagesArray[$count]['private'] = $data->private;
-				$pagesArray[$count]['menuStatus'] = $data->menuStatus;
-				$count++;
+				if ($data->url != '404') {
+					$status = $data->menuStatus;
+					$pagesArray[$count]['url'] = $data->url;
+					$pagesArray[$count]['parent'] = $data->parent;
+					$pagesArray[$count]['date'] = $data->pubDate;
+					$pagesArray[$count]['private'] = $data->private;
+					$pagesArray[$count]['menuStatus'] = $data->menuStatus;
+					$count++;
+				}
 			}
 		}
 	}
