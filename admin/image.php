@@ -85,7 +85,7 @@ if (file_exists($thumb_folder . 'thumbnail.' . $src)) {
 	
 	<div id="jcrop_open" class="main">
 
-    <img src="<?php echo $src_folder . $subPath.$src; ?>" id="cropbox" style="max-width:585px;"/>
+    <img src="<?php echo $src_folder . $subPath.$src; ?>" id="cropbox" />
     
 
 		<div id="handw" class="toggle" ><?php i18n('SELECT_DIMENTIONS'); ?><br /><span id="picw"></span> x <span id="pich"></span></div>
