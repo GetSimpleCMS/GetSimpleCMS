@@ -14,6 +14,18 @@ $load['plugin'] = true;
 // Include common.php
 include('inc/common.php');
 
+$pluginid 		=  isset($_GET['set']) ? $_GET['set'] : null;
+$nonce    		= isset($_GET['nonce']) ? $_GET['nonce'] : null;
+
+if ($pluginid){
+	if(check_nonce($nonce, "set", "plugins.php")) {
+	  $plugin=antixss($pluginid);	
+	  change_plugin($pluginid);
+	  redirect('plugins.php');
+	}
+}
+
+
 // Variable settings
 login_cookie_check();
 $counter = '0';
@@ -25,6 +37,7 @@ $needsupdate = false;
 foreach ($pluginfiles as $fi){
 	$pathExt = pathinfo($fi,PATHINFO_EXTENSION );
 	$pathName = pathinfo_filename($fi);
+	$setNonce='&nonce='.get_nonce("set","plugins.php");
 	
 	if ($pathExt=="php") {
 		if ($live_plugins[$fi]=='true'){
@@ -49,8 +62,8 @@ foreach ($pluginfiles as $fi){
 		$table .= '<td><span>'.$plugin_info[$pathName]['description'] .'<br /><b>';
 		$table .= i18n_r('PLUGIN_VER') .' '. $plugin_info[$pathName]['version'].'</b> &mdash; '.i18n_r('AUTHOR').': <a href="'.$plugin_info[$pathName]['author_url'].'" target="_blank">'.$plugin_info[$pathName]['author'].'</a></span></td>';
 	  $table.= '<td style="width:60px;" class="status" >
-	  	<a href="plugins.php?set='.$fi.'" class="toggleEnable '.$cls_Enabled.'" style="padding: 1px 3px;" title="'.i18n_r('ENABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('ENABLE').'</a>
-	  	<a href="plugins.php?set='.$fi.'" class="cancel toggleEnable '.$cls_Disabled.'" title="'.i18n_r('DISABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('DISABLE').'</a>
+	  	<a href="plugins.php?set='.$fi.$setNonce.'" class="toggleEnable '.$cls_Enabled.'" style="padding: 1px 3px;" title="'.i18n_r('ENABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('ENABLE').'</a>
+	  	<a href="plugins.php?set='.$fi.$setNonce.'" class="cancel toggleEnable '.$cls_Disabled.'" title="'.i18n_r('DISABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('DISABLE').'</a>
 	  </td>';	  
 		$table .= "</tr>\n";
 		$counter++;
