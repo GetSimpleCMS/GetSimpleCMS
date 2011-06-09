@@ -49,6 +49,7 @@ if (isset($_GET['deleteall'])){
 $filenames = getFiles($path);
 $count="0";
 $pagesArray = array();
+$pagesSorted=array(); 
 
 if (count($filenames) != 0) 
 { 
