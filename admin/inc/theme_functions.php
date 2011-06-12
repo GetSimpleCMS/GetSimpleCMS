@@ -548,24 +548,29 @@ function menu_data($id = null,$xml=false) {
  * @since 1.0
  * @uses GSDATAOTHERPATH
  * @uses getXML
+ * @modified mvlcek 6/12/2011
  *
  * @param string $id This is the ID of the component you want to display
  *				True will return value in XML format. False will return an array
  * @return string 
  */
 function get_component($id) {
-	if (file_exists(GSDATAOTHERPATH.'components.xml')) {
-		$data = getXML(GSDATAOTHERPATH.'components.xml');
-		$components = $data->item;
-		
-		if (count($components) != 0) {
-			foreach ($components as $component) {
-				if ($id == $component->slug) { 
-					eval("?>" . strip_decode($component->value) . "<?php "); 
-				}
-			}
-		}
-	}
+    global $components;
+    if (!$components) {
+         if (file_exists(GSDATAOTHERPATH.'components.xml')) {
+            $data = getXML(GSDATAOTHERPATH.'components.xml');
+            $components = $data->item;
+        } else {
+            $components = array();
+        }
+    }
+    if (count($components) > 0) {
+        foreach ($components as $component) {
+            if ($id == $component->slug) { 
+                eval("?>" . strip_decode($component->value) . "<?php "); 
+            }
+        }
+    }
 }
 
 /**
