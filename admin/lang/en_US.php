@@ -86,7 +86,7 @@ $i18n = array(
 "CANCEL"						=>	"Cancel",
 "BACKUP_AVAILABLE"	=>	"Backup Available",
 "MAX_FILE_SIZE"			=>	"Max file size",
-"LAST_SAVED"				=>	"Last Saved",
+"LAST_SAVED"				=>	"Last saved by %s on",
 "FILE_UPLOAD"				=>	"File Upload",
 "OR"								=>	"or",
 

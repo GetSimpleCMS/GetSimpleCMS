@@ -34,6 +34,7 @@ $menuStatus = '';
 $private = ''; 
 $menu = ''; 
 $content = '';
+$author = '';
 $title = '';
 $url = '';
 $metak = '';
@@ -56,6 +57,7 @@ if ($id){
 	$content = stripslashes($data_edit->content);
 	$template = $data_edit->template;
 	$parent = $data_edit->parent;
+	$author = $data_edit->author;
 	$menu = stripslashes($data_edit->menu);
 	$private = $data_edit->private;
 	$menuStatus = $data_edit->menuStatus;
@@ -145,7 +147,7 @@ if ($menu == '') { $menu = $title; }
 			
 		<form class="largeform" id="editform" action="changedata.php" method="post" accept-charset="utf-8" >
 			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("edit", "edit.php"); ?>" />			
-
+			<input id="author" name="post-author" type="hidden" value="<?php echo $USR; ?>" />	
 
 			<!-- page title toggle screen -->
 			<p id="edit_window">
@@ -282,7 +284,7 @@ if ($menu == '') { $menu = $title; }
 			
 			<small><?php 
 					if (isset($pubDate)) { 
-						echo i18n_r('LAST_SAVED').': '. lngDate($pubDate).'&nbsp; ';
+						echo sprintf(i18n_r('LAST_SAVED'), $author).' '. lngDate($pubDate).'&nbsp; ';
 					}
 					if ( file_exists(GSBACKUPSPATH.'pages/'.$url.'.bak.xml') ) {	
 						echo '-&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
