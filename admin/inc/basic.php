@@ -640,14 +640,15 @@ function suggest_site_path($parts=false) {
 	$protocol = http_protocol();
 	$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
 	$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
+	$port = ($p=$_SERVER['SERVER_PORT'])!='80'&&$p!='443'?':'.$p:'';
 	
 	if($path_parts == '/') {
 	
-		$fullpath = $protocol."://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . "/";
+		$fullpath = $protocol."://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $port . "/";
 	
 	} else {
 		
-		$fullpath = $protocol."://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $path_parts ."/";
+		$fullpath = $protocol."://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $port . $path_parts ."/";
 		
 	}
 		
