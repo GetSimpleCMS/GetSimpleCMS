@@ -45,11 +45,17 @@ if (isset($_POST['submitted'])) {
 		// is a slug provided?
 		if ($_POST['post-id']) { 
 			$url = $_POST['post-id'];
-      $url = to7bit($url, "UTF-8");
-      $url = clean_url($url); //old way
+			if (isset($i18n['TRANSLITERATION']) && is_array($translit=$i18n['TRANSLITERATION']) && count($translit>0)) {
+				$url = str_replace(array_keys($translit),array_values($translit),$url);
+			}
+			$url = to7bit($url, "UTF-8");
+			$url = clean_url($url); //old way
 		} else {
 			if ($_POST['post-title'])	{ 
 				$url = $_POST['post-title'];
+				if (isset($i18n['TRANSLITERATION']) && is_array($translit=$i18n['TRANSLITERATION']) && count($translit>0)) {
+					$url = str_replace(array_keys($translit),array_values($translit),$url);
+				}
 				$url = to7bit($url, "UTF-8");
 				$url = clean_url($url); //old way
 			} else {

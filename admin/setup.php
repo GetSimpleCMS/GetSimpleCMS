@@ -10,7 +10,7 @@
 
 # setup inclusions
 $load['plugin'] = true;
-if($_POST['lang'] != '') { $LANG = $_POST['lang']; }
+if(isset($_POST['lang']) && trim($_POST['lang']) != '') { $LANG = $_POST['lang']; }
 include('inc/common.php');
 
 # default variables
