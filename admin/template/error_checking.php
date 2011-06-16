@@ -17,10 +17,10 @@
 	$update = '';
 	$err = '';
 	$restored = '';
-	if(isset($_GET['upd'])) $update = ( function_exists( "filter_var") ) ? filter_var ( $_GET['upd'], FILTER_SANITIZE_URL)  : htmlentities($_GET['upd']);
-	if(isset($_GET['success'])) $success = ( function_exists( "filter_var") ) ? filter_var ( $_GET['success'], FILTER_SANITIZE_URL)  : htmlentities($_GET['success']);
-	if(isset($_GET['error'])) $error = ( function_exists( "filter_var") ) ? filter_var ( $_GET['error'], FILTER_SANITIZE_URL)  : htmlentities($_GET['error']);
-	if(isset($_GET['err'])) $err = ( function_exists( "filter_var") ) ? filter_var ( $_GET['err'], FILTER_SANITIZE_URL)  : htmlentities($_GET['err']);
+	if(isset($_GET['upd'])) $update = ( function_exists( "filter_var") ) ? filter_var ( $_GET['upd'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['upd']);
+	if(isset($_GET['success'])) $success = ( function_exists( "filter_var") ) ? filter_var ( $_GET['success'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['success']);
+	if(isset($_GET['error'])) $error = ( function_exists( "filter_var") ) ? filter_var ( $_GET['error'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['error']);
+	if(isset($_GET['err'])) $err = ( function_exists( "filter_var") ) ? filter_var ( $_GET['err'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['err']);
 
 	switch ( $update ) {
 		case 'bak-success':

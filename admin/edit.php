@@ -342,9 +342,7 @@ if ($menu == '') { $menu = $title; }
     		});
     		CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
     	
-				<?php if (defined('GSAUTOSAVE')) { 
-		    	# IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP
-		    ?>
+				<?php if (defined('GSAUTOSAVE')) { /* IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP */  ?>
 					var yourText = $('#post-content').val();
 					function InstanceReadyEvent() {
 					  this.document.on("keyup", function () {
@@ -352,9 +350,7 @@ if ($menu == '') { $menu = $title; }
 					      yourText = CKEDITOR.instances["post-content"].getData();
 					  });
 					}
-				<?php } else { 
-					# AUTOSAVE IS NOT TURNED ON
-				?>
+				<?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
 					function InstanceReadyEvent() {
 					  this.document.on("keyup", function () {
 					  		warnme = true;
@@ -385,9 +381,8 @@ if ($menu == '') { $menu = $title; }
 			
 			jQuery(document).ready(function() { 
 	    
-		    <?php if (defined('GSAUTOSAVE')) { 
-		    	# IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP
-		    ?>	
+		    <?php if (defined('GSAUTOSAVE')) { /* IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP */  ?>	
+		    	
 		    	function autoSave() {
 		    		$('input[type=submit]').attr('disabled', 'disabled');
 		    		if (!yourText) {
@@ -420,12 +415,13 @@ if ($menu == '') { $menu = $title; }
 						  var wait = setTimeout(autoSave, <?php echo (int)GSAUTOSAVE; ?>);
 						  $(this).data('timer', wait);
 		    	});
-	    	<?php } else { 
-					# AUTOSAVE IS NOT TURNED ON
-				?>
+		    	
+	    	<?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
+	    		
 		    	$('#editform').change(function(){
 						warnme = true;
 		    	});
+		    	
 				<?php } ?>
 			});
 		</script>

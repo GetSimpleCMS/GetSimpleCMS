@@ -172,9 +172,11 @@ if (isset($_POST['submitted'])) {
 		$note->addCData($author);
 
 		exec_action('changedata-save');
-		
-		XMLsave($xml, $file);
-		
+		if ($_POST['autosave'] == 'true') {
+			XMLsave($xml, GSAUTOSAVE.$url);
+		} else {
+			XMLsave($xml, $file);
+		}
 		exec_action('changedata-aftersave');
 		
 		// redirect user back to edit page 
