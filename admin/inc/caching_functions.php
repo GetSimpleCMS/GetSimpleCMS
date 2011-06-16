@@ -149,9 +149,7 @@ function getPagesXmlValues(){
         $key=$component->url;
         $pagesArray[(string)$key]=array();
         foreach ($component->children() as $opt=>$val) {
-          if ($opt!="url"){
             $pagesArray[(string)$key][(string)$opt]=(string)$val;
-          }
         }
         
       }
