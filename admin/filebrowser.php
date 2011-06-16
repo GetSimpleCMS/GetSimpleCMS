@@ -160,14 +160,10 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 			echo '<td style="width:80px;text-align:right;" ><span>'. $upload['size'] .'</span></td>';
 
 			// get the file permissions.
-			if ($isUnixHost && defined('GSDEBUG')) {
+			if ($isUnixHost && defined('GSDEBUG') && function_exists('posix_getpwuid')) {
 				$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
-				if (function_exists('posix_getpwuid')){
-					$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
-				}
-				if (($filePerms) && isset($fileOwner['name'])){
-					echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
-				}
+				$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
+				echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 			}
 
 			echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';

@@ -263,17 +263,13 @@ if (isset($_GET['newfolder'])) {
 					echo '<td style="width:80px;text-align:right;" ><span>'. $upload['size'] .'</span></td>';
              
 		            
-					if ($isUnixHost && defined('GSDEBUG')) {
+					// get the file permissions.
+					if ($isUnixHost && defined('GSDEBUG') && function_exists('posix_getpwuid')) {
 						$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
-						$fileOwner = null;
-						if (function_exists('posix_getpwuid')) {
-							$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
-						}
-						if (($filePerms) && ($fileOwner['name'])){
-							echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
-						}
+						$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
+						echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 					}
-					
+							
 					echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
 					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a></td>';
 					echo '</tr>';
