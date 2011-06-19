@@ -144,11 +144,11 @@ function getPagesXmlValues(){
   // load the xml file and setup the array. 
     $thisfile = file_get_contents($file);
     $data = simplexml_load_string($thisfile);
-    $components = $data->item;
-      foreach ($components as $component) {
-        $key=$component->url;
+    $pages = $data->item;
+      foreach ($pages as $page) {
+        $key=$page->url;
         $pagesArray[(string)$key]=array();
-        foreach ($component->children() as $opt=>$val) {
+        foreach ($page->children() as $opt=>$val) {
             $pagesArray[(string)$key][(string)$opt]=(string)$val;
         }
         
@@ -199,56 +199,56 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=='true'){
         $count++;   
         $id=$data->url;
         
-        $components = $xml->addChild('item');
-        $components->addChild('url', $id);
+        $pages = $xml->addChild('item');
+        $pages->addChild('url', $id);
         $pagesArray[(string)$id]['url']=(string)$id;
         
-        $note = $components->addChild('meta');
+        $note = $pages->addChild('meta');
         $note->addCData($data->meta);
         $pagesArray[(string)$id]['meta']=(string)$data->meta;
    
-        $note = $components->addChild('metad'); 
+        $note = $pages->addChild('metad'); 
         $note->addCData($data->metad);     
         $pagesArray[(string)$id]['metad']=(string)$data->metad;
 		
-        $note = $components->addChild('menu');
+        $note = $pages->addChild('menu');
         $note->addCData($data->menu);
         $pagesArray[(string)$id]['menu']=(string)$data->menu;
 
-        $note = $components->addChild('title'); 
+        $note = $pages->addChild('title'); 
         $note->addCData($data->title);        
         $pagesArray[(string)$id]['title']=(string)$data->title;
         
-        $note = $components->addChild('menuOrder'); 
+        $note = $pages->addChild('menuOrder'); 
         $note->addCData($data->menuOrder);        
         $pagesArray[(string)$id]['menuOrder']=(string)$data->menuOrder;
 		
-        $note = $components->addChild('menuStatus'); 
+        $note = $pages->addChild('menuStatus'); 
         $note->addCData($data->menuStatus);        
         $pagesArray[(string)$id]['menuStatus']=(string)$data->menuStatus;
 		
-        $note = $components->addChild('template');
+        $note = $pages->addChild('template');
         $note->addCData($data->template);        
         $pagesArray[(string)$id]['template']=(string)$data->template;
 		
-        $note = $components->addChild('parent');
+        $note = $pages->addChild('parent');
         $note->addCData($data->parent);        
         $pagesArray[(string)$id]['parent']=(string)$data->parent;
 		
-        $note = $components->addChild('private'); 
+        $note = $pages->addChild('private'); 
         $note->addCData($data->private);        
         $pagesArray[(string)$id]['private']=(string)$data->private;
 		
-        $note = $components->addChild('pubDate');
+        $note = $pages->addChild('pubDate');
         $note->addCData($data->pubDate);        
         $pagesArray[(string)$id]['pubDate']=(string)$data->pubDate;
 		
-        $note = $components->addChild('slug');
+        $note = $pages->addChild('slug');
         $note->addCData($id);
         $pagesArray[(string)$id]['slug']=(string)$data->slug;
         
         $pagesArray[(string)$id]['filename']=$file;
-        $note = $components->addChild('filename'); 
+        $note = $pages->addChild('filename'); 
         $note->addCData($file);
         
         // Plugin Authors should add custome fields etc.. here
