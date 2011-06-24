@@ -594,33 +594,7 @@ function get_navigation($currentpage) {
 
 	$menu = '';
 
-	$path = GSDATAPAGESPATH;
-	$dir_handle = opendir($path) or die("Unable to open $path");
-	$filenames = array();
-	while ($filename = readdir($dir_handle)) {
-		$filenames[] = $filename;
-	}
-	
-	$count="0";
-	$pagesArray = array();
-	if (count($filenames) != 0) {
-		foreach ($filenames as $file) {
-			if ($file == "." || $file == ".." || is_dir($path . $file) || $file == ".htaccess"  ) {
-				// not a page data file
-			} else {
-				$data = getXML($path . $file);
-				if ($data->private != 'Y') {
-					$pagesArray[$count]['menuStatus'] = $data->menuStatus;
-					$pagesArray[$count]['menuOrder'] = $data->menuOrder;
-					$pagesArray[$count]['menu'] = strip_decode($data->menu);
-					$pagesArray[$count]['url'] = $data->url;
-					$pagesArray[$count]['title'] = strip_decode($data->title);
-					$pagesArray[$count]['parent'] = $data->parent;
-					$count++;
-				}
-			}
-		}
-	}
+	global $pagesArray;
 	
 	$pagesSorted = subval_sort($pagesArray,'menuOrder');
 	if (count($pagesSorted) != 0) { 
@@ -638,7 +612,6 @@ function get_navigation($currentpage) {
 		
 	}
 	
-	closedir($dir_handle);
 	echo exec_filter('menuitems',$menu);
 }
 

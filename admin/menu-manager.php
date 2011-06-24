@@ -24,27 +24,12 @@ while ($filename = readdir($dir_handle)) {
 }
 
 $count="0"; $data = '';
-$pagesArray = array();
-if (count($filenames) != 0) {
-	foreach ($filenames as $file) {
-		if ($file == "." || $file == ".." || is_dir(GSDATAPAGESPATH . $file) || $file == ".htaccess"  ) {
-			// not a page data file
-		} else {
-				$data = getXML(GSDATAPAGESPATH . $file);
-			if ($data->private != 'Y') {
-				$pagesArray[$count]['menuStatus'] = $data->menuStatus;
-				$pagesArray[$count]['menuOrder'] = $data->menuOrder;
-				$pagesArray[$count]['menu'] = html_entity_decode($data->menu, ENT_QUOTES, 'UTF-8');
-				$pagesArray[$count]['url'] = $data->url;
-				$pagesArray[$count]['parent'] = $data->parent;
-				$pagesArray[$count]['title'] = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
-				$count++;
-			}
-		}
-	}
-}
+
+getPagesXmlValues();
 
 $pagesSorted = subval_sort($pagesArray,'menuOrder');
+
+
 ?> 
 
 <?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT').' &raquo; '.i18n_r('MENU_MANAGER')); ?>

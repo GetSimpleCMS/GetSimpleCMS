@@ -129,6 +129,36 @@ function getChildren($page){
 }
 
 /**
+ * Get Page Children - returns multi fields
+ *
+ * Return an Array of pages that are children of the requested page/slug with optional fields.
+ *
+ * @since 3.1
+ * @param $page - slug of the page to retrieve content
+ * @param options - array of optional fields to return
+ * 
+ * @returns - Array of slug names and optional fields. 
+ * 
+ */
+
+function getChildrenMulti($page,$options=array()){
+	global $pagesArray;
+	$count=0;
+	$returnArray = array();
+	foreach ($pagesArray as $key => $value) {
+	    if ($pagesArray[$key]['parent']==$page){
+	      	$returnArray[$count]=array();
+			$returnArray[$count]['url']=$key;
+	    	foreach ($options as $option){
+	    		$returnArray[$count][$option]=returnPageField($key,$option);
+	    	}
+			$count++;
+		}
+	}
+	return $returnArray;
+}
+
+/**
  * Get Cached Pages XML Values
  *
  * Loads the Cached XML data into the Array $pagesArray
