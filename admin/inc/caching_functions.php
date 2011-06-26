@@ -169,7 +169,7 @@ function getChildrenMulti($page,$options=array()){
  */
 function getPagesXmlValues(){
   global $pagesArray;
-  $file=GSDATAPAGESPATH."pages.array";
+  $file=GSDATAOTHERPATH."pages.xml";
   if (file_exists($file)){
   // load the xml file and setup the array. 
     $thisfile = file_get_contents($file);
@@ -201,11 +201,10 @@ function getPagesXmlValues(){
  */
 function create_pagesxml($flag){
 global $pagesArray;
-global $plugin_info;
 
 if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=='true'){
   $menu = '';
-  $filem=GSDATAPAGESPATH."pages.array";
+  $filem=GSDATAOTHERPATH."pages.xml";
 
   $path = GSDATAPAGESPATH;
   $dir_handle = @opendir($path) or die("Unable to open $path");
