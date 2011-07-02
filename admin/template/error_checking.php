@@ -24,7 +24,7 @@
 
 	switch ( $update ) {
 		case 'bak-success':
-			echo '<div class="updated">'. sprintf(i18n_r('ER_BAKUP_DELETED'), (int)$_GET['id']) .'</div>';
+			echo '<div class="updated">'. sprintf(i18n_r('ER_BAKUP_DELETED'), $_GET['id']) .'</div>';
 		break;
 		case 'bak-err':
 			echo '<div class="error"><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_REQ_PROC_FAIL').'</div>';
@@ -34,9 +34,9 @@
 			if ($ptype == 'edit') { 
 				echo sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>';
 			} elseif ($ptype == 'restore') {
-				echo sprintf(i18n_r('ER_HASBEEN_REST'), $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>';
+				echo sprintf(i18n_r('ER_HASBEEN_REST'), $id);
 			} elseif ($ptype == 'delete') {
-				echo sprintf(i18n_r('ER_HASBEEN_DEL'), (int)$_GET['id']) .'. <a href="backup-edit.php?p=restore&id='. (int)$_GET['id'] .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>';
+				echo sprintf(i18n_r('ER_HASBEEN_DEL'), $_GET['id']) .'. <a href="backup-edit.php?p=restore&id='. $_GET['id'] .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>';
 			}
 			echo '</div>';
 		break;
@@ -53,7 +53,7 @@
 			echo '<div class="error"><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_SENDMAIL_ERR').'.</div>';
 		break;
 		case 'del-success':
-			echo '<div class="updated">'.i18n_r('ER_FILE_DEL_SUC').': <b>'.(int)$_GET['id'].'</b></div>';
+			echo '<div class="updated">'.i18n_r('ER_FILE_DEL_SUC').': <b>'.$_GET['id'].'</b></div>';
 		break;
 		case 'del-error':
 			echo '<div class="error"><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_PROBLEM_DEL').'.</div>';
