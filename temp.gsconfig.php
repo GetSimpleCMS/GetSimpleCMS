@@ -64,7 +64,7 @@ define('GSIMAGEWIDTH', '200');
 #define('GSSTORAGE', 'xml');
 
 # Autosave within edit.php. Value is the autosave interval 
-#define('GSAUTOSAVE', 30000);
+#define('GSAUTOSAVE', 900);
 	
 # Set PHP locale
 # http://php.net/manual/en/function.setlocale.php
