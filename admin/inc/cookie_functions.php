@@ -20,7 +20,8 @@ function create_cookie() {
 	global $USR,$SALT,$cookie_time,$cookie_name;
   $saltUSR = $USR.$SALT;
   $saltCOOKIE = sha1($cookie_name.$SALT);
-  setcookie($saltCOOKIE, sha1($saltUSR), time() + $cookie_time,'/');    
+  setcookie($saltCOOKIE, sha1($saltUSR), time() + $cookie_time,'/'); 
+  setcookie('GS_ADMIN_USERNAME', $USR, time() + $cookie_time,'/');   
 }
 
 /**
