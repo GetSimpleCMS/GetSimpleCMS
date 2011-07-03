@@ -331,6 +331,8 @@ function find_url($slug, $parent, $type='full') {
 	global $PRETTYURLS;
 	global $SITEURL;
 	global $PERMALINK;
+	
+	if ($parent=='index') $parent='';
 				
 	if ($type == 'full') {
 		$full = $SITEURL;
