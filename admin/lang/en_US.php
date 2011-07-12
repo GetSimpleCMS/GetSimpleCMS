@@ -492,7 +492,7 @@ $i18n = array(
 "GET_PLUGINS_LINK" => 'Download <em>M</em>ore Plugins',
 "SITEMAP_REFRESHED" => "Your sitemap has been refreshed", //edit.php
 "LOG_FILE_EMPTY" 		=> 	"This log file is empty",
-
+"SHARE" 		=> 	"Share",
 
 /* 
  * For: api related pages

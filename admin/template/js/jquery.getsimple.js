@@ -199,6 +199,7 @@ jQuery(document).ready(function() {
 	
 	if(jQuery().fancybox) {
 		$('a[rel*=facybox]').fancybox();
+		$('a[rel*=facybox_s]').fancybox();
 	}
 
 	
