@@ -341,22 +341,14 @@ if ($menu == '') { $menu = $title; }
 	        filebrowserWindowHeight : '500'
     		});
     		CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
-    	
-				<?php if (defined('GSAUTOSAVE')) { /* IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP */  ?>
-					var yourText = $('#post-content').val();
-					function InstanceReadyEvent() {
-					  this.document.on("keyup", function () {
-					  		warnme = true;
-					      yourText = CKEDITOR.instances["post-content"].getData();
-					  });
-					}
-				<?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
-					function InstanceReadyEvent() {
-					  this.document.on("keyup", function () {
-					  		warnme = true;
-					  });
-					}
-				<?php } ?>	
+				var yourText = $('#post-content').val();
+				function InstanceReadyEvent() {
+				  this.document.on("keyup", function () {
+				  		warnme = true;
+				      yourText = CKEDITOR.instances["post-content"].getData();
+				  });
+				}
+
 			</script>
 			
 			<?php
@@ -372,17 +364,16 @@ if ($menu == '') { $menu = $title; }
 		<script type="text/javascript">
 			/* Warning for unsaved Data */
 			var yourText = null;
-    	var warnme = false;	
+			var warnme = false;	
 			window.onbeforeunload = function () {
-		    if (warnme) {
-		      return "<?php i18n('UNSAVED_INFORMATION'); ?>";
-		    }
+			  if (warnme) {
+			    return "<?php i18n('UNSAVED_INFORMATION'); ?>";
+			  }
 			}
 			
 			jQuery(document).ready(function() { 
 	    
-		    <?php if (defined('GSAUTOSAVE')) { /* IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP */  ?>	
-		    	
+		    <?php if (defined('GSAUTOSAVE') && (int)GSAUTOSAVE != 0) { /* IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP */ ?>	
 		    	function autoSave() {
 		    		$('input[type=submit]').attr('disabled', 'disabled');
 		    		if (!yourText) {
@@ -416,13 +407,12 @@ if ($menu == '') { $menu = $title; }
 						  $(this).data('timer', wait);
 		    	});
 		    	
-	    	<?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
-	    		
-		    	$('#editform').change(function(){
-						warnme = true;
-		    	});
-		    	
-				<?php } ?>
+		    	<?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
+			    	$('#editform').change(function(){
+							warnme = true;
+			    	});
+					<?php } ?>
+				
 			});
 		</script>
 	</div>

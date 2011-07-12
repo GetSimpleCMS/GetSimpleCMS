@@ -152,7 +152,7 @@ if(isset($_POST['submitted'])) {
 		
 		# check for fatal errors, if none, redirect to 
 		if ($kill == '') {
-			redirect("welcome.php");
+			redirect("support.php");
 		}
 	}
 }

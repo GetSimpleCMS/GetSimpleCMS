@@ -165,10 +165,10 @@ jQuery(document).ready(function() {
 				        $('div.wrapper .updated').remove();
 				        $('div.wrapper .error').remove();
                 if($(response).find('div.error').html()) {
-                  $('div.bodycontent').before('<div class="error">'+ $(response).find('div.error').html() + '</div>'); 
+                  $('div.bodycontent').before('<div class="error"><p>'+ $(response).find('div.error').html() + '</p></div>'); 
                 }
                 if($(response).find('div.updated').html()) {
-                  $('div.bodycontent').before('<div class="updated">'+ $(response).find('div.updated').html() + '</div>'); 
+                  $('div.bodycontent').before('<div class="updated"><p>'+ $(response).find('div.updated').html() + '</p></div>'); 
                 }
 				     }
 				  });
@@ -184,8 +184,19 @@ jQuery(document).ready(function() {
 		$('#loader').fadeIn();
 		$("#waiting").fadeIn(1000).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
 	});
+	
 	$(".updated").fadeOut(500).fadeIn(500);
 	$(".error").fadeOut(500).fadeIn(500);
+	setTimeout(function() {
+		$(".updated").slideUp(function() {
+			$(".updated").remove();
+		});
+		$(".error").slideUp(function() {
+			$(".error").remove();
+		});
+	  
+	}, 10000);
+	
 	if(jQuery().fancybox) {
 		$('a[rel*=facybox]').fancybox();
 	}

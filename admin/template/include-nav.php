@@ -10,7 +10,7 @@ if (cookie_check()) {
 	if (defined('GSDEBUG')) {
 		echo '<li class="debug"><a href="http://get-simple.info/wiki/themes:tips" target="_blank">'.i18n_r('DEBUG_MODE').'</a></li>';
 	}
-	echo '<li class="rightnav" ><a href="settings.php#profile">'.i18n_r('WELCOME').' <b>'.$USR.'</b>!</a></li></ul>';
+	echo '<li class="rightnav" ><a href="settings.php#profile">'.i18n_r('WELCOME').' <strong>'.$USR.'</strong>!</a></li></ul>';
 } 
 
 //determine page type if plugin is being shown
@@ -34,14 +34,9 @@ if (get_filename_id() == 'load') {
 	<li><img class="toggle" id="loader" src="template/images/ajax.gif" alt="" /></li>
 	<li class="rightnav" ><a class="settings first" href="settings.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SETTINGS'));?>" ><?php i18n('TAB_SETTINGS');?></a></li>
 	<li class="rightnav" ><a class="support last" href="support.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SUPPORT'));?>" ><?php i18n('TAB_SUPPORT');?></a></li>
-	
-	<!--
-	 add this to any .nav <li> element to display a warning symbol on it. 
-	 This will primarily be used when an update is needed or something is determined 'wrong'
-	 code: <span class="warning">!</span>
-	-->
+
 </ul>
-<div class="clear" ></div>
+
 </div>
 </div>
 	

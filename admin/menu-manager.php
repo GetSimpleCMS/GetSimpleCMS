@@ -32,9 +32,9 @@ $pagesSorted = subval_sort($pagesArray,'menuOrder');
 
 ?> 
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT').' &raquo; '.i18n_r('MENU_MANAGER')); ?>
+<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT').' &raquo; '.str_replace(array('<em>','</em>'), '', i18n_r('MENU_MANAGER'))); ?>
 	
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('PAGE_MANAGEMENT'); ?> <span>&raquo;</span> <?php i18n('MENU_MANAGER'); ?></h1>
+	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('PAGE_MANAGEMENT'); ?> <span>&raquo;</span> <?php echo str_replace(array('<em>','</em>'), '', i18n_r('MENU_MANAGER')); ?></h1>
 	
 	<?php include('template/include-nav.php'); ?>
 	<?php include('template/error_checking.php'); ?>

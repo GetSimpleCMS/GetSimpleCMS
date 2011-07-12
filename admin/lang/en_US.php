@@ -58,7 +58,7 @@ $i18n = array(
 "PAGE_MANAGEMENT"		=>	"Page Management",
 "TOGGLE_STATUS"			=>	"Toggle Stat<em>u</em>s",
 "TOTAL_PAGES"				=>	"total pages",
-"ALL_PAGES"					=>	"All Pages",
+"ALL_PAGES"					=>	"Pages",
 
 /* 
  * For: edit.php
@@ -302,7 +302,7 @@ $i18n = array(
 */
 "SIDE_SUPPORT_LOG"	=>	"Supp<em>o</em>rt",
 "SIDE_HEALTH_CHK"		=>	"Website <em>H</em>ealth Check",
-"SIDE_DOCUMENTATION"=>	"Documentation",
+"SIDE_DOCUMENTATION"=>	"Wiki Documentation",
 "SIDE_VIEW_LOG"=>	"<em>V</em>iew Log",
 
 /* 
@@ -386,10 +386,10 @@ $i18n = array(
 "DATE_AND_TIME_FORMAT"				=>	"F jS, Y - g:i A", //date and time
 
 /* 
- * For: welcome.php
+ * For: support.php
 */
-"WELCOME_MSG"				=>	"Thank you for choosing GetSimple as your CMS!",
-"WELCOME_P"					=>	"GetSimple makes managing your website as simple as possible with its top-of-the-class user interface and the easiest templating system around.",
+"WELCOME_MSG"				=>	"Thank you for choosing GetSimple as your content management system!",
+"WELCOME_P"					=>	"GetSimple makes managing a website as simple as possible with its best-in-class user interface. We strive to keep the system easy enough for anyone to use, yet powerful enough for a developer to enable all the features that are needed.</p><p><strong>Some first steps that might useful:</strong></p>",
 "GETTING_STARTED"		=>	"Getting Started",
 
 /* 
@@ -491,6 +491,8 @@ $i18n = array(
 "MENU_MANAGER" => '<em>M</em>enu Manager', //edit.php
 "GET_PLUGINS_LINK" => 'Download <em>M</em>ore Plugins',
 "SITEMAP_REFRESHED" => "Your sitemap has been refreshed", //edit.php
+"LOG_FILE_EMPTY" 		=> 	"This log file is empty",
+
 
 /* 
  * For: api related pages

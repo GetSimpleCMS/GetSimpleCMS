@@ -21,7 +21,6 @@ $log_path = GSDATAOTHERPATH.'logs/';
 $log_file = $log_path . $log_name;
 
 if (!is_file($log_file)) {
-	$log_name = '';
 	$log_data = false;
 }
 
@@ -57,6 +56,7 @@ if (!isset($log_data)) $log_data = getXML($log_file);
 				<a href="log.php?log=<?php echo $log_name; ?>&action=delete&nonce=<?php echo get_nonce("delete"); ?>" accesskey="<?php echo find_accesskey(i18n_r('CLEAR_ALL_DATA'));?>" title="<?php i18n('CLEAR_ALL_DATA');?> <?php echo $log_name; ?>?" /><?php i18n('CLEAR_THIS_LOG');?></a>
 				<div class="clear"></div>
 			</div>
+			<?php if (!$log_data) echo '<p><em>'.i18n_r('LOG_FILE_EMPTY').'</em></p>'; ?>
 			<ol class="more" >
 				<?php 
 				$count = 1;
@@ -104,7 +104,7 @@ if (!isset($log_data)) $log_data = getXML($log_file);
 						echo "</p></li>";
 						$count++;
 					}
-				}
+				} 
 				
 				?>
 			</ol>

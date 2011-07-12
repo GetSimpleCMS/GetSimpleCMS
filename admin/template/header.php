@@ -4,6 +4,7 @@
  *
  * @package GetSimple
  */
+ global $SITENAME, $SITEURL;
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo get_site_lang(true); ?>">
@@ -67,4 +68,4 @@
 
 <body <?php filename_id(); ?> >	
 	<div class="header" id="header" >
-	<div class="wrapper">		
+		<div class="wrapper clearfix">

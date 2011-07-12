@@ -1138,7 +1138,11 @@ function archive_targz() {
 	$saved_zip_file = $timestamp .'_archive.tar.gz';	
 	$script_contents = "tar -cvzf ".$saved_zip_file_path.$saved_zip_file." ".GSROOTPATH.".htaccess ".GSROOTPATH."gsconfig.php ".GSROOTPATH."data ".GSROOTPATH."plugins ".GSROOTPATH."theme ".GSROOTPATH."admin/lang > /dev/null 2>&1";
 	exec($script_contents, $output, $rc);
-	return $rc;
+	if (file_exists($saved_zip_file_path.$saved_zip_file)) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 ?>
