@@ -98,15 +98,20 @@ if (count($pagesSorted) != 0)
 		<div class="main" >
 			<h3 class="floated"><?php i18n('PAGE_BACKUPS');?></h3>
 			
-			<div class="edit-nav clearfix" ><a href="#" id="filtertable" accesskey="<?php echo find_accesskey(i18n_r('FILTER'));?>" ><?php i18n('FILTER'); ?></a> <a href="backups.php?deleteall&amp;nonce=<?php echo get_nonce("deleteall"); ?>" title="<?php i18n('DELETE_ALL_BAK');?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE_ALL'));?>" class="confirmation"  ><?php i18n('ASK_DELETE_ALL');?></a></div>
-			<div id="filter-search">
-				<form><input type="text" autocomplete="off" class="text" id="q" placeholder="<?php echo strip_tags(lowercase(i18n_r('FILTER'))); ?>..." /> &nbsp; <a href="pages.php" class="cancel"><?php i18n('CANCEL'); ?></a></form>
-			</div>
-			<table id="editpages" class="highlight paginate">
-				<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th></tr>
-				<?php echo $table; ?>
-			</table>
-			<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php i18n('TOTAL_BACKUPS');?></em></p>
+			<?php if ($counter > 0) { ?>
+				<div class="edit-nav clearfix" ><a href="#" id="filtertable" accesskey="<?php echo find_accesskey(i18n_r('FILTER'));?>" ><?php i18n('FILTER'); ?></a> <a href="backups.php?deleteall&amp;nonce=<?php echo get_nonce("deleteall"); ?>" title="<?php i18n('DELETE_ALL_BAK');?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE_ALL'));?>" class="confirmation"  ><?php i18n('ASK_DELETE_ALL');?></a></div>
+				<div id="filter-search">
+					<form><input type="text" autocomplete="off" class="text" id="q" placeholder="<?php echo strip_tags(lowercase(i18n_r('FILTER'))); ?>..." /> &nbsp; <a href="pages.php" class="cancel"><?php i18n('CANCEL'); ?></a></form>
+				</div>
+				<table id="editpages" class="highlight paginate">
+					<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th></tr>
+					<?php echo $table; ?>
+				</table>
+			<?php  } else { ?>
+				<div class="clearfix" style="height:40px;"></div>
+			<?php  }	?>
+		
+			<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php echo lowercase( i18n_r('PAGE_BACKUPS'));?></em></p>
 		</div>
 	</div>
 	

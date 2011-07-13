@@ -28,19 +28,18 @@ if ($pluginid){
 
 // Variable settings
 login_cookie_check();
-$counter = '0';
-$table = '';
+$counter = 0; $table = null;
 
 $pluginfiles = getFiles(GSPLUGINPATH);
 sort($pluginfiles);
 $needsupdate = false;
-foreach ($pluginfiles as $fi){
+foreach ($pluginfiles as $fi) {
 	$pathExt = pathinfo($fi,PATHINFO_EXTENSION );
 	$pathName = pathinfo_filename($fi);
 	$setNonce='&nonce='.get_nonce("set","plugins.php");
 	
 	if ($pathExt=="php") {
-		if ($live_plugins[$fi]=='true'){
+		if ($live_plugins[$fi]=='true') {
 			$cls_Enabled = 'hidden';
 			$cls_Disabled = '';
 			$trclass='enabled';
@@ -95,13 +94,22 @@ if ($needsupdate) {
 		<div class="main" >
 		<h3><?php i18n('PLUGINS_MANAGEMENT'); ?></h3>
 		
-		<table class="edittable">
-			<tr><th><?php i18n('PLUGIN_NAME'); ?></th><th><?php i18n('PLUGIN_DESC'); ?></th><th><?php i18n('STATUS'); ?></th></tr>
-			<?php echo $table; ?>
-		</table>
-
-		<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php i18n('PLUGINS_INSTALLED'); ?></em></p>
-			
+		<?php if ($counter > 0) { ?>
+			<table class="edittable">
+				<tr><th><?php i18n('PLUGIN_NAME'); ?></th><th><?php i18n('PLUGIN_DESC'); ?></th><th><?php i18n('STATUS'); ?></th></tr>
+				<?php echo $table; ?>
+			</table>
+		<?php  } ?>
+		
+		
+		<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php i18n('PLUGINS_INSTALLED'); ?>
+		<?php 
+		if ($counter == 0) { 
+			echo ' - <a href="http://get-simple.info/extend/" target="_blank" >'. str_replace(array('<em>','</em>'), '', i18n_r('GET_PLUGINS_LINK')) .'</a>';
+		}
+		?>	
+		</em></p>
+		
 		</div>
 	</div>
 	
