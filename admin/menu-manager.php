@@ -8,27 +8,12 @@
  * @subpackage Page-Edit
  */
 
-// Setup inclusions
+# Setup
 $load['plugin'] = true;
-
-// Include common.php
 include('inc/common.php');
-
-// Variable Settings
 login_cookie_check();
-
-$dir_handle = opendir(GSDATAPAGESPATH) or die("Unable to open ". GSDATAPAGESPATH);
-$filenames = array();
-while ($filename = readdir($dir_handle)) {
-	$filenames[] = $filename;
-}
-
-$count="0"; $data = '';
-
 getPagesXmlValues();
-
 $pagesSorted = subval_sort($pagesArray,'menuOrder');
-
 
 ?> 
 
@@ -43,7 +28,7 @@ $pagesSorted = subval_sort($pagesArray,'menuOrder');
 	
 	<div id="maincontent">
 		<div class="main" >
-			<h3><?php i18n('MENU_MANAGER');?></h3>
+			<h3><?php echo str_replace(array('<em>','</em>'), '', i18n_r('MENU_MANAGER')); ?></h3>
 			
 			<?php
 				if (count($pagesSorted) != 0) { 
@@ -72,7 +57,6 @@ $pagesSorted = subval_sort($pagesArray,'menuOrder');
 				} else {
 					echo '<p>'.i18n_r('NO_MENU_PAGES').'.</p>';	
 				}
-				closedir($dir_handle);
 			?>
 
 		</div>

@@ -167,40 +167,35 @@ if ($menu == '') { $menu = $title; }
 					<label for="post-parent"><?php i18n('PARENT_PAGE'); ?>:</label>
 					<select class="text short" id="post-parent" name="post-parent"> 
 						<?php 
-						$path 		= GSDATAPAGESPATH;
-						$counter 	= '0';
-						
-						//get all pages
-						$filenames = getFiles($path);
-						
-						$count="0";
-						$pagesArray = array();
-						if (count($filenames) != 0) { 
-							foreach ($filenames as $file) {
-								if (isFile($file, $path, 'xml')) {
-									$data = getXML($path .$file);
-									$status = $data->menuStatus;
-									$pagesArray[$count]['parent'] = $data->parent;
-									if ($data->parent != '') { 
-										$parentdata = getXML($path . $data->parent .'.xml');
-										$parentTitle = $parentdata->title;
-										$pagesArray[$count]['sort'] = $parentTitle .' '. $data->title;
-									} else {
-										$pagesArray[$count]['sort'] = $data->title;
-									}
-									$pagesArray[$count]['url'] = $data->url;
-									$parentTitle = '';
-									$count++;
-								}
+						getPagesXmlValues();
+						$count = 0;
+						foreach ($pagesArray as $page) {
+							if ($page['parent'] != '') { 
+								$parentdata = getXML(GSDATAPAGESPATH . $page['parent'] .'.xml');
+								$parentTitle = $parentdata->title;
+								$sort = $parentTitle .' '. $page['title'];
+							} else {
+								$sort = $page['title'];
 							}
+							$page = array_merge($page, array('sort' => $sort));
+							$pagesArray_tmp[$count] = $page;
+							$count++;
 						}
+						$pagesArray = $pagesArray_tmp;
 						$pagesSorted = subval_sort($pagesArray,'sort');
 						$ret=get_pages_menu_dropdown('','',0);
 						
-						if ($parent == null) { $none="selected"; } else { $none=""; }
+						// handle 'no parents' correctly
+						if ($parent == '') { 
+							$none='selected';
+							$noneText=null; 
+						} else { 
+							$none=null; 
+							$noneText='< '.i18n_r('NO_PARENT').' >'; 
+						}
 						
 						// Create base option
-						echo '<option '.$none.' value="" ></option>';
+						echo '<option '.$none.' value="" >'.$noneText.'</option>';
 						echo $ret;
 						?>
 					</select>
@@ -213,7 +208,7 @@ if ($menu == '') { $menu = $title; }
 				</p>
 				
 				<p class="inline">
-					<label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label> &ndash; <span><a href="navigation.php" rel="facybox" ><?php echo strip_tags(i18n_r('VIEW')); ?></a></span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> /><br />
+					<label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label> &ndash; <span><a href="navigation.php" rel="facybox_s" ><?php echo strip_tags(i18n_r('VIEW')); ?></a></span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> /><br />
 				</p>
 				<div id="menu-items">
 					<span style="float:left;width:84%" ><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span><span style="float:left;width:10%;" ><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>

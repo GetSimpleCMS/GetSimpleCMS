@@ -63,35 +63,21 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 }
 
 
-# display all pages
-$filenames = getFiles($path);
-
-$count="0";
-$pagesArray = array();
-if (count($filenames) != 0) { 
-	foreach ($filenames as $file) {
-		if (isFile($file, $path, 'xml')) {
-			$data = getXML($path .$file);
-			$status = $data->menuStatus;
-			$pagesArray[$count]['title'] = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
-			$pagesArray[$count]['parent'] = $data->parent;
-			$pagesArray[$count]['menuStatus'] = $data->menuStatus;
-			$pagesArray[$count]['private'] = $data->private;
-			if ($data->parent != '') { 
-				$parentdata = getXML($path . $data->parent .'.xml');
-				$parentTitle = $parentdata->title;
-				$pagesArray[$count]['sort'] = $parentTitle .' '. $data->title;
-			} else {
-				$pagesArray[$count]['sort'] = $data->title;
-			}
-			$pagesArray[$count]['url'] = $data->url;
-			$pagesArray[$count]['date'] = $data->pubDate;
-			$parentTitle = '';
-			$count++;
-		}
+getPagesXmlValues();
+$count = 0;
+foreach ($pagesArray as $page) {
+	if ($page['parent'] != '') { 
+		$parentdata = getXML(GSDATAPAGESPATH . $page['parent'] .'.xml');
+		$parentTitle = $parentdata->title;
+		$sort = $parentTitle .' '. $page['title'];
+	} else {
+		$sort = $page['title'];
 	}
+	$page = array_merge($page, array('sort' => $sort));
+	$pagesArray_tmp[$count] = $page;
+	$count++;
 }
-
+$pagesArray = $pagesArray_tmp;
 $pagesSorted = subval_sort($pagesArray,'sort');
 $table = get_pages_menu('','',0);
 

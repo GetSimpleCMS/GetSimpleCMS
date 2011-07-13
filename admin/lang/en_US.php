@@ -491,8 +491,9 @@ $i18n = array(
 "MENU_MANAGER" => '<em>M</em>enu Manager', //edit.php
 "GET_PLUGINS_LINK" => 'Download <em>M</em>ore Plugins',
 "SITEMAP_REFRESHED" => "Your sitemap has been refreshed", //edit.php
-"LOG_FILE_EMPTY" 		=> 	"This log file is empty",
-"SHARE" 		=> 	"Share",
+"LOG_FILE_EMPTY" 		=> 	"This log file is empty", //log.php
+"SHARE" 		=> 	"Share", //footer.php
+"NO_PARENT" => "No Parent", //edit.php
 
 /* 
  * For: api related pages

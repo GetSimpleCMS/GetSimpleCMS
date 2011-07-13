@@ -65,6 +65,9 @@ define('GSIMAGEWIDTH', '200');
 
 # Autosave within edit.php. Value is the autosave interval 
 #define('GSAUTOSAVE', 900);
+
+# Enable the External API to be shown on settings page 
+#define('GSEXTAPI', 1);
 	
 # Set PHP locale
 # http://php.net/manual/en/function.setlocale.php

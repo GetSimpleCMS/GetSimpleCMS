@@ -226,7 +226,9 @@ if(isset($load['plugin']) && $load['plugin']){
 	if(get_filename_id()=='settings' || get_filename_id()=='load') {
 		/* this core plugin only needs to be visible when you are viewing the 
 		settings page since that is where it's sidebar item is. */
-		include_once('api.plugin.php');
+		if (defined('GSEXTAPI') && GSEXTAPI==1) {
+			include_once('api.plugin.php');
+		}
 	}
 	# include core plugin for page caching
 	include_once('caching_functions.php');

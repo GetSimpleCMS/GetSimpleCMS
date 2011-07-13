@@ -10,6 +10,7 @@
 	
 	#step 1 - check for post
 	if (empty($_POST)) exit;
+	if (!defined('GSEXTAPI')) exit;
 	
 	#step 1 - check post for data
 	if (!isset($_POST['data'])) {
