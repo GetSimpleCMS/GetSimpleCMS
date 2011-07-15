@@ -9,8 +9,8 @@ body .cke_dialog {
 
 .cke_skin_getsimple .cke_dialog_body {
 	z-index:1;
-	border:solid 2px #666;
-	padding:10px;
+	border:1px solid #333;
+	padding:20px;
 	background-color:#fff;
 	position:relative;
 	_position:static;

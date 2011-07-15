@@ -539,9 +539,9 @@ form select.text { width:521px;padding:4px 5px; }
 input.text:focus, select.text:focus, textarea.text:focus {
 	outline:none;
 	border:1px solid #666 !important;
-	box-shadow: rgba(0,0,0, 0.15) 0px 0px 6px;  
-	-moz-box-shadow: rgba(0,0,0, 0.15) 0px 0px 6px;  
-	-webkit-box-shadow: rgba(0,0,0, 0.15) 0px 0px 6px;
+	box-shadow: rgba(0,0,0, 0.10) 0px 0px 6px;  
+	-moz-box-shadow: rgba(0,0,0, 0.10) 0px 0px 6px;  
+	-webkit-box-shadow: rgba(0,0,0, 0.10) 0px 0px 6px;
 	background-image:none;
 }
 
@@ -618,7 +618,7 @@ input.submit {
 }
 
 /* edit css */
-form input.title {font-size:18px;border-color:#000; width:635px; }
+form input.title {font-size:17px;border-color:#999; width:635px; }
 form input.secondary {width:280px;}
 /* components css */
 form.manyinputs input.text { width:230px; }
@@ -886,13 +886,13 @@ index #maincontent h3,
 }
 #index #maincontent .main,
 #resetpassword #maincontent .main {margin:50px auto 0 auto;width:270px;float:none;text-align:left;
-	border-radius: 8px;
-	-moz-border-radius: 8px;
-	-khtml-border-radius: 8px;
-	-webkit-border-radius: 8px;
-	box-shadow: rgba(0,0,0, 0.1) 0px 0px 10px;  
-	-moz-box-shadow: rgba(0,0,0, 0.1) 0px 0px 10px;  
-	-webkit-box-shadow: rgba(0,0,0, 0.1) 0px 0px 10px;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	box-shadow: rgba(0,0,0, 0.05) 0px 0px 10px;  
+	-moz-box-shadow: rgba(0,0,0, 0.05) 0px 0px 10px;  
+	-webkit-box-shadow: rgba(0,0,0, 0.05) 0px 0px 10px;
 	border-bottom:1px solid #999;
 	border-right:1px solid #999;
 	background:#FFF;
