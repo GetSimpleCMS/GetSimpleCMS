@@ -4,7 +4,10 @@
  *
  * @package GetSimple
  */
- global $SITENAME, $SITEURL;
+ 
+global $SITENAME, $SITEURL;
+exec_action('admin-pre-header');
+
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo get_site_lang(true); ?>">

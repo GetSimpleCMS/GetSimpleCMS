@@ -101,6 +101,8 @@ ini_set('log_errors', 1);
 ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
 
 
+
+
 /**
  * Pull data from storage
  */
@@ -232,6 +234,10 @@ if(isset($load['plugin']) && $load['plugin']){
 	}
 	# include core plugin for page caching
 	include_once('caching_functions.php');
+	
+	# main hook for common.php
+	exec_action('common');
+	
 }
 if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login_functions.php'); }
 ?>
