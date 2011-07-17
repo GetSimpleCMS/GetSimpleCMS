@@ -125,16 +125,15 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	/* end update */
 } 
 
+get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE')); 
+
 ?>
-<?php get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE')); ?>
 	
 	<h1><?php echo $site_full_name; ?> <span>&raquo;</span> <?php i18n('SYSTEM_UPDATE'); ?></h1>
 </div>
 </div>
 <div class="wrapper">
-	<?php 
-		include('template/error_checking.php'); 
-	?>
+	<?php include('template/error_checking.php'); ?>
 	
 	<div id="maincontent">
 		<div class="main" >

@@ -86,27 +86,23 @@ if (count($theme_dir_array) == 1){ $theme_options = ''; }
 if ($template == '') { $template = 'template.php'; }
 $templates = get_themes($TEMPLATE);
 $theme_templates .= '<span id="themefiles"><select class="text" id="theme_files" style="width:225px;" name="f" >';
-
 foreach ($templates as $file){
 	if ($TEMPLATE_FILE == $file){ 
 		$sel="selected"; 
 	} else { 
 		$sel="";
 	}
-	
 	if ($file == 'template.php'){ 
 		$templatename=i18n_r('DEFAULT_TEMPLATE'); 
 	} else { 
 		$templatename=$file; 
 	}
-	
 	$theme_templates .= '<option '.$sel.' value="'.$file.'" >'.$templatename.'</option>';
 }
-
 $theme_templates .= "</select></span>";
-?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); ?>
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); 
+?>
 	
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('THEME_MANAGEMENT'); ?> <span>&raquo;</span> <?php i18n('EDIT_THEME'); ?></h1>
 	<?php include('template/include-nav.php'); ?>

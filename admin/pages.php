@@ -81,9 +81,9 @@ $pagesArray = $pagesArray_tmp;
 $pagesSorted = subval_sort($pagesArray,'sort');
 $table = get_pages_menu('','',0);
 
-?>
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); 
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); ?>
+?>
 	
 	<h1>
 		<a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('PAGE_MANAGEMENT'); ?> <span>&raquo;</span> <?php i18n('ALL_PAGES'); ?>		

@@ -175,9 +175,10 @@ if (count($lang_array) != 0) {
 } else {
 	$langs = '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>';
 }
-?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('GENERAL_SETTINGS')); ?>
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('GENERAL_SETTINGS')); 
+
+?>
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('GENERAL_SETTINGS');?></h1>
 	<?php include('template/include-nav.php'); ?>
 	<?php include('template/error_checking.php'); ?>

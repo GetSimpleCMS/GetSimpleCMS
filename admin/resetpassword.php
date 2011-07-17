@@ -83,9 +83,10 @@ if(isset($_POST['submitted'])){
 		redirect("resetpassword.php?upd=pwd-error");
 	}
 } 
-?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('RESET_PASSWORD')); ?>
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('RESET_PASSWORD')); 
+
+?>
 </div>
 </div>
 <div class="wrapper">

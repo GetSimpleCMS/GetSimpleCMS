@@ -83,9 +83,10 @@ if (count($pagesSorted) != 0)
 		$table .= '</tr>';
 	}
 }	
-?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT')); ?>
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT')); 
+
+?>
 	
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('BAK_MANAGEMENT'); ?> <span>&raquo;</span> <?php i18n('ALL_PAGES'); ?></h1>
 	

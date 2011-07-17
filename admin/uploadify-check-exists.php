@@ -18,4 +18,3 @@ if (file_exists(GSDATAUPLOADPATH .$path . $name)) {
 } else {
 	echo 0;
 }
-?>

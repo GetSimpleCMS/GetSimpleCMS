@@ -12,12 +12,14 @@
 $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
+
+# get pages
 getPagesXmlValues();
 $pagesSorted = subval_sort($pagesArray,'menuOrder');
 
-?> 
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT').' &raquo; '.str_replace(array('<em>','</em>'), '', i18n_r('MENU_MANAGER'))); 
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT').' &raquo; '.str_replace(array('<em>','</em>'), '', i18n_r('MENU_MANAGER'))); ?>
+?>
 	
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('PAGE_MANAGEMENT'); ?> <span>&raquo;</span> <?php echo str_replace(array('<em>','</em>'), '', i18n_r('MENU_MANAGER')); ?></h1>
 	

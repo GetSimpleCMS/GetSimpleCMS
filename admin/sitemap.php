@@ -19,8 +19,10 @@ if (!generate_sitemap()) {
 		$success = i18n_r('SITEMAP_REFRESHED');
 	}
 }
+
+get_template('header', cl($SITENAME).' &raquo; '.strip_tags(i18n_r('SIDE_VIEW_SITEMAP'))); 
+
 ?>
-<?php get_template('header', cl($SITENAME).' &raquo; '.strip_tags(i18n_r('SIDE_VIEW_SITEMAP'))); ?>
 
 	<h1>
 		<a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo strip_tags(i18n_r('SIDE_VIEW_SITEMAP')); ?>

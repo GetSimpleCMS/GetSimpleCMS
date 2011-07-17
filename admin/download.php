@@ -60,5 +60,3 @@ if(isset($_GET['file'])) {
 }
 
 exit;
-
-?>

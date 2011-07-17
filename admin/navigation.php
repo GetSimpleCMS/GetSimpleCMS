@@ -8,18 +8,16 @@
  * @subpackage Page-Edit
  */
 
-// Setup inclusions
+# Setup
 $load['plugin'] = true;
-
-// Include common.php
 include('inc/common.php');
-
-// Variable settings
 login_cookie_check();
+
+# get pages
 getPagesXmlValues();
 $pagesSorted = subval_sort($pagesArray,'menuOrder');
-global $LANG;
-$LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
+
+global $LANG; $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 ?>
 <!DOCTYPE html>
 <html lang="en">

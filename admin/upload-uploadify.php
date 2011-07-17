@@ -146,4 +146,3 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 } else {
 	echo 'Wrong session hash!';
 }
-?>

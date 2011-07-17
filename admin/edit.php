@@ -111,10 +111,10 @@ foreach ($templates as $file){
 $sel_m = ($menuStatus != '') ? 'checked' : '' ;
 $sel_p = ($private != '') ? 'checked' : '' ;
 if ($menu == '') { $menu = $title; } 
-?>		
 
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); 
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); ?>
+?>
 
 	<noscript><style>#metadata_window {display:block !important} </style></noscript>
 	

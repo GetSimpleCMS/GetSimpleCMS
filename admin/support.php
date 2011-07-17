@@ -10,9 +10,10 @@
 $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
-?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT') ); ?>
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT') ); 
+
+?>
 	
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('SUPPORT');?> <span>&raquo;</span> <?php i18n('SETTINGS');?></h1>
 	<?php include('template/include-nav.php'); ?>

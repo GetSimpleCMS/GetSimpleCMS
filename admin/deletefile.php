@@ -70,6 +70,3 @@ if (isset($_GET['folder'])) {
 		redirect("upload.php?upd=del-success&id=". $folder . "&path=".$path);
 	}
 } 
-
-
-?>

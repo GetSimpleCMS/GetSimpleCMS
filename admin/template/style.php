@@ -638,15 +638,15 @@ table.comptable tr td input.newtitle {margin-bottom:2px !important;}
 
 /* alert styles */
 .updated, .error {
-	border:1px solid #F9CF51;
-	background:#FCFBB8;
-	background: -moz-linear-gradient(top, #F7F7C3 0%, #F9F8B3 100%); /* firefox */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#F7F7C3), color-stop(100%,#F9F8B3)); /* webkit */
-	line-height:35px;
-	padding:0 10px;
+	border:1px solid #E6DB55;
+	background:#FFFBCC;
+	background: -moz-linear-gradient(top, #FFFBCC 0%, #FFFBC1 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFBCC), color-stop(100%,#FFFBC1)); /* webkit */
+	line-height:22px;
+	padding:5px 10px;
 	margin-bottom:20px;
 }
-.updated p, .error p {margin:0;line-height:35px;}
+.updated p, .error p {margin:0;line-height:22px;}
 .error {
 	color:#990000;
 	border-color: #cc0000;

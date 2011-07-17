@@ -194,4 +194,3 @@ if (isset($_POST['submitted'])) {
 } else {
 	redirect('pages.php');
 }
-?>

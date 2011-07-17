@@ -63,9 +63,10 @@ while ($file = readdir($themes_handle)) {
 		}
 	}
 }
-?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); ?>
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); 
+
+?>
 	
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('THEME_MANAGEMENT');?></h1>
 	<?php include('template/include-nav.php'); ?>

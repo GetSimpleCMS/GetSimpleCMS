@@ -123,9 +123,10 @@ if (count($componentsec) != 0) {
 		$submitclass = 'hidden';
 		
 	}
-?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('COMPONENTS')); ?>
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('COMPONENTS')); 
+
+?>
 
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('THEME_MANAGEMENT');?> <span>&raquo;</span> <?php i18n('COMPONENTS');?></h1>
 	<?php include('template/include-nav.php'); ?>

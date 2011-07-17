@@ -111,8 +111,10 @@ if (isset($_GET['newfolder'])) {
 		}
 	}
 }
+
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT')); 
+
 ?>
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT')); ?>
 
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo i18n_r('FILE_MANAGEMENT'); ?></h1>
 	<?php include('template/include-nav.php');?>

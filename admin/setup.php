@@ -156,9 +156,10 @@ if(isset($_POST['submitted'])) {
 		}
 	}
 }
-?>
 
-<?php get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION')); ?>
+get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION')); 
+
+?>
 	
 		<h1><?php echo $site_full_name; ?> <span>&raquo;</span> <?php i18n('INSTALLATION'); ?></h1>
 	</div>

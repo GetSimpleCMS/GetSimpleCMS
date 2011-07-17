@@ -22,4 +22,3 @@ if (function_exists($_GET['func'])) {
 } else {
 	return false;
 }
-?>

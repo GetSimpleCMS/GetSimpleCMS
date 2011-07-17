@@ -16,9 +16,9 @@ include('inc/common.php');
 login_cookie_check();
 $php_modules = get_loaded_extensions();
 
-?>
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i18n_r('WEB_HEALTH_CHECK')); 
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i18n_r('WEB_HEALTH_CHECK')); ?>
+?>
 	
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('SUPPORT');?> <span>&raquo;</span> <?php i18n('WEB_HEALTH_CHECK');?></h1>
 	<?php include('template/include-nav.php'); ?>

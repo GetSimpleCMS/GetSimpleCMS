@@ -39,9 +39,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && strlen($log_name)>0
 
 if (!isset($log_data)) $log_data = getXML($log_file);
 
-?>
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i18n_r('LOGS')); 
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i18n_r('LOGS')); ?>
+?>
 	
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('SUPPORT');?> <span>&raquo;</span> <?php i18n('VIEWING');?> &lsquo;<span class="filename" ><?php echo $log_name; ?></span>&rsquo;</h1>
 	<?php include('template/include-nav.php'); ?>

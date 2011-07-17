@@ -77,11 +77,11 @@ if ($needsupdate) {
 		unlink(GSCACHEPATH.'plugin-update.trigger');
 	}
 }	
+
+exec_action('plugin-hook');
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PLUGINS_MANAGEMENT')); 
+
 ?>
-
-<?php exec_action('plugin-hook');?>
-
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PLUGINS_MANAGEMENT')); ?>
 	
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('PLUGINS_MANAGEMENT'); ?></h1>
 	

@@ -47,9 +47,10 @@ if (file_exists($thumb_folder . 'thumbnail.' . $src)) {
 	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . 'thumbnail.'.$src);
 	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder_rel . 'thumbnail.'. $src .'" rel="facybox" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 }
-?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT').' &raquo; '.i18n_r('IMAGES')); ?>
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT').' &raquo; '.i18n_r('IMAGES')); 
+
+?>
 	
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('FILE_MANAGEMENT');?> <span>&raquo;</span> <?php i18n('IMAGES');?></h1>
 	<?php include('template/include-nav.php'); ?>

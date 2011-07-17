@@ -23,9 +23,9 @@ if (!isset($_GET['id'])) {
 $plugin_id = $_GET['id'];
 global $plugin_info;
 
-?>
+get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name']); 
 
-<?php get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name']); ?>
+?>
 	
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $plugin_info[$plugin_id]['name']; ?></h1>
 

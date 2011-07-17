@@ -13,9 +13,9 @@ $load['login'] = true;
 $load['plugin'] = true;
 include('inc/common.php');
 
-?> 
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('LOGIN')); 
 
-<?php get_template('header', cl($SITENAME).' &raquo; '.i18n_r('LOGIN')); ?>
+?>
 
 </div>
 </div>

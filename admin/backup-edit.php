@@ -81,9 +81,10 @@ elseif ($p == 'restore') {
 	
 	
 }
-?>
 
-<?php get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &raquo; '.i18n_r('VIEWPAGE_TITLE')); ?>
+get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &raquo; '.i18n_r('VIEWPAGE_TITLE')); 
+
+?>
 	
 	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('BAK_MANAGEMENT'); ?> <span>&raquo;</span> <?php i18n('VIEWING');?> &lsquo;<span class="filename" ><?php echo $url; ?></span>&rsquo;</h1>
 	
