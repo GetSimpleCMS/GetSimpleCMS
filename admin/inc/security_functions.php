@@ -134,7 +134,7 @@ function validate_safe_file($file, $name, $mime){
 	global $mime_type_blacklist;
 	global $file_ext_blacklist;
 
-	$file_extention = substr($name, strrpos($name, '.') + 1);
+	$file_extention = pathinfo($name,PATHINFO_EXTENSION);
 	$file_mime_type = $mime;
 	
 	if (in_arrayi($file_mime_type, $mime_type_blacklist)) {

@@ -10,72 +10,75 @@
  * GetSimple js file	
  */
 
-function DeleteComp(id) {
-	var message = $("#del-" + id).attr("title");
-	var answer = confirm(message);
-  $('#loader').show();
-  if (answer){
-  	$("#section-" + id).slideToggle('40000').remove();
-  	if($("#divlist-" + id).length) {
-  		$("#divlist-" + id).remove();
-  	}  	
-  }
-  $('#loader').fadeOut(1000);
-	return false;
-};
-			
-function updateCoords(c) {
-	$('#handw').show();
-  $('#x').val(c.x);
-  $('#y').val(c.y);
-  $('#w').val(c.w);
-  $('#h').val(c.h);
-  $('#pich').html(c.h);
-  $('#picw').html(c.w);
-};
-
-function checkCoords() {
-  if (parseInt($('#x').val())) return true;
-  alert('Please select a crop region then press submit.');
-  return false;
-};
-
-function attachFilterChangeEvent() {
-	$("#imageFilter").change(function(){
-		$('#loader').show();
-		var filterx = $(this).val();
-		$("#imageTable tr").hide();
-		if (filterx == 'Images'){
-			$("#imageTable tr .imgthumb").show();
-		} else {
-			$("#imageTable tr .imgthumb").hide();
-		}		
-		$("#filetypetoggle").html('&nbsp;&nbsp;/&nbsp;&nbsp;' + filterx);
-		$("#imageTable tr." + filterx).show();
-		$("#imageTable tr.folder").show();
-		$("#imageTable tr:first-child").show();
-   	$("#imageTable tr.deletedrow").hide();
-   	$('#loader').fadeOut(500);
-	});
-}
-
 jQuery(document).ready(function() { 
+
+	var loadingAjaxIndicator = $('#loader');
+	
+	function DeleteComp(id) {
+		var message = $("#del-" + id).attr("title");
+		var answer = confirm(message);
+	  loadingAjaxIndicator.show();
+	  if (answer){
+	  	$("#section-" + id).slideToggle('40000').remove();
+	  	if($("#divlist-" + id).length) {
+	  		$("#divlist-" + id).remove();
+	  	}  	
+	  }
+	  loadingAjaxIndicator.fadeOut(1000);
+		return false;
+	};
+				
+	function updateCoords(c) {
+		$('#handw').show();
+	  $('#x').val(c.x);
+	  $('#y').val(c.y);
+	  $('#w').val(c.w);
+	  $('#h').val(c.h);
+	  $('#pich').html(c.h);
+	  $('#picw').html(c.w);
+	};
+	
+	function checkCoords() {
+	  if (parseInt($('#x').val())) return true;
+	  alert('Please select a crop region then press submit.');
+	  return false;
+	};
+	
+	var imageTableElement $("#imageTable");
+	function attachFilterChangeEvent() {
+		$("#imageFilter").change(function(){
+			loadingAjaxIndicator.show();
+			var filterx = $(this).val();
+			imageTableElement.find("tr").hide();
+			if (filterx == 'Images'){
+				imageTableElement.find("tr .imgthumb").show();
+			} else {
+				imageTableElement.find("tr .imgthumb").hide();
+			}		
+			$("#filetypetoggle").html('&nbsp;&nbsp;/&nbsp;&nbsp;' + filterx);
+			imageTableElement.find("tr." + filterx).show();
+			imageTableElement.find("tr.folder").show();
+			imageTableElement.find("tr:first-child").show();
+	   	imageTableElement.find("tr.deletedrow").hide();
+	   	loadingAjaxIndicator.fadeOut(500);
+		});
+	}
+	
+	
 	//upload.php
 	attachFilterChangeEvent();
 
 	//image.php	
+	var copyKitTextArea = $('textarea.copykit');
 	$("select#img-info").change(function() {
 		var codetype = $(this).val();
 		var code = $('p#'+ codetype).html();
 		var originalBG = $('textarea.copykit').css('background-color'); 
 		var fadeColor = "#FFFFD1"; 
-		$('textarea.copykit')
-			.fadeOut(500)
-			.fadeIn(500)
-			.html(code)
+		copyKitTextArea.fadeOut(500).fadeIn(500).html(code);
 	});
 	$(".select-all").live("click", function() {
-    $('textarea.copykit').focus().select();
+    copyKitTextArea.focus().select();
     return false;
   });
   
@@ -88,24 +91,24 @@ jQuery(document).ready(function() {
 	// components.php
 	$(".delconfirmcomp").live("click", function($e) {
 		$e.preventDefault();
-		$('#loader').show();
+		loadingAjaxIndicator.show();
 		var message = $(this).attr("title");
 		var answer = confirm(message);
 	    if (answer){
 	    	var compid = $(this).attr("rel");
 	    	$(compid).slideToggle(500).remove();
 	    }
-	  $('#loader').fadeOut(500);
+	  loadingAjaxIndicator.fadeOut(500);
 	});
 	$("#addcomponent").live("click", function($e) {
 		$e.preventDefault();
-		$('#loader').show();
+		loadingAjaxIndicator.show();
 		var id = $("#id").val();
 		$("#divTxt").append('<div style="display:none;" class="compdiv" id="section-' + id + '"><table class="comptable"><tr><td><b>Title: </b><input type="text" class="text newtitle" name="title[]" value="" /></td><td class="delete"><a href="#" title="Delete Component:?" id="del-'+ id +'" onclick="DeleteComp('+ id +'); return false;" >&times;</a></td></tr></table><textarea name="val[]"></textarea><input type="hidden" name="slug[]" value="" /><input type="hidden" name="id[]" value="' + id + '" /><div>');
 		$("#section-" + id).slideToggle('fast');
 		id = (id - 1) + 2;
 		$("#id").val(id);
-		$('#loader').fadeOut(500);
+		loadingAjaxIndicator.fadeOut(500);
 		$('#submit_line').fadeIn();
 	});
 	$("b.editable").dblclick(function () {
@@ -115,7 +118,7 @@ jQuery(document).ready(function() {
 		$(this).parents('.compdiv').find("input.compslug").val('');
 		$(this).hide();
 	});
-	$("input.titlesaver").live("keydown", function () {
+	$("input.titlesaver").live("keyup", function () {
 		var myval = $(this).val();
 		$(this).parents('.compdiv').find(".compslugcode").html("'"+myval.toLowerCase()+"'");
 		$(this).parents('.compdiv').find("b.editable").html(myval);
@@ -133,14 +136,14 @@ jQuery(document).ready(function() {
 		$e.preventDefault();
 	});
 	$(".confirmation").live("click", function($e) {
-		$('#loader').show();
+		loadingAjaxIndicator.show();
 		var message = $(this).attr("title");
 		var answer = confirm(message);
 	    if (!answer){
-	    	$('#loader').fadeOut(500);
+	    	loadingAjaxIndicator.fadeOut(500);
 	    	return false;
 	    }
-	  $('#loader').fadeOut(500);
+	  loadingAjaxIndicator.fadeOut(500);
 	});
 	$(".delconfirm").live("click", function() {
 		var message = $(this).attr("title");
@@ -149,7 +152,7 @@ jQuery(document).ready(function() {
 	  mytr.css("font-style", "italic");
 	    var answer = confirm(message);
 	    if (answer){
-	    	$('#loader').show();
+	    	loadingAjaxIndicator.show();
 	    	mytr.addClass('deletedrow');
 	    	mytr.fadeOut(500, function(){
 					$.ajax({
@@ -174,7 +177,7 @@ jQuery(document).ready(function() {
                 }
 				     }
 				  });
-					$('#loader').fadeOut(500);
+					loadingAjaxIndicator.fadeOut(500);
 				});
 	    } else {
 	    	mytr.css('font-style', 'normal');
@@ -183,7 +186,7 @@ jQuery(document).ready(function() {
 	    return false;
 	});
 	$("#waittrigger").click(function(){
-		$('#loader').fadeIn();
+		loadingAjaxIndicator.fadeIn();
 		$("#waiting").fadeIn(1000).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
 	});
 
@@ -211,7 +214,7 @@ jQuery(document).ready(function() {
 	//plugins.php
 	$(".toggleEnable").live("click", function($e) {
 		$e.preventDefault();
-		$('#loader').show();
+		loadingAjaxIndicator.show();
 		var message = $(this).attr("title");
 		var dlink = $(this).attr("href");
 		var mytd=$(this).parents("td");
@@ -228,7 +231,7 @@ jQuery(document).ready(function() {
 	        $('#maincontent').load(location.href+' #maincontent');
 	     }
 	  });
-	  $('#loader').fadeOut();
+	  loadingAjaxIndicator.fadeOut();
 	});
 	
 		
@@ -241,17 +244,19 @@ jQuery(document).ready(function() {
 		$("#metadata_window").slideToggle('fast');
 		$(this).toggleClass('current');
 	});
+	
+	var privateLabel = $("#post-private-wrap label");
 	$("#post-private").change(function(){
-	  if ($("#post-private").is(":checked")) { 
-	  	$("#post-private-wrap label").css("color", '#cc0000');
+	  if ($(this).is(":checked")) { 
+	  	privateLabel.css("color", '#cc0000');
 	  } else {
-	    $("#post-private-wrap label").css("color", '#333333'); 
+	    privateLabel.css("color", '#333333'); 
 	  }
 	});
 	if ($("#post-private").is(":checked")) { 
-  	$("#post-private-wrap label").css("color", '#cc0000');
+  	privateLabel.css("color", '#cc0000');
   } else {
-    $("#post-private-wrap label").css("color", '#333333'); 
+    privateLabel.css("color", '#333333'); 
   }
 	$("#post-menu-enable").live("click", function() {
       $("#menu-items").slideToggle("fast");
@@ -305,11 +310,12 @@ jQuery(document).ready(function() {
 
 
 	//title filtering on pages.php & backups.php
+	var filterSearchInput = $("#filter-search");
 	$('#filtertable').live("click", function($e) {
 		$e.preventDefault();
-		$("#filter-search").slideToggle();
+		filterSearchInput.slideToggle();
 		$(this).toggleClass('current');
-		$('#filter-search #q').focus();
+		filterSearchInput.find('#q').focus();
 	});
 	$("#filter-search #q").keydown(function($e){
 		if($e.keyCode == 13) {
@@ -331,28 +337,29 @@ jQuery(document).ready(function() {
 		$e.preventDefault();
 		$("#editpages tr").show();
 		$('#filtertable').toggleClass('current');
-		$("#filter-search #q").val('');
-		$("#filter-search").slideUp();
+		filterSearchInput.find('#q').val('');
+		filterSearchInput.slideUp();
 	});
 	
 	
 	//create new folder in upload.php
+	var newFolderDiv = $("#new-folder");
 	$('#createfolder').live("click", function($e) {
 		$e.preventDefault();
-		$("#new-folder form").show();
+		newFolderDiv.find("form").show();
 		$(this).hide();
-		$('#new-folder #foldername').focus();
+		newFolderDiv.find('#foldername').focus();
 	});
 	$("#new-folder .cancel").live("click", function($e) {
 		$e.preventDefault();
-		$("#new-folder #foldername").val('');
-		$("#new-folder form").hide();
+		newFolderDiv.find("#foldername").val('');
+		newFolderDiv.find("form").hide();
 		$('#createfolder').show();
 	});
 	
 	// upload.php ajax folder creation
 	$('#new-folder form').submit(function() {
-		$('#loader').show();
+		loadingAjaxIndicator.show();
 		var dataString = $(this).serialize();
 		var newfolder = $('#foldername').val();
 		var hrefaction = $(this).attr('action');
@@ -363,13 +370,13 @@ jQuery(document).ready(function() {
        success: function(response){
        		$('#imageTable').load(location.href+' #imageTable', function() {
 						attachFilterChangeEvent();
-						$("#new-folder #foldername").val('');
-						$("#new-folder form").hide();
+						newFolderDiv.find("#foldername").val('');
+						newFolderDiv.find("form").hide();
 						$('#createfolder').show();
         	  counter=parseInt($("#pg_counter").text());
 		        $("#pg_counter").html(counter++);
 						$("tr."+newfolder+" td").css("background-color", "#F9F8B6");
-						$('#loader').fadeOut();
+						loadingAjaxIndicator.fadeOut();
 					});
        }
     });

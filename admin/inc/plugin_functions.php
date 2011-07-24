@@ -110,7 +110,7 @@ function create_pluginsxml(){
   }  
   $xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>'); 
   foreach ($pluginfiles as $fi) {
-    $pathExt = pathinfo($fi,PATHINFO_EXTENSION );
+    $pathExt = lowercase(pathinfo($fi,PATHINFO_EXTENSION));
     $pathName= pathinfo_filename($fi);
     $count=0;
     if ($pathExt=="php")
@@ -170,7 +170,7 @@ function add_action($hook_name, $added_function, $args = array()) {
 			'function' => $added_function,
 			'args' => (array) $args,
 			'file' => $pathName.'.php',
-	    	'line' => $caller['line']
+	    'line' => $caller['line']
 		);
 	  } 
 }

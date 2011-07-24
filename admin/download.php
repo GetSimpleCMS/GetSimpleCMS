@@ -18,10 +18,8 @@ login_cookie_check();
 # check if all variables are set
 if(isset($_GET['file'])) {
 	
-	$file = str_replace('../','',$_GET['file']);
-	
-	# get file extention (type)
-	$extention = substr($file, strrpos($file, '.') + 1);
+	$file = removerelativepath($_GET['file']);
+	$extention = pathinfo($file,PATHINFO_EXTENSION);
 	header("Content-disposition: attachment; filename=".$file);
 	
 	# set content headers

@@ -963,4 +963,38 @@ function get_site_lang($short=false) {
 	}
 }
 
+/**
+ * Convert to Bytes
+ *
+ * @since 3.0
+ *
+ * @param $str string
+ * @return string
+ */
+function toBytes($str){
+	$val = trim($str);
+	$last = strtolower($str[strlen($str)-1]);
+		switch($last) {
+			case 'g': $val *= 1024;
+			case 'm': $val *= 1024;
+			case 'k': $val *= 1024;
+		}
+	return $val;
+}
+
+/**
+ * Remove Relative Paths
+ *
+ * @since 3.1
+ *
+ * @param $file string
+ * @return string
+ */
+function removerelativepath($file) {
+	while(strpos($file,'../')!==false) { 
+		$file = str_replace('../','',$file);
+	}
+	return $file;
+}
+	
 ?>

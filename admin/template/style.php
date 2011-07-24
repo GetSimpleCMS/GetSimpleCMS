@@ -74,7 +74,16 @@ html {overflow-y: scroll;}
 .clearfix:before, .clearfix:after { content: "\0020"; display: block; height: 0; visibility: hidden; }
 .clearfix:after { clear: both; }
 .clearfix {zoom:1;}
-
+::selection {
+  text-shadow:none !important;
+  background:#a8d1ff;
+  color:#111;
+}
+::-moz-selection {
+  text-shadow:none !important;
+  background:#a8d1ff;
+  color:#111;
+}
 /** HEADER / NAVIGATION **/
 .header {
 	color:#FFF;
@@ -187,7 +196,7 @@ html {overflow-y: scroll;}
 	}
 		.wrapper .nav li.rightnav a.last {
 		padding:4px 10px;
-		font-weight:100 !important;
+		font-weight:100;
 		text-decoration:none !important;
 		display:block;
 		border-top-left-radius: 5px;
@@ -317,7 +326,7 @@ html {overflow-y: scroll;}
 		font-style:italic;
 		}
 	h3 {
-		font-size:17px;
+		font-size:19px;
 		font-family:Georgia, Times, Times New Roman, serif;
 		font-weight:normal;
 		color:<?php echo $secondary_1; ?>;
@@ -325,7 +334,7 @@ html {overflow-y: scroll;}
 		}
 	h3 em {font-style:normal;}
 	h3.floated {
-		font-size:16px;	
+		font-size:18px;	
 		font-weight:normal;
 		font-family:Georgia, Times, Times New Roman, serif ;
 		padding:2px 0 0 0;

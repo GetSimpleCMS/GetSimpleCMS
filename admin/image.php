@@ -66,13 +66,13 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT').' &ra
 
 			<form>
 				<select class="text" id="img-info" style="width:50%" >
-					<option selected="selected" value="code-img-html" ><?php i18n('HTML_ORIG_IMG');?></option>
-					<option value="code-img-link" ><?php i18n('LINK_ORIG_IMG');?></option>
+					<option selected value="code-img-link" ><?php i18n('LINK_ORIG_IMG');?></option>
+					<option value="code-img-html" ><?php i18n('HTML_ORIG_IMG');?></option>
 					<option value="code-thumb-html" ><?php i18n('HTML_THUMBNAIL');?></option>
 					<option value="code-thumb-link" ><?php i18n('LINK_THUMBNAIL');?></option>
 					<option value="code-imgthumb-html" ><?php i18n('HTML_THUMB_ORIG');?></option>
 				</select>
-				<textarea class="copykit" >&lt;img src="<?php echo tsl($SITEURL) .'data/uploads/'. $subPath. $src; ?>" class="gs_image" alt=""></textarea>
+				<textarea class="copykit" ><?php echo tsl($SITEURL) .'data/uploads/'. $subPath. $src; ?></textarea>
 				<p style="color:#666;font-size:11px;margin:-10px 0 0 0"><a href="#" class="select-all" ><?php i18n('CLIPBOARD_INSTR');?></a></p>
 			</form>
 			<div class="toggle">

@@ -40,7 +40,7 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 		}
 		
 		   
-		$ext = lowercase(substr($name, strrpos($name, '.') + 1));	
+		$ext = lowercase(pathinfo($name,PATHINFO_EXTENSION));	
 		
 		if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' )	{
 			
