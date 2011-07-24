@@ -22,7 +22,7 @@ exec_action('admin-pre-header');
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 	<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
-	<script type="text/javascript" src="template/js/jquery.min.js?v=1.5.1"></script>
+	<script type="text/javascript" src="template/js/jquery.min.js?v=1.6.2"></script>
 	
 	<!-- GetSimple specific files -->
 	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>
