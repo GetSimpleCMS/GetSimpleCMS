@@ -44,7 +44,7 @@ jQuery(document).ready(function() {
 	  return false;
 	};
 	
-	var imageTableElement $("#imageTable");
+	var imageTableElement = $("#imageTable");
 	function attachFilterChangeEvent() {
 		$("#imageFilter").change(function(){
 			loadingAjaxIndicator.show();

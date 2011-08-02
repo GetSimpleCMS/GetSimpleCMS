@@ -13,7 +13,7 @@
 Innovation_Settings();
 
 # Include the header template
-include('header.php'); 
+include('header.inc.php'); 
 ?>
 	
 	<div class="wrapper clearfix">
@@ -34,8 +34,8 @@ include('header.php');
 		</article>
 		
 		<!-- include the sidebar template -->
-		<?php include('sidebar.php'); ?>
+		<?php include('sidebar.inc.php'); ?>
 	</div>
 
 <!-- include the footer template -->
-<?php include('footer.php'); ?>
+<?php include('footer.inc.php'); ?>

@@ -83,7 +83,7 @@ $themes_path = GSTHEMESPATH . $TEMPLATE;
 $themes_handle = opendir($themes_path) or die("Unable to open ". GSTHEMESPATH);		
 while ($file = readdir($themes_handle))	{		
 	if( isFile($file, $themes_path, 'php') ) {		
-		if ($file != 'functions.php') {		
+		if ($file != 'functions.php' && !strpos(strtolower($file), '.inc.php')) {		
       $templates[] = $file;		
     }		
 	}		
