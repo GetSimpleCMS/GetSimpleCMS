@@ -22,7 +22,8 @@ exec_action('admin-pre-header');
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 	<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
-	<script type="text/javascript" src="template/js/jquery.min.js?v=1.6.2"></script>
+	
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
 	
 	<!-- GetSimple specific files -->
 	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>
@@ -30,7 +31,7 @@ exec_action('admin-pre-header');
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
 	
 	<!-- Javascript Plugins -->
-	<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->
 	<?php if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!defined('GSNOUPLOADIFY')) ) { ?>
 	<script type="text/javascript" src="template/js/uploadify/jquery.uploadify.js?v=3.0"></script>
 	<?php } ?>
@@ -41,8 +42,6 @@ exec_action('admin-pre-header');
 	
 	<script type="text/javascript" src="template/js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 	<link rel="stylesheet" type="text/css" href="template/js/fancybox/jquery.fancybox-1.3.4.css" media="screen" />		
-
-	
 	
 	<?php 
 		# Plugin hook to allow insertion of stuff into the header
