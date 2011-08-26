@@ -9,7 +9,16 @@
 /*
  * GetSimple js file	
  */
-
+function updateCoords(c) {
+	$('#handw').show();
+  $('#x').val(c.x);
+  $('#y').val(c.y);
+  $('#w').val(c.w);
+  $('#h').val(c.h);
+  $('#pich').html(c.h);
+  $('#picw').html(c.w);
+};
+	
 jQuery(document).ready(function() { 
 
 	var loadingAjaxIndicator = $('#loader');
@@ -28,15 +37,7 @@ jQuery(document).ready(function() {
 		return false;
 	};
 				
-	function updateCoords(c) {
-		$('#handw').show();
-	  $('#x').val(c.x);
-	  $('#y').val(c.y);
-	  $('#w').val(c.w);
-	  $('#h').val(c.h);
-	  $('#pich').html(c.h);
-	  $('#picw').html(c.w);
-	};
+	
 	
 	function checkCoords() {
 	  if (parseInt($('#x').val())) return true;

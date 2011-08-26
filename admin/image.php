@@ -115,27 +115,27 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT').' &ra
 	  jQuery(document).ready(function() { 
 	    		
 			$(window).load(function(){
-			var api = $.Jcrop('#cropbox',{
-		    onChange: updateCoords,
-		    onSelect: updateCoords,
-		    boxWidth: 585, 
-		    boxHeight: 500
-		  }); 
-		  var isCtrl = false;
-			$(document).keyup(function (e) {
-				api.setOptions({ aspectRatio: 0 });
-				api.focus();
-				if(e.which == 17) isCtrl=false;
-			}).keydown(function (e) {
-				if(e.which == 17) isCtrl=true;
-				if(e.which == 66 && isCtrl == true) {
-					api.setOptions({ aspectRatio: 1 });
+				var api = $.Jcrop('#cropbox',{
+			    onChange: updateCoords,
+			    onSelect: updateCoords,
+			    boxWidth: 585, 
+			    boxHeight: 500
+			  }); 
+			  var isCtrl = false;
+				$(document).keyup(function (e) {
+					api.setOptions({ aspectRatio: 0 });
 					api.focus();
-				}
+					if(e.which == 17) isCtrl=false;
+				}).keydown(function (e) {
+					if(e.which == 17) isCtrl=true;
+					if(e.which == 66 && isCtrl == true) {
+						api.setOptions({ aspectRatio: 1 });
+						api.focus();
+					}
+				});
 			});
-		});
 		
-	});
+		});
 	</script>
 	
 	</div>
