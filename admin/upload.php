@@ -55,7 +55,11 @@ if (isset($_FILES['file'])) {
 			//validate file
 			if (validate_safe_file($_FILES["file"]["tmp_name"][$i], $_FILES["file"]["name"][$i],  $_FILES["file"]["type"][$i])) {
 				move_uploaded_file($_FILES["file"]["tmp_name"][$i], $file_loc);
-				chmod($file_loc, 0644);
+				if (defined('GSCHMOD')) {
+					chmod($file_loc, GSCHMOD);
+				} else {
+					chmod($file_loc, 0644);
+				}
 				exec_action('file-uploaded');
 				$messages[] = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$subFolder.$base.'">'. $SITEURL .'data/uploads/'.$subFolder.$base.'</a>';
 			} else {
