@@ -173,7 +173,7 @@ if (isset($_POST['submitted'])) {
 
 		exec_action('changedata-save');
 		if ($_POST['autosave'] == 'true') {
-			XMLsave($xml, GSAUTOSAVE.$url);
+			XMLsave($xml, GSAUTOSAVEPATH.$url);
 		} else {
 			XMLsave($xml, $file);
 		}

@@ -55,7 +55,7 @@ define('GSTHEMESPATH', GSROOTPATH. 'theme/');
 define('GSUSERSPATH', GSROOTPATH. 'data/users/');
 define('GSBACKUSERSPATH', GSROOTPATH. 'backups/users/');
 define('GSCACHEPATH', GSROOTPATH. 'data/cache/');
-define('GSAUTOSAVE', GSROOTPATH. 'data/pages/autosave/');
+define('GSAUTOSAVEPATH', GSROOTPATH. 'data/pages/autosave/');
 
 /* create new folders */
 if (!file_exists(GSCACHEPATH)) {
