@@ -564,6 +564,7 @@ function safe_slash_html($text) {
 	} else {
 		$text = htmlentities($text, ENT_QUOTES, 'UTF-8');
 	}
+	$text = str_replace('', ' ', $text); //remove hard return symbol that comes with Photoshop & others
 	return $text;
 }
 
