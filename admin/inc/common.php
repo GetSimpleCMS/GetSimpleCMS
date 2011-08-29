@@ -67,13 +67,13 @@ if (!file_exists(GSCACHEPATH)) {
 	mkdir(GSCACHEPATH, $chmod_value);
 }
 
-if (!file_exists(GSAUTOSAVE)) {
+if (!file_exists(GSAUTOSAVEPATH)) {
 	if (defined('GSCHMOD')) { 
 		$chmod_value = GSCHMOD; 
 	} else {
 		$chmod_value = 0755;
 	}
-	mkdir(GSAUTOSAVE, $chmod_value);
+	mkdir(GSAUTOSAVEPATH, $chmod_value);
 }
 
 
