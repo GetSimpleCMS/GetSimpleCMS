@@ -1,10 +1,12 @@
-/* reverseOrder : jQuery order reverser plugin
- * Written by Corey H Maass for Arc90
- * (c) Arc90, Inc.
- * 
- * Licensed under:Creative Commons Attribution-Share Alike 3.0 http://creativecommons.org/licenses/by-sa/3.0/us/
+/* jQuery reverseOrder
+ * Written by Corey H Maass for Arc90; (c) Arc90, Inc.
  */
 (function($){$.fn.reverseOrder=function(){return this.each(function(){$(this).prependTo($(this).parent())})}})(jQuery);
+/*
+ * jQuery Capslock 0.4
+ * Copyright (c) Arthur McLean
+ */
+(function($){$.fn.capslock=function(options){if(options)$.extend($.fn.capslock.defaults,options);this.each(function(){$(this).bind("caps_lock_on",$.fn.capslock.defaults.caps_lock_on);$(this).bind("caps_lock_off",$.fn.capslock.defaults.caps_lock_off);$(this).bind("caps_lock_undetermined",$.fn.capslock.defaults.caps_lock_undetermined);$(this).keypress(function(e){check_caps_lock(e)})});return this};function check_caps_lock(e){var ascii_code=e.which;var letter=String.fromCharCode(ascii_code);var upper=letter.toUpperCase();var lower=letter.toLowerCase();var shift_key=e.shiftKey;if(upper!==lower){if(letter===upper&&!shift_key){$(e.target).trigger("caps_lock_on")}else if(letter===lower&&!shift_key){$(e.target).trigger("caps_lock_off")}else if(letter===lower&&shift_key){$(e.target).trigger("caps_lock_on")}else if(letter===upper&&shift_key){if(navigator.platform.toLowerCase().indexOf("win")!==-1){$(e.target).trigger("caps_lock_off")}else{if(navigator.platform.toLowerCase().indexOf("mac")!==-1&&$.fn.capslock.defaults.mac_shift_hack){$(e.target).trigger("caps_lock_off")}else{$(e.target).trigger("caps_lock_undetermined")}}}else{$(e.target).trigger("caps_lock_undetermined")}}else{$(e.target).trigger("caps_lock_undetermined")}if($.fn.capslock.defaults.debug){if(console){console.log("Ascii code: "+ascii_code);console.log("Letter: "+letter);console.log("Upper Case: "+upper);console.log("Shift key: "+shift_key)}}}$.fn.capslock.defaults={caps_lock_on:function(){},caps_lock_off:function(){},caps_lock_undetermined:function(){},mac_shift_hack:true,debug:false}})(jQuery);
 
 /*
  * GetSimple js file	
@@ -36,8 +38,7 @@ jQuery(document).ready(function() {
 	  loadingAjaxIndicator.fadeOut(1000);
 		return false;
 	};
-				
-	
+
 	
 	function checkCoords() {
 	  if (parseInt($('#x').val())) return true;
@@ -87,6 +88,20 @@ jQuery(document).ready(function() {
 	//autofocus index.php & resetpassword.php fields on pageload
 	$("#index input#userid").focus();
 	$("#resetpassword input[name='username']").focus();
+	var options = {
+		caps_lock_on: function() {
+			$(this).addClass('capslock');
+		},
+		caps_lock_off: function() {
+			$(this).removeClass('capslock');
+		},
+		caps_lock_undetermined: function() {
+			//nothing
+		}
+	};
+	
+	$("input[type='password']").capslock(options);
+
 	
 	
 	// components.php

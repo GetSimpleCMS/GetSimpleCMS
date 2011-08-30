@@ -551,7 +551,6 @@ input.text:focus, select.text:focus, textarea.text:focus {
 	box-shadow: rgba(0,0,0, 0.10) 0px 0px 6px;  
 	-moz-box-shadow: rgba(0,0,0, 0.10) 0px 0px 6px;  
 	-webkit-box-shadow: rgba(0,0,0, 0.10) 0px 0px 6px;
-	background-image:none;
 }
 
 form textarea { width:635px; height:420px;line-height:18px;text-align:left;	color:#333;
@@ -565,7 +564,11 @@ form input[readonly], form select[readonly], form textarea[readonly] {
   color:#666;
   cursor:default;
 }
-
+form input.capslock {
+	background-image: url('images/capslock.png');
+	background-position:right center;
+	background-repeat:no-repeat;
+}
 
 textarea#codetext { 
 	height:660px; 
