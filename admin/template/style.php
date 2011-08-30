@@ -619,6 +619,7 @@ input.submit {
 	padding:5px 12px;
 	font-family:Arial, Helvetica Neue, Helvetica, sans-serif;
 	font-weight:bold;
+	cursor:pointer;
 }
 .leftsec {float:left;width:50%;padding-bottom:5px;}
 .rightsec {float:left;width:50%;padding-bottom:5px;}

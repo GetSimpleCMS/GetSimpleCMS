@@ -438,7 +438,7 @@ a:hover.cke_colorauto,a:hover.cke_colormore,a:focus.cke_colorauto,a:focus.cke_co
 }
 .cke_skin_getsimple .cke_button a,.cke_skin_getsimple .cke_button a:hover,.cke_skin_getsimple .cke_button a:focus,.cke_skin_getsimple .cke_button a:active,.cke_skin_getsimple .cke_button a.cke_off
 {
-	cursor: default;
+	cursor: pointer;
 	display: inline-block;
 	height: 18px;
 	outline: none;
@@ -524,7 +524,7 @@ background:#cccccc;
 	background-image: url(icons.png);
 	background-position: 100px;
 	background-repeat: no-repeat;
-	cursor: default;
+	cursor: pointer;
 	display: inline-block;
 	float: left;
 	height: 16px;
@@ -549,7 +549,7 @@ background:#cccccc;
 }
 .cke_skin_getsimple .cke_button .cke_label
 {
-	cursor: default;
+	cursor: pointer;
 	display: none;
 	float: left;
 	line-height: 18px;
@@ -585,7 +585,7 @@ background:#cccccc;
 	background-image: url(images/sprites.png);
 	background-position: 2px -1469px;
 	background-repeat: no-repeat;
-	cursor: default;
+	cursor: pointer;
 	display: inline-block;
 	float: left;
 	height: 17px;
@@ -643,7 +643,7 @@ background:#cccccc;
 }
 .cke_skin_getsimple .cke_browser_ie .cke_rcombo,.cke_skin_getsimple .cke_browser_ie .cke_rcombo *
 {
-	cursor: default;
+	cursor: pointer;
 }
 .cke_skin_getsimple .cke_browser_ie .cke_toolbox
 {
