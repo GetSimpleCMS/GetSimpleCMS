@@ -79,6 +79,7 @@
 {
 	display: inline-table;
 	width: 100%;
+	margin: 0 !important;
 }
 .cke_skin_getsimple .cke_browser_webkit .cke_editor
 {
@@ -113,11 +114,12 @@
 {
 	outline: auto 5px -webkit-focus-ring-color;
 }
-.cke_skin_getsimple textarea.cke_source
-{
-	background-color: #fff;
-	font-family: 'Courier New',Monospace;
-	font-size: small;
+.cke_skin_getsimple textarea.cke_source{
+	background-color: #f9f9f9;
+	padding:5px 1px 1px 1px;
+	margin-right:10px;
+	font-family: Consolas, Monaco, "Courier New", Courier, monospace;
+	font-size:12px;
 	white-space: pre;
 }
 .cke_skin_getsimple .cke_browser_iequirks textarea.cke_source

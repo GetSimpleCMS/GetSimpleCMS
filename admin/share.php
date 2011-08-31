@@ -13,11 +13,14 @@ if ($term = '{SHARE}') {
 	<style>
 		.share {
 			padding:20px;
-			height:110px;
-			width:240px;
+			height:130px;
+			width:300px;
 			background:#f6f6f6;
 		}
 		h1 {font-size:18px;color:#111;margin:0 0 20px;font-family:georgia, garamond;font-weight:normal;text-shadow:1px 1px 0 #fff;}
+		p {font-size:11px;line-height:20px;color:#999;margin-top:-15px;}
+		a:link, a:visited {text-decoration:underline;color:#CF3805;font-weight:bold;font-size:12px;}
+		a:focus, a:hover {text-decoration:underline;color:#222;font-weight:bold;font-size:12px;}
 	</style>
 </head>
 <body>
@@ -32,9 +35,18 @@ if ($term = '{SHARE}') {
 			<g:plusone size="tall" href="http://get-simple.info/" ></g:plusone>
 		</div>
 		
-		<div style="float:left;width:60px;" >	
+		<div style="float:left;width:68px;" >	
 			<a href="http://twitter.com/share" class="twitter-share-button" data-url="http://get-simple.info/" data-text="Check out GetSimple CMS!" data-count="vertical" data-via="get_simple" data-related="buydealsin:Daily Deals">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 		</div>
+		
+		<div style="float:left;width:55px;" >	
+			<script src="http://platform.linkedin.com/in.js" type="text/javascript"></script>
+			<script type="IN/Share" data-url="get-simple.info" data-counter="top"></script>
+		</div>
+		
+		<div style="clear:both"></div>
+		<p><a href="http://www.facebook.com/GetSimpleCMS" target="_blank" >Find us on Facebook</a> &nbsp; | &nbsp; <a href="http://twitter.com/get_simple" target="_blank" >Follow us on Twitter</a></p>
+	
 	</div>
 </body>
 </html>
