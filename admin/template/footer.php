@@ -11,7 +11,7 @@
       	<?php 
       		include(GSADMININCPATH ."configuration.php");
       		if (cookie_check()) { 
-      			echo '<p><a href="pages.php">'.i18n_r('PAGE_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="upload.php">'.i18n_r('FILE_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="theme.php">'.i18n_r('THEME_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="backups.php">'.i18n_r('BAK_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="plugins.php">'.i18n_r('PLUGINS_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="settings.php">'.i18n_r('GENERAL_SETTINGS').'</a> &nbsp;&bull;&nbsp; <a href="support.php">'.i18n_r('SUPPORT').'</a> &nbsp;&bull;&nbsp; <a href="share.php?term='.i18n_r('SHARE').'" rel="facybox" >'.i18n_r('SHARE').'</a></p>';
+      			echo '<p><a href="pages.php">'.i18n_r('PAGE_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="upload.php">'.i18n_r('FILE_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="theme.php">'.i18n_r('THEME_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="backups.php">'.i18n_r('BAK_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="plugins.php">'.i18n_r('PLUGINS_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="settings.php">'.i18n_r('GENERAL_SETTINGS').'</a> &nbsp;&bull;&nbsp; <a href="support.php">'.i18n_r('SUPPORT').'</a> &nbsp;&bull;&nbsp; <a href="share.php?term='.i18n_r('SHARE').'" rel="facybox_s" >'.i18n_r('SHARE').'</a></p>';
       		}
       	?>
       		<p>&copy; 2009-<?php echo date('Y'); ?> <a href="http://get-simple.info/" target="_blank" >GetSimple CMS</a> &ndash; <?php echo i18n_r('VERSION') .' '. $site_version_no; ?></p>

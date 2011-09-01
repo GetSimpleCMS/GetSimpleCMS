@@ -172,16 +172,18 @@ if (isset($_POST['submitted'])) {
 		$note->addCData($author);
 
 		exec_action('changedata-save');
-		if ($_POST['autosave'] == 'true') {
+		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true') {
 			XMLsave($xml, GSAUTOSAVEPATH.$url);
 		} else {
 			XMLsave($xml, $file);
 		}
+		
+		//ending actions
 		exec_action('changedata-aftersave');
+		generate_sitemap();
 		
 		// redirect user back to edit page 
-		generate_sitemap();
-		if ($_POST['autosave'] == 'true') {
+		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true') {
 			echo 'OK';
 		} else {
 			if ($url == $_POST['existing-url']) {

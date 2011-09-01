@@ -36,7 +36,11 @@ function gsapi_display_cp() {
 		} else {
 			$api_key = $_POST['apikey'];
 		}
-		$api_status = $_POST['status'];
+		if (isset($_POST['status'])) {
+			$api_status = $_POST['status'];
+		} else {
+			$api_status = null;
+		}
 		
 		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
 		$xml->addChild('status', $api_status);
@@ -54,6 +58,7 @@ function gsapi_display_cp() {
 	
 	# get data to show in control panel
 	$api=getXML($thisdatafile);
+	$enabled_status = null;
 	if ($api->status == 'true') {
 		$enabled_status = 'checked';
 	} 
