@@ -207,13 +207,14 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 					</select>
 				</p>
 				
-				<p class="inline post-menu">
-					<label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label> &ndash; <span><a href="navigation.php" rel="facybox" ><?php echo strip_tags(i18n_r('VIEW')); ?></a></span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> /><br />
+				<p class="inline post-menu clearfix">
+					<input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> />&nbsp;&nbsp;&nbsp;<label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label><a href="navigation.php" class="viewlink" rel="facybox" ><img src="template/images/search.png" id="tick" alt="<?php echo strip_tags(i18n_r('VIEW')); ?>" /></a>
 				</p>
 				<div id="menu-items">
-					<span style="float:left;width:84%" ><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span><span style="float:left;width:10%;" ><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>
+					<img src="template/images/tick.png" id="tick" />
+					<span style="float:left;width:81%;" ><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span><span style="float:left;width:10%;" ><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>
 					<div class="clear"></div>
-					<input class="text" style="width:79%;" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />&nbsp; <select class="text"  style="width:16%" id="post-menu-order" name="post-menu-order" >
+					<input class="text" style="width:73%;" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />&nbsp;&nbsp;&nbsp;&nbsp;<select class="text"  style="width:16%" id="post-menu-order" name="post-menu-order" >
 					<?php if(isset($menuOrder)) { 
 						if($menuOrder == 0) {
 							echo '<option value="" selected>-</option>'; 

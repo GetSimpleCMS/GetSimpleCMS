@@ -597,7 +597,10 @@ label {
 
 /* meta dropdown style */
 #metadata_window {
-	margin:0 2px 20px 0;background:#f9f9f9;border:1px solid #eee;padding:10px 10px 5px 10px;
+	margin:0 2px 20px 0;
+	background:#f9f9f9;
+	border:1px solid #e8e8e8;
+	padding:10px;
 	border-radius: 2px;
 	-moz-border-radius: 2px;
 	-khtml-border-radius: 2px;
@@ -613,13 +616,17 @@ label {
 	padding:3px;	
 	margin:0 !important;
 }
+#metadata_window input#post-menu-enable {width:20px;padding:0;margin:0;}
 #metadata_window textarea { height:72px;margin-bottom:0;}
 #metadata_window select { width:100%;}
 #metadata_window select.text.autowidth {width:auto;}
-#metadata_window p.inline input {width:25px;padding:0;margin:0;}
 #metadata_window p.post-menu {margin-bottom:5px;}
-#metadata_window #menu-items {height:50px;}
-#metadata_window #menu-items span label {display:inline;font-size:11px;color:#777;font-weight:normal;margin:0;padding:0;}
+#metadata_window a.viewlink img {vertical-align:baseline;margin-left:15px;opacity:.5}
+#metadata_window a.viewlink:hover img {opacity:1}
+#metadata_window #menu-items {height:50px;background:#222;padding:5px 10px 0 10px;position:relative;}
+#metadata_window #menu-items #tick {margin-top:-10px;left:5px;position:absolute;}
+#metadata_window #menu-items input, #metadata_window #menu-items select {border:1px solid #000;border-radius:0;}
+#metadata_window #menu-items span label {text-shadow:none;display:inline-block;font-size:11px;line-height:16px;color:#e3e3e3;font-weight:normal;margin:0;padding:0;}
 #metadata_window #menu-items select {padding:2px 3px;}
 #metadata_window p#post-private-wrap {margin-top:-3px;}
 #countdownwrap {
