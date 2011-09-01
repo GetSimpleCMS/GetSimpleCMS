@@ -283,13 +283,13 @@ jQuery(document).ready(function() {
 	
 	var privateLabel = $("#post-private-wrap label");
 	$("#post-private").change(function(){
-	  if ($(this).is(":checked")) { 
+	  if ($(this).val() == "Y") { 
 	  	privateLabel.css("color", '#cc0000');
 	  } else {
 	    privateLabel.css("color", '#333333'); 
 	  }
 	});
-	if ($("#post-private").is(":checked")) { 
+	if ($("#post-private").val() == "Y") {  
   	privateLabel.css("color", '#cc0000');
   } else {
     privateLabel.css("color", '#333333'); 

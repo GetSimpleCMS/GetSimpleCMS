@@ -78,7 +78,7 @@ $i18n = array(
 "TAG_KEYWORDS"			=>	"Tags &amp; Keywords",
 "PARENT_PAGE"				=>	"Parent",
 "TEMPLATE"					=>	"Template",
-"KEEP_PRIVATE"			=>	"Keep Page Private?",
+"KEEP_PRIVATE"			=>	"Page Visibility",
 "ADD_TO_MENU"				=>	"Add to Menu?",
 "PRIORITY"					=>	"Priority",
 "MENU_TEXT"					=>	"Menu Text",
@@ -495,6 +495,7 @@ $i18n = array(
 "SHARE" 		=> 	"Share", //footer.php
 "NO_PARENT" => "No Parent", //edit.php
 "REMAINING" => "characters remaining", //edit.php
+"NORMAL" => "Normal", //edit.php
 
 
 /* 

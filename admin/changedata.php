@@ -100,7 +100,7 @@ if (isset($_POST['submitted'])) {
 		if(isset($_POST['post-parent'])) 			{ $parent = $_POST['post-parent']; }
 		if(isset($_POST['post-menu'])) 				{ $menu = safe_slash_html($_POST['post-menu']); }
 		if(isset($_POST['post-menu-enable'])) { $menuStatus = "Y"; } else { $menuStatus = ""; }
-		if(isset($_POST['post-private'])) 		{ $private = "Y"; } else { $private = ""; }
+		if(isset($_POST['post-private']) ) 		{ $private = safe_slash_html($_POST['post-private']); }
 		if(isset($_POST['post-content'])) 		{	$content = safe_slash_html($_POST['post-content']);	}
 		if(isset($_POST['post-menu-order'])) 	{ 
 			if (is_numeric($_POST['post-menu-order'])) 

@@ -109,7 +109,7 @@ foreach ($templates as $file){
 
 // SETUP CHECKBOXES
 $sel_m = ($menuStatus != '') ? 'checked' : '' ;
-$sel_p = ($private != '') ? 'checked' : '' ;
+$sel_p = ($private == 'Y') ? 'selected' : '' ;
 if ($menu == '') { $menu = $title; } 
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); 
@@ -207,7 +207,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 					</select>
 				</p>
 				
-				<p class="inline">
+				<p class="inline post-menu">
 					<label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label> &ndash; <span><a href="navigation.php" rel="facybox" ><?php echo strip_tags(i18n_r('VIEW')); ?></a></span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> /><br />
 				</p>
 				<div id="menu-items">
@@ -243,7 +243,11 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 					<textarea class="text" id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
 				</p>
 				<p class="inline" id="post-private-wrap" >
-					<label for="post-private" ><?php i18n('KEEP_PRIVATE'); ?></label> &nbsp;&nbsp;&nbsp; <input type="checkbox" id="post-private" name="post-private" <?php echo $sel_p; ?> />
+					<label for="post-private" ><?php i18n('KEEP_PRIVATE'); ?>: &nbsp; </label>
+					<select id="post-private" name="post-private" class="text autowidth" >
+						<option value="" ><?php i18n('NORMAL'); ?></option>
+						<option value="Y" <?php echo $sel_p; ?> ><?php echo ucwords(i18n_r('PRIVATE_SUBTITLE')); ?></option>
+					</select>
 				</p>
 
 			</div>

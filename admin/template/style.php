@@ -596,7 +596,14 @@ label {
 .inline label {display:inline;}
 
 /* meta dropdown style */
-#metadata_window {margin:0 15px 30px 0;}
+#metadata_window {
+	margin:0 2px 20px 0;background:#f9f9f9;border:1px solid #eee;padding:10px 10px 5px 10px;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-khtml-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	text-shadow:1px 1px 0 #fff;
+}
 #metadata_window .rightopt {float:right;width:48%;}
 #metadata_window .leftopt {float:left;width:48%;}
 #metadata_window p {margin:0 0 15px 0;}
@@ -608,28 +615,21 @@ label {
 }
 #metadata_window textarea { height:72px;margin-bottom:0;}
 #metadata_window select { width:100%;}
+#metadata_window select.text.autowidth {width:auto;}
 #metadata_window p.inline input {width:25px;padding:0;margin:0;}
-#metadata_window #menu-items {height:75px;}
+#metadata_window p.post-menu {margin-bottom:5px;}
+#metadata_window #menu-items {height:50px;}
 #metadata_window #menu-items span label {display:inline;font-size:11px;color:#777;font-weight:normal;margin:0;padding:0;}
 #metadata_window #menu-items select {padding:2px 3px;}
+#metadata_window p#post-private-wrap {margin-top:-3px;}
 #countdownwrap {
 	display:inline-block;
-	padding:0 3px;
-	border:1px solid #e0e0e0;
-	text-shadow:1px 1px 0 #fff;
-	line-height:16px;
-	background:#f6f6f6;
-	-moz-border-radius: 2px;
-	-khtml-border-radius: 2px;
-	-webkit-border-radius: 2px;
-	border-radius: 2px;
 	color:#999;
 	font-size:11px;
 	font-weight:normal;
 	float:right;
-	margin-bottom:3px;
 }
-#countdownwrap strong {color:#666;}
+#countdownwrap strong {color:#555;font-weight:normal;}
 form table.formtable select { width:275px;padding:3px 4px; } 
 table.cleantable {border-collapse:collapse;margin:0 0 0 0;}
 table.cleantable tr {border:none;}
