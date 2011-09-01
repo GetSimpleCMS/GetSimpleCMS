@@ -557,7 +557,12 @@ form textarea { width:635px; height:420px;line-height:18px;text-align:left;	colo
 	border:1px solid #aaa;
 	padding:5px;
 	font-family:Arial, Helvetica Neue, Helvetica, sans-serif;
-	font-size:12px;}
+	font-size:12px;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-khtml-border-radius: 2px;
+	-webkit-border-radius: 2px;
+}
 form input[readonly], form select[readonly], form textarea[readonly] {
   background:#eeeeee;
   border:1px solid #999;
@@ -601,12 +606,30 @@ label {
 	padding:3px;	
 	margin:0 !important;
 }
-#metadata_window textarea { height:74px;}
+#metadata_window textarea { height:72px;margin-bottom:0;}
 #metadata_window select { width:100%;}
 #metadata_window p.inline input {width:25px;padding:0;margin:0;}
 #metadata_window #menu-items {height:75px;}
 #metadata_window #menu-items span label {display:inline;font-size:11px;color:#777;font-weight:normal;margin:0;padding:0;}
 #metadata_window #menu-items select {padding:2px 3px;}
+#countdownwrap {
+	display:inline-block;
+	padding:0 3px;
+	border:1px solid #e0e0e0;
+	text-shadow:1px 1px 0 #fff;
+	line-height:16px;
+	background:#f6f6f6;
+	-moz-border-radius: 2px;
+	-khtml-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	color:#999;
+	font-size:11px;
+	font-weight:normal;
+	float:right;
+	margin-bottom:3px;
+}
+#countdownwrap strong {color:#666;}
 form table.formtable select { width:275px;padding:3px 4px; } 
 table.cleantable {border-collapse:collapse;margin:0 0 0 0;}
 table.cleantable tr {border:none;}

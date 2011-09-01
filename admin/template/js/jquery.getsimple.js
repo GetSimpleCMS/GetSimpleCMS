@@ -20,6 +20,15 @@ function updateCoords(c) {
   $('#pich').html(c.h);
   $('#picw').html(c.w);
 };
+var Debugger = function() { }
+Debugger.log = function(message) {
+ try {
+  console.log(message); 
+ } 
+ catch(exception) {
+  return; 
+ }
+}
 	
 jQuery(document).ready(function() { 
 
@@ -215,6 +224,7 @@ jQuery(document).ready(function() {
 			});
 			$(".error").slideUp(function() {
 				$(".error").remove();
+				Debugger.log('Alert has timed out. Removing...');
 			});
 		  
 		}, 10000);
@@ -252,6 +262,16 @@ jQuery(document).ready(function() {
 	
 		
 	// edit.php
+	function updateMetaDescriptionCounter() {
+	  var remaining = 155 - jQuery('#post-metad').val().length;
+	  jQuery('#countdown').text(remaining);
+	  Debugger.log('Meta Description has '+remaining+' characters remaining');
+	}
+	if ($('#post-metad').length) {
+		updateMetaDescriptionCounter();
+	  $('#post-metad').change(updateMetaDescriptionCounter);
+	  $('#post-metad').keyup(updateMetaDescriptionCounter);
+	}
 	if ( $("#edit input#post-title:empty").val() == '' ) {
 		$("#edit input#post-title").focus();
 	}

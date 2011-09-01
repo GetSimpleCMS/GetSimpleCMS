@@ -239,7 +239,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 					<input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" />
 				</p>
 				<p>
-					<label for="post-metad"><?php i18n('META_DESC'); ?>:</label>
+					<label for="post-metad" class="clearfix"><?php i18n('META_DESC'); ?>: <span id="countdownwrap"><strong id="countdown" ></strong> <?php i18n('REMAINING'); ?></span></label>
 					<textarea class="text" id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
 				</p>
 				<p class="inline" id="post-private-wrap" >

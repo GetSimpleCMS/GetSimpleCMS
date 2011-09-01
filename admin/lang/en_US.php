@@ -494,6 +494,8 @@ $i18n = array(
 "LOG_FILE_EMPTY" 		=> 	"This log file is empty", //log.php
 "SHARE" 		=> 	"Share", //footer.php
 "NO_PARENT" => "No Parent", //edit.php
+"REMAINING" => "characters remaining", //edit.php
+
 
 /* 
  * For: api related pages
