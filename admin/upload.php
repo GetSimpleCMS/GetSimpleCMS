@@ -13,7 +13,7 @@
 $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
-
+$dirsSorted=null;$filesSorted=null;$foldercount=null;
 
 if (isset($_GET['path'])) {
 	$path = str_replace('../','', $_GET['path']);

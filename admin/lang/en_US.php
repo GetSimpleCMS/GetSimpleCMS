@@ -496,7 +496,7 @@ $i18n = array(
 "NO_PARENT" => "No Parent", //edit.php
 "REMAINING" => "characters remaining", //edit.php
 "NORMAL" => "Normal", //edit.php
-
+"ERR_CANNOT_DELETE" => "Cannot delete %s. Please do this manually.", //common.php
 
 /* 
  * For: api related pages
