@@ -371,6 +371,7 @@ html {overflow-y: scroll;}
 #sidebar .snav ul {list-style:none;margin:0;}
 #sidebar .snav li {margin:0 0 3px 0;}
 #sidebar .snav li ul li {margin:0 0 3px 0;}
+#submit_line {margin-bottom:15px;}
 #sidebar #js_submit_line {margin:0 0 0 12px;}
 #sidebar .snav li a {font-weight:800;display:block;padding:5px 15px 5px 15px;text-decoration:none;
 	border-radius: 4px;
@@ -593,14 +594,14 @@ label {
 	font-weight:bold;
 	font-family:arial, helvetica, sans-serif
 }
-.inline label {display:inline;}
+.inline label {display:inline-block;padding-top:3px;}
 
 /* meta dropdown style */
 #metadata_window {
 	margin:0 2px 20px 0;
 	background:#f9f9f9;
 	border:1px solid #e8e8e8;
-	padding:10px;
+	padding:15px 10px 5px 10px;
 	border-radius: 2px;
 	-moz-border-radius: 2px;
 	-khtml-border-radius: 2px;
@@ -611,15 +612,15 @@ label {
 #metadata_window .leftopt {float:left;width:48%;}
 #metadata_window p {margin:0 0 15px 0;}
 #metadata_window input, #metadata_window select, #metadata_window textarea {
-	width:98%;
+	width:97%;
 	font-size:11px;
 	padding:3px;	
 	margin:0 !important;
 }
 #metadata_window input#post-menu-enable {width:20px;padding:0;margin:0;}
-#metadata_window textarea { height:72px;margin-bottom:0;}
+#metadata_window textarea { height:62px;margin-bottom:0;line-height:15px;}
 #metadata_window select { width:100%;}
-#metadata_window select.text.autowidth {width:auto;}
+#metadata_window select.text.autowidth {width:155px;float:right;}
 #metadata_window p.post-menu {margin-bottom:5px;}
 #metadata_window a.viewlink img {vertical-align:baseline;margin-left:15px;opacity:.5}
 #metadata_window a.viewlink:hover img {opacity:1}
@@ -628,7 +629,6 @@ label {
 #metadata_window #menu-items input, #metadata_window #menu-items select {border:1px solid #000;border-radius:0;}
 #metadata_window #menu-items span label {text-shadow:none;display:inline-block;font-size:11px;line-height:16px;color:#e3e3e3;font-weight:normal;margin:0;padding:0;}
 #metadata_window #menu-items select {padding:2px 3px;}
-#metadata_window p#post-private-wrap {margin-top:-3px;}
 #countdownwrap {
 	display:inline-block;
 	color:#999;
@@ -651,6 +651,7 @@ input.submit {
 	font-weight:bold;
 	cursor:pointer;
 }
+
 .leftsec {float:left;width:50%;padding-bottom:5px;}
 .rightsec {float:left;width:50%;padding-bottom:5px;}
 .rightsec input.text, .leftsec input.text {
@@ -661,7 +662,7 @@ input.submit {
 }
 
 /* edit css */
-form input.title {font-size:17px;border-color:#999; width:635px; }
+form input.title {font-size:19px;border-color:#999; width:635px;padding: 3px 4px; }
 form input.secondary {width:280px;}
 /* components css */
 form.manyinputs input.text { width:230px; }
@@ -974,6 +975,45 @@ h5 .crumbs, div.h5 .crumbs {float:left;}
 #new-folder .cancel {font-size:11px;text-shadow:none !important;}
 #new-folder input.submit {font-size:11px;padding:3px;}
 #new-folder input.text {width:120px;font-size:11px;padding:3px;}
+
+#edit #dropdown {display:inline-block;padding:3px 15px;position:relative;}
+#edit #dropdown h6 {font-weight:bold;font-size:11px;color:#777;margin-bottom:5px;font-weight:100;padding-right:15px;display:inline-block;
+	background:transparent url('images/utick.png') right center no-repeat;
+}
+#edit #dropdown:hover h6 {visibility:hidden;}
+#edit #dropdown ul {
+	display:none;
+	text-shadow:1px 1px 0 #fff;
+	list-style:none;margin:0;
+	font-size:11px;opacity:0;
+	background:#f6f6f6;
+	border:1px solid #ccc;
+	position:absolute;top:-5px;
+	left:5px;
+	min-width:100px;
+	border-radius: 2px;
+	-moz-border-radius: 2px;
+	-khtml-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	-webkit-transition: opacity .3s ease-in-out;
+	-moz-transition: opacity .3s ease-in-out;
+	-o-transition: opacity .3s ease-in-out;
+	transition: opacity .3s ease-in-out;
+	box-shadow: rgba(0,0,0, 0.2) 1px 1px 3px 0;  
+	-moz-box-shadow: rgba(0,0,0, 0.2) 1px 1px 3px 0; 
+	-webkit-box-shadow: rgba(0,0,0, 0.2) 1px 1px 3px 0;
+	overflow:hidden;
+}
+#edit #dropdown li {line-height:22px;border-bottom:#eee 1px solid;padding:0 8px}
+#edit #dropdown li:last-child {border:none;}
+#edit #dropdown li a:link, #edit #dropdown li a:visited, #edit #dropdown li a:hover {font-weight:100;color:#666;text-decoration:none;display:block;}
+#edit #dropdown li:hover {background:#fff;}
+#edit #dropdown li:hover a {color:#cc0000;}
+#edit #dropdown li.alertme:hover {background:#cc0000;}
+#edit #dropdown li.alertme:hover a {color:#FFF;text-shadow:none;}
+#edit #dropdown:hover ul {display:block;opacity:1;}
+
+
 
 <?php
 file_put_contents($cachefile, ob_get_contents());

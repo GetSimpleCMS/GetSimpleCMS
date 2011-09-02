@@ -186,10 +186,17 @@ if (isset($_POST['submitted'])) {
 		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true') {
 			echo 'OK';
 		} else {
-			if ($url == $_POST['existing-url']) {
-				redirect("edit.php?id=". $url ."&upd=edit-success&type=edit");
+			
+			if ($_POST['redirectto']!='') {
+				$redirect_url = $_POST['redirectto'];
 			} else {
-				redirect("edit.php?id=". $url ."&old=".$_POST['existing-url']."&upd=edit-success&type=edit");
+				$redirect_url = 'edit.php';
+			}
+			
+			if ($url == $_POST['existing-url']) {
+				redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
+			} else {
+				redirect($redirect_url."?id=". $url ."&old=".$_POST['existing-url']."&upd=edit-success&type=edit");
 			}
 		}
 	}

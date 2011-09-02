@@ -76,8 +76,8 @@ $i18n = array(
 "PAGE_OPTIONS"			=>	"Page Optio<em>n</em>s",
 "SLUG_URL"					=>	"Custom URL (Slug)",
 "TAG_KEYWORDS"			=>	"Tags &amp; Keywords",
-"PARENT_PAGE"				=>	"Parent",
-"TEMPLATE"					=>	"Template",
+"PARENT_PAGE"				=>	"Page Parent",
+"TEMPLATE"					=>	"Page Template",
 "KEEP_PRIVATE"			=>	"Page Visibility",
 "ADD_TO_MENU"				=>	"Add this page to the menu",
 "PRIORITY"					=>	"Priority",
@@ -497,6 +497,7 @@ $i18n = array(
 "REMAINING" => "characters remaining", //edit.php
 "NORMAL" => "Normal", //edit.php
 "ERR_CANNOT_DELETE" => "Cannot delete %s. Please do this manually.", //common.php
+"ADDITIONAL_ACTIONS" => "Other Actions",
 
 /* 
  * For: api related pages

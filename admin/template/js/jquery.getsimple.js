@@ -305,7 +305,12 @@ jQuery(document).ready(function() {
   var edit_line = $('#submit_line span').html();
   $('#js_submit_line').html(edit_line);
   $("#js_submit_line input.submit").live("click", function() {
-      $("#submit_line input.submit").trigger('click');
+    $("#submit_line input.submit").trigger('click');
+	});
+  $("#save-close a").live("click", function($e) {
+  	$e.preventDefault();
+  	$('input[name=redirectto]').val('pages.php');
+    $("#submit_line input.submit").trigger('click');
 	});
   
   

@@ -159,13 +159,16 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			<!-- metadata toggle screen -->
 			<div style="display:none;" id="metadata_window" >
 			<div class="leftopt">
-				<p>
-					<label for="post-id"><?php i18n('SLUG_URL'); ?>:</label>
-          <input class="text short" type="text" id="post-id" name="post-id" value="<?php echo $url; ?>" <?php echo ($url=='index'?'readonly="readonly" ':''); ?>/>
+				<p class="inline clearfix" id="post-private-wrap" >
+					<label for="post-private" ><?php i18n('KEEP_PRIVATE'); ?>: &nbsp; </label>
+					<select id="post-private" name="post-private" class="text autowidth" >
+						<option value="" ><?php i18n('NORMAL'); ?></option>
+						<option value="Y" <?php echo $sel_p; ?> ><?php echo ucwords(i18n_r('PRIVATE_SUBTITLE')); ?></option>
+					</select>
 				</p>
-				<p>
+				<p class="inline clearfix" >
 					<label for="post-parent"><?php i18n('PARENT_PAGE'); ?>:</label>
-					<select class="text short" id="post-parent" name="post-parent"> 
+					<select class="text autowidth" id="post-parent" name="post-parent"> 
 						<?php 
 						getPagesXmlValues();
 						$count = 0;
@@ -200,9 +203,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 						?>
 					</select>
 				</p>			
-				<p>
+				<p class="inline clearfix" >
 					<label for="post-template"><?php i18n('TEMPLATE'); ?>:</label>
-					<select class="text short" id="post-template" name="post-template" >
+					<select class="text autowidth" id="post-template" name="post-template" >
 						<?php echo $theme_templates; ?>
 					</select>
 				</p>
@@ -236,6 +239,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			
 			<div class="rightopt">
 				<p>
+					<label for="post-id"><?php i18n('SLUG_URL'); ?>:</label>
+          <input class="text short" type="text" id="post-id" name="post-id" value="<?php echo $url; ?>" <?php echo ($url=='index'?'readonly="readonly" ':''); ?>/>
+				</p>
+				<p>
 					<label for="post-metak"><?php i18n('TAG_KEYWORDS'); ?>:</label>
 					<input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" />
 				</p>
@@ -243,13 +250,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 					<label for="post-metad" class="clearfix"><?php i18n('META_DESC'); ?>: <span id="countdownwrap"><strong id="countdown" ></strong> <?php i18n('REMAINING'); ?></span></label>
 					<textarea class="text" id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
 				</p>
-				<p class="inline" id="post-private-wrap" >
-					<label for="post-private" ><?php i18n('KEEP_PRIVATE'); ?>: &nbsp; </label>
-					<select id="post-private" name="post-private" class="text autowidth" >
-						<option value="" ><?php i18n('NORMAL'); ?></option>
-						<option value="Y" <?php echo $sel_p; ?> ><?php echo ucwords(i18n_r('PRIVATE_SUBTITLE')); ?></option>
-					</select>
-				</p>
+				
 
 			</div>
 			<div class="clear"></div>
@@ -270,24 +271,33 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 				echo '<input type="hidden" name="existing-url" value="'. $url .'" />'; 
 			} ?>	
 			
-			<p id="submit_line" >
-				<span><input class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" onclick="warnme=false;" /></span>&nbsp;&nbsp;
-				<?php i18n('OR'); ?>&nbsp;&nbsp;
-				<a class="cancel" href="pages.php?cancel" title="<?php i18n('CANCEL'); ?>"><?php i18n('CANCEL'); ?></a>
-				<?php if($url != '') { ?>
-					<?php if($url != 'index') { ?>
-						&nbsp;/&nbsp; <a class="cancel" href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" title="<?php i18n('DELETEPAGE_TITLE'); ?>" ><?php i18n('ASK_DELETE'); ?></a>
-					<?php } ?>
-					  &nbsp;/&nbsp; <a class="cancel" href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" title="<?php i18n('CLONE'); ?>" ><?php i18n('CLONE'); ?></a>
-				<?php } ?>
-			</p>
+			<div id="submit_line" >
+				<input type="hidden" name="redirectto" value="" />
+				
+				<span><input class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" onclick="warnme=false;" /></span>
+				
+				<div id="dropdown">
+					<h6 class="dropdownaction"><?php i18n('ADDITIONAL_ACTIONS'); ?></h6>
+					<ul class="dropdownmenu">
+						<li id="save-close" ><a href="#" >Save &amp; Close</a></li>
+						<?php if($url != '') { ?>
+							<li><a href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" ><?php i18n('CLONE'); ?></a></li>
+						<?php } ?>
+						<li id="cancel-updates" class="alertme"><a href="pages.php?cancel" ><?php i18n('CANCEL'); ?></a></li>
+						<?php if($url != 'index' && $url != '') { ?>
+							<li class="alertme" ><a href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
+						<?php } ?>
+					</ul>
+				</div>
+				
+			</div>
 			
 			<small><?php 
 					if (isset($pubDate)) { 
 						echo sprintf(i18n_r('LAST_SAVED'), $author).' '. lngDate($pubDate).'&nbsp; ';
 					}
 					if ( file_exists(GSBACKUPSPATH.'pages/'.$url.'.bak.xml') ) {	
-						echo '-&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
+						echo '-&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
 					} 
 			?></small>
 		</form>
@@ -346,6 +356,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 				  this.document.on("keyup", function () {
 				  		warnme = true;
 				      yourText = CKEDITOR.instances["post-content"].getData();
+				      $('#cancel-updates').show();
 				  });
 				}
 
@@ -364,7 +375,8 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 		<script type="text/javascript">
 			/* Warning for unsaved Data */
 			var yourText = null;
-			var warnme = false;	
+			var warnme = false;
+			$('#cancel-updates').hide();	
 			window.onbeforeunload = function () {
 			  if (warnme) {
 			    return "<?php i18n('UNSAVED_INFORMATION'); ?>";
@@ -395,21 +407,24 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 									$('#autosavenotify').text("<?php i18n('AUTOSAVE_NOTIFY'); ?> "+ hours +":"+minutes+" "+daypart);
 									$('input[type=submit]').attr('disabled', '');
 									warnme = false;
+									$('#cancel-updates').hide();
 								}
 							}
 						});	
 		    	}
 		    	
 		    	$('#editform').change(function(){
-						warnme = true;
+							warnme = true;
 							clearTimeout($.data(this, 'timer'));
 						  var wait = setTimeout(autoSave, <?php echo (int)GSAUTOSAVE; ?>);
 						  $(this).data('timer', wait);
+						  $('#cancel-updates').show();
 		    	});
 		    	
 		    	<?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
 			    	$('#editform').change(function(){
 							warnme = true;
+							$('#cancel-updates').show();
 			    	});
 					<?php } ?>
 				
