@@ -97,6 +97,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 	<div class="bodycontent">
 	
 	<div id="maincontent">
+	<?php exec_action('pages-main'); ?>
 		<div class="main">
 			<h3 class="floated"><?php i18n('PAGE_MANAGEMENT'); ?></h3>
 			<div class="edit-nav clearfix" >
