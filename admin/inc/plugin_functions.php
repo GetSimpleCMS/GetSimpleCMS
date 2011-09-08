@@ -39,7 +39,13 @@ foreach ($live_plugins as $file=>$en) {
   if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
   	require_once(GSPLUGINPATH . $file);
   } else {
-  	register_plugin( pathinfo_filename($file), $file, '', 'Unknown', '', 'Disabled Plugin', '', '');
+	$apiback = file_get_contents('http://get-simple.info/api/extend/?file='.$file);
+	$response = json_decode($apiback);
+	if ($response->status == 'successful') {
+		register_plugin( pathinfo_filename($file), $file, 'Unknown', $response->owner, '', $response->name, '', '');
+	} else {
+  		register_plugin( pathinfo_filename($file), $file, '', 'Unknown', '', 'Disabled Plugin', '', '');
+	}
   }
 }
 
@@ -259,6 +265,7 @@ function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $des
 	);
 
 }
+
 
 /**
  * Add Filter
