@@ -143,6 +143,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
             // not a upload file
           	} elseif (is_dir($path . $file)) {
             $dirsArray[$dircount]['name'] = $file;
+            clearstatcache();
+						$ss = @stat($path . $file);
+						$dirsArray[$dircount]['date'] = @date('M j, Y',$ss['ctime']);
             $dircount++;
 					} else {
 						$filesArray[$count]['name'] = $file;
@@ -208,14 +211,13 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
 			
 			
      echo '<table class="highlight" id="imageTable">'; 
-     echo '<tr><th class="imgthumb" ></th><th>'.i18n_r('FILE_NAME').'</th><th style="text-align:right;">'.i18n_r('FILE_SIZE').'</th>';
+     echo '<tr><th class="imgthumb" ></th><th>'.i18n_r('FILE_NAME').'</th>';
+     echo '<th style="text-align:right;">'.i18n_r('FILE_SIZE').'</th>';
+     echo '<th style="text-align:right;">'.i18n_r('DATE').'</th>';
      if (defined('GSDEBUG')){
-     	echo '<th style="text-align:right;">'.i18n_r('PERMS').'</th>';
-		$cols='4';
-     } else {
-     	$cols='3';
+     	 echo '<th style="text-align:right;">'.i18n_r('PERMS').'</th>';
      }
-     echo '<th style="text-align:right;">'.i18n_r('DATE').'</th><th></th></tr>';  
+     echo '<th><!-- actions --></th></tr>';  
      if (count($dirsSorted) != 0) {
      		$foldercount = 0;
         foreach ($dirsSorted as $upload) {
@@ -227,14 +229,23 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
         	if ( check_empty_folder($path.$upload['name']) ) {  
 						$directory_delete = '<a class="delconfirm" title="'.i18n_r('DELETE_FOLDER').': '. $upload['name'] .'" href="deletefile.php?path='.$urlPath.'&amp;folder='. $upload['name'] . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a>';
 					}
+        	$directory_size = '<span>'.folder_items($path.$upload['name']).' '.i18n_r('ITEMS').'</span>';
         	
           echo '<tr class="All folder '.$upload['name'].'" >';
-          echo '<td class="imgthumb" ></td><td colspan="'.$cols.'">';
+          echo '<td class="imgthumb" ></td><td>';
         
           $adm = substr($path . $upload['name'] ,  16); 
-          echo '<img src="template/images/folder.png" width="11" /> <a href="upload.php?path='.$adm.'" ><strong>'.$upload['name'].'</strong></a>';
-                   
-          echo '</td>';
+          echo '<img src="template/images/folder.png" width="11" /> <a href="upload.php?path='.$adm.'" ><strong>'.$upload['name'].'</strong></a></td>';
+          echo '<td style="width:80px;text-align:right;" ><span>'.$directory_size.'</span></td>';
+          
+          // get the file permissions.
+					if ($isUnixHost && defined('GSDEBUG') && function_exists('posix_getpwuid')) {
+						$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
+						$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
+						echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
+					}
+					
+		      echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
           echo '<td class="delete" >'.$directory_delete.'</td>';
           echo '</tr>';
           $foldercount++;

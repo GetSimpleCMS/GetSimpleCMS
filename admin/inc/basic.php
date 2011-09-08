@@ -808,6 +808,27 @@ function check_empty_folder($folder) {
 
 
 /**
+ * Folder Items
+ *
+ * Return the amount of items within the given folder
+ * 
+ * @param string $folder
+ * @return string
+ */
+function folder_items($folder) {
+	$files = array ();
+	if ( $handle = opendir ( $folder ) ) {
+		while ( false !== ( $file = readdir ( $handle ) ) ) {
+			if ( $file != "." && $file != ".." ) {
+				$files [] = $file;
+			}
+		}
+		closedir($handle);
+	}
+	return count($files);
+}
+
+/**
  * Validate a URL String
  * 
  * @param string $u

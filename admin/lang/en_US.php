@@ -497,7 +497,9 @@ $i18n = array(
 "REMAINING" => "characters remaining", //edit.php
 "NORMAL" => "Normal", //edit.php
 "ERR_CANNOT_DELETE" => "Cannot delete %s. Please do this manually.", //common.php
-"ADDITIONAL_ACTIONS" => "Other Actions",
+"ADDITIONAL_ACTIONS" => "Other Actions", //edit.php
+"ITEMS" => "items", //upload.php
+
 
 /* 
  * For: api related pages
