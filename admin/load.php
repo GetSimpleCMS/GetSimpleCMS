@@ -27,12 +27,10 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
 
 ?>
 	
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $plugin_info[$plugin_id]['name']; ?></h1>
+<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $plugin_info[$plugin_id]['name']; ?></h1>
 
-		<?php include('template/include-nav.php'); ?>
-
-
-	<?php include('template/error_checking.php'); ?>
+<?php include('template/include-nav.php'); ?>
+<?php include('template/error_checking.php'); ?>
 
 <div class="bodycontent">
 	
@@ -40,7 +38,6 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
 		<div class="main">
 
 		<?php 
-			//print_r($plugin_info[$plugin_id]);
 			call_user_func_array($plugin_info[$plugin_id]['load_data'],array()); 
 		?>
 

@@ -53,6 +53,7 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 		$newxml->pubDate = date('r');
 		$status = XMLsave($newxml, $path.$newurl.'.xml');
 		if ($status) {
+			create_pagesxml('true');
 			$success = sprintf(i18n_r('CLONE_SUCCESS'), '<a href="edit.php?id='.$newurl.'">'.$newurl.'</a>');
 		} else {
 			$error = sprintf(i18n_r('CLONE_ERROR'), $_GET['id']);
