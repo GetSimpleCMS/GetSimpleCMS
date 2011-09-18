@@ -14,6 +14,7 @@
 include('inc/common.php');
 login_cookie_check();
 
+$filesSorted=null;$dirsSorted=null;
 $path = (isset($_GET['path'])) ? "../data/uploads/".$_GET['path'] : "../data/uploads/";
 $subPath = (isset($_GET['path'])) ? $_GET['path'] : "";
 $returnid = (isset($_GET['returnid'])) ? $_GET['returnid'] : "";
