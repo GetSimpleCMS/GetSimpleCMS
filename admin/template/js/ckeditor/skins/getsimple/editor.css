@@ -37,7 +37,7 @@
 }
 .cke_skin_getsimple .cke_browser_gecko textarea[disabled]
 {
-	cursor: default;
+	cursor: pointer;
 }
 .cke_skin_getsimple input[type="text"],.cke_skin_getsimple input[type="password"]
 {
@@ -45,7 +45,7 @@
 }
 .cke_skin_getsimple input[type="text"][disabled],.cke_skin_getsimple input[type="password"][disabled]
 {
-	cursor: default;
+	cursor: pointer;
 }
 .cke_skin_getsimple fieldset
 {
@@ -114,7 +114,8 @@
 {
 	outline: auto 5px -webkit-focus-ring-color;
 }
-.cke_skin_getsimple textarea.cke_source{
+.cke_skin_getsimple textarea.cke_source
+{
 	background-color: #f9f9f9;
 	padding:5px 1px 1px 1px;
 	margin-right:10px;
@@ -136,7 +137,7 @@
 	display: block;
 	float: right;
 	height: 12px;
-	margin-top: 9px;
+	margin-top: 12px;
 	width: 12px;
 }
 .cke_skin_getsimple .cke_browser_air .cke_resizer,.cke_skin_getsimple .cke_browser_air .cke_rtl .cke_resizer
@@ -666,7 +667,7 @@ background:#cccccc;
 }
 .cke_skin_getsimple .cke_menuitem span
 {
-	cursor: default;
+	cursor: pointer;
 }
 .cke_skin_getsimple .cke_menuitem a:hover,.cke_skin_getsimple .cke_menuitem a:focus,.cke_skin_getsimple .cke_menuitem a:active
 {
@@ -894,7 +895,7 @@ background:#cccccc;
 }
 .cke_skin_getsimple .cke_rcombo .cke_text
 {
-	cursor: default;
+	cursor: pointer;
 	display: inline-block;
 	filter: alpha(opacity=90);
 	height: 21px;
@@ -1024,7 +1025,7 @@ background:#cccccc;
 .cke_skin_getsimple .cke_path a,.cke_skin_getsimple .cke_path .cke_empty
 {
 	color: #60676a;
-	cursor: default;
+	cursor: pointer;
 	display: inline-block;
 	float: left;
 	padding: 1px 4px; /* original "1px 4px 0;" */
@@ -1415,6 +1416,11 @@ html.cke_skin_getsimple_container
 
 #cke_top_post-content {
 	border-bottom:1px solid #999;
+	background:#eeeeee;
+	background: -moz-linear-gradient(top, #eeeeee, #e2e2e2);
+	background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e2e2e2));
+}
+#cke_bottom_post-content {
 	background:#eeeeee;
 	background: -moz-linear-gradient(top, #eeeeee, #e2e2e2);
 	background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e2e2e2));

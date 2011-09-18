@@ -1,0 +1,2 @@
+To get more languages download CKEditor 3.6.2 archive
+ from http://ckeditor.com/download and copy them from it.
