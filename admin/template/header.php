@@ -6,8 +6,9 @@
  */
  
 global $SITENAME, $SITEURL;
-exec_action('admin-pre-header');
-
+if(get_filename_id()!='index') {
+	exec_action('admin-pre-header');
+}
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo get_site_lang(true); ?>">
@@ -45,7 +46,9 @@ exec_action('admin-pre-header');
 	
 	<?php 
 		# Plugin hook to allow insertion of stuff into the header
-		exec_action('header'); 
+		if(get_filename_id()!='index') {
+			exec_action('header'); 
+		}
 	?>
 	
 	<?php if( get_filename_id()!='resetpassword' && get_filename_id()!='index' ) { ?>

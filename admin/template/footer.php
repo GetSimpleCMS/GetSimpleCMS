@@ -20,7 +20,11 @@
 	      	<a href="http://get-simple.info/" target="_blank" ><img src="template/images/getsimple_logo.gif" alt="GetSimple Content Management System" /></a>
 	      </div>
       	<div class="clear"></div>
-      	<?php exec_action('footer'); ?>
+      	<?php 
+      	if(get_filename_id()!='index') {
+      		exec_action('footer'); 
+      	}
+      	?>
 
 		</div><!-- end #footer -->
 	</div><!-- end .wrapper -->
