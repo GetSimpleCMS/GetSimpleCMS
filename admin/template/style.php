@@ -1013,6 +1013,7 @@ h5 .crumbs, div.h5 .crumbs {float:left;}
 #edit #dropdown li.alertme:hover a {color:#FFF;text-shadow:none;}
 #edit #dropdown:hover ul {display:block;opacity:1;}
 
+#menu-order tr {cursor:move;}
 
 
 <?php
