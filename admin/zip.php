@@ -42,10 +42,10 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		foreach($iter as $element) {
 		    /* @var $element SplFileInfo */
 		    $dir = str_replace($sourcePath, '', $element->getPath()) . '/';
-		    if ( strstr($dir, $GSADMIN.'/') || strstr($dir, 'backups/') || strstr($dir, 'admin/lang/') ) {
-		    	#don't archive these folders
-		  	} else {
-			    if ($element->isDir()) {
+		    if ( strstr($dir, $GSADMIN.'/') || strstr($dir, 'backups/')) {
+  				#don't archive these folders
+				} else if ($element->getFilename() != '..') { // FIX: if added to ignore parent directories
+				  if ($element->isDir()) {
 				     $archiv->addEmptyDir($dir);
 			    } elseif ($element->isFile()) {
 			        $file         = $element->getPath() .

@@ -388,8 +388,10 @@ function get_site_name($echo=true) {
 
 /**
  * Get Administrator's Email Address
- *
+ * 
  * This will return the value set in the control panel
+ * 
+ * @depreciated as of 3.0
  *
  * @since 1.0
  * @uses $EMAIL
