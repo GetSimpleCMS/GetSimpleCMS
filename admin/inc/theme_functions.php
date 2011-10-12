@@ -428,7 +428,7 @@ function get_site_email($echo=true) {
 function get_site_credits($text ='Powered by ') {
 	include(GSADMININCPATH.'configuration.php');
 	
-	$site_credit_link = '<a href="'.$site_link_back_url.'" >'.$text.' '.$site_full_name.'</a>';
+	$site_credit_link = '<a href="'.$site_link_back_url.'" target="_blank" >'.$text.' '.$site_full_name.'</a>';
 	echo stripslashes($site_credit_link);
 }
 
