@@ -91,7 +91,7 @@ $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
  * Debugging
  */
 if ( defined('GSDEBUG') && (GSDEBUG == TRUE) ) {
-	error_reporting(E_ALL | E_STRICT);
+	error_reporting(E_ERROR | ERROR_WARNING);
 	ini_set('display_errors', 1);
 } else {
 	error_reporting(0);
