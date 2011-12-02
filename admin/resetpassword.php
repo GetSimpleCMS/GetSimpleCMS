@@ -58,11 +58,10 @@ if(isset($_POST['submitted'])){
 				
 				# send the email with the new password
 				$subject = $site_full_name .' '. i18n_r('RESET_PASSWORD') .' '. i18n_r('ATTEMPT');
-				$message = "'". cl($SITENAME) ."' ". i18n_r('RESET_PASSWORD') ." ". i18n_r('ATTEMPT');
-				$message .= '<br>-------------------------------------------------------<br>';
-				$message .= "<br>". i18n_r('LABEL_USERNAME').": ". $USR;
-				$message .= "<br>". i18n_r('NEW_PASSWORD').": ". $random;
-				$message .= '<br><br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL . $GSADMIN.'/">'.$SITEURL . $GSADMIN.'/</a>';
+				$message = "<p>". cl($SITENAME) ." ". i18n_r('RESET_PASSWORD') ." ". i18n_r('ATTEMPT').'</p>';
+				$message .= "<p>". i18n_r('LABEL_USERNAME').": <strong>". $USR."</strong>";
+				$message .= "<br>". i18n_r('NEW_PASSWORD').": <strong>". $random."</strong>";
+				$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL . $GSADMIN.'/">'.$SITEURL . $GSADMIN.'/</a></p>';
 				exec_action('resetpw-success');
 				$status = sendmail($EMAIL,$subject,$message);
 				
