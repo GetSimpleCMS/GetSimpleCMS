@@ -40,6 +40,9 @@
 			}
 			echo '</p></div>';
 		break;
+		case 'clone-success':
+			echo '<div class="error"><p>'.sprintf(i18n_r('CLONE_SUCCESS'), '<a href="edit.php?id='.$_GET['id'].'">'.$_GET['id'].'</a>').'.</p></div>';
+		break;
 		case 'edit-index':
 			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_CANNOT_INDEX').'.</p></div>';
 		break;
