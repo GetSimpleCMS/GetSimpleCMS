@@ -18,7 +18,6 @@
 
   <title><?php get_page_clean_title(); ?> - <?php get_site_name(); ?></title>
 	
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="robots" content="index, follow">
 
 	<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
