@@ -694,9 +694,9 @@ table.comptable tr td input.newtitle {margin-bottom:2px !important;}
 .error {
 	color:#990000;
 	border-color: #cc0000;
-	background:#F6D3D0;
-	background: -moz-linear-gradient(top, #F9DFDD 0%, #F4CDCA 100%); /* firefox */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#F9DFDD), color-stop(100%,#F4CDCA)); /* webkit */
+	background:#F9DFDD;
+	background: -moz-linear-gradient(top, #FCF0EF 0%, #F9DFDD 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FCF0EF), color-stop(100%,#F9DFDD)); /* webkit */
 }
 .deletedrow {background-color:#FFB19B}
 .error code {
