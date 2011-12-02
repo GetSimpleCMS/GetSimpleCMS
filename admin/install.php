@@ -79,7 +79,7 @@ foreach ($filenames as $lfile) {
 }
 
 if (count($lang_array) == 1) {
-	$langs = '<b>'.i18n_r('LANGUAGE').'</b>: &nbsp;'.$lang_array[0];
+	$langs = '<b>'.i18n_r('LANGUAGE').'</b>: &nbsp;<code style="border:1px solid #ccc;background:#f9f9f9;padding:2px;display:inline-block;">'.$lang_array[0].'</code> &nbsp;&nbsp;';
 } elseif (count($lang_array) > 1) {
 	sort($lang_array);
 	$count="0"; $sel = ''; 
@@ -92,9 +92,9 @@ if (count($lang_array) == 1) {
 		$sel = '';
 		$count++;
 	}
-	$langs .= '</select>';
+	$langs .= '</select><br />';
 } else {
-	$langs = '<b>'.i18n_r('LANGUAGE').'</b>: &nbsp;'.i18n_r('NONE');
+	$langs = '<b>'.i18n_r('LANGUAGE').'</b>: &nbsp;<code style="color:red;">'.i18n_r('NONE').'</code> &nbsp;&nbsp;';
 }
 
 # salt value generation
@@ -215,9 +215,8 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') );
 			<form action="setup.php" method="post" accept-charset="utf-8" >
 				<div class="leftsec">
 					<p>			
-						<?php echo $langs; ?><br />
+						<?php echo $langs; ?><a href="http://get-simple.info/wiki/languages" target="_blank" ><?php i18n('DOWNLOAD_LANG');?></a>
 						<noscript><a href="install.php?lang=" id="refreshlanguage" ><?php i18n('REFRESH');?></a> &nbsp;|&nbsp;</noscript> 
-						<a href="http://get-simple.info/wiki/languages" target="_blank" ><?php i18n('DOWNLOAD_LANG');?></a>
 					</p>
 				</div>
 				<div class="clear"></div>

@@ -71,6 +71,44 @@ function to7bit($text,$from_enc="UTF-8") {
     return $text;
 }
 
+
+/**
+ * Formats Email to HTML Style
+ *
+ * @since 3.1
+ *
+ * @param string $message
+ * @return string
+ */
+function email_template($message) {
+	$data = '
+	<style>
+	 body {background:#f6f6f6;font-family:arial, helvetica, sans-serif;}
+	 table.wrap {background:#fff;border:1px solid #e1e1e1;border-collapse:collapse;font-size:12px;font-family:arial, helvetica, sans-serif;width:90%;max-width:600px;}
+	 table th {padding:10px 10px;background: #171E25;text-align:left;}
+	 table td {padding:15px;color:#111;line-height:20px;}
+	 table td p {margin-bottom:20px;}
+	 body p.meta {line-height:15px;color:#666;font-size:11px}
+	 body p.meta a,body p.meta a:link, body p.meta a:visited, body p.meta a:hover, body p.meta a:focus {color:#777 !important;}
+	</style>
+	<html>
+	<body>
+	<table class="wrap" >
+		<tr>
+			<th><a href="http://get-simple.info/"><img src="http://get-simple.info/GSSW/gssw_assets/images/logo.png" alt="GetSimple CMS"></a></th>
+		</tr>
+		<tr>
+			<td>'.$message.'</td>
+		</tr>
+	</table>
+	<p class="meta">This is a system-generated email, please do not reply to it. For help or questions about GetSimple, please visit our <a href="http://get-simple.info/">website</a>.<br />&copy; '.date('Y').' GetSimple CMS. All Rights Reserved.&nbsp;<a href="http://get-simple.info/start/privacy">Privacy Policy</a>. </p>
+	</body>
+	</html>
+	';
+	return $data;
+}
+
+
 /**
  * Send Email
  *
@@ -84,6 +122,8 @@ function to7bit($text,$from_enc="UTF-8") {
  * @return string
  */
 function sendmail($to,$subject,$message) {
+	
+	$message = email_template($message);
 
 	if (defined('GSFROMEMAIL')){
 		$fromemail = GSFROMEMAIL; 

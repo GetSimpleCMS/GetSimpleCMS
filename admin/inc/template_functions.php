@@ -988,7 +988,7 @@ function get_api_details($type='core', $args=null) {
 	# check to see if cache is available for this
 	$cachefile = md5($fetch_this_api).'.txt';
 
-	if (file_exists(GSCACHEPATH.$cachefile) && time() - 600 < filemtime(GSCACHEPATH.$cachefile)) {
+	if (file_exists(GSCACHEPATH.$cachefile) && time() - 40000 < filemtime(GSCACHEPATH.$cachefile)) {
 		# grab the api request from the cache
 		
 		$data = file_get_contents(GSCACHEPATH.$cachefile);

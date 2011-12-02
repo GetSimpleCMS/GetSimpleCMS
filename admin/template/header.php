@@ -55,12 +55,13 @@ if(get_filename_id()!='index') {
 	<script>
 		// check to see if core update is needed
 		jQuery(document).ready(function() { 
-			var obj = jQuery.parseJSON('<?php echo get_api_details(); ?>');
-			if(obj.status != 1) {
-				$('a.support').parent('li').append('<span class="warning">!</span>');
-				$('a.support').attr('href', 'health-check.php');
-			}
-			
+			<?php $json = get_api_details();	if ($json != '') { ?>
+				var obj = jQuery.parseJSON('<?php echo $json; ?>');
+				if(obj.status != 1) {
+					$('a.support').parent('li').append('<span class="warning">!</span>');
+					$('a.support').attr('href', 'health-check.php');
+				}
+			<?php  } ?>
 			<?php if (file_exists(GSCACHEPATH.'plugin-update.trigger')) { ?>
 				$('a.plugins').parent('li').append('<span class="warning">!</span>');
 			<?php  } ?>

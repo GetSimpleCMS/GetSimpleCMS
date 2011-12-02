@@ -111,20 +111,22 @@ if(isset($_POST['submitted'])) {
 		}
 
 		# create root .htaccess file
-		if(in_arrayi('mod_rewrite',apache_get_modules())) {
-			$init = GSROOTPATH.'.htaccess';
-			$temp_data = file_get_contents(GSROOTPATH .'temp.htaccess');
-			$temp_data = str_replace('**REPLACE**',tsl($path_parts), $temp_data);
-			$fp = fopen($init, 'w');
-			fwrite($fp, $temp_data);
-			fclose($fp);
-			if (!file_exists($init)) {
-				$kill .= sprintf(i18n_r('ROOT_HTACCESS_ERROR'), 'temp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
-			} else {
-				unlink(GSROOTPATH .'temp.htaccess');
+		if ( function_exists('apache_get_modules') ) {
+			if(in_arrayi('mod_rewrite',apache_get_modules())) {
+				$init = GSROOTPATH.'.htaccess';
+				$temp_data = file_get_contents(GSROOTPATH .'temp.htaccess');
+				$temp_data = str_replace('**REPLACE**',tsl($path_parts), $temp_data);
+				$fp = fopen($init, 'w');
+				fwrite($fp, $temp_data);
+				fclose($fp);
+				if (!file_exists($init)) {
+					$kill .= sprintf(i18n_r('ROOT_HTACCESS_ERROR'), 'temp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
+				} else {
+					unlink(GSROOTPATH .'temp.htaccess');
+				}
 			}
 		}
-		
+	
 		# create gsconfig.php if it doesn't exist yet.
 		$init = GSROOTPATH.'gsconfig.php';
 		$temp = GSROOTPATH.'temp.gsconfig.php';
@@ -142,10 +144,10 @@ if(isset($_POST['submitted'])) {
 		
 		# send email to new administrator
 		$subject  = $site_full_name .' '. i18n_r('EMAIL_COMPLETE');
-		$message .= i18n_r('EMAIL_USERNAME') . ': '. stripslashes($_POST['user']);
-		$message .= '<br>'. i18n_r('EMAIL_PASSWORD') .': '. $random;
-		$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL.$GSADMIN.'/">'.$SITEURL.$GSADMIN.'/</a>';
-		$message .= '<br><br>'. i18n_r('EMAIL_THANKYOU') .' '.$site_full_name.'!';
+		$message .= '<p>'.i18n_r('EMAIL_USERNAME') . ': <strong>'. stripslashes($_POST['user']).'</strong>';
+		$message .= '<br>'. i18n_r('EMAIL_PASSWORD') .': <strong>'. $random.'</strong>';
+		$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL.$GSADMIN.'/">'.$SITEURL.$GSADMIN.'/</a></p>';
+		$message .= '<p><em>'. i18n_r('EMAIL_THANKYOU') .' '.$site_full_name.'!</em></p>';
 		$status   = sendmail($EMAIL,$subject,$message);
 		
 		# set the login cookie, then redirect user to secure panel		
@@ -199,7 +201,7 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION'));
 				<div class="leftsec">
 					<p><label for="sitename" ><?php i18n('LABEL_WEBSITE'); ?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php if(isset($_POST['sitename'])) { echo $_POST['sitename']; } ?>" /></p>
 					<p><label for="user" ><?php i18n('LABEL_USERNAME'); ?>:</label><input class="text" name="user" id="user" type="text" value="<?php if(isset($_POST['user'])) { echo $_POST['user']; } ?>" /></p>
-					<p><label for="email" ><?php i18n('LABEL_EMAIL'); ?>:</label><input class="text" name="email" id="email" type="text" value="<?php if(isset($_POST['email'])) { echo $_POST['email']; } ?>" /></p>
+					<p><label for="email" ><?php i18n('LABEL_EMAIL'); ?>:</label><input class="text" name="email" id="email" type="email" value="<?php if(isset($_POST['email'])) { echo $_POST['email']; } ?>" /></p>
 				</div>
 				<div class="clear"></div>
 				<p><input class="submit" type="submit" name="submitted" value="<?php i18n('LABEL_INSTALL'); ?>" /></p>
