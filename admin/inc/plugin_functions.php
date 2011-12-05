@@ -39,7 +39,7 @@ foreach ($live_plugins as $file=>$en) {
   if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
   	require_once(GSPLUGINPATH . $file);
   } else {
-	$apiback = file_get_contents('http://get-simple.info/api/extend/?file='.$file);
+	$apiback = get_api_details('plugin', $file);
 	$response = json_decode($apiback);
 	if ($response->status == 'successful') {
 		register_plugin( pathinfo_filename($file), $file, 'Unknown', $response->owner, '', $response->name, '', '');
