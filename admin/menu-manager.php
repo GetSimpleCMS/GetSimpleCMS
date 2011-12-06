@@ -51,12 +51,11 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT').' &ra
 	<div id="maincontent">
 		<div class="main" >
 			<h3><?php echo str_replace(array('<em>','</em>'), '', i18n_r('MENU_MANAGER')); ?></h3>
-			
+			<p><?php i18n('MENU_MANAGER_DESC'); ?></p>
 			<?php
 				if (count($pagesSorted) != 0) { 
-					echo '<form method="post" id="menuItemsOrder" action="">';
-					echo '<table class="highlight" id="menu-order">';
-					echo '<thead><tr ><th style="width:60px;">'.i18n_r('PRIORITY').'</th><th>'.i18n_r('MENU_TEXT').'</th><th>'.i18n_r('PAGE_TITLE').'</th><th></th><th></th></tr></thead><tbody>';
+					echo '<form method="post" action="menu-manager.php">';
+					echo '<ul id="menu-order" >';
 					foreach ($pagesSorted as $page) {
 						$sel = '';
 						if ($page['menuStatus'] != '') { 
@@ -67,40 +66,36 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT').' &ra
 							if ($page['menu'] == '') { 
 								$page['menu'] = $page['title']; 
 							}
-							echo '<tr id="page_'.$page['slug'].'">
-							<td style="width:35px;" >'.$page['menuOrder'].'</td>
-							<td><strong>'. $page['menu'] .'</strong></td>
-							<td>'. $page['title'] .'</td>
-							<td><a href="edit.php?id='.$page['url'].'" target="_blank" >'.strip_tags(i18n_r('EDIT')).'</a></td>
-							<td class="secondarylink" ><a href="'.find_url($page['url'], $page['parent']).'" target="_blank" >#</a></td>
-							</tr>';
+							echo '<li class="clearfix" rel="'.$page['slug'].'">
+											<strong>#'.$page['menuOrder'].'</strong>&nbsp;&nbsp;
+											'. $page['menu'] .' <em>'. $page['title'] .'</em>
+										</li>';
 						}
 					}
-					echo '</tbody></table>';
-					echo '<div id="saveOrderBtn"></div>';
+					echo '</ul>';
+					echo '<input type="hidden" name="menuOrder" value=""><input class="submit" type="submit" value="'. i18n_r("SAVE_MENU_ORDER").'" />';
 					echo '</form>';
- ?>
-			<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-			<script>
-			$("#menu-order tbody").sortable({
-				opacity: 0.6,
-				cursor: 'move',
-				update: function() {
-					order = [];
-					$('#menu-order tbody').children('tr').each(function(idx, elm) {
-						order.push(elm.id.split('_')[1])
-					});
-					$('#saveOrderBtn').html('<input type="hidden" name="menuOrder" value="'+order+'"><input class="submit" type="submit" value="Save Menu Order" />');
-				}
-			});
-			</script>
-
-			<?php
 				} else {
 					echo '<p>'.i18n_r('NO_MENU_PAGES').'.</p>';	
 				}
 			?>
-
+			
+			<script>
+				$("#menu-order").sortable({
+					cursor: 'move',
+					placeholder: "placeholder-menu",
+					update: function() {
+						var order = '';
+						$('#menu-order li').each(function(index) {
+							var cat = $(this).attr('rel');
+							order = order+','+cat;
+						});
+						$('[name=menuOrder]').val(order);
+					}
+				});
+				$("#menu-order").disableSelection();
+			</script>
+			
 		</div>
 	</div>
 	

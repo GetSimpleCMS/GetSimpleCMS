@@ -221,7 +221,7 @@ $i18n = array(
 "CONFIRM_PASSWORD"	=>	"Confirm Password",
 "PASSWORD_NO_MATCH"	=>	"Passwords do not match",
 "PERMALINK" 				=> 	"Custom Permalink Structure",
-"MORE" 							=> 	"Learn More...",
+"MORE" 							=> 	"more",
 "HELP" 							=> 	"help",
 
 /* 
@@ -389,7 +389,7 @@ $i18n = array(
  * For: support.php
 */
 "WELCOME_MSG"				=>	"Thank you for choosing GetSimple as your content management system!",
-"WELCOME_P"					=>	"GetSimple makes managing a website as simple as possible with its best-in-class user interface. We strive to keep the system easy enough for anyone to use, yet powerful enough for a developer to enable all the features that are needed.</p><p><strong>Some first steps that might useful:</strong></p>",
+"WELCOME_P"					=>	"GetSimple makes managing a website as simple as possible with its best-in-class user interface. We strive to keep the system easy enough for anyone to use, yet powerful enough for a developer to enable all the features that are needed.</p><p><strong>Some first steps that might be useful:</strong></p>",
 "GETTING_STARTED"		=>	"Getting Started",
 
 /* 
@@ -499,6 +499,9 @@ $i18n = array(
 "ERR_CANNOT_DELETE" => "Cannot delete %s. Please do this manually.", //common.php
 "ADDITIONAL_ACTIONS" => "Other Actions", //edit.php
 "ITEMS" => "items", //upload.php
+"SAVE_MENU_ORDER" => "Save Menu Order", //menu-manager.php
+"MENU_MANAGER_DESC" => "Drag-and-drop the menu items around until you have the order you want, then click the <strong>'Save Menu Order'</strong> button.", //menu-manager.php
+
 
 
 /* 

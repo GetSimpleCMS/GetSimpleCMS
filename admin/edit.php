@@ -228,7 +228,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 						<option value="">-</option>
 						<?php
 						$i = 1;
-						while ($i <= 20) { 
+						while ($i <= 30) { 
 							echo '<option value="'.$i.'">'.$i.'</option>';
 							$i++;
 						}

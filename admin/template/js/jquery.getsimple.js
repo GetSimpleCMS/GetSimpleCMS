@@ -111,8 +111,7 @@ jQuery(document).ready(function() {
 	
 	$("input[type='password']").capslock(options);
 
-	
-	
+
 	// components.php
 	$(".delconfirmcomp").live("click", function($e) {
 		$e.preventDefault();

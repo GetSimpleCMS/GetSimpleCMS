@@ -40,6 +40,9 @@ if(get_filename_id()!='index') {
 	<script type="text/javascript" src="template/js/jcrop/jquery.Jcrop.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="template/js/jcrop/jquery.Jcrop.css" media="screen" />
 	<?php } ?>
+	<?php if(get_filename_id()=='menu-manager') { ?>
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+	<?php } ?>
 	
 	<script type="text/javascript" src="template/js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 	<link rel="stylesheet" type="text/css" href="template/js/fancybox/jquery.fancybox-1.3.4.css" media="screen" />		

@@ -84,6 +84,12 @@ html {overflow-y: scroll;}
   background:#a8d1ff;
   color:#111;
 }
+::-webkit-input-placeholder {
+    color:    #999;
+}
+:-moz-placeholder {
+    color:    #999;
+}
 /** HEADER / NAVIGATION **/
 .header {
 	color:#FFF;
@@ -594,6 +600,9 @@ label {
 	font-weight:bold;
 	font-family:arial, helvetica, sans-serif
 }
+label span.right {float:right;color:#999;display:inline-block;margin-right:15px;font-weight:100 !important;font-size:11px !important;}
+label span.right a:link, label span.right a:visited {font-size:11px;color:#999;text-decoration:none;font-weight:100 !important;}
+label span.right a:focus, label span.right a:hover {font-size:11px;color:#333;text-decoration:underline;font-weight:100 !important;}
 .inline label {display:inline-block;padding-top:3px;}
 
 /* meta dropdown style */
@@ -1013,8 +1022,11 @@ h5 .crumbs, div.h5 .crumbs {float:left;}
 #edit #dropdown li.alertme:hover a {color:#FFF;text-shadow:none;}
 #edit #dropdown:hover ul {display:block;opacity:1;}
 
-#menu-order tr {cursor:move;}
-
+.wrapper #maincontent ul#menu-order {list-style:none;margin:0 0 25px 0;;}
+#menu-order li {text-shadow:1px 1px solid rgba(255,255,255,.3); cursor:move;display:block;margin:2px 0;border:1px solid #eee;background:#fbfbfb;padding:5px 10px;}
+#menu-order li:hover {border:1px solid #ccc;background:#f6f6f6;}
+#menu-order li em {float:right;color:#666;}
+#menu-order li.placeholder-menu {height: 18px; background:#FFB164;border:1px solid #FF9933;}
 
 <?php
 file_put_contents($cachefile, ob_get_contents());
