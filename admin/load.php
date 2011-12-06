@@ -45,10 +45,17 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
 	</div>
 	
 	<div id="sidebar" >
-		<?php 
-			include('template/sidebar-'.$plugin_info[$plugin_id]['page_type'].'.php'); 
-		?>
-	</div>	
+    <?php 
+      $res = (@include('template/sidebar-'.$plugin_info[$plugin_id]['page_type'].'.php'));
+      if (!$res) { 
+    ?>
+      <ul class="snav">
+        <?php exec_action($plugin_info[$plugin_id]['page_type']."-sidebar"); ?>
+      </ul>
+    <?php
+      }
+    ?>
+  </div>
 	
 	<div class="clear"></div>
 </div>

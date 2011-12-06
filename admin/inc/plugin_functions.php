@@ -210,12 +210,15 @@ function exec_action($a) {
  * @param string $id ID of the link you are adding
  * @param string $txt Text to add to tabbed link
  */
-function createSideMenu($id,$txt){
-	$class=null;
-  if (isset($_GET['id']) && $_GET['id'] == $id) {
-		$class='class="current"';
-	}
-	echo '<li><a href="load.php?id='.$id.'" '.$class.' >'.$txt.'</a></li>';
+
+function createSideMenu($id, $txt, $action=null, $always=true){
+  $current = false;
+  if (isset($_GET['id']) && $_GET['id'] == $id && (!$action || isset($_GET[$action]))) {
+    $current = true;
+  }
+  if ($always || $current) {
+    echo '<li><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
+  }
 }
 
 /**
@@ -230,10 +233,14 @@ function createSideMenu($id,$txt){
  * @param string $txt Text to add to tabbed link
  * @param string $klass class to add to a element
  */
-function createNavTab($url, $txt, $klass = 'plugins') {
-	echo '<li><a href="'.$url.'" class="'.$klass.'" >';
-	echo $txt;
-	echo '</a></li>';
+function createNavTab($tabname, $id, $txt, $action=null) {
+  global $plugin_info;
+  $current = false;
+  if (basename($_SERVER['PHP_SELF']) == 'load.php') {
+    $plugin_id = @$_GET['id'];
+    if ($plugin_info[$plugin_id]['page_type'] == $tabname) $current = true;
+  }
+  echo '<li><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
 }
 
 /**
