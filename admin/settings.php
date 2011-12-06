@@ -121,6 +121,9 @@ if(isset($_POST['submitted'])) {
 		$xml->addChild('HTMLEDITOR', $HTMLEDITOR);
 		$xml->addChild('TIMEZONE', $TIMEZONE);
 		$xml->addChild('LANG', $LANG);
+		
+		exec_action('settings-user');
+		
 		if (! XMLsave($xml, GSUSERSPATH . $file) ) {
 			$error = i18n_r('CHMOD_ERROR');
 		}
@@ -136,6 +139,9 @@ if(isset($_POST['submitted'])) {
 		$note->addCData($TEMPLATE);
 		$xmls->addChild('PRETTYURLS', $PRETTYURLS);
 		$xmls->addChild('PERMALINK', $PERMALINK);
+		
+		exec_action('settings-website');
+		
 		if (! XMLsave($xmls, GSDATAOTHERPATH . $wfile) ) {
 			$error = i18n_r('CHMOD_ERROR');
 		}
