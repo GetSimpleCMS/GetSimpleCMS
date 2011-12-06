@@ -78,3 +78,4 @@ if(get_filename_id()!='index') {
 <body <?php filename_id(); ?> >	
 	<div class="header" id="header" >
 		<div class="wrapper clearfix">
+ <?php exec_action('header-body'); ?>
