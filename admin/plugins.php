@@ -53,7 +53,7 @@ foreach ($pluginfiles as $fi) {
 		if ($trclass=='enabled'){
 			$api_data = json_decode(get_api_details('plugin', $fi));
 			if ($api_data->status == 'successful') {
-				if ($api_data->version != $plugin_info[$pathName]['version']) {
+				if ($api_data->version > $plugin_info[$pathName]['version']) {
 					$table .= '<br /><a class="updatelink" href="'.$api_data->path.'" target="_blank">'.i18n_r('UPDATE_AVAILABLE').' '.$api_data->version.'</a>';
 					$needsupdate = true;
 				}
