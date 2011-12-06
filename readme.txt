@@ -9,7 +9,7 @@ the best UI around.
 
 Official Website - http://get-simple.info/
 
-GetSimple CMS was developed by Chris Cagle ( http://www.cagintranet.com ) but 
+GetSimple CMS was developed by Chris Cagle [ http://chriscagle.me ] and 
 is now passionately supported and developed by a lovely community.
 
 
@@ -17,15 +17,15 @@ is now passionately supported and developed by a lovely community.
 ================================================================================
 LICENSE:
 
-This software package is licensed under the GNU GENERAL PUBLIC LICENSE. 
-Please view the license at http://www.gnu.org/licenses/gpl-3.0.txt
+This software package is licensed under the GNU GENERAL PUBLIC LICENSE v3. 
+LICENSE.txt is located within this download's zip file
 
 It would be great if you would link back to get-simple.info if you use it.
 
 
 
 ================================================================================
-REQUIREMENTS:
+REQUIREMENTS: [ http://get-simple.info/wiki/installation:modules ]
 
 Build Requirements
 ----------------------
@@ -34,9 +34,6 @@ PHP 5.2+
 Module Requirements
 ----------------------
 SimpleXML
-SMTP Server
-mod_rewrite
-ZipArchive
 
 Browser Requirements
 ----------------------

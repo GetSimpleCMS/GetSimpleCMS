@@ -2,9 +2,9 @@
 /**
  * English Language File
  *
- * Date:				16 Oct 2010
+ * Date:				6 December 2011
  * Revision:		Feb 2011
- * Version:			GetSimple 3.0
+ * Version:			GetSimple 3.1
  * Traductors: 	Chris Cagle 
  *
  * @package GetSimple
@@ -25,7 +25,7 @@ $i18n = array(
 "WEBSITEURL_ERROR"	=>	"<b>Error:</b> There was a problem with your website URL",
 "USERNAME_ERROR"		=>	"<b>Error:</b> Username was not set",
 "EMAIL_ERROR"				=>	"<b>Error:</b> There was a problem with your email address",
-"CHMOD_ERROR"				=>	"<b>Unable to continue:</b> Unable to write config file. <em>CHMOD 777</em> the folders /data, /backups and their sub-folders and retry",
+"CHMOD_ERROR"				=>	"<b>Unable to continue:</b> Unable to write config file. CHMOD 755 or 777 the folders /data, /backups and their sub-folders and retry",
 "EMAIL_COMPLETE"		=>	"Setup Complete",
 "EMAIL_USERNAME"		=>	"Your username is",
 "EMAIL_PASSWORD"		=>	"Your new password is",

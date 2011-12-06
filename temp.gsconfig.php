@@ -60,9 +60,6 @@ define('GSIMAGEWIDTH', '200');
 # Set email from address
 #define('GSFROMEMAIL', 'noreply@get-simple.info');
 
-# Data saving method. Default is XML
-#define('GSSTORAGE', 'xml');
-
 # Autosave within edit.php. Value is the autosave interval 
 #define('GSAUTOSAVE', 900);
 
