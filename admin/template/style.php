@@ -164,7 +164,8 @@ html {overflow-y: scroll;}
 	#load .wrapper .theme li a.theme,
 	#load .wrapper .files li a.files,
 	#load .wrapper .backups li a.backups,
-	#load	.wrapper .support li a.support {
+	#load	.wrapper .support li a.support,
+	#load .wrapper .nav li a.current {
 		color:<?php echo $primary_1; ?>;
 		background:#f6f6f6;
 		background: -moz-linear-gradient(top, #FFF 3%, #F6F6F6 100%); /* firefox */
