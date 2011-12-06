@@ -30,7 +30,7 @@ if (isset($_POST['menuOrder'])) {
 		$priority++;
 	}
 	create_pagesxml('true');
-	$success = 'Menu order saved!';
+	$success = i18n_r('MENU_MANAGER_SUCCESS');
 }
 
 # get pages
