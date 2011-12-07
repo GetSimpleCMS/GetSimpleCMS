@@ -1,4 +1,7 @@
 <?php
+include('common.php');
+login_cookie_check();
+
 /**
  * Thumbnail Image Generator
  *
@@ -37,7 +40,7 @@ $save_to_file = true;
 // Quality for JPEG and PNG.
 // 0 (worst quality, smaller file) to 100 (best quality, bigger file)
 // Note: PNG quality is only supported starting PHP 5.1.2
-$image_quality = 85;
+$image_quality = 65;
 
 // resulting image type (1 = GIF, 2 = JPG, 3 = PNG)
 // enter code of the image type if you want override it
@@ -54,13 +57,13 @@ $cut_y = 0;
 
 // Folder where source images are stored (thumbnails will be generated from these images).
 // MUST end with slash.
-$images_folder = '../../data/uploads/';
+$images_folder = GSDATAUPLOADPATH;
 
 // Folder to save thumbnails, full path from the root folder, MUST end with slash.
 // Only needed if you save generated thumbnails on the server.
 // Sample for windows:     c:/wwwroot/thumbs/
 // Sample for unix/linux:  /home/site.com/htdocs/thumbs/
-$thumbs_folder = '../../data/thumbs/';
+$thumbs_folder = GSTHUMBNAILPATH;
 
 
 ///////////////////////////////////////////////////
@@ -74,14 +77,14 @@ if (isset($_REQUEST['f'])) {
 }
 
 if (isset($_REQUEST['src'])) {
-  $from_name = urldecode($_REQUEST['src']);
+  $from_name = str_replace('../','', urldecode($_REQUEST['src']));
 }
 else {
   die("Source file name must be specified.");
 }
 
 if (isset($_REQUEST['dest'])) {
-  $to_name = urldecode($_REQUEST['dest']);
+  $to_name = str_replace('../','', urldecode($_REQUEST['dest']));
 }
 else if ($save_to_file) {
   die("Thumbnail file name must be specified.");

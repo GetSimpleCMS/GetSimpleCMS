@@ -265,10 +265,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
 						$gallery = 'rel="facybox"';
 						$pathlink = 'image.php?i='.$upload['name'].'&amp;path='.$subPath;
 						$thumbLink = $urlPath.'thumbsm.'.$upload['name'];
-						if (file_exists('../data/thumbs/'.$thumbLink)) {
+						if (file_exists(GSTHUMBNAILPATH.$thumbLink)) {
 							$imgSrc='<img src="../data/thumbs/'. $thumbLink .'" />';
 						} else {
-							$imgSrc='<img src="inc/thumb.php?src='. $urlPath . $upload['name'] .'&amp;dest='. $thumbLink .'&amp;x=65&amp;f=1" />';
+							$imgSrc='<img src="inc/thumb.php?src='. $urlPath . $upload['name'] .'&amp;dest='. $thumbLink .'&amp;f=1" />';
 						}
 						echo '<a href="'. $path . $upload['name'] .'" title="'. $upload['name'] .'" rel="facybox" >'.$imgSrc.'</a>';
 					} else {
