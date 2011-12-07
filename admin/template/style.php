@@ -11,7 +11,7 @@ $offset = 30000;
 #header ('Expires: ' . gmdate ("D, d M Y H:i:s", time() + $offset) . ' GMT');
 
 # check to see if cache is available for this
-$cacheme = FALSE;
+$cacheme = TRUE;
 $cachefile = '../../data/cache/stylesheet.txt';
 if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && $cacheme) {
 	echo file_get_contents($cachefile);
