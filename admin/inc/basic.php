@@ -765,7 +765,7 @@ function htmldecode($text) {
  */
 function lowercase($text) {
 	if (function_exists('mb_strtolower')) {
-		$text = mb_strtolower($text); 
+		$text = mb_strtolower($text, 'UTF-8'); 
 	} else {
 		$text = strtolower($text); 
 	}
