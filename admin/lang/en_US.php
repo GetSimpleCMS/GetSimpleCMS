@@ -89,6 +89,7 @@ $i18n = array(
 "LAST_SAVED"				=>	"Last saved by %s on",
 "FILE_UPLOAD"				=>	"File Upload",
 "OR"								=>	"or",
+"SAVE_AND_CLOSE"		=> "Save &amp; Close",
 
 /* 
  * For: upload.php
