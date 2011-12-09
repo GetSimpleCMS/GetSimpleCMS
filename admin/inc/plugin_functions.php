@@ -14,13 +14,21 @@ $GS_scripts       = array();  // used for queing Scripts
 $GS_styles        = array();  // used for queing Styles
 
 // register our local copies of jquery and fancybox
-register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', '1.7', TRUE,FALSE);
+register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', '1.7', FALSE,FALSE);
 register_script('fancybox', $SITEURL.'admin/template/js/fancybox/jquery.fancybox-1.3.4.pack.js', '1.3.4', FALSE,FALSE);
+register_script('getsimple', $SITEURL.'admin/template/js/jquery.getsimple.js', GSVERSION, FALSE,FALSE);
+register_style('getsimple', $SITEURL.'admin/template/style.php', GSVERSION, 'screen',FALSE);
 
-queue_script('jquery', 'both');
+/**
+ * Queue our scripts and styles for the backend
+ */
 
-register_style('test', 'testing', '1.2', 'screen');
-queue_style('test','both');
+queue_script('jquery', 'back');
+queue_script('fancybox', 'back');
+queue_script('getsimple', 'back');
+
+queue_style('getsimple', 'back');
+
 
 /**
  * Include any plugins, depending on where the referring 

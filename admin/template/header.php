@@ -24,11 +24,10 @@ if(get_filename_id()!='index') {
 	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 	<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 	
-	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+	<?php 
+		get_scripts_backend();
+	?>
 	
-	<!-- GetSimple specific files -->
-	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>
-	<link rel="stylesheet" type="text/css" href="template/style.php?v=<?php echo GSVERSION; ?>" media="screen" />
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
 	
 	<!-- Javascript Plugins -->
@@ -50,7 +49,6 @@ if(get_filename_id()!='index') {
 	<?php 
 		# Plugin hook to allow insertion of stuff into the header
 		if(get_filename_id()!='index') {
-			get_scripts_backend();
 			exec_action('header'); 
 		}
 	?>
