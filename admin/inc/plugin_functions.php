@@ -437,7 +437,6 @@ function dequeue_script($handle, $where){
  */
 function get_scripts_frontend($footer=FALSE){
 	global $GS_scripts;
-	print_r($GS_scripts);
 	if (!$footer){
 		get_styles_frontend();
 	}
