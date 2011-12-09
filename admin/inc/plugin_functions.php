@@ -13,21 +13,28 @@ $live_plugins     = array();  // used for enablie/disable functions
 $GS_scripts       = array();  // used for queing Scripts
 $GS_styles        = array();  // used for queing Styles
 
-// register our local copies of jquery and fancybox
+// constants 
+
+define('GSNONE',0);
+define('GSFRONT',1);
+define('GSBACK',2);
+define('GSBOTH',3);
+
+// register jquery, fancybox & GS Scripts for loading in the header
 register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', '1.7', FALSE,FALSE);
 register_script('fancybox', $SITEURL.'admin/template/js/fancybox/jquery.fancybox-1.3.4.pack.js', '1.3.4', FALSE,FALSE);
 register_script('getsimple', $SITEURL.'admin/template/js/jquery.getsimple.js', GSVERSION, FALSE,FALSE);
+// register our stylesheet
 register_style('getsimple', $SITEURL.'admin/template/style.php', GSVERSION, 'screen',FALSE);
 
 /**
  * Queue our scripts and styles for the backend
  */
+queue_script('jquery', GSBACK);
+queue_script('fancybox', GSBACK);
+queue_script('getsimple', GSBACK);
 
-queue_script('jquery', 'back');
-queue_script('fancybox', 'back');
-queue_script('getsimple', 'back');
-
-queue_style('getsimple', 'back');
+queue_style('getsimple', GSBACK);
 
 
 /**
@@ -356,7 +363,8 @@ function register_script($handle, $src, $ver, $in_footer=FALSE,$load=FALSE){
 	  'src' => $src,
 	  'ver' => $ver,
 	  'in_footer' => $in_footer,
-	  'load' => $load
+	  'load' => $load,
+	  'where' => 0
 	);
 	if ($load==TRUE){
 		$GS_scripts[$handle]['load']=TRUE;	
@@ -393,10 +401,9 @@ function deregister_script($handle){
  */
 function queue_script($handle,$where){
 	global $GS_scripts;
-	$where=strtolower($where);
 	if (array_key_exists($handle, $GS_scripts)){
 		$GS_scripts[$handle]['load']=true;
-		$GS_scripts[$handle]['where']=$where;
+		$GS_scripts[$handle]['where']=$GS_scripts[$handle]['where'] | $where;
 	}
 }
 
@@ -410,11 +417,11 @@ function queue_script($handle,$where){
  *
  * @param string $handle name for the script to load
  */
-function dequeue_script($handle){
+function dequeue_script($handle, $where){
 	global $GS_scripts;
 	if (array_key_exists($handle, $GS_scripts)){
 		$GS_scripts[$handle]['load']=false;
-		$GS_scripts[$handle]['where']='';
+		$GS_scripts[$handle]['where']=$GS_scripts[$handle]['where'] & ~ $where;
 	}
 }
 
@@ -430,11 +437,12 @@ function dequeue_script($handle){
  */
 function get_scripts_frontend($footer=FALSE){
 	global $GS_scripts;
+	print_r($GS_scripts);
 	if (!$footer){
 		get_styles_frontend();
 	}
 	foreach ($GS_scripts as $script){
-		if ($script['where']=='front' or $script['where']=='both'){
+		if ($script['where'] & GSFRONT ){
 			if (!$footer){
 				if ($script['load']==TRUE && $script['in_footer']==FALSE ){
 					 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
@@ -464,7 +472,7 @@ function get_scripts_backend($footer=FALSE){
 		get_styles_backend();
 	}
 	foreach ($GS_scripts as $script){
-		if ($script['where']=='back' or $script['where']=='both'){	
+		if ($script['where'] & GSBACK ){	
 			if (!$footer){
 				if ($script['load']==TRUE && $script['in_footer']==FALSE ){
 					 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
@@ -492,7 +500,7 @@ function queue_style($handle,$where=1){
 	global $GS_styles;
 	if (array_key_exists($handle, $GS_styles)){
 		$GS_styles[$handle]['load']=true;
-		$GS_styles[$handle]['where']=$where;
+		$GS_styles[$handle]['where']=$GS_styles[$handle]['where'] | $where;
 	}
 }
 
@@ -506,11 +514,11 @@ function queue_style($handle,$where=1){
  *
  * @param string $handle name for the Style to load
  */
-function dequeue_style($handle){
+function dequeue_style($handle,$where){
 	global $GS_styles;
 	if (array_key_exists($handle, $GS_styles)){
 		$GS_styles[$handle]['load']=false;
-		$GS_styles[$handle]['where']='';
+		$GS_styles[$handle]['where']=$GS_styles[$handle]['where'] & ~$where;
 	}
 }
 
@@ -534,7 +542,8 @@ function register_style($handle, $src, $ver, $media,$load=FALSE){
 	  'name' => $handle,
 	  'src' => $src,
 	  'ver' => $ver,
-	  'media' => $media
+	  'media' => $media,
+	  'where' => 0
 	);
 	if ($load==TRUE){
 		$GS_styles[$handle]['load']=TRUE;	
@@ -543,9 +552,9 @@ function register_style($handle, $src, $ver, $media,$load=FALSE){
 }
 
 /**
- * Get Styles
- *
- * Echo and load Styles
+ * Get Styles Frontend
+ * 
+ * Echo and load Styles in the Theme header
  *
  * @since 3.1
  * @uses $GS_styles
@@ -554,17 +563,26 @@ function register_style($handle, $src, $ver, $media,$load=FALSE){
 function get_styles_frontend(){
 	global $GS_styles;
 	foreach ($GS_styles as $style){
-		if ($style['where']=='front' or $style['where']=='both'){
+		if ($style['where'] & GSFRONT ){
 				if ($style['load']==TRUE){
 				 echo '<link href='.$style['src'].'?v='.$style['ver'].' rel="stylesheet" media="'.$style['media'].'">';
 				}
 		}
 	}
 }
+/**
+ * Get Styles Backend
+ *
+ * Echo and load Styles on Admin
+ *
+ * @since 3.1
+ * @uses $GS_styles
+ *
+ */
 function get_styles_backend(){
 	global $GS_styles;
 	foreach ($GS_styles as $style){
-		if ($style['where']=='back' or $style['where']=='both'){
+		if ($style['where'] & GSBACK ){
 				if ($style['load']==TRUE){
 				 echo '<link href='.$style['src'].'?v='.$style['ver'].' rel="stylesheet" media="'.$style['media'].'">';
 				}
