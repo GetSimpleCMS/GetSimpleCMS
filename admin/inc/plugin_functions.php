@@ -14,8 +14,8 @@ $GS_scripts       = array();  // used for queing Scripts
 $GS_styles        = array();  // used for queing Styles
 
 // register our local copies of jquery and fancybox
-register_script('jquery', 'admin/template/js/jquery-iu-1.7.2.custom.min.js', '1.7', TRUE,TRUE);
-register_script('fancybox', 'admin/template/js/fancybox/jquery.fancybox-1.3.4.pack.js', '1.7', FALSE,FALSE);
+register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', '1.7', TRUE,TRUE);
+register_script('fancybox', $SITEURL.'admin/template/js/fancybox/jquery.fancybox-1.3.4.pack.js', '1.3.4', FALSE,FALSE);
 
 
 
