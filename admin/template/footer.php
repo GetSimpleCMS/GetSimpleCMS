@@ -22,6 +22,7 @@
       	<div class="clear"></div>
       	<?php 
       	if(get_filename_id()!='index') {
+      		get_scripts_backend(TRUE);
       		exec_action('footer'); 
       	}
       	?>

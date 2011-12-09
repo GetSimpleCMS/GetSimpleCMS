@@ -14,10 +14,13 @@ $GS_scripts       = array();  // used for queing Scripts
 $GS_styles        = array();  // used for queing Styles
 
 // register our local copies of jquery and fancybox
-register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', '1.7', TRUE,TRUE);
+register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', '1.7', TRUE,FALSE);
 register_script('fancybox', $SITEURL.'admin/template/js/fancybox/jquery.fancybox-1.3.4.pack.js', '1.3.4', FALSE,FALSE);
 
+queue_script('jquery', 'both');
 
+register_style('test', 'testing', '1.2', 'screen');
+queue_style('test','both');
 
 /**
  * Include any plugins, depending on where the referring 
@@ -380,12 +383,15 @@ function deregister_script($handle){
  *
  * @param string $handle name for the script to load
  */
-function queue_script($handle){
+function queue_script($handle,$where){
 	global $GS_scripts;
+	$where=strtolower($where);
 	if (array_key_exists($handle, $GS_scripts)){
 		$GS_scripts[$handle]['load']=true;
+		$GS_scripts[$handle]['where']=$where;
 	}
 }
+
 /**
  * De-Queue Script
  *
@@ -400,6 +406,7 @@ function dequeue_script($handle){
 	global $GS_scripts;
 	if (array_key_exists($handle, $GS_scripts)){
 		$GS_scripts[$handle]['load']=false;
+		$GS_scripts[$handle]['where']='';
 	}
 }
 
@@ -413,19 +420,51 @@ function dequeue_script($handle){
  *
  * @param boolean $footer Load only script with footer flag set
  */
-function get_scripts($footer=FALSE){
+function get_scripts_frontend($footer=FALSE){
 	global $GS_scripts;
 	if (!$footer){
-		get_styles();
+		get_styles_frontend();
 	}
 	foreach ($GS_scripts as $script){
-		if (!$footer){
-			if ($script['load']==TRUE && $script['in_footer']==FALSE ){
-				 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
+		if ($script['where']=='front' or $script['where']=='both'){
+			if (!$footer){
+				if ($script['load']==TRUE && $script['in_footer']==FALSE ){
+					 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
+				}
+			} else {
+				if ($script['load']==TRUE && $script['in_footer']==TRUE ){
+					 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
+				}
 			}
-		} else {
-			if ($script['load']==TRUE && $script['in_footer']==TRUE ){
-				 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
+		}
+	}
+}
+
+/**
+ * Get Scripts
+ *
+ * Echo and load scripts
+ *
+ * @since 3.1
+ * @uses $GS_scripts
+ *
+ * @param boolean $footer Load only script with footer flag set
+ */
+function get_scripts_backend($footer=FALSE){
+	global $GS_scripts;
+	if (!$footer){
+		get_styles_backend();
+	}
+	foreach ($GS_scripts as $script){
+		if ($script['where']=='back' or $script['where']=='both'){	
+			if (!$footer){
+				if ($script['load']==TRUE && $script['in_footer']==FALSE ){
+					 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
+				}
+			} else {
+				if ($script['load']==TRUE && $script['in_footer']==TRUE ){
+					 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
+				}
 			}
 		}
 	}
@@ -441,10 +480,11 @@ function get_scripts($footer=FALSE){
  *
  * @param string $handle name for the Style to load
  */
-function queue_style($handle){
+function queue_style($handle,$where=1){
 	global $GS_styles;
 	if (array_key_exists($handle, $GS_styles)){
 		$GS_styles[$handle]['load']=true;
+		$GS_styles[$handle]['where']=$where;
 	}
 }
 
@@ -462,6 +502,7 @@ function dequeue_style($handle){
 	global $GS_styles;
 	if (array_key_exists($handle, $GS_styles)){
 		$GS_styles[$handle]['load']=false;
+		$GS_styles[$handle]['where']='';
 	}
 }
 
@@ -502,11 +543,23 @@ function register_style($handle, $src, $ver, $media,$load=FALSE){
  * @uses $GS_styles
  *
  */
-function get_styles(){
+function get_styles_frontend(){
 	global $GS_styles;
 	foreach ($GS_styles as $style){
-		if ($style['load']==TRUE){
-			 echo '<link href='.$style['src'].'?v='.$style['ver'].' rel="stylesheet" media="'.$style['media'].'">';
+		if ($style['where']=='front' or $style['where']=='both'){
+				if ($style['load']==TRUE){
+				 echo '<link href='.$style['src'].'?v='.$style['ver'].' rel="stylesheet" media="'.$style['media'].'">';
+				}
+		}
+	}
+}
+function get_styles_backend(){
+	global $GS_styles;
+	foreach ($GS_styles as $style){
+		if ($style['where']=='back' or $style['where']=='both'){
+				if ($style['load']==TRUE){
+				 echo '<link href='.$style['src'].'?v='.$style['ver'].' rel="stylesheet" media="'.$style['media'].'">';
+				}
 		}
 	}
 }

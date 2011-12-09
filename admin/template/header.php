@@ -50,6 +50,7 @@ if(get_filename_id()!='index') {
 	<?php 
 		# Plugin hook to allow insertion of stuff into the header
 		if(get_filename_id()!='index') {
+			get_scripts_backend();
 			exec_action('header'); 
 		}
 	?>
