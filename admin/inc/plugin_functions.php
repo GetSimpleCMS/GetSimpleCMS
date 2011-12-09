@@ -21,11 +21,11 @@ define('GSBACK',2);
 define('GSBOTH',3);
 
 // register jquery, fancybox & GS Scripts for loading in the header
-register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', '1.7', FALSE,FALSE);
-register_script('fancybox', $SITEURL.'admin/template/js/fancybox/jquery.fancybox-1.3.4.pack.js', '1.3.4', FALSE,FALSE);
-register_script('getsimple', $SITEURL.'admin/template/js/jquery.getsimple.js', GSVERSION, FALSE,FALSE);
+register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', '1.7', FALSE);
+register_script('fancybox', $SITEURL.'admin/template/js/fancybox/jquery.fancybox-1.3.4.pack.js', '1.3.4',FALSE);
+register_script('getsimple', $SITEURL.'admin/template/js/jquery.getsimple.js', GSVERSION, FALSE);
 // register our stylesheet
-register_style('getsimple', $SITEURL.'admin/template/style.php', GSVERSION, 'screen',FALSE);
+register_style('getsimple', $SITEURL.'admin/template/style.php', GSVERSION, 'screen');
 
 /**
  * Queue our scripts and styles for the backend
