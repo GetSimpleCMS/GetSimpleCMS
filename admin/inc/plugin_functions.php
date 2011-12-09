@@ -15,7 +15,6 @@ $GS_styles        = array();  // used for queing Styles
 
 // constants 
 
-define('GSNONE',0);
 define('GSFRONT',1);
 define('GSBACK',2);
 define('GSBOTH',3);
