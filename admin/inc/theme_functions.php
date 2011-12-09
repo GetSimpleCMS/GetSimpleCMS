@@ -299,6 +299,7 @@ function get_header($full=true) {
 		echo '<meta name="generator" content="'. $site_full_name .'" />'."\n";
 		echo '<link rel="canonical" href="'. get_page_url(true) .'" />'."\n";
 	}
+	get_scripts();
 	exec_action('theme-header');
 }
 
@@ -315,6 +316,7 @@ function get_header($full=true) {
  * @return string HTML for template header
  */
 function get_footer() {
+	get_scripts(TRUE);
 	exec_action('theme-footer');
 }
 

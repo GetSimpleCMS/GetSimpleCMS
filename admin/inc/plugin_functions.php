@@ -10,6 +10,13 @@ $plugins          = array();  // used for option names
 $plugins_info     = array();
 $filters          = array();
 $live_plugins     = array();  // used for enablie/disable functions
+$GS_scripts       = array();  // used for queing Scripts
+$GS_styles        = array();  // used for queing Styles
+
+// register our local copies of jquery and fancybox
+register_script('jquery', 'admin/template/js/jquery-iu-1.7.2.custom.min.js', '1.7', TRUE,TRUE);
+register_script('fancybox', 'admin/template/js/fancybox/jquery.fancybox-1.3.4.pack.js', '1.7', FALSE,FALSE);
+
 
 
 /**
@@ -317,4 +324,190 @@ function exec_filter($script,$data=array()) {
 	return $data;
 }
 
+/**
+ * Register Script
+ *
+ * Register a script to include in Themes
+ *
+ * @since 3.1
+ * @uses $GS_scripts
+ *
+ * @param string $handle name for the script
+ * @param string $src location of the src for loading
+ * @param string $ver script version
+ * @param boolean $in_footer load the script in the footer if true
+ * @param boolean $load automatically queue the script for loading 
+ */
+function register_script($handle, $src, $ver, $in_footer=FALSE,$load=FALSE){
+	global $GS_scripts;
+	$GS_scripts[$handle] = array(
+	  'name' => $handle,
+	  'src' => $src,
+	  'ver' => $ver,
+	  'in_footer' => $in_footer,
+	  'load' => $load
+	);
+	if ($load==TRUE){
+		$GS_scripts[$handle]['load']=TRUE;	
+	}
+	
+}
+
+/**
+ * De-Register Script
+ *
+ * Deregisters a script
+ *
+ * @since 3.1
+ * @uses $GS_scripts
+ *
+ * @param string $handle name for the script to remove
+ */
+function deregister_script($handle){
+	global $GS_scripts;
+	if (array_key_exists($handle, $GS_scripts)){
+		unset($GS_scripts[$handle]);
+	}
+}
+
+/**
+ * Queue Script
+ *
+ * Queue a script for loading
+ *
+ * @since 3.1
+ * @uses $GS_scripts
+ *
+ * @param string $handle name for the script to load
+ */
+function queue_script($handle){
+	global $GS_scripts;
+	if (array_key_exists($handle, $GS_scripts)){
+		$GS_scripts[$handle]['load']=true;
+	}
+}
+/**
+ * De-Queue Script
+ *
+ * Remove a queued script
+ *
+ * @since 3.1
+ * @uses $GS_scripts
+ *
+ * @param string $handle name for the script to load
+ */
+function dequeue_script($handle){
+	global $GS_scripts;
+	if (array_key_exists($handle, $GS_scripts)){
+		$GS_scripts[$handle]['load']=false;
+	}
+}
+
+/**
+ * Get Scripts
+ *
+ * Echo and load scripts
+ *
+ * @since 3.1
+ * @uses $GS_scripts
+ *
+ * @param boolean $footer Load only script with footer flag set
+ */
+function get_scripts($footer=FALSE){
+	global $GS_scripts;
+	if (!$footer){
+		get_styles();
+	}
+	foreach ($GS_scripts as $script){
+		if (!$footer){
+			if ($script['load']==TRUE && $script['in_footer']==FALSE ){
+				 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
+			}
+		} else {
+			if ($script['load']==TRUE && $script['in_footer']==TRUE ){
+				 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
+			}
+		}
+	}
+}
+
+/**
+ * Queue Style
+ *
+ * Queue a Style for loading
+ *
+ * @since 3.1
+ * @uses $GS_styles
+ *
+ * @param string $handle name for the Style to load
+ */
+function queue_style($handle){
+	global $GS_styles;
+	if (array_key_exists($handle, $GS_styles)){
+		$GS_styles[$handle]['load']=true;
+	}
+}
+
+/**
+ * De-Queue Style
+ *
+ * Remove a queued Style
+ *
+ * @since 3.1
+ * @uses $GS_styles
+ *
+ * @param string $handle name for the Style to load
+ */
+function dequeue_style($handle){
+	global $GS_styles;
+	if (array_key_exists($handle, $GS_styles)){
+		$GS_styles[$handle]['load']=false;
+	}
+}
+
+/**
+ * Register Style
+ *
+ * Register a Style to include in Themes
+ *
+ * @since 3.1
+ * @uses $GS_scripts
+ *
+ * @param string $handle name for the Style
+ * @param string $src location of the src for loading
+ * @param string $ver Style version
+ * @param string $media load the Style in the footer if true
+ * @param boolean $load automatically queue the Style for loading 
+ */
+function register_style($handle, $src, $ver, $media,$load=FALSE){
+	global $GS_styles;
+	$GS_styles[$handle] = array(
+	  'name' => $handle,
+	  'src' => $src,
+	  'ver' => $ver,
+	  'media' => $media
+	);
+	if ($load==TRUE){
+		$GS_styles[$handle]['load']=TRUE;	
+	}
+	
+}
+
+/**
+ * Get Styles
+ *
+ * Echo and load Styles
+ *
+ * @since 3.1
+ * @uses $GS_styles
+ *
+ */
+function get_styles(){
+	global $GS_styles;
+	foreach ($GS_styles as $style){
+		if ($style['load']==TRUE){
+			 echo '<link href='.$style['src'].'?v='.$style['ver'].' rel="stylesheet" media="'.$style['media'].'">';
+		}
+	}
+}
 ?>
