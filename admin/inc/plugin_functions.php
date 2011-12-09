@@ -354,9 +354,8 @@ function exec_filter($script,$data=array()) {
  * @param string $src location of the src for loading
  * @param string $ver script version
  * @param boolean $in_footer load the script in the footer if true
- * @param boolean $load automatically queue the script for loading 
  */
-function register_script($handle, $src, $ver, $in_footer=FALSE,$load=FALSE){
+function register_script($handle, $src, $ver, $in_footer=FALSE){
 	global $GS_scripts;
 	$GS_scripts[$handle] = array(
 	  'name' => $handle,
@@ -366,10 +365,6 @@ function register_script($handle, $src, $ver, $in_footer=FALSE,$load=FALSE){
 	  'load' => $load,
 	  'where' => 0
 	);
-	if ($load==TRUE){
-		$GS_scripts[$handle]['load']=TRUE;	
-	}
-	
 }
 
 /**
@@ -533,9 +528,8 @@ function dequeue_style($handle,$where){
  * @param string $src location of the src for loading
  * @param string $ver Style version
  * @param string $media load the Style in the footer if true
- * @param boolean $load automatically queue the Style for loading 
  */
-function register_style($handle, $src, $ver, $media,$load=FALSE){
+function register_style($handle, $src, $ver, $media){
 	global $GS_styles;
 	$GS_styles[$handle] = array(
 	  'name' => $handle,
@@ -543,11 +537,7 @@ function register_style($handle, $src, $ver, $media,$load=FALSE){
 	  'ver' => $ver,
 	  'media' => $media,
 	  'where' => 0
-	);
-	if ($load==TRUE){
-		$GS_styles[$handle]['load']=TRUE;	
-	}
-	
+	);	
 }
 
 /**
