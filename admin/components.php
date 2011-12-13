@@ -127,11 +127,10 @@ if (count($componentsec) != 0) {
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('COMPONENTS')); 
 
 ?>
+	
+<?php include('template/include-nav.php'); ?>
 
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('THEME_MANAGEMENT');?> <span>&raquo;</span> <?php i18n('COMPONENTS');?></h1>
-	<?php include('template/include-nav.php'); ?>
-	<?php include('template/error_checking.php'); ?>
-<div class="bodycontent">
+<div class="bodycontent clearfix">
 	
 	<div id="maincontent">
 	<div class="main">
@@ -159,7 +158,5 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('COMPONENTS'));
 		<?php if ($listc != '') { echo '<div class="compdivlist">'.$listc .'</div>'; } ?>
 	</div>
 
-	
-	<div class="clear"></div>
-	</div>
+</div>
 <?php get_template('footer'); ?>

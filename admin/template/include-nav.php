@@ -21,7 +21,7 @@ if (get_filename_id() == 'load') {
 }
 
 ?>
-
+<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a></h1>
 <ul class="nav <?php echo $plugin_class; ?>">
 	<li><a class="pages" href="pages.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_PAGES'));?>" ><?php i18n('TAB_PAGES');?></a></li>
 	<li><a class="files" href="upload.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_FILES'));?>" ><?php i18n('TAB_FILES');?></a></li>
@@ -41,3 +41,5 @@ if (get_filename_id() == 'load') {
 </div>
 	
 <div class="wrapper">
+
+	<?php include('template/error_checking.php'); ?>

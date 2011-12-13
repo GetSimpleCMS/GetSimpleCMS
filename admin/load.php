@@ -27,12 +27,9 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
 
 ?>
 	
-<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $plugin_info[$plugin_id]['name']; ?></h1>
-
 <?php include('template/include-nav.php'); ?>
-<?php include('template/error_checking.php'); ?>
 
-<div class="bodycontent">
+<div class="bodycontent clearfix">
 	
 	<div id="maincontent">
 		<div class="main">
@@ -56,7 +53,6 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
       }
     ?>
   </div>
-	
-	<div class="clear"></div>
+
 </div>
 <?php get_template('footer'); ?>

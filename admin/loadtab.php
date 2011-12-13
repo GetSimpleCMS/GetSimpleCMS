@@ -26,16 +26,12 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
  
 ?>
 	
-<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo $plugin_info[$plugin_id]['name']; ?></h1>
-
 <?php include('template/include-nav.php'); ?>
-<?php include('template/error_checking.php'); ?>
 
-<div class="bodycontent">
+<div class="bodycontent clearfix">
 	
 	<div id="maincontent">
 		<div class="main">
-
 		<?php 
 			if ($plugin_id == @$_GET['item'])	{
 				call_user_func_array($plugin_info[$plugin_id]['load_data'],array());
@@ -43,7 +39,6 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
 				call_user_func_array($_GET['item'],array());
 			}
 		?>
-
 		</div>
 	</div>
 	
@@ -53,7 +48,6 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
 		</ul>
 		<?php exec_action($plugin_id."-sidebar-extra"); ?>
 	</div>	
-	
-	<div class="clear"></div>
+
 </div>
 <?php get_template('footer'); ?>

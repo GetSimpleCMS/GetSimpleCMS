@@ -185,10 +185,10 @@ if (count($lang_array) != 0) {
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('GENERAL_SETTINGS')); 
 
 ?>
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('GENERAL_SETTINGS');?></h1>
-	<?php include('template/include-nav.php'); ?>
-	<?php include('template/error_checking.php'); ?>
-<div class="bodycontent">
+	
+<?php include('template/include-nav.php'); ?>
+
+<div class="bodycontent clearfix">
 	
 	<div id="maincontent">
 		<form class="largeform" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
@@ -267,15 +267,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('GENERAL_SETTINGS'));
 	</form>
 	
 	</div>
-
-
-
-
 	
 	<div id="sidebar" >
 		<?php include('template/sidebar-settings.php'); ?>		
 	</div>
-	
-	<div class="clear"></div>
-	</div>
+
+</div>
 <?php get_template('footer'); ?>

@@ -87,17 +87,10 @@ $table = get_pages_menu('','',0);
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); 
 
 ?>
+
+<?php include('template/include-nav.php'); ?>
 	
-	<h1>
-		<a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('PAGE_MANAGEMENT'); ?> <span>&raquo;</span> <?php i18n('ALL_PAGES'); ?>		
-	</h1>
-	
-	<?php 
-		include('template/include-nav.php');
-		include('template/error_checking.php'); 
-	?>
-	
-	<div class="bodycontent">
+<div class="bodycontent clearfix">
 	
 	<div id="maincontent">
 	<?php exec_action('pages-main'); ?>
@@ -124,7 +117,6 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 	<div id="sidebar" >
 		<?php include('template/sidebar-pages.php'); ?>
 	</div>
-	
-	<div class="clear"></div>
-	</div>
+
+</div>
 <?php get_template('footer'); ?>

@@ -165,49 +165,40 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION'));
 
 ?>
 	
-		<h1><?php echo $site_full_name; ?> <span>&raquo;</span> <?php i18n('INSTALLATION'); ?></h1>
+		<h1><?php echo $site_full_name; ?></h1>
 	</div>
 </div>
 <div class="wrapper">
-	
-<?php
-	
-	# display error or success messages 
-	if ($status == 'success') {
-		echo '<div class="updated">'. i18n_r('NOTE_REGISTRATION') .' '. $_POST['email'] .'</div>';
-	} 
-	elseif ($status == 'error') {
-		echo '<div class="error">'. i18n_r('NOTE_REGERROR') .'.</div>';
-	}
-	
-	if ($kill != '') {
-		echo '<div class="error">'. $kill .'</div>';
-	}	
-	
-	if ($err != '') {
-		echo '<div class="error">'. $err .'</div>';
-	}
-	
-	if ($random != ''){
-		echo '<div class="updated">'.i18n_r('NOTE_USERNAME').' <b>'. stripslashes($_POST['user']) .'</b> '.i18n_r('NOTE_PASSWORD').' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="welcome.php">'.i18n_r('EMAIL_LOGIN').'</a></div>';
-	}
-?>
 	<div id="maincontent">
+		<?php
+			# display error or success messages 
+			if ($status == 'success') {
+				echo '<div class="updated">'. i18n_r('NOTE_REGISTRATION') .' '. $_POST['email'] .'</div>';
+			} 
+			elseif ($status == 'error') {
+				echo '<div class="error">'. i18n_r('NOTE_REGERROR') .'.</div>';
+			}
+			if ($kill != '') {
+				echo '<div class="error">'. $kill .'</div>';
+			}	
+			if ($err != '') {
+				echo '<div class="error">'. $err .'</div>';
+			}
+			if ($random != ''){
+				echo '<div class="updated">'.i18n_r('NOTE_USERNAME').' <b>'. stripslashes($_POST['user']) .'</b> '.i18n_r('NOTE_PASSWORD').' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="welcome.php">'.i18n_r('EMAIL_LOGIN').'</a></div>';
+			}
+		?>
 		<div class="main" >
 			<h3><?php echo $site_full_name .' '. i18n_r('INSTALLATION'); ?></h3>
 			<form action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 				<input name="siteurl" type="hidden" value="<?php echo $fullpath; ?>" />
 				<input name="lang" type="hidden" value="<?php echo $LANG; ?>" />
-				<div class="leftsec">
-					<p><label for="sitename" ><?php i18n('LABEL_WEBSITE'); ?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php if(isset($_POST['sitename'])) { echo $_POST['sitename']; } ?>" /></p>
-					<p><label for="user" ><?php i18n('LABEL_USERNAME'); ?>:</label><input class="text" name="user" id="user" type="text" value="<?php if(isset($_POST['user'])) { echo $_POST['user']; } ?>" /></p>
-					<p><label for="email" ><?php i18n('LABEL_EMAIL'); ?>:</label><input class="text" name="email" id="email" type="email" value="<?php if(isset($_POST['email'])) { echo $_POST['email']; } ?>" /></p>
-				</div>
-				<div class="clear"></div>
+				<p><label for="sitename" ><?php i18n('LABEL_WEBSITE'); ?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php if(isset($_POST['sitename'])) { echo $_POST['sitename']; } ?>" /></p>
+				<p><label for="user" ><?php i18n('LABEL_USERNAME'); ?>:</label><input class="text" name="user" id="user" type="text" value="<?php if(isset($_POST['user'])) { echo $_POST['user']; } ?>" /></p>
+				<p><label for="email" ><?php i18n('LABEL_EMAIL'); ?>:</label><input class="text" name="email" id="email" type="email" value="<?php if(isset($_POST['email'])) { echo $_POST['email']; } ?>" /></p>
 				<p><input class="submit" type="submit" name="submitted" value="<?php i18n('LABEL_INSTALL'); ?>" /></p>
 			</form>
 	</div>
-	
 </div>
 
 <div class="clear"></div>

@@ -100,7 +100,7 @@ html {overflow-y: scroll;}
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='<?php echo $primary_4; ?>', endColorstr='<?php echo $primary_2; ?>',GradientType=0 ); /* ie */
 	margin:0 0 25px 0;
 	}
-	.header .wrapper {height:115px;position:relative;border:none;}
+	.header .wrapper {height:95px;position:relative;border:none;}
 	.wrapper .nav {
 	list-style:none;
 	font-size:13px;
@@ -303,26 +303,19 @@ html {overflow-y: scroll;}
 	}
 .inner {padding:20px;}
 .header h1 {
-	font-size:20px;
+	font-size:25px;
 	font-family:Georgia, Times, Times New Roman, serif;
 	position:absolute;
 	text-shadow: 1px 1px 0px <?php echo $primary_2; ?>;
-	top:30px;
+	top:17px;
 	left:0;
 	}
 	.header h1 a:link, .header h1 a:visited, .header h1 a:hover {
 		font-weight:normal;
 		color:<?php echo $primary_5; ?>;
 		text-decoration:none;
-		font-size:24px;
 		}
 	.header h1 a:hover  {color:#FFF;}
-	.header h1 span {
-		color:<?php echo $primary_6; ?>;
-		}
-	.header h1 span.filename {
-		font-style:italic;
-	}
 	.wrapper h2 {
 		font-size:18px;
 		font-family:Georgia, Times, Times New Roman, serif;
@@ -337,8 +330,10 @@ html {overflow-y: scroll;}
 		font-size:19px;
 		font-family:Georgia, Times, Times New Roman, serif;
 		font-weight:normal;
+		font-style:italic;
 		color:<?php echo $secondary_1; ?>;
 		margin:0 0 20px 0;
+		text-shadow:1px 1px 0 #fff;
 		}
 	h3 em {font-style:normal;}
 	h3.floated {
@@ -933,16 +928,17 @@ table tr.disabled td b {color:#666;}
 
 /* Logged out specific styles */
 body#index {background:#f9f9f9;}
-#index .header,
-#resetpassword .header {display:none;}
+#index .header,#resetpassword .header,#setup .header,#install .header,
+#setup .gslogo,#install .gslogo,#index .gslogo,#resetpassword .gslogo {display:none;}
 #index #maincontent,
-#resetpassword #maincontent {width:100%;}
-index #maincontent h3,
-#resetpassword #maincontent h3 {
-	text-shadow:1px 1px 0 #fff;
-}
+#resetpassword #maincontent,
+#setup #maincontent,
+#install #maincontent {width:100%;}
+
 #index #maincontent .main,
-#resetpassword #maincontent .main {margin:50px auto 0 auto;width:270px;float:none;text-align:left;
+#resetpassword #maincontent .main,
+#setup #maincontent .main,
+#install #maincontent .main {margin:50px auto 0 auto;float:none;text-align:left;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	-khtml-border-radius: 5px;
@@ -950,6 +946,14 @@ index #maincontent h3,
 	box-shadow: rgba(0,0,0, 0.05) 0px 0px 10px;  
 	-moz-box-shadow: rgba(0,0,0, 0.05) 0px 0px 10px;  
 	-webkit-box-shadow: rgba(0,0,0, 0.05) 0px 0px 10px;
+	background:#FFF;
+	width:645px;
+}
+#setup #maincontent .main {width:270px;}
+#setup input.text {width:250px;}
+#index #maincontent .main,
+#resetpassword #maincontent .main {
+	width:270px;
 	border-bottom:1px solid #999;
 	border-right:1px solid #999;
 	background:#FFF;
@@ -966,16 +970,13 @@ index #maincontent h3,
 #resetpassword form p {margin-bottom:15px;}
 #index p.cta a,
 #resetpassword p.cta a {font-weight:100;}
+#setup .error, #setup .updated,
+#install .error, #install .updated,
 #index .error, #index .updated,
 #resetpassword .error, #resetpassword .updated {margin:25px auto -35px auto;width:290px;line-height:18px;padding:5px 10px;}
-#index #footer,
-#resetpassword #footer {width:270px;border-top:none;margin:0 auto 20px auto;text-align:center;opacity:.7}
-#index #footer:hover,
-#resetpassword #footer:hover {opacity:1}
-#index .footer-left,
-#resetpassword .footer-left  {float:none;width:100%;}
-#index .gslogo,
-#resetpassword .gslogo {display:none;}
+#setup #footer,#install #footer,#index #footer, #resetpassword #footer {width:270px;border-top:none;margin:0 auto 20px auto;text-align:center;opacity:.7}
+#index .footer-left,#resetpassword .footer-left  {float:none;width:100%;}
+
 .desc {font-size:12px;line-height:17px;border-bottom:1px dotted #ccc;padding:0 0 15px 0;margin:0 0 5px 0;}
 
 #filter-search  {margin:0 0 10px 0;display:none;}

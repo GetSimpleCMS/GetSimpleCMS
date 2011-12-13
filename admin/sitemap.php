@@ -23,14 +23,10 @@ if (!generate_sitemap()) {
 get_template('header', cl($SITENAME).' &raquo; '.strip_tags(i18n_r('SIDE_VIEW_SITEMAP'))); 
 
 ?>
-
-	<h1>
-		<a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo strip_tags(i18n_r('SIDE_VIEW_SITEMAP')); ?>
-	</h1>
 	
-	<?php include('template/include-nav.php');?>
-	<?php include('template/error_checking.php');?>
-	<div class="bodycontent">
+<?php include('template/include-nav.php'); ?>
+
+<div class="bodycontent clearfix">
 	<div id="maincontent">
 		<div class="main" >
 			<h3 class="floated"><?php echo i18n('SIDE_VIEW_SITEMAP'); ?></h3>
@@ -43,9 +39,10 @@ get_template('header', cl($SITENAME).' &raquo; '.strip_tags(i18n_r('SIDE_VIEW_SI
 		
 		</div>
 	</div>
-		<div id="sidebar" >
-		<?php include('template/sidebar-theme.php'); ?>
-		</div>	
-	<div class="clear"></div>
-	</div>
+	
+	<div id="sidebar" >
+	<?php include('template/sidebar-theme.php'); ?>
+	</div>	
+
+</div>
 <?php get_template('footer'); ?>

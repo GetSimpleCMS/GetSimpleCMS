@@ -117,9 +117,7 @@ if (file_exists($thisfilew)) {
 	$PRETTYURLS = $dataw->PRETTYURLS;
 	$PERMALINK = $dataw->PERMALINK;
 } 
-if ($SITEURL==""){
-	$SITEURL=suggest_site_path();
-}
+
 
 /** grab user data */
 if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {

@@ -119,11 +119,10 @@ if (isset($_GET['newfolder'])) {
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT')); 
 
 ?>
+	
+<?php include('template/include-nav.php'); ?>
 
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php echo i18n_r('FILE_MANAGEMENT'); ?></h1>
-	<?php include('template/include-nav.php');?>
-	<?php include('template/error_checking.php');?>
-	<div class="bodycontent">
+<div class="bodycontent clearfix">
 	<div id="maincontent">
 		<div class="main" >
 		<h3 class="floated"><?php echo i18n('UPLOADED_FILES'); ?><span id="filetypetoggle">&nbsp;&nbsp;/&nbsp;&nbsp;<?php echo i18n('SHOW_ALL'); ?></span></h3>
@@ -305,9 +304,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
 		</div>
 		</div>
 	</div>
-		<div id="sidebar" >
-		<?php include('template/sidebar-files.php'); ?>
-		</div>	
-	<div class="clear"></div>
-	</div>
+	
+	<div id="sidebar" >
+	<?php include('template/sidebar-files.php'); ?>
+	</div>	
+	
+</div>
 <?php get_template('footer'); ?>

@@ -89,12 +89,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PLUGINS_MANAGEMENT'));
 
 ?>
 	
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('PLUGINS_MANAGEMENT'); ?></h1>
-	
-	<?php include('template/include-nav.php'); ?>
-	<?php include('template/error_checking.php'); ?>
-	
-	<div class="bodycontent">
+<?php include('template/include-nav.php'); ?>
+
+<div class="bodycontent clearfix">
 	
 	<div id="maincontent">
 		<div class="main" >
@@ -122,8 +119,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PLUGINS_MANAGEMENT'));
 	<div id="sidebar" >
 		<?php include('template/sidebar-plugins.php'); ?>
 	</div>
-	
-	<div class="clear"></div>
-	</div>
+
+</div>
 
 <?php get_template('footer'); ?>

@@ -45,12 +45,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT').' &raq
 
 ?>
 	
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('BAK_MANAGEMENT'); ?> <span>&raquo;</span> <?php i18n('WEBSITE_ARCHIVES'); ?></h1>
-	
-	<?php include('template/include-nav.php'); ?>
-	<?php include('template/error_checking.php'); ?>
+<?php include('template/include-nav.php'); ?>
 
-	<div class="bodycontent">
+<div class="bodycontent clearfix">
 	
 	<div id="maincontent">
 		<div class="main" >
@@ -97,7 +94,5 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT').' &raq
 		<?php include('template/sidebar-backups.php'); ?>
 	</div>
 
-	
-	<div class="clear"></div>
-	</div>
+</div>
 <?php get_template('footer'); ?>

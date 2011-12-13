@@ -52,11 +52,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT').' &ra
 
 ?>
 	
-	<h1><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?></a> <span>&raquo;</span> <?php i18n('FILE_MANAGEMENT');?> <span>&raquo;</span> <?php i18n('IMAGES');?></h1>
-	<?php include('template/include-nav.php'); ?>
-	<?php include('template/error_checking.php'); ?>
+<?php include('template/include-nav.php'); ?>
 
-<div class="bodycontent">
+<div class="bodycontent clearfix">
 	<div id="maincontent">
 			
 		<div class="main">
@@ -108,9 +106,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT').' &ra
 	<div id="sidebar" >
 		<?php include('template/sidebar-files.php'); ?>
 	</div>	
-	
-	<div class="clear"></div>
-	
+
 	<script language="Javascript">
 	  jQuery(document).ready(function() { 
 	    		

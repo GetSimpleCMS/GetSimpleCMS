@@ -120,7 +120,7 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') );
 
 ?>
 	
-	<h1><?php echo $site_full_name; ?> <span>&raquo;</span> <?php i18n('INSTALLATION'); ?></h1>
+	<h1><?php echo $site_full_name; ?></h1>
 </div>
 </div>
 <div class="wrapper">
