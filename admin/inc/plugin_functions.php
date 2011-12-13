@@ -19,9 +19,6 @@ define('GSFRONT',1);
 define('GSBACK',2);
 define('GSBOTH',3);
 
-if ($SITEURL==""){
-	$SITEURL=suggest_site_path();
-}
 
 // register jquery, fancybox & GS Scripts for loading in the header
 register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', '1.7', FALSE);

@@ -150,6 +150,7 @@ jQuery(document).ready(function() {
 		var myval = $(this).val();
 		$(this).parents('.compdiv').find(".compslugcode").html("'"+myval.toLowerCase()+"'");
 		$(this).parents('.compdiv').find("b.editable").html(myval);
+		$(this).parents('.compdiv').find("input.comptitle").val(myval);
 		$("b.editable").show();
 		$('#changetitle').remove();
 	});

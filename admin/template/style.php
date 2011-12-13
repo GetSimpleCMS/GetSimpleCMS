@@ -180,7 +180,7 @@ html {overflow-y: scroll;}
 		color:#FFF;background:<?php echo $primary_0; ?>;
 		text-shadow: 1px 1px 0px #000;
 		}	
-	.wrapper .nav li {float:left; margin:0 5px 0 0;position:relative;}
+	.wrapper .nav li {float:left; margin:0 8px 0 0;position:relative;}
 	.wrapper .nav li.rightnav { float:right; margin:0 0 0 0; font-size:11px; }
 	.wrapper .nav li.rightnav a.first {
 		padding:4px 10px;
@@ -244,7 +244,8 @@ html {overflow-y: scroll;}
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFF66), color-stop(100%,#FFCC33));
 	}
 	
-	.wrapper .nav li a em, .wrapper #pill li a em {font-style:normal;border-bottom:1px dotted #666;}
+	.wrapper .nav li a em, .wrapper #pill li a em {font-style:normal;}
+	.wrapper .nav li a:hover em, .wrapper .nav li a:focus em {border-bottom:1px dotted #666;}
 	.wrapper #pill {list-style:none;position:absolute;top:0px;right:0;font-size:11px;}
 	.wrapper #pill li {float:right;}
 	.wrapper #pill li.leftnav a {
@@ -323,15 +324,15 @@ html {overflow-y: scroll;}
 		font-style:italic;
 	}
 	.wrapper h2 {
-	font-size:18px;
-	font-family:Georgia, Times, Times New Roman, serif;
-	color:#777;
-	margin:0 0 20px 0;
+		font-size:18px;
+		font-family:Georgia, Times, Times New Roman, serif;
+		color:#777;
+		margin:0 0 20px 0;
 	}
 	.wrapper h2 span {
 		color:#bbb;
 		font-style:italic;
-		}
+	}
 	h3 {
 		font-size:19px;
 		font-family:Georgia, Times, Times New Roman, serif;
@@ -427,8 +428,9 @@ html {overflow-y: scroll;}
 	margin-left:13px;
 	text-shadow: 1px 1px 0px #000;
 }
-#sidebar .snav li a em  {font-style:normal;border-bottom:1px dotted #666;}
-#sidebar .snav li a.current em {font-style:normal;border-bottom:1px dotted #fff;}
+#sidebar .snav li a em  {font-style:normal;}
+#sidebar .snav li a:hover em, #sidebar .snav li a:focus em {border-bottom:1px dotted #666;}
+#sidebar .snav li a.current:hover em, #sidebar .snav li a.current:focus em  {border-bottom:1px dotted #fff;}
 #sidebar .snav small {color:#666;}
 .edit-nav {margin:0 0 15px 0;}
 .edit-nav a {
@@ -475,8 +477,8 @@ html {overflow-y: scroll;}
 	line-height:14px !important;
 	text-shadow: 1px 1px 0px <?php echo $secondary_0; ?>;
 }
-.edit-nav a:link em, .edit-nav a:visited em {font-style:normal;border-bottom:1px dotted #999;}
-.edit-nav a.current em, .edit-nav a:hover em {font-style:normal;border-bottom:1px dotted #FFF;}
+.edit-nav a:link em, .edit-nav a:visited em {font-style:normal;}
+.edit-nav a.current em, .edit-nav a:hover em, .edit-nav a:focus em {font-style:normal;border-bottom:1px dotted #FFF;}
 
 
 
@@ -521,7 +523,7 @@ sup {
 #maincontent .main {
 	padding:20px;
 	background:#fff;
-	border:1px solid #c3c3c3;
+	border:1px solid #c8c8c8;
 	margin:0 0 30px 0;
 	box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;  
 	-moz-box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;  
@@ -771,15 +773,16 @@ table.simple td.title {width:125px;color:#222;font-weight:bold;}
 
 /* footer */
 #footer {
-	border-top:1px solid #ccc;
+	border-top:1px solid #e3e3e3;
 	text-shadow:1px 1px 0 #fff;
 	margin:40px 0 0 0;
 	padding:10px 0;
 	font-size:11px;
-	color:#777;
+	color:#888;
 }
 #footer p {margin:0 0 8px 0;}
-#footer a {font-weight:100;}	
+#footer a:link, #footer a:visited {font-weight:100;color:#888;}
+#footer a:focus, #footer a:hover {font-weight:100;color:#333;}	
 #footer .gslogo a {
 float:right;width:60px;text-align:right;
 opacity:.10;	
