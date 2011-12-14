@@ -69,9 +69,9 @@ foreach ($live_plugins as $file=>$en) {
 	$apiback = get_api_details('plugin', $file);
 	$response = json_decode($apiback);
 	if ($response->status == 'successful') {
-		register_plugin( pathinfo_filename($file), $file, 'disabled', $response->owner, '', $response->name, '', '');
+		register_plugin( pathinfo_filename($file), $file, 'disabled', $response->owner, '', 'Disabled Plugin', '', '');
 	} else {
-  		register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', 'Disabled Plugin', '', '');
+  	register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', 'Disabled Plugin', '', '');
 	}
   }
 }

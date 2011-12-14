@@ -48,25 +48,24 @@ foreach ($pluginfiles as $fi) {
 			$cls_Disabled = 'hidden';
 			$trclass='disabled';
 		}
-		$table .= '<tr id="tr-'.$counter.'" class="'.$trclass.'" >';
-		$table .= '<td><b>'.$plugin_info[$pathName]['name'] .'</b>';
-		if ($trclass=='enabled'){
-			$api_data = json_decode(get_api_details('plugin', $fi));
-			if ($api_data->status == 'successful') {
-				if ($api_data->version > $plugin_info[$pathName]['version']) {
-					$table .= '<br /><a class="updatelink" href="'.$api_data->path.'" target="_blank">'.i18n_r('UPDATE_AVAILABLE').' '.$api_data->version.'</a>';
-					$needsupdate = true;
-				}
+		$api_data = json_decode(get_api_details('plugin', $fi));
+		if ($api_data->status == 'successful') {
+			if ($api_data->version > $plugin_info[$pathName]['version']) {
+				$updatelink = null;
+				$updatelink = '<br /><a class="updatelink" href="'.$api_data->path.'" target="_blank">'.i18n_r('UPDATE_AVAILABLE').' '.$api_data->version.'</a>';
+				$needsupdate = true;
 			}
-		}
-		$table .= '</td>';
-		$table .= '<td><span>'.$plugin_info[$pathName]['description'] .'<br /><b>';
-		if ($plugin_info[$pathName]['version']!='disabled'){
-			$table .= i18n_r('PLUGIN_VER') .' '. $plugin_info[$pathName]['version'].'</b> &mdash; '.i18n_r('AUTHOR').': <a href="'.$plugin_info[$pathName]['author_url'].'" target="_blank">'.$plugin_info[$pathName]['author'].'</a></span></td>';
+			$plugin_title = '<a href="'.$api_data->path.'" target="_blank">'.$api_data->name.'</a>';
 		} else {
-			$table .= "</td>";
+			$plugin_title = $plugin_info[$pathName]['name'];
 		}
-	  	$table.= '<td style="width:60px;" class="status" >
+		$table .= '<tr id="tr-'.$counter.'" class="'.$trclass.'" >';
+		$table .= '<td style="width:150px" ><b>'.$plugin_title.'</b></td>';
+		$table .= '<td><span>'.$plugin_info[$pathName]['description'];
+		if ($plugin_info[$pathName]['version']!='disabled'){
+			$table .= '<br /><b>'.i18n_r('PLUGIN_VER') .' '. $plugin_info[$pathName]['version'].'</b> &mdash; '.i18n_r('AUTHOR').': <a href="'.$plugin_info[$pathName]['author_url'].'" target="_blank">'.$plugin_info[$pathName]['author'].'</a></span>';
+		} 
+	  $table.= $updatelink.'</td><td style="width:60px;" class="status" >
 	  		<a href="plugins.php?set='.$fi.$setNonce.'" class="toggleEnable '.$cls_Enabled.'" style="padding: 1px 3px;" title="'.i18n_r('ENABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('ENABLE').'</a>
 	  		<a href="plugins.php?set='.$fi.$setNonce.'" class="cancel toggleEnable '.$cls_Disabled.'" title="'.i18n_r('DISABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('DISABLE').'</a>
 	  	</td>';	  
