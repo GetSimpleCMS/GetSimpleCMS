@@ -581,7 +581,8 @@ form input.capslock {
 }
 
 textarea#codetext { 
-	height:660px; 
+	height:660px;
+	width:99%; 
 	font-family: Consolas, Monaco, "Courier New", Courier, monospace;
 	font-size: 12px;line-height:18px;
 	overflow: scroll; 
@@ -1032,6 +1033,9 @@ h5 .crumbs, div.h5 .crumbs {float:left;}
 #menu-order li:hover {border:1px solid #ccc;background:#f6f6f6;}
 #menu-order li em {float:right;color:#666;}
 #menu-order li.placeholder-menu {height: 18px; background:#FFB164;border:1px solid #FF9933;}
+
+#theme-edit #maincontent {width:100%;}
+#theme-edit #sidebar {display:none;}
 
 <?php
 file_put_contents($cachefile, ob_get_contents());
