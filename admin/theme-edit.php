@@ -101,10 +101,32 @@ foreach ($templates as $file){
 }
 $theme_templates .= "</select></span>";
 
+register_script('codemirror', $SITEURL.'admin/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);
+register_style('codemirror-css',$SITEURL.'admin/template/js/codemirror/lib/codemirror.css','screen',FALSE);
+register_style('codemirror-theme',$SITEURL.'admin/template/js/codemirror/theme/default.css','screen',FALSE);
+
+queue_script('codemirror', GSBACK);
+queue_style('codemirror-css', GSBACK);
+queue_style('codemirror-theme', GSBACK);
+
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); 
 ?>
-	
+
 <?php include('template/include-nav.php'); ?>
+
+<script>
+window.onload = function() {
+      var editor = CodeMirror.fromTextArea(document.getElementById("codetext"), {
+        lineNumbers: true,
+        matchBrackets: true,
+        indentUnit: 4,
+        indentWithTabs: true,
+        enterMode: "keep",
+        tabMode: "shift",
+        theme:'default'
+      });
+     }
+</script>
 
 <div class="bodycontent clearfix">
 	
@@ -122,7 +144,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT'));
 		
 		<form action="<?php myself(); ?>?t=<?php echo $TEMPLATE; ?>&amp;f=<?php echo $TEMPLATE_FILE; ?>" method="post" >
 			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
-			<p><textarea name="content" id="codetext" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea></p>
+			<textarea name="content" id="codetext" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
 			<input type="hidden" value="<?php echo tsl($TEMPLATE) . $TEMPLATE_FILE; ?>" name="edited_file" />
 			<?php exec_action('theme-edit-extras'); ?>
 			<p id="submit_line" >
