@@ -33,20 +33,6 @@ Debugger.log = function(message) {
 jQuery(document).ready(function() { 
 
 	var loadingAjaxIndicator = $('#loader');
-	
-	function DeleteComp(id) {
-		var message = $("#del-" + id).attr("title");
-		var answer = confirm(message);
-	  loadingAjaxIndicator.show();
-	  if (answer){
-	  	$("#section-" + id).slideToggle('40000').remove();
-	  	if($("#divlist-" + id).length) {
-	  		$("#divlist-" + id).remove();
-	  	}  	
-	  }
-	  loadingAjaxIndicator.fadeOut(1000);
-		return false;
-	};
 
 	
 	function checkCoords() {
@@ -128,12 +114,30 @@ jQuery(document).ready(function() {
 		$e.preventDefault();
 		loadingAjaxIndicator.show();
 		var id = $("#id").val();
-		$("#divTxt").append('<div style="display:none;" class="compdiv" id="section-' + id + '"><table class="comptable"><tr><td><b>Title: </b><input type="text" class="text newtitle" name="title[]" value="" /></td><td class="delete"><a href="#" title="Delete Component:?" id="del-'+ id +'" onclick="DeleteComp('+ id +'); return false;" >&times;</a></td></tr></table><textarea name="val[]"></textarea><input type="hidden" name="slug[]" value="" /><input type="hidden" name="id[]" value="' + id + '" /><div>');
+		$("#divTxt").append('<div style="display:none;" class="compdiv" id="section-' + id + '"><table class="comptable"><tr><td><b>Title: </b><input type="text" class="text newtitle" name="title[]" value="" /></td><td class="delete"><a href="#" title="Delete Component:?" class="delcomponent" id="del-'+ id +'" rel="'+ id +'" >&times;</a></td></tr></table><textarea name="val[]"></textarea><input type="hidden" name="slug[]" value="" /><input type="hidden" name="id[]" value="' + id + '" /><div>');
 		$("#section-" + id).slideToggle('fast');
 		id = (id - 1) + 2;
 		$("#id").val(id);
 		loadingAjaxIndicator.fadeOut(500);
 		$('#submit_line').fadeIn();
+	});
+	$('.delcomponent').live("click", function($e) {
+		$e.preventDefault();
+		var message = $(this).attr("title");
+		var compid = $(this).attr("rel");
+		var answer = confirm(message);
+	  if (answer){
+	  	loadingAjaxIndicator.show();
+	  	var myparent = $(this).parents('.compdiv');
+	  	myparent.slideUp('fast', function () {
+		  	if($("#divlist-" + compid).length) {
+		  		$("#divlist-" + compid).remove();
+		  	}
+		  	myparent.remove();
+	  	}); 
+	  	loadingAjaxIndicator.fadeOut(1000); 	
+	  }
+	  
 	});
 	$("b.editable").dblclick(function () {
 		var t = $(this).html();

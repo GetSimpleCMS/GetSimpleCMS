@@ -207,7 +207,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('GENERAL_SETTINGS'));
 		<div class="clear"></div>
 		
 		<div class="leftsec">
-			<p><label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: <span class="right">(<a href="http://get-simple.info/wiki/pretty_urls" target="_blank" ><?php i18n('MORE');?></a>)</span></label><input class="text" name="permalink" id="permalink" type="text" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /></p>
+			<p><label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: <span class="right"><a href="http://get-simple.info/wiki/pretty_urls" target="_blank" ><?php i18n('MORE');?></a></span></label><input class="text" name="permalink" id="permalink" type="text" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /></p>
 		</div>
 		<div class="clear"></div>
 		
@@ -238,7 +238,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('GENERAL_SETTINGS'));
 			</p>
 		</div>
 		<div class="rightsec">
-			<p><label for="lang" ><?php i18n('LANGUAGE');?>: <span class="right">(<a href="http://get-simple.info/wiki/languages" target="_blank" ><?php i18n('MORE');?></a>)</span></label>
+			<p><label for="lang" ><?php i18n('LANGUAGE');?>: <span class="right"><a href="http://get-simple.info/wiki/languages" target="_blank" ><?php i18n('MORE');?></a></span></label>
 			<select name="lang" id="lang" class="text">
 				<?php echo $langs; ?>
 			</select>
