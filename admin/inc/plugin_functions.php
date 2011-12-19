@@ -23,7 +23,8 @@ if ($SITEURL==""){
 }
 
 // register jquery, fancybox & GS Scripts for loading in the header
-register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', '1.7', FALSE);
+register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', '1.7.1', FALSE);
+register_script('jquery-ui','http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.js','1.7.2',FALSE);
 register_script('fancybox', $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox-1.3.4.pack.js', '1.3.4',FALSE);
 register_script('getsimple', $SITEURL.$GSADMIN.'/template/js/jquery.getsimple.js', GSVERSION, FALSE);
 // register our stylesheet
