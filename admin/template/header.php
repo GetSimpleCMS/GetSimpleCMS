@@ -23,11 +23,15 @@ if(get_filename_id()!='index') {
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 	<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
-	
+	<link rel="stylesheet" type="text/css" href="template/style.php?v=<?php echo GSVERSION; ?>" media="screen" />
+
 	<?php 
 		get_scripts_backend();
 	?>
 	
+	<!-- GetSimple specific files -->		
+	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
+
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
 	
 	<!-- Javascript Plugins -->
@@ -39,12 +43,9 @@ if(get_filename_id()!='index') {
 	<script type="text/javascript" src="template/js/jcrop/jquery.Jcrop.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="template/js/jcrop/jquery.Jcrop.css" media="screen" />
 	<?php } ?>
-	<?php if(get_filename_id()=='menu-manager') { ?>
-	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
-	<?php } ?>
 	
-	<script type="text/javascript" src="template/js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-	<link rel="stylesheet" type="text/css" href="template/js/fancybox/jquery.fancybox-1.3.4.css" media="screen" />		
+	<?php if(get_filename_id()=='menu-manager') { queue_script('jquery-ui', GSBACK); } ?>
+	
 	
 	<?php 
 		# Plugin hook to allow insertion of stuff into the header
