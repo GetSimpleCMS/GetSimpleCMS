@@ -102,12 +102,25 @@ foreach ($templates as $file){
 $theme_templates .= "</select></span>";
 
 register_script('codemirror', $SITEURL.'admin/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);
+register_script('codemirror-search', $SITEURL.'admin/template/js/codemirror/lib/searchcursor.js', '0.2.0', FALSE);
+register_script('codemirror-search-cursor', $SITEURL.'admin/template/js/codemirror/lib/search.js', '0.2.0', FALSE);
+register_script('codemirror-dialog', $SITEURL.'admin/template/js/codemirror/lib/dialog.js', '0.2.0', FALSE);
+register_script('codemirror-folding', $SITEURL.'admin/template/js/codemirror/lib/foldcode.js', '0.2.0', FALSE);
+
 register_style('codemirror-css',$SITEURL.'admin/template/js/codemirror/lib/codemirror.css','screen',FALSE);
 register_style('codemirror-theme',$SITEURL.'admin/template/js/codemirror/theme/default.css','screen',FALSE);
+register_style('codemirror-dialog',$SITEURL.'admin/template/js/codemirror/lib/dialog.css','screen',FALSE);
 
 queue_script('codemirror', GSBACK);
+queue_script('codemirror-search', GSBACK);
+queue_script('codemirror-search-cursor', GSBACK);
+queue_script('codemirror-dialog', GSBACK);
+queue_script('codemirror-folding', GSBACK);
+
+
 queue_style('codemirror-css', GSBACK);
 queue_style('codemirror-theme', GSBACK);
+queue_style('codemirror-dialog', GSBACK);
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); 
 ?>
@@ -116,6 +129,33 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT'));
 
 <script>
 window.onload = function() {
+	  var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder);
+	  function keyEvent(cm, e) {
+	    if (e.keyCode == 81 && e.ctrlKey) {
+	      if (e.type == "keydown") {
+	        e.stop();
+	        setTimeout(function() {foldFunc(cm, cm.getCursor().line);}, 50);
+	      }
+	      return true;
+	    }
+	  }
+	  function toggleFullscreenEditing()
+	    {
+	        var editorDiv = $('.CodeMirror-scroll');
+	        if (!editorDiv.hasClass('fullscreen')) {
+	            toggleFullscreenEditing.beforeFullscreen = { height: editorDiv.height(), width: editorDiv.width() }
+	            editorDiv.addClass('fullscreen');
+	            editorDiv.height('100%');
+	            editorDiv.width('100%');
+	            editor.refresh();
+	        }
+	        else {
+	            editorDiv.removeClass('fullscreen');
+	            editorDiv.height(toggleFullscreenEditing.beforeFullscreen.height);
+	            editorDiv.width(toggleFullscreenEditing.beforeFullscreen.width);
+	            editor.refresh();
+	        }
+	    }
       var editor = CodeMirror.fromTextArea(document.getElementById("codetext"), {
         lineNumbers: true,
         matchBrackets: true,
@@ -123,9 +163,19 @@ window.onload = function() {
         indentWithTabs: true,
         enterMode: "keep",
         tabMode: "shift",
-        theme:'default'
-      });
+        theme:'default',
+    	onGutterClick: foldFunc,
+    	extraKeys: {"Ctrl-Q": function(cm){foldFunc(cm, cm.getCursor().line);},
+    				"F11": toggleFullscreenEditing, "Esc": toggleFullscreenEditing},
+        onCursorActivity: function() {
+		   	editor.setLineClass(hlLine, null);
+		   	hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
+		}
+      	});
+     var hlLine = editor.setLineClass(0, "activeline");
+    
      }
+     
 </script>
 
 <div class="bodycontent clearfix">
