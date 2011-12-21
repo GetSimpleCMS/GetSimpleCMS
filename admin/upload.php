@@ -261,7 +261,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
 					echo '<tr class="All '.$upload['type'].' '.$cclass.'" >';
 					echo '<td class="imgthumb" >';
 					if ($upload['type'] == i18n_r('IMAGES') .' Images') {
-						$gallery = 'rel="facybox"';
+						$gallery = 'rel=" facybox_i"';
 						$pathlink = 'image.php?i='.$upload['name'].'&amp;path='.$subPath;
 						$thumbLink = $urlPath.'thumbsm.'.$upload['name'];
 						if (file_exists(GSTHUMBNAILPATH.$thumbLink)) {
@@ -269,7 +269,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
 						} else {
 							$imgSrc='<img src="inc/thumb.php?src='. $urlPath . $upload['name'] .'&amp;dest='. $thumbLink .'&amp;f=1" />';
 						}
-						echo '<a href="'. $path . $upload['name'] .'" title="'. $upload['name'] .'" rel="facybox" >'.$imgSrc.'</a>';
+						echo '<a href="'. $path . $upload['name'] .'" title="'. $upload['name'] .'" rel=" facybox_i" >'.$imgSrc.'</a>';
 					} else {
 						$gallery = '';
 						$controlpanel = '';

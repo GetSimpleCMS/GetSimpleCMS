@@ -236,10 +236,18 @@ jQuery(document).ready(function() {
 	popAlertMsg();
 	
 	if(jQuery().fancybox) {
-		$('a[rel*=facybox]').fancybox();
-		$('a[rel*=facybox_s]').fancybox();
+		$('a[rel*=facybox]').fancybox({
+			type: 'ajax',
+			padding: 0,
+			scrolling: 'auto'
+		});
+		$('a[rel*=facybox_i]').fancybox();
+		$('a[rel*=facybox_s]').fancybox({
+			type: 'ajax',
+			padding: 0,
+			scrolling: 'no'
+		});
 	}
-
 	
 	//plugins.php
 	$(".toggleEnable").live("click", function($e) {
