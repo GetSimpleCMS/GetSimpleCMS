@@ -45,7 +45,7 @@ list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($src_folder .$sub
 
 if (file_exists($thumb_folder . 'thumbnail.' . $src)) {
 	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . 'thumbnail.'.$src);
-	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder_rel . 'thumbnail.'. $src .'" rel="facybox" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
+	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder_rel . 'thumbnail.'. $src .'" rel="facybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 }
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT').' &raquo; '.i18n_r('IMAGES')); 
@@ -60,7 +60,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT').' &ra
 		<div class="main">
 		<h3><?php i18n('IMG_CONTROl_PANEL');?></h3>
 	
-			<?php echo '<p><a href="'.$src_folder . $subPath .$src.'" rel="facybox" >'.i18n_r('ORIGINAL_IMG').'</a> <code>'.$imgwidth.'x'.$imgheight .'</code>'. $thumb_exists .'</p>'; ?>
+			<?php echo '<p><a href="'.$src_folder . $subPath .$src.'" rel="facybox_i" >'.i18n_r('ORIGINAL_IMG').'</a> <code>'.$imgwidth.'x'.$imgheight .'</code>'. $thumb_exists .'</p>'; ?>
 
 			<form>
 				<select class="text" id="img-info" style="width:50%" >
