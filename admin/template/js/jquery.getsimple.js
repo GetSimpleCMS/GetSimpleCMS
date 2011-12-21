@@ -226,11 +226,6 @@ jQuery(document).ready(function() {
 			$(".updated").slideUp(function() {
 				$(".updated").remove();
 			});
-			$(".error").slideUp(function() {
-				$(".error").remove();
-				Debugger.log('Alert has timed out. Removing...');
-			});
-		  
 		}, 10000);
 	}
 	popAlertMsg();
