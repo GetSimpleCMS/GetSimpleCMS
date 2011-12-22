@@ -27,7 +27,7 @@ if (isset($_GET['t'])) {
 	}
 }
 if (isset($_GET['f'])) {
-	//$_GET['f'] = strippath($_GET['f']);
+	$_GET['f'] = strippath($_GET['f']);
 	if ($_GET['f']&&is_file(GSTHEMESPATH . $TEMPLATE.'/'.$_GET['f'])) {
 		$TEMPLATE_FILE = $_GET['f'];
 	}
@@ -85,9 +85,22 @@ if (count($theme_dir_array) == 1){ $theme_options = ''; }
 # if no template is selected, use the default
 if ($template == '') { $template = 'template.php'; }
 $templates = get_themes($TEMPLATE);
-$theme_templates .= '<span id="themefiles"><select class="text" id="theme_files" style="width:400px;" name="f" >';
-$theme_templates .=get_theme_files($themes_path.$TEMPLATE);
+$theme_templates .= '<span id="themefiles"><select class="text" id="theme_files" style="width:225px;" name="f" >';
+foreach ($templates as $file){
+  if ($TEMPLATE_FILE == $file){ 
+          $sel="selected"; 
+  } else { 
+          $sel="";
+  }
+  if ($file == 'template.php'){ 
+          $templatename=i18n_r('DEFAULT_TEMPLATE'); 
+  } else { 
+          $templatename=$file; 
+  }
+  $theme_templates .= '<option '.$sel.' value="'.$file.'" >'.$templatename.'</option>';
+}
 $theme_templates .= "</select></span>";
+
 
 
 register_script('codemirror', $SITEURL.'admin/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);

@@ -741,52 +741,6 @@ function get_themes($temp) {
 	return $templates;
 }
 
-/**
- * Get Themes Files 
- *
- * @since 3.1
- * @uses TEMPLATE
- * @author Mike
- *
- * @param string $dir
- * @param int $subdir
- * @return string
- */
-function get_theme_files( $dir , $subdir = 0 ) {
-	global $TEMPLATE;
-	//global $theme_templates;
-	
-    if ( !is_dir( $dir ) ) { return false; }
-	$theme_template="";
-    $scan = scandir( $dir );
-	$filetype=array('php','css','js');
-    foreach( $scan as $key => $val ) {
-        if ( $val[0] == "." ) { continue; }
-        if ( is_dir( $dir . "/" . $val ) ) {
-            $theme_templates .= "<optgroup label='" . str_repeat( "&nbsp;&nbsp;", $subdir+1 ). '&ndash;' . $val . "'></optgroup>\n";
-			$subdirname=$val;
-            if ( $val[0] !="." ) {
-                get_theme_files( $dir . "/" . $val , $subdir + 1 );
-            }
-        } else {
-        if (in_array(pathinfo($val,PATHINFO_EXTENSION),$filetype)){
-        	if ($val=='template.php'){
-        		$displayName=i18n_r('DEFAULT_TEMPLATE');
-			} else {
-				$displayName=$val;
-			}
-			$reldir=str_replace($TEMPLATE.'/','',strstr($dir, $TEMPLATE));
-        	if ($subdir>0){
-        		$theme_templates .= "<option value='".$reldir.'/'.$val."'>&nbsp;&nbsp;" . str_repeat( "&nbsp;&nbsp;", $subdir+1 ) . $displayName . "</option>\n";
-			} else {
-				$theme_templates .= "<option value='".$reldir.'/'.$val."'>" . $displayName . "</option>\n";
-			}	
-		}
-        }
-    }
-    return $theme_templates;
-}
-
 
 /**
  * HTML Decode 
