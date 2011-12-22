@@ -31,20 +31,16 @@ if (isset($_GET['dir'])) {
 if (isset($TEMPLATE)) {
 	$TEMPLATE_FILE = ''; $template = ''; $theme_templates = '';
 
-	if ($template == '') { $template = 'template.php'; }
-	$templates = get_themes($TEMPLATE);
+if ($template == '') { $template = 'template.php'; }
+$themes_path = GSTHEMESPATH;
+$templates = get_themes($TEMPLATE);
+$theme_templates = '<span id="themefiles"><select class="text" id="theme_files" style="width:400px;" name="f" >';
+$theme_templates .=get_theme_files($themes_path.$TEMPLATE);
+$theme_templates .= "</select></span>";
 	
-	$theme_templates .= '<select class="text" id="theme_files" style="width:225px;" name="f" >';
-	
-	foreach ($templates as $file) {
-		if ($TEMPLATE_FILE == $file) { $sel="selected"; } else { $sel=""; };
-		$templatename=$file;
-		$theme_templates .= '<option '.@$sel.' value="'.$file.'" >'.$templatename.'</option>';
-  	}
-	
-	$theme_templates .= "</select>";
-	
-	echo $theme_templates;
+echo $theme_templates;
 }
+
+
 
 ?>
