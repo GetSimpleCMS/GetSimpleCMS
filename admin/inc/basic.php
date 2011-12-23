@@ -82,26 +82,36 @@ function to7bit($text,$from_enc="UTF-8") {
  */
 function email_template($message) {
 	$data = '
-	<style>
-	 body {background:#f6f6f6;font-family:arial, helvetica, sans-serif;}
-	 table.wrap {background:#fff;border:1px solid #e1e1e1;border-collapse:collapse;font-size:12px;font-family:arial, helvetica, sans-serif;width:90%;max-width:600px;}
-	 table th {padding:10px 10px;background: #171E25;text-align:left;}
-	 table td {padding:15px;color:#111;line-height:20px;}
-	 table td p {margin-bottom:20px;}
-	 body p.meta {line-height:15px;color:#666;font-size:11px}
-	 body p.meta a,body p.meta a:link, body p.meta a:visited, body p.meta a:hover, body p.meta a:focus {color:#777 !important;}
-	</style>
 	<html>
-	<body>
-	<table class="wrap" >
-		<tr>
-			<th><a href="http://get-simple.info/"><img src="http://get-simple.info/GSSW/gssw_assets/images/logo.png" alt="GetSimple CMS"></a></th>
-		</tr>
-		<tr>
-			<td>'.$message.'</td>
+	<style>
+	 table td p {margin-bottom:15px;}
+	</style>
+	<body style="padding:0;margin:0;background: #f3f3f3;font-family:arial, \'helvetica neue\', helvetica, serif" >
+	<table cellpadding="0" cellspacing="0" border="0" align="center" width="100%" style="padding: 0 0 35px 0; background: #f3f3f3;">
+  	<tr>
+	    <td align="center" style="margin: 0; padding: 0;">
+	      <center>
+	        <table border="0" cellpadding="0" cellspacing="0" width="580" style="border-radius:3px;">
+						<tr>
+							<th style="padding:15px 0 15px 20px;text-align:left;vertical-align:top;background:#171E25;border-radius:4px 4px 0 0;" >
+								<a href="http://get-simple.info/"><img src="http://get-simple.info/GSSW/gssw_assets/images/logo.png" alt="GetSimple CMS"></a>
+							</th>
+						</tr>
+						<tr>
+							<td style="background:#fff;border-bottom:1px solid #e1e1e1;border-right:1px solid #e1e1e1;border-left:1px solid #e1e1e1;font-size:13px;font-family:arial, helvetica, sans-serif;padding:20px;line-height:22px;" >
+								'.$message.'
+							</td>
+						</tr>
+						<tr>
+							<td style="padding-top:10px;font-size:10px;color:#aaa;line-height:14px;font-family:arial, \'helvetica neue\', helvetica, serif" >
+								<p class="meta">This is a system-generated email, please do not reply to it. For help or questions about GetSimple, please visit our <a href="http://get-simple.info/" style="color:#aaa;" >website</a>.<br />&copy; '.date('Y').' GetSimple CMS. All Rights Reserved.&nbsp;<a href="http://get-simple.info/start/privacy" style="color:#aaa;" >Privacy Policy</a>. </p>
+							</td>
+						</tr>
+					</table>
+				</center>
+			</td>
 		</tr>
 	</table>
-	<p class="meta">This is a system-generated email, please do not reply to it. For help or questions about GetSimple, please visit our <a href="http://get-simple.info/">website</a>.<br />&copy; '.date('Y').' GetSimple CMS. All Rights Reserved.&nbsp;<a href="http://get-simple.info/start/privacy">Privacy Policy</a>. </p>
 	</body>
 	</html>
 	';

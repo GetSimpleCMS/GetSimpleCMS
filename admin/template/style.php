@@ -948,7 +948,7 @@ body#index {background:#f9f9f9;}
 #install .error, #install .updated,
 #index .error, #index .updated,
 #resetpassword .error, #resetpassword .updated {margin:25px auto -35px auto;width:290px;line-height:18px;padding:5px 10px;}
-#setup #footer,#install #footer,#index #footer, #resetpassword #footer {width:270px;border-top:none;margin:0 auto 20px auto;text-align:center;opacity:.7}
+#setup #footer,#install #footer,#index #footer, #resetpassword #footer {width:270px;border-top:none;margin:0 auto 20px auto;text-align:center;}
 #index .footer-left,#resetpassword .footer-left  {float:none;width:100%;}
 
 .desc {font-size:12px;line-height:17px;border-bottom:1px dotted #ccc;padding:0 0 15px 0;margin:0 0 5px 0;}
