@@ -24,7 +24,10 @@ if(get_filename_id()!='index') {
 	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 	<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 	<link rel="stylesheet" type="text/css" href="template/style.php?v=<?php echo GSVERSION; ?>" media="screen" />
-
+	<?php if(get_filename_id()=='menu-manager') {
+		 queue_script('jquery-ui', GSBACK); } 
+	?>
+	
 	<?php 
 		get_scripts_backend();
 	?>
@@ -44,7 +47,7 @@ if(get_filename_id()!='index') {
 	<link rel="stylesheet" type="text/css" href="template/js/jcrop/jquery.Jcrop.css" media="screen" />
 	<?php } ?>
 	
-	<?php if(get_filename_id()=='menu-manager') { queue_script('jquery-ui', GSBACK); } ?>
+
 	
 	
 	<?php 
