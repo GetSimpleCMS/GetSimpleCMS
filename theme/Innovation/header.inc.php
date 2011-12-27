@@ -20,7 +20,7 @@
 	
 	<meta name="robots" content="index, follow">
 
-	<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
+	<link href='//fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
 	<link href="<?php get_theme_url(); ?>/assets/css/reset.css" rel="stylesheet">
 	<link href="<?php get_theme_url(); ?>/style.css?v=<?php echo get_site_version(); ?>" rel="stylesheet">
 	

@@ -27,9 +27,9 @@
 			
 			<!-- addthis popup - you can add your username if you want analytics: http://www.addthis.com/help/customizing-addthis -->
 			<div class="addthis_toolbox" style="display:inline;width:24px;" >
-				<a href="http://www.addthis.com/bookmark.php?v=250" class="addthis_button_compact"><img src="<?php get_theme_url(); ?>/assets/images/share.png" /></a>
+				<a href="//www.addthis.com/bookmark.php?v=250" class="addthis_button_compact"><img src="<?php get_theme_url(); ?>/assets/images/share.png" /></a>
 			</div>
-			<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js"></script>
+			<script type="text/javascript" src="//s7.addthis.com/js/250/addthis_widget.js"></script>
 		</div>
 	</div>
 	
