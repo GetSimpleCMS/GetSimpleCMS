@@ -1069,5 +1069,19 @@ function removerelativepath($file) {
 	}
 	return $file;
 }
+
+/**
+ * Debug Console Log
+ *
+ * @since 3.1
+ *
+ * @param $txt string
+ */
+function debugLog($txt) {
+	global $GS_debug;	
+	array_push($GS_debug,$txt.'<br/>');
+}
+
+
 	
 ?>

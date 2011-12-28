@@ -28,6 +28,21 @@
       	?>
 
 		</div><!-- end #footer -->
+		<?php 
+		if (defined('GSDEBUG')){
+			global $GS_debug;
+			echo '<div id="gsdebug"><h2>'.i18n_r('DEBUG_CONSOLE').'</h2>';
+			echo '<pre>';
+			foreach ($GS_debug as $log){
+				print($log);
+			}
+			echo '</pre>';	
+			echo '</div>';
+		}
+		?>
 	</div><!-- end .wrapper -->
+	
+	
+	
 </body>
 </html>

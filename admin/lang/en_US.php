@@ -523,9 +523,13 @@ $i18n = array(
 
 
 
-"X" => "not translated"
+"X" => "not translated",
 
 
+/*
+ * Additions for 3.1
+ */
+"DEBUG_CONSOLE" => 'Debug Console'
 
 );
 

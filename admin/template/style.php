@@ -1010,6 +1010,14 @@ h5 .crumbs, div.h5 .crumbs {float:left;}
 #theme-edit #maincontent {width:100%;}
 #theme-edit #sidebar {display:none;}
 
+#gsdebug{
+	border:1px solid #FF9933;
+	padding:5px;
+	background:white;
+	height:300px;
+	overflow:scroll;
+}
+
 <?php
 file_put_contents($cachefile, ob_get_contents());
 chmod($cachefile, 0644);
