@@ -31,7 +31,7 @@
 		<?php 
 		if (defined('GSDEBUG')){
 			global $GS_debug;
-			echo '<div id="gsdebug"><h2>'.i18n_r('DEBUG_CONSOLE').'</h2>';
+			echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
 			echo '<pre>';
 			foreach ($GS_debug as $log){
 				print($log);
