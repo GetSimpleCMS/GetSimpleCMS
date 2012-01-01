@@ -293,8 +293,8 @@ function get_header($full=true) {
 	
 	$keywords = get_page_meta_keywords(FALSE);
 	
-	echo '<meta name="description" content="'.encode_quotes($description).'" />'."\n";
-	echo '<meta name="keywords" content="'.encode_quotes($keywords).'" />'."\n";
+	echo '<meta name="description" content="'.get_page_meta_desc(false).'" />'."\n";
+	echo '<meta name="keywords" content="'.get_page_meta_keywords(false).'" />'."\n";
 	if ($full) {
 		echo '<meta name="generator" content="'. $site_full_name .'" />'."\n";
 		echo '<link rel="canonical" href="'. get_page_url(true) .'" />'."\n";
