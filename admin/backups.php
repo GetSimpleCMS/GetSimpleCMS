@@ -109,7 +109,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT'));
 				<div class="clearfix" style="height:40px;"></div>
 			<?php  }	?>
 		
-			<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php echo lowercase( i18n_r('PAGE_BACKUPS'));?></em></p>
+			<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php echo i18n_r('PAGE_BACKUPS');?></em></p>
 		</div>
 	</div>
 	
