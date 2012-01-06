@@ -555,7 +555,7 @@ function get_styles_frontend(){
 	foreach ($GS_styles as $style){
 		if ($style['where'] & GSFRONT ){
 				if ($style['load']==TRUE){
-				 echo '<link href='.$style['src'].'?v='.$style['ver'].' rel="stylesheet" media="'.$style['media'].'">';
+				 echo '<link href="'.$style['src'].'?v='.$style['ver'].'" rel="stylesheet" media="'.$style['media'].'">';
 				}
 		}
 	}
@@ -574,7 +574,7 @@ function get_styles_backend(){
 	foreach ($GS_styles as $style){
 		if ($style['where'] & GSBACK ){
 				if ($style['load']==TRUE){
-				 echo '<link href='.$style['src'].'?v='.$style['ver'].' rel="stylesheet" media="'.$style['media'].'">';
+				 echo '<link href="'.$style['src'].'?v='.$style['ver'].'" rel="stylesheet" media="'.$style['media'].'">';
 				}
 		}
 	}
