@@ -90,7 +90,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT').' &ra
 		<div id="handw" class="toggle" ><?php i18n('SELECT_DIMENTIONS'); ?><br /><span id="picw"></span> x <span id="pich"></span></div>
  
     <!-- This is the form that our event handler fills -->
-    <form id="jcropform" action="<?php myself(); ?>?i=<?php echo $src; ?>&path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
+    <form id="jcropform" action="<?php myself(); ?>?i=<?php echo $src; ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
       <input type="hidden" id="x" name="x" />
       <input type="hidden" id="y" name="y" />
       <input type="hidden" id="w" name="w" />
@@ -107,7 +107,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT').' &ra
 		<?php include('template/sidebar-files.php'); ?>
 	</div>	
 
-	<script language="Javascript">
+	<script>
 	  jQuery(document).ready(function() { 
 	    		
 			$(window).load(function(){

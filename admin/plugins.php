@@ -36,7 +36,7 @@ $needsupdate = false;
 foreach ($pluginfiles as $fi) {
 	$pathExt = pathinfo($fi,PATHINFO_EXTENSION );
 	$pathName = pathinfo_filename($fi);
-	$setNonce='&nonce='.get_nonce("set","plugins.php");
+	$setNonce='&amp;nonce='.get_nonce("set","plugins.php");
 	
 	if ($pathExt=="php") {
 		if ($live_plugins[$fi]=='true') {
