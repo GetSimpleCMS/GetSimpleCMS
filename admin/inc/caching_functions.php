@@ -193,8 +193,6 @@ function getPagesXmlValues(){
 	      $filenames[] = $filename;
 	    }
 	  }
-	  debugLog("total pages cached: ".count($pagesArray));
-	  debugLog("total page Files: ".count($filenames));
 	  if (count($pagesArray)!=count($filenames)) {
 	  		create_pagesxml('true');
     		getPagesXmlValues();
