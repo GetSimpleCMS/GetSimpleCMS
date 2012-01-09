@@ -184,6 +184,21 @@ function getPagesXmlValues(){
         }
         
       }
+	  $path = GSDATAPAGESPATH;
+	  $dir_handle = @opendir($path) or die("Unable to open $path");
+	  $filenames = array();
+	  while ($filename = readdir($dir_handle)) {
+	    $ext = substr($filename, strrpos($filename, '.') + 1);
+	    if ($ext=="xml"){
+	      $filenames[] = $filename;
+	    }
+	  }
+	  debugLog("total pages cached: ".count($pagesArray));
+	  debugLog("total page Files: ".count($filenames));
+	  if (count($pagesArray)!=count($filenames)) {
+	  		create_pagesxml('true');
+    		getPagesXmlValues();
+	  }
   } else {
     create_pagesxml('true');
     getPagesXmlValues();
