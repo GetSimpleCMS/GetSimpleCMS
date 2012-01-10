@@ -146,11 +146,11 @@ function sendmail($to,$subject,$message) {
 	}
 	
 	global $EMAIL;
-	$headers  = "From: ".$fromemail."\r\n";
-	$headers .= "Reply-To: ".$fromemail."\r\n";
-	$headers .= "Return-Path: ".$fromemail."\r\n";
-	$headers .= "MIME-Version: 1.0\r\n";
-	$headers .= "Content-type: text/html; charset=UTF-8\r\n";
+	$headers  ='"MIME-Version: 1.0' . PHP_EOL;
+	$headers .= 'Content-Type: text/html; charset=UTF-8' . PHP_EOL;
+	$headers .= 'From: '.$fromemail . PHP_EOL;
+  $headers .= 'Reply-To: '.$fromemail . PHP_EOL;
+  $headers .= 'Return-Path: '.$fromemail . PHP_EOL;
 	
 	if( mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',"$message",$headers) ) {
 		return 'success';
