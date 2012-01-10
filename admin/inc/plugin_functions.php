@@ -243,7 +243,7 @@ function createSideMenu($id, $txt, $action=null, $always=true){
     $current = true;
   }
   if ($always || $current) {
-    echo '<li><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
+    echo '<li id="sb_'.$id.'"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
   }
 }
 
@@ -266,7 +266,7 @@ function createNavTab($tabname, $id, $txt, $action=null) {
     $plugin_id = @$_GET['id'];
     if ($plugin_info[$plugin_id]['page_type'] == $tabname) $current = true;
   }
-  echo '<li><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
+  echo '<li id="nav_'.$id.'"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
 }
 
 /**
@@ -311,7 +311,7 @@ function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $des
  * @param string $txt Text to add to tabbed link
  */
 function add_filter($filter_name, $added_function) {
-	global $filters;
+  global $filters;
   global $live_plugins;   
   $bt = debug_backtrace();
   $caller = array_shift($bt);
