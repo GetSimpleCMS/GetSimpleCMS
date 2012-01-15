@@ -84,23 +84,28 @@ if (count($theme_dir_array) == 1){ $theme_options = ''; }
 
 # if no template is selected, use the default
 if ($template == '') { $template = 'template.php'; }
-$templates = get_themes($TEMPLATE);
-$theme_templates .= '<span id="themefiles"><select class="text" id="theme_files" style="width:225px;" name="f" >';
+$templates = directoryToArray(GSTHEMESPATH . $TEMPLATE . '/', true);
+$theme_templates .= '<span id="themefiles"><select class="text" id="theme_files" style="width:425px;" name="f" >';
+$allowed_extensions=array('php','css','js','html','htm');
 foreach ($templates as $file){
-  if ($TEMPLATE_FILE == $file){ 
+  $extension=pathinfo($file,PATHINFO_EXTENSION);
+  if (in_array($extension, $allowed_extensions)){
+  $filename=pathinfo($file,PATHINFO_BASENAME);
+  $filenamefull=substr(strstr($file,'/theme/'.$TEMPLATE.'/'),strlen('/theme/'.$TEMPLATE.'/'));   
+  if ($TEMPLATE_FILE == $filename){ 
           $sel="selected"; 
   } else { 
           $sel="";
   }
-  if ($file == 'template.php'){ 
+  if ($filename == 'template.php'){ 
           $templatename=i18n_r('DEFAULT_TEMPLATE'); 
   } else { 
-          $templatename=$file; 
+          $templatename=$filenamefull; 
   }
-  $theme_templates .= '<option '.$sel.' value="'.$file.'" >'.$templatename.'</option>';
+  $theme_templates .= '<option '.$sel.' value="'.$templatename.'" >'.$templatename.'</option>';
+  }
 }
 $theme_templates .= "</select></span>";
-
 
 
 register_script('codemirror', $SITEURL.'admin/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);

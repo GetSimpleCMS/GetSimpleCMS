@@ -1087,5 +1087,36 @@ function debugLog($txt) {
 }
 
 
+/**
+ * Return a directory of files and folders
+ *
+ * @since 3.1
+ *
+ * @param $directory string directory to scan
+ * @param $recursive boolean whether to do a recursive scan or not. 
+ * @return array or files and folders
+ */
+function directoryToArray($directory, $recursive) {
+	$array_items = array();
+	if ($handle = opendir($directory)) {
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != "..") {
+				if (is_dir($directory. "/" . $file)) {
+					if($recursive) {
+						$array_items = array_merge($array_items, directoryToArray($directory. "/" . $file, $recursive));
+					}
+					$file = $directory . "/" . $file;
+					$array_items[] = preg_replace("/\/\//si", "/", $file);
+				} else {
+					$file = $directory . "/" . $file;
+					$array_items[] = preg_replace("/\/\//si", "/", $file);
+				}
+			}
+		}
+		closedir($handle);
+	}
+	return $array_items;
+}
+
 	
 ?>
