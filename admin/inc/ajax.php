@@ -34,7 +34,7 @@ if (isset($TEMPLATE)) {
         if ($template == '') { $template = 'template.php'; }
         $templates = directoryToArray(GSTHEMESPATH . $TEMPLATE . '/', true);
 		$allowed_extensions=array('php','css','js','html','htm');
-        $theme_templates .= '<select class="text" id="theme_files" style="width:225px;" name="f" >';
+        $theme_templates .= '<select class="text" id="theme_files" style="width:425px;" name="f" >';
         foreach ($templates as $file) {
 		  $extension=pathinfo($file,PATHINFO_EXTENSION);
 		  if (in_array($extension, $allowed_extensions)){
