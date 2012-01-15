@@ -32,15 +32,27 @@ if (isset($TEMPLATE)) {
         $TEMPLATE_FILE = ''; $template = ''; $theme_templates = '';
 
         if ($template == '') { $template = 'template.php'; }
-        $templates = get_themes($TEMPLATE);
-        
+        $templates = directoryToArray(GSTHEMESPATH . $TEMPLATE . '/', true);
+		$allowed_extensions=array('php','css','js','html','htm');
         $theme_templates .= '<select class="text" id="theme_files" style="width:225px;" name="f" >';
-        
         foreach ($templates as $file) {
-                if ($TEMPLATE_FILE == $file) { $sel="selected"; } else { $sel=""; };
-                $templatename=$file;
-                $theme_templates .= '<option '.@$sel.' value="'.$file.'" >'.$templatename.'</option>';
-        }
+		  $extension=pathinfo($file,PATHINFO_EXTENSION);
+		  if (in_array($extension, $allowed_extensions)){
+		  $filename=pathinfo($file,PATHINFO_BASENAME);
+		  $filenamefull=substr(strstr($file,'/theme/'.$TEMPLATE.'/'),strlen('/theme/'.$TEMPLATE.'/'));   
+		  if ($TEMPLATE_FILE == $filename){ 
+		          $sel="selected"; 
+		  } else { 
+		          $sel="";
+		  }
+		  if ($filename == 'template.php'){ 
+		          $templatename=i18n_r('DEFAULT_TEMPLATE'); 
+		  } else { 
+		          $templatename=$filenamefull; 
+		  }
+		  $theme_templates .= '<option '.$sel.' value="'.$templatename.'" >'.$templatename.'</option>';
+		  }        
+		}
         
         $theme_templates .= "</select>";
         
