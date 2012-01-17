@@ -181,38 +181,40 @@ jQuery(document).ready(function() {
 	  mytr.css("font-style", "italic");
 	    var answer = confirm(message);
 	    if (answer){
-	    	loadingAjaxIndicator.show();
-	    	mytr.addClass('deletedrow');
-	    	mytr.fadeOut(500, function(){
-					$.ajax({
-			       type: "GET",
-			       url: dlink,
-			       success: function(response){
-			          mytr.remove();
-			          if($("#pg_counter").length) {
-			        	  counter=$("#pg_counter").html();
-				          $("#pg_counter").html(counter-1);
-					      }
-				        
-				        $('div.wrapper .updated').remove();
-				        $('div.wrapper .error').remove();
-                if($(response).find('div.error').html()) {
-                  $('div.bodycontent').before('<div class="error"><p>'+ $(response).find('div.error').html() + '</p></div>');
-                  popAlertMsg();
-                }
-                if($(response).find('div.updated').html()) {
-                  $('div.bodycontent').before('<div class="updated"><p>'+ $(response).find('div.updated').html() + '</p></div>');
-                  popAlertMsg(); 
-                }
-				     }
-				  });
-					loadingAjaxIndicator.fadeOut(500);
-				});
+	    	if (!$(this).hasClass('noajax')) {
+	    		loadingAjaxIndicator.show();
+	    		mytr.addClass('deletedrow');
+	    		mytr.fadeOut(500, function(){
+						$.ajax({
+				       type: "GET",
+				       url: dlink,
+				       success: function(response){
+				          mytr.remove();
+				          if($("#pg_counter").length) {
+				        	  counter=$("#pg_counter").html();
+					          $("#pg_counter").html(counter-1);
+						      }
+					        
+					        $('div.wrapper .updated').remove();
+					        $('div.wrapper .error').remove();
+	                if($(response).find('div.error').html()) {
+	                  $('div.bodycontent').before('<div class="error"><p>'+ $(response).find('div.error').html() + '</p></div>');
+	                  popAlertMsg();
+	                }
+	                if($(response).find('div.updated').html()) {
+	                  $('div.bodycontent').before('<div class="updated"><p>'+ $(response).find('div.updated').html() + '</p></div>');
+	                  popAlertMsg(); 
+	                }
+					     }
+					  });
+						loadingAjaxIndicator.fadeOut(500);
+					});
+					return false;
+				}
 	    } else {
 	    	mytr.css('font-style', 'normal');
 	    	return false;
 	    }
-	    return false;
 	});
 	$("#waittrigger").click(function(){
 		loadingAjaxIndicator.fadeIn();
