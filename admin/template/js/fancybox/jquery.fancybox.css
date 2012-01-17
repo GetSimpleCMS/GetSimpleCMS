@@ -41,6 +41,7 @@
 	position: relative;
 	outline: none;
 	overflow: hidden;
+	background:#F6F6F6;
 }
 
 .fancybox-error {

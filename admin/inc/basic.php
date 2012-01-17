@@ -331,6 +331,7 @@ function shtDate($dt) {
  */
 function cl($data){
 	$data = stripslashes(strip_tags(html_entity_decode($data, ENT_QUOTES, 'UTF-8')));
+	$data = preg_replace('/[[:cntrl:]]/', '', $data); //remove control characters that cause interface to choke
 	return $data;
 }
 
@@ -618,7 +619,7 @@ function safe_slash_html($text) {
 	} else {
 		$text = htmlentities($text, ENT_QUOTES, 'UTF-8');
 	}
-	$text = preg_replace('/[[:cntrl:]]/', '', $text); //remove control characters that cause interfce to choke
+	$text = preg_replace('/[[:cntrl:]]/', '', $text); //remove control characters that cause interface to choke
 	return $text;
 }
 
@@ -817,6 +818,7 @@ function find_accesskey($string) {
 function _id($text) {
 	$text = to7bit($text, "UTF-8");
 	$text = clean_url($text);
+	$text = preg_replace('/[[:cntrl:]]/', '', $text); //remove control characters that cause interface to choke
 	return lowercase($text);
 }
 
