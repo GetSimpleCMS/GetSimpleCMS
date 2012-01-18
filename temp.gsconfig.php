@@ -31,7 +31,7 @@ define('GSIMAGEWIDTH', '200');
 #define('GSDEBUG', TRUE);
 
 # Ping search engines upon sitemap generation?
-#define('GSDONOTPING', 1);
+define('GSDONOTPING', 1);
 
 # Turn off CSRF protection. Uncomment this if you keep receiving the error message "CSRF error detected..."
 #define('GSNOCSRF', TRUE);
