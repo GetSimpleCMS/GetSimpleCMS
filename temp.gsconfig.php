@@ -70,4 +70,6 @@ define('GSDONOTPING', 1);
 # http://php.net/manual/en/function.setlocale.php
 #setlocale(LC_ALL, 'en_US');
 
+# disable JQuery CDN loading on admin backend
+#define("GSNOCDN",true);
 ?>
