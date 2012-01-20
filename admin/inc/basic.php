@@ -619,7 +619,8 @@ function safe_slash_html($text) {
 	} else {
 		$text = htmlentities($text, ENT_QUOTES, 'UTF-8');
 	}
-	$text = preg_replace('/[[:cntrl:]]/', '', $text); //remove control characters that cause interface to choke
+	$text = str_replace(chr(12), '', $text);
+	$text = str_replace(chr(3), ' ', $text);
 	return $text;
 }
 

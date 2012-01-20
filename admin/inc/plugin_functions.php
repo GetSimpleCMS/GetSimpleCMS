@@ -22,15 +22,17 @@ if ($SITEURL==""){
 	$SITEURL=suggest_site_path();
 }
 
-// register jquery, fancybox & GS Scripts for loading in the header
+/**
+ * Register shared javascript/css scripts for loading into the header
+ */
 if (!defined('GSNOCDN')){
 	register_script('jquery', '//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js', '1.7.1', FALSE);
+	register_script('jquery-ui','//ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/jquery-ui.min.js','1.8.17',FALSE);
 } else {
 	register_script('jquery', $SITEURL.$GSADMIN.'/template/js/jquery.min.js', '1.7.1', FALSE);
+	register_script('jquery-ui', $SITEURL.$GSADMIN.'/template/js/jquery-ui.min.js', '1.8.17', FALSE);
 }
-register_script('jquery-ui','//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js','1.8.16',FALSE);
 register_script('fancybox', $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.pack.js', '2.0.4',FALSE);
-
 register_style('fancybox-css', $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css', '2.0.4', 'screen');
 
 /**
@@ -38,7 +40,6 @@ register_style('fancybox-css', $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.f
  */
 queue_script('jquery', GSBACK);
 queue_script('fancybox', GSBACK);
-
 queue_style('fancybox-css',GSBACK);
 
 
