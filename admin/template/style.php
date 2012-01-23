@@ -116,7 +116,7 @@ html {overflow-y: scroll;}
 		display:block;
 		border-radius: 5px 5px 0 0;
 	}
-	.wrapper .nav li a:link, .wrapper .nav li a:visited, .wrapper #pill li a:link, .wrapper #pill li a:visited {
+	.wrapper .nav li a:link, .wrapper .nav li a:visited, .wrapper #pill li a:link, .wrapper #pill li a:visited, #loadtab .wrapper .nav li a.current {
 		color:<?php echo $primary_6; ?>;
 		background:<?php echo $primary_1; ?>;
 		text-shadow: 1px 1px 0px rgba(0,0,0,.3);
