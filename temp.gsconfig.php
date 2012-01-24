@@ -60,7 +60,7 @@ define('GSDONOTPING', 1);
 # Set email from address
 #define('GSFROMEMAIL', 'noreply@get-simple.info');
 
-# Autosave within edit.php. Value is the autosave interval 
+# Autosave within edit.php. Value is the autosave interval in seconds
 #define('GSAUTOSAVE', 900);
 
 # Enable the External API to be shown on settings page 
