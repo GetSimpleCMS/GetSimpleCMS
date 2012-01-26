@@ -24,7 +24,8 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 	$timestamp = gmdate('Y-m-d-Hi_s');
 	$zipcreated = true;
 	
-	ini_set("memory_limit","600M"); 
+	set_time_limit (0);
+	ini_set("memory_limit","800M"); 
 
 	$saved_zip_file = GSBACKUPSPATH.'zip/'. $timestamp .'_archive.zip';	
 	
