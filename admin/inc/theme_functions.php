@@ -73,7 +73,7 @@ function get_page_excerpt($n=200, $html=false) {
  */
 function get_page_meta_keywords($echo=true) {
 	global $metak;
-	$myVar = strip_decode($metak);
+	$myVar = encode_quotes(strip_decode($metak));
 	
 	if ($echo) {
 		echo $myVar;
@@ -94,7 +94,7 @@ function get_page_meta_keywords($echo=true) {
  */
 function get_page_meta_desc($echo=true) {
 	global $metad;
-	$myVar = strip_decode($metad);
+	$myVar = encode_quotes(strip_decode($metad));
 	
 	if ($echo) {
 		echo $myVar;
@@ -114,7 +114,7 @@ function get_page_meta_desc($echo=true) {
  */
 function get_page_title($echo=true) {
 	global $title;
-	$myVar = strip_decode($title);
+	$myVar = encode_quotes(strip_decode($title));
 	
 	if ($echo) {
 		echo $myVar;
