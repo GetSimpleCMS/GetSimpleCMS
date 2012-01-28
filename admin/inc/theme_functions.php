@@ -114,7 +114,7 @@ function get_page_meta_desc($echo=true) {
  */
 function get_page_title($echo=true) {
 	global $title;
-	$myVar = encode_quotes(strip_decode($title));
+	$myVar = strip_decode($title);
 	
 	if ($echo) {
 		echo $myVar;
