@@ -116,7 +116,7 @@ html {overflow-y: scroll;}
 		display:block;
 		border-radius: 5px 5px 0 0;
 	}
-	.wrapper .nav li a:link, .wrapper .nav li a:visited, .wrapper #pill li a:link, .wrapper #pill li a:visited, #loadtab .wrapper .nav li a.current {
+	.wrapper .nav li a:link, .wrapper .nav li a:visited, .wrapper #pill li a:link, .wrapper #pill li a:visited {
 		color:<?php echo $primary_6; ?>;
 		background:<?php echo $primary_1; ?>;
 		text-shadow: 1px 1px 0px rgba(0,0,0,.3);
@@ -156,7 +156,8 @@ html {overflow-y: scroll;}
 	#load .wrapper .files li a.files,
 	#load .wrapper .backups li a.backups,
 	#load	.wrapper .support li a.support,
-	#load .wrapper .nav li a.current {
+	#load .wrapper .nav li a.current,
+	#loadtab .wrapper .nav li a.current {
 		color:<?php echo $primary_1; ?>;
 		background:#f6f6f6;
 		background: -moz-linear-gradient(top, #FFF 3%, #F6F6F6 100%); /* firefox */
