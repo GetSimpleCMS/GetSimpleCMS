@@ -368,7 +368,6 @@ function register_script($handle, $src, $ver, $in_footer=FALSE){
 	  'src' => $src,
 	  'ver' => $ver,
 	  'in_footer' => $in_footer,
-	  'load' => $load,
 	  'where' => 0
 	);
 }
