@@ -468,7 +468,7 @@ function strip_quotes($text)  {
  */
 function encode_quotes($text)  { 
 	$text = strip_tags($text); 
-	$text = htmlspecialchars($text, ENT_QUOTES); 
+	$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8', false);
 	return trim($text); 
 } 
 
@@ -615,7 +615,7 @@ function i18n_merge_impl($plugin, $lang, &$globali18n) {
  */
 function safe_slash_html($text) {
 	if (get_magic_quotes_gpc()==0) {
-		$text = addslashes(htmlentities($text, ENT_QUOTES, 'UTF-8'));
+		$text = addslashes(htmlspecialchars($text, ENT_QUOTES, 'UTF-8'));
 	} else {
 		$text = htmlentities($text, ENT_QUOTES, 'UTF-8');
 	}
