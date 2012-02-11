@@ -289,10 +289,12 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
 					echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
 					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a></td>';
 					echo '</tr>';
-					exec_action('file-extras');
+					
 				}
 			}
+			exec_action('file-extras');
 			echo '</table>';
+			
 			if ($counter > 0) { 
 				$sizedesc = '('. fSize($totalsize) .')';
 			} else {
