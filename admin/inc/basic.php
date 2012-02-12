@@ -617,7 +617,7 @@ function safe_slash_html($text) {
 	if (get_magic_quotes_gpc()==0) {
 		$text = addslashes(htmlspecialchars($text, ENT_QUOTES, 'UTF-8'));
 	} else {
-		$text = htmlentities($text, ENT_QUOTES, 'UTF-8');
+		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 	}
 	$text = str_replace(chr(12), '', $text);
 	$text = str_replace(chr(3), ' ', $text);
