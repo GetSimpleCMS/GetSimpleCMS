@@ -91,7 +91,7 @@ jQuery(document).ready(function() {
 			$(this).removeClass('capslock');
 		},
 		caps_lock_undetermined: function() {
-			//nothing
+			$(this).removeClass('capslock');
 		}
 	};
 	
