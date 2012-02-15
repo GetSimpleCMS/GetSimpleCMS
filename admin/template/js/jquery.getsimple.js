@@ -224,11 +224,6 @@ jQuery(document).ready(function() {
 	function popAlertMsg() {	
 		$(".updated").fadeOut(500).fadeIn(500);
 		$(".error").fadeOut(500).fadeIn(500);
-		setTimeout(function() {
-			$(".updated").slideUp(function() {
-				$(".updated").remove();
-			});
-		}, 10000);
 	}
 	popAlertMsg();
 	
