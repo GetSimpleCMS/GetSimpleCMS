@@ -50,7 +50,7 @@ foreach ($pluginfiles as $fi) {
 		}
 		$api_data = json_decode(get_api_details('plugin', $fi));
 		$updatelink = null;
-		if ($api_data->status == 'successful') {
+		if (is_object($api_data) && $api_data->status == 'successful') {
 			if ($api_data->version > $plugin_info[$pathName]['version']) {				
 				$updatelink = '<br /><a class="updatelink" href="'.$api_data->path.'" target="_blank">'.i18n_r('UPDATE_AVAILABLE').' '.$api_data->version.'</a>';
 				$needsupdate = true;
