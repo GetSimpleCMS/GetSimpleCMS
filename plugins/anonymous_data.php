@@ -8,22 +8,25 @@ Author URI: http://get-simple.info/
 */
 
 # get correct id for plugin
-$thisfile=basename(__FILE__, ".php");
+$thisfile_anony=basename(__FILE__, ".php");
+
+# add in this plugin's language file
+i18n_merge($thisfile_anony,'en_US');
 
 # register plugin
 register_plugin(
-	$thisfile,
-	'Send Anonymous Data',
+	$thisfile_anony,
+	i18n_r($thisfile_anony.'/ANONY_TITLE'),
 	'1.0',
 	'Chris Cagle',
 	'http://get-simple.info/',
-	'GetSimple needs your anonymous data so we can understand our users better. It\'s completely voluntary and will help us improve our product.',
+	i18n_r($thisfile_anony.'/ANONY_DESC'),
 	'plugin',
 	'gs_anonymousdata'
 );
 
 # activate hooks
-add_action('plugins-sidebar','createSideMenu',array($thisfile,'Send Anonymous Data')); 
+add_action('plugins-sidebar','createSideMenu',array($thisfile_anony,i18n_r($thisfile_anony.'/ANONY_TITLE'))); 
 
 if ( ! function_exists('get_tld_from_url')){ 
 	function get_tld_from_url( $url ){
@@ -52,7 +55,7 @@ function gs_anonymousdata() {
 	
 	#grab data from this installation
 	if(isset($_POST['preview'])) {
-		global $LANG, $TIMEZONE, $SITEURL, $live_plugins;
+		global $LANG, $TIMEZONE, $SITEURL, $live_plugins, $thisfile_anony;
 		
 		$php_modules = get_loaded_extensions();
 		if (! in_arrayi('curl', $php_modules) ) {
@@ -99,8 +102,10 @@ function gs_anonymousdata() {
 	
 	# post data to server
 	if(isset($_POST['send'])) {
+		global $thisfile_anony;
+		
 		$xml = file_get_contents(GSDATAOTHERPATH . 'anonymous_data.xml');
-		$success = 'We successfully received your data. Thank you for helping the GetSimple project.';
+		$success = i18n_r($thisfile_anony.'/ANONY_SUCCESS');
 		
 		$php_modules = get_loaded_extensions();
 		if (in_arrayi('curl', $php_modules)) {
@@ -116,81 +121,75 @@ function gs_anonymousdata() {
 		}
 		
 	}
+	
+	global $thisfile_anony;
 	?>
 	<style>
 		form#anondata p {margin-bottom:5px;}
 		form#anondata label {display:block;width:220px;float:left;line-height:35px;}
 		form#anondata select.text {width:auto;float:left;}
 	</style>
-	<h3>Send Anonymous Website Data</h3>
+	<h3><?php i18n($thisfile_anony.'/ANONY_TITLE'); ?></h3>
 	
 	<?php 
 	if($success) { 
 		echo '<p style="color:#669933;"><b>'. $success .'</b></p>';
-	} 
-	if($error) { 
-		echo '<p style="color:#cc0000;"><b>'. $error .'</b></p>';
 	}
 	?>
 	
 	<form method="post" id="anondata" action="<?php	echo $_SERVER ['REQUEST_URI']?>">
 		
 		<?php if($preview_data) { ?>
-			<p>This is the exact data that we are going to send back to our servers for processing. If agree with the data below, please click the '<strong>Send Data</strong>' button. Thank you again for participating.</p>
+			<p><?php i18n($thisfile_anony.'/ANONY_CONFIRM'); ?></p>
 			<pre><code><?php echo htmlentities(formatXmlString(file_get_contents(GSDATAOTHERPATH . 'anonymous_data.xml')));?></code></pre>
-			<p class="submit"><br /><input type="submit" class="submit" value="Send Data" name="send" /></p>		
+			<p class="submit"><br /><input type="submit" class="submit" value="<?php i18n($thisfile_anony.'/ANONY_SEND_BTN'); ?>" name="send" /> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="plugins.php?cancel"><?php i18n('CANCEL'); ?></p>		
 		<?php } else { ?> 
-			<p>
-				GetSimple needs to find out what type of people and businesses are using our product. This form allows you to voluntarily send us <u>completely
-				anonymous data</u> about your website. This data includes things like the type of server you're on, your PHP version and how many pages and files you currently have.
-				We would be very grateful if you could take a few minutes to submit this data to us as it is essential for the continued growth of 
-				our CMS product.
-			</p>
-			<p>Complete the optional fields below, then click the '<strong>Preview Data Submission</strong>' button to preview your data before it's sent to our servers. </p>
-			<p class="clearfix" ><label>Website Category:</label>
+			<p><?php i18n($thisfile_anony.'/ANONY_PARAGRAPH'); ?></p>
+			<p><?php i18n($thisfile_anony.'/ANONY_PARAGRAPH2'); ?></p>
+			<p class="clearfix" ><label><?php i18n($thisfile_anony.'/ANONY_CATEGORY'); ?>:</label>
 					<select name="category" class="text">
 						<option value=""></option>
-						<option value="Arts">Arts</option>
-						<option value="Business">Business</option>
-						<option value="Children">Children</option>
-						<option value="Computer &amp; Internet">Computer &amp; Internet</option>
-						<option value="Culture &amp; Religion">Culture &amp; Religion</option>
-						<option value="Education">Education</option>
-						<option value="Employment">Employment</option>
-						<option value="Entertainment">Entertainment</option>
-						<option value="Money &amp; Finance">Money &amp; Finance</option>
-						<option value="Food">Food</option>
-						<option value="Games">Games</option>
-						<option value="Government">Government</option>
-						<option value="Health &amp; Fitness">Health &amp; Fitness</option>
-						<option value="HighTech">HighTech</option>
-						<option value="Hobbies &amp; Interests">Hobbies &amp; Interests</option>
-						<option value="Law">Law</option>
-						<option value="Life Family Issues">Life Family Issues</option>
-						<option value="Marketing">Marketing</option>
-						<option value="Media">Media</option>
-						<option value="Misc">Misc</option>
-						<option value="Movies &amp; Television">Movies &amp; Television</option>
-						<option value="Music &amp; Radio">Music &amp; Radio</option>
-						<option value="Nature">Nature</option>
-						<option value="Non-Profit">Non-Profit</option>
-						<option value="Personal Homepages">Personal Homepages</option>
-						<option value="Pets">Pets</option>
-						<option value="Home &amp; Garden">Home &amp; Garden</option>
-						<option value="Real Estate">Real Estate</option>
-						<option value="Science &amp; Technology">Science &amp; Technology</option>
-						<option value="Shopping &amp; Services">Shopping &amp; Services</option>
-						<option value="Society">Society</option>
-						<option value="Sports">Sports</option>
-						<option value="Tourism">Tourism</option>
-						<option value="Transportation">Transportation</option>
-						<option value="Travel">Travel</option>
-						<option value="X-rated">X-rated</option>
+						<option value="Arts"><?php i18n($thisfile_anony.'/ANONY_ARTS'); ?></option>
+						<option value="Business"><?php i18n($thisfile_anony.'/ANONY_BUSINESS'); ?></option>
+						<option value="Children"><?php i18n($thisfile_anony.'/ANONY_CHILDREN'); ?></option>
+						<option value="Computer &amp; Internet"><?php i18n($thisfile_anony.'/ANONY_INTERNET'); ?></option>
+						<option value="Culture &amp; Religion"><?php i18n($thisfile_anony.'/ANONY_RELIGION'); ?></option>
+						<option value="Education"><?php i18n($thisfile_anony.'/ANONY_EDUCATION'); ?></option>
+						<option value="Employment"><?php i18n($thisfile_anony.'/ANONY_EMPLOYMENT'); ?></option>
+						<option value="Entertainment"><?php i18n($thisfile_anony.'/ANONY_ENTERTAINMENT'); ?></option>
+						<option value="Money &amp; Finance"><?php i18n($thisfile_anony.'/ANONY_FINANCE'); ?></option>
+						<option value="Food"><?php i18n($thisfile_anony.'/ANONY_FOOD'); ?></option>
+						<option value="Games"><?php i18n($thisfile_anony.'/ANONY_GAMES'); ?></option>
+						<option value="Government"><?php i18n($thisfile_anony.'/ANONY_GOVERNMENT'); ?></option>
+						<option value="Health &amp; Fitness"><?php i18n($thisfile_anony.'/ANONY_HEALTHFITNESS'); ?></option>
+						<option value="HighTech"><?php i18n($thisfile_anony.'/ANONY_HIGHTECH'); ?></option>
+						<option value="Hobbies &amp; Interests"><?php i18n($thisfile_anony.'/ANONY_HOBBIES'); ?></option>
+						<option value="Law"><?php i18n($thisfile_anony.'/ANONY_LAW'); ?></option>
+						<option value="Life Family Issues"><?php i18n($thisfile_anony.'/ANONY_LIFEFAMILY'); ?></option>
+						<option value="Marketing"><?php i18n($thisfile_anony.'/ANONY_MARKETING'); ?></option>
+						<option value="Media"><?php i18n($thisfile_anony.'/ANONY_MEDIA'); ?></option>
+						<option value="Misc"><?php i18n($thisfile_anony.'/ANONY_MISC'); ?></option>
+						<option value="Movies &amp; Television"><?php i18n($thisfile_anony.'/ANONY_MOVIES'); ?></option>
+						<option value="Music &amp; Radio"><?php i18n($thisfile_anony.'/ANONY_MUSIC'); ?></option>
+						<option value="Nature"><?php i18n($thisfile_anony.'/ANONY_NATURE'); ?></option>
+						<option value="Non-Profit"><?php i18n($thisfile_anony.'/ANONY_NONPROFIT'); ?></option>
+						<option value="Personal Homepages"><?php i18n($thisfile_anony.'/ANONY_PERSONAL'); ?></option>
+						<option value="Pets"><?php i18n($thisfile_anony.'/ANONY_PETS'); ?></option>
+						<option value="Home &amp; Garden"><?php i18n($thisfile_anony.'/ANONY_HOMEGARDEN'); ?></option>
+						<option value="Real Estate"><?php i18n($thisfile_anony.'/ANONY_REALESTATE'); ?></option>
+						<option value="Science &amp; Technology"><?php i18n($thisfile_anony.'/ANONY_SCIENCE'); ?></option>
+						<option value="Shopping &amp; Services"><?php i18n($thisfile_anony.'/ANONY_SHOPPING'); ?></option>
+						<option value="Society"><?php i18n($thisfile_anony.'/ANONY_SOCIETY'); ?></option>
+						<option value="Sports"><?php i18n($thisfile_anony.'/ANONY_SPORTS'); ?></option>
+						<option value="Tourism"><?php i18n($thisfile_anony.'/ANONY_TOURISM'); ?></option>
+						<option value="Transportation"><?php i18n($thisfile_anony.'/ANONY_TRANSPORTATION'); ?></option>
+						<option value="Travel"><?php i18n($thisfile_anony.'/ANONY_TRAVEL'); ?></option>
+						<option value="X-rated"><?php i18n($thisfile_anony.'/ANONY_XRATED'); ?></option>
 					</select>
 			</p>
-			<p class="clearfix" ><label>Do you link back to GetSimple?</label><select class="text" name="link_back"><option></option><option value="yes" >Yes</option><option value="no" >No</option></select></p>
-			<p style="color:#cc0000;font-size:11px;" >* Please only submit this data once per website AND AFTER the site has been completed. Thank you.</p>
-			<p class="submit"><br /><input type="submit" class="submit" value="Preview Data Submission" name="preview" /></p>
+			<p class="clearfix" ><label><?php i18n($thisfile_anony.'/ANONY_LINK'); ?></label><select class="text" name="link_back"><option></option><option value="yes" ><?php i18n($thisfile_anony.'/ANONY_YES'); ?></option><option value="no" ><?php i18n($thisfile_anony.'/ANONY_NO'); ?></option></select></p>
+			<p style="color:#cc0000;font-size:11px;" >* <?php i18n($thisfile_anony.'/ANONY_DISCLAIMER'); ?></p>
+			<p class="submit"><br /><input type="submit" class="submit" value="<?php i18n($thisfile_anony.'/ANONY_PREVIEW_BTN'); ?>" name="preview" /> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="plugins.php?cancel"><?php i18n('CANCEL'); ?></p>
 		<?php  } ?>
 	</form>
 
