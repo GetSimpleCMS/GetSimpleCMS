@@ -183,9 +183,12 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION'));
 				echo '<div class="error">'. $err .'</div>';
 			}
 			if ($random != ''){
-				echo '<div class="updated">'.i18n_r('NOTE_USERNAME').' <b>'. stripslashes($_POST['user']) .'</b> '.i18n_r('NOTE_PASSWORD').' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="welcome.php">'.i18n_r('EMAIL_LOGIN').'</a></div>';
+				echo '<div class="updated">'.i18n_r('NOTE_USERNAME').' <b>'. stripslashes($_POST['user']) .'</b> '.i18n_r('NOTE_PASSWORD').' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="support.php">'.i18n_r('EMAIL_LOGIN').'</a></div>';
+				$_POST = null;
 			}
 		?>
+		
+<?php if ($kill == '') { ?>
 		<div class="main" >
 			<h3><?php echo $site_full_name .' '. i18n_r('INSTALLATION'); ?></h3>
 			<form action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
@@ -196,8 +199,10 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION'));
 				<p><label for="email" ><?php i18n('LABEL_EMAIL'); ?>:</label><input class="text" name="email" id="email" type="email" value="<?php if(isset($_POST['email'])) { echo $_POST['email']; } ?>" /></p>
 				<p><input class="submit" type="submit" name="submitted" value="<?php i18n('LABEL_INSTALL'); ?>" /></p>
 			</form>
-	</div>
+		</div>
 </div>
 
 <div class="clear"></div>
 <?php get_template('footer'); ?>
+
+<?php } ?>

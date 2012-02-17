@@ -25,7 +25,7 @@ $i18n = array(
 "WEBSITEURL_ERROR"	=>	"<b>Error:</b> There was a problem with your website URL",
 "USERNAME_ERROR"		=>	"<b>Error:</b> Username was not set",
 "EMAIL_ERROR"				=>	"<b>Error:</b> There was a problem with your email address",
-"CHMOD_ERROR"				=>	"<b>Unable to continue:</b> Unable to write config file. CHMOD 755 or 777 the folders /data, /backups and their sub-folders and retry",
+"CHMOD_ERROR"				=>	"<b>Unable to continue:</b> Unable to write the configuration file. CHMOD 755 or 777 the <code>/data</code>, <code>/backups</code> folders &amp; sub-folders and retry.",
 "EMAIL_COMPLETE"		=>	"Setup Complete",
 "EMAIL_USERNAME"		=>	"Your username is",
 "EMAIL_PASSWORD"		=>	"Your new password is",
@@ -434,9 +434,9 @@ $i18n = array(
  * For: setup.php
  */
 
-"ROOT_HTACCESS_ERROR" => "Failed to create .htaccess in root! Please copy <b>%s</b> to <b>.htaccess</b> and change <code>%s</code> to <code>%s</code>",
-"REMOVE_TEMPCONFIG_ERROR" => "Failed to remove <b>%s</b>! Please do it manually.",
-"MOVE_TEMPCONFIG_ERROR" => "Failed to rename <b>%s</b> to <b>%s</b>! Please do it manually.",
+"ROOT_HTACCESS_ERROR" => "Failed to create .htaccess in root! Please copy <code>%s</code> to <code>.htaccess</code> and change <code>%s</code> to <code>%s</code>",
+"REMOVE_TEMPCONFIG_ERROR" => "Failed to remove <code>%s</code>! Please do it manually.",
+"MOVE_TEMPCONFIG_ERROR" => "Failed to rename <code>%s</code> to <code>%s</code>! Please do it manually.",
 "KILL_CANT_CONTINUE" => "Cannot continue. Please fix errors and try again.",
 "REFRESH" => "Refresh",
 "BETA"=> "Beta / Bleeding Edge",
