@@ -62,7 +62,7 @@ if (!file_exists(GSDATAOTHERPATH."plugins.xml")){
 read_pluginsxml();        // get the live plugins into $live_plugins array
 
 
-create_pluginsxml();      // check that plugins have not been removed or added to the directory
+//create_pluginsxml();      // check that plugins have not been removed or added to the directory
 
 // load each of the plugins
 foreach ($live_plugins as $file=>$en) {
@@ -100,7 +100,7 @@ function change_plugin($name){
 	  } else {
 	    $live_plugins[$name]="true";
 	  }
-	  create_pluginsxml();
+	  create_pluginsxml(true);
 	}
 }
 
@@ -119,7 +119,6 @@ function read_pluginsxml(){
    
   $data = getXML(GSDATAOTHERPATH . "plugins.xml");
   $componentsec = $data->item;
-  $count= 0;
   if (count($componentsec) != 0) {
     foreach ($componentsec as $component) {
       $live_plugins[(string)$component->plugin]=(string)$component->enabled;
@@ -140,16 +139,16 @@ function read_pluginsxml(){
  * @uses $live_plugins
  *
  */
-function create_pluginsxml(){
+function create_pluginsxml($force=false){
   global $live_plugins;   
   if (file_exists(GSPLUGINPATH)){
     $pluginfiles = getFiles(GSPLUGINPATH);
   }  
+  $plugincount=0;
   $xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>'); 
   foreach ($pluginfiles as $fi) {
     $pathExt = lowercase(pathinfo($fi,PATHINFO_EXTENSION));
     $pathName= pathinfo_filename($fi);
-    $count=0;
     if ($pathExt=="php")
     {
       $components = $xml->addChild('item');  
@@ -161,9 +160,12 @@ function create_pluginsxml(){
       } else {
          $c_note->addCData('true'); 
       } 
+	  $plugincount++;
     }
-  }    
-  XMLsave($xml, GSDATAOTHERPATH."plugins.xml");
+  }
+  if ($plugincount!=count($live_plugins) || $force==true ){    
+  	XMLsave($xml, GSDATAOTHERPATH."plugins.xml");
+  }
   read_pluginsxml();
 }
 
