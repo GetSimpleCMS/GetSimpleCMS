@@ -10,3 +10,4 @@ CKEDITOR.editorConfig = function( config )
 	config.toolbarCanCollapse = false; // hide toolbar collapse button
 	config.dialog_backgroundCoverColor = '#000000';
 };
+
