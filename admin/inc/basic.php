@@ -331,7 +331,7 @@ function shtDate($dt) {
  */
 function cl($data){
 	$data = stripslashes(strip_tags(html_entity_decode($data, ENT_QUOTES, 'UTF-8')));
-	$data = preg_replace('/[[:cntrl:]]/', '', $data); //remove control characters that cause interface to choke
+	//$data = preg_replace('/[[:cntrl:]]/', '', $data); //remove control characters that cause interface to choke
 	return $data;
 }
 
