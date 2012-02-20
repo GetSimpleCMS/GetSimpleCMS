@@ -357,8 +357,8 @@ $i18n = array(
 /* 
  * For: changedata.php
 */
-"CANNOT_SAVE_EMPTY"	=>	"You cannot save an empty page",
-"META_DESC" 				=> "Meta Description",
+"CANNOT_SAVE_EMPTY"	=>	"You cannot save a page with an empty title or slug",
+"META_DESC" 				=>  "Meta Description",
 
 /* 
  * For: template_functions.php

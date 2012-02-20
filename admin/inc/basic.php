@@ -467,8 +467,12 @@ function strip_quotes($text)  {
  * @return string
  */
 function encode_quotes($text)  { 
-	$text = strip_tags($text); 
-	$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8', false);
+	$text = strip_tags($text);
+	if (version_compare(PHP_VERSION, "5.2.3")  >= 0) {	
+		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8', false);
+	} else {	
+		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+	}
 	return trim($text); 
 } 
 
