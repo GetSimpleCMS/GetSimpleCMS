@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Innovation Theme Settings
-Description: Settings for the default GetSimple 3.0 Theme: Innovation
-Version: 1.1
+Description: Settings for the default GetSimple Theme: Innovation
+Version: 1.2
 Author: Chris Cagle
-Author URI: http://www.cagintranet.com/
+Author URI: http://chriscagle.me
 */
 
 # get correct id for plugin
@@ -18,9 +18,9 @@ i18n_merge($thisfile_innov,'en_US');
 register_plugin(
 	$thisfile_innov, 													# ID of plugin, should be filename minus php
 	i18n_r($thisfile_innov.'/INNOVATION_TITLE'), 				# Title of plugin
-	'1.1', 															# Version of plugin
+	'1.2', 															# Version of plugin
 	'Chris Cagle',											# Author of plugin
-	'http://www.cagintranet.com/', 			# Author URL
+	'http://chriscagle.me', 			# Author URL
 	i18n_r($thisfile_innov.'/INNOVATION_DESC'), 					# Plugin Description
 	'theme', 														# Page type of plugin
 	'innovation_show'  									# Function that displays content
@@ -110,9 +110,9 @@ function innovation_show() {
 	
 	<form method="post" action="<?php	echo $_SERVER ['REQUEST_URI']?>">
 		
-		<p><label for="inn_facebook" ><?php i18n($thisfile_innov.'/FACEBOOK_URL'); ?></label><input id="inn_facebook" name="facebook" class="text" value="<?php echo $facebook; ?>" /></p>
-		<p><label for="inn_twitter" ><?php i18n($thisfile_innov.'/TWITTER_URL'); ?></label><input id="inn_twitter" name="twitter" class="text" value="<?php echo $twitter; ?>" /></p>
-		<p><label for="inn_linkedin" ><?php i18n($thisfile_innov.'/LINKEDIN_URL'); ?></label><input id="inn_linkedin" name="linkedin" class="text" value="<?php echo $linkedin; ?>" /></p>
+		<p><label for="inn_facebook" ><?php i18n($thisfile_innov.'/FACEBOOK_URL'); ?></label><input id="inn_facebook" name="facebook" class="text" value="<?php echo $facebook; ?>" type="url" /></p>
+		<p><label for="inn_twitter" ><?php i18n($thisfile_innov.'/TWITTER_URL'); ?></label><input id="inn_twitter" name="twitter" class="text" value="<?php echo $twitter; ?>" type="url" /></p>
+		<p><label for="inn_linkedin" ><?php i18n($thisfile_innov.'/LINKEDIN_URL'); ?></label><input id="inn_linkedin" name="linkedin" class="text" value="<?php echo $linkedin; ?>" type="url" /></p>
 		
 		<p><input type="submit" id="submit" class="submit" value="<?php i18n('BTN_SAVESETTINGS'); ?>" name="submit" /></p>
 	</form>

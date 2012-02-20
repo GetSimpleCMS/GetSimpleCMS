@@ -2,7 +2,7 @@
 /**
  * English Language File for Innovation Theme Plugin
  *
- * Date:				8 Apr 2011
+ * Date:				19 Feb 2012
  * Revision:		
  * Version:			GetSimple 3.0
  * Traductors: 	Chris Cagle 
@@ -14,7 +14,7 @@
 $i18n = array (
 	
 	"INNOVATION_TITLE"=>  "Innovation Theme Settings",
-	"INNOVATION_DESC" =>  "Settings for the default GetSimple 3.0 Theme: Innovation",
+	"INNOVATION_DESC" =>  "Settings for the default GetSimple theme: Innovation",
 	"FACEBOOK_ERROR"	=>	"Facebook URL is not valid.",
 	"TWITTER_ERROR"		=>	"Twitter URL is not valid.",
 	"LINKEDIN_ERROR"	=>	"LinkedIn URL is not valid.",
