@@ -1,9 +1,9 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /****************************************************
 *
-* @File: 			sidebar.php
+* @File: 			sidebar.inc.php
 * @Package:		GetSimple
-* @Action:		Innovation theme for the GetSimple 3.0
+* @Action:		Innovation theme for GetSimple CMS
 *
 *****************************************************/
 ?><aside id="sidebar">

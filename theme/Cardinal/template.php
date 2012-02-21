@@ -3,7 +3,7 @@
 *
 * @File: 			template.php
 * @Package:		GetSimple
-* @Action:		Cardinal theme for the GetSimple CMS
+* @Action:		Cardinal theme for GetSimple CMS
 *
 *****************************************************/
 ?>
@@ -50,7 +50,7 @@
 		<div class="section credits">
 			<p><?php echo date('Y'); ?> - <strong><?php get_site_name(); ?></strong></p>
 			<p>
-				Cardinal Theme by <a href="http://www.cagintranet.com" title="Pittsburgh Creative Agency" >Cagintranet</a><br />
+				Cardinal Theme by <a href="http://www.cagintranet.com" >Cagintranet</a><br />
 				<?php get_site_credits(); ?>
 			</p>
 		</div>

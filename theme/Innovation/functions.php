@@ -3,7 +3,7 @@
 *
 * @File: 			functions.php
 * @Package:		GetSimple
-* @Action:		Innovation theme for the GetSimple 3.0
+* @Action:		Innovation theme for GetSimple CMS
 *
 *****************************************************/
 
