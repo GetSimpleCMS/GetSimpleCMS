@@ -85,10 +85,10 @@ html {overflow-y: scroll;}
   color:#111;
 }
 ::-webkit-input-placeholder {
-    color:    #aaaaaa;
+    color:    #c3c3c3;
 }
 :-moz-placeholder {
-    color:    #aaaaaa;
+    color:    #c3c3c3;
 }
 /** HEADER / NAVIGATION **/
 .header {

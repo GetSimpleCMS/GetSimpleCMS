@@ -139,6 +139,7 @@
 	height: 12px;
 	margin-top: 12px;
 	width: 12px;
+	opacity:.25;
 }
 .cke_skin_getsimple .cke_browser_air .cke_resizer,.cke_skin_getsimple .cke_browser_air .cke_rtl .cke_resizer
 {
@@ -1421,9 +1422,8 @@ html.cke_skin_getsimple_container
 	background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e2e2e2));
 }
 #cke_bottom_post-content {
-	background:#eeeeee;
-	background: -moz-linear-gradient(top, #eeeeee, #e2e2e2);
-	background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e2e2e2));
+	border-top:1px solid #eee;
+	background:#f6f6f6;
 }
 #cke_top_post-content .cke_toolbar {
 	margin:2px 0 0px 2px;
