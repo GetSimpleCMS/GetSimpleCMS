@@ -11,7 +11,8 @@ Author URI: http://get-simple.info/
 $thisfile_anony=basename(__FILE__, ".php");
 
 # add in this plugin's language file
-i18n_merge($thisfile_anony,'en_US');
+i18n_merge($thisfile_anony) || i18n_merge($thisfile_anony, 'en_US');
+
 
 # register plugin
 register_plugin(
