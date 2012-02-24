@@ -1095,12 +1095,12 @@ function generate_sitemap() {
 				$url_item->addChild('priority', $pagePriority);
 				exec_action('sitemap-additem');
 			}
-			
-			//create xml file
-			$file = GSROOTPATH .'sitemap.xml';
-			exec_action('save-sitemap');
-			XMLsave($xml, $file);
 		}
+		
+		//create xml file
+		$file = GSROOTPATH .'sitemap.xml';
+		exec_action('save-sitemap');
+		XMLsave($xml, $file);
 	}
 	
 	if (!defined('GSDONOTPING')) {
