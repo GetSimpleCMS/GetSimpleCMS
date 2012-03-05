@@ -42,7 +42,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		
 		foreach($iter as $element) {
 		    /* @var $element SplFileInfo */
-		    $dir = str_replace($sourcePath, '', $element->getPath()) . '/';
+		    $dir = str_replace($sourcePath, '', $element->getPath()) . DIRECTORY_SEPARATOR;
 		    if ( strstr($dir, $GSADMIN.DIRECTORY_SEPARATOR ) || strstr($dir, 'backups'.DIRECTORY_SEPARATOR )) {
   				#don't archive these folders
 				} else if ($element->getFilename() != '..') { // FIX: if added to ignore parent directories
