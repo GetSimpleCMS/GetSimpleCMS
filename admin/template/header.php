@@ -50,9 +50,6 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 					$('a.support').attr('href', 'health-check.php');
 				}
 			<?php  } ?>
-			<?php if (file_exists(GSCACHEPATH.'plugin-update.trigger')) { ?>
-				$('a.plugins').parent('li').append('<span class="warning">!</span>');
-			<?php  } ?>
 		});
 	</script>
 	<?php } ?>
