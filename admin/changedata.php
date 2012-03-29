@@ -36,7 +36,7 @@ if (isset($_POST['submitted'])) {
 		}
 	}
 	
-	if ( $_POST['post-title'] == '' )	{
+	if ( trim($_POST['post-title']) == '' )	{
 		redirect("edit.php?upd=edit-err&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
 	}	else {
 		
