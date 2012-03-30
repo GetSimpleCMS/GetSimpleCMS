@@ -137,6 +137,17 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT'));
 
 if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 
+switch (pathinfo($TEMPLATE_FILE,PATHINFO_EXTENSION)) {
+		case 'css':
+			$mode = 'text/css';
+			break;
+		case 'js':
+			$mode = 'text/javascript';
+			break;
+		default:
+			$mode = 'application/x-httpd-php';
+	}
+
 ?>
 
 <script>
@@ -174,7 +185,7 @@ window.onload = function() {
         indentUnit: 4,
         indentWithTabs: true,
         enterMode: "keep",
-        mode:"application/x-httpd-php",
+        mode:"<?php echo $mode; ?>",
         tabMode: "shift",
         theme:'default',
     	onGutterClick: foldFunc,
