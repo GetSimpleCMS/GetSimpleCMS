@@ -73,4 +73,7 @@ define('GSDONOTPING', 1);
 # Disable loading of external CDN versions of scripts (jQuery/jQueryUI)
 #define("GSNOCDN",true);
 
+# Disable Codemirror theme editor
+#define("GSNOHIGHLIGHT",true);
+
 ?>

@@ -107,32 +107,37 @@ foreach ($templates as $file){
 }
 $theme_templates .= "</select></span>";
 
-
-register_script('codemirror', $SITEURL.'admin/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);
-register_script('codemirror-search', $SITEURL.'admin/template/js/codemirror/lib/searchcursor.js', '0.2.0', FALSE);
-register_script('codemirror-search-cursor', $SITEURL.'admin/template/js/codemirror/lib/search.js', '0.2.0', FALSE);
-register_script('codemirror-dialog', $SITEURL.'admin/template/js/codemirror/lib/dialog.js', '0.2.0', FALSE);
-register_script('codemirror-folding', $SITEURL.'admin/template/js/codemirror/lib/foldcode.js', '0.2.0', FALSE);
-
-register_style('codemirror-css',$SITEURL.'admin/template/js/codemirror/lib/codemirror.css','screen',FALSE);
-register_style('codemirror-theme',$SITEURL.'admin/template/js/codemirror/theme/default.css','screen',FALSE);
-register_style('codemirror-dialog',$SITEURL.'admin/template/js/codemirror/lib/dialog.css','screen',FALSE);
-
-queue_script('codemirror', GSBACK);
-queue_script('codemirror-search', GSBACK);
-queue_script('codemirror-search-cursor', GSBACK);
-queue_script('codemirror-dialog', GSBACK);
-queue_script('codemirror-folding', GSBACK);
-
-
-queue_style('codemirror-css', GSBACK);
-queue_style('codemirror-theme', GSBACK);
-queue_style('codemirror-dialog', GSBACK);
+if (defined('GSNOHIGHLIGHT') && GSNOHIGHLIGHT==FALSE){
+	register_script('codemirror', $SITEURL.'admin/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);
+	register_script('codemirror-search', $SITEURL.'admin/template/js/codemirror/lib/searchcursor.js', '0.2.0', FALSE);
+	register_script('codemirror-search-cursor', $SITEURL.'admin/template/js/codemirror/lib/search.js', '0.2.0', FALSE);
+	register_script('codemirror-dialog', $SITEURL.'admin/template/js/codemirror/lib/dialog.js', '0.2.0', FALSE);
+	register_script('codemirror-folding', $SITEURL.'admin/template/js/codemirror/lib/foldcode.js', '0.2.0', FALSE);
+	
+	register_style('codemirror-css',$SITEURL.'admin/template/js/codemirror/lib/codemirror.css','screen',FALSE);
+	register_style('codemirror-theme',$SITEURL.'admin/template/js/codemirror/theme/default.css','screen',FALSE);
+	register_style('codemirror-dialog',$SITEURL.'admin/template/js/codemirror/lib/dialog.css','screen',FALSE);
+	
+	queue_script('codemirror', GSBACK);
+	queue_script('codemirror-search', GSBACK);
+	queue_script('codemirror-search-cursor', GSBACK);
+	queue_script('codemirror-dialog', GSBACK);
+	queue_script('codemirror-folding', GSBACK);
+	
+	
+	queue_style('codemirror-css', GSBACK);
+	queue_style('codemirror-theme', GSBACK);
+	queue_style('codemirror-dialog', GSBACK);
+}
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); 
 ?>
 
-<?php include('template/include-nav.php'); ?>
+<?php include('template/include-nav.php');
+
+if (defined('GSNOHIGHLIGHT') && GSNOHIGHLIGHT==FALSE){
+
+?>
 
 <script>
 window.onload = function() {
@@ -185,7 +190,9 @@ window.onload = function() {
      }
      
 </script>
-
+<?php 
+}
+?>
 <div class="bodycontent clearfix">
 	
 	<div id="maincontent">
