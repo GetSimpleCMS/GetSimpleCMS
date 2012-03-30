@@ -169,6 +169,7 @@ window.onload = function() {
         indentUnit: 4,
         indentWithTabs: true,
         enterMode: "keep",
+        mode:"application/x-httpd-php",
         tabMode: "shift",
         theme:'default',
     	onGutterClick: foldFunc,
