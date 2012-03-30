@@ -137,7 +137,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT'));
 
 if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 
-switch (pathinfo($TEMPLATE_FILE,PATHINFO_EXTENSION)) {
+	switch (pathinfo($TEMPLATE_FILE,PATHINFO_EXTENSION)) {
 		case 'css':
 			$mode = 'text/css';
 			break;
