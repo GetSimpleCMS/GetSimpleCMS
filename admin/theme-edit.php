@@ -107,7 +107,7 @@ foreach ($templates as $file){
 }
 $theme_templates .= "</select></span>";
 
-if (defined('GSNOHIGHLIGHT') && GSNOHIGHLIGHT==FALSE){
+if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 	register_script('codemirror', $SITEURL.'admin/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);
 	register_script('codemirror-search', $SITEURL.'admin/template/js/codemirror/lib/searchcursor.js', '0.2.0', FALSE);
 	register_script('codemirror-search-cursor', $SITEURL.'admin/template/js/codemirror/lib/search.js', '0.2.0', FALSE);
@@ -135,7 +135,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT'));
 
 <?php include('template/include-nav.php');
 
-if (defined('GSNOHIGHLIGHT') && GSNOHIGHLIGHT==FALSE){
+if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 
 ?>
 
