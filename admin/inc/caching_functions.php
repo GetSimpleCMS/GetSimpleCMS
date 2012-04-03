@@ -109,7 +109,11 @@ function returnPageField($page,$field){
 	if ($field=="content"){
 	  $ret=returnPageContent($page); 
 	} else {
-	  $ret=strip_decode(@$pagesArray[(string)$page][(string)$field]);
+		if (array_key_exists($field, $pagesArray[(string)$page])){
+	  		$ret=strip_decode(@$pagesArray[(string)$page][(string)$field]);
+		} else {
+			$ret = returnPageContent($page,$field);
+		}
 	} 
 	return $ret;
 }
