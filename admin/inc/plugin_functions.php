@@ -62,7 +62,7 @@ if (!file_exists(GSDATAOTHERPATH."plugins.xml")){
 read_pluginsxml();        // get the live plugins into $live_plugins array
 
 
-//create_pluginsxml();      // check that plugins have not been removed or added to the directory
+create_pluginsxml();      // check that plugins have not been removed or added to the directory
 
 // load each of the plugins
 foreach ($live_plugins as $file=>$en) {
@@ -143,28 +143,33 @@ function create_pluginsxml($force=false){
   global $live_plugins;   
   if (file_exists(GSPLUGINPATH)){
     $pluginfiles = getFiles(GSPLUGINPATH);
-  }  
-  $plugincount=0;
-  $xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>'); 
+  }
+  $phpfiles = array();
   foreach ($pluginfiles as $fi) {
-    $pathExt = lowercase(pathinfo($fi,PATHINFO_EXTENSION));
-    $pathName= pathinfo_filename($fi);
-    if ($pathExt=="php")
-    {
-      $components = $xml->addChild('item');  
-      $c_note = $components->addChild('plugin');
-      $c_note->addCData($fi);
-      $c_note = $components->addChild('enabled');
-      if (isset($live_plugins[(string)$fi])){
-        $c_note->addCData($live_plugins[(string)$fi]);     
-      } else {
-         $c_note->addCData('true'); 
-      } 
-	  $plugincount++;
+    if (lowercase(pathinfo($fi, PATHINFO_EXTENSION))=='php') {
+      $phpfiles[] = $fi;
     }
   }
-  if ($plugincount!=count($live_plugins) || $force==true ){    
-  	XMLsave($xml, GSDATAOTHERPATH."plugins.xml");
+  if (!$force) {
+    $livekeys = array_keys($live_plugins);
+    if (count(array_diff($livekeys, $phpfiles))>0 || count(array_diff($phpfiles, $livekeys))>0) {
+      $force = true;
+    }
+  }
+  if ($force) {
+    $xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>'); 
+    foreach ($phpfiles as $fi) {
+      $plugins = $xml->addChild('item');  
+      $p_note = $plugins->addChild('plugin');
+      $p_note->addCData($fi);
+      $p_note = $plugins->addChild('enabled');
+      if (isset($live_plugins[(string)$fi])){
+        $p_note->addCData($live_plugins[(string)$fi]);     
+      } else {
+         $p_note->addCData('true'); 
+      } 
+    }
+    XMLsave($xml, GSDATAOTHERPATH."plugins.xml");
   }
   read_pluginsxml();
 }

@@ -26,11 +26,13 @@ add_action('page-delete', 'create_pagesxml',array('true'));            				// Cr
  * @param $page - slug of the page to retrieve content
  *
  */
-function getPageContent($page){   
+function getPageContent($page,$field='content'){   
 	$thisfile = file_get_contents(GSDATAPAGESPATH.$page.'.xml');
 	$data = simplexml_load_string($thisfile);
-	$content = stripslashes(htmlspecialchars_decode($data->content, ENT_QUOTES));
-	$content = exec_filter('content',$content);
+	$content = stripslashes(htmlspecialchars_decode($data->$field, ENT_QUOTES));
+	if ($field=='content'){
+		$content = exec_filter('content',$content);
+	}
 	echo $content;
 }
 
@@ -49,7 +51,11 @@ function getPageField($page,$field){
 	if ($field=="content"){
 	  getPageContent($page);  
 	} else {
-	  echo strip_decode($pagesArray[(string)$page][(string)$field]);
+		if (array_key_exists($field, $pagesArray[(string)$page])){
+	  		echo strip_decode($pagesArray[(string)$page][(string)$field]);
+		} else {
+			getPageContent($page,$field);
+		}
 	} 
 }
 
@@ -77,12 +83,14 @@ function echoPageField($page,$field){
  * @param $page - slug of the page to retrieve content
  *
  */
-function returnPageContent($page){   
-  $thisfile = file_get_contents(GSDATAPAGESPATH.$page.'.xml');
-  $data = simplexml_load_string($thisfile);
-  $content = stripslashes(htmlspecialchars_decode($data->content, ENT_QUOTES));
-  $content = exec_filter('content',$content);
-  return $content;
+function returnPageContent($page,$field='content'){   
+	$thisfile = file_get_contents(GSDATAPAGESPATH.$page.'.xml');
+	$data = simplexml_load_string($thisfile);
+	$content = stripslashes(htmlspecialchars_decode($data->$field, ENT_QUOTES));
+	if ($field=='content'){
+		$content = exec_filter('content',$content);
+	}
+  	return $content;
 }
 
 /**
@@ -168,8 +176,9 @@ function getChildrenMulti($page,$options=array()){
  * @since 3.1
  *  
  */
-function getPagesXmlValues(){
+function getPagesXmlValues($chkcount=true){
   global $pagesArray;
+  $pagesArray=array();
   $file=GSDATAOTHERPATH."pages.xml";
   if (file_exists($file)){
   // load the xml file and setup the array. 
@@ -193,13 +202,16 @@ function getPagesXmlValues(){
 	      $filenames[] = $filename;
 	    }
 	  }
-	  if (count($pagesArray)!=count($filenames)) {
-	  		create_pagesxml('true');
-    		getPagesXmlValues();
+	  if ($chkcount==true){
+		  if (count($pagesArray)!=count($filenames)) {
+		  		debugLog(count($pagesArray).":".count($filenames));	
+		  		create_pagesxml('true');
+	    		getPagesXmlValues(false);
+		  }
 	  }
   } else {
-    create_pagesxml('true');
-    getPagesXmlValues();
+    create_pagesxml(true);
+    getPagesXmlValues(false);
   }
   
 }
@@ -243,27 +255,59 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=='true'){
         $id=$data->url;
         
     	$pages = $xml->addChild('item');
-    	$pages->addChild('url', $id);
-    	$pagesArray[(string)$id]['url']=(string)$id;		
-		
-		foreach ($data->children() as $item => $itemdata) {
-		   	if ($item!="content"){
-				$note = $pages->addChild($item);
-	        	$note->addCData($itemdata);
-	        	$pagesArray[(string)$id][$item]=(string)$itemdata;
-			}
-		}
-		
+        $pages->addChild('url', $id);
+        $pagesArray[(string)$id]['url']=(string)$id;
+        
+        $note = $pages->addChild('meta');
+        $note->addCData($data->meta);
+        $pagesArray[(string)$id]['meta']=(string)$data->meta;
+   
+        $note = $pages->addChild('metad'); 
+        $note->addCData($data->metad);     
+        $pagesArray[(string)$id]['metad']=(string)$data->metad;
+                
+        $note = $pages->addChild('menu');
+        $note->addCData($data->menu);
+        $pagesArray[(string)$id]['menu']=(string)$data->menu;
+
+        $note = $pages->addChild('title'); 
+        $note->addCData($data->title);        
+        $pagesArray[(string)$id]['title']=(string)$data->title;
+        
+        $note = $pages->addChild('menuOrder'); 
+        $note->addCData($data->menuOrder);        
+        $pagesArray[(string)$id]['menuOrder']=(string)$data->menuOrder;
+                
+        $note = $pages->addChild('menuStatus'); 
+        $note->addCData($data->menuStatus);        
+        $pagesArray[(string)$id]['menuStatus']=(string)$data->menuStatus;
+                
+        $note = $pages->addChild('template');
+        $note->addCData($data->template);        
+        $pagesArray[(string)$id]['template']=(string)$data->template;
+                
+        $note = $pages->addChild('parent');
+        $note->addCData($data->parent);        
+        $pagesArray[(string)$id]['parent']=(string)$data->parent;
+                
+        $note = $pages->addChild('private'); 
+        $note->addCData($data->private);        
+        $pagesArray[(string)$id]['private']=(string)$data->private;
+                
+        $note = $pages->addChild('pubDate');
+        $note->addCData($data->pubDate);        
+        $pagesArray[(string)$id]['pubDate']=(string)$data->pubDate;
+                
         $note = $pages->addChild('slug');
         $note->addCData($id);
         $pagesArray[(string)$id]['slug']=(string)$data->slug;
-		
+        
         $pagesArray[(string)$id]['filename']=$file;
         $note = $pages->addChild('filename'); 
         $note->addCData($file);
 		
         // Plugin Authors should add custome fields etc.. here
-  			exec_action('caching-save');
+  		exec_action('caching-save');
 	  
       } // else
     } // end foreach
