@@ -259,52 +259,20 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=='true'){
         
     	$pages = $xml->addChild('item');
         $pages->addChild('url', $id);
-        $pagesArray[(string)$id]['url']=(string)$id;
-        
-        $note = $pages->addChild('meta');
-        $note->addCData($data->meta);
-        $pagesArray[(string)$id]['meta']=(string)$data->meta;
-   
-        $note = $pages->addChild('metad'); 
-        $note->addCData($data->metad);     
-        $pagesArray[(string)$id]['metad']=(string)$data->metad;
+        $pagesArray[(string)$id]['url']=(string)$id;            
                 
-        $note = $pages->addChild('menu');
-        $note->addCData($data->menu);
-        $pagesArray[(string)$id]['menu']=(string)$data->menu;
-
-        $note = $pages->addChild('title'); 
-        $note->addCData($data->title);        
-        $pagesArray[(string)$id]['title']=(string)$data->title;
-        
-        $note = $pages->addChild('menuOrder'); 
-        $note->addCData($data->menuOrder);        
-        $pagesArray[(string)$id]['menuOrder']=(string)$data->menuOrder;
-                
-        $note = $pages->addChild('menuStatus'); 
-        $note->addCData($data->menuStatus);        
-        $pagesArray[(string)$id]['menuStatus']=(string)$data->menuStatus;
-                
-        $note = $pages->addChild('template');
-        $note->addCData($data->template);        
-        $pagesArray[(string)$id]['template']=(string)$data->template;
-                
-        $note = $pages->addChild('parent');
-        $note->addCData($data->parent);        
-        $pagesArray[(string)$id]['parent']=(string)$data->parent;
-                
-        $note = $pages->addChild('private'); 
-        $note->addCData($data->private);        
-        $pagesArray[(string)$id]['private']=(string)$data->private;
-                
-        $note = $pages->addChild('pubDate');
-        $note->addCData($data->pubDate);        
-        $pagesArray[(string)$id]['pubDate']=(string)$data->pubDate;
+        foreach ($data->children() as $item => $itemdata) {
+                if ($item!="content"){
+                        $note = $pages->addChild($item);
+                $note->addCData($itemdata);
+                $pagesArray[(string)$id][$item]=(string)$itemdata;
+                }
+        }
                 
         $note = $pages->addChild('slug');
         $note->addCData($id);
         $pagesArray[(string)$id]['slug']=(string)$data->slug;
-        
+                
         $pagesArray[(string)$id]['filename']=$file;
         $note = $pages->addChild('filename'); 
         $note->addCData($file);
