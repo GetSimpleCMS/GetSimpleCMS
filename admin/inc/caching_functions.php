@@ -204,7 +204,6 @@ function getPagesXmlValues($chkcount=true){
 	  }
 	  if ($chkcount==true){
 		  if (count($pagesArray)!=count($filenames)) {
-		  		debugLog(count($pagesArray).":".count($filenames));	
 		  		create_pagesxml('true');
 	    		getPagesXmlValues(false);
 		  }
