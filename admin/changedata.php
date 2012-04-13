@@ -65,7 +65,7 @@ if (isset($_POST['submitted'])) {
 	
 	
 		//check again to see if the URL is empty
-		if ( $url == '' )	{
+		if ( trim($url) == '' )	{
 			redirect("edit.php?upd=edit-err&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
 		}
 		
