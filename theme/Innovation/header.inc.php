@@ -14,7 +14,6 @@
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" > <!--<![endif]-->
 <head>
 <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
   <title><?php get_page_clean_title(); ?> - <?php get_site_name(); ?></title>
 	
