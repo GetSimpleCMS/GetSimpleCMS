@@ -106,8 +106,19 @@ if (isset($_REQUEST['y'])) {
   $max_y = intval($_REQUEST['y']);
 }
 
+$path_parts = pathinfo($from_name);
+
 if (!file_exists($images_folder)) die('Images folder does not exist (update $images_folder in the script)');
 if ($save_to_file && !file_exists($thumbs_folder)) die('Thumbnails folder does not exist (update $thumbs_folder in the script)');
+
+$dirs=explode(DIRECTORY_SEPARATOR ,$path_parts['dirname']);
+$folder=$thumbs_folder;
+foreach ($dirs as $dir){
+	$folder.="/".$dir;	
+	if (!file_exists($folder)){
+		mkdir ($folder); 
+	}
+}
 
 // Allocate all necessary memory for the image.
 // Special thanks to Alecos for providing the code.
