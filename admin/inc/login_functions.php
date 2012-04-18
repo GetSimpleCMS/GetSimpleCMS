@@ -33,7 +33,9 @@ if(isset($_POST['submitted'])) {
 		
 		# hash the given password
 		$password = passhash($password);
-		
+    $logFailed = new GS_Logging_Class('failedlogins.log');
+    $logFailed->add('Username',$userid);
+        
 		# does this user exist?
 		if (file_exists($user_xml)) {
 
@@ -48,29 +50,18 @@ if(isset($_POST['submitted'])) {
 				$authenticated = true;
 			} else {
 				$authenticated = false;
-				
-				# add login failure to failed logins page
-				$xmlfile = GSDATAOTHERPATH.'logs/failedlogins.log';
-				if ( ! file_exists($xmlfile) ) 	{ 
-					$xml = new SimpleXMLExtended('<channel></channel>');
-				} else {
-					$xmldata = file_get_contents($xmlfile);
-					$xml = new SimpleXMLExtended($xmldata);
-				}
-				$thislog = $xml->addChild('entry');
-				$thislog->addChild('date', date('r'));
-				$cdata = $thislog->addChild('Username');
-				$cdata->addCData(htmlentities($userid, ENT_QUOTES));
-				$cdata = $thislog->addChild('IP_Address');
-				$ip = getenv("REMOTE_ADDR"); 
-				$cdata->addCData(htmlentities($ip, ENT_QUOTES));
-				XMLsave($xml, $xmlfile);
-				
+
+        # add login failure to failed logins log
+        $logFailed->add('Reason','Invalid Password');
+        
 			} # end password match check
 			
 		} else {
 			# user doesnt exist in this system
 			$authenticated = false;
+
+      # add login failure to failed logins log
+      $logFailed->add('Reason','Invalid User');
 		}		
 		
 		# is this successful?
@@ -83,7 +74,8 @@ if(isset($_POST['submitted'])) {
 		} else {
 			# NO - show error message
 			$error = i18n_r('LOGIN_FAILED');
-		} # end authenticated check
+      $logFailed->save(); 								            
+    } # end authenticated check
 		
 	} # end error check
 	
