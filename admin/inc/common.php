@@ -24,6 +24,7 @@ if (version_compare(PHP_VERSION, "5")  >= 0) {
  */
 include('basic.php');
 include('template_functions.php');
+include('logging.class.php');
 
 
 define('GSROOTPATH', get_root_path());
