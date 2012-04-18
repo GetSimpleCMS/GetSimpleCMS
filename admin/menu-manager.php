@@ -55,7 +55,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT').' &ra
 					echo '<ul id="menu-order" >';
 					foreach ($pagesSorted as $page) {
 						$sel = '';
-						if ($page['menuStatus'] != '' && $page['parent'] == '') { 
+						if ($page['menuStatus'] != '') { 
 							
 							if ($page['menuOrder'] == '') { 
 								$page['menuOrder'] = "N/A"; 
