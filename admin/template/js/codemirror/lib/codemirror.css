@@ -74,11 +74,14 @@
 
 span.CodeMirror-selected {
   background: #ccc !important;
-  color: HighlightText !important;
+  color: #d7d4f0 !important;
 }
 .CodeMirror-focused span.CodeMirror-selected {
-  background: Highlight !important;
+  background: #d9d9d9 !important;
 }
+
+div.CodeMirror-selected { background: #d9d9d9; }
+.CodeMirror-focused div.CodeMirror-selected { background: #d7d4f0; }
 
 .CodeMirror-matchingbracket {color: #0f0 !important;}
 .CodeMirror-nonmatchingbracket {color: #f22 !important;}
