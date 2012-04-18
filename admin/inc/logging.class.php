@@ -66,8 +66,9 @@ class GS_Logging_Class {
                 $pathinfo=pathinfo($filename);
                 if(!isset($pathinfo['extension']) || strtolower($pathinfo['extension']) != 'log' || $pathinfo['dirname']!='.'){
                   throw new Exception("Filename is not valid in GS_Logging_Class");                 
-                }  
-                return true;
+                }  else {
+                  return true;
+                }
         }
         
         /* 
