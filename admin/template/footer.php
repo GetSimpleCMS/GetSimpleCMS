@@ -29,6 +29,7 @@
 
 		</div><!-- end #footer -->
 		<?php 
+		if(get_filename_id()!='index') {
 		if (defined('GSDEBUG')){
 			global $GS_debug;
 			echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
@@ -38,6 +39,7 @@
 			}
 			echo '</pre>';	
 			echo '</div>';
+		}
 		}
 		?>
 	</div><!-- end .wrapper -->
