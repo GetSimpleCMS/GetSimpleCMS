@@ -620,10 +620,25 @@ function get_navigation($currentpage) {
 	echo exec_filter('menuitems',$menu);
 }
 
+/**
+ * Check if a user is logged in
+ * 
+ * This will return true if user is logged in
+ *
+ * @since 3.2
+ * @uses get_cookie();
+ * @uses $USR
+ *
+ * @return bool
+ */	
+function is_logged_in(){
+  global $USR;
+  if (isset($USR) && $USR == get_cookie('GS_ADMIN_USERNAME')) {
+    return true;
+  }
+}	
 	
-	
-	
-	
+
 	
 /**
  * @depreciated as of 2.04
