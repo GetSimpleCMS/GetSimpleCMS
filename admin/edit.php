@@ -347,7 +347,6 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 	        filebrowserWindowHeight : '500'
     		});
     		CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
-				//var yourText = $('#post-content').val();
 				function InstanceReadyEvent() {
 				  this.document.on("keyup", function () {
 				  		warnme = true;
@@ -419,8 +418,6 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 						});	
 		    	}
 		    	
-		    	// $('#editform').change(function(){
-		    	// $('#editform :input').bind('change',function(){
 		    	$('#editform').on('change',function(){
 							warnme = true;
               // * clearing the timeout will make autosave only fire if idle for GSAUTOSAVE ms
