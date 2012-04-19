@@ -15,5 +15,6 @@
 
 <?php if(get_filename_id()==='edit') { ?>
 <p id="js_submit_line" ></p>
+<p id="pagechangednotify"></p>
 <p id="autosavenotify"></p>
 <?php } ?>

@@ -347,12 +347,11 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 	        filebrowserWindowHeight : '500'
     		});
     		CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
-				var yourText = $('#post-content').val();
+				//var yourText = $('#post-content').val();
 				function InstanceReadyEvent() {
 				  this.document.on("keyup", function () {
 				  		warnme = true;
-				      yourText = CKEDITOR.instances["post-content"].getData();
-				      $('#cancel-updates').show();
+              $('#editform').trigger('change');
 				  });
 				}
 
@@ -382,13 +381,18 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			jQuery(document).ready(function() { 
 	    
 		    <?php if (defined('GSAUTOSAVE') && (int)GSAUTOSAVE != 0) { /* IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP */ ?>	
-		    	function autoSave() {
-		    		$('input[type=submit]').attr('disabled', 'disabled');
-		    		if (!yourText) {
-			    		$('#post-content').val(yourText);
-			    	}
-		    		var dataString = $("#editform").serialize();
+
+          $('#pagechangednotify').hide();
+          $('#autosavenotify').show();
+          $('#autosavenotify').html('Autosaving is <b>ON</b> (<?php echo (int)GSAUTOSAVE/1000; ?> s)');   		    	
+          
+          function autoSave() {
+            $('input[type=submit]').attr('disabled', 'disabled');
+
+            // we are using ajax, so ckeditor wont copy data to our textarea for us, so we do it manually
+            if(typeof(editor)!='undefined'){ $('#post-content').val(CKEDITOR.instances["post-content"].getData()); }
 		    		
+            var dataString = $("#editform").serialize();
 						var currentTime = new Date();
 						var hours = currentTime.getHours();
 						var minutes = currentTime.getMinutes();
@@ -401,25 +405,44 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 							success: function(msg) {
 								if (msg.toString()=='OK') {
 									$('#autosavenotify').text("<?php i18n('AUTOSAVE_NOTIFY'); ?> "+ hours +":"+minutes+" "+daypart);
-									$('input[type=submit]').attr('disabled', '');
+                  $('#pagechangednotify').hide();
+                  $('#pagechangednotify').text('');                    
+									$('input[type=submit]').attr('disabled', false);
+									$('input[type=submit]').css('border-color','#ABABAB');
 									warnme = false;
 									$('#cancel-updates').hide();
 								}
+                else {
+									$('#autosavenotify').text("Autosave Failed");                
+                }
 							}
 						});	
 		    	}
 		    	
-		    	$('#editform').change(function(){
+		    	// $('#editform').change(function(){
+		    	// $('#editform :input').bind('change',function(){
+		    	$('#editform').on('change',function(){
 							warnme = true;
-							clearTimeout($.data(this, 'timer'));
+              // * clearing the timeout will make autosave only fire if idle for GSAUTOSAVE ms
+              // * otherwise If there is activity, then autosave is saving every GSAUTOSAVE ms with a GSAUTOSAVE delay after changes first detected
+              // * what we probably want is some intelligent method in between the 2 with 2 timers that 
+              // * can detect author pauses but still keep interval saves for safety.
+              // *
+							// clearTimeout($.data(this, 'timer'));
 						  var wait = setTimeout(autoSave, <?php echo (int)GSAUTOSAVE; ?>);
 						  $(this).data('timer', wait);
 						  $('#cancel-updates').show();
+							$('#pagechangednotify').show();  
+							$('#pagechangednotify').text('Page has unsaved changes');  
+							$('input[type=submit]').css('border-color','#CC0000');
 		    	});
 		    	
 		    	<?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
-			    	$('#editform').change(function(){
+			    	$('#editform').on('change',function(){
 							warnme = true;
+							$('#pagechangednotify').show();                
+							$('#pagechangednotify').text('Page has unsaved changes');  
+							$('input[type=submit]').css('border-color','#CC0000');              
 							$('#cancel-updates').show();
 			    	});
 					<?php } ?>

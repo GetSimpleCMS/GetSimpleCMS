@@ -590,6 +590,7 @@ table.cleantable {border-collapse:collapse;margin:0 0 0 0;}
 table.cleantable tr {border:none;}
 table.cleantable tr td {border:none;}
 #autosavenotify {padding:15px 0 0 13px;color:#666;text-shadow:1px 1px 0 #fff;font-size:11px;}
+#pagechangednotify {margin:0px;padding:15px 0 0 13px;color:#CC0000;text-shadow:1px 1px 0 #fff;font-size:11px;}
 p.backuplink {text-shadow:1px 1px 0 rgba(255,255,255,.3);color:#888;font-size:11px;margin:20px -20px -20px -20px;padding:10px 8px 10px 40px;background:#f9f9f9 url('images/clock.png') 20px center no-repeat;border-top:1px solid #eee;}
 p.backuplink a {font-weight:100 !important;}
 
