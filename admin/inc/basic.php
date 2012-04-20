@@ -1090,7 +1090,7 @@ function removerelativepath($file) {
  */
 function debugLog($txt) {
 	global $GS_debug;	
-	array_push($GS_debug,$txt.'<br/>');
+	array_push($GS_debug,$txt);
 }
 
 
