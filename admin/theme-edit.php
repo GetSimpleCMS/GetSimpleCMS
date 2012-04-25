@@ -92,7 +92,7 @@ foreach ($templates as $file){
   if (in_array($extension, $allowed_extensions)){
   $filename=pathinfo($file,PATHINFO_BASENAME);
   $filenamefull=substr(strstr($file,'/theme/'.$TEMPLATE.'/'),strlen('/theme/'.$TEMPLATE.'/'));   
-  if ($TEMPLATE_FILE == $filename){ 
+  if ($TEMPLATE_FILE == $filenamefull){ 
           $sel="selected"; 
   } else { 
           $sel="";
