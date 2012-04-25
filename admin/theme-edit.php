@@ -112,13 +112,12 @@ if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 	
 	register_style('codemirror-css',$SITEURL.'admin/template/js/codemirror/lib/codemirror.css','screen',FALSE);
 	register_style('codemirror-theme',$SITEURL.'admin/template/js/codemirror/theme/default.css','screen',FALSE);
-	register_style('codemirror-dialog',$SITEURL.'admin/template/js/codemirror/lib/dialog.css','screen',FALSE);
 	
 	queue_script('codemirror', GSBACK);
 	
 	queue_style('codemirror-css', GSBACK);
 	queue_style('codemirror-theme', GSBACK);
-	queue_style('codemirror-dialog', GSBACK);
+
 }
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); 
@@ -200,7 +199,7 @@ window.onload = function() {
 ?>
 <div class="bodycontent clearfix">
 	
-	<div id="maincontent">
+	<div id="themeedit_maincontent">
 		
 		
 		<div class="main">
