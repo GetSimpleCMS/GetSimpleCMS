@@ -199,8 +199,8 @@ window.onload = function() {
 ?>
 <div class="bodycontent clearfix">
 	
-	<div id="themeedit_maincontent">
-		
+	<div id="themecontent">
+		<div>
 		
 		<div class="main">
 		<h3><?php i18n('EDIT_THEME'); ?></h3>
@@ -227,6 +227,6 @@ window.onload = function() {
 	<div id="sidebar" >
 		<?php include('template/sidebar-theme.php'); ?>
 	</div>
-
+	</div>
 </div>
 <?php get_template('footer'); ?>

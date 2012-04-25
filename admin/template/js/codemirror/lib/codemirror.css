@@ -114,3 +114,13 @@ span.cm-link {text-decoration: underline;}
 
 div.CodeMirror span.CodeMirror-matchingbracket {color: #0f0;}
 div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
+#themecontent{
+padding: 20px;
+background: white;
+border: 1px solid #C8C8C8;
+margin: 0 0 30px 0;
+box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;
+-moz-box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;
+-webkit-box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;
+border-image: initial;
+}
