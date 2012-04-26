@@ -200,8 +200,6 @@ window.onload = function() {
 <div class="bodycontent clearfix">
 	
 	<div id="themecontent">
-		<div>
-		
 		<div class="main">
 		<h3><?php i18n('EDIT_THEME'); ?></h3>
 		<form action="<?php myself(); ?>" method="get" accept-charset="utf-8" >
@@ -226,7 +224,6 @@ window.onload = function() {
 	
 	<div id="sidebar" >
 		<?php include('template/sidebar-theme.php'); ?>
-	</div>
 	</div>
 </div>
 <?php get_template('footer'); ?>
