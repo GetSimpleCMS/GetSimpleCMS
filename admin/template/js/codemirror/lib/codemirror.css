@@ -2,6 +2,11 @@
   line-height: 1em;
   font-family: monospace;
   padding-bottom:20px;
+  line-height: 1em;
+	font-family: monospace;
+	margin-bottom: 15px;
+	height: 660px;
+	border: 1px solid #AAA;
 }
 
 .CodeMirror-scroll {
