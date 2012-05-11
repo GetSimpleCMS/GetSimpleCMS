@@ -67,16 +67,21 @@ create_pluginsxml();      // check that plugins have not been removed or added t
 // load each of the plugins
 foreach ($live_plugins as $file=>$en) {
   $pluginsLoaded=true;
+  # debugLog("plugin: $file" . " exists: " . file_exists(GSPLUGINPATH . $file) ." enabled: " . $en); 
   if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
   	require_once(GSPLUGINPATH . $file);
   } else {
-	$apiback = get_api_details('plugin', $file);
-	$response = json_decode($apiback);
-	if ($response->status == 'successful') {
-		register_plugin( pathinfo_filename($file), $file, 'disabled', $response->owner, '', 'Disabled Plugin', '', '');
-	} else {
-  	register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', 'Disabled Plugin', '', '');
-	}
+    if(!is_frontend()){
+      $apiback = get_api_details('plugin', $file);
+      $response = json_decode($apiback);
+      if ($response and $response->status == 'successful') {
+        register_plugin( pathinfo_filename($file), $file, 'disabled', $response->owner, '', 'Disabled Plugin', '', '');
+      } else {
+        register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', 'Disabled Plugin', '', '');
+      }
+    } else {
+        register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', 'Disabled Plugin', '', '');
+    }  
   }
 }
 
