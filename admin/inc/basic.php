@@ -1001,6 +1001,7 @@ function file_mime_type($file) {
  * @return bool
  */
 function is_frontend() {
+  GLOBAL $base;
 	if(isset($base)) {
 		return true;
 	} else {
