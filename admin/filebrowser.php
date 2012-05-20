@@ -23,7 +23,7 @@ $path = tsl($path);
 $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 $CKEditorFuncNum = $_GET['CKEditorFuncNum'];
 $sitepath = suggest_site_path();
-$fullPath = $sitepath . "data/uploads/";
+$fullPath =  "data/uploads/";
 $type = $_GET['type'];
 
 if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
@@ -49,7 +49,14 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 		}
 		<?php if (isset($_GET['returnid'])){ ?>
 			if(window.opener){
+				window.opener.document.getElementById('<?php echo $returnid; ?>').focus();
 				window.opener.document.getElementById('<?php echo $returnid; ?>').value=$url;
+			}
+		<?php } ?>	
+		<?php if (isset($_GET['func'])){
+		$func = @$_GET['func']; ?>
+			if(window.opener){
+				window.opener.<?php echo $func; ?>($url);
 			}
 		<?php } ?>	
 		window.close();
