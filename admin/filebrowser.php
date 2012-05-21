@@ -56,7 +56,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 		<?php if (isset($_GET['func'])){
 		$func = @$_GET['func']; ?>
 			if(window.opener){
-				window.opener.<?php echo $func; ?>($url);
+				window.opener.<?php echo $func; ?>('<?php echo $returnid; ?>');
 			}
 		<?php } ?>	
 		window.close();
