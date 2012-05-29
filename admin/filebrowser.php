@@ -24,7 +24,7 @@ $path = tsl($path);
 $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 $CKEditorFuncNum = $_GET['CKEditorFuncNum'];
 $sitepath = suggest_site_path();
-$fullPath =  "data/uploads/";
+$fullPath = $sitepath . "data/uploads/";
 $type = $_GET['type'];
 
 if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
