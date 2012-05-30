@@ -233,7 +233,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			<div class="rightopt">
 				<p>
 					<label for="post-id"><?php i18n('SLUG_URL'); ?>:</label>
-          <input class="text short" type="text" id="post-id" name="post-id" value="<?php echo $url; ?>" <?php echo ($url=='index'?'readonly="readonly" ':''); ?>/>
+					<input class="text short" type="text" id="post-id" name="post-id" value="<?php echo $url; ?>" <?php echo ($url=='index'?'readonly="readonly" ':''); ?>/>
 				</p>
 				<p>
 					<label for="post-metak"><?php i18n('TAG_KEYWORDS'); ?>:</label>
@@ -322,35 +322,34 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			<script type="text/javascript">
 			
 			var editor = CKEDITOR.replace( 'post-content', {
-	        skin : 'getsimple',
-	        forcePasteAsPlainText : true,
-	        language : '<?php echo $EDLANG; ?>',
-	        defaultLanguage : 'en',
-	        <?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
-	        	$fullpath = suggest_site_path();
-	        ?>
-            contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
-          <?php } ?>
-	        entities : false,
-	        uiColor : '#FFFFFF',
-			height: '<?php echo $EDHEIGHT; ?>',
-			baseHref : '<?php echo $SITEURL; ?>',
-	        toolbar : 
-	        [
-	        <?php echo $toolbar; ?>
-			]
-			<?php echo $EDOPTIONS; ?>,
+					skin : 'getsimple',
+					forcePasteAsPlainText : true,
+					language : '<?php echo $EDLANG; ?>',
+					defaultLanguage : 'en',
+					<?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
+						$fullpath = suggest_site_path();
+						?>
+						contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
+					<?php } ?>
+					entities : false,
+					uiColor : '#FFFFFF',
+					height: '<?php echo $EDHEIGHT; ?>',
+					baseHref : '<?php echo $SITEURL; ?>',
+					toolbar : 
+					[
+					<?php echo $toolbar; ?>
+					]
+					<?php echo $EDOPTIONS; ?>,					
 					tabSpaces:10,
-	        filebrowserBrowseUrl : 'filebrowser.php?type=all',
+					filebrowserBrowseUrl : 'filebrowser.php?type=all',
 					filebrowserImageBrowseUrl : 'filebrowser.php?type=images',
-	        filebrowserWindowWidth : '730',
-	        filebrowserWindowHeight : '500'
-    		});
-    		CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
+					filebrowserWindowWidth : '730',
+					filebrowserWindowHeight : '500'
+			});
+			CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
 				function InstanceReadyEvent() {
-				  this.document.on("keyup", function () {
-				  		warnme = true;
-              $('#editform').trigger('change');
+					this.document.on("keyup", function () {
+							$('#editform').trigger('change');
 				  });
 				}
 
@@ -370,33 +369,47 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			/* Warning for unsaved Data */
 			var yourText = null;
 			var warnme = false;
+			var pageisdirty = false;
+			
 			$('#cancel-updates').hide();	
 			window.onbeforeunload = function () {
-			  if (warnme) {
-			    return "<?php i18n('UNSAVED_INFORMATION'); ?>";
-			  }
+				if (warnme || pageisdirty == true) {
+					return "<?php i18n('UNSAVED_INFORMATION'); ?>";
+				}
 			}
 			
 			jQuery(document).ready(function() { 
-	    
-		    <?php if (defined('GSAUTOSAVE') && (int)GSAUTOSAVE != 0) { /* IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP */ ?>	
 
-          $('#pagechangednotify').hide();
-          $('#autosavenotify').show();
-          $('#autosavenotify').html('Autosaving is <b>ON</b> (<?php echo (int)GSAUTOSAVE/1000; ?> s)');   		    	
-          
-          function autoSave() {
-            $('input[type=submit]').attr('disabled', 'disabled');
+			<?php if (defined('GSAUTOSAVE') && (int)GSAUTOSAVE != 0) { /* IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP */ ?>	
 
-            // we are using ajax, so ckeditor wont copy data to our textarea for us, so we do it manually
-            if(typeof(editor)!='undefined'){ $('#post-content').val(CKEDITOR.instances["post-content"].getData()); }
-		    		
-            var dataString = $("#editform").serialize();
+					$('#pagechangednotify').hide();
+					$('#autosavenotify').show();
+					$('#autosavenotify').html('Autosaving is <b>ON</b> (<?php echo (int)GSAUTOSAVE/1000; ?> s)');   		    	
+					
+					function autoSaveIntvl(){
+						// console.log('autoSaveIntvl called, isdirty:' + pageisdirty);
+						if(pageisdirty == true){
+							autoSave();
+							pageisdirty = false;
+						}						
+					}
+					
+					function autoSave() {
+						$('input[type=submit]').attr('disabled', 'disabled');
+
+						// we are using ajax, so ckeditor wont copy data to our textarea for us, so we do it manually
+						if(typeof(editor)!='undefined'){ $('#post-content').val(CKEDITOR.instances["post-content"].getData()); }
+						
+						var dataString = $("#editform").serialize();
+						
+						// not internalionalized or using GS date format!
 						var currentTime = new Date();
 						var hours = currentTime.getHours();
 						var minutes = currentTime.getMinutes();
 						if (minutes < 10){ minutes = "0" + minutes; }
 						if(hours > 11){ daypart = "PM";	} else {	daypart = "AM";	}
+						if(hours > 12){ hours-=12; }
+						
 						$.ajax({
 							type: "POST",
 							url: "changedata.php",
@@ -404,44 +417,42 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 							success: function(msg) {
 								if (msg.toString()=='OK') {
 									$('#autosavenotify').text("<?php i18n('AUTOSAVE_NOTIFY'); ?> "+ hours +":"+minutes+" "+daypart);
-                  $('#pagechangednotify').hide();
-                  $('#pagechangednotify').text('');                    
+									$('#pagechangednotify').hide();
+									$('#pagechangednotify').text('');                    
 									$('input[type=submit]').attr('disabled', false);
 									$('input[type=submit]').css('border-color','#ABABAB');
 									warnme = false;
 									$('#cancel-updates').hide();
 								}
-                else {
+								else {
+									pageisdirty=true;
 									$('#autosavenotify').text("Autosave Failed");                
-                }
+								}
 							}
 						});	
-		    	}
-		    	
-		    	$('#editform').on('change',function(){
+					}
+					
+					// $('#editform').on('change',function(){
+					$('#editform').bind('change keypress paste focus textInput input',function(){
+							pageisdirty = true;
 							warnme = true;
-              // * clearing the timeout will make autosave only fire if idle for GSAUTOSAVE ms
-              // * otherwise If there is activity, then autosave is saving every GSAUTOSAVE ms with a GSAUTOSAVE delay after changes first detected
-              // * what we probably want is some intelligent method in between the 2 with 2 timers that 
-              // * can detect author pauses but still keep interval saves for safety.
-              // *
-							// clearTimeout($.data(this, 'timer'));
-						  var wait = setTimeout(autoSave, <?php echo (int)GSAUTOSAVE; ?>);
-						  $(this).data('timer', wait);
-						  $('#cancel-updates').show();
+							$('#cancel-updates').show();
 							$('#pagechangednotify').show();  
 							$('#pagechangednotify').text('Page has unsaved changes');  
 							$('input[type=submit]').css('border-color','#CC0000');
-		    	});
-		    	
-		    	<?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
-			    	$('#editform').on('change',function(){
+					});
+				
+				setInterval(autoSaveIntvl, <?php echo (int)GSAUTOSAVE; ?>);
+				
+				<?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
+					$('#editform').on('change',function(){
 							warnme = true;
+							pageisdirty = true;
 							$('#pagechangednotify').show();                
 							$('#pagechangednotify').text('Page has unsaved changes');  
 							$('input[type=submit]').css('border-color','#CC0000');              
 							$('#cancel-updates').show();
-			    	});
+					});
 					<?php } ?>
 				
 			});
