@@ -432,7 +432,6 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 						});	
 					}
 					
-					// $('#editform').on('change',function(){
 					$('#editform').bind('change keypress paste focus textInput input',function(){
 							pageisdirty = true;
 							warnme = true;
@@ -445,7 +444,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 				setInterval(autoSaveIntvl, <?php echo (int)GSAUTOSAVE; ?>);
 				
 				<?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
-					$('#editform').on('change',function(){
+					$('#editform').bind('change keypress paste focus textInput input',function(){					
 							warnme = true;
 							pageisdirty = true;
 							$('#pagechangednotify').show();                
