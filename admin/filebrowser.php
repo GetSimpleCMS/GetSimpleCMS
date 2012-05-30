@@ -43,7 +43,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	</style>
 	<script type='text/javascript'>
 	function submitLink($funcNum, $url) {
-		if ($funcNum=="2"){
+		if ($funcNum!=""){
 			if(window.opener){
 				window.opener.CKEDITOR.tools.callFunction($funcNum, $url);
 			}
