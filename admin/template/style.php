@@ -334,7 +334,7 @@ html {overflow-y: scroll;}
 #submit_line {margin-bottom:15px;}
 #sidebar #js_submit_line {margin:0 0 0 12px;}
 #sidebar .snav li a {
-	font-weight:800;
+	font-weight:bold;
 	display:block;
 	padding:5px 15px 5px 15px;
 	text-decoration:none;
@@ -657,7 +657,7 @@ table.comptable tr td {font-size:12px;border: none;padding:0;}
 table.comptable tr td code {font-size:11px;color:#666;padding:0 4px 0 0;display:block;font-family: Consolas, Monaco, "Courier New", Courier, monospace;}
 table.comptable tr {border:none;border:none !important;}
 table.comptable tr td input.newtitle {margin-bottom:2px !important;}
-.wrapper a.component { float:left;font-weight:800; margin:0 5px 5px 0; padding:3px 10px; text-decoration:none; border-radius: 3px; -moz-border-radius: 3px; -khtml-border-radius: 3px; -webkit-border-radius: 3px; }
+.wrapper a.component { float:left;font-weight:bold; margin:0 5px 5px 0; padding:3px 10px; text-decoration:none; border-radius: 3px; -moz-border-radius: 3px; -khtml-border-radius: 3px; -webkit-border-radius: 3px; }
 .wrapper a.component:link, .wrapper a.component:visited { color:#666; background:#fff;border:1px solid #999; text-decoration: none; }
 .wrapper a.component:hover { color:<?php echo $primary_6; ?>; background:<?php echo $primary_1; ?>;border:1px solid <?php echo $primary_0; ?>;text-decoration: none; }
 .compdivlist {padding:30px 0;text-align:center;margin:0 0 0 15px;overflow:auto;}
