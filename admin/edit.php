@@ -446,7 +446,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 				<?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
 					$('#editform').bind('change keypress paste focus textInput input',function(){					
 							warnme = true;
-							pageisdirty = true;
+							pageisdirty = false;
 							$('#pagechangednotify').show();                
 							$('#pagechangednotify').text('Page has unsaved changes');  
 							$('input[type=submit]').css('border-color','#CC0000');              
