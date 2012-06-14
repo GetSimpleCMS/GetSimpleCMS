@@ -126,7 +126,12 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 			} else {
 				$returnlink='';
 			}
-			echo '<img src="template/images/folder.png" width="11" /> <a href="filebrowser.php?path='.$adm.'&amp;CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.$returnlink.'&amp;func='.$func.'" title="'. $upload['name'] .'"  ><strong>'.$upload['name'].'</strong></a>';
+			if ($func!='') {
+				$funct = '$func='.$func;
+			} else {
+				$funct='';
+			}
+			echo '<img src="template/images/folder.png" width="11" /> <a href="filebrowser.php?path='.$adm.'&amp;CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.$returnlink.'&amp;'.$funct.'" title="'. $upload['name'] .'"  ><strong>'.$upload['name'].'</strong></a>';
 			echo '</td>';
 			echo '</tr>';
 		}
