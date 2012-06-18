@@ -131,7 +131,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 				$returnlink='';
 			}
 			if ($func!='') {
-				$funct = '$func='.$func;
+				$funct = '&func='.$func;
 			} else {
 				$funct='';
 			}

@@ -111,11 +111,11 @@ $path_parts = pathinfo($from_name);
 if (!file_exists($images_folder)) die('Images folder does not exist (update $images_folder in the script)');
 if ($save_to_file && !file_exists($thumbs_folder)) die('Thumbnails folder does not exist (update $thumbs_folder in the script)');
 
-$dirs=explode(DIRECTORY_SEPARATOR ,$path_parts['dirname']);
+$dirs=explode('/' ,$path_parts['dirname']);
 $folder=$thumbs_folder;
 foreach ($dirs as $dir){
-	$folder.="/".$dir;	
-	if (!file_exists($folder)){
+	$folder.=DIRECTORY_SEPARATOR.$dir;
+	if (!is_dir($folder)){
 		mkdir ($folder); 
 	}
 }
