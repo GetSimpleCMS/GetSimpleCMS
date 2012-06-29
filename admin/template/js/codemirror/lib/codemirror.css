@@ -33,7 +33,7 @@
 .CodeMirror-lines {
   padding: .4em;
   white-space: pre;
-  line-height:1.4em;
+  line-height:16px;
 }
 
 .CodeMirror pre {
