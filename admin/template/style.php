@@ -902,8 +902,8 @@ textarea.copykit {
 #jcrop_open {}
 
 
-a.updatelink:link, a.updatelink:visited {color:#888;}
-a.updatelink:hover, a.updatelink:focus {color:#333;}
+a.updatelink:link, a.updatelink:visited {color:#CF3805;padding:1px 3px;}
+a.updatelink:hover, a.updatelink:focus {color:#FFF;background-color:#2AA206;padding:1px 3px;}
 
 /* File Browser Styles */
 #filebrowser {background:#fff;}
