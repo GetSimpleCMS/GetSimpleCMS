@@ -331,7 +331,7 @@ html {overflow-y: scroll;}
 #sidebar .snav ul {list-style:none;margin:0;}
 #sidebar .snav li {margin:0 0 3px 0;}
 #sidebar .snav li ul li {margin:0 0 3px 0;}
-#submit_line {margin-bottom:15px;}
+#submit_line {margin:15px 0 15px 0;}
 #sidebar #js_submit_line {margin:0 0 0 12px;}
 #sidebar .snav li a {
 	font-weight:bold;
@@ -484,6 +484,17 @@ sup {
 	overflow:auto;
 }
 
+#themecontent{
+	/* replaces #maincontent on theme editor page, fix for the above style interferring with codemirror for now */
+	padding: 20px;
+	background: white;
+	border: 1px solid #C8C8C8;
+	margin: 0 0 30px 0;
+	box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;
+	-moz-box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;
+	-webkit-box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;
+	border-image: initial;
+}
 
 form p {margin:0 0 10px 0;}
 form input.text, form select.text {
