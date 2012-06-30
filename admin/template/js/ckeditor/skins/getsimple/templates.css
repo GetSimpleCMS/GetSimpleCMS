@@ -59,9 +59,3 @@
 	text-align:center;
 	padding:5px;
 }
-
-.cke_skin_getsimple td#cke_contents_post-content {
-	border:1px solid #aaa;
-	border-bottom: 1px solid #aaa !important;
-	border-top:1px solid #aaa !important;
-}

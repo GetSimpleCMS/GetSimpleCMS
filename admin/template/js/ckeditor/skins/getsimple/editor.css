@@ -1414,15 +1414,12 @@ html.cke_skin_getsimple_container
 	line-height: 17px !important;
 }
 
-
 .cke_top {
-	border-bottom:1px solid #999 ;
 	background:#eeeeee;
 	background: -moz-linear-gradient(top, #eeeeee, #e2e2e2);
 	background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e2e2e2));
 }
 .cke_bottom {
-	border-top:1px solid #eee;
 	background:#f6f6f6;
 }
 .cke_top .cke_toolbar {
@@ -1438,4 +1435,10 @@ html.cke_skin_getsimple_container
 	-webkit-border-radius: 4px 4px 0 0;
 	border-radius:4px 4px 0 0;
 	overflow:hidden;
+}
+
+.cke_contents {
+	border:1px solid #aaa;
+	border-bottom: 1px solid #aaa !important;
+	border-top:1px solid #aaa !important;
 }
