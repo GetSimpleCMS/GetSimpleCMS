@@ -1415,22 +1415,23 @@ html.cke_skin_getsimple_container
 }
 
 
-#cke_top_post-content {
-	border-bottom:1px solid #999;
+.cke_top {
+	border-bottom:1px solid #999 ;
 	background:#eeeeee;
 	background: -moz-linear-gradient(top, #eeeeee, #e2e2e2);
 	background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e2e2e2));
 }
-#cke_bottom_post-content {
+.cke_bottom {
 	border-top:1px solid #eee;
 	background:#f6f6f6;
 }
-#cke_top_post-content .cke_toolbar {
+.cke_top .cke_toolbar {
 	margin:2px 0 0px 2px;
 	background:transparent;	
 }
-#cke_top_post-content .cke_toolbox, #cke_top_post-content .cke_toolgroup {background:transparent;	}
-#cke_post-content {
+.cke_top .cke_toolbox, .cke_top .cke_toolgroup {background:transparent;	}
+
+.cke_skin_getsimple {
 	border:1px solid #999;
 	-moz-border-radius: 4px 4px 0 0;
 	-khtml-border-radius: 4px 4px 0 0;
