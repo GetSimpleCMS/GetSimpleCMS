@@ -267,7 +267,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			<div id="submit_line" >
 				<input type="hidden" name="redirectto" value="" />
 				
-				<span><input class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" onclick="warnme=false;" /></span>
+				<span><input class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" onclick="warnme=false;pageisdirty=false;" /></span>
 				
 				<div id="dropdown">
 					<h6 class="dropdownaction"><?php i18n('ADDITIONAL_ACTIONS'); ?></h6>
@@ -349,7 +349,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
 				function InstanceReadyEvent() {
 					this.document.on("keyup", function () {
-							$('#editform').trigger('change');
+							$('#editform #post-content').trigger('change');
 				  });
 				}
 
@@ -371,7 +371,8 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			var warnme = false;
 			var pageisdirty = false;
 			
-			$('#cancel-updates').hide();	
+			$('#cancel-updates').hide();
+	
 			window.onbeforeunload = function () {
 				if (warnme || pageisdirty == true) {
 					return "<?php i18n('UNSAVED_INFORMATION'); ?>";
@@ -384,7 +385,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 
 					$('#pagechangednotify').hide();
 					$('#autosavenotify').show();
-					$('#autosavenotify').html('Autosaving is <b>ON</b> (<?php echo (int)GSAUTOSAVE/1000; ?> s)');   		    	
+					$('#autosavenotify').html('Autosaving is <b>ON</b> (<?php echo (int)GSAUTOSAVE; ?> s)');   		    	
 					
 					function autoSaveIntvl(){
 						// console.log('autoSaveIntvl called, isdirty:' + pageisdirty);
@@ -432,28 +433,34 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 						});	
 					}
 					
-					$('#editform').bind('change keypress paste focus textInput input',function(){
+					// We register title and slug changes with change() which only fires when you lose focus to prevent midchange saves.
+					$('#post-title, #post-id').change(function () {
+							$('#editform #post-content').trigger('change');
+				  });					
+					
+					// We register all other form elements to detect changes of any type by using bind
+					$('#editform input,#editform textarea,#editform select').not('#post-title').not('#post-id').bind('change keypress paste textInput input',function(){
 							pageisdirty = true;
 							warnme = true;
-							$('#cancel-updates').show();
-							$('#pagechangednotify').show();  
-							$('#pagechangednotify').text('Page has unsaved changes');  
-							$('input[type=submit]').css('border-color','#CC0000');
+							autoSaveInd();
 					});
 				
-				setInterval(autoSaveIntvl, <?php echo (int)GSAUTOSAVE; ?>);
+				setInterval(autoSaveIntvl, <?php echo (int)GSAUTOSAVE*1000; ?>);
 				
 				<?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
 					$('#editform').bind('change keypress paste focus textInput input',function(){					
 							warnme = true;
 							pageisdirty = false;
+							autoSaveInd();
+					});
+					<?php } ?>
+					
+					function autoSaveInd(){
 							$('#pagechangednotify').show();                
 							$('#pagechangednotify').text('Page has unsaved changes');  
 							$('input[type=submit]').css('border-color','#CC0000');              
-							$('#cancel-updates').show();
-					});
-					<?php } ?>
-				
+							$('#cancel-updates').show();						
+					}
 			});
 		</script>
 	</div>
