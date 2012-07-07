@@ -674,8 +674,15 @@ table.comptable tr td input.newtitle {margin-bottom:2px !important;}
 .compdivlist {padding:30px 0;text-align:center;margin:0 0 0 15px;overflow:auto;}
 
 
-/* alert styles */
-.updated, .error {
+/* Notification styles
+ *
+ * alerts are now notifications 
+ * use notify and notify_type
+ * .error and .upddated are still supported for legacy alerts
+ *
+ */ 
+
+.updated, .error, .notify {
 	border:1px solid #E6DB55;
 	border-radius:2px;
 	background:#FFFBCC;
@@ -685,16 +692,52 @@ table.comptable tr td input.newtitle {margin-bottom:2px !important;}
 	padding:5px 10px;
 	margin-bottom:20px;
 }
-.updated p, .error p {margin:0;line-height:22px;}
-.error {
+.updated p, .error p, .notify p {margin:0;line-height:22px;}
+.error, .notify_error {
 	color:#990000;
 	border-color: #cc0000;
 	background:#F9DFDD;
 	background: -moz-linear-gradient(top, #FCF0EF 0%, #F9DFDD 100%); /* firefox */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FCF0EF), color-stop(100%,#F9DFDD)); /* webkit */
 }
+.notify_ok {
+	border-color: #258815;
+	color:#258815;
+	background: #f0ffed; /* Old browsers */
+	background: -moz-linear-gradient(top,  #f0ffed 0%, #dfffd7 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f0ffed), color-stop(100%,#dfffd7)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #f0ffed 0%,#dfffd7 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #f0ffed 0%,#dfffd7 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #f0ffed 0%,#dfffd7 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #f0ffed 0%,#dfffd7 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0ffed', endColorstr='#dfffd7',GradientType=0 ); /* IE6-9 */
+}
+.notify_info {
+	border-color: #2850C1;
+	color:#2850C1;
+	background: #edf4ff; /* Old browsers */
+	background: -moz-linear-gradient(top,  #edf4ff 0%, #d7e7ff 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#edf4ff), color-stop(100%,#d7e7ff)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #edf4ff 0%,#d7e7ff 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #edf4ff 0%,#d7e7ff 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #edf4ff 0%,#d7e7ff 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #edf4ff 0%,#d7e7ff 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#edf4ff', endColorstr='#d7e7ff',GradientType=0 ); /* IE6-9 */
+}
+.notify_warning {
+	border-color: #878314;
+	color:#878314;
+background: #fffed5; /* Old browsers */
+background: -moz-linear-gradient(top,  #fffed5 0%, #fffdbf 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fffed5), color-stop(100%,#fffdbf)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #fffed5 0%,#fffdbf 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #fffed5 0%,#fffdbf 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #fffed5 0%,#fffdbf 100%); /* IE10+ */
+background: linear-gradient(to bottom,  #fffed5 0%,#fffdbf 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fffed5', endColorstr='#fffdbf',GradientType=0 ); /* IE6-9 */
+}
 .deletedrow {background-color:#FFB19B}
-.error code {
+.error code, .notify code {
 	color:#990000;
 	font-size:11px;
 	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; 
@@ -1030,6 +1073,28 @@ h5 .crumbs, div.h5 .crumbs {float:left;}
 	background:white;
 	height:300px;
 	overflow:scroll;
+}
+
+.ajaxwait{
+	background-image: url('images/ajax.gif');
+	background-position: center;
+	background-repeat:no-repeat;
+}
+
+.ajaxwait_dark {
+	background-image: url('images/ajax_dark.gif');
+}
+
+.ajaxwait_tint_dark{
+	background-color:#F6F6F6;
+}
+
+a.disabled:link , a.disabled:visited {
+	pointer-events: none;
+	cursor: default;
+	text-decoration:none !important;
+	color:#CCC !important;
+	
 }
 
 <?php

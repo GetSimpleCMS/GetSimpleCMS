@@ -8,6 +8,7 @@
  */
 (function($){$.fn.capslock=function(options){if(options)$.extend($.fn.capslock.defaults,options);this.each(function(){$(this).bind("caps_lock_on",$.fn.capslock.defaults.caps_lock_on);$(this).bind("caps_lock_off",$.fn.capslock.defaults.caps_lock_off);$(this).bind("caps_lock_undetermined",$.fn.capslock.defaults.caps_lock_undetermined);$(this).keypress(function(e){check_caps_lock(e)})});return this};function check_caps_lock(e){var ascii_code=e.which;var letter=String.fromCharCode(ascii_code);var upper=letter.toUpperCase();var lower=letter.toLowerCase();var shift_key=e.shiftKey;if(upper!==lower){if(letter===upper&&!shift_key){$(e.target).trigger("caps_lock_on")}else if(letter===lower&&!shift_key){$(e.target).trigger("caps_lock_off")}else if(letter===lower&&shift_key){$(e.target).trigger("caps_lock_on")}else if(letter===upper&&shift_key){if(navigator.platform.toLowerCase().indexOf("win")!==-1){$(e.target).trigger("caps_lock_off")}else{if(navigator.platform.toLowerCase().indexOf("mac")!==-1&&$.fn.capslock.defaults.mac_shift_hack){$(e.target).trigger("caps_lock_off")}else{$(e.target).trigger("caps_lock_undetermined")}}}else{$(e.target).trigger("caps_lock_undetermined")}}else{$(e.target).trigger("caps_lock_undetermined")}if($.fn.capslock.defaults.debug){if(console){console.log("Ascii code: "+ascii_code);console.log("Letter: "+letter);console.log("Upper Case: "+upper);console.log("Shift key: "+shift_key)}}}$.fn.capslock.defaults={caps_lock_on:function(){},caps_lock_off:function(){},caps_lock_undetermined:function(){},mac_shift_hack:true,debug:false}})(jQuery);
 
+
 /*
  * GetSimple js file	
  */
@@ -29,6 +30,34 @@ Debugger.log = function(message) {
   return; 
  }
 }
+	
+	/*
+	 * popit
+	 * element attention blink
+	 * ensures occurs only once
+	 */ 
+	$.fn.popit = function($speed) {
+		$speed = $speed || 500;
+		$(this).each(function(){
+			if($(this).data('popped') !=true){
+				$(this).fadeOut($speed).fadeIn($speed);
+				$(this).data('popped',true);
+			}
+		});
+		return $(this);
+	}		
+
+	/*
+	 * closeit
+	 * fadeout close on delay
+	 */ 
+	$.fn.removeit = function($delay) {
+		$delay = $delay || 5000;
+		$(this).each(function(){
+				$(this).delay($delay).fadeOut(500);
+		});
+		return $(this);		
+	}		
 	
 jQuery(document).ready(function() { 
 
@@ -221,10 +250,26 @@ jQuery(document).ready(function() {
 		$("#waiting").fadeIn(1000).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
 	});
 
+	
+	/* Notifications */
+	
+	/*
+	notifyError('This is an ERROR notification');
+	notifyOk('This is an OK notification');
+	notifyWarn('This is an WARNING notification');
+	notifyInfo('This is an INFO notification');
+	notify('message','msgtype');
+	notifyError('This notification blinks and autocloses').popit(ms speed).closeit(ms delay);	
+	*/	
+		
 	function popAlertMsg() {	
+		/* legacy, see jquery extend popit() and closeit() */
 		$(".updated").fadeOut(500).fadeIn(500);
-		$(".error").fadeOut(500).fadeIn(500);
+		$(".error").fadeOut(500).fadeIn(500); 
+		
+		$(".notify").popit(); // allows legacy use
 	}
+	
 	popAlertMsg();
 	
 	if(jQuery().fancybox) {
@@ -240,30 +285,85 @@ jQuery(document).ready(function() {
 			scrolling: 'no'
 		});
 	}
+
+	function notifyOk($msg){
+		return notify($msg,'ok');	
+	}		
 	
+	function notifyWarn($msg){
+		return notify($msg,'warning');	
+	}	
+	
+	function notifyInfo($msg){
+		return notify($msg,'info');	
+	}
+
+	function notifyError($msg){
+		return notify($msg,'error');	
+	}
+	
+	function notify($msg,$type){
+		if($type == 'ok' || $type == 'warning' || $type == 'info' || $type == 'error'){	
+			var $notify = $('<div class="notify notify_'+$type+'"><p>' + $msg + '</p></div>');
+			$('div.bodycontent').before($notify);
+			return $notify;
+		}
+	}
+	
+	function clearNotify(){
+		$('div.wrapper .notify').remove();
+	}	
+		
 	//plugins.php
 	$(".toggleEnable").live("click", function($e) {
 		$e.preventDefault();
+		
+		var loadingAjaxIndicator = $('#loader');
+    document.body.style.cursor = "wait";		
 		loadingAjaxIndicator.show();
+		
 		var message = $(this).attr("title");
 		var dlink = $(this).attr("href");
 		var mytd=$(this).parents("td");
 		var mytr=$(this).parents("tr");
-  	mytd.find('a').toggleClass('hidden');
-  	mytr.toggleClass('enabled');
-  	mytr.toggleClass('disabled');
+		
+		mytd.html('');
+		mytd.addClass('ajaxwait ajaxwait_dark ajaxwait_tint_dark');
+		$('.toggleEnable').addClass('disabled');		
+		
   	$.ajax({
-       type: "GET",
-       url: dlink,
-       success: function(response){
-	        $('#header').load(location.href+' #header');
-	        $('#sidebar').load(location.href+' #sidebar');
-	        $('#maincontent').load(location.href+' #maincontent');
-	     }
-	  });
-	  loadingAjaxIndicator.fadeOut();
+      type: "GET",
+ 			dataType: "html",
+			url: dlink,
+			success: function( data, textStatus, jqXHR ) {
+				// Store the response as specified by the jqXHR object
+				responseText = jqXHR.responseText;
+				
+				// remove scripts to prevent assets from loading when we create temp dom
+				rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
+								
+				// create temp doms to reliably find elements
+				$('#header').html($("<div>").append(responseText.replace(rscript, "")).find('#header > *') );
+				$('#sidebar').html($("<div>").append(responseText.replace(rscript, "")).find('#sidebar > *') );
+				$('#maincontent').html($("<div>").append(responseText.replace(rscript, "")).find('#maincontent > *') );
+								
+				document.body.style.cursor = "default";		
+				clearNotify();
+				notifyOk('Plugin Updated').popit().removeit();		
+			},
+			error: function( data, textStatus, jqXHR ) {
+				// These go in failures if we catch them in the future
+				document.body.style.cursor = "default";		
+				mytd.removeClass('ajaxwait ajaxwait_dark ajaxwait_tint_dark');
+				$('.toggleEnable').removeClass('disabled');						
+				loadingAjaxIndicator.fadeOut();	
+
+				clearNotify();
+				notifyError('An error has occured');
+			}
+				
+		});
 	});
-	
 		
 	// edit.php
 	function updateMetaDescriptionCounter() {
@@ -427,6 +527,8 @@ jQuery(document).ready(function() {
     });
 		return false;
 	});
+
+
 	
 //end of javascript for getsimple
 }); 
