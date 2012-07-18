@@ -38,15 +38,14 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
 				}	else {
 					$verstatus = null;
 				}
-				
 				if ($verstatus == '0') {
-					$ver = '<span class="ERRmsg" >'. i18n_r('UPG_NEEDED').' <b>'.$apikey->latest .'</b><br /><a href="http://get-simple.info/download/">'. i18n_r('DOWNLOAD').'</a></span>';
+					$ver = '<span class="ERRmsg" ><b>'.$site_version_no.'</b><br /> '. i18n_r('UPG_NEEDED').' (<b>'.$apikey->latest .'</b>)<br /><a href="http://get-simple.info/download/">'. i18n_r('DOWNLOAD').'</a></span>';
 				} elseif ($verstatus == '1') {
-					$ver = '<span class="OKmsg" ><b>'.$site_version_no.'</b> - '. i18n_r('LATEST_VERSION').'</span>';
+					$ver = '<span class="OKmsg" ><b>'.$site_version_no.'</b><br />'. i18n_r('LATEST_VERSION').'</span>';
 				} elseif ($verstatus == '2') {
-					$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - '. i18n_r('BETA').'</span>';
+					$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b><br /> '. i18n_r('BETA').'</span>';
 				} else {
-					$ver = '<span class="WARNmsg" >'. i18n_r('CANNOT_CHECK').' <b>'.$site_version_no.'</b><br /><a href="http://get-simple.info/download">'. i18n_r('DOWNLOAD').'</a></span>';
+					$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b><br />'. i18n_r('CANNOT_CHECK').'<br /><a href="http://get-simple.info/download">'. i18n_r('DOWNLOAD').'</a></span>';
 				}
 				?>
 				<tr><td style="width:445px;" ><?php echo $site_full_name; ?> <?php i18n('VERSION');?></td><td><?php echo $ver; ?></td></tr>

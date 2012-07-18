@@ -836,7 +836,7 @@ opacity:.10;
 
 .wrapper table td span.ERRmsg {color:#D94136;font-color:12px;}
 .wrapper table td span.OKmsg {color:#308000;font-color:12px;}
-.wrapper table td span.WARNmsg {color:#FFCC33;font-color:12px;}
+.wrapper table td span.WARNmsg {color:#FFA500;font-color:12px;}
 .wrapper table.highlight tr.img-highlight {
 	background:#FFFFD1 !important;
 }

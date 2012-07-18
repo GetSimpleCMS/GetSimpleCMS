@@ -230,8 +230,8 @@ $i18n = array(
 */
 "WEB_HEALTH_CHECK"	=>	"Website Health Check",
 "VERSION"						=>	"Version",
-"UPG_NEEDED"				=>	"Upgrade needed to",
-"CANNOT_CHECK"			=>	"Unable to check. Your version is",
+"UPG_NEEDED"				=>	"Upgrade Recommended",
+"CANNOT_CHECK"			=>	"Upgrade Check Failed !",
 "LATEST_VERSION"		=>	"Latest version installed",
 "SERVER_SETUP"			=>	"Server Setup",
 "OR_GREATER_REQ"		=>	"or greater is required",
