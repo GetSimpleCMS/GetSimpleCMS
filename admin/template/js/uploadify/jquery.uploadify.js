@@ -51,7 +51,7 @@ if(jQuery)(
 						auto : false,
 						buttonClass     : '',
 						buttonCursor    : 'hand',
-						buttonImage     : false,
+						buttonImage     : null,
 						buttonText      : 'SELECT FILES',
 						cancelImage     : 'uploadify-cancel.png',
 						checkExisting   : 'uploadify-check-existing.php',
