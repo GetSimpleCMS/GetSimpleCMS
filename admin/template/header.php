@@ -43,9 +43,14 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	<script>
 		// check to see if core update is needed
 		jQuery(document).ready(function() { 
-			<?php $json = get_api_details();	if ($json != '') { ?>
-				var obj = jQuery.parseJSON('<?php echo $json; ?>');
-				if(obj.status != 1) {
+			<?php 
+				$data = get_api_details();
+				if ($data)      {
+					$apikey = json_decode($data);
+					$verstatus = $apikey->status;
+			?>
+				var verstatus = <?php echo $verstatus; ?>;
+				if(verstatus != 1) {
 					$('a.support').parent('li').append('<span class="warning">!</span>');
 					$('a.support').attr('href', 'health-check.php');
 				}
