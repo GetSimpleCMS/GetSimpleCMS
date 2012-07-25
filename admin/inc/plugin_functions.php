@@ -85,8 +85,6 @@ foreach ($live_plugins as $file=>$en) {
   }
 }
 
-create_pluginsxml();      // check that plugins have not been removed or added to the directory
-
 /**
  * change_plugin
  * 
