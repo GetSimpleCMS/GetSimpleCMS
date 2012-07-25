@@ -171,12 +171,13 @@ function create_pluginsxml($force=false){
       if (isset($live_plugins[(string)$fi])){
         $p_note->addCData($live_plugins[(string)$fi]);     
       } else {
-         $p_note->addCData('true'); 
+         $p_note->addCData('false'); 
       } 
     }
-    XMLsave($xml, GSDATAOTHERPATH."plugins.xml");
+    XMLsave($xml, GSDATAOTHERPATH."plugins.xml");  
+    read_pluginsxml();
   }
-  read_pluginsxml();
+
 }
 
 
