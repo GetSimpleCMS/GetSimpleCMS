@@ -169,17 +169,27 @@ function sendmail($to,$subject,$message) {
  * @param array $a
  * @param string $subkey Key within the array passed you want to sort by
  * @param string $order - order 'asc' ascending or 'desc' descending
+ * @param bool $natural - sort using a "natural order" algorithm
  * @return array
  */
-function subval_sort($a,$subkey, $order='asc') {
+function subval_sort($a,$subkey, $order='asc',$natural = true) {
 	if (count($a) != 0 || (!empty($a))) { 
 		foreach($a as $k=>$v) {
 			$b[$k] = lowercase($v[$subkey]);
 		}
-		($order=='asc')? asort($b) : arsort($b);
+
+		if($natural){
+			natsort($b);
+			if($order=='desc') $b = array_reverse($b,true);	
+		} 
+		else {
+			($order=='asc')? asort($b) : arsort($b);
+		}
+		
 		foreach($b as $key=>$val) {
 			$c[] = $a[$key];
 		}
+
 		return $c;
 	}
 }
@@ -243,6 +253,23 @@ function getFiles($path) {
 	return $file_arr;
 }
 
+$microtime_start = null;
+
+function get_execution_time($reset=false)
+{
+		GLOBAL $microtime_start;
+    if($reset) $microtime_start = null;
+		
+    if($microtime_start === null)
+    {
+        $microtime_start = microtime(true);
+        return 0.0; 
+    }    
+    return round(microtime(true) - $microtime_start,5); 
+}
+
+$GS_debug = array();
+
 /**
  * Get XML Data
  *
@@ -254,8 +281,11 @@ function getFiles($path) {
  * @return object
  */
 function getXML($file) {
+	get_execution_time(true);
+	# debugLog('getXML start: ' . $file . ' ' . get_execution_time(true));
 	$xml = file_get_contents($file);
 	$data = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA);
+	debugLog('getXML: ' . $file . ' ' . get_execution_time());	
 	return $data;
 }
 
@@ -270,7 +300,9 @@ function getXML($file) {
  * @return bool
  */
 function XMLsave($xml, $file) {
+	get_execution_time(true);
 	$success = $xml->asXML($file) === TRUE;
+	debugLog('XMLsave: ' . $file . ' ' . get_execution_time());	
 	
 	if (defined('GSCHMOD')) {
 		return $success && chmod($file, GSCHMOD);
