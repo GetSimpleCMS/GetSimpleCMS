@@ -129,6 +129,29 @@ function delete_upload($id, $path = "") {
 } 
 
 /**
+ * Delete Cache Files
+ *
+ * @since 3.1.3
+ * @uses GSCACHEPATH
+ *
+ * @returns deleted count on success, null if there are any errors
+ */
+function delete_cache() { 
+	$cachepath = GSCACHEPATH;
+	
+	$cnt = 0;	
+	$success = null;
+	
+	foreach(glob($cachepath.'*.txt') as $file){
+		if(unlink($file)) $cnt++;
+		else $success = false;
+	}	
+
+	if($success == false) return null;
+	return $cnt;
+} 
+
+/**
  * Delete Pages Backup File
  *
  * @since 1.0
@@ -988,7 +1011,8 @@ function get_api_details($type='core', $args=null) {
 	# check to see if cache is available for this
 	$cachefile = md5($fetch_this_api).'.txt';
 	# debugLog($fetch_this_api.' ' .$cachefile);
-	if (file_exists(GSCACHEPATH.$cachefile) && time() - 40000 < filemtime(GSCACHEPATH.$cachefile)) {
+	$nocache = false;
+	if (file_exists(GSCACHEPATH.$cachefile) && time() - 40000 < filemtime(GSCACHEPATH.$cachefile) and !$nocache) {
 		# grab the api request from the cache
 		$data = file_get_contents(GSCACHEPATH.$cachefile);
 	} else {	

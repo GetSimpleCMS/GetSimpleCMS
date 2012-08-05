@@ -5,16 +5,18 @@
  * Displays error and success messages	
  *
  * @package GetSimple
- */
- 
- /* 
+ *  
  * Modified by Jorge H. [ http://www.jorgehoya.es ] on 07/09/2011
+ *
+ * Modified by Shawn_a 8/01/2012
+ * You can pass $update(global) directly if not using a redirrect and querystring
+ *
  */
  
 	if ( file_exists(GSUSERSPATH._id($USR).".xml.reset") && get_filename_id()!='index' && get_filename_id()!='resetpassword' ) {
 		echo '<div class="error"><p>'.i18n_r('ER_PWD_CHANGE').'</p></div>';
 	}
-	$update = '';
+	if(!isset($update)) $update = '';
 	$err = '';
 	$restored = '';
 	if(isset($_GET['upd'])) $update = ( function_exists( "filter_var") ) ? filter_var ( $_GET['upd'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['upd']);
@@ -57,6 +59,9 @@
 		break;
 		case 'del-success':
 			echo '<div class="updated"><p>'.i18n_r('ER_FILE_DEL_SUC').': <b>'.$_GET['id'].'</b></p></div>';
+		break;
+		case 'flushcache-success':
+			echo '<div class="updated"><p>'.i18n_r('FLUSHCACHE-SUCCESS').'</p></div>';
 		break;
 		case 'del-error':
 			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_PROBLEM_DEL').'.</p></div>';

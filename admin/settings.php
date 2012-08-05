@@ -21,7 +21,15 @@ $data 		= getXML(GSUSERSPATH . $file);
 $USR 			= stripslashes($data->USR);
 $PASSWD 	= $data->PWD;
 $EMAIL 		= $data->EMAIL;
-$pwd1 =null;$error =null;$success=null;$pwd2 =null;$editorchck =null; $prettychck =null;
+
+# initialize these all as null
+$pwd1 = $error = $success = $pwd2 = $editorchck = $prettychck = null;
+
+# if the flush cache command was invoked
+if (isset($_GET['flushcache'])) { 
+	delete_cache();
+	$update = 'flushcache-success';
+}
 
 # if the undo command was invoked
 if (isset($_GET['undo'])) { 
@@ -82,7 +90,7 @@ if(isset($_POST['submitted'])) {
 	# user-specific fields
 	if(isset($_POST['user'])) { 
 		$USR = strtolower($_POST['user']); 
-	} 
+	}
 	if(isset($_POST['email'])) { 
 		$EMAIL = $_POST['email']; 
 	} 
@@ -210,6 +218,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('GENERAL_SETTINGS'));
 				
 		<div class="leftsec">
 			<p><label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: <span class="right"><a href="http://get-simple.info/wiki/pretty_urls" target="_blank" ><?php i18n('MORE');?></a></span></label><input class="text" name="permalink" id="permalink" type="text" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /></p>
+		<a href="?flushcache"><?php i18n('FLUSHCACHE'); ?></a>
 		</div>
 		<div class="clear"></div>
 		

@@ -224,6 +224,8 @@ $i18n = array(
 "PERMALINK" 				=> 	"Custom Permalink Structure",
 "MORE" 							=> 	"more",
 "HELP" 							=> 	"help",
+"FLUSHCACHE"        =>  "Flush All Caches",
+"FLUSHCACHE-SUCCESS"=>  "Caches Flushed Successfully",
 
 /* 
  * For: health-check.php
