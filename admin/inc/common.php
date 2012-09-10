@@ -117,7 +117,9 @@ if (file_exists($thisfilew)) {
 	$TEMPLATE = $dataw->TEMPLATE;
 	$PRETTYURLS = $dataw->PRETTYURLS;
 	$PERMALINK = $dataw->PERMALINK;
-} 
+} else {
+	$SITENAME = '';
+}
 
 
 /** grab user data */
