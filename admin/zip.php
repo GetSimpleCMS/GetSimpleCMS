@@ -29,7 +29,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 
 	$saved_zip_file = GSBACKUPSPATH.'zip/'. $timestamp .'_archive.zip';	
 	
-	$sourcePath = GSROOTPATH;
+	$sourcePath = str_replace('/', DIRECTORY_SEPARATOR, GSROOTPATH);
 	if (!class_exists ( 'ZipArchive' , false)) {
 		include('inc/ZipArchive.php');
 	}
