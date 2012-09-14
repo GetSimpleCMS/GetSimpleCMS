@@ -40,11 +40,12 @@ $i18n = array(
 "LABEL_BASEURL"			=>	"Website URL",
 "LABEL_SUGGESTION"	=>	"Our suggestion is",
 "LABEL_USERNAME"		=>	"Username",
+"LABEL_DISPNAME"		=>	"Display Name",
 "LABEL_EMAIL"				=>	"Email Address",
 "LABEL_INSTALL"			=>	"Install Now!",
-"SELECT_LANGUAGE"		=> "Select your language",
-"CONTINUE_SETUP" 		=> "Continue with Setup",
-"DOWNLOAD_LANG" 		=> "Download Languages",
+"SELECT_LANGUAGE"		=>  "Select your language",
+"CONTINUE_SETUP" 		=>  "Continue with Setup",
+"DOWNLOAD_LANG" 		=>  "Download Languages",
 
 /* 
  * For: pages.php
@@ -226,6 +227,7 @@ $i18n = array(
 "HELP" 							=> 	"help",
 "FLUSHCACHE"        =>  "Flush All Caches",
 "FLUSHCACHE-SUCCESS"=>  "Caches Flushed Successfully",
+"DISPLAY_NAME"			=>  "A name for public display that is not your username",
 
 /* 
  * For: health-check.php

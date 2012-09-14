@@ -21,6 +21,7 @@ $data 		= getXML(GSUSERSPATH . $file);
 $USR 			= stripslashes($data->USR);
 $PASSWD 	= $data->PWD;
 $EMAIL 		= $data->EMAIL;
+$NAME			= $data->NAME;
 
 # initialize these all as null
 $pwd1 = $error = $success = $pwd2 = $editorchck = $prettychck = null;
@@ -91,6 +92,9 @@ if(isset($_POST['submitted'])) {
 	if(isset($_POST['user'])) { 
 		$USR = strtolower($_POST['user']); 
 	}
+ 	if(isset($_POST['name'])) { 
+		$NAME = $_POST['name']; 
+	} 
 	if(isset($_POST['email'])) { 
 		$EMAIL = $_POST['email']; 
 	} 
@@ -124,6 +128,7 @@ if(isset($_POST['submitted'])) {
 		if (file_exists(GSUSERSPATH . _id($USR).'.xml.reset')) { unlink(GSUSERSPATH . _id($USR).'.xml.reset'); }	
 		$xml = new SimpleXMLElement('<item></item>');
 		$xml->addChild('USR', $USR);
+		$xml->addChild('NAME', $NAME);
 		$xml->addChild('PWD', $PASSWD);
 		$xml->addChild('EMAIL', $EMAIL);
 		$xml->addChild('HTMLEDITOR', $HTMLEDITOR);
@@ -238,6 +243,12 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('GENERAL_SETTINGS'));
 			}?>
 		</div>
 		<div class="clear"></div>
+		<div class="leftsec">
+			<p><label for="name" ><?php i18n('LABEL_DISPNAME');?>:</label>
+			<span style="margin:0px 0 5px 0;font-size:12px;color:#999;" ><?php i18n('DISPLAY_NAME');?></span>			
+			<input class="text" id="name" name="name" type="text" value="<?php if(isset($NAME1)) { echo $NAME1; } else { echo $NAME; } ?>" /></p>
+		</div>		
+		<div class="clear"></div>		
 		<div class="leftsec">
 			<p><label for="timezone" ><?php i18n('LOCAL_TIMEZONE');?>:</label>
 			<?php if( (isset($_POST['timezone'])) ) { $TIMEZONE = $_POST['timezone']; } ?>
