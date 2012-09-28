@@ -23,10 +23,11 @@
 	if(isset($_GET['success'])) $success = ( function_exists( "filter_var") ) ? filter_var ( $_GET['success'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['success']);
 	if(isset($_GET['error'])) $error = ( function_exists( "filter_var") ) ? filter_var ( $_GET['error'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['error']);
 	if(isset($_GET['err'])) $err = ( function_exists( "filter_var") ) ? filter_var ( $_GET['err'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['err']);
+	if(isset($_GET['id'])) $errid = ( function_exists( "filter_var") ) ? filter_var ( $_GET['id'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['err']);
 
 	switch ( $update ) {
 		case 'bak-success':
-			echo '<div class="updated"><p>'. sprintf(i18n_r('ER_BAKUP_DELETED'), $_GET['id']) .'</p></div>';
+			echo '<div class="updated"><p>'. sprintf(i18n_r('ER_BAKUP_DELETED'), $errid) .'</p></div>';
 		break;
 		case 'bak-err':
 			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_REQ_PROC_FAIL').'</p></div>';
@@ -38,12 +39,12 @@
 			} elseif ($ptype == 'restore') {
 				echo sprintf(i18n_r('ER_HASBEEN_REST'), $id);
 			} elseif ($ptype == 'delete') {
-				echo sprintf(i18n_r('ER_HASBEEN_DEL'), $_GET['id']) .'. <a href="backup-edit.php?p=restore&id='. $_GET['id'] .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>';
+				echo sprintf(i18n_r('ER_HASBEEN_DEL'), $errid) .'. <a href="backup-edit.php?p=restore&id='. $errid .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>';
 			}
 			echo '</p></div>';
 		break;
 		case 'clone-success':
-			echo '<div class="updated"><p>'.sprintf(i18n_r('CLONE_SUCCESS'), '<a href="edit.php?id='.$_GET['id'].'">'.$_GET['id'].'</a>').'.</p></div>';
+			echo '<div class="updated"><p>'.sprintf(i18n_r('CLONE_SUCCESS'), '<a href="edit.php?id='.$errid.'">'.$errid.'</a>').'.</p></div>';
 		break;
 		case 'edit-index':
 			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_CANNOT_INDEX').'.</p></div>';
@@ -58,7 +59,7 @@
 			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_SENDMAIL_ERR').'.</p></div>';
 		break;
 		case 'del-success':
-			echo '<div class="updated"><p>'.i18n_r('ER_FILE_DEL_SUC').': <b>'.$_GET['id'].'</b></p></div>';
+			echo '<div class="updated"><p>'.i18n_r('ER_FILE_DEL_SUC').': <b>'.$errid.'</b></p></div>';
 		break;
 		case 'flushcache-success':
 			echo '<div class="updated"><p>'.i18n_r('FLUSHCACHE-SUCCESS').'</p></div>';
