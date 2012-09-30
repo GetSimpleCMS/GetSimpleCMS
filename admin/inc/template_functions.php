@@ -62,7 +62,7 @@ function get_filename_id() {
 /**
  * Delete Pages File
  *
- * Generates HTML code to place on the body tag of a page
+ * Deletes pages data file afer making backup
  *
  * @since 1.0
  * @uses GSBACKUPSPATH
@@ -71,10 +71,19 @@ function get_filename_id() {
  * @param string $id File ID to delete
  */
 function delete_file($id) {
-	$bakfile = GSBACKUPSPATH."pages/". $id .".bak.xml";
-	$file = GSDATAPAGESPATH . $id .".xml";
-	copy($file, $bakfile);
-	unlink($file);
+
+	$bakfilepath = GSBACKUPSPATH . 'pages' . DIRECTORY_SEPARATOR;
+	$bakfile = $bakfilepath . $id .'.bak.xml';
+
+	$filepath = GSDATAPAGESPATH;
+	$file = $filepath . $id .'xml';
+
+	if(filepath_is_safe($file,$filepath)){
+		$success = copy($file, $bakfile);
+		$successdel  = unlink($file);
+		if($success && $successbak) return 'success';
+	}
+	return 'error';
 }
 
 /**
@@ -102,8 +111,14 @@ function check_perms($path) {
  * @return string
  */
 function delete_zip($id) { 
-	unlink(GSBACKUPSPATH."zip/". $id);
-	return 'success';
+	$filepath = GSBACKUPSPATH . 'zip' . DIRECTORY_SEPARATOR;
+	$file = $filepath . $id;
+
+	if(filepath_is_safe($file,$filepath)){
+		$success =  unlink($file);
+		if($success) return 'success';
+	}
+	return 'error';
 } 
 
 /**
@@ -118,14 +133,21 @@ function delete_zip($id) {
  * @return string
  */
 function delete_upload($id, $path = "") { 
-	unlink(GSDATAUPLOADPATH . $path . $id);
-	if (file_exists(GSTHUMBNAILPATH.$path."thumbnail.". $id)) {
-		unlink(GSTHUMBNAILPATH.$path."thumbnail.". $id);
-	}
-	if (file_exists(GSTHUMBNAILPATH.$path."thumbsm.". $id)) {
-		unlink(GSTHUMBNAILPATH.$path."thumbsm.". $id);
-	}
-	return 'success';
+	$filepath = GSDATAUPLOADPATH . $path;
+	$file =  $filepath . $id;
+
+	if(path_is_safe($filepath,GSDATAUPLOADPATH) && filepath_is_safe($file,$filepath)){
+		$status = unlink(GSDATAUPLOADPATH . $path . $id);
+		if (file_exists(GSTHUMBNAILPATH.$path."thumbnail.". $id)) {
+			unlink(GSTHUMBNAILPATH.$path."thumbnail.". $id);
+		}
+		if (file_exists(GSTHUMBNAILPATH.$path."thumbsm.". $id)) {
+			unlink(GSTHUMBNAILPATH.$path."thumbsm.". $id);
+		}
+		if($status) return 'success';
+	}	
+
+	return 'error';
 } 
 
 /**

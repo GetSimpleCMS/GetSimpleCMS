@@ -146,4 +146,35 @@ function validate_safe_file($file, $name, $mime){
 	}
 }
 
+/**
+ * Checks that a filepath is safe to use by checking canonicalized absolute pathname.
+ *
+ * @since 3.1.3
+ *
+ * @param string $path Unknown Path to file to check for safety
+ * @param string $pathmatch Known Path to parent folder to check against
+ * @return bool Returns true if files path resolves to your known path
+ */
+function filepath_is_safe($path,$pathmatch){
+	$realpath = realpath($path);
+	$realpathmatch = realpath($pathmatch);
+	return dirname($realpath) == $realpathmatch;
+}
+
+/**
+ * Checks that a path is safe to use by checking canonicalized absolute path
+ *
+ * @since 3.1.3
+ *
+ * @param string $path Unknown Path to check for safety
+ * @param string $pathmatch Known Path to check against
+ * @return bool Returns true if $path is a subfolder of $pathmatch
+ */
+function path_is_safe($path,$pathmatch){
+	$realpath = realpath($path);
+	$realpathmatch = realpath($pathmatch);
+
+	return strpos($realpath,$realpathmatch) === 0;
+}
+
 ?>

@@ -33,10 +33,10 @@ if (isset($_GET['id'])) {
 		redirect('pages.php?upd=edit-err&type='.urlencode(i18n_r('HOMEPAGE_DELETE_ERROR')));
 	} else {	
 		updateSlugs($id);
-		delete_file($id);
+		$status = delete_file($id);
 		generate_sitemap();
 		exec_action('page-delete');
-		redirect("pages.php?upd=edit-success&id=". $id ."&type=delete");
+		redirect("pages.php?upd=edit-".$status."&id=". $id ."&type=delete");
 	}
 } 
 
@@ -52,9 +52,9 @@ if (isset($_GET['zip'])) {
 if (isset($_GET['file'])) {
 	$path = (isset($_GET['path'])) ? $_GET['path'] : "";
 	$file = $_GET['file'];
-	delete_upload($file, $path);
+	$status = delete_upload($file, $path);
 	
-	redirect("upload.php?upd=del-success&id=". $file . "&path=" . $path);
+	redirect("upload.php?upd=del-".$status."&id=". $file . "&path=" . $path);
 } 
 
 
