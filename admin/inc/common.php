@@ -119,7 +119,7 @@ if (file_exists($thisfilew)) {
 	$PERMALINK = $dataw->PERMALINK;
 } else {
 	$SITENAME = '';
-}
+} 
 
 
 /** grab user data */
@@ -133,11 +133,11 @@ if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 		$LANG = $datau->LANG;
 	} else {
 		$USR = null;
-		$TIMEZONE = "";	
+		$TIMEZONE = defined('GSTIMEZONE') ? GSTIMEZONE : "";	
 	}
 } else {
 	$USR = null;
-	$TIMEZONE = "";
+	$TIMEZONE = defined('GSTIMEZONE') ? GSTIMEZONE : "";
 }
 
 
