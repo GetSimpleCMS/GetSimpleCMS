@@ -172,6 +172,7 @@ jQuery(document).ready(function() {
 		var t = $(this).html();
 		$(this).parents('.compdiv').find("input.comptitle").hide();
 		$(this).after('<div id="changetitle"><b>Title: </b><input class="text newtitle titlesaver" name="title[]" value="'+t+'" /></div>');
+		$(this).next('#changetitle').children('input').focus();
 		$(this).parents('.compdiv').find("input.compslug").val('');
 		$(this).hide();
 	});
