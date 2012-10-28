@@ -474,15 +474,6 @@ sup {
 	-webkit-box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;
 }
 #maincontent .main .section {padding-top:40px;}
-#maincontent .main pre {
-	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace; 
-	line-height:15px;
-	font-size:11px;
-	display:block;
-	padding-bottom:15px;
-	color:#555;
-	overflow:auto;
-}
 
 #themecontent{
 	/* replaces #maincontent on theme editor page, fix for the above style interferring with codemirror for now */

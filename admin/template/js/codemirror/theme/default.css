@@ -17,8 +17,3 @@
 .cm-s-default span.cm-bracket {color: #cc7;}
 .cm-s-default span.cm-tag {color: #170;}
 .cm-s-default span.cm-attribute {color: #00c;}
-
-#maincontent .main pre {
-	line-height: 12px;
-	padding-bottom:1px;
-}

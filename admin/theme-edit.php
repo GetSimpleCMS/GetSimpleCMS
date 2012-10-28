@@ -199,7 +199,7 @@ window.onload = function() {
 ?>
 <div class="bodycontent clearfix">
 	
-	<div id="themecontent">
+	<div id="maincontent">
 		<div class="main">
 		<h3><?php i18n('EDIT_THEME'); ?></h3>
 		<form action="<?php myself(); ?>" method="get" accept-charset="utf-8" >
