@@ -88,6 +88,7 @@ function email_template($message) {
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
 	<style>
 	 table td p {margin-bottom:15px;}
+	 a img {border:none;}
 	</style>
 	</head>
 	<body style="padding:0;margin:0;background: #f3f3f3;font-family:arial, \'helvetica neue\', helvetica, serif" >
