@@ -608,7 +608,7 @@ function get_navigation($currentpage) {
 			$url_nav = $page['url'];
 			
 			if ($page['menuStatus'] == 'Y') { 
-				if ("$currentpage" == "$url_nav") { $classes = "current ". $page['parent'] ." ". $url_nav; } else { $classes = trim($page['parent'] ." ". $url_nav); }
+				if ("$currentpage" == "$url_nav") { $classes = "current active ". $page['parent'] ." ". $url_nav; } else { $classes = trim($page['parent'] ." ". $url_nav); }
 				if ($page['menu'] == '') { $page['menu'] = $page['title']; }
 				if ($page['title'] == '') { $page['title'] = $page['menu']; }
 				$menu .= '<li class="'. $classes .'"><a href="'. find_url($page['url'],$page['parent']) . '" title="'. encode_quotes(cl($page['title'])) .'">'.strip_decode($page['menu']).'</a></li>'."\n";
