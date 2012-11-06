@@ -39,6 +39,7 @@ register_style('fancybox-css', $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.f
  * Queue our scripts and styles for the backend
  */
 queue_script('jquery', GSBACK);
+queue_script('jquery-ui', GSBACK);
 queue_script('fancybox', GSBACK);
 queue_style('fancybox-css',GSBACK);
 

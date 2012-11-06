@@ -58,24 +58,6 @@ define('GSBACKUSERSPATH', GSROOTPATH. 'backups/users/');
 define('GSCACHEPATH', GSROOTPATH. 'data/cache/');
 define('GSAUTOSAVEPATH', GSROOTPATH. 'data/pages/autosave/');
 
-/* create new folders */
-if (!file_exists(GSCACHEPATH)) {
-	if (defined('GSCHMOD')) { 
-		$chmod_value = GSCHMOD; 
-	} else {
-		$chmod_value = 0755;
-	}
-	mkdir(GSCACHEPATH, $chmod_value);
-}
-
-if (!file_exists(GSAUTOSAVEPATH)) {
-	if (defined('GSCHMOD')) { 
-		$chmod_value = GSCHMOD; 
-	} else {
-		$chmod_value = 0755;
-	}
-	mkdir(GSAUTOSAVEPATH, $chmod_value);
-}
 
 
 /**
