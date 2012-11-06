@@ -180,6 +180,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 						$pagesArray = $pagesArray_tmp;
 						$pagesSorted = subval_sort($pagesArray,'sort');
 						$ret=get_pages_menu_dropdown('','',0);
+						$ret=str_replace('value="'.$id.'"', 'value="'.$id.'" disabled', $ret);
 						
 						// handle 'no parents' correctly
 						if ($parent == '') { 
