@@ -30,12 +30,12 @@ $dirsArray = array(
 	GSBACKUPSPATH.'pages/',
 	GSBACKUPSPATH.'zip/',
 	GSBACKUSERSPATH,
-	GSUSERSPATH
+	GSUSERSPATH,
+	GSDATAPAGESPATH.'autosave/'
 );
 
 foreach ($dirsArray as $dir) {
 	$tmpfile = GSADMININCPATH.'tmp/tmp-404.xml';
-	
 	if (file_exists($dir)) {
 		chmod($dir, 0755);
 		$result_755 = copy($tmpfile, $dir .'tmp.tmp');
