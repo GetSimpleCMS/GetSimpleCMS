@@ -19,7 +19,6 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	<meta name="robots" content="noindex, nofollow">
 	<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 	<link rel="stylesheet" type="text/css" href="template/style.php?v=<?php echo GSVERSION; ?>" media="screen" />
-	<?php if(get_filename_id()=='menu-manager') queue_script('jquery-ui', GSBACK); ?>
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
 	<?php get_scripts_backend(); ?>
 		
