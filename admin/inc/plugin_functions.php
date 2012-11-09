@@ -70,19 +70,19 @@ foreach ($live_plugins as $file=>$en) {
   $pluginsLoaded=true;
   # debugLog("plugin: $file" . " exists: " . file_exists(GSPLUGINPATH . $file) ." enabled: " . $en); 
   if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
-  	require_once(GSPLUGINPATH . $file);
+	require_once(GSPLUGINPATH . $file);
   } else {
-    if(!is_frontend()){
-      $apiback = get_api_details('plugin', $file);
-      $response = json_decode($apiback);
-      if ($response and $response->status == 'successful') {
-        register_plugin( pathinfo_filename($file), $file, 'disabled', $response->owner, '', 'Disabled Plugin', '', '');
-      } else {
-        register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', 'Disabled Plugin', '', '');
-      }
-    } else {
-        register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', 'Disabled Plugin', '', '');
-    }  
+	if(!is_frontend()){
+	  $apiback = get_api_details('plugin', $file);
+	  $response = json_decode($apiback);
+	  if ($response and $response->status == 'successful') {
+		register_plugin( pathinfo_filename($file), $file, 'disabled', $response->owner, '', 'Disabled Plugin', '', '');
+	  } else {
+		register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', 'Disabled Plugin', '', '');
+	  }
+	} else {
+		register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', 'Disabled Plugin', '', '');
+	}  
   }
 }
 
@@ -95,15 +95,26 @@ foreach ($live_plugins as $file=>$en) {
  * @uses $live_plugins
  *
  * @param $name
+ * @param $active bool default=null, sets plugin active | inactive else toggle
  */
-function change_plugin($name){
+function change_plugin($name,$active=null){
   global $live_plugins;   
 	 if (isset($live_plugins[$name])){
-	  if ($live_plugins[$name]=="true"){
-	    $live_plugins[$name]="false";
-	  } else {
-	    $live_plugins[$name]="true";
+	
+	  // set plugin active | inactive
+	  if(isset($active) and is_bool($active)) {
+		$live_plugins[$name] = $active ? 'true' : 'false';	  		
+		create_pluginsxml(true);
+		return;
 	  }
+
+	  // else we toggle
+	  if ($live_plugins[$name]=="true"){
+		$live_plugins[$name]="false";
+	  } else {
+		$live_plugins[$name]="true";
+	  }
+
 	  create_pluginsxml(true);
 	}
 }
@@ -124,9 +135,9 @@ function read_pluginsxml(){
   $data = getXML(GSDATAOTHERPATH . "plugins.xml");
   $componentsec = $data->item;
   if (count($componentsec) != 0) {
-    foreach ($componentsec as $component) {
-      $live_plugins[(string)$component->plugin]=(string)$component->enabled;
-    }
+	foreach ($componentsec as $component) {
+	  $live_plugins[(string)$component->plugin]=(string)$component->enabled;
+	}
   }
 
 }
@@ -146,35 +157,35 @@ function read_pluginsxml(){
 function create_pluginsxml($force=false){
   global $live_plugins;   
   if (file_exists(GSPLUGINPATH)){
-    $pluginfiles = getFiles(GSPLUGINPATH);
+	$pluginfiles = getFiles(GSPLUGINPATH);
   }
   $phpfiles = array();
   foreach ($pluginfiles as $fi) {
-    if (lowercase(pathinfo($fi, PATHINFO_EXTENSION))=='php') {
-      $phpfiles[] = $fi;
-    }
+	if (lowercase(pathinfo($fi, PATHINFO_EXTENSION))=='php') {
+	  $phpfiles[] = $fi;
+	}
   }
   if (!$force) {
-    $livekeys = array_keys($live_plugins);
-    if (count(array_diff($livekeys, $phpfiles))>0 || count(array_diff($phpfiles, $livekeys))>0) {
-      $force = true;
-    }
+	$livekeys = array_keys($live_plugins);
+	if (count(array_diff($livekeys, $phpfiles))>0 || count(array_diff($phpfiles, $livekeys))>0) {
+	  $force = true;
+	}
   }
   if ($force) {
-    $xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>'); 
-    foreach ($phpfiles as $fi) {
-      $plugins = $xml->addChild('item');  
-      $p_note = $plugins->addChild('plugin');
-      $p_note->addCData($fi);
-      $p_note = $plugins->addChild('enabled');
-      if (isset($live_plugins[(string)$fi])){
-        $p_note->addCData($live_plugins[(string)$fi]);     
-      } else {
-         $p_note->addCData('false'); 
-      } 
-    }
-    XMLsave($xml, GSDATAOTHERPATH."plugins.xml");  
-    read_pluginsxml();
+	$xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>'); 
+	foreach ($phpfiles as $fi) {
+	  $plugins = $xml->addChild('item');  
+	  $p_note = $plugins->addChild('plugin');
+	  $p_note->addCData($fi);
+	  $p_note = $plugins->addChild('enabled');
+	  if (isset($live_plugins[(string)$fi])){
+		$p_note->addCData($live_plugins[(string)$fi]);     
+	  } else {
+		 $p_note->addCData('false'); 
+	  } 
+	}
+	XMLsave($xml, GSDATAOTHERPATH."plugins.xml");  
+	read_pluginsxml();
   }
 
 }
@@ -197,14 +208,14 @@ function add_action($hook_name, $added_function, $args = array()) {
   
 	$bt = debug_backtrace();
 	$shift=count($bt) - 4;	// plugin name should be  
-  	$caller = array_shift($bt);
+	$caller = array_shift($bt);
 	$realPathName=pathinfo_filename($caller['file']);
 	$realLineNumber=$caller['line'];
 	while ($shift > 0) {
 		 $caller = array_shift($bt);
 		 $shift--;
 	}
-  	$pathName= pathinfo_filename($caller['file']);
+	$pathName= pathinfo_filename($caller['file']);
 
 	if ((isset ($live_plugins[$pathName.'.php']) && $live_plugins[$pathName.'.php']=='true') || $shift<0 ){
 		if ($realPathName!=$pathName) {
@@ -219,7 +230,7 @@ function add_action($hook_name, $added_function, $args = array()) {
 			'function' => $added_function,
 			'args' => (array) $args,
 			'file' => $pathName.'.php',
-	    'line' => $caller['line']
+		'line' => $caller['line']
 		);
 	  } 
 }
@@ -257,10 +268,10 @@ function exec_action($a) {
 function createSideMenu($id, $txt, $action=null, $always=true){
   $current = false;
   if (isset($_GET['id']) && $_GET['id'] == $id && (!$action || isset($_GET[$action]))) {
-    $current = true;
+	$current = true;
   }
   if ($always || $current) {
-    echo '<li id="sb_'.$id.'" class="plugin_sb"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
+	echo '<li id="sb_'.$id.'" class="plugin_sb"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
   }
 }
 
@@ -280,8 +291,8 @@ function createNavTab($tabname, $id, $txt, $action=null) {
   global $plugin_info;
   $current = false;
   if (basename($_SERVER['PHP_SELF']) == 'load.php') {
-    $plugin_id = @$_GET['id'];
-    if ($plugin_info[$plugin_id]['page_type'] == $tabname) $current = true;
+	$plugin_id = @$_GET['id'];
+	if ($plugin_info[$plugin_id]['page_type'] == $tabname) $current = true;
   }
   echo '<li id="nav_'.$id.'" class="plugin_tab"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
 }
@@ -333,10 +344,10 @@ function add_filter($filter_name, $added_function) {
   $bt = debug_backtrace();
   $caller = array_shift($bt);
   $pathName= pathinfo_filename($caller['file']);
-  	$filters[] = array(
-  		'filter' => $filter_name,
-  		'function' => $added_function
-  	);
+	$filters[] = array(
+		'filter' => $filter_name,
+		'function' => $added_function
+	);
 }
 
 /**
