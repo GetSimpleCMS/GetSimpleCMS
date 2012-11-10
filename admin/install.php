@@ -8,6 +8,8 @@
  * @subpackage Installation
  */
 
+$kill = '';
+
 # setup inclusions
 $load['plugin'] = true;
 if(isset($_GET['lang'])) {$LANG = $_GET['lang'];}
