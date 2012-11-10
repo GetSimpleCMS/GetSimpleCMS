@@ -31,38 +31,66 @@ Debugger.log = function(message) {
  }
 }
 	
-	/*
-	 * popit
-	 * element attention blink
-	 * ensures occurs only once
-	 */ 
-	$.fn.popit = function($speed) {
-		$speed = $speed || 500;
-		$(this).each(function(){
-			if($(this).data('popped') !=true){
-				$(this).fadeOut($speed).fadeIn($speed);
-				$(this).data('popped',true);
-			}
-		});
-		return $(this);
-	}		
+/*
+ * popit
+ * element attention blink
+ * ensures occurs only once
+ */ 
+$.fn.popit = function($speed) {
+	$speed = $speed || 500;
+	$(this).each(function(){
+		if($(this).data('popped') !=true){
+			$(this).fadeOut($speed).fadeIn($speed);
+			$(this).data('popped',true);
+		}
+	});
+	return $(this);
+}
 
-	/*
-	 * closeit
-	 * fadeout close on delay
-	 */ 
-	$.fn.removeit = function($delay) {
-		$delay = $delay || 5000;
-		$(this).each(function(){
-				$(this).delay($delay).fadeOut(500);
-		});
-		return $(this);		
-	}		
+/*
+ * closeit
+ * fadeout close on delay
+ */ 
+$.fn.removeit = function($delay) {
+	$delay = $delay || 5000;
+	$(this).each(function(){
+			$(this).delay($delay).fadeOut(500);
+	});
+	return $(this);		
+}	
+
+function notifyOk($msg){
+	return notify($msg,'ok');	
+}		
+
+function notifyWarn($msg){
+	return notify($msg,'warning');	
+}	
+
+function notifyInfo($msg){
+	return notify($msg,'info');	
+}
+
+function notifyError($msg){
+	return notify($msg,'error');	
+}
+
+function notify($msg,$type){
+	if($type == 'ok' || $type == 'warning' || $type == 'info' || $type == 'error'){	
+		var $notify = $('<div class="notify notify_'+$type+'"><p>' + $msg + '</p></div>');
+		$('div.bodycontent').before($notify);
+		return $notify;
+	}
+}
+
+function clearNotify(){
+	$('div.wrapper .notify').remove();
+}	
+	
 	
 jQuery(document).ready(function() { 
 
 	var loadingAjaxIndicator = $('#loader');
-
 	
 	function checkCoords() {
 	  if (parseInt($('#x').val())) return true;
@@ -71,6 +99,7 @@ jQuery(document).ready(function() {
 	};
 	
 	var imageTableElement = $("#imageTable");
+
 	function attachFilterChangeEvent() {
 		$("#imageFilter").change(function(){
 			loadingAjaxIndicator.show();
@@ -286,34 +315,6 @@ jQuery(document).ready(function() {
 			scrolling: 'no'
 		});
 	}
-
-	function notifyOk($msg){
-		return notify($msg,'ok');	
-	}		
-	
-	function notifyWarn($msg){
-		return notify($msg,'warning');	
-	}	
-	
-	function notifyInfo($msg){
-		return notify($msg,'info');	
-	}
-
-	function notifyError($msg){
-		return notify($msg,'error');	
-	}
-	
-	function notify($msg,$type){
-		if($type == 'ok' || $type == 'warning' || $type == 'info' || $type == 'error'){	
-			var $notify = $('<div class="notify notify_'+$type+'"><p>' + $msg + '</p></div>');
-			$('div.bodycontent').before($notify);
-			return $notify;
-		}
-	}
-	
-	function clearNotify(){
-		$('div.wrapper .notify').remove();
-	}	
 		
 	//plugins.php
 	$(".toggleEnable").live("click", function($e) {

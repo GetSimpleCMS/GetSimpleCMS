@@ -268,7 +268,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			<div id="submit_line" >
 				<input type="hidden" name="redirectto" value="" />
 				
-				<span><input class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" onclick="warnme=false;pageisdirty=false;" /></span>
+				<span><input id="page_submit" class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" /></span>
 				
 				<div id="dropdown">
 					<h6 class="dropdownaction"><?php i18n('ADDITIONAL_ACTIONS'); ?></h6>
@@ -380,6 +380,18 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 				}
 			}
 			
+			$('#editform').submit(function(){
+				warnme = false;
+				return checkTitle();
+			});
+
+			checkTitle = function(){
+				if($.trim($("#post-title").val()).length == 0){
+					notifyError("<?php i18n('CANNOT_SAVE_EMPTY'); ?>").popit().removeit();
+					return false;
+				}					
+			}
+
 			jQuery(document).ready(function() { 
 
 			<?php if (defined('GSAUTOSAVE') && (int)GSAUTOSAVE != 0) { /* IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP */ ?>	
