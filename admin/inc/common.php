@@ -9,6 +9,84 @@
  * @subpackage init
  */
 
+
+/**
+ * Variable Globalization
+ */
+global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR, $PERMALINK, $GSADMIN, $GS_debug, $components;
+
+$GS_debug = array();
+
+
+/*
+ * Defines Root Path
+ */
+define('GSROOTPATH', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
+
+/*
+ * Load config
+ */
+if (file_exists(GSROOTPATH . 'gsconfig.php')) {
+	require_once(GSROOTPATH . 'gsconfig.php');
+}
+
+/*
+ * Set custom GSADMINPATH path from config
+ */
+if (defined('GSADMIN')) {
+	# make sure trailing slashes are standardized from user input
+	$GSADMIN = rtrim(GSADMIN,'/\\').DIRECTORY_SEPARATOR;
+} else {
+	$GSADMIN = 'admin'.DIRECTORY_SEPARATOR;
+}
+
+/**
+ * Define some constants
+ */
+define('GSADMINPATH', GSROOTPATH . $GSADMIN);
+define('GSADMININCPATH', GSADMINPATH. 'inc/');
+define('GSPLUGINPATH', GSROOTPATH. 'plugins/');
+define('GSLANGPATH', GSADMINPATH. 'lang/');
+define('GSDATAPATH', GSROOTPATH. 'data/');
+define('GSDATAOTHERPATH', GSROOTPATH. 'data/other/');
+define('GSDATAPAGESPATH', GSROOTPATH. 'data/pages/');
+define('GSDATAUPLOADPATH', GSROOTPATH. 'data/uploads/');
+define('GSTHUMBNAILPATH', GSROOTPATH. 'data/thumbs/');
+define('GSBACKUPSPATH', GSROOTPATH. 'backups/');
+define('GSTHEMESPATH', GSROOTPATH. 'theme/');
+define('GSUSERSPATH', GSROOTPATH. 'data/users/');
+define('GSBACKUSERSPATH', GSROOTPATH. 'backups/users/');
+define('GSCACHEPATH', GSROOTPATH. 'data/cache/');
+define('GSAUTOSAVEPATH', GSROOTPATH. 'data/pages/autosave/');
+
+
+/**
+ * Debugging
+ */
+
+/**
+ * Debug Console Log
+ *
+ * @since 3.1
+ *
+ * @param $txt string
+ */
+function debugLog($txt) {
+	global $GS_debug;	
+	array_push($GS_debug,$txt);
+}
+
+if ( defined('GSDEBUG') && (GSDEBUG == TRUE) ) {
+	error_reporting(-1);
+	ini_set('display_errors', 1);
+} else if( defined('SUPRESSERRORS') && (SUPRESSERRORS == TRUE) ){
+	error_reporting(0);
+	ini_set('display_errors', 0);
+}
+ini_set('log_errors', 1);
+ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
+
+
 /**
  * Bad stuff protection
  */
@@ -27,39 +105,6 @@ include('template_functions.php');
 include('logging.class.php');
 
 
-define('GSROOTPATH', get_root_path());
-
-if (file_exists(GSROOTPATH . 'gsconfig.php')) {
-	require_once(GSROOTPATH . 'gsconfig.php');
-}
-
-if (defined('GSADMIN')) {
-	$GSADMIN = GSADMIN;
-} else {
-	$GSADMIN = 'admin';
-}
-
-/**
- * Define some constants
- */
-define('GSADMINPATH', get_admin_path());
-define('GSADMININCPATH', GSADMINPATH. 'inc/');
-define('GSPLUGINPATH', GSROOTPATH. 'plugins/');
-define('GSLANGPATH', GSADMINPATH. 'lang/');
-define('GSDATAPATH', GSROOTPATH. 'data/');
-define('GSDATAOTHERPATH', GSROOTPATH. 'data/other/');
-define('GSDATAPAGESPATH', GSROOTPATH. 'data/pages/');
-define('GSDATAUPLOADPATH', GSROOTPATH. 'data/uploads/');
-define('GSTHUMBNAILPATH', GSROOTPATH. 'data/thumbs/');
-define('GSBACKUPSPATH', GSROOTPATH. 'backups/');
-define('GSTHEMESPATH', GSROOTPATH. 'theme/');
-define('GSUSERSPATH', GSROOTPATH. 'data/users/');
-define('GSBACKUSERSPATH', GSROOTPATH. 'backups/users/');
-define('GSCACHEPATH', GSROOTPATH. 'data/cache/');
-define('GSAUTOSAVEPATH', GSROOTPATH. 'data/pages/autosave/');
-
-
-
 /**
  * Variable check to prevent debugging going off
  * @todo some of these may not even be needed anymore
@@ -68,22 +113,6 @@ $admin_relative = (isset($admin_relative)) ? $admin_relative : '';
 $lang_relative = (isset($lang_relative)) ? $lang_relative : '';
 $load['login'] = (isset($load['login'])) ? $load['login'] : '';
 $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
-
-
-/**
- * Debugging
- */
-if ( defined('GSDEBUG') && (GSDEBUG == TRUE) ) {
-	error_reporting(-1);
-	ini_set('display_errors', 1);
-} else if( defined('SUPRESSERRORS') && (SUPRESSERRORS == TRUE) ){
-	error_reporting(0);
-	ini_set('display_errors', 0);
-}
-ini_set('log_errors', 1);
-ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
-
-
 
 
 /**
@@ -101,6 +130,7 @@ if (file_exists($thisfilew)) {
 	$PERMALINK = $dataw->PERMALINK;
 } else {
 	$SITENAME = '';
+	$SITEURL = '';
 } 
 
 
@@ -127,7 +157,7 @@ if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
 	$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
 	$SALT = stripslashes($dataa->apikey);
-}	else {
+} else {
 	$SALT = sha1($SITEURL);
 }
 $SESSIONHASH = sha1($SALT . $SITENAME);
@@ -154,14 +184,6 @@ if(!isset($LANG) || $LANG == '') {
 	}
 }
 include_once(GSLANGPATH . $LANG . '.php');
-
-
-/**
- * Variable Globalization
- */
-global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR, $PERMALINK, $GSADMIN, $components;
-
-$GS_debug        = array();
 
 /**
  * $base is if the site is being viewed from the front-end
