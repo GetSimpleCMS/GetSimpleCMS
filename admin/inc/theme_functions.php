@@ -380,7 +380,7 @@ function get_theme_url($echo=true) {
  */
 function get_site_name($echo=true) {
 	global $SITENAME;
-	$myVar = trim(stripslashes($SITENAME));
+	$myVar = cl($SITENAME);
 	
 	if ($echo) {
 		echo $myVar;
