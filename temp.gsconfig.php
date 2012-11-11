@@ -79,4 +79,7 @@ define('GSDONOTPING', 1);
 # Disable Codemirror theme editor
 #define("GSNOHIGHLIGHT",true);
 
+# Forces suppression of php errors when GSDEBUG is false, despite php ini settings
+# define('SUPPRESSERRORS',true);
+
 ?>

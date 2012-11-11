@@ -76,7 +76,7 @@ $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
 if ( defined('GSDEBUG') && (GSDEBUG == TRUE) ) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
-} else {
+} else if( defined('SUPRESSERRORS') && (SUPRESSERRORS == TRUE) ){
 	error_reporting(0);
 	ini_set('display_errors', 0);
 }
