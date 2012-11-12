@@ -153,7 +153,6 @@ if(isset($_POST['submitted'])) {
 		change_plugin('InnovationPlugin.php',true);
 
 		# set the login cookie, then redirect user to secure panel		
-		setcookie('GS_ADMIN_USERNAME', _id($USR));
 		create_cookie();
 		
 		# check for fatal errors, if none, redirect to 
