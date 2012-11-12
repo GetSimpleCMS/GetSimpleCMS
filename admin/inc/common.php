@@ -35,15 +35,15 @@ if (file_exists(GSROOTPATH . 'gsconfig.php')) {
  */
 if (defined('GSADMIN')) {
 	# make sure trailing slashes are standardized from user input
-	$GSADMIN = rtrim(GSADMIN,'/\\').DIRECTORY_SEPARATOR;
+	$GSADMIN = rtrim(GSADMIN,'/\\');
 } else {
-	$GSADMIN = 'admin'.DIRECTORY_SEPARATOR;
+	$GSADMIN = 'admin';
 }
 
 /**
  * Define some constants
  */
-define('GSADMINPATH', GSROOTPATH . $GSADMIN);
+define('GSADMINPATH', GSROOTPATH . $GSADMIN.'/');
 define('GSADMININCPATH', GSADMINPATH. 'inc/');
 define('GSPLUGINPATH', GSROOTPATH. 'plugins/');
 define('GSLANGPATH', GSADMINPATH. 'lang/');
