@@ -95,7 +95,7 @@ function get_nonce($action, $file = "", $last = false) {
 	$time = $last ? time() - 3600: time(); 
 	
 	// Mix with a little salt
-	$hash=sha1($action.$file.$ip.$USR.$SALT.date('YmdH',$time));
+	$hash=sha1($action.$file.$ip.$USR.$SALT.@date('YmdH',$time));
 	
 	return $hash;
 }
