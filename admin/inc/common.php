@@ -101,6 +101,7 @@ if (file_exists($thisfilew)) {
 	$PERMALINK = $dataw->PERMALINK;
 } else {
 	$SITENAME = '';
+	$SITEURL = '';
 } 
 
 
