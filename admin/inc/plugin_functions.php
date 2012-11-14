@@ -133,13 +133,14 @@ function read_pluginsxml(){
   global $live_plugins;   
    
   $data = getXML(GSDATAOTHERPATH . "plugins.xml");
-  $componentsec = $data->item;
-  if (count($componentsec) != 0) {
-	foreach ($componentsec as $component) {
-	  $live_plugins[(string)$component->plugin]=(string)$component->enabled;
+  if($data){
+  	$componentsec = $data->item;
+	  if (count($componentsec) != 0) {
+			foreach ($componentsec as $component) {
+			  $live_plugins[(string)$component->plugin]=(string)$component->enabled;
+			}
+	  }
 	}
-  }
-
 }
 
 

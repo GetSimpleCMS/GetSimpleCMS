@@ -282,12 +282,11 @@ $GS_debug = array();
  * @return object
  */
 function getXML($file) {
-	# get_execution_time(true);
-	# debugLog('getXML start: ' . $file . ' ' . get_execution_time(true));
-	$xml = file_get_contents($file);
-	$data = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA);
-	# debugLog('getXML: ' . $file . ' ' . get_execution_time());	
-	return $data;
+	$xml = @file_get_contents($file);
+	if($xml){
+		$data = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA); 
+		return $data;
+	}	
 }
 
 /**
@@ -302,7 +301,7 @@ function getXML($file) {
  */
 function XMLsave($xml, $file) {
 	# get_execution_time(true);
-	$success = $xml->asXML($file) === TRUE;
+	$success = @$xml->asXML($file) === TRUE;
 	# debugLog('XMLsave: ' . $file . ' ' . get_execution_time());	
 	
 	if (defined('GSCHMOD')) {
