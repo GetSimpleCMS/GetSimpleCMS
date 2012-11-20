@@ -18,7 +18,7 @@ if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && $cacheme)
 	echo "/* Cached copy, generated ".date('H:i', filemtime($cachefile))." '".$cachefile."' */\n";
 	exit;
 } 
-ob_start("compress");
+ob_start();
 
 function compress($buffer) {
   $buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer); /* remove comments */
@@ -1089,6 +1089,6 @@ a.disabled:link , a.disabled:visited {
 }
 
 <?php
-file_put_contents($cachefile, ob_get_contents());
+file_put_contents($cachefile, compress(ob_get_contents()));
 chmod($cachefile, 0644);
 ob_end_flush();
