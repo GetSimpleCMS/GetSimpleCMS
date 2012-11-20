@@ -1,6 +1,6 @@
 .CodeMirror {
-  line-height: 1em;
-  font-family: monospace;
+  line-height: normal;
+  font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;
   padding-bottom:0px;
   margin-bottom: 15px;
   height: 660px;
