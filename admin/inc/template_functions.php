@@ -76,12 +76,12 @@ function delete_file($id) {
 	$bakfile = $bakfilepath . $id .'.bak.xml';
 
 	$filepath = GSDATAPAGESPATH;
-	$file = $filepath . $id .'xml';
+	$file = $filepath . $id .'.xml';
 
 	if(filepath_is_safe($file,$filepath)){
-		$success = copy($file, $bakfile);
-		$successdel  = unlink($file);
-		if($success && $successbak) return 'success';
+		$successbak = copy($file, $bakfile);
+		$successdel = unlink($file);
+		if($successdel && $successbak) return 'success';
 	}
 	return 'error';
 }
