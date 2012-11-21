@@ -49,7 +49,7 @@
 		case 'edit-index':
 			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_CANNOT_INDEX').'.</p></div>';
 		break;
-		case 'edit-err':
+		case 'edit-error':
 			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '. $ptype .'.</p></div>';
 		break;
 		case 'pwd-success':

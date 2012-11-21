@@ -30,13 +30,13 @@ if (isset($_GET['id'])) {
 	$id = $_GET['id'];
 	
 	if ($id == 'index') {
-		redirect('pages.php?upd=edit-err&type='.urlencode(i18n_r('HOMEPAGE_DELETE_ERROR')));
+		redirect('pages.php?upd=edit-error&type='.urlencode(i18n_r('HOMEPAGE_DELETE_ERROR')));
 	} else {	
 		updateSlugs($id);
 		$status = delete_file($id);
 		generate_sitemap();
 		exec_action('page-delete');
-		redirect("pages.php?upd=edit-".$status."&id=". $id ."&type=delete");
+		redirect("pages.php?upd=del-".$status."&id=". $id ."&type=delete");
 	}
 } 
 

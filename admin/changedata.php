@@ -37,7 +37,7 @@ if (isset($_POST['submitted'])) {
 	}
 	
 	if ( trim($_POST['post-title']) == '' )	{
-		redirect("edit.php?upd=edit-err&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
+		redirect("edit.php?upd=edit-error&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
 	}	else {
 		
 		$url="";$title="";$metad=""; $metak="";	$cont="";
@@ -66,7 +66,7 @@ if (isset($_POST['submitted'])) {
 	
 		//check again to see if the URL is empty
 		if ( trim($url) == '' )	{
-			redirect("edit.php?upd=edit-err&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
+			redirect("edit.php?upd=edit-error&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
 		}
 		
 		
