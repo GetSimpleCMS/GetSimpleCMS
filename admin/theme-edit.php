@@ -8,6 +8,8 @@
  * @subpackage Theme
  */
 
+global $TEMPLATE_FILE;
+
 # setup inclusions
 $load['plugin'] = true;
 include('inc/common.php');
@@ -61,7 +63,7 @@ if (! $TEMPLATE_FILE) {
 # create themes dropdown
 $themes_path = GSTHEMESPATH;
 $themes_handle = opendir($themes_path);
-$theme_options .= '<select class="text" style="width:225px;" name="t" id="theme-folder" >';	
+$theme_options .= '<select class="text" name="t" id="theme-folder" >';	
 while ($file = readdir($themes_handle)) {
 	$curpath = $themes_path .'/'. $file;
 	if( is_dir($curpath) && $file != "." && $file != ".." ) {
@@ -85,27 +87,125 @@ if (count($theme_dir_array) == 1){ $theme_options = ''; }
 # if no template is selected, use the default
 if ($template == '') { $template = 'template.php'; }
 $templates = directoryToArray(GSTHEMESPATH . $TEMPLATE . '/', true);
+
+$directory = GSTHEMESPATH . $TEMPLATE . '/';
+
 $theme_templates .= '<span id="themefiles"><select class="text" id="theme_files" style="width:425px;" name="f" >';
-$allowed_extensions=array('php','css','js','html','htm');
-foreach ($templates as $file){
-  $extension=pathinfo($file,PATHINFO_EXTENSION);
-  if (in_array($extension, $allowed_extensions)){
-  $filename=pathinfo($file,PATHINFO_BASENAME);
-  $filenamefull=substr(strstr($file,'/theme/'.$TEMPLATE.'/'),strlen('/theme/'.$TEMPLATE.'/'));   
-  if ($TEMPLATE_FILE == $filenamefull){ 
-          $sel="selected"; 
-  } else { 
-          $sel="";
-  }
-  if ($filename == 'template.php'){ 
-          $templatename=i18n_r('DEFAULT_TEMPLATE'); 
-  } else { 
-          $templatename=$filenamefull; 
-  }
-  $theme_templates .= '<option '.$sel.' value="'.$templatename.'" >'.$templatename.'</option>';
-  }
+$allowed_extensions=array('php','css','js','html','htm','txt','');
+
+$theme_templates .= createFileDropdown($templates);
+
+
+//////////////////////////////////////////////////
+// File Manager
+//////////////////////////////////////////////////
+
+
+function createFileDropdown($templates){
+	GLOBAL $TEMPLATE_FILE,$TEMPLATE,$allowed_extensions;
+	
+	$theme_templates = '';
+
+	foreach ($templates as $file){
+	  $extension=pathinfo($file,PATHINFO_EXTENSION);
+	  if (in_array($extension, $allowed_extensions)){
+	  $filename=pathinfo($file,PATHINFO_BASENAME);
+	  $filenamefull=substr(strstr($file,'/theme/'.$TEMPLATE.'/'),strlen('/theme/'.$TEMPLATE.'/'));   
+	  if ($TEMPLATE_FILE == $filenamefull){ 
+	          $sel="selected"; 
+	  } else { 
+	          $sel="";
+	  }
+	  if ($filename == 'template.php'){ 
+	          $templatename=i18n_r('DEFAULT_TEMPLATE'); 
+	  } else { 
+	          $templatename=$filenamefull; 
+	  }
+	  $theme_templates .= '<option '.$sel.' value="'.$templatename.'" >'.$templatename.'</option>';
+	  }
+	}
+	$theme_templates .= "</select></span>";
+	return $theme_templates;
 }
-$theme_templates .= "</select></span>";
+
+function array2ul($array) {
+	GLOBAL $allowed_extensions,$TEMPLATE_FILE,$TEMPLATE;
+    
+	$cnt = 0;
+
+    $out="<ul>";
+    foreach($array as $key => $elem){
+    	
+    	// todo: replace this with an actual loop counter for valid filetypes.
+    	if(strtolower($key) == 'images') continue;
+
+        if(!is_array($elem['value'])){
+    		$ext = lowercase(pathinfo($elem['value'], PATHINFO_EXTENSION));
+    		
+    		// Is a file
+    		if( in_array($ext,$allowed_extensions) ){
+
+    			$filename = $elem['value'];
+					$filepath = $elem['path'];    			
+					$filenamefull=substr(strstr($filepath.DIRECTORY_SEPARATOR.$filename,'/theme/'.$TEMPLATE.'/'),strlen('/theme/'.$TEMPLATE.'/')); 
+
+    			$open = fileIsOpen($elem['path'],$elem['value']) ? ' open' : '';
+  				if ($filename == 'template.php'){
+  					$ext = 'theme';
+  					$filename=i18n_r('DEFAULT_TEMPLATE');        			
+  				}	
+				
+				$link = myself(false).'?t='.$TEMPLATE.'&amp;f='.$filenamefull;
+
+				$out.='<li><a href="'.$link.'"class="file ext-'.$ext.$open.'">'.$filename."</a></li>";
+        	}
+        }
+        else {
+        	// Is a folder
+        	$out.='<li><a class="directory">'.$key.'</a>'.array2ul($elem['value']).'</li>';
+        }	
+    }
+    $out=$out."</ul>";
+    return $out; 
+}
+
+function fileIsOpen($path,$file){
+	GLOBAL $TEMPLATE,$TEMPLATE_FILE;
+    $file = $path.DIRECTORY_SEPARATOR.$file;
+    $filename=pathinfo($file,PATHINFO_BASENAME);
+    $filenamefull=substr(strstr($file,'/theme/'.$TEMPLATE.'/'),strlen('/theme/'.$TEMPLATE.'/')); 
+	# _debugLog($file,$TEMPLATE_FILE,$filename,$filenamefull);
+	return $TEMPLATE_FILE == $filenamefull;
+}
+
+function compareOrder($a, $b)
+{
+		$atype = $a['type'];
+		$btype = $b['type'];
+
+		// directories first
+    if ($atype!=$btype){
+    	return strcmp($atype,$btype);
+    }
+
+    // sort directories by key
+    if($atype == 'directory' and $btype == 'directory'){
+    	return strcmp(key($a['value']),key($b['value']));
+    } 
+    
+    // sort files by value
+    if($atype == 'file' and $btype == 'file'){
+    	return strcmp($a['value'],$b['value']);
+    } 
+}
+
+
+$files = directoryToMultiArray($directory);
+#_debugLog($TEMPLATE_FILE);
+#_debugLog($files);
+uasort($files, 'compareOrder');
+# uksort($files, 'compareOrder');
+$fileList = array2ul($files);
 
 if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 	register_script('codemirror', $SITEURL.'admin/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);
@@ -202,24 +302,53 @@ window.onload = function() {
 	<div id="maincontent">
 		<div class="main">
 		<h3><?php i18n('EDIT_THEME'); ?></h3>
-		<form action="<?php myself(); ?>" method="get" accept-charset="utf-8" >
-		<p><?php echo $theme_options; ?><?php echo $theme_templates; ?>&nbsp;&nbsp;&nbsp;<input class="submit" type="submit" name="s" value="<?php i18n('EDIT'); ?>" /></p>
-		</form>
 		
-		<p><b><?php i18n('EDITING_FILE'); ?>:</b> <code><?php echo $SITEURL.'theme/'. tsl($TEMPLATE) .'<b>'. $TEMPLATE_FILE; ?></b></code></p>
-		<?php $content = file_get_contents(GSTHEMESPATH . tsl($TEMPLATE) . $TEMPLATE_FILE); ?>
-		
-		<form action="<?php myself(); ?>?t=<?php echo $TEMPLATE; ?>&amp;f=<?php echo $TEMPLATE_FILE; ?>" method="post" >
-			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
-			<textarea name="content" id="codetext" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
-			<input type="hidden" value="<?php echo tsl($TEMPLATE) . $TEMPLATE_FILE; ?>" name="edited_file" />
-			<?php exec_action('theme-edit-extras'); ?>
-			<p id="submit_line" >
-				<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
-			</p>
-		</form>
-		</div>
-	
+		<!-- float wrapper -->
+		<div id="theme_edit_wrap">
+
+			<!-- left nav  -->
+			<div id="theme_edit_nav">
+
+				<!-- Theme Selector -->
+				<div id="theme_edit_select">
+					<div class="well"><?php echo $theme_options; ?>	</div>
+				</div>
+
+				<!-- File Tree -->
+				<div id="theme_filemanager">
+					<?php echo $fileList; ?>
+				</div>
+			</div>
+
+			<div id="theme_edit_code">
+				
+<!-- 				<form action="<?php myself(); ?>" method="get" accept-charset="utf-8" >
+				<p><?php echo $theme_options; ?><?php echo $theme_templates; ?>&nbsp;&nbsp;&nbsp;<input class="submit" type="submit" name="s" value="<?php i18n('EDIT'); ?>" /></p>
+				</form> -->
+				
+
+				<div class="well">
+				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.'theme/'. tsl($TEMPLATE) .'<b>'. $TEMPLATE_FILE .'</b>'; ?>
+				<?php $content = file_get_contents(GSTHEMESPATH . tsl($TEMPLATE) . $TEMPLATE_FILE); ?>
+				</div>
+
+				<form action="<?php myself(); ?>?t=<?php echo $TEMPLATE; ?>&amp;f=<?php echo $TEMPLATE_FILE; ?>" method="post" >
+					<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
+					<textarea name="content" id="codetext" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
+					<input type="hidden" value="<?php echo tsl($TEMPLATE) . $TEMPLATE_FILE; ?>" name="edited_file" />
+					<?php exec_action('theme-edit-extras'); ?>
+					<p id="submit_line" >
+						<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
+					</p>
+				</form>
+			
+			</div>
+			
+			<!-- float clear -->
+			<div class="clear"></div>
+			
+			</div>
+		</div>	
 	</div>
 	
 	<div id="sidebar" >

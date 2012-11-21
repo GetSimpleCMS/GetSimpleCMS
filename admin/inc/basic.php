@@ -301,7 +301,7 @@ function getXML($file) {
  */
 function XMLsave($xml, $file) {
 	# get_execution_time(true);
-	$success = @$xml->asXML($file) === TRUE;
+	$success = $xml->@asXML($file) === TRUE;
 	# debugLog('XMLsave: ' . $file . ' ' . get_execution_time());	
 	
 	if (defined('GSCHMOD')) {
@@ -1156,6 +1156,45 @@ function directoryToArray($directory, $recursive) {
 		closedir($handle);
 	}
 	return $array_items;
+}
+
+/**
+ * Return a directory of files and folders with heirarchy and additional data
+ *
+ * @since 3.1.3
+ *
+ * @param $directory string directory to scan
+ * @param $recursive boolean whether to do a recursive scan or not. 
+ * @return multidimensional array or files and folders {type,path,name}
+ */
+function directoryToMultiArray($dir) {
+   
+   $result = array();
+   $dir = rtrim($dir,DIRECTORY_SEPARATOR);
+
+   $cdir = scandir($dir,0);
+   foreach ($cdir as $key => $value)
+   {
+      if (!in_array($value,array(".","..")))
+      {
+         if (is_dir($dir . DIRECTORY_SEPARATOR . $value))
+         {
+            $result[$value] = array();
+            $result[$value]['type'] = "directory";
+            $result[$value]['path'] = $dir . DIRECTORY_SEPARATOR . $value;
+            $result[$value]['value'] = call_user_func(__FUNCTION__,$dir . DIRECTORY_SEPARATOR . $value);
+         }
+         else
+         {
+         	$result[$value] = array();
+            $result[$value]['type'] = 'file';
+            $result[$value]['value'] = $value;
+            $result[$value]['path'] = $dir;
+         } 
+      }
+   }
+   
+   return $result;
 }
 
 	
