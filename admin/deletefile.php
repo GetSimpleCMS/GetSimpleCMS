@@ -63,7 +63,7 @@ if (isset($_GET['folder'])) {
 	$path = (isset($_GET['path'])) ? $_GET['path'] : "";
 	$folder = $_GET['folder'];
 	$target = GSDATAUPLOADPATH . $path . $folder;
-	if (file_exists($target)) {
+	if (path_is_safe($target,GSDATAUPLOADPATH) && file_exists($target)) {
 		rmdir($target);
 		// delete thumbs folder
 		rmdir(GSTHUMBNAILPATH . $path . $folder);
