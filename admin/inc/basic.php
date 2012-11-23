@@ -301,7 +301,7 @@ function getXML($file) {
  */
 function XMLsave($xml, $file) {
 	# get_execution_time(true);
-	$success = $xml->@asXML($file) === TRUE;
+	$success = @$xml->asXML($file) === TRUE;
 	# debugLog('XMLsave: ' . $file . ' ' . get_execution_time());	
 	
 	if (defined('GSCHMOD')) {
