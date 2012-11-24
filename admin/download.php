@@ -20,7 +20,7 @@ if(isset($_GET['file'])) {
 	
 	$file = removerelativepath($_GET['file']);
 
-	if(!filepath_is_safe($file,GSDATAUPLOADPATH) || !filepath_is_safe($file,GSBACKUPSPATH)) die();
+	if(!filepath_is_safe($file,GSDATAUPLOADPATH) && !filepath_is_safe($file,GSBACKUPSPATH.DIRECTORY_SEPARATOR.'zip')) die();
 
 	$extention = pathinfo($file,PATHINFO_EXTENSION);
 	header("Content-disposition: attachment; filename=".$file);
