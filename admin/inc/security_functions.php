@@ -41,7 +41,7 @@ $file_ext_blacklist = array(
  *
  * Attempts to clean variables from XSS attacks
  * @since 2.03
-
+ *
  * @author Martijn van der Ven
  *
  * @param string $str The string to be stripped of XSS attempts
@@ -147,34 +147,38 @@ function validate_safe_file($file, $name, $mime){
 }
 
 /**
- * Checks that a filepath is safe to use by checking canonicalized absolute pathname.
+ * Checks that an existing filepath is safe to use by checking canonicalized absolute pathname.
  *
  * @since 3.1.3
  *
  * @param string $path Unknown Path to file to check for safety
  * @param string $pathmatch Known Path to parent folder to check against
+ * @param bool $subdir allow path to be a deeper subfolder
  * @return bool Returns true if files path resolves to your known path
  */
-function filepath_is_safe($path,$pathmatch){
+function filepath_is_safe($path,$pathmatch,$subdir = true){
 	$realpath = realpath($path);
 	$realpathmatch = realpath($pathmatch);
+	if($subdir) return strpos(dirname($realpath),$realpathmatch) === 0;
 	return dirname($realpath) == $realpathmatch;
 }
 
 /**
- * Checks that a path is safe to use by checking canonicalized absolute path
+ * Checks that an existing path is safe to use by checking canonicalized absolute path
  *
  * @since 3.1.3
  *
  * @param string $path Unknown Path to check for safety
  * @param string $pathmatch Known Path to check against
- * @return bool Returns true if $path is a subfolder of $pathmatch
+ * @param bool $subdir allow path to be a deeper subfolder
+ * @return bool Returns true if $path is direct subfolder of $pathmatch
+ *
  */
-function path_is_safe($path,$pathmatch){
+function path_is_safe($path,$pathmatch,$subdir = true){
 	$realpath = realpath($path);
 	$realpathmatch = realpath($pathmatch);
-
-	return strpos($realpath,$realpathmatch) === 0;
+	if($subdir) return strpos($realpath,$realpathmatch) === 0;
+	return $realpath == $realpathmatch;
 }
 
 ?>
