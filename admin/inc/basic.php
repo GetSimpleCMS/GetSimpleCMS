@@ -460,6 +460,8 @@ function find_url($slug, $parent, $type='full') {
 /**
  * Strip Path
  *
+ * Strips all path info from a filepath or basedir
+ *
  * @since 2.0
  * @author Martijn van der Ven
  *
@@ -467,12 +469,9 @@ function find_url($slug, $parent, $type='full') {
  * @return string
  */
 function strippath($path) {
-	$segments = explode('/',implode('/',explode('\\',$path)));
-	$path = '';
-	foreach ($segments as $part) if ($part !== '..') $path .= trim($part).'/';
-	$path = preg_replace('/\/+/','/',substr($path, 0, -1));
-	if (strlen($path)<=0||$path=='/') return false;
-	return $path;
+	$pathparts = pathinfo($path);
+	if(isset($pathparts['extension'])) return $pathparts['filename'].'.'.$pathparts['extension'];
+	return $pathparts['basename'];
 }
 
 /**
