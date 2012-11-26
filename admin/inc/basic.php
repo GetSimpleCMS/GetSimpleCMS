@@ -269,8 +269,6 @@ function get_execution_time($reset=false)
     return round(microtime(true) - $microtime_start,5); 
 }
 
-$GS_debug = array();
-
 /**
  * Get XML Data
  *
@@ -1112,19 +1110,6 @@ function removerelativepath($file) {
 	}
 	return $file;
 }
-
-/**
- * Debug Console Log
- *
- * @since 3.1
- *
- * @param $txt string
- */
-function debugLog($txt) {
-	global $GS_debug;	
-	array_push($GS_debug,$txt);
-}
-
 
 /**
  * Return a directory of files and folders
