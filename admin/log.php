@@ -16,9 +16,10 @@ include('inc/common.php');
 // Variable Settings
 login_cookie_check();
 
-$log_name = strippath($_GET['log']);
+$log_name = $_GET['log'];
 $log_path = GSDATAOTHERPATH.'logs/';
 $log_file = $log_path . $log_name;
+if(!filepath_is_safe($log_file,$log_path)) die();
 
 $whois_url = 'http://whois.arin.net/rest/ip/';
 
