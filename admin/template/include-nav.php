@@ -12,9 +12,6 @@ if (cookie_check()) {
 	if (defined('GSDEBUG')) {
 		echo '<li class="debug"><a href="'.$debugInfoUrl.'" target="_blank">'.i18n_r('DEBUG_MODE').'</a></li>';
 	}
-    if ((!defined('GSNOAPACHECHECK') || GSNOAPACHECHECK == false) and !server_is_apache()) {
-        echo '<li class="debug"><a href="health-check.php">Warning: non-Apache server</a></li>';
-    }
 	echo '<li class="rightnav" ><a href="settings.php#profile">'.i18n_r('WELCOME').' <strong>'.$USR.'</strong>!</a></li></ul>';
 } 
 
