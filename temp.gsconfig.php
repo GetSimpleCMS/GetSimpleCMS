@@ -85,4 +85,7 @@ define('GSDONOTPING', 1);
 # Disable check for Apache web server, default false
 #define('GSNOAPACHECHECK', true);
 
+# Disable header version check
+#define('GSNOVERCHECK', true);
+
 ?>

@@ -34,11 +34,19 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	<?php } ?>
 
 	<?php 
-		# Plugin hook to allow insertion of stuff into the header
-		if(get_filename_id()!='index') exec_action('header'); 
-	?>
+	# Plugin hook to allow insertion of stuff into the header
+	if(get_filename_id()!='index') exec_action('header'); 
 	
-	<?php if( get_filename_id()!='resetpassword' && get_filename_id()!='index' ) { ?>
+	function doVerCheck(){
+		if( get_filename_id()!='resetpassword' && 
+			get_filename_id()!='index' && 
+			!getDef('GSNOVERCHECK')
+		){
+			return true;	
+		}
+	}
+	
+	if( doVerCheck() ) { ?>
 	<script>
 		// check to see if core update is needed
 		jQuery(document).ready(function() { 
