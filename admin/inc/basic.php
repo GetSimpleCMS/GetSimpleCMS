@@ -1157,5 +1157,21 @@ function directoryToArray($directory, $recursive) {
 	return $array_items;
 }
 
+
+/**
+ * Returns definition safely
+ * 
+ * @since 3.1.3
+ * 
+ * @param str $id 
+ * @param bool $isbool treat definition as boolean and cast it
+ * @return * returns definition or null if not defined
+ */
+function getDef($id,$isbool = false){
+	if( defined($id) ) {
+		if($isbool) return (bool) constant($id);
+		return constant($id);
+	}
+}
 	
 ?>
