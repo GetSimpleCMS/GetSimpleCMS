@@ -20,8 +20,8 @@ gsconfig.php
 sitemap.xml
 
 # Local dev or ide stuff
-.project
-.settings
-.sublime-project
+*.project
+*.settings
+*.sublime-project
 
 thumbs.db
