@@ -13,6 +13,8 @@
  * Bad stuff protection
  */
 define('IN_GS', TRUE);
+define('GSSTYLEWIDE','wide');
+
 include_once('security_functions.php');
 
 if (version_compare(PHP_VERSION, "5")  >= 0) {
@@ -25,7 +27,6 @@ if (version_compare(PHP_VERSION, "5")  >= 0) {
 include('basic.php');
 include('template_functions.php');
 include('logging.class.php');
-
 
 define('GSROOTPATH', get_root_path());
 
@@ -57,8 +58,6 @@ define('GSUSERSPATH', GSROOTPATH. 'data/users/');
 define('GSBACKUSERSPATH', GSROOTPATH. 'backups/users/');
 define('GSCACHEPATH', GSROOTPATH. 'data/cache/');
 define('GSAUTOSAVEPATH', GSROOTPATH. 'data/pages/autosave/');
-
-
 
 /**
  * Variable check to prevent debugging going off

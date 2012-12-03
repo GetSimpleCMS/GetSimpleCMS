@@ -59,6 +59,7 @@ if (file_exists('../../theme/admin.xml')) {
 }
 
 include('css.php');
+if( isset($_GET['s']) and $_GET['s'] == 'wide' ) include('css-wide.php');
 
 file_put_contents($cachefile, compress(ob_get_contents()));
 chmod($cachefile, 0644);

@@ -88,4 +88,8 @@ define('GSDONOTPING', 1);
 # Disable header version check
 #define('GSNOVERCHECK', true);
 
+# Enable alternate admin styles, current style constants are
+# GSSTYLEWIDE = wide fluid
+# define('GSSTYLE',GSSTYLEWIDE);
+
 ?>
