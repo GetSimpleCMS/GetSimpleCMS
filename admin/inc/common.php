@@ -189,21 +189,23 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
 	if ($SITEURL == '')	{
 		redirect($fullpath . $GSADMIN.'/install.php');
 	} 
-	
-	# if you've made it this far, the site is already installed so remove the installation files
-	$filedeletionstatus=true;
-	if (file_exists(GSADMINPATH.'install.php'))	{
-		$filedeletionstatus = unlink(GSADMINPATH.'install.php');
-	}
-	if (file_exists(GSADMINPATH.'setup.php'))	{
-		$filedeletionstatus = unlink(GSADMINPATH.'setup.php');
-	}
-	if (file_exists(GSADMINPATH.'update.php'))	{
-		$filedeletionstatus = unlink(GSADMINPATH.'update.php');
-	}
-	if (!$filedeletionstatus) {
-		$error = sprintf(i18n_r('ERR_CANNOT_DELETE'), '<code>/'.$GSADMIN.'/install.php</code>, <code>/'.$GSADMIN.'/setup.php</code> or <code>/'.$GSADMIN.'/update.php</code>');
-	}
+
+	if(!getDef('GSDEBUGINSTALL')){	
+		# if you've made it this far, the site is already installed so remove the installation files
+		$filedeletionstatus=true;
+		if (file_exists(GSADMINPATH.'install.php'))	{
+			$filedeletionstatus = unlink(GSADMINPATH.'install.php');
+		}
+		if (file_exists(GSADMINPATH.'setup.php'))	{
+			$filedeletionstatus = unlink(GSADMINPATH.'setup.php');
+		}
+		if (file_exists(GSADMINPATH.'update.php'))	{
+			$filedeletionstatus = unlink(GSADMINPATH.'update.php');
+		}
+		if (!$filedeletionstatus) {
+			$error = sprintf(i18n_r('ERR_CANNOT_DELETE'), '<code>/'.$GSADMIN.'/install.php</code>, <code>/'.$GSADMIN.'/setup.php</code> or <code>/'.$GSADMIN.'/update.php</code>');
+		}
+	}	
 }
 
 
