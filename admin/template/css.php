@@ -1,3 +1,5 @@
+/** CSS **/
+
 /*
  * CSS php dynamic
  * DO NOT TIDY!
@@ -16,7 +18,8 @@ h1,h2,h3,h4,h5,h6,pre,code {
 
 ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,body,html,p,blockquote,fieldset,input {
 	margin: 0;
-	padding: 0}
+	padding: 0;
+}
 
 body {
 	height: 100%;
