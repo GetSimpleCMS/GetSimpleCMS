@@ -190,7 +190,7 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
 		redirect($fullpath . $GSADMIN.'/install.php');
 	} 
 
-	if(!getDef('GSDEBUGINSTALL')){	
+	if(!getDef('GSDEBUGINSTALL',true)){	
 		# if you've made it this far, the site is already installed so remove the installation files
 		$filedeletionstatus=true;
 		if (file_exists(GSADMINPATH.'install.php'))	{
