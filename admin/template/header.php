@@ -6,6 +6,9 @@
  */
  
 global $SITENAME, $SITEURL;
+
+$GSSTYLE = getDef('GSSTYLE') ? GSSTYLE : '';
+
 if(get_filename_id()!='index') exec_action('admin-pre-header');
 ?>
 <!DOCTYPE html>
@@ -18,7 +21,7 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	<link rel="author" href="humans.txt" />
 	<meta name="robots" content="noindex, nofollow">
 	<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
-	<link rel="stylesheet" type="text/css" href="template/style.php?v=<?php echo GSVERSION; ?>" media="screen" />
+	<link rel="stylesheet" type="text/css" href="template/style.php?<?php echo 's='.$GSSTYLE.'&amp;v='.GSVERSION; ?>" media="screen" />
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
 	<?php get_scripts_backend(); ?>
 		
