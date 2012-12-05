@@ -253,4 +253,3 @@ if(isset($load['plugin']) && $load['plugin']){
 	
 }
 if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login_functions.php'); }
-?>
