@@ -2011,3 +2011,129 @@ a.disabled:visited {
 	text-decoration: none !important;
 	color: #CCC !important;	
 }
+
+/* 
+ * Theme Editor custom layout
+ */
+#theme-edit #header .wrapper{
+	width:950px;
+}
+
+#theme-edit .wrapper{
+	width: 100%;
+}
+
+#theme-edit #footer{
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+#theme-edit .bodycontent {
+	margin:0 10px;
+}
+
+#theme_edit_wrap {
+	width:100%;
+	margin:0;
+	padding:0;	
+}
+
+#theme_edit_nav {
+	width: 20%;
+	float: left;
+}
+
+#theme_edit_code {
+	float:left;
+	width:80%;	
+}
+
+#theme_filemanager {
+	margin: 14px 10px 20px 0;
+	background: #F9F9F9;
+	border: 1px solid #E8E8E8;
+	border-radius:2px;
+	padding:15px 10px 15px 10px;
+	/*height: 60%;*/
+	padding: 8px;
+	overflow: auto;
+
+}
+
+#theme_filemanager ul {
+    display: block;
+    margin: 0 !important;
+    padding: 0;
+    line-height: 14px !important;
+}
+#theme_filemanager li {
+    display: block;
+    margin: 0;
+    padding: 2px 0;
+    list-style: none;
+}
+#theme_filemanager ul ul li {
+    margin-left: 20px;
+    white-space: nowrap;
+}
+#theme_filemanager a {
+    display: block;
+    min-width: 100%;
+    cursor: pointer;
+    padding: 5px 0;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: normal;
+    font-family: sans-serif;
+    color: #333;
+}
+
+#theme_filemanager a:hover, #file-manager a.context-menu-active {
+    background-color: #E0E0E0;
+    text-decoration:none;
+    font-weight:normal;
+}
+
+#theme_filemanager a.open {
+    background-color: #E0E0E0;
+    font-weight:bold;
+}
+
+#theme_filemanager .well{
+	border-radius:4px;
+	background-color:#CCC;
+	padding:4px 8px;
+}
+
+#theme_filemanager #theme-folder{
+	width:100% !important;
+}
+
+/* ICONS */
+
+#theme_filemanager a {
+    background-repeat: no-repeat;
+    background-position: 6px 6px;
+    text-indent: 28px;
+    padding-top: 6px;
+}
+
+#theme_filemanager .directory {
+    background-image: url(images/filemanager/folder-open.png);
+}
+
+#theme_filemanager .directory.open {
+    background-image: url(images/filemanager/folder_open.png);
+}
+
+.file {
+    background-image: url(images/filemanager/text-x-generic.png);
+}
+
+.ext- {background-image: url(images/filemanager/text-x-preview.png);}
+.ext-js {background-image: url(images/filemanager/application-javascript.png);}
+.ext-html {background-image: url(images/filemanager/text-html.png);}
+.ext-htm {background-image: url(images/filemanager/text-html.png);}
+.ext-php {background-image: url(images/filemanager/application-x-php.png);}
+.ext-css {background-image: url(images/filemanager/text-css.png);}
+.ext-theme {background-image: url(images/filemanager/preferences-desktop-theme.png);}
