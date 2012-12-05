@@ -17,7 +17,6 @@ global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR, $PE
 
 $GS_debug = array();
 
-
 /*
  * Defines Root Path
  */
@@ -59,6 +58,8 @@ define('GSBACKUSERSPATH', GSROOTPATH. 'backups/users/');
 define('GSCACHEPATH', GSROOTPATH. 'data/cache/');
 define('GSAUTOSAVEPATH', GSROOTPATH. 'data/pages/autosave/');
 
+define('GSSTYLEWIDE','wide');
+define('IN_GS', TRUE);
 
 /**
  * Debugging
@@ -90,7 +91,6 @@ ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
 /**
  * Bad stuff protection
  */
-define('IN_GS', TRUE);
 include_once('security_functions.php');
 
 if (version_compare(PHP_VERSION, "5")  >= 0) {
@@ -211,6 +211,7 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
 		redirect($fullpath . $GSADMIN.'/install.php');
 	} 
 	
+	if(!getDef('GSDEBUGINSTALL',true)){	
 	# if you've made it this far, the site is already installed so remove the installation files
 	$filedeletionstatus=true;
 	if (file_exists(GSADMINPATH.'install.php'))	{
@@ -225,6 +226,7 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
 	if (!$filedeletionstatus) {
 		$error = sprintf(i18n_r('ERR_CANNOT_DELETE'), '<code>/'.$GSADMIN.'/install.php</code>, <code>/'.$GSADMIN.'/setup.php</code> or <code>/'.$GSADMIN.'/update.php</code>');
 	}
+}
 }
 
 

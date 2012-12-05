@@ -82,4 +82,14 @@ define('GSDONOTPING', 1);
 # Forces suppression of php errors when GSDEBUG is false, despite php ini settings
 # define('SUPPRESSERRORS',true);
 
+# Disable check for Apache web server, default false
+#define('GSNOAPACHECHECK', true);
+
+# Disable header version check
+#define('GSNOVERCHECK', true);
+
+# Enable alternate admin styles, current style constants are
+# GSSTYLEWIDE = wide fluid
+# define('GSSTYLE',GSSTYLEWIDE);
+
 ?>

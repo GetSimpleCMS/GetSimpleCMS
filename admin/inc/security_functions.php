@@ -181,4 +181,11 @@ function path_is_safe($path,$pathmatch,$subdir = true){
 	return $realpath == $realpathmatch;
 }
 
-?>
+/**
+ * Check if server is Apache
+ * 
+ * @returns bool
+ */
+function server_is_apache() {
+    return( strpos(strtolower($_SERVER['SERVER_SOFTWARE']),'apache') !== false );
+}

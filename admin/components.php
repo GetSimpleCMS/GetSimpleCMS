@@ -44,7 +44,7 @@ if (isset($_POST['submitted'])){
 		
 		$ct = 0; $coArray = array();
 		foreach ($ids as $id)		{
-			if ( ($title[$ct] != null) && ($value[$ct] != null) )	{
+			if ($title[$ct] != null) {
 				if ( $slug[$ct] == null )	{
 					$slug_tmp = to7bit($title[$ct], 'UTF-8');
 					$slug[$ct] = clean_url($slug_tmp); 
