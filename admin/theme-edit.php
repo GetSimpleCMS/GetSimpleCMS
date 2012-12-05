@@ -8,7 +8,6 @@
  * @subpackage Theme
  */
 
-global $TEMPLATE_FILE;
 # setup inclusions
 $load['plugin'] = true;
 include('inc/common.php');
@@ -62,11 +61,6 @@ if((isset($_POST['submitsave']))){
 	$success = sprintf(i18n_r('TEMPLATE_FILE'), $SavedFile);
 }
 
-# if no template is selected, use the default
-if (! $TEMPLATE_FILE) {
-	$TEMPLATE_FILE = 'template.php';
-}
-
 # create themes dropdown
 $themes_path = GSTHEMESPATH;
 $themes_handle = opendir($themes_path);
@@ -91,13 +85,14 @@ $theme_options .= '</select> ';
 # check to see how many themes are available
 if (count($theme_dir_array) == 1){ $theme_options = ''; }
 
+$allowed_extensions=array('php','css','js','html','htm','txt','');
+
 # if no template is selected, use the default
 if ($template == '') { $template = 'template.php'; }
 $templates = directoryToArray(GSTHEMESPATH . $template . '/', true);
 $directory = GSTHEMESPATH . $template . '/';
-$theme_templates .= '<span id="themefiles"><select class="text" id="theme_files" style="width:425px;" name="f" >';
-$allowed_extensions=array('php','css','js','html','htm','txt','');
 
+$theme_templates .= '<span id="themefiles"><select class="text" id="theme_files" style="width:425px;" name="f" >';
 $theme_templates .= createFileDropdown($templates);
 
 
@@ -107,27 +102,29 @@ $theme_templates .= createFileDropdown($templates);
 
 
 function createFileDropdown($templates){
-	GLOBAL $TEMPLATE_FILE,$TEMPLATE,$allowed_extensions;
+	GLOBAL $TEMPLATE_FILE,$template,$allowed_extensions;
 	
 	$theme_templates = '';
 
 	foreach ($templates as $file){
-	  $extension=pathinfo($file,PATHINFO_EXTENSION);
-	  if (in_array($extension, $allowed_extensions)){
-	  $filename=pathinfo($file,PATHINFO_BASENAME);
-	$filenamefull=substr(strstr($file,'/theme/'.$template.'/'),strlen('/theme/'.$template.'/'));   
-	if ($template_file == $filenamefull){ 
-	          $sel="selected"; 
-	  } else { 
-	          $sel="";
-	  }
-	  if ($filename == 'template.php'){ 
-	          $templatename=i18n_r('DEFAULT_TEMPLATE'); 
-	  } else { 
-	          $templatename=$filenamefull; 
-	  }
-	  $theme_templates .= '<option '.$sel.' value="'.$templatename.'" >'.$templatename.'</option>';
-	  }
+		$extension=pathinfo($file,PATHINFO_EXTENSION);
+		if (in_array($extension, $allowed_extensions)){
+			$filename=pathinfo($file,PATHINFO_BASENAME);
+			$filenamefull=substr(strstr($file,'/theme/'.$template.'/'),strlen('/theme/'.$template.'/'));   
+			if ($TEMPLATE_FILE == $filenamefull){ 
+		        $sel="selected"; 
+			} else { 
+				$sel="";
+			}
+			
+			if ($filename == 'template.php'){ 
+				$templatename=i18n_r('DEFAULT_TEMPLATE'); 
+			} else { 
+				$templatename=$filenamefull; 
+			}
+			
+			$theme_templates .= '<option '.$sel.' value="'.$templatename.'" >'.$templatename.'</option>';
+		}
 	}
 	$theme_templates .= "</select></span>";
 	return $theme_templates;
@@ -175,12 +172,12 @@ function array2ul($array) {
 }
 
 function fileIsOpen($path,$file){
-	GLOBAL $TEMPLATE,$TEMPLATE_FILE;
+	GLOBAL $template,$template_file;
     $file = $path.DIRECTORY_SEPARATOR.$file;
     $filename=pathinfo($file,PATHINFO_BASENAME);
-    $filenamefull=substr(strstr($file,'/theme/'.$TEMPLATE.'/'),strlen('/theme/'.$TEMPLATE.'/')); 
-	# _debugLog($file,$TEMPLATE_FILE,$filename,$filenamefull);
-	return $TEMPLATE_FILE == $filenamefull;
+    $filenamefull=substr(strstr($file,'/theme/'.$template.'/'),strlen('/theme/'.$template.'/')); 
+	# _debugLog($file,$template_file,$filename,$filenamefull);
+	return $template_file == $filenamefull;
 }
 
 function compareOrder($a, $b)
@@ -333,8 +330,8 @@ window.onload = function() {
 		
 
 				<div class="well">
-				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.'theme/'. tsl($TEMPLATE) .'<b>'. $TEMPLATE_FILE .'</b>'; ?>
-				<?php $content = file_get_contents(GSTHEMESPATH . tsl($TEMPLATE) . $TEMPLATE_FILE); ?>
+				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.'theme/'. tsl($template) .'<b>'. $template_file .'</b>'; ?>
+				<?php $content = file_get_contents(GSTHEMESPATH . tsl($template) . $template_file); ?>
 				</div>
 		
 		<form action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >

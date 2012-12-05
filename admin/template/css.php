@@ -2043,7 +2043,8 @@ a.disabled:visited {
 	border:1px solid #E8E8E8;
 	border-radius: 2px;
 	padding:6px;
-	line-height:26px;
+	line-height:27px;
+	height:24px;
 }	
 
 #theme_edit_nav {
@@ -2066,6 +2067,10 @@ a.disabled:visited {
 #theme_edit_code {
 	float:left;
 	width:80%;	
+}
+
+#theme_edit_code .well{
+	padding-left: 12px;
 }
 
 #theme_edit_code .CodeMirror{
