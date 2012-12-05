@@ -2038,14 +2038,40 @@ a.disabled:visited {
 	padding:0;	
 }
 
+#theme_edit_wrap .well{
+	background-color:#F9F9F9;	
+	border:1px solid #E8E8E8;
+	border-radius: 2px;
+	padding:6px;
+	line-height:26px;
+}	
+
 #theme_edit_nav {
 	width: 20%;
 	float: left;
 }
 
+#theme_edit_select{
+	margin-right:10px;
+}
+
+#theme_edit_select select{
+	width:100%;
+}
+
+#theme_edit_select .well{
+	background-color:#DDD;
+}
+
 #theme_edit_code {
 	float:left;
 	width:80%;	
+}
+
+#theme_edit_code .CodeMirror{
+	border:1px solid #E8E8E8;
+	border-radius:2px;
+	margin-top:14px;
 }
 
 #theme_filemanager {
