@@ -9,7 +9,6 @@
  */
 
 global $TEMPLATE_FILE;
-
 # setup inclusions
 $load['plugin'] = true;
 include('inc/common.php');
@@ -17,22 +16,30 @@ include('inc/common.php');
 # variable settings
 login_cookie_check();
 $theme_options 		= ''; 
-$TEMPLATE_FILE 		= ''; 
-$template 			= ''; 
+$template_file 		= ''; 
+$template 			= $TEMPLATE; 
 $theme_templates 	= '';
 
 # were changes submitted?
 if (isset($_GET['t'])) {
 	$_GET['t'] = strippath($_GET['t']);
 	if ($_GET['t']&&is_dir(GSTHEMESPATH . $_GET['t'].'/')) {
-		$TEMPLATE = $_GET['t'];
+		$template = $_GET['t'];
 	}
 }
 if (isset($_GET['f'])) {
-	$_GET['f'] = strippath($_GET['f']);
-	if ($_GET['f']&&is_file(GSTHEMESPATH . $TEMPLATE.'/'.$_GET['f'])) {
-		$TEMPLATE_FILE = $_GET['f'];
+	$_GET['f'] = $_GET['f'];
+	if ($_GET['f']&&is_file(GSTHEMESPATH . $template.'/'.$_GET['f'])) {
+		$template_file = $_GET['f'];
 	}
+}
+
+$themepath = GSTHEMESPATH.$template.DIRECTORY_SEPARATOR;
+if($template_file!='' and !filepath_is_safe($themepath.$template_file,$themepath)) die();
+
+# if no template is selected, use the default
+if ($template_file == '') {
+	$template_file = 'template.php';
 }
 
 # check for form submission
@@ -71,7 +78,7 @@ while ($file = readdir($themes_handle)) {
 		$sel="";
 		
 		if (file_exists($curpath.'/template.php')){
-			if ($TEMPLATE == $file){ 
+			if ($template == $file){ 
 				$sel="selected"; 
 			}
 			
@@ -86,10 +93,8 @@ if (count($theme_dir_array) == 1){ $theme_options = ''; }
 
 # if no template is selected, use the default
 if ($template == '') { $template = 'template.php'; }
-$templates = directoryToArray(GSTHEMESPATH . $TEMPLATE . '/', true);
-
-$directory = GSTHEMESPATH . $TEMPLATE . '/';
-
+$templates = directoryToArray(GSTHEMESPATH . $template . '/', true);
+$directory = GSTHEMESPATH . $template . '/';
 $theme_templates .= '<span id="themefiles"><select class="text" id="theme_files" style="width:425px;" name="f" >';
 $allowed_extensions=array('php','css','js','html','htm','txt','');
 
@@ -110,8 +115,8 @@ function createFileDropdown($templates){
 	  $extension=pathinfo($file,PATHINFO_EXTENSION);
 	  if (in_array($extension, $allowed_extensions)){
 	  $filename=pathinfo($file,PATHINFO_BASENAME);
-	  $filenamefull=substr(strstr($file,'/theme/'.$TEMPLATE.'/'),strlen('/theme/'.$TEMPLATE.'/'));   
-	  if ($TEMPLATE_FILE == $filenamefull){ 
+	$filenamefull=substr(strstr($file,'/theme/'.$template.'/'),strlen('/theme/'.$template.'/'));   
+	if ($template_file == $filenamefull){ 
 	          $sel="selected"; 
 	  } else { 
 	          $sel="";
@@ -227,7 +232,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT'));
 
 if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 
-	switch (pathinfo($TEMPLATE_FILE,PATHINFO_EXTENSION)) {
+	switch (pathinfo($template_file,PATHINFO_EXTENSION)) {
 		case 'css':
 			$mode = 'text/css';
 			break;
@@ -323,31 +328,29 @@ window.onload = function() {
 			<div id="theme_edit_code">
 				
 <!-- 				<form action="<?php myself(); ?>" method="get" accept-charset="utf-8" >
-				<p><?php echo $theme_options; ?><?php echo $theme_templates; ?>&nbsp;&nbsp;&nbsp;<input class="submit" type="submit" name="s" value="<?php i18n('EDIT'); ?>" /></p>
+		<p><?php echo $theme_options; ?><?php echo $theme_templates; ?>&nbsp;&nbsp;&nbsp;<input class="submit" type="submit" name="s" value="<?php i18n('EDIT'); ?>" /></p>
 				</form> -->
-				
+		
 
 				<div class="well">
 				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.'theme/'. tsl($TEMPLATE) .'<b>'. $TEMPLATE_FILE .'</b>'; ?>
 				<?php $content = file_get_contents(GSTHEMESPATH . tsl($TEMPLATE) . $TEMPLATE_FILE); ?>
 				</div>
-
-				<form action="<?php myself(); ?>?t=<?php echo $TEMPLATE; ?>&amp;f=<?php echo $TEMPLATE_FILE; ?>" method="post" >
-					<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
-					<textarea name="content" id="codetext" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
-					<input type="hidden" value="<?php echo tsl($TEMPLATE) . $TEMPLATE_FILE; ?>" name="edited_file" />
-					<?php exec_action('theme-edit-extras'); ?>
-					<p id="submit_line" >
-						<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
-					</p>
-				</form>
-			
-			</div>
-			
+		
+		<form action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
+			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
+			<textarea name="content" id="codetext" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
+			<input type="hidden" value="<?php echo tsl($template) . $template_file; ?>" name="edited_file" />
+			<?php exec_action('theme-edit-extras'); ?>
+			<p id="submit_line" >
+				<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
+			</p>
+		</form>
+		</div>
+	
 			<!-- float clear -->
 			<div class="clear"></div>
-			
-			</div>
+	</div>
 		</div>	
 	</div>
 	

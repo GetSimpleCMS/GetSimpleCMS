@@ -18,6 +18,8 @@ $dirsSorted=null;$filesSorted=null;$foldercount=null;
 if (isset($_GET['path'])) {
 	$path = str_replace('../','', $_GET['path']);
 	$path = tsl("../data/uploads/".$path);
+	// die if path is outside of uploads
+	if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
 	$subPath = str_replace('../','', $_GET['path']);
 	$subFolder = tsl($subPath);
 } else { 
@@ -96,7 +98,7 @@ if (isset($_GET['newfolder'])) {
 	
 	$newfolder = $_GET['newfolder'];
 	// check for invalid chars
-	$cleanname = clean_url(to7bit($newfolder, "UTF-8"));
+	$cleanname = clean_url(to7bit(strippath($newfolder), "UTF-8"));
 	if (file_exists($path.$cleanname) || $cleanname=='') {
 			$error = i18n_r('ERROR_FOLDER_EXISTS');
 	} else {

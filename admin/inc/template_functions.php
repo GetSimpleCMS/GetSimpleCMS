@@ -1013,7 +1013,7 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
  */
 function get_api_details($type='core', $args=null) {
 	include(GSADMININCPATH.'configuration.php');
-	
+
 	# core api details
 	if ($type=='core') {
 		$fetch_this_api = $api_url .'?v='.GSVERSION;
@@ -1029,11 +1029,16 @@ function get_api_details($type='core', $args=null) {
 	if ($type=='custom' && $args) {
 		$fetch_this_api = $args;
 	}
-		
+	
+	// debugLog("get_api_details: " . $type);
+	// debugLog("get_api_details: " . $args);
+	// debugLog("get_api_details: " . $fetch_this_api);
+
 	# check to see if cache is available for this
 	$cachefile = md5($fetch_this_api).'.txt';
-	# debugLog($fetch_this_api.' ' .$cachefile);
 	$nocache = false;
+
+	# debugLog($fetch_this_api.' ' .$cachefile);
 	if (file_exists(GSCACHEPATH.$cachefile) && time() - 40000 < filemtime(GSCACHEPATH.$cachefile) and !$nocache) {
 		# grab the api request from the cache
 		$data = file_get_contents(GSCACHEPATH.$cachefile);
@@ -1046,15 +1051,19 @@ function get_api_details($type='core', $args=null) {
 			curl_setopt($ch, CURLOPT_URL, $fetch_this_api);
 			$data = curl_exec($ch);
 			curl_close($ch);
-		} else {
+		} else {  
 			$data = file_get_contents($fetch_this_api);
 		}
-    $response = json_decode($data);		
-		// we make sure our response is valid before saving it to disk, 
-		// to avoid corrupt or infected cache files from being saved to local filesystem.
+	
+	    $response = json_decode($data);		
+		// if response is invalid do not write to cache and return false
+		// this keep proxy and malicious responses out of downstream code
 		if($response){
 			file_put_contents(GSCACHEPATH.$cachefile, $data);
 			chmod(GSCACHEPATH.$cachefile, 0644);
+			return $data;
+		} else {
+			return;
 		}	
 	}
 	return $data;

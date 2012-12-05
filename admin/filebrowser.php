@@ -15,19 +15,20 @@ include('inc/common.php');
 login_cookie_check();
 
 $filesSorted=null;$dirsSorted=null;
+
 $path = (isset($_GET['path'])) ? "../data/uploads/".$_GET['path'] : "../data/uploads/";
 $subPath = (isset($_GET['path'])) ? $_GET['path'] : "";
+if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
 $returnid = (isset($_GET['returnid'])) ? $_GET['returnid'] : "";
 $func = (isset($_GET['func'])) ? $_GET['func'] : "";
 $path = tsl($path);
 // check if host uses Linux (used for displaying permissions
 $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
-$CKEditorFuncNum = $_GET['CKEditorFuncNum'];
+$CKEditorFuncNum = isset($_GET['CKEditorFuncNum']) ? $_GET['CKEditorFuncNum'] : '';
 $sitepath = suggest_site_path();
 $fullPath = $sitepath . "data/uploads/";
-$type = $_GET['type'];
+$type = isset($_GET['type']) ? $_GET['type'] : '';
 
-if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 global $LANG;
 $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 ?>

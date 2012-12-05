@@ -460,6 +460,8 @@ function find_url($slug, $parent, $type='full') {
 /**
  * Strip Path
  *
+ * Strips all path info from a filepath or basedir
+ *
  * @since 2.0
  * @author Martijn van der Ven
  *
@@ -467,12 +469,9 @@ function find_url($slug, $parent, $type='full') {
  * @return string
  */
 function strippath($path) {
-	$segments = explode('/',implode('/',explode('\\',$path)));
-	$path = '';
-	foreach ($segments as $part) if ($part !== '..') $path .= trim($part).'/';
-	$path = preg_replace('/\/+/','/',substr($path, 0, -1));
-	if (strlen($path)<=0||$path=='/') return false;
-	return $path;
+	$pathparts = pathinfo($path);
+	if(isset($pathparts['extension'])) return $pathparts['filename'].'.'.$pathparts['extension'];
+	return $pathparts['basename'];
 }
 
 /**
@@ -1197,5 +1196,20 @@ function directoryToMultiArray($dir) {
    return $result;
 }
 
+/**
+ * Returns definition safely
+ * 
+ * @since 3.1.3
+ * 
+ * @param str $id 
+ * @param bool $isbool treat definition as boolean and cast it
+ * @return * returns definition or null if not defined
+ */
+function getDef($id,$isbool = false){
+	if( defined($id) ) {
+		if($isbool) return (bool) constant($id);
+		return constant($id);
+	}
+}
 	
 ?>

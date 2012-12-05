@@ -18,6 +18,10 @@ data/pages/
 data/users/
 gsconfig.php
 sitemap.xml
-.project
+
+# Local dev or ide stuff
+*.project
+*.settings
+*.sublime-project
 
 thumbs.db
