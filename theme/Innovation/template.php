@@ -1,14 +1,14 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /****************************************************
 *
-* @File: 			tempate.php
+* @File: 			template.php
 * @Package:		GetSimple
 * @Action:		Innovation theme for GetSimple CMS
 *
 *****************************************************/
 
 
-# Get this theme's settings based on what was entered within it's plugin. 
+# Get this theme's settings based on what was entered within its plugin. 
 # This function is in functions.php 
 Innovation_Settings();
 
