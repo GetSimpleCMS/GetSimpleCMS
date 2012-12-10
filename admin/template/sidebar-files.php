@@ -40,17 +40,15 @@ $path = (isset($_GET['path'])) ? $_GET['path'] : "";
 			'cancelImage'	: 'template/images/cancel.png',
 			'checkExisting'	: 'uploadify-check-exists.php?path=".$path."',
 			'postData'		: {
-				'sessionHash' : '". $SESSIONHASH ."',
-				'path' : '". $path ."'
+			'sessionHash' : '". $SESSIONHASH ."',
+			'path' : '". $path ."'
 			},
 			onUploadProgress: function() {
 				$('#loader').show();
 			},
 			onUploadComplete: function() {
 				$('#loader').fadeOut(500);
-				$('#maincontent').load(location.href+' #maincontent', function() {
-					attachFilterChangeEvent();
-				});
+				$('#maincontent').load(location.href+' #maincontent > *');
 			},
 			onSelectError: function(file,errorCode,errorMsg) {
 				//alert(file + ' Error ' + errorCode +':'+errorMsg);

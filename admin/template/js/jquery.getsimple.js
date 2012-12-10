@@ -98,27 +98,26 @@ jQuery(document).ready(function() {
 	  return false;
 	};
 	
-	var imageTableElement = $("#imageTable");
-
+	/* Listener for filter dropdown */
 	function attachFilterChangeEvent() {
-		$("#imageFilter").change(function(){
+		$(document).on('change',"#imageFilter",function(){
+			console.log('attachFilterChangeEvent');
 			loadingAjaxIndicator.show();
 			var filterx = $(this).val();
-			imageTableElement.find("tr").hide();
+			$("#imageTable").find("tr").hide();
 			if (filterx == 'Images'){
-				imageTableElement.find("tr .imgthumb").show();
+				$("#imageTable").find("tr .imgthumb").show();
 			} else {
-				imageTableElement.find("tr .imgthumb").hide();
+				$("#imageTable").find("tr .imgthumb").hide();
 			}		
 			$("#filetypetoggle").html('&nbsp;&nbsp;/&nbsp;&nbsp;' + filterx);
-			imageTableElement.find("tr." + filterx).show();
-			imageTableElement.find("tr.folder").show();
-			imageTableElement.find("tr:first-child").show();
-	   	imageTableElement.find("tr.deletedrow").hide();
-	   	loadingAjaxIndicator.fadeOut(500);
+			$("#imageTable").find("tr." + filterx).show();
+			$("#imageTable").find("tr.folder").show();
+			$("#imageTable").find("tr:first-child").show();
+			$("#imageTable").find("tr.deletedrow").hide();
+			loadingAjaxIndicator.fadeOut(500);
 		});
 	}
-	
 	
 	//upload.php
 	attachFilterChangeEvent();
@@ -320,14 +319,14 @@ jQuery(document).ready(function() {
 	$(".toggleEnable").live("click", function($e) {
 		$e.preventDefault();
 		
-		var loadingAjaxIndicator = $('#loader');
-    document.body.style.cursor = "wait";		
+		var loadingAjaxIndicator   = $('#loader');
+		document.body.style.cursor = "wait";		
 		loadingAjaxIndicator.show();
 		
-		var message = $(this).attr("title");
-		var dlink = $(this).attr("href");
-		var mytd=$(this).parents("td");
-		var mytr=$(this).parents("tr");
+		var message		= $(this).attr("title");
+		var dlink  		= $(this).attr("href");
+		var mytd   		= $(this).parents("td");
+		var mytr   		= $(this).parents("tr");
 		
 		mytd.html('');
 		mytd.addClass('ajaxwait ajaxwait_dark ajaxwait_tint_dark');
@@ -490,17 +489,16 @@ jQuery(document).ready(function() {
 	
 	
 	//create new folder in upload.php
-	var newFolderDiv = $("#new-folder");
 	$('#createfolder').live("click", function($e) {
 		$e.preventDefault();
-		newFolderDiv.find("form").show();
+		$("#new-folder").find("form").show();
 		$(this).hide();
-		newFolderDiv.find('#foldername').focus();
+		$("#new-folder").find('#foldername').focus();
 	});
 	$("#new-folder .cancel").live("click", function($e) {
 		$e.preventDefault();
-		newFolderDiv.find("#foldername").val('');
-		newFolderDiv.find("form").hide();
+		$("#new-folder").find("#foldername").val('');
+		$("#new-folder").find("form").hide();
 		$('#createfolder').show();
 	});
 	
@@ -510,23 +508,23 @@ jQuery(document).ready(function() {
 		var dataString = $(this).serialize();
 		var newfolder = $('#foldername').val();
 		var hrefaction = $(this).attr('action');
-	  $.ajax({
-       type: "GET",
-       data: dataString,
-       url: hrefaction,
-       success: function(response){
-       		$('#imageTable').load(location.href+' #imageTable', function() {
-						attachFilterChangeEvent();
-						newFolderDiv.find("#foldername").val('');
-						newFolderDiv.find("form").hide();
-						$('#createfolder').show();
-        	  counter=parseInt($("#pg_counter").text());
-		        $("#pg_counter").html(counter++);
-						$("tr."+newfolder+" td").css("background-color", "#F9F8B6");
-						loadingAjaxIndicator.fadeOut();
-					});
-       }
-    });
+		$.ajax({
+			type: "GET",
+			data: dataString,
+			url: hrefaction,
+			success: function(response){
+					$('#imageTable').load(location.href+' #imageTable >*', function() {
+					attachFilterChangeEvent();
+					$("#new-folder").find("#foldername").val('');
+					$("#new-folder").find("form").hide();
+					$('#createfolder').show();
+				 	counter=parseInt($("#pg_counter").text());
+					$("#pg_counter").html(counter++);
+					$("tr."+newfolder+" td").css("background-color", "#F9F8B6");
+					loadingAjaxIndicator.fadeOut();
+				});
+		}
+	});
 		return false;
 	});
 
