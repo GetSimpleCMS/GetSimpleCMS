@@ -236,7 +236,7 @@ function createRandomPassword() {
 /**
  * File Type Category
  *
- * Returns the category of an file based on it's extension
+ * Returns the category of an file based on its extension
  *
  * @since 1.0
  * @uses i18n_r
