@@ -1400,6 +1400,9 @@ a.cancel em {
 	line-height: 16px;
 }
 
+.delete a:link, .delete a:visited, .wrapper .secondarylink a:link, .wrapper .secondarylink a:visited, a.cancel:link, a.updatelink:link{
+	border-radius:3px;
+}
 
 /* backup info display */
 table.simple td {
