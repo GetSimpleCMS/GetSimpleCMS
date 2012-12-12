@@ -214,7 +214,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
      echo '<table class="highlight" id="imageTable">'; 
      echo '<tr><th class="imgthumb" ></th><th>'.i18n_r('FILE_NAME').'</th>';
      echo '<th style="text-align:right;">'.i18n_r('FILE_SIZE').'</th>';
-     if (defined('GSDEBUG')){
+     if (isDebug()){
      	 echo '<th style="text-align:right;">'.i18n_r('PERMS').'</th>';
      }
      echo '<th style="text-align:right;">'.i18n_r('DATE').'</th>';
@@ -240,7 +240,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
           echo '<td style="width:80px;text-align:right;" ><span>'.$directory_size.'</span></td>';
           
           // get the file permissions.
-					if ($isUnixHost && defined('GSDEBUG') && function_exists('posix_getpwuid')) {
+					if ($isUnixHost && isDebug() && function_exists('posix_getpwuid')) {
 						$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
 						$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
 						echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
@@ -282,7 +282,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
              
 		            
 					// get the file permissions.
-					if ($isUnixHost && defined('GSDEBUG') && function_exists('posix_getpwuid')) {
+					if ($isUnixHost && isDebug() && function_exists('posix_getpwuid')) {
 						$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
 						$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
 						echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
