@@ -387,7 +387,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 
 			checkTitle = function(){
 				if($.trim($("#post-title").val()).length == 0){
-					notifyError("<?php i18n('CANNOT_SAVE_EMPTY'); ?>").popit().removeit();
+					alert("<?php i18n('CANNOT_SAVE_EMPTY'); ?>");
 					return false;
 				}					
 			}
