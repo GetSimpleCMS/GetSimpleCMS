@@ -19,7 +19,7 @@ $path = (isset($_GET['path'])) ? $_GET['path'] : "";
 	<?php 
 	
 	// create Uploadify uploader
-	$debug = (defined('GSDEBUG') && GSDEBUG == 1) ? 'true' : 'false';
+	$debug = isDebug() ? 'true' : 'false';
 	$fileSizeLimit = toBytes(ini_get('upload_max_filesize'))/1024;
 	echo "
 	<script type=\"text/javascript\">

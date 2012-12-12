@@ -72,10 +72,10 @@ $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
 /**
  * Debugging
  */
-if ( defined('GSDEBUG') && (GSDEBUG == TRUE) ) {
+if ( isDebug() ) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
-} else if( defined('SUPRESSERRORS') && (SUPRESSERRORS == TRUE) ){
+} else if( getDef('SUPRESSERRORS',true) ) {
 	error_reporting(0);
 	ini_set('display_errors', 0);
 }
