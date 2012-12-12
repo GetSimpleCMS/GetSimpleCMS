@@ -58,6 +58,8 @@ function gs_anonymousdata() {
 	if(isset($_POST['preview'])) {
 		global $LANG, $TIMEZONE, $SITEURL, $live_plugins, $thisfile_anony;
 		
+		$missing_modules = array();
+		
 		$php_modules = get_loaded_extensions();
 		if (! in_arrayi('curl', $php_modules) ) {
 			$missing_modules[] = 'curl';
@@ -79,7 +81,9 @@ function gs_anonymousdata() {
 				$missing_modules[] = 'mod_rewrite';
 			}
 		}
-		
+		$lastModified = @filemtime(GSROOTPATH .'.htaccess');
+		if($lastModified == NULL)
+		    $lastModified = filemtime(utf8_decode(GSROOTPATH .'.htaccess'));
 		$preview_data = @new SimpleXMLExtended('<data></data>');
 		$preview_data->addChild('submission_date', date('c'));
 		$preview_data->addChild('getsimple_version', get_site_version(false));
@@ -95,7 +99,7 @@ function gs_anonymousdata() {
 		$preview_data->addChild('number_backups', count(getFiles(GSBACKUPSPATH.'zip')));
 		$preview_data->addChild('number_users', folder_items(GSUSERSPATH)-1);
 		$preview_data->addChild('domain_tld', get_tld_from_url($SITEURL));
-		$preview_data->addChild('install_date', date('m-d-Y', filemtime(GSDATAOTHERPATH .'.htaccess')));
+		$preview_data->addChild('install_date', date('m-d-Y', $lastModified));
 		$preview_data->addChild('category', $_POST['category']);
 		$preview_data->addChild('link_back', $_POST['link_back']);
 		XMLsave($preview_data, GSDATAOTHERPATH . 'anonymous_data.xml');
