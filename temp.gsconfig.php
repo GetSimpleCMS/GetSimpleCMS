@@ -93,4 +93,8 @@ define('GSDONOTPING', 1);
 # GSSTYLEWIDE = wide fluid
 # define('GSSTYLE',GSSTYLEWIDE);
 
+# Disable Sitemap generation and menu items
+# define('GSNOSITEMAP',true);
+
+
 ?>

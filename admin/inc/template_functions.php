@@ -1093,6 +1093,8 @@ function get_gs_version() {
  */
 function generate_sitemap() {
 	
+	if(getDef('GSNOSITEMAP',true)) return;
+
 	// Variable settings
 	global $SITEURL;
 	$path = GSDATAPAGESPATH;
@@ -1185,8 +1187,6 @@ function generate_sitemap() {
 
 /**
  * Creates tar.gz Archive 
- *
- * Creates sitemap.xml in the site's root.
  */
 function archive_targz() {
 	if(!function_exists('exec')) {
