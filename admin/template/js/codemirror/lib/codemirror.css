@@ -21,15 +21,17 @@
   z-index: 10;
   background-color: #f7f7f7;
   border-right: 1px solid #eee;
-  min-width: 2em;
+  min-width: 2.4em;
   height: 100%;
 }
+
 .CodeMirror-gutter-text {
   color: #aaa;
   text-align: right;
-  padding: .4em .2em .4em .4em;
+  padding: .4em 0em .4em .4em;
   white-space: pre !important;
 }
+
 .CodeMirror-lines {
   padding: .4em;
   white-space: pre;
@@ -83,6 +85,15 @@ div.CodeMirror-selected { background: #d9d9d9; }
 .CodeMirror-searching {
   background: #ffa;
   background: rgba(255, 255, 0, .4);
+}
+
+.CodeMirror-fullscreen {
+  display: block;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  z-index: 9999;
+  background-color:#FFF;
 }
 
 /* Default theme */

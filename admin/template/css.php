@@ -2074,12 +2074,12 @@ a.disabled:visited {
 
 #theme_edit_code .well{
 	padding-left: 12px;
+	margin-bottom:14px;
 }
 
 #theme_edit_code .CodeMirror{
 	border:1px solid #E8E8E8;
 	border-radius:2px;
-	margin-top:14px;
 }
 
 #theme_filemanager {

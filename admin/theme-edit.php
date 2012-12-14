@@ -257,44 +257,64 @@ window.onload = function() {
 	      return true;
 	    }
 	  }
-	  function toggleFullscreenEditing()
-	    {
-	        var editorDiv = $('.CodeMirror-scroll');
-	        if (!editorDiv.hasClass('fullscreen')) {
-	            toggleFullscreenEditing.beforeFullscreen = { height: editorDiv.height(), width: editorDiv.width() }
-	            editorDiv.addClass('fullscreen');
-	            editorDiv.height('100%');
-	            editorDiv.width('100%');
-	            editor.refresh();
-	        }
-	        else {
-	            editorDiv.removeClass('fullscreen');
-	            editorDiv.height(toggleFullscreenEditing.beforeFullscreen.height);
-	            editorDiv.width(toggleFullscreenEditing.beforeFullscreen.width);
-	            editor.refresh();
-	        }
-	    }
-      var editor = CodeMirror.fromTextArea(document.getElementById("codetext"), {
-        lineNumbers: true,
-        matchBrackets: true,
-        indentUnit: 4,
-        indentWithTabs: true,
-        enterMode: "keep",
-        mode:"<?php echo $mode; ?>",
-        tabMode: "shift",
-        theme:'default',
-    	onGutterClick: foldFunc,
-    	extraKeys: {"Ctrl-Q": function(cm){foldFunc(cm, cm.getCursor().line);},
-    				"F11": toggleFullscreenEditing, "Esc": toggleFullscreenEditing},
-        onCursorActivity: function() {
-		   	editor.setLineClass(hlLine, null);
-		   	hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
-		}
-      	});
-     var hlLine = editor.setLineClass(0, "activeline");
-    
-     }
+
+    	var editor = CodeMirror.fromTextArea(document.getElementById("codetext"), {
+	        lineNumbers: true,
+	        matchBrackets: true,
+	        indentUnit: 4,
+	        indentWithTabs: true,
+	        enterMode: "keep",
+	        mode:"<?php echo $mode; ?>",
+	        tabMode: "shift",
+	        theme:'default',
+	    	onGutterClick: foldFunc,
+	    	extraKeys: {
+	    		"Ctrl-Q": function(cm){foldFunc(cm, cm.getCursor().line);},
+		        "F11": function(cm) {
+		          setFullScreen(cm, !isFullScreen(cm));
+		        },
+		        "Esc": function(cm) {
+		          if (isFullScreen(cm)) setFullScreen(cm, false);
+		        }
+	    	},
+	        
+	        onCursorActivity: function() {
+			   	editor.setLineClass(hlLine, null);
+			   	hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
+			}
+    	});
+		var hlLine = editor.setLineClass(0, "activeline");
      
+    function isFullScreen(cm) {
+      return /\bCodeMirror-fullscreen\b/.test(cm.getWrapperElement().className);
+    }
+
+    function winHeight() {
+      return window.innerHeight || (document.documentElement || document.body).clientHeight;
+    }
+
+    function setFullScreen(cm, full) {
+      var wrap = cm.getWrapperElement();
+      if (full) {
+        wrap.className += " CodeMirror-fullscreen";
+        wrap.style.height = winHeight() + "px";
+        document.documentElement.style.overflow = "hidden";
+      } else {
+        wrap.className = wrap.className.replace(" CodeMirror-fullscreen", "");
+        wrap.style.height = "";
+        document.documentElement.style.overflow = "";
+      }
+      cm.refresh();
+    }
+
+    // CodeMirror.on(window, "resize", function() {
+    //   var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
+    //   if (!showing) return;
+    //   showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
+    // });
+
+}
+
 </script>
 <?php 
 }
