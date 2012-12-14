@@ -77,10 +77,10 @@ function debugLog($txt) {
 	array_push($GS_debug,$txt);
 }
 
-if( isDebug() ) {
+if(defined('GSDEBUG') and (bool)GSDEBUG == true) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
-} else if( getDef('SUPRESSERRORS',true) ) {
+} else if( defined('SUPRESSERRORS') and (bool)SUPPRESSERRORS == true ) {
 	error_reporting(0);
 	ini_set('display_errors', 0);
 }
