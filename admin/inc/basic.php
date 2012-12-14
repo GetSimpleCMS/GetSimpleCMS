@@ -520,7 +520,7 @@ function redirect($url) {
     header('Location: '.$url);
   } else {
     echo "<html><head><title>".i18n_r('REDIRECT')."</title></head><body>";
-    if ( !defined('GSDEBUG') || (GSDEBUG != TRUE) ) {
+    if ( !isDebug() ) {
 	    echo '<script type="text/javascript">';
 	    echo 'window.location.href="'.$url.'";';
 	    echo '</script>';
@@ -1158,5 +1158,12 @@ function getDef($id,$isbool = false){
 		return constant($id);
 	}
 }
-	
+
+/**
+ * Alias for checking for debug constant
+ */
+function isDebug(){
+	return getDef('GSDEBUG',true);
+}
+
 ?>

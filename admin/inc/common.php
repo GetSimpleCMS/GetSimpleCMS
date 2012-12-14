@@ -77,10 +77,10 @@ function debugLog($txt) {
 	array_push($GS_debug,$txt);
 }
 
-if ( defined('GSDEBUG') && (GSDEBUG == TRUE) ) {
+if( isDebug() ) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
-} else if( defined('SUPRESSERRORS') && (SUPRESSERRORS == TRUE) ){
+} else if( getDef('SUPRESSERRORS',true) ) {
 	error_reporting(0);
 	ini_set('display_errors', 0);
 }
@@ -242,7 +242,7 @@ if(isset($load['plugin']) && $load['plugin']){
 	include_once(GSADMININCPATH.'plugin_functions.php');
 	if(get_filename_id()=='settings' || get_filename_id()=='load') {
 		/* this core plugin only needs to be visible when you are viewing the 
-		settings page since that is where it's sidebar item is. */
+		settings page since that is where its sidebar item is. */
 		if (defined('GSEXTAPI') && GSEXTAPI==1) {
 			include_once('api.plugin.php');
 		}
