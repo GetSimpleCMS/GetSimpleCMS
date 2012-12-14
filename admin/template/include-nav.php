@@ -9,7 +9,7 @@ $debugInfoUrl = 'http://get-simple.info/wiki/debugging';
 
 if (cookie_check()) { 
 	echo '<ul id="pill"><li class="leftnav"><a href="logout.php" accesskey="'. find_accesskey(i18n_r('TAB_LOGOUT')).'" >'.i18n_r('TAB_LOGOUT').'</a></li>';
-	if (defined('GSDEBUG')) {
+	if (isDebug()) {
 		echo '<li class="debug"><a href="'.$debugInfoUrl.'" target="_blank">'.i18n_r('DEBUG_MODE').'</a></li>';
 	}
 	echo '<li class="rightnav" ><a href="settings.php#profile">'.i18n_r('WELCOME').' <strong>'.$USR.'</strong>!</a></li></ul>';

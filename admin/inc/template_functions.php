@@ -236,7 +236,7 @@ function createRandomPassword() {
 /**
  * File Type Category
  *
- * Returns the category of an file based on it's extension
+ * Returns the category of an file based on its extension
  *
  * @since 1.0
  * @uses i18n_r
@@ -1093,6 +1093,8 @@ function get_gs_version() {
  */
 function generate_sitemap() {
 	
+	if(getDef('GSNOSITEMAP',true)) return;
+
 	// Variable settings
 	global $SITEURL;
 	$path = GSDATAPAGESPATH;
@@ -1185,8 +1187,6 @@ function generate_sitemap() {
 
 /**
  * Creates tar.gz Archive 
- *
- * Creates sitemap.xml in the site's root.
  */
 function archive_targz() {
 	if(!function_exists('exec')) {

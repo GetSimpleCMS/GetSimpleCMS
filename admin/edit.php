@@ -83,7 +83,7 @@ $themes_path = GSTHEMESPATH . $TEMPLATE;
 $themes_handle = opendir($themes_path) or die("Unable to open ". GSTHEMESPATH);		
 while ($file = readdir($themes_handle))	{		
 	if( isFile($file, $themes_path, 'php') ) {		
-		if ($file != 'functions.php' && !strpos(strtolower($file), '.inc.php')) {		
+		if ($file != 'functions.php' && substr(strtolower($file),-8) !='.inc.php' && substr($file,0,1)!=='.') {		
       $templates[] = $file;		
     }		
 	}		
@@ -387,7 +387,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 
 			checkTitle = function(){
 				if($.trim($("#post-title").val()).length == 0){
-					notifyError("<?php i18n('CANNOT_SAVE_EMPTY'); ?>").popit().removeit();
+					alert("<?php i18n('CANNOT_SAVE_EMPTY'); ?>");
 					return false;
 				}					
 			}

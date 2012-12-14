@@ -89,7 +89,12 @@ define('GSDONOTPING', 1);
 #define('GSNOVERCHECK', true);
 
 # Enable alternate admin styles, current style constants are
+# note: stylesheets are cached
 # GSSTYLEWIDE = wide fluid
 # define('GSSTYLE',GSSTYLEWIDE);
+
+# Disable Sitemap generation and menu items
+# define('GSNOSITEMAP',true);
+
 
 ?>
