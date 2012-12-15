@@ -437,64 +437,58 @@ jQuery(document).ready(function () {
 		li.parent().children().show();
 		li.remove();
 	});
-<<<<<<< HEAD
  
  
-	// theme-edit.php
-	$("#theme-folder").change(function () {
+// theme-edit.php
+	$("#theme-folder").change(function(){
 		var thmfld = $(this).val();
+		updateTheme(thmfld);
+	});
+
+	// theme-edit.php
+	// $("#theme_filemanager a").on('click',function(e){
+	$(document).on('click',"#theme_filemanager a",function(e){
+		console.log('filechange');
+		e.preventDefault();
+		var thmfld = $("#theme-folder").val();
+		console.log($(this).attr('href'));
+		updateTheme('','',$(this).attr('href'));
+	});
+
+
+	function updateTheme(theme,file,url){
+		console.log(theme);
+		theme = theme == undefined ? '' : theme;
+		file = file == undefined ? '' : file;
+		url = url == undefined ? "theme-edit.php?t="+theme+'&amp;f='+file : url;
+		
 		$.ajax({
 			type: "GET",
-			url: "inc/ajax.php?dir=" + thmfld,
-			success: function (response) {
-				$("#themefiles").html(response);
+			url: url,
+			success: function( data, textStatus, jqXHR ) {
+				// $("#themefiles").html(response);
+				responseText = jqXHR.responseText;
+				
+				rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
+				responseText = responseText.replace(rscript, "");
+
+				/* dir tree */
+				$('#theme_filemanager').html($("<div>").append(responseText.replace(rscript, "")).find('#theme_filemanager > *') );
+				
+				/* content */
+				var newcontent = $("<div>").append(responseText).find('#codetext');
+				$('#codetext').html(newcontent.val());
+				editor.setValue(newcontent.val());
+
+				/* form */
+				var filename = $("<div>").append(responseText.replace(rscript, "")).find('#edited_file').val() ;
+				$('#edited_file').val(filename);
+
+				$('#theme_editing_file').html(filename);
+
 			}
-		});
-=======
-  
-  
-  // pages.php
-  $("#show-characters").live("click", function() {
-  	 $(".showstatus").toggle();
-  	 $(this).toggleClass('current');
-  });
-  
-  
-  // log.php
-  if(jQuery().reverseOrder) {
-	  $('ol.more li').reverseOrder(); 
-	} 
-  $("ol.more").each(function() {
-    $("li:gt(4)", this).hide(); /* :gt() is zero-indexed */
-    $("li:nth-child(5)", this).after("<li class='more'><a href='#'>More...</a></li>"); /* :nth-child() is one-indexed */
-  });
-  $("li.more a").live("click", function($e) {
-    $e.preventDefault();
-    var li = $(this).parents("li:first");
-    li.parent().children().show();
-    li.remove();
-  });
-  
-   
-	// theme-edit.php
-	$("#theme-folder").change(function(){
-	var thmfld = $(this).val();
-	$.ajax({
-		type: "GET",
-		url: "theme-edit.php?t="+thmfld,
-		success: function( data, textStatus, jqXHR ) {
-			// $("#themefiles").html(response);
-			responseText = jqXHR.responseText;
-			rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
-			// responseText = responseText.replace(rscript, "");
-			$('#theme_filemanager').html($("<div>").append(responseText.replace(rscript, "")).find('#theme_filemanager > *') );
-			$('#codetext').val(responseText.find('#condetext').val());
-			editor.refresh();
-		}
-	  });
->>>>>>> fix up merge from master
-	});
- 
+		  });
+	}
  
 	//title filtering on pages.php & backups.php
 	var filterSearchInput = $("#filter-search");

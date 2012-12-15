@@ -350,15 +350,15 @@ window.onload = function() {
 				</form> -->
 		
 
-				<div class="well">
-				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.'theme/'. tsl($template) .'<b>'. $template_file .'</b>'; ?>
+				<div id="theme_editing" class="well">
+				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.'theme/ <b><span id="theme_editing_file">'. tsl($template) .'/'.$template_file .'</span></b>'; ?>
 				<?php $content = file_get_contents(GSTHEMESPATH . tsl($template) . $template_file); ?>
 				</div>
 		
 		<form action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
 			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
 			<textarea name="content" id="codetext" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
-			<input type="hidden" value="<?php echo tsl($template) . $template_file; ?>" name="edited_file" />
+			<input type="hidden" value="<?php echo tsl($template) . $template_file; ?>" name="edited_file" id="edited_file" />
 			<?php exec_action('theme-edit-extras'); ?>
 			<p id="submit_line" >
 				<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
