@@ -131,7 +131,7 @@ function createFileDropdown($templates){
 }
 
 function array2ul($array) {
-	GLOBAL $allowed_extensions,$TEMPLATE_FILE,$TEMPLATE;
+	GLOBAL $allowed_extensions,$template_file,$template;
     
 	$cnt = 0;
 
@@ -148,8 +148,8 @@ function array2ul($array) {
     		if( in_array($ext,$allowed_extensions) ){
 
     			$filename = $elem['value'];
-					$filepath = $elem['path'];    			
-					$filenamefull=substr(strstr($filepath.DIRECTORY_SEPARATOR.$filename,'/theme/'.$TEMPLATE.'/'),strlen('/theme/'.$TEMPLATE.'/')); 
+				$filepath = $elem['path'];    			
+				$filenamefull=substr(strstr($filepath.DIRECTORY_SEPARATOR.$filename,'/theme/'.$template.'/'),strlen('/theme/'.$template.'/')); 
 
     			$open = fileIsOpen($elem['path'],$elem['value']) ? ' open' : '';
   				if ($filename == 'template.php'){
@@ -157,7 +157,7 @@ function array2ul($array) {
   					$filename=i18n_r('DEFAULT_TEMPLATE');        			
   				}	
 				
-				$link = myself(false).'?t='.$TEMPLATE.'&amp;f='.$filenamefull;
+				$link = myself(false).'?t='.$template.'&amp;f='.$filenamefull;
 
 				$out.='<li><a href="'.$link.'"class="file ext-'.$ext.$open.'">'.$filename."</a></li>";
         	}
@@ -246,6 +246,7 @@ if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 ?>
 
 <script>
+var editor;
 window.onload = function() {
 	  var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder);
 	  function keyEvent(cm, e) {
@@ -258,7 +259,7 @@ window.onload = function() {
 	    }
 	  }
 
-    	var editor = CodeMirror.fromTextArea(document.getElementById("codetext"), {
+    	editor = CodeMirror.fromTextArea(document.getElementById("codetext"), {
 	        lineNumbers: true,
 	        matchBrackets: true,
 	        indentUnit: 4,

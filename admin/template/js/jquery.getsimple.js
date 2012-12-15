@@ -437,6 +437,7 @@ jQuery(document).ready(function () {
 		li.parent().children().show();
 		li.remove();
 	});
+<<<<<<< HEAD
  
  
 	// theme-edit.php
@@ -449,6 +450,49 @@ jQuery(document).ready(function () {
 				$("#themefiles").html(response);
 			}
 		});
+=======
+  
+  
+  // pages.php
+  $("#show-characters").live("click", function() {
+  	 $(".showstatus").toggle();
+  	 $(this).toggleClass('current');
+  });
+  
+  
+  // log.php
+  if(jQuery().reverseOrder) {
+	  $('ol.more li').reverseOrder(); 
+	} 
+  $("ol.more").each(function() {
+    $("li:gt(4)", this).hide(); /* :gt() is zero-indexed */
+    $("li:nth-child(5)", this).after("<li class='more'><a href='#'>More...</a></li>"); /* :nth-child() is one-indexed */
+  });
+  $("li.more a").live("click", function($e) {
+    $e.preventDefault();
+    var li = $(this).parents("li:first");
+    li.parent().children().show();
+    li.remove();
+  });
+  
+   
+	// theme-edit.php
+	$("#theme-folder").change(function(){
+	var thmfld = $(this).val();
+	$.ajax({
+		type: "GET",
+		url: "theme-edit.php?t="+thmfld,
+		success: function( data, textStatus, jqXHR ) {
+			// $("#themefiles").html(response);
+			responseText = jqXHR.responseText;
+			rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
+			// responseText = responseText.replace(rscript, "");
+			$('#theme_filemanager').html($("<div>").append(responseText.replace(rscript, "")).find('#theme_filemanager > *') );
+			$('#codetext').val(responseText.find('#condetext').val());
+			editor.refresh();
+		}
+	  });
+>>>>>>> fix up merge from master
 	});
  
  
