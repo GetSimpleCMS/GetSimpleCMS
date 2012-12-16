@@ -442,6 +442,7 @@ jQuery(document).ready(function () {
 // theme-edit.php
 	$("#theme-folder").change(function(){
 		var thmfld = $(this).val();
+		$('#theme_filemanager').html('Loading...');
 		updateTheme(thmfld);
 	});
 
@@ -452,19 +453,22 @@ jQuery(document).ready(function () {
 		e.preventDefault();
 		var thmfld = $("#theme-folder").val();
 		// console.log($(this).attr('href'));
-		$(this).addClass('ext-wait');
+		$(this).addClass('ext-wait'); // loading icon
 		updateTheme('','',$(this).attr('href'));
 	});
 
 
 	function updateTheme(theme,file,url){
-		console.log(theme);
+		// console.log(theme);
 		theme = theme == undefined ? '' : theme;
 		file = file == undefined ? '' : file;
 		url = url == undefined ? "theme-edit.php?t="+theme+'&amp;f='+file : url;
 		
+
 		loadingAjaxIndicator.show();
 		editor.setValue('');
+		// $('#theme_editing').fadeOut();
+		$('#theme_edit_code').fadeOut();
 
 		$.ajax({
 			type: "GET",
@@ -496,6 +500,8 @@ jQuery(document).ready(function () {
 				// editor.refresh();
 
 				loadingAjaxIndicator.fadeOut();
+				$('#theme_edit_code').fadeIn();
+
 
 			}
 		});
