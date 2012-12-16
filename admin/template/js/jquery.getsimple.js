@@ -468,38 +468,38 @@ jQuery(document).ready(function () {
 
 		$.ajax({
 			type: "GET",
+			cache: false,
 			url: url,
-			success: function( data, textStatus, jqXHR ) {
-				// $("#themefiles").html(response);
-				responseText = jqXHR.responseText;
+			success: function( data ) {
 				
 				rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
-				responseText = responseText.replace(rscript, "");
+				responseText = data.replace(rscript, "");
+				response = $(data);
 
 				/* dir tree */
-				$('#theme_filemanager').html($("<div>").append(responseText.replace(rscript, "")).find('#theme_filemanager > *') );
+				$('#theme_filemanager').html(response.find('#theme_filemanager > *') );
 				
 				/* content */
-				var newcontent = $("<div>").append(responseText).find('#codetext');
-				$('#codetext').html(newcontent.val());
+				var newcontent = response.find('#codetext');
+				$('#codetext').val(newcontent.val());
 				editor.setValue(newcontent.val());
 
 				/* form */
-				var filename = $("<div>").append(responseText.replace(rscript, "")).find('#edited_file').val() ;
+				var filename = response.find('#edited_file').val() ;
 				$('#edited_file').val(filename);
 
+				/* title */
 				$('#theme_editing_file').html(filename);
 
-				// editor.setOption('mode',getEditorMode(getExtension(filename)));
-				console.log(getExtension(filename));
-				console.log(getEditorMode(getExtension(filename)));
+				/* update editor mode */
 				editor.setOption('mode',getEditorMode(getExtension(filename)));
 				// editor.refresh();
 
-			loadingAjaxIndicator.fadeOut();
+				loadingAjaxIndicator.fadeOut();
 
 			}
-		  });
+		});
+
 	}
  
 	function getExtension(file){
