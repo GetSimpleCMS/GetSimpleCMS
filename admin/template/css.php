@@ -2072,6 +2072,13 @@ a.disabled:visited {
 	width:80%;	
 }
 
+#theme_editing .wait{
+	width: 35px;
+	height: 25px;
+	float: left;
+	margin-left: -10px;
+}
+
 #theme_edit_code .well{
 	padding-left: 12px;
 	margin-bottom:14px;
@@ -2171,3 +2178,4 @@ a.disabled:visited {
 .ext-php {background-image: url(images/filemanager/application-x-php.png);}
 .ext-css {background-image: url(images/filemanager/text-css.png);}
 .ext-theme {background-image: url(images/filemanager/preferences-desktop-theme.png);}
+.ext-wait {background-image: url(images/ajax_dark.gif);}

@@ -448,10 +448,11 @@ jQuery(document).ready(function () {
 	// theme-edit.php
 	// $("#theme_filemanager a").on('click',function(e){
 	$(document).on('click',"#theme_filemanager a",function(e){
-		console.log('filechange');
+		// console.log('filechange');
 		e.preventDefault();
 		var thmfld = $("#theme-folder").val();
-		console.log($(this).attr('href'));
+		// console.log($(this).attr('href'));
+		$(this).addClass('ext-wait');
 		updateTheme('','',$(this).attr('href'));
 	});
 
@@ -462,6 +463,9 @@ jQuery(document).ready(function () {
 		file = file == undefined ? '' : file;
 		url = url == undefined ? "theme-edit.php?t="+theme+'&amp;f='+file : url;
 		
+		loadingAjaxIndicator.show();
+		editor.setValue('');
+
 		$.ajax({
 			type: "GET",
 			url: url,
@@ -486,10 +490,33 @@ jQuery(document).ready(function () {
 
 				$('#theme_editing_file').html(filename);
 
+				// editor.setOption('mode',getEditorMode(getExtension(filename)));
+				console.log(getExtension(filename));
+				console.log(getEditorMode(getExtension(filename)));
+				editor.setOption('mode',getEditorMode(getExtension(filename)));
+				// editor.refresh();
+
+			loadingAjaxIndicator.fadeOut();
+
 			}
 		  });
 	}
  
+	function getExtension(file){
+    var extension = file.substr( (file.lastIndexOf('.') +1) );
+    return extension;
+	}
+
+	function getEditorMode(extension){
+		var modes = {
+			'php'  : 'application/x-httpd-php',
+			'html' : 'text/html',
+			'js'   : 'text/javascript',
+			'css'  : 'text/css'
+		};
+		return extension in modes ? modes[extension] : modes['php'];
+	}
+
 	//title filtering on pages.php & backups.php
 	var filterSearchInput = $("#filter-search");
 	$('#filtertable').live("click", function ($e) {
