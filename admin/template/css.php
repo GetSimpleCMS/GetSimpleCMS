@@ -2072,13 +2072,6 @@ a.disabled:visited {
 	width:80%;	
 }
 
-#theme_editing .wait{
-	width: 35px;
-	height: 25px;
-	float: left;
-	margin-left: -10px;
-}
-
 #theme_edit_code .well{
 	padding-left: 12px;
 	margin-bottom:14px;
