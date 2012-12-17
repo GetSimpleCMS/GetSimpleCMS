@@ -440,8 +440,10 @@ jQuery(document).ready(function () {
  
  
 // theme-edit.php
+
 	$("#theme-folder").change(function(){
 		var thmfld = $(this).val();
+		if (checkChanged()) return; // todo: change selection back
 		$('#theme_filemanager').html('Loading...');
 		updateTheme(thmfld);
 	});
@@ -453,12 +455,20 @@ jQuery(document).ready(function () {
 		e.preventDefault();
 		var thmfld = $("#theme-folder").val();
 		// console.log($(this).attr('href'));
+		if (checkChanged()) return;
 		$(this).addClass('ext-wait'); // loading icon
 		updateTheme('','',$(this).attr('href'));
 	});
 
+	function checkChanged(){
+		if(editor.hasChange == true){
+			alert('unsaved content');
+			return true;
+		}
+	}
 
 	function updateTheme(theme,file,url){
+
 		// console.log(theme);
 		theme = theme == undefined ? '' : theme;
 		file = file == undefined ? '' : file;

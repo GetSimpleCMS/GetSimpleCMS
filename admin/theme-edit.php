@@ -247,8 +247,10 @@ if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 
 <script>
 var editor;
-window.onload = function() {
+jQuery(document).ready(function () {
+	  
 	  var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder);
+	 
 	  function keyEvent(cm, e) {
 	    if (e.keyCode == 81 && e.ctrlKey) {
 	      if (e.type == "keydown") {
@@ -259,31 +261,39 @@ window.onload = function() {
 	    }
 	  }
 
-    	editor = CodeMirror.fromTextArea(document.getElementById("codetext"), {
-	        lineNumbers: true,
-	        matchBrackets: true,
-	        indentUnit: 4,
-	        indentWithTabs: true,
-	        enterMode: "keep",
-	        mode:"<?php echo $mode; ?>",
-	        tabMode: "shift",
-	        theme:'default',
-	    	onGutterClick: foldFunc,
-	    	extraKeys: {
-	    		"Ctrl-Q": function(cm){foldFunc(cm, cm.getCursor().line);},
-		        "F11": function(cm) {
-		          setFullScreen(cm, !isFullScreen(cm));
-		        },
-		        "Esc": function(cm) {
-		          if (isFullScreen(cm)) setFullScreen(cm, false);
-		        }
-	    	},
-	        
-	        onCursorActivity: function() {
-			   	editor.setLineClass(hlLine, null);
-			   	hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
+		editor = CodeMirror.fromTextArea(document.getElementById("codetext"), {
+			lineNumbers: true,
+			matchBrackets: true,
+			indentUnit: 4,
+			indentWithTabs: true,
+			enterMode: "keep",
+			mode:"<?php echo $mode; ?>",
+			tabMode: "shift",
+			theme:'default',
+			onGutterClick: foldFunc,
+			extraKeys: {
+				"Ctrl-Q": function(cm){
+					foldFunc(cm, cm.getCursor().line);
+				},
+				"F11": function(cm) {
+				  setFullScreen(cm, !isFullScreen(cm));
+				},
+				"Esc": function(cm) {
+				  if (isFullScreen(cm)) setFullScreen(cm, false);
+				}
+			},
+			
+			onChange: function(){
+				console.log('content changed');
+				editor.hasChange = true;
+			},
+
+			onCursorActivity: function() {
+				editor.setLineClass(hlLine, null);
+				hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
 			}
-    	});
+		});
+
 		var hlLine = editor.setLineClass(0, "activeline");
      
     function isFullScreen(cm) {
@@ -314,7 +324,7 @@ window.onload = function() {
     //   showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
     // });
 
-}
+});
 
 </script>
 <?php 
