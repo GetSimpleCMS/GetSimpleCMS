@@ -13,8 +13,25 @@
 /**
  * Variable Globalization
  */
-global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR, $PERMALINK, $GSADMIN, $GS_debug, $components;
+global 
+ $SITENAME,		// sitename setting
+ $SITEURL,		// siteurl setting
+ $TEMPLATE,		// current theme
+ $TIMEZONE,		// current timezone either from config or user
+ $LANG,
+ $SALT,
+ $i18n,
+ $USR,			// logged in user
+ $PERMALINK,	// permalink structure
+ $GSADMIN,		// admin foldername
+ $GS_debug,		// debug log array
+ $components,	// components array
+ $nocache		// disable site wide cache
+;
 
+/**
+ * Init debug log array
+ */
 $GS_debug = array();
 
 /*
@@ -77,6 +94,10 @@ function debugLog($txt) {
 	array_push($GS_debug,$txt);
 }
 
+/**
+ * Init debug mode
+ * Enable php error logging	
+ */
 if(defined('GSDEBUG') and (bool)GSDEBUG == true) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
@@ -84,6 +105,7 @@ if(defined('GSDEBUG') and (bool)GSDEBUG == true) {
 	error_reporting(0);
 	ini_set('display_errors', 0);
 }
+
 ini_set('log_errors', 1);
 ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
 
@@ -145,13 +167,15 @@ if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 		$LANG = $datau->LANG;
 	} else {
 		$USR = null;
-		$TIMEZONE = defined('GSTIMEZONE') ? GSTIMEZONE : "";	
 	}
 } else {
 	$USR = null;
-	$TIMEZONE = defined('GSTIMEZONE') ? GSTIMEZONE : "";
 }
 
+// set defined timezone from config if not set on user
+if( (!isset($TIMEZONE) || trim($TIMEZONE) == '' ) && defined('GSTIMEZONE') ){
+	$TIMEZONE = GSTIMEZONE;
+}
 
 /** grab authorization and security data */
 if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
