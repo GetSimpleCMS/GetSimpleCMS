@@ -347,7 +347,8 @@ function add_filter($filter_name, $added_function) {
   $pathName= pathinfo_filename($caller['file']);
 	$filters[] = array(
 		'filter' => $filter_name,
-		'function' => $added_function
+		'function' => $added_function,
+		'active' => false
 	);
 }
 
@@ -366,7 +367,12 @@ function exec_filter($script,$data=array()) {
 	global $filters;
 	foreach ($filters as $filter)	{
 		if ($filter['filter'] == $script) {
-			$data = call_user_func_array($filter['function'], array($data));
+			$key = array_search($script,$filters);
+			if (!$filters[$key]['active']) {
+				$filters[$key]['active'] = true;
+				$data = call_user_func_array($filter['function'], array($data));
+				$filters[$key]['active'] = false;
+			}
 		}
 	}
 	return $data;
