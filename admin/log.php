@@ -16,16 +16,17 @@ include('inc/common.php');
 // Variable Settings
 login_cookie_check();
 
-$log_name = $_GET['log'];
+$log_name = isset($_GET['log']) ? $_GET['log'] : '';
 $log_path = GSDATAOTHERPATH.'logs/';
 $log_file = $log_path . $log_name;
-if(!filepath_is_safe($log_file,$log_path)) die();
 
 $whois_url = 'http://whois.arin.net/rest/ip/';
 
 if (!is_file($log_file)) {
 	$log_data = false;
 }
+
+if($log_data && !empty($log_name) && !filepath_is_safe($log_file,$log_path)) die();
 
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && strlen($log_name)>0) {
 	// check for csrf
