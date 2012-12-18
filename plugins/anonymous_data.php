@@ -146,7 +146,7 @@ function gs_anonymousdata() {
 		
 		<?php if(isset($preview_data)) { ?>
 			<p><?php i18n($thisfile_anony.'/ANONY_CONFIRM'); ?></p>
-			<pre><code><?php echo htmlentities(formatXmlString(file_get_contents(GSDATAOTHERPATH . 'anonymous_data.xml')));?></code></pre>
+			<div class="unformatted"><code><?php echo htmlentities(formatXmlString(file_get_contents(GSDATAOTHERPATH . 'anonymous_data.xml')));?></code></div>
 			<p class="submit"><br /><input type="submit" class="submit" value="<?php i18n($thisfile_anony.'/ANONY_SEND_BTN'); ?>" name="send" /> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="plugins.php?cancel"><?php i18n('CANCEL'); ?></p>		
 		<?php } else { ?> 
 			<p><?php i18n($thisfile_anony.'/ANONY_PARAGRAPH'); ?></p>
