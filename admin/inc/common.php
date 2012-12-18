@@ -9,7 +9,6 @@
  * @subpackage init
  */
 
-
 /**
  * Variable Globalization
  */
@@ -28,6 +27,10 @@ global
  $components,	// components array
  $nocache		// disable site wide cache
 ;
+
+if(isset($_GET['nocache'])){
+	$nocache = true;
+}
 
 /**
  * Init debug log array
@@ -101,6 +104,7 @@ function debugLog($txt) {
 if(defined('GSDEBUG') and (bool)GSDEBUG == true) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
+	$nocache = true;
 } else if( defined('SUPRESSERRORS') and (bool)SUPPRESSERRORS == true ) {
 	error_reporting(0);
 	ini_set('display_errors', 0);
@@ -108,7 +112,6 @@ if(defined('GSDEBUG') and (bool)GSDEBUG == true) {
 
 ini_set('log_errors', 1);
 ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
-
 
 /**
  * Bad stuff protection
