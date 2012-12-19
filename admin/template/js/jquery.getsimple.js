@@ -7,6 +7,7 @@
  * Copyright (c) Arthur McLean
  */
 (function($){$.fn.capslock=function(options){if(options)$.extend($.fn.capslock.defaults,options);this.each(function(){$(this).bind("caps_lock_on",$.fn.capslock.defaults.caps_lock_on);$(this).bind("caps_lock_off",$.fn.capslock.defaults.caps_lock_off);$(this).bind("caps_lock_undetermined",$.fn.capslock.defaults.caps_lock_undetermined);$(this).keypress(function(e){check_caps_lock(e)})});return this};function check_caps_lock(e){var ascii_code=e.which;var letter=String.fromCharCode(ascii_code);var upper=letter.toUpperCase();var lower=letter.toLowerCase();var shift_key=e.shiftKey;if(upper!==lower){if(letter===upper&&!shift_key){$(e.target).trigger("caps_lock_on")}else if(letter===lower&&!shift_key){$(e.target).trigger("caps_lock_off")}else if(letter===lower&&shift_key){$(e.target).trigger("caps_lock_on")}else if(letter===upper&&shift_key){if(navigator.platform.toLowerCase().indexOf("win")!==-1){$(e.target).trigger("caps_lock_off")}else{if(navigator.platform.toLowerCase().indexOf("mac")!==-1&&$.fn.capslock.defaults.mac_shift_hack){$(e.target).trigger("caps_lock_off")}else{$(e.target).trigger("caps_lock_undetermined")}}}else{$(e.target).trigger("caps_lock_undetermined")}}else{$(e.target).trigger("caps_lock_undetermined")}if($.fn.capslock.defaults.debug){if(console){console.log("Ascii code: "+ascii_code);console.log("Letter: "+letter);console.log("Upper Case: "+upper);console.log("Shift key: "+shift_key)}}}$.fn.capslock.defaults={caps_lock_on:function(){},caps_lock_off:function(){},caps_lock_undetermined:function(){},mac_shift_hack:true,debug:false}})(jQuery);
+
  
 /*
  * GetSimple js file    
@@ -20,7 +21,9 @@ function updateCoords(c) {
 	$('#pich').html(c.h);
 	$('#picw').html(c.w);
 };
+
 var Debugger = function () {}
+
 Debugger.log = function (message) {
 	try {
 		console.log(message);
@@ -462,7 +465,7 @@ jQuery(document).ready(function () {
 
 	function checkChanged(){
 		if(editor.hasChange == true){
-			alert('unsaved content');
+			alert('This file has unsaved content, save or cancel befor continuing');
 			return true;
 		}
 	}
@@ -471,10 +474,9 @@ jQuery(document).ready(function () {
 
 		// console.log(theme);
 		theme = theme == undefined ? '' : theme;
-		file = file == undefined ? '' : file;
-		url = url == undefined ? "theme-edit.php?t="+theme+'&amp;f='+file : url;
+		file  = file  == undefined ? '' : file;
+		url   = url   == undefined ? "theme-edit.php?t="+theme+'&amp;f='+file : url;
 		
-
 		loadingAjaxIndicator.show('fast');
 		editor.setValue('');
 		editor.hasChange == false;
@@ -489,9 +491,9 @@ jQuery(document).ready(function () {
 				
 				$('#theme_edit_code').fadeIn('fast');
 
-				rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
+				rscript      = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
 				responseText = data.replace(rscript, "");
-				response = $(data);
+				response     = $(data);
 
 				/* dir tree */
 				$('#theme_filemanager').html(response.find('#theme_filemanager > *') );
@@ -521,10 +523,48 @@ jQuery(document).ready(function () {
 		});
 
 	}
- 
+ 	
+ 	// todo: maybe just use on submit event ?
+	$('#themeEditForm .submit').on('click',function(e){
+		e.preventDefault();
+		themeFileSave(editor);
+	});
+
+	$('#themeEditForm .cancel').on('click',function(e){
+		e.preventDefault();
+		editor.hasChange = false;
+		notifyWarn('Updates cancelled').removeit();
+		//todo: reload file to discard changes
+	});
+
+	themeFileSave = function(cm){
+		
+		cm.save(); // copy back to textarea
+		var dataString  = $("#themeEditForm").serialize();
+
+		$.ajax({
+			type: "POST",
+			cache: false,
+			url: '/getsimple_svn/admin/theme-edit.php',
+			data: dataString+'&submitsave=1&ajaxsave=1',
+			success: function( response ) {
+				$('div.wrapper .updated').remove();
+				$('div.wrapper .error').remove();
+				if ($(response).find('div.error').html()) {
+					notifyError($(response).find('div.error').html().popit().removeit());
+				}
+				if ($(response).find('div.updated').html()) {
+					notifyOk($(response).find('div.updated').html()).popit().removeit();
+				}	
+
+				editor.hasChange = false; // mark clean		
+			}
+		});
+	}
+
 	function getExtension(file){
-    var extension = file.substr( (file.lastIndexOf('.') +1) );
-    return extension;
+		var extension = file.substr( (file.lastIndexOf('.') +1) );
+		return extension;
 	}
 
 	function getEditorMode(extension){

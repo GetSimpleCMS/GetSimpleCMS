@@ -8,6 +8,10 @@
  * @subpackage Theme
  */
 
+
+// simulate load waits
+// sleep(2);
+
 # setup inclusions
 $load['plugin'] = true;
 include('inc/common.php');
@@ -59,6 +63,13 @@ if((isset($_POST['submitsave']))){
 	fwrite($fh, $FileContents);
 	fclose($fh);
 	$success = sprintf(i18n_r('TEMPLATE_FILE'), $SavedFile);
+	
+	if(isset($_POST['ajaxsave'])){
+		echo "<div>";
+		include('template/error_checking.php');
+		echo "</div>";
+		die();
+	}
 }
 
 # create themes dropdown
@@ -246,6 +257,7 @@ if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 ?>
 
 <script>
+var themeFileSave;
 var editor;
 jQuery(document).ready(function () {
 	  
@@ -272,17 +284,12 @@ jQuery(document).ready(function () {
 			theme:'default',
 			onGutterClick: foldFunc,
 			extraKeys: {
-				"Ctrl-Q": function(cm){
-					foldFunc(cm, cm.getCursor().line);
-				},
-				"F11": function(cm) {
-				  setFullScreen(cm, !isFullScreen(cm));
-				},
-				"Esc": function(cm) {
-				  if (isFullScreen(cm)) setFullScreen(cm, false);
-				}
+				"Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
+				"F11"    : function(cm) { setFullScreen(cm, !isFullScreen(cm)); },
+				"Esc"    : function(cm) { if (isFullScreen(cm)) setFullScreen(cm, false); },
+				"Ctrl-S" : function(cm) { customSave(cm);	}
 			},
-			
+			saveFunction:  function() { customSave(cm); },
 			onChange: function(){
 				console.log('content changed');
 				editor.hasChange = true;
@@ -295,7 +302,12 @@ jQuery(document).ready(function () {
 		});
 
 		var hlLine = editor.setLineClass(0, "activeline");
-     
+    
+	function customSave(cm){
+		console.log('saving');
+		themeFileSave(cm);
+	}
+
     function isFullScreen(cm) {
       return /\bCodeMirror-fullscreen\b/.test(cm.getWrapperElement().className);
     }
@@ -365,7 +377,7 @@ jQuery(document).ready(function () {
 				<?php $content = file_get_contents(GSTHEMESPATH . tsl($template) . $template_file); ?>
 				</div>
 		
-		<form action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
+		<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
 			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
 			<textarea name="content" id="codetext" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
 			<input type="hidden" value="<?php echo tsl($template) . $template_file; ?>" name="edited_file" id="edited_file" />

@@ -2018,6 +2018,11 @@ a.disabled:visited {
 /* 
  * Theme Editor custom layout
  */
+
+#theme-edit .updated, #theme-edit .error, #theme-edit .notify {
+	margin: 0 10px 10px 10px;
+}
+
 #theme-edit #header .wrapper{
 	width:950px;
 }
