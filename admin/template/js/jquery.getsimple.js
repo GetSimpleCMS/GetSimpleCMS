@@ -475,10 +475,11 @@ jQuery(document).ready(function () {
 		url = url == undefined ? "theme-edit.php?t="+theme+'&amp;f='+file : url;
 		
 
-		loadingAjaxIndicator.show();
+		loadingAjaxIndicator.show('fast');
 		editor.setValue('');
+		editor.hasChange == false;
 		// $('#theme_editing').fadeOut();
-		$('#theme_edit_code').fadeOut();
+		$('#theme_edit_code').fadeOut('fast');
 
 		$.ajax({
 			type: "GET",
@@ -486,6 +487,8 @@ jQuery(document).ready(function () {
 			url: url,
 			success: function( data ) {
 				
+				$('#theme_edit_code').fadeIn('fast');
+
 				rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
 				responseText = data.replace(rscript, "");
 				response = $(data);
@@ -497,6 +500,9 @@ jQuery(document).ready(function () {
 				var newcontent = response.find('#codetext');
 				$('#codetext').val(newcontent.val());
 				editor.setValue(newcontent.val());
+				console.log('set content');
+				editor.hasChange = false;
+				console.log(editor.hasChange);
 
 				/* form */
 				var filename = response.find('#edited_file').val() ;
@@ -507,11 +513,9 @@ jQuery(document).ready(function () {
 
 				/* update editor mode */
 				editor.setOption('mode',getEditorMode(getExtension(filename)));
-				// editor.refresh();
+				editor.refresh();
 
 				loadingAjaxIndicator.fadeOut();
-				$('#theme_edit_code').fadeIn();
-
 
 			}
 		});
