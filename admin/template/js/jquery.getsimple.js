@@ -465,7 +465,7 @@ jQuery(document).ready(function () {
 
 	function checkChanged(){
 		if(editor.hasChange == true){
-			alert('This file has unsaved content, save or cancel befor continuing');
+			alert('This file has unsaved content, save or cancel before continuing');
 			return true;
 		}
 	}
