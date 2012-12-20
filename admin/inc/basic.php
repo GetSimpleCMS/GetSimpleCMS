@@ -1164,14 +1164,17 @@ function directoryToArray($directory, $recursive) {
  *
  * @param $directory string directory to scan
  * @param $recursive boolean whether to do a recursive scan or not. 
+ * @param $exts array file extension include filter, array of extensions to include
+ * @param $exclude bool true to treat exts as exclusion filter instead of include
  * @return multidimensional array or files and folders {type,path,name}
  */
-function directoryToMultiArray($dir) {
-   
+function directoryToMultiArray($dir,$recursive = true,$exts = null,$exclude = false) {
+   // $recurse is not implemented
+
    $result = array();
    $dir = rtrim($dir,DIRECTORY_SEPARATOR);
 
-   $cdir = scandir($dir,0);
+   $cdir = scandir($dir);
    foreach ($cdir as $key => $value)
    {
       if (!in_array($value,array(".","..")))
@@ -1181,14 +1184,21 @@ function directoryToMultiArray($dir) {
             $result[$value] = array();
             $result[$value]['type'] = "directory";
             $result[$value]['path'] = $dir . DIRECTORY_SEPARATOR . $value;
-            $result[$value]['value'] = call_user_func(__FUNCTION__,$dir . DIRECTORY_SEPARATOR . $value);
+            $result[$value]['dir'] = $value;
+            $result[$value]['value'] = call_user_func(__FUNCTION__,$dir . DIRECTORY_SEPARATOR . $value,$recursive,$exts,$exclude);
          }
          else
          {
+         	// filetype filter
+         	$ext = lowercase(pathinfo($value,PATHINFO_EXTENSION));	
+         	if(is_array($exts)){
+				if(!in_array($ext,$exts) and !$exclude) continue;
+				if($exclude and in_array($ext,$exts)) continue;
+			} 
          	$result[$value] = array();
             $result[$value]['type'] = 'file';
-            $result[$value]['value'] = $value;
             $result[$value]['path'] = $dir;
+            $result[$value]['value'] = $value;
          } 
       }
    }

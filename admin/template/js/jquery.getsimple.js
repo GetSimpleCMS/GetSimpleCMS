@@ -102,7 +102,6 @@ jQuery(document).ready(function () {
 	/* Listener for filter dropdown */
 	function attachFilterChangeEvent() {
 		$(document).on('change', "#imageFilter", function () {
-			console.log('attachFilterChangeEvent');
 			loadingAjaxIndicator.show();
 			var filterx = $(this).val();
 			$("#imageTable").find("tr").hide();
@@ -442,7 +441,9 @@ jQuery(document).ready(function () {
 	});
  
  
-// theme-edit.php
+	///////////////////////////////////////////////////////////////////////////
+	// theme-edit.php
+	///////////////////////////////////////////////////////////////////////////
 
 	$("#theme-folder").change(function(){
 		var thmfld = $(this).val();
@@ -451,79 +452,6 @@ jQuery(document).ready(function () {
 		updateTheme(thmfld);
 	});
 
-	// theme-edit.php
-	// $("#theme_filemanager a").on('click',function(e){
-	$(document).on('click',"#theme_filemanager a",function(e){
-		// console.log('filechange');
-		e.preventDefault();
-		var thmfld = $("#theme-folder").val();
-		// console.log($(this).attr('href'));
-		if (checkChanged()) return;
-		$(this).addClass('ext-wait'); // loading icon
-		updateTheme('','',$(this).attr('href'));
-	});
-
-	function checkChanged(){
-		if(editor.hasChange == true){
-			alert('This file has unsaved content, save or cancel before continuing');
-			return true;
-		}
-	}
-
-	function updateTheme(theme,file,url){
-
-		// console.log(theme);
-		theme = theme == undefined ? '' : theme;
-		file  = file  == undefined ? '' : file;
-		url   = url   == undefined ? "theme-edit.php?t="+theme+'&amp;f='+file : url;
-		
-		loadingAjaxIndicator.show('fast');
-		editor.setValue('');
-		editor.hasChange == false;
-		// $('#theme_editing').fadeOut();
-		$('#theme_edit_code').fadeOut('fast');
-
-		$.ajax({
-			type: "GET",
-			cache: false,
-			url: url,
-			success: function( data ) {
-				
-				$('#theme_edit_code').fadeIn('fast');
-
-				rscript      = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
-				responseText = data.replace(rscript, "");
-				response     = $(data);
-
-				/* dir tree */
-				$('#theme_filemanager').html(response.find('#theme_filemanager > *') );
-				
-				/* content */
-				var newcontent = response.find('#codetext');
-				$('#codetext').val(newcontent.val());
-				editor.setValue(newcontent.val());
-				console.log('set content');
-				editor.hasChange = false;
-				console.log(editor.hasChange);
-
-				/* form */
-				var filename = response.find('#edited_file').val() ;
-				$('#edited_file').val(filename);
-
-				/* title */
-				$('#theme_editing_file').html(filename);
-
-				/* update editor mode */
-				editor.setOption('mode',getEditorMode(getExtension(filename)));
-				editor.refresh();
-
-				loadingAjaxIndicator.fadeOut();
-
-			}
-		});
-
-	}
- 	
  	// todo: maybe just use on submit event ?
 	$('#themeEditForm .submit').on('click',function(e){
 		e.preventDefault();
@@ -537,8 +465,97 @@ jQuery(document).ready(function () {
 		//todo: reload file to discard changes
 	});
 
+	// delegated on() handlers survive ajax replacement
+	$(document).on('click',"#theme_filemanager a.file",function(e){
+		// console.log('filechange');
+		e.preventDefault();
+		var thmfld = $("#theme-folder").val();
+		// console.log($(this).attr('href'));
+		if (checkChanged()) return;
+		clearFileOpen();
+		$(this).addClass('ext-wait'); // loading icon
+		$(this).addClass('open'); // loading icon
+		updateTheme('','_noload',$(this).attr('href')+'&ajax=1'); // ajax request
+	});
+
+	function checkChanged(){
+		if(editor.hasChange == true){
+			alert('This file has unsaved content, save or cancel before continuing');
+			return true;
+		}
+	}
+
+	function updateTheme(theme,file,url){
+
+		// console.log(theme);
+		var theme = theme == undefined ? '' : theme;
+		var file  = file  == undefined ? '' : file;
+		var url   = url   == undefined ? "theme-edit.php?t="+theme+'&f='+file : url;
+		
+		loadingAjaxIndicator.show('fast');
+		editor.setValue('');
+		editor.hasChange == false;
+		// $('#theme_editing').fadeOut();
+		$('#theme_edit_code').fadeOut('fast');
+
+		$.ajax({
+			type: "GET",
+			cache: false,
+			url: url,
+			paramfile: file, // not sure if its ok to stuff local things here, but it takes it
+			success: function( data ) {
+				
+				$('#theme_edit_code').fadeIn('fast');
+
+				rscript      = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
+				responseText = data.replace(rscript, "");
+				response     = $(data);
+
+				/* dir tree */
+				
+				// using this var to prevent reloads on the filetree for now, 
+				// can go away when we are sending proper ajax responses and not full html pages.
+				if(this.paramfile!='_noload'){
+					$('#theme_filemanager').html(response.find('#theme_filemanager > *') ); 
+				}
+				
+				/* content */
+				var newcontent = response.find('#codetext');
+				$('#codetext').val(newcontent.val());
+				editor.setValue(newcontent.val());
+				editor.hasChange = false;
+
+				/* form */
+				var filename = response.find('#edited_file').val() ;
+				$('#edited_file').val(filename);
+
+				/* title */
+				$('#theme_editing_file').html(filename);
+
+				/* update editor mode */
+				editor.setOption('mode',getEditorMode(getExtension(filename)));
+				editor.refresh();
+				
+				clearFileWaits();
+				loadingAjaxIndicator.fadeOut();
+
+			}
+		});
+
+	}
+ 	
+	function clearFileWaits(){
+		$('#theme_filemanager a.ext-wait').removeClass('ext-wait'); // loading icon
+	}
+
+	function clearFileOpen(){
+		$('#theme_filemanager a.open').removeClass('open'); // loading icon
+	}
+
 	themeFileSave = function(cm){
 		
+		loadingAjaxIndicator.show('fast');
+
 		cm.save(); // copy back to textarea
 		var dataString  = $("#themeEditForm").serialize();
 
@@ -557,6 +574,7 @@ jQuery(document).ready(function () {
 					notifyOk($(response).find('div.updated').html()).popit().removeit();
 				}	
 
+				loadingAjaxIndicator.fadeOut();
 				editor.hasChange = false; // mark clean		
 			}
 		});
@@ -577,7 +595,17 @@ jQuery(document).ready(function () {
 		return extension in modes ? modes[extension] : modes['php'];
 	}
 
-	//title filtering on pages.php & backups.php
+
+	// tree folding
+	$(document).on('click',"#theme_filemanager a.directory",function(e){
+		$(this).toggleClass('dir-open');
+		$(this).next("ul").slideToggle('fast');
+	});
+
+	///////////////////////////////////////////////////////////////////////////
+	// title filtering on pages.php & backups.php
+	///////////////////////////////////////////////////////////////////////////
+
 	var filterSearchInput = $("#filter-search");
 	$('#filtertable').live("click", function ($e) {
 		$e.preventDefault();
@@ -609,7 +637,11 @@ jQuery(document).ready(function () {
 		filterSearchInput.slideUp();
 	});
  
- 
+
+	///////////////////////////////////////////////////////////////////////////
+	// Upload.php
+	///////////////////////////////////////////////////////////////////////////
+
 	//create new folder in upload.php
 	$('#createfolder').live("click", function ($e) {
 		$e.preventDefault();
@@ -652,6 +684,6 @@ jQuery(document).ready(function () {
  
  
  
-	//end of javascript for getsimple
+	// end of javascript for getsimple
 });
  

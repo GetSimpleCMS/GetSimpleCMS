@@ -8,7 +8,6 @@
  * @subpackage Theme
  */
 
-
 // simulate load waits
 // sleep(2);
 
@@ -70,6 +69,22 @@ if((isset($_POST['submitsave']))){
 		echo "</div>";
 		die();
 	}
+}
+
+if(isset($_GET['ajax'])){
+	$content = file_get_contents(GSTHEMESPATH . tsl($template) . $template_file);
+	?>
+		<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
+			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
+			<textarea name="content" id="codetext" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
+			<input type="hidden" value="<?php echo tsl($template) . $template_file; ?>" name="edited_file" id="edited_file" />
+			<?php exec_action('theme-edit-extras'); ?>
+			<p id="submit_line" >
+				<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
+			</p>
+		</form>	
+	<?php		
+	die();	
 }
 
 # create themes dropdown
@@ -141,7 +156,7 @@ function createFileDropdown($templates){
 	return $theme_templates;
 }
 
-function array2ul($array) {
+function array2ul($array,$hideEmpty = true) {
 	GLOBAL $allowed_extensions,$template_file,$template;
     
 	$cnt = 0;
@@ -149,33 +164,38 @@ function array2ul($array) {
     $out="<ul>";
     foreach($array as $key => $elem){
     	
-    	// todo: replace this with an actual loop counter for valid filetypes.
-    	if(strtolower($key) == 'images') continue;
-
         if(!is_array($elem['value'])){
     		$ext = lowercase(pathinfo($elem['value'], PATHINFO_EXTENSION));
     		
     		// Is a file
-    		if( in_array($ext,$allowed_extensions) ){
+    		if( in_array($ext,$allowed_extensions)){
 
     			$filename = $elem['value'];
 				$filepath = $elem['path'];    			
 				$filenamefull=substr(strstr($filepath.DIRECTORY_SEPARATOR.$filename,'/theme/'.$template.'/'),strlen('/theme/'.$template.'/')); 
 
     			$open = fileIsOpen($elem['path'],$elem['value']) ? ' open' : '';
+    			
   				if ($filename == 'template.php'){
   					$ext = 'theme';
   					$filename=i18n_r('DEFAULT_TEMPLATE');        			
   				}	
 				
 				$link = myself(false).'?t='.$template.'&amp;f='.$filenamefull;
-
 				$out.='<li><a href="'.$link.'"class="file ext-'.$ext.$open.'">'.$filename."</a></li>";
         	}
         }
         else {
         	// Is a folder
-        	$out.='<li><a class="directory">'.$key.'</a>'.array2ul($elem['value']).'</li>';
+
+        	// Are we showing/hiding empty folders.
+        	// this will not hide empty folders that contain at least 1 subfolder
+        	$empty = '';
+        	if(count($elem['value']) == 0){
+        		if($hideEmpty) continue;
+        		$empty = ' dir-empty'; // empty folder class
+        	}	
+        	$out.='<li><a class="directory'.$empty.'">'.$key.'</a>'.array2ul($elem['value']).'</li>';
         }	
     }
     $out=$out."</ul>";
@@ -187,37 +207,39 @@ function fileIsOpen($path,$file){
     $file = $path.DIRECTORY_SEPARATOR.$file;
     $filename=pathinfo($file,PATHINFO_BASENAME);
     $filenamefull=substr(strstr($file,'/theme/'.$template.'/'),strlen('/theme/'.$template.'/')); 
-	# _debugLog($file,$template_file,$filename,$filenamefull);
 	return $template_file == $filenamefull;
 }
 
 function compareOrder($a, $b)
 {
-		$atype = $a['type'];
-		$btype = $b['type'];
+	$atype = $a['type'];
+	$btype = $b['type'];
 
-		// directories first
-    if ($atype!=$btype){
-    	return strcmp($atype,$btype);
-    }
+	// place directories first
+	if ($atype!=$btype){
+		return strcmp($atype,$btype);
+	}
 
-    // sort directories by key
-    if($atype == 'directory' and $btype == 'directory'){
-    	return strcmp(key($a['value']),key($b['value']));
-    } 
-    
-    // sort files by value
-    if($atype == 'file' and $btype == 'file'){
-    	return strcmp($a['value'],$b['value']);
-    } 
+	// sort directories by key
+	if($atype == 'directory' and $btype == 'directory'){
+		return strcmp($a['dir'],$b['dir']);
+	}
+
+	// sort files by value
+	if($atype == 'file' and $btype == 'file'){
+		return strcmp($a['value'],$b['value']);
+	} 
 }
 
+function recur_sort(&$array) {
+   foreach ($array as &$value) {
+      if (is_array($value['value']) and count($value['value']>1)) recur_sort($value['value']);
+   }
+   return @uasort($array, 'compareOrder');
+}
 
-$files = directoryToMultiArray($directory);
-#_debugLog($TEMPLATE_FILE);
-#_debugLog($files);
-uasort($files, 'compareOrder');
-# uksort($files, 'compareOrder');
+$files = directoryToMultiArray($directory,true,$allowed_extensions);
+recur_sort($files, 'compareOrder');
 $fileList = array2ul($files);
 
 if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
@@ -291,7 +313,7 @@ jQuery(document).ready(function () {
 			},
 			saveFunction:  function() { customSave(cm); },
 			onChange: function(){
-				console.log('content changed');
+				// console.log('content changed');
 				editor.hasChange = true;
 			},
 

@@ -2127,6 +2127,10 @@ a.disabled:visited {
     color: #333;
 }
 
+#theme_filemanager ul ul{
+	display:none;
+}
+
 #theme_filemanager a:hover, #file-manager a.context-menu-active {
     background-color: #E0E0E0;
     text-decoration:none;
@@ -2158,17 +2162,15 @@ a.disabled:visited {
 }
 
 #theme_filemanager .directory {
+    background-image: url(images/filemanager/folder.png);
+}
+
+#theme_filemanager .dir-open {
     background-image: url(images/filemanager/folder-open.png);
 }
 
-#theme_filemanager .directory.open {
-    background-image: url(images/filemanager/folder_open.png);
-}
-
-.file {
-    background-image: url(images/filemanager/text-x-generic.png);
-}
-
+/* File Extension icons*/
+.file {    background-image: url(images/filemanager/text-x-generic.png); }
 .ext- {background-image: url(images/filemanager/text-x-preview.png);}
 .ext-js {background-image: url(images/filemanager/application-javascript.png);}
 .ext-html {background-image: url(images/filemanager/text-html.png);}
@@ -2177,3 +2179,15 @@ a.disabled:visited {
 .ext-css {background-image: url(images/filemanager/text-css.png);}
 .ext-theme {background-image: url(images/filemanager/preferences-desktop-theme.png);}
 .ext-wait {background-image: url(images/ajax_dark.gif);}
+
+/* Grayscale */
+.desaturate, .dir-empty{
+    filter: grayscale(100%); /* Current draft standard */
+    -webkit-filter: grayscale(100%); /* New WebKit */
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%); 
+    -o-filter: grayscale(100%); /* Not yet supported in Gecko, Opera or IE */ 
+    /*filter: url(resources.svg#desaturate); /* Gecko */*/
+    filter: gray; /* IE */
+    -webkit-filter: grayscale(1); /* Old WebKit */
+}
