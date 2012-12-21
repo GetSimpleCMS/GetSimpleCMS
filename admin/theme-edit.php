@@ -279,21 +279,64 @@ if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 ?>
 
 <script>
+
+function loadjscssfile(filename, filetype){
+ if (filetype=="js"){ //if filename is a external JavaScript file
+  var fileref=document.createElement('script')
+  fileref.setAttribute("type","text/javascript")
+  fileref.setAttribute("src", filename)
+ }
+ else if (filetype=="css"){ //if filename is an external CSS file
+  var fileref=document.createElement("link")
+  fileref.setAttribute("rel", "stylesheet")
+  fileref.setAttribute("type", "text/css")
+  fileref.setAttribute("href", filename)
+ }
+ if (typeof fileref!="undefined")
+  document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+
 var themeFileSave;
 var editor;
 jQuery(document).ready(function () {
-	  
-	  var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder);
-	 
-	  function keyEvent(cm, e) {
-	    if (e.keyCode == 81 && e.ctrlKey) {
-	      if (e.type == "keydown") {
-	        e.stop();
-	        setTimeout(function() {foldFunc(cm, cm.getCursor().line);}, 50);
-	      }
-	      return true;
-	    }
-	  }
+	
+		var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder);
+
+		function keyEvent(cm, e) {
+			if (e.keyCode == 81 && e.ctrlKey) {
+				if (e.type == "keydown") {
+					e.stop();
+					setTimeout(function() {foldFunc(cm, cm.getCursor().line);}, 50);
+				}
+				return true;
+			}
+		}
+
+		var themes = Array(
+			'ambiance',
+			'cobalt',
+			'eclipse',
+			'eclipse',
+			'elegant',
+			'erlang-dark',
+			'lesser-dark',
+			'monokai',
+			'neat',
+			'night',
+			'rubyblue',
+			'solarized',
+			'twilight',
+			'vibrant-ink',
+			'xq-dark'
+		);
+
+		var defTheme = 'default';		
+		var customTheme = themes[Math.floor(Math.random()*themes.length)];
+
+		if(customTheme != undefined){
+			defTheme = customTheme;
+			loadjscssfile("template/js/codemirror/theme/"+defTheme+".css", "css")
+		}	
 
 		editor = CodeMirror.fromTextArea(document.getElementById("codetext"), {
 			lineNumbers: true,
@@ -303,7 +346,7 @@ jQuery(document).ready(function () {
 			enterMode: "keep",
 			mode:"<?php echo $mode; ?>",
 			tabMode: "shift",
-			theme:'default',
+			theme: defTheme,
 			onGutterClick: foldFunc,
 			extraKeys: {
 				"Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
@@ -352,11 +395,10 @@ jQuery(document).ready(function () {
       cm.refresh();
     }
 
-    // CodeMirror.on(window, "resize", function() {
-    //   var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
-    //   if (!showing) return;
-    //   showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
-    // });
+    // hack in new theme support until we update codemirror
+    var theme = editor.getOption('theme');
+    $('.CodeMirror').addClass('cm-s-'+theme);
+    $('.CodeMirror-gutter').addClass('cm-s-'+theme);
 
 });
 

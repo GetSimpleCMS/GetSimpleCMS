@@ -2191,3 +2191,40 @@ a.disabled:visited {
     filter: gray; /* IE */
     -webkit-filter: grayscale(1); /* Old WebKit */
 }
+
+/* CodeMirror WEBKIT SCROLLBARS */
+
+.CodeMirror ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.CodeMirror ::-webkit-scrollbar-track-piece {
+    /*background-color: #333;*/
+    -webkit-border-radius: 0;
+    margin:2px;
+}
+
+.CodeMirror ::-webkit-scrollbar-thumb:vertical {
+    height: 5px;
+    background-color: #9C9C9C;
+    -webkit-border-radius: 3px;
+}
+
+.CodeMirror ::-webkit-scrollbar-thumb:vertical:hover {
+    background-color: #666;
+}
+
+.CodeMirror ::-webkit-scrollbar-thumb:horizontal {
+    width: 5px;
+    background-color: #9C9C9C;
+    -webkit-border-radius: 3px;
+}
+
+.CodeMirror ::-webkit-scrollbar-thumb:horizontal:hover {
+    background-color: #666;
+}
+
+.CodeMirror ::-webkit-scrollbar-corner {
+    background-color: transparent;
+}

@@ -9,7 +9,8 @@
 
 .CodeMirror-scroll {
   overflow: auto;
-  height: 660px;
+  /*height: 660px;*/
+  height: 100%;
   /* This is needed to prevent an IE[67] bug where the scrolled content
      is visible outside of the scrolling box. */
   position: relative;
@@ -19,8 +20,8 @@
 .CodeMirror-gutter {
   position: absolute; left: 0; top: 0;
   z-index: 10;
-  background-color: #f7f7f7;
-  border-right: 1px solid #eee;
+/*  background-color: #f7f7f7;
+  border-right: 1px solid #eee;*/
   min-width: 2.4em;
   height: 100%;
 }
@@ -89,7 +90,7 @@ div.CodeMirror-selected { background: #d9d9d9; }
 
 .CodeMirror-fullscreen {
   display: block;
-  position: absolute;
+  position: fixed;
   top: 0; left: 0;
   width: 100%;
   z-index: 9999;
