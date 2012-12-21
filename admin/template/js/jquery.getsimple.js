@@ -529,6 +529,9 @@ jQuery(document).ready(function () {
 				var filename = response.find('#edited_file').val() ;
 				$('#edited_file').val(filename);
 
+				/* hook wrapper */
+				$('#theme-edit-extras-wrap').html(response.find('#theme-edit-extras-wrap > *'));
+
 				/* title */
 				$('#theme_editing_file').html(filename);
 
