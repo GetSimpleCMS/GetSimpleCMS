@@ -545,25 +545,28 @@ jQuery(document).ready(function () {
 
 	}
  	
+ 	// removes loading icons
 	function clearFileWaits(){
-		$('#theme_filemanager a.ext-wait').removeClass('ext-wait'); // loading icon
+		$('#theme_filemanager a.ext-wait').removeClass('ext-wait'); 
 	}
 
+	// removes active file backgrounds
 	function clearFileOpen(){
-		$('#theme_filemanager a.open').removeClass('open'); // loading icon
+		$('#theme_filemanager a.open').removeClass('open'); 
 	}
 
 	themeFileSave = function(cm){
 		
 		loadingAjaxIndicator.show('fast');
 
-		cm.save(); // copy back to textarea
-		var dataString  = $("#themeEditForm").serialize();
+		cm.save(); // copy cm back to textarea
+
+		var dataString = $("#themeEditForm").serialize();
 
 		$.ajax({
 			type: "POST",
 			cache: false,
-			url: '/getsimple_svn/admin/theme-edit.php',
+			url: 'theme-edit.php',
 			data: dataString+'&submitsave=1&ajaxsave=1',
 			success: function( response ) {
 				$('div.wrapper .updated').remove();
