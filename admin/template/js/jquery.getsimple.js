@@ -495,8 +495,7 @@ jQuery(document).ready(function () {
 		loadingAjaxIndicator.show('fast');
 		editor.setValue('');
 		editor.hasChange == false;
-		// $('#theme_editing').fadeOut();
-		$('#theme_edit_code').fadeOut('fast');
+		$('#theme_edit_code').fadeTo('fast',0.3);
 
 		$.ajax({
 			type: "GET",
@@ -505,8 +504,6 @@ jQuery(document).ready(function () {
 			paramfile: file, // not sure if its ok to stuff local things here, but it takes it
 			success: function( data ) {
 				
-				$('#theme_edit_code').fadeIn('fast');
-
 				rscript      = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
 				responseText = data.replace(rscript, "");
 				response     = $(data);
@@ -541,6 +538,7 @@ jQuery(document).ready(function () {
 				
 				clearFileWaits();
 				loadingAjaxIndicator.fadeOut();
+				$('#theme_edit_code').fadeTo('fast',1);
 
 			}
 		});
