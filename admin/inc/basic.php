@@ -60,9 +60,11 @@ function clean_img_name($text)  {
  * @return string 
  */
 function to7bit($text,$from_enc="UTF-8") {
-		if (function_exists('mb_convert_encoding')) {
+	if (function_exists('mb_convert_encoding')) {
    		$text = mb_convert_encoding($text,'HTML-ENTITIES',$from_enc);
-   	}
+    } else {
+		$text = htmlspecialchars_decode(utf8_decode(htmlentities($text, ENT_COMPAT, 'utf-8', false)));
+	}
     $text = preg_replace(
         array('/&szlig;/','/&(..)lig;/',
              '/&([aouAOU])uml;/','/&(.)[^;]*;/'),
