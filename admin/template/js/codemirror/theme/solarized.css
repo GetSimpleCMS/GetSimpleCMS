@@ -95,7 +95,7 @@ http://ethanschoonover.com/solarized/img/solarized-palette.png
 }
 .cm-s-solarized .cm-strong { color: #eee; }
 .cm-s-solarized .cm-tab:before {
-  content: "➤";   /*visualize tab character*/
+ /* content: "➤";*/   /*visualize tab character*/
   color: #586e75;
 }
 
@@ -187,7 +187,7 @@ Active line. Negative margin compensates left padding of the text in the
 view-port
 */
 .cm-s-solarized .activeline {
-  margin-left: -20px;
+  /*margin-left: -20px;*/
 }
 
 .cm-s-solarized.cm-s-dark .activeline {

@@ -2087,6 +2087,10 @@ a.disabled:visited {
 	border-radius:2px;
 }
 
+#cm_themeselect {
+	float: right;
+}
+
 #theme_filemanager {
 	margin: 14px 10px 20px 0;
 	background: #F9F9F9;

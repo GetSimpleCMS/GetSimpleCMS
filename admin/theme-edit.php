@@ -30,10 +30,13 @@ if (isset($_GET['t'])) {
 	}
 }
 if (isset($_GET['f'])) {
-	$_GET['f'] = $_GET['f'];
-	if ($_GET['f']&&is_file(GSTHEMESPATH . $template.'/'.$_GET['f'])) {
+	if (is_file(GSTHEMESPATH . $template.'/'.$_GET['f'])) {
 		$template_file = $_GET['f'];
 	}
+}
+
+if(isset($_POST['themesave'])){
+	setcookie('gs_editor_theme',$_POST['themesave']);
 }
 
 $themepath = GSTHEMESPATH.$template.DIRECTORY_SEPARATOR;
@@ -45,7 +48,7 @@ if ($template_file == '') {
 }
 
 # check for form submission
-if((isset($_POST['submitsave']))){
+if(isset($_POST['submitsave'])){
 	
 	# check for csrf
 	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
@@ -71,6 +74,28 @@ if((isset($_POST['submitsave']))){
 	}
 }
 
+$themeselector = '
+			<select id="cm_themeselect">
+		    <option>default</option>
+		    <option>ambiance</option>
+		    <option>blackboard</option>
+		    <option>cobalt</option>
+		    <option>eclipse</option>
+		    <option>elegant</option>
+		    <option>erlang-dark</option>
+		    <option>lesser-dark</option>
+		    <option>monokai</option>
+		    <option>neat</option>
+		    <option>night</option>
+		    <option>rubyblue</option>
+		    <option>solarized dark</option>
+		    <option>solarized light</option>
+		    <option>twilight</option>
+		    <option>vibrant-ink</option>
+		    <option>xq-dark</option>
+		</select>		
+';
+
 if(isset($_GET['ajax'])){
 	$content = file_get_contents(GSTHEMESPATH . tsl($template) . $template_file);
 	?>
@@ -81,6 +106,7 @@ if(isset($_GET['ajax'])){
 			<div id="theme-edit-extras-wrap"><?php exec_action('theme-edit-extras'); ?></div>
 			<p id="submit_line" >
 				<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
+			<?php echo $themeselector; ?>				
 			</p>
 		</form>	
 	<?php		
@@ -276,28 +302,17 @@ if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 			$mode = 'application/x-httpd-php';
 	}
 
+	if(isset($_COOKIE['gs_editor_theme'])){
+		$theme = $_COOKIE['gs_editor_theme'];
+	}
+
 ?>
 
 <script>
 
-function loadjscssfile(filename, filetype){
- if (filetype=="js"){ //if filename is a external JavaScript file
-  var fileref=document.createElement('script')
-  fileref.setAttribute("type","text/javascript")
-  fileref.setAttribute("src", filename)
- }
- else if (filetype=="css"){ //if filename is an external CSS file
-  var fileref=document.createElement("link")
-  fileref.setAttribute("rel", "stylesheet")
-  fileref.setAttribute("type", "text/css")
-  fileref.setAttribute("href", filename)
- }
- if (typeof fileref!="undefined")
-  document.getElementsByTagName("head")[0].appendChild(fileref)
-}
-
 var themeFileSave;
 var editor;
+var loadjscssfile;
 jQuery(document).ready(function () {
 	
 		var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder);
@@ -330,10 +345,12 @@ jQuery(document).ready(function () {
 			'xq-dark'
 		);
 
-		var defTheme = 'default';		
-		var customTheme = themes[Math.floor(Math.random()*themes.length)];
+		var customTheme = '<?php echo $theme; ?>'; 
 
-		if(customTheme != undefined){
+		var defTheme = 'default';		
+		// var customTheme = themes[Math.floor(Math.random()*themes.length)];
+
+		if(customTheme && customTheme != undefined){
 			defTheme = customTheme;
 			loadjscssfile("template/js/codemirror/theme/"+defTheme+".css", "css")
 		}	
@@ -368,10 +385,10 @@ jQuery(document).ready(function () {
 
 		var hlLine = editor.setLineClass(0, "activeline");
     
-	function customSave(cm){
-		console.log('saving');
-		themeFileSave(cm);
-	}
+		function customSave(cm){
+			console.log('saving');
+			themeFileSave(cm);
+		}
 
     function isFullScreen(cm) {
       return /\bCodeMirror-fullscreen\b/.test(cm.getWrapperElement().className);
@@ -395,10 +412,12 @@ jQuery(document).ready(function () {
       cm.refresh();
     }
 
-    // hack in new theme support until we update codemirror
-    var theme = editor.getOption('theme');
-    $('.CodeMirror').addClass('cm-s-'+theme);
-    $('.CodeMirror-gutter').addClass('cm-s-'+theme);
+		function setThemeSelected(theme){
+			$("#cm_themeselect").val(theme);
+		}
+
+		cm_theme_update(defTheme);	
+		setThemeSelected(defTheme);
 
 });
 
@@ -448,6 +467,7 @@ jQuery(document).ready(function () {
 			<div id="theme-edit-extras-wrap"><?php exec_action('theme-edit-extras'); ?></div>
 			<p id="submit_line" >
 				<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
+			<?php echo $themeselector; ?>	
 			</p>
 		</form>
 		</div>
