@@ -2210,7 +2210,7 @@ a.disabled:visited {
 }
 
 .CodeMirror ::-webkit-scrollbar-thumb:vertical {
-    height: 5px;
+    height: 20px;
     background-color: #9C9C9C;
     -webkit-border-radius: 3px;
 }
@@ -2220,7 +2220,7 @@ a.disabled:visited {
 }
 
 .CodeMirror ::-webkit-scrollbar-thumb:horizontal {
-    width: 5px;
+    width: 20px;
     background-color: #9C9C9C;
     -webkit-border-radius: 3px;
 }
