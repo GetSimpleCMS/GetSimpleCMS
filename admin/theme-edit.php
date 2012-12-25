@@ -365,6 +365,7 @@ jQuery(document).ready(function () {
 			tabMode: "shift",
 			theme: defTheme,
 			onGutterClick: foldFunc,
+			fixedGutter : true,
 			extraKeys: {
 				"Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
 				"F11"    : function(cm) { setFullScreen(cm, !isFullScreen(cm)); },
