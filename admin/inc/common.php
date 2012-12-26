@@ -174,7 +174,7 @@ if(isset($base)) {
 /**
  * Check to make sure site is already installed
  */
-if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update') {
+if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update' && get_filename_id() != 'style') {
 	$fullpath = suggest_site_path();
 	
 	# if an update file was included in the install package, redirect there first	
