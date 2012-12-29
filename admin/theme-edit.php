@@ -345,7 +345,7 @@ jQuery(document).ready(function () {
 			'xq-dark'
 		);
 
-		var customTheme = '<?php echo $theme; ?>'; 
+		var customTheme = '<?php if(isset($theme)) echo $theme; ?>'; 
 
 		var defTheme = 'default';		
 		// var customTheme = themes[Math.floor(Math.random()*themes.length)];
