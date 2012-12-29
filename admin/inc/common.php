@@ -10,32 +10,51 @@
  */
 
 /**
- * Bad stuff protection
+ * Variable Globalization
  */
-define('IN_GS', TRUE);
-define('GSSTYLEWIDE','wide');
+global 
+ $SITENAME,		// sitename setting
+ $SITEURL,		// siteurl setting
+ $TEMPLATE,		// current theme
+ $TIMEZONE,		// current timezone either from config or user
+ $LANG,
+ $SALT,
+ $i18n,
+ $USR,			// logged in user
+ $PERMALINK,	// permalink structure
+ $GSADMIN,		// admin foldername
+ $GS_debug,		// debug log array
+ $components,	// components array
+ $nocache		// disable site wide cache
+;
 
-include_once('security_functions.php');
-
-if (version_compare(PHP_VERSION, "5")  >= 0) {
-	foreach ($_GET as &$xss) $xss = antixss($xss);
+if(isset($_GET['nocache'])){
+	$nocache = true;
 }
 
 /**
- * Basic file inclusions
+ * Init debug log array
  */
-include('basic.php');
-include('template_functions.php');
-include('logging.class.php');
+$GS_debug = array();
 
-define('GSROOTPATH', get_root_path());
+/*
+ * Defines Root Path
+ */
+define('GSROOTPATH', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
 
+/*
+ * Load config
+ */
 if (file_exists(GSROOTPATH . 'gsconfig.php')) {
 	require_once(GSROOTPATH . 'gsconfig.php');
 }
 
+/*
+ * Set custom GSADMINPATH path from config
+ */
 if (defined('GSADMIN')) {
-	$GSADMIN = GSADMIN;
+	# make sure trailing slashes are standardized from user input
+	$GSADMIN = rtrim(GSADMIN,'/\\');
 } else {
 	$GSADMIN = 'admin';
 }
@@ -43,7 +62,7 @@ if (defined('GSADMIN')) {
 /**
  * Define some constants
  */
-define('GSADMINPATH', get_admin_path());
+define('GSADMINPATH', GSROOTPATH . $GSADMIN.'/');
 define('GSADMININCPATH', GSADMINPATH. 'inc/');
 define('GSPLUGINPATH', GSROOTPATH. 'plugins/');
 define('GSLANGPATH', GSADMINPATH. 'lang/');
@@ -59,6 +78,58 @@ define('GSBACKUSERSPATH', GSROOTPATH. 'backups/users/');
 define('GSCACHEPATH', GSROOTPATH. 'data/cache/');
 define('GSAUTOSAVEPATH', GSROOTPATH. 'data/pages/autosave/');
 
+define('GSSTYLEWIDE','wide');
+define('IN_GS', TRUE);
+
+/**
+ * Debugging
+ */
+
+/**
+ * Debug Console Log
+ *
+ * @since 3.1
+ *
+ * @param $txt string
+ */
+function debugLog($txt) {
+	global $GS_debug;	
+	array_push($GS_debug,$txt);
+}
+
+/**
+ * Init debug mode
+ * Enable php error logging	
+ */
+if(defined('GSDEBUG') and (bool)GSDEBUG == true) {
+	error_reporting(-1);
+	ini_set('display_errors', 1);
+	$nocache = true;
+} else if( defined('SUPRESSERRORS') and (bool)SUPPRESSERRORS == true ) {
+	error_reporting(0);
+	ini_set('display_errors', 0);
+}
+
+ini_set('log_errors', 1);
+ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
+
+/**
+ * Bad stuff protection
+ */
+include_once('security_functions.php');
+
+if (version_compare(PHP_VERSION, "5")  >= 0) {
+	foreach ($_GET as &$xss) $xss = antixss($xss);
+}
+
+/**
+ * Basic file inclusions
+ */
+include('basic.php');
+include('template_functions.php');
+include('logging.class.php');
+
+
 /**
  * Variable check to prevent debugging going off
  * @todo some of these may not even be needed anymore
@@ -67,22 +138,6 @@ $admin_relative = (isset($admin_relative)) ? $admin_relative : '';
 $lang_relative = (isset($lang_relative)) ? $lang_relative : '';
 $load['login'] = (isset($load['login'])) ? $load['login'] : '';
 $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
-
-
-/**
- * Debugging
- */
-if ( isDebug() ) {
-	error_reporting(-1);
-	ini_set('display_errors', 1);
-} else if( getDef('SUPRESSERRORS',true) ) {
-	error_reporting(0);
-	ini_set('display_errors', 0);
-}
-ini_set('log_errors', 1);
-ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
-
-
 
 
 /**
@@ -115,19 +170,21 @@ if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 		$LANG = $datau->LANG;
 	} else {
 		$USR = null;
-		$TIMEZONE = defined('GSTIMEZONE') ? GSTIMEZONE : "";	
 	}
 } else {
 	$USR = null;
-	$TIMEZONE = defined('GSTIMEZONE') ? GSTIMEZONE : "";
 }
 
+// set defined timezone from config if not set on user
+if( (!isset($TIMEZONE) || trim($TIMEZONE) == '' ) && defined('GSTIMEZONE') ){
+	$TIMEZONE = GSTIMEZONE;
+}
 
 /** grab authorization and security data */
 if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
 	$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
 	$SALT = stripslashes($dataa->apikey);
-}	else {
+} else {
 	$SALT = sha1($SITEURL);
 }
 $SESSIONHASH = sha1($SALT . $SITENAME);
@@ -155,14 +212,6 @@ if(!isset($LANG) || $LANG == '') {
 }
 include_once(GSLANGPATH . $LANG . '.php');
 
-
-/**
- * Variable Globalization
- */
-global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR, $PERMALINK, $GSADMIN, $components;
-
-$GS_debug        = array();
-
 /**
  * $base is if the site is being viewed from the front-end
  */
@@ -174,7 +223,7 @@ if(isset($base)) {
 /**
  * Check to make sure site is already installed
  */
-if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update') {
+if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update' && get_filename_id() != 'style') {
 	$fullpath = suggest_site_path();
 	
 	# if an update file was included in the install package, redirect there first	
@@ -188,23 +237,23 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
 	if ($SITEURL == '')	{
 		redirect($fullpath . $GSADMIN.'/install.php');
 	} 
-
+	
 	if(!getDef('GSDEBUGINSTALL',true)){	
-		# if you've made it this far, the site is already installed so remove the installation files
-		$filedeletionstatus=true;
-		if (file_exists(GSADMINPATH.'install.php'))	{
-			$filedeletionstatus = unlink(GSADMINPATH.'install.php');
-		}
-		if (file_exists(GSADMINPATH.'setup.php'))	{
-			$filedeletionstatus = unlink(GSADMINPATH.'setup.php');
-		}
-		if (file_exists(GSADMINPATH.'update.php'))	{
-			$filedeletionstatus = unlink(GSADMINPATH.'update.php');
-		}
-		if (!$filedeletionstatus) {
-			$error = sprintf(i18n_r('ERR_CANNOT_DELETE'), '<code>/'.$GSADMIN.'/install.php</code>, <code>/'.$GSADMIN.'/setup.php</code> or <code>/'.$GSADMIN.'/update.php</code>');
-		}
-	}	
+	# if you've made it this far, the site is already installed so remove the installation files
+	$filedeletionstatus=true;
+	if (file_exists(GSADMINPATH.'install.php'))	{
+		$filedeletionstatus = unlink(GSADMINPATH.'install.php');
+	}
+	if (file_exists(GSADMINPATH.'setup.php'))	{
+		$filedeletionstatus = unlink(GSADMINPATH.'setup.php');
+	}
+	if (file_exists(GSADMINPATH.'update.php'))	{
+		$filedeletionstatus = unlink(GSADMINPATH.'update.php');
+	}
+	if (!$filedeletionstatus) {
+		$error = sprintf(i18n_r('ERR_CANNOT_DELETE'), '<code>/'.$GSADMIN.'/install.php</code>, <code>/'.$GSADMIN.'/setup.php</code> or <code>/'.$GSADMIN.'/update.php</code>');
+	}
+}
 }
 
 
@@ -233,4 +282,3 @@ if(isset($load['plugin']) && $load['plugin']){
 	
 }
 if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login_functions.php'); }
-?>

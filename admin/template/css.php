@@ -38,6 +38,17 @@ a img,
 	clear: both;
 }
 
+.unformatted {
+	white-space: pre;
+	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+	line-height: 15px;
+	font-size: 11px;
+	display: block;
+	padding-bottom: 15px;
+	color: #555;
+	overflow: auto;
+}
+
 #help {
 	display: none;
 }

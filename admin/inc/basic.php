@@ -60,9 +60,11 @@ function clean_img_name($text)  {
  * @return string 
  */
 function to7bit($text,$from_enc="UTF-8") {
-		if (function_exists('mb_convert_encoding')) {
+	if (function_exists('mb_convert_encoding')) {
    		$text = mb_convert_encoding($text,'HTML-ENTITIES',$from_enc);
-   	}
+    } else {
+		$text = htmlspecialchars_decode(utf8_decode(htmlentities($text, ENT_COMPAT, 'utf-8', false)));
+	}
     $text = preg_replace(
         array('/&szlig;/','/&(..)lig;/',
              '/&([aouAOU])uml;/','/&(.)[^;]*;/'),
@@ -268,8 +270,6 @@ function get_execution_time($reset=false)
     }    
     return round(microtime(true) - $microtime_start,5); 
 }
-
-$GS_debug = array();
 
 /**
  * Get XML Data
@@ -1112,19 +1112,6 @@ function removerelativepath($file) {
 	}
 	return $file;
 }
-
-/**
- * Debug Console Log
- *
- * @since 3.1
- *
- * @param $txt string
- */
-function debugLog($txt) {
-	global $GS_debug;	
-	array_push($GS_debug,$txt);
-}
-
 
 /**
  * Return a directory of files and folders
