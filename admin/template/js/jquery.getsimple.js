@@ -7,6 +7,7 @@
  * Copyright (c) Arthur McLean
  */
 (function($){$.fn.capslock=function(options){if(options)$.extend($.fn.capslock.defaults,options);this.each(function(){$(this).bind("caps_lock_on",$.fn.capslock.defaults.caps_lock_on);$(this).bind("caps_lock_off",$.fn.capslock.defaults.caps_lock_off);$(this).bind("caps_lock_undetermined",$.fn.capslock.defaults.caps_lock_undetermined);$(this).keypress(function(e){check_caps_lock(e)})});return this};function check_caps_lock(e){var ascii_code=e.which;var letter=String.fromCharCode(ascii_code);var upper=letter.toUpperCase();var lower=letter.toLowerCase();var shift_key=e.shiftKey;if(upper!==lower){if(letter===upper&&!shift_key){$(e.target).trigger("caps_lock_on")}else if(letter===lower&&!shift_key){$(e.target).trigger("caps_lock_off")}else if(letter===lower&&shift_key){$(e.target).trigger("caps_lock_on")}else if(letter===upper&&shift_key){if(navigator.platform.toLowerCase().indexOf("win")!==-1){$(e.target).trigger("caps_lock_off")}else{if(navigator.platform.toLowerCase().indexOf("mac")!==-1&&$.fn.capslock.defaults.mac_shift_hack){$(e.target).trigger("caps_lock_off")}else{$(e.target).trigger("caps_lock_undetermined")}}}else{$(e.target).trigger("caps_lock_undetermined")}}else{$(e.target).trigger("caps_lock_undetermined")}if($.fn.capslock.defaults.debug){if(console){console.log("Ascii code: "+ascii_code);console.log("Letter: "+letter);console.log("Upper Case: "+upper);console.log("Shift key: "+shift_key)}}}$.fn.capslock.defaults={caps_lock_on:function(){},caps_lock_off:function(){},caps_lock_undetermined:function(){},mac_shift_hack:true,debug:false}})(jQuery);
+
  
 /*
  * GetSimple js file    
@@ -20,7 +21,9 @@ function updateCoords(c) {
 	$('#pich').html(c.h);
 	$('#picw').html(c.w);
 };
+
 var Debugger = function () {}
+
 Debugger.log = function (message) {
 	try {
 		console.log(message);
@@ -99,7 +102,6 @@ jQuery(document).ready(function () {
 	/* Listener for filter dropdown */
 	function attachFilterChangeEvent() {
 		$(document).on('change', "#imageFilter", function () {
-			console.log('attachFilterChangeEvent');
 			loadingAjaxIndicator.show();
 			var filterx = $(this).val();
 			$("#imageTable").find("tr").hide();
@@ -439,20 +441,220 @@ jQuery(document).ready(function () {
 	});
  
  
+	///////////////////////////////////////////////////////////////////////////
 	// theme-edit.php
-	$("#theme-folder").change(function () {
+	///////////////////////////////////////////////////////////////////////////
+
+	$("#theme-folder").change(function(){
 		var thmfld = $(this).val();
+		if (checkChanged()) return; // todo: change selection back
+		$('#theme_filemanager').html('Loading...');
+		updateTheme(thmfld);
+	});
+
+ 	// todo: maybe just use on submit event ?
+	$('#themeEditForm .submit').on('click',function(e){
+		e.preventDefault();
+		themeFileSave(editor);
+	});
+
+	$('#themeEditForm .cancel').on('click',function(e){
+		e.preventDefault();
+		editor.hasChange = false;
+		notifyWarn('Updates cancelled').removeit();
+		//todo: reload file to discard changes
+	});
+
+
+	$('#cm_themeselect').on('change',function(e){
+		var theme = $(this).find(":selected").text();
+		sendDataToServer('theme-edit.php','themesave='+theme);
+		cm_theme_update(theme);		
+	});
+
+	function sendDataToServer(url,datastring){
+		$.ajax({
+			type: "POST",
+			dataType: "html",
+			url: url,
+			data: datastring,
+			success: function (data) {
+				
+			}	
+		});
+	}	
+
+	// delegated on() handlers survive ajax replacement
+	$(document).on('click',"#theme_filemanager a.file",function(e){
+		// console.log('filechange');
+		e.preventDefault();
+		var thmfld = $("#theme-folder").val();
+		// console.log($(this).attr('href'));
+		if (checkChanged()) return;
+		clearFileOpen();
+		$(this).addClass('ext-wait'); // loading icon
+		$(this).addClass('open'); // loading icon
+		updateTheme('','_noload',$(this).attr('href')+'&ajax=1'); // ajax request
+	});
+
+	function checkChanged(){
+		if(editor.hasChange == true){
+			alert('This file has unsaved content, save or cancel before continuing');
+			return true;
+		}
+	}
+
+	function updateTheme(theme,file,url){
+
+		// console.log(theme);
+		var theme = theme == undefined ? '' : theme;
+		var file  = file  == undefined ? '' : file;
+		var url   = url   == undefined ? "theme-edit.php?t="+theme+'&f='+file : url;
+		
+		loadingAjaxIndicator.show('fast');
+		editor.setValue('');
+		editor.hasChange == false;
+		$('#theme_edit_code').fadeTo('fast',0.3);
+
 		$.ajax({
 			type: "GET",
-			url: "inc/ajax.php?dir=" + thmfld,
-			success: function (response) {
-				$("#themefiles").html(response);
+			cache: false,
+			url: url,
+			paramfile: file, // not sure if its ok to stuff local things here, but it takes it
+			success: function( data ) {
+				
+				rscript      = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
+				responseText = data.replace(rscript, "");
+				response     = $(data);
+
+				/* dir tree */
+				
+				// using this var to prevent reloads on the filetree for now, 
+				// can go away when we are sending proper ajax responses and not full html pages.
+				if(this.paramfile!='_noload'){
+					$('#theme_filemanager').html(response.find('#theme_filemanager > *') ); 
+				}
+				
+				/* content */
+				var newcontent = response.find('#codetext');
+				$('#codetext').val(newcontent.val());
+				editor.setValue(newcontent.val());
+				editor.hasChange = false;
+
+				/* form */
+				var filename = response.find('#edited_file').val() ;
+				$('#edited_file').val(filename);
+
+				/* hook wrapper */
+				$('#theme-edit-extras-wrap').html(response.find('#theme-edit-extras-wrap > *'));
+
+				/* title */
+				$('#theme_editing_file').html(filename);
+
+				/* update editor mode */
+				editor.setOption('mode',getEditorMode(getExtension(filename)));
+				editor.refresh();
+				
+				clearFileWaits();
+				loadingAjaxIndicator.fadeOut();
+				$('#theme_edit_code').fadeTo('fast',1);
+
 			}
 		});
+
+	}
+ 	
+ 	// removes loading icons
+	function clearFileWaits(){
+		$('#theme_filemanager a.ext-wait').removeClass('ext-wait'); 
+	}
+
+	// removes active file backgrounds
+	function clearFileOpen(){
+		$('#theme_filemanager a.open').removeClass('open'); 
+	}
+
+	themeFileSave = function(cm){
+		
+		loadingAjaxIndicator.show('fast');
+
+		cm.save(); // copy cm back to textarea
+
+		var dataString = $("#themeEditForm").serialize();
+
+		$.ajax({
+			type: "POST",
+			cache: false,
+			url: 'theme-edit.php',
+			data: dataString+'&submitsave=1&ajaxsave=1',
+			success: function( response ) {
+				$('div.wrapper .updated').remove();
+				$('div.wrapper .error').remove();
+				if ($(response).find('div.error').html()) {
+					notifyError($(response).find('div.error').html().popit().removeit());
+				}
+				if ($(response).find('div.updated').html()) {
+					notifyOk($(response).find('div.updated').html()).popit().removeit();
+				}	
+
+				loadingAjaxIndicator.fadeOut();
+				editor.hasChange = false; // mark clean		
+			}
+		});
+	}
+
+	function getExtension(file){
+		var extension = file.substr( (file.lastIndexOf('.') +1) );
+		return extension;
+	}
+
+	function getEditorMode(extension){
+		var modes = {
+			'php'  : 'application/x-httpd-php',
+			'html' : 'text/html',
+			'js'   : 'text/javascript',
+			'css'  : 'text/css'
+		};
+		return extension in modes ? modes[extension] : modes['php'];
+	}
+
+
+	// tree folding
+	$(document).on('click',"#theme_filemanager a.directory",function(e){
+		$(this).toggleClass('dir-open');
+		$(this).next("ul").slideToggle('fast');
 	});
- 
- 
-	//title filtering on pages.php & backups.php
+
+
+	cm_theme_update = function(theme){
+		// hack in new theme support until we update codemirror
+		// init true if initializing codemirror
+
+		var parts = theme.split(' ');
+		//console.log(parts);
+
+		// lazy load css file
+		loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css")
+
+		if(editor){
+			var currTheme = editor.getOption('theme');
+			$('.CodeMirror').removeClass().addClass('CodeMirror');
+			$('.CodeMirror-gutter').removeClass().addClass('CodeMirror-gutter');
+		}
+
+		jQuery.each(parts,function(){
+			//console.log(this);
+			var theme = this;
+			if(editor) editor.setOption('theme',theme);		
+			$('.CodeMirror').addClass('cm-s-'+theme);
+			$('.CodeMirror-gutter').addClass('cm-s-'+theme);
+		});
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	// title filtering on pages.php & backups.php
+	///////////////////////////////////////////////////////////////////////////
+
 	var filterSearchInput = $("#filter-search");
 	$('#filtertable').live("click", function ($e) {
 		$e.preventDefault();
@@ -484,7 +686,11 @@ jQuery(document).ready(function () {
 		filterSearchInput.slideUp();
 	});
  
- 
+
+	///////////////////////////////////////////////////////////////////////////
+	// Upload.php
+	///////////////////////////////////////////////////////////////////////////
+
 	//create new folder in upload.php
 	$('#createfolder').live("click", function ($e) {
 		$e.preventDefault();
@@ -526,7 +732,23 @@ jQuery(document).ready(function () {
 	});
  
  
+loadjscssfile = function(filename, filetype){
+ if (filetype=="js"){ //if filename is a external JavaScript file
+  var fileref=document.createElement('script')
+  fileref.setAttribute("type","text/javascript")
+  fileref.setAttribute("src", filename)
+ }
+ else if (filetype=="css"){ //if filename is an external CSS file
+  var fileref=document.createElement("link")
+  fileref.setAttribute("rel", "stylesheet")
+  fileref.setAttribute("type", "text/css")
+  fileref.setAttribute("href", filename)
+ }
+ if (typeof fileref!="undefined")
+  document.getElementsByTagName("head")[0].appendChild(fileref)
+}
+
  
-	//end of javascript for getsimple
+	// end of javascript for getsimple
 });
  

@@ -1144,6 +1144,54 @@ function directoryToArray($directory, $recursive) {
 	return $array_items;
 }
 
+/**
+ * Return a directory of files and folders with heirarchy and additional data
+ *
+ * @since 3.1.3
+ *
+ * @param $directory string directory to scan
+ * @param $recursive boolean whether to do a recursive scan or not. 
+ * @param $exts array file extension include filter, array of extensions to include
+ * @param $exclude bool true to treat exts as exclusion filter instead of include
+ * @return multidimensional array or files and folders {type,path,name}
+ */
+function directoryToMultiArray($dir,$recursive = true,$exts = null,$exclude = false) {
+   // $recurse is not implemented
+
+   $result = array();
+   $dir = rtrim($dir,DIRECTORY_SEPARATOR);
+
+   $cdir = scandir($dir);
+   foreach ($cdir as $key => $value)
+   {
+      if (!in_array($value,array(".","..")))
+      {
+         if (is_dir($dir . DIRECTORY_SEPARATOR . $value))
+         {
+            $result[$value] = array();
+            $result[$value]['type'] = "directory";
+            $result[$value]['path'] = $dir . DIRECTORY_SEPARATOR . $value;
+            $result[$value]['dir'] = $value;
+            $result[$value]['value'] = call_user_func(__FUNCTION__,$dir . DIRECTORY_SEPARATOR . $value,$recursive,$exts,$exclude);
+         }
+         else
+         {
+         	// filetype filter
+         	$ext = lowercase(pathinfo($value,PATHINFO_EXTENSION));	
+         	if(is_array($exts)){
+				if(!in_array($ext,$exts) and !$exclude) continue;
+				if($exclude and in_array($ext,$exts)) continue;
+			} 
+         	$result[$value] = array();
+            $result[$value]['type'] = 'file';
+            $result[$value]['path'] = $dir;
+            $result[$value]['value'] = $value;
+         } 
+      }
+   }
+   
+   return $result;
+}
 
 /**
  * Returns definition safely

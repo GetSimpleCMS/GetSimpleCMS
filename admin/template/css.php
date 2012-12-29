@@ -2025,3 +2025,221 @@ a.disabled:visited {
 	text-decoration: none !important;
 	color: #CCC !important;	
 }
+
+/* 
+ * Theme Editor custom layout
+ */
+
+#theme-edit .updated, #theme-edit .error, #theme-edit .notify {
+	margin: 0 10px 10px 10px;
+}
+
+#theme-edit #header .wrapper{
+	width:950px;
+}
+
+#theme-edit .wrapper{
+	width: 100%;
+}
+
+#theme-edit #footer{
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+#theme-edit .bodycontent {
+	margin:0 10px;
+}
+
+#theme_edit_wrap {
+	width:100%;
+	margin:0;
+	padding:0;	
+}
+
+#theme_edit_wrap .well{
+	background-color:#F9F9F9;	
+	border:1px solid #E8E8E8;
+	border-radius: 2px;
+	padding:6px;
+	line-height:27px;
+	height:24px;
+}	
+
+#theme_edit_nav {
+	width: 20%;
+	float: left;
+}
+
+#theme_edit_select{
+	margin-right:10px;
+}
+
+#theme_edit_select select{
+	width:100%;
+}
+
+#theme_edit_select .well{
+	background-color:#DDD;
+}
+
+#theme_edit_code {
+	float:left;
+	width:80%;	
+}
+
+#theme_edit_code .well{
+	padding-left: 12px;
+	margin-bottom:14px;
+}
+
+#theme_edit_code .CodeMirror{
+	border:1px solid #E8E8E8;
+	border-radius:2px;
+}
+
+#cm_themeselect {
+	float: right;
+}
+
+#theme_filemanager {
+	margin: 14px 10px 20px 0;
+	background: #F9F9F9;
+	border: 1px solid #E8E8E8;
+	border-radius:2px;
+	padding:15px 10px 15px 10px;
+	/*height: 60%;*/
+	padding: 8px;
+	overflow: auto;
+
+}
+
+#theme_filemanager ul {
+    display: block;
+    margin: 0 !important;
+    padding: 0;
+    line-height: 14px !important;
+}
+#theme_filemanager li {
+    display: block;
+    margin: 0;
+    padding: 2px 0;
+    list-style: none;
+}
+#theme_filemanager ul ul li {
+    margin-left: 20px;
+    white-space: nowrap;
+}
+#theme_filemanager a {
+    display: block;
+    min-width: 100%;
+    cursor: pointer;
+    padding: 5px 0;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: normal;
+    font-family: sans-serif;
+    color: #333;
+}
+
+#theme_filemanager ul ul{
+	display:none;
+}
+
+#theme_filemanager a:hover, #file-manager a.context-menu-active {
+    background-color: #E0E0E0;
+    text-decoration:none;
+    font-weight:normal;
+}
+
+#theme_filemanager a.open {
+    background-color: #E0E0E0;
+    font-weight:bold;
+}
+
+#theme_filemanager .well{
+	border-radius:4px;
+	background-color:#CCC;
+	padding:4px 8px;
+}
+
+#theme_filemanager #theme-folder{
+	width:100% !important;
+}
+
+/* ICONS */
+
+#theme_filemanager a {
+    background-repeat: no-repeat;
+    background-position: 6px 6px;
+    text-indent: 28px;
+    padding-top: 6px;
+}
+
+#theme_filemanager .directory {
+    background-image: url(images/filemanager/folder.png);
+}
+
+#theme_filemanager .dir-open {
+    background-image: url(images/filemanager/folder-open.png);
+}
+
+/* File Extension icons*/
+.file {    background-image: url(images/filemanager/text-x-generic.png); }
+.ext- {background-image: url(images/filemanager/text-x-preview.png);}
+.ext-js {background-image: url(images/filemanager/application-javascript.png);}
+.ext-html {background-image: url(images/filemanager/text-html.png);}
+.ext-htm {background-image: url(images/filemanager/text-html.png);}
+.ext-php {background-image: url(images/filemanager/application-x-php.png);}
+.ext-css {background-image: url(images/filemanager/text-css.png);}
+.ext-theme {background-image: url(images/filemanager/preferences-desktop-theme.png);}
+.ext-wait {background-image: url(images/ajax_dark.gif);}
+
+/* Grayscale */
+.desaturate, .dir-empty{
+    filter: grayscale(100%); /* Current draft standard */
+    -webkit-filter: grayscale(100%); /* New WebKit */
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%); 
+    -o-filter: grayscale(100%); /* Not yet supported in Gecko, Opera or IE */ 
+    /*filter: url(resources.svg#desaturate); /* Gecko */*/
+    filter: gray; /* IE */
+    -webkit-filter: grayscale(1); /* Old WebKit */
+}
+
+/* CodeMirror WEBKIT SCROLLBARS */
+
+.CodeMirror ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.CodeMirror ::-webkit-scrollbar-track-piece {
+    /*background-color: #333;*/
+    -webkit-border-radius: 0;
+    margin:2px;
+}
+
+.CodeMirror ::-webkit-scrollbar-thumb:vertical {
+    height: 20px;
+    background-color: #9C9C9C;
+    -webkit-border-radius: 3px;
+}
+
+.CodeMirror ::-webkit-scrollbar-thumb:vertical:hover {
+    background-color: #666;
+}
+
+.CodeMirror ::-webkit-scrollbar-thumb:horizontal {
+    width: 20px;
+    background-color: #9C9C9C;
+    -webkit-border-radius: 3px;
+}
+
+.CodeMirror ::-webkit-scrollbar-thumb:horizontal:hover {
+    background-color: #666;
+}
+
+.CodeMirror ::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
