@@ -8,9 +8,6 @@
  * @subpackage Theme
  */
 
-// simulate load waits
-// sleep(2);
-
 # setup inclusions
 $load['plugin'] = true;
 include('inc/common.php');
@@ -187,45 +184,46 @@ function array2ul($array,$hideEmpty = true) {
     
 	$cnt = 0;
 
-    $out="<ul>";
-    foreach($array as $key => $elem){
-    	
-        if(!is_array($elem['value'])){
-    		$ext = lowercase(pathinfo($elem['value'], PATHINFO_EXTENSION));
-    		
-    		// Is a file
-    		if( in_array($ext,$allowed_extensions)){
+	$out="<ul>";
+	foreach($array as $key => $elem){
+		
+		if(!is_array($elem['value'])){
+		$ext = lowercase(pathinfo($elem['value'], PATHINFO_EXTENSION));
+			
+			// Is a file
+			if( in_array($ext,$allowed_extensions)){
 
-    			$filename = $elem['value'];
-				$filepath = $elem['path'];    			
-				$filenamefull=substr(strstr($filepath.DIRECTORY_SEPARATOR.$filename,'/theme/'.$template.'/'),strlen('/theme/'.$template.'/')); 
+				$filename = $elem['value'];
+				$filepath = $elem['path'];   
+				$filenamefull=substr(strstr($filepath.$filename,'/theme/'.$template.'/'),strlen('/theme/'.$template.'/')); 
 
-    			$open = fileIsOpen($elem['path'],$elem['value']) ? ' open' : '';
-    			
-  				if ($filename == 'template.php'){
-  					$ext = 'theme';
-  					$filename=i18n_r('DEFAULT_TEMPLATE');        			
-  				}	
+				$open = fileIsOpen($elem['path'],$elem['value']) ? ' open' : '';
+				
+				if ($filename == 'template.php'){
+					$ext = 'theme';
+					$filename=i18n_r('DEFAULT_TEMPLATE');        			
+				}	
 				
 				$link = myself(false).'?t='.$template.'&amp;f='.$filenamefull;
 				$out.='<li><a href="'.$link.'"class="file ext-'.$ext.$open.'">'.$filename."</a></li>";
-        	}
-        }
-        else {
-        	// Is a folder
+			}
+		}
+		else {
+			// Is a folder
 
-        	// Are we showing/hiding empty folders.
-        	// this will not hide empty folders that contain at least 1 subfolder
-        	$empty = '';
-        	if(count($elem['value']) == 0){
-        		if($hideEmpty) continue;
-        		$empty = ' dir-empty'; // empty folder class
-        	}	
-        	$out.='<li><a class="directory'.$empty.'">'.$key.'</a>'.array2ul($elem['value']).'</li>';
-        }	
-    }
-    $out=$out."</ul>";
-    return $out; 
+			// Are we showing/hiding empty folders.
+			// this will not hide empty folders that contain at least 1 subfolder
+			$empty = '';
+			if(count($elem['value']) == 0){
+				if($hideEmpty) continue;
+				$empty = ' dir-empty'; // empty folder class
+			}	
+			$out.='<li><a class="directory'.$empty.'">'.$key.'</a>'.array2ul($elem['value']).'</li>';
+		}	
+	}
+
+	$out=$out."</ul>";
+	return $out; 
 }
 
 function fileIsOpen($path,$file){
@@ -457,7 +455,7 @@ jQuery(document).ready(function () {
 		
 
 				<div id="theme_editing" class="well">
-				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.'theme/ <b><span id="theme_editing_file">'. tsl($template) .'/'.$template_file .'</span></b>'; ?>
+				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.'theme/ <b><span id="theme_editing_file">'. tsl($template).$template_file .'</span></b>'; ?>
 				<?php $content = file_get_contents(GSTHEMESPATH . tsl($template) . $template_file); ?>
 				</div>
 		

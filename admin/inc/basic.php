@@ -61,16 +61,16 @@ function clean_img_name($text)  {
  */
 function to7bit($text,$from_enc="UTF-8") {
 	if (function_exists('mb_convert_encoding')) {
-   		$text = mb_convert_encoding($text,'HTML-ENTITIES',$from_enc);
-    } else {
+			$text = mb_convert_encoding($text,'HTML-ENTITIES',$from_enc);
+		} else {
 		$text = htmlspecialchars_decode(utf8_decode(htmlentities($text, ENT_COMPAT, 'utf-8', false)));
 	}
-    $text = preg_replace(
-        array('/&szlig;/','/&(..)lig;/',
-             '/&([aouAOU])uml;/','/&(.)[^;]*;/'),
-        array('ss',"$1","$1".'e',"$1"),
-        $text);
-    return $text;
+		$text = preg_replace(
+				array('/&szlig;/','/&(..)lig;/',
+						 '/&([aouAOU])uml;/','/&(.)[^;]*;/'),
+				array('ss',"$1","$1".'e',"$1"),
+				$text);
+		return $text;
 }
 
 
@@ -95,10 +95,10 @@ function email_template($message) {
 	</head>
 	<body style="padding:0;margin:0;background: #f3f3f3;font-family:arial, \'helvetica neue\', helvetica, serif" >
 	<table cellpadding="0" cellspacing="0" border="0" align="center" width="100%" style="padding: 0 0 35px 0; background: #f3f3f3;">
-  	<tr>
-	    <td align="center" style="margin: 0; padding: 0;">
-	      <center>
-	        <table border="0" cellpadding="0" cellspacing="0" width="580" style="border-radius:3px;">
+		<tr>
+			<td align="center" style="margin: 0; padding: 0;">
+				<center>
+					<table border="0" cellpadding="0" cellspacing="0" width="580" style="border-radius:3px;">
 						<tr>
 							<th style="padding:15px 0 15px 20px;text-align:left;vertical-align:top;background:#171E25;border-radius:4px 4px 0 0;" >
 								<a href="http://get-simple.info/"><img src="http://get-simple.info/GSSW/gssw_assets/images/logo.png" alt="GetSimple CMS"></a>
@@ -152,8 +152,8 @@ function sendmail($to,$subject,$message) {
 	$headers  ='"MIME-Version: 1.0' . PHP_EOL;
 	$headers .= 'Content-Type: text/html; charset=UTF-8' . PHP_EOL;
 	$headers .= 'From: '.$fromemail . PHP_EOL;
-  $headers .= 'Reply-To: '.$fromemail . PHP_EOL;
-  $headers .= 'Return-Path: '.$fromemail . PHP_EOL;
+	$headers .= 'Reply-To: '.$fromemail . PHP_EOL;
+	$headers .= 'Return-Path: '.$fromemail . PHP_EOL;
 	
 	if( mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',"$message",$headers) ) {
 		return 'success';
@@ -208,11 +208,11 @@ function subval_sort($a,$subkey, $order='asc',$natural = true) {
  * @param string $cdata_text
  */
 class SimpleXMLExtended extends SimpleXMLElement{   
-  public function addCData($cdata_text){   
-   $node= dom_import_simplexml($this);   
-   $no = $node->ownerDocument;   
-   $node->appendChild($no->createCDATASection($cdata_text));   
-  } 
+	public function addCData($cdata_text){   
+	 $node= dom_import_simplexml($this);   
+	 $no = $node->ownerDocument;   
+	 $node->appendChild($no->createCDATASection($cdata_text));   
+	} 
 } 
 
 /**
@@ -261,14 +261,14 @@ $microtime_start = null;
 function get_execution_time($reset=false)
 {
 	GLOBAL $microtime_start;
-    if($reset) $microtime_start = null;
+		if($reset) $microtime_start = null;
 		
-    if($microtime_start === null)
-    {
-        $microtime_start = microtime(true);
-        return 0.0; 
-    }    
-    return round(microtime(true) - $microtime_start,5); 
+		if($microtime_start === null)
+		{
+				$microtime_start = microtime(true);
+				return 0.0; 
+		}    
+		return round(microtime(true) - $microtime_start,5); 
 }
 
 /**
@@ -394,7 +394,7 @@ function tsl($path) {
  */
 if(!function_exists('in_arrayi')) {
 	function in_arrayi($needle, $haystack) {
-	    return in_array(lowercase($needle), array_map('lowercase', $haystack));
+			return in_array(lowercase($needle), array_map('lowercase', $haystack));
 	}
 }
 
@@ -433,20 +433,20 @@ function find_url($slug, $parent, $type='full') {
 		$parent = tsl($parent); 
 	}	
 
-  if ($PRETTYURLS == '1') {      
-    if ($slug != 'index'){  
-    	$url = $full . $parent . $slug . '/';
-    } else {
-    	$url = $full;
-    }   
-  } else {
+	if ($PRETTYURLS == '1') {      
+		if ($slug != 'index'){  
+			$url = $full . $parent . $slug . '/';
+		} else {
+			$url = $full;
+		}   
+	} else {
 		if ($slug != 'index'){ 
-    	$url = $full .'index.php?id='.$slug;
-    } else {
-    	$url = $full;
-    }
-  }
-  
+			$url = $full .'index.php?id='.$slug;
+		} else {
+			$url = $full;
+		}
+	}
+	
 	if ($PERMALINK != '' && $slug != 'index'){
 		$plink = str_replace('%parent%/', $parent, $PERMALINK);
 		$plink = str_replace('%parent%', $parent, $plink);
@@ -519,19 +519,19 @@ function redirect($url) {
 	global $i18n;
 
 	if (!headers_sent($filename, $linenum)) {
-    header('Location: '.$url);
-  } else {
-    echo "<html><head><title>".i18n_r('REDIRECT')."</title></head><body>";
-    if ( !isDebug() ) {
-	    echo '<script type="text/javascript">';
-	    echo 'window.location.href="'.$url.'";';
-	    echo '</script>';
-	    echo '<noscript>';
-	    echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
-	    echo '</noscript>';
-	  }
-    echo i18n_r('ERROR').": Headers already sent in ".$filename." on line ".$linenum."\n";
-    printf(i18n_r('REDIRECT_MSG'), $url);
+		header('Location: '.$url);
+	} else {
+		echo "<html><head><title>".i18n_r('REDIRECT')."</title></head><body>";
+		if ( !isDebug() ) {
+			echo '<script type="text/javascript">';
+			echo 'window.location.href="'.$url.'";';
+			echo '</script>';
+			echo '<noscript>';
+			echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
+			echo '</noscript>';
+		}
+		echo i18n_r('ERROR').": Headers already sent in ".$filename." on line ".$linenum."\n";
+		printf(i18n_r('REDIRECT_MSG'), $url);
 		echo "</body></html>";
 	}
 	
@@ -607,8 +607,8 @@ function i18n_r($name) {
  * @return bool
  */
 function i18n_merge($plugin, $language=null) {
-  global $i18n, $LANG;
-  return i18n_merge_impl($plugin, $language ? $language : $LANG, $i18n);
+	global $i18n, $LANG;
+	return i18n_merge_impl($plugin, $language ? $language : $LANG, $i18n);
 }
 
 /**
@@ -626,17 +626,17 @@ function i18n_merge($plugin, $language=null) {
  * @return bool
  */
 function i18n_merge_impl($plugin, $lang, &$globali18n) { 
-  $i18n = array();
-  if (!file_exists(GSPLUGINPATH.$plugin.'/lang/'.$lang.'.php')) {
-  	return false;
-  }
-  @include(GSPLUGINPATH.$plugin.'/lang/'.$lang.'.php'); 
-  if (count($i18n) > 0) foreach ($i18n as $code => $text) {
-    if (!array_key_exists($plugin.'/'.$code, $globali18n)) {
-    	$globali18n[$plugin.'/'.$code] = $text;
-    }
-  }
-  return true;
+	$i18n = array();
+	if (!file_exists(GSPLUGINPATH.$plugin.'/lang/'.$lang.'.php')) {
+		return false;
+	}
+	@include(GSPLUGINPATH.$plugin.'/lang/'.$lang.'.php'); 
+	if (count($i18n) > 0) foreach ($i18n as $code => $text) {
+		if (!array_key_exists($plugin.'/'.$code, $globali18n)) {
+			$globali18n[$plugin.'/'.$code] = $text;
+		}
+	}
+	return true;
 }
 
 /**
@@ -708,9 +708,9 @@ function pathinfo_filename($file) {
 	$path_parts = pathinfo($file);
 
 	if(isset($path_parts['extension']) && ($file!='..')){
-	  return substr($path_parts['basename'],0 ,strlen($path_parts['basename'])-strlen($path_parts['extension'])-1);
+		return substr($path_parts['basename'],0 ,strlen($path_parts['basename'])-strlen($path_parts['extension'])-1);
 	} else{
-	  return $path_parts['basename'];
+		return $path_parts['basename'];
 	}
 }
 
@@ -835,12 +835,12 @@ function lowercase($text) {
  * @return string
  */
 function find_accesskey($string) {
-  $found = array();
-  $matched = preg_match('/<em>([a-zA-Z])<\/em>/', $string, $found);
-  if ($matched != 1) {
-     return null;
+	$found = array();
+	$matched = preg_match('/<em>([a-zA-Z])<\/em>/', $string, $found);
+	if ($matched != 1) {
+		 return null;
 	}
-  return strtolower($found[1]);
+	return strtolower($found[1]);
 }
 
 /**
@@ -939,43 +939,43 @@ function validate_url($u) {
  * @return string
  */
 function formatXmlString($xml) {  
-  
-  // add marker linefeeds to aid the pretty-tokeniser (adds a linefeed between all tag-end boundaries)
-  $xml = preg_replace('/(>)(<)(\/*)/', "$1\n$2$3", $xml);
-  
-  // now indent the tags
-  $token      = strtok($xml, "\n");
-  $result     = ''; // holds formatted version as it is built
-  $pad        = 0; // initial indent
-  $matches    = array(); // returns from preg_matches()
-  
-  // scan each line and adjust indent based on opening/closing tags
-  while ($token !== false) : 
-  
-    // test for the various tag states
-    
-    // 1. open and closing tags on same line - no change
-    if (preg_match('/.+<\/\w[^>]*>$/', $token, $matches)) : 
-      $indent=0;
-    // 2. closing tag - outdent now
-    elseif (preg_match('/^<\/\w/', $token, $matches)) :
-      $pad--;
-    // 3. opening tag - don't pad this one, only subsequent tags
-    elseif (preg_match('/^<\w[^>]*[^\/]>.*$/', $token, $matches)) :
-      $indent=1;
-    // 4. no indentation needed
-    else :
-      $indent = 0; 
-    endif;
-    
-    // pad the line with the required number of leading spaces
-    $line    = str_pad($token, strlen($token)+$pad, ' ', STR_PAD_LEFT);
-    $result .= $line . "\n"; // add to the cumulative result, with linefeed
-    $token   = strtok("\n"); // get the next token
-    $pad    += $indent; // update the pad size for subsequent lines    
-  endwhile; 
-  
-  return $result;
+	
+	// add marker linefeeds to aid the pretty-tokeniser (adds a linefeed between all tag-end boundaries)
+	$xml = preg_replace('/(>)(<)(\/*)/', "$1\n$2$3", $xml);
+	
+	// now indent the tags
+	$token      = strtok($xml, "\n");
+	$result     = ''; // holds formatted version as it is built
+	$pad        = 0; // initial indent
+	$matches    = array(); // returns from preg_matches()
+	
+	// scan each line and adjust indent based on opening/closing tags
+	while ($token !== false) : 
+	
+		// test for the various tag states
+		
+		// 1. open and closing tags on same line - no change
+		if (preg_match('/.+<\/\w[^>]*>$/', $token, $matches)) : 
+			$indent=0;
+		// 2. closing tag - outdent now
+		elseif (preg_match('/^<\/\w/', $token, $matches)) :
+			$pad--;
+		// 3. opening tag - don't pad this one, only subsequent tags
+		elseif (preg_match('/^<\w[^>]*[^\/]>.*$/', $token, $matches)) :
+			$indent=1;
+		// 4. no indentation needed
+		else :
+			$indent = 0; 
+		endif;
+		
+		// pad the line with the required number of leading spaces
+		$line    = str_pad($token, strlen($token)+$pad, ' ', STR_PAD_LEFT);
+		$result .= $line . "\n"; // add to the cumulative result, with linefeed
+		$token   = strtok("\n"); // get the next token
+		$pad    += $indent; // update the pad size for subsequent lines    
+	endwhile; 
+	
+	return $result;
 }
 
 /**
@@ -988,7 +988,7 @@ function formatXmlString($xml) {
  */
 function http_protocol() {
 	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) {
-	  return 'https';
+		return 'https';
 	} else {
 		return 'http';
 	}
@@ -1032,7 +1032,7 @@ function file_mime_type($file) {
  * @return bool
  */
 function is_frontend() {
-  GLOBAL $base;
+	GLOBAL $base;
 	if(isset($base)) {
 		return true;
 	} else {
@@ -1156,41 +1156,40 @@ function directoryToArray($directory, $recursive) {
  * @return multidimensional array or files and folders {type,path,name}
  */
 function directoryToMultiArray($dir,$recursive = true,$exts = null,$exclude = false) {
-   // $recurse is not implemented
+	// $recurse is not implemented
 
-   $result = array();
-   $dir = rtrim($dir,DIRECTORY_SEPARATOR);
+	$result = array();
+	$dir = rtrim($dir,DIRECTORY_SEPARATOR);
 
-   $cdir = scandir($dir);
-   foreach ($cdir as $key => $value)
-   {
-      if (!in_array($value,array(".","..")))
-      {
-         if (is_dir($dir . DIRECTORY_SEPARATOR . $value))
-         {
-            $result[$value] = array();
-            $result[$value]['type'] = "directory";
-            $result[$value]['path'] = $dir . DIRECTORY_SEPARATOR . $value;
-            $result[$value]['dir'] = $value;
-            $result[$value]['value'] = call_user_func(__FUNCTION__,$dir . DIRECTORY_SEPARATOR . $value,$recursive,$exts,$exclude);
-         }
-         else
-         {
-         	// filetype filter
-         	$ext = lowercase(pathinfo($value,PATHINFO_EXTENSION));	
-         	if(is_array($exts)){
+	$cdir = scandir($dir);
+	foreach ($cdir as $key => $value)	{
+		if (!in_array($value,array(".",".."))) {
+			if (is_dir($dir . DIRECTORY_SEPARATOR . $value)) {
+					$path =  preg_replace("#\\\|//#", "/", $dir . '/' . $value . '/');
+					$result[$value] = array();
+					$result[$value]['type'] = "directory";
+					$result[$value]['path'] = $path;
+					$result[$value]['dir'] = $value;
+					$result[$value]['value'] = call_user_func(__FUNCTION__,$path,$recursive,$exts,$exclude);
+			}
+			else {
+				$path =  preg_replace("#\\\|//#", "/", $dir . '/');
+				// filetype filter
+				$ext = lowercase(pathinfo($value,PATHINFO_EXTENSION));	
+				if(is_array($exts)){
 				if(!in_array($ext,$exts) and !$exclude) continue;
 				if($exclude and in_array($ext,$exts)) continue;
-			} 
-         	$result[$value] = array();
-            $result[$value]['type'] = 'file';
-            $result[$value]['path'] = $dir;
-            $result[$value]['value'] = $value;
-         } 
-      }
-   }
-   
-   return $result;
+			}
+
+			$result[$value] = array();
+			$result[$value]['type'] = 'file';
+			$result[$value]['path'] = $path;
+			$result[$value]['value'] = $value;
+			}
+		}
+	}
+
+	return $result;
 }
 
 /**
