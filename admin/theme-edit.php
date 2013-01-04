@@ -377,12 +377,12 @@ jQuery(document).ready(function () {
 			},
 
 			onCursorActivity: function() {
-				editor.setLineClass(hlLine, null);
-				hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
+				// editor.setLineClass(hlLine, null);
+				// hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
 			}
 		});
 
-		var hlLine = editor.setLineClass(0, "activeline");
+		// var hlLine = editor.setLineClass(0, "activeline");
     
 		function customSave(cm){
 			console.log('saving');

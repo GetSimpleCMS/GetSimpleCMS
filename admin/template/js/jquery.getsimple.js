@@ -638,16 +638,16 @@ jQuery(document).ready(function () {
 
 		if(editor){
 			var currTheme = editor.getOption('theme');
-			$('.CodeMirror').removeClass().addClass('CodeMirror');
-			$('.CodeMirror-gutter').removeClass().addClass('CodeMirror-gutter');
+			// $('.CodeMirror').removeClass().addClass('CodeMirror');
+			// $('.CodeMirror-gutter').removeClass().addClass('CodeMirror-gutter');
 		}
 
 		jQuery.each(parts,function(){
 			//console.log(this);
 			var theme = this;
 			if(editor) editor.setOption('theme',theme);		
-			$('.CodeMirror').addClass('cm-s-'+theme);
-			$('.CodeMirror-gutter').addClass('cm-s-'+theme);
+			// $('.CodeMirror').addClass('cm-s-'+theme);
+			// $('.CodeMirror-gutter').addClass('cm-s-'+theme);
 		});
 	}
 
