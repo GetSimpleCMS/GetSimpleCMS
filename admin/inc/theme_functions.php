@@ -454,7 +454,7 @@ function get_site_credits($text ='Powered by ') {
  */
 function menu_data($id = null,$xml=false) {
     $menu_extract = '';
-    
+    /*
     $path = GSDATAPAGESPATH;
     $dir_handle = opendir($path) or die("Unable to open $path");
     $filenames = array();
@@ -470,7 +470,7 @@ function menu_data($id = null,$xml=false) {
             if ($file == "." || $file == ".." || is_dir($path . $file) || $file == ".htaccess"  ) {
                 // not a page data file
             } else {
-								$data = getXML($path . $file);
+				$data = getXML($path . $file);
                 if ($data->private != 'Y') {
                     $pagesArray[$count]['menuStatus'] = $data->menuStatus;
                     $pagesArray[$count]['menuOrder'] = $data->menuOrder;
@@ -485,7 +485,10 @@ function menu_data($id = null,$xml=false) {
             }
         }
     }
+    */
     
+    global $pagesArray; 
+	echo "menu";
     $pagesSorted = subval_sort($pagesArray,'menuOrder');
     if (count($pagesSorted) != 0) { 
       $count = 0;
