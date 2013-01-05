@@ -623,55 +623,28 @@ function passhash($p) {
 function get_available_pages() {
     $menu_extract = '';
     
-    $path = GSDATAPAGESPATH;
-    $dir_handle = @opendir($path) or die("Unable to open $path");
-    $filenames = array();
-    while ($filename = readdir($dir_handle)) {
-        $filenames[] = $filename;
-    }
-    closedir($dir_handle);
-    
-    $count="0";
-    $pagesArray = array();
-    if (count($filenames) != 0) {
-        foreach ($filenames as $file) {
-            if ($file == "." || $file == ".." || is_dir($path . $file) || $file == ".htaccess"  ) {
-                // not a page data file
-            } else {
-								$data = getXML($path . $file);
-                if ($data->private != 'Y') {
-                    $pagesArray[$count]['menuStatus'] = $data->menuStatus;
-                    $pagesArray[$count]['menuOrder'] = $data->menuOrder;
-                    $pagesArray[$count]['menu'] = strip_decode($data->menu);
-                    $pagesArray[$count]['parent'] = $data->parent;
-                    $pagesArray[$count]['title'] = strip_decode($data->title);
-                    $pagesArray[$count]['url'] = $data->url;
-                    $pagesArray[$count]['private'] = $data->private;
-                    $pagesArray[$count]['pubDate'] = $data->pubDate;
-                    $count++;
-                }
-            }
-        }
-    }
+	global $pagesArray;
     
     $pagesSorted = subval_sort($pagesArray,'title');
     if (count($pagesSorted) != 0) { 
       $count = 0;
       foreach ($pagesSorted as $page) {
-        $text = (string)$page['menu'];
-        $pri = (string)$page['menuOrder'];
-        $parent = (string)$page['parent'];
-        $title = (string)$page['title'];
-        $slug = (string)$page['url'];
-        $menuStatus = (string)$page['menuStatus'];
-        $private = (string)$page['private'];
-				$pubDate = (string)$page['pubDate'];
-        
-        $url = find_url($slug,$parent);
-        
-        $specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
-        
-        $extract[] = $specific;
+      	if ($page['private']!='Y'){
+	        $text = (string)$page['menu'];
+	        $pri = (string)$page['menuOrder'];
+	        $parent = (string)$page['parent'];
+	        $title = (string)$page['title'];
+	        $slug = (string)$page['url'];
+	        $menuStatus = (string)$page['menuStatus'];
+	        $private = (string)$page['private'];
+					$pubDate = (string)$page['pubDate'];
+	        
+	        $url = find_url($slug,$parent);
+	        
+	        $specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
+	        
+	        $extract[] = $specific;
+		}
       } 
       return $extract;
     }
@@ -739,29 +712,9 @@ function updateSlugs($existingUrl, $newurl=null){
  */
 function list_pages_json() {
 	// get local pages list for ckeditor local page link selector
-	$path = GSDATAPAGESPATH;
-	$filenames = getFiles($path);
-	$count="0";
-	$pagesArray = array();
-	if (count($filenames) != 0) { 
-		foreach ($filenames as $file) {
-			if (isFile($file, $path, 'xml')) {
-				$data = getXML($path .$file);
-				$pagesArray[$count]['title'] = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
-				$pagesArray[$count]['parent'] = $data->parent;
-			if ($data->parent != '') { 
-				$parentdata = getXML($path . $data->parent .'.xml');
-				$parentTitle = $parentdata->title;
-				$pagesArray[$count]['sort'] = $parentTitle .' '. $data->title;
-			} else {
-				$pagesArray[$count]['sort'] = $data->title;
-			}
-			$pagesArray[$count]['url'] = $data->url;
-			$parentTitle = '';
-			$count++;
-			}
-		}
-	}
+	
+	global $pagesArray;
+
 	$pagesSorted = subval_sort($pagesArray,'sort');
 	$pageList = array();
 	if (count($pagesSorted) != 0) { 
@@ -1176,27 +1129,9 @@ function generate_sitemap() {
 	// Variable settings
 	global $SITEURL;
 	$path = GSDATAPAGESPATH;
-	$count="0";
 	
-	$filenames = getFiles($path);
-	
-	if (count($filenames) != 0)	{ 
-		foreach ($filenames as $file)	{
-			if ( isFile($file, $path, 'xml')) {
-				$data = getXML($path . $file);
-				if ($data->url != '404') {
-					$status = $data->menuStatus;
-					$pagesArray[$count]['url'] = $data->url;
-					$pagesArray[$count]['parent'] = $data->parent;
-					$pagesArray[$count]['date'] = $data->pubDate;
-					$pagesArray[$count]['private'] = $data->private;
-					$pagesArray[$count]['menuStatus'] = $data->menuStatus;
-					$count++;
-				}
-			}
-		}
-	}
-	
+	global $pagesArray;
+	getPagesXmlValues(false);
 	$pagesSorted = subval_sort($pagesArray,'menuStatus');
 	
 	if (count($pagesSorted) != 0)
@@ -1206,33 +1141,36 @@ function generate_sitemap() {
 		$xml->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 		
 		foreach ($pagesSorted as $page)
-		{	
-			if ($page['private'] != 'Y')
-			{
-				// set <loc>
-				$pageLoc = find_url($page['url'], $page['parent']);
-				
-				// set <lastmod>
-				$tmpDate = date("Y-m-d H:i:s", strtotime($page['date']));
-				$pageLastMod = makeIso8601TimeStamp($tmpDate);
-				
-				// set <changefreq>
-				$pageChangeFreq = 'weekly';
-				
-				// set <priority>
-				if ($page['menuStatus'] == 'Y') {
-					$pagePriority = '1.0';
-				} else {
-					$pagePriority = '0.5';
+		{
+			if ($page['url'] != '404')
+			{		
+				if ($page['private'] != 'Y')
+				{
+					// set <loc>
+					$pageLoc = find_url($page['url'], $page['parent']);
+					
+					// set <lastmod>
+					$tmpDate = date("Y-m-d H:i:s", strtotime($page['pubDate']));
+					$pageLastMod = makeIso8601TimeStamp($tmpDate);
+					
+					// set <changefreq>
+					$pageChangeFreq = 'weekly';
+					
+					// set <priority>
+					if ($page['menuStatus'] == 'Y') {
+						$pagePriority = '1.0';
+					} else {
+						$pagePriority = '0.5';
+					}
+					
+					//add to sitemap
+					$url_item = $xml->addChild('url');
+					$url_item->addChild('loc', $pageLoc);
+					$url_item->addChild('lastmod', $pageLastMod);
+					$url_item->addChild('changefreq', $pageChangeFreq);
+					$url_item->addChild('priority', $pagePriority);
+					exec_action('sitemap-additem');
 				}
-				
-				//add to sitemap
-				$url_item = $xml->addChild('url');
-				$url_item->addChild('loc', $pageLoc);
-				$url_item->addChild('lastmod', $pageLastMod);
-				$url_item->addChild('changefreq', $pageChangeFreq);
-				$url_item->addChild('priority', $pagePriority);
-				exec_action('sitemap-additem');
 			}
 		}
 		
