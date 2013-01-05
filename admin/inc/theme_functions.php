@@ -454,41 +454,8 @@ function get_site_credits($text ='Powered by ') {
  */
 function menu_data($id = null,$xml=false) {
     $menu_extract = '';
-    /*
-    $path = GSDATAPAGESPATH;
-    $dir_handle = opendir($path) or die("Unable to open $path");
-    $filenames = array();
-    while ($filename = readdir($dir_handle)) {
-        $filenames[] = $filename;
-    }
-    closedir($dir_handle);
-    
-    $count="0";
-    $pagesArray = array();
-    if (count($filenames) != 0) {
-        foreach ($filenames as $file) {
-            if ($file == "." || $file == ".." || is_dir($path . $file) || $file == ".htaccess"  ) {
-                // not a page data file
-            } else {
-				$data = getXML($path . $file);
-                if ($data->private != 'Y') {
-                    $pagesArray[$count]['menuStatus'] = $data->menuStatus;
-                    $pagesArray[$count]['menuOrder'] = $data->menuOrder;
-                    $pagesArray[$count]['menu'] = $data->menu;
-                    $pagesArray[$count]['parent'] = $data->parent;
-                    $pagesArray[$count]['title'] = $data->title;
-                    $pagesArray[$count]['url'] = $data->url;
-                    $pagesArray[$count]['private'] = $data->private;
-                    $pagesArray[$count]['pubDate'] = $data->pubDate;
-                    $count++;
-                }
-            }
-        }
-    }
-    */
-    
+       
     global $pagesArray; 
-	echo "menu";
     $pagesSorted = subval_sort($pagesArray,'menuOrder');
     if (count($pagesSorted) != 0) { 
       $count = 0;
@@ -501,7 +468,7 @@ function menu_data($id = null,$xml=false) {
           $slug = (string)$page['url'];
           $menuStatus = (string)$page['menuStatus'];
           $private = (string)$page['private'];
-					$pubDate = (string)$page['pubDate'];
+	  $pubDate = (string)$page['pubDate'];
           
           $url = find_url($slug,$parent);
           
@@ -517,7 +484,7 @@ function menu_data($id = null,$xml=false) {
         return $menu_extract;
       } else {
         $xml = '<?xml version="1.0" encoding="UTF-8"?><channel>';    
-	        foreach ($pagesSorted as $page) {
+	    foreach ($pagesSorted as $page) {
             $text = $page['menu'];
             $pri = $page['menuOrder'];
             $parent = $page['parent'];
@@ -540,9 +507,9 @@ function menu_data($id = null,$xml=false) {
             $xml.="<menuStatus><![CDATA[".$menuStatus."]]></menuStatus>";
             $xml.="<private><![CDATA[".$private."]]></private>";
             $xml.="</item>";
-	        }
-	        $xml.="</channel>";
-	        return $xml;
+	    }
+	    $xml.="</channel>";
+	    return $xml;
         }
     }
 }
