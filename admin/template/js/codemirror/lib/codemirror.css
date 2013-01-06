@@ -2,9 +2,11 @@
 
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
-  font-family: monospace;
-  height: 300px;
+  line-height: normal;
+  font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;
+  height: 500px;
 }
+
 .CodeMirror-scroll {
   /* Set scrolling behaviour here */
   overflow: auto;
@@ -39,14 +41,14 @@
 
 /* CURSOR */
 
-.CodeMirror pre.CodeMirror-cursor {
+.CodeMirror div.CodeMirror-cursor {
   border-left: 1px solid black;
 }
 /* Shown when moving in bi-directional text */
-.CodeMirror pre.CodeMirror-secondarycursor {
+.CodeMirror div.CodeMirror-secondarycursor {
   border-left: 1px solid silver;
 }
-.cm-keymap-fat-cursor pre.CodeMirror-cursor {
+.CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
   width: auto;
   border: 0;
   background: transparent;
@@ -54,11 +56,11 @@
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#6600c800, endColorstr=#4c00c800);
 }
 /* Kludge to turn off filter in ie9+, which also accepts rgba */
-.cm-keymap-fat-cursor pre.CodeMirror-cursor:not(#nonsense_id) {
+.CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor:not(#nonsense_id) {
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 /* Can style cursor different in overwrite (non-insert) mode */
-.CodeMirror pre.CodeMirror-cursor.CodeMirror-overwrite {}
+.CodeMirror div.CodeMirror-cursor.CodeMirror-overwrite {}
 
 /* DEFAULT THEME */
 
@@ -196,6 +198,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 .CodeMirror-linewidget {
   position: relative;
   z-index: 2;
+  overflow: auto;
 }
 
 .CodeMirror-wrap .CodeMirror-scroll {
@@ -210,20 +213,20 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 }
 .CodeMirror-measure pre { position: static; }
 
-.CodeMirror pre.CodeMirror-cursor {
+.CodeMirror div.CodeMirror-cursor {
   position: absolute;
   visibility: hidden;
   border-right: none;
   width: 0;
 }
-.CodeMirror-focused pre.CodeMirror-cursor {
+.CodeMirror-focused div.CodeMirror-cursor {
   visibility: visible;
 }
 
 .CodeMirror-selected { background: #d9d9d9; }
 .CodeMirror-focused .CodeMirror-selected { background: #d7d4f0; }
 
-.CodeMirror-searching {
+.cm-searching {
   background: #ffa;
   background: rgba(255, 255, 0, .4);
 }
@@ -233,7 +236,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 
 @media print {
   /* Hide the cursor when printing */
-  .CodeMirror pre.CodeMirror-cursor {
+  .CodeMirror div.CodeMirror-cursor {
     visibility: hidden;
   }
 }

@@ -313,8 +313,6 @@ var editor;
 var loadjscssfile;
 jQuery(document).ready(function () {
 	
-		var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder);
-
 		function keyEvent(cm, e) {
 			if (e.keyCode == 81 && e.ctrlKey) {
 				if (e.type == "keydown") {
@@ -337,7 +335,8 @@ jQuery(document).ready(function () {
 			'neat',
 			'night',
 			'rubyblue',
-			'solarized',
+			'solarized dark',
+			'solarized light',
 			'twilight',
 			'vibrant-ink',
 			'xq-dark'
@@ -350,7 +349,8 @@ jQuery(document).ready(function () {
 
 		if(customTheme && customTheme != undefined){
 			defTheme = customTheme;
-			loadjscssfile("template/js/codemirror/theme/"+defTheme+".css", "css")
+			var parts = defTheme.split(' ');
+			loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css")
 		}	
 
 		editor = CodeMirror.fromTextArea(document.getElementById("codetext"), {
@@ -362,7 +362,6 @@ jQuery(document).ready(function () {
 			mode:"<?php echo $mode; ?>",
 			tabMode: "shift",
 			theme: defTheme,
-			onGutterClick: foldFunc,
 			fixedGutter : true,
 			extraKeys: {
 				"Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
@@ -374,16 +373,28 @@ jQuery(document).ready(function () {
 			onChange: function(){
 				// console.log('content changed');
 				editor.hasChange = true;
-			},
-
-			onCursorActivity: function() {
-				// editor.setLineClass(hlLine, null);
-				// hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
 			}
+
 		});
 
-		// var hlLine = editor.setLineClass(0, "activeline");
-    
+		var hlLine = editor.addLineClass(0, "background", "activeline");
+
+		var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder,'...');
+		editor.on("gutterClick", foldFunc);
+
+		editor.on("cursorActivity", function() {
+
+		  // line highlihghting
+		  var cur = editor.getLineHandle(editor.getCursor().line);
+		  if (cur != hlLine) {
+		    editor.removeLineClass(hlLine, "background", "activeline");
+		    hlLine = editor.addLineClass(cur, "background", "activeline");
+		  }
+
+		  // highlight matching
+		  editor.matchHighlight("CodeMirror-matchhighlight");
+		});
+
 		function customSave(cm){
 			console.log('saving');
 			themeFileSave(cm);
@@ -411,11 +422,16 @@ jQuery(document).ready(function () {
       cm.refresh();
     }
 
+		CodeMirror.on(window, "resize", function() {
+		    var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
+		    if (!showing) return;
+		    showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
+		});
+
 		function setThemeSelected(theme){
 			$("#cm_themeselect").val(theme);
 		}
 
-		cm_theme_update(defTheme);	
 		setThemeSelected(defTheme);
 
 });
