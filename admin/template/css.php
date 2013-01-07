@@ -1532,17 +1532,17 @@ table.simple td.title {
 
 
 /* JQuery Uploadify Styles */
-.uploadifyQueueItem {
+.uploadify-queue-item {
 	font-size: 10px;
 	padding: 8px 15px;
 	width: 190px;
 }
 
-.uploadifyError {
+.uploadify-error {
 	color: #D94136 !important;
 }
 
-.uploadifyError .uploadifyProgressBar {
+.uploadify-error .uploadify-progress-bar {
 	background-color: #D94136 !important;
 }
 
@@ -1560,13 +1560,13 @@ table.simple td.title {
 	background: transaparent !important;
 }
 
-.uploadifyProgress {
+.uploadify-progress {
 	background-color: #FFF;
 	margin-top: 5px;
 	width: 97%;
 }
 
-.uploadifyProgressBar {
+.uploadify-progress-bar {
 	background-color: <?php echo $primary_6; ?>;
 	width: 1px;
 	height: 4px;
@@ -1584,7 +1584,7 @@ table.simple td.title {
 	font-weight: 100;
 }
 
-.uploadifyButton {
+.uploadify-button {
 	width: 100%;
 	border-radius: 4px;
 		-webkit-border-radius: 4px;
@@ -1600,22 +1600,20 @@ table.simple td.title {
 		-o-transition: all .3s ease-in-out;
 }
 
-.uploadify:hover .uploadifyButton {
+.uploadify:hover .uploadify-button {
 	background-color: #0e1316;
 	color: #ffffff;
 	text-shadow: 1px 1px 0px #000;
 }
 
-.uploadifyButtonText{
+.uploadify-button-text{
 	padding: 5px 15px 5px 15px;
-	display: block;
+	/*display: block;*/
 }
 
-#uploadify object {
-	position: absolute;
-	left: 0;
-	 right: 0;
-	cursor: pointer;
+.uploadify {
+	position: relative;
+	margin-bottom: 1em;
 }
 
 
