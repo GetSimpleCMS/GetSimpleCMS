@@ -175,29 +175,6 @@ if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 	$USR = null;
 }
 
-// set defined timezone from config if not set on user
-if( (!isset($TIMEZONE) || trim($TIMEZONE) == '' ) && defined('GSTIMEZONE') ){
-	$TIMEZONE = GSTIMEZONE;
-}
-
-/** grab authorization and security data */
-if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
-	$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
-	$SALT = stripslashes($dataa->apikey);
-} else {
-	$SALT = sha1($SITEURL);
-}
-$SESSIONHASH = sha1($SALT . $SITENAME);
-
-
-/**
- * Timezone setup
- */
-if( function_exists('date_default_timezone_set') && ($TIMEZONE != "" || stripos($TIMEZONE, '--')) ) { 
-	date_default_timezone_set($TIMEZONE);
-}
-
-
 /**
  * Language control
  */
@@ -211,6 +188,39 @@ if(!isset($LANG) || $LANG == '') {
 	}
 }
 include_once(GSLANGPATH . $LANG . '.php');
+
+
+/** grab authorization and security data */
+
+if (defined('GSUSECUSTOMSALT')) {
+	// use GSUSECUSTOMSALT
+	$SALT = sha1(GSUSECUSTOMSALT);
+} 
+else {
+	// use from authorization.xml
+	if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
+		$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
+		$SALT = stripslashes($dataa->apikey);
+	} else {
+		die(i18n_r('KILL_CANT_CONTINUE')."<br/>".i18n_r('MISSING_FILE').": "."authorization.xml");
+	}
+}
+
+$SESSIONHASH = sha1($SALT . $SITENAME);
+
+
+// set defined timezone from config if not set on user
+if( (!isset($TIMEZONE) || trim($TIMEZONE) == '' ) && defined('GSTIMEZONE') ){
+	$TIMEZONE = GSTIMEZONE;
+}
+
+/**
+ * Timezone setup
+ */
+if( function_exists('date_default_timezone_set') && ($TIMEZONE != "" || stripos($TIMEZONE, '--')) ) { 
+	date_default_timezone_set($TIMEZONE);
+}
+
 
 /**
  * $base is if the site is being viewed from the front-end
