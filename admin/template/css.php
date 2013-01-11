@@ -1674,6 +1674,76 @@ a.updatelink:focus {
 	padding: 1px 3px;
 }
 
+/* Labels */
+.label {
+	color: gray !important;
+	padding: 1px 6px;	
+	border-radius: 3px;	
+	text-align: center;
+	background-color: gray;	
+	color: #F2F2F2;	
+}
+
+.label a{
+	color: white !important;
+}
+
+.label a:hover{
+	color: lightgray !important;
+}
+
+.label-ok {
+	background-color: #2AA206;
+}
+
+.label-error {
+	background-color: #CF1A0D;
+}
+
+.label-warn {
+	background-color: orange;
+}
+
+.label-info {
+	background-color: #2B5CB3;
+}
+
+#hc_version.label {
+	width: 190px;
+	text-align: left;
+	padding: 9px 9px 9px 15px;
+	font-weight:normal;
+}
+
+#hc_alert {
+	float: right;
+	margin-top: -15px;
+	font-weight: bold;
+	color: #5C5C5C;
+}
+
+#hc_alert .label {
+	color: #FCFCFC !important;
+	width: 90px;
+	text-align: center;
+	padding: 1px 10px;
+	font-weight: normal;
+	font-weight: bold;
+}
+
+.wrapper table td span.label {
+	font-weight: bold;
+	color: #FCFCFC !important;
+	text-shadow: none !important;
+	width:50px;
+	display:block;
+	line-height:normal;
+	float:right;
+}
+
+td.hc_item {
+	width: 420px;
+}
 
 /* File Browser Styles */
 #filebrowser {

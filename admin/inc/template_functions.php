@@ -97,6 +97,7 @@ function delete_file($id) {
  */
 function check_perms($path) { 
   clearstatcache(); 
+  if(!file_exists($path)) return false;  
   $configmod = substr(sprintf('%o', fileperms($path)), -4);  
 	return $configmod;
 } 
@@ -521,6 +522,20 @@ function valid_xml($file) {
 	} else {
 		return '<span class="ERRmsg" >'.i18n_r('XML_INVALID').' - '.i18n_r('ERROR').'!</span>';
 	}
+}
+
+/**
+ * Validate XML
+ *
+ * @since 3.3.0
+ * @uses getXML
+ *
+ * @param string $file File to validate
+ * @return bool
+ */
+function is_valid_xml($file) {
+	$xmlv = getXML($file);
+	if ($xmlv) return true;
 }
 
 /**
