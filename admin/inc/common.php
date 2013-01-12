@@ -202,7 +202,7 @@ else {
 		$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
 		$SALT = stripslashes($dataa->apikey);
 	} else {
-		die(i18n_r('KILL_CANT_CONTINUE')."<br/>".i18n_r('MISSING_FILE').": "."authorization.xml");
+		// die(i18n_r('KILL_CANT_CONTINUE')."<br/>".i18n_r('MISSING_FILE').": "."authorization.xml");
 	}
 }
 
