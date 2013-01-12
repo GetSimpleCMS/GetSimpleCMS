@@ -102,6 +102,20 @@ function check_perms($path) {
 	return $configmod;
 } 
 
+
+function ModeOctal2rwx($ModeOctal) { // enter octal mode, e.g. '644' or '2755'
+    if ( ! preg_match("/[0-7]{3,4}/", $ModeOctal) )    // either 3 or 4 digits
+        die("wrong octal mode in ModeOctal2rwx('<TT>$ModeOctal</TT>')");
+    $Moctal = ((strlen($ModeOctal)==3)?"0":"").$ModeOctal;    // assume default 0
+    $Mode3 = substr($Moctal,-3);    // trailing 3 digits, no sticky bits considered
+    $RWX = array ('---','--x','-w-','-wx','r--','r-x','rw-','rwx');    // dumb,huh?
+    $Mrwx = $RWX[$Mode3[0]].$RWX[$Mode3[1]].$RWX[$Mode3[2]];    // concatenate
+    if (preg_match("/[1357]/", $Moctal[0])) $Mrwx[8] = ($Mrwx[8]=="-")?"T":"t";
+    if (preg_match("/[2367]/", $Moctal[0])) $Mrwx[5] = ($Mrwx[5]=="-")?"S":"s";
+    if (preg_match("/[4567]/", $Moctal[0])) $Mrwx[2] = ($Mrwx[2]=="-")?"S":"s";
+    return $Mrwx;    // returns e.g. 'rw-r--r--' or 'rwxr-sr-x'
+}
+
 /**
  * Delete Zip File
  *

@@ -182,7 +182,8 @@ $errorCnt = 0;
 					foreach($dirsArray as $path){
 						$relpath = '/'.str_replace(GSROOTPATH,'',$path);
 						$isFile = substr($relpath, -4,1) == '.';
-						
+						$writeOctal = $isFile ? '644' : '744';
+
 						if($isFile) $relpath = i18n_r('FILE_NAME').": $relpath";
 						
 						echo "<tr><td class=\"hc_item\">$relpath</td><td>";
@@ -194,11 +195,14 @@ $errorCnt = 0;
 						}
 
 						$me = check_perms($path);
-						if( $me >= '0755' ) { 
-							echo $me .' '.i18n_r('WRITABLE').'<td><span class="label label-ok" > '.i18n_r('OK').'</span></td>'; 
+						debugLog($relpath." " .ModeOctal2rwx($me));
+						echo '('.ModeOctal2rwx($me) .") $me ";
+
+						if( $me >= $writeOctal ) { 
+							echo i18n_r('WRITABLE').'<td><span class="label label-ok" > '.i18n_r('OK').'</span></td>'; 
 						} 
 						else { 
-							echo $me .' <span class="ERRmsg">'.i18n_r('NOT_WRITABLE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 
+							echo '<span class="ERRmsg">'.i18n_r('NOT_WRITABLE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 
 							$errorCnt++;											
 						} 
 						echo '</td></tr>';

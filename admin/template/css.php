@@ -1709,7 +1709,7 @@ a.updatelink:focus {
 }
 
 #hc_version.label {
-	width: 190px;
+	width: 280px;
 	text-align: left;
 	padding: 9px 9px 9px 15px;
 	font-weight:normal;
@@ -1742,7 +1742,7 @@ a.updatelink:focus {
 }
 
 td.hc_item {
-	width: 420px;
+	width: 330px;
 }
 
 /* File Browser Styles */
