@@ -529,7 +529,7 @@ $i18n                     = array(
 /*
 * Additions for 3.1
 */
-"DEBUG_CONSOLE"           =>	'Debug Console'
+"DEBUG_CONSOLE"           =>	'Debug Console',
 
 
 /*
