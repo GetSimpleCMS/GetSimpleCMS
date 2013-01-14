@@ -536,6 +536,8 @@ $i18n                     = array(
 * Generics
 * @since 3.3
 */
+"IS_MISSING"              =>    "%s is missing",
+"NOT_FOUND"               =>    "%s was not found",
 "TITLE"                   =>	"Title",
 "DELETE"                  =>	"Delete",
 "REMOVE"                  =>	"Remove",
