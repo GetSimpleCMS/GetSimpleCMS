@@ -89,7 +89,7 @@ $i18n                     = array(
 "LAST_SAVED"              =>	"Page last saved by %s on",
 "FILE_UPLOAD"             =>	"File Upload",
 "OR"                      =>	"or",
-"SAVE_AND_CLOSE"          => 	"Save &amp; Close",
+"SAVE_AND_CLOSE"          =>	"Save &amp; Close",
 
 /* 
 * For: upload.php
@@ -120,41 +120,41 @@ $i18n                     = array(
 /* 
 * For: navigation.php
 */
-"CURRENT_MENU"            => 	"Current Menu",
-"NO_MENU_PAGES"           => 	"There are no pages that are set to appear within the main menu",
+"CURRENT_MENU"            =>	"Current Menu",
+"NO_MENU_PAGES"           =>	"There are no pages that are set to appear within the main menu",
 
 /* 
 * For: theme-edit.php
 */
-"TEMPLATE_FILE"           => 	"Template file <b>%s</b> has successfully been updated!",
-"THEME_MANAGEMENT"        => 	"Theme Management",
-"EDIT_THEME"              => 	"Theme Editor",
-"EDITING_FILE"            => 	"Editing File",
-"BTN_SAVECHANGES"         => 	"Save Changes",
-"EDIT"                    => 	"Edit",
+"TEMPLATE_FILE"           =>	"Template file <b>%s</b> has successfully been updated!",
+"THEME_MANAGEMENT"        =>	"Theme Management",
+"EDIT_THEME"              =>	"Theme Editor",
+"EDITING_FILE"            =>	"Editing File",
+"BTN_SAVECHANGES"         =>	"Save Changes",
+"EDIT"                    =>	"Edit",
 
 /* 
 * For: support.php
 */
-"SETTINGS_UPDATED"        => 	"Your settings have been updated",
-"UNDO"                    => 	"Undo",
-"SUPPORT"                 => 	"Support",
-"SETTINGS"                => 	"Settings",
-"ERROR"                   => 	"Error",
-"BTN_SAVESETTINGS"        => 	"Save Settings",
-"VIEW_FAILED_LOGIN"       => 	"View Failed Login Attempts",
+"SETTINGS_UPDATED"        =>	"Your settings have been updated",
+"UNDO"                    =>	"Undo",
+"SUPPORT"                 =>	"Support",
+"SETTINGS"                =>	"Settings",
+"ERROR"                   =>	"Error",
+"BTN_SAVESETTINGS"        =>	"Save Settings",
+"VIEW_FAILED_LOGIN"       =>	"View Failed Login Attempts",
 
 
 /* 
 * For: log.php
 */
-"MSG_HAS_BEEN_CLR"        => 	" has been cleared",
-"LOGS"                    => 	"Logs",
-"VIEWING"                 => 	"Viewing",
-"LOG_FILE"                => 	"Log File",
-"CLEAR_ALL_DATA"          => 	"Clear all data from",
-"CLEAR_THIS_LOG"          => 	"<em>C</em>lear This Log",
-"LOG_FILE_ENTRY"          => 	"LOG FILE ENTRY",
+"MSG_HAS_BEEN_CLR"        =>	" has been cleared",
+"LOGS"                    =>	"Logs",
+"VIEWING"                 =>	"Viewing",
+"LOG_FILE"                =>	"Log File",
+"CLEAR_ALL_DATA"          =>	"Clear all data from",
+"CLEAR_THIS_LOG"          =>	"<em>C</em>lear This Log",
+"LOG_FILE_ENTRY"          =>	"LOG FILE ENTRY",
 "THIS_COMPUTER"           =>	"This Computer",
 
 /* 
@@ -169,7 +169,7 @@ $i18n                     = array(
 "YES"                     =>	"Yes",
 "NO"                      =>	"No",
 "DATE"                    =>	"Date",
-"PERMS"                   =>  	"Perms",
+"PERMS"                   => 	"Perms",
 
 /* 
 * For: components.php
@@ -221,12 +221,12 @@ $i18n                     = array(
 "NEW_PASSWORD"            =>	"New Password",
 "CONFIRM_PASSWORD"        =>	"Confirm Password",
 "PASSWORD_NO_MATCH"       =>	"Passwords do not match",
-"PERMALINK"               => 	"Custom Permalink Structure",
-"MORE"                    => 	"more",
-"HELP"                    => 	"help",
-"FLUSHCACHE"              =>  	"Flush All Caches",
-"FLUSHCACHE-SUCCESS"      =>  	"Caches Flushed Successfully",
-"DISPLAY_NAME"            =>  	"A name for public display that is not your username",
+"PERMALINK"               =>	"Custom Permalink Structure",
+"MORE"                    =>	"more",
+"HELP"                    =>	"help",
+"FLUSHCACHE"              => 	"Flush All Caches",
+"FLUSHCACHE-SUCCESS"      => 	"Caches Flushed Successfully",
+"DISPLAY_NAME"            => 	"A name for public display that is not your username",
 
 /* 
 * For: health-check.php
@@ -292,7 +292,7 @@ $i18n                     = array(
 "TAB_FILES"               =>	"F<em>i</em>les",
 "TAB_THEME"               =>	"<em>T</em>heme",
 "TAB_BACKUPS"             =>	"<em>B</em>ackups",
-"PLUGINS_NAV"             =>  	"Plu<em>g</em>ins",
+"PLUGINS_NAV"             => 	"Plu<em>g</em>ins",
 "TAB_SETTINGS"            =>	"<em>S</em>ettings",
 "TAB_SUPPORT"             =>	"Supp<em>o</em>rt",
 "TAB_LOGOUT"              =>	"<em>L</em>ogout",
@@ -363,7 +363,7 @@ $i18n                     = array(
 * For: changedata.php
 */
 "CANNOT_SAVE_EMPTY"       =>	"You cannot save a page with an empty title",
-"META_DESC"               =>  	"Meta Description",
+"META_DESC"               => 	"Meta Description",
 
 /* 
 * For: template_functions.php
@@ -484,45 +484,45 @@ $i18n                     = array(
 "ARCHIVE_DATE"            =>	"Archive Date", //archive.php
 "CKEDITOR_LANG"           =>	"en", // edit.php ; set CKEditor language, don't forget to include CKEditor language file in translation zip	
 # new to 3.1 
-"XML_INVALID"             => 	"XML Invalid", //template-functions.php
-"XML_VALID"               => 	"XML Valid",
-"UPDATE_AVAILABLE"        => 	"Update to", //plugins.php
-"STATUS"                  => 	"Status", //plugins.php
-"CLONE"                   => 	"Clone", //edit.php
-"CLONE_SUCCESS"           => 	"Successfully created %s", //pages.php
-"COPY"                    => 	"Copy", //pages.php
-"CLONE_ERROR"             => 	"There was a problem trying to clone <b>%s</b>",  //pages.php
-"AUTOSAVE_NOTIFY"         => 	'Page autosaved at', //edit.php
-"MENU_MANAGER"            => 	'<em>M</em>enu Manager', //edit.php
-"GET_PLUGINS_LINK"        => 	'Download <em>M</em>ore Plugins',
-"SITEMAP_REFRESHED"       => 	"Your sitemap has been refreshed", //edit.php
-"LOG_FILE_EMPTY"          => 	"This log file is empty", //log.php
-"SHARE"                   => 	"Share", //footer.php
-"NO_PARENT"               => 	"No Parent", //edit.php
-"REMAINING"               => 	"characters remaining", //edit.php
-"NORMAL"                  => 	"Normal", //edit.php
-"ERR_CANNOT_DELETE"       => 	"Cannot delete %s. Please do this manually.", //common.php
-"ADDITIONAL_ACTIONS"      => 	"Other Actions", //edit.php
-"ITEMS"                   => 	"items", //upload.php
-"SAVE_MENU_ORDER"         => 	"Save Menu Order", //menu-manager.php
-"MENU_MANAGER_DESC"       => 	"Drag-and-drop the menu items around until you have the order you want, then click the <strong>'Save Menu Order'</strong> button.", //menu-manager.php
-"MENU_MANAGER_SUCCESS"    => 	"The new menu order has been saved", //menu-manager.php
+"XML_INVALID"             =>	"XML Invalid", //template-functions.php
+"XML_VALID"               =>	"XML Valid",
+"UPDATE_AVAILABLE"        =>	"Update to", //plugins.php
+"STATUS"                  =>	"Status", //plugins.php
+"CLONE"                   =>	"Clone", //edit.php
+"CLONE_SUCCESS"           =>	"Successfully created %s", //pages.php
+"COPY"                    =>	"Copy", //pages.php
+"CLONE_ERROR"             =>	"There was a problem trying to clone <b>%s</b>",  //pages.php
+"AUTOSAVE_NOTIFY"         =>	'Page autosaved at', //edit.php
+"MENU_MANAGER"            =>	'<em>M</em>enu Manager', //edit.php
+"GET_PLUGINS_LINK"        =>	'Download <em>M</em>ore Plugins',
+"SITEMAP_REFRESHED"       =>	"Your sitemap has been refreshed", //edit.php
+"LOG_FILE_EMPTY"          =>	"This log file is empty", //log.php
+"SHARE"                   =>	"Share", //footer.php
+"NO_PARENT"               =>	"No Parent", //edit.php
+"REMAINING"               =>	"characters remaining", //edit.php
+"NORMAL"                  =>	"Normal", //edit.php
+"ERR_CANNOT_DELETE"       =>	"Cannot delete %s. Please do this manually.", //common.php
+"ADDITIONAL_ACTIONS"      =>	"Other Actions", //edit.php
+"ITEMS"                   =>	"items", //upload.php
+"SAVE_MENU_ORDER"         =>	"Save Menu Order", //menu-manager.php
+"MENU_MANAGER_DESC"       =>	"Drag-and-drop the menu items around until you have the order you want, then click the <strong>'Save Menu Order'</strong> button.", //menu-manager.php
+"MENU_MANAGER_SUCCESS"    =>	"The new menu order has been saved", //menu-manager.php
 
 
 /* 
 * For: api related pages
 */
-"API_ERR_MISSINGPARAM"    => 	'parameter data does not exist',
-"API_ERR_BADMETHOD"       => 	'method %s does not exist',
-"API_ERR_AUTHFAILED"      => 	'authentication failed',
-"API_ERR_AUTHDISABLED"    => 	'authentication disabled',
-"API_ERR_NOPAGE"          => 	'requested page %s does not exist',
-"API_CONFIGURATION"       => 	'API Configuration',
-"API_ENABLE"              => 	'Enable the API',
-"API_REGENKEY"            => 	'Regenerate Key',
-"API_DISCLAIMER"          => 	"By enabling this API you are allowing any external application that has a copy of your key to have access to your website's data. <b>Only share this key with applications you trust.</b>",
-"API_REGEN_DISCLAIMER"    => 	"When you regenerate your API Key, you will need to enter the new key into any external application using this API to connect to your website.",
-"API_CONFIRM"             => 	"ARE YOU SURE?",
+"API_ERR_MISSINGPARAM"    =>	'parameter data does not exist',
+"API_ERR_BADMETHOD"       =>	'method %s does not exist',
+"API_ERR_AUTHFAILED"      =>	'authentication failed',
+"API_ERR_AUTHDISABLED"    =>	'authentication disabled',
+"API_ERR_NOPAGE"          =>	'requested page %s does not exist',
+"API_CONFIGURATION"       =>	'API Configuration',
+"API_ENABLE"              =>	'Enable the API',
+"API_REGENKEY"            =>	'Regenerate Key',
+"API_DISCLAIMER"          =>	"By enabling this API you are allowing any external application that has a copy of your key to have access to your website's data. <b>Only share this key with applications you trust.</b>",
+"API_REGEN_DISCLAIMER"    =>	"When you regenerate your API Key, you will need to enter the new key into any external application using this API to connect to your website.",
+"API_CONFIRM"             =>	"ARE YOU SURE?",
 
 "X"                       =>	"not translated",
 
@@ -530,6 +530,85 @@ $i18n                     = array(
 * Additions for 3.1
 */
 "DEBUG_CONSOLE"           =>	'Debug Console'
+
+
+/*
+* Generics
+* @since 3.3
+*/
+"TITLE"                   =>	"Title",
+"DELETE"                  =>	"Delete",
+"REMOVE"                  =>	"Remove",
+"FILE"                    =>	"File",
+"FOLDER"                  =>	"Folder",
+"DIRECTORY"               =>	"Directory",
+"CLOSE"                   =>	"Close",
+"OPEN"                    =>	"Open",
+"NEXT"                    =>	"Next",
+"PREVIOUS"                =>	"Previous",
+"BACK"                    =>	"Back",
+"TOP"                     =>	"Top",
+"BOTTOM"                  =>	"Bottom",
+"LEFT"                    =>	"Left",
+"RIGHT"                   =>	"Right",
+"UP"                      =>	"Up",
+"DOWN"                    =>	"Down",
+"REDO"                    =>	"Redo",
+"RESET"                   =>	"Reset",
+"SAVE"                    =>	"Save",
+"SHOW"                    =>	"Show",
+"STATUS"                  =>	"Status",
+"SUCCESS"                 =>	"Success",
+"FAILURE"                 =>	"Failure",
+"PASSED"                  =>	"Passed",
+"FAILED"                  =>	"Failed",
+"INFO"                    =>	"Info",
+"ALERT"                   =>	"Alert",
+"MESSAGE"                 =>	"Message",
+"PRINT"                   =>	"Print",
+"VIEW"                    =>	"View",
+"REFRESH"                 =>	"Refresh",
+"DOWNLOAD"                =>	"Download",
+"THEME"                   =>	"Theme",
+"COMPONENT"               =>	"Component",
+"PLUGIN"                  =>	"Plugin",
+"TOTAL"                   =>	"Total",
+"COUNT"                   =>	"Count",
+"ADD"                     =>	"Add",
+"NEW"                     =>	"New",
+"DAY"                     =>	"Day",
+"MONTH"                   =>	"Month",
+"YEAR"                    =>	"Year",
+"GOOD"                    =>	"Good",
+"BAD"                     =>	"Bad",
+"PASS"                    =>	"Pass",
+"FAIL"                    =>	"Fail",
+"ITEMS"                   =>	"Items",
+"LIST"                    =>	"List",
+"ORDER"                   =>	"Order",
+"MENU"                    =>	"Menu",
+"LOG"                     =>	"Log",
+"GEN_ENABLE"              =>	"Enable",
+"GEN_DISABLE"             =>	"Disable",
+"ENABLED"                 =>	"Enabled",
+"DISABLED"                =>	"Disabled",
+"ACTIVE"                  =>	"Active",
+"INACTIVE"                =>	"Inactive",
+"SERVER"                  =>	"Server"
+
+// already defined generics
+# "UNDO"                  =>	"Undo",
+# "YES"                   =>	"Yes",
+# "NO"                    =>	"No",
+# "EDIT"                  =>	"Edit",
+# "CANCEL"                =>	"Cancel",
+# "DESCRIPTION"           =>	"Description",
+# "ERROR"                 =>	"Error",
+# "WARNING"               =>	"Warning",
+# "NONE"                  =>	""None",
+# "PAGE"                  =>	""Page",
+# "DATE"                  =>	"Date",
+# "OK"                    =>	"OK",
 
 );
 
