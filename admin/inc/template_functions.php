@@ -38,9 +38,7 @@ function get_template($name, $title='** Change Me - Default Page Title **') {
  * @return string
  */
 function filename_id() {
-	$path = myself(FALSE);
-	$file = basename($path,".php");	
-	echo "id=\"". $file ."\"";	
+	echo "id=\"". get_filename_id() ."\"";	
 }
 
 /**
@@ -529,9 +527,8 @@ function do_reg($text, $regex) {
  * @return string
  */
 function valid_xml($file) {
-	$xmlv = getXML($file);
 	global $i18n;
-	if ($xmlv) {
+	if (is_valid_xml($file)) {
 		return '<span class="OKmsg" >'.i18n_r('XML_VALID').' - '.i18n_r('OK').'</span>';
 	} else {
 		return '<span class="ERRmsg" >'.i18n_r('XML_INVALID').' - '.i18n_r('ERROR').'!</span>';

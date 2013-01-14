@@ -256,8 +256,15 @@ function getFiles($path) {
 	return $file_arr;
 }
 
-$microtime_start = null;
-
+/**
+ * execution timer
+ * 
+ * @since 3.2
+ * @uses $microtime_start
+ * 
+ * @param bool $reset resets global to timestamp
+ * @return 
+ */
 function get_execution_time($reset=false)
 {
 	GLOBAL $microtime_start;
@@ -1230,6 +1237,13 @@ function hasModRewrite(){
 	}
 
 	if(getenv('HTTP_MOD_REWRITE') == 'On') return true;
+}
+
+/**
+ *  @return bool true if we not in an install file
+ */
+function notInInstall(){
+	return ( get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update' && get_filename_id() != 'style' );
 }
 
 ?>
