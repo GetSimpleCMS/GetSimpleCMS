@@ -1009,7 +1009,6 @@ function get_api_details($type='core', $args=null) {
 		$fetch_this_api = $args;
 	}
 	
-	// debugLog("get_api_details: " . $type);
 	// debugLog("get_api_details: " . $args);
 	// debugLog("get_api_details: " . $fetch_this_api);
 
@@ -1017,13 +1016,16 @@ function get_api_details($type='core', $args=null) {
 	$cachefile = md5($fetch_this_api).'.txt';
 	$nocache = false;
 
+	$nocurl = false;
+	if(!isset($api_timeout) or (int)$api_timeout<100) $api_timeout = 100; // default and clamp min to 100ms
+
 	# debugLog($fetch_this_api.' ' .$cachefile);
 	if (file_exists(GSCACHEPATH.$cachefile) && time() - 40000 < filemtime(GSCACHEPATH.$cachefile) and !$nocache) {
 		# grab the api request from the cache
 		$data = file_get_contents(GSCACHEPATH.$cachefile);
 	} else {	
 		# make the api call
-		if (function_exists('curl_exec')) {
+		if (function_exists('curl_exec') and !$nocurl) {
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, $api_timeout);
 			curl_setopt($ch, CURLOPT_TIMEOUT_MS, $api_timeout);
@@ -1032,7 +1034,11 @@ function get_api_details($type='core', $args=null) {
 			$data = curl_exec($ch);
 			curl_close($ch);
 		} else {  
-			$data = file_get_contents($fetch_this_api);
+			$timeout = $api_timeout / 1000; // ms to float seconds
+			// $context = stream_context_create();
+			// stream_context_set_option ( $context, array('http' => array('timeout' => $timeout)) );
+			$context = stream_context_create(array('http' => array('timeout' => $timeout))); 
+			$data = @file_get_contents($fetch_this_api,false,$context);			
 		}
 	
 	  $response = json_decode($data);		
