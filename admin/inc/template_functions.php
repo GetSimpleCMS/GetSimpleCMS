@@ -1025,7 +1025,8 @@ function get_api_details($type='core', $args=null) {
 		# make the api call
 		if (function_exists('curl_exec')) {
 			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, $api_timeout);
+			curl_setopt($ch, CURLOPT_TIMEOUT_MS, $api_timeout);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_URL, $fetch_this_api);
 			$data = curl_exec($ch);
@@ -1034,7 +1035,7 @@ function get_api_details($type='core', $args=null) {
 			$data = file_get_contents($fetch_this_api);
 		}
 	
-	    $response = json_decode($data);		
+	  $response = json_decode($data);		
 		// if response is invalid do not write to cache and return false
 		// this keep proxy and malicious responses out of downstream code
 		if($response){
