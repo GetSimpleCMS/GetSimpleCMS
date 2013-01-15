@@ -20,17 +20,18 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
 
 $errorCnt = 0;
 
-?>
-	
-<?php include('template/include-nav.php'); ?>
+include('template/include-nav.php'); 
 
-<div class="bodycontent clearfix">
-	
+echo '<div class="bodycontent clearfix">	
 	<div id="maincontent">
-		<div class="main">
-			<h3><?php echo $site_full_name; ?> <?php i18n('VERSION');?></h3>
-			<table class="highlight healthcheck">
-				<?php
+		<div class="main">';
+
+			///////////////////////////////////////////////
+			// Server Setup
+			///////////////////////////////////////////////
+
+			echo '<h3>' . $site_full_name .' '. i18n_r('VERSION') .'</h3>
+			<table class="highlight healthcheck">';
 				
 				# check to see if there is a core update needed
 				$data = get_api_details();
@@ -57,10 +58,16 @@ $errorCnt = 0;
 				<tr><td class="hc_item" ><?php echo $site_full_name; ?> <?php i18n('VERSION');?></td><td><?php echo $ver; ?></td></tr>
 			</table>
 			
-			<h3><?php i18n('SERVER_SETUP');?></h3>
+			<?php
+
+			///////////////////////////////////////////////
+			// Server Setup
+			///////////////////////////////////////////////
+			
+			echo '<h3>'. i18n_r('SERVER_SETUP') .'</h3>
 			<table class="highlight healthcheck">
-				<tr>
-				<?php
+				<tr>';
+
 					echo '<td class="hc_item">PHP '.i18n_r('VERSION').'</td>';
 					if (version_compare(PHP_VERSION, "5.2", "<")) {
 						echo '<td><span class="ERRmsg"><b>'. PHP_VERSION.'</b><br/>PHP 5.2 '.i18n_r('OR_GREATER_REQ').'</span></td><td><span class="label label-error">'.i18n_r('ERROR').'</span></td>';
@@ -122,11 +129,14 @@ $errorCnt = 0;
 				echo sprintf(i18n_r('REQS_MORE_INFO'), "http://get-simple.info/wiki/installation:requirements"); ?>
 			</p>
 			
-			<h3><?php i18n('DATA_FILE_CHECK');?></h3>
-			<table class="highlight healthcheck">
-				<?php 
-	
-				// Data File Integrity Check
+			<?php
+
+			///////////////////////////////////////////////
+			// Data File Integrity Check
+			///////////////////////////////////////////////
+
+			echo '<h3>'. i18n_r('DATA_FILE_CHECK') .'</h3>
+			<table class="highlight healthcheck">';
 
 					$dirsArray = array(
 						GSDATAPAGESPATH, 
@@ -155,14 +165,16 @@ $errorCnt = 0;
 						}
 					}
 
-				?>
-			</table>
 			
-			<h3><?php i18n('DIR_PERMISSIONS');?></h3>
-			<table class="highlight healthcheck">
-			<?php
-				// Directory Permissions
+			echo '</table>';
+			
+			///////////////////////////////////////////////
+			// Directory Permissions
+			///////////////////////////////////////////////
 
+			echo '<h3>'. i18n_r('DIR_PERMISSIONS') .'</h3>
+			<table class="highlight healthcheck">';
+			
 					$dirsArray = array(
 						GSDATAOTHERPATH.'plugins.xml',
 						GSDATAOTHERPATH.'authorization.xml',
@@ -207,16 +219,15 @@ $errorCnt = 0;
 						} 
 						echo '</td></tr>';
 					}		
-			?>
-			</table>
-
 			
-			<h3><?php echo sprintf(i18n_r('EXISTANCE'), '.htaccess');?></h3>
-			<table class="highlight healthcheck">
+			echo '</table>';
 
-				<?php	
-
-				// htaccess existance
+			///////////////////////////////////////////////
+			// htaccess existance
+			///////////////////////////////////////////////
+			if (server_is_apache()) { 
+				echo '<h3>'. sprintf(i18n_r('EXISTANCE'), '.htaccess') .'</h3>';
+				echo '<table class="highlight healthcheck">';
 
 					$dirsArray = array(
 						GSDATAPATH, 
@@ -290,9 +301,13 @@ $errorCnt = 0;
 						echo "</tr>";						
 					}	
 
-					?>
-			</table>
-			<?php exec_action('healthcheck-extras'); ?>
+					
+				echo '</table>';
+			}
+
+			// call healthcheck-extras hook
+			exec_action('healthcheck-extras');
+			?>			
 	</div>
 		
 	</div>
