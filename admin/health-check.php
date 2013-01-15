@@ -195,7 +195,7 @@ $errorCnt = 0;
 						}
 
 						$me = check_perms($path);
-						debugLog($relpath." " .ModeOctal2rwx($me));
+						// debugLog($relpath." " .ModeOctal2rwx($me));
 						echo '('.ModeOctal2rwx($me) .") $me ";
 
 						if( $me >= $writeOctal ) { 
