@@ -204,7 +204,7 @@ else {
 		$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
 		$SALT = stripslashes($dataa->apikey);
 	} else {
-		if(notInInstall()) die(i18n_r('KILL_CANT_CONTINUE')."<br/>".i18n_r('MISSING_FILE').": "."authorization.xml");
+		if($SITEURL !='' && notInInstall()) die(i18n_r('KILL_CANT_CONTINUE')."<br/>".i18n_r('MISSING_FILE').": "."authorization.xml");
 	}
 }
 
