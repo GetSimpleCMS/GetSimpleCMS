@@ -1027,6 +1027,12 @@ function get_api_details($type='core', $args=null) {
 		# make the api call
 		if (function_exists('curl_exec') and !$nocurl) {
 			$ch = curl_init();
+
+			// define missing curlopts php<5.2.3
+			if(!defined('CURLOPT_CONNECTTIMEOUT_MS')) define('CURLOPT_CONNECTTIMEOUT_MS',156);
+			if(!defined('CURLOPT_TIMEOUT_MS')) define('CURLOPT_TIMEOUT_MS',155);
+			
+			// min cURL 7.16.2
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, $api_timeout);
 			curl_setopt($ch, CURLOPT_TIMEOUT_MS, $api_timeout);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
