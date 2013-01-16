@@ -661,7 +661,7 @@ function get_available_pages() {
  *
  */
 function updateSlugs($existingUrl, $newurl=null){
-     	global $pagesArray;
+	global $pagesArray;
 	getPagesXmlValues();
 	  
 	if (!$newurl){
@@ -672,7 +672,6 @@ function updateSlugs($existingUrl, $newurl=null){
 
 	foreach ($pagesArray as $page){
 		if ( $page['parent'] == $existingUrl ){
-			echo GSDATAPAGESPATH.$page['file'];
 			$thisfile = @file_get_contents(GSDATAPAGESPATH.$page['filename']);
         		$data = simplexml_load_string($thisfile);
             		$data->parent=$url;
