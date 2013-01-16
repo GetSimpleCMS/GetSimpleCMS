@@ -687,39 +687,25 @@ function get_available_pages() {
  *
  */
 function updateSlugs($existingUrl, $newurl=null){
-      
-      if (!$newurl){
-      	global $url;
-      } else {
-      	$url = $newurl;
-      }
+     	global $pagesArray;
+	getPagesXmlValues();
+	  
+	if (!$newurl){
+      		global $url;
+      	} else {
+      		$url = $newurl;
+      	}
 
-      $path = GSDATAPAGESPATH;
-      $dir_handle = @opendir($path) or die("Unable to open $path");
-      $filenames = array();
-      while ($filename = readdir($dir_handle)) {
-        $ext = substr($filename, strrpos($filename, '.') + 1);
-        if ($ext=="xml"){
-          $filenames[] = $filename;
-        }
-      }
-
-      if (count($filenames) != 0) {
-        foreach ($filenames as $file) {
-          
-          if ($file == "." || $file == ".." || is_dir(GSDATAPAGESPATH.$file) || $file == ".htaccess"  ) {
-            // not a page data file
-          } else {
-            $thisfile = @file_get_contents(GSDATAPAGESPATH.$file);
-            $data = simplexml_load_string($thisfile);
-            if ($data->parent==$existingUrl){
-              $data->parent=$url;
-              XMLsave($data, GSDATAPAGESPATH.$file);
-            }   
-          } 
-        }
-      }
-} 
+	foreach ($pagesArray as $page){
+		if ( $page['parent'] == $existingUrl ){
+			echo GSDATAPAGESPATH.$page['file'];
+			$thisfile = @file_get_contents(GSDATAPAGESPATH.$page['filename']);
+        		$data = simplexml_load_string($thisfile);
+            		$data->parent=$url;
+            		XMLsave($data, GSDATAPAGESPATH.$page['filename']);
+		}
+	  }
+}
 
 
 /**
