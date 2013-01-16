@@ -257,6 +257,26 @@ function getFiles($path) {
 }
 
 /**
+ * Get XML Files
+ * Returns an array of xml files from the passed path
+ * @since 3.3.0
+ * @param string $path
+ * @return array
+ */
+function getXmlFiles($path) {
+	$handle = opendir($path) or die("Unable to open $path");
+	$file_arr = array();
+	while ($file = readdir($handle)) {
+		$ext = lowercase(pathinfo($file, PATHINFO_EXTENSION));
+		if ($ext == 'xml') {
+			$file_arr[] = $file;
+		}
+	}
+	closedir($handle);
+	return $file_arr;
+}
+
+/**
  * execution timer
  * 
  * @since 3.2
