@@ -48,6 +48,8 @@ if (isset($_FILES['file'])) {
 			$base = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
 			
 			//prevent overwriting
+			// @todo redo variables to avoid the double redundant clean_img_name(to7bit below
+
 			while ( file_exists($file_loc) ) {
 				$file_loc = $path . $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
 				$base = $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));

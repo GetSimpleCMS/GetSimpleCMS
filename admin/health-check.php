@@ -191,10 +191,16 @@ echo '<div class="bodycontent clearfix">
 						GSBACKUSERSPATH
 					);		
 
+					if (defined('GSCHMOD')) { 
+						$writeOctal = GSCHMOD; 
+					} else {
+						$writeOctal = 0755;
+					}
+
 					foreach($dirsArray as $path){
 						$relpath = '/'.str_replace(GSROOTPATH,'',$path);
 						$isFile = substr($relpath, -4,1) == '.';
-						$writeOctal = $isFile ? '644' : '744';
+						if(!$isFile) $writeOctal = 0744;
 
 						if($isFile) $relpath = i18n_r('FILE_NAME').": $relpath";
 						
@@ -207,10 +213,8 @@ echo '<div class="bodycontent clearfix">
 						}
 
 						$me = check_perms($path);
-						// debugLog($relpath." " .ModeOctal2rwx($me));
 						echo '('.ModeOctal2rwx($me) .") $me ";
-
-						if( $me >= $writeOctal ) { 
+						if( $me >= decoct($writeOctal) ) { 
 							echo i18n_r('WRITABLE').'<td><span class="label label-ok" > '.i18n_r('OK').'</span></td>'; 
 						} 
 						else { 
