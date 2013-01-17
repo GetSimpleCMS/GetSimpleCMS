@@ -176,8 +176,8 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 							$pagesArray_tmp[$count] = $page;
 							$count++;
 						}
-						$pagesArray = $pagesArray_tmp;
-						$pagesSorted = subval_sort($pagesArray,'sort');
+						// $pagesArray = $pagesArray_tmp;
+						$pagesSorted = subval_sort($pagesArray_tmp,'sort');
 						$ret=get_pages_menu_dropdown('','',0);
 						$ret=str_replace('value="'.$id.'"', 'value="'.$id.'" disabled', $ret);
 						
