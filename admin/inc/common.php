@@ -17,8 +17,8 @@ global
  $SITEURL,        // siteurl setting
  $TEMPLATE,       // current theme
  $TIMEZONE,       // current timezone either from config or user
- $LANG,
- $SALT,
+ $LANG,           // settings language
+ $SALT,           // salt holds gsconfig GSUSECUSTOMSALT or authentication.xml salt
  $i18n,
  $USR,            // logged in user
  $PERMALINK,      // permalink structure
@@ -26,7 +26,8 @@ global
  $GS_debug,       // debug log array
  $components,     // components array
  $nocache,        // disable site wide cache
- $microtime_start // used for benchmark timers
+ $microtime_start,// used for benchmark timers
+ $pagesArray      // page cache array, used for all page fields aside from content
 ;
 
 if(isset($_GET['nocache'])){
