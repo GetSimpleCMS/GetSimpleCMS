@@ -262,6 +262,7 @@ function init_pageCache($refresh = false)
  * Loads in pagescache xml to pagecache array
  */
 function load_pageCache(){
+	GLOBAL $pagesArray;
 	$file=GSDATAOTHERPATH."pages.xml";	
 	$pagesArray=array(); // wipe array
 	$data = getXml($file);
