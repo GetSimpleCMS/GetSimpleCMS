@@ -10,9 +10,10 @@
 
 $pagesArray = array();
 
-add_action('index-pretemplate','getPagesXmlValues',array('false'));// make $pagesArray available to the theme 
-add_action('header', 'getPagesXmlValues',array('false'));          // add hook to save  $tags values 
-add_action('page-delete', 'create_pagesxml',array('true'));        // Create pages.array if file deleted
+add_action('index-pretemplate','getPagesXmlValues',array(false)); // make $pagesArray available to the theme 
+add_action('header', 'getPagesXmlValues',array(false));           // add hook to save  $tags values 
+add_action('page-delete', 'create_pagesxml',array(true));         // Create pages.array if file deleted
+add_action('changedata-save', 'create_pagesxml',array(true));     // Create pages.array if file deleted
 
 
 /**
@@ -185,75 +186,110 @@ function pageCacheCountDiffers(){
 }
 
 /**
+ * LEGACY
  * Get Cached Pages XML Values
  *
  * Loads the Cached XML data into the Array $pagesArray
  * If the file does not exist it is created the first time. 
  *
  * @since 3.1
- * @param bool $chkcount regenerate cache before raeding in
+ * @param bool $refresh check cache for changes and regen
  *  
  */
-function getPagesXmlValues($chkcount=true){
-	global $pagesArray;
-	debugLog('getPagesXmlValues');
-	$pagesArray=array(); // wipe array
+
+function getPagesXmlValues($refresh=true){
+	debugLog('getPagesXmlValues '.$refresh);
 
 	$file=GSDATAOTHERPATH."pages.xml";
 
-	// check for changes
-	if ($chkcount==true and pageCacheCountDiffers()){
-		create_pagesxml(true);
-		return; 
-	}
-
-	// load file and create array
 	if (file_exists($file)){
-		$thisfile = file_get_contents($file);
-		$data = simplexml_load_string($thisfile);
-		pageCacheXMLtoArray($data); // create array from xml
+		load_pageCache();
 	} else {
 		create_pagesxml(true);
-		# getPagesXmlValues(false);
+		return;
+	}
+
+	// check for changes
+	if ((bool)$refresh===true and pageCacheCountDiffers()){
+		create_pagesxml(true);
 	}
 	
 }
 
-
 /**
+ * LEGACY
  * Create the Cached Pages XML file
- *
- * Reads in all pages xml builds pagecache xml obj
- * data/pages/pages xml
  *  
- * Optionally saves pagecache xml into data/other/pages.xml
- * @todo why optonal, why would we not always save?
- *
  * @since 3.1
- * @uses $pagesArray
  * @param bool $flag true saves pages.xml
  * @return null 
  */
-function create_pagesxml($flag=false){
+function create_pagesxml($save=false){
 	global $pagesArray;
-	debugLog('create_pagesxml');
+	debugLog('create_pagesxml '.$save);
+  	$pageCacheXml = generate_pageCacheXml();
+	
+	if((bool)$save){ 
+		save_pageCacheXml($pageCacheXml); 
+	}
 
-	// @todo what purpose did this and flag serve ?
-	// @todo why flag to not save xml ?
-	// if ((isset($_GET['upd']) && $_GET['upd']=="edit-success")) || $flag=='true'){
-	$menu = '';
-	$filem=GSDATAOTHERPATH."pages.xml";
+	pageCacheXMLtoArray($pageCacheXml);
+}
 
+
+/**
+ * Initialize pagecache
+ * 
+ * @param bool $refresh regenerate cache
+ */
+function init_pageCache($refresh = false)
+{
+	$file=GSDATAOTHERPATH."pages.xml";
+	
+	if (file_exists($file) and !$refresh){
+		// if exists load it
+		load_pageCache();
+	} else {
+		// else generate,save it,set global pagecache array
+  		$pageCacheXml = generate_pageCacheXml();
+		save_pageCacheXml($pageCacheXml);   		
+		pageCacheXMLtoArray($pageCacheXml);
+		return;
+	}
+}
+
+/**
+ * Loads in pagescache xml to pagecache array
+ */
+function load_pageCache(){
+	$file=GSDATAOTHERPATH."pages.xml";	
+	$pagesArray=array(); // wipe array
+	$data = getXml($file);
+	pageCacheXMLtoArray($data); // create array from xml
+}
+
+/**
+ * Save pagecache xml file
+ * @param  simpleXmlObj
+ * @return sucess
+ */
+function save_pageCacheXml($xml){
+	$file=GSDATAOTHERPATH."pages.xml";		
+	return $xml->asXML($file);
+}
+
+/**
+ * Generates pagecachexml from pages xml
+ * @return simpleXmlobj pagecache xml
+ */
+function generate_pageCacheXml(){
 	// read in each pages xml file
 	$path = GSDATAPAGESPATH;
 	$filenames = getXmlFiles($path);
-	$count=0;
 	$xml = @new SimpleXMLExtended('<channel></channel>');
 	if (count($filenames) != 0) {
 		foreach ($filenames as $file) {
-			$thisfile = file_get_contents($path.$file);
-			$data = simplexml_load_string($thisfile);
-			$count++;   
+			$data = getXml($path.$file);
 						
 			$id=$data->url;
 			$pages = $xml->addChild('item');
@@ -265,24 +301,15 @@ function create_pagesxml($flag=false){
 					$note->addCData($itemdata);
 				}
 			}
-			$note = $pages->addChild('slug');
-			$note->addCData($id);
-			$note = $pages->addChild('filename'); 
-			$note->addCData($file);
-			
-			// pageXMLtoArray($data,$file); // testing per pagexml
-
-			// Plugin Authors should add custome fields etc.. here
-			exec_action('caching-save');
-		} // end foreach
-	}  // endif      
-
-	pageCacheXMLtoArray($xml);
-	if ($flag==true){
-		$xml->asXML($filem);
+			// removed from xml , redundant
+			# $note = $pages->addChild('slug');
+			# $note->addCData($id);
+			# $note = $pages->addChild('filename'); 
+			# $note->addCData($file);
+		}
 	}
-	// }
-
+		
+	return $xml;
 }
 
 /**
@@ -291,7 +318,6 @@ function create_pagesxml($flag=false){
  * @since 3.3.0
  * @uses $pagesArray
  * @param simpleXmlObj $xml xml node of single page
- * @return
  */
 function pageCacheXMLtoArray($xml){
 	GLOBAL $pagesArray;
@@ -306,9 +332,9 @@ function pageCacheXMLtoArray($xml){
 		foreach ($children as $opt=>$val) {
 			$pagesArray[$key][(string)$opt]=(string)$val;
 		}
-
+		$pagesArray[$key]['slug']=$key; // legacy
+		$pagesArray[$key]['filename']=$key.'.xml'; // legacy
 	}	
-	// debugLog(var_export($pagesArray,true));
 	// debugLog(var_export($pagesArray,true));
 }
 
@@ -318,25 +344,24 @@ function pageCacheXMLtoArray($xml){
  * @since 3.3.0
  * @uses $pagesArray
  * @param simpleXmlObj $xml xml node of single page
- * @return
  */
-function pageXMLtoArray($xml,$file=''){
+function pageXMLtoArray($xml){
 	GLOBAL $pagesArray;
 	$data = $xml;
-	$id=(string)$data->url;		
-	// debugLog('pageXMLtoArray ' . $id);
-	$pagesArray[$id]['url']=$id;  
+	$key=(string)$data->url;		
+	// debugLog('pageXMLtoArray ' . $key);
+	$pagesArray[$key]['url']=$key;  
 
 	$children = $data->children();
 	foreach ($children as $item => $itemdata) {
 		if ($item!="content"){
-			$pagesArray[$id][$item]=(string)$itemdata;
+			$pagesArray[$key][$item]=(string)$itemdata;
 		}
 	}
-	$pagesArray[$id]['slug']=(string)$data->slug;
-	$pagesArray[$id]['filename']=$file;
-	// debugLog(var_export($pagesArray[$id],true));
-	// _debugLog('pageXMLtoArray ' . $id,$pagesArray[$id]);
+	$pagesArray[$key]['slug']=$key; // legacy
+	$pagesArray[$key]['filename']=$key.'.xml'; // legacy
+	// debugLog(var_export($pagesArray[$key],true));
+	// _debugLog('pageXMLtoArray ' . $key,$pagesArray[$key]);
 }
 
 ?>
