@@ -20,6 +20,7 @@ if (isset($_GET['redirect'])){
 $cookie_login = 'index.php';
 $cookie_time = '7200';  // 2 hours 
 $api_url = 'http://get-simple.info/api/start/v3.php';
+$api_timeout = 500; // request timeout in ms
 if (!defined('GSVERSION')) define('GSVERSION', $site_version_no);
 
 ?>

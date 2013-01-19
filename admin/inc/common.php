@@ -13,22 +13,25 @@
  * Variable Globalization
  */
 global 
- $SITENAME,		// sitename setting
- $SITEURL,		// siteurl setting
- $TEMPLATE,		// current theme
- $TIMEZONE,		// current timezone either from config or user
- $LANG,
- $SALT,
+ $SITENAME,       // sitename setting
+ $SITEURL,        // siteurl setting
+ $TEMPLATE,       // current theme
+ $TIMEZONE,       // current timezone either from config or user
+ $LANG,           // settings language
+ $SALT,           // salt holds gsconfig GSUSECUSTOMSALT or authentication.xml salt
  $i18n,
- $USR,			// logged in user
- $PERMALINK,	// permalink structure
- $GSADMIN,		// admin foldername
- $GS_debug,		// debug log array
- $components,	// components array
- $nocache		// disable site wide cache
+ $USR,            // logged in user
+ $PERMALINK,      // permalink structure
+ $GSADMIN,        // admin foldername
+ $GS_debug,       // debug log array
+ $components,     // components array
+ $nocache,        // disable site wide cache
+ $microtime_start,// used for benchmark timers
+ $pagesArray      // page cache array, used for all page fields aside from content
 ;
 
 if(isset($_GET['nocache'])){
+	// @todo: disables caching, this should probably only be allowed for auth users
 	$nocache = true;
 }
 
@@ -175,29 +178,6 @@ if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 	$USR = null;
 }
 
-// set defined timezone from config if not set on user
-if( (!isset($TIMEZONE) || trim($TIMEZONE) == '' ) && defined('GSTIMEZONE') ){
-	$TIMEZONE = GSTIMEZONE;
-}
-
-/** grab authorization and security data */
-if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
-	$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
-	$SALT = stripslashes($dataa->apikey);
-} else {
-	$SALT = sha1($SITEURL);
-}
-$SESSIONHASH = sha1($SALT . $SITENAME);
-
-
-/**
- * Timezone setup
- */
-if( function_exists('date_default_timezone_set') && ($TIMEZONE != "" || stripos($TIMEZONE, '--')) ) { 
-	date_default_timezone_set($TIMEZONE);
-}
-
-
 /**
  * Language control
  */
@@ -212,6 +192,38 @@ if(!isset($LANG) || $LANG == '') {
 }
 include_once(GSLANGPATH . $LANG . '.php');
 
+
+/** grab authorization and security data */
+
+if (defined('GSUSECUSTOMSALT')) {
+	// use GSUSECUSTOMSALT
+	$SALT = sha1(GSUSECUSTOMSALT);
+} 
+else {
+	// use from authorization.xml
+	if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
+		$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
+		$SALT = stripslashes($dataa->apikey);
+	} else {
+		if($SITEURL !='' && notInInstall()) die(i18n_r('KILL_CANT_CONTINUE')."<br/>".i18n_r('MISSING_FILE').": "."authorization.xml");
+	}
+}
+
+$SESSIONHASH = sha1($SALT . $SITENAME);
+
+// set defined timezone from config if not set on user
+if( (!isset($TIMEZONE) || trim($TIMEZONE) == '' ) && defined('GSTIMEZONE') ){
+	$TIMEZONE = GSTIMEZONE;
+}
+
+/**
+ * Timezone setup
+ */
+if( function_exists('date_default_timezone_set') && ($TIMEZONE != "" || stripos($TIMEZONE, '--')) ) { 
+	date_default_timezone_set($TIMEZONE);
+}
+
+
 /**
  * $base is if the site is being viewed from the front-end
  */
@@ -223,7 +235,7 @@ if(isset($base)) {
 /**
  * Check to make sure site is already installed
  */
-if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update' && get_filename_id() != 'style') {
+if (notInInstall()) {
 	$fullpath = suggest_site_path();
 	
 	# if an update file was included in the install package, redirect there first	
@@ -235,25 +247,26 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
 	
 	# if there is no SITEURL set, then it's a fresh install. Start installation process
 	if ($SITEURL == '')	{
-		redirect($fullpath . $GSADMIN.'/install.php');
+		if(file_exists(GSADMINPATH.'install.php') ) redirect($fullpath . $GSADMIN.'/install.php');
+		else die(sprintf(i18n_r('NOT_FOUND'),'install.php'));
 	} 
 	
 	if(!getDef('GSDEBUGINSTALL',true)){	
-	# if you've made it this far, the site is already installed so remove the installation files
-	$filedeletionstatus=true;
-	if (file_exists(GSADMINPATH.'install.php'))	{
-		$filedeletionstatus = unlink(GSADMINPATH.'install.php');
+		# if you've made it this far, the site is already installed so remove the installation files
+		$filedeletionstatus=true;
+		if (file_exists(GSADMINPATH.'install.php'))	{
+			$filedeletionstatus = unlink(GSADMINPATH.'install.php');
+		}
+		if (file_exists(GSADMINPATH.'setup.php'))	{
+			$filedeletionstatus = unlink(GSADMINPATH.'setup.php');
+		}
+		if (file_exists(GSADMINPATH.'update.php'))	{
+			$filedeletionstatus = unlink(GSADMINPATH.'update.php');
+		}
+		if (!$filedeletionstatus) {
+			$error = sprintf(i18n_r('ERR_CANNOT_DELETE'), '<code>/'.$GSADMIN.'/install.php</code>, <code>/'.$GSADMIN.'/setup.php</code> or <code>/'.$GSADMIN.'/update.php</code>');
+		}
 	}
-	if (file_exists(GSADMINPATH.'setup.php'))	{
-		$filedeletionstatus = unlink(GSADMINPATH.'setup.php');
-	}
-	if (file_exists(GSADMINPATH.'update.php'))	{
-		$filedeletionstatus = unlink(GSADMINPATH.'update.php');
-	}
-	if (!$filedeletionstatus) {
-		$error = sprintf(i18n_r('ERR_CANNOT_DELETE'), '<code>/'.$GSADMIN.'/install.php</code>, <code>/'.$GSADMIN.'/setup.php</code> or <code>/'.$GSADMIN.'/update.php</code>');
-	}
-}
 }
 
 
@@ -261,12 +274,15 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
  * Include other files depending if they are needed or not
  */
 include_once(GSADMININCPATH.'cookie_functions.php');
+
 if(isset($load['plugin']) && $load['plugin']){
 	# remove the pages.php plugin if it exists. 	
 	if (file_exists(GSPLUGINPATH.'pages.php'))	{
 		unlink(GSPLUGINPATH.'pages.php');
 	}
+
 	include_once(GSADMININCPATH.'plugin_functions.php');
+
 	if(get_filename_id()=='settings' || get_filename_id()=='load') {
 		/* this core plugin only needs to be visible when you are viewing the 
 		settings page since that is where its sidebar item is. */
@@ -274,6 +290,7 @@ if(isset($load['plugin']) && $load['plugin']){
 			include_once('api.plugin.php');
 		}
 	}
+
 	# include core plugin for page caching
 	include_once('caching_functions.php');
 	

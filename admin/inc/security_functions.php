@@ -187,5 +187,14 @@ function path_is_safe($path,$pathmatch,$subdir = true){
  * @returns bool
  */
 function server_is_apache() {
-    return( strpos(strtolower($_SERVER['SERVER_SOFTWARE']),'apache') !== false );
+    return( strpos(strtolower(get_Server_Software()),'apache') !== false );
+}
+
+/**
+ * Try to get server_software
+ * 
+ * @returns string
+ */
+function get_Server_Software() {
+    return $_SERVER['SERVER_SOFTWARE'];
 }

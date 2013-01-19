@@ -155,7 +155,7 @@ function sendmail($to,$subject,$message) {
 	$headers .= 'Reply-To: '.$fromemail . PHP_EOL;
 	$headers .= 'Return-Path: '.$fromemail . PHP_EOL;
 	
-	if( mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',"$message",$headers) ) {
+	if( @mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',"$message",$headers) ) {
 		return 'success';
 	} else {
 		return 'error';
@@ -256,8 +256,35 @@ function getFiles($path) {
 	return $file_arr;
 }
 
-$microtime_start = null;
+/**
+ * Get XML Files
+ * Returns an array of xml files from the passed path
+ * @since 3.3.0
+ * @param string $path
+ * @return array
+ */
+function getXmlFiles($path) {
+	$handle = opendir($path) or die("Unable to open $path");
+	$file_arr = array();
+	while ($file = readdir($handle)) {
+		$ext = lowercase(pathinfo($file, PATHINFO_EXTENSION));
+		if ($ext == 'xml') {
+			$file_arr[] = $file;
+		}
+	}
+	closedir($handle);
+	return $file_arr;
+}
 
+/**
+ * execution timer
+ * 
+ * @since 3.2
+ * @uses $microtime_start
+ * 
+ * @param bool $reset resets global to timestamp
+ * @return 
+ */
 function get_execution_time($reset=false)
 {
 	GLOBAL $microtime_start;
@@ -1213,6 +1240,30 @@ function getDef($id,$isbool = false){
  */
 function isDebug(){
 	return getDef('GSDEBUG',true);
+}
+
+
+/**
+ * Returns status of mode rewrite
+ * @return bool true if on false if not, null if unknown
+ */
+function hasModRewrite(){
+
+	if ( function_exists('apache_get_modules') ) {
+		if(in_arrayi('mod_rewrite',apache_get_modules()) ) {	
+			return true;
+		}	
+		return false;
+	}
+
+	if(getenv('HTTP_MOD_REWRITE') == 'On') return true;
+}
+
+/**
+ *  @return bool true if we not in an install file
+ */
+function notInInstall(){
+	return ( get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update' && get_filename_id() != 'style' );
 }
 
 ?>

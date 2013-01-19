@@ -38,9 +38,7 @@ function get_template($name, $title='** Change Me - Default Page Title **') {
  * @return string
  */
 function filename_id() {
-	$path = myself(FALSE);
-	$file = basename($path,".php");	
-	echo "id=\"". $file ."\"";	
+	echo "id=\"". get_filename_id() ."\"";	
 }
 
 /**
@@ -97,9 +95,24 @@ function delete_file($id) {
  */
 function check_perms($path) { 
   clearstatcache(); 
+  if(!file_exists($path)) return false;  
   $configmod = substr(sprintf('%o', fileperms($path)), -4);  
 	return $configmod;
 } 
+
+
+function ModeOctal2rwx($ModeOctal) { // enter octal mode, e.g. '644' or '2755'
+    if ( ! preg_match("/[0-7]{3,4}/", $ModeOctal) )    // either 3 or 4 digits
+        die("wrong octal mode in ModeOctal2rwx('<TT>$ModeOctal</TT>')");
+    $Moctal = ((strlen($ModeOctal)==3)?"0":"").$ModeOctal;    // assume default 0
+    $Mode3 = substr($Moctal,-3);    // trailing 3 digits, no sticky bits considered
+    $RWX = array ('---','--x','-w-','-wx','r--','r-x','rw-','rwx');    // dumb,huh?
+    $Mrwx = $RWX[$Mode3[0]].$RWX[$Mode3[1]].$RWX[$Mode3[2]];    // concatenate
+    if (preg_match("/[1357]/", $Moctal[0])) $Mrwx[8] = ($Mrwx[8]=="-")?"T":"t";
+    if (preg_match("/[2367]/", $Moctal[0])) $Mrwx[5] = ($Mrwx[5]=="-")?"S":"s";
+    if (preg_match("/[4567]/", $Moctal[0])) $Mrwx[2] = ($Mrwx[2]=="-")?"S":"s";
+    return $Mrwx;    // returns e.g. 'rw-r--r--' or 'rwxr-sr-x'
+}
 
 /**
  * Delete Zip File
@@ -514,13 +527,26 @@ function do_reg($text, $regex) {
  * @return string
  */
 function valid_xml($file) {
-	$xmlv = getXML($file);
 	global $i18n;
-	if ($xmlv) {
+	if (is_valid_xml($file)) {
 		return '<span class="OKmsg" >'.i18n_r('XML_VALID').' - '.i18n_r('OK').'</span>';
 	} else {
 		return '<span class="ERRmsg" >'.i18n_r('XML_INVALID').' - '.i18n_r('ERROR').'!</span>';
 	}
+}
+
+/**
+ * Validate XML
+ *
+ * @since 3.3.0
+ * @uses getXML
+ *
+ * @param string $file File to validate
+ * @return bool
+ */
+function is_valid_xml($file) {
+	$xmlv = getXML($file);
+	if ($xmlv) return true;
 }
 
 /**
@@ -623,55 +649,28 @@ function passhash($p) {
 function get_available_pages() {
     $menu_extract = '';
     
-    $path = GSDATAPAGESPATH;
-    $dir_handle = @opendir($path) or die("Unable to open $path");
-    $filenames = array();
-    while ($filename = readdir($dir_handle)) {
-        $filenames[] = $filename;
-    }
-    closedir($dir_handle);
-    
-    $count="0";
-    $pagesArray = array();
-    if (count($filenames) != 0) {
-        foreach ($filenames as $file) {
-            if ($file == "." || $file == ".." || is_dir($path . $file) || $file == ".htaccess"  ) {
-                // not a page data file
-            } else {
-								$data = getXML($path . $file);
-                if ($data->private != 'Y') {
-                    $pagesArray[$count]['menuStatus'] = $data->menuStatus;
-                    $pagesArray[$count]['menuOrder'] = $data->menuOrder;
-                    $pagesArray[$count]['menu'] = strip_decode($data->menu);
-                    $pagesArray[$count]['parent'] = $data->parent;
-                    $pagesArray[$count]['title'] = strip_decode($data->title);
-                    $pagesArray[$count]['url'] = $data->url;
-                    $pagesArray[$count]['private'] = $data->private;
-                    $pagesArray[$count]['pubDate'] = $data->pubDate;
-                    $count++;
-                }
-            }
-        }
-    }
+	global $pagesArray;
     
     $pagesSorted = subval_sort($pagesArray,'title');
     if (count($pagesSorted) != 0) { 
       $count = 0;
       foreach ($pagesSorted as $page) {
-        $text = (string)$page['menu'];
-        $pri = (string)$page['menuOrder'];
-        $parent = (string)$page['parent'];
-        $title = (string)$page['title'];
-        $slug = (string)$page['url'];
-        $menuStatus = (string)$page['menuStatus'];
-        $private = (string)$page['private'];
-				$pubDate = (string)$page['pubDate'];
-        
-        $url = find_url($slug,$parent);
-        
-        $specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
-        
-        $extract[] = $specific;
+      	if ($page['private']!='Y'){
+	        $text = (string)$page['menu'];
+	        $pri = (string)$page['menuOrder'];
+	        $parent = (string)$page['parent'];
+	        $title = (string)$page['title'];
+	        $slug = (string)$page['url'];
+	        $menuStatus = (string)$page['menuStatus'];
+	        $private = (string)$page['private'];
+					$pubDate = (string)$page['pubDate'];
+	        
+	        $url = find_url($slug,$parent);
+	        
+	        $specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
+	        
+	        $extract[] = $specific;
+		}
       } 
       return $extract;
     }
@@ -688,39 +687,24 @@ function get_available_pages() {
  *
  */
 function updateSlugs($existingUrl, $newurl=null){
-      
-      if (!$newurl){
-      	global $url;
-      } else {
-      	$url = $newurl;
-      }
+	global $pagesArray;
+	getPagesXmlValues();
+	  
+	if (!$newurl){
+      		global $url;
+      	} else {
+      		$url = $newurl;
+      	}
 
-      $path = GSDATAPAGESPATH;
-      $dir_handle = @opendir($path) or die("Unable to open $path");
-      $filenames = array();
-      while ($filename = readdir($dir_handle)) {
-        $ext = substr($filename, strrpos($filename, '.') + 1);
-        if ($ext=="xml"){
-          $filenames[] = $filename;
-        }
-      }
-
-      if (count($filenames) != 0) {
-        foreach ($filenames as $file) {
-          
-          if ($file == "." || $file == ".." || is_dir(GSDATAPAGESPATH.$file) || $file == ".htaccess"  ) {
-            // not a page data file
-          } else {
-            $thisfile = @file_get_contents(GSDATAPAGESPATH.$file);
-            $data = simplexml_load_string($thisfile);
-            if ($data->parent==$existingUrl){
-              $data->parent=$url;
-              XMLsave($data, GSDATAPAGESPATH.$file);
-            }   
-          } 
-        }
-      }
-} 
+	foreach ($pagesArray as $page){
+		if ( $page['parent'] == $existingUrl ){
+			$thisfile = @file_get_contents(GSDATAPAGESPATH.$page['filename']);
+        		$data = simplexml_load_string($thisfile);
+            		$data->parent=$url;
+            		XMLsave($data, GSDATAPAGESPATH.$page['filename']);
+		}
+	  }
+}
 
 
 /**
@@ -739,29 +723,9 @@ function updateSlugs($existingUrl, $newurl=null){
  */
 function list_pages_json() {
 	// get local pages list for ckeditor local page link selector
-	$path = GSDATAPAGESPATH;
-	$filenames = getFiles($path);
-	$count="0";
-	$pagesArray = array();
-	if (count($filenames) != 0) { 
-		foreach ($filenames as $file) {
-			if (isFile($file, $path, 'xml')) {
-				$data = getXML($path .$file);
-				$pagesArray[$count]['title'] = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
-				$pagesArray[$count]['parent'] = $data->parent;
-			if ($data->parent != '') { 
-				$parentdata = getXML($path . $data->parent .'.xml');
-				$parentTitle = $parentdata->title;
-				$pagesArray[$count]['sort'] = $parentTitle .' '. $data->title;
-			} else {
-				$pagesArray[$count]['sort'] = $data->title;
-			}
-			$pagesArray[$count]['url'] = $data->url;
-			$parentTitle = '';
-			$count++;
-			}
-		}
-	}
+	
+	global $pagesArray;
+
 	$pagesSorted = subval_sort($pagesArray,'sort');
 	$pageList = array();
 	if (count($pagesSorted) != 0) { 
@@ -1030,7 +994,6 @@ function get_api_details($type='core', $args=null) {
 		$fetch_this_api = $args;
 	}
 	
-	// debugLog("get_api_details: " . $type);
 	// debugLog("get_api_details: " . $args);
 	// debugLog("get_api_details: " . $fetch_this_api);
 
@@ -1038,24 +1001,38 @@ function get_api_details($type='core', $args=null) {
 	$cachefile = md5($fetch_this_api).'.txt';
 	$nocache = false;
 
+	$nocurl = false;
+	if(!isset($api_timeout) or (int)$api_timeout<100) $api_timeout = 100; // default and clamp min to 100ms
+
 	# debugLog($fetch_this_api.' ' .$cachefile);
 	if (file_exists(GSCACHEPATH.$cachefile) && time() - 40000 < filemtime(GSCACHEPATH.$cachefile) and !$nocache) {
 		# grab the api request from the cache
 		$data = file_get_contents(GSCACHEPATH.$cachefile);
 	} else {	
 		# make the api call
-		if (function_exists('curl_exec')) {
+		if (function_exists('curl_exec') and !$nocurl) {
 			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+
+			// define missing curlopts php<5.2.3
+			if(!defined('CURLOPT_CONNECTTIMEOUT_MS')) define('CURLOPT_CONNECTTIMEOUT_MS',156);
+			if(!defined('CURLOPT_TIMEOUT_MS')) define('CURLOPT_TIMEOUT_MS',155);
+			
+			// min cURL 7.16.2
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, $api_timeout);
+			curl_setopt($ch, CURLOPT_TIMEOUT_MS, $api_timeout);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_URL, $fetch_this_api);
 			$data = curl_exec($ch);
 			curl_close($ch);
 		} else {  
-			$data = file_get_contents($fetch_this_api);
+			$timeout = $api_timeout / 1000; // ms to float seconds
+			// $context = stream_context_create();
+			// stream_context_set_option ( $context, array('http' => array('timeout' => $timeout)) );
+			$context = stream_context_create(array('http' => array('timeout' => $timeout))); 
+			$data = @file_get_contents($fetch_this_api,false,$context);			
 		}
 	
-	    $response = json_decode($data);		
+	  $response = json_decode($data);		
 		// if response is invalid do not write to cache and return false
 		// this keep proxy and malicious responses out of downstream code
 		if($response){
@@ -1098,27 +1075,9 @@ function generate_sitemap() {
 	// Variable settings
 	global $SITEURL;
 	$path = GSDATAPAGESPATH;
-	$count="0";
 	
-	$filenames = getFiles($path);
-	
-	if (count($filenames) != 0)	{ 
-		foreach ($filenames as $file)	{
-			if ( isFile($file, $path, 'xml')) {
-				$data = getXML($path . $file);
-				if ($data->url != '404') {
-					$status = $data->menuStatus;
-					$pagesArray[$count]['url'] = $data->url;
-					$pagesArray[$count]['parent'] = $data->parent;
-					$pagesArray[$count]['date'] = $data->pubDate;
-					$pagesArray[$count]['private'] = $data->private;
-					$pagesArray[$count]['menuStatus'] = $data->menuStatus;
-					$count++;
-				}
-			}
-		}
-	}
-	
+	global $pagesArray;
+	getPagesXmlValues(false);
 	$pagesSorted = subval_sort($pagesArray,'menuStatus');
 	
 	if (count($pagesSorted) != 0)
@@ -1128,33 +1087,36 @@ function generate_sitemap() {
 		$xml->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 		
 		foreach ($pagesSorted as $page)
-		{	
-			if ($page['private'] != 'Y')
-			{
-				// set <loc>
-				$pageLoc = find_url($page['url'], $page['parent']);
-				
-				// set <lastmod>
-				$tmpDate = date("Y-m-d H:i:s", strtotime($page['date']));
-				$pageLastMod = makeIso8601TimeStamp($tmpDate);
-				
-				// set <changefreq>
-				$pageChangeFreq = 'weekly';
-				
-				// set <priority>
-				if ($page['menuStatus'] == 'Y') {
-					$pagePriority = '1.0';
-				} else {
-					$pagePriority = '0.5';
+		{
+			if ($page['url'] != '404')
+			{		
+				if ($page['private'] != 'Y')
+				{
+					// set <loc>
+					$pageLoc = find_url($page['url'], $page['parent']);
+					
+					// set <lastmod>
+					$tmpDate = date("Y-m-d H:i:s", strtotime($page['pubDate']));
+					$pageLastMod = makeIso8601TimeStamp($tmpDate);
+					
+					// set <changefreq>
+					$pageChangeFreq = 'weekly';
+					
+					// set <priority>
+					if ($page['menuStatus'] == 'Y') {
+						$pagePriority = '1.0';
+					} else {
+						$pagePriority = '0.5';
+					}
+					
+					//add to sitemap
+					$url_item = $xml->addChild('url');
+					$url_item->addChild('loc', $pageLoc);
+					$url_item->addChild('lastmod', $pageLastMod);
+					$url_item->addChild('changefreq', $pageChangeFreq);
+					$url_item->addChild('priority', $pagePriority);
+					exec_action('sitemap-additem');
 				}
-				
-				//add to sitemap
-				$url_item = $xml->addChild('url');
-				$url_item->addChild('loc', $pageLoc);
-				$url_item->addChild('lastmod', $pageLastMod);
-				$url_item->addChild('changefreq', $pageChangeFreq);
-				$url_item->addChild('priority', $pagePriority);
-				exec_action('sitemap-additem');
 			}
 		}
 		
