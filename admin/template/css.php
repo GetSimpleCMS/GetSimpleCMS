@@ -1644,7 +1644,7 @@ textarea.copykit {
 	font-size: 11px;
 	width: 150px;
 	text-align: center;
-	margin: -50px 0 0 0;
+	margin: 5px 0 0 0;
 }
 
 #handw span {
