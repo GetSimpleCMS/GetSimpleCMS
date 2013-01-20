@@ -1,27 +1,5 @@
-# ignore these files as they will be deleted on your local copy
-admin/install.php
-admin/setup.php
-admin/update.php
-temp.gsconfig.php
-temp.htaccess
-
-# ignore the following as they are created by setup
-
-.htaccess
-backups/other/website.xml.bak
-backups/users/
-backups/
-plugins/
-data/cache/
-data/other/
-data/pages/
-data/users/
-gsconfig.php
-sitemap.xml
-
 # Local dev or ide stuff
 *.project
 *.settings
-*.sublime-project
-
+*.sublime-
 thumbs.db
