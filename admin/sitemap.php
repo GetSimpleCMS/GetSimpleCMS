@@ -35,7 +35,7 @@ get_template('header', cl($SITENAME).' &raquo; '.strip_tags(i18n_r('SIDE_VIEW_SI
 				<a href="sitemap.php?refresh" accesskey="<?php echo find_accesskey(i18n_r('REFRESH'));?>" ><?php i18n('REFRESH'); ?></a>
 			</div>
 					
-			<pre><code><?php echo htmlentities(formatXmlString(file_get_contents('../sitemap.xml')));?></code></pre>
+			<div class="unformatted"><code><?php echo htmlentities(formatXmlString(file_get_contents('../sitemap.xml')));?></code></div>
 		
 		</div>
 	</div>
