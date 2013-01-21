@@ -9,11 +9,17 @@
  * @subpackage init
  */
 
+define('IN_GS', TRUE);
+
+/**
+ *  GSCONFIG definitions
+ */
+
+if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
+
 /**
  * Bad stuff protection
  */
-define('IN_GS', TRUE);
-define('GSSTYLEWIDE','wide');
 
 include_once('security_functions.php');
 

@@ -7,7 +7,13 @@
  * @package GetSimple
  * @subpackage FrontEnd
  */
- 	
+
+/**
+ *  GSCONFIG definitions
+ */
+
+if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
+
 # Setup inclusions
 $load['plugin'] = true;
 if (file_exists('gsconfig.php')) {
