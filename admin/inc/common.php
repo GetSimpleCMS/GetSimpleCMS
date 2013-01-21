@@ -9,6 +9,14 @@
  * @subpackage init
  */
 
+define('IN_GS', TRUE);
+
+/**
+ *  GSCONFIG definitions
+ */
+
+if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
+
 /**
  * Variable Globalization
  */
