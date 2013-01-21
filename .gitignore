@@ -1,5 +1,5 @@
 # Local dev or ide stuff
 *.project
 *.settings
-*.sublime-
+*.sublime-*
 thumbs.db
