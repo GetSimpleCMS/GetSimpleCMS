@@ -24,13 +24,7 @@ $table = '';
 
 // delete all backup files if the ?deleteall session parameter is set
 if (isset($_GET['deleteall'])){
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "deleteall")) {
-			die("CSRF detected!");	
-		}
-	}
+	check_for_csrf("deleteall");
 	$filenames = getFiles($path);
 	
 	foreach ($filenames as $file) {

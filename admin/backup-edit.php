@@ -47,25 +47,14 @@ if ($_GET['p'] != '') {
 }
 
 if ($p == 'delete') {
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "delete", "backup-edit.php")) {
-			die("CSRF detected!");
-		}
-	}
+	check_for_csrf("delete","backup-edit");
 	delete_bak($id);
 	redirect("backups.php?upd=bak-success&id=".$id);
 } 
 
 elseif ($p == 'restore') {
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "restore", "backup-edit.php")) {
-			die("CSRF detected!");	
-		}
-	}
+	check_for_csrf("restore", "backup-edit.php");
+	
 	if (isset($_GET['new'])) {
 		updateSlugs($_GET['new'], $id);
 		restore_bak($id);

@@ -20,14 +20,7 @@ $table = '';
 
 // if a backup needs to be created
 if(isset($_GET['do'])) {
-	
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "create")) {
-			die("CSRF detected!");
-		}
-	}	
+	check_for_csrf("create");
 	exec_action('archive-backup');
 	redirect('zip.php?s='.$SESSIONHASH);	
 }

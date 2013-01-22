@@ -34,14 +34,7 @@ if (isset($_GET['flushcache'])) {
 
 # if the undo command was invoked
 if (isset($_GET['undo'])) { 
-	
-	# first check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "undo")) {
-			die("CSRF detected!");
-		}
-	}
+	check_for_csrf("undo");	
 	# perform undo
 	undo($file, GSUSERSPATH, GSBACKUSERSPATH);
 	undo($wfile, GSDATAOTHERPATH, GSBACKUPSPATH.'other/');
@@ -60,15 +53,9 @@ if (isset($_GET['restored'])) {
 
 # was the form submitted?
 if(isset($_POST['submitted'])) {
-	
-	# first check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_POST['nonce'];
-		if(!check_nonce($nonce, "save_settings")) {
-			die("CSRF detected!");	
-		}
-	}
-	
+
+	check_for_csrf("save_settings");	
+		
 	# website-specific fields
 	if(isset($_POST['sitename'])) { 
 		$SITENAME = htmlentities($_POST['sitename'], ENT_QUOTES, 'UTF-8'); 

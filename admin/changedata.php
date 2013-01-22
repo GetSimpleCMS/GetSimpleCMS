@@ -27,14 +27,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 login_cookie_check();
 	
 if (isset($_POST['submitted'])) {
-	
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_POST['nonce'];
-		if(!check_nonce($nonce, "edit", "edit.php")) {
-			die("CSRF detected!");	
-		}
-	}
+	check_for_csrf("edit", "edit.php");	
 	
 	if ( trim($_POST['post-title']) == '' )	{
 		redirect("edit.php?upd=edit-error&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));

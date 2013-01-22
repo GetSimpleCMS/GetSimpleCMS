@@ -24,14 +24,8 @@ $table   = '';
 
 # clone attempt happening
 if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone') {
-	
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "clone", "pages.php")) {
-			die("CSRF detected!");	
-		}
-	}
+
+	check_for_csrf("clone", "pages.php");	
 
 	# check to not overwrite
 	$count = 1;

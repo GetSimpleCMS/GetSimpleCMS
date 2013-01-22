@@ -26,14 +26,8 @@ if (isset($_POST['submitted'])){
 	$slug = $_POST['slug'];
 	$title = $_POST['title'];
 	$ids = $_POST['id'];
-	
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_POST['nonce'];	
-		if(!check_nonce($nonce, "modify_components")) {
-			die("CSRF detected!");
-		}
-	}
+
+	check_for_csrf("modify_components");
 
 	# create backup file for undo           
 	createBak($file, $path, $bakpath);
@@ -82,12 +76,7 @@ if (isset($_POST['submitted'])){
 # if undo was invoked
 if (isset($_GET['undo'])) { 
 	
-	# check for csrf
-	$nonce = $_GET['nonce'];	
-	if(!check_nonce($nonce, "undo")) {
-		die("CSRF detected!");
-	}
-	
+	check_for_csrf("undo");		
 	# perform the undo
 	undo($file, $path, $bakpath);
 	redirect('components.php?upd=comp-restored');
