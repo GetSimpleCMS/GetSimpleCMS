@@ -18,26 +18,26 @@ include('inc/common.php');
 $userid = login_cookie_check();
 
 // Get passed variables
-$id    = isset($_GET['id']) ? $_GET['id'] : null;
-$uri   = isset($_GET['uri']) ? $_GET['uri'] : null; 
-$ptype = isset($_GET['type']) ? $_GET['type'] : null;    
-$nonce = isset($_GET['nonce']) ? $_GET['nonce'] : null;
-$path  = GSDATAPAGESPATH;
+$id 		=  isset($_GET['id']) ? $_GET['id'] : null;
+$uri    = isset($_GET['uri']) ? $_GET['uri'] : null; 
+$ptype    = isset($_GET['type']) ? $_GET['type'] : null;    
+$nonce    = isset($_GET['nonce']) ? $_GET['nonce'] : null;
+$path 		= GSDATAPAGESPATH;
 
 // Page variables reset
 $theme_templates = ''; 
-$parents_list    = ''; 
-$keytags         = '';
-$parent          = '';
-$template        = '';
-$menuStatus      = ''; 
-$private         = ''; 
-$menu            = ''; 
-$content         = '';
-$author          = '';
-$title           = '';
-$url             = '';
-$metak           = '';
+$parents_list = ''; 
+$keytags = '';
+$parent = '';
+$template = '';
+$menuStatus = ''; 
+$private = ''; 
+$menu = ''; 
+$content = '';
+$author = '';
+$title = '';
+$url = '';
+$metak = '';
 $metad = '';
 
 if ($id){
@@ -48,30 +48,30 @@ if ($id){
 		redirect('pages.php?error='.urlencode(i18n_r('PAGE_NOTEXIST')));
 	}
 
-	$data_edit  = getXML($path . $file);
-	$title      = stripslashes($data_edit->title);
-	$pubDate    = $data_edit->pubDate;
-	$metak      = stripslashes($data_edit->meta);
-	$metad      = stripslashes($data_edit->metad);
-	$url        = $data_edit->url;
-	$content    = stripslashes($data_edit->content);
-	$template   = $data_edit->template;
-	$parent     = $data_edit->parent;
-	$author     = $data_edit->author;
-	$menu       = stripslashes($data_edit->menu);
-	$private    = $data_edit->private;
+	$data_edit = getXML($path . $file);
+	$title = stripslashes($data_edit->title);
+	$pubDate = $data_edit->pubDate;
+	$metak = stripslashes($data_edit->meta);
+	$metad = stripslashes($data_edit->metad);
+	$url = $data_edit->url;
+	$content = stripslashes($data_edit->content);
+	$template = $data_edit->template;
+	$parent = $data_edit->parent;
+	$author = $data_edit->author;
+	$menu = stripslashes($data_edit->menu);
+	$private = $data_edit->private;
 	$menuStatus = $data_edit->menuStatus;
-	$menuOrder  = $data_edit->menuOrder;
+	$menuOrder = $data_edit->menuOrder;
 	$buttonname = i18n_r('BTN_SAVEUPDATES');
 } else {
 	// prefill fields is provided
-	$title      =  isset($_GET['title']) ? $_GET['title'] : '';
-	$template   =  isset($_GET['template']) ? $_GET['template'] : '';
-	$parent     =  isset($_GET['parent']) ? $_GET['parent'] : '';
-	$menu       =  isset($_GET['menu']) ? $_GET['menu'] : '';
-	$private    =  isset($_GET['private']) ? $_GET['private'] : '';
+	$title 		=  isset($_GET['title']) ? $_GET['title'] : '';
+	$template 	=  isset($_GET['template']) ? $_GET['template'] : '';
+	$parent 	=  isset($_GET['parent']) ? $_GET['parent'] : '';
+	$menu		=  isset($_GET['menu']) ? $_GET['menu'] : '';
+	$private 	=  isset($_GET['private']) ? $_GET['private'] : '';
 	$menuStatus =  isset($_GET['menuStatus']) ? $_GET['menuStatus'] : '';
-	$menuOrder  =  isset($_GET['menuOrder']) ? $_GET['menuOrder'] : '';
+	$menuOrder =  isset($_GET['menuOrder']) ? $_GET['menuOrder'] : '';
 	$buttonname = i18n_r('BTN_SAVEPAGE');
 }
 
@@ -79,7 +79,7 @@ if ($id){
 // MAKE SELECT BOX OF AVAILABLE TEMPLATES
 if ($template == '') { $template = 'template.php'; }
 
-$themes_path   = GSTHEMESPATH . $TEMPLATE;
+$themes_path = GSTHEMESPATH . $TEMPLATE;
 $themes_handle = opendir($themes_path) or die("Unable to open ". GSTHEMESPATH);		
 while ($file = readdir($themes_handle))	{		
 	if( isFile($file, $themes_path, 'php') ) {		

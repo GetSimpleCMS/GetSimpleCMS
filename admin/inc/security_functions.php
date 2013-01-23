@@ -136,20 +136,18 @@ function check_nonce($nonce, $action, $file = ""){
 	return ( $nonce === get_nonce($action, $file) || $nonce === get_nonce($action, $file, true) );
 }
 
-/**
+/*
  * Validate Safe File
  *
- * Verify file is of extension or mime type
- * 
  * @since 3.1
  * @uses file_mime_type
  * @uses $mime_type_blacklist
  * @uses $file_ext_blacklist
  *
- * @param string $file, absolute path NOT USED
+ * @param string $file, absolute path
  * @param string $name, default null
- * @param string $type, default null
- * @return bool true if valid
+ * @param string $type, default 'upload'
+ * @return bool
  */	
 function validate_safe_file($file, $name, $mime){
 	global $mime_type_blacklist;
@@ -218,32 +216,4 @@ function server_is_apache() {
  */
 function get_Server_Software() {
     return $_SERVER['SERVER_SOFTWARE'];
-}
-
-
-/**
- * Performs filtering on variable, falls back to htmlentities
- *
- * @since 3.3.0
- * @param  string $var    var to filter
- * @param  string $filter filter type
- * @return string         return filtered string
- */
-function var_out($var,$filter = "special"){
-	if(function_exists( "filter_var") ){
-		$aryFilter = array(
-			"string"  => FILTER_SANITIZE_STRING,
-			"int"     => FILTER_SANITIZE_INT,
-			"float"   => FILTER_SANITIZE_FLOAT,
-			"string"  => FILTER_SANITIZE_STRING,
-			"url"     => FILTER_SANITIZE_URL,
-			"email"   => FILTER_SANITIZE_EMAIL,
-			"special" => FILTER_SANITIZE_SPECIAL_CHARS,
-		);
-		if(isset($aryFilter[$filter])) return filter_var( $var, $aryFilter[$filter]);
-		return filter_var( $var, FILTER_SANITIZE_SPECIAL_CHARS);
-	}
-	else {
-		return htmlentities($var);
-	}
 }
