@@ -78,7 +78,7 @@ function antixss($str){
 function check_for_csrf($action, $file="", $die = true){
 	// check for csrf
 	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
+		$nonce = $_REQUEST['nonce'];
 		if(!check_nonce($nonce, $action, $file)) {
 			if($die) die("CSRF detected!");
 			return true;
