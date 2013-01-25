@@ -34,9 +34,7 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
 		<div class="main">
 		<?php 
 			if ($plugin_id == @$_GET['item'])	{
-				call_user_func_array($plugin_info[$plugin_id]['load_data'],array());
-			}	else if (isset($_GET['item'])) {
-				call_user_func_array($_GET['item'],array());
+				call_user_func($plugin_info[$plugin_id]['load_data']);
 			}
 		?>
 		</div>
