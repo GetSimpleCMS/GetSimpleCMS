@@ -134,7 +134,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 				echo '<a href="', find_url($url, $parent) ,'" target="_blank" accesskey="', find_accesskey(i18n_r('VIEW')), '" >', i18n_r('VIEW'), ' </a>';
 			} 
 			?>
-			<a href="#" id="metadata_toggle" accesskey="<?php echo find_accesskey(i18n_r('PAGE_OPTIONS'));?>" ><?php i18n('PAGE_OPTIONS'); ?></a>
+			<!-- <a href="#" id="metadata_toggle" accesskey="<?php echo find_accesskey(i18n_r('PAGE_OPTIONS'));?>" ><?php i18n('PAGE_OPTIONS'); ?></a> -->
 			<div class="clear" ></div>
 		</div>	
 			
@@ -150,12 +150,12 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 				
 			<div id="tabs">
 			  <ul>
-			    <li><a href="#section-2"><span>Content</span></a></li>
-			    <li><a href="#section-1"><span>Options</span></a></li>
-			    <li><a href="#section-3"><span>Meta</span></a></li>
+			    <li><a href="#page_content"><span>Content</span></a></li>
+			    <li><a href="#page_options"><span>Options</span></a></li>
+			    <li><a href="#page_meta"><span>Meta</span></a></li>
 			  </ul>
 			<!-- metadata toggle screen -->
-			<div id="section-1">
+			<div id="page_options">
 			<div style="display:normal;" id="metadata_window" >
 			<div class="leftopt">
 				<p class="inline clearfix" id="post-private-wrap" >
@@ -259,7 +259,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			</div>	<!-- / metadata toggle screen -->
 			</div>
 				
-			<div id="section-2">
+			<div id="page_content">
 			<!-- page body -->
 			<p>
 				<label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
@@ -484,10 +484,12 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			});
 		</script>
 	</div>
+	
+	<div id="page_meta">meta</div>
+	</div> <!-- end tabs -->
+
 	</div><!-- end maincontent -->
 	</div>
-	
-	</div> <!-- end tabs -->
 	
 	<div id="sidebar" >
 		<?php include('template/sidebar-pages.php'); ?>	
