@@ -148,9 +148,15 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 				<input class="text title" id="post-title" name="post-title" type="text" value="<?php echo $title; ?>" placeholder="<?php i18n('PAGE_TITLE'); ?>" />
 			</p>
 				
-
+			<div id="tabs">
+			  <ul>
+			    <li><a href="#section-2"><span>Content</span></a></li>
+			    <li><a href="#section-1"><span>Options</span></a></li>
+			    <li><a href="#section-3"><span>Meta</span></a></li>
+			  </ul>
 			<!-- metadata toggle screen -->
-			<div style="display:none;" id="metadata_window" >
+			<div id="section-1">
+			<div style="display:normal;" id="metadata_window" >
 			<div class="leftopt">
 				<p class="inline clearfix" id="post-private-wrap" >
 					<label for="post-private" ><?php i18n('KEEP_PRIVATE'); ?>: &nbsp; </label>
@@ -251,8 +257,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			<?php exec_action('edit-extras'); ?>		
 
 			</div>	<!-- / metadata toggle screen -->
+			</div>
 				
-		
+			<div id="section-2">
 			<!-- page body -->
 			<p>
 				<label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
@@ -478,7 +485,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 		</script>
 	</div>
 	</div><!-- end maincontent -->
+	</div>
 	
+	</div> <!-- end tabs -->
 	
 	<div id="sidebar" >
 		<?php include('template/sidebar-pages.php'); ?>	

@@ -91,6 +91,8 @@ function clearNotify() {
  
 jQuery(document).ready(function () {
  
+	$( "#tabs" ).tabs();
+
 	var loadingAjaxIndicator = $('#loader');
  
 	function checkCoords() {
