@@ -2343,3 +2343,12 @@ a.disabled:visited {
 	border-bottom: 1px solid #aaa;
 	border-radius:0 !important;
 }
+
+#tabs ul.tab-list{
+	display:none;
+}
+
+#tabs.ui-tabs ul.tab-list{
+	display:block;
+}
+
