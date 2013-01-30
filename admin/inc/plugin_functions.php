@@ -31,8 +31,8 @@ $GS_asset_objects['jquery'] = 'jQuery';
 $GS_asset_objects['jquery-ui'] = 'jQuery.ui'; 
 
 // jquery
-$jquery_ver    = '1.9.0';
-$jquery_ui_ver = '1.10.0';
+$jquery_ver    = '1.7.1';
+$jqueryui_ver = '1.10.0';
 
 $GS_script_assets['jquery']['cdn']['url']      = '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js';
 $GS_script_assets['jquery']['cdn']['ver']      = $jquery_ver;
@@ -41,11 +41,11 @@ $GS_script_assets['jquery']['local']['url']    = $SITEURL.$GSADMIN.'/template/js
 $GS_script_assets['jquery']['local']['ver']    = $jquery_ver;
 
 // jquery-ui
-$GS_script_assets['jquery-ui']['cdn']['url']   = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jquery_ui_ver.'/jquery-ui.min.js';
-$GS_script_assets['jquery-ui']['cdn']['ver']   = $jquery_ui_ver;
+$GS_script_assets['jquery-ui']['cdn']['url']   = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jqueryui_ver.'/jquery-ui.min.js';
+$GS_script_assets['jquery-ui']['cdn']['ver']   = $jqueryui_ver;
 
-$GS_script_assets['jquery-ui']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/jqueryui/jquery-ui-'.$jquery_ui_ver.'.min.js';
-$GS_script_assets['jquery-ui']['local']['ver'] = $jquery_ui_ver;
+$GS_script_assets['jquery-ui']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/jqueryui/jquery-ui-'.$jqueryui_ver.'.min.js';
+$GS_script_assets['jquery-ui']['local']['ver'] = $jqueryui_ver;
 
 // misc
 $GS_script_assets['fancybox']['local']['url']  = $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.pack.js';
