@@ -88,9 +88,25 @@ function clearNotify() {
 	$('div.wrapper .notify').remove();
 }
  
- 
 jQuery(document).ready(function () {
- 
+	
+	$("#tabs").tabs({
+		activate: function(event, ui) {
+			// set bookmarkable urls
+			var hash = ui.newTab.context.hash;
+			hash = hash.replace('#','');
+			window.location.hash = "tab_"+hash;
+		},
+		create: function (event,ui) {
+			// set active tab from hash
+			if(window.location.hash){
+				var selectedTabHash = window.location.hash.replace(/tab_/,"");
+				var tabIndex = $( "#tabs li a" ).index($("#tabs li a[href='"+selectedTabHash+"']"));
+				if(tabIndex > 0) $( "#tabs" ).tabs("option", "active", tabIndex );
+			}	
+		}
+	});
+
 	var loadingAjaxIndicator = $('#loader');
  
 	function checkCoords() {
