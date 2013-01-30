@@ -32,20 +32,20 @@ $GS_asset_objects['jquery-ui'] = 'jQuery.ui';
 
 // jquery
 $jquery_ver    = '1.7.1';
-$jquery_ui_ver = '1.8.17';
+$jqueryui_ver = '1.10.0';
 
 $GS_script_assets['jquery']['cdn']['url']      = '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js';
 $GS_script_assets['jquery']['cdn']['ver']      = $jquery_ver;
 
-$GS_script_assets['jquery']['local']['url']    = $SITEURL.$GSADMIN.'/template/js/jquery.min.js';
+$GS_script_assets['jquery']['local']['url']    = $SITEURL.$GSADMIN.'/template/js/jquery/jquery-'.$jquery_ver.'.min.js';
 $GS_script_assets['jquery']['local']['ver']    = $jquery_ver;
 
 // jquery-ui
-$GS_script_assets['jquery-ui']['cdn']['url']   = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jquery_ui_ver.'/jquery-ui.min.js';
-$GS_script_assets['jquery-ui']['cdn']['ver']   = $jquery_ui_ver;
+$GS_script_assets['jquery-ui']['cdn']['url']   = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jqueryui_ver.'/jquery-ui.min.js';
+$GS_script_assets['jquery-ui']['cdn']['ver']   = $jqueryui_ver;
 
-$GS_script_assets['jquery-ui']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/jquery-ui.min.js';
-$GS_script_assets['jquery-ui']['local']['ver'] = $jquery_ui_ver;
+$GS_script_assets['jquery-ui']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/jqueryui/jquery-ui-'.$jqueryui_ver.'.min.js';
+$GS_script_assets['jquery-ui']['local']['ver'] = $jqueryui_ver;
 
 // misc
 $GS_script_assets['fancybox']['local']['url']  = $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.pack.js';
@@ -53,6 +53,10 @@ $GS_script_assets['fancybox']['local']['ver']  = '2.0.4';
 
 $GS_style_assets['fancybox']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css';
 $GS_style_assets['fancybox']['local']['ver']   = '2.0.4';
+
+// $GS_style_assets['jquery-ui']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/jqueryui/css/getsimple/jquery-ui-1.8.20.gs.css';
+$GS_style_assets['jquery-ui']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/jqueryui/css/custom/jquery-ui-1.10.0.custom.min.css';
+$GS_style_assets['jquery-ui']['local']['ver']   = '1.10.0';
 
 /**
  * Register shared javascript/css scripts for loading into the header
@@ -67,6 +71,8 @@ if (!getDef('GSNOCDN',true)){
 register_script('fancybox', $GS_script_assets['fancybox']['local']['url'], $GS_script_assets['fancybox']['local']['ver'],FALSE);
 register_style('fancybox-css', $GS_style_assets['fancybox']['local']['url'], $GS_style_assets['fancybox']['local']['ver'], 'screen');
 
+register_style('jquery-ui', $GS_style_assets['jquery-ui']['local']['url'], $GS_style_assets['jquery-ui']['local']['ver'], 'screen');
+
 /**
  * Queue our scripts and styles for the backend
  */
@@ -74,7 +80,8 @@ queue_script('jquery', GSBACK);
 queue_script('jquery-ui', GSBACK);
 queue_script('fancybox', GSBACK);
 queue_style('fancybox-css',GSBACK);
-
+queue_style('jquery-ui',GSBACK);
+queue_style('jquery-ui-theme',GSBACK);
 
 /**
  * Include any plugins, depending on where the referring 
@@ -93,7 +100,6 @@ if (!file_exists(GSDATAOTHERPATH."plugins.xml")){
 } 
 
 read_pluginsxml();        // get the live plugins into $live_plugins array
-
 
 create_pluginsxml();      // check that plugins have not been removed or added to the directory
 
