@@ -2343,3 +2343,7 @@ a.disabled:visited {
 	border-bottom: 1px solid #aaa;
 	border-radius:0 !important;
 }
+
+.compdiv {
+	padding:0 !important;
+}

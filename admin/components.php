@@ -88,7 +88,8 @@ $componentsec = $data->item;
 $count= 0;
 if (count($componentsec) != 0) {
 	foreach ($componentsec as $component) {
-		$table .= '<div class="compdiv" id="section-'.$count.'"><table class="comptable" ><tr><td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="editable">'. stripslashes($component->title) .'</b></td>';
+		$table .= '<h3 class="comptitle"><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="editable">'. stripslashes($component->title) .'</b></h3>';
+		$table .= '<div class="compdiv" id="section-'.$count.'"><table class="comptable" ><tr><td></td>';
 		$table .= '<td style="text-align:right;" ><code>&lt;?php get_component(<span class="compslugcode">\''.$component->slug.'\'</span>); ?&gt;</code></td><td class="delete" >';
 		$table .= '<a href="#" title="'.i18n_r('DELETE_COMPONENT').': '. cl($component->title).'?" class="delcomponent" rel="'.$count.'" >&times;</a></td></tr></table>';
 		$table .= '<textarea name="val[]">'. stripslashes($component->value) .'</textarea>';
@@ -134,7 +135,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('COMPONENTS'));
 		<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_components"); ?>" />
 
 		<div id="divTxt"></div> 
+		<div id="accordion">
 		<?php echo $table; ?>
+		</div>
 		<p id="submit_line" class="<?php echo $submitclass; ?>" >
 			<span><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_COMPONENTS');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="components.php?cancel"><?php i18n('CANCEL'); ?></a>
 		</p>

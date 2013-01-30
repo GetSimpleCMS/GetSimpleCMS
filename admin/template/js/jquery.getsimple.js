@@ -90,6 +90,13 @@ function clearNotify() {
  
 jQuery(document).ready(function () {
 	
+
+	$("#accordion").accordion({
+		header: ".comptitle",
+		collapsible: true,
+		active: null
+	});
+
 	$("#tabs").tabs({
 		activate: function(event, ui) {
 			// set bookmarkable urls
@@ -214,21 +221,22 @@ jQuery(document).ready(function () {
 	});
 	$("b.editable").dblclick(function () {
 		var t = $(this).html();
-		$(this).parents('.compdiv').find("input.comptitle").hide();
+		console.log($(this).parents(".comptitle"));
+		// $(this).parents(".comptitle").next('.compdiv').find("input.comptitle").hide();
 		$(this).after('<div id="changetitle"><b>Title: </b><input class="text newtitle titlesaver" name="title[]" value="' + t + '" /></div>');
 		$(this).next('#changetitle').children('input').focus();
-		$(this).parents('.compdiv').find("input.compslug").val('');
+		$(this).parents(".comptitle").next('.compdiv').find("input.compslug").val('');
 		$(this).hide();
 	});
 	$("input.titlesaver").live("keyup", function () {
 		var myval = $(this).val();
-		$(this).parents('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
-		$(this).parents('.compdiv').find("b.editable").html(myval);
+		$(this).parents(".comptitle").next('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
+		$(this).parents(".comptitle").find("b.editable").html(myval);
 	}).live("focusout", function () {
 		var myval = $(this).val();
-		$(this).parents('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
-		$(this).parents('.compdiv').find("b.editable").html(myval);
-		$(this).parents('.compdiv').find("input.comptitle").val(myval);
+		$(this).parents(".comptitle").next('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
+		$(this).parents(".comptitle").find("b.editable").html(myval);
+		$(this).parents(".comptitle").next('.compdiv').find("input.comptitle").val(myval);
 		$("b.editable").show();
 		$('#changetitle').remove();
 	});
