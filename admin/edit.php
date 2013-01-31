@@ -185,7 +185,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 						// handle 'no parents' correctly
 						if ($parent == '') { 
 							$none='selected';
-							$noneText=null; 
+							$noneText='< '.i18n_r('NO_PARENT').' >'; 
 						} else { 
 							$none=null; 
 							$noneText='< '.i18n_r('NO_PARENT').' >'; 
