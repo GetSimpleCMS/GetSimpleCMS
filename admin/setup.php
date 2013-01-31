@@ -94,6 +94,9 @@ if(isset($_POST['submitted'])) {
 		$temp = GSADMININCPATH.'tmp/tmp-index.xml';
 		if (! file_exists($init))	{
 			copy($temp,$init);
+			$xml = simplexml_load_file($init); 
+			$xml->pubDate = date('r');
+			$xml->asXML($init);
 		}
 
 		# create default components.xml page
