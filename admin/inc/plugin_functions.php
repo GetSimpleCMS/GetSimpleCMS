@@ -44,7 +44,7 @@ $GS_script_assets['jquery']['local']['ver']    = $jquery_ver;
 $GS_script_assets['jquery-ui']['cdn']['url']   = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jqueryui_ver.'/jquery-ui.min.js';
 $GS_script_assets['jquery-ui']['cdn']['ver']   = $jqueryui_ver;
 
-$GS_script_assets['jquery-ui']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/jqueryui/jquery-ui-'.$jqueryui_ver.'.min.js';
+$GS_script_assets['jquery-ui']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/jqueryui/js/jquery-ui-'.$jqueryui_ver.'.custom.min.js';
 $GS_script_assets['jquery-ui']['local']['ver'] = $jqueryui_ver;
 
 // misc
