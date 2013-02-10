@@ -278,7 +278,7 @@ function load_pageCache(){
  */
 function save_pageCacheXml($xml){
 	$file=GSDATAOTHERPATH."pages.xml";		
-	return $xml->asXML($file);
+	if(!empty($xml)) return $xml->asXML($file);
 }
 
 /**
