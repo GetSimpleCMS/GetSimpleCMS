@@ -60,27 +60,41 @@ if (!array_key_exists($id, $pagesArray)) {
 }
 
 if ($id==''){
-	$data_index 	= getXML($file_404);
-	$title 			= $data_index->title;
-	$date 			= $data_index->pubDate;
-	$metak 			= $data_index->meta;
-	$metad 			= $data_index->metad;
-	$url 			= $data_index->url;
-	$content 		= $data_index->content;
-	$parent 		= $data_index->parent;
-	$template_file 	= $data_index->template;
-	$private 		= $data_index->private;	
+	$data_index    = getXML($file_404);
+	$title         = $data_index->title;
+	$date          = $data_index->pubDate;
+	$metak         = $data_index->meta;
+	$metad         = $data_index->metad;
+	$url           = $data_index->url;
+	$content       = $data_index->content;
+	$parent        = $data_index->parent;
+	$template_file = $data_index->template;
+	$private       = $data_index->private;	
 } else {
 	# get data from page cache
-	$title 			= $pagesArray[$id]['title'];
-	$date 			= $pagesArray[$id]['pubDate'];
-	$metak 			= $pagesArray[$id]['meta'];
-	$metad 			= $pagesArray[$id]['metad'];
-	$url 			= $pagesArray[$id]['url'];
-	$content 		= returnPageContent($id,'content');
-	$parent 		= $pagesArray[$id]['parent'];
-	$template_file 	= $pagesArray[$id]['template'];
-	$private 		= $pagesArray[$id]['private'];
+	$title         = $pagesArray[$id]['title'];
+	$date          = $pagesArray[$id]['pubDate'];
+	$metak         = $pagesArray[$id]['meta'];
+	$metad         = $pagesArray[$id]['metad'];
+	$url           = $pagesArray[$id]['url'];
+	$content       = returnPageContent($id,'content',true);
+	$parent        = $pagesArray[$id]['parent'];
+	$template_file = $pagesArray[$id]['template'];
+	$private       = $pagesArray[$id]['private'];
+
+	// @todo: we might need this later, or abtract these both into methods
+	// # get data from page
+	// $file = GSDATAPAGESPATH . $id .'.xml';
+	// $data_index    = getXML($file);  	
+	// $title         = $data_index->title;
+	// $date          = $data_index->pubDate;
+	// $metak         = $data_index->meta;
+	// $metad         = $data_index->metad;
+	// $url           = $data_index->url;
+	// $content       = $data_index->content;
+	// $parent        = $data_index->parent;
+	// $template_file = $data_index->template;
+	// $private       = $data_index->private;
 }
 
 # if page is private, check user
