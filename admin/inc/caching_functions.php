@@ -10,11 +10,9 @@
 
 $pagesArray = array();
 
-add_action('index-pretemplate','getPagesXmlValues',array('false'));           		// make $pagesArray available to the theme 
-add_action('header', 'create_pagesxml',array('false'));            					// add hook to save  $tags values 
-add_action('page-delete', 'create_pagesxml',array('true'));            				// Create pages.array if file deleted
-
-
+add_action('index-header','getPagesXmlValues',array(false));        // make $pagesArray available to the theme 
+add_action('header', 'create_pagesxml',array('false'));             // add hook to save  $tags values 
+add_action('page-delete', 'create_pagesxml',array('true'));         // Create pages.array if file deleted
 
 /**
  * Get Page Content
