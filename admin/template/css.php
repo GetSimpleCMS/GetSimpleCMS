@@ -314,8 +314,9 @@ html {
 
 .wrapper #maincontent ul, 
 .wrapper #maincontent ol {
-	line-height: 18px;
+/*	line-height: 18px;
 	margin: 0 0 20px 30px;
+*/
 }
 
 .wrapper a:link, 
