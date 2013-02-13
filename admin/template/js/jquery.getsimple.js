@@ -13,13 +13,17 @@
  * GetSimple js file    
  */
 function updateCoords(c) {
+	var x = Math.floor(c.x);
+	var y = Math.floor(c.y);
+	var w = Math.floor(c.w);
+	var h = Math.floor(c.h);
 	$('#handw').show();
-	$('#x').val(c.x);
-	$('#y').val(c.y);
-	$('#w').val(c.w);
-	$('#h').val(c.h);
-	$('#pich').html(c.h);
-	$('#picw').html(c.w);
+	$('#x').val(x);
+	$('#y').val(y);
+	$('#w').val(w);
+	$('#h').val(h);
+	$('#pich').html(h);
+	$('#picw').html(w);
 };
 
 var Debugger = function () {}
