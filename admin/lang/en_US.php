@@ -3,8 +3,8 @@
  * English Language File
  *
  * Date:				6 December 2011
- * Revision:		Feb 2011
- * Version:			GetSimple 3.1
+ * Revision:		Feb 2013
+ * Version:			GetSimple 3.2.1
  * Traductors: 	Chris Cagle 
  *
  * @package GetSimple
