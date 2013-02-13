@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /** CSS **/
 
 /*
@@ -4693,5 +4692,3 @@ a.disabled:visited {
 #tabs.ui-tabs ul.tab-list{
 	display:block;
 }
-
->>>>>>> master
