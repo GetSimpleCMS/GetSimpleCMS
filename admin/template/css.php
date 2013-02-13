@@ -314,8 +314,8 @@ html {
 
 .wrapper #maincontent ul, 
 .wrapper #maincontent ol {
-	line-height: 18px;
-	margin: 0 0 20px 30px;
+/*	line-height: 18px;
+	margin: 0 0 20px 30px;*/
 }
 
 .wrapper a:link, 
@@ -2337,4 +2337,40 @@ span.CodeMirror-matchhighlight {
 	font-family: arial;
 	line-height: .3;
 	cursor: pointer;
+}/* jquiry-ui theme overrides 
+	tab border bug https://github.com/jquery/download.jqueryui.com/issues/87
+*/
+#maincontent .ui-tabs .ui-tabs-panel {
+	border-width: 0 !important; 
+	padding: 1em 0;	
+}
+
+#maincontent .ui-widget-content {
+	border-width:0 !important;
+}	
+
+#maincontent a.ui-tabs-anchor, #maincontent a.ui-tabs-anchor:hover{
+	outline:0;
+	font-weight:normal;
+}
+
+#maincontent .ui-tabs .ui-tabs-nav {
+	padding:0 !important;
+}
+
+#maincontent .ui-tabs .ui-tabs-nav.ui-widget-header {
+	border-top:none !important;
+	border-left:none !important;
+	border-right:none !important;
+	background:none !important;
+	border-bottom: 1px solid #aaa;
+	border-radius:0 !important;
+}
+
+#tabs ul.tab-list{
+	display:none;
+}
+
+#tabs.ui-tabs ul.tab-list{
+	display:block;
 }
