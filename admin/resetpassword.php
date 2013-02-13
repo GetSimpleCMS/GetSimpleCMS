@@ -13,15 +13,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 
 if(isset($_POST['submitted'])){
-	
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_POST['nonce'];
-		if(!check_nonce($nonce, "reset_password")) {
-			die("CSRF detected!");
-		}
-	}
-	
+	check_for_csrf("reset_password");	
+		
 	if(isset($_POST['username']))	{
 
 		# user filename

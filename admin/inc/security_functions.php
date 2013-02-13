@@ -69,6 +69,25 @@ function antixss($str){
 
 
 /**
+ * check for csrfs
+ * @param  string $action action to pass to check_nonce
+ * @param  string $file   file to pass to check_nonce
+ * @param  bool   $die    if false return instead of die
+ * @return 
+ */
+function check_for_csrf($action, $file="", $die = true){
+	// check for csrf
+	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
+		$nonce = $_REQUEST['nonce'];
+		if(!check_nonce($nonce, $action, $file)) {
+			if($die) die("CSRF detected!");
+			return true;
+		}
+	}	
+}
+
+
+/**
  * Get Nonce
  *
  * @since 2.03
@@ -197,4 +216,31 @@ function server_is_apache() {
  */
 function get_Server_Software() {
     return $_SERVER['SERVER_SOFTWARE'];
+}
+
+/**
+ * Performs filtering on variable, falls back to htmlentities
+ *
+ * @since 3.3.0
+ * @param  string $var    var to filter
+ * @param  string $filter filter type
+ * @return string         return filtered string
+ */
+function var_out($var,$filter = "special"){
+	if(function_exists( "filter_var") ){
+		$aryFilter = array(
+			"string"  => FILTER_SANITIZE_STRING,
+			"int"     => FILTER_SANITIZE_INT,
+			"float"   => FILTER_SANITIZE_FLOAT,
+			"string"  => FILTER_SANITIZE_STRING,
+			"url"     => FILTER_SANITIZE_URL,
+			"email"   => FILTER_SANITIZE_EMAIL,
+			"special" => FILTER_SANITIZE_SPECIAL_CHARS,
+		);
+		if(isset($aryFilter[$filter])) return filter_var( $var, $aryFilter[$filter]);
+		return filter_var( $var, FILTER_SANITIZE_SPECIAL_CHARS);
+	}
+	else {
+		return htmlentities($var);
+	}
 }

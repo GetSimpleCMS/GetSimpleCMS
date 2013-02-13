@@ -29,13 +29,7 @@ if (!is_file($log_file)) {
 if($log_data && !empty($log_name) && !filepath_is_safe($log_file,$log_path)) die();
 
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && strlen($log_name)>0) {
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "delete")) {
-			die("CSRF detected!");	
-		}
-	}
+	check_for_csrf("delete");
 	unlink($log_file);
 	exec_action('logfile_delete');
 	redirect('support.php?success='.urlencode('Log '.$log_name . i18n_r('MSG_HAS_BEEN_CLR')));

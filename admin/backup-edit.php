@@ -47,25 +47,14 @@ if ($_GET['p'] != '') {
 }
 
 if ($p == 'delete') {
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "delete", "backup-edit.php")) {
-			die("CSRF detected!");
-		}
-	}
+	check_for_csrf("delete","backup-edit");
 	delete_bak($id);
 	redirect("backups.php?upd=bak-success&id=".$id);
 } 
 
 elseif ($p == 'restore') {
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "restore", "backup-edit.php")) {
-			die("CSRF detected!");	
-		}
-	}
+	check_for_csrf("restore", "backup-edit.php");
+	
 	if (isset($_GET['new'])) {
 		updateSlugs($_GET['new'], $id);
 		restore_bak($id);
@@ -95,7 +84,13 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 		<h3 class="floated"><?php i18n('BACKUP_OF');?> &lsquo;<em><?php echo $url; ?></em>&rsquo;</h3>
 		
 		<div class="edit-nav" >
-			 <a href="backup-edit.php?p=restore&amp;id=<?php echo $id; ?>&amp;nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_RESTORE'));?>" ><?php i18n('ASK_RESTORE');?></a> <a href="backup-edit.php?p=delete&amp;id=<?php echo $id; ?>&amp;nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" title="<?php i18n('DELETEPAGE_TITLE'); ?>: <?php echo $title; ?>?" id="delback" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE'));?>" class="delconfirm noajax" ><?php i18n('ASK_DELETE');?></a>
+			 <a href="backup-edit.php?p=restore&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" 
+			 	accesskey="<?php echo find_accesskey(i18n_r('ASK_RESTORE'));?>" ><?php i18n('ASK_RESTORE');?></a> 
+			 <a href="backup-edit.php?p=delete&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" 
+			 	title="<?php i18n('DELETEPAGE_TITLE'); ?>: <?php echo $title; ?>?" 
+			 	id="delback" 
+			 	accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE'));?>" 
+			 	class="delconfirm noajax" ><?php i18n('ASK_DELETE');?></a>
 			<div class="clear"></div>
 		</div>
 		

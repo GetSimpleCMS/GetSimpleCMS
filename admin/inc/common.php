@@ -9,6 +9,14 @@
  * @subpackage init
  */
 
+define('IN_GS', TRUE);
+
+/**
+ *  GSCONFIG definitions
+ */
+
+if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
+
 /**
  * Variable Globalization
  */
@@ -81,8 +89,6 @@ define('GSBACKUSERSPATH', GSROOTPATH. 'backups/users/');
 define('GSCACHEPATH', GSROOTPATH. 'data/cache/');
 define('GSAUTOSAVEPATH', GSROOTPATH. 'data/pages/autosave/');
 
-define('GSSTYLEWIDE','wide');
-define('IN_GS', TRUE);
 
 /**
  * Debugging

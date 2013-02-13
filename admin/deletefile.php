@@ -15,15 +15,7 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
-
-
-// check for csrf
-if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-	$nonce = $_GET['nonce'];
-	if(!check_nonce($nonce, "delete", "deletefile.php")) {
-		die("CSRF detected!");
-	}
-}
+check_for_csrf("delete", "deletefile.php");
 	
 // are we deleting pages?
 if (isset($_GET['id'])) { 
@@ -36,7 +28,7 @@ if (isset($_GET['id'])) {
 		$status = delete_file($id);
 		generate_sitemap();
 		exec_action('page-delete');
-		redirect("pages.php?upd=del-".$status."&id=". $id ."&type=delete");
+		redirect("pages.php?upd=edit-".$status."&id=". $id ."&type=delete");
 	}
 } 
 

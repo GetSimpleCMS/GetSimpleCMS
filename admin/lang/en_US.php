@@ -1,15 +1,15 @@
 <?php
 /**
-* English Language File
-*
-* Date:			6 December 2011
-* Revision:		Feb 2011
-* Version:		GetSimple 3.1
-* Traductors: 	Chris Cagle 
-*
-* @package GetSimple
-* @subpackage Language
-*/
+ * English Language File
+ *
+ * Date:				6 December 2011
+ * Revision:		Feb 2013
+ * Version:			GetSimple 3.2.1
+ * Traductors: 	Chris Cagle 
+ *
+ * @package GetSimple
+ * @subpackage Language
+ */
 
 $i18n                     = array(
 
@@ -90,6 +90,7 @@ $i18n                     = array(
 "FILE_UPLOAD"             =>	"File Upload",
 "OR"                      =>	"or",
 "SAVE_AND_CLOSE"          =>	"Save &amp; Close",
+"PAGE_UNSAVED"			=>	"Page has unsaved changes",
 
 /* 
 * For: upload.php

@@ -89,14 +89,8 @@ if (isset($_FILES['file'])) {
 }
 // if creating new folder
 if (isset($_GET['newfolder'])) {
-	
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "createfolder")) {
-			die("CSRF detected!");
-		}
-	}
+
+	check_for_csrf("createfolder");	
 	
 	$newfolder = $_GET['newfolder'];
 	// check for invalid chars

@@ -18,15 +18,9 @@ $theme_options 	= '';
 
 # was the form submitted?
 if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
-	
-	# check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_POST['nonce'];	
-		if(!check_nonce($nonce, "activate")) {
-			die("CSRF detected!");
-		}
-	}
-	
+
+	check_for_csrf("activate");	
+		
 	# get passed value from form
 	$TEMPLATE = $_POST['template'];
 	

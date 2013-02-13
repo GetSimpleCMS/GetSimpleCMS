@@ -10,7 +10,7 @@
 
 $pagesArray = array();
 
-add_action('index-pretemplate','getPagesXmlValues',array(false)); // make $pagesArray available to the theme 
+add_action('index-header','getPagesXmlValues',array(false)); // make $pagesArray available to the theme 
 add_action('header', 'getPagesXmlValues',array(false));           // add hook to save  $tags values 
 add_action('page-delete', 'create_pagesxml',array(true));         // Create pages.array if file deleted
 add_action('changedata-save', 'create_pagesxml',array(true));     // Create pages.array if file deleted
@@ -73,6 +73,7 @@ function echoPageField($page,$field){
 	getPageField($page,$field);
 }
 
+
 /**
  * Return Page Content
  *
@@ -81,13 +82,14 @@ function echoPageField($page,$field){
  *
  * @since 3.1
  * @param $page - slug of the page to retrieve content
+ * @param $nofilter if true skip filter execution
  *
  */
-function returnPageContent($page,$field='content'){   
+function returnPageContent($page, $field='content', $nofilter = false){   
 	$thisfile = file_get_contents(GSDATAPAGESPATH.$page.'.xml');
 	$data = simplexml_load_string($thisfile);
 	$content = stripslashes(htmlspecialchars_decode($data->$field, ENT_QUOTES));
-	if ($field=='content'){
+	if ($field=='content' and !$nofilter){
 		$content = exec_filter('content',$content);
 	}
 	return $content;
@@ -276,7 +278,7 @@ function load_pageCache(){
  */
 function save_pageCacheXml($xml){
 	$file=GSDATAOTHERPATH."pages.xml";		
-	return $xml->asXML($file);
+	if(!empty($xml)) return $xml->asXML($file);
 }
 
 /**

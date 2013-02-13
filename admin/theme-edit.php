@@ -46,14 +46,8 @@ if ($template_file == '') {
 
 # check for form submission
 if(isset($_POST['submitsave'])){
-	
-	# check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_POST['nonce'];
-		if(!check_nonce($nonce, "save")) {
-			die("CSRF detected!");
-		}
-	}
+
+	check_for_csrf("save");	
 	
 	# save edited template file
 	$SavedFile = $_POST['edited_file'];

@@ -50,7 +50,9 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
         <?php exec_action($plugin_info[$plugin_id]['page_type']."-sidebar"); ?>
       </ul>
     <?php
-      }
+	}
+	// call sidebar extra hook for plugin page_type
+	exec_action($plugin_info[$plugin_id]['page_type']."-sidebar-extra");     
     ?>
   </div>
 
