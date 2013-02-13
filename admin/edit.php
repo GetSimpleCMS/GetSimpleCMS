@@ -440,7 +440,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 								}
 								else {
 									pageisdirty=true;
-									$('#autosavenotify').text("Autosave Failed");                
+									$('#autosavenotify').text("<?php i18n('AUTOSAVE_FAILED'); ?>");                
 								}
 							}
 						});	
@@ -470,7 +470,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 					
 					function autoSaveInd(){
 							$('#pagechangednotify').show();                
-							$('#pagechangednotify').text(<?php i18n_r('PAGE_UNSAVED')?>);  
+							$('#pagechangednotify').text("<?php i18n('PAGE_UNSAVED')?>");  
 							$('input[type=submit]').css('border-color','#CC0000');              
 							$('#cancel-updates').show();						
 					}
