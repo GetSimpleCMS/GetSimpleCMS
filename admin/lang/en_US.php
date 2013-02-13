@@ -91,6 +91,7 @@ $i18n = array(
 "FILE_UPLOAD"				=>	"File Upload",
 "OR"								=>	"or",
 "SAVE_AND_CLOSE"		=> "Save &amp; Close",
+"PAGE_UNSAVED"			=>	"Page has unsaved changes",
 
 /* 
  * For: upload.php

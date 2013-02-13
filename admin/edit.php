@@ -470,7 +470,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 					
 					function autoSaveInd(){
 							$('#pagechangednotify').show();                
-							$('#pagechangednotify').text('Page has unsaved changes');  
+							$('#pagechangednotify').text(<?php i18n_r('PAGE_UNSAVED')?>);  
 							$('input[type=submit]').css('border-color','#CC0000');              
 							$('#cancel-updates').show();						
 					}
