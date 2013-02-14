@@ -18,11 +18,11 @@ include('inc/common.php');
 $userid = login_cookie_check();
 
 // Get passed variables
-$id 		=  isset($_GET['id']) ? $_GET['id'] : null;
-$uri    = isset($_GET['uri']) ? $_GET['uri'] : null; 
-$ptype    = isset($_GET['type']) ? $_GET['type'] : null;    
-$nonce    = isset($_GET['nonce']) ? $_GET['nonce'] : null;
-$path 		= GSDATAPAGESPATH;
+$id    = isset($_GET['id'])    ? var_out( $_GET['id']    ): null;
+$uri   = isset($_GET['uri'])   ? var_out( $_GET['uri']   ): null; 
+$ptype = isset($_GET['type'])  ? var_out( $_GET['type']  ): null;    
+$nonce = isset($_GET['nonce']) ? var_out( $_GET['nonce'] ): null;
+$path  = GSDATAPAGESPATH;
 
 // Page variables reset
 $theme_templates = ''; 
@@ -65,14 +65,14 @@ if ($id){
 	$buttonname = i18n_r('BTN_SAVEUPDATES');
 } else {
 	// prefill fields is provided
-	$title 		=  isset($_GET['title']) ? $_GET['title'] : '';
-	$template 	=  isset($_GET['template']) ? $_GET['template'] : '';
-	$parent 	=  isset($_GET['parent']) ? $_GET['parent'] : '';
-	$menu		=  isset($_GET['menu']) ? $_GET['menu'] : '';
-	$private 	=  isset($_GET['private']) ? $_GET['private'] : '';
-	$menuStatus =  isset($_GET['menuStatus']) ? $_GET['menuStatus'] : '';
-	$menuOrder =  isset($_GET['menuOrder']) ? $_GET['menuOrder'] : '';
-	$buttonname = i18n_r('BTN_SAVEPAGE');
+	$title      =  isset( $_GET['title']      ) ? var_out( $_GET['title']      ) : '';
+	$template   =  isset( $_GET['template']   ) ? var_out( $_GET['template']   ) : '';
+	$parent     =  isset( $_GET['parent']     ) ? var_out( $_GET['parent']     ) : '';
+	$menu       =  isset( $_GET['menu']       ) ? var_out( $_GET['menu']       ) : '';
+	$private    =  isset( $_GET['private']    ) ? var_out( $_GET['private']    ) : '';
+	$menuStatus =  isset( $_GET['menuStatus'] ) ? var_out( $_GET['menuStatus'] ) : '';
+	$menuOrder  =  isset( $_GET['menuOrder']  ) ? var_out( $_GET['menuOrder']  ) : '';
+	$buttonname =  i18n_r('BTN_SAVEPAGE');
 }
 
 
