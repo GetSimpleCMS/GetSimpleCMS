@@ -18,6 +18,25 @@ include('inc/common.php');
 $error = '';
 $message = null;
 
+/* create new folders */
+if (!file_exists(GSCACHEPATH)) {  	
+	if (defined('GSCHMOD')) { 
+	 $chmod_value = GSCHMOD; 
+	} else {
+	 $chmod_value = 0755;
+	}
+	mkdir(GSCACHEPATH, $chmod_value);
+}
+	  	
+if (!file_exists(GSAUTOSAVEPATH)) {
+	if (defined('GSCHMOD')) { 
+	 $chmod_value = GSCHMOD;
+	} else {
+	 $chmod_value = 0755;
+	}
+	mkdir(GSAUTOSAVEPATH, $chmod_value);
+}
+
 /* check for legacy version of user.xml */
 if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	

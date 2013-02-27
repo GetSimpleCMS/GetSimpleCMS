@@ -111,12 +111,18 @@ if (! file_exists($api_file)) {
 	$xml = new SimpleXMLExtended('<item></item>');
 	$note = $xml->addChild('apikey');
 	$note->addCData($saltval);
-	XMLsave($xml, $api_file);
+	if(! XMLsave($xml, $api_file) ){
+			$kill = i18n_r('CHMOD_ERROR');
+	}
 }
 
 # get salt value
 $data = getXML($api_file);
 $APIKEY = $data->apikey;
+
+if(empty($APIKEY)){
+		$kill = i18n_r('CHMOD_ERROR');
+}
 
 get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') ); 
 
