@@ -232,7 +232,6 @@ function var_out($var,$filter = "special"){
 			"string"  => FILTER_SANITIZE_STRING,
 			"int"     => FILTER_SANITIZE_INT,
 			"float"   => FILTER_SANITIZE_FLOAT,
-			"string"  => FILTER_SANITIZE_STRING,
 			"url"     => FILTER_SANITIZE_URL,
 			"email"   => FILTER_SANITIZE_EMAIL,
 			"special" => FILTER_SANITIZE_SPECIAL_CHARS,
