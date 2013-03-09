@@ -23,6 +23,8 @@ $PASSWD 	= $data->PWD;
 $EMAIL 		= $data->EMAIL;
 $NAME			= $data->NAME;
 
+$lang_array = getFiles(GSLANGPATH);
+
 # initialize these all as null
 $pwd1 = $error = $success = $pwd2 = $editorchck = $prettychck = null;
 
@@ -123,6 +125,9 @@ if(isset($_POST['submitted'])) {
 			$PASSWD = passhash($pwd1); 
 		}	
 		
+		// check valid lang files
+		if(!in_array($LANG.'.php', $lang_array) and !in_array($LANG.'.PHP', $lang_array)) die(); 
+
 		# create user xml file
 		createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
 		if (file_exists(GSUSERSPATH . _id($USR).'.xml.reset')) { unlink(GSUSERSPATH . _id($USR).'.xml.reset'); }	
@@ -175,21 +180,16 @@ if ($HTMLEDITOR != '' ) { $editorchck = 'checked'; }
 if ($PRETTYURLS != '' ) { $prettychck = 'checked'; }
 
 # get all available language files
-$lang_handle = opendir(GSLANGPATH) or die("Unable to open ". GSLANGPATH);
 if ($LANG == ''){ $LANG = 'en_US'; }
-while ($lfile = readdir($lang_handle)) {
-	if( is_file(GSLANGPATH . $lfile) && $lfile != "." && $lfile != ".." )	{
-		$lang_array[] = basename($lfile, ".php");
-	}
-}
+
 if (count($lang_array) != 0) {
 	sort($lang_array);
-	$count = '0'; $sel = ''; $langs = '';
-	foreach ($lang_array as $larray){
-		if ($LANG == $larray)	{ $sel="selected"; }
-		$langs .= '<option '.$sel.' value="'.$larray.'" >'.$larray.'</option>';
+	$sel = ''; $langs = '';
+	foreach ($lang_array as $lfile){
+		$lfile = basename($lfile,".php");
+		if ($LANG == $lfile)	{ $sel="selected"; }
+		$langs .= '<option '.$sel.' value="'.$lfile.'" >'.$lfile.'</option>';
 		$sel = '';
-		$count++;
 	}
 } else {
 	$langs = '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>';
