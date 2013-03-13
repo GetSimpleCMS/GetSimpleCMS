@@ -230,9 +230,8 @@ function var_out($var,$filter = "special"){
 	if(function_exists( "filter_var") ){
 		$aryFilter = array(
 			"string"  => FILTER_SANITIZE_STRING,
-			"int"     => FILTER_SANITIZE_INT,
-			"float"   => FILTER_SANITIZE_FLOAT,
-			"string"  => FILTER_SANITIZE_STRING,
+			"int"     => FILTER_SANITIZE_NUMBER_INT,
+			"float"   => FILTER_SANITIZE_NUMBER_FLOAT,
 			"url"     => FILTER_SANITIZE_URL,
 			"email"   => FILTER_SANITIZE_EMAIL,
 			"special" => FILTER_SANITIZE_SPECIAL_CHARS,

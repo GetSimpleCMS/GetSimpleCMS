@@ -55,7 +55,7 @@
 			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_CANNOT_INDEX').'.</p></div>';
 		break;
 		case 'edit-error':
-			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '. $ptype .'.</p></div>';
+			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '. var_out($ptype) .'.</p></div>';
 		break;
 		case 'pwd-success':
 			echo '<div class="updated"><p>'.i18n_r('ER_NEW_PWD_SENT').'. <a href="index.php">'.i18n_r('LOGIN').'</a></p></div>';

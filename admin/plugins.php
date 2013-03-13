@@ -20,7 +20,7 @@ $nonce    		= isset($_GET['nonce']) ? $_GET['nonce'] : null;
 if ($pluginid){
 	if(check_nonce($nonce, "set", "plugins.php")) {
 	  $plugin=antixss($pluginid);	
-	  change_plugin($pluginid);
+	  change_plugin($plugin);
 	  redirect('plugins.php');
 	}
 }

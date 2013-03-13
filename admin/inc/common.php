@@ -101,7 +101,7 @@ define('GSAUTOSAVEPATH', GSROOTPATH. 'data/pages/autosave/');
  *
  * @param $txt string
  */
-function debugLog($txt) {
+function debugLog($txt='') {
 	global $GS_debug;	
 	array_push($GS_debug,$txt);
 }
@@ -273,8 +273,17 @@ if (notInInstall()) {
 			$error = sprintf(i18n_r('ERR_CANNOT_DELETE'), '<code>/'.$GSADMIN.'/install.php</code>, <code>/'.$GSADMIN.'/setup.php</code> or <code>/'.$GSADMIN.'/update.php</code>');
 		}
 	}
+} else {
+	/* create new folders */
+	if (!file_exists(GSCACHEPATH)) {
+		if (defined('GSCHMOD')) { 
+		  $chmod_value = GSCHMOD; 
+		} else {
+		  $chmod_value = 0755;
+		}
+		mkdir(GSCACHEPATH, $chmod_value);
+	}
 }
-
 
 /**
  * Include other files depending if they are needed or not
