@@ -424,6 +424,7 @@ $i18n                     = array(
 
 "PLUGINS_MANAGEMENT"      =>	"Plugin Management",
 "PLUGINS_INSTALLED"       =>	"plugins installed",
+"PLUGIN_DISABLED"   => "Disabled Plugin",
 "SHOW_PLUGINS"            =>	"Installed Plu<em>g</em>ins",
 "PLUGIN_NAME"             =>	"Plugin",
 "PLUGIN_DESC"             =>	"Description",
