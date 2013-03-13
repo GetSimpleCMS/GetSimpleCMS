@@ -118,13 +118,13 @@ if (defined('GSCANONICAL')) {
 	}
 }
 
+# call pretemplate Hook
+exec_action('index-pretemplate');
+
 # include the functions.php page if it exists within the theme
 if ( file_exists(GSTHEMESPATH .$TEMPLATE."/functions.php") ) {
 	include(GSTHEMESPATH .$TEMPLATE."/functions.php");	
 }
-
-# call pretemplate Hook
-exec_action('index-pretemplate');
 
 # include the template and template file set within theme.php and each page
 if ( (!file_exists(GSTHEMESPATH .$TEMPLATE."/".$template_file)) || ($template_file == '') ) { $template_file = "template.php"; }
