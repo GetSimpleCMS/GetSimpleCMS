@@ -101,7 +101,7 @@ define('GSAUTOSAVEPATH', GSROOTPATH. 'data/pages/autosave/');
  *
  * @param $txt string
  */
-function debugLog($txt) {
+function debugLog($txt='') {
 	global $GS_debug;	
 	array_push($GS_debug,$txt);
 }
