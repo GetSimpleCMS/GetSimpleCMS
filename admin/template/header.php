@@ -33,7 +33,7 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	<?php } ?>
 	<?php if(get_filename_id()=='image') { ?>
 	<script type="text/javascript" src="template/js/jcrop/jquery.Jcrop.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="template/js/jcrop/jquery.Jcrop.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="template/js/jcrop/jquery.Jcrop.min.css" media="screen" />
 	<?php } ?>
 
 	<?php 

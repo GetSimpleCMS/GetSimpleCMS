@@ -59,8 +59,8 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 				}
 				mkdir($thumbsPath, $chmod_value);
 			}
-			echo $path;
-			echo " ".$thumbsPath;
+			// echo $path;
+			// echo " ".$thumbsPath;
 			
 			//thumbnail for post
 			$imgsize = getimagesize($targetFile);
@@ -110,8 +110,6 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 			}
 			
 			imagedestroy($picture);
-			imagedestroy($image);
-			
 			
 			//small thumbnail for image preview
 			$width = 65; //New width of image    
@@ -148,7 +146,9 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 			imagedestroy($picture);
 			imagedestroy($image);
 		}	
-		echo '1';
+		
+		echo 1;
+
 	} else {
 		echo 'Invalid file type.';
 	}

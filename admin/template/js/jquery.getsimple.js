@@ -13,13 +13,17 @@
  * GetSimple js file    
  */
 function updateCoords(c) {
+	var x = Math.floor(c.x);
+	var y = Math.floor(c.y);
+	var w = Math.floor(c.w);
+	var h = Math.floor(c.h);
 	$('#handw').show();
-	$('#x').val(c.x);
-	$('#y').val(c.y);
-	$('#w').val(c.w);
-	$('#h').val(c.h);
-	$('#pich').html(c.h);
-	$('#picw').html(c.w);
+	$('#x').val(x);
+	$('#y').val(y);
+	$('#w').val(w);
+	$('#h').val(h);
+	$('#pich').html(h);
+	$('#picw').html(w);
 };
 
 var Debugger = function () {}
@@ -643,28 +647,12 @@ jQuery(document).ready(function () {
 
 
 	cm_theme_update = function(theme){
-		// hack in new theme support until we update codemirror
-		// init true if initializing codemirror
-
-		var parts = theme.split(' ');
-		//console.log(parts);
 
 		// lazy load css file
-		loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css")
-
-		if(editor){
-			var currTheme = editor.getOption('theme');
-			$('.CodeMirror').removeClass().addClass('CodeMirror');
-			$('.CodeMirror-gutter').removeClass().addClass('CodeMirror-gutter');
-		}
-
-		jQuery.each(parts,function(){
-			//console.log(this);
-			var theme = this;
-			if(editor) editor.setOption('theme',theme);		
-			$('.CodeMirror').addClass('cm-s-'+theme);
-			$('.CodeMirror-gutter').addClass('cm-s-'+theme);
-		});
+		var parts = theme.split(' ');
+		loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css");
+		
+		if(editor) editor.setOption('theme',theme);		
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -747,24 +735,23 @@ jQuery(document).ready(function () {
 		return false;
 	});
  
- 
-loadjscssfile = function(filename, filetype){
- if (filetype=="js"){ //if filename is a external JavaScript file
-  var fileref=document.createElement('script')
-  fileref.setAttribute("type","text/javascript")
-  fileref.setAttribute("src", filename)
- }
- else if (filetype=="css"){ //if filename is an external CSS file
-  var fileref=document.createElement("link")
-  fileref.setAttribute("rel", "stylesheet")
-  fileref.setAttribute("type", "text/css")
-  fileref.setAttribute("href", filename)
- }
- if (typeof fileref!="undefined")
-  document.getElementsByTagName("head")[0].appendChild(fileref)
-}
+	// lazy loader for js and css
+	loadjscssfile = function(filename, filetype){
+	 if (filetype=="js"){ //if filename is a external JavaScript file
+	  var fileref=document.createElement('script')
+	  fileref.setAttribute("type","text/javascript")
+	  fileref.setAttribute("src", filename)
+	 }
+	 else if (filetype=="css"){ //if filename is an external CSS file
+	  var fileref=document.createElement("link")
+	  fileref.setAttribute("rel", "stylesheet")
+	  fileref.setAttribute("type", "text/css")
+	  fileref.setAttribute("href", filename)
+	 }
+	 if (typeof fileref!="undefined")
+	  document.getElementsByTagName("head")[0].appendChild(fileref)
+	}
 
- 
 	// end of javascript for getsimple
 });
  

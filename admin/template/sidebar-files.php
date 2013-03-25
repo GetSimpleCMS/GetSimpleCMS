@@ -21,30 +21,33 @@ $path = (isset($_GET['path'])) ? $_GET['path'] : "";
 	// create Uploadify uploader
 	$debug = isDebug() ? 'true' : 'false';
 	$fileSizeLimit = toBytes(ini_get('upload_max_filesize'))/1024;
-	echo "
-	<script type=\"text/javascript\">
+	?>
+	<script type="text/javascript">
 	jQuery(document).ready(function() {
 		if(jQuery().uploadify) {
 		$('#uploadify').uploadify({
-			'debug'			: ". $debug . ",
-			'buttonText'	: '". i18n_r('UPLOADIFY_BUTTON') ."',
+			'debug'			: '<?php echo $debug; ?>',
+			'buttonText'	: '<?php echo i18n_r('UPLOADIFY_BUTTON'); ?>',
 			'buttonCursor'	: 'pointer',
 			'uploader'		: 'upload-uploadify.php',
 			'swf'			: 'template/js/uploadify/uploadify.swf',
 			'multi'			: true,
 			'auto'			: true,
-			'height'		: '25',
+			'height'		: 25,
 			'width'			: '100%',
 			'requeueErrors'	: false,
-			'fileSizeLimit'	: '".$fileSizeLimit."', // expects input in kb
+			'fileSizeLimit'	: <?php echo $fileSizeLimit; ?>, // expects input in kb
 			'cancelImage'	: 'template/images/cancel.png',
-			'checkExisting'	: 'uploadify-check-exists.php?path=".$path."',
-			'postData'		: {
-			'sessionHash' : '". $SESSIONHASH ."',
-			'path' : '". $path ."'
+			'checkExisting'	: 'uploadify-check-exists.php?path=<?php echo $path; ?>',
+			'formData'		: {
+				'sessionHash' : '<?php echo $SESSIONHASH; ?>',
+				'path' : '<?php echo $path; ?>'
 			},
 			onUploadProgress: function() {
 				$('#loader').show();
+			},
+			'onUploadSuccess' : function(file, data, response) {
+				alert('The file ' + file.name + ' was successfully uploaded with a response of ' + response + ':' + data);
 			},
 			onUploadComplete: function() {
 				$('#loader').fadeOut(500);
@@ -59,8 +62,7 @@ $path = (isset($_GET['path'])) ? $_GET['path'] : "";
 		});
 		}
 	});
-	</script>";
-	 ?>
+	</script>
 	</li>
 <?php } ?>
 	<li style="float:right;" id="sb_filesize" ><small><?php i18n('MAX_FILE_SIZE'); ?>: <strong><?php echo (toBytes(ini_get('upload_max_filesize'))/1024)/1024; ?>MB</strong></small></li>

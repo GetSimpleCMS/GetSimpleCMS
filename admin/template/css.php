@@ -1532,17 +1532,17 @@ table.simple td.title {
 
 
 /* JQuery Uploadify Styles */
-.uploadifyQueueItem {
+.uploadify-queue-item {
 	font-size: 10px;
 	padding: 8px 15px;
 	width: 190px;
 }
 
-.uploadifyError {
+.uploadify-error {
 	color: #D94136 !important;
 }
 
-.uploadifyError .uploadifyProgressBar {
+.uploadify-error .uploadify-progress-bar {
 	background-color: #D94136 !important;
 }
 
@@ -1560,13 +1560,13 @@ table.simple td.title {
 	background: transaparent !important;
 }
 
-.uploadifyProgress {
+.uploadify-progress {
 	background-color: #FFF;
 	margin-top: 5px;
 	width: 97%;
 }
 
-.uploadifyProgressBar {
+.uploadify-progress-bar {
 	background-color: <?php echo $primary_6; ?>;
 	width: 1px;
 	height: 4px;
@@ -1584,7 +1584,7 @@ table.simple td.title {
 	font-weight: 100;
 }
 
-.uploadifyButton {
+.uploadify-button {
 	width: 100%;
 	border-radius: 4px;
 		-webkit-border-radius: 4px;
@@ -1600,22 +1600,20 @@ table.simple td.title {
 		-o-transition: all .3s ease-in-out;
 }
 
-.uploadify:hover .uploadifyButton {
+.uploadify:hover .uploadify-button {
 	background-color: #0e1316;
 	color: #ffffff;
 	text-shadow: 1px 1px 0px #000;
 }
 
-.uploadifyButtonText{
+.uploadify-button-text{
 	padding: 5px 15px 5px 15px;
-	display: block;
+	/*display: block;*/
 }
 
-#uploadify object {
-	position: absolute;
-	left: 0;
-	 right: 0;
-	cursor: pointer;
+.uploadify {
+	position: relative;
+	margin-bottom: 1em;
 }
 
 
@@ -1646,7 +1644,7 @@ textarea.copykit {
 	font-size: 11px;
 	width: 150px;
 	text-align: center;
-	margin: -50px 0 0 0;
+	margin: 5px 0 0 0;
 }
 
 #handw span {
@@ -2185,31 +2183,31 @@ a.disabled:visited {
 }
 
 #theme_filemanager ul {
-    display: block;
-    margin: 0 !important;
-    padding: 0;
-    line-height: 14px !important;
+		display: block;
+		margin: 0 !important;
+		padding: 0;
+		line-height: 14px !important;
 }
 #theme_filemanager li {
-    display: block;
-    margin: 0;
-    padding: 2px 0;
-    list-style: none;
+		display: block;
+		margin: 0;
+		padding: 2px 0;
+		list-style: none;
 }
 #theme_filemanager ul ul li {
-    margin-left: 20px;
-    white-space: nowrap;
+		margin-left: 20px;
+		white-space: nowrap;
 }
 #theme_filemanager a {
-    display: block;
-    min-width: 100%;
-    cursor: pointer;
-    padding: 5px 0;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: normal;
-    font-family: sans-serif;
-    color: #333;
+		display: block;
+		min-width: 100%;
+		cursor: pointer;
+		padding: 5px 0;
+		border-radius: 5px;
+		text-decoration: none;
+		font-weight: normal;
+		font-family: sans-serif;
+		color: #333;
 }
 
 #theme_filemanager ul ul{
@@ -2217,14 +2215,14 @@ a.disabled:visited {
 }
 
 #theme_filemanager a:hover, #file-manager a.context-menu-active {
-    background-color: #E0E0E0;
-    text-decoration:none;
-    font-weight:normal;
+		background-color: #E0E0E0;
+		text-decoration:none;
+		font-weight:normal;
 }
 
 #theme_filemanager a.open {
-    background-color: #E0E0E0;
-    font-weight:bold;
+		background-color: #E0E0E0;
+		font-weight:bold;
 }
 
 #theme_filemanager .well{
@@ -2240,18 +2238,18 @@ a.disabled:visited {
 /* ICONS */
 
 #theme_filemanager a {
-    background-repeat: no-repeat;
-    background-position: 6px 6px;
-    text-indent: 28px;
-    padding-top: 6px;
+		background-repeat: no-repeat;
+		background-position: 6px 6px;
+		text-indent: 28px;
+		padding-top: 6px;
 }
 
 #theme_filemanager .directory {
-    background-image: url(images/filemanager/folder.png);
+		background-image: url(images/filemanager/folder.png);
 }
 
 #theme_filemanager .dir-open {
-    background-image: url(images/filemanager/folder-open.png);
+		background-image: url(images/filemanager/folder-open.png);
 }
 
 /* File Extension icons*/
@@ -2267,54 +2265,79 @@ a.disabled:visited {
 
 /* Grayscale */
 .desaturate, .dir-empty{
-    filter: grayscale(100%); /* Current draft standard */
-    -webkit-filter: grayscale(100%); /* New WebKit */
-    -moz-filter: grayscale(100%);
-    -ms-filter: grayscale(100%); 
-    -o-filter: grayscale(100%); /* Not yet supported in Gecko, Opera or IE */ 
-    /*filter: url(resources.svg#desaturate); /* Gecko */*/
-    filter: gray; /* IE */
-    -webkit-filter: grayscale(1); /* Old WebKit */
+		filter: grayscale(100%); /* Current draft standard */
+		-webkit-filter: grayscale(100%); /* New WebKit */
+		-moz-filter: grayscale(100%);
+		-ms-filter: grayscale(100%); 
+		-o-filter: grayscale(100%); /* Not yet supported in Gecko, Opera or IE */ 
+		/*filter: url(resources.svg#desaturate); /* Gecko */*/
+		filter: gray; /* IE */
+		-webkit-filter: grayscale(1); /* Old WebKit */
 }
 
 /* CodeMirror WEBKIT SCROLLBARS */
 
 .CodeMirror ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+		width: 10px;
+		height: 10px;
 }
 
 .CodeMirror ::-webkit-scrollbar-track-piece {
-    /*background-color: #333;*/
-    -webkit-border-radius: 0;
-    margin:2px;
+		/*background-color: #333;*/
+		-webkit-border-radius: 0;
+		margin:2px;
 }
 
 .CodeMirror ::-webkit-scrollbar-thumb:vertical {
-    height: 20px;
-    background-color: #9C9C9C;
-    -webkit-border-radius: 3px;
+		height: 20px;
+		background-color: #9C9C9C;
+		-webkit-border-radius: 3px;
 }
 
 .CodeMirror ::-webkit-scrollbar-thumb:vertical:hover {
-    background-color: #666;
+		background-color: #666;
 }
 
 .CodeMirror ::-webkit-scrollbar-thumb:horizontal {
-    width: 20px;
-    background-color: #9C9C9C;
-    -webkit-border-radius: 3px;
+		width: 20px;
+		background-color: #9C9C9C;
+		-webkit-border-radius: 3px;
 }
 
 .CodeMirror ::-webkit-scrollbar-thumb:horizontal:hover {
-    background-color: #666;
+		background-color: #666;
 }
 
 .CodeMirror ::-webkit-scrollbar-corner {
-    background-color: transparent;
+		background-color: transparent;
 }
 
-/* jquiry-ui theme overrides 
+span.CodeMirror-matchhighlight { 
+	border: 1px solid #CCC;
+	border-radius: 3px;
+}
+
+.CodeMirror-fullscreen {
+	display: block;
+	position: fixed !important;
+	top: 0; left: 0;
+	width: 100%;
+	z-index: 9999;
+	background-color:#FFF;
+}
+
+.CodeMirror .activeline{
+	background-color:gray;
+	opacity:.08;
+}
+
+.CodeMirror-foldmarker {
+	color: blue;
+	text-shadow: #b9f 1px 1px 2px, #b9f -1px -1px 2px, #b9f 1px -1px 2px, #b9f -1px 1px 2px;
+	font-family: arial;
+	line-height: .3;
+	cursor: pointer;
+}/* jquiry-ui theme overrides 
 	tab border bug https://github.com/jquery/download.jqueryui.com/issues/87
 */
 #maincontent .ui-tabs .ui-tabs-panel {
@@ -2351,4 +2374,3 @@ a.disabled:visited {
 #tabs.ui-tabs ul.tab-list{
 	display:block;
 }
-
