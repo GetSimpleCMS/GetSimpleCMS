@@ -77,7 +77,7 @@ if ($id==''){
 	$metak         = $pagesArray[$id]['meta'];
 	$metad         = $pagesArray[$id]['metad'];
 	$url           = $pagesArray[$id]['url'];
-	$content       = returnPageContent($id,'content',true);
+	$content       = returnPageContent($id,'content',true,true);
 	$parent        = $pagesArray[$id]['parent'];
 	$template_file = $pagesArray[$id]['template'];
 	$private       = $pagesArray[$id]['private'];

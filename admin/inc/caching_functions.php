@@ -82,13 +82,15 @@ function echoPageField($page,$field){
  *
  * @since 3.1
  * @param $page - slug of the page to retrieve content
- * @param $nofilter if true skip filter execution
+ * @param $raw false - if true return raw xml
+ * @param $nofilter false - if true skip content filter execution
  *
  */
-function returnPageContent($page, $field='content', $nofilter = false){   
+function returnPageContent($page, $field='content', $raw = false, $nofilter = false){   
 	$thisfile = file_get_contents(GSDATAPAGESPATH.$page.'.xml');
 	$data = simplexml_load_string($thisfile);
-	$content = stripslashes(htmlspecialchars_decode($data->$field, ENT_QUOTES));
+	$content = $data->$field;
+	if(!$raw) $content = stripslashes(htmlspecialchars_decode($content, ENT_QUOTES));
 	if ($field=='content' and !$nofilter){
 		$content = exec_filter('content',$content);
 	}
