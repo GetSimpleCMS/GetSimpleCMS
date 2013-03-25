@@ -955,6 +955,7 @@ label span.right a:hover {
 	background: #222;
 	padding: 5px 10px 0 10px;
 	position: relative;
+	border-radius: 2px;
 }
 
 #metadata_window #menu-items #tick {
@@ -966,7 +967,6 @@ label span.right a:hover {
 #metadata_window #menu-items input, 
 #metadata_window #menu-items select {
 	border: 1px solid #000;
-	border-radius: 0;
 }
 
 #metadata_window #menu-items span label {
