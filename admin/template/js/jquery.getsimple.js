@@ -611,11 +611,14 @@ jQuery(document).ready(function () {
 				$('div.wrapper .updated').remove();
 				$('div.wrapper .error').remove();
 				if ($(response).find('div.error').html()) {
-					notifyError($(response).find('div.error').html().popit().removeit());
+					notifyError($(response).find('div.error').html()).popit().removeit();
 				}
-				if ($(response).find('div.updated').html()) {
+				else if ($(response).find('div.updated').html()) {
 					notifyOk($(response).find('div.updated').html()).popit().removeit();
 				}	
+				else {
+					notifyError("<p>ERROR</p>").popit().removeit();					
+				}
 
 				loadingAjaxIndicator.fadeOut();
 				editor.hasChange = false; // mark clean		

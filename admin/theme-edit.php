@@ -37,6 +37,8 @@ if(isset($_POST['themesave'])){
 }
 
 $themepath = GSTHEMESPATH.$template.DIRECTORY_SEPARATOR;
+
+// prevent traversal
 if($template_file!='' and !filepath_is_safe($themepath.$template_file,$themepath)) die();
 
 # if no template is selected, use the default
@@ -52,9 +54,12 @@ if(isset($_POST['submitsave'])){
 	# save edited template file
 	$SavedFile = $_POST['edited_file'];
 	$FileContents = get_magic_quotes_gpc() ? stripslashes($_POST['content']) : $_POST['content'];	
+	// prevent traversal
+	if(!filepath_is_safe(GSTHEMESPATH . $SavedFile,$themepath)) die();	
 	$fh = fopen(GSTHEMESPATH . $SavedFile, 'w') or die("can't open file");
 	fwrite($fh, $FileContents);
 	fclose($fh);
+
 	$success = sprintf(i18n_r('TEMPLATE_FILE'), $SavedFile);
 	
 	if(isset($_POST['ajaxsave'])){
@@ -66,24 +71,24 @@ if(isset($_POST['submitsave'])){
 }
 
 $themeselector = '
-			<select id="cm_themeselect">
-		    <option>default</option>
-		    <option>ambiance</option>
-		    <option>blackboard</option>
-		    <option>cobalt</option>
-		    <option>eclipse</option>
-		    <option>elegant</option>
-		    <option>erlang-dark</option>
-		    <option>lesser-dark</option>
-		    <option>monokai</option>
-		    <option>neat</option>
-		    <option>night</option>
-		    <option>rubyblue</option>
-		    <option>solarized dark</option>
-		    <option>solarized light</option>
-		    <option>twilight</option>
-		    <option>vibrant-ink</option>
-		    <option>xq-dark</option>
+		<select id="cm_themeselect">
+			<option>default</option>
+			<option>ambiance</option>
+			<option>blackboard</option>
+			<option>cobalt</option>
+			<option>eclipse</option>
+			<option>elegant</option>
+			<option>erlang-dark</option>
+			<option>lesser-dark</option>
+			<option>monokai</option>
+			<option>neat</option>
+			<option>night</option>
+			<option>rubyblue</option>
+			<option>solarized dark</option>
+			<option>solarized light</option>
+			<option>twilight</option>
+			<option>vibrant-ink</option>
+			<option>xq-dark</option>
 		</select>		
 ';
 
@@ -107,7 +112,7 @@ if(isset($_GET['ajax'])){
 # create themes dropdown
 $themes_path = GSTHEMESPATH;
 $themes_handle = opendir($themes_path);
-$theme_options .= '<select class="text" name="t" id="theme-folder" >';	
+$theme_options .= '<select name="theme-folder" id="theme-folder" >';	
 while ($file = readdir($themes_handle)) {
 	$curpath = $themes_path .'/'. $file;
 	if( is_dir($curpath) && $file != "." && $file != ".." ) {
@@ -173,7 +178,13 @@ function createFileDropdown($templates){
 	return $theme_templates;
 }
 
-function array2ul($array,$hideEmpty = true) {
+/**
+ * outputs a ul nested tree from directory array
+ * @param  array   $array     directoryToMultiArray()
+ * @param  boolean $hideEmpty omit empty directories if true
+ * @return string
+ */
+function editor_array2ul($array,$hideEmpty = true) {
 	GLOBAL $allowed_extensions,$template_file,$template;
     
 	$cnt = 0;
@@ -191,7 +202,7 @@ function array2ul($array,$hideEmpty = true) {
 				$filepath = $elem['path'];   
 				$filenamefull=substr(strstr($filepath.$filename,'/theme/'.$template.'/'),strlen('/theme/'.$template.'/')); 
 
-				$open = fileIsOpen($elem['path'],$elem['value']) ? ' open' : '';
+				$open = editor_fileIsOpen($elem['path'],$elem['value']) ? ' open' : '';
 				
 				if ($filename == 'template.php'){
 					$ext = 'theme';
@@ -206,13 +217,13 @@ function array2ul($array,$hideEmpty = true) {
 			// Is a folder
 
 			// Are we showing/hiding empty folders.
-			// this will not hide empty folders that contain at least 1 subfolder
+			// WILL NOT hide empty folders that contain at least 1 subfolder
 			$empty = '';
 			if(count($elem['value']) == 0){
 				if($hideEmpty) continue;
 				$empty = ' dir-empty'; // empty folder class
 			}	
-			$out.='<li><a class="directory'.$empty.'">'.$key.'</a>'.array2ul($elem['value']).'</li>';
+			$out.='<li><a class="directory'.$empty.'">'.$key.'</a>'.editor_array2ul($elem['value']).'</li>';
 		}	
 	}
 
@@ -220,7 +231,11 @@ function array2ul($array,$hideEmpty = true) {
 	return $out; 
 }
 
-function fileIsOpen($path,$file){
+/**
+ * checks if the template file is open for editing
+ * @return bool true if template_file is being edited
+ */
+function editor_fileIsOpen($path,$file){
 	GLOBAL $template,$template_file;
     $file = $path.DIRECTORY_SEPARATOR.$file;
     $filename=pathinfo($file,PATHINFO_BASENAME);
@@ -228,7 +243,12 @@ function fileIsOpen($path,$file){
 	return $template_file == $filenamefull;
 }
 
-function compareOrder($a, $b)
+/**
+ * directory listing file order comparator 
+ * dirs first, files in alphabetical order
+ * @param array $a,$b directoryToMultiArray() arrays
+ */
+function editor_editor_compareOrder($a, $b)
 {
 	$atype = $a['type'];
 	$btype = $b['type'];
@@ -249,16 +269,23 @@ function compareOrder($a, $b)
 	} 
 }
 
-function recur_sort(&$array) {
+/**
+ * recursive sort
+ * @param  array $array Input array to be sorted
+ * @param  string $comparator compare function name
+ * @return array        Sorted array
+ */
+function editor_recur_sort(&$array,$comparator) {
    foreach ($array as &$value) {
-      if (is_array($value['value']) and count($value['value']>1)) recur_sort($value['value']);
+      if (is_array($value['value']) and count($value['value']>1)) editor_recur_sort($value['value'],$comparator);
    }
-   return @uasort($array, 'compareOrder');
+   return @uasort($array, $comparator);
 }
 
+// get theme files as ul tree
 $files = directoryToMultiArray($directory,true,$allowed_extensions);
-recur_sort($files, 'compareOrder');
-$fileList = array2ul($files);
+editor_recur_sort($files, 'editor_compareOrder');
+$fileList = editor_array2ul($files);
 
 if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 	register_script('codemirror', $SITEURL.'admin/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);
@@ -459,11 +486,6 @@ jQuery(document).ready(function () {
 
 			<div id="theme_edit_code">
 				
-<!-- 				<form action="<?php myself(); ?>" method="get" accept-charset="utf-8" >
-		<p><?php echo $theme_options; ?><?php echo $theme_templates; ?>&nbsp;&nbsp;&nbsp;<input class="submit" type="submit" name="s" value="<?php i18n('EDIT'); ?>" /></p>
-				</form> -->
-		
-
 				<div id="theme_editing" class="well">
 				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.'theme/ <b><span id="theme_editing_file">'. tsl($template).$template_file .'</span></b>'; ?>
 				<?php $content = file_get_contents(GSTHEMESPATH . tsl($template) . $template_file); ?>

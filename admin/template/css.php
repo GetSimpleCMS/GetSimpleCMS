@@ -2145,6 +2145,9 @@ a.disabled:visited {
 
 #theme_edit_select select{
 	width:100%;
+	padding: 2px;
+	border-radius: 2px;
+	border: 1px solid rgb(189, 189, 189);	
 }
 
 #theme_edit_select .well{
