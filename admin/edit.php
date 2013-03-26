@@ -302,19 +302,14 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
                         echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
                     } 
                 ?></p>
-            <?php } ?>
-                    
-        <?php 
+            <?php } 
+
+        // HTMLEDITOR INIT
+        if ($HTMLEDITOR != '') {       
             if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else { $EDHEIGHT = '500px'; }
             if (defined('GSEDITORLANG')) { $EDLANG = GSEDITORLANG; } else { $EDLANG = i18n_r('CKEDITOR_LANG'); }
             if (defined('GSEDITORTOOL')) { $EDTOOL = GSEDITORTOOL; } else { $EDTOOL = 'basic'; }
             if (defined('GSEDITOROPTIONS') && trim(GSEDITOROPTIONS)!="") { $EDOPTIONS = ", ".GSEDITOROPTIONS; } else {  $EDOPTIONS = ''; }
-
-            $toolbar = "
-                ['Bold', 'Italic', 'Underline'],['NumberedList', 'BulletedList', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'], ['Table', '-', 'TextColor', 'BGColor', '-', 'Link', 'Unlink', '-', 'Image', '-', 'RemoveFormat'],['Source'],
-                '/',
-                ['Styles','Format','Font','FontSize']
-            ";
 
             $edtool_adv = array(
                 array(
@@ -389,35 +384,40 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
             } else {
                 $toolbar = GSEDITORTOOL;
             }
+        
+            if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
+                $fullpath = suggest_site_path();
+                $contentsCss = $fullpath.'theme/'.$TEMPLATE.'/editor.css';
+            }
+
         ?>
 
-        <?php if ($HTMLEDITOR != '') { ?>
         <script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 
             <script type="text/javascript">
             
-            var editor = CKEDITOR.replace( 'post-content', {
-                    // skin : 'getsimple',
-                    forcePasteAsPlainText : true,
-                    language : '<?php echo $EDLANG; ?>',
-                    defaultLanguage : 'en',
-                    <?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
-                        $fullpath = suggest_site_path();
-                        ?>
-                        contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
-                    <?php } ?>
-                    entities : false,
-                    // uiColor : '#FFFFFF',
-                    height: '<?php echo $EDHEIGHT; ?>',
-                    baseHref : '<?php echo $SITEURL; ?>',
-                    toolbar : <?php echo $toolbar; ?>
-                    <?php echo $EDOPTIONS; ?>,                  
-                    tabSpaces:10,
-                    filebrowserBrowseUrl : 'filebrowser.php?type=all',
-                    filebrowserImageBrowseUrl : 'filebrowser.php?type=images',
-                    filebrowserWindowWidth : '730',
-                    filebrowserWindowHeight : '500'
-            });
+            var editorCfg = {
+                // skin : 'getsimple',
+                forcePasteAsPlainText        : true,
+                language                     : '<?php echo $EDLANG; ?>',
+                defaultLanguage              : 'en',
+                <?php if(!empty($contentsCss)) echo "contentCss                   : '$contentsCss',"; ?>
+                entities                     : false,
+                uiColor                      : '#DDDDDD',
+                height                       : '<?php echo $EDHEIGHT; ?>',
+                baseHref                     : '<?php echo $SITEURL; ?>',
+                toolbar                      : <?php echo $toolbar; ?>
+                <?php echo $EDOPTIONS; ?>,                  
+                tabSpaces                    : 10,
+                filebrowserBrowseUrl         : 'filebrowser.php?type=all',
+                filebrowserImageBrowseUrl    : 'filebrowser.php?type=images',
+                filebrowserWindowWidth       : '730',
+                filebrowserWindowHeight      : '500',
+                magicline_color              : '#CF3805'
+            };
+
+            var editor = CKEDITOR.replace( 'post-content', editorCfg);
+
             CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
                 function InstanceReadyEvent() {
                     this.document.on("keyup", function () {
