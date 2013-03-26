@@ -312,12 +312,12 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
             
             if ($EDTOOL == 'advanced') {
                 $toolbar = "
-                        ['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
-              '/',
-              ['Styles','Format','Font','FontSize']
-          ";
+                    ['Bold', 'Italic', 'Underline'],['NumberedList', 'BulletedList', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'], ['Table', '-', 'TextColor', 'BGColor', '-', 'Link', 'Unlink', '-', 'Image', '-', 'RemoveFormat'],['Source'],
+                    '/',
+                    ['Styles','Format','Font','FontSize']
+                ";
             } elseif ($EDTOOL == 'basic') {
-                $toolbar = "['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']";
+                $toolbar = "['Bold', 'Italic', 'Underline'],['NumberedList', 'BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],['Link', 'Unlink', '-', 'Image', '-', 'RemoveFormat'],['Source']";
             } else {
                 $toolbar = GSEDITORTOOL;
             }
