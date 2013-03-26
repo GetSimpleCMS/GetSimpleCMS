@@ -309,19 +309,88 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
             if (defined('GSEDITORLANG')) { $EDLANG = GSEDITORLANG; } else { $EDLANG = i18n_r('CKEDITOR_LANG'); }
             if (defined('GSEDITORTOOL')) { $EDTOOL = GSEDITORTOOL; } else { $EDTOOL = 'basic'; }
             if (defined('GSEDITOROPTIONS') && trim(GSEDITOROPTIONS)!="") { $EDOPTIONS = ", ".GSEDITOROPTIONS; } else {  $EDOPTIONS = ''; }
-            
+
+            $toolbar = "
+                ['Bold', 'Italic', 'Underline'],['NumberedList', 'BulletedList', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'], ['Table', '-', 'TextColor', 'BGColor', '-', 'Link', 'Unlink', '-', 'Image', '-', 'RemoveFormat'],['Source'],
+                '/',
+                ['Styles','Format','Font','FontSize']
+            ";
+
+            $edtool_adv = array(
+                array(
+                    'Bold',
+                    'Italic',
+                    'Underline'
+                ),
+                array(
+                    'NumberedList',
+                    'BulletedList',
+                    '-',
+                    'JustifyLeft',
+                    'JustifyCenter',
+                    'JustifyRight',
+                    'JustifyBlock'
+                ),
+                array(
+                    'Table',
+                    '-',
+                    'TextColor',
+                    'BGColor',
+                    '-',
+                    'Link',
+                    'Unlink',
+                    '-',
+                    'Image',
+                    '-',
+                    'RemoveFormat'
+                ),
+                array(
+                    'Source'
+                ),
+                '/',
+                array(
+                    'Styles',
+                    'Format',
+                    'Font',
+                    'FontSize'
+                ));
+
+            $edtool_basic   = array(
+                array(
+                    'Bold',
+                    'Italic',
+                    'Underline'
+                ), 
+                array(
+                    'NumberedList',
+                    'BulletedList',
+                    '-',
+                    'JustifyLeft',
+                    'JustifyCenter',
+                    'JustifyRight',
+                    'JustifyBlock'
+                ),
+                array(
+                    'Link',
+                    'Unlink',
+                    '-',
+                    'Image',
+                    '-',
+                    'RemoveFormat'
+                ),
+                array(
+                    'Source'
+                ));
+
             if ($EDTOOL == 'advanced') {
-                $toolbar = "
-                    ['Bold', 'Italic', 'Underline'],['NumberedList', 'BulletedList', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'], ['Table', '-', 'TextColor', 'BGColor', '-', 'Link', 'Unlink', '-', 'Image', '-', 'RemoveFormat'],['Source'],
-                    '/',
-                    ['Styles','Format','Font','FontSize']
-                ";
+                $toolbar = json_encode($edtool_adv);
             } elseif ($EDTOOL == 'basic') {
-                $toolbar = "['Bold', 'Italic', 'Underline'],['NumberedList', 'BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],['Link', 'Unlink', '-', 'Image', '-', 'RemoveFormat'],['Source']";
+                $toolbar = json_encode($edtool_basic);
             } else {
                 $toolbar = GSEDITORTOOL;
             }
         ?>
+
         <?php if ($HTMLEDITOR != '') { ?>
         <script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 
@@ -341,10 +410,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
                     // uiColor : '#FFFFFF',
                     height: '<?php echo $EDHEIGHT; ?>',
                     baseHref : '<?php echo $SITEURL; ?>',
-                    toolbar : 
-                    [
-                    <?php echo $toolbar; ?>
-                    ]
+                    toolbar : <?php echo $toolbar; ?>
                     <?php echo $EDOPTIONS; ?>,                  
                     tabSpaces:10,
                     filebrowserBrowseUrl : 'filebrowser.php?type=all',
