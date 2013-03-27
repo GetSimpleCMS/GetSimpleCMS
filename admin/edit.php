@@ -349,7 +349,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
                     'Font',
                     'FontSize'
                 ));
-
+            
             $edtool_basic   = array(
                 array(
                     'Bold',
@@ -376,15 +376,24 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
                 array(
                     'Source'
                 ));
-
+             
             if ($EDTOOL == 'advanced') {
-                $toolbar = json_encode($edtool_adv);
+                $toolbar = $edtool_adv;
             } elseif ($EDTOOL == 'basic') {
-                $toolbar = json_encode($edtool_basic);
+                $toolbar = $edtool_basic;
             } else {
                 $toolbar = GSEDITORTOOL;
             }
-        
+
+            // convert to js string if php array
+            if(is_array($toolbar)){
+                // add about button if debug
+                if(isDebug()){
+                    $toolbar[]=array('About');
+                }
+                $toolbar = json_encode($toolbar);                
+            }
+
             if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
                 $fullpath = suggest_site_path();
                 $contentsCss = $fullpath.'theme/'.$TEMPLATE.'/editor.css';
@@ -417,6 +426,8 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
             };
 
             var editor = CKEDITOR.replace( 'post-content', editorCfg);
+
+            CKEDITOR.Debug = true;
 
             CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
                 function InstanceReadyEvent() {
