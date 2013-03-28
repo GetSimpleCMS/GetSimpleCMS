@@ -409,7 +409,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 
         <script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 
-            <script type="text/javascript">
+        <script type="text/javascript">
             
             var editorCfg = {
                 // skin : 'getsimple',
@@ -428,13 +428,11 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
                 filebrowserImageBrowseUrl    : 'filebrowser.php?type=images',
                 filebrowserWindowWidth       : '730',
                 filebrowserWindowHeight      : '500',
-                magicline_color              : '#CF3805'
+                magicline_color              : '#CF3805',
+                allowedContent               : true // disable acf
             };
 
             var editor = CKEDITOR.replace( 'post-content', editorCfg);
-
-            CKEDITOR.Debug = true;
-
             CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
            
             function InstanceReadyEvent() {
@@ -443,22 +441,20 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
               });
             }
 
-            </script>
+        </script>
             
-            <?php
-                # CKEditor setup functions
-                ckeditor_add_page_link();
-                exec_action('html-editor-init'); 
-            ?>
+        <?php
+            # CKEditor setup functions
+            ckeditor_add_page_link();
+            exec_action('html-editor-init'); 
+        ?>
             
         <?php } ?>
         
-        
-        
         <script type="text/javascript">
             /* Warning for unsaved Data */
-            var yourText = null;
-            var warnme = false;
+            var yourText    = null;
+            var warnme      = false;
             var pageisdirty = false;
             
             $('#cancel-updates').hide();
@@ -507,11 +503,11 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
                         
                         // not internalionalized or using GS date format!
                         var currentTime = new Date();
-                        var hours = currentTime.getHours();
-                        var minutes = currentTime.getMinutes();
+                        var hours       = currentTime.getHours();
+                        var minutes     = currentTime.getMinutes();
                         if (minutes < 10){ minutes = "0" + minutes; }
-                        if(hours > 11){ daypart = "PM"; } else {    daypart = "AM"; }
-                        if(hours > 12){ hours-=12; }
+                        if (hours > 11){ daypart = "PM"; } else {    daypart = "AM"; }
+                        if (hours > 12){ hours-=12; }
                         
                         $.ajax({
                             type: "POST",
@@ -528,7 +524,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
                                     $('#cancel-updates').hide();
                                 }
                                 else {
-                                    pageisdirty=true;
+                                    pageisdirty = true;
                                     $('#autosavenotify').text("<?php i18n('AUTOSAVE_FAILED'); ?>");                
                                 }
                             }
@@ -537,31 +533,31 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
                     
                     // We register title and slug changes with change() which only fires when you lose focus to prevent midchange saves.
                     $('#post-title, #post-id').change(function () {
-                            $('#editform #post-content').trigger('change');
-                  });                   
+                        $('#editform #post-content').trigger('change');
+                    });                   
                     
                     // We register all other form elements to detect changes of any type by using bind
                     $('#editform input,#editform textarea,#editform select').not('#post-title').not('#post-id').bind('change keypress paste textInput input',function(){
-                            pageisdirty = true;
-                            warnme = true;
-                            autoSaveInd();
+                        pageisdirty = true;
+                        warnme      = true;
+                        autoSaveInd();
                     });
                 
                 setInterval(autoSaveIntvl, <?php echo (int)GSAUTOSAVE*1000; ?>);
                 
                 <?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
                     $('#editform').bind('change keypress paste focus textInput input',function(){                   
-                            warnme = true;
-                            pageisdirty = false;
-                            autoSaveInd();
+                        warnme      = true;
+                        pageisdirty = false;
+                        autoSaveInd();
                     });
                     <?php } ?>
                     
                     function autoSaveInd(){
-                            $('#pagechangednotify').show();                
-                            $('#pagechangednotify').text("<?php i18n('PAGE_UNSAVED')?>");  
-                            $('input[type=submit]').css('border-color','#CC0000');              
-                            $('#cancel-updates').show();                        
+                        $('#pagechangednotify').show();                
+                        $('#pagechangednotify').text("<?php i18n('PAGE_UNSAVED')?>");  
+                        $('input[type=submit]').css('border-color','#CC0000');              
+                        $('#cancel-updates').show();                        
                     }
             });
         </script>
