@@ -421,21 +421,14 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
                 uiColor                      : '#DDDDDD',
                 height                       : '<?php echo $EDHEIGHT; ?>',
                 baseHref                     : '<?php echo $SITEURL; ?>',
-                // toolbar                      : <?php echo $toolbar; ?>
+                toolbar                      : <?php echo $toolbar; ?>
                 <?php echo $EDOPTIONS; ?>,                  
                 tabSpaces                    : 10,
                 filebrowserBrowseUrl         : 'filebrowser.php?type=all',
                 filebrowserImageBrowseUrl    : 'filebrowser.php?type=images',
                 filebrowserWindowWidth       : '730',
                 filebrowserWindowHeight      : '500',
-                magicline_color              : '#CF3805',
-                toolbarGroups: [
-                    { name: 'document',    groups: [  'document' ] },            // Displays document group with its two subgroups.
-                    { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },           // Group's name will be used to create voice label.
-                    '/',                                                                // Line break - next group will be placed in new line.
-                    { name: 'basicstyles', groups: [ 'basicstyles' ] },
-                    { name: 'links' }
-                ],
+                magicline_color              : '#CF3805'
             };
 
             var editor = CKEDITOR.replace( 'post-content', editorCfg);
