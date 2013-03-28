@@ -985,7 +985,7 @@ function get_api_details($type='core', $args=null) {
 	
 	# plugin api details. requires a passed plugin id
 	if ($type=='plugin' && $args) {
-		$apiurl = 'http://get-simple.info/api/extend/?file=';
+		$apiurl = $site_link_back_url.'api/extend/?file=';
 		$fetch_this_api = $apiurl.$args;
 	}
 	

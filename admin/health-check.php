@@ -43,7 +43,7 @@ echo '<div class="bodycontent clearfix">
 				}
 				if ($verstatus == '0') {
 					// upgrade recomended
-					$ver = '<span id="hc_version" class="label label-error" ><b>'.$site_version_no.'</b><br /> '. i18n_r('UPG_NEEDED').' (<b>'.$apikey->latest .'</b>)<br /><a href="http://get-simple.info/download/">'. i18n_r('DOWNLOAD').'</a></span>';
+					$ver = '<span id="hc_version" class="label label-error" ><b>'.$site_version_no.'</b><br /> '. i18n_r('UPG_NEEDED').' (<b>'.$apikey->latest .'</b>)<br /><a href="'.$site_link_back_url.'download/">'. i18n_r('DOWNLOAD').'</a></span>';
 				} elseif ($verstatus == '1') {
 					// latest version
 					$ver = '<span id="hc_version" class="label label-ok" ><b>'.$site_version_no.'</b><br />'. i18n_r('LATEST_VERSION').'</span>';
@@ -52,7 +52,7 @@ echo '<div class="bodycontent clearfix">
 					$ver = '<span id="hc_version" class="label label-info" ><b>'.$site_version_no.'</b><br /> '. i18n_r('BETA').'</span>';
 				} else {
 					// cannot check
-					$ver = '<span id="hc_version" class="label label-warn" ><b>'.$site_version_no.'</b><br />'. i18n_r('CANNOT_CHECK').'<br /><a href="http://get-simple.info/download">'. i18n_r('DOWNLOAD').'</a></span>';
+					$ver = '<span id="hc_version" class="label label-warn" ><b>'.$site_version_no.'</b><br />'. i18n_r('CANNOT_CHECK').'<br /><a href="'.$site_link_back_url.'download">'. i18n_r('DOWNLOAD').'</a></span>';
 				}
 				?>
 				<tr><td class="hc_item" ><?php echo $site_full_name; ?> <?php i18n('VERSION');?></td><td><?php echo $ver; ?></td></tr>
@@ -126,7 +126,7 @@ echo '<div class="bodycontent clearfix">
 				$serveris = get_Server_Software();
 				if(empty($serveris)) $serveris = i18n_r('NA');
 				echo sprintf(i18n_r('SERVER_IS'), $serveris)."<br/>";
-				echo sprintf(i18n_r('REQS_MORE_INFO'), "http://get-simple.info/wiki/installation:requirements"); ?>
+				echo sprintf(i18n_r('REQS_MORE_INFO'), $site_link_back_url . "wiki/installation:requirements"); ?>
 			</p>
 			
 			<?php

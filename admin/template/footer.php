@@ -18,7 +18,7 @@
       		<?php if(get_filename_id() != 'index') { echo '&ndash;'. i18n_r('VERSION') .' '. $site_version_no; } ?>
       		</p> </div>
       	<div class="gslogo" >
-	      	<a href="http://get-simple.info/" target="_blank" ><img src="template/images/getsimple_logo.gif" alt="GetSimple Content Management System" /></a>
+	      	<a href="<?php echo $site_link_back_url; ?>" target="_blank" ><img src="template/images/getsimple_logo.gif" alt="GetSimple Content Management System" /></a>
 	      </div>
       	<div class="clear"></div>
       	<?php 

@@ -156,13 +156,13 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') );
 			}
 			
 			if ($verstatus == '0') {
-				$ver = '<span class="ERRmsg" >'. i18n_r('UPG_NEEDED') .' <b>'.$apikey->latest .'</b><br /><a href="http://get-simple.info/download" target="_blank" >'. i18n_r('DOWNLOAD').'</a></span>';
+				$ver = '<span class="ERRmsg" >'. i18n_r('UPG_NEEDED') .' <b>'.$apikey->latest .'</b><br /><a href="'.$site_link_back_url.'download" target="_blank" >'. i18n_r('DOWNLOAD').'</a></span>';
 			} elseif ($verstatus == '1') {
 				$ver = '<span class="OKmsg" ><b>'.$site_version_no.'</b> - '. i18n_r('LATEST_VERSION').'</span>';
 			} elseif ($verstatus == '2') {
 				$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - '. i18n_r('BETA').'</span>';
 			} else {
-				$ver = '<span class="WARNmsg" >'. i18n_r('CANNOT_CHECK') .' <b>'.$site_version_no.'</b><br /><a href="http://get-simple.info/download/" target="_blank" >'. i18n_r('DOWNLOAD').'</a></span>';
+				$ver = '<span class="WARNmsg" >'. i18n_r('CANNOT_CHECK') .' <b>'.$site_version_no.'</b><br /><a href="'.$site_link_back_url.'download/" target="_blank" >'. i18n_r('DOWNLOAD').'</a></span>';
 			}
 			?>
 			<tr><td style="width:445px;" ><?php echo $site_full_name; ?> <?php i18n_r('VERSION'); ?></td><td><?php echo $ver; ?></td></tr>
@@ -223,14 +223,14 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') );
 
 			?>
 			</table>
-			<p class="hint"><?php echo sprintf(i18n_r('REQS_MORE_INFO'), "http://get-simple.info/wiki/installation:requirements"); ?></p>
+			<p class="hint"><?php echo sprintf(i18n_r('REQS_MORE_INFO'), $site_link_back_url."wiki/installation:requirements"); ?></p>
 			<?php if ($kill != '') { ?>
 				<p><?php i18n('KILL_CANT_CONTINUE');?> <a href="./" ><?php i18n('REFRESH');?></a></p>
 			<?php } else {?>
 			<form action="setup.php" method="post" accept-charset="utf-8" >
 				<div class="leftsec">
 					<p>			
-						<?php echo $langs; ?><a href="http://get-simple.info/wiki/languages" target="_blank" ><?php i18n('DOWNLOAD_LANG');?></a>
+						<?php echo $langs; ?><a href="<?php echo $site_link_back_url; ?>wiki/languages" target="_blank" ><?php i18n('DOWNLOAD_LANG');?></a>
 						<noscript><a href="install.php?lang=" id="refreshlanguage" ><?php i18n('REFRESH');?></a> &nbsp;|&nbsp;</noscript> 
 					</p>
 				</div>
