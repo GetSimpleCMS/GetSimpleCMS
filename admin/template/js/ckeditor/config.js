@@ -1,44 +1,38 @@
-﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
+/**
+ * @license Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.html or http://ckeditor.com/license
+ */
 
-CKEDITOR.editorConfig = function( config )
-{
+CKEDITOR.editorConfig = function( config ) {
 	// Define changes to default configuration here.
-	config.resize_dir = 'vertical' // vertical resize
-	config.toolbarCanCollapse = false; // hide toolbar collapse button
-	config.dialog_backgroundCoverColor = '#000000';
+	// For the complete reference:
+	// http://docs.ckeditor.com/#!/api/CKEDITOR.config
+
+	// The toolbar groups arrangement, optimized for two toolbar rows.
+	config.toolbarGroups = [
+		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
+		{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
+		{ name: 'links' },
+		{ name: 'insert' },
+		{ name: 'forms' },
+		{ name: 'tools' },
+		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
+		{ name: 'others' },
+		'/',
+		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align' ] },
+		{ name: 'styles' },
+		{ name: 'colors' },
+		{ name: 'about' }
+	];
+
+	// Remove some buttons, provided by the standard plugins, which we don't
+	// need to have in the Standard(s) toolbar.
+	config.removeButtons = 'Underline,Subscript,Superscript';
+
+	// Se the most common block elements.
+	config.format_tags = 'p;h1;h2;h3;pre';
+
+	// Make dialogs simpler.
+	config.removeDialogTabs = 'image:advanced;link:advanced';
 };
-
-
-CKEDITOR.on( 'dialogDefinition', function( ev )	{
-		var dialogName = ev.data.name;
-		var dialogDefinition = ev.data.definition;
-		ev.data.definition.resizable = CKEDITOR.DIALOG_RESIZE_NONE;
-
-		if ( dialogName == 'link' ) {
-			var infoTab = dialogDefinition.getContents( 'info' );
-			//dialogDefinition.removeContents( 'target' );
-			var advTab = dialogDefinition.getContents( 'advanced' );
-			advTab.remove( 'advLangDir' );
-			advTab.remove( 'advLangCode' );
-			advTab.remove( 'advContentType' );
-			advTab.remove( 'advTitle' );
-			advTab.remove( 'advCharset' );
-		}
-
-		if ( dialogName == 'image' ) {
-			var infoTab = dialogDefinition.getContents( 'info' );
-			infoTab.remove( 'txtBorder' );
-			infoTab.remove( 'txtHSpace' );
-			infoTab.remove( 'txtVSpace' );
-			infoTab.remove( 'btnResetSize' );
-			dialogDefinition.removeContents( 'Link' );
-			var advTab = dialogDefinition.getContents( 'advanced' );
-			advTab.remove( 'cmbLangDir' );
-			advTab.remove( 'txtLangCode' );
-			advTab.remove( 'txtGenLongDescr' );
-			advTab.remove( 'txtGenTitle' );
-		}
-});
