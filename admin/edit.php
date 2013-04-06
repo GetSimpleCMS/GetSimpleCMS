@@ -323,7 +323,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			<script type="text/javascript">
 			
 			var editor = CKEDITOR.replace( 'post-content', {
-					skin : 'getsimple',
+					// skin : 'getsimple',
 					forcePasteAsPlainText : true,
 					language : '<?php echo $EDLANG; ?>',
 					defaultLanguage : 'en',
@@ -333,7 +333,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 						contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
 					<?php } ?>
 					entities : false,
-					uiColor : '#FFFFFF',
+					// uiColor : '#FFFFFF',
 					height: '<?php echo $EDHEIGHT; ?>',
 					baseHref : '<?php echo $SITEURL; ?>',
 					toolbar : 
