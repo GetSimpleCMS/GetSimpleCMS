@@ -345,7 +345,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 					filebrowserBrowseUrl : 'filebrowser.php?type=all',
 					filebrowserImageBrowseUrl : 'filebrowser.php?type=images',
 					filebrowserWindowWidth : '730',
-					filebrowserWindowHeight : '500'
+					filebrowserWindowHeight : '500',
+          magicline_color : '#CF3805',
+          allowedContent  : true // disable acf					
 			});
 			CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
 				function InstanceReadyEvent() {
