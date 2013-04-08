@@ -346,15 +346,34 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 					filebrowserImageBrowseUrl : 'filebrowser.php?type=images',
 					filebrowserWindowWidth : '730',
 					filebrowserWindowHeight : '500',
-          magicline_color : '#CF3805',
-          allowedContent  : true // disable acf					
+					magicline_color : '#CF3805',
+					allowedContent  : true // disable acf					
 			});
+
 			CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
-				function InstanceReadyEvent() {
-					this.document.on("keyup", function () {
-							$('#editform #post-content').trigger('change');
-				  });
+
+			function InstanceReadyEvent(ev) {
+				_this = this;
+
+				this.document.on("keyup", function () {
+					$('#editform #post-content').trigger('change');
+					_this.resetDirty();
+				});
+
+			    this.timer = setInterval(function(){trackChanges(_this)},500);
+			}		
+
+			/**
+			 * keep track of changes for editor
+			 * until cke 4.2 is released with onchange event
+			 */
+			function trackChanges(editor) {
+				console.log('check changes');
+				if ( editor.checkDirty() ) {
+					$('#editform #post-content').trigger('change');
+					editor.resetDirty();			
 				}
+			};
 
 			</script>
 			
