@@ -368,7 +368,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 			 * until cke 4.2 is released with onchange event
 			 */
 			function trackChanges(editor) {
-				console.log('check changes');
+				// console.log('check changes');
 				if ( editor.checkDirty() ) {
 					$('#editform #post-content').trigger('change');
 					editor.resetDirty();			
