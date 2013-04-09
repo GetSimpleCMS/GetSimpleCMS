@@ -45,57 +45,36 @@ if (isset($_GET['id'])){
 	$id = "index";
 }
 
+
 # define page, spit out 404 if it doesn't exist
 $file_404 = GSDATAOTHERPATH . '404.xml';
 $user_created_404 = GSDATAPAGESPATH . '404.xml';
-if (!array_key_exists($id, $pagesArray)) {
+
+if (array_key_exists($id, $pagesArray)) {
+	$data_index = getXml(GSDATAPAGESPATH . $id . '.xml');
+} else {	
 	if (file_exists($user_created_404)) {
-		//user created their own 404 page, which overrides the default 404 message
-		$id='404';
+		// use user created 404 page
+		$data_index = getXml($user_created_404);		
 	} elseif (file_exists($file_404))	{
-		// this file is not cached so we need to read it in normally.
-		$id=''; 		
-	}
+		// default 404
+		$data_index = getXml($file_404);
+	} else {
+		// fail over
+		redirect('404');
+	} 	
 	exec_action('error-404');
 }
 
-if ($id==''){
-	$data_index    = getXML($file_404);
-	$title         = $data_index->title;
-	$date          = $data_index->pubDate;
-	$metak         = $data_index->meta;
-	$metad         = $data_index->metad;
-	$url           = $data_index->url;
-	$content       = $data_index->content;
-	$parent        = $data_index->parent;
-	$template_file = $data_index->template;
-	$private       = $data_index->private;	
-} else {
-	# get data from page cache
-	$title         = $pagesArray[$id]['title'];
-	$date          = $pagesArray[$id]['pubDate'];
-	$metak         = $pagesArray[$id]['meta'];
-	$metad         = $pagesArray[$id]['metad'];
-	$url           = $pagesArray[$id]['url'];
-	$content       = returnPageContent($id,'content',true,true);
-	$parent        = $pagesArray[$id]['parent'];
-	$template_file = $pagesArray[$id]['template'];
-	$private       = $pagesArray[$id]['private'];
-
-	// @todo: we might need this later, or abtract these both into methods
-	// # get data from page
-	// $file = GSDATAPAGESPATH . $id .'.xml';
-	// $data_index    = getXML($file);  	
-	// $title         = $data_index->title;
-	// $date          = $data_index->pubDate;
-	// $metak         = $data_index->meta;
-	// $metad         = $data_index->metad;
-	// $url           = $data_index->url;
-	// $content       = $data_index->content;
-	// $parent        = $data_index->parent;
-	// $template_file = $data_index->template;
-	// $private       = $data_index->private;
-}
+$title         = $data_index->title;
+$date          = $data_index->pubDate;
+$metak         = $data_index->meta;
+$metad         = $data_index->metad;
+$url           = $data_index->url;
+$content       = $data_index->content;
+$parent        = $data_index->parent;
+$template_file = $data_index->template;
+$private       = $data_index->private;	
 
 # if page is private, check user
 if ($private == 'Y') {
