@@ -1044,6 +1044,16 @@ p.backuplink a {
 	font-weight: 100 !important;
 }
 
+.editing {
+	font-size: 10px;
+	padding: 3px;
+	display: block;
+	margin-top: -13px;
+	margin-bottom: -10px;
+	color: #888;
+	font-style: italic;
+}
+
 /* form submit button style */
 /*
 input.submit {
