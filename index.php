@@ -50,10 +50,10 @@ if (isset($_GET['id'])){
 $file_404 = GSDATAOTHERPATH . '404.xml';
 $user_created_404 = GSDATAPAGESPATH . '404.xml';
 
-if (array_key_exists($id, $pagesArray)) {
+if (isset($pagesArray[$id])) {
 	$data_index = getXml(GSDATAPAGESPATH . $id . '.xml');
 } else {	
-	if (file_exists($user_created_404)) {
+	if (isset($pagesArray['404'])) {
 		// use user created 404 page
 		$data_index = getXml($user_created_404);		
 	} elseif (file_exists($file_404))	{
