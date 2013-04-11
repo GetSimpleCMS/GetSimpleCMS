@@ -294,9 +294,11 @@ aside #socialmedia h2 {
 aside #socialmedia .icons {
 	position:absolute;
 	top:3px;
-	right:0px;	
+	left:100px;
 }
-
+aside #socialmedia .icons a{
+	margin:0 2px;
+}
 
 /* FOOTER */
 footer {
