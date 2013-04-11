@@ -94,7 +94,9 @@ function innovation_show() {
 		
 		<?php 
 			foreach($services as $var){
-				echo '<p><label for="inn_'.$var.'" >' . i18n($thisfile_innov.'/'.strtoupper($var).'_URL') .'</label><input id="inn_'.$var.'" name="'.$var.'" class="text" value="'.$innovation_data->$var.'" type="url" /></p>';
+				$value = '';
+				if(isset($innovation_data->$var)) $value = $innovation_data->$var;
+				echo '<p><label for="inn_'.$var.'" >' . i18n($thisfile_innov.'/'.strtoupper($var).'_URL') .'</label><input id="inn_'.$var.'" name="'.$var.'" class="text" value="'.$value.'" type="url" /></p>';
 			}
 		?>
 
