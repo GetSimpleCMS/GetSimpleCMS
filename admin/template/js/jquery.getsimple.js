@@ -85,6 +85,9 @@ function clearNotify() {
 	$('div.wrapper .notify').remove();
 }
  
+basename = function(str){
+	return str.substring(0,str.lastIndexOf('/') ); 		
+} 
  
 jQuery(document).ready(function () {
  
@@ -438,7 +441,16 @@ jQuery(document).ready(function () {
 		li.remove();
 	});
  
- 
+ 	// theme.php
+	$("#theme_select").change(function () {
+		var theme_new = $(this).val();
+		var theme_url_old = $("#theme_preview").attr('src');
+		// we dont have a global paths in js so work theme path out
+		var theme_path = basename(basename(basename(theme_url_old)));	
+		var theme_url_new = theme_path+'/'+theme_new+'/images/screenshot.png';
+		$("#theme_preview").attr('src',theme_url_new);
+	});
+
 	// theme-edit.php
 	$("#theme-folder").change(function () {
 		var thmfld = $(this).val();
@@ -450,8 +462,7 @@ jQuery(document).ready(function () {
 			}
 		});
 	});
- 
- 
+
 	//title filtering on pages.php & backups.php
 	var filterSearchInput = $("#filter-search");
 	$('#filtertable').live("click", function ($e) {
@@ -524,8 +535,6 @@ jQuery(document).ready(function () {
 		});
 		return false;
 	});
- 
- 
  
 	//end of javascript for getsimple
 });
