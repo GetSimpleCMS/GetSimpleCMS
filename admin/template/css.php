@@ -902,6 +902,11 @@ label span.right a:hover {
 	width: 48%;
 }
 
+#metadata_window .wideopt {
+	clear:both;
+	width: 100%;
+}
+
 #metadata_window p {
 	margin: 0 0 15px 0;
 }
@@ -914,6 +919,12 @@ label span.right a:hover {
 	padding: 3px;
 	margin: 0 !important;
 }
+
+#metadata_window .wideopt input, 
+#metadata_window .wideopt select, 
+#metadata_window .wideopt textarea {
+	width: 99%;
+}	
 
 #metadata_window input#post-menu-enable {
 	width: 20px;
@@ -1109,10 +1120,17 @@ input.submit:focus, input.submit:hover {
 	padding-bottom: 5px;
 }
 
-.rightsec input.text, .leftsec input.text {
+.widesec {
+	clear: both;
+	width: 100%;
+	padding-bottom: 5px;
+}
+
+.widesec input.text, .rightsec input.text, .leftsec input.text {
 	width: 92%;
 }	
-.rightsec select.text,  .leftsec select.text {
+
+.widesec input.text, .rightsec select.text, .leftsec select.text {
 	width: 96%;
 }
 
