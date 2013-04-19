@@ -77,20 +77,23 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT'));
 		<h3><?php i18n('CHOOSE_THEME');?></h3>
 		<form action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" accept-charset="utf-8" >
 		<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("activate"); ?>" />			
-
+		<?php	
+			$theme_path = str_replace(GSROOTPATH,'',GSTHEMESPATH);
+			if ( $SITEURL ) {	
+				echo '<p><b>'.i18n_r('THEME_PATH').': &nbsp;</b> <code>'.$SITEURL.$theme_path.$TEMPLATE.'/</code></p>';
+			}
+		?>
 		<p><select id="theme_select" class="text" style="width:250px;" name="template" >
 				<?php echo $theme_options; ?>
 			</select>&nbsp;&nbsp;&nbsp;<input class="submit" type="submit" name="submitted" value="<?php i18n('ACTIVATE_THEME');?>" /></p>
 		</form>
 		<?php
-			$theme_path = str_replace(GSROOTPATH,'',GSTHEMESPATH);
-			if ( $SITEURL ) {	
-				echo '<p><b>'.i18n_r('THEME_PATH').': &nbsp;</b> <code>'.$SITEURL.$theme_path.$TEMPLATE.'/</code></p>';
-			}
 		 	if (file_exists('../theme/'.$TEMPLATE.'/images/screenshot.png')) { 
 				echo '<p><img id="theme_preview" style="border:2px solid #333;" src="../'.$theme_path.$TEMPLATE.'/images/screenshot.png" alt="'.i18n_r('THEME_SCREENSHOT').'" /></p>';
+				echo '<span id="theme_no_img" style="visibility:hidden"><p><em>'.i18n_r('NO_THEME_SCREENSHOT').'</em></p></span>';				
 			} else {
-				echo '<p><em>'.i18n_r('NO_THEME_SCREENSHOT').'</em></p>';
+				echo '<p><img id="theme_preview" style="visiblity:hidden;border:2px solid #333;" src="../'.$theme_path.$TEMPLATE.'/images/screenshot.png" alt="'.i18n_r('THEME_SCREENSHOT').'" /></p>';				
+				echo '<span id="theme_no_img"><p><em>'.i18n_r('NO_THEME_SCREENSHOT').'</em></p></span>';
 			}
 
 			exec_action('theme-extras');
