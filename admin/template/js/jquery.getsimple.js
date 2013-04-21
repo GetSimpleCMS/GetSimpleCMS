@@ -92,6 +92,10 @@ function clearNotify() {
 	$('div.wrapper .notify').remove();
 }
  
+basename = function(str){
+	return str.substring(0,str.lastIndexOf('/') ); 		
+} 
+ 
 jQuery(document).ready(function () {
 	
 	$("#tabs").tabs({
@@ -460,12 +464,27 @@ jQuery(document).ready(function () {
 		li.remove();
 	});
  
+ 	// theme.php
+	$("#theme_select").on('change',function (e) {
+		var theme_new = $(this).val();
+		var theme_url_old = $("#theme_preview").attr('src');
+		// we dont have a global paths in js so work theme path out
+		var theme_path = basename(basename(basename(theme_url_old)));	
+		var theme_url_new = theme_path+'/'+theme_new+'/images/screenshot.png';
+		$("#theme_preview").attr('src',theme_url_new);
+		$("#theme_preview").css('visibility','visible');
+		$('#theme_no_img').css('visibility','hidden');		
+	});
  
+	$("#theme_preview").on('error',function ($e) {
+		$(this).css('visibility','hidden');
+		$('#theme_no_img').css('visibility','visible');
+	});
+
 	///////////////////////////////////////////////////////////////////////////
 	// theme-edit.php
 	///////////////////////////////////////////////////////////////////////////
-
-	$("#theme-folder").change(function(){
+	$("#theme-folder").on('change',function (e) {
 		var thmfld = $(this).val();
 		if (checkChanged()) return; // todo: change selection back
 		$('#theme_filemanager').html('Loading...');
