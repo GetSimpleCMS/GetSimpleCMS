@@ -112,7 +112,7 @@ $sel_m = ($menuStatus != '') ? 'checked' : '' ;
 $sel_p = ($private == 'Y') ? 'selected' : '' ;
 if ($menu == '') { $menu = $title; } 
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); 
+get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title); 
 
 ?>
 
@@ -272,6 +272,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
                 echo '<input type="hidden" name="existing-url" value="'. $url .'" />'; 
             } ?>    
             
+			<span class="editing"><?php echo i18n_r('EDITPAGE_TITLE') .':' . $title; ?></span>
             <div id="submit_line" >
                 <input type="hidden" name="redirectto" value="" />
                 

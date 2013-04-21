@@ -219,7 +219,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
      		$foldercount = 0;
         foreach ($dirsSorted as $upload) {
         	
-        	$upload['name'] = rawurlencode($upload['name']);
+        	// $upload['name'] = rawurlencode($upload['name']);
         	
         	# check to see if folder is empty
         	$directory_delete = null;

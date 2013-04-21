@@ -26,7 +26,7 @@ if (!is_file($log_file)) {
 	$log_data = false;
 }
 
-if($log_data && !empty($log_name) && !filepath_is_safe($log_file,$log_path)) die();
+if(empty($log_data) && !empty($log_name) && !filepath_is_safe($log_file,$log_path)) die();
 
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && strlen($log_name)>0) {
 	check_for_csrf("delete");
