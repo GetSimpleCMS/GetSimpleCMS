@@ -26,7 +26,7 @@ $path = (isset($_GET['path'])) ? $_GET['path'] : "";
 	jQuery(document).ready(function() {
 		if(jQuery().uploadify) {
 		$('#uploadify').uploadify({
-			'debug'			: '<?php echo $debug; ?>',
+			'debug'			: <?php echo $debug; ?>,
 			'buttonText'	: '<?php echo i18n_r('UPLOADIFY_BUTTON'); ?>',
 			'buttonCursor'	: 'pointer',
 			'uploader'		: 'upload-uploadify.php',
