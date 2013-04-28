@@ -1189,7 +1189,7 @@ function generate_sitemap() {
  * Creates tar.gz Archive 
  */
 function archive_targz() {
-	GLOBAL $GSADMIN
+	GLOBAL $GSADMIN;
 	if(!function_exists('exec')) {
     return false;
     exit;
