@@ -101,7 +101,7 @@ if (!file_exists(GSDATAOTHERPATH."plugins.xml")){
 
 read_pluginsxml();        // get the live plugins into $live_plugins array
 
-create_pluginsxml();      // check that plugins have not been removed or added to the directory
+if(!is_frontend()) create_pluginsxml();      // check that plugins have not been removed or added to the directory
 
 // load each of the plugins
 foreach ($live_plugins as $file=>$en) {
