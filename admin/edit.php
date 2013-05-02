@@ -346,9 +346,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 					filebrowserBrowseUrl : 'filebrowser.php?type=all',
 					filebrowserImageBrowseUrl : 'filebrowser.php?type=images',
 					filebrowserWindowWidth : '730',
-					filebrowserWindowHeight : '500',
-					magicline_color : '#CF3805',
-					allowedContent  : true // disable acf					
+					filebrowserWindowHeight : '500'
 			});
 
 			CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
