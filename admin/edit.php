@@ -301,22 +301,22 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 		</form>
 		
 		<?php 
+
 			if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
 			if (defined('GSEDITORLANG')) { $EDLANG = GSEDITORLANG; } else {	$EDLANG = i18n_r('CKEDITOR_LANG'); }
-			if (defined('GSEDITORTOOL')) { $EDTOOL = GSEDITORTOOL; } else {	$EDTOOL = 'basic'; }
+			if (defined('GSEDITORTOOL') and !isset($EDTOOL)) { $EDTOOL = GSEDITORTOOL; }
 			if (defined('GSEDITOROPTIONS') && trim(GSEDITOROPTIONS)!="") { $EDOPTIONS = ", ".GSEDITOROPTIONS; } else {	$EDOPTIONS = ''; }
+
+			if(!isset($EDTOOL)) $EDTOOL = 'basic';
+
+			if(strpos($EDTOOL,'[')!==false){ $EDTOOL = "[$EDTOOL]"; } // toolbar is array
+			else if(is_array($EDTOOL)) $EDTOOL = json_encode($EDTOOL);
+			// else if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
+			else if($EDTOOL == "none") $EDTOOL = null; // toolbar is cke default
+			else $EDTOOL = "'$EDTOOL'"; // toolbar is a toolbar config variable config.toolbar_$var 
 			
-			if ($EDTOOL == 'advanced') {
-				$toolbar = "
-						['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
-	          '/',
-	          ['Styles','Format','Font','FontSize']
-	      ";
-			} elseif ($EDTOOL == 'basic') {
-				$toolbar = "['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']";
-			} else {
-				$toolbar = GSEDITORTOOL;
-			}
+			$toolbar = isset($EDTOOL) ? ",toolbar: ".$EDTOOL : '';
+			
 		?>
 		<?php if ($HTMLEDITOR != '') { ?>
 		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
@@ -336,11 +336,8 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 					entities : false,
 					uiColor : '#FFFFFF',
 					height: '<?php echo $EDHEIGHT; ?>',
-					baseHref : '<?php echo $SITEURL; ?>',
-					toolbar : 
-					[
+					baseHref : '<?php echo $SITEURL; ?>'
 					<?php echo $toolbar; ?>
-					]
 					<?php echo $EDOPTIONS; ?>,					
 					tabSpaces:10,
 					filebrowserBrowseUrl : 'filebrowser.php?type=all',
