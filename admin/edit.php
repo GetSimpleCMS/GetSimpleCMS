@@ -336,14 +336,14 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 					entities : false,
 					uiColor : '#FFFFFF',
 					height: '<?php echo $EDHEIGHT; ?>',
-					baseHref : '<?php echo $SITEURL; ?>'
-					<?php echo $toolbar; ?>
-					<?php echo $EDOPTIONS; ?>,					
+					baseHref : '<?php echo $SITEURL; ?>',
 					tabSpaces:10,
 					filebrowserBrowseUrl : 'filebrowser.php?type=all',
 					filebrowserImageBrowseUrl : 'filebrowser.php?type=images',
 					filebrowserWindowWidth : '730',
 					filebrowserWindowHeight : '500'
+					<?php echo $toolbar; ?>
+					<?php echo $EDOPTIONS; ?>					
 			});
 			CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
 				function InstanceReadyEvent() {
