@@ -413,7 +413,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
         <script type="text/javascript">
             
             var editorCfg = {
-                // skin : 'getsimple',
+                skin : 'getsimple',
                 forcePasteAsPlainText        : true,
                 language                     : '<?php echo $EDLANG; ?>',
                 defaultLanguage              : 'en',

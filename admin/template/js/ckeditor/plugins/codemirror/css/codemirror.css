@@ -41,10 +41,7 @@
 
 .CodeMirror div.CodeMirror-cursor {
   border-left: 1px solid black;
-<<<<<<< HEAD
-=======
   z-index: 3;
->>>>>>> patch_cke
 }
 /* Shown when moving in bi-directional text */
 .CodeMirror div.CodeMirror-secondarycursor {
@@ -53,27 +50,14 @@
 .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor {
   width: auto;
   border: 0;
-<<<<<<< HEAD
-  background: transparent;
-  background: rgba(0, 200, 0, .4);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#6600c800, endColorstr=#4c00c800);
-}
-/* Kludge to turn off filter in ie9+, which also accepts rgba */
-.CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor:not(#nonsense_id) {
-  filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-=======
   background: #7e7;
   z-index: 1;
->>>>>>> patch_cke
 }
 /* Can style cursor different in overwrite (non-insert) mode */
 .CodeMirror div.CodeMirror-cursor.CodeMirror-overwrite {}
 
-<<<<<<< HEAD
-=======
 .cm-tab { display: inline-block; }
 
->>>>>>> patch_cke
 /* DEFAULT THEME */
 
 .cm-s-default .cm-keyword {color: #708;}
@@ -104,10 +88,6 @@
 .cm-positive {color: #292;}
 .cm-header, .cm-strong {font-weight: bold;}
 .cm-em {font-style: italic;}
-<<<<<<< HEAD
-.cm-emstrong {font-style: italic; font-weight: bold;}
-=======
->>>>>>> patch_cke
 .cm-link {text-decoration: underline;}
 
 .cm-invalidchar {color: #f00;}
@@ -124,11 +104,8 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
   line-height: 1;
   position: relative;
   overflow: hidden;
-<<<<<<< HEAD
-=======
   background: white;
   color: black;
->>>>>>> patch_cke
 }
 
 .CodeMirror-scroll {
@@ -175,11 +152,8 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 }
 .CodeMirror-gutter {
   height: 100%;
-<<<<<<< HEAD
-=======
   padding-bottom: 30px;
   margin-bottom: -32px;
->>>>>>> patch_cke
   display: inline-block;
   /* Hack to make IE7 behave */
   *zoom:1;
@@ -196,11 +170,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 }
 .CodeMirror pre {
   /* Reset some styles that the rest of the page might have set */
-<<<<<<< HEAD
-  -moz-border-radius: 0; -webkit-border-radius: 0; -o-border-radius: 0; border-radius: 0;
-=======
   -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;
->>>>>>> patch_cke
   border-width: 0;
   background: transparent;
   font-family: inherit;

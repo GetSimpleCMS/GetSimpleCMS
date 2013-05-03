@@ -72,8 +72,6 @@
 .CodeMirror-dialog button {
   font-size: 70%;
 }
-<<<<<<< HEAD
-=======
 .CodeMirror-hints {
   position: absolute;
   z-index: 10;
@@ -112,4 +110,3 @@
   background: #08f;
   color: white;
 }
->>>>>>> patch_cke
