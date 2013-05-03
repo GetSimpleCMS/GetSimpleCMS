@@ -1,6 +1,9 @@
 .cm-s-ambiance.CodeMirror {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
+<<<<<<< HEAD
   -o-box-shadow: none;
+=======
+>>>>>>> patch_cke
   box-shadow: none;
 }
