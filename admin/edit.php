@@ -431,14 +431,31 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                 filebrowserWindowHeight      : '500'
             };
 
-            var editor = CKEDITOR.replace( 'post-content', editorCfg);
+            var editor = CKEDITOR.replace( 'post-content', editorCfg);           
             CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
-           
-            function InstanceReadyEvent() {
+
+            function InstanceReadyEvent(ev) {
+                _this = this;
+
                 this.document.on("keyup", function () {
-                        $('#editform #post-content').trigger('change');
-              });
-            }
+                    $('#editform #post-content').trigger('change');
+                    _this.resetDirty();
+                });
+
+                this.timer = setInterval(function(){trackChanges(_this)},500);
+            }       
+
+            /**
+             * keep track of changes for editor
+             * until cke 4.2 is released with onchange event
+             */
+            function trackChanges(editor) {
+                // console.log('check changes');
+                if ( editor.checkDirty() ) {
+                    $('#editform #post-content').trigger('change');
+                    editor.resetDirty();            
+                }
+            };
 
         </script>
             
