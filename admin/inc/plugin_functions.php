@@ -71,7 +71,7 @@ foreach ($live_plugins as $file=>$en) {
   if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
 	require_once(GSPLUGINPATH . $file);
   } else {
-	if(!is_frontend()){
+	if(!is_frontend() and get_filename_id() == 'plugins'){
 	  $apiback = get_api_details('plugin', $file);
 	  $response = json_decode($apiback);
 	  if ($response and $response->status == 'successful') {
