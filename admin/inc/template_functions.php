@@ -1235,7 +1235,6 @@ function generate_sitemap() {
 }
 
 
-
 /**
  * Creates tar.gz Archive 
  */
@@ -1255,5 +1254,15 @@ function archive_targz() {
 		return false;
 	}
 }
+
+/**
+ * Check if a page is a public admin page
+ * @return boolean true if page is non protected admin page
+ */
+function isAuthPage(){
+	$page = get_filename_id(); 
+	return $page == 'index' || $page == 'resetpassword';
+}
+
 
 ?>
