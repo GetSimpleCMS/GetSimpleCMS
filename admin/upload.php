@@ -16,7 +16,7 @@ login_cookie_check();
 $dirsSorted=null;$filesSorted=null;$foldercount=null;
 
 if (isset($_GET['path'])) {
-	$path = str_replace('../','', $_GET['path']);
+	$path = removerelativepath($_GET['path']);
 	$path = tsl("../data/uploads/".$path);
 	// die if path is outside of uploads
 	if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
