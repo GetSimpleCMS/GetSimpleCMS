@@ -1014,8 +1014,9 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
 
 function get_api_details($type='core', $args=null) {
 	
-	$debugApi = false; // output debugging info to debugLog
-	$nocache  = false; // do not use cache
+	GLOBAL $debugApi,$nocache,$nocurl;
+	$debugApi = true; // output debugging info to debugLog
+	$nocache  = true; // do not use cache
 	$nocurl   = false; // do not use curl
 
 	include(GSADMININCPATH.'configuration.php');
@@ -1042,12 +1043,13 @@ function get_api_details($type='core', $args=null) {
 
 	# debug_api_details(debug_backtrace());
 
+	if(!isset($api_timeout) or (int)$api_timeout<100) $api_timeout = 500; // default and clamp min to 100ms
+	debug_api_details("API timeout: " .$api_timeout);
+
 	# check to see if cache is available for this
 	$cachefile = md5($fetch_this_api).'.txt';
-	
-	if(!isset($api_timeout) or (int)$api_timeout<100) $api_timeout = 500; // default and clamp min to 100ms
-
 	debug_api_details('cache check for ' . $fetch_this_api.' ' .$cachefile);
+
 	if (file_exists(GSCACHEPATH.$cachefile) && time() - 40000 < filemtime(GSCACHEPATH.$cachefile) and !$nocache) {
 		# grab the api request from the cache
 		$data = file_get_contents(GSCACHEPATH.$cachefile);
@@ -1055,15 +1057,13 @@ function get_api_details($type='core', $args=null) {
 	} else {	
 		# make the api call
 		if (function_exists('curl_exec') and !$nocurl) {
+
 			// USE CURL
 			$ch = curl_init();
-			debug_api_details("API via curl");
 			
 			// define missing curlopts php<5.2.3
 			if(!defined('CURLOPT_CONNECTTIMEOUT_MS')) define('CURLOPT_CONNECTTIMEOUT_MS',156);
-			if(!defined('CURLOPT_TIMEOUT_MS')) define('CURLOPT_TIMEOUT_MS',155);
-			
-			debug_api_details("API timeout: " .$api_timeout);
+			if(!defined('CURLOPT_TIMEOUT_MS')) define('CURLOPT_TIMEOUT_MS',155);			
 			
 			// min cURL 7.16.2
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, $api_timeout); // define the maximum amount of time that cURL can take to connect to the server 
@@ -1071,16 +1071,34 @@ function get_api_details($type='core', $args=null) {
 			curl_setopt($ch, CURLOPT_NOSIGNAL, 1); // prevents SIGALRM during dns allowing timeouts to work http://us2.php.net/manual/en/function.curl-setopt.php#104597
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_URL, $fetch_this_api);
-			
-			$data = curl_exec($ch);
-			debug_api_details(print_r(curl_getinfo($ch),true));
 
-			debug_api_details("Curl Data: " .$data);
-			
-			if (!$data) {
-				debug_api_details("cURL error number:" .curl_errno($ch));
-				debug_api_details("cURL error:" . curl_error($ch));
+			if($debugApi){
+				// $verbose = fopen(GSDATAOTHERPATH .'logs/curllog.txt', 'w+');			
+				$verbose = tmpfile();
+				curl_setopt($ch, CURLOPT_VERBOSE, true);
+				curl_setopt($ch, CURLOPT_STDERR, $verbose );
 			}
+				
+			$data = curl_exec($ch);
+
+			if($debugApi){
+				debug_api_details("API via curl");
+				debug_api_details("curl version: ");
+				debug_api_details(print_r(curl_version(),true));	
+			
+				debug_api_details("Curl info:");
+				debug_api_details(print_r(curl_getinfo($ch),true));
+			
+				if (!$data) {
+					debug_api_details("cURL error number:" .curl_errno($ch));
+					debug_api_details("cURL error:" . curl_error($ch));
+				}
+
+				debug_api_details("Curl Verbose: ");
+				debug_api_details(!rewind($verbose) . nl2br(htmlspecialchars(stream_get_contents($verbose))) );
+			
+				debug_api_details("Curl Data: $data");
+			}	
 
 			curl_close($ch);
 
@@ -1092,7 +1110,7 @@ function get_api_details($type='core', $args=null) {
 			// stream_context_set_option ( $context, array('http' => array('timeout' => $timeout)) );
 			$context = stream_context_create(array('http' => array('timeout' => $timeout))); 
 			$data = @file_get_contents($fetch_this_api,false,$context);	
-			debug_api_details($data);		
+			debug_api_details("fopen data: " .$data);		
 		} else {
 			debug_api_details("No api methods available");						
 			return;
@@ -1101,6 +1119,9 @@ function get_api_details($type='core', $args=null) {
 		// debug_api_details("Duration: ".get_execution_time());	
 
 		$response = json_decode($data);		
+		debug_api_details('API JSON:');
+		debug_api_details(print_r($response,true));
+
 		// if response is invalid do not write to cache and return false
 		// this keep proxy and malicious responses out of downstream code
 		if($response){
