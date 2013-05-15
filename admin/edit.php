@@ -364,7 +364,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                 filebrowserWindowHeight      : '500'
 					<?php echo $toolbar; ?>
 					<?php echo $EDOPTIONS; ?>					
-			});
+			};
+            
+            var editor = CKEDITOR.replace( 'post-content', editorCfg);            
             CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
 
             function InstanceReadyEvent(ev) {
