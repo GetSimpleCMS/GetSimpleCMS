@@ -893,10 +893,10 @@ function get_pages_menu($parent, $menu,$level) {
 			if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <sup>['.i18n_r('MENUITEM_SUBTITLE').']</sup>'; } else { $page['menuStatus'] = ''; }
 			if ($page['private'] != '' ) { $page['private'] = ' <sup>['.i18n_r('PRIVATE_SUBTITLE').']</sup>'; } else { $page['private'] = ''; }
 			if ($page['url'] == 'index' ) { $homepage = ' <sup>['.i18n_r('HOMEPAGE_SUBTITLE').']</sup>'; } else { $homepage = ''; }
-			$menu .= '<td class="pagetitle">'. $dash .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. cl($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
+			$menu .= '<td class="pagetitle">'. $dash .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
 			$menu .= '<td style="width:80px;text-align:right;" ><span>'. shtDate($page['pubDate']) .'</span></td>';
 			$menu .= '<td class="secondarylink" >';
-			$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. cl($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
+			$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
 			$menu .= '</td>';
 			if ($page['url'] != 'index' ) {
 				$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. cl($page['title']) .'" >&times;</a></td>';
@@ -975,7 +975,14 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
  * 
  * @returns string
  */
+
 function get_api_details($type='core', $args=null) {
+	
+	GLOBAL $debugApi,$nocache,$nocurl;
+	$debugApi = true; // output debugging info to debugLog
+	$nocache  = true; // do not use cache
+	$nocurl   = false; // do not use curl
+
 	include(GSADMININCPATH.'configuration.php');
 
 	# core api details
@@ -994,45 +1001,91 @@ function get_api_details($type='core', $args=null) {
 		$fetch_this_api = $args;
 	}
 	
-	// debugLog("get_api_details: " . $args);
-	// debugLog("get_api_details: " . $fetch_this_api);
+	// get_execution_time();
+	debug_api_details("get_api_details: " . $type. " " .$args);
+	debug_api_details("get_api_details: " . $fetch_this_api);
+
+	# debug_api_details(debug_backtrace());
+
+	if(!isset($api_timeout) or (int)$api_timeout<100) $api_timeout = 500; // default and clamp min to 100ms
+	debug_api_details("API timeout: " .$api_timeout);
 
 	# check to see if cache is available for this
 	$cachefile = md5($fetch_this_api).'.txt';
-	$nocache = false;
+	debug_api_details('cache check for ' . $fetch_this_api.' ' .$cachefile);
 
-	$nocurl = false;
-	if(!isset($api_timeout) or (int)$api_timeout<100) $api_timeout = 100; // default and clamp min to 100ms
-
-	# debugLog($fetch_this_api.' ' .$cachefile);
 	if (file_exists(GSCACHEPATH.$cachefile) && time() - 40000 < filemtime(GSCACHEPATH.$cachefile) and !$nocache) {
 		# grab the api request from the cache
 		$data = file_get_contents(GSCACHEPATH.$cachefile);
+		debug_api_details('Returning api cache ' . GSCACHEPATH.$cachefile);
 	} else {	
 		# make the api call
 		if (function_exists('curl_exec') and !$nocurl) {
-			$ch = curl_init();
 
+			// USE CURL
+			$ch = curl_init();
+			
 			// define missing curlopts php<5.2.3
 			if(!defined('CURLOPT_CONNECTTIMEOUT_MS')) define('CURLOPT_CONNECTTIMEOUT_MS',156);
-			if(!defined('CURLOPT_TIMEOUT_MS')) define('CURLOPT_TIMEOUT_MS',155);
+			if(!defined('CURLOPT_TIMEOUT_MS')) define('CURLOPT_TIMEOUT_MS',155);			
 			
 			// min cURL 7.16.2
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, $api_timeout);
-			curl_setopt($ch, CURLOPT_TIMEOUT_MS, $api_timeout);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, $api_timeout); // define the maximum amount of time that cURL can take to connect to the server 
+			curl_setopt($ch, CURLOPT_TIMEOUT_MS, $api_timeout); // define the maximum amount of time cURL can execute for.
+			curl_setopt($ch, CURLOPT_NOSIGNAL, 1); // prevents SIGALRM during dns allowing timeouts to work http://us2.php.net/manual/en/function.curl-setopt.php#104597
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_URL, $fetch_this_api);
+
+			if($debugApi){
+				// $verbose = fopen(GSDATAOTHERPATH .'logs/curllog.txt', 'w+');			
+				$verbose = tmpfile();
+				curl_setopt($ch, CURLOPT_VERBOSE, true);
+				curl_setopt($ch, CURLOPT_STDERR, $verbose );
+			}
+				
 			$data = curl_exec($ch);
+
+			if($debugApi){
+				debug_api_details("API via curl");
+				debug_api_details("curl version: ");
+				debug_api_details(print_r(curl_version(),true));	
+			
+				debug_api_details("Curl info:");
+				debug_api_details(print_r(curl_getinfo($ch),true));
+			
+				if (!$data) {
+					debug_api_details("cURL error number:" .curl_errno($ch));
+					debug_api_details("cURL error:" . curl_error($ch));
+				}
+
+				debug_api_details("Curl Verbose: ");
+				debug_api_details(!rewind($verbose) . nl2br(htmlspecialchars(stream_get_contents($verbose))) );
+			
+				debug_api_details("Curl Data: $data");
+			}	
+
 			curl_close($ch);
-		} else {  
+
+		} else if(ini_get('allow_url_fopen')) {  
+			// USE FOPEN
+			debug_api_details("API via fopen");			
 			$timeout = $api_timeout / 1000; // ms to float seconds
 			// $context = stream_context_create();
 			// stream_context_set_option ( $context, array('http' => array('timeout' => $timeout)) );
 			$context = stream_context_create(array('http' => array('timeout' => $timeout))); 
-			$data = @file_get_contents($fetch_this_api,false,$context);			
+			$data = @file_get_contents($fetch_this_api,false,$context);	
+			debug_api_details("fopen data: " .$data);		
+		} else {  
+			debug_api_details("No api methods available");						
+			return;
 		}
 	
-	  $response = json_decode($data);		
+		// debug_api_details("Duration: ".get_execution_time());	
+
+		$response = json_decode($data);		
+		debug_api_details('API JSON:');
+		debug_api_details(print_r($response,true));
+
 		// if response is invalid do not write to cache and return false
 		// this keep proxy and malicious responses out of downstream code
 		if($response){
@@ -1044,6 +1097,12 @@ function get_api_details($type='core', $args=null) {
 		}	
 	}
 	return $data;
+}
+
+function debug_api_details($msg){
+	GLOBAL $debugApi;
+	if(!$debugApi) return;
+	debugLog($msg);
 }
 
 /**
@@ -1146,12 +1205,10 @@ function generate_sitemap() {
 }
 
 
-
 /**
  * Creates tar.gz Archive 
  */
 function archive_targz() {
-	GLOBAL $GSADMIN;
 	if(!function_exists('exec')) {
     return false;
     exit;
@@ -1159,7 +1216,7 @@ function archive_targz() {
 	$timestamp = gmdate('Y-m-d-Hi_s');
 	$saved_zip_file_path = GSBACKUPSPATH.'zip/';
 	$saved_zip_file = $timestamp .'_archive.tar.gz';	
-	$script_contents = "tar -cvzf ".$saved_zip_file_path.$saved_zip_file." ".GSROOTPATH.".htaccess ".GSROOTPATH."gsconfig.php ".GSROOTPATH."data ".GSROOTPATH."plugins ".GSROOTPATH."theme ".GSROOTPATH.$GSADMIN."/lang > /dev/null 2>&1";
+	$script_contents = "tar -cvzf ".$saved_zip_file_path.$saved_zip_file." ".GSROOTPATH.".htaccess ".GSROOTPATH."gsconfig.php ".GSROOTPATH."data ".GSROOTPATH."plugins ".GSROOTPATH."theme ".GSROOTPATH."admin/lang > /dev/null 2>&1";
 	exec($script_contents, $output, $rc);
 	if (file_exists($saved_zip_file_path.$saved_zip_file)) {
 		return true;
@@ -1167,5 +1224,15 @@ function archive_targz() {
 		return false;
 	}
 }
+
+/**
+ * Check if a page is a public admin page
+ * @return boolean true if page is non protected admin page
+ */
+function isAuthPage(){
+	$page = get_filename_id(); 
+	return $page == 'index' || $page == 'resetpassword';
+}
+
 
 ?>

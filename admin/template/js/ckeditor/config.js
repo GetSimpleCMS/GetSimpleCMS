@@ -11,6 +11,15 @@ CKEDITOR.editorConfig = function( config )
 	config.dialog_backgroundCoverColor = '#000000'; // veil color for dialog popups
 	config.magicline_color             = '#CF3805'; 
 	config.allowedContent              = true; // disable acf
+
+	config.toolbar_advanced = 
+		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
+		'/',
+		['Styles','Format','Font','FontSize']];	
+
+	config.toolbar_basic = 
+		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']];
+
 };
 
 

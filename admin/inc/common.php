@@ -222,6 +222,11 @@ if( (!isset($TIMEZONE) || trim($TIMEZONE) == '' ) && defined('GSTIMEZONE') ){
 	$TIMEZONE = GSTIMEZONE;
 }
 
+if(isset($TIMEZONE) && function_exists('date_default_timezone_set') && ($TIMEZONE != "" || stripos($TIMEZONE, '--')) ) { 
+	date_default_timezone_set($TIMEZONE);
+}
+
+
 /**
  * Timezone setup
  */

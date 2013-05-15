@@ -150,12 +150,22 @@ function check_nonce($nonce, $action, $file = ""){
  * @return bool
  */	
 function validate_safe_file($file, $name, $mime){
-	global $mime_type_blacklist;
-	global $file_ext_blacklist;
+	global $mime_type_blacklist, $file_ext_blacklist, $mime_type_whitelist, $file_ext_whitelist;
+
+	include(GSADMININCPATH.'configuration.php');
 
 	$file_extention = pathinfo($name,PATHINFO_EXTENSION);
 	$file_mime_type = $mime;
-	
+
+	if ($mime_type_whitelist && in_arrayi($file_mime_type, $mime_type_whitelist)) {
+		return true;	
+	} elseif ($file_ext_whitelist && $in_arrayi($file_extention, $file_ext_whitelist)) {
+		return true;	
+	}
+
+	// skip blackist checks if whitelists exist
+	if($mime_type_whitelist || $file_ext_whitelist) return false;
+
 	if (in_arrayi($file_mime_type, $mime_type_blacklist)) {
 		return false;	
 	} elseif (in_arrayi($file_extention, $file_ext_blacklist)) {
