@@ -179,8 +179,10 @@ function sendmail($to,$subject,$message) {
 function subval_sort($a,$subkey, $order='asc',$natural = true) {
 	if (count($a) != 0 || (!empty($a))) { 
 		foreach($a as $k=>$v) {
-			$b[$k] = lowercase($v[$subkey]);
+			if(isset($v[$subkey])) $b[$k] = lowercase($v[$subkey]);
 		}
+
+		if(!isset($b)) return $a;
 
 		if($natural){
 			natsort($b);
