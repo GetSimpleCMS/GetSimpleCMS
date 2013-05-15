@@ -1209,6 +1209,7 @@ function generate_sitemap() {
  * Creates tar.gz Archive 
  */
 function archive_targz() {
+	GLOBAL $GSADMIN;
 	if(!function_exists('exec')) {
     return false;
     exit;
@@ -1216,7 +1217,7 @@ function archive_targz() {
 	$timestamp = gmdate('Y-m-d-Hi_s');
 	$saved_zip_file_path = GSBACKUPSPATH.'zip/';
 	$saved_zip_file = $timestamp .'_archive.tar.gz';	
-	$script_contents = "tar -cvzf ".$saved_zip_file_path.$saved_zip_file." ".GSROOTPATH.".htaccess ".GSROOTPATH."gsconfig.php ".GSROOTPATH."data ".GSROOTPATH."plugins ".GSROOTPATH."theme ".GSROOTPATH."admin/lang > /dev/null 2>&1";
+	$script_contents = "tar -cvzf ".$saved_zip_file_path.$saved_zip_file." ".GSROOTPATH.".htaccess ".GSROOTPATH."gsconfig.php ".GSROOTPATH."data ".GSROOTPATH."plugins ".GSROOTPATH."theme ".GSROOTPATH.$GSADMIN."/lang > /dev/null 2>&1";
 	exec($script_contents, $output, $rc);
 	if (file_exists($saved_zip_file_path.$saved_zip_file)) {
 		return true;
