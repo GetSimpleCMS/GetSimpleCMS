@@ -1,10 +1,10 @@
 web1:
   shared_writable_dirs:
-    - data
-    - data/cache
-    - data/other
-    - data/pages
-    - data/thumbs
-    - data/uploads
-    - data/users
-    - backups
+    - /data
+    - /data/cache
+    - /data/other
+    - /data/pages
+    - /data/thumbs
+    - /data/uploads
+    - /data/users
+    - /backups
