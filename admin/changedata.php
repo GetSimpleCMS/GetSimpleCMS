@@ -87,26 +87,24 @@ if (isset($_POST['submitted'])) {
 		$file = GSDATAPAGESPATH . $url .".xml";
 		
 		// format and clean the responses
-		if(isset($_POST['post-title'])) 			{	$title = safe_slash_html($_POST['post-title']);	}
-		if(isset($_POST['post-metak'])) 			{	$metak = safe_slash_html($_POST['post-metak']);	}
-		if(isset($_POST['post-metad'])) 			{	$metad = safe_slash_html($_POST['post-metad']);	}
-		if(isset($_POST['post-author'])) 			{	$author = safe_slash_html($_POST['post-author']);	}
-		if(isset($_POST['post-template'])) 		{ $template = $_POST['post-template']; }
-		if(isset($_POST['post-parent'])) 			{ $parent = $_POST['post-parent']; }
-		if(isset($_POST['post-menu'])) 				{ $menu = safe_slash_html($_POST['post-menu']); }
-		if(isset($_POST['post-menu-enable'])) { $menuStatus = "Y"; } else { $menuStatus = ""; }
-		if(isset($_POST['post-private']) ) 		{ $private = safe_slash_html($_POST['post-private']); }
-		if(isset($_POST['post-content'])) 		{	$content = safe_slash_html($_POST['post-content']);	}
-		if(isset($_POST['post-menu-order'])) 	{ 
-			if (is_numeric($_POST['post-menu-order'])) 
-			{
-				$menuOrder = $_POST['post-menu-order']; 
-			} 
-			else 
-			{
-				$menuOrder = "0";
-			}
-		}		
+		// content
+		if(isset($_POST['post-title'])) 			{ $title       = safe_slash_html($_POST['post-title']);	}
+		if(isset($_POST['post-titlelong']))			{ $titlelong   = safe_slash_html($_POST['post-titlelong']);	}
+		if(isset($_POST['post-summary']))			{ $summary     = safe_slash_html($_POST['post-titlelong']);	}
+ 		if(isset($_POST['post-content'])) 			{ $content     = safe_slash_html($_POST['post-content']); }
+ 		// options
+ 		if(isset($_POST['post-author'])) 			{ $author      = safe_slash_html($_POST['post-author']);	}
+ 		if(isset($_POST['post-template'])) 			{ $template    = $_POST['post-template']; }
+ 		if(isset($_POST['post-parent'])) 			{ $parent      = $_POST['post-parent']; }
+ 		if(isset($_POST['post-menu'])) 				{ $menu        = safe_slash_html($_POST['post-menu']); }
+ 		if(isset($_POST['post-menu-enable'])) 		{ $menuStatus  = "Y"; } else { $menuStatus = ""; }
+ 		if(isset($_POST['post-menu-order'])) 		{ $menuOrder   = is_numeric($_POST['post-menu-order']) ? $_POST['post-menu-order'] : "0"; }
+ 		if(isset($_POST['post-private']) ) 			{ $private     = safe_slash_html($_POST['post-private']); }
+ 		// meta
+		if(isset($_POST['post-metak'])) 			{ $meta        = $metak = safe_slash_html($_POST['post-metak']);	}
+		if(isset($_POST['post-metad'])) 			{ $metad       = safe_slash_html($_POST['post-metad']);	}
+		if(isset($_POST['post-metarobots'])) 		{ $metarobots  = is_numeric($_POST['post-menu-robots']) ? $_POST['post-menu-robots'] : "0"; }
+
 		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
 		if ( file_exists($file) && ($url != $_POST['existing-url']) ) {
 			$count = "1";
@@ -117,7 +115,6 @@ if (isset($_POST['submitted'])) {
 			}
 			$url = $url .'-'. $count;
 		}
-
 		
 		// if we are editing an existing page, create a backup
 		if ( file_exists($file) ) 
@@ -126,45 +123,31 @@ if (isset($_POST['submitted'])) {
 			copy($file, $bakfile);
 		}
 		
-		
 		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
 		$xml->addChild('pubDate', date('r'));
 
-		$note = $xml->addChild('title');
-		$note->addCData($title);
-		
-		$note = $xml->addChild('url');
-		$note->addCData($url);
-		
-		$note = $xml->addChild('meta');
-		$note->addCData($metak);
-		
-		$note = $xml->addChild('metad');
-		$note->addCData($metad);
-		
-		$note = $xml->addChild('menu');
-		$note->addCData($menu);
-		
-		$note = $xml->addChild('menuOrder');
-		$note->addCData($menuOrder);
-		
-		$note = $xml->addChild('menuStatus');
-		$note->addCData($menuStatus);
-		
-		$note = $xml->addChild('template');
-		$note->addCData($template);
-		
-		$note = $xml->addChild('parent');
-		$note->addCData($parent);
-		
-		$note = $xml->addChild('content');
-		$note->addCData($content);
-		
-		$note = $xml->addChild('private');
-		$note->addCData($private);
-		
-		$note = $xml->addChild('author');
-		$note->addCData($author);
+		$fields = array(
+			'title',
+			'titlelong',
+			'summary',
+			'url',
+			'author',
+			'template',
+			'parent',
+			'menu',
+			'menuStatus',
+			'menuOrder',
+			'private',
+			'meta',
+			'metad',
+			'metarobots',
+			'content'
+		);
+
+		foreach($fields as $field){
+			$note = $xml->addChild($field);
+			$note->addCData($$field);
+		}
 
 		exec_action('changedata-save');
 		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true' && $autoSaveDraft == true) {

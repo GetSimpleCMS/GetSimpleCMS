@@ -63,6 +63,10 @@ if ($id){
     $menuStatus = $data_edit->menuStatus;
     $menuOrder  = $data_edit->menuOrder;
     $buttonname = i18n_r('BTN_SAVEUPDATES');
+
+    $titlelong  = stripslashes($data_edit->titlelong);
+    $summary    = stripslashes($data_edit->summary);
+    $metarobots = $data_edit->metarobots;
 } else {
     // prefill fields is provided
     $title      =  isset( $_GET['title']      ) ? var_out( $_GET['title']      ) : '';
@@ -72,6 +76,11 @@ if ($id){
     $private    =  isset( $_GET['private']    ) ? var_out( $_GET['private']    ) : '';
     $menuStatus =  isset( $_GET['menuStatus'] ) ? var_out( $_GET['menuStatus'] ) : '';
     $menuOrder  =  isset( $_GET['menuOrder']  ) ? var_out( $_GET['menuOrder']  ) : '';
+    
+    $titlelong  =  isset( $_GET['titlelong']  ) ? var_out( $_GET['titlelong']  ) : '';
+    $summary    =  isset( $_GET['summary']    ) ? var_out( $_GET['summary']    ) : '';
+    $metarobots =  isset( $_GET['metarobots'] ) ? var_out( $_GET['metarobots'] ) : '';
+
     $buttonname = i18n_r('BTN_SAVEPAGE');
 }
 
@@ -88,7 +97,7 @@ while ($file = readdir($themes_handle)) {
     }       
     }       
 }       
-        
+
 sort($templates);
 
 foreach ($templates as $file){
@@ -158,6 +167,16 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
             <!-- PAGE OPTIONS -->
             <div id="page_options">
                 <div style="display:normal;" id="metadata_window" >
+                    <div class="wideopt">
+                        <p>
+                            <label for="post-titlelong"><?php i18n('TITLELONG'); ?>:</label>
+                            <input class="text short" id="post-titlelong" name="post-titlelong" type="text" value="<?php echo $titlelong; ?>" />
+                        </p>
+                       <p>
+                            <label for="post-summary" class=""><?php i18n('SUMMARY'); ?>: <!--<span class="countdownwrap"><strong class="countdown" ></strong> <?php i18n('REMAINING'); ?>--></span></label>
+                            <textarea class="text" id="post-summary" name="post-summary" ><?php echo $summary; ?></textarea>
+                        </p>                        
+                    </div>
                     <div class="leftopt">
                         <p class="inline clearfix" id="post-private-wrap" >
                             <label for="post-private" ><?php i18n('KEEP_PRIVATE'); ?>: &nbsp; </label>
