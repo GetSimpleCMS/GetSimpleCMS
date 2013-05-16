@@ -1,0 +1,3 @@
+web1:
+  shared_writable_dirs:
+    - data
