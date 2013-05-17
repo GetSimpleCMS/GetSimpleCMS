@@ -784,9 +784,9 @@ form select.text {
 	/*width: 510px;*/
 	width:100%;
 	border-radius: 2px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
+    box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
 }
 
 form input.text:focus, 
