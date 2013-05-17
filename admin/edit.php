@@ -160,7 +160,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
         <!-- TABS -->
         <div id="tabs">
                 <ul class="tab-list">
-                    <li><a href="#page_content"><span><?php i18n('CONTENTS'); ?></span></a></li>
+                    <li><a href="#page_content"><span><?php i18n('CONTENT'); ?></span></a></li>
                     <li><a href="#page_options"><span><?php i18n('OPTIONS'); ?></span></a></li>
                     <li><a href="#page_meta"><span><?php i18n('META'); ?></span></a></li>
                 </ul>
