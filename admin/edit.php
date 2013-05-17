@@ -160,21 +160,21 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
         <!-- TABS -->
         <div id="tabs">
                 <ul class="tab-list">
-                    <li><a href="#page_content"><span>Content</span></a></li>
-                    <li><a href="#page_options"><span>Options</span></a></li>
-                    <!-- <li><a href="#page_meta"><span>Meta</span></a></li> -->
+                    <li><a href="#page_content"><span><?php i18n('CONTENTS'); ?></span></a></li>
+                    <li><a href="#page_options"><span><?php i18n('OPTIONS'); ?></span></a></li>
+                    <li><a href="#page_meta"><span><?php i18n('META'); ?></span></a></li>
                 </ul>
             <!-- PAGE OPTIONS -->
             <div id="page_options">
-                <div style="display:normal;" id="metadata_window" >
+                <fieldset>
                     <div class="wideopt">
                         <p>
                             <label for="post-titlelong"><?php i18n('TITLELONG'); ?>:</label>
                             <input class="text short" id="post-titlelong" name="post-titlelong" type="text" value="<?php echo $titlelong; ?>" />
                         </p>
-                       <p>
-                            <label for="post-summary" class=""><?php i18n('SUMMARY'); ?>: <!--<span class="countdownwrap"><strong class="countdown" ></strong> <?php i18n('REMAINING'); ?>--></span></label>
-                            <textarea class="text" id="post-summary" name="post-summary" ><?php echo $summary; ?></textarea>
+                        <p>
+                            <label for="post-summary" class=""><?php i18n('SUMMARY'); ?>: <!--<span class="countdownwrap"><strong class="countdown" ></strong> <?php i18n('REMAINING'); ?></span>--></label>
+                            <textarea class="text short" id="post-summary" name="post-summary" ><?php echo $summary; ?></textarea>
                         </p>                        
                     </div>
                     <div class="leftopt">
@@ -232,12 +232,12 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                         
                         <p class="inline post-menu clearfix">
                             <input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> />&nbsp;&nbsp;&nbsp;<label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label><a href="navigation.php" class="viewlink" rel="facybox" ><img src="template/images/search.png" id="tick" alt="<?php echo strip_tags(i18n_r('VIEW')); ?>" /></a>
-                    </p>
+                        </p>
                         <div id="menu-items">
                             <img src="template/images/tick.png" id="tick" />
                             <span style="float:left;width:81%;" ><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span><span style="float:left;width:10%;" ><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>
                             <div class="clear"></div>
-                            <input class="text" style="width:73%;" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />&nbsp;&nbsp;&nbsp;&nbsp;<select class="text"  style="width:16%" id="post-menu-order" name="post-menu-order" >
+                            <input class="text" style="width:73%;" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" /><select class="text"  style="width:16%" id="post-menu-order" name="post-menu-order" >
                             <?php if(isset($menuOrder)) { 
                                 if($menuOrder == 0) {
                                     echo '<option value="" selected>-</option>'; 
@@ -262,19 +262,11 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                             <label for="post-id"><?php i18n('SLUG_URL'); ?>:</label>
                             <input class="text short" type="text" id="post-id" name="post-id" value="<?php echo $url; ?>" <?php echo ($url=='index'?'readonly="readonly" ':''); ?>/>
                         </p>
-                        <p>
-                            <label for="post-metak"><?php i18n('TAG_KEYWORDS'); ?>:</label>
-                            <input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" />
-                        </p>
-                        <p>
-                            <label for="post-metad" class="clearfix"><?php i18n('META_DESC'); ?>: <span id="countdownwrap"><strong id="countdown" ></strong> <?php i18n('REMAINING'); ?></span></label>
-                            <textarea class="text" id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
-                        </p>
                     </div>
 
                     <div class="clear"></div>
                     <?php exec_action('edit-extras'); ?>        
-                </div>  
+                </fieldset>
             </div> 
             <!-- / END PAGE OPTIONS -->
 
@@ -534,7 +526,32 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
         </div> 
         <!-- / END PAGE CONTENT -->
         
-        <!-- <div id="page_meta">meta</div> -->
+        <div id="page_meta">
+            <fieldset>    
+            <div class="leftopt">
+                <p class="inline clearfix">
+                    <label for="post-metarobots" ><?php i18n('METAROBOTS'); ?>: &nbsp; </label>
+                    <select id="post-metarobots" name="post-metarobots" class="text autowidth" >
+                        <option value="0" <?php echo $metarobots == 0 ? "selected" :""; ?> >INDEX , FOLLOW</option>
+                        <option value="1" <?php echo $metarobots == 1 ? "selected" :""; ?> >INDEX , NOFOLLOW</option>
+                        <option value="2" <?php echo $metarobots == 2 ? "selected" :""; ?> >NOINDEX , FOLLOW</option>
+                        <option value="3" <?php echo $metarobots == 3 ? "selected" :""; ?> >NOINDEX , NOFOLLOW</option>
+                    </select>
+                </p>   
+            </div>
+            <div class="rightopt">             
+                <p class="inline clearfix">
+                    <label for="post-metak"><?php i18n('TAG_KEYWORDS'); ?>:</label>
+                    <input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" />
+                </p>
+                <p class="clearfix">
+                    <label for="post-metad" class="clearfix"><?php i18n('META_DESC'); ?>: <span id="countdownwrap"><strong id="countdown" ></strong> <?php i18n('REMAINING'); ?></span></label>
+                    <textarea class="text short" id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
+                </p>
+            </div>    
+            <div class="clear"></div>    
+            </fieldset>            
+        </div>
     </div> <!-- / END TABS -->
     </form>
     </div><!-- end main -->

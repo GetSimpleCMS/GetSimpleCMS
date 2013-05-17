@@ -571,7 +571,7 @@ h5:hover img {
 .edit-nav select {
 	margin-top: -3px;
 	float: right;
-	padding: 1px;
+	padding: 3px;
 	border: 1px solid #999;
 	font-size: 11px;
 	border-radius: 2px;
@@ -778,21 +778,20 @@ form input.text,
 form select.text {
 	color: #333;
 	border: 1px solid #aaa;
-	padding: 5px;
+	padding: 3px;
 	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-	font-size: 12px;
-	width: 510px;
+	font-size: 11px;
+	/*width: 510px;*/
+	width:100%;
 	border-radius: 2px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
-form select.text {
-	width: 521px;
-	padding: 4px 5px;
-}
-
-input.text:focus, 
-select.text:focus, 
-textarea.text:focus {
+form input.text:focus, 
+form select.text:focus, 
+form textarea.text:focus {
 	outline: none;
 	border: 1px solid #666 !important;
 	box-shadow: rgba(0,0,0, 0.10) 0px 0px 6px;
@@ -801,16 +800,20 @@ textarea.text:focus {
 }
 
 form textarea {
-	width: 635px;
+	width: 100%;
 	height: 420px;
-	line-height: 18px;
+	line-height: 15px;
 	text-align: left;
-		color: #333;
+	color: #333;
 	border: 1px solid #aaa;
-	padding: 5px;
-	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-	font-size: 12px;
+	padding: 3px;
+	font-family: Arial, Helvetica Neue, Helvetica, sans-serif !important;
+	font-size: 11px !important;
 	border-radius: 2px;
+}
+
+textarea.short {
+	height:62px;
 }
 
 form input[readonly], form select[readonly], form textarea[readonly] {
@@ -883,7 +886,7 @@ label span.right a:hover {
 }
 
 /* meta dropdown style */
-#metadata_window {
+#metadata_window,fieldset {
 	margin: 0 2px 20px 0;
 	background: #f9f9f9;
 	border: 1px solid #e8e8e8;
@@ -892,95 +895,80 @@ label span.right a:hover {
 	text-shadow: 1px 1px 0 rgba(255,255,255,.3);
 }
 
-#metadata_window .rightopt {
+.rightopt {
 	float: right;
 	width: 48%;
 }
 
-#metadata_window .leftopt {
+.leftopt {
 	float: left;
 	width: 48%;
 }
 
-#metadata_window .wideopt {
+.wideopt {
 	clear:both;
 	width: 100%;
 }
 
-#metadata_window p {
-	margin: 0 0 15px 0;
+.leftopt p,.rightopt p,.wideopt p{
+	margin:0 10px 15px 0;
 }
 
-#metadata_window input, 
-#metadata_window select, 
-#metadata_window textarea {
-	width: 97%;
-	font-size: 11px;
-	padding: 3px;
-	margin: 0 !important;
+.leftopt input,.rightopt input,.wideopt input{
+	margin:0;
 }
 
-#metadata_window .wideopt input, 
-#metadata_window .wideopt select, 
-#metadata_window .wideopt textarea {
-	width: 99%;
-}	
+.leftopt select,.rightopt select,.wideopt select{
+	margin:0;
+}
 
-#metadata_window input#post-menu-enable {
+input#post-menu-enable {
 	width: 20px;
 	padding: 0;
 	margin: 0;
 }
 
-#metadata_window textarea {
-	 height: 62px;
-	margin-bottom: 0;
-	line-height: 15px;
-}
-
-#metadata_window select {
-	 width: 100%;
-}
-
-#metadata_window select.text.autowidth {
+select.text.autowidth {
 	width: 155px;
 	float: right;
 }
 
-#metadata_window p.post-menu {
+p.post-menu {
 	margin-bottom: 5px;
 }
 
-#metadata_window a.viewlink img {
+a.viewlink img {
 	vertical-align: baseline;
 	margin-left: 15px;
 	opacity: .5;
 }
 
-#metadata_window a.viewlink:hover img {
+a.viewlink:hover img {
 	opacity: 1;
 }
 
-#metadata_window #menu-items {
+#menu-items {
 	height: 50px;
 	background: #222;
 	padding: 5px 10px 0 10px;
 	position: relative;
 	border-radius: 2px;
+	margin-bottom:5px;
 }
 
-#metadata_window #menu-items #tick {
+#menu-items #tick {
 	margin-top: -10px;
 	left: 5px;
 	position: absolute;
 }
 
-#metadata_window #menu-items input, 
-#metadata_window #menu-items select {
+#menu-items input, 
+#menu-items select {
 	border: 1px solid #000;
+	padding:3px;
 }
 
-#metadata_window #menu-items span label {
+#menu-items span label {
 	text-shadow: none;
 	display: inline-block;
 	font-size: 11px;
@@ -991,8 +979,9 @@ label span.right a:hover {
 	padding: 0;
 }
 
-#metadata_window #menu-items select {
+#menu-items select {
 	padding: 2px 3px;
+	margin-left:14px;
 }
 
 #countdownwrap {
@@ -1108,13 +1097,7 @@ input.submit:focus, input.submit:hover {
 		-webkit-box-shadow: rgba(0,0,0, 0.15) 0px 0px 4px;	  
 }
 
-.leftsec {
-	float: left;
-	width: 50%;
-	padding-bottom: 5px;
-}
-
-.rightsec {
+.leftsec,.rightsec {
 	float: left;
 	width: 50%;
 	padding-bottom: 5px;
@@ -1127,11 +1110,17 @@ input.submit:focus, input.submit:hover {
 }
 
 .widesec input.text, .rightsec input.text, .leftsec input.text {
-	width: 92%;
+	width: 100%;
+	font-size:12px !important;
 }	
 
 .widesec input.text, .rightsec select.text, .leftsec select.text {
-	width: 96%;
+	width: 100%;
+	font-size:12px !important;
+}
+
+.leftsec p,.rightsec p,.widesec p {
+	margin: 0 20px 20px 0;
 }
 
 /* edit css */
@@ -1154,6 +1143,8 @@ form.manyinputs input.text {
 form.manyinputs textarea {
 	width: 632px;
 	height: 200px;
+	font-size:12px !important;
+	font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace !important;
 }
 
 form.manyinputs p {
@@ -2084,6 +2075,11 @@ h5 .crumbs, div.h5 .crumbs {
 	border: 1px solid #FF9933;
 }
 
+#theme_select {
+	font-size:16px;
+	font-weight:bold;	
+}
+
 #theme-edit #maincontent {
 	width: 100%;
 }
@@ -2175,7 +2171,7 @@ a.disabled:visited {
 	width:100%;
 	padding: 2px;
 	border-radius: 2px;
-	border: 1px solid rgb(189, 189, 189);	
+	border: 1px solid rgb(189, 189, 189);
 }
 
 #theme_edit_select .well{

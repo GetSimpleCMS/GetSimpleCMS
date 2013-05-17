@@ -2,16 +2,16 @@
 /**
  * English Language File
  *
- * Date:				6 December 2011
- * Revision:		Feb 2013
- * Version:			GetSimple 3.2.1
- * Traductors: 	Chris Cagle 
+ * Date:        6 December 2011
+ * Revision:    Feb 2013
+ * Version:     GetSimple 3.2.1
+ * Traductors:  Chris Cagle 
  *
  * @package GetSimple
  * @subpackage Language
  */
 
-$i18n                     = array(
+$i18n = array(
 
 /* 
 * For: install.php
@@ -90,7 +90,13 @@ $i18n                     = array(
 "FILE_UPLOAD"             =>	"File Upload",
 "OR"                      =>	"or",
 "SAVE_AND_CLOSE"          =>	"Save &amp; Close",
-"PAGE_UNSAVED"			=>	"Page has unsaved changes",
+"PAGE_UNSAVED"            =>	"Page has unsaved changes",
+"TITLELONG"               =>	"Long Title",
+"SUMMARY"                 =>	"Summary",
+"METAROBOTS"                  =>	"Robots",
+"CONTENTS"                =>	"Contents",
+"OPTIONS"                 =>	"Options",
+"META"                    =>	"Meta",
 
 /* 
 * For: upload.php
@@ -170,7 +176,7 @@ $i18n                     = array(
 "YES"                     =>	"Yes",
 "NO"                      =>	"No",
 "DATE"                    =>	"Date",
-"PERMS"                   => 	"Perms",
+"PERMS"                   =>	"Perms",
 
 /* 
 * For: components.php
@@ -225,9 +231,9 @@ $i18n                     = array(
 "PERMALINK"               =>	"Custom Permalink Structure",
 "MORE"                    =>	"more",
 "HELP"                    =>	"help",
-"FLUSHCACHE"              => 	"Flush All Caches",
-"FLUSHCACHE-SUCCESS"      => 	"Caches Flushed Successfully",
-"DISPLAY_NAME"            => 	"A name for public display that is not your username",
+"FLUSHCACHE"              =>	"Flush All Caches",
+"FLUSHCACHE-SUCCESS"      =>	"Caches Flushed Successfully",
+"DISPLAY_NAME"            =>	"A name for public display that is not your username",
 
 /* 
 * For: health-check.php
@@ -293,7 +299,7 @@ $i18n                     = array(
 "TAB_FILES"               =>	"F<em>i</em>les",
 "TAB_THEME"               =>	"<em>T</em>heme",
 "TAB_BACKUPS"             =>	"<em>B</em>ackups",
-"PLUGINS_NAV"             => 	"Plu<em>g</em>ins",
+"PLUGINS_NAV"             =>	"Plu<em>g</em>ins",
 "TAB_SETTINGS"            =>	"<em>S</em>ettings",
 "TAB_SUPPORT"             =>	"Supp<em>o</em>rt",
 "TAB_LOGOUT"              =>	"<em>L</em>ogout",
@@ -364,20 +370,20 @@ $i18n                     = array(
 * For: changedata.php
 */
 "CANNOT_SAVE_EMPTY"       =>	"You cannot save a page with an empty title",
-"META_DESC"               => 	"Meta Description",
+"META_DESC"               =>	"Meta Description",
 
 /* 
 * For: template_functions.php
 */
-"FTYPE_COMPRESSED"        =>	"Compressed", //a file-type
-"FTYPE_VECTOR"            =>	"Vector", //a file-type
-"FTYPE_FLASH"             =>	"Flash", //a file-type
-"FTYPE_VIDEO"             =>	"Video", //a file-type
-"FTYPE_AUDIO"             =>	"Audio", //a file-type
-"FTYPE_WEB"               =>	"Web", //a file-type
-"FTYPE_DOCUMENTS"         =>	"Documents", //a file-type
-"FTYPE_SYSTEM"            =>	"System", //a file-type
-"FTYPE_MISC"              =>	"Misc", //a file-type
+"FTYPE_COMPRESSED"        =>	"Compressed", // file-type
+"FTYPE_VECTOR"            =>	"Vector",     // file-type
+"FTYPE_FLASH"             =>	"Flash",      // file-type
+"FTYPE_VIDEO"             =>	"Video",      // file-type
+"FTYPE_AUDIO"             =>	"Audio",      // file-type
+"FTYPE_WEB"               =>	"Web",        // file-type
+"FTYPE_DOCUMENTS"         =>	"Documents",  // file-type
+"FTYPE_SYSTEM"            =>	"System",     // file-type
+"FTYPE_MISC"              =>	"Misc",       // file-type
 "IMAGES"                  =>	"Images",
 
 /* 
@@ -424,7 +430,7 @@ $i18n                     = array(
 
 "PLUGINS_MANAGEMENT"      =>	"Plugin Management",
 "PLUGINS_INSTALLED"       =>	"plugins installed",
-"PLUGIN_DISABLED"   => "Disabled Plugin",
+"PLUGIN_DISABLED"         =>	"Disabled Plugin",
 "SHOW_PLUGINS"            =>	"Installed Plu<em>g</em>ins",
 "PLUGIN_NAME"             =>	"Plugin",
 "PLUGIN_DESC"             =>	"Description",
@@ -538,8 +544,8 @@ $i18n                     = array(
 * Generics
 * @since 3.3
 */
-"IS_MISSING"              =>    "%s is missing",
-"NOT_FOUND"               =>    "%s was not found",
+"IS_MISSING"              =>	"%s is missing",
+"NOT_FOUND"               =>	"%s was not found",
 "TITLE"                   =>	"Title",
 "DELETE"                  =>	"Delete",
 "REMOVE"                  =>	"Remove",

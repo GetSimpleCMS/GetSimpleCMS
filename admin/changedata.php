@@ -90,7 +90,7 @@ if (isset($_POST['submitted'])) {
 		// content
 		if(isset($_POST['post-title'])) 			{ $title       = safe_slash_html($_POST['post-title']);	}
 		if(isset($_POST['post-titlelong']))			{ $titlelong   = safe_slash_html($_POST['post-titlelong']);	}
-		if(isset($_POST['post-summary']))			{ $summary     = safe_slash_html($_POST['post-titlelong']);	}
+		if(isset($_POST['post-summary']))			{ $summary     = safe_slash_html($_POST['post-summary']);	}
  		if(isset($_POST['post-content'])) 			{ $content     = safe_slash_html($_POST['post-content']); }
  		// options
  		if(isset($_POST['post-author'])) 			{ $author      = safe_slash_html($_POST['post-author']);	}
@@ -103,7 +103,7 @@ if (isset($_POST['submitted'])) {
  		// meta
 		if(isset($_POST['post-metak'])) 			{ $meta        = $metak = safe_slash_html($_POST['post-metak']);	}
 		if(isset($_POST['post-metad'])) 			{ $metad       = safe_slash_html($_POST['post-metad']);	}
-		if(isset($_POST['post-metarobots'])) 		{ $metarobots  = is_numeric($_POST['post-menu-robots']) ? $_POST['post-menu-robots'] : "0"; }
+		if(isset($_POST['post-metarobots'])) 		{ $metarobots  = is_numeric($_POST['post-metarobots']) ? $_POST['post-metarobots'] : "0"; }
 
 		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
 		if ( file_exists($file) && ($url != $_POST['existing-url']) ) {
