@@ -93,8 +93,8 @@ $i18n = array(
 "PAGE_UNSAVED"            =>	"Page has unsaved changes",
 "TITLELONG"               =>	"Long Title",
 "SUMMARY"                 =>	"Summary",
-"METAROBOTS"                  =>	"Robots",
-"CONTENTS"                =>	"Contents",
+"METAROBOTS"              =>	"Robots",
+"CONTENT"                 =>	"Content",
 "OPTIONS"                 =>	"Options",
 "META"                    =>	"Meta",
 
