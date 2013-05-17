@@ -173,8 +173,8 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                             <input class="text short" id="post-titlelong" name="post-titlelong" type="text" value="<?php echo $titlelong; ?>" />
                         </p>
                         <p>
-                            <label for="post-summary" class=""><?php i18n('SUMMARY'); ?>: <!--<span class="countdownwrap"><strong class="countdown" ></strong> <?php i18n('REMAINING'); ?></span>--></label>
-                            <textarea class="text short" id="post-summary" name="post-summary" ><?php echo $summary; ?></textarea>
+                            <label for="post-summary" class=""><?php i18n('SUMMARY'); ?>: <span class="countdownwrap"><strong class="countdown" ></strong> <?php i18n('REMAINING'); ?></span></label>
+                            <textarea class="text short charlimit" data-maxLength='256' id="post-summary" name="post-summary" ><?php echo $summary; ?></textarea>
                         </p>                        
                     </div>
                     <div class="leftopt">
@@ -545,8 +545,8 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                     <input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" />
                 </p>
                 <p class="clearfix">
-                    <label for="post-metad" class="clearfix"><?php i18n('META_DESC'); ?>: <span id="countdownwrap"><strong id="countdown" ></strong> <?php i18n('REMAINING'); ?></span></label>
-                    <textarea class="text short" id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
+                    <label for="post-metad" class="clearfix"><?php i18n('META_DESC'); ?>: <span class="countdownwrap"><strong class="countdown" ></strong> <?php i18n('REMAINING'); ?></span></label>
+                    <textarea class="text short charlimit" data-maxLength='155' id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
                 </p>
             </div>    
             <div class="clear"></div>    

@@ -390,20 +390,39 @@ jQuery(document).ready(function () {
 		});
 	});
  
+	function getElemLabel(element){
+	   var label = $("label[for='"+element.attr('id')+"']")
+	   if (label.length == 0) {
+	     label = element.closest('label')
+	   }
+	   return label;
+	}
+
 	// edit.php
-	function updateMetaDescriptionCounter() {
-		var remaining = 155 - jQuery('#post-metad').val().length;
-		jQuery('#countdown').text(remaining);
-		Debugger.log('Meta Description has ' + remaining + ' characters remaining');
+	function updateMetaDescriptionCounter(ev) {
+		var element = $(ev.currentTarget);
+		var label = getElemLabel(element);
+		var countdown = label.find('.countdown');
+		var charlimit = element.attr('data-maxLength');
+
+		if(label && charlimit && countdown){
+			var remaining = charlimit - element.val().length;
+			countdown.text(remaining);
+			if(remaining < 0) countdown.addClass('maxchars');
+			else countdown.removeClass('maxchars');
+		}
 	}
-	if ($('#post-metad').length) {
-		updateMetaDescriptionCounter();
-		$('#post-metad').change(updateMetaDescriptionCounter);
-		$('#post-metad').keyup(updateMetaDescriptionCounter);
+
+	if ($('.charlimit').length) {
+		$('.charlimit').change(updateMetaDescriptionCounter);
+		$('.charlimit').keyup(updateMetaDescriptionCounter);
+		$('.charlimit').trigger('change');
 	}
+
 	if ($("#edit input#post-title:empty").val() == '') {
 		$("#edit input#post-title").focus();
 	}
+
 	$("#metadata_toggle").on("click", function ($e) {
 		$e.preventDefault();
 		$("#metadata_window").slideToggle('fast');

@@ -984,7 +984,7 @@ a.viewlink:hover img {
 	margin-left:14px;
 }
 
-#countdownwrap {
+.countdownwrap {
 	display: inline-block;
 	color: #999;
 	font-size: 11px;
@@ -992,9 +992,14 @@ a.viewlink:hover img {
 	float: right;
 }
 
-#countdownwrap strong {
+.countdownwrap strong {
 	color: #555;
 	font-weight: normal;
+}
+
+.maxchars {
+	color:red !important;
+	font-weight:bold !important;
 }
 
 form table.formtable select {
