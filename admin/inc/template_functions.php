@@ -893,13 +893,21 @@ function get_pages_menu($parent, $menu,$level) {
 			if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <sup>['.i18n_r('MENUITEM_SUBTITLE').']</sup>'; } else { $page['menuStatus'] = ''; }
 			if ($page['private'] != '' ) { $page['private'] = ' <sup>['.i18n_r('PRIVATE_SUBTITLE').']</sup>'; } else { $page['private'] = ''; }
 			if ($page['url'] == 'index' ) { $homepage = ' <sup>['.i18n_r('HOMEPAGE_SUBTITLE').']</sup>'; } else { $homepage = ''; }
-			$menu .= '<td class="pagetitle">'. $dash .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
+			$menu .= '<td class="pagetitle">'. $dash .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. var_out($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
 			$menu .= '<td style="width:80px;text-align:right;" ><span>'. shtDate($page['pubDate']) .'</span></td>';
-			$menu .= '<td class="secondarylink" >';
-			$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
+			$menu .= '<td>' . ($page['menuStatus'] != '' ? '<span class="label label-info"><i class="icon-reorder"></span>' : '<span class="label label-disabled"><i class="icon-reorder"></span>') ."</td>";
+			$menu .= '<td>' . ($page['private'] != '' ? '<span class="label label-error"><i class="icon-lock"></i></span>' : '<span class="label label-disabled"><i class="icon-unlock-alt"></i></span>') ."</td>";
+			$menu .= '<td>' . (rand(0,1) == 1 ? '<span class="label label-ok"><i class="icon-globe"></span>' : '<span class="label label-disabled"><i class="icon-globe"></span>') ."</td>";
+			$menu .= '<td>' . (rand(0,1) == 1 ? '<span class="label label-warn"><i class="icon-pencil"></span>' : '<span class="label label-disabled"><i class="icon-folder-close"></span>') ."</td>";
+			// $menu .= '<td>' . ($page['menuStatus'] != '' ? '<span class="label label-ok"><i class="icon-reorder"></span>' : '<span class="label label-none"><i class="icon-reorder"></span>') ."</td>";
+			// $menu .= '<td>' . ($page['private'] != '' ? '<span class="label label-ok"><i class="icon-lock"></i></span>' : '<span class="label label-none"><i class="icon-unlock-alt"></i></span>') ."</td>";
+			// $menu .= '<td>' . (rand(0,1) == 1 ? '<span class="label label-ok"><i class="icon-globe"></span>' : '<span class="label label-none"><i class="icon-globe"></span>') ."</td>";
+			// $menu .= '<td>' . (rand(0,1) == 1 ? '<span class="label label-ok"><i class="icon-folder-open"></span>' : '<span class="label label-none"><i class="icon-folder-close"></span>') ."</td>";
+			$menu .= '<td class="secondarylink">';
+			$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'"><i class="icon-eye-open"></i></a>';
 			$menu .= '</td>';
 			if ($page['url'] != 'index' ) {
-				$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. cl($page['title']) .'" >&times;</a></td>';
+				$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. cl($page['title']) .'" ><i class="icon-remove"></i></a></td>';
 			} else {
 				$menu .= '<td class="delete" ></td>';
 			}
@@ -909,6 +917,7 @@ function get_pages_menu($parent, $menu,$level) {
 	}
 	return $menu;
 }
+
 
 /**
  * Recursive list of pages for Dropdown menu

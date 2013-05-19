@@ -18,10 +18,10 @@ $GS_styles        = array();  // used for queing Styles
 define('GSFRONT',1);
 define('GSBACK',2);
 define('GSBOTH',3);
+
 if ($SITEURL==""){
 	$SITEURL=suggest_site_path();
 }
-
 
 $GS_script_assets = array(); // defines asset scripts
 $GS_style_assets = array();  // defines asset styles
@@ -58,6 +58,11 @@ $GS_style_assets['fancybox']['local']['ver']   = '2.0.4';
 $GS_style_assets['jquery-ui']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/jqueryui/css/custom/jquery-ui-1.10.0.custom.min.css';
 $GS_style_assets['jquery-ui']['local']['ver']   = '1.10.0';
 
+// font-awesome icons
+$GS_style_assets['font-awesome']['cdn']['url']   =  '//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css';
+$GS_style_assets['font-awesome']['cdn']['ver']   = '3.1.1';
+
+
 /**
  * Register shared javascript/css scripts for loading into the header
  */
@@ -73,15 +78,19 @@ register_style('fancybox-css', $GS_style_assets['fancybox']['local']['url'], $GS
 
 register_style('jquery-ui', $GS_style_assets['jquery-ui']['local']['url'], $GS_style_assets['jquery-ui']['local']['ver'], 'screen');
 
+register_style('font-awesome', $GS_style_assets['font-awesome']['cdn']['url'], $GS_style_assets['font-awesome']['cdn']['ver'], 'screen');
+
 /**
  * Queue our scripts and styles for the backend
  */
 queue_script('jquery', GSBACK);
 queue_script('jquery-ui', GSBACK);
 queue_script('fancybox', GSBACK);
+
 queue_style('fancybox-css',GSBACK);
 queue_style('jquery-ui',GSBACK);
 queue_style('jquery-ui-theme',GSBACK);
+queue_style('font-awesome',GSBACK);
 
 /**
  * Include any plugins, depending on where the referring 

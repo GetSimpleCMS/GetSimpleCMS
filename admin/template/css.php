@@ -1327,12 +1327,12 @@ table.comptable tr td input.newtitle {
 }
 
 table td.delete {
-	width: 20px;
+	/*width: 20px;*/
 	text-align: center;
 }
 
 table td.delete a {
-	font-size: 18px !important;
+	font-size: 12px !important;
 	line-height: 16px;
 }
 
@@ -1698,7 +1698,7 @@ a.updatelink:focus {
 
 /* Labels */
 .label {
-	color: gray !important;
+	color: white !important;
 	padding: 1px 6px;	
 	border-radius: 3px;	
 	text-align: center;
@@ -1712,6 +1712,10 @@ a.updatelink:focus {
 
 .label a:hover{
 	color: lightgray !important;
+}
+
+.label-disabled {
+	background-color: #E9E6E6;
 }
 
 .label-ok {
@@ -1728,6 +1732,10 @@ a.updatelink:focus {
 
 .label-info {
 	background-color: #2B5CB3;
+}
+
+.label-none {
+	background-color: transparent;
 }
 
 #hc_version.label {
@@ -1757,10 +1765,19 @@ a.updatelink:focus {
 	font-weight: bold;
 	color: #FCFCFC !important;
 	text-shadow: none !important;
-	width:50px;
+	/*width:50px;*/
 	display:block;
 	line-height:normal;
-	float:right;
+	/*float:right;*/
+}
+
+#editpages td span.label {
+	padding:1px 0px;
+}
+
+.healthcheck td span.label {
+	width:50px;
+	float:right;	
 }
 
 td.hc_item {
