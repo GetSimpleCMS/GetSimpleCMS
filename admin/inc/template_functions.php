@@ -1070,6 +1070,7 @@ function get_api_details($type='core', $args=null) {
 			curl_setopt($ch, CURLOPT_TIMEOUT_MS, $api_timeout); // define the maximum amount of time cURL can execute for.
 			curl_setopt($ch, CURLOPT_NOSIGNAL, 1); // prevents SIGALRM during dns allowing timeouts to work http://us2.php.net/manual/en/function.curl-setopt.php#104597
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_HEADER, true);			
 			curl_setopt($ch, CURLOPT_URL, $fetch_this_api);
 
 			if($debugApi){
@@ -1077,6 +1078,7 @@ function get_api_details($type='core', $args=null) {
 				$verbose = tmpfile();
 				curl_setopt($ch, CURLOPT_VERBOSE, true);
 				curl_setopt($ch, CURLOPT_STDERR, $verbose );
+				curl_setopt($ch, CURLINFO_HEADER_OUT, true);								
 			}
 				
 			$data = curl_exec($ch);
