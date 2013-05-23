@@ -1706,6 +1706,12 @@ a.updatelink:focus {
 	color: #F2F2F2;	
 }
 
+.label i{
+  width: 12px;
+  display: inline-block;
+  text-align: center;
+}
+
 .label a{
 	color: white !important;
 }
