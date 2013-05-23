@@ -898,7 +898,7 @@ function get_pages_menu($parent, $menu,$level) {
 			$menu .= '<td>' . ($page['menuStatus'] != '' ? '<span class="label label-info"><i class="icon-reorder"></span>' : '<span class="label label-disabled"><i class="icon-reorder"></span>') ."</td>";
 			$menu .= '<td>' . ($page['private'] != '' ? '<span class="label label-error"><i class="icon-lock"></i></span>' : '<span class="label label-disabled"><i class="icon-unlock-alt"></i></span>') ."</td>";
 			$menu .= '<td>' . (rand(0,1) == 1 ? '<span class="label label-ok"><i class="icon-globe"></span>' : '<span class="label label-disabled"><i class="icon-globe"></span>') ."</td>";
-			$menu .= '<td>' . (rand(0,1) == 1 ? '<span class="label label-warn"><i class="icon-pencil"></span>' : '<span class="label label-disabled"><i class="icon-folder-close"></span>') ."</td>";
+			$menu .= '<td>' . (rand(0,1) == 1 ? '<span class="label label-warn"><i class="icon-pencil"></span>' : '<span class="label label-disabled"><i class="icon-pencil"></span>') ."</td>";
 			// $menu .= '<td>' . ($page['menuStatus'] != '' ? '<span class="label label-ok"><i class="icon-reorder"></span>' : '<span class="label label-none"><i class="icon-reorder"></span>') ."</td>";
 			// $menu .= '<td>' . ($page['private'] != '' ? '<span class="label label-ok"><i class="icon-lock"></i></span>' : '<span class="label label-none"><i class="icon-unlock-alt"></i></span>') ."</td>";
 			// $menu .= '<td>' . (rand(0,1) == 1 ? '<span class="label label-ok"><i class="icon-globe"></span>' : '<span class="label label-none"><i class="icon-globe"></span>') ."</td>";

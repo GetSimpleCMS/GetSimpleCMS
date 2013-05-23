@@ -1779,6 +1779,7 @@ a.updatelink:focus {
 
 #editpages td span.label {
 	padding:1px 0px;
+	width:20px;
 }
 
 .healthcheck td span.label {
