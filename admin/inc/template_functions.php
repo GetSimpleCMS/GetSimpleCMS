@@ -1015,9 +1015,6 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
 function get_api_details($type='core', $args=null) {
 	
 	GLOBAL $debugApi,$nocache,$nocurl;
-	$debugApi = true; // output debugging info to debugLog
-	$nocache  = true; // do not use cache
-	$nocurl   = false; // do not use curl
 
 	include(GSADMININCPATH.'configuration.php');
 
