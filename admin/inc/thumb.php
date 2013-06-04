@@ -122,7 +122,7 @@ foreach ($dirs as $dir){
 
 // Allocate all necessary memory for the image.
 // Special thanks to Alecos for providing the code.
-ini_set('memory_limit', '-1');
+ini_set('memory_limit', '100M');
 
 // include image processing code
 include('image.class.php');
