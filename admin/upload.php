@@ -15,7 +15,7 @@ include('inc/common.php');
 login_cookie_check();
 $dirsSorted=null;$filesSorted=null;$foldercount=null;
 
-if (isset($_GET['path'])) {
+if (isset($_GET['path']) && !empty($_GET['path'])) {
 	$path = str_replace('../','', $_GET['path']);
 	$path = tsl("../data/uploads/".$path);
 	// die if path is outside of uploads
@@ -63,6 +63,10 @@ if (isset($_FILES['file'])) {
 					chmod($file_loc, 0644);
 				}
 				exec_action('file-uploaded');
+				
+				// generate thumbnail				
+				require('inc/imagemanipulation.php');	
+				genStdThumb($subFolder,$base);					
 				$messages[] = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$subFolder.$base.'">'. $SITEURL .'data/uploads/'.$subFolder.$base.'</a>';
 			} else {
 				$messages[] = $_FILES["file"]["name"][$i] .' - '.i18n_r('ERROR_UPLOAD');
@@ -75,12 +79,12 @@ if (isset($_FILES['file'])) {
 	 // after uploading all files process messages
 		if(sizeof($messages) != 0) { 
 			foreach($messages as $msg) {
-				$success .= $msg.'<br />';
+				$success = $msg.'<br />';
 			}
 		}
 		if(sizeof($errors) != 0) {
 			foreach($errors as $msg) {
-				$error .= $msg.'<br />';
+				$error = $msg.'<br />';
 			}
 		}
 	}
