@@ -29,8 +29,8 @@ register_plugin(
 # hooks
 # enable side menu is theme is innovation or on theme page and enabling innovation, handle plugin exec before global is set
 if( 
-	( $TEMPLATE == "Innovation" || 	( get_filename_id() == 'theme' && $_POST['template'] == 'Innovation') ) &&
-	!( $TEMPLATE == "Innovation" && get_filename_id() == 'theme' && $_POST['template'] != 'Innovation') 
+	( $TEMPLATE == "Innovation" || 	( get_filename_id() == 'theme' && isset($_POST['template']) && $_POST['template'] == 'Innovation') ) &&
+	!( $TEMPLATE == "Innovation" && get_filename_id() == 'theme' && isset($_POST['template']) && $_POST['template'] != 'Innovation') 
 ) {
 	add_action('theme-sidebar','createSideMenu',array($thisfile_innov, i18n_r($thisfile_innov.'/INNOVATION_TITLE'))); 
 }
