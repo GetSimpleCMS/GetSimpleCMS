@@ -1013,7 +1013,6 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
  */
 
 function get_api_details($type='core', $args=null) {
-	
 	GLOBAL $debugApi,$nocache,$nocurl;
 
 	include(GSADMININCPATH.'configuration.php');
@@ -1066,13 +1065,15 @@ function get_api_details($type='core', $args=null) {
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, $api_timeout); // define the maximum amount of time that cURL can take to connect to the server 
 			curl_setopt($ch, CURLOPT_TIMEOUT_MS, $api_timeout); // define the maximum amount of time cURL can execute for.
 			curl_setopt($ch, CURLOPT_NOSIGNAL, 1); // prevents SIGALRM during dns allowing timeouts to work http://us2.php.net/manual/en/function.curl-setopt.php#104597
+			curl_setopt($ch, CURLOPT_HEADER, false); // ensures header is not in output
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_HEADER, true);			
 			curl_setopt($ch, CURLOPT_URL, $fetch_this_api);
 
 			if($debugApi){
 				// $verbose = fopen(GSDATAOTHERPATH .'logs/curllog.txt', 'w+');			
-				$verbose = tmpfile();
+				$verbose = tmpfile();				
+				// curl_setopt($ch, CURLOPT_WRITEHEADER, $verbose );
+				curl_setopt($ch, CURLOPT_HEADER, true); 
 				curl_setopt($ch, CURLOPT_VERBOSE, true);
 				curl_setopt($ch, CURLOPT_STDERR, $verbose );
 				curl_setopt($ch, CURLINFO_HEADER_OUT, true);								
@@ -1095,8 +1096,14 @@ function get_api_details($type='core', $args=null) {
 
 				debug_api_details("Curl Verbose: ");
 				debug_api_details(!rewind($verbose) . nl2br(htmlspecialchars(stream_get_contents($verbose))) );
-			
-				debug_api_details("Curl Data: $data");
+				fclose($verbose);
+				
+				// output header and response then remove header from data
+				$dataparts = explode("\r\n",$data);
+				debug_api_details("Curl Data: ");
+				debug_api_details($data);
+				$data = end($dataparts);
+
 			}	
 
 			curl_close($ch);
