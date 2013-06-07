@@ -18,7 +18,7 @@ if ($term = '{SHARE}') {
 		}
 		.share .inner {padding:20px 20px 10px 20px;}
 		h1 {font-size:18px;color:#111;margin:0 0 20px;font-family:georgia, garamond;font-weight:normal;text-shadow:1px 1px 0 #fff;}
-		p {font-size:11px;line-height:20px;color:#999;margin-top:-15px;margin-bottom:20px;}
+		p {font-size:11px;line-height:20px;color:#999;margin-top:10px;margin-bottom:20px;}
 		a:link, a:visited {text-decoration:underline;color:#CF3805;font-weight:bold;font-size:12px;}
 		a:focus, a:hover {text-decoration:underline;color:#222;font-weight:bold;font-size:12px;}
 	</style>
@@ -27,7 +27,7 @@ if ($term = '{SHARE}') {
 	<div class="share">
 		<div class="inner">
 			<h1><?php echo $term; ?> GetSimple CMS:</h1>
-			<div style="float:left;width:100px;" >	
+			<div style="float:left;width:100px;height:65px;" >	
 				<iframe src="http://www.facebook.com/plugins/like.php?app_id=171087202956642&amp;href=http%3A%2F%2Fwww.facebook.com%2FGetSimpleCMS&amp;send=false&amp;layout=box_count&amp;width=100&amp;show_faces=false&amp;action=recommend&amp;colorscheme=light&amp;font&amp;height=90" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:90px;" allowTransparency="true"></iframe>
 			</div>
 			
