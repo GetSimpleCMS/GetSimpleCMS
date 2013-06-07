@@ -313,7 +313,7 @@ jQuery(document).ready(function () {
 			type: 'ajax',
 			padding: 0,
 			scrolling: 'no'
-		});
+		}).on('click',function(e){e.preventDefault();});
 	}
  
 	//plugins.php
