@@ -26,7 +26,7 @@ $src_folder = '../data/uploads/';
 $thumb_folder_rel = '../data/thumbs/'.$subPath;
 if (!is_file($src_folder . $subPath .$src)) redirect("upload.php");
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	require('inc/imagemanipulation.php');
+	require_once('inc/imagemanipulation.php');
 	$objImage = new ImageManipulation($src_folder . $subPath .$src);
 	if ( $objImage->imageok ) {
 		$objImage->setCrop($_POST['x'], $_POST['y'], $_POST['w'], $_POST['h']);
@@ -44,7 +44,7 @@ if (file_exists($thumb_folder . 'thumbnail.' . $src)) {
 	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . 'thumbnail.'.$src);
 	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder_rel . 'thumbnail.'. rawurlencode($src) .'" rel="facybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 }else{
-	require('inc/imagemanipulation.php');	
+	require_once('inc/imagemanipulation.php');	
 	genStdThumb($subPath,$src);	
 	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . 'thumbnail.'.$src);	
 	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder_rel . 'thumbnail.'. rawurlencode($src) .'" rel="facybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
