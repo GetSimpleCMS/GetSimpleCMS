@@ -297,7 +297,6 @@ function get_header($full=true) {
 	if ($keywords != '') echo '<meta name="keywords" content="'.$keywords.'" />'."\n";
 	
 	if ($full) {
-		echo '<meta name="generator" content="'. $site_full_name .'" />'."\n";
 		echo '<link rel="canonical" href="'. get_page_url(true) .'" />'."\n";
 	}
 	get_scripts_frontend();
