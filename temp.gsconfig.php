@@ -97,5 +97,7 @@ define('GSDONOTPING', 1);
 # Disable Sitemap generation and menu items
 # define('GSNOSITEMAP',true);
 
+# Enable auto meta descriptions from content excerpts when empty
+# define('GSAUTOMETAD',true);
 
 ?>
