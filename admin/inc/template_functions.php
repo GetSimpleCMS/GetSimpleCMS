@@ -812,7 +812,7 @@ function ckeditor_add_page_link(){
 			return function() {
 				original.call(this);
 					if (this.getValueOf('info', 'linkType') == 'localPage') {
-						this.getContentElement('info', 'localPage_path').select();
+						this.getContentElement('info', 'localPage_path').focus();
 					}
 			};
 		});

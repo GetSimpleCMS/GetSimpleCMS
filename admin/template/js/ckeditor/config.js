@@ -44,3 +44,12 @@ CKEDITOR.on( 'dialogDefinition', function( ev )	{
 			advTab.remove( 'txtGenTitle' );
 		}
 });
+
+// Fix for IE onbeforeunload bubbling up from dialogs
+CKEDITOR.on('instanceReady', function(event) {
+  event.editor.on('dialogShow', function(dialogShowEvent) {
+    if(CKEDITOR.env.ie) {
+      $(dialogShowEvent.data._.element.$).find('a[href*="void(0)"]').removeAttr('href');
+    }
+  });
+});
