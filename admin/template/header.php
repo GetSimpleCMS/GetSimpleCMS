@@ -16,11 +16,12 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"  />
 	<title><?php echo $title ?></title>
+	<?php if(!isAuthPage()) { ?> <meta name="generator" content="GetSimple - <?php echo GSVERSION; ?>" /> 
 	<link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
-	<meta name="generator" content="GetSimple - <?php echo GSVERSION; ?>" />
 	<link rel="author" href="humans.txt" />
-	<meta name="robots" content="noindex, nofollow">
 	<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+	<?php } ?>	
+	<meta name="robots" content="noindex, nofollow">
 	<link rel="stylesheet" type="text/css" href="template/style.php?<?php echo 's='.$GSSTYLE.'&amp;v='.GSVERSION; ?>" media="screen" />
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
 	<?php get_scripts_backend(); ?>
@@ -38,15 +39,10 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 
 	<?php 
 	# Plugin hook to allow insertion of stuff into the header
-	if(get_filename_id()!='index') exec_action('header'); 
+	if(!isAuthPage()) exec_action('header'); 
 	
 	function doVerCheck(){
-		if( get_filename_id()!='resetpassword' && 
-			get_filename_id()!='index' && 
-			!getDef('GSNOVERCHECK')
-		){
-			return true;	
-		}
+		return !isAuthPage() && !getDef('GSNOVERCHECK');
 	}
 	
 	if( doVerCheck() ) { ?>

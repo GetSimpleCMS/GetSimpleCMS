@@ -1,4 +1,87 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
+
+/**
+ * Generate standard thumbnails
+ * @param  string $path path to image
+ * @param  string $name file name
+ */
+
+function genStdThumb($path,$name){
+
+	if (!defined('GSIMAGEWIDTH')) {
+		$width = 200; //New width of image  	
+	} else {
+		$width = GSIMAGEWIDTH;
+	}
+
+	$ext = lowercase(pathinfo($name,PATHINFO_EXTENSION));	
+	
+	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' )	{
+		
+		$thumbsPath = GSTHUMBNAILPATH.$path;
+		
+		if (!(file_exists($thumbsPath))) {
+			if (defined('GSCHMOD')) { 
+				$chmod_value = GSCHMOD; 
+			} else {
+				$chmod_value = 0755;
+			}
+			echo $thumbsPath;
+			mkdir($thumbsPath, $chmod_value);
+		}
+	}
+
+	$targetFile = GSDATAUPLOADPATH.$path.$name;
+	
+	//thumbnail for post
+	$imgsize = getimagesize($targetFile);
+		
+	switch(lowercase(substr($targetFile, -3))){
+			case "jpg":
+					$image = imagecreatefromjpeg($targetFile);    
+			break;
+			case "png":
+					$image = imagecreatefrompng($targetFile);
+			break;
+			case "gif":
+					$image = imagecreatefromgif($targetFile);
+			break;
+			default:
+					exit;
+			break;
+	}
+		
+	$height = $imgsize[1]/$imgsize[0]*$width; //This maintains proportions
+	
+	$src_w = $imgsize[0];
+	$src_h = $imgsize[1];
+	
+	$picture = imagecreatetruecolor($width, $height);
+	imagealphablending($picture, false);
+	imagesavealpha($picture, true);
+	$bool = imagecopyresampled($picture, $image, 0, 0, 0, 0, $width, $height, $src_w, $src_h); 
+	
+	if($bool)	{	
+		$thumbnailFile = $thumbsPath . "thumbnail." . $name;
+		
+	    switch(lowercase(substr($targetFile, -3))) {
+	        case "jpg":
+	            $bool2 = imagejpeg($picture,$thumbnailFile,85);
+	        break;
+	        case "png":
+	            imagepng($picture,$thumbnailFile);
+	        break;
+	        case "gif":
+	            imagegif($picture,$thumbnailFile);
+	        break;
+	    }
+	}
+	
+	imagedestroy($picture);
+	imagedestroy($image);
+}
+
+
 /**
  * ImageManipulation
  *

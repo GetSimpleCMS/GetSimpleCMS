@@ -274,15 +274,19 @@ function get_header($full=true) {
 	global $content;
 	include(GSADMININCPATH.'configuration.php');
 	
-	if (function_exists('mb_substr')) { 
-		$description = trim(mb_substr(strip_tags(strip_decode($content)), 0, 160));
-	} else {
-		$description = trim(substr(strip_tags(strip_decode($content)), 0, 160));
-	}
-	
+	// meta description	
 	if ($metad != '') {
 		$description = get_page_meta_desc(FALSE);
-	} else {
+	} 
+	else if(getDef('GSAUTOMETAD',true))
+	{
+		// get meta from content excerpt
+		if (function_exists('mb_substr')) { 
+			$description = trim(mb_substr(strip_tags(strip_decode($content)), 0, 160));
+		} else {
+			$description = trim(substr(strip_tags(strip_decode($content)), 0, 160));
+		}
+
 		$description = str_replace('"','', $description);
 		$description = str_replace("'",'', $description);
 		$description = preg_replace('/\n/', " ", $description);
@@ -290,17 +294,20 @@ function get_header($full=true) {
 		$description = preg_replace('/\t/', " ", $description);
 		$description = preg_replace('/ +/', " ", $description);
 	}
-	
+
+	if(!empty($description)) echo '<meta name="description" content="'.$description.'" />'."\n";
+
+	// meta keywords
 	$keywords = get_page_meta_keywords(FALSE);
-	
-	echo '<meta name="description" content="'.$description.'" />'."\n";
 	if ($keywords != '') echo '<meta name="keywords" content="'.$keywords.'" />'."\n";
 	
 	if ($full) {
-		echo '<meta name="generator" content="'. $site_full_name .'" />'."\n";
 		echo '<link rel="canonical" href="'. get_page_url(true) .'" />'."\n";
 	}
+
+	// script queue
 	get_scripts_frontend();
+	
 	exec_action('theme-header');
 }
 

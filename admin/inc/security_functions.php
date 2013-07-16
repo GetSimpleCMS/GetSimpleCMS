@@ -107,14 +107,14 @@ function get_nonce($action, $file = "", $last = false) {
 	if($file == "")
 		$file = $_SERVER['PHP_SELF'];
 	
-	// Any problem with this?
-	$ip = $_SERVER['REMOTE_ADDR'];
+	// using user agent since ip can change on proxys
+	$uid = $_SERVER['HTTP_USER_AGENT'];
 	
 	// Limits Nonce to one hour
 	$time = $last ? time() - 3600: time(); 
 	
 	// Mix with a little salt
-	$hash=sha1($action.$file.$ip.$USR.$SALT.@date('YmdH',$time));
+	$hash=sha1($action.$file.$uid.$USR.$SALT.@date('YmdH',$time));
 	
 	return $hash;
 }
