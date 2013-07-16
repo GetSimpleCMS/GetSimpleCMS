@@ -88,14 +88,14 @@ function get_nonce($action, $file = "", $last = false) {
 	if($file == "")
 		$file = $_SERVER['PHP_SELF'];
 	
-	// Any problem with this?
-	$ip = $_SERVER['REMOTE_ADDR'];
+	// using user agent since ip can change on proxys
+	$uid = $_SERVER['HTTP_USER_AGENT'];
 	
 	// Limits Nonce to one hour
 	$time = $last ? time() - 3600: time(); 
 	
 	// Mix with a little salt
-	$hash=sha1($action.$file.$ip.$USR.$SALT.@date('YmdH',$time));
+	$hash=sha1($action.$file.$uid.$USR.$SALT.@date('YmdH',$time));
 	
 	return $hash;
 }
@@ -131,12 +131,22 @@ function check_nonce($nonce, $action, $file = ""){
  * @return bool
  */	
 function validate_safe_file($file, $name, $mime){
-	global $mime_type_blacklist;
-	global $file_ext_blacklist;
+	global $mime_type_blacklist, $file_ext_blacklist, $mime_type_whitelist, $file_ext_whitelist;
+
+	include(GSADMININCPATH.'configuration.php');
 
 	$file_extention = pathinfo($name,PATHINFO_EXTENSION);
 	$file_mime_type = $mime;
-	
+
+	if ($mime_type_whitelist && in_arrayi($file_mime_type, $mime_type_whitelist)) {
+		return true;	
+	} elseif ($file_ext_whitelist && $in_arrayi($file_extention, $file_ext_whitelist)) {
+		return true;	
+	}
+
+	// skip blackist checks if whitelists exist
+	if($mime_type_whitelist || $file_ext_whitelist) return false;
+
 	if (in_arrayi($file_mime_type, $mime_type_blacklist)) {
 		return false;	
 	} elseif (in_arrayi($file_extention, $file_ext_blacklist)) {

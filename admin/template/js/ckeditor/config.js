@@ -9,8 +9,31 @@ CKEDITOR.editorConfig = function( config )
 	config.resize_dir = 'vertical' // vertical resize
 	config.toolbarCanCollapse = false; // hide toolbar collapse button
 	config.dialog_backgroundCoverColor = '#000000';
+
+	config.toolbar_advanced = 
+		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
+		'/',
+		['Styles','Format','Font','FontSize']];	
+
+	config.toolbar_basic = 
+		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']];
+
 };
 
+CKEDITOR.on( 'instanceReady', function( ev ) {
+	var blockTags = ['div','h1','h2','h3','h4','h5','h6','p','pre','li','blockquote','ul','ol','table','thead','tbody','tfoot','td','th',];
+	var rules = {
+		indent : true,
+		breakBeforeOpen : true,
+		breakAfterOpen : false,
+		breakBeforeClose : false,
+		breakAfterClose : true
+	};
+
+	for (var i=0; i<blockTags.length; i++) {
+		ev.editor.dataProcessor.writer.setRules( blockTags[i], rules );
+	}
+}); 
 
 CKEDITOR.on( 'dialogDefinition', function( ev )	{
 		var dialogName = ev.data.name;

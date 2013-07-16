@@ -71,6 +71,7 @@ define('GSDONOTPING', 1);
 #setlocale(LC_ALL, 'en_US');
 
 # Define default timezone of server, accepts php timezone string
+# valid timeszones can be found here http://www.php.net/manual/en/timezones.php
 # define('GSTIMEZONE', 'America/Chicago');
 
 # Disable loading of external CDN versions of scripts (jQuery/jQueryUI)
@@ -96,5 +97,7 @@ define('GSDONOTPING', 1);
 # Disable Sitemap generation and menu items
 # define('GSNOSITEMAP',true);
 
+# Enable auto meta descriptions from content excerpts when empty
+# define('GSAUTOMETAD',true);
 
 ?>

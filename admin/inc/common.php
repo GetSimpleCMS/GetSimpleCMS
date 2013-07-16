@@ -121,11 +121,9 @@ if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 		$LANG = $datau->LANG;
 	} else {
 		$USR = null;
-		$TIMEZONE = defined('GSTIMEZONE') ? GSTIMEZONE : "";	
 	}
 } else {
 	$USR = null;
-	$TIMEZONE = defined('GSTIMEZONE') ? GSTIMEZONE : "";
 }
 
 
@@ -142,7 +140,13 @@ $SESSIONHASH = sha1($SALT . $SITENAME);
 /**
  * Timezone setup
  */
-if( function_exists('date_default_timezone_set') && ($TIMEZONE != "" || stripos($TIMEZONE, '--')) ) { 
+
+// set defined timezone from config if not set on user
+if( (!isset($TIMEZONE) || trim($TIMEZONE) == '' ) && defined('GSTIMEZONE') ){
+	$TIMEZONE = GSTIMEZONE;
+}
+
+if(isset($TIMEZONE) && function_exists('date_default_timezone_set') && ($TIMEZONE != "" || stripos($TIMEZONE, '--')) ) { 
 	date_default_timezone_set($TIMEZONE);
 }
 

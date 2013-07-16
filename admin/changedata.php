@@ -15,6 +15,8 @@ $load['plugin'] = true;
 // Include common.php
 include('inc/common.php');
 
+$autoSaveDraft = false; // auto save to autosave drafts
+
 // check form referrer - needs siteurl and edit.php in it. 
 if (isset($_SERVER['HTTP_REFERER'])) {
 	if ( !(strpos(str_replace('http://www.', '', $SITEURL), $_SERVER['HTTP_REFERER']) === false) || !(strpos("edit.php", $_SERVER['HTTP_REFERER']) === false)) {
@@ -112,7 +114,7 @@ if (isset($_POST['submitted'])) {
 				$menuOrder = "0";
 			}
 		}		
-		//check to make sure we dont overwrite any good files upon create
+		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
 		if ( file_exists($file) && ($url != $_POST['existing-url']) ) {
 			$count = "1";
 			$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
@@ -172,7 +174,7 @@ if (isset($_POST['submitted'])) {
 		$note->addCData($author);
 
 		exec_action('changedata-save');
-		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true') {
+		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true' && $autoSaveDraft == true) {
 			XMLsave($xml, GSAUTOSAVEPATH.$url);
 		} else {
 			XMLsave($xml, $file);

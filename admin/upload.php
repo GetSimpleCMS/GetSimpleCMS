@@ -15,7 +15,7 @@ include('inc/common.php');
 login_cookie_check();
 $dirsSorted=null;$filesSorted=null;$foldercount=null;
 
-if (isset($_GET['path'])) {
+if (isset($_GET['path']) && !empty($_GET['path'])) {
 	$path = str_replace('../','', $_GET['path']);
 	$path = tsl("../data/uploads/".$path);
 	// die if path is outside of uploads
@@ -63,6 +63,10 @@ if (isset($_FILES['file'])) {
 					chmod($file_loc, 0644);
 				}
 				exec_action('file-uploaded');
+				
+				// generate thumbnail				
+				require('inc/imagemanipulation.php');	
+				genStdThumb($subFolder,$base);					
 				$messages[] = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$subFolder.$base.'">'. $SITEURL .'data/uploads/'.$subFolder.$base.'</a>';
 			} else {
 				$messages[] = $_FILES["file"]["name"][$i] .' - '.i18n_r('ERROR_UPLOAD');
@@ -75,12 +79,12 @@ if (isset($_FILES['file'])) {
 	 // after uploading all files process messages
 		if(sizeof($messages) != 0) { 
 			foreach($messages as $msg) {
-				$success .= $msg.'<br />';
+				$success = $msg.'<br />';
 			}
 		}
 		if(sizeof($errors) != 0) {
 			foreach($errors as $msg) {
-				$error .= $msg.'<br />';
+				$error = $msg.'<br />';
 			}
 		}
 	}
@@ -223,20 +227,18 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
      		$foldercount = 0;
         foreach ($dirsSorted as $upload) {
         	
-        	$upload['name'] = rawurlencode($upload['name']);
-        	
         	# check to see if folder is empty
         	$directory_delete = null;
         	if ( check_empty_folder($path.$upload['name']) ) {  
-						$directory_delete = '<a class="delconfirm" title="'.i18n_r('DELETE_FOLDER').': '. $upload['name'] .'" href="deletefile.php?path='.$urlPath.'&amp;folder='. $upload['name'] . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a>';
+						$directory_delete = '<a class="delconfirm" title="'.i18n_r('DELETE_FOLDER').': '. rawurlencode($upload['name']) .'" href="deletefile.php?path='.$urlPath.'&amp;folder='. rawurlencode($upload['name']) . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a>';
 					}
         	$directory_size = '<span>'.folder_items($path.$upload['name']).' '.i18n_r('ITEMS').'</span>';
         	
           echo '<tr class="All folder '.$upload['name'].'" >';
           echo '<td class="imgthumb" ></td><td>';
         
-          $adm = substr($path . $upload['name'] ,  16); 
-          echo '<img src="template/images/folder.png" width="11" /> <a href="upload.php?path='.$adm.'" ><strong>'.$upload['name'].'</strong></a></td>';
+          $adm = substr($path . rawurlencode($upload['name']) ,  16); 
+          echo '<img src="template/images/folder.png" width="11" /> <a href="upload.php?path='.$adm.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
           echo '<td style="width:80px;text-align:right;" ><span>'.$directory_size.'</span></td>';
           
           // get the file permissions.
@@ -264,14 +266,15 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
 					echo '<td class="imgthumb" >';
 					if ($upload['type'] == i18n_r('IMAGES') .' Images') {
 						$gallery = 'rel=" facybox_i"';
-						$pathlink = 'image.php?i='.$upload['name'].'&amp;path='.$subPath;
+						$pathlink = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subPath;
 						$thumbLink = $urlPath.'thumbsm.'.$upload['name'];
+						$thumbLinkEncoded = $urlPath.'thumbsm.'.rawurlencode($upload['name']);
 						if (file_exists(GSTHUMBNAILPATH.$thumbLink)) {
-							$imgSrc='<img src="../data/thumbs/'. $thumbLink .'" />';
+							$imgSrc='<img src="../data/thumbs/'. $thumbLinkEncoded .'" />';
 						} else {
-							$imgSrc='<img src="inc/thumb.php?src='. $urlPath . $upload['name'] .'&amp;dest='. $thumbLink .'&amp;f=1" />';
+							$imgSrc='<img src="inc/thumb.php?src='. $urlPath . rawurlencode($upload['name']) .'&amp;dest='. $thumbLinkEncoded .'&amp;f=1" />';
 						}
-						echo '<a href="'. $path . $upload['name'] .'" title="'. $upload['name'] .'" rel=" facybox_i" >'.$imgSrc.'</a>';
+						echo '<a href="'. $path . rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel=" facybox_i" >'.$imgSrc.'</a>';
 					} else {
 						$gallery = '';
 						$controlpanel = '';
@@ -289,7 +292,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
 					}
 							
 					echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
-					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. $upload['name'] . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a></td>';
+					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. rawurlencode($upload['name']) . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a></td>';
 					echo '</tr>';
 					
 				}

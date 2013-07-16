@@ -85,6 +85,9 @@ function clearNotify() {
 	$('div.wrapper .notify').remove();
 }
  
+basename = function(str){
+	return str.substring(0,str.lastIndexOf('/') ); 		
+} 
  
 jQuery(document).ready(function () {
  
@@ -310,7 +313,7 @@ jQuery(document).ready(function () {
 			type: 'ajax',
 			padding: 0,
 			scrolling: 'no'
-		});
+		}).on('click',function(e){e.preventDefault();});
 	}
  
 	//plugins.php
@@ -438,9 +441,25 @@ jQuery(document).ready(function () {
 		li.remove();
 	});
  
- 
+ 	// theme.php
+	$("#theme_select").on('change',function (e) {
+		var theme_new = $(this).val();
+		var theme_url_old = $("#theme_preview").attr('src');
+		// we dont have a global paths in js so work theme path out
+		var theme_path = basename(basename(basename(theme_url_old)));	
+		var theme_url_new = theme_path+'/'+theme_new+'/images/screenshot.png';
+		$("#theme_preview").attr('src',theme_url_new);
+		$("#theme_preview").css('visibility','visible');
+		$('#theme_no_img').css('visibility','hidden');		
+	});
+
+	$("#theme_preview").on('error',function ($e) {
+		$(this).css('visibility','hidden');
+		$('#theme_no_img').css('visibility','visible');
+	});
+
 	// theme-edit.php
-	$("#theme-folder").change(function () {
+	$("#theme-folder").on('change',function (e) {
 		var thmfld = $(this).val();
 		$.ajax({
 			type: "GET",
@@ -450,8 +469,8 @@ jQuery(document).ready(function () {
 			}
 		});
 	});
- 
- 
+
+
 	//title filtering on pages.php & backups.php
 	var filterSearchInput = $("#filter-search");
 	$('#filtertable').live("click", function ($e) {
@@ -524,8 +543,6 @@ jQuery(document).ready(function () {
 		});
 		return false;
 	});
- 
- 
  
 	//end of javascript for getsimple
 });
