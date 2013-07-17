@@ -171,8 +171,6 @@ include_once(GSLANGPATH . $LANG . '.php');
  */
 global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR, $PERMALINK, $GSADMIN, $components;
 
-$GS_debug        = array();
-
 /**
  * $base is if the site is being viewed from the front-end
  */
