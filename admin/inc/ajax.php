@@ -12,6 +12,7 @@
 
 // Include common.php
 include('common.php');
+login_cookie_check();
 
 // JSON output of pages for ckeditor select
 if(isset($_REQUEST['list_pages_json'])) {

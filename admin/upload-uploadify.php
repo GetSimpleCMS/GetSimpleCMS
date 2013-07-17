@@ -13,6 +13,7 @@ $load['plugin'] = true;
 
 // Include common.php
 include('inc/common.php');
+login_cookie_check();
 
 if (!defined('GSIMAGEWIDTH')) {
 	$width = 200; //New width of image  	
