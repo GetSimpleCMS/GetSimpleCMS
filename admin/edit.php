@@ -167,8 +167,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 						$count = 0;
 						foreach ($pagesArray as $page) {
 							if ($page['parent'] != '') { 
-								$parentdata = getXML(GSDATAPAGESPATH . $page['parent'] .'.xml');
-								$parentTitle = $parentdata->title;
+								$parentTitle = getPageField($page['parent'], "title");
 								$sort = $parentTitle .' '. $page['title'];
 							} else {
 								$sort = $page['title'];
