@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Display Available Themes
  * 
@@ -11,6 +12,14 @@
 
 // Include common.php
 include('common.php');
+
+// JSON output of pages for ckeditor select
+if(isset($_REQUEST['list_pages_json'])) {
+	include_once('plugin_functions.php');	
+	include_once('caching_functions.php');
+	getPagesXmlValues();
+	echo list_pages_json();
+}
 
 // Make sure register globals don't make this hackable again.
 if (isset($TEMPLATE)) unset($TEMPLATE);

@@ -603,6 +603,7 @@ function get_component($id) {
  * @uses exec_filter 
  *
  * @param string $currentpage This is the ID of the current page the visitor is on
+ * @param string $classPrefix Prefix that gets added to the parent and slug classnames
  * @return string 
  */	
 function get_navigation($currentpage,$classPrefix = "") {
