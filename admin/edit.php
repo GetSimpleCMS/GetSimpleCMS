@@ -167,7 +167,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 						$count = 0;
 						foreach ($pagesArray as $page) {
 							if ($page['parent'] != '') { 
-								$parentTitle = getPageField($page['parent'], "title");
+								$parentTitle = returnPageField($page['parent'], "title");
 								$sort = $parentTitle .' '. $page['title'];
 							} else {
 								$sort = $page['title'];

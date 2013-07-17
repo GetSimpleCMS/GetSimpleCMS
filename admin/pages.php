@@ -70,7 +70,7 @@ getPagesXmlValues();
 $count = 0;
 foreach ($pagesArray as $page) {
 	if ($page['parent'] != '') { 
-		$parentTitle = getPageField($page['parent'], "title");
+		$parentTitle = returnPageField($page['parent'], "title");
 		$sort = $parentTitle .' '. $page['title'];		
 		$sort = $parentTitle .' '. $page['title'];
 	} else {
