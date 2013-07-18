@@ -634,7 +634,7 @@ function i18n_merge_impl($plugin, $lang, &$globali18n) {
   if (!file_exists($filename)) {
     return false;
   }
-  include($filename); 
+  @include($filename); 
   if (count($i18n) > 0) foreach ($i18n as $code => $text) {
     if (!array_key_exists($prefix.$code, $globali18n)) {
         $globali18n[$prefix.$code] = $text;
