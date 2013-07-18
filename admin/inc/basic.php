@@ -622,20 +622,22 @@ function i18n_merge($plugin, $language=null) {
  * @author mvlcek
  * @uses GSPLUGINPATH
  *
- * @param string $plugin
+ * @param string $plugin null if merging in core langs
  * @param string $lang
  * @param string $globali18n
  * @return bool
  */
 function i18n_merge_impl($plugin, $lang, &$globali18n) { 
   $i18n = array();
-  if (!file_exists(GSPLUGINPATH.$plugin.'/lang/'.$lang.'.php')) {
-  	return false;
+  $filename = ($plugin ? GSPLUGINPATH.$plugin.'/lang/' : GSLANGPATH).$lang.'.php';
+  $prefix = $plugin ? $plugin.'/' : '';
+  if (!file_exists($filename)) {
+    return false;
   }
-  @include(GSPLUGINPATH.$plugin.'/lang/'.$lang.'.php'); 
+  include($filename); 
   if (count($i18n) > 0) foreach ($i18n as $code => $text) {
-    if (!array_key_exists($plugin.'/'.$code, $globali18n)) {
-    	$globali18n[$plugin.'/'.$code] = $text;
+    if (!array_key_exists($prefix.$code, $globali18n)) {
+        $globali18n[$prefix.$code] = $text;
     }
   }
   return true;

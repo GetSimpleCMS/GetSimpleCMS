@@ -150,7 +150,6 @@ if(isset($TIMEZONE) && function_exists('date_default_timezone_set') && ($TIMEZON
 	date_default_timezone_set($TIMEZONE);
 }
 
-
 /**
  * Language control
  */
@@ -165,6 +164,14 @@ if(!isset($LANG) || $LANG == '') {
 }
 include_once(GSLANGPATH . $LANG . '.php');
 
+// Merge in default lang to avoid empty lang tokens
+// if GSMERGELANG is undefined or false merge en_US
+if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
+	if($LANG !='en_US')	i18n_merge(null,"en_US");
+} else{
+	// merge GSMERGELANG defined lang
+	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
+}	
 
 /**
  * Variable Globalization

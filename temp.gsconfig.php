@@ -100,4 +100,8 @@ define('GSDONOTPING', 1);
 # Enable auto meta descriptions from content excerpts when empty
 # define('GSAUTOMETAD',true);
 
+# Set default language for missing lang token merge, 
+# accepts a lang string, default is 'en_US', false to disable
+# define('GSMERGELANG',false);
+
 ?>
