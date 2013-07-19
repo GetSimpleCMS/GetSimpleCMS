@@ -145,15 +145,15 @@ function sendmail($to,$subject,$message) {
 	if (defined('GSFROMEMAIL')){
 		$fromemail = GSFROMEMAIL; 
 	} else {
-		$fromemail = 'noreply@get-simple.info';
+		$fromemail =  'noreply@'.$_SERVER['SERVER_NAME'];
 	}
 	
 	global $EMAIL;
 	$headers  ='"MIME-Version: 1.0' . PHP_EOL;
 	$headers .= 'Content-Type: text/html; charset=UTF-8' . PHP_EOL;
 	$headers .= 'From: '.$fromemail . PHP_EOL;
-  $headers .= 'Reply-To: '.$fromemail . PHP_EOL;
-  $headers .= 'Return-Path: '.$fromemail . PHP_EOL;
+  	$headers .= 'Reply-To: '.$fromemail . PHP_EOL;
+  	$headers .= 'Return-Path: '.$fromemail . PHP_EOL;
 	
 	if( mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',"$message",$headers) ) {
 		return 'success';
