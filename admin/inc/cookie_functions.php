@@ -77,7 +77,14 @@ function login_cookie_check() {
 	if(cookie_check()) {
 		create_cookie();
 	} else {
-		redirect($cookie_login.'?redirect='.myself(FALSE));
+		
+		// preserve querystring
+		$qstring = $_SERVER['QUERY_STRING'];
+  		parse_str($qstring, $query_string);
+  		$new_str = http_build_query($query_string,'','&amp;');
+
+		$redirect_url = $cookie_login.'?redirect='.myself(FALSE).'?'.$new_str;
+		redirect($redirect_url);
 	}
 }
 
