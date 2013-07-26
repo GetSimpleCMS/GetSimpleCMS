@@ -891,7 +891,7 @@ function get_api_details($type='core', $args=null) {
 		debug_api_details('Returning api cache ' . GSCACHEPATH.$cachefile);
 	} else {	
 		# make the api call
-		if (function_exists('curl_exec') and !$nocurl) {
+		if (function_exists('curl_init') && function_exists('curl_exec') && !$nocurl) {
 
 			// USE CURL
 			$ch = curl_init();
