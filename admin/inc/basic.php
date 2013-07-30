@@ -658,8 +658,8 @@ function safe_slash_html($text) {
 	} else {
 		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 	}
-	$text = str_replace(chr(12), '', $text);
-	$text = str_replace(chr(3), ' ', $text);
+	$text = str_replace(chr(12), '', $text); // FF
+	$text = str_replace(chr(3), ' ', $text); // ETX
 	return $text;
 }
 
