@@ -406,19 +406,19 @@ function pingGoogleSitemaps($url_xml) {
  * @since 1.0
  * @uses tsl
  *
- * @param string $file
- * @param string $filepath
- * @param string $bakpath
+ * @param string $file filename to undo
+ * @param string $filepath filepath to undo
+ * @param string $bakpath path to the backup file
  * @return bool
  */
 function undo($file, $filepath, $bakpath) {
-	$old_file = $filepath . $file;
-	$new_file = tsl($bakpath) . $file .".bak";
-	$tmp_file = tsl($bakpath) . $file .".tmp";
-	copy($old_file, $tmp_file);
-	copy($new_file, $old_file);
-	copy($tmp_file, $new_file);
-	unlink($tmp_file);
+	$undo_file = $filepath . $file;
+	$bak_file  = tsl($bakpath) . $file .".bak";
+	$tmp_file  = tsl($bakpath) . $file .".tmp";
+	copy($undo_file, $tmp_file); // rename original to temp shuttle
+	copy($bak_file, $undo_file); // copy backup
+	copy($tmp_file, $bak_file);  // save original as backup
+	unlink($tmp_file); 			 // remove temp shuttle file
 	
 	if (file_exists($tmp_file)) {
 		return false;
@@ -1115,5 +1115,16 @@ function isAuthPage(){
 	return $page == 'index' || $page == 'resetpassword';
 }
 
+/**
+ * returns a query string with only the allowed keys
+ * @param  array $allowed array of querystring keys to keep
+ * @return string built query string
+ */
+function filter_queryString($allowed = array()){
+	parse_str($_SERVER['QUERY_STRING'], $query_string);
+	$qstring_filtered = array_intersect_key($query_string, array_flip($allowed));
+	$new_qstring = http_build_query($qstring_filtered,'','&amp;');
+	return $new_qstring;
+}
 
 ?>
