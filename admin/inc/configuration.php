@@ -18,7 +18,7 @@ if (isset($_GET['redirect'])){
 	$cookie_redirect = 'pages.php';
 }
 $cookie_login = 'index.php';
-$cookie_time = '7200';  // 2 hours 
+$cookie_time = '10800';  // in seconds, 3 hours 
 $api_url = 'http://get-simple.info/api/start/v3.php';
 if (!defined('GSVERSION')) define('GSVERSION', $site_version_no);
 
