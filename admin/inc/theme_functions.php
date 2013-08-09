@@ -522,37 +522,64 @@ function menu_data($id = null,$xml=false) {
 }
 
 /**
- * Get Component
+ * get the components xml data
  *
- * This will return the component requested. 
- * Components are parsed for PHP within them.
- *
- * @since 1.0
+ * @since 3.2.3
+ * 
+ * @uses components
  * @uses GSDATAOTHERPATH
  * @uses getXML
- * @modified mvlcek 6/12/2011
+ * @param  boolean $xml [description]
+ * @return components data as xml obj
  *
- * @param string $id This is the ID of the component you want to display
- *				True will return value in XML format. False will return an array
- * @return string 
  */
-function get_component($id) {
+function get_component_xml(){
     global $components;
     if (!$components) {
-         if (file_exists(GSDATAOTHERPATH.'components.xml')) {
-            $data = getXML(GSDATAOTHERPATH.'components.xml');
+        if (file_exists(GSDATAOTHERPATH.'components.xml')) {
+        	$data = getXML(GSDATAOTHERPATH.'components.xml');
             $components = $data->item;
         } else {
             $components = array();
         }
     }
-    if (count($components) > 0) {
-        foreach ($components as $component) {
-            if ($id == $component->slug) { 
-                eval("?>" . strip_decode($component->value) . "<?php "); 
-            }
-        }
-    }
+    return $components;
+}
+
+/**
+ * Get Component
+ *
+ * This will output the component requested. 
+ * Components are parsed for PHP within them.
+ *
+ * @since 1.0
+ *
+ * @param string $id This is the ID of the component you want to display
+ * @param bool $force Force return of inactive components
+ * @param bool $raw do not process php
+ */
+function get_component($id, $force = false, $raw = false) {
+	$components = get_component_xml();
+	$component = $components->xpath("item/slug[.='".$id."']/parent::*");
+	if(!$component) return;
+	$enabled = !(bool)($component[0]->disabled == 'true' || $component[0]->disabled == '1');
+	if(!$enabled && !$force) return;
+	if(!$raw) eval("?>" . strip_decode($component[0]->value) . "<?php ");
+	else echo strip_decode($component[0]->value);
+}
+
+/**
+ * Return Component
+ * Returns a components output
+ * 
+ * @since 3.2.3
+ * @return component buffered output
+ */
+function return_component(){
+	ob_start();
+	$args = func_get_args();
+	call_user_func_array('get_component',$args);
+	return ob_get_clean();
 }
 
 /**

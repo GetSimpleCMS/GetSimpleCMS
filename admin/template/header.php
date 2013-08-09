@@ -5,7 +5,7 @@
  * @package GetSimple
  */
  
-global $SITENAME, $SITEURL;
+global $SITENAME, $SITEURL, $GSADMIN;
 
 $GSSTYLE = getDef('GSSTYLE') ? GSSTYLE : '';
 
@@ -24,10 +24,26 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	<meta name="robots" content="noindex, nofollow">
 	<link rel="stylesheet" type="text/css" href="template/style.php?<?php echo 's='.$GSSTYLE.'&amp;v='.GSVERSION; ?>" media="screen" />
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
+<?php	
+
+if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
+	debugLog("loading codemiror");
+	register_script('codemirror', $SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);
+	
+	register_style('codemirror-css',$SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror.css','screen',FALSE);
+	register_style('codemirror-theme',$SITEURL.$GSADMIN.'/template/js/codemirror/theme/default.css','screen',FALSE);
+	
+	queue_script('codemirror', GSBACK);
+	queue_style('codemirror-css', GSBACK);
+	queue_style('codemirror-theme', GSBACK);
+
+}
+?>
 	<?php get_scripts_backend(); ?>
 		
 	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
-	
+	<script type="text/javascript" src="template/js/codemirror.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
+
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->
 	<?php if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!defined('GSNOUPLOADIFY')) ) { ?>
 	<script type="text/javascript" src="template/js/uploadify/jquery.uploadify.js?v=3.0"></script>

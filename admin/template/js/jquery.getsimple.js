@@ -513,16 +513,17 @@ jQuery(document).ready(function () {
  	// todo: maybe just use on submit event ?
 	$('#themeEditForm .submit').on('click',function(e){
 		e.preventDefault();
-		themeFileSave(editor);
+		themeFileSave($('#codetext').data('editor'));
 	});
 
 	$('#themeEditForm .cancel').on('click',function(e){
 		e.preventDefault();
-		editor.hasChange = false;
+		$('#codetext').data('editor').hasChange = false;
 		notifyWarn('Updates cancelled').removeit();
 		//todo: reload file to discard changes
 	});
 
+	// editor theme selector
 	$('#cm_themeselect').on('change',function(e){
 		var theme = $(this).find(":selected").text();
 		sendDataToServer('theme-edit.php','themesave='+theme);
@@ -555,7 +556,7 @@ jQuery(document).ready(function () {
 	});
 
 	function checkChanged(){
-		if(editor.hasChange == true){
+		if($('#codetext').data('editor').hasChange == true){
 			alert('This file has unsaved content, save or cancel before continuing');
 			return true;
 		}
@@ -569,8 +570,8 @@ jQuery(document).ready(function () {
 		var url   = url   == undefined ? "theme-edit.php?t="+theme+'&f='+file : url;
 		
 		loadingAjaxIndicator.show('fast');
-		editor.setValue('');
-		editor.hasChange == false;
+		$('#codetext').data('editor').setValue('');
+		$('#codetext').data('editor').hasChange == false;
 		$('#theme_edit_code').fadeTo('fast',0.3);
 
 		$.ajax({
@@ -594,8 +595,8 @@ jQuery(document).ready(function () {
 				/* content */
 				var newcontent = response.find('#codetext');
 				$('#codetext').val(newcontent.val());
-				editor.setValue(newcontent.val());
-				editor.hasChange = false;
+				$('#codetext').data('editor').setValue(newcontent.val());
+				$('#codetext').data('editor').hasChange = false;
 
 				/* form */
 				var filename = response.find('#edited_file').val() ;
@@ -608,8 +609,8 @@ jQuery(document).ready(function () {
 				$('#theme_editing_file').html(filename);
 
 				/* update editor mode */
-				editor.setOption('mode',getEditorMode(getExtension(filename)));
-				editor.refresh();
+				$('#codetext').data('editor').setOption('mode',getEditorMode(getExtension(filename)));
+				$('#codetext').data('editor').refresh();
 				
 				clearFileWaits();
 				loadingAjaxIndicator.fadeOut();
@@ -657,7 +658,7 @@ jQuery(document).ready(function () {
 				}
 
 				loadingAjaxIndicator.fadeOut();
-				editor.hasChange = false; // mark clean		
+				$('#codetext').data('editor').hasChange = false; // mark clean		
 			}
 		});
 	}
@@ -686,12 +687,15 @@ jQuery(document).ready(function () {
 
 
 	cm_theme_update = function(theme){
-
+		// Debugger.log('updating codemirror theme: ' + theme);
 		// lazy load css file
 		var parts = theme.split(' ');
 		loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css");
-		
-		if(editor) editor.setOption('theme',theme);		
+		$('.code_edit').each(function(i, textarea){
+			// Debugger.log(textarea);
+			var editor = $(textarea).data('editor');
+			if(editor) editor.setOption('theme',theme);	
+		});
 	}
 
 	///////////////////////////////////////////////////////////////////////////

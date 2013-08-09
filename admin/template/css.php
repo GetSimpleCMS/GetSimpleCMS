@@ -558,7 +558,7 @@ h5:hover img {
 	font-size: 10px;
 	text-transform: uppercase;
 	display: block;
-	padding: 3px 10px;
+	padding: 4px 10px;
 	float: right;
 	margin: 0 0 0 5px;
 	border-radius: 3px;
@@ -569,9 +569,9 @@ h5:hover img {
 }
 
 .edit-nav select {
-	margin-top: -3px;
+	margin-top: 0px;
 	float: right;
-	padding: 3px;
+	padding: 2px;
 	border: 1px solid #999;
 	font-size: 11px;
 	border-radius: 2px;
@@ -807,8 +807,8 @@ form textarea {
 	color: #333;
 	border: 1px solid #aaa;
 	padding: 3px;
-	font-family: Arial, Helvetica Neue, Helvetica, sans-serif !important;
-	font-size: 11px !important;
+	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+	font-size: 11px;
 	border-radius: 2px;
 }
 
@@ -833,8 +833,8 @@ textarea#codetext {
 	height: 660px;
 	width: 99%;
 	font-family: Consolas, Monaco, "Courier New", Courier, monospace;
-	font-size: 12px;
-	line-height: 18px;
+	font-size: 13px;
+	line-height: 13px;
 	overflow: scroll;
 	overflow-y: scroll;
 	overflow-x: scroll;
@@ -2344,6 +2344,15 @@ a.disabled:visited {
 		background-color: transparent;
 }
 
+/* code editor wrapper for inherits*/
+#theme_edit_code, #code_edit {
+	font-size:13px;
+}
+
+.codewrap{
+	font-size:13px;
+}
+
 span.CodeMirror-matchhighlight { 
 	border: 1px solid #CCC;
 	border-radius: 3px;
@@ -2369,7 +2378,10 @@ span.CodeMirror-matchhighlight {
 	font-family: arial;
 	line-height: .3;
 	cursor: pointer;
-}/* jquiry-ui theme overrides 
+}
+
+
+/* jquiry-ui theme overrides 
 	tab border bug https://github.com/jquery/download.jqueryui.com/issues/87
 */
 #maincontent .ui-tabs .ui-tabs-panel {
@@ -2405,4 +2417,10 @@ span.CodeMirror-matchhighlight {
 
 #tabs.ui-tabs ul.tab-list{
 	display:block;
+}
+
+/* jqueryui tabs specivity overrides */
+#tabs textarea {
+	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+	font-size: 11px;	
 }
