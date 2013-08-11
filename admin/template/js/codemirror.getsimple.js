@@ -61,15 +61,15 @@ jQuery(document).ready(function () {
 					"Ctrl-S" : function(cm) { customSave(cm);	}
 				},
 				saveFunction:  function(cm) { customSave(cm); },
-				onChange: function(cm){
-					// console.log('content changed');
-					cm.hasChange = true;
-				}
-
 			});
 			
 			// add reference to this editor to the textarea
 			$(textarea).data('editor', editor);
+
+			editor.on('change', function(cm){
+					console.log('content changed');
+					cm.hasChange = true;
+			});
 
 			var hlLine = editor.addLineClass(0, "background", "activeline");
 
@@ -94,7 +94,7 @@ jQuery(document).ready(function () {
 			// add in resizing
 			$(editor.getWrapperElement()).resizable({
 			  resize: function() {
-			    editor.setSize($(this).width(), $(this).height());
+			    editor.setSize(null, $(this).height());
 			    editor.refresh();
 			  }
 			});
@@ -102,7 +102,7 @@ jQuery(document).ready(function () {
 	});
 
 	function customSave(cm){
-		log('saving');
+		Debugger.log('saving');
 		themeFileSave(cm);
 	}
 
@@ -119,6 +119,7 @@ jQuery(document).ready(function () {
       if (full) {
         wrap.className += " CodeMirror-fullscreen";
         wrap.style.height = winHeight() + "px";
+        wrap.style.width = "100%";
         document.documentElement.style.overflow = "hidden";
       } else {
         wrap.className = wrap.className.replace(" CodeMirror-fullscreen", "");
@@ -129,6 +130,7 @@ jQuery(document).ready(function () {
     }
 
 	CodeMirror.on(window, "resize", function() {
+		Debugger.log("resizing");
 	    var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
 	    if (!showing) return;
 	    showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
