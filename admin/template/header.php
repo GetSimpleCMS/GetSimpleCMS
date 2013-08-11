@@ -38,6 +38,15 @@ if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 	queue_style('codemirror-theme', GSBACK);
 
 }
+
+if(isset($_COOKIE['gs_editor_theme'])){
+	$editor_theme = $_COOKIE['gs_editor_theme'];
+}
+
+echo '<script>
+	var editor_theme = "'.$editor_theme.'";
+</script>';
+
 ?>
 	<?php get_scripts_backend(); ?>
 		

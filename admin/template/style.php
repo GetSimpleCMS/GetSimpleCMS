@@ -13,7 +13,7 @@ include('../inc/common.php');
 $offset = 30000;
 #header ('Cache-Control: max-age=' . $offset . ', must-revalidate');
 #header ('Expires: ' . gmdate ("D, d M Y H:i:s", time() + $offset) . ' GMT');
-
+$nocache = true;
 # check to see if cache is available for this
 $cachefile = '../../data/cache/stylesheet.txt';
 if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && !$nocache) {

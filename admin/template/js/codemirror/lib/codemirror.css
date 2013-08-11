@@ -4,7 +4,7 @@
   /* Set height, width, borders, and global font properties here */
   line-height: normal;
   font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;
-  height: 500px;
+  /*height: 500px;*/
 }
 
 .CodeMirror-scroll {

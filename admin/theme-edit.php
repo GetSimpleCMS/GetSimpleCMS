@@ -301,38 +301,26 @@ if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 }
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); 
-?>
 
-<?php include('template/include-nav.php');
-
-if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
-
-	switch (pathinfo($template_file,PATHINFO_EXTENSION)) {
-		case 'css':
-			$mode = 'text/css';
-			break;
-		case 'js':
-			$mode = 'text/javascript';
-			break;
-		case 'html':
-			$mode = 'text/html';
-			break;
-		default:
-			$mode = 'application/x-httpd-php';
-	}
-
-	if(isset($_COOKIE['gs_editor_theme'])){
-		$theme = $_COOKIE['gs_editor_theme'];
-	}
-
-?>
-
-<script>
+include('template/include-nav.php');
 
 
-</script>
-<?php 
+// setup editor specs
+switch (pathinfo($template_file,PATHINFO_EXTENSION)) {
+	case 'css':
+		$mode = 'text/css';
+		break;
+	case 'js':
+		$mode = 'text/javascript';
+		break;
+	case 'html':
+		$mode = 'text/html';
+		break;
+	default:
+		$mode = 'application/x-httpd-php';
 }
+
+
 ?>
 <div class="bodycontent clearfix">
 	

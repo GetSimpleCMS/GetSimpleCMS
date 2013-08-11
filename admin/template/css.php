@@ -2362,9 +2362,10 @@ span.CodeMirror-matchhighlight {
 	display: block;
 	position: fixed !important;
 	top: 0; left: 0;
-	width: 100%;
+	width: 100% !important;
 	z-index: 9999;
 	background-color:#FFF;
+  	max-height: none !important;	
 }
 
 .CodeMirror .activeline{
@@ -2380,6 +2381,19 @@ span.CodeMirror-matchhighlight {
 	cursor: pointer;
 }
 
+/* codemirror autosizing, max height 500px */
+.CodeMirror {
+  height: auto;
+  max-height: 550px; /* autosizing max height */
+  background-color:#FEFEFE;
+  /*padding-bottom:20px;*/
+}
+
+.CodeMirror-scroll {
+  max-height: 550px; /* autosizing max height */
+  overflow-y: hidden;
+  overflow-x: auto;
+}
 
 /* jquiry-ui theme overrides 
 	tab border bug https://github.com/jquery/download.jqueryui.com/issues/87

@@ -31,8 +31,8 @@ jQuery(document).ready(function () {
 			'vibrant-ink',
 			'xq-dark'
 		);
-
-		var customTheme = 'monokai';// '<?php if(isset($theme)) echo $theme; ?>'; 
+		
+		var customTheme = editor_theme;// '<?php if(isset($theme)) echo $theme; ?>'; 
 
 		var defTheme = 'default';		
 		// var customTheme = themes[Math.floor(Math.random()*themes.length)];
@@ -43,6 +43,8 @@ jQuery(document).ready(function () {
 			loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css")
 		}	
 
+		var mode = 'php';
+
 		$(".code_edit").each(function(i,textarea) {		
 			var editor = CodeMirror.fromTextArea(textarea, {
 				lineNumbers: true,
@@ -50,7 +52,7 @@ jQuery(document).ready(function () {
 				indentUnit: 4,
 				indentWithTabs: true,
 				enterMode: "keep",
-				mode: 'application/x-httpd-php',
+				mode: mode,
 				tabMode: "shift",
 				theme: defTheme,
 				fixedGutter : true,
@@ -61,6 +63,7 @@ jQuery(document).ready(function () {
 					"Ctrl-S" : function(cm) { customSave(cm);	}
 				},
 				saveFunction:  function(cm) { customSave(cm); },
+		        viewportMargin: Infinity //for autosizing
 			});
 			
 			// add reference to this editor to the textarea
@@ -119,7 +122,6 @@ jQuery(document).ready(function () {
       if (full) {
         wrap.className += " CodeMirror-fullscreen";
         wrap.style.height = winHeight() + "px";
-        wrap.style.width = "100%";
         document.documentElement.style.overflow = "hidden";
       } else {
         wrap.className = wrap.className.replace(" CodeMirror-fullscreen", "");
@@ -140,6 +142,7 @@ jQuery(document).ready(function () {
 		$("#cm_themeselect").val(theme);
 	}
 
-	setThemeSelected(defTheme);
+	setThemeSelected(editor_theme);
+	cm_theme_update(editor_theme);		
 
 });
