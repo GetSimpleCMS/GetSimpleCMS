@@ -102,6 +102,8 @@ jQuery(document).ready(function () {
 			  }
 			});
 
+			fullscreen_button(editor);			
+
 	});
 
 	function customSave(cm){
@@ -144,5 +146,9 @@ jQuery(document).ready(function () {
 
 	setThemeSelected(editor_theme);
 	cm_theme_update(editor_theme);		
+
+	function fullscreen_button(cm){
+      $(cm.getWrapperElement()).append('<div id="overlay_but_fullscrn"><a href="#">^</a></div>');
+	}
 
 });
