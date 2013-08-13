@@ -31,8 +31,9 @@ $GS_asset_objects['jquery'] = 'jQuery';
 $GS_asset_objects['jquery-ui'] = 'jQuery.ui'; 
 
 // jquery
-$jquery_ver    = '1.9.0';
-$jqueryui_ver = '1.10.0';
+$jquery_ver       = '1.9.0';
+$jqueryui_ver     = '1.10.0';
+$font_awesome_ver = '3.1.1';
 
 $GS_script_assets['jquery']['cdn']['url']      = '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js';
 $GS_script_assets['jquery']['cdn']['ver']      = $jquery_ver;
@@ -54,9 +55,12 @@ $GS_script_assets['fancybox']['local']['ver']  = '2.0.4';
 $GS_style_assets['fancybox']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css';
 $GS_style_assets['fancybox']['local']['ver']   = '2.0.4';
 
-// $GS_style_assets['jquery-ui']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/jqueryui/css/getsimple/jquery-ui-1.8.20.gs.css';
-$GS_style_assets['jquery-ui']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/jqueryui/css/custom/jquery-ui-1.10.0.custom.min.css';
-$GS_style_assets['jquery-ui']['local']['ver']   = '1.10.0';
+$GS_style_assets['jquery-ui']['local']['url']  =  $SITEURL.$GSADMIN.'/template/js/jqueryui/css/custom/jquery-ui-'.$jqueryui_ver.'.custom.min.css';
+$GS_style_assets['jquery-ui']['local']['ver']  =  $jqueryui_ver;
+
+// font-awesome icons
+$GS_style_assets['font-awesome']['cdn']['url'] =  '//netdna.bootstrapcdn.com/font-awesome/'.$font_awesome_ver.'/css/font-awesome.min.css';
+$GS_style_assets['font-awesome']['cdn']['ver'] = $font_awesome_ver;
 
 /**
  * Register shared javascript/css scripts for loading into the header
@@ -73,6 +77,8 @@ register_style('fancybox-css', $GS_style_assets['fancybox']['local']['url'], $GS
 
 register_style('jquery-ui', $GS_style_assets['jquery-ui']['local']['url'], $GS_style_assets['jquery-ui']['local']['ver'], 'screen');
 
+register_style('font-awesome', $GS_style_assets['font-awesome']['cdn']['url'], $GS_style_assets['font-awesome']['cdn']['ver'], 'screen');
+
 /**
  * Queue our scripts and styles for the backend
  */
@@ -82,6 +88,7 @@ queue_script('fancybox', GSBACK);
 queue_style('fancybox-css',GSBACK);
 queue_style('jquery-ui',GSBACK);
 queue_style('jquery-ui-theme',GSBACK);
+queue_style('font-awesome',GSBACK);
 
 /**
  * Include any plugins, depending on where the referring 

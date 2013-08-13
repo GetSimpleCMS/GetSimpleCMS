@@ -2395,25 +2395,30 @@ span.CodeMirror-matchhighlight {
   overflow-x: auto;
 }
 
-#overlay_but_fullscrn a {
+.CodeMirror .overlay_but_fullscrn a {
 	position: absolute;
-	top: 0;
-	right: 0;
-	width: 20px;
-	height: 20px;
+	top: 4px;
+	right: 4px;
+	width: 16px;
+	height: 16px;
 	padding: 2px;
-	margin: 15px;
-	background-color: rgba(131, 131, 131, 0.2);
+	background-color: #777777;
 	border-radius: 4px;
 	color: whitesmoke;
-	font-size: 20px;
+	font-size: 16px;
 	text-align: center;
 	text-decoration:none;
-	z-index: 9999;
+	z-index: 9998;
+	font-weight: normal;
+	opacity:.2;
 }
 
-#overlay_but_fullscrn a:hover {
-	background-color: rgba(131, 131, 131, 0.6);
+.CodeMirror .overlay_but_fullscrn a.scrolled {
+	right: 14px;
+}
+
+.CodeMirror .overlay_but_fullscrn a:hover {
+	opacity:.6;
 }
 
 /* jquiry-ui theme overrides 

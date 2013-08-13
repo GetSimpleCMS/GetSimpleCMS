@@ -70,7 +70,6 @@ jQuery(document).ready(function () {
 			$(textarea).data('editor', editor);
 
 			editor.on('change', function(cm){
-					console.log('content changed');
 					cm.hasChange = true;
 			});
 
@@ -92,7 +91,7 @@ jQuery(document).ready(function () {
 			  editor.matchHighlight("CodeMirror-matchhighlight");
 			});
 
-			Debugger.log(editor.getWrapperElement());
+			// Debugger.log(editor.getWrapperElement());
 
 			// add in resizing
 			$(editor.getWrapperElement()).resizable({
@@ -103,8 +102,13 @@ jQuery(document).ready(function () {
 			});
 
 			fullscreen_button(editor);			
-
 	});
+
+	function editorScrollVisible(cm){
+		var wrap = cm.getWrapperElement();		
+		var scroller =  $(wrap).find('.CodeMirror-vscrollbar').css('display');
+		return scroller == "block";
+	}
 
 	function customSave(cm){
 		Debugger.log('saving');
@@ -117,6 +121,11 @@ jQuery(document).ready(function () {
 
     function winHeight() {
       return window.innerHeight || (document.documentElement || document.body).clientHeight;
+    }
+
+    function toggleFullscreen(cm){
+    	Debugger.log(cm);
+    	setFullScreen(cm, !isFullScreen(cm));
     }
 
     function setFullScreen(cm, full) {
@@ -134,7 +143,6 @@ jQuery(document).ready(function () {
     }
 
 	CodeMirror.on(window, "resize", function() {
-		Debugger.log("resizing");
 	    var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
 	    if (!showing) return;
 	    showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
@@ -144,11 +152,29 @@ jQuery(document).ready(function () {
 		$("#cm_themeselect").val(theme);
 	}
 
-	setThemeSelected(editor_theme);
-	cm_theme_update(editor_theme);		
-
 	function fullscreen_button(cm){
-      $(cm.getWrapperElement()).append('<div id="overlay_but_fullscrn"><a href="#">^</a></div>');
+		var cmwrapper = $(cm.getWrapperElement());
+		var scrolled = editorScrollVisible(cm);
+
+		var button = cmwrapper.find(".overlay_but_fullscrn a");
+		// Debugger.log(button);
+		if(button.length == 0){
+			buttonhtml = $('<div class="overlay_but_fullscrn"></div>');
+			button = $('<a href="#"><i class="icon-fullscreen"></i></a>').appendTo(buttonhtml);
+			buttoncont = buttonhtml.appendTo(cmwrapper);
+			button.on('click', cm,function(e){
+				toggleFullscreen(e.data);
+			});
+
+			// events to watch for to adjust positioning accordingly
+			cm.on('change', fullscreen_button);
+			cm.on('update', fullscreen_button);
+		}
+
+		button.toggleClass("scrolled",scrolled);
+	
 	}
 
+	setThemeSelected(editor_theme);
+	cm_theme_update(editor_theme);		
 });
