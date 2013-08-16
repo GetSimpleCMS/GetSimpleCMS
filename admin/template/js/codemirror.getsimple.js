@@ -39,6 +39,7 @@ jQuery(document).ready(function () {
 			theme: defTheme,
 			fixedGutter : true,
 			styleActiveLine : true,
+			// lineWrapping:true,
 			highlightSelectionMatches: true, // {showToken: /\w/}, // for word boundaries				
 			extraKeys: {
 				"Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
@@ -63,9 +64,13 @@ jQuery(document).ready(function () {
 		// add in resizing
 		$(editor.getWrapperElement()).resizable({
 			// helper: "outline", // less intensive resizing
-			resize: function() {
-			editor.setSize(null, $(this).height());
-			editor.refresh();
+			resize: function(e) {
+				editor.setSize(null, $(this).height());
+			},
+			stop: function(e,ui) {
+				// Debugger.log(ui.originalElement);
+				ui.originalElement.css('max-height','none');
+				editor.refresh();
 			}
 		});
 

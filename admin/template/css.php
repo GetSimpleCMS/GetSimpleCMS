@@ -2378,7 +2378,7 @@ a.disabled:visited {
 }
 
 .codewrap .CodeMirror-scroll {
-	max-height: 550px; /* autosizing max height */
+	max-height: inherit; /* autosizing max height */
 	overflow-y: auto;
 	overflow-x: auto;
 }
@@ -2393,7 +2393,7 @@ a.disabled:visited {
   	max-height: none !important;	
 }
 
-.CodeMirror-fullscreen .CodeMirror-scroll{
+.CodeMirror-fullscreen .CodeMirror-scroll, .CodeMirror.ui-resizable-resizing, .CodeMirror.ui-resizable-resizing .CodeMirror-scroll{
   	max-height: none !important;		
 }
 
