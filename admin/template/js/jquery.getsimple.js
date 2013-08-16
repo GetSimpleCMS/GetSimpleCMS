@@ -191,6 +191,7 @@ jQuery(document).ready(function () {
 		}
 		loadingAjaxIndicator.fadeOut(500);
 	});
+
 	$("#addcomponent").on("click", function ($e) {
 		$e.preventDefault();
 		loadingAjaxIndicator.show();
@@ -201,7 +202,9 @@ jQuery(document).ready(function () {
 		$("#id").val(id);
 		loadingAjaxIndicator.fadeOut(500);
 		$('#submit_line').fadeIn();
+		jQuery().editorFromTextarea($("#divTxt").find('textarea').last().get(0));
 	});
+
 	$("#maincontent").on("click",'.delcomponent', function ($e) {
 		$e.preventDefault();
 		var message = $(this).attr("title");
@@ -220,6 +223,7 @@ jQuery(document).ready(function () {
 		}
  
 	});
+
 	$("b.editable").dblclick(function () {
 		var t = $(this).html();
 		$(this).parents('.compdiv').find("input.comptitle").hide();
@@ -228,6 +232,7 @@ jQuery(document).ready(function () {
 		$(this).parents('.compdiv').find("input.compslug").val('');
 		$(this).hide();
 	});
+
 	$("#maincontent").on("keyup","input.titlesaver", function () {
 		var myval = $(this).val();
 		$(this).parents('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
@@ -246,6 +251,7 @@ jQuery(document).ready(function () {
 	$(".snav a.current").on("click", function ($e) {
 		$e.preventDefault();
 	});
+
 	$(".confirmation").on("click", function ($e) {
 		loadingAjaxIndicator.show();
 		var message = $(this).attr("title");
@@ -256,6 +262,7 @@ jQuery(document).ready(function () {
 		}
 		loadingAjaxIndicator.fadeOut(500);
 	});
+
 	$(".delconfirm").on("click", function () {
 		var message = $(this).attr("title");
 		var dlink = $(this).attr("href");
@@ -298,6 +305,7 @@ jQuery(document).ready(function () {
 			return false;
 		}
 	});
+
 	$("#waittrigger").click(function () {
 		loadingAjaxIndicator.fadeIn();
 		$("#waiting").fadeIn(1000).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
