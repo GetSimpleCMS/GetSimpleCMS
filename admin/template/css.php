@@ -2350,16 +2350,6 @@ a.disabled:visited {
 	margin:-1px; /* border offset */
 }
 
-.CodeMirror-fullscreen {
-	display: block;
-	position: fixed !important;
-	top: 0; left: 0;
-	width: 100% !important;
-	z-index: 9999;
-	background-color:#FFF;
-  	max-height: none !important;	
-}
-
 .CodeMirror-focused .CodeMirror-activeline-background{
 	background-color:gray;
 	opacity:.08;
@@ -2374,23 +2364,37 @@ a.disabled:visited {
 }
 
 .codewrap {
-  font-size: 13px;
-  line-height: 13px;	
+	font-size: 13px;
+	line-height: 13px;	
 }
 
 /* codemirror overrides */
 .codewrap .CodeMirror {
-  font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;	
-  height: auto;
-  max-height: 550px; /* autosizing max height */
-  background-color:#FEFEFE;
-  /*padding-bottom:20px;*/
+	font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;	
+	height: auto;
+	max-height: 550px; /* autosizing max height */
+	background-color:#FEFEFE;
+	/*padding-bottom:20px;*/
 }
 
 .codewrap .CodeMirror-scroll {
-  max-height: 550px; /* autosizing max height */
-  overflow-y: auto;
-  overflow-x: auto;
+	max-height: 550px; /* autosizing max height */
+	overflow-y: auto;
+	overflow-x: auto;
+}
+
+.CodeMirror-fullscreen {
+	display: block;
+	position: fixed !important;
+	top: 0; left: 0;
+	width: 100% !important;
+	z-index: 9999;
+	background-color:#FFF;
+  	max-height: none !important;	
+}
+
+.CodeMirror-fullscreen .CodeMirror-scroll{
+  	max-height: none !important;		
 }
 
 .CodeMirror .overlay_but_fullscrn a {
