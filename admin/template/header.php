@@ -5,7 +5,7 @@
  * @package GetSimple
  */
  
-global $SITENAME, $SITEURL, $GSADMIN;
+global $SITENAME, $SITEURL, $GSADMIN, $themeselector;
 
 $GSSTYLE = getDef('GSSTYLE') ? GSSTYLE : '';
 
@@ -26,12 +26,11 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
 <?php	
 
+// code editor inits
 if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 	debugLog("loading codemiror");
 	register_script('codemirror', $SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);
-	
 	register_style('codemirror-css',$SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror.css','screen',FALSE);
-	register_style('codemirror-theme',$SITEURL.$GSADMIN.'/template/js/codemirror/theme/default.css','screen',FALSE);
 	
 	queue_script('codemirror', GSBACK);
 	queue_style('codemirror-css', GSBACK);
@@ -41,16 +40,65 @@ if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 
 if(isset($_COOKIE['gs_editor_theme'])){
 	$editor_theme = $_COOKIE['gs_editor_theme'];
+
+	echo '<script>
+		var editor_theme = "'.$editor_theme.'";
+	</script>';
+
 }
 
-echo '<script>
-	var editor_theme = "'.$editor_theme.'";
-</script>';
+$cm_themes = array(
+	'3024-day',
+	'3024-night',
+	'ambiance',
+	'base16-light',
+	'base16-dark',
+	'cobalt',
+	'eclipse',
+	'eclipse',
+	'elegant',
+	'erlang-dark',
+	'lesser-dark',
+	'midnight',
+	'monokai',
+	'neat',
+	'night',
+	'rubyblue',
+	'solarized dark',
+	'solarized light',
+	'twilight',
+	'tomorrow-night-eighties',
+	'vibrant-ink',
+	'xq-dark',
+	'xq-light'
+);
 
-?>
-	<?php get_scripts_backend(); ?>
+$themeselector = '
+		<select id="cm_themeselect">
+			<option>default</option>
+			<option>ambiance</option>
+			<option>blackboard</option>
+			<option>cobalt</option>
+			<option>eclipse</option>
+			<option>elegant</option>
+			<option>erlang-dark</option>
+			<option>lesser-dark</option>
+			<option>monokai</option>
+			<option>neat</option>
+			<option>night</option>
+			<option>rubyblue</option>
+			<option>solarized dark</option>
+			<option>solarized light</option>
+			<option>twilight</option>
+			<option>vibrant-ink</option>
+			<option>xq-dark</option>
+		</select>		
+';
+
+	get_scripts_backend(); ?>
 		
 	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
+	<script type="text/javascript" src="template/js/lazyload.js?v=<?php echo GSVERSION; ?>"></script>		
 	<script type="text/javascript" src="template/js/codemirror.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
 
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->

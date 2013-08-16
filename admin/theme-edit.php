@@ -70,28 +70,6 @@ if(isset($_POST['submitsave'])){
 	}
 }
 
-$themeselector = '
-		<select id="cm_themeselect">
-			<option>default</option>
-			<option>ambiance</option>
-			<option>blackboard</option>
-			<option>cobalt</option>
-			<option>eclipse</option>
-			<option>elegant</option>
-			<option>erlang-dark</option>
-			<option>lesser-dark</option>
-			<option>monokai</option>
-			<option>neat</option>
-			<option>night</option>
-			<option>rubyblue</option>
-			<option>solarized dark</option>
-			<option>solarized light</option>
-			<option>twilight</option>
-			<option>vibrant-ink</option>
-			<option>xq-dark</option>
-		</select>		
-';
-
 if(isset($_GET['ajax'])){
 	$content = file_get_contents(GSTHEMESPATH . tsl($template) . $template_file);
 	?>
@@ -345,7 +323,7 @@ switch (pathinfo($template_file,PATHINFO_EXTENSION)) {
 				</div>
 			</div>
 
-			<div id="theme_edit_code">
+			<div id="theme_edit_code" class="codewrap">
 				
 				<div id="theme_editing" class="well">
 				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.'theme/ <b><span id="theme_editing_file">'. tsl($template).$template_file .'</span></b>'; ?>

@@ -2344,18 +2344,10 @@ a.disabled:visited {
 		background-color: transparent;
 }
 
-/* code editor wrapper for inherits*/
-#theme_edit_code, #code_edit {
-	font-size:13px;
-}
-
-.codewrap{
-	font-size:13px;
-}
-
-span.CodeMirror-matchhighlight { 
-	border: 1px solid #CCC;
+.CodeMirror-focused .cm-matchhighlight{ 
+	border: 1px solid #777777;
 	border-radius: 3px;
+	margin:-1px; /* border offset */
 }
 
 .CodeMirror-fullscreen {
@@ -2368,28 +2360,34 @@ span.CodeMirror-matchhighlight {
   	max-height: none !important;	
 }
 
-.CodeMirror .activeline{
+.CodeMirror .CodeMirror-activeline-background{
 	background-color:gray;
 	opacity:.08;
 }
 
 .CodeMirror-foldmarker {
-	color: blue;
-	text-shadow: #b9f 1px 1px 2px, #b9f -1px -1px 2px, #b9f 1px -1px 2px, #b9f -1px 1px 2px;
+	color: white;
+	text-shadow: #000 1px 1px 2px, #000 -1px -1px 2px, #000 1px -1px 2px, #000 -1px 1px 2px;
 	font-family: arial;
 	line-height: .3;
 	cursor: pointer;
 }
 
-/* codemirror autosizing, max height 500px */
-.CodeMirror {
+.codewrap {
+  font-size: 13px;
+  line-height: 13px;	
+}
+
+/* codemirror overrides */
+.codewrap .CodeMirror {
+  font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;	
   height: auto;
   max-height: 550px; /* autosizing max height */
   background-color:#FEFEFE;
   /*padding-bottom:20px;*/
 }
 
-.CodeMirror-scroll {
+.codewrap .CodeMirror-scroll {
   max-height: 550px; /* autosizing max height */
   overflow-y: hidden;
   overflow-x: auto;

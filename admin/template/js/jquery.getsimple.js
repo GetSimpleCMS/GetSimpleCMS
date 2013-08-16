@@ -195,7 +195,7 @@ jQuery(document).ready(function () {
 		$e.preventDefault();
 		loadingAjaxIndicator.show();
 		var id = $("#id").val();
-		$("#divTxt").append('<div style="display:none;" class="compdiv" id="section-' + id + '"><table class="comptable"><tr><td><b>Title: </b><input type="text" class="text newtitle" name="title[]" value="" /></td><td class="delete"><a href="#" title="Delete Component:?" class="delcomponent" id="del-' + id + '" rel="' + id + '" >&times;</a></td></tr></table><textarea name="val[]"></textarea><input type="hidden" name="slug[]" value="" /><input type="hidden" name="id[]" value="' + id + '" /><div>');
+		$("#divTxt").append('<div style="display:none;" class="compdiv" id="section-' + id + '"><table class="comptable"><tr><td><b>Title: </b><input type="text" class="text newtitle" name="title[]" value="" /></td><td class="delete"><a href="#" title="Delete Component:?" class="delcomponent" id="del-' + id + '" rel="' + id + '" >&times;</a></td></tr></table><textarea name="val[]" class="code_edit"></textarea><input type="hidden" name="slug[]" value="" /><input type="hidden" name="id[]" value="' + id + '" /><div>');
 		$("#section-" + id).slideToggle('fast');
 		id = (id - 1) + 2;
 		$("#id").val(id);
@@ -686,16 +686,28 @@ jQuery(document).ready(function () {
 	});
 
 
+	// update editor theme and lazy load css file async and update theme on callback
 	cm_theme_update = function(theme){
 		// Debugger.log('updating codemirror theme: ' + theme);
-		// lazy load css file
 		var parts = theme.split(' ');
-		loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css");
+		callback = function () {
+			  cm_theme_update_editors(theme);
+			}
+		if(theme == "default") cm_theme_update_editors(theme);
+		else loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css", callback );
+	}
+
+	// set all editors themes
+	cm_theme_update_editors = function(theme){
+		Debugger.log(theme);
 		$('.code_edit').each(function(i, textarea){
 			// Debugger.log(textarea);
 			var editor = $(textarea).data('editor');
-			if(editor) editor.setOption('theme',theme);	
-		});
+			if(editor) {
+				editor.setOption('theme',theme);	
+				editor.refresh();
+			}	
+		});		
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -778,23 +790,15 @@ jQuery(document).ready(function () {
 		return false;
 	});
  
-	// lazy loader for js and css
-	loadjscssfile = function(filename, filetype){
-	 if (filetype=="js"){ //if filename is a external JavaScript file
-	  var fileref=document.createElement('script')
-	  fileref.setAttribute("type","text/javascript")
-	  fileref.setAttribute("src", filename)
-	 }
-	 else if (filetype=="css"){ //if filename is an external CSS file
-	  var fileref=document.createElement("link")
-	  fileref.setAttribute("rel", "stylesheet")
-	  fileref.setAttribute("type", "text/css")
-	  fileref.setAttribute("href", filename)
-	 }
-	 if (typeof fileref!="undefined")
-	  document.getElementsByTagName("head")[0].appendChild(fileref)
-	}
-
 	// end of javascript for getsimple
 });
  
+// lazy loader for js and css
+loadjscssfile = function(filename, filetype, callback){
+	if (filetype=="js"){ //if filename is a external JavaScript file
+		LazyLoad.js(filename,callback);
+	}
+	else if (filetype=="css"){ //if filename is an external CSS file
+		LazyLoad.css(filename,callback);
+	}
+}

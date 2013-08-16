@@ -114,32 +114,8 @@ if (count($componentsec) != 0) {
 	}
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('COMPONENTS')); 
-
-$themeselector = '
-		<select id="cm_themeselect">
-			<option>default</option>
-			<option>ambiance</option>
-			<option>blackboard</option>
-			<option>cobalt</option>
-			<option>eclipse</option>
-			<option>elegant</option>
-			<option>erlang-dark</option>
-			<option>lesser-dark</option>
-			<option>monokai</option>
-			<option>neat</option>
-			<option>night</option>
-			<option>rubyblue</option>
-			<option>solarized dark</option>
-			<option>solarized light</option>
-			<option>twilight</option>
-			<option>vibrant-ink</option>
-			<option>xq-dark</option>
-		</select>		
-';
-
-?>
 	
-<?php include('template/include-nav.php'); ?>
+include('template/include-nav.php'); ?>
 
 <div class="bodycontent clearfix">
 	
