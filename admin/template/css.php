@@ -2360,7 +2360,7 @@ a.disabled:visited {
   	max-height: none !important;	
 }
 
-.CodeMirror .CodeMirror-activeline-background{
+.CodeMirror-focused .CodeMirror-activeline-background{
 	background-color:gray;
 	opacity:.08;
 }
@@ -2389,7 +2389,7 @@ a.disabled:visited {
 
 .codewrap .CodeMirror-scroll {
   max-height: 550px; /* autosizing max height */
-  overflow-y: hidden;
+  overflow-y: auto;
   overflow-x: auto;
 }
 
@@ -2461,4 +2461,8 @@ a.disabled:visited {
 #tabs textarea {
 	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
 	font-size: 11px;	
+}
+
+.outline {
+	border: 1px dotted gray;
 }
