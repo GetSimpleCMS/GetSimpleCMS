@@ -14,6 +14,7 @@
 h1,h2,h3,h4,h5,h6,pre,code {
 	font-size: 1em;
 	font-weight: 400;
+	word-wrap: break-word;
 }
 
 ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,body,html,p,blockquote,fieldset,input {
