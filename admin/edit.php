@@ -308,9 +308,6 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 			if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!="" ) $EDOPTIONS = GSEDITOROPTIONS; 
 
 			if(!isset($EDTOOL)) $EDTOOL = 'basic';
-			
-			if(!isset($EDOPTIONS)) $EDOPTIONS = '';
-			else $EDOPTIONS = ','.$EDOPTIONS;
 
 			if(strpos($EDTOOL,'[')!==false){ $EDTOOL = "[$EDTOOL]"; } // toolbar is array
 			else if(is_array($EDTOOL)) $EDTOOL = json_encode($EDTOOL);
@@ -319,6 +316,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 			else $EDTOOL = "'$EDTOOL'"; // toolbar is a toolbar config variable config.toolbar_$var 
 			
 			$toolbar = isset($EDTOOL) ? ",toolbar: ".$EDTOOL : '';
+			$options = isset($EDOPTIONS) ? ','.$EDOPTIONS : '';
 			
 		?>
 		<?php if ($HTMLEDITOR != '') { ?>
@@ -346,7 +344,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 					filebrowserWindowWidth : '730',
 					filebrowserWindowHeight : '500'
 					<?php echo $toolbar; ?>
-					<?php echo $EDOPTIONS; ?>					
+					<?php echo $options; ?>					
 			});
 			CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
 				function InstanceReadyEvent() {
