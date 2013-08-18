@@ -14,13 +14,10 @@ jQuery(document).ready(function () {
 	// 	}
 	// }
 	
-	var customTheme = editor_theme; // '<?php if(isset($theme)) echo $theme; ?>'; 
+	var defTheme = 'default';		
 
-	var defTheme = '';		
-	// var customTheme = themes[Math.floor(Math.random()*themes.length)];
-
-	if(customTheme && customTheme != undefined && customTheme != 'default'){
-		defTheme = customTheme;
+	if(typeof editor_theme != 'undefined' && editor_theme != 'default'){
+		defTheme = editor_theme;
 		var parts = defTheme.split(' ');
 		loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css")
 	}	
@@ -153,6 +150,6 @@ jQuery(document).ready(function () {
 		button.toggleClass("hidden",cm.getScrollInfo().height < 25);	
 	}
 
-	setThemeSelected(editor_theme);
-	cm_theme_update(editor_theme);		
+	setThemeSelected(defTheme);
+	cm_theme_update(defTheme);		
 });
