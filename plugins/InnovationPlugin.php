@@ -16,81 +16,69 @@ i18n_merge($thisfile_innov) || i18n_merge($thisfile_innov, 'en_US');
 
 # register plugin
 register_plugin(
-	$thisfile_innov, 													# ID of plugin, should be filename minus php
-	i18n_r($thisfile_innov.'/INNOVATION_TITLE'), 				# Title of plugin
-	'1.2', 															# Version of plugin
-	'Chris Cagle',											# Author of plugin
-	'http://chriscagle.me', 			# Author URL
-	i18n_r($thisfile_innov.'/INNOVATION_DESC'), 					# Plugin Description
-	'theme', 														# Page type of plugin
-	'innovation_show'  									# Function that displays content
+	$thisfile_innov, 								# ID of plugin, should be filename minus php
+	i18n_r($thisfile_innov.'/INNOVATION_TITLE'), 	# Title of plugin
+	'1.2', 											# Version of plugin
+	'Chris Cagle',									# Author of plugin
+	'http://chriscagle.me', 						# Author URL
+	i18n_r($thisfile_innov.'/INNOVATION_DESC'), 	# Plugin Description
+	'theme', 										# Page type of plugin
+	'innovation_show'  								# Function that displays content
 );
 
-
-
 # hooks
-add_action('theme-sidebar','createSideMenu',array($thisfile_innov, i18n_r($thisfile_innov.'/INNOVATION_TITLE'))); 
+# enable side menu is theme is innovation or on theme page and enabling innovation, handle plugin exec before global is set
+if( 
+	( $TEMPLATE == "Innovation" || 	( get_filename_id() == 'theme' && isset($_POST['template']) && $_POST['template'] == 'Innovation') ) &&
+	!( $TEMPLATE == "Innovation" && get_filename_id() == 'theme' && isset($_POST['template']) && $_POST['template'] != 'Innovation') 
+) {
+	add_action('theme-sidebar','createSideMenu',array($thisfile_innov, i18n_r($thisfile_innov.'/INNOVATION_TITLE'))); 
+}
+
+$services = array(
+	'facebook',
+	'googleplus',
+	'twitter',
+	'linkedin',
+	'tumblr',
+	'instagram',
+	'youtube',
+	'vimeo',
+	'github'
+);
 
 # get XML data
 if (file_exists($innovation_file)) {
-	$x = getXML($innovation_file);
-	$facebook = $x->facebook;
-	$twitter = $x->twitter;
-	$linkedin = $x->linkedin;
-} else {
-	$facebook = '';
-	$twitter = '';
-	$linkedin = '';
+	$innovation_data = getXML($innovation_file);
 }
 
-
 function innovation_show() {
-	global $innovation_file, $facebook, $twitter, $linkedin, $thisfile_innov;
-	$success=null;$error=null;
+	global $services,$innovation_file, $innovation_data, $thisfile_innov;
+	$success=$error=null;
 	
 	// submitted form
-	if (isset($_POST['submit'])) {
-		$facebook=null;	$twitter=null; $linkedin=null;
-		
-		# check to see if the URLs provided are valid
-		if ($_POST['facebook'] != '') {
-			if (validate_url($_POST['facebook'])) {
-				$facebook = $_POST['facebook'];
-			} else {
-				$error .= i18n_r($thisfile_innov.'/FACEBOOK_ERROR').' ';
-			}
+	if (isset($_POST['submit'])) {		
+		foreach($services as $var){			
+			if ($_POST[$var] != '') {
+				if (validate_url($_POST[$var])) {
+					$resp[$var] = $_POST[$var];
+				} else {
+					$error .= i18n_r($thisfile_innov.'/'.strtoupper($var).'_ERROR').' ';
+				}
+			}			
 		}
 		
-		if ($_POST['twitter'] != '') {
-			if (validate_url($_POST['twitter'])) {
-				$twitter = $_POST['twitter'];
-			} else {
-				$error .= i18n_r($thisfile_innov.'/TWITTER_ERROR').' ';
-			}
-		}
-		
-		if ($_POST['linkedin'] != '') {
-			if (validate_url($_POST['linkedin'])) {
-				$linkedin = $_POST['linkedin'];
-			} else {
-				$error .= i18n_r($thisfile_innov.'/LINKEDIN_ERROR').' ';
-			}
-		}
-		
-		# if there are no errors, dave data
+		# if there are no errors, save data
 		if (!$error) {
 			$xml = @new SimpleXMLElement('<item></item>');
-			$xml->addChild('facebook', $facebook);
-			$xml->addChild('twitter', $twitter);
-			$xml->addChild('linkedin', $linkedin);
-			
+			foreach($services as $var){			
+				if(isset($resp[$var])) $xml->addChild($var, $resp[$var]);
+			}
+							
 			if (! $xml->asXML($innovation_file)) {
 				$error = i18n_r('CHMOD_ERROR');
 			} else {
-				$x = getXML($innovation_file);
-				$facebook = $x->facebook;
-				$twitter = $x->twitter;
-				$linkedin = $x->linkedin;
+				$innovation_data = getXML($innovation_file);
 				$success = i18n_r('SETTINGS_UPDATED');
 			}
 		}
@@ -110,10 +98,14 @@ function innovation_show() {
 	
 	<form method="post" action="<?php	echo $_SERVER ['REQUEST_URI']?>">
 		
-		<p><label for="inn_facebook" ><?php i18n($thisfile_innov.'/FACEBOOK_URL'); ?></label><input id="inn_facebook" name="facebook" class="text" value="<?php echo $facebook; ?>" type="url" /></p>
-		<p><label for="inn_twitter" ><?php i18n($thisfile_innov.'/TWITTER_URL'); ?></label><input id="inn_twitter" name="twitter" class="text" value="<?php echo $twitter; ?>" type="url" /></p>
-		<p><label for="inn_linkedin" ><?php i18n($thisfile_innov.'/LINKEDIN_URL'); ?></label><input id="inn_linkedin" name="linkedin" class="text" value="<?php echo $linkedin; ?>" type="url" /></p>
-		
+		<?php 
+			foreach($services as $var){
+				$value = '';
+				if(isset($innovation_data->$var)) $value = $innovation_data->$var;
+				echo '<p><label for="inn_'.$var.'" >' . i18n($thisfile_innov.'/'.strtoupper($var).'_URL') .'</label><input id="inn_'.$var.'" name="'.$var.'" class="text" value="'.$value.'" type="url" /></p>';
+			}
+		?>
+
 		<p><input type="submit" id="submit" class="submit" value="<?php i18n('BTN_SAVESETTINGS'); ?>" name="submit" /></p>
 	</form>
 	

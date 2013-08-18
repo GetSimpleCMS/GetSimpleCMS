@@ -301,22 +301,25 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 		</form>
 		
 		<?php 
+
 			if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
 			if (defined('GSEDITORLANG')) { $EDLANG = GSEDITORLANG; } else {	$EDLANG = i18n_r('CKEDITOR_LANG'); }
-			if (defined('GSEDITORTOOL')) { $EDTOOL = GSEDITORTOOL; } else {	$EDTOOL = 'basic'; }
-			if (defined('GSEDITOROPTIONS') && trim(GSEDITOROPTIONS)!="") { $EDOPTIONS = ", ".GSEDITOROPTIONS; } else {	$EDOPTIONS = ''; }
+			if (defined('GSEDITORTOOL') and !isset($EDTOOL)) { $EDTOOL = GSEDITORTOOL; }
+			if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!="" ) $EDOPTIONS = GSEDITOROPTIONS; 
+
+			if(!isset($EDTOOL)) $EDTOOL = 'basic';
 			
-			if ($EDTOOL == 'advanced') {
-				$toolbar = "
-						['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
-	          '/',
-	          ['Styles','Format','Font','FontSize']
-	      ";
-			} elseif ($EDTOOL == 'basic') {
-				$toolbar = "['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']";
-			} else {
-				$toolbar = GSEDITORTOOL;
-			}
+			if(!isset($EDOPTIONS)) $EDOPTIONS = '';
+			else $EDOPTIONS = ','.$EDOPTIONS;
+
+			if(strpos($EDTOOL,'[')!==false){ $EDTOOL = "[$EDTOOL]"; } // toolbar is array
+			else if(is_array($EDTOOL)) $EDTOOL = json_encode($EDTOOL);
+			// else if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
+			else if($EDTOOL == "none") $EDTOOL = null; // toolbar is cke default
+			else $EDTOOL = "'$EDTOOL'"; // toolbar is a toolbar config variable config.toolbar_$var 
+			
+			$toolbar = isset($EDTOOL) ? ",toolbar: ".$EDTOOL : '';
+			
 		?>
 		<?php if ($HTMLEDITOR != '') { ?>
 		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
@@ -337,16 +340,13 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 					// uiColor : '#FFFFFF',
 					height: '<?php echo $EDHEIGHT; ?>',
 					baseHref : '<?php echo $SITEURL; ?>',
-					toolbar : 
-					[
-					<?php echo $toolbar; ?>
-					]
-					<?php echo $EDOPTIONS; ?>,					
 					tabSpaces:10,
 					filebrowserBrowseUrl : 'filebrowser.php?type=all',
 					filebrowserImageBrowseUrl : 'filebrowser.php?type=images',
 					filebrowserWindowWidth : '730',
 					filebrowserWindowHeight : '500'
+					<?php echo $toolbar; ?>
+					<?php echo $EDOPTIONS; ?>					
 			});
 
 			CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);

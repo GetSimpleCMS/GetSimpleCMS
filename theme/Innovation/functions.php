@@ -37,11 +37,7 @@ function Innovation_Settings() {
 	$file = GSDATAOTHERPATH . 'InnovationSettings.xml';
 	if (file_exists($file)) {
 		$p = getXML($file);
-		if ($p->facebook != '' ) define('FACEBOOK', $p->facebook);
-		if ($p->twitter != '' ) define('TWITTER', $p->twitter);
-		if ($p->linkedin != '' ) define('LINKEDIN', $p->linkedin);
-		if ($p->webfont != '' ) define('WEBFONT', $p->webfont);
-		return true;
+		return $p;
 	} else {
 		return false;
 	}

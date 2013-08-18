@@ -11,18 +11,15 @@
 	<div class="section" id="socialmedia" >
 		<h2>Connect</h2>
 		<div class="icons">
-			
-			<!-- Social Media URLs are set within this theme's settings plugin -->
-			<?php if (defined('FACEBOOK')) { ?>
-				<a href="<?php echo FACEBOOK; ?>"><img src="<?php get_theme_url(); ?>/assets/images/facebook.png" /></a>
-			<?php } ?>
-			<?php if (defined('TWITTER')) { ?>
-				<a href="<?php echo TWITTER; ?>"><img src="<?php get_theme_url(); ?>/assets/images/twitter.png" /></a>
-			<?php } ?>
-			<?php if (defined('LINKEDIN')) { ?>
-				<a href="<?php echo LINKEDIN; ?>"><img src="<?php get_theme_url(); ?>/assets/images/linkedin.png" /></a>
-			<?php } ?>
-			
+		<?php
+			if($innov_settings){
+				foreach($innov_settings as $id=>$setting){
+					if ($setting  != '' ){
+						echo '<a href="'.$setting.'"><img src="'.get_theme_url(false).'/assets/images/'.$id.'.png" alt="'.$id.'"/></a>';
+					}
+				}
+			}
+		?>				
 			<img src="<?php get_theme_url(); ?>/assets/images/break.png" />
 			
 			<!-- addthis popup - you can add your username if you want analytics: http://www.addthis.com/help/customizing-addthis -->

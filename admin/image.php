@@ -25,11 +25,8 @@ $thumb_folder = GSTHUMBNAILPATH.$subPath;
 $src_folder = '../data/uploads/';
 $thumb_folder_rel = '../data/thumbs/'.$subPath;
 if (!is_file($src_folder . $subPath .$src)) redirect("upload.php");
-$src = rawurlencode($src);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	
-	require('inc/imagemanipulation.php');
-	
+	require_once('inc/imagemanipulation.php');
 	$objImage = new ImageManipulation($src_folder . $subPath .$src);
 	if ( $objImage->imageok ) {
 		$objImage->setCrop($_POST['x'], $_POST['y'], $_POST['w'], $_POST['h']);
@@ -41,97 +38,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 }
 
-list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($src_folder .$subPath. rawurldecode($src));
+list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($src_folder .$subPath. $src);
 
 if (file_exists($thumb_folder . 'thumbnail.' . $src)) {
 	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . 'thumbnail.'.$src);
-	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder_rel . 'thumbnail.'. $src .'" rel="facybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
+	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder_rel . 'thumbnail.'. rawurlencode($src) .'" rel="facybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 }else{
+	require_once('inc/imagemanipulation.php');	
 	genStdThumb($subPath,$src);	
 	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . 'thumbnail.'.$src);	
-	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder_rel . 'thumbnail.'. $src .'" rel="facybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
+	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder_rel . 'thumbnail.'. rawurlencode($src) .'" rel="facybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 }
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT').' &raquo; '.i18n_r('IMAGES')); 
-
-function genStdThumb($path,$name){
-
-	if (!defined('GSIMAGEWIDTH')) {
-		$width = 200; //New width of image  	
-	} else {
-		$width = GSIMAGEWIDTH;
-	}
-
-	$ext = lowercase(pathinfo($name,PATHINFO_EXTENSION));	
 	
-	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' )	{
-		
-		$thumbsPath = GSTHUMBNAILPATH.$path;
-		
-		if (!(file_exists($thumbsPath))) {
-			if (defined('GSCHMOD')) { 
-				$chmod_value = GSCHMOD; 
-			} else {
-				$chmod_value = 0755;
-			}
-			mkdir($thumbsPath, $chmod_value);
-		}
-	}
-
-	$targetFile = GSDATAUPLOADPATH.$path.$name;
-	
-	//thumbnail for post
-	$imgsize = getimagesize($targetFile);
-		
-	switch(lowercase(substr($targetFile, -3))){
-			case "jpg":
-					$image = imagecreatefromjpeg($targetFile);    
-			break;
-			case "png":
-					$image = imagecreatefrompng($targetFile);
-			break;
-			case "gif":
-					$image = imagecreatefromgif($targetFile);
-			break;
-			default:
-					exit;
-			break;
-	}
-		
-	$height = $imgsize[1]/$imgsize[0]*$width; //This maintains proportions
-	
-	$src_w = $imgsize[0];
-	$src_h = $imgsize[1];
-	
-	
-	$picture = imagecreatetruecolor($width, $height);
-	imagealphablending($picture, false);
-	imagesavealpha($picture, true);
-	$bool = imagecopyresampled($picture, $image, 0, 0, 0, 0, $width, $height, $src_w, $src_h); 
-	
-			if($bool)	{	
-				$thumbnailFile = $thumbsPath . "thumbnail." . $name;
-				
-			    switch(lowercase(substr($targetFile, -3))) {
-			        case "jpg":
-			            $bool2 = imagejpeg($picture,$thumbnailFile,85);
-			        break;
-			        case "png":
-			            imagepng($picture,$thumbnailFile);
-			        break;
-			        case "gif":
-			            imagegif($picture,$thumbnailFile);
-			        break;
-			    }
-			}
-			
-			imagedestroy($picture);
-			imagedestroy($image);
-}
-
-?>
-	
-<?php include('template/include-nav.php'); ?>
+include('template/include-nav.php'); ?>
 
 <div class="bodycontent clearfix">
 	<div id="maincontent">
@@ -139,7 +60,7 @@ function genStdThumb($path,$name){
 		<div class="main">
 		<h3><?php i18n('IMG_CONTROl_PANEL');?></h3>
 	
-			<?php echo '<p><a href="'.$src_folder . $subPath .$src.'" rel="facybox_i" >'.i18n_r('ORIGINAL_IMG').'</a> <code>'.$imgwidth.'x'.$imgheight .'</code>'. $thumb_exists .'</p>'; ?>
+			<?php echo '<p><a href="'.$src_folder . $subPath .rawurlencode($src).'" rel="facybox_i" >'.i18n_r('ORIGINAL_IMG').'</a> <code>'.$imgwidth.'x'.$imgheight .'</code>'. $thumb_exists .'</p>'; ?>
 
 			<form>
 				<select class="text" id="img-info" style="width:50%" >
@@ -149,27 +70,27 @@ function genStdThumb($path,$name){
 					<option value="code-thumb-link" ><?php i18n('LINK_THUMBNAIL');?></option>
 					<option value="code-imgthumb-html" ><?php i18n('HTML_THUMB_ORIG');?></option>
 				</select>
-				<textarea class="copykit" ><?php echo tsl($SITEURL) .'data/uploads/'. $subPath. $src; ?></textarea>
+				<textarea class="copykit" ><?php echo tsl($SITEURL) .'data/uploads/'. $subPath. rawurlencode($src); ?></textarea>
 				<p style="color:#666;font-size:11px;margin:-10px 0 0 0"><a href="#" class="select-all" ><?php i18n('CLIPBOARD_INSTR');?></a></p>
 			</form>
 			<div class="toggle">
-				<p id="code-img-html">&lt;img src="<?php echo tsl($SITEURL) .'data/uploads/'. $subPath. $src; ?>" class="gs_image" height="<?php echo $imgheight; ?>" width="<?php echo $imgwidth; ?>" alt=""></p>
-				<p id="code-img-link"><?php echo tsl($SITEURL) .'data/uploads/'. $subPath. $src; ?></p>
-				<p id="code-thumb-html">&lt;img src="<?php echo tsl($SITEURL) .'data/thumbs/'.$subPath.'thumbnail.'. $src; ?>" class="gs_image gs_thumb" height="<?php echo $thheight; ?>" width="<?php echo $thwidth; ?>" alt=""></p>
-				<p id="code-thumb-link"><?php echo tsl($SITEURL) .'data/thumbs/'.$subPath.'thumbnail.'.$src; ?></p>
-				<p id="code-imgthumb-html">&lt;a href="<?php echo tsl($SITEURL) .'data/uploads/'. $subPath. $src; ?>" class="gs_image_link" >&lt;img src="<?php echo tsl($SITEURL) .'data/thumbs/'.$subPath.'thumbnail.'.$src; ?>" class="gs_thumb" height="<?php echo $thheight; ?>" width="<?php echo $thwidth; ?>" alt="" />&lt;/a></p>
+				<p id="code-img-html">&lt;img src="<?php echo tsl($SITEURL) .'data/uploads/'. $subPath. rawurlencode($src); ?>" class="gs_image" height="<?php echo $imgheight; ?>" width="<?php echo $imgwidth; ?>" alt=""></p>
+				<p id="code-img-link"><?php echo tsl($SITEURL) .'data/uploads/'. $subPath. rawurlencode($src); ?></p>
+				<p id="code-thumb-html">&lt;img src="<?php echo tsl($SITEURL) .'data/thumbs/'.$subPath.'thumbnail.'. rawurlencode($src); ?>" class="gs_image gs_thumb" height="<?php echo $thheight; ?>" width="<?php echo $thwidth; ?>" alt=""></p>
+				<p id="code-thumb-link"><?php echo tsl($SITEURL) .'data/thumbs/'.$subPath.'thumbnail.'.rawurlencode($src); ?></p>
+				<p id="code-imgthumb-html">&lt;a href="<?php echo tsl($SITEURL) .'data/uploads/'. $subPath. rawurlencode($src); ?>" class="gs_image_link" >&lt;img src="<?php echo tsl($SITEURL) .'data/thumbs/'.$subPath.'thumbnail.'.rawurlencode($src); ?>" class="gs_thumb" height="<?php echo $thheight; ?>" width="<?php echo $thwidth; ?>" alt="" />&lt;/a></p>
 			</div>
 	</div>
 	
 	<div id="jcrop_open" class="main">
 
-    <img src="<?php echo $src_folder . $subPath.$src; ?>" id="cropbox" />
+    <img src="<?php echo $src_folder . $subPath.rawurlencode($src); ?>" id="cropbox" />
     
 
 		<div id="handw" class="toggle" ><?php i18n('SELECT_DIMENTIONS'); ?><br /><span id="picw"></span> x <span id="pich"></span></div>
  
     <!-- This is the form that our event handler fills -->
-    <form id="jcropform" action="<?php myself(); ?>?i=<?php echo $src; ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
+    <form id="jcropform" action="<?php myself(); ?>?i=<?php echo rawurlencode($src); ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
       <input type="hidden" id="x" name="x" />
       <input type="hidden" id="y" name="y" />
       <input type="hidden" id="w" name="w" />
