@@ -314,9 +314,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 			else if($EDTOOL == "none") $EDTOOL = null; // toolbar is cke default
 			else $EDTOOL = "'$EDTOOL'"; // toolbar is a toolbar config variable config.toolbar_$var 
 			
-			$toolbar = isset($EDTOOL) ? ",toolbar: ".$EDTOOL : '';
-			$options = isset($EDOPTIONS) ? ','.$EDOPTIONS : '';
-			
+			$toolbar = isset($EDTOOL) ? ",toolbar: ".trim($EDTOOL,",") : '';
+			$options = isset($EDOPTIONS) ? ','.trim($EDOPTIONS,",") : '';
+
 		?>
 		<?php if ($HTMLEDITOR != '') { ?>
 		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
