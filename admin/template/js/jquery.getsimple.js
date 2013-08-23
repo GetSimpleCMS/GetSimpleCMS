@@ -707,10 +707,10 @@ jQuery(document).ready(function () {
 
 	// set all editors themes
 	cm_theme_update_editors = function(theme){
-		Debugger.log(theme);
+		// Debugger.log(theme);
 		$('.code_edit').each(function(i, textarea){
-			// Debugger.log(textarea);
 			var editor = $(textarea).data('editor');
+			// Debugger.log(editor);
 			if(editor) {
 				editor.setOption('theme',theme);	
 				editor.refresh();

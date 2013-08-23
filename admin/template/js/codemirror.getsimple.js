@@ -24,8 +24,7 @@ jQuery(document).ready(function () {
 
 	var mode = 'php';
 
-	$.fn.editorFromTextarea = function(textarea){	
-		var editor = CodeMirror.fromTextArea(textarea, {
+	var editorConfig = {
 			lineNumbers: true,
 			matchBrackets: true,
 			indentUnit: 4,
@@ -37,7 +36,11 @@ jQuery(document).ready(function () {
 			fixedGutter : true,
 			styleActiveLine : true,
 			// lineWrapping:true,
-			highlightSelectionMatches: true, // {showToken: /\w/}, // for word boundaries				
+			matchBrackets : true, // highlight matching brackets when cusrsor is next to one
+			autoCloseBrackets : true, // auto close brackets when typing
+			// matchTags :true, // adds class CodeMirror-matchingbrackets to tags contents
+			showTrailingSpace : true, // adds the CSS class cm-trailingspace to stretches of whitespace at the end of lines. 
+			highlightSelectionMatches : true, // {showToken: /\w/}, // for word boundaries				
 			extraKeys: {
 				"Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
 				"F11"    : function(cm) { setFullScreen(cm, !isFullScreen(cm)); },
@@ -46,7 +49,14 @@ jQuery(document).ready(function () {
 			},
 			saveFunction:  function(cm) { customSave(cm); },
 	        viewportMargin: Infinity //for autosizing
-		});
+	}
+
+	/**
+	 * editorFromTextarea replaces a textarea with a codemirror editor
+	 * @param  dom or string of a textarea 
+	 */
+	$.fn.editorFromTextarea = function(textarea){	
+		var editor = CodeMirror.fromTextArea(textarea, jQuery.extend({}, editorConfig));
 		
 		// add reference to this editor to the textarea
 		$(textarea).data('editor', editor);
@@ -76,6 +86,7 @@ jQuery(document).ready(function () {
 		return editor;
 	}
 
+	// apply codemirror to class of .code_edit
 	$(".code_edit").each(function(i,textarea) {	jQuery().editorFromTextarea(textarea); });	
 
 	function editorScrollVisible(cm){
@@ -146,8 +157,9 @@ jQuery(document).ready(function () {
 			cm.on('update', fullscreen_button);
 		}
 
-		button.toggleClass("scrolled",scrolled);
-		button.toggleClass("hidden",cm.getScrollInfo().height < 25);	
+		// adjust fullscreen button visibility and position
+		button.toggleClass("scrolled",scrolled); // scrollbars
+		button.toggleClass("hidden",cm.getScrollInfo().height < 25); // too small
 	}
 
 	setThemeSelected(defTheme);
