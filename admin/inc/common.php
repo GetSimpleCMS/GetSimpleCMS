@@ -66,6 +66,44 @@ define('GSCACHEPATH', GSROOTPATH. 'data/cache/');
 define('GSAUTOSAVEPATH', GSROOTPATH. 'data/pages/autosave/');
 
 
+/**
+ * Debugging
+ */
+if ( isDebug() ) {
+	error_reporting(-1);
+	ini_set('display_errors', 1);
+} else if( getDef('SUPRESSERRORS',true) ) {
+	error_reporting(0);
+	ini_set('display_errors', 0);
+}
+ini_set('log_errors', 1);
+ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
+
+
+/**
+ * Language control
+ */
+if(!isset($LANG) || $LANG == '') {
+	$filenames = getFiles(GSLANGPATH);
+	$cntlang = count($filenames);
+	if ($cntlang == 1) {
+		$LANG = basename($filenames[0], ".php");
+	} elseif($cntlang > 1) {
+		$LANG = 'en_US';
+	}
+}
+include_once(GSLANGPATH . $LANG . '.php');
+
+// Merge in default lang to avoid empty lang tokens
+// if GSMERGELANG is undefined or false merge en_US
+if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
+	if($LANG !='en_US')	i18n_merge(null,"en_US");
+} else{
+	// merge GSMERGELANG defined lang
+	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
+}	
+
+
 /** 
  * Init Editor globals
  * @uses $EDHEIGHT
@@ -94,21 +132,6 @@ $admin_relative = (isset($admin_relative)) ? $admin_relative : '';
 $lang_relative = (isset($lang_relative)) ? $lang_relative : '';
 $load['login'] = (isset($load['login'])) ? $load['login'] : '';
 $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
-
-
-/**
- * Debugging
- */
-if ( isDebug() ) {
-	error_reporting(-1);
-	ini_set('display_errors', 1);
-} else if( getDef('SUPRESSERRORS',true) ) {
-	error_reporting(0);
-	ini_set('display_errors', 0);
-}
-ini_set('log_errors', 1);
-ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
-
 
 
 
@@ -171,28 +194,6 @@ if(isset($TIMEZONE) && function_exists('date_default_timezone_set') && ($TIMEZON
 	date_default_timezone_set($TIMEZONE);
 }
 
-/**
- * Language control
- */
-if(!isset($LANG) || $LANG == '') {
-	$filenames = getFiles(GSLANGPATH);
-	$cntlang = count($filenames);
-	if ($cntlang == 1) {
-		$LANG = basename($filenames[0], ".php");
-	} elseif($cntlang > 1) {
-		$LANG = 'en_US';
-	}
-}
-include_once(GSLANGPATH . $LANG . '.php');
-
-// Merge in default lang to avoid empty lang tokens
-// if GSMERGELANG is undefined or false merge en_US
-if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
-	if($LANG !='en_US')	i18n_merge(null,"en_US");
-} else{
-	// merge GSMERGELANG defined lang
-	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
-}	
 
 /**
  * Variable Globalization
