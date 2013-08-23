@@ -1,3 +1,7 @@
+/*
+ * GetSimple js file    
+ */
+
 /* jQuery reverseOrder
  * Written by Corey H Maass for Arc90; (c) Arc90, Inc.
  */
@@ -8,10 +12,8 @@
  */
 (function($){$.fn.capslock=function(options){if(options)$.extend($.fn.capslock.defaults,options);this.each(function(){$(this).bind("caps_lock_on",$.fn.capslock.defaults.caps_lock_on);$(this).bind("caps_lock_off",$.fn.capslock.defaults.caps_lock_off);$(this).bind("caps_lock_undetermined",$.fn.capslock.defaults.caps_lock_undetermined);$(this).keypress(function(e){check_caps_lock(e)})});return this};function check_caps_lock(e){var ascii_code=e.which;var letter=String.fromCharCode(ascii_code);var upper=letter.toUpperCase();var lower=letter.toLowerCase();var shift_key=e.shiftKey;if(upper!==lower){if(letter===upper&&!shift_key){$(e.target).trigger("caps_lock_on")}else if(letter===lower&&!shift_key){$(e.target).trigger("caps_lock_off")}else if(letter===lower&&shift_key){$(e.target).trigger("caps_lock_on")}else if(letter===upper&&shift_key){if(navigator.platform.toLowerCase().indexOf("win")!==-1){$(e.target).trigger("caps_lock_off")}else{if(navigator.platform.toLowerCase().indexOf("mac")!==-1&&$.fn.capslock.defaults.mac_shift_hack){$(e.target).trigger("caps_lock_off")}else{$(e.target).trigger("caps_lock_undetermined")}}}else{$(e.target).trigger("caps_lock_undetermined")}}else{$(e.target).trigger("caps_lock_undetermined")}if($.fn.capslock.defaults.debug){if(console){console.log("Ascii code: "+ascii_code);console.log("Letter: "+letter);console.log("Upper Case: "+upper);console.log("Shift key: "+shift_key)}}}$.fn.capslock.defaults={caps_lock_on:function(){},caps_lock_off:function(){},caps_lock_undetermined:function(){},mac_shift_hack:true,debug:false}})(jQuery);
 
- 
-/*
- * GetSimple js file    
- */
+
+/* jcrop display */ 
 function updateCoords(c) {
 	var x = Math.floor(c.x);
 	var y = Math.floor(c.y);
@@ -27,7 +29,6 @@ function updateCoords(c) {
 };
 
 var Debugger = function () {}
-
 Debugger.log = function (message) {
 	try {
 		console.log(message);
@@ -40,6 +41,7 @@ Debugger.log = function (message) {
  * popit
  * element attention blink
  * ensures occurs only once
+ * @param int $speed animation speed in ms
  */
 $.fn.popit = function ($speed) {
 	$speed = $speed || 500;
@@ -55,6 +57,7 @@ $.fn.popit = function ($speed) {
 /*
  * closeit
  * fadeout close on delay
+ * @param int $delay delay in ms
  */
 $.fn.removeit = function ($delay) {
 	$delay = $delay || 5000;
@@ -64,6 +67,8 @@ $.fn.removeit = function ($delay) {
 	return $(this);
 }
  
+
+/* notification functions */ 
 function notifyOk($msg) {
 	return notify($msg, 'ok');
 }
@@ -196,13 +201,15 @@ jQuery(document).ready(function () {
 		$e.preventDefault();
 		loadingAjaxIndicator.show();
 		var id = $("#id").val();
-		$("#divTxt").append('<div style="display:none;" class="compdiv" id="section-' + id + '"><table class="comptable"><tr><td><b>Title: </b><input type="text" class="text newtitle" name="title[]" value="" /></td><td class="delete"><a href="#" title="Delete Component:?" class="delcomponent" id="del-' + id + '" rel="' + id + '" >&times;</a></td></tr></table><textarea name="val[]" class="code_edit"></textarea><input type="hidden" name="slug[]" value="" /><input type="hidden" name="id[]" value="' + id + '" /><div>');
+		$("#divTxt").append('<div style="display:none;" class="compdiv codewrap" id="section-' + id + '"><table class="comptable"><tr><td><b>Title: </b><input type="text" class="text newtitle" name="title[]" value="" /></td><td class="delete"><a href="#" title="Delete Component:?" class="delcomponent" id="del-' + id + '" rel="' + id + '" >&times;</a></td></tr></table><textarea name="val[]" class="code_edit"></textarea><input type="hidden" name="slug[]" value="" /><input type="hidden" name="id[]" value="' + id + '" /><div>');
 		$("#section-" + id).slideToggle('fast');
 		id = (id - 1) + 2;
-		$("#id").val(id);
+		$("#id").val(id); // bump count
 		loadingAjaxIndicator.fadeOut(500);
-		$('#submit_line').fadeIn();
-		jQuery().editorFromTextarea($("#divTxt").find('textarea').last().get(0));
+		$('#submit_line').fadeIn(); // fadein in case no components exist
+		var editor = jQuery().editorFromTextarea($("#divTxt").find('textarea').last().get(0));
+		$(editor.getWrapperElement()).css('min-height',100);
+		$("#divTxt").find('input').get(0).focus();
 	});
 
 	$("#maincontent").on("click",'.delcomponent', function ($e) {
@@ -221,7 +228,6 @@ jQuery(document).ready(function () {
 			});
 			loadingAjaxIndicator.fadeOut(1000);
 		}
- 
 	});
 
 	$("b.editable").dblclick(function () {

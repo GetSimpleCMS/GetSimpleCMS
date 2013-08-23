@@ -1,6 +1,40 @@
-var themeFileSave;
-var editor;
-var loadjscssfile;
+
+// setup codemirror instances and functions	
+
+if(typeof editorTheme === 'undefined'){
+	editorTheme = 'default';
+}	
+
+var editorMode = 'php';
+
+var editorConfig = {
+	mode                      : editorMode,
+	theme                     : editorTheme,
+	lineNumbers               : true,
+	matchBrackets             : true,
+	indentWithTabs            : true,
+	indentUnit                : 4,
+	enterMode                 : "keep",
+	tabMode                   : "shift",
+	fixedGutter               : true,
+	styleActiveLine           : true,
+	matchBrackets             : true, // highlight matching brackets when cusrsor is next to one
+	autoCloseBrackets         : true, // auto close brackets when typing
+	showTrailingSpace         : true, // adds the CSS class cm-trailingspace to stretches of whitespace at the end of lines.
+	highlightSelectionMatches : true, // {showToken                                                                          : /\w/}, // for word boundaries
+	viewportMargin            : Infinity, // for autosizing
+	// lineWrapping			  : true,
+	// matchTags              : true, // adds class CodeMirror-matchingbrackets to tags contents
+	saveFunction              : function(cm) { customSave(cm); },
+	extraKeys: {
+		"Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
+		"F11"    : function(cm) { setFullScreen(cm, !isFullScreen(cm)); },
+		"Esc"    : function(cm) { if (isFullScreen(cm)) setFullScreen(cm, false); },
+		"Ctrl-S" : function(cm) { customSave(cm);	}
+	}
+}
+
+
 jQuery(document).ready(function () {
 	
 	// do not know what this does, looks like old ctrl+q fold debouncer
@@ -13,50 +47,24 @@ jQuery(document).ready(function () {
 	// 		return true;
 	// 	}
 	// }
-	
-	var defTheme = 'default';		
 
-	if(typeof editor_theme != 'undefined' && editor_theme != 'default'){
-		defTheme = editor_theme;
-		var parts = defTheme.split(' ');
+	if(typeof editor_defTheme != 'undefined' && editor_defTheme != 'default'){
+		var parts = editor_defTheme.split(' ');
 		loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css")
 	}	
-
-	var mode = 'php';
-
-	var editorConfig = {
-			lineNumbers: true,
-			matchBrackets: true,
-			indentUnit: 4,
-			indentWithTabs: true,
-			enterMode: "keep",
-			mode: mode,
-			tabMode: "shift",
-			theme: defTheme,
-			fixedGutter : true,
-			styleActiveLine : true,
-			// lineWrapping:true,
-			matchBrackets : true, // highlight matching brackets when cusrsor is next to one
-			autoCloseBrackets : true, // auto close brackets when typing
-			// matchTags :true, // adds class CodeMirror-matchingbrackets to tags contents
-			showTrailingSpace : true, // adds the CSS class cm-trailingspace to stretches of whitespace at the end of lines. 
-			highlightSelectionMatches : true, // {showToken: /\w/}, // for word boundaries				
-			extraKeys: {
-				"Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
-				"F11"    : function(cm) { setFullScreen(cm, !isFullScreen(cm)); },
-				"Esc"    : function(cm) { if (isFullScreen(cm)) setFullScreen(cm, false); },
-				"Ctrl-S" : function(cm) { customSave(cm);	}
-			},
-			saveFunction:  function(cm) { customSave(cm); },
-	        viewportMargin: Infinity //for autosizing
-	}
-
+	
 	/**
 	 * editorFromTextarea replaces a textarea with a codemirror editor
-	 * @param  dom or string of a textarea 
+	 * @param dom or string of a textarea 
+	 * @param editorConfig config obj
+	 * @param editorUserConfig config to merge
 	 */
 	$.fn.editorFromTextarea = function(textarea){	
-		var editor = CodeMirror.fromTextArea(textarea, jQuery.extend({}, editorConfig));
+		
+		if (typeof editorConfig === "undefined" || editorConfig === null) editorConfig = {};
+		if (typeof editorUserConfig === "undefined" || editorUserConfig === null) editorUserConfig = {};
+
+		var editor = CodeMirror.fromTextArea(textarea, jQuery.extend({}, editorConfig, editorUserConfig));
 		
 		// add reference to this editor to the textarea
 		$(textarea).data('editor', editor);
@@ -71,11 +79,12 @@ jQuery(document).ready(function () {
 		// add in resizing
 		$(editor.getWrapperElement()).resizable({
 			// helper: "outline", // less intensive resizing
-			resize: function(e) {
+			resize: function(e,ui) {
 				editor.setSize(null, $(this).height());
 			},
 			stop: function(e,ui) {
 				// Debugger.log(ui.originalElement);
+				ui.originalElement.css('min-height','25px');				
 				ui.originalElement.css('max-height','none');
 				editor.refresh();
 			}
@@ -100,12 +109,12 @@ jQuery(document).ready(function () {
 		themeFileSave(cm);
 	}
 
-    function isFullScreen(cm) {
-      return /\bCodeMirror-fullscreen\b/.test(cm.getWrapperElement().className);
-    }
-
     function winHeight() {
       return window.innerHeight || (document.documentElement || document.body).clientHeight;
+    }
+    
+    function isFullScreen(cm) {
+      return /\bCodeMirror-fullscreen\b/.test(cm.getWrapperElement().className);
     }
 
     function toggleFullscreen(cm){
@@ -126,6 +135,7 @@ jQuery(document).ready(function () {
       cm.refresh();
     }
 
+    // adjust for window resizing awhen in fullscreen
 	CodeMirror.on(window, "resize", function() {
 	    var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
 	    if (!showing) return;
@@ -162,6 +172,7 @@ jQuery(document).ready(function () {
 		button.toggleClass("hidden",cm.getScrollInfo().height < 25); // too small
 	}
 
-	setThemeSelected(defTheme);
-	cm_theme_update(defTheme);		
+
+	setThemeSelected(editorTheme);
+	cm_theme_update(editorTheme);		
 });

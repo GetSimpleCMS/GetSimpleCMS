@@ -42,7 +42,7 @@ if(isset($_COOKIE['gs_editor_theme'])){
 	$editor_theme = $_COOKIE['gs_editor_theme'];
 
 	echo '<script>
-		var editor_theme = "'.$editor_theme.'";
+		var editorTheme = "'.$editor_theme.'";
 	</script>';
 
 }
