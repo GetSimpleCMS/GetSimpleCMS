@@ -559,6 +559,8 @@ function i18n($name, $echo=true) {
 	global $i18n;
 	global $LANG;
 
+	if(!isset($i18n)) return; 
+
 	if (array_key_exists($name, $i18n)) {
 		$myVar = $i18n[$name];
 	} else {
