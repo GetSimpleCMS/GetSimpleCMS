@@ -569,6 +569,15 @@ function get_component($id, $force = false, $raw = false) {
 }
 
 /**
+ * See if a component exists
+ * @param  str $id component id
+ * @return bool
+ */
+function componentExists($id){
+	return get_component_xml()->xpath("item/slug[.='".$id."']/parent::*") != null;
+}
+
+/**
  * Return Component
  * Returns a components output
  * 
