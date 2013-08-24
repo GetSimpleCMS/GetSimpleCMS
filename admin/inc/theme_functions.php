@@ -533,7 +533,7 @@ function menu_data($id = null,$xml=false) {
  * @return components data as xml obj
  *
  */
-function get_component_xml(){
+function get_components_xml(){
     global $components;
     if (!$components) {
         if (file_exists(GSDATAOTHERPATH.'components.xml')) {
@@ -544,6 +544,19 @@ function get_component_xml(){
         }
     }
     return $components;
+}
+
+/**
+ * get xml for an individual component
+ *
+ * @since 3.2.3
+ *
+ * @param  str $id component id
+ * @return simpleXmlObj
+ */
+function get_component_xml($id){
+	if(!$id) return;
+	return get_components_xml()->xpath("item/slug[.='".$id."']/parent::*");
 }
 
 /**
@@ -559,8 +572,8 @@ function get_component_xml(){
  * @param bool $raw do not process php
  */
 function get_component($id, $force = false, $raw = false) {
-	$components = get_component_xml();
-	$component = $components->xpath("item/slug[.='".$id."']/parent::*");
+	$components = get_components_xml();
+	$component = get_component_xml($id);
 	if(!$component) return;
 	$enabled = !(bool)($component[0]->disabled == 'true' || $component[0]->disabled == '1');
 	if(!$enabled && !$force) return;
@@ -570,11 +583,12 @@ function get_component($id, $force = false, $raw = false) {
 
 /**
  * See if a component exists
+ * @since 3.2.3
  * @param  str $id component id
  * @return bool
  */
 function componentExists($id){
-	return get_component_xml()->xpath("item/slug[.='".$id."']/parent::*") != null;
+	return !get_component_xml($id);
 }
 
 /**
