@@ -17,7 +17,7 @@ $cookie_login       = 'index.php';
 $cookie_time        = '10800';  // in seconds, 3 hours 
 
 $api_url            = 'http://get-simple.info/api/start/v3.php';
-$api_timeout        = 800; // time in ms
+# $api_timeout        = 800; // time in ms defaults to 500
 
 
 if (isset($_GET['redirect'])){
