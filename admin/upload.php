@@ -227,7 +227,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
      if (count($dirsSorted) != 0) {
      		$foldercount = 0;
         foreach ($dirsSorted as $upload) {
-        	        	
+        	
         	# check to see if folder is empty
         	$directory_delete = null;
         	if ( check_empty_folder($path.$upload['name']) ) {  
