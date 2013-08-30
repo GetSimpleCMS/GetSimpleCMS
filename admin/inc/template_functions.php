@@ -873,22 +873,23 @@ function get_api_details($type='core', $args=null) {
 	}
 	
 	// get_execution_time();
-	debug_api_details("get_api_details: " . $type. " " .$args);
-	debug_api_details("get_api_details: " . $fetch_this_api);
+	debug_api_details("type: " . $type. " " .$args);
+	debug_api_details("address: " . $fetch_this_api);
 
 	# debug_api_details(debug_backtrace());
 
 	if(!isset($api_timeout) or (int)$api_timeout<100) $api_timeout = 500; // default and clamp min to 100ms
-	debug_api_details("API timeout: " .$api_timeout);
+	debug_api_details("timeout: " .$api_timeout);
 
 	# check to see if cache is available for this
 	$cachefile = md5($fetch_this_api).'.txt';
-	debug_api_details('cache check for ' . $fetch_this_api.' ' .$cachefile);
+	if(!$nocache) debug_api_details('cache check for ' . $fetch_this_api.' ' .$cachefile);
+	else debug_api_details('cache check: disabled');
 
-	if (file_exists(GSCACHEPATH.$cachefile) && time() - 40000 < filemtime(GSCACHEPATH.$cachefile) and !$nocache) {
+	if (!$nocache && file_exists(GSCACHEPATH.$cachefile) && time() - 40000 < filemtime(GSCACHEPATH.$cachefile) ) {
 		# grab the api request from the cache
 		$data = file_get_contents(GSCACHEPATH.$cachefile);
-		debug_api_details('Returning api cache ' . GSCACHEPATH.$cachefile);
+		debug_api_details('returning api cache ' . GSCACHEPATH.$cachefile);
 	} else {	
 		# make the api call
 		if (function_exists('curl_init') && function_exists('curl_exec') && !$nocurl) {
@@ -921,25 +922,25 @@ function get_api_details($type='core', $args=null) {
 			$data = curl_exec($ch);
 
 			if($debugApi){
-				debug_api_details("API via curl");
+				debug_api_details("using curl");
 				debug_api_details("curl version: ");
 				debug_api_details(print_r(curl_version(),true));	
 			
-				debug_api_details("Curl info:");
+				debug_api_details("curl info:");
 				debug_api_details(print_r(curl_getinfo($ch),true));
 			
 				if (!$data) {
-					debug_api_details("cURL error number:" .curl_errno($ch));
-					debug_api_details("cURL error:" . curl_error($ch));
+					debug_api_details("curl error number:" .curl_errno($ch));
+					debug_api_details("curl error:" . curl_error($ch));
 				}
 
-				debug_api_details("Curl Verbose: ");
+				debug_api_details("curl Verbose: ");
 				debug_api_details(!rewind($verbose) . nl2br(htmlspecialchars(stream_get_contents($verbose))) );
 				fclose($verbose);
 				
 				// output header and response then remove header from data
 				$dataparts = explode("\r\n",$data);
-				debug_api_details("Curl Data: ");
+				debug_api_details("curl Data: ");
 				debug_api_details($data);
 				$data = end($dataparts);
 
@@ -949,7 +950,7 @@ function get_api_details($type='core', $args=null) {
 
 		} else if(ini_get('allow_url_fopen')) {  
 			// USE FOPEN
-			debug_api_details("API via fopen");			
+			debug_api_details("using fopen");			
 			$timeout = $api_timeout / 1000; // ms to float seconds
 			// $context = stream_context_create();
 			// stream_context_set_option ( $context, array('http' => array('timeout' => $timeout)) );
@@ -964,8 +965,8 @@ function get_api_details($type='core', $args=null) {
 		// debug_api_details("Duration: ".get_execution_time());	
 
 		$response = json_decode($data);		
-		debug_api_details('API JSON:');
-		debug_api_details(print_r($response,true));
+		debug_api_details('JSON:');
+		debug_api_details(print_r($response,true),'');
 
 		// if response is invalid do not write to cache and return false
 		// this keep proxy and malicious responses out of downstream code
@@ -980,10 +981,10 @@ function get_api_details($type='core', $args=null) {
 	return $data;
 }
 
-function debug_api_details($msg){
+function debug_api_details($msg,$prefix = "API: "){
 	GLOBAL $debugApi;
 	if(!$debugApi) return;
-	debugLog($msg);
+	debugLog($prefix.$msg);
 }
 
 /**
