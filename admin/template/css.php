@@ -806,12 +806,15 @@ form textarea {
 	height: 420px;
 	line-height: 18px;
 	text-align: left;
-		color: #333;
+	color: #333;
 	border: 1px solid #aaa;
 	padding: 5px;
 	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
 	font-size: 12px;
 	border-radius: 2px;
+	tab-size:4; 
+	 -moz-tab-size:4; 
+	 -o-tab-size:4; 
 }
 
 form input[readonly], form select[readonly], form textarea[readonly] {
