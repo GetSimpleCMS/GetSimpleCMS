@@ -105,7 +105,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
                         }
                     }
 
-				$disabled_funcs = ini_get('disabled_functions');
+				$disabled_funcs = ini_get('disable_functions');
                 if(!empty($disabled_funcs)) echo '<tr><td colspan=2>PHP disable_functions<span class="hint"> ' . $disabled_funcs . '</span></td></tr>';
 	?>
 			</table>
