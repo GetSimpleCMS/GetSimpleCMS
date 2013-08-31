@@ -587,7 +587,7 @@ function get_component($id, $force = false, $raw = false) {
  * @param  str $id component id
  * @return bool
  */
-function componentExists($id){
+function component_exists($id){
 	return !get_component_xml($id);
 }
 
