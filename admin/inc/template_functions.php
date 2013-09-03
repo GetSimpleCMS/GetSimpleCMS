@@ -516,7 +516,7 @@ function do_reg($text, $regex) {
 function valid_xml($file) {
 	$xmlv = getXML($file);
 	global $i18n;
-	if ($xmlv) {
+	if (is_object($xmlv)) {
 		return '<span class="OKmsg" >'.i18n_r('XML_VALID').' - '.i18n_r('OK').'</span>';
 	} else {
 		return '<span class="ERRmsg" >'.i18n_r('XML_INVALID').' - '.i18n_r('ERROR').'!</span>';
