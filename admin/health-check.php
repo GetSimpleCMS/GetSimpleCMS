@@ -26,7 +26,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
 	
 	<div id="maincontent">
 		<div class="main">
-			<h3><?php echo $site_full_name; ?> <?php i18n('VERSION');?></h3>
+			<h3><?php echo $site_full_name; ?></h3>
 			<table class="highlight healthcheck">
 				<?php
 				
@@ -49,6 +49,15 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
 				}
 				?>
 				<tr><td style="width:445px;" ><?php echo $site_full_name; ?> <?php i18n('VERSION');?></td><td><?php echo $ver; ?></td></tr>
+                <?php 
+                if(defined('GSADMIN') && GSADMIN!='admin2') echo '<tr><td>GSADMIN</td><td><span class="hint">admin</span></td></tr>'; 
+                
+                if(defined('GSLOGINSALT') && GSLOGINSALT!='') echo '<tr><td>GSLOGINSALT</td><td><span class="hint">'. i18n_r('YES').'</span></td></tr>'; 
+                else echo '<tr><td>GSLOGINSALT</td><td><span class="hint">'. i18n_r('NO').'</span></td></tr>'; 
+                
+                if(defined('GSUSECUSTOMSALT') && GSUSECUSTOMSALT!='') echo '<tr><td>GSUSECUSTOMSALT</td><td><span class="hint">'. i18n_r('YES').'</span></td></tr>'; 
+				else echo '<tr><td>GSUSECUSTOMSALT</td><td><span class="hint">'. i18n_r('NO').'</span></td></tr>';                 
+                ?>
 			</table>
 			
 			<h3><?php i18n('SERVER_SETUP');?></h3>
