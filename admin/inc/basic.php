@@ -739,6 +739,8 @@ function suggest_site_path($parts=false) {
 	global $GSADMIN;
 	$protocol = http_protocol();
 	$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
+        //Fix for Microsoft Windows (IIS)
+        $path_parts['dirname'] = str_replace(DIRECTORY_SEPARATOR, "/", $path_parts['dirname']);
 	$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
 	$port = ($p=$_SERVER['SERVER_PORT'])!='80'&&$p!='443'?':'.$p:'';
 	
