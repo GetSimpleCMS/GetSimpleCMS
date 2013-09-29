@@ -192,6 +192,26 @@ function path_is_safe($path,$pathmatch,$subdir = true){
 }
 
 /**
+ * Check if server is supported
+ * 
+ * @returns bool
+ */
+function server_is_supported() {
+    // define supported servers
+    $supported = array(
+        'apache',
+        'microsoft-iis'
+        );
+
+    foreach($supported as $server) {
+        if(strpos(strtolower($_SERVER['SERVER_SOFTWARE']), $server) !== false) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * Check if server is Apache
  * 
  * @returns bool

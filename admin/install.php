@@ -204,7 +204,8 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') );
 					echo '<tr><td>SimpleXML Module</td><td><span class="OKmsg" >'.i18n_r('INSTALLED').' - '.i18n_r('OK').'</span></td></tr>';
 				}
 
-				if (server_is_apache()) {
+				if (server_is_supported()) {
+                                    if(server_is_apache()) {
 					echo '<tr><td>Apache web server</td><td><span class="OKmsg" >'.$_SERVER['SERVER_SOFTWARE'].' - '.i18n_r('OK').'</span></td></tr>';
 					if ( function_exists('apache_get_modules') ) {
 						if(! in_arrayi('mod_rewrite',apache_get_modules())) {
@@ -215,6 +216,9 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') );
 					} else {
 						echo '<tr><td>Apache Mod Rewrite</td><td><span class="OKmsg" >'.i18n_r('INSTALLED').' - '.i18n_r('OK').'</span></td></tr>';
 					}
+                                    } else {
+                                        echo '<tr><td>'.$_SERVER['SERVER_SOFTWARE'].'</td><td><span class="OKmsg" >'.$_SERVER['SERVER_SOFTWARE'].' - <b>'.i18n_r('OK').'</b></span></td></tr>';
+                                    }
 				} else {
 					if (!defined('GSNOAPACHECHECK') || GSNOAPACHECHECK == false) {
 						echo '<tr><td>Apache web server</td><td><span class="ERRmsg" >'.$_SERVER['SERVER_SOFTWARE'].' - <b>'.i18n_r('ERROR').'</b></span></td></tr>';
