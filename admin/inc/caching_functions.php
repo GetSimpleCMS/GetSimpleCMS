@@ -278,15 +278,15 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=='true'){
         $pagesArray[(string)$id]['filename']=$file;
         $note = $pages->addChild('filename'); 
         $note->addCData($file);
-		
-        // Plugin Authors should add custome fields etc.. here
-  		exec_action('caching-save');
-	  
+			  
       } // else
     } // end foreach
   }   // endif      
   if ($flag==true){
+  	// Plugin Authors should add custome fields etc.. here
+  	exec_filter('pagecache');
     $xml->asXML($filem);
+  	exec_action('pagecache-saved');
   }
 }
 }
