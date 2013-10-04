@@ -1010,7 +1010,7 @@ function get_gs_version() {
  * Creates sitemap.xml in the site's root.
  */
 function generate_sitemap() {
-	
+
 	if(getDef('GSNOSITEMAP',true)) return;
 
 	// Variable settings
@@ -1056,15 +1056,15 @@ function generate_sitemap() {
 					$url_item->addChild('lastmod', $pageLastMod);
 					$url_item->addChild('changefreq', $pageChangeFreq);
 					$url_item->addChild('priority', $pagePriority);
-					exec_action('sitemap-additem');
 				}
 			}
 		}
 		
 		//create xml file
 		$file = GSROOTPATH .'sitemap.xml';
-		exec_action('save-sitemap');
+		$xml = exec_filter('sitemap',$xml);
 		XMLsave($xml, $file);
+		exec_action('sitemap-saved');
 	}
 	
 	if (!defined('GSDONOTPING')) {
