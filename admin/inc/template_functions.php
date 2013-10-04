@@ -712,7 +712,7 @@ function list_pages_json() {
 }
 
 /**
- * @deprecated since 3.2.3
+ * @deprecated since 3.3.0
  * moved to ckeditor config.js
  */
 function ckeditor_add_page_link(){
