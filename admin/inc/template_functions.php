@@ -1118,6 +1118,8 @@ function isAuthPage(){
 
 /**
  * returns a query string with only the allowed keys
+ * @since  3.3.0
+ * 
  * @param  array $allowed array of querystring keys to keep
  * @return string built query string
  */
