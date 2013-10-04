@@ -10,6 +10,9 @@ global $SITENAME, $SITEURL;
 $GSSTYLE = getDef('GSSTYLE') ? GSSTYLE : '';
 
 if(get_filename_id()!='index') exec_action('admin-pre-header');
+
+header('content-type: text/html; charset=utf-8');
+
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo get_site_lang(true); ?>">
