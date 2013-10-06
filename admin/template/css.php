@@ -266,8 +266,8 @@ html {
 .nav li .info {
 	font-family: serif;
 	border: 1px solid #73CBFF;
-	background: #0BA7FD;
-	background: -moz-linear-gradient(top, #FFFF66 0%, #FFCC33 100%);
+	background: #6FCCFF;
+	background: -moz-linear-gradient(top, #BDF2FF 0%, #6FCCFF 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#BDF2FF), color-stop(100%,#6FCCFF));
 }
 
