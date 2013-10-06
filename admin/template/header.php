@@ -60,7 +60,8 @@ header('content-type: text/html; charset=utf-8');
 			?>
 				var verstatus = <?php echo $verstatus; ?>;
 				if(verstatus != 1) {
-					$('a.support').parent('li').append('<span class="warning">!</span>');
+					<?php if(isBeta()){ ?> $('a.support').parent('li').append('<span class="info">i</span>');
+					<?php } else { ?> $('a.support').parent('li').append('<span class="warning">!</span>'); <?php } ?>
 					$('a.support').attr('href', 'health-check.php');
 				}
 			<?php  } ?>

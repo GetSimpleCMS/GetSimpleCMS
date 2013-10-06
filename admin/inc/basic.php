@@ -1189,4 +1189,14 @@ function isDebug(){
 	return getDef('GSDEBUG',true);
 }
 
+/**
+ * check gs version is Beta
+ *
+ * @since  3.3.0
+ * @return boolean true if beta release
+ */
+function isBeta(){
+	return strPos(get_site_version(false),"b");
+}
+
 ?>
