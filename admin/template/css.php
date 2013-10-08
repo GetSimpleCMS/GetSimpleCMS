@@ -1557,6 +1557,11 @@ table.simple td.title {
 	font-color: 12px;
 }
 
+.wrapper table td span.WARNmsg {
+	color: #2B5CB3;
+	font-color: 12px;
+}
+
 .wrapper table.highlight tr.img-highlight {
 	background: #FFFFD1 !important;
 }

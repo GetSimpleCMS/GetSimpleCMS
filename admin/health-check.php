@@ -43,7 +43,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
 				} elseif ($verstatus == '1') {
 					$ver = '<span class="OKmsg" ><b>'.$site_version_no.'</b><br />'. i18n_r('LATEST_VERSION').'</span>';
 				} elseif ($verstatus == '2') {
-					$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b><br /> '. i18n_r('BETA').'</span>';
+					$ver = '<span class="INFOmsg" ><b>'.$site_version_no.'</b><br /> '. i18n_r('BETA').'</span>';
 				} else {
 					$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b><br />'. i18n_r('CANNOT_CHECK').'<br /><a href="http://get-simple.info/download">'. i18n_r('DOWNLOAD').'</a></span>';
 				}
