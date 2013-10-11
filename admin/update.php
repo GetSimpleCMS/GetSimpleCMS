@@ -11,37 +11,50 @@
 $load['plugin'] = true;
 include('inc/common.php');
 
+/* delete caches */
+delete_cache();
 
 /* 
  * Updates below here 
  */
-$error = '';
+
 $message = null;
 
+$create_dirs = array(
+	GSCACHEPATH,
+	GSAUTOSAVEPATH
+);
+
+$create_files = array();
+
+$delete_files = array(
+	GSADMININCPATH.'xss.php',
+	GSADMININCPATH.'nonce.php',
+	GSADMININCPATH.'install.php',
+	GSADMINPATH.'load-ajax.php',
+	GSADMINPATH.'cron.php',
+	GSADMINPATH.'loadtab.php'
+);
+
+
 /* create new folders */
-if (!file_exists(GSCACHEPATH)) {  	
-	if (defined('GSCHMOD')) { 
-	 $chmod_value = GSCHMOD; 
-	} else {
-	 $chmod_value = 0755;
+foreach($create_dir as $dir)
+	if (!file_exists($dir)) {  	
+		if (defined('GSCHMOD')) { 
+		 $chmod_value = GSCHMOD; 
+		} else {
+		 $chmod_value = 0755;
+		}
+		mkdir($dir, $chmod_value);
 	}
-	mkdir(GSCACHEPATH, $chmod_value);
 }
-	  	
-if (!file_exists(GSAUTOSAVEPATH)) {
-	if (defined('GSCHMOD')) { 
-	 $chmod_value = GSCHMOD;
-	} else {
-	 $chmod_value = 0755;
-	}
-	mkdir(GSAUTOSAVEPATH, $chmod_value);
-}
+
 
 /* check for legacy version of user.xml */
 if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	
 	
-	# make two new users folder
+	# make new users folder
 	if (!file_exists(GSUSERSPATH)) {
 		$status = mkdir(GSUSERSPATH, 0777);
 		chmod(GSUSERSPATH, 0777);
@@ -52,7 +65,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 		}
 	}
 
-	# make two new backup users folder
+	# make new backup users folder
 	if (!file_exists(GSBACKUSERSPATH)) {
 		$status = mkdir(GSBACKUSERSPATH, 0777);
 		chmod(GSBACKUSERSPATH, 0777);
@@ -144,6 +157,8 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	/* end update */
 } 
 
+$message.=i18n_r('SETTINGS_UPDATED');
+
 get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE')); 
 
 ?>
@@ -159,9 +174,8 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE'));
 			<h3><?php i18n('SYSTEM_UPDATE'); ?></h3>
 			
 			<?php 
-				echo $message; 
-				echo '<p><a href="./">Login</a></p>';
-		
+				echo "<p>$message</p>";
+				echo '<p><a href="./?updated=1">'.i18n_r('CONTINUE_SETUP').'</a></p>';
 			?>
 			
 		</div>

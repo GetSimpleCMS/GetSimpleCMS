@@ -213,12 +213,10 @@ if(isset($base)) {
  */
 if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update') {
 	$fullpath = suggest_site_path();
-	
+
 	# if an update file was included in the install package, redirect there first	
-	if (file_exists(GSDATAOTHERPATH .'user.xml')) {
-		if (file_exists(GSADMINPATH.'update.php'))	{
-			redirect($fullpath . $GSADMIN.'/update.php');
-		}
+	if (file_exists(GSADMINPATH.'update.php') && !isset($_GET['updated']))	{
+		redirect($fullpath . $GSADMIN.'/update.php');
 	}
 	
 	# if there is no SITEURL set, then it's a fresh install. Start installation process
@@ -242,16 +240,7 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
 			$error = sprintf(i18n_r('ERR_CANNOT_DELETE'), '<code>/'.$GSADMIN.'/install.php</code>, <code>/'.$GSADMIN.'/setup.php</code> or <code>/'.$GSADMIN.'/update.php</code>');
 		}
 	}	
-} else {
-	/* create new folders */
-	if (!file_exists(GSCACHEPATH)) {
-		if (defined('GSCHMOD')) { 
-		  $chmod_value = GSCHMOD; 
-		} else {
-		  $chmod_value = 0755;
-		}
-		mkdir(GSCACHEPATH, $chmod_value);
-	}
+
 }
 
 /**
