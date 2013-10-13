@@ -38,7 +38,7 @@ $delete_files = array(
 
 
 /* create new folders */
-foreach($create_dir as $dir)
+foreach($create_dirs as $dir){
 	if (!file_exists($dir)) {  	
 		if (defined('GSCHMOD')) { 
 		 $chmod_value = GSCHMOD; 
