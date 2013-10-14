@@ -45,7 +45,9 @@ foreach($create_dirs as $dir){
 		} else {
 		 $chmod_value = 0755;
 		}
-		mkdir($dir, $chmod_value);
+		$suceess = mkdir($dir, $chmod_value);
+		if( $success) $message.= sprintf(i18n_r('FOLDER_CREATED'),$dir) . "<br /><br />";
+		else $error.= i18n_r('ERROR_CREATING_FOLDER') . "<br /> - $dir<br />";
 	}
 }
 
@@ -157,6 +159,9 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	/* end update */
 } 
 
+// If no errors or messages, then we did nothing, just continue automatically
+if(!isset($error) && !isset($message)) redirect("./?updated=1");
+
 $message.=i18n_r('SETTINGS_UPDATED');
 
 get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE')); 
@@ -164,8 +169,8 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE'));
 ?>
 	
 	<h1><?php echo $site_full_name; ?></h1>
-</div>
-</div>
+</div> 
+</div><!-- Closes header -->
 <div class="wrapper">
 	<?php include('template/error_checking.php'); ?>
 	
@@ -179,6 +184,6 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE'));
 			?>
 			
 		</div>
-	
-		<div class="clear"></div>
-<?php get_template('footer'); ?> 
+	</div>
+	<div class="clear"></div>
+	<?php get_template('footer'); ?> 
