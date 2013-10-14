@@ -162,7 +162,9 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 // If no errors or messages, then we did nothing, just continue automatically
 if(!isset($error) && !isset($message)) redirect("./?updated=1");
 
-$message.=i18n_r('SETTINGS_UPDATED');
+// show errors or messages
+if(isset($error)) $message.= i18n_r('ER_REQ_PROC_FAIL');
+else $message.= i18n_r('SETTINGS_UPDATED');
 
 get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE')); 
 

@@ -213,16 +213,17 @@ if(isset($base)) {
  */
 if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update') {
 	$fullpath = suggest_site_path();
-
-	# if an update file was included in the install package, redirect there first	
-	if (file_exists(GSADMINPATH.'update.php') && !isset($_GET['updated']))	{
-		redirect($fullpath . $GSADMIN.'/update.php');
-	}
 	
 	# if there is no SITEURL set, then it's a fresh install. Start installation process
 	if ($SITEURL == '')	{
 		redirect($fullpath . $GSADMIN.'/install.php');
 	} 
+	else {	
+	# if an update file was included in the install package, redirect there first	
+		if (file_exists(GSADMINPATH.'update.php') && !isset($_GET['updated']))	{
+			redirect($fullpath . $GSADMIN.'/update.php');
+		}
+	}
 
 	if(!getDef('GSDEBUGINSTALL',true)){	
 		# if you've made it this far, the site is already installed so remove the installation files
