@@ -65,6 +65,7 @@ define('GSBACKUSERSPATH', GSROOTPATH. 'backups/users/');
 define('GSCACHEPATH', GSROOTPATH. 'data/cache/');
 define('GSAUTOSAVEPATH', GSROOTPATH. 'data/pages/autosave/');
 
+require_once(GSADMININCPATH.'configuration.php');
 
 /**
  * Debugging
