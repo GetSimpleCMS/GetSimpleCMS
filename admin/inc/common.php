@@ -208,7 +208,6 @@ if(isset($base)) {
 	include_once(GSADMININCPATH.'theme_functions.php');
 }
 
-
 /**
  * Check to make sure site is already installed
  */
@@ -216,7 +215,8 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
 	$fullpath = suggest_site_path();
 	
 	# if there is no SITEURL set, then it's a fresh install. Start installation process
-	if ($SITEURL == '')	{
+	# siteurl check is not good for pre 3.0 since it will be empty, so skip and run update first.
+	if ($SITEURL == '' &&  get_gs_version() >= 3.0)	{
 		redirect($fullpath . $GSADMIN.'/install.php');
 	} 
 	else {	
