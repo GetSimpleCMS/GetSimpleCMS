@@ -1380,6 +1380,7 @@ table td.delete a {
 	-moz-transition: all .05s ease-in-out;
 	-o-transition: all .05s ease-in-out;
 	transition: all .05s ease-in-out;
+	font-style:normal;
 }
 
 .delete a:hover {
