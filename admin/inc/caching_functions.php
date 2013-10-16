@@ -284,7 +284,7 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=='true'){
   }   // endif      
   if ($flag==true){
   	// Plugin Authors should add custome fields etc.. here
-  	exec_filter('pagecache');
+  	$xml = exec_filter('pagecache');
     $xml->asXML($filem);
   	exec_action('pagecache-saved');
   }
