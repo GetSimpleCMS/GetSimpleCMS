@@ -37,6 +37,14 @@ $delete_files = array(
 );
 
 
+function msgOK($msg){
+	return '<div class="notify">'.$msg.'</div>';
+}
+
+function msgError($msg){
+	return '<div class="notify notify_error">'.$msg.'</div>';
+}
+
 /* create new folders */
 foreach($create_dirs as $dir){
 	if (!file_exists($dir)) {  	
@@ -46,8 +54,8 @@ foreach($create_dirs as $dir){
 		 $chmod_value = 0755;
 		}
 		$status = mkdir($dir, $chmod_value);
-		if( $status) $message.= sprintf(i18n_r('FOLDER_CREATED'),$dir) . "<br /><br />";
-		else $error.= i18n_r('ERROR_CREATING_FOLDER') . "<br /> - $dir<br />";
+		if($status) $message.= msgOK(sprintf(i18n_r('FOLDER_CREATED'),$dir));
+		else $error.= msgError(i18n_r('ERROR_CREATING_FOLDER') . "<br /> - $dir");
 	}
 }
 
@@ -61,9 +69,9 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 		$status = mkdir(GSUSERSPATH, 0777);
 		chmod(GSUSERSPATH, 0777);
 		if (!$status) { 
-			$error .= 'Unable to create the folder /data/users/<br />';	
+			$error .= msgError('Unable to create the folder /data/users/');	
 		} else {
-			$message .= '<li>Created the folder /data/users/</li>';
+			$message .= msgOK('Created the folder /data/users/');
 		}
 	}
 
@@ -72,9 +80,9 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 		$status = mkdir(GSBACKUSERSPATH, 0777);
 		chmod(GSBACKUSERSPATH, 0777);
 		if (!$status) {
-			$error .= 'Unable to create the folder /backup/users/<br />';	
+			$error .= msgError('Unable to create the folder /backup/users/');	
 		} else {
-			$message .= '<li>Created the folder /backup/users/</li>';
+			$message .=  msgOK('Created the folder /backup/users/');
 		}
 	}
 
@@ -106,9 +114,9 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	$status = XMLsave($xml, GSUSERSPATH . _id($USR) .'.xml');	
 	chmod(GSUSERSPATH . _id($USR) .'.xml', 0777);
 	if (!$status) {
-		$error .= 'Unable to create new  '._id($USR).'.xml file!<br />';	
+		$error .= msgError('Unable to create new  '._id($USR).'.xml file!');	
 	} else {
-		$message .= '<li>Created new '._id($USR).'.xml file</li>';
+		$message .= msgOK('Created new '._id($USR).'.xml file');
 	}
 	
 	
@@ -116,9 +124,9 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_website.xml')) {
 		$status = rename(GSDATAOTHERPATH .'website.xml', GSDATAOTHERPATH .'_legacy_website.xml');
 		if (!$status) {
-			$error .= 'Unable to rename website.xml to _legacy_website.xml<br />';	
+			$error .= msgError('Unable to rename website.xml to _legacy_website.xml');	
 		} else {
-			$message .= '<li>Renamed website.xml to _legacy_website.xml</li>';
+			$message .= msgOK('Renamed website.xml to _legacy_website.xml');
 		}
 	}
 	
@@ -131,9 +139,9 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	$xml->addChild('PERMALINK', $PERMALINK);
 	$status = XMLsave($xml, GSDATAOTHERPATH .'website.xml');	
 	if (!$status) {
-		$error .= 'Unable to update website.xml file!<br />';	
+		$error .= msgError('Unable to update website.xml file!');	
 	} else {
-		$message .= '<li>Created updated website.xml file</li>';
+		$message .= msgOK('Created updated website.xml file');
 	}
 	
 	
@@ -141,9 +149,9 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_user.xml')) {
 		$status = rename(GSDATAOTHERPATH .'user.xml', GSDATAOTHERPATH .'_legacy_user.xml');
 		if (!$status) {
-			$error .= 'Unable to rename user.xml to _legacy_user.xml<br />';	
+			$error .= msgError('Unable to rename user.xml to _legacy_user.xml');	
 		} else {
-			$message .= '<li>Renamed user.xml to _legacy_user.xml</li>';
+			$message .= msgOK('Renamed user.xml to _legacy_user.xml');
 		}
 	}
 
@@ -151,9 +159,9 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_cp_settings.xml')) {
 		$status = rename(GSDATAOTHERPATH .'cp_settings.xml', GSDATAOTHERPATH .'_legacy_cp_settings.xml');
 		if (!$status) {
-			$error .= 'Unable to rename cp_settings.xml to _legacy_cp_settings.xml<br />';	
+			$error .= msgError('Unable to rename cp_settings.xml to _legacy_cp_settings.xml');	
 		} else {
-			$message .= '<li>Renamed cp_settings.xml to _legacy_cp_settings.xml</li>';
+			$message .= msgOK('Renamed cp_settings.xml to _legacy_cp_settings.xml');
 		}
 	}
 	/* end update */
@@ -164,7 +172,7 @@ if(!isset($error) && !isset($message)) redirect("./?updated=1");
 
 // show errors or messages
 if(isset($error)) $message.= i18n_r('ER_REQ_PROC_FAIL');
-else $message.= i18n_r('SETTINGS_UPDATED');
+else $message.= "<div class=\"notify notify_ok\">".i18n_r('SETTINGS_UPDATED')."</div>";
 
 get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE')); 
 
@@ -174,14 +182,14 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE'));
 </div> 
 </div><!-- Closes header -->
 <div class="wrapper">
-	<?php include('template/error_checking.php'); ?>
+	<?php // include('template/error_checking.php'); ?>
 	
 	<div id="maincontent">
 		<div class="main" >
 			<h3><?php i18n('SYSTEM_UPDATE'); ?></h3>
 			
 			<?php 
-				echo "<p>$message</p>";
+				echo "$message";
 				echo '<p><a href="./?updated=1">'.i18n_r('CONTINUE_SETUP').'</a></p>';
 			?>
 			
