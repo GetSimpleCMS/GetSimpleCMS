@@ -45,8 +45,8 @@ foreach($create_dirs as $dir){
 		} else {
 		 $chmod_value = 0755;
 		}
-		$suceess = mkdir($dir, $chmod_value);
-		if( $success) $message.= sprintf(i18n_r('FOLDER_CREATED'),$dir) . "<br /><br />";
+		$status = mkdir($dir, $chmod_value);
+		if( $status) $message.= sprintf(i18n_r('FOLDER_CREATED'),$dir) . "<br /><br />";
 		else $error.= i18n_r('ERROR_CREATING_FOLDER') . "<br /> - $dir<br />";
 	}
 }
