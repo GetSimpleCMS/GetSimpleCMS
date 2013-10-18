@@ -854,7 +854,12 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
 function get_api_details($type='core', $args=null) {
 	GLOBAL $debugApi,$nocache,$nocurl;
 
+	 // $debugApi = true;
+	// $nocache = true;
+
 	include(GSADMININCPATH.'configuration.php');
+	 $site_link_back_url = "dfsdf";
+	 $api_url = "sdfsdf";
 
 	# core api details
 	if ($type=='core') {
@@ -886,7 +891,11 @@ function get_api_details($type='core', $args=null) {
 	if(!$nocache) debug_api_details('cache check for ' . $fetch_this_api.' ' .$cachefile);
 	else debug_api_details('cache check: disabled');
 
-	if (!$nocache && file_exists(GSCACHEPATH.$cachefile) && time() - 40000 < filemtime(GSCACHEPATH.$cachefile) ) {
+	$cacheExpire = 40000;
+
+	$cacheAge = file_exists(GSCACHEPATH.$cachefile) ? filemtime(GSCACHEPATH.$cachefile) : '';
+
+	if (!$nocache &&  !empty($cachAge) && time() - $cacheExpire < $cacheAge ) {
 		# grab the api request from the cache
 		$data = file_get_contents(GSCACHEPATH.$cachefile);
 		debug_api_details('returning api cache ' . GSCACHEPATH.$cachefile);
@@ -968,15 +977,18 @@ function get_api_details($type='core', $args=null) {
 		debug_api_details('JSON:');
 		debug_api_details(print_r($response,true),'');
 
-		// if response is invalid do not write to cache and return false
-		// this keep proxy and malicious responses out of downstream code
-		if($response){
-			file_put_contents(GSCACHEPATH.$cachefile, $data);
-			chmod(GSCACHEPATH.$cachefile, 0644);
-			return $data;
-		} else {
-			return;
-		}	
+		// if response is invalid set status to -1 error
+		// and we pass on our own data, it is also cached to prevent constant rechecking
+
+		if(!$response){
+			$data = '{"status":-1';
+		}
+		
+		debug_api_details($data);
+
+		file_put_contents(GSCACHEPATH.$cachefile, $data);
+		chmod(GSCACHEPATH.$cachefile, 0644);
+		return $data;
 	}
 	return $data;
 }
