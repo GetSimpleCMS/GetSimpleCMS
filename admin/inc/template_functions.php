@@ -883,14 +883,14 @@ function get_api_details($type='core', $args=null) {
 
 	# check to see if cache is available for this
 	$cachefile = md5($fetch_this_api).'.txt';
+	$cacheExpire = 39600; // 11 minutes
+	
 	if(!$nocache) debug_api_details('cache check for ' . $fetch_this_api.' ' .$cachefile);
 	else debug_api_details('cache check: disabled');
 
-	$cacheExpire = 40000;
-
 	$cacheAge = file_exists(GSCACHEPATH.$cachefile) ? filemtime(GSCACHEPATH.$cachefile) : '';
 
-	if (!$nocache &&  !empty($cachAge) && time() - $cacheExpire < $cacheAge ) {
+	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpire) < $cacheAge ) {
 		# grab the api request from the cache
 		$data = file_get_contents(GSCACHEPATH.$cachefile);
 		debug_api_details('returning api cache ' . GSCACHEPATH.$cachefile);
