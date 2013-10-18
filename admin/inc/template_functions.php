@@ -854,12 +854,7 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
 function get_api_details($type='core', $args=null) {
 	GLOBAL $debugApi,$nocache,$nocurl;
 
-	 // $debugApi = true;
-	// $nocache = true;
-
 	include(GSADMININCPATH.'configuration.php');
-	 $site_link_back_url = "dfsdf";
-	 $api_url = "sdfsdf";
 
 	# core api details
 	if ($type=='core') {
