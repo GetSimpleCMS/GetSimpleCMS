@@ -449,6 +449,10 @@ h5:hover img {
 	float: right;
 }
 
+#sidebar.fixed{
+	-webkit-transition: top 200ms ease-out;
+}
+
 #sidebar .section {
 	background: #fff;
 	border: 1px solid #ccc;

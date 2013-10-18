@@ -544,6 +544,19 @@ jQuery(document).ready(function () {
 		return false;
 	});
  
+	function scrollsidebar(){
+		elem.scrollToFixed({ 
+			marginTop: 15,
+			limit: function(){ return $('#footer').offset().top - elem.outerHeight(true) - 15},
+			postUnfixed: function(){console.log($(this).offset().top);$(this).addClass('fixed')},
+			postFixed: function(){$(this).removeClass('fixed')},
+			postAbsolute: function(){$(this).removeClass('fixed')},
+
+		});
+	}
+
+	scrollsidebar();
+
 	//end of javascript for getsimple
 });
  
