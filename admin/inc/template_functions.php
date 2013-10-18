@@ -858,19 +858,18 @@ function get_api_details($type='core', $args=null) {
 
 	# core api details
 	if ($type=='core') {
+		# core version request, return status 0-outdated,1-current,2-bleedingedge
 		$fetch_this_api = $api_url .'?v='.GSVERSION;
 	}
-	
-	# plugin api details. requires a passed plugin id
-	if ($type=='plugin' && $args) {
+	else if ($type=='plugin' && $args) {
+		# plugin api details. requires a passed plugin i
 		$apiurl = $site_link_back_url.'api/extend/?file=';
 		$fetch_this_api = $apiurl.$args;
 	}
-	
-	# custom api details. requires a passed url
-	if ($type=='custom' && $args) {
+	else if ($type=='custom' && $args) {
+		# custom api details. requires a passed url
 		$fetch_this_api = $args;
-	}
+	} else return;
 	
 	// get_execution_time();
 	debug_api_details("type: " . $type. " " .$args);
