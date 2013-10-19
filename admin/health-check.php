@@ -30,7 +30,7 @@ echo '<div class="bodycontent clearfix">
 			// Server Setup
 			///////////////////////////////////////////////
 
-			echo '<h3>' . $site_full_name .' '. i18n_r('VERSION') .'</h3>
+			echo '<h3>' . $site_full_name .'</h3>
 			<table class="highlight healthcheck">';
 				
 				# check to see if there is a core update needed
@@ -110,13 +110,13 @@ echo '<div class="bodycontent clearfix">
 						}	
 					}
 					if (!function_exists('chmod') ) {
-						echo '<tr><td>chmod</td><td><span class="ERRmsg" >'.i18n_r('NOT_INSTALLED').' - '.i18n_r('ERROR').'</span></td></tr>';
+						echo '<tr><td>chmod</td><td>'.i18n_r('NOT_INSTALLED').'</td><td><span class="label label-warn">'.i18n_r('ERROR').'</span></td></tr>';
 					} else {
-						echo '<tr><td>chmod</td><td><span class="OKmsg" >chmod - '.i18n_r('OK').'</span></td></tr>';
+						echo '<tr><td>chmod</td><td>'.i18n_r('INSTALLED').'</td><td><span class="label label-ok">'.i18n_r('OK').'</span></td></tr>';
 					}
 
 					if (server_is_apache()) {
-						echo '<tr><td>Apache web server</td><td>'.i18n_r('INSTALLED').'</td><td><span class="label label-ok">'.i18n_r('OK').'</span></td></tr>';
+						echo '<tr><td>Apache web server*</td><td>'.i18n_r('INSTALLED').'</td><td><span class="label label-ok">'.i18n_r('OK').'</span></td></tr>';
 						// check mod_rewrite
 						$moderewritestatus = hasModRewrite();
 						if ( hasModRewrite() === false ) {
@@ -130,7 +130,7 @@ echo '<div class="bodycontent clearfix">
 						}
 					} else {
 						if (!defined('GSNOAPACHECHECK') || GSNOAPACHECHECK == false) {
-							echo '<tr><td>Apache web server</td><td><span class="ERRmsg" >'.i18n_r('NOT_INSTALLED').'</span></td><td><span class="label label-error">'.i18n_r('ERROR').'</span></td></tr>';
+							echo '<tr><td>Apache web server*</td><td><span class="ERRmsg" >'.i18n_r('NOT_INSTALLED').'</span></td><td><span class="label label-error">'.i18n_r('ERROR').'</span></td></tr>';
 							$errorCnt++;											
 						}
 					}
@@ -143,7 +143,7 @@ echo '<div class="bodycontent clearfix">
 				<?php 
 				$serveris = get_Server_Software();
 				if(empty($serveris)) $serveris = i18n_r('NA');
-				echo sprintf(i18n_r('SERVER_IS'), $serveris)."<br/>";
+				echo "*".sprintf(i18n_r('SERVER_IS'), $serveris)."<br/>";
 				echo sprintf(i18n_r('REQS_MORE_INFO'), $site_link_back_url . "wiki/installation:requirements"); ?>
 			</p>
 			
