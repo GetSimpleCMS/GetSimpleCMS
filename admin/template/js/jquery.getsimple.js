@@ -545,6 +545,7 @@ jQuery(document).ready(function () {
 	});
  
 	function scrollsidebar(){
+		var elem = $('#sidebar');
 		elem.scrollToFixed({ 
 			marginTop: 15,
 			limit: function(){ return $('#footer').offset().top - elem.outerHeight(true) - 15},
