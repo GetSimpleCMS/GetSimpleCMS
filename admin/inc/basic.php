@@ -83,6 +83,7 @@ function to7bit($text,$from_enc="UTF-8") {
  * @return string
  */
 function email_template($message) {
+	GLOBAL $site_link_back_url;
 	$data = '
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml">
@@ -145,7 +146,8 @@ function sendmail($to,$subject,$message) {
 	if (defined('GSFROMEMAIL')){
 		$fromemail = GSFROMEMAIL; 
 	} else {
-		$fromemail = 'noreply@get-simple.info';
+		if(!empty($_SERVER['SERVER_ADMIN']) && check_email_address($_SERVER['SERVER_ADMIN'])) $fromemail = $_SERVER['SERVER_ADMIN'];
+		else $fromemail =  'noreply@'.$_SERVER['SERVER_NAME'];
 	}
 	
 	global $EMAIL;
@@ -330,6 +332,7 @@ function getXML($file) {
  */
 function XMLsave($xml, $file) {
 	# get_execution_time(true);
+	if(!$xml) return false;
 	$success = @$xml->asXML($file) === TRUE;
 	# debugLog('XMLsave: ' . $file . ' ' . get_execution_time());	
 	
@@ -586,6 +589,8 @@ function i18n($name, $echo=true) {
 	global $i18n;
 	global $LANG;
 
+	if(!isset($i18n)) return; 
+
 	if (array_key_exists($name, $i18n)) {
 		$myVar = $i18n[$name];
 	} else {
@@ -649,20 +654,22 @@ function i18n_merge($plugin, $language=null) {
  * @author mvlcek
  * @uses GSPLUGINPATH
  *
- * @param string $plugin
+ * @param string $plugin null if merging in core langs
  * @param string $lang
  * @param string $globali18n
  * @return bool
  */
 function i18n_merge_impl($plugin, $lang, &$globali18n) { 
 	$i18n = array();
-	if (!file_exists(GSPLUGINPATH.$plugin.'/lang/'.$lang.'.php')) {
-		return false;
+  $filename = ($plugin ? GSPLUGINPATH.$plugin.'/lang/' : GSLANGPATH).$lang.'.php';
+  $prefix = $plugin ? $plugin.'/' : '';
+  if (!file_exists($filename)) {
+    return false;
 	}
-	@include(GSPLUGINPATH.$plugin.'/lang/'.$lang.'.php'); 
+  @include($filename); 
 	if (count($i18n) > 0) foreach ($i18n as $code => $text) {
-		if (!array_key_exists($plugin.'/'.$code, $globali18n)) {
-			$globali18n[$plugin.'/'.$code] = $text;
+    if (!array_key_exists($prefix.$code, $globali18n)) {
+        $globali18n[$prefix.$code] = $text;
 		}
 	}
 	return true;
@@ -683,8 +690,8 @@ function safe_slash_html($text) {
 	} else {
 		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 	}
-	$text = str_replace(chr(12), '', $text);
-	$text = str_replace(chr(3), ' ', $text);
+	$text = str_replace(chr(12), '', $text); // FF
+	$text = str_replace(chr(3), ' ', $text); // ETX
 	return $text;
 }
 
@@ -1242,6 +1249,16 @@ function getDef($id,$isbool = false){
  */
 function isDebug(){
 	return getDef('GSDEBUG',true);
+}
+
+/**
+ * check gs version is Beta
+ *
+ * @since  3.3.0
+ * @return boolean true if beta release
+ */
+function isBeta(){
+	return strPos(get_site_version(false),"b");
 }
 
 

@@ -77,7 +77,9 @@ function login_cookie_check() {
 	if(cookie_check()) {
 		create_cookie();
 	} else {
-		redirect($cookie_login.'?redirect='.myself(FALSE));
+		$qstring = filter_queryString(array('id'));
+		$redirect_url = $cookie_login.'?redirect='.myself(FALSE).'?'.$qstring;
+		redirect($redirect_url);
 	}
 }
 

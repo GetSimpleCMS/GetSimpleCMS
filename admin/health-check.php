@@ -56,6 +56,15 @@ echo '<div class="bodycontent clearfix">
 				}
 				?>
 				<tr><td class="hc_item" ><?php echo $site_full_name; ?> <?php i18n('VERSION');?></td><td><?php echo $ver; ?></td></tr>
+                <?php 
+                if(defined('GSADMIN') && GSADMIN!='admin') echo '<tr><td>GSADMIN</td><td><span class="hint">'.GSADMIN.'</span></td></tr>'; 
+                
+                if(defined('GSLOGINSALT') && GSLOGINSALT!='') echo '<tr><td>GSLOGINSALT</td><td><span class="hint">'. i18n_r('YES').'</span></td></tr>'; 
+                else echo '<tr><td>GSLOGINSALT</td><td><span class="hint">'. i18n_r('NO').'</span></td></tr>'; 
+                
+                if(defined('GSUSECUSTOMSALT') && GSUSECUSTOMSALT!='') echo '<tr><td>GSUSECUSTOMSALT</td><td><span class="hint">'. i18n_r('YES').'</span></td></tr>'; 
+				else echo '<tr><td>GSUSECUSTOMSALT</td><td><span class="hint">'. i18n_r('NO').'</span></td></tr>';                 
+                ?>
 			</table>
 			
 			<?php
@@ -69,6 +78,7 @@ echo '<div class="bodycontent clearfix">
 				<tr>';
 
 					echo '<td class="hc_item">PHP '.i18n_r('VERSION').'</td>';
+					
 					if (version_compare(PHP_VERSION, "5.2", "<")) {
 						echo '<td><span class="ERRmsg"><b>'. PHP_VERSION.'</b><br/>PHP 5.2 '.i18n_r('OR_GREATER_REQ').'</span></td><td><span class="label label-error">'.i18n_r('ERROR').'</span></td>';
 						$errorCnt++;						
@@ -99,6 +109,11 @@ echo '<div class="bodycontent clearfix">
 							$errorCnt++;				
 						}	
 					}
+					if (!function_exists('chmod') ) {
+						echo '<tr><td>chmod</td><td><span class="ERRmsg" >'.i18n_r('NOT_INSTALLED').' - '.i18n_r('ERROR').'</span></td></tr>';
+					} else {
+						echo '<tr><td>chmod</td><td><span class="OKmsg" >chmod - '.i18n_r('OK').'</span></td></tr>';
+					}
 
 					if (server_is_apache()) {
 						echo '<tr><td>Apache web server</td><td>'.i18n_r('INSTALLED').'</td><td><span class="label label-ok">'.i18n_r('OK').'</span></td></tr>';
@@ -119,6 +134,9 @@ echo '<div class="bodycontent clearfix">
 							$errorCnt++;											
 						}
 					}
+
+				$disabled_funcs = ini_get('disable_functions');
+                if(!empty($disabled_funcs)) echo '<tr><td colspan=2>PHP disable_functions<span class="hint"> ' . $disabled_funcs . '</span></td></tr>';
 	?>
 			</table>
 			<p class="hint">

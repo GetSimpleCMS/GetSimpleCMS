@@ -49,10 +49,10 @@
 <option value="Asia/Baghdad">(GMT+03:00) Baghdad</option>
 <option value="Africa/Nairobi">(GMT+03:00) Nairobi</option>
 <option value="Asia/Tbilisi">(GMT+03:00) Tbilisi</option>
-<option value="Europe/Moscow">(GMT+03:00) Moscow, St. Petersburg, Volgograd</option>
 <option value="Asia/Tehran">(GMT+03:30) Tehran</option>
 <option value="Asia/Muscat">(GMT+04:00) Abu Dhabi, Muscat</option>
 <option value="Asia/Baku">(GMT+04:00) Baku</option>
+<option value="Europe/Moscow">(GMT+04:00) Moscow, St. Petersburg, Volgograd</option>
 <option value="Asia/Yerevan">(GMT+04:00) Yerevan</option>
 <option value="Asia/Yekaterinburg">(GMT+05:00) Ekaterinburg</option>
 <option value="Asia/Karachi">(GMT+05:00) Islamabad, Karachi</option>

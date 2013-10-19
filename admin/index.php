@@ -11,7 +11,10 @@
 # Setup inclusions
 $load['login'] = true;
 $load['plugin'] = true;
+
+ob_start();
 include('inc/common.php');
+ob_end_flush();
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('LOGIN')); 
 

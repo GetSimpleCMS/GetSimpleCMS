@@ -193,8 +193,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                                 $count = 0;
                                 foreach ($pagesArray as $page) {
                                     if ($page['parent'] != '') { 
-                                        $parentdata = getXML(GSDATAPAGESPATH . $page['parent'] .'.xml');
-                                        $parentTitle = $parentdata->title;
+								$parentTitle = returnPageField($page['parent'], "title");
                                         $sort = $parentTitle .' '. $page['title'];
                                     } else {
                                         $sort = $page['title'];
@@ -319,24 +318,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
         // HTMLEDITOR INIT
         if ($HTMLEDITOR != '') {       
 
-            if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else { $EDHEIGHT = '500px'; }
-            if (defined('GSEDITORLANG')) { $EDLANG = GSEDITORLANG; } else { $EDLANG = i18n_r('CKEDITOR_LANG'); }
-			if (defined('GSEDITORTOOL') and !isset($EDTOOL)) { $EDTOOL = GSEDITORTOOL; }
-			if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!="" ) $EDOPTIONS = GSEDITOROPTIONS; 
+			$toolbar = isset($EDTOOL) ? ",toolbar: ".trim($EDTOOL,",") : '';
+			$options = isset($EDOPTIONS) ? ','.trim($EDOPTIONS,",") : '';
 
-			if(!isset($EDTOOL)) $EDTOOL = 'basic';
-			
-			if(!isset($EDOPTIONS)) $EDOPTIONS = '';
-			else $EDOPTIONS = ','.$EDOPTIONS;
-
-			if(strpos($EDTOOL,'[')!==false){ $EDTOOL = "[$EDTOOL]"; } // toolbar is array
-			else if(is_array($EDTOOL)) $EDTOOL = json_encode($EDTOOL);
-			// else if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
-			else if($EDTOOL == "none") $EDTOOL = null; // toolbar is cke default
-			else $EDTOOL = "'$EDTOOL'"; // toolbar is a toolbar config variable config.toolbar_$var 
-			
-			$toolbar = isset($EDTOOL) ? ",toolbar: ".$EDTOOL : '';
-			
 
             // convert to js string if php array
             if(is_array($toolbar)){
@@ -374,7 +358,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                 filebrowserWindowWidth       : '730',
                 filebrowserWindowHeight      : '500'
 					<?php echo $toolbar; ?>
-					<?php echo $EDOPTIONS; ?>					
+					<?php echo $options; ?>					
 			};
             
             var editor = CKEDITOR.replace( 'post-content', editorCfg);            

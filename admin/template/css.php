@@ -14,6 +14,7 @@
 h1,h2,h3,h4,h5,h6,pre,code {
 	font-size: 1em;
 	font-weight: 400;
+	word-wrap: break-word;
 }
 
 ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,body,html,p,blockquote,fieldset,input {
@@ -238,13 +239,13 @@ html {
 }
 
 /* warning alert on tab */
-.nav li.rightnav .warning {
+.nav li.rightnav .warning, .nav li.rightnav .info {
 	position: absolute;
 	top: -5px;
 	left: -5px;
 }
 
-.nav li .warning {
+.nav li .warning, .nav li .info {
 	position: absolute;
 	top: -5px;
 	right: -5px;
@@ -260,6 +261,14 @@ html {
 	background: #FFFF66;
 	background: -moz-linear-gradient(top, #FFFF66 0%, #FFCC33 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFF66), color-stop(100%,#FFCC33));
+}
+
+.nav li .info {
+	font-family: serif;
+	border: 1px solid #2DB1FF;
+	background: #6FCCFF;
+	background: -moz-linear-gradient(top, #BDF2FF 0%, #6FCCFF 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#BDF2FF), color-stop(100%,#6FCCFF));
 }
 
 .wrapper .nav li a em, .wrapper #pill li a em {
@@ -810,6 +819,9 @@ form textarea {
 	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
 	font-size: 11px;
 	border-radius: 2px;
+	tab-size:4; 
+	 -moz-tab-size:4; 
+	 -o-tab-size:4; 
 }
 
 textarea.short {
@@ -1364,6 +1376,7 @@ table td.delete a {
 	-moz-transition: all .05s ease-in-out;
 	-o-transition: all .05s ease-in-out;
 	transition: all .05s ease-in-out;
+	font-style:normal;
 }
 
 .delete a:hover {
@@ -1538,6 +1551,11 @@ table.simple td.title {
 
 .wrapper table td span.WARNmsg {
 	color: #FFA500;
+	font-color: 12px;
+}
+
+.wrapper table td span.WARNmsg {
+	color: #2B5CB3;
 	font-color: 12px;
 }
 

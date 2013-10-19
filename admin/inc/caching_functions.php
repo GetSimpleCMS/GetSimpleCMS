@@ -1,4 +1,4 @@
-<?php 
+<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /****************************************************
 *
 * @File:  caching_functions.php
@@ -280,7 +280,10 @@ function load_pageCache(){
  */
 function save_pageCacheXml($xml){
 	$file=GSDATAOTHERPATH."pages.xml";		
+  	// Plugin Authors should add custome fields etc.. here
+  	$xml = exec_filter('pagecache',$xml);	
 	if(!empty($xml)) return $xml->asXML($file);
+  	exec_action('pagecache-saved');	
 }
 
 /**

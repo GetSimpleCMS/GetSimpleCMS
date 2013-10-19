@@ -65,8 +65,8 @@ getPagesXmlValues();
 $count = 0;
 foreach ($pagesArray as $page) {
 	if ($page['parent'] != '') { 
-		$parentdata = getXML(GSDATAPAGESPATH . $page['parent'] .'.xml');
-		$parentTitle = $parentdata->title;
+		$parentTitle = returnPageField($page['parent'], "title");
+		$sort = $parentTitle .' '. $page['title'];		
 		$sort = $parentTitle .' '. $page['title'];
 	} else {
 		$sort = $page['title'];

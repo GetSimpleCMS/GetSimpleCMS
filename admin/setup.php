@@ -156,12 +156,7 @@ if(isset($_POST['submitted'])) {
 		change_plugin('InnovationPlugin.php',true);
 
 		# set the login cookie, then redirect user to secure panel		
-		create_cookie();
-		
-		# check for fatal errors, if none, redirect to 
-		if ($kill == '') {
-			redirect("support.php");
-		}
+		create_cookie();		
 	}
 }
 
@@ -194,7 +189,7 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION'));
 			}
 		?>
 		
-<?php if ($kill == '') { ?>
+<?php if ($kill == '' && $status != 'success') { ?>
 		<div class="main" >
 			<h3><?php echo $site_full_name .' '. i18n_r('INSTALLATION'); ?></h3>
 			<form action="<?php myself(); ?>" method="post" accept-charset="utf-8" >

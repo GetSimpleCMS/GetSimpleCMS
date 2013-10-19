@@ -12,8 +12,10 @@
 $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
-if (!generate_sitemap()) {
-	$error = generate_sitemap();
+
+$sitemap = generate_sitemap();
+if ($sitemap !== true) {
+	$error = $sitemap;
 } else {
 	if (isset($_GET['refresh'])) {
 		$success = i18n_r('SITEMAP_REFRESHED');

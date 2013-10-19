@@ -72,7 +72,7 @@ function innovation_show() {
 		if (!$error) {
 			$xml = @new SimpleXMLElement('<item></item>');
 			foreach($services as $var){			
-				$xml->addChild($var, $resp[$var]);
+				if(isset($resp[$var])) $xml->addChild($var, $resp[$var]);
 			}
 							
 			if (! $xml->asXML($innovation_file)) {

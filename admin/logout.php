@@ -10,6 +10,8 @@
 
 # Setup inclusions
 $load['plugin'] = true;
+
+ob_start();
 include('inc/common.php');
 
 # end it all :'(
@@ -18,4 +20,6 @@ exec_action('logout');
 
 # send back to login screen
 redirect('index.php?logout');
+ob_end_flush();
+
 ?>
