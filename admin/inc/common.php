@@ -81,26 +81,6 @@ ini_set('log_errors', 1);
 ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
 
 
-/** 
- * Init Editor globals
- * @uses $EDHEIGHT
- * @uses $EDLANG
- * @uses $EDTOOL js array string | php array | 'none' | ck toolbar_ name
- * @uses $EDOPTIONS js obj param strings, comma delimited
- */
-if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
-if (defined('GSEDITORLANG'))   { $EDLANG = GSEDITORLANG; } else {	$EDLANG = i18n_r('CKEDITOR_LANG'); }
-if (defined('GSEDITORTOOL') and !isset($EDTOOL)) { $EDTOOL = GSEDITORTOOL; }
-if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!="" ) $EDOPTIONS = GSEDITOROPTIONS; 
-
-if(!isset($EDTOOL)) $EDTOOL = 'basic'; // default gs toolbar
-
-if(strpos($EDTOOL,'[')!==false){ $EDTOOL = "[$EDTOOL]"; } // toolbar is js array
-else if(is_array($EDTOOL)) $EDTOOL = json_encode($EDTOOL); // toolbar is php array, convert to js str
-// else if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
-else if($EDTOOL == "none") $EDTOOL = null; // toolbar to use cke default
-else $EDTOOL = "'$EDTOOL'"; // toolbar is a toolbar config variable config.js config.toolbar_$var = []
-
 /**
  * Variable check to prevent debugging going off
  * @todo some of these may not even be needed anymore
@@ -170,8 +150,6 @@ if(!isset($LANG) || $LANG == '') {
 	}
 }
 
-debugLog($LANG);
-
 include_once(GSLANGPATH . $LANG . '.php');
 
 // Merge in default lang to avoid empty lang tokens
@@ -182,6 +160,26 @@ if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
 	// merge GSMERGELANG defined lang
 	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
 }	
+
+/** 
+ * Init Editor globals
+ * @uses $EDHEIGHT
+ * @uses $EDLANG
+ * @uses $EDTOOL js array string | php array | 'none' | ck toolbar_ name
+ * @uses $EDOPTIONS js obj param strings, comma delimited
+ */
+if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
+if (defined('GSEDITORLANG'))   { $EDLANG = GSEDITORLANG; } else {	$EDLANG = i18n_r('CKEDITOR_LANG'); }
+if (defined('GSEDITORTOOL') and !isset($EDTOOL)) { $EDTOOL = GSEDITORTOOL; }
+if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!="" ) $EDOPTIONS = GSEDITOROPTIONS; 
+
+if(!isset($EDTOOL)) $EDTOOL = 'basic'; // default gs toolbar
+
+if(strpos($EDTOOL,'[')!==false){ $EDTOOL = "[$EDTOOL]"; } // toolbar is js array
+else if(is_array($EDTOOL)) $EDTOOL = json_encode($EDTOOL); // toolbar is php array, convert to js str
+// else if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
+else if($EDTOOL == "none") $EDTOOL = null; // toolbar to use cke default
+else $EDTOOL = "'$EDTOOL'"; // toolbar is a toolbar config variable config.js config.toolbar_$var = []
 
 
 /**
