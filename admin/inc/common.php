@@ -81,30 +81,6 @@ ini_set('log_errors', 1);
 ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
 
 
-/**
- * Language control
- */
-if(!isset($LANG) || $LANG == '') {
-	$filenames = getFiles(GSLANGPATH);
-	$cntlang = count($filenames);
-	if ($cntlang == 1) {
-		$LANG = basename($filenames[0], ".php");
-	} elseif($cntlang > 1) {
-		$LANG = 'en_US';
-	}
-}
-include_once(GSLANGPATH . $LANG . '.php');
-
-// Merge in default lang to avoid empty lang tokens
-// if GSMERGELANG is undefined or false merge en_US
-if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
-	if($LANG !='en_US')	i18n_merge(null,"en_US");
-} else{
-	// merge GSMERGELANG defined lang
-	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
-}	
-
-
 /** 
  * Init Editor globals
  * @uses $EDHEIGHT
@@ -180,6 +156,32 @@ if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
 	$SALT = sha1($SITEURL);
 }
 $SESSIONHASH = sha1($SALT . $SITENAME);
+
+/**
+ * Language control
+ */
+if(!isset($LANG) || $LANG == '') {
+	$filenames = getFiles(GSLANGPATH);
+	$cntlang = count($filenames);
+	if ($cntlang == 1) {
+		$LANG = basename($filenames[0], ".php");
+	} elseif($cntlang > 1) {
+		$LANG = 'en_US';
+	}
+}
+
+debugLog($LANG);
+
+include_once(GSLANGPATH . $LANG . '.php');
+
+// Merge in default lang to avoid empty lang tokens
+// if GSMERGELANG is undefined or false merge en_US
+if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
+	if($LANG !='en_US')	i18n_merge(null,"en_US");
+} else{
+	// merge GSMERGELANG defined lang
+	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
+}	
 
 
 /**
