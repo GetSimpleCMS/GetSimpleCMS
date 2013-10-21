@@ -14,6 +14,8 @@ add_action('index-header','getPagesXmlValues',array(false));        // make $pag
 add_action('header', 'create_pagesxml',array('false'));             // add hook to save  $tags values 
 add_action('page-delete', 'create_pagesxml',array('true'));         // Create pages.array if file deleted
 
+getPagesXmlValues();
+
 /**
  * Get Page Content
  *
@@ -197,22 +199,22 @@ function getPagesXmlValues($chkcount=true){
         foreach ($page->children() as $opt=>$val) {
             $pagesArray[(string)$key][(string)$opt]=(string)$val;
         }
-        
       }
-	  $path = GSDATAPAGESPATH;
-	  $dir_handle = @opendir($path) or die("Unable to open $path");
-	  $filenames = array();
-	  while ($filename = readdir($dir_handle)) {
-	    $ext = substr($filename, strrpos($filename, '.') + 1);
-	    if ($ext=="xml"){
-	      $filenames[] = $filename;
-	    }
-	  }
+	  
 	  if ($chkcount==true){
-		  if (count($pagesArray)!=count($filenames)) {
-		  		create_pagesxml('true');
-	    		getPagesXmlValues(false);
-		  }
+		$path = GSDATAPAGESPATH;
+		$dir_handle = @opendir($path) or die("Unable to open $path");
+		$filenames = array();
+		while ($filename = readdir($dir_handle)) {
+			$ext = substr($filename, strrpos($filename, '.') + 1);
+			if ($ext=="xml"){
+		  		$filenames[] = $filename;
+			}
+		}
+		if (count($pagesArray)!=count($filenames)) {
+			create_pagesxml('true');
+			getPagesXmlValues(false);
+		}
 	  }
   } else {
     create_pagesxml(true);
