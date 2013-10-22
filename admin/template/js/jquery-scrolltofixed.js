@@ -145,6 +145,7 @@
                 target.css(cssOptions);
                 
                 target.addClass('scroll-to-fixed-fixed');
+                target.removeClass('scroll-to-fixed-abs');                
 
                 if (base.options.className) {
                     target.addClass(base.options.className);
@@ -178,6 +179,10 @@
             target.css(cssOptions);
 
             position = 'absolute';
+
+            target.removeClass('scroll-to-fixed-fixed');
+            target.addClass('scroll-to-fixed-abs');
+
         }
 
         // Sets the target element back to unfixed. Also, hides the spacer.
@@ -202,6 +207,7 @@
                 });
 
                 target.removeClass('scroll-to-fixed-fixed');
+                target.removeClass('scroll-to-fixed-abs');                
 
                 if (base.options.className) {
                     target.removeClass(base.options.className);
