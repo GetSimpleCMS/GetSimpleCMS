@@ -1334,6 +1334,12 @@ table.comptable tr td input.newtitle {
 
 .hint {
 	color: #777;
+	-ms-word-break: break-all;
+	    word-break: break-all;
+	    word-break: break-word; 
+	-webkit-hyphens: auto;
+	   -moz-hyphens: auto;
+	        hyphens: auto;
 }
 
 /* file listing table style */
@@ -1558,7 +1564,7 @@ table.simple td.title {
 	font-color: 12px;
 }
 
-.wrapper table td span.WARNmsg {
+.wrapper table td span.INFOmsg {
 	color: #2B5CB3;
 	font-color: 12px;
 }
