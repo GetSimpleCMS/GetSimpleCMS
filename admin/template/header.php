@@ -29,6 +29,7 @@ header('content-type: text/html; charset=utf-8');
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
 	<?php get_scripts_backend(); ?>
 		
+	<script type="text/javascript" src="template/js/jquery-scrolltofixed.js?v=<?php echo GSVERSION; ?>"></script>		
 	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
 	
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->
