@@ -304,7 +304,7 @@ function getXML($file) {
  */
 function XMLsave($xml, $file) {
 	# get_execution_time(true);
-	if(!$xml) return false;
+	if(!is_object($xml)) return false;
 	$success = @$xml->asXML($file) === TRUE;
 	# debugLog('XMLsave: ' . $file . ' ' . get_execution_time());	
 	
