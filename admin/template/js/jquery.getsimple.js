@@ -546,6 +546,7 @@ jQuery(document).ready(function () {
  	
 	$( document ).ajaxError(function( event, xhr, settings ) {
 		// notifyInfo("ajaxComplete: " + xhr.status);
+		notifyInfo("Redirecting...");
 		if(xhr.status == 401) window.location.reload();
 	});
 	
