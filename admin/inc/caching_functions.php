@@ -14,8 +14,6 @@ add_action('index-header','getPagesXmlValues',array(false));        // make $pag
 add_action('header', 'create_pagesxml',array('false'));             // add hook to save  $tags values 
 add_action('page-delete', 'create_pagesxml',array('true'));         // Create pages.array if file deleted
 
-getPagesXmlValues();
-
 /**
  * Get Page Content
  *
@@ -203,7 +201,7 @@ function getPagesXmlValues($chkcount=true){
 	  
 	  if ($chkcount==true){
 		$path = GSDATAPAGESPATH;
-		$dir_handle = @opendir($path) or die("Unable to open $path");
+		$dir_handle = @opendir($path) or die("getPageXmlValues: Unable to open $path");
 		$filenames = array();
 		while ($filename = readdir($dir_handle)) {
 			$ext = substr($filename, strrpos($filename, '.') + 1);
@@ -240,7 +238,7 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=='true'){
   $filem=GSDATAOTHERPATH."pages.xml";
 
   $path = GSDATAPAGESPATH;
-  $dir_handle = @opendir($path) or die("Unable to open $path");
+  $dir_handle = @opendir($path) or die("create_pagesxml: Unable to open $path");
   $filenames = array();
   while ($filename = readdir($dir_handle)) {
     $ext = substr($filename, strrpos($filename, '.') + 1);

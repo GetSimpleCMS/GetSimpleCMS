@@ -246,7 +246,7 @@ function isFile($file, $path, $type = 'xml') {
  * @return array
  */
 function getFiles($path) {
-	$handle = opendir($path) or die("Unable to open $path");
+	$handle = opendir($path) or die("getFiles: Unable to open $path");
 	$file_arr = array();
 	while ($file = readdir($handle)) {
 		if ($file != '.' && $file != '..') {
