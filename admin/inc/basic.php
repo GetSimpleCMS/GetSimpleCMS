@@ -522,6 +522,12 @@ function encode_quotes($text)  {
 function redirect($url) {
 	global $i18n;
 
+	if(requestIsAjax()){
+		header('HTTP/1.1 401 Unauthorized', true, 401);
+		header('WWW-Authenticate: FormBased');
+		die();
+	}	
+
 	if (!headers_sent($filename, $linenum)) {
     header('Location: '.$url);
   } else {
@@ -1184,6 +1190,8 @@ function getDef($id,$isbool = false){
 
 /**
  * Alias for checking for debug constant
+ * @since 3.2.1
+ * @return  bool true if debug enabled
  */
 function isDebug(){
 	return getDef('GSDEBUG',true);
@@ -1198,5 +1206,15 @@ function isDebug(){
 function isBeta(){
 	return strPos(get_site_version(false),"b");
 }
+
+/**
+ * Check if request is an ajax request
+ * @since  3.3.0
+ * @return bool true if ajax
+ */
+function requestIsAjax(){
+	return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || isset($_GET['ajax']);
+}
+
 
 ?>
