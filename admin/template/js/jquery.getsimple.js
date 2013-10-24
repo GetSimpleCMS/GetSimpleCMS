@@ -547,8 +547,10 @@ jQuery(document).ready(function () {
  	// catch all redirects for session timeout on HTTP 401 unauthorized
 	$( document ).ajaxError(function( event, xhr, settings ) {
 		// notifyInfo("ajaxComplete: " + xhr.status);
-		notifyInfo("Redirecting...");
-		if(xhr.status == 401) window.location.reload();
+		if(xhr.status == 401){
+			notifyInfo("Redirecting...");
+			window.location.reload();
+		}
 	});
 	
 	//end of javascript for getsimple
