@@ -544,6 +544,7 @@ jQuery(document).ready(function () {
 		return false;
 	});
  	
+ 	// catch all redirects for session timeout on HTTP 401 unauthorized
 	$( document ).ajaxError(function( event, xhr, settings ) {
 		// notifyInfo("ajaxComplete: " + xhr.status);
 		notifyInfo("Redirecting...");
