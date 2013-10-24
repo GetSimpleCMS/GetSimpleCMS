@@ -102,7 +102,7 @@ jQuery(document).ready(function () {
 	/* Listener for filter dropdown */
 	function attachFilterChangeEvent() {
 		$(document).on('change', "#imageFilter", function () {
-			console.log('attachFilterChangeEvent');
+			Debugger.log('attachFilterChangeEvent');
 			loadingAjaxIndicator.show();
 			var filterx = $(this).val();
 			$("#imageTable").find("tr").hide();

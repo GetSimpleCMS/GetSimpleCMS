@@ -522,7 +522,8 @@ function encode_quotes($text)  {
 function redirect($url) {
 	global $i18n;
 
-	if(requestIsAjax()){
+	// handle expired sessions for ajax requests
+	if(requestIsAjax() && !cookie_check()){
 		header('HTTP/1.1 401 Unauthorized', true, 401);
 		header('WWW-Authenticate: FormBased');
 		die();
