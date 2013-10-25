@@ -752,7 +752,6 @@ function list_pages_json(){
 		if ($page['parent'] != '') { 
 			$parentTitle = returnPageField($page['parent'], "title");
 			$sort = $parentTitle .' '. $page['title'];		
-			$sort = $parentTitle .' '. $page['title'];
 		} else {
 			$sort = $page['title'];
 		}
