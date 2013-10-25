@@ -102,7 +102,7 @@ jQuery(document).ready(function () {
 	/* Listener for filter dropdown */
 	function attachFilterChangeEvent() {
 		$(document).on('change', "#imageFilter", function () {
-			console.log('attachFilterChangeEvent');
+			Debugger.log('attachFilterChangeEvent');
 			loadingAjaxIndicator.show();
 			var filterx = $(this).val();
 			$("#imageTable").find("tr").hide();
@@ -557,7 +557,17 @@ jQuery(document).ready(function () {
 	}
 
 	scrollsidebar();
-
+ 	
+ 	// catch all redirects for session timeout on HTTP 401 unauthorized
+	$( document ).ajaxError(function( event, xhr, settings ) {
+		// notifyInfo("ajaxComplete: " + xhr.status);
+		if(xhr.status == 401){
+			notifyInfo("Redirecting...");
+			window.location.reload();
+		}
+	});
+	
 	//end of javascript for getsimple
+
 });
  

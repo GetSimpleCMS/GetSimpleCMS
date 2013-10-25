@@ -179,8 +179,10 @@ function sendmail($to,$subject,$message) {
 function subval_sort($a,$subkey, $order='asc',$natural = true) {
 	if (count($a) != 0 || (!empty($a))) { 
 		foreach($a as $k=>$v) {
-			$b[$k] = lowercase($v[$subkey]);
+			if(isset($v[$subkey])) $b[$k] = lowercase($v[$subkey]);
 		}
+
+		if(!isset($b)) return $a;
 
 		if($natural){
 			natsort($b);
@@ -246,7 +248,7 @@ function isFile($file, $path, $type = 'xml') {
  * @return array
  */
 function getFiles($path) {
-	$handle = opendir($path) or die("Unable to open $path");
+	$handle = opendir($path) or die("getFiles: Unable to open $path");
 	$file_arr = array();
 	while ($file = readdir($handle)) {
 		if ($file != '.' && $file != '..') {
@@ -521,6 +523,13 @@ function encode_quotes($text)  {
  */
 function redirect($url) {
 	global $i18n;
+
+	// handle expired sessions for ajax requests
+	if(requestIsAjax() && !cookie_check()){
+		header('HTTP/1.1 401 Unauthorized', true, 401);
+		header('WWW-Authenticate: FormBased');
+		die();
+	}	
 
 	if (!headers_sent($filename, $linenum)) {
     header('Location: '.$url);
@@ -1184,6 +1193,8 @@ function getDef($id,$isbool = false){
 
 /**
  * Alias for checking for debug constant
+ * @since 3.2.1
+ * @return  bool true if debug enabled
  */
 function isDebug(){
 	return getDef('GSDEBUG',true);
@@ -1198,5 +1209,15 @@ function isDebug(){
 function isBeta(){
 	return strPos(get_site_version(false),"b");
 }
+
+/**
+ * Check if request is an ajax request
+ * @since  3.3.0
+ * @return bool true if ajax
+ */
+function requestIsAjax(){
+	return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || isset($_GET['ajax']);
+}
+
 
 ?>

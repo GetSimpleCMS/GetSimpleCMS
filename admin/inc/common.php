@@ -208,6 +208,17 @@ if(isset($base)) {
 	include_once(GSADMININCPATH.'theme_functions.php');
 }
 
+function serviceUnavailable(){
+	GLOBAL $base;
+	if(isset($base)){
+		header('HTTP/1.1 503 Service Temporarily Unavailable');
+		header('Status: 503 Service Temporarily Unavailable');
+		header('Retry-After: 7200'); // in seconds
+		i18n('SERVICE_UNAVAILABLE');
+		die();
+	}
+}
+
 /**
  * Check to make sure site is already installed
  */
@@ -217,11 +228,13 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
 	# if there is no SITEURL set, then it's a fresh install. Start installation process
 	# siteurl check is not good for pre 3.0 since it will be empty, so skip and run update first.
 	if ($SITEURL == '' &&  get_gs_version() >= 3.0)	{
+		serviceUnavailable();
 		redirect($fullpath . $GSADMIN.'/install.php');
 	} 
 	else {	
-	# if an update file was included in the install package, redirect there first	
+		# if an update file was included in the install package, redirect there first	
 		if (file_exists(GSADMINPATH.'update.php') && !isset($_GET['updated']))	{
+			serviceUnavailable();
 			redirect($fullpath . $GSADMIN.'/update.php');
 		}
 	}
@@ -264,6 +277,7 @@ if(isset($load['plugin']) && $load['plugin']){
 	}
 	# include core plugin for page caching
 	include_once('caching_functions.php');
+	if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update') getPagesXmlValues();	
 	
 	# main hook for common.php
 	exec_action('common');

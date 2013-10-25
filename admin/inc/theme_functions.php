@@ -461,39 +461,7 @@ function get_site_credits($text ='Powered by ') {
  */
 function menu_data($id = null,$xml=false) {
     $menu_extract = '';
-    /*
-    $path = GSDATAPAGESPATH;
-    $dir_handle = opendir($path) or die("Unable to open $path");
-    $filenames = array();
-    while ($filename = readdir($dir_handle)) {
-        $filenames[] = $filename;
-    }
-    closedir($dir_handle);
-    
-    $count="0";
-    $pagesArray = array();
-    if (count($filenames) != 0) {
-        foreach ($filenames as $file) {
-            if ($file == "." || $file == ".." || is_dir($path . $file) || $file == ".htaccess"  ) {
-                // not a page data file
-            } else {
-				$data = getXML($path . $file);
-                if ($data->private != 'Y') {
-                    $pagesArray[$count]['menuStatus'] = $data->menuStatus;
-                    $pagesArray[$count]['menuOrder'] = $data->menuOrder;
-                    $pagesArray[$count]['menu'] = $data->menu;
-                    $pagesArray[$count]['parent'] = $data->parent;
-                    $pagesArray[$count]['title'] = $data->title;
-                    $pagesArray[$count]['url'] = $data->url;
-                    $pagesArray[$count]['private'] = $data->private;
-                    $pagesArray[$count]['pubDate'] = $data->pubDate;
-                    $count++;
-                }
-            }
-        }
-    }
-    */
-    
+
     global $pagesArray; 
 	echo "menu";
     $pagesSorted = subval_sort($pagesArray,'menuOrder');
