@@ -10,9 +10,10 @@
 
 $pagesArray = array();
 
-add_action('index-header','getPagesXmlValues',array(false));        // make $pagesArray available to the theme 
-add_action('header', 'create_pagesxml',array('false'));             // add hook to save  $tags values 
-add_action('page-delete', 'create_pagesxml',array('true'));         // Create pages.array if file deleted
+add_action('index-header','getPagesXmlValues',array(false));      // make $pagesArray available to the theme 
+add_action('header', 'getPagesXmlValues',array(false));            // 
+add_action('page-delete', 'create_pagesxml',array(true));         // Create pages.array if page deleted
+add_action('changedata-save', 'create_pagesxml',array(true));     // Create pages.array if page is updated
 
 /**
  * Get Page Content
@@ -182,8 +183,12 @@ function getChildrenMulti($page,$options=array()){
  * @since 3.1
  *  
  */
-function getPagesXmlValues($chkcount=true){
+function getPagesXmlValues($chkcount=false){
   global $pagesArray;
+
+  if($pagesArray && !$chkcount) return;
+  debugLog("getPagesXmlValues: " . $chkcount);
+
   $pagesArray=array();
   $file=GSDATAOTHERPATH."pages.xml";
   if (file_exists($file)){
@@ -210,7 +215,7 @@ function getPagesXmlValues($chkcount=true){
 			}
 		}
 		if (count($pagesArray)!=count($filenames)) {
-			create_pagesxml('true');
+			create_pagesxml(true);
 			getPagesXmlValues(false);
 		}
 	  }
@@ -233,7 +238,9 @@ function getPagesXmlValues($chkcount=true){
 function create_pagesxml($flag){
 global $pagesArray;
 
-if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=='true'){
+debugLog("create_pagesxml: " . $flag);
+if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $flag=='true'){
+  debugLog("create_pagesxml");
   $menu = '';
   $filem=GSDATAOTHERPATH."pages.xml";
 
@@ -282,7 +289,8 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=='true'){
       } // else
     } // end foreach
   }   // endif      
-  if ($flag==true){
+  if ($flag===true || $flag == 'true'){
+  	 // die("<pre>".print_r(debug_backtrace(),true)."</pre>");
   	// Plugin Authors should add custome fields etc.. here
   	$xml = exec_filter('pagecache',$xml);
     // sanity check in case the filter does not come back properly or returns null
