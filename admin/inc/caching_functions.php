@@ -47,6 +47,8 @@ function getPageContent($page,$field='content'){
  */
 function getPageField($page,$field){   
 	global $pagesArray;
+	if(!$pagesArray) getPagesXmlValues();	
+	
 	if ($field=="content"){
 	  getPageContent($page);  
 	} else {
@@ -109,6 +111,8 @@ function returnPageContent($page, $field='content', $raw = false, $nofilter = fa
  */
 function returnPageField($page,$field){   
 	global $pagesArray;
+	if(!$pagesArray) getPagesXmlValues();	
+
 	if ($field=="content"){
 	  $ret=returnPageContent($page); 
 	} else {
