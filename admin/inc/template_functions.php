@@ -1028,7 +1028,7 @@ function get_api_details($type='core', $args=null) {
 		// and we pass on our own data, it is also cached to prevent constant rechecking
 
 		if(!$response){
-			$data = '{"status":-1';
+			$data = '{"status":-1}';
 		}
 		
 		debug_api_details($data);
