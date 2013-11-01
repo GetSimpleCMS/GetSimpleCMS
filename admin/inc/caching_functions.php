@@ -191,7 +191,7 @@ function getPagesXmlValues($chkcount=false){
   global $pagesArray;
 
   if($pagesArray && !$chkcount) return;
-  debugLog("getPagesXmlValues: " . $chkcount);
+  // debugLog("getPagesXmlValues: " . $chkcount);
 
   $pagesArray=array();
   $file=GSDATAOTHERPATH."pages.xml";
@@ -242,7 +242,7 @@ function getPagesXmlValues($chkcount=false){
 function create_pagesxml($flag){
 global $pagesArray;
 
-debugLog("create_pagesxml: " . $flag);
+// debugLog("create_pagesxml: " . $flag);
 if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $flag=='true'){
   debugLog("create_pagesxml");
   $menu = '';
