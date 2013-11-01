@@ -10,8 +10,8 @@
 
 $pagesArray = array();
 
-add_action('index-header','getPagesXmlValues',array(false));      // make $pagesArray available to the theme 
-add_action('header', 'getPagesXmlValues',array(false));            // 
+add_action('index-header','getPagesXmlValues',array(false));      // make $pagesArray available to the front 
+add_action('header', 'getPagesXmlValues',array(false));           // make $pagesArray available to the back
 add_action('page-delete', 'create_pagesxml',array(true));         // Create pages.array if page deleted
 add_action('changedata-save', 'create_pagesxml',array(true));     // Create pages.array if page is updated
 
@@ -190,8 +190,8 @@ function getChildrenMulti($page,$options=array()){
 function getPagesXmlValues($chkcount=false){
   global $pagesArray;
 
-  if($pagesArray && !$chkcount) return;
   // debugLog("getPagesXmlValues: " . $chkcount);
+  if($pagesArray && !$chkcount) return;
 
   $pagesArray=array();
   $file=GSDATAOTHERPATH."pages.xml";
