@@ -11,7 +11,7 @@
 $pagesArray = array();
 
 add_action('index-header','getPagesXmlValues',array(false));      // make $pagesArray available to the front 
-add_action('header', 'getPagesXmlValues',array(false));           // make $pagesArray available to the back
+add_action('header', 'getPagesXmlValues',array(true));           // make $pagesArray available to the back
 add_action('page-delete', 'create_pagesxml',array(true));         // Create pages.array if page deleted
 add_action('changedata-save', 'create_pagesxml',array(true));     // Create pages.array if page is updated
 
@@ -190,8 +190,8 @@ function getChildrenMulti($page,$options=array()){
 function getPagesXmlValues($chkcount=false){
   global $pagesArray;
 
-  // debugLog("getPagesXmlValues: " . $chkcount);
-  if($pagesArray && !$chkcount) return;
+   // debugLog("getPagesXmlValues: " . $chkcount);
+   if($pagesArray && !$chkcount) return;
 
   $pagesArray=array();
   $file=GSDATAOTHERPATH."pages.xml";
@@ -219,13 +219,11 @@ function getPagesXmlValues($chkcount=false){
 			}
 		}
 		if (count($pagesArray)!=count($filenames)) {
-			create_pagesxml(true);
-			getPagesXmlValues(false);
+			if(create_pagesxml(true)) getPagesXmlValues(false);
 		}
 	  }
   } else {
-    create_pagesxml(true);
-    getPagesXmlValues(false);
+    if(create_pagesxml(true)) getPagesXmlValues(false);
   }
   
 }
@@ -244,7 +242,7 @@ global $pagesArray;
 
 // debugLog("create_pagesxml: " . $flag);
 if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $flag=='true'){
-  debugLog("create_pagesxml");
+  // debugLog("create_pagesxml");
   $menu = '';
   $filem=GSDATAOTHERPATH."pages.xml";
 
@@ -301,6 +299,7 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $fl
     if($xml){ 
     	$xml->asXML($filem);
   		exec_action('pagecache-saved');
+  		return true;
   	}	
   }
 }
