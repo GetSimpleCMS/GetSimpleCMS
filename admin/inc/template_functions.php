@@ -1122,7 +1122,8 @@ function generate_sitemap() {
 		//create xml file
 		$file = GSROOTPATH .'sitemap.xml';
 		$xml = exec_filter('sitemap',$xml);
-		if(XMLsave($xml, $file)) exec_action('sitemap-saved');
+		XMLsave($xml, $file)
+		exec_action('sitemap-aftersave');
 	}
 	
 	if (!defined('GSDONOTPING')) {

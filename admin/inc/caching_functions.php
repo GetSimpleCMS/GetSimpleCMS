@@ -298,9 +298,9 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $fl
     // sanity check in case the filter does not come back properly or returns null
     if($xml){ 
     	$xml->asXML($filem);
-  		exec_action('pagecache-saved');
   		return true;
   	}	
+  	exec_action('pagecache-aftersave');
   }
 }
 }
