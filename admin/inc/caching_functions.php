@@ -13,7 +13,7 @@ $pagesArray = array();
 add_action('index-header','getPagesXmlValues',array(false));      // make $pagesArray available to the front 
 add_action('header', 'getPagesXmlValues',array(true));           // make $pagesArray available to the back
 add_action('page-delete', 'create_pagesxml',array(true));         // Create pages.array if page deleted
-add_action('changedata-save', 'create_pagesxml',array(true));     // Create pages.array if page is updated
+add_action('changedata-aftersave', 'create_pagesxml',array(true));     // Create pages.array if page is updated
 
 /**
  * Get Page Content
@@ -240,9 +240,11 @@ function getPagesXmlValues($chkcount=false){
 function create_pagesxml($flag){
 global $pagesArray;
 
+$success = '';
+
 // debugLog("create_pagesxml: " . $flag);
 if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $flag=='true'){
-  // debugLog("create_pagesxml");
+  // debugLog("create_pagesxml proceeding");
   $menu = '';
   $filem=GSDATAOTHERPATH."pages.xml";
 
@@ -292,15 +294,17 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $fl
     } // end foreach
   }   // endif      
   if ($flag===true || $flag == 'true'){
-  	 // die("<pre>".print_r(debug_backtrace(),true)."</pre>");
+
   	// Plugin Authors should add custome fields etc.. here
   	$xml = exec_filter('pagecache',$xml);
+
     // sanity check in case the filter does not come back properly or returns null
     if($xml){ 
-    	$xml->asXML($filem);
-  		return true;
+    	$success = $xml->asXML($filem);
   	}	
+  	// debugLog("create_pagesxml saved: ". $success);
   	exec_action('pagecache-aftersave');
+  	return $success;
   }
 }
 }
