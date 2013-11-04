@@ -139,6 +139,7 @@ function returnPageField($page,$field){
  */
 function getChildren($page){
 	global $pagesArray;
+	if(!$pagesArray) getPagesXmlValues();		
 	$returnArray = array();
 	foreach ($pagesArray as $key => $value) {
 	    if ($pagesArray[$key]['parent']==$page){
@@ -163,6 +164,7 @@ function getChildren($page){
 
 function getChildrenMulti($page,$options=array()){
 	global $pagesArray;
+	if(!$pagesArray) getPagesXmlValues();		
 	$count=0;
 	$returnArray = array();
 	foreach ($pagesArray as $key => $value) {
