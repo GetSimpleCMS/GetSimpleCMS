@@ -708,6 +708,53 @@ function updateSlugs($existingUrl, $newurl=null){
 
 
 /**
+ * Get Link Menu Array
+ * 
+ * get an array of menu links sorted by heirarchy and indented
+ * 
+ * @uses $pagesSorted
+ *
+ * @since  3.3.0
+ * @param string $parent
+ * @param array $array
+ * @param int $level
+ * @return array menuitems title,url,parent
+ */
+function get_link_menu_array($parent='', $array=array(), $level=0) {
+	
+	global $pagesSorted;
+	
+	$items=array();
+	// $pageList=array();
+
+	foreach ($pagesSorted as $page) {
+		if ($page['parent']==$parent){
+			$items[(string)$page['url']]=$page;
+		}	
+	}	
+
+	if (count($items)>0){
+		foreach ($items as $page) {
+		  	$dash="";
+		  	if ($page['parent'] != '') {
+	  			$page['parent'] = $page['parent']."/";
+	  		}
+			for ($i=0;$i<=$level-1;$i++){
+				if ($i!=$level-1){
+	  				$dash .= utf8_encode("\xA0\xA0"); // outer level
+				} else {
+					$dash .= '- '; // inner level
+				}
+			} 
+			array_push($array, array( $dash . $page['title'], find_url($page['url'], $page['parent'])));
+			// recurse submenus
+			$array=get_link_menu_array((string)$page['url'], $array,$level+1);	 
+		}
+	}
+	return $array;
+}
+
+/**
  * List Pages Json
  *
  * This is used by the CKEditor link-local plugin function: ckeditor_add_page_link()
@@ -722,21 +769,25 @@ function updateSlugs($existingUrl, $newurl=null){
  *
  * @returns array
  */
-function list_pages_json() {
-	// get local pages list for ckeditor local page link selector
-	
-	global $pagesArray;
+function list_pages_json(){	
+	GLOBAL $pagesArray,$pagesSorted;
 
-	$pagesSorted = subval_sort($pagesArray,'sort');
-	$pageList = array();
-	if (count($pagesSorted) != 0) { 
-		foreach ($pagesSorted as $page) {
-			if ($page['parent'] != '') {$page['parent'] = $page['parent']."/"; $dash = '- '; } else { $dash = ""; }
-			if ($page['title'] == '' ) { $page['title'] = '[No Title] '.$page['url']; }
-			array_push($pageList, array( $dash . $page['title'], find_url($page['url'],$page['parent'])));
+	$pagesArray_tmp = array();
+	$count = 0;
+	foreach ($pagesArray as $page) {
+		if ($page['parent'] != '') { 
+			$parentTitle = returnPageField($page['parent'], "title");
+			$sort = $parentTitle .' '. $page['title'];		
+		} else {
+			$sort = $page['title'];
 		}
+		$page = array_merge($page, array('sort' => $sort));
+		$pagesArray_tmp[$count] = $page;
+		$count++;
 	}
-	return json_encode($pageList);
+	$pagesSorted = subval_sort($pagesArray_tmp,'sort');
+
+	return json_encode(get_link_menu_array());
 }
 
 /**
@@ -1003,7 +1054,7 @@ function get_api_details($type='core', $args=null) {
 		// and we pass on our own data, it is also cached to prevent constant rechecking
 
 		if(!$response){
-			$data = '{"status":-1';
+			$data = '{"status":-1}';
 		}
 		
 		debug_api_details($data);
@@ -1098,7 +1149,7 @@ function generate_sitemap() {
 		$file = GSROOTPATH .'sitemap.xml';
 		$xml = exec_filter('sitemap',$xml);
 		XMLsave($xml, $file);
-		exec_action('sitemap-saved');
+		exec_action('sitemap-aftersave');
 	}
 	
 	if (!defined('GSDONOTPING')) {

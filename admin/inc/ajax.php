@@ -19,7 +19,9 @@ if(isset($_REQUEST['list_pages_json'])) {
 	include_once('plugin_functions.php');	
 	include_once('caching_functions.php');
 	getPagesXmlValues();
+	header('Content-type: application/json');	
 	echo list_pages_json();
+	die();
 }
 
 // Make sure register globals don't make this hackable again.

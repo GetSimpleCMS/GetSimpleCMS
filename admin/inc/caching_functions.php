@@ -10,10 +10,10 @@
 
 $pagesArray = array();
 
-add_action('index-header','getPagesXmlValues',array(false)); // make $pagesArray available to the theme 
-add_action('header', 'getPagesXmlValues',array(false));           // add hook to save  $tags values 
-add_action('page-delete', 'create_pagesxml',array(true));         // Create pages.array if file deleted
-add_action('changedata-save', 'create_pagesxml',array(true));     // Create pages.array if file deleted
+add_action('index-header','getPagesXmlValues',array(false));      // make $pagesArray available to the front 
+add_action('header', 'getPagesXmlValues',array(true));           // make $pagesArray available to the back
+add_action('page-delete', 'create_pagesxml',array(true));         // Create pages.array if page deleted
+add_action('changedata-aftersave', 'create_pagesxml',array(true));     // Create pages.array if page is updated
 
 
 /**
@@ -48,6 +48,8 @@ function getPageContent($page,$field='content'){
  */
 function getPageField($page,$field){   
 	global $pagesArray;
+	if(!$pagesArray) getPagesXmlValues();	
+	
 	if ($field=="content"){
 		getPageContent($page);  
 	} else {
@@ -110,6 +112,8 @@ function returnPageContent($page, $field='content', $raw = false, $nofilter = fa
  */
 function returnPageField($page,$field){   
 	global $pagesArray;
+	if(!$pagesArray) getPagesXmlValues();	
+
 	if ($field=="content"){
 		$ret=returnPageContent($page); 
 	} else {
@@ -136,6 +140,7 @@ function returnPageField($page,$field){
  */
 function getChildren($page){
 	global $pagesArray;
+	if(!$pagesArray) getPagesXmlValues();		
 	$returnArray = array();
 	foreach ($pagesArray as $key => $value) {
 		if ($pagesArray[$key]['parent']==$page){
@@ -160,6 +165,7 @@ function getChildren($page){
 
 function getChildrenMulti($page,$options=array()){
 	global $pagesArray;
+	if(!$pagesArray) getPagesXmlValues();		
 	$count=0;
 	$returnArray = array();
 	foreach ($pagesArray as $key => $value) {
@@ -212,6 +218,7 @@ function getPagesXmlValues($refresh=true){
 		create_pagesxml(true);
 		return;
 	}
+      }
 
 	// check for changes
 	if ((bool)$refresh===true and pageCacheCountDiffers()){

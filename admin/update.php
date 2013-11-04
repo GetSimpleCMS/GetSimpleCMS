@@ -172,7 +172,7 @@ if(!isset($error) && !isset($message)) redirect("./?updated=1");
 
 // show errors or messages
 if(isset($error)) $message.= i18n_r('ER_REQ_PROC_FAIL');
-else $message.= "<div class=\"notify notify_ok\">".i18n_r('SETTINGS_UPDATED')."</div>";
+else $message.= "<div class=\"notify notify_ok\">".i18n_r('SITE_UPGRADED')."</div>";
 
 get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE')); 
 

@@ -140,52 +140,6 @@ if (version_compare(PHP_VERSION, "5")  >= 0) {
 	foreach ($_GET as &$xss) $xss = antixss($xss);
 }
 
-/**
- * Language control
- */
-if(!isset($LANG) || $LANG == '') {
-	$filenames = getFiles(GSLANGPATH);
-	$cntlang = count($filenames);
-	if ($cntlang == 1) {
-		$LANG = basename($filenames[0], ".php");
-	} elseif($cntlang > 1) {
-		$LANG = 'en_US';
-	}
-}
-
-include_once(GSLANGPATH . $LANG . '.php');
-
-// Merge in default lang to avoid empty lang tokens
-// if GSMERGELANG is undefined or false merge en_US
-if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
-	if($LANG !='en_US')	i18n_merge(null,"en_US");
-} else{
-	// merge GSMERGELANG defined lang
-	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
-}	
-
-
-/**
- * Init Editor globals
- * @uses $EDHEIGHT
- * @uses $EDLANG
- * @uses $EDTOOL js array string | php array | 'none' | ck toolbar_ name
- * @uses $EDOPTIONS js obj param strings, comma delimited
- */
-if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
-if (defined('GSEDITORLANG'))   { $EDLANG = GSEDITORLANG; } else {	$EDLANG = i18n_r('CKEDITOR_LANG'); }
-if (defined('GSEDITORTOOL') and !isset($EDTOOL)) { $EDTOOL = GSEDITORTOOL; }
-if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!="" ) $EDOPTIONS = GSEDITOROPTIONS; 
-
-if(!isset($EDTOOL)) $EDTOOL = 'basic'; // default gs toolbar
-
-if(strpos($EDTOOL,'[')!==false){ $EDTOOL = "[$EDTOOL]"; } // toolbar is js array
-else if(is_array($EDTOOL)) $EDTOOL = json_encode($EDTOOL); // toolbar is php array, convert to js str
-// else if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
-else if($EDTOOL == "none") $EDTOOL = null; // toolbar to use cke default
-else $EDTOOL = "'$EDTOOL'"; // toolbar is a toolbar config variable config.js config.toolbar_$var = []
-
-/**
  * Variable check to prevent debugging going off
  * @todo some of these may not even be needed anymore
  */
@@ -231,19 +185,6 @@ if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 	$USR = null;
 }
 
-/**
- * Language control
- */
-if(!isset($LANG) || $LANG == '') {
-	$filenames = getFiles(GSLANGPATH);
-	$cntlang = count($filenames);
-	if ($cntlang == 1) {
-		$LANG = basename($filenames[0], ".php");
-	} elseif($cntlang > 1) {
-		$LANG = 'en_US';
-	}
-}
-include_once(GSLANGPATH . $LANG . '.php');
 
 
 /** grab authorization and security data */
@@ -264,6 +205,55 @@ else {
 
 $SESSIONHASH = sha1($SALT . $SITENAME);
 
+/**
+ * Language control
+ */
+if(!isset($LANG) || $LANG == '') {
+	$filenames = getFiles(GSLANGPATH);
+	$cntlang = count($filenames);
+	if ($cntlang == 1) {
+		$LANG = basename($filenames[0], ".php");
+	} elseif($cntlang > 1) {
+		$LANG = 'en_US';
+	}
+}
+
+include_once(GSLANGPATH . $LANG . '.php');
+
+// Merge in default lang to avoid empty lang tokens
+// if GSMERGELANG is undefined or false merge en_US
+if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
+	if($LANG !='en_US')	i18n_merge(null,"en_US");
+} else{
+	// merge GSMERGELANG defined lang
+	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
+}	
+
+/** 
+ * Init Editor globals
+ * @uses $EDHEIGHT
+ * @uses $EDLANG
+ * @uses $EDTOOL js array string | php array | 'none' | ck toolbar_ name
+ * @uses $EDOPTIONS js obj param strings, comma delimited
+ */
+if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
+if (defined('GSEDITORLANG'))   { $EDLANG = GSEDITORLANG; } else {	$EDLANG = i18n_r('CKEDITOR_LANG'); }
+if (defined('GSEDITORTOOL') and !isset($EDTOOL)) { $EDTOOL = GSEDITORTOOL; }
+if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!="" ) $EDOPTIONS = GSEDITOROPTIONS; 
+
+if(!isset($EDTOOL)) $EDTOOL = 'basic'; // default gs toolbar
+
+if(strpos($EDTOOL,'[')!==false){ $EDTOOL = "[$EDTOOL]"; } // toolbar is js array
+else if(is_array($EDTOOL)) $EDTOOL = json_encode($EDTOOL); // toolbar is php array, convert to js str
+// else if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
+else if($EDTOOL == "none") $EDTOOL = null; // toolbar to use cke default
+else $EDTOOL = "'$EDTOOL'"; // toolbar is a toolbar config variable config.js config.toolbar_$var = []
+
+
+/**
+ * Timezone setup
+ */
+
 // set defined timezone from config if not set on user
 if( (!isset($TIMEZONE) || trim($TIMEZONE) == '' ) && defined('GSTIMEZONE') ){
 	$TIMEZONE = GSTIMEZONE;
@@ -281,6 +271,17 @@ if(isset($base)) {
 	include_once(GSADMININCPATH.'theme_functions.php');
 }
 
+function serviceUnavailable(){
+	GLOBAL $base;
+	if(isset($base)){
+		header('HTTP/1.1 503 Service Temporarily Unavailable');
+		header('Status: 503 Service Temporarily Unavailable');
+		header('Retry-After: 7200'); // in seconds
+		i18n('SERVICE_UNAVAILABLE');
+		die();
+	}
+}
+
 /**
  * Check to make sure site is already installed
  */
@@ -290,11 +291,13 @@ if (notInInstall()) {
 	# if there is no SITEURL set, then it's a fresh install. Start installation process
 	# siteurl check is not good for pre 3.0 since it will be empty, so skip and run update first.
 	if ($SITEURL == '' &&  get_gs_version() >= 3.0)	{
+		serviceUnavailable();
 		redirect($fullpath . $GSADMIN.'/install.php');
 	} 
 	else {	
 	# if an update file was included in the install package, redirect there first	
 		if (file_exists(GSADMINPATH.'update.php') && !isset($_GET['updated']))	{
+			serviceUnavailable();
 			redirect($fullpath . $GSADMIN.'/update.php');
 		}
 	}

@@ -45,6 +45,8 @@ $i18n = array(
 "SELECT_LANGUAGE"         =>	"Select your language",
 "CONTINUE_SETUP"          =>	"Continue with Setup",
 "DOWNLOAD_LANG"           =>	"Download Languages",
+"SITE_UPDATED"			=>	"Your site has been Updated",
+"SERVICE_UNAVAILABLE"	=>	"This page is temporarily unavailable",
 
 /* 
 * For: pages.php
@@ -531,6 +533,7 @@ $i18n = array(
 "API_DISCLAIMER"          =>	"By enabling this API you are allowing any external application that has a copy of your key to have access to your website's data. <b>Only share this key with applications you trust.</b>",
 "API_REGEN_DISCLAIMER"    =>	"When you regenerate your API Key, you will need to enter the new key into any external application using this API to connect to your website.",
 "API_CONFIRM"             =>	"ARE YOU SURE?",
+
 
 "X"                       =>	"not translated",
 
