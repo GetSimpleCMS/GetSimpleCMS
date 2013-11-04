@@ -1286,14 +1286,11 @@ function requestIsAjax(){
  * @return bool true if on false if not, null if unknown
  */
 function hasModRewrite(){
-
 	if ( function_exists('apache_get_modules') ) {
 		if(in_arrayi('mod_rewrite',apache_get_modules()) ) {	
 			return true;
 		}	
-		return false;
 	}
-
 	if(getenv('HTTP_MOD_REWRITE') == 'On') return true;
 }
 

@@ -119,10 +119,10 @@ echo '<div class="bodycontent clearfix">
 						echo '<tr><td>Apache web server*</td><td>'.i18n_r('INSTALLED').'</td><td><span class="label label-ok">'.i18n_r('OK').'</span></td></tr>';
 						// check mod_rewrite
 						$moderewritestatus = hasModRewrite();
-						if ( hasModRewrite() === false ) {
+						if ( $moderewritestatus === false ) {
 							echo '<tr><td>Apache Mod Rewrite</td><td><span class="WARNmsg" >'.i18n_r('NOT_INSTALLED').'</span></td><td><span class="label label-warn">'.i18n_r('WARNING').'</span></td></tr>';
 						}
-						else if( hasModRewrite() === true ) {
+						else if( $moderewritestatus === true ) {
 							echo '<tr><td>Apache Mod Rewrite</td><td>'.i18n_r('INSTALLED').'</td><td><span class="label label-ok">'.i18n_r('OK').'</span></td></tr>';
 						}
 						else {
