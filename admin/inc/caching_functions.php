@@ -218,7 +218,6 @@ function getPagesXmlValues($refresh=true){
 		create_pagesxml(true);
 		return;
 	}
-      }
 
 	// check for changes
 	if ((bool)$refresh===true and pageCacheCountDiffers()){

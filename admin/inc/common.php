@@ -140,6 +140,7 @@ if (version_compare(PHP_VERSION, "5")  >= 0) {
 	foreach ($_GET as &$xss) $xss = antixss($xss);
 }
 
+/**
  * Variable check to prevent debugging going off
  * @todo some of these may not even be needed anymore
  */
