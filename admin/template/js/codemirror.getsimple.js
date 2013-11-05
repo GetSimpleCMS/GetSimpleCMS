@@ -1,42 +1,45 @@
-
-// setup codemirror instances and functions	
-
-if(typeof editorTheme === 'undefined'){
-	editorTheme = 'default';
-}	
-
-var editorMode = 'php';
-
-var editorConfig = {
-	mode                      : editorMode,
-	theme                     : editorTheme,
-	lineNumbers               : true,
-	matchBrackets             : true,
-	indentWithTabs            : true,
-	indentUnit                : 4,
-	enterMode                 : "keep",
-	tabMode                   : "shift",
-	fixedGutter               : true,
-	styleActiveLine           : true,
-	matchBrackets             : true, // highlight matching brackets when cusrsor is next to one
-	autoCloseBrackets         : true, // auto close brackets when typing
-	showTrailingSpace         : true, // adds the CSS class cm-trailingspace to stretches of whitespace at the end of lines.
-	highlightSelectionMatches : true, // {showToken                                                                          : /\w/}, // for word boundaries
-	viewportMargin            : Infinity, // for autosizing
-	// lineWrapping			  : true,
-	// matchTags              : true, // adds class CodeMirror-matchingbrackets to tags contents
-	saveFunction              : function(cm) { customSave(cm); },
-	extraKeys: {
-		"Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
-		"F11"    : function(cm) { setFullScreen(cm, !isFullScreen(cm)); },
-		"Esc"    : function(cm) { if (isFullScreen(cm)) setFullScreen(cm, false); },
-		"Ctrl-S" : function(cm) { customSave(cm);	}
-	}
-}
-
+var editorConfig;
+var editorUserConfig;
+var editorTheme;
+var editorMode;
 
 jQuery(document).ready(function () {
-	
+
+	// setup codemirror instances and functions	
+
+	if(typeof editorTheme === 'undefined'){
+		editorTheme = 'default';
+	}	
+
+	var editorMode = 'php';
+
+	editorConfig = {
+		mode                      : editorMode,
+		theme                     : editorTheme,
+		lineNumbers               : true,
+		matchBrackets             : true,
+		indentWithTabs            : true,
+		indentUnit                : 4,
+		enterMode                 : "keep",
+		tabMode                   : "shift",
+		fixedGutter               : true,
+		styleActiveLine           : true,
+		matchBrackets             : true, // highlight matching brackets when cusrsor is next to one
+		autoCloseBrackets         : true, // auto close brackets when typing
+		showTrailingSpace         : true, // adds the CSS class cm-trailingspace to stretches of whitespace at the end of lines.
+		highlightSelectionMatches : true, // {showToken                                                                          : /\w/}, // for word boundaries
+		viewportMargin            : Infinity, // for autosizing
+		// lineWrapping			  : true,
+		// matchTags              : true, // adds class CodeMirror-matchingbrackets to tags contents
+		saveFunction              : function(cm) { customSave(cm); },
+		extraKeys: {
+			"Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
+			"F11"    : function(cm) { setFullScreen(cm, !isFullScreen(cm)); },
+			"Esc"    : function(cm) { if (isFullScreen(cm)) setFullScreen(cm, false); },
+			"Ctrl-S" : function(cm) { customSave(cm);	}
+		}
+	}
+
 	// do not know what this does, looks like old ctrl+q fold debouncer
 	// function keyEvent(cm, e) {
 	// 	if (e.keyCode == 81 && e.ctrlKey) {
@@ -70,13 +73,13 @@ jQuery(document).ready(function () {
 		$(textarea).data('editor', editor);
 
 		editor.on('change', function(cm){
-				cm.hasChange = true;
+			cm.hasChange = true;
 		});
 
 		var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder,'...');
 		editor.on("gutterClick", foldFunc);
 
-		// add in resizing
+		// add resisable capability to codemirror
 		$(editor.getWrapperElement()).resizable({
 			// helper: "outline", // less intensive resizing
 			resize: function(e,ui) {
@@ -84,8 +87,8 @@ jQuery(document).ready(function () {
 			},
 			stop: function(e,ui) {
 				// Debugger.log(ui.originalElement);
-				ui.originalElement.css('min-height','25px');				
-				ui.originalElement.css('max-height','none');
+				ui.originalElement.css('min-height','25px'); // clamp min height				
+				ui.originalElement.css('max-height','none'); 
 				editor.refresh();
 			}
 		});

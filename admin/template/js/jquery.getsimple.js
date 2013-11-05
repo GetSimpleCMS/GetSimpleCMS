@@ -202,14 +202,19 @@ jQuery(document).ready(function () {
 		$e.preventDefault();
 		loadingAjaxIndicator.show();
 		var id = $("#id").val();
-		$("#divTxt").append('<div style="display:none;" class="compdiv codewrap" id="section-' + id + '"><table class="comptable"><tr><td><b>Title: </b><input type="text" class="text newtitle" name="title[]" value="" /></td><td class="delete"><a href="#" title="Delete Component:?" class="delcomponent" id="del-' + id + '" rel="' + id + '" >&times;</a></td></tr></table><textarea name="val[]" class="code_edit"></textarea><input type="hidden" name="slug[]" value="" /><input type="hidden" name="id[]" value="' + id + '" /><div>');
+		$("#divTxt").prepend('<div style="display:none;" class="compdiv codewrap" id="section-' + id + '"><table class="comptable"><tr><td><b>Title: </b><input type="text" class="text newtitle" name="title[]" value="" /></td><td class="delete"><a href="#" title="Delete Component:?" class="delcomponent" id="del-' + id + '" rel="' + id + '" >&times;</a></td></tr></table><textarea name="val[]" class="code_edit"></textarea><input type="hidden" name="slug[]" value="" /><input type="hidden" name="id[]" value="' + id + '" /><div>');
 		$("#section-" + id).slideToggle('fast');
 		id = (id - 1) + 2;
 		$("#id").val(id); // bump count
 		loadingAjaxIndicator.fadeOut(500);
 		$('#submit_line').fadeIn(); // fadein in case no components exist
-		var editor = jQuery().editorFromTextarea($("#divTxt").find('textarea').last().get(0));
-		$(editor.getWrapperElement()).css('min-height',100);
+		
+		// add codemirror to new textarea
+		var editor = jQuery().editorFromTextarea($("#divTxt").find('textarea').first().get(0));
+		// retain autosizing but make sure the editor start larger than 1 line high
+		$(editor.getWrapperElement()).find('.CodeMirror-scroll').css('min-height',100);
+		editor.refresh();
+
 		$("#divTxt").find('input').get(0).focus();
 	});
 
@@ -707,6 +712,7 @@ jQuery(document).ready(function () {
 		var parts = theme.split(' ');
 		callback = function () {
 			  cm_theme_update_editors(theme);
+			  editorConfig.theme = theme;
 			}
 		if(theme == "default") cm_theme_update_editors(theme);
 		else loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css", callback );

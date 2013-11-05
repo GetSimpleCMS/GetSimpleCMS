@@ -2218,7 +2218,7 @@ a.disabled:visited {
 }
 
 #theme_edit_code .CodeMirror{
-	border:1px solid #E8E8E8;
+	/*border:1px solid #E8E8E8;*/
 	border-radius:2px;
 }
 
@@ -2496,13 +2496,12 @@ a.disabled:visited {
 }
 
 
-.compdiv.codewrap .CodeMirror{
+.codewrap .CodeMirror{
     border: 3px solid rgba(128,128, 128, .15);
     -webkit-background-clip: padding-box ; /* for Safari */
     background-clip: padding-box ; /* for IE9+, Firefox 4+, Opera, Chrome */
 }    
 
-.compdiv.codewrap .CodeMirror.CodeMirror-fullscreen{
+.codewrap .CodeMirror.CodeMirror-fullscreen{
     border: none;
-
 }    
