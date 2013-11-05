@@ -252,6 +252,7 @@ echo '<div class="bodycontent clearfix">
 				echo '<table class="highlight healthcheck">';
 
 					$dirsArray = array(
+						GSROOTPATH,
 						GSDATAPATH, 
 						GSDATAUPLOADPATH, 
 						GSUSERSPATH, 
@@ -272,6 +273,10 @@ echo '<div class="bodycontent clearfix">
 					$noFile = array(
 						GSTHEMESPATH
 					);
+
+					$required = array(
+						GSROOTPATH
+					);						
 
 					foreach($dirsArray as $path){
 						$relpath = '/'.str_replace(GSROOTPATH,'',$path);
@@ -305,6 +310,11 @@ echo '<div class="bodycontent clearfix">
 								$AD = "Allow from all";
 								$ADtran = 'GOOD_A_FILE';
 							}	
+							else if(in_array($path, $required)){
+								// file is allow file
+								$AD = "RewriteBase";
+								$ADtran = 'GOOD_FILE';
+							}								
 							else {
 								// file is deny file
 								$AD = "Deny from all";

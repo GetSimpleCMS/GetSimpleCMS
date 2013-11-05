@@ -260,6 +260,7 @@ $i18n = array(
 "NO_FILE"                 =>	"No file",
 "GOOD_D_FILE"             =>	"Good 'Deny' file",
 "GOOD_A_FILE"             =>	"Good 'Allow' file",
+"GOOD_FILE"               =>	"Good file",
 "CANNOT_DEL_FILE"         =>	"Cannot Delete File",
 "DOWNLOAD"                =>	"Download",
 "WRITABLE"                =>	"Writable",
