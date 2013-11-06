@@ -97,20 +97,24 @@ $.getJSON("inc/ajax.php?list_pages_json=1", function (data){
  * This is used by the CKEditor to link to internal pages
 **/
 CKEDITOR.on( 'dialogDefinition', function( ev )	{
-	if ((ev.editor != editor) || (ev.data.name != 'link')) return;
-
-	// Overrides definition.
+	if ((ev.editor != editor) || (ev.data.name != 'link') || !menuItems) return;
+	
+	// modify dialog definition for "link" dialog else return
+	
 	var definition = ev.data.definition;
+	
+	// override onfocus handler
+	// Supposed to select the select box, not working
 	definition.onFocus = CKEDITOR.tools.override(definition.onFocus, function(original) {
 		return function() {
 			original.call(this);
 				if (this.getValueOf('info', 'linkType') == 'localPage') {
-					// this.getContentElement('info', 'localPage_path').select();
+					// this.getContentElement('info', 'localPage_path').select(); // disabled, object has no method select
 				}
 		};
 	});
 
-	// Overrides linkType definition.
+	// Add localpage to linktypes
 	var infoTab = definition.getContents('info');
 	var content = CKEgetById(infoTab.elements, 'linkType');
 
@@ -131,6 +135,8 @@ CKEDITOR.on( 'dialogDefinition', function( ev )	{
 			}
 		}]
 	});
+
+	// hide and show tabs and stuff as typ eis changed
 	content.onChange = CKEDITOR.tools.override(content.onChange, function(original) {
 		return function() {
 			original.call(this);
@@ -151,12 +157,16 @@ CKEDITOR.on( 'dialogDefinition', function( ev )	{
 			}
 		};
 	});
+
 	content.setup = function(data) {
+		// if no url set selection to localpage
 		if (!data.type || (data.type == 'url') && !data.url) {
-			data.type = 'localPage';
+			data.type = 'localPage'; // default to localPage
 		}
 		else if (data.url && !data.url.protocol && data.url.url) {
+		// already a link
 			if (path) {
+				// what is path, this seems to do nothing
 				data.type = 'localPage';
 				data.localPage_path = path;
 				delete data.url;
@@ -164,6 +174,7 @@ CKEDITOR.on( 'dialogDefinition', function( ev )	{
 		}
 		this.setValue(data.type);
 	};
+
 	content.commit = function(data) {
 		data.type = this.getValue();
 		if (data.type == 'localPage') {
