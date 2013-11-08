@@ -648,9 +648,12 @@ jQuery(document).ready(function () {
 
 	$('#themeEditForm .cancel').on('click',function(e){
 		e.preventDefault();
-		$('#codetext').data('editor').hasChange = false;
+		editor = $('#codetext').data('editor');
+		if(editor){
+			editor.hasChange = false;
+			editor.setValue($(editor.getTextArea()).val());
+		}	
 		notifyWarn('Updates cancelled').removeit();
-		//todo: reload file to discard changes
 	});
 
 	// ajax save theme file
