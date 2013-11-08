@@ -650,8 +650,8 @@ jQuery(document).ready(function () {
 		e.preventDefault();
 		editor = $('#codetext').data('editor');
 		if(editor){
-			editor.hasChange = false;
 			editor.setValue($(editor.getTextArea()).val());
+			editor.hasChange = false;
 		}	
 		notifyWarn('Updates cancelled').removeit();
 	});
