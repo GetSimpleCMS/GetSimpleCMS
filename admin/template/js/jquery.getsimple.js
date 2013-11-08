@@ -469,11 +469,13 @@ jQuery(document).ready(function () {
 		$("#menu-items").css("display", "none");
 	}
  
+ 	// adds sidebar submit buttons and fire clicks
 	var edit_line = $('#submit_line span').html();
 	$('#js_submit_line').html(edit_line);
 	$("#js_submit_line input.submit").on("click", function () {
 		$("#submit_line input.submit").trigger('click');
 	});
+
 	$("#save-close a").on("click", function ($e) {
 		$e.preventDefault();
 		$('input[name=redirectto]').val('pages.php');
@@ -528,19 +530,6 @@ jQuery(document).ready(function () {
 		if (checkChanged()) return; // todo: change selection back
 		$('#theme_filemanager').html('Loading...');
 		updateTheme(thmfld);
-	});
-
- 	// todo: maybe just use on submit event ?
-	$('#themeEditForm .submit').on('click',function(e){
-		e.preventDefault();
-		themeFileSave($('#codetext').data('editor'));
-	});
-
-	$('#themeEditForm .cancel').on('click',function(e){
-		e.preventDefault();
-		$('#codetext').data('editor').hasChange = false;
-		notifyWarn('Updates cancelled').removeit();
-		//todo: reload file to discard changes
 	});
 
 	// editor theme selector
@@ -651,7 +640,90 @@ jQuery(document).ready(function () {
 		$('#theme_filemanager a.open').removeClass('open'); 
 	}
 
+	// ajaxify theme submit
+	$('#themeEditForm').on('submit',function(e){
+		e.preventDefault();
+		themeFileSave($('#codetext').data('editor'));
+	});
+
+	$('#themeEditForm .cancel').on('click',function(e){
+		e.preventDefault();
+		$('#codetext').data('editor').hasChange = false;
+		notifyWarn('Updates cancelled').removeit();
+		//todo: reload file to discard changes
+	});
+
+	// ajax save theme file
 	themeFileSave = function(cm){
+		loadingAjaxIndicator.show('fast');
+
+		cm.save(); // copy cm back to textarea
+
+		var dataString = $("#themeEditForm").serialize();
+
+		$.ajax({
+			type: "POST",
+			cache: false,
+			url: 'theme-edit.php',
+			data: dataString+'&submitsave=1&ajaxsave=1',
+			success: function( response ) {
+				$('div.wrapper .updated').remove();
+				$('div.wrapper .error').remove();
+				if ($(response).find('div.error').html()) {
+					notifyError($(response).find('div.error').html()).popit().removeit();
+				}
+				else if ($(response).find('div.updated').html()) {
+					notifyOk($(response).find('div.updated').html()).popit().removeit();
+				}	
+				else {
+					notifyError("<p>ERROR</p>").popit().removeit();					
+				}
+
+				loadingAjaxIndicator.fadeOut();
+				$('#codetext').data('editor').hasChange = false; // mark clean		
+			}
+		});
+	}
+
+
+	$('#compEditForm').submit(function(e) {
+		console.log("onsubmit");
+		e.preventDefault();
+
+		loadingAjaxIndicator.show('fast');
+		// $('#codetext').data('editor').setValue('');
+		// $('#codetext').data('editor').hasChange == false;
+		// $('#theme_edit_code').fadeTo('fast',0.3);
+		
+		cm_save_editors();
+	    var url = "path/to/your/script.php"; // the script where you handle the form input.
+		var dataString = $("#compEditForm").serialize();			
+
+	    $.ajax({
+	    	type: "POST",
+			cache: false,
+			url: 'components.php',
+			data: dataString+'&submitted=1&ajaxsave=1',
+			success: function( response ) {
+				$('div.wrapper .updated').remove();
+				$('div.wrapper .error').remove();
+				if ($(response).find('div.error').html()) {
+					notifyError($(response).find('div.error').html()).popit().removeit();
+				}
+				else if ($(response).find('div.updated').html()) {
+					notifyOk($(response).find('div.updated').html()).popit().removeit();
+				}	
+				else {
+					notifyError("<p>ERROR</p>").popit().removeit();					
+				}
+
+				loadingAjaxIndicator.fadeOut();
+				// $('#codetext').data('editor').hasChange = false; // mark clean		
+			}
+	    });
+	});
+
+	componentSave = function(cm){
 		
 		loadingAjaxIndicator.show('fast');
 
@@ -727,6 +799,18 @@ jQuery(document).ready(function () {
 			if(editor) {
 				editor.setOption('theme',theme);	
 				editor.refresh();
+			}	
+		});		
+	}
+
+	// save all editors
+	cm_save_editors = function(theme){
+		// Debugger.log(theme);
+		$('.code_edit').each(function(i, textarea){
+			var editor = $(textarea).data('editor');
+			// Debugger.log(editor);
+			if(editor) {
+				editor.save();
 			}	
 		});		
 	}

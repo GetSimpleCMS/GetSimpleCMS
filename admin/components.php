@@ -128,7 +128,7 @@ include('template/include-nav.php'); ?>
 		<p style="font-size:12px;color:#BBB;margin:0 3px;line-height:22px">Theme</p>	
 		<div class="clear"></div>
 	</div>
-	<form class="manyinputs" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
+	<form id="compEditForm" class="manyinputs" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 		<input type="hidden" id="id" value="<?php echo $count; ?>" />
 		<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_components"); ?>" />
 

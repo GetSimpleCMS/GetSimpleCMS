@@ -108,8 +108,8 @@ jQuery(document).ready(function () {
 	}
 
 	function customSave(cm){
-		// Debugger.log('saving');
-		themeFileSave(cm);
+		Debugger.log('saving');
+		$("#submit_line input.submit").trigger('submit');
 	}
 
     function winHeight() {
