@@ -9,6 +9,7 @@
 .wrapper{
 	/* main wrapper */
 	width:100%;
+	max-width:1680px;
 }
 
 .wrapper .nav{
@@ -67,6 +68,14 @@
 	margin: 0 15px;
 }
 
+#theme-edit #header .wrapper  {
+	width:100%;
+}
+
+#theme-edit #maincontent .main {
+	margin-right: 0;
+}
+
 textarea, form input.title{
 	/* resize backend textareas */
 	/* outline backend administrative input fields for emphasis */
@@ -76,4 +85,21 @@ textarea, form input.title{
 form.manyinputs textarea{
 	/* resize backend textareas for components */
 	width:100% ;
+}
+
+.main form{
+	/*max-width: 600px;*/
+}
+
+
+.wideopt {
+	max-width:600px;	
+}
+
+.leftopt,.rightopt {
+	max-width:300px;
+}
+
+.rightopt {
+	float:left;
 }

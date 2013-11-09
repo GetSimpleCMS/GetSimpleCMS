@@ -993,7 +993,7 @@ a.viewlink:hover img {
 
 #menu-items select {
 	padding: 2px 3px;
-	margin-left:14px;
+	margin-left:13px;
 }
 
 .countdownwrap {
@@ -2152,7 +2152,7 @@ a.disabled:visited {
  */
 
 #theme-edit .updated, #theme-edit .error, #theme-edit .notify {
-	margin: 0 10px 10px 10px;
+	margin: 0 15px 15px 15px;
 }
 
 #theme-edit #header .wrapper{
@@ -2161,15 +2161,16 @@ a.disabled:visited {
 
 #theme-edit .wrapper{
 	width: 100%;
+	max-width:1680px;
 }
 
 #theme-edit #footer{
-	margin-left: 10px;
-	margin-right: 10px;
+	margin-left: 15px;
+	margin-right: 15px;
 }
 
 #theme-edit .bodycontent {
-	margin:0 10px;
+	margin:0 15px;
 }
 
 #theme_edit_wrap {
