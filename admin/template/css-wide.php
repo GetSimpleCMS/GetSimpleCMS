@@ -28,7 +28,19 @@
 
 #maincontent{
 	/* wrapper for admin inputs */
-	width:80%;
+	width:100%;
+	float:left;
+
+}
+
+#maincontent .main {
+	margin-right: 256px;
+	min-width: 260px;
+	margin-left: 15px;
+}
+
+#sidebar {
+	margin-left: -225px;
 }
 
 textarea, form input.title{
