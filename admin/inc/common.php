@@ -16,7 +16,7 @@ define('IN_GS', TRUE);
  */
 
 if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
-if(!defined('GSSTYLE_SBFIXED')) define('GSSTYLE_SBFIXED','sbfixed'); // wide style sheet
+if(!defined('GSSTYLE_SBFIXED')) define('GSSTYLE_SBFIXED','sbfixed'); // fixed sidebar
 
 /**
  * Bad stuff protection
