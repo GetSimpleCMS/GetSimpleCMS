@@ -1028,7 +1028,7 @@ function get_api_details($type='core', $args=null) {
 		// and we pass on our own data, it is also cached to prevent constant rechecking
 
 		if(!$response){
-			$data = '{"status":-1';
+			$data = '{"status":-1}';
 		}
 		
 		debug_api_details($data);
@@ -1122,7 +1122,8 @@ function generate_sitemap() {
 		//create xml file
 		$file = GSROOTPATH .'sitemap.xml';
 		$xml = exec_filter('sitemap',$xml);
-		if(XMLsave($xml, $file)) exec_action('sitemap-saved');
+		XMLsave($xml, $file);
+		exec_action('sitemap-aftersave');
 	}
 	
 	if (!defined('GSDONOTPING')) {

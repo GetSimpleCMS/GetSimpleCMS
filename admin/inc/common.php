@@ -277,7 +277,6 @@ if(isset($load['plugin']) && $load['plugin']){
 	}
 	# include core plugin for page caching
 	include_once('caching_functions.php');
-	if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update') getPagesXmlValues();	
 	
 	# main hook for common.php
 	exec_action('common');

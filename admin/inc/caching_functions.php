@@ -10,9 +10,10 @@
 
 $pagesArray = array();
 
-add_action('index-header','getPagesXmlValues',array(false));        // make $pagesArray available to the theme 
-add_action('header', 'create_pagesxml',array('false'));             // add hook to save  $tags values 
-add_action('page-delete', 'create_pagesxml',array('true'));         // Create pages.array if file deleted
+add_action('index-header','getPagesXmlValues',array(false));      // make $pagesArray available to the front 
+add_action('header', 'getPagesXmlValues',array(true));           // make $pagesArray available to the back
+add_action('page-delete', 'create_pagesxml',array(true));         // Create pages.array if page deleted
+add_action('changedata-aftersave', 'create_pagesxml',array(true));     // Create pages.array if page is updated
 
 /**
  * Get Page Content
@@ -46,6 +47,8 @@ function getPageContent($page,$field='content'){
  */
 function getPageField($page,$field){   
 	global $pagesArray;
+	if(!$pagesArray) getPagesXmlValues();	
+	
 	if ($field=="content"){
 	  getPageContent($page);  
 	} else {
@@ -108,6 +111,8 @@ function returnPageContent($page, $field='content', $raw = false, $nofilter = fa
  */
 function returnPageField($page,$field){   
 	global $pagesArray;
+	if(!$pagesArray) getPagesXmlValues();	
+
 	if ($field=="content"){
 	  $ret=returnPageContent($page); 
 	} else {
@@ -134,6 +139,7 @@ function returnPageField($page,$field){
  */
 function getChildren($page){
 	global $pagesArray;
+	if(!$pagesArray) getPagesXmlValues();		
 	$returnArray = array();
 	foreach ($pagesArray as $key => $value) {
 	    if ($pagesArray[$key]['parent']==$page){
@@ -158,6 +164,7 @@ function getChildren($page){
 
 function getChildrenMulti($page,$options=array()){
 	global $pagesArray;
+	if(!$pagesArray) getPagesXmlValues();		
 	$count=0;
 	$returnArray = array();
 	foreach ($pagesArray as $key => $value) {
@@ -182,8 +189,12 @@ function getChildrenMulti($page,$options=array()){
  * @since 3.1
  *  
  */
-function getPagesXmlValues($chkcount=true){
+function getPagesXmlValues($chkcount=false){
   global $pagesArray;
+
+   // debugLog("getPagesXmlValues: " . $chkcount);
+   if($pagesArray && !$chkcount) return;
+
   $pagesArray=array();
   $file=GSDATAOTHERPATH."pages.xml";
   if (file_exists($file)){
@@ -210,13 +221,11 @@ function getPagesXmlValues($chkcount=true){
 			}
 		}
 		if (count($pagesArray)!=count($filenames)) {
-			create_pagesxml('true');
-			getPagesXmlValues(false);
+			if(create_pagesxml(true)) getPagesXmlValues(false);
 		}
 	  }
   } else {
-    create_pagesxml(true);
-    getPagesXmlValues(false);
+    if(create_pagesxml(true)) getPagesXmlValues(false);
   }
   
 }
@@ -233,7 +242,11 @@ function getPagesXmlValues($chkcount=true){
 function create_pagesxml($flag){
 global $pagesArray;
 
-if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=='true'){
+$success = '';
+
+// debugLog("create_pagesxml: " . $flag);
+if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $flag=='true'){
+  // debugLog("create_pagesxml proceeding");
   $menu = '';
   $filem=GSDATAOTHERPATH."pages.xml";
 
@@ -282,14 +295,18 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag=='true'){
       } // else
     } // end foreach
   }   // endif      
-  if ($flag==true){
+  if ($flag===true || $flag == 'true'){
+
   	// Plugin Authors should add custome fields etc.. here
   	$xml = exec_filter('pagecache',$xml);
+
     // sanity check in case the filter does not come back properly or returns null
     if($xml){ 
-    	$xml->asXML($filem);
-  		exec_action('pagecache-saved');
+    	$success = $xml->asXML($filem);
   	}	
+  	// debugLog("create_pagesxml saved: ". $success);
+  	exec_action('pagecache-aftersave');
+  	return $success;
   }
 }
 }
