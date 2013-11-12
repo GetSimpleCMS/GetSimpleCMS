@@ -28,7 +28,7 @@ define('GSIMAGEWIDTH', '200');
 #define('GSADMIN', 'admin');
 
 # Turn on debug mode
-#define('GSDEBUG', TRUE);
+define('GSDEBUG', TRUE);
 
 # Ping search engines upon sitemap generation?
 define('GSDONOTPING', 1);
@@ -90,9 +90,17 @@ define('GSDONOTPING', 1);
 #define('GSNOVERCHECK', true);
 
 # Enable alternate admin styles, current style constants are
-# note: stylesheets are cached
+# GSSTYLE can be a comma delimied list of flags
+# note: stylesheets are cached, flush cache after changing
+#
+# style flags:
 # GSSTYLEWIDE = wide fluid
+# GSSTYLE_SBFIXED = fixed sidemenu
+# 
+# eg. 
+# define('GSSTYLE',GSSTYLE_SBFIXED);
 # define('GSSTYLE',GSSTYLEWIDE);
+#define('GSSTYLE',implode(',',array(GSSTYLEWIDE,GSSTYLE_SBFIXED)));
 
 # Disable Sitemap generation and menu items
 # define('GSNOSITEMAP',true);

@@ -13,6 +13,7 @@
  */
 
 if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
+if(!defined('GSSTYLE_SBFIXED')) define('GSSTYLE_SBFIXED','sbfixed'); // wide style sheet
 
 # Setup inclusions
 $load['plugin'] = true;

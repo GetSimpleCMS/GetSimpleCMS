@@ -545,11 +545,11 @@ jQuery(document).ready(function () {
 	});
  
 	function scrollsidebar(){
-		var elem = $('#sidebar');
+		var elem = $('body.sbfixed #sidebar');
 		elem.scrollToFixed({ 
 			marginTop: 15,
 			limit: function(){ return $('#footer').offset().top - elem.outerHeight(true) - 15},
-			postUnfixed: function(){console.log($(this).offset().top);$(this).addClass('fixed')},
+			postUnfixed: function(){$(this).addClass('fixed')},
 			postFixed: function(){$(this).removeClass('fixed')},
 			postAbsolute: function(){$(this).removeClass('fixed')},
 

@@ -9,6 +9,11 @@ global $SITENAME, $SITEURL;
 
 $GSSTYLE = getDef('GSSTYLE') ? GSSTYLE : '';
 
+$bodyclass="class=\"";
+if( in_array('sbfixed',explode(',',$GSSTYLE)) ) $bodyclass .= " sbfixed";
+if( in_array('wide',explode(',',$GSSTYLE)) ) $bodyclass .= " wide";
+$bodyclass .="\"";
+
 if(get_filename_id()!='index') exec_action('admin-pre-header');
 
 header('content-type: text/html; charset=utf-8');
@@ -71,11 +76,10 @@ header('content-type: text/html; charset=utf-8');
 		});
 	</script>
 	<?php } ?>
-	
-	
+		
 </head>
 
-<body <?php filename_id(); ?> >	
+<body <?php filename_id(); echo $bodyclass; ?> >	
 	<div class="header" id="header" >
 		<div class="wrapper clearfix">
  <?php exec_action('header-body'); ?>
