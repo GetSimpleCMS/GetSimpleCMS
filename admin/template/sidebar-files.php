@@ -8,13 +8,13 @@
 $path = (isset($_GET['path'])) ? $_GET['path'] : "";
 ?>
 <ul class="snav">
-	<li id="sb_upload" ><a href="upload.php" <?php check_menu('upload');  ?>><?php i18n('FILE_MANAGEMENT');?></a></li>
-	<?php if(isset($_GET['i']) && $_GET['i'] != '') { ?><li id="sb_image" ><a href="#" class="current"><?php i18n('IMG_CONTROl_PANEL');?></a></li><?php } ?>
+	<li id="sb_upload"<?php if(!isset($_GET['i'])) echo'class="last_sb"'; ?> ><a href="upload.php" <?php check_menu('upload');  ?>><?php i18n('FILE_MANAGEMENT');?></a></li>
+	<?php if(isset($_GET['i']) && $_GET['i'] != '') { ?><li id="sb_image" class="last_sb"><a href="#" class="current"><?php i18n('IMG_CONTROl_PANEL');?></a></li><?php } ?>
 	
 	<?php exec_action("files-sidebar"); ?>
 
 <?php if (!defined('GSNOUPLOADIFY')) { ?>	
-	<li class="upload" id="sb_uploadify" >
+	<hr><li class="upload" id="sb_uploadify" >
 		<div id="uploadify"></div>
 	<?php 
 	

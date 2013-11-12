@@ -2506,3 +2506,35 @@ a.disabled:visited {
 .codewrap .CodeMirror.CodeMirror-fullscreen{
     border: none;
 }    
+
+/* sidebar plugins seperator */
+
+/*
+body#pages #sidebar .snav li:nth-child(4):before,
+body#menu-manager #sidebar .snav li:nth-child(4):before,
+
+body#upload #sidebar .snav li:nth-child(3):before,
+
+body#theme #sidebar .snav li:nth-child(5):before,
+body#theme-edit #sidebar .snav li:nth-child(5):before,
+body#components #sidebar .snav li:nth-child(5):before,
+body#sitemap #sidebar .snav li:nth-child(5):before,
+
+body#backups #sidebar .snav li:nth-child(3):before,
+body#archive #sidebar .snav li:nth-child(3):before,
+
+body#plugins #sidebar .snav li:nth-child(3):before, 
+
+body#support #sidebar .snav li:nth-child(3):before,
+body#health-check #sidebar .snav li:nth-child(3):before,
+body#settings #sidebar .snav li:nth-child(3):before
+*/ 
+#sidebar .snav li.last_sb + li.plugin_sb:before, #sidebar hr
+{
+	margin: 3px 3px 3px 16px;
+	border:none;
+	border-bottom: 1px solid <?php echo $primary_6; ?>;
+	content: "";
+	display: block;
+	border-style:thin;
+}
