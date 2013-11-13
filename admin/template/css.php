@@ -2513,7 +2513,6 @@ a.disabled:visited {
     border: none;
 }    
 
-
 /* sidebar plugins seperator */
 
 #sidebar .snav li.last_sb + li.plugin_sb:before, #sidebar hr
@@ -2558,7 +2557,18 @@ a.disabled:visited {
   .primary_4.border-color, .light-border               { border-color: <?php echo $primary_4;   ?>;}
   .primary_5.border-color, .lighter-border             { border-color: <?php echo $primary_5;   ?>;}
   .primary_6.border-color, .lightest-border            { border-color: <?php echo $primary_6;   ?>;}
-.secondary_0.border-color, .secondary.darkest.border   { border-color: <?php echo $secondary_0; ?>;}
-.secondary_1.border-color, .secondary.lightest.border  { border-color: <?php echo $secondary_1; ?>;}
+.secondary_0.border-color, .secondary.darkest-border   { border-color: <?php echo $secondary_0; ?>;}
+.secondary_1.border-color, .secondary.lightest-border  { border-color: <?php echo $secondary_1; ?>;}
+
+/* debug color */
+  .primary_0.border-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>";}
+  .primary_1.border-debug:after, .darker-debug:after              { content: "<?php echo $primary_1;   ?>";}
+  .primary_2.border-debug:after, .dark-debug:after                { content: "<?php echo $primary_2;   ?>";}
+  .primary_3.border-debug:after, .middle-debug:after              { content: "<?php echo $primary_3;   ?>";}
+  .primary_4.border-debug:after, .light-debug:after               { content: "<?php echo $primary_4;   ?>";}
+  .primary_5.border-debug:after, .lighter-debug:after             { content: "<?php echo $primary_5;   ?>";}
+  .primary_6.border-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>";}
+.secondary_0.border-debug:after, .secondary.darkest-debug:after   { content: "<?php echo $secondary_0; ?>";}
+.secondary_1.border-debug:after, .secondary.lightest-debug:after  { content: "<?php echo $secondary_1; ?>";}
 
 /*END*/
