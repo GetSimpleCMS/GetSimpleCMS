@@ -1722,20 +1722,19 @@ a.updatelink:focus {
 
 /* Labels */
 .label {
-	color: gray !important;
 	padding: 1px 6px;	
 	border-radius: 3px;	
 	text-align: center;
-	background-color: gray;	
 	color: #F2F2F2;	
+	margin:3px;
 }
 
 .label a{
-	color: white !important;
+	color: white;
 }
 
 .label a:hover{
-	color: lightgray !important;
+	color: lightgray;
 }
 
 .label-ok {
@@ -1752,6 +1751,12 @@ a.updatelink:focus {
 
 .label-info {
 	background-color: #2B5CB3;
+}
+
+.label-light{
+	color: #666;
+	background: #FFF;
+	border: 1px solid #999;	
 }
 
 #hc_version.label {
@@ -1785,6 +1790,7 @@ a.updatelink:focus {
 	display:block;
 	line-height:normal;
 	float:right;
+	margin:0;
 }
 
 td.hc_item {
@@ -2507,6 +2513,7 @@ a.disabled:visited {
     border: none;
 }    
 
+
 /* sidebar plugins seperator */
 
 #sidebar .snav li.last_sb + li.plugin_sb:before, #sidebar hr
@@ -2518,3 +2525,40 @@ a.disabled:visited {
 	display: block;
 	border-style:thin;
 }
+
+/* Admin theme colors */
+
+/* background-color */
+  .primary_0.back, .darkest-back               { background-color: <?php echo $primary_0;   ?>;}
+  .primary_1.back, .darker-back                { background-color: <?php echo $primary_1;   ?>;}
+  .primary_2.back, .dark-back                  { background-color: <?php echo $primary_2;   ?>;}
+  .primary_3.back, .middle-back                { background-color: <?php echo $primary_3;   ?>;}
+  .primary_4.back, .light-back                 { background-color: <?php echo $primary_4;   ?>;}
+  .primary_5.back, .lighter-back               { background-color: <?php echo $primary_5;   ?>;}
+  .primary_6.back, .lightest-back              { background-color: <?php echo $primary_6;   ?>;}
+.secondary_0.back, .secondary.darkest-back     { background-color: <?php echo $secondary_0; ?>;}
+.secondary_1.back, .secondary.lightest-back    { background-color: <?php echo $secondary_1; ?>;}
+
+/* color */
+  .primary_0.color, .darkest-color             { color: <?php echo $primary_0;   ?>;}
+  .primary_1.color, .darker-color              { color: <?php echo $primary_1;   ?>;}
+  .primary_2.color, .dark-color                { color: <?php echo $primary_2;   ?>;}
+  .primary_3.color, .middle-color              { color: <?php echo $primary_3;   ?>;}
+  .primary_4.color, .light-color               { color: <?php echo $primary_4;   ?>;}
+  .primary_5.color, .lighter-color             { color: <?php echo $primary_5;   ?>;}
+  .primary_6.color, .lightest-color            { color: <?php echo $primary_6;   ?>;}
+.secondary_0.color, .secondary.darkest-color   { color: <?php echo $secondary_0; ?>;}
+.secondary_1.color, .secondary.lightest-color  { color: <?php echo $secondary_1; ?>;}
+
+/* border color */
+  .primary_0.border-color, .darkest-border             { border-color: <?php echo $primary_0;   ?>;}
+  .primary_1.border-color, .darker-border              { border-color: <?php echo $primary_1;   ?>;}
+  .primary_2.border-color, .dark-border                { border-color: <?php echo $primary_2;   ?>;}
+  .primary_3.border-color, .middle-border              { border-color: <?php echo $primary_3;   ?>;}
+  .primary_4.border-color, .light-border               { border-color: <?php echo $primary_4;   ?>;}
+  .primary_5.border-color, .lighter-border             { border-color: <?php echo $primary_5;   ?>;}
+  .primary_6.border-color, .lightest-border            { border-color: <?php echo $primary_6;   ?>;}
+.secondary_0.border-color, .secondary.darkest.border   { border-color: <?php echo $secondary_0; ?>;}
+.secondary_1.border-color, .secondary.lightest.border  { border-color: <?php echo $secondary_1; ?>;}
+
+/*END*/
