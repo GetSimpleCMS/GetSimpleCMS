@@ -41,7 +41,7 @@
 	margin-left: -15px;
 }
 
-.updated {
+.updated, .error, .notify {
 	margin: 0 15px 20px 15px;
 }
 
