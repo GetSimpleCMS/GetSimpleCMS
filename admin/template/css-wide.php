@@ -64,8 +64,9 @@
 	margin-left: -225px;
 }
 
-#footer .footer-left {
-	margin: 0 15px;
+#footer {
+	margin-left:15px;
+	margin-right:15px;
 }
 
 #theme-edit #header .wrapper  {
