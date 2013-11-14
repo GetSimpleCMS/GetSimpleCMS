@@ -516,23 +516,39 @@ h5:hover img {
 }
 
 #sidebar .snav li a.current {
-	margin-left: 0px;
+    position: relative;
 	cursor: default;
 	color: #FFF;
-	background: <?php echo $secondary_1; ?> url('images/active.png') center left no-repeat !important;
 	text-shadow: 1px 1px 0px <?php echo $secondary_0; ?>;
-	padding-left: 28px;
 	border-radius: 0 3px 3px 0;
+	height:14px;
+    background-color:<?php echo $secondary_1; ?>;;
+    margin-left:13px;
+    padding-left:15px;	
 }
 
 #sidebar .snav li a.current:hover {
-	text-shadow: 1px 1px 0px <?php echo $secondary_0; ?>;
-	margin-left: 0px;
-	cursor: default;
-	color: #FFF;
-	background: <?php echo $secondary_1; ?> url('images/active.png') center left no-repeat !important;
-	padding-left: 28px;
+    background-color: <?php echo $secondary_1; ?>;
 }
+
+/* sidebar current arrow */
+#sidebar .snav li a.current:after {
+    right: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    /*pointer-events: none;*/
+}
+#sidebar .snav li a.current:after {
+    border-color: rgba(207, 56, 5, 0);
+    border-right-color: <?php echo $secondary_1; ?>;;
+    border-width: 12px;
+    top: 50%;
+    margin-top: -12px;
+}
+/**/
 
 #sidebar .snav li a:hover {
 	color: #FFF;
@@ -558,6 +574,18 @@ h5:hover img {
 #sidebar .snav small {
 	color: #666;
 }
+
+/* sidebar plugins seperator */
+#sidebar .snav li.last_sb + li.plugin_sb:before, #sidebar hr
+{
+	margin: 3px 3px 3px 16px;
+	border:none;
+	border-bottom: 1px solid <?php echo $primary_6; ?>;
+	content: "";
+	display: block;
+	border-style:thin;
+}
+/**/
 
 .edit-nav {
 	margin: 0 0 15px 0;
@@ -2338,39 +2366,34 @@ a.disabled:visited {
 		-webkit-filter: grayscale(1); /* Old WebKit */
 }
 
+/* codemirror */
 /* CodeMirror WEBKIT SCROLLBARS */
 
 .CodeMirror ::-webkit-scrollbar {
 		width: 10px;
 		height: 10px;
 }
-
 .CodeMirror ::-webkit-scrollbar-track-piece {
 		/*background-color: #333;*/
 		-webkit-border-radius: 0;
 		margin:2px;
 }
-
 .CodeMirror ::-webkit-scrollbar-thumb:vertical {
 		height: 20px;
 		background-color: #9C9C9C;
 		-webkit-border-radius: 3px;
 }
-
 .CodeMirror ::-webkit-scrollbar-thumb:vertical:hover {
 		background-color: #666;
 }
-
 .CodeMirror ::-webkit-scrollbar-thumb:horizontal {
 		width: 20px;
 		background-color: #9C9C9C;
 		-webkit-border-radius: 3px;
 }
-
 .CodeMirror ::-webkit-scrollbar-thumb:horizontal:hover {
 		background-color: #666;
 }
-
 .CodeMirror ::-webkit-scrollbar-corner {
 		background-color: transparent;
 }
@@ -2484,6 +2507,7 @@ a.disabled:visited {
 	border-radius:0 !important;
 }
 
+/* jui tabs */
 #tabs ul.tab-list{
 	display:none;
 }
@@ -2503,6 +2527,7 @@ a.disabled:visited {
 }
 
 
+/* codemirror */
 .codewrap .CodeMirror{
     border: 3px solid rgba(128,128, 128, .15);
     -webkit-background-clip: padding-box ; /* for Safari */
@@ -2513,17 +2538,6 @@ a.disabled:visited {
     border: none;
 }    
 
-/* sidebar plugins seperator */
-
-#sidebar .snav li.last_sb + li.plugin_sb:before, #sidebar hr
-{
-	margin: 3px 3px 3px 16px;
-	border:none;
-	border-bottom: 1px solid <?php echo $primary_6; ?>;
-	content: "";
-	display: block;
-	border-style:thin;
-}
 
 /* Admin theme colors */
 
