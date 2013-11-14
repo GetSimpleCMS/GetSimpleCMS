@@ -330,7 +330,7 @@ html {
 .wrapper a:link, 
 .wrapper a:visited {
 	color: <?php echo $primary_3; ?>;
-	text-decoration: underline;
+	text-decoration: none;
 	font-weight: bold;
 }
 
@@ -755,6 +755,7 @@ table td a {
 	font-size: 12px;
 }
 
+/* popup does not appear to be in use */
 .popup table td {
 	padding: 4px;
 }
