@@ -66,20 +66,25 @@ if ($id){
 
     $titlelong  = stripslashes($data_edit->titlelong);
     $summary    = stripslashes($data_edit->summary);
-    $metarobots = $data_edit->metarobots;
+    $metarNoIndex = $data_edit->metarNoIndex;
+    $metarNoFollow = $data_edit->metarNoFollow;
+    $metarNoArchive = $data_edit->metarNoArchive;
 } else {
     // prefill fields is provided
-    $title      =  isset( $_GET['title']      ) ? var_out( $_GET['title']      ) : '';
-    $template   =  isset( $_GET['template']   ) ? var_out( $_GET['template']   ) : '';
-    $parent     =  isset( $_GET['parent']     ) ? var_out( $_GET['parent']     ) : '';
-    $menu       =  isset( $_GET['menu']       ) ? var_out( $_GET['menu']       ) : '';
-    $private    =  isset( $_GET['private']    ) ? var_out( $_GET['private']    ) : '';
-    $menuStatus =  isset( $_GET['menuStatus'] ) ? var_out( $_GET['menuStatus'] ) : '';
-    $menuOrder  =  isset( $_GET['menuOrder']  ) ? var_out( $_GET['menuOrder']  ) : '';
+    $title          =  isset( $_GET['title']      ) ? var_out( $_GET['title']      ) : '';
+    $template       =  isset( $_GET['template']   ) ? var_out( $_GET['template']   ) : '';
+    $parent         =  isset( $_GET['parent']     ) ? var_out( $_GET['parent']     ) : '';
+    $menu           =  isset( $_GET['menu']       ) ? var_out( $_GET['menu']       ) : '';
+    $private        =  isset( $_GET['private']    ) ? var_out( $_GET['private']    ) : '';
+    $menuStatus     =  isset( $_GET['menuStatus'] ) ? var_out( $_GET['menuStatus'] ) : '';
+    $menuOrder      =  isset( $_GET['menuOrder']  ) ? var_out( $_GET['menuOrder']  ) : '';
     
-    $titlelong  =  isset( $_GET['titlelong']  ) ? var_out( $_GET['titlelong']  ) : '';
-    $summary    =  isset( $_GET['summary']    ) ? var_out( $_GET['summary']    ) : '';
-    $metarobots =  isset( $_GET['metarobots'] ) ? var_out( $_GET['metarobots'] ) : '';
+    $titlelong      =  isset( $_GET['titlelong']  ) ? var_out( $_GET['titlelong']  ) : '';
+    $summary        =  isset( $_GET['summary']    ) ? var_out( $_GET['summary']    ) : '';
+    
+    $metarNoIndex   =  isset( $_GET['metarNoIndex'] )   ? var_out( $_GET['metarNoIndex'] ) : '';
+    $metarNoFollow  =  isset( $_GET['metarNoFollow'] )  ? var_out( $_GET['metarNoFollow'] ) : '';
+    $metarNoArchive =  isset( $_GET['metarNoArchive'] ) ? var_out( $_GET['metarNoArchive'] ) : '';
 
     $buttonname = i18n_r('BTN_SAVEPAGE');
 }
@@ -117,8 +122,12 @@ foreach ($templates as $file){
 }
 
 // SETUP CHECKBOXES
-$sel_m = ($menuStatus != '') ? 'checked' : '' ;
-$sel_p = ($private == 'Y') ? 'selected' : '' ;
+$sel_m  = ($menuStatus != '') ? 'checked' : '' ;
+$sel_p  = ($private == 'Y') ? 'selected' : '' ;
+$sel_ri = $metarNoIndex == '1' ? 'checked' : '';
+$sel_rf = $metarNoFollow == '1' ? 'checked' : '';
+$sel_ra = $metarNoArchive == '1' ? 'checked' : '';
+
 if ($menu == '') { $menu = $title; } 
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title); 
@@ -509,21 +518,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
         </script>
         </div> 
         <!-- / END PAGE CONTENT -->
-        
+        <!-- META -->
         <div id="page_meta">
             <fieldset>    
-            <div class="leftopt">
-                <p class="inline clearfix">
-                    <label for="post-metarobots" ><?php i18n('METAROBOTS'); ?>: &nbsp; </label>
-                    <select id="post-metarobots" name="post-metarobots" class="text autowidth" >
-                        <option value="0" <?php echo $metarobots == 0 ? "selected" :""; ?> >INDEX , FOLLOW</option>
-                        <option value="1" <?php echo $metarobots == 1 ? "selected" :""; ?> >INDEX , NOFOLLOW</option>
-                        <option value="2" <?php echo $metarobots == 2 ? "selected" :""; ?> >NOINDEX , FOLLOW</option>
-                        <option value="3" <?php echo $metarobots == 3 ? "selected" :""; ?> >NOINDEX , NOFOLLOW</option>
-                    </select>
-                </p>   
-            </div>
-            <div class="rightopt">             
+            <div class="leftopt">             
                 <p class="inline clearfix">
                     <label for="post-metak"><?php i18n('TAG_KEYWORDS'); ?>:</label>
                     <input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" />
@@ -533,6 +531,20 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                     <textarea class="text short charlimit" data-maxLength='155' id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
                 </p>
             </div>    
+            <div class="rightopt">
+                <p class="inline clearfix">
+                <label>Robots:</label><br/>
+                    <label class="checkbox" for="post-metar-noindex" >NOINDEX</label>
+                    <input type="checkbox" id="post-metar-noindex" name="post-metar-noindex" <?php echo $sel_ri; ?> />
+                    <br/>               
+                    <label class="checkbox" for="post-metar-nofollow" >NOFOLLOW</label>
+                    <input type="checkbox" id="post-metar-nofollow" name="post-metar-nofollow" <?php echo $sel_rf; ?> />
+                    <br/>
+                    <label class="checkbox" for="post-metar-noindex" >NOARCHIVE</label>
+                    <input type="checkbox" id="post-metar-noarchive" name="post-metar-noarchive" <?php echo $sel_ra; ?> />
+                    <br/>
+                </p>   
+            </div>
             <div class="clear"></div>    
             </fieldset>            
         </div>

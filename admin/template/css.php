@@ -926,6 +926,13 @@ label span.right a:hover {
 	padding-top: 3px;
 }
 
+label.checkbox {
+	width: 100px;
+	margin-right: 3px;
+	text-align: right;
+	font-weight: normal;
+}
+
 /* meta dropdown style */
 #metadata_window,fieldset {
 	margin: 0 2px 20px 0;
