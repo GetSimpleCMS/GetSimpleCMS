@@ -157,12 +157,19 @@ echo '<div class="bodycontent clearfix">
 			<table class="highlight healthcheck">';
 
 					$dirsArray = array(
-						GSDATAPAGESPATH, 
 						GSDATAOTHERPATH, 
 						GSDATAOTHERPATH.'logs/', 
-						GSBACKUSERSPATH,
-						GSDATAUPLOADPATH, 
+						GSDATAPAGESPATH,
+						GSBACKUSERSPATH
 					);			
+
+					$filesArray = array(
+						GSDATAOTHERPATH."authorization.xml",
+						GSDATAOTHERPATH."website.xml",
+						GSDATAOTHERPATH."pages.xml",
+						GSDATAOTHERPATH."components.xml",
+						GSDATAOTHERPATH."plugins.xml"
+					);
 
 					foreach($dirsArray as $path){
 						$data = getFiles($path);
@@ -175,14 +182,14 @@ echo '<div class="bodycontent clearfix">
 									echo '<td>' . i18n_r('XML_VALID').'</td><td><span class="label label-ok">'.i18n_r('OK') .'</span></td>';
 								}									
 								else {
-									echo '<td>' . i18n_r('XML_INVALID').'</td><td><span class="label label-ok">'.i18n_r('ERROR') .'</span></td>';
+									if(in_array($path.$file,$filesArray)) echo '<td>' . i18n_r('XML_INVALID').'</td><td><span class="label label-error">'.i18n_r('ERROR') .'</span></td>';
+									else echo '<td>' . i18n_r('XML_INVALID').'</td><td><span class="label label-warn">'.i18n_r('WARNING') .'</span></td>';
 									$errorCnt++;													
 								}	
 								echo '</tr>';
 							}							
 						}
 					}
-
 			
 			echo '</table>';
 			
