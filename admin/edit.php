@@ -135,8 +135,6 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 
 ?>
 
-<noscript><style>#metadata_window {display:block !important} </style></noscript>
-
 <?php include('template/include-nav.php'); ?>
 
 <div class="bodycontent clearfix">
@@ -290,41 +288,8 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
             
             <?php if(isset($data_edit)) { 
                 echo '<input type="hidden" name="existing-url" value="'. $url .'" />'; 
-            } ?>    
+            } 
             
-			<span class="editing"><?php echo i18n_r('EDITPAGE_TITLE') .':' . $title; ?></span>
-            <div id="submit_line" >
-                <input type="hidden" name="redirectto" value="" />
-                
-                <span><input id="page_submit" class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" /></span>
-                
-                <div id="dropdown">
-                    <h6 class="dropdownaction"><?php i18n('ADDITIONAL_ACTIONS'); ?></h6>
-                    <ul class="dropdownmenu">
-                        <li id="save-close" ><a href="#" ><?php i18n('SAVE_AND_CLOSE'); ?></a></li>
-                        <?php if($url != '') { ?>
-                            <li><a href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" ><?php i18n('CLONE'); ?></a></li>
-                        <?php } ?>
-                        <li id="cancel-updates" class="alertme"><a href="pages.php?cancel" ><?php i18n('CANCEL'); ?></a></li>
-                        <?php if($url != 'index' && $url != '') { ?>
-                            <li class="alertme" ><a href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
-                        <?php } ?>
-                    </ul>
-                </div>
-                
-            </div>
-            
-            <?php if($url != '') { ?>
-                <p class="backuplink" ><?php 
-                    if (isset($pubDate)) { 
-                        echo sprintf(i18n_r('LAST_SAVED'), '<em>'.$author.'</em>').' '. lngDate($pubDate).'&nbsp;&nbsp; ';
-                    }
-                    if ( file_exists(GSBACKUPSPATH.'pages/'.$url.'.bak.xml') ) {    
-                        echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
-                    } 
-                ?></p>
-            <?php } 
-
         // HTMLEDITOR INIT
         if ($HTMLEDITOR != '') {       
 
@@ -550,6 +515,38 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
             </fieldset>            
         </div>
     </div> <!-- / END TABS -->
+                <span class="editing"><?php echo i18n_r('EDITPAGE_TITLE') .':' . $title; ?></span>
+            <div id="submit_line" >
+                <input type="hidden" name="redirectto" value="" />
+                
+                <span><input id="page_submit" class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" /></span>
+                
+                <div id="dropdown">
+                    <h6 class="dropdownaction"><?php i18n('ADDITIONAL_ACTIONS'); ?></h6>
+                    <ul class="dropdownmenu">
+                        <li id="save-close" ><a href="#" ><?php i18n('SAVE_AND_CLOSE'); ?></a></li>
+                        <?php if($url != '') { ?>
+                            <li><a href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" ><?php i18n('CLONE'); ?></a></li>
+                        <?php } ?>
+                        <li id="cancel-updates" class="alertme"><a href="pages.php?cancel" ><?php i18n('CANCEL'); ?></a></li>
+                        <?php if($url != 'index' && $url != '') { ?>
+                            <li class="alertme" ><a href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
+                        <?php } ?>
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <?php if($url != '') { ?>
+                <p class="backuplink" ><?php 
+                    if (isset($pubDate)) { 
+                        echo sprintf(i18n_r('LAST_SAVED'), '<em>'.$author.'</em>').' '. lngDate($pubDate).'&nbsp;&nbsp; ';
+                    }
+                    if ( file_exists(GSBACKUPSPATH.'pages/'.$url.'.bak.xml') ) {    
+                        echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
+                    } 
+                ?></p>
+            <?php } ?>
     </form>
     </div><!-- end main -->
     </div><!-- end maincontent -->

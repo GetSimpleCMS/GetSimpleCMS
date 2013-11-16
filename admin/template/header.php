@@ -144,6 +144,12 @@ $themeselector = '
 	</script>
 	<?php } ?>
 	
+
+<noscript>
+	<style>
+		.tab{ display:block; clear:both;}
+	</style>
+</noscript>
 	
 </head>
 
