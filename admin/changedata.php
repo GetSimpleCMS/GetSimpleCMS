@@ -103,10 +103,17 @@ if (isset($_POST['submitted'])) {
  		// meta
 		if(isset($_POST['post-metak'])) 			{ $meta        = $metak = safe_slash_html($_POST['post-metak']);	}
 		if(isset($_POST['post-metad'])) 			{ $metad       = safe_slash_html($_POST['post-metad']);	}
+		
 		//robots
-		if(isset($_POST['post-metar-noindex'])) 	{ $metarNoIndex  = is_numeric($_POST['post-metar-noindex']) ? $_POST['post-metar-noindex'] : "0"; }
-		if(isset($_POST['post-metar-nofollow'])) 	{ $metarNoFollow = is_numeric($_POST['post-metar-nofollow']) ? $_POST['post-metar-nofollow'] : "0"; }
-		if(isset($_POST['post-metar-noarchive'])) 	{ $metaNoArchive = is_numeric($_POST['post-metar-noarchive']) ? $_POST['post-metar-noarchive'] : "0"; }
+		if(isset($_POST['post-metar-noindex']))	 	$metarNoIndex   = 1;
+		else $metarNoIndex = 0; 
+		if(isset($_POST['post-metar-nofollow']))	$metarNoFollow  = 1;
+		else $metarNoFollow = 0; 
+		if(isset($_POST['post-metar-noarchive']))	$metarNoArchive = 1;
+		else $metarNoArchive = 0; 
+
+		debugLog(print_r($_POST,true));
+		debugLog($metarNoFollow);
 
 		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
 		if ( file_exists($file) && ($url != $_POST['existing-url']) ) {
