@@ -2535,6 +2535,10 @@ a.disabled:visited {
 	display:none;
 }
 
+.tab fieldset legend{
+	display: none;
+}
+
 .outline {
 	border: 1px dotted gray;
 }

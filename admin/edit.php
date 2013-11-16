@@ -172,9 +172,12 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                     <li><a href="#page_options"><span><?php i18n('OPTIONS'); ?></span></a></li>
                     <li><a href="#page_meta"><span><?php i18n('META'); ?></span></a></li>
                 </ul>
-            <!-- PAGE OPTIONS -->
+
+
+<!-- ------- PAGE OPTIONS --------------------------------------------------- -->
             <div id="page_options" class="tab">
                 <fieldset>
+                    <legend>Page Options</legend>
                     <div class="wideopt">
                         <p>
                             <label for="post-titlelong"><?php i18n('TITLELONG'); ?>:</label>
@@ -277,8 +280,11 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
             </div> 
             <!-- / END PAGE OPTIONS -->
 
-            <!-- PAGE CONTENT -->
+<!-- ------- PAGE CONTENT --------------------------------------------------- -->            
             <div id="page_content" class="tab">
+            <fieldset>
+            <legend>Page Content</legend>
+                
             <p>
                 <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
                 <textarea id="post-content" name="post-content"><?php echo $content; ?></textarea>
@@ -482,11 +488,14 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                     }
             });
         </script>
+        </fieldset>
         </div> 
         <!-- / END PAGE CONTENT -->
-        <!-- META -->
+
+<!-- ------- PAGE META OPTIONS --------------------------------------------------- -->
         <div id="page_meta" class="tab">
             <fieldset>    
+            <legend>Page Meta</legend>                
             <div class="leftopt">             
                 <p class="inline clearfix">
                     <label for="post-metak"><?php i18n('TAG_KEYWORDS'); ?>:</label>

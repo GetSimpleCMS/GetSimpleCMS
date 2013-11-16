@@ -148,6 +148,7 @@ $themeselector = '
 <noscript>
 	<style>
 		.tab{ display:block; clear:both;}
+		.tab fieldset legend{ display: block; }
 	</style>
 </noscript>
 	
