@@ -290,10 +290,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
             <fieldset>
             <legend>Page Content</legend>
                 
-            <p>
+
                 <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
                 <textarea id="post-content" name="post-content"><?php echo $content; ?></textarea>
-            </p>
             
             <?php exec_action('edit-content'); ?> 
             

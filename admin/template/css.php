@@ -935,7 +935,7 @@ label.checkbox {
 
 /* meta dropdown style */
 #metadata_window,fieldset {
-	margin: 0 2px 20px 0;
+	margin: 0 2px 0 0;
 	background: #f9f9f9;
 	border: 1px solid #e8e8e8;
 	padding: 15px 10px 5px 10px;
@@ -1101,7 +1101,7 @@ p.backuplink a {
 	font-size: 10px;
 	padding: 3px;
 	display: block;
-	margin-top: -13px;
+	/*margin-top: -13px;*/
 	margin-bottom: -10px;
 	color: #888;
 	font-style: italic;
@@ -2490,7 +2490,8 @@ a.disabled:visited {
 */
 #maincontent .ui-tabs .ui-tabs-panel {
 	border-width: 0 !important; 
-	padding: 1em 0;	
+	padding: 0;	
+	margin:10px 0px;
 }
 
 #maincontent .ui-widget-content {
