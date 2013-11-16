@@ -569,8 +569,22 @@ function redirect($url) {
 			echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
 			echo '</noscript>';
 		}
-		echo i18n_r('ERROR').": Headers already sent in ".$filename." on line ".$linenum."\n";
+		echo i18n_r('ERROR').": Headers already sent in ".$filename." on line ".$linenum."<br/><br/>\n\n";
 		printf(i18n_r('REDIRECT_MSG'), $url);
+
+		if(!isAuthPage()) {
+		if (isDebug()){
+			global $GS_debug;
+			echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
+			echo '<pre>';
+			foreach ($GS_debug as $log){
+				print($log.'<br/>');
+			}
+			echo '</pre>';	
+			echo '</div>';
+		}
+		}
+		
 		echo "</body></html>";
 	}
 	
