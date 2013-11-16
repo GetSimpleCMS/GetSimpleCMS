@@ -245,28 +245,33 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                         </p>
                         <div id="menu-items">
                             <img src="template/images/tick.png" id="tick" />
-                            <span style="float:left;width:81%;" ><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span><span style="float:left;width:10%;" ><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>
-                            <div class="clear"></div>
-                            <input class="text" style="width:73%;" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" /><select class="text"  style="width:16%" id="post-menu-order" name="post-menu-order" >
-                            <?php if(isset($menuOrder)) { 
-                                if($menuOrder == 0) {
-                                    echo '<option value="" selected>-</option>'; 
-                                } else {
-                                    echo '<option value="'.$menuOrder.'" selected>'.$menuOrder.'</option>'; 
-                                }
-                            } ?>
-                                <option value="">-</option>
-                                <?php
-                                $i = 1;
-                                while ($i <= 30) { 
-                                    echo '<option value="'.$i.'">'.$i.'</option>';
-                                    $i++;
-                                }
-                                ?>
-                            </select>
-                        </div>              
+                            <div style="float:left;width:210px;">
+                                <span><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span>
+                                <input class="text" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />
+                            </div>
+                            <div style="float:right;width:40px;">
+                                <span><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>                                
+                                <select class="text" id="post-menu-order" name="post-menu-order" >
+                                <?php if(isset($menuOrder)) { 
+                                    if($menuOrder == 0) {
+                                        echo '<option value="" selected>-</option>'; 
+                                    } else {
+                                        echo '<option value="'.$menuOrder.'" selected>'.$menuOrder.'</option>'; 
+                                    }
+                                } ?>
+                                    <option value="">-</option>
+                                    <?php
+                                    $i = 1;
+                                    while ($i <= 30) { 
+                                        echo '<option value="'.$i.'">'.$i.'</option>';
+                                        $i++;
+                                    }
+                                    ?>
+                                </select>
+                            </div> 
+                        </div>                
+                    <div class="clear"></div>
                     </div>
-                
                     <div class="rightopt">
                         <p>
                             <label for="post-id"><?php i18n('SLUG_URL'); ?>:</label>

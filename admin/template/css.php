@@ -998,7 +998,7 @@ a.viewlink:hover img {
 #menu-items {
 	height: 50px;
 	background: #222;
-	padding: 5px 10px 0 10px;
+	padding: 5px 18px 0 10px;
 	position: relative;
 	border-radius: 2px;
 	margin-bottom:5px;
@@ -1029,7 +1029,7 @@ a.viewlink:hover img {
 
 #menu-items select {
 	padding: 2px 3px;
-	margin-left:13px;
+	/*margin-left:13px;*/
 }
 
 .countdownwrap {
