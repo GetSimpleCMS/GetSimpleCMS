@@ -2530,6 +2530,11 @@ a.disabled:visited {
 	font-size: 11px;	
 }
 
+/* prevent ui tabs fouc */
+.tab {
+	display:none;
+}
+
 .outline {
 	border: 1px dotted gray;
 }

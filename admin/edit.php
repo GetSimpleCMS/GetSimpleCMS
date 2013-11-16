@@ -175,7 +175,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                     <li><a href="#page_meta"><span><?php i18n('META'); ?></span></a></li>
                 </ul>
             <!-- PAGE OPTIONS -->
-            <div id="page_options">
+            <div id="page_options" class="tab">
                 <fieldset>
                     <div class="wideopt">
                         <p>
@@ -280,7 +280,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
             <!-- / END PAGE OPTIONS -->
 
             <!-- PAGE CONTENT -->
-            <div id="page_content">
+            <div id="page_content" class="tab">
             <p>
                 <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
                 <textarea id="post-content" name="post-content"><?php echo $content; ?></textarea>
@@ -520,7 +520,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
         </div> 
         <!-- / END PAGE CONTENT -->
         <!-- META -->
-        <div id="page_meta">
+        <div id="page_meta" class="tab">
             <fieldset>    
             <div class="leftopt">             
                 <p class="inline clearfix">
