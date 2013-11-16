@@ -66,6 +66,7 @@ if ($id){
 
     $titlelong  = stripslashes($data_edit->titlelong);
     $summary    = stripslashes($data_edit->summary);
+
     $metarNoIndex = $data_edit->metarNoIndex;
     $metarNoFollow = $data_edit->metarNoFollow;
     $metarNoArchive = $data_edit->metarNoArchive;
@@ -540,7 +541,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                     <label class="checkbox" for="post-metar-nofollow" >NOFOLLOW</label>
                     <input type="checkbox" id="post-metar-nofollow" name="post-metar-nofollow" <?php echo $sel_rf; ?> />
                     <br/>
-                    <label class="checkbox" for="post-metar-noindex" >NOARCHIVE</label>
+                    <label class="checkbox" for="post-metar-noarchive" >NOARCHIVE</label>
                     <input type="checkbox" id="post-metar-noarchive" name="post-metar-noarchive" <?php echo $sel_ra; ?> />
                     <br/>
                 </p>   
