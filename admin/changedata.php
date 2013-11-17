@@ -64,20 +64,22 @@ if (isset($_POST['submitted'])) {
 			$url = 'temp';
 		}
 		
-		
+		$oldslug = "";
+
 		// was the slug changed on an existing page?
 		if ( isset($_POST['existing-url']) ) {
-			if ($_POST['post-id'] != $_POST['existing-url']){
+			$oldslug = $_POST['existing-url'];
+			if ($_POST['post-id'] != $oldslug){
 				// dont change the index page's slug
-				if ($_POST['existing-url'] == 'index') {
-					$url = $_POST['existing-url'];
-					redirect("edit.php?id=". urlencode($_POST['existing-url']) ."&upd=edit-index&type=edit");
+				if ($oldslug == 'index') {
+					$url = $oldslug;
+					redirect("edit.php?id=". urlencode($oldslug) ."&upd=edit-index&type=edit");
 				} else {
 					exec_action('changedata-updateslug');
-					updateSlugs($_POST['existing-url']);
+					updateSlugs($oldslug);
 					$file = GSDATAPAGESPATH . $url .".xml";
-					$existing = GSDATAPAGESPATH . $_POST['existing-url'] .".xml";
-					$bakfile = GSBACKUPSPATH."pages/". $_POST['existing-url'] .".bak.xml";
+					$existing = GSDATAPAGESPATH . $oldslug .".xml";
+					$bakfile = GSBACKUPSPATH."pages/". $oldslug .".bak.xml";
 					copy($existing, $bakfile);
 					unlink($existing);
 				} 
@@ -112,11 +114,8 @@ if (isset($_POST['submitted'])) {
 		if(isset($_POST['post-metar-noarchive']))	$metarNoArchive = 1;
 		else $metarNoArchive = 0; 
 
-		debugLog(print_r($_POST,true));
-		debugLog($metarNoFollow);
-
 		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
-		if ( file_exists($file) && ($url != $_POST['existing-url']) ) {
+		if ( file_exists($file) && ($url != $oldslug) ) {
 			$count = "1";
 			$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
 			while ( file_exists($file) ) {
@@ -183,10 +182,10 @@ if (isset($_POST['submitted'])) {
 				$redirect_url = 'edit.php';
 			}
 			
-			if ($url == $_POST['existing-url']) {
+			if ($url == $oldslug) {
 				redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
 			} else {
-				redirect($redirect_url."?id=". $url ."&old=".$_POST['existing-url']."&upd=edit-success&type=edit");
+				redirect($redirect_url."?id=". $url ."&old=".$oldslug."&upd=edit-success&type=edit");
 			}
 		}
 	}
