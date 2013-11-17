@@ -152,7 +152,6 @@ if(isset($_POST['submitted'])) {
 		$status   = sendmail($EMAIL,$subject,$message);
 		
 		# activate default plugins
-		change_plugin('anonymous_data.php',true);
 		change_plugin('InnovationPlugin.php',true);
 
 		# set the login cookie, then redirect user to secure panel		
