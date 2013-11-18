@@ -36,7 +36,9 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
 		<div class="main">
 
 		<?php 
-			call_user_func_array($plugin_info[$plugin_id]['load_data'],array()); 
+			if(function_exists($plugin_info[$plugin_id]['load_data'])){
+				call_user_func_array($plugin_info[$plugin_id]['load_data'],array()); 
+			}	
 		?>
 
 		</div>
