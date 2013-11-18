@@ -104,22 +104,20 @@ function get_page_meta_desc($echo=true) {
 }
 
 /**
- * Get Page Meta Description
+ * Get Page Meta Robots
  *
- * @since 2.0
- * @uses $metad
- * @uses strip_decode
+ * @since 3.4.0
+ * @uses $metarNoIndex, $metarNoFollow, $metarNoArchive
  *
  * @param bool $echo Optional, default is true. False will 'return' value
- * @return string Echos or returns based on param $echo
+ * @return string returns comma serperated list of robots
  */
 function get_page_meta_robots($echo=true) {
 	global $metarNoIndex, $metarNoFollow, $metarNoArchive;
 	$myVar = array();
-
-	$myVar[] = $metarNoIndex == 1 ? ' noindex' : 'index';
-	$myVar[] = $metarNoIndex == 1 ? ' nofollow' : 'follow';
-	$myVar[] = $metarNoIndex == 1 ? ' noarchive' : 'archive';
+	$myVar[] = $metarNoIndex == 1 ? 'noindex' : 'index';
+	$myVar[] = $metarNoFollow == 1 ? 'nofollow' : 'follow';
+	$myVar[] = $metarNoArchive == 1 ? 'noarchive' : 'archive';
 
 	$metar = implode(',',$myVar);
 
