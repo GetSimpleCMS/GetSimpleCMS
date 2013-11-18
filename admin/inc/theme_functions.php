@@ -73,12 +73,13 @@ function get_page_excerpt($n=200, $html=false) {
  */
 function get_page_meta_keywords($echo=true) {
 	global $metak;
-	$myVar = encode_quotes(strip_decode($metak));
-	
+	$str = encode_quotes(strip_decode($metak));
+	$str = exec_filter('metak',$str);	
+
 	if ($echo) {
-		echo $myVar;
+		echo $str;
 	} else {
-		return $myVar;
+		return $str;
 	}
 }
 
@@ -94,12 +95,33 @@ function get_page_meta_keywords($echo=true) {
  */
 function get_page_meta_desc($echo=true) {
 	global $metad;
-	$myVar = encode_quotes(strip_decode($metad));
+
+	if ($metad != '') {
+		$description = encode_quotes(strip_decode($metad));
+	}
+	else if(getDef('GSAUTOMETAD',true))
+	{
+		// get meta from content excerpt
+		if (function_exists('mb_substr')) { 
+			$description = trim(mb_substr(strip_tags(strip_decode($content)), 0, 160));
+		} else {
+			$description = trim(substr(strip_tags(strip_decode($content)), 0, 160));
+		}
+
+		$description = str_replace('"','', $description);
+		$description = str_replace("'",'', $description);
+		$description = preg_replace('/\n/', " ", $description);
+		$description = preg_replace('/\r/', " ", $description);
+		$description = preg_replace('/\t/', " ", $description);
+		$description = preg_replace('/ +/', " ", $description);
+	}
 	
+	$str = exec_filter('metad',$description);
+
 	if ($echo) {
-		echo $myVar;
+		echo $str;
 	} else {
-		return $myVar;
+		return $str;
 	}
 }
 
@@ -114,17 +136,18 @@ function get_page_meta_desc($echo=true) {
  */
 function get_page_meta_robots($echo=true) {
 	global $metarNoIndex, $metarNoFollow, $metarNoArchive;
-	$myVar = array();
-	$myVar[] = $metarNoIndex == 1 ? 'noindex' : 'index';
-	$myVar[] = $metarNoFollow == 1 ? 'nofollow' : 'follow';
-	$myVar[] = $metarNoArchive == 1 ? 'noarchive' : 'archive';
+	$arr = array();
+	$arr[] = $metarNoIndex == 1 ? 'noindex' : 'index';
+	$arr[] = $metarNoFollow == 1 ? 'nofollow' : 'follow';
+	$arr[] = $metarNoArchive == 1 ? 'noarchive' : 'archive';
 
-	$metar = implode(',',$myVar);
+	$str = implode(',',$arr);
+	$str = exec_filter('metar',$str);
 
 	if ($echo) {
-		echo $metar;
+		echo $str;
 	} else {
-		return $metar;
+		return $str;
 	}
 }
 
@@ -295,43 +318,26 @@ function get_page_url($echo=false) {
  * @return string HTML for template header
  */
 function get_header($full=true) {
-	global $metad;
 	global $title;
 	global $content;
 	include(GSADMININCPATH.'configuration.php');
 	
 	// meta description	
-	if ($metad != '') {
-		$description = get_page_meta_desc(false);
-	} 
-	else if(getDef('GSAUTOMETAD',true))
-	{
-		// get meta from content excerpt
-		if (function_exists('mb_substr')) { 
-			$description = trim(mb_substr(strip_tags(strip_decode($content)), 0, 160));
-		} else {
-			$description = trim(substr(strip_tags(strip_decode($content)), 0, 160));
-		}
-
-		$description = str_replace('"','', $description);
-		$description = str_replace("'",'', $description);
-		$description = preg_replace('/\n/', " ", $description);
-		$description = preg_replace('/\r/', " ", $description);
-		$description = preg_replace('/\t/', " ", $description);
-		$description = preg_replace('/ +/', " ", $description);
-	}
-
+	$description = get_page_meta_desc(false);
 	if(!empty($description)) echo '<meta name="description" content="'.$description.'" />'."\n";
 	
-	$metarobots =  get_page_meta_robots(false);
+	// meta robots
+	$metarobots = get_page_meta_robots(false);
 	if(!empty($metarobots)) echo '<meta name="robots" content="'.$metarobots.'" />'."\n";
 
 	// meta keywords
 	$keywords = get_page_meta_keywords(false);
-	if ($keywords != '') echo '<meta name="keywords" content="'.$keywords.'" />'."\n";
+	if (!empty($keywords)) echo '<meta name="keywords" content="'.$keywords.'" />'."\n";
 	
-	if ($full) {
-		echo '<link rel="canonical" href="'. get_page_url(true) .'" />'."\n";
+	// canonical link
+	$canonical = '<link rel="canonical" href="'. get_page_url(true) .'" />'."\n";
+	if ($full and !empty($canonical)) {
+		echo $canonical;
 	}
 
 	// script queue
