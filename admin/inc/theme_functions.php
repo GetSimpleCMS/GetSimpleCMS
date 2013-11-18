@@ -163,12 +163,12 @@ function get_page_meta_robots($echo=true) {
  */
 function get_page_title($echo=true) {
 	global $title;
-	$myVar = strip_decode($title);
+	$str = strip_decode($title);
 	
 	if ($echo) {
-		echo $myVar;
+		echo $str;
 	} else {
-		return $myVar;
+		return $str;
 	}
 }
 
@@ -185,12 +185,12 @@ function get_page_title($echo=true) {
  */
 function get_page_clean_title($echo=true) {
 	global $title;
-	$myVar = strip_tags(strip_decode($title));
+	$str = strip_tags(strip_decode($title));
 	
 	if ($echo) {
-		echo $myVar;
+		echo $str;
 	} else {
-		return $myVar;
+		return $str;
 	}
 }
 
@@ -207,12 +207,12 @@ function get_page_clean_title($echo=true) {
  */
 function get_page_slug($echo=true) {
 	global $url;
-	$myVar = $url;
+	$str = $url;
 	
 	if ($echo) {
-		echo $myVar;
+		echo $str;
 	} else {
-		return $myVar;
+		return $str;
 	}
 }
 
@@ -229,12 +229,12 @@ function get_page_slug($echo=true) {
  */
 function get_parent($echo=true) {
 	global $parent;
-	$myVar = $parent;
+	$str = $parent;
 	
 	if ($echo) {
-		echo $myVar;
+		echo $str;
 	} else {
-		return $myVar;
+		return $str;
 	}
 }
 
@@ -260,12 +260,12 @@ function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
 		}
 	}
 	
-	$myVar = date($i, strtotime($date));
+	$str = date($i, strtotime($date));
 	
 	if ($echo) {
-		echo $myVar;
+		echo $str;
 	} else {
-		return $myVar;
+		return $str;
 	}
 }
 
