@@ -104,6 +104,34 @@ function get_page_meta_desc($echo=true) {
 }
 
 /**
+ * Get Page Meta Description
+ *
+ * @since 2.0
+ * @uses $metad
+ * @uses strip_decode
+ *
+ * @param bool $echo Optional, default is true. False will 'return' value
+ * @return string Echos or returns based on param $echo
+ */
+function get_page_meta_robots($echo=true) {
+	global $metarNoIndex, $metarNoFollow, $metarNoArchive;
+	$myVar = array();
+
+	$myVar[] = $metarNoIndex == 1 ? ' noindex' : 'index';
+	$myVar[] = $metarNoIndex == 1 ? ' nofollow' : 'follow';
+	$myVar[] = $metarNoIndex == 1 ? ' noarchive' : 'archive';
+
+	$metar = implode(',',$myVar);
+
+	if ($echo) {
+		echo $metar;
+	} else {
+		return $metar;
+	}
+}
+
+
+/**
  * Get Page Title
  *
  * @since 1.0
@@ -276,7 +304,7 @@ function get_header($full=true) {
 	
 	// meta description	
 	if ($metad != '') {
-		$description = get_page_meta_desc(FALSE);
+		$description = get_page_meta_desc(false);
 	} 
 	else if(getDef('GSAUTOMETAD',true))
 	{
@@ -296,9 +324,12 @@ function get_header($full=true) {
 	}
 
 	if(!empty($description)) echo '<meta name="description" content="'.$description.'" />'."\n";
+	
+	$metarobots =  get_page_meta_robots(false);
+	if(!empty($metarobots)) echo '<meta name="robots" content="'.$metarobots.'" />'."\n";
 
 	// meta keywords
-	$keywords = get_page_meta_keywords(FALSE);
+	$keywords = get_page_meta_keywords(false);
 	if ($keywords != '') echo '<meta name="keywords" content="'.$keywords.'" />'."\n";
 	
 	if ($full) {
