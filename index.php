@@ -66,15 +66,18 @@ if (isset($pagesArray[$id])) {
 	exec_action('error-404');
 }
 
-$title         = $data_index->title;
-$date          = $data_index->pubDate;
-$metak         = $data_index->meta;
-$metad         = $data_index->metad;
-$url           = $data_index->url;
-$content       = $data_index->content;
-$parent        = $data_index->parent;
-$template_file = $data_index->template;
-$private       = $data_index->private;	
+$title          = $data_index->title;
+$date           = $data_index->pubDate;
+$metak          = $data_index->meta;
+$metad          = $data_index->metad;
+$metarNoIndex   = $data_index->metarNoIndex;
+$metarNoFollow  = $data_index->metarNoFollow;
+$metarNoArchive = $data_index->metarNoArchive;
+$url            = $data_index->url;
+$content        = $data_index->content;
+$parent         = $data_index->parent;
+$template_file  = $data_index->template;
+$private        = $data_index->private;	
 
 # if page is private, check user
 if ($private == 'Y') {

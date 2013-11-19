@@ -14,7 +14,6 @@
 	<!-- Site Title -->
 	<title><?php get_page_clean_title(); ?> &lt; <?php get_site_name(); ?></title>
 	<?php get_header(); ?>
-	<meta name="robots" content="index, follow" />
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="<?php get_theme_url(); ?>/style.css" media="all" />
 
