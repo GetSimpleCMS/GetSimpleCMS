@@ -218,8 +218,7 @@ function editor_array2ul($array,$hideEmpty = true) {
  */
 function editor_fileIsOpen($path,$file){
 	GLOBAL $template,$template_file;
-    $file = $path.DIRECTORY_SEPARATOR.$file;
-    $filename=pathinfo($file,PATHINFO_BASENAME);
+    $file = $path.$file;
     $filenamefull=substr(strstr($file,'/theme/'.$template.'/'),strlen('/theme/'.$template.'/')); 
 	return $template_file == $filenamefull;
 }
