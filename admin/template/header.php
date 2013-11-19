@@ -149,6 +149,7 @@ $themeselector = '
 	<style>
 		.tab{ display:block; clear:both;}
 		.tab fieldset legend{ display: block; }
+		#cm_themeselect { display:none;}
 	</style>
 </noscript>
 	
