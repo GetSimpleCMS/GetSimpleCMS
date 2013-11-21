@@ -68,11 +68,12 @@ if (isset($_FILES['file'])) {
 				exec_action('file-uploaded');
 				
 				// generate thumbnail				
-				require('inc/imagemanipulation.php');	
+				require_once('inc/imagemanipulation.php');	
 				genStdThumb($subFolder,$base);					
 				$messages[] = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$subFolder.$base.'">'. $SITEURL .'data/uploads/'.$subFolder.$base.'</a>';
 			} else {
 				$messages[] = $_FILES["file"]["name"][$i] .' - '.i18n_r('ERROR_UPLOAD');
+				if(requestIsAjax()) header('Status: 403 FIle not allowed');
 			}
 			
 			//successfull message

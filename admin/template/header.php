@@ -102,6 +102,8 @@ $themeselector = '
 		
 	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
 	<script type="text/javascript" src="template/js/lazyload.js?v=<?php echo GSVERSION; ?>"></script>		
+
+	<script type="text/javascript" src="template/js/dropzone.js?v=<?php echo GSVERSION; ?>"></script>		
 	<script type="text/javascript" src="template/js/codemirror.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
 
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->

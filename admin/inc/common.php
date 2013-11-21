@@ -10,6 +10,7 @@
  */
 
 define('IN_GS', TRUE);
+define('GSNOUPLOADIFY', 1); // disable uploadify until we remove it
 
 /**
  *  GSCONFIG definitions

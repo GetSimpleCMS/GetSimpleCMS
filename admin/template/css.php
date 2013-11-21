@@ -1615,45 +1615,102 @@ table.simple td.title {
 }
 
 
-/* JQuery Uploadify Styles */
-.uploadify-queue-item {
+/* Upload Queue */
+
+#queue-item-template{
+	display: none;	
+}	
+.queue-item-wrap{
+	margin:0;
+	padding:0;
+	position:relative;
+}
+
+.queue-item-wrap .queue-item {
 	font-size: 10px;
 	padding: 8px 15px;
 	width: 190px;
 }
 
-.uploadify-error {
-	color: #D94136 !important;
+/* special overrides for non templated remove links */
+.queue-item-wrap a.dz-remove{
+	margin:0;
+	padding:0 !important;
+	position: absolute;
+	right: 13px;
+	top: 6px;
+	background: none !important;
+	opacity: .8;	
+	font-size:14px;
 }
 
-.uploadify-error .uploadify-progress-bar {
-	background-color: #D94136 !important;
-}
-
-#sidebar .snav li .cancel {
-	float: right;
-}
-
-#sidebar .snav li .cancel a:link,
-#sidebar .snav li .cancel a:visited,
-#sidebar .snav li .cancel a:hover {
-	padding: 0 !important;
-	margin: 0 4px 0 0 !important;
-	width: 11px !important;
-	opacity: .8;
-	background: transaparent !important;
-}
-
-.uploadify-progress {
+.queue-item-wrap .queue-item .progress {
 	background-color: #FFF;
 	margin-top: 5px;
 	width: 97%;
 }
 
-.uploadify-progress-bar {
+.queue-item-wrap .queue-item .progress-bar {
 	background-color: <?php echo $primary_6; ?>;
 	width: 1px;
 	height: 4px;
+	transition: width 200ms;
+}
+
+.queue-item-wrap .dz-filename {
+	width:165px;
+	/*word-break: break-all;*/
+	display: inline-block;
+}
+
+.queue-item-wrap .dz-name{
+	word-break: break-all;
+}
+
+.queue-item-wrap .dz-filename .size{
+	word-break: normal;
+	white-space: nowrap;
+}
+
+/* statuses */
+
+.queue-item-wrap .dz-error-mark,
+.queue-item-wrap .dz-success-mark,
+.queue-item-wrap dz-process-mark
+{
+	display:none;
+}
+
+/* processing */
+.queue-item-wrap.dz-processing .dz-process-mark{
+	display:inline;
+	color: #AFC5CF;
+	opacity:.8;
+}
+
+.queue-item-wrap.dz-success .dz-process-mark,
+.queue-item-wrap.dz-error .dz-process-mark
+{
+	display:none;
+}
+
+/* error */
+.queue-item-wrap.dz-error .dz-error-mark{
+	display: inline;
+	color: #D94136;	
+}
+
+/* error progressbar */
+.queue-item-wrap.dz-error .progress, 
+.queue-item-wrap.dz-error .progress-bar
+{
+	background-color: #D94136;
+}
+
+/* success */
+.queue-item-wrap.dz-success .dz-success-mark{
+	display:inline;
+	color: #00CA00;		
 }
 
 #sidebar .snav li.upload {
@@ -1667,39 +1724,6 @@ table.simple td.title {
 	background: <?php echo $primary_1; ?>;
 	font-weight: 100;
 }
-
-.uploadify-button {
-	width: 100%;
-	border-radius: 4px;
-		-webkit-border-radius: 4px;
-		-moz-border-radius: 4px;
-	display: block;
-	font-weight: bold;
-	color: #AFC5CF;
-	background: #182227;
-	text-shadow: 1px 1px 0px #0E1316;
-	transition: all .3s ease-in-out;
-		-webkit-transition: all .3s ease-in-out;
-		-moz-transition: all .3s ease-in-out;
-		-o-transition: all .3s ease-in-out;
-}
-
-.uploadify:hover .uploadify-button {
-	background-color: #0e1316;
-	color: #ffffff;
-	text-shadow: 1px 1px 0px #000;
-}
-
-.uploadify-button-text{
-	padding: 5px 15px 5px 15px;
-	/*display: block;*/
-}
-
-.uploadify {
-	position: relative;
-	margin-bottom: 1em;
-}
-
 
 /* Image Editor Styles */
 textarea.copykit {
