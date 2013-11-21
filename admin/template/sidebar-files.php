@@ -57,7 +57,7 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 			forceFallback: false,
 			maxFilesize: <?php echo $fileSizeLimitMB; ?>, // MB			
 			parallelUploads: 1, // can be bumped
-			url: location.href,
+			url: 'upload.php?path=<?php echo $path;?>',
 			uploadMultiple: true,
 			paramName: 'file',
 			createImageThumbnails: false,
