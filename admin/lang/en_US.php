@@ -104,7 +104,7 @@ $i18n = array(
 * For: upload.php
 */
 "ERROR_UPLOAD"            =>	"There was a problem with the file upload",
-"FILE_SUCCESS_MSG"        =>	"Success! File location",
+"FILE_SUCCESS_MSG"        =>	"File Upload Success!",
 "FILE_MANAGEMENT"         =>	"File Management",
 "UPLOADED_FILES"          =>	"Uploaded Files",
 "SHOW_ALL"                =>	"Show All",

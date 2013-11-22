@@ -51,6 +51,17 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 
 	jQuery(document).ready(function() {
 
+		// workaroud for safari mutiple bug
+	    if (Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor')>0){
+	         $('input:file').removeAttr("multiple");
+	    }    
+
+		if(!window.Dropzone){
+			$('.upload').hide(); 
+			$('#gs-dropzone').hide(); 
+			return;
+		}
+
 		$('.uploadform').hide();
 
 		myDropzone = new Dropzone("#gs-dropzone",{
@@ -137,11 +148,6 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 			// var existingFileCount = 1; // The number of files already uploaded
 			// myDropzone.options.maxFiles = myDropzone.options.maxFiles - existingFileCount;
 		}
-
-		// workaroud for safari mutiple bug
-	    if (Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor')>0){
-	         $('input:file').removeAttr("multiple");
-	    }    
 
 	});
 	</script>		
