@@ -1617,6 +1617,19 @@ table.simple td.title {
 
 /* Upload Queue */
 
+.uploaddropzone {
+	border: 3px dashed #E9E9E9;
+	border-radius: 3px;
+	margin: 8px 0 5px 15px !important;
+	text-align: center;
+	height: 40px;
+	line-height: 40px;
+	font-weight: bold;
+	font-size: 16px;
+	color: #DDD;
+	font-family: sans-serif;
+}
+
 #queue-item-template{
 	display: none;	
 }	

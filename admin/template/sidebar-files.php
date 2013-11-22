@@ -43,6 +43,7 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 	</div>	
 
 	</li>
+	<li id="gs-dropzone" class="uploaddropzone"><span class="dz-message">Drop Files Here</span></li>
 	<li style="float:right;" id="sb_filesize" ><small><?php i18n('MAX_FILE_SIZE'); ?>: <strong><?php echo (toBytes(ini_get('upload_max_filesize'))/1024)/1024; ?>MB</strong></small></li>
 </ul>
 
@@ -52,7 +53,9 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 
 		$('.uploadform').hide();
 
-		$("#fileuploadlink").dropzone({
+		myDropzone = new Dropzone("#gs-dropzone",{
+			clickable: '#fileuploadlink',
+			// dictDefaultMessage : '',
 			debug: false,
 			forceFallback: false,
 			maxFilesize: <?php echo $fileSizeLimitMB; ?>, // MB			
@@ -64,7 +67,7 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 			addRemoveLinks:true,
 			dictCancelUpload: '×',
 			dictRemoveFile: '×',
-			fallback: function(){$('.uploadform').show(); $('.upload').hide();},
+			fallback: function(){$('.uploadform').show(); $('.upload').hide(); $('#gs-dropzone').hide(); },
 			// dictFallbackMessage: null,
 			// dictFallbackText: null,
 			previewTemplate: $("#queue-item-template").html(),
@@ -87,8 +90,6 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
     			removeDelay
     		);
 		}
-
-		var myDropzone = Dropzone.forElement("#fileuploadlink");
 		
 		// after success, remove queue item
 		myDropzone.on("processing", function(file) {
@@ -107,8 +108,7 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
   		});
 
     	myDropzone.on("complete", function(file) {
-    		_this = Dropzone.forElement("#fileuploadlink");
-      		if (_this.getQueuedFiles().length == 0) {
+      		if (this.getQueuedFiles().length == 0) {
 				$('#loader').fadeOut(500);
 				$('#maincontent').load(location.href+' #maincontent > *');      			
       		}	
@@ -137,6 +137,12 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 			// var existingFileCount = 1; // The number of files already uploaded
 			// myDropzone.options.maxFiles = myDropzone.options.maxFiles - existingFileCount;
 		}
+
+		// workaroud for safari mutiple bug
+	    if (Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor')>0){
+	         $('input:file').removeAttr("multiple");
+	    }    
+
 	});
 	</script>		
 
