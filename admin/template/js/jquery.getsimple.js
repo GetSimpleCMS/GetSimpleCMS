@@ -551,6 +551,7 @@ jQuery(document).ready(function () {
 		});
 	}	
 
+	// theme-edit fileselector change
 	// delegated on() handlers survive ajax replacement
 	$(document).on('click',"#theme_filemanager a.file",function(e){
 		// console.log('filechange');
@@ -571,6 +572,7 @@ jQuery(document).ready(function () {
 		}
 	}
 
+	// update theme-edit code editor
 	function updateTheme(theme,file,url){
 
 		// console.log(theme);
@@ -650,6 +652,7 @@ jQuery(document).ready(function () {
 		e.preventDefault();
 		editor = $('#codetext').data('editor');
 		if(editor){
+			$('#theme_edit_code').fadeTo('fast',0.3).fadeTo('fast',1.0);
 			editor.setValue($(editor.getTextArea()).val());
 			editor.hasChange = false;
 		}	
