@@ -439,7 +439,7 @@ h5:hover img {
 }
 
 #maincontent {
-	width: 690px;
+	width: 710px;
 	float: left;
 	text-align: left;
 }
@@ -686,7 +686,7 @@ h5:hover img {
 .wrapper table {
 	border-collapse: collapse;
 	margin: 0 0 20px 0;
-	width: 645px;
+	width: 668px;
 }
 
 .wrapper table td {
@@ -2471,9 +2471,10 @@ a.disabled:visited {
 .codewrap .CodeMirror {
 	font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;	
 	height: auto;
-	max-height: 550px; /* autosizing max height */
+	max-height: 550px;/* autosizing max height */
 	background-color:#FEFEFE;
 	/*padding-bottom:20px;*/
+	min-height:550px;
 }
 
 .codewrap .CodeMirror-scroll {
