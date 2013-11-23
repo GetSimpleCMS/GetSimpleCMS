@@ -1789,6 +1789,11 @@ a.updatelink:focus {
 	background-color: #2B5CB3;
 }
 
+.label-medium {
+	color: #000000;
+	background-color: #999;
+}
+
 .label-light{
 	color: #666;
 	background: #FFF;
