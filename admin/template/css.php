@@ -1619,7 +1619,7 @@ table.simple td.title {
 
 .uploaddropzone {
 	border: 3px dashed #E9E9E9;
-	border-radius: 3px;
+	border-radius: 4px;
 	margin: 8px 0 5px 15px !important;
 	text-align: center;
 	height: 40px;
