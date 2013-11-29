@@ -176,7 +176,7 @@ var CKEsetupLinks = function(){
 				dialog.setValueOf('info', 'url', dialog.getValueOf('info', 'localPage_path'));
 			}
 		};
-	});
+	},null,null,1); 
 }
 
 
