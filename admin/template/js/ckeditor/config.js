@@ -79,16 +79,20 @@ var menuItems;
 
 $.getJSON("inc/ajax.php?list_pages_json=1", function (data){
 	menuItems = data;
-	CKEsetupLinks();
+	if (typeof editor !== "undefined")  CKEsetupLinks(editor);
 });
 
 /**
  * CKEditor Add Local Page Link
  * This is used by the CKEditor to link to internal pages
+ * @param editorObj	an editor instance
 **/
-var CKEsetupLinks = function(){
+CKEsetupLinks = function(editorObj){
+
 	CKEDITOR.on( 'dialogDefinition', function( ev )	{
-		if ((ev.editor != editor) || (ev.data.name != 'link') || !menuItems) return;
+		if (typeof editorObj === "undefined") return;
+
+		if ((ev.editor != editorObj) || (ev.data.name != 'link') || !menuItems) return;
 		
 		// modify dialog definition for "link" dialog else return
 		
@@ -135,7 +139,7 @@ var CKEsetupLinks = function(){
 				var element = dialog.getContentElement('info', 'localPageOptions').getElement().getParent().getParent();
 				if (this.getValue() == 'localPage') {
 					element.show();
-					if (editor.config.linkShowTargetTab) {
+					if (editorObj.config.linkShowTargetTab) {
 						dialog.showPage('target');
 					}
 					var uploadTab = dialog.definition.getContents('upload');
@@ -181,7 +185,7 @@ var CKEsetupLinks = function(){
 
 
 // Helper function to get a CKEDITOR.dialog.contentDefinition object by its ID.
-var CKEgetById = function(array, id, recurse) {
+CKEgetById = function(array, id, recurse) {
 	for (var i = 0, item; (item = array[i]); i++) {
 		if (item.id == id) return item;
 			if (recurse && item[recurse]) {
@@ -191,3 +195,5 @@ var CKEgetById = function(array, id, recurse) {
 	}
 	return null;
 };
+
+var getById = CKEgetById; // alias for legacy
