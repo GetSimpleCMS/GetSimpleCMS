@@ -89,8 +89,9 @@ $.getJSON("inc/ajax.php?list_pages_json=1", function (data){
 **/
 CKEsetupLinks = function(editorObj){
 
+	if (typeof editorObj === "undefined") return;
+	
 	CKEDITOR.on( 'dialogDefinition', function( ev )	{
-		if (typeof editorObj === "undefined") return;
 
 		if ((ev.editor != editorObj) || (ev.data.name != 'link') || !menuItems) return;
 		
