@@ -11,7 +11,7 @@
 $pagesArray = array();
 
 add_action('index-header','getPagesXmlValues',array(false));      // make $pagesArray available to the front 
-add_action('header', 'getPagesXmlValues',array(true));           // make $pagesArray available to the back
+add_action('header', 'getPagesXmlValues',array(get_filename_id() != 'pages'));  // make $pagesArray available to the back
 add_action('page-delete', 'create_pagesxml',array(true));         // Create pages.array if page deleted
 add_action('changedata-aftersave', 'create_pagesxml',array(true));     // Create pages.array if page is updated
 
@@ -192,25 +192,36 @@ function getChildrenMulti($page,$options=array()){
 function getPagesXmlValues($chkcount=false){
   global $pagesArray;
 
-   // debugLog("getPagesXmlValues: " . $chkcount);
-   if($pagesArray && !$chkcount) return;
+   // debugLog(__FUNCTION__.": chkcount - " .(int)$chkcount);
+   
+   // if page cache not load load it
+   if(!$pagesArray){
+		$pagesArray=array();
+		$file=GSDATAOTHERPATH."pages.xml";
+		if (file_exists($file)){
+			// load the xml file and setup the array. 
+			// debugLog(__FUNCTION__.": load pages.xml");
+			$thisfile = file_get_contents($file);
+			$data = simplexml_load_string($thisfile);
+			$pages = $data->item;
+			  foreach ($pages as $page) {
+			    $key=$page->url;
+			    $pagesArray[(string)$key]=array();
+			    foreach ($page->children() as $opt=>$val) {
+			        $pagesArray[(string)$key][(string)$opt]=(string)$val;
+			    }
+			  }
+		}
+		else {
+			// no page cache, regen and then load it
+			// debugLog(__FUNCTION__.": pages.xml not exist");			
+   		 	if(create_pagesxml(true)) getPagesXmlValues(false);
+   		 	return;
+  		}
+  	}
 
-  $pagesArray=array();
-  $file=GSDATAOTHERPATH."pages.xml";
-  if (file_exists($file)){
-  // load the xml file and setup the array. 
-    $thisfile = file_get_contents($file);
-    $data = simplexml_load_string($thisfile);
-    $pages = $data->item;
-      foreach ($pages as $page) {
-        $key=$page->url;
-        $pagesArray[(string)$key]=array();
-        foreach ($page->children() as $opt=>$val) {
-            $pagesArray[(string)$key][(string)$opt]=(string)$val;
-        }
-      }
-	  
-	  if ($chkcount==true){
+  	// if checking cache sync, regen cache if pages differ.
+	if ($chkcount==true){
 		$path = GSDATAPAGESPATH;
 		$dir_handle = @opendir($path) or die("getPageXmlValues: Unable to open $path");
 		$filenames = array();
@@ -221,12 +232,10 @@ function getPagesXmlValues($chkcount=false){
 			}
 		}
 		if (count($pagesArray)!=count($filenames)) {
+			// debugLog(__FUNCTION__.": count differs regen pages.xml");
 			if(create_pagesxml(true)) getPagesXmlValues(false);
 		}
-	  }
-  } else {
-    if(create_pagesxml(true)) getPagesXmlValues(false);
-  }
+	}
   
 }
 
