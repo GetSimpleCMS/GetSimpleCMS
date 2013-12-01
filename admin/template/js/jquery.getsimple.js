@@ -186,6 +186,17 @@ jQuery(document).ready(function () {
  
  
 	// components.php
+	
+	function focusCompEditor(selector){
+		var editor = $(selector + ' textarea');		
+		editor.focus();
+	}
+
+	// auto focus component editors
+	$('#components div.compdivlist a').on('click', function(ev){
+		focusCompEditor($(this).attr('href'));
+	});	
+	
 	$(".delconfirmcomp").on("click", function ($e) {
 		$e.preventDefault();
 		loadingAjaxIndicator.show();
