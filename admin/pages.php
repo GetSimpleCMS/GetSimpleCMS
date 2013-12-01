@@ -66,7 +66,7 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 }
 
 
-getPagesXmlValues();
+getPagesXmlValues(true);
 
 $count = 0;
 foreach ($pagesArray as $page) {
