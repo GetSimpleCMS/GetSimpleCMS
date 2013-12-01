@@ -168,7 +168,7 @@ jQuery(document).ready(function () {
 		focusCompEditor($(this).attr('href'));
 	});	
 	
-	$(".delconfirmcomp").on("click", function ($e) {
+	$(".delconfirmcomp").live("click", function ($e) {
 		$e.preventDefault();
 		loadingAjaxIndicator.show();
 		var message = $(this).attr("title");
