@@ -28,7 +28,7 @@ define('GSIMAGEWIDTH', '200');
 #define('GSADMIN', 'admin');
 
 # Turn on debug mode
-define('GSDEBUG', TRUE);
+#define('GSDEBUG', TRUE);
 
 # Ping search engines upon sitemap generation?
 define('GSDONOTPING', 1);
