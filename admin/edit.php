@@ -302,10 +302,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
             
         // HTMLEDITOR INIT
         if ($HTMLEDITOR != '') {       
-
+            
+            if($EDTOOL == 'basic' || $EDTOOL == 'advanced') $EDTOOL = "'$EDTOOL'";          
 			$toolbar = isset($EDTOOL) ? ",toolbar: ".trim($EDTOOL,",") : '';
 			$options = isset($EDOPTIONS) ? ','.trim($EDOPTIONS,",") : '';
-
 
             // convert to js string if php array
             if(is_array($toolbar)){
@@ -321,14 +321,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                 $contentsCss = $fullpath.'theme/'.$TEMPLATE.'/editor.css';
             }
 
-        ?>
-
-			if($EDTOOL == 'basic' || $EDTOOL == 'advanced') $EDTOOL = "'$EDTOOL'";			
-			$toolbar = isset($EDTOOL) ? ",toolbar: ".trim($EDTOOL,",") : '';
-			$options = isset($EDOPTIONS) ? ','.trim($EDOPTIONS,",") : '';
-
 		?>
-		<?php if ($HTMLEDITOR != '') { ?>
         <script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 
         <script type="text/javascript">
