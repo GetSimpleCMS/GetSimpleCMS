@@ -323,6 +323,12 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 
         ?>
 
+			if($EDTOOL == 'basic' || $EDTOOL == 'advanced') $EDTOOL = "'$EDTOOL'";			
+			$toolbar = isset($EDTOOL) ? ",toolbar: ".trim($EDTOOL,",") : '';
+			$options = isset($EDOPTIONS) ? ','.trim($EDOPTIONS,",") : '';
+
+		?>
+		<?php if ($HTMLEDITOR != '') { ?>
         <script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 
         <script type="text/javascript">
