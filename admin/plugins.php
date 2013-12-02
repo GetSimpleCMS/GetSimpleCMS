@@ -31,7 +31,7 @@ login_cookie_check();
 $counter = 0; $table = null;
 
 $pluginfiles = getFiles(GSPLUGINPATH);
-sort($pluginfiles);
+natcasesort($pluginfiles);
 $needsupdate = false;
 foreach ($pluginfiles as $fi) {
 	$pathExt = pathinfo($fi,PATHINFO_EXTENSION );

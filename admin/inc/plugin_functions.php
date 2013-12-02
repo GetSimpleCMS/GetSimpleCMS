@@ -62,6 +62,10 @@ $GS_style_assets['jquery-ui']['local']['ver']  =  $jqueryui_ver;
 $GS_style_assets['font-awesome']['cdn']['url'] =  '//netdna.bootstrapcdn.com/font-awesome/'.$font_awesome_ver.'/css/font-awesome.min.css';
 $GS_style_assets['font-awesome']['cdn']['ver'] = $font_awesome_ver;
 
+// scrolltofixed
+$GS_script_assets['scrolltofixed']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/jquery-scrolltofixed.js';
+$GS_script_assets['scrolltofixed']['local']['ver']   = '0.0.1';
+
 /**
  * Register shared javascript/css scripts for loading into the header
  */
@@ -79,12 +83,16 @@ register_style('jquery-ui', $GS_style_assets['jquery-ui']['local']['url'], $GS_s
 
 register_style('font-awesome', $GS_style_assets['font-awesome']['cdn']['url'], $GS_style_assets['font-awesome']['cdn']['ver'], 'screen');
 
+register_script('scrolltofixed', $GS_script_assets['scrolltofixed']['local']['url'], $GS_script_assets['scrolltofixed']['local']['ver'],FALSE);
+
 /**
  * Queue our scripts and styles for the backend
  */
 queue_script('jquery', GSBACK);
 queue_script('jquery-ui', GSBACK);
 queue_script('fancybox', GSBACK);
+queue_script('scrolltofixed', GSBACK);
+
 queue_style('fancybox-css',GSBACK);
 queue_style('jquery-ui',GSBACK);
 queue_style('jquery-ui-theme',GSBACK);

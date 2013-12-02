@@ -289,7 +289,7 @@ function save_pageCacheXml($xml){
   	// Plugin Authors should add custome fields etc.. here
   	$xml = exec_filter('pagecache',$xml);	
 	if(!empty($xml)) return $xml->asXML($file);
-  	exec_action('pagecache-saved');	
+  	exec_action('pagecache-aftersave');	
 }
 
 /**

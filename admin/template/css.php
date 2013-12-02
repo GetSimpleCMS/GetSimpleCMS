@@ -449,6 +449,10 @@ h5:hover img {
 	float: right;
 }
 
+#sidebar.fixed{
+	-webkit-transition: top 200ms ease-out;
+}
+
 #sidebar .section {
 	background: #fff;
 	border: 1px solid #ccc;
@@ -1826,6 +1830,11 @@ a.updatelink:focus {
 	background-color: #2B5CB3;
 }
 
+.label-medium {
+	color: #000000;
+	background-color: #999;
+}
+
 .label-light{
 	color: #666;
 	background: #FFF;
@@ -2300,6 +2309,7 @@ a.disabled:visited {
 #theme_edit_code .CodeMirror{
 	/*border:1px solid #E8E8E8;*/
 	border-radius:2px;
+	min-height:550px;	
 }
 
 #cm_themeselect {
@@ -2414,27 +2424,60 @@ a.disabled:visited {
 /* codemirror */
 /* CodeMirror WEBKIT SCROLLBARS */
 
+/* scroll on focus only */
+.CodeMirror:not(.CodeMirror-focused) .CodeMirror-hscrollbar,
+.CodeMirror:not(.CodeMirror-focused) .CodeMirror-vscrollbar
+{
+	/*visibility: hidden !important;*/
+	opacity:0.2;
+}
+
+.CodeMirror .CodeMirror-hscrollbar,
+.CodeMirror .CodeMirror-vscrollbar{
+	/*visibility: visible;*/
+	opacity:1;
+}
+
+.CodeMirror .CodeMirror-hscrollbar{
+	margin: 0px 15px 2px 2px;	
+}
+
+.CodeMirror .CodeMirror-vscrollbar{
+	margin: 2px 2px 15px 0;	
+}
+
 .CodeMirror ::-webkit-scrollbar {
 		width: 10px;
 		height: 10px;
 }
 .CodeMirror ::-webkit-scrollbar-track-piece {
-		/*background-color: #333;*/
+		background-color: rgba(100,100,100,.2);
 		-webkit-border-radius: 0;
-		margin:2px;
+		border-radius: 3px;
 }
+
+.CodeMirror ::-webkit-scrollbar-track-piece:vertical {
+	/*margin-bottom:10px;*/
+}
+
+.CodeMirror ::-webkit-scrollbar-track-piece:horizontal {
+	/*margin-right:10px;*/
+}
+
 .CodeMirror ::-webkit-scrollbar-thumb:vertical {
-		height: 20px;
-		background-color: #9C9C9C;
+		height: 25px;
+		background-color: rgba(100,100,100,.5);
 		-webkit-border-radius: 3px;
+		border:1px solid #666;	
 }
 .CodeMirror ::-webkit-scrollbar-thumb:vertical:hover {
 		background-color: #666;
 }
 .CodeMirror ::-webkit-scrollbar-thumb:horizontal {
-		width: 20px;
-		background-color: #9C9C9C;
+		width: 25px;
+		background-color: rgba(100,100,100,.5);
 		-webkit-border-radius: 3px;
+		border:1px solid #666;
 }
 .CodeMirror ::-webkit-scrollbar-thumb:horizontal:hover {
 		background-color: #666;
@@ -2474,7 +2517,16 @@ a.disabled:visited {
 	max-height: 550px;/* autosizing max height */
 	background-color:#FEFEFE;
 	/*padding-bottom:20px;*/
-	min-height:550px;
+	border: 3px solid rgba(128,128, 128, .15);
+    -webkit-background-clip: padding-box !important; /* for Safari */
+    background-clip: padding-box !important; /* for IE9+, Firefox 4+, Opera, Chrome */
+}
+
+/* codemirror focused border highlight style */
+.codewrap .CodeMirror.CodeMirror-focused{
+/*    outline: none;
+    border-color: #9ecaed;
+    box-shadow: 0 0 10px #9ecaed;*/
 }
 
 .codewrap .CodeMirror-scroll {
@@ -2483,7 +2535,12 @@ a.disabled:visited {
 	overflow-x: auto;
 }
 
+.codewrap .CodeMirror.CodeMirror-fullscreen{
+    border: none;
+}    
+
 .CodeMirror-fullscreen {
+	border: none;
 	display: block;
 	position: fixed !important;
 	top: 0; left: 0;
@@ -2513,6 +2570,7 @@ a.disabled:visited {
 	z-index: 9998;
 	font-weight: normal;
 	opacity:.2;
+	transition: all 300ms;
 }
 
 .CodeMirror .overlay_but_fullscrn a.scrolled {
@@ -2526,6 +2584,19 @@ a.disabled:visited {
 /* jquiry-ui theme overrides 
 	tab border bug https://github.com/jquery/download.jqueryui.com/issues/87
 */
+
+.CodeMirror .ui-icon-gripsmall-diagonal-se {
+	background-position: -64px -224px;
+	background-color: rgba(119, 119, 119, 0.2);
+	border-radius: 4px;
+	width: 13px;
+	height: 13px;
+}
+
+.CodeMirror .ui-icon-gripsmall-diagonal-se:hover {
+	background-color: rgba(119, 119, 119, 0.6);
+}
+
 #maincontent .ui-tabs .ui-tabs-panel {
 	border-width: 0 !important; 
 	padding: 0;	
@@ -2581,18 +2652,6 @@ a.disabled:visited {
 .outline {
 	border: 1px dotted gray;
 }
-
-
-/* codemirror */
-.codewrap .CodeMirror{
-    border: 3px solid rgba(128,128, 128, .15);
-    -webkit-background-clip: padding-box ; /* for Safari */
-    background-clip: padding-box ; /* for IE9+, Firefox 4+, Opera, Chrome */
-}    
-
-.codewrap .CodeMirror.CodeMirror-fullscreen{
-    border: none;
-}    
 
 
 /* Admin theme colors */

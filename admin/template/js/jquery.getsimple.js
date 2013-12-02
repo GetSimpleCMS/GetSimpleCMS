@@ -186,6 +186,17 @@ jQuery(document).ready(function () {
  
  
 	// components.php
+	
+	function focusCompEditor(selector){
+		var editor = $(selector + ' textarea');		
+		editor.focus();
+	}
+
+	// auto focus component editors
+	$('#components div.compdivlist a').on('click', function(ev){
+		focusCompEditor($(this).attr('href'));
+	});	
+	
 	$(".delconfirmcomp").on("click", function ($e) {
 		$e.preventDefault();
 		loadingAjaxIndicator.show();
@@ -901,6 +912,20 @@ jQuery(document).ready(function () {
 		return false;
 	});
  
+	function scrollsidebar(){
+		var elem = $('body.sbfixed #sidebar');
+		elem.scrollToFixed({ 
+			marginTop: 15,
+			limit: function(){ return $('#footer').offset().top - elem.outerHeight(true) - 15},
+			postUnfixed: function(){$(this).addClass('fixed')},
+			postFixed: function(){$(this).removeClass('fixed')},
+			postAbsolute: function(){$(this).removeClass('fixed')},
+
+		});
+	}
+
+	scrollsidebar();
+ 	
  	// catch all redirects for session timeout on HTTP 401 unauthorized
 	$( document ).ajaxError(function( event, xhr, settings ) {
 		// notifyInfo("ajaxComplete: " + xhr.status);
