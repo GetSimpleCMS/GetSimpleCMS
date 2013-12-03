@@ -1618,20 +1618,33 @@ table.simple td.title {
 	padding: 5px 15px;
 }
 
+/* upload link larger button for touch devices */
+#fileuploadlink span.touch {
+	display: none;
+}
+#fileuploadlink.touch span {
+	display:none;
+}
+#fileuploadlink.touch span.touch {
+	display: block;
+	text-align: center;
+	font-size: 20px;
+}
 
 /* Upload Queue */
 
 .uploaddropzone {
-	border: 3px dashed #E9E9E9;
-	border-radius: 4px;
+	border: 3px dashed <?php echo $primary_1 ?>;
+	border-radius: 3px;
 	margin: 8px 0 5px 15px !important;
 	text-align: center;
 	height: 40px;
 	line-height: 40px;
 	font-weight: bold;
 	font-size: 16px;
-	color: #DDD;
+	color: <?php echo $primary_1 ?>;
 	font-family: sans-serif;
+	opacity: .2;
 }
 
 #queue-item-template{
@@ -1722,6 +1735,11 @@ table.simple td.title {
 .queue-item-wrap.dz-error .progress-bar
 {
 	background-color: #D94136;
+}
+
+/* error message */
+.queue-item-wrap .dz-error-message{
+	color: #D94136;
 }
 
 /* success */
@@ -2419,6 +2437,20 @@ a.disabled:visited {
 		/*filter: url(resources.svg#desaturate); /* Gecko */*/
 		filter: gray; /* IE */
 		-webkit-filter: grayscale(1); /* Old WebKit */
+}
+
+/* force text to be non selectable , for labels psuedo buttons */
+*.unselectable {
+	cursor:default;
+   -moz-user-select: none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+   /*
+     Introduced in IE 10.
+     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+   */
+   -ms-user-select: none;
+   user-select: none;
 }
 
 /* codemirror */

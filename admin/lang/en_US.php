@@ -312,6 +312,7 @@ $i18n = array(
 */
 "BROWSE_COMPUTER"         =>	"Browse Your Computer",
 "UPLOAD"                  =>	"Upload",
+"DROP_FILES"              =>	"Drop Files Here",
 
 /* 
 * For: sidebar-support.php
