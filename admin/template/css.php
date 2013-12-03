@@ -1634,6 +1634,7 @@ table.simple td.title {
 /* Upload Queue */
 
 .uploaddropzone {
+	display: none;
 	border: 3px dashed <?php echo $primary_1 ?>;
 	border-radius: 3px;
 	margin: 8px 0 5px 15px !important;
@@ -1645,6 +1646,7 @@ table.simple td.title {
 	color: <?php echo $primary_1 ?>;
 	font-family: sans-serif;
 	opacity: .2;
+
 }
 
 #queue-item-template{
@@ -1749,7 +1751,7 @@ table.simple td.title {
 }
 
 #sidebar .snav li.upload {
-	display: block;
+	display: none;
 	border-radius: 4px;
 		-moz-border-radius: 4px;
 		-khtml-border-radius: 4px;

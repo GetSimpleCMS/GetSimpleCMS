@@ -67,10 +67,13 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 	    }    
 
 	    // handle asset not loaded
-		if(!window.Dropzone){
-			$('.upload').hide(); 
-			$('#gs-dropzone').hide(); 
-			return;
+		if(window.Dropzone){
+			// show
+			$('.upload').show(); 
+			$('#gs-dropzone').show(); 
+			
+			// hide fallback form
+			$('.uploadform').hide();			
 		}
 
 		// detect touch devices, only mobiles, commented out feature spec
@@ -92,9 +95,6 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 		// flag drop target for touch devices
 		$("#gs-dropzone").toggle(!isTouchDevice);
 		$('#fileuploadlink').toggleClass('touch',isTouchDevice); 
-
-		// hide fallback form
-		$('.uploadform').hide();
 
 		// Remove the queue item
 		removeFromQueue = function(file){
