@@ -141,6 +141,9 @@ if (isset($_GET['newfolder'])) {
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT')); 
 
+// check if host uses Linux (used for displaying permissions
+$isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
+
 ?>
 	
 <?php include('template/include-nav.php'); ?>
@@ -257,9 +260,6 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
           $adm = substr($path . rawurlencode($upload['name']) ,  16); 
           echo '<img src="template/images/folder.png" width="11" /> <a href="upload.php?path='.$adm.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
           echo '<td style="width:80px;text-align:right;" ><span>'.$directory_size.'</span></td>';
-
-		  // check if host uses Linux (used for displaying permissions
-		  $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
           
           // get the file permissions.
 					if ($isUnixHost && isDebug() && function_exists('posix_getpwuid')) {
