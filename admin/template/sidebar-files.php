@@ -57,6 +57,9 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 
 	jQuery(document).ready(function() {
 
+		var uploadSession = '<?php echo $SESSIONHASH; ?>';
+		var uploadPath = '<?php echo $path; ?>';
+
 		// workaroud for safari mutiple bug
 		// disable mutiple or else we get empty uploads
 	    if (Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor')>0){
@@ -95,7 +98,7 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 
 		// Remove the queue item
 		removeFromQueue = function(file){
-			var slideDuration = 1000;
+			var slideDuration = 600;
 			var removeDelay = 5000;
 			setTimeout(
 				function(){ 
@@ -125,8 +128,8 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 			previewTemplate: $("#queue-item-template").html(),
 			previewsContainer: "#upload-queue",
 			params	: {
-				sessionHash : '<?php echo $SESSIONHASH; ?>',
-				path : '<?php echo $path; ?>'
+				sessionHash : uploadSession,
+				path : uploadPath
 			},
 			accept: checkfile,
 	        sending: function(file, xhr, formData) {
@@ -202,7 +205,7 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 			var mockFile = { name: "Even_more_long_Very_Long_Filename", size: 12345 };
 			myDropzone.emit("addedfile", mockFile);
 			myDropzone.emit("processing", mockFile);			
-			myDropzone.emit("error", mockFile);
+			myDropzone.emit("error", mockFile,'An Error occured');
 
 			// myDropzone.emit("thumbnail", mockFile, "/image/url");
 			// If you use the maxFiles option, make sure you adjust it to the
