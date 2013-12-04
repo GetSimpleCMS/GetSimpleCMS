@@ -234,7 +234,7 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
 	} 
 	else {	
 		# if an update file was included in the install package, redirect there first	
-		if (file_exists(GSADMINPATH.'update.php') && !isset($_GET['updated']))	{
+		if (file_exists(GSADMINPATH.'update.php') && !isset($_GET['updated']) && !getDef('GSDEBUGINSTALL'))	{
 			serviceUnavailable();
 			redirect($fullpath . $GSADMIN.'/update.php');
 		}
