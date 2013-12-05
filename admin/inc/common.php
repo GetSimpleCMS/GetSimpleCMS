@@ -37,14 +37,16 @@ include('logging.class.php');
 
 define('GSROOTPATH', get_root_path());
 
-if (file_exists(GSROOTPATH . 'gsconfig.php')) {
-	require_once(GSROOTPATH . 'gsconfig.php');
-}
+if(!is_frontend()){
+	if (file_exists(GSROOTPATH . 'gsconfig.php')) {
+		require_once(GSROOTPATH . 'gsconfig.php');
+	}
 
-if (defined('GSADMIN')) {
-	$GSADMIN = GSADMIN;
-} else {
-	$GSADMIN = 'admin';
+	if (defined('GSADMIN')) {
+		$GSADMIN = GSADMIN;
+	} else {
+		$GSADMIN = 'admin';
+	}
 }
 
 /**
