@@ -392,7 +392,7 @@ function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $des
  * @param string $id Id of current page
  * @param string $txt Text to add to tabbed link
  */
-function add_filter($filter_name, $added_function) {
+function add_filter($filter_name, $added_function, $args = array()) {
   global $filters;
   global $live_plugins;   
   $bt = debug_backtrace();
@@ -401,7 +401,8 @@ function add_filter($filter_name, $added_function) {
 	$filters[] = array(
 		'filter' => $filter_name,
 		'function' => $added_function,
-		'active' => false
+		'active' => false,
+		'args' => (array) $args		
 	);
 }
 
