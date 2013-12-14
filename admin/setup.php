@@ -184,7 +184,7 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION'));
 				echo '<div class="error">'. $err .'</div>';
 			}
 			if ($random != ''){
-				echo '<div class="updated">'.i18n_r('NOTE_USERNAME').' <b>'. stripslashes($_POST['user']) .'</b> '.i18n_r('NOTE_PASSWORD').' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="support.php">'.i18n_r('EMAIL_LOGIN').'</a></div>';
+				echo '<div class="updated">'.i18n_r('NOTE_USERNAME').' <b>'. stripslashes($_POST['user']) .'</b> '.i18n_r('NOTE_PASSWORD').' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="support.php?updated=2">'.i18n_r('EMAIL_LOGIN').'</a></div>';
 				$_POST = null;
 			}
 		?>

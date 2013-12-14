@@ -167,12 +167,18 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	/* end update */
 } 
 
+// redirect to health check or login and show updated notice
+$redirect = cookie_check() ? "health-check.php?updated=1" : "index.php?updated=1";
+
 // If no errors or messages, then we did nothing, just continue automatically
-if(!isset($error) && !isset($message)) redirect("./?updated=1");
+if(!isset($error) && !isset($message)) redirect($redirect);
+
+// we already showed a notice, pass updated so it gets deleted, no indication, 
+$redirect = cookie_check() ? "health-check.php?updated=2" : "index.php?updated=2";
 
 // show errors or messages
 if(isset($error)) $message.= i18n_r('ER_REQ_PROC_FAIL');
-else $message.= "<div class=\"notify notify_ok\">".i18n_r('SITE_UPGRADED')."</div>";
+else $message.= "<p><div class=\"notify notify_ok\">".i18n_r('SITE_UPDATED')."</div></p>";
 
 get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE')); 
 
@@ -190,7 +196,7 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE'));
 			
 			<?php 
 				echo "$message";
-				echo '<p><a href="./?updated=1">'.i18n_r('CONTINUE_SETUP').'</a></p>';
+				echo '<p><a href="'.$redirect.'">'.i18n_r('CONTINUE_SETUP').'</a></p>';
 			?>
 			
 		</div>

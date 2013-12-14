@@ -8,28 +8,34 @@
  * @subpackage FrontEnd
  */
 
-/**
- *  GSCONFIG definitions
- */
 
-if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
-if(!defined('GSSTYLE_SBFIXED')) define('GSSTYLE_SBFIXED','sbfixed'); // fixed sidebar
+/* pre-common setup, load gsconfig and get GSADMIN path */
 
-# Setup inclusions
-$load['plugin'] = true;
-if (file_exists('gsconfig.php')) {
-	require_once('gsconfig.php');
-}
+	/* GSCONFIG definitions */
+	if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
+	if(!defined('GSSTYLE_SBFIXED')) define('GSSTYLE_SBFIXED','sbfixed'); // fixed sidebar
 
-# Relative
-if (defined('GSADMIN')) {
-	$GSADMIN = GSADMIN;
-} else {
-	$GSADMIN = 'admin';
-}
-$admin_relative = $GSADMIN.'/inc/';
-$lang_relative = $GSADMIN.'/';
-$base = true;
+	# Check and load gsconfig
+	if (file_exists('gsconfig.php')) {
+		require_once('gsconfig.php');
+	}
+
+	# Apply GSADMIN env
+	if (defined('GSADMIN')) {
+		$GSADMIN = GSADMIN;
+	} else {
+		$GSADMIN = 'admin';
+	}
+
+	# setup paths 
+	# @todo wtf are these for ?
+	$admin_relative = $GSADMIN.'/inc/';
+	$lang_relative = $GSADMIN.'/';
+
+	$load['plugin'] = true;
+	$base = true;
+
+/* end */
 
 # Include common.php
 include($GSADMIN.'/inc/common.php');
@@ -46,14 +52,25 @@ if (isset($_GET['id'])){
 	$id = "index";
 }
 
+// filter to modify page id request
+$id = exec_filter('indexid',$id);
+ // $_GET['id'] = $id; // support for plugins that are checking get?
 
 # define page, spit out 404 if it doesn't exist
 $file_404 = GSDATAOTHERPATH . '404.xml';
 $user_created_404 = GSDATAPAGESPATH . '404.xml';
+$data_index = null;
 
+// apply page data if page id exists
 if (isset($pagesArray[$id])) {
 	$data_index = getXml(GSDATAPAGESPATH . $id . '.xml');
-} else {	
+} 
+
+// filter to modify data_index obj
+$data_index = exec_filter('data_index',$data_index);
+
+// page not found handling
+if(!$data_index) {	
 	if (isset($pagesArray['404'])) {
 		// use user created 404 page
 		$data_index = getXml($user_created_404);		
@@ -76,6 +93,9 @@ $content       = $data_index->content;
 $parent        = $data_index->parent;
 $template_file = $data_index->template;
 $private       = $data_index->private;	
+
+// after fields from dataindex, can modify globals here or do whatever by checking them
+exec_action('index-post-dataindex');
 
 # if page is private, check user
 if ($private == 'Y') {

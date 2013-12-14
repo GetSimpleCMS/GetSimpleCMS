@@ -37,14 +37,16 @@ include('logging.class.php');
 
 define('GSROOTPATH', get_root_path());
 
-if (file_exists(GSROOTPATH . 'gsconfig.php')) {
-	require_once(GSROOTPATH . 'gsconfig.php');
-}
+if(!is_frontend()){
+	if (file_exists(GSROOTPATH . 'gsconfig.php')) {
+		require_once(GSROOTPATH . 'gsconfig.php');
+	}
 
-if (defined('GSADMIN')) {
-	$GSADMIN = GSADMIN;
-} else {
-	$GSADMIN = 'admin';
+	if (defined('GSADMIN')) {
+		$GSADMIN = GSADMIN;
+	} else {
+		$GSADMIN = 'admin';
+	}
 }
 
 /**
@@ -234,7 +236,7 @@ if (get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filena
 	} 
 	else {	
 		# if an update file was included in the install package, redirect there first	
-		if (file_exists(GSADMINPATH.'update.php') && !isset($_GET['updated']))	{
+		if (file_exists(GSADMINPATH.'update.php') && !isset($_GET['updated']) && !getDef('GSDEBUGINSTALL'))	{
 			serviceUnavailable();
 			redirect($fullpath . $GSADMIN.'/update.php');
 		}
