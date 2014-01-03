@@ -556,16 +556,14 @@ function redirect($url) {
  * @param bool $echo Optional, default is true
  */
 function i18n($name, $echo=true) {
-	global $i18n;
 	global $LANG;
-
-	if (array_key_exists($name, $i18n)) {
-		$myVar = $i18n[$name];
+	$i18n = array();
+	if (array_key_exists($name, $GLOBALS['i18n'])) {
+		$myVar = $GLOBALS['i18n'][$name];
 	} else {
-		# this messes with the global $i18n
-		//include_once(GSLANGPATH . 'en_US.php');
+		@include(GSLANGPATH.'en_US.php');
 		if (array_key_exists($name, $i18n)) {
-			$myVar = $i18n[$name];
+			$myVar = $GLOBALS['i18n'][$name] = $i18n[$name];
 		} else {
 			$myVar = '{'.$name.'}';
 		}
