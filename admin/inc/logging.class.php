@@ -38,10 +38,10 @@ class GS_Logging_Class {
                 if($this->validFilename($filename)){
                     $this->_xmlfile = GSDATAOTHERPATH.'logs/'.$filename;
                     if ( ! file_exists($this->_xmlfile) )  { 
-                            $this->_xml = new SimpleXMLExtended('<channel></channel>');
+                        $this->_xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
                     } else {
-                            $xmldata = file_get_contents($this->_xmlfile);
-                            $this->_xml = new SimpleXMLExtended($xmldata);
+                        $xmldata = file_get_contents($this->_xmlfile);
+                        $this->_xml = new SimpleXMLExtended($xmldata);
                     }    
                     
                     // create entry and add date
@@ -124,7 +124,7 @@ class GS_Logging_Class {
         public function add($field,$value){
                 if(isset($field) && isset($value) && isset($this->_entry)){
                       $cdata = $this->_entry->addChild(htmlentities($field, ENT_QUOTES));
-                      $cdata->addCData(htmlentities($value, ENT_QUOTES));
+                      $cdata->addCData(safe_slash_html($value));
                 }  
         }
   

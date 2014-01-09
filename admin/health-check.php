@@ -26,7 +26,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
 	
 	<div id="maincontent">
 		<div class="main">
-			<h3><?php echo $site_full_name; ?> <?php i18n('VERSION');?></h3>
+			<h3><?php echo $site_full_name; ?></h3>
 			<table class="highlight healthcheck">
 				<?php
 				
@@ -43,25 +43,35 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
 				} elseif ($verstatus == '1') {
 					$ver = '<span class="OKmsg" ><b>'.$site_version_no.'</b><br />'. i18n_r('LATEST_VERSION').'</span>';
 				} elseif ($verstatus == '2') {
-					$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b><br /> '. i18n_r('BETA').'</span>';
+					$ver = '<span class="INFOmsg" ><b>'.$site_version_no.'</b><br /> '. i18n_r('BETA').'</span>';
 				} else {
 					$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b><br />'. i18n_r('CANNOT_CHECK').'<br /><a href="http://get-simple.info/download">'. i18n_r('DOWNLOAD').'</a></span>';
 				}
 				?>
 				<tr><td style="width:445px;" ><?php echo $site_full_name; ?> <?php i18n('VERSION');?></td><td><?php echo $ver; ?></td></tr>
+                <?php 
+                if(defined('GSADMIN') && GSADMIN!='admin') echo '<tr><td>GSADMIN</td><td><span class="hint">'.GSADMIN.'</span></td></tr>'; 
+                
+                if(defined('GSLOGINSALT') && GSLOGINSALT!='') echo '<tr><td>GSLOGINSALT</td><td><span class="hint">'. i18n_r('YES').'</span></td></tr>'; 
+                else echo '<tr><td>GSLOGINSALT</td><td><span class="hint">'. i18n_r('NO').'</span></td></tr>'; 
+                
+                if(defined('GSUSECUSTOMSALT') && GSUSECUSTOMSALT!='') echo '<tr><td>GSUSECUSTOMSALT</td><td><span class="hint">'. i18n_r('YES').'</span></td></tr>'; 
+				else echo '<tr><td>GSUSECUSTOMSALT</td><td><span class="hint">'. i18n_r('NO').'</span></td></tr>';                 
+                ?>
 			</table>
 			
 			<h3><?php i18n('SERVER_SETUP');?></h3>
 			<table class="highlight healthcheck">
 				<tr><td style="width:445px;" >
 				<?php
+					
 					if (version_compare(PHP_VERSION, "5.2", "<")) {
 						echo 'PHP '.i18n_r('VERSION').'</td><td><span class="ERRmsg" ><b>'. PHP_VERSION.'</b> - PHP 5.2 '.i18n_r('OR_GREATER_REQ').' - '.i18n_r('ERROR').'</span></td></tr>';
 					} else {
 						echo 'PHP '.i18n_r('VERSION').'</td><td><span class="OKmsg" ><b>'. PHP_VERSION.'</b> - '.i18n_r('OK').'</span></td></tr>';
 					}
 
-					if  (in_arrayi('curl', $php_modules) ) {
+					if  (in_arrayi('curl', $php_modules) && function_exists('curl_init') && function_exists('curl_exec')) {
 						echo '<tr><td>cURL Module</td><td><span class="OKmsg" >'.i18n_r('INSTALLED').' - '.i18n_r('OK').'</span></td></tr>';
 					} else{
 						echo '<tr><td>cURL Module</td><td><span class="WARNmsg" >'.i18n_r('NOT_INSTALLED').' - '.i18n_r('WARNING').'</span></td></tr>';
@@ -81,9 +91,14 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
 					} else {
 						echo '<tr><td>SimpleXML Module</td><td><span class="OKmsg" >'.i18n_r('INSTALLED').' - '.i18n_r('OK').'</span></td></tr>';
 					}
+					if (!function_exists('chmod') ) {
+						echo '<tr><td>chmod</td><td><span class="ERRmsg" >'.i18n_r('NOT_INSTALLED').' - '.i18n_r('ERROR').'</span></td></tr>';
+					} else {
+						echo '<tr><td>chmod</td><td><span class="OKmsg" >chmod - '.i18n_r('OK').'</span></td></tr>';
+					}
 
                     if (server_is_apache()) {
-                        echo '<tr><td>Apache web server</td><td><span class="OKmsg" >'.$_SERVER['SERVER_SOFTWARE'].' - '.i18n_r('OK').'</span></td></tr>';
+                        echo '<tr><td>Apache Web Server</td><td><span class="OKmsg" >'.$_SERVER['SERVER_SOFTWARE'].' - '.i18n_r('OK').'</span></td></tr>';
                         if ( function_exists('apache_get_modules') ) {
                             if(! in_arrayi('mod_rewrite',apache_get_modules())) {
                                 echo '<tr><td>Apache Mod Rewrite</td><td><span class="WARNmsg" >'.i18n_r('NOT_INSTALLED').' - '.i18n_r('WARNING').'</span></td></tr>';
@@ -98,6 +113,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
                             echo '<tr><td>Apache web server</td><td><span class="ERRmsg" >'.$_SERVER['SERVER_SOFTWARE'].' - <b>'.i18n_r('ERROR').'</b></span></td></tr>';
                         }
                     }
+
+				$disabled_funcs = ini_get('disable_functions');
+                if(!empty($disabled_funcs)) echo '<tr><td colspan=2>PHP disable_functions<span class="hint"> ' . $disabled_funcs . '</span></td></tr>';
 	?>
 			</table>
 			<p class="hint"><?php echo sprintf(i18n_r('REQS_MORE_INFO'), "http://get-simple.info/wiki/installation:requirements"); ?></p>

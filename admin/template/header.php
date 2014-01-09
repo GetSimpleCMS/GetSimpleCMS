@@ -9,7 +9,15 @@ global $SITENAME, $SITEURL;
 
 $GSSTYLE = getDef('GSSTYLE') ? GSSTYLE : '';
 
+$bodyclass="class=\"";
+if( in_array('sbfixed',explode(',',$GSSTYLE)) ) $bodyclass .= " sbfixed";
+if( in_array('wide',explode(',',$GSSTYLE)) ) $bodyclass .= " wide";
+$bodyclass .="\"";
+
 if(get_filename_id()!='index') exec_action('admin-pre-header');
+
+header('content-type: text/html; charset=utf-8');
+
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo get_site_lang(true); ?>">
@@ -26,6 +34,7 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
 	<?php get_scripts_backend(); ?>
 		
+	<script type="text/javascript" src="template/js/jquery-scrolltofixed.js?v=<?php echo GSVERSION; ?>"></script>		
 	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
 	
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->
@@ -51,24 +60,26 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 		jQuery(document).ready(function() { 
 			<?php 
 				$data = get_api_details();
-				if ($data)      {
+				if ($data) {
 					$apikey = json_decode($data);
-					$verstatus = $apikey->status;
+					
+					if(isset($apikey->status)) {
+						$verstatus = $apikey->status;
 			?>
 				var verstatus = <?php echo $verstatus; ?>;
 				if(verstatus != 1) {
-					$('a.support').parent('li').append('<span class="warning">!</span>');
+					<?php if(isBeta()){ ?> $('a.support').parent('li').append('<span class="info">i</span>');
+					<?php } else { ?> $('a.support').parent('li').append('<span class="warning">!</span>'); <?php } ?>
 					$('a.support').attr('href', 'health-check.php');
 				}
-			<?php  } ?>
+			<?php  }} ?>
 		});
 	</script>
 	<?php } ?>
-	
-	
+		
 </head>
 
-<body <?php filename_id(); ?> >	
+<body <?php filename_id(); echo $bodyclass; ?> >	
 	<div class="header" id="header" >
 		<div class="wrapper clearfix">
  <?php exec_action('header-body'); ?>

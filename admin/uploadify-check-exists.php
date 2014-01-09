@@ -10,6 +10,7 @@
  */
  
 include('inc/common.php');
+login_cookie_check();
 
 $path = (isset($_GET['path'])) ? $_GET['path'] . "/" : "";
 $name = clean_img_name($_POST['filename']);

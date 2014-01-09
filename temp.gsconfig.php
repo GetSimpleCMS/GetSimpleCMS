@@ -90,14 +90,26 @@ define('GSDONOTPING', 1);
 #define('GSNOVERCHECK', true);
 
 # Enable alternate admin styles, current style constants are
-# note: stylesheets are cached
+# GSSTYLE can be a comma delimied list of flags
+# note: stylesheets are cached, flush cache after changing
+#
+# style flags:
 # GSSTYLEWIDE = wide fluid
+# GSSTYLE_SBFIXED = fixed sidemenu
+# 
+# eg. 
+# define('GSSTYLE',GSSTYLE_SBFIXED);
 # define('GSSTYLE',GSSTYLEWIDE);
+#define('GSSTYLE',implode(',',array(GSSTYLEWIDE,GSSTYLE_SBFIXED)));
 
 # Disable Sitemap generation and menu items
 # define('GSNOSITEMAP',true);
 
 # Enable auto meta descriptions from content excerpts when empty
 # define('GSAUTOMETAD',true);
+
+# Set default language for missing lang token merge, 
+# accepts a lang string, default is 'en_US', false to disable
+# define('GSMERGELANG',false);
 
 ?>

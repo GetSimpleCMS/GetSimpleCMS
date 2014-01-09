@@ -8,12 +8,13 @@
  * @subpackage Backups
  */
 
-	// Setup inclusions
-	$load['plugin'] = true;
-	
+// Setup inclusions
+$load['plugin'] = true;
 
-	// Include common.php
-	include('inc/common.php');
+
+// Include common.php
+include('inc/common.php');
+login_cookie_check();
 
 // check validity of request
 if ($_REQUEST['s'] === $SESSIONHASH) {
