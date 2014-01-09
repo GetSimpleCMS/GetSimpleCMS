@@ -79,7 +79,7 @@ if(isset($_POST['submitted'])) {
 		$SITEURL = tsl($_POST['siteurl']); 
 	}
 	if(isset($_POST['permalink'])) { 
-		$PERMALINK = $_POST['permalink']; 
+		$PERMALINK = trim($_POST['permalink']); 
 	}	
 	if(isset($_POST['template'])) { 
 		$TEMPLATE = $_POST['template']; 

@@ -453,7 +453,7 @@ function find_url($slug, $parent, $type='full') {
     }
   }
   
-	if ($PERMALINK != '' && $slug != 'index'){
+	if (trim($PERMALINK) != '' && $slug != 'index'){
 		$plink = str_replace('%parent%/', $parent, $PERMALINK);
 		$plink = str_replace('%parent%', $parent, $plink);
 		$plink = str_replace('%slug%', $slug, $plink);
