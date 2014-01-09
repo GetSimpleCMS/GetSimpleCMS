@@ -51,10 +51,10 @@ $path = (isset($_GET['path'])) ? $_GET['path'] : "";
 				$('#maincontent').load(location.href+' #maincontent > *');
 			},
 			onSelectError: function(file,errorCode,errorMsg) {
-				//alert(file + ' Error ' + errorCode +':'+errorMsg);
+				notifyError('uploadify: ' + file + ' Error ' + errorCode +':'+errorMsg);
 			},
 			onUploadError: function(file,errorCode,errorMsg, errorString) {
-				alert(errorMsg);
+				notifyError('uploadify: ' + errorMsg);
 			}
 		});
 		}

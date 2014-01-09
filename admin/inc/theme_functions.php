@@ -461,38 +461,9 @@ function get_site_credits($text ='Powered by ') {
  */
 function menu_data($id = null,$xml=false) {
     $menu_extract = '';
-    
-    $path = GSDATAPAGESPATH;
-    $dir_handle = opendir($path) or die("Unable to open $path");
-    $filenames = array();
-    while ($filename = readdir($dir_handle)) {
-        $filenames[] = $filename;
-    }
-    closedir($dir_handle);
-    
-    $count="0";
-    $pagesArray = array();
-    if (count($filenames) != 0) {
-        foreach ($filenames as $file) {
-            if ($file == "." || $file == ".." || is_dir($path . $file) || $file == ".htaccess"  ) {
-                // not a page data file
-            } else {
-								$data = getXML($path . $file);
-                if ($data->private != 'Y') {
-                    $pagesArray[$count]['menuStatus'] = $data->menuStatus;
-                    $pagesArray[$count]['menuOrder'] = $data->menuOrder;
-                    $pagesArray[$count]['menu'] = $data->menu;
-                    $pagesArray[$count]['parent'] = $data->parent;
-                    $pagesArray[$count]['title'] = $data->title;
-                    $pagesArray[$count]['url'] = $data->url;
-                    $pagesArray[$count]['private'] = $data->private;
-                    $pagesArray[$count]['pubDate'] = $data->pubDate;
-                    $count++;
-                }
-            }
-        }
-    }
-    
+
+    global $pagesArray; 
+	echo "menu";
     $pagesSorted = subval_sort($pagesArray,'menuOrder');
     if (count($pagesSorted) != 0) { 
       $count = 0;
@@ -600,9 +571,10 @@ function get_component($id) {
  * @uses exec_filter 
  *
  * @param string $currentpage This is the ID of the current page the visitor is on
+ * @param string $classPrefix Prefix that gets added to the parent and slug classnames
  * @return string 
  */	
-function get_navigation($currentpage) {
+function get_navigation($currentpage,$classPrefix = "") {
 
 	$menu = '';
 
@@ -615,7 +587,9 @@ function get_navigation($currentpage) {
 			$url_nav = $page['url'];
 			
 			if ($page['menuStatus'] == 'Y') { 
-				if ("$currentpage" == "$url_nav") { $classes = "current active ". $page['parent'] ." ". $url_nav; } else { $classes = trim($page['parent'] ." ". $url_nav); }
+				$parentClass = !empty($page['parent']) ? $classPrefix.$page['parent'] . " " : "";
+				$classes = trim( $parentClass.$classPrefix.$url_nav);
+				if ("$currentpage" == "$url_nav") $classes .= " current active";
 				if ($page['menu'] == '') { $page['menu'] = $page['title']; }
 				if ($page['title'] == '') { $page['title'] = $page['menu']; }
 				$menu .= '<li class="'. $classes .'"><a href="'. find_url($page['url'],$page['parent']) . '" title="'. encode_quotes(cl($page['title'])) .'">'.strip_decode($page['menu']).'</a></li>'."\n";

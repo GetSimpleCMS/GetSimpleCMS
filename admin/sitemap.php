@@ -12,8 +12,10 @@
 $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
-if (!generate_sitemap()) {
-	$error = generate_sitemap();
+
+$sitemap = generate_sitemap();
+if ($sitemap !== true) {
+	$error = $sitemap;
 } else {
 	if (isset($_GET['refresh'])) {
 		$success = i18n_r('SITEMAP_REFRESHED');
@@ -35,7 +37,11 @@ get_template('header', cl($SITENAME).' &raquo; '.strip_tags(i18n_r('SIDE_VIEW_SI
 				<a href="sitemap.php?refresh" accesskey="<?php echo find_accesskey(i18n_r('REFRESH'));?>" ><?php i18n('REFRESH'); ?></a>
 			</div>
 					
-			<div class="unformatted"><code><?php echo htmlentities(formatXmlString(file_get_contents('../sitemap.xml')));?></code></div>
+			<div class="unformatted"><code><?php 
+				if (file_exists('../sitemap.xml')) {
+					echo htmlentities(formatXmlString(file_get_contents('../sitemap.xml')));
+				} 
+				?></code></div>
 		
 		</div>
 	</div>

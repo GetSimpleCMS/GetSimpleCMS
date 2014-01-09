@@ -39,12 +39,25 @@ SimpleXML
 
 Javascript Enabled
 
+### Server ###
+*Apache ( required for out of the box security using .htaccess )
+
+*If not using Apache you will get a non-apache warning, 
+this warning is to alert you that your data files will not be secure 
+and you must take proper precautions to secure your site.
+To disable this warning see gsconfig definition GSNOAPACHECHECK
+
 
 INSTALLATION:
--------------------------
+-----------------------------------
 
 Please see: http://get-simple.info/wiki/installation
 
+
+UPGRADING
+-----------------------------------
+
+Please see: http://get-simple.info/wiki/installation:upgrade
 
 
 DISCLAIMER:

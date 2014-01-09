@@ -54,6 +54,10 @@ $GS_script_assets['fancybox']['local']['ver']  = '2.0.4';
 $GS_style_assets['fancybox']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css';
 $GS_style_assets['fancybox']['local']['ver']   = '2.0.4';
 
+// scrolltofixed
+$GS_script_assets['scrolltofixed']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/jquery-scrolltofixed.js';
+$GS_script_assets['scrolltofixed']['local']['ver']   = '0.0.1';
+
 /**
  * Register shared javascript/css scripts for loading into the header
  */
@@ -67,14 +71,17 @@ if (!getDef('GSNOCDN',true)){
 register_script('fancybox', $GS_script_assets['fancybox']['local']['url'], $GS_script_assets['fancybox']['local']['ver'],FALSE);
 register_style('fancybox-css', $GS_style_assets['fancybox']['local']['url'], $GS_style_assets['fancybox']['local']['ver'], 'screen');
 
+register_script('scrolltofixed', $GS_script_assets['scrolltofixed']['local']['url'], $GS_script_assets['scrolltofixed']['local']['ver'],FALSE);
+
 /**
  * Queue our scripts and styles for the backend
  */
 queue_script('jquery', GSBACK);
 queue_script('jquery-ui', GSBACK);
 queue_script('fancybox', GSBACK);
-queue_style('fancybox-css',GSBACK);
+queue_script('scrolltofixed', GSBACK);
 
+queue_style('fancybox-css',GSBACK);
 
 /**
  * Include any plugins, depending on where the referring 
