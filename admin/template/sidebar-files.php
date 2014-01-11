@@ -189,9 +189,9 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 
 				// #imageFilter seleced index to restore 
 				var filterIdx = $('#imageFilter').prop("selectedIndex");
-				
+
 				$('#maincontent').load(location.href+' #maincontent > *', function(ev){
-					$('#imageFilter').prop("selectedIndex",1);
+					$('#imageFilter').prop("selectedIndex",filterIdx);
 					$('#imageFilter').trigger('change');
 				});  
       		}	

@@ -286,7 +286,7 @@ jQuery(document).ready(function () {
 		loadingAjaxIndicator.fadeOut(500);
 	});
 
-	$(".delconfirm").on("click", function () {
+	$("#maincontent").on("click",".delconfirm", function () {
 		var message = $(this).attr("title");
 		var dlink = $(this).attr("href");
 		var mytr = $(this).parents("tr");
