@@ -689,7 +689,7 @@ jQuery(document).ready(function () {
 				if ($(response).find('div.error').html()) {
 					notifyError($(response).find('div.error').html()).popit().removeit();
 				}
-				else if ($(response).find('div.updated').html()) {
+				if ($(response).find('div.updated').html()) {
 					notifyOk($(response).find('div.updated').html()).popit().removeit();
 				}	
 				else {

@@ -1184,7 +1184,7 @@ input.submit:focus, input.submit:hover {
 form input.title {
 	font-size: 19px;
 	border-color: #999;
-	width: 635px;
+	width: 655px;
 	padding: 3px 4px;
 }
 
@@ -1961,7 +1961,7 @@ body#index {
 		-moz-box-shadow: rgba(0,0,0, 0.05) 0px 0px 10px;
 		-webkit-box-shadow: rgba(0,0,0, 0.05) 0px 0px 10px;
 	background: #FFF;
-	width: 645px;
+	width: 671px;
 }
 
 #setup #maincontent .main {
