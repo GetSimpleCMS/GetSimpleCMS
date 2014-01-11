@@ -526,7 +526,7 @@ h5:hover img {
 	text-shadow: 1px 1px 0px <?php echo $secondary_0; ?>;
 	border-radius: 0 3px 3px 0;
 	height:14px;
-    background-color:<?php echo $secondary_1; ?>;;
+    background-color:<?php echo $secondary_1; ?>;
     margin-left:13px;
     padding-left:15px;	
 }
@@ -547,7 +547,7 @@ h5:hover img {
 }
 #sidebar .snav li a.current:after {
     border-color: rgba(207, 56, 5, 0);
-    border-right-color: <?php echo $secondary_1; ?>;;
+    border-right-color: <?php echo $secondary_1; ?>;
     border-width: 12px;
     top: 50%;
     margin-top: -12px;
@@ -587,7 +587,7 @@ h5:hover img {
 	border-bottom: 1px solid <?php echo $primary_6; ?>;
 	content: "";
 	display: block;
-	border-style:thin;
+	border-width: thin;
 }
 /**/
 
@@ -1587,22 +1587,22 @@ table.simple td.title {
 
 .wrapper table td span.ERRmsg {
 	color: #D94136;
-	font-color: 12px;
+	font-size: 12px;
 }
 
 .wrapper table td span.OKmsg {
 	color: #308000;
-	font-color: 12px;
+	font-size: 12px;
 }
 
 .wrapper table td span.WARNmsg {
 	color: #FFA500;
-	font-color: 12px;
+	font-size: 12px;
 }
 
 .wrapper table td span.INFOmsg {
 	color: #2B5CB3;
-	font-color: 12px;
+	font-size: 12px;
 }
 
 .wrapper table.highlight tr.img-highlight {
@@ -1766,7 +1766,7 @@ table.simple td.title {
 textarea.copykit {
 	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
 	font-size: 12px;
-	outline: none
+	outline: none;
 	color: #666;
 	border: 1px solid #aaa;
 	line-height: 17px;
@@ -2187,7 +2187,7 @@ h5 .crumbs, div.h5 .crumbs {
 }
 
 #menu-order li {
-	text-shadow: 1px 1px solid rgba(255,255,255,.3);
+	text-shadow: 1px 1px 0 rgba(255,255,255,.3);
 	cursor: move;
 	display: block;
 	margin: 2px 0;

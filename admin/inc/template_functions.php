@@ -787,7 +787,7 @@ function list_pages_json(){
 	}
 	$pagesSorted = subval_sort($pagesArray_tmp,'sort');
 
-	$links = exec_filter('editorLinks',get_link_menu_array());
+	$links = exec_filter('editorlinks',get_link_menu_array());
 	return json_encode($links);
 }
 
