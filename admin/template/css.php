@@ -1862,7 +1862,7 @@ a.updatelink:focus {
 }
 
 #hc_version.label {
-	width: 280px;
+	width: 298px;
 	text-align: left;
 	padding: 9px 9px 9px 15px;
 	font-weight:normal;
