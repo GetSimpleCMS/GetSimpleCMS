@@ -186,7 +186,14 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
     	myDropzone.on("complete", function(file) {
       		if (this.getQueuedFiles().length == 0) {
 				$('#loader').fadeOut(500);
-				$('#maincontent').load(location.href+' #maincontent > *');      			
+
+				// #imageFilter seleced index to restore 
+				var filterIdx = $('#imageFilter').prop("selectedIndex");
+				
+				$('#maincontent').load(location.href+' #maincontent > *', function(ev){
+					$('#imageFilter').prop("selectedIndex",1);
+					$('#imageFilter').trigger('change');
+				});  
       		}	
       	});
 

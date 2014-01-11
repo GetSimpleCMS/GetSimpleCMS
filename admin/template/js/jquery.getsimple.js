@@ -873,13 +873,13 @@ jQuery(document).ready(function () {
 	///////////////////////////////////////////////////////////////////////////
 
 	//create new folder in upload.php
-	$('#createfolder').on("click", function ($e) {
+	$("#maincontent").on("click",'#createfolder', function ($e) {
 		$e.preventDefault();
 		$("#new-folder").find("form").show();
 		$(this).hide();
 		$("#new-folder").find('#foldername').focus();
 	});
-	$("#new-folder .cancel").on("click", function ($e) {
+	$("#maincontent").on("click","#new-folder .cancel", function ($e) {
 		$e.preventDefault();
 		$("#new-folder").find("#foldername").val('');
 		$("#new-folder").find("form").hide();
