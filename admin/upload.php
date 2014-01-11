@@ -29,15 +29,15 @@ if (isset($_GET['path']) && !empty($_GET['path'])) {
 	$subFolder = '';
 }
 
-// check if host uses Linux (used for displaying permissions
-$isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
-
 // if a file was uploaded
 if (isset($_FILES['file'])) {
+	
 	$uploadsCount = count($_FILES['file']['name']);
+
 	if($uploadsCount > 0) {
 	 $errors = array();
 	 $messages = array();
+
 	 for ($i=0; $i < $uploadsCount; $i++) {
 		if ($_FILES["file"]["error"][$i] > 0)	{
 			$errors[] = i18n_r('ERROR_UPLOAD');
@@ -50,13 +50,15 @@ if (isset($_FILES['file'])) {
 			
 			//prevent overwriting
 			// @todo redo variables to avoid the double redundant clean_img_name(to7bit below
-
-			while ( file_exists($file_loc) ) {
-				$file_loc = $path . $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
-				$base = $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
-				$count++;
+						
+			if(!isset($_POST['fileoverwrite'])){
+				while ( file_exists($file_loc) ) {
+					$file_loc = $path . $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+					$base = $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+					$count++;
+				}
 			}
-			
+
 			//validate file
 			if (validate_safe_file($_FILES["file"]["tmp_name"][$i], $_FILES["file"]["name"][$i],  $_FILES["file"]["type"][$i])) {
 				move_uploaded_file($_FILES["file"]["tmp_name"][$i], $file_loc);
@@ -69,10 +71,21 @@ if (isset($_FILES['file'])) {
 				
 				// generate thumbnail				
 				require_once('inc/imagemanipulation.php');	
-				genStdThumb($subFolder,$base);					
-				$messages[] = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$subFolder.$base.'">'. $SITEURL .'data/uploads/'.$subFolder.$base.'</a>';
+
+				genStdThumb($subFolder,$base);	
+
+				$messages[] = i18n_r('FILE_SUCCESS_MSG');
+				if(requestIsAjax()){
+					header('Status: 200');				
+					die();
+				}	
 			} else {
 				$messages[] = $_FILES["file"]["name"][$i] .' - '.i18n_r('ERROR_UPLOAD');
+				if(requestIsAjax()){
+					header('Status: 403 File not allowed');
+					i18n('ERROR_UPLOAD');
+					die();
+				}	
 			}
 			
 			//successfull message
@@ -92,6 +105,7 @@ if (isset($_FILES['file'])) {
 		}
 	}
 }
+
 // if creating new folder
 if (isset($_GET['newfolder'])) {
 
@@ -120,6 +134,9 @@ if (isset($_GET['newfolder'])) {
 }
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT')); 
+
+// check if host uses Linux (used for displaying permissions
+$isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 
 ?>
 	

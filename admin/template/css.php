@@ -86,23 +86,23 @@ html {
 	zoom: 1;
 }
 
-::selection {
+:: selection {
 	text-shadow: none !important;
 	background: #a8d1ff;
 	color: #111;
 }
 
-::-moz-selection {
+:: -moz-selection {
 	text-shadow: none !important;
 	background: #a8d1ff;
 	color: #111;
 }
 
-::-webkit-input-placeholder {
+:: -webkit-input-placeholder {
 	color: #c3c3c3;
 }
 
-:-moz-placeholder {
+: -moz-placeholder {
 	color: #c3c3c3;
 }
 
@@ -439,7 +439,7 @@ h5:hover img {
 }
 
 #maincontent {
-	width: 690px;
+	width: 710px;
 	float: left;
 	text-align: left;
 }
@@ -583,7 +583,7 @@ h5:hover img {
 #sidebar .snav li.last_sb + li.plugin_sb:before, #sidebar hr
 {
 	margin: 3px 3px 3px 16px;
-	border: none;
+	border:none;
 	border-bottom: 1px solid <?php echo $primary_6; ?>;
 	content: "";
 	display: block;
@@ -690,7 +690,7 @@ h5:hover img {
 .wrapper table {
 	border-collapse: collapse;
 	margin: 0 0 20px 0;
-	width: 645px;
+	width: 668px;
 }
 
 .wrapper table td {
@@ -1618,50 +1618,140 @@ table.simple td.title {
 	padding: 5px 15px;
 }
 
+/* upload link larger button for touch devices */
+#fileuploadlink span.touch {
+	display: none;
+}
+#fileuploadlink.touch span {
+	display:none;
+}
+#fileuploadlink.touch span.touch {
+	display: block;
+	text-align: center;
+	font-size: 20px;
+}
 
-/* JQuery Uploadify Styles */
-.uploadify-queue-item {
+/* Upload Queue */
+
+.uploaddropzone {
+	display: none;
+	border: 3px dashed <?php echo $primary_1 ?>;
+	border-radius: 3px;
+	margin: 8px 0 5px 15px !important;
+	text-align: center;
+	height: 40px;
+	line-height: 40px;
+	font-weight: bold;
+	font-size: 16px;
+	color: <?php echo $primary_1 ?>;
+	font-family: sans-serif;
+	opacity: .2;
+
+}
+
+#queue-item-template{
+	display: none;	
+}	
+.queue-item-wrap{
+	margin:0;
+	padding:0;
+	position:relative;
+}
+
+.queue-item-wrap .queue-item {
 	font-size: 10px;
 	padding: 8px 15px;
 	width: 190px;
 }
 
-.uploadify-error {
-	color: #D94136 !important;
-}
-
-.uploadify-error .uploadify-progress-bar {
-	background-color: #D94136 !important;
-}	
-
-#sidebar .snav li .cancel {
-	float: right;
-}
-
-#sidebar .snav li .cancel a:link,
-#sidebar .snav li .cancel a:visited,
-#sidebar .snav li .cancel a:hover {
+/* special overrides for non templated remove links */
+.queue-item-wrap a.dz-remove{
+	margin:0;
 	padding:0 !important;
-	margin: 0 4px 0 0 !important;
-	width: 11px !important;
+	position: absolute;
+	right: 13px;
+	top: 6px;
+	background: none !important;
 	opacity: .8;	
-	background: transparent !important;
+	font-size:14px;
 }
 
-.uploadify-progress {
+.queue-item-wrap .queue-item .progress {
 	background-color: #FFF;
 	margin-top: 5px;
 	width: 97%;
 }
 
-.uploadify-progress-bar {
+.queue-item-wrap .queue-item .progress-bar {
 	background-color: <?php echo $primary_6; ?>;
 	width: 1px;
 	height: 4px;
+	transition: width 200ms;
+}
+
+.queue-item-wrap .dz-filename {
+	width:165px;
+	/*word-break: break-all;*/
+	display: inline-block;
+}
+
+.queue-item-wrap .dz-name{
+	word-break: break-all;
+}
+
+.queue-item-wrap .dz-filename .size{
+	word-break: normal;
+	white-space: nowrap;
+}
+
+/* statuses */
+
+.queue-item-wrap .dz-error-mark,
+.queue-item-wrap .dz-success-mark,
+.queue-item-wrap dz-process-mark
+{
+	display:none;
+}
+
+/* processing */
+.queue-item-wrap.dz-processing .dz-process-mark{
+	display:inline;
+	color: #AFC5CF;
+	opacity:.8;
+}
+
+.queue-item-wrap.dz-success .dz-process-mark,
+.queue-item-wrap.dz-error .dz-process-mark
+{
+	display:none;
+}
+
+/* error */
+.queue-item-wrap.dz-error .dz-error-mark{
+	display: inline;
+	color: #D94136;	
+}
+
+/* error progressbar */
+.queue-item-wrap.dz-error .progress, 
+.queue-item-wrap.dz-error .progress-bar
+{
+	background-color: #D94136;
+}
+
+/* error message */
+.queue-item-wrap .dz-error-message{
+	color: #D94136;
+}
+
+/* success */
+.queue-item-wrap.dz-success .dz-success-mark{
+	display:inline;
+	color: #00CA00;		
 }
 
 #sidebar .snav li.upload {
-	display: block;
+	display: none;
 	border-radius: 4px;
 		-moz-border-radius: 4px;
 		-khtml-border-radius: 4px;
@@ -1671,39 +1761,6 @@ table.simple td.title {
 	background: <?php echo $primary_1; ?>;
 	font-weight: 100;
 }
-
-.uploadify-button {
-	width: 100%;
-	border-radius: 4px;
-		-webkit-border-radius: 4px;
-		-moz-border-radius: 4px;
-	display: block;
-	font-weight: bold;
-	color: #AFC5CF;
-	background: #182227;
-	text-shadow: 1px 1px 0px #0E1316;
-	transition: all .3s ease-in-out;
-		-webkit-transition: all .3s ease-in-out;
-		-moz-transition: all .3s ease-in-out;
-		-o-transition: all .3s ease-in-out;
-}
-
-.uploadify:hover .uploadify-button {
-	background-color: #0e1316;
-	color: #ffffff;
-	text-shadow: 1px 1px 0px #000;
-}
-
-.uploadify-button-text{
-	padding: 5px 15px 5px 15px;
-	/*display: block;*/
-}
-
-.uploadify {
-	position: relative;
-	margin-bottom: 1em;
-}
-
 
 /* Image Editor Styles */
 textarea.copykit {
@@ -2382,6 +2439,20 @@ a.disabled:visited {
 		/*filter: url(resources.svg#desaturate); /* Gecko */*/
 		filter: gray; /* IE */
 		-webkit-filter: grayscale(1); /* Old WebKit */
+}
+
+/* force text to be non selectable , for labels psuedo buttons */
+*.unselectable {
+	cursor:default;
+   -moz-user-select: none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+   /*
+     Introduced in IE 10.
+     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+   */
+   -ms-user-select: none;
+   user-select: none;
 }
 
 /* codemirror */

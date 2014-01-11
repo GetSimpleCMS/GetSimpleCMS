@@ -286,7 +286,7 @@ jQuery(document).ready(function () {
 		loadingAjaxIndicator.fadeOut(500);
 	});
 
-	$(".delconfirm").on("click", function () {
+	$("#maincontent").on("click",".delconfirm", function () {
 		var message = $(this).attr("title");
 		var dlink = $(this).attr("href");
 		var mytr = $(this).parents("tr");
@@ -562,6 +562,7 @@ jQuery(document).ready(function () {
 		});
 	}	
 
+	// theme-edit fileselector change
 	// delegated on() handlers survive ajax replacement
 	$(document).on('click',"#theme_filemanager a.file",function(e){
 		// console.log('filechange');
@@ -582,6 +583,7 @@ jQuery(document).ready(function () {
 		}
 	}
 
+	// update theme-edit code editor
 	function updateTheme(theme,file,url){
 
 		// console.log(theme);
@@ -661,6 +663,7 @@ jQuery(document).ready(function () {
 		e.preventDefault();
 		editor = $('#codetext').data('editor');
 		if(editor){
+			$('#theme_edit_code').fadeTo('fast',0.3).fadeTo('fast',1.0);
 			editor.setValue($(editor.getTextArea()).val());
 			editor.hasChange = false;
 		}	
@@ -870,13 +873,13 @@ jQuery(document).ready(function () {
 	///////////////////////////////////////////////////////////////////////////
 
 	//create new folder in upload.php
-	$('#createfolder').on("click", function ($e) {
+	$("#maincontent").on("click",'#createfolder', function ($e) {
 		$e.preventDefault();
 		$("#new-folder").find("form").show();
 		$(this).hide();
 		$("#new-folder").find('#foldername').focus();
 	});
-	$("#new-folder .cancel").on("click", function ($e) {
+	$("#maincontent").on("click","#new-folder .cancel", function ($e) {
 		$e.preventDefault();
 		$("#new-folder").find("#foldername").val('');
 		$("#new-folder").find("form").hide();

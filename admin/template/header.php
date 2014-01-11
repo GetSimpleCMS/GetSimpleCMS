@@ -107,11 +107,12 @@ $themeselector = '
 		
 	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
 	<script type="text/javascript" src="template/js/lazyload.js?v=<?php echo GSVERSION; ?>"></script>		
+
 	<script type="text/javascript" src="template/js/codemirror.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
 
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->
 	<?php if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!defined('GSNOUPLOADIFY')) ) { ?>
-	<script type="text/javascript" src="template/js/uploadify/jquery.uploadify.js?v=3.0"></script>
+	<script type="text/javascript" src="template/js/dropzone.js?v=<?php echo GSVERSION; ?>"></script>		
 	<?php } ?>
 	<?php if(get_filename_id()=='image') { ?>
 	<script type="text/javascript" src="template/js/jcrop/jquery.Jcrop.min.js"></script>
