@@ -2,10 +2,10 @@
 /**
  * English Language File
  *
- * Date:        6 December 2011
- * Revision:    Feb 2013
- * Version:     GetSimple 3.2.1
- * Traductors:  Chris Cagle 
+ * Date:			6 December 2011
+ * Revision:		Dec 2013
+ * Version:			GetSimple 3.3.0
+ * Traductors: 		Chris Cagle 
  *
  * @package GetSimple
  * @subpackage Language
@@ -45,7 +45,7 @@ $i18n = array(
 "SELECT_LANGUAGE"         =>	"Select your language",
 "CONTINUE_SETUP"          =>	"Continue with Setup",
 "DOWNLOAD_LANG"           =>	"Download Languages",
-"SITE_UPDATED"			=>	"Your site has been Updated",
+"SITE_UPDATED"			=>	"Your site has been updated",
 "SERVICE_UNAVAILABLE"	=>	"This page is temporarily unavailable",
 
 /* 
