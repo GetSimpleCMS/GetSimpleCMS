@@ -69,6 +69,25 @@ function antixss($str){
 
 
 /**
+ * check for csrfs
+ * @param  string $action action to pass to check_nonce
+ * @param  string $file   file to pass to check_nonce
+ * @param  bool   $die    if false return instead of die
+ * @return 
+ */
+function check_for_csrf($action, $file="", $die = true){
+	// check for csrf
+	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
+		$nonce = $_REQUEST['nonce'];
+		if(!check_nonce($nonce, $action, $file)) {
+			if($die) die("CSRF detected!");
+			return true;
+		}
+	}	
+}
+
+
+/**
  * Get Nonce
  *
  * @since 2.03
@@ -197,7 +216,16 @@ function path_is_safe($path,$pathmatch,$subdir = true){
  * @returns bool
  */
 function server_is_apache() {
-    return( strpos(strtolower($_SERVER['SERVER_SOFTWARE']),'apache') !== false );
+    return( strpos(strtolower(get_Server_Software()),'apache') !== false );
+}
+
+/**
+ * Try to get server_software
+ * 
+ * @returns string
+ */
+function get_Server_Software() {
+    return $_SERVER['SERVER_SOFTWARE'];
 }
 
 /**

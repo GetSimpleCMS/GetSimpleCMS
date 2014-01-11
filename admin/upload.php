@@ -13,6 +13,7 @@
 $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
+
 $dirsSorted=null;$filesSorted=null;$foldercount=null;
 
 if (isset($_GET['path']) && !empty($_GET['path'])) {
@@ -48,6 +49,8 @@ if (isset($_FILES['file'])) {
 			$base = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
 			
 			//prevent overwriting
+			// @todo redo variables to avoid the double redundant clean_img_name(to7bit below
+
 			while ( file_exists($file_loc) ) {
 				$file_loc = $path . $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
 				$base = $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
@@ -65,7 +68,7 @@ if (isset($_FILES['file'])) {
 				exec_action('file-uploaded');
 				
 				// generate thumbnail				
-				require('inc/imagemanipulation.php');	
+				require_once('inc/imagemanipulation.php');	
 				genStdThumb($subFolder,$base);					
 				$messages[] = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$subFolder.$base.'">'. $SITEURL .'data/uploads/'.$subFolder.$base.'</a>';
 			} else {
@@ -91,14 +94,8 @@ if (isset($_FILES['file'])) {
 }
 // if creating new folder
 if (isset($_GET['newfolder'])) {
-	
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "createfolder")) {
-			die("CSRF detected!");
-		}
-	}
+
+	check_for_csrf("createfolder");	
 	
 	$newfolder = $_GET['newfolder'];
 	// check for invalid chars

@@ -29,14 +29,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 login_cookie_check();
 	
 if (isset($_POST['submitted'])) {
-	
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_POST['nonce'];
-		if(!check_nonce($nonce, "edit", "edit.php")) {
-			die("CSRF detected!");	
-		}
-	}
+	check_for_csrf("edit", "edit.php");	
 	
 	if ( trim($_POST['post-title']) == '' )	{
 		redirect("edit.php?upd=edit-error&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
@@ -46,7 +39,7 @@ if (isset($_POST['submitted'])) {
 		
 		// is a slug provided?
 		if ($_POST['post-id']) { 
-			$url = $_POST['post-id'];
+			$url = trim($_POST['post-id']);
 			if (isset($i18n['TRANSLITERATION']) && is_array($translit=$i18n['TRANSLITERATION']) && count($translit>0)) {
 				$url = str_replace(array_keys($translit),array_values($translit),$url);
 			}
@@ -54,7 +47,7 @@ if (isset($_POST['submitted'])) {
 			$url = clean_url($url); //old way
 		} else {
 			if ($_POST['post-title'])	{ 
-				$url = $_POST['post-title'];
+				$url = trim($_POST['post-title']);
 				if (isset($i18n['TRANSLITERATION']) && is_array($translit=$i18n['TRANSLITERATION']) && count($translit>0)) {
 					$url = str_replace(array_keys($translit),array_values($translit),$url);
 				}
@@ -71,20 +64,22 @@ if (isset($_POST['submitted'])) {
 			$url = 'temp';
 		}
 		
-		
+		$oldslug = "";
+
 		// was the slug changed on an existing page?
 		if ( isset($_POST['existing-url']) ) {
-			if ($_POST['post-id'] != $_POST['existing-url']){
+			$oldslug = $_POST['existing-url'];
+			if ($_POST['post-id'] != $oldslug){
 				// dont change the index page's slug
-				if ($_POST['existing-url'] == 'index') {
-					$url = $_POST['existing-url'];
-					redirect("edit.php?id=". urlencode($_POST['existing-url']) ."&upd=edit-index&type=edit");
+				if ($oldslug == 'index') {
+					$url = $oldslug;
+					redirect("edit.php?id=". urlencode($oldslug) ."&upd=edit-index&type=edit");
 				} else {
 					exec_action('changedata-updateslug');
-					updateSlugs($_POST['existing-url']);
+					updateSlugs($oldslug);
 					$file = GSDATAPAGESPATH . $url .".xml";
-					$existing = GSDATAPAGESPATH . $_POST['existing-url'] .".xml";
-					$bakfile = GSBACKUPSPATH."pages/". $_POST['existing-url'] .".bak.xml";
+					$existing = GSDATAPAGESPATH . $oldslug .".xml";
+					$bakfile = GSBACKUPSPATH."pages/". $oldslug .".bak.xml";
 					copy($existing, $bakfile);
 					unlink($existing);
 				} 
@@ -94,28 +89,33 @@ if (isset($_POST['submitted'])) {
 		$file = GSDATAPAGESPATH . $url .".xml";
 		
 		// format and clean the responses
-		if(isset($_POST['post-title'])) 			{	$title = safe_slash_html($_POST['post-title']);	}
-		if(isset($_POST['post-metak'])) 			{	$metak = safe_slash_html($_POST['post-metak']);	}
-		if(isset($_POST['post-metad'])) 			{	$metad = safe_slash_html($_POST['post-metad']);	}
-		if(isset($_POST['post-author'])) 			{	$author = safe_slash_html($_POST['post-author']);	}
-		if(isset($_POST['post-template'])) 		{ $template = $_POST['post-template']; }
-		if(isset($_POST['post-parent'])) 			{ $parent = $_POST['post-parent']; }
-		if(isset($_POST['post-menu'])) 				{ $menu = safe_slash_html($_POST['post-menu']); }
-		if(isset($_POST['post-menu-enable'])) { $menuStatus = "Y"; } else { $menuStatus = ""; }
-		if(isset($_POST['post-private']) ) 		{ $private = safe_slash_html($_POST['post-private']); }
-		if(isset($_POST['post-content'])) 		{	$content = safe_slash_html($_POST['post-content']);	}
-		if(isset($_POST['post-menu-order'])) 	{ 
-			if (is_numeric($_POST['post-menu-order'])) 
-			{
-				$menuOrder = $_POST['post-menu-order']; 
-			} 
-			else 
-			{
-				$menuOrder = "0";
-			}
-		}		
+		// content
+		if(isset($_POST['post-title'])) 			{ $title       = safe_slash_html($_POST['post-title']);	}
+		if(isset($_POST['post-titlelong']))			{ $titlelong   = safe_slash_html($_POST['post-titlelong']);	}
+		if(isset($_POST['post-summary']))			{ $summary     = safe_slash_html($_POST['post-summary']);	}
+ 		if(isset($_POST['post-content'])) 			{ $content     = safe_slash_html($_POST['post-content']); }
+ 		// options
+ 		if(isset($_POST['post-author'])) 			{ $author      = safe_slash_html($_POST['post-author']);	}
+ 		if(isset($_POST['post-template'])) 			{ $template    = $_POST['post-template']; }
+ 		if(isset($_POST['post-parent'])) 			{ $parent      = $_POST['post-parent']; }
+ 		if(isset($_POST['post-menu'])) 				{ $menu        = safe_slash_html($_POST['post-menu']); }
+ 		if(isset($_POST['post-menu-enable'])) 		{ $menuStatus  = "Y"; } else { $menuStatus = ""; }
+ 		if(isset($_POST['post-menu-order'])) 		{ $menuOrder   = is_numeric($_POST['post-menu-order']) ? $_POST['post-menu-order'] : "0"; }
+ 		if(isset($_POST['post-private']) ) 			{ $private     = safe_slash_html($_POST['post-private']); }
+ 		// meta
+		if(isset($_POST['post-metak'])) 			{ $meta        = $metak = safe_slash_html($_POST['post-metak']);	}
+		if(isset($_POST['post-metad'])) 			{ $metad       = safe_slash_html($_POST['post-metad']);	}
+		
+		//robots
+		if(isset($_POST['post-metar-noindex']))	 	$metarNoIndex   = 1;
+		else $metarNoIndex = 0; 
+		if(isset($_POST['post-metar-nofollow']))	$metarNoFollow  = 1;
+		else $metarNoFollow = 0; 
+		if(isset($_POST['post-metar-noarchive']))	$metarNoArchive = 1;
+		else $metarNoArchive = 0; 
+
 		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
-		if ( file_exists($file) && ($url != $_POST['existing-url']) ) {
+		if ( file_exists($file) && ($url != $oldslug) ) {
 			$count = "1";
 			$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
 			while ( file_exists($file) ) {
@@ -124,7 +124,6 @@ if (isset($_POST['submitted'])) {
 			}
 			$url = $url .'-'. $count;
 		}
-
 		
 		// if we are editing an existing page, create a backup
 		if ( file_exists($file) ) 
@@ -133,45 +132,33 @@ if (isset($_POST['submitted'])) {
 			copy($file, $bakfile);
 		}
 		
-		
 		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
 		$xml->addChild('pubDate', date('r'));
 
-		$note = $xml->addChild('title');
-		$note->addCData($title);
-		
-		$note = $xml->addChild('url');
-		$note->addCData($url);
-		
-		$note = $xml->addChild('meta');
-		$note->addCData($metak);
-		
-		$note = $xml->addChild('metad');
-		$note->addCData($metad);
-		
-		$note = $xml->addChild('menu');
-		$note->addCData($menu);
-		
-		$note = $xml->addChild('menuOrder');
-		$note->addCData($menuOrder);
-		
-		$note = $xml->addChild('menuStatus');
-		$note->addCData($menuStatus);
-		
-		$note = $xml->addChild('template');
-		$note->addCData($template);
-		
-		$note = $xml->addChild('parent');
-		$note->addCData($parent);
-		
-		$note = $xml->addChild('content');
-		$note->addCData($content);
-		
-		$note = $xml->addChild('private');
-		$note->addCData($private);
-		
-		$note = $xml->addChild('author');
-		$note->addCData($author);
+		$fields = array(
+			'title',
+			'titlelong',
+			'summary',
+			'url',
+			'author',
+			'template',
+			'parent',
+			'menu',
+			'menuStatus',
+			'menuOrder',
+			'private',
+			'meta',
+			'metad',
+			'metarNoIndex',
+			'metarNoFollow',
+			'metarNoArchive',
+			'content'
+		);
+
+		foreach($fields as $field){
+			$note = $xml->addChild($field);
+			$note->addCData($$field);
+		}
 
 		exec_action('changedata-save');
 		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true' && $autoSaveDraft == true) {
@@ -195,10 +182,10 @@ if (isset($_POST['submitted'])) {
 				$redirect_url = 'edit.php';
 			}
 			
-			if ($url == $_POST['existing-url']) {
+			if ($url == $oldslug) {
 				redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
 			} else {
-				redirect($redirect_url."?id=". $url ."&old=".$_POST['existing-url']."&upd=edit-success&type=edit");
+				redirect($redirect_url."?id=". $url ."&old=".$oldslug."&upd=edit-success&type=edit");
 			}
 		}
 	}

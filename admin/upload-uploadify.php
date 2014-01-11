@@ -42,14 +42,16 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 			i18n('ERROR_UPLOAD');
 			exit;
 		}
-		 
-		$path = (isset($_POST['path'])) ? $_POST['path']."/" : "";
-		$thumbsPath = GSTHUMBNAILPATH.$path;
+		
+			$path = (isset($_POST['path'])) ? $_POST['path']."/" : "";
+			$thumbsPath = GSTHUMBNAILPATH.$path;
 			
 		require('inc/imagemanipulation.php');	
 		genStdThumb(isset($_POST['path']) ? $_POST['path']."/" : '',$name);	
+			
+		
+		echo 1;
 
-		echo '1';
 	} else {
 		echo 'Invalid file type.';
 	}

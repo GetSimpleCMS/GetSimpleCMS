@@ -31,21 +31,22 @@ $GS_asset_objects['jquery'] = 'jQuery';
 $GS_asset_objects['jquery-ui'] = 'jQuery.ui'; 
 
 // jquery
-$jquery_ver    = '1.7.1';
-$jquery_ui_ver = '1.8.17';
+$jquery_ver       = '1.9.0';
+$jqueryui_ver     = '1.10.0';
+$font_awesome_ver = '3.1.1';
 
 $GS_script_assets['jquery']['cdn']['url']      = '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js';
 $GS_script_assets['jquery']['cdn']['ver']      = $jquery_ver;
 
-$GS_script_assets['jquery']['local']['url']    = $SITEURL.$GSADMIN.'/template/js/jquery.min.js';
+$GS_script_assets['jquery']['local']['url']    = $SITEURL.$GSADMIN.'/template/js/jquery/jquery-'.$jquery_ver.'.min.js';
 $GS_script_assets['jquery']['local']['ver']    = $jquery_ver;
 
 // jquery-ui
-$GS_script_assets['jquery-ui']['cdn']['url']   = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jquery_ui_ver.'/jquery-ui.min.js';
-$GS_script_assets['jquery-ui']['cdn']['ver']   = $jquery_ui_ver;
+$GS_script_assets['jquery-ui']['cdn']['url']   = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jqueryui_ver.'/jquery-ui.min.js';
+$GS_script_assets['jquery-ui']['cdn']['ver']   = $jqueryui_ver;
 
-$GS_script_assets['jquery-ui']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/jquery-ui.min.js';
-$GS_script_assets['jquery-ui']['local']['ver'] = $jquery_ui_ver;
+$GS_script_assets['jquery-ui']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/jqueryui/js/jquery-ui-'.$jqueryui_ver.'.custom.min.js';
+$GS_script_assets['jquery-ui']['local']['ver'] = $jqueryui_ver;
 
 // misc
 $GS_script_assets['fancybox']['local']['url']  = $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.pack.js';
@@ -53,6 +54,17 @@ $GS_script_assets['fancybox']['local']['ver']  = '2.0.4';
 
 $GS_style_assets['fancybox']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css';
 $GS_style_assets['fancybox']['local']['ver']   = '2.0.4';
+
+$GS_style_assets['jquery-ui']['local']['url']  =  $SITEURL.$GSADMIN.'/template/js/jqueryui/css/custom/jquery-ui-'.$jqueryui_ver.'.custom.min.css';
+$GS_style_assets['jquery-ui']['local']['ver']  =  $jqueryui_ver;
+
+// font-awesome icons
+$GS_style_assets['font-awesome']['cdn']['url'] =  '//netdna.bootstrapcdn.com/font-awesome/'.$font_awesome_ver.'/css/font-awesome.min.css';
+$GS_style_assets['font-awesome']['cdn']['ver'] = $font_awesome_ver;
+
+// scrolltofixed
+$GS_script_assets['scrolltofixed']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/jquery-scrolltofixed.js';
+$GS_script_assets['scrolltofixed']['local']['ver']   = '0.0.1';
 
 /**
  * Register shared javascript/css scripts for loading into the header
@@ -67,14 +79,24 @@ if (!getDef('GSNOCDN',true)){
 register_script('fancybox', $GS_script_assets['fancybox']['local']['url'], $GS_script_assets['fancybox']['local']['ver'],FALSE);
 register_style('fancybox-css', $GS_style_assets['fancybox']['local']['url'], $GS_style_assets['fancybox']['local']['ver'], 'screen');
 
+register_style('jquery-ui', $GS_style_assets['jquery-ui']['local']['url'], $GS_style_assets['jquery-ui']['local']['ver'], 'screen');
+
+register_style('font-awesome', $GS_style_assets['font-awesome']['cdn']['url'], $GS_style_assets['font-awesome']['cdn']['ver'], 'screen');
+
+register_script('scrolltofixed', $GS_script_assets['scrolltofixed']['local']['url'], $GS_script_assets['scrolltofixed']['local']['ver'],FALSE);
+
 /**
  * Queue our scripts and styles for the backend
  */
 queue_script('jquery', GSBACK);
 queue_script('jquery-ui', GSBACK);
 queue_script('fancybox', GSBACK);
-queue_style('fancybox-css',GSBACK);
+queue_script('scrolltofixed', GSBACK);
 
+queue_style('fancybox-css',GSBACK);
+queue_style('jquery-ui',GSBACK);
+queue_style('jquery-ui-theme',GSBACK);
+queue_style('font-awesome',GSBACK);
 
 /**
  * Include any plugins, depending on where the referring 
@@ -370,7 +392,7 @@ function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $des
  * @param string $id Id of current page
  * @param string $txt Text to add to tabbed link
  */
-function add_filter($filter_name, $added_function) {
+function add_filter($filter_name, $added_function, $args = array()) {
   global $filters;
   global $live_plugins;   
   $bt = debug_backtrace();
@@ -378,7 +400,9 @@ function add_filter($filter_name, $added_function) {
   $pathName= pathinfo_filename($caller['file']);
 	$filters[] = array(
 		'filter' => $filter_name,
-		'function' => $added_function
+		'function' => $added_function,
+		'active' => false,
+		'args' => (array) $args		
 	);
 }
 
@@ -397,7 +421,12 @@ function exec_filter($script,$data=array()) {
 	global $filters;
 	foreach ($filters as $filter)	{
 		if ($filter['filter'] == $script) {
-			$data = call_user_func_array($filter['function'], array($data));
+			$key = array_search($script,$filters);
+			if (!$filters[$key]['active']) {
+				$filters[$key]['active'] = true;
+				$data = call_user_func_array($filter['function'], array($data));
+				$filters[$key]['active'] = false;
+			}
 		}
 	}
 	return $data;

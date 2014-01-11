@@ -14,14 +14,15 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+global $plugin_info;
+
 # verify a plugin was passed to this page
-if (!isset($_GET['id'])) {
+if (empty($_GET['id']) || !isset($plugin_info[$_GET['id']])) {
 	redirect('plugins.php');
 }
 
 # include the plugin
 $plugin_id = $_GET['id'];
-global $plugin_info;
 
 get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name']); 
 
@@ -35,7 +36,9 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
 		<div class="main">
 
 		<?php 
-			call_user_func_array($plugin_info[$plugin_id]['load_data'],array()); 
+			if(function_exists($plugin_info[$plugin_id]['load_data'])){
+				call_user_func_array($plugin_info[$plugin_id]['load_data'],array()); 
+			}	
 		?>
 
 		</div>
@@ -50,7 +53,9 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
         <?php exec_action($plugin_info[$plugin_id]['page_type']."-sidebar"); ?>
       </ul>
     <?php
-      }
+	}
+	// call sidebar extra hook for plugin page_type
+	exec_action($plugin_info[$plugin_id]['page_type']."-sidebar-extra");     
     ?>
   </div>
 

@@ -47,25 +47,14 @@ if ($_GET['p'] != '') {
 }
 
 if ($p == 'delete') {
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "delete", "backup-edit.php")) {
-			die("CSRF detected!");
-		}
-	}
+	check_for_csrf("delete","backup-edit");
 	delete_bak($id);
 	redirect("backups.php?upd=bak-success&id=".$id);
 } 
 
 elseif ($p == 'restore') {
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "restore", "backup-edit.php")) {
-			die("CSRF detected!");	
-		}
-	}
+	check_for_csrf("restore", "backup-edit.php");
+	
 	if (isset($_GET['new'])) {
 		updateSlugs($_GET['new'], $id);
 		restore_bak($id);
@@ -126,10 +115,7 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 
 		</div>
 		
-		<?php if ($HTMLEDITOR != '') { 
-			if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
-			if (defined('GSEDITORLANG')) { $EDLANG = GSEDITORLANG; } else {	$EDLANG = 'en'; }
-		?>
+		<?php if ($HTMLEDITOR != '') { ?>
 		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 		<script type="text/javascript">
 		var editor = CKEDITOR.replace( 'codetext', {
@@ -141,8 +127,8 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 			?>
 			contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
 			<?php } ?>
-			entities : true,
-			uiColor : '#FFFFFF',
+			entities : false,
+			uiColor : '#DDDDDD',
 			height: '<?php echo $EDHEIGHT; ?>',
 			baseHref : '<?php echo $SITEURL; ?>',
 			toolbar : [['Source']],

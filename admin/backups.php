@@ -24,13 +24,7 @@ $table = '';
 
 // delete all backup files if the ?deleteall session parameter is set
 if (isset($_GET['deleteall'])){
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "deleteall")) {
-			die("CSRF detected!");	
-		}
-	}
+	check_for_csrf("deleteall");
 	$filenames = getFiles($path);
 	
 	foreach ($filenames as $file) {
@@ -48,7 +42,7 @@ if (isset($_GET['deleteall'])){
 //display all page backups
 $filenames = getFiles($path);
 $count="0";
-$pagesArray = array();
+$pagesArray_tmp = array();
 $pagesSorted=array(); 
 
 if (count($filenames) != 0) 
@@ -59,13 +53,13 @@ if (count($filenames) != 0)
 		{
 			$data = getXML($path .$file);
 			$status = $data->menuStatus;
-			$pagesArray[$count]['title'] = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
-			$pagesArray[$count]['url'] = $data->url;
-			$pagesArray[$count]['date'] = $data->pubDate;
+			$pagesArray_tmp[$count]['title'] = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
+			$pagesArray_tmp[$count]['url'] = $data->url;
+			$pagesArray_tmp[$count]['date'] = $data->pubDate;
 			$count++;
 		}
 	}
-	$pagesSorted = subval_sort($pagesArray,'title');
+	$pagesSorted = subval_sort($pagesArray_tmp,'title');
 }
 
 if (count($pagesSorted) != 0) 

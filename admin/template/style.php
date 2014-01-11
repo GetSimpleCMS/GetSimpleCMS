@@ -5,17 +5,20 @@
  * @package GetSimple
  * @subpackage init
  */
+
 header('Content-type: text/css');
+
+include('../inc/common.php');
+
 $offset = 30000;
 #header ('Cache-Control: max-age=' . $offset . ', must-revalidate');
 #header ('Expires: ' . gmdate ("D, d M Y H:i:s", time() + $offset) . ' GMT');
-
+$nocache = true;
 # check to see if cache is available for this
-$cacheme = true;
 $cachefile = '../../data/cache/stylesheet.txt';
-if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && $cacheme) {
-	echo file_get_contents($cachefile);
+if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && !$nocache) {
 	echo "/* Cached copy, generated ".date('H:i', filemtime($cachefile))." '".$cachefile."' */\n";
+	echo file_get_contents($cachefile);
 	exit;
 } 
 ob_start();
@@ -24,12 +27,6 @@ function compress($buffer) {
   $buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer); /* remove comments */
   $buffer = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $buffer); /* remove tabs, spaces, newlines, etc. */
   return $buffer;
-}
-
-function getXML($file) {
-	$xml = file_get_contents($file);
-	$data = simplexml_load_string($xml);
-	return $data;
 }
 
 if (file_exists('../../theme/admin.xml')) {
@@ -59,7 +56,7 @@ if (file_exists('../../theme/admin.xml')) {
 }
 
 include('css.php');
-if( isset($_GET['s']) and $_GET['s'] == 'wide' ) include('css-wide.php');
+if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ) include('css-wide.php');
 
 file_put_contents($cachefile, compress(ob_get_contents()));
 chmod($cachefile, 0644);

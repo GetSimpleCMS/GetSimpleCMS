@@ -29,6 +29,7 @@
 	if(isset($_GET['error'])) $error = ( function_exists( "filter_var") ) ? filter_var ( $_GET['error'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['error']);
 	if(isset($_GET['err'])) $err = ( function_exists( "filter_var") ) ? filter_var ( $_GET['err'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['err']);
 	if(isset($_GET['id'])) $errid = ( function_exists( "filter_var") ) ? filter_var ( $_GET['id'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['id']);
+	if(isset($_GET['updated']) && $_GET['updated'] ==1)	$success = i18n_r('SITE_UPDATED');
 
 	switch ( $update ) {
 		case 'bak-success':

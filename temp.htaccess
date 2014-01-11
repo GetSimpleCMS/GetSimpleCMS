@@ -13,12 +13,20 @@ Options -Indexes
     Satisfy All
 </Files>
 
-RewriteEngine on
 
-# Usually it RewriteBase is just '/', but 
-# replace it with your subdirectory path
-RewriteBase **REPLACE**
+<IfModule mod_rewrite.c>
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule /?([A-Za-z0-9_-]+)/?$ index.php?id=$1 [QSA,L]
+	# Tell PHP that the mod_rewrite module is ENABLED.
+	SetEnv HTTP_MOD_REWRITE On
+
+	RewriteEngine on
+
+	# Usually it RewriteBase is just '/', but 
+	# replace it with your subdirectory path
+	RewriteBase **REPLACE**
+
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule /?([A-Za-z0-9_-]+)/?$ index.php?id=$1 [QSA,L]
+
+</IfModule>
