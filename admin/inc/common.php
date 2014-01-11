@@ -57,7 +57,7 @@ define('GSROOTPATH', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
 /*
  * Load config
  */
-if(!is_frontend()){
+if(!isset($base)){
 if (file_exists(GSROOTPATH . 'gsconfig.php')) {
 	require_once(GSROOTPATH . 'gsconfig.php');
 }
@@ -232,6 +232,10 @@ if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
 	// merge GSMERGELANG defined lang
 	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
 }	
+
+// Set Locale
+if (array_key_exists('LOCALE', $i18n))
+  setlocale(LC_ALL, preg_split('/s*,s*/', $i18n['LOCALE']));
 
 /** 
  * Init Editor globals

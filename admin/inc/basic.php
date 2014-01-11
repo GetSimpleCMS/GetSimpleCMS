@@ -344,6 +344,32 @@ function XMLsave($xml, $file) {
 }
 
 /**
+ * Date Formated Output
+ * @since  3.4.0
+ * @author  cnb
+ * 
+ * @param  string $format    A strftime or date format
+ * @param  time $timestamp   A timestamp
+ * @return string            returns a formated date string
+  */
+function formatDate($format, $timestamp = null) {
+  if(!$timestamp) $timestamp = time();	
+
+  if (strpos($format, '%') === false) {
+    $date = date($format, $timestamp);
+  } else {
+    if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+      # fixes for Windows
+      $format = preg_replace('#(?<!%)((?:%%)*)%e#', '\1%#d', $format); // strftime %e parameter not supported
+      $date = utf8_encode(strftime($format, $timestamp)); // strftime returns ISO-8859-1 encoded string
+    } else {
+      $date = strftime($format, $timestamp);
+    }
+  }
+  return $date;
+}
+
+/**
  * Long Date Output
  *
  * @since 1.0
@@ -357,9 +383,9 @@ function lngDate($dt) {
 	global $i18n;
 	
 	if (!$dt) {
-		$data = date(i18n_r('DATE_AND_TIME_FORMAT'));
+		$data = formatDate(i18n_r('DATE_AND_TIME_FORMAT'));
 	} else {
-		$data = date(i18n_r('DATE_AND_TIME_FORMAT'), strtotime($dt));
+		$data = formatDate(i18n_r('DATE_AND_TIME_FORMAT'), strtotime($dt));
 	}
 	return $data;
 }
@@ -378,9 +404,9 @@ function shtDate($dt) {
 	global $i18n;
 	
 	if (!$dt) {
-		$data = date(i18n_r('DATE_FORMAT'));
+		$data = formatDate(i18n_r('DATE_FORMAT'));
 	} else {
-		$data = date(i18n_r('DATE_FORMAT'), strtotime($dt));
+		$data = formatDate(i18n_r('DATE_FORMAT'), strtotime($dt));
 	}
 	return $data;
 }
