@@ -211,17 +211,20 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
 			</div></div>';
       
 			
+	$showperms = $isUnixHost && isDebug() && function_exists('posix_getpwuid');
 			
      echo '<table class="highlight" id="imageTable">'; 
      echo '<tr><th class="imgthumb" ></th><th>'.i18n_r('FILE_NAME').'</th>';
      echo '<th style="text-align:right;">'.i18n_r('FILE_SIZE').'</th>';
-     if (isDebug()){
+     if ($showperms){
      	 echo '<th style="text-align:right;">'.i18n_r('PERMS').'</th>';
      }
      echo '<th style="text-align:right;">'.i18n_r('DATE').'</th>';
      echo '<th><!-- actions --></th></tr>';  
      if (count($dirsSorted) != 0) {
      		$foldercount = 0;
+
+
         foreach ($dirsSorted as $upload) {
         	
         	# check to see if folder is empty
@@ -239,7 +242,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
           echo '<td style="width:80px;text-align:right;" ><span>'.$directory_size.'</span></td>';
           
           // get the file permissions.
-					if ($isUnixHost && isDebug() && function_exists('posix_getpwuid')) {
+					if ($showperms) {
 						$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
 						$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
 						echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
