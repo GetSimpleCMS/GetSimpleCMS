@@ -57,7 +57,7 @@ define('GSROOTPATH', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
 /*
  * Load config
  */
-if(!is_frontend()){
+if(!isset($base)){
 if (file_exists(GSROOTPATH . 'gsconfig.php')) {
 	require_once(GSROOTPATH . 'gsconfig.php');
 }
