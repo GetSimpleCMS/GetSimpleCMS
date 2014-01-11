@@ -96,6 +96,8 @@ function get_page_meta_keywords($echo=true) {
 function get_page_meta_desc($echo=true) {
 	global $metad;
 
+	$description = '';
+
 	if ($metad != '') {
 		$description = encode_quotes(strip_decode($metad));
 	}
