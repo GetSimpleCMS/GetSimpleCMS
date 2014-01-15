@@ -24,7 +24,8 @@ jQuery(document).ready(function () {
 		fixedGutter               : true,
 		styleActiveLine           : true,
 		matchBrackets             : true, // highlight matching brackets when cusrsor is next to one
-		autoCloseBrackets         : true, // auto close brackets when typing
+        autoCloseBrackets         : true, // auto close brackets when typing
+		autoCloseTags             : true, // auto close tags when typing
 		// showTrailingSpace         : true, // adds the CSS class cm-trailingspace to stretches of whitespace at the end of lines.
 		highlightSelectionMatches : true, // {showToken : /\w/}, for word boundaries
 		viewportMargin            : Infinity, // for autosizing
