@@ -5,11 +5,11 @@ var editorMode;
 
 jQuery(document).ready(function () {
 
-	// setup codemirror instances and functions	
+	// setup codemirror instances and functions
 
 	if(typeof editorTheme === 'undefined'){
 		editorTheme = 'default';
-	}	
+	}
 
 	var editorMode = 'php';
 
@@ -17,7 +17,6 @@ jQuery(document).ready(function () {
 		mode                      : editorMode,
 		theme                     : editorTheme,
 		lineNumbers               : true,
-		matchBrackets             : true,
 		indentWithTabs            : true,
 		indentUnit                : 4,
 		enterMode                 : "keep",
@@ -26,11 +25,11 @@ jQuery(document).ready(function () {
 		styleActiveLine           : true,
 		matchBrackets             : true, // highlight matching brackets when cusrsor is next to one
 		autoCloseBrackets         : true, // auto close brackets when typing
-		showTrailingSpace         : true, // adds the CSS class cm-trailingspace to stretches of whitespace at the end of lines.
-		highlightSelectionMatches : true, // {showToken                                                                          : /\w/}, // for word boundaries
+		// showTrailingSpace         : true, // adds the CSS class cm-trailingspace to stretches of whitespace at the end of lines.
+		highlightSelectionMatches : true, // {showToken : /\w/}, for word boundaries
 		viewportMargin            : Infinity, // for autosizing
-		// lineWrapping			  : true,
-		// matchTags              : true, // adds class CodeMirror-matchingbrackets to tags contents
+		// lineWrapping           : true,
+		// matchTags              : true, // adds class CodeMirror-matchingtag to tags contents
 		saveFunction              : function(cm) { customSave(cm); },
 		extraKeys: {
 			"Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
@@ -38,37 +37,37 @@ jQuery(document).ready(function () {
 			"Esc"    : function(cm) { if (isFullScreen(cm)) setFullScreen(cm, false); },
 			"Ctrl-S" : function(cm) { customSave(cm);	}
 		}
-	}
+	};
 
 	// do not know what this does, looks like old ctrl+q fold debouncer
 	// function keyEvent(cm, e) {
-	// 	if (e.keyCode == 81 && e.ctrlKey) {
-	// 		if (e.type == "keydown") {
-	// 			e.stop();
-	// 			setTimeout(function() {foldFunc(cm, cm.getCursor().line);}, 50);
-	// 		}
-	// 		return true;
-	// 	}
+	//	if (e.keyCode == 81 && e.ctrlKey) {
+	//		if (e.type == "keydown") {
+	//			e.stop();
+	//			setTimeout(function() {foldFunc(cm, cm.getCursor().line);}, 50);
+	//		}
+	//		return true;
+	//	}
 	// }
 
 	if(typeof editor_defTheme != 'undefined' && editor_defTheme != 'default'){
 		var parts = editor_defTheme.split(' ');
-		loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css")
-	}	
-	
+		loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css");
+	}
+
 	/**
 	 * editorFromTextarea replaces a textarea with a codemirror editor
-	 * @param dom or string of a textarea 
+	 * @param dom or string of a textarea
 	 * @param editorConfig config obj
 	 * @param editorUserConfig config to merge
 	 */
-	$.fn.editorFromTextarea = function(textarea){	
-		
+	$.fn.editorFromTextarea = function(textarea){
+
 		if (typeof editorConfig === "undefined" || editorConfig === null) editorConfig = {};
 		if (typeof editorUserConfig === "undefined" || editorUserConfig === null) editorUserConfig = {};
 
 		var editor = CodeMirror.fromTextArea(textarea, jQuery.extend({}, editorConfig, editorUserConfig));
-		
+
 		// add reference to this editor to the textarea
 		$(textarea).data('editor', editor);
 
@@ -87,22 +86,22 @@ jQuery(document).ready(function () {
 			},
 			stop: function(e,ui) {
 				// Debugger.log(ui.originalElement);
-				ui.originalElement.css('min-height','25px'); // clamp min height				
-				ui.originalElement.css('max-height','none'); 
+				ui.originalElement.css('min-height','25px'); // clamp min height
+				ui.originalElement.css('max-height','none');
 				editor.refresh();
 			}
 		});
 
-		fullscreen_button(editor);			
+		fullscreen_button(editor);
 
 		return editor;
-	}
+	};
 
 	// apply codemirror to class of .code_edit
-	$(".code_edit").each(function(i,textarea) {	jQuery().editorFromTextarea(textarea); });	
+	$(".code_edit").each(function(i,textarea) {	jQuery().editorFromTextarea(textarea); });
 
 	function editorScrollVisible(cm){
-		var wrap = cm.getWrapperElement();		
+		var wrap = cm.getWrapperElement();
 		var scroller =  $(wrap).find('.CodeMirror-vscrollbar').css('display');
 		return scroller == "block";
 	}
@@ -115,13 +114,13 @@ jQuery(document).ready(function () {
     function winHeight() {
       return window.innerHeight || (document.documentElement || document.body).clientHeight;
     }
-    
+
     function isFullScreen(cm) {
       return /\bCodeMirror-fullscreen\b/.test(cm.getWrapperElement().className);
     }
 
     function toggleFullscreen(cm){
-    	setFullScreen(cm, !isFullScreen(cm));
+		setFullScreen(cm, !isFullScreen(cm));
     }
 
     function setFullScreen(cm, full) {
@@ -140,10 +139,10 @@ jQuery(document).ready(function () {
 
     // adjust for window resizing awhen in fullscreen
 	CodeMirror.on(window, "resize", function() {
-	    var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
-	    if (!showing) return;
-	    showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
-	});
+        var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
+        if (!showing) return;
+        showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
+    });
 
 	function setThemeSelected(theme){
 		$("#cm_themeselect").val(theme);
@@ -155,9 +154,9 @@ jQuery(document).ready(function () {
 
 		var button = cmwrapper.find(".overlay_but_fullscrn a");
 		// Debugger.log(button);
-		
+
 		// if no button create it and add to editor
-		if(button.length == 0){
+		if(button.length === 0){
 			buttonhtml = $('<div class="overlay_but_fullscrn"></div>');
 			button = $('<a href="#"><i class="icon-fullscreen"></i></a>').appendTo(buttonhtml);
 			buttoncont = buttonhtml.appendTo(cmwrapper);
@@ -177,5 +176,5 @@ jQuery(document).ready(function () {
 
 
 	setThemeSelected(editorTheme);
-	cm_theme_update(editorTheme);		
+	cm_theme_update(editorTheme);
 });
