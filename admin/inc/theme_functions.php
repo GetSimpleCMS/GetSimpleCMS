@@ -40,7 +40,7 @@ function get_page_content() {
  *
  * @param string $n Optional, default is 200.
  * @param bool $html Optional, default is false.  
- * 				If this is true, it will strip out html from $content
+ * 				If this is true, it will NOT strip out html from $content
  * @return string Echos.
  */
 function get_page_excerpt($n=200, $html=false) {
