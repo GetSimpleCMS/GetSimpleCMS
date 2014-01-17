@@ -13,6 +13,8 @@ jQuery(document).ready(function () {
 
 	var editorMode = 'php';
 
+	// cmfold = function(cm){cm.foldCode(cm.getCursor(),{"widget":"...","minFoldSize":2});};
+
 	editorConfig = {
 		mode                      : editorMode,
 		theme                     : editorTheme,
@@ -31,13 +33,22 @@ jQuery(document).ready(function () {
 		viewportMargin            : Infinity, // for autosizing
 		// lineWrapping           : true,
 		// matchTags              : true, // adds class CodeMirror-matchingtag to tags contents
+		foldGutter                : true,
+		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 		saveFunction              : function(cm) { customSave(cm); },
 		extraKeys: {
-			"Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
+			// "Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
+			// "Ctrl-Q" : function(cm) { cmfold(cm) },
 			"F11"    : function(cm) { setFullScreen(cm, !isFullScreen(cm)); },
 			"Esc"    : function(cm) { if (isFullScreen(cm)) setFullScreen(cm, false); },
-			"Ctrl-S" : function(cm) { customSave(cm);	}
+			"Ctrl-S" : function(cm) { customSave(cm); },
+            "Ctrl-Space" : "autocomplete"
 		}
+	};
+
+	CodeMirror.commands.autocomplete = function(cm) {
+		CodeMirror.showHint(cm); // auto
+		// CodeMirror.showHint(cm, CodeMirror.hint.anyword);
 	};
 
 	// do not know what this does, looks like old ctrl+q fold debouncer
@@ -76,8 +87,8 @@ jQuery(document).ready(function () {
 			cm.hasChange = true;
 		});
 
-		var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder,'...');
-		editor.on("gutterClick", foldFunc);
+		// var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder,'...');
+		// editor.on("gutterClick", cmfold);
 
 		// add resisable capability to codemirror
 		$(editor.getWrapperElement()).resizable({
