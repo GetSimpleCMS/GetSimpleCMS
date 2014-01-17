@@ -574,14 +574,15 @@ function get_component($id) {
  * @param string $classPrefix Prefix that gets added to the parent and slug classnames
  * @return string 
  */	
-function get_navigation($currentpage,$classPrefix = "") {
+function get_navigation($currentpage=NULL,$classPrefix = "") {
 
 	$menu = '';
 
 	global $pagesArray;
 	
 	$pagesSorted = subval_sort($pagesArray,'menuOrder');
-	if (count($pagesSorted) != 0) { 
+	if (count($pagesSorted) != 0) {
+		if (empty($currentpage)) $currentpage = get_page_slug(FALSE);
 		foreach ($pagesSorted as $page) {
 			$sel = ''; $classes = '';
 			$url_nav = $page['url'];
