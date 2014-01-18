@@ -38,7 +38,7 @@ header('content-type: text/html; charset=utf-8');
 if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
 	debugLog("loading codemiror");
 	register_script('codemirror', $SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);
-	register_style('codemirror-css',$SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror.css','screen',FALSE);
+	register_style('codemirror-css',$SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror.min.css','screen',FALSE);
 	
 	queue_script('codemirror', GSBACK);
 	queue_style('codemirror-css', GSBACK);
