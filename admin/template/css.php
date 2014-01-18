@@ -2520,6 +2520,14 @@ a.disabled:visited {
 		background-color: transparent;
 }
 
+/* custom se resize handle */
+.CodeMirror .handle {
+	font-size: 12px;
+	opacity: .2;
+	margin-bottom: -2px;
+	margin-right: -1px;
+}
+
 .CodeMirror-focused .cm-matchhighlight{ 
 	border: 1px solid #777777;
 	border-radius: 3px;
@@ -2549,6 +2557,7 @@ a.disabled:visited {
 	border: 3px solid rgba(128,128, 128, .15);
     -webkit-background-clip: padding-box !important; /* for Safari */
     background-clip: padding-box !important; /* for IE9+, Firefox 4+, Opera, Chrome */
+    z-index: 1001;
 }
 
 /* codemirror focused border highlight style */
@@ -2593,7 +2602,7 @@ a.disabled:visited {
 	background-color: #777777;
 	border-radius: 4px;
 	color: whitesmoke;
-	font-size: 16px;
+	font-size: 17px;
 	text-align: center;
 	text-decoration:none;
 	z-index: 9998;
@@ -2728,5 +2737,25 @@ a.disabled:visited {
   .primary_6.border-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>";}
 .secondary_0.border-debug:after, .secondary.darkest-debug:after   { content: "<?php echo $secondary_0; ?>";}
 .secondary_1.border-debug:after, .secondary.lightest-debug:after  { content: "<?php echo $secondary_1; ?>";}
+
+/* Allow Font Awesome Icons in lieu of jQuery UI and only apply when using a FA icon */
+.ui-icon[class*=" icon-"] {
+    /* Remove the jQuery UI Icon */
+    background: none repeat scroll 0 0 transparent;
+    /* Remove the jQuery UI Text Indent */
+    text-indent: 0; 
+    /* Bump it up - jQuery UI is -8px */
+    margin-top: -0.5em;
+}
+
+/* Allow use of icon-large to be properly aligned */
+.ui-icon.icon-large {
+    margin-top: -0.75em;
+}
+
+.ui-button-icon-only .ui-icon[class*=" icon-"] {
+    /* Bump it - jQuery UI is -8px */
+    margin-left: -7px;
+}
 
 /*END*/

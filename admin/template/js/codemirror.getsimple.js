@@ -93,6 +93,7 @@ jQuery(document).ready(function () {
 		// add resisable capability to codemirror
 		$(editor.getWrapperElement()).resizable({
 			// helper: "outline", // less intensive resizing
+			autoHide : true,
 			resize: function(e,ui) {
 				editor.setSize(null, $(this).height());
 			},
@@ -103,6 +104,10 @@ jQuery(document).ready(function () {
 				editor.refresh();
 			}
 		});
+
+		// replace jqueryui resize handle with custom
+		$(editor.getWrapperElement()).find($('.ui-resizable-se')).removeClass('ui-icon');
+		$(editor.getWrapperElement()).find($('.ui-resizable-se')).addClass('handle fa fa-th-large');
 
 		fullscreen_button(editor);
 
@@ -170,7 +175,7 @@ jQuery(document).ready(function () {
 		// if no button create it and add to editor
 		if(button.length === 0){
 			buttonhtml = $('<div class="overlay_but_fullscrn"></div>');
-			button = $('<a href="#"><i class="icon-fullscreen"></i></a>').appendTo(buttonhtml);
+			button = $('<a href="#"><i class="fa fa-arrows-alt"></i></a>').appendTo(buttonhtml);
 			buttoncont = buttonhtml.appendTo(cmwrapper);
 			button.on('click', cm,function(e){
 				toggleFullscreen(e.data);
