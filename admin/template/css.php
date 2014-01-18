@@ -2526,11 +2526,6 @@ a.disabled:visited {
 	margin:-1px; /* border offset */
 }
 
-.CodeMirror-focused .CodeMirror-activeline-background{
-	background-color:gray;
-	opacity:.08;
-}
-
 .CodeMirror-foldmarker {
 	color: white;
 	text-shadow: #000 1px 1px 2px, #000 -1px -1px 2px, #000 1px -1px 2px, #000 -1px 1px 2px;

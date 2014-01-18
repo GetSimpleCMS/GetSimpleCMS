@@ -61,19 +61,24 @@ $cm_themes = array(
 	'ambiance',
 	'base16-light',
 	'base16-dark',
+	'blackboard',
 	'cobalt',
 	'eclipse',
 	'eclipse',
 	'elegant',
 	'erlang-dark',
 	'lesser-dark',
+	'mbo',
 	'midnight',
 	'monokai',
 	'neat',
 	'night',
+	'paraiso-dark',
+	'paraiso-light',
 	'rubyblue',
 	'solarized dark',
 	'solarized light',
+	'the-matrix',
 	'twilight',
 	'tomorrow-night-eighties',
 	'vibrant-ink',
@@ -81,27 +86,11 @@ $cm_themes = array(
 	'xq-light'
 );
 
-$themeselector = '
-		<select id="cm_themeselect">
-			<option>default</option>
-			<option>ambiance</option>
-			<option>blackboard</option>
-			<option>cobalt</option>
-			<option>eclipse</option>
-			<option>elegant</option>
-			<option>erlang-dark</option>
-			<option>lesser-dark</option>
-			<option>monokai</option>
-			<option>neat</option>
-			<option>night</option>
-			<option>rubyblue</option>
-			<option>solarized dark</option>
-			<option>solarized light</option>
-			<option>twilight</option>
-			<option>vibrant-ink</option>
-			<option>xq-dark</option>
-		</select>		
-';
+$themeselector = '<select id="cm_themeselect">\n<option>default</option>';
+foreach($cm_themes as $theme){
+	$themeselector .= "<option>$theme</option>";
+}
+$themeselector .= '</select>';
 
 	get_scripts_backend(); ?>
 		
