@@ -33,7 +33,7 @@ $GS_asset_objects['jquery-ui'] = 'jQuery.ui';
 // jquery
 $jquery_ver       = '1.9.0';
 $jqueryui_ver     = '1.10.0';
-$font_awesome_ver = '3.1.1';
+$font_awesome_ver = '4.0.3';
 
 $GS_script_assets['jquery']['cdn']['url']      = '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js';
 $GS_script_assets['jquery']['cdn']['ver']      = $jquery_ver;
@@ -62,6 +62,9 @@ $GS_style_assets['jquery-ui']['local']['ver']  =  $jqueryui_ver;
 $GS_style_assets['font-awesome']['cdn']['url'] =  '//netdna.bootstrapcdn.com/font-awesome/'.$font_awesome_ver.'/css/font-awesome.min.css';
 $GS_style_assets['font-awesome']['cdn']['ver'] = $font_awesome_ver;
 
+$GS_style_assets['font-awesome']['local']['url'] =  $SITEURL.$GSADMIN.'/template/css/font-awesome.min.css';
+$GS_style_assets['font-awesome']['local']['ver'] = $font_awesome_ver;
+
 // scrolltofixed
 $GS_script_assets['scrolltofixed']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/jquery-scrolltofixed.js';
 $GS_script_assets['scrolltofixed']['local']['ver']   = '0.0.1';
@@ -72,16 +75,16 @@ $GS_script_assets['scrolltofixed']['local']['ver']   = '0.0.1';
 if (!getDef('GSNOCDN',true)){
 	register_script('jquery', $GS_script_assets['jquery']['cdn']['url'], $GS_script_assets['jquery']['cdn']['ver'], FALSE);
 	register_script('jquery-ui',$GS_script_assets['jquery-ui']['cdn']['url'],$GS_script_assets['jquery-ui']['cdn']['ver'],FALSE);
+	register_style('font-awesome', $GS_style_assets['font-awesome']['cdn']['url'], $GS_style_assets['font-awesome']['cdn']['ver'], 'screen');
 } else {
 	register_script('jquery', $GS_script_assets['jquery']['local']['url'], $GS_script_assets['jquery']['local']['ver'], FALSE);
 	register_script('jquery-ui',$GS_script_assets['jquery-ui']['local']['url'],$GS_script_assets['jquery-ui']['local']['ver'],FALSE);
+	register_style('font-awesome', $GS_style_assets['font-awesome']['local']['url'], $GS_style_assets['font-awesome']['local']['ver'], 'screen');	
 }
 register_script('fancybox', $GS_script_assets['fancybox']['local']['url'], $GS_script_assets['fancybox']['local']['ver'],FALSE);
 register_style('fancybox-css', $GS_style_assets['fancybox']['local']['url'], $GS_style_assets['fancybox']['local']['ver'], 'screen');
 
 register_style('jquery-ui', $GS_style_assets['jquery-ui']['local']['url'], $GS_style_assets['jquery-ui']['local']['ver'], 'screen');
-
-register_style('font-awesome', $GS_style_assets['font-awesome']['cdn']['url'], $GS_style_assets['font-awesome']['cdn']['ver'], 'screen');
 
 register_script('scrolltofixed', $GS_script_assets['scrolltofixed']['local']['url'], $GS_script_assets['scrolltofixed']['local']['ver'],FALSE);
 
