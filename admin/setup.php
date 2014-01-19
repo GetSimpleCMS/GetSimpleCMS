@@ -125,7 +125,7 @@ if(isset($_POST['submitted'])) {
 				if (!file_exists($init)) {
 					$kill .= sprintf(i18n_r('ROOT_HTACCESS_ERROR'), 'temp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
 				} else {
-					// unlink(GSROOTPATH .'temp.htaccess');
+					unlink(GSROOTPATH .'temp.htaccess');
 				}
 		}
 	
@@ -133,10 +133,10 @@ if(isset($_POST['submitted'])) {
 		$init = GSROOTPATH.'gsconfig.php';
 		$temp = GSROOTPATH.'temp.gsconfig.php';
 		if (file_exists($init)) {
-			// unlink($temp);
-			// if (file_exists($temp)) {
-			// 	$kill .= sprintf(i18n_r('REMOVE_TEMPCONFIG_ERROR'), 'temp.gsconfig.php') . '<br />';
-			// }
+			unlink($temp);
+			if (file_exists($temp)) {
+				$kill .= sprintf(i18n_r('REMOVE_TEMPCONFIG_ERROR'), 'temp.gsconfig.php') . '<br />';
+			}
 		} else {
 			rename($temp, $init);
 			if (!file_exists($init)) {
