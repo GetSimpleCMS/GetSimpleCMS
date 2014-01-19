@@ -55,7 +55,7 @@ header('content-type: text/html; charset=utf-8');
 	}
 	
 	if( doVerCheck() ) { ?>
-	<script>
+	<script type="text/javascript">		
 		// check to see if core update is needed
 		jQuery(document).ready(function() { 
 			<?php 
@@ -76,10 +76,19 @@ header('content-type: text/html; charset=utf-8');
 		});
 	</script>
 	<?php } ?>
-		
+
+	<script type="text/javascript">		
+		// init gs namespace and i18n
+		var GS = {};
+		GS.i18n = new Array();
+		GS.i18n['PLUGIN_UPDATED'] = '<?php i18n("PLUGIN_UPDATED"); ?>';
+		GS.i18n['ERROR'] = '<?php i18n("ERROR"); ?>';
+
+	</script>
+
 </head>
 
-<body <?php filename_id(); echo $bodyclass; ?> >	
+<body <?php filename_id(); echo ' '.$bodyclass; ?> >	
 	<div class="header" id="header" >
 		<div class="wrapper clearfix">
  <?php exec_action('header-body'); ?>

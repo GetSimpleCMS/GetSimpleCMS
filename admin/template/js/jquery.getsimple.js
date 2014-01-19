@@ -89,15 +89,20 @@ basename = function(str){
 	return str.substring(0,str.lastIndexOf('/') ); 		
 } 
  
+
+function i18n(key){
+	return GS.i18n[key];
+}
+
+function checkCoords() {
+	if (parseInt($('#x').val())) return true;
+	alert('Please select a crop region then press submit.');
+	return false;
+};
+		 
 jQuery(document).ready(function () {
  
 	var loadingAjaxIndicator = $('#loader');
- 
-	function checkCoords() {
-		if (parseInt($('#x').val())) return true;
-		alert('Please select a crop region then press submit.');
-		return false;
-	};
  
 	/* Listener for filter dropdown */
 	function attachFilterChangeEvent() {
@@ -362,7 +367,7 @@ jQuery(document).ready(function () {
  
 				document.body.style.cursor = "default";
 				clearNotify();
-				notifyOk('Plugin Updated').popit().removeit();
+				notifyOk(i18n('PLUGIN_UPDATED')).popit().removeit();
 			},
 			error: function (data, textStatus, jqXHR) {
 				// These go in failures if we catch them in the future
@@ -372,7 +377,7 @@ jQuery(document).ready(function () {
 				loadingAjaxIndicator.fadeOut();
  
 				clearNotify();
-				notifyError('An error has occured');
+				notifyError(i18n('ERROR'));
 			}
  
 		});
@@ -382,7 +387,7 @@ jQuery(document).ready(function () {
 	function updateMetaDescriptionCounter() {
 		var remaining = 155 - jQuery('#post-metad').val().length;
 		jQuery('#countdown').text(remaining);
-		Debugger.log('Meta Description has ' + remaining + ' characters remaining');
+		// Debugger.log('Meta Description has ' + remaining + ' characters remaining');
 	}
 	if ($('#post-metad').length) {
 		updateMetaDescriptionCounter();
