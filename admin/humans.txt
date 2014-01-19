@@ -16,7 +16,13 @@
   Site: http://www.owassowebsolutions.com/
   Location: Owasso, Oklahoma, USA
 
+  Developer: Shawn Alverson
+  Forum Handle: shawn_a
+  Site: http://shawnalverson.com/
+  Location: Tennessee, USA
+
 /* THANKS */
+  Carlos Navarro (cnb)
   Joshas
   Connie Connie Müller-Gödecke (Connie)
   Thorsten Panknin (polyfragmented)
