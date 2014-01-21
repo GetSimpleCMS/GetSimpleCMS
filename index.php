@@ -27,11 +27,6 @@
 		$GSADMIN = 'admin';
 	}
 
-	# setup paths 
-	# @todo wtf are these for ?
-	$admin_relative = $GSADMIN.'/inc/';
-	$lang_relative = $GSADMIN.'/';
-
 	$load['plugin'] = true;
 	$base = true;
 

@@ -86,10 +86,7 @@ ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
 
 /**
  * Variable check to prevent debugging going off
- * @todo some of these may not even be needed anymore
  */
-$admin_relative = (isset($admin_relative)) ? $admin_relative : '';
-$lang_relative = (isset($lang_relative)) ? $lang_relative : '';
 $load['login'] = (isset($load['login'])) ? $load['login'] : '';
 $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
 
