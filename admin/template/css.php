@@ -3,7 +3,7 @@
 /*
  * CSS php dynamic
  * DO NOT TIDY!
- * @uses color variables $primary0 - $primary6, $secondary_0-$secondary_1 	
+ * @uses color variables $primary0 - $primary6, $secondary_0-$secondary_1
  *
  */
 
@@ -140,9 +140,9 @@ html {
 	border-radius: 5px 5px 0 0;
 }
 
-.wrapper .nav li a:link, 
-.wrapper .nav li a:visited, 
-.wrapper #pill li a:link, 
+.wrapper .nav li a:link,
+.wrapper .nav li a:visited,
+.wrapper #pill li a:link,
 .wrapper #pill li a:visited {
 	color: <?php echo $primary_6; ?>;
 	background: <?php echo $primary_1; ?>;
@@ -178,7 +178,7 @@ html {
 #log .wrapper .nav li a.support,
 #health-check .wrapper .nav li a.support,
 #backup-edit .wrapper .nav li a.backups,
-#archive .wrapper .nav li a.backups, 
+#archive .wrapper .nav li a.backups,
 #load .wrapper .pages li a.pages,
 #load .wrapper .plugins li a.plugins,
 #load .wrapper .settings li a.settings,
@@ -195,14 +195,14 @@ html {
 	font-weight: bold !important;
 	text-shadow: 1px 1px 0px rgba(255,244,255,.2);
 	box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;
-		-moz-box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;  
+		-moz-box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;
 		-webkit-box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;
 }
 
-.wrapper .nav li a:active, 
-.wrapper .nav li a:focus, 
-.wrapper .nav li a:hover, 
-.wrapper #pill li a:hover, 
+.wrapper .nav li a:active,
+.wrapper .nav li a:focus,
+.wrapper .nav li a:hover,
+.wrapper #pill li a:hover,
 .wrapper #pill li a:focus {
 	color: #FFF;
 	background: <?php echo $primary_0; ?>;
@@ -321,13 +321,13 @@ html {
 	margin: 0 0 20px 0;
 }
 
-.wrapper #maincontent ul, 
+.wrapper #maincontent ul,
 .wrapper #maincontent ol {
 /*	line-height: 18px;
 	margin: 0 0 20px 30px;*/
 }
 
-.wrapper a:link, 
+.wrapper a:link,
 .wrapper a:visited {
 	color: <?php echo $primary_3; ?>;
 	text-decoration: none;
@@ -417,7 +417,7 @@ h5 a {
 	text-decoration: none !important;
 }
 
-h5 img, 
+h5 img,
 tr.folder img {
 	vertical-align: middle;
 	margin: 0 5px 0 0;
@@ -428,12 +428,12 @@ h5:hover img {
 	opacity: 1;
 }
 
-.bodycontent ul, 
+.bodycontent ul,
 .bodycontent ol {
 	margin: 0 0 20px 30px;
 }
 
-.bodycontent ul p, 
+.bodycontent ul p,
 .bodycontent ol p {
 	margin: 0 0 10px 0;
 }
@@ -507,7 +507,7 @@ h5:hover img {
 	border-radius: 3px;
 }
 
-#sidebar .snav li a:link, 
+#sidebar .snav li a:link,
 #sidebar .snav li a:visited {
 	margin-left: 13px;
 	color: <?php echo $primary_6; ?>;
@@ -528,7 +528,7 @@ h5:hover img {
 	height:14px;
     background-color:<?php echo $secondary_1; ?>;
     margin-left:13px;
-    padding-left:15px;	
+    padding-left:15px;
 }
 
 #sidebar .snav li a.current:hover {
@@ -565,12 +565,12 @@ h5:hover img {
 	font-style: normal;
 }
 
-#sidebar .snav li a:hover em, 
+#sidebar .snav li a:hover em,
 #sidebar .snav li a:focus em {
 	border-bottom: 1px dotted #666;
 }
 
-#sidebar .snav li a.current:hover em, 
+#sidebar .snav li a.current:hover em,
 #sidebar .snav li a.current:focus em  {
 	border-bottom: 1px dotted #fff;
 }
@@ -649,7 +649,7 @@ h5:hover img {
 	height: 1%;
 }
 
-.edit-nav a:link, 
+.edit-nav a:link,
 .edit-nav a:visited {
 	line-height: 14px !important;
 	background-color: <?php echo $primary_1; ?>;
@@ -663,8 +663,8 @@ h5:hover img {
 		-o-transition: all .10s ease-in-out;
 }
 
-.edit-nav a:hover, 
-#sidebar .edit-nav a:hover, 
+.edit-nav a:hover,
+#sidebar .edit-nav a:hover,
 .edit-nav a.current {
 	background-color: <?php echo $secondary_1; ?>;
 	color: #FFF;
@@ -674,13 +674,13 @@ h5:hover img {
 	text-shadow: 1px 1px 0px rgba(0,0,0,.2);
 }
 
-.edit-nav a:link em, 
+.edit-nav a:link em,
 .edit-nav a:visited em {
 	font-style: normal;
 }
 
-.edit-nav a.current em, 
-.edit-nav a:hover em, 
+.edit-nav a.current em,
+.edit-nav a:hover em,
 .edit-nav a:focus em {
 	font-style: normal;
 	border-bottom: 1px dotted #FFF;
@@ -764,7 +764,7 @@ table td a {
 	padding: 4px;
 }
 
-.popup table a:link, 
+.popup table a:link,
 .popup table a:visited {
 	color: <?php echo $primary_3; ?>;
 	text-decoration: underline;
@@ -816,7 +816,7 @@ form p {
 	margin: 0 0 10px 0;
 }
 
-form input.text, 
+form input.text,
 form select.text {
 	color: #333;
 	border: 1px solid #aaa;
@@ -831,8 +831,8 @@ form select.text {
     -webkit-box-sizing: content-box;
 }
 
-form input.text:focus, 
-form select.text:focus, 
+form input.text:focus,
+form select.text:focus,
 form textarea.text:focus {
 	outline: none;
 	border: 1px solid #666 !important;
@@ -852,9 +852,9 @@ form textarea {
 	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
 	font-size: 11px;
 	border-radius: 2px;
-	tab-size:4; 
-	 -moz-tab-size:4; 
-	 -o-tab-size:4; 
+	tab-size:4;
+	 -moz-tab-size:4;
+	 -o-tab-size:4;
 }
 
 textarea.short {
@@ -883,7 +883,7 @@ textarea#codetext {
 	overflow: scroll;
 	overflow-y: scroll;
 	overflow-x: scroll;
-	 
+
 }
 
 #menu-items span {
@@ -909,7 +909,7 @@ label span.right {
 	font-size: 11px !important;
 }
 
-label span.right a:link, 
+label span.right a:link,
 label span.right a:visited {
 	font-size: 11px;
 	color: #999;
@@ -917,7 +917,7 @@ label span.right a:visited {
 	font-weight: 100 !important;
 }
 
-label span.right a:focus, 
+label span.right a:focus,
 label span.right a:hover {
 	font-size: 11px;
 	color: #333;
@@ -1014,7 +1014,7 @@ a.viewlink:hover img {
 	position: absolute;
 }
 
-#menu-items input, 
+#menu-items input,
 #menu-items select {
 	border: 1px solid #000;
 	padding:3px;
@@ -1151,7 +1151,7 @@ input.submit:focus, input.submit:hover {
 	border: solid 1px #aaaaaa;
 	box-shadow: rgba(0,0,0, 0.15) 0px 0px 4px;
 		-moz-box-shadow: rgba(0,0,0, 0.15) 0px 0px 4px;
-		-webkit-box-shadow: rgba(0,0,0, 0.15) 0px 0px 4px;	  
+		-webkit-box-shadow: rgba(0,0,0, 0.15) 0px 0px 4px;
 }
 
 .leftsec,.rightsec {
@@ -1169,7 +1169,7 @@ input.submit:focus, input.submit:hover {
 .widesec input.text, .rightsec input.text, .leftsec input.text {
 	width: 100%;
 	font-size:12px !important;
-}	
+}
 
 .widesec input.text, .rightsec select.text, .leftsec select.text {
 	width: 100%;
@@ -1278,11 +1278,11 @@ table.comptable tr td input.newtitle {
 
 /* Notification styles
  *
- * alerts are now notifications 
+ * alerts are now notifications
  * use notify and notify_type
  * .error and .upddated are still supported for legacy alerts
  *
- */ 
+ */
 
 .updated, .error, .notify {
 	border: 1px solid #E6DB55;
@@ -1351,12 +1351,12 @@ table.comptable tr td input.newtitle {
 	background-color: #FFB19B;
 }
 
-.error code, 
+.error code,
 .notify code {
 	color: #990000;
 	font-size: 11px;
 	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
-	 
+
 	line-height: 14px;
 	background: #fff;
 	opacity: .8;
@@ -1372,7 +1372,7 @@ table.comptable tr td input.newtitle {
 	color: #777;
 	-ms-word-break: break-all;
 	    word-break: break-all;
-	    word-break: break-word; 
+	    word-break: break-word;
 	-webkit-hyphens: auto;
 	   -moz-hyphens: auto;
 	        hyphens: auto;
@@ -1409,7 +1409,7 @@ table td.delete a {
 	text-align: left;
 }
 
-.delete a:link, 
+.delete a:link,
 .delete a:visited {
 	color: #999 !important;
 	text-decoration: none !important;
@@ -1436,8 +1436,8 @@ table td.delete a {
 	font-weight: normal;
 }
 
-a.cancel:link, 
-a.cancel:visited {	 
+a.cancel:link,
+a.cancel:visited {
 	font-weight: 100;
 	color: #D94136 !important;
 	text-decoration: underline;
@@ -1470,7 +1470,7 @@ a.cancel em {
 	line-height: 14px;
 }
 
-.wrapper .secondarylink a:link, 
+.wrapper .secondarylink a:link,
 .wrapper .secondarylink a:visited {
 	color: #aaa;
 	text-decoration: none;
@@ -1533,22 +1533,22 @@ table.simple td.title {
 	margin: 0 0 8px 0;
 }
 
-#footer a:link, 
+#footer a:link,
 #footer a:visited {
 	font-weight: 100;
 	color: #888;
 }
 
-#footer a:focus, 
+#footer a:focus,
 #footer a:hover {
 	font-weight: 100;
 	color: #333;
-}	
+}
 #footer .gslogo a {
 	float: right;
 	width: 60px;
 	text-align: right;
-	opacity: .10;	
+	opacity: .10;
 }
 
 #footer .footer-left {
@@ -1650,8 +1650,8 @@ table.simple td.title {
 }
 
 #queue-item-template{
-	display: none;	
-}	
+	display: none;
+}
 .queue-item-wrap{
 	margin:0;
 	padding:0;
@@ -1672,7 +1672,7 @@ table.simple td.title {
 	right: 13px;
 	top: 6px;
 	background: none !important;
-	opacity: .8;	
+	opacity: .8;
 	font-size:14px;
 }
 
@@ -1729,11 +1729,11 @@ table.simple td.title {
 /* error */
 .queue-item-wrap.dz-error .dz-error-mark{
 	display: inline;
-	color: #D94136;	
+	color: #D94136;
 }
 
 /* error progressbar */
-.queue-item-wrap.dz-error .progress, 
+.queue-item-wrap.dz-error .progress,
 .queue-item-wrap.dz-error .progress-bar
 {
 	background-color: #D94136;
@@ -1747,7 +1747,7 @@ table.simple td.title {
 /* success */
 .queue-item-wrap.dz-success .dz-success-mark{
 	display:inline;
-	color: #00CA00;		
+	color: #00CA00;
 }
 
 #sidebar .snav li.upload {
@@ -1804,13 +1804,13 @@ textarea.copykit {
 #jcrop_open {
 }
 
-a.updatelink:link, 
+a.updatelink:link,
 a.updatelink:visited {
 	color: #CF3805;
 	padding: 1px 3px;
 }
 
-a.updatelink:hover, 
+a.updatelink:hover,
 a.updatelink:focus {
 	color: #FFF;
 	background-color: #2AA206;
@@ -1819,10 +1819,10 @@ a.updatelink:focus {
 
 /* Labels */
 .label {
-	padding: 1px 6px;	
-	border-radius: 3px;	
+	padding: 1px 6px;
+	border-radius: 3px;
 	text-align: center;
-	color: #F2F2F2;	
+	color: #F2F2F2;
 	margin:3px;
 }
 
@@ -1858,7 +1858,7 @@ a.updatelink:focus {
 .label-light{
 	color: #666;
 	background: #FFF;
-	border: 1px solid #999;	
+	border: 1px solid #999;
 }
 
 #hc_version.label {
@@ -2012,13 +2012,13 @@ body#index {
 	font-weight: 100;
 }
 
-#setup .error, 
+#setup .error,
 #setup .updated,
-#install .error, 
+#install .error,
 #install .updated,
-#index .error, 
+#index .error,
 #index .updated,
-#resetpassword .error, 
+#resetpassword .error,
 #resetpassword .updated {
 	margin: 25px auto -23px auto;
 	width: 290px;
@@ -2150,7 +2150,7 @@ h5 .crumbs, div.h5 .crumbs {
 	border: none;
 }
 
-#edit #dropdown li a:link, 
+#edit #dropdown li a:link,
 #edit #dropdown li a:visited,
 #edit #dropdown li a:hover {
 	font-weight: 100;
@@ -2214,7 +2214,7 @@ h5 .crumbs, div.h5 .crumbs {
 
 #theme_select {
 	font-size:16px;
-	font-weight:bold;	
+	font-weight:bold;
 }
 
 #theme-edit #maincontent {
@@ -2252,10 +2252,10 @@ a.disabled:visited {
 	pointer-events: none;
 	cursor: default;
 	text-decoration: none !important;
-	color: #CCC !important;	
+	color: #CCC !important;
 }
 
-/* 
+/*
  * Theme Editor custom layout
  */
 
@@ -2284,17 +2284,17 @@ a.disabled:visited {
 #theme_edit_wrap {
 	width:100%;
 	margin:0;
-	padding:0;	
+	padding:0;
 }
 
 #theme_edit_wrap .well{
-	background-color:#F9F9F9;	
+	background-color:#F9F9F9;
 	border:1px solid #E8E8E8;
 	border-radius: 2px;
 	padding:6px;
 	line-height:27px;
 	height:24px;
-}	
+}
 
 #theme_edit_nav {
 	width: 20%;
@@ -2318,7 +2318,7 @@ a.disabled:visited {
 
 #theme_edit_code {
 	float:left;
-	width:80%;	
+	width:80%;
 }
 
 #theme_edit_code .well{
@@ -2329,7 +2329,7 @@ a.disabled:visited {
 #theme_edit_code .CodeMirror{
 	/*border:1px solid #E8E8E8;*/
 	border-radius:2px;
-	min-height:550px;	
+	min-height:550px;
 }
 
 #cm_themeselect {
@@ -2434,8 +2434,8 @@ a.disabled:visited {
 		filter: grayscale(100%); /* Current draft standard */
 		-webkit-filter: grayscale(100%); /* New WebKit */
 		-moz-filter: grayscale(100%);
-		-ms-filter: grayscale(100%); 
-		-o-filter: grayscale(100%); /* Not yet supported in Gecko, Opera or IE */ 
+		-ms-filter: grayscale(100%);
+		-o-filter: grayscale(100%); /* Not yet supported in Gecko, Opera or IE */
 		/*filter: url(resources.svg#desaturate); /* Gecko */*/
 		filter: gray; /* IE */
 		-webkit-filter: grayscale(1); /* Old WebKit */
@@ -2473,11 +2473,11 @@ a.disabled:visited {
 }
 
 .CodeMirror .CodeMirror-hscrollbar{
-	margin: 0px 15px 2px 2px;	
+	margin: 0px 15px 2px 2px;
 }
 
 .CodeMirror .CodeMirror-vscrollbar{
-	margin: 2px 2px 15px 0;	
+	margin: 2px 2px 15px 0;
 }
 
 .CodeMirror ::-webkit-scrollbar {
@@ -2502,7 +2502,7 @@ a.disabled:visited {
 		height: 25px;
 		background-color: rgba(100,100,100,.5);
 		-webkit-border-radius: 3px;
-		border:1px solid #666;	
+		border:1px solid #666;
 }
 .CodeMirror ::-webkit-scrollbar-thumb:vertical:hover {
 		background-color: #666;
@@ -2528,7 +2528,7 @@ a.disabled:visited {
 	margin-right: -1px;
 }
 
-.CodeMirror-focused .cm-matchhighlight{ 
+.CodeMirror-focused .cm-matchhighlight{
 	border: 1px solid #777777;
 	border-radius: 3px;
 	margin:-1px; /* border offset */
@@ -2544,12 +2544,12 @@ a.disabled:visited {
 
 .codewrap {
 	font-size: 13px;
-	line-height: 13px;	
+	line-height: 13px;
 }
 
 /* codemirror overrides */
 .codewrap .CodeMirror {
-	font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;	
+	font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;
 	height: auto;
 	max-height: 550px;/* autosizing max height */
 	background-color:#FEFEFE;
@@ -2570,12 +2570,13 @@ a.disabled:visited {
 .codewrap .CodeMirror-scroll {
 	max-height: inherit; /* autosizing max height */
 	overflow-y: auto;
-	overflow-x: auto;
+	overflow-x: hidden;
+	/* causing extra scrollbar */
 }
 
 .codewrap .CodeMirror.CodeMirror-fullscreen{
     border: none;
-}    
+}
 
 .CodeMirror-fullscreen {
 	border: none;
@@ -2585,11 +2586,11 @@ a.disabled:visited {
 	width: 100% !important;
 	z-index: 9999 !important;
 	background-color:#FFF;
-  	max-height: none !important;	
+  	max-height: none !important;
 }
 
 .CodeMirror-fullscreen .CodeMirror-scroll, .CodeMirror.ui-resizable-resizing, .CodeMirror.ui-resizable-resizing .CodeMirror-scroll{
-  	max-height: none !important;		
+  	max-height: none !important;
 }
 
 .CodeMirror .overlay_but_fullscrn a {
@@ -2619,7 +2620,7 @@ a.disabled:visited {
 	opacity:.6;
 }
 
-/* jquiry-ui theme overrides 
+/* jquiry-ui theme overrides
 	tab border bug https://github.com/jquery/download.jqueryui.com/issues/87
 */
 
@@ -2636,14 +2637,14 @@ a.disabled:visited {
 }
 
 #maincontent .ui-tabs .ui-tabs-panel {
-	border-width: 0 !important; 
-	padding: 0;	
+	border-width: 0 !important;
+	padding: 0;
 	margin:10px 0px;
 }
 
 #maincontent .ui-widget-content {
 	border-width:0 !important;
-}	
+}
 
 #maincontent a.ui-tabs-anchor, #maincontent a.ui-tabs-anchor:hover{
 	outline:0;
@@ -2675,7 +2676,7 @@ a.disabled:visited {
 /* jqueryui tabs specivity overrides */
 #tabs textarea {
 	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-	font-size: 11px;	
+	font-size: 11px;
 }
 
 /* prevent ui tabs fouc */
@@ -2743,7 +2744,7 @@ a.disabled:visited {
     /* Remove the jQuery UI Icon */
     background: none repeat scroll 0 0 transparent;
     /* Remove the jQuery UI Text Indent */
-    text-indent: 0; 
+    text-indent: 0;
     /* Bump it up - jQuery UI is -8px */
     margin-top: -0.5em;
 }
