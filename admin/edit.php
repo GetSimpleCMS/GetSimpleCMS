@@ -287,12 +287,13 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 
 <!-- ------- PAGE CONTENT --------------------------------------------------- -->            
             <div id="page_content" class="tab">
+            <?php if (empty($HTMLEDITOR)) { ?>
             <fieldset>
             <legend>Page Content</legend>
-                
+            <?php } ?>
 
                 <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
-                <textarea id="post-content" name="post-content"><?php echo $content; ?></textarea>
+                <div class="codewrap"><textarea id="post-content" name="post-content"><?php echo $content; ?></textarea></div>
             
             <?php exec_action('edit-content'); ?> 
             
@@ -491,7 +492,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                     }
             });
         </script>
-        </fieldset>
+        <?php if (empty($HTMLEDITOR)) echo '</fieldset>'; ?>
         </div> 
         <!-- / END PAGE CONTENT -->
 
