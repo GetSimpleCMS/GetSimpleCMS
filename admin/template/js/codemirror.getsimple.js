@@ -30,7 +30,7 @@ jQuery(document).ready(function () {
 		autoCloseTags             : true, // auto close tags when typing
 		// showTrailingSpace         : true, // adds the CSS class cm-trailingspace to stretches of whitespace at the end of lines.
 		highlightSelectionMatches : true, // {showToken : /\w/}, for word boundaries
-		viewportMargin            : Infinity, // for autosizing
+		// viewportMargin            : Infinity, // for autosizing
 		// lineWrapping           : true,
 		// matchTags              : true, // adds class CodeMirror-matchingtag to tags contents
 		foldGutter                : true,
