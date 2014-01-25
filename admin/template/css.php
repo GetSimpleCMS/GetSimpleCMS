@@ -2520,7 +2520,7 @@ a.disabled:visited {
 		background-color: transparent;
 }
 
-/* custom se resize handle */
+/* custom se resize grip handle */
 .CodeMirror .handle {
 	font-size: 12px;
 	opacity: .2;
@@ -2528,10 +2528,19 @@ a.disabled:visited {
 	margin-right: -1px;
 }
 
+/* match highlight rounded outline */
 .CodeMirror-focused .cm-matchhighlight{
 	border: 1px solid #777777;
 	border-radius: 3px;
 	margin:-1px; /* border offset */
+}
+
+/* hides codemirror active line when not focuses */
+.CodeMirror-activeline-background{
+	display:none;
+}
+.CodeMirror-focused .CodeMirror-activeline-background{
+	display:block;
 }
 
 .CodeMirror-foldmarker {
