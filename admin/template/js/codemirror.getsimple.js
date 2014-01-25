@@ -175,7 +175,7 @@ jQuery(document).ready(function () {
 		// if no button create it and add to editor
 		if(button.length === 0){
 			buttonhtml = $('<div class="overlay_but_fullscrn"></div>');
-			button = $('<a href="#"><i class="fa fa-arrows-alt"></i></a>').appendTo(buttonhtml);
+			button = $('<a href="javascript:void(0)"><i class="fa fa-arrows-alt"></i></a>').appendTo(buttonhtml);
 			buttoncont = buttonhtml.appendTo(cmwrapper);
 			button.on('click', cm,function(e){
 				toggleFullscreen(e.data);

@@ -151,7 +151,8 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                 echo '<a href="', find_url($url, $parent) ,'" target="_blank" accesskey="', find_accesskey(i18n_r('VIEW')), '" >', i18n_r('VIEW'), ' </a>';
             } 
             ?>
-            <!-- <a href="#" id="metadata_toggle" accesskey="<?php echo find_accesskey(i18n_r('PAGE_OPTIONS'));?>" ><?php i18n('PAGE_OPTIONS'); ?></a> -->
+            <!-- @todo: fix accesskey for options  -->
+            <!-- <a href="javascript:void(0)" id="metadata_toggle" accesskey="<?php echo find_accesskey(i18n_r('PAGE_OPTIONS'));?>" ><?php i18n('PAGE_OPTIONS'); ?></a> -->
             <div class="clear" ></div>
         </div>  
             
@@ -537,7 +538,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                 <div id="dropdown">
                     <h6 class="dropdownaction"><?php i18n('ADDITIONAL_ACTIONS'); ?></h6>
                     <ul class="dropdownmenu">
-                        <li id="save-close" ><a href="#" ><?php i18n('SAVE_AND_CLOSE'); ?></a></li>
+                        <li id="save-close" ><a href="javascript:void(0)" ><?php i18n('SAVE_AND_CLOSE'); ?></a></li>
                         <?php if($url != '') { ?>
                             <li><a href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" ><?php i18n('CLONE'); ?></a></li>
                         <?php } ?>

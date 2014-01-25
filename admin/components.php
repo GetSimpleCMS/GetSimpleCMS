@@ -90,7 +90,7 @@ if (count($componentsec) != 0) {
 	foreach ($componentsec as $component) {
 		$table .= '<div class="compdiv codewrap" id="section-'.$count.'"><table class="comptable" ><tr><td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="editable">'. stripslashes($component->title) .'</b></td>';
 		$table .= '<td style="text-align:right;" ><code>&lt;?php get_component(<span class="compslugcode">\''.$component->slug.'\'</span>); ?&gt;</code></td><td class="delete" >';
-		$table .= '<a href="#" title="'.i18n_r('DELETE_COMPONENT').': '. cl($component->title).'?" class="delcomponent" rel="'.$count.'" >&times;</a></td></tr></table>';
+		$table .= '<a href="javascript:void(0)" title="'.i18n_r('DELETE_COMPONENT').': '. cl($component->title).'?" class="delcomponent" rel="'.$count.'" >&times;</a></td></tr></table>';
 		$table .= '<textarea name="val[]" class="code_edit">'. stripslashes($component->value) .'</textarea>';
 		$table .= '<input type="hidden" class="compslug" name="slug[]" value="'. $component->slug .'" />';
 		$table .= '<input type="hidden" class="comptitle" name="title[]" value="'. stripslashes($component->title) .'" />';
@@ -123,7 +123,7 @@ include('template/include-nav.php'); ?>
 	<div class="main">
 	<h3 class="floated"><?php echo i18n('EDIT_COMPONENTS');?></h3>
 	<div class="edit-nav" >
-		<a href="#" id="addcomponent" accesskey="<?php echo find_accesskey(i18n_r('ADD_COMPONENT'));?>" ><?php i18n('ADD_COMPONENT');?></a>
+		<a href="javascript:void(0)" id="addcomponent" accesskey="<?php echo find_accesskey(i18n_r('ADD_COMPONENT'));?>" ><?php i18n('ADD_COMPONENT');?></a>
 		<?php echo $themeselector; ?>	
 		<p style="font-size:12px;color:#BBB;margin:0 3px;line-height:22px">Theme</p>	
 		<div class="clear"></div>

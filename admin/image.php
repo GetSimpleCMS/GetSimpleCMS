@@ -71,7 +71,7 @@ include('template/include-nav.php'); ?>
 					<option value="code-imgthumb-html" ><?php i18n('HTML_THUMB_ORIG');?></option>
 				</select>
 				<textarea class="copykit" ><?php echo tsl($SITEURL) .'data/uploads/'. $subPath. rawurlencode($src); ?></textarea>
-				<p style="color:#666;font-size:11px;margin:-10px 0 0 0"><a href="#" class="select-all" ><?php i18n('CLIPBOARD_INSTR');?></a></p>
+				<p style="color:#666;font-size:11px;margin:-10px 0 0 0"><a href="javascript:void(0)" class="select-all" ><?php i18n('CLIPBOARD_INSTR');?></a></p>
 			</form>
 			<div class="toggle">
 				<p id="code-img-html">&lt;img src="<?php echo tsl($SITEURL) .'data/uploads/'. $subPath. rawurlencode($src); ?>" class="gs_image" height="<?php echo $imgheight; ?>" width="<?php echo $imgwidth; ?>" alt=""></p>
