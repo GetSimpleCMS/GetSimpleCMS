@@ -2528,6 +2528,12 @@ a.disabled:visited {
 	margin-right: -1px;
 }
 
+
+/* tab guides */
+.CodeMirror .cm-tab:not(:first-child){
+	border-left: 1px dotted rgba(100,100,100,0.3);
+}
+
 /* match highlight rounded outline */
 .CodeMirror-focused .cm-matchhighlight{
 	border: 1px solid #777777;
