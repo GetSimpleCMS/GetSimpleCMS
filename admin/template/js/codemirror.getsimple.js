@@ -93,7 +93,7 @@ jQuery(document).ready(function () {
 		// add resisable capability to codemirror
 		$(editor.getWrapperElement()).resizable({
 			// helper: "outline", // less intensive resizing
-			autoHide : true,
+			autoHide : true, // hide the resize grips when unfocused
 			resize: function(e,ui) {
 				editor.setSize(null, $(this).height());
 			},
@@ -144,18 +144,19 @@ jQuery(document).ready(function () {
       var wrap = cm.getWrapperElement();
       if (full) {
         wrap.className += " CodeMirror-fullscreen";
+        $(wrap).data('normalheight',$(wrap).css('height')); // store original height
         wrap.style.height = winHeight() + "px";
         document.documentElement.style.overflow = "hidden";
       } else {
         wrap.className = wrap.className.replace(" CodeMirror-fullscreen", "");
-        wrap.style.height = "";
+        wrap.style.height = $(wrap).data('normalheight'); // restore original height
         document.documentElement.style.overflow = "";
       }
       cm.refresh();
     }
 
     // adjust for window resizing awhen in fullscreen
-	CodeMirror.on(window, "resize", function() {
+	CodeMirror.on(window, "resize", function(e) {
         var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
         if (!showing) return;
         showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
