@@ -94,6 +94,10 @@ jQuery(document).ready(function () {
 		$(editor.getWrapperElement()).resizable({
 			// helper: "outline", // less intensive resizing
 			autoHide : true, // hide the resize grips when unfocused
+			minHeight: 25,
+			start: function(e,ui) {
+				ui.originalElement.css('min-height','25px'); // clamp min height				
+			},
 			resize: function(e,ui) {
 				editor.setSize(null, $(this).height());
 			},
