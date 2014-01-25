@@ -2593,13 +2593,17 @@ a.disabled:visited {
   	max-height: none !important;
 }
 
-.CodeMirror .overlay_but_fullscrn a {
-	position: absolute;
-	top: 4px;
-	right: 4px;
+.CodeMirror .overlay_but_fullscrn {
+	position:absolute;
+	top: 5px;
+	right: 5px;
 	width: 16px;
 	height: 16px;
-	padding: 2px;
+}
+
+.CodeMirror .overlay_but_fullscrn a {
+	position: relative;
+	padding: 0px 2px;
 	background-color: #777777;
 	border-radius: 4px;
 	color: whitesmoke;
@@ -2609,7 +2613,11 @@ a.disabled:visited {
 	z-index: 9998;
 	font-weight: normal;
 	opacity:.2;
-	transition: all 300ms;
+	-webkit-transition: opacity 300ms;
+	-moz-transition: opacity 300ms;
+	-o-transition: opacity 300ms;
+	-ms-transition: opacity 300ms;
+	transition: opacity 300ms;
 }
 
 .CodeMirror .overlay_but_fullscrn a.scrolled {
