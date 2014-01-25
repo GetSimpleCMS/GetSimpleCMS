@@ -1,10 +1,10 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /****************************************************
 *
-* @File:  caching_functions.php
-* @Package: GetSimple
-* @since 3.1
-* @Action:  Plugin to create pages.xml and new functions  
+* @File:		caching_functions.php
+* @Package:		GetSimple
+* @since:		3.1
+* @Action:		Plugin to create pages.xml and new functions  
 *
 *****************************************************/
 

@@ -1,7 +1,7 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /****************************************************
 *
-* @File: 			template.php
+* @File: 		template.php
 * @Package:		GetSimple
 * @Action:		Innovation theme for GetSimple CMS
 *
