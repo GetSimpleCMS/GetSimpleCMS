@@ -22,12 +22,13 @@ register_plugin(
 	'Chris Cagle',
 	'http://get-simple.info/',
 	i18n_r($thisfile_anony.'/ANONY_DESC'),
-	'plugin',
+	$thisfile_anony,
 	'gs_anonymousdata'
 );
 
 # activate hooks
 add_action('plugins-sidebar','createSideMenu',array($thisfile_anony,i18n_r($thisfile_anony.'/ANONY_TITLE'))); 
+add_action($thisfile_anony.'-sidebar','createSideMenu',array("",i18n_r("CANCEL"))); 
 
 if ( ! function_exists('get_tld_from_url')){ 
 	function get_tld_from_url( $url ){
@@ -147,7 +148,7 @@ function gs_anonymousdata() {
 		<?php if(isset($preview_data)) { ?>
 			<p><?php i18n($thisfile_anony.'/ANONY_CONFIRM'); ?></p>
 			<div class="unformatted"><code><?php echo htmlentities(formatXmlString(file_get_contents(GSDATAOTHERPATH . 'anonymous_data.xml')));?></code></div>
-			<p class="submit"><br /><input type="submit" class="submit" value="<?php i18n($thisfile_anony.'/ANONY_SEND_BTN'); ?>" name="send" /> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="plugins.php?cancel"><?php i18n('CANCEL'); ?></p>		
+			<p class="submit"><br /><input type="submit" class="submit" value="<?php i18n($thisfile_anony.'/ANONY_SEND_BTN'); ?>" name="send" /> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="plugins.php?cancel"><?php i18n('CANCEL'); ?></a></p>		
 		<?php } else { ?> 
 			<p><?php i18n($thisfile_anony.'/ANONY_PARAGRAPH'); ?></p>
 			<p><?php i18n($thisfile_anony.'/ANONY_PARAGRAPH2'); ?></p>
@@ -194,7 +195,7 @@ function gs_anonymousdata() {
 			</p>
 			<p class="clearfix" ><label><?php i18n($thisfile_anony.'/ANONY_LINK'); ?></label><select class="text" name="link_back"><option></option><option value="yes" ><?php i18n($thisfile_anony.'/ANONY_YES'); ?></option><option value="no" ><?php i18n($thisfile_anony.'/ANONY_NO'); ?></option></select></p>
 			<p style="color:#cc0000;font-size:11px;" >* <?php i18n($thisfile_anony.'/ANONY_DISCLAIMER'); ?></p>
-			<p class="submit"><br /><input type="submit" class="submit" value="<?php i18n($thisfile_anony.'/ANONY_PREVIEW_BTN'); ?>" name="preview" /> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="plugins.php?cancel"><?php i18n('CANCEL'); ?></p>
+			<p class="submit"><br /><input type="submit" class="submit" value="<?php i18n($thisfile_anony.'/ANONY_PREVIEW_BTN'); ?>" name="preview" /> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="plugins.php?cancel"><?php i18n('CANCEL'); ?></a></p>
 		<?php  } ?>
 	</form>
 

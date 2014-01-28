@@ -113,7 +113,7 @@ if (count($componentsec) != 0) {
 }
 	# create list to show on sidebar for easy access
 	$listc = ''; $submitclass = '';
-	if($count > 3) {
+	if($count > 1) {
 		$item = 0;
 		foreach($componentsec as $component) {
 			$listc .= '<a id="divlist-' . $item . '" href="#section-' . $item . '" class="component">' . $component->title . '</a>';

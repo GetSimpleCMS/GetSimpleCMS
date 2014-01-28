@@ -11,9 +11,12 @@
 # Setup inclusions
 $load['login'] = true;
 $load['plugin'] = true;
-include('inc/common.php');
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('LOGIN')); 
+// wrap all include and header output in output buffering to prevent sending before headers.
+ob_start();
+	include('inc/common.php');
+	get_template('header', cl($SITENAME).' &raquo; '.i18n_r('LOGIN')); 
+ob_end_flush();
 
 ?>
 

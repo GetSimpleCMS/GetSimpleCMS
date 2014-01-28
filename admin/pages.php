@@ -16,11 +16,11 @@ include('inc/common.php');
 
 // Variable settings
 login_cookie_check();
-$id     =  isset($_GET['id']) ? $_GET['id'] : null;
-$ptype    = isset($_GET['type']) ? $_GET['type'] : null; 
-$path 		= GSDATAPAGESPATH;
-$counter 	= '0';
-$table 		= '';
+$id      =  isset($_GET['id']) ? $_GET['id'] : null;
+$ptype   = isset($_GET['type']) ? $_GET['type'] : null; 
+$path    = GSDATAPAGESPATH;
+$counter = '0';
+$table   = '';
 
 # clone attempt happening
 if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone') {
@@ -66,12 +66,13 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 }
 
 
-getPagesXmlValues();
+getPagesXmlValues(true);
+
 $count = 0;
 foreach ($pagesArray as $page) {
 	if ($page['parent'] != '') { 
-		$parentdata = getXML(GSDATAPAGESPATH . $page['parent'] .'.xml');
-		$parentTitle = $parentdata->title;
+		$parentTitle = returnPageField($page['parent'], "title");
+		$sort = $parentTitle .' '. $page['title'];		
 		$sort = $parentTitle .' '. $page['title'];
 	} else {
 		$sort = $page['title'];
@@ -80,8 +81,8 @@ foreach ($pagesArray as $page) {
 	$pagesArray_tmp[$count] = $page;
 	$count++;
 }
-$pagesArray = $pagesArray_tmp;
-$pagesSorted = subval_sort($pagesArray,'sort');
+// $pagesArray = $pagesArray_tmp;
+$pagesSorted = subval_sort($pagesArray_tmp,'sort');
 $table = get_pages_menu('','',0);
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); 

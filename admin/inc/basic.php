@@ -145,17 +145,18 @@ function sendmail($to,$subject,$message) {
 	if (defined('GSFROMEMAIL')){
 		$fromemail = GSFROMEMAIL; 
 	} else {
-		$fromemail = 'noreply@get-simple.info';
+		if(!empty($_SERVER['SERVER_ADMIN']) && check_email_address($_SERVER['SERVER_ADMIN'])) $fromemail = $_SERVER['SERVER_ADMIN'];
+		else $fromemail =  'noreply@'.$_SERVER['SERVER_NAME'];
 	}
-	
+
 	global $EMAIL;
 	$headers  ='"MIME-Version: 1.0' . PHP_EOL;
 	$headers .= 'Content-Type: text/html; charset=UTF-8' . PHP_EOL;
 	$headers .= 'From: '.$fromemail . PHP_EOL;
-  $headers .= 'Reply-To: '.$fromemail . PHP_EOL;
-  $headers .= 'Return-Path: '.$fromemail . PHP_EOL;
+  	$headers .= 'Reply-To: '.$fromemail . PHP_EOL;
+  	$headers .= 'Return-Path: '.$fromemail . PHP_EOL;
 	
-	if( mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',"$message",$headers) ) {
+	if( @mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',"$message",$headers) ) {
 		return 'success';
 	} else {
 		return 'error';
@@ -178,8 +179,10 @@ function sendmail($to,$subject,$message) {
 function subval_sort($a,$subkey, $order='asc',$natural = true) {
 	if (count($a) != 0 || (!empty($a))) { 
 		foreach($a as $k=>$v) {
-			$b[$k] = lowercase($v[$subkey]);
+			if(isset($v[$subkey])) $b[$k] = lowercase($v[$subkey]);
 		}
+
+		if(!isset($b)) return $a;
 
 		if($natural){
 			natsort($b);
@@ -245,7 +248,7 @@ function isFile($file, $path, $type = 'xml') {
  * @return array
  */
 function getFiles($path) {
-	$handle = opendir($path) or die("Unable to open $path");
+	$handle = opendir($path) or die("getFiles: Unable to open $path");
 	$file_arr = array();
 	while ($file = readdir($handle)) {
 		if ($file != '.' && $file != '..') {
@@ -303,6 +306,7 @@ function getXML($file) {
  */
 function XMLsave($xml, $file) {
 	# get_execution_time(true);
+	if(!is_object($xml)) return false;
 	$success = @$xml->asXML($file) === TRUE;
 	# debugLog('XMLsave: ' . $file . ' ' . get_execution_time());	
 	
@@ -520,6 +524,13 @@ function encode_quotes($text)  {
 function redirect($url) {
 	global $i18n;
 
+	// handle expired sessions for ajax requests
+	if(requestIsAjax() && !cookie_check()){
+		header('HTTP/1.1 401 Unauthorized', true, 401);
+		header('WWW-Authenticate: FormBased');
+		die();
+	}	
+
 	if (!headers_sent($filename, $linenum)) {
     header('Location: '.$url);
   } else {
@@ -558,6 +569,8 @@ function redirect($url) {
 function i18n($name, $echo=true) {
 	global $i18n;
 	global $LANG;
+
+	if(!isset($i18n)) return; 
 
 	if (array_key_exists($name, $i18n)) {
 		$myVar = $i18n[$name];
@@ -622,20 +635,22 @@ function i18n_merge($plugin, $language=null) {
  * @author mvlcek
  * @uses GSPLUGINPATH
  *
- * @param string $plugin
+ * @param string $plugin null if merging in core langs
  * @param string $lang
  * @param string $globali18n
  * @return bool
  */
 function i18n_merge_impl($plugin, $lang, &$globali18n) { 
   $i18n = array();
-  if (!file_exists(GSPLUGINPATH.$plugin.'/lang/'.$lang.'.php')) {
-  	return false;
+  $filename = ($plugin ? GSPLUGINPATH.$plugin.'/lang/' : GSLANGPATH).$lang.'.php';
+  $prefix = $plugin ? $plugin.'/' : '';
+  if (!file_exists($filename)) {
+    return false;
   }
-  @include(GSPLUGINPATH.$plugin.'/lang/'.$lang.'.php'); 
+  @include($filename); 
   if (count($i18n) > 0) foreach ($i18n as $code => $text) {
-    if (!array_key_exists($plugin.'/'.$code, $globali18n)) {
-    	$globali18n[$plugin.'/'.$code] = $text;
+    if (!array_key_exists($prefix.$code, $globali18n)) {
+        $globali18n[$prefix.$code] = $text;
     }
   }
   return true;
@@ -656,8 +671,8 @@ function safe_slash_html($text) {
 	} else {
 		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 	}
-	$text = str_replace(chr(12), '', $text);
-	$text = str_replace(chr(3), ' ', $text);
+	$text = str_replace(chr(12), '', $text); // FF
+	$text = str_replace(chr(3), ' ', $text); // ETX
 	return $text;
 }
 
@@ -1178,9 +1193,31 @@ function getDef($id,$isbool = false){
 
 /**
  * Alias for checking for debug constant
+ * @since 3.2.1
+ * @return  bool true if debug enabled
  */
 function isDebug(){
 	return getDef('GSDEBUG',true);
 }
+
+/**
+ * check gs version is Beta
+ *
+ * @since  3.3.0
+ * @return boolean true if beta release
+ */
+function isBeta(){
+	return strPos(get_site_version(false),"b");
+}
+
+/**
+ * Check if request is an ajax request
+ * @since  3.3.0
+ * @return bool true if ajax
+ */
+function requestIsAjax(){
+	return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || isset($_GET['ajax']);
+}
+
 
 ?>

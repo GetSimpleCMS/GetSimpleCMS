@@ -89,20 +89,25 @@ basename = function(str){
 	return str.substring(0,str.lastIndexOf('/') ); 		
 } 
  
+
+function i18n(key){
+	return GS.i18n[key];
+}
+
+function checkCoords() {
+	if (parseInt($('#x').val())) return true;
+	alert('Please select a crop region then press submit.');
+	return false;
+};
+		 
 jQuery(document).ready(function () {
  
 	var loadingAjaxIndicator = $('#loader');
  
-	function checkCoords() {
-		if (parseInt($('#x').val())) return true;
-		alert('Please select a crop region then press submit.');
-		return false;
-	};
- 
 	/* Listener for filter dropdown */
 	function attachFilterChangeEvent() {
 		$(document).on('change', "#imageFilter", function () {
-			console.log('attachFilterChangeEvent');
+			Debugger.log('attachFilterChangeEvent');
 			loadingAjaxIndicator.show();
 			var filterx = $(this).val();
 			$("#imageTable").find("tr").hide();
@@ -157,6 +162,17 @@ jQuery(document).ready(function () {
  
  
 	// components.php
+	
+	function focusCompEditor(selector){
+		var editor = $(selector + ' textarea');		
+		editor.focus();
+	}
+
+	// auto focus component editors
+	$('#components div.compdivlist a').on('click', function(ev){
+		focusCompEditor($(this).attr('href'));
+	});	
+	
 	$(".delconfirmcomp").live("click", function ($e) {
 		$e.preventDefault();
 		loadingAjaxIndicator.show();
@@ -351,7 +367,7 @@ jQuery(document).ready(function () {
  
 				document.body.style.cursor = "default";
 				clearNotify();
-				notifyOk('Plugin Updated').popit().removeit();
+				notifyOk(i18n('PLUGIN_UPDATED')).popit().removeit();
 			},
 			error: function (data, textStatus, jqXHR) {
 				// These go in failures if we catch them in the future
@@ -361,7 +377,7 @@ jQuery(document).ready(function () {
 				loadingAjaxIndicator.fadeOut();
  
 				clearNotify();
-				notifyError('An error has occured');
+				notifyError(i18n('ERROR'));
 			}
  
 		});
@@ -371,7 +387,7 @@ jQuery(document).ready(function () {
 	function updateMetaDescriptionCounter() {
 		var remaining = 155 - jQuery('#post-metad').val().length;
 		jQuery('#countdown').text(remaining);
-		Debugger.log('Meta Description has ' + remaining + ' characters remaining');
+		// Debugger.log('Meta Description has ' + remaining + ' characters remaining');
 	}
 	if ($('#post-metad').length) {
 		updateMetaDescriptionCounter();
@@ -544,6 +560,30 @@ jQuery(document).ready(function () {
 		return false;
 	});
  
+	function scrollsidebar(){
+		var elem = $('body.sbfixed #sidebar');
+		elem.scrollToFixed({ 
+			marginTop: 15,
+			limit: function(){ return $('#footer').offset().top - elem.outerHeight(true) - 15},
+			postUnfixed: function(){$(this).addClass('fixed')},
+			postFixed: function(){$(this).removeClass('fixed')},
+			postAbsolute: function(){$(this).removeClass('fixed')},
+
+		});
+	}
+
+	scrollsidebar();
+ 	
+ 	// catch all redirects for session timeout on HTTP 401 unauthorized
+	$( document ).ajaxError(function( event, xhr, settings ) {
+		// notifyInfo("ajaxComplete: " + xhr.status);
+		if(xhr.status == 401){
+			notifyInfo("Redirecting...");
+			window.location.reload();
+		}
+	});
+	
 	//end of javascript for getsimple
+
 });
  

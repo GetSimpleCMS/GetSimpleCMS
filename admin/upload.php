@@ -13,6 +13,7 @@
 $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
+
 $dirsSorted=null;$filesSorted=null;$foldercount=null;
 
 if (isset($_GET['path']) && !empty($_GET['path'])) {
@@ -65,7 +66,7 @@ if (isset($_FILES['file'])) {
 				exec_action('file-uploaded');
 				
 				// generate thumbnail				
-				require('inc/imagemanipulation.php');	
+				require_once('inc/imagemanipulation.php');	
 				genStdThumb($subFolder,$base);					
 				$messages[] = i18n_r('FILE_SUCCESS_MSG').': <a href="'. $SITEURL .'data/uploads/'.$subFolder.$base.'">'. $SITEURL .'data/uploads/'.$subFolder.$base.'</a>';
 			} else {
