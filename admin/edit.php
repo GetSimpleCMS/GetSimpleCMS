@@ -167,8 +167,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 						$count = 0;
 						foreach ($pagesArray as $page) {
 							if ($page['parent'] != '') { 
-								$parentdata = getXML(GSDATAPAGESPATH . $page['parent'] .'.xml');
-								$parentTitle = $parentdata->title;
+								$parentTitle = returnPageField($page['parent'], "title");
 								$sort = $parentTitle .' '. $page['title'];
 							} else {
 								$sort = $page['title'];
@@ -177,8 +176,8 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 							$pagesArray_tmp[$count] = $page;
 							$count++;
 						}
-						$pagesArray = $pagesArray_tmp;
-						$pagesSorted = subval_sort($pagesArray,'sort');
+						// $pagesArray = $pagesArray_tmp;
+						$pagesSorted = subval_sort($pagesArray_tmp,'sort');
 						$ret=get_pages_menu_dropdown('','',0);
 						$ret=str_replace('value="'.$id.'"', 'value="'.$id.'" disabled', $ret);
 						
@@ -265,7 +264,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 				echo '<input type="hidden" name="existing-url" value="'. $url .'" />'; 
 			} ?>	
 			
-			<span class="editing"><?php echo i18n_r('EDITPAGE_TITLE') .':' . $title; ?></span>
+			<span class="editing"><?php echo i18n_r('EDITPAGE_TITLE') .': ' . $title; ?></span>
 			<div id="submit_line" >
 				<input type="hidden" name="redirectto" value="" />
 				
@@ -302,19 +301,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 		
 		<?php 
 
-			if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
-			if (defined('GSEDITORLANG')) { $EDLANG = GSEDITORLANG; } else {	$EDLANG = i18n_r('CKEDITOR_LANG'); }
-			if (defined('GSEDITORTOOL') and !isset($EDTOOL)) { $EDTOOL = GSEDITORTOOL; }
-			if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!="" ) $EDOPTIONS = GSEDITOROPTIONS; 
-
-			if(!isset($EDTOOL)) $EDTOOL = 'basic';
-
-			if(strpos($EDTOOL,'[')!==false){ $EDTOOL = "[$EDTOOL]"; } // toolbar is array
-			else if(is_array($EDTOOL)) $EDTOOL = json_encode($EDTOOL);
-			// else if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
-			else if($EDTOOL == "none") $EDTOOL = null; // toolbar is cke default
-			else $EDTOOL = "'$EDTOOL'"; // toolbar is a toolbar config variable config.toolbar_$var 
-			
+			if($EDTOOL == 'basic' || $EDTOOL == 'advanced') $EDTOOL = "'$EDTOOL'";			
 			$toolbar = isset($EDTOOL) ? ",toolbar: ".trim($EDTOOL,",") : '';
 			$options = isset($EDOPTIONS) ? ','.trim($EDOPTIONS,",") : '';
 

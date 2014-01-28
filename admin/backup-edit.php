@@ -126,10 +126,7 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 
 		</div>
 		
-		<?php if ($HTMLEDITOR != '') { 
-			if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
-			if (defined('GSEDITORLANG')) { $EDLANG = GSEDITORLANG; } else {	$EDLANG = 'en'; }
-		?>
+		<?php if ($HTMLEDITOR != '') { ?>
 		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 		<script type="text/javascript">
 		var editor = CKEDITOR.replace( 'codetext', {
@@ -141,7 +138,7 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 			?>
 			contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
 			<?php } ?>
-			entities : true,
+			entities : false,
 			// uiColor : '#FFFFFF',
 			height: '<?php echo $EDHEIGHT; ?>',
 			baseHref : '<?php echo $SITEURL; ?>',

@@ -11,55 +11,78 @@
 $load['plugin'] = true;
 include('inc/common.php');
 
+/* delete caches */
+delete_cache();
 
 /* 
  * Updates below here 
  */
-$error = '';
+
 $message = null;
 
+$create_dirs = array(
+	GSCACHEPATH,
+	GSAUTOSAVEPATH
+);
+
+$create_files = array();
+
+$delete_files = array(
+	GSADMININCPATH.'xss.php',
+	GSADMININCPATH.'nonce.php',
+	GSADMININCPATH.'install.php',
+	GSADMINPATH.'load-ajax.php',
+	GSADMINPATH.'cron.php',
+	GSADMINPATH.'loadtab.php'
+);
+
+
+function msgOK($msg){
+	return '<div class="notify">'.$msg.'</div>';
+}
+
+function msgError($msg){
+	return '<div class="notify notify_error">'.$msg.'</div>';
+}
+
 /* create new folders */
-if (!file_exists(GSCACHEPATH)) {  	
-	if (defined('GSCHMOD')) { 
-	 $chmod_value = GSCHMOD; 
-	} else {
-	 $chmod_value = 0755;
+foreach($create_dirs as $dir){
+	if (!file_exists($dir)) {  	
+		if (defined('GSCHMOD')) { 
+		 $chmod_value = GSCHMOD; 
+		} else {
+		 $chmod_value = 0755;
+		}
+		$status = mkdir($dir, $chmod_value);
+		if($status) $message.= msgOK(sprintf(i18n_r('FOLDER_CREATED'),$dir));
+		else $error.= msgError(i18n_r('ERROR_CREATING_FOLDER') . "<br /> - $dir");
 	}
-	mkdir(GSCACHEPATH, $chmod_value);
 }
-	  	
-if (!file_exists(GSAUTOSAVEPATH)) {
-	if (defined('GSCHMOD')) { 
-	 $chmod_value = GSCHMOD;
-	} else {
-	 $chmod_value = 0755;
-	}
-	mkdir(GSAUTOSAVEPATH, $chmod_value);
-}
+
 
 /* check for legacy version of user.xml */
 if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	
 	
-	# make two new users folder
+	# make new users folder
 	if (!file_exists(GSUSERSPATH)) {
 		$status = mkdir(GSUSERSPATH, 0777);
 		chmod(GSUSERSPATH, 0777);
 		if (!$status) { 
-			$error .= 'Unable to create the folder /data/users/<br />';	
+			$error .= msgError('Unable to create the folder /data/users/');	
 		} else {
-			$message .= '<li>Created the folder /data/users/</li>';
+			$message .= msgOK('Created the folder /data/users/');
 		}
 	}
 
-	# make two new backup users folder
+	# make new backup users folder
 	if (!file_exists(GSBACKUSERSPATH)) {
 		$status = mkdir(GSBACKUSERSPATH, 0777);
 		chmod(GSBACKUSERSPATH, 0777);
 		if (!$status) {
-			$error .= 'Unable to create the folder /backup/users/<br />';	
+			$error .= msgError('Unable to create the folder /backup/users/');	
 		} else {
-			$message .= '<li>Created the folder /backup/users/</li>';
+			$message .=  msgOK('Created the folder /backup/users/');
 		}
 	}
 
@@ -91,9 +114,9 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	$status = XMLsave($xml, GSUSERSPATH . _id($USR) .'.xml');	
 	chmod(GSUSERSPATH . _id($USR) .'.xml', 0777);
 	if (!$status) {
-		$error .= 'Unable to create new  '._id($USR).'.xml file!<br />';	
+		$error .= msgError('Unable to create new  '._id($USR).'.xml file!');	
 	} else {
-		$message .= '<li>Created new '._id($USR).'.xml file</li>';
+		$message .= msgOK('Created new '._id($USR).'.xml file');
 	}
 	
 	
@@ -101,9 +124,9 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_website.xml')) {
 		$status = rename(GSDATAOTHERPATH .'website.xml', GSDATAOTHERPATH .'_legacy_website.xml');
 		if (!$status) {
-			$error .= 'Unable to rename website.xml to _legacy_website.xml<br />';	
+			$error .= msgError('Unable to rename website.xml to _legacy_website.xml');	
 		} else {
-			$message .= '<li>Renamed website.xml to _legacy_website.xml</li>';
+			$message .= msgOK('Renamed website.xml to _legacy_website.xml');
 		}
 	}
 	
@@ -116,9 +139,9 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	$xml->addChild('PERMALINK', $PERMALINK);
 	$status = XMLsave($xml, GSDATAOTHERPATH .'website.xml');	
 	if (!$status) {
-		$error .= 'Unable to update website.xml file!<br />';	
+		$error .= msgError('Unable to update website.xml file!');	
 	} else {
-		$message .= '<li>Created updated website.xml file</li>';
+		$message .= msgOK('Created updated website.xml file');
 	}
 	
 	
@@ -126,9 +149,9 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_user.xml')) {
 		$status = rename(GSDATAOTHERPATH .'user.xml', GSDATAOTHERPATH .'_legacy_user.xml');
 		if (!$status) {
-			$error .= 'Unable to rename user.xml to _legacy_user.xml<br />';	
+			$error .= msgError('Unable to rename user.xml to _legacy_user.xml');	
 		} else {
-			$message .= '<li>Renamed user.xml to _legacy_user.xml</li>';
+			$message .= msgOK('Renamed user.xml to _legacy_user.xml');
 		}
 	}
 
@@ -136,35 +159,47 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_cp_settings.xml')) {
 		$status = rename(GSDATAOTHERPATH .'cp_settings.xml', GSDATAOTHERPATH .'_legacy_cp_settings.xml');
 		if (!$status) {
-			$error .= 'Unable to rename cp_settings.xml to _legacy_cp_settings.xml<br />';	
+			$error .= msgError('Unable to rename cp_settings.xml to _legacy_cp_settings.xml');	
 		} else {
-			$message .= '<li>Renamed cp_settings.xml to _legacy_cp_settings.xml</li>';
+			$message .= msgOK('Renamed cp_settings.xml to _legacy_cp_settings.xml');
 		}
 	}
 	/* end update */
 } 
+
+// redirect to health check or login and show updated notice
+$redirect = cookie_check() ? "health-check.php?updated=1" : "index.php?updated=1";
+
+// If no errors or messages, then we did nothing, just continue automatically
+if(!isset($error) && !isset($message)) redirect($redirect);
+
+// we already showed a notice, pass updated so it gets deleted, no indication, 
+$redirect = cookie_check() ? "health-check.php?updated=2" : "index.php?updated=2";
+
+// show errors or messages
+if(isset($error)) $message.= i18n_r('ER_REQ_PROC_FAIL');
+else $message.= "<p><div class=\"notify notify_ok\">".i18n_r('SITE_UPDATED')."</div></p>";
 
 get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE')); 
 
 ?>
 	
 	<h1><?php echo $site_full_name; ?></h1>
-</div>
-</div>
+</div> 
+</div><!-- Closes header -->
 <div class="wrapper">
-	<?php include('template/error_checking.php'); ?>
+	<?php // include('template/error_checking.php'); ?>
 	
 	<div id="maincontent">
 		<div class="main" >
 			<h3><?php i18n('SYSTEM_UPDATE'); ?></h3>
 			
 			<?php 
-				echo $message; 
-				echo '<p><a href="./">Login</a></p>';
-		
+				echo "$message";
+				echo '<p><a href="'.$redirect.'">'.i18n_r('CONTINUE_SETUP').'</a></p>';
 			?>
 			
 		</div>
-	
-		<div class="clear"></div>
-<?php get_template('footer'); ?> 
+	</div>
+	<div class="clear"></div>
+	<?php get_template('footer'); ?> 
