@@ -463,7 +463,6 @@ function menu_data($id = null,$xml=false) {
     $menu_extract = '';
 
     global $pagesArray; 
-	echo "menu";
     $pagesSorted = subval_sort($pagesArray,'menuOrder');
     if (count($pagesSorted) != 0) { 
       $count = 0;
