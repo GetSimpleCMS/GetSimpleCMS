@@ -2522,10 +2522,10 @@ a.disabled:visited {
 
 /* custom se resize grip handle */
 .CodeMirror .handle {
-	font-size: 12px;
-	opacity: .2;
-	margin-bottom: -2px;
-	margin-right: -1px;
+	font-size: 17px;
+	opacity: .3;
+	margin-bottom: 2px;
+	margin-right: 0;
 }
 
 

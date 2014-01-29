@@ -111,7 +111,9 @@ jQuery(document).ready(function () {
 
 		// replace jqueryui resize handle with custom
 		$(editor.getWrapperElement()).find($('.ui-resizable-se')).removeClass('ui-icon');
-		$(editor.getWrapperElement()).find($('.ui-resizable-se')).addClass('handle fa fa-th-large');
+		// $(editor.getWrapperElement()).find($('.ui-resizable-se')).addClass('handle fa fa-th-large');
+		$(editor.getWrapperElement()).find($('.ui-resizable-se')).addClass('handle');
+		$(editor.getWrapperElement()).find($('.ui-resizable-se')).html('◢'); // U+25E2	e2 97 a2 BLACK LOWER RIGHT TRIANGLE
 
 		fullscreen_button(editor);
 
