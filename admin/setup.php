@@ -20,6 +20,7 @@ $status = '';
 $err = null; 
 $message = null; 
 $random = null;
+$success = false;
 $fullpath = suggest_site_path();	
 $path_parts = suggest_site_path(true);   
 
@@ -150,12 +151,12 @@ if(isset($_POST['submitted'])) {
 		$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL.$GSADMIN.'/">'.$SITEURL.$GSADMIN.'/</a></p>';
 		$message .= '<p><em>'. i18n_r('EMAIL_THANKYOU') .' '.$site_full_name.'!</em></p>';
 		$status   = sendmail($EMAIL,$subject,$message);
-		
 		# activate default plugins
 		change_plugin('InnovationPlugin.php',true);
 
 		# set the login cookie, then redirect user to secure panel		
 		create_cookie();		
+		$success = true;
 	}
 }
 
@@ -177,18 +178,19 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION'));
 				echo '<div class="error">'. i18n_r('NOTE_REGERROR') .'.</div>';
 			}
 			if ($kill != '') {
+				$success = false;
 				echo '<div class="error">'. $kill .'</div>';
-			}	
+			}
 			if ($err != '') {
+				$success = false;				
 				echo '<div class="error">'. $err .'</div>';
 			}
 			if ($random != ''){
 				echo '<div class="updated">'.i18n_r('NOTE_USERNAME').' <b>'. stripslashes($_POST['user']) .'</b> '.i18n_r('NOTE_PASSWORD').' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="support.php?updated=2">'.i18n_r('EMAIL_LOGIN').'</a></div>';
 				$_POST = null;
 			}
-		?>
-		
-<?php if ($kill == '' && $status != 'success') { ?>
+
+	if (!$success) { ?>
 		<div class="main" >
 			<h3><?php echo $site_full_name .' '. i18n_r('INSTALLATION'); ?></h3>
 			<form action="<?php myself(); ?>" method="post" accept-charset="utf-8" >

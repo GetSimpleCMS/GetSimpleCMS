@@ -1,19 +1,46 @@
+#
+# GetSimple CMS htaccess ROOT file
+# apache 2.4 
+#
+
 AddDefaultCharset UTF-8
+
+# prevent directory listings
+# NOTE: some hosts such as aruba do not allow this directive, comment it out if getting 500 errors
 Options -Indexes
+
+# Follow symbolink links, This is required for rewrites on some hosts
+Options +FollowSymLinks
+
+# Make gs handle any 404 errors.
+# ErrorDocument 404 /index.php
+
+# Set the default handler.
+DirectoryIndex index.php
 
 # blocks direct access to the XML files - they hold all the data!
 <Files ~ "\.xml$">
+	<IfModule !mod_authz_core.c>
     Order allow,deny
     Deny from all
     Satisfy All
+	</IfModule>
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
 </Files>
 <Files sitemap.xml>
+	<IfModule !mod_authz_core.c>
 		Order allow,deny
     Allow from all
     Satisfy All
+	</IfModule>
+	<IfModule mod_authz_core.c>
+		Require all granted
+	</IfModule>
 </Files>
 
-
+# handle rewrites for fancy urls
 <IfModule mod_rewrite.c>
 
 	# Tell PHP that the mod_rewrite module is ENABLED.
@@ -21,12 +48,11 @@ Options -Indexes
 
 	RewriteEngine on
 
-	# Usually it RewriteBase is just '/', but 
+	# Usually RewriteBase is just '/', but 
 	# replace it with your subdirectory path
 	RewriteBase **REPLACE**
 
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteRule /?([A-Za-z0-9_-]+)/?$ index.php?id=$1 [QSA,L]
-
 </IfModule>

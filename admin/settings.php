@@ -66,7 +66,7 @@ if(isset($_POST['submitted'])) {
 		$SITEURL = tsl($_POST['siteurl']); 
 	}
 	if(isset($_POST['permalink'])) { 
-		$PERMALINK = $_POST['permalink']; 
+		$PERMALINK = trim($_POST['permalink']); 
 	}	
 	if(isset($_POST['template'])) { 
 		$TEMPLATE = $_POST['template']; 
@@ -209,7 +209,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('GENERAL_SETTINGS'));
 		<p class="inline" ><input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<label for="prettyurls" ><?php i18n('USE_FANCY_URLS');?></label></p>
 				
 		<div class="leftsec">
-			<p><label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: <span class="right"><a href="<?php echo $site_link_back_url;?>wiki/pretty_urls" target="_blank" ><?php i18n('MORE');?></a></span></label><input class="text" name="permalink" id="permalink" type="text" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /></p>
+			<p><label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: <span class="right"><a href="<?php echo $site_link_back_url;?>wiki/pretty_urls" target="_blank" ><?php i18n('MORE');?></a></span></label><input class="text" name="permalink" id="permalink" type="text" placeholder="%parent%/%slug%/" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /></p>
 		<a href="?flushcache"><?php i18n('FLUSHCACHE'); ?></a>
 		</div>
 		<div class="clear"></div>

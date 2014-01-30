@@ -101,8 +101,10 @@ basename = function(str){
 	return str.substring(0,str.lastIndexOf('/') ); 		
 } 
  
-jQuery(document).ready(function () {
 	
+function i18n(key){
+	return GS.i18n[key];
+}
 	$("#tabs").tabs({
 		activate: function(event, ui) {
 			// set bookmarkable urls
@@ -127,6 +129,10 @@ jQuery(document).ready(function () {
 		alert('Please select a crop region then press submit.');
 		return false;
 	};
+ 
+jQuery(document).ready(function () {
+ 
+	var loadingAjaxIndicator = $('#loader');
  
 	/* Listener for filter dropdown */
 	function attachFilterChangeEvent() {
@@ -410,7 +416,7 @@ jQuery(document).ready(function () {
  
 				document.body.style.cursor = "default";
 				clearNotify();
-				notifyOk('Plugin Updated').popit().removeit();
+				notifyOk(i18n('PLUGIN_UPDATED')).popit().removeit();
 			},
 			error: function (data, textStatus, jqXHR) {
 				// These go in failures if we catch them in the future
@@ -420,7 +426,7 @@ jQuery(document).ready(function () {
 				loadingAjaxIndicator.fadeOut();
  
 				clearNotify();
-				notifyError('An error has occured');
+				notifyError(i18n('ERROR'));
 			}
  
 		});

@@ -439,7 +439,7 @@ $i18n = array(
 "PLUGIN_NAME"             =>	"Plugin",
 "PLUGIN_DESC"             =>	"Description",
 "PLUGIN_VER"              =>	"Version",
-
+"PLUGIN_UPDATED"		=> "Plugin Updated",
 
 
 
