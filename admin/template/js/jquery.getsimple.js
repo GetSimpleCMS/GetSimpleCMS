@@ -105,6 +105,9 @@ basename = function(str){
 function i18n(key){
 	return GS.i18n[key];
 }
+
+jQuery(document).ready(function () {
+
 	$("#tabs").tabs({
 		activate: function(event, ui) {
 			// set bookmarkable urls
@@ -129,9 +132,7 @@ function i18n(key){
 		alert('Please select a crop region then press submit.');
 		return false;
 	};
- 
-jQuery(document).ready(function () {
- 
+  
 	var loadingAjaxIndicator = $('#loader');
  
 	/* Listener for filter dropdown */
