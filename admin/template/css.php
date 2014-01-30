@@ -127,7 +127,7 @@ html {
 	list-style: none;
 	font-size: 13px;
 	position: absolute;
-	bottom: 0px;
+	bottom: 0;
 	left: 0;
 	width: 960px;
 }
@@ -146,7 +146,7 @@ html {
 .wrapper #pill li a:visited {
 	color: <?php echo $primary_6; ?>;
 	background: <?php echo $primary_1; ?>;
-	text-shadow: 1px 1px 0px rgba(0,0,0,.3);
+	text-shadow: 1px 1px 0 rgba(0,0,0,.3);
 }
 
 .wrapper #pill li.debug a:link,
@@ -193,7 +193,7 @@ html {
 		background: -moz-linear-gradient(top, #FFF 3%, #F6F6F6 100%);	/* firefox */
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(3%,#FFF), color-stop(100%,#F6F6F6));	/* webkit */
 	font-weight: bold !important;
-	text-shadow: 1px 1px 0px rgba(255,244,255,.2);
+	text-shadow: 1px 1px 0 rgba(255,244,255,.2);
 	box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;
 		-moz-box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;
 		-webkit-box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;
@@ -206,7 +206,7 @@ html {
 .wrapper #pill li a:focus {
 	color: #FFF;
 	background: <?php echo $primary_0; ?>;
-	text-shadow: 1px 1px 0px rgba(0,0,0,.4);
+	text-shadow: 1px 1px 0 rgba(0,0,0,.4);
 }
 
 .wrapper .nav li {
@@ -251,7 +251,7 @@ html {
 	right: -5px;
 	font-size: 10px;
 	color: #000;
-	text-shadow: 1px 1px 0px rgba(255,255,255,.5);
+	text-shadow: 1px 1px 0 rgba(255,255,255,.5);
 	font-weight: bold;
 	text-align: center;
 	border-radius: 2px;
@@ -282,7 +282,7 @@ html {
 .wrapper #pill {
 	list-style: none;
 	position: absolute;
-	top: 0px;
+	top: 0;
 	right: 0;
 	font-size: 11px;
 }
@@ -348,7 +348,7 @@ html {
 	font-size: 25px;
 	font-family: Georgia, Times, Times New Roman, serif;
 	position: absolute;
-	text-shadow: 1px 1px 0px <?php echo $primary_2; ?>;
+	text-shadow: 1px 1px 0 <?php echo $primary_2; ?>;
 	top: 17px;
 	left: 0;
 }
@@ -512,7 +512,7 @@ h5:hover img {
 	margin-left: 13px;
 	color: <?php echo $primary_6; ?>;
 	background: <?php echo $primary_1; ?>;
-	text-shadow: 1px 1px 0px <?php echo $primary_0; ?>;
+	text-shadow: 1px 1px 0 <?php echo $primary_0; ?>;
 	transition: all .2s ease-in-out;
 		-webkit-transition: all .2s ease-in-out;
 		-moz-transition: all .2s ease-in-out;
@@ -523,7 +523,7 @@ h5:hover img {
     position: relative;
 	cursor: default;
 	color: #FFF;
-	text-shadow: 1px 1px 0px <?php echo $secondary_0; ?>;
+	text-shadow: 1px 1px 0 <?php echo $secondary_0; ?>;
 	border-radius: 0 3px 3px 0;
 	height:14px;
     background-color:<?php echo $secondary_1; ?>;
@@ -558,7 +558,7 @@ h5:hover img {
 	color: #FFF;
 	background: <?php echo $primary_0; ?>;
 	margin-left: 13px;
-	text-shadow: 1px 1px 0px rgba(0,0,0,.25);
+	text-shadow: 1px 1px 0 rgba(0,0,0,.25);
 }
 
 #sidebar .snav li a em  {
@@ -610,7 +610,7 @@ h5:hover img {
 }
 
 .edit-nav select {
-	margin-top: 0px;
+	margin-top: 0;
 	float: right;
 	padding: 2px;
 	border: 1px solid #999;
@@ -656,7 +656,7 @@ h5:hover img {
 	color: #ccc;
 	font-weight: bold;
 	text-decoration: none;
-	text-shadow: 1px 1px 0px rgba(0,0,0,.2);
+	text-shadow: 1px 1px 0 rgba(0,0,0,.2);
 	transition: all .10s ease-in-out;
 		-webkit-transition: all .10s ease-in-out;
 		-moz-transition: all .10s ease-in-out;
@@ -671,7 +671,7 @@ h5:hover img {
 	font-weight: bold;
 	text-decoration: none;
 	line-height: 14px !important;
-	text-shadow: 1px 1px 0px rgba(0,0,0,.2);
+	text-shadow: 1px 1px 0 rgba(0,0,0,.2);
 }
 
 .edit-nav a:link em,
@@ -791,9 +791,9 @@ sup {
 	background: #fff;
 	border: 1px solid #c8c8c8;
 	margin: 0 0 30px 0;
-	box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;
-		-moz-box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;
-		-webkit-box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;
+	box-shadow: rgba(0,0,0, 0.06) 0 0 4px;
+		-moz-box-shadow: rgba(0,0,0, 0.06) 0 0 4px;
+		-webkit-box-shadow: rgba(0,0,0, 0.06) 0 0 4px;
 }
 
 #maincontent .main .section {
@@ -806,9 +806,9 @@ sup {
 	background: white;
 	border: 1px solid #C8C8C8;
 	margin: 0 0 30px 0;
-	box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;
-		-moz-box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;
-		-webkit-box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px;
+	box-shadow: rgba(0,0,0, 0.06) 0 0 4px;
+		-moz-box-shadow: rgba(0,0,0, 0.06) 0 0 4px;
+		-webkit-box-shadow: rgba(0,0,0, 0.06) 0 0 4px;
 	border-image: initial;
 }
 
@@ -836,9 +836,9 @@ form select.text:focus,
 form textarea.text:focus {
 	outline: none;
 	border: 1px solid #666 !important;
-	box-shadow: rgba(0,0,0, 0.10) 0px 0px 6px;
-		-moz-box-shadow: rgba(0,0,0, 0.10) 0px 0px 6px;
-		-webkit-box-shadow: rgba(0,0,0, 0.10) 0px 0px 6px;
+	box-shadow: rgba(0,0,0, 0.10) 0 0 6px;
+		-moz-box-shadow: rgba(0,0,0, 0.10) 0 0 6px;
+		-webkit-box-shadow: rgba(0,0,0, 0.10) 0 0 6px;
 }
 
 form textarea {
@@ -1080,7 +1080,7 @@ table.cleantable tr td {
 }
 
 #pagechangednotify {
-	margin: 0px;
+	margin: 0;
 	padding: 15px 0 0 13px;
 	color: #CC0000;
 	text-shadow: 1px 1px 0 #fff;
@@ -1138,9 +1138,9 @@ input.submit {
 		-webkit-border-radius: 2px;
 		-moz-border-radius: 2px;
 	cursor: pointer;
-	box-shadow: rgba(0,0,0, 0.06) 0px 0px 3px;
-		-moz-box-shadow: rgba(0,0,0, 0.06) 0px 0px 3px;
-		-webkit-box-shadow: rgba(0,0,0, 0.06) 0px 0px 3px;
+	box-shadow: rgba(0,0,0, 0.06) 0 0 3px;
+		-moz-box-shadow: rgba(0,0,0, 0.06) 0 0 3px;
+		-webkit-box-shadow: rgba(0,0,0, 0.06) 0 0 3px;
 }
 
 input.submit:focus, input.submit:hover {
@@ -1149,9 +1149,9 @@ input.submit:focus, input.submit:hover {
 		background: -webkit-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#dddddd));
 		background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#dddddd));
 	border: solid 1px #aaaaaa;
-	box-shadow: rgba(0,0,0, 0.15) 0px 0px 4px;
-		-moz-box-shadow: rgba(0,0,0, 0.15) 0px 0px 4px;
-		-webkit-box-shadow: rgba(0,0,0, 0.15) 0px 0px 4px;
+	box-shadow: rgba(0,0,0, 0.15) 0 0 4px;
+		-moz-box-shadow: rgba(0,0,0, 0.15) 0 0 4px;
+		-webkit-box-shadow: rgba(0,0,0, 0.15) 0 0 4px;
 }
 
 .leftsec,.rightsec {
@@ -1213,7 +1213,7 @@ form.manyinputs p {
 }
 
 table.comptable {
-	margin: 0px !important;
+	margin: 0 !important;
 	width: 645px;
 	background: #fff;
 	border: none;
@@ -1957,9 +1957,9 @@ body#index {
 		-moz-border-radius: 5px;
 		-khtml-border-radius: 5px;
 		-webkit-border-radius: 5px;
-	box-shadow: rgba(0,0,0, 0.05) 0px 0px 10px;
-		-moz-box-shadow: rgba(0,0,0, 0.05) 0px 0px 10px;
-		-webkit-box-shadow: rgba(0,0,0, 0.05) 0px 0px 10px;
+	box-shadow: rgba(0,0,0, 0.05) 0 0 10px;
+		-moz-box-shadow: rgba(0,0,0, 0.05) 0 0 10px;
+		-webkit-box-shadow: rgba(0,0,0, 0.05) 0 0 10px;
 	background: #FFF;
 	width: 671px;
 }
@@ -2473,7 +2473,7 @@ a.disabled:visited {
 }
 
 .CodeMirror .CodeMirror-hscrollbar{
-	margin: 0px 15px 2px 2px;
+	margin: 0 15px 2px 2px;
 }
 
 .CodeMirror .CodeMirror-vscrollbar{
@@ -2617,7 +2617,7 @@ a.disabled:visited {
 
 .CodeMirror .overlay_but_fullscrn a {
 	position: relative;
-	padding: 0px 2px;
+	padding: 0 2px;
 	background-color: #777777;
 	border-radius: 4px;
 	color: whitesmoke;
@@ -2657,7 +2657,7 @@ a.disabled:visited {
 #maincontent .ui-tabs .ui-tabs-panel {
 	border-width: 0 !important;
 	padding: 0;
-	margin:10px 0px;
+	margin:10px 0;
 }
 
 #maincontent .ui-widget-content {
