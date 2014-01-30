@@ -86,23 +86,23 @@ html {
 	zoom: 1;
 }
 
-:: selection {
+::selection {
 	text-shadow: none !important;
 	background: #a8d1ff;
 	color: #111;
 }
 
-:: -moz-selection {
+::-moz-selection {
 	text-shadow: none !important;
 	background: #a8d1ff;
 	color: #111;
 }
 
-:: -webkit-input-placeholder {
+::-webkit-input-placeholder {
 	color: #c3c3c3;
 }
 
-: -moz-placeholder {
+:-moz-placeholder {
 	color: #c3c3c3;
 }
 
@@ -194,9 +194,9 @@ html {
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(3%,#FFF), color-stop(100%,#F6F6F6));	/* webkit */
 	font-weight: bold !important;
 	text-shadow: 1px 1px 0 rgba(255,244,255,.2);
-	box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;
 		-moz-box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;
 		-webkit-box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;
+	box-shadow: rgba(0,0,0, 0.10) 2px -2px 2px;
 }
 
 .wrapper .nav li a:active,
@@ -602,9 +602,9 @@ h5:hover img {
 	padding: 4px 10px;
 	float: right;
 	margin: 0 0 0 5px;
-	border-radius: 3px;
 		-moz-border-radius: 3px;
 		-webkit-border-radius: 3px;
+	border-radius: 3px;
 	background-repeat: no-repeat;
 	background-position: 94% center;
 }
@@ -615,9 +615,9 @@ h5:hover img {
 	padding: 2px;
 	border: 1px solid #999;
 	font-size: 11px;
-	border-radius: 2px;
 		-moz-border-radius: 2px;
 		-webkit-border-radius: 2px;
+	border-radius: 2px;
 }
 
 .edit-nav p {
@@ -626,12 +626,13 @@ h5:hover img {
 	margin: 0;
 }
 
+/*not used*/
 .edit-nav label {
 	font-weight: 100;
 	display: inline;
 	font-size: 11px;
 	color: #666;
-	margin: 0;
+	/*margin: 0;*/ /*not allowed*/
 	padding: 0;
 }
 
@@ -713,9 +714,6 @@ h5:hover img {
 	text-align: left;
 }
 
-.wrapper table tr.head {
-}
-
 .wrapper table td span {
 	font-size: 12px;
 	color: #777;
@@ -791,9 +789,9 @@ sup {
 	background: #fff;
 	border: 1px solid #c8c8c8;
 	margin: 0 0 30px 0;
-	box-shadow: rgba(0,0,0, 0.06) 0 0 4px;
 		-moz-box-shadow: rgba(0,0,0, 0.06) 0 0 4px;
 		-webkit-box-shadow: rgba(0,0,0, 0.06) 0 0 4px;
+	box-shadow: rgba(0,0,0, 0.06) 0 0 4px;
 }
 
 #maincontent .main .section {
@@ -806,9 +804,9 @@ sup {
 	background: white;
 	border: 1px solid #C8C8C8;
 	margin: 0 0 30px 0;
-	box-shadow: rgba(0,0,0, 0.06) 0 0 4px;
 		-moz-box-shadow: rgba(0,0,0, 0.06) 0 0 4px;
 		-webkit-box-shadow: rgba(0,0,0, 0.06) 0 0 4px;
+	box-shadow: rgba(0,0,0, 0.06) 0 0 4px;
 	border-image: initial;
 }
 
@@ -826,9 +824,9 @@ form select.text {
 	/*width: 510px;*/
 	width:100%;
 	border-radius: 2px;
-    box-sizing: content-box;
     -moz-box-sizing: content-box;
     -webkit-box-sizing: content-box;
+    box-sizing: content-box;
 }
 
 form input.text:focus,
@@ -836,9 +834,9 @@ form select.text:focus,
 form textarea.text:focus {
 	outline: none;
 	border: 1px solid #666 !important;
-	box-shadow: rgba(0,0,0, 0.10) 0 0 6px;
 		-moz-box-shadow: rgba(0,0,0, 0.10) 0 0 6px;
 		-webkit-box-shadow: rgba(0,0,0, 0.10) 0 0 6px;
+	box-shadow: rgba(0,0,0, 0.10) 0 0 6px;
 }
 
 form textarea {
@@ -903,8 +901,8 @@ label {
 label span.right {
 	float: right;
 	color: #999;
-	display: inline-block;
-	margin-right: 15px;
+	display: block;
+	margin-right: 0;
 	font-weight: 100 !important;
 	font-size: 11px !important;
 }
@@ -1037,7 +1035,7 @@ a.viewlink:hover img {
 }
 
 .countdownwrap {
-	display: inline-block;
+	display: block;
 	color: #999;
 	font-size: 11px;
 	font-weight: normal;
@@ -1134,13 +1132,13 @@ input.submit {
 		background: -webkit-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#e1e1e1));
 		background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#e1e1e1));
 	border: solid 1px #acacac;
-	border-radius: 2px;
 		-webkit-border-radius: 2px;
 		-moz-border-radius: 2px;
+	border-radius: 2px;
 	cursor: pointer;
-	box-shadow: rgba(0,0,0, 0.06) 0 0 3px;
 		-moz-box-shadow: rgba(0,0,0, 0.06) 0 0 3px;
 		-webkit-box-shadow: rgba(0,0,0, 0.06) 0 0 3px;
+	box-shadow: rgba(0,0,0, 0.06) 0 0 3px;
 }
 
 input.submit:focus, input.submit:hover {
@@ -1149,9 +1147,9 @@ input.submit:focus, input.submit:hover {
 		background: -webkit-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#dddddd));
 		background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#dddddd));
 	border: solid 1px #aaaaaa;
-	box-shadow: rgba(0,0,0, 0.15) 0 0 4px;
 		-moz-box-shadow: rgba(0,0,0, 0.15) 0 0 4px;
 		-webkit-box-shadow: rgba(0,0,0, 0.15) 0 0 4px;
+	box-shadow: rgba(0,0,0, 0.15) 0 0 4px;
 }
 
 .leftsec,.rightsec {
@@ -1235,7 +1233,6 @@ table.comptable tr td code {
 }
 
 table.comptable tr {
-	border: none;
 	border: none !important;
 }
 
@@ -1249,10 +1246,10 @@ table.comptable tr td input.newtitle {
 	margin: 0 5px 5px 0;
 	padding: 3px 10px;
 	text-decoration: none;
+		-moz-border-radius: 3px;
+		-khtml-border-radius: 3px;
+		-webkit-border-radius: 3px;
 	border-radius: 3px;
-	-moz-border-radius: 3px;
-	-khtml-border-radius: 3px;
-	-webkit-border-radius: 3px;
 }
 
 .wrapper a.component:link, .wrapper a.component:visited {
@@ -1372,7 +1369,6 @@ table.comptable tr td input.newtitle {
 	color: #777;
 	-ms-word-break: break-all;
 	    word-break: break-all;
-	    word-break: break-word;
 	-webkit-hyphens: auto;
 	   -moz-hyphens: auto;
 	        hyphens: auto;
@@ -1652,6 +1648,7 @@ table.simple td.title {
 #queue-item-template{
 	display: none;
 }
+
 .queue-item-wrap{
 	margin:0;
 	padding:0;
@@ -1752,10 +1749,10 @@ table.simple td.title {
 
 #sidebar .snav li.upload {
 	display: none;
-	border-radius: 4px;
 		-moz-border-radius: 4px;
 		-khtml-border-radius: 4px;
 		-webkit-border-radius: 4px;
+	border-radius: 4px;
 	margin-left: 13px;
 	color: #FFF;
 	background: <?php echo $primary_1; ?>;
@@ -1771,10 +1768,10 @@ textarea.copykit {
 	border: 1px solid #aaa;
 	line-height: 17px;
 	padding: 4px;
-	border-radius: 2px;
 		-moz-border-radius: 2px;
 		-khtml-border-radius: 2px;
 		-webkit-border-radius: 2px;
+	border-radius: 2px;
 	width: 98%;
 	height: 70px;
 	margin-bottom: 10px;
@@ -1799,9 +1796,6 @@ textarea.copykit {
 
 #jcropform .submit {
 	margin: 20px 0 0 0;
-}
-
-#jcrop_open {
 }
 
 a.updatelink:link,
@@ -1953,13 +1947,13 @@ body#index {
 	margin: 50px auto 0 auto;
 	float: none;
 	text-align: left;
-	border-radius: 5px;
 		-moz-border-radius: 5px;
 		-khtml-border-radius: 5px;
 		-webkit-border-radius: 5px;
-	box-shadow: rgba(0,0,0, 0.05) 0 0 10px;
+	border-radius: 5px;
 		-moz-box-shadow: rgba(0,0,0, 0.05) 0 0 10px;
 		-webkit-box-shadow: rgba(0,0,0, 0.05) 0 0 10px;
+	box-shadow: rgba(0,0,0, 0.05) 0 0 10px;
 	background: #FFF;
 	width: 671px;
 }
@@ -1989,9 +1983,6 @@ body#index {
 	font-size: 18px;
 	padding: 5px;
 	margin-top: 2px;
-}
-
-#index form input.submit {
 }
 
 #index p.cta,
@@ -2103,7 +2094,6 @@ h5 .crumbs, div.h5 .crumbs {
 	font-size: 11px;
 	color: #777;
 	margin-bottom: 5px;
-	font-weight: 100;
 	padding-right: 15px;
 	display: inline-block;
 	background: transparent url('images/utick.png') right center no-repeat;
@@ -2126,17 +2116,17 @@ h5 .crumbs, div.h5 .crumbs {
 	top: -5px;
 	left: 5px;
 	min-width: 100px;
-	border-radius: 2px;
 		-moz-border-radius: 2px;
 		-khtml-border-radius: 2px;
 		-webkit-border-radius: 2px;
-	transition: opacity .3s ease-in-out;
+	border-radius: 2px;
 		-webkit-transition: opacity .3s ease-in-out;
 		-moz-transition: opacity .3s ease-in-out;
 		-o-transition: opacity .3s ease-in-out;
-	box-shadow: rgba(0,0,0, 0.2) 1px 1px 3px 0;
+	transition: opacity .3s ease-in-out;
 		-moz-box-shadow: rgba(0,0,0, 0.2) 1px 1px 3px 0;
 		-webkit-box-shadow: rgba(0,0,0, 0.2) 1px 1px 3px 0;
+	box-shadow: rgba(0,0,0, 0.2) 1px 1px 3px 0;
 	overflow: hidden;
 }
 
@@ -2431,14 +2421,14 @@ a.disabled:visited {
 
 /* Grayscale */
 .desaturate, .dir-empty{
-		filter: grayscale(100%); /* Current draft standard */
-		-webkit-filter: grayscale(100%); /* New WebKit */
+		filter: gray; /* IE */
 		-moz-filter: grayscale(100%);
 		-ms-filter: grayscale(100%);
 		-o-filter: grayscale(100%); /* Not yet supported in Gecko, Opera or IE */
-		/*filter: url(resources.svg#desaturate); /* Gecko */*/
-		filter: gray; /* IE */
+		/*filter: url(resources.svg#desaturate); /* Gecko */
 		-webkit-filter: grayscale(1); /* Old WebKit */
+		-webkit-filter: grayscale(100%); /* New WebKit */
+		filter: grayscale(100%); /* Current draft standard */
 }
 
 /* force text to be non selectable , for labels psuedo buttons */
@@ -2501,8 +2491,9 @@ a.disabled:visited {
 .CodeMirror ::-webkit-scrollbar-thumb:vertical {
 		height: 25px;
 		background-color: rgba(100,100,100,.5);
-		-webkit-border-radius: 3px;
 		border:1px solid #666;
+		-webkit-border-radius: 3px;
+		border-radius: 3px;
 }
 .CodeMirror ::-webkit-scrollbar-thumb:vertical:hover {
 		background-color: #666;
@@ -2510,8 +2501,9 @@ a.disabled:visited {
 .CodeMirror ::-webkit-scrollbar-thumb:horizontal {
 		width: 25px;
 		background-color: rgba(100,100,100,.5);
-		-webkit-border-radius: 3px;
 		border:1px solid #666;
+		-webkit-border-radius: 3px;
+		border-radius: 3px;
 }
 .CodeMirror ::-webkit-scrollbar-thumb:horizontal:hover {
 		background-color: #666;
