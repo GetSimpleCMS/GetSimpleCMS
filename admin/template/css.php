@@ -2523,7 +2523,6 @@ a.disabled:visited {
 /* custom se resize grip handle */
 .CodeMirror .handle {
 	font-size: 17px;
-	opacity: .3;
 	margin-bottom: 2px;
 	margin-right: 0;
 }
@@ -2648,15 +2647,11 @@ a.disabled:visited {
 */
 
 .CodeMirror .ui-icon-gripsmall-diagonal-se {
-	background-position: -64px -224px;
-	background-color: rgba(119, 119, 119, 0.2);
-	border-radius: 4px;
-	width: 13px;
-	height: 13px;
+	opacity:.3;
 }
 
 .CodeMirror .ui-icon-gripsmall-diagonal-se:hover {
-	background-color: rgba(119, 119, 119, 0.6);
+	opacity:.6;
 }
 
 #maincontent .ui-tabs .ui-tabs-panel {
