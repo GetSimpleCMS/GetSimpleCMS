@@ -1818,6 +1818,8 @@ a.updatelink:focus {
 	text-align: center;
 	color: #F2F2F2;
 	margin:3px;
+ 	background-color: <?php echo $label_0; ?>	
+ 	display: block;
 }
 
 .label a{
@@ -1828,31 +1830,31 @@ a.updatelink:focus {
 	color: lightgray;
 }
 
-.label-ok {
-	background-color: #2AA206;
+.label-info {
+	background-color:  <?php echo $label_1; ?>;
 }
 
-.label-error {
-	background-color: #CF1A0D;
+.label-ok {
+	background-color: <?php echo $label_2; ?>;
 }
 
 .label-warn {
-	background-color: orange;
+	background-color:  <?php echo $label_3; ?>;
 }
 
-.label-info {
-	background-color: #2B5CB3;
+.label-error {
+	background-color:  <?php echo $label_4; ?>;
 }
 
 .label-medium {
-	color: #000000;
-	background-color: #999;
+	color: <?php echo $primary_0; ?>;
+	background-color:  <?php echo $label_6; ?>;
 }
 
 .label-light{
-	color: #666;
-	background: #FFF;
-	border: 1px solid #999;
+	color: <?php echo $primary_6; ?>;
+	background:  <?php echo $label_5; ?>;
+	border: 1px solid <?php echo $primary_6; ?>;
 }
 
 #hc_version.label {
