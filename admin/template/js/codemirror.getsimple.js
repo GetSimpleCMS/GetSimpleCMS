@@ -195,7 +195,7 @@ jQuery(document).ready(function () {
 
 		// adjust fullscreen button visibility and position
 		button.toggleClass("scrolled",scrolled); // scrollbars
-		button.toggleClass("hidden",cm.getScrollInfo().height < 25); // too small
+		button.toggleClass("hidden",cmwrapper.height() <= 25); // too small
 	}
 
 

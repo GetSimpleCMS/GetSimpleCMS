@@ -2514,14 +2514,6 @@ a.disabled:visited {
 		background-color: transparent;
 }
 
-/* custom se resize grip handle */
-.CodeMirror .handle {
-	font-size: 17px;
-	margin-bottom: 2px;
-	margin-right: 0;
-}
-
-
 /* tab guides */
 .CodeMirror .cm-tab:not(:first-child){
 	border-left: 1px dotted rgba(100,100,100,0.3);
@@ -2556,6 +2548,9 @@ a.disabled:visited {
 }
 
 /* codemirror overrides */
+
+.codewrap .cm-s-midnight.CodeMirror {border:none;} /* override midnight borers */
+
 .codewrap .CodeMirror {
 	font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;
 	height: auto;
@@ -2567,6 +2562,7 @@ a.disabled:visited {
     background-clip: padding-box !important; /* for IE9+, Firefox 4+, Opera, Chrome */
     z-index: 1001;
 }
+
 
 /* codemirror focused border highlight style */
 .codewrap .CodeMirror.CodeMirror-focused{
@@ -2601,6 +2597,24 @@ a.disabled:visited {
   	max-height: none !important;
 }
 
+
+/* custom se resize grip handle */
+.CodeMirror .handle {
+	font-family: monospace;
+	font-size: 17px;
+	/*margin-bottom: 1px;*/
+	/*margin-right: -1px;*/
+	margin:0;
+	padding-bottom:1px;
+	padding-right:0;
+	text-decoration:none;
+	text-shadow:none;	
+	box-shadow : none;	
+	font-weight: normal;
+	line-height:1;
+}
+
+/* fullscreen button */
 .CodeMirror .overlay_but_fullscrn {
 	position:absolute;
 	top: 5px;
@@ -2615,16 +2629,18 @@ a.disabled:visited {
 	background-color: #777777;
 	border-radius: 4px;
 	color: whitesmoke;
+	font-family: FontAwesome;
 	font-size: 17px;
 	text-align: center;
 	text-decoration:none;
+	box-shadow : none;
 	z-index: 9998;
 	font-weight: normal;
 	opacity:.2;
-	-webkit-transition: opacity 300ms;
-	-moz-transition: opacity 300ms;
-	-o-transition: opacity 300ms;
-	-ms-transition: opacity 300ms;
+		-webkit-transition: opacity 300ms;
+		-moz-transition: opacity 300ms;
+		-o-transition: opacity 300ms;
+		-ms-transition: opacity 300ms;
 	transition: opacity 300ms;
 }
 
