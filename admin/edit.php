@@ -148,7 +148,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
         <div class="edit-nav" >
             <?php 
             if(isset($id)) {
-                echo '<a href="', find_url($url, $parent) ,'" target="_blank" accesskey="', find_accesskey(i18n_r('VIEW')), '" >', i18n_r('VIEW'), ' </a>';
+                echo '<a href="'. find_url($url, $parent) .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
+                if($url != '') {echo '<a href="pages.php?id='. $url .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
+                echo '<span class="save-close"><a href="javascript:void(0)" >'.i18n_r('SAVE_AND_CLOSE').'</a></span>';
             } 
             ?>
             <!-- @todo: fix accesskey for options  -->
@@ -538,7 +540,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                 <div id="dropdown">
                     <h6 class="dropdownaction"><?php i18n('ADDITIONAL_ACTIONS'); ?></h6>
                     <ul class="dropdownmenu">
-                        <li id="save-close" ><a href="javascript:void(0)" ><?php i18n('SAVE_AND_CLOSE'); ?></a></li>
+                        <li class="save-close" ><a href="javascript:void(0)" ><?php i18n('SAVE_AND_CLOSE'); ?></a></li>
                         <?php if($url != '') { ?>
                             <li><a href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" ><?php i18n('CLONE'); ?></a></li>
                         <?php } ?>

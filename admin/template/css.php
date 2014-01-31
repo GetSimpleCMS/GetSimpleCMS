@@ -2115,7 +2115,7 @@ h5 .crumbs, div.h5 .crumbs {
 	background: #f6f6f6;
 	border: 1px solid #ccc;
 	position: absolute;
-	top: -5px;
+	top:  5px;
 	left: 5px;
 	min-width: 100px;
 		-moz-border-radius: 2px;

@@ -499,7 +499,7 @@ jQuery(document).ready(function () {
 		$("#submit_line input.submit").trigger('click');
 	});
 
-	$("#save-close a").on("click", function ($e) {
+	$(".save-close a").on("click", function ($e) {
 		$e.preventDefault();
 		$('input[name=redirectto]').val('pages.php');
 		$("#submit_line input.submit").trigger('click');
