@@ -165,7 +165,7 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') );
 				$ver = '<span class="WARNmsg" >'. i18n_r('CANNOT_CHECK') .' <b>'.$site_version_no.'</b><br /><a href="http://get-simple.info/download/" target="_blank" >'. i18n_r('DOWNLOAD').'</a></span>';
 			}
 			?>
-			<tr><td style="width:445px;" ><?php echo $site_full_name; ?> <?php i18n_r('VERSION'); ?></td><td><?php echo $ver; ?></td></tr>
+			<tr><td style="width:380px;" ><?php echo $site_full_name; ?> <?php i18n_r('VERSION'); ?></td><td><?php echo $ver; ?></td></tr>
 			<tr><td>
 			<?php
 				if (version_compare(PHP_VERSION, "5.2", "<")) {
