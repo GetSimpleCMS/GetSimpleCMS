@@ -14,19 +14,17 @@ define('IN_GS', TRUE);
 /**
  * Set PHP enviroment
  */
-mb_internal_encoding("UTF-8"); // set multibyte encoding
+if(function_exists('mb_internal_encoding')) mb_internal_encoding("UTF-8"); // set multibyte encoding
 
 /**
  *  GSCONFIG definitions
  */
-
 if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
 if(!defined('GSSTYLE_SBFIXED')) define('GSSTYLE_SBFIXED','sbfixed'); // fixed sidebar
 
 /**
  * Bad stuff protection
  */
-
 include_once('security_functions.php');
 
 if (version_compare(PHP_VERSION, "5")  >= 0) {
