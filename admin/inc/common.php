@@ -23,8 +23,8 @@ if(!isset($GS_debug)) $GS_debug = array();
  *
  * @param $txt string
  */
-function debugLog($txt) {
-	global $GS_debug;	
+function debugLog($txt = '') {
+	global $GS_debug;
 	array_push($GS_debug,print_r($txt,true));
 }
 
