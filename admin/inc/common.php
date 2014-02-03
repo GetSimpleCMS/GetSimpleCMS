@@ -12,6 +12,11 @@
 define('IN_GS', TRUE);
 
 /**
+ * Set PHP enviroment
+ */
+mb_internal_encoding("UTF-8"); // set multibyte encoding
+
+/**
  *  GSCONFIG definitions
  */
 
