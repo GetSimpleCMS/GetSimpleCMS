@@ -255,6 +255,7 @@ $success = '';
 
 // debugLog("create_pagesxml: " . $flag);
 if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $flag=='true'){
+  $pagesArray = array();
   // debugLog("create_pagesxml proceeding");
   $menu = '';
   $filem=GSDATAOTHERPATH."pages.xml";
@@ -295,7 +296,7 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $fl
                 
         $note = $pages->addChild('slug');
         $note->addCData($id);
-        $pagesArray[(string)$id]['slug']=(string)$data->slug;
+        $pagesArray[(string)$id]['slug']=(string)$id;
                 
         $pagesArray[(string)$id]['filename']=$file;
         $note = $pages->addChild('filename'); 
