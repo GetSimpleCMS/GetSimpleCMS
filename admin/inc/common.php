@@ -9,7 +9,24 @@
  * @subpackage init
  */
 
-define('IN_GS', TRUE);
+
+define('IN_GS', TRUE); // GS enviroment flag
+
+// GS Debugger
+global $GS_debug; // GS debug trace array
+if(!isset($GS_debug)) $GS_debug = array();	
+
+/**
+ * Debug Console Log
+ *
+ * @since 3.1
+ *
+ * @param $txt string
+ */
+function debugLog($txt) {
+	global $GS_debug;	
+	array_push($GS_debug,print_r($txt,true));
+}
 
 /**
  * Set PHP enviroment
