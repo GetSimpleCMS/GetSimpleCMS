@@ -262,7 +262,7 @@ function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
 		}
 	}
 	
-	$str = date($i, strtotime($date));
+	$str = formatDate($i, strtotime($date));
 	
 	if ($echo) {
 		echo $str;

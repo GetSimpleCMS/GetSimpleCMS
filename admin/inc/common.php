@@ -233,6 +233,10 @@ if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
 	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
 }	
 
+// Set Locale
+if (array_key_exists('LOCALE', $i18n))
+  setlocale(LC_ALL, preg_split('/s*,s*/', $i18n['LOCALE']));
+
 /** 
  * Init Editor globals
  * @uses $EDHEIGHT

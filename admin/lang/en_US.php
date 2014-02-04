@@ -397,8 +397,9 @@ $i18n = array(
 "LOGIN_FAILED"            =>	"Login failed. Please double check your Username and Password",
 
 /* 
-* For: Date Format
+* For: Locale and Date Format
 */
+"LOCALE"                  =>	"en_US",
 "DATE_FORMAT"             =>	"M j, Y", //please keep short
 "DATE_AND_TIME_FORMAT"    =>	"F jS, Y - g:i A", //date and time
 
