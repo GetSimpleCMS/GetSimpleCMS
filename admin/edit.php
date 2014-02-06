@@ -325,10 +325,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
             }
 
             if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
+                debugLog("ckeditor editor.css");
                 $fullpath = suggest_site_path();
-                $contentsCss = $fullpath.'theme/'.$TEMPLATE.'/editor.css';
+                $contentsCss = $fullpath.getRelPath(GSTHEMESPATH).$TEMPLATE.'/editor.css';
             }
-
 
 		?>
         <script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>

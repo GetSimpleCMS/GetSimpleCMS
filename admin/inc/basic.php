@@ -1341,4 +1341,15 @@ function notInInstall(){
 	return ( get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update' && get_filename_id() != 'style' );
 }
 
+/**
+ * Returns a relative path to GSROOTPATH for a full path
+ * @since 3.4
+ * @param  string $path full file path
+ * @return string       relative file path
+ */
+function getRelPath($path){
+	$relpath = str_replace(GSROOTPATH,'',$path);
+	return $relpath;
+}
+
 ?>

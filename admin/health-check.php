@@ -176,7 +176,7 @@ echo '<div class="bodycontent clearfix">
 						sort($data);
 						foreach($data as $file) {
 							if( isFile($file, $path) ) {
-								$relpath = '/'.str_replace(GSROOTPATH,'',$path);
+								$relpath = '/'.getRelPath($path);
 								echo '<tr><td class="hc_item" >'.$relpath . $file .'</td>';
 								if(is_valid_xml($path . $file)){
 									echo '<td>' . i18n_r('XML_VALID').'</td><td><span class="label label-ok">'.i18n_r('OK') .'</span></td>';
@@ -223,7 +223,7 @@ echo '<div class="bodycontent clearfix">
 					}
 
 					foreach($dirsArray as $path){
-						$relpath = '/'.str_replace(GSROOTPATH,'',$path);
+						$relpath = '/'.getRelPath($path);
 						$isFile = substr($relpath, -4,1) == '.';
 						if(!$isFile) $writeOctal = 0744;
 
@@ -286,7 +286,7 @@ echo '<div class="bodycontent clearfix">
 					);						
 
 					foreach($dirsArray as $path){
-						$relpath = '/'.str_replace(GSROOTPATH,'',$path);
+						$relpath = '/'.getRelPath($path);
 						echo "<tr><td class=\"hc_item\" >$relpath</td>";
 						
 						$file = $path.".htaccess";

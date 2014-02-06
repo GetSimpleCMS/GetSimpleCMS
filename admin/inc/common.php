@@ -107,7 +107,7 @@ define('GSDATAPAGESPATH', GSROOTPATH. 'data/pages/');
 define('GSDATAUPLOADPATH', GSROOTPATH. 'data/uploads/');
 define('GSTHUMBNAILPATH', GSROOTPATH. 'data/thumbs/');
 define('GSBACKUPSPATH', GSROOTPATH. 'backups/');
-define('GSTHEMESPATH', GSROOTPATH. 'theme/');
+define('GSTHEMESPATH', GSROOTPATH. 'custom_theme/');
 define('GSUSERSPATH', GSROOTPATH. 'data/users/');
 define('GSBACKUSERSPATH', GSROOTPATH. 'backups/users/');
 define('GSCACHEPATH', GSROOTPATH. 'data/cache/');

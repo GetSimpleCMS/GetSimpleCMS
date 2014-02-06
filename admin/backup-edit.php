@@ -125,7 +125,7 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 			<?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
 				$fullpath = suggest_site_path();
 			?>
-			contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
+			contentsCss: '<?php echo $fullpath.getRelPath(GSTHEMESPATH).$TEMPLATE; ?>/editor.css',
 			<?php } ?>
 			entities : false,
 			uiColor : '#DDDDDD',

@@ -139,7 +139,7 @@ function createFileDropdown($templates){
 		$extension=pathinfo($file,PATHINFO_EXTENSION);
 		if (in_array($extension, $allowed_extensions)){
 			$filename=pathinfo($file,PATHINFO_BASENAME);
-			$filenamefull=substr(strstr($file,'/theme/'.$template.'/'),strlen('/theme/'.$template.'/'));   
+			$filenamefull=substr(strstr($file,getRelPath(GSTHEMESPATH).$template.'/'),strlen(getRelPath(GSTHEMESPATH).$template.'/'));   
 			if ($TEMPLATE_FILE == $filenamefull){ 
 		        $sel="selected"; 
 			} else { 
@@ -181,7 +181,7 @@ function editor_array2ul($array,$hideEmpty = true) {
 
 				$filename = $elem['value'];
 				$filepath = $elem['path'];   
-				$filenamefull=substr(strstr($filepath.$filename,'/theme/'.$template.'/'),strlen('/theme/'.$template.'/')); 
+				$filenamefull=substr(strstr($filepath.$filename,getRelPath(GSTHEMESPATH).$template.'/'),strlen(getRelPath(GSTHEMESPATH).$template.'/')); 
 
 				$open = editor_fileIsOpen($elem['path'],$elem['value']) ? ' open' : '';
 				
@@ -219,7 +219,7 @@ function editor_array2ul($array,$hideEmpty = true) {
 function editor_fileIsOpen($path,$file){
 	GLOBAL $template,$template_file;
     $file = $path.$file;
-    $filenamefull=substr(strstr($file,'/theme/'.$template.'/'),strlen('/theme/'.$template.'/')); 
+    $filenamefull=substr(strstr($file,getRelPath(GSTHEMESPATH).$template.'/'),strlen(getRelPath(GSTHEMESPATH).$template.'/')); 
 	return $template_file == $filenamefull;
 }
 
@@ -315,7 +315,7 @@ switch (pathinfo($template_file,PATHINFO_EXTENSION)) {
 			<div id="theme_edit_code" class="codewrap">
 				
 				<div id="theme_editing" class="well">
-				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.'theme/ <b><span id="theme_editing_file">'. tsl($template).$template_file .'</span></b>'; ?>
+				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.getRelPath(GSTHEMESPATH).' <b><span id="theme_editing_file">'. tsl($template).$template_file .'</span></b>'; ?>
 				<?php $content = file_get_contents(GSTHEMESPATH . tsl($template) . $template_file); ?>
 				</div>
 		

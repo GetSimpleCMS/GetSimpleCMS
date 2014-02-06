@@ -401,9 +401,8 @@ function get_site_url($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_theme_url($echo=true) {
-	global $SITEURL;
-	global $TEMPLATE;
-	$myVar = trim($SITEURL . "theme/" . $TEMPLATE);
+	global $SITEURL, $TEMPLATE;
+	$myVar = trim($SITEURL . getRelPath(GSTHEMESPATH) . $TEMPLATE);
 	
 	if ($echo) {
 		echo $myVar;

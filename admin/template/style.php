@@ -30,9 +30,9 @@ function compress($buffer) {
   return $buffer;
 }
 
-if (file_exists('../../theme/admin.xml')) {
+if (file_exists(GSTHEMESPATH.'admin.xml')) {
 	#load admin theme xml file
-	$theme = getXML('../../theme/admin.xml');
+	$theme = getXML(GSTHEMESPATH.'admin.xml');
 	$primary_0 = trim($theme->primary->darkest);
 	$primary_1 = trim($theme->primary->darker);
 	$primary_2 = trim($theme->primary->dark);
