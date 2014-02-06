@@ -340,7 +340,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                 forcePasteAsPlainText        : true,
                 language                     : '<?php echo $EDLANG; ?>',
                 defaultLanguage              : 'en',
-                <?php if(!empty($contentsCss)) echo "contentCss                   : '$contentsCss',"; ?>
+                <?php if(!empty($contentsCss)) echo "contentsCss                   : '$contentsCss',"; ?>
                 entities                     : false,
                 uiColor                      : '#DDDDDD',
                 height                       : '<?php echo $EDHEIGHT; ?>',
