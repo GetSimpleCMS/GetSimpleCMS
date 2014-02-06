@@ -1342,13 +1342,14 @@ function notInInstall(){
 }
 
 /**
- * Returns a relative path to GSROOTPATH for a full path
+ * Returns a path relative to GSROOTPATH or optional root path
  * @since 3.4
  * @param  string $path full file path
+ * @param  string $root optional root path, defaults to GSROOTPATH
  * @return string       relative file path
  */
-function getRelPath($path){
-	$relpath = str_replace(GSROOTPATH,'',$path);
+function getRelPath($path,$root = GSROOTPATH ){
+	$relpath = str_replace($root,'',$path);
 	return $relpath;
 }
 
