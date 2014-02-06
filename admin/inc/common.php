@@ -97,21 +97,24 @@ if (defined('GSADMIN')) {
 /**
  * Define some constants
  */
-define('GSADMINPATH', GSROOTPATH . $GSADMIN.'/');
-define('GSADMININCPATH', GSADMINPATH. 'inc/');
-define('GSPLUGINPATH', GSROOTPATH. 'plugins/');
-define('GSLANGPATH', GSADMINPATH. 'lang/');
-define('GSDATAPATH', GSROOTPATH. 'data/');
-define('GSDATAOTHERPATH', GSROOTPATH. 'data/other/');
-define('GSDATAPAGESPATH', GSROOTPATH. 'data/pages/');
-define('GSDATAUPLOADPATH', GSROOTPATH. 'data/uploads/');
-define('GSTHUMBNAILPATH', GSROOTPATH. 'data/thumbs/');
-define('GSBACKUPSPATH', GSROOTPATH. 'backups/');
-define('GSTHEMESPATH', GSROOTPATH. 'custom_theme/');
-define('GSUSERSPATH', GSROOTPATH. 'data/users/');
-define('GSBACKUSERSPATH', GSROOTPATH. 'backups/users/');
-define('GSCACHEPATH', GSROOTPATH. 'data/cache/');
-define('GSAUTOSAVEPATH', GSROOTPATH. 'data/pages/autosave/');
+define('GSADMINPATH'     , GSROOTPATH      . $GSADMIN.'/');
+define('GSADMININCPATH'  , GSADMINPATH     . 'inc/');
+define('GSPLUGINPATH'    , GSROOTPATH      . 'plugins/');
+define('GSLANGPATH'      , GSADMINPATH     . 'lang/');
+
+// data
+define('GSDATAPATH'      , GSROOTPATH      . 'data/');
+define('GSDATAOTHERPATH' , GSDATAPATH      . 'other/');
+define('GSDATAPAGESPATH' , GSDATAPATH      . 'pages/');
+define('GSAUTOSAVEPATH'  , GSDATAPAGESPATH . 'autosave/');
+define('GSDATAUPLOADPATH', GSDATAPATH      . 'uploads/');
+define('GSTHUMBNAILPATH' , GSDATAPATH      . 'thumbs/');
+define('GSUSERSPATH'     , GSDATAPATH      . 'users/');
+define('GSCACHEPATH'     , GSDATAPATH      . 'cache/');
+
+define('GSBACKUPSPATH'   , GSROOTPATH      . 'backups/');
+define('GSBACKUSERSPATH' , GSBACKUPSPATH   . 'users/');
+define('GSTHEMESPATH'    , GSROOTPATH      . 'theme/');
 
 /**
  * Init debug mode
