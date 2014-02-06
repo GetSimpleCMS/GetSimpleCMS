@@ -17,7 +17,7 @@ include('inc/common.php');
 $userid 	= login_cookie_check();
 $file 		= "components.xml";
 $path 		= GSDATAOTHERPATH;
-$bakpath 	= GSBACKUPSPATH .'other/';
+$bakpath 	= GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH);
 $update 	= ''; $table = ''; $list='';
 
 # check to see if form was submitted

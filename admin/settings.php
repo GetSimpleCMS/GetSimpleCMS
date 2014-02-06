@@ -39,7 +39,8 @@ if (isset($_GET['undo'])) {
 	check_for_csrf("undo");	
 	# perform undo
 	undo($file, GSUSERSPATH, GSBACKUSERSPATH);
-	undo($wfile, GSDATAOTHERPATH, GSBACKUPSPATH.'other/');
+	$bakpath 	= GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH);	
+	undo($wfile, GSDATAOTHERPATH, $bakpath);
 	generate_sitemap();
 	
 	# redirect back to yourself to show the new restored data
@@ -134,7 +135,8 @@ if(isset($_POST['submitted'])) {
 		}
 		
 		# create website xml file
-		createBak($wfile, GSDATAOTHERPATH, GSBACKUPSPATH.'other/');
+		$bakpath = GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH); 
+		createBak($wfile, GSDATAOTHERPATH, $bakpath);
 		$xmls = new SimpleXMLExtended('<item></item>');
 		$note = $xmls->addChild('SITENAME');
 		$note->addCData($SITENAME);
