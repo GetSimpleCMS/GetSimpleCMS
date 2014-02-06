@@ -193,7 +193,7 @@ function read_pluginsxml(){
   	$componentsec = $data->item;
 	  if (count($componentsec) != 0) {
 			foreach ($componentsec as $component) {
-			  $live_plugins[(string)$component->plugin]=(string)$component->enabled;
+			  $live_plugins[trim((string)$component->plugin)]=trim((string)$component->enabled);
 			}
 	  }
 	}

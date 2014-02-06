@@ -9,12 +9,33 @@
  * @subpackage init
  */
 
-define('IN_GS', TRUE);
+
+define('IN_GS', TRUE); // GS enviroment flag
+
+// GS Debugger
+global $GS_debug; // GS debug trace array
+if(!isset($GS_debug)) $GS_debug = array();	
+
+/**
+ * Debug Console Log
+ *
+ * @since 3.1
+ *
+ * @param $txt string
+ */
+function debugLog($txt = '') {
+	global $GS_debug;
+	array_push($GS_debug,print_r($txt,true));
+}
+
+/**
+ * Set PHP enviroment
+ */
+if(function_exists('mb_internal_encoding')) mb_internal_encoding("UTF-8"); // set multibyte encoding
 
 /**
  *  GSCONFIG definitions
  */
-
 if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
 if(!defined('GSSTYLE_SBFIXED')) define('GSSTYLE_SBFIXED','sbfixed'); // fixed sidebar
 

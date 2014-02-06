@@ -4,9 +4,14 @@
  * Generate standard thumbnails
  * @param  string $path path to image
  * @param  string $name file name
+ * @uses   GD
  */
 
 function genStdThumb($path,$name){
+
+	//gd check
+	$php_modules = get_loaded_extensions();
+	if(!in_arrayi('gd', $php_modules)) return;
 
 	if (!defined('GSIMAGEWIDTH')) {
 		$width = 200; //New width of image  	
@@ -79,6 +84,8 @@ function genStdThumb($path,$name){
 	
 	imagedestroy($picture);
 	imagedestroy($image);
+
+	return true;
 }
 
 
@@ -92,6 +99,7 @@ function genStdThumb($path,$name){
  *
  * @package GetSimple
  * @subpackage Images
+ * @uses GD
  */
 class ImageManipulation {
 

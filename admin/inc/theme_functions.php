@@ -39,26 +39,27 @@ function get_page_content() {
  * @uses strip_decode
  *
  * @param string $n Optional, default is 200.
- * @param bool $html Optional, default is false.  
- * 				If this is true, it will strip out html from $content
+ * @param bool $html Optional, default is false, if true, it will strip html from $content
+ * @param string $ellipsis Optional, Default '...', specify an ellipsis
  * @return string Echos.
  */
-function get_page_excerpt($n=200, $html=false) {
+function get_page_excerpt($n=200, $html=false, $ellipsis = '...') {
+	if ($n<1) return;
 	global $content;
 	$content_e = strip_decode($content);
 	$content_e = exec_filter('content',$content_e);
-	
+
 	if (!$html) {
 		$content_e = strip_tags($content_e);
 	}
-	
-	if (function_exists('mb_substr')) { 
-		$content_e = trim(mb_substr($content_e, 0, $n)) . '...';
+
+	if ( function_exists('mb_check_encoding') && ! mb_check_encoding($content_e, 'ASCII') && mb_check_encoding($content_e, 'UTF-8')) {
+		$content_e = mb_substr($content_e, 0, mb_strpos($content_e,' ',$n-1, 'UTF-8'), 'UTF-8');
 	} else {
-		$content_e = trim(substr($content_e, 0, $n)) . '...';
+		$content_e = substr($content_e, 0, strpos($content_e,' ',$n-1));
 	}
 
-	echo $content_e;
+	echo trim($content_e) . $ellipsis;
 }
 
 /**
