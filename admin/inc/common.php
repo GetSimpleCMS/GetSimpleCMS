@@ -97,24 +97,24 @@ if (defined('GSADMIN')) {
 /**
  * Define some constants
  */
-define('GSADMINPATH'     , GSROOTPATH      . $GSADMIN.'/');
-define('GSADMININCPATH'  , GSADMINPATH     . 'inc/');
-define('GSPLUGINPATH'    , GSROOTPATH      . 'plugins/');
-define('GSLANGPATH'      , GSADMINPATH     . 'lang/');
+define('GSADMINPATH'     , GSROOTPATH      . $GSADMIN.'/'); // admin/
+define('GSADMININCPATH'  , GSADMINPATH     . 'inc/');       // admin/inc/
+define('GSPLUGINPATH'    , GSROOTPATH      . 'plugins/');   // plugins/
+define('GSLANGPATH'      , GSADMINPATH     . 'lang/');      // lang/
 
 // data
-define('GSDATAPATH'      , GSROOTPATH      . 'data/');
-define('GSDATAOTHERPATH' , GSDATAPATH      . 'other/');
-define('GSDATAPAGESPATH' , GSDATAPATH      . 'pages/');
-define('GSAUTOSAVEPATH'  , GSDATAPAGESPATH . 'autosave/');
-define('GSDATAUPLOADPATH', GSDATAPATH      . 'uploads/');
-define('GSTHUMBNAILPATH' , GSDATAPATH      . 'thumbs/');
-define('GSUSERSPATH'     , GSDATAPATH      . 'users/');
-define('GSCACHEPATH'     , GSDATAPATH      . 'cache/');
+define('GSDATAPATH'      , GSROOTPATH      . 'data/');      // data/
+define('GSDATAOTHERPATH' , GSDATAPATH      . 'other/');     // data/other/
+define('GSDATAPAGESPATH' , GSDATAPATH      . 'pages/');     // data/pages/
+define('GSAUTOSAVEPATH'  , GSDATAPAGESPATH . 'autosave/');  // data/pages/autosave/
+define('GSDATAUPLOADPATH', GSDATAPATH      . 'uploads/');   // data/uploads/
+define('GSTHUMBNAILPATH' , GSDATAPATH      . 'thumbs/');    // data/thumbs/
+define('GSUSERSPATH'     , GSDATAPATH      . 'users/');     // data/users/
+define('GSCACHEPATH'     , GSDATAPATH      . 'cache/');     // data/cache/
 
-define('GSBACKUPSPATH'   , GSROOTPATH      . 'backups/');
-define('GSBACKUSERSPATH' , GSBACKUPSPATH   . 'users/');
-define('GSTHEMESPATH'    , GSROOTPATH      . 'theme/');
+define('GSBACKUPSPATH'   , GSROOTPATH      . 'backups/');   // backups/
+define('GSBACKUSERSPATH' , GSBACKUPSPATH   . 'users/');     // backups/users
+define('GSTHEMESPATH'    , GSROOTPATH      . 'theme/');     // theme/
 
 /**
  * Init debug mode
