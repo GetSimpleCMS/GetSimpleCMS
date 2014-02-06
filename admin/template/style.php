@@ -33,6 +33,7 @@ function compress($buffer) {
 if (file_exists(GSTHEMESPATH.'admin.xml')) {
 	#load admin theme xml file
 	$theme = getXML(GSTHEMESPATH.'admin.xml');
+	
 	$primary_0 = trim($theme->primary->darkest);
 	$primary_1 = trim($theme->primary->darker);
 	$primary_2 = trim($theme->primary->dark);
@@ -40,8 +41,10 @@ if (file_exists(GSTHEMESPATH.'admin.xml')) {
 	$primary_4 = trim($theme->primary->light);
 	$primary_5 = trim($theme->primary->lighter);
 	$primary_6 = trim($theme->primary->lightest);
+	
 	$secondary_0 = trim($theme->secondary->darkest);
 	$secondary_1 = trim($theme->secondary->lightest);
+
 	$label_0     = trim($theme->label->label_0); // label_default
 	$label_1     = trim($theme->label->label_1); // label_info
 	$label_2     = trim($theme->label->label_2); // label_ok
@@ -49,27 +52,27 @@ if (file_exists(GSTHEMESPATH.'admin.xml')) {
 	$label_4     = trim($theme->label->label_4); // label_error
 	$label_5     = trim($theme->label->label_5); // label_medium
 	$label_6     = trim($theme->label->label_6); // label_light
-} else {
-	# set default colors
-	$primary_0 = '#0E1316'; # darkest
-	$primary_1 = '#182227';
-	$primary_2 = '#283840';
-	$primary_3 = '#415A66';
-	$primary_4 = '#618899';
-	$primary_5 = '#E8EDF0';
-	$primary_6 = '#AFC5CF'; # lightest
-	
-	$secondary_0 = '#9F2C04'; # darkest
-	$secondary_1 = '#CF3805'; # lightest
-
-	$label_0     = '#F2F2F2'; // label_default
-	$label_1     = '#0B5584'; // label_info
-	$label_2     = '#008C00'; // label_ok
-	$label_3     = '#FF8500'; // label_warn
-	$label_4     = '#CC0000'; // label_error
-	$label_5     = '#FFFFFF'; // label_light
-	$label_6     = '#999999'; // label_medium
 }
+
+	# set default colors
+	if(!is_object($primary_0)) $primary_0   = '#0E1316'; # darkest
+	if(!is_object($primary_1)) $primary_1   = '#182227';
+	if(!is_object($primary_2)) $primary_2   = '#283840';
+	if(!is_object($primary_3)) $primary_3   = '#415A66';
+	if(!is_object($primary_4)) $primary_4   = '#618899';
+	if(!is_object($primary_5)) $primary_5   = '#E8EDF0';
+	if(!is_object($primary_6)) $primary_6   = '#AFC5CF'; # lightest
+	
+	if(!is_object($secondary)) $secondary_0 = '#9F2C04'; # darkest
+	if(!is_object($secondary)) $secondary_1 = '#CF3805'; # lightest
+
+	if(!is_object($label_0))   $label_0     = '#F2F2F2'; // label_default
+	if(!is_object($label_1))   $label_1     = '#0B5584'; // label_info
+	if(!is_object($label_2))   $label_2     = '#008C00'; // label_ok
+	if(!is_object($label_3))   $label_3     = '#FF8500'; // label_warn
+	if(!is_object($label_4))   $label_4     = '#CC0000'; // label_error
+	if(!is_object($label_5))   $label_5     = '#FFFFFF'; // label_light
+	if(!is_object($label_6))   $label_6     = '#999999'; // label_medium
 
 include('css.php');
 
