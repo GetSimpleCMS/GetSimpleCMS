@@ -1,4 +1,9 @@
 <?php
+
+// TESTING DISABLED
+header('Status: 404 Not Found');
+die();
+
 # Setup inclusions
 $load['plugin'] = true;
 
