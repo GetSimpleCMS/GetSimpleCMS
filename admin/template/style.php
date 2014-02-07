@@ -63,8 +63,8 @@ if (file_exists(GSTHEMESPATH.'admin.xml')) {
 	if(!is_object($primary_5)) $primary_5   = '#E8EDF0';
 	if(!is_object($primary_6)) $primary_6   = '#AFC5CF'; # lightest
 	
-	if(!is_object($secondary)) $secondary_0 = '#9F2C04'; # darkest
-	if(!is_object($secondary)) $secondary_1 = '#CF3805'; # lightest
+	if(!is_object($secondary_0)) $secondary_0 = '#9F2C04'; # darkest
+	if(!is_object($secondary_1)) $secondary_1 = '#CF3805'; # lightest
 
 	if(!is_object($label_0))   $label_0     = '#F2F2F2'; // label_default
 	if(!is_object($label_1))   $label_1     = '#0B5584'; // label_info
