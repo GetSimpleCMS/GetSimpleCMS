@@ -11,9 +11,9 @@
 # setup inclusions
 $load['plugin'] = true;
 include('inc/common.php');
+login_cookie_check();
 
 # variable settings
-login_cookie_check();
 $fullpath = suggest_site_path();
 $file			= _id($USR) .'.xml';
 $wfile 		= 'website.xml';

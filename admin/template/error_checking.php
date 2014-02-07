@@ -6,13 +6,11 @@
  *
  * @package GetSimple
  *  
- * Modified by Jorge H. [ http://www.jorgehoya.es ] on 07/09/2011
- *
- * Modified by Shawn_a 8/01/2012
  * You can pass $update(global) directly if not using a redirrect and querystring
  *
  */
- 
+ 	
+ 	// do not use these alerts if ajax requests as they will not be seen, and interfere with other alerts
 	if ( !requestIsAjax() && file_exists(GSUSERSPATH._id($USR).".xml.reset") && get_filename_id()!='index' && get_filename_id()!='resetpassword' ) {
 		echo '<div class="error"><p>'.i18n_r('ER_PWD_CHANGE').'</p></div>';
 	}

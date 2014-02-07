@@ -14,6 +14,7 @@ $load['plugin'] = true;
 // Include common.php
 include('inc/common.php');
 login_cookie_check();
+
 $php_modules = get_loaded_extensions();
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i18n_r('WEB_HEALTH_CHECK')); 

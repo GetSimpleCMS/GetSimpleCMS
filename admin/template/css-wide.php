@@ -2,9 +2,9 @@
 
 /*
  * CSS wide
- *
  */
 
+/* <style> */
 
 .wrapper{
 	/* main wrapper */
@@ -104,3 +104,5 @@ form.manyinputs textarea{
 .rightopt {
 	float:left;
 }
+
+/* </style> */

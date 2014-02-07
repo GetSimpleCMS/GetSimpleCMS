@@ -13,9 +13,9 @@ $load['plugin'] = true;
 
 // Include common.php
 include('inc/common.php');
+login_cookie_check();
 
 // Variable Settings
-login_cookie_check();
 $table = '';
 
 // if a backup needs to be created

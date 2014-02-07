@@ -11,7 +11,7 @@
 # setup
 $load['plugin'] = true;
 include('inc/common.php');
-$userid = login_cookie_check();
+login_cookie_check();
 
 # get page url to display
 if ($_GET['id'] != '') {

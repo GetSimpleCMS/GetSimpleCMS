@@ -13,10 +13,9 @@ $load['plugin'] = true;
 
 // Include common.php
 include('inc/common.php');
-
-// Variable Settings
 login_cookie_check();
 
+// Variable Settings
 $subPath = (isset($_GET['path'])) ? $_GET['path'] : "";
 if ($subPath != '') $subPath = tsl($subPath);
 

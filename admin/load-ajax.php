@@ -1,3 +1,5 @@
 <?php
-
-die("This functionality is deprecated");
+/**
+ * load-ajax.php removed in version 3.2
+ */
+?>

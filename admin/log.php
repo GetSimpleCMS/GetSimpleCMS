@@ -12,10 +12,9 @@
 // Setup inclusions
 $load['plugin'] = true;
 include('inc/common.php');
-
-// Variable Settings
 login_cookie_check();
 
+// Variable Settings
 $log_name = isset($_GET['log']) ? $_GET['log'] : '';
 $log_path = GSDATAOTHERPATH.'logs/';
 $log_file = $log_path . $log_name;

@@ -13,9 +13,9 @@ $load['plugin'] = true;
 
 // Include common.php
 include('inc/common.php');
+login_cookie_check();
 
 // Variable settings
-login_cookie_check();
 $id      =  isset($_GET['id']) ? $_GET['id'] : null;
 $ptype   = isset($_GET['type']) ? $_GET['type'] : null; 
 $path    = GSDATAPAGESPATH;

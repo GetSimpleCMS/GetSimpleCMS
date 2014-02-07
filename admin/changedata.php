@@ -19,6 +19,8 @@ $autoSaveDraft = false; // auto save to autosave drafts
 
 $bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/					
 
+login_cookie_check();
+
 // check form referrer - needs siteurl and edit.php in it. 
 if (isset($_SERVER['HTTP_REFERER'])) {
 	if ( !(strpos(str_replace('http://www.', '', $SITEURL), $_SERVER['HTTP_REFERER']) === false) || !(strpos("edit.php", $_SERVER['HTTP_REFERER']) === false)) {
@@ -28,8 +30,6 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	}
 }
 
-login_cookie_check();
-	
 if (isset($_POST['submitted'])) {
 	check_for_csrf("edit", "edit.php");	
 	

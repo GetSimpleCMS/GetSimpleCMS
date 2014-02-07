@@ -9,9 +9,9 @@
 # setup inclusions
 $load['plugin'] = true;
 include('inc/common.php');
+login_cookie_check();
 
 # variable settings
-login_cookie_check();
 $path 			= GSDATAOTHERPATH; 
 $file 			= "website.xml"; 
 $theme_options 	= '';

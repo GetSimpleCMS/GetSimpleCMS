@@ -1,3 +1,5 @@
 <?php
-
-die("This functionality is deprecated");
+/**
+ * loadtab.php removed in version 3.2.1
+ */
+?>

@@ -1,11 +1,16 @@
 /** CSS **/
 
-/*
+/**
  * CSS php dynamic
  * DO NOT TIDY!
- * @uses color variables $primary0 - $primary6, $secondary_0-$secondary_1
+ *
+ * @uses $primary_0 - $primary_6
+ * @uses $secondary_0 - $secondary_1
+ * @uses $label_0 - $label_6
  *
  */
+
+/* <style> */
 
 /** GLOBAL RESETS **/
 :link,:visited {
@@ -2787,4 +2792,6 @@ a.disabled:visited {
     margin-left: -7px;
 }
 
-/*END*/
+/* END */
+
+/* </style> */

@@ -13,9 +13,9 @@ $load['plugin'] = true;
 
 // Include common.php
 include('inc/common.php');
+login_cookie_check();
 
 // Variable settings
-$userid = login_cookie_check();
 
 // Get passed variables
 $id    = isset($_GET['id'])    ? var_out( $_GET['id']    ): null;

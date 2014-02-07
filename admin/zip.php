@@ -11,7 +11,6 @@
 // Setup inclusions
 $load['plugin'] = true;
 
-
 // Include common.php
 include('inc/common.php');
 login_cookie_check();
@@ -19,9 +18,6 @@ login_cookie_check();
 // check validity of request
 if ($_REQUEST['s'] === $SESSIONHASH) {
 	
-	
-	# fix from hameau 
-	//$timestamp = date('Y-m-d-Hi');
 	$timestamp = gmdate('Y-m-d-Hi_s');
 	$zipcreated = true;
 	
