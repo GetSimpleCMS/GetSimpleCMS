@@ -15,8 +15,10 @@ include('inc/common.php');
 login_cookie_check();
 
 $filesSorted=null;$dirsSorted=null;
+$uploadsPath = GSDATAUPLOADPATH;
+$uploadsPathRel = getRelPath(GSDATAUPLOADPATH);
 
-$path = (isset($_GET['path'])) ? "../data/uploads/".$_GET['path'] : "../data/uploads/";
+$path = (isset($_GET['path'])) ? $uploadsPath.$_GET['path'] : $uploadsPath;
 $subPath = (isset($_GET['path'])) ? $_GET['path'] : "";
 if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
 $returnid = isset($_GET['returnid']) ? var_out($_GET['returnid']) : "";
@@ -26,7 +28,7 @@ $path = tsl($path);
 $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 $CKEditorFuncNum = isset($_GET['CKEditorFuncNum']) ? var_out($_GET['CKEditorFuncNum']) : '';
 $sitepath = suggest_site_path();
-$fullPath = $sitepath . "data/uploads/";
+$fullPath = $sitepath . $uploadsPathRel; // url path to image
 $type = isset($_GET['type']) ? var_out($_GET['type']) : '';
 
 global $LANG;
@@ -156,8 +158,8 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 					# get internal thumbnail to show beside link in table
 					$thumb = '<td class="imgthumb" style="display:table-cell" >';
 					$thumbLink = $urlPath.'thumbsm.'.$upload['name'];
-					if (file_exists('../data/thumbs/'.$thumbLink)) {
-						$imgSrc='<img src="../data/thumbs/'. $thumbLink .'" />';
+					if (file_exists(GSTHUMBNAILPATH.$thumbLink.'a')) {
+						$imgSrc='<img src="'.$SITEURL.getRelPath(GSTHUMBNAILPATH).$thumbLink .'" />';
 					} else {
 						$imgSrc='<img src="inc/thumb.php?src='. $urlPath . $upload['name'] .'&amp;dest='. $thumbLink .'&amp;x=65&amp;f=1" />';
 					}
@@ -165,9 +167,9 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 					$thumb .= '</td>';
 					
 					# get external thumbnail link
-					$thumbLinkExternal = 'data/thumbs/'.$urlPath.'thumbnail.'.$upload['name'];
-					if (file_exists('../'.$thumbLinkExternal)) {
-					$thumbnailLink = '<span>&nbsp;&ndash;&nbsp;&nbsp;</span><a href="javascript:void(0)" onclick="submitLink('.$CKEditorFuncNum.',\''.$sitepath.$thumbLinkExternal.'\')">'.i18n_r('THUMBNAIL').'</a>';
+					$thumbLinkExternal = $urlPath.'thumbnail.'.$upload['name'];
+					if (file_exists(GSTHUMBNAILPATH.$thumbLinkExternal)) {
+					$thumbnailLink = '<span>&nbsp;&ndash;&nbsp;&nbsp;</span><a href="javascript:void(0)" onclick="submitLink('.$CKEditorFuncNum.',\''.$sitepath.getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'\')">'.i18n_r('THUMBNAIL').'</a>';
 					}
 				}
 				else { continue; }

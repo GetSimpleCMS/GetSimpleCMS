@@ -20,10 +20,17 @@ login_cookie_check();
 $subPath = (isset($_GET['path'])) ? $_GET['path'] : "";
 if ($subPath != '') $subPath = tsl($subPath);
 
+$uploadsPath = GSDATAUPLOADPATH;
+$uploadsPathRel = getRelPath(GSDATAUPLOADPATH);
+$thumbPathRel = getRelPath(GSTHUMBNAILPATH);
+
 $src = strippath($_GET['i']);
 $thumb_folder = GSTHUMBNAILPATH.$subPath;
-$src_folder = '../data/uploads/';
-$thumb_folder_rel = '../data/thumbs/'.$subPath;
+$src_folder = $uploadsPath;
+$src_url = $SITEURL.$uploadsPathRel.$subPath;
+$thumb_folder_rel = $thumbPathRel.$subPath;
+$thumb_url = $SITEURL.$thumb_folder_rel;
+
 if (!is_file($src_folder . $subPath .$src)) redirect("upload.php");
 
 // handle jcrop thumbnail creation
@@ -46,13 +53,13 @@ list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($src_folder .$sub
 
 if (file_exists($thumb_folder . 'thumbnail.' . $src)) {
 	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . 'thumbnail.'.$src);
-	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder_rel . 'thumbnail.'. rawurlencode($src) .'" rel="facybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
+	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'" rel="facybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 }else{
 	// if thumb is missing recreate it
 	require_once('inc/imagemanipulation.php');
 	if(genStdThumb($subPath,$src)){
 		list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . 'thumbnail.'.$src);
-		$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_folder_rel . 'thumbnail.'. rawurlencode($src) .'" rel="facybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
+		$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'" rel="facybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 	}
 }
 
@@ -66,7 +73,7 @@ include('template/include-nav.php'); ?>
 		<div class="main">
 		<h3><?php i18n('IMG_CONTROl_PANEL');?></h3>
 	
-			<?php echo '<p><a href="'.$src_folder . $subPath .rawurlencode($src).'" rel="facybox_i" >'.i18n_r('ORIGINAL_IMG').'</a> <code>'.$imgwidth.'x'.$imgheight .'</code>'. $thumb_exists .'</p>'; ?>
+			<?php echo '<p><a href="'.$src_url .rawurlencode($src).'" rel="facybox_i" >'.i18n_r('ORIGINAL_IMG').'</a> <code>'.$imgwidth.'x'.$imgheight .'</code>'. $thumb_exists .'</p>'; ?>
 
 			<form>
 				<select class="text" id="img-info" style="width:50%" >
@@ -78,16 +85,16 @@ include('template/include-nav.php'); ?>
 					<option value="code-imgthumb-html" ><?php i18n('HTML_THUMB_ORIG');?></option>
 					<?php } ?>
 				</select>
-				<textarea class="copykit" ><?php echo tsl($SITEURL) .'data/uploads/'. $subPath. rawurlencode($src); ?></textarea>
+				<textarea class="copykit" ><?php echo $src_url. rawurlencode($src); ?></textarea>
 				<p style="color:#666;font-size:11px;margin:-10px 0 0 0"><a href="javascript:void(0)" class="select-all" ><?php i18n('CLIPBOARD_INSTR');?></a></p>
 			</form>
 			<div class="toggle">
-				<p id="code-img-html">&lt;img src="<?php echo tsl($SITEURL) .'data/uploads/'. $subPath. rawurlencode($src); ?>" class="gs_image" height="<?php echo $imgheight; ?>" width="<?php echo $imgwidth; ?>" alt=""></p>
-				<p id="code-img-link"><?php echo tsl($SITEURL) .'data/uploads/'. $subPath. rawurlencode($src); ?></p>
+				<p id="code-img-html">&lt;img src="<?php echo $src_url. rawurlencode($src); ?>" class="gs_image" height="<?php echo $imgheight; ?>" width="<?php echo $imgwidth; ?>" alt=""></p>
+				<p id="code-img-link"><?php echo $src_url. rawurlencode($src); ?></p>
 				<?php if(!empty($thumb_exists)) { ?>
-				<p id="code-thumb-html">&lt;img src="<?php echo tsl($SITEURL) .'data/thumbs/'.$subPath.'thumbnail.'. rawurlencode($src); ?>" class="gs_image gs_thumb" height="<?php echo $thheight; ?>" width="<?php echo $thwidth; ?>" alt=""></p>
-				<p id="code-thumb-link"><?php echo tsl($SITEURL) .'data/thumbs/'.$subPath.'thumbnail.'.rawurlencode($src); ?></p>
-				<p id="code-imgthumb-html">&lt;a href="<?php echo tsl($SITEURL) .'data/uploads/'. $subPath. rawurlencode($src); ?>" class="gs_image_link" >&lt;img src="<?php echo tsl($SITEURL) .'data/thumbs/'.$subPath.'thumbnail.'.rawurlencode($src); ?>" class="gs_thumb" height="<?php echo $thheight; ?>" width="<?php echo $thwidth; ?>" alt="" />&lt;/a></p>
+				<p id="code-thumb-html">&lt;img src="<?php echo $thumb_url.'thumbnail.'. rawurlencode($src); ?>" class="gs_image gs_thumb" height="<?php echo $thheight; ?>" width="<?php echo $thwidth; ?>" alt=""></p>
+				<p id="code-thumb-link"><?php echo $thumb_url.'thumbnail.'.rawurlencode($src); ?></p>
+				<p id="code-imgthumb-html">&lt;a href="<?php echo $src_url. rawurlencode($src); ?>" class="gs_image_link" >&lt;img src="<?php echo $thumb_url.'thumbnail.'.rawurlencode($src); ?>" class="gs_thumb" height="<?php echo $thheight; ?>" width="<?php echo $thwidth; ?>" alt="" />&lt;/a></p>
 				<?php } ?>
 			</div>
 	</div>
@@ -96,7 +103,7 @@ include('template/include-nav.php'); ?>
 $jcrop = !empty($thumb_exists);
 if($jcrop){ ?>
 	<div id="jcrop_open" class="main">
-	    <img src="<?php echo $src_folder . $subPath.rawurlencode($src); ?>" id="cropbox" />
+	    <img src="<?php echo $src_url . $subPath.rawurlencode($src); ?>" id="cropbox" />
 			<div id="handw" class="toggle" ><?php i18n('SELECT_DIMENTIONS'); ?><br /><span id="picw"></span> x <span id="pich"></span></div>
 	    <!-- This is the form that our event handler fills -->
 	    <form id="jcropform" action="<?php myself(); ?>?i=<?php echo rawurlencode($src); ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
