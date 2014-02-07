@@ -137,6 +137,7 @@ class API_Request {
 		if($this->auth()) {
 			$patho = (string)$this->xml->data->path;
 			$path = tsl(GSDATAUPLOADPATH . $patho);
+			$url = tsl($SITEURL.getRelPath(GSDATAUPLOADPATH).$patho);
 			$filesArray = array();
 			$count =0;
 			global $SITEURL;
@@ -153,7 +154,7 @@ class API_Request {
 					    $filesArray[$count]['type'] = 'folder';
 						} else {
 							$filesArray[$count]['type'] = 'file';
-							$filesArray[$count]['url'] = tsl($SITEURL.'data/uploads/'.$patho).$file;
+							$filesArray[$count]['url'] = $url.$file;
 								$ext = pathinfo($file,PATHINFO_EXTENSION);
 								$extention = get_FileType($ext);
 							$filesArray[$count]['category'] = $extention;

@@ -18,13 +18,13 @@ $dirsSorted=null;$filesSorted=null;$foldercount=null;
 
 if (isset($_GET['path']) && !empty($_GET['path'])) {
 	$path = str_replace('../','', $_GET['path']);
-	$path = tsl("../data/uploads/".$path);
+	$path = tsl(GSDATAUPLOADPATH.$path);
 	// die if path is outside of uploads
 	if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
 	$subPath = str_replace('../','', $_GET['path']);
 	$subFolder = tsl($subPath);
 } else { 
-	$path = "../data/uploads/";
+	$path = GSDATAUPLOADPATH;
 	$subPath = ''; 
 	$subFolder = '';
 }
@@ -253,8 +253,8 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
         	
           echo '<tr class="All folder '.$upload['name'].'" >';
           echo '<td class="imgthumb" ></td><td>';
-        
-          $adm = substr($path . rawurlencode($upload['name']) ,  16); 
+          // $adm = substr($path . rawurlencode($upload['name']) ,  16); // todo: wtf is this for ?
+          $adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
           echo '<img src="template/images/folder.png" width="11" /> <a href="upload.php?path='.$adm.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
           echo '<td style="width:80px;text-align:right;" ><span>'.$directory_size.'</span></td>';
           
@@ -287,7 +287,7 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 						$thumbLink = $urlPath.'thumbsm.'.$upload['name'];
 						$thumbLinkEncoded = $urlPath.'thumbsm.'.rawurlencode($upload['name']);
 						if (file_exists(GSTHUMBNAILPATH.$thumbLink)) {
-							$imgSrc='<img src="../data/thumbs/'. $thumbLinkEncoded .'" />';
+							$imgSrc='<img src="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH). $thumbLinkEncoded .'" />';
 						} else {
 							$imgSrc='<img src="inc/thumb.php?src='. $urlPath . rawurlencode($upload['name']) .'&amp;dest='. $thumbLinkEncoded .'&amp;f=1" />';
 						}

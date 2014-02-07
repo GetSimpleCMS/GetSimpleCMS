@@ -27,9 +27,9 @@ $thumbPathRel = getRelPath(GSTHUMBNAILPATH);
 $src = strippath($_GET['i']);
 $thumb_folder = GSTHUMBNAILPATH.$subPath;
 $src_folder = $uploadsPath;
-$src_url = $SITEURL.$uploadsPathRel.$subPath;
+$src_url = tsl($SITEURL).$uploadsPathRel.$subPath;
 $thumb_folder_rel = $thumbPathRel.$subPath;
-$thumb_url = $SITEURL.$thumb_folder_rel;
+$thumb_url = tsl($SITEURL).$thumb_folder_rel;
 
 if (!is_file($src_folder . $subPath .$src)) redirect("upload.php");
 
@@ -103,7 +103,7 @@ include('template/include-nav.php'); ?>
 $jcrop = !empty($thumb_exists);
 if($jcrop){ ?>
 	<div id="jcrop_open" class="main">
-	    <img src="<?php echo $src_url . $subPath.rawurlencode($src); ?>" id="cropbox" />
+	    <img src="<?php echo $src_url .rawurlencode($src); ?>" id="cropbox" />
 			<div id="handw" class="toggle" ><?php i18n('SELECT_DIMENTIONS'); ?><br /><span id="picw"></span> x <span id="pich"></span></div>
 	    <!-- This is the form that our event handler fills -->
 	    <form id="jcropform" action="<?php myself(); ?>?i=<?php echo rawurlencode($src); ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">

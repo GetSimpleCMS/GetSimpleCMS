@@ -15,7 +15,7 @@ $offset = 30000;
 #header ('Expires: ' . gmdate ("D, d M Y H:i:s", time() + $offset) . ' GMT');
 $nocache = true;
 # check to see if cache is available for this
-$cachefile = '../../data/cache/stylesheet.txt';
+$cachefile = GSDATACACHE.'stylesheet.txt';
 if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && !$nocache) {
 	echo "/* Cached copy, generated ".date('H:i', filemtime($cachefile))." '".$cachefile."' */\n";
 	echo file_get_contents($cachefile);

@@ -159,7 +159,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 					$thumb = '<td class="imgthumb" style="display:table-cell" >';
 					$thumbLink = $urlPath.'thumbsm.'.$upload['name'];
 					if (file_exists(GSTHUMBNAILPATH.$thumbLink.'a')) {
-						$imgSrc='<img src="'.$SITEURL.getRelPath(GSTHUMBNAILPATH).$thumbLink .'" />';
+						$imgSrc='<img src="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLink .'" />';
 					} else {
 						$imgSrc='<img src="inc/thumb.php?src='. $urlPath . $upload['name'] .'&amp;dest='. $thumbLink .'&amp;x=65&amp;f=1" />';
 					}
