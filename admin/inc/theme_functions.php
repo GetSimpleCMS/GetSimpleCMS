@@ -705,38 +705,22 @@ function is_logged_in(){
   }
 }	
 	
-
-	
 /**
- * @depreciated as of 2.04
- */
+ * aliases
+ * @depreciated as of 2.03
+ * WHY?
+ */	
 function return_page_title() {
 	return get_page_title(FALSE);
 }
-/**
- * @depreciated as of 2.04
- */
 function return_parent() {
 	return get_parent(FALSE);
 }
-/**
- * @depreciated as of 2.04
- */
 function return_page_slug() {
   return get_page_slug(FALSE);
 }
-/**
- * @depreciated as of 2.04
- */
 function return_site_ver() {
 	return get_site_version(FALSE);
 }	
-/**
- * @depreciated as of 2.03
- */
-if(!function_exists('set_contact_page')) {
-	function set_contact_page() {
-		#removed functionality	
-	}
-}
+
 ?>

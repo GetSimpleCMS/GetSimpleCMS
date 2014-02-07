@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /*
 Plugin Name: GetSimple API
 Description: Connect to your site from an external application 

@@ -1,14 +1,15 @@
-<?php
+<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
+
 /**
- * English Language File
+ * English Language File for GetSimpleCMS
  *
- * Date:			6 December 2011
- * Revision:		Dec 2013
- * Version:			GetSimple 3.3.0
- * Traductors: 		Chris Cagle 
- *
- * @package GetSimple
- * @subpackage Language
+ * @Date:       2013-2-1
+ * @Version:    GetSimple 3.4.0
+ * @Traductors: Chris Cagle 
+ * 
+ * @url:        http://get-simple.info
+ * @package     GetSimple
+ * @subpackage  Language
  */
 
 $i18n = array(
@@ -45,8 +46,8 @@ $i18n = array(
 "SELECT_LANGUAGE"         =>	"Select your language",
 "CONTINUE_SETUP"          =>	"Continue with Setup",
 "DOWNLOAD_LANG"           =>	"Download Languages",
-"SITE_UPDATED"			=>	"Your site has been updated",
-"SERVICE_UNAVAILABLE"	=>	"This page is temporarily unavailable",
+"SITE_UPDATED"            =>	"Your site has been updated",
+"SERVICE_UNAVAILABLE"     =>	"This page is temporarily unavailable",
 
 /* 
 * For: pages.php
@@ -440,7 +441,7 @@ $i18n = array(
 "PLUGIN_NAME"             =>	"Plugin",
 "PLUGIN_DESC"             =>	"Description",
 "PLUGIN_VER"              =>	"Version",
-"PLUGIN_UPDATED"		=> "Plugin Updated",
+"PLUGIN_UPDATED"          =>	"Plugin Updated",
 
 
 

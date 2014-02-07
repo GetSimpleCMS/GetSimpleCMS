@@ -8,8 +8,7 @@
 		2. This is to be placed in the root of `/themes/` as `admin.xml`
 		3. Colors need the hash in front of the numbers. eg: #333333
 		4. Do not use shortcut hex values. eg. #333
-		5. Only works with GetSimple version 3.0
-
+		5. Only works with GetSimple version 3.0+
 -->
 <item>
 	<title>GetSimple Default Admin</title>
