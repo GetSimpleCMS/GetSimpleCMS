@@ -17,6 +17,8 @@ include('inc/common.php');
 
 $autoSaveDraft = false; // auto save to autosave drafts
 
+$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/					
+
 // check form referrer - needs siteurl and edit.php in it. 
 if (isset($_SERVER['HTTP_REFERER'])) {
 	if ( !(strpos(str_replace('http://www.', '', $SITEURL), $_SERVER['HTTP_REFERER']) === false) || !(strpos("edit.php", $_SERVER['HTTP_REFERER']) === false)) {
@@ -79,7 +81,7 @@ if (isset($_POST['submitted'])) {
 					updateSlugs($oldslug);
 					$file = GSDATAPAGESPATH . $url .".xml";
 					$existing = GSDATAPAGESPATH . $oldslug .".xml";
-					$bakfile = GSBACKUPSPATH."pages/". $oldslug .".bak.xml";
+					$bakfile = $bakpagespath. $oldslug .".bak.xml";
 					copy($existing, $bakfile);
 					unlink($existing);
 				} 
@@ -128,7 +130,7 @@ if (isset($_POST['submitted'])) {
 		// if we are editing an existing page, create a backup
 		if ( file_exists($file) ) 
 		{
-			$bakfile = GSBACKUPSPATH."pages/". $url .".bak.xml";
+			$bakfile = $bakpagespath. $url .".bak.xml";
 			copy($file, $bakfile);
 		}
 		

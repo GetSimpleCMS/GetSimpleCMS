@@ -17,7 +17,7 @@ $userid = login_cookie_check();
 if ($_GET['id'] != '') {
 	$id = $_GET['id'];
 	$file = $id .".bak.xml";
-	$path = GSBACKUPSPATH .'pages/';
+	$path = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
 	
 	$data = getXML($path . $file);
 	$title = htmldecode($data->title);
@@ -59,7 +59,7 @@ elseif ($p == 'restore') {
 		updateSlugs($_GET['new'], $id);
 		restore_bak($id);
 		$existing = GSDATAPAGESPATH . $_GET['new'] .".xml";
-		$bakfile = GSBACKUPSPATH."pages/". $_GET['new'] .".bak.xml";
+		$bakfile = $path. $_GET['new'] .".bak.xml";
 		copy($existing, $bakfile);
 		unlink($existing);
 		redirect("edit.php?id=". $id ."&old=".$_GET['new']."&upd=edit-success&type=restore");
@@ -67,7 +67,6 @@ elseif ($p == 'restore') {
 		restore_bak($id);
 		redirect("edit.php?id=". $id ."&upd=edit-success&type=restore");
 	}
-	
 	
 }
 

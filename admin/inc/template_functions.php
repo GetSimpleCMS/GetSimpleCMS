@@ -196,7 +196,8 @@ function delete_cache() {
  * @return string
  */
 function delete_bak($id) { 
-	unlink(GSBACKUPSPATH."pages/". $id .".bak.xml");
+	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
+	unlink($bakpagespath. $id .".bak.xml");
 	return 'success';
 } 
 
@@ -210,9 +211,10 @@ function delete_bak($id) {
  * @param string $id File ID to restore
  */
 function restore_bak($id) { 
-	$file = GSBACKUPSPATH."pages/". $id .".bak.xml";
+	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
+	$file = $bakpagespath. $id .".bak.xml";
 	$newfile = GSDATAPAGESPATH . $id .".xml";
-	$tmpfile = GSBACKUPSPATH."pages/". $id .".tmp.xml";
+	$tmpfile = $bakpagespath. $id .".tmp.xml";
 	if ( !file_exists($newfile) ) { 
 		copy($file, $newfile);
 		unlink($file);

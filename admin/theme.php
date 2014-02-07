@@ -25,7 +25,7 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 	$TEMPLATE = $_POST['template'];
 	
 	# backup old website.xml file
-	$bakpath = GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH);	
+	$bakpath = GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH); // backups/other/
 	createBak($file, $path, $bakpath);
 	
 	# udpate website.xml file with new theme

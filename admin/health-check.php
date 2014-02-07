@@ -211,8 +211,8 @@ echo '<div class="bodycontent clearfix">
 						GSUSERSPATH,
 						GSCACHEPATH,
 						GSBACKUPSPATH.'zip/',
-						GSBACKUPSPATH.'pages/',
-						GSBACKUPSPATH.'other/',
+						GSBACKUPSPATH.getRelPath(GSDATAPAGESPATH,GSDATAPATH), // backups/pages/
+						GSBACKUPSPATH.getRelPath(GSDATAOTHERPATH,GSDATAPATH), // backups/other/
 						GSBACKUSERSPATH
 					);		
 

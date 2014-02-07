@@ -23,6 +23,7 @@ $uri   = isset($_GET['uri'])   ? var_out( $_GET['uri']   ): null;
 $ptype = isset($_GET['type'])  ? var_out( $_GET['type']  ): null;    
 $nonce = isset($_GET['nonce']) ? var_out( $_GET['nonce'] ): null;
 $path  = GSDATAPAGESPATH;
+$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/                    
 
 // Page variables reset
 $theme_templates = ''; 
@@ -562,7 +563,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                     if (isset($pubDate)) { 
                         echo sprintf(i18n_r('LAST_SAVED'), '<em>'.$author.'</em>').' '. lngDate($pubDate).'&nbsp;&nbsp; ';
                     }
-                    if ( file_exists(GSBACKUPSPATH.'pages/'.$url.'.bak.xml') ) {    
+                    if ( file_exists($bakpagespath.$url.'.bak.xml') ) {    
                         echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
                     } 
                 ?></p>
