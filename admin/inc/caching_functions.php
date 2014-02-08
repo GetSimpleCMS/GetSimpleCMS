@@ -141,7 +141,6 @@ function getChildren($page){
 
 function getChildrenMulti($page,$options=array()){
 	$pagesArray = getPagesXmlValues();	
-	getPagesXmlValues();
 	$count=0;
 	$returnArray = array();
 	foreach ($pagesArray as $key => $value) {
