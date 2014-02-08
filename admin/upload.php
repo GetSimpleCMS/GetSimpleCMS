@@ -291,13 +291,16 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 						} else {
 							$imgSrc='<img src="inc/thumb.php?src='. $urlPath . rawurlencode($upload['name']) .'&amp;dest='. $thumbLinkEncoded .'&amp;f=1" />';
 						}
-						echo '<a href="'. $path . rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel=" facybox_i" >'.$imgSrc.'</a>';
+						// thumbnail link lightbox
+						echo '<a href="'. tsl($SITEURL).getRelPath(GSDATAUPLOADPATH). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel=" facybox_i" >'.$imgSrc.'</a>';
 					} else {
 						$gallery = '';
 						$controlpanel = '';
 						$pathlink = $path . $upload['name'];
 					}
+					// name column linked
 					echo '</td><td><a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';
+					// size column
 					echo '<td style="width:80px;text-align:right;" ><span>'. $upload['size'] .'</span></td>';
              
 		            
