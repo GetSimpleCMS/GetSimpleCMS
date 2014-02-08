@@ -25,7 +25,7 @@ if(!isset($GS_debug)) $GS_debug = array();
  */
 function debugLog($txt = '') {
 	global $GS_debug;
-	array_push($GS_debug,print_r($txt,true));
+	array_push($GS_debug,$txt);
 }
 
 /**

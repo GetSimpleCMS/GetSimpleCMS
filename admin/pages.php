@@ -63,6 +63,8 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 getPagesXmlValues(true);
 
 $count = 0;
+$pagesArray_tmp = array();
+
 foreach ($pagesArray as $page) {
 	if ($page['parent'] != '') { 
 		$parentTitle = returnPageField($page['parent'], "title");

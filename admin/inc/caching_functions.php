@@ -186,7 +186,7 @@ function pageCacheCountDiffers(){
 function getPagesXmlValues($refresh=false){
 	debugLog('getPagesXmlValues '.$refresh);
 	GLOBAL $pagesArray;
-	if(!isset($pagesArray)) init_pageCache($refresh);
+	if(!$pagesArray) init_pageCache($refresh);
 }
 
 /**
@@ -205,7 +205,6 @@ function create_pagesxml($save=false){
 	if((bool)$save){ 
 		save_pageCacheXml($pageCacheXml); 
 	}
-
 	pageCacheXMLtoArray($pageCacheXml);
 }
 
