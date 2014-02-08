@@ -27,13 +27,32 @@ add_action('changedata-aftersave', 'create_pagesxml',array(true));     // Create
  *
  */
 function getPageContent($page,$field='content'){   
+	echo returnPageContent($page,$field);
+}
+
+/**
+ * Return Page Content
+ *
+ * Return the content of the requested page. 
+ * As the Content is not cahed the file is read in.
+ *
+ * @since 3.1
+ * @param $page - slug of the page to retrieve content
+ * @param $raw false - if true return raw xml, no strip, no filter
+ * @param $nofilter false - if true skip content filter execution
+ *
+ */
+function returnPageContent($page, $field='content', $raw = false, $nofilter = false){   
 	$thisfile = file_get_contents(GSDATAPAGESPATH.$page.'.xml');
 	$data = simplexml_load_string($thisfile);
-	$content = stripslashes(htmlspecialchars_decode($data->$field, ENT_QUOTES));
-	if ($field=='content'){
+	$content = $data->$field;
+	if($raw) return $content; // return without any processing
+
+	$content = stripslashes(htmlspecialchars_decode($content, ENT_QUOTES));
+	if ($field=='content' and !$nofilter){
 		$content = exec_filter('content',$content);
 	}
-	echo $content;
+	return $content;
 }
 
 /**
@@ -47,29 +66,11 @@ function getPageContent($page,$field='content'){
  * 
  */
 function getPageField($page,$field){   
-	global $pagesArray;
-	if(!$pagesArray) getPagesXmlValues();	
-	
-	if ($field=="content"){
-		getPageContent($page);  
-	} else {
-		if (array_key_exists($field, $pagesArray[(string)$page])){
-			echo strip_decode($pagesArray[(string)$page][(string)$field]);
-		} else {
-			getPageContent($page,$field);
-		}
-	} 
+	returnPageField($page,$field);
 }
 
 /**
- * Echo Page Field
- *
- * Retrieve and display the requested field from the given page. 
- *
- * @since 3.1
- * @param $page - slug of the page to retrieve content
- * @param $field - the Field to display
- * 
+ * alias for getPageField()
  */
 function echoPageField($page,$field){
 	getPageField($page,$field);
@@ -77,32 +78,9 @@ function echoPageField($page,$field){
 
 
 /**
- * Return Page Content
+ * Return Page Field
  *
- * Return the content of the requested page. 
- * As the Content is not cahed the file is read in.
- *
- * @since 3.1
- * @param $page - slug of the page to retrieve content
- * @param $raw false - if true return raw xml
- * @param $nofilter false - if true skip content filter execution
- *
- */
-function returnPageContent($page, $field='content', $raw = false, $nofilter = false){   
-	$thisfile = file_get_contents(GSDATAPAGESPATH.$page.'.xml');
-	$data = simplexml_load_string($thisfile);
-	$content = $data->$field;
-	if(!$raw) $content = stripslashes(htmlspecialchars_decode($content, ENT_QUOTES));
-	if ($field=='content' and !$nofilter){
-		$content = exec_filter('content',$content);
-	}
-	return $content;
-}
-
-/**
- * Get Page Field
- *
- * Retrieve and display the requested field from the given page. 
+ * Retrieve the requested field from the given page. 
  * If the field is "content" it will call returnPageContent()
  *
  * @since 3.1
@@ -111,14 +89,13 @@ function returnPageContent($page, $field='content', $raw = false, $nofilter = fa
  * 
  */
 function returnPageField($page,$field){   
-	global $pagesArray;
-	if(!$pagesArray) getPagesXmlValues();	
+	$pagesArray = getPagesXmlValues();	
 
 	if ($field=="content"){
 		$ret=returnPageContent($page); 
 	} else {
 		if (array_key_exists($field, $pagesArray[(string)$page])){
-			$ret=strip_decode(@$pagesArray[(string)$page][(string)$field]);
+			$ret=strip_decode($pagesArray[(string)$page][(string)$field]);
 		} else {
 			$ret = returnPageContent($page,$field);
 		}
@@ -139,8 +116,7 @@ function returnPageField($page,$field){
  * 
  */
 function getChildren($page){
-	global $pagesArray;
-	if(!$pagesArray) getPagesXmlValues();		
+	$pagesArray = getPagesXmlValues();	
 	$returnArray = array();
 	foreach ($pagesArray as $key => $value) {
 		if ($pagesArray[$key]['parent']==$page){
@@ -164,8 +140,8 @@ function getChildren($page){
  */
 
 function getChildrenMulti($page,$options=array()){
-	global $pagesArray;
-	if(!$pagesArray) getPagesXmlValues();		
+	$pagesArray = getPagesXmlValues();	
+	getPagesXmlValues();
 	$count=0;
 	$returnArray = array();
 	foreach ($pagesArray as $key => $value) {
@@ -184,6 +160,7 @@ function getChildrenMulti($page,$options=array()){
 /**
  * Return true if pagecache differs from pages
  * Uses very basic filecount checks
+ * @todo  make more complex checking
  * 
  * @since 3.3.0 
  * @return bool
@@ -197,33 +174,20 @@ function pageCacheCountDiffers(){
 
 /**
  * LEGACY
- * Get Cached Pages XML Values
+ * Get Cached Pages XML File Values
  *
- * Loads the Cached XML data into the Array $pagesArray
- * If the file does not exist it is created the first time. 
- *
+ * Populates $pagesArray from page cache file
+ * If the file does not exist it is created
+ * 
  * @since 3.1
- * @param bool $refresh check cache for changes and regen
+ * @param bool $refresh check cache for pages changes and regen
  *  
  */
 
-function getPagesXmlValues($refresh=true){
+function getPagesXmlValues($refresh=false){
 	debugLog('getPagesXmlValues '.$refresh);
-
-	$file=GSDATAOTHERPATH."pages.xml";
-
-	if (file_exists($file)){
-		load_pageCache();
-	} else {
-		create_pagesxml(true);
-		return;
-	}
-
-	// check for changes
-	if ((bool)$refresh===true and pageCacheCountDiffers()){
-		create_pagesxml(true);
-	}
-	
+	GLOBAL $pagesArray;
+	if(!isset($pagesArray)) init_pageCache($refresh);
 }
 
 /**
@@ -250,7 +214,7 @@ function create_pagesxml($save=false){
 /**
  * Initialize pagecache
  * 
- * @param bool $refresh regenerate cache
+ * @param bool $refresh regenerate cache from pages files
  */
 function init_pageCache($refresh = false)
 {
@@ -269,7 +233,7 @@ function init_pageCache($refresh = false)
 }
 
 /**
- * Loads in pagescache xml to pagecache array
+ * Loads in pagescache file xml to pagecache array
  */
 function load_pageCache(){
 	GLOBAL $pagesArray;
@@ -293,7 +257,7 @@ function save_pageCacheXml($xml){
 }
 
 /**
- * Generates pagecachexml from pages xml
+ * Generates pagecachexml obj from pages xml
  * @return simpleXmlobj pagecache xml
  */
 function generate_pageCacheXml(){
@@ -331,7 +295,7 @@ function generate_pageCacheXml(){
  * 
  * @since 3.3.0
  * @uses $pagesArray
- * @param simpleXmlObj $xml xml node of single page
+ * @param simpleXmlObj $xml xml object of page cache 
  */
 function pageCacheXMLtoArray($xml){
 	GLOBAL $pagesArray;
