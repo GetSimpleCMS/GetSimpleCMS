@@ -22,11 +22,8 @@ $log_file = $log_path . $log_name;
 
 $whois_url = 'http://whois.arin.net/rest/ip/';
 
-if (!is_file($log_file)) {
-	$log_data = false;
-}
-
-if(empty($log_data) && !empty($log_name) && !filepath_is_safe($log_file,$log_path)) die();
+// filepath_is_safe returns false if file does nt exist
+if(!isset($log_name) || !filepath_is_safe($log_file,$log_path)) $log_data = false;
 
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && strlen($log_name)>0) {
 	// check for csrf
@@ -53,7 +50,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
 	
 	<div id="maincontent">
 		<div class="main">
-			<h3 class="floated"><?php i18n('VIEWING');?> <?php i18n('LOG_FILE');?>: &lsquo;<em><?php echo $log_name; ?></em>&rsquo;</h3>
+			<h3 class="floated"><?php i18n('VIEWING');?> <?php i18n('LOG_FILE');?>: &lsquo;<em><?php echo var_out($log_name); ?></em>&rsquo;</h3>
 			<div class="edit-nav" >
 				<a href="log.php?log=<?php echo $log_name; ?>&action=delete&nonce=<?php echo get_nonce("delete"); ?>" accesskey="<?php echo find_accesskey(i18n_r('CLEAR_ALL_DATA'));?>" title="<?php i18n('CLEAR_ALL_DATA');?> <?php echo $log_name; ?>?" /><?php i18n('CLEAR_THIS_LOG');?></a>
 				<div class="clear"></div>
