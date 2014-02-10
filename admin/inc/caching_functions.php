@@ -66,7 +66,7 @@ function returnPageContent($page, $field='content', $raw = false, $nofilter = fa
  * 
  */
 function getPageField($page,$field){   
-	returnPageField($page,$field);
+	echo returnPageField($page,$field);
 }
 
 /**
