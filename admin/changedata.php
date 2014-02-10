@@ -79,11 +79,12 @@ if (isset($_POST['submitted'])) {
 				} else {
 					exec_action('changedata-updateslug');
 					updateSlugs($oldslug);
+					// do backup
 					$file = GSDATAPAGESPATH . $url .".xml";
 					$existing = GSDATAPAGESPATH . $oldslug .".xml";
 					$bakfile = $bakpagespath. $oldslug .".bak.xml";
-					copy($existing, $bakfile);
-					unlink($existing);
+					copy($existing, $bakfile); // copy to backup folder
+					unlink($existing); // delete page, wil resave new one here
 				} 
 			} 
 		}
