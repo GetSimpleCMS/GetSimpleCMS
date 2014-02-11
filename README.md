@@ -74,11 +74,15 @@ CREDITS:
 -----------------------------------
 
 ### TEAM ###
-  Founder & Developer: Chris Cagle
-  Forum Handle: ccagle8
-  Site: http://get-simple.info/forums/member.php?action=profile&uid=3
-  Twitter: @ccagle8
-  Location: Pittsburgh, Pennsylvania, USA
+
+
+Founder & Developer: Chris Cagle
+Forum Handle: ccagle8
+Site: http://get-simple.info/forums/member.php?action=profile&uid=3
+Twitter: @ccagle8
+Location: Pittsburgh, Pennsylvania, USA
+  
+  
   
   Developer: Mike Swan
   Forum Handle: n00dles101
@@ -107,6 +111,8 @@ CREDITS:
 
 Libraries:
 -----------------------------------
+
+
 
 Vector Social Media Icons
 http://icondock.com/free/vector-social-media-icons
