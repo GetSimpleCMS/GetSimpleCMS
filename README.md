@@ -75,44 +75,39 @@ CREDITS:
 
 ### TEAM ###
 
-
 Founder & Developer: Chris Cagle
 Forum Handle: ccagle8
 Site: http://get-simple.info/forums/member.php?action=profile&uid=3
 Twitter: @ccagle8
 Location: Pittsburgh, Pennsylvania, USA
-  
-  
-  
-  Developer: Mike Swan
-  Forum Handle: n00dles101
-  Site: http://get-simple.info/forums/member.php?action=profile&uid=9
-  Twitter: @digimute
-  Location: Dublin, Ireland
-  
-  Developer: Matthew Phillips
-  Forum Handle: JWH_Matthew
-  Site: http://get-simple.info/forums/member.php?action=profile&uid=161
-  Location: Owasso, Oklahoma, USA
 
-  Developer: Shawn Alverson
-  Forum Handle: shawn_a
-  Site: http://get-simple.info/forums/member.php?action=profile&uid=1878
-  Location: Tennessee, USA
+Developer: Mike Swan
+Forum Handle: n00dles101
+Site: http://get-simple.info/forums/member.php?action=profile&uid=9
+Twitter: @digimute
+Location: Dublin, Ireland
+  
+Developer: Matthew Phillips
+Forum Handle: JWH_Matthew
+Site: http://get-simple.info/forums/member.php?action=profile&uid=161
+Location: Owasso, Oklahoma, USA
+
+Developer: Shawn Alverson
+Forum Handle: shawn_a
+Site: http://get-simple.info/forums/member.php?action=profile&uid=1878
+Location: Tennessee, USA
 
 ### THANKS ###
-  Carlos Navarro (cnb)
-  Joshas
-  Connie Connie Müller-Gödecke (Connie)
-  Thorsten Panknin (polyfragmented)
-  Mike Henken (MikeH)
-  Martijn van der Ven (Zegnåt)
-  ...and the countless others on the forums and SVN that help us make this amazing product possible.
+Carlos Navarro (cnb)
+Joshas
+Connie Connie Müller-Gödecke (Connie)
+Thorsten Panknin (polyfragmented)
+Mike Henken (MikeH)
+Martijn van der Ven (Zegnåt)
+...and the countless others on the forums and SVN that help us make this amazing product possible.
 
 Libraries:
 -----------------------------------
-
-
 
 Vector Social Media Icons
 http://icondock.com/free/vector-social-media-icons
