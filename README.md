@@ -71,7 +71,7 @@ http://get-simple.info/forum
 
 
 CREDITS:
-----------------------------------
+-----------------------------------
 
 ### TEAM ###
   Founder & Developer: Chris Cagle
@@ -105,6 +105,29 @@ CREDITS:
   Martijn van der Ven (Zegnåt)
   ...and the countless others on the forums and SVN that help us make this amazing product possible.
 
+Libraries:
+-----------------------------------
 
+Vector Social Media Icons
+http://icondock.com/free/vector-social-media-icons
+_company logos in the icons are copyright of their respective owners_
+
+Ckeditor
+http://ckeditor.com/
+
+jcrop
+http://deepliquid.com/content/Jcrop.html
+
+marijnh/CodeMirror
+http://codemirror.net/
+
+fancybox
+https://github.com/fancyapps/fancyBox
+
+rgrove/lazyload
+https://github.com/rgrove/lazyload
+
+enyo/dropzone
+https://github.com/enyo/dropzone
 ______________________________________________
 GetSimple CMS - http://get-simple.info/
