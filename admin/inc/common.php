@@ -138,6 +138,7 @@ ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
  */
 include('basic.php');
 include('template_functions.php');
+include('theme_functions.php');
 include('logging.class.php');
 
 require_once(GSADMININCPATH.'configuration.php');
@@ -279,13 +280,6 @@ if(isset($TIMEZONE) && function_exists('date_default_timezone_set') && ($TIMEZON
 	date_default_timezone_set($TIMEZONE);
 }
 
-
-/**
- * $base is if the site is being viewed from the front-end
- */
-if(isset($base)) {
-	include_once(GSADMININCPATH.'theme_functions.php');
-}
 
 function serviceUnavailable(){
 	GLOBAL $base;
