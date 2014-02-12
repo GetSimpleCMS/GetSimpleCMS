@@ -560,14 +560,15 @@ function menu_data($id = null,$xml=false) {
 
 /**
  * get the components xml data
+ * returns an array of xmlobjs
  *
- * @since 3.2.3
+ * @since 3.4
  * 
  * @uses components
  * @uses GSDATAOTHERPATH
  * @uses getXML
  * @param  boolean $xml [description]
- * @return components data as xml obj
+ * @return components data items xmlobj
  *
  */
 function get_components_xml(){
@@ -585,11 +586,12 @@ function get_components_xml(){
 
 /**
  * get xml for an individual component
+ * returns an array since duplicates are possible on component slugs
  *
- * @since 3.2.3
+ * @since 3.4.0
  *
  * @param  str $id component id
- * @return simpleXmlObj
+ * @return array of simpleXmlObj matching slug
  */
 function get_component_xml($id){
 	if(!$id) return;
@@ -601,6 +603,7 @@ function get_component_xml($id){
  *
  * This will output the component requested. 
  * Components are parsed for PHP within them.
+ * Will only return the first component matching $id
  *
  * @since 1.0
  *
@@ -610,7 +613,7 @@ function get_component_xml($id){
  */
 function get_component($id, $force = false, $raw = false) {
 	$components = get_components_xml();
-	$component = get_component_xml($id);
+	$component = get_component_xml($id); // this returns an array due to no distinct slug enforcement
 	if(!$component) return;
 	$enabled = !(bool)($component[0]->disabled == 'true' || $component[0]->disabled == '1');
 	if(!$enabled && !$force) return;
@@ -620,7 +623,7 @@ function get_component($id, $force = false, $raw = false) {
 
 /**
  * See if a component exists
- * @since 3.2.3
+ * @since 3.4.0
  * @param  str $id component id
  * @return bool
  */
@@ -632,7 +635,7 @@ function component_exists($id){
  * Return Component
  * Returns a components output
  * 
- * @since 3.2.3
+ * @since 3.4.0
  * @return component buffered output
  */
 function return_component(){
