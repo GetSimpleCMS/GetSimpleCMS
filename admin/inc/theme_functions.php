@@ -73,7 +73,7 @@ function get_page_excerpt($n=200, $html=false, $ellipsis = '...') {
 function get_page_meta_keywords($echo=true) {
 	$str = encode_quotes(strip_decode(getPageGlobal('metak')));
 	$str = exec_filter('metak',$str);	
-	echoReturn($str,$echo);
+	return echoReturn($str,$echo);
 }
 
 /**
@@ -87,10 +87,11 @@ function get_page_meta_keywords($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_meta_desc($echo=true) {
+	$metad = getPageGlobal('metad');
 	$description = '';
 
 	if ($metad != '') {
-		$description = encode_quotes(strip_decode(getPageGlobal('metad')));
+		$description = encode_quotes(strip_decode($metad));
 	}
 	else if(getDef('GSAUTOMETAD',true))
 	{
@@ -111,11 +112,7 @@ function get_page_meta_desc($echo=true) {
 	
 	$str = exec_filter('metad',$description);
 
-	if ($echo) {
-		echo $str;
-	} else {
-		return $str;
-	}
+	return echoReturn($str,$echo);	
 }
 
 /**
@@ -136,11 +133,7 @@ function get_page_meta_robots($echo=true) {
 	$str = implode(',',$arr);
 	$str = exec_filter('metar',$str);
 
-	if ($echo) {
-		echo $str;
-	} else {
-		return $str;
-	}
+	return echoReturn($str,$echo);		
 }
 
 
@@ -155,7 +148,7 @@ function get_page_meta_robots($echo=true) {
  */
 function get_page_title($echo=true) {
 	$str = strip_decode(getPageGlobal('title'));
-	echoReturn($str,$echo);	
+	return echoReturn($str,$echo);	
 }
 
 /**
@@ -171,7 +164,7 @@ function get_page_title($echo=true) {
  */
 function get_page_clean_title($echo=true) {
 	$str = strip_tags(strip_decode(getPageGlobal('title')));
-	echoReturn($str,$echo);	
+	return echoReturn($str,$echo);	
 }
 
 /**
@@ -186,7 +179,7 @@ function get_page_clean_title($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_slug($echo=true) {
-	echoReturn(getPageGlobal('url'),$echo);
+	return echoReturn(getPageGlobal('url'),$echo);
 }
 
 /**
@@ -201,7 +194,7 @@ function get_page_slug($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_parent($echo=true) {
-	echoReturn(getPageGlobal('parent'),$echo);
+	return echoReturn(getPageGlobal('parent'),$echo);
 }
 
 /**
@@ -226,7 +219,7 @@ function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
 	}
 	
 	$str = formatDate($i, strtotime(getPageGlobal('date')));
-	echoReturn($str,$echo);	
+	return echoReturn($str,$echo);	
 }
 
 /**
@@ -246,7 +239,7 @@ function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_url($echo=false) {
-	echoReturn(find_url(getPageGlobal('url'), getPageGlobal('parent')),!$echo);
+	return echoReturn(find_url(getPageGlobal('url'), getPageGlobal('parent')),!$echo);
 }
 
 /**
@@ -326,7 +319,7 @@ function get_footer() {
  * @return string Echos or returns based on param $echo
  */
 function get_site_url($echo=true) {
-	echoReturn(getPageGlobal('SITEURL'),$echo);
+	return echoReturn(getPageGlobal('SITEURL'),$echo);
 }
 
 /**
@@ -344,7 +337,7 @@ function get_site_url($echo=true) {
 function get_theme_url($echo=true) {
 	global $SITEURL, $TEMPLATE;
 	$str = trim($SITEURL . getRelPath(GSTHEMESPATH) . $TEMPLATE);
-	echoReturn($str,$echo);	
+	return echoReturn($str,$echo);	
 }
 
 /**
@@ -360,7 +353,7 @@ function get_theme_url($echo=true) {
  */
 function get_site_name($echo=true) {
 	global $SITENAME;
-	echoReturn(cl($SITENAME),$echo);
+	return echoReturn(cl($SITENAME),$echo);
 }
 
 /**
@@ -379,7 +372,7 @@ function get_site_name($echo=true) {
 function get_site_email($echo=true) {
 	global $EMAIL;
 	$str = trim(stripslashes($EMAIL));
-	echoReturn($str,$echo);	
+	return echoReturn($str,$echo);	
 }
 
 
@@ -451,7 +444,7 @@ function menu_data($id = null,$xml=false) {
               $menu_extract[] = $specific;
           }
         } 
-        
+
         return $menu_extract;
       } else {
         $xml = '<?xml version="1.0" encoding="UTF-8"?><channel>';    
