@@ -34,7 +34,6 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 
 // code editor inits
 if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
-	debugLog("loading codemiror");
 	register_script('codemirror', $SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);
 	register_style('codemirror-css',$SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror.min.css','screen',FALSE);
 	
