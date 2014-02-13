@@ -22,7 +22,12 @@ $message = null;
 
 $create_dirs = array(
 	GSCACHEPATH,
-	GSAUTOSAVEPATH
+	GSAUTOSAVEPATH,
+	GSBACKUPSPATH, 
+	GSBACKUPSPATH . getRelPath(GSDATAOTHERPATH,GSDATAPATH), // backups/other/
+	GSBACKUPSPATH . getRelPath(GSDATAPAGESPATH,GSDATAPATH), // backups/pages/
+	GSBACKUSERSPATH,
+	GSBACKUPSPATH .'zip/'	
 );
 
 $create_files = array();
@@ -58,7 +63,6 @@ foreach($create_dirs as $dir){
 		else $error.= msgError(i18n_r('ERROR_CREATING_FOLDER') . "<br /> - $dir");
 	}
 }
-
 
 /* check for legacy version of user.xml */
 if (file_exists(GSDATAOTHERPATH .'user.xml')) {
