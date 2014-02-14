@@ -1319,8 +1319,6 @@ function requestIsAjax(){
 	return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || isset($_GET['ajax']);
 }
 
-
-
 /**
  * Returns status of mode rewrite
  * @return bool true if on false if not, null if unknown
@@ -1351,6 +1349,64 @@ function notInInstall(){
 function getRelPath($path,$root = GSROOTPATH ){
 	$relpath = str_replace($root,'',$path);
 	return $relpath;
+}
+
+/**
+ * returns a global, easier inline usage of readonly globals
+ * @since  3.4.0 
+ * @param  str $var variable name
+ * @return global
+ */
+function getGlobal($var) {
+	global $$var;
+	return $$var;
+}
+
+/** 
+ * returns a page global 
+ * currently an alias for getGlobal
+ * @since 3.4.0
+ */
+function getPageGlobal($var){
+	return getGlobal($var);
+}
+
+/**
+ * echo or return toggle
+ * @since  3.4.0
+ * @param str $str 
+ * @param bool $echo default true, echoes or returns $str
+ */
+function echoReturn($str,$echo = true){
+	if ($echo) echo $str;
+	return $str;	
+}
+
+/**
+ * clamps an integer reference to specified value
+ * @since 3.4
+ * @param int &$var reference to clamp
+ * @param int $min minimum to enforce clamp
+ * @param int $max maximum to enforce clamp
+ * @param type $default default to set if not set
+ */
+function clamp(&$var,$min=null,$max=null,$default=null){
+	if(is_numeric($var)){
+		if(is_numeric($min) && $var < $min) $var = $min;
+		if(is_numeric($max) && $var > $max) $var = $max;
+	}
+	if(isset($default)) setDefault($var,$default);
+}
+
+/**
+ * set reference to default value if $var not set
+ * does no type checking or conversions on default
+ * @since 3.4
+ * @param $value   reference
+ * @param $default default value to set
+ */
+function setDefault(&$var = '',$default){
+	if(!isset($var) || empty($var)) $var = $default;
 }
 
 ?>

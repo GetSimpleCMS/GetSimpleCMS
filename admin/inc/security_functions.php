@@ -103,7 +103,11 @@ function check_for_csrf($action, $file="", $die = true){
 function get_nonce($action, $file = "", $last = false) {
 	global $USR;
 	global $SALT;
-	
+
+	// set nonce_timeout default and clamps
+	include_once(GSADMININCPATH.'configuration.php');
+	clamp($nonce_timeout, 60, 86400, 3600);// min, max, default in seconds
+
 	if($file == "")
 		$file = $_SERVER['PHP_SELF'];
 	
@@ -111,7 +115,7 @@ function get_nonce($action, $file = "", $last = false) {
 	$uid = $_SERVER['HTTP_USER_AGENT'];
 	
 	// Limits Nonce to one hour
-	$time = $last ? time() - 3600: time(); 
+	$time = $last ? time() - $nonce_timeout: time(); 
 	
 	// Mix with a little salt
 	$hash=sha1($action.$file.$uid.$USR.$SALT.@date('YmdH',$time));
