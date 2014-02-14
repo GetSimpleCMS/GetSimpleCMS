@@ -67,16 +67,6 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 	         $('input:file').removeAttr("multiple");
 	    }    
 
-	    // handle asset not loaded
-		if(window.Dropzone){
-			// show
-			$('.upload').show(); 
-			$('#gs-dropzone').show(); 
-			
-			// hide fallback form
-			$('.uploadform').hide();			
-		}
-
 		// detect touch devices, only mobiles, commented out feature spec
 		var deviceAgent = navigator.userAgent.toLowerCase();
 		var isTouchDevice = (
@@ -93,9 +83,19 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 			false
 		);
 
-		// flag drop target for touch devices
-		$("#gs-dropzone").toggle(!isTouchDevice);
-		$('#fileuploadlink').toggleClass('touch',isTouchDevice); 
+	    // handle asset not loaded
+		if(window.Dropzone){
+			// show
+			$('.upload').show(); 
+			$('#gs-dropzone').show(); 
+			
+			// hide fallback form
+			$('.uploadform').hide();			
+			
+			// flag drop target for touch devices
+			$("#gs-dropzone").toggle(!isTouchDevice);
+			$('#fileuploadlink').toggleClass('touch',isTouchDevice); 
+		}
 
 		// Remove the queue item
 		removeFromQueue = function(file){
