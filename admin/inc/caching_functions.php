@@ -187,6 +187,7 @@ function getPagesXmlValues($refresh=false){
 	debugLog('getPagesXmlValues '.$refresh);
 	GLOBAL $pagesArray;
 	if(!$pagesArray) init_pageCache($refresh);
+	return $pagesArray;
 }
 
 /**
