@@ -184,7 +184,6 @@ function pageCacheCountDiffers(){
  */
 
 function getPagesXmlValues($refresh=false){
-	debugLog('getPagesXmlValues '.$refresh);
 	GLOBAL $pagesArray;
 	if(!$pagesArray) init_pageCache($refresh);
 	return $pagesArray;
@@ -200,7 +199,6 @@ function getPagesXmlValues($refresh=false){
  */
 function create_pagesxml($save=false){
 	global $pagesArray;
-	debugLog('create_pagesxml '.$save);
   	$pageCacheXml = generate_pageCacheXml();
 	
 	if((bool)$save){ 
@@ -298,7 +296,6 @@ function generate_pageCacheXml(){
  */
 function pageCacheXMLtoArray($xml){
 	GLOBAL $pagesArray;
-	debugLog('pageCacheXMLtoArray');
 	$data = $xml;
 	$pages = $data->item;
 	foreach ($pages as $page) {
@@ -312,7 +309,6 @@ function pageCacheXMLtoArray($xml){
 		$pagesArray[$key]['slug']=$key; // legacy
 		$pagesArray[$key]['filename']=$key.'.xml'; // legacy
 	}	
-	// debugLog(var_export($pagesArray,true));
 }
 
 /**
@@ -326,7 +322,6 @@ function pageXMLtoArray($xml){
 	GLOBAL $pagesArray;
 	$data = $xml;
 	$key=(string)$data->url;		
-	// debugLog('pageXMLtoArray ' . $key);
 	$pagesArray[$key]['url']=$key;  
 
 	$children = $data->children();
@@ -337,8 +332,6 @@ function pageXMLtoArray($xml){
 	}
 	$pagesArray[$key]['slug']=$key; // legacy
 	$pagesArray[$key]['filename']=$key.'.xml'; // legacy
-	// debugLog(var_export($pagesArray[$key],true));
-	// _debugLog('pageXMLtoArray ' . $key,$pagesArray[$key]);
 }
 
 ?>
