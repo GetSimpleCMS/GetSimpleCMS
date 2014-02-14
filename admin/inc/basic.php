@@ -1382,4 +1382,31 @@ function echoReturn($str,$echo = true){
 	return $str;	
 }
 
+/**
+ * clamps an integer reference to specified value
+ * @since 3.4
+ * @param int &$var reference to clamp
+ * @param int $min minimum to enforce clamp
+ * @param int $max maximum to enforce clamp
+ * @param type $default default to set if not set
+ */
+function clamp(&$var,$min=null,$max=null,$default=null){
+	if(is_numeric($var)){
+		if(is_numeric($min) && $var < $min) $var = $min;
+		if(is_numeric($max) && $var > $max) $var = $max;
+	}
+	if(isset($default)) setDefault($var,$default);
+}
+
+/**
+ * set reference to default value if $var not set
+ * does no type checking or conversions on default
+ * @since 3.4
+ * @param $value   reference
+ * @param $default default value to set
+ */
+function setDefault(&$var = '',$default){
+	if(!isset($var) || empty($var)) $var = $default;
+}
+
 ?>
