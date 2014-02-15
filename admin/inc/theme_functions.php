@@ -22,9 +22,8 @@
  * @return string Echos.
  */
 function get_page_content() {
-	global $content;
 	exec_action('content-top');
-	$content = strip_decode($content);
+	$content = strip_decode(getPageGlobal('content'));
 	$content = exec_filter('content',$content);
 	echo $content;
 	exec_action('content-bottom');
@@ -45,8 +44,7 @@ function get_page_content() {
  */
 function get_page_excerpt($n=200, $html=false, $ellipsis = '...') {
 	if ($n<1) return;
-	global $content;
-	$content_e = strip_decode($content);
+	$content_e = strip_decode(getPageGlobal('content'));
 	$content_e = exec_filter('content',$content_e);
 
 	if (!$html) {
@@ -73,15 +71,9 @@ function get_page_excerpt($n=200, $html=false, $ellipsis = '...') {
  * @return string Echos or returns based on param $echo
  */
 function get_page_meta_keywords($echo=true) {
-	global $metak;
-	$str = encode_quotes(strip_decode($metak));
+	$str = encode_quotes(strip_decode(getPageGlobal('metak')));
 	$str = exec_filter('metak',$str);	
-
-	if ($echo) {
-		echo $str;
-	} else {
-		return $str;
-	}
+	return echoReturn($str,$echo);
 }
 
 /**
@@ -95,8 +87,7 @@ function get_page_meta_keywords($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_meta_desc($echo=true) {
-	global $metad;
-
+	$metad = getPageGlobal('metad');
 	$description = '';
 
 	if ($metad != '') {
@@ -121,11 +112,7 @@ function get_page_meta_desc($echo=true) {
 	
 	$str = exec_filter('metad',$description);
 
-	if ($echo) {
-		echo $str;
-	} else {
-		return $str;
-	}
+	return echoReturn($str,$echo);	
 }
 
 /**
@@ -138,20 +125,15 @@ function get_page_meta_desc($echo=true) {
  * @return string returns comma serperated list of robots
  */
 function get_page_meta_robots($echo=true) {
-	global $metarNoIndex, $metarNoFollow, $metarNoArchive;
 	$arr = array();
-	$arr[] = $metarNoIndex == 1 ? 'noindex' : 'index';
-	$arr[] = $metarNoFollow == 1 ? 'nofollow' : 'follow';
-	$arr[] = $metarNoArchive == 1 ? 'noarchive' : 'archive';
+	$arr[] = getPageGlobal('metarNoIndex') == 1 ? 'noindex' : 'index';
+	$arr[] = getPageGlobal('metarNoFollow') == 1 ? 'nofollow' : 'follow';
+	$arr[] = getPageGlobal('metarNoArchive') == 1 ? 'noarchive' : 'archive';
 
 	$str = implode(',',$arr);
 	$str = exec_filter('metar',$str);
 
-	if ($echo) {
-		echo $str;
-	} else {
-		return $str;
-	}
+	return echoReturn($str,$echo);		
 }
 
 
@@ -165,14 +147,8 @@ function get_page_meta_robots($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_title($echo=true) {
-	global $title;
-	$str = strip_decode($title);
-	
-	if ($echo) {
-		echo $str;
-	} else {
-		return $str;
-	}
+	$str = strip_decode(getPageGlobal('title'));
+	return echoReturn($str,$echo);	
 }
 
 /**
@@ -187,14 +163,8 @@ function get_page_title($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_clean_title($echo=true) {
-	global $title;
-	$str = strip_tags(strip_decode($title));
-	
-	if ($echo) {
-		echo $str;
-	} else {
-		return $str;
-	}
+	$str = strip_tags(strip_decode(getPageGlobal('title')));
+	return echoReturn($str,$echo);	
 }
 
 /**
@@ -209,14 +179,7 @@ function get_page_clean_title($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_slug($echo=true) {
-	global $url;
-	$str = $url;
-	
-	if ($echo) {
-		echo $str;
-	} else {
-		return $str;
-	}
+	return echoReturn(getPageGlobal('url'),$echo);
 }
 
 /**
@@ -231,14 +194,7 @@ function get_page_slug($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_parent($echo=true) {
-	global $parent;
-	$str = $parent;
-	
-	if ($echo) {
-		echo $str;
-	} else {
-		return $str;
-	}
+	return echoReturn(getPageGlobal('parent'),$echo);
 }
 
 /**
@@ -255,7 +211,6 @@ function get_parent($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
-	global $date;
 	global $TIMEZONE;
 	if ($TIMEZONE != '') {
 		if (function_exists('date_default_timezone_set')) {
@@ -263,13 +218,8 @@ function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
 		}
 	}
 	
-	$str = formatDate($i, strtotime($date));
-	
-	if ($echo) {
-		echo $str;
-	} else {
-		return $str;
-	}
+	$str = formatDate($i, strtotime(getPageGlobal('date')));
+	return echoReturn($str,$echo);	
 }
 
 /**
@@ -284,20 +234,12 @@ function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
  * @uses $PRETTYURLS
  * @uses find_url
  *
- * @param bool $echo Optional, default is false. True will 'return' value
+ * @param bool $echo Optional, default is false. True will 'return' value 
+ * @todo $echo is backwards!
  * @return string Echos or returns based on param $echo
  */
 function get_page_url($echo=false) {
-	global $url;
-	global $SITEURL;
-	global $PRETTYURLS;
-	global $parent;
-
-	if (!$echo) {
-		echo find_url($url, $parent);
-	} else {
-		return find_url($url, $parent);
-	}
+	return echoReturn(find_url(getPageGlobal('url'), getPageGlobal('parent')),!$echo);
 }
 
 /**
@@ -321,8 +263,6 @@ function get_page_url($echo=false) {
  * @return string HTML for template header
  */
 function get_header($full=true) {
-	global $title;
-	global $content;
 	include(GSADMININCPATH.'configuration.php');
 	
 	// meta description	
@@ -379,13 +319,7 @@ function get_footer() {
  * @return string Echos or returns based on param $echo
  */
 function get_site_url($echo=true) {
-	global $SITEURL;
-	
-	if ($echo) {
-		echo $SITEURL;
-	} else {
-		return $SITEURL;
-	}
+	return echoReturn(getPageGlobal('SITEURL'),$echo);
 }
 
 /**
@@ -402,13 +336,8 @@ function get_site_url($echo=true) {
  */
 function get_theme_url($echo=true) {
 	global $SITEURL, $TEMPLATE;
-	$myVar = trim($SITEURL . getRelPath(GSTHEMESPATH) . $TEMPLATE);
-	
-	if ($echo) {
-		echo $myVar;
-	} else {
-		return $myVar;
-	}
+	$str = trim($SITEURL . getRelPath(GSTHEMESPATH) . $TEMPLATE);
+	return echoReturn($str,$echo);	
 }
 
 /**
@@ -424,13 +353,7 @@ function get_theme_url($echo=true) {
  */
 function get_site_name($echo=true) {
 	global $SITENAME;
-	$myVar = cl($SITENAME);
-	
-	if ($echo) {
-		echo $myVar;
-	} else {
-		return $myVar;
-	}
+	return echoReturn(cl($SITENAME),$echo);
 }
 
 /**
@@ -448,13 +371,8 @@ function get_site_name($echo=true) {
  */
 function get_site_email($echo=true) {
 	global $EMAIL;
-	$myVar = trim(stripslashes($EMAIL));
-	
-	if ($echo) {
-		echo $myVar;
-	} else {
-		return $myVar;
-	}
+	$str = trim(stripslashes($EMAIL));
+	return echoReturn($str,$echo);	
 }
 
 
@@ -497,10 +415,11 @@ function get_site_credits($text ='Powered by ') {
  * @return array|string Type 'string' in this case will be XML 
  */
 function menu_data($id = null,$xml=false) {
-    $menu_extract = '';
- 
     global $pagesArray; 
+    
+    $menu_extract = '';
     $pagesSorted = subval_sort($pagesArray,'menuOrder');
+
     if (count($pagesSorted) != 0) { 
       $count = 0;
       if (!$xml){
@@ -512,7 +431,7 @@ function menu_data($id = null,$xml=false) {
           $slug = (string)$page['url'];
           $menuStatus = (string)$page['menuStatus'];
           $private = (string)$page['private'];
-	  $pubDate = (string)$page['pubDate'];
+          $pubDate = (string)$page['pubDate'];
           
           $url = find_url($slug,$parent);
           
@@ -525,6 +444,7 @@ function menu_data($id = null,$xml=false) {
               $menu_extract[] = $specific;
           }
         } 
+
         return $menu_extract;
       } else {
         $xml = '<?xml version="1.0" encoding="UTF-8"?><channel>';    
