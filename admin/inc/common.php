@@ -9,8 +9,21 @@
  * @subpackage init
  */
 
-// headers
+
+/**
+ * Headers
+ */
+
+// charset utf-8
 header('content-type: text/html; charset=utf-8');
+
+// no-cache headers
+$timestamp = gmdate("D, d M Y H:i:s") . " GMT";
+header("Expires: " . $timestamp);
+header("Last-Modified: " . $timestamp);
+header("Pragma: no-cache");
+header("Cache-Control: no-cache, must-revalidate");
+
 
 define('IN_GS', TRUE); // GS enviroment flag
 
