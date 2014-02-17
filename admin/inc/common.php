@@ -9,6 +9,8 @@
  * @subpackage init
  */
 
+// headers
+header('content-type: text/html; charset=utf-8');
 
 define('IN_GS', TRUE); // GS enviroment flag
 
