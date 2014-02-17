@@ -106,6 +106,7 @@ define('GSLANGPATH'      , GSADMINPATH     . 'lang/');      // lang/
 define('GSDATAPATH'      , GSROOTPATH      . 'data/');      // data/
 define('GSDATAOTHERPATH' , GSDATAPATH      . 'other/');     // data/other/
 define('GSDATAPAGESPATH' , GSDATAPATH      . 'pages/');     // data/pages/
+
 define('GSAUTOSAVEPATH'  , GSDATAPAGESPATH . 'autosave/');  // data/pages/autosave/
 define('GSDATAUPLOADPATH', GSDATAPATH      . 'uploads/');   // data/uploads/
 define('GSTHUMBNAILPATH' , GSDATAPATH      . 'thumbs/');    // data/thumbs/
