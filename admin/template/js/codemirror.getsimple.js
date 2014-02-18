@@ -73,15 +73,22 @@ jQuery(document).ready(function () {
 	 * @param editorConfig config obj
 	 * @param editorUserConfig config to merge
 	 */
-	$.fn.editorFromTextarea = function(textarea){
+	$.fn.editorFromTextarea = function(){
+		
+		return this.each(function() {
+			
+		var $this = $(this);
+		console.log($this);
+		console.log($this.is("textarea"));
+		if(!$this.is("textarea")) return;
 
 		if (typeof editorConfig === "undefined" || editorConfig === null) editorConfig = {};
 		if (typeof editorUserConfig === "undefined" || editorUserConfig === null) editorUserConfig = {};
 
-		var editor = CodeMirror.fromTextArea(textarea, jQuery.extend({}, editorConfig, editorUserConfig));
+		var editor = CodeMirror.fromTextArea($this.get(0), jQuery.extend({}, editorConfig, editorUserConfig));
 
 		// add reference to this editor to the textarea
-		$(textarea).data('editor', editor);
+		$this.data('editor', editor);
 
 		editor.on('change', function(cm){
 			cm.hasChange = true;
@@ -117,11 +124,16 @@ jQuery(document).ready(function () {
 
 		fullscreen_button(editor);
 
-		return editor;
+		});
 	};
 
 	// apply codemirror to class of .code_edit
-	$(".code_edit").each(function(i,textarea) {	jQuery().editorFromTextarea(textarea); });
+	$(".code_edit").editorFromTextarea();
+
+	setThemeSelected(editorTheme);
+	cm_theme_update(editorTheme);
+
+});
 
 	function editorScrollVisible(cm){
 		var wrap = cm.getWrapperElement();
@@ -177,7 +189,7 @@ jQuery(document).ready(function () {
 		var scrolled = editorScrollVisible(cm);
 
 		var button = cmwrapper.find(".overlay_but_fullscrn a");
-		// Debugger.log(button);
+		Debugger.log(button);
 
 		// if no button create it and add to editor
 		if(button.length === 0){
@@ -197,8 +209,3 @@ jQuery(document).ready(function () {
 		button.toggleClass("scrolled",scrolled); // scrollbars
 		button.toggleClass("hidden",cmwrapper.height() <= 25); // too small
 	}
-
-
-	setThemeSelected(editorTheme);
-	cm_theme_update(editorTheme);
-});
