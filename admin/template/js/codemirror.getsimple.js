@@ -69,9 +69,10 @@ jQuery(document).ready(function () {
 
 	/**
 	 * editorFromTextarea replaces a textarea with a codemirror editor
-	 * @param dom or string of a textarea
+	 * @uses editorConfig
+	 * @uses editorUserConfig
 	 * @param editorConfig config obj
-	 * @param editorUserConfig config to merge
+	 * @return jquery collection
 	 */
 	$.fn.editorFromTextarea = function(config){
 		
