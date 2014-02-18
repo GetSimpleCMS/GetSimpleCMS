@@ -73,56 +73,60 @@ jQuery(document).ready(function () {
 	 * @param editorConfig config obj
 	 * @param editorUserConfig config to merge
 	 */
-	$.fn.editorFromTextarea = function(){
+	$.fn.editorFromTextarea = function(config){
 		
 		return this.each(function() {
-			
-		var $this = $(this);
-		console.log($this);
-		console.log($this.is("textarea"));
-		if(!$this.is("textarea")) return;
 
-		if (typeof editorConfig === "undefined" || editorConfig === null) editorConfig = {};
-		if (typeof editorUserConfig === "undefined" || editorUserConfig === null) editorUserConfig = {};
+			var $this = $(this);
+			if(!$this.is("textarea")) return;
 
-		var editor = CodeMirror.fromTextArea($this.get(0), jQuery.extend({}, editorConfig, editorUserConfig));
+			if (typeof editorConfig === "undefined" || editorConfig === null) editorConfig = {};
+			if (typeof editorUserConfig === "undefined" || editorUserConfig === null) editorUserConfig = {};
 
-		// add reference to this editor to the textarea
-		$this.data('editor', editor);
-
-		editor.on('change', function(cm){
-			cm.hasChange = true;
-		});
-
-		// var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder,'...');
-		// editor.on("gutterClick", cmfold);
-
-		// add resisable capability to codemirror
-		$(editor.getWrapperElement()).resizable({
-			// helper: "outline", // less intensive resizing
-			autoHide : true, // hide the resize grips when unfocused
-			minHeight: 25,
-			start: function(e,ui) {
-				ui.originalElement.css('min-height','25px'); // clamp min height				
-			},
-			resize: function(e,ui) {
-				editor.setSize(null, $(this).height());
-			},
-			stop: function(e,ui) {
-				// Debugger.log(ui.originalElement);
-				ui.originalElement.css('min-height','25px'); // clamp min height
-				ui.originalElement.css('max-height','none');
-				editor.refresh();
+			// use config arg if present, ignore user config
+			if (typeof config !== "undefined" && config !== null){
+				editorConfig = config;
+				editorUserConfig = {}; // empty editor config
 			}
-		});
 
-		// replace jqueryui resize handle with custom
-		$(editor.getWrapperElement()).find($('.ui-resizable-se')).removeClass('ui-icon');
-		// $(editor.getWrapperElement()).find($('.ui-resizable-se')).addClass('handle fa fa-th-large');
-		$(editor.getWrapperElement()).find($('.ui-resizable-se')).addClass('handle');
-		$(editor.getWrapperElement()).find($('.ui-resizable-se')).html('◢'); // U+25E2	e2 97 a2 BLACK LOWER RIGHT TRIANGLE
+			var editor = CodeMirror.fromTextArea($this.get(0), jQuery.extend({}, editorConfig, editorUserConfig));
 
-		fullscreen_button(editor);
+			// add reference to this editor to the textarea
+			$this.data('editor', editor);
+
+			editor.on('change', function(cm){
+				cm.hasChange = true;
+			});
+
+			// var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder,'...');
+			// editor.on("gutterClick", cmfold);
+
+			// add resisable capability to codemirror
+			$(editor.getWrapperElement()).resizable({
+				// helper: "outline", // less intensive resizing
+				autoHide : true, // hide the resize grips when unfocused
+				minHeight: 25,
+				start: function(e,ui) {
+					ui.originalElement.css('min-height','25px'); // clamp min height				
+				},
+				resize: function(e,ui) {
+					editor.setSize(null, $(this).height());
+				},
+				stop: function(e,ui) {
+					// Debugger.log(ui.originalElement);
+					ui.originalElement.css('min-height','25px'); // clamp min height
+					ui.originalElement.css('max-height','none');
+					editor.refresh();
+				}
+			});
+
+			// replace jqueryui resize handle with custom
+			$(editor.getWrapperElement()).find($('.ui-resizable-se')).removeClass('ui-icon');
+			// $(editor.getWrapperElement()).find($('.ui-resizable-se')).addClass('handle fa fa-th-large');
+			$(editor.getWrapperElement()).find($('.ui-resizable-se')).addClass('handle');
+			$(editor.getWrapperElement()).find($('.ui-resizable-se')).html('◢'); // U+25E2	e2 97 a2 BLACK LOWER RIGHT TRIANGLE
+
+			fullscreen_button(editor);
 
 		});
 	};
