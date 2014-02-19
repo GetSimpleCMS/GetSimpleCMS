@@ -206,7 +206,7 @@ jQuery(document).ready(function () {
 	// auto focus component editors
 	$('#components div.compdivlist a').on('click', function(ev){
 		focusCompEditor($(this).attr('href'));
-	});	
+	});
 	
 	$(".delconfirmcomp").on("click", function ($e) {
 		$e.preventDefault();
@@ -237,7 +237,10 @@ jQuery(document).ready(function () {
 		$('#submit_line').fadeIn(); // fadein in case no components exist
 		
 		// add codemirror to new textarea
-		var editor = jQuery().editorFromTextarea($("#divTxt").find('textarea').first().get(0));
+		var textarea = $("#divTxt").find('textarea').first();
+		textarea.editorFromTextarea();
+
+		var editor = textarea.data('editor');
 		// retain autosizing but make sure the editor start larger than 1 line high
 		$(editor.getWrapperElement()).find('.CodeMirror-scroll').css('min-height',100);
 		editor.refresh();
@@ -793,17 +796,6 @@ jQuery(document).ready(function () {
 		return extension;
 	}
 
-	function getEditorMode(extension){
-		var modes = {
-			'php'  : 'application/x-httpd-php',
-			'html' : 'text/html',
-			'js'   : 'text/javascript',
-			'css'  : 'text/css'
-		};
-		return extension in modes ? modes[extension] : modes['php'];
-	}
-
-
 	// tree folding
 	$(document).on('click',"#theme_filemanager a.directory",function(e){
 		$(this).toggleClass('dir-open');
@@ -817,7 +809,6 @@ jQuery(document).ready(function () {
 		var parts = theme.split(' ');
 		callback = function () {
 			  cm_theme_update_editors(theme);
-			  editorConfig.theme = theme;
 			}
 		if(theme == "default") cm_theme_update_editors(theme);
 		else loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css", callback );
@@ -829,11 +820,14 @@ jQuery(document).ready(function () {
 		$('.code_edit').each(function(i, textarea){
 			var editor = $(textarea).data('editor');
 			// Debugger.log(editor);
-			if(editor) {
+			// update all editor themes, unless they were modified manually
+			if(editor && editor.getOption('theme') == editorTheme) {
 				editor.setOption('theme',theme);	
 				editor.refresh();
 			}	
-		});		
+		});	
+		editorConfig.theme = theme;		
+		editorTheme = theme; // update global			  
 	}
 
 	// save all editors

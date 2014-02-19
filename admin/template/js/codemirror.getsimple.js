@@ -3,6 +3,21 @@ var editorUserConfig;
 var editorTheme;
 var editorMode;
 
+var cm_modes = {
+	'php'        : 'application/x-httpd-php',
+	'htmlmixed'  : 'text/html',
+	'html'       : 'text/html',
+	'xml'        : 'application/xml',
+	'javascript' : 'text/javascript',
+	'js'         : 'text/javascript',
+	'css'        : 'text/css',
+	'markdown'   : 'text/x-markdown'
+};
+
+function getEditorMode(extension){
+	return extension in cm_modes ? cm_modes[extension] : extension;
+}
+
 jQuery(document).ready(function () {
 
 	// setup codemirror instances and functions
@@ -11,11 +26,12 @@ jQuery(document).ready(function () {
 		editorTheme = 'default';
 	}
 
-	var editorMode = 'php';
+	editorMode = cm_modes['html'];
 
 	// cmfold = function(cm){cm.foldCode(cm.getCursor(),{"widget":"...","minFoldSize":2});};
 
 	editorConfig = {
+		id                        : 'editorConfig',
 		mode                      : editorMode,
 		theme                     : editorTheme,
 		lineNumbers               : true,
@@ -26,13 +42,13 @@ jQuery(document).ready(function () {
 		fixedGutter               : true,
 		styleActiveLine           : true,
 		matchBrackets             : true, // highlight matching brackets when cusrsor is next to one
-        autoCloseBrackets         : true, // auto close brackets when typing
+		autoCloseBrackets         : true, // auto close brackets when typing
 		autoCloseTags             : true, // auto close tags when typing
 		// showTrailingSpace         : true, // adds the CSS class cm-trailingspace to stretches of whitespace at the end of lines.
 		highlightSelectionMatches : true, // {showToken : /\w/}, for word boundaries
-		// viewportMargin            : Infinity, // for autosizing
-		// lineWrapping           : true,
-		// matchTags              : true, // adds class CodeMirror-matchingtag to tags contents
+		// viewportMargin            : Infinity, // for autosizing, REMOVED for performance
+		// lineWrapping              : true,
+		// matchTags                 : true, // adds class CodeMirror-matchingtag to tags contents
 		foldGutter                : true,
 		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 		saveFunction              : function(cm) { customSave(cm); },
@@ -42,7 +58,7 @@ jQuery(document).ready(function () {
 			"F11"    : function(cm) { setFullScreen(cm, !isFullScreen(cm)); },
 			"Esc"    : function(cm) { if (isFullScreen(cm)) setFullScreen(cm, false); },
 			"Ctrl-S" : function(cm) { customSave(cm); },
-            "Ctrl-Space" : "autocomplete"
+			"Ctrl-Space" : "autocomplete"
 		}
 	};
 
@@ -62,13 +78,9 @@ jQuery(document).ready(function () {
 	//	}
 	// }
 
-	if(typeof editor_defTheme != 'undefined' && editor_defTheme != 'default'){
-		var parts = editor_defTheme.split(' ');
-		loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css");
-	}
-
 	/**
 	 * editorFromTextarea replaces a textarea with a codemirror editor
+	 * @uses jquery collection $(this)
 	 * @uses editorConfig
 	 * @uses editorUserConfig
 	 * @param editorConfig config obj
@@ -76,25 +88,40 @@ jQuery(document).ready(function () {
 	 */
 	$.fn.editorFromTextarea = function(config){
 		
-		return this.each(function() {
+		return $(this).each(function() {
 
 			var $this = $(this);
-			if(!$this.is("textarea")) return;
+			if(!$this.is("textarea")) return; // invalid element
 
-			if (typeof editorConfig === "undefined" || editorConfig === null) editorConfig = {};
-			if (typeof editorUserConfig === "undefined" || editorUserConfig === null) editorUserConfig = {};
-
-			// use config arg if present, ignore user config
-			if (typeof config !== "undefined" && config !== null){
-				editorConfig = config;
-				editorUserConfig = {}; // empty editor config
+			// use config arg if present and ignore user config
+			if (typeof config == "undefined" || config === null){
+				// Debugger.log('using default config');
+				// Debugger.log(editorConfig);
+				// Debugger.log(editorUserConfig);
+				cm_config = jQuery.extend(true, {}, editorConfig, editorUserConfig);
+			} else {
+				// Debugger.log('using custom config');
+				// Debugger.log(config);
+				cm_config = jQuery.extend(true, {}, config);
 			}
+			
+			// get mode override from data-mode attr if it exists
+			if($this.data('mode')) cm_config.mode = getEditorMode($this.data('mode'));
 
-			var editor = CodeMirror.fromTextArea($this.get(0), jQuery.extend({}, editorConfig, editorUserConfig));
+			// Debugger.log(cm_config);
+			// create codemirror instance from textarea DOM
+			var editor = CodeMirror.fromTextArea($this.get(0), cm_config);
+
+			// lazy load custom themes
+			if(cm_config.theme != editorTheme && cm_config.theme != 'default'){
+				var parts = cm_config.theme.split(' ');
+				loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css",function(){editor.refresh();});
+			}
 
 			// add reference to this editor to the textarea
 			$this.data('editor', editor);
 
+			// init change listener
 			editor.on('change', function(cm){
 				cm.hasChange = true;
 			});
@@ -121,12 +148,12 @@ jQuery(document).ready(function () {
 				}
 			});
 
-			// replace jqueryui resize handle with custom
+			// replace jqueryui resize handle with custom icon
 			$(editor.getWrapperElement()).find($('.ui-resizable-se')).removeClass('ui-icon');
-			// $(editor.getWrapperElement()).find($('.ui-resizable-se')).addClass('handle fa fa-th-large');
 			$(editor.getWrapperElement()).find($('.ui-resizable-se')).addClass('handle');
 			$(editor.getWrapperElement()).find($('.ui-resizable-se')).html('◢'); // U+25E2	e2 97 a2 BLACK LOWER RIGHT TRIANGLE
 
+			// add fixed fullscreen toggle
 			fullscreen_button(editor);
 
 		});
@@ -136,7 +163,7 @@ jQuery(document).ready(function () {
 	$(".code_edit").editorFromTextarea();
 
 	setThemeSelected(editorTheme);
-	cm_theme_update(editorTheme);
+	cm_theme_update(editorTheme); // @todo: prevent overriding theme in custom configs
 
 });
 
@@ -194,7 +221,7 @@ jQuery(document).ready(function () {
 		var scrolled = editorScrollVisible(cm);
 
 		var button = cmwrapper.find(".overlay_but_fullscrn a");
-		Debugger.log(button);
+		// Debugger.log(button);
 
 		// if no button create it and add to editor
 		if(button.length === 0){

@@ -1219,7 +1219,7 @@ form.manyinputs p {
 
 table.comptable {
 	margin: 0 !important;
-	width: 645px;
+	/*width: 645px;*/
 	background: #fff;
 	border: none;
 	padding: 0;
