@@ -1301,6 +1301,16 @@ function isDebug(){
 }
 
 /**
+ * check gs version is Alpha
+ *
+ * @since  3.3.0
+ * @return boolean true if Alpha release
+ */
+function isAlpha(){
+	return strPos(get_site_version(false),"a");
+}
+
+/**
  * check gs version is Beta
  *
  * @since  3.3.0

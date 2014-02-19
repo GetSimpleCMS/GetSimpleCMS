@@ -127,7 +127,7 @@ $themeselector .= '</select>';
 			?>
 				var verstatus = <?php echo $verstatus; ?>;
 				if(verstatus != 1) {
-					<?php if(isBeta()){ ?> $('a.support').parent('li').append('<span class="info">i</span>');
+					<?php if(isBeta() || isAlpha()){ ?> $('a.support').parent('li').append('<span class="info">i</span>');
 					<?php } else { ?> $('a.support').parent('li').append('<span class="warning">!</span>'); <?php } ?>
 					$('a.support').attr('href', 'health-check.php');
 				}
