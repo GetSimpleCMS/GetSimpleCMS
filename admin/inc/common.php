@@ -180,16 +180,21 @@ $SESSIONHASH = sha1($SALT . $SITENAME);
  * Language control
  */
 if(!isset($LANG) || $LANG == '') {
-	$filenames = getFiles(GSLANGPATH);
+	$filenames = glob(GSLANGPATH.'*.php');	
 	$cntlang = count($filenames);
 	if ($cntlang == 1) {
+		// assign lang to only existing file
 		$LANG = basename($filenames[0], ".php");
-	} elseif($cntlang > 1) {
+	} elseif($cntlang > 1 && in_array(GSLANGPATH .'en_US.php',$filenames)) {
+		// fallback to en_US if it exists
 		$LANG = 'en_US';
+	} elseif(isset($filenames[0])) {
+		// fallback to first lang found
+		$LANG=basename($filenames[0], ".php");
 	}
 }
 
-include_once(GSLANGPATH . $LANG . '.php');
+if(in_array(GSLANGPATH . $LANG . '.php',$filenames)) include_once(GSLANGPATH . $LANG . '.php');
 
 // Merge in default lang to avoid empty lang tokens
 // if GSMERGELANG is undefined or false merge en_US
