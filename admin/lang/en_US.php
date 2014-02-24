@@ -243,9 +243,11 @@ $i18n = array(
 */
 "WEB_HEALTH_CHECK"        =>	"Website Health Check",
 "VERSION"                 =>	"Version",
-"UPG_NEEDED"              =>	"Upgrade Recommended",
-"CANNOT_CHECK"            =>	"Upgrade Check Failed !",
-"LATEST_VERSION"          =>	"Latest version installed",
+"CURR_VERSION"            =>	"Current Version: %s",
+"UPG_NEEDED"              =>	"A newer version is available",
+"CANNOT_CHECK"            =>	"Failed to check for upgrade",
+"LATEST_VERSION"          =>	"You have the latest version",
+"CHECK_MANUALLY"          =>	"Check Manually",
 "SERVER_SETUP"            =>	"Server Setup",
 "SERVER_IS"               =>	'Server reported as %s',
 "OR_GREATER_REQ"          =>	"or greater is required",
@@ -459,6 +461,7 @@ $i18n = array(
 "KILL_CANT_CONTINUE"      =>	"Cannot continue. Please fix errors and try again.",
 "REFRESH"                 =>	"Refresh",
 "BETA"                    =>	"Beta / Bleeding Edge",
+"ALPHA"                   =>	"Alpha / Non-Stable !",
 
 /*
 * Misc Cleanup Work

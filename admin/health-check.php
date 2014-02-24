@@ -42,18 +42,20 @@ echo '<div class="bodycontent clearfix">
 				}	else {
 					$verstatus = null;
 				}
+				$verstatus = $_GET['status'];
+				$verstring = sprintf(i18n_r('CURR_VERSION'),'<b>'.$site_version_no.'</b>').'<hr>';
 				if ($verstatus == '0') {
 					// upgrade recomended
-					$ver = '<span id="hc_version" class="label label-error" ><b>'.$site_version_no.'</b><br /> '. i18n_r('UPG_NEEDED').' (<b>'.$apikey->latest .'</b>)<br /><a href="'.$site_link_back_url.'download/">'. i18n_r('DOWNLOAD').'</a></span>';
+					$ver = '<span id="hc_version" class="label label-error" >'.$verstring. i18n_r('UPG_NEEDED').' (<b>'.$apikey->latest .'</b>)<br /><a href="'.$site_link_back_url.'download/">'. i18n_r('DOWNLOAD').'</a></span>';
 				} elseif ($verstatus == '1') {
 					// latest version
-					$ver = '<span id="hc_version" class="label label-ok" ><b>'.$site_version_no.'</b><br />'. i18n_r('LATEST_VERSION').'</span>';
+					$ver = '<span id="hc_version" class="label label-medium" >'.$verstring. i18n_r('LATEST_VERSION').'</span>';
 				} elseif ($verstatus == '2') {
 					// bleeding edge
-					$ver = '<span id="hc_version" class="label label-info" ><b>'.$site_version_no.'</b><br /> '. i18n_r('BETA').'</span>';
+					$ver = '<span id="hc_version" class="label '.(isAlpha() ? 'label-info' : 'label-info' ).'" >'.$verstring. (isAlpha() ? i18n_r('ALPHA') : i18n_r('BETA')) .'</span>';
 				} else {
 					// cannot check
-					$ver = '<span id="hc_version" class="label label-warn" ><b>'.$site_version_no.'</b><br />'. i18n_r('CANNOT_CHECK').'<br /><a href="'.$site_link_back_url.'download">'. i18n_r('DOWNLOAD').'</a></span>';
+					$ver = '<span id="hc_version" class="label label-warn" >'.$verstring. i18n_r('CANNOT_CHECK').'<br /><a href="'.$site_link_back_url.'download">'. i18n_r('CHECK_MANUALLY').'</a></span>';
 				}
 				?>
 				<tr><td class="hc_item" ><?php echo $site_full_name; ?> <?php i18n('VERSION');?></td><td><?php echo $ver; ?></td></tr>

@@ -1864,6 +1864,12 @@ a.updatelink:focus {
 	border: 1px solid <?php echo $primary_6; ?>;
 }
 
+.label hr{
+	border: none;
+	border-top: 1px solid rgba(255, 255, 255, 0.2);
+	margin: 3px 0;
+}
+
 #hc_version.label {
 	width: 298px;
 	text-align: left;
