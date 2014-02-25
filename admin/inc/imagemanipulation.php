@@ -41,7 +41,8 @@ function genStdThumb($path,$name){
 	//thumbnail for post
 	$imgsize = getimagesize($targetFile);
 		
-	switch(lowercase(substr($targetFile, -3))){
+	switch($ext){
+			case "jpeg":
 			case "jpg":
 					$image = imagecreatefromjpeg($targetFile);    
 			break;
