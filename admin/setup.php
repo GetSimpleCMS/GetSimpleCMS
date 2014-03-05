@@ -117,6 +117,7 @@ if(isset($_POST['submitted'])) {
 		# create root .htaccess file
 		 if ( !function_exists('apache_get_modules') or in_arrayi('mod_rewrite',apache_get_modules()) ) {
 				$init = GSROOTPATH.'.htaccess';
+				$temp = GSROOTPATH .'temp.htaccess';
 				$temp_data = file_get_contents(GSROOTPATH .'temp.htaccess');
 				$temp_data = str_replace('**REPLACE**',tsl($path_parts), $temp_data);
 				$fp = fopen($init, 'w');
@@ -124,8 +125,8 @@ if(isset($_POST['submitted'])) {
 				fclose($fp);
 				if (!file_exists($init)) {
 					$kill .= sprintf(i18n_r('ROOT_HTACCESS_ERROR'), 'temp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
-				} else {
-					unlink(GSROOTPATH .'temp.htaccess');
+				} else if(file_exists($temp)){
+					unlink($temp);
 				}
 		}
 	
@@ -133,7 +134,7 @@ if(isset($_POST['submitted'])) {
 		$init = GSROOTPATH.'gsconfig.php';
 		$temp = GSROOTPATH.'temp.gsconfig.php';
 		if (file_exists($init)) {
-			unlink($temp);
+			if(file_exists($temp)) unlink($temp);
 			if (file_exists($temp)) {
 				$kill .= sprintf(i18n_r('REMOVE_TEMPCONFIG_ERROR'), 'temp.gsconfig.php') . '<br />';
 			}
