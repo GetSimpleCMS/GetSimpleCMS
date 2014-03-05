@@ -39,7 +39,8 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 			}
 			exec_action('file-uploaded');
 		} else {
-			i18n('ERROR_UPLOAD');
+			echo i18n_r('ERROR_UPLOAD') . ' - ' . i18n_r('BAD_FILE');
+			// invalid file
 			exit;
 		}
 		 
@@ -50,9 +51,12 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 		genStdThumb(isset($_POST['path']) ? $_POST['path']."/" : '',$name);	
 
 		echo '1';
+		// success
 	} else {
-		echo 'Invalid file type.';
+		echo i18n_r('ERROR_UPLOAD') . ' - ' . i18n_r('MISSING_FILE');
+		// nothing sent
 	}
 } else {
-	echo 'Wrong session hash!';
+	echo i18n_r('ERROR_UPLOAD') . ' - ' . i18n_r('API_ERR_AUTHFAILED');
+	// Wrong session hash!
 }
