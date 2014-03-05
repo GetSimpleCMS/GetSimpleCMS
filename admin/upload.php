@@ -45,13 +45,13 @@ if (isset($_FILES['file'])) {
 			
 			//set variables
 			$count = '1';
-			$file_loc = $path . clean_img_name(to7bit($_FILES["file"]["name"][$i]));
 			$base = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+			$file_loc = $path . $base;
 			
 			//prevent overwriting
 			while ( file_exists($file_loc) ) {
-				$file_loc = $path . $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
-				$base = $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+				$file_loc = $path . $count.'-'. $base;
+				$base = $count.'-'. $base;
 				$count++;
 			}
 			
