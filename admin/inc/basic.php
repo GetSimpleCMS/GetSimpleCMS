@@ -639,18 +639,26 @@ function i18n_merge($plugin, $language=null) {
  * @return bool
  */
 function i18n_merge_impl($plugin, $lang, &$globali18n) { 
-  $i18n = array();
-  $filename = ($plugin ? GSPLUGINPATH.$plugin.'/lang/' : GSLANGPATH).$lang.'.php';
-  $prefix = $plugin ? $plugin.'/' : '';
-  if (!file_exists($filename)) {
+
+  $i18n = array(); // local from file
+  if(!isset($globali18n)) $globali18n = array(); //global ref to $i18n
+	
+  $path     = ($plugin ? GSPLUGINPATH.$plugin.'/lang/' : GSLANGPATH);
+  $filename = $path.$lang.'.php';
+  $prefix   = $plugin ? $plugin.'/' : '';
+
+  if (!filepath_is_safe($filename,$path) || !file_exists($filename)) {
     return false;
   }
-  @include($filename); 
+
+  include($filename); 
+  
   if (count($i18n) > 0) foreach ($i18n as $code => $text) {
     if (!array_key_exists($prefix.$code, $globali18n)) {
         $globali18n[$prefix.$code] = $text;
     }
   }
+
   return true;
 }
 

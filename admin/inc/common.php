@@ -194,14 +194,14 @@ if(!isset($LANG) || $LANG == '') {
 	}
 }
 
-if(in_array(GSLANGPATH . $LANG . '.php',$filenames)) include_once(GSLANGPATH . $LANG . '.php');
+i18n_merge(null); // load $LANG file into $i18n
 
 // Merge in default lang to avoid empty lang tokens
-// if GSMERGELANG is undefined or false merge en_US
+// if GSMERGELANG is undefined or false merge en_US else merge custom
 if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
 	if($LANG !='en_US')	i18n_merge(null,"en_US");
 } else{
-	// merge GSMERGELANG defined lang
+	// merge GSMERGELANG defined lang if not the same as $LANG
 	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
 }	
 
