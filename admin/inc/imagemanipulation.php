@@ -53,7 +53,7 @@ function genStdThumb($path,$name){
 					$image = imagecreatefromgif($targetFile);
 			break;
 			default:
-					exit;
+					return;
 			break;
 	}
 		
