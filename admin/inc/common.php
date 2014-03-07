@@ -219,7 +219,7 @@ if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!=
 
 if(!isset($EDTOOL)) $EDTOOL = 'basic'; // default gs toolbar
 
-if(strpos(trim($EDTOOL),'[')!==false){ $EDTOOL = "[".trim($EDTOOL)."]"; } // toolbar is js array
+if(is_string($EDTOOL) && strpos(trim($EDTOOL),'[')!==false){ $EDTOOL = "[".trim($EDTOOL)."]"; } // toolbar is js array
 else if(is_array($EDTOOL)) $EDTOOL = json_encode($EDTOOL); // toolbar is php array, convert to js str
 // else if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
 else if($EDTOOL == "none") $EDTOOL = null; // toolbar to use cke default
