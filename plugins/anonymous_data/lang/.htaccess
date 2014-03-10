@@ -1,1 +1,10 @@
-Deny from all
+#
+# GetSimple CMS htaccess DENY file
+#
+
+<IfModule !mod_authz_core.c>
+	Deny from all
+</IfModule>
+<IfModule mod_authz_core.c>
+	Require all denied
+</IfModule>	
