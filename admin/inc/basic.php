@@ -44,6 +44,7 @@ function clean_img_name($text)  {
 	$text = str_replace($code_entities_match, $code_entities_replace, $text); 
 	$text = urlencode($text);
 	$text = str_replace('--','-',$text);
+	$text = str_replace('%40','@',$text); // ensure @ is not encoded
 	$text = rtrim($text, "-");
 	return $text; 
 } 
