@@ -219,13 +219,10 @@ if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!=
 
 if(!isset($EDTOOL)) $EDTOOL = 'basic'; // default gs toolbar
 
-if(is_string($EDTOOL) && strpos(trim($EDTOOL),'[[')!==0 && strpos(trim($EDTOOL),'[')===0){ $EDTOOL = "[".trim($EDTOOL)."]"; } // toolbar is js array
-else if(is_string($EDTOOL) && strpos(trim($EDTOOL),'[[')===0){ $EDTOOL = $EDTOOL; } // toolbar is js or json array
-else if(is_array($EDTOOL)) $EDTOOL = json_encode($EDTOOL); // toolbar is php array, convert to js str
-// else if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
-else if($EDTOOL == "none") $EDTOOL = null; // toolbar to use cke default
-else $EDTOOL = "'$EDTOOL'"; // toolbar is a toolbar config variable config.js config.toolbar_$var = []
-
+if($EDTOOL == "none") $EDTOOL = null; // toolbar to use cke default
+$EDTOOL = returnJsArray($EDTOOL);
+// if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
+// at this point $EDTOOL should always be a valid js nested array ([[ ]]) or escaped toolbar id ('toolbar_id')
 
 /**
  * Timezone setup

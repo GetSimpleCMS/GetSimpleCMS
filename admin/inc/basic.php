@@ -1221,5 +1221,55 @@ function requestIsAjax(){
 	return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || isset($_GET['ajax']);
 }
 
+/**
+ * check if array is multidimensional
+ * @since 3.3.2
+ * @param  array $ary
+ * @return bool true if $ary is a multidimensional array
+ */
+function arrayIsMultid($ary){
+	return is_array($ary) && ( count($ary) != count($ary,COUNT_RECURSIVE) );
+}
+
+/**
+ * normalizes toolbar setting, always returns js array string syntax
+ * @since 3.3.2
+ * 
+ * @param $var string or array to convert to js array syntax
+ */
+function returnJsArray($var){
+	
+	if(!$var) return;
+
+	if(!is_array($var)) {
+		// if looks like an array string try to parse as array
+		if(strrpos($var, '[')){
+			// normalize array strings
+			$var = stripslashes($var);         // remove escaped quotes
+			$var = trim(trim($var),',');       // remove trailing commas
+			$var = str_replace('\'','"',$var); // replace single quotes with double (for json)
+			
+			$ary = json_decode($var);
+			
+			// add primary nest if missing
+			if(!is_array($ary) || !arrayIsMultid($ary) ) $ary = json_decode('['.$var.']');
+			
+			// if proper array use it
+			if(is_array($ary) ) $var = json_encode($ary);
+			else $var = "'".trim($var,"\"'")."'"; 
+		} 
+		else{
+			// else quote wrap string, trim to avoid double quoting
+			$var = "'".trim($var,"\"'")."'";
+		}	
+	} 
+	else {
+		// convert php array to js array
+		$var = json_encode($var);
+	}
+
+	return $var;
+}
+
 
 ?>
