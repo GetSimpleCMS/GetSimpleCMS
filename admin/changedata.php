@@ -118,7 +118,7 @@ if (isset($_POST['submitted'])) {
 		else $metarNoArchive = 0; 
 
 		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
-		if ( file_exists($file) && ($url != $oldslug) ) {
+		if ( (file_exists($file) && $url != $oldslug) ||  in_array($url,$reservedSlugs) ) {
 			$count = "1";
 			$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
 			while ( file_exists($file) ) {

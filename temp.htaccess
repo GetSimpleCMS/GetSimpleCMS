@@ -3,10 +3,13 @@
 # apache 2.4 
 #
 
+# The following require certain allow overrides, if getting 500 error comment them out one by one 
+# can be resolved in apache httpd.conf to ensure security alternatives
+
+# override charset
 AddDefaultCharset UTF-8
 
 # prevent directory listings
-# NOTE: some hosts such as aruba do not allow this directive, comment it out if getting 500 errors
 Options -Indexes
 
 # Follow symbolink links, This is required for rewrites on some hosts
@@ -21,23 +24,30 @@ DirectoryIndex index.php
 # blocks direct access to the XML files - they hold all the data!
 <Files ~ "\.xml$">
 	<IfModule !mod_authz_core.c>
-    Order allow,deny
     Deny from all
-    Satisfy All
+	</IfModule>
+	<IfModule mod_access_compat.c>
+		Deny from all
 	</IfModule>
 	<IfModule mod_authz_core.c>
+		<IfModule !mod_access_compat.c>
 		Require all denied
 	</IfModule>
+	</IfModule>	
 </Files>
+
 <Files sitemap.xml>
 	<IfModule !mod_authz_core.c>
-		Order allow,deny
     Allow from all
-    Satisfy All
+	</IfModule>
+	<IfModule mod_access_compat.c>
+		Allow from all
 	</IfModule>
 	<IfModule mod_authz_core.c>
+		<IfModule !mod_access_compat.c>
 		Require all granted
 	</IfModule>
+	</IfModule>	
 </Files>
 
 # handle rewrites for fancy urls

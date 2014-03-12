@@ -10,6 +10,22 @@
  */
 
 
+/**
+ * Headers
+ */
+
+// charset utf-8
+header('content-type: text/html; charset=utf-8');
+
+// no-cache headers
+if(!isset($base)){
+	$timestamp = gmdate("D, d M Y H:i:s") . " GMT";
+	header("Expires: " . $timestamp);
+	header("Last-Modified: " . $timestamp);
+	header("Pragma: no-cache");
+	header("Cache-Control: no-cache, must-revalidate");
+}
+
 define('IN_GS', TRUE); // GS enviroment flag
 
 // GS Debugger
@@ -144,6 +160,8 @@ include('logging.class.php');
 
 require_once(GSADMININCPATH.'configuration.php');
 
+$reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
+
 /**
  * Bad stuff protection
  */
@@ -223,23 +241,28 @@ $SESSIONHASH = sha1($SALT . $SITENAME);
  * Language control
  */
 if(!isset($LANG) || $LANG == '') {
-	$filenames = getFiles(GSLANGPATH);
+	$filenames = glob(GSLANGPATH.'*.php');	
 	$cntlang = count($filenames);
 	if ($cntlang == 1) {
+		// assign lang to only existing file
 		$LANG = basename($filenames[0], ".php");
-	} elseif($cntlang > 1) {
+	} elseif($cntlang > 1 && in_array(GSLANGPATH .'en_US.php',$filenames)) {
+		// fallback to en_US if it exists
 		$LANG = 'en_US';
+	} elseif(isset($filenames[0])) {
+		// fallback to first lang found
+		$LANG=basename($filenames[0], ".php");
 	}
 }
 
-include_once(GSLANGPATH . $LANG . '.php');
+i18n_merge(null); // load $LANG file into $i18n
 
 // Merge in default lang to avoid empty lang tokens
-// if GSMERGELANG is undefined or false merge en_US
+// if GSMERGELANG is undefined or false merge en_US else merge custom
 if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
 	if($LANG !='en_US')	i18n_merge(null,"en_US");
 } else{
-	// merge GSMERGELANG defined lang
+	// merge GSMERGELANG defined lang if not the same as $LANG
 	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
 }	
 
@@ -261,12 +284,10 @@ if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!=
 
 if(!isset($EDTOOL)) $EDTOOL = 'basic'; // default gs toolbar
 
-if(strpos($EDTOOL,'[')!==false){ $EDTOOL = "[$EDTOOL]"; } // toolbar is js array
-else if(is_array($EDTOOL)) $EDTOOL = json_encode($EDTOOL); // toolbar is php array, convert to js str
-// else if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
-else if($EDTOOL == "none") $EDTOOL = null; // toolbar to use cke default
-else $EDTOOL = "'$EDTOOL'"; // toolbar is a toolbar config variable config.js config.toolbar_$var = []
-
+if($EDTOOL == "none") $EDTOOL = null; // toolbar to use cke default
+$EDTOOL = returnJsArray($EDTOOL);
+// if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
+// at this point $EDTOOL should always be a valid js nested array ([[ ]]) or escaped toolbar id ('toolbar_id')
 
 /**
  * Timezone setup

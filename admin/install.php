@@ -8,6 +8,9 @@
  * @subpackage Installation
  */
 
+$php_modules = get_loaded_extensions();
+if(!in_array('simplexml', array_map('strtolower', $php_modules)) ) die('PHP SimpleXML Module NOT INSTALLED');
+
 $kill = '';
 
 # setup inclusions
@@ -16,7 +19,6 @@ if(isset($_GET['lang'])) {$LANG = $_GET['lang'];}
 include('inc/common.php');
 
 # variable setup
-$php_modules = get_loaded_extensions();
 
 // attempt to fix permissions issues
 $dirsArray = array(

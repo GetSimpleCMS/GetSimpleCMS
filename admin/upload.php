@@ -45,16 +45,16 @@ if (isset($_FILES['file'])) {
 			
 			//set variables
 			$count = '1';
-			$file_loc = $path . clean_img_name(to7bit($_FILES["file"]["name"][$i]));
 			$base = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+			$file_loc = $path . $base;
 			
 			//prevent overwriting
 			// @todo redo variables to avoid the double redundant clean_img_name(to7bit below
 						
 			if(!isset($_POST['fileoverwrite'])){
 				while ( file_exists($file_loc) ) {
-					$file_loc = $path . $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
-					$base = $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+				$file_loc = $path . $count.'-'. $base;
+				$base = $count.'-'. $base;
 					$count++;
 				}
 			}
@@ -156,9 +156,10 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
       		$dirsArray = array();
       
 			$filenames = getFiles($path);
+
 			if (count($filenames) != 0) { 
 				foreach ($filenames as $file) {
-					if ($file == "." || $file == ".." || $file == ".htaccess" ){
+					if ($file == "." || $file == ".." || $file == ".htaccess" || $file == "index.php"){
             // not a upload file
           	} elseif (is_dir($path . $file)) {
             $dirsArray[$dircount]['name'] = $file;

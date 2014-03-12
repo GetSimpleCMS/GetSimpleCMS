@@ -30,9 +30,9 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 			<div class="queue-item-wrap">
 				<div class="queue-item dz-preview dz-file-preview">					
 					<div class="dz-filename">
-				    	<span class="dz-process-mark"><span>►</span></span>
-				    	<span class="dz-success-mark"><span>✔</span></span>
-						<span class="dz-error-mark">✘</span>				
+				    	<span class="dz-process-mark"><span>?</span></span>
+				    	<span class="dz-success-mark"><span>?</span></span>
+						<span class="dz-error-mark">?</span>				
 						<span class="dz-name" data-dz-name></span><span class="size"> (<span class="dz-size" data-dz-size></span>)</span>
 					</div>
 					<div class="dz-error-message"><span data-dz-errormessage></span></div>
@@ -121,8 +121,8 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 			paramName: 'file',
 			createImageThumbnails: false,
 			addRemoveLinks:true,
-			dictCancelUpload: '×',
-			dictRemoveFile: '×',
+			dictCancelUpload: '�',
+			dictRemoveFile: '�',
 			fallback: function(){$('.uploadform').show(); $('.upload').hide(); $('#gs-dropzone').hide(); },
 			// dictFallbackMessage: null,
 			// dictFallbackText: null,

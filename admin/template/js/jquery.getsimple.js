@@ -246,6 +246,7 @@ jQuery(document).ready(function () {
 		editor.refresh();
 
 		$("#divTxt").find('input').get(0).focus();
+		$("#divTxt").find('input').get(0).focus();		
 	});
 
 	$("#maincontent").on("click",'.delcomponent', function ($e) {

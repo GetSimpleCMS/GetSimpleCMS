@@ -81,7 +81,7 @@ define('GSDONOTPING', 1);
 #define("GSNOHIGHLIGHT",true);
 
 # Forces suppression of php errors when GSDEBUG is false, despite php ini settings
-# define('SUPPRESSERRORS',true);
+define('SUPPRESSERRORS',true);
 
 # Disable check for Apache web server, default false
 #define('GSNOAPACHECHECK', true);
