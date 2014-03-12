@@ -1224,7 +1224,7 @@ function requestIsAjax(){
 /**
  * check if array is multidimensional
  * @since 3.3.2
- * @param  array $ary
+ * @param  mixed $ary
  * @return bool true if $ary is a multidimensional array
  */
 function arrayIsMultid($ary){
@@ -1235,7 +1235,7 @@ function arrayIsMultid($ary){
  * normalizes toolbar setting, always returns js array string syntax
  * @since 3.3.2
  * 
- * @param $var string or array to convert to js array syntax
+ * @param mixed $var string or array var to convert to js array syntax
  */
 function returnJsArray($var){
 	

@@ -115,7 +115,7 @@ if (isset($_POST['submitted'])) {
 			}
 		}		
 		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
-		if ( file_exists($file) && ($url != $_POST['existing-url']) ) {
+		if ( (file_exists($file) && $url != $_POST['existing-url']) ||  in_array($url,$reservedSlugs) ) {
 			$count = "1";
 			$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
 			while ( file_exists($file) ) {
