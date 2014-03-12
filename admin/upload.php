@@ -143,9 +143,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
       		$dirsArray = array();
       
 			$filenames = getFiles($path);
+
 			if (count($filenames) != 0) { 
 				foreach ($filenames as $file) {
-					if ($file == "." || $file == ".." || $file == ".htaccess" ){
+					if ($file == "." || $file == ".." || $file == ".htaccess" || $file == "index.php"){
             // not a upload file
           	} elseif (is_dir($path . $file)) {
             $dirsArray[$dircount]['name'] = $file;
