@@ -115,9 +115,11 @@ if(isset($_POST['submitted'])) {
 		}
 
 		# create root .htaccess file
-		 if ( !function_exists('apache_get_modules') or in_arrayi('mod_rewrite',apache_get_modules()) ) {
-				$init = GSROOTPATH.'.htaccess';
-				$temp = GSROOTPATH .'temp.htaccess';
+		 if ( !function_exists('apache_get_modules') or in_arrayi('mod_rewrite',apache_get_modules())) {
+		 	$temp = GSROOTPATH .'temp.htaccess';
+		 	$init = GSROOTPATH.'.htaccess';
+			
+			if(file_exists($temp)) {				
 				$temp_data = file_get_contents(GSROOTPATH .'temp.htaccess');
 				$temp_data = str_replace('**REPLACE**',tsl($path_parts), $temp_data);
 				$fp = fopen($init, 'w');
@@ -128,7 +130,8 @@ if(isset($_POST['submitted'])) {
 				} else if(file_exists($temp)){
 					unlink($temp);
 				}
-		}
+			}	
+		} 
 	
 		# create gsconfig.php if it doesn't exist yet.
 		$init = GSROOTPATH.'gsconfig.php';
