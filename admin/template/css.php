@@ -1090,16 +1090,16 @@ input.submit {
 	cursor: pointer;
 }*/
 
-input.submit {
+input.submit, .button {
 	font: bold 13px Helvetica, Arial, sans-serif;
-	text-decoration: none;
+	text-decoration: none !important;
 	padding: 7px 15px;
 	text-shadow: 0 1px 0 rgba(255,255,255,.5);
 	transition: all .218s;
 		-webkit-transition: all .218s;
 		-moz-transition: all .218s;
 		-o-transition: all .218s;
-	color: #333333;
+	color: #333333 !important;
 	background: #dddddd;
 		background: -webkit-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#e1e1e1));
 		background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#e1e1e1));
@@ -1113,7 +1113,7 @@ input.submit {
 		-webkit-box-shadow: rgba(0,0,0, 0.06) 0px 0px 3px;
 }
 
-input.submit:focus, input.submit:hover {
+input.submit:focus, input.submit:hover, .button:hover {
 	color: #111111;
 	background: #eeeeee;
 		background: -webkit-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#dddddd));
@@ -1122,6 +1122,10 @@ input.submit:focus, input.submit:hover {
 	box-shadow: rgba(0,0,0, 0.15) 0px 0px 4px;
 		-moz-box-shadow: rgba(0,0,0, 0.15) 0px 0px 4px;
 		-webkit-box-shadow: rgba(0,0,0, 0.15) 0px 0px 4px;	  
+}
+
+.button {
+	padding: 3px 7px;
 }
 
 .leftsec {
