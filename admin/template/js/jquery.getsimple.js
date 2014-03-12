@@ -194,6 +194,7 @@ jQuery(document).ready(function () {
 		$("#id").val(id);
 		loadingAjaxIndicator.fadeOut(500);
 		$('#submit_line').fadeIn();
+		$("#divTxt").find('input').get(0).focus();		
 	});
 	$('.delcomponent').live("click", function ($e) {
 		$e.preventDefault();
