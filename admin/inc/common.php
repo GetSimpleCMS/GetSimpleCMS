@@ -9,23 +9,6 @@
  * @subpackage init
  */
 
-
-/**
- * Headers
- */
-
-// charset utf-8
-header('content-type: text/html; charset=utf-8');
-
-// no-cache headers
-if(!isset($base)){
-	$timestamp = gmdate("D, d M Y H:i:s") . " GMT";
-	header("Expires: " . $timestamp);
-	header("Last-Modified: " . $timestamp);
-	header("Pragma: no-cache");
-	header("Cache-Control: no-cache, must-revalidate");
-}
-
 define('IN_GS', TRUE); // GS enviroment flag
 
 // GS Debugger
@@ -180,6 +163,21 @@ $lang_relative = (isset($lang_relative)) ? $lang_relative : '';
 $load['login'] = (isset($load['login'])) ? $load['login'] : '';
 $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
 
+/**
+ * Headers
+ */
+
+// charset utf-8
+if(get_filename_id() != 'style' ) header('content-type: text/html; charset=utf-8');
+
+// no-cache headers
+if(!isset($base)){
+	$timestamp = gmdate("D, d M Y H:i:s") . " GMT";
+	header("Expires: " . $timestamp);
+	header("Last-Modified: " . $timestamp);
+	header("Pragma: no-cache");
+	header("Cache-Control: no-cache, must-revalidate");
+}
 
 
 /**
