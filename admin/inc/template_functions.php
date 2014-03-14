@@ -659,8 +659,7 @@ function get_available_pages() {
       return $extract;
     }
 }
-
-  
+ 
 /**
  * Update Slugs
  *
@@ -690,6 +689,84 @@ function updateSlugs($existingUrl, $newurl=null){
 	  }
 }
 
+/** NEW stuff **/
+
+function getPages($filterFunc=null,$arg){
+	GLOBAL $pagesArray;
+
+	if(function_exists($filterFunc)){
+		return($filterFunc($pagesArray,$arg));
+	} else return $pagesArray;
+}
+
+
+//filters
+function filterParent($pages,$parent=''){
+	return filterValueMatch($pages,'parent',$parent);	
+}
+
+function filterValueMatch($pages,$key,$value){	
+	return filterKeyValueFunc($pages,$key,$value,'filterValueMatchCmp');
+}
+
+function filterValueMatch_i($pages,$key,$value){	
+ 	return filterKeyValueFunc($pages,$key,$value,'filterValueMatchiCmp');
+}
+
+// comparison function
+function filterValueMatchCmp($a,$b){
+	return $a!==$b;
+}
+
+// comparison function
+// @uses lowercase (mbstring compat)
+function filterValueMatchiCmp($a,$b){
+	return lowercase($a)!==lowercase($b);
+}
+
+function filterKeyValueFunc($pages,$key,$value,$func){	
+	return filterKeyFunc($pages,'filterKeyValueFuncCmp',array($key,$value,$func));
+}
+
+// comparison function
+function filterKeyValueFuncCmp($page,$arg){
+	list($key,$value,$func) = $arg;
+	if (function_exists($func))	return $func($page[$key],$value);
+}
+
+// filter comparators return true to filter
+function filterKeyFunc($pages,$func,$arg){	
+	if (function_exists($func)){
+		foreach ($pages as $slug => $page) {
+			if( $func($page,$arg) ) unset($pages[$slug]);
+		}	
+		return $pages;
+	}	
+	return $pages;	
+}
+
+
+// sorters
+function sortKey($pages,$key){
+	return subval_sort($pagesArray,$key);
+}
+
+// @todo: will need to sort on full path instead
+function sortParent($pages){
+	foreach ($pages as $slug => &$page) {
+		$page['path'] = $page['parent'] ? returnPageField($page['parent'], "title") . '/' : '';
+		$page['path'] .= $page['title'];
+	}
+	return 	subval_sort($pages,'path');
+}
+
+
+//abstractions
+function get_page_children($parent){
+	return getPages('filterParent',$parent);
+}
+
+
 
 /**
  * Get Link Menu Array
@@ -705,17 +782,10 @@ function updateSlugs($existingUrl, $newurl=null){
  * @return array menuitems title,url,parent
  */
 function get_link_menu_array($parent='', $array=array(), $level=0) {
-	
-	global $pagesSorted;
-	
-	$items=array();
-	// $pageList=array();
+	// pagesarray is sorted by file load, no specific or normalized sort order
+	// pagesSorted attempts to sort by heirarchy parent children, in alphabetic order
 
-	foreach ($pagesSorted as $page) {
-		if ($page['parent']==$parent){
-			$items[(string)$page['url']]=$page;
-		}	
-	}	
+	$items = filterParent(getPages('sortParent'),$parent);
 
 	if (count($items)>0){
 		foreach ($items as $page) {
