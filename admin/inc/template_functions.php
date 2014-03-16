@@ -713,7 +713,6 @@ function getPages($filterFunc=null){
 /**
  * get list of field values from pagesarray
  *
- * @todo  this does not return keys which would be useful
  * @since  3.4
  * @uses  array_column
  * @param  string $key key of fields to return
@@ -721,7 +720,7 @@ function getPages($filterFunc=null){
  */
 function getPagesFields($key){
 	GLOBAL $pagesArray;
-	return array_column($pagesArray,$key);
+	return array_column($pagesArray,$key,'url');
 }
 
 /**
@@ -845,7 +844,7 @@ function filterValueMatchiCmp($a,$b){
 
 // BOOLEAN
 // casts to boolean before compare
-function filterValueMatchBool($a,$b){
+function filterValueMatchBoolCmp($a,$b){
 	$a = (bool) $a;
 	$b = (bool) $b;
 	return $a!==$b;
@@ -860,13 +859,6 @@ function filterParent($pages,$parent=''){
 // sorters
 function sortKey($pages,$key){
 	// return subval_sort($pagesArray,$key);
-
-$fruits = array('Orange9','Orange11','Orange10','Orange6','Orange15');
-uasort ( $fruits , function ($a, $b) {
-            return strnatcmp($a,$b); // or other function/code
-        }
-    );
-_debugLog($fruits);
 
 	GLOBAL $sortkey;
 	$sortkey = $key;
