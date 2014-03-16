@@ -692,6 +692,14 @@ function updateSlugs($existingUrl, $newurl=null){
 /** NEW stuff **/
 
 // get pages with optional filter or sorter
+
+/**
+ * getpagesarray filter with optional filterfunction
+ *
+ * @since  3.4
+ * @param  string $filterFunc function name for filter callout
+ * @return array  new pagesarray
+ */
 function getPages($filterFunc=null){
 	GLOBAL $pagesArray;
 
@@ -702,6 +710,15 @@ function getPages($filterFunc=null){
 	} else return $pagesArray;
 }
 
+/**
+ * get list of field values from pagesarray
+ *
+ * @todo  this does not return keys which would be useful
+ * @since  3.4
+ * @uses  array_column
+ * @param  string $key key of fields to return
+ * @return array      new array of fields
+ */
 function getPagesFields($key){
 	GLOBAL $pagesArray;
 	return array_column($pagesArray,$key);
@@ -709,6 +726,8 @@ function getPagesFields($key){
 
 /**
  * filter pages by key using comparator function
+ *
+ * @since  3.4
  * @param  array $pages pagesarray
  * @param  string $func  functionname to use as filter
  * @param  args $arg  args to pass on to func
@@ -724,6 +743,16 @@ function filterPageFunc($pages,$func,$arg){
 	return $pages;
 }
 
+/**
+ * filter pagesarray fields using filter function
+ * @todo  switch to get_func_args
+ *
+ * @since  3.4
+ * @param  array $pages pagesarray
+ * @param  string $func  functioname of function
+ * @param  mixed $arg   args for filter function
+ * @return array        new pagesarray
+ */
 function filterPageFieldFunc($pages,$func,$arg){
 	if (function_exists($func)){
 		$pages = $func($pages,$arg);
@@ -731,14 +760,31 @@ function filterPageFieldFunc($pages,$func,$arg){
 	return $pages;
 }
 
-// filter abstractions
-// custom key value comparison function
+/**
+ * filter abstractions
+ */
+
+/**
+ * custom key value comparison filter function
+ *
+ * @since  3.4
+ * @param  array $page page array
+ * @param  mixed $arg arguments for func
+ * @return bool       returns true to filter from comparator function
+ */
 function filterKeyValueCmpFunc($page,$arg){
 	list($key,$value,$func) = $arg;
 	if (function_exists($func))	return $func($page[$key],$value);
-	return true;
+	return false;
 }
 
+/**
+ * custom key comparison filter function
+ *
+ * @param  array $pages pagesarray
+ * @param  mixed $arg   arguments for function
+ * @return array        new pagesarray
+ */
 function filterKeyCmpFunc($pages,$arg){
 	list($key,$func) = $arg;
 	if (function_exists($func)){
@@ -755,42 +801,50 @@ function filterKeyCmpFunc($pages,$arg){
 	return $pages;
 }
 
-// filter on key and value using a custom comparator function
+// filter on key using a custom comparator function
 function filterKeyFunc($pages,$key,$func){
 	return filterPageFieldFunc($pages,'filterKeyCmpFunc',array($key,$func));
 }
 
+// filter on key and value using a custom comparator function
 function filterKeyValueFunc($pages,$key,$value,$func){
 	return filterPageFunc($pages,'filterKeyValueCmpFunc',array($key,$value,$func));
 }
 
-// filter on key equals value
+// filter on key IS value
 function filterKeyMatch($pages,$key){
 	return filterKeyFunc($pages,$key,'filterValueMatchCmp');
 }
 
+// filter on key MATCHES value
 function filterValueMatch($pages,$key,$value){
 	return filterKeyValueFunc($pages,$key,$value,'filterValueMatchCmp');
 }
 
-// filter on key equals value (case-insentitive)
+// filter on key MATCHES value (case-insentitive)
 function filterValueMatch_i($pages,$key,$value){
  	return filterKeyValueFunc($pages,$key,$value,'filterValueMatchiCmp');
 }
 
-// comparison function
-// filter comparators return true to filter
+/**
+ * comparison functions
+ * filter comparators return true to filter
+ */
+
+// EQUALS
 function filterValueMatchCmp($a,$b){
 	// _debugLog($a,$b,$a!==$b);
 	return $a!==$b;
 }
 
-// comparison function
+// EQUALS case-insensitive
 // @uses lowercase (mbstring compat)
 function filterValueMatchiCmp($a,$b){
 	return lowercase($a)!==lowercase($b);
 }
 
+// BOOLEAN
+// casts to boolean before compare
 function filterValueMatchBool($a,$b){
 	$a = (bool) $a;
 	$b = (bool) $b;
