@@ -661,7 +661,7 @@ function get_available_pages() {
 }
  
 /**
- * Update Slugs
+ * Updates parent Slugs
  *
  * @since 2.04
  * @uses $url
@@ -691,30 +691,97 @@ function updateSlugs($existingUrl, $newurl=null){
 
 /** NEW stuff **/
 
-function getPages($filterFunc=null,$arg){
+// get pages with optional filter or sorter
+function getPages($filterFunc=null){
 	GLOBAL $pagesArray;
 
 	if(function_exists($filterFunc)){
-		return($filterFunc($pagesArray,$arg));
+		$args=func_get_args();
+		$args[0] = $pagesArray;
+		return call_user_func_array($filterFunc, $args);
 	} else return $pagesArray;
 }
 
-
-//filters
-function filterParent($pages,$parent=''){
-	return filterValueMatch($pages,'parent',$parent);	
+function getPagesFields($key){
+	GLOBAL $pagesArray;
+	return array_column($pagesArray,$key);
 }
 
-function filterValueMatch($pages,$key,$value){	
+/**
+ * filter pages by key using comparator function
+ * @param  array $pages pagesarray
+ * @param  string $func  functionname to use as filter
+ * @param  args $arg  args to pass on to func
+ * @return array        new pagesarray
+ */
+function filterPageFunc($pages,$func,$arg){
+	if (function_exists($func)){
+		foreach ($pages as $slug => $page) {
+			if( $func($page,$arg) ) unset($pages[$slug]);
+		}
+		return $pages;
+	}
+	return $pages;
+}
+
+function filterPageFieldFunc($pages,$func,$arg){
+	if (function_exists($func)){
+		$pages = $func($pages,$arg);
+	}
+	return $pages;
+}
+
+// filter abstractions
+// custom key value comparison function
+function filterKeyValueCmpFunc($page,$arg){
+	list($key,$value,$func) = $arg;
+	if (function_exists($func))	return $func($page[$key],$value);
+	return true;
+}
+
+function filterKeyCmpFunc($pages,$arg){
+	list($key,$func) = $arg;
+	if (function_exists($func)){
+
+		foreach ($pages as $slug => &$page) {
+
+			foreach ($page as $fieldkey => $field) {
+				if( $func($fieldkey,$key) ){
+					unset($page[$fieldkey]);
+				}
+			}
+		}
+	}
+	return $pages;
+}
+
+// filter on key and value using a custom comparator function
+function filterKeyFunc($pages,$key,$func){
+	return filterPageFieldFunc($pages,'filterKeyCmpFunc',array($key,$func));
+}
+
+function filterKeyValueFunc($pages,$key,$value,$func){
+	return filterPageFunc($pages,'filterKeyValueCmpFunc',array($key,$value,$func));
+}
+
+// filter on key equals value
+function filterKeyMatch($pages,$key){
+	return filterKeyFunc($pages,$key,'filterValueMatchCmp');
+}
+
+function filterValueMatch($pages,$key,$value){
 	return filterKeyValueFunc($pages,$key,$value,'filterValueMatchCmp');
 }
 
-function filterValueMatch_i($pages,$key,$value){	
+// filter on key equals value (case-insentitive)
+function filterValueMatch_i($pages,$key,$value){
  	return filterKeyValueFunc($pages,$key,$value,'filterValueMatchiCmp');
 }
 
 // comparison function
+// filter comparators return true to filter
 function filterValueMatchCmp($a,$b){
+	// _debugLog($a,$b,$a!==$b);
 	return $a!==$b;
 }
 
@@ -724,42 +791,67 @@ function filterValueMatchiCmp($a,$b){
 	return lowercase($a)!==lowercase($b);
 }
 
-function filterKeyValueFunc($pages,$key,$value,$func){	
-	return filterKeyFunc($pages,'filterKeyValueFuncCmp',array($key,$value,$func));
+function filterValueMatchBool($a,$b){
+	$a = (bool) $a;
+	$b = (bool) $b;
+	return $a!==$b;
 }
 
-// comparison function
-function filterKeyValueFuncCmp($page,$arg){
-	list($key,$value,$func) = $arg;
-	if (function_exists($func))	return $func($page[$key],$value);
-}
 
-// filter comparators return true to filter
-function filterKeyFunc($pages,$func,$arg){	
-	if (function_exists($func)){
-		foreach ($pages as $slug => $page) {
-			if( $func($page,$arg) ) unset($pages[$slug]);
-		}	
-		return $pages;
-	}	
-	return $pages;	
+//filter shortcuts
+function filterParent($pages,$parent=''){
+	return filterValueMatch($pages,'parent',$parent);
 }
-
 
 // sorters
 function sortKey($pages,$key){
-	return subval_sort($pagesArray,$key);
+	// return subval_sort($pagesArray,$key);
+
+$fruits = array('Orange9','Orange11','Orange10','Orange6','Orange15');
+uasort ( $fruits , function ($a, $b) {
+            return strnatcmp($a,$b); // or other function/code
+        }
+    );
+_debugLog($fruits);
+
+	GLOBAL $sortkey;
+	$sortkey = $key;
+     function custom_sort($a,$b) {
+     	GLOBAL $sortkey;
+        return $a[$sortkey]>$b[$sortkey];
+     }
+     uasort($pages, "custom_sort");
+
+     unset($sortkey);
+     return $pages;
 }
 
-// @todo: will need to sort on full path instead
-function sortParent($pages){
+
+// get all parents not just first
+// function sortPathTitle($pages){
+// function sortPathTitle($pages){
+
+function sortParentTitle($pages){
 	foreach ($pages as $slug => &$page) {
-		$page['path'] = $page['parent'] ? returnPageField($page['parent'], "title") . '/' : '';
+		$page['path'] = $page['parent'] ? $pages[$page['parent']]["title"] . '/' : '';
 		$page['path'] .= $page['title'];
 	}
 	return 	subval_sort($pages,'path');
 }
 
+function sortParentPath($pages){
+	foreach ($pages as $slug => &$page) {
+		$page['path'] = $page['parent'] ? $pages[$page['parent']]["url"] . '/' : '';
+		$page['path'] .= $page['url'];
+	}
+	return 	subval_sort($pages,'path');
+}
+
+function sortPageFunc($pages,$func=null){
+     // Define the custom sort function
+	uasort ( $pages,$func);
+    return $pages;
+}
 
 //abstractions
 function get_page_children($parent){
