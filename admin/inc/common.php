@@ -56,7 +56,8 @@ global
  $components,     // components array
  $nocache,        // disable site wide cache
  $microtime_start,// used for benchmark timers
- $pagesArray      // page cache array, used for all page fields aside from content
+ $pagesArray,     // page cache array, used for all page fields aside from content
+ $pageCacheXml    // page cache raw xml
 ;
 
 if(isset($_GET['nocache'])){

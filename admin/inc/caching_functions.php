@@ -198,7 +198,7 @@ function getPagesXmlValues($refresh=false){
  * @return null 
  */
 function create_pagesxml($save=false){
-	global $pagesArray;
+	global $pagesArray, $pageCacheXml;
   	$pageCacheXml = generate_pageCacheXml();
 	
 	if((bool)$save){ 
@@ -213,8 +213,9 @@ function create_pagesxml($save=false){
  * 
  * @param bool $refresh regenerate cache from pages files
  */
-function init_pageCache($refresh = false)
-{
+function init_pageCache($refresh = false) {
+	GLOBAL $pageCacheXml;
+
 	$file=GSDATAOTHERPATH."pages.xml";
 	
 	if (file_exists($file) and !$refresh){
@@ -233,11 +234,11 @@ function init_pageCache($refresh = false)
  * Loads in pagescache file xml to pagecache array
  */
 function load_pageCache(){
-	GLOBAL $pagesArray;
+	GLOBAL $pagesArray,$pageCacheXml;
 	$file=GSDATAOTHERPATH."pages.xml";	
 	$pagesArray=array(); // wipe array
-	$data = getXml($file);
-	pageCacheXMLtoArray($data); // create array from xml
+	$pageCacheXml = getXml($file);
+	pageCacheXMLtoArray($pageCacheXml); // create array from xml
 }
 
 /**
@@ -284,7 +285,7 @@ function generate_pageCacheXml(){
 			# $note->addCData($file);
 		}
 	}
-		
+
 	return $xml;
 }
 
