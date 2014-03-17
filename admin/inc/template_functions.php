@@ -727,7 +727,7 @@ function getPagesFields($key){
  * filter pages by key using comparator function
  *
  * @since  3.4
- * @param  array $pages pagesarray
+ * @param  array $pages pages array
  * @param  string $func  functionname to use as filter
  * @param  args $arg  args to pass on to func
  * @return array        new pagesarray
@@ -743,11 +743,11 @@ function filterPageFunc($pages,$func,$arg){
 }
 
 /**
- * filter pagesarray fields using filter function
+ * filter pages array fields using filter function
  * @todo  switch to get_func_args
  *
  * @since  3.4
- * @param  array $pages pagesarray
+ * @param  array $pages pages array
  * @param  string $func  functioname of function
  * @param  mixed $arg   args for filter function
  * @return array        new pagesarray
@@ -850,11 +850,34 @@ function filterValueMatchBoolCmp($a,$b){
 	return $a!==$b;
 }
 
+// VALUES
+function filterValueMatchesCmp($a,$b){
+	return !in_array($a,$b);
+}
 
-//filter shortcuts
+// TAGS
+// splits comma delimited tags then compares to array provided
+// @todo case sensitivity
+function filterTagsCmp($a,$b){
+	if( is_array($b) ) return !array_intersect(explode(",",$a),$b);
+	return false;
+}
+
+/**
+ * filter shortcuts
+ */
+
+// filter matching tags
+function filtertags($pages,$tags){
+	return filterKeyValueFunc($pages,'meta',$tags,'filterTagsCmp');
+}
+
+// filter matching parent
 function filterParent($pages,$parent=''){
 	return filterValueMatch($pages,'parent',$parent);
 }
+
+
 
 // sorters
 function sortKey($pages,$key){
