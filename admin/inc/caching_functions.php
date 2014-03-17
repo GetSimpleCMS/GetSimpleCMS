@@ -249,8 +249,9 @@ function save_pageCacheXml($xml){
 	$file=GSDATAOTHERPATH."pages.xml";		
   	// Plugin Authors should add custome fields etc.. here
   	$xml = exec_filter('pagecache',$xml);	
-	if(!empty($xml)) return $xml->asXML($file);
+	if(!empty($xml)) $success = $xml->asXML($file);
   	exec_action('pagecache-aftersave');	
+  	return;
 }
 
 /**
