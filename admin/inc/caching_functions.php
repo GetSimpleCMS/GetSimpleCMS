@@ -283,8 +283,8 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $fl
         $id=$data->url;
         
     	$pages = $xml->addChild('item');
-        $pages->addChild('url', $id);
-        $pagesArray[(string)$id]['url']=(string)$id;            
+        // $pages->addChild('url', $id);
+        // $pagesArray[(string)$id]['url']=(string)$id;            
                 
         foreach ($data->children() as $item => $itemdata) {
                 if ($item!="content"){
