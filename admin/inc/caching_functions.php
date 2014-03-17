@@ -270,7 +270,7 @@ function generate_pageCacheXml(){
 						
 			$id=$data->url;
 			$pages = $xml->addChild('item');
-			$pages->addChild('url', $id);
+			// $pages->addChild('url', $id);
 			$children = $data->children();
 			foreach ($children as $item => $itemdata) {
 				if ($item!="content"){
