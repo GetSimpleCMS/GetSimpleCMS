@@ -27,8 +27,6 @@
 		      		get_scripts_backend(TRUE);
 		      		exec_action('footer'); 
 	      		}
-	    		GLOBAL $pagesArray;
-	    		debugLog($pagesArray);
 	      	?>
 
 		</div><!-- end #footer -->
