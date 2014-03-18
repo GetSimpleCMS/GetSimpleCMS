@@ -15,9 +15,6 @@ Options -Indexes
 # Follow symbolink links, This is required for rewrites on some hosts
 Options +FollowSymLinks
 
-# Make gs handle any 404 errors.
-# ErrorDocument 404 /index.php
-
 # Set the default handler.
 DirectoryIndex index.php
 
