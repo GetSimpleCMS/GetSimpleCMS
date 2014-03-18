@@ -830,19 +830,19 @@ function filterValueMatch_i($pages,$key,$value){
  * filter comparators return true to filter
  */
 
-// EQUALS
+// EQUALS comparison
 function filterValueMatchCmp($a,$b){
 	// _debugLog($a,$b,$a!==$b);
 	return $a!==$b;
 }
 
-// EQUALS case-insensitive
+// EQUALS case-insensitive comparison
 // @uses lowercase (mbstring compat)
 function filterValueMatchiCmp($a,$b){
 	return lowercase($a)!==lowercase($b);
 }
 
-// BOOLEAN
+// BOOLEAN comparison
 // casts to boolean before compare
 function filterValueMatchBoolCmp($a,$b){
 	$a = (bool) $a;
@@ -850,17 +850,22 @@ function filterValueMatchBoolCmp($a,$b){
 	return $a!==$b;
 }
 
-// VALUES
+// VALUES comparison
 function filterValueMatchesCmp($a,$b){
 	return !in_array($a,$b);
 }
 
-// TAGS
+// TAGS comparison
 // splits comma delimited tags then compares to array provided
-// @todo case sensitivity
 function filterTagsCmp($a,$b){
 	if( is_array($b) ) return !array_intersect(explode(",",$a),$b);
 	return false;
+}
+
+// TAGS case-insensitive tag comparison
+function filterTagsiCmp($a,$b){
+	$a = lowercase($a);
+	return filterTagsCmp($a,$b);
 }
 
 /**
@@ -868,8 +873,9 @@ function filterTagsCmp($a,$b){
  */
 
 // filter matching tags
-function filtertags($pages,$tags){
-	return filterKeyValueFunc($pages,'meta',$tags,'filterTagsCmp');
+function filtertags($pages,$tags,$case = false){
+	if($case) return filterKeyValueFunc($pages,'meta',$tags,'filterTagsCmp');
+	return filterKeyValueFunc($pages,'meta',array_map('lowercase',$tags),'filterTagsiCmp');
 }
 
 // filter matching parent
