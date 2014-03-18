@@ -16,7 +16,7 @@
       		
       		if(!isAuthPage()){ ?>
 	      		<p>&copy; 2009-<?php echo date('Y'); ?> <a href="http://get-simple.info/" target="_blank" >GetSimple CMS</a>
-	      		<?php echo '&ndash;'. i18n_r('VERSION') .' '. $site_version_no;  ?>
+	      		<?php echo '&ndash; '. i18n_r('VERSION') .' '. $site_version_no;  ?>
 	      		</p> 
       		</div> <!-- end .footer-left -->
 	      	<div class="gslogo" >
@@ -27,6 +27,8 @@
 		      		get_scripts_backend(TRUE);
 		      		exec_action('footer'); 
 	      		}
+	    		GLOBAL $pagesArray;
+	    		debugLog($pagesArray);
 	      	?>
 
 		</div><!-- end #footer -->
@@ -37,7 +39,8 @@
 				echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
 				echo '<pre>';
 				foreach ($GS_debug as $log){
-					print($log.'<br/>');
+					if(is_array($log)) print_r($log).'<br/>';
+					else print($log.'<br/>');
 				}
 				echo '</pre>';	
 				echo '</div>';

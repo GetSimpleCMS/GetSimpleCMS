@@ -2060,8 +2060,9 @@ h5 .crumbs, div.h5 .crumbs {
 	border: 1px solid #FF9933;
 	padding: 5px;
 	background: white;
-	height: 300px;
+	height: 500px;
 	overflow: scroll;
+	margin-bottom: 20px;
 }
 
 .ajaxwait {
