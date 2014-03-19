@@ -828,22 +828,27 @@ function filterValueMatch_i($pages,$key,$value){
 /**
  * comparison functions
  * filter comparators return true to filter
+ * @todo possible to use native sort cmps eg. strncasecmp but considerations for multibyte need to be taken
+ * returns 0 if equal should evaluate with !== 0 or false since it can return null on failures
  */
 
 // EQUALS comparison
 function filterValueMatchCmp($a,$b){
-	// _debugLog($a,$b,$a!==$b);
-	return $a!==$b;
+	return strcmp($a,$b) !== 0; // native , respects LC_COLLATE
+	// return $a!==$b; // custom
 }
 
 // EQUALS case-insensitive comparison
 // @uses lowercase (mbstring compat)
 function filterValueMatchiCmp($a,$b){
-	return lowercase($a)!==lowercase($b);
+	// return strcasecmp($a,$b); // native, not mb safe?
+	return strcmp(lowercase($a),lowercase($b)) !== 0; // custom
 }
 
 // BOOLEAN comparison
 // casts to boolean before compare
+// can probably use native str cmp since its binary safe, 
+// but we might have to do some Y/N noramlizing later on etc.
 function filterValueMatchBoolCmp($a,$b){
 	$a = (bool) $a;
 	$b = (bool) $b;
@@ -856,9 +861,9 @@ function filterValueMatchesCmp($a,$b){
 }
 
 // TAGS comparison
-// splits comma delimited tags then compares to array provided
+// splits comma delimited tag string then compares to array provided
 function filterTagsCmp($a,$b){
-	if( is_array($b) ) return !array_intersect(explode(",",$a),$b);
+	if( is_array($b) ) return !array_intersect(getTagsAry($a,true),$b);
 	return false;
 }
 
@@ -872,8 +877,17 @@ function filterTagsiCmp($a,$b){
  * filter shortcuts
  */
 
-// filter matching tags
+/**
+ * filter by matching tags
+ * accepts an array or a csv string of keywords
+ * @since 3.4
+ * @param  array   $pages pagesarray
+ * @param  mixed   $tags  array or keyword string of tags to filter by
+ * @param  boolean $case preserve case if true, default caseinsensitive
+ * @return array         fitlered pagesarray copy
+ */
 function filtertags($pages,$tags,$case = false){
+	if(!is_array($tags)) $tags = getTagsAry($tags,$case); // convert to array
 	if($case) return filterKeyValueFunc($pages,'meta',$tags,'filterTagsCmp');
 	return filterKeyValueFunc($pages,'meta',array_map('lowercase',$tags),'filterTagsiCmp');
 }
@@ -883,9 +897,34 @@ function filterParent($pages,$parent=''){
 	return filterValueMatch($pages,'parent',$parent);
 }
 
-
+// @todo date field filter and sorter
+// probably only need sorter in core
+// filter and sort by date field
+// date format none = gs default,
+// sort flags asc desc
+// filter flags between, null start or null end lg gt
+// equals mask for date match yyyy mm dd, no time
+// datetime php 5.3+ so use unixtime evaluation
 
 // sorters
+// @todo
+// how to do sorters
+// most will be a custom comparison sort
+// will need to do case conversions
+// will need date conversions
+// will need multi sort
+// will need multi sort using sort index faster to just sort fields you need and use the slug index
+// as a sort index depending on the sort needed, this also can help avoid
+// requiring a special multidimentional sorts and allowing any sort by slug pattern, and possibly cache sorts easier.
+// subval sort is very inefficient in that it creates a tmp array adds sort key value to it then sorts it and then rebuids to tmo index,
+// it is great but it might be possible to make it more efficient
+// eg uksort($array, "strnatcasecmp"); then resort main array as multi or just rebuild
+// some more stuff here http://us2.php.net/array_multisort
+// sortkey below sorts by a key without creating a seperate sorting array but it uses a tmp global
+// 
+// Sorting utf-8 by locale is iffy
+// strcoll() might be of some use
+
 function sortKey($pages,$key){
 	// return subval_sort($pagesArray,$key);
 

@@ -1602,4 +1602,19 @@ if (!function_exists('array_column')) {
 
 }
 
+/**
+ * return tags string as array
+ * explodes, trims keywords
+ * @since 3.4
+ * @param string $str string of comman delimited keywords
+ * @param bool	$case preserve case if true, else lower
+ * @return array      returns array of tags
+ */
+function getTagsAry($str,$case = false){
+	if(!$case) $str = lowercase($str);
+	$ary = explode(',',$str);
+	$ary = array_map('trim',$ary);
+	return $ary;
+}
+
 ?>
