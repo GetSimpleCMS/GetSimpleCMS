@@ -1172,4 +1172,51 @@ function filter_queryString($allowed = array()){
 	return $new_qstring;
 }
 
+
+/**
+ * Get String Excerpt
+ *
+ * @since 3.3.2
+ *
+ * @uses mb_strlen
+ * @uses mb_strrpos
+ * @uses mb_substr
+ * @uses strip_tags
+ * @uses strIsMultibyte
+ *
+ * @param string $n Optional, default is 200.
+ * @param bool $striphtml Optional, default true, true will strip html from $content
+ * @param string $ellipsis Optional, Default '...', specify an ellipsis
+ * @return string
+ */
+function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = "..."){
+	$str = $striphtml ? strip_tags($str) : $str;
+
+	// setup multibyte function names
+	$prefix = strIsMultibyte($str) ?  'mb_' : '';
+	list($substr,$strlen,$strrpos) = array($prefix.'substr',$prefix.'strlen',$prefix.'strrpos');
+
+	// string is shorter than truncate length, return
+	if ($strlen($str) <= $len) return $str;
+
+	// find last word boundary before truncate, avoid splitting in last word
+	$lastWordBoundaryIndex = $strrpos($substr($str, 0, $len+1), ' ');
+	$str = $substr($str, 0, $lastWordBoundaryIndex); 
+	return trim($str) . $ellipsis;	
+}
+
+/**
+ * check if a string is multbyte
+ * @since 3.3.2
+ * 
+ * @uses mb_check_encoding
+ * 
+ * @param  string $str string to check
+ * @return bool      true if multibyte
+ */
+function strIsMultibyte($str){
+	return function_exists('mb_check_encoding') && ! mb_check_encoding($str, 'ASCII') && mb_check_encoding($str, 'UTF-8');
+}
+
+
 ?>
