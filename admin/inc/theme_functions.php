@@ -54,7 +54,7 @@ function get_page_excerpt($n=200, $html=false, $ellipsis = '...') {
 	}
 
 	if ( function_exists('mb_check_encoding') && ! mb_check_encoding($content_e, 'ASCII') && mb_check_encoding($content_e, 'UTF-8')) {
-		$content_e = mb_substr($content_e, 0, mb_strpos($content_e,' ',$n-1, 'UTF-8'), 'UTF-8');
+		$content_e = mb_strcut($content_e, 0, mb_strpos($content_e,' ',$n-1, 'UTF-8'), 'UTF-8');
 	} else {
 		$content_e = substr($content_e, 0, strpos($content_e,' ',$n-1));
 	}
