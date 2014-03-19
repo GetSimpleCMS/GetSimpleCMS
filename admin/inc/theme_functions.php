@@ -39,7 +39,7 @@ function get_page_content() {
  * @uses strip_decode
  *
  * @param string $n Optional, default is 200.
- * @param bool $nohtml Optional, default false, true will strip html from $content
+ * @param bool $striphtml Optional, default false, true will strip html from $content
  * @param string $ellipsis Optional, Default '...', specify an ellipsis
  * @return string Echos.
  */
