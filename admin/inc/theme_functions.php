@@ -46,7 +46,7 @@ function get_page_content() {
 function get_page_excerpt($len=200, $striphtml=false, $ellipsis = '...') {
 	GLOBAL $content;
 	if ($len<1) return '';
-	$content_e = strip_decode(getPageGlobal('content'));
+	$content_e = strip_decode($content);
 	$content_e = exec_filter('content',$content_e);
 
 	echo getExcerpt($content_e, $len, $striphtml, $ellipsis);
