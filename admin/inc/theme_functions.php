@@ -48,8 +48,7 @@ function get_page_excerpt($len=200, $striphtml=true, $ellipsis = '...') {
 	if ($len<1) return '';
 	$content_e = strip_decode($content);
 	$content_e = exec_filter('content',$content_e);
-
-	echo getExcerpt($content_e, $len, $striphtml) . $ellipsis;
+	echo getExcerpt($content_e, $len, $striphtml, $ellipsis);
 }
 
 

@@ -1188,11 +1188,12 @@ function filter_queryString($allowed = array()){
  *
  * @param string $n Optional, default is 200.
  * @param bool $striphtml Optional, default true, true will strip html from $content
+ * @param string $ellipsis 
  * @param bool $break	break words, default: do not break words find whitespace and puntuation
  * @param bool $cleanhtml attempt to clean up html IF strip tags is false, default: true
  * @return string
  */
-function getExcerpt($str, $len = 200, $striphtml = true, $break = false, $cleanhtml = true){
+function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = '...', $break = false, $cleanhtml = true){
 	$str = $striphtml ? trim(strip_tags($str)) : $str;
 	$len = $len++; // zero index bump
 
@@ -1201,7 +1202,7 @@ function getExcerpt($str, $len = 200, $striphtml = true, $break = false, $cleanh
 	list($substr,$strlen,$strrpos) = array($prefix.'substr',$prefix.'strlen',$prefix.'strrpos');
 
 	// string is shorter than truncate length, return
-	if ($strlen($str) <= $len) return $str;
+	if ($strlen($str) < $len) return $str;
 
 	// if not break, find last word boundary before truncate to avoid splitting last word
 	// solves for unicode whitespace and punctuation and a 1 character lookahead
@@ -1212,8 +1213,8 @@ function getExcerpt($str, $len = 200, $striphtml = true, $break = false, $cleanh
 	$lastWordBoundaryIndex = !$break ? $strrpos($excerpt, ' ') : $len;
 	$str = $substr($str, 0, $lastWordBoundaryIndex); 
 
-	if(!$striphtml && $cleanhtml) return trim(cleanHtml($str));
-	return trim($str);	
+	if(!$striphtml && $cleanhtml) return trim(cleanHtml($str)) . $ellipsis;
+	return trim($str) . $ellipsis;	
 }
 
 /**
