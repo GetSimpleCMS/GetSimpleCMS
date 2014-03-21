@@ -571,7 +571,7 @@ function i18n($name, $echo=true) {
 
 	if(isset($i18n)){
 
-		if (isset($i18n['name'])) {
+		if (isset($i18n[$name])) {
 			$myVar = $i18n[$name];
 		} else {
 			$myVar = '{'.$name.'}';
