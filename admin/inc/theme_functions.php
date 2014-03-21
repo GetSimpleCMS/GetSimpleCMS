@@ -43,13 +43,13 @@ function get_page_content() {
  * @param string $ellipsis Optional, Default '...', specify an ellipsis
  * @return string Echos.
  */
-function get_page_excerpt($len=200, $striphtml=false, $ellipsis = '...') {
+function get_page_excerpt($len=200, $striphtml=true, $ellipsis = '...') {
 	GLOBAL $content;
 	if ($len<1) return '';
 	$content_e = strip_decode($content);
 	$content_e = exec_filter('content',$content_e);
 
-	echo getExcerpt($content_e, $len, $striphtml, $ellipsis);
+	echo getExcerpt($content_e, $len, $striphtml) . $ellipsis;
 }
 
 

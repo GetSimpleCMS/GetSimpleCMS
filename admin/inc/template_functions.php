@@ -1183,14 +1183,18 @@ function filter_queryString($allowed = array()){
  * @uses mb_substr
  * @uses strip_tags
  * @uses strIsMultibyte
+ * @uses cleanHtml
+ * @uses preg_repalce PCRE compiled with "--enable-unicode-properties"
  *
  * @param string $n Optional, default is 200.
  * @param bool $striphtml Optional, default true, true will strip html from $content
- * @param string $ellipsis Optional, Default '...', specify an ellipsis
+ * @param bool $break	break words, default: do not break words find whitespace and puntuation
+ * @param bool $cleanhtml attempt to clean up html IF strip tags is false, default: true
  * @return string
  */
-function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = "..."){
-	$str = $striphtml ? strip_tags($str) : $str;
+function getExcerpt($str, $len = 200, $striphtml = true, $break = false, $cleanhtml = true){
+	$str = $striphtml ? trim(strip_tags($str)) : $str;
+	$len = $len++; // zero index bump
 
 	// setup multibyte function names
 	$prefix = strIsMultibyte($str) ?  'mb_' : '';
@@ -1199,10 +1203,17 @@ function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = "..."){
 	// string is shorter than truncate length, return
 	if ($strlen($str) <= $len) return $str;
 
-	// find last word boundary before truncate, avoid splitting in last word
-	$lastWordBoundaryIndex = $strrpos($substr($str, 0, $len+1), ' ');
+	// if not break, find last word boundary before truncate to avoid splitting last word
+	// solves for unicode whitespace and punctuation and a 1 character lookahead
+	// hack,  replaces punc with space and handles it all the same for obtaining boundary index
+	// REQUIRES that PCRE is compiled with "--enable-unicode-properties, detect or supress ?
+	if(!$break) $excerpt = preg_replace('/\n|\p{Z}|\p{P}+$/u',' ',$substr($str, 0, $len+1)); 
+
+	$lastWordBoundaryIndex = !$break ? $strrpos($excerpt, ' ') : $len;
 	$str = $substr($str, 0, $lastWordBoundaryIndex); 
-	return trim($str) . $ellipsis;	
+
+	if(!$striphtml && $cleanhtml) return trim(cleanHtml($str));
+	return trim($str);	
 }
 
 /**
@@ -1217,6 +1228,26 @@ function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = "..."){
 function strIsMultibyte($str){
 	return function_exists('mb_check_encoding') && ! mb_check_encoding($str, 'ASCII') && mb_check_encoding($str, 'UTF-8');
 }
+
+/**
+ * clean Html fragments by loading and saving from DOMDocument
+ * Will only clean html body fragments,unexpected results with full html doc or containg head or body
+ * it will also strip these in final result
+ * 
+ * @note supressig errors on libxml functions to prevent parse errors on no well formed content
+ * @since 3.3.2
+ * @param  string $str string to clean up
+ * @return string      return well formed html , with open tags being closed and incomplete open tags removed
+ */
+function cleanHtml($str){
+	// setup encoding, required for proper dom loading
+	$charsetstr = '<meta http-equiv="content-type" content="text/html; charset=utf-8">'.$str;
+	$dom_document = new DOMDocument();
+	@$dom_document->loadHTML($charsetstr);
+	// strip dom tags
+	$html_fragment = preg_replace('/^<!DOCTYPE.+?>|<head.*?>(.*)?<\/head>/', '', str_replace( array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), @$dom_document->saveHTML()));	
+	return $html_fragment;
+}	
 
 
 ?>
