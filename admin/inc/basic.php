@@ -569,26 +569,24 @@ function i18n($name, $echo=true) {
 	global $i18n;
 	global $LANG;
 
-	if(!isset($i18n)) return; 
+	if(isset($i18n)){
 
-	if (array_key_exists($name, $i18n)) {
-		$myVar = $i18n[$name];
-	} else {
-		# this messes with the global $i18n
-		//include_once(GSLANGPATH . 'en_US.php');
-		if (array_key_exists($name, $i18n)) {
+		if (isset($i18n['name'])) {
 			$myVar = $i18n[$name];
 		} else {
 			$myVar = '{'.$name.'}';
 		}
 	}
-	
+	else {
+		$myVar = '{'.$name.'}'; // if $i18n doesnt exist yet return something
+	}
+
 	if (!$echo) {
 		return $myVar;
 	} else {
 		echo $myVar;
 	}
-} 
+}
 
 /**
  * Return i18n
