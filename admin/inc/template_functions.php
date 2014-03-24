@@ -695,7 +695,6 @@ function updateSlugs($existingUrl, $newurl=null){
 	  }
 }
 
-
 /**
  * Get Link Menu Array
  * 
@@ -1200,15 +1199,19 @@ function filter_queryString($allowed = array()){
 }
 
 
+
 /** NEW stuff **/
 
-// get pages with optional filter or sorter
+// @todo: now that I have some structure, i can probably reduce this into some array_filter functions, depending on speed these might be easier and faster to use.
+// @todo: replace function checks with callable checks
+// but it still requires a class or __invoke to pass arguments into the callback
+
 
 /**
  * getpagesarray filter with optional filterfunction
  *
  * @since  3.4
- * @param  string $filterFunc function name for filter callout
+ * @param  callable $filterFunc function name for filter callout
  * @return array  new pagesarray
  */
 function getPages($filterFunc=null){
@@ -1226,12 +1229,12 @@ function getPages($filterFunc=null){
  *
  * @since  3.4
  * @uses  array_column
- * @param  string $key key of fields to return
+ * @uses  getPages
+ * @param  string $field key of fields to return
  * @return array      new array of fields
  */
-function getPagesFields($key){
-	GLOBAL $pagesArray;
-	return array_column($pagesArray,$key,'url');
+function getPagesFields($field){
+	return array_column($getPages(),$field,'url');
 }
 
 /**
@@ -1239,14 +1242,14 @@ function getPagesFields($key){
  *
  * @since  3.4
  * @param  array $pages pages array
- * @param  string $func  functionname to use as filter
+ * @param  callable $func  functionname to use as filter
  * @param  args $arg  args to pass on to func
  * @return array        new pagesarray
  */
 function filterPageFunc($pages,$func,$arg){
 	if (function_exists($func)){
-		foreach ($pages as $slug => $page) {
-			if( $func($page,$arg) ) unset($pages[$slug]);
+		foreach ($pages as $pageId => $page) {
+			if( $func($page,$arg) ) unset($pages[$pageId]);
 		}
 		return $pages;
 	}
@@ -1259,7 +1262,7 @@ function filterPageFunc($pages,$func,$arg){
  *
  * @since  3.4
  * @param  array $pages pages array
- * @param  string $func  functioname of function
+ * @param  callable $func  functioname of function
  * @param  mixed $arg   args for filter function
  * @return array        new pagesarray
  */
@@ -1322,8 +1325,15 @@ function filterKeyValueFunc($pages,$key,$value,$func){
 }
 
 // filter on key IS value
+// @todo: probably useless
 function filterKeyMatch($pages,$key){
 	return filterKeyFunc($pages,$key,'filterValueMatchCmp');
+}
+
+// filter on keys match array of keys
+// use to filter pages by certain field keys
+function filterKeysMatch($pages,$keys){
+	return filterKeyFunc($pages,$keys,'filterValueMatchesCmp');
 }
 
 // filter on key MATCHES value
@@ -1337,10 +1347,11 @@ function filterValueMatch_i($pages,$key,$value){
 }
 
 /**
- * comparison functions
- * filter comparators return true to filter
- * @todo possible to use native sort cmps eg. strncasecmp but considerations for multibyte need to be taken
- * returns 0 if equal should evaluate with !== 0 or false since it can return null on failures
+ * filter comparison functions
+ * return true to filter
+ * 
+ * natives return 0 if equal should evaluate with !== 0 or false since it can return null on failures 
+ * in main funcs to allow for use with sort comparators
  */
 
 // EQUALS comparison
@@ -1367,8 +1378,14 @@ function filterValueMatchBoolCmp($a,$b){
 }
 
 // VALUES comparison
+// match multiple values
 function filterValueMatchesCmp($a,$b){
 	return !in_array($a,$b);
+}
+
+// not matching multiple values
+function filterValueNotMatchesCmp($a,$b){
+	return in_array($a,$b);
 }
 
 // TAGS comparison
@@ -1414,10 +1431,13 @@ function filterParent($pages,$parent=''){
 // date format none = gs default,
 // sort flags asc desc
 // filter flags between, null start or null end lg gt
-// equals mask for date match yyyy mm dd, no time
-// datetime php 5.3+ so use unixtime evaluation
+// equals mask for date match yyyy, mm, dd, no time
+// datetime php min 5.3+ ,  so use unixtime evaluation
+// multi sort 2 columns etc.
 
+//
 // sorters
+// most use subval sort for now
 // @todo
 // how to do sorters
 // most will be a custom comparison sort
@@ -1429,13 +1449,19 @@ function filterParent($pages,$parent=''){
 // requiring a special multidimentional sorts and allowing any sort by slug pattern, and possibly cache sorts easier.
 // subval sort is very inefficient in that it creates a tmp array adds sort key value to it then sorts it and then rebuids to tmo index,
 // it is great but it might be possible to make it more efficient
-// eg uksort($array, "strnatcasecmp"); then resort main array as multi or just rebuild
+// 
+// eg uksort($array, "strnatcasecmp"); then resort main array as multi
 // some more stuff here http://us2.php.net/array_multisort
-// sortkey below sorts by a key without creating a seperate sorting array but it uses a tmp global
 // 
 // Sorting utf-8 by locale is iffy
 // strcoll() might be of some use
+// 
 
+
+/**
+ * sortkey below sorts by a key with uasort without creating a seperate sorting array
+ * but it uses a tmp global and custom comparator
+ */
 function sortKey($pages,$key){
 	// return subval_sort($pagesArray,$key);
 
@@ -1452,10 +1478,15 @@ function sortKey($pages,$key){
 }
 
 
-// get all parents not just first
-// function sortPathTitle($pages){
-// function sortPathTitle($pages){
+// path = get all parents not just first
+// function sortPathTitle($pages)
+// function sortPath($pages)
 
+/**
+ * sort by "parent title page title"
+ * @param  array $pages pages array
+ * @return array        sorted
+ */
 function sortParentTitle($pages){
 	foreach ($pages as $slug => &$page) {
 		$page['path'] = $page['parent'] ? $pages[$page['parent']]["title"] . '/' : '';
@@ -1464,6 +1495,11 @@ function sortParentTitle($pages){
 	return 	subval_sort($pages,'path');
 }
 
+/**
+ * sorts by "parent slug page slug"
+ * @param  array $pages pages array
+ * @return array        sorted
+ */
 function sortParentPath($pages){
 	foreach ($pages as $slug => &$page) {
 		$page['path'] = $page['parent'] ? $pages[$page['parent']]["url"] . '/' : '';
@@ -1472,15 +1508,57 @@ function sortParentPath($pages){
 	return 	subval_sort($pages,'path');
 }
 
+// in progress
 function sortPageFunc($pages,$func=null){
      // Define the custom sort function
 	uasort ( $pages,$func);
     return $pages;
 }
 
-//abstractions
-function get_page_children($parent){
-	return getPages('filterParent',$parent);
+
+function sortPageDateCmp($a,$b){
+	// sort by date field ( using gs format )
+}
+
+/**
+ * abstractions / shorthand
+ */
+
+function get_pages(){
+	return getPages();
+}
+
+function getPageFieldValue($pageId,$field){
+	return returnPageField($pageId,$field);
+}
+
+function get_page_children($pageId){
+	return getPages('filterParent',$pageId);
+}
+
+function get_page_parent($pageId){
+	$pagesArray = getPages();
+	$parentId = $pagesArray[$pageId]['parent'];
+	return $pagesArray[$parentId];
+}
+
+function get_page_parents($pageId){
+	getParentPages($pageId);
+}
+
+function getParentPages($pageId,$pathAry = array()){
+	$pagesArray = getPages();
+	$pageParent = getPageFieldValue($pageId,'parent');
+	if(empty($pageParent)) return $pathAry;
+
+	foreach($pagesArray as $pageId => $page){
+		if($pageId == $pagesArray[$child]['parent']){
+			$pathAry[] = $page;
+			return get_page_parents($pageId,$pathAry);
+		}
+	}
+
+	return $pathAry;
 }
 
 
