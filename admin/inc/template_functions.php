@@ -1198,14 +1198,13 @@ function filter_queryString($allowed = array()){
 	return $new_qstring;
 }
 
-
-
-/** NEW stuff **/
-
 // @todo: now that I have some structure, i can probably reduce this into some array_filter functions, depending on speed these might be easier and faster to use.
 // @todo: replace function checks with callable checks
 // but it still requires a class or __invoke to pass arguments into the callback
 
+/*
+ * FILTER CORE FUNCTIONS
+ */
 
 /**
  * getpagesarray filter with optional filterfunction
@@ -1225,20 +1224,22 @@ function getPages($filterFunc=null){
 }
 
 /**
- * get list of field values from pagesarray
- *
+ * get list of field values from pages array as column
+ * 
  * @since  3.4
  * @uses  array_column
  * @uses  getPages
  * @param  string $field key of fields to return
+ * @param  optional pages array
  * @return array      new array of fields
  */
-function getPagesFields($field){
-	return array_column($getPages(),$field,'url');
+function getPagesFields($field,$pages = array()){
+	if(!$pages) $pages = getPages();
+	return array_column($pages,$field,'url');
 }
 
 /**
- * filter pages by key using comparator function
+ * filter PAGES using comparator function
  *
  * @since  3.4
  * @param  array $pages pages array
@@ -1257,7 +1258,7 @@ function filterPageFunc($pages,$func,$arg){
 }
 
 /**
- * filter pages array fields using filter function
+ * filter PAGE FIELDS using filter function
  * @todo  switch to get_func_args
  *
  * @since  3.4
@@ -1273,12 +1274,13 @@ function filterPageFieldFunc($pages,$func,$arg){
 	return $pages;
 }
 
+
 /**
- * filter abstractions
+ * FILTER WITH CUSTOM COMPARE, FUNCTION CALLERS
  */
 
 /**
- * custom key value comparison filter function
+ * runs a custom key value comparison filter on array
  *
  * @since  3.4
  * @param  array $page page array
@@ -1292,17 +1294,18 @@ function filterKeyValueCmpFunc($page,$arg){
 }
 
 /**
- * custom key comparison filter function
+ * runs a custom key comparison filter on subarray keys
+ * removes sub array key if filter returns true
  *
  * @param  array $pages pagesarray
  * @param  mixed $arg   arguments for function
- * @return array        new pagesarray
+ * @return array        original array with subarray fields removed or not
  */
 function filterKeyCmpFunc($pages,$arg){
 	list($key,$func) = $arg;
 	if (function_exists($func)){
 
-		foreach ($pages as $slug => &$page) {
+		foreach ($pages as $pageKey => &$page) {
 
 			foreach ($page as $fieldkey => $field) {
 				if( $func($fieldkey,$key) ){
@@ -1314,36 +1317,47 @@ function filterKeyCmpFunc($pages,$arg){
 	return $pages;
 }
 
-// filter on key using a custom comparator function
+/*
+ * Abstractions
+ */
+
+// main filter on key using a custom comparator function
 function filterKeyFunc($pages,$key,$func){
 	return filterPageFieldFunc($pages,'filterKeyCmpFunc',array($key,$func));
 }
 
-// filter on key and value using a custom comparator function
+// main filter on key and value using a custom comparator function
 function filterKeyValueFunc($pages,$key,$value,$func){
 	return filterPageFunc($pages,'filterKeyValueCmpFunc',array($key,$value,$func));
 }
 
-// filter on key IS value
-// @todo: probably useless
+// filter on key index matches key
+// @todo: probably useless, 
+// alternatives filterKeysMatch with single element array
+// differs from getPagesFields in that this preserves inner array and keys
+// eg. $newPages = filterKeyMatch($pagesArray,'meta');
+// eg. $newPages = getPagesFields('meta');
 function filterKeyMatch($pages,$key){
-	return filterKeyFunc($pages,$key,'filterValueMatchCmp');
+	return filterKeyFunc($pages,$key,'filterMatchCmp');
 }
 
-// filter on keys match array of keys
+// filter on key index match array of keys
 // use to filter pages by certain field keys
+// eg. $newPages = getPages('filterKeysMatch',array('url','meta'));
 function filterKeysMatch($pages,$keys){
-	return filterKeyFunc($pages,$keys,'filterValueMatchesCmp');
+	return filterKeyFunc($pages,$keys,'filterInValuesCmp');
 }
 
-// filter on key MATCHES value
-function filterValueMatch($pages,$key,$value){
-	return filterKeyValueFunc($pages,$key,$value,'filterValueMatchCmp');
+// filter on key value MATCHES value
+// eg. $newPages = getPages('filterKeyValueMatch','menuStatus','Y');
+function filterKeyValueMatch($pages,$key,$value){
+	return filterKeyValueFunc($pages,$key,$value,'filterMatchCmp');
 }
 
-// filter on key MATCHES value (case-insentitive)
-function filterValueMatch_i($pages,$key,$value){
- 	return filterKeyValueFunc($pages,$key,$value,'filterValueMatchiCmp');
+// filter on key value MATCHES value (case-insentitive)
+// eg. $newPages = getPages('filterKeyValueMatch','menuStatus','y');
+function filterKeyValueMatch_i($pages,$key,$value){
+ 	return filterKeyValueFunc($pages,$key,$value,'filterMatchiCmp');
 }
 
 /**
@@ -1355,14 +1369,14 @@ function filterValueMatch_i($pages,$key,$value){
  */
 
 // EQUALS comparison
-function filterValueMatchCmp($a,$b){
+function filterMatchCmp($a,$b){
 	return strcmp($a,$b) !== 0; // native , respects LC_COLLATE
 	// return $a!==$b; // custom
 }
 
 // EQUALS case-insensitive comparison
 // @uses lowercase (mbstring compat)
-function filterValueMatchiCmp($a,$b){
+function filterMatchiCmp($a,$b){
 	// return strcasecmp($a,$b); // native, not mb safe?
 	return strcmp(lowercase($a),lowercase($b)) !== 0; // custom
 }
@@ -1371,7 +1385,7 @@ function filterValueMatchiCmp($a,$b){
 // casts to boolean before compare
 // can probably use native str cmp since its binary safe, 
 // but we might have to do some Y/N noramlizing later on etc.
-function filterValueMatchBoolCmp($a,$b){
+function filterMatchBoolCmp($a,$b){
 	$a = (bool) $a;
 	$b = (bool) $b;
 	return $a!==$b;
@@ -1379,12 +1393,14 @@ function filterValueMatchBoolCmp($a,$b){
 
 // VALUES comparison
 // match multiple values
-function filterValueMatchesCmp($a,$b){
+// eg. filterKeyValueFunc($pagesArray,'menuOrder',array(1,2),'filterInValuesCmp');
+function filterInValuesCmp($a,$b){
 	return !in_array($a,$b);
 }
 
 // not matching multiple values
-function filterValueNotMatchesCmp($a,$b){
+// eg. filterKeyValueFunc($pagesArray,'menuOrder',array(1,2),'filterNotInValuesCmp');
+function filterNotInValuesCmp($a,$b){
 	return in_array($a,$b);
 }
 
@@ -1406,23 +1422,31 @@ function filterTagsiCmp($a,$b){
  */
 
 /**
- * filter by matching tags
+ * return pages with pages not containing tags removed, or inverse via exclude flag
  * accepts an array or a csv string of keywords
- * @since 3.4
- * @param  array   $pages pagesarray
- * @param  mixed   $tags  array or keyword string of tags to filter by
- * @param  boolean $case preserve case if true, default caseinsensitive
- * @return array         fitlered pagesarray copy
+ * eg. getPages('filterTags',array('test','test2','позтюлант'),false,true);
+ * 
+ * @since  3.4
+ * @param  array   $pages   pagesarray
+ * @param  mixed   $tags    array or keyword string of tags to filter by
+ * @param  boolean $case    preserve case if true, default case-insensitive
+ * @param  boolean $exclude invert filter, return pages not matching tags
+ * @return array            fitlered pagesarray copy
  */
-function filtertags($pages,$tags,$case = false){
-	if(!is_array($tags)) $tags = getTagsAry($tags,$case); // convert to array
-	if($case) return filterKeyValueFunc($pages,'meta',$tags,'filterTagsCmp');
-	return filterKeyValueFunc($pages,'meta',array_map('lowercase',$tags),'filterTagsiCmp');
+function filterTags($pages, $tags, $case = false, $exclude = false){
+	if(!is_array($tags)) $tags  = getTagsAry($tags,$case); // convert to array
+
+	if($case) $pagesFiltered    = filterKeyValueFunc($pages,'meta',$tags,'filterTagsCmp');
+	else $pagesFiltered         = filterKeyValueFunc($pages,'meta',array_map('lowercase',$tags),'filterTagsiCmp');
+	
+	if($exclude) $pagesFiltered = array_diff_key($pages,$pagesFiltered);
+	
+	return $pagesFiltered;
 }
 
 // filter matching parent
 function filterParent($pages,$parent=''){
-	return filterValueMatch($pages,'parent',$parent);
+	return filterMatch($pages,'parent',$parent);
 }
 
 // @todo date field filter and sorter
