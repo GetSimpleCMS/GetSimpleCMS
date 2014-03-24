@@ -695,290 +695,6 @@ function updateSlugs($existingUrl, $newurl=null){
 	  }
 }
 
-/** NEW stuff **/
-
-// get pages with optional filter or sorter
-
-/**
- * getpagesarray filter with optional filterfunction
- *
- * @since  3.4
- * @param  string $filterFunc function name for filter callout
- * @return array  new pagesarray
- */
-function getPages($filterFunc=null){
-	GLOBAL $pagesArray;
-
-	if(function_exists($filterFunc)){
-		$args=func_get_args();
-		$args[0] = $pagesArray;
-		return call_user_func_array($filterFunc, $args);
-	} else return $pagesArray;
-}
-
-/**
- * get list of field values from pagesarray
- *
- * @since  3.4
- * @uses  array_column
- * @param  string $key key of fields to return
- * @return array      new array of fields
- */
-function getPagesFields($key){
-	GLOBAL $pagesArray;
-	return array_column($pagesArray,$key,'url');
-}
-
-/**
- * filter pages by key using comparator function
- *
- * @since  3.4
- * @param  array $pages pages array
- * @param  string $func  functionname to use as filter
- * @param  args $arg  args to pass on to func
- * @return array        new pagesarray
- */
-function filterPageFunc($pages,$func,$arg){
-	if (function_exists($func)){
-		foreach ($pages as $slug => $page) {
-			if( $func($page,$arg) ) unset($pages[$slug]);
-		}
-		return $pages;
-	}
-	return $pages;
-}
-
-/**
- * filter pages array fields using filter function
- * @todo  switch to get_func_args
- *
- * @since  3.4
- * @param  array $pages pages array
- * @param  string $func  functioname of function
- * @param  mixed $arg   args for filter function
- * @return array        new pagesarray
- */
-function filterPageFieldFunc($pages,$func,$arg){
-	if (function_exists($func)){
-		$pages = $func($pages,$arg);
-	}
-	return $pages;
-}
-
-/**
- * filter abstractions
- */
-
-/**
- * custom key value comparison filter function
- *
- * @since  3.4
- * @param  array $page page array
- * @param  mixed $arg arguments for func
- * @return bool       returns true to filter from comparator function
- */
-function filterKeyValueCmpFunc($page,$arg){
-	list($key,$value,$func) = $arg;
-	if (function_exists($func))	return $func($page[$key],$value);
-	return false;
-}
-
-/**
- * custom key comparison filter function
- *
- * @param  array $pages pagesarray
- * @param  mixed $arg   arguments for function
- * @return array        new pagesarray
- */
-function filterKeyCmpFunc($pages,$arg){
-	list($key,$func) = $arg;
-	if (function_exists($func)){
-
-		foreach ($pages as $slug => &$page) {
-
-			foreach ($page as $fieldkey => $field) {
-				if( $func($fieldkey,$key) ){
-					unset($page[$fieldkey]);
-				}
-			}
-		}
-	}
-	return $pages;
-}
-
-// filter on key using a custom comparator function
-function filterKeyFunc($pages,$key,$func){
-	return filterPageFieldFunc($pages,'filterKeyCmpFunc',array($key,$func));
-}
-
-// filter on key and value using a custom comparator function
-function filterKeyValueFunc($pages,$key,$value,$func){
-	return filterPageFunc($pages,'filterKeyValueCmpFunc',array($key,$value,$func));
-}
-
-// filter on key IS value
-function filterKeyMatch($pages,$key){
-	return filterKeyFunc($pages,$key,'filterValueMatchCmp');
-}
-
-// filter on key MATCHES value
-function filterValueMatch($pages,$key,$value){
-	return filterKeyValueFunc($pages,$key,$value,'filterValueMatchCmp');
-}
-
-// filter on key MATCHES value (case-insentitive)
-function filterValueMatch_i($pages,$key,$value){
- 	return filterKeyValueFunc($pages,$key,$value,'filterValueMatchiCmp');
-}
-
-/**
- * comparison functions
- * filter comparators return true to filter
- * @todo possible to use native sort cmps eg. strncasecmp but considerations for multibyte need to be taken
- * returns 0 if equal should evaluate with !== 0 or false since it can return null on failures
- */
-
-// EQUALS comparison
-function filterValueMatchCmp($a,$b){
-	return strcmp($a,$b) !== 0; // native , respects LC_COLLATE
-	// return $a!==$b; // custom
-}
-
-// EQUALS case-insensitive comparison
-// @uses lowercase (mbstring compat)
-function filterValueMatchiCmp($a,$b){
-	// return strcasecmp($a,$b); // native, not mb safe?
-	return strcmp(lowercase($a),lowercase($b)) !== 0; // custom
-}
-
-// BOOLEAN comparison
-// casts to boolean before compare
-// can probably use native str cmp since its binary safe, 
-// but we might have to do some Y/N noramlizing later on etc.
-function filterValueMatchBoolCmp($a,$b){
-	$a = (bool) $a;
-	$b = (bool) $b;
-	return $a!==$b;
-}
-
-// VALUES comparison
-function filterValueMatchesCmp($a,$b){
-	return !in_array($a,$b);
-}
-
-// TAGS comparison
-// splits comma delimited tag string then compares to array provided
-function filterTagsCmp($a,$b){
-	if( is_array($b) ) return !array_intersect(getTagsAry($a,true),$b);
-	return false;
-}
-
-// TAGS case-insensitive tag comparison
-function filterTagsiCmp($a,$b){
-	$a = lowercase($a);
-	return filterTagsCmp($a,$b);
-}
-
-/**
- * filter shortcuts
- */
-
-/**
- * filter by matching tags
- * accepts an array or a csv string of keywords
- * @since 3.4
- * @param  array   $pages pagesarray
- * @param  mixed   $tags  array or keyword string of tags to filter by
- * @param  boolean $case preserve case if true, default caseinsensitive
- * @return array         fitlered pagesarray copy
- */
-function filtertags($pages,$tags,$case = false){
-	if(!is_array($tags)) $tags = getTagsAry($tags,$case); // convert to array
-	if($case) return filterKeyValueFunc($pages,'meta',$tags,'filterTagsCmp');
-	return filterKeyValueFunc($pages,'meta',array_map('lowercase',$tags),'filterTagsiCmp');
-}
-
-// filter matching parent
-function filterParent($pages,$parent=''){
-	return filterValueMatch($pages,'parent',$parent);
-}
-
-// @todo date field filter and sorter
-// probably only need sorter in core
-// filter and sort by date field
-// date format none = gs default,
-// sort flags asc desc
-// filter flags between, null start or null end lg gt
-// equals mask for date match yyyy mm dd, no time
-// datetime php 5.3+ so use unixtime evaluation
-
-// sorters
-// @todo
-// how to do sorters
-// most will be a custom comparison sort
-// will need to do case conversions
-// will need date conversions
-// will need multi sort
-// will need multi sort using sort index faster to just sort fields you need and use the slug index
-// as a sort index depending on the sort needed, this also can help avoid
-// requiring a special multidimentional sorts and allowing any sort by slug pattern, and possibly cache sorts easier.
-// subval sort is very inefficient in that it creates a tmp array adds sort key value to it then sorts it and then rebuids to tmo index,
-// it is great but it might be possible to make it more efficient
-// eg uksort($array, "strnatcasecmp"); then resort main array as multi or just rebuild
-// some more stuff here http://us2.php.net/array_multisort
-// sortkey below sorts by a key without creating a seperate sorting array but it uses a tmp global
-// 
-// Sorting utf-8 by locale is iffy
-// strcoll() might be of some use
-
-function sortKey($pages,$key){
-	// return subval_sort($pagesArray,$key);
-
-	GLOBAL $sortkey;
-	$sortkey = $key;
-     function custom_sort($a,$b) {
-     	GLOBAL $sortkey;
-        return $a[$sortkey]>$b[$sortkey];
-     }
-     uasort($pages, "custom_sort");
-
-     unset($sortkey);
-     return $pages;
-}
-
-
-// get all parents not just first
-// function sortPathTitle($pages){
-// function sortPathTitle($pages){
-
-function sortParentTitle($pages){
-	foreach ($pages as $slug => &$page) {
-		$page['path'] = $page['parent'] ? $pages[$page['parent']]["title"] . '/' : '';
-		$page['path'] .= $page['title'];
-	}
-	return 	subval_sort($pages,'path');
-}
-
-function sortParentPath($pages){
-	foreach ($pages as $slug => &$page) {
-		$page['path'] = $page['parent'] ? $pages[$page['parent']]["url"] . '/' : '';
-		$page['path'] .= $page['url'];
-	}
-	return 	subval_sort($pages,'path');
-}
-
-function sortPageFunc($pages,$func=null){
-     // Define the custom sort function
-	uasort ( $pages,$func);
-    return $pages;
-}
-
-//abstractions
-function get_page_children($parent){
-	return getPages('filterParent',$parent);
-}
-
-
 
 /**
  * Get Link Menu Array
@@ -1482,5 +1198,290 @@ function filter_queryString($allowed = array()){
 	$new_qstring = http_build_query($qstring_filtered,'','&amp;');
 	return $new_qstring;
 }
+
+
+/** NEW stuff **/
+
+// get pages with optional filter or sorter
+
+/**
+ * getpagesarray filter with optional filterfunction
+ *
+ * @since  3.4
+ * @param  string $filterFunc function name for filter callout
+ * @return array  new pagesarray
+ */
+function getPages($filterFunc=null){
+	GLOBAL $pagesArray;
+
+	if(function_exists($filterFunc)){
+		$args=func_get_args();
+		$args[0] = $pagesArray;
+		return call_user_func_array($filterFunc, $args);
+	} else return $pagesArray;
+}
+
+/**
+ * get list of field values from pagesarray
+ *
+ * @since  3.4
+ * @uses  array_column
+ * @param  string $key key of fields to return
+ * @return array      new array of fields
+ */
+function getPagesFields($key){
+	GLOBAL $pagesArray;
+	return array_column($pagesArray,$key,'url');
+}
+
+/**
+ * filter pages by key using comparator function
+ *
+ * @since  3.4
+ * @param  array $pages pages array
+ * @param  string $func  functionname to use as filter
+ * @param  args $arg  args to pass on to func
+ * @return array        new pagesarray
+ */
+function filterPageFunc($pages,$func,$arg){
+	if (function_exists($func)){
+		foreach ($pages as $slug => $page) {
+			if( $func($page,$arg) ) unset($pages[$slug]);
+		}
+		return $pages;
+	}
+	return $pages;
+}
+
+/**
+ * filter pages array fields using filter function
+ * @todo  switch to get_func_args
+ *
+ * @since  3.4
+ * @param  array $pages pages array
+ * @param  string $func  functioname of function
+ * @param  mixed $arg   args for filter function
+ * @return array        new pagesarray
+ */
+function filterPageFieldFunc($pages,$func,$arg){
+	if (function_exists($func)){
+		$pages = $func($pages,$arg);
+	}
+	return $pages;
+}
+
+/**
+ * filter abstractions
+ */
+
+/**
+ * custom key value comparison filter function
+ *
+ * @since  3.4
+ * @param  array $page page array
+ * @param  mixed $arg arguments for func
+ * @return bool       returns true to filter from comparator function
+ */
+function filterKeyValueCmpFunc($page,$arg){
+	list($key,$value,$func) = $arg;
+	if (function_exists($func))	return $func($page[$key],$value);
+	return false;
+}
+
+/**
+ * custom key comparison filter function
+ *
+ * @param  array $pages pagesarray
+ * @param  mixed $arg   arguments for function
+ * @return array        new pagesarray
+ */
+function filterKeyCmpFunc($pages,$arg){
+	list($key,$func) = $arg;
+	if (function_exists($func)){
+
+		foreach ($pages as $slug => &$page) {
+
+			foreach ($page as $fieldkey => $field) {
+				if( $func($fieldkey,$key) ){
+					unset($page[$fieldkey]);
+				}
+			}
+		}
+	}
+	return $pages;
+}
+
+// filter on key using a custom comparator function
+function filterKeyFunc($pages,$key,$func){
+	return filterPageFieldFunc($pages,'filterKeyCmpFunc',array($key,$func));
+}
+
+// filter on key and value using a custom comparator function
+function filterKeyValueFunc($pages,$key,$value,$func){
+	return filterPageFunc($pages,'filterKeyValueCmpFunc',array($key,$value,$func));
+}
+
+// filter on key IS value
+function filterKeyMatch($pages,$key){
+	return filterKeyFunc($pages,$key,'filterValueMatchCmp');
+}
+
+// filter on key MATCHES value
+function filterValueMatch($pages,$key,$value){
+	return filterKeyValueFunc($pages,$key,$value,'filterValueMatchCmp');
+}
+
+// filter on key MATCHES value (case-insentitive)
+function filterValueMatch_i($pages,$key,$value){
+ 	return filterKeyValueFunc($pages,$key,$value,'filterValueMatchiCmp');
+}
+
+/**
+ * comparison functions
+ * filter comparators return true to filter
+ * @todo possible to use native sort cmps eg. strncasecmp but considerations for multibyte need to be taken
+ * returns 0 if equal should evaluate with !== 0 or false since it can return null on failures
+ */
+
+// EQUALS comparison
+function filterValueMatchCmp($a,$b){
+	return strcmp($a,$b) !== 0; // native , respects LC_COLLATE
+	// return $a!==$b; // custom
+}
+
+// EQUALS case-insensitive comparison
+// @uses lowercase (mbstring compat)
+function filterValueMatchiCmp($a,$b){
+	// return strcasecmp($a,$b); // native, not mb safe?
+	return strcmp(lowercase($a),lowercase($b)) !== 0; // custom
+}
+
+// BOOLEAN comparison
+// casts to boolean before compare
+// can probably use native str cmp since its binary safe, 
+// but we might have to do some Y/N noramlizing later on etc.
+function filterValueMatchBoolCmp($a,$b){
+	$a = (bool) $a;
+	$b = (bool) $b;
+	return $a!==$b;
+}
+
+// VALUES comparison
+function filterValueMatchesCmp($a,$b){
+	return !in_array($a,$b);
+}
+
+// TAGS comparison
+// splits comma delimited tag string then compares to array provided
+function filterTagsCmp($a,$b){
+	if( is_array($b) ) return !array_intersect(getTagsAry($a,true),$b);
+	return false;
+}
+
+// TAGS case-insensitive tag comparison
+function filterTagsiCmp($a,$b){
+	$a = lowercase($a);
+	return filterTagsCmp($a,$b);
+}
+
+/**
+ * filter shortcuts
+ */
+
+/**
+ * filter by matching tags
+ * accepts an array or a csv string of keywords
+ * @since 3.4
+ * @param  array   $pages pagesarray
+ * @param  mixed   $tags  array or keyword string of tags to filter by
+ * @param  boolean $case preserve case if true, default caseinsensitive
+ * @return array         fitlered pagesarray copy
+ */
+function filtertags($pages,$tags,$case = false){
+	if(!is_array($tags)) $tags = getTagsAry($tags,$case); // convert to array
+	if($case) return filterKeyValueFunc($pages,'meta',$tags,'filterTagsCmp');
+	return filterKeyValueFunc($pages,'meta',array_map('lowercase',$tags),'filterTagsiCmp');
+}
+
+// filter matching parent
+function filterParent($pages,$parent=''){
+	return filterValueMatch($pages,'parent',$parent);
+}
+
+// @todo date field filter and sorter
+// probably only need sorter in core
+// filter and sort by date field
+// date format none = gs default,
+// sort flags asc desc
+// filter flags between, null start or null end lg gt
+// equals mask for date match yyyy mm dd, no time
+// datetime php 5.3+ so use unixtime evaluation
+
+// sorters
+// @todo
+// how to do sorters
+// most will be a custom comparison sort
+// will need to do case conversions
+// will need date conversions
+// will need multi sort
+// will need multi sort using sort index faster to just sort fields you need and use the slug index
+// as a sort index depending on the sort needed, this also can help avoid
+// requiring a special multidimentional sorts and allowing any sort by slug pattern, and possibly cache sorts easier.
+// subval sort is very inefficient in that it creates a tmp array adds sort key value to it then sorts it and then rebuids to tmo index,
+// it is great but it might be possible to make it more efficient
+// eg uksort($array, "strnatcasecmp"); then resort main array as multi or just rebuild
+// some more stuff here http://us2.php.net/array_multisort
+// sortkey below sorts by a key without creating a seperate sorting array but it uses a tmp global
+// 
+// Sorting utf-8 by locale is iffy
+// strcoll() might be of some use
+
+function sortKey($pages,$key){
+	// return subval_sort($pagesArray,$key);
+
+	GLOBAL $sortkey;
+	$sortkey = $key;
+     function custom_sort($a,$b) {
+     	GLOBAL $sortkey;
+        return $a[$sortkey]>$b[$sortkey];
+     }
+     uasort($pages, "custom_sort");
+
+     unset($sortkey);
+     return $pages;
+}
+
+
+// get all parents not just first
+// function sortPathTitle($pages){
+// function sortPathTitle($pages){
+
+function sortParentTitle($pages){
+	foreach ($pages as $slug => &$page) {
+		$page['path'] = $page['parent'] ? $pages[$page['parent']]["title"] . '/' : '';
+		$page['path'] .= $page['title'];
+	}
+	return 	subval_sort($pages,'path');
+}
+
+function sortParentPath($pages){
+	foreach ($pages as $slug => &$page) {
+		$page['path'] = $page['parent'] ? $pages[$page['parent']]["url"] . '/' : '';
+		$page['path'] .= $page['url'];
+	}
+	return 	subval_sort($pages,'path');
+}
+
+function sortPageFunc($pages,$func=null){
+     // Define the custom sort function
+	uasort ( $pages,$func);
+    return $pages;
+}
+
+//abstractions
+function get_page_children($parent){
+	return getPages('filterParent',$parent);
+}
+
 
 ?>
