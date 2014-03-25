@@ -1446,7 +1446,7 @@ function filterTags($pages, $tags, $case = false, $exclude = false){
 
 // filter matching parent
 function filterParent($pages,$parent=''){
-	return filterMatch($pages,'parent',$parent);
+	return filterKeyValueMatch($pages,'parent',$parent);
 }
 
 // @todo date field filter and sorter
@@ -1560,6 +1560,7 @@ function get_page_children($pageId){
 	return getPages('filterParent',$pageId);
 }
 
+// get direct children no recursive
 function get_page_parent($pageId){
 	$pagesArray = getPages();
 	$parentId = $pagesArray[$pageId]['parent'];
@@ -1570,15 +1571,19 @@ function get_page_parents($pageId){
 	getParentPages($pageId);
 }
 
+
+// why did I use self rescursion ?
+// I had a reason for this.
 function getParentPages($pageId,$pathAry = array()){
 	$pagesArray = getPages();
 	$pageParent = getPageFieldValue($pageId,'parent');
 	if(empty($pageParent)) return $pathAry;
 
-	foreach($pagesArray as $pageId => $page){
-		if($pageId == $pagesArray[$child]['parent']){
-			$pathAry[] = $page;
-			return get_page_parents($pageId,$pathAry);
+	foreach($pagesArray as $key => $page){
+		if($key == $pageParent){
+			_debugLog($key,$pageParent);
+			$pathAry[$key] = $page;
+			return getParentPages($key,$pathAry);
 		}
 	}
 
