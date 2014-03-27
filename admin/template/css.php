@@ -450,7 +450,10 @@ h5:hover img {
 }
 
 #sidebar.fixed{
-	-webkit-transition: top 200ms ease-out;
+	-transition: top .02s ease-out;
+		-webkit-transition: all .2s ease-in-out;
+		-moz-transition: all .2s ease-in-out;
+		-o-transition: all .2s ease-in-out;
 }
 
 #sidebar .section {
@@ -717,10 +720,10 @@ h5:hover img {
 .wrapper table tr {
 	border-bottom: 1px solid #eee;
 	border-top: 1px solid #eee;
-	transition: background-color .3s ease-in-out;
-		-webkit-transition: background-color .3s ease-in-out;
-		-moz-transition: background-color .3s ease-in-out;
-		-o-transition: background-color .3s ease-in-out;
+	transition: background-color .1s ease-in-out;
+		-webkit-transition: background-color .1s ease-in-out;
+		-moz-transition: background-color .1s ease-in-out;
+		-o-transition: background-color .1s ease-in-out;
 }
 
 table td a {
@@ -1390,10 +1393,10 @@ table td.delete a {
 	line-height: 16px;
 	font-size: 12px;
 	font-weight: normal;
-	-webkit-transition: all .05s ease-in-out;
-	-moz-transition: all .05s ease-in-out;
-	-o-transition: all .05s ease-in-out;
-	transition: all .05s ease-in-out;
+	-webkit-transition: all .02s ease-in-out;
+	-moz-transition: all .02s ease-in-out;
+	-o-transition: all .02s ease-in-out;
+	transition: all .02s ease-in-out;
 	font-style:normal;
 }
 
@@ -1416,10 +1419,10 @@ a.cancel:visited {
 	padding: 1px 3px;
 	background: none !important;
 	line-height: 16px;
-	-webkit-transition: all .05s ease-in-out;
-	-moz-transition: all .05s ease-in-out;
-	-o-transition: all .05s ease-in-out;
-	transition: all .05s ease-in-out;
+	-webkit-transition: all .02s ease-in-out;
+	-moz-transition: all .02s ease-in-out;
+	-o-transition: all .02s ease-in-out;
+	transition: all .02s ease-in-out;
 }
 
 a.cancel:hover {

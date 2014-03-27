@@ -438,7 +438,7 @@ jQuery(document).ready(function () {
  
 	// pages.php
 	$("#show-characters").live("click", function () {
-		$(".showstatus").toggle();
+		$(this).hasClass('current') ? $(".showstatus").hide() : $(".showstatus").show() ;
 		$(this).toggleClass('current');
 	});
  
