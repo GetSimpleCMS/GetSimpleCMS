@@ -22,7 +22,9 @@ if(isset($_POST['submitted'])){
 		}
 	}
 	
-	if(isset($_POST['username']))	{
+	$randSleep = rand(250000,2000000); // random sleep for .25 to 2 seconds
+
+	if(isset($_POST['username']) and !empty($_POST['username']))	{
 
 		# user filename
 		$file = _id($_POST['username']).'.xml';
@@ -64,17 +66,20 @@ if(isset($_POST['submitted'])){
 				$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL . $GSADMIN.'/">'.$SITEURL . $GSADMIN.'/</a></p>';
 				exec_action('resetpw-success');
 				$status = sendmail($EMAIL,$subject,$message);
-				
 				# show the result of the reset attempt
+				usleep($randSleep); 
+				$status = 'success';
 				redirect("resetpassword.php?upd=pwd-".$status);
 			} else{
-				
 				# username doesnt match listed xml username
 				exec_action('resetpw-error');
-				redirect("resetpassword.php?upd=pwd-error");
+				usleep($randSleep);
+				redirect("resetpassword.php?upd=pwd-success");
 			} 
 		} else {
-			# no user exists for this username, but do not show this to the submitter		
+			# no user exists for this username, but do not show this to the submitter
+			usleep($randSleep);
+			redirect("resetpassword.php?upd=pwd-success");
 		}
 	} else {
 		
