@@ -30,14 +30,16 @@ if(isset($_POST['submitted'])){
 		$file = _id($_POST['username']).'.xml';
 		
 		# get user information from existing XML file
-		if (file_exists(GSUSERSPATH . $file)) {
-			$data = getXML(GSUSERSPATH . $file);
+		
+		if (filepath_is_safe(GSUSERSPATH . $file,GSUSERSPATH)) {
+			$data = simplexml_load_file(GSUSERSPATH . $file);
 			$USR = strtolower($data->USR);
 			$EMAIL = $data->EMAIL;
 			
 			if(strtolower($_POST['username']) == $USR) {
 				# create new random password
 				$random = createRandomPassword();
+				// $random = '1234';
 				
 				# create backup
 				createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
@@ -46,17 +48,9 @@ if(isset($_POST['submitted'])){
 				$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
 				copy(GSUSERSPATH . $file, $flagfile);
 				
-				# resave new user xml file
-				$xml = new SimpleXMLElement('<item></item>');
-				$xml->addChild('USR', $data->USR);
-				$xml->addChild('PWD', passhash($random));
-				$xml->addChild('EMAIL', $data->EMAIL);
-				$xml->addChild('HTMLEDITOR', $data->HTMLEDITOR);
-				$xml->addChild('PRETTYURLS', $data->PRETTYURLS);
-				$xml->addChild('PERMALINK', $data->PERMALINK);
-				$xml->addChild('TIMEZONE', $data->TIMEZONE);
-				$xml->addChild('LANG', $data->LANG);
-				XMLsave($xml, GSUSERSPATH . $file);
+				# change password and resave xml file
+				$data->PWD = passhash($random); 
+				$status = XMLsave($data, GSUSERSPATH . $file);
 				
 				# send the email with the new password
 				$subject = $site_full_name .' '. i18n_r('RESET_PASSWORD') .' '. i18n_r('ATTEMPT');
