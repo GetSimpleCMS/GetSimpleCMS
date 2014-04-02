@@ -170,12 +170,20 @@ if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 
 
 /** grab authorization and security data */
-if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
-	$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
-	$SALT = stripslashes($dataa->apikey);
-}	else {
-	$SALT = sha1($SITEURL);
+if (defined('GSUSECUSTOMSALT')) {
+	// use GSUSECUSTOMSALT
+	$SALT = sha1(GSUSECUSTOMSALT);
+} 
+else {
+	// use from authorization.xml
+	if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
+		$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
+		$SALT = stripslashes($dataa->apikey);
+	} else {
+		die(i18n_r('KILL_CANT_CONTINUE')."<br/>".i18n_r('MISSING_FILE').": "."authorization.xml");
+	}
 }
+
 $SESSIONHASH = sha1($SALT . $SITENAME);
 
 /**
