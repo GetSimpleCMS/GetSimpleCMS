@@ -30,6 +30,9 @@ define('GSIMAGEWIDTH', '200');
 # Turn on debug mode
 #define('GSDEBUG', TRUE);
 
+# Disable Sitemap generation and menu items
+# define('GSNOSITEMAP',true);
+
 # Ping search engines upon sitemap generation?
 define('GSDONOTPING', 1);
 
@@ -101,9 +104,6 @@ define('SUPPRESSERRORS',true);
 # define('GSSTYLE',GSSTYLE_SBFIXED);
 # define('GSSTYLE',GSSTYLEWIDE);
 #define('GSSTYLE',implode(',',array(GSSTYLEWIDE,GSSTYLE_SBFIXED)));
-
-# Disable Sitemap generation and menu items
-# define('GSNOSITEMAP',true);
 
 # Enable auto meta descriptions from content excerpts when empty
 # define('GSAUTOMETAD',true);
