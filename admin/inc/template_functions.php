@@ -1574,7 +1574,7 @@ function get_page_parents($pageId){
 
 // why did I use self rescursion ?
 // I had a reason for this.
-function getParentPages($pageId,$pathAry = array()){
+function getParentPagesRecurse($pageId,$pathAry = array()){
 	$pagesArray = getPages();
 	$pageParent = getPageFieldValue($pageId,'parent');
 	if(empty($pageParent)) return $pathAry;
@@ -1590,5 +1590,18 @@ function getParentPages($pageId,$pathAry = array()){
 	return $pathAry;
 }
 
+function getParents($pageId){
+	$pageparents = getPagesFields('parent');
+	// _debugLog($pageparents);
+	$parent = $pageId;
+	$parents = array();
+	// _debuglog($pageparents[$parent]);
+	while(isset($pageparents[$parent])){
+		$parent = $pageparents[$parent];
+		$parents[] = $parent;
+		_debuglog($parent);
+	}
+	return $parents;
+}
 
 ?>
