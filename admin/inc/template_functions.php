@@ -827,7 +827,7 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
 	if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <span class="label">'.i18n_r('MENUITEM_SUBTITLE').'</span>'; } else { $page['menuStatus'] = ''; }
 	if ($page['private'] != '' ) { $page['private'] = ' <span class="label">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } else { $page['private'] = ''; }
-	if ($page['url'] == 'index' ) { $homepage = ' <span class="">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; } else { $homepage = ''; }
+	if ($page['url'] == 'index' ) { $homepage = ' <span class="label">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; } else { $homepage = ''; }
 
 	$pageTitle = cl($page['title']);
 

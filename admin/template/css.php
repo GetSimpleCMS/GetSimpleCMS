@@ -797,6 +797,16 @@ sup {
 	font-size: 0.8em;
 	position: relative;
 	top: -0.4em;
+
+	vertical-align: baseline;
+	font-size: .8em;
+	position: inherit; 
+	top: -0.4em;
+	background: #E7E7E7;
+	border-radius: 3px;
+	text-shadow: none;
+	padding: 3px 6px;
+	font-weight: bold;	
 }
 
 
@@ -1841,6 +1851,7 @@ a.updatelink:focus {
 	margin:3px;
  	background-color: <?php echo $label_0; ?>	
  	display: block;
+ 	text-shadow: none;
 }
 
 .label a{
@@ -1892,6 +1903,10 @@ a.updatelink:focus {
 	padding:0 6px;
 	opacity:.6;
 	color: #333333;
+}
+
+div.showstatus{
+	float:right;
 }
 
 #hc_version.label {
