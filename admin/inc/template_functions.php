@@ -977,8 +977,7 @@ function get_pages_menu($parent = '',$menu = '',$level = '') {
 	global $pagesSorted,$pagesArray;
 	static $pages;
 
-	// if(!$pages)	$pages = getPageDepths($pagesSorted); // use parent hash table for speed
-	if(!$pages)	$pages = $pagesSorted; // use parent hash table for speed
+	if(!$pages)	$pages = getPageDepths($pagesSorted); // use parent hash table for speed
 
 	$depth = null;
 
