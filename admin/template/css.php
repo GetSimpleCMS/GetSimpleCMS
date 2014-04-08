@@ -1909,7 +1909,7 @@ div.showstatus{
 	float:right;
 }
 
-#hc_version.label {
+#health-check #hc_version.label {
 	width: 298px;
 	text-align: left;
 	padding: 9px 9px 9px 15px;
