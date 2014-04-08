@@ -65,7 +65,7 @@ getPagesXmlValues(true);
 $count = 0;
 $pagesArray_tmp = array();
 
-foreach ($pagesArray as $page) {
+foreach ($pagesArray as $key =>$page) {
 	if ($page['parent'] != '') { 
 		$parentTitle = returnPageField($page['parent'], "title");
 		$sort = $parentTitle .' '. $page['title'];		
@@ -74,7 +74,7 @@ foreach ($pagesArray as $page) {
 		$sort = $page['title'];
 	}
 	$page = array_merge($page, array('sort' => $sort));
-	$pagesArray_tmp[$count] = $page;
+	$pagesArray_tmp[$key] = $page;
 	$count++;
 }
 // $pagesArray = $pagesArray_tmp;

@@ -788,13 +788,181 @@ function ckeditor_add_page_link(){
 	</script>";
 }
 
+/**
+ * get table row for pages display
+ *
+ * @since 3.4
+ * @param  array $page   page array
+ * @param  int $level    current level
+ * @param  int $index    current index
+ * @param  int $parent   parent index
+ * @param  int $children number of children
+ * @return str           html for table row
+ */
+function getPagesRow($page,$level,$index,$parent,$children){
+
+	$indentation = $menu = '';
+
+	// indentation
+	$indent   = '<span class="tree-indent"></span>';
+	$last     = '<span class="tree-indent indent-last">&ndash;</span>';
+	$expander = '<span class="tree-expander tree-expander-expanded"></span>';
+
+	// add indents based on level
+	$indentation .= $level > 0 ? str_repeat($indent, $level-1) : '';
+	$indentation .= $level > 0 ? $last : '';
+
+	// add indents or expanders
+	$isParent = $children > 0;
+	$expander = $isParent ? $expander : '<span class="tree-indent"></span>';
+	// $indentation = $indentation . $expander;
+
+	// depth level identifiers
+	$class  = 'depth-'.$level;
+	$class .= $isParent ? ' tree-parent' : '';
+
+	$menu .= '<tr id="tr-'.$page['url'] .'" class="'.$class.'" data-depth="'.$level.'">';
+
+	// if ($page['parent'] != '') $page['parent'] = $page['parent']."/"; // why is this here ?
+	if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
+	if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <span class="label">'.i18n_r('MENUITEM_SUBTITLE').'</span>'; } else { $page['menuStatus'] = ''; }
+	if ($page['private'] != '' ) { $page['private'] = ' <span class="label">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } else { $page['private'] = ''; }
+	if ($page['url'] == 'index' ) { $homepage = ' <span class="">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; } else { $homepage = ''; }
+
+	$pageTitle = cl($page['title']);
+
+	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. $pageTitle .'</a><div class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</div></td>';
+	$menu .= '<td style="width:80px;text-align:right;" ><span>'. shtDate($page['pubDate']) .'</span></td>';
+	$menu .= '<td class="secondarylink" >';
+	$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
+	$menu .= '</td>';
+	if ($page['url'] != 'index' ) {
+		$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. cl($page['title']) .'" >&times;</a></td>';
+	} else {
+		$menu .= '<td class="delete" ></td>';
+	}
+	$menu .= '</tr>';
+
+	return $menu;
+}
+
+function getPagesRowMissing($ancestor,$level,$children){
+	$menu = '';
+	$menu .= '<tr id="tr-'.$ancestor.'" class="tree-error tree-parent depth-'.$level.'" data-depth="'.$level.'"><td colspan="4" class="pagetitle"><a><strong>'. $ancestor.'</strong> Missing Parent</a>';
+	if ( file_exists(GSBACKUPSPATH."pages/".$ancestor.'.bak.xml') ) {
+		$menu.= '&nbsp;&nbsp;&nbsp;&nbsp;<a href="backup-edit.php?p=view&amp;id='.$ancestor.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
+	}
+	$menu.= "</td></tr>";
+	return $menu;
+}
+
+/**
+ * create a parent child bucket
+ *
+ * @since 3.4
+ *
+ * @param  array   $pages  pagesarray
+ * @param  boolean $useref true: use references for values, false: empty
+ * @return array   returns array keyed by parents, then keyed by url with values page refs or empty
+ */
+function getParentsHashTable($pages = array(), $useref = true){
+	$pagesArray = $pages ? $pages : getPagesXmlValues();
+	$ary = array();
+	foreach($pagesArray as $key => &$page){
+		$parent = isset($page['parent']) ? $page['parent'] : '';
+		$pageId = isset($page['url']) ? $page['url'] : null;
+		if($pageId) $ary[$parent][$pageId] = $useref ? $page : '';
+	}
+	return $ary;
+}
+
+/**
+ * gets a page array with heirachy data added to it
+ *
+ * @since 3.4
+ * @param  array  $mypages pages array
+ * @return array           pages array with order,depth,numchildren added
+ */
+function getPageDepths($mypages=array()){
+	static $parents;     // parent lookup table
+	static $pages;       // pagesarray
+	static $newpages;    // new pagesarray
+	static $keys;        // track processed pageIds
+
+	static $parent = ''; // current parent being processed
+	static $level  = 0;  // depth / indentation level
+	static $iter   = 0;  // order / weight iteration counter
+
+	$thisfunc = __FUNCTION__;
+
+	if(!$keys)     $keys     = array();
+	if(!$pages)    $pages    = $mypages;
+	if(!$newpages) $newpages = array();
+	if(!$parents)  $parents  = getParentsHashTable($pages); // use parent child lookup table for speed
+
+	foreach ($parents[$parent] as $key => &$page) {
+		$iter++;
+		$keys[$key]  = '';
+
+		// assert cyclical parent child
+		if($page['parent'] == $page['url']) die("self parent ". $key);
+
+		$pageId      = (string) $key;
+		$numChildren = isset($parents[$pageId]) ? count($parents[$pageId]) : 0;
+
+		$newpages[$pageId]                = $page;
+		$newpages[$pageId]['order']       = $iter;
+		$newpages[$pageId]['depth']       = $level;
+		$newpages[$pageId]['numchildren'] = $numChildren;
+
+		if(isset($parents[$pageId])){
+			$level++;
+			$parent = $pageId;
+			$thisfunc();
+			$level--;
+		} else $parent ='';
+	}
+
+	// do missing ancestor checks, orphans are not previously processed since they have no root
+	if($level == 0 and $parent==''){
+		// debugLog('missing ancestor check');
+		$level++;
+		$ancestors = array_diff(array_keys($parents),array_keys($keys) );
+		// debugLog($ancestors);
+
+		foreach($ancestors as $key => $ancestor){
+			if($ancestor !=='') {
+				// check again to see if it was already removed from a previous loop
+		 		if(!isset($keys[$ancestor])) {
+		 			// provide special row and backup restore links then recurse on children
+		 			$iter++;
+					$keys[$ancestor]  = '';
+
+					$pageId      = $ancestor;
+					$numChildren = isset($parents[$pageId]) ? count($parents[$pageId]) : 0;
+
+					// add empty page shim here
+					// this will cause issues if used for something else that tried to use a required field
+					// @todo add a status flag ?
+					$newpages[$pageId]                = array(); 
+					// $newpages[$pageId]['url']         = $ancestor;
+					$newpages[$pageId]['order']       = $iter;
+					$newpages[$pageId]['depth']       = $level-1;
+					$newpages[$pageId]['numchildren'] = $numChildren;
+					$parent = $ancestor;
+		 			$thisfunc();
+		 		}
+		 	}
+		}
+	}
+
+	return $newpages;
+}
 
 /**
  * Recursive list of pages
  *
  * Returns a recursive list of items for the main page
- *
- * @author Mike
  *
  * @since 3.0
  * @uses $pagesSorted
@@ -802,50 +970,43 @@ function ckeditor_add_page_link(){
  * @param string $parent
  * @param string $menu
  * @param int $level
- * 
+ *
  * @returns string
  */
-function get_pages_menu($parent, $menu,$level) {
-	global $pagesSorted;
-	
-	$items=array();
-	foreach ($pagesSorted as $page) {
-		if ($page['parent']==$parent){
-			$items[(string)$page['url']]=$page;
-		}	
-	}	
-	if (count($items)>0){
-		foreach ($items as $page) {
-		  	$dash="";
-		  	if ($page['parent'] != '') {
-	  			$page['parent'] = $page['parent']."/";
-	  		}
-			for ($i=0;$i<=$level-1;$i++){
-				if ($i!=$level-1){
-	  				$dash .= '<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>';
-				} else {
-					$dash .= '<span>&nbsp;&nbsp;&ndash;&nbsp;&nbsp;&nbsp;</span>';
-				}
-			} 
-			$menu .= '<tr id="tr-'.$page['url'] .'" >';
-			if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
-			if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <sup>['.i18n_r('MENUITEM_SUBTITLE').']</sup>'; } else { $page['menuStatus'] = ''; }
-			if ($page['private'] != '' ) { $page['private'] = ' <sup>['.i18n_r('PRIVATE_SUBTITLE').']</sup>'; } else { $page['private'] = ''; }
-			if ($page['url'] == 'index' ) { $homepage = ' <sup>['.i18n_r('HOMEPAGE_SUBTITLE').']</sup>'; } else { $homepage = ''; }
-			$menu .= '<td class="pagetitle">'. $dash .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
-			$menu .= '<td style="width:80px;text-align:right;" ><span>'. shtDate($page['pubDate']) .'</span></td>';
-			$menu .= '<td class="secondarylink" >';
-			$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
-			$menu .= '</td>';
-			if ($page['url'] != 'index' ) {
-				$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. cl($page['title']) .'" >&times;</a></td>';
-			} else {
-				$menu .= '<td class="delete" ></td>';
+function get_pages_menu($parent = '',$menu = '',$level = '') {
+	global $pagesSorted,$pagesArray;
+	static $pages;
+
+	// if(!$pages)	$pages = getPageDepths($pagesSorted); // use parent hash table for speed
+	if(!$pages)	$pages = $pagesSorted; // use parent hash table for speed
+
+	$depth = null;
+
+	// get depth of requested parent, then get all subsequent children until we get back to our starting depth
+	foreach($pages as $key => $page){
+
+		// check for cyclical parent child and die
+		if(isset($page['parent']) && $page['parent'] === $key) die("self parent > " . $key); 
+
+		$level       = isset($page['depth']) ? $page['depth'] : 0;
+		$numChildren = isset($page['numchildren']) ? $page['numchildren'] : 0;
+
+		// if sublevel
+		if($parent !== ''){
+			// skip until we get to parent
+			if($parent !== $key && $depth === null) continue;
+
+			if($depth === null){
+			 // set sub level starting depth
+			 $depth = $page['depth']; _debugLog("SET"); continue;
 			}
-			$menu .= '</tr>';
-			$menu = get_pages_menu((string)$page['url'], $menu,$level+1);	  	
+			else if(($page['depth'] == $depth)) return $menu; // we are back to starting depth so stop
+			$level = $level - ($depth+1);
 		}
+		if( !isset($page['url']) ) $menu .= getPagesRowMissing($key,$level,$numChildren); // use URL check for missing parents
+		else $menu       .= getPagesRow($page,$level,'','',$numChildren);
 	}
+
 	return $menu;
 }
 

@@ -195,7 +195,7 @@ function subval_sort($a,$subkey, $order='asc',$natural = true) {
 		}
 		
 		foreach($b as $key=>$val) {
-			$c[] = $a[$key];
+			$c[$key] = $a[$key];
 		}
 
 		return $c;

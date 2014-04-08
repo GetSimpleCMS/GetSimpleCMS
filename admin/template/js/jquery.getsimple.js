@@ -946,9 +946,19 @@ jQuery(document).ready(function () {
 		}
 	});
 	
+
+	/**
+	 * get elements tagname
+	 */
+	function getTagName(elem){
+		return $(elem).prop('tagName');
+	}
+
+	$('table #editpages').addTableTree();
+
 	// end of jQuery ready
 });
- 
+
 // lazy loader for js and css
 loadjscssfile = function(filename, filetype, callback){
 	if (filetype=="js"){ //if filename is a external JavaScript file

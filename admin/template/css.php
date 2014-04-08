@@ -743,6 +743,10 @@ h5:hover img {
 	text-shadow: none;
 }
 
+.wrapper table.highlight tr.nohighlight:hover {
+	background: none !important;
+}
+
 .wrapper table tr.currentpage{
 	 background: #FFFFD1;
 }
@@ -754,6 +758,12 @@ h5:hover img {
 		-webkit-transition: background-color .3s ease-in-out;
 		-moz-transition: background-color .3s ease-in-out;
 		-o-transition: background-color .3s ease-in-out;
+}
+
+.wrapper table tr.attention{
+	background: #FFCCC8 !important;
+	font-weight:bold;
+	text-shadow: none;
 }
 
 table td a {
@@ -1874,6 +1884,16 @@ a.updatelink:focus {
 	margin: 3px 0;
 }
 
+.edittable .label{
+	display:inline-block;
+ 	background-color: #DDDDDD;
+	font-size:11px;
+	margin:0;
+	padding:0 6px;
+	opacity:.6;
+	color: #333333;
+}
+
 #hc_version.label {
 	width: 298px;
 	text-align: left;
@@ -1897,7 +1917,8 @@ a.updatelink:focus {
 	font-weight: bold;
 }
 
-.wrapper table td span.label {
+/* healthcheck only */
+#health-check .wrapper table td span.label {
 	font-weight: bold;
 	color: #FCFCFC !important;
 	text-shadow: none !important;
@@ -2803,6 +2824,51 @@ a.disabled:visited {
     /* Bump it - jQuery UI is -8px */
     margin-left: -7px;
 }
+
+/* gstree styles */
+.tree-roottoggle .label{
+	opacity:1;
+	color: #777;
+ 	background-color: #F2F2F2;
+ 	cursor: pointer;
+}
+
+.tree-indent {
+	padding: 0 10px 0 5px;
+	display: inline;
+	position: relative;
+}
+
+.tree-expander {
+	padding: 0 12px 0 3px;
+	display: inline;
+	position: relative;
+	cursor: pointer;
+}
+
+.tree-indent-last {
+	padding: 0 6px 0 6px;
+}
+
+.tree-expander-expanded{
+	background-image: url(images/collapse.png);
+	background-position: -3px 0;
+}
+
+.tree-expander-collapsed{
+	background-image: url(images/expand.png);
+	background-position: -3px 0;
+}
+
+.tree-parentcollapsed {
+	display:none;
+}
+
+.tree-error {
+	color: #990000;
+	border: 1px solid #cc0000;
+}
+
 
 /* END */
 

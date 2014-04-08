@@ -92,6 +92,7 @@ $themeselector .= '</select>';
 	get_scripts_backend(); ?>
 		
 	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
+	<script type="text/javascript" src="template/js/jquery-gstree.js?v=<?php echo GSVERSION; ?>"></script>		
 	<script type="text/javascript" src="template/js/lazyload.js?v=<?php echo GSVERSION; ?>"></script>		
 
 	<script type="text/javascript" src="template/js/codemirror.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
@@ -142,6 +143,8 @@ $themeselector .= '</select>';
 		GS.i18n = new Array();
 		GS.i18n['PLUGIN_UPDATED'] = '<?php i18n("PLUGIN_UPDATED"); ?>';
 		GS.i18n['ERROR'] = '<?php i18n("ERROR"); ?>';
+		GS.i18n['EXPAND_TOP'] = '<?php i18n("EXPAND_TOP"); ?>';
+		GS.i18n['COLLAPSE_TOP'] = '<?php i18n("COLLAPSE_TOP"); ?>';
 
 	</script>
 
