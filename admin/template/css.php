@@ -1849,8 +1849,8 @@ a.updatelink:focus {
 	text-align: center;
 	color: #F2F2F2;
 	margin:3px;
- 	background-color: <?php echo $label_0; ?>	
- 	display: block;
+ 	background-color: <?php echo $label_0; ?>;	
+ 	/*display: inline-block;*/
  	text-shadow: none;
 }
 
@@ -1889,21 +1889,20 @@ a.updatelink:focus {
 	border: 1px solid <?php echo $primary_6; ?>;
 }
 
+.label-ghost {
+	background-color: rgba(221, 221, 221, 0.5);	
+}
+
 .label hr{
 	border: none;
 	border-top: 1px solid rgba(255, 255, 255, 0.2);
 	margin: 3px 0;
 }
 
-.edittable .label{
-	display:inline-block;
- 	background-color: #DDDDDD;
+.edittable .label-ghost{
 	font-size:11px;
-	margin:0;
-	padding:0 6px;
-	opacity:.6;
-	color: #333333;
-	border: none;
+	padding:3px 6px;
+	color: #999999;	
 }
 
 div.showstatus{
@@ -2843,10 +2842,8 @@ a.disabled:visited {
 
 /* gstree styles */
 .tree-roottoggle .label{
-	opacity:1;
-	color: #777;
- 	background-color: #F2F2F2;
  	cursor: pointer;
+ 	font-size: 11px;
 }
 
 .tree-indent {
