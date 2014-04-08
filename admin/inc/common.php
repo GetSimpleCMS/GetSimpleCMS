@@ -197,24 +197,6 @@ if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
 	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
 }	
 
-/** grab authorization and security data */
-if (defined('GSUSECUSTOMSALT')) {
-	// use GSUSECUSTOMSALT
-	$SALT = sha1(GSUSECUSTOMSALT);
-} 
-else {
-	// use from authorization.xml
-	if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
-		$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
-		$SALT = stripslashes($dataa->apikey);
-	} else {
-		if($SITEURL !='' && get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update' && get_filename_id() != 'style'){
-			die(i18n_r('KILL_CANT_CONTINUE')."<br/>".i18n_r('MISSING_FILE').": "."authorization.xml");
-		}
-	}
-}
-$SESSIONHASH = sha1($SALT . $SITENAME);
-
 /** 
  * Init Editor globals
  * @uses $EDHEIGHT
@@ -252,6 +234,25 @@ if(isset($TIMEZONE) && function_exists('date_default_timezone_set') && ($TIMEZON
  * Variable Globalization
  */
 global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR, $PERMALINK, $GSADMIN, $components, $EDTOOL, $EDOPTIONS, $EDLANG, $EDHEIGHT;
+
+/** grab authorization and security data */
+if (defined('GSUSECUSTOMSALT')) {
+	// use GSUSECUSTOMSALT
+	$SALT = sha1(GSUSECUSTOMSALT);
+} 
+else {
+	// use from authorization.xml
+	if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
+		$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
+		$SALT = stripslashes($dataa->apikey);
+	} else {
+		if($SITEURL !='' && get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update' && get_filename_id() != 'style'){
+			die(i18n_r('KILL_CANT_CONTINUE')."<br/>".i18n_r('MISSING_FILE').": "."authorization.xml");
+		}
+	}
+}
+$SESSIONHASH = sha1($SALT . $SITENAME);
+
 
 /**
  * $base is if the site is being viewed from the front-end
