@@ -954,7 +954,7 @@ jQuery(document).ready(function () {
 		return $(elem).prop('tagName');
 	}
 
-	$('#pages table #editpages').addTableTree();
+	$('#pages table#editpages').addTableTree();
 
 	// end of jQuery ready
 });

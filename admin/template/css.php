@@ -1903,6 +1903,7 @@ a.updatelink:focus {
 	padding:0 6px;
 	opacity:.6;
 	color: #333333;
+	border: none;
 }
 
 div.showstatus{

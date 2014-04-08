@@ -157,6 +157,7 @@ function addExpanderTableHeader(elem,colspan){
 
 $.fn.addTableTree = function(elem){
 	var elem = this;
+	console.log(this);
 	if(!elem[0]) return;
 	
 	addExpanderTableHeader($('tbody > tr:first',elem),4);
