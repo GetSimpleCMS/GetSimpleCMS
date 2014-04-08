@@ -59,8 +59,6 @@ function showChildRows(elem){
 
 	children.each(function(i,elem){
 		thisDepth   = getNodeDepth(elem);
-		// isparent    = $(elem).hasClass(treeparentclass);
-		// iscollapsed = $(elem).hasClass(nodecollapsedclass);
 		immediateChild = thisDepth == (startDepth + 1);
 
 		// if immediate child just show it
@@ -100,17 +98,6 @@ function getNextSiblingByDepth(elem){
 	return $("~ [data-"+datadepthattr+"='" + (depth) + "']",elem).first();
 }
 
-// @DEPRECATED
-// was using tagnames and nextall with a filter
-function getSiblingsByDepth(elem){
-	var tagname      = getTagName(elem);
-	var depth        = getNodeDepth(elem);
-	var nextsiblings = elem.nextAll(tagname).filter(function(index){
-								return getNodeDepth(this) <= depth;
-							});
-	return nextsiblings;
-}
-
 function addExpanders(elems){
 	$(elems).each(function(i,elem){
 		// Debugger.log($(elem));
@@ -128,6 +115,7 @@ function addIndents(elems){
 
 
 function toggleTopAncestors(){
+	// @todo
 	// could use a table css rule to hide all trs, unless classes depth-0 or something with specificty to override
 	// would skip all iterations needed here, but would also require special css to toggle expanders
 	// could also use a cache table for these using tr ids
@@ -168,7 +156,9 @@ function addExpanderTableHeader(elem,colspan){
 
 
 $.fn.addTableTree = function(elem){
-	console.profile() ;
+	var elem = this;
+	if(!elem[0]) return;
+	
 	addExpanderTableHeader($('tbody > tr:first',elem),4);
 
 	// remove all last indents on parents that will now be expanders
@@ -179,26 +169,4 @@ $.fn.addTableTree = function(elem){
 
 	// add indents to root nodes without children to line up with expander nodes
 	addIndents($('tr:not(.tree-parent) td:first-child a',elem)); // not parents
-
-	// all in 1 loop instead
-	// $('tr td:first-child a',elem).each(function(i,elem){
-	//	var row = $(this).closest('tr');
-
-	//	// add expander span
-	//	if( row.hasClass(treeparentclass)) $('<span class="'+ treeexpanderclass + ' ' + treeexpandedclass +'"></span>').insertBefore($(elem));
-	//	else $('<span class="'+ treeindentclass +'"></span>').insertBefore($(elem));
-
-	//	// remove last indent
-	//	// @todo: make class agnostic using tree-indent:last
-	//	var indentlast = $(row).find('span.indent-last');
-	//	$(indentlast).removeClass('indent-last').html('');
-	//});
-
-	// init expander onclick listeners, and prevent text selections
-	// $('.tree-expander',elem).on('click',toggleRow).bind('selectstart dragstart', function(evt)
-	//					{ evt.preventDefault(); return false; });
-
-	// toggleTopAncestors();
-
-	console.profileEnd();
 }
