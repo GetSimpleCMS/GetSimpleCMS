@@ -14,6 +14,12 @@ var nodeparentcollapsedclass = treeprefix + 'parentcollapsed';    // class to co
 var depthprefix              = 'depth-';                          // class prefix for depth information
 var datadepthattr            = 'depth';                           // data attribute name for depth information
 
+// extend with depth selectors ( attr data-depth )
+$.extend($.expr[':'], {
+  depthLess: function(e, i, m) { return getNodeDepth(e) <= m[3]; },
+  depthMore: function(e, i, m) { return getNodeDepth(e) >= m[3]; }
+});
+
 function toggleRow(){
 	var row = $(this).closest('.'+treeparentclass);
 	// Debugger.log("toggle row " + $(row));
@@ -87,15 +93,16 @@ function getNodeDepth(elem){
 }
 
 function getChildrenByDepth(elem){
-	// children are all nodes until nextsibling of equal depth
+	// children are all nodes until nextsibling of equal OR LOWER depth
 	var nextsibling = getNextSiblingByDepth(elem);
 	var children    = elem.nextUntil(nextsibling);
 	return children;
 }
 
+// get next sibling of equal or less than depth
 function getNextSiblingByDepth(elem){
-	var depth = getNodeDepth(elem);	
-	return $("~ [data-"+datadepthattr+"='" + (depth) + "']",elem).first();
+	var depth       = getNodeDepth(elem);	
+	return $("~ :depthLess("+depth+")",elem).first();
 }
 
 function addExpanders(elems){
@@ -149,13 +156,13 @@ function addExpanderTableHeader(elem,colspan){
 	$('#roottoggle').toggleClass("collapsed",rootcollapsed);
 	setExpander($('#roottoggle'));
 	$('#roottoggle .'+treeexpanderclass).on('click',toggleTopAncestors).bind('selectstart dragstart', function(evt)
-								{ evt.preventDefault(); return false; });;
+								{ evt.preventDefault(); return false; });
 	$('#roottoggle .label').on('click',toggleTopAncestors).bind('selectstart dragstart', function(evt)
-								{ evt.preventDefault(); return false; });;
+								{ evt.preventDefault(); return false; });
 }
 
 
-$.fn.addTableTree = function(elem){
+$.fn.addTableTree = function(){
 	var elem = this;
 	console.log(this);
 	if(!elem[0]) return;
@@ -166,8 +173,8 @@ $.fn.addTableTree = function(elem){
 	$('tr td span.tree-indent:last-of-type',elem).removeClass('indent-last').html('');
 
 	// add expanders
-	addExpanders($('tr.tree-parent td:first-child a',elem));
+	addExpanders($('tr.tree-parent td:first-child a:first-of-type',elem));
 
 	// add indents to root nodes without children to line up with expander nodes
-	addIndents($('tr:not(.tree-parent) td:first-child a',elem)); // not parents
+	addIndents($('tr:not(.tree-parent) td:first-child a:first-of-type',elem)); // not parents
 }
