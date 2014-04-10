@@ -2810,6 +2810,10 @@ a.disabled:visited {
 	color: #868686;
 	font-size: 0.8em;	
 	margin-right: 7px;
+	transition: all 50ms ease-out;
+		-webkit-transition: all 50ms ease-out;
+		-moz-transition: all 50ms ease-out;
+		-o-transition: all 50ms ease-out;		
 }
 
 .tree-indent-last {
@@ -2843,60 +2847,68 @@ a.disabled:visited {
 	border: 1px solid #cc0000;
 }
 
-
 /* END */
 
 /* Admin theme colors */
 
 /* background-color */
-  .primary_0.back, .darkest-back               { background-color: <?php echo $primary_0;   ?>;}
-  .primary_1.back, .darker-back                { background-color: <?php echo $primary_1;   ?>;}
-  .primary_2.back, .dark-back                  { background-color: <?php echo $primary_2;   ?>;}
-  .primary_3.back, .middle-back                { background-color: <?php echo $primary_3;   ?>;}
-  .primary_4.back, .light-back                 { background-color: <?php echo $primary_4;   ?>;}
-  .primary_5.back, .lighter-back               { background-color: <?php echo $primary_5;   ?>;}
-  .primary_6.back, .lightest-back              { background-color: <?php echo $primary_6;   ?>;}
-.secondary_0.back, .secondary.darkest-back     { background-color: <?php echo $secondary_0; ?>;}
-.secondary_1.back, .secondary.lightest-back    { background-color: <?php echo $secondary_1; ?>;}
+  .primary_0-back, .darkest-back               { background-color: <?php echo $primary_0;   ?>;}
+  .primary_1-back, .darker-back                { background-color: <?php echo $primary_1;   ?>;}
+  .primary_2-back, .dark-back                  { background-color: <?php echo $primary_2;   ?>;}
+  .primary_3-back, .middle-back                { background-color: <?php echo $primary_3;   ?>;}
+  .primary_4-back, .light-back                 { background-color: <?php echo $primary_4;   ?>;}
+  .primary_5-back, .lighter-back               { background-color: <?php echo $primary_5;   ?>;}
+  .primary_6-back, .lightest-back              { background-color: <?php echo $primary_6;   ?>;}
+.secondary_0-back, .secondary-darkest-back     { background-color: <?php echo $secondary_0; ?>;}
+.secondary_1-back, .secondary-lightest-back    { background-color: <?php echo $secondary_1; ?>;}
 
 /* color */
-  .primary_0.color, .darkest-color             { color: <?php echo $primary_0;   ?>;}
-  .primary_1.color, .darker-color              { color: <?php echo $primary_1;   ?>;}
-  .primary_2.color, .dark-color                { color: <?php echo $primary_2;   ?>;}
-  .primary_3.color, .middle-color              { color: <?php echo $primary_3;   ?>;}
-  .primary_4.color, .light-color               { color: <?php echo $primary_4;   ?>;}
-  .primary_5.color, .lighter-color             { color: <?php echo $primary_5;   ?>;}
-  .primary_6.color, .lightest-color            { color: <?php echo $primary_6;   ?>;}
-.secondary_0.color, .secondary.darkest-color   { color: <?php echo $secondary_0; ?>;}
-.secondary_1.color, .secondary.lightest-color  { color: <?php echo $secondary_1; ?>;}
+  .primary_0-color, .darkest-color             { color: <?php echo $primary_0;   ?>;}
+  .primary_1-color, .darker-color              { color: <?php echo $primary_1;   ?>;}
+  .primary_2-color, .dark-color                { color: <?php echo $primary_2;   ?>;}
+  .primary_3-color, .middle-color              { color: <?php echo $primary_3;   ?>;}
+  .primary_4-color, .light-color               { color: <?php echo $primary_4;   ?>;}
+  .primary_5-color, .lighter-color             { color: <?php echo $primary_5;   ?>;}
+  .primary_6-color, .lightest-color            { color: <?php echo $primary_6;   ?>;}
+.secondary_0-color, .secondary-darkest-color   { color: <?php echo $secondary_0; ?>;}
+.secondary_1-color, .secondary-lightest-color  { color: <?php echo $secondary_1; ?>;}
 
 /* border color */
-  .primary_0.border-color, .darkest-border             { border-color: <?php echo $primary_0;   ?>;}
-  .primary_1.border-color, .darker-border              { border-color: <?php echo $primary_1;   ?>;}
-  .primary_2.border-color, .dark-border                { border-color: <?php echo $primary_2;   ?>;}
-  .primary_3.border-color, .middle-border              { border-color: <?php echo $primary_3;   ?>;}
-  .primary_4.border-color, .light-border               { border-color: <?php echo $primary_4;   ?>;}
-  .primary_5.border-color, .lighter-border             { border-color: <?php echo $primary_5;   ?>;}
-  .primary_6.border-color, .lightest-border            { border-color: <?php echo $primary_6;   ?>;}
-.secondary_0.border-color, .secondary.darkest-border   { border-color: <?php echo $secondary_0; ?>;}
-.secondary_1.border-color, .secondary.lightest-border  { border-color: <?php echo $secondary_1; ?>;}
+  .primary_0-border-color, .darkest-border             { border-color: <?php echo $primary_0;   ?>;}
+  .primary_1-border-color, .darker-border              { border-color: <?php echo $primary_1;   ?>;}
+  .primary_2-border-color, .dark-border                { border-color: <?php echo $primary_2;   ?>;}
+  .primary_3-border-color, .middle-border              { border-color: <?php echo $primary_3;   ?>;}
+  .primary_4-border-color, .light-border               { border-color: <?php echo $primary_4;   ?>;}
+  .primary_5-border-color, .lighter-border             { border-color: <?php echo $primary_5;   ?>;}
+  .primary_6-border-color, .lightest-border            { border-color: <?php echo $primary_6;   ?>;}
+.secondary_0-border-color, .secondary-darkest-border   { border-color: <?php echo $secondary_0; ?>;}
+.secondary_1-border-color, .secondary-lightest-border  { border-color: <?php echo $secondary_1; ?>;}
+
+  .label-info-border                                         { border-color: <?php echo $label_0; ?>;}
+  .label-ok-border                                           { border-color: <?php echo $label_1; ?>;}
+  .label-warn-border                                         { border-color: <?php echo $label_2; ?>;}
+  .label-error-border                                        { border-color: <?php echo $label_3; ?>;}
+  .label-light-border                                        { border-color: <?php echo $label_4; ?>;}
+  .label-medium-border                                       { border-color: <?php echo $label_5; ?>;}
 
 /* debug color */
-  .primary_0.border-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>";}
-  .primary_1.border-debug:after, .darker-debug:after              { content: "<?php echo $primary_1;   ?>";}
-  .primary_2.border-debug:after, .dark-debug:after                { content: "<?php echo $primary_2;   ?>";}
-  .primary_3.border-debug:after, .middle-debug:after              { content: "<?php echo $primary_3;   ?>";}
-  .primary_4.border-debug:after, .light-debug:after               { content: "<?php echo $primary_4;   ?>";}
-  .primary_5.border-debug:after, .lighter-debug:after             { content: "<?php echo $primary_5;   ?>";}
-  .primary_6.border-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>";}
-.secondary_0.border-debug:after, .secondary.darkest-debug:after   { content: "<?php echo $secondary_0; ?>";}
-.secondary_1.border-debug:after, .secondary.lightest-debug:after  { content: "<?php echo $secondary_1; ?>";}
-  .label-debug:after                                              { content: "<?php echo $label_0;   ?>";}
-  .label-info-debug:after                                         { content: "<?php echo $label_1;   ?>";}
-  .label-ok-debug:after                                           { content: "<?php echo $label_2;   ?>";}
-  .label-warn-debug:after                                         { content: "<?php echo $label_3;   ?>";}
-  .label-error-debug:after                                        { content: "<?php echo $label_4;   ?>";}
-  .label-light-debug:after                                        { content: "<?php echo $label_5;   ?>";}
-  .label-medium-debug:after                                       { content: "<?php echo $label_6;   ?>";}
+  .primary_0-border-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>";}
+  .primary_1-border-debug:after, .darker-debug:after              { content: "<?php echo $primary_1;   ?>";}
+  .primary_2-border-debug:after, .dark-debug:after                { content: "<?php echo $primary_2;   ?>";}
+  .primary_3-border-debug:after, .middle-debug:after              { content: "<?php echo $primary_3;   ?>";}
+  .primary_4-border-debug:after, .light-debug:after               { content: "<?php echo $primary_4;   ?>";}
+  .primary_5-border-debug:after, .lighter-debug:after             { content: "<?php echo $primary_5;   ?>";}
+  .primary_6-border-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>";}
+.secondary_0-border-debug:after, .secondary-darkest-debug:after   { content: "<?php echo $secondary_0; ?>";}
+.secondary_1-border-debug:after, .secondary-lightest-debug:after  { content: "<?php echo $secondary_1; ?>";}
+   
+/* label colors */
+   .label-default-debug:after                                     { content: "<?php echo $label_0;   ?>";}
+   .label-info-debug:after                                        { content: "<?php echo $label_1;   ?>";}
+   .label-ok-debug:after                                          { content: "<?php echo $label_2;   ?>";}
+   .label-warn-debug:after                                        { content: "<?php echo $label_3;   ?>";}
+   .label-error-debug:after                                       { content: "<?php echo $label_4;   ?>";}
+   .label-light-debug:after                                       { content: "<?php echo $label_5;   ?>";}
+   .label-medium-debug:after                                      { content: "<?php echo $label_6;   ?>";}
 
 /* </style> */

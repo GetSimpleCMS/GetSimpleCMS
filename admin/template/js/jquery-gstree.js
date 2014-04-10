@@ -52,8 +52,13 @@ function expandRow(elem){
 function hideChildRows(elem){
 	var children = getChildrenByDepth(elem);
 	children.each(function(i,elem){
-		$(elem).addClass(nodeparentcollapsedclass);
+		hideChildRow(elem);
 	});
+}
+
+function hideChildRow(elem){
+	// $(elem).addClass(nodeparentcollapsedclass);
+	$(elem).animate({opacity: 0.1} , 100, function(){ $(this).addClass(nodeparentcollapsedclass);} ); // @todo custom callout
 }
 
 // not using recursion or tree walking here, this is likely faster
@@ -69,7 +74,7 @@ function showChildRows(elem){
 
 		// if immediate child just show it
 		if(immediateChild){
-			$(elem).removeClass(nodeparentcollapsedclass);
+			showChildRow(elem);
 			return true;
 		}
 
@@ -82,10 +87,15 @@ function showChildRows(elem){
 
 		// show child only if parent is not hidden AND parent is not collapsed 
 		if(!parentHidden && !parentCollapsed){
-			$(elem).removeClass(nodeparentcollapsedclass);
+			showChildRow(elem);
 		}
 
 	});
+}
+
+function showChildRow(elem){
+	$(elem).removeClass(nodeparentcollapsedclass);
+	$(elem).animate({opacity: 1}, 300); // todo: custom callout
 }
 
 function getNodeDepth(elem){
@@ -122,7 +132,7 @@ function addIndents(elems){
 
 
 function toggleTopAncestors(){
-	// @todo
+	// @todo possible optimizations
 	// could use a table css rule to hide all trs, unless classes depth-0 or something with specificty to override
 	// would skip all iterations needed here, but would also require special css to toggle expanders
 	// could also use a cache table for these using tr ids
@@ -169,7 +179,7 @@ $.fn.addTableTree = function(){
 	treeexpandedclass = 'fa-rotate-90';
 	treecollapsedclass = '';
 	var customexpander = '<i class="'+treeexpanderclass+' '+treeexpandedclass+' fa fa-play fa-fw"></i>';
-
+	// customexpander = undefined;
 	addExpanderTableHeader($('tbody > tr:first',elem),customexpander,4);
 
 	// remove all last indents on parents that will now be expanders
@@ -177,8 +187,6 @@ $.fn.addTableTree = function(){
 
 	// add expanders
 	addExpanders($('tr.tree-parent td:first-child a:first-of-type',elem),customexpander);
-
-	// addExpanders($('tr.tree-parent td:first-child a:first-of-type',elem));
 
 	// add indents to root nodes without children to line up with expander nodes
 	addIndents($('tr:not(.tree-parent) td:first-child a:first-of-type',elem)); // not parents
