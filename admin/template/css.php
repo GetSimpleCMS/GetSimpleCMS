@@ -2773,6 +2773,78 @@ a.disabled:visited {
 	border: 1px dotted gray;
 }
 
+/* Allow Font Awesome Icons in lieu of jQuery UI and only apply when using a FA icon */
+.ui-icon[class*=" icon-"] {
+    /* Remove the jQuery UI Icon */
+    background: none repeat scroll 0 0 transparent;
+    /* Remove the jQuery UI Text Indent */
+    text-indent: 0;
+    /* Bump it up - jQuery UI is -8px */
+    margin-top: -0.5em;
+}
+
+/* Allow use of icon-large to be properly aligned */
+.ui-icon.icon-large {
+    margin-top: -0.75em;
+}
+
+.ui-button-icon-only .ui-icon[class*=" icon-"] {
+    /* Bump it - jQuery UI is -8px */
+    margin-left: -7px;
+}
+
+/* gstree styles */
+.tree-roottoggle .label{
+ 	cursor: pointer;
+ 	font-size: 11px;
+}
+
+.tree-indent {
+	padding: 0 10px 0 5px;
+	display: inline;
+	position: relative;
+}
+
+.tree-expander {
+	cursor: pointer;
+	color: #868686;
+	font-size: 0.8em;	
+	margin-right: 7px;
+}
+
+.tree-indent-last {
+	padding: 0 6px 0 6px;
+}
+
+.tree-expander-expanded{
+	padding: 0 12px 0 3px;
+	display: inline;
+	position: relative;	
+	background-image: url(images/collapse.png);
+	background-position: -3px 0;
+	background-repeat: no-repeat;
+}
+
+.tree-expander-collapsed{
+	padding: 0 12px 0 3px;
+	display: inline;
+	position: relative;	
+	background-image: url(images/expand.png);
+	background-position: -3px 0;
+	background-repeat: no-repeat;	
+}
+
+.tree-parentcollapsed {
+	display:none;
+}
+
+.tree-error {
+	color: #990000;
+	border: 1px solid #cc0000;
+}
+
+
+/* END */
 
 /* Admin theme colors */
 
@@ -2819,70 +2891,12 @@ a.disabled:visited {
   .primary_6.border-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>";}
 .secondary_0.border-debug:after, .secondary.darkest-debug:after   { content: "<?php echo $secondary_0; ?>";}
 .secondary_1.border-debug:after, .secondary.lightest-debug:after  { content: "<?php echo $secondary_1; ?>";}
-
-/* Allow Font Awesome Icons in lieu of jQuery UI and only apply when using a FA icon */
-.ui-icon[class*=" icon-"] {
-    /* Remove the jQuery UI Icon */
-    background: none repeat scroll 0 0 transparent;
-    /* Remove the jQuery UI Text Indent */
-    text-indent: 0;
-    /* Bump it up - jQuery UI is -8px */
-    margin-top: -0.5em;
-}
-
-/* Allow use of icon-large to be properly aligned */
-.ui-icon.icon-large {
-    margin-top: -0.75em;
-}
-
-.ui-button-icon-only .ui-icon[class*=" icon-"] {
-    /* Bump it - jQuery UI is -8px */
-    margin-left: -7px;
-}
-
-/* gstree styles */
-.tree-roottoggle .label{
- 	cursor: pointer;
- 	font-size: 11px;
-}
-
-.tree-indent {
-	padding: 0 10px 0 5px;
-	display: inline;
-	position: relative;
-}
-
-.tree-expander {
-	padding: 0 12px 0 3px;
-	display: inline;
-	position: relative;
-	cursor: pointer;
-}
-
-.tree-indent-last {
-	padding: 0 6px 0 6px;
-}
-
-.tree-expander-expanded{
-	background-image: url(images/collapse.png);
-	background-position: -3px 0;
-}
-
-.tree-expander-collapsed{
-	background-image: url(images/expand.png);
-	background-position: -3px 0;
-}
-
-.tree-parentcollapsed {
-	display:none;
-}
-
-.tree-error {
-	color: #990000;
-	border: 1px solid #cc0000;
-}
-
-
-/* END */
+  .label-debug:after                                              { content: "<?php echo $label_0;   ?>";}
+  .label-info-debug:after                                         { content: "<?php echo $label_1;   ?>";}
+  .label-ok-debug:after                                           { content: "<?php echo $label_2;   ?>";}
+  .label-warn-debug:after                                         { content: "<?php echo $label_3;   ?>";}
+  .label-error-debug:after                                        { content: "<?php echo $label_4;   ?>";}
+  .label-light-debug:after                                        { content: "<?php echo $label_5;   ?>";}
+  .label-medium-debug:after                                       { content: "<?php echo $label_6;   ?>";}
 
 /* </style> */

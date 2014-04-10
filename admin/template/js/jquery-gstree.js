@@ -105,12 +105,12 @@ function getNextSiblingByDepth(elem){
 	return $("~ :depthLess("+depth+")",elem).first();
 }
 
-function addExpanders(elems){
+function addExpanders(elems,expander){
+	if(expander === undefined) expander = '<span class="'+ treeexpanderclass + ' ' + treeexpandedclass +'"></span>';
 	$(elems).each(function(i,elem){
 		// Debugger.log($(elem));
-		var expander = $('<span class="'+ treeexpanderclass + ' ' + treeexpandedclass +'"></span>').insertBefore($(elem));
-		expander.on('click',toggleRow).bind('selectstart dragstart', function(evt)
-								{ evt.preventDefault(); return false; });
+		$(expander).on('click',toggleRow).bind('selectstart dragstart', function(evt)
+								{ evt.preventDefault(); return false; }).insertBefore($(elem));
 	});
 }
 
@@ -146,12 +146,12 @@ function toggleTopAncestors(){
 
 
 // add tree to editpages table
-function addExpanderTableHeader(elem,colspan){
+function addExpanderTableHeader(elem,expander,colspan){
 	// Debugger.log($(elem));
 	var rootcollapsed = $("#roottoggle").hasClass("rootcollapsed");
 	var langstr = rootcollapsed ? i18n('EXPAND_TOP') : i18n('COLLAPSE_TOP');
 
-	$('<tr id="roottoggle" class="tree-roottoggle nohighlight" data-depth="-1"><td colspan="'+colspan+'"><span class="tree-expander"></span><span class="label">'+ langstr +'</span></td></tr>').insertAfter(elem);
+	$('<tr id="roottoggle" class="tree-roottoggle nohighlight" data-depth="-1"><td colspan="'+colspan+'">'+expander+'<span class="label">'+ langstr +'</span></td></tr>').insertAfter(elem);
 	// init expander
 	$('#roottoggle').toggleClass("collapsed",rootcollapsed);
 	setExpander($('#roottoggle'));
@@ -164,17 +164,22 @@ function addExpanderTableHeader(elem,colspan){
 
 $.fn.addTableTree = function(){
 	var elem = this;
-	console.log(this);
 	if(!elem[0]) return;
-	
-	addExpanderTableHeader($('tbody > tr:first',elem),4);
+
+	treeexpandedclass = 'fa-rotate-90';
+	treecollapsedclass = '';
+	var customexpander = '<i class="'+treeexpanderclass+' '+treeexpandedclass+' fa fa-play fa-fw"></i>';
+
+	addExpanderTableHeader($('tbody > tr:first',elem),customexpander,4);
 
 	// remove all last indents on parents that will now be expanders
 	$('tr td span.tree-indent:last-of-type',elem).removeClass('indent-last').html('');
 
 	// add expanders
-	addExpanders($('tr.tree-parent td:first-child a:first-of-type',elem));
+	addExpanders($('tr.tree-parent td:first-child a:first-of-type',elem),customexpander);
+
+	// addExpanders($('tr.tree-parent td:first-child a:first-of-type',elem));
 
 	// add indents to root nodes without children to line up with expander nodes
 	addIndents($('tr:not(.tree-parent) td:first-child a:first-of-type',elem)); // not parents
-}
+};
