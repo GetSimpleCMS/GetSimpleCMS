@@ -14,11 +14,6 @@ var nodeparentcollapsedclass = treeprefix + 'parentcollapsed';    // class to co
 var depthprefix              = 'depth-';                          // class prefix for depth information
 var datadepthattr            = 'depth';                           // data attribute name for depth information
 
-// extend with depth selectors ( attr data-depth )
-$.extend($.expr[':'], {
-  depthLess: function(e, i, m) { return getNodeDepth(e) <= m[3]; },
-  depthMore: function(e, i, m) { return getNodeDepth(e) >= m[3]; }
-});
 
 function toggleRow(){
 	var row = $(this).closest('.'+treeparentclass);
@@ -57,8 +52,8 @@ function hideChildRows(elem){
 }
 
 function hideChildRow(elem){
-	// $(elem).addClass(nodeparentcollapsedclass);
-	$(elem).animate({opacity: 0.1} , 100, function(){ $(this).addClass(nodeparentcollapsedclass);} ); // @todo custom callout
+	$(elem).addClass(nodeparentcollapsedclass);
+	// $(elem).animate({opacity: 0.1} , 100, function(){ $(this).addClass(nodeparentcollapsedclass);} ); // @todo custom callout
 }
 
 // not using recursion or tree walking here, this is likely faster
@@ -67,7 +62,6 @@ function hideChildRow(elem){
 function showChildRows(elem){
 	var children = getChildrenByDepth(elem);
 	var startDepth = getNodeDepth(elem);
-
 	children.each(function(i,elem){
 		thisDepth   = getNodeDepth(elem);
 		immediateChild = thisDepth == (startDepth + 1);
@@ -79,8 +73,7 @@ function showChildRows(elem){
 		}
 
 		// get actual parent of this child
-		// check previous elements with parent class and depth 1 less that this depth
-		thisParent      = $(elem).prevAll("."+treeparentclass+"[data-"+datadepthattr+"='" + (thisDepth-1) + "']").first();
+		thisParent = getParentByDepth(elem);
 		parentCollapsed = $(thisParent).hasClass(nodecollapsedclass);
 		parentHidden    = $(thisParent).hasClass(nodeparentcollapsedclass);
 		// Debugger.log(elem.id + ' | ' + parent.attr('id') + ' | ' + parentCollapsed + ' | ' + parentHidden);
@@ -95,7 +88,7 @@ function showChildRows(elem){
 
 function showChildRow(elem){
 	$(elem).removeClass(nodeparentcollapsedclass);
-	$(elem).animate({opacity: 1}, 300); // todo: custom callout
+	// $(elem).animate({opacity: 1}, 300); // todo: custom callout
 }
 
 function getNodeDepth(elem){
@@ -109,10 +102,24 @@ function getChildrenByDepth(elem){
 	return children;
 }
 
-// get next sibling of equal or less than depth
+/**
+ * get the first previous parentclass with lower depth
+ */
+function getParentByDepth(elem){
+	var depth = getNodeDepth(elem) - 1;
+	return $(elem).prev("."+treeparentclass+"[data-"+datadepthattr+"='" + (thisDepth) + "']"); // 300ms	
+}
+
+/**
+ * get the next parent of equal or less depth
+ */
 function getNextSiblingByDepth(elem){
-	var depth       = getNodeDepth(elem);	
-	return $("~ :depthLess("+depth+")",elem).first();
+	var tagname      = getTagName(elem);
+	var depth        = getNodeDepth(elem);
+	var nextsiblings = elem.nextAll(tagname).filter(function(index){
+								return getNodeDepth(this) <= depth;
+							});
+	return nextsiblings.first();
 }
 
 function addExpanders(elems,expander){
@@ -132,6 +139,7 @@ function addIndents(elems){
 
 
 function toggleTopAncestors(){
+	// console.profile();
 	// @todo possible optimizations
 	// could use a table css rule to hide all trs, unless classes depth-0 or something with specificty to override
 	// would skip all iterations needed here, but would also require special css to toggle expanders
@@ -152,6 +160,7 @@ function toggleTopAncestors(){
 	$("#roottoggle").toggleClass("rootcollapsed");
 	$('#roottoggle').toggleClass(nodecollapsedclass,!rootcollapsed);
 	setExpander($('#roottoggle'));
+	// console.profileEnd();
 }
 
 
@@ -173,6 +182,7 @@ function addExpanderTableHeader(elem,expander,colspan){
 
 
 $.fn.addTableTree = function(){
+	// console.profile();
 	var elem = this;
 	if(!elem[0]) return;
 
@@ -190,4 +200,5 @@ $.fn.addTableTree = function(){
 
 	// add indents to root nodes without children to line up with expander nodes
 	addIndents($('tr:not(.tree-parent) td:first-child a:first-of-type',elem)); // not parents
+	// console.profileEnd();	
 };

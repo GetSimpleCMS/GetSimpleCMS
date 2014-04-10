@@ -110,6 +110,13 @@ function i18n(key){
 	return GS.i18n[key];
 }
 
+/**
+ * get elements tagname
+ */
+function getTagName(elem){
+	return $(elem).prop('tagName');
+}
+
 jQuery(document).ready(function () {
 
 	$("#tabs").tabs({
@@ -946,14 +953,6 @@ jQuery(document).ready(function () {
 		}
 	});
 	
-
-	/**
-	 * get elements tagname
-	 */
-	function getTagName(elem){
-		return $(elem).prop('tagName');
-	}
-
 	$('#pages table#editpages').addTableTree();
 
 	// end of jQuery ready
