@@ -730,8 +730,24 @@ h5:hover img {
 	text-shadow: 1px 1px 0 #fff;
 }
 
-.wrapper table.highlight tr:nth-child(odd) {
-	 background: #f7f7f7;
+.wrapper table.highlight tr:nth-child(odd), .wrapper table.striped tr:nth-child(odd) {
+	background: #f7f7f7;
+}
+
+.wrapper table.striped tr.odd {
+	background: #f7f7f7;
+}
+
+.wrapper table.striped tr.even {
+	background: #FFF;
+}
+
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  -ms-transition: none !important;
+  transition: none !important;
 }
 
 .wrapper table tr#tr-index a {
@@ -754,10 +770,10 @@ h5:hover img {
 .wrapper table tr {
 	border-bottom: 1px solid #eee;
 	border-top: 1px solid #eee;
-	transition: background-color .3s ease-in-out;
+/*	transition: background-color .3s ease-in-out;
 		-webkit-transition: background-color .3s ease-in-out;
 		-moz-transition: background-color .3s ease-in-out;
-		-o-transition: background-color .3s ease-in-out;
+		-o-transition: background-color .3s ease-in-out;*/
 }
 
 .wrapper table tr.attention{

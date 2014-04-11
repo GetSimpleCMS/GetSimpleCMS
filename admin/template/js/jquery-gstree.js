@@ -24,6 +24,7 @@ function toggleRow(){
 
 	if($(row).hasClass(nodecollapsedclass)) expandRow(row);
 	else collapseRow(row);
+	$("table.striped").zebraStripe();	
 }
 
 function setExpander(elem){
@@ -160,6 +161,7 @@ function toggleTopAncestors(){
 	$("#roottoggle").toggleClass("rootcollapsed");
 	$('#roottoggle').toggleClass(nodecollapsedclass,!rootcollapsed);
 	setExpander($('#roottoggle'));
+	$("table.striped").zebraStripe();
 	// console.profileEnd();
 }
 
@@ -180,9 +182,14 @@ function addExpanderTableHeader(elem,expander,colspan){
 								{ evt.preventDefault(); return false; });
 }
 
+$.fn.zebraStripe = function(){
+	$("tr:not(.tree-parentcollapsed)",$(this)).each(function(i,elem){
+		if(i%2!=1) $(elem).addClass('odd').removeClass('even');
+		else $(elem).addClass('even').removeClass('odd');
+	});
+};
 
 $.fn.addTableTree = function(){
-	// console.profile();
 	var elem = this;
 	if(!elem[0]) return;
 
@@ -200,5 +207,8 @@ $.fn.addTableTree = function(){
 
 	// add indents to root nodes without children to line up with expander nodes
 	addIndents($('tr:not(.tree-parent) td:first-child a:first-of-type',elem)); // not parents
-	// console.profileEnd();	
+	
+	$("table.striped").zebraStripe();
 };
+
+// @todo insert tbody at start end and animate it, use display:block on tbody
