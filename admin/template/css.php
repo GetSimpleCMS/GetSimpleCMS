@@ -2824,12 +2824,12 @@ a.disabled:visited {
 .tree-expander {
 	cursor: pointer;
 	color: #868686;
-	font-size: 0.8em;	
+	font-size: 0.8em;
 	margin-right: 7px;
 	transition: all 50ms ease-out;
 		-webkit-transition: all 50ms ease-out;
 		-moz-transition: all 50ms ease-out;
-		-o-transition: all 50ms ease-out;		
+		-o-transition: all 50ms ease-out;
 }
 
 .tree-indent-last {
@@ -2839,19 +2839,13 @@ a.disabled:visited {
 .tree-expander-expanded{
 	padding: 0 12px 0 3px;
 	display: inline;
-	position: relative;	
-	background-image: url(images/collapse.png);
-	background-position: -3px 0;
-	background-repeat: no-repeat;
+	position: relative;
 }
 
 .tree-expander-collapsed{
 	padding: 0 12px 0 3px;
 	display: inline;
-	position: relative;	
-	background-image: url(images/expand.png);
-	background-position: -3px 0;
-	background-repeat: no-repeat;	
+	position: relative;
 }
 
 .tree-parentcollapsed {
@@ -2917,7 +2911,7 @@ a.disabled:visited {
   .primary_6-border-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>";}
 .secondary_0-border-debug:after, .secondary-darkest-debug:after   { content: "<?php echo $secondary_0; ?>";}
 .secondary_1-border-debug:after, .secondary-lightest-debug:after  { content: "<?php echo $secondary_1; ?>";}
-   
+
 /* label colors */
    .label-default-debug:after                                     { content: "<?php echo $label_0;   ?>";}
    .label-info-debug:after                                        { content: "<?php echo $label_1;   ?>";}
