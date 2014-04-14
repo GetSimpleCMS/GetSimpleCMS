@@ -193,12 +193,29 @@ $.fn.zebraStripe = function(){
 	});
 };
 
-$.fn.addTableTree = function(){
+/**
+ * add gstree to tree ready table with data-depths and parent,indent classes
+ * @param int minrows minumum rows needed to init, else will skip
+ * @param int mindepth minimum depth required to add the header expander controls
+ */
+$.fn.addTableTree = function(minrows,mindepth){
 	// console.profile();
 	// @todo for slide animations, temporarily insert tbody at start end of collapse range and animate it, use display:block on tbody
         
 	var elem = this;
-	if(!elem[0]) return;
+	if(!elem[0]){
+		Debugger.log("gstree: table does not exist, skipping");
+		return;
+	}	
+
+	var small = minrows !== undefined && $("tbody tr",elem).length < minrows;
+
+	// skip if no children
+	if(!$("."+treeparentclass,elem)[0] || small){
+		if(!small) Debugger.log("gstree: no depths, skipping");
+		else Debugger.log("gstree: too small, skipping");
+		return;
+	}
 
 	// custom overrides for fontawesome icons for expander and collapse classes
 	treeexpandedclass = 'fa-rotate-90';
@@ -209,7 +226,9 @@ $.fn.addTableTree = function(){
 	addExpanders($('tr.tree-parent td:first-child .tree-indent:last-of-type',elem),customexpander); // add expanders to last indent
 	$('tr td:first-child .tree-indent:last-of-type').html(''); // remove extra indentation
 	
-	addExpanderTableHeader($('thead > tr:first',elem),customexpander,4);	
+	// add the header expander controls
+	var deep = mindepth == undefined || $("tbody tr[data-depth="+mindepth+"]",elem).length > 0;	
+	if(deep) addExpanderTableHeader($('thead > tr:first',elem),customexpander,4);	
 	
 	$("table.striped").zebraStripe();
 

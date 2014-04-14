@@ -2813,6 +2813,7 @@ a.disabled:visited {
 .tree-roottoggle .label{
  	cursor: pointer;
  	font-size: 11px;
+ 	margin-left:0;
 }
 
 .tree-indent {
