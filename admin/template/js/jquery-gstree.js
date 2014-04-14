@@ -227,7 +227,7 @@ $.fn.addTableTree = function(minrows,mindepth){
 	$('tr td:first-child .tree-indent:last-of-type').html(''); // remove extra indentation
 	
 	// add the header expander controls
-	var deep = mindepth == undefined || $("tbody tr[data-depth="+mindepth+"]",elem).length > 0;	
+	var deep = mindepth === undefined || $("tbody tr[data-depth="+mindepth+"]",elem).length > 0;	
 	if(deep) addExpanderTableHeader($('thead > tr:first',elem),customexpander,4);	
 	
 	$("table.striped").zebraStripe();
