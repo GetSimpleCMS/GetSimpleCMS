@@ -2832,10 +2832,6 @@ a.disabled:visited {
 		-o-transition: all 50ms ease-out;
 }
 
-.tree-indent-last {
-	padding: 0 6px 0 6px;
-}
-
 .tree-expander-expanded{
 	padding: 0 12px 0 3px;
 	display: inline;

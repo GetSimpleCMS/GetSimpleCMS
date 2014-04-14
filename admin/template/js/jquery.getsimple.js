@@ -953,7 +953,7 @@ jQuery(document).ready(function () {
 		}
 	});
 	
-	$('#pages table#editpages').addTableTree();
+	$('table.tree').addTableTree(); // add tree folding to tree tables
 
 	// end of jQuery ready
 });

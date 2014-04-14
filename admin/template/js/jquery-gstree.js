@@ -128,14 +128,15 @@ function addExpanders(elems,expander){
 	if(expander === undefined) expander = '<span class="'+ treeexpanderclass + ' ' + treeexpandedclass +'"></span>';
 	$(elems).each(function(i,elem){
 		// Debugger.log($(elem));
+		$(elem).removeClass("tree-indent").removeClass("indent-last").html(''); // remove any indentation here, now an expander
 		$(expander).on('click',toggleRow).bind('selectstart dragstart', function(evt)
-								{ evt.preventDefault(); return false; }).insertBefore($(elem));
+								{ evt.preventDefault(); return false; }).prependTo($(elem));
 	});
 }
 
 function addIndents(elems){
 	$(elems).each(function(i,elem){
-		$('<span class="'+treeindentclass+'"></span>').insertBefore($(elem));
+		$('<span class="'+treeindentclass+'"></span>').prependTo($(elem));
 	});
 }
 
@@ -186,32 +187,31 @@ function addExpanderTableHeader(elem,expander,colspan){
 }
 
 $.fn.zebraStripe = function(){
-	$("tr:not(.tree-parentcollapsed)",$(this)).each(function(i,elem){
-		if(i%2!=1) $(elem).addClass('odd').removeClass('even');
+	$("tbody tr:not(.tree-parentcollapsed)",$(this)).each(function(i,elem){
+		if(i%2!=1) $(elem).addClass('odd').removeClass('even'); 
 		else $(elem).addClass('even').removeClass('odd');
 	});
 };
 
 $.fn.addTableTree = function(){
+	// console.profile();
 	// @todo for slide animations, temporarily insert tbody at start end of collapse range and animate it, use display:block on tbody
-
+        
 	var elem = this;
 	if(!elem[0]) return;
 
+	// custom overrides for fontawesome icons for expander and collapse classes
 	treeexpandedclass = 'fa-rotate-90';
 	treecollapsedclass = '';
 	var customexpander = '<i class="'+treeexpanderclass+' '+treeexpandedclass+' fa fa-play fa-fw"></i>';
-	// customexpander = undefined;
-	addExpanderTableHeader($('tbody > tr:first',elem),customexpander,4);
 
-	// remove all last indents on parents that will now be expanders
-	$('tr td span.tree-indent:last-of-type',elem).removeClass('indent-last').html('');
-
-	// add expanders
-	addExpanders($('tr.tree-parent td:first-child a:first-of-type',elem),customexpander);
-
-	// add indents to root nodes without children to line up with expander nodes
-	addIndents($('tr:not(.tree-parent) td:first-child a:first-of-type',elem)); // not parents
+	addIndents($('tr td:first-child',elem)); // preload indents for roots and childless
+	addExpanders($('tr.tree-parent td:first-child .tree-indent:last-of-type',elem),customexpander); // add expanders to last indent
+	$('tr td:first-child .tree-indent:last-of-type').html(''); // remove extra indentation
+	
+	addExpanderTableHeader($('thead > tr:first',elem),customexpander,4);	
 	
 	$("table.striped").zebraStripe();
+
+	// console.profileEnd();
 };
