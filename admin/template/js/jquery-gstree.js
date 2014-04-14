@@ -75,9 +75,10 @@ function showChildRows(elem){
 
 		// get actual parent of this child
 		thisParent = getParentByDepth(elem);
+		// if(!thisParent[0]) Debugger.log('parent not found');
 		parentCollapsed = $(thisParent).hasClass(nodecollapsedclass);
 		parentHidden    = $(thisParent).hasClass(nodeparentcollapsedclass);
-		// Debugger.log(elem.id + ' | ' + parent.attr('id') + ' | ' + parentCollapsed + ' | ' + parentHidden);
+		// Debugger.log(elem.id + ' | ' + $(thisParent).attr('id') + ' | ' + parentCollapsed + ' | ' + parentHidden);
 
 		// show child only if parent is not hidden AND parent is not collapsed 
 		if(!parentHidden && !parentCollapsed){
@@ -108,7 +109,7 @@ function getChildrenByDepth(elem){
  */
 function getParentByDepth(elem){
 	var depth = getNodeDepth(elem) - 1;
-	return $(elem).prev("."+treeparentclass+"[data-"+datadepthattr+"='" + (thisDepth) + "']"); // 300ms	
+	return $(elem).prevAll("."+treeparentclass+"[data-"+datadepthattr+"='" + (depth) + "']").first();
 }
 
 /**
@@ -138,21 +139,22 @@ function addIndents(elems){
 	});
 }
 
-
 function toggleTopAncestors(){
-	// console.profile();
 	// @todo possible optimizations
 	// could use a table css rule to hide all trs, unless classes depth-0 or something with specificty to override
 	// would skip all iterations needed here, but would also require special css to toggle expanders
 	// could also use a cache table for these using tr ids
-	var depth = 0;
 	var rootcollapsed = $("#roottoggle").hasClass("rootcollapsed");
+
+	// if(rootcollapsed) console.profile('expand all');
+	// else console.profile('collapse all');
 
 	// toggle label text
 	var langstr = !rootcollapsed ? i18n('EXPAND_TOP') : i18n('COLLAPSE_TOP');
 	$('#roottoggle .label').html(langstr);
 
 	// hide all depth 0 children, do not change collpase data
+	var depth = 0;
 	$("#editpages tr[data-depth='" + depth + "']").each(function(i,elem){
 					if(rootcollapsed) expandRow($(elem));
 					else collapseRow($(elem));
@@ -162,6 +164,7 @@ function toggleTopAncestors(){
 	$('#roottoggle').toggleClass(nodecollapsedclass,!rootcollapsed);
 	setExpander($('#roottoggle'));
 	$("table.striped").zebraStripe();
+	
 	// console.profileEnd();
 }
 
@@ -190,6 +193,8 @@ $.fn.zebraStripe = function(){
 };
 
 $.fn.addTableTree = function(){
+	// @todo for slide animations, temporarily insert tbody at start end of collapse range and animate it, use display:block on tbody
+
 	var elem = this;
 	if(!elem[0]) return;
 
@@ -210,5 +215,3 @@ $.fn.addTableTree = function(){
 	
 	$("table.striped").zebraStripe();
 };
-
-// @todo insert tbody at start end and animate it, use display:block on tbody
