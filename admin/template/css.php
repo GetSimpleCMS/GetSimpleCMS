@@ -2854,6 +2854,13 @@ a.disabled:visited {
 	border: 1px solid #cc0000;
 }
 
+/* icon offset override for 10px for rotation centering */
+.tree .fa-play{
+    -webkit-transform-origin-x: 38%;
+    -webkit-transform-origin-y: 45%; 
+}
+
+
 /* END */
 
 /* Admin theme colors */
