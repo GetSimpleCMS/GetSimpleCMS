@@ -995,7 +995,7 @@ function get_pages_menu($parent = '',$menu = '',$level = '') {
 
 			if($depth === null){
 			 // set sub level starting depth
-			 $depth = $page['depth']; _debugLog("SET"); continue;
+			 $depth = $page['depth']; continue;
 			}
 			else if(($page['depth'] == $depth)) return $menu; // we are back to starting depth so stop
 			$level = $level - ($depth+1);
