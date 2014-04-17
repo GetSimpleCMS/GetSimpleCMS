@@ -25,8 +25,8 @@ if(isset($_POST['submitted'])){
 		# get user information from existing XML file
 		
 		if (filepath_is_safe(GSUSERSPATH . $file,GSUSERSPATH)) {
-			$data = simplexml_load_file(GSUSERSPATH . $file);
-			$USR = strtolower($data->USR);
+			$data  = simplexml_load_file(GSUSERSPATH . $file);
+			$USR   = strtolower($data->USR);
 			$EMAIL = $data->EMAIL;
 			
 			if(strtolower($_POST['username']) == $USR) {

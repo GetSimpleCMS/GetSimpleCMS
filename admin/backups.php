@@ -17,9 +17,9 @@ include('inc/common.php');
 	
 // Variable settings
 login_cookie_check();
-$path = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
+$path    = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
 $counter = '0';
-$table = '';
+$table   = '';
 
 
 // delete all backup files if the ?deleteall session parameter is set
@@ -40,10 +40,10 @@ if (isset($_GET['deleteall'])){
 
 
 //display all page backups
-$filenames = getFiles($path);
-$count="0";
+$filenames      = getFiles($path);
+$count          = "0";
 $pagesArray_tmp = array();
-$pagesSorted=array(); 
+$pagesSorted    = array(); 
 
 if (count($filenames) != 0) 
 { 
@@ -51,11 +51,11 @@ if (count($filenames) != 0)
 	{
 		if (isFile($file, $path, 'bak')) 
 		{
-			$data = getXML($path .$file);
+			$data   = getXML($path .$file);
 			$status = $data->menuStatus;
 			$pagesArray_tmp[$count]['title'] = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
-			$pagesArray_tmp[$count]['url'] = $data->url;
-			$pagesArray_tmp[$count]['date'] = $data->pubDate;
+			$pagesArray_tmp[$count]['url']   = $data->url;
+			$pagesArray_tmp[$count]['date']  = $data->pubDate;
 			$count++;
 		}
 	}

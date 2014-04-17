@@ -19,16 +19,16 @@ login_cookie_check();
 $subPath = (isset($_GET['path'])) ? $_GET['path'] : "";
 if ($subPath != '') $subPath = tsl($subPath);
 
-$uploadsPath = GSDATAUPLOADPATH;
-$uploadsPathRel = getRelPath(GSDATAUPLOADPATH);
-$thumbPathRel = getRelPath(GSTHUMBNAILPATH);
+$uploadsPath      = GSDATAUPLOADPATH;
+$uploadsPathRel   = getRelPath(GSDATAUPLOADPATH);
+$thumbPathRel     = getRelPath(GSTHUMBNAILPATH);
 
-$src = strippath($_GET['i']);
-$thumb_folder = GSTHUMBNAILPATH.$subPath;
-$src_folder = $uploadsPath;
-$src_url = tsl($SITEURL).$uploadsPathRel.$subPath;
+$src              = strippath($_GET['i']);
+$thumb_folder     = GSTHUMBNAILPATH.$subPath;
+$src_folder       = $uploadsPath;
+$src_url          = tsl($SITEURL).$uploadsPathRel.$subPath;
 $thumb_folder_rel = $thumbPathRel.$subPath;
-$thumb_url = tsl($SITEURL).$thumb_folder_rel;
+$thumb_url        = tsl($SITEURL).$thumb_folder_rel;
 
 if (!is_file($src_folder . $subPath .$src)) redirect("upload.php");
 

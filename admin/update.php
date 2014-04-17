@@ -91,20 +91,21 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	}
 
 	# get $USR data
-	$datau = getXML(GSDATAOTHERPATH .'user.xml');
-	$datac = getXML(GSDATAOTHERPATH .'cp_settings.xml');
-	$dataw = getXML(GSDATAOTHERPATH .'website.xml');
-	$USR = _id(stripslashes($datau->USR));
-	$EMAIL = $datau->EMAIL;
-	$PASSWD = $datau->PWD;
+	$datau      = getXML(GSDATAOTHERPATH .'user.xml');
+	$datac      = getXML(GSDATAOTHERPATH .'cp_settings.xml');
+	$dataw      = getXML(GSDATAOTHERPATH .'website.xml');
+	
+	$USR        = _id(stripslashes($datau->USR));
+	$EMAIL      = $datau->EMAIL;
+	$PASSWD     = $datau->PWD;
 	$HTMLEDITOR = $datac->HTMLEDITOR;
 	$PRETTYURLS = $datac->PRETTYURLS;
-	$PERMALINK = $datac->PERMALINK;
-	$TIMEZONE = $datac->TIMEZONE;
-	$LANG = $datac->LANG;
-	$SITENAME = stripslashes($dataw->SITENAME);
-	$SITEURL = $dataw->SITEURL;
-	$TEMPLATE = $dataw->TEMPLATE;
+	$PERMALINK  = $datac->PERMALINK;
+	$TIMEZONE   = $datac->TIMEZONE;
+	$LANG       = $datac->LANG;
+	$SITENAME   = stripslashes($dataw->SITENAME);
+	$SITEURL    = $dataw->SITEURL;
+	$TEMPLATE   = $dataw->TEMPLATE;
 	
 	
 	# creating new user file

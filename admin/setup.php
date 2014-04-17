@@ -15,13 +15,13 @@ include('inc/common.php');
 
 # default variables
 if(defined('GSLOGINSALT')) { $logsalt = GSLOGINSALT;} else { $logsalt = null; }
-$kill = ''; 
-$status = ''; 
-$err = null; 
-$message = null; 
-$random = null;
-$success = false;
-$fullpath = suggest_site_path();	
+$kill       = ''; 
+$status     = ''; 
+$err        = null; 
+$message    = null; 
+$random     = null;
+$success    = false;
+$fullpath   = suggest_site_path();	
 $path_parts = suggest_site_path(true);   
 
 # if the form was submitted, continue

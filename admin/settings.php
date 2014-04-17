@@ -14,15 +14,14 @@ include('inc/common.php');
 login_cookie_check();
 
 # variable settings
-$fullpath = suggest_site_path();
-$file			= _id($USR) .'.xml';
-$wfile 		= 'website.xml';
-$data 		= getXML(GSUSERSPATH . $file);
-$USR 			= stripslashes($data->USR);
-$PASSWD 	= $data->PWD;
-$EMAIL 		= $data->EMAIL;
-$NAME			= $data->NAME;
-
+$fullpath   = suggest_site_path();
+$file       = _id($USR) .'.xml';
+$wfile      = 'website.xml';
+$data       = getXML(GSUSERSPATH . $file);
+$USR        = stripslashes($data->USR);
+$PASSWD     = $data->PWD;
+$EMAIL      = $data->EMAIL;
+$NAME       = $data->NAME;
 $lang_array = getFiles(GSLANGPATH);
 
 # initialize these all as null
@@ -39,7 +38,7 @@ if (isset($_GET['undo'])) {
 	check_for_csrf("undo");	
 	# perform undo
 	undo($file, GSUSERSPATH, GSBACKUSERSPATH);
-	$bakpath 	= GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH); // backups/other/
+	$bakpath = GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH); // backups/other/
 	undo($wfile, GSDATAOTHERPATH, $bakpath);
 	generate_sitemap();
 	
@@ -176,7 +175,7 @@ if (count($lang_array) != 0) {
 	$sel = ''; $langs = '';
 	foreach ($lang_array as $lfile){
 		$lfile = basename($lfile,".php");
-		if ($LANG == $lfile)	{ $sel="selected"; }
+		if ($LANG == $lfile) { $sel="selected"; }
 		$langs .= '<option '.$sel.' value="'.$lfile.'" >'.$lfile.'</option>';
 		$sel = '';
 	}

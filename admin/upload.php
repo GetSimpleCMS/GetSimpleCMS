@@ -14,18 +14,19 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
-$dirsSorted=null;$filesSorted=null;$foldercount=null;
+$dirsSorted = $filesSorted = $foldercount = null;
 
 if (isset($_GET['path']) && !empty($_GET['path'])) {
 	$path = str_replace('../','', $_GET['path']);
 	$path = tsl(GSDATAUPLOADPATH.$path);
+
 	// die if path is outside of uploads
 	if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
-	$subPath = str_replace('../','', $_GET['path']);
+	$subPath   = str_replace('../','', $_GET['path']);
 	$subFolder = tsl($subPath);
 } else { 
-	$path = GSDATAUPLOADPATH;
-	$subPath = ''; 
+	$path      = GSDATAUPLOADPATH;
+	$subPath   = ''; 
 	$subFolder = '';
 }
 
@@ -35,7 +36,7 @@ if (isset($_FILES['file'])) {
 	$uploadsCount = count($_FILES['file']['name']);
 
 	if($uploadsCount > 0) {
-	 $errors = array();
+	 $errors   = array();
 	 $messages = array();
 
 	 for ($i=0; $i < $uploadsCount; $i++) {
@@ -44,8 +45,8 @@ if (isset($_FILES['file'])) {
 		} else {
 			
 			//set variables
-			$count = '1';
-			$base = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+			$count    = '1';
+			$base     = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
 			$file_loc = $path . $base;
 			
 			//prevent overwriting
@@ -53,8 +54,8 @@ if (isset($_FILES['file'])) {
 						
 			if(!isset($_POST['fileoverwrite'])){
 				while ( file_exists($file_loc) ) {
-				$file_loc = $path . $count.'-'. $base;
-				$base = $count.'-'. $base;
+					$file_loc = $path . $count.'-'. $base;
+					$base     = $count.'-'. $base;
 					$count++;
 				}
 			}
@@ -148,14 +149,14 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 		<h3 class="floated"><?php echo i18n('UPLOADED_FILES'); ?><span id="filetypetoggle">&nbsp;&nbsp;/&nbsp;&nbsp;<?php echo i18n('SHOW_ALL'); ?></span></h3>
 		<div id="file_load">
 		<?php
-			$count="0";
-      		$dircount="0";
-			$counter = "0";
-			$totalsize = 0;
+			$count      ="0";
+			$dircount   ="0";
+			$counter    = "0";
+			$totalsize  = 0;
 			$filesArray = array();
-      		$dirsArray = array();
-      
-			$filenames = getFiles($path);
+			$dirsArray  = array();
+			
+			$filenames  = getFiles($path);
 
 			if (count($filenames) != 0) { 
 				foreach ($filenames as $file) {
@@ -169,7 +170,7 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
             $dircount++;
 					} else {
 						$filesArray[$count]['name'] = $file;
-							$ext = substr($file, strrpos($file, '.') + 1);
+						$ext = substr($file, strrpos($file, '.') + 1);
 						$extention = get_FileType($ext);
 						$filesArray[$count]['type'] = $extention;
 						clearstatcache();
@@ -283,21 +284,21 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 					echo '<tr class="All '.$upload['type'].' '.$cclass.'" >';
 					echo '<td class="imgthumb" >';
 					if ($upload['type'] == i18n_r('IMAGES') .' Images') {
-						$gallery = 'rel=" facybox_i"';
-						$pathlink = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subPath;
-						$thumbLink = $urlPath.'thumbsm.'.$upload['name'];
+						$gallery          = 'rel=" facybox_i"';
+						$pathlink         = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subPath;
+						$thumbLink        = $urlPath.'thumbsm.'.$upload['name'];
 						$thumbLinkEncoded = $urlPath.'thumbsm.'.rawurlencode($upload['name']);
 						if (file_exists(GSTHUMBNAILPATH.$thumbLink)) {
-							$imgSrc='<img src="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH). $thumbLinkEncoded .'" />';
+							$imgSrc = '<img src="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH). $thumbLinkEncoded .'" />';
 						} else {
-							$imgSrc='<img src="inc/thumb.php?src='. $urlPath . rawurlencode($upload['name']) .'&amp;dest='. $thumbLinkEncoded .'&amp;f=1" />';
+							$imgSrc = '<img src="inc/thumb.php?src='. $urlPath . rawurlencode($upload['name']) .'&amp;dest='. $thumbLinkEncoded .'&amp;f=1" />';
 						}
 						// thumbnail link lightbox
 						echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel=" facybox_i" >'.$imgSrc.'</a>';
 					} else {
-						$gallery = '';
+						$gallery      = '';
 						$controlpanel = '';
-						$pathlink = $path . $upload['name'];
+						$pathlink     = $path . $upload['name'];
 					}
 					// name column linked
 					echo '</td><td><a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';

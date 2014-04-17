@@ -352,7 +352,7 @@ function get_site_name($echo=true) {
  * 
  * This will return the value set in the control panel
  * 
- * @depreciated as of 3.0
+ * @deprecated as of 3.0
  *
  * @since 1.0
  * @uses $EMAIL
@@ -412,61 +412,63 @@ function menu_data($id = null,$xml=false) {
     $pagesSorted = subval_sort($pagesArray,'menuOrder');
 
     if (count($pagesSorted) != 0) { 
-      $count = 0;
-      if (!$xml){
-        foreach ($pagesSorted as $page) {
-          $text = (string)$page['menu'];
-          $pri = (string)$page['menuOrder'];
-          $parent = (string)$page['parent'];
-          $title = (string)$page['title'];
-          $slug = (string)$page['url'];
-          $menuStatus = (string)$page['menuStatus'];
-          $private = (string)$page['private'];
-          $pubDate = (string)$page['pubDate'];
-          
-          $url = find_url($slug,$parent);
-          
-          $specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
-          
-          if ($id == $slug) { 
-              return $specific; 
-              exit; 
-          } else {
-              $menu_extract[] = $specific;
-          }
-        } 
+		$count = 0;
+		if (!$xml){
+			foreach ($pagesSorted as $page) {
+				$text       = (string)$page['menu'];
+				$pri        = (string)$page['menuOrder'];
+				$parent     = (string)$page['parent'];
+				$title      = (string)$page['title'];
+				$slug       = (string)$page['url'];
+				$menuStatus = (string)$page['menuStatus'];
+				$private    = (string)$page['private'];
+				$pubDate    = (string)$page['pubDate'];
+			  
+				$url = find_url($slug,$parent);
+				$specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
 
-        return $menu_extract;
-      } else {
-        $xml = '<?xml version="1.0" encoding="UTF-8"?><channel>';    
-	    foreach ($pagesSorted as $page) {
-            $text = $page['menu'];
-            $pri = $page['menuOrder'];
-            $parent = $page['parent'];
-            $title = $page['title'];
-            $slug = $page['url'];
-            $pubDate = $page['pubDate'];
-            $menuStatus = $page['menuStatus'];
-            $private = $page['private'];
-           	
-            $url = find_url($slug,$parent);
-            
-            $xml.="<item>";
-            $xml.="<slug><![CDATA[".$slug."]]></slug>";
-            $xml.="<pubDate><![CDATA[".$pubDate."]]></pubDate>";
-            $xml.="<url><![CDATA[".$url."]]></url>";
-            $xml.="<parent><![CDATA[".$parent."]]></parent>";
-            $xml.="<title><![CDATA[".$title."]]></title>";
-            $xml.="<menuOrder><![CDATA[".$pri."]]></menuOrder>";
-            $xml.="<menu><![CDATA[".$text."]]></menu>";
-            $xml.="<menuStatus><![CDATA[".$menuStatus."]]></menuStatus>";
-            $xml.="<private><![CDATA[".$private."]]></private>";
-            $xml.="</item>";
-	    }
-	    $xml.="</channel>";
-	    return $xml;
-        }
-    }
+				if ($id == $slug) { 
+					return $specific; 
+					exit; 
+				} else {
+					$menu_extract[] = $specific;
+				}
+			} 
+
+			return $menu_extract;
+		} 
+		else {
+
+			$xml = '<?xml version="1.0" encoding="UTF-8"?><channel>';    
+			foreach ($pagesSorted as $page) {
+				$text       = $page['menu'];
+				$pri        = $page['menuOrder'];
+				$parent     = $page['parent'];
+				$title      = $page['title'];
+				$slug       = $page['url'];
+				$pubDate    = $page['pubDate'];
+				$menuStatus = $page['menuStatus'];
+				$private    = $page['private'];
+					
+				$url = find_url($slug,$parent);
+
+				$xml.="<item>";
+				$xml.="<slug><![CDATA[".$slug."]]></slug>";
+				$xml.="<pubDate><![CDATA[".$pubDate."]]></pubDate>";
+				$xml.="<url><![CDATA[".$url."]]></url>";
+				$xml.="<parent><![CDATA[".$parent."]]></parent>";
+				$xml.="<title><![CDATA[".$title."]]></title>";
+				$xml.="<menuOrder><![CDATA[".$pri."]]></menuOrder>";
+				$xml.="<menu><![CDATA[".$text."]]></menu>";
+				$xml.="<menuStatus><![CDATA[".$menuStatus."]]></menuStatus>";
+				$xml.="<private><![CDATA[".$private."]]></private>";
+				$xml.="</item>";
+			}
+
+		$xml.="</channel>";
+		return $xml;
+		}
+	}
 }
 
 /**
@@ -524,10 +526,12 @@ function get_component_xml($id){
  */
 function get_component($id, $force = false, $raw = false) {
 	$components = get_components_xml();
-	$component = get_component_xml($id); // this returns an array due to no distinct slug enforcement
+	$component  = get_component_xml($id); // this returns an array due to no distinct slug enforcement
 	if(!$component) return;
+
 	$enabled = !(bool)($component[0]->disabled == 'true' || $component[0]->disabled == '1');
 	if(!$enabled && !$force) return;
+
 	if(!$raw) eval("?>" . strip_decode($component[0]->value) . "<?php ");
 	else echo strip_decode($component[0]->value);
 }
@@ -583,19 +587,20 @@ function get_navigation($currentpage,$classPrefix = "") {
 	$pagesSorted = subval_sort($pagesArray,'menuOrder');
 	if (count($pagesSorted) != 0) { 
 		foreach ($pagesSorted as $page) {
-			$sel = ''; $classes = '';
+			$sel = $classes = '';
 			$url_nav = $page['url'];
 			
 			if ($page['menuStatus'] == 'Y') { 
 				$parentClass = !empty($page['parent']) ? $classPrefix.$page['parent'] . " " : "";
-				$classes = trim( $parentClass.$classPrefix.$url_nav);
+				$classes     = trim( $parentClass.$classPrefix.$url_nav);
+
 				if ("$currentpage" == "$url_nav") $classes .= " current active";
-				if ($page['menu'] == '') { $page['menu'] = $page['title']; }
+				if ($page['menu']  == '') { $page['menu']  = $page['title']; }
 				if ($page['title'] == '') { $page['title'] = $page['menu']; }
+
 				$menu .= '<li class="'. $classes .'"><a href="'. find_url($page['url'],$page['parent']) . '" title="'. encode_quotes(cl($page['title'])) .'">'.strip_decode($page['menu']).'</a></li>'."\n";
 			}
 		}
-		
 	}
 	
 	echo exec_filter('menuitems',$menu);
@@ -613,15 +618,15 @@ function get_navigation($currentpage,$classPrefix = "") {
  * @return bool
  */	
 function is_logged_in(){
-  global $USR;
-  if (isset($USR) && $USR == get_cookie('GS_ADMIN_USERNAME')) {
-    return true;
-  }
+	global $USR;
+	if (isset($USR) && $USR == get_cookie('GS_ADMIN_USERNAME')) {
+		return true;
+	}
 }	
 	
 /**
  * aliases
- * @depreciated as of 2.03
+ * @deprecated as of 2.03
  * WHY?
  */	
 function return_page_title() {

@@ -23,9 +23,9 @@ $update 	= ''; $table = ''; $list='';
 # check to see if form was submitted
 if (isset($_POST['submitted'])){
 	$value = $_POST['val'];
-	$slug = $_POST['slug'];
+	$slug  = $_POST['slug'];
 	$title = $_POST['title'];
-	$ids = $_POST['id'];
+	$ids   = $_POST['id'];
 
 	check_for_csrf("modify_components");
 
@@ -40,13 +40,13 @@ if (isset($_POST['submitted'])){
 		foreach ($ids as $id)		{
 			if ($title[$ct] != null) {
 				if ( $slug[$ct] == null )	{
-					$slug_tmp = to7bit($title[$ct], 'UTF-8');
+					$slug_tmp  = to7bit($title[$ct], 'UTF-8');
 					$slug[$ct] = clean_url($slug_tmp); 
-					$slug_tmp = '';
+					$slug_tmp  = '';
 				}
 				
-				$coArray[$ct]['id'] = $ids[$ct];
-				$coArray[$ct]['slug'] = $slug[$ct];
+				$coArray[$ct]['id']    = $ids[$ct];
+				$coArray[$ct]['slug']  = $slug[$ct];
 				$coArray[$ct]['title'] = safe_slash_html($title[$ct]);
 				$coArray[$ct]['value'] = safe_slash_html($value[$ct]);
 				
@@ -60,10 +60,10 @@ if (isset($_POST['submitted'])){
 		foreach ($ids as $comp)	{
 			# create the body of components.xml file
 			$components = $xml->addChild('item');
-			$c_note = $components->addChild('title');
+			$c_note     = $components->addChild('title');
 			$c_note->addCData($comp['title']);
 			$components->addChild('slug', $comp['slug']);
-			$c_note = $components->addChild('value');
+			$c_note     = $components->addChild('value');
 			$c_note->addCData($comp['value']);
 			$count++;
 		}

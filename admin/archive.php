@@ -66,7 +66,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT').' &raq
 						$timestamp = explode('_', $file);
 						$name = lngDate($timestamp[0]);
 						clearstatcache();
-						$ss = stat($path . $file);
+						$ss   = stat($path . $file);
 						$size = fSize($ss['size']);
 						echo '<tr>
 								<td><a title="'.i18n_r('DOWNLOAD').' '. $name .'" href="download.php?file='. $path . $file .'&amp;nonce='.get_nonce("archive", "download.php").'">'.$name .'</a></td>

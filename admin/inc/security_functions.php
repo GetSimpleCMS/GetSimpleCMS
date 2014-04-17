@@ -24,6 +24,7 @@ $mime_type_blacklist = array(
 	# and thus blacklisted just as other zip files
 	'application/x-opc+zip'
 );
+
 $file_ext_blacklist = array(
 	# HTML may contain cookie-stealing JavaScript and web bugs
 	'html', 'htm', 'js', 'jsb', 'mhtml', 'mht',
@@ -56,14 +57,17 @@ function antixss($str){
 	$str = preg_replace('#<!--.*?-->?#', '', $str);
 	$str = preg_replace('#<!--#', '', $str);
 	$str = preg_replace('#(<[a-z]+(\s+[a-z][a-z\-]+\s*=\s*(\'[^\']*\'|"[^"]*"|[^\'">][^\s>]*))*)\s+href\s*=\s*(\'javascript:[^\']*\'|"javascript:[^"]*"|javascript:[^\s>]*)((\s+[a-z][a-z\-]*\s*=\s*(\'[^\']*\'|"[^"]*"|[^\'">][^\s>]*))*\s*>)#is', '$1$5', $str);
+	
 	foreach($attr as $a) {
 	    $regex = '(<[a-z]+(\s+[a-z][a-z\-]+\s*=\s*(\'[^\']*\'|"[^"]*"|[^\'">][^\s>]*))*)\s+'.$a.'\s*=\s*(\'[^\']*\'|"[^"]*"|[^\'">][^\s>]*)((\s+[a-z][a-z\-]*\s*=\s*(\'[^\']*\'|"[^"]*"|[^\'">][^\s>]*))*\s*>)';
-	    $str = preg_replace('#'.$regex.'#is', '$1$5', $str);
+	    $str   = preg_replace('#'.$regex.'#is', '$1$5', $str);
 	}
+
 	foreach($elem as $e) {
 		$regex = '<'.$e.'(\s+[a-z][a-z\-]*\s*=\s*(\'[^\']*\'|"[^"]*"|[^\'">][^\s>]*))*\s*>.*?<\/'.$e.'\s*>';
-	    $str = preg_replace('#'.$regex.'#is', '', $str);
+	    $str   = preg_replace('#'.$regex.'#is', '', $str);
 	}
+
 	return $str;
 }
 
@@ -190,7 +194,7 @@ function validate_safe_file($file, $name, $mime){
  * @return bool Returns true if files path resolves to your known path
  */
 function filepath_is_safe($path,$pathmatch,$subdir = true){
-	$realpath = realpath($path);
+	$realpath      = realpath($path);
 	$realpathmatch = realpath($pathmatch);
 	if($subdir) return strpos(dirname($realpath),$realpathmatch) === 0;
 	return dirname($realpath) == $realpathmatch;
@@ -208,7 +212,7 @@ function filepath_is_safe($path,$pathmatch,$subdir = true){
  *
  */
 function path_is_safe($path,$pathmatch,$subdir = true){
-	$realpath = realpath($path);
+	$realpath      = realpath($path);
 	$realpathmatch = realpath($pathmatch);
 	if($subdir) return strpos($realpath,$realpathmatch) === 0;
 	return $realpath == $realpathmatch;

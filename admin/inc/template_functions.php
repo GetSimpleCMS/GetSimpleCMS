@@ -71,10 +71,10 @@ function get_filename_id() {
 function delete_file($id) {
 
 	$bakfilepath = GSBACKUPSPATH . 'pages' . DIRECTORY_SEPARATOR;
-	$bakfile = $bakfilepath . $id .'.bak.xml';
-
+	$bakfile     = $bakfilepath . $id .'.bak.xml';
+	
 	$filepath = GSDATAPAGESPATH;
-	$file = $filepath . $id .'.xml';
+	$file     = $filepath . $id .'.xml';
 
 	if(filepath_is_safe($file,$filepath)){
 		$successbak = copy($file, $bakfile);
@@ -104,10 +104,10 @@ function check_perms($path) {
 function ModeOctal2rwx($ModeOctal) { // enter octal mode, e.g. '644' or '2755'
     if ( ! preg_match("/[0-7]{3,4}/", $ModeOctal) )    // either 3 or 4 digits
         die("wrong octal mode in ModeOctal2rwx('<TT>$ModeOctal</TT>')");
-    $Moctal = ((strlen($ModeOctal)==3)?"0":"").$ModeOctal;    // assume default 0
-    $Mode3 = substr($Moctal,-3);    // trailing 3 digits, no sticky bits considered
-    $RWX = array ('---','--x','-w-','-wx','r--','r-x','rw-','rwx');    // dumb,huh?
-    $Mrwx = $RWX[$Mode3[0]].$RWX[$Mode3[1]].$RWX[$Mode3[2]];    // concatenate
+	$Moctal = ((strlen($ModeOctal)==3)?"0":"").$ModeOctal;    // assume default 0
+	$Mode3  = substr($Moctal,-3);    // trailing 3 digits, no sticky bits considered
+	$RWX    = array ('---','--x','-w-','-wx','r--','r-x','rw-','rwx');    // dumb,huh?
+	$Mrwx   = $RWX[$Mode3[0]].$RWX[$Mode3[1]].$RWX[$Mode3[2]];    // concatenate
     if (preg_match("/[1357]/", $Moctal[0])) $Mrwx[8] = ($Mrwx[8]=="-")?"T":"t";
     if (preg_match("/[2367]/", $Moctal[0])) $Mrwx[5] = ($Mrwx[5]=="-")?"S":"s";
     if (preg_match("/[4567]/", $Moctal[0])) $Mrwx[2] = ($Mrwx[2]=="-")?"S":"s";
@@ -125,7 +125,7 @@ function ModeOctal2rwx($ModeOctal) { // enter octal mode, e.g. '644' or '2755'
  */
 function delete_zip($id) { 
 	$filepath = GSBACKUPSPATH . 'zip' . DIRECTORY_SEPARATOR;
-	$file = $filepath . $id;
+	$file     = $filepath . $id;
 
 	if(filepath_is_safe($file,$filepath)){
 		$success =  unlink($file);
@@ -147,7 +147,7 @@ function delete_zip($id) {
  */
 function delete_upload($id, $path = "") { 
 	$filepath = GSDATAUPLOADPATH . $path;
-	$file =  $filepath . $id;
+	$file     =  $filepath . $id;
 
 	if(path_is_safe($filepath,GSDATAUPLOADPATH) && filepath_is_safe($file,$filepath)){
 		$status = unlink(GSDATAUPLOADPATH . $path . $id);
@@ -174,7 +174,7 @@ function delete_upload($id, $path = "") {
 function delete_cache() { 
 	$cachepath = GSCACHEPATH;
 	
-	$cnt = 0;	
+	$cnt     = 0;	
 	$success = null;
 	
 	foreach(glob($cachepath.'*.txt') as $file){
@@ -212,9 +212,9 @@ function delete_bak($id) {
  */
 function restore_bak($id) { 
 	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
-	$file = $bakpagespath. $id .".bak.xml";
-	$newfile = GSDATAPAGESPATH . $id .".xml";
-	$tmpfile = $bakpagespath. $id .".tmp.xml";
+	$file         = $bakpagespath. $id .".bak.xml";
+	$newfile      = GSDATAPAGESPATH . $id .".xml";
+	$tmpfile      = $bakpagespath. $id .".tmp.xml";
 	if ( !file_exists($newfile) ) { 
 		copy($file, $newfile);
 		unlink($file);
@@ -240,9 +240,9 @@ function createRandomPassword() {
     $i = 0;
     $pass = '' ;
     while ($i <= 5) {
-        $num = rand() % 33;
-        $tmp = substr($chars, $num, 1);
-        $pass = $pass . $tmp;
+		$num  = rand() % 33;
+		$tmp  = substr($chars, $num, 1);
+		$pass = $pass . $tmp;
         $i++;
     }
     return $pass;
@@ -339,41 +339,51 @@ function makeIso8601TimeStamp($dateTime) {
  * @return bool
  */
 function pingGoogleSitemaps($url_xml) {
-   $status = 0;
-   $google = 'www.google.com';
-   $bing 	 = 'www.bing.com';
-   $ask 	 = 'submissions.ask.com';
-   if( $fp=@fsockopen($google, 80) ) {
-      $req =  'GET /webmasters/sitemaps/ping?sitemap=' .
-              urlencode( $url_xml ) . " HTTP/1.1\r\n" .
-              "Host: $google\r\n" .
-              "User-Agent: Mozilla/5.0 (compatible; " .
-              PHP_OS . ") PHP/" . PHP_VERSION . "\r\n" .
-              "Connection: Close\r\n\r\n";
-      fwrite( $fp, $req );
-      while( !feof($fp) ) {
-         if( @preg_match('~^HTTP/\d\.\d (\d+)~i', fgets($fp, 128), $m) ) {
-            $status = intval( $m[1] );
-            break;
-         }
-      }
-      fclose( $fp );
+	$status = 0;
+	$google = 'www.google.com';
+	$bing   = 'www.bing.com';
+	$ask    = 'submissions.ask.com';
+
+	if( $fp=@fsockopen($google, 80) ) {
+
+	  $req =  'GET /webmasters/sitemaps/ping?sitemap=' .
+	          urlencode( $url_xml ) . " HTTP/1.1\r\n" .
+	          "Host: $google\r\n" .
+	          "User-Agent: Mozilla/5.0 (compatible; " .
+	          PHP_OS . ") PHP/" . PHP_VERSION . "\r\n" .
+	          "Connection: Close\r\n\r\n";
+
+	  fwrite( $fp, $req );
+
+	  while( !feof($fp) ) {
+	     if( @preg_match('~^HTTP/\d\.\d (\d+)~i', fgets($fp, 128), $m) ) {
+	        $status = intval( $m[1] );
+	        break;
+	     }
+	  }
+
+	  fclose( $fp );
    }
    
    if( $fp=@fsockopen($bing, 80) ) {
+
       $req =  'GET /webmaster/ping.aspx?sitemap=' .
               urlencode( $url_xml ) . " HTTP/1.1\r\n" .
               "Host: $bing\r\n" .
               "User-Agent: Mozilla/5.0 (compatible; " .
               PHP_OS . ") PHP/" . PHP_VERSION . "\r\n" .
               "Connection: Close\r\n\r\n";
+
       fwrite( $fp, $req );
+
       while( !feof($fp) ) {
+
          if( @preg_match('~^HTTP/\d\.\d (\d+)~i', fgets($fp, 128), $m) ) {
             $status = intval( $m[1] );
             break;
          }
       }
+
       fclose( $fp );
    }
    
@@ -384,13 +394,16 @@ function pingGoogleSitemaps($url_xml) {
               "User-Agent: Mozilla/5.0 (compatible; " .
               PHP_OS . ") PHP/" . PHP_VERSION . "\r\n" .
               "Connection: Close\r\n\r\n";
+
       fwrite( $fp, $req );
+
       while( !feof($fp) ) {
          if( @preg_match('~^HTTP/\d\.\d (\d+)~i', fgets($fp, 128), $m) ) {
             $status = intval( $m[1] );
             break;
          }
       }
+
       fclose( $fp );
    }
    
@@ -411,7 +424,7 @@ function pingGoogleSitemaps($url_xml) {
 function undo($file, $filepath, $bakpath) {
 	$undo_file = $filepath . $file;
 	$bak_file  = tsl($bakpath) . $file .".bak";
-	$tmp_file = tsl($bakpath) . $file .".tmp";
+	$tmp_file  = tsl($bakpath) . $file .".tmp";
 	copy($undo_file, $tmp_file); // rename original to temp shuttle
 	copy($bak_file, $undo_file); // copy backup
 	copy($tmp_file, $bak_file);  // save original as backup
@@ -572,10 +585,10 @@ function get_admin_path() {
  * @return string
  */
 function get_root_path() {
-  $pos = strrpos(dirname(__FILE__),DIRECTORY_SEPARATOR.'inc');
-  $adm = substr(dirname(__FILE__), 0, $pos);
-  $pos2 = strrpos($adm,DIRECTORY_SEPARATOR);
-  return tsl(substr(__FILE__, 0, $pos2));
+	$pos  = strrpos(dirname(__FILE__),DIRECTORY_SEPARATOR.'inc');
+	$adm  = substr(dirname(__FILE__), 0, $pos);
+	$pos2 = strrpos($adm,DIRECTORY_SEPARATOR);
+  	return tsl(substr(__FILE__, 0, $pos2));
 }
 
 
@@ -637,25 +650,23 @@ function get_available_pages() {
     
     $pagesSorted = subval_sort($pagesArray,'title');
     if (count($pagesSorted) != 0) { 
-      $count = 0;
-      foreach ($pagesSorted as $page) {
-      	if ($page['private']!='Y'){
-	        $text = (string)$page['menu'];
-	        $pri = (string)$page['menuOrder'];
-	        $parent = (string)$page['parent'];
-	        $title = (string)$page['title'];
-	        $slug = (string)$page['url'];
-	        $menuStatus = (string)$page['menuStatus'];
-	        $private = (string)$page['private'];
-					$pubDate = (string)$page['pubDate'];
-	        
-	        $url = find_url($slug,$parent);
-	        
-	        $specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
-	        
-	        $extract[] = $specific;
-		}
-      } 
+		$count = 0;
+		foreach ($pagesSorted as $page) {
+			if ($page['private']!='Y'){
+				$text       = (string)$page['menu'];
+				$pri        = (string)$page['menuOrder'];
+				$parent     = (string)$page['parent'];
+				$title      = (string)$page['title'];
+				$slug       = (string)$page['url'];
+				$menuStatus = (string)$page['menuStatus'];
+				$private    = (string)$page['private'];
+				$pubDate    = (string)$page['pubDate'];
+				$url        = find_url($slug,$parent);
+
+			    $specific   = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);	        
+			    $extract[]  = $specific;
+			}
+		} 
       return $extract;
     }
 }
@@ -676,18 +687,18 @@ function updateSlugs($existingUrl, $newurl=null){
 	  
 	if (!$newurl){
       		global $url;
-      	} else {
-      		$url = $newurl;
-      	}
+  	} else {
+  		$url = $newurl;
+  	}
 
 	foreach ($pagesArray as $page){
 		if ( $page['parent'] == $existingUrl ){
 			$thisfile = @file_get_contents(GSDATAPAGESPATH.$page['filename']);
-        		$data = simplexml_load_string($thisfile);
-            		$data->parent=$url;
-            		XMLsave($data, GSDATAPAGESPATH.$page['filename']);
+    		$data = simplexml_load_string($thisfile);
+    		$data->parent=$url;
+    		XMLsave($data, GSDATAPAGESPATH.$page['filename']);
 		}
-	  }
+	}
 }
 
 
@@ -735,6 +746,7 @@ function get_link_menu_array($parent='', $array=array(), $level=0) {
 			$array=get_link_menu_array((string)$page['url'], $array,$level+1);	 
 		}
 	}
+
 	return $array;
 }
 
@@ -758,6 +770,7 @@ function list_pages_json(){
 
 	$pagesArray_tmp = array();
 	$count = 0;
+
 	foreach ($pagesArray as $page) {
 		if ($page['parent'] != '') { 
 			$parentTitle = returnPageField($page['parent'], "title");
@@ -765,10 +778,12 @@ function list_pages_json(){
 		} else {
 			$sort = $page['title'];
 		}
+
 		$page = array_merge($page, array('sort' => $sort));
 		$pagesArray_tmp[$count] = $page;
 		$count++;
 	}
+
 	$pagesSorted = subval_sort($pagesArray_tmp,'sort');
 
 	$links = exec_filter('editorlinks',get_link_menu_array());
@@ -824,10 +839,10 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	$menu .= '<tr id="tr-'.$page['url'] .'" class="'.$class.'" data-depth="'.$level.'">';
 
 	// if ($page['parent'] != '') $page['parent'] = $page['parent']."/"; // why is this here ?
-	if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
+	if ($page['title'] == '' )      { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
 	if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <span class="label label-ghost">'.i18n_r('MENUITEM_SUBTITLE').'</span>'; } else { $page['menuStatus'] = ''; }
-	if ($page['private'] != '' ) { $page['private'] = ' <span class="label label-ghost">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } else { $page['private'] = ''; }
-	if ($page['url'] == 'index' ) { $homepage = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; } else { $homepage = ''; }
+	if ($page['private'] != '' )    { $page['private'] = ' <span class="label label-ghost">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } else { $page['private'] = ''; }
+	if ($page['url'] == 'index' )   { $homepage = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; } else { $homepage = ''; }
 
 	$pageTitle = cl($page['title']);
 
@@ -836,19 +851,19 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	$menu .= '<td class="secondarylink" >';
 	$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
 	$menu .= '</td>';
+
 	if ($page['url'] != 'index' ) {
 		$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. cl($page['title']) .'" >&times;</a></td>';
 	} else {
 		$menu .= '<td class="delete" ></td>';
 	}
-	$menu .= '</tr>';
 
+	$menu .= '</tr>';
 	return $menu;
 }
 
 function getPagesRowMissing($ancestor,$level,$children){
-	$menu = '';
-	$menu .= '<tr id="tr-'.$ancestor.'" class="tree-error tree-parent depth-'.$level.'" data-depth="'.$level.'"><td colspan="4" class="pagetitle"><a><strong>'. $ancestor.'</strong> Missing Parent</a>';
+	$menu = '<tr id="tr-'.$ancestor.'" class="tree-error tree-parent depth-'.$level.'" data-depth="'.$level.'"><td colspan="4" class="pagetitle"><a><strong>'. $ancestor.'</strong> Missing Parent</a>';
 	if ( file_exists(GSBACKUPSPATH."pages/".$ancestor.'.bak.xml') ) {
 		$menu.= '&nbsp;&nbsp;&nbsp;&nbsp;<a href="backup-edit.php?p=view&amp;id='.$ancestor.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
 	}
@@ -867,12 +882,14 @@ function getPagesRowMissing($ancestor,$level,$children){
  */
 function getParentsHashTable($pages = array(), $useref = true){
 	$pagesArray = $pages ? $pages : getPagesXmlValues();
-	$ary = array();
+	$ary        = array();
+
 	foreach($pagesArray as $key => &$page){
 		$parent = isset($page['parent']) ? $page['parent'] : '';
 		$pageId = isset($page['url']) ? $page['url'] : null;
 		if($pageId) $ary[$parent][$pageId] = $useref ? $page : '';
 	}
+
 	return $ary;
 }
 
@@ -976,7 +993,6 @@ function get_pages_menu($parent = '',$menu = '',$level = '') {
 	global $pagesSorted;
 	
 	$pages = getPageDepths($pagesSorted); // use parent hash table for speed
-
 	$depth = null;
 
 	// get depth of requested parent, then get all subsequent children until we get back to our starting depth
@@ -1000,9 +1016,10 @@ function get_pages_menu($parent = '',$menu = '',$level = '') {
 			else if(($page['depth'] == $depth)) return $menu; // we are back to starting depth so stop
 			$level = $level - ($depth+1);
 		}
+
 		// provide special row if this is a missing parent
 		if( !isset($page['url']) ) $menu .= getPagesRowMissing($key,$level,$numChildren); // use URL check for missing parents for now
-		else $menu       .= getPagesRow($page,$level,'','',$numChildren);
+		else $menu .= getPagesRow($page,$level,'','',$numChildren);
 	}
 
 	return $menu;
@@ -1030,17 +1047,21 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
 	global $parent; 
 	
 	$items=array();
+
 	foreach ($pagesSorted as $page) {
 		if ($page['parent']==$parentitem){
 			$items[(string)$page['url']]=$page;
 		}	
 	}	
+
 	if (count($items)>0){
 		foreach ($items as $page) {
 		  	$dash="";
+
 		  	if ($page['parent'] != '') {
 	  			$page['parent'] = $page['parent']."/";
 	  		}
+
 			for ($i=0;$i<=$level-1;$i++){
 				if ($i!=$level-1){
 	  				$dash .= '<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>';
@@ -1048,11 +1069,14 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
 					$dash .= '<span>&nbsp;&nbsp;&ndash;&nbsp;&nbsp;&nbsp;</span>';
 				}
 			} 
+
 			if ($parent == (string)$page['url']) { $sel="selected"; } else { $sel=""; }
+
 			$menu .= '<option '.$sel.' value="'.$page['url'] .'" >'.$dash.$page['url'].'</option>';
 			$menu = get_pages_menu_dropdown((string)$page['url'], $menu,$level+1);	  	
 		}
 	}
+
 	return $menu;
 }
 
@@ -1129,9 +1153,9 @@ function get_api_details($type='core', $args=null) {
 			
 			// min cURL 7.16.2
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, $api_timeout); // define the maximum amount of time that cURL can take to connect to the server 
-			curl_setopt($ch, CURLOPT_TIMEOUT_MS, $api_timeout); // define the maximum amount of time cURL can execute for.
-			curl_setopt($ch, CURLOPT_NOSIGNAL, 1); // prevents SIGALRM during dns allowing timeouts to work http://us2.php.net/manual/en/function.curl-setopt.php#104597
-			curl_setopt($ch, CURLOPT_HEADER, false); // ensures header is not in output
+			curl_setopt($ch, CURLOPT_TIMEOUT_MS, $api_timeout);        // define the maximum amount of time cURL can execute for.
+			curl_setopt($ch, CURLOPT_NOSIGNAL, 1);                     // prevents SIGALRM during dns allowing timeouts to work http://us2.php.net/manual/en/function.curl-setopt.php#104597
+			curl_setopt($ch, CURLOPT_HEADER, false);                   // ensures header is not in output
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_URL, $fetch_this_api);
 
@@ -1291,7 +1315,8 @@ function generate_sitemap() {
 		
 		//create xml file
 		$file = GSROOTPATH .'sitemap.xml';
-		$xml = exec_filter('sitemap',$xml);
+		$xml  = exec_filter('sitemap',$xml);
+
 		XMLsave($xml, $file);
 		exec_action('sitemap-aftersave');
 	}
@@ -1321,15 +1346,19 @@ function generate_sitemap() {
  */
 function archive_targz() {
 	GLOBAL $GSADMIN;
+	
 	if(!function_exists('exec')) {
-    return false;
-    exit;
+    	return false;
+    	exit;
 	}
-	$timestamp = gmdate('Y-m-d-Hi_s');
+
+	$timestamp           = gmdate('Y-m-d-Hi_s');
 	$saved_zip_file_path = GSBACKUPSPATH.'zip/';
-	$saved_zip_file = $timestamp .'_archive.tar.gz';	
-	$script_contents = "tar -cvzf ".$saved_zip_file_path.$saved_zip_file." ".GSROOTPATH.".htaccess ".GSROOTPATH."gsconfig.php ".GSROOTPATH."data ".GSROOTPATH."plugins ".GSROOTPATH."theme ".GSROOTPATH.$GSADMIN."/lang > /dev/null 2>&1";
+	$saved_zip_file      = $timestamp .'_archive.tar.gz';	
+	$script_contents     = "tar -cvzf ".$saved_zip_file_path.$saved_zip_file." ".GSROOTPATH.".htaccess ".GSROOTPATH."gsconfig.php ".GSROOTPATH."data ".GSROOTPATH."plugins ".GSROOTPATH."theme ".GSROOTPATH.$GSADMIN."/lang > /dev/null 2>&1";
+	
 	exec($script_contents, $output, $rc);
+	
 	if (file_exists($saved_zip_file_path.$saved_zip_file)) {
 		return true;
 	} else {
@@ -1356,7 +1385,7 @@ function isAuthPage(){
 function filter_queryString($allowed = array()){
 	parse_str($_SERVER['QUERY_STRING'], $query_string);
 	$qstring_filtered = array_intersect_key($query_string, array_flip($allowed));
-	$new_qstring = http_build_query($qstring_filtered,'','&amp;');
+	$new_qstring      = http_build_query($qstring_filtered,'','&amp;');
 	return $new_qstring;
 }
 

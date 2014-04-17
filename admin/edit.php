@@ -124,11 +124,11 @@ foreach ($templates as $file){
 }
 
 // SETUP CHECKBOXES
-$sel_m  = ($menuStatus != '') ? 'checked' : '' ;
-$sel_p  = ($private == 'Y') ? 'selected' : '' ;
-$sel_ri = $metarNoIndex == '1' ? 'checked' : '';
-$sel_rf = $metarNoFollow == '1' ? 'checked' : '';
-$sel_ra = $metarNoArchive == '1' ? 'checked' : '';
+$sel_m  = ($menuStatus != '') ?    'checked'  : '';
+$sel_p  = ($private == 'Y') ?      'selected' : '';
+$sel_ri = $metarNoIndex == '1' ?   'checked'  : '';
+$sel_rf = $metarNoFollow == '1' ?  'checked'  : '';
+$sel_ra = $metarNoArchive == '1' ? 'checked'  : '';
 
 if ($menu == '') { $menu = $title; } 
 

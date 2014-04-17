@@ -14,22 +14,25 @@
 include('inc/common.php');
 login_cookie_check();
 
-$filesSorted=null;$dirsSorted=null;
-$uploadsPath = GSDATAUPLOADPATH;
-$uploadsPathRel = getRelPath(GSDATAUPLOADPATH);
+$filesSorted     = null;
+$dirsSorted      = null;
+$uploadsPath     = GSDATAUPLOADPATH;
+$uploadsPathRel  = getRelPath(GSDATAUPLOADPATH);
 
-$path = (isset($_GET['path'])) ? $uploadsPath.$_GET['path'] : $uploadsPath;
-$subPath = (isset($_GET['path'])) ? $_GET['path'] : "";
+$path            = (isset($_GET['path'])) ? $uploadsPath.$_GET['path'] : $uploadsPath;
+$subPath         = (isset($_GET['path'])) ? $_GET['path'] : "";
+
 if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
-$returnid = isset($_GET['returnid']) ? var_out($_GET['returnid']) : "";
-$func = (isset($_GET['func'])) ? $_GET['func'] : "";
-$path = tsl($path);
+
+$returnid        = isset($_GET['returnid']) ? var_out($_GET['returnid']) : "";
+$func            = (isset($_GET['func'])) ? $_GET['func'] : "";
+$path            = tsl($path);
 // check if host uses Linux (used for displaying permissions
-$isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
+$isUnixHost      = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 $CKEditorFuncNum = isset($_GET['CKEditorFuncNum']) ? var_out($_GET['CKEditorFuncNum']) : '';
-$sitepath = suggest_site_path();
-$fullPath = $sitepath . $uploadsPathRel; // url path to image
-$type = isset($_GET['type']) ? var_out($_GET['type']) : '';
+$sitepath        = suggest_site_path();
+$fullPath        = $sitepath . $uploadsPathRel; // url path to image
+$type            = isset($_GET['type']) ? var_out($_GET['type']) : '';
 
 global $LANG;
 $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
@@ -79,21 +82,21 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	<div class="main" style="border:none;">
 		<h3><?php echo i18n('UPLOADED_FILES'); ?><span id="filetypetoggle">&nbsp;&nbsp;/&nbsp;&nbsp;<?php echo ($type == 'images' ? i18n('IMAGES') : i18n('SHOW_ALL') ); ?></span></h3>
 <?php
-	$count="0";
-	$dircount="0";
-	$counter = "0";
-	$totalsize = 0;
+	$count      = "0";
+	$dircount   = "0";
+	$counter    = "0";
+	$totalsize  = 0;
 	$filesArray = array();
-	$dirsArray = array();
+	$dirsArray  = array();
+	$filenames  = getFiles($path);
 
-	$filenames = getFiles($path);
 	if (count($filenames) != 0) { 
 		foreach ($filenames as $file) {
 			if ($file == "." || $file == ".." || $file == ".htaccess" ){
-			// not a upload file
+				// not a upload file
 			} elseif (is_dir($path . $file)) {
-			$dirsArray[$dircount]['name'] = $file;
-			$dircount++;
+				$dirsArray[$dircount]['name'] = $file;
+				$dircount++;
 			} else {
 				$filesArray[$count]['name'] = $file;
 				$ext = substr($file, strrpos($file, '.') + 1);
@@ -111,8 +114,8 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 		$dirsSorted = subval_sort($dirsArray,'name');
 	}
 
-	$pathParts=explode("/",$subPath);
-	$urlPath="";
+	$pathParts = explode("/",$subPath);
+	$urlPath = "";
 
 	echo '<div class="h5">/ <a href="?CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.'">uploads</a> / ';
 	foreach ($pathParts as $pathPart){
@@ -130,15 +133,15 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 			echo '<tr class="All" >';  
 			echo '<td class="" colspan="5">';
 			$adm = substr($path . $upload['name'] ,  16); 
-			if ($returnid!='') {
+			if ($returnid != '') {
 				$returnlink = '&returnid='.$returnid;
 			} else {
-				$returnlink='';
+				$returnlink = '';
 			}
 			if ($func!='') {
 				$funct = '&func='.$func;
 			} else {
-				$funct='';
+				$funct = '';
 			}
 			echo '<img src="template/images/folder.png" width="11" /> <a href="filebrowser.php?path='.$adm.'&amp;CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.$returnlink.'&amp;'.$funct.'" title="'. $upload['name'] .'"  ><strong>'.$upload['name'].'</strong></a>';
 			echo '</td>';
@@ -178,7 +181,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 			$counter++;	
 
 			echo '<tr class="All '.$upload['type'].'" >';
-			echo ($thumb=='' ? '<td style="display: none"></td>' : $thumb);
+			echo ($thumb == '' ? '<td style="display: none"></td>' : $thumb);
 			echo '<td><a '.$selectLink.' class="primarylink">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
 			echo '<td style="width:80px;text-align:right;" ><span>'. $upload['size'] .'</span></td>';
 

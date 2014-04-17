@@ -18,7 +18,7 @@
  */
 function clean_url($text)  { 
 	$text = strip_tags(lowercase($text)); 
-	$code_entities_match = array(' ?',' ','--','&quot;','!','@','#','$','%','^','&','*','(',')','+','{','}','|',':','"','<','>','?','[',']','\\',';',"'",',','/','*','+','~','`','=','.'); 
+	$code_entities_match   = array(' ?',' ','--','&quot;','!','@','#','$','%','^','&','*','(',')','+','{','}','|',':','"','<','>','?','[',']','\\',';',"'",',','/','*','+','~','`','=','.'); 
 	$code_entities_replace = array('','-','-','','','','','','','','','','','','','','','','','','','','','','','',''); 
 	$text = str_replace($code_entities_match, $code_entities_replace, $text); 
 	$text = urlencode($text);
@@ -39,7 +39,7 @@ function clean_url($text)  {
  */
 function clean_img_name($text)  { 
 	$text = strip_tags(lowercase($text)); 
-	$code_entities_match = array(' ?',' ','--','&quot;','!','#','$','%','^','&','*','(',')','+','{','}','|',':','"','<','>','?','[',']','\\',';',"'",',','/','*','+','~','`','='); 
+	$code_entities_match   = array(' ?',' ','--','&quot;','!','#','$','%','^','&','*','(',')','+','{','}','|',':','"','<','>','?','[',']','\\',';',"'",',','/','*','+','~','`','='); 
 	$code_entities_replace = array('','-','-','','','','','','','','','','','','','','','','','','','','','',''); 
 	$text = str_replace($code_entities_match, $code_entities_replace, $text); 
 	$text = urlencode($text);
@@ -214,9 +214,9 @@ function subval_sort($a,$subkey, $order='asc',$natural = true) {
  */
 class SimpleXMLExtended extends SimpleXMLElement{   
 	public function addCData($cdata_text){   
-	 $node= dom_import_simplexml($this);   
-	 $no = $node->ownerDocument;   
-	 $node->appendChild($no->createCDATASection($cdata_text));   
+	$node = dom_import_simplexml($this);   
+	$no   = $node->ownerDocument;   
+	$node->appendChild($no->createCDATASection($cdata_text));   
 	} 
 } 
 
@@ -250,13 +250,15 @@ function isFile($file, $path, $type = 'xml') {
  * @return array
  */
 function getFiles($path) {
-	$handle = opendir($path) or die("getFiles: Unable to open $path");
+	$handle   = opendir($path) or die("getFiles: Unable to open $path");
 	$file_arr = array();
+
 	while ($file = readdir($handle)) {
 		if ($file != '.' && $file != '..') {
 			$file_arr[] = $file;
 		}
 	}
+
 	closedir($handle);
 	return $file_arr;
 }
@@ -269,14 +271,16 @@ function getFiles($path) {
  * @return array
  */
 function getXmlFiles($path) {
-	$handle = opendir($path) or die("Unable to open $path");
+	$handle   = opendir($path) or die("Unable to open $path");
 	$file_arr = array();
+
 	while ($file = readdir($handle)) {
 		$ext = lowercase(pathinfo($file, PATHINFO_EXTENSION));
 		if ($ext == 'xml') {
 			$file_arr[] = $file;
 		}
 	}
+
 	closedir($handle);
 	return $file_arr;
 }
@@ -354,20 +358,22 @@ function XMLsave($xml, $file) {
  * @return string            returns a formated date string
   */
 function formatDate($format, $timestamp = null) {
-  if(!$timestamp) $timestamp = time();	
+	if(!$timestamp) $timestamp = time();	
 
-  if (strpos($format, '%') === false) {
-    $date = date($format, $timestamp);
-  } else {
-    if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-      # fixes for Windows
-      $format = preg_replace('#(?<!%)((?:%%)*)%e#', '\1%#d', $format); // strftime %e parameter not supported
-      $date = utf8_encode(strftime($format, $timestamp)); // strftime returns ISO-8859-1 encoded string
-    } else {
-      $date = strftime($format, $timestamp);
-    }
-  }
-  return $date;
+	if (strpos($format, '%') === false) {
+		$date = date($format, $timestamp);
+	} 
+	else {
+		if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+		  # fixes for Windows
+		  $format = preg_replace('#(?<!%)((?:%%)*)%e#', '\1%#d', $format); // strftime %e parameter not supported
+		  $date   = utf8_encode(strftime($format, $timestamp)); // strftime returns ISO-8859-1 encoded string
+		} else {
+		  $date = strftime($format, $timestamp);
+		}
+ 	}
+  
+	return $date;
 }
 
 /**
@@ -388,6 +394,7 @@ function lngDate($dt) {
 	} else {
 		$data = formatDate(i18n_r('DATE_AND_TIME_FORMAT'), strtotime($dt));
 	}
+
 	return $data;
 }
 
@@ -409,6 +416,7 @@ function shtDate($dt) {
 	} else {
 		$data = formatDate(i18n_r('DATE_FORMAT'), strtotime($dt));
 	}
+
 	return $data;
 }
 
@@ -453,7 +461,7 @@ function tsl($path) {
  */
 if(!function_exists('in_arrayi')) {
 	function in_arrayi($needle, $haystack) {
-			return in_array(lowercase($needle), array_map('lowercase', $haystack));
+		return in_array(lowercase($needle), array_map('lowercase', $haystack));
 	}
 }
 
@@ -558,11 +566,13 @@ function strip_quotes($text)  {
  */
 function encode_quotes($text)  { 
 	$text = strip_tags($text);
+
 	if (version_compare(PHP_VERSION, "5.2.3")  >= 0) {	
 		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8', false);
 	} else {	
 		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 	}
+
 	return trim($text); 
 } 
 
@@ -596,20 +606,23 @@ function redirect($url) {
 			echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
 			echo '</noscript>';
 		}
+
 		echo i18n_r('ERROR').": Headers already sent in ".$filename." on line ".$linenum."<br/><br/>\n\n";
 		printf(i18n_r('REDIRECT_MSG'), $url);
 
 		if(!isAuthPage()) {
-		if (isDebug()){
-			global $GS_debug;
-			echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
-			echo '<pre>';
-			foreach ($GS_debug as $log){
-				print($log.'<br/>');
+			if (isDebug()){
+				global $GS_debug;
+				echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
+				echo '<pre>';
+
+				foreach ($GS_debug as $log){
+					print($log.'<br/>');
+				}
+
+				echo '</pre>';	
+				echo '</div>';
 			}
-			echo '</pre>';	
-			echo '</div>';
-		}
 		}
 		
 		echo "</body></html>";
@@ -707,33 +720,33 @@ function i18n_merge($plugin, $language=null) {
  */
 function i18n_merge_impl($plugin, $lang, &$globali18n) { 
 
-  $i18n = array(); // local from file
-  if(!isset($globali18n)) $globali18n = array(); //global ref to $i18n
-	
-  $path     = ($plugin ? GSPLUGINPATH.$plugin.'/lang/' : GSLANGPATH);
-  $filename = $path.$lang.'.php';
-  $prefix = $plugin ? $plugin.'/' : '';
+	$i18n = array(); // local from file
+	if(!isset($globali18n)) $globali18n = array(); //global ref to $i18n
 
-  if (!filepath_is_safe($filename,$path) || !file_exists($filename)) {
-    return false;
+	$path     = ($plugin ? GSPLUGINPATH.$plugin.'/lang/' : GSLANGPATH);
+	$filename = $path.$lang.'.php';
+	$prefix   = $plugin ? $plugin.'/' : '';
+
+	if (!filepath_is_safe($filename,$path) || !file_exists($filename)) {
+		return false;
 	}
 
-  include($filename); 
-  
-  // if core lang and glboal is empty assign
-  if(!$plugin && !$globali18n && count($i18n) > 0){
-     $globali18n = $i18n;
-     return true;
-  }
+	include($filename); 
 
-  // replace on per key basis
-  if (count($i18n) > 0){
-    foreach ($i18n as $code => $text) {
-      if (!array_key_exists($prefix.$code, $globali18n)) {
-        $globali18n[$prefix.$code] = $text;
-      }
-    }
-  } 
+	// if core lang and glboal is empty assign
+	if(!$plugin && !$globali18n && count($i18n) > 0){
+		$globali18n = $i18n;
+	 	return true;
+	}
+
+	// replace on per key basis
+	if (count($i18n) > 0){
+		foreach ($i18n as $code => $text) {
+			if (!array_key_exists($prefix.$code, $globali18n)) {
+				$globali18n[$prefix.$code] = $text;
+			}
+		}
+	} 
 	return true;
 }
 
@@ -827,19 +840,16 @@ function pathinfo_filename($file) {
  */
 function suggest_site_path($parts=false) {
 	global $GSADMIN;
-	$protocol = http_protocol();
+
+	$protocol   = http_protocol();
 	$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
 	$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
-	$port = ($p=$_SERVER['SERVER_PORT'])!='80'&&$p!='443'?':'.$p:'';
+	$port       = ( $p=$_SERVER['SERVER_PORT'] ) != '80' && $p != '443' ? ':'.$p : '';
 	
 	if($path_parts == '/') {
-	
 		$fullpath = $protocol."://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $port . "/";
-	
 	} else {
-		
 		$fullpath = $protocol."://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $port . $path_parts ."/";
-		
 	}
 		
 	if ($parts) {
@@ -879,9 +889,9 @@ function myself($echo=true) {
  * @return array
  */
 function get_themes($temp) {
-	$themes_path = GSTHEMESPATH . $temp .'/';
+	$themes_path   = GSTHEMESPATH . $temp .'/';
 	$themes_handle = opendir($themes_path);
-	while ($file = readdir($themes_handle))	{
+	while ($file   = readdir($themes_handle))	{
 		if( is_file($themes_path . $file) && $file != "." && $file != ".." ) {
 			$templates[] = $file;
 		}
@@ -933,7 +943,7 @@ function lowercase($text) {
  * @return string
  */
 function find_accesskey($string) {
-	$found = array();
+	$found   = array();
 	$matched = preg_match('/<em>([a-zA-Z])<\/em>/', $string, $found);
 	if ($matched != 1) {
 		 return null;
@@ -1001,7 +1011,7 @@ function check_empty_folder($folder) {
 /**
  * Folder Items
  *
- * Return the amount of items within the given folder
+ * Return the count of items within the given folder
  * 
  * @param string $folder
  * @return string
@@ -1043,8 +1053,8 @@ function formatXmlString($xml) {
 	
 	// now indent the tags
 	$token      = strtok($xml, "\n");
-	$result     = ''; // holds formatted version as it is built
-	$pad        = 0; // initial indent
+	$result     = '';      // holds formatted version as it is built
+	$pad        = 0;       // initial indent
 	$matches    = array(); // returns from preg_matches()
 	
 	// scan each line and adjust indent based on opening/closing tags
@@ -1070,7 +1080,7 @@ function formatXmlString($xml) {
 		$line    = str_pad($token, strlen($token)+$pad, ' ', STR_PAD_LEFT);
 		$result .= $line . "\n"; // add to the cumulative result, with linefeed
 		$token   = strtok("\n"); // get the next token
-		$pad    += $indent; // update the pad size for subsequent lines    
+		$pad    += $indent;      // update the pad size for subsequent lines    
 	endwhile; 
 	
 	return $result;
@@ -1111,7 +1121,7 @@ function file_mime_type($file) {
 		finfo_close($finfo);
 		
 	} elseif(function_exists('mime_content_type')) {
-		# Depreciated: http://php.net/manual/en/function.mime-content-type.php
+		# Deprecated: http://php.net/manual/en/function.mime-content-type.php
 		$mimetype = mime_content_type($file);
 	} else {
 		return false;
@@ -1119,7 +1129,6 @@ function file_mime_type($file) {
 	}
 	return $mimetype;
 }
-
 
 /**
  * Check Is FrontEnd
