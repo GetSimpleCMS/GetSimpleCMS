@@ -974,8 +974,8 @@ function getPageDepths($mypages=array()){
  */
 function get_pages_menu($parent = '',$menu = '',$level = '') {
 	global $pagesSorted;
-
-	if(!$pages)	$pages = getPageDepths($pagesSorted); // use parent hash table for speed
+	
+	$pages = getPageDepths($pagesSorted); // use parent hash table for speed
 
 	$depth = null;
 
