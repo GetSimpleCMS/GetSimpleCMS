@@ -110,6 +110,13 @@ function i18n(key){
 	return GS.i18n[key];
 }
 
+/**
+ * get elements tagname
+ */
+function getTagName(elem){
+	return $(elem).prop('tagName');
+}
+
 jQuery(document).ready(function () {
 
 	$("#tabs").tabs({
@@ -946,9 +953,11 @@ jQuery(document).ready(function () {
 		}
 	});
 	
+	$('table.tree').addTableTree(0,2); // add tree folding to tree tables
+
 	// end of jQuery ready
 });
- 
+
 // lazy loader for js and css
 loadjscssfile = function(filename, filetype, callback){
 	if (filetype=="js"){ //if filename is a external JavaScript file

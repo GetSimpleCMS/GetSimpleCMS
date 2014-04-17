@@ -62,6 +62,8 @@ $i18n = array(
 "TOGGLE_STATUS"           =>	"Toggle Stat<em>u</em>s",
 "TOTAL_PAGES"             =>	"total pages",
 "ALL_PAGES"               =>	"Pages",
+"EXPAND_TOP"              =>	"Expand Top Parents",
+"COLLAPSE_TOP"            =>	"Collapse Top Parents",
 
 /* 
 * For: edit.php

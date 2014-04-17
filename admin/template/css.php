@@ -730,8 +730,24 @@ h5:hover img {
 	text-shadow: 1px 1px 0 #fff;
 }
 
-.wrapper table.highlight tr:nth-child(odd) {
-	 background: #f7f7f7;
+.wrapper table.highlight tr:nth-child(odd), .wrapper table.striped tr:nth-child(odd) {
+	background: #f7f7f7;
+}
+
+.wrapper table.striped tr.odd {
+	background: #f7f7f7;
+}
+
+.wrapper table.striped tr.even {
+	background: #FFF;
+}
+
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  -ms-transition: none !important;
+  transition: none !important;
 }
 
 .wrapper table tr#tr-index a {
@@ -743,6 +759,10 @@ h5:hover img {
 	text-shadow: none;
 }
 
+.wrapper table.highlight tr.nohighlight:hover {
+	background: none !important;
+}
+
 .wrapper table tr.currentpage{
 	 background: #FFFFD1;
 }
@@ -750,10 +770,16 @@ h5:hover img {
 .wrapper table tr {
 	border-bottom: 1px solid #eee;
 	border-top: 1px solid #eee;
-	transition: background-color .3s ease-in-out;
+/*	transition: background-color .3s ease-in-out;
 		-webkit-transition: background-color .3s ease-in-out;
 		-moz-transition: background-color .3s ease-in-out;
-		-o-transition: background-color .3s ease-in-out;
+		-o-transition: background-color .3s ease-in-out;*/
+}
+
+.wrapper table tr.attention{
+	background: #FFCCC8 !important;
+	font-weight:bold;
+	text-shadow: none;
 }
 
 table td a {
@@ -787,6 +813,16 @@ sup {
 	font-size: 0.8em;
 	position: relative;
 	top: -0.4em;
+
+	vertical-align: baseline;
+	font-size: .8em;
+	position: inherit; 
+	top: -0.4em;
+	background: #E7E7E7;
+	border-radius: 3px;
+	text-shadow: none;
+	padding: 3px 6px;
+	font-weight: bold;	
 }
 
 
@@ -1829,8 +1865,9 @@ a.updatelink:focus {
 	text-align: center;
 	color: #F2F2F2;
 	margin:3px;
- 	background-color: <?php echo $label_0; ?>	
- 	display: block;
+ 	background-color: <?php echo $label_0; ?>;	
+ 	/*display: inline-block;*/
+ 	text-shadow: none;
 }
 
 .label a{
@@ -1868,13 +1905,27 @@ a.updatelink:focus {
 	border: 1px solid <?php echo $primary_6; ?>;
 }
 
+.label-ghost {
+	background-color: rgba(221, 221, 221, 0.5);	
+}
+
 .label hr{
 	border: none;
 	border-top: 1px solid rgba(255, 255, 255, 0.2);
 	margin: 3px 0;
 }
 
-#hc_version.label {
+.edittable .label-ghost{
+	font-size:11px;
+	padding:3px 6px;
+	color: #999999;	
+}
+
+div.showstatus{
+	float:right;
+}
+
+#health-check #hc_version.label {
 	width: 298px;
 	text-align: left;
 	padding: 9px 9px 9px 15px;
@@ -1897,7 +1948,8 @@ a.updatelink:focus {
 	font-weight: bold;
 }
 
-.wrapper table td span.label {
+/* healthcheck only */
+#health-check .wrapper table td span.label {
 	font-weight: bold;
 	color: #FCFCFC !important;
 	text-shadow: none !important;
@@ -2737,53 +2789,6 @@ a.disabled:visited {
 	border: 1px dotted gray;
 }
 
-
-/* Admin theme colors */
-
-/* background-color */
-  .primary_0.back, .darkest-back               { background-color: <?php echo $primary_0;   ?>;}
-  .primary_1.back, .darker-back                { background-color: <?php echo $primary_1;   ?>;}
-  .primary_2.back, .dark-back                  { background-color: <?php echo $primary_2;   ?>;}
-  .primary_3.back, .middle-back                { background-color: <?php echo $primary_3;   ?>;}
-  .primary_4.back, .light-back                 { background-color: <?php echo $primary_4;   ?>;}
-  .primary_5.back, .lighter-back               { background-color: <?php echo $primary_5;   ?>;}
-  .primary_6.back, .lightest-back              { background-color: <?php echo $primary_6;   ?>;}
-.secondary_0.back, .secondary.darkest-back     { background-color: <?php echo $secondary_0; ?>;}
-.secondary_1.back, .secondary.lightest-back    { background-color: <?php echo $secondary_1; ?>;}
-
-/* color */
-  .primary_0.color, .darkest-color             { color: <?php echo $primary_0;   ?>;}
-  .primary_1.color, .darker-color              { color: <?php echo $primary_1;   ?>;}
-  .primary_2.color, .dark-color                { color: <?php echo $primary_2;   ?>;}
-  .primary_3.color, .middle-color              { color: <?php echo $primary_3;   ?>;}
-  .primary_4.color, .light-color               { color: <?php echo $primary_4;   ?>;}
-  .primary_5.color, .lighter-color             { color: <?php echo $primary_5;   ?>;}
-  .primary_6.color, .lightest-color            { color: <?php echo $primary_6;   ?>;}
-.secondary_0.color, .secondary.darkest-color   { color: <?php echo $secondary_0; ?>;}
-.secondary_1.color, .secondary.lightest-color  { color: <?php echo $secondary_1; ?>;}
-
-/* border color */
-  .primary_0.border-color, .darkest-border             { border-color: <?php echo $primary_0;   ?>;}
-  .primary_1.border-color, .darker-border              { border-color: <?php echo $primary_1;   ?>;}
-  .primary_2.border-color, .dark-border                { border-color: <?php echo $primary_2;   ?>;}
-  .primary_3.border-color, .middle-border              { border-color: <?php echo $primary_3;   ?>;}
-  .primary_4.border-color, .light-border               { border-color: <?php echo $primary_4;   ?>;}
-  .primary_5.border-color, .lighter-border             { border-color: <?php echo $primary_5;   ?>;}
-  .primary_6.border-color, .lightest-border            { border-color: <?php echo $primary_6;   ?>;}
-.secondary_0.border-color, .secondary.darkest-border   { border-color: <?php echo $secondary_0; ?>;}
-.secondary_1.border-color, .secondary.lightest-border  { border-color: <?php echo $secondary_1; ?>;}
-
-/* debug color */
-  .primary_0.border-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>";}
-  .primary_1.border-debug:after, .darker-debug:after              { content: "<?php echo $primary_1;   ?>";}
-  .primary_2.border-debug:after, .dark-debug:after                { content: "<?php echo $primary_2;   ?>";}
-  .primary_3.border-debug:after, .middle-debug:after              { content: "<?php echo $primary_3;   ?>";}
-  .primary_4.border-debug:after, .light-debug:after               { content: "<?php echo $primary_4;   ?>";}
-  .primary_5.border-debug:after, .lighter-debug:after             { content: "<?php echo $primary_5;   ?>";}
-  .primary_6.border-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>";}
-.secondary_0.border-debug:after, .secondary.darkest-debug:after   { content: "<?php echo $secondary_0; ?>";}
-.secondary_1.border-debug:after, .secondary.lightest-debug:after  { content: "<?php echo $secondary_1; ?>";}
-
 /* Allow Font Awesome Icons in lieu of jQuery UI and only apply when using a FA icon */
 .ui-icon[class*=" icon-"] {
     /* Remove the jQuery UI Icon */
@@ -2804,6 +2809,120 @@ a.disabled:visited {
     margin-left: -7px;
 }
 
+/* gstree styles */
+.tree-roottoggle .label{
+ 	cursor: pointer;
+ 	font-size: 11px;
+ 	margin-left:0;
+}
+
+.tree-indent {
+	padding: 0 10px 0 5px;
+	display: inline;
+	position: relative;
+}
+
+.tree-expander {
+	cursor: pointer;
+	color: #868686;
+	font-size: 0.8em;
+	margin-right: 7px;
+	transition: all 50ms ease-out;
+		-webkit-transition: all 50ms ease-out;
+		-moz-transition: all 50ms ease-out;
+		-o-transition: all 50ms ease-out;
+}
+
+.tree-expander-expanded{
+	padding: 0 12px 0 3px;
+	display: inline;
+	position: relative;
+}
+
+.tree-expander-collapsed{
+	padding: 0 12px 0 3px;
+	display: inline;
+	position: relative;
+}
+
+.tree-parentcollapsed {
+	display:none;
+}
+
+.tree-error {
+	color: #990000;
+	border: 1px solid #cc0000;
+}
+
+/* icon offset override for 10px for rotation centering */
+.tree .fa-play{
+    -webkit-transform-origin-x: 38%;
+    -webkit-transform-origin-y: 45%; 
+}
+
+
 /* END */
+
+/* Admin theme colors */
+
+/* background-color */
+  .primary_0-back, .darkest-back               { background-color: <?php echo $primary_0;   ?>;}
+  .primary_1-back, .darker-back                { background-color: <?php echo $primary_1;   ?>;}
+  .primary_2-back, .dark-back                  { background-color: <?php echo $primary_2;   ?>;}
+  .primary_3-back, .middle-back                { background-color: <?php echo $primary_3;   ?>;}
+  .primary_4-back, .light-back                 { background-color: <?php echo $primary_4;   ?>;}
+  .primary_5-back, .lighter-back               { background-color: <?php echo $primary_5;   ?>;}
+  .primary_6-back, .lightest-back              { background-color: <?php echo $primary_6;   ?>;}
+.secondary_0-back, .secondary-darkest-back     { background-color: <?php echo $secondary_0; ?>;}
+.secondary_1-back, .secondary-lightest-back    { background-color: <?php echo $secondary_1; ?>;}
+
+/* color */
+  .primary_0-color, .darkest-color             { color: <?php echo $primary_0;   ?>;}
+  .primary_1-color, .darker-color              { color: <?php echo $primary_1;   ?>;}
+  .primary_2-color, .dark-color                { color: <?php echo $primary_2;   ?>;}
+  .primary_3-color, .middle-color              { color: <?php echo $primary_3;   ?>;}
+  .primary_4-color, .light-color               { color: <?php echo $primary_4;   ?>;}
+  .primary_5-color, .lighter-color             { color: <?php echo $primary_5;   ?>;}
+  .primary_6-color, .lightest-color            { color: <?php echo $primary_6;   ?>;}
+.secondary_0-color, .secondary-darkest-color   { color: <?php echo $secondary_0; ?>;}
+.secondary_1-color, .secondary-lightest-color  { color: <?php echo $secondary_1; ?>;}
+
+/* border color */
+  .primary_0-border-color, .darkest-border             { border-color: <?php echo $primary_0;   ?>;}
+  .primary_1-border-color, .darker-border              { border-color: <?php echo $primary_1;   ?>;}
+  .primary_2-border-color, .dark-border                { border-color: <?php echo $primary_2;   ?>;}
+  .primary_3-border-color, .middle-border              { border-color: <?php echo $primary_3;   ?>;}
+  .primary_4-border-color, .light-border               { border-color: <?php echo $primary_4;   ?>;}
+  .primary_5-border-color, .lighter-border             { border-color: <?php echo $primary_5;   ?>;}
+  .primary_6-border-color, .lightest-border            { border-color: <?php echo $primary_6;   ?>;}
+.secondary_0-border-color, .secondary-darkest-border   { border-color: <?php echo $secondary_0; ?>;}
+.secondary_1-border-color, .secondary-lightest-border  { border-color: <?php echo $secondary_1; ?>;}
+
+  .label-info-border                                         { border-color: <?php echo $label_0; ?>;}
+  .label-ok-border                                           { border-color: <?php echo $label_1; ?>;}
+  .label-warn-border                                         { border-color: <?php echo $label_2; ?>;}
+  .label-error-border                                        { border-color: <?php echo $label_3; ?>;}
+  .label-light-border                                        { border-color: <?php echo $label_4; ?>;}
+  .label-medium-border                                       { border-color: <?php echo $label_5; ?>;}
+
+/* debug color */
+  .primary_0-border-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>";}
+  .primary_1-border-debug:after, .darker-debug:after              { content: "<?php echo $primary_1;   ?>";}
+  .primary_2-border-debug:after, .dark-debug:after                { content: "<?php echo $primary_2;   ?>";}
+  .primary_3-border-debug:after, .middle-debug:after              { content: "<?php echo $primary_3;   ?>";}
+  .primary_4-border-debug:after, .light-debug:after               { content: "<?php echo $primary_4;   ?>";}
+  .primary_5-border-debug:after, .lighter-debug:after             { content: "<?php echo $primary_5;   ?>";}
+  .primary_6-border-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>";}
+.secondary_0-border-debug:after, .secondary-darkest-debug:after   { content: "<?php echo $secondary_0; ?>";}
+.secondary_1-border-debug:after, .secondary-lightest-debug:after  { content: "<?php echo $secondary_1; ?>";}
+
+/* label colors */
+   .label-default-debug:after                                     { content: "<?php echo $label_0;   ?>";}
+   .label-info-debug:after                                        { content: "<?php echo $label_1;   ?>";}
+   .label-ok-debug:after                                          { content: "<?php echo $label_2;   ?>";}
+   .label-warn-debug:after                                        { content: "<?php echo $label_3;   ?>";}
+   .label-error-debug:after                                       { content: "<?php echo $label_4;   ?>";}
+   .label-light-debug:after                                       { content: "<?php echo $label_5;   ?>";}
+   .label-medium-debug:after                                      { content: "<?php echo $label_6;   ?>";}
 
 /* </style> */
