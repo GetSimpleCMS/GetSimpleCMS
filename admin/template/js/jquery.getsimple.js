@@ -1,6 +1,9 @@
-/*
+/**
  * GetSimple js file    
+ * 
  */
+
+/* jshint multistr: true */
 
 /* jQuery reverseOrder
  * Written by Corey H Maass for Arc90; (c) Arc90, Inc.
@@ -139,13 +142,11 @@ jQuery(document).ready(function () {
 	var loadingAjaxIndicator = $('#loader');
  
 	function checkCoords() {
-		if (parseInt($('#x').val())) return true;
+		if (parseInt($('#x').val(),10)) return true;
 		alert('Please select a crop region then press submit.');
 		return false;
-	};
-  
-	var loadingAjaxIndicator = $('#loader');
- 
+	}
+   
 	/* Listener for filter dropdown */
 	function attachFilterChangeEvent() {
 		$(document).on('change', "#imageFilter", function () {
@@ -254,7 +255,6 @@ jQuery(document).ready(function () {
 		editor.refresh();
 
 		$("#divTxt").find('input').get(0).focus();
-		$("#divTxt").find('input').get(0).focus();		
 	});
 
 	$("#maincontent").on("click",'.delcomponent', function ($e) {
@@ -450,11 +450,11 @@ jQuery(document).ready(function () {
 	});
  
 	function getElemLabel(element){
-	   var label = $("label[for='"+element.attr('id')+"']")
-	   if (label.length == 0) {
-	     label = element.closest('label')
-	   }
-	   return label;
+		var label = $("label[for='"+element.attr('id')+"']");
+		if (label.length === 0) {
+			label = element.closest('label');
+		}
+		return label;
 	}
 
 	// edit.php
@@ -478,7 +478,7 @@ jQuery(document).ready(function () {
 		$('.charlimit').trigger('change');
 	}
 
-	if ($("#edit input#post-title:empty").val() == '') {
+	if ($("#edit input#post-title:empty").val() === '') {
 		$("#edit input#post-title").focus();
 	}
 
@@ -507,8 +507,8 @@ jQuery(document).ready(function () {
 	if ($("#post-menu-enable").is(":checked")) {} else {
 		$("#menu-items").css("display", "none");
 	}
- 
- 	// adds sidebar submit buttons and fire clicks
+
+	// adds sidebar submit buttons and fire clicks
 	var edit_line = $('#submit_line span').html();
 	$('#js_submit_line').html(edit_line);
 	$("#js_submit_line input.submit").on("click", function () {
@@ -524,7 +524,8 @@ jQuery(document).ready(function () {
  
 	// pages.php
 	$("#show-characters").on("click", function () {
-		$(this).hasClass('current') ? $(".showstatus").hide() : $(".showstatus").show() ;
+		if($(this).hasClass('current')) $(".showstatus").hide();
+		else $(".showstatus").show() ;
 		$(this).toggleClass('current');
 	});
  
@@ -543,8 +544,8 @@ jQuery(document).ready(function () {
 		li.parent().children().show();
 		li.remove();
 	});
- 
- 	// theme.php
+
+	// theme.php
 	$("#theme_select").on('change',function (e) {
 		var theme_new = $(this).val();
 		var theme_url_old = $("#theme_preview").attr('src');
@@ -605,7 +606,7 @@ jQuery(document).ready(function () {
 	});
 
 	function checkChanged(){
-		if($('#codetext').data('editor').hasChange == true){
+		if($('#codetext').data('editor').hasChange === true){
 			alert('This file has unsaved content, save or cancel before continuing');
 			return true;
 		}
@@ -615,13 +616,13 @@ jQuery(document).ready(function () {
 	function updateTheme(theme,file,url){
 
 		// console.log(theme);
-		var theme = theme == undefined ? '' : theme;
-		var file  = file  == undefined ? '' : file;
-		var url   = url   == undefined ? "theme-edit.php?t="+theme+'&f='+file : url;
+		theme = theme === undefined ? '' : theme;
+		file  = file  === undefined ? '' : file;
+		url   = url   === undefined ? "theme-edit.php?t="+theme+'&f='+file : url;
 		
 		loadingAjaxIndicator.show('fast');
 		$('#codetext').data('editor').setValue('');
-		$('#codetext').data('editor').hasChange == false;
+		$('#codetext').data('editor').hasChange = false;
 		$('#theme_edit_code').fadeTo('fast',0.3);
 
 		$.ajax({
@@ -670,8 +671,8 @@ jQuery(document).ready(function () {
 		});
 
 	}
- 	
- 	// removes loading icons
+	
+	// removes loading icons
 	function clearFileWaits(){
 		$('#theme_filemanager a.ext-wait').removeClass('ext-wait'); 
 	}
@@ -728,7 +729,7 @@ jQuery(document).ready(function () {
 				$('#codetext').data('editor').hasChange = false; // mark clean		
 			}
 		});
-	}
+	};
 
 
 	$('#compEditForm').submit(function(e) {
@@ -741,11 +742,11 @@ jQuery(document).ready(function () {
 		// $('#theme_edit_code').fadeTo('fast',0.3);
 		
 		cm_save_editors();
-	    var url = "path/to/your/script.php"; // the script where you handle the form input.
+		var url = "path/to/your/script.php"; // the script where you handle the form input.
 		var dataString = $("#compEditForm").serialize();			
 
-	    $.ajax({
-	    	type: "POST",
+		$.ajax({
+			type: "POST",
 			cache: false,
 			url: 'components.php',
 			data: dataString+'&submitted=1&ajaxsave=1',
@@ -765,7 +766,7 @@ jQuery(document).ready(function () {
 				loadingAjaxIndicator.fadeOut();
 				// $('#codetext').data('editor').hasChange = false; // mark clean		
 			}
-	    });
+		});
 	});
 
 	componentSave = function(cm){
@@ -798,7 +799,7 @@ jQuery(document).ready(function () {
 				$('#codetext').data('editor').hasChange = false; // mark clean		
 			}
 		});
-	}
+	};
 
 	function getExtension(file){
 		var extension = file.substr( (file.lastIndexOf('.') +1) );
@@ -817,11 +818,11 @@ jQuery(document).ready(function () {
 		// Debugger.log('updating codemirror theme: ' + theme);
 		var parts = theme.split(' ');
 		callback = function () {
-			  cm_theme_update_editors(theme);
-			}
+				cm_theme_update_editors(theme);
+			};
 		if(theme == "default") cm_theme_update_editors(theme);
 		else loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css", callback );
-	}
+	};
 
 	// set all editors themes
 	cm_theme_update_editors = function(theme){
@@ -836,8 +837,8 @@ jQuery(document).ready(function () {
 			}	
 		});	
 		editorConfig.theme = theme;		
-		editorTheme = theme; // update global			  
-	}
+		editorTheme = theme; // update global
+	};
 
 	// save all editors
 	cm_save_editors = function(theme){
@@ -849,7 +850,7 @@ jQuery(document).ready(function () {
 				editor.save();
 			}	
 		});		
-	}
+	};
 
 	///////////////////////////////////////////////////////////////////////////
 	// title filtering on pages.php & backups.php
@@ -921,7 +922,7 @@ jQuery(document).ready(function () {
 					$("#new-folder").find("#foldername").val('');
 					$("#new-folder").find("form").hide();
 					$('#createfolder').show();
-					counter = parseInt($("#pg_counter").text());
+					counter = parseInt($("#pg_counter").text(),10);
 					$("#pg_counter").html(counter++);
 					$("tr." + newfolder + " td").css("background-color", "#F9F8B6");
 					loadingAjaxIndicator.fadeOut();
@@ -935,17 +936,17 @@ jQuery(document).ready(function () {
 		var elem = $('body.sbfixed #sidebar');
 		elem.scrollToFixed({ 
 			marginTop: 15,
-			limit: function(){ return $('#footer').offset().top - elem.outerHeight(true) - 15},
-			postUnfixed: function(){$(this).addClass('fixed')},
-			postFixed: function(){$(this).removeClass('fixed')},
-			postAbsolute: function(){$(this).removeClass('fixed')},
+			limit: function(){ return $('#footer').offset().top - elem.outerHeight(true) - 15 ;} ,
+			postUnfixed: function(){$(this).addClass('fixed') ;},
+			postFixed: function(){$(this).removeClass('fixed') ;},
+			postAbsolute: function(){$(this).removeClass('fixed') ;},
 
 		});
 	}
 
 	scrollsidebar();
- 	
- 	// catch all redirects for session timeout on HTTP 401 unauthorized
+	
+	// catch all redirects for session timeout on HTTP 401 unauthorized
 	$( document ).ajaxError(function( event, xhr, settings ) {
 		// notifyInfo("ajaxComplete: " + xhr.status);
 		if(xhr.status == 401){
@@ -967,13 +968,13 @@ loadjscssfile = function(filename, filetype, callback){
 	else if (filetype=="css"){ //if filename is an external CSS file
 		LazyLoad.css(filename,callback);
 	}
-}
+};
 
 // prevent js access to cookies
 if(!document.__defineGetter__) {
     Object.defineProperty(document, 'cookie', {
-        get: function(){return ''},
-        set: function(){return true},
+        get: function(){return '' ;},
+        set: function(){return true ;},
     });
 } else {
     document.__defineGetter__("cookie", function() { return '';} );
