@@ -934,16 +934,15 @@ function getPageDepths($mypages=array()){
 			if($ancestor !=='') {
 				// check again to see if it was already removed from a previous loop
 		 		if(!isset($keys[$ancestor])) {
-		 			// provide special row and backup restore links then recurse on children
+		 			// Add this mising page to new array, then recurse on its children
 		 			$iter++;
 					$keys[$ancestor]  = '';
 
 					$pageId      = $ancestor;
 					$numChildren = isset($parents[$pageId]) ? count($parents[$pageId]) : 0;
 
-					// add empty page shim here
-					// this will cause issues if used for something else that tried to use a required field
-					// @todo add a status flag ?
+					// this will cause issues if used for something else that tried to use a required field, since this will be missing all of them
+					// @todo add a status flag instead of null ['url'] ?
 					$newpages[$pageId]                = array(); 
 					// $newpages[$pageId]['url']         = $ancestor;
 					$newpages[$pageId]['order']       = $iter;
@@ -974,8 +973,7 @@ function getPageDepths($mypages=array()){
  * @returns string
  */
 function get_pages_menu($parent = '',$menu = '',$level = '') {
-	global $pagesSorted,$pagesArray;
-	static $pages;
+	global $pagesSorted;
 
 	if(!$pages)	$pages = getPageDepths($pagesSorted); // use parent hash table for speed
 
@@ -1002,7 +1000,8 @@ function get_pages_menu($parent = '',$menu = '',$level = '') {
 			else if(($page['depth'] == $depth)) return $menu; // we are back to starting depth so stop
 			$level = $level - ($depth+1);
 		}
-		if( !isset($page['url']) ) $menu .= getPagesRowMissing($key,$level,$numChildren); // use URL check for missing parents
+		// provide special row if this is a missing parent
+		if( !isset($page['url']) ) $menu .= getPagesRowMissing($key,$level,$numChildren); // use URL check for missing parents for now
 		else $menu       .= getPagesRow($page,$level,'','',$numChildren);
 	}
 
