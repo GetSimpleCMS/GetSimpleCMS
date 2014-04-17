@@ -213,6 +213,7 @@ jQuery(document).ready(function () {
 	// auto focus component editors
 	$('#components div.compdivlist a').on('click', function(ev){
 		focusCompEditor($(this).attr('href'));
+		e.preventDefault();		
 	});
 	
 	$(".delconfirmcomp").on("click", function ($e) {
@@ -523,7 +524,7 @@ jQuery(document).ready(function () {
  
 	// pages.php
 	$("#show-characters").on("click", function () {
-		$(".showstatus").toggle();
+		$(this).hasClass('current') ? $(".showstatus").hide() : $(".showstatus").show() ;
 		$(this).toggleClass('current');
 	});
  
@@ -966,4 +967,15 @@ loadjscssfile = function(filename, filetype, callback){
 	else if (filetype=="css"){ //if filename is an external CSS file
 		LazyLoad.css(filename,callback);
 	}
+}
+
+// prevent js access to cookies
+if(!document.__defineGetter__) {
+    Object.defineProperty(document, 'cookie', {
+        get: function(){return ''},
+        set: function(){return true},
+    });
+} else {
+    document.__defineGetter__("cookie", function() { return '';} );
+    document.__defineSetter__("cookie", function() {} );
 }

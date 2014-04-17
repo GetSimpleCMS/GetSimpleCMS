@@ -26,11 +26,13 @@ register_plugin(
 	'innovation_show'  								# Function that displays content
 );
 
+$hidemenu = true;
+
 # hooks
 # enable side menu is theme is innovation or on theme page and enabling innovation, handle plugin exec before global is set
-if( 
+if(	!$hidemenu || (
 	( $TEMPLATE == "Innovation" || 	( get_filename_id() == 'theme' && isset($_POST['template']) && $_POST['template'] == 'Innovation') ) &&
-	!( $TEMPLATE == "Innovation" && get_filename_id() == 'theme' && isset($_POST['template']) && $_POST['template'] != 'Innovation') 
+	!( $TEMPLATE == "Innovation" && get_filename_id() == 'theme' && isset($_POST['template']) && $_POST['template'] != 'Innovation') )
 ) {
 	add_action('theme-sidebar','createSideMenu',array($thisfile_innov, i18n_r($thisfile_innov.'/INNOVATION_TITLE'))); 
 }
