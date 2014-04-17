@@ -819,13 +819,13 @@ sup {
 
 	vertical-align: baseline;
 	font-size: .8em;
-	position: inherit; 
+	position: inherit;
 	top: -0.4em;
 	background: #E7E7E7;
 	border-radius: 3px;
 	text-shadow: none;
 	padding: 3px 6px;
-	font-weight: bold;	
+	font-weight: bold;
 }
 
 
@@ -1868,17 +1868,18 @@ a.updatelink:focus {
 	text-align: center;
 	color: #F2F2F2;
 	margin:3px;
- 	background-color: <?php echo $label_0; ?>;	
+ 	background-color: <?php echo $label_0; ?>;
  	/*display: inline-block;*/
- 	text-shadow: none;
 }
 
-.label a{
+.wrapper .label a,.label a{
 	color: white;
+	text-decoration: underline;
+	font-weight: bold !important;
 }
 
 .label a:hover{
-	color: lightgray;
+	opacity:.6;
 }
 
 .label-info {
@@ -1909,19 +1910,19 @@ a.updatelink:focus {
 }
 
 .label-ghost {
-	background-color: rgba(221, 221, 221, 0.5);	
+	background-color: rgba(221, 221, 221, 0.5);
 }
 
 .label hr{
 	border: none;
 	border-top: 1px solid rgba(255, 255, 255, 0.2);
-	margin: 3px 0;
+	margin: 6px -8px;
 }
 
 .edittable .label-ghost{
 	font-size:11px;
 	padding:3px 6px;
-	color: #999999;	
+	color: #999999;
 }
 
 div.showstatus{
@@ -1929,10 +1930,12 @@ div.showstatus{
 }
 
 #health-check #hc_version.label {
-	width: 298px;
+	width: 292px;
 	text-align: left;
-	padding: 9px 9px 9px 15px;
-	font-weight:normal;
+	padding: 9px 15px;
+	font-weight: normal;
+	line-height: normal;
+	text-shadow: 1px 1px 0 rgba(60, 60, 60, 0.2) !important;
 }
 
 #hc_alert {
@@ -1958,7 +1961,7 @@ div.showstatus{
 	text-shadow: none !important;
 	width:50px;
 	display:block;
-	line-height:normal;
+	line-height: 17px;
 	float:right;
 	margin:0;
 }
@@ -2681,8 +2684,8 @@ a.disabled:visited {
 	padding-bottom:1px;
 	padding-right:0;
 	text-decoration:none;
-	text-shadow:none;	
-	box-shadow : none;	
+	text-shadow:none;
+	box-shadow : none;
 	font-weight: normal;
 	line-height:1;
 }
@@ -2861,7 +2864,7 @@ a.disabled:visited {
 /* icon offset override for 10px for rotation centering */
 .tree .fa-play{
     -webkit-transform-origin-x: 38%;
-    -webkit-transform-origin-y: 45%; 
+    -webkit-transform-origin-y: 45%;
 }
 
 
