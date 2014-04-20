@@ -28,21 +28,22 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 		<!-- Dropzone Template -->
 		<div id="queue-item-template">
 			<div class="queue-item-wrap">
-				<div class="queue-item dz-preview dz-file-preview">					
+				<div class="queue-item dz-preview dz-file-preview">
 					<div class="dz-filename">
-				    	<span class="dz-process-mark"><span>?</span></span>
-				    	<span class="dz-success-mark"><span>?</span></span>
-						<span class="dz-error-mark">?</span>				
+				    	<span class="dz-process-mark"><span>&#x25ba;</span></span>
+				    	<span class="dz-success-mark"><span>&#x2713;</span></span>
+						<span class="dz-error-mark">&#x2717;</span>
 						<span class="dz-name" data-dz-name></span><span class="size"> (<span class="dz-size" data-dz-size></span>)</span>
 					</div>
 					<div class="dz-error-message"><span data-dz-errormessage></span></div>
-					<div class="progress">						
+					<div class="progress">
 						<div class="progress-bar" style="width: 0%;" data-dz-uploadprogress>
 						<!--Progress Bar-->
-						</div>					
-					</div>				
+						</div>
+					</div>
 				</div>
-			</div>	
+			<a class="dz-remove" href="javascript:undefined;" data-dz-remove>&times;</a>
+			</div>
 		</div>
 		<!-- End Dropzone Template -->
 	</div>	
@@ -121,8 +122,8 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 			paramName: 'file',
 			createImageThumbnails: false,
 			addRemoveLinks:true,
-			dictCancelUpload: '×',
-			dictRemoveFile: '×',
+			dictCancelUpload: '',
+			dictRemoveFile: '',
 			fallback: function(){$('.uploadform').show(); $('.upload').hide(); $('#gs-dropzone').hide(); },
 			// dictFallbackMessage: null,
 			// dictFallbackText: null,

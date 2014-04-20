@@ -1738,7 +1738,7 @@ table.simple td.title {
 
 .queue-item-wrap .dz-filename {
 	width:165px;
-	/*word-break: break-all;*/
+	word-break: break-all;
 	display: inline-block;
 }
 
