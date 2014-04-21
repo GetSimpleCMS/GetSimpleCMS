@@ -50,7 +50,7 @@ foreach ($pluginfiles as $fi) {
 			$trclass      ='disabled';
 		}
 		$api_data   = json_decode(get_api_details('plugin', $fi));
-		$updatelink = null;
+		$updatelink = '';
 
 		if (is_object($api_data) && $api_data->status == 'successful') {
 			if ($api_data->version > $plugin_info[$pathName]['version']) {				

@@ -36,9 +36,18 @@ body {
 	background: #f6f6f6;
 }
 
-a img,
-:link img,
-:visited img {
+a {
+	color: <?php echo $primary_3; ?>;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+a:hover {
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+a img {
 	border: none;
 }
 
@@ -332,19 +341,6 @@ html {
 .wrapper #maincontent ol {
 /*	line-height: 18px;
 	margin: 0 0 20px 30px;*/
-}
-
-.wrapper a:link,
-.wrapper a:visited {
-	color: <?php echo $primary_3; ?>;
-	text-decoration: none;
-	font-weight: bold;
-}
-
-.wrapper a:hover {
-	color: #333;
-	text-decoration: underline;
-	font-weight: bold;
 }
 
 .inner {
@@ -671,7 +667,7 @@ h5:hover img {
 
 .edit-nav a:link,
 .edit-nav a:visited {
-	line-height: 14px !important;
+	line-height: 14px;
 	background-color: <?php echo $primary_1; ?>;
 	color: #ccc;
 	font-weight: bold;
@@ -683,6 +679,7 @@ h5:hover img {
 		-o-transition: all .10s ease-in-out;
 }
 
+/* what is this for ? edit-nav in sidebar ? */
 .edit-nav a:hover,
 #sidebar .edit-nav a:hover,
 .edit-nav a.current {
@@ -690,7 +687,7 @@ h5:hover img {
 	color: #FFF;
 	font-weight: bold;
 	text-decoration: none;
-	line-height: 14px !important;
+	line-height: 14px;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.2);
 }
 
@@ -1447,16 +1444,6 @@ table.comptable label {
 	font-size: 12px;
 }
 
-table td.delete {
-	width: 20px;
-	text-align: center;
-}
-
-table td.delete a {
-	font-size: 18px !important;
-	line-height: 16px;
-}
-
 .view {
 	width: 48px;
 	text-align: center;
@@ -1472,94 +1459,80 @@ table td.delete a {
 	text-align: left;
 }
 
-.delete a:link,
-.delete a:visited {
-	color: #999 !important;
-	text-decoration: none !important;
+.delete a {
+	font-size: 18px;
+}
+
+.delete a, .secondarylink a, a.cancel, a.updatelink{
+	color: #999;
+	text-decoration: none;
 	padding: 1px;
 	display: block;
 	line-height: 16px;
-	font-size: 12px;
 	font-weight: normal;
-	-webkit-transition: all .02s ease-in-out;
-	-moz-transition: all .02s ease-in-out;
-	-o-transition: all .02s ease-in-out;
-	transition: all .02s ease-in-out;
-	font-style:normal;
+	font-style: normal;
+}
+
+a.updatelink {
+	display: inline-block;
+	color: #CF3805;
+	padding: 1px 3px;
+	margin-left:-3px;
+}
+
+a.updatelink:hover {
+	color: #FFF;
+	background-color: #415A66;
 }
 
 .delete a:hover {
-	background: #D94136 !important;
-	color: #fff !important;
-	text-decoration: none !important;
-	padding: 1px;
-	line-height: 16px;
-	display: block;
-	font-size: 12px;
-	font-weight: normal;
+	background: #D94136;
+	color: #fff;
 }
 
-a.cancel:link,
-a.cancel:visited {
-	font-weight: 100;
-	color: #D94136 !important;
+.secondarylink, .delete {
+	width: 20px;
+	text-align: center;
+	line-height: 14px;
+}
+
+.secondarylink a:hover {
+	background: <?php echo $primary_3; ?>;
+	color: #FFF;
+}
+
+a.cancel {
+	display: inline-block;	
+	color: #D94136;
 	text-decoration: underline;
 	padding: 1px 3px;
-	background: none !important;
+	background: none;
 	line-height: 16px;
-	-webkit-transition: all .02s ease-in-out;
-	-moz-transition: all .02s ease-in-out;
-	-o-transition: all .02s ease-in-out;
-	transition: all .02s ease-in-out;
 }
 
 a.cancel:hover {
-	font-weight: 100;
-	background: #D94136 !important;
-	color: #fff !important;
-	text-decoration: none !important;
-	padding: 1px 3px;
-	line-height: 16px;
+	background: #D94136;
+	color: #fff;
+	text-decoration: none;
 }
 
 a.cancel em {
 	font-style: normal;
 }
 
-.wrapper .secondarylink {
-	width: 20px;
-	text-align: center;
-	font-size: 12px;
-	line-height: 14px;
-}
-
-.wrapper .secondarylink a:link,
-.wrapper .secondarylink a:visited {
-	color: #aaa;
-	text-decoration: none;
-		font-weight: normal;
-	padding: 1px;
-	display: block;
-	line-height: 16px;
-	-webkit-transition: all .15s ease-in-out;
-	-moz-transition: all .15s ease-in-out;
-	-o-transition: all .15s ease-in-out;
-	transition: all .15s ease-in-out;
-}
-
-.wrapper .secondarylink a:hover {
-	background: <?php echo $primary_3; ?>;
-	color: #FFF;
-	text-decoration: none;
-	font-weight: normal;
-	padding: 1px;
-	display: block;
-	line-height: 16px;
-}
-
-.delete a:link, .delete a:visited, .wrapper .secondarylink a:link, .wrapper .secondarylink a:visited, a.cancel:link, a.updatelink:link{
+.delete a, .secondarylink a, a.cancel, a.updatelink{
+    -webkit-transition:  150ms ease-in-out;
+	   -moz-transition:  150ms ease-in-out;
+	     -o-transition:  150ms ease-in-out;
+	        transition:  150ms ease-in-out;
+	-webkit-transition-property: background-color, color, text-shadow;
+	   -moz-transition-property: background-color, color, text-shadow;
+	     -o-transition-property: background-color, color, text-shadow;
+	        transition-property: background-color, color, text-shadow;
+	
 	border-radius:3px;
 }
+
 
 /* backup info display */
 table.simple td {
@@ -1865,18 +1838,6 @@ textarea.copykit {
 	margin: 20px 0 0 0;
 }
 
-a.updatelink:link,
-a.updatelink:visited {
-	color: #CF3805;
-	padding: 1px 3px;
-}
-
-a.updatelink:hover,
-a.updatelink:focus {
-	color: #FFF;
-	background-color: #2AA206;
-	padding: 1px 3px;
-}
 
 /* Labels */
 .label {
