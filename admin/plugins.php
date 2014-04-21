@@ -28,7 +28,7 @@ if ($pluginid){
 
 // Variable settings
 $counter     = 0; 
-$table       = null;
+$table       = '';
 $needsupdate = false;
 $pluginfiles = getFiles(GSPLUGINPATH);
 
@@ -101,8 +101,12 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PLUGINS_MANAGEMENT'));
 		
 		<?php if ($counter > 0) { ?>
 			<table class="edittable">
-				<tr><th><?php i18n('PLUGIN_NAME'); ?></th><th><?php i18n('PLUGIN_DESC'); ?></th><th><?php i18n('STATUS'); ?></th></tr>
-				<?php echo $table; ?>
+				<thead>
+					<tr><th><?php i18n('PLUGIN_NAME'); ?></th><th><?php i18n('PLUGIN_DESC'); ?></th><th><?php i18n('STATUS'); ?></th></tr>
+				</thead>
+				<tbody>
+					<?php echo $table; ?>
+				</tbody>
 			</table>
 		<?php  } ?>
 		

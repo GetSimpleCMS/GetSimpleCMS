@@ -232,14 +232,15 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 			
 	$showperms = $isUnixHost && isDebug() && function_exists('posix_getpwuid');
 			
-     echo '<table class="highlight" id="imageTable">'; 
+     echo '<table class="highlight" id="imageTable"><thead>'; 
      echo '<tr><th class="imgthumb" ></th><th>'.i18n_r('FILE_NAME').'</th>';
      echo '<th style="text-align:right;">'.i18n_r('FILE_SIZE').'</th>';
      if ($showperms){
      	 echo '<th style="text-align:right;">'.i18n_r('PERMS').'</th>';
      }
      echo '<th style="text-align:right;">'.i18n_r('DATE').'</th>';
-     echo '<th><!-- actions --></th></tr>';  
+     echo '<th><!-- actions --></th></tr>';
+     echo '</thead><tbody>';  
      if (count($dirsSorted) != 0) {
      		$foldercount = 0;
 
@@ -320,7 +321,7 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 				}
 			}
 			exec_action('file-extras');
-			echo '</table>';
+			echo '</tbody></table>';
 			
 			if ($counter > 0) { 
 				$sizedesc = '('. fSize($totalsize) .')';

@@ -234,7 +234,7 @@ jQuery(document).ready(function () {
 		loadingAjaxIndicator.show();
 		var id = $("#id").val();
 		$("#divTxt").prepend('<div style="display:none;" class="compdiv codewrap" id="section-' + id + '"> \
-			<table class="comptable"><tr><td><b>Title: </b><input type="text" class="text newtitle" name="title[]" value="" /></td> \
+			<table class="comptable"><tr><td><label>Title: </label><input type="text" class="text newtitle" name="title[]" value="" /></td> \
 			<td class="delete"><a href="javascript:void(0)" title="Delete Component:?" class="delcomponent" id="del-' + id + '" rel="' + id + '" >&times;</a> \
 			</td></tr></table> \
 			<textarea name="val[]" class="code_edit"></textarea><input type="hidden" name="slug[]" value="" /> \
@@ -278,7 +278,7 @@ jQuery(document).ready(function () {
 	$("b.editable").dblclick(function () {
 		var t = $(this).html();
 		$(this).parents('.compdiv').find("input.comptitle").hide();
-		$(this).after('<div id="changetitle"><b>Title: </b><input class="text newtitle titlesaver" name="title[]" value="' + t + '" /></div>');
+		$(this).after('<div id="changetitle"><label>Title: </b><input class="text newtitle titlesaver" name="title[]" value="' + t + '" /></div>');
 		$(this).next('#changetitle').children('input').focus();
 		$(this).parents('.compdiv').find("input.compslug").val('');
 		$(this).hide();

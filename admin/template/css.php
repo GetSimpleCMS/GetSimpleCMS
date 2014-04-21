@@ -601,6 +601,9 @@ h5:hover img {
 }
 /**/
 
+/**
+ * .main top action nav links
+ */
 .edit-nav {
 	margin: 0 0 15px 0;
 }
@@ -638,15 +641,21 @@ h5:hover img {
 
 /*not used*/
 .edit-nav label {
-	font-weight: 100;
+/*	font-weight: 100;
 	display: inline;
 	font-size: 11px;
 	color: #666;
-	/*margin: 0;*/ /*not allowed*/
-	padding: 0;
+	padding: 0;*/
+
+	font-size: 12px;
+	color: #BBB;
+	margin: 0 3px;
+	line-height: 22px;
+	float: right;
+	font-weight: normal;
 }
 
-.edit-nav a#metadata_toggle {
+/*.edit-nav a#metadata_toggle {
 	background-image: url('images/plus.png');
 	padding-right: 20px;
 }
@@ -654,7 +663,7 @@ h5:hover img {
 .edit-nav a#metadata_toggle.current {
 	background-image: url('images/minus.png');
 	 padding-right: 20px;
-}
+}*/
 
 .edit-nav {
 	height: 1%;
@@ -685,6 +694,7 @@ h5:hover img {
 	text-shadow: 1px 1px 0 rgba(0,0,0,.2);
 }
 
+/* shortcut letter highlights */
 .edit-nav a:link em,
 .edit-nav a:visited em {
 	font-style: normal;
@@ -704,65 +714,65 @@ h5:hover img {
 	width: 668px;
 }
 
-.wrapper table td {
-	vertical-align: top;
-	padding: 4px;
+.wrapper table tbody tr {
+	line-height:20px;
+	font-size: 12px;
+	color: #777;
 	border-bottom: 1px solid #eee;
 	border-top: 1px solid #eee;
-	line-height: 20px !important;
+	vertical-align: top;
+	/*line-height: 20px !important;*/
+	color: #777; 	
+}
+
+.wrapper table td {
+	padding: 4px;
+	vertical-align: top;
+	/*line-height: 20px !important;*/
 }
 
 .wrapper table th {
-	background: #FFF !important;
+	/*background: #FFF !important;*/
 	padding: 2px 4px;
 	font-size: 11px;
-	border-top: 1px solid #FFF;
+	/*border-top: 1px solid #FFF;*/
 	color: #222;
 	font-weight: bold;
 	text-transform: uppercase;
-	line-height: 20px !important;
+	line-height: 20px;
 	text-align: left;
 }
 
 .wrapper table td span {
-	font-size: 12px;
-	color: #777;
+	/*font-size: 12px;*/
+	/*color: #777;*/
 }
 
-.wrapper table.highlight {
+.wrapper table.highlight tbody{
 	text-shadow: 1px 1px 0 #fff;
 }
 
-.wrapper table.highlight tr:nth-child(odd), .wrapper table.striped tr:nth-child(odd) {
+.wrapper table.highlight tbody tr:nth-child(odd), .wrapper table.striped tbody tr:nth-child(odd) {
 	background: #f7f7f7;
 }
 
-.wrapper table.striped tr.odd {
+.wrapper table.striped tbody tr.odd {
 	background: #f7f7f7;
 }
-
-.wrapper table.striped tr.even {
+.wrapper table.striped tbody tr.even {
 	background: #FFF;
 }
 
-.notransition {
-  -webkit-transition: none !important;
-  -moz-transition: none !important;
-  -o-transition: none !important;
-  -ms-transition: none !important;
-  transition: none !important;
-}
-
 .wrapper table tr#tr-index a {
-	 font-weight: bold !important;
+	 font-weight: bold;
 }
 
-.wrapper table.highlight tr:hover {
+.wrapper table.highlight tbody tr:hover {
 	background: #FFFFD5 !important;
 	text-shadow: none;
 }
 
-.wrapper table.highlight tr.nohighlight:hover {
+.wrapper table.highlight tbody tr.nohighlight:hover {
 	background: none !important;
 }
 
@@ -771,8 +781,8 @@ h5:hover img {
 }
 
 .wrapper table tr {
-	border-bottom: 1px solid #eee;
-	border-top: 1px solid #eee;
+	/*border-bottom: 1px solid #eee;*/
+	/*border-top: 1px solid #eee;*/
 /*	transition: background-color .3s ease-in-out;
 		-webkit-transition: background-color .3s ease-in-out;
 		-moz-transition: background-color .3s ease-in-out;
@@ -785,12 +795,13 @@ h5:hover img {
 	text-shadow: none;
 }
 
-table td a {
-	font-weight: normal !important;
+.wrapper table td a:link, .wrapper table td a:visited {
+	font-weight: normal;
 }
 
-.wrapper table.healthcheck tr td {
+.wrapper table.healthcheck tr {
 	font-size: 12px;
+	color: #000;
 }
 
 /* popup does not appear to be in use */
@@ -1282,6 +1293,18 @@ table.comptable tr {
 
 table.comptable tr td input.newtitle {
 	margin-bottom: 2px !important;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+table.comptable .comptitle {
+	color: #000;
+}
+
+table.comptable label {
+	display: inline-block;
+	margin-right: 3px;
+	color: #777;
 }
 
 .wrapper a.component {
@@ -1924,6 +1947,7 @@ div.showstatus{
 	float:right;
 }
 
+/* healthcheck only */
 #health-check #hc_version.label {
 	width: 292px;
 	text-align: left;
@@ -1949,10 +1973,9 @@ div.showstatus{
 	font-weight: bold;
 }
 
-/* healthcheck only */
 #health-check .wrapper table td span.label {
 	font-weight: bold;
-	color: #FCFCFC !important;
+	color: white;
 	text-shadow: none !important;
 	width:50px;
 	display:block;
@@ -2516,6 +2539,14 @@ a.disabled:visited {
    */
    -ms-user-select: none;
    user-select: none;
+}
+
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  -ms-transition: none !important;
+  transition: none !important;
 }
 
 /* codemirror */
