@@ -118,16 +118,12 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 		<script type="text/javascript">
 		var editor = CKEDITOR.replace( 'codetext', {
-			skin            : 'getsimple',
 			language        : '<?php echo $EDLANG; ?>',
-			defaultLanguage : '<?php echo $EDLANG; ?>',
 			<?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
 				$fullpath = suggest_site_path();
 			?>
 			contentsCss     : '<?php echo $fullpath.getRelPath(GSTHEMESPATH).$TEMPLATE; ?>/editor.css',
 			<?php } ?>
-			entities        : false,
-			uiColor         : '#DDDDDD',
 			height          : '<?php echo $EDHEIGHT; ?>',
 			baseHref        : '<?php echo $SITEURL; ?>',
 			toolbar         : [['Source']],

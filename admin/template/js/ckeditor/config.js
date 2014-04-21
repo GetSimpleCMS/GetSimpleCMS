@@ -5,10 +5,24 @@
 CKEDITOR.editorConfig = function( config )
 {
 	// Define changes to default configuration here.
+    config.skin                        = 'getsimple';
+	
+    config.defaultLanguage             = 'en';
 	config.resize_dir                  = 'vertical'; // vertical resize
 	config.toolbarCanCollapse          = false;      // hide toolbar collapse button
+    config.forcePasteAsPlainText       = true;
+    config.tabSpaces                   = 10;    
+
 	config.dialog_backgroundCoverColor = '#000000';  // veil color for dialog popups
+    config.uiColor                     = '#DDDDDD';
 	config.magicline_color             = '#CF3805'; 
+    config.entities                    = false;    
+
+    config.filebrowserBrowseUrl        = 'filebrowser.php?type=all';
+    config.filebrowserImageBrowseUrl   = 'filebrowser.php?type=images';
+    config.filebrowserWindowWidth      = '730';
+    config.filebrowserWindowHeight     = '500';
+
 	config.allowedContent              = true;       // disable acf
 
 	config.toolbar_advanced = 
@@ -19,13 +33,23 @@ CKEDITOR.editorConfig = function( config )
 	config.toolbar_basic = 
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']];
 
+	// add about if debug mode
+	if(GS.debug === true){
+		config.toolbar_advanced.push(Array("About"));
+		config.toolbar_basic.push(Array("About"));
+	}
+
 };
+
 
 
 /** ------------------------------------------------------------------------
  * GS Default overrides and extras
  * DO NOT EDIT BELOW THIS LINE
  */
+
+// prevent removal of empty tags
+// CKEDITOR.dtd.$removeEmpty['i'] = false;
 
 // Override default block element source formatting
 CKEDITOR.on( 'instanceReady', function( ev ) {
@@ -77,6 +101,7 @@ CKEDITOR.on( 'dialogDefinition', function( ev )	{
 		}
 });
 
+// set default link to url
 // linkdefault = "url";
 
 var menuItems;
