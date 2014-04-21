@@ -1088,14 +1088,8 @@ a.viewlink:hover img {
 	float: right;
 }
 
-.countdownwrap strong {
-	color: #555;
-	font-weight: normal;
-}
-
 .maxchars {
-	color:red !important;
-	font-weight:bold !important;
+	color:#C00;
 }
 
 form table.formtable select {
@@ -1923,6 +1917,7 @@ a.updatelink:focus {
 	font-size:11px;
 	padding:3px 6px;
 	color: #999999;
+	text-shadow: none;
 }
 
 div.showstatus{
