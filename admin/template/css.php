@@ -51,6 +51,8 @@ a img {
 	border: none;
 }
 
+/* @todo all these modifier classe need to go togather probably at the end */
+
 .clear {
 	clear: both;
 }
@@ -102,6 +104,7 @@ html {
 	zoom: 1;
 }
 
+/* @todo annotate these */
 ::selection {
 	text-shadow: none !important;
 	background: #a8d1ff;
@@ -156,6 +159,7 @@ html {
 	border-radius: 5px 5px 0 0;
 }
 
+/* @todo noooooo */
 .wrapper .nav li a:link,
 .wrapper .nav li a:visited,
 .wrapper #pill li a:link,
@@ -165,6 +169,7 @@ html {
 	text-shadow: 1px 1px 0 rgba(0,0,0,.3);
 }
 
+/* @todo noooooo */
 .wrapper #pill li.debug a:link,
 .wrapper #pill li.debug a:visited,
 .wrapper #pill li.debug a:hover {
@@ -177,6 +182,7 @@ html {
 	border-left: 1px solid <?php echo $primary_3; ?>;
 }
 
+/* @todo: noooooo */
 #edit .wrapper .nav li a.pages,
 #pages .wrapper .nav li a.pages,
 #menu-manager .wrapper .nav li a.pages,
@@ -1304,6 +1310,7 @@ table.comptable label {
 	color: #777;
 }
 
+/* @todo more wrappers */
 .wrapper a.component {
 	float: left;
 	font-weight: bold;
@@ -1621,6 +1628,7 @@ table.simple td.title {
 	 background: #FCFBB8;
 }
 
+/* @todo all these wrappers, why every page has a wrapper */
 .wrapper table td span.ERRmsg {
 	color: #D94136;
 	font-size: 12px;
@@ -1908,6 +1916,8 @@ div.showstatus{
 	float:right;
 }
 
+
+/* @todo #ID selector hell, can be fixed up once some heirarchy is established */
 /* healthcheck only */
 #health-check #hc_version.label {
 	width: 292px;
@@ -2294,6 +2304,7 @@ h5 .crumbs, div.h5 .crumbs {
 	background-color: #F6F6F6;
 }
 
+/* @todo with other link styles? */
 a.disabled:link,
 a.disabled:visited {
 	pointer-events: none;
@@ -2306,6 +2317,7 @@ a.disabled:visited {
  * Theme Editor custom layout
  */
 
+/* @todo ditch the IDs */
 #theme-edit .updated, #theme-edit .error, #theme-edit .notify {
 	margin: 0 15px 15px 15px;
 }
@@ -2808,6 +2820,7 @@ a.disabled:visited {
  	cursor: pointer;
  	font-size: 11px;
  	margin-left:0;
+ 	color: #777;
 }
 
 .tree-indent {
