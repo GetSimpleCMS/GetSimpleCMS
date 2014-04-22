@@ -22,7 +22,6 @@ if ($SITEURL==""){
 	$SITEURL=suggest_site_path();
 }
 
-
 $GS_script_assets = array(); // defines asset scripts
 $GS_style_assets = array();  // defines asset styles
 
@@ -73,14 +72,15 @@ $GS_script_assets['scrolltofixed']['local']['ver']   = '0.0.1';
  * Register shared javascript/css scripts for loading into the header
  */
 if (!getDef('GSNOCDN',true)){
-	register_script('jquery', $GS_script_assets['jquery']['cdn']['url'], $GS_script_assets['jquery']['cdn']['ver'], FALSE);
-	register_script('jquery-ui',$GS_script_assets['jquery-ui']['cdn']['url'],$GS_script_assets['jquery-ui']['cdn']['ver'],FALSE);
-	register_style('font-awesome', $GS_style_assets['font-awesome']['cdn']['url'], $GS_style_assets['font-awesome']['cdn']['ver'], 'screen');
+	register_script('jquery', $GS_script_assets['jquery']['cdn']['url'], '', FALSE);
+	register_script('jquery-ui',$GS_script_assets['jquery-ui']['cdn']['url'],'',FALSE);
+	register_style('font-awesome', $GS_style_assets['font-awesome']['cdn']['url'], '', 'screen');
 } else {
 	register_script('jquery', $GS_script_assets['jquery']['local']['url'], $GS_script_assets['jquery']['local']['ver'], FALSE);
 	register_script('jquery-ui',$GS_script_assets['jquery-ui']['local']['url'],$GS_script_assets['jquery-ui']['local']['ver'],FALSE);
 	register_style('font-awesome', $GS_style_assets['font-awesome']['local']['url'], $GS_style_assets['font-awesome']['local']['ver'], 'screen');	
 }
+
 register_script('fancybox', $GS_script_assets['fancybox']['local']['url'], $GS_script_assets['fancybox']['local']['ver'],FALSE);
 register_style('fancybox-css', $GS_style_assets['fancybox']['local']['url'], $GS_style_assets['fancybox']['local']['ver'], 'screen');
 
@@ -522,70 +522,52 @@ function dequeue_script($handle, $where){
 }
 
 /**
- * Get Scripts
+ * Get Scripts for front end
  *
- * Echo and load scripts
- *
- * @since 3.1
- * @uses $GS_scripts
- *
+ * @since 3.1 *
  * @param boolean $footer Load only script with footer flag set
  */
 function get_scripts_frontend($footer = false){
-	global $GS_scripts;
-	if (!$footer){
-		get_styles_frontend();
-	}
-	foreach ($GS_scripts as $script){
-		if ($script['where'] & GSFRONT ){
-			if (!$footer){
-				if ($script['load'] == true && $script['in_footer'] == false ){
-					 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
-					 cdn_fallback($script);		 					 
-				}
-			} else {
-				if ($script['load'] == true && $script['in_footer'] == true ){
-					 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
-					 cdn_fallback($script);		 					 
-				}
-			}
-		}
-	}
+	getScripts(GSFRONT,$footer);
+}
+
+/**
+ * Get Scripts for backend
+ *
+ * @since 3.1 *
+ * @param boolean $footer Load only script with footer flag set
+ */
+function get_scripts_backend($footer = false){
+	getScripts(GSBACK,$footer);
 }
 
 /**
  * Get Scripts
  *
- * Echo and load scripts
+ * Echo and load scripts via queue depending on if in footer and on front or back
  *
- * @since 3.1
+ * @since 3.4
  * @uses $GS_scripts
  *
+ * @param int $facing GSBACK or GSFRONT constant
  * @param boolean $footer Load only script with footer flag set
  */
-function get_scripts_backend($footer = false){
+function getScripts($facing = GSBACK, $footer = false){
 	global $GS_scripts;
 	if (!$footer){
-		get_styles_backend();
+		$facing === GSBACK ? get_styles_backend() : get_styles_frontend();
 	}
 
 	# debugLog($GS_scripts);
 	foreach ($GS_scripts as $script){
-		if ($script['where'] & GSBACK ){	
-			if (!$footer){
-				if ($script['load'] == true && $script['in_footer'] == false ){
-					 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
-					 cdn_fallback($script);		 
-				}
-			} else {
-				if ($script['load'] == true && $script['in_footer'] == true ){
-					 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
-					 cdn_fallback($script);		 					 
-				}
-			}
+		if ($script['load'] == true && ($script['where'] & $facing) ){
+			if($footer && $script['in_footer'] !== true) continue;
+			echo '<script src="'.$script['src'].( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '"></script>';
+			cdn_fallback($script);	
 		}
-	}
+	}	
 }
+
 
 /**
  * Add javascript for cdn fallback to local
@@ -665,41 +647,39 @@ function register_style($handle, $src, $ver, $media){
 
 /**
  * Get Styles Frontend
- * 
- * Echo and load Styles in the Theme header
- *
  * @since 3.1
+ */
+function get_styles_frontend(){
+	getStyles(GSFRONT);
+}
+
+/**
+ * Get Styles Backend
+ * @since 3.1
+  */
+function get_styles_backend(){
+	getStyles(GSBACK);
+}
+
+
+/**
+ * Get Styles Backend
+ *
+ * Echo and load Styles on Front or Back
+ *
+ * @since 3.4
  * @uses $GS_styles
  *
  */
-function get_styles_frontend(){
+function getStyles($facing = GSBACK){
 	global $GS_styles;
 	foreach ($GS_styles as $style){
-		if ($style['where'] & GSFRONT ){
+		if ($style['where'] & $facing ){
 				if ($style['load'] == true){
-					echo '<link href="'.$style['src'].'?v='.$style['ver'].'" rel="stylesheet" media="'.$style['media'].'">';
+					echo '<link href="'.$style['src']. ( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '" rel="stylesheet" media="'.$style['media'].'">';
 				}
 		}
 	}
 }
 
-/**
- * Get Styles Backend
- *
- * Echo and load Styles on Admin
- *
- * @since 3.1
- * @uses $GS_styles
- *
- */
-function get_styles_backend(){
-	global $GS_styles;
-	foreach ($GS_styles as $style){
-		if ($style['where'] & GSBACK ){
-				if ($style['load'] == true){
-					echo '<link href="'.$style['src'].'?v='.$style['ver'].'" rel="stylesheet" media="'.$style['media'].'">';
-				}
-		}
-	}
-}
 ?>
