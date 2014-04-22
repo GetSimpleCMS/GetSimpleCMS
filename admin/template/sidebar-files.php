@@ -152,18 +152,18 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 	            success: function(response)
 	            {
 	            	if(response == 1){
-	            		if(confirm(file.name + "\n\nFile Exists, Overwrite?")){
+	            		if(confirm(file.name + "\n\n" + i18n('FILE_EXISTS_PROMPT') )){
 	            			file.overwrite = 1;
 	            			done();
 	            		}	
-	                	else done('Cancelled');
+	                	else done(i18n('CANCELLED'));
 	            	} 
 	            	else if(response == 0) done();
-	            	else done('Error');
+	            	else done(i18n('ERROR'));
 	            },
 	            error: function(response)
 	            {
-	                done('Error');
+	                done(i18n('ERROR'));
 	            }
 	        });	
 		}
@@ -175,7 +175,7 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 
 		// after success, remove queue item
 		myDropzone.on("success", function(file) {
-			removeFromQueue(file);
+			if(!this.options.debug)	removeFromQueue(file);
   		});
 
 		// progress of total queue

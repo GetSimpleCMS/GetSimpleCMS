@@ -49,9 +49,7 @@ if (isset($_FILES['file'])) {
 			$base     = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
 			$file_loc = $path . $base;
 			
-			//prevent overwriting
-			// @todo redo variables to avoid the double redundant clean_img_name(to7bit below
-						
+			//prevent overwriting						
 			if(!isset($_POST['fileoverwrite'])){
 				while ( file_exists($file_loc) ) {
 					$file_loc = $path . $count.'-'. $base;
@@ -77,13 +75,13 @@ if (isset($_FILES['file'])) {
 
 				$messages[] = i18n_r('FILE_SUCCESS_MSG');
 				if(requestIsAjax()){
-					header('Status: 200');				
+					header("HTTP/1.0 200");
 					die();
 				}	
 			} else {
 				$messages[] = $_FILES["file"]["name"][$i] .' - '.i18n_r('ERROR_UPLOAD');
 				if(requestIsAjax()){
-					header('Status: 403 File not allowed');
+					header("HTTP/1.0 403");
 					i18n('ERROR_UPLOAD');
 					die();
 				}	
@@ -100,6 +98,13 @@ if (isset($_FILES['file'])) {
 			}
 		}
 		if(sizeof($errors) != 0) {
+
+			if(requestIsAjax()){
+				header("HTTP/1.0 403");
+				i18n('ERROR_UPLOAD');
+				die();
+			}
+
 			foreach($errors as $msg) {
 				$error = $msg.'<br />';
 			}

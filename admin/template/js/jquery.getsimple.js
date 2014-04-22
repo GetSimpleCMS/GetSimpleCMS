@@ -109,8 +109,12 @@ function basename(str){
 	return str.substring(0,str.lastIndexOf('/') );
 }
 	
+/**
+ * generic i18n using array
+ * @todo add sprintf
+ */
 function i18n(key){
-	return GS.i18n[key];
+	return GS.i18n[key] || key;
 }
 
 /**
