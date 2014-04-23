@@ -137,16 +137,16 @@ $themeselector .= '</select>';
 	</script>
 	<?php } 
 
-	$jsi18nkeys = array(
-		'PLUGIN_UPDATED',
-		'ERROR',
-		'EXPAND_TOP',
-		'COLLAPSE_TOP',
-		'FILE_EXISTS_PROMPT',
-		'CANCELLED'
-	);
-	
-	$jsi18n = array_combine($jsi18nkeys,array_map('i18n_r',$jsi18nkeys));
+		$jsi18nkeys = array(
+			'PLUGIN_UPDATED',
+			'ERROR',
+			'EXPAND_TOP',
+			'COLLAPSE_TOP',
+			'FILE_EXISTS_PROMPT',
+			'CANCELLED'
+		);
+		
+		$jsi18n = array_combine($jsi18nkeys,array_map('i18n_r',$jsi18nkeys));
 
 	?>
 	
@@ -154,7 +154,6 @@ $themeselector .= '</select>';
 		// init gs namespace and i18n
 		var GS = {};
 		GS.i18n = <?php echo json_encode($jsi18n); ?>;
-		console.log(GS.i18n);
 		GS.debug = <?php echo isDebug() === true ? 'true' : 'false'; ?> ;
 	</script>
 
