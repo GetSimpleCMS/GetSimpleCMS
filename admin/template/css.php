@@ -2933,3 +2933,8 @@ a.disabled:visited {
    .label-medium-debug:after                                      { content: "<?php echo $label_6;   ?>";}
 
 /* </style> */
+
+#nav_loaderimg {
+	width: 60px;
+	height: 30px;
+}

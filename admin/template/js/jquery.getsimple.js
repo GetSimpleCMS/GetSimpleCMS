@@ -74,6 +74,60 @@ $.fn.removeit = function ($delay) {
 	return $(this);
 };
  
+/*
+ * spinner
+ */
+
+$.fn.spin = function(opts, color) {
+
+	return this.each(function() {
+		var $this = $(this),
+		data = $this.data();
+
+		if (data.spinner) {
+			data.spinner.stop();
+			delete data.spinner;
+		}
+
+		if(opts === undefined) opts = $.fn.spin.presets['gs'];
+
+		if (opts !== false) {
+			console.log(opts);
+			opts = $.extend(
+				{ color: color || $this.css('color') },
+				$.fn.spin.presets['gs'],
+				$.fn.spin.presets[opts] || opts
+			);
+			data.spinner = new Spinner(opts).spin(this);
+		}
+	});
+};
+
+$.fn.spin.presets = {
+	tiny:  {  width: 2, radius: 2 },
+	large: { width: 6, radius: 8 },
+	xlarge: { width: 10, radius: 13 },
+	gs: {
+		lines      : 9,          // The number of lines to draw
+		length     : 0,          // The length of each line
+		width      : 4,          // The line thickness
+		radius     : 5,          // The radius of the inner circle
+		corners    : 1,          // Corner roundness (0..1)
+		rotate     : 0,         // The rotation offset
+		direction  : 1,          // 1 clockwise, -1 counterclockwise
+		color      : 'rgba(255, 255, 255, 0.8)',  // #rgb or #rrggbb or array of colors
+		speed      : 1.2,        // Rounds per second
+		trail      : 45,         // Afterglow percentage
+		opacity    : 0,          // Opacity of the lines
+		shadow     : false,      // Whether to render a shadow
+		hwaccel    : false,      // Whether to use hardware acceleration
+		className  : 'spinner',  // The CSS class to assign to the spinner
+		zIndex     : 2e9,        // The z-index (defaults to 2000000000)
+		top        : '50%',      // Top position relative to parent
+		left       : '100%'      // Left position relative to parent
+	}
+};
+
 }( jQuery));
 
 /* notification functions */
@@ -100,7 +154,7 @@ function notify($msg, $type) {
 		return $notify;
 	}
 }
- 
+
 function clearNotify() {
 	$('div.wrapper .notify').remove();
 }
@@ -144,7 +198,8 @@ jQuery(document).ready(function () {
 	});
 
 	var loadingAjaxIndicator = $('#loader');
- 
+	// loadingAjaxIndicator.parent().spin();
+
 	function checkCoords() {
 		if (parseInt($('#x').val(),10)) return true;
 		alert('Please select a crop region then press submit.');
