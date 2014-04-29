@@ -82,7 +82,7 @@ a img {
 }
 
 .hidden {
-	display: none;
+	display: none !important;
 }
 
 html {
@@ -299,6 +299,12 @@ html {
 
 .wrapper .nav li a:hover em, .wrapper .nav li a:focus em {
 	border-bottom: 1px dotted #666;
+}
+
+#nav_loaderimg {
+	width: 30px;
+	height: 30px;
+	-webkit-transition: none;
 }
 
 .wrapper #pill {
@@ -2290,6 +2296,7 @@ h5 .crumbs, div.h5 .crumbs {
 	margin-bottom: 20px;
 }
 
+/* ajaxwait deprecated , use js spin() */
 .ajaxwait {
 	background-image: url('images/ajax.gif');
 	background-position: center;
@@ -2302,6 +2309,7 @@ h5 .crumbs, div.h5 .crumbs {
 
 .ajaxwait_tint_dark {
 	background-color: #F6F6F6;
+	position: relative;	
 }
 
 /* @todo with other link styles? */
@@ -2418,6 +2426,7 @@ a.disabled:visited {
 		margin: 0;
 		padding: 2px 0;
 		list-style: none;
+		position:relative;
 }
 #theme_filemanager ul ul li {
 		margin-left: 20px;
@@ -2486,7 +2495,7 @@ a.disabled:visited {
 .ext-php {background-image: url(images/filemanager/application-x-php.png);}
 .ext-css {background-image: url(images/filemanager/text-css.png);}
 .ext-theme {background-image: url(images/filemanager/preferences-desktop-theme.png);}
-.ext-wait {background-image: url(images/ajax_dark.gif);}
+.ext-wait,.ext-blank {background-image: none;}
 
 /* Grayscale */
 .desaturate, .dir-empty{
@@ -2629,7 +2638,8 @@ a.disabled:visited {
 .codewrap .CodeMirror {
 	font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;
 	height: auto;
-	max-height: 550px;/* autosizing max height */
+	/* autosizing max height @todo: breaks gutter height and overrides above */
+	max-height: 550px; 
 	background-color:#FEFEFE;
 	/*padding-bottom:20px;*/
 	border: 3px solid rgba(128,128, 128, .15);
@@ -2933,8 +2943,3 @@ a.disabled:visited {
    .label-medium-debug:after                                      { content: "<?php echo $label_6;   ?>";}
 
 /* </style> */
-
-#nav_loaderimg {
-	width: 60px;
-	height: 30px;
-}

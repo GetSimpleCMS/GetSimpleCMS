@@ -73,6 +73,20 @@ $.fn.removeit = function ($delay) {
 	});
 	return $(this);
 };
+
+// overrides a method thats supposed to be called on a single node (a method like val)
+$.fn.overrideNodeMethod = function(methodName, action) {
+    var originalVal = $.fn[methodName];
+    var thisNode = this;
+    $.fn[methodName] = function() {
+    	// if called on node, avoid recursion from callback
+        if (this[0]==thisNode[0] && arguments.callee.caller !== action) {
+            return action.apply(this, arguments);
+        } else {
+            return originalVal.apply(this, arguments);
+        }
+    };
+};
  
 /*
  * spinner
@@ -92,14 +106,19 @@ $.fn.spin = function(opts, color) {
 		if(opts === undefined) opts = $.fn.spin.presets['gs'];
 
 		if (opts !== false) {
-			console.log(opts);
 			opts = $.extend(
 				{ color: color || $this.css('color') },
 				$.fn.spin.presets['gs'],
 				$.fn.spin.presets[opts] || opts
 			);
+			
+			// var shim = $('<span style="position:relative"></span>');
+			// $this.append(shim);
+			// data.spinner = new Spinner(opts).spin($(shim)[0]);
+			
 			data.spinner = new Spinner(opts).spin(this);
 		}
+
 	});
 };
 
@@ -107,6 +126,8 @@ $.fn.spin.presets = {
 	tiny:  {  width: 2, radius: 2 },
 	large: { width: 6, radius: 8 },
 	xlarge: { width: 10, radius: 13 },
+	gsdefault: { color : 'rgba(255, 255, 255, 0.8)' },
+	gsfilemanager: { width:3, radius: 4,color : 'rgba(0, 0, 0, 0.6)',left: '13px' , top: '50%' },
 	gs: {
 		lines      : 9,          // The number of lines to draw
 		length     : 0,          // The length of each line
@@ -115,7 +136,7 @@ $.fn.spin.presets = {
 		corners    : 1,          // Corner roundness (0..1)
 		rotate     : 0,         // The rotation offset
 		direction  : 1,          // 1 clockwise, -1 counterclockwise
-		color      : 'rgba(255, 255, 255, 0.8)',  // #rgb or #rrggbb or array of colors
+		// color      : 'rgba(255, 255, 255, 0.8)',  // #rgb or #rrggbb or array of colors
 		speed      : 1.2,        // Rounds per second
 		trail      : 45,         // Afterglow percentage
 		opacity    : 0,          // Opacity of the lines
@@ -124,7 +145,7 @@ $.fn.spin.presets = {
 		className  : 'spinner',  // The CSS class to assign to the spinner
 		zIndex     : 2e9,        // The z-index (defaults to 2000000000)
 		top        : '50%',      // Top position relative to parent
-		left       : '100%'      // Left position relative to parent
+		left       : '50%'      // Left position relative to parent
 	}
 };
 
@@ -197,8 +218,9 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	var loadingAjaxIndicator = $('#loader');
-	// loadingAjaxIndicator.parent().spin();
+	// replace loader IMG with ajax loader
+	$('#loader').remove();
+	var loadingAjaxIndicator = $($('#nav_loaderimg').spin('gsdefault').data('spinner').el).attr('id','loader').hide();
 
 	function checkCoords() {
 		if (parseInt($('#x').val(),10)) return true;
@@ -461,17 +483,16 @@ jQuery(document).ready(function () {
 	$("#maincontent").on("click", ".toggleEnable", function ($e) {
 		$e.preventDefault();
  
-		var loadingAjaxIndicator = $('#loader');
-		document.body.style.cursor = "wait";
+		// document.body.style.cursor = "wait";
 		loadingAjaxIndicator.show();
  
 		var message = $(this).attr("title");
 		var dlink = $(this).attr("href");
 		var mytd = $(this).parents("td");
 		var mytr = $(this).parents("tr");
- 
-		mytd.html('');
-		mytd.addClass('ajaxwait ajaxwait_dark ajaxwait_tint_dark');
+
+		mytd.html('').addClass('ajaxwait_tint_dark').spin();
+
 		$('.toggleEnable').addClass('disabled');
  
 		$.ajax({
@@ -490,17 +511,17 @@ jQuery(document).ready(function () {
 				$('#sidebar').html($("<div>").append(responseText.replace(rscript, "")).find('#sidebar > *'));
 				$('#maincontent').html($("<div>").append(responseText.replace(rscript, "")).find('#maincontent > *'));
  
-				document.body.style.cursor = "default";
+				// document.body.style.cursor = "default";
 				clearNotify();
 				notifyOk(i18n('PLUGIN_UPDATED')).popit().removeit();
 			},
 			error: function (data, textStatus, jqXHR) {
 				// These go in failures if we catch them in the future
 				document.body.style.cursor = "default";
-				mytd.removeClass('ajaxwait ajaxwait_dark ajaxwait_tint_dark');
+				mytd.removeClass('ajaxwait_tint_dark');
 				$('.toggleEnable').removeClass('disabled');
 				loadingAjaxIndicator.fadeOut();
- 
+				mytd.stop(); 
 				clearNotify();
 				notifyError(i18n('ERROR'));
 			}
@@ -624,6 +645,8 @@ jQuery(document).ready(function () {
 	///////////////////////////////////////////////////////////////////////////
 	// theme-edit.php
 	///////////////////////////////////////////////////////////////////////////
+	
+	// change gs theme dropdown
 	$("#theme-folder").on('change',function (e) {
 		var thmfld = $(this).val();
 		if (checkChanged()) return; // todo: change selection back
@@ -631,7 +654,7 @@ jQuery(document).ready(function () {
 		updateTheme(thmfld);
 	});
 
-	// editor theme selector
+	// codemirror editor theme select
 	$('#cm_themeselect').on('change',function(e){
 		var theme = $(this).find(":selected").text();
 		sendDataToServer('theme-edit.php','themesave='+theme);
@@ -659,8 +682,8 @@ jQuery(document).ready(function () {
 		// console.log($(this).attr('href'));
 		if (checkChanged()) return;
 		clearFileOpen();
-		$(this).addClass('ext-wait'); // loading icon
-		$(this).addClass('open'); // loading icon
+		$(this).addClass('open').addClass('ext-wait');
+		$(this).parent().spin('gsfilemanager'); // ajax spinner
 		updateTheme('','_noload',$(this).attr('href')+'&ajax=1'); // ajax request
 	});
 
@@ -679,7 +702,7 @@ jQuery(document).ready(function () {
 		file  = file  === undefined ? '' : file;
 		url   = url   === undefined ? "theme-edit.php?t="+theme+'&f='+file : url;
 		
-		loadingAjaxIndicator.show('fast');
+		loadingAjaxIndicator.show();
 		$('#codetext').data('editor').setValue('');
 		$('#codetext').data('editor').hasChange = false;
 		$('#theme_edit_code').fadeTo('fast',0.3);
@@ -724,6 +747,7 @@ jQuery(document).ready(function () {
 				
 				clearFileWaits();
 				loadingAjaxIndicator.fadeOut();
+
 				$('#theme_edit_code').fadeTo('fast',1);
 
 			}
@@ -733,6 +757,7 @@ jQuery(document).ready(function () {
 	
 	// removes loading icons
 	function clearFileWaits(){
+		$('#theme_filemanager li .spinner').each(function(){$(this).closest('li').data('spinner').stop();}); 
 		$('#theme_filemanager a.ext-wait').removeClass('ext-wait'); 
 	}
 
@@ -760,7 +785,7 @@ jQuery(document).ready(function () {
 
 	// ajax save theme file
 	themeFileSave = function(cm){
-		loadingAjaxIndicator.show('fast');
+		loadingAjaxIndicator.show();
 
 		cm.save(); // copy cm back to textarea
 
@@ -795,7 +820,7 @@ jQuery(document).ready(function () {
 		console.log("onsubmit");
 		e.preventDefault();
 
-		loadingAjaxIndicator.show('fast');
+		loadingAjaxIndicator.show();
 		// $('#codetext').data('editor').setValue('');
 		// $('#codetext').data('editor').hasChange == false;
 		// $('#theme_edit_code').fadeTo('fast',0.3);
@@ -830,7 +855,7 @@ jQuery(document).ready(function () {
 
 	componentSave = function(cm){
 		
-		loadingAjaxIndicator.show('fast');
+		loadingAjaxIndicator.show();
 
 		cm.save(); // copy cm back to textarea
 
