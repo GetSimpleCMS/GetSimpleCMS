@@ -813,6 +813,13 @@ h5:hover img {
 	color: #000;
 }
 
+/*
+ fix for firefox row heighs inheritance for positioning children, specifically absolute children
+ */
+tr, td.status {
+	height: 100%;
+}
+
 /* popup does not appear to be in use */
 .popup table td {
 	padding: 4px;
@@ -2309,7 +2316,7 @@ h5 .crumbs, div.h5 .crumbs {
 
 .ajaxwait_tint_dark {
 	background-color: #F6F6F6;
-	position: relative;	
+	/*position: relative;	*/
 }
 
 /* @todo with other link styles? */

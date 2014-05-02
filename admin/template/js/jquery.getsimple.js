@@ -92,7 +92,7 @@ $.fn.overrideNodeMethod = function(methodName, action) {
  * spinner
  */
 
-$.fn.spin = function(opts, color) {
+$.fn.spin = function(opts, color, shim) {
 
 	return this.each(function() {
 		var $this = $(this),
@@ -112,11 +112,13 @@ $.fn.spin = function(opts, color) {
 				$.fn.spin.presets[opts] || opts
 			);
 			
-			// var shim = $('<span style="position:relative"></span>');
-			// $this.append(shim);
-			// data.spinner = new Spinner(opts).spin($(shim)[0]);
-			
-			data.spinner = new Spinner(opts).spin(this);
+			if(opts.shim !== undefined && opts.shim === true){
+				var shimElem = $('<div style="position:relative;display:inline-block;height:100%;width:100%"></div>');
+				$this.append(shimElem);
+				data.spinner = new Spinner(opts).spin($(shimElem)[0]);
+			} else {
+				data.spinner = new Spinner(opts).spin(this); return;
+			}
 		}
 
 	});
@@ -127,6 +129,7 @@ $.fn.spin.presets = {
 	large: { width: 6, radius: 8 },
 	xlarge: { width: 10, radius: 13 },
 	gsdefault: { color : 'rgba(255, 255, 255, 0.8)' },
+	gstable: { shim: true },
 	gsfilemanager: { width:3, radius: 4,color : 'rgba(0, 0, 0, 0.6)',left: '13px' , top: '50%' },
 	gs: {
 		lines      : 9,          // The number of lines to draw
@@ -136,7 +139,7 @@ $.fn.spin.presets = {
 		corners    : 1,          // Corner roundness (0..1)
 		rotate     : 0,         // The rotation offset
 		direction  : 1,          // 1 clockwise, -1 counterclockwise
-		// color      : 'rgba(255, 255, 255, 0.8)',  // #rgb or #rrggbb or array of colors
+		// color     : '#FFF',  // #rgb or #rrggbb or array of colors
 		speed      : 1.2,        // Rounds per second
 		trail      : 45,         // Afterglow percentage
 		opacity    : 0,          // Opacity of the lines
@@ -218,9 +221,14 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	// replace loader IMG with ajax loader
-	$('#loader').remove();
-	var loadingAjaxIndicator = $($('#nav_loaderimg').spin('gsdefault').data('spinner').el).attr('id','loader').hide();
+	var loadingAjaxIndicator;
+	initLoaderIndicator();
+
+	function initLoaderIndicator(){
+		// replace loader IMG with ajax loader
+		$('#loader').remove();
+		loadingAjaxIndicator = $($('#nav_loaderimg').spin('gsdefault').data('spinner').el).attr('id','loader').hide();
+	}
 
 	function checkCoords() {
 		if (parseInt($('#x').val(),10)) return true;
@@ -491,10 +499,10 @@ jQuery(document).ready(function () {
 		var mytd = $(this).parents("td");
 		var mytr = $(this).parents("tr");
 
-		mytd.html('').addClass('ajaxwait_tint_dark').spin();
+		mytd.html('').addClass('ajaxwait_tint_dark').spin('gstable');
 
 		$('.toggleEnable').addClass('disabled');
- 
+
 		$.ajax({
 			type: "GET",
 			dataType: "html",
@@ -514,6 +522,7 @@ jQuery(document).ready(function () {
 				// document.body.style.cursor = "default";
 				clearNotify();
 				notifyOk(i18n('PLUGIN_UPDATED')).popit().removeit();
+				initLoaderIndicator();
 			},
 			error: function (data, textStatus, jqXHR) {
 				// These go in failures if we catch them in the future
