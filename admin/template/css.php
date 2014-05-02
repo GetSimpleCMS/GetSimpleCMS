@@ -303,7 +303,7 @@ html {
 
 #nav_loaderimg {
 	width: 30px;
-	height: 30px;
+	padding: 13px 7px;
 	-webkit-transition: none;
 }
 

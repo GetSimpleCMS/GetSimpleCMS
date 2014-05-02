@@ -90,6 +90,13 @@ $.fn.overrideNodeMethod = function(methodName, action) {
  
 /*
  * spinner
+ *
+ * adds ajax or wait spinner, configured via opts object or presets
+ * inherits color from parent if not present
+ * presets.gs is base opts, all others are extended and override
+ * 
+ * @since 3.4
+ *
  */
 
 $.fn.spin = function(opts, color, shim) {
