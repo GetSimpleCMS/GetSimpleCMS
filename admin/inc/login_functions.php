@@ -33,8 +33,6 @@ if(isset($_POST['submitted'])) {
 		
 		# hash the given password
 		$password  = passhash($password);
-		$logFailed = new GS_Logging_Class('failedlogins.log');
-		$logFailed->add('Username',$userid);
 
 		# does this user exist?
 		if (file_exists($user_xml)) {
@@ -49,12 +47,16 @@ if(isset($_POST['submitted'])) {
 			} else {
 				$authenticated = false;
 				# add login failure to failed logins log
+				$logFailed = new GS_Logging_Class('failedlogins.log');
+				$logFailed->add('Username',$userid);
 				$logFailed->add('Reason','Invalid Password');
 			}
 		} else {
 			# user doesnt exist in this system
 			$authenticated = false;
 			# add login failure to failed logins log
+			$logFailed = new GS_Logging_Class('failedlogins.log');
+			$logFailed->add('Username',$userid);
 			$logFailed->add('Reason','Invalid User');
 		}
 		
@@ -67,7 +69,7 @@ if(isset($_POST['submitted'])) {
 		} else {
 			# NO - show error message
 			$error = i18n_r('LOGIN_FAILED');
-			$logFailed->save(); 								            
+			$logFailed->save();
 		} 
 		
 	} # end error check

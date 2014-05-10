@@ -225,14 +225,14 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') );
 
 			?>
 			</table>
-			<p class="hint"><?php echo sprintf(i18n_r('REQS_MORE_INFO'), $site_link_back_url."wiki/installation:requirements"); ?></p>
+			<p class="hint"><?php echo sprintf(i18n_r('REQS_MORE_INFO'), "http://get-simple.info/docs/requirements"); ?></p>
 			<?php if ($kill != '') { ?>
 				<p><?php i18n('KILL_CANT_CONTINUE');?> <a href="./" ><?php i18n('REFRESH');?></a></p>
 			<?php } else {?>
 			<form action="setup.php" method="post" accept-charset="utf-8" >
 				<div class="leftsec">
 					<p>			
-						<?php echo $langs; ?><a href="<?php echo $site_link_back_url; ?>wiki/languages" target="_blank" ><?php i18n('DOWNLOAD_LANG');?></a>
+						<?php echo $langs; ?><a href="http://get-simple.info/docs/languages" target="_blank" ><?php i18n('DOWNLOAD_LANG');?></a>
 						<noscript><a href="install.php?lang=" id="refreshlanguage" ><?php i18n('REFRESH');?></a> &nbsp;|&nbsp;</noscript> 
 					</p>
 				</div>

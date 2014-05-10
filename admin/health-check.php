@@ -147,7 +147,7 @@ echo '<div class="bodycontent clearfix">
 				$serveris = get_Server_Software();
 				if(empty($serveris)) $serveris = i18n_r('NA');
 				echo "*".sprintf(i18n_r('SERVER_IS'), $serveris)."<br/>";
-				echo sprintf(i18n_r('REQS_MORE_INFO'), $site_link_back_url . "wiki/installation:requirements"); ?>
+				echo sprintf(i18n_r('REQS_MORE_INFO'), $site_link_back_url . "docs/requirements"); ?>
 			</p>
 			
 			<?php
