@@ -39,8 +39,8 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 			}
 			exec_action('file-uploaded');
 		} else {
-			i18n('ERROR_UPLOAD');
-			exit;
+			die(i18n_r('ERROR_UPLOAD') . ' - ' . i18n_r('BAD_FILE'));
+			// invalid file
 		}
 		 
 		$path = (isset($_POST['path'])) ? $_POST['path']."/" : "";
@@ -49,10 +49,15 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 		require('inc/imagemanipulation.php');	
 		genStdThumb(isset($_POST['path']) ? $_POST['path']."/" : '',$name);	
 
-		echo '1';
+		die('1');
+		// success
 	} else {
-		echo 'Invalid file type.';
+		die(i18n_r('ERROR_UPLOAD') . ' - ' . i18n_r('MISSING_FILE'));
+		// nothing sent
 	}
 } else {
-	echo 'Wrong session hash!';
+	die(i18n_r('ERROR_UPLOAD') . ' - ' . i18n_r('API_ERR_AUTHFAILED'));
+	// Wrong session hash!
 }
+
+die('END');

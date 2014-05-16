@@ -9,19 +9,55 @@
  * @subpackage init
  */
 
-define('IN_GS', TRUE);
+
+/**
+ * Headers
+ */
+
+// charset utf-8
+header('content-type: text/html; charset=utf-8');
+
+// no-cache headers
+if(!isset($base)){
+	$timestamp = gmdate("D, d M Y H:i:s") . " GMT";
+	header("Expires: " . $timestamp);
+	header("Last-Modified: " . $timestamp);
+	header("Pragma: no-cache");
+	header("Cache-Control: no-cache, must-revalidate");
+}
+
+define('IN_GS', TRUE); // GS enviroment flag
+
+// GS Debugger
+global $GS_debug; // GS debug trace array
+if(!isset($GS_debug)) $GS_debug = array();	
+
+/**
+ * Debug Console Log
+ *
+ * @since 3.1
+ *
+ * @param $txt string
+ */
+function debugLog($txt = '') {
+	global $GS_debug;
+	array_push($GS_debug,$txt);
+}
+
+/**
+ * Set PHP enviroment
+ */
+if(function_exists('mb_internal_encoding')) mb_internal_encoding("UTF-8"); // set multibyte encoding
 
 /**
  *  GSCONFIG definitions
  */
-
 if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
 if(!defined('GSSTYLE_SBFIXED')) define('GSSTYLE_SBFIXED','sbfixed'); // fixed sidebar
 
 /**
  * Bad stuff protection
  */
-
 include_once('security_functions.php');
 
 if (version_compare(PHP_VERSION, "5")  >= 0) {
@@ -67,6 +103,8 @@ define('GSUSERSPATH', GSROOTPATH. 'data/users/');
 define('GSBACKUSERSPATH', GSROOTPATH. 'backups/users/');
 define('GSCACHEPATH', GSROOTPATH. 'data/cache/');
 define('GSAUTOSAVEPATH', GSROOTPATH. 'data/pages/autosave/');
+
+$reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
 
 require_once(GSADMININCPATH.'configuration.php');
 
@@ -130,37 +168,32 @@ if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 	$USR = null;
 }
 
-
-/** grab authorization and security data */
-if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
-	$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
-	$SALT = stripslashes($dataa->apikey);
-}	else {
-	$SALT = sha1($SITEURL);
-}
-$SESSIONHASH = sha1($SALT . $SITENAME);
-
 /**
  * Language control
  */
 if(!isset($LANG) || $LANG == '') {
-	$filenames = getFiles(GSLANGPATH);
+	$filenames = glob(GSLANGPATH.'*.php');	
 	$cntlang = count($filenames);
 	if ($cntlang == 1) {
+		// assign lang to only existing file
 		$LANG = basename($filenames[0], ".php");
-	} elseif($cntlang > 1) {
+	} elseif($cntlang > 1 && in_array(GSLANGPATH .'en_US.php',$filenames)) {
+		// fallback to en_US if it exists
 		$LANG = 'en_US';
+	} elseif(isset($filenames[0])) {
+		// fallback to first lang found
+		$LANG=basename($filenames[0], ".php");
 	}
 }
 
-include_once(GSLANGPATH . $LANG . '.php');
+i18n_merge(null); // load $LANG file into $i18n
 
 // Merge in default lang to avoid empty lang tokens
-// if GSMERGELANG is undefined or false merge en_US
+// if GSMERGELANG is undefined or false merge en_US else merge custom
 if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
 	if($LANG !='en_US')	i18n_merge(null,"en_US");
 } else{
-	// merge GSMERGELANG defined lang
+	// merge GSMERGELANG defined lang if not the same as $LANG
 	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
 }	
 
@@ -178,12 +211,10 @@ if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!=
 
 if(!isset($EDTOOL)) $EDTOOL = 'basic'; // default gs toolbar
 
-if(strpos($EDTOOL,'[')!==false){ $EDTOOL = "[$EDTOOL]"; } // toolbar is js array
-else if(is_array($EDTOOL)) $EDTOOL = json_encode($EDTOOL); // toolbar is php array, convert to js str
-// else if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
-else if($EDTOOL == "none") $EDTOOL = null; // toolbar to use cke default
-else $EDTOOL = "'$EDTOOL'"; // toolbar is a toolbar config variable config.js config.toolbar_$var = []
-
+if($EDTOOL == "none") $EDTOOL = null; // toolbar to use cke default
+$EDTOOL = returnJsArray($EDTOOL);
+// if($EDTOOL === null) $EDTOOL = 'null'; // not supported in cke 3.x
+// at this point $EDTOOL should always be a valid js nested array ([[ ]]) or escaped toolbar id ('toolbar_id')
 
 /**
  * Timezone setup
@@ -203,6 +234,25 @@ if(isset($TIMEZONE) && function_exists('date_default_timezone_set') && ($TIMEZON
  * Variable Globalization
  */
 global $SITENAME, $SITEURL, $TEMPLATE, $TIMEZONE, $LANG, $SALT, $i18n, $USR, $PERMALINK, $GSADMIN, $components, $EDTOOL, $EDOPTIONS, $EDLANG, $EDHEIGHT;
+
+/** grab authorization and security data */
+if (defined('GSUSECUSTOMSALT')) {
+	// use GSUSECUSTOMSALT
+	$SALT = sha1(GSUSECUSTOMSALT);
+} 
+else {
+	// use from authorization.xml
+	if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
+		$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
+		$SALT = stripslashes($dataa->apikey);
+	} else {
+		if($SITEURL !='' && get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update' && get_filename_id() != 'style'){
+			die(i18n_r('KILL_CANT_CONTINUE')."<br/>".i18n_r('MISSING_FILE').": "."authorization.xml");
+		}
+	}
+}
+$SESSIONHASH = sha1($SALT . $SITENAME);
+
 
 /**
  * $base is if the site is being viewed from the front-end

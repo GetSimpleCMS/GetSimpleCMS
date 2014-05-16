@@ -45,13 +45,13 @@ if (isset($_FILES['file'])) {
 			
 			//set variables
 			$count = '1';
-			$file_loc = $path . clean_img_name(to7bit($_FILES["file"]["name"][$i]));
 			$base = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+			$file_loc = $path . $base;
 			
 			//prevent overwriting
 			while ( file_exists($file_loc) ) {
-				$file_loc = $path . $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
-				$base = $count.'-'. clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+				$file_loc = $path . $count.'-'. $base;
+				$base = $count.'-'. $base;
 				$count++;
 			}
 			
@@ -143,9 +143,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
       		$dirsArray = array();
       
 			$filenames = getFiles($path);
+
 			if (count($filenames) != 0) { 
 				foreach ($filenames as $file) {
-					if ($file == "." || $file == ".." || $file == ".htaccess" ){
+					if ($file == "." || $file == ".." || $file == ".htaccess" || $file == "index.php"){
             // not a upload file
           	} elseif (is_dir($path . $file)) {
             $dirsArray[$dircount]['name'] = $file;

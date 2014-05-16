@@ -22,20 +22,24 @@ if(isset($_POST['submitted'])){
 		}
 	}
 	
-	if(isset($_POST['username']))	{
+	$randSleep = rand(250000,2000000); // random sleep for .25 to 2 seconds
+
+	if(isset($_POST['username']) and !empty($_POST['username']))	{
 
 		# user filename
 		$file = _id($_POST['username']).'.xml';
 		
 		# get user information from existing XML file
-		if (file_exists(GSUSERSPATH . $file)) {
-			$data = getXML(GSUSERSPATH . $file);
+		
+		if (filepath_is_safe(GSUSERSPATH . $file,GSUSERSPATH)) {
+			$data = simplexml_load_file(GSUSERSPATH . $file);
 			$USR = strtolower($data->USR);
 			$EMAIL = $data->EMAIL;
 			
 			if(strtolower($_POST['username']) == $USR) {
 				# create new random password
 				$random = createRandomPassword();
+				// $random = '1234';
 				
 				# create backup
 				createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
@@ -44,17 +48,9 @@ if(isset($_POST['submitted'])){
 				$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
 				copy(GSUSERSPATH . $file, $flagfile);
 				
-				# resave new user xml file
-				$xml = new SimpleXMLElement('<item></item>');
-				$xml->addChild('USR', $data->USR);
-				$xml->addChild('PWD', passhash($random));
-				$xml->addChild('EMAIL', $data->EMAIL);
-				$xml->addChild('HTMLEDITOR', $data->HTMLEDITOR);
-				$xml->addChild('PRETTYURLS', $data->PRETTYURLS);
-				$xml->addChild('PERMALINK', $data->PERMALINK);
-				$xml->addChild('TIMEZONE', $data->TIMEZONE);
-				$xml->addChild('LANG', $data->LANG);
-				XMLsave($xml, GSUSERSPATH . $file);
+				# change password and resave xml file
+				$data->PWD = passhash($random); 
+				$status = XMLsave($data, GSUSERSPATH . $file);
 				
 				# send the email with the new password
 				$subject = $site_full_name .' '. i18n_r('RESET_PASSWORD') .' '. i18n_r('ATTEMPT');
@@ -64,17 +60,20 @@ if(isset($_POST['submitted'])){
 				$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL . $GSADMIN.'/">'.$SITEURL . $GSADMIN.'/</a></p>';
 				exec_action('resetpw-success');
 				$status = sendmail($EMAIL,$subject,$message);
-				
 				# show the result of the reset attempt
+				usleep($randSleep); 
+				$status = 'success';
 				redirect("resetpassword.php?upd=pwd-".$status);
 			} else{
-				
 				# username doesnt match listed xml username
 				exec_action('resetpw-error');
-				redirect("resetpassword.php?upd=pwd-error");
+				usleep($randSleep);
+				redirect("resetpassword.php?upd=pwd-success");
 			} 
 		} else {
-			# no user exists for this username, but do not show this to the submitter		
+			# no user exists for this username, but do not show this to the submitter
+			usleep($randSleep);
+			redirect("resetpassword.php?upd=pwd-success");
 		}
 	} else {
 		

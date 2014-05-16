@@ -450,7 +450,10 @@ h5:hover img {
 }
 
 #sidebar.fixed{
-	-webkit-transition: top 200ms ease-out;
+	-transition: top .02s ease-out;
+		-webkit-transition: all .2s ease-in-out;
+		-moz-transition: all .2s ease-in-out;
+		-o-transition: all .2s ease-in-out;
 }
 
 #sidebar .section {
@@ -717,10 +720,10 @@ h5:hover img {
 .wrapper table tr {
 	border-bottom: 1px solid #eee;
 	border-top: 1px solid #eee;
-	transition: background-color .3s ease-in-out;
-		-webkit-transition: background-color .3s ease-in-out;
-		-moz-transition: background-color .3s ease-in-out;
-		-o-transition: background-color .3s ease-in-out;
+	transition: background-color .1s ease-in-out;
+		-webkit-transition: background-color .1s ease-in-out;
+		-moz-transition: background-color .1s ease-in-out;
+		-o-transition: background-color .1s ease-in-out;
 }
 
 table td a {
@@ -1090,16 +1093,16 @@ input.submit {
 	cursor: pointer;
 }*/
 
-input.submit {
+input.submit, .button {
 	font: bold 13px Helvetica, Arial, sans-serif;
-	text-decoration: none;
+	text-decoration: none !important;
 	padding: 7px 15px;
 	text-shadow: 0 1px 0 rgba(255,255,255,.5);
 	transition: all .218s;
 		-webkit-transition: all .218s;
 		-moz-transition: all .218s;
 		-o-transition: all .218s;
-	color: #333333;
+	color: #333333 !important;
 	background: #dddddd;
 		background: -webkit-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#e1e1e1));
 		background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#e1e1e1));
@@ -1113,7 +1116,7 @@ input.submit {
 		-webkit-box-shadow: rgba(0,0,0, 0.06) 0px 0px 3px;
 }
 
-input.submit:focus, input.submit:hover {
+input.submit:focus, input.submit:hover, .button:hover {
 	color: #111111;
 	background: #eeeeee;
 		background: -webkit-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#dddddd));
@@ -1122,6 +1125,10 @@ input.submit:focus, input.submit:hover {
 	box-shadow: rgba(0,0,0, 0.15) 0px 0px 4px;
 		-moz-box-shadow: rgba(0,0,0, 0.15) 0px 0px 4px;
 		-webkit-box-shadow: rgba(0,0,0, 0.15) 0px 0px 4px;	  
+}
+
+.button {
+	padding: 3px 7px;
 }
 
 .leftsec {
@@ -1386,10 +1393,10 @@ table td.delete a {
 	line-height: 16px;
 	font-size: 12px;
 	font-weight: normal;
-	-webkit-transition: all .05s ease-in-out;
-	-moz-transition: all .05s ease-in-out;
-	-o-transition: all .05s ease-in-out;
-	transition: all .05s ease-in-out;
+	-webkit-transition: all .02s ease-in-out;
+	-moz-transition: all .02s ease-in-out;
+	-o-transition: all .02s ease-in-out;
+	transition: all .02s ease-in-out;
 	font-style:normal;
 }
 
@@ -1412,10 +1419,10 @@ a.cancel:visited {
 	padding: 1px 3px;
 	background: none !important;
 	line-height: 16px;
-	-webkit-transition: all .05s ease-in-out;
-	-moz-transition: all .05s ease-in-out;
-	-o-transition: all .05s ease-in-out;
-	transition: all .05s ease-in-out;
+	-webkit-transition: all .02s ease-in-out;
+	-moz-transition: all .02s ease-in-out;
+	-o-transition: all .02s ease-in-out;
+	transition: all .02s ease-in-out;
 }
 
 a.cancel:hover {
@@ -2056,8 +2063,9 @@ h5 .crumbs, div.h5 .crumbs {
 	border: 1px solid #FF9933;
 	padding: 5px;
 	background: white;
-	height: 300px;
+	height: 500px;
 	overflow: scroll;
+	margin-bottom: 20px;
 }
 
 .ajaxwait {
