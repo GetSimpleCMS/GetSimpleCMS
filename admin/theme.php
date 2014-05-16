@@ -29,7 +29,7 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 	createBak($file, $path, $bakpath);
 	
 	# udpate website.xml file with new theme
-	$xml = new SimpleXMLExtended('<item></item>');
+	$xml  = new SimpleXMLExtended('<item></item>');
 	$note = $xml->addChild('SITENAME');
 	$note->addCData($SITENAME);
 	$note = $xml->addChild('SITEURL');

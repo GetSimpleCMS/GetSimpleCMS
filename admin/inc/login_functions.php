@@ -17,9 +17,9 @@ if(isset($_POST['submitted'])) {
 	
 	# initial variable setup
 	$user_xml = GSUSERSPATH . _id($_POST['userid']).'.xml';
-	$userid = strtolower($_POST['userid']);
+	$userid   = strtolower($_POST['userid']);
 	$password = $_POST['pwd'];
-	$error = null;
+	$error    = null;
 	
 	# check the username or password fields
 	if ( !$userid || !$password ) {
@@ -32,37 +32,33 @@ if(isset($_POST['submitted'])) {
 		exec_action('successful-login-start');
 		
 		# hash the given password
-		$password = passhash($password);
-    $logFailed = new GS_Logging_Class('failedlogins.log');
-    $logFailed->add('Username',$userid);
-        
+		$password  = passhash($password);
+
 		# does this user exist?
 		if (file_exists($user_xml)) {
-
 			# pull the data from the user's data file
-			$data = getXML($user_xml);
+			$data   = getXML($user_xml);
 			$PASSWD = $data->PWD;
-			$USR = strtolower($data->USR);
+			$USR    = strtolower($data->USR);
 
-			
 			# do the username and password match?
 			if ( ($userid == $USR) && ($password == $PASSWD) ) {
 				$authenticated = true;
 			} else {
 				$authenticated = false;
-
-        # add login failure to failed logins log
-        $logFailed->add('Reason','Invalid Password');
-        
-			} # end password match check
-			
+				# add login failure to failed logins log
+				$logFailed = new GS_Logging_Class('failedlogins.log');
+				$logFailed->add('Username',$userid);
+				$logFailed->add('Reason','Invalid Password');
+			}
 		} else {
 			# user doesnt exist in this system
 			$authenticated = false;
-
-      # add login failure to failed logins log
-      $logFailed->add('Reason','Invalid User');
-		}		
+			# add login failure to failed logins log
+			$logFailed = new GS_Logging_Class('failedlogins.log');
+			$logFailed->add('Username',$userid);
+			$logFailed->add('Reason','Invalid User');
+		}
 		
 		# is this successful?
 		if( $authenticated ) {
@@ -73,8 +69,8 @@ if(isset($_POST['submitted'])) {
 		} else {
 			# NO - show error message
 			$error = i18n_r('LOGIN_FAILED');
-      $logFailed->save(); 								            
-    } # end authenticated check
+			$logFailed->save();
+		} 
 		
 	} # end error check
 	

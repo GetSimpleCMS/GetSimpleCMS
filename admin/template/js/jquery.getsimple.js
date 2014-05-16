@@ -1,6 +1,9 @@
-/*
+/**
  * GetSimple js file    
+ * 
  */
+
+/* jshint multistr: true */
 
 /* jQuery reverseOrder
  * Written by Corey H Maass for Arc90; (c) Arc90, Inc.
@@ -70,7 +73,92 @@ $.fn.removeit = function ($delay) {
 	});
 	return $(this);
 };
+
+// overrides a method thats supposed to be called on a single node (a method like val)
+$.fn.overrideNodeMethod = function(methodName, action) {
+    var originalVal = $.fn[methodName];
+    var thisNode = this;
+    $.fn[methodName] = function() {
+    	// if called on node, avoid recursion from callback
+        if (this[0]==thisNode[0] && arguments.callee.caller !== action) {
+            return action.apply(this, arguments);
+        } else {
+            return originalVal.apply(this, arguments);
+        }
+    };
+};
  
+/*
+ * spinner
+ *
+ * adds ajax or wait spinner, configured via opts object or presets
+ * inherits color from parent if not present
+ * presets.gs is base opts, all others are extended and override
+ * 
+ * @since 3.4
+ *
+ */
+
+$.fn.spin = function(opts, color, shim) {
+
+	return this.each(function() {
+		var $this = $(this),
+		data = $this.data();
+
+		if (data.spinner) {
+			data.spinner.stop();
+			delete data.spinner;
+		}
+
+		if(opts === undefined) opts = $.fn.spin.presets['gs'];
+
+		if (opts !== false) {
+			opts = $.extend(
+				{ color: color || $this.css('color') },
+				$.fn.spin.presets['gs'],
+				$.fn.spin.presets[opts] || opts
+			);
+			
+			if(opts.shim !== undefined && opts.shim === true){
+				var shimElem = $('<div style="position:relative;display:inline-block;height:100%;width:100%"></div>');
+				$this.append(shimElem);
+				data.spinner = new Spinner(opts).spin($(shimElem)[0]);
+			} else {
+				data.spinner = new Spinner(opts).spin(this); return;
+			}
+		}
+
+	});
+};
+
+$.fn.spin.presets = {
+	tiny:  {  width: 2, radius: 2 },
+	large: { width: 6, radius: 8 },
+	xlarge: { width: 10, radius: 13 },
+	gsdefault: { color : 'rgba(255, 255, 255, 0.8)' },
+	gstable: { shim: true },
+	gsfilemanager: { width:3, radius: 4,color : 'rgba(0, 0, 0, 0.6)',left: '13px' , top: '50%' },
+	gs: {
+		lines      : 9,          // The number of lines to draw
+		length     : 0,          // The length of each line
+		width      : 4,          // The line thickness
+		radius     : 5,          // The radius of the inner circle
+		corners    : 1,          // Corner roundness (0..1)
+		rotate     : 0,         // The rotation offset
+		direction  : 1,          // 1 clockwise, -1 counterclockwise
+		// color     : '#FFF',  // #rgb or #rrggbb or array of colors
+		speed      : 1.2,        // Rounds per second
+		trail      : 45,         // Afterglow percentage
+		opacity    : 0,          // Opacity of the lines
+		shadow     : false,      // Whether to render a shadow
+		hwaccel    : false,      // Whether to use hardware acceleration
+		className  : 'spinner',  // The CSS class to assign to the spinner
+		zIndex     : 2e9,        // The z-index (defaults to 2000000000)
+		top        : '50%',      // Top position relative to parent
+		left       : '50%'      // Left position relative to parent
+	}
+};
+
 }( jQuery));
 
 /* notification functions */
@@ -97,7 +185,7 @@ function notify($msg, $type) {
 		return $notify;
 	}
 }
- 
+
 function clearNotify() {
 	$('div.wrapper .notify').remove();
 }
@@ -106,8 +194,19 @@ function basename(str){
 	return str.substring(0,str.lastIndexOf('/') );
 }
 	
+/**
+ * generic i18n using array
+ * @todo add sprintf
+ */
 function i18n(key){
-	return GS.i18n[key];
+	return GS.i18n[key] || key;
+}
+
+/**
+ * get elements tagname
+ */
+function getTagName(elem){
+	return $(elem).prop('tagName');
 }
 
 jQuery(document).ready(function () {
@@ -129,16 +228,21 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	var loadingAjaxIndicator = $('#loader');
- 
+	var loadingAjaxIndicator;
+	initLoaderIndicator();
+
+	function initLoaderIndicator(){
+		// replace loader IMG with ajax loader
+		$('#loader').remove();
+		loadingAjaxIndicator = $($('#nav_loaderimg').spin('gsdefault').data('spinner').el).attr('id','loader').hide();
+	}
+
 	function checkCoords() {
-		if (parseInt($('#x').val())) return true;
+		if (parseInt($('#x').val(),10)) return true;
 		alert('Please select a crop region then press submit.');
 		return false;
-	};
-  
-	var loadingAjaxIndicator = $('#loader');
- 
+	}
+   
 	/* Listener for filter dropdown */
 	function attachFilterChangeEvent() {
 		$(document).on('change', "#imageFilter", function () {
@@ -206,6 +310,7 @@ jQuery(document).ready(function () {
 	// auto focus component editors
 	$('#components div.compdivlist a').on('click', function(ev){
 		focusCompEditor($(this).attr('href'));
+		e.preventDefault();		
 	});
 	
 	$(".delconfirmcomp").on("click", function ($e) {
@@ -225,7 +330,7 @@ jQuery(document).ready(function () {
 		loadingAjaxIndicator.show();
 		var id = $("#id").val();
 		$("#divTxt").prepend('<div style="display:none;" class="compdiv codewrap" id="section-' + id + '"> \
-			<table class="comptable"><tr><td><b>Title: </b><input type="text" class="text newtitle" name="title[]" value="" /></td> \
+			<table class="comptable"><tr><td><label>Title: </label><input type="text" class="text newtitle" name="title[]" value="" /></td> \
 			<td class="delete"><a href="javascript:void(0)" title="Delete Component:?" class="delcomponent" id="del-' + id + '" rel="' + id + '" >&times;</a> \
 			</td></tr></table> \
 			<textarea name="val[]" class="code_edit"></textarea><input type="hidden" name="slug[]" value="" /> \
@@ -246,7 +351,6 @@ jQuery(document).ready(function () {
 		editor.refresh();
 
 		$("#divTxt").find('input').get(0).focus();
-		$("#divTxt").find('input').get(0).focus();		
 	});
 
 	$("#maincontent").on("click",'.delcomponent', function ($e) {
@@ -270,7 +374,7 @@ jQuery(document).ready(function () {
 	$("b.editable").dblclick(function () {
 		var t = $(this).html();
 		$(this).parents('.compdiv').find("input.comptitle").hide();
-		$(this).after('<div id="changetitle"><b>Title: </b><input class="text newtitle titlesaver" name="title[]" value="' + t + '" /></div>');
+		$(this).after('<div id="changetitle"><label>Title: </b><input class="text newtitle titlesaver" name="title[]" value="' + t + '" /></div>');
 		$(this).next('#changetitle').children('input').focus();
 		$(this).parents('.compdiv').find("input.compslug").val('');
 		$(this).hide();
@@ -394,19 +498,18 @@ jQuery(document).ready(function () {
 	$("#maincontent").on("click", ".toggleEnable", function ($e) {
 		$e.preventDefault();
  
-		var loadingAjaxIndicator = $('#loader');
-		document.body.style.cursor = "wait";
+		// document.body.style.cursor = "wait";
 		loadingAjaxIndicator.show();
  
 		var message = $(this).attr("title");
 		var dlink = $(this).attr("href");
 		var mytd = $(this).parents("td");
 		var mytr = $(this).parents("tr");
- 
-		mytd.html('');
-		mytd.addClass('ajaxwait ajaxwait_dark ajaxwait_tint_dark');
+
+		mytd.html('').addClass('ajaxwait_tint_dark').spin('gstable');
+
 		$('.toggleEnable').addClass('disabled');
- 
+
 		$.ajax({
 			type: "GET",
 			dataType: "html",
@@ -423,17 +526,18 @@ jQuery(document).ready(function () {
 				$('#sidebar').html($("<div>").append(responseText.replace(rscript, "")).find('#sidebar > *'));
 				$('#maincontent').html($("<div>").append(responseText.replace(rscript, "")).find('#maincontent > *'));
  
-				document.body.style.cursor = "default";
+				// document.body.style.cursor = "default";
 				clearNotify();
 				notifyOk(i18n('PLUGIN_UPDATED')).popit().removeit();
+				initLoaderIndicator();
 			},
 			error: function (data, textStatus, jqXHR) {
 				// These go in failures if we catch them in the future
 				document.body.style.cursor = "default";
-				mytd.removeClass('ajaxwait ajaxwait_dark ajaxwait_tint_dark');
+				mytd.removeClass('ajaxwait_tint_dark');
 				$('.toggleEnable').removeClass('disabled');
 				loadingAjaxIndicator.fadeOut();
- 
+				mytd.stop(); 
 				clearNotify();
 				notifyError(i18n('ERROR'));
 			}
@@ -442,11 +546,11 @@ jQuery(document).ready(function () {
 	});
  
 	function getElemLabel(element){
-	   var label = $("label[for='"+element.attr('id')+"']")
-	   if (label.length == 0) {
-	     label = element.closest('label')
-	   }
-	   return label;
+		var label = $("label[for='"+element.attr('id')+"']");
+		if (label.length === 0) {
+			label = element.closest('label');
+		}
+		return label;
 	}
 
 	// edit.php
@@ -470,7 +574,7 @@ jQuery(document).ready(function () {
 		$('.charlimit').trigger('change');
 	}
 
-	if ($("#edit input#post-title:empty").val() == '') {
+	if ($("#edit input#post-title:empty").val() === '') {
 		$("#edit input#post-title").focus();
 	}
 
@@ -499,8 +603,8 @@ jQuery(document).ready(function () {
 	if ($("#post-menu-enable").is(":checked")) {} else {
 		$("#menu-items").css("display", "none");
 	}
- 
- 	// adds sidebar submit buttons and fire clicks
+
+	// adds sidebar submit buttons and fire clicks
 	var edit_line = $('#submit_line span').html();
 	$('#js_submit_line').html(edit_line);
 	$("#js_submit_line input.submit").on("click", function () {
@@ -516,7 +620,8 @@ jQuery(document).ready(function () {
  
 	// pages.php
 	$("#show-characters").on("click", function () {
-		$(".showstatus").toggle();
+		if($(this).hasClass('current')) $(".showstatus").hide();
+		else $(".showstatus").show() ;
 		$(this).toggleClass('current');
 	});
  
@@ -535,8 +640,8 @@ jQuery(document).ready(function () {
 		li.parent().children().show();
 		li.remove();
 	});
- 
- 	// theme.php
+
+	// theme.php
 	$("#theme_select").on('change',function (e) {
 		var theme_new = $(this).val();
 		var theme_url_old = $("#theme_preview").attr('src');
@@ -556,6 +661,8 @@ jQuery(document).ready(function () {
 	///////////////////////////////////////////////////////////////////////////
 	// theme-edit.php
 	///////////////////////////////////////////////////////////////////////////
+	
+	// change gs theme dropdown
 	$("#theme-folder").on('change',function (e) {
 		var thmfld = $(this).val();
 		if (checkChanged()) return; // todo: change selection back
@@ -563,7 +670,7 @@ jQuery(document).ready(function () {
 		updateTheme(thmfld);
 	});
 
-	// editor theme selector
+	// codemirror editor theme select
 	$('#cm_themeselect').on('change',function(e){
 		var theme = $(this).find(":selected").text();
 		sendDataToServer('theme-edit.php','themesave='+theme);
@@ -591,13 +698,13 @@ jQuery(document).ready(function () {
 		// console.log($(this).attr('href'));
 		if (checkChanged()) return;
 		clearFileOpen();
-		$(this).addClass('ext-wait'); // loading icon
-		$(this).addClass('open'); // loading icon
+		$(this).addClass('open').addClass('ext-wait');
+		$(this).parent().spin('gsfilemanager'); // ajax spinner
 		updateTheme('','_noload',$(this).attr('href')+'&ajax=1'); // ajax request
 	});
 
 	function checkChanged(){
-		if($('#codetext').data('editor').hasChange == true){
+		if($('#codetext').data('editor').hasChange === true){
 			alert('This file has unsaved content, save or cancel before continuing');
 			return true;
 		}
@@ -607,13 +714,13 @@ jQuery(document).ready(function () {
 	function updateTheme(theme,file,url){
 
 		// console.log(theme);
-		var theme = theme == undefined ? '' : theme;
-		var file  = file  == undefined ? '' : file;
-		var url   = url   == undefined ? "theme-edit.php?t="+theme+'&f='+file : url;
+		theme = theme === undefined ? '' : theme;
+		file  = file  === undefined ? '' : file;
+		url   = url   === undefined ? "theme-edit.php?t="+theme+'&f='+file : url;
 		
-		loadingAjaxIndicator.show('fast');
+		loadingAjaxIndicator.show();
 		$('#codetext').data('editor').setValue('');
-		$('#codetext').data('editor').hasChange == false;
+		$('#codetext').data('editor').hasChange = false;
 		$('#theme_edit_code').fadeTo('fast',0.3);
 
 		$.ajax({
@@ -656,15 +763,17 @@ jQuery(document).ready(function () {
 				
 				clearFileWaits();
 				loadingAjaxIndicator.fadeOut();
+
 				$('#theme_edit_code').fadeTo('fast',1);
 
 			}
 		});
 
 	}
- 	
- 	// removes loading icons
+	
+	// removes loading icons
 	function clearFileWaits(){
+		$('#theme_filemanager li .spinner').each(function(){$(this).closest('li').data('spinner').stop();}); 
 		$('#theme_filemanager a.ext-wait').removeClass('ext-wait'); 
 	}
 
@@ -692,7 +801,7 @@ jQuery(document).ready(function () {
 
 	// ajax save theme file
 	themeFileSave = function(cm){
-		loadingAjaxIndicator.show('fast');
+		loadingAjaxIndicator.show();
 
 		cm.save(); // copy cm back to textarea
 
@@ -720,24 +829,24 @@ jQuery(document).ready(function () {
 				$('#codetext').data('editor').hasChange = false; // mark clean		
 			}
 		});
-	}
+	};
 
 
 	$('#compEditForm').submit(function(e) {
 		console.log("onsubmit");
 		e.preventDefault();
 
-		loadingAjaxIndicator.show('fast');
+		loadingAjaxIndicator.show();
 		// $('#codetext').data('editor').setValue('');
 		// $('#codetext').data('editor').hasChange == false;
 		// $('#theme_edit_code').fadeTo('fast',0.3);
 		
 		cm_save_editors();
-	    var url = "path/to/your/script.php"; // the script where you handle the form input.
+		var url = "path/to/your/script.php"; // the script where you handle the form input.
 		var dataString = $("#compEditForm").serialize();			
 
-	    $.ajax({
-	    	type: "POST",
+		$.ajax({
+			type: "POST",
 			cache: false,
 			url: 'components.php',
 			data: dataString+'&submitted=1&ajaxsave=1',
@@ -757,12 +866,12 @@ jQuery(document).ready(function () {
 				loadingAjaxIndicator.fadeOut();
 				// $('#codetext').data('editor').hasChange = false; // mark clean		
 			}
-	    });
+		});
 	});
 
 	componentSave = function(cm){
 		
-		loadingAjaxIndicator.show('fast');
+		loadingAjaxIndicator.show();
 
 		cm.save(); // copy cm back to textarea
 
@@ -790,7 +899,7 @@ jQuery(document).ready(function () {
 				$('#codetext').data('editor').hasChange = false; // mark clean		
 			}
 		});
-	}
+	};
 
 	function getExtension(file){
 		var extension = file.substr( (file.lastIndexOf('.') +1) );
@@ -809,11 +918,11 @@ jQuery(document).ready(function () {
 		// Debugger.log('updating codemirror theme: ' + theme);
 		var parts = theme.split(' ');
 		callback = function () {
-			  cm_theme_update_editors(theme);
-			}
+				cm_theme_update_editors(theme);
+			};
 		if(theme == "default") cm_theme_update_editors(theme);
 		else loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css", callback );
-	}
+	};
 
 	// set all editors themes
 	cm_theme_update_editors = function(theme){
@@ -828,8 +937,8 @@ jQuery(document).ready(function () {
 			}	
 		});	
 		editorConfig.theme = theme;		
-		editorTheme = theme; // update global			  
-	}
+		editorTheme = theme; // update global
+	};
 
 	// save all editors
 	cm_save_editors = function(theme){
@@ -841,7 +950,7 @@ jQuery(document).ready(function () {
 				editor.save();
 			}	
 		});		
-	}
+	};
 
 	///////////////////////////////////////////////////////////////////////////
 	// title filtering on pages.php & backups.php
@@ -913,7 +1022,7 @@ jQuery(document).ready(function () {
 					$("#new-folder").find("#foldername").val('');
 					$("#new-folder").find("form").hide();
 					$('#createfolder').show();
-					counter = parseInt($("#pg_counter").text());
+					counter = parseInt($("#pg_counter").text(),10);
 					$("#pg_counter").html(counter++);
 					$("tr." + newfolder + " td").css("background-color", "#F9F8B6");
 					loadingAjaxIndicator.fadeOut();
@@ -927,17 +1036,17 @@ jQuery(document).ready(function () {
 		var elem = $('body.sbfixed #sidebar');
 		elem.scrollToFixed({ 
 			marginTop: 15,
-			limit: function(){ return $('#footer').offset().top - elem.outerHeight(true) - 15},
-			postUnfixed: function(){$(this).addClass('fixed')},
-			postFixed: function(){$(this).removeClass('fixed')},
-			postAbsolute: function(){$(this).removeClass('fixed')},
+			limit: function(){ return $('#footer').offset().top - elem.outerHeight(true) - 15 ;} ,
+			postUnfixed: function(){$(this).addClass('fixed') ;},
+			postFixed: function(){$(this).removeClass('fixed') ;},
+			postAbsolute: function(){$(this).removeClass('fixed') ;},
 
 		});
 	}
 
 	scrollsidebar();
- 	
- 	// catch all redirects for session timeout on HTTP 401 unauthorized
+	
+	// catch all redirects for session timeout on HTTP 401 unauthorized
 	$( document ).ajaxError(function( event, xhr, settings ) {
 		// notifyInfo("ajaxComplete: " + xhr.status);
 		if(xhr.status == 401){
@@ -946,9 +1055,11 @@ jQuery(document).ready(function () {
 		}
 	});
 	
+	$('table.tree').addTableTree(0,2); // add tree folding to tree tables
+
 	// end of jQuery ready
 });
- 
+
 // lazy loader for js and css
 loadjscssfile = function(filename, filetype, callback){
 	if (filetype=="js"){ //if filename is a external JavaScript file
@@ -957,4 +1068,15 @@ loadjscssfile = function(filename, filetype, callback){
 	else if (filetype=="css"){ //if filename is an external CSS file
 		LazyLoad.css(filename,callback);
 	}
+};
+
+// prevent js access to cookies
+if(!document.__defineGetter__) {
+    Object.defineProperty(document, 'cookie', {
+        get: function(){return '' ;},
+        set: function(){return true ;},
+    });
+} else {
+    document.__defineGetter__("cookie", function() { return '';} );
+    document.__defineSetter__("cookie", function() {} );
 }

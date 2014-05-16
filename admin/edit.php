@@ -124,11 +124,11 @@ foreach ($templates as $file){
 }
 
 // SETUP CHECKBOXES
-$sel_m  = ($menuStatus != '') ? 'checked' : '' ;
-$sel_p  = ($private == 'Y') ? 'selected' : '' ;
-$sel_ri = $metarNoIndex == '1' ? 'checked' : '';
-$sel_rf = $metarNoFollow == '1' ? 'checked' : '';
-$sel_ra = $metarNoArchive == '1' ? 'checked' : '';
+$sel_m  = ($menuStatus != '') ?    'checked'  : '';
+$sel_p  = ($private == 'Y') ?      'selected' : '';
+$sel_ri = $metarNoIndex == '1' ?   'checked'  : '';
+$sel_rf = $metarNoFollow == '1' ?  'checked'  : '';
+$sel_ra = $metarNoArchive == '1' ? 'checked'  : '';
 
 if ($menu == '') { $menu = $title; } 
 
@@ -307,7 +307,6 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
             
         // HTMLEDITOR INIT
         if ($HTMLEDITOR != '') {       
-            
 
 			if(isset($EDTOOL)) $EDTOOL = returnJsArray($EDTOOL);
 			if(isset($toolbar)) $toolbar = returnJsArray($toolbar); // handle plugins that corrupt this
@@ -335,20 +334,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
         <script type="text/javascript">
             
             var editorCfg = {
-                skin : 'getsimple',
-                forcePasteAsPlainText        : true,
                 language                     : '<?php echo $EDLANG; ?>',
-                defaultLanguage              : 'en',
                 <?php if(!empty($contentsCss)) echo "contentsCss                   : '$contentsCss',"; ?>
-                entities                     : false,
-                uiColor                      : '#DDDDDD',
                 height                       : '<?php echo $EDHEIGHT; ?>',
-                baseHref                     : '<?php echo $SITEURL; ?>',
-                tabSpaces                    : 10,
-                filebrowserBrowseUrl         : 'filebrowser.php?type=all',
-                filebrowserImageBrowseUrl    : 'filebrowser.php?type=images',
-                filebrowserWindowWidth       : '730',
-                filebrowserWindowHeight      : '500'
+                baseHref                     : '<?php echo $SITEURL; ?>'
 					<?php echo $toolbar; ?>
 					<?php echo $options; ?>					
 			};

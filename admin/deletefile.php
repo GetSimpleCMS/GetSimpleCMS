@@ -34,7 +34,7 @@ if (isset($_GET['id'])) {
 
 // are we deleting archives?
 if (isset($_GET['zip'])) { 
-	$zip = $_GET['zip'];
+	$zip    = $_GET['zip'];
 	$status = delete_zip($zip);
 	
 	redirect("archive.php?upd=del-". $status ."&id=". $zip);
@@ -42,8 +42,8 @@ if (isset($_GET['zip'])) {
 
 // are we deleting uploads?
 if (isset($_GET['file'])) {
-	$path = (isset($_GET['path'])) ? $_GET['path'] : "";
-	$file = $_GET['file'];
+	$path   = (isset($_GET['path'])) ? $_GET['path'] : "";
+	$file   = $_GET['file'];
 	$status = delete_upload($file, $path);
 	
 	redirect("upload.php?upd=del-".$status."&id=". $file . "&path=" . $path);
@@ -52,7 +52,7 @@ if (isset($_GET['file'])) {
 
 // are we deleting a folder?
 if (isset($_GET['folder'])) {
-	$path = (isset($_GET['path'])) ? $_GET['path'] : "";
+	$path   = (isset($_GET['path'])) ? $_GET['path'] : "";
 	$folder = $_GET['folder'];
 	$target = GSDATAUPLOADPATH . $path . $folder;
 	if (path_is_safe($target,GSDATAUPLOADPATH) && file_exists($target)) {

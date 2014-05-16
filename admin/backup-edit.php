@@ -15,23 +15,23 @@ login_cookie_check();
 
 # get page url to display
 if ($_GET['id'] != '') {
-	$id = $_GET['id'];
+	$id   = $_GET['id'];
 	$file = $id .".bak.xml";
 	$path = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
 	
-	$data = getXML($path . $file);
-	$title = htmldecode($data->title);
-	$pubDate = $data->pubDate;
-	$parent = $data->parent;
-	$metak = htmldecode($data->meta);
-	$metad = htmldecode($data->metad);
-	$url = $data->url;
-	$content = htmldecode($data->content);
-	$private = $data->private;
-	$template = $data->template;
-	$menu = htmldecode($data->menu);
+	$data       = getXML($path . $file);
+	$title      = htmldecode($data->title);
+	$pubDate    = $data->pubDate;
+	$parent     = $data->parent;
+	$metak      = htmldecode($data->meta);
+	$metad      = htmldecode($data->metad);
+	$url        = $data->url;
+	$content    = htmldecode($data->content);
+	$private    = $data->private;
+	$template   = $data->template;
+	$menu       = htmldecode($data->menu);
 	$menuStatus = $data->menuStatus;
-	$menuOrder = $data->menuOrder;
+	$menuOrder  = $data->menuOrder;
 } else {
 	redirect('backups.php?upd=bak-err');
 }
@@ -59,7 +59,7 @@ elseif ($p == 'restore') {
 		updateSlugs($_GET['new'], $id);
 		restore_bak($id);
 		$existing = GSDATAPAGESPATH . $_GET['new'] .".xml";
-		$bakfile = $path. $_GET['new'] .".bak.xml";
+		$bakfile  = $path. $_GET['new'] .".bak.xml";
 		copy($existing, $bakfile);
 		unlink($existing);
 		redirect("edit.php?id=". $id ."&old=".$_GET['new']."&upd=edit-success&type=restore");
@@ -118,19 +118,15 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 		<script type="text/javascript">
 		var editor = CKEDITOR.replace( 'codetext', {
-			skin : 'getsimple',
-			language : '<?php echo $EDLANG; ?>',
-			defaultLanguage : '<?php echo $EDLANG; ?>',
+			language        : '<?php echo $EDLANG; ?>',
 			<?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
 				$fullpath = suggest_site_path();
 			?>
-			contentsCss: '<?php echo $fullpath.getRelPath(GSTHEMESPATH).$TEMPLATE; ?>/editor.css',
+			contentsCss     : '<?php echo $fullpath.getRelPath(GSTHEMESPATH).$TEMPLATE; ?>/editor.css',
 			<?php } ?>
-			entities : false,
-			uiColor : '#DDDDDD',
-			height: '<?php echo $EDHEIGHT; ?>',
-			baseHref : '<?php echo $SITEURL; ?>',
-			toolbar : [['Source']],
+			height          : '<?php echo $EDHEIGHT; ?>',
+			baseHref        : '<?php echo $SITEURL; ?>',
+			toolbar         : [['Source']],
 			removePlugins: 'image,link,elementspath,resize'
 		});
 		// set editor to read only mode

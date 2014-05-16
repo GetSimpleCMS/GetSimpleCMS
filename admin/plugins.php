@@ -15,49 +15,53 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
-$pluginid 		=  isset($_GET['set']) ? $_GET['set'] : null;
-$nonce    		= isset($_GET['nonce']) ? $_GET['nonce'] : null;
+$pluginid = isset($_GET['set']) ? $_GET['set'] : null;
+$nonce    = isset($_GET['nonce']) ? $_GET['nonce'] : null;
 
 if ($pluginid){
 	if(check_nonce($nonce, "set", "plugins.php")) {
-	  $plugin=antixss($pluginid);	
+	  $plugin = antixss($pluginid);	
 	  change_plugin($plugin);
 	  redirect('plugins.php');
 	}
 }
 
 // Variable settings
-$counter = 0; $table = null;
-
-$pluginfiles = getFiles(GSPLUGINPATH);
-natcasesort($pluginfiles);
+$counter     = 0; 
+$table       = '';
 $needsupdate = false;
+$pluginfiles = getFiles(GSPLUGINPATH);
+
+natcasesort($pluginfiles);
+
 foreach ($pluginfiles as $fi) {
-	$pathExt = pathinfo($fi,PATHINFO_EXTENSION );
+	$pathExt  = pathinfo($fi,PATHINFO_EXTENSION );
 	$pathName = pathinfo_filename($fi);
-	$setNonce='&amp;nonce='.get_nonce("set","plugins.php");
+	$setNonce = '&amp;nonce='.get_nonce("set","plugins.php");
 	
 	if ($pathExt=="php") {
 		if ($live_plugins[$fi]=='true') {
-			$cls_Enabled = 'hidden';
+			$cls_Enabled  = 'hidden';
 			$cls_Disabled = '';
-			$trclass='enabled';
+			$trclass      ='enabled';
 		} else {
-			$cls_Enabled = '';
+			$cls_Enabled  = '';
 			$cls_Disabled = 'hidden';
-			$trclass='disabled';
+			$trclass      ='disabled';
 		}
-		$api_data = json_decode(get_api_details('plugin', $fi));
-		$updatelink = null;
+		$api_data   = json_decode(get_api_details('plugin', $fi));
+		$updatelink = '';
+
 		if (is_object($api_data) && $api_data->status == 'successful') {
 			if ($api_data->version > $plugin_info[$pathName]['version']) {				
-				$updatelink = '<br /><a class="updatelink" href="'.$api_data->path.'" target="_blank">'.i18n_r('UPDATE_AVAILABLE').' '.$api_data->version.'</a>';
+				$updatelink  = '<br /><a class="updatelink" href="'.$api_data->path.'" target="_blank">'.i18n_r('UPDATE_AVAILABLE').' '.$api_data->version.'</a>';
 				$needsupdate = true;
 			}
 			$plugin_title = '<a href="'.$api_data->path.'" target="_blank">'.$api_data->name.'</a>';
 		} else {
 			$plugin_title = $plugin_info[$pathName]['name'];
 		}
+		
 		$table .= '<tr id="tr-'.$counter.'" class="'.$trclass.'" >';
 		$table .= '<td style="width:150px" ><b>'.$plugin_title.'</b></td>';
 		$table .= '<td><span>'.$plugin_info[$pathName]['description'];
@@ -97,8 +101,12 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PLUGINS_MANAGEMENT'));
 		
 		<?php if ($counter > 0) { ?>
 			<table class="edittable">
-				<tr><th><?php i18n('PLUGIN_NAME'); ?></th><th><?php i18n('PLUGIN_DESC'); ?></th><th><?php i18n('STATUS'); ?></th></tr>
-				<?php echo $table; ?>
+				<thead>
+					<tr><th><?php i18n('PLUGIN_NAME'); ?></th><th><?php i18n('PLUGIN_DESC'); ?></th><th><?php i18n('STATUS'); ?></th></tr>
+				</thead>
+				<tbody>
+					<?php echo $table; ?>
+				</tbody>
 			</table>
 		<?php  } ?>
 		

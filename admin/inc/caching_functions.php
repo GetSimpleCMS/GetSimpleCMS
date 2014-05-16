@@ -10,10 +10,10 @@
 
 $pagesArray = array();
 
-add_action('index-header','getPagesXmlValues',array(false));      // make $pagesArray available to the front 
-add_action('header', 'getPagesXmlValues',array(true));           // make $pagesArray available to the back
-add_action('page-delete', 'create_pagesxml',array(true));         // Create pages.array if page deleted
-add_action('changedata-aftersave', 'create_pagesxml',array(true));     // Create pages.array if page is updated
+add_action('index-header','getPagesXmlValues',array(false));       // make $pagesArray available to the front 
+add_action('header', 'getPagesXmlValues',array(true));             // make $pagesArray available to the back
+add_action('page-delete', 'create_pagesxml',array(true));          // Create pages.array if page deleted
+add_action('changedata-aftersave', 'create_pagesxml',array(true)); // Create pages.array if page is updated
 
 
 /**
@@ -198,7 +198,7 @@ function getPagesXmlValues($refresh=false){
  * @return null 
  */
 function create_pagesxml($save=false){
-	global $pagesArray;
+	global $pagesArray, $pageCacheXml;
   	$pageCacheXml = generate_pageCacheXml();
 	
 	if((bool)$save){ 
@@ -213,8 +213,9 @@ function create_pagesxml($save=false){
  * 
  * @param bool $refresh regenerate cache from pages files
  */
-function init_pageCache($refresh = false)
-{
+function init_pageCache($refresh = false) {
+	GLOBAL $pageCacheXml;
+
 	$file=GSDATAOTHERPATH."pages.xml";
 	
 	if (file_exists($file) and !$refresh){
@@ -233,11 +234,11 @@ function init_pageCache($refresh = false)
  * Loads in pagescache file xml to pagecache array
  */
 function load_pageCache(){
-	GLOBAL $pagesArray;
+	GLOBAL $pagesArray,$pageCacheXml;
 	$file=GSDATAOTHERPATH."pages.xml";	
 	$pagesArray=array(); // wipe array
-	$data = getXml($file);
-	pageCacheXMLtoArray($data); // create array from xml
+	$pageCacheXml = getXml($file);
+	pageCacheXMLtoArray($pageCacheXml); // create array from xml
 }
 
 /**
@@ -249,8 +250,9 @@ function save_pageCacheXml($xml){
 	$file=GSDATAOTHERPATH."pages.xml";		
   	// Plugin Authors should add custome fields etc.. here
   	$xml = exec_filter('pagecache',$xml);	
-	if(!empty($xml)) return $xml->asXML($file);
+	if(!empty($xml)) $success = $xml->asXML($file);
   	exec_action('pagecache-aftersave');	
+  	return;
 }
 
 /**
@@ -268,7 +270,7 @@ function generate_pageCacheXml(){
 						
 			$id=$data->url;
 			$pages = $xml->addChild('item');
-			$pages->addChild('url', $id);
+			// $pages->addChild('url', $id);
 			$children = $data->children();
 			foreach ($children as $item => $itemdata) {
 				if ($item!="content"){
@@ -283,7 +285,7 @@ function generate_pageCacheXml(){
 			# $note->addCData($file);
 		}
 	}
-		
+
 	return $xml;
 }
 

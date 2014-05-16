@@ -18,7 +18,7 @@ login_cookie_check();
 // check validity of request
 if ($_REQUEST['s'] === $SESSIONHASH) {
 	
-	$timestamp = gmdate('Y-m-d-Hi_s');
+	$timestamp  = gmdate('Y-m-d-Hi_s');
 	$zipcreated = true;
 	
 	set_time_limit (0);
@@ -31,11 +31,10 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		include('inc/ZipArchive.php');
 	}
 	if (class_exists ( 'ZipArchive' , false)) {
-	
-		$archiv = new ZipArchive();
+		$archiv  = new ZipArchive();
 		$archiv->open($saved_zip_file, ZipArchive::CREATE);
 		$dirIter = new RecursiveDirectoryIterator($sourcePath);
-		$iter = new RecursiveIteratorIterator($dirIter);
+		$iter    = new RecursiveIteratorIterator($dirIter);
 		
 		foreach($iter as $element) {
 		    /* @var $element SplFileInfo */

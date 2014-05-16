@@ -56,7 +56,8 @@ global
  $components,     // components array
  $nocache,        // disable site wide cache
  $microtime_start,// used for benchmark timers
- $pagesArray      // page cache array, used for all page fields aside from content
+ $pagesArray,     // page cache array, used for all page fields aside from content
+ $pageCacheXml    // page cache raw xml
 ;
 
 if(isset($_GET['nocache'])){
@@ -187,15 +188,15 @@ if(!isset($base)){
 /** grab website data */
 $thisfilew = GSDATAOTHERPATH .'website.xml';
 if (file_exists($thisfilew)) {
-	$dataw = getXML($thisfilew);
-	$SITENAME = stripslashes($dataw->SITENAME);
-	$SITEURL = $dataw->SITEURL;
-	$TEMPLATE = $dataw->TEMPLATE;
+	$dataw      = getXML($thisfilew);
+	$SITENAME   = stripslashes($dataw->SITENAME);
+	$SITEURL    = $dataw->SITEURL;
+	$TEMPLATE   = $dataw->TEMPLATE;
 	$PRETTYURLS = $dataw->PRETTYURLS;
-	$PERMALINK = $dataw->PERMALINK;
+	$PERMALINK  = $dataw->PERMALINK;
 } else {
 	$SITENAME = '';
-	$SITEURL = '';
+	$SITEURL  = '';
 } 
 
 
@@ -203,11 +204,11 @@ if (file_exists($thisfilew)) {
 if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 	$cookie_user_id = _id($_COOKIE['GS_ADMIN_USERNAME']);
 	if (file_exists(GSUSERSPATH . $cookie_user_id.'.xml')) {
-		$datau = getXML(GSUSERSPATH  . $cookie_user_id.'.xml');
-		$USR = stripslashes($datau->USR);
+		$datau      = getXML(GSUSERSPATH  . $cookie_user_id.'.xml');
+		$USR        = stripslashes($datau->USR);
 		$HTMLEDITOR = $datau->HTMLEDITOR;
-		$TIMEZONE = $datau->TIMEZONE;
-		$LANG = $datau->LANG;
+		$TIMEZONE   = $datau->TIMEZONE;
+		$LANG       = $datau->LANG;
 	} else {
 		$USR = null;
 	}
@@ -227,7 +228,7 @@ else {
 	// use from authorization.xml
 	if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
 		$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
-		$SALT = stripslashes($dataa->apikey);
+		$SALT  = stripslashes($dataa->apikey);
 	} else {
 		if($SITEURL !='' && notInInstall()) die(i18n_r('KILL_CANT_CONTINUE')."<br/>".i18n_r('MISSING_FILE').": "."authorization.xml");
 	}

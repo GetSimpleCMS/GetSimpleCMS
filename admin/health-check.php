@@ -42,7 +42,7 @@ echo '<div class="bodycontent clearfix">
 				}	else {
 					$verstatus = null;
 				}
-				$verstatus = $_GET['status'];
+				// $verstatus = $_GET['status']; // debugging
 				$verstring = sprintf(i18n_r('CURR_VERSION'),'<b>'.$site_version_no.'</b>').'<hr>';
 				if ($verstatus == '0') {
 					// upgrade recomended
@@ -147,7 +147,7 @@ echo '<div class="bodycontent clearfix">
 				$serveris = get_Server_Software();
 				if(empty($serveris)) $serveris = i18n_r('NA');
 				echo "*".sprintf(i18n_r('SERVER_IS'), $serveris)."<br/>";
-				echo sprintf(i18n_r('REQS_MORE_INFO'), $site_link_back_url . "wiki/installation:requirements"); ?>
+				echo sprintf(i18n_r('REQS_MORE_INFO'), $site_link_back_url . "docs/requirements"); ?>
 			</p>
 			
 			<?php

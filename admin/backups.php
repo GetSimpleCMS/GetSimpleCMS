@@ -17,9 +17,9 @@ include('inc/common.php');
 	
 // Variable settings
 login_cookie_check();
-$path = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
+$path    = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
 $counter = '0';
-$table = '';
+$table   = '';
 
 
 // delete all backup files if the ?deleteall session parameter is set
@@ -40,10 +40,10 @@ if (isset($_GET['deleteall'])){
 
 
 //display all page backups
-$filenames = getFiles($path);
-$count="0";
+$filenames      = getFiles($path);
+$count          = "0";
 $pagesArray_tmp = array();
-$pagesSorted=array(); 
+$pagesSorted    = array(); 
 
 if (count($filenames) != 0) 
 { 
@@ -51,11 +51,11 @@ if (count($filenames) != 0)
 	{
 		if (isFile($file, $path, 'bak')) 
 		{
-			$data = getXML($path .$file);
+			$data   = getXML($path .$file);
 			$status = $data->menuStatus;
 			$pagesArray_tmp[$count]['title'] = html_entity_decode($data->title, ENT_QUOTES, 'UTF-8');
-			$pagesArray_tmp[$count]['url'] = $data->url;
-			$pagesArray_tmp[$count]['date'] = $data->pubDate;
+			$pagesArray_tmp[$count]['url']   = $data->url;
+			$pagesArray_tmp[$count]['date']  = $data->pubDate;
 			$count++;
 		}
 	}
@@ -96,8 +96,12 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT'));
 					<form><input type="text" autocomplete="off" class="text" id="q" placeholder="<?php echo strip_tags(lowercase(i18n_r('FILTER'))); ?>..." /> &nbsp; <a href="pages.php" class="cancel"><?php i18n('CANCEL'); ?></a></form>
 				</div>
 				<table id="editpages" class="highlight paginate">
-					<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th></tr>
-					<?php echo $table; ?>
+					<thead>
+						<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th></tr>
+					</thead>
+					<tbody>
+						<?php echo $table; ?>
+					</tbody>						
 				</table>
 			<?php  } else { ?>
 				<div class="clearfix" style="height:40px;"></div>

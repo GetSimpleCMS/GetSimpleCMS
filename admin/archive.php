@@ -51,7 +51,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT').' &raq
 		<p style="display:none" id="waiting" ><?php i18n('CREATE_ARC_WAIT');?></p>
 		
 		<table class="highlight paginate">
-			<tr><th><?php i18n('ARCHIVE_DATE'); ?></th><th style="text-align:right;" ><?php i18n('FILE_SIZE'); ?></th><th></th></tr>
+			<thead>
+				<tr><th><?php i18n('ARCHIVE_DATE'); ?></th><th style="text-align:right;" ><?php i18n('FILE_SIZE'); ?></th><th></th></tr>
+			</thead>
+			<tbody>
 			<?php
 				$count="0";
 				$path = tsl(GSBACKUPSPATH .'zip/');
@@ -66,7 +69,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT').' &raq
 						$timestamp = explode('_', $file);
 						$name = lngDate($timestamp[0]);
 						clearstatcache();
-						$ss = stat($path . $file);
+						$ss   = stat($path . $file);
 						$size = fSize($ss['size']);
 						echo '<tr>
 								<td><a title="'.i18n_r('DOWNLOAD').' '. $name .'" href="download.php?file='. $path . $file .'&amp;nonce='.get_nonce("archive", "download.php").'">'.$name .'</a></td>
@@ -78,6 +81,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT').' &raq
 				}
 	
 			?>
+			</tbody>
 			</table>
 			<p><em><b><span id="pg_counter"><?php echo $count; ?></span></b> <?php i18n('TOTAL_ARCHIVES');?></em></p>
 		</div>

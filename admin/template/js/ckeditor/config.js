@@ -5,11 +5,25 @@
 CKEDITOR.editorConfig = function( config )
 {
 	// Define changes to default configuration here.
-	config.resize_dir                  = 'vertical' // vertical resize
-	config.toolbarCanCollapse          = false; // hide toolbar collapse button
-	config.dialog_backgroundCoverColor = '#000000'; // veil color for dialog popups
+    config.skin                        = 'getsimple';
+	
+    config.defaultLanguage             = 'en';
+	config.resize_dir                  = 'vertical'; // vertical resize
+	config.toolbarCanCollapse          = false;      // hide toolbar collapse button
+    config.forcePasteAsPlainText       = true;
+    config.tabSpaces                   = 10;    
+
+	config.dialog_backgroundCoverColor = '#000000';  // veil color for dialog popups
+    config.uiColor                     = '#DDDDDD';
 	config.magicline_color             = '#CF3805'; 
-	config.allowedContent              = true; // disable acf
+    config.entities                    = false;    
+
+    config.filebrowserBrowseUrl        = 'filebrowser.php?type=all';
+    config.filebrowserImageBrowseUrl   = 'filebrowser.php?type=images';
+    config.filebrowserWindowWidth      = '730';
+    config.filebrowserWindowHeight     = '500';
+
+	config.allowedContent              = true;       // disable acf
 
 	config.toolbar_advanced = 
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
@@ -19,13 +33,23 @@ CKEDITOR.editorConfig = function( config )
 	config.toolbar_basic = 
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']];
 
+	// add about if debug mode
+	if(GS.debug === true){
+		config.toolbar_advanced.push(Array("About"));
+		config.toolbar_basic.push(Array("About"));
+	}
+
 };
+
 
 
 /** ------------------------------------------------------------------------
  * GS Default overrides and extras
  * DO NOT EDIT BELOW THIS LINE
  */
+
+// prevent removal of empty tags
+// CKEDITOR.dtd.$removeEmpty['i'] = false;
 
 // Override default block element source formatting
 CKEDITOR.on( 'instanceReady', function( ev ) {
@@ -48,11 +72,13 @@ CKEDITOR.on( 'dialogDefinition', function( ev )	{
 		var dialogName = ev.data.name;
 		var dialogDefinition = ev.data.definition;
 		ev.data.definition.resizable = CKEDITOR.DIALOG_RESIZE_NONE;
+		var infoTab;
+		var advTab;
 
 		if ( dialogName == 'link' ) {
-			var infoTab = dialogDefinition.getContents( 'info' );
+			infoTab = dialogDefinition.getContents( 'info' );
 			//dialogDefinition.removeContents( 'target' );
-			var advTab = dialogDefinition.getContents( 'advanced' );
+			advTab = dialogDefinition.getContents( 'advanced' );
 			advTab.remove( 'advLangDir' );
 			advTab.remove( 'advLangCode' );
 			advTab.remove( 'advContentType' );
@@ -61,13 +87,13 @@ CKEDITOR.on( 'dialogDefinition', function( ev )	{
 		}
 
 		if ( dialogName == 'image' ) {
-			var infoTab = dialogDefinition.getContents( 'info' );
+			infoTab = dialogDefinition.getContents( 'info' );
 			infoTab.remove( 'txtBorder' );
 			infoTab.remove( 'txtHSpace' );
 			infoTab.remove( 'txtVSpace' );
 			infoTab.remove( 'btnResetSize' );
 			dialogDefinition.removeContents( 'Link' );
-			var advTab = dialogDefinition.getContents( 'advanced' );
+			advTab = dialogDefinition.getContents( 'advanced' );
 			advTab.remove( 'cmbLangDir' );
 			advTab.remove( 'txtLangCode' );
 			advTab.remove( 'txtGenLongDescr' );
@@ -75,6 +101,7 @@ CKEDITOR.on( 'dialogDefinition', function( ev )	{
 		}
 });
 
+// set default link to url
 // linkdefault = "url";
 
 var menuItems;
@@ -88,7 +115,7 @@ $.getJSON("inc/ajax.php?list_pages_json=1", function (data){
  * CKEditor Add Local Page Link
  * This is used by the CKEditor to link to internal pages
  * @param editorObj	an editor instance
-**/
+ */
 CKEsetupLinks = function(editorObj){
 
 	if (typeof editorObj === "undefined") return;
@@ -184,7 +211,7 @@ CKEsetupLinks = function(editorObj){
 			}
 		};
 	},null,null,1); 
-}
+};
 
 
 // Helper function to get a CKEDITOR.dialog.contentDefinition object by its ID.

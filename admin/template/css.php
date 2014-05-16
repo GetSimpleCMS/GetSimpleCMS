@@ -36,11 +36,22 @@ body {
 	background: #f6f6f6;
 }
 
-a img,
-:link img,
-:visited img {
+a {
+	color: <?php echo $primary_3; ?>;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+a:hover {
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+a img {
 	border: none;
 }
+
+/* @todo all these modifier classe need to go togather probably at the end */
 
 .clear {
 	clear: both;
@@ -71,7 +82,7 @@ a img,
 }
 
 .hidden {
-	display: none;
+	display: none !important;
 }
 
 html {
@@ -93,6 +104,7 @@ html {
 	zoom: 1;
 }
 
+/* @todo annotate these */
 ::selection {
 	text-shadow: none !important;
 	background: #a8d1ff;
@@ -147,6 +159,7 @@ html {
 	border-radius: 5px 5px 0 0;
 }
 
+/* @todo noooooo */
 .wrapper .nav li a:link,
 .wrapper .nav li a:visited,
 .wrapper #pill li a:link,
@@ -156,6 +169,7 @@ html {
 	text-shadow: 1px 1px 0 rgba(0,0,0,.3);
 }
 
+/* @todo noooooo */
 .wrapper #pill li.debug a:link,
 .wrapper #pill li.debug a:visited,
 .wrapper #pill li.debug a:hover {
@@ -168,6 +182,7 @@ html {
 	border-left: 1px solid <?php echo $primary_3; ?>;
 }
 
+/* @todo: noooooo */
 #edit .wrapper .nav li a.pages,
 #pages .wrapper .nav li a.pages,
 #menu-manager .wrapper .nav li a.pages,
@@ -286,6 +301,12 @@ html {
 	border-bottom: 1px dotted #666;
 }
 
+#nav_loaderimg {
+	width: 30px;
+	padding: 13px 7px;
+	-webkit-transition: none;
+}
+
 .wrapper #pill {
 	list-style: none;
 	position: absolute;
@@ -332,19 +353,6 @@ html {
 .wrapper #maincontent ol {
 /*	line-height: 18px;
 	margin: 0 0 20px 30px;*/
-}
-
-.wrapper a:link,
-.wrapper a:visited {
-	color: <?php echo $primary_3; ?>;
-	text-decoration: none;
-	font-weight: bold;
-}
-
-.wrapper a:hover {
-	color: #333;
-	text-decoration: underline;
-	font-weight: bold;
 }
 
 .inner {
@@ -457,7 +465,10 @@ h5:hover img {
 }
 
 #sidebar.fixed{
-	-webkit-transition: top 200ms ease-out;
+	-transition: top .02s ease-out;
+		-webkit-transition: all .2s ease-in-out;
+		-moz-transition: all .2s ease-in-out;
+		-o-transition: all .2s ease-in-out;
 }
 
 #sidebar .section {
@@ -598,6 +609,9 @@ h5:hover img {
 }
 /**/
 
+/**
+ * .main top action nav links
+ */
 .edit-nav {
 	margin: 0 0 15px 0;
 }
@@ -635,15 +649,21 @@ h5:hover img {
 
 /*not used*/
 .edit-nav label {
-	font-weight: 100;
+/*	font-weight: 100;
 	display: inline;
 	font-size: 11px;
 	color: #666;
-	/*margin: 0;*/ /*not allowed*/
-	padding: 0;
+	padding: 0;*/
+
+	font-size: 12px;
+	color: #BBB;
+	margin: 0 3px;
+	line-height: 22px;
+	float: right;
+	font-weight: normal;
 }
 
-.edit-nav a#metadata_toggle {
+/*.edit-nav a#metadata_toggle {
 	background-image: url('images/plus.png');
 	padding-right: 20px;
 }
@@ -651,7 +671,7 @@ h5:hover img {
 .edit-nav a#metadata_toggle.current {
 	background-image: url('images/minus.png');
 	 padding-right: 20px;
-}
+}*/
 
 .edit-nav {
 	height: 1%;
@@ -659,7 +679,7 @@ h5:hover img {
 
 .edit-nav a:link,
 .edit-nav a:visited {
-	line-height: 14px !important;
+	line-height: 14px;
 	background-color: <?php echo $primary_1; ?>;
 	color: #ccc;
 	font-weight: bold;
@@ -671,6 +691,7 @@ h5:hover img {
 		-o-transition: all .10s ease-in-out;
 }
 
+/* what is this for ? edit-nav in sidebar ? */
 .edit-nav a:hover,
 #sidebar .edit-nav a:hover,
 .edit-nav a.current {
@@ -678,10 +699,11 @@ h5:hover img {
 	color: #FFF;
 	font-weight: bold;
 	text-decoration: none;
-	line-height: 14px !important;
+	line-height: 14px;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.2);
 }
 
+/* shortcut letter highlights */
 .edit-nav a:link em,
 .edit-nav a:visited em {
 	font-style: normal;
@@ -701,46 +723,66 @@ h5:hover img {
 	width: 668px;
 }
 
-.wrapper table td {
-	vertical-align: top;
-	padding: 4px;
+.wrapper table tbody tr {
+	line-height:20px;
+	font-size: 12px;
+	color: #777;
 	border-bottom: 1px solid #eee;
 	border-top: 1px solid #eee;
-	line-height: 20px !important;
+	vertical-align: top;
+	/*line-height: 20px !important;*/
+	color: #777; 	
+}
+
+.wrapper table td {
+	padding: 4px;
+	vertical-align: top;
+	/*line-height: 20px !important;*/
 }
 
 .wrapper table th {
-	background: #FFF !important;
+	/*background: #FFF !important;*/
 	padding: 2px 4px;
 	font-size: 11px;
-	border-top: 1px solid #FFF;
+	/*border-top: 1px solid #FFF;*/
 	color: #222;
 	font-weight: bold;
 	text-transform: uppercase;
-	line-height: 20px !important;
+	line-height: 20px;
 	text-align: left;
 }
 
 .wrapper table td span {
-	font-size: 12px;
-	color: #777;
+	/*font-size: 12px;*/
+	/*color: #777;*/
 }
 
-.wrapper table.highlight {
+.wrapper table.highlight tbody{
 	text-shadow: 1px 1px 0 #fff;
 }
 
-.wrapper table.highlight tr:nth-child(odd) {
-	 background: #f7f7f7;
+.wrapper table.highlight tbody tr:nth-child(odd), .wrapper table.striped tbody tr:nth-child(odd) {
+	background: #f7f7f7;
+}
+
+.wrapper table.striped tbody tr.odd {
+	background: #f7f7f7;
+}
+.wrapper table.striped tbody tr.even {
+	background: #FFF;
 }
 
 .wrapper table tr#tr-index a {
-	 font-weight: bold !important;
+	 font-weight: bold;
 }
 
-.wrapper table.highlight tr:hover {
+.wrapper table.highlight tbody tr:hover {
 	background: #FFFFD5 !important;
 	text-shadow: none;
+}
+
+.wrapper table.highlight tbody tr.nohighlight:hover {
+	background: none !important;
 }
 
 .wrapper table tr.currentpage{
@@ -748,20 +790,34 @@ h5:hover img {
 }
 
 .wrapper table tr {
-	border-bottom: 1px solid #eee;
-	border-top: 1px solid #eee;
-	transition: background-color .3s ease-in-out;
+	/*border-bottom: 1px solid #eee;*/
+	/*border-top: 1px solid #eee;*/
+/*	transition: background-color .3s ease-in-out;
 		-webkit-transition: background-color .3s ease-in-out;
 		-moz-transition: background-color .3s ease-in-out;
-		-o-transition: background-color .3s ease-in-out;
+		-o-transition: background-color .3s ease-in-out;*/
 }
 
-table td a {
-	font-weight: normal !important;
+.wrapper table tr.attention{
+	background: #FFCCC8 !important;
+	font-weight:bold;
+	text-shadow: none;
 }
 
-.wrapper table.healthcheck tr td {
+.wrapper table td a:link, .wrapper table td a:visited {
+	font-weight: normal;
+}
+
+.wrapper table.healthcheck tr {
 	font-size: 12px;
+	color: #000;
+}
+
+/*
+ fix for firefox row heighs inheritance for positioning children, specifically absolute children
+ */
+tr, td.status {
+	height: 100%;
 }
 
 /* popup does not appear to be in use */
@@ -787,6 +843,16 @@ sup {
 	font-size: 0.8em;
 	position: relative;
 	top: -0.4em;
+
+	vertical-align: baseline;
+	font-size: .8em;
+	position: inherit;
+	top: -0.4em;
+	background: #E7E7E7;
+	border-radius: 3px;
+	text-shadow: none;
+	padding: 3px 6px;
+	font-weight: bold;
 }
 
 
@@ -1049,14 +1115,8 @@ a.viewlink:hover img {
 	float: right;
 }
 
-.countdownwrap strong {
-	color: #555;
-	font-weight: normal;
-}
-
 .maxchars {
-	color:red !important;
-	font-weight:bold !important;
+	color:#C00;
 }
 
 form table.formtable select {
@@ -1249,8 +1309,21 @@ table.comptable tr {
 
 table.comptable tr td input.newtitle {
 	margin-bottom: 2px !important;
+	font-size: 12px;
+	font-weight: bold;
 }
 
+table.comptable .comptitle {
+	color: #000;
+}
+
+table.comptable label {
+	display: inline-block;
+	margin-right: 3px;
+	color: #777;
+}
+
+/* @todo more wrappers */
 .wrapper a.component {
 	float: left;
 	font-weight: bold;
@@ -1391,16 +1464,6 @@ table.comptable tr td input.newtitle {
 	font-size: 12px;
 }
 
-table td.delete {
-	width: 20px;
-	text-align: center;
-}
-
-table td.delete a {
-	font-size: 18px !important;
-	line-height: 16px;
-}
-
 .view {
 	width: 48px;
 	text-align: center;
@@ -1416,94 +1479,80 @@ table td.delete a {
 	text-align: left;
 }
 
-.delete a:link,
-.delete a:visited {
-	color: #999 !important;
-	text-decoration: none !important;
+.delete a {
+	font-size: 18px;
+}
+
+.delete a, .secondarylink a, a.cancel, a.updatelink{
+	color: #999;
+	text-decoration: none;
 	padding: 1px;
 	display: block;
 	line-height: 16px;
-	font-size: 12px;
 	font-weight: normal;
-	-webkit-transition: all .05s ease-in-out;
-	-moz-transition: all .05s ease-in-out;
-	-o-transition: all .05s ease-in-out;
-	transition: all .05s ease-in-out;
-	font-style:normal;
+	font-style: normal;
+}
+
+a.updatelink {
+	display: inline-block;
+	color: #CF3805;
+	padding: 1px 3px;
+	margin-left:-3px;
+}
+
+a.updatelink:hover {
+	color: #FFF;
+	background-color: #415A66;
 }
 
 .delete a:hover {
-	background: #D94136 !important;
-	color: #fff !important;
-	text-decoration: none !important;
-	padding: 1px;
-	line-height: 16px;
-	display: block;
-	font-size: 12px;
-	font-weight: normal;
+	background: #D94136;
+	color: #fff;
 }
 
-a.cancel:link,
-a.cancel:visited {
-	font-weight: 100;
-	color: #D94136 !important;
+.secondarylink, .delete {
+	width: 20px;
+	text-align: center;
+	line-height: 14px;
+}
+
+.secondarylink a:hover {
+	background: <?php echo $primary_3; ?>;
+	color: #FFF;
+}
+
+a.cancel {
+	display: inline-block;	
+	color: #D94136;
 	text-decoration: underline;
 	padding: 1px 3px;
-	background: none !important;
+	background: none;
 	line-height: 16px;
-	-webkit-transition: all .05s ease-in-out;
-	-moz-transition: all .05s ease-in-out;
-	-o-transition: all .05s ease-in-out;
-	transition: all .05s ease-in-out;
 }
 
 a.cancel:hover {
-	font-weight: 100;
-	background: #D94136 !important;
-	color: #fff !important;
-	text-decoration: none !important;
-	padding: 1px 3px;
-	line-height: 16px;
+	background: #D94136;
+	color: #fff;
+	text-decoration: none;
 }
 
 a.cancel em {
 	font-style: normal;
 }
 
-.wrapper .secondarylink {
-	width: 20px;
-	text-align: center;
-	font-size: 12px;
-	line-height: 14px;
-}
-
-.wrapper .secondarylink a:link,
-.wrapper .secondarylink a:visited {
-	color: #aaa;
-	text-decoration: none;
-		font-weight: normal;
-	padding: 1px;
-	display: block;
-	line-height: 16px;
-	-webkit-transition: all .15s ease-in-out;
-	-moz-transition: all .15s ease-in-out;
-	-o-transition: all .15s ease-in-out;
-	transition: all .15s ease-in-out;
-}
-
-.wrapper .secondarylink a:hover {
-	background: <?php echo $primary_3; ?>;
-	color: #FFF;
-	text-decoration: none;
-	font-weight: normal;
-	padding: 1px;
-	display: block;
-	line-height: 16px;
-}
-
-.delete a:link, .delete a:visited, .wrapper .secondarylink a:link, .wrapper .secondarylink a:visited, a.cancel:link, a.updatelink:link{
+.delete a, .secondarylink a, a.cancel, a.updatelink{
+    -webkit-transition:  150ms ease-in-out;
+	   -moz-transition:  150ms ease-in-out;
+	     -o-transition:  150ms ease-in-out;
+	        transition:  150ms ease-in-out;
+	-webkit-transition-property: background-color, color, text-shadow;
+	   -moz-transition-property: background-color, color, text-shadow;
+	     -o-transition-property: background-color, color, text-shadow;
+	        transition-property: background-color, color, text-shadow;
+	
 	border-radius:3px;
 }
+
 
 /* backup info display */
 table.simple td {
@@ -1592,6 +1641,7 @@ table.simple td.title {
 	 background: #FCFBB8;
 }
 
+/* @todo all these wrappers, why every page has a wrapper */
 .wrapper table td span.ERRmsg {
 	color: #D94136;
 	font-size: 12px;
@@ -1699,7 +1749,7 @@ table.simple td.title {
 
 .queue-item-wrap .dz-filename {
 	width:165px;
-	/*word-break: break-all;*/
+	word-break: break-all;
 	display: inline-block;
 }
 
@@ -1809,18 +1859,6 @@ textarea.copykit {
 	margin: 20px 0 0 0;
 }
 
-a.updatelink:link,
-a.updatelink:visited {
-	color: #CF3805;
-	padding: 1px 3px;
-}
-
-a.updatelink:hover,
-a.updatelink:focus {
-	color: #FFF;
-	background-color: #2AA206;
-	padding: 1px 3px;
-}
 
 /* Labels */
 .label {
@@ -1829,16 +1867,18 @@ a.updatelink:focus {
 	text-align: center;
 	color: #F2F2F2;
 	margin:3px;
- 	background-color: <?php echo $label_0; ?>	
- 	display: block;
+ 	background-color: <?php echo $label_0; ?>;
+ 	/*display: inline-block;*/
 }
 
-.label a{
+.wrapper .label a,.label a{
 	color: white;
+	text-decoration: underline;
+	font-weight: bold !important;
 }
 
 .label a:hover{
-	color: lightgray;
+	opacity:.6;
 }
 
 .label-info {
@@ -1868,17 +1908,37 @@ a.updatelink:focus {
 	border: 1px solid <?php echo $primary_6; ?>;
 }
 
+.label-ghost {
+	background-color: rgba(221, 221, 221, 0.5);
+}
+
 .label hr{
 	border: none;
 	border-top: 1px solid rgba(255, 255, 255, 0.2);
-	margin: 3px 0;
+	margin: 6px -8px;
 }
 
-#hc_version.label {
-	width: 298px;
+.edittable .label-ghost{
+	font-size:11px;
+	padding:3px 6px;
+	color: #999999;
+	text-shadow: none;
+}
+
+div.showstatus{
+	float:right;
+}
+
+
+/* @todo #ID selector hell, can be fixed up once some heirarchy is established */
+/* healthcheck only */
+#health-check #hc_version.label {
+	width: 292px;
 	text-align: left;
-	padding: 9px 9px 9px 15px;
-	font-weight:normal;
+	padding: 9px 15px;
+	font-weight: normal;
+	line-height: normal;
+	text-shadow: 1px 1px 0 rgba(60, 60, 60, 0.2) !important;
 }
 
 #hc_alert {
@@ -1897,13 +1957,13 @@ a.updatelink:focus {
 	font-weight: bold;
 }
 
-.wrapper table td span.label {
+#health-check .wrapper table td span.label {
 	font-weight: bold;
-	color: #FCFCFC !important;
+	color: white;
 	text-shadow: none !important;
 	width:50px;
 	display:block;
-	line-height:normal;
+	line-height: 17px;
 	float:right;
 	margin:0;
 }
@@ -2238,10 +2298,12 @@ h5 .crumbs, div.h5 .crumbs {
 	border: 1px solid #FF9933;
 	padding: 5px;
 	background: white;
-	height: 300px;
+	height: 500px;
 	overflow: scroll;
+	margin-bottom: 20px;
 }
 
+/* ajaxwait deprecated , use js spin() */
 .ajaxwait {
 	background-image: url('images/ajax.gif');
 	background-position: center;
@@ -2254,8 +2316,10 @@ h5 .crumbs, div.h5 .crumbs {
 
 .ajaxwait_tint_dark {
 	background-color: #F6F6F6;
+	/*position: relative;	*/
 }
 
+/* @todo with other link styles? */
 a.disabled:link,
 a.disabled:visited {
 	pointer-events: none;
@@ -2268,6 +2332,7 @@ a.disabled:visited {
  * Theme Editor custom layout
  */
 
+/* @todo ditch the IDs */
 #theme-edit .updated, #theme-edit .error, #theme-edit .notify {
 	margin: 0 15px 15px 15px;
 }
@@ -2368,6 +2433,7 @@ a.disabled:visited {
 		margin: 0;
 		padding: 2px 0;
 		list-style: none;
+		position:relative;
 }
 #theme_filemanager ul ul li {
 		margin-left: 20px;
@@ -2436,7 +2502,7 @@ a.disabled:visited {
 .ext-php {background-image: url(images/filemanager/application-x-php.png);}
 .ext-css {background-image: url(images/filemanager/text-css.png);}
 .ext-theme {background-image: url(images/filemanager/preferences-desktop-theme.png);}
-.ext-wait {background-image: url(images/ajax_dark.gif);}
+.ext-wait,.ext-blank {background-image: none;}
 
 /* Grayscale */
 .desaturate, .dir-empty{
@@ -2462,6 +2528,14 @@ a.disabled:visited {
    */
    -ms-user-select: none;
    user-select: none;
+}
+
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  -ms-transition: none !important;
+  transition: none !important;
 }
 
 /* codemirror */
@@ -2571,7 +2645,8 @@ a.disabled:visited {
 .codewrap .CodeMirror {
 	font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;
 	height: auto;
-	max-height: 550px;/* autosizing max height */
+	/* autosizing max height @todo: breaks gutter height and overrides above */
+	max-height: 550px; 
 	background-color:#FEFEFE;
 	/*padding-bottom:20px;*/
 	border: 3px solid rgba(128,128, 128, .15);
@@ -2625,8 +2700,8 @@ a.disabled:visited {
 	padding-bottom:1px;
 	padding-right:0;
 	text-decoration:none;
-	text-shadow:none;	
-	box-shadow : none;	
+	text-shadow:none;
+	box-shadow : none;
 	font-weight: normal;
 	line-height:1;
 }
@@ -2737,53 +2812,6 @@ a.disabled:visited {
 	border: 1px dotted gray;
 }
 
-
-/* Admin theme colors */
-
-/* background-color */
-  .primary_0.back, .darkest-back               { background-color: <?php echo $primary_0;   ?>;}
-  .primary_1.back, .darker-back                { background-color: <?php echo $primary_1;   ?>;}
-  .primary_2.back, .dark-back                  { background-color: <?php echo $primary_2;   ?>;}
-  .primary_3.back, .middle-back                { background-color: <?php echo $primary_3;   ?>;}
-  .primary_4.back, .light-back                 { background-color: <?php echo $primary_4;   ?>;}
-  .primary_5.back, .lighter-back               { background-color: <?php echo $primary_5;   ?>;}
-  .primary_6.back, .lightest-back              { background-color: <?php echo $primary_6;   ?>;}
-.secondary_0.back, .secondary.darkest-back     { background-color: <?php echo $secondary_0; ?>;}
-.secondary_1.back, .secondary.lightest-back    { background-color: <?php echo $secondary_1; ?>;}
-
-/* color */
-  .primary_0.color, .darkest-color             { color: <?php echo $primary_0;   ?>;}
-  .primary_1.color, .darker-color              { color: <?php echo $primary_1;   ?>;}
-  .primary_2.color, .dark-color                { color: <?php echo $primary_2;   ?>;}
-  .primary_3.color, .middle-color              { color: <?php echo $primary_3;   ?>;}
-  .primary_4.color, .light-color               { color: <?php echo $primary_4;   ?>;}
-  .primary_5.color, .lighter-color             { color: <?php echo $primary_5;   ?>;}
-  .primary_6.color, .lightest-color            { color: <?php echo $primary_6;   ?>;}
-.secondary_0.color, .secondary.darkest-color   { color: <?php echo $secondary_0; ?>;}
-.secondary_1.color, .secondary.lightest-color  { color: <?php echo $secondary_1; ?>;}
-
-/* border color */
-  .primary_0.border-color, .darkest-border             { border-color: <?php echo $primary_0;   ?>;}
-  .primary_1.border-color, .darker-border              { border-color: <?php echo $primary_1;   ?>;}
-  .primary_2.border-color, .dark-border                { border-color: <?php echo $primary_2;   ?>;}
-  .primary_3.border-color, .middle-border              { border-color: <?php echo $primary_3;   ?>;}
-  .primary_4.border-color, .light-border               { border-color: <?php echo $primary_4;   ?>;}
-  .primary_5.border-color, .lighter-border             { border-color: <?php echo $primary_5;   ?>;}
-  .primary_6.border-color, .lightest-border            { border-color: <?php echo $primary_6;   ?>;}
-.secondary_0.border-color, .secondary.darkest-border   { border-color: <?php echo $secondary_0; ?>;}
-.secondary_1.border-color, .secondary.lightest-border  { border-color: <?php echo $secondary_1; ?>;}
-
-/* debug color */
-  .primary_0.border-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>";}
-  .primary_1.border-debug:after, .darker-debug:after              { content: "<?php echo $primary_1;   ?>";}
-  .primary_2.border-debug:after, .dark-debug:after                { content: "<?php echo $primary_2;   ?>";}
-  .primary_3.border-debug:after, .middle-debug:after              { content: "<?php echo $primary_3;   ?>";}
-  .primary_4.border-debug:after, .light-debug:after               { content: "<?php echo $primary_4;   ?>";}
-  .primary_5.border-debug:after, .lighter-debug:after             { content: "<?php echo $primary_5;   ?>";}
-  .primary_6.border-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>";}
-.secondary_0.border-debug:after, .secondary.darkest-debug:after   { content: "<?php echo $secondary_0; ?>";}
-.secondary_1.border-debug:after, .secondary.lightest-debug:after  { content: "<?php echo $secondary_1; ?>";}
-
 /* Allow Font Awesome Icons in lieu of jQuery UI and only apply when using a FA icon */
 .ui-icon[class*=" icon-"] {
     /* Remove the jQuery UI Icon */
@@ -2804,6 +2832,121 @@ a.disabled:visited {
     margin-left: -7px;
 }
 
+/* gstree styles */
+.tree-roottoggle .label{
+ 	cursor: pointer;
+ 	font-size: 11px;
+ 	margin-left:0;
+ 	color: #777;
+}
+
+.tree-indent {
+	padding: 0 10px 0 5px;
+	display: inline;
+	position: relative;
+}
+
+.tree-expander {
+	cursor: pointer;
+	color: #868686;
+	font-size: 0.8em;
+	margin-right: 7px;
+	transition: all 50ms ease-out;
+		-webkit-transition: all 50ms ease-out;
+		-moz-transition: all 50ms ease-out;
+		-o-transition: all 50ms ease-out;
+}
+
+.tree-expander-expanded{
+	padding: 0 12px 0 3px;
+	display: inline;
+	position: relative;
+}
+
+.tree-expander-collapsed{
+	padding: 0 12px 0 3px;
+	display: inline;
+	position: relative;
+}
+
+.tree-parentcollapsed {
+	display:none;
+}
+
+.tree-error {
+	color: #990000;
+	border: 1px solid #cc0000;
+}
+
+/* icon offset override for 10px for rotation centering */
+.tree .fa-play{
+    -webkit-transform-origin-x: 38%;
+    -webkit-transform-origin-y: 45%;
+}
+
+
 /* END */
+
+/* Admin theme colors */
+
+/* background-color */
+  .primary_0-back, .darkest-back               { background-color: <?php echo $primary_0;   ?>;}
+  .primary_1-back, .darker-back                { background-color: <?php echo $primary_1;   ?>;}
+  .primary_2-back, .dark-back                  { background-color: <?php echo $primary_2;   ?>;}
+  .primary_3-back, .middle-back                { background-color: <?php echo $primary_3;   ?>;}
+  .primary_4-back, .light-back                 { background-color: <?php echo $primary_4;   ?>;}
+  .primary_5-back, .lighter-back               { background-color: <?php echo $primary_5;   ?>;}
+  .primary_6-back, .lightest-back              { background-color: <?php echo $primary_6;   ?>;}
+.secondary_0-back, .secondary-darkest-back     { background-color: <?php echo $secondary_0; ?>;}
+.secondary_1-back, .secondary-lightest-back    { background-color: <?php echo $secondary_1; ?>;}
+
+/* color */
+  .primary_0-color, .darkest-color             { color: <?php echo $primary_0;   ?>;}
+  .primary_1-color, .darker-color              { color: <?php echo $primary_1;   ?>;}
+  .primary_2-color, .dark-color                { color: <?php echo $primary_2;   ?>;}
+  .primary_3-color, .middle-color              { color: <?php echo $primary_3;   ?>;}
+  .primary_4-color, .light-color               { color: <?php echo $primary_4;   ?>;}
+  .primary_5-color, .lighter-color             { color: <?php echo $primary_5;   ?>;}
+  .primary_6-color, .lightest-color            { color: <?php echo $primary_6;   ?>;}
+.secondary_0-color, .secondary-darkest-color   { color: <?php echo $secondary_0; ?>;}
+.secondary_1-color, .secondary-lightest-color  { color: <?php echo $secondary_1; ?>;}
+
+/* border color */
+  .primary_0-border-color, .darkest-border             { border-color: <?php echo $primary_0;   ?>;}
+  .primary_1-border-color, .darker-border              { border-color: <?php echo $primary_1;   ?>;}
+  .primary_2-border-color, .dark-border                { border-color: <?php echo $primary_2;   ?>;}
+  .primary_3-border-color, .middle-border              { border-color: <?php echo $primary_3;   ?>;}
+  .primary_4-border-color, .light-border               { border-color: <?php echo $primary_4;   ?>;}
+  .primary_5-border-color, .lighter-border             { border-color: <?php echo $primary_5;   ?>;}
+  .primary_6-border-color, .lightest-border            { border-color: <?php echo $primary_6;   ?>;}
+.secondary_0-border-color, .secondary-darkest-border   { border-color: <?php echo $secondary_0; ?>;}
+.secondary_1-border-color, .secondary-lightest-border  { border-color: <?php echo $secondary_1; ?>;}
+
+  .label-info-border                                         { border-color: <?php echo $label_0; ?>;}
+  .label-ok-border                                           { border-color: <?php echo $label_1; ?>;}
+  .label-warn-border                                         { border-color: <?php echo $label_2; ?>;}
+  .label-error-border                                        { border-color: <?php echo $label_3; ?>;}
+  .label-light-border                                        { border-color: <?php echo $label_4; ?>;}
+  .label-medium-border                                       { border-color: <?php echo $label_5; ?>;}
+
+/* debug color */
+  .primary_0-border-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>";}
+  .primary_1-border-debug:after, .darker-debug:after              { content: "<?php echo $primary_1;   ?>";}
+  .primary_2-border-debug:after, .dark-debug:after                { content: "<?php echo $primary_2;   ?>";}
+  .primary_3-border-debug:after, .middle-debug:after              { content: "<?php echo $primary_3;   ?>";}
+  .primary_4-border-debug:after, .light-debug:after               { content: "<?php echo $primary_4;   ?>";}
+  .primary_5-border-debug:after, .lighter-debug:after             { content: "<?php echo $primary_5;   ?>";}
+  .primary_6-border-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>";}
+.secondary_0-border-debug:after, .secondary-darkest-debug:after   { content: "<?php echo $secondary_0; ?>";}
+.secondary_1-border-debug:after, .secondary-lightest-debug:after  { content: "<?php echo $secondary_1; ?>";}
+
+/* label colors */
+   .label-default-debug:after                                     { content: "<?php echo $label_0;   ?>";}
+   .label-info-debug:after                                        { content: "<?php echo $label_1;   ?>";}
+   .label-ok-debug:after                                          { content: "<?php echo $label_2;   ?>";}
+   .label-warn-debug:after                                        { content: "<?php echo $label_3;   ?>";}
+   .label-error-debug:after                                       { content: "<?php echo $label_4;   ?>";}
+   .label-light-debug:after                                       { content: "<?php echo $label_5;   ?>";}
+   .label-medium-debug:after                                      { content: "<?php echo $label_6;   ?>";}
 
 /* </style> */

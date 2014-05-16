@@ -65,7 +65,7 @@ getPagesXmlValues(true);
 $count = 0;
 $pagesArray_tmp = array();
 
-foreach ($pagesArray as $page) {
+foreach ($pagesArray as $key =>$page) {
 	if ($page['parent'] != '') { 
 		$parentTitle = returnPageField($page['parent'], "title");
 		$sort = $parentTitle .' '. $page['title'];		
@@ -74,7 +74,7 @@ foreach ($pagesArray as $page) {
 		$sort = $page['title'];
 	}
 	$page = array_merge($page, array('sort' => $sort));
-	$pagesArray_tmp[$count] = $page;
+	$pagesArray_tmp[$key] = $page;
 	$count++;
 }
 // $pagesArray = $pagesArray_tmp;
@@ -101,8 +101,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 				<form><input type="text" autocomplete="off" class="text" id="q" placeholder="<?php echo strip_tags(lowercase(i18n_r('FILTER'))); ?>..." /> &nbsp; <a href="pages.php" class="cancel"><?php i18n('CANCEL'); ?></a></form>
 			</div>
 			
-			<table id="editpages" class="edittable highlight paginate">
-				<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th><th></th></tr>
+			<table id="editpages" class="edittable highlight striped paginate tree">
+				<thead>
+					<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th><th></th></tr>
+				</thead>					
 				<?php echo $table; ?>
 			</table>
 			<p><em><b><span id="pg_counter"><?php echo $count; ?></span></b> <?php i18n('TOTAL_PAGES'); ?></em></p>

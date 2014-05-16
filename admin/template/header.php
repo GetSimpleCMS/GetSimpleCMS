@@ -92,7 +92,9 @@ $themeselector .= '</select>';
 	get_scripts_backend(); ?>
 		
 	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
+	<script type="text/javascript" src="template/js/jquery-gstree.js?v=<?php echo GSVERSION; ?>"></script>		
 	<script type="text/javascript" src="template/js/lazyload.js?v=<?php echo GSVERSION; ?>"></script>		
+	<script type="text/javascript" src="template/js/spin.js?v=<?php echo GSVERSION; ?>"></script>		
 
 	<script type="text/javascript" src="template/js/codemirror.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
 
@@ -134,15 +136,26 @@ $themeselector .= '</select>';
 			<?php  }} ?>
 		});
 	</script>
-	<?php } ?>
+	<?php } 
+
+		$jsi18nkeys = array(
+			'PLUGIN_UPDATED',
+			'ERROR',
+			'EXPAND_TOP',
+			'COLLAPSE_TOP',
+			'FILE_EXISTS_PROMPT',
+			'CANCELLED'
+		);
+		
+		$jsi18n = array_combine($jsi18nkeys,array_map('i18n_r',$jsi18nkeys));
+
+	?>
 	
 	<script type="text/javascript">		
 		// init gs namespace and i18n
 		var GS = {};
-		GS.i18n = new Array();
-		GS.i18n['PLUGIN_UPDATED'] = '<?php i18n("PLUGIN_UPDATED"); ?>';
-		GS.i18n['ERROR'] = '<?php i18n("ERROR"); ?>';
-
+		GS.i18n = <?php echo json_encode($jsi18n); ?>;
+		GS.debug = <?php echo isDebug() === true ? 'true' : 'false'; ?> ;
 	</script>
 
 <noscript>
