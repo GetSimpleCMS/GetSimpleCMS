@@ -1464,8 +1464,6 @@ function cleanHtml($str){
 	return $html_fragment;
 }	
 
-
-?>
 // @todo: now that I have some structure, i can probably reduce this into some array_filter functions, depending on speed these might be easier and faster to use.
 // @todo: replace function checks with callable checks
 // but it still requires a class or __invoke to pass arguments into the callback
