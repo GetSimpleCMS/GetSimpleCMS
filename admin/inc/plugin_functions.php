@@ -76,7 +76,6 @@ register_script('scrolltofixed', $GS_script_assets['scrolltofixed']['local']['ur
 queue_script('jquery', GSBACK);
 queue_script('jquery-ui', GSBACK);
 queue_script('fancybox', GSBACK);
-queue_script('scrolltofixed', GSBACK);
 
 queue_style('fancybox-css',GSBACK);
 
