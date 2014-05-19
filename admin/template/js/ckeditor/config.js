@@ -26,9 +26,9 @@ CKEDITOR.editorConfig = function( config )
 	config.allowedContent              = true;       // disable acf
 
 	config.toolbar_advanced = 
-		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
+		[['Bold', 'Italic', 'Underline', 'Subscript', 'Superscript', 'Blockquote', 'NumberedList', 'BulletedList', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', 'Table', 'Anchor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'ShowBlocks', 'Source'],
 		'/',
-		['Styles','Format','Font','FontSize']];	
+		[ 'TextColor', 'BGColor', 'Styles', 'Format', 'Font', 'FontSize', 'Cut', 'Copy', 'Paste', 'PasteText','PasteFromWord', 'Undo', 'Redo' ]];
 
 	config.toolbar_basic = 
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']];
