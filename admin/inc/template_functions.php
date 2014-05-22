@@ -1642,6 +1642,7 @@ function filterMatchCmp($a,$b){
 
 // EQUALS case-insensitive comparison
 // @uses lowercase (mbstring compat)
+// @todo is strcmp utf-8 compatbile , also suffers from  type casting injection
 function filterMatchiCmp($a,$b){
 	// return strcasecmp($a,$b); // native, not mb safe?
 	return strcmp(lowercase($a),lowercase($b)) !== 0; // custom
@@ -1650,7 +1651,7 @@ function filterMatchiCmp($a,$b){
 // BOOLEAN comparison
 // casts to boolean before compare
 // can probably use native str cmp since its binary safe, 
-// but we might have to do some Y/N noramlizing later on etc.
+// but we might want to do some smart Y/N str noramlizing later on etc.
 function filterMatchBoolCmp($a,$b){
 	$a = (bool) $a;
 	$b = (bool) $b;
@@ -1688,7 +1689,7 @@ function filterTagsiCmp($a,$b){
  */
 
 /**
- * return pages with pages not containing tags removed, or inverse via exclude flag
+ * return pages with those not containing specified tags, excluded, or the inverse via exclude flag
  * accepts an array or a csv string of keywords
  * eg. getPages('filterTags',array('test','test2','?????????'),false,true);
  * 
@@ -1710,7 +1711,20 @@ function filterTags($pages, $tags, $case = false, $exclude = false){
 	return $pagesFiltered;
 }
 
+/*
+ * aliases for filtertasgs exclude toggle
+ */
+function filterTagsMatch($pages, $tags, $case = false){
+	filterTags($pages, $tags, $case);
+}
+
+function filterTagsNotMatch($pages, $tags, $case = false){
+	filterTags($pages, $tags, $case, false);
+}
+
+
 // filter matching parent
+// @todo tolowercase parent since it should be a slug
 function filterParent($pages,$parent=''){
 	return filterKeyValueMatch($pages,'parent',$parent);
 }
@@ -1728,6 +1742,8 @@ function filterParent($pages,$parent=''){
 //
 // sorters
 // most use subval sort for now
+// @todo any sortkey will remain in array, eg. sortbytitle and path key = 'path'
+
 // @todo
 // how to do sorters
 // most will be a custom comparison sort
@@ -1737,34 +1753,36 @@ function filterParent($pages,$parent=''){
 // will need multi sort using sort index faster to just sort fields you need and use the slug index
 // as a sort index depending on the sort needed, this also can help avoid
 // requiring a special multidimentional sorts and allowing any sort by slug pattern, and possibly cache sorts easier.
-// subval sort is very inefficient in that it creates a tmp array adds sort key value to it then sorts it and then rebuids to tmo index,
+// subval sort is very inefficient in that it creates a tmp array adds sort key value to it then sorts it and then rebuids to tmp index,
 // it is great but it might be possible to make it more efficient
 // 
 // eg uksort($array, "strnatcasecmp"); then resort main array as multi
-// some more stuff here http://us2.php.net/array_multisort
+// some more stuff here http://us2.php.net/array_multisort, supports sorting by sort array or multiple columns.
+// multisort does not support local or natural sorting in php < 5.4 and 5.3 respectivly
 // 
 // Sorting utf-8 by locale is iffy
 // strcoll() might be of some use
 // 
+// sorting by at least 2 columns, and fake columns such as external relationships, parent title / parent slug
 
 
 /**
  * sortkey below sorts by a key with uasort without creating a seperate sorting array
- * but it uses a tmp global and custom comparator
+ * but it uses a tmp global (@todo make static) and custom comparator
  */
 function sortKey($pages,$key){
 	// return subval_sort($pagesArray,$key);
 
 	GLOBAL $sortkey;
 	$sortkey = $key;
-     function custom_sort($a,$b) {
-     	GLOBAL $sortkey;
-        return $a[$sortkey]>$b[$sortkey];
-     }
-     uasort($pages, "custom_sort");
+    function custom_sort($a,$b) {
+    GLOBAL $sortkey;
+       return $a[$sortkey]>$b[$sortkey];
+    }
+    uasort($pages, "custom_sort");
 
-     unset($sortkey);
-     return $pages;
+    unset($sortkey);
+    return $pages;
 }
 
 
@@ -1773,26 +1791,41 @@ function sortKey($pages,$key){
 // function sortPath($pages)
 
 /**
- * sort by "parent title page title"
+ * sort by "parent-title / page-title"
  * @param  array $pages pages array
  * @return array        sorted
  */
 function sortParentTitle($pages){
+	$seperator = ' - ';
 	foreach ($pages as $slug => &$page) {
-		$page['path'] = $page['parent'] ? $pages[$page['parent']]["title"] . '/' : '';
+		$page['path'] = $page['parent'] ? $pages[$page['parent']]["title"] . $seperator : '';
 		$page['path'] .= $page['title'];
 	}
 	return 	subval_sort($pages,'path');
 }
 
+// test using multi sort 
+function sortParentTitleMulti($pages){
+	$sort = array();
+	foreach($pages as $slug => $page) {
+    	$sort['title'][$slug] = $page['title'];
+    	$sort['parenttitle'][$slug] = $page['parent'] ? $pages[$page['parent']]["title"] : '';
+    }
+    _debugLog($sort);
+	# sort by event_type desc and then title asc
+	array_multisort($sort['parenttitle'], SORT_ASC, $sort['title'], SORT_ASC,$pages);
+	return $pages;
+}
+
 /**
- * sorts by "parent slug page slug"
+ * sorts by "parent-slug / page-slug"
  * @param  array $pages pages array
  * @return array        sorted
  */
 function sortParentPath($pages){
+	$seperator = '/';
 	foreach ($pages as $slug => &$page) {
-		$page['path'] = $page['parent'] ? $pages[$page['parent']]["url"] . '/' : '';
+		$page['path'] = $page['parent'] ? $pages[$page['parent']]["url"] . $seperator : '';
 		$page['path'] .= $page['url'];
 	}
 	return 	subval_sort($pages,'path');
