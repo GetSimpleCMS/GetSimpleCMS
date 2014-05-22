@@ -4,9 +4,14 @@
  * Generate standard thumbnails
  * @param  string $path path to image
  * @param  string $name file name
+ * @uses   GD
  */
 
 function genStdThumb($path,$name){
+
+	//gd check
+	$php_modules = get_loaded_extensions();
+	if(!in_arrayi('gd', $php_modules)) return;
 
 	if (!defined('GSIMAGEWIDTH')) {
 		$width = 200; //New width of image  	
@@ -36,7 +41,8 @@ function genStdThumb($path,$name){
 	//thumbnail for post
 	$imgsize = getimagesize($targetFile);
 		
-	switch(lowercase(substr($targetFile, -3))){
+	switch($ext){
+			case "jpeg":
 			case "jpg":
 					$image = imagecreatefromjpeg($targetFile);    
 			break;
@@ -47,7 +53,7 @@ function genStdThumb($path,$name){
 					$image = imagecreatefromgif($targetFile);
 			break;
 			default:
-					exit;
+					return;
 			break;
 	}
 		
@@ -79,6 +85,8 @@ function genStdThumb($path,$name){
 	
 	imagedestroy($picture);
 	imagedestroy($image);
+
+	return true;
 }
 
 
@@ -92,6 +100,7 @@ function genStdThumb($path,$name){
  *
  * @package GetSimple
  * @subpackage Images
+ * @uses GD
  */
 class ImageManipulation {
 

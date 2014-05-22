@@ -283,8 +283,8 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $fl
         $id=$data->url;
         
     	$pages = $xml->addChild('item');
-        $pages->addChild('url', $id);
-        $pagesArray[(string)$id]['url']=(string)$id;            
+        // $pages->addChild('url', $id);
+        // $pagesArray[(string)$id]['url']=(string)$id;            
                 
         foreach ($data->children() as $item => $itemdata) {
                 if ($item!="content"){
@@ -307,7 +307,7 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $fl
   }   // endif      
   if ($flag===true || $flag == 'true'){
 
-  	// Plugin Authors should add custome fields etc.. here
+  	// Plugin Authors should add custom fields etc.. here
   	$xml = exec_filter('pagecache',$xml);
 
     // sanity check in case the filter does not come back properly or returns null

@@ -79,7 +79,7 @@ if(isset($_POST['submitted'])) {
 		$SITEURL = tsl($_POST['siteurl']); 
 	}
 	if(isset($_POST['permalink'])) { 
-		$PERMALINK = $_POST['permalink']; 
+		$PERMALINK = var_out(trim($_POST['permalink'])); 
 	}	
 	if(isset($_POST['template'])) { 
 		$TEMPLATE = $_POST['template']; 
@@ -95,19 +95,19 @@ if(isset($_POST['submitted'])) {
 		$USR = strtolower($_POST['user']); 
 	}
  	if(isset($_POST['name'])) { 
-		$NAME = $_POST['name']; 
+		$NAME = var_out($_POST['name']); 
 	} 
 	if(isset($_POST['email'])) { 
-		$EMAIL = $_POST['email']; 
+		$EMAIL = var_out($_POST['email'],'email'); 
 	} 
 	if(isset($_POST['timezone'])) { 
-		$TIMEZONE = $_POST['timezone']; 
+		$TIMEZONE = var_out($_POST['timezone']); 
 	}
 	if(isset($_POST['lang'])) { 
-		$LANG = $_POST['lang']; 
+		$LANG = var_out($_POST['lang']); 
 	}
 	if(isset($_POST['show_htmleditor'])) {
-	  $HTMLEDITOR = $_POST['show_htmleditor']; 
+	  $HTMLEDITOR = var_out($_POST['show_htmleditor']); 
 	} else {
 		$HTMLEDITOR = '';
 	}
@@ -222,8 +222,8 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('GENERAL_SETTINGS'));
 		<p class="inline" ><input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<label for="prettyurls" ><?php i18n('USE_FANCY_URLS');?></label></p>
 				
 		<div class="leftsec">
-			<p><label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: <span class="right"><a href="http://get-simple.info/wiki/pretty_urls" target="_blank" ><?php i18n('MORE');?></a></span></label><input class="text" name="permalink" id="permalink" type="text" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /></p>
-		<a href="?flushcache"><?php i18n('FLUSHCACHE'); ?></a>
+			<p><label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: <span class="right"><a href="http://get-simple.info/docs/pretty_urls" target="_blank" ><?php i18n('MORE');?></a></span></label><input class="text" name="permalink" id="permalink" type="text" placeholder="%parent%/%slug%/" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /></p>
+		<a id="flushcache" class="button" href="?flushcache"><?php i18n('FLUSHCACHE'); ?></a>
 		</div>
 		<div class="clear"></div>
 		
@@ -259,7 +259,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('GENERAL_SETTINGS'));
 			</p>
 		</div>
 		<div class="rightsec">
-			<p><label for="lang" ><?php i18n('LANGUAGE');?>: <span class="right"><a href="http://get-simple.info/wiki/languages" target="_blank" ><?php i18n('MORE');?></a></span></label>
+			<p><label for="lang" ><?php i18n('LANGUAGE');?>: <span class="right"><a href="http://get-simple.info/docs/languages" target="_blank" ><?php i18n('MORE');?></a></span></label>
 			<select name="lang" id="lang" class="text">
 				<?php echo $langs; ?>
 			</select>

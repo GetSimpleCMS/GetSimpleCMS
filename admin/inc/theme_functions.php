@@ -39,27 +39,18 @@ function get_page_content() {
  * @uses strip_decode
  *
  * @param string $n Optional, default is 200.
- * @param bool $html Optional, default is false.  
- * 				If this is true, it will strip out html from $content
+ * @param bool $striphtml Optional, default false, true will strip html from $content
+ * @param string $ellipsis Optional, Default '...', specify an ellipsis
  * @return string Echos.
  */
-function get_page_excerpt($n=200, $html=false) {
-	global $content;
+function get_page_excerpt($len=200, $striphtml=true, $ellipsis = '...') {
+	GLOBAL $content;
+	if ($len<1) return '';
 	$content_e = strip_decode($content);
 	$content_e = exec_filter('content',$content_e);
-	
-	if (!$html) {
-		$content_e = strip_tags($content_e);
-	}
-	
-	if (function_exists('mb_substr')) { 
-		$content_e = trim(mb_substr($content_e, 0, $n)) . '...';
-	} else {
-		$content_e = trim(substr($content_e, 0, $n)) . '...';
-	}
-
-	echo $content_e;
+	echo getExcerpt($content_e, $len, $striphtml, $ellipsis);
 }
+
 
 /**
  * Get Page Meta Keywords

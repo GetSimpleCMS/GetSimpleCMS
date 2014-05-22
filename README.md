@@ -25,7 +25,7 @@ It would be great if you would link back to get-simple.info if you use it.
 REQUIREMENTS: 
 -----------------------------------
 
-http://get-simple.info/wiki/installation:modules
+http://get-simple.info/docs/requirements
 
 ### Build Requirements ###
 
@@ -51,13 +51,13 @@ To disable this warning see gsconfig definition GSNOAPACHECHECK
 INSTALLATION:
 -----------------------------------
 
-Please see: http://get-simple.info/wiki/installation
+Please see: http://get-simple.info/docs/installation
 
 
 UPGRADING
 -----------------------------------
 
-Please see: http://get-simple.info/wiki/installation:upgrade
+Please see: http://get-simple.info/docs/upgrading
 
 
 DISCLAIMER:

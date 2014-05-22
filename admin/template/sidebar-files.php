@@ -51,10 +51,18 @@ $path = (isset($_GET['path'])) ? $_GET['path'] : "";
 				$('#maincontent').load(location.href+' #maincontent > *');
 			},
 			onSelectError: function(file,errorCode,errorMsg) {
-				notifyError('uploadify: ' + file + ' Error ' + errorCode +':'+errorMsg);
+				notifyError('<strong>Uploadify:</strong> ' + file.name + ' <br/>Error ' + errorCode +':'+errorMsg).popit().removeit();
 			},
+			onUploadSuccess: function(file,data,response) {	
+				if(data != 1){
+					notifyError('<strong>Uploadify:</strong>' + data + ' ('+file.name+')').popit().removeit();
+					jQuery('#' + file.id).addClass('uploadifyError');
+					jQuery('#' + file.id).find('.uploadifyProgressBar').css('width','1px');
+					jQuery('#' + file.id).find('.data').html(' - ' + 'Failed');					
+				}	 
+			},				
 			onUploadError: function(file,errorCode,errorMsg, errorString) {
-				notifyError('uploadify: ' + errorMsg);
+				notifyError('<strong>Uploadify:</strong> ' + errorMsg).popit().removeit();
 			}
 		});
 		}

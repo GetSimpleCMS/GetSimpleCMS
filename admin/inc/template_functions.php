@@ -326,30 +326,12 @@ function makeIso8601TimeStamp($dateTime) {
 function pingGoogleSitemaps($url_xml) {
    $status = 0;
    $google = 'www.google.com';
-   $yahoo  = 'search.yahooapis.com';
    $bing 	 = 'www.bing.com';
    $ask 	 = 'submissions.ask.com';
    if( $fp=@fsockopen($google, 80) ) {
       $req =  'GET /webmasters/sitemaps/ping?sitemap=' .
               urlencode( $url_xml ) . " HTTP/1.1\r\n" .
               "Host: $google\r\n" .
-              "User-Agent: Mozilla/5.0 (compatible; " .
-              PHP_OS . ") PHP/" . PHP_VERSION . "\r\n" .
-              "Connection: Close\r\n\r\n";
-      fwrite( $fp, $req );
-      while( !feof($fp) ) {
-         if( @preg_match('~^HTTP/\d\.\d (\d+)~i', fgets($fp, 128), $m) ) {
-            $status = intval( $m[1] );
-            break;
-         }
-      }
-      fclose( $fp );
-   }
-   
-   if( $fp=@fsockopen($yahoo, 80) ) {
-      $req =  'GET /SiteExplorerService/V1/updateNotification?appid=simpleManage&url=' .
-              urlencode( $url_xml ) . " HTTP/1.1\r\n" .
-              "Host: $yahoo\r\n" .
               "User-Agent: Mozilla/5.0 (compatible; " .
               PHP_OS . ") PHP/" . PHP_VERSION . "\r\n" .
               "Connection: Close\r\n\r\n";
@@ -1189,5 +1171,84 @@ function filter_queryString($allowed = array()){
 	$new_qstring = http_build_query($qstring_filtered,'','&amp;');
 	return $new_qstring;
 }
+
+
+/**
+ * Get String Excerpt
+ *
+ * @since 3.3.2
+ *
+ * @uses mb_strlen
+ * @uses mb_strrpos
+ * @uses mb_substr
+ * @uses strip_tags
+ * @uses strIsMultibyte
+ * @uses cleanHtml
+ * @uses preg_repalce PCRE compiled with "--enable-unicode-properties"
+ *
+ * @param string $n Optional, default is 200.
+ * @param bool $striphtml Optional, default true, true will strip html from $content
+ * @param string $ellipsis 
+ * @param bool $break	break words, default: do not break words find whitespace and puntuation
+ * @param bool $cleanhtml attempt to clean up html IF strip tags is false, default: true
+ * @return string
+ */
+function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = '...', $break = false, $cleanhtml = true){
+	$str = $striphtml ? trim(strip_tags($str)) : $str;
+	$len = $len++; // zero index bump
+
+	// setup multibyte function names
+	$prefix = strIsMultibyte($str) ?  'mb_' : '';
+	list($substr,$strlen,$strrpos) = array($prefix.'substr',$prefix.'strlen',$prefix.'strrpos');
+
+	// string is shorter than truncate length, return
+	if ($strlen($str) < $len) return $str;
+
+	// if not break, find last word boundary before truncate to avoid splitting last word
+	// solves for unicode whitespace and punctuation and a 1 character lookahead
+	// hack,  replaces punc with space and handles it all the same for obtaining boundary index
+	// REQUIRES that PCRE is compiled with "--enable-unicode-properties, detect or supress ?
+	if(!$break) $excerpt = preg_replace('/\n|\p{Z}|\p{P}+$/u',' ',$substr($str, 0, $len+1)); 
+
+	$lastWordBoundaryIndex = !$break ? $strrpos($excerpt, ' ') : $len;
+	$str = $substr($str, 0, $lastWordBoundaryIndex); 
+
+	if(!$striphtml && $cleanhtml) return trim(cleanHtml($str)) . $ellipsis;
+	return trim($str) . $ellipsis;	
+}
+
+/**
+ * check if a string is multbyte
+ * @since 3.3.2
+ * 
+ * @uses mb_check_encoding
+ * 
+ * @param  string $str string to check
+ * @return bool      true if multibyte
+ */
+function strIsMultibyte($str){
+	return function_exists('mb_check_encoding') && ! mb_check_encoding($str, 'ASCII') && mb_check_encoding($str, 'UTF-8');
+}
+
+/**
+ * clean Html fragments by loading and saving from DOMDocument
+ * Will only clean html body fragments,unexpected results with full html doc or containg head or body
+ * it will also strip these in final result
+ * 
+ * @note supressig errors on libxml functions to prevent parse errors on no well formed content
+ * @since 3.3.2
+ * @param  string $str string to clean up
+ * @return string      return well formed html , with open tags being closed and incomplete open tags removed
+ */
+function cleanHtml($str){
+	// setup encoding, required for proper dom loading
+	$charsetstr = '<meta http-equiv="content-type" content="text/html; charset=utf-8">'.$str;
+	$dom_document = new DOMDocument();
+	@$dom_document->loadHTML($charsetstr);
+	// strip dom tags
+	$html_fragment = preg_replace('/^<!DOCTYPE.+?>|<head.*?>(.*)?<\/head>/', '', str_replace( array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), @$dom_document->saveHTML()));	
+	return $html_fragment;
+}	
+
 
 ?>

@@ -301,7 +301,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 		
 		<?php 
 
-			if($EDTOOL == 'basic' || $EDTOOL == 'advanced') $EDTOOL = "'$EDTOOL'";
+			if(isset($EDTOOL)) $EDTOOL = returnJsArray($EDTOOL);
+			if(isset($toolbar)) $toolbar = returnJsArray($toolbar); // handle plugins that corrupt this
+
 			else if(strpos(trim($EDTOOL),'[[')!==0 && strpos(trim($EDTOOL),'[')===0){ $EDTOOL = "[$EDTOOL]"; }
 
 			if(isset($toolbar) && strpos(trim($toolbar),'[[')!==0 && strpos($toolbar,'[')===0){ $toolbar = "[$toolbar]"; }
