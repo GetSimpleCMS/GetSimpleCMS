@@ -508,7 +508,7 @@ function get_components_xml(){
  */
 function get_component_xml($id){
 	if(!$id) return;
-	return get_components_xml()->xpath("item/slug[.='".$id."']/parent::*");
+	return get_components_xml()->xpath("//slug[.='sidebar']/..");	
 }
 
 /**
