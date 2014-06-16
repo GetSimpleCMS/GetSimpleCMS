@@ -109,7 +109,7 @@ function get_page_meta_desc($echo=true) {
 /**
  * Get Page Meta Robots
  *
- * @since 3.4.0
+ * @since 3.4
  * @uses $metarNoIndex, $metarNoFollow, $metarNoArchive
  *
  * @param bool $echo Optional, default is true. False will 'return' value
@@ -127,6 +127,19 @@ function get_page_meta_robots($echo=true) {
 	return echoReturn($str,$echo);		
 }
 
+/**
+ * Get Page Meta Title for <title>
+ *
+ * @since 3.4
+ * @uses $title
+ *
+ * @param bool $echo Optional, default is true. False will 'return' value
+ * @return string Echos or returns based on param $echo
+ */
+function get_page_meta_title($echo=true){
+	$str = strip_tags(strip_decode(getPageGlobal('title')));
+	return echoReturn(exec_filter('metat',$str),$echo);		
+}
 
 /**
  * Get Page Title
@@ -139,7 +152,7 @@ function get_page_meta_robots($echo=true) {
  */
 function get_page_title($echo=true) {
 	$str = strip_decode(getPageGlobal('title'));
-	return echoReturn($str,$echo);	
+	return echoReturn(exec_filter('pagetitle',$str),$echo);	
 }
 
 /**
@@ -148,13 +161,13 @@ function get_page_title($echo=true) {
  * This will remove all HTML from the title before returning
  *
  * @since 1.0
- * @uses $title
+ * @uses get_page_title()
  *
  * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_page_clean_title($echo=true) {
-	$str = strip_tags(strip_decode(getPageGlobal('title')));
+	$str = strip_tags(get_page_title(false));
 	return echoReturn($str,$echo);	
 }
 
@@ -170,7 +183,7 @@ function get_page_clean_title($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_slug($echo=true) {
-	return echoReturn(getPageGlobal('url'),$echo);
+	return echoReturn(exec_filter('pageslug',getPageGlobal('url')),$echo);
 }
 
 /**
