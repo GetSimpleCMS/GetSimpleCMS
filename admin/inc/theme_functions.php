@@ -136,9 +136,9 @@ function get_page_meta_robots($echo=true) {
  * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
-function get_page_meta_title($echo=true){
+function get_page_head_title($echo=true){
 	$str = strip_tags(strip_decode(getPageGlobal('title')));
-	return echoReturn(exec_filter('metat',$str),$echo);		
+	return echoReturn(exec_filter('headtitle',$str),$echo);		
 }
 
 /**
