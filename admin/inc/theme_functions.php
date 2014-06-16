@@ -282,7 +282,7 @@ function get_header($full=true) {
 	if (!empty($keywords)) echo '<meta name="keywords" content="'.$keywords.'" />'."\n";
 	
 	// canonical link
-	$canonical = '<link rel="canonical" href="'. get_page_url(true) .'" />'."\n";
+	$canonical = '<link rel="canonical" href="'. exec_filter('canonical',get_page_url(true)) .'" />'."\n";
 	if ($full and !empty($canonical)) {
 		echo $canonical;
 	}
