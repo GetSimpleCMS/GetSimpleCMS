@@ -466,9 +466,9 @@ h5:hover img {
 
 #sidebar.fixed{
 	-transition: top .02s ease-out;
-		-webkit-transition: all .2s ease-in-out;
-		-moz-transition: all .2s ease-in-out;
-		-o-transition: all .2s ease-in-out;
+		-webkit-transition: top .2s ease-in-out;
+		-moz-transition: top .2s ease-in-out;
+		-o-transition: top .2s ease-in-out;
 }
 
 #sidebar .section {
