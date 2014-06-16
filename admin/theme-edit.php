@@ -227,7 +227,7 @@ function editor_fileIsOpen($path,$file){
  * dirs first, files in alphabetical order
  * @param array $a,$b directoryToMultiArray() arrays
  */
-function editor_editor_compareOrder($a, $b)
+function editor_compareOrder($a, $b)
 {
 	$atype = $a['type'];
 	$btype = $b['type'];
