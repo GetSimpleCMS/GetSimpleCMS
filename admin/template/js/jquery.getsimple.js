@@ -333,7 +333,7 @@ jQuery(document).ready(function () {
 			<table class="comptable"><tr><td><label>Title: </label><input type="text" class="text newtitle" name="title[]" value="" /></td> \
 			<td class="delete"><a href="javascript:void(0)" title="Delete Component:?" class="delcomponent" id="del-' + id + '" rel="' + id + '" >&times;</a> \
 			</td></tr></table> \
-			<textarea name="val[]" class="code_edit"></textarea><input type="hidden" name="slug[]" value="" /> \
+			<textarea name="val[]" class="code_edit" data-mode="php"></textarea><input type="hidden" name="slug[]" value="" /> \
 			<input type="hidden" name="id[]" value="' + id + '" /><div>');
 		$("#section-" + id).slideToggle('fast');
 		id = (id - 1) + 2;
