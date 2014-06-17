@@ -2644,21 +2644,20 @@ a.disabled:visited {
 
 .codewrap .CodeMirror {
 	font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;
-	height: auto;
-	line-height:1.2em;
-	/* autosizing max height @todo: breaks gutter height and overrides above */
+	height: auto; /* autosizing max height @todo: breaks gutter height and overrides above */
 	max-height: 550px; 
+	line-height:1.2em;
 	background-color:#FEFEFE;
 	/*padding-bottom:20px;*/
 	border: 3px solid rgba(128,128, 128, .15);
-    -webkit-background-clip: padding-box !important; /* for Safari */
     background-clip: padding-box !important; /* for IE9+, Firefox 4+, Opera, Chrome */
+    -webkit-background-clip: padding-box !important; /* for Safari */
     z-index: 1001;
     padding-bottom: 10px; /* padding for hscroll not obfuscate last line */
 }
 
 
-/* codemirror focused border highlight style */
+/* codemirror focused special border highlight style */
 .codewrap .CodeMirror.CodeMirror-focused{
 /*    outline: none;
     border-color: #9ecaed;
@@ -2669,7 +2668,6 @@ a.disabled:visited {
 	max-height: inherit; /* autosizing max height */
 	overflow-y: auto;
 	overflow-x: hidden;
-	/* causing extra scrollbar */
 }
 
 .codewrap .CodeMirror.CodeMirror-fullscreen{

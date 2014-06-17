@@ -51,13 +51,13 @@ jQuery(document).ready(function () {
 		// matchTags                 : true, // adds class CodeMirror-matchingtag to tags contents
 		foldGutter                : true,
 		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-		saveFunction              : function(cm) { customSave(cm); },
+		saveFunction              : function(cm) { dosave(); },
 		extraKeys: {
 			// "Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
 			// "Ctrl-Q" : function(cm) { cmfold(cm) },
 			"F11"    : function(cm) { setFullScreen(cm, !isFullScreen(cm)); },
 			"Esc"    : function(cm) { if (isFullScreen(cm)) setFullScreen(cm, false); },
-			"Ctrl-S" : function(cm) { customSave(cm); },
+			// "Ctrl-S" : function(cm) { customSave(cm); },
 			"Ctrl-Space" : "autocomplete"
 		}
 	};

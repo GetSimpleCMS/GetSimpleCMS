@@ -1045,7 +1045,24 @@ jQuery(document).ready(function () {
 	}
 
 	scrollsidebar();
+
+	function dosave(){
+		Debugger.log('saving');
+		Debugger.log($("#submit_line input.submit"));
+		$("#submit_line input.submit").trigger('click'); // should do form.submit handlers as well
+	}
 	
+	$(document).bind('keydown', function(e) {
+		var ctrlpress = navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey;
+		// detect CTRL+S do save on all pages
+		if(ctrlpress && (e.which == 83)) {
+			Debugger.log('Ctrl+S pressed');
+			dosave();
+			e.preventDefault();
+			return false;
+		}
+	});
+
 	// catch all redirects for session timeout on HTTP 401 unauthorized
 	$( document ).ajaxError(function( event, xhr, settings ) {
 		// notifyInfo("ajaxComplete: " + xhr.status);
