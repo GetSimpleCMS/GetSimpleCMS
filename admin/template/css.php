@@ -2645,6 +2645,7 @@ a.disabled:visited {
 .codewrap .CodeMirror {
 	font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;
 	height: auto;
+	line-height:1.2em;
 	/* autosizing max height @todo: breaks gutter height and overrides above */
 	max-height: 550px; 
 	background-color:#FEFEFE;
