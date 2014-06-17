@@ -63,6 +63,7 @@ jQuery(document).ready(function () {
 	};
 
 	CodeMirror.commands.autocomplete = function(cm) {
+		// @todo needs to be mode dependant, detect current mixed mode context
 		CodeMirror.showHint(cm); // auto
 		// CodeMirror.showHint(cm, CodeMirror.hint.anyword);
 	};
@@ -151,7 +152,7 @@ jQuery(document).ready(function () {
 			// replace jqueryui resize handle with custom icon
 			$(editor.getWrapperElement()).find($('.ui-resizable-se')).removeClass('ui-icon');
 			$(editor.getWrapperElement()).find($('.ui-resizable-se')).addClass('handle');
-			$(editor.getWrapperElement()).find($('.ui-resizable-se')).html('◢'); // U+25E2	e2 97 a2 BLACK LOWER RIGHT TRIANGLE
+			$(editor.getWrapperElement()).find($('.ui-resizable-se')).html('&#x25e2;'); // U+25E2	e2 97 a2 BLACK LOWER RIGHT TRIANGLE
 
 			// add fixed fullscreen toggle
 			fullscreen_button(editor);

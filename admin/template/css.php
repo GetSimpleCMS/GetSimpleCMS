@@ -2654,6 +2654,7 @@ a.disabled:visited {
     -webkit-background-clip: padding-box !important; /* for Safari */
     background-clip: padding-box !important; /* for IE9+, Firefox 4+, Opera, Chrome */
     z-index: 1001;
+    padding-bottom: 10px; /* padding for hscroll not obfuscate last line */
 }
 
 
