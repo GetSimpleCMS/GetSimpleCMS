@@ -6,67 +6,111 @@
  * @subpackage Plugin-Functions
  */
 
-$plugins          = array();  // used for option names
-$plugins_info     = array();
-$filters          = array();
-$live_plugins     = array();  // used for enablie/disable functions
-$GS_scripts       = array();  // used for queing Scripts
-$GS_styles        = array();  // used for queing Styles
+$plugins_info = array();  // global array for storing all plugins greated from plugins registerplugin() call
+/*
+    $plugin_info[$id] = array(
+       'name'        => $name,
+       'version'     => $ver,
+       'author'      => $auth,
+       'author_url'  => $auth_url,
+       'description' => $desc,
+       'page_type'   => $type,
+       'load_data'   => $loaddata
+    );
+*/
+
+$live_plugins = array();  // global array for storing active plugins
+
+$plugins = array();  // global array for storing action hook callbacks
+/*
+    $plugins[] = array(
+       'hook'     => hookname,
+       'function' => callback function name,
+       'args'     => (array) arguments to pass to function,
+       'file'     => caller filename obtained from backtrace,
+       'line'     => caller line obtained from backtrace,
+    );
+*/
+
+$filters = array();  // global array for storing filter callbacks
+/*
+    $filters[] = array(
+        'filter'   => filtername,
+        'function' => callback function name,
+        'args'     => (array) arguments for callback,
+        'active'   => (bool) is processing anti-self-looping flag
+    );
+*/    
+
+$GS_scripts = array();  // global array for storing queued script assets
+/*
+    $GS_scripts[$handle] = array(
+        'name'      => handle,
+        'src'       => src file,
+        'ver'       => version,
+        'in_footer' => in_footer,
+        'where'     => 0 bitflag
+    );
+*/
+$GS_styles = array();  // glboal array for storing queued stylesheet assets
 
 // constants 
+// frontend, backend or both for script location load flags
+define('GSFRONT',1); 
+define('GSBACK' ,2);
+define('GSBOTH' ,3);
 
-define('GSFRONT',1);
-define('GSBACK',2);
-define('GSBOTH',3);
 if ($SITEURL==""){
 	$SITEURL=suggest_site_path();
 }
 
 $GS_script_assets = array(); // defines asset scripts
-$GS_style_assets = array();  // defines asset styles
+$GS_style_assets  = array();  // defines asset styles
 
 $GS_asset_objects = array(); // holds asset js object names
-$GS_asset_objects['jquery'] = 'jQuery';
+$GS_asset_objects['jquery']    = 'jQuery';
 $GS_asset_objects['jquery-ui'] = 'jQuery.ui'; 
 
 // jquery
-$jquery_ver       = '1.9.0';
-$jqueryui_ver     = '1.10.0';
-$font_awesome_ver = '4.0.3';
+$jquery_ver        = '1.9.0';
+$jqueryui_ver      = '1.10.0';
+$font_awesome_ver  = '4.0.3';
+$fancybox_ver      = '2.0.4';
+$scrolltofixed_ver = '0.0.1';
 
-$GS_script_assets['jquery']['cdn']['url']      = '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js';
-$GS_script_assets['jquery']['cdn']['ver']      = $jquery_ver;
+$GS_script_assets['jquery']['cdn']['url']          = '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js';
+$GS_script_assets['jquery']['cdn']['ver']          = $jquery_ver;
 
-$GS_script_assets['jquery']['local']['url']    = $SITEURL.$GSADMIN.'/template/js/jquery/jquery-'.$jquery_ver.'.min.js';
-$GS_script_assets['jquery']['local']['ver']    = $jquery_ver;
+$GS_script_assets['jquery']['local']['url']        = $SITEURL.$GSADMIN.'/template/js/jquery/jquery-'.$jquery_ver.'.min.js';
+$GS_script_assets['jquery']['local']['ver']        = $jquery_ver;
 
 // jquery-ui
-$GS_script_assets['jquery-ui']['cdn']['url']   = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jqueryui_ver.'/jquery-ui.min.js';
-$GS_script_assets['jquery-ui']['cdn']['ver']   = $jqueryui_ver;
+$GS_script_assets['jquery-ui']['cdn']['url']       = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jqueryui_ver.'/jquery-ui.min.js';
+$GS_script_assets['jquery-ui']['cdn']['ver']       = $jqueryui_ver;
 
-$GS_script_assets['jquery-ui']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/jqueryui/js/jquery-ui-'.$jqueryui_ver.'.custom.min.js';
-$GS_script_assets['jquery-ui']['local']['ver'] = $jqueryui_ver;
+$GS_script_assets['jquery-ui']['local']['url']     = $SITEURL.$GSADMIN.'/template/js/jqueryui/js/jquery-ui-'.$jqueryui_ver.'.custom.min.js';
+$GS_script_assets['jquery-ui']['local']['ver']     = $jqueryui_ver;
 
 // misc
-$GS_script_assets['fancybox']['local']['url']  = $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.pack.js';
-$GS_script_assets['fancybox']['local']['ver']  = '2.0.4';
+$GS_script_assets['fancybox']['local']['url']      = $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.pack.js';
+$GS_script_assets['fancybox']['local']['ver']      = $fancybox_ver;
 
-$GS_style_assets['fancybox']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css';
-$GS_style_assets['fancybox']['local']['ver']   = '2.0.4';
+$GS_style_assets['fancybox']['local']['url']       = $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css';
+$GS_style_assets['fancybox']['local']['ver']       = $fancybox_ver;
 
-$GS_style_assets['jquery-ui']['local']['url']  =  $SITEURL.$GSADMIN.'/template/js/jqueryui/css/custom/jquery-ui-'.$jqueryui_ver.'.custom.min.css';
-$GS_style_assets['jquery-ui']['local']['ver']  =  $jqueryui_ver;
+$GS_style_assets['jquery-ui']['local']['url']      =  $SITEURL.$GSADMIN.'/template/js/jqueryui/css/custom/jquery-ui-'.$jqueryui_ver.'.custom.min.css';
+$GS_style_assets['jquery-ui']['local']['ver']      =  $jqueryui_ver;
 
 // font-awesome icons
-$GS_style_assets['font-awesome']['cdn']['url'] =  '//netdna.bootstrapcdn.com/font-awesome/'.$font_awesome_ver.'/css/font-awesome.min.css';
-$GS_style_assets['font-awesome']['cdn']['ver'] = $font_awesome_ver;
+$GS_style_assets['font-awesome']['cdn']['url']     = '//netdna.bootstrapcdn.com/font-awesome/'.$font_awesome_ver.'/css/font-awesome.min.css';
+$GS_style_assets['font-awesome']['cdn']['ver']     = $font_awesome_ver;
 
-$GS_style_assets['font-awesome']['local']['url'] =  $SITEURL.$GSADMIN.'/template/css/font-awesome.min.css';
-$GS_style_assets['font-awesome']['local']['ver'] = $font_awesome_ver;
+$GS_style_assets['font-awesome']['local']['url']   = $SITEURL.$GSADMIN.'/template/css/font-awesome.min.css';
+$GS_style_assets['font-awesome']['local']['ver']   = $font_awesome_ver;
 
 // scrolltofixed
-$GS_script_assets['scrolltofixed']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/jquery-scrolltofixed.js';
-$GS_script_assets['scrolltofixed']['local']['ver']   = '0.0.1';
+$GS_script_assets['scrolltofixed']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/jquery-scrolltofixed.js';
+$GS_script_assets['scrolltofixed']['local']['ver'] = $scrolltofixed_ver;
 
 /**
  * Register shared javascript/css scripts for loading into the header
@@ -91,15 +135,15 @@ register_script('scrolltofixed', $GS_script_assets['scrolltofixed']['local']['ur
 /**
  * Queue our scripts and styles for the backend
  */
-queue_script('jquery', GSBACK);
-queue_script('jquery-ui', GSBACK);
-queue_script('fancybox', GSBACK);
-queue_script('scrolltofixed', GSBACK);
+queue_script('jquery'        , GSBACK);
+queue_script('jquery-ui'     , GSBACK);
+queue_script('fancybox'      , GSBACK);
+queue_script('scrolltofixed' , GSBACK);
 
-queue_style('fancybox-css',GSBACK);
-queue_style('jquery-ui',GSBACK);
-queue_style('jquery-ui-theme',GSBACK);
-queue_style('font-awesome',GSBACK);
+queue_style('fancybox-css'   , GSBACK);
+queue_style('jquery-ui'      , GSBACK);
+queue_style('jquery-ui-theme', GSBACK);
+queue_style('font-awesome'   , GSBACK);
 
 /**
  * Include any plugins, depending on where the referring 
@@ -109,7 +153,7 @@ if (file_exists(GSPLUGINPATH)){
 	$pluginfiles = getFiles(GSPLUGINPATH);
 } 
 
-$pluginsLoaded=false;
+$pluginsLoaded = false;
 
 
 // Check if data\other\plugins.xml exists 
