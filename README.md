@@ -77,31 +77,21 @@ CREDITS
 
 ### TEAM ###
 
-Founder & Developer: Chris Cagle  
+Founder / Creator: Chris Cagle  
 Forum Handle: ccagle8  
 Site: http://get-simple.info/forums/member.php?action=profile&uid=3  
 Twitter: @ccagle8  
 Location: Pittsburgh, Pennsylvania, USA  
 
-Developer: Mike Swan  
-Forum Handle: n00dles101  
-Site: http://get-simple.info/forums/member.php?action=profile&uid=9  
-Twitter: @digimute  
-Location: Dublin, Ireland  
-  
-Developer: Matthew Phillips  
-Forum Handle: JWH_Matthew  
-Site: http://get-simple.info/forums/member.php?action=profile&uid=161  
-Location: Owasso, Oklahoma, USA  
-
-Developer: Shawn Alverson  
+Lead Developer: Shawn Alverson  
 Forum Handle: shawn_a  
 Site: http://get-simple.info/forums/member.php?action=profile&uid=1878  
 Location: Tennessee, USA  
 
+
 ### THANKS ###
 
-
+Mike Swan (n00dles)
 Carlos Navarro (cnb)  
 Joshas  
 Connie Connie Müller-Gödecke (Connie)  
@@ -114,9 +104,10 @@ Martijn van der Ven (Zegnåt)
 Libraries
 -----------------------------------
 
+_company logos in the icons are copyright of their respective owners_
+
 Vector Social Media Icons  
 http://icondock.com/free/vector-social-media-icons  
-_company logos in the icons are copyright of their respective owners_
 
 Ckeditor  
 http://ckeditor.com/
@@ -135,6 +126,15 @@ https://github.com/rgrove/lazyload
 
 enyo/dropzone  
 https://github.com/enyo/dropzone
+
+fontawesome
+http://fontawesome.io/
+
+bigspotteddog/scrolltofixed
+https://github.com/bigspotteddog/ScrollToFixed
+
+dropzonejs
+http://www.dropzonejs.com/
 
 
 

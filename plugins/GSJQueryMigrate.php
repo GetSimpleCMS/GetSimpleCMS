@@ -4,7 +4,7 @@ Plugin Name: GSJQueryMigrate
 Description: implements jquery Migrate for backwards compatability of jquery code older than 1.9
 Version: 1.0
 Author: getSimpleCMS
-Author URI: http://get-simple-info
+Author URI: http://get-simple.info
 */
 
 $thisfile_GSJQM = basename(__FILE__, ".php");
@@ -20,7 +20,7 @@ function jQuery_migrate_init(){
         i18n_r($thisfile_GSJQM .'/GSJQMigrate_TITLE'), # Title of plugin
         '1.0',                                         # Version of plugin
         'GetSimpleCMS',                                # Author of plugin
-        'http://get-simple-info',                      # Author URL
+        'http://get-simple.info',                      # Author URL
         i18n_r($thisfile_GSJQM .'/GSJQMigrate_DESC'),  # Plugin Description
         '',                                            # Page type of plugin
         ''                                             # Function that displays content
