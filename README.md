@@ -127,13 +127,13 @@ https://github.com/rgrove/lazyload
 enyo/dropzone  
 https://github.com/enyo/dropzone
 
-fontawesome
+fontawesome  
 http://fontawesome.io/
 
-bigspotteddog/scrolltofixed
+bigspotteddog/scrolltofixed  
 https://github.com/bigspotteddog/ScrollToFixed
 
-dropzonejs
+dropzonejs  
 http://www.dropzonejs.com/
 
 
