@@ -1046,13 +1046,12 @@ jQuery(document).ready(function () {
 
 	scrollsidebar();
 
-	function dosave(){
-		Debugger.log('saving');
-		Debugger.log($("#submit_line input.submit"));
-		$("#submit_line input.submit").trigger('click'); // should do form.submit handlers as well
-	}
+	$(document).bind('keypress', function(e) {
+		Debugger.log('keypress: ' + e.which);
+	});	
 	
 	$(document).bind('keydown', function(e) {
+		Debugger.log('keydown: ' + e.which);
 		var ctrlpress = navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey;
 		// detect CTRL+S do save on all pages
 		if(ctrlpress && (e.which == 83)) {
@@ -1076,6 +1075,12 @@ jQuery(document).ready(function () {
 
 	// end of jQuery ready
 });
+
+function dosave(){
+	Debugger.log('saving');
+	Debugger.log($("#submit_line input.submit"));
+	$("#submit_line input.submit").trigger('click'); // should do form.submit handlers as well
+}
 
 // lazy loader for js and css
 loadjscssfile = function(filename, filetype, callback){
