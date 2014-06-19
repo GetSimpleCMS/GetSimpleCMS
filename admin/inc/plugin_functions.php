@@ -40,7 +40,7 @@ $filters = array();  // global array for storing filter callbacks
         'args'     => (array) arguments for callback,
         'active'   => (bool) is processing anti-self-looping flag
     );
-*/    
+*/
 
 $GS_scripts = array();  // global array for storing queued script assets
 /*
@@ -49,14 +49,15 @@ $GS_scripts = array();  // global array for storing queued script assets
         'src'       => src file,
         'ver'       => version,
         'in_footer' => in_footer,
-        'where'     => 0 bitflag
+        'where'     => 0 bitflag,
+        'load'      => (bool) is queued
     );
 */
 $GS_styles = array();  // glboal array for storing queued stylesheet assets
 
-// constants 
+// constants
 // frontend, backend or both for script location load flags
-define('GSFRONT',1); 
+define('GSFRONT',1);
 define('GSBACK' ,2);
 define('GSBOTH' ,3);
 
@@ -533,7 +534,8 @@ function register_script($handle, $src, $ver, $in_footer = false){
 		'src'       => $src,
 		'ver'       => $ver,
 		'in_footer' => $in_footer,
-		'where'     => 0
+		'where'     => 0,
+		'load'      => false
 	);
 }
 
@@ -714,7 +716,7 @@ function preRegisterStyle($id,$CDN = false, $media = 'screen'){
  * Register a Style to include in Themes
  *
  * @since 3.1
- * @uses $GS_scripts
+ * @uses $GS_styles
  *
  * @param string $handle name for the Style
  * @param string $src location of the src for loading
@@ -728,8 +730,9 @@ function register_style($handle, $src, $ver, $media){
 		'src'   => $src,
 		'ver'   => $ver,
 		'media' => $media,
-		'where' => 0
-	);	
+		'where' => 0,
+		'load'	=> false
+	);
 }
 
 /**
