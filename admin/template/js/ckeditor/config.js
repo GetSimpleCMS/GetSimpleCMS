@@ -25,6 +25,8 @@ CKEDITOR.editorConfig = function( config )
 
 	config.allowedContent              = true;       // disable acf
 
+	config.extraPlugins                = 'codemirror';
+
 	config.toolbar_advanced = 
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
 		'/',
