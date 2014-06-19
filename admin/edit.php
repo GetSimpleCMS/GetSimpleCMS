@@ -339,34 +339,39 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                 height                       : '<?php echo $EDHEIGHT; ?>',
                 baseHref                     : '<?php echo $SITEURL; ?>'
 					<?php echo $toolbar; ?>
-					<?php echo $options; ?>					
+					<?php echo $options; ?>
 			};
             
-            var editor = CKEDITOR.replace( 'post-content', editorCfg);            
-            CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
+            var editor = CKEDITOR.replace( 'post-content');         
 
-            function InstanceReadyEvent(ev) {
-                _this = this;
+            // ctr+s save handler
+            CKEDITOR.on('instanceReady', function (ev) {
+                ev.editor.setKeystroke(CKEDITOR.CTRL + 83 /*S*/, 'customSave' );              
+            });
 
-                this.document.on("keyup", function () {
-                    $('#editform #post-content').trigger('change');
-                    _this.resetDirty();
-                });
-
-                this.timer = setInterval(function(){trackChanges(_this)},500);
-            }       
-
-            /**
-             * keep track of changes for editor
-             * until cke 4.2 is released with onchange event
-             */
-            function trackChanges(editor) {
-                // console.log('check changes');
-                if ( editor.checkDirty() ) {
-                    $('#editform #post-content').trigger('change');
-                    editor.resetDirty();            
+            // custom save function
+            editor.addCommand( 'customSave',{
+                exec : function( editor ){
+                    // Debugger.log('customsave');
+                    dosave(); // gs global save function
                 }
-            };
+            });
+            
+            // on change listener for cke ( source mode not supported )
+            editor.on( 'change', function() {
+                // Debugger.log('cke change');
+                $('#editform #post-content').trigger('change');                
+            });
+            
+            // onchange listener for cke source mode
+            editor.on( 'mode', function() {
+                if ( this.mode == 'source' ) {
+                    var editable = editor.editable();
+                    editable.attachListener( editable, 'input', function() {
+                        $('#editform #post-content').trigger('change');
+                    } );
+                }
+            } );
 
         </script>
             
@@ -471,7 +476,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                     });
                 
                 setInterval(autoSaveIntvl, <?php echo (int)GSAUTOSAVE*1000; ?>);
-                
+
                 <?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
                     $('#editform').bind('change keypress paste focus textInput input',function(){                   
                         warnme      = true;
