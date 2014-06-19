@@ -1044,14 +1044,12 @@ jQuery(document).ready(function () {
 		});
 	}
 
+	// initialize fixed sidebar
 	scrollsidebar();
 
-	$(document).bind('keypress', function(e) {
-		Debugger.log('keypress: ' + e.which);
-	});	
-	
+	// CTRL+s save hotkey listener
 	$(document).bind('keydown', function(e) {
-		Debugger.log('keydown: ' + e.which);
+		// Debugger.log('keydown: ' + e.which);
 		var ctrlpress = navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey;
 		// detect CTRL+S do save on all pages
 		if(ctrlpress && (e.which == 83)) {
@@ -1071,7 +1069,8 @@ jQuery(document).ready(function () {
 		}
 	});
 	
-	$('table.tree').addTableTree(0,2); // add tree folding to tree tables
+	// add tree folding to tree tables
+	$('table.tree').addTableTree(0,2); 
 
 	// end of jQuery ready
 });
