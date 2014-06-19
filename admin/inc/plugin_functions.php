@@ -84,7 +84,6 @@ $GS_script_assets['jquery']['cdn']['ver']          = $jquery_ver;
 $GS_script_assets['jquery']['local']['url']        = $SITEURL.$GSADMIN.'/template/js/jquery/jquery-'.$jquery_ver.'.min.js';
 $GS_script_assets['jquery']['local']['ver']        = $jquery_ver;
 
-
 // jquery-ui
 $GS_script_assets['jquery-ui']['cdn']['url']       = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jqueryui_ver.'/jquery-ui.min.js';
 $GS_script_assets['jquery-ui']['cdn']['ver']       = $jqueryui_ver;
@@ -99,11 +98,11 @@ $GS_script_assets['scrolltofixed']['local']['url'] = $SITEURL.$GSADMIN.'/templat
 $GS_script_assets['scrolltofixed']['local']['ver'] = $scrolltofixed_ver;
 
 // codemirror
-$GS_script_assets['codemirror']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror-compressed.js';
-$GS_script_assets['codemirror']['local']['ver'] = $codemirror_ver;
+$GS_script_assets['codemirror']['local']['url']    = $SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror-compressed.js';
+$GS_script_assets['codemirror']['local']['ver']    = $codemirror_ver;
 
-$GS_style_assets['codemirror']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror.min.css';
-$GS_style_assets['codemirror']['local']['ver'] = $codemirror_ver;
+$GS_style_assets['codemirror']['local']['url']     = $SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror.min.css';
+$GS_style_assets['codemirror']['local']['ver']     = $codemirror_ver;
 
 // fancybox
 $GS_script_assets['fancybox']['local']['url']      = $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.pack.js';
