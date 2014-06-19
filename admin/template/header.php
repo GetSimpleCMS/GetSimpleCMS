@@ -34,13 +34,8 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 
 // code editor inits
 if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
-	register_script('codemirror', $SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror-compressed.js', '0.2.0', FALSE);
-	register_style('codemirror-css',$SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror.min.css','screen',FALSE);
-	
 	queue_script('codemirror', GSBACK);
-	queue_style('codemirror-css', GSBACK);
-	queue_style('codemirror-theme', GSBACK);
-
+	queue_style('codemirror', GSBACK);
 }
 
 if(isset($_COOKIE['gs_editor_theme'])){
