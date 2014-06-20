@@ -54,6 +54,17 @@ $GS_scripts = array();  // global array for storing queued script assets
     );
 */
 $GS_styles = array();  // glboal array for storing queued stylesheet assets
+/*
+    $GS_styles[$handle] = array(
+        'name'      => handle,
+        'src'       => src file,
+        'ver'       => version,
+        'media'     => style media eg. screen,print,
+        'where'     => 0 bitflag,
+        'load'      => (bool) is queued
+    );
+*/
+
 
 // constants
 // frontend, backend or both for script location load flags
@@ -72,12 +83,63 @@ $GS_asset_objects = array(); // holds asset js object names
 $GS_asset_objects['jquery']    = 'jQuery';
 $GS_asset_objects['jquery-ui'] = 'jQuery.ui'; 
 
+$getsimple_ver     = GSVERSION;
 $jquery_ver        = '1.9.0';
 $jqueryui_ver      = '1.10.0';
 $font_awesome_ver  = '4.0.3';
 $fancybox_ver      = '2.0.4';
 $scrolltofixed_ver = '0.0.1';
 $codemirror_ver	   = '3.2.0';
+$ckeditor_ver      = '4.4.1';
+
+// long form
+// $GS_script_assets = array(
+// 	'jquery' => array(
+// 		'cdn' => array(
+// 			'url' => '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js',
+// 			'ver' => $jquery_ver	
+// 		),
+// 		'local' => array(
+// 			'url' => $SITEURL.$GSADMIN.'/template/js/jquery/jquery-'.$jquery_ver.'.min.js',
+// 			'ver' => $jquery_ver		
+// 		)
+// 	)	
+// )
+
+/**
+ * Core assets
+ */
+
+// core
+$GS_script_assets['getsimple']['local']['url']     = $SITEURL.$GSADMIN.'/template/js/jquery.getsimple.js';
+$GS_script_assets['getsimple']['local']['ver']     = $getsimple_ver;
+
+// lazyload (lazy loading assets js/css)
+$GS_script_assets['lazyload']['local']['url']      = $SITEURL.$GSADMIN.'/template/js/lazyload.js';
+$GS_script_assets['lazyload']['local']['ver']      = $getsimple_ver;
+
+// gstree (collpaseble heirarchy table tree) 
+$GS_script_assets['gstree']['local']['url']        = $SITEURL.$GSADMIN.'/template/js/jquery-gstree.js';
+$GS_script_assets['gstree']['local']['ver']        = $getsimple_ver;
+
+// spin (ajax spinners)
+$GS_script_assets['spin']['local']['url']          = $SITEURL.$GSADMIN.'/template/js/spin.js';
+$GS_script_assets['spin']['local']['ver']          = $getsimple_ver;
+
+// dropzone (ajax/html uploader w drag and drop)
+$GS_script_assets['dropzone']['local']['url']      = $SITEURL.$GSADMIN.'/template/js/dropzone.js';
+$GS_script_assets['dropzone']['local']['ver']      = $getsimple_ver;
+
+// jcrop
+$GS_script_assets['jcrop']['local']['url']        = $SITEURL.$GSADMIN.'/template/js/jcrop/jquery.Jcrop.min.js';
+$GS_script_assets['jcrop']['local']['ver']        = $getsimple_ver;
+ $GS_style_assets['jcrop']['local']['url']        = $SITEURL.$GSADMIN.'/template/js/jcrop/jquery.Jcrop.min.css';
+ $GS_style_assets['jcrop']['local']['ver']        = $getsimple_ver;
+
+
+/**
+ * External assets
+ */
 
 // jquery
 $GS_script_assets['jquery']['cdn']['url']          = '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js';
@@ -113,43 +175,70 @@ $GS_script_assets['fancybox']['local']['ver']      = $fancybox_ver;
  $GS_style_assets['fancybox-css']['local']['ver']  = $GS_style_assets['fancybox']['local']['ver'];
 
 // font-awesome icons
- $GS_style_assets['font-awesome']['cdn']['url']     = '//netdna.bootstrapcdn.com/font-awesome/'.$font_awesome_ver.'/css/font-awesome.min.css';
- $GS_style_assets['font-awesome']['cdn']['ver']     = $font_awesome_ver;
- $GS_style_assets['font-awesome']['local']['url']   = $SITEURL.$GSADMIN.'/template/css/font-awesome.min.css';
- $GS_style_assets['font-awesome']['local']['ver']   = $font_awesome_ver;
+ $GS_style_assets['font-awesome']['cdn']['url']    = '//netdna.bootstrapcdn.com/font-awesome/'.$font_awesome_ver.'/css/font-awesome.min.css';
+ $GS_style_assets['font-awesome']['cdn']['ver']    = $font_awesome_ver;
+ $GS_style_assets['font-awesome']['local']['url']  = $SITEURL.$GSADMIN.'/template/css/font-awesome.min.css';
+ $GS_style_assets['font-awesome']['local']['ver']  = $font_awesome_ver;
 
+// ckeditor
+$GS_script_assets['ckeditor']['cdn']['url']        = '//cdn.ckeditor.com/'.$ckeditor_ver.'/full/ckeditor.js';
+$GS_script_assets['ckeditor']['cdn']['ver']        = $ckeditor_ver;
+$GS_script_assets['ckeditor']['local']['url']      = $SITEURL.$GSADMIN.'/template/js/ckeditor/ckeditor.js';
+$GS_script_assets['ckeditor']['local']['ver']      = $ckeditor_ver;
+
+// gs codeeditor
+$GS_script_assets['gscodemirror']['local']['url']  = $SITEURL.$GSADMIN.'/template/js/codemirror.getsimple.js';
+$GS_script_assets['gscodemirror']['local']['ver']  = $getsimple_ver;
 
 /**
  * Register shared javascript/css scripts for loading into the header
  */
 
-$scriptsinfooter = false;
+$infooter = false;
 $nocdn = getDef('GSNOCDN',true);
 
-preRegisterScript('jquery',       !$nocdn , $scriptsinfooter);
-preRegisterScript('jquery-ui',    !$nocdn , $scriptsinfooter);
-preRegisterScript('font-awesome', !$nocdn , $scriptsinfooter);
-preRegisterScript('codemirror',     false , $scriptsinfooter);
-preRegisterScript('fancybox',       false , $scriptsinfooter);
-preRegisterScript('scrolltofixed',  false , $scriptsinfooter);
+preRegisterScript('jquery',       '', !$nocdn , $infooter);
+preRegisterScript('jquery-ui',    '', !$nocdn , $infooter);
+preRegisterScript('font-awesome', '', !$nocdn , $infooter);
+preRegisterScript('getsimple',    '',   false , $infooter);
+preRegisterScript('lazyload',     '',   false , $infooter);
+preRegisterScript('spin',         '',   false , $infooter);
+preRegisterScript('jcrop',        '',   false , $infooter);
+preRegisterScript('dropzone',     '',   false , $infooter);
+preRegisterScript('gstree',       '',   false , $infooter);
+preRegisterScript('ckeditor',     '',   false , $infooter); // cdn disabled, http://cdn.ckeditor.com/, requires explicit setting of config and plugin paths to local
+preRegisterScript('codemirror',   '',   false , $infooter);
+preRegisterScript('fancybox',     '',   false , $infooter);
+preRegisterScript('scrolltofixed','',   false , $infooter);
 
-preRegisterStyle('font-awesome',  !$nocdn , $scriptsinfooter);
-preRegisterStyle('codemirror',      false , $scriptsinfooter);
-preRegisterStyle('fancybox-css',    false , $scriptsinfooter); // DEPRECATED legacy , unmatched id
-preRegisterStyle('fancybox',        false , $scriptsinfooter);
-preRegisterStyle('jquery-ui',       false , $scriptsinfooter);
+// gs aliases
+preRegisterScript('gshtmleditor',   $GS_script_assets['ckeditor'],     false , $infooter);
+preRegisterScript('gscodeeditor',   $GS_script_assets['gscodemirror'], false , $infooter);
+preRegisterScript('gscrop',         $GS_script_assets['jcrop'],        false , $infooter);
+preRegisterScript('gsuploader',     $GS_script_assets['dropzone'],     false , $infooter);
+
+preRegisterStyle('font-awesome',  !$nocdn , $infooter);
+preRegisterStyle('codemirror',      false , $infooter);
+preRegisterStyle('jcrop',           false , $infooter);
+preRegisterStyle('fancybox-css',    false , $infooter); // DEPRECATED legacy , unmatched id
+preRegisterStyle('fancybox',        false , $infooter);
+preRegisterStyle('jquery-ui',       false , $infooter);
 
 /**
  * Queue our scripts and styles for the backend
  */
 queue_script('jquery'        , GSBACK);
 queue_script('jquery-ui'     , GSBACK);
+queue_script('getsimple'     , GSBACK);
+queue_script('lazyload'      , GSBACK);
+queue_script('spin'          , GSBACK);
+queue_script('gstree'        , GSBACK);
 queue_script('fancybox'      , GSBACK);
 queue_script('scrolltofixed' , GSBACK);
 
 queue_style('fancybox'       , GSBACK);
 queue_style('jquery-ui'      , GSBACK);
-queue_style('jquery-ui-theme', GSBACK);
+// queue_style('jquery-ui-theme', GSBACK); // unused, reserved for custom GS jquery ui theme
 queue_style('font-awesome'   , GSBACK);
 
 /**
@@ -192,6 +281,12 @@ foreach ($live_plugins as $file=>$en) {
 		}  
 	}
 }
+
+/**
+ * ------------------------------------------------------------------------------
+ * BEGING FUNCTIONS
+ * ------------------------------------------------------------------------------
+ */
 
 /**
  * change_plugin
@@ -506,11 +601,12 @@ function exec_filter($script,$data=array()) {
  * @param  boolean $footer put in footer
  * @return bool
  */
-function preRegisterScript($id,$CDN = false,$footer = false){
+function preRegisterScript($id,$config = array(),$CDN = false,$footer = false){
 	GLOBAL $GS_script_assets;
-	if(!isset($GS_script_assets[$id])) return;
-	if($CDN && isset($GS_script_assets[$id]['cdn'])) return register_script($id, $GS_script_assets[$id]['cdn']['url'], '', $footer); // no version for CDN benefits
-	else return register_script($id, $GS_script_assets[$id]['local']['url'], $GS_script_assets[$id]['local']['ver'], $footer);
+	if(!$config && isset($GS_script_assets[$id])) $config = $GS_script_assets[$id];
+	if(!$config) return;
+	if($CDN && isset($config['cdn'])) return register_script($id, $config['cdn']['url'], '', $footer); // no version for CDN benefits
+	else return register_script($id, $config['local']['url'], $config['local']['ver'], $footer);
 }
 
 /**
@@ -628,10 +724,10 @@ function getScripts($facing = GSBACK, $footer = false){
 		$facing === GSBACK ? get_styles_backend() : get_styles_frontend();
 	}
 
-	# debugLog($GS_scripts);
+	// debugLog($GS_scripts);
 	foreach ($GS_scripts as $script){
 		if ($script['load'] == true && ($script['where'] & $facing) ){
-			if($footer && $script['in_footer'] !== true) continue;
+			if($footer !== $script['in_footer']) continue;
 			echo '<script src="'.$script['src'].( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '"></script>';
 			cdn_fallback($script);	
 		}
@@ -701,11 +797,12 @@ function dequeue_style($handle,$where){
  * @param  boolean $footer put in footer
  * @return bool
  */
-function preRegisterStyle($id,$CDN = false, $media = 'screen'){
+function preRegisterStyle($id,$config = array(), $CDN = false, $media = 'screen'){
 	GLOBAL $GS_style_assets;
-	if(!isset($GS_style_assets[$id])) return;
-	if($CDN && isset($GS_style_assets[$id]['cdn'])) return register_style($id, $GS_style_assets[$id]['cdn']['url'], '', $media); // no version for CDN benefits
-	else return register_style($id, $GS_style_assets[$id]['local']['url'], $GS_style_assets[$id]['local']['ver'], $media);
+	if(!$config && isset($GS_style_assets[$id])) $config = $GS_style_assets[$id];
+	if(!$config) return;
+	if($CDN && isset($config['cdn'])) return register_style($id, $config['cdn']['url'], '', $media); // no version for CDN benefits
+	else return register_style($id, $config['local']['url'], $config['local']['ver'], $media);
 }
 
 
@@ -720,7 +817,7 @@ function preRegisterStyle($id,$CDN = false, $media = 'screen'){
  * @param string $handle name for the Style
  * @param string $src location of the src for loading
  * @param string $ver Style version
- * @param string $media load the Style in the footer if true
+ * @param string $media the media for this stylesheet
  */
 function register_style($handle, $src, $ver, $media){
 	global $GS_styles;

@@ -5,7 +5,7 @@
  * @package GetSimple
  */
  
-global $SITENAME, $SITEURL, $GSADMIN, $themeselector;
+global $SITENAME, $SITEURL, $GSADMIN, $themeselector, $HTMLEDITOR;
 
 $GSSTYLE = getDef('GSSTYLE') ? GSSTYLE : '';
 
@@ -32,77 +32,76 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/css/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
 <?php	
 
-// code editor inits
-if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
-	queue_script('codemirror', GSBACK);
-	queue_style('codemirror', GSBACK);
-}
+	if(isset($_COOKIE['gs_editor_theme'])){
+		$editor_theme = $_COOKIE['gs_editor_theme'];
 
-if(isset($_COOKIE['gs_editor_theme'])){
-	$editor_theme = $_COOKIE['gs_editor_theme'];
+		echo '<script>
+			var editorTheme = "'.$editor_theme.'";
+		</script>';
 
-	echo '<script>
-		var editorTheme = "'.$editor_theme.'";
-	</script>';
+	}
 
-}
+	$cm_themes = array(
+		'3024-day',
+		'3024-night',
+		'ambiance',
+		'base16-light',
+		'base16-dark',
+		'blackboard',
+		'cobalt',
+		'eclipse',
+		'eclipse',
+		'elegant',
+		'erlang-dark',
+		'lesser-dark',
+		'mbo',
+		'midnight',
+		'monokai',
+		'neat',
+		'night',
+		'paraiso-dark',
+		'paraiso-light',
+		'rubyblue',
+		'solarized dark',
+		'solarized light',
+		'the-matrix',
+		'twilight',
+		'tomorrow-night-eighties',
+		'vibrant-ink',
+		'xq-dark',
+		'xq-light'
+	);
 
-$cm_themes = array(
-	'3024-day',
-	'3024-night',
-	'ambiance',
-	'base16-light',
-	'base16-dark',
-	'blackboard',
-	'cobalt',
-	'eclipse',
-	'eclipse',
-	'elegant',
-	'erlang-dark',
-	'lesser-dark',
-	'mbo',
-	'midnight',
-	'monokai',
-	'neat',
-	'night',
-	'paraiso-dark',
-	'paraiso-light',
-	'rubyblue',
-	'solarized dark',
-	'solarized light',
-	'the-matrix',
-	'twilight',
-	'tomorrow-night-eighties',
-	'vibrant-ink',
-	'xq-dark',
-	'xq-light'
-);
+	// build theme seldctor
+	$themeselector = '<select id="cm_themeselect">\n<option>default</option>';
+	foreach($cm_themes as $theme){
+		$themeselector .= "<option>$theme</option>";
+	}
+	$themeselector .= '</select>';
 
-$themeselector = '<select id="cm_themeselect">\n<option>default</option>';
-foreach($cm_themes as $theme){
-	$themeselector .= "<option>$theme</option>";
-}
-$themeselector .= '</select>';
-
-	get_scripts_backend(); ?>
-		
-	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
-	<script type="text/javascript" src="template/js/jquery-gstree.js?v=<?php echo GSVERSION; ?>"></script>		
-	<script type="text/javascript" src="template/js/lazyload.js?v=<?php echo GSVERSION; ?>"></script>		
-	<script type="text/javascript" src="template/js/spin.js?v=<?php echo GSVERSION; ?>"></script>		
-
-	<script type="text/javascript" src="template/js/codemirror.getsimple.js?v=<?php echo GSVERSION; ?>"></script>		
-
+	?>
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->
-	<?php if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!defined('GSNOUPLOADIFY')) ) { ?>
-	<script type="text/javascript" src="template/js/dropzone.js?v=<?php echo GSVERSION; ?>"></script>		
-	<?php } ?>
-	<?php if(get_filename_id()=='image') { ?>
-	<script type="text/javascript" src="template/js/jcrop/jquery.Jcrop.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="template/js/jcrop/jquery.Jcrop.min.css" media="screen" />
-	<?php } ?>
+	<?php
+		
+	if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
+		queue_script('gscodeeditor', GSBACK);
+	}
 
-	<?php 
+	if( ((get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && $HTMLEDITOR ){
+		queue_script('gshtmleditor',GSBACK); 
+	}
+
+	if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!defined('GSNOUPLOADIFY')) ){
+		queue_script('gsuploader',GSBACK); 
+	}
+	
+	if(get_filename_id()=='image'){
+		queue_script('gscrop',GSBACK);
+		queue_style('gscrop',GSBACK);
+	}
+
+	get_scripts_backend(); 
+
 	# Plugin hook to allow insertion of stuff into the header
 	if(!isAuthPage()) exec_action('header'); 
 	

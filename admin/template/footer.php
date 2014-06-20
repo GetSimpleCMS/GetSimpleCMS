@@ -25,7 +25,7 @@
 	      </div>
       	<div class="clear"></div>
       	<?php 
-      		get_scripts_backend(TRUE);
+      		get_scripts_backend(true);
       		exec_action('footer'); 
       	}
       	?>

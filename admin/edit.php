@@ -329,7 +329,6 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
             }
 
 		?>
-        <script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 
         <script type="text/javascript">
             

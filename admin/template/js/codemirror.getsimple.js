@@ -18,7 +18,11 @@ function getEditorMode(extension){
 	return extension in cm_modes ? cm_modes[extension] : extension;
 }
 
-jQuery(document).ready(function () {
+// load codemirror assets
+loadjscssfile("template/js/codemirror/lib/codemirror.min.css", "css");
+loadjscssfile("template/js/codemirror/lib/codemirror-compressed.js", "js",function(){
+	initcodemirror();} 
+);
 
 	// setup codemirror instances and functions
 
@@ -60,12 +64,6 @@ jQuery(document).ready(function () {
 			// "Ctrl-S" : function(cm) { customSave(cm); },
 			"Ctrl-Space" : "autocomplete"
 		}
-	};
-
-	CodeMirror.commands.autocomplete = function(cm) {
-		// @todo needs to be mode dependant, detect current mixed mode context
-		CodeMirror.showHint(cm); // auto
-		// CodeMirror.showHint(cm, CodeMirror.hint.anyword);
 	};
 
 	// do not know what this does, looks like old ctrl+q fold debouncer
@@ -160,13 +158,26 @@ jQuery(document).ready(function () {
 		});
 	};
 
-	// apply codemirror to class of .code_edit
-	$(".code_edit").editorFromTextarea();
+	initcodemirror= function(){
+		// apply codemirror to class of .code_edit
+		$(".code_edit").editorFromTextarea();
 
-	setThemeSelected(editorTheme);
-	cm_theme_update(editorTheme); // @todo: prevent overriding theme in custom configs
+		setThemeSelected(editorTheme);
+		cm_theme_update(editorTheme); // @todo: prevent overriding theme in custom configs
 
-});
+		CodeMirror.commands.autocomplete = function(cm) {
+			// @todo needs to be mode dependant, detect current mixed mode context
+			CodeMirror.showHint(cm); // auto
+			// CodeMirror.showHint(cm, CodeMirror.hint.anyword);
+		};
+
+		// adjust for window resizing awhen in fullscreen
+		CodeMirror.on(window, "resize", function(e) {
+			var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
+			if (!showing) return;
+			showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
+		});
+	}
 
 	function editorScrollVisible(cm){
 		var wrap = cm.getWrapperElement();
@@ -205,13 +216,6 @@ jQuery(document).ready(function () {
       }
       cm.refresh();
     }
-
-    // adjust for window resizing awhen in fullscreen
-	CodeMirror.on(window, "resize", function(e) {
-        var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
-        if (!showing) return;
-        showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
-    });
 
 	function setThemeSelected(theme){
 		$("#cm_themeselect").val(theme);
