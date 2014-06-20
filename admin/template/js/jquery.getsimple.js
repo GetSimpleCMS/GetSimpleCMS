@@ -341,14 +341,17 @@ jQuery(document).ready(function () {
 		loadingAjaxIndicator.fadeOut(500);
 		$('#submit_line').fadeIn(); // fadein in case no components exist
 		
-		// add codemirror to new textarea
+		// add codeditor to new textarea
 		var textarea = $("#divTxt").find('textarea').first();
-		textarea.editorFromTextarea();
+		Debugger.log($.isFunction($.fn.editorFromTextarea));
+		if($.isFunction($.fn.editorFromTextarea)) textarea.editorFromTextarea();
 
 		var editor = textarea.data('editor');
 		// retain autosizing but make sure the editor start larger than 1 line high
-		$(editor.getWrapperElement()).find('.CodeMirror-scroll').css('min-height',100);
-		editor.refresh();
+		if(editor){
+			$(editor.getWrapperElement()).find('.CodeMirror-scroll').css('min-height',100);
+			editor.refresh();
+		}	
 
 		$("#divTxt").find('input').get(0).focus();
 	});
@@ -803,7 +806,9 @@ jQuery(document).ready(function () {
 	themeFileSave = function(cm){
 		loadingAjaxIndicator.show();
 
-		cm.save(); // copy cm back to textarea
+		if($(cm)[0] && $.isFunction(cm.save)){
+			cm.save(); // copy cm back to textarea if editor has save method
+		}	
 
 		var dataString = $("#themeEditForm").serialize();
 
