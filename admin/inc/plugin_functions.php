@@ -197,8 +197,8 @@ $GS_script_assets['gscodemirror']['local']['ver']  = $getsimple_ver;
 $infooter = false;
 $nocdn = getDef('GSNOCDN',true);
 
-preRegisterScript('jquery',       '', !$nocdn , $infooter);
-preRegisterScript('jquery-ui',    '', !$nocdn , $infooter);
+preRegisterScript('jquery',       '', !$nocdn , false);
+preRegisterScript('jquery-ui',    '', !$nocdn , false);
 preRegisterScript('font-awesome', '', !$nocdn , $infooter);
 preRegisterScript('getsimple',    '',   false , $infooter);
 preRegisterScript('lazyload',     '',   false , $infooter);
@@ -217,12 +217,12 @@ preRegisterScript('gscodeeditor', $GS_script_assets['gscodemirror'], false , $in
 preRegisterScript('gscrop',       $GS_script_assets['jcrop'],        false , $infooter);
 preRegisterScript('gsuploader',   $GS_script_assets['dropzone'],     false , $infooter);
 
-preRegisterStyle('font-awesome',  '', !$nocdn , $infooter);
-preRegisterStyle('codemirror',    '',   false , $infooter);
-preRegisterStyle('jcrop',         '',   false , $infooter);
-preRegisterStyle('fancybox-css',  '',   false , $infooter); // DEPRECATED legacy , unmatched id
-preRegisterStyle('fancybox',      '',   false , $infooter);
-preRegisterStyle('jquery-ui',     '',   false , $infooter);
+preRegisterStyle('font-awesome',  '', !$nocdn , 'screen');
+preRegisterStyle('codemirror',    '',   false , 'screen');
+preRegisterStyle('jcrop',         '',   false , 'screen');
+preRegisterStyle('fancybox-css',  '',   false , 'screen'); // DEPRECATED legacy , unmatched id
+preRegisterStyle('fancybox',      '',   false , 'screen');
+preRegisterStyle('jquery-ui',     '',   false , 'screen');
 
 /**
  * Queue our scripts and styles for the backend
