@@ -229,7 +229,7 @@ jQuery(document).ready(function () {
 	});
 
 	var loadingAjaxIndicator;
-	initLoaderIndicator();
+	if($('#loader')[0]) initLoaderIndicator();
 
 	function initLoaderIndicator(){
 		// replace loader IMG with ajax loader
