@@ -342,7 +342,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 					<?php echo $options; ?>
 			};
             
-            var editor = CKEDITOR.replace( 'post-content');         
+            var editor = CKEDITOR.replace( 'post-content',editorCfg);         
 
             // ctr+s save handler
             CKEDITOR.on('instanceReady', function (ev) {

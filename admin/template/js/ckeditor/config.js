@@ -28,12 +28,12 @@ CKEDITOR.editorConfig = function( config )
 	config.extraPlugins                = 'codemirror';
 
 	config.toolbar_advanced = 
-		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
+		[['Bold', 'Italic', 'Underline', '-', 'NumberedList', 'BulletedList', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', '-', 'Link', 'Unlink', 'Image', 'RemoveFormat', '-', 'Table', 'TextColor', 'BGColor', 'ShowBlocks'], ['Source'], ['Maximize'],
 		'/',
 		['Styles','Format','Font','FontSize']];	
 
 	config.toolbar_basic = 
-		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']];
+		[['Bold', 'Italic', 'Underline', '-', 'NumberedList', 'BulletedList', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', '-', 'Link', 'Unlink', 'Image', 'RemoveFormat'], ['Source'], ['Maximize'] ];
 
 	// add about if debug mode
 	if(GS.debug === true){
