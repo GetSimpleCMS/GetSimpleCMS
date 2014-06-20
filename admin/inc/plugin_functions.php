@@ -212,17 +212,17 @@ preRegisterScript('fancybox',     '',   false , $infooter);
 preRegisterScript('scrolltofixed','',   false , $infooter);
 
 // gs aliases
-preRegisterScript('gshtmleditor',   $GS_script_assets['ckeditor'],     false , $infooter);
-preRegisterScript('gscodeeditor',   $GS_script_assets['gscodemirror'], false , $infooter);
-preRegisterScript('gscrop',         $GS_script_assets['jcrop'],        false , $infooter);
-preRegisterScript('gsuploader',     $GS_script_assets['dropzone'],     false , $infooter);
+preRegisterScript('gshtmleditor', $GS_script_assets['ckeditor'],     false , $infooter);
+preRegisterScript('gscodeeditor', $GS_script_assets['gscodemirror'], false , $infooter);
+preRegisterScript('gscrop',       $GS_script_assets['jcrop'],        false , $infooter);
+preRegisterScript('gsuploader',   $GS_script_assets['dropzone'],     false , $infooter);
 
-preRegisterStyle('font-awesome',  !$nocdn , $infooter);
-preRegisterStyle('codemirror',      false , $infooter);
-preRegisterStyle('jcrop',           false , $infooter);
-preRegisterStyle('fancybox-css',    false , $infooter); // DEPRECATED legacy , unmatched id
-preRegisterStyle('fancybox',        false , $infooter);
-preRegisterStyle('jquery-ui',       false , $infooter);
+preRegisterStyle('font-awesome',  '', !$nocdn , $infooter);
+preRegisterStyle('codemirror',    '',   false , $infooter);
+preRegisterStyle('jcrop',         '',   false , $infooter);
+preRegisterStyle('fancybox-css',  '',   false , $infooter); // DEPRECATED legacy , unmatched id
+preRegisterStyle('fancybox',      '',   false , $infooter);
+preRegisterStyle('jquery-ui',     '',   false , $infooter);
 
 /**
  * Queue our scripts and styles for the backend
