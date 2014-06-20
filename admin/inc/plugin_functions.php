@@ -90,9 +90,8 @@ $GS_script_assets['jquery-ui']['cdn']['url']       = '//ajax.googleapis.com/ajax
 $GS_script_assets['jquery-ui']['cdn']['ver']       = $jqueryui_ver;
 $GS_script_assets['jquery-ui']['local']['url']     = $SITEURL.$GSADMIN.'/template/js/jqueryui/js/jquery-ui-'.$jqueryui_ver.'.custom.min.js';
 $GS_script_assets['jquery-ui']['local']['ver']     = $jqueryui_ver;
-
-$GS_style_assets['jquery-ui']['local']['url']      =  $SITEURL.$GSADMIN.'/template/js/jqueryui/css/custom/jquery-ui-'.$jqueryui_ver.'.custom.min.css';
-$GS_style_assets['jquery-ui']['local']['ver']      =  $jqueryui_ver;
+ $GS_style_assets['jquery-ui']['local']['url']     =  $SITEURL.$GSADMIN.'/template/js/jqueryui/css/custom/jquery-ui-'.$jqueryui_ver.'.custom.min.css';
+ $GS_style_assets['jquery-ui']['local']['ver']     =  $jqueryui_ver;
 
 // scrolltofixed
 $GS_script_assets['scrolltofixed']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/jquery-scrolltofixed.js';
@@ -101,24 +100,23 @@ $GS_script_assets['scrolltofixed']['local']['ver'] = $scrolltofixed_ver;
 // codemirror
 $GS_script_assets['codemirror']['local']['url']    = $SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror-compressed.js';
 $GS_script_assets['codemirror']['local']['ver']    = $codemirror_ver;
-
-$GS_style_assets['codemirror']['local']['url']     = $SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror.min.css';
-$GS_style_assets['codemirror']['local']['ver']     = $codemirror_ver;
+ $GS_style_assets['codemirror']['local']['url']    = $SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror.min.css';
+ $GS_style_assets['codemirror']['local']['ver']    = $codemirror_ver;
 
 // fancybox
 $GS_script_assets['fancybox']['local']['url']      = $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.pack.js';
 $GS_script_assets['fancybox']['local']['ver']      = $fancybox_ver;
-
-$GS_style_assets['fancybox']['local']['url']       = $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css';
-$GS_style_assets['fancybox']['local']['ver']       = $fancybox_ver;
-$GS_style_assets['fancybox-css']['local']['url']   = $GS_style_assets['fancybox']['local']['url'];
-$GS_style_assets['fancybox-css']['local']['ver']   = $GS_style_assets['fancybox']['local']['ver'];
+ $GS_style_assets['fancybox']['local']['url']      = $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css';
+ $GS_style_assets['fancybox']['local']['ver']      = $fancybox_ver;
+ // deprecated
+ $GS_style_assets['fancybox-css']['local']['url']  = $GS_style_assets['fancybox']['local']['url'];
+ $GS_style_assets['fancybox-css']['local']['ver']  = $GS_style_assets['fancybox']['local']['ver'];
 
 // font-awesome icons
-$GS_style_assets['font-awesome']['cdn']['url']     = '//netdna.bootstrapcdn.com/font-awesome/'.$font_awesome_ver.'/css/font-awesome.min.css';
-$GS_style_assets['font-awesome']['cdn']['ver']     = $font_awesome_ver;
-$GS_style_assets['font-awesome']['local']['url']   = $SITEURL.$GSADMIN.'/template/css/font-awesome.min.css';
-$GS_style_assets['font-awesome']['local']['ver']   = $font_awesome_ver;
+ $GS_style_assets['font-awesome']['cdn']['url']     = '//netdna.bootstrapcdn.com/font-awesome/'.$font_awesome_ver.'/css/font-awesome.min.css';
+ $GS_style_assets['font-awesome']['cdn']['ver']     = $font_awesome_ver;
+ $GS_style_assets['font-awesome']['local']['url']   = $SITEURL.$GSADMIN.'/template/css/font-awesome.min.css';
+ $GS_style_assets['font-awesome']['local']['ver']   = $font_awesome_ver;
 
 
 /**
@@ -135,10 +133,11 @@ preRegisterScript('codemirror',     false , $scriptsinfooter);
 preRegisterScript('fancybox',       false , $scriptsinfooter);
 preRegisterScript('scrolltofixed',  false , $scriptsinfooter);
 
+preRegisterStyle('font-awesome',  !$nocdn , $scriptsinfooter);
 preRegisterStyle('codemirror',      false , $scriptsinfooter);
-preRegisterStyle('fancybox-css',    false , $scriptsinfooter); // DEPRECATED legacy , bad naming
-preRegisterStyle('fancybox',        false , $scriptsinfooter); //alias
-preRegisterStyle('jquery-ui',       false , $scriptsinfooter); //alias
+preRegisterStyle('fancybox-css',    false , $scriptsinfooter); // DEPRECATED legacy , unmatched id
+preRegisterStyle('fancybox',        false , $scriptsinfooter);
+preRegisterStyle('jquery-ui',       false , $scriptsinfooter);
 
 /**
  * Queue our scripts and styles for the backend
