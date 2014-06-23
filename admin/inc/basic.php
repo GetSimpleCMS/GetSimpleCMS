@@ -684,9 +684,9 @@ function safe_slash_html($text) {
 	} else {
 		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 	}
-	$text = str_replace(chr(12), '', $text); // FF
-	$text = str_replace(chr(3), ' ', $text); // ETX
-	return $text;
+	// filter only allowed characters, removes control characters etc.
+	// (0x10000) - (0x10FFFF) also seen in other filters
+	return preg_replace ('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', ' ', $text);
 }
 
 
