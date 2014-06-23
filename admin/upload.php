@@ -152,7 +152,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
             $dirsArray[$dircount]['name'] = $file;
             clearstatcache();
 						$ss = @stat($path . $file);
-						$dirsArray[$dircount]['date'] = @date('M j, Y',$ss['ctime']);
+						$dirsArray[$dircount]['date'] = @date('M j, Y',$ss['mtime']);
             $dircount++;
 					} else {
 						$filesArray[$count]['name'] = $file;

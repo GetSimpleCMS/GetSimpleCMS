@@ -99,7 +99,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 				$filesArray[$count]['type'] = $extention;
 				clearstatcache();
 				$ss = @stat($path . $file);
-				$filesArray[$count]['date'] = @date('M j, Y',$ss['ctime']);
+				$filesArray[$count]['date'] = @date('M j, Y',$ss['mtime']);
 				$filesArray[$count]['size'] = fSize($ss['size']);
 				$totalsize = $totalsize + $ss['size'];
 				$count++;
