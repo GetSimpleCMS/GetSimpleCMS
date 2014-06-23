@@ -724,8 +724,8 @@ function getRegexUnicode($id){
 		'lower'      => '\x{0020}-\x{D7FF}',   // 32 - 55295
 		'surrogates' => '\x{D800}-\x{DFFF}',   // 55296 - 57343
 		'upper'      => '\x{E000}-\x{FFFD}',   // 57344 - 65533
-		'nonchars'   => '\x{FFFE-\xFFFF}',     // 65534 - 65535
-		'privateb'   => '\x{10000-\x{10FFFD}'  // 65536 - 1114109
+		'nonchars'   => '\x{FFFE}-\x{FFFF}',   // 65534 - 65535
+		'privateb'   => '\x{10000}-\x{10FFFD}' // 65536 - 1114109
 	);
 
 	if(isset($id)) return $chars[$id];
