@@ -225,21 +225,26 @@ $i18n = array(
 */
 "GENERAL_SETTINGS"        =>	"General Settings",
 "WEBSITE_SETTINGS"        =>	"Website Settings",
-"LOCAL_TIMEZONE"          =>	"Local Timezone",
 "LANGUAGE"                =>	"Language",
 "USE_FANCY_URLS"          =>	"Use Fancy URLs - <b style=\"font-weight:100\">Requires that your host has <code>mod_rewrite</code> enabled</b>",
-"ENABLE_HTML_ED"          =>	"<b>Enable the HTML editor</b>",
-"WARN_EMAILINVALID"       =>	"WARNING: This email address does not look valid!",
-"ONLY_NEW_PASSWORD"       =>	"Only provide a password below if you want to change your current one",
-"NEW_PASSWORD"            =>	"New Password",
-"CONFIRM_PASSWORD"        =>	"Confirm Password",
-"PASSWORD_NO_MATCH"       =>	"Passwords do not match",
 "PERMALINK"               =>	"Custom Permalink Structure",
 "MORE"                    =>	"more",
 "HELP"                    =>	"help",
 "FLUSHCACHE"              =>	"Flush All Caches",
 "FLUSHCACHE-SUCCESS"      =>	"Caches Flushed Successfully",
+
+/*
+ * For: Profie.php
+ */
+"USER_PROFILE"            =>    "User Profile",
 "DISPLAY_NAME"            =>	"A name for public display that is not your username",
+"ONLY_NEW_PASSWORD"       =>	"Only provide a password below if you want to change your current one",
+"ENABLE_HTML_ED"          =>	"<b>Enable the HTML editor</b>",
+"WARN_EMAILINVALID"       =>	"WARNING: This email address does not look valid!",
+"NEW_PASSWORD"            =>	"New Password",
+"CONFIRM_PASSWORD"        =>	"Confirm Password",
+"PASSWORD_NO_MATCH"       =>	"Passwords do not match",
+"LOCAL_TIMEZONE"          =>	"Local Timezone",
 
 /* 
 * For: health-check.php
