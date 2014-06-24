@@ -413,6 +413,11 @@ h3.floated {
 	margin: 0 0 5px 0;
 }
 
+h3 span {
+	color: #999;
+	font-size: 14px;
+}
+
 h5,
 div.h5 {
 	margin: 10px 0 10px 0;

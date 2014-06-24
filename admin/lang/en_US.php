@@ -245,6 +245,7 @@ $i18n = array(
 "CONFIRM_PASSWORD"        =>	"Confirm Password",
 "PASSWORD_NO_MATCH"       =>	"Passwords do not match",
 "LOCAL_TIMEZONE"          =>	"Local Timezone",
+"NEW_USER"                =>    "New User",
 
 /* 
 * For: health-check.php

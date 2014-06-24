@@ -13,38 +13,59 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
-$allowedit  = false; // tmp flag for edit permission
-$allowadd   = false; // tmp flag for create permission
+$allowedit  = true; // tmp flag for edit permission
+$allowadd   = true; // tmp flag for create permission
+
+$showpermfail = true; // throw errors on failed permission attempts?
+$permerror = '';
+
 // @todo these flags will probably be implemented as functions that can be manipulated and called out
 // they will be context aware of the user being edited etc, to handle group heiracrhy and protected accounts
 
-$adding     = false; // doing user creation
+$adding     = false; // flag for doing user creation
 $userid     = $USR;
 $lang_array = getFiles(GSLANGPATH);
 
 $pwd1 = $error = $success = $pwd2 = $editorchck = null;
 
-// are we editing ourselves, an existing user, or a new one
 if(isset($_GET['userid'])){
+	// Editing an existing user
 	$userid = _id($_GET['userid']);
-	if(!$allowedit && ( $userid !== $USR )) die(i18n('no edit permission'));
+	if(!$allowedit && ( $userid !== $USR )) {
+		$userid = $USR;
+		// NOT ALLOWED TO EDIT
+		$permerror = i18n_r('ER_REQ_PROC_FAIL');
+	}	
+}
+else if(isset($_GET['add'])){
+	// adding a new user
+	if(!$allowadd) {
+		$userid = $USR;
+		// NOT ALLOWED TO ADD
+		$permerror = i18n_r('ER_REQ_PROC_FAIL'); 
+	} 
+	else {
+		$adding = true;
+		$userid = '';	
+	}	
 }
 
-if(isset($_GET['add'])){
-	if(!$allowadd) die(i18n('no add permission'));
-	$adding = true;
-	$userid = '';
-}
+// throw errors
+if(!empty($permerror) && $showpermfail) $error = $permerror;
 
+// check if editing user is valid
 if(!empty($userid)){
 	$file = _id($userid) .'.xml';
+	// file tranversal protection and checks if file exists at the same time
 	if(!filepath_is_safe(GSUSERSPATH . $file,GSUSERSPATH)) die(i18n('not a valid user'));
 
+	// else populate data for user
 	$data  = getXML(GSUSERSPATH . $file);
 	$EMAIL = $data->EMAIL;
 	$NAME  = $data->NAME;
-} 
+}
 else {
+	// defaults for new user
 	$EMAIL = '';
 	$NAME  = '';
 }
@@ -167,6 +188,8 @@ if (count($lang_array) != 0) {
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('USER_PROFILE')); 
 
+$userheading = empty($userid) ? "<span> / ". i18n_r('NEW_USER') ."</span>" : "<span> / $userid </span>";
+
 ?>
 	
 <?php include('template/include-nav.php'); ?>
@@ -180,7 +203,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('USER_PROFILE'));
 		
 		<div class="main">
 			<div id="profile" class="" >
-				<h3><?php i18n('SIDE_USER_PROFILE');?></h3>
+				<h3><?php i18n('USER_PROFILE'); echo $userheading; ?></h3>
 				<div class="leftsec">
 					<p><label for="user" ><?php i18n('LABEL_USERNAME');?>:</label><input class="text" id="user" name="user" type="text" <?php echo $adding === true ? '' : 'readonly'; ?> value="<?php echo $userid; ?>" /></p>
 				</div>
