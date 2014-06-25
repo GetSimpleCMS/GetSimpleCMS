@@ -185,16 +185,17 @@ function validate_safe_file($file, $name, $mime){
 
 /**
  * Checks that an existing filepath is safe to use by checking canonicalized absolute pathname.
+ * @todo fails if file does not exist
  *
  * @since 3.1.3
  *
- * @param string $path Unknown Path to file to check for safety
+ * @param string $filepath Unknown Path to file to check for safety
  * @param string $pathmatch Known Path to parent folder to check against
  * @param bool $subdir allow path to be a deeper subfolder
  * @return bool Returns true if files path resolves to your known path
  */
-function filepath_is_safe($path,$pathmatch,$subdir = true){
-	$realpath      = realpath($path);
+function filepath_is_safe($filepath,$pathmatch,$subdir = true){
+	$realpath      = realpath($filepath);
 	$realpathmatch = realpath($pathmatch);
 	if($subdir) return strpos(dirname($realpath),$realpathmatch) === 0;
 	return dirname($realpath) == $realpathmatch;
