@@ -72,9 +72,7 @@ define('GSFRONT',1);
 define('GSBACK' ,2);
 define('GSBOTH' ,3);
 
-if ($SITEURL==""){
-	$SITEURL=suggest_site_path();
-}
+$ASSETURL=suggest_site_path(false,true);
 
 $GS_script_assets = array(); // defines asset scripts
 $GS_style_assets  = array();  // defines asset styles
@@ -100,7 +98,7 @@ $ckeditor_ver      = '4.4.1';
 // 			'ver' => $jquery_ver	
 // 		),
 // 		'local' => array(
-// 			'url' => $SITEURL.$GSADMIN.'/template/js/jquery/jquery-'.$jquery_ver.'.min.js',
+// 			'url' => $ASSETURL.$GSADMIN.'/template/js/jquery/jquery-'.$jquery_ver.'.min.js',
 // 			'ver' => $jquery_ver		
 // 		)
 // 	)	
@@ -111,29 +109,29 @@ $ckeditor_ver      = '4.4.1';
  */
 
 // core
-$GS_script_assets['getsimple']['local']['url']     = $SITEURL.$GSADMIN.'/template/js/jquery.getsimple.js';
+$GS_script_assets['getsimple']['local']['url']     = $ASSETURL.$GSADMIN.'/template/js/jquery.getsimple.js';
 $GS_script_assets['getsimple']['local']['ver']     = $getsimple_ver;
 
 // lazyload (lazy loading assets js/css)
-$GS_script_assets['lazyload']['local']['url']      = $SITEURL.$GSADMIN.'/template/js/lazyload.js';
+$GS_script_assets['lazyload']['local']['url']      = $ASSETURL.$GSADMIN.'/template/js/lazyload.js';
 $GS_script_assets['lazyload']['local']['ver']      = $getsimple_ver;
 
 // gstree (collpaseble heirarchy table tree) 
-$GS_script_assets['gstree']['local']['url']        = $SITEURL.$GSADMIN.'/template/js/jquery-gstree.js';
+$GS_script_assets['gstree']['local']['url']        = $ASSETURL.$GSADMIN.'/template/js/jquery-gstree.js';
 $GS_script_assets['gstree']['local']['ver']        = $getsimple_ver;
 
 // spin (ajax spinners)
-$GS_script_assets['spin']['local']['url']          = $SITEURL.$GSADMIN.'/template/js/spin.js';
+$GS_script_assets['spin']['local']['url']          = $ASSETURL.$GSADMIN.'/template/js/spin.js';
 $GS_script_assets['spin']['local']['ver']          = $getsimple_ver;
 
 // dropzone (ajax/html uploader w drag and drop)
-$GS_script_assets['dropzone']['local']['url']      = $SITEURL.$GSADMIN.'/template/js/dropzone.js';
+$GS_script_assets['dropzone']['local']['url']      = $ASSETURL.$GSADMIN.'/template/js/dropzone.js';
 $GS_script_assets['dropzone']['local']['ver']      = $getsimple_ver;
 
 // jcrop
-$GS_script_assets['jcrop']['local']['url']        = $SITEURL.$GSADMIN.'/template/js/jcrop/jquery.Jcrop.min.js';
+$GS_script_assets['jcrop']['local']['url']        = $ASSETURL.$GSADMIN.'/template/js/jcrop/jquery.Jcrop.min.js';
 $GS_script_assets['jcrop']['local']['ver']        = $getsimple_ver;
- $GS_style_assets['jcrop']['local']['url']        = $SITEURL.$GSADMIN.'/template/js/jcrop/jquery.Jcrop.min.css';
+ $GS_style_assets['jcrop']['local']['url']        = $ASSETURL.$GSADMIN.'/template/js/jcrop/jquery.Jcrop.min.css';
  $GS_style_assets['jcrop']['local']['ver']        = $getsimple_ver;
 
 
@@ -144,31 +142,31 @@ $GS_script_assets['jcrop']['local']['ver']        = $getsimple_ver;
 // jquery
 $GS_script_assets['jquery']['cdn']['url']          = '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js';
 $GS_script_assets['jquery']['cdn']['ver']          = $jquery_ver;
-$GS_script_assets['jquery']['local']['url']        = $SITEURL.$GSADMIN.'/template/js/jquery/jquery-'.$jquery_ver.'.min.js';
+$GS_script_assets['jquery']['local']['url']        = $ASSETURL.$GSADMIN.'/template/js/jquery/jquery-'.$jquery_ver.'.min.js';
 $GS_script_assets['jquery']['local']['ver']        = $jquery_ver;
 
 // jquery-ui
 $GS_script_assets['jquery-ui']['cdn']['url']       = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jqueryui_ver.'/jquery-ui.min.js';
 $GS_script_assets['jquery-ui']['cdn']['ver']       = $jqueryui_ver;
-$GS_script_assets['jquery-ui']['local']['url']     = $SITEURL.$GSADMIN.'/template/js/jqueryui/js/jquery-ui-'.$jqueryui_ver.'.custom.min.js';
+$GS_script_assets['jquery-ui']['local']['url']     = $ASSETURL.$GSADMIN.'/template/js/jqueryui/js/jquery-ui-'.$jqueryui_ver.'.custom.min.js';
 $GS_script_assets['jquery-ui']['local']['ver']     = $jqueryui_ver;
- $GS_style_assets['jquery-ui']['local']['url']     =  $SITEURL.$GSADMIN.'/template/js/jqueryui/css/custom/jquery-ui-'.$jqueryui_ver.'.custom.min.css';
+ $GS_style_assets['jquery-ui']['local']['url']     =  $ASSETURL.$GSADMIN.'/template/js/jqueryui/css/custom/jquery-ui-'.$jqueryui_ver.'.custom.min.css';
  $GS_style_assets['jquery-ui']['local']['ver']     =  $jqueryui_ver;
 
 // scrolltofixed
-$GS_script_assets['scrolltofixed']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/jquery-scrolltofixed.js';
+$GS_script_assets['scrolltofixed']['local']['url'] = $ASSETURL.$GSADMIN.'/template/js/jquery-scrolltofixed.js';
 $GS_script_assets['scrolltofixed']['local']['ver'] = $scrolltofixed_ver;
 
 // codemirror
-$GS_script_assets['codemirror']['local']['url']    = $SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror-compressed.js';
+$GS_script_assets['codemirror']['local']['url']    = $ASSETURL.$GSADMIN.'/template/js/codemirror/lib/codemirror-compressed.js';
 $GS_script_assets['codemirror']['local']['ver']    = $codemirror_ver;
- $GS_style_assets['codemirror']['local']['url']    = $SITEURL.$GSADMIN.'/template/js/codemirror/lib/codemirror.min.css';
+ $GS_style_assets['codemirror']['local']['url']    = $ASSETURL.$GSADMIN.'/template/js/codemirror/lib/codemirror.min.css';
  $GS_style_assets['codemirror']['local']['ver']    = $codemirror_ver;
 
 // fancybox
-$GS_script_assets['fancybox']['local']['url']      = $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.pack.js';
+$GS_script_assets['fancybox']['local']['url']      = $ASSETURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.pack.js';
 $GS_script_assets['fancybox']['local']['ver']      = $fancybox_ver;
- $GS_style_assets['fancybox']['local']['url']      = $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css';
+ $GS_style_assets['fancybox']['local']['url']      = $ASSETURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css';
  $GS_style_assets['fancybox']['local']['ver']      = $fancybox_ver;
  // deprecated
  $GS_style_assets['fancybox-css']['local']['url']  = $GS_style_assets['fancybox']['local']['url'];
@@ -177,17 +175,17 @@ $GS_script_assets['fancybox']['local']['ver']      = $fancybox_ver;
 // font-awesome icons
  $GS_style_assets['font-awesome']['cdn']['url']    = '//netdna.bootstrapcdn.com/font-awesome/'.$font_awesome_ver.'/css/font-awesome.min.css';
  $GS_style_assets['font-awesome']['cdn']['ver']    = $font_awesome_ver;
- $GS_style_assets['font-awesome']['local']['url']  = $SITEURL.$GSADMIN.'/template/css/font-awesome.min.css';
+ $GS_style_assets['font-awesome']['local']['url']  = $ASSETURL.$GSADMIN.'/template/css/font-awesome.min.css';
  $GS_style_assets['font-awesome']['local']['ver']  = $font_awesome_ver;
 
 // ckeditor
 $GS_script_assets['ckeditor']['cdn']['url']        = '//cdn.ckeditor.com/'.$ckeditor_ver.'/full/ckeditor.js';
 $GS_script_assets['ckeditor']['cdn']['ver']        = $ckeditor_ver;
-$GS_script_assets['ckeditor']['local']['url']      = $SITEURL.$GSADMIN.'/template/js/ckeditor/ckeditor.js';
+$GS_script_assets['ckeditor']['local']['url']      = $ASSETURL.$GSADMIN.'/template/js/ckeditor/ckeditor.js';
 $GS_script_assets['ckeditor']['local']['ver']      = $ckeditor_ver;
 
 // gs codeeditor
-$GS_script_assets['gscodemirror']['local']['url']  = $SITEURL.$GSADMIN.'/template/js/codemirror.getsimple.js';
+$GS_script_assets['gscodemirror']['local']['url']  = $ASSETURL.$GSADMIN.'/template/js/codemirror.getsimple.js';
 $GS_script_assets['gscodemirror']['local']['ver']  = $getsimple_ver;
 
 /**
