@@ -910,7 +910,8 @@ form select.text {
 
 form input.text:focus,
 form select.text:focus,
-form textarea.text:focus {
+form textarea.text:focus,
+#post-content:focus {
 	outline: none;
 	border: 1px solid #666 !important;
 		-moz-box-shadow: rgba(0,0,0, 0.10) 0 0 6px;
@@ -919,6 +920,7 @@ form textarea.text:focus {
 }
 
 form textarea {
+	outline: none;
 	width: 100%;
 	height: 420px;
 	line-height: 15px;
