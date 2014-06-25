@@ -11,31 +11,37 @@
 
 /* pre-common setup, load gsconfig and get GSADMIN path */
 
-	/* GSCONFIG definitions */
-	if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
-	if(!defined('GSSTYLE_SBFIXED')) define('GSSTYLE_SBFIXED','sbfixed'); // fixed sidebar
+$GS_definitions = array(
+	'GSHTTPPREFIX'    => '', // for user http pages
+	'GSSLUGNOTFOUND'  => '404',
+	'GSSLUGPRIVATE'   => '403',
+	'GSSTYLEWIDE'     => 'wide',   // wide stylesheet
+	'GSSTYLE_SBFIXED' => 'sbfixed' // fixed sidebar
+);
 
-	# Check and load gsconfig
-	if (file_exists('gsconfig.php')) {
-		require_once('gsconfig.php');
-	}
+foreach($GS_definitions as $definition => $value){
+	if(!defined($definition)) define($definition,$value);
+}
 
-	# Apply GSADMIN env
-	if (defined('GSADMIN')) {
-		$GSADMIN = GSADMIN;
-	} else {
-		$GSADMIN = 'admin';
-	}
+# Check and load gsconfig
+if (file_exists('gsconfig.php')) {
+	require_once('gsconfig.php');
+}
 
-	# setup paths 
-	# @todo wtf are these for ?
-	$admin_relative = $GSADMIN.'/inc/';
-	$lang_relative = $GSADMIN.'/';
+# Apply GSADMIN env
+if (defined('GSADMIN')) {
+	$GSADMIN = GSADMIN;
+} else {
+	$GSADMIN = 'admin';
+}
 
-	$load['plugin'] = true;
-	$base = true;
+# setup paths 
+# @todo wtf are these for ?
+$admin_relative = $GSADMIN.'/inc/';
+$lang_relative = $GSADMIN.'/';
 
-/* end */
+$load['plugin'] = true;
+$base = true;
 
 # Include common.php
 include($GSADMIN.'/inc/common.php');
@@ -56,9 +62,6 @@ if (isset($_GET['id'])){
 $id = exec_filter('indexid',$id);
  // $_GET['id'] = $id; // support for plugins that are checking get?
 
-# define page, spit out 404 if it doesn't exist
-$file_404 = GSDATAOTHERPATH . '404.xml';
-$user_created_404 = GSDATAPAGESPATH . '404.xml';
 $data_index = null;
 
 // apply page data if page id exists
@@ -69,20 +72,29 @@ if (isset($pagesArray[$id])) {
 // filter to modify data_index obj
 $data_index = exec_filter('data_index',$data_index);
 
-// page not found handling
-if(!$data_index) {	
-	if (isset($pagesArray['404'])) {
-		// use user created 404 page
-		$data_index = getXml($user_created_404);		
-	} elseif (file_exists($file_404))	{
-		// default 404
-		$data_index = getXml($file_404);
-	} else {
-		// fail over
-		redirect('404');
-	} 	
-	exec_action('error-404');
+$file_404         = GSDATAOTHERPATH . GSSLUGNOTFOUND .'.xml'; // Legacy DEPRECATED
+$user_created_404 = GSDATAPAGESPATH . GSSLUGNOTFOUND .'.xml'; // legacy DEPRECATED
+
+// page not found handling 
+if(!$data_index) {
+	$httpcode = GSSLUGNOTFOUND;
+	$data_index = getHttpResponsePage($httpcode);
+	exec_action('error-404'); // Legacy DEPRECATED
+	exec_action('pagenotfound');
 }
+
+// is page private
+if($data_index->private == 'Y' && !is_logged_in()){
+	$httpcode = GSSLUGPRIVATE;
+	$data_index = getHttpResponsePage($httpcode);
+	exec_action('pageisprivate');
+}
+
+// failsafe to standard http responses if we still have no data
+if(!$data_index && isset($httpcode)) {
+	header($_SERVER["SERVER_PROTOCOL"].' '.$httpcode);
+	die();
+}	
 
 $title          = $data_index->title;
 $date           = $data_index->pubDate;
@@ -100,18 +112,10 @@ $private        = $data_index->private;
 // after fields from dataindex, can modify globals here or do whatever by checking them
 exec_action('index-post-dataindex');
 
-# if page is private, check user
-if ($private == 'Y') {
-	if (isset($USR) && $USR == get_cookie('GS_ADMIN_USERNAME')) {
-		//ok, allow the person to see it then
-	} else {
-		redirect('404');
-	}
-}
-
-# if page does not exist, throw 404 error
-if ($url == '404') {
-	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+# if page does not exist, throw http response header then output
+$errorcode = GSHTTPPREFIX !== '' ? str_replace(GSHTTPPREFIX,'',$url) : $url;
+if ($errorcode == GSSLUGNOTFOUND || $errorcode == GSSLUGPRIVATE) {
+	header($_SERVER["SERVER_PROTOCOL"].' '.$errorcode);
 }
 
 # check for correctly formed url

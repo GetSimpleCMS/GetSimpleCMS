@@ -38,6 +38,8 @@ $dirsArray = array(
 	GSAUTOSAVEPATH
 );
 
+// tmp-404.xml used as temporary write tester
+// removed afterwards
 foreach ($dirsArray as $dir) {
 	$tmpfile = GSADMININCPATH.'tmp/tmp-404.xml';
 	if (file_exists($dir)) {

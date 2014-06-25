@@ -53,6 +53,12 @@ a img {
 
 /* @todo all these modifier classe need to go togather probably at the end */
 
+.boxsizingBorder {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
 .clear {
 	clear: both;
 }
@@ -909,7 +915,8 @@ form select.text {
 
 form input.text:focus,
 form select.text:focus,
-form textarea.text:focus {
+form textarea.text:focus,
+#post-content:focus {
 	outline: none;
 	border: 1px solid #666 !important;
 		-moz-box-shadow: rgba(0,0,0, 0.10) 0 0 6px;
@@ -918,6 +925,7 @@ form textarea.text:focus {
 }
 
 form textarea {
+	outline: none;
 	width: 100%;
 	height: 420px;
 	line-height: 15px;
@@ -2641,6 +2649,11 @@ a.disabled:visited {
 .codewrap {
 	font-size: 13px;
 	line-height: 13px;
+}
+
+.codewrap textarea, #tabs .codewrap textarea{
+	font-family: "Consolas", "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", "Monaco", "Courier New", "Courier", "monospace";	
+	font-size: 12px;
 }
 
 /* codemirror overrides */

@@ -35,8 +35,17 @@ if(function_exists('mb_internal_encoding')) mb_internal_encoding("UTF-8"); // se
 /**
  *  GSCONFIG definitions
  */
-if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
-if(!defined('GSSTYLE_SBFIXED')) define('GSSTYLE_SBFIXED','sbfixed'); // fixed sidebar
+$GS_definitions = array(
+	'GSHTTPPREFIX'    => '',
+	'GSSLUGNOTFOUND'  => '404',
+	'GSSLUGPRIVATE'   => '403',
+	'GSSTYLEWIDE'     => 'wide', // wide stylesheet
+	'GSSTYLE_SBFIXED' => 'sbfixed' // fixed sidebar
+);
+
+foreach($GS_definitions as $definition => $value){
+	if(!defined($definition)) define($definition,$value);
+}
 
 /**
  * Variable Globalization
@@ -215,7 +224,6 @@ if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 } else {
 	$USR = null;
 }
-
 
 
 /** grab authorization and security data */

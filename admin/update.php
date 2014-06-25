@@ -50,6 +50,22 @@ function msgError($msg){
 	return '<div class="notify notify_error">'.$msg.'</div>';
 }
 
+# create default 404.xml page
+$init = GSDATAOTHERPATH.GSHTTPPREFIX.'404.xml';
+$temp = GSADMININCPATH.'tmp/tmp-404.xml'; 
+if (! file_exists($init)) {
+	if(copy($temp,$init)) $message.= msgOK(sprintf(i18n_r('COPY_SUCCESS'),'tmp/404.xml'));
+	else $message.= msgError(sprintf(i18n_r('COPY_FAILURE'),'tmp/404.xml'));
+}
+
+# create default 403.xml page
+$init = GSDATAOTHERPATH.GSHTTPPREFIX.'403.xml';
+$temp = GSADMININCPATH.'tmp/tmp-403.xml'; 
+if (! file_exists($init)) {
+	if(copy($temp,$init)) $message.= msgOK(sprintf(i18n_r('COPY_SUCCESS'),'tmp/403.xml'));
+	else $message.= msgError(sprintf(i18n_r('COPY_FAILURE'),'tmp/403.xml'));
+}
+
 /* create new folders */
 foreach($create_dirs as $dir){
 	if (!file_exists($dir)) {  	

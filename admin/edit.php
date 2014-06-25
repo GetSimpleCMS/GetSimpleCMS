@@ -297,7 +297,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
             <?php } ?>
 
                 <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
-                <div class="codewrap"><textarea id="post-content" name="post-content"><?php echo $content; ?></textarea></div>
+                <div class="codewrap"><textarea id="post-content" class="boxsizingBorder" name="post-content"><?php echo $content; ?></textarea></div>
             
             <?php exec_action('edit-content'); ?> 
             

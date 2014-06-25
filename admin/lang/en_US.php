@@ -563,6 +563,8 @@ $i18n = array(
 * Generics
 * @since 3.3
 */
+"COPY_SUCCESS"            =>    "Successfully Copied %s",
+"COPY_FAILURE"            =>    "Failed to Copy %s",
 "IS_MISSING"              =>	"%s is missing",
 "NOT_FOUND"               =>	"%s was not found",
 "TITLE"                   =>	"Title",
@@ -625,6 +627,8 @@ $i18n = array(
 "MENU"                    =>	"Menu",
 "LOG"                     =>	"Log",
 "LOGGED"                  =>	"Logged",
+"CONFIGURATION"           =>    "Configuration",
+"CONFIG"                  =>    "Config",
 "GEN_ENABLE"              =>	"Enable",
 "ENABLED"                 =>	"Enabled",
 "GEN_DISABLE"             =>	"Disable",
@@ -637,6 +641,14 @@ $i18n = array(
 "INACTIVATED"             =>	"Inactivated",
 "SERVER"                  =>	"Server",
 "CANCELLED"               =>    "Cancelled",
+"PERMITTED"               =>    "Permitted",
+"NOT_PERMITTED"           =>    "Not Permitted",
+"ALLOW"                   =>    "Allow",
+"ALLOWED"                 =>    "Allowed",
+"NOT_ALLOWED"             =>    "Not Allowed",
+"APPROVE"                 =>    "Approve",
+"APPROVED"                =>    "Approved",
+"NOT_APPROVED"            =>    "Not Approved"
 
 // already defined generics
 # "ENABLE"                =>    "Activate"
@@ -649,10 +661,12 @@ $i18n = array(
 # "DESCRIPTION"           =>	"Description",
 # "ERROR"                 =>	"Error",
 # "WARNING"               =>	"Warning",
-# "NONE"                  =>	""None",
-# "PAGE"                  =>	""Page",
+# "NONE"                  =>	"None",
+# "PAGE"                  =>	"Page",
 # "DATE"                  =>	"Date",
 # "OK"                    =>	"OK",
+# "DENIED"                =>	"Denied",
+# "SETTINGS"              =>	"Settings",
 
 );
 
