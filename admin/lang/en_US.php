@@ -557,6 +557,8 @@ $i18n = array(
 * Generics
 * @since 3.3
 */
+"COPY_SUCCESS"            =>    "Successfully Copied %s",
+"COPY_FAILURE"            =>    "Failed to Copy %s",
 "IS_MISSING"              =>	"%s is missing",
 "NOT_FOUND"               =>	"%s was not found",
 "TITLE"                   =>	"Title",

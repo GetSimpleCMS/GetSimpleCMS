@@ -107,13 +107,6 @@ if(isset($_POST['submitted'])) {
 			copy($temp,$init);
 		}
 		
-		# create default 404.xml page
-		$init = GSDATAOTHERPATH.'404.xml';
-		$temp = GSADMININCPATH.'tmp/tmp-404.xml'; 
-		if (! file_exists($init)) {
-			copy($temp,$init);
-		}
-
 		# create root .htaccess file
 		 if ( !function_exists('apache_get_modules') or in_arrayi('mod_rewrite',apache_get_modules())) {
 		 	$temp = GSROOTPATH .'temp.htaccess';

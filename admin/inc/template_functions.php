@@ -1468,4 +1468,24 @@ function cleanHtml($str){
 }	
 
 
+/**
+ * get Page data for http response code
+ * 
+ * returns page xml for http response code, by checking for user page then core page
+ * 
+ * @param  int $code http response code
+ * @return obj       page xml
+ */
+function getHttpResponsePage($code){
+	GLOBAL $pagesArray;
+
+	if (isset($pagesArray[GSHTTPPREFIX . $code])) {
+		// use user created http response page
+		return getXml(GSDATAPAGESPATH . GSHTTPPREFIX . $code . '.xml');		
+	} elseif (file_exists(GSDATAOTHERPATH . $code . '.xml'))	{
+		// default http response page
+		return getXml(GSDATAOTHERPATH . $code . '.xml');	
+	}	
+}
+
 ?>
