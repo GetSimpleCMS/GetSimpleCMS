@@ -215,8 +215,8 @@ jQuery(document).ready(function () {
 		activate: function(event, ui) {
 			// set bookmarkable urls
 			var hash = ui.newTab.context.hash;
-			hash = hash.replace('#','');
-			window.location.hash = "tab_"+hash;
+			hash = "tab_"+hash.replace('#','');
+			window.location.replace(('' + window.location).split('#')[0] + '#' + hash);	// should not affect history
 		},
 		create: function (event,ui) {
 			// set active tab from hash
