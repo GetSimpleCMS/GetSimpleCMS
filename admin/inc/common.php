@@ -36,7 +36,7 @@ if(function_exists('mb_internal_encoding')) mb_internal_encoding("UTF-8"); // se
  *  GSCONFIG definitions
  */
 $GS_definitions = array(
-	'GSHTTPPREFIX'    => 'error_',
+	'GSHTTPPREFIX'    => '',
 	'GSSLUGNOTFOUND'  => '404',
 	'GSSLUGPRIVATE'   => '403',
 	'GSSTYLEWIDE'     => 'wide', // wide stylesheet

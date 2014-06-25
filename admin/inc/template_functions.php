@@ -1473,6 +1473,7 @@ function cleanHtml($str){
  * 
  * returns page xml for http response code, by checking for user page then core page
  * 
+ * @since 3.4
  * @param  int $code http response code
  * @return obj       page xml
  */
