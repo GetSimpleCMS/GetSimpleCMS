@@ -53,6 +53,12 @@ a img {
 
 /* @todo all these modifier classe need to go togather probably at the end */
 
+.boxsizingBorder {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
 .clear {
 	clear: both;
 }
@@ -2636,6 +2642,11 @@ a.disabled:visited {
 .codewrap {
 	font-size: 13px;
 	line-height: 13px;
+}
+
+.codewrap textarea, #tabs .codewrap textarea{
+	font-family: "Consolas", "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", "Monaco", "Courier New", "Courier", "monospace";	
+	font-size: 12px;
 }
 
 /* codemirror overrides */
