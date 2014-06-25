@@ -171,7 +171,7 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
             $dirsArray[$dircount]['name'] = $file;
             clearstatcache();
 						$ss = @stat($path . $file);
-						$dirsArray[$dircount]['date'] = @date('M j, Y',$ss['ctime']);
+						$dirsArray[$dircount]['date'] = @date('M j, Y',$ss['mtime']);
             $dircount++;
 					} else {
 						$filesArray[$count]['name'] = $file;
