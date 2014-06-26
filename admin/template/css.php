@@ -266,29 +266,30 @@ html {
 	border-radius: 3px 0 0 3px;
 }
 
-/* warning alert on tab */
-.nav li.rightnav .warning, .nav li.rightnav .info {
-	position: absolute;
-	top: -5px;
-	left: -5px;
-}
+/* rightnav status badges  
+ * .warning
+ * .info
+*/
 
 .nav li .warning, .nav li .info {
-	position: absolute;
-	top: -5px;
-	right: -5px;
-	font-size: 10px;
+	/*position: absolute;*/
+	/*top: -5px;*/
+	/*right: -5px;*/
+	font-size: 15px;
 	color: #000;
 	text-shadow: 1px 1px 0 rgba(255,255,255,.5);
 	font-weight: bold;
 	text-align: center;
 	border-radius: 2px;
 	display: block;
-	width: 11px;
+	height: 16px;
+	width: 16px;
+	margin:2px 6px;
 	border: 1px solid #FFCC33;
 	background: #FFFF66;
 	background: -moz-linear-gradient(top, #FFFF66 0%, #FFCC33 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFF66), color-stop(100%,#FFCC33));
+	opacity:.9;
 }
 
 .nav li .info {
@@ -297,6 +298,17 @@ html {
 	background: #6FCCFF;
 	background: -moz-linear-gradient(top, #BDF2FF 0%, #6FCCFF 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#BDF2FF), color-stop(100%,#6FCCFF));
+}
+
+.nav li.statusbadge a {
+	padding: 0;
+	background-color: none;
+	display: inline;
+}
+
+.nav li.statusbadge a:hover span {
+	opacity:1;
+	transition: all;
 }
 
 .wrapper .nav li a em, .wrapper #pill li a em {
@@ -416,7 +428,7 @@ h3.floated {
 	color: <?php echo $secondary_1; ?>;
 	float: left;
 	display: block;
-	margin: 0 0 5px 0;
+	margin: 0 0 20px 0;
 }
 
 h3 span {
@@ -624,7 +636,8 @@ h5:hover img {
  * .main top action nav links
  */
 .edit-nav {
-	margin: 0 0 15px 0;
+	/*margin: 0 0 10px 0;*/
+	margin: 0;
 }
 
 .edit-nav a {

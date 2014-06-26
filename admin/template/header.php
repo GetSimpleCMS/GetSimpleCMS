@@ -125,9 +125,9 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 			?>
 				var verstatus = <?php echo $verstatus; ?>;
 				if(verstatus != 1) {
-					<?php if(isBeta() || isAlpha()){ ?> $('a.support').parent('li').append('<span class="info">i</span>');
-					<?php } else { ?> $('a.support').parent('li').append('<span class="warning">!</span>'); <?php } ?>
-					$('a.support').attr('href', 'health-check.php');
+					<?php if(isBeta() || isAlpha()){ ?> $('.nav').append('<li class="rightnav statusbadge"><a href="health-check.php"><span class="info">i</span></a></li>');
+					<?php } else { ?> $('a.support').parent('li').append('<li class="rightnav statusbadge"><a href="health-check.php"><span class="warning">!</span></a></li>'); <?php } ?>
+					// $('a.support').attr('href', 'health-check.php');
 				}
 			<?php  }} ?>
 		});
