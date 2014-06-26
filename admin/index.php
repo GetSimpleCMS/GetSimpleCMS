@@ -34,7 +34,7 @@ ob_end_flush();
 				<p><b><?php i18n('PASSWORD'); ?>:</b><br /><input type="password" class="text" id="pwd" name="pwd" /></p>
 				<p><input type="submit" name="submitted" class="submit" value="<?php i18n('LOGIN'); ?>" /></p>
 			</form>
-			<p class="cta" ><b>&laquo;</b> <a href="<?php echo $SITEURL; ?>"><?php i18n('BACK_TO_WEBSITE'); ?></a> &nbsp; | &nbsp; <a href="resetpassword.php"><?php i18n('FORGOT_PWD'); ?></a> &raquo;</p>
+			<p class="cta" ><a href="<?php echo $SITEURL; ?>"><?php i18n('BACK_TO_WEBSITE'); ?></a> &nbsp; <?php if(getDef('GSALLOWRESETTPASSWORD',true)!== false){ ?>| &nbsp; <a href="resetpassword.php"><?php i18n('FORGOT_PWD'); ?></a> <?php } ?></p>
 			<div class="reqs" ><?php exec_action('login-reqs'); ?></div>
 		</div>
 	</div>

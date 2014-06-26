@@ -112,4 +112,7 @@ define('SUPPRESSERRORS',true);
 # accepts a lang string, default is 'en_US', false to disable
 # define('GSMERGELANG',false);
 
+# Disable resetpassword , set false, default is true
+# define('GSALLOWRESETPASSWORD',false);
+
 ?>

@@ -12,6 +12,8 @@
 $load['plugin'] = true;
 include('inc/common.php');
 
+if(getDef('GSALLOWRESETPASSWORD',true) === false) die();
+
 if(isset($_POST['submitted'])){
 	check_for_csrf("reset_password");	
 		
