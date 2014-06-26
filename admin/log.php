@@ -28,7 +28,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && strlen($log_name)>0
 	check_for_csrf("delete");
 	unlink($log_file);
 	exec_action('logfile_delete');
-	redirect('support.php?success='.urlencode('Log '.$log_name . i18n_r('MSG_HAS_BEEN_CLR')));
+	redirect('log.php?success='.urlencode('Log '.$log_name . i18n_r('MSG_HAS_BEEN_CLR')));
 }
 
 if (!isset($log_data)) $log_data = getXML($log_file);
@@ -43,19 +43,30 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
 	
 	<div id="maincontent">
 		<div class="main">
-			<h3 class="floated"><?php i18n('VIEWING');?> <?php i18n('LOG_FILE');?>: &lsquo;<em><?php echo var_out($log_name); ?></em>&rsquo;</h3>
+		<?php if(empty($log_name)){
+			echo '<h3 class="floated">'.i18n_r('VIEW_LOG_FILE').'</h3><div class="clear"></div>';
+			echo '<ul>';
+			echo '<li><a href="log.php?log=failedlogins.log">Failed Logins</a></li>';
+			echo '<li><a href="log.php?log=logins.log">Logins</a></li>';
+			echo '</ul>';
+		}
+		else { ?>	
+			<h3 class="floated"><?php echo i18n_r('VIEW_LOG_FILE');?><span> / <?php echo var_out($log_name); ?></span></h3>
 			<div class="edit-nav" >
 				<a href="log.php?log=<?php echo $log_name; ?>&action=delete&nonce=<?php echo get_nonce("delete"); ?>" accesskey="<?php echo find_accesskey(i18n_r('CLEAR_ALL_DATA'));?>" title="<?php i18n('CLEAR_ALL_DATA');?> <?php echo $log_name; ?>?" /><?php i18n('CLEAR_THIS_LOG');?></a>
 				<div class="clear"></div>
 			</div>
-			<?php if (!$log_data) echo '<p><em>'.i18n_r('LOG_FILE_EMPTY').'</em></p>'; ?>
+			
+			<?php if (!$log_data){
+				 echo '<p><em>'.i18n_r('LOG_FILE_EMPTY').'</em></p>'; 
+			} else { ?>	 
 			<ol class="more" >
 				<?php 
 				$count = 1;
 
 				if ($log_data) {
 					foreach ($log_data as $log) {
-						echo '<li><p style="font-size:11px;line-height:15px;" ><b style="line-height:20px;" >'.i18n_r('LOG_FILE_ENTRY').'</b><br />';
+						echo '<li><p style="font-size:11px;line-height:15px;" >';
 						foreach($log->children() as $child) {
 						  $name = $child->getName();
 						  echo '<b>'. stripslashes(ucwords($name)) .'</b>: ';
@@ -90,7 +101,8 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
 							$d = lngDate($d);
 						  }
 							
-						  echo stripslashes($d);
+						  // echo stripslashes($d);
+						  echo $d;
 						  echo ' <br />';
 						}
 						echo "</p></li>";
@@ -100,8 +112,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
 				
 				?>
 			</ol>
+			<?php } ?>
+			<?php } ?>
 		</div>
-		
 	</div>
 	
 	<div id="sidebar" >

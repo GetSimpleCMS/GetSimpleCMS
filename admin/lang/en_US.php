@@ -165,6 +165,7 @@ $i18n = array(
 "LOGS"                    =>	"Logs",
 "VIEWING"                 =>	"Viewing",
 "LOG_FILE"                =>	"Log File",
+"VIEW_LOG_FILE"           =>	"View Log Files",
 "CLEAR_ALL_DATA"          =>	"Clear all data from",
 "CLEAR_THIS_LOG"          =>	"<em>C</em>lear This Log",
 "LOG_FILE_ENTRY"          =>	"LOG FILE ENTRY",
@@ -329,10 +330,10 @@ $i18n = array(
 /* 
 * For: sidebar-support.php
 */
-"SIDE_SUPPORT_LOG"        =>	"Supp<em>o</em>rt",
+"SIDE_SUPPORT_LOG"        =>	"Supp<em>o</em>rt Resources",
 "SIDE_HEALTH_CHK"         =>	"Website <em>H</em>ealth Check",
 "SIDE_DOCUMENTATION"      =>	"Wiki Documentation",
-"SIDE_VIEW_LOG"           =>	"<em>V</em>iew Log",
+"SIDE_VIEW_LOG"           =>	"<em>V</em>iew Logs",
 
 /* 
 * For: sidebar-theme.php

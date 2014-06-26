@@ -44,6 +44,10 @@ if(isset($_POST['submitted'])) {
 			# do the username and password match?
 			if ( ($userid === $USR) && ($password === $PASSWD) ) {
 				$authenticated = true;
+				# add login success to failed logins log
+				$logFailed = new GS_Logging_Class('logins.log');
+				$logFailed->add('Username',$userid);
+				// $logFailed->add('Reason','Invalid Password');				
 			} else {
 				$authenticated = false;
 				# add login failure to failed logins log
@@ -65,9 +69,11 @@ if(isset($_POST['submitted'])) {
 			# YES - set the login cookie, then redirect user to secure panel		
 			create_cookie();
 			exec_action('successful-login-end');
-			redirect($cookie_redirect); 
+			$logFailed->save();			
+			redirect($cookie_redirect);
 		} else {
 			# NO - show error message
+			exec_action('successful-login-failed'); 
 			$error = i18n_r('LOGIN_FAILED');
 			$logFailed->save();
 		} 
