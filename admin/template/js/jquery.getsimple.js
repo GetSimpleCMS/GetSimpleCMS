@@ -634,8 +634,9 @@ jQuery(document).ready(function () {
 		$('ol.more li').reverseOrder();
 	}
 	$("ol.more").each(function () {
-		$("li:gt(4)", this).hide(); /* :gt() is zero-indexed */
-		$("li:nth-child(5)", this).after("<li class='more'><a href='#'>More...</a></li>"); /* :nth-child() is one-indexed */
+		var show = 7; // how many to show
+		$("li:gt("+(show-1)+")", this).hide(); /* :gt() is zero-indexed */
+		if($("li:nth-child("+(show+1)+")", this)[0]) $("li:nth-child("+show+")", this).after("<li class='more'><a href='#'>More...</a></li>"); /* :nth-child() is one-indexed */
 	});
 	$("li.more a").on("click", function ($e) {
 		$e.preventDefault();
