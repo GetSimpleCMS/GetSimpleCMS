@@ -1535,4 +1535,21 @@ function setDefault(&$var = '',$default){
 	if(!isset($var) || empty($var)) $var = $default;
 }
 
+
+function allowVerCheck(){
+	return !isAuthPage() && !getDef('GSNOVERCHECK');
+}
+
+function getVerCheck(){
+	# check to see if there is a core update needed
+	$data = get_api_details();
+	if ($data)	{
+		$apikey = json_decode($data);
+		$verstatus = $apikey->status;
+	}else {
+		$verstatus = null;
+	}
+	return $verstatus;
+}
+
 ?>

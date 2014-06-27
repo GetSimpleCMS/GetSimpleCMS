@@ -264,13 +264,43 @@ html {
 	text-decoration: none !important;
 	display: block;
 	border-radius: 3px 0 0 3px;
+	margin-left:4px;
 }
 
-/* rightnav status badges  
+.wrapper .nav li.rightnav a.label {
+	padding: 3px 4px;
+	background-color: none;
+	display: inline-block;
+	/*margin:0px 0px;*/
+	border-radius:3px !important;
+	color: #FFFFFF;
+	border: 1px solid rgba(0,0,0,0.5);
+	        background-clip: padding-box;
+       -moz-background-clip: padding;
+    -webkit-background-clip: padding;
+    
+            box-sizing: border-box;    
+       -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.wrapper .nav li.rightnav a.label:hover {
+	border: 1px solid rgba(0,0,0,0.8);
+	box-shadow: rgba(0,0,0, 0.3) 0 0 4px;
+	opacity:.9;
+	transition: all;
+}
+
+.wrapper .nav li.rightnav a.label.label-ghost {
+	background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 
+ * DEPRECATED
+ * rightnav status badges  
  * .warning
  * .info
 */
-
 .nav li .warning, .nav li .info {
 	/*position: absolute;*/
 	/*top: -5px;*/
@@ -298,20 +328,6 @@ html {
 	background: #C7C7C7;
 	background: -moz-linear-gradient(top, #BDF2FF 0%, #6FCCFF 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#F7F7F7), color-stop(100%,#999));
-}
-
-.wrapper .nav li.statusbadge a {
-	padding: 0;
-	background-color: none;
-	display: inline;
-	margin-right:10px;
-	border-radius:3px !important;
-	color: #FFFFFF;
-}
-
-.nav li.statusbadge a:hover span {
-	opacity:1;
-	transition: all;
 }
 
 .wrapper .nav li a em, .wrapper #pill li a em {
@@ -1895,7 +1911,7 @@ textarea.copykit {
 	border-radius: 3px;
 	text-align: center;
 	color: #F2F2F2;
-	margin:3px;
+	margin:0px 3px;
  	background-color: <?php echo $label_0; ?>;
  	/*display: inline-block;*/
 }
@@ -1945,7 +1961,6 @@ textarea.copykit {
 	color: black !important;
 	text-shadow: none !important;
 	background-color: #FFE000 !important;
-
 }
 
 .label hr{

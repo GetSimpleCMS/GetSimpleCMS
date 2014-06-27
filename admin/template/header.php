@@ -107,45 +107,16 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	# Plugin hook to allow insertion of stuff into the header
 	if(!isAuthPage()) exec_action('header'); 
 	
-	function doVerCheck(){
-		return !isAuthPage() && !getDef('GSNOVERCHECK');
-	}
+	$jsi18nkeys = array(
+		'PLUGIN_UPDATED',
+		'ERROR',
+		'EXPAND_TOP',
+		'COLLAPSE_TOP',
+		'FILE_EXISTS_PROMPT',
+		'CANCELLED'
+	);
 	
-	if( doVerCheck() ) { ?>
-	<script type="text/javascript">		
-		// check to see if core update is needed
-		jQuery(document).ready(function() { 
-			<?php 
-				$data = get_api_details();
-				if ($data) {
-					$apikey = json_decode($data);
-					
-					if(isset($apikey->status)) {
-						$verstatus = $apikey->status;
-			?>
-				var verstatus = <?php echo $verstatus; ?>;
-				if(verstatus != 1) {
-					<?php if(isBeta() || isAlpha() && false){ ?>
-						$('.nav').append('<li class="rightnav statusbadge"><a class="light-back last" href="health-check.php"><span class="">beta</span></a></li>');
-					<?php } else { ?>
-						$('.nav').append('<li class="rightnav statusbadge "><a class="label-gold last" href="health-check.php"><span class="fa fa-lg fa-cloud-download"></span></a></li>');
-					<?php } ?>
-				}
-			<?php  }} ?>
-		});
-	</script>
-	<?php } 
-
-		$jsi18nkeys = array(
-			'PLUGIN_UPDATED',
-			'ERROR',
-			'EXPAND_TOP',
-			'COLLAPSE_TOP',
-			'FILE_EXISTS_PROMPT',
-			'CANCELLED'
-		);
-		
-		$jsi18n = array_combine($jsi18nkeys,array_map('i18n_r',$jsi18nkeys));
+	$jsi18n = array_combine($jsi18nkeys,array_map('i18n_r',$jsi18nkeys));
 
 	?>
 	

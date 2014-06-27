@@ -35,13 +35,7 @@ echo '<div class="bodycontent clearfix">
 			<table class="highlight healthcheck">';
 				
 				# check to see if there is a core update needed
-				$data = get_api_details();
-				if ($data)	{
-					$apikey = json_decode($data);
-					$verstatus = $apikey->status;
-				}	else {
-					$verstatus = null;
-				}
+				$verstatus = getVerCheck();
 				// $verstatus = $_GET['status']; // debugging
 				$verstring = sprintf(i18n_r('CURR_VERSION'),'<b>'.$site_version_no.'</b>').'<hr>';
 				if ($verstatus == '0') {

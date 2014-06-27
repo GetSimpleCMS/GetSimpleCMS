@@ -35,8 +35,24 @@ if (get_filename_id() == 'load') {
 	<?php exec_action('nav-tab');	?>
 	
 	<li id="nav_loaderimg" ><img class="toggle" id="loader" src="template/images/ajax.gif" alt="" /></li>
+
 	<li class="rightnav" ><a class="settings first" href="settings.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SETTINGS'));?>" ><?php i18n('TAB_SETTINGS');?></a></li>
 	<li class="rightnav" ><a class="support last" href="support.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SUPPORT'));?>" ><?php i18n('TAB_SUPPORT');?></a></li>
+
+	<?php 
+
+	// nav status labels
+	if(isBeta() || isAlpha()) echo '<li class="rightnav"><a class="label label-ghost" href="health-check.php"><span><span class="fa fa-fw fa-flask"></span> '. (isAlpha() ? 'alpha' : 'beta') .'</span></a></li>';
+
+	if( allowVerCheck() ) {
+		$verstatus = getVerCheck();
+		if($verstatus == 0){ 
+			// update available newer than current
+			echo '<li class="rightnav"><a class="label label-gold" href="health-check.php"><span class="fa fa-fw fa-lg fa-cloud-download"></span></a></li>';
+		}
+	}
+
+	?>	
 
 </ul>
 
