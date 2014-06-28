@@ -119,14 +119,25 @@ class GS_Logging_Class {
          * 
          * @param string $field
          * @param string $value
+         * @param bool   $unique, is this field unique, if true replace existing values, else allow duplicates
          *
          * @return success
          */    
-        public function add($field,$value){
+        public function add($field,$value,$unique = true){
                 if(isset($field) && isset($value) && isset($this->_entry)){
+                      if($unique) $this->remove($field); // allow dups ?
                       $cdata = $this->_entry->addChild(htmlentities($field, ENT_QUOTES));
-                      $cdata->addCData(safe_slash_html($value));
-                }  
+                      return $cdata->addCData(safe_slash_html($value));
+                }
+        }
+
+        /*
+         * Remove Log Record Field
+         *
+         * @param string $field
+         */
+        public function remove($field){
+            if(isset($this->_entry->$field)) unset($this->_entry->$field);
         }
   
 } // end of class                   
