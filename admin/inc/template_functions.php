@@ -1348,6 +1348,7 @@ function archive_targz() {
 	GLOBAL $GSADMIN;
 	
 	if(!function_exists('exec')) {
+    	// @todo catch exec not prermitted
     	return false;
     	exit;
 	}
@@ -1356,8 +1357,9 @@ function archive_targz() {
 	$saved_zip_file_path = GSBACKUPSPATH.'zip/';
 	$saved_zip_file      = $timestamp .'_archive.tar.gz';	
 	$script_contents     = "tar -cvzf ".$saved_zip_file_path.$saved_zip_file." ".GSROOTPATH.".htaccess ".GSROOTPATH."gsconfig.php ".GSROOTPATH."data ".GSROOTPATH."plugins ".GSROOTPATH."theme ".GSROOTPATH.$GSADMIN."/lang > /dev/null 2>&1";
-	
-	exec($script_contents, $output, $rc);
+
+	debugLog('archive function exec called ' . __FUNCTION__);
+	exec(escapeshellarg($script_contents), $output, $rc);
 	
 	if (file_exists($saved_zip_file_path.$saved_zip_file)) {
 		return true;
