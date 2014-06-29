@@ -50,7 +50,8 @@ $GS_scripts = array();  // global array for storing queued script assets
         'ver'       => version,
         'in_footer' => in_footer,
         'where'     => 0 bitflag,
-        'load'      => (bool) is queued
+        'load'      => (bool) is queued,
+        'queue'     => array of additional assets to queue
     );
 */
 $GS_styles = array();  // glboal array for storing queued stylesheet assets
@@ -61,7 +62,9 @@ $GS_styles = array();  // glboal array for storing queued stylesheet assets
         'ver'       => version,
         'media'     => style media eg. screen,print,
         'where'     => 0 bitflag,
-        'load'      => (bool) is queued
+        'load'      => (bool) is queued,
+        'queue'     => array of additional assets to queue
+        
     );
 */
 
@@ -187,6 +190,9 @@ $GS_script_assets['ckeditor']['local']['ver']      = $ckeditor_ver;
 // gs codeeditor
 $GS_script_assets['gscodemirror']['local']['url']  = $ASSETURL.$GSADMIN.'/template/js/codemirror.getsimple.js';
 $GS_script_assets['gscodemirror']['local']['ver']  = $getsimple_ver;
+$GS_script_assets['gscodemirror']['queue']['script']  = array('codemirror');
+$GS_script_assets['gscodemirror']['queue']['style']   = array('codemirror');
+
 
 /**
  * Register shared javascript/css scripts for loading into the header
@@ -212,6 +218,7 @@ preRegisterScript('scrolltofixed','',   false , $infooter);
 // gs aliases
 preRegisterScript('gshtmleditor', $GS_script_assets['ckeditor'],     false , $infooter);
 preRegisterScript('gscodeeditor', $GS_script_assets['gscodemirror'], false , $infooter);
+
 preRegisterScript('gscrop',       $GS_script_assets['jcrop'],        false , $infooter);
 preRegisterScript('gsuploader',   $GS_script_assets['dropzone'],     false , $infooter);
 
@@ -603,8 +610,9 @@ function preRegisterScript($id,$config = array(),$CDN = false,$footer = false){
 	GLOBAL $GS_script_assets;
 	if(!$config && isset($GS_script_assets[$id])) $config = $GS_script_assets[$id];
 	if(!$config) return;
-	if($CDN && isset($config['cdn'])) return register_script($id, $config['cdn']['url'], '', $footer); // no version for CDN benefits
-	else return register_script($id, $config['local']['url'], $config['local']['ver'], $footer);
+	$queue = isset($config['queue']) ? $config['queue'] : null;
+	if($CDN && isset($config['cdn'])) return register_script($id, $config['cdn']['url'], '', $footer, $queue); // no version for CDN benefits
+	else return register_script($id, $config['local']['url'], $config['local']['ver'], $footer, $queue);
 }
 
 /**
@@ -619,8 +627,9 @@ function preRegisterScript($id,$config = array(),$CDN = false,$footer = false){
  * @param string $src location of the src for loading
  * @param string $ver script version
  * @param boolean $in_footer load the script in the footer if true
+ * @param array $queue array of script or style assets to auto queue
  */
-function register_script($handle, $src, $ver, $in_footer = false){
+function register_script($handle, $src, $ver, $in_footer = false, $queue = null){
 	global $GS_scripts;
 	$GS_scripts[$handle] = array(
 		'name'      => $handle,
@@ -628,7 +637,8 @@ function register_script($handle, $src, $ver, $in_footer = false){
 		'ver'       => $ver,
 		'in_footer' => $in_footer,
 		'where'     => 0,
-		'load'      => false
+		'load'      => false,
+		'queue'     => $queue
 	);
 }
 
@@ -662,6 +672,13 @@ function deregister_script($handle){
 function queue_script($handle,$where){
 	global $GS_scripts;
 	if (array_key_exists($handle, $GS_scripts)){
+		// load items queue
+		if(isset($GS_scripts[$handle]['queue'])){
+			$config = $GS_scripts[$handle]['queue'];
+			if(isset($config['script'])) array_map('queue_script',$config['script'],array_fill(0,count($config['script']),$where));
+			if(isset($config['style']))  array_map('queue_style',$config['style'],array_fill(0,count($config['style']),$where));
+		}
+
 		$GS_scripts[$handle]['load']  = true;
 		$GS_scripts[$handle]['where'] = $GS_scripts[$handle]['where'] | $where;
 	}
@@ -762,6 +779,13 @@ function cdn_fallback($script){
 function queue_style($handle,$where = 1){
 	global $GS_styles;
 	if (array_key_exists($handle, $GS_styles)){
+
+		// load items queue
+		if(isset($GS_scripts[$handle]['queue'])){
+			$config = $GS_scripts[$handle]['queue'];
+			if(isset($config['style']))  array_map('queue_style',$config['style'],array_fill(0,count($config['style']),$where));
+		}
+
 		$GS_styles[$handle]['load'] = true;
 		$GS_styles[$handle]['where'] = $GS_styles[$handle]['where'] | $where;
 	}
@@ -799,8 +823,9 @@ function preRegisterStyle($id,$config = array(), $CDN = false, $media = 'screen'
 	GLOBAL $GS_style_assets;
 	if(!$config && isset($GS_style_assets[$id])) $config = $GS_style_assets[$id];
 	if(!$config) return;
-	if($CDN && isset($config['cdn'])) return register_style($id, $config['cdn']['url'], '', $media); // no version for CDN benefits
-	else return register_style($id, $config['local']['url'], $config['local']['ver'], $media);
+	$queue = isset($config['queue']) ? $config['queue'] : null;
+	if($CDN && isset($config['cdn'])) return register_style($id, $config['cdn']['url'], '', $media,$queue); // no version for CDN benefits
+	else return register_style($id, $config['local']['url'], $config['local']['ver'], $media,$queue);
 }
 
 
@@ -816,8 +841,9 @@ function preRegisterStyle($id,$config = array(), $CDN = false, $media = 'screen'
  * @param string $src location of the src for loading
  * @param string $ver Style version
  * @param string $media the media for this stylesheet
+ * @param array $queue array of style assets to auto queue
  */
-function register_style($handle, $src, $ver, $media){
+function register_style($handle, $src, $ver, $media, $queue = null){
 	global $GS_styles;
 	$GS_styles[$handle] = array(
 		'name'  => $handle,
@@ -825,7 +851,8 @@ function register_style($handle, $src, $ver, $media){
 		'ver'   => $ver,
 		'media' => $media,
 		'where' => 0,
-		'load'	=> false
+		'load'	=> false,
+		'queue' => $queue
 	);
 }
 

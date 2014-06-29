@@ -18,11 +18,9 @@ function getEditorMode(extension){
 	return extension in cm_modes ? cm_modes[extension] : extension;
 }
 
-// load codemirror assets
-loadjscssfile("template/js/codemirror/lib/codemirror.min.css", "css");
-loadjscssfile("template/js/codemirror/lib/codemirror-compressed.js", "js",function(){
-	initcodemirror();} 
-);
+jQuery(document).ready(function () {
+	initcodemirror();
+});
 
 	// setup codemirror instances and functions
 
