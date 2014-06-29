@@ -13,7 +13,7 @@ function genStdThumb($path,$name){
 	$php_modules = get_loaded_extensions();
 	if(!in_arrayi('gd', $php_modules)) return;
 
-	if (!defined('GSIMAGEWIDTH')) {
+	if (!getDef('GSIMAGEWIDTH')) {
 		$width = 200; //New width of image  	
 	} else {
 		$width = GSIMAGEWIDTH;
@@ -26,7 +26,7 @@ function genStdThumb($path,$name){
 		$thumbsPath = GSTHUMBNAILPATH.$path;
 		
 		if (!(file_exists($thumbsPath))) {
-			if (defined('GSCHMOD')) { 
+			if (getDef('GSCHMOD')) {
 				$chmod_value = GSCHMOD; 
 			} else {
 				$chmod_value = 0755;

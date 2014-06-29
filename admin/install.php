@@ -107,7 +107,7 @@ if (count($lang_array) == 1) {
 $api_file = GSDATAOTHERPATH.'authorization.xml';
 
 if (! file_exists($api_file)) {
-	if (defined('GSUSECUSTOMSALT')) {
+	if (getDef('GSUSECUSTOMSALT')) {
 		$saltval = sha1(GSUSECUSTOMSALT);
 	} else {
 		$saltval = generate_salt();
@@ -220,7 +220,7 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') );
 						echo '<tr><td>Apache Mod Rewrite</td><td><span class="OKmsg" >'.i18n_r('INSTALLED').' - '.i18n_r('OK').'</span></td></tr>';
 					}
 				} else {
-					if (!defined('GSNOAPACHECHECK') || GSNOAPACHECHECK == false) {
+					if (!getDef('GSNOAPACHECHECK') || GSNOAPACHECHECK == false) {
 						echo '<tr><td>Apache web server</td><td><span class="ERRmsg" >'.$_SERVER['SERVER_SOFTWARE'].' - <b>'.i18n_r('ERROR').'</b></span></td></tr>';
 					}
 				}

@@ -69,7 +69,7 @@ if (! file_exists($init)) {
 /* create new folders */
 foreach($create_dirs as $dir){
 	if (!file_exists($dir)) {  	
-		if (defined('GSCHMOD')) { 
+		if (getDef('GSCHMOD')) {
 		 $chmod_value = GSCHMOD; 
 		} else {
 		 $chmod_value = 0755;

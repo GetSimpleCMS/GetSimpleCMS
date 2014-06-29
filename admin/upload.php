@@ -61,7 +61,7 @@ if (isset($_FILES['file'])) {
 			//validate file
 			if (validate_safe_file($_FILES["file"]["tmp_name"][$i], $_FILES["file"]["name"][$i],  $_FILES["file"]["type"][$i])) {
 				move_uploaded_file($_FILES["file"]["tmp_name"][$i], $file_loc);
-				if (defined('GSCHMOD')) {
+				if (getDef('GSCHMOD')) {
 					chmod($file_loc, GSCHMOD);
 				} else {
 					chmod($file_loc, 0644);
@@ -123,7 +123,7 @@ if (isset($_GET['newfolder'])) {
 	if (file_exists($path.$cleanname) || $cleanname=='') {
 			$error = i18n_r('ERROR_FOLDER_EXISTS');
 	} else {
-		if (defined('GSCHMOD')) { 
+		if (getDef('GSCHMOD')) {
 			$chmod_value = GSCHMOD; 
 		} else {
 			$chmod_value = 0755;

@@ -85,7 +85,7 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->
 	<?php
 		
-	if (!defined('GSNOHIGHLIGHT') || GSNOHIGHLIGHT!=true){
+	if (!getDef('GSNOHIGHLIGHT',true) || GSNOHIGHLIGHT!=true){
 		queue_script('gscodeeditor', GSBACK);
 	}
 
@@ -93,7 +93,7 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 		queue_script('gshtmleditor',GSBACK); 
 	}
 
-	if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!defined('GSNOUPLOADIFY')) ){
+	if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!getDef('GSNOUPLOADIFY',true)) ){
 		queue_script('gsuploader',GSBACK); 
 	}
 	

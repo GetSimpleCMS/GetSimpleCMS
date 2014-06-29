@@ -144,7 +144,7 @@ function sendmail($to,$subject,$message) {
 	
 	$message = email_template($message);
 
-	if (defined('GSFROMEMAIL')){
+	if (getDef('GSFROMEMAIL')){
 		$fromemail = GSFROMEMAIL; 
 	} else {
 		if(!empty($_SERVER['SERVER_ADMIN']) && check_email_address($_SERVER['SERVER_ADMIN'])) $fromemail = $_SERVER['SERVER_ADMIN'];
@@ -341,7 +341,7 @@ function XMLsave($xml, $file) {
 	$success = @$xml->asXML($file) === TRUE;
 	# debugLog('XMLsave: ' . $file . ' ' . get_execution_time());	
 	
-	if (defined('GSCHMOD')) {
+	if (getDef('GSCHMOD')) {
 		return $success && chmod($file, GSCHMOD);
 	} else {
 		return $success && chmod($file, 0755);
@@ -857,7 +857,7 @@ function strip_decode($text) {
  * @return string
  */
 function pathinfo_filename($file) {
-	if (defined('PATHINFO_FILENAME')) return pathinfo($file,PATHINFO_FILENAME);
+	if (getDef('PATHINFO_FILENAME')) return pathinfo($file,PATHINFO_FILENAME);
 	$path_parts = pathinfo($file);
 
 	if(isset($path_parts['extension']) && ($file!='..')){

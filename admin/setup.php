@@ -14,7 +14,7 @@ if(isset($_POST['lang']) && trim($_POST['lang']) != '') { $LANG = $_POST['lang']
 include('inc/common.php');
 
 # default variables
-if(defined('GSLOGINSALT')) { $logsalt = GSLOGINSALT;} else { $logsalt = null; }
+if(getDef('GSLOGINSALT')) { $logsalt = GSLOGINSALT;} else { $logsalt = null; }
 $kill = ''; // fatal error kill submission reshow form
 $status     = ''; 
 $err = null; // used for errors, show form alow resubmision

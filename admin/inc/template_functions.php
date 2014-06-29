@@ -621,7 +621,7 @@ function check_menu($text) {
  * @return string
  */
 function passhash($p) {
-	if(defined('GSLOGINSALT') && GSLOGINSALT != '') { 
+	if(getDef('GSLOGINSALT') && GSLOGINSALT != '') {
 		$logsalt = sha1(GSLOGINSALT);
 	} else { 
 		$logsalt = null; 
@@ -1321,7 +1321,7 @@ function generate_sitemap() {
 		exec_action('sitemap-aftersave');
 	}
 	
-	if (!defined('GSDONOTPING')) {
+	if (!getDef('GSDONOTPING',true)) {
 		if (file_exists(GSROOTPATH .'sitemap.xml')){
 			if( 200 === ($status=pingGoogleSitemaps($SITEURL.'sitemap.xml')))	{
 				#sitemap successfully created & pinged

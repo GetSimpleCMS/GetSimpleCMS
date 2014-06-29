@@ -410,7 +410,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 
             jQuery(document).ready(function() { 
 
-            <?php if (defined('GSAUTOSAVE') && (int)GSAUTOSAVE != 0) { /* IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP */ ?>   
+            <?php if (getDef('GSAUTOSAVE',true) && (int)GSAUTOSAVE != 0) { /* IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP */ ?>
 
                     $('#pagechangednotify').hide();
                     $('#autosavenotify').show();
