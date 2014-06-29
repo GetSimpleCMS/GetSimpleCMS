@@ -219,6 +219,10 @@ function path_is_safe($path,$pathmatch,$subdir = true){
 	return $realpath == $realpathmatch;
 }
 
+function subDir_is_safe($path,$dir){
+	return path_is_safe($path.$dir,$path);
+}
+
 /**
  * Check if server is Apache
  * 

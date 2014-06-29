@@ -22,8 +22,10 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 	check_for_csrf("activate");	
 		
 	# get passed value from form
-	$TEMPLATE = $_POST['template'];
-	
+	$newTemplate = var_in($_POST['template']);
+
+	if(!path_is_safe(GSTHEMESPATH.$newTemplate,GSTHEMESPATH)) die();
+
 	# backup old website.xml file
 	$bakpath = GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH); // backups/other/
 	createBak($file, $path, $bakpath);
@@ -35,12 +37,14 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 	$note = $xml->addChild('SITEURL');
 	$note->addCData($SITEURL);
 	$note = $xml->addChild('TEMPLATE');
-	$note->addCData($TEMPLATE);
+	$note->addCData($newTemplate);
 	$xml->addChild('PRETTYURLS', $PRETTYURLS);
 	$xml->addChild('PERMALINK', $PERMALINK);
 	XMLsave($xml, $path . $file);
 	
 	$success = i18n_r('THEME_CHANGED');
+
+	$TEMPLATE = $newTemplate; // set new global
 }
 
 # get available themes (only look for folders)

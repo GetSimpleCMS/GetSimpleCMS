@@ -14,7 +14,7 @@ CKEDITOR.editorConfig = function( config )
     config.tabSpaces                   = 10;    
 
 	config.dialog_backgroundCoverColor = '#000000';  // veil color for dialog popups
-    config.uiColor                     = '#DDDDDD';
+    config.uiColor                     = '#FFFFFF';
 	config.magicline_color             = '#CF3805'; 
     config.entities                    = false;    
 

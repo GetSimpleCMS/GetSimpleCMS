@@ -22,7 +22,7 @@ $theme_templates 	= '';
 # were changes submitted?
 if (isset($_GET['t'])) {
 	$_GET['t'] = strippath($_GET['t']);
-	if ($_GET['t']&&is_dir(GSTHEMESPATH . $_GET['t'].'/')) {
+	if ($_GET['t'] && is_dir(GSTHEMESPATH . $_GET['t'].'/')) {
 		$template = $_GET['t'];
 	}
 }

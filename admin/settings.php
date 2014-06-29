@@ -62,7 +62,7 @@ if(isset($_POST['submitted'])) {
 		$PERMALINK = var_in(trim($_POST['permalink']));
 	}	
 	if(isset($_POST['template'])) { 
-		$TEMPLATE = $_POST['template']; 
+		// $TEMPLATE = $_POST['template'];
 	}
 	if(isset($_POST['prettyurls'])) {
 	  $PRETTYURLS = $_POST['prettyurls'];
