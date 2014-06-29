@@ -1180,12 +1180,7 @@ function file_mime_type($file) {
  * @return bool
  */
 function is_frontend() {
-	GLOBAL $base;
-	if(isset($base)) {
-		return true;
-	} else {
-		return false;
-	}
+	return GSBASE;
 }
 
 /**
@@ -1550,6 +1545,23 @@ function getVerCheck(){
 		$verstatus = null;
 	}
 	return $verstatus;
+}
+
+/**
+ * includeTheme
+ *
+ * @param  str $template      template name
+ * @param  str $template_file template filename
+ */
+function includeTheme($template, $template_file = 'template.php'){
+	# include the functions.php page if it exists within the theme
+	if ( file_exists(GSTHEMESPATH .$template."/functions.php") ) {
+		include(GSTHEMESPATH .$template."/functions.php");
+	}
+
+	# include the template and template file set within theme.php and each page
+	if ( (!file_exists(GSTHEMESPATH .$template."/".$template_file)) || ($template_file == '') ) { $template_file = "template.php"; }
+	include(GSTHEMESPATH .$template."/".$template_file);
 }
 
 ?>

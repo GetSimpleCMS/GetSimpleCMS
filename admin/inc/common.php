@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Common Setup File
@@ -12,20 +13,8 @@
 define('IN_GS', TRUE); // GS enviroment flag
 
 // GS Debugger
-global $GS_debug; // GS debug trace array
+GLOBAL $GS_debug; // GS debug trace array
 if(!isset($GS_debug)) $GS_debug = array();	
-
-/**
- * Debug Console Log
- *
- * @since 3.1
- *
- * @param $txt string
- */
-function debugLog($txt = '') {
-	global $GS_debug;
-	array_push($GS_debug,$txt);
-}
 
 /**
  * Set PHP enviroment
@@ -35,73 +24,81 @@ if(function_exists('mb_internal_encoding')) mb_internal_encoding("UTF-8"); // se
 /**
  *  GSCONFIG definitions
  */
-$GS_definitions = array(
-	'GSHTTPPREFIX'    => '',
-	'GSSLUGNOTFOUND'  => '404',
-	'GSSLUGPRIVATE'   => '403',
-	'GSSTYLEWIDE'     => 'wide', // wide stylesheet
-	'GSSTYLE_SBFIXED' => 'sbfixed' // fixed sidebar
+
+$GS_constants = array(
+	'GSTARTTIME'      => microtime(),
+ 	'GSBASE'          => false,          // front end flag
+	'GSROOTPATH'      => dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR, // root path of getsimple
+	'GSCONFIGFILE'    => 'gsconfig.php', // config filename
+	'GSSTYLEWIDE'     => 'wide',         // wide stylesheet
+	'GSSTYLE_SBFIXED' => 'sbfixed'       // fixed sidebar
 );
 
-foreach($GS_definitions as $definition => $value){
-	if(!defined($definition)) define($definition,$value);
-}
+$GS_definitions = array(
+	'GSHTTPPREFIX'    => '',       // http slug prefix GSHTTPPREFIX.GSSLUGxx
+	'GSSLUGNOTFOUND'  => '404',    // http slug for not found
+	'GSSLUGPRIVATE'   => '403',    // http slug for private pages
+	'GSADMIN'         => 'admin',   // admin foldername
+	'GSERRORLOGFILE'  => 'errorlog.txt'
+);
+
+/* Define Constants */
+GS_defineFromArray($GS_constants);
 
 /**
  * Variable Globalization
  */
 global 
- $SITENAME,       // sitename setting
- $SITEURL,        // siteurl setting
- $TEMPLATE,       // current theme
- $TIMEZONE,       // current timezone either from config or user
- $LANG,           // settings language
- $SALT,           // salt holds gsconfig GSUSECUSTOMSALT or authentication.xml salt
- $i18n,
- $USR,            // logged in user
- $PERMALINK,      // permalink structure
- $GSADMIN,        // admin foldername
- $GS_debug,       // debug log array
- $components,     // components array
- $nocache,        // disable site wide cache
- $microtime_start,// used for benchmark timers
- $pagesArray,     // page cache array, used for all page fields aside from content
- $pageCacheXml    // page cache raw xml
+ $SITENAME,       // (str) sitename setting
+ $SITEURL,        // (str) siteurl setting
+ $TEMPLATE,       // (str) current theme
+ $TIMEZONE,       // (str) current timezone either from config or user
+ $LANG,           // (str) settings language
+ $SALT,           // (str) salt holds gsconfig GSUSECUSTOMSALT or authentication.xml salt
+ $i18n,           // (array) holds global i18n token array
+ $USR,            // (str) holds the GS_ADMIN_USERNAME cookie value
+ $PERMALINK,      // (str) permalink structure
+ $GSADMIN,        // (str) admin foldername
+ $GS_debug,       // (array) debug log entries are stored here
+ $components,     // (array) components array, array of objs from components.xml
+ $nocache,        // (bool) disable site wide cache true, not fully implemented
+ $microtime_start,// (microtime) used for benchmark timers
+ $pagesArray,     // (array) page cache array, used for all page fields aside from content
+ $pageCacheXml,    // (obj) page cache raw xml simpleXMLobj
+ $plugins_info,
+ $live_plugins,
+ $plugins,
+ $filters,
+ $GS_scripts,
+ $GS_styles
 ;
 
 if(isset($_GET['nocache'])){
-	// @todo: disables caching, this should probably only be allowed for auth users
+	// @todo: disables caching, this should probably only be allowed for auth users, it is also not well inplemented
 	$nocache = true;
 }
 
-/**
- * Init debug log array
- */
-$GS_debug = array();
-
 /*
- * Defines Root Path
+ * If backend Load config, else do front end stuff
  */
-define('GSROOTPATH', dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR);
+if(!GSBASE){
+	if (file_exists(GSROOTPATH . GSCONFIGFILE)){
+		require_once(GSROOTPATH . GSCONFIGFILE);
+	}
+}
+else {
+	$base = GSBASE; // LEGACY frontend flag DEPRECATED
 
-/*
- * Load config
- */
-if(!isset($base)){
-if (file_exists(GSROOTPATH . 'gsconfig.php')) {
-	require_once(GSROOTPATH . 'gsconfig.php');
+	// set loaders, if you want to override these do it your main common wrapper or index.php
+	if(!isset($load['plugin']))   $load['plugin'] = true;   // load plugin system
+	if(!isset($load['template'])) $load['template'] = true; // load template system
 }
 
 /*
- * Set custom GSADMINPATH path from config
+ * Apply default definitions
  */
-if (defined('GSADMIN')) {
-	# make sure trailing slashes are standardized from user input
-	$GSADMIN = rtrim(GSADMIN,'/\\');
-} else {
-	$GSADMIN = 'admin';
-}
-}
+GS_defineFromArray($GS_definitions);
+$GSADMIN       = rtrim(GSADMIN,'/\\'); // global GS admin root folder name
 
 /**
  * Define some constants
@@ -126,6 +123,8 @@ define('GSBACKUPSPATH'   , GSROOTPATH      . 'backups/');   // backups/
 define('GSBACKUSERSPATH' , GSBACKUPSPATH   . 'users/');     // backups/users
 define('GSTHEMESPATH'    , GSROOTPATH      . 'theme/');     // theme/
 
+$reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
+
 /**
  * Init debug mode
  * Enable php error logging	
@@ -140,8 +139,7 @@ if(defined('GSDEBUG') and (bool)GSDEBUG == true) {
 }
 
 ini_set('log_errors', 1);
-ini_set('error_log', GSDATAOTHERPATH .'logs/errorlog.txt');
-
+ini_set('error_log', GSDATAOTHERPATH .'logs/'. GSERRORLOGFILE);
 
 /**
  * Basic file inclusions
@@ -153,8 +151,6 @@ include('logging.class.php');
 
 require_once(GSADMININCPATH.'configuration.php');
 
-$reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
-
 /**
  * Bad stuff protection
  */
@@ -164,14 +160,6 @@ if (version_compare(PHP_VERSION, "5")  >= 0) {
 	foreach ($_GET as &$xss) $xss = antixss($xss);
 }
 
-/**
- * Variable check to prevent debugging going off
- * @todo some of these may not even be needed anymore
- */
-$admin_relative = (isset($admin_relative)) ? $admin_relative : '';
-$lang_relative = (isset($lang_relative)) ? $lang_relative : '';
-$load['login'] = (isset($load['login'])) ? $load['login'] : '';
-$load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
 
 /**
  * Headers
@@ -181,7 +169,7 @@ $load['plugin'] = (isset($load['plugin'])) ? $load['plugin'] : '';
 if(get_filename_id() != 'style' ) header('content-type: text/html; charset=utf-8');
 
 // no-cache headers
-if(!isset($base)){
+if(!is_frontend()){
 	$timestamp = gmdate("D, d M Y H:i:s") . " GMT";
 	header("Expires: " . $timestamp);
 	header("Last-Modified: " . $timestamp);
@@ -195,6 +183,7 @@ if(!isset($base)){
  */
  
 /** grab website data */
+
 $thisfilew = GSDATAOTHERPATH .'website.xml';
 if (file_exists($thisfilew)) {
 	$dataw      = getXML($thisfilew);
@@ -208,8 +197,8 @@ if (file_exists($thisfilew)) {
 	$SITEURL  = '';
 } 
 
-
 /** grab user data */
+
 if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 	$cookie_user_id = _id($_COOKIE['GS_ADMIN_USERNAME']);
 	if (file_exists(GSUSERSPATH . $cookie_user_id.'.xml')) {
@@ -309,18 +298,6 @@ if(isset($TIMEZONE) && function_exists('date_default_timezone_set') && ($TIMEZON
 	date_default_timezone_set($TIMEZONE);
 }
 
-
-function serviceUnavailable(){
-	GLOBAL $base;
-	if(isset($base)){
-		header('HTTP/1.1 503 Service Temporarily Unavailable');
-		header('Status: 503 Service Temporarily Unavailable');
-		header('Retry-After: 7200'); // in seconds
-		i18n('SERVICE_UNAVAILABLE');
-		die();
-	}
-}
-
 /**
  * Check to make sure site is already installed
  */
@@ -389,3 +366,43 @@ if(isset($load['plugin']) && $load['plugin']){
 	
 }
 if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login_functions.php'); }
+
+
+// do the template rendering
+if(GSBASE) include_once(GSADMINPATH.'base.php');
+
+// common methods
+ 
+/**
+ * Debug Console Log
+ * @since 3.1
+ * @param $txt string
+ */
+function debugLog($txt = '') {
+	global $GS_debug;
+	array_push($GS_debug,$txt);
+}
+
+/**
+ * Define from an array
+ * @param array assoc of keyed values [DEFINITIONNAME] => value
+ */
+function GS_defineFromArray($definitions){
+	foreach($definitions as $definition => $value){
+		if(!defined($definition)) define($definition,$value);
+	}
+}
+
+/**
+ * service is unavailable
+ * performs a service unavailable if front end
+ */
+function serviceUnavailable(){
+	if(is_frontend()){
+		header('HTTP/1.1 503 Service Temporarily Unavailable');
+		header('Status: 503 Service Temporarily Unavailable');
+		header('Retry-After: 7200'); // in seconds
+		i18n('SERVICE_UNAVAILABLE');
+		die();
+	}
+}

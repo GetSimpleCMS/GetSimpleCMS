@@ -46,14 +46,14 @@ if (isset($_FILES['file'])) {
 			
 			//set variables
 			$count    = '1';
-			$base     = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
-			$file_loc = $path . $base;
+			$file_base     = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+			$file_loc = $path . $file_base;
 			
 			//prevent overwriting						
 			if(!isset($_POST['fileoverwrite'])){
 				while ( file_exists($file_loc) ) {
-					$file_loc = $path . $count.'-'. $base;
-					$base     = $count.'-'. $base;
+					$file_loc = $path . $count.'-'. $file_base;
+					$file_base     = $count.'-'. $file_base;
 					$count++;
 				}
 			}
@@ -71,7 +71,7 @@ if (isset($_FILES['file'])) {
 				// generate thumbnail				
 				require_once('inc/imagemanipulation.php');	
 
-				genStdThumb($subFolder,$base);	
+				genStdThumb($subFolder,$file_base);
 
 				$messages[] = i18n_r('FILE_SUCCESS_MSG');
 				if(requestIsAjax()){
