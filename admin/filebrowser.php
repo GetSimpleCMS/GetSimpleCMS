@@ -24,19 +24,20 @@ $subPath         = (isset($_GET['path'])) ? $_GET['path'] : "";
 
 if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
 
-$returnid        = isset($_GET['returnid']) ? var_out($_GET['returnid']) : "";
+$returnid        = isset($_GET['returnid']) ? var_in($_GET['returnid']) : "";
 $func            = (isset($_GET['func'])) ? $_GET['func'] : "";
 $path            = tsl($path);
 // check if host uses Linux (used for displaying permissions
 $isUnixHost      = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
-$CKEditorFuncNum = isset($_GET['CKEditorFuncNum']) ? var_out($_GET['CKEditorFuncNum']) : '';
+$CKEditorFuncNum = isset($_GET['CKEditorFuncNum']) ? var_in($_GET['CKEditorFuncNum']) : '';
 $sitepath        = suggest_site_path();
 $fullPath        = $sitepath . $uploadsPathRel; // url path to image
-$type            = isset($_GET['type']) ? var_out($_GET['type']) : '';
+$type            = isset($_GET['type']) ? var_in($_GET['type']) : '';
 
 global $LANG;
 $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 ?>
+
 <!DOCTYPE html>
 <html lang="<?php echo $LANG_header; ?>">
 <head>

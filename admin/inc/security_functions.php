@@ -262,3 +262,8 @@ function var_out($var,$filter = "special"){
 		return htmlentities($var);
 	}
 }
+
+//alias var_out for inputs in case we ned to diverge in future
+function var_in($var,$filter = 'special'){
+	var_out($var,$filter);
+}

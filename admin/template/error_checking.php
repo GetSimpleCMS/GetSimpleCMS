@@ -20,14 +20,14 @@
 	}
 
 	if(!isset($update)) $update = '';
-	$err = '';
+	$err      = '';
 	$restored = '';
-	if(isset($_GET['upd'])) $update = ( function_exists( "filter_var") ) ? filter_var ( $_GET['upd'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['upd']);
-	if(isset($_GET['success'])) $success = ( function_exists( "filter_var") ) ? filter_var ( $_GET['success'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['success']);
-	if(isset($_GET['error'])) $error = ( function_exists( "filter_var") ) ? filter_var ( $_GET['error'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['error']);
-	if(isset($_GET['err'])) $err = ( function_exists( "filter_var") ) ? filter_var ( $_GET['err'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['err']);
-	if(isset($_GET['id'])) $errid = ( function_exists( "filter_var") ) ? filter_var ( $_GET['id'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['id']);
-	if(isset($_GET['updated']) && $_GET['updated'] ==1)	$success = i18n_r('SITE_UPDATED');
+	if(isset($_GET['upd'])) 	$update  = var_in(isset($_GET['upd']));
+	if(isset($_GET['success'])) $success = var_in(isset($_GET['success']));
+	if(isset($_GET['error'])) 	$error   = var_in(isset($_GET['error']));
+	if(isset($_GET['err'])) 	$err     = var_in(isset($_GET['err']));
+	if(isset($_GET['id'])) 		$errid   = var_in(isset($_GET['id']));
+	if(isset($_GET['updated']) && $_GET['updated'] == 1) $success = i18n_r('SITE_UPDATED');
 
 	switch ( $update ) {
 		case 'bak-success':

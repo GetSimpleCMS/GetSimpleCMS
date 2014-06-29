@@ -59,7 +59,7 @@ if(isset($_POST['submitted'])) {
 		$SITEURL = tsl($_POST['siteurl']); 
 	}
 	if(isset($_POST['permalink'])) { 
-		$PERMALINK = var_out(trim($_POST['permalink'])); 
+		$PERMALINK = var_in(trim($_POST['permalink']));
 	}	
 	if(isset($_POST['template'])) { 
 		$TEMPLATE = $_POST['template']; 
@@ -73,13 +73,13 @@ if(isset($_POST['submitted'])) {
 	/*
 	// email, timezone to replace gsconfig settings GSFROMEMAIL, GSTIMEZONE,  and global $lang on front end
 	if(isset($_POST['email'])) { 
-		$EMAIL = var_out($_POST['email'],'email'); 
+		$EMAIL = var_in($_POST['email'],'email');
 	} 
 	if(isset($_POST['timezone'])) { 
-		$TIMEZONE = var_out($_POST['timezone']); 
+		$TIMEZONE = var_in($_POST['timezone']);
 	}
 	if(isset($_POST['lang'])) { 
-		$LANG = var_out($_POST['lang']); 
+		$LANG = var_in($_POST['lang']);
 	}
 	*/
 

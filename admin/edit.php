@@ -18,10 +18,10 @@ login_cookie_check();
 // Variable settings
 
 // Get passed variables
-$id    = isset($_GET['id'])    ? var_out( $_GET['id']    ): null;
-$uri   = isset($_GET['uri'])   ? var_out( $_GET['uri']   ): null; 
-$ptype = isset($_GET['type'])  ? var_out( $_GET['type']  ): null;    
-$nonce = isset($_GET['nonce']) ? var_out( $_GET['nonce'] ): null;
+$id    = isset($_GET['id'])    ? var_in( $_GET['id']    ): null;
+$uri   = isset($_GET['uri'])   ? var_in( $_GET['uri']   ): null;
+$ptype = isset($_GET['type'])  ? var_in( $_GET['type']  ): null;
+$nonce = isset($_GET['nonce']) ? var_in( $_GET['nonce'] ): null;
 $path  = GSDATAPAGESPATH;
 $bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/                    
 
@@ -73,20 +73,20 @@ if ($id){
     $metarNoArchive = $data_edit->metarNoArchive;
 } else {
     // prefill fields is provided
-    $title          =  isset( $_GET['title']      ) ? var_out( $_GET['title']      ) : '';
-    $template       =  isset( $_GET['template']   ) ? var_out( $_GET['template']   ) : '';
-    $parent         =  isset( $_GET['parent']     ) ? var_out( $_GET['parent']     ) : '';
-    $menu           =  isset( $_GET['menu']       ) ? var_out( $_GET['menu']       ) : '';
-    $private        =  isset( $_GET['private']    ) ? var_out( $_GET['private']    ) : '';
-    $menuStatus     =  isset( $_GET['menuStatus'] ) ? var_out( $_GET['menuStatus'] ) : '';
-    $menuOrder      =  isset( $_GET['menuOrder']  ) ? var_out( $_GET['menuOrder']  ) : '';
+    $title          =  isset( $_GET['title']      ) ? var_in( $_GET['title']      ) : '';
+    $template       =  isset( $_GET['template']   ) ? var_in( $_GET['template']   ) : '';
+    $parent         =  isset( $_GET['parent']     ) ? var_in( $_GET['parent']     ) : '';
+    $menu           =  isset( $_GET['menu']       ) ? var_in( $_GET['menu']       ) : '';
+    $private        =  isset( $_GET['private']    ) ? var_in( $_GET['private']    ) : '';
+    $menuStatus     =  isset( $_GET['menuStatus'] ) ? var_in( $_GET['menuStatus'] ) : '';
+    $menuOrder      =  isset( $_GET['menuOrder']  ) ? var_in( $_GET['menuOrder']  ) : '';
     
-    $titlelong      =  isset( $_GET['titlelong']  ) ? var_out( $_GET['titlelong']  ) : '';
-    $summary        =  isset( $_GET['summary']    ) ? var_out( $_GET['summary']    ) : '';
+    $titlelong      =  isset( $_GET['titlelong']  ) ? var_in( $_GET['titlelong']  ) : '';
+    $summary        =  isset( $_GET['summary']    ) ? var_in( $_GET['summary']    ) : '';
     
-    $metarNoIndex   =  isset( $_GET['metarNoIndex'] )   ? var_out( $_GET['metarNoIndex'] ) : '';
-    $metarNoFollow  =  isset( $_GET['metarNoFollow'] )  ? var_out( $_GET['metarNoFollow'] ) : '';
-    $metarNoArchive =  isset( $_GET['metarNoArchive'] ) ? var_out( $_GET['metarNoArchive'] ) : '';
+    $metarNoIndex   =  isset( $_GET['metarNoIndex'] )   ? var_in( $_GET['metarNoIndex'] ) : '';
+    $metarNoFollow  =  isset( $_GET['metarNoFollow'] )  ? var_in( $_GET['metarNoFollow'] ) : '';
+    $metarNoArchive =  isset( $_GET['metarNoArchive'] ) ? var_in( $_GET['metarNoArchive'] ) : '';
 
     $buttonname = i18n_r('BTN_SAVEPAGE');
 }

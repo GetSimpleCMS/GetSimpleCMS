@@ -105,23 +105,12 @@ if(isset($_POST['submitted'])) {
 		// @todo use custom nonce or hash checking to make sure username was not modified
 	}
 
- 	if(isset($_POST['name'])) { 
-		$NAME = var_out($_POST['name']); 
-	} 
-	if(isset($_POST['email'])) { 
-		$EMAIL = var_out($_POST['email'],'email'); 
-	} 
-	if(isset($_POST['timezone'])) { 
-		$TIMEZONE = var_out($_POST['timezone']); 
-	}
-	if(isset($_POST['lang'])) { 
-		$LANG = var_out($_POST['lang']); 
-	}
-	if(isset($_POST['show_htmleditor'])) {
-	  $HTMLEDITOR = var_out($_POST['show_htmleditor']); 
-	} else {
-		$HTMLEDITOR = '';
-	}
+ 	if(isset($_POST['name']))				$NAME       = var_in($_POST['name']);
+ 	if(isset($_POST['email']))  			$EMAIL      = var_in($_POST['email'],'email');
+ 	if(isset($_POST['timezone']))  			$TIMEZONE   = var_in($_POST['timezone']);
+ 	if(isset($_POST['lang']))  				$LANG       = var_in($_POST['lang']);
+ 	if(isset($_POST['show_htmleditor']))	$HTMLEDITOR = var_in($_POST['show_htmleditor']);
+ 	else $HTMLEDITOR = '';
 		
 	# check to see if passwords are changing
 	if(isset($_POST['sitepwd'])) { $pwd1 = $_POST['sitepwd']; }
