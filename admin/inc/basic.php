@@ -718,12 +718,12 @@ function i18n_merge($plugin, $language=null) {
  * @param string $globali18n
  * @return bool
  */
-function i18n_merge_impl($plugin, $lang, &$globali18n) { 
+function i18n_merge_impl($plugin = '', $lang, &$globali18n) {
 
 	$i18n = array(); // local from file
 	if(!isset($globali18n)) $globali18n = array(); //global ref to $i18n
 
-	$path     = ($plugin ? GSPLUGINPATH.$plugin.'/lang/' : GSLANGPATH);
+	$path     = (isset($plugin) && $plugin !=='' ? GSPLUGINPATH.$plugin.'/lang/' : GSLANGPATH);
 	$filename = $path.$lang.'.php';
 	$prefix   = $plugin ? $plugin.'/' : '';
 
@@ -1462,6 +1462,7 @@ function notInInstall(){
 
 /**
  * Returns a path relative to GSROOTPATH or optional root path
+ * @todo  probably not fully windows drive safe
  * @since 3.4
  * @param  string $path full file path
  * @param  string $root optional root path, defaults to GSROOTPATH

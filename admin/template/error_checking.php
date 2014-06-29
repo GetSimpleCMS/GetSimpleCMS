@@ -22,11 +22,11 @@
 	if(!isset($update)) $update = '';
 	$err      = '';
 	$restored = '';
-	if(isset($_GET['upd'])) 	$update  = var_in(isset($_GET['upd']));
-	if(isset($_GET['success'])) $success = var_in(isset($_GET['success']));
-	if(isset($_GET['error'])) 	$error   = var_in(isset($_GET['error']));
-	if(isset($_GET['err'])) 	$err     = var_in(isset($_GET['err']));
-	if(isset($_GET['id'])) 		$errid   = var_in(isset($_GET['id']));
+	if(isset($_GET['upd'])) 	$update  = var_in($_GET['upd']);
+	if(isset($_GET['success'])) $success = var_in($_GET['success']);
+	if(isset($_GET['error'])) 	$error   = var_in($_GET['error']);
+	if(isset($_GET['err'])) 	$err     = var_in($_GET['err']);
+	if(isset($_GET['id'])) 		$errid   = var_in($_GET['id']);
 	if(isset($_GET['updated']) && $_GET['updated'] == 1) $success = i18n_r('SITE_UPDATED');
 
 	switch ( $update ) {
