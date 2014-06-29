@@ -265,5 +265,5 @@ function var_out($var,$filter = "special"){
 
 //alias var_out for inputs in case we ned to diverge in future
 function var_in($var,$filter = 'special'){
-	var_out($var,$filter);
+	return var_out($var,$filter);
 }
