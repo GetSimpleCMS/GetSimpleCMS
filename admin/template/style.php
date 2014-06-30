@@ -55,7 +55,7 @@ if (file_exists(GSTHEMESPATH.'admin.xml')) {
 	$label_6     = trim($theme->label->label_6); // label_light
 }
 
-	# set default colors
+# set default colors
 if(!isset($primary_0)   || !is_object($primary_0))   $primary_0   = '#0E1316'; # darkest
 if(!isset($primary_1)   || !is_object($primary_1))   $primary_1   = '#182227';
 if(!isset($primary_2)   || !is_object($primary_2))   $primary_2   = '#283840';
@@ -72,10 +72,24 @@ if(!isset($label_3)     || !is_object($label_3))     $label_3     = '#FF8500'; /
 if(!isset($label_4)     || !is_object($label_4))     $label_4     = '#CC0000'; // label_error
 if(!isset($label_5)     || !is_object($label_5))     $label_5     = '#FFFFFF'; // label_light
 if(!isset($label_6)     || !is_object($label_6))     $label_6     = '#999999'; // label_medium
-  
+
+
 include('css.php');
 
-if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ) include('css-wide.php');
+if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ){
+	$width      = getDef('GSWIDTH');
+	$width_wide = getDef('GSWIDTHWIDE');
+	$widepages  = explode(',',getDef('GSWIDEPAGES'));
+	$widepagecss = '';
+
+	if($width =='0' or $width == '') $width = 'none';
+
+	foreach($widepages as $pageid){
+		$widepagecss.= "#$pageid .wrapper {max-width: $width_wide;}\n";
+	}
+	
+	include('css-wide.php');
+}	
 
 file_put_contents($cachefile, compress(ob_get_contents()));
 chmod($cachefile, 0644);

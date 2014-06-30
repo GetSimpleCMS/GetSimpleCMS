@@ -100,7 +100,7 @@ define('SUPPRESSERRORS',true);
 # eg. 
 # define('GSSTYLE',GSSTYLE_SBFIXED);
 # define('GSSTYLE',GSSTYLEWIDE);
-#define('GSSTYLE',implode(',',array(GSSTYLEWIDE,GSSTYLE_SBFIXED)));
+# define('GSSTYLE',implode(',',array(GSSTYLEWIDE,GSSTYLE_SBFIXED)));
 
 # Disable Sitemap generation and menu items
 # define('GSNOSITEMAP',true);
@@ -114,5 +114,9 @@ define('SUPPRESSERRORS',true);
 
 # Disable resetpassword , set false, default is true
 # define('GSALLOWRESETPASSWORD',false);
+
+define('GSWIDTH','1024px'); // css value px,%  0 or '' will be treated as 100%
+define('GSWIDTHWIDE','1336px');
+define('GSWIDEPAGES','components,theme-edit');
 
 ?>

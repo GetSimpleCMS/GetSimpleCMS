@@ -35,11 +35,15 @@ $GS_constants = array(
 );
 
 $GS_definitions = array(
-	'GSHTTPPREFIX'    => '',       // http slug prefix GSHTTPPREFIX.GSSLUGxx
-	'GSSLUGNOTFOUND'  => '404',    // http slug for not found
-	'GSSLUGPRIVATE'   => '403',    // http slug for private pages
-	'GSADMIN'         => 'admin',   // admin foldername
-	'GSERRORLOGFILE'  => 'errorlog.txt'
+	'GSHTTPPREFIX'    => '',             // http slug prefix GSHTTPPREFIX.GSSLUGxx
+	'GSSLUGNOTFOUND'  => '404',          // http slug for not found
+	'GSSLUGPRIVATE'   => '403',          // http slug for private pages
+	'GSADMIN'         => 'admin',        // admin foldername
+	'GSERRORLOGFILE'  => 'errorlog.txt', // error log filename
+	'GSSTYLE'         => 'wide,sbfixed',  // default style modifiers
+	'GSWIDTH'         => '1024px',
+	'GSWIDTHWIDE'     => '1366px',
+	'GSWIDEPAGES'     => 'theme-edit,components'
 );
 
 /* Define Constants */
