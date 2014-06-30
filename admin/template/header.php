@@ -34,15 +34,7 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/css/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
 <?php	
 
-	if(isset($_COOKIE['gs_editor_theme'])){
-		$editor_theme = $_COOKIE['gs_editor_theme'];
-
-		echo '<script>
-			var editorTheme = "'.$editor_theme.'";
-		</script>';
-
-	}
-
+	// setup some stuf here for now
 	$cm_themes = array(
 		'3024-day',
 		'3024-night',
@@ -74,12 +66,25 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 		'xq-light'
 	);
 
-	// build theme seldctor
+	// build theme selector
 	$themeselector = '<select id="cm_themeselect">\n<option>default</option>';
 	foreach($cm_themes as $theme){
 		$themeselector .= "<option>$theme</option>";
 	}
 	$themeselector .= '</select>';
+
+	// js i18n tokens
+	$jsi18nkeys = array(
+		'PLUGIN_UPDATED',
+		'ERROR',
+		'EXPAND_TOP',
+		'COLLAPSE_TOP',
+		'FILE_EXISTS_PROMPT',
+		'CANCELLED'
+	);
+	
+	// i18n for JS
+	$jsi18n = array_combine($jsi18nkeys,array_map('i18n_r',$jsi18nkeys));
 
 	?>
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->
@@ -107,24 +112,20 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	# Plugin hook to allow insertion of stuff into the header
 	if(!isAuthPage()) exec_action('header'); 
 	
-	$jsi18nkeys = array(
-		'PLUGIN_UPDATED',
-		'ERROR',
-		'EXPAND_TOP',
-		'COLLAPSE_TOP',
-		'FILE_EXISTS_PROMPT',
-		'CANCELLED'
-	);
-	
-	$jsi18n = array_combine($jsi18nkeys,array_map('i18n_r',$jsi18nkeys));
-
 	?>
 	
-	<script type="text/javascript">		
+	<script type="text/javascript">
 		// init gs namespace and i18n
 		var GS = {};
 		GS.i18n = <?php echo json_encode($jsi18n); ?>;
 		GS.debug = <?php echo isDebug() === true ? 'true' : 'false'; ?> ;
+
+		<?php
+			if(isset($_COOKIE['gs_editor_theme'])){
+				$editor_theme = var_out($_COOKIE['gs_editor_theme']);
+				echo 'var editorTheme = "'.$editor_theme.'";'	
+			}
+		?>
 	</script>
 
 <noscript>
