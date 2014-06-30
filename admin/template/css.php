@@ -999,7 +999,6 @@ textarea#codetext {
 	overflow: scroll;
 	overflow-y: scroll;
 	overflow-x: scroll;
-
 }
 
 #menu-items span {
@@ -1409,6 +1408,19 @@ table.comptable label {
  * .error and .upddated are still supported for legacy alerts
  *
  */
+
+.fullscreen .notify{
+	position: absolute;
+	width: 100%;
+	margin: 0;
+	left: 0;
+	opacity: 1;
+	top: 0;
+	background: rgba(0, 0, 0, 0.8);
+	z-index: 9999;
+	font-weight: bold;
+	border: none;
+}
 
 .updated, .error, .notify {
 	border: 1px solid #E6DB55;
@@ -2392,9 +2404,10 @@ a.disabled:visited {
 	width:950px;
 }
 
+/* core theme override for theme editor */
 #theme-edit .wrapper{
-	width: 100%;
-	max-width:1680px;
+	/*width: 100%;*/
+	/*max-width:1680px;*/
 }
 
 #theme-edit #footer{
@@ -2685,8 +2698,8 @@ a.disabled:visited {
 }
 
 .codewrap {
-	font-size: 13px;
-	line-height: 13px;
+	/*font-size: 13px;*/
+	/*line-height: 13px;*/
 }
 
 .codewrap textarea, #tabs .codewrap textarea{
@@ -2708,7 +2721,7 @@ a.disabled:visited {
 	border: 3px solid rgba(128,128, 128, .15);
     background-clip: padding-box !important; /* for IE9+, Firefox 4+, Opera, Chrome */
     -webkit-background-clip: padding-box !important; /* for Safari */
-    z-index: 1001;
+    /*z-index: 1001;*/
     padding-bottom: 10px; /* padding for hscroll not obfuscate last line */
 }
 
@@ -2736,9 +2749,13 @@ a.disabled:visited {
 	position: fixed !important;
 	top: 0; left: 0;
 	width: 100% !important;
-	z-index: 9999 !important;
+	z-index: 1001 !important;
 	background-color:#FFF;
   	max-height: none !important;
+}
+
+.CodeMirror-hints{
+	z-index: 1002 !important;
 }
 
 .CodeMirror-fullscreen .CodeMirror-scroll, .CodeMirror.ui-resizable-resizing, .CodeMirror.ui-resizable-resizing .CodeMirror-scroll{
@@ -2782,7 +2799,7 @@ a.disabled:visited {
 	text-align: center;
 	text-decoration:none;
 	box-shadow : none;
-	z-index: 9998;
+	z-index: 10;
 	font-weight: normal;
 	opacity:.2;
 		-webkit-transition: opacity 300ms;
