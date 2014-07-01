@@ -336,4 +336,4 @@ function pageXMLtoArray($xml){
 	$pagesArray[$key]['filename']=$key.'.xml'; // legacy
 }
 
-?>
+/* ?> */

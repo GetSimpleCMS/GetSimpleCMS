@@ -655,4 +655,4 @@ function return_site_ver() {
 	return get_site_version(FALSE);
 }	
 
-?>
+/* ?> */

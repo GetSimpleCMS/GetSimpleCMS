@@ -177,4 +177,5 @@ class API_Request {
 	}
 	
 } // end of class
-?>
+
+/* ?> */

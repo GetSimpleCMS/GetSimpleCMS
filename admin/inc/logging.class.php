@@ -142,4 +142,4 @@ class GS_Logging_Class {
   
 } // end of class                   
 
-?>
+/* ?> */

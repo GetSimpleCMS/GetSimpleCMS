@@ -1491,4 +1491,4 @@ function getHttpResponsePage($code){
 	}	
 }
 
-?>
+/* ?> */

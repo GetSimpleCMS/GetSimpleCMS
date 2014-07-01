@@ -410,3 +410,5 @@ function serviceUnavailable(){
 		die();
 	}
 }
+
+/* ?> */

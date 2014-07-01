@@ -24,4 +24,4 @@ if(isset($_REQUEST['list_pages_json'])) {
 	die();
 }
 
-?>
+/* ?> */

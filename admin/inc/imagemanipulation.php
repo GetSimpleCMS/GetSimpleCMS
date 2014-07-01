@@ -310,3 +310,5 @@ class ImageManipulation {
 		header("Content-Type: text/html");
 	}
 }
+
+/* ?> */

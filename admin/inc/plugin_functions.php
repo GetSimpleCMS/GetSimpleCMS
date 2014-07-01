@@ -893,4 +893,4 @@ function getStyles($facing = GSBACK){
 	}
 }
 
-?>
+/* ?> */

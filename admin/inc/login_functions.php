@@ -81,4 +81,5 @@ if(isset($_POST['submitted'])) {
 	} # end error check
 	
 } # end submission check
-?>
+
+/* ?> */

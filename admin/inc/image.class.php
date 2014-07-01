@@ -209,4 +209,4 @@ class Zubrag_image {
 
 }
 
-?>
+/* ?> */

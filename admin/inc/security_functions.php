@@ -271,3 +271,5 @@ function var_out($var,$filter = "special"){
 function var_in($var,$filter = 'special'){
 	return var_out($var,$filter);
 }
+
+/* ?> */

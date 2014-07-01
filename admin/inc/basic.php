@@ -1572,4 +1572,4 @@ function includeTheme($template, $template_file = 'template.php'){
 	include(GSTHEMESPATH .$template."/".$template_file);
 }
 
-?>
+/* ?> */
