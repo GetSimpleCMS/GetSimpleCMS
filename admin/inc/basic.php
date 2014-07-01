@@ -247,16 +247,23 @@ function isFile($file, $path, $type = 'xml') {
  * @since 1.0
  *
  * @param string $path
+ * @param string $ext optional file extensions to filter
  * @return array
  */
-function getFiles($path) {
+function getFiles($path,$ext = null) {
 	$handle   = opendir($path) or die("getFiles: Unable to open $path");
 	$file_arr = array();
 
 	while ($file = readdir($handle)) {
-		if ($file != '.' && $file != '..') {
-			$file_arr[] = $file;
+		if(isset($ext)){
+			$fileext = lowercase(pathinfo($file, PATHINFO_EXTENSION));
+			if ($fileext == $ext) $file_arr[] = $file;
 		}
+		else {
+			if ($file != '.' && $file != '..') {
+				$file_arr[] = $file;
+			}
+		}	
 	}
 
 	closedir($handle);
