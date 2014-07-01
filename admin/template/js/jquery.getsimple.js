@@ -428,6 +428,7 @@ jQuery(document).ready(function () {
 						type: "GET",
 						url: dlink,
 						success: function (response) {
+							response = $.parseHTML(response);
 							mytr.remove();
 							if ($("#pg_counter").length) {
 								counter = $("#pg_counter").html();
@@ -819,9 +820,9 @@ jQuery(document).ready(function () {
 			url: 'theme-edit.php',
 			data: dataString+'&submitsave=1&ajaxsave=1',
 			success: function( response ) {
+				response = $.parseHTML(response); // jquery 1.9 html parsing fix
 				$('div.wrapper .updated').remove();
 				$('div.wrapper .error').remove();
-				// response = $(response).parseHTML();
 				if ($(response).find('div.error').html()) {
 					notifyError($(response).find('div.error').html()).popit().removeit();
 				}
@@ -838,8 +839,15 @@ jQuery(document).ready(function () {
 		});
 	};
 
+	// ajaxify components submit
+	$('#compEditForm').on('submit',function(e){
+		e.preventDefault();
+		componentSave(e);
+	});
+	
 
-	$('#compEditForm').submit(function(e) {
+	componentSave = function(e){
+
 		Debugger.log("onsubmit");
 		e.preventDefault();
 
@@ -858,6 +866,7 @@ jQuery(document).ready(function () {
 			url: 'components.php',
 			data: dataString+'&submitted=1&ajaxsave=1',
 			success: function( response ) {
+				response = $.parseHTML(response);
 				$('div.wrapper .updated').remove();
 				$('div.wrapper .error').remove();
 				if ($(response).find('div.error').html()) {
@@ -874,39 +883,7 @@ jQuery(document).ready(function () {
 				// $('#codetext').data('editor').hasChange = false; // mark clean		
 			}
 		});
-	});
-
-	componentSave = function(cm){
-		
-		loadingAjaxIndicator.show();
-
-		cm.save(); // copy cm back to textarea
-
-		var dataString = $("#themeEditForm").serialize();
-
-		$.ajax({
-			type: "POST",
-			cache: false,
-			url: 'theme-edit.php',
-			data: dataString+'&submitsave=1&ajaxsave=1',
-			success: function( response ) {
-				$('div.wrapper .updated').remove();
-				$('div.wrapper .error').remove();
-				if ($(response).find('div.error').html()) {
-					notifyError($(response).find('div.error').html()).popit().removeit();
-				}
-				else if ($(response).find('div.updated').html()) {
-					notifyOk($(response).find('div.updated').html()).popit().removeit();
-				}	
-				else {
-					notifyError("<p>ERROR</p>").popit().removeit();					
-				}
-
-				loadingAjaxIndicator.fadeOut();
-				$('#codetext').data('editor').hasChange = false; // mark clean		
-			}
-		});
-	};
+	}
 
 	function getExtension(file){
 		var extension = file.substr( (file.lastIndexOf('.') +1) );
