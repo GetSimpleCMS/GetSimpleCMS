@@ -106,12 +106,6 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 		queue_script('gscrop',GSBACK);
 		queue_style('gscrop',GSBACK);
 	}
-
-	get_scripts_backend(); 
-
-	# Plugin hook to allow insertion of stuff into the header
-	if(!isAuthPage()) exec_action('header'); 
-	
 	?>
 	
 	<script type="text/javascript">
@@ -122,11 +116,20 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 
 		<?php
 			if(isset($_COOKIE['gs_editor_theme'])){
+				// $editor_theme = var_out($_COOKIE['gs_editor_theme']);
 				$editor_theme = var_out($_COOKIE['gs_editor_theme']);
-				echo 'var editorTheme = "'.$editor_theme.'";';	
+				echo 'editorTheme = "'.$editor_theme.'";';	
 			}
 		?>
 	</script>
+	<?php
+	
+	get_scripts_backend(); 
+
+	# Plugin hook to allow insertion of stuff into the header
+	if(!isAuthPage()) exec_action('header'); 
+	
+	?>
 
 <noscript>
 	<style>
