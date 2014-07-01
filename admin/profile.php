@@ -63,6 +63,7 @@ if(!empty($userid)){
 	$data  = getXML(GSUSERSPATH . $file);
 	$EMAIL = $data->EMAIL;
 	$NAME  = $data->NAME;
+	$password = $data->PWD;
 }
 else {
 	// defaults for new user
@@ -91,20 +92,21 @@ if(isset($_POST['submitted'])) {
 
 	check_for_csrf("save_profile");	
 		   
-	# user-specific fields
+	// if adding a new user
 	if(isset($_POST['add']) && $_POST['add'] == 1 && $allowadd && isset($_POST['user'])) {
 		$adding = true;
 		$userid = strtolower($_POST['user']);
-		$file = _id($userid) .'.xml';
+		$file   = _id($userid) .'.xml';
+		if(path_is_safe(GSUSERSPATH . $file,GSUSERSPATH)) die(i18n('invalid username'));
 		if(!path_is_safe(dirname(GSUSERSPATH . $file),GSUSERSPATH,true)) die(i18n('invalid username'));
 	}
-	else if(isset($_POST['user']) && $allowedit === true){
+	else if(isset($_POST['user']) && $allowedit){
 		$userid = strtolower($_POST['user']);
-		$file = _id($userid) .'.xml';
+		$file   = _id($userid) .'.xml';
 		if(!path_is_safe(dirname(GSUSERSPATH . $file),GSUSERSPATH,true)) die(i18n('invalid username'));
-		// @todo use custom nonce or hash checking to make sure username was not modified
+		// @todo use custom nonce or hash checking to make sure username was not changed
 	}
-
+	// @todo $these are global pollution
  	if(isset($_POST['name']))				$NAME       = var_in($_POST['name']);
  	if(isset($_POST['email']))  			$EMAIL      = var_in($_POST['email'],'email');
  	if(isset($_POST['timezone']))  			$TIMEZONE   = var_in($_POST['timezone']);
@@ -115,15 +117,14 @@ if(isset($_POST['submitted'])) {
 	# check to see if passwords are changing
 	if(isset($_POST['sitepwd'])) { $pwd1 = $_POST['sitepwd']; }
 	if(isset($_POST['sitepwd_confirm'])) { $pwd2 = $_POST['sitepwd_confirm']; }
-	_debugLog($pwd1);
 	if ($pwd1 != $pwd2 || ($adding === true && (empty($pwd1) || $pwd1 !== $pwd2) ) )	{
 		#passwords do not match 
 		$error = i18n_r('PASSWORD_NO_MATCH');
 	} else {
 		# password cannot be null
-		if ( $pwd1 != '' ) { 
-			$PASSWD = passhash($pwd1); 
-		}	
+		if ( $pwd1 != '' ) {
+			$password = passhash($pwd1);
+		}
 		
 		// check valid lang files
 		if(!in_array($LANG.'.php', $lang_array) and !in_array($LANG.'.PHP', $lang_array)) die(); 
@@ -134,7 +135,7 @@ if(isset($_POST['submitted'])) {
 		$xml = new SimpleXMLElement('<item></item>');
 		$xml->addChild('USR', $userid);
 		$xml->addChild('NAME', $NAME);
-		$xml->addChild('PWD', $PASSWD);
+		$xml->addChild('PWD', $password);
 		$xml->addChild('EMAIL', $EMAIL);
 		$xml->addChild('HTMLEDITOR', $HTMLEDITOR);
 		$xml->addChild('TIMEZONE', $TIMEZONE);
@@ -147,12 +148,14 @@ if(isset($_POST['submitted'])) {
 		}
 
 		# see new language file immediately
-		include(GSLANGPATH.$LANG.'.php');
+		include(GSLANGPATH.$LANG.'.php'); // @todo: is this necessary, it could cause half of stuff to be one language and the rest another
 		
 		if (!$error) {
 			$success = sprintf(i18n_r('ER_YOUR_CHANGES'), $userid).'. <a href="profile.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>';
 		}
-		
+
+		if($adding) exec_action('user-added');
+		else exec_action('user-edited');
 	}
 }
 
