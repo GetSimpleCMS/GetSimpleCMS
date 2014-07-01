@@ -123,7 +123,7 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 		<?php
 			if(isset($_COOKIE['gs_editor_theme'])){
 				$editor_theme = var_out($_COOKIE['gs_editor_theme']);
-				echo 'var editorTheme = "'.$editor_theme.'";'	
+				echo 'var editorTheme = "'.$editor_theme.'";';	
 			}
 		?>
 	</script>
