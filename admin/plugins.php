@@ -44,7 +44,7 @@ foreach ($pluginfiles as $fi) {
 	// @todo disabled plugins have a version of (str) 'disabled', should be 0 or null
 	$pluginver  = $plugininfo['version'] == 'disabled' ? 0 : $plugininfo['version'];
 
-	if ($live_plugins[$fi]=='true') {
+	if ($live_plugins[$fi] == 'true' || $live_plugins[$fi] === true) {
 		$cls_Enabled  = 'hidden';
 		$cls_Disabled = '';
 		$trclass      ='enabled';
@@ -64,10 +64,12 @@ foreach ($pluginfiles as $fi) {
 		$apipath    = $api_data->path;
 		$apiname    = $api_data->name;
 
+		// show update available link
 		if ($pluginver >0 && version_compare($apiver,$pluginver,'>')) {				
 			$updatelink  = '<br /><a class="updatelink" href="'.$apipath.'" target="_blank">'.i18n_r('UPDATE_AVAILABLE').' '.$apiver.'</a>';
 			$needsupdate = true;
 		}
+
 		$plugin_title = '<a href="'.$apipath.'" target="_blank">'.$apiname.'</a>';
 	} else {
 		// api fail , does not exist in extend
