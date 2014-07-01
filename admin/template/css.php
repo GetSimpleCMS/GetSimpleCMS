@@ -135,7 +135,7 @@ html {
 .header {
 	color: #FFF;
 	border-top: 1px solid <?php echo $primary_1; ?>;
-	background: <?php echo $primary_3; ?>;	/* old browsers */
+	background: <?php echo $header_base; ?>;	/* old browsers */
 	margin: 0 0 25px 0;
 }
 
