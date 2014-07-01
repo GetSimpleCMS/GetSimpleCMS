@@ -136,10 +136,13 @@ html {
 	color: #FFF;
 	border-top: 1px solid <?php echo $primary_1; ?>;
 	background: <?php echo $primary_3; ?>;	/* old browsers */
-		background: -moz-linear-gradient(top, <?php echo $primary_4; ?> 0%, <?php echo $primary_2; ?> 100%);	/* firefox */
+	margin: 0 0 25px 0;
+}
+
+.header.gradient{
+		background: -moz-linear-gradient(top, <?php echo $primary_4; ?> 0%, <?php echo $primary_2; ?> 100%);	 /* firefox */
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,<?php echo $primary_4; ?>), color-stop(100%,<?php echo $primary_2; ?>));	/* webkit */
 		filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='<?php echo $primary_4; ?>', endColorstr='<?php echo $primary_2; ?>',GradientType=0 );	/* ie */
-	margin: 0 0 25px 0;
 }
 
 .header .wrapper {
@@ -278,8 +281,8 @@ html {
 	        background-clip: padding-box;
        -moz-background-clip: padding;
     -webkit-background-clip: padding;
-    
-            box-sizing: border-box;    
+
+            box-sizing: border-box;
        -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
@@ -295,9 +298,9 @@ html {
 	background-color: rgba(0, 0, 0, 0.3) !important;
 }
 
-/* 
+/*
  * DEPRECATED
- * rightnav status badges  
+ * rightnav status badges
  * .warning
  * .info
 */
@@ -774,7 +777,7 @@ h5:hover img {
 	border-top: 1px solid #eee;
 	vertical-align: top;
 	/*line-height: 20px !important;*/
-	color: #777; 	
+	color: #777;
 }
 
 .wrapper table td {
@@ -1579,7 +1582,7 @@ a.updatelink:hover {
 }
 
 a.cancel {
-	display: inline-block;	
+	display: inline-block;
 	color: #D94136;
 	text-decoration: underline;
 	padding: 1px 3px;
@@ -1606,7 +1609,7 @@ a.cancel em {
 	   -moz-transition-property: background-color, color, text-shadow;
 	     -o-transition-property: background-color, color, text-shadow;
 	        transition-property: background-color, color, text-shadow;
-	
+
 	border-radius:3px;
 }
 
@@ -2703,7 +2706,7 @@ a.disabled:visited {
 }
 
 .codewrap textarea, #tabs .codewrap textarea{
-	font-family: "Consolas", "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", "Monaco", "Courier New", "Courier", "monospace";	
+	font-family: "Consolas", "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", "Monaco", "Courier New", "Courier", "monospace";
 	font-size: 12px;
 }
 
@@ -2714,7 +2717,7 @@ a.disabled:visited {
 .codewrap .CodeMirror {
 	font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;
 	height: auto; /* autosizing max height @todo: breaks gutter height and overrides above */
-	max-height: 550px; 
+	max-height: 550px;
 	line-height:1.2em;
 	background-color:#FEFEFE;
 	/*padding-bottom:20px;*/

@@ -2,7 +2,7 @@
 <?php
 /**
  * Common Setup File
- * 
+ *
  * This file initializes up most variables for the site. It is also where most files
  * are included from. It also reads and stores certain variables.
  *
@@ -14,7 +14,7 @@ define('IN_GS', TRUE); // GS enviroment flag
 
 // GS Debugger
 GLOBAL $GS_debug; // GS debug trace array
-if(!isset($GS_debug)) $GS_debug = array();	
+if(!isset($GS_debug)) $GS_debug = array();
 
 /**
  * Set PHP enviroment
@@ -44,6 +44,7 @@ $GS_definitions = array(
 	'GSWIDTH'         => '1024px',
 	'GSWIDTHWIDE'     => '1366px',
 	'GSWIDEPAGES'     => 'theme-edit,components'
+	// 'GSHEADERCLASS'     => 'gradient'
 );
 
 /* Define Constants */
@@ -52,7 +53,7 @@ GS_defineFromArray($GS_constants);
 /**
  * Variable Globalization
  */
-global 
+global
  $SITENAME,       // (str) sitename setting
  $SITEURL,        // (str) siteurl setting
  $TEMPLATE,       // (str) current theme
@@ -131,7 +132,7 @@ $reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
 
 /**
  * Init debug mode
- * Enable php error logging	
+ * Enable php error logging
  */
 if(defined('GSDEBUG') and (bool)GSDEBUG == true) {
 	error_reporting(-1);
@@ -185,7 +186,7 @@ if(!is_frontend()){
 /**
  * Pull data from storage
  */
- 
+
 /** grab website data */
 
 $thisfilew = GSDATAOTHERPATH .'website.xml';
@@ -199,7 +200,7 @@ if (file_exists($thisfilew)) {
 } else {
 	$SITENAME = '';
 	$SITEURL  = '';
-} 
+}
 
 /** grab user data */
 
@@ -224,7 +225,7 @@ if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 if (defined('GSUSECUSTOMSALT')) {
 	// use GSUSECUSTOMSALT
 	$SALT = sha1(GSUSECUSTOMSALT);
-} 
+}
 else {
 	// use from authorization.xml
 	if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
@@ -241,7 +242,7 @@ $SESSIONHASH = sha1($SALT . $SITENAME);
  * Language control
  */
 if(!isset($LANG) || $LANG == '') {
-	$filenames = glob(GSLANGPATH.'*.php');	
+	$filenames = glob(GSLANGPATH.'*.php');
 	$cntlang = count($filenames);
 	if ($cntlang == 1) {
 		// assign lang to only existing file
@@ -263,14 +264,14 @@ if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
 	if($LANG !='en_US')	i18n_merge(null,"en_US");
 } else{
 	// merge GSMERGELANG defined lang if not the same as $LANG
-	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));	
-}	
+	if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));
+}
 
 // Set Locale
 if (array_key_exists('LOCALE', $i18n))
   setlocale(LC_ALL, preg_split('/s*,s*/', $i18n['LOCALE']));
 
-/** 
+/**
  * Init Editor globals
  * @uses $EDHEIGHT
  * @uses $EDLANG
@@ -280,7 +281,7 @@ if (array_key_exists('LOCALE', $i18n))
 if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
 if (defined('GSEDITORLANG'))   { $EDLANG = GSEDITORLANG; } else {	$EDLANG = i18n_r('CKEDITOR_LANG'); }
 if (defined('GSEDITORTOOL') and !isset($EDTOOL)) { $EDTOOL = GSEDITORTOOL; }
-if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!="" ) $EDOPTIONS = GSEDITOROPTIONS; 
+if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!="" ) $EDOPTIONS = GSEDITOROPTIONS;
 
 if(!isset($EDTOOL)) $EDTOOL = 'basic'; // default gs toolbar
 
@@ -298,7 +299,7 @@ if( (!isset($TIMEZONE) || trim($TIMEZONE) == '' ) && defined('GSTIMEZONE') ){
 	$TIMEZONE = GSTIMEZONE;
 }
 
-if(isset($TIMEZONE) && function_exists('date_default_timezone_set') && ($TIMEZONE != "" || stripos($TIMEZONE, '--')) ) { 
+if(isset($TIMEZONE) && function_exists('date_default_timezone_set') && ($TIMEZONE != "" || stripos($TIMEZONE, '--')) ) {
 	date_default_timezone_set($TIMEZONE);
 }
 
@@ -307,22 +308,22 @@ if(isset($TIMEZONE) && function_exists('date_default_timezone_set') && ($TIMEZON
  */
 if (notInInstall()) {
 	$fullpath = suggest_site_path();
-	
+
 	# if there is no SITEURL set, then it's a fresh install. Start installation process
 	# siteurl check is not good for pre 3.0 since it will be empty, so skip and run update first.
 	if ($SITEURL == '' &&  get_gs_version() >= 3.0)	{
 		serviceUnavailable();
 		redirect($fullpath . $GSADMIN.'/install.php');
-	} 
-	else {	
-	# if an update file was included in the install package, redirect there first	
+	}
+	else {
+	# if an update file was included in the install package, redirect there first
 		if (file_exists(GSADMINPATH.'update.php') && !isset($_GET['updated']) && !getDef('GSDEBUGINSTALL'))	{
 			serviceUnavailable();
 			redirect($fullpath . $GSADMIN.'/update.php');
 		}
 	}
 
-	if(!getDef('GSDEBUGINSTALL',true)){	
+	if(!getDef('GSDEBUGINSTALL',true)){
 		# if you've made it this far, the site is already installed so remove the installation files
 		$filedeletionstatus=true;
 		if (file_exists(GSADMINPATH.'install.php'))	{
@@ -347,7 +348,7 @@ if (notInInstall()) {
 include_once(GSADMININCPATH.'cookie_functions.php');
 
 if(isset($load['plugin']) && $load['plugin']){
-	# remove the pages.php plugin if it exists. 	
+	# remove the pages.php plugin if it exists.
 	if (file_exists(GSPLUGINPATH.'pages.php'))	{
 		unlink(GSPLUGINPATH.'pages.php');
 	}
@@ -355,7 +356,7 @@ if(isset($load['plugin']) && $load['plugin']){
 	include_once(GSADMININCPATH.'plugin_functions.php');
 
 	if(get_filename_id()=='settings' || get_filename_id()=='load') {
-		/* this core plugin only needs to be visible when you are viewing the 
+		/* this core plugin only needs to be visible when you are viewing the
 		settings page since that is where its sidebar item is. */
 		if (defined('GSEXTAPI') && GSEXTAPI==1) {
 			include_once('api.plugin.php');
@@ -364,10 +365,10 @@ if(isset($load['plugin']) && $load['plugin']){
 
 	# include core plugin for page caching
 	include_once('caching_functions.php');
-	
+
 	# main hook for common.php
 	exec_action('common');
-	
+
 }
 if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login_functions.php'); }
 
@@ -376,7 +377,7 @@ if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login
 if(GSBASE) include_once(GSADMINPATH.'base.php');
 
 // common methods
- 
+
 /**
  * Debug Console Log
  * @since 3.1

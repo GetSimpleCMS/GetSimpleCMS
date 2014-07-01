@@ -1,10 +1,11 @@
+
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /**
  * Header Admin Template
  *
  * @package GetSimple
  */
- 
+
 global $SITENAME, $SITEURL, $GSADMIN, $themeselector, $HTMLEDITOR;
 
 $GSSTYLE = getDef('GSSTYLE') ? GSSTYLE : '';
@@ -24,15 +25,15 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"  />
 	<title><?php echo $title ?></title>
-	<?php if(!isAuthPage()) { ?> <meta name="generator" content="GetSimple - <?php echo GSVERSION; ?>" /> 
+	<?php if(!isAuthPage()) { ?> <meta name="generator" content="GetSimple - <?php echo GSVERSION; ?>" />
 	<link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
 	<link rel="author" href="humans.txt" />
 	<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
-	<?php } ?>	
+	<?php } ?>
 	<meta name="robots" content="noindex, nofollow">
 	<link rel="stylesheet" type="text/css" href="template/style.php?<?php echo 's='.$GSSTYLE.'&amp;v='.GSVERSION; ?>" media="screen" />
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/css/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
-<?php	
+<?php
 
 	// setup some stuf here for now
 	$cm_themes = array(
@@ -82,32 +83,32 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 		'FILE_EXISTS_PROMPT',
 		'CANCELLED'
 	);
-	
+
 	// i18n for JS
 	$jsi18n = array_combine($jsi18nkeys,array_map('i18n_r',$jsi18nkeys));
 
 	?>
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->
 	<?php
-		
+
 	if (!getDef('GSNOHIGHLIGHT',true) || GSNOHIGHLIGHT!=true){
 		queue_script('gscodeeditor', GSBACK);
 	}
 
 	if( ((get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && $HTMLEDITOR ){
-		queue_script('gshtmleditor',GSBACK); 
+		queue_script('gshtmleditor',GSBACK);
 	}
 
 	if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!getDef('GSNOUPLOADIFY',true)) ){
-		queue_script('gsuploader',GSBACK); 
+		queue_script('gsuploader',GSBACK);
 	}
-	
+
 	if(get_filename_id()=='image'){
 		queue_script('gscrop',GSBACK);
 		queue_style('gscrop',GSBACK);
 	}
 	?>
-	
+
 	<script type="text/javascript">
 		// init gs namespace and i18n
 		var GS = {};
@@ -118,17 +119,17 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 			if(isset($_COOKIE['gs_editor_theme'])){
 				// $editor_theme = var_out($_COOKIE['gs_editor_theme']);
 				$editor_theme = var_out($_COOKIE['gs_editor_theme']);
-				echo 'editorTheme = "'.$editor_theme.'";';	
+				echo 'editorTheme = "'.$editor_theme.'";';
 			}
 		?>
 	</script>
 	<?php
-	
-	get_scripts_backend(); 
+
+	get_scripts_backend();
 
 	# Plugin hook to allow insertion of stuff into the header
-	if(!isAuthPage()) exec_action('header'); 
-	
+	if(!isAuthPage()) exec_action('header');
+
 	?>
 
 <noscript>
@@ -138,10 +139,10 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 		#cm_themeselect { display:none;}
 	</style>
 </noscript>
-	
-</head>
 
-<body <?php filename_id(); echo ' '.$bodyclass; ?> >	
-	<div class="header" id="header" >
+</head>
+<?php $gradient = getDef('GSHEADERCLASS',true) ? getDef('GSHEADERCLASS') : ''?>
+<body <?php filename_id(); echo ' '.$bodyclass; ?> >
+	<div class="header <?php echo $gradient; ?>" id="header" >
 		<div class="wrapper clearfix">
  <?php exec_action('header-body'); ?>
