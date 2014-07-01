@@ -417,7 +417,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
                     $('#autosavenotify').html('Autosaving is <b>ON</b> (<?php echo (int)GSAUTOSAVE; ?> s)');                
                     
                     function autoSaveIntvl(){
-                        // console.log('autoSaveIntvl called, isdirty:' + pageisdirty);
+                        // Debugger.log('autoSaveIntvl called, isdirty:' + pageisdirty);
                         if(pageisdirty == true){
                             autoSave();
                             pageisdirty = false;

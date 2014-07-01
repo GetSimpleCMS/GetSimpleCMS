@@ -118,7 +118,7 @@
         // Sets the target element to fixed. Also, sets the spacer to fill the
         // void left by the target element.
         function setFixed() {
-            // console.log("setFixed");
+            // Debugger.log("setFixed");
             // Only fix the target element and the spacer if we need to.
             if (!isFixed()) {
                 // Set the spacer to fill the height and width of the target
@@ -158,7 +158,7 @@
         }
 
         function setAbsolute() {
-            // console.log("setAbsolute");
+            // Debugger.log("setAbsolute");
             var top = getLimit();
             var left = offsetLeft;
 
@@ -187,7 +187,7 @@
 
         // Sets the target element back to unfixed. Also, hides the spacer.
         function setUnfixed() {
-            // console.log("setUnfixed");
+            // Debugger.log("setUnfixed");
             // Only unfix the target element and the spacer if we need to.
             if (!isUnfixed()) {
                 lastOffsetLeft = -1;

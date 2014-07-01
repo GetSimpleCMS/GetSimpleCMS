@@ -180,7 +180,7 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 
 		// progress of total queue
 		// myDropzone.on("totaluploadprogress", function(progress) {
-		// 	// console.log(progress);
+		// 	// Debugger.log(progress);
 		// 	// $(file.previewElement).delay(5000).slideUp();
 		// });
 		

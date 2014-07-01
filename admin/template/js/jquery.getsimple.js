@@ -696,10 +696,10 @@ jQuery(document).ready(function () {
 	// theme-edit fileselector change
 	// delegated on() handlers survive ajax replacement
 	$(document).on('click',"#theme_filemanager a.file",function(e){
-		// console.log('filechange');
+		// Debugger.log('filechange');
 		e.preventDefault();
 		var thmfld = $("#theme-folder").val();
-		// console.log($(this).attr('href'));
+		// Debugger.log($(this).attr('href'));
 		if (checkChanged()) return;
 		clearFileOpen();
 		$(this).addClass('open').addClass('ext-wait');
@@ -717,7 +717,7 @@ jQuery(document).ready(function () {
 	// update theme-edit code editor
 	function updateTheme(theme,file,url){
 
-		// console.log(theme);
+		// Debugger.log(theme);
 		theme = theme === undefined ? '' : theme;
 		file  = file  === undefined ? '' : file;
 		url   = url   === undefined ? "theme-edit.php?t="+theme+'&f='+file : url;
@@ -821,6 +821,7 @@ jQuery(document).ready(function () {
 			success: function( response ) {
 				$('div.wrapper .updated').remove();
 				$('div.wrapper .error').remove();
+				// response = $(response).parseHTML();
 				if ($(response).find('div.error').html()) {
 					notifyError($(response).find('div.error').html()).popit().removeit();
 				}
@@ -839,7 +840,7 @@ jQuery(document).ready(function () {
 
 
 	$('#compEditForm').submit(function(e) {
-		console.log("onsubmit");
+		Debugger.log("onsubmit");
 		e.preventDefault();
 
 		loadingAjaxIndicator.show();
