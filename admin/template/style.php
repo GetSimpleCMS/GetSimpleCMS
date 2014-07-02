@@ -95,8 +95,7 @@ if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ){
 	}
 
 	include('css-wide.php');
-
-	if(file_exists(GSTHEMESPATH.'admin.css')) include('admin.css');
+	if(file_exists(GSTHEMESPATH.'admin.css')) include(GSTHEMESPATH.'admin.css');
 
 }
 
