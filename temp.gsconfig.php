@@ -115,6 +115,9 @@ define('SUPPRESSERRORS',true);
 # Disable resetpassword , set false, default is true
 # define('GSALLOWRESETPASSWORD',false);
 
+# Disable logins , set false, default is true
+# define('GSALLOWLOGIN',false);
+
 define('GSWIDTH','1024px'); // css value px,%  0 or '' will be treated as 100%
 define('GSWIDTHWIDE','1336px');
 define('GSWIDEPAGES','components,theme-edit');

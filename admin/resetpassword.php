@@ -97,7 +97,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('RESET_PASSWORD'));
 			<p><b><?php i18n('LABEL_USERNAME'); ?>:</b><br /><input class="text" name="username" type="text" value="" /></p>
 			<p><input class="submit" type="submit" name="submitted" value="<?php echo i18n('SEND_NEW_PWD'); ?>" /></p>
 		</form>
-		<p class="cta" ><b>&laquo;</b> <a href="<?php echo $SITEURL; ?>"><?php i18n('BACK_TO_WEBSITE'); ?></a> &nbsp; | &nbsp; <a href="index.php"><?php i18n('CONTROL_PANEL'); ?></a> &raquo;</p>
+		<p class="cta"><a href="<?php echo $SITEURL; ?>"><?php i18n('BACK_TO_WEBSITE'); ?></a> &nbsp;
+		<?php if(getDef('GSALLOWLOGIN',true)) { ?> | &nbsp; <a href="index.php"><?php echo i18n_r('CONTROL_PANEL'); ?></a>
+		<?php } ?>
+		</p>
 		</div>
 		
 	</div>
