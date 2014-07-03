@@ -32,8 +32,8 @@ $GS_constants = array(
 	'GSCONFIGFILE'          => 'gsconfig.php', // config filename
 	'GSSTYLEWIDE'           => 'wide',         // wide stylesheet
 	'GSSTYLE_SBFIXED'       => 'sbfixed',      // fixed sidebar
-	'GSCSSMAINFILENAME'     => 'css.php',
-	'GSCSSCUSTOMFILENAME'   => 'admin.css',
+	'GSCSSMAINFILE'         => 'css.php',
+	'GSCSSCUSTOMFILE'       => 'admin.css',
 	'GSCONSTANTSLOADED'     => true          // loaded flag
 );
 

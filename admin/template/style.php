@@ -81,7 +81,7 @@ if(!isset($label_6))     $label_6    	= '#999999'; # label_medium
 
 if(!isset($header_base)) $header_base 	= $primary_3; # middle
 
-include(GSCSSMAINFILENAME);
+include(GSCSSMAINFILE);
 
 if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ){
 	$width      = getDef('GSWIDTH');
@@ -96,7 +96,7 @@ if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ){
 	}
 
 	include('css-wide.php');
-	if(file_exists(GSTHEMESPATH.GSCSSCUSTOMFILENAME)) include(GSTHEMESPATH.GSCSSCUSTOMFILENAME);
+	if(file_exists(GSTHEMESPATH.GSCSSCUSTOMFILE)) include(GSTHEMESPATH.GSCSSCUSTOMFILE);
 }
 
 exec_action('style-save'); // called after css files are included
