@@ -364,7 +364,7 @@ if(isset($load['plugin']) && $load['plugin']){
 	if(get_filename_id()=='settings' || get_filename_id()=='load') {
 		/* this core plugin only needs to be visible when you are viewing the
 		settings page since that is where its sidebar item is. */
-		if (defined('GSEXTAPI') && GSEXTAPI==1) {
+		if (getDef('GSEXTAPI',true)) {
 			include_once('api.plugin.php');
 		}
 	}
@@ -376,8 +376,8 @@ if(isset($load['plugin']) && $load['plugin']){
 	exec_action('common');
 
 }
-if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ 	include_once(GSADMININCPATH.'login_functions.php'); }
 
+if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ include_once(GSADMININCPATH.'login_functions.php'); }
 
 // do the template rendering
 if(GSBASE) include_once(GSADMINPATH.'base.php');
