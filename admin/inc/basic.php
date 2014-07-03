@@ -598,12 +598,16 @@ function redirect($url) {
 	if(requestIsAjax() && !cookie_check()){
 		header('HTTP/1.1 401 Unauthorized', true, 401);
 		header('WWW-Authenticate: FormBased');
+		// @note this is not a security function for ajax, just a handler
 		die();
 	}	
+
+	exec_action('redirect');
 
 	if (!headers_sent($filename, $linenum)) {
 		header('Location: '.$url);
 	} else {
+		// @todo not sure this ever gets used or headers_sent is reliable ( turn output buffering off to test )
 		echo "<html><head><title>".i18n_r('REDIRECT')."</title></head><body>";
 		if ( !isDebug() ) {
 			echo '<script type="text/javascript">';
