@@ -1241,7 +1241,7 @@ input.submit, .button {
 		-webkit-transition: all .218s;
 		-moz-transition: all .218s;
 		-o-transition: all .218s;
-	color: #333333 !important;
+	color: #333333;
 	background: #dddddd;
 		background: -webkit-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#e1e1e1));
 		background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#e1e1e1));
