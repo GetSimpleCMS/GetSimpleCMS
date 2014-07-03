@@ -26,12 +26,15 @@ if(function_exists('mb_internal_encoding')) mb_internal_encoding("UTF-8"); // se
  */
 
 $GS_constants = array(
-	'GSTARTTIME'      => microtime(),
- 	'GSBASE'          => false,          // front end flag
-	'GSROOTPATH'      => dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR, // root path of getsimple
-	'GSCONFIGFILE'    => 'gsconfig.php', // config filename
-	'GSSTYLEWIDE'     => 'wide',         // wide stylesheet
-	'GSSTYLE_SBFIXED' => 'sbfixed'       // fixed sidebar
+	'GSTARTTIME'            => microtime(),
+ 	'GSBASE'                => false,          // front end flag
+	'GSROOTPATH'            => dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR, // root path of getsimple
+	'GSCONFIGFILE'          => 'gsconfig.php', // config filename
+	'GSSTYLEWIDE'           => 'wide',         // wide stylesheet
+	'GSSTYLE_SBFIXED'       => 'sbfixed',      // fixed sidebar
+	'GSCSSMAINFILENAME'     => 'css.php',
+	'GSCSSCUSTOMFILENAME'   => 'admin.css',
+	'GSCONSTANTSLOADED'     => true          // loaded flag
 );
 
 $GS_definitions = array(
@@ -40,11 +43,13 @@ $GS_definitions = array(
 	'GSSLUGPRIVATE'   => '403',          // http slug for private pages
 	'GSADMIN'         => 'admin',        // admin foldername
 	'GSERRORLOGFILE'  => 'errorlog.txt', // error log filename
-	'GSSTYLE'         => 'wide,sbfixed',  // default style modifiers
-	'GSWIDTH'         => '1024px',
-	'GSWIDTHWIDE'     => '1366px',
-	'GSWIDEPAGES'     => 'theme-edit,components'
-	// 'GSHEADERCLASS'     => 'gradient'
+	'GSSTYLE'         => 'wide,sbfixed', // default style modifiers
+	'GSWIDTH'         => '1024px',       // pagewidth on backend
+	'GSWIDTHWIDE'     => '1366px',       // page width on backend pages defined in GSWIDEPAGES
+	'GSWIDEPAGES'     => 'theme-edit,components', // pages to apply GSWIDTHWIED on
+	'GSALLOWLOGIN'    => true,           // allow front end login
+	// 'GSHEADERCLASS'     => 'gradient',// custom class to add to header
+	'GSDEFINITIONSLOADED' => true        // loaded flag
 );
 
 /* Define Constants */
@@ -342,6 +347,7 @@ if (notInInstall()) {
 
 		}
 
+
 /**
  * Include other files depending if they are needed or not
  */
@@ -370,13 +376,14 @@ if(isset($load['plugin']) && $load['plugin']){
 	exec_action('common');
 
 }
-if(isset($load['login']) && $load['login']){ 	include_once(GSADMININCPATH.'login_functions.php'); }
+if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ 	include_once(GSADMININCPATH.'login_functions.php'); }
 
 
 // do the template rendering
 if(GSBASE) include_once(GSADMINPATH.'base.php');
 
-// common methods
+
+// common methods are immediatly available
 
 /**
  * Debug Console Log

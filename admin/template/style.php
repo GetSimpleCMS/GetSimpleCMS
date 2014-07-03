@@ -9,6 +9,7 @@
 
 header('Content-type: text/css');
 
+$load['plugin'] = true;
 include('../inc/common.php');
 
 $offset = 30000;
@@ -80,7 +81,7 @@ if(!isset($label_6))     $label_6    	= '#999999'; # label_medium
 
 if(!isset($header_base)) $header_base 	= $primary_3; # middle
 
-include('css.php');
+include(GSCSSMAINFILENAME);
 
 if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ){
 	$width      = getDef('GSWIDTH');
@@ -95,10 +96,10 @@ if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ){
 	}
 
 	include('css-wide.php');
-	if(file_exists(GSTHEMESPATH.'admin.css')) include(GSTHEMESPATH.'admin.css');
-
+	if(file_exists(GSTHEMESPATH.GSCSSCUSTOMFILENAME)) include(GSTHEMESPATH.GSCSSCUSTOMFILENAME);
 }
 
+exec_action('style-save'); // called after css files are included
 file_put_contents($cachefile, compress(ob_get_contents()));
 chmod($cachefile, 0644);
 
