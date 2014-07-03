@@ -38,18 +38,19 @@ $GS_constants = array(
 );
 
 $GS_definitions = array(
-	'GSHTTPPREFIX'    => '',             // http slug prefix GSHTTPPREFIX.GSSLUGxx
-	'GSSLUGNOTFOUND'  => '404',          // http slug for not found
-	'GSSLUGPRIVATE'   => '403',          // http slug for private pages
-	'GSADMIN'         => 'admin',        // admin foldername
-	'GSERRORLOGFILE'  => 'errorlog.txt', // error log filename
-	'GSSTYLE'         => 'wide,sbfixed', // default style modifiers
-	'GSWIDTH'         => '1024px',       // pagewidth on backend
-	'GSWIDTHWIDE'     => '1366px',       // page width on backend pages defined in GSWIDEPAGES
-	'GSWIDEPAGES'     => 'theme-edit,components', // pages to apply GSWIDTHWIED on
-	'GSALLOWLOGIN'    => true,           // allow front end login
-	// 'GSHEADERCLASS'     => 'gradient',// custom class to add to header
-	'GSDEFINITIONSLOADED' => true        // loaded flag
+	// 'GSHEADERCLASS'     => 'gradient',     // custom class to add to header
+	'GSHTTPPREFIX'         => '',             // http slug prefix GSHTTPPREFIX.GSSLUGxx
+	'GSSLUGNOTFOUND'       => '404',          // http slug for not found
+	'GSSLUGPRIVATE'        => '403',          // http slug for private pages
+	'GSADMIN'              => 'admin',        // admin foldername
+	'GSERRORLOGFILE'       => 'errorlog.txt', // error log filename
+	'GSSTYLE'              => 'wide,sbfixed', // default style modifiers
+	'GSWIDTH'              => '1024px',       // pagewidth on backend
+	'GSWIDTHWIDE'          => '1366px',       // page width on backend pages defined in GSWIDEPAGES
+	'GSWIDEPAGES'          => 'theme-edit,components', // pages to apply GSWIDTHWIED on
+	'GSALLOWLOGIN'         => true,           // allow front end login
+	'GSALLOWRESETPASS'     => true,           // allow front end login
+	'GSDEFINITIONSLOADED'  => true            // loaded flag
 );
 
 /* Define Constants */
