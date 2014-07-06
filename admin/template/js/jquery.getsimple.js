@@ -1060,7 +1060,8 @@ jQuery(document).ready(function () {
 	});
 	
 	// add tree folding to tree tables
-	$('table.tree').addTableTree(0,2); 
+	// addTableTree(minrows,mindepth,headerdepth)
+	$('table.tree').addTableTree(1,1,1);
 
 	// end of jQuery ready
 });
