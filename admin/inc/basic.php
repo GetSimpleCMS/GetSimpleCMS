@@ -596,7 +596,7 @@ function redirect($url) {
 
 	// handle expired sessions for ajax requests
 	if(requestIsAjax() && !cookie_check()){
-		header('HTTP/1.1 401 Unauthorized', true, 401);
+		header('HTTP/1.1 401 Unauthorized');
 		header('WWW-Authenticate: FormBased');
 		// @note this is not a security function for ajax, just a handler
 		die();
