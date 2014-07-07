@@ -602,7 +602,7 @@ function redirect($url) {
 		die();
 	}	
 
-	exec_action('redirect');
+	if(function_exists('exec_action')) exec_action('redirect');
 
 	if (!headers_sent($filename, $linenum)) {
 		header('Location: '.$url);
