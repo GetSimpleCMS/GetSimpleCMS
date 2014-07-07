@@ -137,6 +137,9 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 		.tab{ display:block; clear:both;}
 		.tab fieldset legend{ display: block; }
 		#cm_themeselect { display:none;}
+		#theme_filemanager ul ul {
+			display: block;
+		}
 	</style>
 </noscript>
 

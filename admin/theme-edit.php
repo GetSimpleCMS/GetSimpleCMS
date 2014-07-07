@@ -39,10 +39,10 @@ if(isset($_POST['themesave'])){
 	return;
 }
 
-$themepath = GSTHEMESPATH.$template.DIRECTORY_SEPARATOR;
+$themepath = GSTHEMESPATH.tsl($template);
 
 // prevent traversal
-if($template_file!='' and !filepath_is_safe($themepath.$template_file,$themepath)) die();
+if($template_file!='' and !filepath_is_safe($themepath.$template_file,$themepath)) die(i18n_r('INVALID_OPER'));
 
 # if no template is selected, use the default
 if ($template_file == '') {
@@ -58,7 +58,7 @@ if(isset($_POST['submitsave'])){
 	$SavedFile = $_POST['edited_file'];
 	$FileContents = get_magic_quotes_gpc() ? stripslashes($_POST['content']) : $_POST['content'];	
 	// prevent traversal
-	if(!filepath_is_safe(GSTHEMESPATH . $SavedFile,$themepath)) die();	
+	if(!filepath_is_safe(GSTHEMESPATH . $SavedFile,GSTHEMESPATH)) die(i18n_r('INVALID_OPER'));	
 	$fh = fopen(GSTHEMESPATH . $SavedFile, 'w') or die("can't open file");
 	fwrite($fh, $FileContents);
 	fclose($fh);
@@ -89,73 +89,51 @@ if(isset($_GET['ajax'])){
 	die();	
 }
 
-# create themes dropdown
-$themes_path = GSTHEMESPATH;
-$themes_handle = opendir($themes_path);
-$theme_options .= '<select name="theme-folder" id="theme-folder" >';	
-while ($file = readdir($themes_handle)) {
-	$curpath = $themes_path .'/'. $file;
-	if( is_dir($curpath) && $file != "." && $file != ".." ) {
-		$theme_dir_array[] = $file;
-		$sel="";
-		
-		if (file_exists($curpath.'/template.php')){
-			if ($template == $file){ 
-				$sel="selected"; 
-			}
-			
-			$theme_options .= '<option '.$sel.' value="'.$file.'" >'.$file.'</option>';
-		}
-	}
-}
-$theme_options .= '</select> ';
-
-# check to see how many themes are available
-if (count($theme_dir_array) == 1){ $theme_options = ''; }
-
-$allowed_extensions=array('php','css','js','html','htm','txt','');
+$allowed_extensions = getDef('GSTHEMEEDITEXTS',true) ? explode(',',getDef('GSTHEMEEDITEXTS')) : array('php','css','js','html','htm','txt','xml','');
 
 # if no template is selected, use the default
-if ($template == '') { $template = 'template.php'; }
-$templates = directoryToArray(GSTHEMESPATH . $template . '/', true);
+if ($template == '') $template = 'template.php';
 $directory = GSTHEMESPATH . $template . '/';
-
-$theme_templates .= '<span id="themefiles"><select class="text" id="theme_files" style="width:425px;" name="f" >';
-$theme_templates .= createFileDropdown($templates);
 
 
 //////////////////////////////////////////////////
 // File Manager
 //////////////////////////////////////////////////
 
+function createTemplateDropdown(){
+	GLOBAL $template;
+	# create themes dropdown
+	$theme_options = '<select name="theme-folder" id="theme-folder" >';
 
-function createFileDropdown($templates){
-	GLOBAL $TEMPLATE_FILE,$template,$allowed_extensions;
-	
-	$theme_templates = '';
+	$templates = directoryToArray(GSTHEMESPATH, false);
+	$theme_dir_array = array();
 
-	foreach ($templates as $file){
-		$extension=pathinfo($file,PATHINFO_EXTENSION);
-		if (in_array($extension, $allowed_extensions)){
-			$filename=pathinfo($file,PATHINFO_BASENAME);
-			$filenamefull=substr(strstr($file,getRelPath(GSTHEMESPATH).$template.'/'),strlen(getRelPath(GSTHEMESPATH).$template.'/'));   
-			if ($TEMPLATE_FILE == $filenamefull){ 
-		        $sel="selected"; 
-			} else { 
+	foreach($templates as $file){
+		if( is_dir($file) ) {
+			// only a theme if template.php exists
+			if (file_exists($file.'/template.php')){
 				$sel="";
+				$theme_dir_array[] = $file;
+				$theme = basename($file);
+				if ($template == $theme){
+					$sel="selected";
+				}
+
+				$theme_options .= '<option '.$sel.' value="'.$theme.'" >'.$theme.'</option>';
 			}
-			
-			if ($filename == 'template.php'){ 
-				$templatename=i18n_r('DEFAULT_TEMPLATE'); 
-			} else { 
-				$templatename=$filenamefull; 
-			}
-			
-			$theme_templates .= '<option '.$sel.' value="'.$templatename.'" >'.$templatename.'</option>';
 		}
 	}
-	$theme_templates .= "</select></span>";
-	return $theme_templates;
+
+	// edit theme/root files
+	if(getDef('GSTHEMEEDITROOT',true)){
+		$theme_options .= '<option value="." style="font-style:italic">'.i18n_r('THEME_ROOT').'</option>';
+	}
+	$theme_options .= '</select> ';
+
+	# check to see how many themes are available
+	if (count($theme_dir_array) == 1) $theme_options = '';
+
+	return $theme_options;
 }
 
 /**
@@ -164,36 +142,35 @@ function createFileDropdown($templates){
  * @param  boolean $hideEmpty omit empty directories if true
  * @return string
  */
-function editor_array2ul($array,$hideEmpty = true) {
+function editor_array2ul($array, $hideEmpty = true, $recurse = true) {
 	GLOBAL $allowed_extensions,$template_file,$template;
-    
+
 	$cnt = 0;
 
 	$out="<ul>";
 	foreach($array as $key => $elem){
-		
+
 		if(!is_array($elem['value'])){
-		$ext = lowercase(pathinfo($elem['value'], PATHINFO_EXTENSION));
-			
 			// Is a file
+			$ext = lowercase(pathinfo($elem['value'], PATHINFO_EXTENSION));
 			if( in_array($ext,$allowed_extensions)){
 
 				$filename = $elem['value'];
-				$filepath = $elem['path'];   
-				$filenamefull=substr(strstr($filepath.$filename,getRelPath(GSTHEMESPATH).$template.'/'),strlen(getRelPath(GSTHEMESPATH).$template.'/')); 
+				$filepath = $elem['path'];
+				$filenamefull=substr(strstr($filepath.$filename,getRelPath(GSTHEMESPATH).$template.'/'),strlen(getRelPath(GSTHEMESPATH).$template.'/'));
 
 				$open = editor_fileIsOpen($elem['path'],$elem['value']) ? ' open' : '';
-				
+
 				if ($filename == 'template.php'){
 					$ext = 'theme';
-					$filename=i18n_r('DEFAULT_TEMPLATE');        			
-				}	
-				
+					$filename=i18n_r('DEFAULT_TEMPLATE');
+				}
+
 				$link = myself(false).'?t='.$template.'&amp;f='.$filenamefull;
 				$out.='<li><a href="'.$link.'"class="file ext-'.$ext.$open.'">'.$filename."</a></li>";
 			}
 		}
-		else {
+		else if($recurse){
 			// Is a folder
 
 			// Are we showing/hiding empty folders.
@@ -202,13 +179,13 @@ function editor_array2ul($array,$hideEmpty = true) {
 			if(count($elem['value']) == 0){
 				if($hideEmpty) continue;
 				$empty = ' dir-empty'; // empty folder class
-			}	
+			}
 			$out.='<li><a class="directory'.$empty.'">'.$key.'</a>'.editor_array2ul($elem['value']).'</li>';
-		}	
+		}
 	}
 
 	$out=$out."</ul>";
-	return $out; 
+	return $out;
 }
 
 /**
@@ -223,8 +200,8 @@ function editor_fileIsOpen($path,$file){
 }
 
 /**
- * directory listing file order comparator 
- * dirs first, files in alphabetical order
+ * directory listing file order comparator
+ * dirs first then files , in alphabetical order
  * @param array $a,$b directoryToMultiArray() arrays
  */
 function editor_compareOrder($a, $b)
@@ -245,7 +222,7 @@ function editor_compareOrder($a, $b)
 	// sort files by value
 	if($atype == 'file' and $btype == 'file'){
 		return strcmp($a['value'],$b['value']);
-	} 
+	}
 }
 
 /**
@@ -261,10 +238,13 @@ function editor_recur_sort(&$array,$comparator) {
    return @uasort($array, $comparator);
 }
 
-// get theme files as ul tree
+
+$theme_options = createTemplateDropdown();
+// get themes files, sort then generate ul list heirachy
 $files = directoryToMultiArray($directory,true,$allowed_extensions);
-editor_recur_sort($files, 'editor_compareOrder');
-$fileList = editor_array2ul($files);
+editor_recur_sort($files, 'editor_compareOrder'); // custom sort, dir,file,nat sort
+
+$fileList = $template == '.' ? editor_array2ul($files,false,false) : editor_array2ul($files);
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); 
 

@@ -145,6 +145,7 @@ $i18n = array(
 "EDITING_FILE"            =>	"Editing File",
 "BTN_SAVECHANGES"         =>	"Save Changes",
 "EDIT"                    =>	"Edit",
+"THEME_ROOT"              =>    "Configuration Files",
 
 /* 
 * For: support.php
@@ -649,7 +650,10 @@ $i18n = array(
 "NOT_ALLOWED"             =>    "Not Allowed",
 "APPROVE"                 =>    "Approve",
 "APPROVED"                =>    "Approved",
-"NOT_APPROVED"            =>    "Not Approved"
+"NOT_APPROVED"            =>    "Not Approved",
+"VALID"                   =>    "Valid",
+"INVALID"                 =>    "Invalid",
+"INVALID_OPER"            =>    "Invalid Operation"
 
 // already defined generics
 # "ENABLE"                =>    "Activate"
@@ -671,4 +675,4 @@ $i18n = array(
 
 );
 
-?>
+/* ?> */

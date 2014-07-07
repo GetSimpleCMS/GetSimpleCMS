@@ -2523,13 +2523,13 @@ a.disabled:visited {
 }
 
 #theme_filemanager a:hover, #file-manager a.context-menu-active {
-		background-color: #E0E0E0;
+		background-color: #E9E9E9;
 		text-decoration:none;
 		font-weight:normal;
 }
 
 #theme_filemanager a.open {
-		background-color: #E0E0E0;
+		background-color: #DADADA;
 		font-weight:bold;
 }
 
