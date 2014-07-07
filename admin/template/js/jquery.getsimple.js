@@ -1068,7 +1068,7 @@ jQuery(document).ready(function () {
 
 function dosave(){
 	Debugger.log('saving');
-	Debugger.log($("#submit_line input.submit"));
+	// Debugger.log($("#submit_line input.submit"));
 	$("#submit_line input.submit").trigger('click'); // should do form.submit handlers as well
 }
 

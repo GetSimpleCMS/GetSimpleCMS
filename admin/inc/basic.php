@@ -1331,14 +1331,14 @@ function directoryToMultiArray($dir,$recursive = true,$exts = null,$exclude = fa
 				// filetype filter
 				$ext = lowercase(pathinfo($value,PATHINFO_EXTENSION));	
 				if(is_array($exts)){
-				if(!in_array($ext,$exts) and !$exclude) continue;
-				if($exclude and in_array($ext,$exts)) continue;
-			}
+					if(!in_array($ext,$exts) and !$exclude) continue;
+					if($exclude and in_array($ext,$exts)) continue;
+				}
 
-			$result[$value] = array();
-			$result[$value]['type'] = 'file';
-			$result[$value]['path'] = $path;
-			$result[$value]['value'] = $value;
+				$result[$value] = array();
+				$result[$value]['type'] = 'file';
+				$result[$value]['path'] = $path;
+				$result[$value]['value'] = $value;
 			}
 		}
 	}
