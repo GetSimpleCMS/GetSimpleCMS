@@ -2400,7 +2400,7 @@ a.disabled:visited {
 
 /* @todo ditch the IDs */
 #theme-edit .updated, #theme-edit .error, #theme-edit .notify {
-	margin: 0 15px 15px 15px;
+	/*margin: 0 15px 15px 15px;*/
 }
 
 #theme-edit #header .wrapper{
@@ -2414,12 +2414,12 @@ a.disabled:visited {
 }
 
 #theme-edit #footer{
-	margin-left: 15px;
-	margin-right: 15px;
+	/*margin-left: 15px;*/
+	/*margin-right: 15px;*/
 }
 
 #theme-edit .bodycontent {
-	margin:0 15px;
+	/*margin:0 15px;*/
 }
 
 #theme_edit_wrap {
