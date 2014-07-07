@@ -50,6 +50,7 @@ $GS_definitions = array(
 	'GSWIDEPAGES'          => 'theme-edit,components', // pages to apply GSWIDTHWIED on
 	'GSALLOWLOGIN'         => true,           // allow front end login
 	'GSALLOWRESETPASS'     => true,           // allow front end login
+	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // file extensions to show and edit in theme editor
 	'GSDEFINITIONSLOADED'  => true            // loaded flag
 );
 

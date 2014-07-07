@@ -89,7 +89,7 @@ if(isset($_GET['ajax'])){
 	die();	
 }
 
-$allowed_extensions = getDef('GSTHEMEEDITEXTS',true) ? explode(',',getDef('GSTHEMEEDITEXTS')) : array('php','css','js','html','htm','txt','xml','');
+$allowed_extensions = explode(',',getDef('GSTHEMEEDITEXTS'));
 
 # if no template is selected, use the default
 if ($template == '') $template = 'template.php';
