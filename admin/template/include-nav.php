@@ -45,7 +45,7 @@ if (get_filename_id() == 'load') {
 	if(isBeta() || isAlpha()) echo '<li class="rightnav"><a class="label label-ghost" href="health-check.php"><span><span class="fa fa-fw fa-flask"></span> '. (isAlpha() ? 'alpha' : 'beta') .'</span></a></li>';
 
 	if( allowVerCheck() ) {
-		$verstatus = getVerCheck();
+		$verstatus = getVerCheck()->status;
 		if($verstatus == 0){ 
 			// update available newer than current
 			echo '<li class="rightnav"><a class="label label-gold" href="health-check.php"><span class="fa fa-fw fa-lg fa-cloud-download"></span></a></li>';
@@ -61,4 +61,4 @@ if (get_filename_id() == 'load') {
 	
 <div class="wrapper">
 
-	<?php include('template/error_checking.php'); ?>
+<?php include('template/error_checking.php'); ?>

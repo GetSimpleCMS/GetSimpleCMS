@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /**
  * Health Check
  *
@@ -35,15 +36,16 @@ echo '<div class="bodycontent clearfix">
 			<table class="highlight healthcheck">';
 				
 				# check to see if there is a core update needed
-				$verstatus = getVerCheck();
-				// $verstatus = $_GET['status']; // debugging
+				$verdata   = getVerCheck();
+				$verstatus = $verdata->status;
+				$verstatus = $_GET['status']; // debugging
 				$verstring = sprintf(i18n_r('CURR_VERSION'),'<b>'.$site_version_no.'</b>').'<hr>';
 				if ($verstatus == '0') {
 					// upgrade recomended
-					$ver = '<div id="hc_version" class="label label-error" >'.$verstring. i18n_r('UPG_NEEDED').' (<b>'.$apikey->latest .'</b>)<br /><a href="'.$site_link_back_url.'download/">'. i18n_r('DOWNLOAD').'</a></div>';
+					$ver = '<div id="hc_version" class="label label-error" >'.$verstring. i18n_r('UPG_NEEDED').' (<b>'.$verdata->latest .'</b>)<br /><a href="'.$site_link_back_url.'download/">'. i18n_r('DOWNLOAD').'</a></div>';
 				} elseif ($verstatus == '1') {
 					// latest version
-					$ver = '<div id="hc_version" class="label label-medium" >'.$verstring. i18n_r('LATEST_VERSION').'</div>';
+					$ver = '<div id="hc_version" class="label label-ok" >'.$verstring. i18n_r('LATEST_VERSION').'</div>';
 				} elseif ($verstatus == '2') {
 					// bleeding edge
 					$ver = '<div id="hc_version" class="label '.(isAlpha() ? 'label-info' : 'label-info' ).'" >'.$verstring. (isAlpha() ? i18n_r('ALPHA') : i18n_r('BETA')) .'</div>';
@@ -359,7 +361,6 @@ echo '<div class="bodycontent clearfix">
 						echo "</tr>";						
 					}	
 
-					
 				echo '</table>';
 			}
 
@@ -380,4 +381,5 @@ echo '<div class="bodycontent clearfix">
 	</div>	
 
 </div>
+
 <?php get_template('footer'); ?>

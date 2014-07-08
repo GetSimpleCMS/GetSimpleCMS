@@ -1551,12 +1551,10 @@ function getVerCheck(){
 	# check to see if there is a core update needed
 	$data = get_api_details();
 	if ($data)	{
-		$apikey = json_decode($data);
-		$verstatus = $apikey->status;
+		return json_decode($data);
 	}else {
-		$verstatus = null;
+		return null;
 	}
-	return $verstatus;
 }
 
 /**
