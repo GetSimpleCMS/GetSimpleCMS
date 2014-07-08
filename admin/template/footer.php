@@ -33,17 +33,17 @@
 		</div><!-- end #footer -->
 		<?php 
 		if(!isAuthPage()) {
-		if (isDebug()){
-			global $GS_debug;
-			echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
-			echo '<pre>';
-			foreach ($GS_debug as $log){
-					if(is_array($log)) print_r($log).'<br/>';
-					else print($log.'<br/>');
+			if (isDebug()){
+				global $GS_debug;
+				echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
+				echo '<pre>';
+				foreach ($GS_debug as $log){
+						if(is_array($log)) print_r($log).'<br/>';
+						else print($log.'<br/>');
+				}
+				echo '</pre>';	
+				echo '</div>';
 			}
-			echo '</pre>';	
-			echo '</div>';
-		}
 		}
 		?>
 	</div><!-- end .wrapper -->
