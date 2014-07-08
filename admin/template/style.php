@@ -32,7 +32,8 @@ function compress($buffer) {
   return $buffer;
 }
 
-$useadminxml = true;
+$useadminxml = true; // bypass for including admin.xml
+$useadmincss = true; // bypass for including admin.css
 
 if (file_exists(GSTHEMESPATH.'admin.xml') && $useadminxml) {
 	#load admin theme xml file
@@ -75,9 +76,9 @@ $defaultcolors = array(
 	'label_1'    	=> '#0B5584', # label_info
 	'label_2'    	=> '#008C00', # label_ok
 	'label_3'    	=> '#FF8500', # label_warn
-	'label_4'    	=> 'rgb(204,0,0)', # label_error
+	'label_4'    	=> '#CC0000', # label_error
 	'label_5'    	=> '#FFFFFF', # label_light
-	'label_6'    	=> '#999999',  # label_medium
+	'label_6'    	=> '#999999'  # label_medium
 );
 
 foreach($defaultcolors as $var => $color){
@@ -118,7 +119,7 @@ if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ){
 }
 
 // include custom theme/admin.css if exists
-if(file_exists(GSTHEMESPATH.GSCSSCUSTOMFILE)) include(GSTHEMESPATH.GSCSSCUSTOMFILE);
+if(file_exists(GSTHEMESPATH.GSCSSCUSTOMFILE) && $useadmincss) include(GSTHEMESPATH.GSCSSCUSTOMFILE);
 
 exec_action('style-save'); // called after css files are included
 
