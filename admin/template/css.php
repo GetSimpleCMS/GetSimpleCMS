@@ -1673,22 +1673,22 @@ table.simple td.title {
 
 /* @todo all these wrappers, why every page has a wrapper */
 .wrapper table td span.ERRmsg {
-	color: #D94136;
+	color: <?php echo $label_4;?> ; /*#D94136;*/
 	font-size: 12px;
 }
 
 .wrapper table td span.OKmsg {
-	color: #308000;
+	color: <?php echo $label_2;?> ; /*#308000;*/
 	font-size: 12px;
 }
 
 .wrapper table td span.WARNmsg {
-	color: #FFA500;
+	color: <?php echo $label_3;?> ; /*#FFA500;*/
 	font-size: 12px;
 }
 
 .wrapper table td span.INFOmsg {
-	color: #2B5CB3;
+	color: <?php echo $label_1;?> ; /*#2B5CB3;*/
 	font-size: 12px;
 }
 
@@ -1972,7 +1972,6 @@ div.showstatus{
 /* @todo #ID selector hell, can be fixed up once some heirarchy is established */
 /* healthcheck only */
 #health-check #hc_version.label {
-	width: 292px;
 	text-align: left;
 	padding: 9px 15px;
 	font-weight: normal;

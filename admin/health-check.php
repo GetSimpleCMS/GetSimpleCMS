@@ -19,7 +19,7 @@ $php_modules = get_loaded_extensions();
 
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i18n_r('WEB_HEALTH_CHECK')); 
 
-$errorCnt = 0;
+$errorCnt = 0; // error counter, for error catch and flag
 
 include('template/include-nav.php'); 
 
@@ -40,16 +40,16 @@ echo '<div class="bodycontent clearfix">
 				$verstring = sprintf(i18n_r('CURR_VERSION'),'<b>'.$site_version_no.'</b>').'<hr>';
 				if ($verstatus == '0') {
 					// upgrade recomended
-					$ver = '<span id="hc_version" class="label label-error" >'.$verstring. i18n_r('UPG_NEEDED').' (<b>'.$apikey->latest .'</b>)<br /><a href="'.$site_link_back_url.'download/">'. i18n_r('DOWNLOAD').'</a></span>';
+					$ver = '<div id="hc_version" class="label label-error" >'.$verstring. i18n_r('UPG_NEEDED').' (<b>'.$apikey->latest .'</b>)<br /><a href="'.$site_link_back_url.'download/">'. i18n_r('DOWNLOAD').'</a></div>';
 				} elseif ($verstatus == '1') {
 					// latest version
-					$ver = '<span id="hc_version" class="label label-medium" >'.$verstring. i18n_r('LATEST_VERSION').'</span>';
+					$ver = '<div id="hc_version" class="label label-medium" >'.$verstring. i18n_r('LATEST_VERSION').'</div>';
 				} elseif ($verstatus == '2') {
 					// bleeding edge
-					$ver = '<span id="hc_version" class="label '.(isAlpha() ? 'label-info' : 'label-info' ).'" >'.$verstring. (isAlpha() ? i18n_r('ALPHA') : i18n_r('BETA')) .'</span>';
+					$ver = '<div id="hc_version" class="label '.(isAlpha() ? 'label-info' : 'label-info' ).'" >'.$verstring. (isAlpha() ? i18n_r('ALPHA') : i18n_r('BETA')) .'</div>';
 				} else {
 					// cannot check
-					$ver = '<span id="hc_version" class="label label-warn" >'.$verstring. i18n_r('CANNOT_CHECK').'<br /><a href="'.$site_link_back_url.'download">'. i18n_r('CHECK_MANUALLY').'</a></span>';
+					$ver = '<div id="hc_version" class="label label-warn" >'.$verstring. i18n_r('CANNOT_CHECK').'<br /><a href="'.$site_link_back_url.'download">'. i18n_r('CHECK_MANUALLY').'</a></div>';
 				}
 				?>
 				<tr><td class="hc_item" ><?php echo $site_full_name; ?> <?php i18n('VERSION');?></td><td><?php echo $ver; ?></td></tr>
@@ -156,7 +156,6 @@ echo '<div class="bodycontent clearfix">
 					$dirsArray = array(
 						GSDATAOTHERPATH, 
 						GSDATAOTHERPATH.'logs/', 
-						GSDATAPAGESPATH,
 						GSBACKUSERSPATH
 					);			
 
@@ -179,14 +178,37 @@ echo '<div class="bodycontent clearfix">
 									echo '<td>' . i18n_r('XML_VALID').'</td><td><span class="label label-ok">'.i18n_r('OK') .'</span></td>';
 								}									
 								else {
-									if(in_array($path.$file,$filesArray)) echo '<td>' . i18n_r('XML_INVALID').'</td><td><span class="label label-error">'.i18n_r('ERROR') .'</span></td>';
-									else echo '<td>' . i18n_r('XML_INVALID').'</td><td><span class="label label-warn">'.i18n_r('WARNING') .'</span></td>';
+									if(in_array($path.$file,$filesArray)) echo '<td><span class="ERRmsg">' . i18n_r('XML_INVALID').'</span></td><td><span class="label label-error">'.i18n_r('ERROR') .'</span></td>';
+									else echo '<td><span class="WARNmsg">' . i18n_r('XML_INVALID').'</span></td><td><span class="label label-warn">'.i18n_r('WARNING') .'</span></td>';
 									$errorCnt++;													
 								}	
 								echo '</tr>';
 							}							
 						}
 					}
+			
+			echo '</table>';
+
+			echo '<h3>'. i18n_r('PAGE_FILE_CHECK') .'</h3>
+			<table class="highlight healthcheck">';
+
+						$path = GSDATAPAGESPATH;
+						$data = getFiles($path);
+						sort($data);
+						foreach($data as $file) {
+							if( isFile($file, $path) ) {
+								$relpath = '/'.getRelPath($path);
+								echo '<tr><td class="hc_item" >'.$relpath . $file .'</td>';
+								if(is_valid_xml($path . $file)){
+									echo '<td>' . i18n_r('XML_VALID').'</td><td><span class="label label-ok">'.i18n_r('OK') .'</span></td>';
+								}									
+								else {
+									echo '<td><span class="WARNmsg">' . i18n_r('XML_INVALID').'</span></td><td><span class="label label-warn">'.i18n_r('WARNING') .'</span></td>';
+									$errorCnt++;													
+								}	
+								echo '</tr>';
+							}							
+						}
 			
 			echo '</table>';
 			
@@ -229,7 +251,7 @@ echo '<div class="bodycontent clearfix">
 						echo "<tr><td class=\"hc_item\">$relpath</td><td>";
 						
 						if($isFile and !file_exists($path)) {
-							echo '<span class="ERRmsg">'.i18n_r('MISSING_FILE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 							
+							echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('MISSING_FILE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 							
 							$errorCnt++;				
 							continue;
 						}
@@ -240,7 +262,7 @@ echo '<div class="bodycontent clearfix">
 							echo i18n_r('WRITABLE').'<td><span class="label label-ok" > '.i18n_r('OK').'</span></td>'; 
 						} 
 						else { 
-							echo '<span class="ERRmsg">'.i18n_r('NOT_WRITABLE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 
+							echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('NOT_WRITABLE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 
 							$errorCnt++;											
 						} 
 						echo '</td></tr>';
@@ -352,7 +374,7 @@ echo '<div class="bodycontent clearfix">
 		<?php 
 		include('template/sidebar-support.php'); 
 		if($errorCnt > 0){
-			echo '<div id="hc_alert">'.i18n_r('STATUS').': <span class="label label-error">'.i18n_r('ERROR').'</span></div>';
+			echo '<div id="hc_alert">'.i18n_r('STATUS').': <a href="#error"><span class="label label-error">'.i18n_r('ERROR').'</span></a></div>';
 		}
 		?>
 	</div>	

@@ -267,6 +267,7 @@ $i18n = array(
 "NOT_INSTALLED"           =>	"Not Installed",
 "WARNING"                 =>	"Warning",
 "DATA_FILE_CHECK"         =>	"Data File Integrity Check",
+"PAGE_FILE_CHECK"         =>	"Page File Integrity Check",
 "DIR_PERMISSIONS"         =>	"Directory Permissions",
 "EXISTANCE"               =>	"%s Existence",
 "MISSING_FILE"            =>	"Missing file",
