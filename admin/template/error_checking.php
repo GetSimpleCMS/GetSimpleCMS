@@ -37,7 +37,7 @@
 			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_REQ_PROC_FAIL').'</p></div>';
 		break;
 		case 'edit-success':
-			echo '<div class="updated"><p>';
+			echo '<div class="updated notify_success"><p>';
 			if ($ptype == 'edit') { 
 				echo sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>';
 			} elseif ($ptype == 'restore') {
@@ -87,7 +87,7 @@
 			elseif (isset($_GET['cancel'])) echo '<div class="error"><p>'.i18n_r('ER_CANCELLED_FAIL').'</p></div>';
 			elseif (isset($error)) echo '<div class="error"><p>'.$error.'</div>';
 			elseif (!empty($err)) echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '.$err.'</p></div>';
-			elseif (isset($success)) echo '<div class="updated"><p>'.$success.'</p></div>';
+			elseif (isset($success)) echo '<div class="notify notify_success"><p>'.$success.'</p></div>';
 			elseif ( $restored == 'true') 
 				echo '<div class="updated"><p>'.i18n_r('ER_OLD_RESTORED').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a></p></div>';
 		break;

@@ -645,12 +645,13 @@ h5:hover img {
 /* sidebar plugins seperator */
 #sidebar .snav li.last_sb + li.plugin_sb:before, #sidebar hr
 {
-	margin: 3px 3px 3px 16px;
+	margin: 4px 3px 4px 16px;
 	border:none;
-	border-bottom: 1px solid <?php echo $primary_6; ?>;
+	border-bottom: 1px solid <?php echo $primary_0; ?>;
 	content: "";
 	display: block;
 	border-width: thin;
+	opacity: 0.2;
 }
 /**/
 
@@ -727,7 +728,7 @@ h5:hover img {
 .edit-nav a:visited {
 	line-height: 14px;
 	background-color: <?php echo $primary_1; ?>;
-	color: #ccc;
+	color: <?php echo $primary_6; ?>;
 	font-weight: bold;
 	text-decoration: none;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.2);
@@ -1408,7 +1409,8 @@ table.comptable label {
  *
  * alerts are now notifications
  * use notify and notify_type
- * .error and .upddated are still supported for legacy alerts
+ * .error and .upddated are DEPRECATED but still supported for legacy alerts
+ * use "notify notify_error" etc.
  *
  */
 
@@ -1426,11 +1428,10 @@ table.comptable label {
 }
 
 .updated, .error, .notify {
-	border: 1px solid #E6DB55;
+	/*border: 1px solid #E6DB55;*/
 	border-radius: 2px;
-	background: #FFFBCC;
-		background: -moz-linear-gradient(top, #FFFBCC 0%, #FFFBC1 100%);	/* firefox */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFBCC), color-stop(100%,#FFFBC1));	/* webkit */
+	/*background: #FFFBCC;*/
+	background: <?php echo $notify_6; ?>;
 	line-height: 22px;
 	padding: 5px 10px;
 	margin-bottom: 20px;
@@ -1442,56 +1443,30 @@ table.comptable label {
 }
 
 .error, .notify_error {
-	color: #990000;
-	border-color: #cc0000;
-	background: #F9DFDD;
-		background: -moz-linear-gradient(top, #FCF0EF 0%, #F9DFDD 100%);	/* firefox */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FCF0EF), color-stop(100%,#F9DFDD));	/* webkit */
+	color: <?php echo $label_4; ?>;
+	background: <?php echo $notify_4; ?>;
 }
 
-.notify_ok {
-	border-color: #258815;
-	color: #258815;
-	background: #f0ffed;	/* Old browsers */
-		background: -moz-linear-gradient(top,  #f0ffed 0%, #dfffd7 100%);	/* FF3.6+ */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f0ffed), color-stop(100%,#dfffd7));	/* Chrome,Safari4+ */
-		background: -webkit-linear-gradient(top,  #f0ffed 0%,#dfffd7 100%);	/* Chrome10+,Safari5.1+ */
-		background: -o-linear-gradient(top,  #f0ffed 0%,#dfffd7 100%);	/* Opera 11.10+ */
-		background: -ms-linear-gradient(top,  #f0ffed 0%,#dfffd7 100%);	/* IE10+ */
-		background: linear-gradient(to bottom,  #f0ffed 0%,#dfffd7 100%);	/* W3C */
-		filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#f0ffed', endColorstr='#dfffd7',GradientType=0 );	/* IE6-9 */
+.notify_ok, .notify_success {
+	color: <?php echo $label_2; ?>;
+	background: <?php echo $notify_2; ?>;
 }
 
 .notify_info {
-	border-color: #2850C1;
-	color: #2850C1;
-	background: #edf4ff;	/* Old browsers */
-		background: -moz-linear-gradient(top,  #edf4ff 0%, #d7e7ff 100%);	/* FF3.6+ */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#edf4ff), color-stop(100%,#d7e7ff));	/* Chrome,Safari4+ */
-		background: -webkit-linear-gradient(top,  #edf4ff 0%,#d7e7ff 100%);	/* Chrome10+,Safari5.1+ */
-		background: -o-linear-gradient(top,  #edf4ff 0%,#d7e7ff 100%);	/* Opera 11.10+ */
-		background: -ms-linear-gradient(top,  #edf4ff 0%,#d7e7ff 100%);	/* IE10+ */
-		background: linear-gradient(to bottom,  #edf4ff 0%,#d7e7ff 100%);	/* W3C */
-		filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#edf4ff', endColorstr='#d7e7ff',GradientType=0 );	/* IE6-9 */
+	color: <?php echo $label_1; ?>;
+	background: <?php echo $notify_1; ?>;
 }
 
 .notify_warning {
-	border-color: #878314;
-	color: #878314;
-	background: #fffed5;	/* Old browsers */
-		background: -moz-linear-gradient(top,  #fffed5 0%, #fffdbf 100%);	/* FF3.6+ */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fffed5), color-stop(100%,#fffdbf));	/* Chrome,Safari4+ */
-		background: -webkit-linear-gradient(top,  #fffed5 0%,#fffdbf 100%);	/* Chrome10+,Safari5.1+ */
-		background: -o-linear-gradient(top,  #fffed5 0%,#fffdbf 100%);	/* Opera 11.10+ */
-		background: -ms-linear-gradient(top,  #fffed5 0%,#fffdbf 100%);	/* IE10+ */
-		background: linear-gradient(to bottom,  #fffed5 0%,#fffdbf 100%);	/* W3C */
-		filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#fffed5', endColorstr='#fffdbf',GradientType=0 );	/* IE6-9 */
+	color: <?php echo $label_3; ?>;
+	background: <?php echo $notify_3; ?>;	
 }
 
 .deletedrow {
 	background-color: #FFB19B;
 }
 
+/* what is this for , code inside a notify ? */
 .error code,
 .notify code {
 	color: #990000;
@@ -1502,11 +1477,6 @@ table.comptable label {
 	background: #fff;
 	opacity: .8;
 	padding: 1px;
-}
-
-.updated,
-#temp_good_flash {
-	color: #308000;
 }
 
 .hint {
@@ -1562,7 +1532,7 @@ a.updatelink {
 
 a.updatelink:hover {
 	color: #FFF;
-	background-color: #415A66;
+	background-color: <?php echo $primary_3; ?>;
 }
 
 .delete a:hover {
@@ -1795,7 +1765,7 @@ table.simple td.title {
 }
 
 .queue-item-wrap .queue-item .progress {
-	background-color: #FFF;
+	background-color: <?php echo $primary_4; ?>;;
 	margin-top: 5px;
 	width: 97%;
 }
@@ -1829,13 +1799,14 @@ table.simple td.title {
 .queue-item-wrap dz-process-mark
 {
 	display:none;
+	font-weight:bold;
 }
 
 /* processing */
 .queue-item-wrap.dz-processing .dz-process-mark{
 	display:inline;
-	color: #AFC5CF;
-	opacity:.8;
+	color: <?php echo $primary_6; ?>;
+	/*opacity:.8;*/
 }
 
 .queue-item-wrap.dz-success .dz-process-mark,
@@ -1847,25 +1818,26 @@ table.simple td.title {
 /* error */
 .queue-item-wrap.dz-error .dz-error-mark{
 	display: inline;
-	color: #D94136;
+	color: <?php echo $label_4; ?>;
 }
 
 /* error progressbar */
 .queue-item-wrap.dz-error .progress,
 .queue-item-wrap.dz-error .progress-bar
 {
-	background-color: #D94136;
+	background-color: <?php echo $label_4; ?>;
 }
 
 /* error message */
 .queue-item-wrap .dz-error-message{
-	color: #D94136;
+	color: <?php echo $label_4; ?>;
+	font-weight:bold;
 }
 
 /* success */
 .queue-item-wrap.dz-success .dz-success-mark{
 	display:inline;
-	color: #00CA00;
+	color: <?php echo $label_2; ?>;
 }
 
 #sidebar .snav li.upload {
@@ -1878,6 +1850,7 @@ table.simple td.title {
 	color: #FFF;
 	background: <?php echo $primary_1; ?>;
 	font-weight: 100;
+	text-shadow: 1px 1px 1px <?php echo $primary_1; ?>;
 }
 
 /* Image Editor Styles */

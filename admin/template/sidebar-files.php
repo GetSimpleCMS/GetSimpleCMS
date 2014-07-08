@@ -30,9 +30,9 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 			<div class="queue-item-wrap">
 				<div class="queue-item dz-preview dz-file-preview">
 					<div class="dz-filename">
-				    	<span class="dz-process-mark"><span>&#x25ba;</span></span>
-				    	<span class="dz-success-mark"><span>&#x2713;</span></span>
-						<span class="dz-error-mark">&#x2717;</span>
+				    	<span class="dz-process-mark"><span>&#x25ba;</span> </span>
+				    	<span class="dz-success-mark"><span>&#x2713;</span> </span>
+						<span class="dz-error-mark">&#x2717; </span>
 						<span class="dz-name" data-dz-name></span><span class="size"> (<span class="dz-size" data-dz-size></span>)</span>
 					</div>
 					<div class="dz-error-message"><span data-dz-errormessage></span></div>
@@ -113,7 +113,7 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 		myDropzone = new Dropzone("#gs-dropzone",{
 			clickable: '#fileuploadlink',
 			// dictDefaultMessage : '',
-			debug: false,
+			debug: false, // debugging
 			forceFallback: false,
 			maxFilesize: <?php echo $fileSizeLimitMB; ?>, // MB			
 			parallelUploads: 1, // can be bumped
@@ -214,7 +214,7 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 			var mockFile = { name: "Even_more_long_Very_Long_Filename", size: 12345 };
 			myDropzone.emit("addedfile", mockFile);
 			myDropzone.emit("processing", mockFile);			
-			myDropzone.emit("error", mockFile,'An Error occured');
+			myDropzone.emit("error", mockFile,'An Error Occured');
 
 			// myDropzone.emit("thumbnail", mockFile, "/image/url");
 			// If you use the maxFiles option, make sure you adjust it to the
