@@ -77,14 +77,7 @@ if (isset($_GET['undo'])) {
 	# perform undo
 	undo($file, GSUSERSPATH, GSBACKUSERSPATH);	
 	# redirect back to yourself to show the new restored data
-	redirect('profile.php?restored=true');
-}
-
-# was this page restored?
-if (isset($_GET['restored'])) { 
-	$restored = 'true'; 
-} else {
-	$restored = 'false';
+	redirect('profile.php?upd=profile-restored');
 }
 
 # was the form submitted?

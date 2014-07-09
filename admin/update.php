@@ -209,7 +209,6 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE'));
 </div> 
 </div><!-- Closes header -->
 <div class="wrapper">
-	<?php // include('template/error_checking.php'); ?>
 	
 	<div id="maincontent">
 		<div class="main" >

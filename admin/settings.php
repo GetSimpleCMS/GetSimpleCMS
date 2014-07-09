@@ -36,14 +36,7 @@ if (isset($_GET['undo'])) {
 	generate_sitemap();
 	
 	# redirect back to yourself to show the new restored data
-	redirect('settings.php?restored=true');
-}
-
-# was this page restored?
-if (isset($_GET['restored'])) { 
-	$restored = 'true'; 
-} else {
-	$restored = 'false';
+	redirect('settings.php?upd=settings-restored');
 }
 
 # was the form submitted?
