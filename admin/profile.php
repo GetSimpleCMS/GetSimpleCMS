@@ -17,7 +17,7 @@ $allowedit  = true; // tmp flag for edit permission
 $allowadd   = true; // tmp flag for create permission
 
 $showpermfail = true; // throw errors on failed permission attempts?
-$permerror = '';
+$permerror = '';      // init
 
 // @todo these flags will probably be implemented as functions that can be manipulated and called out
 // they will be context aware of the user being edited etc, to handle group heiracrhy and protected accounts
@@ -75,9 +75,10 @@ else {
 if (isset($_GET['undo'])) { 
 	check_for_csrf("undo");	
 	# perform undo
-	undo($file, GSUSERSPATH, GSBACKUSERSPATH);	
+	print_r('profile undoing ' . $file);
+	$success = undo($file, GSUSERSPATH, GSBACKUSERSPATH);
 	# redirect back to yourself to show the new restored data
-	redirect('profile.php?upd=profile-restored');
+	redirect('profile.php?upd=profile-restored&userid='.$userid);
 }
 
 # was the form submitted?
@@ -134,6 +135,8 @@ if(isset($_POST['submitted'])) {
 		$xml->addChild('TIMEZONE', $TIMEZONE);
 		$xml->addChild('LANG', $LANG);
 		
+		$data = $xml;
+
 		exec_action('settings-user');
 		
 		if (! XMLsave($xml, GSUSERSPATH . $file) ) {
@@ -144,7 +147,7 @@ if(isset($_POST['submitted'])) {
 		include(GSLANGPATH.$LANG.'.php'); // @todo: is this necessary, it could cause half of stuff to be one language and the rest another
 		
 		if (!$error) {
-			$success = sprintf(i18n_r('ER_YOUR_CHANGES'), $userid).'. <a href="profile.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>';
+			$success = sprintf(i18n_r('ER_YOUR_CHANGES'), $userid).'. <a href="profile.php?undo&nonce='.get_nonce("undo").'&userid='.$userid.'">'.i18n_r('UNDO').'</a>';
 		}
 
 		if($adding) exec_action('user-added');
@@ -153,7 +156,7 @@ if(isset($_POST['submitted'])) {
 }
 
 # are any of the control panel checkboxes checked?
-if ($HTMLEDITOR != '' ) { $editorchck = 'checked'; }
+if ($data->HTMLEDITOR != '' ) { $editorchck = 'checked'; }
 
 # get all available language files
 if ($LANG == ''){ $LANG = 'en_US'; }
@@ -163,7 +166,7 @@ if (count($lang_array) != 0) {
 	$sel = ''; $langs = '';
 	foreach ($lang_array as $lfile){
 		$lfile = basename($lfile,".php");
-		if ($LANG == $lfile) { $sel="selected"; }
+		if ($data->LANG == $lfile) { $sel="selected"; }
 		$langs .= '<option '.$sel.' value="'.$lfile.'" >'.$lfile.'</option>';
 		$sel = '';
 	}
@@ -202,14 +205,13 @@ $userheading = empty($userid) ? "<span> / ". i18n_r('NEW_USER') ."</span>" : "<s
 				<div class="leftsec">
 					<p><label for="name" ><?php i18n('LABEL_DISPNAME');?>:</label>
 					<span style="margin:0px 0 5px 0;font-size:12px;color:#999;" ><?php i18n('DISPLAY_NAME');?></span>			
-					<input class="text" id="name" name="name" type="text" value="<?php echo $NAME; ?>" /></p>
+					<input class="text" id="name" name="name" type="text" value="<?php echo $data->NAME; ?>" /></p>
 				</div>		
 				<div class="clear"></div>		
 				<div class="leftsec">
 					<p><label for="timezone" ><?php i18n('LOCAL_TIMEZONE');?>:</label>
-					<?php if( (isset($_POST['timezone'])) ) { $TIMEZONE = $_POST['timezone']; } ?>
 					<select class="text" id="timezone" name="timezone"> 
-					<?php if ($TIMEZONE == '') { echo '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>'; } else { echo '<option selected="selected"  value="'. $TIMEZONE .'">'. $TIMEZONE .'</option>'; } ?>
+					<?php if ($data->TIMEZONE == '') { echo '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>'; } else { echo '<option selected="selected"  value="'. $data->TIMEZONE .'">'. $data->TIMEZONE .'</option>'; } ?>
 					<?php include('inc/timezone_options.txt'); ?>
 					</select>
 					</p>

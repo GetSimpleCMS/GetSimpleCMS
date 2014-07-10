@@ -76,7 +76,7 @@
 			doNotify(i18n_r('ER_COMPONENT_REST').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
 		break;
 		case 'profile-restored':
-			doNotify(i18n_r('ER_OLD_RESTORED').'. <a href="profile.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
+			doNotify(i18n_r('ER_OLD_RESTORED').'. <a href="profile.php?undo&nonce='.get_nonce("undo").'&userid='.$userid.'">'.i18n_r('UNDO').'</a>','success');
 		break;
 		case 'settings-restored':
 			doNotify(i18n_r('ER_OLD_RESTORED').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
