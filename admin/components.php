@@ -86,6 +86,9 @@ if (isset($_GET['undo'])) {
 $data = getXML($path . $file);
 $componentsec = $data->item;
 $count= 0;
+
+// $componentsec = subval_sort($data->item,'title'); // sorted on save probably not necessary at this time
+
 if (count($componentsec) != 0) {
 	foreach ($componentsec as $component) {
 		$table .= '<div class="compdiv codewrap" id="section-'.$count.'"><table class="comptable" ><tr><td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="comptitle editable">'. stripslashes($component->title) .'</b></td>';
@@ -101,11 +104,12 @@ if (count($componentsec) != 0) {
 	}
 }
 	# create list to show on sidebar for easy access
-	$listc = ''; $submitclass = '';
+	$listc = $submitclass = '';
+	$stack = $count < 15 ? ' clear-left' : '';
 	if($count > 1) {
 		$item = 0;
 		foreach($componentsec as $component) {
-			$listc .= '<a id="divlist-' . $item . '" href="#section-' . $item . '" class="component">' . $component->title . '</a>';
+			$listc .= '<a id="divlist-' . $item . '" href="#section-' . $item . '" class="component'.$stack.' comp_'.$component->title.'">' . $component->title . '</a>';
 			$item++;
 		}
 	} elseif ($count == 0) {

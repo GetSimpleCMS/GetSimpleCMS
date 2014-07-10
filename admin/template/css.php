@@ -63,6 +63,14 @@ a img {
 	clear: both;
 }
 
+.clear-left {
+	clear: left;
+}
+
+.clear-right {
+	clear: right;
+}
+
 .unformatted {
 	white-space: pre;
 	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
@@ -514,6 +522,10 @@ h5:hover img {
 		-webkit-transition: top .2s ease-in-out;
 		-moz-transition: top .2s ease-in-out;
 		-o-transition: top .2s ease-in-out;
+}
+
+#components.sbfixed #sidebar{
+	z-index: 0 !important; /* allow codemirror to resize over fixed sidebar */
 }
 
 #sidebar .section {
@@ -2697,7 +2709,7 @@ a.disabled:visited {
 	border: 3px solid rgba(128,128, 128, .15);
     background-clip: padding-box !important; /* for IE9+, Firefox 4+, Opera, Chrome */
     -webkit-background-clip: padding-box !important; /* for Safari */
-    /*z-index: 1001;*/
+    z-index: 1;
     padding-bottom: 10px; /* padding for hscroll not obfuscate last line */
 }
 
