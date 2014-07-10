@@ -89,7 +89,7 @@ foreach($defaultcolors as $var => $color){
 if(empty($header_base)) $header_base = $primary_3;
 
 // notfication backgrounds with custom opacity
-$notify_opacity = '0.18';
+$notify_opacity = '0.1';
 $notify_0 = getRGBA($defaultcolors['label_0'],$notify_opacity);
 $notify_1 = getRGBA($defaultcolors['label_1'],$notify_opacity);
 $notify_2 = getRGBA($defaultcolors['label_2'],$notify_opacity);

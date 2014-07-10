@@ -377,6 +377,7 @@ $i18n = array(
 "ER_CANNOT_INDEX"         =>	"You cannot change the URL of the index page",
 "ER_SETTINGS_UPD"         =>	"Your settings have been updated",
 "ER_OLD_RESTORED"         =>	"Your old settings have been restored",
+"ER_PROFILE_RESTORED"     =>	"The Profile has been restored",
 "ER_NEW_PWD_SENT"         =>	"A new password has been sent to the email address provided",
 "ER_SENDMAIL_ERR"         =>	"There was a problem sending the email. Please try again",
 "ER_FILE_DEL_SUC"         =>	"File deleted successfully",

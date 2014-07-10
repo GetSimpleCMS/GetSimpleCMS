@@ -1332,7 +1332,7 @@ form.manyinputs p {
 table.comptable {
 	margin: 0 !important;
 	/*width: 645px;*/
-	background: #fff;
+	/*background: #fff;*/
 	border: none;
 	padding: 0;
 }
@@ -1415,16 +1415,17 @@ table.comptable label {
  */
 
 .fullscreen .notify{
-	position: absolute;
-	width: 100%;
-	margin: 0;
-	left: 0;
+	position: fixed;
+	width: 600px;
+	margin: 5px;
+	right: 60px;
 	opacity: 1;
 	top: 0;
-	background: rgba(0, 0, 0, 0.8);
+	background: rgba(119, 119, 119, 0.2);
 	z-index: 9999;
 	font-weight: bold;
 	border: none;
+	padding: 3px 9px;
 }
 
 .updated, .error, .notify {
@@ -2759,8 +2760,8 @@ a.disabled:visited {
 	position:absolute;
 	top: 5px;
 	right: 5px;
-	width: 16px;
-	height: 16px;
+	/*width: 16px;*/
+	/*height: 16px;*/
 }
 
 .CodeMirror .overlay_but_fullscrn a {
@@ -2782,6 +2783,10 @@ a.disabled:visited {
 		-o-transition: opacity 300ms;
 		-ms-transition: opacity 300ms;
 	transition: opacity 300ms;
+}
+
+.fullscreen .CodeMirror .overlay_but_fullscrn a{
+	font-size:27px;
 }
 
 .CodeMirror .overlay_but_fullscrn a.scrolled {

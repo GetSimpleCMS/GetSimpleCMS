@@ -20,18 +20,16 @@
 	}
 
 	if(!isset($update)) $update = '';
-	$err      = '';
-	// $restored = '';
 	if(isset($_GET['upd'])) 	$update  = var_in($_GET['upd']);
 	if(isset($_GET['success'])) $success = var_in($_GET['success']);
 	if(isset($_GET['error'])) 	$error   = var_in($_GET['error']);
-	if(isset($_GET['err'])) 	$err     = var_in($_GET['err']);
+	// if(isset($_GET['err'])) 	$err     = var_in($_GET['err']); // deprecated not used
 	if(isset($_GET['id'])) 		$errid   = var_in($_GET['id']);
-	if(isset($_GET['updated']) && $_GET['updated'] == 1) $success = i18n_r('SITE_UPDATED');
+	if(isset($_GET['updated']) && $_GET['updated'] == 1) $success = i18n_r('SITE_UPDATED'); // for update.php only
 
 	switch ( $update ) {
 		case 'bak-success':
-			doNotify(sprintf(i18n_r('ER_BAKUP_DELETED'), $errid) .'</p></div>');
+			doNotify(sprintf(i18n_r('ER_BAKUP_DELETED'), $errid) .'</p>','success');
 		break;
 		case 'bak-err':
 			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_REQ_PROC_FAIL'),'error');
@@ -55,7 +53,7 @@
 			doNotify('<b>'.i18n_r('ERROR').':</b> '. var_out($ptype),'error');
 		break;
 		case 'pwd-success':
-			doNotify(i18n_r('ER_NEW_PWD_SENT').'. <a href="index.php">'.i18n_r('LOGIN').'</a>');
+			doNotify(i18n_r('ER_NEW_PWD_SENT').'. <a href="index.php">'.i18n_r('LOGIN').'</a>','info');
 		break;
 		case 'pwd-error':
 			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_SENDMAIL_ERR').'.','error');
@@ -94,7 +92,7 @@
 	}
 
 	function doNotify($msg, $type = '', $persist = false){
-		echo '<div class="notify '. ($type == '' ? '' : 'notify_'.$type.' ') . ($persist ? 'remove' : '') . '"><p>'.$msg.'</p></div>';
+		echo '<div class="updated notify '. ($type == '' ? '' : 'notify_'.$type.' ') . ($persist ? 'remove' : '') . '"><p>'.$msg.'</p></div>';
 	}
 
 /* ?> */
