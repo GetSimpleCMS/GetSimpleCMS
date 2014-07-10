@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /**
  * Settings
  *
@@ -193,7 +194,7 @@ $userheading = empty($userid) ? "<span> / ". i18n_r('NEW_USER') ."</span>" : "<s
 				</div>
 				<div class="rightsec">
 					<p><label for="email" ><?php i18n('LABEL_EMAIL');?>:</label><input class="text" id="email" name="email" type="email" value="<?php echo $data->EMAIL; ?>" /></p>
-					<?php if (! check_email_address($EMAIL)) {
+					<?php if (! check_email_address($data->EMAIL)) {
 						echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.i18n_r('WARN_EMAILINVALID').'</p>';
 					}?>
 				</div>
@@ -249,4 +250,6 @@ $userheading = empty($userid) ? "<span> / ". i18n_r('NEW_USER') ."</span>" : "<s
 
 </div>
 
-<?php get_template('footer'); ?>
+<?php
+get_template('footer'); 
+/* ?> */
