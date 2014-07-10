@@ -2,14 +2,14 @@
 /**
  * Error Checking
  *
- * Displays error and success messages	
+ * Displays error and success messages
  *
  * @package GetSimple
- *  
+ *
  * You can pass $update(global) directly if not using a redirrect and querystring
  *
  */
- 	
+
  	// do not use these alerts if ajax requests as they will not be seen, and interfere with other alerts
 	if ( !requestIsAjax() && file_exists(GSUSERSPATH._id($USR).".xml.reset") && get_filename_id()!='index' && get_filename_id()!='resetpassword' ) {
 		echo '<div class="error"><p>'.i18n_r('ER_PWD_CHANGE').'</p></div>';
@@ -74,13 +74,13 @@
 			doNotify(i18n_r('ER_COMPONENT_REST').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
 		break;
 		case 'profile-restored':
-			doNotify(i18n_r('ER_OLD_RESTORED').'. <a href="profile.php?undo&nonce='.get_nonce("undo").'&userid='.$userid.'">'.i18n_r('UNDO').'</a>','success');
+			doNotify(i18n_r('ER_PROFILE_RESTORED').'. <a href="profile.php?undo&nonce='.get_nonce("undo").
+				'&userid='.$userid.'">'.i18n_r('UNDO').'</a>','success');
 		break;
 		case 'settings-restored':
 			doNotify(i18n_r('ER_OLD_RESTORED').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
 		break;
-		
-		/**/
+
 		default:
 			if ( isset( $error ) )          doNotify('<b>'.i18n_r('ERROR').':</b> '. $error,'error');
 			elseif (isset($_GET['cancel'])) doNotify(i18n_r('ER_CANCELLED_FAIL'),'error');
@@ -88,7 +88,6 @@
 			elseif (!empty($err))           doNotify('<b>'.i18n_r('ERROR').':</b> '.$err,'error');
 			elseif (isset($success))        doNotify($success,'success');
 		break;
-		/**/
 	}
 
 	function doNotify($msg, $type = '', $persist = false){
