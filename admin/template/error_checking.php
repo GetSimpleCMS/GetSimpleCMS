@@ -82,9 +82,9 @@
 		break;
 
 		default:
-			if ( isset( $error ) )          doNotify('<b>'.i18n_r('ERROR').':</b> '. $error,'error');
+			if     (isset($error))          doNotify('<b>'.i18n_r('ERROR').':</b> '. $error,'error');
 			elseif (isset($_GET['cancel'])) doNotify(i18n_r('ER_CANCELLED_FAIL'),'error');
-			elseif (isset($error))          doNotify($error,'error');
+			elseif (isset($_GET['logout'])) doNotify(i18n_r('MSG_LOGGEDOUT'),'info');
 			elseif (!empty($err))           doNotify('<b>'.i18n_r('ERROR').':</b> '.$err,'error');
 			elseif (isset($success))        doNotify($success,'success');
 		break;
