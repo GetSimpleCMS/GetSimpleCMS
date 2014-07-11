@@ -88,18 +88,25 @@ foreach($defaultcolors as $var => $color){
 // set default header_base to primary_3
 if(empty($header_base)) $header_base = $primary_3;
 
-// notfication backgrounds with custom opacity
-$notify_opacity = '0.1';
-$notify_0 = getRGBA($defaultcolors['label_0'],$notify_opacity);
-$notify_1 = getRGBA($defaultcolors['label_1'],$notify_opacity);
-$notify_2 = getRGBA($defaultcolors['label_2'],$notify_opacity);
-$notify_3 = getRGBA($defaultcolors['label_3'],$notify_opacity);
-$notify_4 = getRGBA($defaultcolors['label_4'],$notify_opacity);
-$notify_5 = getRGBA($defaultcolors['label_5'],$notify_opacity);
-$notify_6 = getRGBA($defaultcolors['label_6'],$notify_opacity);
+$labelAlphas = "\n";
+// generate notfication and label backgrounds with custom opacities
+for($i=0;$i<7;$i++){
+	$var  = 'notify_'.$i;
+	$$var = getRGBA($defaultcolors['label_'.$i],'0.1');
+
+	$alphas = array('0.8','0.5','0.1');
+	foreach($alphas as $alpha){
+		$labelAlphas .= '.label_'.$i.'_'.floor($alpha*100).' {background-color: '.getRGBA($defaultcolors['label_'.$i],$alpha)."!important ;}\n";
+	}
+	$labelAlphas .= "\n";
+}
 
 // include main css file css.php
 include(GSCSSMAINFILE);
+
+// output label alphas
+echo "/* label alphas */\n";
+echo $labelAlphas;
 
 // if GSTYLEWIDE ( default )
 if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ){

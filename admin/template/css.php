@@ -159,6 +159,11 @@ html {
 	border: none;
 }
 
+.header .sitename .icon{
+	font-size: 10px;
+	opacity: .5;
+}
+
 .wrapper .nav {
 	list-style: none;
 	font-size: 13px;
@@ -266,7 +271,8 @@ html {
 	text-decoration: none !important;
 	display: block;
 	border-radius: 0 3px 3px 0;
-	border-left: 1px solid <?php echo $primary_3; ?>;
+	/*border-left: 1px solid <?php echo $primary_3; ?>;*/
+	margin-left:1px;
 }
 
 .wrapper .nav li.rightnav a.last {
@@ -278,7 +284,7 @@ html {
 	margin-left:4px;
 }
 
-.wrapper .nav li.rightnav a.label {
+.wrapper li.rightnav a.label {
 	padding: 3px 4px;
 	background-color: none;
 	display: inline-block;
@@ -295,14 +301,14 @@ html {
     -webkit-box-sizing: border-box;
 }
 
-.wrapper .nav li.rightnav a.label:hover {
+.wrapper li.rightnav a.label:hover {
 	border: 1px solid rgba(0,0,0,0.8);
 	box-shadow: rgba(0,0,0, 0.3) 0 0 4px;
 	opacity:.9;
 	transition: all;
 }
 
-.wrapper .nav li.rightnav a.label.label-ghost {
+.wrapper li.rightnav a.label.label-ghost {
 	background-color: rgba(0, 0, 0, 0.3) !important;
 }
 
@@ -367,13 +373,18 @@ html {
 	float: right;
 }
 
+.wrapper #pill li a:link{
+	background-color: rgba(0,0,0,0.6);
+}
+
 .wrapper #pill li.leftnav a {
 	padding: 4px 10px;
 	font-weight: 100 !important;
 	text-decoration: none !important;
 	display: block;
 	border-radius: 0 0 3px 0;
-	border-left: 1px solid <?php echo $primary_3; ?>;
+	/*border-left: 1px solid <?php echo $primary_3; ?>;*/
+	margin-left:1px;
 }
 
 .wrapper #pill li.rightnav a {
