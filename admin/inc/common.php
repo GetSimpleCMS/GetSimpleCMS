@@ -365,13 +365,18 @@ include_once(GSADMININCPATH.'assets.php');
 
 if(isset($load['plugin']) && $load['plugin']){
 
-	// load plugins
+	// load plugins functions
 		$live_plugins = array();  // global array for storing active plugins
 		include_once(GSADMININCPATH.'plugin_functions.php');
+
+	// include core plugin for page caching, requires plugin functions for hooks
+		include_once('caching_functions.php'); 
+
+	// Include plugins files in global scope
 		loadPlugins();
 		foreach ($live_plugins as $file=>$en) {
 			if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
-				require_once(GSPLUGINPATH . $file); // include plugins in global scope
+				require_once(GSPLUGINPATH . $file);
 			}
 		}
 		exec_action('plugins-loaded');
@@ -384,9 +389,6 @@ if(isset($load['plugin']) && $load['plugin']){
 			include_once('api.plugin.php');
 		}
 	}
-
-	# include core plugin for page caching
-	include_once('caching_functions.php');
 
 	# main hook for common.php
 	exec_action('common');
