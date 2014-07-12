@@ -33,7 +33,10 @@ $GS_constants = array(
 	'GSSTYLE_SBFIXED'       => 'sbfixed',      // fixed sidebar
 	'GSCSSMAINFILE'         => 'css.php',
 	'GSCSSCUSTOMFILE'       => 'admin.css',
-	'GSCONSTANTSLOADED'     => true          // loaded flag
+	'GSFRONT'               => 1,
+	'GSBACK'                => 2,
+	'GSBOTH'                => 3,
+	'GSCONSTANTSLOADED'     => true          // $GS_constants IS LOADED FLAG
 );
 
 $GS_definitions = array(
@@ -47,10 +50,11 @@ $GS_definitions = array(
 	'GSWIDTH'              => '1024px',       // pagewidth on backend, widths implemented as max-width, defaults to 100%
 	'GSWIDTHWIDE'          => '1366px',       // page width on backend pages defined in GSWIDEPAGES
 	'GSWIDEPAGES'          => 'theme-edit,components', // pages to apply GSWIDTHWIED on
-	'GSALLOWLOGIN'         => true,           // allow front end login
-	'GSALLOWRESETPASS'     => true,           // allow front end login
+	'GSALLOWLOGIN'         => true,           // (bool) allow front end login
+	'GSALLOWRESETPASS'     => true,           // (bool) allow front end login
 	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // file extensions to show and edit in theme editor
-	'GSDEFINITIONSLOADED'  => true            // loaded flag
+	'GSASSETSCHEMES'       => false,          // (bool) should $ASSETURL contian the url scheme http|https
+	'GSDEFINITIONSLOADED'  => true            // $GS_definitions IS LOADED FLAG
 );
 
 /* Define Constants */
@@ -62,6 +66,7 @@ GS_defineFromArray($GS_constants);
 global
  $SITENAME,       // (str) sitename setting
  $SITEURL,        // (str) siteurl setting
+ $ASSETURL,       // (str) siteurl asset url (protocolless) ://
  $TEMPLATE,       // (str) current theme
  $TIMEZONE,       // (str) current timezone either from config or user
  $LANG,           // (str) settings language
@@ -75,9 +80,9 @@ global
  $nocache,        // (bool) disable site wide cache true, not fully implemented
  $microtime_start,// (microtime) used for benchmark timers
  $pagesArray,     // (array) page cache array, used for all page fields aside from content
- $pageCacheXml,    // (obj) page cache raw xml simpleXMLobj
+ $pageCacheXml,   // (obj) page cache raw xml simpleXMLobj
  $plugins_info,
- $live_plugins,
+ $live_plugins,   // (array)
  $plugins,
  $filters,
  $GS_scripts,
@@ -177,7 +182,7 @@ if (version_compare(PHP_VERSION, "5")  >= 0) {
  */
 
 // charset utf-8
-if(get_filename_id() != 'style' ) header('content-type: text/html; charset=utf-8');
+header('content-type: text/html; charset=utf-8');
 
 // no-cache headers
 if(!is_frontend()){
@@ -199,14 +204,17 @@ $thisfilew = GSDATAOTHERPATH .'website.xml';
 if (file_exists($thisfilew)) {
 	$dataw      = getXML($thisfilew);
 	$SITENAME   = stripslashes($dataw->SITENAME);
-	$SITEURL    = $dataw->SITEURL;
-	$TEMPLATE   = $dataw->TEMPLATE;
-	$PRETTYURLS = $dataw->PRETTYURLS;
-	$PERMALINK  = $dataw->PERMALINK;
+	$SITEURL    = (string) $dataw->SITEURL;
+	$TEMPLATE   = (string) $dataw->TEMPLATE;
+	$PRETTYURLS = (string) $dataw->PRETTYURLS;
+	$PERMALINK  = (string) $dataw->PERMALINK;
 } else {
 	$SITENAME = '';
 	$SITEURL  = '';
 }
+
+$ASSETURL = getDef('GSASSETSCHEMES',true) !==true ? str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL) : $SITEURL; 
+debugLog($ASSETURL);
 
 /** grab user data */
 
@@ -215,9 +223,9 @@ if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 	if (file_exists(GSUSERSPATH . $cookie_user_id.'.xml')) {
 		$datau      = getXML(GSUSERSPATH  . $cookie_user_id.'.xml');
 		$USR        = stripslashes($datau->USR);
-		$HTMLEDITOR = $datau->HTMLEDITOR;
-		$TIMEZONE   = $datau->TIMEZONE;
-		$LANG       = $datau->LANG;
+		$HTMLEDITOR = (string) $datau->HTMLEDITOR;
+		$TIMEZONE   = (string) $datau->TIMEZONE;
+		$LANG       = (string) $datau->LANG;
 	} else {
 		$USR = null;
 	}
@@ -353,15 +361,22 @@ if (notInInstall()) {
  * Include other files depending if they are needed or not
  */
 include_once(GSADMININCPATH.'cookie_functions.php');
+include_once(GSADMININCPATH.'assets.php');
 
 if(isset($load['plugin']) && $load['plugin']){
-	# remove the pages.php plugin if it exists.
-	if (file_exists(GSPLUGINPATH.'pages.php'))	{
-		unlink(GSPLUGINPATH.'pages.php');
-	}
 
-	include_once(GSADMININCPATH.'plugin_functions.php');
+	// load plugins
+		$live_plugins = array();  // global array for storing active plugins
+		include_once(GSADMININCPATH.'plugin_functions.php');
+		loadPlugins();
+		foreach ($live_plugins as $file=>$en) {
+			if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
+				require_once(GSPLUGINPATH . $file); // include plugins in global scope
+			}
+		}
+		exec_action('plugins-loaded');
 
+	// load api
 	if(get_filename_id()=='settings' || get_filename_id()=='load') {
 		/* this core plugin only needs to be visible when you are viewing the
 		settings page since that is where its sidebar item is. */
@@ -394,6 +409,7 @@ if(GSBASE) include_once(GSADMINPATH.'base.php');
 function debugLog($txt = '') {
 	global $GS_debug;
 	array_push($GS_debug,$txt);
+	return $txt;
 }
 
 /**

@@ -7,10 +7,11 @@
  * @subpackage init
  */
 
-header('Content-type: text/css');
 
 $load['plugin'] = true;
 include('../inc/common.php');
+
+header('Content-type: text/css',true);
 
 $offset = 30000;
 #header ('Cache-Control: max-age=' . $offset . ', must-revalidate');

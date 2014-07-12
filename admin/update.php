@@ -80,6 +80,11 @@ foreach($create_dirs as $dir){
 	}
 }
 
+# remove the pages.php plugin if it exists.
+if (file_exists(GSPLUGINPATH.'pages.php'))	{
+	unlink(GSPLUGINPATH.'pages.php');
+}
+
 /* check for legacy version of user.xml */
 if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	
