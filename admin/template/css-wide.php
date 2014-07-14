@@ -1,14 +1,9 @@
-<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); } ?>
+<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 
 /** CSS **/
-
-/*
- * CSS wide
- */
-
+?>
+/* CSS-wide.php */
 /* <style> */
-
-
 body{
 	margin:0 15px;
 }

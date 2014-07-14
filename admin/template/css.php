@@ -1,4 +1,4 @@
-<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); } ?>
+<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); } 
 
 /** CSS **/
 
@@ -12,6 +12,8 @@
  *
  */
 
+?>
+/** css.php **/
 /* <style> */
 
 /** GLOBAL RESETS **/

@@ -857,20 +857,22 @@ function strip_decode($text) {
 }
 
 /**
- * Safe Pathinfo Filename
+ * Safe Pathinfo Filename, pathinfo php 5.2 compatability wrapper
  *
  * for backwards compatibility for before PHP 5.2
  *
  * @since 3.0
  * @author madvic
  *
+ * @todo remove shim support, min requirements is php 5.2
  * @param string $file
  * @return string
  */
 function pathinfo_filename($file) {
 	if (getDef('PATHINFO_FILENAME')) return pathinfo($file,PATHINFO_FILENAME);
-	$path_parts = pathinfo($file);
 
+	// php 5.2 support
+	$path_parts = pathinfo($file);
 	if(isset($path_parts['extension']) && ($file!='..')){
 		return substr($path_parts['basename'],0 ,strlen($path_parts['basename'])-strlen($path_parts['extension'])-1);
 	} else{
