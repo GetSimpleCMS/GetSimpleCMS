@@ -374,7 +374,7 @@ html {
 }
 
 .wrapper #pill li a:link{
-	background-color: rgba(0,0,0,0.6);
+	background-color: rgba(0,0,0,0.4);
 }
 
 .wrapper #pill li.leftnav a {

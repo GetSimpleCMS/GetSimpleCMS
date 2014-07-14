@@ -38,7 +38,7 @@ echo '<div class="bodycontent clearfix">
 				# check to see if there is a core update needed
 				$verdata   = getVerCheck();
 				$verstatus = $verdata->status;
-				$verstatus = $_GET['status']; // debugging
+				// $verstatus = $_GET['status']; // debugging
 				$verstring = sprintf(i18n_r('CURR_VERSION'),'<b>'.$site_version_no.'</b>').'<hr>';
 				if ($verstatus == '0') {
 					// upgrade recomended
