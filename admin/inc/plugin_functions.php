@@ -70,6 +70,8 @@ function loadPluginData(){
  * register the plugins that are not enabled
  * api checks are only done on plugins page
  *
+ * @todo disabled plugins have a version of (str) 'disabled', should be 0 or null, leaving alone for now for legacy support
+ *
  * @since 3.4.0
  * @uses $live_plugins;
  * @param  bool $apilookup lookup filename in api to get name and desc
@@ -107,16 +109,17 @@ function registerInactivePlugins($apilookup = false){
  * @since 2.04
  * @uses $live_plugins
  *
- * @param $name
- * @param $active bool default=null, sets plugin active | inactive else toggle
+ * @param str  $name pluginid
+ * @param bool $active default=null, sets plugin active or inactive, default=toggle
  */
 function change_plugin($name,$active=null){
-	global $live_plugins;   
+	global $live_plugins;
 
+	$name = pathinfo_filename($name).'.php'; // normalize to pluginid
 	if (isset($live_plugins[$name])){
 		// set plugin active | inactive
 		if(isset($active) and is_bool($active)) {
-			$live_plugins[$name] = $active ? 'true' : 'false';	  		
+			$live_plugins[$name] = $active ? 'true' : 'false';
 			create_pluginsxml(true);
 			return;
 		}
@@ -130,6 +133,19 @@ function change_plugin($name,$active=null){
 
 		create_pluginsxml(true); // save change; @todo, currently reloads all files and recreates entire xml not just node, is wasteful
 	}
+}
+
+/**
+ * plugin_active
+ * determine if a plugin is active
+ *
+ * @since 3.4.0
+ * @param  string $pluginid
+ * @return bool   returns true if active
+ */
+function plugin_active($pluginid){
+	GLOBAL $live_plugins;
+	return isset($live_plugins[$pluginid.'.php']) && ($live_plugins[$pluginid.'.php'] == 'true' || $live_plugins[$pluginid.'.php'] === true);
 }
 
 
@@ -177,15 +193,16 @@ function read_pluginsxml($data = null){
  *
  */
 function create_pluginsxml($force=false){
-	GLOBAL $live_plugins;   
+	GLOBAL $live_plugins;
+
 	$pluginfiles = array();
-	$success = false;
+	$success     = false;
 
 	if (file_exists(GSPLUGINPATH)){
 		$pluginfiles = getFiles(GSPLUGINPATH,'php');
-	} 
+	}
 	else return; // plugin files path issue
-	
+
 	if (!$force) {
 		$livekeys = array_keys($live_plugins);
 		// check for file diff and use force to regen if count differs @todo better detection than just count
@@ -193,25 +210,25 @@ function create_pluginsxml($force=false){
 	  		$force = true;
 		}
 	}
-	
+
 	// create plugins.xml if missing or updating
 	if ($force) {
-		$xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>'); 
+		$xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
 		foreach ($pluginfiles as $fi) {
-			$plugins = $xml->addChild('item');  
+			$plugins = $xml->addChild('item');
 			$p_note  = $plugins->addChild('plugin');
 			$p_note->addCData($fi);
 			$p_note  = $plugins->addChild('enabled');
-			
+
 			// check live_plugins and set enables
 			if (isset($live_plugins[(string)$fi])){
-				$p_note->addCData($live_plugins[(string)$fi]);     
+				$p_note->addCData($live_plugins[(string)$fi]);
 			} else {
-				$p_note->addCData('false'); 
-			} 
+				$p_note->addCData('false');
+			}
 		}
 
-		$success = XMLsave($xml, GSDATAOTHERPATH."plugins.xml");  
+		$success = XMLsave($xml, GSDATAOTHERPATH."plugins.xml");
 		read_pluginsxml($xml);
 	}
 
@@ -354,7 +371,6 @@ function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $des
 		'page_type'   => $type,
 		'load_data'   => $loaddata
 	);
-
 }
 
 
@@ -397,6 +413,7 @@ function add_filter($filter_name, $added_function, $args = array()) {
 function exec_filter($script,$data=array()) {
 	global $filters;
 
+	if(!$filters) return;
 	foreach ($filters as $filter)	{
 		if ($filter['filter'] == $script) {
 			$key = array_search($script,$filters);
