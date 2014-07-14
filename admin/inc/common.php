@@ -100,14 +100,14 @@ if(isset($_GET['nocache'])){
  */
 if(!GSBASE){
 	if (file_exists(GSROOTPATH . GSCONFIGFILE)){
-		require_once(GSROOTPATH . GSCONFIGFILE);
+		include_once(GSROOTPATH . GSCONFIGFILE);
 	}
 }
 else {
 	$base = GSBASE; // LEGACY frontend flag DEPRECATED
 
 	// set loaders, if you want to override these do it your main common wrapper or index.php
-	if(!isset($load['plugin']))   $load['plugin'] = true;   // load plugin system
+	if(!isset($load['plugin']))   $load['plugin']   = true;   // load plugin system
 	if(!isset($load['template'])) $load['template'] = true; // load template system
 }
 
@@ -165,17 +165,17 @@ if(defined('GSERRORLOGENABLE') && (bool) GSERRORLOGENABLE === true){
 /**
  * Basic file inclusions
  */
-include('basic.php');
-include('template_functions.php');
-include('theme_functions.php');
-include('logging.class.php');
+require_once('basic.php');
+require_once('template_functions.php');
+require_once('theme_functions.php');
+require_once('logging.class.php');
 
-require_once(GSADMININCPATH.'configuration.php');
+include_once(GSADMININCPATH.'configuration.php');
 
 /**
  * Bad stuff protection
  */
-include_once('security_functions.php');
+require_once('security_functions.php');
 
 if (version_compare(PHP_VERSION, "5")  >= 0) {
 	foreach ($_GET as &$xss) $xss = antixss($xss);
@@ -362,27 +362,26 @@ if (notInInstall()) {
 /**
  * Include other files depending if they are needed or not
  */
-include_once(GSADMININCPATH.'cookie_functions.php');
-include_once(GSADMININCPATH.'assets.php');
+require_once(GSADMININCPATH.'cookie_functions.php');
+require_once(GSADMININCPATH.'assets.php');
 
 if(isset($load['plugin']) && $load['plugin']){
 
 	// load plugins functions
-		$live_plugins = array();  // global array for storing active plugins
-		include_once(GSADMININCPATH.'plugin_functions.php');
+	$live_plugins = array();  // global array for storing active plugins
+	include_once(GSADMININCPATH.'plugin_functions.php');
 
 	// include core plugin for page caching, requires plugin functions for hooks
-		include_once('caching_functions.php'); 
+	include_once('caching_functions.php');
 
 	// Include plugins files in global scope
-		loadPluginData();
-		foreach ($live_plugins as $file=>$en) {
-			if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
-				require_once(GSPLUGINPATH . $file);
-			}
+	loadPluginData();
+	foreach ($live_plugins as $file=>$en) {
+		if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
+			include_once(GSPLUGINPATH . $file);
 		}
-
-		exec_action('plugins-loaded');
+	}
+	exec_action('plugins-loaded');
 
 	// load api
 	if(get_filename_id()=='settings' || get_filename_id()=='load') {
@@ -398,10 +397,10 @@ if(isset($load['plugin']) && $load['plugin']){
 
 }
 
-if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ include_once(GSADMININCPATH.'login_functions.php'); }
+if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ require_once(GSADMININCPATH.'login_functions.php'); }
 
 // do the template rendering
-if(GSBASE) include_once(GSADMINPATH.'base.php');
+if(GSBASE) require_once(GSADMINPATH.'base.php');
 
 
 // common methods are immediatly available
