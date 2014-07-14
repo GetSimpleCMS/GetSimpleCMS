@@ -6,17 +6,48 @@
  * @subpackage Plugin-Functions
  */
 
+/**
+ * 
+ * 	global array for storing all plugins greated from plugins registerplugin() call
+ *	    $plugin_info[$id] = array(
+ *	       'name'        => $name,
+ *	       'version'     => $ver,
+ *	       'author'      => $auth,
+ *	       'author_url'  => $auth_url,
+ *	       'description' => $desc,
+ *	       'page_type'   => $type,
+ *	       'load_data'   => $loaddata
+ *	    );
+ *
+ *
+ *	global array for storing action hook callbacks
+ *	    $plugins[] = array(
+ *	       'hook'     => hookname,
+ *	       'function' => callback function name,
+ *	       'args'     => (array) arguments to pass to function,
+ *	       'file'     => caller filename obtained from backtrace,
+ *	       'line'     => caller line obtained from backtrace,
+ *	    );
+ *
+ *
+ *	global array for storing filter callbacks
+ *	$filters[] = array(
+ *	    'filter'   => filtername,
+ *	    'function' => callback function name,
+ *	    'args'     => (array) arguments for callback,
+ *	    'active'   => (bool) is processing anti-self-looping flag
+ *	);
+ *
+*/
 
 /**
  * Include any plugins, depending on where the referring 
  * file that calls it we need to set the correct paths. 
  *
- * @since  3.4
+ * @since  3.4.0
  * @uses  $live_plugins
 */
-function loadPlugins(){
-	GLOBAL $live_plugins, $pluginsLoaded;
-
+function loadPluginData(){
 	if (file_exists(GSPLUGINPATH)){
 		$pluginfiles = getFiles(GSPLUGINPATH);
 	} 
@@ -24,31 +55,48 @@ function loadPlugins(){
 	// Check if data\other\plugins.xml exists 
 	if (!file_exists(GSDATAOTHERPATH."plugins.xml")){
 		create_pluginsxml();
-	} 
+		registerInactivePlugins(get_filename_id() == 'plugins');
+		return true;
+	}
 
-	read_pluginsxml();        // get the live plugins into $live_plugins array
+	read_pluginsxml();  // get the live plugins into $live_plugins array
+	if(!is_frontend()) create_pluginsxml(get_filename_id() == 'plugins');  // only on backend check that plugin files have not changed, and regen
+	
+	registerInactivePlugins();
+	return true;
+}
 
-	if(!is_frontend()) create_pluginsxml();      // check that plugins have not been removed or added to the directory
+/**
+ * register the plugins that are not enabled
+ * api checks are only done on plugins page
+ *
+ * @since 3.4.0
+ * @uses $live_plugins;
+ * @param  bool $apilookup lookup filename in api to get name and desc
+ */
+function registerInactivePlugins($apilookup = false){
+	GLOBAL $live_plugins;
+	// load plugins into $plugins_info
 
-	// load each of the plugins in global scope
 	foreach ($live_plugins as $file=>$en) {
 		# debugLog("plugin: $file" . " exists: " . file_exists(GSPLUGINPATH . $file) ." enabled: " . $en); 
 		if ($en!=='true' || !file_exists(GSPLUGINPATH . $file)){
-			if(!is_frontend() and get_filename_id() == 'plugins'){
-		 		$apiback = get_api_details('plugin', $file);
+			if($apilookup){
+				// check api to get names of inactive plugins etc.
+		 		$apiback  = get_api_details('plugin', $file);
 		  		$response = json_decode($apiback);
+
 		  		if ($response and $response->status == 'successful') {
 					register_plugin( pathinfo_filename($file), $file, 'disabled', $response->owner, '', i18n_r('PLUGIN_DISABLED'), '', '');
 		  		} else {
 					register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', i18n_r('PLUGIN_DISABLED'), '', '');
 		  		}
+
 			} else {
 				register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', i18n_r('PLUGIN_DISABLED'), '', '');
 			}  
 		}
 	}
-
-	$pluginsLoaded = true;	// does anyone use this ?
 }
 
 /**
@@ -80,7 +128,7 @@ function change_plugin($name,$active=null){
 			$live_plugins[$name]="true";
 		}
 
-		create_pluginsxml(true);
+		create_pluginsxml(true); // save change; @todo, currently reloads all files and recreates entire xml not just node, is wasteful
 	}
 }
 
@@ -92,63 +140,70 @@ function change_plugin($name,$active=null){
  *
  * @since 2.04
  * @uses $live_plugins
+ * @param obj $data pass in xml data instead of using plugins.xml file load
  *
  */
-function read_pluginsxml(){
+function read_pluginsxml($data = null){
   	global $live_plugins;   
    
-	$data = getXML(GSDATAOTHERPATH . "plugins.xml");
+	if(!$data) $data = getXML(GSDATAOTHERPATH . "plugins.xml");
 	if($data){
-		$componentsec = $data->item;
-		if (count($componentsec) != 0) {
-			foreach ($componentsec as $component) {
-			  $live_plugins[trim((string)$component->plugin)]=trim((string)$component->enabled);
+   		$live_plugins= array(); // clean live_plugins
+		$pluginitem = $data->item;
+		if (count($pluginitem) != 0) {
+			foreach ($pluginitem as $plugin) {
+			  $live_plugins[trim((string)$plugin->plugin)]=trim((string)$plugin->enabled);
 			}
 		}
-	}
+
+		return true;
+	} 
 }
 
 
 /**
  * create_pluginsxml
  * 
- * If the plugins.xml file does not exists, read in each plugin 
- * and add it to the file. 
- * read_pluginsxml() is called again to repopulate $live_plugins
+ * Read in each plugin php file and add it to the plugins.xml file.
+ * read_pluginsxml() is called to populate $live_plugins
+ *
+ * Does nothing if force is false and no file diff found
+ * @todo  if this gets called before live plugins is loaded it will wipe your activated plugin state
  *
  * @since 2.04
  * @uses $live_plugins
  *
+ * @param  bool $force force an update of plugins.xml regardless of diff check
+ *
  */
 function create_pluginsxml($force=false){
-	global $live_plugins;   
-	$phpfiles = array();
+	GLOBAL $live_plugins;   
+	$pluginfiles = array();
+	$success = false;
 
 	if (file_exists(GSPLUGINPATH)){
-		$pluginfiles = getFiles(GSPLUGINPATH);
-	}
-	
-	foreach ($pluginfiles as $fi) {
-		if (lowercase(pathinfo($fi, PATHINFO_EXTENSION))=='php') {
-			$phpfiles[] = $fi;
-		}
-	}
+		$pluginfiles = getFiles(GSPLUGINPATH,'php');
+	} 
+	else return; // plugin files path issue
 	
 	if (!$force) {
 		$livekeys = array_keys($live_plugins);
-		if (count(array_diff($livekeys, $phpfiles))>0 || count(array_diff($phpfiles, $livekeys))>0) {
+		// check for file diff and use force to regen if count differs @todo better detection than just count
+		if (count(array_diff($livekeys, $pluginfiles))>0 || count(array_diff($pluginfiles, $livekeys))>0) {
 	  		$force = true;
 		}
 	}
 	
+	// create plugins.xml if missing or updating
 	if ($force) {
 		$xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>'); 
-		foreach ($phpfiles as $fi) {
+		foreach ($pluginfiles as $fi) {
 			$plugins = $xml->addChild('item');  
 			$p_note  = $plugins->addChild('plugin');
 			$p_note->addCData($fi);
 			$p_note  = $plugins->addChild('enabled');
 			
+			// check live_plugins and set enables
 			if (isset($live_plugins[(string)$fi])){
 				$p_note->addCData($live_plugins[(string)$fi]);     
 			} else {
@@ -156,9 +211,11 @@ function create_pluginsxml($force=false){
 			} 
 		}
 
-		XMLsave($xml, GSDATAOTHERPATH."plugins.xml");  
-		read_pluginsxml();
+		$success = XMLsave($xml, GSDATAOTHERPATH."plugins.xml");  
+		read_pluginsxml($xml);
 	}
+
+	return $success;
 }
 
 
@@ -281,13 +338,13 @@ function createNavTab($tabname, $id, $txt, $action = null) {
  * @param string $ver Optional, default is null. 
  * @param string $auth Optional, default is null. 
  * @param string $auth_url Optional, default is null. 
- * @param string $desc Optional, default is null. 
+ * @param string $desc Optional, default is null.
  * @param string $type Optional, default is null. This is the page type your plugin is classifying itself
- * @param string $loaddata Optional, default is null. This is the function that run on load
+ * @param string $loaddata Optional, default is null. This is the callback funcname to run on load.php
  */
 function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $desc=null, $type=null, $loaddata=null) {
 	global $plugin_info;
-	
+
 	$plugin_info[$id] = array(
 		'name'        => $name,
 		'version'     => $ver,
@@ -313,7 +370,6 @@ function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $des
  */
 function add_filter($filter_name, $added_function, $args = array()) {
   	global $filters;
-	global $live_plugins;   
 
 	$bt       = debug_backtrace();
 	$caller   = array_shift($bt);
@@ -340,6 +396,7 @@ function add_filter($filter_name, $added_function, $args = array()) {
  */
 function exec_filter($script,$data=array()) {
 	global $filters;
+
 	foreach ($filters as $filter)	{
 		if ($filter['filter'] == $script) {
 			$key = array_search($script,$filters);

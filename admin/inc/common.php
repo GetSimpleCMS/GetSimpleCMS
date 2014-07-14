@@ -75,18 +75,18 @@ global
  $USR,            // (str) holds the GS_ADMIN_USERNAME cookie value
  $PERMALINK,      // (str) permalink structure
  $GSADMIN,        // (str) admin foldername
- $GS_debug,       // (array) debug log entries are stored here
- $components,     // (array) components array, array of objs from components.xml
+ $GS_debug,       // (array) global array for storing debug log entries
+ $components,     // (array) global array for storing components, array of objs from components.xml
  $nocache,        // (bool) disable site wide cache true, not fully implemented
  $microtime_start,// (microtime) used for benchmark timers
- $pagesArray,     // (array) page cache array, used for all page fields aside from content
+ $pagesArray,     // (array) global array for storing pages cache, used for all page fields aside from content
  $pageCacheXml,   // (obj) page cache raw xml simpleXMLobj
- $plugins_info,
- $live_plugins,   // (array)
- $plugins,
- $filters,
- $GS_scripts,
- $GS_styles
+ $plugins_info,   // (array) contains registered plugin info for active and inactive plugins
+ $live_plugins,   // (array) contains plugin file ids and enable status
+ $plugins,        // (array) global array for storing action hook callbacks
+ $filters,        // (array) global array for storing action filter callbacks
+ $GS_scripts,     // (array) global array for storing queued asset scripts
+ $GS_styles       // (array) global array for storing queued asset styles
 ;
 
 if(isset($_GET['nocache'])){
@@ -354,7 +354,7 @@ if (notInInstall()) {
 		}
 	}
 
-		}
+}
 
 
 /**
@@ -373,12 +373,15 @@ if(isset($load['plugin']) && $load['plugin']){
 		include_once('caching_functions.php'); 
 
 	// Include plugins files in global scope
-		loadPlugins();
+		loadPluginData();
 		foreach ($live_plugins as $file=>$en) {
 			if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
 				require_once(GSPLUGINPATH . $file);
 			}
 		}
+
+		debugLog($plugin_info);	
+
 		exec_action('plugins-loaded');
 
 	// load api

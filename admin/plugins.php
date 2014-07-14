@@ -34,12 +34,13 @@ $needsupdate = false;
 // get all plugin files
 $pluginfiles = getFiles(GSPLUGINPATH,'php');
 natcasesort($pluginfiles);
+# @todo: why is this not using plugin_info directly?
 
 foreach ($pluginfiles as $fi) {
 	$pathName = pathinfo_filename($fi);
-	$setNonce = '&amp;nonce='.get_nonce("set","plugins.php");
-
 	$plugininfo = $plugin_info[$pathName];
+
+	$setNonce = '&amp;nonce='.get_nonce("set","plugins.php");
 
 	// @todo disabled plugins have a version of (str) 'disabled', should be 0 or null
 	$pluginver  = $plugininfo['version'] == 'disabled' ? 0 : $plugininfo['version'];
