@@ -46,6 +46,7 @@ $GS_definitions = array(
 	'GSSLUGPRIVATE'        => '403',          // http slug for private pages
 	'GSADMIN'              => 'admin',        // admin foldername
 	'GSERRORLOGFILE'       => 'errorlog.txt', // error log filename
+	'GSERRORLOGENABLE'     => true,           // (bool) should GS log php errors to GSERRORLOGFILE
 	'GSSTYLE'              => 'wide,sbfixed', // default style modifiers
 	'GSWIDTH'              => '1024px',       // pagewidth on backend, widths implemented as max-width, defaults to 100%
 	'GSWIDTHWIDE'          => '1366px',       // page width on backend pages defined in GSWIDEPAGES
@@ -114,7 +115,7 @@ else {
  * Apply default definitions
  */
 GS_defineFromArray($GS_definitions);
-$GSADMIN       = rtrim(GSADMIN,'/\\'); // global GS admin root folder name
+$GSADMIN = rtrim(GSADMIN,'/\\'); // global GS admin root folder name
 
 /**
  * Define some constants
@@ -143,19 +144,23 @@ $reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
 
 /**
  * Init debug mode
- * Enable php error logging
  */
-if(defined('GSDEBUG') and (bool)GSDEBUG == true) {
+if(defined('GSDEBUG') && (bool) GSDEBUG === true) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
 	$nocache = true;
-} else if( defined('SUPRESSERRORS') and (bool)SUPPRESSERRORS == true ) {
+} else if( defined('SUPRESSERRORS') && (bool)SUPPRESSERRORS === true ) {
 	error_reporting(0);
 	ini_set('display_errors', 0);
 }
 
-ini_set('log_errors', 1);
-ini_set('error_log', GSDATAOTHERPATH .'logs/'. GSERRORLOGFILE);
+/*
+ * Enable php error logging
+ */
+if(defined('GSERRORLOGENABLE') && (bool) GSERRORLOGENABLE === true){
+	ini_set('log_errors', 1);
+	ini_set('error_log', GSDATAOTHERPATH .'logs/'. GSERRORLOGFILE);
+}
 
 /**
  * Basic file inclusions
@@ -176,7 +181,6 @@ if (version_compare(PHP_VERSION, "5")  >= 0) {
 	foreach ($_GET as &$xss) $xss = antixss($xss);
 }
 
-
 /**
  * Headers
  */
@@ -192,7 +196,6 @@ if(!is_frontend()){
 	header("Pragma: no-cache");
 	header("Cache-Control: no-cache, must-revalidate");
 }
-
 
 /**
  * Pull data from storage
@@ -214,7 +217,6 @@ if (file_exists($thisfilew)) {
 }
 
 $ASSETURL = getDef('GSASSETSCHEMES',true) !==true ? str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL) : $SITEURL; 
-debugLog($ASSETURL);
 
 /** grab user data */
 
@@ -379,8 +381,6 @@ if(isset($load['plugin']) && $load['plugin']){
 				require_once(GSPLUGINPATH . $file);
 			}
 		}
-
-		debugLog($plugin_info);	
 
 		exec_action('plugins-loaded');
 
