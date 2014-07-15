@@ -181,29 +181,17 @@ html {
 	text-decoration: none !important;
 	display: block;
 	border-radius: 5px 5px 0 0;
+	color: <?php echo $primary_6; ?>;
+	background: <?php echo $primary_1; ?>;
+	text-shadow: 1px 1px 0 rgba(0,0,0,.3);	
 }
 
 /* @todo noooooo */
-.wrapper .nav li a:link,
-.wrapper .nav li a:visited,
-.wrapper #pill li a:link,
-.wrapper #pill li a:visited {
+.wrapper .nav li a,
+.wrapper .nav li a{
 	color: <?php echo $primary_6; ?>;
 	background: <?php echo $primary_1; ?>;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.3);
-}
-
-/* @todo noooooo */
-.wrapper #pill li.debug a:link,
-.wrapper #pill li.debug a:visited,
-.wrapper #pill li.debug a:hover {
-	color: #fff;
-	background: #cc0000;
-	padding: 4px 10px;
-	font-weight: 700 !important;
-	text-decoration: none !important;
-	display: block;
-	border-left: 1px solid <?php echo $primary_3; ?>;
 }
 
 /* @todo: noooooo */
@@ -247,9 +235,7 @@ html {
 
 .wrapper .nav li a:active,
 .wrapper .nav li a:focus,
-.wrapper .nav li a:hover,
-.wrapper #pill li a:hover,
-.wrapper #pill li a:focus {
+.wrapper .nav li a:hover{
 	color: #FFF;
 	background: <?php echo $primary_0; ?>;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.4);
@@ -363,6 +349,19 @@ html {
 	-webkit-transition: none;
 }
 
+.wrapper #pill li a {
+	color:#FFF;
+	background: #000;
+	opacity: 0.6;
+}
+
+.wrapper #pill li a:hover{
+	color: #FFF;
+	opacity: 0.8;
+	/*background: rgba(0,0,0,0.8);*/
+	text-shadow: 1px 1px 0 rgba(0,0,0,.4);
+}
+
 .wrapper #pill {
 	list-style: none;
 	position: absolute;
@@ -373,10 +372,6 @@ html {
 
 .wrapper #pill li {
 	float: right;
-}
-
-.wrapper #pill li a:link{
-	background-color: rgba(0,0,0,0.4);
 }
 
 .wrapper #pill li.leftnav a {
