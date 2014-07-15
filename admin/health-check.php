@@ -18,7 +18,8 @@ login_cookie_check();
 
 $php_modules = get_loaded_extensions();
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i18n_r('WEB_HEALTH_CHECK')); 
+$pagetitle = i18n_r('WEB_HEALTH_CHECK').' &middot; '.i18n_r('SUPPORT');
+get_template('header');
 
 $errorCnt = 0; // error counter, for error catch and flag
 

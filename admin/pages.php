@@ -81,7 +81,8 @@ foreach ($pagesArray as $key =>$page) {
 $pagesSorted = subval_sort($pagesArray_tmp,'sort');
 $table = get_pages_menu('','',0);
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); 
+$pagetitle = i18n_r('PAGE_MANAGEMENT');
+get_template('header');
 
 ?>
 

@@ -22,7 +22,8 @@ if ($sitemap !== true) {
 	}
 }
 
-get_template('header', cl($SITENAME).' &raquo; '.strip_tags(i18n_r('SIDE_VIEW_SITEMAP'))); 
+$pagetitle = strip_tags(i18n_r('SIDE_VIEW_SITEMAP'));
+get_template('header');
 
 ?>
 	

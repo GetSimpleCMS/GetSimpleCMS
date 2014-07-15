@@ -246,7 +246,8 @@ editor_recur_sort($files, 'editor_compareOrder'); // custom sort, dir,file,nat s
 
 $fileList = $template == '.' ? editor_array2ul($files,false,false) : editor_array2ul($files);
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); 
+$pagetitle = i18n_r('THEME_MANAGEMENT');
+get_template('header');
 
 include('template/include-nav.php');
 

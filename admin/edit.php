@@ -130,10 +130,10 @@ $sel_ri = $metarNoIndex == '1' ?   'checked'  : '';
 $sel_rf = $metarNoFollow == '1' ?  'checked'  : '';
 $sel_ra = $metarNoArchive == '1' ? 'checked'  : '';
 
-if ($menu == '') { $menu = $title; } 
+if ($menu == '') { $menu = $title; }
 
-$pagetitle = i18n_r('EDIT').' &middot; '.$title;
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title); 
+$pagetitle = empty($title) ? i18n_r('CREATE_NEW_PAGE') : i18n_r('EDIT').' &middot; '.$title;
+get_template('header');
 
 ?>
 

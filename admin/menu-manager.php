@@ -37,7 +37,8 @@ if (isset($_POST['menuOrder'])) {
 getPagesXmlValues();
 $pagesSorted = subval_sort($pagesArray,'menuOrder');
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT').' &raquo; '.str_replace(array('<em>','</em>'), '', i18n_r('MENU_MANAGER'))); 
+$pagetitle = strip_tags(i18n_r('MENU_MANAGER')).' &middot; '.i18n_r('PAGE_MANAGEMENT');
+get_template('header');
 
 ?>
 	

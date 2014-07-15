@@ -62,7 +62,8 @@ while ($file = readdir($themes_handle)) {
 	}
 }
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); 
+$pagetitle = i18n_r('THEME_MANAGEMENT');
+get_template('header');
 
 ?>
 	

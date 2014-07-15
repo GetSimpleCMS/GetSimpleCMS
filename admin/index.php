@@ -16,7 +16,8 @@ $load['plugin'] = true;
 ob_start();
 	include('inc/common.php');
 	if(!getDef('GSALLOWLOGIN',true)) redirect($SITEURL);
-	get_template('header', cl($SITENAME).' &raquo; '.i18n_r('LOGIN')); 
+	$pagetitle = i18n_r('LOGIN');
+	get_template('header');
 ob_end_flush();
 
 ?>

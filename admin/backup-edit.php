@@ -70,7 +70,8 @@ elseif ($p == 'restore') {
 	
 }
 
-get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &raquo; '.i18n_r('VIEWPAGE_TITLE')); 
+$pagetitle = i18n_r('BAK_MANAGEMENT').' &middot; '.i18n_r('VIEWPAGE_TITLE');
+get_template('header');
 
 ?>
 	

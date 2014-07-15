@@ -117,7 +117,8 @@ if (count($componentsec) != 0) {
 		
 	}
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('COMPONENTS')); 
+$pagetitle = i18n_r('COMPONENTS');
+get_template('header');
 	
 include('template/include-nav.php'); ?>
 

@@ -33,7 +33,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && strlen($log_name)>0
 
 if (!isset($log_data)) $log_data = getXML($log_file);
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i18n_r('LOGS')); 
+$pagetitle = i18n_r('LOGS').' &middot; '.i18n_r('SUPPORT');
+get_template('header');
 
 ?>
 	

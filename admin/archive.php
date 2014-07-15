@@ -34,7 +34,8 @@ if(isset($_GET['nozip'])) {
 	$error = i18n_r('NO_ZIPARCHIVE'). ' - <a href="health-check.php">'.i18n_r('WEB_HEALTH_CHECK').'</a>';
 }
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT').' &raquo; '.i18n_r('WEBSITE_ARCHIVES')); 
+$pagetitle = i18n_r('WEBSITE_ARCHIVES').' &middot; '.i18n_r('BAK_MANAGEMENT');
+get_template('header');
 
 ?>
 	

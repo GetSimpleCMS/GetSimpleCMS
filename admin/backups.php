@@ -78,7 +78,8 @@ if (count($pagesSorted) != 0)
 	}
 }	
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT')); 
+$pagetitle = i18n_r('BAK_MANAGEMENT');
+get_template('header');
 
 ?>
 	

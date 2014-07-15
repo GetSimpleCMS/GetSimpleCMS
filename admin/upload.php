@@ -139,7 +139,8 @@ if (isset($_GET['newfolder'])) {
 	}
 }
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT')); 
+$pagetitle = i18n_r('FILE_MANAGEMENT');
+get_template('header');
 
 // check if host uses Linux (used for displaying permissions
 $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);

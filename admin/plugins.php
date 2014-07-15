@@ -101,7 +101,8 @@ if ($needsupdate) {
 }
 
 exec_action('plugin-hook');
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PLUGINS_MANAGEMENT')); 
+$pagetitle = i18n_r('PLUGINS_MANAGEMENT');
+get_template('header');
 
 ?>
 	

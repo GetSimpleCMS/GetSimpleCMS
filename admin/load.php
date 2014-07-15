@@ -24,7 +24,8 @@ if (empty($_GET['id']) || !isset($plugin_info[$_GET['id']])) {
 # include the plugin
 $plugin_id = $_GET['id'];
 
-get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name']); 
+if(!isset($pagetitle)) $pagetitle = $plugin_info[$plugin_id]['name'];
+get_template('header');
 
 ?>
 	

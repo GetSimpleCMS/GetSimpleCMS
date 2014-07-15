@@ -171,7 +171,8 @@ if (count($lang_array) != 0) {
 	$langs = '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>';
 }
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('USER_PROFILE')); 
+$pagetitle = i18n_r('USER_PROFILE');
+get_template('header');
 
 $userheading = empty($userid) ? "<span> / ". i18n_r('NEW_USER') ."</span>" : "<span> / $userid </span>";
 

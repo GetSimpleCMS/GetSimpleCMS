@@ -77,7 +77,8 @@ if(isset($_POST['submitted'])){
 	}
 } 
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('RESET_PASSWORD')); 
+$pagetitle = i18n_r('RESET_PASSWORD');
+get_template('header');
 
 ?>
 </div>
