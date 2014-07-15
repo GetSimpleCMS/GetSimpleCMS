@@ -132,6 +132,7 @@ $sel_ra = $metarNoArchive == '1' ? 'checked'  : '';
 
 if ($menu == '') { $menu = $title; } 
 
+$pagetitle = i18n_r('EDIT').' &middot; '.$title;
 get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title); 
 
 ?>

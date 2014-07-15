@@ -6,7 +6,7 @@
  * @package GetSimple
  */
 
-global $SITENAME, $SITEURL, $GSADMIN, $themeselector, $HTMLEDITOR;
+global $SITENAME, $SITEURL, $GSADMIN, $themeselector, $HTMLEDITOR,$pagetitle;
 
 $GSSTYLE = getDef('GSSTYLE') ? GSSTYLE : '';
 $GSSTYLE_sbfixed = in_array('sbfixed',explode(',',$GSSTYLE));
@@ -18,6 +18,9 @@ if( $GSSTYLE_wide )    $bodyclass .= " wide";
 $bodyclass .="\"";
 
 if(get_filename_id()!='index') exec_action('admin-pre-header');
+
+if(!isset($pagetitle)) $pagetitle = i18n_r(get_filename_id().'_title');
+$title = $pagetitle.' &middot; '.cl($SITENAME);
 
 ?>
 <!DOCTYPE html>
