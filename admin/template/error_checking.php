@@ -12,11 +12,11 @@
 
  	// do not use these alerts if ajax requests as they will not be seen, and interfere with other alerts
 	if ( !requestIsAjax() && file_exists(GSUSERSPATH._id($USR).".xml.reset") && get_filename_id()!='index' && get_filename_id()!='resetpassword' ) {
-		echo '<div class="error"><p>'.i18n_r('ER_PWD_CHANGE').'</p></div>';
+		doNotify(sprintf(i18n_r('ER_PWD_CHANGE'),'profile.php'),'error');
 	}
 
 	if ( !requestIsAjax() && (!defined('GSNOAPACHECHECK') || GSNOAPACHECHECK == false) and !server_is_apache()) {
-		echo '<div class="error">'.i18n_r('WARNING').': <a href="health-check.php">'.i18n_r('SERVER_SETUP').' non-Apache</a></div>';
+		doNotify(i18n_r('WARNING').': <a href="health-check.php">'.i18n_r('SERVER_SETUP').' non-Apache</a>','info');
 	}
 
 	if(!isset($update)) $update = '';

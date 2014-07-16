@@ -368,7 +368,7 @@ $i18n = array(
 /* 
 * For: error_checking.php
 */
-"ER_PWD_CHANGE"           =>	"Don't forget to <a href=\"settings.php#profile\">change your password</a> from that random generated one you have now...",
+"ER_PWD_CHANGE"           =>	"Don't forget to <a href=\"%s\">change your password</a> from that random generated one you have now...",
 "ER_BAKUP_DELETED"        =>	"The backup has been deleted for <b>%s</b>",
 "ER_REQ_PROC_FAIL"        =>	"The requested process failed",
 "ER_YOUR_CHANGES"         =>	"Your changes to <b>%s</b> have been saved",
