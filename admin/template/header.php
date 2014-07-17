@@ -79,7 +79,6 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 
 	// js i18n tokens
 	$jsi18nkeys = array(
-		'PLUGIN_UPDATED',
 		'ERROR',
 		'EXPAND_TOP',
 		'COLLAPSE_TOP',

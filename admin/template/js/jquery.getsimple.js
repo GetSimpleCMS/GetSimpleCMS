@@ -533,7 +533,7 @@ jQuery(document).ready(function () {
 	 
 					// document.body.style.cursor = "default";
 					clearNotify();
-					notifyOk(i18n('PLUGIN_UPDATED')).popit().removeit();
+					notifyOk($(responseText).find('div.notify_success').html()).popit().removeit();
 					initLoaderIndicator();
 				} else if ($(responseText).find('div.notify_error').html()) {
 					document.body.style.cursor = "default";
@@ -542,7 +542,7 @@ jQuery(document).ready(function () {
 					loadingAjaxIndicator.fadeOut();
 					mytd.stop();
 					clearNotify();
-					notifyError(i18n('ERROR'));
+					notifyError($(responseText).find('div.notify_error').html());
 				}
 			},
 			error: function (data, textStatus, jqXHR) {
