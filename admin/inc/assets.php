@@ -356,7 +356,7 @@ function getScripts($facing = GSBACK, $footer = false){
   foreach ($GS_scripts as $script){
     if ($script['load'] == true && ($script['where'] & $facing) ){
       if($footer !== $script['in_footer']) continue;
-      echo '<script src="'.$script['src'].( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '"></script>';
+      echo '<script src="'.$script['src'].( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '"></script>'."\n";
       cdn_fallback($script);  
     }
   } 
@@ -375,7 +375,7 @@ function cdn_fallback($script){
     echo "<script>";
     echo "window.".$GS_asset_objects[$script['name']]." || ";
     echo "document.write('<!-- CDN FALLING BACK --><script src=\"".$GS_script_assets[$script['name']]['local']['url'].'?v='.$GS_script_assets[$script['name']]['local']['ver']."\"><\/script>');";
-    echo "</script>";
+    echo "</script>\n";
   }         
 }
 
@@ -500,7 +500,7 @@ function getStyles($facing = GSBACK){
   foreach ($GS_styles as $style){
     if ($style['where'] & $facing ){
         if ($style['load'] == true){
-          echo '<link href="'.$style['src']. ( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '" rel="stylesheet" media="'.$style['media'].'">';
+          echo '<link href="'.$style['src']. ( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '" rel="stylesheet" media="'.$style['media'].'">'."\n";
         }
     }
   }
