@@ -1037,9 +1037,9 @@ jQuery(document).ready(function () {
 		elem.scrollToFixed({ 
 			marginTop: 15,
 			limit: function(){ return $('#footer').offset().top - elem.outerHeight(true) - 15 ;} ,
-			// postUnfixed: function(){$(this).addClass('fixed') ;},
-			// postFixed: function(){$(this).removeClass('fixed') ;},
-			// postAbsolute: function(){$(this).removeClass('fixed') ;},
+			postUnfixed: function(){$(this).addClass('fixed') ;},
+			postFixed: function(){$(this).removeClass('fixed') ;},
+			postAbsolute: function(){$(this).removeClass('fixed') ;},
 
 		});
 	}
