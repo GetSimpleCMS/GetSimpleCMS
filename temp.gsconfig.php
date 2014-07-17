@@ -2,18 +2,18 @@
 /**
  * GSConfig
  *
- * The base configurations for GetSimple	
+ * The base configurations for GetSimple
  *
  * @package GetSimple
  */
 
 /** Prevent direct access */
-if (basename($_SERVER['PHP_SELF']) == 'gsconfig.php') { 
+if (basename($_SERVER['SCRIPT_NAME']) === basename(__FILE__))) {
 	die('You cannot load this page directly.');
-}; 
+};
 
 /*****************************************************************************/
-/** Below are constants that you can use to customize how GetSimple operates */ 
+/** Below are constants that you can use to customize how GetSimple operates */
 
 # Extra salt to secure your password with. Default is empty for backwards compatibility.
 #define('GSLOGINSALT', 'your_unique_phrase');
@@ -48,7 +48,7 @@ define('GSDONOTPING', 1);
 # WYSIWYG editor height (default 500)
 #define('GSEDITORHEIGHT', '400');
 
-# WYSIWYG toolbars (advanced, basic or [custom config]) 
+# WYSIWYG toolbars (advanced, basic or [custom config])
 #define('GSEDITORTOOL', 'advanced');
 
 # WYSIWYG editor language (default en)
@@ -63,9 +63,9 @@ define('GSDONOTPING', 1);
 # Autosave within edit.php. Value is the autosave interval in seconds
 #define('GSAUTOSAVE', 900);
 
-# Enable the External API to be shown on settings page 
+# Enable the External API to be shown on settings page
 #define('GSEXTAPI', 1);
-	
+
 # Set PHP locale
 # http://php.net/manual/en/function.setlocale.php
 #setlocale(LC_ALL, 'en_US');
@@ -96,8 +96,8 @@ define('SUPPRESSERRORS',true);
 # style flags:
 # GSSTYLEWIDE = wide fluid
 # GSSTYLE_SBFIXED = fixed sidemenu
-# 
-# eg. 
+#
+# eg.
 # define('GSSTYLE',GSSTYLE_SBFIXED);
 # define('GSSTYLE',GSSTYLEWIDE);
 # define('GSSTYLE',implode(',',array(GSSTYLEWIDE,GSSTYLE_SBFIXED)));
@@ -108,7 +108,7 @@ define('SUPPRESSERRORS',true);
 # Enable auto meta descriptions from content excerpts when empty
 # define('GSAUTOMETAD',true);
 
-# Set default language for missing lang token merge, 
+# Set default language for missing lang token merge,
 # accepts a lang string, default is 'en_US', false to disable
 # define('GSMERGELANG',false);
 

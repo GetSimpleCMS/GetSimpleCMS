@@ -18,13 +18,10 @@ $cookie_time        = '10800';  // in seconds, 3 hours
 
 $api_url            = 'http://get-simple.info/api/start/v3.php';
 # $api_timeout        = 800; // time in ms defaults to 500
-$nonce_timeout     = 3600; // in seconds, default 1 hour
+$nonce_timeout      = 3600; // in seconds, default 1 hour
 
-if (isset($_GET['redirect'])){
-	$cookie_redirect = $_GET['redirect'];
-} else {	
-	$cookie_redirect = 'pages.php';
-}
+if (isset($_GET['redirect'])) $cookie_redirect = htmlentities($_GET['redirect']);
+else                          $cookie_redirect = 'pages.php';
 
 if (!defined('GSVERSION')) define('GSVERSION', $site_version_no);
 
