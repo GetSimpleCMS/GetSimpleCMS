@@ -1458,6 +1458,12 @@ table.comptable label {
 	margin-bottom: 20px;
 }
 
+.updated a, .error a, .notify a{
+	color: inherit;
+	text-decoration: underline;
+	font-style:bold;
+}
+
 .updated p, .error p, .notify p {
 	margin: 0;
 	line-height: 22px;
