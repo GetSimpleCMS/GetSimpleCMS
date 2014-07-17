@@ -39,7 +39,7 @@ if (get_filename_id() == 'load') {
 	<?php
 
 	// nav status labels
-	if(isDebug()) echo '<li class="rightnav"><a class="label label-error label_4_80" href="'.$debugInfoUrl.'" title="'.i18n_r('DEBUG_MODE').'"><span><span class="fa fa-fw fa-wrench"></span></span></a></li>';
+	if(isDebug()) echo '<li class="rightnav"><a class="label label-error label_4_80" href="'.$debugInfoUrl.'" target="_blank" title="'.i18n_r('DEBUG_MODE').'"><span><span class="fa fa-fw fa-wrench"></span></span></a></li>';
 
 	if( allowVerCheck() ) {
 		$verstatus = getVerCheck()->status;
