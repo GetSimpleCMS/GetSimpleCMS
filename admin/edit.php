@@ -399,6 +399,7 @@ get_template('header');
             
             $('#editform').submit(function(){
                 warnme = false;
+                pageisdirty = false;    
                 return checkTitle();
             });
 
@@ -444,29 +445,41 @@ get_template('header');
                         $.ajax({
                             type: "POST",
                             url: "changedata.php",
-                            data: dataString+'&autosave=true&submitted=true',
-                            success: function(msg) {
-                                if (msg.toString()=='OK') {
+                            data: dataString+'&autosave=true&submitted=true&ajaxsave=1',
+                            success: function(response) {
+                                if ($(response).find('div.updated').html()) {
+                                    notifyOk($(response).find('div.updated').html()).popit().removeit();
                                     $('#autosavenotify').text("<?php i18n('AUTOSAVE_NOTIFY'); ?> "+ hours +":"+minutes+" "+daypart);
                                     $('#pagechangednotify').hide();
-                                    $('#pagechangednotify').text('');                    
+                                    $('#pagechangednotify').text('');
                                     $('input[type=submit]').attr('disabled', false);
                                     $('input[type=submit]').css('border-color','#ABABAB');
                                     warnme = false;
                                     $('#cancel-updates').hide();
                                 }
                                 else {
+                                    if ($(response).find('div.error').html()) {
+                                        notifyError($(response).find('div.error').html()).popit().removeit();
+                                    } else notifyError(i18n_r('ERROR')).popit().removeit();
                                     pageisdirty = true;
-                                    $('#autosavenotify').text("<?php i18n('AUTOSAVE_FAILED'); ?>");                
+                                    warnme = false;
+                                    $('#autosavenotify').text("<?php i18n('AUTOSAVE_FAILED'); ?>");
+                                    $('input[type=submit]').attr('disabled', false);
                                 }
                             }
                         }); 
                     }
+
+                    // ajaxify components submit
+                    $('#editform').on('submit',function(e){
+                        e.preventDefault();
+                        autoSave();
+                    });
                     
                     // We register title and slug changes with change() which only fires when you lose focus to prevent midchange saves.
                     $('#post-title, #post-id').change(function () {
                         $('#editform #post-content').trigger('change');
-                    });                   
+                    });
                     
                     // We register all other form elements to detect changes of any type by using bind
                     $('#editform input,#editform textarea,#editform select').not('#post-title').not('#post-id').bind('change keypress paste textInput input',function(){

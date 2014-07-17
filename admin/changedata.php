@@ -21,7 +21,7 @@ $bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backup
 
 login_cookie_check();
 
-// check form referrer - needs siteurl and edit.php in it. 
+// check form referrer - needs siteurl and edit.php in it.
 if (isset($_SERVER['HTTP_REFERER'])) {
 	if ( !(strpos(str_replace('http://www.', '', $SITEURL), $_SERVER['HTTP_REFERER']) === false) || !(strpos("edit.php", $_SERVER['HTTP_REFERER']) === false)) {
 		echo "<b>Invalid Referer</b><br />-------<br />"; 
@@ -31,7 +31,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 }
 
 if (isset($_POST['submitted'])) {
-	check_for_csrf("edit", "edit.php");	
+	check_for_csrf("edit", "edit.php");
 	
 	if ( trim($_POST['post-title']) == '' )	{
 		redirect("edit.php?upd=edit-error&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
@@ -42,6 +42,7 @@ if (isset($_POST['submitted'])) {
 		// is a slug provided?
 		if ($_POST['post-id']) { 
 			$url = trim($_POST['post-id']);
+			// @todo abstract this translit stuff
 			if (isset($i18n['TRANSLITERATION']) && is_array($translit=$i18n['TRANSLITERATION']) && count($translit>0)) {
 				$url = str_replace(array_keys($translit),array_values($translit),$url);
 			}
@@ -158,7 +159,7 @@ if (isset($_POST['submitted'])) {
 			'content'
 		);
 
-		foreach($fields as $field){
+	foreach($fields as $field){
 			$note = $xml->addChild($field);
 			$note->addCData($$field);
 		}
@@ -173,24 +174,33 @@ if (isset($_POST['submitted'])) {
 		//ending actions
 		exec_action('changedata-aftersave');
 		generate_sitemap();
-		
-		// redirect user back to edit page 
-		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true') {
-			echo 'OK';
-		} else {
-			
-			if ($_POST['redirectto']!='') {
-				$redirect_url = $_POST['redirectto'];
-			} else {
-				$redirect_url = 'edit.php';
-			}
-			
-			if ($url == $oldslug) {
-				redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
-			} else {
-				redirect($redirect_url."?id=". $url ."&old=".$oldslug."&upd=edit-success&type=edit");
-			}
+
+		if(isset($_POST['ajaxsave'])){
+			$id     = $url;
+			$update = 'edit-success';
+			$ptype  = 'edit';
+			// if(isset($_POST['autosave']) && $_POST['autosave'] == 'true')
+			echo "<div>";
+			include('template/error_checking.php');
+			echo '<input id="nonce" name="nonce" type="hidden" value="'. get_nonce("edit", "edit.php") .'" />';
+			echo "</div>";
+			die();
 		}
+
+		// redirect user back to edit page 
+			
+		if ($_POST['redirectto']!='') {
+			$redirect_url = $_POST['redirectto'];
+		} else {
+			$redirect_url = 'edit.php';
+		}
+		
+		if ($url == $oldslug) {
+			redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
+		} else {
+			redirect($redirect_url."?id=". $url ."&old=".$oldslug."&upd=edit-success&type=edit");
+		}
+		
 	}
 } else {
 	redirect('pages.php');
