@@ -122,6 +122,7 @@ $GSADMIN = rtrim(GSADMIN,'/\\'); // global GS admin root folder name
  */
 define('GSADMINPATH'     , GSROOTPATH      . $GSADMIN.'/'); // admin/
 define('GSADMININCPATH'  , GSADMINPATH     . 'inc/');       // admin/inc/
+define('GSADMINTPLPATH'  , GSADMINPATH     . 'template/');  // admin/template/
 define('GSPLUGINPATH'    , GSROOTPATH      . 'plugins/');   // plugins/
 define('GSLANGPATH'      , GSADMINPATH     . 'lang/');      // lang/
 
@@ -295,7 +296,10 @@ if (array_key_exists('LOCALE', $i18n))
  * @uses $EDOPTIONS js obj param strings, comma delimited
  */
 if (defined('GSEDITORHEIGHT')) { $EDHEIGHT = GSEDITORHEIGHT .'px'; } else {	$EDHEIGHT = '500px'; }
-if (defined('GSEDITORLANG'))   { $EDLANG = GSEDITORLANG; } else {	$EDLANG = i18n_r('CKEDITOR_LANG'); }
+if (defined('GSEDITORLANG'))   { $EDLANG = GSEDITORLANG; }
+else if (file_exists(GSADMINTPLPATH.'js/ckeditor/lang/'.i18n_r('CKEDITOR_LANG').'.js')){
+	$EDLANG = i18n_r('CKEDITOR_LANG');
+} else $EDLANG = ''; // ckeditor lang file does not exist
 if (defined('GSEDITORTOOL') and !isset($EDTOOL)) { $EDTOOL = GSEDITORTOOL; }
 if (defined('GSEDITOROPTIONS') and !isset($EDOPTIONS) && trim(GSEDITOROPTIONS)!="" ) $EDOPTIONS = GSEDITOROPTIONS;
 
