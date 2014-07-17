@@ -80,6 +80,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	// js i18n tokens
 	$jsi18nkeys = array(
 		'ERROR',
+		'ERROR_OCCURED',
 		'EXPAND_TOP',
 		'COLLAPSE_TOP',
 		'FILE_EXISTS_PROMPT',

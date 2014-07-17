@@ -462,10 +462,10 @@ get_template('header');
                                 else {
                                     if ($(response).find('div.error').html()) {
                                         notifyError($(response).find('div.error').html()).popit().removeit();
-                                    } else notifyError(i18n('ERROR')).popit().removeit();
+                                    } else notifyError(i18n('ERROR_OCCURED')).popit().removeit();
                                     pageisdirty = true;
                                     warnme = false;
-                                    $('#autosavenotify').text("<?php i18n('AUTOSAVE_FAILED'); ?>");
+                                    $('#autosavenotify').text(i18n('ERROR_OCCURED'));
                                     $('input[type=submit]').attr('disabled', false);
                                 }
                             }
