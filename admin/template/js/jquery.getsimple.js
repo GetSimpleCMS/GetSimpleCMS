@@ -748,15 +748,14 @@ jQuery(document).ready(function () {
 				responseText = data.replace(rscript, "");
 				response     = $($.parseHTML(data));
 
-				/* dir tree */
-				
+				/* load dir tree */
 				// using this var to prevent reloads on the filetree for now, 
 				// can go away when we are sending proper ajax responses and not full html pages.
 				if(this.paramfile!='_noload'){
 					$('#theme_filemanager').html(response.find('#theme_filemanager > *') ); 
 				}
-				
-				/* content */
+
+				/* load code content */
 				var newcontent = response.find('#codetext');
 				$('#codetext').val(newcontent.val());
 				$('#codetext').data('editor').setValue(newcontent.val());
@@ -765,6 +764,7 @@ jQuery(document).ready(function () {
 				/* form */
 				var filename = response.find('#edited_file').val() ;
 				$('#edited_file').val(filename);
+				updateNonce(response);
 
 				/* hook wrapper */
 				$('#theme-edit-extras-wrap').html(response.find('#theme-edit-extras-wrap > *'));
@@ -814,7 +814,7 @@ jQuery(document).ready(function () {
 		notifyWarn('Updates cancelled').removeit();
 	});
 
-	// ajax save theme file
+	// theme-edit ajax save
 	themeFileSave = function(cm){
 		loadingAjaxIndicator.show();
 
@@ -843,6 +843,8 @@ jQuery(document).ready(function () {
 					notifyError("<p>ERROR</p>").popit().removeit();					
 				}
 
+				updateNonce(response);
+
 				loadingAjaxIndicator.fadeOut();
 				$('#codetext').data('editor').hasChange = false; // mark clean		
 			}
@@ -855,7 +857,6 @@ jQuery(document).ready(function () {
 		componentSave(e);
 	});
 	
-
 	componentSave = function(e){
 
 		Debugger.log("onsubmit");
@@ -889,11 +890,19 @@ jQuery(document).ready(function () {
 					notifyError("<p>ERROR</p>").popit().removeit();					
 				}
 
+				updateNonce(response);
+
 				loadingAjaxIndicator.fadeOut();
 				// $('#codetext').data('editor').hasChange = false; // mark clean		
 			}
 		});
-	}
+	};
+
+	updateNonce = function(html){
+		var newnonce = $(html).find('#nonce').val();
+		if(newnonce) $('#nonce').val(newnonce);
+		// Debugger.log(newnonce);
+	};
 
 	function getExtension(file){
 		var extension = file.substr( (file.lastIndexOf('.') +1) );
@@ -1068,7 +1077,7 @@ jQuery(document).ready(function () {
 			window.location.reload();
 		}
 	});
-	
+
 	// add tree folding to tree tables
 	// addTableTree(minrows,mindepth,headerdepth)
 	$('table.tree').addTableTree(1,1,1);

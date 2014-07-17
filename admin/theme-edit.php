@@ -52,7 +52,7 @@ if ($template_file == '') {
 # check for form submission
 if(isset($_POST['submitsave'])){
 
-	check_for_csrf("save");	
+	check_for_csrf("save");
 	
 	# save edited template file
 	$SavedFile = $_POST['edited_file'];
@@ -68,6 +68,7 @@ if(isset($_POST['submitsave'])){
 	if(isset($_POST['ajaxsave'])){
 		echo "<div>";
 		include('template/error_checking.php');
+		echo '<input id="nonce" name="nonce" type="hidden" value="'. get_nonce("save") .'" />';
 		echo "</div>";
 		die();
 	}

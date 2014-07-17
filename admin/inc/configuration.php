@@ -14,11 +14,11 @@ $site_link_back_url = 'http://get-simple.info/';
 
 $cookie_name        = lowercase($name_url_clean) .'_cookie_'. $ver_no_clean;
 $cookie_login       = 'index.php';
-$cookie_time        = '10800';  // in seconds, 3 hours 
+$cookie_time        = '10800';  // in seconds, 3 hours
 
 $api_url            = 'http://get-simple.info/api/start/v3.php';
 # $api_timeout        = 800; // time in ms defaults to 500
-
+$nonce_timeout     = 3600; // in seconds, default 1 hour
 
 if (isset($_GET['redirect'])){
 	$cookie_redirect = $_GET['redirect'];

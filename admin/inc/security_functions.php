@@ -112,6 +112,8 @@ function get_nonce($action, $file = "", $last = false) {
 	include_once(GSADMININCPATH.'configuration.php');
 	clamp($nonce_timeout, 60, 86400, 3600);// min, max, default in seconds
 
+	// $nonce_timeout = 10;
+
 	if($file == "")
 		$file = $_SERVER['PHP_SELF'];
 
@@ -124,7 +126,6 @@ function get_nonce($action, $file = "", $last = false) {
 
 	// Mix with a little salt
 	$hash=sha1($action.$file.$uid.$USR.$SALT.$time);
-
 	return $hash;
 }
 
