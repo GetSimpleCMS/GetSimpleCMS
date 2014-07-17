@@ -447,6 +447,7 @@ get_template('header');
                             url: "changedata.php",
                             data: dataString+'&autosave=true&submitted=true&ajaxsave=1',
                             success: function(response) {
+                                response = $.parseHTML(response);
                                 if ($(response).find('div.updated').html()) {
                                     notifyOk($(response).find('div.updated').html()).popit().removeit();
                                     $('#autosavenotify').text("<?php i18n('AUTOSAVE_NOTIFY'); ?> "+ hours +":"+minutes+" "+daypart);
@@ -456,11 +457,12 @@ get_template('header');
                                     $('input[type=submit]').css('border-color','#ABABAB');
                                     warnme = false;
                                     $('#cancel-updates').hide();
+                                    updateNonce(response);
                                 }
                                 else {
                                     if ($(response).find('div.error').html()) {
                                         notifyError($(response).find('div.error').html()).popit().removeit();
-                                    } else notifyError(i18n_r('ERROR')).popit().removeit();
+                                    } else notifyError(i18n('ERROR')).popit().removeit();
                                     pageisdirty = true;
                                     warnme = false;
                                     $('#autosavenotify').text("<?php i18n('AUTOSAVE_FAILED'); ?>");
