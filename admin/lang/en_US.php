@@ -655,7 +655,8 @@ $i18n = array(
 "NOT_APPROVED"            =>    "Not Approved",
 "VALID"                   =>    "Valid",
 "INVALID"                 =>    "Invalid",
-"INVALID_OPER"            =>    "Invalid Operation"
+"INVALID_OPER"            =>    "Invalid Operation",
+"ERROR_OCCURED"           =>    "An Error has Occured"
 
 // already defined generics
 # "ENABLE"                =>    "Activate"

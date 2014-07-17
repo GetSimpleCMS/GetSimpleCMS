@@ -22,8 +22,9 @@ if ($pluginid){
 	if(check_nonce($nonce, "set", "plugins.php")) {
 		$plugin = antixss($pluginid);
 		change_plugin($plugin);
-		redirect('plugins.php');
+		redirect('plugins.php?success='.i18n_r('PLUGIN_UPDATED'));
 	}
+	else redirect('plugins.php?error='.i18n_r('ERROR_OCCURED'));
 }
 
 // Variable settings
@@ -74,11 +75,11 @@ foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
 
 	$table .= '<tr id="tr-'.$counter.'" class="'.$trclass.'" >';
 	$table .= '<td style="width:150px" ><b>'.$plugin_title.'</b></td>';
-	$table .= '<td><span>'.$plugininfo['description']; // desc empty if inactive
+	$table .= '<td><span>'.$plugininfo['description'].'</span>'; // desc empty if inactive
 
 	// if plugin is active, show what we know from register_plugin, version , author
 	if ($pluginver > 0){
-		$table .= '<br /><b>'.i18n_r('PLUGIN_VER') .' '. $pluginver.'</b> &mdash; '.i18n_r('AUTHOR').': <a href="'.$plugininfo['author_url'].'" target="_blank">'.$plugininfo['author'].'</a></span>';
+		$table .= '<span><br /><b>'.i18n_r('PLUGIN_VER') .' '. $pluginver.'</b> &mdash; '.i18n_r('AUTHOR').': <a href="'.$plugininfo['author_url'].'" target="_blank">'.$plugininfo['author'].'</a></span>';
 	}
 
   	$table.= $updatelink.'</td><td style="width:60px;" class="status" >

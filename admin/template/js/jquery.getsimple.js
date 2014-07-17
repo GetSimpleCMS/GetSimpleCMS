@@ -521,19 +521,29 @@ jQuery(document).ready(function () {
 			success: function (data, textStatus, jqXHR) {
 				// Store the response as specified by the jqXHR object
 				responseText = jqXHR.responseText;
- 
-				// remove scripts to prevent assets from loading when we create temp dom
-				rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
- 
-				// create temp doms to reliably find elements
-				$('#header').html($("<div>").append(responseText.replace(rscript, "")).find('#header > *'));
-				$('#sidebar').html($("<div>").append(responseText.replace(rscript, "")).find('#sidebar > *'));
-				$('#maincontent').html($("<div>").append(responseText.replace(rscript, "")).find('#maincontent > *'));
- 
-				// document.body.style.cursor = "default";
-				clearNotify();
-				notifyOk(i18n('PLUGIN_UPDATED')).popit().removeit();
-				initLoaderIndicator();
+
+				if ($(responseText).find('div.notify_success').html()) {
+					// remove scripts to prevent assets from loading when we create temp dom
+					rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
+	 
+					// create temp doms to reliably find elements
+					$('#header').html($("<div>").append(responseText.replace(rscript, "")).find('#header > *'));
+					$('#sidebar').html($("<div>").append(responseText.replace(rscript, "")).find('#sidebar > *'));
+					$('#maincontent').html($("<div>").append(responseText.replace(rscript, "")).find('#maincontent > *'));
+	 
+					// document.body.style.cursor = "default";
+					clearNotify();
+					notifyOk(i18n('PLUGIN_UPDATED')).popit().removeit();
+					initLoaderIndicator();
+				} else if ($(responseText).find('div.notify_error').html()) {
+					document.body.style.cursor = "default";
+					mytd.removeClass('ajaxwait_tint_dark');
+					$('.toggleEnable').removeClass('disabled');
+					loadingAjaxIndicator.fadeOut();
+					mytd.stop();
+					clearNotify();
+					notifyError(i18n('ERROR'));
+				}
 			},
 			error: function (data, textStatus, jqXHR) {
 				// These go in failures if we catch them in the future
@@ -541,7 +551,7 @@ jQuery(document).ready(function () {
 				mytd.removeClass('ajaxwait_tint_dark');
 				$('.toggleEnable').removeClass('disabled');
 				loadingAjaxIndicator.fadeOut();
-				mytd.stop(); 
+				mytd.stop();
 				clearNotify();
 				notifyError(i18n('ERROR'));
 			}
@@ -1027,9 +1037,9 @@ jQuery(document).ready(function () {
 		elem.scrollToFixed({ 
 			marginTop: 15,
 			limit: function(){ return $('#footer').offset().top - elem.outerHeight(true) - 15 ;} ,
-			postUnfixed: function(){$(this).addClass('fixed') ;},
-			postFixed: function(){$(this).removeClass('fixed') ;},
-			postAbsolute: function(){$(this).removeClass('fixed') ;},
+			// postUnfixed: function(){$(this).addClass('fixed') ;},
+			// postFixed: function(){$(this).removeClass('fixed') ;},
+			// postAbsolute: function(){$(this).removeClass('fixed') ;},
 
 		});
 	}
