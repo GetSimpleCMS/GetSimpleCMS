@@ -19,7 +19,7 @@ $pluginid = isset($_GET['set']) ? $_GET['set'] : null;
 $nonce    = isset($_GET['nonce']) ? $_GET['nonce'] : null;
 
 if ($pluginid){
-	if(check_nonce($nonce, "set", "plugins.php")) {
+	if(check_nonce($nonce, "set_".pathinfo_filename($pluginid), "plugins.php")) {
 		$plugin = antixss($pluginid);
 		change_plugin($plugin);
 		redirect('plugins.php?success='.i18n_r('PLUGIN_UPDATED'));
@@ -36,7 +36,7 @@ $plugin_info_sorted = subval_sort($plugin_info,'name');
 
 foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
 
-	$setNonce = '&amp;nonce='.get_nonce("set","plugins.php");
+	$setNonce = '&amp;nonce='.get_nonce("set_".$pluginid,"plugins.php");
 
 	// @todo disabled plugins have a version of (str) 'disabled', should be 0 or null
 	$pluginver  = $plugininfo['version'] == 'disabled' ? 0 : $plugininfo['version'];
