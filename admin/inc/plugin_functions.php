@@ -337,7 +337,7 @@ function createSideMenu($id, $txt, $action = null, $always = true){
 function createNavTab($tabname, $id, $txt, $action = null) {
 	global $plugin_info;
 	$current = false;
-	if (basename($_SERVER['PHP_SELF']) == 'load.php') {
+	if (basename(getScriptFile()) == 'load.php') {
 		$plugin_id = @$_GET['id'];
 		if ($plugin_info[$plugin_id]['page_type'] == $tabname) $current = true;
 	}

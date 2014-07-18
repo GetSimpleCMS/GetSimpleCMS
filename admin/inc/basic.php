@@ -496,7 +496,7 @@ function find_url($slug, $parent, $type='full') {
 	if ($type == 'full') {
 		$full = $SITEURL;
 	} elseif($type == 'relative') {
-		$s = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
+		$s = pathinfo(htmlentities(getScriptFile(), ENT_QUOTES));
 		$full = $s['dirname'] .'/';
 		$full = str_replace('//', '/', $full);
 	} else {
@@ -896,7 +896,7 @@ function pathinfo_filename($file) {
 function suggest_site_path($parts=false, $protocolRelative = false) {
 	global $GSADMIN;
 	$protocol   = $protocolRelative ? '' : http_protocol().':';
-	$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
+	$path_parts = pathinfo(htmlentities(getScriptFile(), ENT_QUOTES));
 	$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
 	$port       = ( $p=$_SERVER['SERVER_PORT'] ) != '80' && $p != '443' ? ':'.$p : '';
 	
@@ -926,9 +926,9 @@ function suggest_site_path($parts=false, $protocolRelative = false) {
  */
 function myself($echo=true) {
 	if ($echo) {
-		echo htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES);
+		echo htmlentities(getScriptFile(), ENT_QUOTES);
 	} else {
-		return htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES);
+		return htmlentities(getScriptFile(), ENT_QUOTES);
 	}
 }
 
@@ -1574,6 +1574,14 @@ function includeTheme($template, $template_file = 'template.php'){
 	# include the template and template file set within theme.php and each page
 	if ( (!file_exists(GSTHEMESPATH .$template."/".$template_file)) || ($template_file == '') ) { $template_file = "template.php"; }
 	include(GSTHEMESPATH .$template."/".$template_file);
+}
+
+/**
+ * get the current accessed script file
+ * @return str  path to script filename
+ */
+function getScriptFile(){
+	return $_SERVER['SCRIPT_NAME'];
 }
 
 /* ?> */

@@ -74,7 +74,7 @@ get_template('header');
 	<div id="maincontent">
 		<div class="main">
 		<h3><?php i18n('CHOOSE_THEME');?></h3>
-		<form action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" accept-charset="utf-8" >
+		<form action="" method="post" accept-charset="utf-8" >
 		<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("activate"); ?>" />			
 		<?php	
 			$theme_path = str_replace(GSROOTPATH,'',GSTHEMESPATH);

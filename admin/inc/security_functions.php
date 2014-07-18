@@ -115,7 +115,7 @@ function get_nonce($action, $file = "", $last = false) {
 	// $nonce_timeout = 10;
 
 	if($file == "")
-		$file = $_SERVER['PHP_SELF'];
+		$file = getScriptFile();
 
 	// using user agent since ip can change on proxys
 	$uid = $_SERVER['HTTP_USER_AGENT'];

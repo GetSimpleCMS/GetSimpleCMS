@@ -67,8 +67,6 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 			}
 		}
 
-		debuglog();
-
 		// attempt to save and close
 		$status = $archiv->close();
 		if (!$status) {
