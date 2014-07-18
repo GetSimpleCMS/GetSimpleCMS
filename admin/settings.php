@@ -53,7 +53,7 @@ if(isset($_POST['submitted'])) {
 	}
 	if(isset($_POST['permalink'])) { 
 		$PERMALINK = var_in(trim($_POST['permalink']));
-	}	
+	}
 	if(isset($_POST['template'])) { 
 		// $TEMPLATE = $_POST['template'];
 	}
@@ -62,19 +62,15 @@ if(isset($_POST['submitted'])) {
 	} else {
 		$PRETTYURLS = '';
 	}
-
-	/*
-	// email, timezone to replace gsconfig settings GSFROMEMAIL, GSTIMEZONE,  and global $lang on front end
-	if(isset($_POST['email'])) { 
+	if(isset($_POST['email'])) {
 		$EMAIL = var_in($_POST['email'],'email');
-	} 
-	if(isset($_POST['timezone'])) { 
+	}
+	if(isset($_POST['timezone'])) {
 		$TIMEZONE = var_in($_POST['timezone']);
 	}
-	if(isset($_POST['lang'])) { 
+	if(isset($_POST['lang'])) {
 		$LANG = var_in($_POST['lang']);
 	}
-	*/
 
 	// check valid lang files
 	if(!in_array($LANG.'.php', $lang_array) and !in_array($LANG.'.PHP', $lang_array)) die(); 
@@ -91,6 +87,9 @@ if(isset($_POST['submitted'])) {
 	$note->addCData($TEMPLATE);
 	$xmls->addChild('PRETTYURLS', $PRETTYURLS);
 	$xmls->addChild('PERMALINK', $PERMALINK);
+	$xmls->addChild('EMAIL', $EMAIL);
+	$xmls->addChild('TIMEZONE', $TIMEZONE);
+	$xmls->addChild('LANG', $LANG);
 	
 	exec_action('settings-website');
 	
@@ -151,7 +150,22 @@ get_template('header');
 				<?php	if ( $fullpath != $SITEURL ) {	echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.i18n_r('LABEL_SUGGESTION').': &nbsp; <code>'.$fullpath.'</code></p>';	}	?>
 			</div>
 			<div class="clear"></div>
-			
+			<div class="leftsec">
+				<p><label for="timezone" ><?php i18n('LOCAL_TIMEZONE');?>:</label>
+				<select class="text" id="timezone" name="timezone"> 
+				<?php if ($data->TIMEZONE == '') { echo '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>'; } else { echo '<option selected="selected"  value="'. $data->TIMEZONE .'">'. $data->TIMEZONE .'</option>'; } ?>
+				<?php include('inc/timezone_options.txt'); ?>
+				</select>
+				</p>
+			</div>
+			<div class="rightsec">
+				<p><label for="lang" ><?php i18n('LANGUAGE');?>: <span class="right"><a href="http://get-simple.info/docs/languages" target="_blank" ><?php i18n('MORE');?></a></span></label>
+				<select name="lang" id="lang" class="text">
+					<?php echo $langs; ?>
+				</select>
+				</p>
+			</div>
+			<div class="clear"></div>			
 			<p class="inline" ><input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<label for="prettyurls" ><?php i18n('USE_FANCY_URLS');?></label></p>
 					
 			<div class="leftsec">
