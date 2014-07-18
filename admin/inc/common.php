@@ -16,7 +16,8 @@ define('IN_GS', TRUE); // GS enviroment flag
 GLOBAL $GS_debug; // GS debug trace array
 if(!isset($GS_debug)) $GS_debug = array();
 
-// if(htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES) !== htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES)) die('PHP_SELF mismatch');
+// debug catcher for this core wide change issues
+if(htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES) !== htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES)) die('PHP_SELF mismatch ' . $_SERVER['PHP_SELF']);
 
 /**
  * Set PHP enviroment
