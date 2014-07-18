@@ -3,6 +3,7 @@
  * Download Files
  *
  * Forces the download of file types
+ * Allows downloads of any file in uploads and backups/zip
  *
  * @package GetSimple
  * @subpackage Download
@@ -15,13 +16,22 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+// disable this entirely if not enabled
+if(getdef('GSALLOWDOWNLOADS',true) === false) die(i18n('NOT_ALLOWED'));
+
 # check if all variables are set
 if(isset($_GET['file'])) {
 	
 	$file = removerelativepath($_GET['file']);
 
-	if(!filepath_is_safe($file,GSDATAUPLOADPATH) && !filepath_is_safe($file,GSBACKUPSPATH.DIRECTORY_SEPARATOR.'zip')) die();
+	// check that this file is safe to access
+	$archivesafe = filepath_is_safe($file,GSBACKUPSPATH.DIRECTORY_SEPARATOR.'zip'); // check for archives
+	if($archivesafe) check_for_csrf("archive", "download.php");                     // check archive nonce
 
+	$filesafe = filepath_is_safe($file,GSDATAUPLOADPATH);      // check for uploads
+
+	if(!($filesafe || $archivesafe)) die(i18n('NOT_ALLOWED')); // file specified is non existant or LFI! WE DIE
+	
 	$extention = pathinfo($file,PATHINFO_EXTENSION);
 	header("Content-disposition: attachment; filename=".$file);
 	
@@ -50,7 +60,7 @@ if(isset($_GET['file'])) {
 	exec_action('download-file');
 	
 	# get file
-	if (file_exists($file)) {		
+	if (file_exists($file)) {
 		readfile($file, 'r');
 	}
 	exit;

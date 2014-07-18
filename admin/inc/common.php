@@ -11,9 +11,12 @@
 
 define('IN_GS', TRUE); // GS enviroment flag
 
+
 // GS Debugger
 GLOBAL $GS_debug; // GS debug trace array
 if(!isset($GS_debug)) $GS_debug = array();
+
+// if(htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES) !== htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES)) die('PHP_SELF mismatch');
 
 /**
  * Set PHP enviroment
@@ -55,6 +58,7 @@ $GS_definitions = array(
 	'GSALLOWRESETPASS'     => true,           // (bool) allow front end login
 	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // file extensions to show and edit in theme editor
 	'GSASSETSCHEMES'       => false,          // (bool) should $ASSETURL contian the url scheme http|https
+	'GSALLOWDOWNLOADS'     => true,           // (bool) allow using downloads.php to download files from /uploads and backups/zip
 	'GSDEFINITIONSLOADED'  => true            // $GS_definitions IS LOADED FLAG
 );
 

@@ -308,6 +308,7 @@ $i18n = array(
 "DOWNLOAD_ARCHIVES"       =>	"Download Archive",
 "DELETE_ARCHIVE"          =>	"Delete Archive",
 "TOTAL_ARCHIVES"          =>	"total archives",
+"ARCHIVE_DL_DISABLED"     =>	"Archive Downloads are Currently Disabled",
 
 /* 
 * For: include-nav.php
