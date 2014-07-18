@@ -8,6 +8,24 @@
  * @subpackage Init
  */
 
+
+function check_php_requirements(){
+	$kill = false;
+	$php_required_exts = array('xml','simplexml','dom','json');
+
+	$php_modules = get_loaded_extensions();
+	$php_modules = array_map('strtolower', $php_modules);
+	foreach($php_required_exts as $ext){
+		if(!in_array($ext, $php_modules )){
+			echo("PHP $ext extension NOT INSTALLED<br/>\n");
+			$kill = 1;
+		}
+	}
+	if($kill) die('Getsimple Install Cannot Continue');
+}
+check_php_requirements();
+
+
 $load['plugin'] = true;
 include('inc/common.php');
 
