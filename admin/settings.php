@@ -15,7 +15,6 @@ login_cookie_check();
 
 # variable settings
 $fullpath   = suggest_site_path();
-$wfile      = 'website.xml';
 $lang_array = getFiles(GSLANGPATH);
 
 # initialize these all as null
@@ -32,7 +31,7 @@ if (isset($_GET['undo'])) {
 	check_for_csrf("undo");	
 	# perform undo
 	$bakpath = GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH); // backups/other/
-	undo($wfile, GSDATAOTHERPATH, $bakpath);
+	undo(GSWEBSITEFILE, GSDATAOTHERPATH, $bakpath);
 	generate_sitemap();
 	
 	# redirect back to yourself to show the new restored data
@@ -63,13 +62,13 @@ if(isset($_POST['submitted'])) {
 		$PRETTYURLS = '';
 	}
 	if(isset($_POST['email'])) {
-		$EMAIL = var_in($_POST['email'],'email');
+		$SITEEMAIL = var_in($_POST['email'],'email');
 	}
 	if(isset($_POST['timezone'])) {
-		$TIMEZONE = var_in($_POST['timezone']);
+		$SITETIMEZONE = var_in($_POST['timezone']);
 	}
 	if(isset($_POST['lang'])) {
-		$LANG = var_in($_POST['lang']);
+		$SITELANG = var_in($_POST['lang']);
 	}
 
 	// check valid lang files
@@ -77,7 +76,7 @@ if(isset($_POST['submitted'])) {
 
 	# create website xml file
 	$bakpath = GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH); // backups/other/
-	createBak($wfile, GSDATAOTHERPATH, $bakpath);
+	createBak(GSWEBSITEFILE, GSDATAOTHERPATH, $bakpath);
 	$xmls = new SimpleXMLExtended('<item></item>');
 	$note = $xmls->addChild('SITENAME');
 	$note->addCData($SITENAME);
@@ -87,13 +86,14 @@ if(isset($_POST['submitted'])) {
 	$note->addCData($TEMPLATE);
 	$xmls->addChild('PRETTYURLS', $PRETTYURLS);
 	$xmls->addChild('PERMALINK', $PERMALINK);
-	$xmls->addChild('EMAIL', $EMAIL);
+	$xmls->addChild('EMAIL', $SITEEMAIL);
 	$xmls->addChild('TIMEZONE', $TIMEZONE);
 	$xmls->addChild('LANG', $LANG);
+	$xmls->addChild('SITEUSR', $SITEUSR);
 	
 	exec_action('settings-website');
 	
-	if (! XMLsave($xmls, GSDATAOTHERPATH . $wfile) ) {
+	if (! XMLsave($xmls, GSDATAOTHERPATH . GSWEBSITEFILE) ) {
 		$error = i18n_r('CHMOD_ERROR');
 	}
 
@@ -140,8 +140,11 @@ get_template('header');
 		<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save_settings"); ?>" />
 		
 		<div class="main">
-			<h3><?php i18n('WEBSITE_SETTINGS');?></h3>
-			
+			<h3 class="floated"><?php i18n('WEBSITE_SETTINGS');?></h3>
+			<div class="edit-nav" >
+				<a id="flushcache" class="" title="<?php i18n('FLUSHCACHE'); ?>" href="?flushcache"><?php i18n('FLUSHCACHE'); ?></a>
+				<div class="clear"></div>
+			</div>			
 			<div class="leftsec">
 				<p><label for="sitename" ><?php i18n('LABEL_WEBSITE');?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php if(isset($SITENAME1)) { echo stripslashes($SITENAME1); } else { echo stripslashes($SITENAME); } ?>" /></p>
 			</div>
@@ -153,7 +156,7 @@ get_template('header');
 			<div class="leftsec">
 				<p><label for="timezone" ><?php i18n('LOCAL_TIMEZONE');?>:</label>
 				<select class="text" id="timezone" name="timezone"> 
-				<?php if ($data->TIMEZONE == '') { echo '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>'; } else { echo '<option selected="selected"  value="'. $data->TIMEZONE .'">'. $data->TIMEZONE .'</option>'; } ?>
+				<?php if ($SITETIMEZONE == '') { echo '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>'; } else { echo '<option selected="selected"  value="'. $SITETIMEZONE .'">'. $SITETIMEZONE .'</option>'; } ?>
 				<?php include('inc/timezone_options.txt'); ?>
 				</select>
 				</p>
@@ -167,11 +170,16 @@ get_template('header');
 			</div>
 			<div class="clear"></div>			
 			<p class="inline" ><input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<label for="prettyurls" ><?php i18n('USE_FANCY_URLS');?></label></p>
-					
 			<div class="leftsec">
 				<p><label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: <span class="right"><a href="http://get-simple.info/docs/pretty_urls" target="_blank" ><?php i18n('MORE');?></a></span></label><input class="text" name="permalink" id="permalink" type="text" placeholder="%parent%/%slug%/" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /></p>
-			<a id="flushcache" class="button" href="?flushcache"><?php i18n('FLUSHCACHE'); ?></a>
 			</div>
+			<div class="rightsec">
+				<p><label for="email" ><?php i18n('LABEL_EMAIL');?>:</label><input class="text" id="email" name="email" type="email" value="<?php echo $SITEEMAIL; ?>" /></p>
+				<?php if (! check_email_address($SITEEMAIL)) {
+					echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.i18n_r('WARN_EMAILINVALID').'</p>';
+				}?>
+			</div>			
+					
 			<div class="clear"></div>
 			
 			<?php exec_action('settings-website-extras'); ?>
