@@ -303,7 +303,7 @@ get_template('header');
             <?php exec_action('edit-content'); ?> 
             
             <?php if(isset($data_edit)) { 
-                echo '<input type="hidden" name="existing-url" value="'. $url .'" />'; 
+                echo '<input id="existing-url" type="hidden" name="existing-url" value="'. $url .'" />'; 
             } 
             
         // HTMLEDITOR INIT
@@ -457,7 +457,9 @@ get_template('header');
                                     $('input[type=submit]').css('border-color','#ABABAB');
                                     warnme = false;
                                     $('#cancel-updates').hide();
+                                    updateEditSlug(response);
                                     updateNonce(response);
+                                    // @todo change url to new slug so refreshes work
                                 }
                                 else {
                                     if ($(response).find('div.error').html()) {

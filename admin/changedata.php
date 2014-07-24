@@ -170,7 +170,7 @@ if (isset($_POST['submitted'])) {
 		} else {
 			XMLsave($xml, $file);
 		}
-		
+
 		//ending actions
 		exec_action('changedata-aftersave');
 		generate_sitemap();
@@ -179,28 +179,30 @@ if (isset($_POST['submitted'])) {
 			$id     = $url;
 			$update = 'edit-success';
 			$ptype  = 'edit';
+			if($url !== $oldslug) $oldid = $oldslug;
 			// if(isset($_POST['autosave']) && $_POST['autosave'] == 'true')
 			echo "<div>";
 			include('template/error_checking.php');
 			echo '<input id="nonce" name="nonce" type="hidden" value="'. get_nonce("edit", "edit.php") .'" />';
+            echo '<input id="existing-url" name="existing-url" type="hidden" value="'. $url .'" />';
 			echo "</div>";
 			die();
 		}
 
-		// redirect user back to edit page 
-			
+		// redirect user back to edit page
+
 		if ($_POST['redirectto']!='') {
 			$redirect_url = $_POST['redirectto'];
 		} else {
 			$redirect_url = 'edit.php';
 		}
-		
+
 		if ($url == $oldslug) {
 			redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
 		} else {
 			redirect($redirect_url."?id=". $url ."&old=".$oldslug."&upd=edit-success&type=edit");
 		}
-		
+
 	}
 } else {
 	redirect('pages.php');

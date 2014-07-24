@@ -904,6 +904,12 @@ jQuery(document).ready(function () {
 		// Debugger.log(newnonce);
 	};
 
+	updateEditSlug = function(html){
+		var newslug = $(html).find('#existing-url').val();
+		if(newslug) $('#existing-url').val(newslug);
+		// Debugger.log(newslug);
+	};
+
 	function getExtension(file){
 		var extension = file.substr( (file.lastIndexOf('.') +1) );
 		return extension;
