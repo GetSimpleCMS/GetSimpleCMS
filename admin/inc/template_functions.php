@@ -1356,7 +1356,7 @@ function archive_targz() {
 	$timestamp           = gmdate('Y-m-d-Hi_s');
 	$saved_zip_file_path = GSBACKUPSPATH.'zip/';
 	$saved_zip_file      = $timestamp .'_archive.tar.gz';	
-	$script_contents     = "tar -cvzf ".$saved_zip_file_path.$saved_zip_file." ".GSROOTPATH.".htaccess ".GSROOTPATH."gsconfig.php ".GSROOTPATH."data ".GSROOTPATH."plugins ".GSROOTPATH."theme ".GSROOTPATH.$GSADMIN."/lang > /dev/null 2>&1";
+	$script_contents     = "tar -cvzf ".$saved_zip_file_path.$saved_zip_file." ".GSROOTPATH.".htaccess ".GSROOTPATH.GSCONFIGFILE." ".GSROOTPATH."data ".GSROOTPATH."plugins ".GSROOTPATH."theme ".GSROOTPATH.$GSADMIN."/lang > /dev/null 2>&1";
 
 	debugLog('archive function exec called ' . __FUNCTION__);
 	exec(escapeshellarg($script_contents), $output, $rc);

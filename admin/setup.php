@@ -127,17 +127,18 @@ if(isset($_POST['submitted'])) {
 		} 
 	
 		# create gsconfig.php if it doesn't exist yet.
-		$init = GSROOTPATH.'gsconfig.php';
-		$temp = GSROOTPATH.'temp.gsconfig.php';
+		$tempconfig = 'temp.'.GSCONFIGFILE;
+		$init = GSROOTPATH.GSCONFIGFILE;
+		$temp = GSROOTPATH.$tempconfig;
 		if (file_exists($init)) {
 			if(file_exists($temp)) unlink($temp);
 			if (file_exists($temp)) {
-				$err .= sprintf(i18n_r('REMOVE_TEMPCONFIG_ERROR'), 'temp.gsconfig.php') . '<br />';
+				$err .= sprintf(i18n_r('REMOVE_TEMPCONFIG_ERROR'), $tempconfig ) . '<br />';
 			}
 		} else {
 			rename($temp, $init);
 			if (!file_exists($init)) {
-				$err .= sprintf(i18n_r('MOVE_TEMPCONFIG_ERROR'), 'temp.gsconfig.php', 'gsconfig.php') . '<br />';
+				$err .= sprintf(i18n_r('MOVE_TEMPCONFIG_ERROR'), $tempconfig , GSCONFIGFILE) . '<br />';
 			}
 		}
 		
