@@ -37,6 +37,7 @@ $GS_constants = array(
 	'GSAUTHFILE'            => 'authorization.xml',  // authorizaton salt data filename
 	'GSCSSMAINFILE'         => 'css.php',
 	'GSCSSCUSTOMFILE'       => 'admin.css',
+	'GSTEMPLATEFILE'        => 'template.php',
 	'GSSTYLEWIDE'           => 'wide',         // wide stylesheet
 	'GSSTYLE_SBFIXED'       => 'sbfixed',      // fixed sidebar
 	'GSFRONT'               => 1,

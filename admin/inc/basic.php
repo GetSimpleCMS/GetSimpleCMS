@@ -1562,14 +1562,14 @@ function getVerCheck(){
  * @param  str $template      template name
  * @param  str $template_file template filename
  */
-function includeTheme($template, $template_file = 'template.php'){
+function includeTheme($template, $template_file = GSTEMPLATEFILE){
 	# include the functions.php page if it exists within the theme
 	if ( file_exists(GSTHEMESPATH .$template."/functions.php") ) {
 		include(GSTHEMESPATH .$template."/functions.php");
 	}
 
 	# include the template and template file set within theme.php and each page
-	if ( (!file_exists(GSTHEMESPATH .$template."/".$template_file)) || ($template_file == '') ) { $template_file = "template.php"; }
+	if ( (!file_exists(GSTHEMESPATH .$template."/".$template_file)) || ($template_file == '') ) { $template_file = GSTEMPLATEFILE; }
 	include(GSTHEMESPATH .$template."/".$template_file);
 }
 

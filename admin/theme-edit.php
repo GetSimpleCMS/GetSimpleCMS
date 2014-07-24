@@ -46,7 +46,7 @@ if($template_file!='' and !filepath_is_safe($themepath.$template_file,$themepath
 
 # if no template is selected, use the default
 if ($template_file == '') {
-	$template_file = 'template.php';
+	$template_file = GSTEMPLATEFILE;
 }
 
 # check for form submission
@@ -93,7 +93,7 @@ if(isset($_GET['ajax'])){
 $allowed_extensions = explode(',',getDef('GSTHEMEEDITEXTS'));
 
 # if no template is selected, use the default
-if ($template == '') $template = 'template.php';
+if ($template == '') $template = GSTEMPLATEFILE;
 $directory = GSTHEMESPATH . $template . '/';
 
 
@@ -111,8 +111,8 @@ function createTemplateDropdown(){
 
 	foreach($templates as $file){
 		if( is_dir($file) ) {
-			// only a theme if template.php exists
-			if (file_exists($file.'/template.php')){
+			// only a theme if GSTEMPLATEFILE  (template.php) exists
+			if (file_exists($file.'/'.GSTEMPLATEFILE)){
 				$sel="";
 				$theme_dir_array[] = $file;
 				$theme = basename($file);
@@ -162,7 +162,7 @@ function editor_array2ul($array, $hideEmpty = true, $recurse = true) {
 
 				$open = editor_fileIsOpen($elem['path'],$elem['value']) ? ' open' : '';
 
-				if ($filename == 'template.php'){
+				if ($filename == GSTEMPLATEFILE){
 					$ext = 'theme';
 					$filename=i18n_r('DEFAULT_TEMPLATE');
 				}

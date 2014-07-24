@@ -93,7 +93,7 @@ if ($id){
 
 
 // MAKE SELECT BOX OF AVAILABLE TEMPLATES
-if ($template == '') { $template = 'template.php'; }
+if ($template == '') { $template = GSTEMPLATEFILE; }
 
 $themes_path   = GSTHEMESPATH . $TEMPLATE;
 $themes_handle = opendir($themes_path) or die("Unable to open ". GSTHEMESPATH);     
@@ -114,7 +114,7 @@ foreach ($templates as $file){
         $sel=""; 
     }
     
-    if ($file == 'template.php'){ 
+    if ($file == GSTEMPLATEFILE){ 
         $templatename=i18n_r('DEFAULT_TEMPLATE'); 
     } else { 
         $templatename=$file;

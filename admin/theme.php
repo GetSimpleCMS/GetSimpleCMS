@@ -53,7 +53,7 @@ while ($file = readdir($themes_handle)) {
 	$curpath = GSTHEMESPATH . $file;
 	if( is_dir($curpath) && $file != "." && $file != ".." ) {
 		$sel="";
-		if (file_exists($curpath.'/template.php')){
+		if (file_exists($curpath.'/'.GSTEMPLATEFILE)){
 			if ($TEMPLATE == $file)	{ 
 				$sel="selected";
 			}
