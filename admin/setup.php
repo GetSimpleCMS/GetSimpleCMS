@@ -83,7 +83,7 @@ if(isset($_POST['submitted'])) {
 		$note->addCData($SITENAME);
 		$note = $xmls->addChild('SITEURL');
 		$note->addCData($SITEURL);
-		$xmls->addChild('TEMPLATE', 'Innovation');
+		$xmls->addChild('TEMPLATE', GSINSTALLTEMPLATE);
 		$xmls->addChild('PRETTYURLS', '');
 		$xmls->addChild('PERMALINK', '');
 		if (! XMLsave($xmls, GSDATAOTHERPATH . $file) ) {
@@ -149,10 +149,12 @@ if(isset($_POST['submitted'])) {
 		$message .= '<p><em>'. i18n_r('EMAIL_THANKYOU') .' '.$site_full_name.'!</em></p>';
 		$status   = sendmail($EMAIL,$subject,$message);
 		# activate default plugins
-		change_plugin('InnovationPlugin.php',true);
+		foreach(explode(',',GSINSTALLPLUGINS) as $actplugin){
+			change_plugin($actplugin,true);
+		}
 
-		# set the login cookie, then redirect user to secure panel		
-		create_cookie();		
+		# set the login cookie, then redirect user to secure panel
+		create_cookie();
 		$success = true;
 	}
 }
