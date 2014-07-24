@@ -13,8 +13,9 @@ $live_plugins     = array();  // used for enablie/disable functions
 $GS_scripts       = array();  // used for queing Scripts
 $GS_styles        = array();  // used for queing Styles
 
-// constants 
-$ASSETURL=suggest_site_path(false,true);
+// constants
+// asseturl is scheme-less ://url if GSASSETSCHEMES is not true
+$ASSETURL = getDef('GSASSETSCHEMES',true) !==true ? str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL) : $SITEURL;
 
 define('GSFRONT',1);
 define('GSBACK',2);
