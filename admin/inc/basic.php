@@ -356,10 +356,11 @@ function XMLsave($xml, $file) {
 }
 
 /**
- * Date Formated Output
+ * Formated Date Output, special handling for params on windows
+ *
  * @since  3.4.0
  * @author  cnb
- * 
+ *
  * @param  string $format    A strftime or date format
  * @param  time $timestamp   A timestamp
  * @return string            returns a formated date string
@@ -645,8 +646,8 @@ function redirect($url) {
 /**
  * Display i18n
  *
- * Displays the default language's tranlation, but if it 
- * does not exist, it falls back to the en_US one.
+ * Displays the default language's tranlation, but if it
+ * does not exist, it falls back to $default if set, else GSMERGELANG else {token}.
  *
  * @since 3.0
  * @author ccagle8
@@ -656,28 +657,24 @@ function redirect($url) {
  *
  * @param string $name
  * @param bool $echo Optional, default is true
+ * @param mixed $default default return value if i18n or token not exist, default:true {token}, false:null, str:string
  */
-function i18n($name, $echo=true) {
+function i18n($name, $echo=true, $default = true) {
 	global $i18n;
 	global $LANG;
 
-	if(isset($i18n)){
-
-		if (isset($i18n[$name])) {
-			$myVar = $i18n[$name];
-		} else {
-			$myVar = '{'.$name.'}';
-		}
+	if(isset($i18n) && isset($i18n[$name])){
+		$myVar = $i18n[$name];
 	}
-	else {
+	else if($default === true){
 		$myVar = '{'.$name.'}'; // if $i18n doesnt exist yet return something
 	}
-
-	if (!$echo) {
-		return $myVar;
-	} else {
-		echo $myVar;
+	else if(is_string($default)){
+		$myVar = $default;
 	}
+	else return;
+
+	return echoReturn($myVar,$echo);
 }
 
 /**
@@ -690,8 +687,8 @@ function i18n($name, $echo=true) {
  *
  * @param string $name
  */
-function i18n_r($name) {
-	return i18n($name, false);
+function i18n_r($name,$default = true) {
+	return i18n($name, false, $default);
 }
 
 /**
@@ -1488,7 +1485,7 @@ function getRelPath($path,$root = GSROOTPATH ){
 
 /**
  * returns a global, easier inline usage of readonly globals
- * @since  3.4.0 
+ * @since  3.4.0
  * @param  str $var variable name
  * @return global
  */
@@ -1578,10 +1575,252 @@ function includeTheme($template, $template_file = 'template.php'){
 
 /**
  * get the current accessed script file
+ * @since 3.4.0
  * @return str  path to script filename
  */
 function getScriptFile(){
 	return $_SERVER['SCRIPT_NAME'];
+}
+
+/**
+ * get custom locale as defined in i18n
+ * @since 3.4.0
+ * @return str
+ */
+function getLocaleConfig(){
+	return i18n_r("LOCALE",null);
+}
+
+/**
+ * get date format as defined in i18n
+ * @since 3.4.0
+ * @return str date format string
+ */
+function getDateFormat(){
+	return i18n_r("DATE_FORMAT",null);
+}
+/**
+ * get date time format as defined in i18n
+ * @since 3.4.0
+ * @return str date time format string
+ */
+function getDateTimeFormat(){
+	return i18n_r("DATE_AND_TIME_FORMAT",null);
+}
+/**
+ * get transliteration set as defined in i18n
+ * @since 3.4.0
+ * @return str
+ */
+function getTransliteration(){
+	return i18n_r("TRANSLITERATION",null);
+}
+
+/**
+ * set php locale via i18n
+ * @since 3.4.0
+ * @param str locale str
+ */
+function  setCustomLocale($locale){
+	if ($locale) setlocale(LC_ALL, preg_split('/s*,s*/', $locale));
+}
+
+/**
+ * Merge GSMERGELANG, a fallback language, into i18n
+ * This is a default lang to load after the custom lang to
+ * avoid empty lang tokens not found in the custom lang
+ *
+ * @since 3.4.0
+ * @global $LANG
+ */
+function i18n_mergeDefault(){
+	GLOBAL $LANG;
+	// Merge in default lang to avoid empty lang tokens
+	// if GSMERGELANG is undefined or false merge GSDEFAULTLANG else merge custom
+	if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
+		if($LANG !=GSDEFAULTLANG)	i18n_merge(null,GSDEFAULTLANG);
+	} else{
+		// merge GSMERGELANG defined lang if not the same as $LANG
+		if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));
+	}
+}
+
+/**
+ * get the gs editor height config
+ * @since 3.4.0
+ * @return str string with height units
+ */
+function getEditorHeight(){
+	if (getDef('GSEDITORHEIGHT')) return getDef('GSEDITORHEIGHT') .'px';
+}
+
+/**
+ * get the gs editor language
+ * @since 3.4.0
+ * @return str
+ */
+function getEditorLang(){
+	if (getDef('GSEDITORLANG')) return getDef('GSEDITORLANG');
+	else if (file_exists(GSADMINTPLPATH.'js/ckeditor/lang/'.i18n_r('CKEDITOR_LANG').'.js')){
+		return i18n_r('CKEDITOR_LANG');
+	}
+}
+
+/**
+ * get the gs editor custom options
+ * @since 3.4.0
+ * @return str js config string
+ */
+function getEditorOptions(){
+	if (getDef('GSEDITOROPTIONS') && trim(getDef('GSEDITOROPTIONS'))!="" ) return getDef('GSEDITOROPTIONS');
+}
+
+/**
+ * get the gs editor custom toolbar
+ * @since 3.4.0
+ * @return str valid js nested array ([[ ]]) or escaped toolbar id ('toolbar_id')
+ */
+function getEditorToolbar(){
+	if (getDef('GSEDITORTOOL')) $edtool = getDef('GSEDITORTOOL');
+	if($edtool == "none") $edtool = null; // toolbar to use cke default
+	// if($edtool === null) $edtool = 'null'; // not supported in cke 3.x
+
+	// at this point $edtool should always be a valid js nested array ([[ ]]) or escaped toolbar id ('toolbar_id')
+	return returnJsArray($edtool);
+}
+
+/**
+ * get defined timezone from user->site->gsconfig
+ * @since 3.4.0
+ * @return str timezone identifier
+ */
+function getDefaultTimezone(){
+	GLOBAL $USRTIMEZONE, $SITETIMEZONE;
+	if(isset($USRTIMEZONE)) return $USRTIMEZONE;
+	if(isset($SITETIMEZONE)) return $SITETIMEZONE;
+	if(getDef('GSTIMEZONE')) return getDef('GSTIMEZONE');
+}
+
+/**
+ * set defined timezone
+ *
+ * @since 3.4.0
+ * @param str timezone identifier http://us3.php.net/manual/en/timezones.php
+ */
+function setTimezone($timezone){
+	if(isset($timezone) && function_exists('date_default_timezone_set') && ($timezone != "" || stripos($timezone, '--')) ) {
+		date_default_timezone_set($timezone);
+	}
+}
+
+/**
+ * gets website data from GSWEBSITEFILE
+ *
+ * @todo use a custom schema array for extracting fields
+ * @since 3.4.0
+ * @param  boolean $returnGlobals return as obj or array of vars
+ * @return mixed    depending on returnGlobals returns xml as object or a defined var array for global extraction
+ */
+function getWebsiteData($returnGlobals = false){
+	$thisfilew = GSDATAOTHERPATH .GSWEBSITEFILE;
+	if (file_exists($thisfilew)) {
+		$dataw        = getXML($thisfilew);
+		$SITENAME     = stripslashes( $dataw->SITENAME);
+		$SITEURL      = trim((string) $dataw->SITEURL);
+		$TEMPLATE     = trim((string) $dataw->TEMPLATE);
+		$PRETTYURLS   = trim((string) $dataw->PRETTYURLS);
+		$PERMALINK    = trim((string) $dataw->PERMALINK);
+		$SITEEMAIL    = trim((string) $dataw->EMAIL);
+		$SITETIMEZONE = trim((string) $dataw->TIMEZONE);
+		$SITELANG     = trim((string) $dataw->LANG);
+		$SITEUSR      = trim((string) $dataw->USR);
+	} else {
+		$SITENAME = '';
+		$SITEURL  = '';
+	}
+
+	// asseturl is scheme-less ://url if GSASSETSCHEMES is not true
+	$ASSETURL = getDef('GSASSETSCHEMES',true) !==true ? str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL) : $SITEURL;
+
+	unset($thisfilew);
+	if($returnGlobals) return get_defined_vars();
+	return $dataw;
+}
+
+/**
+ * gets user data from cookie_user.xml
+ * 
+ * @since 3.4.0
+ * @todo use a custom schema array for extracting fields
+ * @param  boolean $returnGlobals return as obj or array of vars
+ * @return mixed    depending on returnGlobals returns xml as object or a defined var array for global extraction
+ */
+function getUserData($returnGlobals = false){
+
+	if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
+		$cookie_user_id = _id($_COOKIE['GS_ADMIN_USERNAME']);
+		if (file_exists(GSUSERSPATH . $cookie_user_id.'.xml')) {
+			$datau      = getXML(GSUSERSPATH  . $cookie_user_id.'.xml');
+			$USR        = stripslashes($datau->USR);
+			$HTMLEDITOR = (string) $datau->HTMLEDITOR;
+			$USRTIMEZONE= (string) $datau->TIMEZONE;
+			$USRLANG    = (string) $datau->LANG;
+		} else {
+			$USR = null;
+		}
+	} else {
+		$USR = null;
+	}
+
+	unset($cookie_user_id);
+	if($returnGlobals) return get_defined_vars();
+	return $datau;
+}
+
+
+function getDefaultSalt(){
+	$salt = null;
+	if (defined('GSUSECUSTOMSALT')) {
+		// use GSUSECUSTOMSALT
+		$salt = sha1(getDef('GSUSECUSTOMSALT'));
+	}
+	else {
+		// use from authorization.xml
+		if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
+			$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
+			$salt  = stripslashes($dataa->apikey);
+		}
+	}
+
+	return $salt;
+}
+
+/**
+ * get the default language user->site->gsconfig->GSDEFAULTLANG->filesystem fallback
+ * @return str IETF langcode
+ */
+function getDefaultLang(){
+	GLOBAL $USRLANG, $SITELANG;
+
+	if(isset($USRLANG)) return $USRLANG;
+	if(isset($SITELANG)) return $SITELANG;
+	if(getDef('GSLANG')) return getDef('GSLANG');
+
+	// get language files
+	$filenames = glob(GSLANGPATH.'*.php');
+	$cntlang   = count($filenames);
+	if ($cntlang == 1) {
+		// 1 file , assign lang to only existing file
+		return basename($filenames[0], ".php");
+	} elseif($cntlang > 1 && in_array(GSLANGPATH .GSDEFAULTLANG.'.php',$filenames)) {
+		// prefer GSDEFAULTLANG as default if available
+		return GSDEFAULTLANG;
+	} elseif(isset($filenames[0])) {
+		// else fallback to first lang found
+		return basename($filenames[0], ".php");
+	} else {
+		return ''; // no languages available
+	}
 }
 
 /* ?> */

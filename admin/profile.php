@@ -156,7 +156,7 @@ if(isset($_POST['submitted'])) {
 if ($data->HTMLEDITOR != '' ) { $editorchck = 'checked'; }
 
 # get all available language files
-// if ($data->LANG == ''){ $LANG = 'en_US'; }
+// if ($data->LANG == ''){ $LANG = GSDEFAULTLANG; }
 
 if (count($lang_array) != 0) {
 	sort($lang_array);

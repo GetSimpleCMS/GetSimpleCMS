@@ -111,7 +111,7 @@ if(isset($_POST['submitted'])) {
 if ($PRETTYURLS != '' ) { $prettychck = 'checked'; }
 
 # get all available language files
-if ($LANG == ''){ $LANG = 'en_US'; }
+if ($LANG == ''){ $LANG = GSDEFAULTLANG; }
 
 if (count($lang_array) != 0) {
 	sort($lang_array);

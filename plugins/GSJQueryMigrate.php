@@ -12,7 +12,7 @@ $thisfile_GSJQM = basename(__FILE__, ".php");
 function jQuery_migrate_init(){
     GLOBAL $thisfile_GSJQM, $SITEURL;
 
-    i18n_merge($thisfile_GSJQM ) || i18n_merge($thisfile_GSJQM , 'en_US');
+    i18n_merge($thisfile_GSJQM ) || i18n_merge($thisfile_GSJQM , GSDEFAULTLANG);
 
     # register plugin
     register_plugin(

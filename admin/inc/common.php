@@ -11,16 +11,16 @@
 
 define('IN_GS', TRUE); // GS enviroment flag
 
-
 // GS Debugger
 GLOBAL $GS_debug; // GS debug trace array
 if(!isset($GS_debug)) $GS_debug = array();
 
+// @todo remove for production
 // debug catcher for this core wide change issues
 if(htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES) !== htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES)) die('PHP_SELF mismatch ' . $_SERVER['PHP_SELF']);
 
 /**
- * Set PHP enviroment
+ * Set PHP enviroments
  */
 if(function_exists('mb_internal_encoding')) mb_internal_encoding("UTF-8"); // set multibyte encoding
 
@@ -34,6 +34,7 @@ $GS_constants = array(
 	'GSROOTPATH'            => dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR, // root path of getsimple
 	'GSCONFIGFILE'          => 'gsconfig.php', // config filename
 	'GSWEBSITEFILE'         => 'website.xml',  // website data filename
+	'GSAUTHFILE'            => 'authorization.xml',  // authorizaton salt data filename
 	'GSSTYLEWIDE'           => 'wide',         // wide stylesheet
 	'GSSTYLE_SBFIXED'       => 'sbfixed',      // fixed sidebar
 	'GSCSSMAINFILE'         => 'css.php',
@@ -41,6 +42,7 @@ $GS_constants = array(
 	'GSFRONT'               => 1,
 	'GSBACK'                => 2,
 	'GSBOTH'                => 3,
+	'GSDEFAULTLANG'         => 'en_US',      // default language for core
 	'GSCONSTANTSLOADED'     => true          // $GS_constants IS LOADED FLAG
 );
 
@@ -119,7 +121,7 @@ GS_defineFromArray($GS_definitions);
 $GSADMIN = rtrim(GSADMIN,'/\\'); // global GS admin root folder name
 
 /**
- * Define some constants
+ * Define Paths
  */
 define('GSADMINPATH'     , GSROOTPATH      . $GSADMIN.'/'); // admin/
 define('GSADMININCPATH'  , GSADMINPATH     . 'inc/');       // admin/inc/
@@ -151,7 +153,7 @@ if(defined('GSDEBUG') && (bool) GSDEBUG === true) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
 	$nocache = true;
-} else if( defined('SUPRESSERRORS') && (bool)SUPPRESSERRORS === true ) {
+} else if( defined('GSSUPPRESSERRORS') && (bool)GSSUPPRESSERRORS === true ) {
 	error_reporting(0);
 	ini_set('display_errors', 0);
 }
@@ -200,8 +202,9 @@ if(!is_frontend()){
 }
 
 /**
- * Global website settings
- * @global (obj) $dataw         user xml raw obj from GSUSERSPATH/userid.xml
+ * Global website data
+ *
+ * @global (obj) $dataw         user xml raw obj from GSDATAOTHERPATH.GSWEBSITEFILE
  * @global (str) $SITENAME      sitename
  * @global (str) $SITEURL       siteurl
  * @global (str) $TEMPLATE      site default theme
@@ -214,26 +217,27 @@ if(!is_frontend()){
  * @global (str) $ASSETURL      url for asset loading in head default same as SITEURL but without the scheme '://url'
  */
 
-// load globals from website.xml
-GLOBAL 
- $dataw,         // user xml raw obj
- $SITENAME,      // sitename
- $SITEURL,       // siteurl
- $TEMPLATE,      // site default theme
- $PRETTYURLS,    //  pretty urls enabled?
- $PERMALINK,     // permalink structure, default %parents%/%slug%
- $SITEEMAIL,     // default site email for sending email primarily or contacting administrator
- $SITETIMEZONE,  // default timezone of server, safer to set than guess
- $SITELANG,      // default site lang, used for login etc.
- $SITEUSR,       // primary user id that installed GS
- $ASSETURL       // url for asset loading in head default same as SITEURL but without the scheme '://url'
+GLOBAL
+ $dataw,
+ $SITENAME,
+ $SITEURL,
+ $TEMPLATE,
+ $PRETTYURLS,
+ $PERMALINK,
+ $SITEEMAIL,
+ $SITETIMEZONE,
+ $SITELANG,
+ $SITEUSR,
+ $ASSETURL
 ;
 
-// grab website data
+// load website data from website.xml
 extract(getWebsiteData(true));
 
 /**
- * @global  (str) $datau      user xml raw obj
+ * Global user data
+ *
+ * @global  (str) $datau      user xml raw obj from GSUSERSPATH/userid.xml
  * @global  (str) $USR        user id
  * @global  (str) $HTMLEDITOR htmleditor toggle for auth user
  * @global  (str) $TIMEZONE   timezone for auth user
@@ -250,43 +254,48 @@ GLOBAL
 extract(getUserData(true));
 
 /**
- * 
- * @global  (array) $i18n i18n token array
+ * Global Language Data
+ *
+ * @global  (array) $i18n i18n token keyed translation array
  * @global  (str) $LANG  IETF langcode (w/underscore delim) [tag]_[subtag]
  */
-GLOBAL 
- $i18n, 
+
+GLOBAL
+ $i18n,
  $LANG
 ;
 
 // load language
-$LANG = getLang();   // set global language, order if set site->user->onlyfile->en_US
-i18n_merge(null);    // load $LANG file into $i18n
-i18n_mergeDefault(); // if GSMERGELANG, load en_US or GSMERGELANG lang into $i18n to override ugly missing {} tokens
-i18n_setLocale();    // set locale if provided in i18n lang file
+$LANG = getDefaultLang();   // set global language from config heirarchy
+i18n_merge(null);           // load $LANG file into $i18n
+i18n_mergeDefault();        // load GSDEFAULTLANG or GSMERGELANG lang into $i18n to override ugly missing {} tokens if set
 
+//set php locale
+setCustomLocale(getLocaleConfig());
 
 /**
  * Globals for salt and authentication data
- * @global (obj) $dataa,       authorization xml raw obj from GSWEBSITEFILE
+ *
+ * @global (obj) $dataa,       authorization xml raw obj from GSDATAOTHERPATH.GSAUTHFILE
  * @global (str) $SALT,        salt from gsconfig else authorization file
  * @global (str) $SESSIONHASH  used for stateless session confirmation, or as non-expiring nonce for certain operations
  */
 
 GLOBAL
- $dataa,
+ $dataa, // legacy for anyone using
  $SALT,
- $SESSIONHASH 
+ $SESSIONHASH
 ;
 
 // grab authorization and security data fatal fail if salt is not set
-$SALT = getSalt();
+$SALT = getDefaultSalt();
 if(!isset($SALT) && $SITEURL !='' && notInInstall()) die(i18n_r('KILL_CANT_CONTINUE')."<br/>".sprintf(i18n_r('NOT_SET'),'SALT') );
 $SESSIONHASH = sha1($SALT . $SITENAME);
 
 
 /**
- * Global editor vars
+ * Global editor vars (ckeditor)
+ *
  * @global (str) 	$EDHEIGHT editor custom height
  * @global (str) 	$EDLANG editor custom user lang or lang file specified
  * @global (mixed) 	$EDTOOL editor custom toolbar, json array | php array | 'none' | ck toolbar_ name
@@ -294,11 +303,11 @@ $SESSIONHASH = sha1($SALT . $SITENAME);
  */
 
 // Init Editor globals
-GLOBAL 
- $EDTOOL,   // 
- $EDHEIGHT, // 
- $EDLANG,   // 
- $EDOPTIONS // 
+GLOBAL
+ $EDTOOL,
+ $EDHEIGHT,
+ $EDLANG,
+ $EDOPTIONS
 ;
 
 // init editor globals
@@ -307,191 +316,37 @@ $EDLANG    = getEditorLang();
 $EDOPTIONS = getEditorOptions();
 $EDTOOL    = getEditorToolbar();
 
-$TIMEZONE  = getTimezone();
+$TIMEZONE  = getDefaultTimezone();
 setTimezone($TIMEZONE);
 
-debugLog(array(
-// 'dataw'        => $dataw,       
-// 'datau'        => $datau,       
-// 'dataa'        => $dataa,       
-'SITENAME'     => $SITENAME,    
-'SITEURL'      => $SITEURL,     
-'TEMPLATE'     => $TEMPLATE,    
-'PRETTYURLS'   => $PRETTYURLS,  
-'PERMALINK'    => $PERMALINK,   
-'SITEEMAIL'    => $SITEEMAIL,   
+
+$dump = array(
+// 'dataw'        => $dataw,
+// 'datau'        => $datau,
+// 'dataa'        => $dataa,
+'SITENAME'     => $SITENAME,
+'SITEURL'      => $SITEURL,
+'TEMPLATE'     => $TEMPLATE,
+'PRETTYURLS'   => $PRETTYURLS,
+'PERMALINK'    => $PERMALINK,
+'SITEEMAIL'    => $SITEEMAIL,
 'SITETIMEZONE' => $SITETIMEZONE,
-'SITELANG'     => $SITELANG,    
+'SITELANG'     => $SITELANG,
 'SITEUSR'      => $SITEUSR,
 'USR'          => $USR,
 'HTMLEDITOR'   => $HTMLEDITOR,
 'USRTIMEZONE'  => $USRTIMEZONE,
-'USRLANG'      => $USRLANG, 
+'USRLANG'      => $USRLANG,
 'ASSETURL'     => $ASSETURL,
-'i18n'         => count($i18n), 
+'i18n'         => count($i18n),
 'SALT'         => $SALT,
 'SESSIONHASH'  => $SESSIONHASH,
 'EDTOOL'       => $EDTOOL,
 'EDOPTIONS'    => $EDOPTIONS,
 'EDLANG'       => $EDLANG,
 'EDHEIGHT'     => $EDHEIGHT,
-));
-
-function getWebsiteData($returnGlobals = false){
-	// GLOBAL $dataw,$SITENAME,$SITEURL,$TEMPLATE,$PRETTYURLS,$PERMALINK,$SITEEMAIL,$ITETIMEZONE,$SITELANG,$SITEUSR,$ASSETURL;
-	$thisfilew = GSDATAOTHERPATH .GSWEBSITEFILE;
-	if (file_exists($thisfilew)) {
-		$dataw        = getXML($thisfilew);
-		$SITENAME     = stripslashes( $dataw->SITENAME);
-		$SITEURL      = trim((string) $dataw->SITEURL);
-		$TEMPLATE     = trim((string) $dataw->TEMPLATE);
-		$PRETTYURLS   = trim((string) $dataw->PRETTYURLS);
-		$PERMALINK    = trim((string) $dataw->PERMALINK);
-		$SITEEMAIL    = trim((string) $dataw->EMAIL);
-		$SITETIMEZONE = trim((string) $dataw->TIMEZONE);
-		$SITELANG     = trim((string) $dataw->LANG);
-		$SITEUSR      = trim((string) $dataw->USR);
-	} else {
-		$SITENAME = '';
-		$SITEURL  = '';
-	}
-
-	// asseturl is scheme-less ://url if GSASSETSCHEMES is not true
-	$ASSETURL = getDef('GSASSETSCHEMES',true) !==true ? str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL) : $SITEURL; 
-	
-	unset($thisfilew);
-	if($returnGlobals) return get_defined_vars();
-	return $dataw;
-}
-
-function getUserData($returnGlobals = false){
-
-	if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
-		$cookie_user_id = _id($_COOKIE['GS_ADMIN_USERNAME']);
-		if (file_exists(GSUSERSPATH . $cookie_user_id.'.xml')) {
-			$datau      = getXML(GSUSERSPATH  . $cookie_user_id.'.xml');
-			$USR        = stripslashes($datau->USR);
-			$HTMLEDITOR = (string) $datau->HTMLEDITOR;
-			$USRTIMEZONE= (string) $datau->TIMEZONE;
-			$USRLANG    = (string) $datau->LANG;
-		} else {
-			$USR = null;
-		}
-	} else {
-		$USR = null;
-	}
-
-	unset($cookie_user_id);
-	if($returnGlobals) return get_defined_vars();
-	return $datau;
-}
-
-function getSalt(){
-	$salt = null;
-	if (defined('GSUSECUSTOMSALT')) {
-		// use GSUSECUSTOMSALT
-		$salt = sha1(GSUSECUSTOMSALT);
-	}
-	else {
-		// use from authorization.xml
-		if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
-			$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
-			$salt  = stripslashes($dataa->apikey);
-		} else {
-			if($SITEURL !='' && notInInstall()) die(i18n_r('KILL_CANT_CONTINUE')."<br/>".i18n_r('MISSING_FILE').": "."authorization.xml");
-		}
-	}
-
-	return $salt;
-}
-
-function getLang(){
-	$lang = '';
-	// get language files
-	$filenames = glob(GSLANGPATH.'*.php');
-	$cntlang   = count($filenames);
-	if ($cntlang == 1) {
-		// 1 file , assign lang to only existing file
-		$lang = basename($filenames[0], ".php");
-	} elseif($cntlang > 1 && in_array(GSLANGPATH .'en_US.php',$filenames)) {
-		// prefer en_US as default if available
-		$lang = 'en_US';
-	} elseif(isset($filenames[0])) {
-		// else fallback to first lang found
-		$lang=basename($filenames[0], ".php");
-	} else {
-		// no languages available
-	}
-	return $lang;
-}	
-
-function i18n_mergeDefault(){
-	GLOBAL $LANG;
-	// Merge in default lang to avoid empty lang tokens
-	// if GSMERGELANG is undefined or false merge en_US else merge custom
-	if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
-		if($LANG !='en_US')	i18n_merge(null,"en_US");
-	} else{
-		// merge GSMERGELANG defined lang if not the same as $LANG
-		if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));
-	}
-}
-
-function i18n_setLocale(){
-	GLOBAL $i18n;
-	if (array_key_exists('LOCALE', $i18n)) setlocale(LC_ALL, preg_split('/s*,s*/', $i18n['LOCALE']));
-}
-
-/**
- * get the gs editor height config
- * @return [type] [description]
- */
-function getEditorHeight(){
-	if (getDef('GSEDITORHEIGHT')) return GSEDITORHEIGHT .'px'; 
-	else return '500px'; 
-}
-
-function getEditorLang(){
-	if (getDef('GSEDITORLANG')) return GSEDITORLANG;
-	else if (file_exists(GSADMINTPLPATH.'js/ckeditor/lang/'.i18n_r('CKEDITOR_LANG').'.js')){
-		return i18n_r('CKEDITOR_LANG');
-	}
-}
-
-function getEditorOptions(){
-	if (getDef('GSEDITOROPTIONS') && trim(GSEDITOROPTIONS)!="" ) return GSEDITOROPTIONS;
-}
-
-function getEditorToolbar(){
-	$edtool = 'advanced';
-	if (getDef('GSEDITORTOOL')) { $edtool = GSEDITORTOOL; }
-	if($edtool == "none") $edtool = null; // toolbar to use cke default
-	// if($edtool === null) $edtool = 'null'; // not supported in cke 3.x
-	// at this point $edtool should always be a valid js nested array ([[ ]]) or escaped toolbar id ('toolbar_id')
-	return returnJsArray($edtool);
-}
-
-/**
- * set defined timezone from config if not set on user
- * @global  $TIMEZONE
- */
-function getTimezone(){
-	if(getDef('GSTIMEZONE')) return GSTIMEZONE;
-}
-
-
-function setTimezone($timezone){
-	if(isset($timezone) && function_exists('date_default_timezone_set') && ($timezone != "" || stripos($timezone, '--')) ) {
-		date_default_timezone_set($timezone);
-	}
-}
-
-// settings heirarchy
-// check for global
-// check website
-// check user
-// check default
-// set global
+);
+debugLog($dump);
 
 /**
  * Check to make sure site is already installed
@@ -515,7 +370,7 @@ if (notInInstall()) {
 
 	if(!getDef('GSDEBUGINSTALL',true)){
 		# if you've made it this far, the site is already installed so remove the installation files
-		$filedeletionstatus=true;
+		$filedeletionstatus = true;
 		if (file_exists(GSADMINPATH.'install.php'))	{
 			$filedeletionstatus = unlink(GSADMINPATH.'install.php');
 		}
@@ -531,7 +386,6 @@ if (notInInstall()) {
 	}
 
 }
-
 
 /**
  * Include other files depending if they are needed or not
@@ -577,7 +431,7 @@ if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ requ
 if(GSBASE) require_once(GSADMINPATH.'base.php');
 
 
-// common methods are immediatly available
+// common methods that are required before dpendancy includes
 
 /**
  * Debug Console Log

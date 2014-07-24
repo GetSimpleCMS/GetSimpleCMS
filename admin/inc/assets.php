@@ -183,7 +183,7 @@ preRegisterScript('gsuploader',   $GS_script_assets['dropzone'],     false , $in
 preRegisterStyle('font-awesome',  '', !$nocdn , 'screen');
 preRegisterStyle('codemirror',    '',   false , 'screen');
 preRegisterStyle('jcrop',         '',   false , 'screen');
-preRegisterStyle('fancybox-css',  '',   false , 'screen'); // DEPRECATED legacy , unmatched id
+preRegisterStyle('fancybox-css',  '',   false , 'screen'); // DEPRECATED legacy , styleid not matching scriptid is confusing.
 preRegisterStyle('fancybox',      '',   false , 'screen');
 preRegisterStyle('jquery-ui',     '',   false , 'screen');
 
@@ -201,7 +201,7 @@ queue_script('scrolltofixed' , GSBACK);
 
 queue_style('fancybox'       , GSBACK);
 queue_style('jquery-ui'      , GSBACK);
-// queue_style('jquery-ui-theme', GSBACK); // unused, reserved for custom GS jquery ui theme
+// queue_style('jquery-ui-theme', GSBACK); // unused, reserved for custom GS jquery ui theme if ever needed
 queue_style('font-awesome'   , GSBACK);
 
 

@@ -89,7 +89,7 @@ foreach ($dirsArray as $dir) {
 // get available language files
 $filenames = getFiles(GSLANGPATH);
 
-if ($LANG == '') { $LANG = 'en_US'; }
+if ($LANG == '') { $LANG = GSDEFAULTLANG; }
 
 foreach ($filenames as $lfile) {
 	if( is_file(GSLANGPATH . $lfile) && $lfile != "." && $lfile != ".." ) {
