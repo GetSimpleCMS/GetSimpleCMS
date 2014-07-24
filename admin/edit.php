@@ -167,7 +167,7 @@ get_template('header');
         <!-- page title toggle screen -->
         <p id="edit_window">
             <label for="post-title" style="display:none;"><?php i18n('PAGE_TITLE'); ?></label>
-            <input class="text title" id="post-title" name="post-title" type="text" value="<?php echo $title; ?>" placeholder="<?php i18n('PAGE_TITLE'); ?>" />
+            <input class="text title" id="post-title" name="post-title" type="text" maxlength="<?php echo GSTITLEMAX; ?>" value="<?php echo $title; ?>" placeholder="<?php i18n('PAGE_TITLE'); ?>" />
         </p>
 
         <!-- TABS -->

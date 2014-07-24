@@ -35,14 +35,16 @@ $GS_constants = array(
 	'GSCONFIGFILE'          => 'gsconfig.php', // config filename
 	'GSWEBSITEFILE'         => 'website.xml',  // website data filename
 	'GSAUTHFILE'            => 'authorization.xml',  // authorizaton salt data filename
-	'GSSTYLEWIDE'           => 'wide',         // wide stylesheet
-	'GSSTYLE_SBFIXED'       => 'sbfixed',      // fixed sidebar
 	'GSCSSMAINFILE'         => 'css.php',
 	'GSCSSCUSTOMFILE'       => 'admin.css',
+	'GSSTYLEWIDE'           => 'wide',         // wide stylesheet
+	'GSSTYLE_SBFIXED'       => 'sbfixed',      // fixed sidebar
 	'GSFRONT'               => 1,
 	'GSBACK'                => 2,
 	'GSBOTH'                => 3,
 	'GSDEFAULTLANG'         => 'en_US',      // default language for core
+	'GSTITLEMAX'            => '70',         // max length allowed for titles
+	'GSFILENAMEMAX'         => '255',        // max length allowed for file names/slugs
 	'GSCONSTANTSLOADED'     => true          // $GS_constants IS LOADED FLAG
 );
 
@@ -59,7 +61,7 @@ $GS_definitions = array(
 	'GSWIDTHWIDE'          => '1366px',       // page width on backend pages defined in GSWIDEPAGES
 	'GSWIDEPAGES'          => 'theme-edit,components', // pages to apply GSWIDTHWIED on
 	'GSALLOWLOGIN'         => true,           // (bool) allow front end login
-	'GSALLOWRESETPASS'     => true,           // (bool) allow front end login
+	'GSALLOWRESETPASS'     => true,           // (bool) allow front end password resets
 	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // file extensions to show and edit in theme editor
 	'GSASSETSCHEMES'       => false,          // (bool) should $ASSETURL contian the url scheme http|https
 	'GSALLOWDOWNLOADS'     => true,           // (bool) allow using downloads.php to download files from /uploads and backups/zip

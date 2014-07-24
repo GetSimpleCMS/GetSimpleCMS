@@ -32,28 +32,29 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 
 if (isset($_POST['submitted'])) {
 	check_for_csrf("edit", "edit.php");
-	
+
+
 	if ( trim($_POST['post-title']) == '' )	{
 		redirect("edit.php?upd=edit-error&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
 	}	else {
-		
+
 		$url="";$title="";$metad=""; $metak="";	$cont="";
-		
+		if(isset($_POST['post-title'])){
+			$title = trim(safe_slash_html($_POST['post-title']));
+			$title = truncate($title,GSTITLEMAX); // limit titles to 70 characters
+		}
+
 		// is a slug provided?
-		if ($_POST['post-id']) { 
-			$url = trim($_POST['post-id']);
+		if ($_POST['post-id']) {
+			$url = truncate($_POST['post-id'],GSFILENAMEMAX); // limit slug/filenames to 70 chars
 			// @todo abstract this translit stuff
-			if (isset($i18n['TRANSLITERATION']) && is_array($translit=$i18n['TRANSLITERATION']) && count($translit>0)) {
-				$url = str_replace(array_keys($translit),array_values($translit),$url);
-			}
+			$url = doTransliteration($url);
 			$url = to7bit($url, "UTF-8");
 			$url = clean_url($url); //old way
 		} else {
-			if ($_POST['post-title'])	{ 
-				$url = trim($_POST['post-title']);
-				if (isset($i18n['TRANSLITERATION']) && is_array($translit=$i18n['TRANSLITERATION']) && count($translit>0)) {
-					$url = str_replace(array_keys($translit),array_values($translit),$url);
-				}
+			if ($title)	{
+				$url = $title;
+				$url = doTransliteration($url);
 				$url = to7bit($url, "UTF-8");
 				$url = clean_url($url); //old way
 			} else {
@@ -94,7 +95,6 @@ if (isset($_POST['submitted'])) {
 		
 		// format and clean the responses
 		// content
-		if(isset($_POST['post-title'])) 			{ $title       = safe_slash_html($_POST['post-title']);	}
 		if(isset($_POST['post-titlelong']))			{ $titlelong   = safe_slash_html($_POST['post-titlelong']);	}
 		if(isset($_POST['post-summary']))			{ $summary     = safe_slash_html($_POST['post-summary']);	}
  		if(isset($_POST['post-content'])) 			{ $content     = safe_slash_html($_POST['post-content']); }

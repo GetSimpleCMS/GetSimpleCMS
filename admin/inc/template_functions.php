@@ -1391,23 +1391,30 @@ function filter_queryString($allowed = array()){
 	return $new_qstring;
 }
 
+/**
+ * truncate a string, multibyte safe
+ *
+ * @since 3.4.0
+ * @param  str $str      string to truncate
+ * @param  int $numchars number of characters to return
+ * @return str           truncated string
+ */
+function truncate($str,$numchars){
+	return getExcerpt($str,$numchars,false,'',true,false);
+}
 
 /**
  * Get String Excerpt
  *
  * @since 3.3.2
  *
- * @uses mb_strlen
- * @uses mb_strrpos
- * @uses mb_substr
- * @uses strip_tags
  * @uses strIsMultibyte
  * @uses cleanHtml
- * @uses preg_repalce PCRE compiled with "--enable-unicode-properties"
+ * @uses preg_replace PCRE compiled with "--enable-unicode-properties"
  *
  * @param string $n Optional, default is 200.
  * @param bool $striphtml Optional, default true, true will strip html from $content
- * @param string $ellipsis 
+ * @param string $ellipsis
  * @param bool $break	break words, default: do not break words find whitespace and puntuation
  * @param bool $cleanhtml attempt to clean up html IF strip tags is false, default: true
  * @return string
@@ -1426,7 +1433,7 @@ function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = '...', $bre
 	// if not break, find last word boundary before truncate to avoid splitting last word
 	// solves for unicode whitespace and punctuation and a 1 character lookahead
 	// hack,  replaces punc with space and handles it all the same for obtaining boundary index
-	// REQUIRES that PCRE is compiled with "--enable-unicode-properties, detect or supress ?
+	// REQUIRES that PCRE is compiled with "--enable-unicode-properties, @todo detect or supress ?
 	if(!$break) $excerpt = preg_replace('/\n|\p{Z}|\p{P}+$/u',' ',$substr($str, 0, $len+1)); 
 
 	$lastWordBoundaryIndex = !$break ? $strrpos($excerpt, ' ') : $len;
