@@ -107,7 +107,7 @@ function email_template($message) {
 					<table border="0" cellpadding="0" cellspacing="0" width="580" style="border-radius:3px;">
 						<tr>
 							<th style="padding:15px 0 15px 20px;text-align:left;vertical-align:top;background:#171E25;border-radius:4px 4px 0 0;" >
-								<a href="'.$linkurl.'"><img src="'.$linkurl.'GSSW/gssw_assets/images/logo.png" alt="GetSimple CMS"></a>
+								<a href="'.$linkurl.'"><img src="'.$linkurl.'logo.png" alt="GetSimple CMS"></a>
 							</th>
 						</tr>
 						<tr>
