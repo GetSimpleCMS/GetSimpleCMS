@@ -27,28 +27,27 @@ if(function_exists('mb_internal_encoding')) mb_internal_encoding("UTF-8"); // se
 /**
  *  GSCONFIG definitions
  */
-
 $GS_constants = array(
-	'GSROOTPATH'            => dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR, // root path of getsimple
-	'GSTARTTIME'            => microtime               (),    // micro time stamp for gs loaded
- 	'GSBASE'                => false,                  // front end flag
-	'GSCONFIGFILE'          => 'gsconfig.php',         // config filename
-	'GSWEBSITEFILE'         => 'website.xml',          // website data filename
-	'GSAUTHFILE'            => 'authorization.xml',    // authorizaton salt data filename
-	'GSCSSMAINFILE'         => 'css.php',              // main css file name
-	'GSCSSCUSTOMFILE'       => 'admin.css',            // custom css file name
-	'GSTEMPLATEFILE'        => 'template.php',         // default template file name
-	'GSINSTALLTEMPLATE'     => 'Innovation',           // template to set on install
-	'GSINSTALLPLUGINS'      => 'InnovationPlugin.php', // comma delimited list of plugins to activate on install
-	'GSSTYLEWIDE'           => 'wide',                 // wide stylesheet
-	'GSSTYLE_SBFIXED'       => 'sbfixed',              // fixed sidebar
-	'GSFRONT'               => 1,                      // front end enum
-	'GSBACK'                => 2,                      // back end enum
-	'GSBOTH'                => 3,                      // front and back enum
-	'GSDEFAULTLANG'         => 'en_US',                // default language for core
-	'GSTITLEMAX'            => '70',                   // max length allowed for titles
-	'GSFILENAMEMAX'         => '255',                  // max length allowed for file names/slugs
-	'GSCONSTANTSLOADED'     => true                    // $GS_constants IS LOADED FLAG
+	'GSROOTPATH'            => getGSRootPath(),               // root path of getsimple
+	'GSTARTTIME'            => microtime(),                   // micro time stamp for gs loaded
+ 	'GSBASE'                => false,                         // front end flag
+	'GSCONFIGFILE'          => 'gsconfig.php',                // config filename
+	'GSWEBSITEFILE'         => 'website.xml',                 // website data filename
+	'GSAUTHFILE'            => 'authorization.xml',           // authorizaton salt data filename
+	'GSCSSMAINFILE'         => 'css.php',                     // main css file name
+	'GSCSSCUSTOMFILE'       => 'admin.css',                   // custom css file name
+	'GSTEMPLATEFILE'        => 'template.php',                // default template file name
+	'GSINSTALLTEMPLATE'     => 'Innovation',                  // template to set on install
+	'GSINSTALLPLUGINS'      => 'InnovationPlugin.php',        // comma delimited list of plugins to activate on install
+	'GSSTYLEWIDE'           => 'wide',                        // wide stylesheet
+	'GSSTYLE_SBFIXED'       => 'sbfixed',                     // fixed sidebar
+	'GSFRONT'               => 1,                             // front end enum
+	'GSBACK'                => 2,                             // back end enum
+	'GSBOTH'                => 3,                             // front and back enum
+	'GSDEFAULTLANG'         => 'en_US',                       // default language for core
+	'GSTITLEMAX'            => '70',                          // max length allowed for titles
+	'GSFILENAMEMAX'         => '255',                         // max length allowed for file names/slugs
+	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
 
 $GS_definitions = array(
@@ -473,6 +472,10 @@ function serviceUnavailable(){
 		i18n('SERVICE_UNAVAILABLE');
 		die();
 	}
+}
+
+function getGSRootPath(){
+	return dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR;
 }
 
 /* ?> */
