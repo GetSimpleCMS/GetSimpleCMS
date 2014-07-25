@@ -368,15 +368,15 @@ function get_site_name($echo=true) {
  * @deprecated as of 3.0
  *
  * @since 1.0
- * @uses $EMAIL
+ * @global $SITEEMAIL
  *
  * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_site_email($echo=true) {
-	global $EMAIL;
-	$str = trim(stripslashes($EMAIL));
-	return echoReturn($str,$echo);	
+	global $SITEEMAIL;
+	$str = trim(stripslashes($SITEEMAIL));
+	return echoReturn($str,$echo);
 }
 
 
