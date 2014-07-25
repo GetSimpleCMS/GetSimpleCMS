@@ -236,11 +236,12 @@ $i18n = array(
 "FLUSHCACHE-SUCCESS"      =>	"Caches Flushed Successfully",
 
 /*
- * For: Profie.php
+ * For: Profile.php
  */
 "USER_PROFILE"            =>    "User Profile",
 "DISPLAY_NAME"            =>	"A name for public display that is not your username",
 "ONLY_NEW_PASSWORD"       =>	"Only provide a password below if you want to change your current one",
+"PROVIDE_PASSWORD"        =>	"You must provide a password",
 "ENABLE_HTML_ED"          =>	"<b>Enable the HTML editor</b>",
 "WARN_EMAILINVALID"       =>	"WARNING: This email address does not look valid!",
 "NEW_PASSWORD"            =>	"New Password",
@@ -249,7 +250,7 @@ $i18n = array(
 "LOCAL_TIMEZONE"          =>	"Local Timezone",
 "NEW_USER"                =>    "New User",
 
-/* 
+/*
 * For: health-check.php
 */
 "WEB_HEALTH_CHECK"        =>	"Website Health Check",
@@ -412,6 +413,8 @@ $i18n = array(
 */
 "FILL_IN_REQ_FIELD"       =>	"Please fill in all the required fields",
 "LOGIN_FAILED"            =>	"Login failed. Please double check your Username and Password",
+"INVALID_PASSWORD"        =>    "Invalid Password",
+"INVALID_USER"            =>    "Invalid User",
 
 /* 
 * For: Locale and Date Format

@@ -88,14 +88,14 @@ if(isset($_POST['submitted'])) {
 		$adding = true;
 		$userid = strtolower($_POST['user']);
 		$file   = _id($userid) .'.xml';
-		if(path_is_safe(GSUSERSPATH . $file,GSUSERSPATH)) die(i18n('invalid username'));
-		if(!path_is_safe(dirname(GSUSERSPATH . $file),GSUSERSPATH,true)) die(i18n('invalid username'));
+		if(path_is_safe(GSUSERSPATH . $file,GSUSERSPATH)) die(i18n('INVALID_USER'));
+		if(!path_is_safe(dirname(GSUSERSPATH . $file),GSUSERSPATH,true)) die(i18n('INVALID_USER'));
 	}
 	else if(isset($_POST['user']) && $allowedit){
 		// @todo use custom nonce or hash checking to make sure username was not changed
 		$userid = strtolower($_POST['user']);
 		$file   = _id($userid) .'.xml';
-		if(!path_is_safe(dirname(GSUSERSPATH . $file),GSUSERSPATH,true)) die(i18n('invalid username'));
+		if(!path_is_safe(dirname(GSUSERSPATH . $file),GSUSERSPATH,true)) die(i18n('INVALID_USER'));
 	}
 	// @todo $these are global pollution
  	if(isset($_POST['name']))				$name       = var_in($_POST['name']);
@@ -226,9 +226,9 @@ $userheading = empty($userid) ? "<span> / ". i18n_r('NEW_USER') ."</span>" : "<s
 				
 				<?php exec_action('settings-user-extras'); ?>
 				
-				<p style="margin:0px 0 5px 0;font-size:12px;color:#999;" ><?php $adding === true ? i18n('you must provde a password') : i18n('ONLY_NEW_PASSWORD');?>:</p>
+				<p style="margin:0px 0 5px 0;font-size:12px;color:#999;" ><?php $adding === true ? i18n('PROVIDE_PASSWORD') : i18n('ONLY_NEW_PASSWORD');?>:</p>
 				<div class="leftsec">
-					<p><label for="sitepwd" ><?php i18n('NEW_PASSWORD');?>:</label><input autocomplete="off" class="text" id="sitepwd" name="sitepwd" type="password" value="" /></p>
+					<p><label for="sitepwd" ><?php $adding === true ? i18n('PASSWORD') : i18n('NEW_PASSWORD');?>:</label><input autocomplete="off" class="text" id="sitepwd" name="sitepwd" type="password" value="" /></p>
 				</div>
 				<div class="rightsec">
 					<p><label for="sitepwd_confirm" ><?php i18n('CONFIRM_PASSWORD');?>:</label><input autocomplete="off" class="text" id="sitepwd_confirm" name="sitepwd_confirm" type="password" value="" /></p>
