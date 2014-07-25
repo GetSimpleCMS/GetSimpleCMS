@@ -80,11 +80,15 @@ function to7bit($text,$from_enc="UTF-8") {
  *
  * @since 3.1
  *
+ * @global $site_link_back_url
  * @param string $message
  * @return string
  */
 function email_template($message) {
 	GLOBAL $site_link_back_url;
+	$linkurl = $site_link_back_url;
+	if(getDef('GSEMAILLINKBACK') && getDef('GSEMAILLINKBACK') !== $linkurl) $linkurl = getDef('GSEMAILLINKBACK');
+
 	$data = '
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml">
@@ -103,7 +107,7 @@ function email_template($message) {
 					<table border="0" cellpadding="0" cellspacing="0" width="580" style="border-radius:3px;">
 						<tr>
 							<th style="padding:15px 0 15px 20px;text-align:left;vertical-align:top;background:#171E25;border-radius:4px 4px 0 0;" >
-								<a href="'.$site_link_back_url.'"><img src="'.$site_link_back_url.'GSSW/gssw_assets/images/logo.png" alt="GetSimple CMS"></a>
+								<a href="'.$linkurl.'"><img src="'.$linkurl.'GSSW/gssw_assets/images/logo.png" alt="GetSimple CMS"></a>
 							</th>
 						</tr>
 						<tr>
@@ -113,7 +117,7 @@ function email_template($message) {
 						</tr>
 						<tr>
 							<td style="padding-top:10px;font-size:10px;color:#aaa;line-height:14px;font-family:arial, \'helvetica neue\', helvetica, serif" >
-								<p class="meta">This is a system-generated email, please do not reply to it. For help or questions about GetSimple, please visit our <a href="'.$site_link_back_url.'" style="color:#aaa;" >website</a>.<br />&copy; '.date('Y').' GetSimple CMS. All Rights Reserved.&nbsp;<a href="'.$site_link_back_url.'start/privacy" style="color:#aaa;" >Privacy Policy</a>. </p>
+								<p class="meta">This is a system-generated email, please do not reply to it. For help or questions about GetSimple, please visit our <a href="'.$site_link_back_url.'" style="color:#aaa;" >website</a>.<br />&copy; '.date('Y').' GetSimple CMS. All Rights Reserved.&nbsp;<a href="'.$linkurl.'start/privacy" style="color:#aaa;" >Privacy Policy</a>. </p>
 							</td>
 						</tr>
 					</table>

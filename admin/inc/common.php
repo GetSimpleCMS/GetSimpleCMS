@@ -38,8 +38,9 @@ $GS_constants = array(
 	'GSCSSMAINFILE'         => 'css.php',
 	'GSCSSCUSTOMFILE'       => 'admin.css',
 	'GSTEMPLATEFILE'        => 'template.php',
+	'GSSITEMAPFILE'         => 'sitemap.xml',
 	'GSINSTALLTEMPLATE'     => 'Innovation',   // tempalte to set on install
-	'GSINSTALLPLUGINS'      => 'InnovationPlugin.php' // comma delimited list of plugins to activate on install
+	'GSINSTALLPLUGINS'      => 'InnovationPlugin.php', // comma delimited list of plugins to activate on install
 	'GSSTYLEWIDE'           => 'wide',         // wide stylesheet
 	'GSSTYLE_SBFIXED'       => 'sbfixed',      // fixed sidebar
 	'GSFRONT'               => 1,
@@ -71,7 +72,8 @@ $GS_definitions = array(
 	'GSEDITORHEIGHT'       => '500',          // (str) wysiwyg editor height in px
 	'GSEDITORTOOL'         => 'basic',        // (str) wysiwyg editor toobar
 	'GSEDITORCONFIGFILE'   => 'config.js',    // (str) wysiwyg editor toobar
-	'GSDEFINITIONSLOADED'  => true	          // $GS_definitions IS LOADED FLAG
+	'GSEMAILLINKBACK'      => 'http://get-simple.info/', // url used in email template
+ 	'GSDEFINITIONSLOADED'  => true	          // $GS_definitions IS LOADED FLAG
 );
 
 /* Define Constants */
