@@ -1260,7 +1260,7 @@ function get_gs_version() {
 /**
  * Creates Sitemap
  *
- * Creates sitemap.xml in the site's root.
+ * Creates GSSITEMAPFILE (sitemap.xml) in the site's root.
  */
 function generate_sitemap() {
 	
@@ -1314,7 +1314,7 @@ function generate_sitemap() {
 		}
 		
 		//create xml file
-		$file = GSROOTPATH .'sitemap.xml';
+		$file = GSROOTPATH .GSSITEMAPFILE;
 		$xml  = exec_filter('sitemap',$xml);
 
 		XMLsave($xml, $file);
@@ -1322,8 +1322,8 @@ function generate_sitemap() {
 	}
 	
 	if (!getDef('GSDONOTPING',true)) {
-		if (file_exists(GSROOTPATH .'sitemap.xml')){
-			if( 200 === ($status=pingGoogleSitemaps($SITEURL.'sitemap.xml')))	{
+		if (file_exists(GSROOTPATH .GSSITEMAPFILE)){
+			if( 200 === ($status=pingGoogleSitemaps($SITEURL.GSSITEMAPFILE)))	{
 				#sitemap successfully created & pinged
 				return true;
 			} else {
