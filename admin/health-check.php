@@ -163,8 +163,8 @@ echo '<div class="bodycontent clearfix">
 					);			
 
 					$filesArray = array(
-						GSDATAOTHERPATH."authorization.xml",
-						GSDATAOTHERPATH."website.xml",
+						GSDATAOTHERPATH.GSAUTHFILE,
+						GSDATAOTHERPATH.GSWEBSITEFILE,
 						GSDATAOTHERPATH."pages.xml",
 						GSDATAOTHERPATH."components.xml",
 						GSDATAOTHERPATH."plugins.xml"
@@ -224,7 +224,7 @@ echo '<div class="bodycontent clearfix">
 			
 					$dirsArray = array(
 						GSDATAOTHERPATH.'plugins.xml',
-						GSDATAOTHERPATH.'authorization.xml',
+						GSDATAOTHERPATH.GSAUTHFILE,
 						GSDATAPAGESPATH, 
 						GSDATAOTHERPATH, 
 						GSDATAOTHERPATH.'logs/', 

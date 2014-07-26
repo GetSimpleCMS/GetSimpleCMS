@@ -13,7 +13,7 @@ login_cookie_check();
 
 # variable settings
 $path 			= GSDATAOTHERPATH; 
-$file 			= "website.xml"; 
+$file 			= GSWEBSITEFILE; 
 $theme_options 	= '';
 
 # was the form submitted?
@@ -26,11 +26,11 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 
 	if(!path_is_safe(GSTHEMESPATH.$newTemplate,GSTHEMESPATH)) die();
 
-	# backup old website.xml file
+	# backup old GSWEBSITEFILE (website.xml) file
 	$bakpath = GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH); // backups/other/
 	createBak($file, $path, $bakpath);
 	
-	# udpate website.xml file with new theme
+	# udpate GSWEBSITEFILE (website.xml) file with new theme
 	$xml  = new SimpleXMLExtended('<item></item>');
 	$note = $xml->addChild('SITENAME');
 	$note->addCData($SITENAME);

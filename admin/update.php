@@ -104,8 +104,8 @@ if (file_exists(GSPLUGINPATH.'pages.php'))	{
 }
 
 /* check for legacy version of user.xml */
+/* check and perform 2.x - 3.x upgrade */
 if (file_exists(GSDATAOTHERPATH .'user.xml')) {
-	
 	
 	# make new users folder
 	if (!file_exists(GSUSERSPATH)) {
@@ -132,7 +132,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	# get $USR data
 	$datau      = getXML(GSDATAOTHERPATH .'user.xml');
 	$datac      = getXML(GSDATAOTHERPATH .'cp_settings.xml');
-	$dataw      = getXML(GSDATAOTHERPATH .'website.xml');
+	$dataw      = getXML(GSDATAOTHERPATH .GSWEBSITEFILE);
 	
 	$USR        = _id(stripslashes($datau->USR));
 	$EMAIL      = $datau->EMAIL;
@@ -163,7 +163,6 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 		$message .= msgOK('Created new '._id($USR).'.xml file');
 	}
 	
-	
 	# rename old wesbite.xml
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_website.xml')) {
 		$status = rename(GSDATAOTHERPATH .'website.xml', GSDATAOTHERPATH .'_legacy_website.xml');
@@ -181,11 +180,11 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	$xml->addChild('TEMPLATE', $TEMPLATE);
 	$xml->addChild('PRETTYURLS', $PRETTYURLS);
 	$xml->addChild('PERMALINK', $PERMALINK);
-	$status = XMLsave($xml, GSDATAOTHERPATH .'website.xml');	
+	$status = XMLsave($xml, GSDATAOTHERPATH .GSWEBSITEFILE);	
 	if (!$status) {
-		$error .= msgError('Unable to update website.xml file!');	
+		$error .= msgError('Unable to update '.GSWEBSITEFILE.' file!');	
 	} else {
-		$message .= msgOK('Created updated website.xml file');
+		$message .= msgOK('Created updated '.GSWEBSITEFILE.' file');
 	}
 	
 	

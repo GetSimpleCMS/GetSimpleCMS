@@ -76,8 +76,8 @@ if(isset($_POST['submitted'])) {
 		$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
 		copy(GSUSERSPATH . $file, $flagfile);
 		
-		# create new website.xml file
-		$file = 'website.xml';
+		# create new GSWEBSITEFILE (website.xml) file
+		$file = GSWEBSITEFILE;
 		$xmls = new SimpleXMLExtended('<item></item>');
 		$note = $xmls->addChild('SITENAME');
 		$note->addCData($SITENAME);

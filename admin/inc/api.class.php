@@ -64,7 +64,7 @@ class API_Request {
 	 */
 	public function settings_read() {
 		if($this->auth()) {
-			$settings = getXML(GSDATAOTHERPATH.'website.xml');
+			$settings = getXML(GSDATAOTHERPATH.GSWEBSITEFILE);
 			$wrapper = array('status' => 'success', 'message' => 'settings_read ok', 'response' => $settings);
 			return json_encode($wrapper);
 		}

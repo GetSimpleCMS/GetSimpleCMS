@@ -117,7 +117,7 @@ if (count($lang_array) == 1) {
 }
 
 # salt value generation
-$api_file = GSDATAOTHERPATH.'authorization.xml';
+$api_file = GSDATAOTHERPATH.GSAUTHFILE;
 
 if (! file_exists($api_file)) {
 	if (getDef('GSUSECUSTOMSALT')) {

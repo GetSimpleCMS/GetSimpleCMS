@@ -1789,9 +1789,9 @@ function getDefaultSalt(){
 		$salt = sha1(getDef('GSUSECUSTOMSALT'));
 	}
 	else {
-		// use from authorization.xml
-		if (file_exists(GSDATAOTHERPATH .'authorization.xml')) {
-			$dataa = getXML(GSDATAOTHERPATH .'authorization.xml');
+		// use from GSAUTHFILE
+		if (file_exists(GSDATAOTHERPATH .GSAUTHFILE)) {
+			$dataa = getXML(GSDATAOTHERPATH .GSAUTHFILE);
 			$salt  = stripslashes($dataa->apikey);
 		}
 	}

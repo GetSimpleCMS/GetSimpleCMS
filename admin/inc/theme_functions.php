@@ -643,16 +643,13 @@ function is_logged_in(){
  * WHY?
  */	
 function return_page_title() {
-	return get_page_title(FALSE);
+	return get_page_title(false);
 }
 function return_parent() {
-	return get_parent(FALSE);
+	return get_parent(false);
 }
 function return_page_slug() {
-  return get_page_slug(FALSE);
+  return get_page_slug(false);
 }
-function return_site_ver() {
-	return get_site_version(FALSE);
-}	
 
 /* ?> */

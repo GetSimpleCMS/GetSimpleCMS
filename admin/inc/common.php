@@ -237,7 +237,7 @@ GLOBAL
  $ASSETURL
 ;
 
-// load website data from website.xml
+// load website data from GSWEBSITEFILE (website.xml)
 extract(getWebsiteData(true));
 
 /**
