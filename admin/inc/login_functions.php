@@ -52,7 +52,7 @@ if(isset($_POST['submitted'])) {
 				# add login failure to failed logins log
 				$logFailed = new GS_Logging_Class('failedlogins.log');
 				$logFailed->add('Username',$userid);
-				$logFailed->add('Reason',i18n_r('INVALID_PASSWORD');
+				$logFailed->add('Reason',i18n_r('INVALID_PASSWORD'));
 			}
 		} else {
 			# user doesnt exist in this system
@@ -60,7 +60,7 @@ if(isset($_POST['submitted'])) {
 			# add login failure to failed logins log
 			$logFailed = new GS_Logging_Class('failedlogins.log');
 			$logFailed->add('Username',$userid);
-			$logFailed->add('Reason',i18n_r('INVALID_USER');
+			$logFailed->add('Reason',i18n_r('INVALID_USER'));
 		}
 		
 		# is this successful?
