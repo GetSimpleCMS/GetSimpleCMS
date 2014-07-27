@@ -621,8 +621,8 @@ function check_menu($text) {
  * @return string
  */
 function passhash($p) {
-	if(getDef('GSLOGINSALT') && GSLOGINSALT != '') {
-		$logsalt = sha1(GSLOGINSALT);
+	if(getDef('GSLOGINSALT') && getDef(GSLOGINSALT) != '') {
+		$logsalt = sha1(getDef(GSLOGINSALT));
 	} else { 
 		$logsalt = null; 
 	}

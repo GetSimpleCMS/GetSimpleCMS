@@ -31,7 +31,7 @@ if(isset($_POST['submitted'])){
 			$USR   = strtolower($data->USR);
 			$EMAIL = $data->EMAIL;
 			
-			if(strtolower($_POST['username']) == $USR) {
+			if(strtolower($_POST['username']) === $USR) {
 				# create new random password
 				$random = createRandomPassword();
 				// $random = '1234';
