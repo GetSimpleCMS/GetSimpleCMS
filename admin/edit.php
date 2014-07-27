@@ -72,7 +72,7 @@ if ($id){
     $metarNoFollow = $data_edit->metarNoFollow;
     $metarNoArchive = $data_edit->metarNoArchive;
 } else {
-    // prefill fields is provided
+    // prefill fields if provided
     $title          =  isset( $_GET['title']      ) ? var_in( $_GET['title']      ) : '';
     $template       =  isset( $_GET['template']   ) ? var_in( $_GET['template']   ) : '';
     $parent         =  isset( $_GET['parent']     ) ? var_in( $_GET['parent']     ) : '';
@@ -365,9 +365,11 @@ get_template('header');
             
             // onchange listener for cke source mode
             editor.on( 'mode', function() {
+                Debugger.log('ckeditor mode change: '+ this.mode);
                 if ( this.mode == 'source' ) {
                     var editable = editor.editable();
                     editable.attachListener( editable, 'input', function() {
+                        Debugger.log('source input');
                         $('#editform #post-content').trigger('change');
                     } );
                 }
