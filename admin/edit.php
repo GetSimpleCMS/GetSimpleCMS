@@ -356,21 +356,22 @@ get_template('header');
                     dosave(); // gs global save function
                 }
             });
-            
+
             // on change listener for cke ( source mode not supported )
             editor.on( 'change', function() {
-                // Debugger.log('cke change');
-                $('#editform #post-content').trigger('change');                
+                // Debugger.log('ckeditor change event');
+                $('#editform #post-content').trigger('change');
             });
-            
-            // onchange listener for cke source mode
+
+            // kludge onchange listener for cke source mode
             editor.on( 'mode', function() {
-                Debugger.log('ckeditor mode change: '+ this.mode);
-                if ( this.mode == 'source' ) {
-                    var editable = editor.editable();
+                _this = this;
+                // Debugger.log('ckeditor mode change: '+ _this.mode);
+                if ( _this.mode == 'source' ) {
+                    var editable = _this.editable();
                     editable.attachListener( editable, 'input', function() {
-                        Debugger.log('source input');
-                        $('#editform #post-content').trigger('change');
+                        // Debugger.log('ckeditor source input change');
+                        _this.fire('change');
                     } );
                 }
             } );
