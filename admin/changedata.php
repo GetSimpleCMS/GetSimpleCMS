@@ -180,8 +180,10 @@ if (isset($_POST['submitted'])) {
 			$update = 'edit-success';
 			$ptype  = 'edit';
 			if($url !== $oldslug) $oldid = $oldslug;
-			// if(isset($_POST['autosave']) && $_POST['autosave'] == 'true')
 			echo "<div>";
+			if(isset($_POST['autosave']) && $_POST['autosave'] == 'true'){
+				echo '<div class="autosavenotify">'.sprintf(i18n_r('AUTOSAVE_NOTIFY'),output_time(date())).'</div>';
+			}
 			include('template/error_checking.php');
 			echo '<input id="nonce" name="nonce" type="hidden" value="'. get_nonce("edit", "edit.php") .'" />';
             echo '<input id="existing-url" name="existing-url" type="hidden" value="'. $url .'" />';

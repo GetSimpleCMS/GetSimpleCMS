@@ -1205,19 +1205,16 @@ table.cleantable tr td {
 	border: none;
 }
 
-#autosavenotify {
+#pagechangednotify, #autosavenotify, #autosavestatus {
 	padding: 15px 0 0 13px;
 	color: #666;
 	text-shadow: 1px 1px 0 #fff;
 	font-size: 11px;
+	margin: 0;
 }
 
 #pagechangednotify {
-	margin: 0;
-	padding: 15px 0 0 13px;
 	color: #CC0000;
-	text-shadow: 1px 1px 0 #fff;
-	font-size: 11px;
 }
 
 p.backuplink {

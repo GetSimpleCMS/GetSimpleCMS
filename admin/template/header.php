@@ -6,7 +6,7 @@
  * @package GetSimple
  */
 
-global $SITENAME, $SITEURL, $GSADMIN, $themeselector, $HTMLEDITOR,$pagetitle;
+GLOBAL $SITENAME, $SITEURL, $GSADMIN, $themeselector, $pagetitle;
 
 $GSSTYLE = getDef('GSSTYLE') ? GSSTYLE : '';
 $GSSTYLE_sbfixed = in_array('sbfixed',explode(',',$GSSTYLE));
@@ -94,11 +94,11 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->
 	<?php
 
-	if (!getDef('GSNOHIGHLIGHT',true) || GSNOHIGHLIGHT!=true){
+	if (!getDef('GSNOHIGHLIGHT',true) || getDef('GSNOHIGHLIGHT')!=true){
 		queue_script('gscodeeditor', GSBACK);
 	}
 
-	if( ((get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && $HTMLEDITOR ){
+	if( ((get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGlobal('HTMLEDITOR') ){
 		queue_script('gshtmleditor',GSBACK);
 	}
 
@@ -109,6 +109,14 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	if(get_filename_id()=='image'){
 		queue_script('gscrop',GSBACK);
 		queue_style('gscrop',GSBACK);
+	}
+
+    // HTMLEDITOR INIT
+    if (getGlobal('HTMLEDITOR') != '') {
+        if (file_exists(GSTHEMESPATH .getGlobal('TEMPLATE')."/editor.css")) {
+            $fullpath    = suggest_site_path();
+            $contentsCss = $fullpath.getRelPath(GSTHEMESPATH).getGlobal('TEMPLATE').'/editor.css';
+        }
 	}
 	?>
 
@@ -125,7 +133,18 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 				echo 'editorTheme = "'.$editor_theme.'";';
 			}
 		?>
-	</script>
+
+        var htmlEditorConfig = {
+            language                     : '<?php echo getGlobal('EDLANG'); ?>',
+<?php       if(!empty($contentsCss)) echo "contentsCss                   : '$contentsCss',"; ?>
+            height                       : '<?php echo getGlobal('EDHEIGHT'); ?>',
+            baseHref                     : '<?php echo getGlobal('SITEURL'); ?>'
+			<?php if(getGlobal('EDTOOL')) echo ",toolbar: " . returnJsArray(getGlobal('EDTOOL')); ?>
+<?php       if(getGlobal('EDOPTIONS')) echo ','.trim(getGlobal('EDOPTIONS')); ?>
+        };
+
+    </script>
+
 	<?php
 
 	get_scripts_backend();

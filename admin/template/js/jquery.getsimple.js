@@ -619,7 +619,7 @@ jQuery(document).ready(function () {
 	}
 
 	// init auto saving
-	if($('#autosavenotify').get(0)) autoSaveInit();
+	if($('#autosavestatus').get(0)) autoSaveInit();
 
     $('#editform').submit(function(){
         warnme = false;
@@ -651,8 +651,8 @@ jQuery(document).ready(function () {
 		var GSAUTOSAVEPERIOD = 5; // save period in seconds
 		Debugger.log('auto saving initialized ' + GSAUTOSAVEPERIOD);
 		$('#pagechangednotify').hide();
+		$('#autosavestatus').show();
 		$('#autosavenotify').show();
-		$('#autosavenotify').html('Autosaving is <b>ON</b> ('+GSAUTOSAVEPERIOD+'s)');
 		setInterval(autoSaveIntvl, GSAUTOSAVEPERIOD*1000);
     }
 
@@ -688,9 +688,10 @@ jQuery(document).ready(function () {
                 response = $.parseHTML(response);
                 if ($(response).find('div.updated').html()) {
                     notifyOk($(response).find('div.updated').html()).popit().removeit();
-                    $('#autosavenotify').text(i18n('AUTOSAVE_NOTIFY') + hours +":"+minutes+" "+daypart);
+                    $('#autosavestatus').hide();
+                    // get auto save notification response
+                    $('#autosavenotify').html($(response).find('div.autosavenotify').html());
                     $('#pagechangednotify').hide();
-                    $('#pagechangednotify').text('');
                     $('input[type=submit]').attr('disabled', false);
                     $('input[type=submit]').css('border-color','#ABABAB');
                     warnme = false;
@@ -700,11 +701,13 @@ jQuery(document).ready(function () {
                     // @todo change url to new slug so refreshes work
                 }
                 else {
+                	ajaxError(response);
                     if ($(response).find('div.error').html()) {
                         notifyError($(response).find('div.error').html()).popit().removeit();
                     } else notifyError(i18n('ERROR_OCCURED')).popit().removeit();
                     pageisdirty = true;
                     warnme = false;
+                    $('#autosavestatus').hide();
                     $('#autosavenotify').text(i18n('ERROR_OCCURED'));
                     $('input[type=submit]').attr('disabled', false);
                 }
@@ -733,7 +736,6 @@ jQuery(document).ready(function () {
 
     function autoSaveInd(){
         $('#pagechangednotify').show();
-        $('#pagechangednotify').text(i18n('PAGE_UNSAVED'));
         $('input[type=submit]').css('border-color','#CC0000');
         $('#cancel-updates').show();
     }
@@ -1195,7 +1197,7 @@ jQuery(document).ready(function () {
 		}
 	});
 
-	// catch all redirects for session timeout on HTTP 401 unauthorized
+	// catch all ajax error, and redirects for session timeout on HTTP 401 unauthorized
 	$( document ).ajaxError(function( event, xhr, settings ) {
 		// notifyInfo("ajaxComplete: " + xhr.status);
 		if(xhr.status == 401){
@@ -1203,6 +1205,13 @@ jQuery(document).ready(function () {
 			window.location.reload();
 		}
 	});
+
+	// custom ajax error handler
+	function ajaxError($response){
+		if(GS.debug === true){
+			Debugger.log($response);
+		}
+	}
 
 	// add tree folding to tree tables
 	// addTableTree(minrows,mindepth,headerdepth)
