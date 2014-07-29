@@ -717,15 +717,16 @@
                     clearTimeout(delay);
                     delay = setTimeout(function () {
                         var cm = window["codemirror_" + editor.id];
-                    
+
                         if (cm) {
                             cm.save();
+                            editor.editable().fire('input');
                         }
                     }, 300);
                 });
 
                 window["codemirror_" + editor.id].setSize(null, holderHeight);
-                
+
                 // Enable Code Folding (Requires 'lineNumbers' to be set to 'true')
                 if (config.lineNumbers && config.enableCodeFolding) {
                     window["codemirror_" + editor.id].on("gutterClick", window["foldFunc_" + editor.id]);

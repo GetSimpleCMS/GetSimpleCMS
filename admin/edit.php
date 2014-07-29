@@ -298,7 +298,7 @@ get_template('header');
             <?php } ?>
 
                 <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
-                <div class="codewrap"><textarea id="post-content" class="boxsizingBorder" name="post-content"><?php echo $content; ?></textarea></div>
+                <div class="codewrap"><textarea id="post-content" class="html_edit boxsizingBorder" name="post-content"><?php echo $content; ?></textarea></div>
             
             <?php exec_action('edit-content'); ?> 
             
@@ -309,210 +309,32 @@ get_template('header');
         // HTMLEDITOR INIT
         if ($HTMLEDITOR != '') {       
 
-			if(isset($EDTOOL)) $EDTOOL = returnJsArray($EDTOOL);
-			if(isset($toolbar)) $toolbar = returnJsArray($toolbar); // handle plugins that corrupt this
-
-			$toolbar = isset($EDTOOL) ? ",toolbar: ".trim($EDTOOL,",") : '';
-			$options = isset($EDOPTIONS) ? ','.trim($EDOPTIONS,",") : '';
-
-            // convert to js string if php array
-            if(is_array($toolbar)){
-                // add about button if debug
-                if(isDebug()){
-                    $toolbar[]=array('About');
-                }
-                $toolbar = json_encode($toolbar);                
-            }
-
-            if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
-                $fullpath = suggest_site_path();
+            if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) {
+                $fullpath    = suggest_site_path();
                 $contentsCss = $fullpath.getRelPath(GSTHEMESPATH).$TEMPLATE.'/editor.css';
             }
 
 		?>
 
         <script type="text/javascript">
-            
-            var editorCfg = {
+
+            htmlEditorConfig = {
                 language                     : '<?php echo $EDLANG; ?>',
                 <?php if(!empty($contentsCss)) echo "contentsCss                   : '$contentsCss',"; ?>
                 height                       : '<?php echo $EDHEIGHT; ?>',
                 baseHref                     : '<?php echo $SITEURL; ?>'
-					<?php echo $toolbar; ?>
-					<?php echo $options; ?>
-			};
-            
-            var editor = CKEDITOR.replace( 'post-content',editorCfg);         
-
-            // ctr+s save handler
-            CKEDITOR.on('instanceReady', function (ev) {
-                ev.editor.setKeystroke(CKEDITOR.CTRL + 83 /*S*/, 'customSave' );              
-            });
-
-            // custom save function
-            editor.addCommand( 'customSave',{
-                exec : function( editor ){
-                    // Debugger.log('customsave');
-                    dosave(); // gs global save function
-                }
-            });
-
-            // on change listener for cke ( source mode not supported )
-            editor.on( 'change', function() {
-                // Debugger.log('ckeditor change event');
-                $('#editform #post-content').trigger('change');
-            });
-
-            // kludge onchange listener for cke source mode
-            editor.on( 'mode', function() {
-                _this = this;
-                // Debugger.log('ckeditor mode change: '+ _this.mode);
-                if ( _this.mode == 'source' ) {
-                    var editable = _this.editable();
-                    editable.attachListener( editable, 'input', function() {
-                        // Debugger.log('ckeditor source input change');
-                        _this.fire('change');
-                    } );
-                }
-            } );
+                <?php if(!empty($EDTOOL)) echo ",toolbar: " . returnJsArray($EDTOOL); ?>
+                <?php if(!empty($EDOPTIONS)) echo ','.trim($EDOPTIONS); ?>
+            };
 
         </script>
-            
+
         <?php
             # CKEditor setup functions
-            ckeditor_add_page_link();
-            exec_action('html-editor-init'); 
+            exec_action('html-editor-init');
         ?>
-            
+
         <?php } ?>
-        
-        <script type="text/javascript">
-            /* Warning for unsaved Data */
-            var yourText    = null;
-            var warnme      = false;
-            var pageisdirty = false;
-            
-            $('#cancel-updates').hide();
-    
-            window.onbeforeunload = function () {
-                if (warnme || pageisdirty == true) {
-                    return "<?php i18n('UNSAVED_INFORMATION'); ?>";
-                }
-            }
-            
-            $('#editform').submit(function(){
-                warnme = false;
-                pageisdirty = false;    
-                return checkTitle();
-            });
-
-            checkTitle = function(){
-                if($.trim($("#post-title").val()).length == 0){
-                    alert("<?php i18n('CANNOT_SAVE_EMPTY'); ?>");
-                    return false;
-                }                   
-            }
-
-            jQuery(document).ready(function() { 
-
-            <?php if (getDef('GSAUTOSAVE',true) && (int)GSAUTOSAVE != 0) { /* IF AUTOSAVE IS TURNED ON via GSCONFIG.PHP */ ?>
-
-                    $('#pagechangednotify').hide();
-                    $('#autosavenotify').show();
-                    $('#autosavenotify').html('Autosaving is <b>ON</b> (<?php echo (int)GSAUTOSAVE; ?> s)');                
-                    
-                    function autoSaveIntvl(){
-                        // Debugger.log('autoSaveIntvl called, isdirty:' + pageisdirty);
-                        if(pageisdirty == true){
-                            autoSave();
-                            pageisdirty = false;
-                        }                       
-                    }
-                    
-                    function autoSave() {
-                        $('input[type=submit]').attr('disabled', 'disabled');
-
-                        // we are using ajax, so ckeditor wont copy data to our textarea for us, so we do it manually
-                        if(typeof(editor)!='undefined'){ $('#post-content').val(CKEDITOR.instances["post-content"].getData()); }
-                        
-                        var dataString = $("#editform").serialize();
-                        
-                        // not internalionalized or using GS date format!
-                        var currentTime = new Date();
-                        var hours       = currentTime.getHours();
-                        var minutes     = currentTime.getMinutes();
-                        if (minutes < 10){ minutes = "0" + minutes; }
-                        if (hours > 11){ daypart = "PM"; } else {    daypart = "AM"; }
-                        if (hours > 12){ hours-=12; }
-                        
-                        $.ajax({
-                            type: "POST",
-                            url: "changedata.php",
-                            data: dataString+'&autosave=true&submitted=true&ajaxsave=1',
-                            success: function(response) {
-                                response = $.parseHTML(response);
-                                if ($(response).find('div.updated').html()) {
-                                    notifyOk($(response).find('div.updated').html()).popit().removeit();
-                                    $('#autosavenotify').text("<?php i18n('AUTOSAVE_NOTIFY'); ?> "+ hours +":"+minutes+" "+daypart);
-                                    $('#pagechangednotify').hide();
-                                    $('#pagechangednotify').text('');
-                                    $('input[type=submit]').attr('disabled', false);
-                                    $('input[type=submit]').css('border-color','#ABABAB');
-                                    warnme = false;
-                                    $('#cancel-updates').hide();
-                                    updateEditSlug(response);
-                                    updateNonce(response);
-                                    // @todo change url to new slug so refreshes work
-                                }
-                                else {
-                                    if ($(response).find('div.error').html()) {
-                                        notifyError($(response).find('div.error').html()).popit().removeit();
-                                    } else notifyError(i18n('ERROR_OCCURED')).popit().removeit();
-                                    pageisdirty = true;
-                                    warnme = false;
-                                    $('#autosavenotify').text(i18n('ERROR_OCCURED'));
-                                    $('input[type=submit]').attr('disabled', false);
-                                }
-                            }
-                        }); 
-                    }
-
-                    // ajaxify components submit
-                    $('#editform').on('submit',function(e){
-                        e.preventDefault();
-                        autoSave();
-                    });
-                    
-                    // We register title and slug changes with change() which only fires when you lose focus to prevent midchange saves.
-                    $('#post-title, #post-id').change(function () {
-                        $('#editform #post-content').trigger('change');
-                    });
-                    
-                    // We register all other form elements to detect changes of any type by using bind
-                    $('#editform input,#editform textarea,#editform select').not('#post-title').not('#post-id').bind('change keypress paste textInput input',function(){
-                        pageisdirty = true;
-                        warnme      = true;
-                        autoSaveInd();
-                    });
-                
-                setInterval(autoSaveIntvl, <?php echo (int)GSAUTOSAVE*1000; ?>);
-
-                <?php } else { /* AUTOSAVE IS NOT TURNED ON */ ?>
-                    $('#editform').bind('change keypress paste focus textInput input',function(){                   
-                        warnme      = true;
-                        pageisdirty = false;
-                        autoSaveInd();
-                    });
-                    <?php } ?>
-                    
-                    function autoSaveInd(){
-                        $('#pagechangednotify').show();                
-                        $('#pagechangednotify').text("<?php i18n('PAGE_UNSAVED')?>");  
-                        $('input[type=submit]').css('border-color','#CC0000');              
-                        $('#cancel-updates').show();                        
-                    }
-            });
-        </script>
         <?php if (empty($HTMLEDITOR)) echo '</fieldset>'; ?>
         </div> 
         <!-- / END PAGE CONTENT -->

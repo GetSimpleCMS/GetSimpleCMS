@@ -618,6 +618,126 @@ jQuery(document).ready(function () {
 		$("#menu-items").css("display", "none");
 	}
 
+	// init auto saving
+	if($('#autosavenotify').get(0)) autoSaveInit();
+
+    $('#editform').submit(function(){
+        warnme = false;
+        pageisdirty = false;
+        return checkTitle();
+    });
+
+    /* Warning for unsaved Data */
+    var yourText    = null;
+    var warnme      = false;
+    var pageisdirty = false;
+
+    $('#cancel-updates').hide();
+
+    window.onbeforeunload = function () {
+        if (warnme || pageisdirty === true) {
+            return "<?php i18n('UNSAVED_INFORMATION'); ?>";
+        }
+    };
+
+    function checkTitle(){
+        if($.trim($("#post-title").val()).length === 0){
+            alert(i18n('CANNOT_SAVE_EMPTY'));
+            return false;
+        }
+    }
+
+	function autoSaveInit(){
+		var GSAUTOSAVEPERIOD = 5; // save period in seconds
+		Debugger.log('auto saving initialized ' + GSAUTOSAVEPERIOD);
+		$('#pagechangednotify').hide();
+		$('#autosavenotify').show();
+		$('#autosavenotify').html('Autosaving is <b>ON</b> ('+GSAUTOSAVEPERIOD+'s)');
+		setInterval(autoSaveIntvl, GSAUTOSAVEPERIOD*1000);
+    }
+
+    function autoSaveIntvl(){
+        Debugger.log('autoSaveIntvl called, isdirty:' + pageisdirty);
+        if(pageisdirty === true){
+            autoSave();
+            pageisdirty = false;
+        }
+    }
+
+    function autoSave() {
+        $('input[type=submit]').attr('disabled', 'disabled');
+
+        // we are using ajax, so ckeditor wont copy data to our textarea for us, so we do it manually
+        if(typeof(editor)!='undefined'){ $('#post-content').val(CKEDITOR.instances["post-content"].getData()); }
+
+        var dataString = $("#editform").serialize();
+
+        // not internalionalized or using GS date format!
+        var currentTime = new Date();
+        var hours       = currentTime.getHours();
+        var minutes     = currentTime.getMinutes();
+        if (minutes < 10){ minutes = "0" + minutes; }
+        if (hours > 11){ daypart = "PM"; } else {    daypart = "AM"; }
+        if (hours > 12){ hours-=12; }
+
+        $.ajax({
+            type: "POST",
+            url: "changedata.php",
+            data: dataString+'&autosave=true&submitted=true&ajaxsave=1',
+            success: function(response) {
+                response = $.parseHTML(response);
+                if ($(response).find('div.updated').html()) {
+                    notifyOk($(response).find('div.updated').html()).popit().removeit();
+                    $('#autosavenotify').text(i18n('AUTOSAVE_NOTIFY') + hours +":"+minutes+" "+daypart);
+                    $('#pagechangednotify').hide();
+                    $('#pagechangednotify').text('');
+                    $('input[type=submit]').attr('disabled', false);
+                    $('input[type=submit]').css('border-color','#ABABAB');
+                    warnme = false;
+                    $('#cancel-updates').hide();
+                    updateEditSlug(response);
+                    updateNonce(response);
+                    // @todo change url to new slug so refreshes work
+                }
+                else {
+                    if ($(response).find('div.error').html()) {
+                        notifyError($(response).find('div.error').html()).popit().removeit();
+                    } else notifyError(i18n('ERROR_OCCURED')).popit().removeit();
+                    pageisdirty = true;
+                    warnme = false;
+                    $('#autosavenotify').text(i18n('ERROR_OCCURED'));
+                    $('input[type=submit]').attr('disabled', false);
+                }
+            }
+        });
+    }
+
+    // ajaxify components submit
+    $('#editform').on('submit',function(e){
+        e.preventDefault();
+        autoSave();
+    });
+
+    // We register title and slug changes with change() which only fires when you lose focus to prevent midchange saves.
+    $('#post-title, #post-id').change(function () {
+        $('#editform #post-content').trigger('change');
+    });
+
+    // We register all other form elements to detect changes of any type by using bind
+    $('#editform input,#editform textarea,#editform select').not('#post-title').not('#post-id').bind('change keypress paste textInput input',function(){
+        Debugger.log('#editform changed');
+        warnme      = true;
+        pageisdirty = true;
+        autoSaveInd();
+    });
+
+    function autoSaveInd(){
+        $('#pagechangednotify').show();
+        $('#pagechangednotify').text(i18n('PAGE_UNSAVED'));
+        $('input[type=submit]').css('border-color','#CC0000');
+        $('#cancel-updates').show();
+    }
+
 	// adds sidebar submit buttons and fire clicks
 	var edit_line = $('#submit_line span').html();
 	$('#js_submit_line').html(edit_line);

@@ -152,6 +152,10 @@ $GS_script_assets['gscodemirror']['local']['ver']  = $getsimple_ver;
 $GS_script_assets['gscodemirror']['queue']['script']  = array('codemirror');
 $GS_script_assets['gscodemirror']['queue']['style']   = array('codemirror');
 
+// gs htmleditor
+$GS_script_assets['gsckeditor']['local']['url']  = $ASSETURL.$GSADMIN.'/template/js/ckeditor.getsimple.js';
+$GS_script_assets['gsckeditor']['local']['ver']  = $getsimple_ver;
+$GS_script_assets['gsckeditor']['queue']['script']  = array('ckeditor');
 
 /**
  * Register shared javascript/css scripts for loading into the header
@@ -175,7 +179,7 @@ preRegisterScript('fancybox',     '',   false , $infooter);
 preRegisterScript('scrolltofixed','',   false , $infooter);
 
 // gs aliases
-preRegisterScript('gshtmleditor', $GS_script_assets['ckeditor'],     false , $infooter);
+preRegisterScript('gshtmleditor', $GS_script_assets['gsckeditor'],     false , $infooter);
 preRegisterScript('gscodeeditor', $GS_script_assets['gscodemirror'], false , $infooter);
 preRegisterScript('gscrop',       $GS_script_assets['jcrop'],        false , $infooter);
 preRegisterScript('gsuploader',   $GS_script_assets['dropzone'],     false , $infooter);
