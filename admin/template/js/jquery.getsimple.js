@@ -841,7 +841,8 @@ jQuery(document).ready(function () {
 	});
 
 	function checkChanged(){
-		if($('#codetext').data('editor').hasChange === true){
+		// @todo add non codemirror change detection using listeners
+		if($('#codetext').data('editor') && $('#codetext').data('editor').hasChange === true){
 			alert('This file has unsaved content, save or cancel before continuing');
 			return true;
 		}
@@ -856,8 +857,10 @@ jQuery(document).ready(function () {
 		url   = url   === undefined ? "theme-edit.php?t="+theme+'&f='+file : url;
 		
 		loadingAjaxIndicator.show();
-		$('#codetext').data('editor').setValue('');
-		$('#codetext').data('editor').hasChange = false;
+		if($('#codetext').data('editor')){
+			$('#codetext').data('editor').setValue('');
+			$('#codetext').data('editor').hasChange = false;
+		}	
 		$('#theme_edit_code').fadeTo('fast',0.3);
 
 		$.ajax({
@@ -880,24 +883,26 @@ jQuery(document).ready(function () {
 				/* load code content */
 				var newcontent = response.find('#codetext');
 				$('#codetext').val(newcontent.val());
-				$('#codetext').data('editor').setValue(newcontent.val());
-				$('#codetext').data('editor').hasChange = false;
-
+				
 				/* form */
 				var filename = response.find('#edited_file').val() ;
 				$('#edited_file').val(filename);
 				updateNonce(response);
 
+				if($('#codetext').data('editor')){
+					$('#codetext').data('editor').setValue(newcontent.val());
+					$('#codetext').data('editor').hasChange = false;
+					/* update editor mode */
+					$('#codetext').data('editor').setOption('mode',getEditorMode(getExtension(filename)));
+					$('#codetext').data('editor').refresh();
+				}
 				/* hook wrapper */
 				$('#theme-edit-extras-wrap').html(response.find('#theme-edit-extras-wrap > *'));
 
 				/* title */
 				$('#theme_editing_file').html(filename);
 
-				/* update editor mode */
-				$('#codetext').data('editor').setOption('mode',getEditorMode(getExtension(filename)));
-				$('#codetext').data('editor').refresh();
-				
+
 				clearFileWaits();
 				loadingAjaxIndicator.fadeOut();
 
