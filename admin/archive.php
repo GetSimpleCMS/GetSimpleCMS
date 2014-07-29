@@ -67,7 +67,7 @@ get_template('header');
 				foreach ($filenames as $file) {
 					if($file[0] != "." ) {
 						$timestamp = explode('_', $file);
-						$name = lngDate($timestamp[0]);
+						$name = output_datetime($timestamp[0]);
 						clearstatcache();
 						$ss   = stat($path . $file);
 						$size = fSize($ss['size']);

@@ -1,4 +1,4 @@
-var htmlEditorConfig;
+// var htmlEditorConfig;
 var htmlEditorUserConfig;
 
 jQuery(document).ready(function () {
@@ -19,12 +19,15 @@ $.fn.htmlEditorFromTextarea = function(config){
 
     return $(this).each(function() {
 
+        var html_config;
+
         var $this = $(this);
         if(!$this.is("textarea")) return; // invalid element
 
-        // use config arg if present and ignore user config
+        // use config arg if present and ignore user configs
         if (typeof config == "undefined" || config === null){
-            // Debugger.log('using default config');
+            // if not a config arg, merge main config and user configs
+            // Debugger.log('using default config and user configs');
             // Debugger.log(htmlEditorConfig);
             // Debugger.log(htmlEditorUserConfig);
             html_config = jQuery.extend(true, {}, htmlEditorConfig, htmlEditorUserConfig);
@@ -35,6 +38,8 @@ $.fn.htmlEditorFromTextarea = function(config){
         }
 
         // Debugger.log(html_config);
+
+        // create ckeditor instance from textarea
         var editor = CKEDITOR.replace($this.get(0),html_config);
 
         // add reference to this editor to the textarea
@@ -54,7 +59,6 @@ $.fn.htmlEditorFromTextarea = function(config){
         });
 
         // trigger change event on original textarea for any form listeners
-        // @todo do a save first before trigger, if ckeditor not updated textarea
 
         // detect cke changes and trigger on original textarea
         editor.on( 'change', function() {
@@ -82,5 +86,5 @@ $.fn.htmlEditorFromTextarea = function(config){
 
 function initckeditor(){
     // apply ckeditor to class of .html_edit
-    var elem = $(".html_edit").htmlEditorFromTextarea();
+    $(".html_edit").htmlEditorFromTextarea();
 }

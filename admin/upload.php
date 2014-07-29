@@ -274,7 +274,7 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 						echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 					}
 					
-		      echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
+		      echo '<td style="width:85px;text-align:right;" ><span>'. output_date($upload['date']) .'</span></td>';
           echo '<td class="delete" >'.$directory_delete.'</td>';
           echo '</tr>';
           $foldercount++;
@@ -320,7 +320,7 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 						echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 					}
 							
-					echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
+					echo '<td style="width:85px;text-align:right;" ><span>'. output_date($upload['date']) .'</span></td>';
 					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. rawurlencode($upload['name']) . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a></td>';
 					echo '</tr>';
 					

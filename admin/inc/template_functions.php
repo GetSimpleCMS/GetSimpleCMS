@@ -847,7 +847,7 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	$pageTitle = cl($page['title']);
 
 	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. $pageTitle .'</a><div class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</div></td>';
-	$menu .= '<td style="width:80px;text-align:right;" ><span>'. shtDate($page['pubDate']) .'</span></td>';
+	$menu .= '<td style="width:80px;text-align:right;" ><span>'. output_date($page['pubDate']) .'</span></td>';
 	$menu .= '<td class="secondarylink" >';
 	$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
 	$menu .= '</td>';

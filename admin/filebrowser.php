@@ -193,7 +193,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 				echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 			}
 
-			echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
+			echo '<td style="width:85px;text-align:right;" ><span>'. output_date($upload['date']) .'</span></td>';
 			echo '</tr>';
 		}
 

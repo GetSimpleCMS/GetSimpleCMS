@@ -419,9 +419,10 @@ $i18n = array(
 /* 
 * For: Locale and Date Format
 */
-"LOCALE"                  =>	"en_US",
-"DATE_FORMAT"             =>	"M j, Y", //please keep short
-"DATE_AND_TIME_FORMAT"    =>	"F jS, Y - g:i A", //date and time
+"LOCALE"                  =>	"en_US",           // locale to use
+"DATE_FORMAT"             =>	"M j, Y",          // short date only format
+"DATE_AND_TIME_FORMAT"    =>	"F jS, Y - g:i A", // date and time format
+"TIME_FORMAT"             =>	"g:i A",           // time only format
 
 /* 
 * For: support.php
@@ -526,7 +527,8 @@ $i18n = array(
 "CLONE_SUCCESS"           =>	"Successfully created %s", //pages.php
 "COPY"                    =>	"Copy", //pages.php
 "CLONE_ERROR"             =>	"There was a problem trying to clone <b>%s</b>",  //pages.php
-"AUTOSAVE_NOTIFY"         =>	'Page autosaved at', //edit.php
+"AUTOSAVE_STATUS"         =>	'Autosaving is ON (%ss)', //edit.php
+"AUTOSAVE_NOTIFY"         =>	'Page autosaved at %s', //edit.php
 "MENU_MANAGER"            =>	'<em>M</em>enu Manager', //edit.php
 "GET_PLUGINS_LINK"        =>	'Download <em>M</em>ore Plugins',
 "SITEMAP_REFRESHED"       =>	"Your sitemap has been refreshed", //edit.php

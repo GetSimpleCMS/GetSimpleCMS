@@ -99,7 +99,7 @@ get_template('header');
 						  
 						  //check if its a date
 						  if ($n === 'date') {
-							$d = lngDate($d);
+							$d = output_datetime($d);
 						  }
 							
 						  // echo stripslashes($d);

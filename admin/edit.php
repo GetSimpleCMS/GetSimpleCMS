@@ -299,44 +299,20 @@ get_template('header');
 
                 <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
                 <div class="codewrap"><textarea id="post-content" class="html_edit boxsizingBorder" name="post-content"><?php echo $content; ?></textarea></div>
-            
+
             <?php exec_action('edit-content'); ?> 
-            
+
             <?php if(isset($data_edit)) { 
                 echo '<input id="existing-url" type="hidden" name="existing-url" value="'. $url .'" />'; 
-            } 
-            
-        // HTMLEDITOR INIT
-        if ($HTMLEDITOR != '') {       
-
-            if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) {
-                $fullpath    = suggest_site_path();
-                $contentsCss = $fullpath.getRelPath(GSTHEMESPATH).$TEMPLATE.'/editor.css';
             }
 
-		?>
-
-        <script type="text/javascript">
-
-            htmlEditorConfig = {
-                language                     : '<?php echo $EDLANG; ?>',
-                <?php if(!empty($contentsCss)) echo "contentsCss                   : '$contentsCss',"; ?>
-                height                       : '<?php echo $EDHEIGHT; ?>',
-                baseHref                     : '<?php echo $SITEURL; ?>'
-                <?php if(!empty($EDTOOL)) echo ",toolbar: " . returnJsArray($EDTOOL); ?>
-                <?php if(!empty($EDOPTIONS)) echo ','.trim($EDOPTIONS); ?>
-            };
-
-        </script>
-
-        <?php
             # CKEditor setup functions
             exec_action('html-editor-init');
-        ?>
 
-        <?php } ?>
-        <?php if (empty($HTMLEDITOR)) echo '</fieldset>'; ?>
-        </div> 
+            if (empty($HTMLEDITOR)) echo '</fieldset>';
+
+        ?>
+        </div>
         <!-- / END PAGE CONTENT -->
 
 <!-- ------- PAGE META OPTIONS --------------------------------------------------- -->
@@ -396,7 +372,7 @@ get_template('header');
             <?php if($url != '') { ?>
                 <p class="backuplink" ><?php 
                     if (isset($pubDate)) { 
-                        echo sprintf(i18n_r('LAST_SAVED'), '<em>'.$author.'</em>').' '. lngDate($pubDate).'&nbsp;&nbsp; ';
+                        echo sprintf(i18n_r('LAST_SAVED'), '<em>'.$author.'</em>').' '. output_datetime($pubDate).'&nbsp;&nbsp; ';
                     }
                     if ( file_exists($bakpagespath.$url.'.bak.xml') ) {    
                         echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';

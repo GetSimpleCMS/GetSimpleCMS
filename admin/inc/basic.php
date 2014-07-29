@@ -370,11 +370,11 @@ function XMLsave($xml, $file) {
  * @return string            returns a formated date string
   */
 function formatDate($format, $timestamp = null) {
-	if(!$timestamp) $timestamp = time();	
+	if(!$timestamp) $timestamp = time();
 
 	if (strpos($format, '%') === false) {
 		$date = date($format, $timestamp);
-	} 
+	}
 	else {
 		if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
 		  # fixes for Windows
@@ -384,52 +384,55 @@ function formatDate($format, $timestamp = null) {
 		  $date = strftime($format, $timestamp);
 		}
  	}
-  
+
 	return $date;
 }
 
 /**
- * Long Date Output
+ * Time Output using locale
  *
- * @since 1.0
- * @uses $i18n
- * @uses i18n_r
- *
- * @param string $dt Date/Time format, default is $i18n['DATE_AND_TIME_FORMAT']
- * @return string
+ * @since 3.4.0
+ * @param  str $dt Date/Time String
+ * @return str
  */
-function lngDate($dt) {
-	global $i18n;
-	
-	if (!$dt) {
-		$data = formatDate(i18n_r('DATE_AND_TIME_FORMAT'));
-	} else {
-		$data = formatDate(i18n_r('DATE_AND_TIME_FORMAT'), strtotime($dt));
-	}
-
-	return $data;
+function output_time($dt = null) {
+	if(isset($dt)) $dt = strtotime($dt);
+	if(getTimeFormat()) return formatDate(getTimeFormat(),$dt);
 }
 
 /**
- * Short Date Output
+ * Date/Time Output using locale
  *
  * @since 1.0
- * @uses $i18n
- * @uses i18n_r
- *
- * @param string $dt Date/Time format, default is $i18n['DATE_FORMAT']
+ * @param string $dt Date/Time string
  * @return string
  */
-function shtDate($dt) {
-	global $i18n;
-	
-	if (!$dt) {
-		$data = formatDate(i18n_r('DATE_FORMAT'));
-	} else {
-		$data = formatDate(i18n_r('DATE_FORMAT'), strtotime($dt));
-	}
+function output_datetime($dt = null) {
+	if(isset($dt)) $dt = strtotime($dt);
+	if(getDateTimeFormat()) return formatDate(getDateTimeFormat(),$dt);
+}
 
-	return $data;
+/**
+ * Date only Output using locale
+ *
+ * @since 1.0
+ * @param string $dt Date/Time string
+ * @return string
+ */
+function output_date($dt = null) {
+	if(isset($dt)) $dt = strtotime($dt);
+	if(getDateFormat()) return formatDate(getDateFormat(),$dt);
+}
+
+// legacy aliases
+function shtTime($dt = null){
+	return output_time($dt);
+}
+function shtDate($dt = null){
+	return output_date($dt);
+}
+function lngDate($dt = null){
+	return output_datetime($dt);
 }
 
 /**
@@ -1601,7 +1604,7 @@ function getLocaleConfig(){
  * @return str date format string
  */
 function getDateFormat(){
-	return i18n_r("DATE_FORMAT",null);
+	return i18n_r("DATE_FORMAT",getDef('GSDATEFORMAT'));
 }
 /**
  * get date time format as defined in i18n
@@ -1609,7 +1612,15 @@ function getDateFormat(){
  * @return str date time format string
  */
 function getDateTimeFormat(){
-	return i18n_r("DATE_AND_TIME_FORMAT",null);
+	return i18n_r("DATE_AND_TIME_FORMAT",getDef('GSDATETIMEFORMAT'));
+}
+/**
+ * get date time format as defined in i18n
+ * @since 3.4.0
+ * @return str date time format string
+ */
+function getTimeFormat(){
+	return i18n_r("TIME_FORMAT",getDef('GSTIMEFORMAT'));
 }
 /**
  * get transliteration set as defined in i18n

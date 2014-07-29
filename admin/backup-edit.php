@@ -103,7 +103,7 @@ get_template('header');
 			} 
 			?>
 		</td></tr>
-		<tr><td class="title" ><?php i18n('DATE');?>:</td><td><?php echo lngDate($pubDate); ?></td></tr>
+		<tr><td class="title" ><?php i18n('DATE');?>:</td><td><?php echo output_datetime($pubDate); ?></td></tr>
 		<tr><td class="title" ><?php i18n('TAG_KEYWORDS');?>:</td><td><em><?php echo $metak; ?></em></td></tr>
 		<tr><td class="title" ><?php i18n('META_DESC');?>:</td><td><em><?php echo $metad; ?></em></td></tr>
 		<tr><td class="title" ><?php i18n('MENU_TEXT');?>:</td><td><?php echo $menu; ?></td></tr>

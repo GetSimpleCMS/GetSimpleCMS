@@ -29,6 +29,9 @@ if(function_exists('mb_internal_encoding')) mb_internal_encoding("UTF-8"); // se
  */
 $GS_constants = array(
 	'GSROOTPATH'            => getGSRootPath(),               // root path of getsimple
+	"GSDATEFORMAT"          =>	"M j, Y",                     // short date-only format fallback
+	"GSDATEANDTIMEFORMAT"   =>	"F jS, Y - g:i A",            // date/time format fallback
+	"GSTIMEFORMAT"          =>	"g:i A",                      // time only format fallback
 	'GSTARTTIME'            => microtime(),                   // micro time stamp for gs loaded
  	'GSBASE'                => false,                         // front end flag
 	'GSCONFIGFILE'          => 'gsconfig.php',                // config filename
