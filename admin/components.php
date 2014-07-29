@@ -129,8 +129,10 @@ include('template/include-nav.php'); ?>
 	<h3 class="floated"><?php echo i18n('EDIT_COMPONENTS');?></h3>
 	<div class="edit-nav" >
 		<a href="javascript:void(0)" id="addcomponent" accesskey="<?php echo find_accesskey(i18n_r('ADD_COMPONENT'));?>" ><?php i18n('ADD_COMPONENT');?></a>
-		<?php echo $themeselector; ?>	
+		<?php if(!getDef('GSNOHIGHLIGHT',true)){
+		echo $themeselector; ?>	
 		<label>Theme</label>
+	<?php } ?>	
 		<div class="clear"></div>
 	</div>
 	<form id="compEditForm" class="manyinputs" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >

@@ -310,7 +310,7 @@ jQuery(document).ready(function () {
 	// auto focus component editors
 	$('#components div.compdivlist a').on('click', function(ev){
 		focusCompEditor($(this).attr('href'));
-		e.preventDefault();		
+		ev.preventDefault();		
 	});
 	
 	$(".delconfirmcomp").on("click", function ($e) {
