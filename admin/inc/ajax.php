@@ -10,6 +10,8 @@
  * @subpackage Available-Themes
  */
 
+$load['plugin'] = true;
+
 // Include common.php
 include('common.php');
 login_cookie_check();
