@@ -636,7 +636,7 @@ jQuery(document).ready(function () {
 
     window.onbeforeunload = function () {
         if (warnme || pageisdirty === true) {
-            return "<?php i18n('UNSAVED_INFORMATION'); ?>";
+            return i18n('UNSAVED_INFORMATION');
         }
     };
 
@@ -876,7 +876,7 @@ jQuery(document).ready(function () {
 	function checkChanged(){
 		// @todo add non codemirror change detection using listeners
 		if($('#codetext').data('editor') && $('#codetext').data('editor').hasChange === true){
-			alert('This file has unsaved content, save or cancel before continuing');
+			alert(i18n('UNSAVED_INFORMATION'));
 			return true;
 		}
 	}
