@@ -657,68 +657,101 @@ jQuery(document).ready(function () {
     }
 
     function autoSaveIntvl(){
-        Debugger.log('autoSaveIntvl called, isdirty:' + pageisdirty);
         if(pageisdirty === true){
-            autoSave();
+            Debugger.log('autoSaveIntvl called, form is dirty: autosaving');
+            ajaxSave('&autosave=1').done(autoSaveCallback);
             pageisdirty = false;
         }
     }
 
-    function autoSave() {
+    // ajax save function for edit.php #editform
+    function ajaxSave(urlargs) {
         $('input[type=submit]').attr('disabled', 'disabled');
 
         // we are using ajax, so ckeditor wont copy data to our textarea for us, so we do it manually
-        if(typeof(editor)!='undefined'){ $('#post-content').val(CKEDITOR.instances["post-content"].getData()); }
+        if($('#post-content').data('htmleditor')){ $('#post-content').val($('#post-content').data('htmleditor').getData()); }
+		// Debugger.log($('#post-content').val());
 
         var dataString = $("#editform").serialize();
+        dataString += '&submitted=true&ajaxsave=1';
+        if(urlargs) dataString += urlargs;
 
-        // not internalionalized or using GS date format!
-        var currentTime = new Date();
-        var hours       = currentTime.getHours();
-        var minutes     = currentTime.getMinutes();
-        if (minutes < 10){ minutes = "0" + minutes; }
-        if (hours > 11){ daypart = "PM"; } else {    daypart = "AM"; }
-        if (hours > 12){ hours-=12; }
-
-        $.ajax({
+        return $.ajax({
             type: "POST",
             url: "changedata.php",
-            data: dataString+'&autosave=true&submitted=true&ajaxsave=1',
-            success: function(response) {
-                response = $.parseHTML(response);
-                if ($(response).find('div.updated').html()) {
-                    notifyOk($(response).find('div.updated').html()).popit().removeit();
-                    $('#autosavestatus').hide();
-                    // get auto save notification response
-                    $('#autosavenotify').html($(response).find('div.autosavenotify').html());
-                    $('#pagechangednotify').hide();
-                    $('input[type=submit]').attr('disabled', false);
-                    $('input[type=submit]').css('border-color','#ABABAB');
-                    warnme = false;
-                    $('#cancel-updates').hide();
-                    updateEditSlug(response);
-                    updateNonce(response);
-                    // @todo change url to new slug so refreshes work
-                }
-                else {
-                	ajaxError(response);
-                    if ($(response).find('div.error').html()) {
-                        notifyError($(response).find('div.error').html()).popit().removeit();
-                    } else notifyError(i18n('ERROR_OCCURED')).popit().removeit();
-                    pageisdirty = true;
-                    warnme = false;
-                    $('#autosavestatus').hide();
-                    $('#autosavenotify').text(i18n('ERROR_OCCURED'));
-                    $('input[type=submit]').attr('disabled', false);
-                }
-            }
+            data: dataString
         });
     }
 
-    // ajaxify components submit
+    function autoSaveUpdate(success,status){
+        $('#autosavestatus').hide();
+        $('#autosavenotify').html(status);
+        $('#pagechangednotify').hide();
+        $('input[type=submit]').attr('disabled', false);
+        if(success){
+            $('#cancel-updates').hide();
+            $('input[type=submit]').css('border-color','#ABABAB');
+            warnme = false;
+        }
+        pageisdirty = !success;
+    }
+
+    function ajaxSaveUpdate(success,status){
+        notifyOk(status).popit().removeit();
+        $('#pagechangednotify').hide();
+        if(success) {
+            $('#cancel-updates').hide();
+            $('input[type=submit]').attr('disabled', false);
+            $('input[type=submit]').css('border-color','#ABABAB');
+            warnme = false;
+        }
+        pageisdirty = !success;
+    }
+
+    function ajaxSaveSucess(response){
+        updateEditSlug(response);
+        updateNonce(response);
+        // @todo change url to new slug so refreshes work        
+    }
+
+    function ajaxSaveError(response){
+        ajaxError(response);
+        if ($(response).find('div.error').html()) {
+            notifyError($(response).find('div.error').html()).popit().removeit();
+        } else notifyError(i18n('ERROR_OCCURED')).popit().removeit();
+        warnme = false;
+        pageisdirty = true;
+    }
+
+    function autoSaveCallback(response){
+        Debugger.log('autoSaveCallback ' + response);
+        response = $.parseHTML(response);
+        if ($(response).find('div.updated').html()) {
+            autoSaveUpdate(true,$(response).find('div.autosavenotify').html());
+            ajaxSaveSucess(response);
+        }
+        else {
+            ajaxSaveError(response);
+            autoSaveUpdate(false,i18n('ERROR_OCCURED'));
+        }
+    }
+
+    function ajaxSaveCallback(response){
+        Debugger.log('ajaxSaveCallback ' + response);
+        response = $.parseHTML(response);
+        if ($(response).find('div.updated').html()) {
+            ajaxSaveUpdate(true,$(response).find('div.updated').html());
+            ajaxSaveSucess(response);
+        }
+        else {
+            ajaxSaveError(response);
+        }
+    }
+
+    // ajaxify edit.php submit
     $('#editform').on('submit',function(e){
         e.preventDefault();
-        autoSave();
+        ajaxSave().done(ajaxSaveCallback);
     });
 
     // We register title and slug changes with change() which only fires when you lose focus to prevent midchange saves.
@@ -1214,6 +1247,7 @@ jQuery(document).ready(function () {
 	// custom ajax error handler
 	function ajaxError($response){
 		if(GS.debug === true){
+            alert('An error occured in an XHR call, check console for response');
 			Debugger.log($response);
 		}
 	}

@@ -159,13 +159,13 @@ if (isset($_POST['submitted'])) {
 			'content'
 		);
 
-	foreach($fields as $field){
+		foreach($fields as $field){
 			$note = $xml->addChild($field);
 			$note->addCData($$field);
 		}
 
 		exec_action('changedata-save');
-		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true' && $autoSaveDraft == true) {
+		if (isset($_POST['autosave']) && $_POST['autosave'] == '1' && $autoSaveDraft == true) {
 			XMLsave($xml, GSAUTOSAVEPATH.$url);
 		} else {
 			XMLsave($xml, $file);
@@ -175,21 +175,38 @@ if (isset($_POST['submitted'])) {
 		exec_action('changedata-aftersave');
 		generate_sitemap();
 
-		if(isset($_POST['ajaxsave'])){
-			$id     = $url;
-			$update = 'edit-success';
-			$ptype  = 'edit';
-			if($url !== $oldslug) $oldid = $oldslug;
-			echo "<div>";
-			if(isset($_POST['autosave']) && $_POST['autosave'] == 'true'){
-				echo '<div class="autosavenotify">'.sprintf(i18n_r('AUTOSAVE_NOTIFY'),output_time(date())).'</div>';
+		/**
+		 * do changedata ajax save checking for legacy
+		 * @param  str $url     [description]
+		 * @param  str $oldslug [description]
+		 */
+		function changedataAjaxSave($url,$oldslug){
+			if(isset($_POST['ajaxsave'])){
+				// ajax response wrapper, still using html parsing for now
+				echo "<div>";
+
+				// if this was an autosave add autosave response
+				if(isset($_POST['autosave']) && $_POST['autosave'] == '1'){
+					echo '<div class="autosavenotify">'.sprintf(i18n_r('AUTOSAVE_NOTIFY'),output_time(date())).'</div>';
+				}
+
+				// setup error checking vars and include error checking for notifications
+				$id     = $url;
+				$update = 'edit-success';
+				$ptype  = 'edit';
+				if($url !== $oldslug) $oldid = $oldslug; // if slug was changed set $oldid
+				include('template/error_checking.php');
+
+				// send new inputs for slug changes and new nonces
+				echo '<input id="nonce" name="nonce" type="hidden" value="'. get_nonce("edit", "edit.php") .'" />';
+	            echo '<input id="existing-url" name="existing-url" type="hidden" value="'. $url .'" />';
+				echo "</div>";
+				die();
 			}
-			include('template/error_checking.php');
-			echo '<input id="nonce" name="nonce" type="hidden" value="'. get_nonce("edit", "edit.php") .'" />';
-            echo '<input id="existing-url" name="existing-url" type="hidden" value="'. $url .'" />';
-			echo "</div>";
-			die();
 		}
+
+		// if ajax we are done
+		changedataAjaxSave($url,$oldslug);
 
 		// redirect user back to edit page
 

@@ -1284,6 +1284,13 @@ input.submit:focus, input.submit:hover, .button:hover {
 	box-shadow: rgba(0,0,0, 0.15) 0 0 4px;
 }
 
+/* disabled buttons */
+input.submit:disabled {
+	color: #BBB;
+	background: #eeeeee;
+	border: solid 1px #BBB;
+}
+
 .button {
 	padding: 3px 7px;
 }
