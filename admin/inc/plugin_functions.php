@@ -413,7 +413,7 @@ function add_filter($filter_name, $added_function, $args = array()) {
 function exec_filter($script,$data=array()) {
 	global $filters;
 
-	if(!$filters) return;
+	if(!$filters) return $data;
 	foreach ($filters as $filter)	{
 		if ($filter['filter'] == $script) {
 			$key = array_search($script,$filters);
