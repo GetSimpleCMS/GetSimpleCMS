@@ -1,5 +1,7 @@
 // var htmlEditorConfig;
 var htmlEditorUserConfig;
+// var editor;
+// @todo global js editor for plugins to add links to i18n_navigation
 
 jQuery(document).ready(function () {
     initckeditor();

@@ -69,7 +69,7 @@ $GS_definitions = array(
 	'GSALLOWLOGIN'         => true,                           // (bool) allow front end login
 	'GSALLOWRESETPASS'     => true,                           // (bool) allow front end password resets
 	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // file extensions to show and edit in theme editor
-	'GSASSETSCHEMES'       => false,                          // (bool) should $ASSETURL contian the url scheme http|https
+	'GSASSETSCHEMES'       => false,                          // (bool) should $ASSETURL contain the url scheme http|https
 	'GSALLOWDOWNLOADS'     => true,                           // (bool) allow using downloads.php to download files from /uploads and backups/zip
 	'GSEDITORHEIGHT'       => '500',                          // (str) wysiwyg editor height in px
 	'GSEDITORTOOL'         => 'basic',                        // (str) wysiwyg editor toobar
@@ -161,7 +161,7 @@ $reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
 if(defined('GSDEBUG') && (bool) GSDEBUG === true) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
-	$nocache = true;
+	// $nocache = true;
 } else if( defined('GSSUPPRESSERRORS') && (bool)GSSUPPRESSERRORS === true ) {
 	error_reporting(0);
 	ini_set('display_errors', 0);
