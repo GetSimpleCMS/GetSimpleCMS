@@ -96,7 +96,7 @@ get_template('header');
 		<form class="login" action="" method="post" >
 			<input name="nonce" id="nonce" type="hidden" value="<?php echo get_nonce("reset_password");?>"/>
 			<p><b><?php i18n('LABEL_USERNAME'); ?>:</b><br /><input class="text" name="username" type="text" value="" /></p>
-			<p><input class="submit" type="submit" name="submitted" value="<?php echo i18n('SEND_NEW_PWD'); ?>" /></p>
+			<p><input class="submit" type="submit" name="submitted" value="<?php echo i18n_r('SEND_NEW_PWD'); ?>" /></p>
 		</form>
 		<p class="cta"><a href="<?php echo $SITEURL; ?>"><?php i18n('BACK_TO_WEBSITE'); ?></a> &nbsp;
 		<?php if(getDef('GSALLOWLOGIN',true)) { ?> | &nbsp; <a href="index.php"><?php echo i18n_r('CONTROL_PANEL'); ?></a>

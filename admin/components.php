@@ -126,7 +126,7 @@ include('template/include-nav.php'); ?>
 	
 	<div id="maincontent">
 	<div class="main">
-	<h3 class="floated"><?php echo i18n('EDIT_COMPONENTS');?></h3>
+	<h3 class="floated"><?php echo i18n_r('EDIT_COMPONENTS');?></h3>
 	<div class="edit-nav" >
 		<a href="javascript:void(0)" id="addcomponent" accesskey="<?php echo find_accesskey(i18n_r('ADD_COMPONENT'));?>" ><?php i18n('ADD_COMPONENT');?></a>
 		<?php if(!getDef('GSNOHIGHLIGHT',true)){
