@@ -1517,8 +1517,8 @@ function getPageGlobal($var){
  * @param bool $echo default true, echoes or returns $str
  */
 function echoReturn($str,$echo = true){
-	if ($echo) echo $str;
-	return $str;	
+	if (!$echo) return $str;
+	echo $str;
 }
 
 /**
