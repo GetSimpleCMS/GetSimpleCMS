@@ -73,11 +73,11 @@ $.fn.htmlEditorFromTextarea = function(config){
         // @todo not working now
         editor.on( 'mode', function() {
             _this = this;
-            Debugger.log('ckeditor mode change: '+ _this.mode);
+            // Debugger.log('ckeditor mode change: '+ _this.mode);
             if ( _this.mode == 'source' ) {
                 var editable = _this.editable();
                 editable.attachListener( editable, 'input', function() {
-                    Debugger.log('ckeditor source input change');
+                    // Debugger.log('ckeditor source input change');
                     _this.fire('change');
                 });
             }

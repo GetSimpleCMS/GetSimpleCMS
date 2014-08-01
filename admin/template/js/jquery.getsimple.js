@@ -619,7 +619,7 @@ jQuery(document).ready(function () {
 	}
 
 	// init auto saving
-	if($('#autosavestatus').get(0)) autoSaveInit();
+	if(GSAUTOSAVEPERIOD) autoSaveInit();
 
     $('#editform').submit(function(){
         warnme = false;
@@ -648,7 +648,6 @@ jQuery(document).ready(function () {
     }
 
 	function autoSaveInit(){
-		var GSAUTOSAVEPERIOD = 5; // save period in seconds
 		Debugger.log('auto saving initialized ' + GSAUTOSAVEPERIOD);
 		$('#pagechangednotify').hide();
 		$('#autosavestatus').show();

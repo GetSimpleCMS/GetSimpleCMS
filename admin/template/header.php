@@ -118,29 +118,36 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
             $fullpath    = suggest_site_path();
             $contentsCss = $fullpath.getRelPath(GSTHEMESPATH).getGlobal('TEMPLATE').'/editor.css';
         }
-	}
-	?>
+    }
+    ?>
 
-	<script type="text/javascript">
-		// init gs namespace and i18n
-		var GS = {};
-		GS.i18n = <?php echo json_encode($jsi18n); ?>;
-		GS.debug = <?php echo isDebug() === true ? 'true' : 'false'; ?> ;
+    <script type="text/javascript">
+        // init gs namespace and i18n
+        var GS = {};
+        GS.i18n = <?php echo json_encode($jsi18n); ?>;
+        GS.debug = <?php echo isDebug() === true ? 'true' : 'false'; ?> ;
 
 		<?php
-			if(isset($_COOKIE['gs_editor_theme'])){
-				// $editor_theme = var_out($_COOKIE['gs_editor_theme']);
-				$editor_theme = var_out($_COOKIE['gs_editor_theme']);
-				echo 'editorTheme = "'.$editor_theme.'";';
-			}
-		?>
+        if(isset($_COOKIE['gs_editor_theme'])){
+            // $editor_theme = var_out($_COOKIE['gs_editor_theme']);
+            $editor_theme = var_out($_COOKIE['gs_editor_theme']);
+            echo "// codemirror editortheme\n";
+            echo '		var editorTheme = "'.$editor_theme."\";\n";
+        }
 
+        if(getDef('GSAUTOSAVE',true)){
+        	echo "		// edit autosave\n";
+        	echo '		var GSAUTOSAVEPERIOD = ' . getDef('GSAUTOSAVE').";\n";
+        }
+        ?>
+
+        // ckeditor config obj
         var htmlEditorConfig = {
             language                     : '<?php echo getGlobal('EDLANG'); ?>',
 <?php       if(!empty($contentsCss)) echo "contentsCss                   : '$contentsCss',"; ?>
             height                       : '<?php echo getGlobal('EDHEIGHT'); ?>',
             baseHref                     : '<?php echo getGlobal('SITEURL'); ?>'
-			<?php if(getGlobal('EDTOOL')) echo ",toolbar: " . returnJsArray(getGlobal('EDTOOL')); ?>
+            <?php if(getGlobal('EDTOOL')) echo ",toolbar: " . returnJsArray(getGlobal('EDTOOL')); ?>
 <?php       if(getGlobal('EDOPTIONS')) echo ','.trim(getGlobal('EDOPTIONS')); ?>
         };
 
