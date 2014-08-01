@@ -70,7 +70,6 @@ $.fn.htmlEditorFromTextarea = function(config){
         });
 
         // kludge onchange listener for cke source mode
-        // @todo not working now
         editor.on( 'mode', function() {
             _this = this;
             // Debugger.log('ckeditor mode change: '+ _this.mode);
@@ -88,5 +87,9 @@ $.fn.htmlEditorFromTextarea = function(config){
 
 function initckeditor(){
     // apply ckeditor to class of .html_edit
-    $(".html_edit").htmlEditorFromTextarea();
+    var editors = $(".html_edit").htmlEditorFromTextarea();
+    // Debugger.log(editors);
+
+    // backwards compatibility for i18n, set global editor to first editor
+    editor = $(editors[0]).data('htmleditor');
 }
