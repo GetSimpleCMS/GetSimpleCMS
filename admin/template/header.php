@@ -15,6 +15,7 @@ $GSSTYLE_wide    = in_array('wide',explode(',',$GSSTYLE));
 $bodyclass="class=\"";
 if( $GSSTYLE_sbfixed ) $bodyclass .= " sbfixed";
 if( $GSSTYLE_wide )    $bodyclass .= " wide";
+if( getDef('GSAJAXSAVE',true) ) $bodyclass .= " ajaxsave";
 $bodyclass .="\"";
 
 if(get_filename_id()!='index') exec_action('admin-pre-header');
