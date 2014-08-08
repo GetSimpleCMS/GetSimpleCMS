@@ -63,8 +63,8 @@ $GS_definitions = array(
 	'GSERRORLOGFILE'       => 'errorlog.txt',                 // error log filename
 	'GSERRORLOGENABLE'     => true,                           // (bool) should GS log php errors to GSERRORLOGFILE
 	'GSSTYLE'              => 'wide,sbfixed',                 // default style modifiers
-	'GSWIDTH'              => '1024px',                       // pagewidth on backend, widths implemented as max-width, defaults to 100%
-	'GSWIDTHWIDE'          => '1366px',                       // page width on backend pages defined in GSWIDEPAGES
+	'GSWIDTH'              => '1024px',                       // pagewidth on backend,(max-width), null,'none',''  for 100% width
+	'GSWIDTHWIDE'          => '1366px',                       // page width on backend pages defined in GSWIDEPAGES, values as above
 	'GSWIDEPAGES'          => 'theme-edit,components',        // pages to apply GSWIDTHWIED on
 	'GSALLOWLOGIN'         => true,                           // (bool) allow front end login
 	'GSALLOWRESETPASS'     => true,                           // (bool) allow front end password resets
@@ -75,6 +75,7 @@ $GS_definitions = array(
 	'GSEDITORTOOL'         => 'basic',                        // (str) wysiwyg editor toobar
 	'GSEDITORCONFIGFILE'   => 'config.js',                    // (str) wysiwyg editor toobar
 	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // url used in email template
+	'GSAJAXSAVE'           => true,                           // use ajax for form submission where available (edit,theme-edit,components atm)
  	'GSDEFINITIONSLOADED'  => true	                          // $GS_definitions IS LOADED FLAG
 );
 
@@ -119,8 +120,9 @@ else {
 	$base = GSBASE; // LEGACY frontend flag DEPRECATED
 
 	// set loaders, if you want to override these do it your main common wrapper or index.php
-	if(!isset($load['plugin']))   $load['plugin']   = true;   // load plugin system
+	if(!isset($load['plugin']))   $load['plugin']   = true; // load plugin system
 	if(!isset($load['template'])) $load['template'] = true; // load template system
+	if(!isset($load['login']))    $load['login']    = true; // load template system
 }
 
 /*
@@ -460,6 +462,19 @@ function debugLog($txt = '') {
 function GS_defineFromArray($definitions){
 	foreach($definitions as $definition => $value){
 		if(!defined($definition)) define($definition,$value);
+	}
+}
+
+/**
+ * Define from an array of global keys
+ * @param array  DEFINITION keys to import from globals
+ */
+function GS_defineFromGlobals($definitions){
+	foreach($definitions as $definition){
+		if(isset($_GLOBALS[$definition])){
+			$value = $_GLOBALS[$definition];
+			if(!defined($definition)) define($definition,$value);
+		}
 	}
 }
 
