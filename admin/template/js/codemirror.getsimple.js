@@ -77,6 +77,7 @@ jQuery(document).ready(function () {
 
 	/**
 	 * editorFromTextarea replaces a textarea with a codemirror editor
+	 * @todo  add destroy
 	 * @uses jquery collection $(this)
 	 * @uses editorConfig
 	 * @uses editorUserConfig

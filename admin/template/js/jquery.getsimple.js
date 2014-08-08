@@ -748,7 +748,7 @@ jQuery(document).ready(function () {
     }
 
     // ajaxify edit.php submit
-    $('#editform').on('submit',function(e){
+    $('body.ajaxsave #editform').on('submit',function(e){
         e.preventDefault();
         ajaxSave().done(ajaxSaveCallback);
     });
@@ -957,7 +957,7 @@ jQuery(document).ready(function () {
 	}
 
 	// ajaxify theme submit
-	$('#themeEditForm').on('submit',function(e){
+	$('body.ajaxsave #themeEditForm').on('submit',function(e){
 		e.preventDefault();
 		themeFileSave($('#codetext').data('editor'));
 	});
@@ -1011,7 +1011,7 @@ jQuery(document).ready(function () {
 	};
 
 	// ajaxify components submit
-	$('#compEditForm').on('submit',function(e){
+	$('body.ajaxsave #compEditForm').on('submit',function(e){
 		e.preventDefault();
 		componentSave(e);
 	});
