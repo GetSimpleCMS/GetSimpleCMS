@@ -70,7 +70,8 @@ if (isset($_POST['submitted'])){
 	}
 	exec_action('component-save');
 	XMLsave($xml, $path . $file);
-	redirect('components.php?upd=comp-success');
+	$update = 'comp-success';
+	// redirect('components.php?upd=comp-success');
 }
 
 # if undo was invoked
@@ -79,7 +80,8 @@ if (isset($_GET['undo'])) {
 	check_for_csrf("undo");		
 	# perform the undo
 	undo($file, $path, $bakpath);
-	redirect('components.php?upd=comp-restored');
+	$update = 'comp-restored';
+	// redirect('components.php?upd=comp-restored');
 }
 
 # create components form html
