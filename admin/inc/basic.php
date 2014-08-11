@@ -1283,7 +1283,7 @@ function returnJsArray($var){
 
 	if(!is_array($var)) {
 		// if looks like an array string try to parse as array
-		if(strrpos($var, '[')){
+		if(strrpos($var, '[') !==false){
 			// normalize array strings
 			$var = stripslashes($var);         // remove escaped quotes
 			$var = trim(trim($var),',');       // remove trailing commas
