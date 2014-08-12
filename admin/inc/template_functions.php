@@ -68,7 +68,7 @@ function get_filename_id() {
  *
  * @param string $id File ID to delete
  */
-function delete_file($id) {
+function delete_page($id) {
 
 	$bakfilepath = GSBACKUPSPATH . 'pages' . DIRECTORY_SEPARATOR;
 	$bakfile     = $bakfilepath . $id .'.bak.xml';
@@ -79,9 +79,8 @@ function delete_file($id) {
 	if(filepath_is_safe($file,$filepath)){
 		$successbak = copy($file, $bakfile);
 		$successdel = unlink($file);
-		if($successdel && $successbak) return 'success';
+		return $successdel && $successbak;
 	}
-	return 'error';
 }
 
 /**
@@ -128,10 +127,8 @@ function delete_zip($id) {
 	$file     = $filepath . $id;
 
 	if(filepath_is_safe($file,$filepath)){
-		$success =  unlink($file);
-		if($success) return 'success';
+		return unlink($file);
 	}
-	return 'error';
 } 
 
 /**
@@ -150,18 +147,38 @@ function delete_upload($id, $path = "") {
 	$file     =  $filepath . $id;
 
 	if(path_is_safe($filepath,GSDATAUPLOADPATH) && filepath_is_safe($file,$filepath)){
-		$status = unlink(GSDATAUPLOADPATH . $path . $id);
+		$status = delete_file(GSDATAUPLOADPATH . $path . $id);
 		if (file_exists(GSTHUMBNAILPATH.$path."thumbnail.". $id)) {
-			unlink(GSTHUMBNAILPATH.$path."thumbnail.". $id);
+			delete_file(GSTHUMBNAILPATH.$path."thumbnail.". $id);
 		}
 		if (file_exists(GSTHUMBNAILPATH.$path."thumbsm.". $id)) {
-			unlink(GSTHUMBNAILPATH.$path."thumbsm.". $id);
+			delete_file(GSTHUMBNAILPATH.$path."thumbsm.". $id);
 		}
-		if($status) return 'success';
+		return status;
 	}	
-
-	return 'error';
 } 
+
+/**
+ * Delete Uploaded File
+ *
+ * @since 1.0
+ * @uses GSTHUMBNAILPATH
+ * @uses GSDATAUPLOADPATH
+ *
+ * @param string $path relative path to uploaded file folder
+ * @return string
+ */
+function delete_upload_dir($path){
+	$target = GSDATAUPLOADPATH . $path;	
+	if (path_is_safe($target,GSDATAUPLOADPATH) && file_exists($target)) {
+		$status = delete_dir($target);
+		
+		// delete thumbs folder
+		if(file_exists(GSTHUMBNAILPATH . $path)) delete_dir(GSTHUMBNAILPATH . $path);
+	
+		return $status;
+	}
+}
 
 /**
  * Delete Cache Files
@@ -178,13 +195,75 @@ function delete_cache() {
 	$success = null;
 	
 	foreach(glob($cachepath.'*.txt') as $file){
-		if(unlink($file)) $cnt++;
+		if(delete_file($file)) $cnt++;
 		else $success = false;
 	}	
 
 	if($success == false) return null;
 	return $cnt;
 } 
+
+/**
+ * Create Backup of a File
+ * Copy file to backups, preserve paths 
+ *
+ * @since 3.4
+ *
+ * @param string $filepath filepath/filename to backup
+ * @return bool success
+ */
+function backup_file($filepath){
+	$pathparts = pathinfo($filepath);
+	$filename  = $pathparts['filename'];
+	$fileext   = $pathparts['extension'];
+	$dirname   = $pathparts['dirname'];
+	$bakpath   = getRelPath($dirname,GSDATAPATH);
+	$bakfilepath = GSBACKUPSPATH.$bakpath.'/'.$filename.'.bak.'.$fileext;
+ 	
+ 	// recusive create dirs
+	create_dir(GSBACKUPSPATH.$bakpath,GSCHMOD,true);
+	
+	return copy_file($filepath,$bakfilepath);
+}
+
+/**
+ * Restore Backup copy of a File
+ *
+ * @since 3.4
+ *
+ * @param string $file filepath/filename to backup
+ * @return bool success
+ */
+function restore_backup($file){
+	debugLog(get_defined_vars());
+	$bakfile = '';
+	if ( file_exists(tsl($filepath) . $file) ) {
+		$bakfile = $file .".bak";
+		return copy($filepath . $file, $bakpath . $bakfile);
+	}
+}
+
+/**
+ * Create Backup Pages File
+ *
+ * @since 1.0
+ * @uses tsl
+ *
+ * @param string $file filename to backup
+ * @param string $filepath path to file to backup
+ * @param string $bakpath path to save backed up file
+ * @return bool
+ */
+function createBak($file, $filepath, $bakpath) {
+	debugLog(get_defined_vars());
+	return backup_file($filepath . $file);
+	
+	$bakfile = '';
+	if ( file_exists(tsl($filepath) . $file) ) {
+		$bakfile = $file .".bak";
+		return copy($filepath . $file, $bakpath . $bakfile);
+	}
+}
 
 /**
  * Delete Pages Backup File
@@ -283,31 +362,6 @@ function get_FileType($ext) {
 	} else {
 		return i18n_r('FTYPE_MISC');
 	}
-}
-
-/**
- * Create Backup Pages File
- *
- * @since 1.0
- * @uses tsl
- *
- * @param string $file
- * @param string $filepath
- * @param string $bakpath
- * @return bool
- */
-function createBak($file, $filepath, $bakpath) {
-	$bakfile = '';
-	if ( file_exists(tsl($filepath) . $file) ) {
-		$bakfile = $file .".bak";
-		copy($filepath . $file, $bakpath . $bakfile);
-	}
-	
-	if ( file_exists($bakfile) ) {
-		return true;
-	} else {
-		return false;
-	} 
 }
 
 /**

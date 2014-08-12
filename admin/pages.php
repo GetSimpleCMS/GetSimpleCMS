@@ -1,4 +1,4 @@
-<?php
+7<?php
 /**
  * All Pages
  *
@@ -48,17 +48,16 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 		$status = XMLsave($newxml, $path.$newurl.'.xml');
 		if ($status) {
 			create_pagesxml('true');
-			header('Location: pages.php?upd=clone-success&id='.$newurl);
+			redirect('pages.php?upd=clone-success&id='.$newurl);
 		} else {
 			$error = sprintf(i18n_r('CLONE_ERROR'), $_GET['id']);
-			header('Location: pages.php?error='.$error);
+			redirect('pages.php?error='.$error);
 		}
 	} else {
 		$error = sprintf(i18n_r('CLONE_ERROR'), $_GET['id']);
-		header('Location: pages.php?error='.$error);
+		redirect('pages.php?error='.$error);
 	}
 }
-
 
 getPagesXmlValues(true);
 

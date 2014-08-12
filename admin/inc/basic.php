@@ -16,7 +16,7 @@
  * @param string $text
  * @return string
  */
-function clean_url($text)  { 
+function clean_url($text)  {
 	$text = strip_tags(lowercase($text)); 
 	$code_entities_match   = array(' ?',' ','--','&quot;','!','@','#','$','%','^','&','*','(',')','+','{','}','|',':','"','<','>','?','[',']','\\',';',"'",',','/','*','+','~','`','=','.'); 
 	$code_entities_replace = array('','-','-','','','','','','','','','','','','','','','','','','','','','','','',''); 
@@ -347,17 +347,52 @@ function getXML($file) {
  * @return bool
  */
 function XMLsave($xml, $file) {
-	# get_execution_time(true);
 	if(!is_object($xml)) return false;
-	$success = @$xml->asXML($file) === TRUE;
-	# debugLog('XMLsave: ' . $file . ' ' . get_execution_time());	
-	
-	if (getDef('GSCHMOD')) {
-		return $success && chmod($file, GSCHMOD);
-	} else {
-		return $success && chmod($file, 0755);
+	$data = @$xml->asXML();
+	return save_file($file,$data);
+}
+
+/**
+ * create a director or path
+ * @param  str  $dir          directory or path
+ * @param  boolean $recursive create recursive path
+ * @return bool               success, null if already exists
+ */
+function create_dir($dir,$recursive = true){
+	debugLog('create dir : '.  ($recursive ? '(recursively) ' : '') . $dir);
+	// debugLog('create dir : '.  ($recursive ? '(recursively) ' : '') . $dir);
+	// @todo normalize slashes for windows
+	// @todo might need a recursive chmod also, mkdir only chmods the basedir allegedly
+	if(file_exists($dir)) return;
+	return debugLog(mkdir($dir,getDef('GSCHMODDIR'),$recursive));
+}
+
+function save_file($file,$data){
+	return file_put_contents($file,$data) !==false;
+	if(function_exists('chmod')) chmod($file,getDef('GSCHMODFILE'));
+}
+
+// overwrites if exists
+function move_file($srcfile,$destfile){
+	if(!rename($srcfile,$destfile)){
+		return copy($srcfile,$destfile) && unlink($srcfile);
 	}
 }
+
+// overwrites if exist
+function copy_file($srcfile,$destfile){
+	debugLog('copy file : '. $srcfile . ' to ' . $destfile);
+	return debugLog(copy($srcfile,$destfile));
+}
+
+function delete_file($file){
+	return unlink($file);
+}
+
+function delete_folder($path){
+	return rmdir($path);
+}
+
 
 /**
  * Formated Date Output, special handling for params on windows

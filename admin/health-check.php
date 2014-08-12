@@ -235,8 +235,9 @@ echo '<div class="bodycontent clearfix">
 						GSBACKUPSPATH.'zip/',
 						GSBACKUPSPATH.getRelPath(GSDATAPAGESPATH,GSDATAPATH), // backups/pages/
 						GSBACKUPSPATH.getRelPath(GSDATAOTHERPATH,GSDATAPATH), // backups/other/
-						GSBACKUSERSPATH
-					);		
+						GSBACKUSERSPATH,
+						GSTHEMESPATH
+					);
 
 					if (getDef('GSCHMOD')) {
 						$writeOctal = GSCHMOD; 
