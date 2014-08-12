@@ -162,7 +162,7 @@ function sendmail($to,$subject,$message) {
 	$headers .= 'Reply-To: '.$fromemail . PHP_EOL;
 	$headers .= 'Return-Path: '.$fromemail . PHP_EOL;
 	
-	return @mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',"$message",$headers) ) {
+	return @mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',"$message",$headers);
 }
 
 /**
@@ -350,45 +350,98 @@ function XMLsave($xml, $file) {
 
 /**
  * create a director or path
+ *
+ * @since 3.4.0
+ *
  * @param  str  $dir          directory or path
  * @param  boolean $recursive create recursive path
  * @return bool               success, null if already exists
  */
 function create_dir($dir,$recursive = true){
-	debugLog('create dir : '.  ($recursive ? '(recursively) ' : '') . $dir);
-	// debugLog('create dir : '.  ($recursive ? '(recursively) ' : '') . $dir);
 	// @todo normalize slashes for windows
 	// @todo might need a recursive chmod also, mkdir only chmods the basedir allegedly
-	if(file_exists($dir)) return;
-	return debugLog(mkdir($dir,getDef('GSCHMODDIR'),$recursive));
+	if(is_dir($dir)) return fileLog(__FUNCTION__,true,'dir already exists',$dir);
+	$status = mkdir($dir,getDef('GSCHMODDIR'),$recursive);
+	return 	fileLog(__FUNCTION__. ':' . ($recursive ? ' [recursive=true] ' : ''),$status,$dir);
 }
 
 function save_file($file,$data){
-	return file_put_contents($file,$data) !==false;
-	if(function_exists('chmod')) chmod($file,getDef('GSCHMODFILE'));
+	$status = file_put_contents($file,$data) !==false; // returns num bytes written, FALSE on failure
+	fileLog(__FUNCTION__,$status,$file);
+	$chmodstatus = gs_chmod($file); // ignoring chmod failures
+	return $status;
 }
 
 // overwrites if exists
 function move_file($srcfile,$destfile){
-	if(!rename($srcfile,$destfile)){
-		return copy($srcfile,$destfile) && unlink($srcfile);
+	if(!$status = rename_file($srcfile,$destfile)){
+		$status = copy_file($srcfile,$destfile) && delete_file($srcfile);
 	}
+	return fileLog(__FUNCTION__,$status,$srcfile,$destfile);
+}
+
+// overwrites if exists
+function rename_file($srcfile,$destfile){
+	$status = rename($srcfile,$destfile);
+	return fileLog(__FUNCTION__,$status,$srcfile,$destfile);
 }
 
 // overwrites if exist
 function copy_file($srcfile,$destfile){
-	debugLog('copy file : '. $srcfile . ' to ' . $destfile);
-	return debugLog(copy($srcfile,$destfile));
+	$status = copy($srcfile,$destfile);
+	return fileLog(__FUNCTION__,$status,$srcfile,$destfile);
 }
 
 function delete_file($file){
-	return unlink($file);
+	$status = unlink($file);
+	return fileLog(__FUNCTION__,$status,$file);
 }
 
 function delete_folder($path){
-	return rmdir($path);
+	$status = rmdir($path);
+	return fileLog(__FUNCTION__,$status,$path);
 }
 
+/**
+ * do chmod using gs chmod constants or user
+ * returns false if chmod is not avialable for whatever reason
+ *
+ * @since 3.4.0
+ *
+ * @param  str  $path  path to file or dir
+ * @param  boolean $dir   is directory, default false = file
+ * @param  int  $chmod chmod value
+ * @return bool         success of chmod
+ */
+function gs_chmod($path,$dir = false,$chmod = null){
+	if(!isset($chmod)){
+		$chmod = $dir ? getDef('GSCHMODDIR') : getDef('GSCHMODFILE');
+	}
+	// chmod might be prohibited by disabled functions etc.
+	if(!function_exists('chmod')) return fileLog(__FUNCTION__,false,'chmod not available',$path,$chmod);
+
+	$status = chmod($path,$chmod);
+	return fileLog(__FUNCTION__,$status,$path,$chmod);
+}
+
+/**
+ * log fileio operations
+ *
+ * since 3.4.0
+ *
+ * @param  str   $operation file operation or functionname to log
+ * @param  mixed $status    if bool evals to success and fail, else shows status as string
+ * @param  mixed  variable length args any other arguments are outputted at end
+ * @return mixed            returns status untouched, passthrough
+ */
+function fileLog($operation,$status = null){
+	$args = array_slice(func_get_args(),2); // grab arguments past first 2 for output
+	if(is_bool($status)) $logstatus = ($status === true) ? 'success' : 'fail';
+	else $logstatus = (string) $status;
+	debugLog("&bull; fileio: [$logstatus] $operation: ".implode(" - ",$args));
+
+	return $status;
+}
 
 /**
  * Formated Date Output, special handling for params on windows
