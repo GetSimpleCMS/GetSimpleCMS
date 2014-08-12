@@ -162,11 +162,7 @@ function sendmail($to,$subject,$message) {
 	$headers .= 'Reply-To: '.$fromemail . PHP_EOL;
 	$headers .= 'Return-Path: '.$fromemail . PHP_EOL;
 	
-	if( @mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',"$message",$headers) ) {
-		return 'success';
-	} else {
-		return 'error';
-	}
+	return @mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',"$message",$headers) ) {
 }
 
 /**

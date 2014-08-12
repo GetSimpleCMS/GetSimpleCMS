@@ -276,9 +276,8 @@ function createBak($file, $filepath, $bakpath) {
  */
 function delete_bak($id) { 
 	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
-	unlink($bakpagespath. $id .".bak.xml");
-	return 'success';
-} 
+	return unlink($bakpagespath. $id .".bak.xml");
+}
 
 /**
  * Restore Pages Backup File

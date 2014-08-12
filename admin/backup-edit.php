@@ -48,9 +48,9 @@ if ($_GET['p'] != '') {
 
 if ($p == 'delete') {
 	check_for_csrf("delete","backup-edit");
-	delete_bak($id);
-	redirect("backups.php?upd=bak-success&id=".$id);
-} 
+	$status = delete_bak($id) ? 'success' : 'error';
+	redirect("backups.php?upd=bak-".$status."&id=".$id);
+}
 
 elseif ($p == 'restore') {
 	check_for_csrf("restore", "backup-edit.php");
