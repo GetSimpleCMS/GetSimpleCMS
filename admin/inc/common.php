@@ -36,6 +36,7 @@ $GS_constants = array(
  	'GSBASE'                => false,                         // front end flag
 	'GSCONFIGFILE'          => 'gsconfig.php',                // config filename
 	'GSWEBSITEFILE'         => 'website.xml',                 // website data filename
+	'GSCOMPONENTSFILE'      => 'components.xml',              // website data filename
 	'GSAUTHFILE'            => 'authorization.xml',           // authorizaton salt data filename
 	'GSCSSMAINFILE'         => 'css.php',                     // main css file name
 	'GSCSSCUSTOMFILE'       => 'admin.css',                   // custom css file name

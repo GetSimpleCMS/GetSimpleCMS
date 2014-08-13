@@ -333,12 +333,11 @@ function getXML($file) {
 }
 
 /**
- * XML Save
+ * save XML to file
  *
  * @since 2.0
- * @todo create and chmod file before ->asXML call (if it doesnt exist already, if so, then just chmod it.)
  *
- * @param object $xml
+ * @param object $xml  simple xml object to save to file via asXml
  * @param string $file Filename that it will be saved as
  * @return bool
  */
@@ -351,62 +350,117 @@ function XMLsave($xml, $file) {
 /**
  * create a director or path
  *
- * @since 3.4.0
+ * @since 3.4
+ * @todo normalize slashes for windows
+ * @todo might need a recursive chmod also, mkdir only chmods the basedir allegedly
  *
  * @param  str  $dir          directory or path
  * @param  boolean $recursive create recursive path
  * @return bool               success, null if already exists
  */
-function create_dir($dir,$recursive = true){
-	// @todo normalize slashes for windows
-	// @todo might need a recursive chmod also, mkdir only chmods the basedir allegedly
-	if(is_dir($dir)) return fileLog(__FUNCTION__,true,'dir already exists',$dir);
-	$status = mkdir($dir,getDef('GSCHMODDIR'),$recursive);
-	return 	fileLog(__FUNCTION__. ':' . ($recursive ? ' [recursive=true] ' : ''),$status,$dir);
+function create_dir($path,$recursive = true){
+	if(is_dir($path)) return fileLog(__FUNCTION__,true,'dir already exists',$path);
+	$status = mkdir($path,getDef('GSCHMODDIR'),$recursive);
+	return 	fileLog(__FUNCTION__. ':' . ($recursive ? ' [recursive=true] ' : ''),$status,$path);
 }
 
+/**
+ * Delete a folder, must be empty
+ * 
+ * @param  str $path path to remove
+ * @return bool       success
+ */
+function delete_dir($path){
+	$status = rmdir($path);
+	return fileLog(__FUNCTION__,$status,$path);
+}
+
+/**
+ * save data to file (overwrites existing)
+ * then chmod
+ * @todo do we really need to chmod everytime ?
+ *
+ * @since  3.4
+ *
+ * @param  str $file filepath
+ * @param  str $data data to save to file
+ * @return bool success
+ */
 function save_file($file,$data){
-	$status = file_put_contents($file,$data) !==false; // returns num bytes written, FALSE on failure
+	$status = file_put_contents($file,$data) !== false; // returns num bytes written, FALSE on failure
 	fileLog(__FUNCTION__,$status,$file);
-	$chmodstatus = gs_chmod($file); // ignoring chmod failures
+	$chmodstatus = gs_chmod($file); // currently ignoring chmod failures
 	return $status;
 }
 
-// overwrites if exists
-function move_file($srcfile,$destfile){
-	if(!$status = rename_file($srcfile,$destfile)){
-		$status = copy_file($srcfile,$destfile) && delete_file($srcfile);
+
+// alias for rename_file()
+function move_file($src,$dest,$filename = null){
+	fileLog(__FUNCTION__,'-','ALIAS calling rename_file');
+	$status = rename_file($src,$dest,$filename);
+}
+
+/**
+ * Rename a file (overwrites existing)
+ * renames a file, moving between dirs if necessary
+ *
+ * @since  3.4
+ *
+ * @param  str  $src  filepath to rename
+ * @param  str  $dest filepath destination
+ * @param  str $filename optional filename will be appended to src and destf
+ * @return bool           success
+ */
+function rename_file($src,$dest,$filename = null){
+	if(isset($filename)){
+		$src  .= DIRECTORY_SEPARATOR . $filename;
+		$dest .= DIRECTORY_SEPARATOR . $filename;
 	}
-	return fileLog(__FUNCTION__,$status,$srcfile,$destfile);
+	if(!$status = rename($src,$dest)){
+		fileLog(__FUNCTION__,false,'calling copy_file & delete_file');
+		$status = copy_file($src,$dest) && delete_file($src);
+		return $status;
+	}
+	return fileLog(__FUNCTION__,$status,$src,$dest);
 }
 
-// overwrites if exists
-function rename_file($srcfile,$destfile){
-	$status = rename($srcfile,$destfile);
-	return fileLog(__FUNCTION__,$status,$srcfile,$destfile);
+/**
+ * copy a file (overwrites existing)
+ *
+ * @since  3.4
+ *
+ * @param  str  $src  filepath to copy
+ * @param  str  $dest filepath destination
+ * @param  str  $filename optional filename will be appended to src and destf
+ * @return bool           success
+ */
+function copy_file($src,$dest,$filename = null){
+	if(isset($filename)){
+		$src  .= DIRECTORY_SEPARATOR . $filename;
+		$dest .= DIRECTORY_SEPARATOR . $filename;
+	}	
+	$status = copy($src,$dest);
+	return fileLog(__FUNCTION__,$status,$src,$dest);
 }
 
-// overwrites if exist
-function copy_file($srcfile,$destfile){
-	$status = copy($srcfile,$destfile);
-	return fileLog(__FUNCTION__,$status,$srcfile,$destfile);
-}
-
+/**
+ * Deletes a file
+ *
+ * @since  3.4
+ *
+ * @param  str $file  file to delete
+ * @return bool       success
+ */
 function delete_file($file){
 	$status = unlink($file);
 	return fileLog(__FUNCTION__,$status,$file);
-}
-
-function delete_folder($path){
-	$status = rmdir($path);
-	return fileLog(__FUNCTION__,$status,$path);
 }
 
 /**
  * do chmod using gs chmod constants or user
  * returns false if chmod is not avialable for whatever reason
  *
- * @since 3.4.0
+ * @since 3.4
  *
  * @param  str  $path  path to file or dir
  * @param  boolean $dir   is directory, default false = file
@@ -427,7 +481,7 @@ function gs_chmod($path,$dir = false,$chmod = null){
 /**
  * log fileio operations
  *
- * since 3.4.0
+ * since 3.4
  *
  * @param  str   $operation file operation or functionname to log
  * @param  mixed $status    if bool evals to success and fail, else shows status as string
@@ -446,7 +500,7 @@ function fileLog($operation,$status = null){
 /**
  * Formated Date Output, special handling for params on windows
  *
- * @since  3.4.0
+ * @since  3.4
  * @author  cnb
  *
  * @param  string $format    A strftime or date format
@@ -475,7 +529,7 @@ function formatDate($format, $timestamp = null) {
 /**
  * Time Output using locale
  *
- * @since 3.4.0
+ * @since 3.4
  * @param  str $dt Date/Time String
  * @return str
  */
@@ -522,6 +576,8 @@ function lngDate($dt = null){
 /**
  * Clean Utility
  *
+ * Removes slashes, removes html tags, decodes entities
+ * used to clean slugs and titles
  * @since 1.0
  *
  * @param string $data
@@ -534,7 +590,7 @@ function cl($data){
 }
 
 /**
- * Add Trailing Slash
+ * Add Trailing Slash if missing
  *
  * @since 1.0
  *
@@ -826,9 +882,10 @@ function i18n_merge_impl($plugin = '', $lang, &$globali18n) {
 	$filename = $path.$lang.'.php';
 	$prefix   = $plugin ? $plugin.'/' : '';
 
-	if (!filepath_is_safe($filename,$path) || !file_exists($filename)) {
-		return false;
-	}
+	// this is probably overkill, we can just sanitize the crap out of $lang
+	// if (!filepath_is_safe($filename,$path) || !file_exists($filename)) {
+		// return false;
+	// }
 
 	include($filename); 
 
@@ -1576,7 +1633,7 @@ function getRelPath($path,$root = GSROOTPATH ){
 
 /**
  * returns a global, easier inline usage of readonly globals
- * @since  3.4.0
+ * @since  3.4
  * @param  str $var variable name
  * @return global
  */
@@ -1588,7 +1645,7 @@ function getGlobal($var) {
 /** 
  * returns a page global 
  * currently an alias for getGlobal
- * @since 3.4.0
+ * @since 3.4
  */
 function getPageGlobal($var){
 	return getGlobal($var);
@@ -1596,7 +1653,7 @@ function getPageGlobal($var){
 
 /**
  * echo or return toggle
- * @since  3.4.0
+ * @since  3.4
  * @param str $str 
  * @param bool $echo default true, echoes or returns $str
  */
@@ -1666,7 +1723,7 @@ function includeTheme($template, $template_file = GSTEMPLATEFILE){
 
 /**
  * get the current accessed script file
- * @since 3.4.0
+ * @since 3.4
  * @return str  path to script filename
  */
 function getScriptFile(){
@@ -1675,7 +1732,7 @@ function getScriptFile(){
 
 /**
  * get custom locale as defined in i18n
- * @since 3.4.0
+ * @since 3.4
  * @return str
  */
 function getLocaleConfig(){
@@ -1684,7 +1741,7 @@ function getLocaleConfig(){
 
 /**
  * get date format as defined in i18n
- * @since 3.4.0
+ * @since 3.4
  * @return str date format string
  */
 function getDateFormat(){
@@ -1692,7 +1749,7 @@ function getDateFormat(){
 }
 /**
  * get date time format as defined in i18n
- * @since 3.4.0
+ * @since 3.4
  * @return str date time format string
  */
 function getDateTimeFormat(){
@@ -1700,7 +1757,7 @@ function getDateTimeFormat(){
 }
 /**
  * get date time format as defined in i18n
- * @since 3.4.0
+ * @since 3.4
  * @return str date time format string
  */
 function getTimeFormat(){
@@ -1708,7 +1765,7 @@ function getTimeFormat(){
 }
 /**
  * get transliteration set as defined in i18n
- * @since 3.4.0
+ * @since 3.4
  * @return str
  */
 function getTransliteration(){
@@ -1717,7 +1774,7 @@ function getTransliteration(){
 
 /**
  * set php locale via i18n
- * @since 3.4.0
+ * @since 3.4
  * @param str locale str
  */
 function  setCustomLocale($locale){
@@ -1729,7 +1786,7 @@ function  setCustomLocale($locale){
  * This is a default lang to load after the custom lang to
  * avoid empty lang tokens not found in the custom lang
  *
- * @since 3.4.0
+ * @since 3.4
  * @global $LANG
  */
 function i18n_mergeDefault(){
@@ -1746,7 +1803,7 @@ function i18n_mergeDefault(){
 
 /**
  * get the gs editor height config
- * @since 3.4.0
+ * @since 3.4
  * @return str string with height units
  */
 function getEditorHeight(){
@@ -1755,7 +1812,7 @@ function getEditorHeight(){
 
 /**
  * get the gs editor language
- * @since 3.4.0
+ * @since 3.4
  * @return str
  */
 function getEditorLang(){
@@ -1767,7 +1824,7 @@ function getEditorLang(){
 
 /**
  * get the gs editor custom options
- * @since 3.4.0
+ * @since 3.4
  * @return str js config string
  */
 function getEditorOptions(){
@@ -1776,7 +1833,7 @@ function getEditorOptions(){
 
 /**
  * get the gs editor custom toolbar
- * @since 3.4.0
+ * @since 3.4
  * @return str valid js nested array ([[ ]]) or escaped toolbar id ('toolbar_id')
  */
 function getEditorToolbar(){
@@ -1790,7 +1847,7 @@ function getEditorToolbar(){
 
 /**
  * get defined timezone from user->site->gsconfig
- * @since 3.4.0
+ * @since 3.4
  * @return str timezone identifier
  */
 function getDefaultTimezone(){
@@ -1803,7 +1860,7 @@ function getDefaultTimezone(){
 /**
  * set defined timezone
  *
- * @since 3.4.0
+ * @since 3.4
  * @param str timezone identifier http://us3.php.net/manual/en/timezones.php
  */
 function setTimezone($timezone){
@@ -1816,7 +1873,7 @@ function setTimezone($timezone){
  * gets website data from GSWEBSITEFILE
  *
  * @todo use a custom schema array for extracting fields
- * @since 3.4.0
+ * @since 3.4
  * @param  boolean $returnGlobals return as obj or array of vars
  * @return mixed    depending on returnGlobals returns xml as object or a defined var array for global extraction
  */
@@ -1849,7 +1906,7 @@ function getWebsiteData($returnGlobals = false){
 /**
  * gets user data from cookie_user.xml
  * 
- * @since 3.4.0
+ * @since 3.4
  * @todo use a custom schema array for extracting fields
  * @param  boolean $returnGlobals return as obj or array of vars
  * @return mixed    depending on returnGlobals returns xml as object or a defined var array for global extraction

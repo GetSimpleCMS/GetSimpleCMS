@@ -204,43 +204,77 @@ function delete_cache() {
 } 
 
 /**
- * Create Backup of a File
- * Copy file to backups, preserve paths 
+ * Create Backup of a Data File
+ * Copy file to backups, preserve paths structure
+ * Only files in GSDATAPATH can be backed up!
  *
  * @since 3.4
  *
- * @param string $filepath filepath/filename to backup
+ * @param string $filepath filepath of datafile to backup
  * @return bool success
  */
-function backup_file($filepath){
+function backup_datafile($filepath){
+	if(!filepath_is_safe($filepath,GSDATAPATH)) return false;
+
+	$bakfilepath = getBackupFilePath($filepath);
+	$bakpath = dirname($bakfilepath);
+ 	// recusive create dirs
+	create_dir($bakpath,GSCHMOD,true);
+	return copy_file($filepath,$bakfilepath);
+}
+
+/**
+ * Restore Backup copy of a dataFile to where it belongs
+ *
+ * @since 3.4
+ *
+ * @param string $file filepath of data file to restore from backup, locked to GSDATAPATH
+ * @return bool success
+ */
+function restore_datafile($filepath){
+	if(!filepath_is_safe($filepath,GSDATAPATH)) return false;
+	$bakfilepath = getBackupFilePath($filepath);
+
+	// backup original before restoring
+	if(file_exists($filepath)){
+		rename_file($bakfilepath,$bakfilepath.'.tmp');
+		move_file($filepath,$bakfilepath);
+		$bakfilepath .= '.tmp';
+	}
+	return move_file($bakfilepath,$filepath);
+}
+
+/**
+ * gets the backup filepath for a data file
+ *
+ * @since 3.4
+ * @param  str $filepath filepath to get backup path
+ * @return str           converted to backup filepath
+ */
+function getBackupFilePath($filepath){
 	$pathparts = pathinfo($filepath);
 	$filename  = $pathparts['filename'];
 	$fileext   = $pathparts['extension'];
 	$dirname   = $pathparts['dirname'];
 	$bakpath   = getRelPath($dirname,GSDATAPATH);
 	$bakfilepath = GSBACKUPSPATH.$bakpath.'/'.$filename.'.bak.'.$fileext;
- 	
- 	// recusive create dirs
-	create_dir(GSBACKUPSPATH.$bakpath,GSCHMOD,true);
-	
-	return copy_file($filepath,$bakfilepath);
+	// debugLog(get_defined_vars());
+	return $bakfilepath;
 }
 
 /**
- * Restore Backup copy of a File
+ * Restore From Backup to custom destintation
+ * source locked to GSBACKUPSPATH
  *
  * @since 3.4
  *
- * @param string $file filepath/filename to backup
+ * @param string $backfilepath filepath to backup file
+ * @param string $destination  filepath retore to
  * @return bool success
  */
-function restore_backup($file){
-	debugLog(get_defined_vars());
-	$bakfile = '';
-	if ( file_exists(tsl($filepath) . $file) ) {
-		$bakfile = $file .".bak";
-		return copy($filepath . $file, $bakpath . $bakfile);
-	}
+function restore_backup($bakfilepath,$destination){
+	if(!filepath_is_safe($bakfilepath,GSBACKUPSPATH)) return false;
+	return copy_file($bakfilepath,$destination);
 }
 
 /**
@@ -255,9 +289,8 @@ function restore_backup($file){
  * @return bool
  */
 function createBak($file, $filepath, $bakpath) {
-	debugLog(get_defined_vars());
-	return backup_file($filepath . $file);
-	
+	return backup_datafile($filepath . $file);
+
 	$bakfile = '';
 	if ( file_exists(tsl($filepath) . $file) ) {
 		$bakfile = $file .".bak";
@@ -290,17 +323,19 @@ function delete_bak($id) {
  */
 function restore_bak($id) { 
 	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
-	$file         = $bakpagespath. $id .".bak.xml";
-	$newfile      = GSDATAPAGESPATH . $id .".xml";
-	$tmpfile      = $bakpagespath. $id .".tmp.xml";
-	if ( !file_exists($newfile) ) { 
-		copy($file, $newfile);
-		unlink($file);
+	$file         = $bakpagespath. $id .".bak.xml"; // backup file
+	$newfile      = GSDATAPAGESPATH . $id .".xml";  // replace file
+	$tmpfile      = $bakpagespath. $id .".tmp.xml"; // tmp file
+	// if file does not already exist just move it
+	// else we swap files
+	if ( !file_exists($newfile) ) {
+		copy($file, $newfile); // restore backup file to replace file
+		unlink($file); // delete backup
 	} else {
-		copy($file, $tmpfile);
-		copy($newfile, $file);
-		copy($tmpfile, $newfile);
-		unlink($tmpfile);
+		copy($file, $tmpfile); // copy the backup file to tmp file
+		copy($newfile, $file); // copy replace file to backup file
+		copy($tmpfile, $newfile); // copy temp file to replace file
+		unlink($tmpfile); // remove tmp file
 	}
 	generate_sitemap();
 } 
@@ -475,6 +510,7 @@ function pingGoogleSitemaps($url_xml) {
  * @return bool
  */
 function undo($file, $filepath, $bakpath) {
+	// return restore_datafile($filepath.$file);
 	$undo_file = $filepath . $file;
 	$bak_file  = tsl($bakpath) . $file .".bak";
 	$tmp_file  = tsl($bakpath) . $file .".tmp";
@@ -1447,7 +1483,7 @@ function filter_queryString($allowed = array()){
 /**
  * truncate a string, multibyte safe
  *
- * @since 3.4.0
+ * @since 3.4
  * @param  str $str      string to truncate
  * @param  int $numchars number of characters to return
  * @return str           truncated string
