@@ -529,6 +529,11 @@ function menu_data($id = null,$xml=false) {
  */
 function get_component($id) {
     global $components;
+
+    // normalize id
+    $id = to7bit($id, 'UTF-8');
+	$id = clean_url($id);
+
     if (!$components) {
          if (file_exists(GSDATAOTHERPATH.'components.xml')) {
             $data = getXML(GSDATAOTHERPATH.'components.xml');
