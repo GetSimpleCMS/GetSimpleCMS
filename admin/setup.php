@@ -60,7 +60,7 @@ if(isset($_POST['submitted'])) {
 		
 		# create user xml file
 		$file = _id($USR).'.xml';
-		createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
+		backup_datafile(GSUSERSPATH.$file);
 		$xml = new SimpleXMLElement('<item></item>');
 		$xml->addChild('USR', $USR);
 		$xml->addChild('PWD', $PASSWD);
@@ -74,7 +74,7 @@ if(isset($_POST['submitted'])) {
 		
 		# create password change trigger file
 		$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
-		copy(GSUSERSPATH . $file, $flagfile);
+		copy_file(GSUSERSPATH . $file, $flagfile);
 		
 		# create new GSWEBSITEFILE (website.xml) file
 		$file = GSWEBSITEFILE;
@@ -94,7 +94,7 @@ if(isset($_POST['submitted'])) {
 		$init = GSDATAPAGESPATH.'index.xml'; 
 		$temp = GSADMININCPATH.'tmp/tmp-index.xml';
 		if (! file_exists($init))	{
-			copy($temp,$init);
+			copy_file($temp,$init);
 			$xml = simplexml_load_file($init); 
 			$xml->pubDate = date('r');
 			$xml->asXML($init);
@@ -104,7 +104,7 @@ if(isset($_POST['submitted'])) {
 		$init = GSDATAOTHERPATH.'components.xml';
 		$temp = GSADMININCPATH.'tmp/tmp-components.xml'; 
 		if (! file_exists($init)) {
-			copy($temp,$init);
+			copy_file($temp,$init);
 		}
 		
 		# create root .htaccess file
@@ -121,7 +121,7 @@ if(isset($_POST['submitted'])) {
 				if (!file_exists($init)) {
 					$err .= sprintf(i18n_r('ROOT_HTACCESS_ERROR'), 'temp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
 				} else if(file_exists($temp)){
-					unlink($temp);
+					delete_file($temp);
 				}
 			}	
 		} 
@@ -131,12 +131,12 @@ if(isset($_POST['submitted'])) {
 		$init = GSROOTPATH.GSCONFIGFILE;
 		$temp = GSROOTPATH.$tempconfig;
 		if (file_exists($init)) {
-			if(file_exists($temp)) unlink($temp);
+			if(file_exists($temp)) delete_file($temp);
 			if (file_exists($temp)) {
 				$err .= sprintf(i18n_r('REMOVE_TEMPCONFIG_ERROR'), $tempconfig ) . '<br />';
 			}
 		} else {
-			rename($temp, $init);
+			rename_file($temp, $init);
 			if (!file_exists($init)) {
 				$err .= sprintf(i18n_r('MOVE_TEMPCONFIG_ERROR'), $tempconfig , GSCONFIGFILE) . '<br />';
 			}

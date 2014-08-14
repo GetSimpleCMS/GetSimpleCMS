@@ -6,9 +6,9 @@
  *
  * @package GetSimple
  * @subpackage Zip
- */ 
-	
-	
+ */
+
+
 /**
  * Get Template
  *
@@ -20,10 +20,10 @@
  */
 function get_template($name, $title='** Change Me - Default Page Title **') {
 	ob_start();
-	$file = "template/" . $name . ".php";
-	include($file);
-	$template = ob_get_contents();
-	ob_end_clean(); 
+		$file = "template/" . $name . ".php";
+		include($file);
+		$template = ob_get_contents();
+	ob_end_clean();
 	echo $template;
 }
 
@@ -57,31 +57,6 @@ function get_filename_id() {
 	return $file;	
 }
 
-/**
- * Delete Pages File
- *
- * Deletes pages data file afer making backup
- *
- * @since 1.0
- * @uses GSBACKUPSPATH
- * @uses GSDATAPAGESPATH
- *
- * @param string $id File ID to delete
- */
-function delete_page($id) {
-
-	$bakfilepath = GSBACKUPSPATH . 'pages' . DIRECTORY_SEPARATOR;
-	$bakfile     = $bakfilepath . $id .'.bak.xml';
-	
-	$filepath = GSDATAPAGESPATH;
-	$file     = $filepath . $id .'.xml';
-
-	if(filepath_is_safe($file,$filepath)){
-		$successbak = copy($file, $bakfile);
-		$successdel = unlink($file);
-		return $successdel && $successbak;
-	}
-}
 
 /**
  * Check Permissions
@@ -127,7 +102,7 @@ function delete_zip($id) {
 	$file     = $filepath . $id;
 
 	if(filepath_is_safe($file,$filepath)){
-		return unlink($file);
+		return delete_file($file);
 	}
 } 
 
@@ -159,7 +134,7 @@ function delete_upload($id, $path = "") {
 } 
 
 /**
- * Delete Uploaded File
+ * Delete Upload Directory
  *
  * @since 1.0
  * @uses GSTHUMBNAILPATH
@@ -169,7 +144,7 @@ function delete_upload($id, $path = "") {
  * @return string
  */
 function delete_upload_dir($path){
-	$target = GSDATAUPLOADPATH . $path;	
+	$target = GSDATAUPLOADPATH . $path;
 	if (path_is_safe($target,GSDATAUPLOADPATH) && file_exists($target)) {
 		$status = delete_dir($target);
 		
@@ -186,7 +161,7 @@ function delete_upload_dir($path){
  * @since 3.1.3
  * @uses GSCACHEPATH
  *
- * @returns deleted count on success, null if there are any errors
+ * @return mixed deleted count on success, null if there are any errors
  */
 function delete_cache() { 
 	$cachepath = GSCACHEPATH;
@@ -199,9 +174,27 @@ function delete_cache() {
 		else $success = false;
 	}	
 
-	if($success == false) return null;
+	if($success === false) return null;
 	return $cnt;
 } 
+
+/**
+ * gets the backup filepath for a data file
+ *
+ * @since 3.4
+ * @param  str $filepath filepath to get backup path
+ * @return str           converted to backup filepath
+ */
+function getBackupFilePath($filepath){
+	$pathparts = pathinfo($filepath);
+	$filename  = $pathparts['filename'];
+	$fileext   = $pathparts['extension'];
+	$dirname   = $pathparts['dirname'];
+	$bakpath   = getRelPath($dirname,GSDATAPATH);
+	$bakfilepath = GSBACKUPSPATH.$bakpath.'/'.$filename.'.bak.'.$fileext;
+	// debugLog(get_defined_vars());
+	return $bakfilepath;
+}
 
 /**
  * Create Backup of a Data File
@@ -219,7 +212,7 @@ function backup_datafile($filepath){
 	$bakfilepath = getBackupFilePath($filepath);
 	$bakpath = dirname($bakfilepath);
  	// recusive create dirs
-	create_dir($bakpath,GSCHMOD,true);
+	create_dir($bakpath,getDef('GSCHMODDIR'),true);
 	return copy_file($filepath,$bakfilepath);
 }
 
@@ -245,24 +238,6 @@ function restore_datafile($filepath){
 }
 
 /**
- * gets the backup filepath for a data file
- *
- * @since 3.4
- * @param  str $filepath filepath to get backup path
- * @return str           converted to backup filepath
- */
-function getBackupFilePath($filepath){
-	$pathparts = pathinfo($filepath);
-	$filename  = $pathparts['filename'];
-	$fileext   = $pathparts['extension'];
-	$dirname   = $pathparts['dirname'];
-	$bakpath   = getRelPath($dirname,GSDATAPATH);
-	$bakfilepath = GSBACKUPSPATH.$bakpath.'/'.$filename.'.bak.'.$fileext;
-	// debugLog(get_defined_vars());
-	return $bakfilepath;
-}
-
-/**
  * Restore From Backup to custom destintation
  * source locked to GSBACKUPSPATH
  *
@@ -278,67 +253,104 @@ function restore_backup($bakfilepath,$destination){
 }
 
 /**
- * Create Backup Pages File
+ * backup a page
  *
- * @since 1.0
- * @uses tsl
+ * @since 3.4
  *
- * @param string $file filename to backup
- * @param string $filepath path to file to backup
- * @param string $bakpath path to save backed up file
- * @return bool
+ * @param  str $id id of page to backup
+ * @return bool     success
  */
-function createBak($file, $filepath, $bakpath) {
-	return backup_datafile($filepath . $file);
-
-	$bakfile = '';
-	if ( file_exists(tsl($filepath) . $file) ) {
-		$bakfile = $file .".bak";
-		return copy($filepath . $file, $bakpath . $bakfile);
-	}
+function backup_page($id){
+	backup_datafile(GSDATAPAGESPATH.$id.'.xml');
 }
 
 /**
- * Delete Pages Backup File
+ * Restore a page from backup
  *
- * @since 1.0
- * @uses GSBACKUPSPATH
+ * @since 3.4
  *
- * @param string $id File ID to delete
- * @return string
+ * @param  str $id id of page
+ * @return bool     success
  */
-function delete_bak($id) { 
-	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
-	return unlink($bakpagespath. $id .".bak.xml");
+function restore_page($id){
+	restore_datafile(GSDATAPAGESPATH.$id.'.xml');
 }
 
 /**
- * Restore Pages Backup File
+ * Delete Pages File
+ *
+ * Deletes pages data file afer making backup
  *
  * @since 1.0
  * @uses GSBACKUPSPATH
  * @uses GSDATAPAGESPATH
  *
- * @param string $id File ID to restore
+ * @param string $id File ID to delete
  */
-function restore_bak($id) { 
-	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
-	$file         = $bakpagespath. $id .".bak.xml"; // backup file
-	$newfile      = GSDATAPAGESPATH . $id .".xml";  // replace file
-	$tmpfile      = $bakpagespath. $id .".tmp.xml"; // tmp file
-	// if file does not already exist just move it
-	// else we swap files
-	if ( !file_exists($newfile) ) {
-		copy($file, $newfile); // restore backup file to replace file
-		unlink($file); // delete backup
-	} else {
-		copy($file, $tmpfile); // copy the backup file to tmp file
-		copy($newfile, $file); // copy replace file to backup file
-		copy($tmpfile, $newfile); // copy temp file to replace file
-		unlink($tmpfile); // remove tmp file
+function delete_page($id){
+	backup_datafile(GSDATAPAGESPATH.$id.'.xml');
+	delete_file(GSDATAPAGESPATH.$id.'.xml');
+}
+
+/**
+ * Clone a page
+ * Automatically names page id to next incremental copy eg. "slug-n"
+ * Clone title becomes "title [copy]""
+ *
+ * @param  str $id page id to clone
+ * @return bool    success
+ */
+function clone_page($id){
+	$count = 1;
+	$cloneurl =  $id ."-".$count;
+	$clonefile = GSDATAPAGESPATH . $cloneurl .".xml";
+
+	if (file_exists(GSDATAPAGESPATH . $id .".xml")) {
+		while ( file_exists($clonefile) ) {
+			$count++;
+			$cloneurl = $id .'-'. $count;
+			$clonefile = GSDATAPAGESPATH . $cloneurl.".xml";
+		}
 	}
-	generate_sitemap();
-} 
+
+	// get page and resave with new slug and title
+	$newxml = getXML(GSDATAPAGESPATH.$id.'.xml');
+	$newxml->url = $cloneurl;
+	$newxml->title = $newxml->title.' ['.i18n_r('COPY').' '.$count.']';
+	$newxml->pubDate = date('r');
+	return XMLsave($newxml, GSDATAPAGESPATH.$cloneurl.'.xml');
+}
+
+/**
+ * Delete Pages Backup File
+ *
+ * @since 3.4
+ * @uses GSBACKUPSPATH
+ * @uses GSDATAPAGESPATH
+ * @uses GSGSDATATPATH
+ *
+ * @param string $id File ID to delete
+ * @return bool success
+ */
+function delete_page_backup($id){
+	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
+	return delete_file($bakpagespath. $id .".bak.xml");
+}
+
+// DEPRECATED 3.4 LEGACY
+function createBak($file, $filepath, $bakpath) {
+	return backup_datafile($filepath . $file);
+}
+function delete_bak($id) { 
+	return delete_page_backup($id);
+}
+function restore_bak($id) {
+	restore_page($id);
+}
+function undo($file, $filepath, $bakpath) {
+	return restore_datafile($filepath.$file);
+}
+
 
 /**
  * Create Random Password
@@ -498,33 +510,6 @@ function pingGoogleSitemaps($url_xml) {
    return( $status );
 }
 
-/**
- * Undo
- *
- * @since 1.0
- * @uses tsl
- *
- * @param string $file filename to undo
- * @param string $filepath filepath to undo
- * @param string $bakpath path to the backup file
- * @return bool
- */
-function undo($file, $filepath, $bakpath) {
-	// return restore_datafile($filepath.$file);
-	$undo_file = $filepath . $file;
-	$bak_file  = tsl($bakpath) . $file .".bak";
-	$tmp_file  = tsl($bakpath) . $file .".tmp";
-	copy($undo_file, $tmp_file); // rename original to temp shuttle
-	copy($bak_file, $undo_file); // copy backup
-	copy($tmp_file, $bak_file);  // save original as backup
-	unlink($tmp_file); 			 // remove temp shuttle file
-	
-	if (file_exists($tmp_file)) {
-		return false;
-	} else {
-		return true;
-	}
-}
 
 /**
  * File Size

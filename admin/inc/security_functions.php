@@ -200,7 +200,7 @@ function filepath_is_safe($filepath,$pathmatch,$subdir = true){
 	$realpath = realpath($filepath);
 	if(!$realpath) return path_is_safe(dirname($filepath),$pathmatch,$subdir);
 
-	$realpathmatch = debugLog(realpath($pathmatch));
+	$realpathmatch = realpath($pathmatch);
 	if($subdir) return strpos(dirname($realpath),$realpathmatch) === 0;
 	return dirname($realpath) == $realpathmatch;
 }

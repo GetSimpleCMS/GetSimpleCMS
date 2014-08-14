@@ -360,7 +360,7 @@ function XMLsave($xml, $file) {
  */
 function create_dir($path,$recursive = true){
 	if(is_dir($path)) return fileLog(__FUNCTION__,true,'dir already exists',$path);
-	$status = mkdir($path,getDef('GSCHMODDIR'),$recursive);
+	$status = mkdir($path,getDef('GSCHMODDIR'),$recursive); // php mkdir
 	return 	fileLog(__FUNCTION__. ':' . ($recursive ? ' [recursive=true] ' : ''),$status,$path);
 }
 
@@ -416,7 +416,7 @@ function rename_file($src,$dest,$filename = null){
 		$src  .= DIRECTORY_SEPARATOR . $filename;
 		$dest .= DIRECTORY_SEPARATOR . $filename;
 	}
-	if(!$status = rename($src,$dest)){
+	if(!$status = rename($src,$dest)){ // php rename
 		fileLog(__FUNCTION__,false,'calling copy_file & delete_file');
 		$status = copy_file($src,$dest) && delete_file($src);
 		return $status;
@@ -439,7 +439,7 @@ function copy_file($src,$dest,$filename = null){
 		$src  .= DIRECTORY_SEPARATOR . $filename;
 		$dest .= DIRECTORY_SEPARATOR . $filename;
 	}	
-	$status = copy($src,$dest);
+	$status = copy($src,$dest); // php copy
 	return fileLog(__FUNCTION__,$status,$src,$dest);
 }
 
@@ -452,7 +452,7 @@ function copy_file($src,$dest,$filename = null){
  * @return bool       success
  */
 function delete_file($file){
-	$status = unlink($file);
+	$status = unlink($file); // php unlink
 	return fileLog(__FUNCTION__,$status,$file);
 }
 
@@ -467,8 +467,8 @@ function delete_file($file){
  * @param  int  $chmod chmod value
  * @return bool         success of chmod
  */
-function gs_chmod($path,$dir = false,$chmod = null){
-	if(!isset($chmod)){
+function gs_chmod($path,$chmod = null,$dir = false){
+	if(!isset($chmod) || empty($chmod)){
 		$chmod = $dir ? getDef('GSCHMODDIR') : getDef('GSCHMODFILE');
 	}
 	// chmod might be prohibited by disabled functions etc.
@@ -882,10 +882,10 @@ function i18n_merge_impl($plugin = '', $lang, &$globali18n) {
 	$filename = $path.$lang.'.php';
 	$prefix   = $plugin ? $plugin.'/' : '';
 
-	// this is probably overkill, we can just sanitize the crap out of $lang
-	// if (!filepath_is_safe($filename,$path) || !file_exists($filename)) {
-		// return false;
-	// }
+	// @todo safe checking every lang file is probably overkill, we can just sanitize the crap out of $lang
+	if (!filepath_is_safe($filename,$path) || !file_exists($filename)) {
+		return false;
+	}
 
 	include($filename); 
 
@@ -902,7 +902,7 @@ function i18n_merge_impl($plugin = '', $lang, &$globali18n) {
 				$globali18n[$prefix.$code] = $text;
 			}
 		}
-	} 
+	}
 	return true;
 }
 

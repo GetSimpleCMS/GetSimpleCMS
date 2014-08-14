@@ -22,6 +22,7 @@ $bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backup
 login_cookie_check();
 
 // check form referrer - needs siteurl and edit.php in it.
+// @todo why only here, maybe we should add this to everything, although easily circumventable
 if (isset($_SERVER['HTTP_REFERER'])) {
 	if ( !(strpos(str_replace('http://www.', '', $SITEURL), $_SERVER['HTTP_REFERER']) === false) || !(strpos("edit.php", $_SERVER['HTTP_REFERER']) === false)) {
 		echo "<b>Invalid Referer</b><br />-------<br />"; 
@@ -32,7 +33,6 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 
 if (isset($_POST['submitted'])) {
 	check_for_csrf("edit", "edit.php");
-
 
 	if ( trim($_POST['post-title']) == '' )	{
 		redirect("edit.php?upd=edit-error&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
@@ -74,21 +74,17 @@ if (isset($_POST['submitted'])) {
 		if ( isset($_POST['existing-url']) ) {
 			$oldslug = $_POST['existing-url'];
 			if ($_POST['post-id'] != $oldslug){
-				// dont change the index page's slug
 				if ($oldslug == 'index') {
-					$url = $oldslug;
+					// prevent change of index page's slug
 					redirect("edit.php?id=". urlencode($oldslug) ."&upd=edit-index&type=edit");
 				} else {
 					exec_action('changedata-updateslug');
 					updateSlugs($oldslug);
 					// do backup
-					$file = GSDATAPAGESPATH . $url .".xml";
-					$existing = GSDATAPAGESPATH . $oldslug .".xml";
-					$bakfile = $bakpagespath. $oldslug .".bak.xml";
-					copy($existing, $bakfile); // copy to backup folder
-					unlink($existing); // delete page, wil resave new one here
-				} 
-			} 
+					backup_page($oldslug);
+					delete_page($oldslug);
+				}
+			}
 		}
 		
 		$file = GSDATAPAGESPATH . $url .".xml";
@@ -119,6 +115,7 @@ if (isset($_POST['submitted'])) {
 		else $metarNoArchive = 0; 
 
 		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
+		// @todo abstract into method for getting incremental file names
 		if ( (file_exists($file) && $url != $oldslug) ||  in_array($url,$reservedSlugs) ) {
 			$count = "1";
 			$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
@@ -128,14 +125,8 @@ if (isset($_POST['submitted'])) {
 			}
 			$url = $url .'-'. $count;
 		}
-		
-		// if we are editing an existing page, create a backup
-		if ( file_exists($file) ) 
-		{
-			$bakfile = $bakpagespath. $url .".bak.xml";
-			copy($file, $bakfile);
-		}
-		
+
+		// create new xml
 		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
 		$xml->addChild('pubDate', date('r'));
 
@@ -165,8 +156,12 @@ if (isset($_POST['submitted'])) {
 		}
 
 		exec_action('changedata-save');
+
+		// backup before overwriting
+		if(file_exists($file)) backup_page($url);
+
 		if (isset($_POST['autosave']) && $_POST['autosave'] == '1' && $autoSaveDraft == true) {
-			XMLsave($xml, GSAUTOSAVEPATH.$url);
+			XMLsave($xml, GSAUTOSAVEPATH.$url.'.xml');
 		} else {
 			XMLsave($xml, $file);
 		}

@@ -37,11 +37,11 @@ if(isset($_POST['submitted'])){
 				// $random = '1234';
 				
 				# create backup
-				createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
+				backup_datafile(GSUSERSPATH.$file);
 				
 				# create password change trigger file
 				$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
-				copy(GSUSERSPATH . $file, $flagfile);
+				copy_file(GSUSERSPATH . $file, $flagfile);
 				
 				# change password and resave xml file
 				$data->PWD = passhash($random); 

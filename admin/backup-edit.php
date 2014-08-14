@@ -47,24 +47,26 @@ if ($_GET['p'] != '') {
 }
 
 if ($p == 'delete') {
+	// deleting page backup
 	check_for_csrf("delete","backup-edit");
 	$status = delete_bak($id) ? 'success' : 'error';
 	redirect("backups.php?upd=bak-".$status."&id=".$id);
 }
 
 elseif ($p == 'restore') {
+	// restoring page backup
 	check_for_csrf("restore", "backup-edit.php");
 	
 	if (isset($_GET['new'])) {
-		updateSlugs($_GET['new'], $id);
-		restore_bak($id);
-		$existing = GSDATAPAGESPATH . $_GET['new'] .".xml";
-		$bakfile  = $path. $_GET['new'] .".bak.xml";
-		copy($existing, $bakfile);
-		unlink($existing);
+		$newid = $_GET['new'];
+		// restore page by old slug id
+		updateSlugs($newid, $id); // update parents and children
+		restore_page($id);        // restore old slug file
+		delete_page($newid);      // backup and delete live new slug file
+
 		redirect("edit.php?id=". $id ."&old=".$_GET['new']."&upd=edit-success&type=restore");
 	} else {
-		restore_bak($id);
+		restore_page($id);   // restore old slug file
 		redirect("edit.php?id=". $id ."&upd=edit-success&type=restore");
 	}
 	

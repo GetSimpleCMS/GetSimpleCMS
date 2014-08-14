@@ -72,7 +72,7 @@ function msgError($msg){
 $init = GSDATAOTHERPATH.GSHTTPPREFIX.'404.xml';
 $temp = GSADMININCPATH.'tmp/tmp-404.xml'; 
 if (! file_exists($init)) {
-	if(copy($temp,$init)) $message.= msgOK(sprintf(i18n_r('COPY_SUCCESS'),'tmp/404.xml'));
+	if(copy_file($temp,$init)) $message.= msgOK(sprintf(i18n_r('COPY_SUCCESS'),'tmp/404.xml'));
 	else $message.= msgError(sprintf(i18n_r('COPY_FAILURE'),'tmp/404.xml'));
 }
 
@@ -80,7 +80,7 @@ if (! file_exists($init)) {
 $init = GSDATAOTHERPATH.GSHTTPPREFIX.'403.xml';
 $temp = GSADMININCPATH.'tmp/tmp-403.xml'; 
 if (! file_exists($init)) {
-	if(copy($temp,$init)) $message.= msgOK(sprintf(i18n_r('COPY_SUCCESS'),'tmp/403.xml'));
+	if(copy_file($temp,$init)) $message.= msgOK(sprintf(i18n_r('COPY_SUCCESS'),'tmp/403.xml'));
 	else $message.= msgError(sprintf(i18n_r('COPY_FAILURE'),'tmp/403.xml'));
 }
 
@@ -92,7 +92,7 @@ foreach($create_dirs as $dir){
 		} else {
 		 $chmod_value = 0755;
 		}
-		$status = mkdir($dir, $chmod_value);
+		$status = create_dir($dir, $chmod_value);
 		if($status) $message.= msgOK(sprintf(i18n_r('FOLDER_CREATED'),$dir));
 		else $error.= msgError(i18n_r('ERROR_CREATING_FOLDER') . "<br /> - $dir");
 	}
@@ -100,7 +100,7 @@ foreach($create_dirs as $dir){
 
 # remove the pages.php plugin if it exists.
 if (file_exists(GSPLUGINPATH.'pages.php'))	{
-	unlink(GSPLUGINPATH.'pages.php');
+	delete_file(GSPLUGINPATH.'pages.php');
 }
 
 /* check for legacy version of user.xml */
@@ -109,7 +109,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	
 	# make new users folder
 	if (!file_exists(GSUSERSPATH)) {
-		$status = mkdir(GSUSERSPATH, 0777);
+		$status = create_dir(GSUSERSPATH, 0777);
 		chmod(GSUSERSPATH, 0777);
 		if (!$status) { 
 			$error .= msgError('Unable to create the folder /data/users/');	
@@ -120,7 +120,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 
 	# make new backup users folder
 	if (!file_exists(GSBACKUSERSPATH)) {
-		$status = mkdir(GSBACKUSERSPATH, 0777);
+		$status = create_dir(GSBACKUSERSPATH, 0777);
 		chmod(GSBACKUSERSPATH, 0777);
 		if (!$status) {
 			$error .= msgError('Unable to create the folder /backup/users/');	
@@ -165,7 +165,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	
 	# rename old wesbite.xml
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_website.xml')) {
-		$status = rename(GSDATAOTHERPATH .'website.xml', GSDATAOTHERPATH .'_legacy_website.xml');
+		$status = rename_file(GSDATAOTHERPATH .'website.xml', GSDATAOTHERPATH .'_legacy_website.xml');
 		if (!$status) {
 			$error .= msgError('Unable to rename website.xml to _legacy_website.xml');	
 		} else {
@@ -190,7 +190,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	
 	# rename old user.xml
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_user.xml')) {
-		$status = rename(GSDATAOTHERPATH .'user.xml', GSDATAOTHERPATH .'_legacy_user.xml');
+		$status = rename_file(GSDATAOTHERPATH .'user.xml', GSDATAOTHERPATH .'_legacy_user.xml');
 		if (!$status) {
 			$error .= msgError('Unable to rename user.xml to _legacy_user.xml');	
 		} else {
@@ -200,7 +200,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 
 	# rename old cp_settings.xml
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_cp_settings.xml')) {
-		$status = rename(GSDATAOTHERPATH .'cp_settings.xml', GSDATAOTHERPATH .'_legacy_cp_settings.xml');
+		$status = rename_file(GSDATAOTHERPATH .'cp_settings.xml', GSDATAOTHERPATH .'_legacy_cp_settings.xml');
 		if (!$status) {
 			$error .= msgError('Unable to rename cp_settings.xml to _legacy_cp_settings.xml');	
 		} else {

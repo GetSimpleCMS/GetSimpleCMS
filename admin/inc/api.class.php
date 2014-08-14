@@ -113,7 +113,7 @@ class API_Request {
 				$page->title = safe_slash_html($this->xml->data->title);
 				$page->pubDate = date('r');
 				$bakfile = $bakpagespath. $id .".bak.xml";
-				copy($thisfile, $bakfile);
+				copy_file($thisfile, $bakfile);
 				$status = XMLsave($page, $thisfile);
 				if ($status) {
 					touch($thisfile);

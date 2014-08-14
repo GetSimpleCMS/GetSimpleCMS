@@ -57,22 +57,22 @@ foreach ($dirsArray as $dir) {
 	$tmpfile = GSADMININCPATH.'tmp/tmp-404.xml';
 	if (file_exists($dir)) {
 		chmod($dir, 0755);
-		$result_755 = copy($tmpfile, $dir .'tmp.tmp');
+		$result_755 = copy_file($tmpfile, $dir .'tmp.tmp');
 		
 		if (!$result_755) {
 			chmod($dir, 0777);
-			$result_777 = copy($tmpfile, $dir .'tmp.tmp');
+			$result_777 = copy_file($tmpfile, $dir .'tmp.tmp');
 			
 			if (!$result_777) {
 				$kill = i18n_r('CHMOD_ERROR');
 			}
 		}
 	} else {
-		mkdir($dir, 0755);
-		$result_755 = copy($tmpfile, $dir .'tmp.tmp');
+		create_dir($dir, 0755);
+		$result_755 = copy_file($tmpfile, $dir .'tmp.tmp');
 		if (!$result_755) {
 			chmod($dir, 0777);
-			$result_777 = copy($tmpfile, $dir .'tmp.tmp');
+			$result_777 = copy_file($tmpfile, $dir .'tmp.tmp');
 			
 			if (!$result_777) {
 				$kill = i18n_r('CHMOD_ERROR');
@@ -81,7 +81,7 @@ foreach ($dirsArray as $dir) {
 	}
 	
 	if (file_exists($dir .'tmp.tmp')) {
-		unlink($dir .'tmp.tmp');
+		delete_file($dir .'tmp.tmp');
 	}
 }
 

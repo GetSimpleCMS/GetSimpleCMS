@@ -30,8 +30,7 @@ if (isset($_GET['flushcache'])) {
 if (isset($_GET['undo'])) { 
 	check_for_csrf("undo");	
 	# perform undo
-	$bakpath = GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH); // backups/other/
-	undo(GSWEBSITEFILE, GSDATAOTHERPATH, $bakpath);
+	restore_datafile(GSWEBSITEFILE):
 	generate_sitemap();
 	
 	# redirect back to yourself to show the new restored data
@@ -75,8 +74,9 @@ if(isset($_POST['submitted'])) {
 	if(!in_array($LANG.'.php', $lang_array) and !in_array($LANG.'.PHP', $lang_array)) die(); 
 
 	# create website xml file
-	$bakpath = GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH); // backups/other/
-	createBak(GSWEBSITEFILE, GSDATAOTHERPATH, $bakpath);
+	backup_datafile(GSWEBSITEFILE);
+
+	// new xml
 	$xmls = new SimpleXMLExtended('<item></item>');
 	$note = $xmls->addChild('SITENAME');
 	$note->addCData($SITENAME);
