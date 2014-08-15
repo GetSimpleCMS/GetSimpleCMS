@@ -113,7 +113,7 @@ if(isset($_POST['submitted'])) {
 		 	$init = GSROOTPATH.'.htaccess';
 			
 			if(file_exists($temp)) {				
-				$temp_data = file_get_contents(GSROOTPATH .'temp.htaccess');
+				$temp_data = read_file(GSROOTPATH .'temp.htaccess');
 				$temp_data = str_replace('**REPLACE**',tsl($path_parts), $temp_data);
 				$fp = fopen($init, 'w');
 				fwrite($fp, $temp_data);

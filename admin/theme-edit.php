@@ -75,7 +75,7 @@ if(isset($_POST['submitsave'])){
 }
 
 if(isset($_GET['ajax'])){
-	$content = file_get_contents(GSTHEMESPATH . tsl($template) . $template_file);
+	$content = read_file(GSTHEMESPATH . tsl($template) . $template_file);
 	?>
 		<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
 			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
@@ -297,7 +297,7 @@ switch (pathinfo($template_file,PATHINFO_EXTENSION)) {
 				
 				<div id="theme_editing" class="well">
 				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.getRelPath(GSTHEMESPATH).' <b><span id="theme_editing_file">'. tsl($template).$template_file .'</span></b>'; ?>
-				<?php $content = file_get_contents(GSTHEMESPATH . tsl($template) . $template_file); ?>
+				<?php $content = read_file(GSTHEMESPATH . tsl($template) . $template_file); ?>
 				</div>
 		
 		<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >

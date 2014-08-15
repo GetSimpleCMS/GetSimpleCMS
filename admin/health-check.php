@@ -333,7 +333,7 @@ echo '<div class="bodycontent clearfix">
 								continue;
 							}	
 
-							$res = file_get_contents($file);
+							$res = read_file($file);
 							
 							if(in_array($path, $aDirs)){
 								// file is allow file

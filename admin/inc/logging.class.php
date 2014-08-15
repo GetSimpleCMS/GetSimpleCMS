@@ -38,7 +38,7 @@ class GS_Logging_Class {
                 if($this->validFilename($filename)){
                     $this->_xmlfile = GSDATAOTHERPATH.'logs/'.$filename;
                     if ( file_exists($this->_xmlfile) )  {
-                        $xml = file_get_contents($this->_xmlfile);
+                        $xml = read_file($this->_xmlfile);
                         if($xml) $this->_xml = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA);
                         else $this->_xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
                     } else {

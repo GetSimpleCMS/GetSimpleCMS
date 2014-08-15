@@ -17,7 +17,7 @@ header('Content-type: text/css',true);
 $cachefile = GSCACHEPATH.'stylesheet.txt';
 if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && !$nocache) {
 	echo "/* Cached copy, generated ".date('H:i', filemtime($cachefile))." '".$cachefile."' */\n";
-	echo file_get_contents($cachefile);
+	echo read_file($cachefile);
 	exit;
 }
 

@@ -314,7 +314,7 @@ function clone_page($id){
 	}
 
 	// get page and resave with new slug and title
-	$newxml = getXML(GSDATAPAGESPATH.$id.'.xml');
+	$newxml = getPageXML($id);
 	$newxml->url = $cloneurl;
 	$newxml->title = $newxml->title.' ['.sprintf(i18n_r('COPY_N',i18n_r('COPY')),$count).']';
 	$newxml->pubDate = date('r');
@@ -745,7 +745,7 @@ function get_available_pages() {
     }
 }
 
-  
+ 
 /**
  * Update Slugs
  *
@@ -758,17 +758,16 @@ function get_available_pages() {
 function updateSlugs($existingUrl, $newurl=null){
 	global $pagesArray;
 	getPagesXmlValues();
-	  
+
 	if (!$newurl){
-      		global $url;
+      		global $url; // @todo this is a bad idea
   	} else {
   		$url = $newurl;
   	}
 
 	foreach ($pagesArray as $page){
 		if ( $page['parent'] == $existingUrl ){
-			$thisfile = @file_get_contents(GSDATAPAGESPATH.$page['filename']);
-    		$data = simplexml_load_string($thisfile);
+			$data = getPageXML($page['filename']);
     		$data->parent=$url;
     		XMLsave($data, GSDATAPAGESPATH.$page['filename']);
 		}
@@ -1212,7 +1211,7 @@ function get_api_details($type='core', $args=null) {
 
 	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpire) < $cacheAge ) {
 		# grab the api request from the cache
-		$data = file_get_contents(GSCACHEPATH.$cachefile);
+		$data = read_file(GSCACHEPATH.$cachefile);
 		debug_api_details('returning api cache ' . GSCACHEPATH.$cachefile);
 	} else {	
 		# make the api call
@@ -1279,7 +1278,7 @@ function get_api_details($type='core', $args=null) {
 			// $context = stream_context_create();
 			// stream_context_set_option ( $context, array('http' => array('timeout' => $timeout)) );
 			$context = stream_context_create(array('http' => array('timeout' => $timeout))); 
-			$data = @file_get_contents($fetch_this_api,false,$context);	
+			$data = read_file($fetch_this_api,false,$context);	
 			debug_api_details("fopen data: " .$data);		
 		} else {  
 			debug_api_details("No api methods available");						

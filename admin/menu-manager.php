@@ -20,7 +20,7 @@ if (isset($_POST['menuOrder'])) {
 	foreach ($menuOrder as $slug) {
 		$file = GSDATAPAGESPATH . $slug . '.xml';
 		if (file_exists($file)) {
-			$data = getXML($file);
+			$data = getPageXML($slug);
 			if ($priority != (int) $data->menuOrder) {
 				unset($data->menuOrder);
 				$data->addChild('menuOrder')->addCData($priority);

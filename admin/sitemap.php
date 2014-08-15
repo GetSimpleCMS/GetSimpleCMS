@@ -41,7 +41,7 @@ $sitemapfile = '../'.GSSITEMAPFILE;
 			<div class="unformatted">
 				<code><?php
 				if (file_exists($sitemapfile)) {
-					echo htmlentities(formatXmlString(file_get_contents($sitemapfile)));
+					echo htmlentities(formatXmlString(read_file($sitemapfile)));
 				}
 				?>
 				</code>

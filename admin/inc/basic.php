@@ -325,11 +325,34 @@ function get_execution_time($reset=false)
  * @return object
  */
 function getXML($file) {
-	$xml = @file_get_contents($file);
+	$xml = read_file($file);
 	if($xml){
 		$data = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA); 
 		return $data;
-	}	
+	}
+}
+
+/**
+ * get page xml shortcut
+ *
+ * @since 3.4
+ * @param  str $id id of page
+ * @return xml     xml object
+ */
+function getPageXML($id){
+	return getXML(GSDATAPAGESPATH.$id.'.xml');
+}
+
+/**
+ * check if a file has a backup copy
+ *
+ * @since 3.4
+ * @param str $filepath filepath to data file
+ * @return bool status
+ */
+function fileHasBackup($filepath){
+	$backupfilepath = getBackupFilePath($filepath);
+	return file_exists($backupfilepath);
 }
 
 /**
@@ -366,7 +389,7 @@ function create_dir($path,$recursive = true){
 
 /**
  * Delete a folder, must be empty
- * 
+ *
  * @param  str $path path to remove
  * @return bool       success
  */
@@ -393,6 +416,16 @@ function save_file($file,$data){
 	return $status;
 }
 
+/**
+ * read a file in
+ * @param  str $file filepath to file
+ * @return bool      file contents
+ */
+function read_file($file){
+	$data = file_get_contents($file); // php file_get_contents
+	fileLog(__FUNCTION__,isset($data),$file);
+	return $data;
+}
 
 // alias for rename_file()
 function move_file($src,$dest,$filename = null){
@@ -490,7 +523,7 @@ function gs_chmod($path,$chmod = null,$dir = false){
  */
 function fileLog($operation,$status = null){
 	$args = array_slice(func_get_args(),2); // grab arguments past first 2 for output
-	if(is_bool($status)) $logstatus = ($status === true) ? uppercase(i18n_r('SUCCESS')) : uppercase(i18n_r('FAIL'));
+	if(is_bool($status)) $logstatus = ($status === true) ? uppercase(i18n_r('SUCCESS','SUCCESS')) : uppercase(i18n_r('FAIL','FAIL'));
 	else $logstatus = (string) $status;
 	$args = convertPathArgs($args);
 	debugLog("&bull; fileio: [$logstatus] ".uppercase($operation).": ".implode(" - ",$args));

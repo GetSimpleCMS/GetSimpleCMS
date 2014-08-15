@@ -60,6 +60,7 @@ if(isset($_GET['file'])) {
 	exec_action('download-file');
 	
 	# get file
+	// debugLog(ob_get_level()); // check buffering level for memory issues
 	if (file_exists($file)) {
 		readfile($file, 'r');
 	}

@@ -47,15 +47,15 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 # get available themes (only look for folders)
 # @todo replace with getfiles
 $themes_handle = opendir(GSTHEMESPATH) or die("Unable to open ".GSTHEMESPATH);
-while ($readfile = readdir($themes_handle)) {
-	$curpath = GSTHEMESPATH . $readfile;
-	if( is_dir($curpath) && $readfile != "." && $readfile != ".." ) {
+while ($getfile = readdir($themes_handle)) {
+	$curpath = GSTHEMESPATH . $getfile;
+	if( is_dir($curpath) && $getfile != "." && $getfile != ".." ) {
 		$sel="";
 		if (file_exists($curpath.'/'.GSTEMPLATEFILE)){
-			if ($TEMPLATE == $readfile)	{ 
+			if ($TEMPLATE == $getfile)	{ 
 				$sel="selected";
 			}
-			$theme_options .= '<option '.$sel.' value="'.$readfile.'" >'.$readfile.'</option>';
+			$theme_options .= '<option '.$sel.' value="'.$getfile.'" >'.$getfile.'</option>';
 		}
 	}
 }
