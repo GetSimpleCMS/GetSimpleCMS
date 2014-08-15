@@ -21,16 +21,16 @@ $lang_array = getFiles(GSLANGPATH);
 $error = $success = $prettychck = null;
 
 # if the flush cache command was invoked
-if (isset($_GET['flushcache'])) { 
+if (isset($_GET['flushcache'])) {
 	delete_cache();
 	$update = 'flushcache-success';
 }
 
 # if the undo command was invoked
-if (isset($_GET['undo'])) { 
-	check_for_csrf("undo");	
+if (isset($_GET['undo'])) {
+	check_for_csrf("undo");
 	# perform undo
-	restore_datafile(GSWEBSITEFILE):
+	restore_datafile(GSWEBSITEFILE);
 	generate_sitemap();
 	
 	# redirect back to yourself to show the new restored data

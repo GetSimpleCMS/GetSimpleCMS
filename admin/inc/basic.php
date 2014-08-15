@@ -474,7 +474,7 @@ function gs_chmod($path,$chmod = null,$dir = false){
 	// chmod might be prohibited by disabled functions etc.
 	if(!function_exists('chmod')) return fileLog(__FUNCTION__,false,'chmod not available',$path,$chmod);
 
-	$status = chmod($path,$chmod);
+	$status = chmod($path,$chmod); // php chmod
 	return fileLog(__FUNCTION__,$status,$path,$chmod);
 }
 
@@ -482,7 +482,7 @@ function gs_chmod($path,$chmod = null,$dir = false){
  * log fileio operations
  *
  * since 3.4
- *
+ * @todo check args for gsroot and convert to relative paths
  * @param  str   $operation file operation or functionname to log
  * @param  mixed $status    if bool evals to success and fail, else shows status as string
  * @param  mixed  variable length args any other arguments are outputted at end
@@ -490,11 +490,22 @@ function gs_chmod($path,$chmod = null,$dir = false){
  */
 function fileLog($operation,$status = null){
 	$args = array_slice(func_get_args(),2); // grab arguments past first 2 for output
-	if(is_bool($status)) $logstatus = ($status === true) ? 'success' : 'fail';
+	if(is_bool($status)) $logstatus = ($status === true) ? uppercase(i18n_r('SUCCESS')) : uppercase(i18n_r('FAIL'));
 	else $logstatus = (string) $status;
-	debugLog("&bull; fileio: [$logstatus] $operation: ".implode(" - ",$args));
+	$args = convertPathArgs($args);
+	debugLog("&bull; fileio: [$logstatus] ".uppercase($operation).": ".implode(" - ",$args));
 
 	return $status;
+}
+
+function convertPathArgs($args){
+	foreach($args as &$arg){
+		if(!is_string($arg)) continue;
+		if(strpos($arg,GSROOTPATH) !== false){
+			$arg = getRelPath($arg);
+		}
+	}
+	return $args;
 }
 
 /**
@@ -1114,23 +1125,60 @@ function htmldecode($text) {
 }
 
 /**
- * Safe to LowerCase 
+ * multibyte Safe to lower case
  *
  * @since 2.04
- * @author ccagle8
  *
  * @param string $text
- * @return string
+ * @return string converted to lowercase
  */
 function lowercase($text) {
-	if (function_exists('mb_strtolower')) {
-		$text = mb_strtolower($text, 'UTF-8'); 
+	if (function_exists('mb_convert_case')) {
+		$text = mb_convert_case($text, MB_CASE_LOWER, 'UTF-8');
 	} else {
-		$text = strtolower($text); 
+		$text = strtolower($text);
 	}
-	
+
 	return $text;
 }
+
+
+/**
+ * multibyte Safe to UPPER CASE
+ *
+ * @since 2.04
+ *
+ * @param string $text
+ * @return string converted to UPPERCASE
+ */
+function uppercase($text) {
+	if (function_exists('mb_convert_case')) {
+		$text = mb_convert_case($text, MB_CASE_UPPER, 'UTF-8');
+	} else {
+		$text = strtoupper($text);
+	}
+
+	return $text;
+}
+
+/**
+ * multibyte Safe to Title Case
+ *
+ * @since 3.4
+ *
+ * @param string $text
+ * @return string converted to Titlecase
+ */
+function titlecase($text) {
+	if (function_exists('mb_convert_case')) {
+		$text = mb_convert_case($text, MB_CASE_TITLE, 'UTF-8');
+	} else {
+		$text = ucwords($text);
+	}
+
+	return $text;
+}
+
 
 /**
  * Find AccessKey

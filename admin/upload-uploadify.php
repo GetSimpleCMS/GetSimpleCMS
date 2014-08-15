@@ -31,11 +31,7 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 		//validate file
 		if (validate_safe_file($tempFile, $_FILES["Filedata"]["name"], $_FILES["Filedata"]["type"])) {
 			move_uploaded_file($tempFile, $targetFile);
-			if (getDef('GSCHMOD')) {
-				chmod($targetFile, GSCHMOD);
-			} else {
-				chmod($targetFile, 0644);
-			}
+			gs_chmod($targetFile);
 			exec_action('file-uploaded');
 		} else {
 			die(i18n_r('ERROR_UPLOAD') . ' - ' . i18n_r('BAD_FILE'));

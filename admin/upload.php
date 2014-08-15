@@ -61,11 +61,7 @@ if (isset($_FILES['file'])) {
 			//validate file
 			if (validate_safe_file($_FILES["file"]["tmp_name"][$i], $_FILES["file"]["name"][$i],  $_FILES["file"]["type"][$i])) {
 				move_uploaded_file($_FILES["file"]["tmp_name"][$i], $file_loc);
-				if (getDef('GSCHMOD')) {
-					chmod($file_loc, GSCHMOD);
-				} else {
-					chmod($file_loc, 0644);
-				}
+				gs_chmod($file_loc);
 				exec_action('file-uploaded');
 				
 				// generate thumbnail				

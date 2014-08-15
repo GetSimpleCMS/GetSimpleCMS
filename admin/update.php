@@ -110,7 +110,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	# make new users folder
 	if (!file_exists(GSUSERSPATH)) {
 		$status = create_dir(GSUSERSPATH, 0777);
-		chmod(GSUSERSPATH, 0777);
+		gs_chmod(GSUSERSPATH, 0777);
 		if (!$status) { 
 			$error .= msgError('Unable to create the folder /data/users/');	
 		} else {
@@ -121,7 +121,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	# make new backup users folder
 	if (!file_exists(GSBACKUSERSPATH)) {
 		$status = create_dir(GSBACKUSERSPATH, 0777);
-		chmod(GSBACKUSERSPATH, 0777);
+		gs_chmod(GSBACKUSERSPATH, 0777);
 		if (!$status) {
 			$error .= msgError('Unable to create the folder /backup/users/');	
 		} else {
@@ -156,7 +156,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	$xml->addChild('TIMEZONE', $TIMEZONE);
 	$xml->addChild('LANG', $LANG);
 	$status = XMLsave($xml, GSUSERSPATH . _id($USR) .'.xml');	
-	chmod(GSUSERSPATH . _id($USR) .'.xml', 0777);
+	gs_chmod(GSUSERSPATH . _id($USR) .'.xml');
 	if (!$status) {
 		$error .= msgError('Unable to create new  '._id($USR).'.xml file!');	
 	} else {

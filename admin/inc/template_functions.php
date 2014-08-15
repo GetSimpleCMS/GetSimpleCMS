@@ -316,7 +316,7 @@ function clone_page($id){
 	// get page and resave with new slug and title
 	$newxml = getXML(GSDATAPAGESPATH.$id.'.xml');
 	$newxml->url = $cloneurl;
-	$newxml->title = $newxml->title.' ['.i18n_r('COPY').' '.$count.']';
+	$newxml->title = $newxml->title.' ['.sprintf(i18n_r('COPY_N',i18n_r('COPY')),$count).']';
 	$newxml->pubDate = date('r');
 	return XMLsave($newxml, GSDATAPAGESPATH.$cloneurl.'.xml');
 }
@@ -1300,11 +1300,9 @@ function get_api_details($type='core', $args=null) {
 		}
 		
 		debug_api_details($data);
-
-			file_put_contents(GSCACHEPATH.$cachefile, $data);
-			chmod(GSCACHEPATH.$cachefile, 0644);
+			save_file(GSCACHEPATH.$cachefile,$data);
 			return $data;
-		}	
+		}
 	return $data;
 }
 

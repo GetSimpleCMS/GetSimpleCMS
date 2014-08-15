@@ -29,8 +29,8 @@ function compress($buffer) {
   return $buffer;
 }
 
-$useadminxml = true; // bypass for including admin.xml
-$useadmincss = true; // bypass for including admin.css
+$useadminxml = false; // bypass for including admin.xml
+$useadmincss = false; // bypass for including admin.css
 
 if (file_exists(GSTHEMESPATH.'admin.xml') && $useadminxml) {
 	#load admin theme xml file
@@ -128,8 +128,7 @@ if(file_exists(GSTHEMESPATH.GSCSSCUSTOMFILE) && $useadmincss) include(GSTHEMESPA
 exec_action('style-save'); // called after css files are included
 
 // save cache
-file_put_contents($cachefile, compress(ob_get_contents()));
-chmod($cachefile, 0644);
+save_file($cachefile, compress(ob_get_contents()));
 
 ob_end_flush();
 
