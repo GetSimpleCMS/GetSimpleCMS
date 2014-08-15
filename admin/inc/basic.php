@@ -281,7 +281,7 @@ function getDirs($path,$filereq = null) {
 	$dir_arr = array();
 	while ($file = readdir($handle)) {
 		if (is_dir($curpath) && $file != '.' && $file != '..') {
-			if(isset($filereq)) && !file_exists($curpath.'/'.$filereq) continue;
+			if(isset($filereq) && !file_exists($curpath.'/'.$filereq)) continue;
 			$dir_arr[] = $file;
 		}
 	}
@@ -800,11 +800,13 @@ function redirect($url) {
 		header('WWW-Authenticate: FormBased');
 		// @note this is not a security function for ajax, just a handler
 		die();
-	}	
+	}
 
 	if(function_exists('exec_action')) exec_action('redirect');
 
-	if (!headers_sent($filename, $linenum)) {
+	$debugredirect = false;
+	
+	if (!headers_sent($filename, $linenum) && !$debugredirect) {
 		header('Location: '.$url);
 	} else {
 		// @todo not sure this ever gets used or headers_sent is reliable ( turn output buffering off to test )
@@ -823,16 +825,8 @@ function redirect($url) {
 
 		if(!isAuthPage()) {
 			if (isDebug()){
-				global $GS_debug;
-				echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
-				echo '<pre>';
-
-				foreach ($GS_debug as $log){
-					print($log.'<br/>');
-				}
-
-				echo '</pre>';	
-				echo '</div>';
+				debugLog(debug_backtrace());
+				outputDebugLog();
 			}
 		}
 		
@@ -2066,6 +2060,18 @@ function doTransliteration($str){
 		$str = str_replace(array_keys($translit),array_values($translit),$str);
 	}
 	return $str;
+}
+
+function outputDebugLog(){
+	global $GS_debug;
+	echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
+	echo '<pre>';
+	foreach ($GS_debug as $log){
+			if(is_array($log)) print_r($log).'<br/>';
+			else print($log.'<br/>');
+	}
+	echo '</pre>';
+	echo '</div>';
 }
 
 /* ?> */
