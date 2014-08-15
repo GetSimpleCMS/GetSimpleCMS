@@ -153,7 +153,7 @@ function editor_array2ul($array, $hideEmpty = true, $recurse = true) {
 
 		if(!is_array($elem['value'])){
 			// Is a file
-			$ext = lowercase(pathinfo($elem['value'], PATHINFO_EXTENSION));
+			$ext = getFileExtension($elem['value']);
 			if( in_array($ext,$allowed_extensions)){
 
 				$filename = $elem['value'];
@@ -254,7 +254,7 @@ include('template/include-nav.php');
 
 
 // setup editor specs
-switch (pathinfo($template_file,PATHINFO_EXTENSION)) {
+switch (getFileExtension($template_file)) {
 	case 'css':
 		$mode = 'text/css';
 		break;

@@ -256,7 +256,7 @@ function getFiles($path,$ext = null) {
 
 	while ($file = readdir($handle)) {
 		if(isset($ext)){
-			$fileext = lowercase(pathinfo($file, PATHINFO_EXTENSION));
+			$fileext = getFileExtension($file);
 			if ($fileext == $ext) $file_arr[] = $file;
 		}
 		else {
@@ -271,6 +271,25 @@ function getFiles($path,$ext = null) {
 }
 
 /**
+ * get list of subdirectories
+ * @param  str $path    path to dir
+ * @param  str $filereq filename required for inclusion
+ * @return array        array of dir names
+ */
+function getDirs($path,$filereq = null) {
+	$handle   = opendir($path) or die("getDirs: Unable to open $path");
+	$dir_arr = array();
+	while ($file = readdir($handle)) {
+		if (is_dir($curpath) && $file != '.' && $file != '..') {
+			if(isset($filereq)) && !file_exists($curpath.'/'.$filereq) continue;
+			$dir_arr[] = $file;
+		}
+	}
+	closedir($handle);
+	return $dir_arr;
+}
+
+/**
  * Get XML Files
  * Returns an array of xml files from the passed path
  * @since 3.3.0
@@ -278,18 +297,7 @@ function getFiles($path,$ext = null) {
  * @return array
  */
 function getXmlFiles($path) {
-	$handle   = opendir($path) or die("Unable to open $path");
-	$file_arr = array();
-
-	while ($file = readdir($handle)) {
-		$ext = lowercase(pathinfo($file, PATHINFO_EXTENSION));
-		if ($ext == 'xml') {
-			$file_arr[] = $file;
-		}
-	}
-
-	closedir($handle);
-	return $file_arr;
+	return getFiles($path,'xml');
 }
 
 /**
@@ -1069,6 +1077,10 @@ function pathinfo_filename($file) {
 	}
 }
 
+function getFileExtension($file){
+	return lowercase(pathinfo($file,PATHINFO_EXTENSION));
+}
+
 /**
  * Suggest Site Path
  *
@@ -1123,7 +1135,8 @@ function myself($echo=true) {
 
 /**
  * Get Available Themes 
- *
+ * @todo  unused, actually returns templates for a theme it seems
+ * 
  * @since 2.04
  * @uses GSTHEMESPATH
  * @author ccagle8
@@ -1248,7 +1261,7 @@ function _id($text) {
 
 /**
  * Defined Array
- *
+ * @todo  unused, what is it for ?
  * Checks an array of PHP constants and verifies they are defined
  * 
  * @param array $constants
@@ -1272,19 +1285,10 @@ function defined_array($constants) {
  * Check to see if a folder is empty or not
  * 
  * @param string $folder
- * @return bool
+ * @return bool true if empty
  */
 function check_empty_folder($folder) {
-	$files = array ();
-	if ( $handle = opendir ( $folder ) ) {
-		while ( false !== ( $file = readdir ( $handle ) ) ) {
-			if ( $file != "." && $file != ".." ) {
-				$files [] = $file;
-			}
-		}
-		closedir ( $handle );
-	}
-	return ( count ( $files ) > 0 ) ? FALSE : TRUE;
+	return folder_items($folder) == 0;
 }
 
 
@@ -1294,19 +1298,10 @@ function check_empty_folder($folder) {
  * Return the count of items within the given folder
  * 
  * @param string $folder
- * @return string
+ * @return int count of folder items
  */
 function folder_items($folder) {
-	$files = array ();
-	if ( $handle = opendir ( $folder ) ) {
-		while ( false !== ( $file = readdir ( $handle ) ) ) {
-			if ( $file != "." && $file != ".." ) {
-				$files [] = $file;
-			}
-		}
-		closedir($handle);
-	}
-	return count($files);
+	return count(getFiles($folder));
 }
 
 /**
@@ -1445,7 +1440,7 @@ function get_site_version($echo=true) {
 
 /**
  * Get GetSimple Language
- *
+ * @todo  wtf does this do?
  * @since 3.1
  * @uses $LANG
  *
@@ -1558,7 +1553,7 @@ function directoryToMultiArray($dir,$recursive = true,$exts = null,$exclude = fa
 			else {
 				$path =  preg_replace("#\\\|//#", "/", $dir . '/');
 				// filetype filter
-				$ext = lowercase(pathinfo($value,PATHINFO_EXTENSION));	
+				$ext = getFileExtension($value);
 				if(is_array($exts)){
 					if(!in_array($ext,$exts) and !$exclude) continue;
 					if($exclude and in_array($ext,$exts)) continue;

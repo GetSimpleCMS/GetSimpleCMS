@@ -19,7 +19,7 @@ function genStdThumb($path,$name){
 		$width = GSIMAGEWIDTH;
 	}
 
-	$ext = lowercase(pathinfo($name,PATHINFO_EXTENSION));	
+	$ext = getFileExtension($name);
 	
 	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' )	{
 		

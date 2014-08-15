@@ -164,7 +164,7 @@ function validate_safe_file($file, $name, $mime){
 
 	include(GSADMININCPATH.'configuration.php');
 
-	$file_extention = pathinfo($name,PATHINFO_EXTENSION);
+	$file_extention = getFileExtension($name);
 	$file_mime_type = $mime;
 
 	if ($mime_type_whitelist && in_arrayi($file_mime_type, $mime_type_whitelist)) {

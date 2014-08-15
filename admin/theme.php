@@ -11,9 +11,6 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
-# variable settings
-$theme_options 	= '';
-
 # was the form submitted?
 if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 
@@ -46,18 +43,13 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 
 # get available themes (only look for folders)
 # @todo replace with getfiles
-$themes_handle = opendir(GSTHEMESPATH) or die("Unable to open ".GSTHEMESPATH);
-while ($getfile = readdir($themes_handle)) {
-	$curpath = GSTHEMESPATH . $getfile;
-	if( is_dir($curpath) && $getfile != "." && $getfile != ".." ) {
-		$sel="";
-		if (file_exists($curpath.'/'.GSTEMPLATEFILE)){
-			if ($TEMPLATE == $getfile)	{ 
-				$sel="selected";
-			}
-			$theme_options .= '<option '.$sel.' value="'.$getfile.'" >'.$getfile.'</option>';
-		}
-	}
+
+$themes = getDirs(GSTHEMESPATH,GSTEMPLATEFILE);
+$theme_options 	= '';
+
+foreach($themes as $theme){
+	$sel = $TEMPLATE == $theme ? 'selected' : '';
+	$theme_options .= '<option '.$sel.' value="'.$theme.'" >'.$theme.'</option>';
 }
 
 $pagetitle = i18n_r('THEME_MANAGEMENT');

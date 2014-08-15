@@ -88,34 +88,25 @@ if ($id){
 }
 
 
-// MAKE SELECT BOX OF AVAILABLE TEMPLATES
+// make select box of available theme templates
 if ($template == '') { $template = GSTEMPLATEFILE; }
 
 $themes_path   = GSTHEMESPATH . $TEMPLATE;
 $themes_handle = opendir($themes_path) or die("Unable to open ". GSTHEMESPATH);     
 while ($getfile = readdir($themes_handle)) {       
-    if( isFile($getfile, $themes_path, 'php') ) {      
+    if( isFile($getfile, $themes_path, 'php') ) {
+        // exclude functions.php, and include files .inc.php
         if ($getfile != 'functions.php' && substr(strtolower($getfile),-8) !='.inc.php' && substr($getfile,0,1)!=='.') {     
-      $templates[] = $file;     
-    }       
+            $templates[] = $getfile;     
+        }       
     }       
 }       
 
 sort($templates);
 
 foreach ($templates as $file){
-    if ($template == $file) { 
-        $sel="selected"; 
-    } else{ 
-        $sel=""; 
-    }
-    
-    if ($file == GSTEMPLATEFILE){ 
-        $templatename=i18n_r('DEFAULT_TEMPLATE'); 
-    } else { 
-        $templatename=$file;
-    }
-    
+    $sel = $template == $file ? 'selected' : '';
+    $templatename = $file == GSTEMPLATEFILE ?  i18n_r('DEFAULT_TEMPLATE') : $file;
     $theme_templates .= '<option '.$sel.' value="'.$file.'" >'.$templatename.'</option>';
 }
 
