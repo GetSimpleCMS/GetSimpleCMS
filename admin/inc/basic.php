@@ -335,7 +335,7 @@ function get_execution_time($reset=false)
 function getXML($file) {
 	$xml = read_file($file);
 	if($xml){
-		$data = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA); 
+		$data = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA);
 		return $data;
 	}
 }
@@ -805,7 +805,7 @@ function redirect($url) {
 	if(function_exists('exec_action')) exec_action('redirect');
 
 	$debugredirect = false;
-	
+
 	if (!headers_sent($filename, $linenum) && !$debugredirect) {
 		header('Location: '.$url);
 	} else {

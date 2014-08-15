@@ -33,14 +33,14 @@ class GS_Logging_Class {
         private $_entry;
   
         function __construct($filename,$logdefaults=true) {
-                // check filename, must be .log
+                // @todo check filename, must be .log
                 
                 if($this->validFilename($filename)){
                     $this->_xmlfile = GSDATAOTHERPATH.'logs/'.$filename;
                     if ( file_exists($this->_xmlfile) )  {
-                        $xml = read_file($this->_xmlfile);
-                        if($xml) $this->_xml = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA);
-                        else $this->_xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
+                        $xml = getXML($this->_xmlfile);
+                        if(!is_object($xml)) $this->_xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
+                        else $this->_xml = $xml;
                     } else {
                         $this->_xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
                     }
