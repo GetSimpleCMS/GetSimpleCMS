@@ -86,9 +86,7 @@ if (isset($_POST['submitted'])) {
 				}
 			}
 		}
-		
-		$file = GSDATAPAGESPATH . $url .".xml";
-		
+
 		// format and clean the responses
 		// content
 		if(isset($_POST['post-titlelong']))			{ $titlelong   = safe_slash_html($_POST['post-titlelong']);	}
@@ -116,13 +114,8 @@ if (isset($_POST['submitted'])) {
 
 		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
 		// @todo abstract into method for getting incremental file names
-		if ( (file_exists($file) && $url != $oldslug) ||  in_array($url,$reservedSlugs) ) {
-			$count = "1";
-			$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
-			while ( file_exists($file) ) {
-				$count++;
-				$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
-			}
+		if ( (file_exists(GSDATAPAGESPATH . $url .".xml") && $url != $oldslug) ||  in_array($url,$reservedSlugs) ) {
+			list($newfilename,$count) = getNextFileName(GSDATAPAGESPATH,$url.'.xml');
 			$url = $url .'-'. $count;
 		}
 
@@ -158,12 +151,12 @@ if (isset($_POST['submitted'])) {
 		exec_action('changedata-save');
 
 		// backup before overwriting
-		if(file_exists($file)) backup_page($url);
+		if(file_exists(GSDATAPAGESPATH . $url .".xml")) backup_page($url);
 
 		if (isset($_POST['autosave']) && $_POST['autosave'] == '1' && $autoSaveDraft == true) {
-			XMLsave($xml, GSAUTOSAVEPATH.$url.'.xml');
+			XMLsave($xml, GSAUTOSAVEPATH . $url . '.xml');
 		} else {
-			XMLsave($xml, $file);
+			XMLsave($xml, GSDATAPAGESPATH . $url .".xml");
 		}
 
 		//ending actions

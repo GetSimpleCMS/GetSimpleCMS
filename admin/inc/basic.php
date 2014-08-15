@@ -1482,6 +1482,7 @@ function toBytes($str){
 
 /**
  * Remove Relative Paths
+ * @todo this function is a bad idea
  *
  * @since 3.1
  *

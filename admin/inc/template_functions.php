@@ -301,24 +301,40 @@ function delete_page($id){
  * @return bool    success
  */
 function clone_page($id){
-	$count = 1;
-	$cloneurl =  $id ."-".$count;
-	$clonefile = GSDATAPAGESPATH . $cloneurl .".xml";
-
-	if (file_exists(GSDATAPAGESPATH . $id .".xml")) {
-		while ( file_exists($clonefile) ) {
-			$count++;
-			$cloneurl = $id .'-'. $count;
-			$clonefile = GSDATAPAGESPATH . $cloneurl.".xml";
-		}
-	}
-
+	list($cloneurl,$count) = getNextFileName(GSDATAPAGESPATH,$id.'.xml');
 	// get page and resave with new slug and title
 	$newxml = getPageXML($id);
 	$newxml->url = $cloneurl;
 	$newxml->title = $newxml->title.' ['.sprintf(i18n_r('COPY_N',i18n_r('COPY')),$count).']';
 	$newxml->pubDate = date('r');
-	return XMLsave($newxml, GSDATAPAGESPATH.$cloneurl.'.xml');
+	return XMLsave($newxml, GSDATAPAGESPATH.$cloneurl);
+}
+
+/**
+ * get the next incremental filename
+ *
+ * @since 3.4
+ * @param  str $path path to file
+ * @param  str $file filename with extension
+ * @return array     array('newfilename.ext',count)
+ */
+function getNextFileName($path,$file){
+	$count = 1;
+	$pathparts = pathinfo($path.$file);
+	$filename  = $pathparts['filename'];
+	$fileext   = '.'.$pathparts['extension'];
+
+	$nextfilename =  $filename ."-".$count;
+	$nextfile = $path.$filename . $fileext;
+
+	if (file_exists($nextfile)) {
+		while ( file_exists($nextfile) ) {
+			$count++;
+			$nextfilename = $filename .'-'. $count;
+			$nextfile = $path . $nextfilename . $fileext;
+		}
+	}
+	return array($nextfilename.$fileext,$count);
 }
 
 /**

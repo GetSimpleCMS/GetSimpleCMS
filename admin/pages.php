@@ -28,7 +28,6 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 	check_for_csrf("clone", "pages.php");
 
 	$status = clone_page($_GET['id']);
-	_debuglog($status);
 	if ($status) {
 		create_pagesxml('true');
 		redirect('pages.php?upd=clone-success&id='.$newurl);
