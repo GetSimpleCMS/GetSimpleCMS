@@ -9,6 +9,7 @@
  */
 
 function check_php_requirements(){
+	GLOBAL $php_modules;
 	$kill = false;
 	$php_required_exts = array('xml','simplexml','dom','json');
 
