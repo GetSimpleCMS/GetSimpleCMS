@@ -8,7 +8,7 @@
  */
 
 /** Prevent direct access */
-if (basename($_SERVER['SCRIPT_NAME']) === basename(__FILE__))) {
+if (basename($_SERVER['SCRIPT_NAME']) === basename(__FILE__)) {
 	die('You cannot load this page directly.');
 };
 
