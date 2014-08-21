@@ -164,7 +164,7 @@ function validate_safe_file($file, $name, $mime){
 
 	include(GSADMININCPATH.'configuration.php');
 
-	$file_extention = pathinfo($name,PATHINFO_EXTENSION);
+	$file_extention = getFileExtension($name);
 	$file_mime_type = $mime;
 
 	if ($mime_type_whitelist && in_arrayi($file_mime_type, $mime_type_whitelist)) {
@@ -187,7 +187,7 @@ function validate_safe_file($file, $name, $mime){
 
 /**
  * Checks that an existing filepath is safe to use by checking canonicalized absolute pathname.
- * @todo fails if file does not exist
+ * If file does not exist and realpath fails, we realpath dirname() instead
  *
  * @since 3.1.3
  *
@@ -197,7 +197,9 @@ function validate_safe_file($file, $name, $mime){
  * @return bool Returns true if files path resolves to your known path
  */
 function filepath_is_safe($filepath,$pathmatch,$subdir = true){
-	$realpath      = realpath($filepath);
+	$realpath = realpath($filepath);
+	if(!$realpath) return path_is_safe(dirname($filepath),$pathmatch,$subdir);
+
 	$realpathmatch = realpath($pathmatch);
 	if($subdir) return strpos(dirname($realpath),$realpathmatch) === 0;
 	return dirname($realpath) == $realpathmatch;
@@ -221,7 +223,8 @@ function path_is_safe($path,$pathmatch,$subdir = true){
 	return $realpath == $realpathmatch;
 }
 
-function subDir_is_safe($path,$dir){
+// alias to check a subdir easily
+function subpath_is_safe($path,$dir){
 	return path_is_safe($path.$dir,$path);
 }
 

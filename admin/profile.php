@@ -73,7 +73,7 @@ if (isset($_GET['undo'])) {
 	if($_GET['userid'] !== $userid) die(i18n_r('ER_REQ_PROC_FAIL')); // if not allowedtoedit then userid is $USR now, so stop undo actions
 	check_for_csrf("undo");	
 	# perform undo
-	$success = undo($file, GSUSERSPATH, GSBACKUSERSPATH);
+	$success = restore_datafile(GSUSERSPATH.$file);
 	# redirect back to yourself to show the new restored data
 	redirect('profile.php?upd=profile-restored&userid='.$userid);
 }
@@ -92,12 +92,12 @@ if(isset($_POST['submitted'])) {
 		if(!path_is_safe(dirname(GSUSERSPATH . $file),GSUSERSPATH,true)) die(i18n('INVALID_USER'));
 	}
 	else if(isset($_POST['user']) && $allowedit){
+		// editing an existing user other than self
 		// @todo use custom nonce or hash checking to make sure username was not changed
 		$userid = strtolower($_POST['user']);
 		$file   = _id($userid) .'.xml';
 		if(!path_is_safe(dirname(GSUSERSPATH . $file),GSUSERSPATH,true)) die(i18n('INVALID_USER'));
 	}
-	// @todo $these are global pollution
  	if(isset($_POST['name']))				$name       = var_in($_POST['name']);
  	if(isset($_POST['email']))  			$email      = var_in($_POST['email'],'email');
  	if(isset($_POST['timezone']))  			$timezone   = var_in($_POST['timezone']);
@@ -121,8 +121,11 @@ if(isset($_POST['submitted'])) {
 		if(!in_array($lang.'.php', $lang_array) and !in_array($lang.'.PHP', $lang_array)) $lang = ''; 
 
 		# create user xml file
-		createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
-		if (file_exists(GSUSERSPATH . _id($userid).'.xml.reset')) { unlink(GSUSERSPATH . _id($userid).'.xml.reset'); }	
+		backup_datafile(GSUSERSPATH.$file);
+		// remove pass word reset
+		if (file_exists(GSUSERSPATH . _id($userid).'.xml.reset')) { delete_file(GSUSERSPATH . _id($userid).'.xml.reset'); }	
+
+		// create new xml
 		$xml = new SimpleXMLElement('<item></item>');
 		$xml->addChild('USR', $userid);
 		$xml->addChild('NAME', $name);

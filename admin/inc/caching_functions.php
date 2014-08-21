@@ -43,8 +43,7 @@ function getPageContent($page,$field='content'){
  *
  */
 function returnPageContent($page, $field='content', $raw = false, $nofilter = false){   
-	$thisfile = file_get_contents(GSDATAPAGESPATH.$page.'.xml');
-	$data = simplexml_load_string($thisfile);
+	$data = getPageXML($id);
 	$content = $data->$field;
 	if($raw) return $content; // return without any processing
 

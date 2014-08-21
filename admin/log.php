@@ -26,7 +26,7 @@ if(!isset($log_name) || !filepath_is_safe($log_file,$log_path)) $log_data = fals
 
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && strlen($log_name)>0) {
 	check_for_csrf("delete");
-	unlink($log_file);
+	delete_file($log_file);
 	exec_action('logfile_delete');
 	redirect('log.php?success='.urlencode('Log '.$log_name . i18n_r('MSG_HAS_BEEN_CLR')));
 }

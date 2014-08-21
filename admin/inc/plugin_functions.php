@@ -44,7 +44,7 @@
  * Include any plugins, depending on where the referring 
  * file that calls it we need to set the correct paths. 
  *
- * @since  3.4.0
+ * @since  3.4
  * @uses  $live_plugins
 */
 function loadPluginData(){
@@ -72,7 +72,7 @@ function loadPluginData(){
  *
  * @todo disabled plugins have a version of (str) 'disabled', should be 0 or null, leaving alone for now for legacy support
  *
- * @since 3.4.0
+ * @since 3.4
  * @uses $live_plugins;
  * @param  bool $apilookup lookup filename in api to get name and desc
  */
@@ -139,7 +139,7 @@ function change_plugin($name,$active=null){
  * plugin_active
  * determine if a plugin is active
  *
- * @since 3.4.0
+ * @since 3.4
  * @param  string $pluginid
  * @return bool   returns true if active
  */

@@ -17,7 +17,7 @@ header('Content-type: text/css',true);
 $cachefile = GSCACHEPATH.'stylesheet.txt';
 if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && !$nocache) {
 	echo "/* Cached copy, generated ".date('H:i', filemtime($cachefile))." '".$cachefile."' */\n";
-	echo file_get_contents($cachefile);
+	echo read_file($cachefile);
 	exit;
 }
 
@@ -29,8 +29,8 @@ function compress($buffer) {
   return $buffer;
 }
 
-$useadminxml = true; // bypass for including admin.xml
-$useadmincss = true; // bypass for including admin.css
+$useadminxml = false; // bypass for including admin.xml
+$useadmincss = false; // bypass for including admin.css
 
 if (file_exists(GSTHEMESPATH.'admin.xml') && $useadminxml) {
 	#load admin theme xml file
@@ -128,8 +128,7 @@ if(file_exists(GSTHEMESPATH.GSCSSCUSTOMFILE) && $useadmincss) include(GSTHEMESPA
 exec_action('style-save'); // called after css files are included
 
 // save cache
-file_put_contents($cachefile, compress(ob_get_contents()));
-chmod($cachefile, 0644);
+save_file($cachefile, compress(ob_get_contents()));
 
 ob_end_flush();
 

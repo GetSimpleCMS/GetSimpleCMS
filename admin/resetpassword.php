@@ -27,7 +27,7 @@ if(isset($_POST['submitted'])){
 		# get user information from existing XML file
 		
 		if (filepath_is_safe(GSUSERSPATH . $file,GSUSERSPATH)) {
-			$data  = simplexml_load_file(GSUSERSPATH . $file);
+			$data  = getXML(GSUSERSPATH . $file);
 			$USR   = strtolower($data->USR);
 			$EMAIL = $data->EMAIL;
 			
@@ -37,11 +37,11 @@ if(isset($_POST['submitted'])){
 				// $random = '1234';
 				
 				# create backup
-				createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
+				backup_datafile(GSUSERSPATH.$file);
 				
 				# create password change trigger file
 				$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
-				copy(GSUSERSPATH . $file, $flagfile);
+				copy_file(GSUSERSPATH . $file, $flagfile);
 				
 				# change password and resave xml file
 				$data->PWD = passhash($random); 
@@ -54,10 +54,11 @@ if(isset($_POST['submitted'])){
 				$message .= "<br>". i18n_r('NEW_PASSWORD').": <strong>". $random."</strong>";
 				$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL . $GSADMIN.'/">'.$SITEURL . $GSADMIN.'/</a></p>';
 				exec_action('resetpw-success');
-				$status = sendmail($EMAIL,$subject,$message);
+				$status = sendmail($EMAIL,$subject,$message) ? 'success' : 'error';
 				# show the result of the reset attempt
-				usleep($randSleep); 
-				$status = 'success';
+				usleep($randSleep);
+				$status = 'success'; // we dont care if email fails
+				// @todo status from xml save is the important one
 				redirect("resetpassword.php?upd=pwd-".$status);
 			} else{
 				# username doesnt match listed xml username

@@ -22,43 +22,20 @@ $path    = GSDATAPAGESPATH;
 $counter = '0';
 $table   = '';
 
-# clone attempt happening
+// cloning a page
 if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone') {
 
-	check_for_csrf("clone", "pages.php");	
+	check_for_csrf("clone", "pages.php");
 
-	# check to not overwrite
-	$count = 1;
-	$newfile = GSDATAPAGESPATH . $_GET['id'] ."-".$count.".xml";
-	if (file_exists($newfile)) {
-		while ( file_exists($newfile) ) {
-			$count++;
-			$newfile = GSDATAPAGESPATH . $_GET['id'] ."-".$count.".xml";
-		}
-	}
-	$newurl = $_GET['id'] .'-'. $count;
-	
-	# do the copy
-	$status = copy($path.$_GET['id'].'.xml', $path.$newurl.'.xml');
+	$status = clone_page($_GET['id']);
 	if ($status) {
-		$newxml = getXML($path.$newurl.'.xml');
-		$newxml->url = $newurl;
-		$newxml->title = $newxml->title.' ['.i18n_r('COPY').']';
-		$newxml->pubDate = date('r');
-		$status = XMLsave($newxml, $path.$newurl.'.xml');
-		if ($status) {
-			create_pagesxml('true');
-			header('Location: pages.php?upd=clone-success&id='.$newurl);
-		} else {
-			$error = sprintf(i18n_r('CLONE_ERROR'), $_GET['id']);
-			header('Location: pages.php?error='.$error);
-		}
+		create_pagesxml('true');
+		redirect('pages.php?upd=clone-success&id='.$newurl);
 	} else {
 		$error = sprintf(i18n_r('CLONE_ERROR'), $_GET['id']);
-		header('Location: pages.php?error='.$error);
+		redirect('pages.php?error='.$error);
 	}
 }
-
 
 getPagesXmlValues(true);
 

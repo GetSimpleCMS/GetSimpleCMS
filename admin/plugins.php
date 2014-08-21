@@ -97,7 +97,7 @@ if ($needsupdate) {
 	exec_action('plugin-update');
 } else {
 	if (file_exists(GSCACHEPATH.'plugin-update.trigger')) {
-		unlink(GSCACHEPATH.'plugin-update.trigger');
+		delete_file(GSCACHEPATH.'plugin-update.trigger');
 	}
 }
 

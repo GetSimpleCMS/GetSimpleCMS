@@ -235,8 +235,9 @@ echo '<div class="bodycontent clearfix">
 						GSBACKUPSPATH.'zip/',
 						GSBACKUPSPATH.getRelPath(GSDATAPAGESPATH,GSDATAPATH), // backups/pages/
 						GSBACKUPSPATH.getRelPath(GSDATAOTHERPATH,GSDATAPATH), // backups/other/
-						GSBACKUSERSPATH
-					);		
+						GSBACKUSERSPATH,
+						GSTHEMESPATH
+					);
 
 					if (getDef('GSCHMOD')) {
 						$writeOctal = GSCHMOD; 
@@ -332,7 +333,7 @@ echo '<div class="bodycontent clearfix">
 								continue;
 							}	
 
-							$res = file_get_contents($file);
+							$res = read_file($file);
 							
 							if(in_array($path, $aDirs)){
 								// file is allow file

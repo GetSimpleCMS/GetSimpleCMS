@@ -36,6 +36,7 @@ $GS_constants = array(
  	'GSBASE'                => false,                         // front end flag
 	'GSCONFIGFILE'          => 'gsconfig.php',                // config filename
 	'GSWEBSITEFILE'         => 'website.xml',                 // website data filename
+	'GSCOMPONENTSFILE'      => 'components.xml',              // website data filename
 	'GSAUTHFILE'            => 'authorization.xml',           // authorizaton salt data filename
 	'GSCSSMAINFILE'         => 'css.php',                     // main css file name
 	'GSCSSCUSTOMFILE'       => 'admin.css',                   // custom css file name
@@ -77,7 +78,10 @@ $GS_definitions = array(
 	'GSEDITORTOOL'         => 'basic',                        // (str) wysiwyg editor toobar
 	'GSEDITORCONFIGFILE'   => 'config.js',                    // (str) wysiwyg editor toobar
 	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // url used in email template
-	'GSAJAXSAVE'           => true,                           // use ajax for form submission where available (edit,theme-edit,components atm)
+	'GSCHMOD'              => 0644,                           // chmod mode legacy
+	'GSCHMODFILE'          => 0644,                           // chmod mode for files
+	'GSCHMODDIR'           => 0755,                           // chmod mode for dirs
+	'GSDOCHMOD'            => true,                           // perform chmod after creating files or directories
  	'GSDEFINITIONSLOADED'  => true	                          // $GS_definitions IS LOADED FLAG
 );
 
@@ -122,7 +126,7 @@ else {
 	$base = GSBASE; // LEGACY frontend flag DEPRECATED
 
 	// set loaders, if you want to override these do it your main common wrapper or index.php
-	if(!isset($load['plugin']))   $load['plugin']   = true; // load plugin system
+	if(!isset($load['plugin']))   $load['plugin']   = true;   // load plugin system
 	if(!isset($load['template'])) $load['template'] = true; // load template system
 	if(!isset($load['login']))    $load['login']    = false; // load template system
 }
@@ -388,13 +392,13 @@ if (notInInstall()) {
 		# if you've made it this far, the site is already installed so remove the installation files
 		$filedeletionstatus = true;
 		if (file_exists(GSADMINPATH.'install.php'))	{
-			$filedeletionstatus = unlink(GSADMINPATH.'install.php');
+			$filedeletionstatus = delete_file(GSADMINPATH.'install.php');
 		}
 		if (file_exists(GSADMINPATH.'setup.php'))	{
-			$filedeletionstatus = unlink(GSADMINPATH.'setup.php');
+			$filedeletionstatus = delete_file(GSADMINPATH.'setup.php');
 		}
 		if (file_exists(GSADMINPATH.'update.php'))	{
-			$filedeletionstatus = unlink(GSADMINPATH.'update.php');
+			$filedeletionstatus = delete_file(GSADMINPATH.'update.php');
 		}
 		if (!$filedeletionstatus) {
 			$error = sprintf(i18n_r('ERR_CANNOT_DELETE'), '<code>/'.$GSADMIN.'/install.php</code>, <code>/'.$GSADMIN.'/setup.php</code> or <code>/'.$GSADMIN.'/update.php</code>');
@@ -438,8 +442,12 @@ if(isset($load['plugin']) && $load['plugin']){
 
 	# main hook for common.php
 	exec_action('common');
-
+	// debugLog('calling common_callout');
+	if(function_exists('common_callout')) common_callout();
 }
+
+// debugLog($live_plugins);
+
 
 if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ require_once(GSADMININCPATH.'login_functions.php'); }
 
@@ -454,9 +462,11 @@ if(GSBASE) require_once(GSADMINPATH.'base.php');
  * @since 3.1
  * @param $txt string
  */
-function debugLog($txt = '') {
+function debugLog($txt = null) {
 	global $GS_debug;
 	array_push($GS_debug,$txt);
+	if(function_exists('debugLog_callout')) debugLog_callout($txt);
+	// print_r($GS_debug);
 	return $txt;
 }
 

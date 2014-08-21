@@ -61,11 +61,7 @@ if (isset($_FILES['file'])) {
 			//validate file
 			if (validate_safe_file($_FILES["file"]["tmp_name"][$i], $_FILES["file"]["name"][$i],  $_FILES["file"]["type"][$i])) {
 				move_uploaded_file($_FILES["file"]["tmp_name"][$i], $file_loc);
-				if (getDef('GSCHMOD')) {
-					chmod($file_loc, GSCHMOD);
-				} else {
-					chmod($file_loc, 0644);
-				}
+				gs_chmod($file_loc);
 				exec_action('file-uploaded');
 				
 				// generate thumbnail				
@@ -128,10 +124,10 @@ if (isset($_GET['newfolder'])) {
 		} else {
 			$chmod_value = 0755;
 		}
-		if (mkdir($path . $cleanname, $chmod_value)) {
+		if (create_dir($path . $cleanname, $chmod_value)) {
 			//create folder for thumbnails
 			$thumbFolder = GSTHUMBNAILPATH.$subFolder.$cleanname;
-			if (!(file_exists($thumbFolder))) { mkdir($thumbFolder, $chmod_value); }
+			if (!(file_exists($thumbFolder))) { create_dir($thumbFolder, $chmod_value); }
 			$success = sprintf(i18n_r('FOLDER_CREATED'), $cleanname);
 		}	else { 
 			$error = i18n_r('ERROR_CREATING_FOLDER'); 

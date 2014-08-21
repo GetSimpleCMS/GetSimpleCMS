@@ -32,7 +32,7 @@ if(isset($_GET['file'])) {
 
 	if(!($filesafe || $archivesafe)) die(i18n('NOT_ALLOWED')); // file specified is non existant or LFI! WE DIE
 	
-	$extention = pathinfo($file,PATHINFO_EXTENSION);
+	$extention = getFileExtension($file);
 	header("Content-disposition: attachment; filename=".$file);
 	
 	# set content headers
@@ -60,6 +60,7 @@ if(isset($_GET['file'])) {
 	exec_action('download-file');
 	
 	# get file
+	// debugLog(ob_get_level()); // check buffering level for memory issues
 	if (file_exists($file)) {
 		readfile($file, 'r');
 	}
