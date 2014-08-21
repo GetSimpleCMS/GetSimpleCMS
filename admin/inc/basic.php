@@ -1752,8 +1752,8 @@ function setTimezone($timezone){
  */
 function getRootRelPath($url){
   $urlparts = parse_url($url);
-  $strip    = isset($urlparts['scheme']) ? $urlparts['scheme'] : '';
-  $strip   .=  '://';
+  $strip    = isset($urlparts['scheme']) ? $urlparts['scheme'] .':' : '';
+  $strip   .=  '//';
   $strip   .= isset($urlparts['host']) ? $urlparts['host'] : '';
   debugLog($strip);
   if(strpos($url,$strip) === 0) return str_replace($strip,'',$url);
