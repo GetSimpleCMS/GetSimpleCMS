@@ -1755,8 +1755,8 @@ function getRootRelPath($url){
   $strip    = isset($urlparts['scheme']) ? $urlparts['scheme'] .':' : '';
   $strip   .=  '//';
   $strip   .= isset($urlparts['host']) ? $urlparts['host'] : '';
-  debugLog($strip);
-  if(strpos($url,$strip) === 0) return str_replace($strip,'',$url);
+  debugLog(__FUNCTION__.' base = ' . $strip);
+  if(strpos($url,$strip) === 0) return debugLog(str_replace($strip,'',$url));
   return debugLog($url);
 }
 
