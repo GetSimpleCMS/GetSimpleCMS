@@ -209,6 +209,7 @@ function restore_bak($id) {
 		copy($tmpfile, $newfile);
 		unlink($tmpfile);
 	}
+	exec_action('page-restored');
 	generate_sitemap();
 } 
 

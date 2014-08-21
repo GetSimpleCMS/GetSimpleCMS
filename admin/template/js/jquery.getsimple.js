@@ -564,6 +564,12 @@ jQuery(document).ready(function () {
  
 	function scrollsidebar(){
 		var elem = $('body.sbfixed #sidebar');
+
+		if(!jQuery().scrollToFixed || !elem[0]){
+			Debugger.log("sbfixed not enabled or scrolltofixed not loaded");
+			return;
+		}
+
 		elem.scrollToFixed({ 
 			marginTop: 15,
 			limit: function(){ return $('#footer').offset().top - elem.outerHeight(true) - 15},

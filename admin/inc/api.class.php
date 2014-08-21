@@ -159,7 +159,7 @@ class API_Request {
 							$filesArray[$count]['category'] = $extention;
 							clearstatcache();
 							$ss = stat($path . $file);
-							$filesArray[$count]['date'] = date('c',$ss['ctime']);
+							$filesArray[$count]['date'] = date('c',$ss['mtime']);
 							$filesArray[$count]['size'] = $ss['size'];
 						}
 						

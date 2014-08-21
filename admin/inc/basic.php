@@ -684,11 +684,53 @@ function safe_slash_html($text) {
 	} else {
 		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 	}
-	$text = str_replace(chr(12), '', $text); // FF
-	$text = str_replace(chr(3), ' ', $text); // ETX
-	return $text;
+
+	return xmlFilterChars($text);
 }
 
+/**
+ * xmlFilterChars
+ *
+ * @since  3.3.3
+ * @param  str $str string to prepare for xml cdata
+ * @return str      filtered string
+ */
+function xmlFilterChars($str){
+	$chr = getRegexUnicode();
+	// filter only xml allowed characters
+	return preg_replace ('/[^'.$chr['ht'].$chr['lf'].$chr['cr'].$chr['lower'].$chr['upper'].']+/u', ' ', $str);
+}
+
+/**
+ * getRegexUnicode
+ * defines unicode char and char ranges for use in regex filters
+ *
+ * @since  3.3.3
+ * @param  str $id key to return from char range array
+ * @return mixed     array or str if id specified of regex char strings
+ */
+function getRegexUnicode($id){
+	$chars = array(
+		'null'       => '\x{0000}',            // 0 null
+		'ht'         => '\x{0009}',            // 9 horizontal tab
+		'lf'         => '\x{000a}',            // 10 line feed
+		'vt'         => '\x{000b}',            // 11 vertical tab
+		'FF'         => '\x{000c}',            // 12 form feed
+		'cr'         => '\x{000d}',            // 13 carriage return
+		'cntrl'      => '\x{0001}-\x{0019}',   // 1-31 control codes
+		'cntrllow'   => '\x{0001}-\x{000c}',   // 1-12 low end control codes
+		'cntrlhigh'  => '\x{000e}-\x{0019}',   // 14-31 high end control codes
+		'bom'        => '\x{FEFF}',            // 65279 BOM byte order mark
+		'lower'      => '\x{0020}-\x{D7FF}',   // 32 - 55295
+		'surrogates' => '\x{D800}-\x{DFFF}',   // 55296 - 57343
+		'upper'      => '\x{E000}-\x{FFFD}',   // 57344 - 65533
+		'nonchars'   => '\x{FFFE}-\x{FFFF}',   // 65534 - 65535
+		'privateb'   => '\x{10000}-\x{10FFFD}' // 65536 - 1114109
+	);
+
+	if(isset($id)) return $chars[$id];
+	return $chars;
+}
 
 /**
  * Safe StripSlashes HTML Decode
@@ -757,20 +799,20 @@ function pathinfo_filename($file) {
  * @param bool $parts 
  * @return string
  */
-function suggest_site_path($parts=false) {
+function suggest_site_path($parts=false, $protocolRelative = false) {
 	global $GSADMIN;
-	$protocol = http_protocol();
+	$protocol   = $protocolRelative ? '' : http_protocol().':';
 	$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
 	$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
-	$port = ($p=$_SERVER['SERVER_PORT'])!='80'&&$p!='443'?':'.$p:'';
+	$port       = ($p=$_SERVER['SERVER_PORT'])!='80'&&$p!='443'?':'.$p:'';
 	
 	if($path_parts == '/') {
 	
-		$fullpath = $protocol."://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $port . "/";
+		$fullpath = $protocol."//". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $port . "/";
 	
 	} else {
 		
-		$fullpath = $protocol."://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $port . $path_parts ."/";
+		$fullpath = $protocol."//". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $port . $path_parts ."/";
 		
 	}
 		
@@ -1241,7 +1283,7 @@ function returnJsArray($var){
 
 	if(!is_array($var)) {
 		// if looks like an array string try to parse as array
-		if(strrpos($var, '[')){
+		if(strrpos($var, '[') !==false){
 			// normalize array strings
 			$var = stripslashes($var);         // remove escaped quotes
 			$var = trim(trim($var),',');       // remove trailing commas
