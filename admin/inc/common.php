@@ -60,7 +60,7 @@ $GS_definitions = array(
 	'GSSLUGNOTFOUND'       => '404',                          // http slug for not found
 	'GSSLUGPRIVATE'        => '403',                          // http slug for private pages
 	'GSADMIN'              => 'admin',                        // admin foldername
-	'GSSITEMAPFILE'        => 'sitemap.xml',                  // sitemap file name
+	'GSSITEMAPFILE'        => 'sitemap.xml',                  // sitemap file name, must modify in .htaccess as needed
 	'GSERRORLOGFILE'       => 'errorlog.txt',                 // error log filename
 	'GSERRORLOGENABLE'     => true,                           // (bool) should GS log php errors to GSERRORLOGFILE
 	'GSSTYLE'              => 'wide,sbfixed',                 // default style modifiers
@@ -71,6 +71,8 @@ $GS_definitions = array(
 	'GSALLOWRESETPASS'     => true,                           // (bool) allow front end password resets
 	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // file extensions to show and edit in theme editor
 	'GSASSETSCHEMES'       => false,                          // (bool) should $ASSETURL contain the url scheme http|https
+	'GSASSETURLREL'        => true,                          // (bool) Use root relative urls for $ASSETURL, overrides GSASSETSCHEMES
+	'GSSITEURLREL'         => true,                          // (bool) Use root relative urls for $SITEURL
 	'GSALLOWDOWNLOADS'     => true,                           // (bool) allow using downloads.php to download files from /uploads and backups/zip
 	'GSEDITORHEIGHT'       => '500',                          // (str) wysiwyg editor height in px
 	'GSEDITORTOOL'         => 'basic',                        // (str) wysiwyg editor toobar
@@ -248,6 +250,9 @@ GLOBAL
 
 // load website data from GSWEBSITEFILE (website.xml)
 extract(getWebsiteData(true));
+
+debugLog('SITEURL = ' . $SITEURL);
+debugLog('ASSETURL = ' . $ASSETURL);
 
 /**
  * Global user data

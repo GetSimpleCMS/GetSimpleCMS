@@ -123,7 +123,7 @@ get_template('header');
 		var editor = CKEDITOR.replace( 'codetext', {
 			language        : '<?php echo $EDLANG; ?>',
 			<?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
-				$fullpath = suggest_site_path();
+				$fullpath = $SITEURL;
 			?>
 			contentsCss     : '<?php echo $fullpath.getRelPath(GSTHEMESPATH).$TEMPLATE; ?>/editor.css',
 			<?php } ?>
