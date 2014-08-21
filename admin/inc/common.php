@@ -124,7 +124,7 @@ else {
 	// set loaders, if you want to override these do it your main common wrapper or index.php
 	if(!isset($load['plugin']))   $load['plugin']   = true; // load plugin system
 	if(!isset($load['template'])) $load['template'] = true; // load template system
-	if(!isset($load['login']))    $load['login']    = true; // load template system
+	if(!isset($load['login']))    $load['login']    = false; // load template system
 }
 
 /*
