@@ -465,6 +465,21 @@ function tsl($path) {
 }
 
 /**
+ * Remove Trailing Slash if missing
+ *
+ * @since 3.4
+ *
+ * @param string $path
+ * @return string
+ */
+function no_tsl($path) {
+	if( substr($path, -1) == '/' ) {
+		$path =  substr($path,0,-1);
+	}
+	return $path;
+}
+
+/**
  * Case-Insensitve In-Array
  *
  * Creates a function that PHP should already have, but doesnt
@@ -1728,6 +1743,23 @@ function setTimezone($timezone){
 	}
 }
 
+
+/**
+ * get web root relative url
+ * 
+ * @since  3.4
+ * @var str url to normalize
+ */
+function getRootRelPath($url){
+  $urlparts = parse_url($url);
+  $strip    = isset($urlparts['scheme']) ? $urlparts['scheme'] : '';
+  $strip   .=  '://';
+  $strip   .= isset($urlparts['host']) ? $urlparts['host'] : '';
+  debugLog($strip);
+  if(strpos($url,$strip) === 0) return str_replace($strip,'',$url);
+  return debugLog($url);
+}
+
 /**
  * gets website data from GSWEBSITEFILE
  *
@@ -1756,6 +1788,9 @@ function getWebsiteData($returnGlobals = false){
 
 	// asseturl is scheme-less ://url if GSASSETSCHEMES is not true
 	$ASSETURL = getDef('GSASSETSCHEMES',true) !==true ? str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL) : $SITEURL;
+
+	if(getDef('GSASSETURLREL')) $ASSETURL = getRootRelPath($ASSETURL);
+	if(getDef('GSSITEURLREL'))  $SITEURL  = getRootRelPath($SITEURL);
 
 	unset($thisfilew);
 	if($returnGlobals) return get_defined_vars();
