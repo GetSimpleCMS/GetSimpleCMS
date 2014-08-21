@@ -30,8 +30,8 @@ $path            = tsl($path);
 // check if host uses Linux (used for displaying permissions
 $isUnixHost      = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 $CKEditorFuncNum = isset($_GET['CKEditorFuncNum']) ? var_in($_GET['CKEditorFuncNum']) : '';
-$sitepath        = suggest_site_path();
-$fullPath        = $sitepath . $uploadsPathRel; // url path to image
+$sitepath        = $SITEURL;
+$fullPath        = $SITEURL . $uploadsPathRel; // url path to image
 $type            = isset($_GET['type']) ? var_in($_GET['type']) : '';
 
 global $LANG;

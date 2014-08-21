@@ -116,8 +116,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
     // HTMLEDITOR INIT
     if (getGlobal('HTMLEDITOR') != '') {
         if (file_exists(GSTHEMESPATH .getGlobal('TEMPLATE')."/editor.css")) {
-            $fullpath    = suggest_site_path();
-            $contentsCss = $fullpath.getRelPath(GSTHEMESPATH).getGlobal('TEMPLATE').'/editor.css';
+            $contentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGlobal('TEMPLATE').'/editor.css';
         }
     }
     ?>
