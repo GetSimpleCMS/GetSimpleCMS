@@ -709,7 +709,7 @@ function xmlFilterChars($str){
  * @param  str $id key to return from char range array
  * @return mixed     array or str if id specified of regex char strings
  */
-function getRegexUnicode($id){
+function getRegexUnicode($id = null){
 	$chars = array(
 		'null'       => '\x{0000}',            // 0 null
 		'ht'         => '\x{0009}',            // 9 horizontal tab
