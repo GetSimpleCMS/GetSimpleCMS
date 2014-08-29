@@ -34,6 +34,8 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 if (isset($_POST['submitted'])) {
 	check_for_csrf("edit", "edit.php");
 
+	$existingurl = isset($_POST['existing-url']) ? $_POST['existing-url'] : null;
+
 	if ( trim($_POST['post-title']) == '' )	{
 		redirect("edit.php?upd=edit-error&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
 	}	else {
@@ -71,16 +73,14 @@ if (isset($_POST['submitted'])) {
 		$oldslug = "";
 
 		// was the slug changed on an existing page?
-		if ( isset($_POST['existing-url']) ) {
-			$oldslug = $_POST['existing-url'];
-			if ($_POST['post-id'] != $oldslug){
-				if ($oldslug == 'index') {
+		if ( isset($existingurl) ) {
+			if ($_POST['post-id'] != $existingurl){
+				if ($existingurl == 'index') {
 					// prevent change of index page's slug
-					redirect("edit.php?id=". urlencode($oldslug) ."&upd=edit-index&type=edit");
+					redirect("edit.php?id=". urlencode($existingurl) ."&upd=edit-index&type=edit");
 				} else {
 					exec_action('changedata-updateslug');
-					updateSlugs($oldslug);
-					// do backup
+					updateSlugs($existingurl);
 					backup_page($oldslug);
 					delete_page($oldslug);
 				}
@@ -204,12 +204,21 @@ if (isset($_POST['submitted'])) {
 			$redirect_url = 'edit.php';
 		}
 
-		if ($url == $oldslug) {
+			if(isset($existingurl)){
+				if ($url == $existingurl) {
+					// redirect save new file
 			redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
 		} else {
-			redirect($redirect_url."?id=". $url ."&old=".$oldslug."&upd=edit-success&type=edit");
+					// redirect new slug, undo for old slug
+					redirect($redirect_url."?id=". $url ."&old=".$existingurl."&upd=edit-success&type=edit");
 		}
 
+	}
+			else {
+				// redirect new slug
+				redirect($redirect_url."?id=". $url ."&upd=edit-success&type=new"); 
+			}
+		}
 	}
 } else {
 	redirect('pages.php');

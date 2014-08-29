@@ -46,6 +46,8 @@
 				doNotify(sprintf(i18n_r('ER_HASBEEN_REST'), $id) .'. <a href="backup-edit.php?p=restore&id='. $oldid .'&new='.$id.'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info');
 			} elseif ($ptype == 'delete') {
 				doNotify(sprintf(i18n_r('ER_HASBEEN_DEL'), $errid) .'. <a href="backup-edit.php?p=restore&id='. $errid .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info');
+			} else if($ptype == 'new'){
+				echo sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="deletefile.php?id='. $id .'&nonce='.get_nonce("delete", "deletefile.php").'">'.i18n_r('UNDO').'</a>';
 			}
 		break;
 		case 'clone-success':
