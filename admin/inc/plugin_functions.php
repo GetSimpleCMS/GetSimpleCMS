@@ -13,21 +13,19 @@ $live_plugins     = array();  // used for enablie/disable functions
 $GS_scripts       = array();  // used for queing Scripts
 $GS_styles        = array();  // used for queing Styles
 
-// constants 
+// constants
+// asseturl is scheme-less ://url if GSASSETSCHEMES is not true
+$ASSETURL = getDef('GSASSETSCHEMES',true) !==true ? str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL) : $SITEURL;
 
 define('GSFRONT',1);
 define('GSBACK',2);
 define('GSBOTH',3);
-if ($SITEURL==""){
-	$SITEURL=suggest_site_path();
-}
-
 
 $GS_script_assets = array(); // defines asset scripts
-$GS_style_assets = array();  // defines asset styles
+$GS_style_assets  = array();  // defines asset styles
 
 $GS_asset_objects = array(); // holds asset js object names
-$GS_asset_objects['jquery'] = 'jQuery';
+$GS_asset_objects['jquery']    = 'jQuery';
 $GS_asset_objects['jquery-ui'] = 'jQuery.ui'; 
 
 // jquery
@@ -37,25 +35,25 @@ $jquery_ui_ver = '1.8.17';
 $GS_script_assets['jquery']['cdn']['url']      = '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js';
 $GS_script_assets['jquery']['cdn']['ver']      = $jquery_ver;
 
-$GS_script_assets['jquery']['local']['url']    = $SITEURL.$GSADMIN.'/template/js/jquery.min.js';
+$GS_script_assets['jquery']['local']['url']    = $ASSETURL.$GSADMIN.'/template/js/jquery.min.js';
 $GS_script_assets['jquery']['local']['ver']    = $jquery_ver;
 
 // jquery-ui
 $GS_script_assets['jquery-ui']['cdn']['url']   = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jquery_ui_ver.'/jquery-ui.min.js';
 $GS_script_assets['jquery-ui']['cdn']['ver']   = $jquery_ui_ver;
 
-$GS_script_assets['jquery-ui']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/jquery-ui.min.js';
+$GS_script_assets['jquery-ui']['local']['url'] = $ASSETURL.$GSADMIN.'/template/js/jquery-ui.min.js';
 $GS_script_assets['jquery-ui']['local']['ver'] = $jquery_ui_ver;
 
 // misc
-$GS_script_assets['fancybox']['local']['url']  = $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.pack.js';
+$GS_script_assets['fancybox']['local']['url']  = $ASSETURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.pack.js';
 $GS_script_assets['fancybox']['local']['ver']  = '2.0.4';
 
-$GS_style_assets['fancybox']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css';
+$GS_style_assets['fancybox']['local']['url']   =  $ASSETURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css';
 $GS_style_assets['fancybox']['local']['ver']   = '2.0.4';
 
 // scrolltofixed
-$GS_script_assets['scrolltofixed']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/jquery-scrolltofixed.js';
+$GS_script_assets['scrolltofixed']['local']['url']   =  $ASSETURL.$GSADMIN.'/template/js/jquery-scrolltofixed.js';
 $GS_script_assets['scrolltofixed']['local']['ver']   = '0.0.1';
 
 /**
@@ -79,7 +77,6 @@ register_script('scrolltofixed', $GS_script_assets['scrolltofixed']['local']['ur
 queue_script('jquery', GSBACK);
 queue_script('jquery-ui', GSBACK);
 queue_script('fancybox', GSBACK);
-queue_script('scrolltofixed', GSBACK);
 
 queue_style('fancybox-css',GSBACK);
 
@@ -506,12 +503,12 @@ function get_scripts_frontend($footer=FALSE){
 		if ($script['where'] & GSFRONT ){
 			if (!$footer){
 				if ($script['load']==TRUE && $script['in_footer']==FALSE ){
-					 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
+					 echo "\t<script src=\"".$script['src'].'?v='.$script['ver']."\"></script>\n";
 					 cdn_fallback($script);		 					 
 				}
 			} else {
 				if ($script['load']==TRUE && $script['in_footer']==TRUE ){
-					 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
+					 echo "\t<script src=\"".$script['src'].'?v='.$script['ver']."\"></script>\n";
 					 cdn_fallback($script);		 					 
 				}
 			}
@@ -540,12 +537,12 @@ function get_scripts_backend($footer=FALSE){
 		if ($script['where'] & GSBACK ){	
 			if (!$footer){
 				if ($script['load']==TRUE && $script['in_footer']==FALSE ){
-					 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
+					 echo "\t<script src=\"".$script['src'].'?v='.$script['ver']."\"></script>\n";
 					 cdn_fallback($script);		 
 				}
 			} else {
 				if ($script['load']==TRUE && $script['in_footer']==TRUE ){
-					 echo '<script src="'.$script['src'].'?v='.$script['ver'].'"></script>';
+					 echo "\t<script src=\"".$script['src'].'?v='.$script['ver']."\"></script>\n";
 					 cdn_fallback($script);		 					 
 				}
 			}
@@ -562,10 +559,10 @@ function cdn_fallback($script){
 	GLOBAL $GS_script_assets, $GS_asset_objects;	
 	if (getDef('GSNOCDN',true)) return; // if nocdn skip
 	if($script['name'] == 'jquery' || $script['name'] == 'jquery-ui'){
-		echo "<script>";
+		echo "\t<script>";
 		echo "window.".$GS_asset_objects[$script['name']]." || ";
 		echo "document.write('<!-- CDN FALLING BACK --><script src=\"".$GS_script_assets[$script['name']]['local']['url'].'?v='.$GS_script_assets[$script['name']]['local']['ver']."\"><\/script>');";
-		echo "</script>";
+		echo "</script>\n";
 	}					
 }
 
@@ -643,7 +640,7 @@ function get_styles_frontend(){
 	foreach ($GS_styles as $style){
 		if ($style['where'] & GSFRONT ){
 				if ($style['load']==TRUE){
-				 echo '<link href="'.$style['src'].'?v='.$style['ver'].'" rel="stylesheet" media="'.$style['media'].'">';
+					echo "\t".'<link href="'.$style['src'].'?v='.$style['ver'].'" rel="stylesheet" media="'.$style['media']."\">\n";
 				}
 		}
 	}
@@ -662,7 +659,7 @@ function get_styles_backend(){
 	foreach ($GS_styles as $style){
 		if ($style['where'] & GSBACK ){
 				if ($style['load']==TRUE){
-				 echo '<link href="'.$style['src'].'?v='.$style['ver'].'" rel="stylesheet" media="'.$style['media'].'">';
+					echo "\t".'<link href="'.$style['src'].'?v='.$style['ver'].'" rel="stylesheet" media="'.$style['media']."\">\n";
 				}
 		}
 	}

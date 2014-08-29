@@ -114,7 +114,7 @@ require_once(GSADMININCPATH.'configuration.php');
 if ( isDebug() ) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
-} else if( getDef('SUPRESSERRORS',true) ) {
+} else if( getDef('GSSUPPRESSERRORS',true) ||  getDef('SUPPRESSERRORS',true) ) {
 	error_reporting(0);
 	ini_set('display_errors', 0);
 }
