@@ -619,7 +619,7 @@ jQuery(document).ready(function () {
 	}
 
 	// init auto saving
-	if(typeof GSAUTOSAVEPERIOD !== 'undefined') autoSaveInit();
+	if(typeof GSAUTOSAVEPERIOD !== 'undefined' && parseInt(GSAUTOSAVEPERIOD,10) > 0) autoSaveInit();
 
     $('#editform').submit(function(){
         warnme = false;
