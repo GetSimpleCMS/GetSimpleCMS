@@ -37,7 +37,8 @@ if (isset($_POST['submitted'])) {
 
 	if ( trim($_POST['post-title']) == '' )	{
 		redirect("edit.php?upd=edit-error&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
-	}	else {
+	}	
+	else {
 
 		$url="";$title="";$metad=""; $metak="";	$cont="";
 		if(isset($_POST['post-title'])){
@@ -216,21 +217,20 @@ if (isset($_POST['submitted'])) {
 			$redirect_url = 'edit.php';
 		}
 
-			if(isset($existingurl)){
-				if ($url == $existingurl) {
-					// redirect save new file
-					redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
-				} else {
-					// redirect new slug, undo for old slug
-					redirect($redirect_url."?id=". $url ."&old=".$existingurl."&upd=edit-success&type=edit");
-				}
-
-			}	
-			else {
-				// redirect new slug
-				redirect($redirect_url."?id=". $url ."&upd=edit-success&type=new"); 
+		if(isset($existingurl)){
+			if ($url == $existingurl) {
+				// redirect save new file
+				redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
+			} else {
+				// redirect new slug, undo for old slug
+				redirect($redirect_url."?id=". $url ."&old=".$existingurl."&upd=edit-success&type=edit");
 			}
-		}
+
+		}	
+		else {
+			// redirect new slug
+			redirect($redirect_url."?id=". $url ."&upd=edit-success&type=new"); 
+		}		
 	}
 } else {
 	redirect('pages.php');
