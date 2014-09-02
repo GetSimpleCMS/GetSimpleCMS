@@ -1789,7 +1789,7 @@ function getWebsiteData($returnGlobals = false){
 	// asseturl is scheme-less ://url if GSASSETSCHEMES is not true
 	$ASSETURL = getDef('GSASSETSCHEMES',true) !==true ? str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL) : $SITEURL;
 
-	if(getDef('GSASSETURLREL')) $ASSETURL = getRootRelPath($ASSETURL);
+	if(getDef('GSASSETURLREL')) $ASSETURL = getRootRelPath($SITEURL);
 	if(getDef('GSSITEURLREL'))  $SITEURL  = getRootRelPath($SITEURL);
 
 	unset($thisfilew);
