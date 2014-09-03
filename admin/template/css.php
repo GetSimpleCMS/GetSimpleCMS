@@ -1999,6 +1999,11 @@ div.showstatus{
 	float:right;
 }
 
+.title.label {
+	float: left;
+	margin: 5px 11px;
+	font-weight: bold;
+}
 
 /* @todo #ID selector hell, can be fixed up once some heirarchy is established */
 /* healthcheck only */

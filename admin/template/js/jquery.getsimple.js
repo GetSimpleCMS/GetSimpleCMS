@@ -619,7 +619,7 @@ jQuery(document).ready(function () {
 	}
 
 	// init auto saving
-	if(typeof GSAUTOSAVEPERIOD !== 'undefined') autoSaveInit();
+	if(typeof GSAUTOSAVEPERIOD !== 'undefined' && parseInt(GSAUTOSAVEPERIOD,10) > 0) autoSaveInit();
 
     $('#editform').submit(function(){
         warnme = false;
@@ -656,11 +656,20 @@ jQuery(document).ready(function () {
     }
 
     function autoSaveIntvl(){
+        Debugger.log('autoSaveIntvl called, form is dirty: autosaving');
         if(pageisdirty === true){
             Debugger.log('autoSaveIntvl called, form is dirty: autosaving');
             ajaxSave('&autosave=1').done(autoSaveCallback);
             pageisdirty = false;
         }
+    }
+
+	function autoSaveDestroy(){
+		Debugger.log('auto saving destroying ' + GSAUTOSAVEPERIOD);
+		$('#pagechangednotify').hide();
+		$('#autosavestatus').show();
+		$('#autosavenotify').show();
+		setInterval(autoSaveIntvl, GSAUTOSAVEPERIOD*1000);
     }
 
     // ajax save function for edit.php #editform
@@ -1246,7 +1255,7 @@ jQuery(document).ready(function () {
 	// custom ajax error handler
 	function ajaxError($response){
 		if(GS.debug === true){
-            alert('An error occured in an XHR call, check console for response');
+            Debugger.log('An error occured in an XHR call, check console for response');
 			Debugger.log($response);
 		}
 	}

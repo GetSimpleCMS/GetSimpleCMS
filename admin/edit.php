@@ -132,16 +132,19 @@ get_template('header');
         <div class="main">
         
         <h3 class="floated"><?php if(isset($data_edit)) { i18n('PAGE_EDIT_MODE'); } else { i18n('CREATE_NEW_PAGE'); } ?></h3>   
-
+        <div class="title label secondary-lightest-back">DRAFT</div>
         <!-- pill edit navigation -->
         <div class="edit-nav" >
             <?php 
             if(isset($id)) {
                 echo '<a href="'. find_url($url, $parent) .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
-                if($url != '') {echo '<a href="pages.php?id='. $url .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
-                echo '<span class="save-close"><a href="javascript:void(0)" >'.i18n_r('SAVE_AND_CLOSE').'</a></span>';
+                echo '<a href="" target="_blank" accesskey="'. find_accesskey(i18n_r('PUBLISH')). '" >'. i18n_r('PUBLISH','PUBLISH'). '</a>';
+                echo '<a href="" target="_blank" accesskey="'. find_accesskey(i18n_r('Edit Current')). '" >'. i18n_r('Edit Current','Edit Current'). '</a>';
+                // if($url != '') {echo '<a href="pages.php?id='. $url .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
+                // echo '<span class="save-close"><a href="javascript:void(0)" >'.i18n_r('SAVE_AND_CLOSE').'</a></span>';
             } 
             ?>
+
             <!-- @todo: fix accesskey for options  -->
             <!-- <a href="javascript:void(0)" id="metadata_toggle" accesskey="<?php echo find_accesskey(i18n_r('PAGE_OPTIONS'));?>" ><?php i18n('PAGE_OPTIONS'); ?></a> -->
             <div class="clear" ></div>
@@ -196,7 +199,7 @@ get_template('header');
                                 $count = 0;
                                 foreach ($pagesArray as $page) {
                                     if ($page['parent'] != '') { 
-								$parentTitle = returnPageField($page['parent'], "title");
+                                $parentTitle = returnPageField($page['parent'], "title");
                                         $sort = $parentTitle .' '. $page['title'];
                                     } else {
                                         $sort = $page['title'];
@@ -207,7 +210,7 @@ get_template('header');
                                 }
                                 // $pagesArray = $pagesArray_tmp;
                                 $pagesSorted = subval_sort($pagesArray_tmp,'sort');
-                                $ret=get_pages_menu_dropdown('','',0);
+                                // $ret=get_pages_menu_dropdown('','',0);
                                 $ret=str_replace('value="'.$id.'"', 'value="'.$id.'" disabled', $ret);
                                 
                                 // handle 'no parents' correctly
