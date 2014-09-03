@@ -286,10 +286,11 @@ function restore_page($id){
  * @uses GSDATAPAGESPATH
  *
  * @param string $id File ID to delete
+ * @param  bool $backup perform backup of file before deleting it
  */
-function delete_page($id){
-	backup_datafile(GSDATAPAGESPATH.$id.'.xml');
-	delete_file(GSDATAPAGESPATH.$id.'.xml');
+function delete_page($id, $backup = true){
+	if($backup) backup_datafile(GSDATAPAGESPATH.$id.'.xml');
+	return delete_file(GSDATAPAGESPATH.$id.'.xml');
 }
 
 /**
