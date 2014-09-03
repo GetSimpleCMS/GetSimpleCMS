@@ -178,6 +178,7 @@ function pageCacheCountDiffers(){
  *
  * Populates $pagesArray from page cache file
  * If the file does not exist it is created
+ * @todo refresh does nothing
  * 
  * @since 3.1
  * @param bool $refresh check cache for pages changes and regen
