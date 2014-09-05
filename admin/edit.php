@@ -210,7 +210,7 @@ get_template('header');
                                 }
                                 // $pagesArray = $pagesArray_tmp;
                                 $pagesSorted = subval_sort($pagesArray_tmp,'sort');
-                                // $ret=get_pages_menu_dropdown('','',0);
+                                $ret=get_pages_menu_dropdown('','',0);
                                 $ret=str_replace('value="'.$id.'"', 'value="'.$id.'" disabled', $ret);
                                 
                                 // handle 'no parents' correctly

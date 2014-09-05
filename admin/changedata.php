@@ -52,16 +52,18 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
 
 	// setup url, falls back to title if not set
 	if(!isset($url)) $url = $title;
+	debugLog(gettype($url));
 	$url = prepareSlug($url); // prepare slug, clean it, translit, truncate
 
 	$title = truncate($title,GSTITLEMAX); // truncate long titles
 
-	// If overwrite is false do not use existing slugs, get next incremental slug, slug-count
+	// If overwrite is false do not use existing slugs, get next incremental slug, eg. "slug-count"
 	if ( !$overwrite && (file_exists(GSDATAPAGESPATH . $url .".xml") ||  in_array($url,$reservedSlugs)) ) {
 		list($newfilename,$count) = getNextFileName(GSDATAPAGESPATH,$url.'.xml');
 		$url = $url .'-'. $count;
 	}
 
+	// store url and title in data, if passed in param they are ignored
 	$data['url'] = $url;
 	$data['title'] = $title;
 
@@ -99,14 +101,15 @@ function savePageXml($xml){
  *
  * @since  3.4
  * @param  str $slug slug to normalize
+ * @param  str $default default slug to substitute if conversion empties it
  * @return str       new slug
  */
-function prepareSlug($slug){
+function prepareSlug($slug, $default = 'temp'){
 	$slug = truncate($slug,GSFILENAMEMAX);
 	$slug = doTransliteration($slug);
 	$slug = to7bit($slug, "UTF-8");
 	$slug = clean_url($slug); //old way @todo what does that mean ?
-	if(trim($slug) == '') return "temp";
+	if(trim($slug) == '' && $default) return $default;
 	return $slug;
 }
 
@@ -114,39 +117,28 @@ function prepareSlug($slug){
 if (isset($_POST['submitted'])) {
 	check_for_csrf("edit", "edit.php");
 
-	$update = isset($_POST['existing-url']) && trim($_POST['existing-url']) !== '';
-	// die($update);
-	// did slug change ?
-	$oldslug = isset($_POST['existing-url']) ? $_POST['existing-url'] : null;
-	$url     = isset($_POST['id']) ? prepareSlug($_POST['id']) : null;
-	$slugchanged = $oldslug !== $url;
-
-	// check for missing required fields title
+	// check for missing required fields
 	if ( !isset($_POST['post-title']) || trim($_POST['post-title']) == '' )	{
+		// no title, throw CANNOT_SAVE_EMPTY
 		redirect("edit.php?upd=edit-error&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
 	}
 
+	// flag for new page, true, false existing
+	$pageIsNew = !isset($_POST['existing-url']) || trim($_POST['existing-url']) == '';
+
+	$postslug = $oldslug = null;
+	$oldslug  = (isset($_POST['existing-url']) && trim($_POST['existing-url']) !=='') ? $_POST['existing-url'] : null;
+	$postslug = (isset($_POST['post-id']) && trim($_POST['post-id']) !=='') ? $_POST['post-id'] : null;
+
+	$slugHasChanged = !$pageIsNew && ($oldslug !== $postslug);
+
 	// setup title
 	$title = safe_slash_html($_POST['post-title']);
-	
-	// debugLog('$update ' . $update);
-	// debugLog('$slugchanged'.$slugchanged);
 
-	// was the slug changed on an existing page?
-	if ($update && $slugchanged){
-		if ($oldslug === 'index'){
-			redirect("edit.php?id=". urlencode($oldslug) ."&upd=edit-index&type=edit");
-		}
-		else {
-			exec_action('changedata-updateslug');
-			updateSlugs($oldslug,$url); // update childrens parent slugs to new slug
-			delete_page($oldslug); // backup and delete the page
-		}
-	}
+	// if attempting to change index throw ER_CANNOT_INDEX
+	if ($slugHasChanged && $oldslug === 'index') redirect("edit.php?id=". urlencode($oldslug) ."&upd=edit-index&type=edit");
 
 	// format and clean the responses
-	// content
-
 	$data = array();
 
 	if(isset($_POST['post-titlelong']))			{ $data['titlelong']   = safe_slash_html($_POST['post-titlelong']);	}
@@ -172,11 +164,21 @@ if (isset($_POST['submitted'])) {
 	if(isset($_POST['post-metar-noarchive']))	$data['metarNoArchive'] = 1;
 	else $data['metarNoArchive'] = 0; 
 
-	$xml = createPageXml($title,$url,$data);
-	
+	$xml = createPageXml($title,$postslug,$data);
+
+	debugLog((string)$xml->url);
+	$url = $xml->url;
+	// UPDATE SLUGS IF IT CHANGED
+	// @todo need new slug
+	if ($slugHasChanged){
+		exec_action('changedata-updateslug');
+		updateSlugs($oldslug,$xml->url); // update childrens parent slugs to new slug
+		delete_page($oldslug); // backup and delete the page
+	}
+
 	exec_action('changedata-save');
 	$xml = exec_filter('page-save',$xml);
-	
+
 	savePageXml($xml);
 
 	//ending actions
