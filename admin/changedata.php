@@ -113,6 +113,11 @@ function prepareSlug($slug, $default = 'temp'){
 	return $slug;
 }
 
+function debugDie($msg){
+	debugLog($msg);
+	outputDebugLog();
+	die();
+}
 
 if (isset($_POST['submitted'])) {
 	check_for_csrf("edit", "edit.php");
@@ -131,6 +136,7 @@ if (isset($_POST['submitted'])) {
 	$postslug = (isset($_POST['post-id']) && trim($_POST['post-id']) !=='') ? $_POST['post-id'] : null;
 
 	$slugHasChanged = !$pageIsNew && ($oldslug !== $postslug);
+	$overwrite = !$pageIsNew && !$slugHasChanged;
 
 	// setup title
 	$title = safe_slash_html($_POST['post-title']);
@@ -164,15 +170,12 @@ if (isset($_POST['submitted'])) {
 	if(isset($_POST['post-metar-noarchive']))	$data['metarNoArchive'] = 1;
 	else $data['metarNoArchive'] = 0; 
 
-	$xml = createPageXml($title,$postslug,$data);
-
-	debugLog((string)$xml->url);
-	$url = $xml->url;
-	// UPDATE SLUGS IF IT CHANGED
-	// @todo need new slug
+	// overwrite set for editing pages only, else we autoincrement slug if newpage or slughaschanged
+	$xml = createPageXml($title,$postslug,$data,$overwrite);
+	$url = (string)$xml->url; // legacy global
 	if ($slugHasChanged){
 		exec_action('changedata-updateslug');
-		updateSlugs($oldslug,$xml->url); // update childrens parent slugs to new slug
+		changeChildParents($oldslug,$url); // update childrens parent slugs to the new slug
 		delete_page($oldslug); // backup and delete the page
 	}
 

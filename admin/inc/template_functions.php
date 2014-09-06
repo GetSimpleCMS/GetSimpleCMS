@@ -764,33 +764,30 @@ function get_available_pages() {
 
  
 /**
- * Update Slugs
+ * Change all direct childens parents to new parent
  *
- * @since 2.04
- * @uses $url
- * @uses GSDATAPAGESPATH
- * @uses XMLsave
- *
+ * @since 3.4
+ * @param str $parent parent slug to change
+ * @param str $newparent new slug to change to
  */
-function updateSlugs($existingUrl, $newurl=null){
+function changeChildParents($parent, $newparent=null){
 	global $pagesArray;
 	getPagesXmlValues();
-
-	if (!$newurl){
-      		global $url; // @todo this is a bad idea
-  	} else {
-  		$url = $newurl;
-  	}
-
 	foreach ($pagesArray as $page){
-		if ( $page['parent'] == $existingUrl ){
-			$data = getPageXML($page['filename']);
-    		$data->parent=$url;
+		if ( $page['parent'] == $parent ){
+			$data = getPageXML($page['url']);
+    		$data->parent=$newparent;
     		XMLsave($data, GSDATAPAGESPATH.$page['filename']);
 		}
 	}
 }
 
+// DEPRECATED
+//  LEGACY, uses global url
+function updateSlugs($existingUrl){
+	GLOBAL $url;
+	updateSlugsParents($existingUrl, $url);
+}
 
 /**
  * Get Link Menu Array
