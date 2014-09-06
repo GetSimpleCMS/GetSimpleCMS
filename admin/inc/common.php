@@ -471,6 +471,18 @@ function debugLog($txt = null) {
 }
 
 /**
+ * debug and die
+ * outputs debuglog and dies
+ * @since  3.4
+ * @param  str $msg message to log
+ */
+function debugDie($msg){
+	debugLog($msg);
+	outputDebugLog();
+	die();
+}
+
+/**
  * Define from an array
  * @param array assoc of keyed values [DEFINITIONNAME] => value
  */

@@ -113,12 +113,6 @@ function prepareSlug($slug, $default = 'temp'){
 	return $slug;
 }
 
-function debugDie($msg){
-	debugLog($msg);
-	outputDebugLog();
-	die();
-}
-
 if (isset($_POST['submitted'])) {
 	check_for_csrf("edit", "edit.php");
 
@@ -173,6 +167,8 @@ if (isset($_POST['submitted'])) {
 	// overwrite set for editing pages only, else we autoincrement slug if newpage or slughaschanged
 	$xml = createPageXml($title,$postslug,$data,$overwrite);
 	$url = (string)$xml->url; // legacy global
+	
+	// if the slug changed update children
 	if ($slugHasChanged){
 		exec_action('changedata-updateslug');
 		changeChildParents($oldslug,$url); // update childrens parent slugs to the new slug
@@ -221,29 +217,15 @@ if (isset($_POST['submitted'])) {
 	// if ajax we are done
 	changedataAjaxSave($url,$oldslug);
 
-	// redirect user back to edit page
+	// redirect user back to edit page or redirectto
+	if (isset($_POST['redirectto']) && $_POST['redirectto']!='') $redirect_url = $_POST['redirectto'];
+	else $redirect_url = 'edit.php';
 
-	if ($_POST['redirectto']!='') {
-		$redirect_url = $_POST['redirectto'];
-	} else {
-		$redirect_url = 'edit.php';
-	}
-
-	if(isset($oldslug)){
-		if ($url == $oldslug) {
-			// redirect save new file
-		redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
-		} else {
-			// redirect new slug, undo for old slug
-			redirect($redirect_url."?id=". $url ."&old=".$oldslug."&upd=edit-success&type=edit");
-		}	
-
-	}
-	else {
-		// redirect new slug
-		redirect($redirect_url."?id=". $url ."&upd=edit-success&type=new"); 
-	}
+	if($pageIsNew) redirect($redirect_url."?id=". $url ."&upd=edit-success&type=new"); // new page
+	if($slugHasChanged) redirect($redirect_url."?id=". $url ."&old=".$oldslug."&upd=edit-success&type=edit"); // update with new slug
+	else redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit"); // update
 
 } else {
+	// nothing submitted
 	redirect('pages.php');
 }

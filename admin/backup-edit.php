@@ -60,7 +60,7 @@ elseif ($p == 'restore') {
 	if (isset($_GET['new'])) {
 		$newid = $_GET['new'];
 		// restore page by old slug id
-		updateSlugs($newid, $id); // update parents and children
+		changeChildParents($newid, $id); // update parents and children
 		restore_page($id);        // restore old slug file
 		delete_page($newid);      // backup and delete live new slug file
 

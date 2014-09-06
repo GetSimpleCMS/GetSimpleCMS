@@ -24,13 +24,13 @@ if (isset($_GET['id'])) {
 	if ($id == 'index') {
 		redirect('pages.php?upd=edit-error&type='.urlencode(i18n_r('HOMEPAGE_DELETE_ERROR')));
 	} else {	
-		updateSlugs($id);
+		changeChildParents($id);
 		$status = delete_page($id) ? 'success' : 'error';
 		generate_sitemap();
 		exec_action('page-delete');
 		redirect("pages.php?upd=edit-".$status."&id=". $id ."&type=delete");
 	}
-} 
+}
 
 // Delete archive
 if (isset($_GET['zip'])) { 
