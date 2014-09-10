@@ -56,6 +56,9 @@
 		case 'edit-index':
 			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_CANNOT_INDEX'),'error');
 		break;
+		case 'draft-slug':
+			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_CANNOT_DRAFT'),'error');
+		break;
 		case 'edit-error':
 			doNotify('<b>'.i18n_r('ERROR').':</b> '. var_out($ptype),'error');
 		break;

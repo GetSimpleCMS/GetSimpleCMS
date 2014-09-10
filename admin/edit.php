@@ -22,6 +22,7 @@ $id    = isset($_GET['id'])    ? var_in( $_GET['id']    ): null;
 $uri   = isset($_GET['uri'])   ? var_in( $_GET['uri']   ): null;
 $ptype = isset($_GET['type'])  ? var_in( $_GET['type']  ): null;
 $nonce = isset($_GET['nonce']) ? var_in( $_GET['nonce'] ): null;
+$draft = (isset($_GET['nodraft']) || !getDef('GSUSEDRAFTS',true)) ? false : true;
 
 // Page variables reset
 $theme_templates = '';
@@ -41,11 +42,20 @@ $metad           = '';
 
 if ($id){
     // get saved page data
-    if (!file_exists(GSDATAPAGESPATH . $id .'.xml')){
+
+    $pageExists  = file_exists(GSDATAPAGESPATH . $id .'.xml');
+    $draftExists = pageHasDraft($id);
+
+    // fail if not using drafts and page does not exist
+    // OR if neither page nor draft exists
+    if ((!$draft && !$pageExists) || (!$draftExists && !$pageExists)){
         redirect('pages.php?error='.urlencode(i18n_r('PAGE_NOTEXIST')));
     }
 
-    $data_edit  = getPageXML($id);
+    // if using drafts and no draft exists, load original
+    if(!$draft || !$draftExists) $data_edit = getPageXML($id);
+    else $data_edit = getDraftXML($id);
+
     $title      = stripslashes($data_edit->title);
     $pubDate    = $data_edit->pubDate;
     $metak      = stripslashes($data_edit->meta);
@@ -132,17 +142,23 @@ get_template('header');
         <div class="main">
         
         <h3 class="floated"><?php if(isset($data_edit)) { i18n('PAGE_EDIT_MODE'); } else { i18n('CREATE_NEW_PAGE'); } ?></h3>   
-        <div class="title label secondary-lightest-back">DRAFT</div>
+        <?php if($draft){ ?><div class="title label secondary-lightest-back">DRAFT</div><?php } ?>
         <!-- pill edit navigation -->
         <div class="edit-nav" >
             <?php 
             if(isset($id)) {
-                echo '<a href="'. find_url($url, $parent) .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
-                echo '<a href="" target="_blank" accesskey="'. find_accesskey(i18n_r('PUBLISH')). '" >'. i18n_r('PUBLISH','PUBLISH'). '</a>';
-                echo '<a href="" target="_blank" accesskey="'. find_accesskey(i18n_r('Edit Current')). '" >'. i18n_r('Edit Current','Edit Current'). '</a>';
-                // if($url != '') {echo '<a href="pages.php?id='. $url .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
-                // echo '<span class="save-close"><a href="javascript:void(0)" >'.i18n_r('SAVE_AND_CLOSE').'</a></span>';
-            } 
+                if($draft){
+                    echo '<a href="'. find_url($url, $parent) .'?draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
+                    echo '<a href="" target="_blank" accesskey="'. find_accesskey(i18n_r('PUBLISH')). '" >'. i18n_r('PUBLISH'). '</a>';
+                    if($pageExists) echo '<a href="edit.php?id='.$id.'&nodraft" accesskey="'. find_accesskey(i18n_r('EDIT_NODRAFT')). '" >'. i18n_r('EDIT_NODRAFT'). '</a>';
+                }
+                else {
+                    echo '<a href="'. find_url($url, $parent) .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
+                    if(getDef('GSUSEDRAFTS',true)) echo '<a href="edit.php?id='.$id.'" accesskey="'. find_accesskey(i18n_r('EDIT_DRAFT')). '" >'. i18n_r('EDIT_DRAFT'). '</a>';                    
+                    // if($url != '') {echo '<a href="pages.php?id='. $url .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
+                    // echo '<span class="save-close"><a href="javascript:void(0)" >'.i18n_r('SAVE_AND_CLOSE').'</a></span>';
+                }
+            }
             ?>
 
             <!-- @todo: fix accesskey for options  -->
@@ -151,9 +167,10 @@ get_template('header');
         </div>  
             
         <form class="largeform" id="editform" action="changedata.php" method="post" accept-charset="utf-8" >
-        <input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("edit", "edit.php"); ?>" />            
-        <input id="author" name="post-author" type="hidden" value="<?php echo $USR; ?>" />  
-
+        <input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("edit", "edit.php"); ?>" />
+        <input id="author" name="post-author" type="hidden" value="<?php echo $USR; ?>" />
+        <?php if(getDef('GSUSEDRAFTS',true) && !$draft){ ?><input id="nodraft" name="post-nodraft" type="hidden" value="1" /><?php } ?>
+ 
         <!-- page title toggle screen -->
         <p id="edit_window">
             <label for="post-title" style="display:none;"><?php i18n('PAGE_TITLE'); ?></label>
@@ -270,7 +287,7 @@ get_template('header');
                     <div class="rightopt">
                         <p>
                             <label for="post-id"><?php i18n('SLUG_URL'); ?>:</label>
-                            <input class="text short" type="text" id="post-id" name="post-id" value="<?php echo $url; ?>" <?php echo ($url=='index'?'readonly="readonly" ':''); ?>/>
+                            <input class="text short" type="text" id="post-id" name="post-id" value="<?php echo $url; ?>" <?php echo (($url=='index' || $draft)?'readonly="readonly" ':''); ?>/>
                         </p>
                     </div>
 
@@ -337,7 +354,7 @@ get_template('header');
             </fieldset>            
         </div>
     </div> <!-- / END TABS -->
-                <span class="editing"><?php echo i18n_r('EDITPAGE_TITLE') .': ' . $title; ?></span>
+            <span class="editing"><?php echo ($draft ? i18n_r('EDITDRAFT_TITLE') : i18n_r('EDITPAGE_TITLE')) .': ' . $title; ?></span>
             <div id="submit_line" >
                 <input type="hidden" name="redirectto" value="" />
                 
@@ -362,7 +379,7 @@ get_template('header');
             <?php if($url != '') { ?>
                 <p class="backuplink" ><?php 
                     if (isset($pubDate)) { 
-                        echo sprintf(i18n_r('LAST_SAVED'), '<em>'.$author.'</em>').' '. output_datetime($pubDate).'&nbsp;&nbsp; ';
+                        echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'.$author.'</em>').' '. output_datetime($pubDate).'&nbsp;&nbsp; ';
                     }
                     if ( fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
                         echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';

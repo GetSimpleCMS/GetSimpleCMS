@@ -65,7 +65,19 @@ $i18n = array(
 "EXPAND_TOP"              =>	"Expand Top Parents",
 "COLLAPSE_TOP"            =>	"Collapse Top Parents",
 
-/* 
+// drafts
+// "ALL_DRAFTS"              =>	"Drafts",
+"EDITDRAFT_TITLE"         =>	"Edit Page Draft",
+// "VIEWDRAFT_TITLE"         =>	"View Draft",
+// "DELETEDRAFT_TITLE"       =>	"Delete Draft",
+// "BTN_SAVEDRAFT"           =>	"Save Draft",
+// "DRAFT"                   =>	"Draft",
+"EDIT_DRAFT"              =>	"Edit Draft",
+"EDIT_NODRAFT"            =>	"Edit Current",
+"DRAFT_LAST_SAVED"        =>	"Page Draft last saved by %s on",
+"PUBLISH"                 =>	"Publish",
+
+/*
 * For: edit.php
 */
 "PAGE_NOTEXIST"           =>	"The requested page does not exist",
@@ -377,6 +389,7 @@ $i18n = array(
 "ER_HASBEEN_REST"         =>	"<b>%s</b> has been restored",
 "ER_HASBEEN_DEL"          =>	"<b>%s</b> has been deleted",
 "ER_CANNOT_INDEX"         =>	"You cannot change the URL of the index page",
+"ER_CANNOT_DRAFT"         =>	"You cannot change the URL of a draft page",
 "ER_SETTINGS_UPD"         =>	"Your settings have been updated",
 "ER_OLD_RESTORED"         =>	"Your old settings have been restored",
 "ER_PROFILE_RESTORED"     =>	"The Profile has been restored",

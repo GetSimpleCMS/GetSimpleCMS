@@ -82,6 +82,9 @@ $GS_definitions = array(
 	'GSCHMODFILE'          => 0644,                           // chmod mode for files
 	'GSCHMODDIR'           => 0755,                           // chmod mode for dirs
 	'GSDOCHMOD'            => true,                           // perform chmod after creating files or directories
+	'GSUSEDRAFTS'          => true,                           // use page drafts
+	'GSDEBUG'              => false,                          // debug mode
+	'GSDEBUGREDIRECTS'     => false,                          // debug mode stop redirects for debugging
  	'GSDEFINITIONSLOADED'  => true	                          // $GS_definitions IS LOADED FLAG
 );
 

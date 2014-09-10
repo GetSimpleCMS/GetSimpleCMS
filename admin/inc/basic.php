@@ -352,6 +352,139 @@ function getPageXML($id){
 }
 
 /**
+ * get page draft xml shortcut
+ *
+ * @since 3.4
+ * @param  str $id id of page
+ * @return xml     xml object
+ */
+function getDraftXML($id){
+	return getXML(GSAUTOSAVEPATH.$id.'.xml');
+}
+
+/**
+ * create a page xml obj
+ *
+ * @since 3.4
+ * @param  str      $title     title of page
+ * @param  str      $url       optional, url slug of page, if null title is used
+ * @param  array   	$data      optional, array of data fields for page
+ * @param  boolean 	$overwrite optional, overwrite exisitng slugs, if false auto increments slug id
+ * @return obj                 xml object of page
+ */
+function createPageXml($title, $url = null, $data = array(), $overwrite = false){
+	GLOBAL $reservedSlugs;
+
+	$fields = array(
+		'title',
+		'titlelong',
+		'summary',
+		'url',
+		'author',
+		'template',
+		'parent',
+		'menu',
+		'menuStatus',
+		'menuOrder',
+		'private',
+		'meta',
+		'metad',
+		'metarNoIndex',
+		'metarNoFollow',
+		'metarNoArchive',
+		'content'
+	);
+
+	// setup url, falls back to title if not set
+	if(!isset($url)) $url = $title;
+	debugLog(gettype($url));
+	$url = prepareSlug($url); // prepare slug, clean it, translit, truncate
+
+	$title = truncate($title,GSTITLEMAX); // truncate long titles
+
+	// If overwrite is false do not use existing slugs, get next incremental slug, eg. "slug-count"
+	if ( !$overwrite && (file_exists(GSDATAPAGESPATH . $url .".xml") ||  in_array($url,$reservedSlugs)) ) {
+		list($newfilename,$count) = getNextFileName(GSDATAPAGESPATH,$url.'.xml');
+		$url = $url .'-'. $count;
+	}
+
+	// store url and title in data, if passed in param they are ignored
+	$data['url'] = $url;
+	$data['title'] = $title;
+
+	// create new xml
+	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
+	$xml->addChild('pubDate', date('r'));
+
+	foreach($fields as $field){
+		$node = $xml->addChild($field);
+		if(isset($data[$field])) $node->addCData($data[$field]); // saving all cdata for some reason
+	}
+
+	// debugLog(__FUNCTION__ . ': page created with slug of ' . $xml->url);
+	return $xml;
+}
+
+/**
+ * save a page to xml
+ *
+ * @since  3.4
+ * @param  obj $xml simplexmlobj of page
+ * @return bool success
+ */
+function savePageXml($xml){
+	$url = $xml->url;
+	if(!isset($url) || trim($url) == '') die('empty slug');
+	// backup before overwriting
+	if(file_exists(GSDATAPAGESPATH . $url .".xml")) backup_page($url);
+	return XMLsave($xml, GSDATAPAGESPATH . $url .".xml");
+}
+
+/**
+ * save a page draft to xml
+ *
+ * @since  3.4
+ * @param  obj $xml simplexmlobj of page
+ * @return bool success
+ */
+function saveDraftXml($xml){
+	$url = $xml->url;
+	if(!isset($url) || trim($url) == '') die('empty slug');
+	// backup before overwriting
+	if(file_exists(GSAUTOSAVEPATH . $url .".xml")) backup_datafile(GSAUTOSAVEPATH . $url .".xml");
+	return XMLsave($xml, GSAUTOSAVEPATH . $url .".xml");
+}
+
+/**
+ * check if a page has a draft copy
+ *
+ * @since 3.4
+ * @param str $filepath filepath to data file
+ * @return bool status
+ */
+function pageHasDraft($id){
+	return file_exists(GSAUTOSAVEPATH . $id .".xml");
+}
+
+/**
+ * prepare a slug to gs standads
+ * sanitizes, performs translist for filename, truncates to GSFILENAMEMAX
+ *
+ * @since  3.4
+ * @param  str $slug slug to normalize
+ * @param  str $default default slug to substitute if conversion empties it
+ * @return str       new slug
+ */
+function prepareSlug($slug, $default = 'temp'){
+	$slug = truncate($slug,GSFILENAMEMAX);
+	$slug = doTransliteration($slug);
+	$slug = to7bit($slug, "UTF-8");
+	$slug = clean_url($slug); //old way @todo what does that mean ?
+	if(trim($slug) == '' && $default) return $default;
+	return $slug;
+}
+
+/**
  * check if a file has a backup copy
  *
  * @since 3.4
@@ -819,7 +952,7 @@ function redirect($url) {
 
 	if(function_exists('exec_action')) exec_action('redirect');
 
-	$debugredirect = false;
+	$debugredirect = getDef('GSDEBUGREDIRECTS',true);
 
 	if (!headers_sent($filename, $linenum) && !$debugredirect) {
 		header('Location: '.$url);

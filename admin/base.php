@@ -14,12 +14,17 @@ if (isset($_GET['id'])){
 
 // filter to modify page id request
 $id = exec_filter('indexid',$id);
- // $_GET['id'] = $id; // support for plugins that are checking get?
+ // $_GET['id'] = $id; // @todo: do we need this for support for plugins that are checking get?
 
 $data_index = null;
 
-// apply page data if page id exists
-if (isset($pagesArray[$id])) {
+// load page data
+if(isset($_GET['draft']) && is_logged_in() && pageHasDraft($id)){
+	// display draft if specified else
+	$data_index = getDraftXml($id);
+}
+else if(isset($pagesArray[$id])) {
+	// apply page data if page id exists
 	$data_index = getPageXml($id);
 }
 

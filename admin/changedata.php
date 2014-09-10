@@ -11,107 +11,13 @@
 
 // Setup inclusions
 $load['plugin'] = true;
-$autoSaveDraft = false; // auto save to autosave drafts
 
 // Include common.php
 include('inc/common.php');
 login_cookie_check();
 
-/**
- * create a page xml obj
- *
- * @since 3.4
- * @param  str      $title     title of page
- * @param  str      $url       optional, url slug of page, if null title is used
- * @param  array   	$data      optional, array of data fields for page
- * @param  boolean 	$overwrite optional, overwrite exisitng slugs, if false auto increments slug id
- * @return obj                 xml object of page
- */
-function createPageXml($title, $url = null, $data = array(), $overwrite = false){
-	GLOBAL $reservedSlugs;
-
-	$fields = array(
-		'title',
-		'titlelong',
-		'summary',
-		'url',
-		'author',
-		'template',
-		'parent',
-		'menu',
-		'menuStatus',
-		'menuOrder',
-		'private',
-		'meta',
-		'metad',
-		'metarNoIndex',
-		'metarNoFollow',
-		'metarNoArchive',
-		'content'
-	);
-
-	// setup url, falls back to title if not set
-	if(!isset($url)) $url = $title;
-	debugLog(gettype($url));
-	$url = prepareSlug($url); // prepare slug, clean it, translit, truncate
-
-	$title = truncate($title,GSTITLEMAX); // truncate long titles
-
-	// If overwrite is false do not use existing slugs, get next incremental slug, eg. "slug-count"
-	if ( !$overwrite && (file_exists(GSDATAPAGESPATH . $url .".xml") ||  in_array($url,$reservedSlugs)) ) {
-		list($newfilename,$count) = getNextFileName(GSDATAPAGESPATH,$url.'.xml');
-		$url = $url .'-'. $count;
-	}
-
-	// store url and title in data, if passed in param they are ignored
-	$data['url'] = $url;
-	$data['title'] = $title;
-
-	// create new xml
-	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
-	$xml->addChild('pubDate', date('r'));
-
-	foreach($fields as $field){
-		$node = $xml->addChild($field);
-		if(isset($data[$field])) $node->addCData($data[$field]); // saving all cdata for some reason
-	}
-
-	// debugLog(__FUNCTION__ . ': page created with slug of ' . $xml->url);
-	return $xml;
-}
-
-/**
- * save a page to xml
- *
- * @since  3.4
- * @param  obj $xml simplexmlobj of page
- * @return bool success
- */
-function savePageXml($xml){
-	$url = $xml->url;
-	if(!isset($url) || trim($url) == '') die('empty slug');
-	// backup before overwriting
-	if(file_exists(GSDATAPAGESPATH . $url .".xml")) backup_page($url);
-	return XMLsave($xml, GSDATAPAGESPATH . $url .".xml");
-}
-
-/**
- * prepare a slug to gs standads
- * sanitizes, performs translist for filename, truncates to GSFILENAMEMAX
- *
- * @since  3.4
- * @param  str $slug slug to normalize
- * @param  str $default default slug to substitute if conversion empties it
- * @return str       new slug
- */
-function prepareSlug($slug, $default = 'temp'){
-	$slug = truncate($slug,GSFILENAMEMAX);
-	$slug = doTransliteration($slug);
-	$slug = to7bit($slug, "UTF-8");
-	$slug = clean_url($slug); //old way @todo what does that mean ?
-	if(trim($slug) == '' && $default) return $default;
-	return $slug;
-}
+$autoSaveDraft = false; // auto save to autosave drafts
+$draft = getDef('GSUSEDRAFTS',true);
 
 if (isset($_POST['submitted'])) {
 	check_for_csrf("edit", "edit.php");
@@ -137,9 +43,12 @@ if (isset($_POST['submitted'])) {
 
 	// if attempting to change index throw ER_CANNOT_INDEX
 	if ($slugHasChanged && $oldslug === 'index') redirect("edit.php?id=". urlencode($oldslug) ."&upd=edit-index&type=edit");
+	if ($slugHasChanged && $draft) redirect("edit.php?id=". urlencode($oldslug) ."&upd=draft-slug&type=edit");
 
 	// format and clean the responses
 	$data = array();
+
+	if(isset($_POST['post-nodraft']))			{ $draft = false; } // force no draft usage
 
 	if(isset($_POST['post-titlelong']))			{ $data['titlelong']   = safe_slash_html($_POST['post-titlelong']);	}
 	if(isset($_POST['post-summary']))			{ $data['summary']     = safe_slash_html($_POST['post-summary']);	}
@@ -175,10 +84,18 @@ if (isset($_POST['submitted'])) {
 		delete_page($oldslug); // backup and delete the page
 	}
 
-	exec_action('changedata-save');
-	$xml = exec_filter('page-save',$xml);
-
-	savePageXml($xml);
+	if(!$draft){
+		exec_action('changedata-save');
+		$xml = exec_filter('page-save',$xml);
+		die('page save');
+		savePageXml($xml);
+	}
+	else {
+		exec_action('changedata-draft-save');
+		$xml = exec_filter('draft-save',$xml);
+		die('draft save');
+		saveDraftXml($xml);
+	}
 
 	//ending actions
 	exec_action('changedata-aftersave');
