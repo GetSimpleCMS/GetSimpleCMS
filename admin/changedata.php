@@ -87,13 +87,11 @@ if (isset($_POST['submitted'])) {
 	if(!$draft){
 		exec_action('changedata-save');
 		$xml = exec_filter('page-save',$xml);
-		die('page save');
 		savePageXml($xml);
 	}
 	else {
 		exec_action('changedata-draft-save');
 		$xml = exec_filter('draft-save',$xml);
-		die('draft save');
 		saveDraftXml($xml);
 	}
 
@@ -138,9 +136,13 @@ if (isset($_POST['submitted'])) {
 	if (isset($_POST['redirectto']) && $_POST['redirectto']!='') $redirect_url = $_POST['redirectto'];
 	else $redirect_url = 'edit.php';
 
-	if($pageIsNew) redirect($redirect_url."?id=". $url ."&upd=edit-success&type=new"); // new page
-	if($slugHasChanged) redirect($redirect_url."?id=". $url ."&old=".$oldslug."&upd=edit-success&type=edit"); // update with new slug
-	else redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit"); // update
+	if($pageIsNew) $redirect_url .= "?id=". $url ."&upd=edit-success&type=new"; // new page
+	if($slugHasChanged) $redirect_url .= "?id=". $url ."&old=".$oldslug."&upd=edit-success&type=edit"; // update with new slug
+	else $redirect_url .= "?id=". $url ."&upd=edit-success&type=edit"; // update
+
+	// add nodraft arg if we are force editing a live page
+	if(getDef('GSUSEDRAFTS',true) && !$draft) $redirect_url .= '&nodraft';
+	redirect($redirect_url);
 
 } else {
 	// nothing submitted
