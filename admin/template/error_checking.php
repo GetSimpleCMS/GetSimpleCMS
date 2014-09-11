@@ -52,6 +52,12 @@
 				echo sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="deletefile.php?id='. $id .'&nonce='.get_nonce("delete", "deletefile.php").'">'.i18n_r('UNDO').'</a>';
 			}
 		break;
+		case 'publish-success':
+			doNotify(sprintf(i18n_r('ER_PUBLISH_SUCCESS'),$id),'success');
+		break;
+		case 'publish-error':
+			doNotify(sprintf(i18n_r('ER_PUBLISH_ERROR'),$id),'error');
+		break;
 		case 'clone-success':
 			doNotify(sprintf(i18n_r('CLONE_SUCCESS'), '<a href="edit.php?id='.$errid.'">'.$errid.'</a>'),'success');
 		break;
