@@ -19,6 +19,13 @@ login_cookie_check();
 $autoSaveDraft = false; // auto save to autosave drafts
 $draft = getDef('GSUSEDRAFTS',true);
 
+if(isset($_GET['publish']) && isset($_GET['id'])){
+	$id = var_in($_GET['id']);
+	$status = publishDraft($id) ? 'success' : 'error';
+	redirect("pages.php?id=". $id ."&".$status."=".$status."%20publishing%20draft");
+	die();
+}
+
 if (isset($_POST['submitted'])) {
 	check_for_csrf("edit", "edit.php");
 

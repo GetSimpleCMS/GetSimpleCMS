@@ -20,13 +20,15 @@
 	}
 
 	if(!isset($update)) $update = '';
-	if(isset($_GET['upd'])) 	$update  = var_in($_GET['upd']);
-	if(isset($_GET['success'])) $success = var_in($_GET['success']);
-	if(isset($_GET['error'])) 	$error   = var_in($_GET['error']);
+	if(isset($_GET['upd'])) 	$update  = var_in($_GET['upd']); // preset update tokens
+	if(isset($_GET['id'])) 		$errid   = var_in($_GET['id']);  // preset id argument
+	if(isset($_GET['old'])) 	$oldid   = var_in($_GET['old']); // preset old id argument
+
+	if(isset($_GET['success'])) $success = var_in($_GET['success']); // generic success msg
+	if(isset($_GET['error'])) 	$error   = var_in($_GET['error']);   // generic error msg
 	// if(isset($_GET['err'])) 	$err     = var_in($_GET['err']); // deprecated not used
-	if(isset($_GET['id'])) 		$errid   = var_in($_GET['id']);
-	if(isset($_GET['old'])) 	$oldid   = var_in($_GET['old']);
-	if(isset($_GET['updated']) && $_GET['updated'] == 1) $success = i18n_r('SITE_UPDATED'); // for update.php only
+
+	if(isset($_GET['updated']) && $_GET['updated'] == 1) $success = i18n_r('SITE_UPDATED'); // RESERVED for update.php only for site upgrades
 
 	switch ( $update ) {
 		case 'bak-success':

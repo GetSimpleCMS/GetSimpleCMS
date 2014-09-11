@@ -222,9 +222,10 @@ function backup_datafile($filepath){
  * @since 3.4
  *
  * @param string $file filepath of data file to restore from backup, locked to GSDATAPATH
+ * @param  bool $delete delete the backup
  * @return bool success
  */
-function restore_datafile($filepath){
+function restore_datafile($filepath,$delete = true){
 	if(!filepath_is_safe($filepath,GSDATAPATH)) return false;
 	$bakfilepath = getBackupFilePath($filepath);
 
@@ -234,6 +235,8 @@ function restore_datafile($filepath){
 		move_file($filepath,$bakfilepath);
 		$bakfilepath .= '.tmp';
 	}
+
+	if(!$delete) return copy_file($bakfilepath,$filepath);
 	return move_file($bakfilepath,$filepath);
 }
 

@@ -212,13 +212,70 @@ function subval_sort($a,$subkey, $order='asc',$natural = true) {
  *
  * @param string $cdata_text
  */
-class SimpleXMLExtended extends SimpleXMLElement{   
-	public function addCData($cdata_text){   
-	$node = dom_import_simplexml($this);   
-	$no   = $node->ownerDocument;   
-	$node->appendChild($no->createCDATASection($cdata_text));   
-	} 
-} 
+class SimpleXMLExtended extends SimpleXMLElement{
+
+	/**
+	 * add a cdata value
+	 * @uses  dom_import_simplexml
+	 * @param str $cdata_text value to add as cdata
+	 */
+	public function addCData($cdata_text){
+		$dom  = dom_import_simplexml($this);
+		$cdata = $dom->ownerDocument->createCDATASection($cdata_text);
+		$dom->appendChild($cdata);
+	}
+
+	/**
+	 * update cdata, if empty append cdata, if 1 child remove it and append new cdata
+	 * if mutiple children do nothing, something is wrong
+	 *
+	 * @uses  dom_import_simplexml
+	 * @param  str $cdata_text value to insert as cdata
+	 * @return obj             node
+	 */
+	public function updateCData($cdata_text){
+		$node  = dom_import_simplexml($this);
+		$xml   = $node->ownerDocument;
+		$cdata = $xml->createCDATASection($cdata_text);
+		if($node->childNodes->length == 1){
+			// if exactly one child, remove and append the new cdata
+			$node->removeChild($node->firstChild);
+			$node->appendChild($cdata);
+		}
+		else if($node->childNodes->length == 0){
+			// if no children just append cdata
+			$node->appendChild($cdata);
+		} else {
+			// node has multiple children, ignore
+			return;
+		}
+	}
+
+	public function addCDataChild($nodename,$value){
+		$this->addChild($nodename)->addCData($value);
+	}
+
+	public function setValue($value){
+		if($this->nodeisCData()) $this->updateCData($value);
+		else if($this->nodeisText())  $this[0] = $value;
+		else if($this->getNodeType() === null) $this[0] = $value;
+	}
+
+	public function getNodeType(){
+		$node  = dom_import_simplexml($this);
+		if($node->hasChildNodes()) return $node->firstChild->nodeType;
+	}
+
+	public function nodeisCData(){
+		return $this->getNodeType() == XML_CDATA_SECTION_NODE;
+	}
+
+	public function nodeisText(){
+		return $this->getNodeType() == XML_TEXT_NODE;
+	}
+
+}
+
 
 /**
  * Is File
@@ -332,10 +389,10 @@ function get_execution_time($reset=false)
  * @param string $file
  * @return object
  */
-function getXML($file) {
+function getXML($file,$nocdata = true) {
 	$xml = read_file($file);
 	if($xml){
-		$data = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA);
+		$data = simplexml_load_string($xml, 'SimpleXMLExtended', $nocdata ? LIBXML_NOCDATA : null);
 		return $data;
 	}
 }
@@ -347,8 +404,8 @@ function getXML($file) {
  * @param  str $id id of page
  * @return xml     xml object
  */
-function getPageXML($id){
-	return getXML(GSDATAPAGESPATH.$id.'.xml');
+function getPageXML($id,$nocdata = true){
+	return getXML(GSDATAPAGESPATH.$id.'.xml',$nocdata);
 }
 
 /**
@@ -358,8 +415,28 @@ function getPageXML($id){
  * @param  str $id id of page
  * @return xml     xml object
  */
-function getDraftXML($id){
-	return getXML(GSAUTOSAVEPATH.$id.'.xml');
+function getDraftXML($id,$nocdata = true){
+	return getXML(GSAUTOSAVEPATH.$id.'.xml',$nocdata);
+}
+
+/**
+ * update single pages field value and resave file
+ *
+ * @param  str $id    id of page
+ * @param  str $field field name
+ * @param  str $value value
+ * @param  bool $cdata true, store as cdata, false textnode, null auto detect from destination
+ * @return [type]        [description]
+ */
+function updatePageField($id,$field,$value,$cdata = null){
+	$xml = getPageXML($id,false);
+	if($cdata === true){
+		$xml->addCDataChild($field,$value);
+	}
+	else if($cdata === false) $xml->$field = $value;
+	else $xml->$field->setValue($value);
+
+	savePageXml($xml,false);
 }
 
 /**
@@ -430,13 +507,14 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
  *
  * @since  3.4
  * @param  obj $xml simplexmlobj of page
+ * @param  bool $backup backup before overwriting
  * @return bool success
  */
-function savePageXml($xml){
+function savePageXml($xml,$backup = true){
 	$url = $xml->url;
 	if(!isset($url) || trim($url) == '') die('empty slug');
 	// backup before overwriting
-	if(file_exists(GSDATAPAGESPATH . $url .".xml")) backup_page($url);
+	if($backup && file_exists(GSDATAPAGESPATH . $url .".xml")) backup_page($url);
 	return XMLsave($xml, GSDATAPAGESPATH . $url .".xml");
 }
 
@@ -445,14 +523,31 @@ function savePageXml($xml){
  *
  * @since  3.4
  * @param  obj $xml simplexmlobj of page
+ * @param  bool $backup backup before overwriting
  * @return bool success
  */
-function saveDraftXml($xml){
+function saveDraftXml($xml,$backup = true){
 	$url = $xml->url;
-	if(!isset($url) || trim($url) == '') die('empty slug');
+	if(!isset($url) || trim($url) == '') die('empty slug'); // @todo need some kind of assert here
 	// backup before overwriting
-	if(file_exists(GSAUTOSAVEPATH . $url .".xml")) backup_datafile(GSAUTOSAVEPATH . $url .".xml");
+	if($backup && file_exists(GSAUTOSAVEPATH . $url .".xml")) backup_datafile(GSAUTOSAVEPATH . $url .".xml");
 	return XMLsave($xml, GSAUTOSAVEPATH . $url .".xml");
+}
+
+/**
+ * publish a draft
+ * @since  3.4
+ * @param  str $id id of page draft to publish
+ * @return bool    status
+ */
+function publishDraft($id){
+	if(!pageHasDraft($id)) return false;
+	backup_page($id); // backup live page
+	backup_datafile(GSAUTOSAVEPATH.$id.'.xml'); // backup draft before moving
+	$status = move_file(GSAUTOSAVEPATH,GSDATAPAGESPATH,$id.'.xml');
+	// restore_datafile(GSAUTOSAVEPATH . $id .".xml"); // debugging replays
+	if($status)	updatePageField($id,'pubDate',date('r')); // update pub date
+	return $status;
 }
 
 /**
@@ -572,6 +667,7 @@ function read_file($file){
 function move_file($src,$dest,$filename = null){
 	fileLog(__FUNCTION__,'-','ALIAS calling rename_file');
 	$status = rename_file($src,$dest,$filename);
+	return $status;
 }
 
 /**
@@ -663,6 +759,7 @@ function gs_chmod($path,$chmod = null,$dir = false){
  * @return mixed            returns status untouched, passthrough
  */
 function fileLog($operation,$status = null){
+	if(!getDef('GSDEBUGFILEIO',true)) return $status;
 	$args = array_slice(func_get_args(),2); // grab arguments past first 2 for output
 	if(is_bool($status)) $logstatus = ($status === true) ? uppercase(i18n_r('SUCCESS','SUCCESS')) : uppercase(i18n_r('FAIL','FAIL'));
 	else $logstatus = (string) $status;

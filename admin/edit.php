@@ -149,7 +149,7 @@ get_template('header');
             if(isset($id)) {
                 if($draft){
                     echo '<a href="'. find_url($url, $parent) .'?draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
-                    echo '<a href="" target="_blank" accesskey="'. find_accesskey(i18n_r('PUBLISH')). '" >'. i18n_r('PUBLISH'). '</a>';
+                    echo '<a href="changedata.php?publish&id='.$id.'" accesskey="'. find_accesskey(i18n_r('PUBLISH')). '" >'. i18n_r('PUBLISH'). '</a>';
                     if($pageExists) echo '<a href="edit.php?id='.$id.'&nodraft" accesskey="'. find_accesskey(i18n_r('EDIT_NODRAFT')). '" >'. i18n_r('EDIT_NODRAFT'). '</a>';
                 }
                 else {
