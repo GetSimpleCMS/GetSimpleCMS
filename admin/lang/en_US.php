@@ -400,6 +400,8 @@ $i18n = array(
 "ER_COMPONENT_SAVE"       =>	"Your components have been saved",
 "ER_COMPONENT_REST"       =>	"Your components have been restored",
 "ER_CANCELLED_FAIL"       =>	"<b>Cancelled:</b> This update has been cancelled",
+"ER_PUBLISH_SUCCESS"      =>	"Draft of <b>%s</b> has been published",
+"ER_PUBLISH_ERROR"        =>	"There was a problem publishing draft of <b>%s</b>",
 
 /* 
 * For: changedata.php

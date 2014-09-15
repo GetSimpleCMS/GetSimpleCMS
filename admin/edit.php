@@ -78,6 +78,7 @@ if ($id){
     $metarNoFollow = $data_edit->metarNoFollow;
     $metarNoArchive = $data_edit->metarNoArchive;
 } else {
+    $draft = false;
     // prefill fields if provided
     $title          =  isset( $_GET['title']      ) ? var_in( $_GET['title']      ) : '';
     $template       =  isset( $_GET['template']   ) ? var_in( $_GET['template']   ) : '';
