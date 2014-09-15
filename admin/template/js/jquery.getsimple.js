@@ -1265,6 +1265,31 @@ jQuery(document).ready(function () {
 	$('table.tree').addTableTree(1,1,1);
 
 	// end of jQuery ready
+	$.fn.togglePage = function(height){
+		$(this).animate({height:height},200);
+		return $(this);
+	}	
+
+	$(".pagestack").css("height","50px");
+	$(".pagestack").on('mouseenter',function(e){
+		// e.preventDefault();
+		$(".pagestack").stop().animate({height:80});
+		e.stopPropagation();
+		return false;
+	});
+
+	$(".pagestack").on('mouseleave',function(e){
+		console.log('mouseout');
+		// e.preventDefault();
+		$(".pagestack").stop().animate({height:25});
+		e.stopPropagation();		
+		return false;
+	});
+
+	// setInterval(function(){		$('.pagestack').slideToggle(fast);	},6000);
+	// setInterval($('.pagestack').togglePage(),6000);
+
+
 });
 
 function dosave(){

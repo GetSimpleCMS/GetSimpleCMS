@@ -1935,6 +1935,10 @@ textarea.copykit {
  	/*display: inline-block;*/
 }
 
+.label-inline {
+	display: inline-block;
+}
+
 .wrapper .label a,.label a{
 	color: white;
 	text-decoration: underline;
@@ -1986,6 +1990,11 @@ textarea.copykit {
 	border: none;
 	border-top: 1px solid rgba(255, 255, 255, 0.2);
 	margin: 6px -8px;
+}
+
+a.label:hover{
+	opacity:.8;
+	text-decoration: none;
 }
 
 .edittable .label-ghost{
@@ -2972,6 +2981,40 @@ a.disabled:visited {
     -webkit-transform-origin-y: 45%;
 }
 
+
+#pagestack{
+	margin: -20px -20px 14px -20px;
+}
+
+.pagestack {
+	position: relative;
+	height:35px;	
+	border-bottom: 1px solid #CFCFCF;
+	background-color: #FEFEFE;
+	/*padding: 11px 18px;*/
+	padding-top:11px;
+	padding-left:18px;
+	padding-right:18px;
+	color: #808080;
+	overflow: hidden;
+
+	white-space:nowrap;
+	-webkit-transition: none;
+	-moz-transition: none;
+	-o-transition: none;
+	-ms-transition: none;
+	transition: none;
+}
+
+.pagestack .shadow{
+	box-shadow: inset 0 -6px 8px -6px rgba(0, 0, 0, 0.2);	
+	/*box-shadow: inset 0 0 10px #000;*/
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
 
 /* END */
 

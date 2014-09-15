@@ -140,7 +140,65 @@ get_template('header');
     
     <div id="maincontent">
         <div class="main">
+
+<?php
+    if(isset($id)) {        
+        if($draft && $pageExists){ ?>
+
+        <!-- page stack -->
+        <div id="pagestack">        
+        <div class="pagestack boxsizingBorder">
+            <div style="float: left;">
+                <p><i class="fa fa-clock-o">&nbsp;</i>Page published by <em>user</em> on September 10th, 2014 - 1:52 PM&nbsp;</p>
+            </div>
+            <div style="float:right">
+                <a href="edit.php?id=<?php echo $id;?>&nodraft" class="label label label-ghost label-inline" style="color:#808080;">
+                    <i class="fa fa-pencil"></i>
+                </a>
+                <div class="label label-ok label-inline">PUBLISHED</div>
+            </div>  
+            <div class="shadow"></div>  
+        </div>
+        </div>
         
+<?php 
+        }
+        debugLog($id);
+        debugLog($draftExists);
+        if(!$draft && $draftExists){ 
+?>
+
+        <!-- page stack -->
+        <div id="pagestack">
+        <div class="pagestack boxsizingBorder">
+            <div style="float: left;">
+                <i class="fa fa-clock-o">&nbsp;</i>Page draft created by <em>user</em> on September 11th, 2014 - 1:52 PM&nbsp;
+            </div>
+            <div style="float:right">
+                <a href="edit.php?id=<?php echo $id;?>" class="label label label-ghost label-inline" style="color:#808080;">
+                    <i class="fa fa-pencil"></i>
+                </a>
+                <div class="label secondary-lightest-back label-inline">DRAFT</div>
+            </div>
+            <div>
+            <?php
+            echo '<div class="clear" ><BR></div>';
+            echo '<h3 class="floated">'.i18n_r('PAGE_EDIT_MODE').'</h3>';            
+            echo '<div class="edit-nav" >';
+            echo '<a href="'. find_url($url, $parent) .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
+            if($url != '') {echo '<a href="pages.php?id='. $url .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
+            echo '<span class="save-close"><a href="javascript:void(0)" >'.i18n_r('SAVE_AND_CLOSE').'</a></span>';
+            echo "</div>";
+            ?>
+            </div>/
+            <div class="shadow"></div>  
+        </div>
+        </div>   
+<?php
+        }
+    }
+?>
+
         <h3 class="floated"><?php if(isset($data_edit)) { i18n('PAGE_EDIT_MODE'); } else { i18n('CREATE_NEW_PAGE'); } ?></h3>   
         <?php if($draft){ ?><div class="title label secondary-lightest-back">DRAFT</div><?php } ?>
         <!-- pill edit navigation -->
