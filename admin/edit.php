@@ -22,7 +22,7 @@ $id    = isset($_GET['id'])    ? var_in( $_GET['id']    ): null;
 $uri   = isset($_GET['uri'])   ? var_in( $_GET['uri']   ): null;
 $ptype = isset($_GET['type'])  ? var_in( $_GET['type']  ): null;
 $nonce = isset($_GET['nonce']) ? var_in( $_GET['nonce'] ): null;
-$draft = (isset($_GET['nodraft']) || !getDef('GSUSEDRAFTS',true)) ? false : true;
+$draft = (isset($_GET['nodraft']) || !getDef('GSUSEDRAFTS',true)) ? false : true; // (bool) using draft pages
 
 // Page variables reset
 $theme_templates = '';
@@ -39,6 +39,11 @@ $title           = '';
 $url             = '';
 $metak           = '';
 $metad           = '';
+
+$draftExists = false; // (bool) does a draft exist
+$pageExists  = false; // (bool) does a page exist
+$newdraft    = false; // (bool) new (unsaved) draft being edited
+$pageClass   = "";    // (str) classes to add to maincontent
 
 if ($id){
     // get saved page data
@@ -98,6 +103,8 @@ if ($id){
     $buttonname = i18n_r('BTN_SAVEPAGE');
 }
 
+$newdraft = $draft && !$draftExists; // (bool) is this a new never saved draft?
+$path = find_url($url, $parent);
 
 // make select box of available theme templates
 if ($template == '') { $template = GSTEMPLATEFILE; }
@@ -133,98 +140,114 @@ if ($menu == '') { $menu = $title; }
 $pagetitle = empty($title) ? i18n_r('CREATE_NEW_PAGE') : i18n_r('EDIT').' &middot; '.$title;
 get_template('header');
 
+include('template/include-nav.php');
+
+
+function getPublishedPageHead($editing = true, $path = ''){
+    global $id,$draftExists,$pageExists;
+    echo '<h3 class="floated">'. ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')).'</h3>';
+    if(getDef('GSUSEDRAFTS',true))echo '<div class="title label label-ok">PUBLISHED</div>';
+    echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav" >';
+    if($editing) {
+        echo '<a class="pageview" href="'. $path .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
+        if($path != '') {echo '<a class="pageclone" href="pages.php?id='. $id .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
+    }
+    echo '<div class="clear" ></div>',"\n",'</div>';
+}
+
+function getDraftPageHead($editing = true, $path = ''){
+    global $id,$draftExists,$pageExists;
+    echo '<h3 class="floated">'. ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')) .'</h3>';
+    echo '<div class="title label secondary-lightest-back">DRAFT</div>';
+    echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav" >';
+    if($editing) {
+        echo '<a class="draftview" href="'. $path .'?draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
+        echo '<a class="draftpublish" href="changedata.php?publish&id='.$id.'" accesskey="'. find_accesskey(i18n_r('PUBLISH')). '" >'. i18n_r('PUBLISH'). '</a>';
+    }
+    echo '<div class="clear" ></div>',"\n",'</div>';
+}
+
+if($newdraft) $pageClass.=' newdraft';
+
 ?>
 
-<?php include('template/include-nav.php'); ?>
-
 <div class="bodycontent clearfix">
-    
-    <div id="maincontent">
-        <div class="main">
 
+    <div id="maincontent" class="<?php echo $pageClass; ?>">
+        <div class="main">
+        <div id="pagestack">
 <?php
-    if(isset($id)) {        
+    exec_action('page-stack'); // experimental
+
+    if(isset($id) && getDef('GSUSEDRAFTS',true)) {
+        // draft page and current page exists
         if($draft && $pageExists){ ?>
 
-        <!-- page stack -->
-        <div id="pagestack">        
-        <div class="pagestack boxsizingBorder">
+        <!-- page stack for published page -->
+        <div class="pagestack existingpage boxsizingBorder">
             <div style="float: left;">
-                <p><i class="fa fa-clock-o">&nbsp;</i>Page published by <em>user</em> on September 10th, 2014 - 1:52 PM&nbsp;</p>
+                <i class="fa fa-clock-o">&nbsp;</i>Page published by <em>user</em> on September 10th, 2014 - 1:52 PM&nbsp;
             </div>
             <div style="float:right">
-                <a href="edit.php?id=<?php echo $id;?>&nodraft" class="label label label-ghost label-inline" style="color:#808080;">
+                <a href="edit.php?id=<?php echo $id;?>&amp;nodraft" class="label label-ghost label-inline" style="color:#808080;">
                     <i class="fa fa-pencil"></i>
                 </a>
                 <div class="label label-ok label-inline">PUBLISHED</div>
-            </div>  
-            <div class="shadow"></div>  
+            </div>
+            <div class="pagehead clear" >
+            <?php
+                getPublishedPageHead(isset($id),$path);
+            ?>
+            </div>
+            <div class="shadow"></div>
         </div>
-        </div>
-        
-<?php 
+<?php
         }
-        debugLog($id);
-        debugLog($draftExists);
-        if(!$draft && $draftExists){ 
+        // current page, draft exists
+        if(!$draft && $draftExists){
 ?>
-
-        <!-- page stack -->
-        <div id="pagestack">
-        <div class="pagestack boxsizingBorder">
+        <!-- page stack for draft exists-->
+        <div class="pagestack existingdraft boxsizingBorder">
             <div style="float: left;">
-                <i class="fa fa-clock-o">&nbsp;</i>Page draft created by <em>user</em> on September 11th, 2014 - 1:52 PM&nbsp;
+                <i class="fa fa-clock-o">&nbsp;</i>Page Draft created by <em>user</em> on September 11th, 2014 - 1:52 PM&nbsp;
             </div>
             <div style="float:right">
-                <a href="edit.php?id=<?php echo $id;?>" class="label label label-ghost label-inline" style="color:#808080;">
+                <a href="edit.php?id=<?php echo $id;?>" class="label label-ghost label-inline">
                     <i class="fa fa-pencil"></i>
                 </a>
                 <div class="label secondary-lightest-back label-inline">DRAFT</div>
             </div>
-            <div>
+            <div class="pagehead clear" >
             <?php
-            echo '<div class="clear" ><BR></div>';
-            echo '<h3 class="floated">'.i18n_r('PAGE_EDIT_MODE').'</h3>';            
-            echo '<div class="edit-nav" >';
-            echo '<a href="'. find_url($url, $parent) .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
-            if($url != '') {echo '<a href="pages.php?id='. $url .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
-            echo '<span class="save-close"><a href="javascript:void(0)" >'.i18n_r('SAVE_AND_CLOSE').'</a></span>';
-            echo "</div>";
+                getDraftPageHead(isset($id),$path);
             ?>
-            </div>/
-            <div class="shadow"></div>  
+            </div>
+            <div class="shadow"></div>
         </div>
-        </div>   
+<?php
+        }
+        else if(!$draft && !$draftExists){
+?>
+        <!-- page stack for draft not exist -->
+        <div class="pagestack newdraft boxsizingBorder">
+            <div style="float: left;">
+                <i class="fa fa-info-circle">&nbsp;</i>Page does not have a draft&nbsp;
+            </div>
+            <div style="float:right">
+                <a href="edit.php?id=<?php echo $id;?>&amp;" class="label label-ghost label-inline">
+                    <i class="fa fa-pencil"></i>
+                </a>
+                <div class="label label-ghost label-inline">DRAFT</div>
+            </div>
+            <div class="shadow"></div>
+        </div>
 <?php
         }
     }
+    echo '</div>';
+    $draft ? getDraftPageHead(isset($id),$path) : getPublishedPageHead(isset($id),$path);
+
 ?>
-
-        <h3 class="floated"><?php if(isset($data_edit)) { i18n('PAGE_EDIT_MODE'); } else { i18n('CREATE_NEW_PAGE'); } ?></h3>   
-        <?php if($draft){ ?><div class="title label secondary-lightest-back">DRAFT</div><?php } ?>
-        <!-- pill edit navigation -->
-        <div class="edit-nav" >
-            <?php 
-            if(isset($id)) {
-                if($draft){
-                    echo '<a href="'. find_url($url, $parent) .'?draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
-                    echo '<a href="changedata.php?publish&id='.$id.'" accesskey="'. find_accesskey(i18n_r('PUBLISH')). '" >'. i18n_r('PUBLISH'). '</a>';
-                    if($pageExists) echo '<a href="edit.php?id='.$id.'&nodraft" accesskey="'. find_accesskey(i18n_r('EDIT_NODRAFT')). '" >'. i18n_r('EDIT_NODRAFT'). '</a>';
-                }
-                else {
-                    echo '<a href="'. find_url($url, $parent) .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
-                    if(getDef('GSUSEDRAFTS',true)) echo '<a href="edit.php?id='.$id.'" accesskey="'. find_accesskey(i18n_r('EDIT_DRAFT')). '" >'. i18n_r('EDIT_DRAFT'). '</a>';                    
-                    // if($url != '') {echo '<a href="pages.php?id='. $url .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
-                    // echo '<span class="save-close"><a href="javascript:void(0)" >'.i18n_r('SAVE_AND_CLOSE').'</a></span>';
-                }
-            }
-            ?>
-
-            <!-- @todo: fix accesskey for options  -->
-            <!-- <a href="javascript:void(0)" id="metadata_toggle" accesskey="<?php echo find_accesskey(i18n_r('PAGE_OPTIONS'));?>" ><?php i18n('PAGE_OPTIONS'); ?></a> -->
-            <div class="clear" ></div>
-        </div>  
-            
         <form class="largeform" id="editform" action="changedata.php" method="post" accept-charset="utf-8" >
         <input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("edit", "edit.php"); ?>" />
         <input id="author" name="post-author" type="hidden" value="<?php echo $USR; ?>" />
@@ -423,7 +446,7 @@ get_template('header');
                     <h6 class="dropdownaction"><?php i18n('ADDITIONAL_ACTIONS'); ?></h6>
                     <ul class="dropdownmenu">
                         <li class="save-close" ><a href="javascript:void(0)" ><?php i18n('SAVE_AND_CLOSE'); ?></a></li>
-                        <?php if($url != '') { ?>
+                        <?php if($url != '' && !$draft) { ?>
                             <li><a href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" ><?php i18n('CLONE'); ?></a></li>
                         <?php } ?>
                         <li id="cancel-updates" class="alertme"><a href="pages.php?cancel" ><?php i18n('CANCEL'); ?></a></li>

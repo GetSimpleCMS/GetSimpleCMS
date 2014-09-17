@@ -719,7 +719,8 @@ jQuery(document).ready(function () {
     function ajaxSaveSucess(response){
         updateEditSlug(response);
         updateNonce(response);
-        // @todo change url to new slug so refreshes work        
+        $('#maincontent.newdraft').removeClass('newdraft'); // remove newdraft class / show action buttons
+        // @todo change window url to new slug so refreshes work
     }
 
     function ajaxSaveError(response){
@@ -1265,31 +1266,6 @@ jQuery(document).ready(function () {
 	$('table.tree').addTableTree(1,1,1);
 
 	// end of jQuery ready
-	$.fn.togglePage = function(height){
-		$(this).animate({height:height},200);
-		return $(this);
-	}	
-
-	$(".pagestack").css("height","50px");
-	$(".pagestack").on('mouseenter',function(e){
-		// e.preventDefault();
-		$(".pagestack").stop().animate({height:80});
-		e.stopPropagation();
-		return false;
-	});
-
-	$(".pagestack").on('mouseleave',function(e){
-		console.log('mouseout');
-		// e.preventDefault();
-		$(".pagestack").stop().animate({height:25});
-		e.stopPropagation();		
-		return false;
-	});
-
-	// setInterval(function(){		$('.pagestack').slideToggle(fast);	},6000);
-	// setInterval($('.pagestack').togglePage(),6000);
-
-
 });
 
 function dosave(){

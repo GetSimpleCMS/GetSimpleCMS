@@ -32,6 +32,14 @@ if (isset($_GET['id'])) {
 	}
 }
 
+// are we deleting page draft?
+if (isset($_GET['draft'])) {
+	$id = $_GET['id'];
+	$status = delete_draft($id) ? 'success' : 'error';
+	exec_action('draft-delete');
+	redirect("pages.php?upd=edit-".$status."&id=". $id ."&type=delete");
+}
+
 // Delete archive
 if (isset($_GET['zip'])) { 
 	$zip    = $_GET['zip'];

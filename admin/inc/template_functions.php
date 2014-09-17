@@ -297,6 +297,24 @@ function delete_page($id, $backup = true){
 }
 
 /**
+ * Delete Pages Draft File
+ *
+ * Deletes pages draft data file afer making backup
+ *
+ * @since 3.4
+ * @uses GSBACKUPSPATH
+ * @uses GSDATADRAFTSPATH
+ *
+ * @param string $id File ID to delete
+ * @param  bool $backup perform backup of file before deleting it
+ */
+function delete_draft($id, $backup = true){
+	if($backup) backup_datafile(GSDATADRAFTSPATH.$id.'.xml');
+	return delete_file(GSDATADRAFTSPATH.$id.'.xml');
+}
+
+
+/**
  * Clone a page
  * Automatically names page id to next incremental copy eg. "slug-n"
  * Clone title becomes "title [copy]""

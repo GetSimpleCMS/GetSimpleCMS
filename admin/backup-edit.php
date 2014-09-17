@@ -17,7 +17,13 @@ login_cookie_check();
 if ($_GET['id'] != '') {
 	$id   = $_GET['id'];
 	$file = $id .".bak.xml";
-	$path = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
+
+	$draft = isset($_GET['draft']); // (bool) using draft pages
+	if($draft) $path = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/drafts/
+	else $path = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
+
+	debugLog($path);
+	debugLog($file);
 
 	$data       = getXML($path . $file);
 	$title      = htmldecode($data->title);

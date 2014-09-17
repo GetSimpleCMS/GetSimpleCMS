@@ -1978,6 +1978,7 @@ textarea.copykit {
 
 .label-ghost {
 	background-color: rgba(221, 221, 221, 0.5) !important;
+	color: #999999;
 }
 
 .label-gold {
@@ -2000,7 +2001,6 @@ a.label:hover{
 .edittable .label-ghost{
 	font-size:11px;
 	padding:3px 6px;
-	color: #999999;
 	text-shadow: none;
 }
 
@@ -2981,6 +2981,14 @@ a.disabled:visited {
     -webkit-transform-origin-y: 45%;
 }
 
+#maincontent.newdraft .draftview,#maincontent.newdraft .draftpublish{
+	display:none;
+}
+
+#maincontent.newdraft .title.label{
+	background-color: rgba(221, 221, 221, 0.5) !important;
+	color: #999999;
+}
 
 #pagestack{
 	margin: -20px -20px 14px -20px;
@@ -2988,32 +2996,61 @@ a.disabled:visited {
 
 .pagestack {
 	position: relative;
-	height:35px;	
+	height:27px;
 	border-bottom: 1px solid #CFCFCF;
-	background-color: #FEFEFE;
-	/*padding: 11px 18px;*/
-	padding-top:11px;
-	padding-left:18px;
-	padding-right:18px;
+	background-color: #FAFAFA;
+	padding: 7px 4px 0 7px;
 	color: #808080;
 	overflow: hidden;
-
 	white-space:nowrap;
-	-webkit-transition: none;
-	-moz-transition: none;
-	-o-transition: none;
-	-ms-transition: none;
-	transition: none;
+	transition: height 400ms ease-out,
+				background-color 100ms ;
+	transition-delay: 150ms;
+
+	-webkit-transition: height 400ms ease-out,
+				background-color 100ms ;
+	-webkit-transition-delay: 150ms;
+
+
+}
+
+.pagestack .label {
+	font-weight: bold;
 }
 
 .pagestack .shadow{
-	box-shadow: inset 0 -6px 8px -6px rgba(0, 0, 0, 0.2);	
-	/*box-shadow: inset 0 0 10px #000;*/
+	box-shadow: inset 0 -6px 8px -6px rgba(0, 0, 0, 0.2);
 	position: absolute;
-	top: 0;
 	left: 0;
+	bottom: 0;
 	width: 100%;
-	height: 100%;
+	height: 9px;
+	pointer-events:none; /* clickthrough */
+}
+
+.pagestack .pagehead{
+	padding:15px;
+}
+
+/**
+ * pagestack hover expand animations
+ */
+.pagestack.existingpage:hover,.pagestack.existingdraft:hover,.pagestack.open{
+	transition: height 200ms ease-out,
+				background-color 100ms ;
+	transition-delay: 150ms;
+	-webkit-transition: height 200ms ease-out,
+				background-color 100ms ;
+	-webkit-transition-delay: 150ms;	
+	background-color: #FFFFFF;
+	height:80px;
+}
+
+.pagestack.newdraft:hover,.pagestack.nopeek:hover{
+	transition: height 200ms;
+	transition-delay: 200ms;
+	background-color: #FFFFFF;
+	height:35px;
 }
 
 /* END */

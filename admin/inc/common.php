@@ -82,11 +82,12 @@ $GS_definitions = array(
 	'GSCHMODFILE'          => 0644,                           // (int) chmod mode for files
 	'GSCHMODDIR'           => 0755,                           // (int) chmod mode for dirs
 	'GSDOCHMOD'            => true,                           // (bool) perform chmod after creating files or directories
-	'GSUSEDRAFTS'          => true,                           // (bool) use page drafts
+	'GSUSEDRAFTS'          => true,                          // (bool) use page drafts
 	'GSDEBUG'              => false,                          // (bool) debug mode
-	'GSDEBUGREDIRECTS'     => true,                           // (bool) debug mode stop redirects for debugging
-	'GSDEBUGFILEIO'        => true,                           // (bool) debug filio operations
- 	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
+	'GSDEBUGREDIRECTS'     => false,                          // (bool) debug mode stop redirects for debugging
+	'GSDEBUGFILEIO'        => false,                          // (bool) debug filio operations
+	'GSAJAXSAVE'           => true,                           // (bool) save forms using ajax where
+ 	'GSDEFINITIONSLOADED'  => true                            // (bool) $GS_definitions IS LOADED FLAG
 );
 
 /* Define Constants */
@@ -156,6 +157,7 @@ define('GSDATAOTHERPATH' , GSDATAPATH      . 'other/');     // data/other/
 define('GSDATAPAGESPATH' , GSDATAPATH      . 'pages/');     // data/pages/
 
 define('GSAUTOSAVEPATH'  , GSDATAPAGESPATH . 'autosave/');  // data/pages/autosave/
+define('GSDATADRAFTSPATH', GSDATAPAGESPATH . 'autosave/');  // data/pages/autosave/
 define('GSDATAUPLOADPATH', GSDATAPATH      . 'uploads/');   // data/uploads/
 define('GSTHUMBNAILPATH' , GSDATAPATH      . 'thumbs/');    // data/thumbs/
 define('GSUSERSPATH'     , GSDATAPATH      . 'users/');     // data/users/
