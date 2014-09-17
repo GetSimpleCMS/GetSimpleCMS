@@ -158,7 +158,7 @@ function getPublishedPageHead($editing = true, $path = ''){
 function getDraftPageHead($editing = true, $path = ''){
     global $id,$draftExists,$pageExists;
     echo '<h3 class="floated">'. ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')) .'</h3>';
-    echo '<div class="title label secondary-lightest-back">'.i18n_r('LABEL_DRAFT').'</div>';
+    echo '<div class="title label label-draft secondary-lightest-back">'.i18n_r('LABEL_DRAFT').'</div>';
     echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav" >';
     if($editing) {
         echo '<a class="draftview" href="'. $path .'?draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
@@ -180,13 +180,13 @@ if($newdraft) $pageClass.=' newdraft';
     exec_action('page-stack'); // experimental
 
     if(isset($id) && getDef('GSUSEDRAFTS',true)) {
-        // draft page and current page exists
-        if($draft && $pageExists){ 
-            $publishdata = getPageXML($id,$nocdata = true);
-            $publishAuthor = (string)$publishdata->author;
+        // editing draft page, published page exists
+        if($draft && $pageExists){
+            $publishdata    = getPageXML($id,$nocdata = true);
+            $publishAuthor  = (string)$publishdata->author;
             $publishPubdate = output_datetime($publishdata->pubDate);
 ?>
-        <!-- page stack for published page -->
+        <!-- PUBLISHED pagestack -->
         <div class="pagestack existingpage boxsizingBorder">
             <div style="float: left;">
                 <i class="fa fa-clock-o">&nbsp;</i><?php echo sprintf(i18n_r('LAST_SAVED'),$publishAuthor)," ",$publishPubdate;?>&nbsp;
@@ -206,13 +206,13 @@ if($newdraft) $pageClass.=' newdraft';
         </div>
 <?php
         }
-        // current page, draft exists
+        // editing published page, draft exists
         if(!$draft && $draftExists){
             $draftdata = getDraftXML($id,$nocdata = true);
             $draftAuthor = (string)$draftdata->author;
             $draftPubdate = output_datetime($draftdata->pubDate);
 ?>
-        <!-- page stack for draft exists-->
+        <!-- DRAFT page stack -->
         <div class="pagestack existingdraft boxsizingBorder">
             <div style="float: left;">
                 <i class="fa fa-clock-o">&nbsp;</i><?php echo sprintf(i18n_r('DRAFT_LAST_SAVED'),$draftAuthor)," ",$draftPubdate;?>&nbsp;
@@ -233,11 +233,12 @@ if($newdraft) $pageClass.=' newdraft';
 <?php
         }
         else if(!$draft && !$draftExists){
+        // editing published page, draft does not exist
 ?>
-        <!-- page stack for draft not exist -->
+        <!-- NEWDRAFT page stack -->
         <div class="pagestack newdraft boxsizingBorder">
             <div style="float: left;">
-                <i class="fa fa-info-circle">&nbsp;</i>Page does not have a draft&nbsp;
+                <i class="fa fa-info-circle">&nbsp;</i><?php i18n('PAGE_NO_DRAFT'); ?>&nbsp;
             </div>
             <div style="float:right">
                 <a href="edit.php?id=<?php echo $id;?>&amp;" class="label label-ghost label-inline">
@@ -286,7 +287,7 @@ if($newdraft) $pageClass.=' newdraft';
                         <p>
                             <label for="post-summary" class=""><?php i18n('SUMMARY'); ?>: <span class="countdownwrap"><strong class="countdown" ></strong> <?php i18n('REMAINING'); ?></span></label>
                             <textarea class="text short charlimit" data-maxLength='256' id="post-summary" name="post-summary" ><?php echo $summary; ?></textarea>
-                        </p>                        
+                        </p>
                     </div>
                     <div class="leftopt">
                         <p class="inline clearfix" id="post-private-wrap" >
@@ -452,14 +453,15 @@ if($newdraft) $pageClass.=' newdraft';
                     <h6 class="dropdownaction"><?php i18n('ADDITIONAL_ACTIONS'); ?></h6>
                     <ul class="dropdownmenu">
                         <li class="save-close" ><a href="javascript:void(0)" ><?php i18n('SAVE_AND_CLOSE'); ?></a></li>
-                        <?php if($url != '' && !$draft) { ?>
+                        <?php 
+                            if($url != '' && !$draft) { ?>
                             <li><a href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" ><?php i18n('CLONE'); ?></a></li>
                         <?php } ?>
                         <li id="cancel-updates" class="alertme"><a href="pages.php?cancel" ><?php i18n('CANCEL'); ?></a></li>
-                        <?php if($draft && $url != 'index' && $url != '') { ?>
+                        <?php if($draft && !$newdraft && $url != 'index' && $url != '') { ?>
                             <li class="alertme" ><a href="deletefile.php?draft=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
                         <?php }
-                            else if($url != 'index' && $url != '') { ?>
+                            else if(!$draft && $url != 'index' && $url != '') { ?>
                             <li class="alertme" ><a href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
                         <?php } ?>
                     </ul>

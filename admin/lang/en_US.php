@@ -77,6 +77,7 @@ $i18n = array(
 "DRAFT_LAST_SAVED"        =>	"Page Draft saved by <em>%s</em> on",
 "PUBLISH"                 =>	"Publish",
 "LABEL_PUBLISHED"         =>	"PUBLISHED",
+"PAGE_NO_DRAFT"           =>    "Page does not have a draft",
 
 /*
 * For: edit.php

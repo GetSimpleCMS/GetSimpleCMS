@@ -2985,7 +2985,7 @@ a.disabled:visited {
 	display:none;
 }
 
-#maincontent.newdraft .title.label{
+#maincontent.newdraft .label-draft{
 	background-color: rgba(221, 221, 221, 0.5) !important;
 	color: #999999;
 }
@@ -3038,10 +3038,10 @@ a.disabled:visited {
 .pagestack.existingpage:hover,.pagestack.existingdraft:hover,.pagestack.open{
 	transition: height 200ms ease-out,
 				background-color 100ms ;
-	transition-delay: 150ms;
 	-webkit-transition: height 200ms ease-out,
 				background-color 100ms ;
-	-webkit-transition-delay: 150ms;	
+	transition-delay: 150ms;
+	-webkit-transition-delay: 150ms;
 	background-color: #FFFFFF;
 	height:80px;
 }
