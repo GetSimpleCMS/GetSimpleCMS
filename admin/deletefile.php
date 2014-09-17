@@ -29,15 +29,17 @@ if (isset($_GET['id'])) {
 		generate_sitemap();
 		exec_action('page-delete');
 		redirect("pages.php?upd=edit-".$status."&id=". $id ."&type=delete");
+		die();
 	}
 }
 
 // are we deleting page draft?
 if (isset($_GET['draft'])) {
-	$id = $_GET['id'];
+	$id = $_GET['draft'];
 	$status = delete_draft($id) ? 'success' : 'error';
 	exec_action('draft-delete');
 	redirect("pages.php?upd=edit-".$status."&id=". $id ."&type=delete");
+	die();
 }
 
 // Delete archive
@@ -46,6 +48,7 @@ if (isset($_GET['zip'])) {
 	$status = delete_zip($zip) ? 'success' : 'error';
 	
 	redirect("archive.php?upd=del-". $status ."&id=". $zip);
+	die();
 } 
 
 // Delete upload file
@@ -55,6 +58,7 @@ if (isset($_GET['file'])) {
 	$status = delete_upload($file, $path) ? 'success' : 'error';
 	
 	redirect("upload.php?upd=del-".$status."&id=". $file . "&path=" . $path);
+	die();
 } 
 
 
@@ -65,4 +69,5 @@ if (isset($_GET['folder'])) {
 	$status = delete_upload_dir($path . $folder) ? 'success' : 'error';
 
 	redirect("upload.php?upd=del-".$status."&id=". $folder . "&path=".$path);
+	die();
 }

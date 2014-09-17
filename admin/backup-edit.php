@@ -22,9 +22,6 @@ if ($_GET['id'] != '') {
 	if($draft) $path = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/drafts/
 	else $path = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
 
-	debugLog($path);
-	debugLog($file);
-
 	$data       = getXML($path . $file);
 	$title      = htmldecode($data->title);
 	$pubDate    = $data->pubDate;
@@ -55,13 +52,19 @@ if ($_GET['p'] != '') {
 if ($p == 'delete') {
 	// deleting page backup
 	check_for_csrf("delete","backup-edit");
-	$status = delete_bak($id) ? 'success' : 'error';
+	if($draft) $status = delete_draft_backup($id) ? 'success' : 'error';
+	else $status = delete_page_backup($id) ? 'success' : 'error';
 	redirect("backups.php?upd=bak-".$status."&id=".$id);
 }
 
 elseif ($p == 'restore') {
 	// restoring page backup
 	check_for_csrf("restore", "backup-edit.php");
+
+	if($draft){
+		restore_draft($id);   // restore old slug file
+		redirect("edit.php?id=". $id ."&upd=edit-success&type=restore");
+	}
 
 	if (isset($_GET['new'])) {
 		$newid = $_GET['new'];
@@ -81,6 +84,8 @@ elseif ($p == 'restore') {
 $pagetitle = i18n_r('BAK_MANAGEMENT').' &middot; '.i18n_r('VIEWPAGE_TITLE');
 get_template('header');
 
+$draftqs = $draft ? '&amp;draft' : '';
+
 ?>
 
 <?php include('template/include-nav.php'); ?>
@@ -92,9 +97,9 @@ get_template('header');
 		<h3 class="floated"><?php i18n('BACKUP_OF');?> &lsquo;<em><?php echo $url; ?></em>&rsquo;</h3>
 		
 		<div class="edit-nav" >
-			 <a href="backup-edit.php?p=restore&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" 
+			 <a href="backup-edit.php?p=restore<?php echo $draftqs; ?>&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" 
 			 	accesskey="<?php echo find_accesskey(i18n_r('ASK_RESTORE'));?>" ><?php i18n('ASK_RESTORE');?></a> 
-			 <a href="backup-edit.php?p=delete&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" 
+			 <a href="backup-edit.php?p=delete<?php echo $draftqs; ?>&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" 
 			 	title="<?php i18n('DELETEPAGE_TITLE'); ?>: <?php echo $title; ?>?" 
 			 	id="delback" 
 			 	accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE'));?>" 

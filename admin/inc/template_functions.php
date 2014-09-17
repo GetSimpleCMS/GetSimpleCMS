@@ -268,6 +268,18 @@ function backup_page($id){
 }
 
 /**
+ * backup a draft
+ *
+ * @since 3.4
+ *
+ * @param  str $id id of page to backup
+ * @return bool     success
+ */
+function backup_draft($id){
+	backup_datafile(GSDATADRAFTSPATH.$id.'.xml');
+}
+
+/**
  * Restore a page from backup
  *
  * @since 3.4
@@ -277,6 +289,18 @@ function backup_page($id){
  */
 function restore_page($id){
 	restore_datafile(GSDATAPAGESPATH.$id.'.xml');
+}
+
+/**
+ * Restore a page from backup
+ *
+ * @since 3.4
+ *
+ * @param  str $id id of page
+ * @return bool     success
+ */
+function restore_draft($id){
+	restore_datafile(GSDATADRAFTSPATH.$id.'.xml');
 }
 
 /**
@@ -363,9 +387,6 @@ function getNextFileName($path,$file){
  * Delete Pages Backup File
  *
  * @since 3.4
- * @uses GSBACKUPSPATH
- * @uses GSDATAPAGESPATH
- * @uses GSGSDATATPATH
  *
  * @param string $id File ID to delete
  * @return bool success
@@ -389,6 +410,18 @@ function undo($file, $filepath, $bakpath) {
 	return restore_datafile($filepath.$file);
 }
 
+/**
+ * Delete Draft Backup File
+ *
+ * @since 3.4
+ *
+ * @param string $id File ID to delete
+ * @return bool success
+ */
+function delete_draft_backup($id){
+	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/pages/
+	return delete_file($bakpagespath. $id .".bak.xml");
+}
 
 /**
  * Create Random Password

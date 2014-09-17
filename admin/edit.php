@@ -450,6 +450,9 @@ if($newdraft) $pageClass.=' newdraft';
                             <li><a href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" ><?php i18n('CLONE'); ?></a></li>
                         <?php } ?>
                         <li id="cancel-updates" class="alertme"><a href="pages.php?cancel" ><?php i18n('CANCEL'); ?></a></li>
+                        <?php if($draft && $url != 'index' && $url != '') { ?>
+                            <li class="alertme" ><a href="deletefile.php?draft=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
+                        <?php } ?>
                         <?php if($url != 'index' && $url != '') { ?>
                             <li class="alertme" ><a href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
                         <?php } ?>
@@ -463,9 +466,12 @@ if($newdraft) $pageClass.=' newdraft';
                     if (isset($pubDate)) { 
                         echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'.$author.'</em>').' '. output_datetime($pubDate).'&nbsp;&nbsp; ';
                     }
-                    if ( fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
+                    if ( $draft && fileHasBackup(GSDATADRAFTSPATH.$url.'.xml') ) {
+                        echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
+                    }
+                    else if(fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
                         echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
-                    } 
+                    }
                 ?></p>
             <?php } ?>
     </form>

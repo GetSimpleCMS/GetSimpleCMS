@@ -416,7 +416,7 @@ function getPageXML($id,$nocdata = true){
  * @return xml     xml object
  */
 function getDraftXML($id,$nocdata = true){
-	return getXML(GSAUTOSAVEPATH.$id.'.xml',$nocdata);
+	return getXML(GSDATADRAFTSPATH.$id.'.xml',$nocdata);
 }
 
 /**
@@ -530,8 +530,8 @@ function saveDraftXml($xml,$backup = true){
 	$url = $xml->url;
 	if(!isset($url) || trim($url) == '') die('empty slug'); // @todo need some kind of assert here
 	// backup before overwriting
-	if($backup && file_exists(GSAUTOSAVEPATH . $url .".xml")) backup_datafile(GSAUTOSAVEPATH . $url .".xml");
-	return XMLsave($xml, GSAUTOSAVEPATH . $url .".xml");
+	if($backup && file_exists(GSDATADRAFTSPATH . $url .".xml")) backup_draft($url);
+	return XMLsave($xml, GSDATADRAFTSPATH . $url .".xml");
 }
 
 /**
@@ -543,9 +543,9 @@ function saveDraftXml($xml,$backup = true){
 function publishDraft($id){
 	if(!pageHasDraft($id)) return false;
 	backup_page($id); // backup live page
-	backup_datafile(GSAUTOSAVEPATH.$id.'.xml'); // backup draft before moving
-	$status = move_file(GSAUTOSAVEPATH,GSDATAPAGESPATH,$id.'.xml');
-	// restore_datafile(GSAUTOSAVEPATH . $id .".xml"); // debugging replays
+	backup_datafile(GSDATADRAFTSPATH.$id.'.xml'); // backup draft before moving
+	$status = move_file(GSDATADRAFTSPATH,GSDATAPAGESPATH,$id.'.xml');
+	// restore_datafile(GSDATADRAFTSPATH . $id .".xml"); // debugging replays
 	if($status)	updatePageField($id,'pubDate',date('r')); // update pub date
 	return $status;
 }
@@ -558,7 +558,7 @@ function publishDraft($id){
  * @return bool status
  */
 function pageHasDraft($id){
-	return file_exists(GSAUTOSAVEPATH . $id .".xml");
+	return file_exists(GSDATADRAFTSPATH . $id .".xml");
 }
 
 /**
