@@ -20,8 +20,9 @@ $autoSaveDraft = false; // auto save to autosave drafts
 $draft = (isset($_GET['nodraft']) || isset($_POST['post-nodraft']) || !getDef('GSUSEDRAFTS',true)) ? false : true; // (bool) using draft pages
 
 if(isset($_GET['publish']) && isset($_GET['id'])){
-	$id = var_in($_GET['id']);
+	$id     = var_in($_GET['id']);
 	$status = publishDraft($id) ? 'success' : 'error';
+	exec_action('draft-publish');
 	redirect("pages.php?id=". $id ."&upd=publish-".$status);
 	die();
 }
@@ -93,15 +94,16 @@ if (isset($_POST['submitted'])) {
 		exec_action('changedata-save');
 		$xml = exec_filter('page-save',$xml);
 		savePageXml($xml);
+		exec_action('changedata-aftersave');
 	}
-	else {
-		exec_action('changedata-draft-save');
+	else {;
+		exec_action('changedata-save-draft');
 		$xml = exec_filter('draft-save',$xml);
 		saveDraftXml($xml);
+		exec_action('changedata-aftersave-draft');
 	}
 
-	//ending actions
-	exec_action('changedata-aftersave');
+	//ending action
 	generate_sitemap();
 
 	/**
