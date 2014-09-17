@@ -71,11 +71,12 @@ $i18n = array(
 // "VIEWDRAFT_TITLE"         =>	"View Draft",
 // "DELETEDRAFT_TITLE"       =>	"Delete Draft",
 // "BTN_SAVEDRAFT"           =>	"Save Draft",
-// "DRAFT"                   =>	"Draft",
+"LABEL_DRAFT"             =>	"DRAFT",
 "EDIT_DRAFT"              =>	"Edit Draft",
 "EDIT_NODRAFT"            =>	"Edit Current",
-"DRAFT_LAST_SAVED"        =>	"Page Draft last saved by %s on",
+"DRAFT_LAST_SAVED"        =>	"Page Draft saved by <em>%s</em> on",
 "PUBLISH"                 =>	"Publish",
+"LABEL_PUBLISHED"         =>	"PUBLISHED",
 
 /*
 * For: edit.php
@@ -192,6 +193,7 @@ $i18n = array(
 "ASK_RESTORE"             =>	"<em>R</em>estore", // 'r' is the accesskey identifier
 "ASK_DELETE"              =>	"<em>D</em>elete", // 'd' is the accesskey identifier
 "BACKUP_OF"               =>	"Backup of",
+"BACKUP"                  =>	"Backup",
 "PAGE_TITLE"              =>	"Page Title",
 "YES"                     =>	"Yes",
 "NO"                      =>	"No",
@@ -493,8 +495,10 @@ $i18n = array(
 "MOVE_TEMPCONFIG_ERROR"   =>	"Failed to rename <code>%s</code> to <code>%s</code>! Please do it manually.",
 "KILL_CANT_CONTINUE"      =>	"Cannot continue. Please fix errors and try again.",
 "REFRESH"                 =>	"Refresh",
-"BETA"                    =>	"Beta / Bleeding Edge",
-"ALPHA"                   =>	"Alpha / Non-Stable !",
+"BETA"                    =>	"beta",
+"ALPHA"                   =>	"alpha",
+"BETA_TITLE"              =>	"Beta / Bleeding Edge",
+"ALPHA_TITLE"             =>	"Alpha / Non-Stable !",
 
 /*
 * Misc Cleanup Work

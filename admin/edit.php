@@ -146,7 +146,7 @@ include('template/include-nav.php');
 function getPublishedPageHead($editing = true, $path = ''){
     global $id,$draftExists,$pageExists;
     echo '<h3 class="floated">'. ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')).'</h3>';
-    if(getDef('GSUSEDRAFTS',true))echo '<div class="title label label-ok">PUBLISHED</div>';
+    if(getDef('GSUSEDRAFTS',true))echo '<div class="title label label-ok">'.i18n_r('LABEL_PUBLISHED').'</div>';
     echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav" >';
     if($editing) {
         echo '<a class="pageview" href="'. $path .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
@@ -158,7 +158,7 @@ function getPublishedPageHead($editing = true, $path = ''){
 function getDraftPageHead($editing = true, $path = ''){
     global $id,$draftExists,$pageExists;
     echo '<h3 class="floated">'. ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')) .'</h3>';
-    echo '<div class="title label secondary-lightest-back">DRAFT</div>';
+    echo '<div class="title label secondary-lightest-back">'.i18n_r('LABEL_DRAFT').'</div>';
     echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav" >';
     if($editing) {
         echo '<a class="draftview" href="'. $path .'?draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
@@ -181,18 +181,21 @@ if($newdraft) $pageClass.=' newdraft';
 
     if(isset($id) && getDef('GSUSEDRAFTS',true)) {
         // draft page and current page exists
-        if($draft && $pageExists){ ?>
-
+        if($draft && $pageExists){ 
+            $publishdata = getPageXML($id,$nocdata = true);
+            $publishAuthor = (string)$publishdata->author;
+            $publishPubdate = output_datetime($publishdata->pubDate);
+?>
         <!-- page stack for published page -->
         <div class="pagestack existingpage boxsizingBorder">
             <div style="float: left;">
-                <i class="fa fa-clock-o">&nbsp;</i>Page published by <em>user</em> on September 10th, 2014 - 1:52 PM&nbsp;
+                <i class="fa fa-clock-o">&nbsp;</i><?php echo sprintf(i18n_r('LAST_SAVED'),$publishAuthor)," ",$publishPubdate;?>&nbsp;
             </div>
             <div style="float:right">
                 <a href="edit.php?id=<?php echo $id;?>&amp;nodraft" class="label label-ghost label-inline" style="color:#808080;">
                     <i class="fa fa-pencil"></i>
                 </a>
-                <div class="label label-ok label-inline">PUBLISHED</div>
+                <div class="label label-ok label-inline"><?php i18n('LABEL_PUBLISHED'); ?></div>
             </div>
             <div class="pagehead clear" >
             <?php
@@ -205,17 +208,20 @@ if($newdraft) $pageClass.=' newdraft';
         }
         // current page, draft exists
         if(!$draft && $draftExists){
+            $draftdata = getDraftXML($id,$nocdata = true);
+            $draftAuthor = (string)$draftdata->author;
+            $draftPubdate = output_datetime($draftdata->pubDate);
 ?>
         <!-- page stack for draft exists-->
         <div class="pagestack existingdraft boxsizingBorder">
             <div style="float: left;">
-                <i class="fa fa-clock-o">&nbsp;</i>Page Draft created by <em>user</em> on September 11th, 2014 - 1:52 PM&nbsp;
+                <i class="fa fa-clock-o">&nbsp;</i><?php echo sprintf(i18n_r('DRAFT_LAST_SAVED'),$draftAuthor)," ",$draftPubdate;?>&nbsp;
             </div>
             <div style="float:right">
                 <a href="edit.php?id=<?php echo $id;?>" class="label label-ghost label-inline">
                     <i class="fa fa-pencil"></i>
                 </a>
-                <div class="label secondary-lightest-back label-inline">DRAFT</div>
+                <div class="label secondary-lightest-back label-inline"><?php i18n('LABEL_DRAFT'); ?></div>
             </div>
             <div class="pagehead clear" >
             <?php
@@ -237,7 +243,7 @@ if($newdraft) $pageClass.=' newdraft';
                 <a href="edit.php?id=<?php echo $id;?>&amp;" class="label label-ghost label-inline">
                     <i class="fa fa-pencil"></i>
                 </a>
-                <div class="label label-ghost label-inline">DRAFT</div>
+                <div class="label label-ghost label-inline"><?php i18n('LABEL_DRAFT'); ?></div>
             </div>
             <div class="shadow"></div>
         </div>
@@ -452,8 +458,8 @@ if($newdraft) $pageClass.=' newdraft';
                         <li id="cancel-updates" class="alertme"><a href="pages.php?cancel" ><?php i18n('CANCEL'); ?></a></li>
                         <?php if($draft && $url != 'index' && $url != '') { ?>
                             <li class="alertme" ><a href="deletefile.php?draft=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
-                        <?php } ?>
-                        <?php if($url != 'index' && $url != '') { ?>
+                        <?php }
+                            else if($url != 'index' && $url != '') { ?>
                             <li class="alertme" ><a href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
                         <?php } ?>
                     </ul>

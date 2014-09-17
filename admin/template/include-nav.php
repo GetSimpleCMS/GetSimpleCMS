@@ -48,7 +48,7 @@ if (get_filename_id() == 'load') {
 			echo '<li class="rightnav"><a class="label label-gold" href="health-check.php" title="'.i18n_r('UPG_NEEDED').'"><span class="fa fa-fw fa-lg fa-cloud-download"></span></a></li>';
 		}
 	}
-	if(isBeta() || isAlpha()) echo '<li class="rightnav"><a class="label label-ghost" href="health-check.php" title="'.i18n_r('WEB_HEALTH_CHECK').'"><span><span class="fa fa-fw fa-flask"></span> '. (isAlpha() ? 'alpha' : 'beta') .'</span></a></li>';
+	if(isBeta() || isAlpha()) echo '<li class="rightnav"><a class="label label-ghost" href="health-check.php" title="'.i18n_r('WEB_HEALTH_CHECK').'"><span><span class="fa fa-fw fa-flask"></span> '. (isAlpha() ? i18n_r('ALPHA') : i18n_r('BETA')) .'</span></a></li>';
 
 	?>
 

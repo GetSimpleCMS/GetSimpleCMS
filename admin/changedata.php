@@ -17,7 +17,7 @@ include('inc/common.php');
 login_cookie_check();
 
 $autoSaveDraft = false; // auto save to autosave drafts
-$draft = getDef('GSUSEDRAFTS',true);
+$draft = (isset($_GET['nodraft']) || isset($_POST['post-nodraft']) || !getDef('GSUSEDRAFTS',true)) ? false : true; // (bool) using draft pages
 
 if(isset($_GET['publish']) && isset($_GET['id'])){
 	$id = var_in($_GET['id']);
@@ -28,10 +28,10 @@ if(isset($_GET['publish']) && isset($_GET['id'])){
 
 if (isset($_POST['submitted'])) {
 	check_for_csrf("edit", "edit.php");
-
 	// check for missing required fields
 	if ( !isset($_POST['post-title']) || trim($_POST['post-title']) == '' )	{
 		// no title, throw CANNOT_SAVE_EMPTY
+		// @todo this loses $id, we only get here if js is disabled
 		redirect("edit.php?upd=edit-error&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
 	}
 
@@ -50,12 +50,11 @@ if (isset($_POST['submitted'])) {
 
 	// if attempting to change index throw ER_CANNOT_INDEX
 	if ($slugHasChanged && $oldslug === 'index') redirect("edit.php?id=". urlencode($oldslug) ."&upd=edit-index&type=edit");
+	// if attemping to change slug on draft page throw ER_CANNOT_DRAFT
 	if ($slugHasChanged && $draft) redirect("edit.php?id=". urlencode($oldslug) ."&upd=draft-slug&type=edit");
 
 	// format and clean the responses
 	$data = array();
-
-	if(isset($_POST['post-nodraft']))			{ $draft = false; } // force no draft usage
 
 	if(isset($_POST['post-titlelong']))			{ $data['titlelong']   = safe_slash_html($_POST['post-titlelong']);	}
 	if(isset($_POST['post-summary']))			{ $data['summary']     = safe_slash_html($_POST['post-summary']);	}
@@ -83,15 +82,14 @@ if (isset($_POST['submitted'])) {
 	// overwrite set for editing pages only, else we autoincrement slug if newpage or slughaschanged
 	$xml = createPageXml($title,$postslug,$data,$overwrite);
 	$url = (string)$xml->url; // legacy global
-	
-	// if the slug changed update children
-	if ($slugHasChanged){
-		exec_action('changedata-updateslug');
-		changeChildParents($oldslug,$url); // update childrens parent slugs to the new slug
-		delete_page($oldslug); // backup and delete the page
-	}
 
 	if(!$draft){
+		// if the slug changed update children
+		if ($slugHasChanged){
+			exec_action('changedata-updateslug');
+			changeChildParents($oldslug,$url); // update childrens parent slugs to the new slug
+			delete_page($oldslug); // backup and delete the page
+		}
 		exec_action('changedata-save');
 		$xml = exec_filter('page-save',$xml);
 		savePageXml($xml);
@@ -112,6 +110,7 @@ if (isset($_POST['submitted'])) {
 	 * @param  str $oldslug [description]
 	 */
 	function changedataAjaxSave($url,$oldslug){
+		global $draft;
 		if(isset($_POST['ajaxsave'])){
 			// ajax response wrapper, still using html parsing for now
 			echo "<div>";
@@ -126,6 +125,7 @@ if (isset($_POST['submitted'])) {
 			$update = 'edit-success';
 			$ptype  = 'edit';
 			if($url !== $oldslug) $oldid = $oldslug; // if slug was changed set $oldid
+			$upddraft = $draft;
 			include('template/error_checking.php');
 
 			// send new inputs for slug changes and new nonces
@@ -147,6 +147,7 @@ if (isset($_POST['submitted'])) {
 	if($slugHasChanged) $redirect_url .= "?id=". $url ."&old=".$oldslug."&upd=edit-success&type=edit"; // update with new slug
 	else $redirect_url .= "?id=". $url ."&upd=edit-success&type=edit"; // update
 
+	if($draft) $redirect_url .= "&upd-draft";
 	// add nodraft arg if we are force editing a live page
 	if(getDef('GSUSEDRAFTS',true) && !$draft) $redirect_url .= '&nodraft';
 	redirect($redirect_url);

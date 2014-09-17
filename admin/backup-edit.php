@@ -73,10 +73,10 @@ elseif ($p == 'restore') {
 		restore_page($id);        // restore old slug file
 		delete_page($newid);      // backup and delete live new slug file
 
-		redirect("edit.php?id=". $id ."&old=".$_GET['new']."&upd=edit-success&type=restore");
+		redirect("edit.php?id=". $id ."&nodraft&old=".$_GET['new']."&upd=edit-success&type=restore");
 	} else {
 		restore_page($id);   // restore old slug file
-		redirect("edit.php?id=". $id ."&upd=edit-success&type=restore");
+		redirect("edit.php?id=". $id ."&nodraft&upd=edit-success&type=restore");
 	}
 
 }
@@ -94,8 +94,8 @@ $draftqs = $draft ? '&amp;draft' : '';
 
 	<div id="maincontent">
 		<div class="main" >
-		<h3 class="floated"><?php i18n('BACKUP_OF');?> &lsquo;<em><?php echo $url; ?></em>&rsquo;</h3>
-		
+		<h3 class="floated"><?php i18n('BACKUP');?> <span> / <?php echo $url; ?></span></h3>
+		<?php if($draft){ ?><div class="title label secondary-lightest-back label-inline"><?php i18n('LABEL_DRAFT'); ?></div> <?php } ?>
 		<div class="edit-nav" >
 			 <a href="backup-edit.php?p=restore<?php echo $draftqs; ?>&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" 
 			 	accesskey="<?php echo find_accesskey(i18n_r('ASK_RESTORE'));?>" ><?php i18n('ASK_RESTORE');?></a> 

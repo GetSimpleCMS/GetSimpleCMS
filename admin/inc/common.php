@@ -86,7 +86,7 @@ $GS_definitions = array(
 	'GSDEBUG'              => false,                          // (bool) debug mode
 	'GSDEBUGREDIRECTS'     => false,                          // (bool) debug mode stop redirects for debugging
 	'GSDEBUGFILEIO'        => false,                          // (bool) debug filio operations
-	'GSAJAXSAVE'           => true,                           // (bool) save forms using ajax where
+	'GSAJAXSAVE'           => false,                           // (bool) save forms using ajax where
  	'GSDEFINITIONSLOADED'  => true                            // (bool) $GS_definitions IS LOADED FLAG
 );
 
