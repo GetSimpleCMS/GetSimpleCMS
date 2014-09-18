@@ -83,7 +83,7 @@ if ($id){
     $metarNoFollow = $data_edit->metarNoFollow;
     $metarNoArchive = $data_edit->metarNoArchive;
 } else {
-    $draft = false;
+    $draft = false; // @todo this is to force no draft on new pages until we allow drafts
     // prefill fields if provided
     $title          =  isset( $_GET['title']      ) ? var_in( $_GET['title']      ) : '';
     $template       =  isset( $_GET['template']   ) ? var_in( $_GET['template']   ) : '';
@@ -443,7 +443,7 @@ if($newdraft) $pageClass.=' newdraft';
             </fieldset>            
         </div>
     </div> <!-- / END TABS -->
-            <span class="editing"><?php echo ($draft ? i18n_r('EDITDRAFT_TITLE') : i18n_r('EDITPAGE_TITLE')) .': ' . $title; ?></span>
+            <span class="editing"><?php echo sprintf($draft ? i18n_r('EDITING_DRAFT_TITLE') : i18n_r('EDITING_PAGE_TITLE'),'<b>'.$title.'</b>'); ?></span>
             <div id="submit_line" >
                 <input type="hidden" name="redirectto" value="" />
                 

@@ -64,16 +64,11 @@ $i18n = array(
 "ALL_PAGES"               =>	"Pages",
 "EXPAND_TOP"              =>	"Expand Top Parents",
 "COLLAPSE_TOP"            =>	"Collapse Top Parents",
+"EDITING_PAGE_TITLE"      =>	"Editing Page: %s",
 
 // drafts
-// "ALL_DRAFTS"              =>	"Drafts",
-"EDITDRAFT_TITLE"         =>	"Edit Page Draft",
-// "VIEWDRAFT_TITLE"         =>	"View Draft",
-// "DELETEDRAFT_TITLE"       =>	"Delete Draft",
-// "BTN_SAVEDRAFT"           =>	"Save Draft",
+"EDITING_DRAFT_TITLE"     =>	"Editing Page Draft: %s",
 "LABEL_DRAFT"             =>	"DRAFT",
-"EDIT_DRAFT"              =>	"Edit Draft",
-"EDIT_NODRAFT"            =>	"Edit Current",
 "DRAFT_LAST_SAVED"        =>	"Page Draft saved by <em>%s</em> on",
 "PUBLISH"                 =>	"Publish",
 "LABEL_PUBLISHED"         =>	"PUBLISHED",
