@@ -687,7 +687,7 @@ h5:hover img {
 	font-size: 10px;
 	text-transform: uppercase;
 	display: block;
-	padding: 4px 10px;
+	padding: 3px 10px;
 	float: right;
 	margin: 0 0 0 5px;
 		-moz-border-radius: 3px;
@@ -2935,6 +2935,7 @@ a.disabled:visited {
  	font-size: 11px;
  	margin-left:0;
  	color: #777;
+	padding: 3px 6px;
 }
 
 .tree-indent {
@@ -2947,7 +2948,7 @@ a.disabled:visited {
 	cursor: pointer;
 	color: #868686;
 	font-size: 0.8em;
-	margin-right: 7px;
+	margin-right: 4px;
 	transition: all 50ms ease-out;
 		-webkit-transition: all 50ms ease-out;
 		-moz-transition: all 50ms ease-out;

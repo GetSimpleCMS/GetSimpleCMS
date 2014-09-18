@@ -51,7 +51,7 @@ if ($_GET['p'] != '') {
 
 if ($p == 'delete') {
 	// deleting page backup
-	check_for_csrf("delete","backup-edit");
+	check_for_csrf("delete","backup-edit.php");
 	if($draft) $status = delete_draft_backup($id) ? 'success' : 'error';
 	else $status = delete_page_backup($id) ? 'success' : 'error';
 	redirect("backups.php?upd=bak-".$status."&id=".$id);

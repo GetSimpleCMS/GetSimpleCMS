@@ -500,10 +500,6 @@ function menu_data($id = null,$xml=false) {
 function get_components_xml(){
     global $components;
 
-    // normalize id
-    $id = to7bit($id, 'UTF-8');
-	$id = clean_url($id);
-
     if (!$components) {
         if (file_exists(GSDATAOTHERPATH.'components.xml')) {
         	$data = getXML(GSDATAOTHERPATH.'components.xml');
@@ -525,6 +521,9 @@ function get_components_xml(){
  * @return array of simpleXmlObj matching slug
  */
 function get_component_xml($id){
+        // normalize id
+        $id = to7bit($id, 'UTF-8');
+	$id = clean_url($id);
 	if(!$id) return;
 	return get_components_xml()->xpath("//slug[.='".$id."']/..");	
 }

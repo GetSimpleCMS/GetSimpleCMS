@@ -121,7 +121,7 @@
 	}
 
 	function doNotify($msg, $type = '', $persist = false){
-		echo '<div class="updated notify '. ($type == '' ? '' : 'notify_'.$type.' ') . ($persist ? 'remove' : '') . '"><p>'.$msg.'</p></div>';
+		echo '<div class="updated notify '. ($type == '' ? '' : 'notify_'.$type.' ') . (!$persist ? 'remove' : '') . '"><p>'.$msg.'</p></div>';
 	}
 
 /* ?> */
