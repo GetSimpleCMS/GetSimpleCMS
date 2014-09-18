@@ -62,7 +62,7 @@ $.fn.popit = function ($speed) {
 };
 
 /*
- * closeit
+ * removeit
  * fadeout close on delay
  * @param int $delay delay in ms
  */
@@ -471,15 +471,16 @@ jQuery(document).ready(function () {
 	notifyWarn('This is an WARNING notification');
 	notifyInfo('This is an INFO notification');
 	notify('message','msgtype');
-	notifyError('This notification blinks and autocloses').popit(ms speed).closeit(ms delay);   
+	notifyError('This notification blinks and autocloses').popit(ms speed).removeit(ms delay);   
 	*/
  
 	function popAlertMsg() {
-		/* legacy, see jquery extend popit() and closeit() */
+		/* legacy, see jquery extend popit() and removeit() */
 		$(".updated").fadeOut(500).fadeIn(500);
 		$(".error").fadeOut(500).fadeIn(500);
  
 		$(".notify").popit(); // allows legacy use
+		$(".notify.remove").removeit();
 	}
  
 	popAlertMsg();
@@ -619,7 +620,7 @@ jQuery(document).ready(function () {
 	}
 
 	// init auto saving
-	if(typeof GSAUTOSAVEPERIOD !== 'undefined') autoSaveInit();
+	if(typeof GSAUTOSAVEPERIOD !== 'undefined' && parseInt(GSAUTOSAVEPERIOD,10) > 0) autoSaveInit();
 
     $('#editform').submit(function(){
         warnme = false;

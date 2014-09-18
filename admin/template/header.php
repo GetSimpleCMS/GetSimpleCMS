@@ -1,4 +1,3 @@
-
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /**
  * Header Admin Template
@@ -23,8 +22,7 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 if(!isset($pagetitle)) $pagetitle = i18n_r(get_filename_id().'_title');
 $title = $pagetitle.' &middot; '.cl($SITENAME);
 
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html lang="<?php echo get_site_lang(true); ?>">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"  />
