@@ -71,7 +71,7 @@ if (isset($_POST['submitted'])) {
 			$url = 'temp';
 		}
 		
-		$oldslug = "";
+		$oldslug = $existingurl;
 
 		// was the slug changed on an existing page?
 		if ( isset($existingurl) ) {
@@ -82,7 +82,6 @@ if (isset($_POST['submitted'])) {
 				} else {
 					exec_action('changedata-updateslug');
 					updateSlugs($existingurl);
-					backup_page($oldslug);
 					delete_page($oldslug);
 				}
 			}
