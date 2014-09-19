@@ -299,16 +299,19 @@ function delete_page($id, $backup = true){
  * Clone title becomes "title [copy]""
  *
  * @param  str $id page id to clone
- * @return bool    success
+ * @return mixed   returns new url on succcess, bool false on failure
  */
 function clone_page($id){
 	list($cloneurl,$count) = getNextFileName(GSDATAPAGESPATH,$id.'.xml');
 	// get page and resave with new slug and title
 	$newxml = getPageXML($id);
-	$newxml->url = $cloneurl;
+	$newurl = getFileName($cloneurl);
+	$newxml->url = getFileName($cloneurl);
 	$newxml->title = $newxml->title.' ['.sprintf(i18n_r('COPY_N',i18n_r('COPY')),$count).']';
 	$newxml->pubDate = date('r');
-	return XMLsave($newxml, GSDATAPAGESPATH.$cloneurl);
+	$status = XMLsave($newxml, GSDATAPAGESPATH.$cloneurl);
+	if($status) return $newurl;
+	return false;
 }
 
 /**

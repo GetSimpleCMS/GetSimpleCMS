@@ -1087,6 +1087,10 @@ function pathinfo_filename($file) {
 	}
 }
 
+function getFileName($file){
+	return pathinfo_filename($file);
+}
+
 function getFileExtension($file){
 	return lowercase(pathinfo($file,PATHINFO_EXTENSION));
 }

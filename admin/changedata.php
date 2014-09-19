@@ -114,10 +114,9 @@ if (isset($_POST['submitted'])) {
 		else $metarNoArchive = 0; 
 
 		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
-		// @todo abstract into method for getting incremental file names
 		if ( (file_exists(GSDATAPAGESPATH . $url .".xml") && $url != $oldslug) ||  in_array($url,$reservedSlugs) ) {
 			list($newfilename,$count) = getNextFileName(GSDATAPAGESPATH,$url.'.xml');
-			$url = $url .'-'. $count;
+			$url = getFileName($newfilename);
 		}
 
 		// create new xml
