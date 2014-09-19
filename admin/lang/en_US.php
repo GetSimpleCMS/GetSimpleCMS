@@ -526,6 +526,7 @@ $i18n = array(
 "CLONE"                   =>	"Clone", //edit.php
 "CLONE_SUCCESS"           =>	"Successfully created %s", //pages.php
 "COPY"                    =>	"Copy", //pages.php
+"COPY_N"                  =>	"Copy %s", //pages.php
 "CLONE_ERROR"             =>	"There was a problem trying to clone <b>%s</b>",  //pages.php
 "AUTOSAVE_STATUS"         =>	'Autosaving is ON (%ss)', //edit.php
 "AUTOSAVE_NOTIFY"         =>	'Page autosaved at %s', //edit.php

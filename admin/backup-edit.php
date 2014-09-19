@@ -7,7 +7,7 @@
  * @package GetSimple
  * @subpackage Backups
  */
- 
+
 # setup
 $load['plugin'] = true;
 include('inc/common.php');
@@ -18,7 +18,7 @@ if ($_GET['id'] != '') {
 	$id   = $_GET['id'];
 	$file = $id .".bak.xml";
 	$path = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
-	
+
 	$data       = getXML($path . $file);
 	$title      = htmldecode($data->title);
 	$pubDate    = $data->pubDate;
@@ -47,38 +47,40 @@ if ($_GET['p'] != '') {
 }
 
 if ($p == 'delete') {
+	// deleting page backup
 	check_for_csrf("delete","backup-edit.php");
-	delete_bak($id);
-	redirect("backups.php?upd=bak-success&id=".$id);
-} 
+	$status = delete_bak($id) ? 'success' : 'error';
+	redirect("backups.php?upd=bak-".$status."&id=".$id);
+}
 
 elseif ($p == 'restore') {
+	// restoring page backup
 	check_for_csrf("restore", "backup-edit.php");
-	
+
 	if (isset($_GET['new'])) {
-		updateSlugs($_GET['new'], $id);
-		restore_bak($id);
-		$existing = GSDATAPAGESPATH . $_GET['new'] .".xml";
-		$bakfile  = $path. $_GET['new'] .".bak.xml";
-		copy($existing, $bakfile);
-		unlink($existing);
+		$newid = $_GET['new'];
+		// restore page by old slug id
+		updateSlugs($newid, $id); // update parents and children
+		restore_page($id);        // restore old slug file
+		delete_page($newid);      // backup and delete live new slug file
+
 		redirect("edit.php?id=". $id ."&old=".$_GET['new']."&upd=edit-success&type=restore");
 	} else {
-		restore_bak($id);
+		restore_page($id);   // restore old slug file
 		redirect("edit.php?id=". $id ."&upd=edit-success&type=restore");
 	}
-	
+
 }
 
 $pagetitle = i18n_r('BAK_MANAGEMENT').' &middot; '.i18n_r('VIEWPAGE_TITLE');
 get_template('header');
 
 ?>
-	
+
 <?php include('template/include-nav.php'); ?>
 
 <div class="bodycontent clearfix">
-	
+
 	<div id="maincontent">
 		<div class="main" >
 		<h3 class="floated"><?php i18n('BACKUP_OF');?> &lsquo;<em><?php echo $url; ?></em>&rsquo;</h3>

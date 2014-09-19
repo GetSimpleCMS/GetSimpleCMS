@@ -20,7 +20,7 @@ $data_index = null;
 
 // apply page data if page id exists
 if (isset($pagesArray[$id])) {
-	$data_index = getXml(GSDATAPAGESPATH . $id . '.xml');
+	$data_index = getPageXml($id);
 }
 
 // filter to modify data_index obj

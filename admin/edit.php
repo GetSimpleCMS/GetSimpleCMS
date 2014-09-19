@@ -22,18 +22,16 @@ $id    = isset($_GET['id'])    ? var_in( $_GET['id']    ): null;
 $uri   = isset($_GET['uri'])   ? var_in( $_GET['uri']   ): null;
 $ptype = isset($_GET['type'])  ? var_in( $_GET['type']  ): null;
 $nonce = isset($_GET['nonce']) ? var_in( $_GET['nonce'] ): null;
-$path  = GSDATAPAGESPATH;
-$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/                    
 
 // Page variables reset
-$theme_templates = ''; 
-$parents_list    = ''; 
+$theme_templates = '';
+$parents_list    = '';
 $keytags         = '';
 $parent          = '';
 $template        = '';
-$menuStatus      = ''; 
-$private         = ''; 
-$menu            = ''; 
+$menuStatus      = '';
+$private         = '';
+$menu            = '';
 $content         = '';
 $author          = '';
 $title           = '';
@@ -43,13 +41,11 @@ $metad           = '';
 
 if ($id){
     // get saved page data
-    $file = $id .'.xml';
-    
-    if (!file_exists($path . $file)){ 
+    if (!file_exists(GSDATAPAGESPATH . $id .'.xml')){
         redirect('pages.php?error='.urlencode(i18n_r('PAGE_NOTEXIST')));
     }
 
-    $data_edit  = getXML($path . $file);
+    $data_edit  = getPageXML($id);
     $title      = stripslashes($data_edit->title);
     $pubDate    = $data_edit->pubDate;
     $metak      = stripslashes($data_edit->meta);
@@ -92,34 +88,25 @@ if ($id){
 }
 
 
-// MAKE SELECT BOX OF AVAILABLE TEMPLATES
+// make select box of available theme templates
 if ($template == '') { $template = GSTEMPLATEFILE; }
 
 $themes_path   = GSTHEMESPATH . $TEMPLATE;
 $themes_handle = opendir($themes_path) or die("Unable to open ". GSTHEMESPATH);     
-while ($file = readdir($themes_handle)) {       
-    if( isFile($file, $themes_path, 'php') ) {      
-        if ($file != 'functions.php' && substr(strtolower($file),-8) !='.inc.php' && substr($file,0,1)!=='.') {     
-      $templates[] = $file;     
-    }       
+while ($getfile = readdir($themes_handle)) {       
+    if( isFile($getfile, $themes_path, 'php') ) {
+        // exclude functions.php, and include files .inc.php
+        if ($getfile != 'functions.php' && substr(strtolower($getfile),-8) !='.inc.php' && substr($getfile,0,1)!=='.') {     
+            $templates[] = $getfile;     
+        }       
     }       
 }       
 
 sort($templates);
 
 foreach ($templates as $file){
-    if ($template == $file) { 
-        $sel="selected"; 
-    } else{ 
-        $sel=""; 
-    }
-    
-    if ($file == GSTEMPLATEFILE){ 
-        $templatename=i18n_r('DEFAULT_TEMPLATE'); 
-    } else { 
-        $templatename=$file;
-    }
-    
+    $sel = $template == $file ? 'selected' : '';
+    $templatename = $file == GSTEMPLATEFILE ?  i18n_r('DEFAULT_TEMPLATE') : $file;
     $theme_templates .= '<option '.$sel.' value="'.$file.'" >'.$templatename.'</option>';
 }
 
@@ -374,7 +361,7 @@ get_template('header');
                     if (isset($pubDate)) { 
                         echo sprintf(i18n_r('LAST_SAVED'), '<em>'.$author.'</em>').' '. output_datetime($pubDate).'&nbsp;&nbsp; ';
                     }
-                    if ( file_exists($bakpagespath.$url.'.bak.xml') ) {    
+                    if ( fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
                         echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
                     } 
                 ?></p>

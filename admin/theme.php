@@ -11,11 +11,6 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
-# variable settings
-$path 			= GSDATAOTHERPATH; 
-$file 			= GSWEBSITEFILE; 
-$theme_options 	= '';
-
 # was the form submitted?
 if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 
@@ -27,8 +22,7 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 	if(!path_is_safe(GSTHEMESPATH.$newTemplate,GSTHEMESPATH)) die();
 
 	# backup old GSWEBSITEFILE (website.xml) file
-	$bakpath = GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH); // backups/other/
-	createBak($file, $path, $bakpath);
+	backup_datafile(GSDATAOTHERPATH.GSWEBSITEFILE);
 	
 	# udpate GSWEBSITEFILE (website.xml) file with new theme
 	$xml  = new SimpleXMLExtended('<item></item>');
@@ -40,7 +34,7 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 	$note->addCData($newTemplate);
 	$xml->addChild('PRETTYURLS', $PRETTYURLS);
 	$xml->addChild('PERMALINK', $PERMALINK);
-	XMLsave($xml, $path . $file);
+	XMLsave($xml, GSDATAOTHERPATH . GSWEBSITEFILE);
 	
 	$success = i18n_r('THEME_CHANGED');
 
@@ -48,18 +42,14 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 }
 
 # get available themes (only look for folders)
-$themes_handle = opendir(GSTHEMESPATH) or die("Unable to open ".GSTHEMESPATH);
-while ($file = readdir($themes_handle)) {
-	$curpath = GSTHEMESPATH . $file;
-	if( is_dir($curpath) && $file != "." && $file != ".." ) {
-		$sel="";
-		if (file_exists($curpath.'/'.GSTEMPLATEFILE)){
-			if ($TEMPLATE == $file)	{ 
-				$sel="selected";
-			}
-			$theme_options .= '<option '.$sel.' value="'.$file.'" >'.$file.'</option>';
-		}
-	}
+# @todo replace with getfiles
+
+$themes = getDirs(GSTHEMESPATH,GSTEMPLATEFILE);
+$theme_options 	= '';
+
+foreach($themes as $theme){
+	$sel = $TEMPLATE == $theme ? 'selected' : '';
+	$theme_options .= '<option '.$sel.' value="'.$theme.'" >'.$theme.'</option>';
 }
 
 $pagetitle = i18n_r('THEME_MANAGEMENT');

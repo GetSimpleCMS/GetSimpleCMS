@@ -136,7 +136,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
         if(getDef('GSAUTOSAVE',true)){
         	echo "		// edit autosave\n";
         	echo '		var GSAUTOSAVEPERIOD = ' . getDef('GSAUTOSAVE').";\n";
-        }
+        } else echo "      var GSAUTOSAVEPERIOD = false;\n";
         ?>
 
         // ckeditor config obj

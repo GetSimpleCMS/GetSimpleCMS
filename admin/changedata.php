@@ -22,6 +22,7 @@ $bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backup
 login_cookie_check();
 
 // check form referrer - needs siteurl and edit.php in it.
+// @todo why only here, maybe we should add this to everything, although easily circumventable
 if (isset($_SERVER['HTTP_REFERER'])) {
 	if ( !(strpos(str_replace('http://www.', '', $SITEURL), $_SERVER['HTTP_REFERER']) === false) || !(strpos("edit.php", $_SERVER['HTTP_REFERER']) === false)) {
 		echo "<b>Invalid Referer</b><br />-------<br />"; 
@@ -70,29 +71,22 @@ if (isset($_POST['submitted'])) {
 			$url = 'temp';
 		}
 		
-		$oldslug = "";
+		$oldslug = $existingurl;
 
 		// was the slug changed on an existing page?
 		if ( isset($existingurl) ) {
 			if ($_POST['post-id'] != $existingurl){
-				// dont change the index page's slug
 				if ($existingurl == 'index') {
-					$url = $existingurl;
+					// prevent change of index page's slug
 					redirect("edit.php?id=". urlencode($existingurl) ."&upd=edit-index&type=edit");
 				} else {
 					exec_action('changedata-updateslug');
 					updateSlugs($existingurl);
-					$file = GSDATAPAGESPATH . $url .".xml";
-					$existing = GSDATAPAGESPATH . $existingurl .".xml";
-					$bakfile = GSBACKUPSPATH."pages/". $existingurl .".bak.xml";
-					copy($existing, $bakfile); // copy to backup folder
-					unlink($existing); // delete page, wil resave new one here
-				} 
-			} 
+					delete_page($oldslug);
+				}
+			}
 		}
-		
-		$file = GSDATAPAGESPATH . $url .".xml";
-		
+
 		// format and clean the responses
 		// content
 		if(isset($_POST['post-titlelong']))			{ $titlelong   = safe_slash_html($_POST['post-titlelong']);	}
@@ -119,24 +113,12 @@ if (isset($_POST['submitted'])) {
 		else $metarNoArchive = 0; 
 
 		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
-		// @todo this is a mess, new file existing file should all be determined at beginning of block and defined
-		if ( (file_exists($file) && $url != $oldslug) ||  in_array($url,$reservedSlugs) ) {
-			$count = "1";
-			$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
-			while ( file_exists($file) ) {
-				$count++;
-				$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
-			}
-			$url = $url .'-'. $count;
+		if ( (file_exists(GSDATAPAGESPATH . $url .".xml") && $url != $oldslug) ||  in_array($url,$reservedSlugs) ) {
+			list($newfilename,$count) = getNextFileName(GSDATAPAGESPATH,$url.'.xml');
+			$url = getFileName($newfilename);
 		}
-		
-		// if we are editing an existing page, create a backup
-		if ( file_exists($file) ) 
-		{
-			$bakfile = $bakpagespath. $url .".bak.xml";
-			copy($file, $bakfile);
-		}
-		
+
+		// create new xml
 		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
 		$xml->addChild('pubDate', date('r'));
 
@@ -166,10 +148,14 @@ if (isset($_POST['submitted'])) {
 		}
 
 		exec_action('changedata-save');
+
+		// backup before overwriting
+		if(file_exists(GSDATAPAGESPATH . $url .".xml")) backup_page($url);
+
 		if (isset($_POST['autosave']) && $_POST['autosave'] == '1' && $autoSaveDraft == true) {
-			XMLsave($xml, GSAUTOSAVEPATH.$url);
+			XMLsave($xml, GSAUTOSAVEPATH . $url . '.xml');
 		} else {
-			XMLsave($xml, $file);
+			XMLsave($xml, GSDATAPAGESPATH . $url .".xml");
 		}
 
 		//ending actions
@@ -217,21 +203,21 @@ if (isset($_POST['submitted'])) {
 			$redirect_url = 'edit.php';
 		}
 
-		if(isset($existingurl)){
-			if ($url == $existingurl) {
-				// redirect save new file
-				redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
-			} else {
-				// redirect new slug, undo for old slug
-				redirect($redirect_url."?id=". $url ."&old=".$existingurl."&upd=edit-success&type=edit");
-			}
+			if(isset($existingurl)){
+				if ($url == $existingurl) {
+					// redirect save new file
+			redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
+		} else {
+					// redirect new slug, undo for old slug
+					redirect($redirect_url."?id=". $url ."&old=".$existingurl."&upd=edit-success&type=edit");
+		}
 
-		}	
-		else {
-			// redirect new slug
-			redirect($redirect_url."?id=". $url ."&upd=edit-success&type=new"); 
-		}		
 	}
+			else {
+				// redirect new slug
+				redirect($redirect_url."?id=". $url ."&upd=edit-success&type=new"); 
+			}
+		}
 } else {
 	redirect('pages.php');
 }

@@ -30,7 +30,7 @@ if (isset($_GET['deleteall'])){
 	foreach ($filenames as $file) {
 		if (file_exists($path . $file) ) {
 			if (isFile($file, $path, 'bak')) {
-				unlink($path . $file);
+				delete_file($path . $file);
 			}
 		}
 	}

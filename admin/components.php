@@ -15,10 +15,8 @@ include('inc/common.php');
 login_cookie_check();
 
 # variable settings
-$file 		= "components.xml";
-$path 		= GSDATAOTHERPATH;
-$bakpath 	= GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH); // backups/other/
-$update 	= ''; $table = ''; $list='';
+$componentsfile	= GSDATAOTHERPATH.GSCOMPONENTSFILE;
+$update = $table = $list = '';
 
 # check to see if form was submitted
 if (isset($_POST['submitted'])){
@@ -29,8 +27,8 @@ if (isset($_POST['submitted'])){
 
 	check_for_csrf("modify_components");
 
-	# create backup file for undo           
-	createBak($file, $path, $bakpath);
+	# create backup file for undo
+	backup_datafile(GSDATAOTHERPATH.GSCOMPONENTSFILE);
 	
 	# start creation of top of components.xml file
 	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
@@ -69,7 +67,7 @@ if (isset($_POST['submitted'])){
 		}
 	}
 	exec_action('component-save');
-	XMLsave($xml, $path . $file);
+	XMLsave($xml, GSDATAOTHERPATH.GSCOMPONENTSFILE);
 	$update = 'comp-success';
 	// redirect('components.php?upd=comp-success');
 }
@@ -79,13 +77,13 @@ if (isset($_GET['undo'])) {
 	
 	check_for_csrf("undo");		
 	# perform the undo
-	undo($file, $path, $bakpath);
+	restore_datafile(GSDATAOTHERPATH.GSCOMPONENTSFILE);
 	$update = 'comp-restored';
 	// redirect('components.php?upd=comp-restored');
 }
 
 # create components form html
-$data = getXML($path . $file);
+$data = getXML(GSDATAOTHERPATH.GSCOMPONENTSFILE);
 $componentsec = $data->item;
 $count= 0;
 
