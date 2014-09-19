@@ -280,6 +280,7 @@ function getDirs($path,$filereq = null) {
 	$handle   = opendir($path) or die("getDirs: Unable to open $path");
 	$dir_arr = array();
 	while ($file = readdir($handle)) {
+		$curpath = $path.$file;
 		if (is_dir($curpath) && $file != '.' && $file != '..') {
 			if(isset($filereq) && !file_exists($curpath.'/'.$filereq)) continue;
 			$dir_arr[] = $file;
