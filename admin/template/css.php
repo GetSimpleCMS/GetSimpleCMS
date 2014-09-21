@@ -1211,6 +1211,7 @@ table.cleantable tr td {
 	text-shadow: 1px 1px 0 #fff;
 	font-size: 11px;
 	margin: 0;
+	display: none;
 }
 
 #pagechangednotify {
