@@ -1542,7 +1542,7 @@ function directoryToArray($directory, $recursive) {
  * @since 3.1.3
  *
  * @param $directory string directory to scan
- * @param $recursive boolean whether to do a recursive scan or not. 
+ * @param $recursive boolean whether to do a recursive scan or not.
  * @param $exts array file extension include filter, array of extensions to include
  * @param $exclude bool true to treat exts as exclusion filter instead of include
  * @return multidimensional array or files and folders {type,path,name}
@@ -1557,6 +1557,7 @@ function directoryToMultiArray($dir,$recursive = true,$exts = null,$exclude = fa
 	foreach ($cdir as $key => $value)	{
 		if (!in_array($value,array(".",".."))) {
 			if (is_dir($dir . DIRECTORY_SEPARATOR . $value)) {
+					if(!$recursive) continue;
 					$path =  preg_replace("#\\\|//#", "/", $dir . '/' . $value . '/');
 					$result[$value] = array();
 					$result[$value]['type'] = "directory";
@@ -1962,8 +1963,9 @@ function setTimezone($timezone){
 
 
 /**
- * get web root relative url
- * 
+ * get web root-relative url
+ * parses the host:// part and removes it
+ *
  * @since  3.4
  * @var str url to normalize
  */
@@ -2003,10 +2005,12 @@ function getWebsiteData($returnGlobals = false){
 		$SITEURL  = '';
 	}
 
-	// asseturl is scheme-less ://url if GSASSETSCHEMES is not true
-	$ASSETURL = getDef('GSASSETSCHEMES',true) !==true ? str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL) : $SITEURL;
+	$ASSETURL = $SITEURL;
 
-	if(getDef('GSASSETURLREL')) $ASSETURL = getRootRelPath($SITEURL);
+	// asseturl is scheme-less ://url if GSASSETSCHEMES is not true
+	// asseturl is root relative if GSASSETURLREL is true
+	if(getDef('GSASSETURLREL')) $ASSETURL = getRootRelPath($ASSETURL);
+	else if(getDef('GSASSETSCHEMES',true) !==true) str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL);
 	if(getDef('GSSITEURLREL'))  $SITEURL  = getRootRelPath($SITEURL);
 
 	unset($thisfilew);
@@ -2112,6 +2116,17 @@ function outputDebugLog(){
 	}
 	echo '</pre>';
 	echo '</div>';
+}
+
+/**
+ * compress css
+ * @param  str $buffer css to compress
+ * @return str         compressed css code
+ */
+function cssCompress($buffer) {
+  $buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer); /* remove comments */
+  $buffer = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $buffer); /* remove tabs, spaces, newlines, etc. */
+  return $buffer;
 }
 
 /* ?> */
