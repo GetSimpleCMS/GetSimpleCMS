@@ -30,7 +30,7 @@ if (isset($_GET['deleteall'])){
 	foreach ($filenames as $file) {
 		if (file_exists($path . $file) ) {
 			if (isFile($file, $path, 'bak')) {
-				unlink($path . $file);
+				delete_file($path . $file);
 			}
 		}
 	}
@@ -72,13 +72,14 @@ if (count($pagesSorted) != 0)
 		if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
 		
 		$table .= '<td class="pagetitle"><a title="'.i18n_r('VIEWPAGE_TITLE').' '. cl($page['title']) .'" href="backup-edit.php?p=view&amp;id='. $page['url'] .'">'. cl($page['title']) .'</a></td>';
-		$table .= '<td style="width:80px;text-align:right;" ><span>'. shtDate($page['date']) .'</span></td>';
+		$table .= '<td style="width:80px;text-align:right;" ><span>'. output_date($page['date']) .'</span></td>';
 		$table .= '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETEPAGE_TITLE').' '. cl($page['title']) .'?" href="backup-edit.php?p=delete&amp;id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "backup-edit.php").'">&times;</a></td>';
 		$table .= '</tr>';
 	}
 }	
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('BAK_MANAGEMENT')); 
+$pagetitle = i18n_r('BAK_MANAGEMENT');
+get_template('header');
 
 ?>
 	

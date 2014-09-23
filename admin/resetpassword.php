@@ -12,6 +12,8 @@
 $load['plugin'] = true;
 include('inc/common.php');
 
+if(getDef('GSALLOWRESETPASS',true) === false) die();
+
 if(isset($_POST['submitted'])){
 	check_for_csrf("reset_password");	
 		
@@ -25,21 +27,21 @@ if(isset($_POST['submitted'])){
 		# get user information from existing XML file
 		
 		if (filepath_is_safe(GSUSERSPATH . $file,GSUSERSPATH)) {
-			$data  = simplexml_load_file(GSUSERSPATH . $file);
+			$data  = getXML(GSUSERSPATH . $file);
 			$USR   = strtolower($data->USR);
 			$EMAIL = $data->EMAIL;
 			
-			if(strtolower($_POST['username']) == $USR) {
+			if(strtolower($_POST['username']) === $USR) {
 				# create new random password
 				$random = createRandomPassword();
 				// $random = '1234';
 				
 				# create backup
-				createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
+				backup_datafile(GSUSERSPATH.$file);
 				
 				# create password change trigger file
 				$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
-				copy(GSUSERSPATH . $file, $flagfile);
+				copy_file(GSUSERSPATH . $file, $flagfile);
 				
 				# change password and resave xml file
 				$data->PWD = passhash($random); 
@@ -52,10 +54,11 @@ if(isset($_POST['submitted'])){
 				$message .= "<br>". i18n_r('NEW_PASSWORD').": <strong>". $random."</strong>";
 				$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL . $GSADMIN.'/">'.$SITEURL . $GSADMIN.'/</a></p>';
 				exec_action('resetpw-success');
-				$status = sendmail($EMAIL,$subject,$message);
+				$status = sendmail($EMAIL,$subject,$message) ? 'success' : 'error';
 				# show the result of the reset attempt
-				usleep($randSleep); 
-				$status = 'success';
+				usleep($randSleep);
+				$status = 'success'; // we dont care if email fails
+				// @todo status from xml save is the important one
 				redirect("resetpassword.php?upd=pwd-".$status);
 			} else{
 				# username doesnt match listed xml username
@@ -75,7 +78,8 @@ if(isset($_POST['submitted'])){
 	}
 } 
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('RESET_PASSWORD')); 
+$pagetitle = i18n_r('RESET_PASSWORD');
+get_template('header');
 
 ?>
 </div>
@@ -90,12 +94,15 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('RESET_PASSWORD'));
 		<h3><?php i18n('RESET_PASSWORD'); ?></h3>
 		<p class="desc"><?php i18n('MSG_PLEASE_EMAIL'); ?></p>
 		
-		<form class="login" action="<?php myself(); ?>" method="post" >
+		<form class="login" action="" method="post" >
 			<input name="nonce" id="nonce" type="hidden" value="<?php echo get_nonce("reset_password");?>"/>
 			<p><b><?php i18n('LABEL_USERNAME'); ?>:</b><br /><input class="text" name="username" type="text" value="" /></p>
-			<p><input class="submit" type="submit" name="submitted" value="<?php echo i18n('SEND_NEW_PWD'); ?>" /></p>
+			<p><input class="submit" type="submit" name="submitted" value="<?php echo i18n_r('SEND_NEW_PWD'); ?>" /></p>
 		</form>
-		<p class="cta" ><b>&laquo;</b> <a href="<?php echo $SITEURL; ?>"><?php i18n('BACK_TO_WEBSITE'); ?></a> &nbsp; | &nbsp; <a href="index.php"><?php i18n('CONTROL_PANEL'); ?></a> &raquo;</p>
+		<p class="cta"><a href="<?php echo $SITEURL; ?>"><?php i18n('BACK_TO_WEBSITE'); ?></a> &nbsp;
+		<?php if(getDef('GSALLOWLOGIN',true)) { ?> | &nbsp; <a href="index.php"><?php echo i18n_r('CONTROL_PANEL'); ?></a>
+		<?php } ?>
+		</p>
 		</div>
 		
 	</div>

@@ -62,7 +62,7 @@ $.fn.popit = function ($speed) {
 };
 
 /*
- * closeit
+ * removeit
  * fadeout close on delay
  * @param int $delay delay in ms
  */
@@ -215,8 +215,8 @@ jQuery(document).ready(function () {
 		activate: function(event, ui) {
 			// set bookmarkable urls
 			var hash = ui.newTab.context.hash;
-			hash = hash.replace('#','');
-			window.location.hash = "tab_"+hash;
+			hash = "tab_"+hash.replace('#','');
+			window.location.replace(('' + window.location).split('#')[0] + '#' + hash);	// should not affect history
 		},
 		create: function (event,ui) {
 			// set active tab from hash
@@ -229,7 +229,7 @@ jQuery(document).ready(function () {
 	});
 
 	var loadingAjaxIndicator;
-	initLoaderIndicator();
+	if($('#loader')[0]) initLoaderIndicator();
 
 	function initLoaderIndicator(){
 		// replace loader IMG with ajax loader
@@ -310,7 +310,7 @@ jQuery(document).ready(function () {
 	// auto focus component editors
 	$('#components div.compdivlist a').on('click', function(ev){
 		focusCompEditor($(this).attr('href'));
-		e.preventDefault();		
+		ev.preventDefault();		
 	});
 	
 	$(".delconfirmcomp").on("click", function ($e) {
@@ -333,7 +333,7 @@ jQuery(document).ready(function () {
 			<table class="comptable"><tr><td><label>Title: </label><input type="text" class="text newtitle" name="title[]" value="" /></td> \
 			<td class="delete"><a href="javascript:void(0)" title="Delete Component:?" class="delcomponent" id="del-' + id + '" rel="' + id + '" >&times;</a> \
 			</td></tr></table> \
-			<textarea name="val[]" class="code_edit"></textarea><input type="hidden" name="slug[]" value="" /> \
+			<textarea name="val[]" class="code_edit" data-mode="php"></textarea><input type="hidden" name="slug[]" value="" /> \
 			<input type="hidden" name="id[]" value="' + id + '" /><div>');
 		$("#section-" + id).slideToggle('fast');
 		id = (id - 1) + 2;
@@ -341,14 +341,17 @@ jQuery(document).ready(function () {
 		loadingAjaxIndicator.fadeOut(500);
 		$('#submit_line').fadeIn(); // fadein in case no components exist
 		
-		// add codemirror to new textarea
+		// add codeditor to new textarea
 		var textarea = $("#divTxt").find('textarea').first();
-		textarea.editorFromTextarea();
+		Debugger.log($.isFunction($.fn.editorFromTextarea));
+		if($.isFunction($.fn.editorFromTextarea)) textarea.editorFromTextarea();
 
 		var editor = textarea.data('editor');
 		// retain autosizing but make sure the editor start larger than 1 line high
-		$(editor.getWrapperElement()).find('.CodeMirror-scroll').css('min-height',100);
-		editor.refresh();
+		if(editor){
+			$(editor.getWrapperElement()).find('.CodeMirror-scroll').css('min-height',100);
+			editor.refresh();
+		}	
 
 		$("#divTxt").find('input').get(0).focus();
 	});
@@ -425,6 +428,7 @@ jQuery(document).ready(function () {
 						type: "GET",
 						url: dlink,
 						success: function (response) {
+							response = $.parseHTML(response);
 							mytr.remove();
 							if ($("#pg_counter").length) {
 								counter = $("#pg_counter").html();
@@ -467,15 +471,16 @@ jQuery(document).ready(function () {
 	notifyWarn('This is an WARNING notification');
 	notifyInfo('This is an INFO notification');
 	notify('message','msgtype');
-	notifyError('This notification blinks and autocloses').popit(ms speed).closeit(ms delay);   
+	notifyError('This notification blinks and autocloses').popit(ms speed).removeit(ms delay);   
 	*/
  
 	function popAlertMsg() {
-		/* legacy, see jquery extend popit() and closeit() */
+		/* legacy, see jquery extend popit() and removeit() */
 		$(".updated").fadeOut(500).fadeIn(500);
 		$(".error").fadeOut(500).fadeIn(500);
  
 		$(".notify").popit(); // allows legacy use
+		$(".notify.remove").removeit();
 	}
  
 	popAlertMsg();
@@ -517,19 +522,29 @@ jQuery(document).ready(function () {
 			success: function (data, textStatus, jqXHR) {
 				// Store the response as specified by the jqXHR object
 				responseText = jqXHR.responseText;
- 
-				// remove scripts to prevent assets from loading when we create temp dom
-				rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
- 
-				// create temp doms to reliably find elements
-				$('#header').html($("<div>").append(responseText.replace(rscript, "")).find('#header > *'));
-				$('#sidebar').html($("<div>").append(responseText.replace(rscript, "")).find('#sidebar > *'));
-				$('#maincontent').html($("<div>").append(responseText.replace(rscript, "")).find('#maincontent > *'));
- 
-				// document.body.style.cursor = "default";
-				clearNotify();
-				notifyOk(i18n('PLUGIN_UPDATED')).popit().removeit();
-				initLoaderIndicator();
+
+				if ($(responseText).find('div.notify_success').html()) {
+					// remove scripts to prevent assets from loading when we create temp dom
+					rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
+	 
+					// create temp doms to reliably find elements
+					$('#header').html($("<div>").append(responseText.replace(rscript, "")).find('#header > *'));
+					$('#sidebar').html($("<div>").append(responseText.replace(rscript, "")).find('#sidebar > *'));
+					$('#maincontent').html($("<div>").append(responseText.replace(rscript, "")).find('#maincontent > *'));
+	 
+					// document.body.style.cursor = "default";
+					clearNotify();
+					notifyOk($(responseText).find('div.notify_success').html()).popit().removeit();
+					initLoaderIndicator();
+				} else if ($(responseText).find('div.notify_error').html()) {
+					document.body.style.cursor = "default";
+					mytd.removeClass('ajaxwait_tint_dark');
+					$('.toggleEnable').removeClass('disabled');
+					loadingAjaxIndicator.fadeOut();
+					mytd.stop();
+					clearNotify();
+					notifyError($(responseText).find('div.notify_error').html());
+				}
 			},
 			error: function (data, textStatus, jqXHR) {
 				// These go in failures if we catch them in the future
@@ -537,7 +552,7 @@ jQuery(document).ready(function () {
 				mytd.removeClass('ajaxwait_tint_dark');
 				$('.toggleEnable').removeClass('disabled');
 				loadingAjaxIndicator.fadeOut();
-				mytd.stop(); 
+				mytd.stop();
 				clearNotify();
 				notifyError(i18n('ERROR'));
 			}
@@ -604,6 +619,160 @@ jQuery(document).ready(function () {
 		$("#menu-items").css("display", "none");
 	}
 
+	// init auto saving
+	if(typeof GSAUTOSAVEPERIOD !== 'undefined' && parseInt(GSAUTOSAVEPERIOD,10) > 0) autoSaveInit();
+
+    $('#editform').submit(function(){
+        warnme = false;
+        pageisdirty = false;
+        return checkTitle();
+    });
+
+    /* Warning for unsaved Data */
+    var yourText    = null;
+    var warnme      = false;
+    var pageisdirty = false;
+
+    $('#cancel-updates').hide();
+
+    window.onbeforeunload = function () {
+        if (warnme || pageisdirty === true) {
+            return i18n('UNSAVED_INFORMATION');
+        }
+    };
+
+    function checkTitle(){
+        if($.trim($("#post-title").val()).length === 0){
+            alert(i18n('CANNOT_SAVE_EMPTY'));
+            return false;
+        }
+    }
+
+	function autoSaveInit(){
+		Debugger.log('auto saving initialized ' + GSAUTOSAVEPERIOD);
+		$('#pagechangednotify').hide();
+		$('#autosavestatus').show();
+		$('#autosavenotify').show();
+		setInterval(autoSaveIntvl, GSAUTOSAVEPERIOD*1000);
+    }
+
+    function autoSaveIntvl(){
+        if(pageisdirty === true){
+            Debugger.log('autoSaveIntvl called, form is dirty: autosaving');
+            ajaxSave('&autosave=1').done(autoSaveCallback);
+            pageisdirty = false;
+        }
+    }
+
+    // ajax save function for edit.php #editform
+    function ajaxSave(urlargs) {
+        $('input[type=submit]').attr('disabled', 'disabled');
+
+        // we are using ajax, so ckeditor wont copy data to our textarea for us, so we do it manually
+        if($('#post-content').data('htmleditor')){ $('#post-content').val($('#post-content').data('htmleditor').getData()); }
+		// Debugger.log($('#post-content').val());
+
+        var dataString = $("#editform").serialize();
+        dataString += '&submitted=true&ajaxsave=1';
+        if(urlargs) dataString += urlargs;
+
+        return $.ajax({
+            type: "POST",
+            url: "changedata.php",
+            data: dataString
+        });
+    }
+
+    function autoSaveUpdate(success,status){
+        $('#autosavestatus').hide();
+        $('#autosavenotify').html(status);
+        $('#pagechangednotify').hide();
+        $('input[type=submit]').attr('disabled', false);
+        if(success){
+            $('#cancel-updates').hide();
+            $('input[type=submit]').css('border-color','#ABABAB');
+            warnme = false;
+        }
+        pageisdirty = !success;
+    }
+
+    function ajaxSaveUpdate(success,status){
+        notifyOk(status).popit().removeit();
+        $('#pagechangednotify').hide();
+        if(success) {
+            $('#cancel-updates').hide();
+            $('input[type=submit]').attr('disabled', false);
+            $('input[type=submit]').css('border-color','#ABABAB');
+            warnme = false;
+        }
+        pageisdirty = !success;
+    }
+
+    function ajaxSaveSucess(response){
+        updateEditSlug(response);
+        updateNonce(response);
+        // @todo change url to new slug so refreshes work        
+    }
+
+    function ajaxSaveError(response){
+        ajaxError(response);
+        if ($(response).find('div.error').html()) {
+            notifyError($(response).find('div.error').html()).popit().removeit();
+        } else notifyError(i18n('ERROR_OCCURED')).popit().removeit();
+        warnme = false;
+        pageisdirty = true;
+    }
+
+    function autoSaveCallback(response){
+        Debugger.log('autoSaveCallback ' + response);
+        response = $.parseHTML(response);
+        if ($(response).find('div.updated').html()) {
+            autoSaveUpdate(true,$(response).find('div.autosavenotify').html());
+            ajaxSaveSucess(response);
+        }
+        else {
+            ajaxSaveError(response);
+            autoSaveUpdate(false,i18n('ERROR_OCCURED'));
+        }
+    }
+
+    function ajaxSaveCallback(response){
+        Debugger.log('ajaxSaveCallback ' + response);
+        response = $.parseHTML(response);
+        if ($(response).find('div.updated').html()) {
+            ajaxSaveUpdate(true,$(response).find('div.updated').html());
+            ajaxSaveSucess(response);
+        }
+        else {
+            ajaxSaveError(response);
+        }
+    }
+
+    // ajaxify edit.php submit
+    $('body.ajaxsave #editform').on('submit',function(e){
+        e.preventDefault();
+        ajaxSave().done(ajaxSaveCallback);
+    });
+
+    // We register title and slug changes with change() which only fires when you lose focus to prevent midchange saves.
+    $('#post-title, #post-id').change(function () {
+        $('#editform #post-content').trigger('change');
+    });
+
+    // We register all other form elements to detect changes of any type by using bind
+    $('#editform input,#editform textarea,#editform select').not('#post-title').not('#post-id').bind('change keypress paste textInput input',function(){
+        Debugger.log('#editform changed');
+        warnme      = true;
+        pageisdirty = true;
+        autoSaveInd();
+    });
+
+    function autoSaveInd(){
+        $('#pagechangednotify').show();
+        $('input[type=submit]').css('border-color','#CC0000');
+        $('#cancel-updates').show();
+    }
+
 	// adds sidebar submit buttons and fire clicks
 	var edit_line = $('#submit_line span').html();
 	$('#js_submit_line').html(edit_line);
@@ -631,8 +800,9 @@ jQuery(document).ready(function () {
 		$('ol.more li').reverseOrder();
 	}
 	$("ol.more").each(function () {
-		$("li:gt(4)", this).hide(); /* :gt() is zero-indexed */
-		$("li:nth-child(5)", this).after("<li class='more'><a href='#'>More...</a></li>"); /* :nth-child() is one-indexed */
+		var show = 7; // how many to show
+		$("li:gt("+(show-1)+")", this).hide(); /* :gt() is zero-indexed */
+		if($("li:nth-child("+(show+1)+")", this)[0]) $("li:nth-child("+show+")", this).after("<li class='more'><a href='#'>More...</a></li>"); /* :nth-child() is one-indexed */
 	});
 	$("li.more a").on("click", function ($e) {
 		$e.preventDefault();
@@ -692,10 +862,10 @@ jQuery(document).ready(function () {
 	// theme-edit fileselector change
 	// delegated on() handlers survive ajax replacement
 	$(document).on('click',"#theme_filemanager a.file",function(e){
-		// console.log('filechange');
+		// Debugger.log('filechange');
 		e.preventDefault();
 		var thmfld = $("#theme-folder").val();
-		// console.log($(this).attr('href'));
+		// Debugger.log($(this).attr('href'));
 		if (checkChanged()) return;
 		clearFileOpen();
 		$(this).addClass('open').addClass('ext-wait');
@@ -704,8 +874,9 @@ jQuery(document).ready(function () {
 	});
 
 	function checkChanged(){
-		if($('#codetext').data('editor').hasChange === true){
-			alert('This file has unsaved content, save or cancel before continuing');
+		// @todo add non codemirror change detection using listeners
+		if($('#codetext').data('editor') && $('#codetext').data('editor').hasChange === true){
+			alert(i18n('UNSAVED_INFORMATION'));
 			return true;
 		}
 	}
@@ -713,14 +884,16 @@ jQuery(document).ready(function () {
 	// update theme-edit code editor
 	function updateTheme(theme,file,url){
 
-		// console.log(theme);
+		// Debugger.log(theme);
 		theme = theme === undefined ? '' : theme;
 		file  = file  === undefined ? '' : file;
 		url   = url   === undefined ? "theme-edit.php?t="+theme+'&f='+file : url;
 		
 		loadingAjaxIndicator.show();
-		$('#codetext').data('editor').setValue('');
-		$('#codetext').data('editor').hasChange = false;
+		if($('#codetext').data('editor')){
+			$('#codetext').data('editor').setValue('');
+			$('#codetext').data('editor').hasChange = false;
+		}	
 		$('#theme_edit_code').fadeTo('fast',0.3);
 
 		$.ajax({
@@ -733,34 +906,36 @@ jQuery(document).ready(function () {
 				responseText = data.replace(rscript, "");
 				response     = $($.parseHTML(data));
 
-				/* dir tree */
-				
+				/* load dir tree */
 				// using this var to prevent reloads on the filetree for now, 
 				// can go away when we are sending proper ajax responses and not full html pages.
 				if(this.paramfile!='_noload'){
 					$('#theme_filemanager').html(response.find('#theme_filemanager > *') ); 
 				}
-				
-				/* content */
+
+				/* load code content */
 				var newcontent = response.find('#codetext');
 				$('#codetext').val(newcontent.val());
-				$('#codetext').data('editor').setValue(newcontent.val());
-				$('#codetext').data('editor').hasChange = false;
-
+				
 				/* form */
 				var filename = response.find('#edited_file').val() ;
 				$('#edited_file').val(filename);
+				updateNonce(response);
 
+				if($('#codetext').data('editor')){
+					$('#codetext').data('editor').setValue(newcontent.val());
+					$('#codetext').data('editor').hasChange = false;
+					/* update editor mode */
+					$('#codetext').data('editor').setOption('mode',getEditorMode(getExtension(filename)));
+					$('#codetext').data('editor').refresh();
+				}
 				/* hook wrapper */
 				$('#theme-edit-extras-wrap').html(response.find('#theme-edit-extras-wrap > *'));
 
 				/* title */
 				$('#theme_editing_file').html(filename);
 
-				/* update editor mode */
-				$('#codetext').data('editor').setOption('mode',getEditorMode(getExtension(filename)));
-				$('#codetext').data('editor').refresh();
-				
+
 				clearFileWaits();
 				loadingAjaxIndicator.fadeOut();
 
@@ -783,7 +958,7 @@ jQuery(document).ready(function () {
 	}
 
 	// ajaxify theme submit
-	$('#themeEditForm').on('submit',function(e){
+	$('body.ajaxsave #themeEditForm').on('submit',function(e){
 		e.preventDefault();
 		themeFileSave($('#codetext').data('editor'));
 	});
@@ -799,11 +974,13 @@ jQuery(document).ready(function () {
 		notifyWarn('Updates cancelled').removeit();
 	});
 
-	// ajax save theme file
+	// theme-edit ajax save
 	themeFileSave = function(cm){
 		loadingAjaxIndicator.show();
 
-		cm.save(); // copy cm back to textarea
+		if($(cm)[0] && $.isFunction(cm.save)){
+			cm.save(); // copy cm back to textarea if editor has save method
+		}	
 
 		var dataString = $("#themeEditForm").serialize();
 
@@ -813,6 +990,7 @@ jQuery(document).ready(function () {
 			url: 'theme-edit.php',
 			data: dataString+'&submitsave=1&ajaxsave=1',
 			success: function( response ) {
+				response = $.parseHTML(response); // jquery 1.9 html parsing fix
 				$('div.wrapper .updated').remove();
 				$('div.wrapper .error').remove();
 				if ($(response).find('div.error').html()) {
@@ -825,15 +1003,23 @@ jQuery(document).ready(function () {
 					notifyError("<p>ERROR</p>").popit().removeit();					
 				}
 
+				updateNonce(response);
+
 				loadingAjaxIndicator.fadeOut();
 				$('#codetext').data('editor').hasChange = false; // mark clean		
 			}
 		});
 	};
 
+	// ajaxify components submit
+	$('body.ajaxsave #compEditForm').on('submit',function(e){
+		e.preventDefault();
+		componentSave(e);
+	});
+	
+	componentSave = function(e){
 
-	$('#compEditForm').submit(function(e) {
-		console.log("onsubmit");
+		Debugger.log("onsubmit");
 		e.preventDefault();
 
 		loadingAjaxIndicator.show();
@@ -851,6 +1037,7 @@ jQuery(document).ready(function () {
 			url: 'components.php',
 			data: dataString+'&submitted=1&ajaxsave=1',
 			success: function( response ) {
+				response = $.parseHTML(response);
 				$('div.wrapper .updated').remove();
 				$('div.wrapper .error').remove();
 				if ($(response).find('div.error').html()) {
@@ -862,43 +1049,25 @@ jQuery(document).ready(function () {
 				else {
 					notifyError("<p>ERROR</p>").popit().removeit();					
 				}
+
+				updateNonce(response);
 
 				loadingAjaxIndicator.fadeOut();
 				// $('#codetext').data('editor').hasChange = false; // mark clean		
 			}
 		});
-	});
+	};
 
-	componentSave = function(cm){
-		
-		loadingAjaxIndicator.show();
+	updateNonce = function(html){
+		var newnonce = $(html).find('#nonce').val();
+		if(newnonce) $('#nonce').val(newnonce);
+		// Debugger.log(newnonce);
+	};
 
-		cm.save(); // copy cm back to textarea
-
-		var dataString = $("#themeEditForm").serialize();
-
-		$.ajax({
-			type: "POST",
-			cache: false,
-			url: 'theme-edit.php',
-			data: dataString+'&submitsave=1&ajaxsave=1',
-			success: function( response ) {
-				$('div.wrapper .updated').remove();
-				$('div.wrapper .error').remove();
-				if ($(response).find('div.error').html()) {
-					notifyError($(response).find('div.error').html()).popit().removeit();
-				}
-				else if ($(response).find('div.updated').html()) {
-					notifyOk($(response).find('div.updated').html()).popit().removeit();
-				}	
-				else {
-					notifyError("<p>ERROR</p>").popit().removeit();					
-				}
-
-				loadingAjaxIndicator.fadeOut();
-				$('#codetext').data('editor').hasChange = false; // mark clean		
-			}
-		});
+	updateEditSlug = function(html){
+		var newslug = $(html).find('#existing-url').val();
+		if(newslug) $('#existing-url').val(newslug);
+		// Debugger.log(newslug);
 	};
 
 	function getExtension(file){
@@ -1034,6 +1203,12 @@ jQuery(document).ready(function () {
  
 	function scrollsidebar(){
 		var elem = $('body.sbfixed #sidebar');
+
+		if(!jQuery().scrollToFixed || !elem[0]){
+			Debugger.log("sbfixed not enabled or scrolltofixed not loaded");
+			return;
+		}
+
 		elem.scrollToFixed({ 
 			marginTop: 15,
 			limit: function(){ return $('#footer').offset().top - elem.outerHeight(true) - 15 ;} ,
@@ -1044,9 +1219,23 @@ jQuery(document).ready(function () {
 		});
 	}
 
+	// initialize fixed sidebar
 	scrollsidebar();
-	
-	// catch all redirects for session timeout on HTTP 401 unauthorized
+
+	// CTRL+s save hotkey listener
+	$(document).bind('keydown', function(e) {
+		// Debugger.log('keydown: ' + e.which);
+		var ctrlpress = navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey;
+		// detect CTRL+S do save on all pages
+		if(ctrlpress && (e.which == 83)) {
+			Debugger.log('Ctrl+S pressed');
+			dosave();
+			e.preventDefault();
+			return false;
+		}
+	});
+
+	// catch all ajax error, and redirects for session timeout on HTTP 401 unauthorized
 	$( document ).ajaxError(function( event, xhr, settings ) {
 		// notifyInfo("ajaxComplete: " + xhr.status);
 		if(xhr.status == 401){
@@ -1054,11 +1243,27 @@ jQuery(document).ready(function () {
 			window.location.reload();
 		}
 	});
-	
-	$('table.tree').addTableTree(0,2); // add tree folding to tree tables
+
+	// custom ajax error handler
+	function ajaxError($response){
+		if(GS.debug === true){
+            alert('An error occured in an XHR call, check console for response');
+			Debugger.log($response);
+		}
+	}
+
+	// add tree folding to tree tables
+	// addTableTree(minrows,mindepth,headerdepth)
+	$('table.tree').addTableTree(1,1,1);
 
 	// end of jQuery ready
 });
+
+function dosave(){
+	Debugger.log('saving');
+	// Debugger.log($("#submit_line input.submit"));
+	$("#submit_line input.submit").trigger('click'); // should do form.submit handlers as well
+}
 
 // lazy loader for js and css
 loadjscssfile = function(filename, filetype, callback){

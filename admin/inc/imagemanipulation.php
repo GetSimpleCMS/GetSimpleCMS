@@ -13,20 +13,20 @@ function genStdThumb($path,$name){
 	$php_modules = get_loaded_extensions();
 	if(!in_arrayi('gd', $php_modules)) return;
 
-	if (!defined('GSIMAGEWIDTH')) {
+	if (!getDef('GSIMAGEWIDTH')) {
 		$width = 200; //New width of image  	
 	} else {
 		$width = GSIMAGEWIDTH;
 	}
 
-	$ext = lowercase(pathinfo($name,PATHINFO_EXTENSION));	
+	$ext = getFileExtension($name);
 	
 	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' )	{
 		
 		$thumbsPath = GSTHUMBNAILPATH.$path;
 		
 		if (!(file_exists($thumbsPath))) {
-			if (defined('GSCHMOD')) { 
+			if (getDef('GSCHMOD')) {
 				$chmod_value = GSCHMOD; 
 			} else {
 				$chmod_value = 0755;
@@ -310,3 +310,5 @@ class ImageManipulation {
 		header("Content-Type: text/html");
 	}
 }
+
+/* ?> */

@@ -14,7 +14,7 @@ CKEDITOR.editorConfig = function( config )
     config.tabSpaces                   = 10;    
 
 	config.dialog_backgroundCoverColor = '#000000';  // veil color for dialog popups
-    config.uiColor                     = '#DDDDDD';
+    config.uiColor                     = '#FFFFFF';
 	config.magicline_color             = '#CF3805'; 
     config.entities                    = false;    
 
@@ -25,13 +25,15 @@ CKEDITOR.editorConfig = function( config )
 
 	config.allowedContent              = true;       // disable acf
 
+	config.extraPlugins                = 'codemirror';
+
 	config.toolbar_advanced = 
-		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
+		[['Bold', 'Italic', 'Underline', '-', 'NumberedList', 'BulletedList', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', '-', 'Link', 'Unlink', 'Image', 'RemoveFormat', '-', 'Table', 'TextColor', 'BGColor', 'ShowBlocks'], ['Source'], ['Maximize'],
 		'/',
 		['Styles','Format','Font','FontSize']];	
 
 	config.toolbar_basic = 
-		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']];
+		[['Bold', 'Italic', 'Underline', '-', 'NumberedList', 'BulletedList', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', '-', 'Link', 'Unlink', 'Image', 'RemoveFormat'], ['Source'], ['Maximize'] ];
 
 	// add about if debug mode
 	if(GS.debug === true){
@@ -48,8 +50,9 @@ CKEDITOR.editorConfig = function( config )
  * DO NOT EDIT BELOW THIS LINE
  */
 
-// prevent removal of empty tags
+// prevent removal of empty inline tags
 // CKEDITOR.dtd.$removeEmpty['i'] = false;
+// CKEDITOR.dtd.$removeEmpty['span'] = false;
 
 // Override default block element source formatting
 CKEDITOR.on( 'instanceReady', function( ev ) {
@@ -108,7 +111,7 @@ var menuItems;
 
 $.getJSON("inc/ajax.php?list_pages_json=1", function (data){
 	menuItems = data;
-	if (typeof editor !== "undefined")  CKEsetupLinks(editor);
+	CKEsetupLinks();
 });
 
 /**
@@ -116,18 +119,19 @@ $.getJSON("inc/ajax.php?list_pages_json=1", function (data){
  * This is used by the CKEditor to link to internal pages
  * @param editorObj	an editor instance
  */
-CKEsetupLinks = function(editorObj){
+CKEsetupLinks = function(){
 
-	if (typeof editorObj === "undefined") return;
-	
+	// if (typeof editorObj === "undefined") return;
 	CKEDITOR.on( 'dialogDefinition', function( ev )	{
+		// console.log(ev.editor);
+		// console.log(ev.data.name);
+		// console.log(menuItems);
+		if ((ev.data.name != 'link') || !menuItems) return;
 
-		if ((ev.editor != editorObj) || (ev.data.name != 'link') || !menuItems) return;
-		
 		// modify dialog definition for "link" dialog else return
-		
+
 		var definition = ev.data.definition;
-		
+
 		// override onfocus handler
 		// Supposed to select the select box, not working
 		definition.onFocus = CKEDITOR.tools.override(definition.onFocus, function(original) {
@@ -161,7 +165,7 @@ CKEsetupLinks = function(editorObj){
 			}]
 		});
 
-		// hide and show tabs and stuff as typ eis changed
+		// hide and show tabs and stuff as type i changed
 		content.onChange = CKEDITOR.tools.override(content.onChange, function(original) {
 			return function() {
 				original.call(this);
@@ -169,7 +173,7 @@ CKEsetupLinks = function(editorObj){
 				var element = dialog.getContentElement('info', 'localPageOptions').getElement().getParent().getParent();
 				if (this.getValue() == 'localPage') {
 					element.show();
-					if (editorObj.config.linkShowTargetTab) {
+					if (ev.editor.config.linkShowTargetTab) {
 						dialog.showPage('target');
 					}
 					var uploadTab = dialog.definition.getContents('upload');

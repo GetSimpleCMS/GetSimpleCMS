@@ -17,12 +17,14 @@ require_once(GSADMININCPATH.'configuration.php');
  * @uses $SALT
  * @uses $cookie_time
  * @uses $cookie_name
+ *
+ *
  */
 function create_cookie() {
 	global $USR,$SALT,$cookie_time,$cookie_name;
-	$saltUSR = $USR.$SALT;
+	$saltUSR    = sha1($USR.$SALT);
 	$saltCOOKIE = sha1($cookie_name.$SALT);
-	setcookie($saltCOOKIE, sha1($saltUSR), time() + $cookie_time,'/'); 
+	setcookie($saltCOOKIE, $saltUSR, time() + $cookie_time,'/'); 
 	setcookie('GS_ADMIN_USERNAME', $USR, time() + $cookie_time,'/');   
 }
 
@@ -57,11 +59,11 @@ function kill_cookie($identifier) {
  */
 function cookie_check() {
 	global $USR,$SALT,$cookie_name;
-	$saltUSR    = $USR.$SALT;
-	$saltCOOKIE = sha1($cookie_name.$SALT);
-	if(isset($_COOKIE[$saltCOOKIE])&&$_COOKIE[$saltCOOKIE]==sha1($saltUSR)) {
+	$saltUSR      = sha1($USR.$SALT);
+	$saltCOOKIEID = sha1($cookie_name.$SALT);
+	if(isset($_COOKIE[$saltCOOKIEID]) && $_COOKIE[$saltCOOKIEID] === $saltUSR) {
 		return true; // Cookie proves logged in status.
-	} else { 
+	} else {
 		return false; 
 	}
 }
@@ -95,9 +97,9 @@ function login_cookie_check() {
  * @return bool
  */
 function get_cookie($cookie_name) {
-	if(cookie_check($cookie_name) == true) { 
+	if(cookie_check($cookie_name) === true) { 
 		return $_COOKIE[$cookie_name];
 	}
 }
 	
-?>
+/* ?> */

@@ -80,11 +80,15 @@ function to7bit($text,$from_enc="UTF-8") {
  *
  * @since 3.1
  *
+ * @global $site_link_back_url
  * @param string $message
  * @return string
  */
 function email_template($message) {
 	GLOBAL $site_link_back_url;
+	$linkurl = $site_link_back_url;
+	if(getDef('GSEMAILLINKBACK') && getDef('GSEMAILLINKBACK') !== $linkurl) $linkurl = getDef('GSEMAILLINKBACK');
+
 	$data = '
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml">
@@ -103,7 +107,7 @@ function email_template($message) {
 					<table border="0" cellpadding="0" cellspacing="0" width="580" style="border-radius:3px;">
 						<tr>
 							<th style="padding:15px 0 15px 20px;text-align:left;vertical-align:top;background:#171E25;border-radius:4px 4px 0 0;" >
-								<a href="'.$site_link_back_url.'"><img src="'.$site_link_back_url.'GSSW/gssw_assets/images/logo.png" alt="GetSimple CMS"></a>
+								<a href="'.$linkurl.'"><img src="'.$linkurl.'logo.png" alt="GetSimple CMS"></a>
 							</th>
 						</tr>
 						<tr>
@@ -113,7 +117,7 @@ function email_template($message) {
 						</tr>
 						<tr>
 							<td style="padding-top:10px;font-size:10px;color:#aaa;line-height:14px;font-family:arial, \'helvetica neue\', helvetica, serif" >
-								<p class="meta">This is a system-generated email, please do not reply to it. For help or questions about GetSimple, please visit our <a href="'.$site_link_back_url.'" style="color:#aaa;" >website</a>.<br />&copy; '.date('Y').' GetSimple CMS. All Rights Reserved.&nbsp;<a href="'.$site_link_back_url.'start/privacy" style="color:#aaa;" >Privacy Policy</a>. </p>
+								<p class="meta">This is a system-generated email, please do not reply to it. For help or questions about GetSimple, please visit our <a href="'.$site_link_back_url.'" style="color:#aaa;" >website</a>.<br />&copy; '.date('Y').' GetSimple CMS. All Rights Reserved.&nbsp;<a href="'.$linkurl.'start/privacy" style="color:#aaa;" >Privacy Policy</a>. </p>
 							</td>
 						</tr>
 					</table>
@@ -144,7 +148,7 @@ function sendmail($to,$subject,$message) {
 	
 	$message = email_template($message);
 
-	if (defined('GSFROMEMAIL')){
+	if (getDef('GSFROMEMAIL')){
 		$fromemail = GSFROMEMAIL; 
 	} else {
 		if(!empty($_SERVER['SERVER_ADMIN']) && check_email_address($_SERVER['SERVER_ADMIN'])) $fromemail = $_SERVER['SERVER_ADMIN'];
@@ -158,12 +162,8 @@ function sendmail($to,$subject,$message) {
 	$headers .= 'Reply-To: '.$fromemail . PHP_EOL;
 	$headers .= 'Return-Path: '.$fromemail . PHP_EOL;
 	
-	if( @mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',"$message",$headers) ) {
-		return 'success';
-	} else {
-		return 'error';
+	return @mail($to,'=?UTF-8?B?'.base64_encode($subject).'?=',"$message",$headers);
 	}
-}
 
 /**
  * Sub-Array Sort
@@ -247,20 +247,47 @@ function isFile($file, $path, $type = 'xml') {
  * @since 1.0
  *
  * @param string $path
+ * @param string $ext optional file extensions to filter
  * @return array
  */
-function getFiles($path) {
+function getFiles($path,$ext = null) {
 	$handle   = opendir($path) or die("getFiles: Unable to open $path");
 	$file_arr = array();
 
 	while ($file = readdir($handle)) {
+		if(isset($ext)){
+			$fileext = getFileExtension($file);
+			if ($fileext == $ext) $file_arr[] = $file;
+		}
+		else {
 		if ($file != '.' && $file != '..') {
 			$file_arr[] = $file;
 		}
 	}
+	}
 
 	closedir($handle);
 	return $file_arr;
+}
+
+/**
+ * get list of subdirectories
+ * @param  str $path    path to dir
+ * @param  str $filereq filename required for inclusion
+ * @return array        array of dir names
+ */
+function getDirs($path,$filereq = null) {
+	$handle   = opendir($path) or die("getDirs: Unable to open $path");
+	$dir_arr = array();
+	while ($file = readdir($handle)) {
+		$curpath = $path.$file;
+		if (is_dir($curpath) && $file != '.' && $file != '..') {
+			if(isset($filereq) && !file_exists($curpath.'/'.$filereq)) continue;
+			$dir_arr[] = $file;
+		}
+	}
+	closedir($handle);
+	return $dir_arr;
 }
 
 /**
@@ -271,19 +298,8 @@ function getFiles($path) {
  * @return array
  */
 function getXmlFiles($path) {
-	$handle   = opendir($path) or die("Unable to open $path");
-	$file_arr = array();
-
-	while ($file = readdir($handle)) {
-		$ext = lowercase(pathinfo($file, PATHINFO_EXTENSION));
-		if ($ext == 'xml') {
-			$file_arr[] = $file;
+	return getFiles($path,'xml');
 		}
-	}
-
-	closedir($handle);
-	return $file_arr;
-}
 
 /**
  * execution timer
@@ -318,7 +334,7 @@ function get_execution_time($reset=false)
  * @return object
  */
 function getXML($file) {
-	$xml = @file_get_contents($file);
+	$xml = read_file($file);
 	if($xml){
 		$data = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA); 
 		return $data;
@@ -326,31 +342,218 @@ function getXML($file) {
 }
 
 /**
- * XML Save
+ * get page xml shortcut
+ *
+ * @since 3.4
+ * @param  str $id id of page
+ * @return xml     xml object
+ */
+function getPageXML($id){
+	return getXML(GSDATAPAGESPATH.$id.'.xml');
+}
+
+/**
+ * check if a file has a backup copy
+ *
+ * @since 3.4
+ * @param str $filepath filepath to data file
+ * @return bool status
+ */
+function fileHasBackup($filepath){
+	$backupfilepath = getBackupFilePath($filepath);
+	return file_exists($backupfilepath);
+}
+
+/**
+ * save XML to file
  *
  * @since 2.0
- * @todo create and chmod file before ->asXML call (if it doesnt exist already, if so, then just chmod it.)
  *
- * @param object $xml
+ * @param object $xml  simple xml object to save to file via asXml
  * @param string $file Filename that it will be saved as
  * @return bool
  */
 function XMLsave($xml, $file) {
-	# get_execution_time(true);
 	if(!is_object($xml)) return false;
-	$success = @$xml->asXML($file) === TRUE;
-	# debugLog('XMLsave: ' . $file . ' ' . get_execution_time());	
+	$data = @$xml->asXML();
+	return save_file($file,$data);
+}
 	
-	if (defined('GSCHMOD')) {
-		return $success && chmod($file, GSCHMOD);
-	} else {
-		return $success && chmod($file, 0755);
+/**
+ * create a director or path
+ *
+ * @since 3.4
+ * @todo normalize slashes for windows
+ * @todo might need a recursive chmod also, mkdir only chmods the basedir allegedly
+ *
+ * @param  str  $dir          directory or path
+ * @param  boolean $recursive create recursive path
+ * @return bool               success, null if already exists
+ */
+function create_dir($path,$recursive = true){
+	if(is_dir($path)) return fileLog(__FUNCTION__,true,'dir already exists',$path);
+	$status = mkdir($path,getDef('GSCHMODDIR'),$recursive); // php mkdir
+	return 	fileLog(__FUNCTION__. ':' . ($recursive ? ' [recursive=true] ' : ''),$status,$path);
 	}
+
+/**
+ * Delete a folder, must be empty
+ *
+ * @param  str $path path to remove
+ * @return bool       success
+ */
+function delete_dir($path){
+	$status = rmdir($path);
+	return fileLog(__FUNCTION__,$status,$path);
 }
 
 /**
- * Date Formated Output
- * @since  3.4.0
+ * save data to file (overwrites existing)
+ * then chmod
+ * @todo do we really need to chmod everytime ?
+ *
+ * @since  3.4
+ *
+ * @param  str $file filepath
+ * @param  str $data data to save to file
+ * @return bool success
+ */
+function save_file($file,$data){
+	$status = file_put_contents($file,$data) !== false; // returns num bytes written, FALSE on failure
+	fileLog(__FUNCTION__,$status,$file);
+	$chmodstatus = gs_chmod($file); // currently ignoring chmod failures
+	return $status;
+}
+
+/**
+ * read a file in
+ * @param  str $file filepath to file
+ * @return bool      file contents
+ */
+function read_file($file){
+	$data = file_get_contents($file); // php file_get_contents
+	fileLog(__FUNCTION__,isset($data),$file);
+	return $data;
+}
+
+// alias for rename_file()
+function move_file($src,$dest,$filename = null){
+	fileLog(__FUNCTION__,'-','ALIAS calling rename_file');
+	$status = rename_file($src,$dest,$filename);
+}
+
+/**
+ * Rename a file (overwrites existing)
+ * renames a file, moving between dirs if necessary
+ *
+ * @since  3.4
+ *
+ * @param  str  $src  filepath to rename
+ * @param  str  $dest filepath destination
+ * @param  str $filename optional filename will be appended to src and destf
+ * @return bool           success
+ */
+function rename_file($src,$dest,$filename = null){
+	if(isset($filename)){
+		$src  .= DIRECTORY_SEPARATOR . $filename;
+		$dest .= DIRECTORY_SEPARATOR . $filename;
+	}
+	if(!$status = rename($src,$dest)){ // php rename
+		fileLog(__FUNCTION__,false,'calling copy_file & delete_file');
+		$status = copy_file($src,$dest) && delete_file($src);
+		return $status;
+	}
+	return fileLog(__FUNCTION__,$status,$src,$dest);
+}
+
+/**
+ * copy a file (overwrites existing)
+ *
+ * @since  3.4
+ *
+ * @param  str  $src  filepath to copy
+ * @param  str  $dest filepath destination
+ * @param  str  $filename optional filename will be appended to src and destf
+ * @return bool           success
+ */
+function copy_file($src,$dest,$filename = null){
+	if(isset($filename)){
+		$src  .= DIRECTORY_SEPARATOR . $filename;
+		$dest .= DIRECTORY_SEPARATOR . $filename;
+	}	
+	$status = copy($src,$dest); // php copy
+	return fileLog(__FUNCTION__,$status,$src,$dest);
+}
+
+/**
+ * Deletes a file
+ *
+ * @since  3.4
+ *
+ * @param  str $file  file to delete
+ * @return bool       success
+ */
+function delete_file($file){
+	$status = unlink($file); // php unlink
+	return fileLog(__FUNCTION__,$status,$file);
+}
+
+/**
+ * do chmod using gs chmod constants or user
+ * returns false if chmod is not avialable for whatever reason
+ *
+ * @since 3.4
+ *
+ * @param  str  $path  path to file or dir
+ * @param  boolean $dir   is directory, default false = file
+ * @param  int  $chmod chmod value
+ * @return bool         success of chmod
+ */
+function gs_chmod($path,$chmod = null,$dir = false){
+	if(!isset($chmod) || empty($chmod)){
+		$chmod = $dir ? getDef('GSCHMODDIR') : getDef('GSCHMODFILE');
+	}
+	// chmod might be prohibited by disabled functions etc.
+	if(!function_exists('chmod')) return fileLog(__FUNCTION__,false,'chmod not available',$path,$chmod);
+
+	$status = chmod($path,$chmod); // php chmod
+	return fileLog(__FUNCTION__,$status,$path,$chmod);
+}
+
+/**
+ * log fileio operations
+ *
+ * since 3.4
+ * @todo check args for gsroot and convert to relative paths
+ * @param  str   $operation file operation or functionname to log
+ * @param  mixed $status    if bool evals to success and fail, else shows status as string
+ * @param  mixed  variable length args any other arguments are outputted at end
+ * @return mixed            returns status untouched, passthrough
+ */
+function fileLog($operation,$status = null){
+	$args = array_slice(func_get_args(),2); // grab arguments past first 2 for output
+	if(is_bool($status)) $logstatus = ($status === true) ? uppercase(i18n_r('SUCCESS','SUCCESS')) : uppercase(i18n_r('FAIL','FAIL'));
+	else $logstatus = (string) $status;
+	$args = convertPathArgs($args);
+	debugLog("&bull; fileio: [$logstatus] ".uppercase($operation).": ".implode(" - ",$args));
+
+	return $status;
+}
+
+function convertPathArgs($args){
+	foreach($args as &$arg){
+		if(!is_string($arg)) continue;
+		if(strpos($arg,GSROOTPATH) !== false){
+			$arg = getRelPath($arg);
+		}
+	}
+	return $args;
+}
+
+/**
+ * Formated Date Output, special handling for params on windows
+ *
+ * @since  3.4
  * @author  cnb
  * 
  * @param  string $format    A strftime or date format
@@ -377,52 +580,57 @@ function formatDate($format, $timestamp = null) {
 }
 
 /**
- * Long Date Output
+ * Time Output using locale
  *
- * @since 1.0
- * @uses $i18n
- * @uses i18n_r
- *
- * @param string $dt Date/Time format, default is $i18n['DATE_AND_TIME_FORMAT']
- * @return string
+ * @since 3.4
+ * @param  str $dt Date/Time String
+ * @return str
  */
-function lngDate($dt) {
-	global $i18n;
-	
-	if (!$dt) {
-		$data = formatDate(i18n_r('DATE_AND_TIME_FORMAT'));
-	} else {
-		$data = formatDate(i18n_r('DATE_AND_TIME_FORMAT'), strtotime($dt));
-	}
-
-	return $data;
+function output_time($dt = null) {
+	if(isset($dt)) $dt = strtotime($dt);
+	if(getTimeFormat()) return formatDate(getTimeFormat(),$dt);
 }
 
 /**
- * Short Date Output
+ * Date/Time Output using locale
  *
  * @since 1.0
- * @uses $i18n
- * @uses i18n_r
- *
- * @param string $dt Date/Time format, default is $i18n['DATE_FORMAT']
+ * @param string $dt Date/Time string
  * @return string
  */
-function shtDate($dt) {
-	global $i18n;
-	
-	if (!$dt) {
-		$data = formatDate(i18n_r('DATE_FORMAT'));
-	} else {
-		$data = formatDate(i18n_r('DATE_FORMAT'), strtotime($dt));
+function output_datetime($dt = null) {
+	if(isset($dt)) $dt = strtotime($dt);
+	if(getDateTimeFormat()) return formatDate(getDateTimeFormat(),$dt);
 	}
 
-	return $data;
+/**
+ * Date only Output using locale
+ *
+ * @since 1.0
+ * @param string $dt Date/Time string
+ * @return string
+ */
+function output_date($dt = null) {
+	if(isset($dt)) $dt = strtotime($dt);
+	if(getDateFormat()) return formatDate(getDateFormat(),$dt);
+	}
+
+// legacy aliases
+function shtTime($dt = null){
+	return output_time($dt);
+}
+function shtDate($dt = null){
+	return output_date($dt);
+}
+function lngDate($dt = null){
+	return output_datetime($dt);
 }
 
 /**
  * Clean Utility
  *
+ * Removes slashes, removes html tags, decodes entities
+ * used to clean slugs and titles
  * @since 1.0
  *
  * @param string $data
@@ -435,7 +643,7 @@ function cl($data){
 }
 
 /**
- * Add Trailing Slash
+ * Add Trailing Slash if missing
  *
  * @since 1.0
  *
@@ -445,6 +653,21 @@ function cl($data){
 function tsl($path) {
 	if( substr($path, strlen($path) - 1) != '/' ) {
 		$path .= '/';
+	}
+	return $path;
+}
+
+/**
+ * Remove Trailing Slash if missing
+ *
+ * @since 3.4
+ *
+ * @param string $path
+ * @return string
+ */
+function no_tsl($path) {
+	if( substr($path, -1) == '/' ) {
+		$path =  substr($path,0,-1);
 	}
 	return $path;
 }
@@ -489,7 +712,7 @@ function find_url($slug, $parent, $type='full') {
 	if ($type == 'full') {
 		$full = $SITEURL;
 	} elseif($type == 'relative') {
-		$s = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
+		$s = pathinfo(htmlentities(getScriptFile(), ENT_QUOTES));
 		$full = $s['dirname'] .'/';
 		$full = str_replace('//', '/', $full);
 	} else {
@@ -589,14 +812,20 @@ function redirect($url) {
 
 	// handle expired sessions for ajax requests
 	if(requestIsAjax() && !cookie_check()){
-		header('HTTP/1.1 401 Unauthorized', true, 401);
+		header('HTTP/1.1 401 Unauthorized');
 		header('WWW-Authenticate: FormBased');
+		// @note this is not a security function for ajax, just a handler
 		die();
 	}	
 
-	if (!headers_sent($filename, $linenum)) {
+	if(function_exists('exec_action')) exec_action('redirect');
+
+	$debugredirect = false;
+
+	if (!headers_sent($filename, $linenum) && !$debugredirect) {
 		header('Location: '.$url);
 	} else {
+		// @todo not sure this ever gets used or headers_sent is reliable ( turn output buffering off to test )
 		echo "<html><head><title>".i18n_r('REDIRECT')."</title></head><body>";
 		if ( !isDebug() ) {
 			echo '<script type="text/javascript">';
@@ -612,18 +841,10 @@ function redirect($url) {
 
 		if(!isAuthPage()) {
 			if (isDebug()){
-				global $GS_debug;
-				echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
-				echo '<pre>';
-
-				foreach ($GS_debug as $log){
-					print($log.'<br/>');
+				debugLog(debug_backtrace());
+				outputDebugLog();
 				}
-
-				echo '</pre>';	
-				echo '</div>';
 			}
-		}
 		
 		echo "</body></html>";
 	}
@@ -635,7 +856,7 @@ function redirect($url) {
  * Display i18n
  *
  * Displays the default language's tranlation, but if it 
- * does not exist, it falls back to the en_US one.
+ * does not exist, it falls back to $default if set, else GSMERGELANG else {token}.
  *
  * @since 3.0
  * @author ccagle8
@@ -645,29 +866,25 @@ function redirect($url) {
  *
  * @param string $name
  * @param bool $echo Optional, default is true
+ * @param mixed $default default return value if i18n or token not exist, default:true {token}, false:null, str:string
  */
-function i18n($name, $echo=true) {
+function i18n($name, $echo=true, $default = true) {
 	global $i18n;
 	global $LANG;
 
-	if(isset($i18n)){
-
-		if (isset($i18n[$name])) {
+	if(isset($i18n) && isset($i18n[$name])){
 			$myVar = $i18n[$name];
-		} else {
-			$myVar = '{'.$name.'}';
 		}
-	}
-	else {
+	else if($default === true){
 		$myVar = '{'.$name.'}'; // if $i18n doesnt exist yet return something
 	}
-
-	if (!$echo) {
-		return $myVar;
-	} else {
-		echo $myVar;
+	else if(is_string($default)){
+		$myVar = $default;
 	}
-}
+	else return;
+
+	return echoReturn($myVar,$echo);
+	}
 
 /**
  * Return i18n
@@ -679,8 +896,8 @@ function i18n($name, $echo=true) {
  *
  * @param string $name
  */
-function i18n_r($name) {
-	return i18n($name, false);
+function i18n_r($name,$default = true) {
+	return i18n($name, false, $default);
 }
 
 /**
@@ -718,15 +935,16 @@ function i18n_merge($plugin, $language=null) {
  * @param string $globali18n
  * @return bool
  */
-function i18n_merge_impl($plugin, $lang, &$globali18n) { 
+function i18n_merge_impl($plugin = '', $lang, &$globali18n) {
 
 	$i18n = array(); // local from file
 	if(!isset($globali18n)) $globali18n = array(); //global ref to $i18n
 
-	$path     = ($plugin ? GSPLUGINPATH.$plugin.'/lang/' : GSLANGPATH);
+	$path     = (isset($plugin) && $plugin !=='' ? GSPLUGINPATH.$plugin.'/lang/' : GSLANGPATH);
 	$filename = $path.$lang.'.php';
 	$prefix   = $plugin ? $plugin.'/' : '';
 
+	// @todo safe checking every lang file is probably overkill, we can just sanitize the crap out of $lang
 	if (!filepath_is_safe($filename,$path) || !file_exists($filename)) {
 		return false;
 	}
@@ -765,11 +983,53 @@ function safe_slash_html($text) {
 	} else {
 		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 	}
-	$text = str_replace(chr(12), '', $text); // FF
-	$text = str_replace(chr(3), ' ', $text); // ETX
-	return $text;
+
+	return xmlFilterChars($text);
 }
 
+/**
+ * xmlFilterChars
+ *
+ * @since  3.3.3
+ * @param  str $str string to prepare for xml cdata
+ * @return str      filtered string
+ */
+function xmlFilterChars($str){
+	$chr = getRegexUnicode();
+	// filter only xml allowed characters
+	return preg_replace ('/[^'.$chr['ht'].$chr['lf'].$chr['cr'].$chr['lower'].$chr['upper'].']+/u', ' ', $str);
+}
+
+/**
+ * getRegexUnicode
+ * defines unicode char and char ranges for use in regex filters
+ *
+ * @since  3.3.3
+ * @param  str $id key to return from char range array
+ * @return mixed     array or str if id specified of regex char strings
+ */
+function getRegexUnicode($id = null){
+	$chars = array(
+		'null'       => '\x{0000}',            // 0 null
+		'ht'         => '\x{0009}',            // 9 horizontal tab
+		'lf'         => '\x{000a}',            // 10 line feed
+		'vt'         => '\x{000b}',            // 11 vertical tab
+		'FF'         => '\x{000c}',            // 12 form feed
+		'cr'         => '\x{000d}',            // 13 carriage return
+		'cntrl'      => '\x{0001}-\x{0019}',   // 1-31 control codes
+		'cntrllow'   => '\x{0001}-\x{000c}',   // 1-12 low end control codes
+		'cntrlhigh'  => '\x{000e}-\x{0019}',   // 14-31 high end control codes
+		'bom'        => '\x{FEFF}',            // 65279 BOM byte order mark
+		'lower'      => '\x{0020}-\x{D7FF}',   // 32 - 55295
+		'surrogates' => '\x{D800}-\x{DFFF}',   // 55296 - 57343
+		'upper'      => '\x{E000}-\x{FFFD}',   // 57344 - 65533
+		'nonchars'   => '\x{FFFE}-\x{FFFF}',   // 65534 - 65535
+		'privateb'   => '\x{10000}-\x{10FFFD}' // 65536 - 1114109
+	);
+
+	if(isset($id)) return $chars[$id];
+	return $chars;
+}
 
 /**
  * Safe StripSlashes HTML Decode
@@ -804,25 +1064,35 @@ function strip_decode($text) {
 }
 
 /**
- * Safe Pathinfo Filename
+ * Safe Pathinfo Filename, pathinfo php 5.2 compatability wrapper
  *
  * for backwards compatibility for before PHP 5.2
  *
  * @since 3.0
  * @author madvic
  *
+ * @todo remove shim support, min requirements is php 5.2
  * @param string $file
  * @return string
  */
 function pathinfo_filename($file) {
-	if (defined('PATHINFO_FILENAME')) return pathinfo($file,PATHINFO_FILENAME);
-	$path_parts = pathinfo($file);
+	if (getDef('PATHINFO_FILENAME')) return pathinfo($file,PATHINFO_FILENAME);
 
+	// php 5.2 support
+	$path_parts = pathinfo($file);
 	if(isset($path_parts['extension']) && ($file!='..')){
 		return substr($path_parts['basename'],0 ,strlen($path_parts['basename'])-strlen($path_parts['extension'])-1);
 	} else{
 		return $path_parts['basename'];
 	}
+}
+
+function getFileName($file){
+	return pathinfo_filename($file);
+}
+
+function getFileExtension($file){
+	return lowercase(pathinfo($file,PATHINFO_EXTENSION));
 }
 
 /**
@@ -838,18 +1108,17 @@ function pathinfo_filename($file) {
  * @param bool $parts 
  * @return string
  */
-function suggest_site_path($parts=false) {
+function suggest_site_path($parts=false, $protocolRelative = false) {
 	global $GSADMIN;
-
-	$protocol   = http_protocol();
-	$path_parts = pathinfo(htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES));
+	$protocol   = $protocolRelative ? '' : http_protocol().':';
+	$path_parts = pathinfo(htmlentities(getScriptFile(), ENT_QUOTES));
 	$path_parts = str_replace("/".$GSADMIN, "", $path_parts['dirname']);
 	$port       = ( $p=$_SERVER['SERVER_PORT'] ) != '80' && $p != '443' ? ':'.$p : '';
 	
 	if($path_parts == '/') {
-		$fullpath = $protocol."://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $port . "/";
+		$fullpath = $protocol."//". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $port . "/";
 	} else {
-		$fullpath = $protocol."://". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $port . $path_parts ."/";
+		$fullpath = $protocol."//". htmlentities($_SERVER['SERVER_NAME'], ENT_QUOTES) . $port . $path_parts ."/";
 	}
 		
 	if ($parts) {
@@ -872,14 +1141,15 @@ function suggest_site_path($parts=false) {
  */
 function myself($echo=true) {
 	if ($echo) {
-		echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES);
+		echo htmlentities(getScriptFile(), ENT_QUOTES);
 	} else {
-		return htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES);
+		return htmlentities(getScriptFile(), ENT_QUOTES);
 	}
 }
 
 /**
  * Get Available Themes 
+ * @todo  unused, actually returns templates for a theme it seems
  *
  * @since 2.04
  * @uses GSTHEMESPATH
@@ -915,23 +1185,60 @@ function htmldecode($text) {
 }
 
 /**
- * Safe to LowerCase 
+ * multibyte Safe to lower case
  *
  * @since 2.04
- * @author ccagle8
  *
  * @param string $text
- * @return string
+ * @return string converted to lowercase
  */
 function lowercase($text) {
-	if (function_exists('mb_strtolower')) {
-		$text = mb_strtolower($text, 'UTF-8'); 
+	if (function_exists('mb_convert_case')) {
+		$text = mb_convert_case($text, MB_CASE_LOWER, 'UTF-8');
 	} else {
 		$text = strtolower($text); 
 	}
 	
 	return $text;
 }
+
+
+/**
+ * multibyte Safe to UPPER CASE
+ *
+ * @since 2.04
+ *
+ * @param string $text
+ * @return string converted to UPPERCASE
+ */
+function uppercase($text) {
+	if (function_exists('mb_convert_case')) {
+		$text = mb_convert_case($text, MB_CASE_UPPER, 'UTF-8');
+	} else {
+		$text = strtoupper($text);
+	}
+
+	return $text;
+}
+
+/**
+ * multibyte Safe to Title Case
+ *
+ * @since 3.4
+ *
+ * @param string $text
+ * @return string converted to Titlecase
+ */
+function titlecase($text) {
+	if (function_exists('mb_convert_case')) {
+		$text = mb_convert_case($text, MB_CASE_TITLE, 'UTF-8');
+	} else {
+		$text = ucwords($text);
+	}
+
+	return $text;
+}
+
 
 /**
  * Find AccessKey
@@ -968,7 +1275,7 @@ function _id($text) {
 
 /**
  * Defined Array
- *
+ * @todo  unused, what is it for ?
  * Checks an array of PHP constants and verifies they are defined
  * 
  * @param array $constants
@@ -992,20 +1299,11 @@ function defined_array($constants) {
  * Check to see if a folder is empty or not
  * 
  * @param string $folder
- * @return bool
+ * @return bool true if empty
  */
 function check_empty_folder($folder) {
-	$files = array ();
-	if ( $handle = opendir ( $folder ) ) {
-		while ( false !== ( $file = readdir ( $handle ) ) ) {
-			if ( $file != "." && $file != ".." ) {
-				$files [] = $file;
+	return folder_items($folder) == 0;
 			}
-		}
-		closedir ( $handle );
-	}
-	return ( count ( $files ) > 0 ) ? FALSE : TRUE;
-}
 
 
 /**
@@ -1014,20 +1312,11 @@ function check_empty_folder($folder) {
  * Return the count of items within the given folder
  * 
  * @param string $folder
- * @return string
+ * @return int count of folder items
  */
 function folder_items($folder) {
-	$files = array ();
-	if ( $handle = opendir ( $folder ) ) {
-		while ( false !== ( $file = readdir ( $handle ) ) ) {
-			if ( $file != "." && $file != ".." ) {
-				$files [] = $file;
+	return count(getFiles($folder));
 			}
-		}
-		closedir($handle);
-	}
-	return count($files);
-}
 
 /**
  * Validate a URL String
@@ -1139,13 +1428,8 @@ function file_mime_type($file) {
  * @return bool
  */
 function is_frontend() {
-	GLOBAL $base;
-	if(isset($base)) {
-		return true;
-	} else {
-		return false;
+	return GSBASE;
 	}
-}
 
 /**
  * Get Installed GetSimple Version
@@ -1170,7 +1454,7 @@ function get_site_version($echo=true) {
 
 /**
  * Get GetSimple Language
- *
+ * @todo  wtf does this do?
  * @since 3.1
  * @uses $LANG
  *
@@ -1207,6 +1491,7 @@ function toBytes($str){
 
 /**
  * Remove Relative Paths
+ * @todo this function is a bad idea
  *
  * @since 3.1
  *
@@ -1282,7 +1567,7 @@ function directoryToMultiArray($dir,$recursive = true,$exts = null,$exclude = fa
 			else {
 				$path =  preg_replace("#\\\|//#", "/", $dir . '/');
 				// filetype filter
-				$ext = lowercase(pathinfo($value,PATHINFO_EXTENSION));	
+				$ext = getFileExtension($value);
 				if(is_array($exts)){
 				if(!in_array($ext,$exts) and !$exclude) continue;
 				if($exclude and in_array($ext,$exts)) continue;
@@ -1375,7 +1660,7 @@ function returnJsArray($var){
 
 	if(!is_array($var)) {
 		// if looks like an array string try to parse as array
-		if(strrpos($var, '[')){
+		if(strrpos($var, '[') !==false){
 			// normalize array strings
 			$var = stripslashes($var);         // remove escaped quotes
 			$var = trim(trim($var),',');       // remove trailing commas
@@ -1426,6 +1711,7 @@ function notInInstall(){
 
 /**
  * Returns a path relative to GSROOTPATH or optional root path
+ * @todo  probably not fully windows drive safe
  * @since 3.4
  * @param  string $path full file path
  * @param  string $root optional root path, defaults to GSROOTPATH
@@ -1438,7 +1724,7 @@ function getRelPath($path,$root = GSROOTPATH ){
 
 /**
  * returns a global, easier inline usage of readonly globals
- * @since  3.4.0 
+ * @since  3.4
  * @param  str $var variable name
  * @return global
  */
@@ -1450,7 +1736,7 @@ function getGlobal($var) {
 /** 
  * returns a page global 
  * currently an alias for getGlobal
- * @since 3.4.0
+ * @since 3.4
  */
 function getPageGlobal($var){
 	return getGlobal($var);
@@ -1458,13 +1744,13 @@ function getPageGlobal($var){
 
 /**
  * echo or return toggle
- * @since  3.4.0
+ * @since  3.4
  * @param str $str 
  * @param bool $echo default true, echoes or returns $str
  */
 function echoReturn($str,$echo = true){
-	if ($echo) echo $str;
-	return $str;	
+	if (!$echo) return $str;
+	echo $str;
 }
 
 /**
@@ -1494,6 +1780,341 @@ function setDefault(&$var = '',$default){
 	if(!isset($var) || empty($var)) $var = $default;
 }
 
+
+function allowVerCheck(){
+	return !isAuthPage() && !getDef('GSNOVERCHECK');
+}
+
+function getVerCheck(){
+	# check to see if there is a core update needed
+	$data = get_api_details();
+	if ($data)	{
+		return json_decode($data);
+	}else {
+		return null;
+	}
+}
+
+/**
+ * includeTheme
+ *
+ * @param  str $template      template name
+ * @param  str $template_file template filename
+ */
+function includeTheme($template, $template_file = GSTEMPLATEFILE){
+	# include the functions.php page if it exists within the theme
+	if ( file_exists(GSTHEMESPATH .$template."/functions.php") ) {
+		include(GSTHEMESPATH .$template."/functions.php");
+	}
+
+	# include the template and template file set within theme.php and each page
+	if ( (!file_exists(GSTHEMESPATH .$template."/".$template_file)) || ($template_file == '') ) { $template_file = GSTEMPLATEFILE; }
+	include(GSTHEMESPATH .$template."/".$template_file);
+}
+
+/**
+ * get the current accessed script file
+ * @since 3.4
+ * @return str  path to script filename
+ */
+function getScriptFile(){
+	return $_SERVER['SCRIPT_NAME'];
+}
+
+/**
+ * get custom locale as defined in i18n
+ * @since 3.4
+ * @return str
+ */
+function getLocaleConfig(){
+	return i18n_r("LOCALE",null);
+}
+
+/**
+ * get date format as defined in i18n
+ * @since 3.4
+ * @return str date format string
+ */
+function getDateFormat(){
+	return i18n_r("DATE_FORMAT",getDef('GSDATEFORMAT'));
+}
+/**
+ * get date time format as defined in i18n
+ * @since 3.4
+ * @return str date time format string
+ */
+function getDateTimeFormat(){
+	return i18n_r("DATE_AND_TIME_FORMAT",getDef('GSDATETIMEFORMAT'));
+}
+/**
+ * get date time format as defined in i18n
+ * @since 3.4
+ * @return str date time format string
+ */
+function getTimeFormat(){
+	return i18n_r("TIME_FORMAT",getDef('GSTIMEFORMAT'));
+}
+/**
+ * get transliteration set as defined in i18n
+ * @since 3.4
+ * @return str
+ */
+function getTransliteration(){
+	return i18n_r("TRANSLITERATION",null);
+}
+
+/**
+ * set php locale via i18n
+ * @since 3.4
+ * @param str locale str
+ */
+function  setCustomLocale($locale){
+	if ($locale) setlocale(LC_ALL, preg_split('/s*,s*/', $locale));
+}
+
+/**
+ * Merge GSMERGELANG, a fallback language, into i18n
+ * This is a default lang to load after the custom lang to
+ * avoid empty lang tokens not found in the custom lang
+ *
+ * @since 3.4
+ * @global $LANG
+ */
+function i18n_mergeDefault(){
+	GLOBAL $LANG;
+	// Merge in default lang to avoid empty lang tokens
+	// if GSMERGELANG is undefined or false merge GSDEFAULTLANG else merge custom
+	if(getDef('GSMERGELANG', true) !== false and !getDef('GSMERGELANG', true) ){
+		if($LANG !=GSDEFAULTLANG)	i18n_merge(null,GSDEFAULTLANG);
+	} else{
+		// merge GSMERGELANG defined lang if not the same as $LANG
+		if($LANG !=getDef('GSMERGELANG') ) i18n_merge(null,getDef('GSMERGELANG'));
+	}
+}
+
+/**
+ * get the gs editor height config
+ * @since 3.4
+ * @return str string with height units
+ */
+function getEditorHeight(){
+	if (getDef('GSEDITORHEIGHT')) return getDef('GSEDITORHEIGHT') .'px';
+}
+
+/**
+ * get the gs editor language
+ * @since 3.4
+ * @return str
+ */
+function getEditorLang(){
+	if (getDef('GSEDITORLANG')) return getDef('GSEDITORLANG');
+	else if (file_exists(GSADMINTPLPATH.'js/ckeditor/lang/'.i18n_r('CKEDITOR_LANG').'.js')){
+		return i18n_r('CKEDITOR_LANG');
+	}
+}
+
+/**
+ * get the gs editor custom options
+ * @since 3.4
+ * @return str js config string
+ */
+function getEditorOptions(){
+	if (getDef('GSEDITOROPTIONS') && trim(getDef('GSEDITOROPTIONS'))!="" ) return getDef('GSEDITOROPTIONS');
+}
+
+/**
+ * get the gs editor custom toolbar
+ * @since 3.4
+ * @return str valid js nested array ([[ ]]) or escaped toolbar id ('toolbar_id')
+ */
+function getEditorToolbar(){
+	if (getDef('GSEDITORTOOL')) $edtool = getDef('GSEDITORTOOL');
+	if($edtool == "none") $edtool = null; // toolbar to use cke default
+	// if($edtool === null) $edtool = 'null'; // not supported in cke 3.x
+
+	// at this point $edtool should always be a valid js nested array ([[ ]]) or escaped toolbar id ('toolbar_id')
+	return returnJsArray($edtool);
+}
+
+/**
+ * get defined timezone from user->site->gsconfig
+ * @since 3.4
+ * @return str timezone identifier
+ */
+function getDefaultTimezone(){
+	GLOBAL $USRTIMEZONE, $SITETIMEZONE;
+	if(isset($USRTIMEZONE)) return $USRTIMEZONE;
+	if(isset($SITETIMEZONE)) return $SITETIMEZONE;
+	if(getDef('GSTIMEZONE')) return getDef('GSTIMEZONE');
+}
+
+/**
+ * set defined timezone
+ *
+ * @since 3.4
+ * @param str timezone identifier http://us3.php.net/manual/en/timezones.php
+ */
+function setTimezone($timezone){
+	if(isset($timezone) && function_exists('date_default_timezone_set') && ($timezone != "" || stripos($timezone, '--')) ) {
+		date_default_timezone_set($timezone);
+	}
+}
+
+
+/**
+ * get web root relative url
+ * 
+ * @since  3.4
+ * @var str url to normalize
+ */
+function getRootRelPath($url){
+  $urlparts = parse_url($url);
+  $strip    = isset($urlparts['scheme']) ? $urlparts['scheme'] .':' : '';
+  $strip   .=  '//';
+  $strip   .= isset($urlparts['host']) ? $urlparts['host'] : '';
+  debugLog(__FUNCTION__.' base = ' . $strip);
+  if(strpos($url,$strip) === 0) return debugLog(str_replace($strip,'',$url));
+  return debugLog($url);
+}
+
+/**
+ * gets website data from GSWEBSITEFILE
+ *
+ * @todo use a custom schema array for extracting fields
+ * @since 3.4
+ * @param  boolean $returnGlobals return as obj or array of vars
+ * @return mixed    depending on returnGlobals returns xml as object or a defined var array for global extraction
+ */
+function getWebsiteData($returnGlobals = false){
+	$thisfilew = GSDATAOTHERPATH .GSWEBSITEFILE;
+	if (file_exists($thisfilew)) {
+		$dataw        = getXML($thisfilew);
+		$SITENAME     = stripslashes( $dataw->SITENAME);
+		$SITEURL      = trim((string) $dataw->SITEURL);
+		$TEMPLATE     = trim((string) $dataw->TEMPLATE);
+		$PRETTYURLS   = trim((string) $dataw->PRETTYURLS);
+		$PERMALINK    = trim((string) $dataw->PERMALINK);
+		$SITEEMAIL    = trim((string) $dataw->EMAIL);
+		$SITETIMEZONE = trim((string) $dataw->TIMEZONE);
+		$SITELANG     = trim((string) $dataw->LANG);
+		$SITEUSR      = trim((string) $dataw->USR);
+	} else {
+		$SITENAME = '';
+		$SITEURL  = '';
+	}
+
+	// asseturl is scheme-less ://url if GSASSETSCHEMES is not true
+	$ASSETURL = getDef('GSASSETSCHEMES',true) !==true ? str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL) : $SITEURL;
+
+	if(getDef('GSASSETURLREL')) $ASSETURL = getRootRelPath($SITEURL);
+	if(getDef('GSSITEURLREL'))  $SITEURL  = getRootRelPath($SITEURL);
+
+	unset($thisfilew);
+	if($returnGlobals) return get_defined_vars();
+	return $dataw;
+}
+
+/**
+ * gets user data from cookie_user.xml
+ * 
+ * @since 3.4
+ * @todo use a custom schema array for extracting fields
+ * @param  boolean $returnGlobals return as obj or array of vars
+ * @return mixed    depending on returnGlobals returns xml as object or a defined var array for global extraction
+ */
+function getUserData($returnGlobals = false){
+
+	if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
+		$cookie_user_id = _id($_COOKIE['GS_ADMIN_USERNAME']);
+		if (file_exists(GSUSERSPATH . $cookie_user_id.'.xml')) {
+			$datau      = getXML(GSUSERSPATH  . $cookie_user_id.'.xml');
+			$USR        = stripslashes($datau->USR);
+			$HTMLEDITOR = (string) $datau->HTMLEDITOR;
+			$USRTIMEZONE= (string) $datau->TIMEZONE;
+			$USRLANG    = (string) $datau->LANG;
+		} else {
+			$USR = null;
+		}
+	} else {
+		$USR = null;
+	}
+
+	unset($cookie_user_id);
+	if($returnGlobals) return get_defined_vars();
+	return $datau;
+}
+
+
+function getDefaultSalt(){
+	$salt = null;
+	if (defined('GSUSECUSTOMSALT')) {
+		// use GSUSECUSTOMSALT
+		$salt = sha1(getDef('GSUSECUSTOMSALT'));
+	}
+	else {
+		// use from GSAUTHFILE
+		if (file_exists(GSDATAOTHERPATH .GSAUTHFILE)) {
+			$dataa = getXML(GSDATAOTHERPATH .GSAUTHFILE);
+			$salt  = stripslashes($dataa->apikey);
+		}
+	}
+
+	return $salt;
+}
+
+/**
+ * get the default language user->site->gsconfig->GSDEFAULTLANG->filesystem fallback
+ * @return str IETF langcode
+ */
+function getDefaultLang(){
+	GLOBAL $USRLANG, $SITELANG;
+
+	if(isset($USRLANG)) return $USRLANG;
+	if(isset($SITELANG)) return $SITELANG;
+	if(getDef('GSLANG')) return getDef('GSLANG');
+
+	// get language files
+	$filenames = glob(GSLANGPATH.'*.php');
+	$cntlang   = count($filenames);
+	if ($cntlang == 1) {
+		// 1 file , assign lang to only existing file
+		return basename($filenames[0], ".php");
+	} elseif($cntlang > 1 && in_array(GSLANGPATH .GSDEFAULTLANG.'.php',$filenames)) {
+		// prefer GSDEFAULTLANG as default if available
+		return GSDEFAULTLANG;
+	} elseif(isset($filenames[0])) {
+		// else fallback to first lang found
+		return basename($filenames[0], ".php");
+	} else {
+		return ''; // no languages available
+	}
+}
+
+/**
+ * perform transliteration conversion on string
+ * @param  str $str string to convert
+ * @return str      str after transliteration replacement array ran on it
+ */
+function doTransliteration($str){
+	if (getTransliteration() && is_array($translit=getTransliteration()) && count($translit>0)) {
+		$str = str_replace(array_keys($translit),array_values($translit),$str);
+	}
+	return $str;
+}
+
+function outputDebugLog(){
+	global $GS_debug;
+	echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
+	echo '<pre>';
+	foreach ($GS_debug as $log){
+			if(is_array($log)) print_r($log).'<br/>';
+			else print($log.'<br/>');
+	}
+	echo '</pre>';
+	echo '</div>';
+}
+
+/* ?> */
 
 /**
  * This file is part of the array_column library

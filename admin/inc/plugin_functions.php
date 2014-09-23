@@ -6,139 +6,98 @@
  * @subpackage Plugin-Functions
  */
 
-$plugins          = array();  // used for option names
-$plugins_info     = array();
-$filters          = array();
-$live_plugins     = array();  // used for enablie/disable functions
-$GS_scripts       = array();  // used for queing Scripts
-$GS_styles        = array();  // used for queing Styles
-
-// constants 
-
-define('GSFRONT',1);
-define('GSBACK',2);
-define('GSBOTH',3);
-if ($SITEURL==""){
-	$SITEURL=suggest_site_path();
-}
-
-$GS_script_assets = array(); // defines asset scripts
-$GS_style_assets = array();  // defines asset styles
-
-$GS_asset_objects = array(); // holds asset js object names
-$GS_asset_objects['jquery'] = 'jQuery';
-$GS_asset_objects['jquery-ui'] = 'jQuery.ui'; 
-
-// jquery
-$jquery_ver       = '1.9.0';
-$jqueryui_ver     = '1.10.0';
-$font_awesome_ver = '4.0.3';
-
-$GS_script_assets['jquery']['cdn']['url']      = '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js';
-$GS_script_assets['jquery']['cdn']['ver']      = $jquery_ver;
-
-$GS_script_assets['jquery']['local']['url']    = $SITEURL.$GSADMIN.'/template/js/jquery/jquery-'.$jquery_ver.'.min.js';
-$GS_script_assets['jquery']['local']['ver']    = $jquery_ver;
-
-// jquery-ui
-$GS_script_assets['jquery-ui']['cdn']['url']   = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jqueryui_ver.'/jquery-ui.min.js';
-$GS_script_assets['jquery-ui']['cdn']['ver']   = $jqueryui_ver;
-
-$GS_script_assets['jquery-ui']['local']['url'] = $SITEURL.$GSADMIN.'/template/js/jqueryui/js/jquery-ui-'.$jqueryui_ver.'.custom.min.js';
-$GS_script_assets['jquery-ui']['local']['ver'] = $jqueryui_ver;
-
-// misc
-$GS_script_assets['fancybox']['local']['url']  = $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.pack.js';
-$GS_script_assets['fancybox']['local']['ver']  = '2.0.4';
-
-$GS_style_assets['fancybox']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css';
-$GS_style_assets['fancybox']['local']['ver']   = '2.0.4';
-
-$GS_style_assets['jquery-ui']['local']['url']  =  $SITEURL.$GSADMIN.'/template/js/jqueryui/css/custom/jquery-ui-'.$jqueryui_ver.'.custom.min.css';
-$GS_style_assets['jquery-ui']['local']['ver']  =  $jqueryui_ver;
-
-// font-awesome icons
-$GS_style_assets['font-awesome']['cdn']['url'] =  '//netdna.bootstrapcdn.com/font-awesome/'.$font_awesome_ver.'/css/font-awesome.min.css';
-$GS_style_assets['font-awesome']['cdn']['ver'] = $font_awesome_ver;
-
-$GS_style_assets['font-awesome']['local']['url'] =  $SITEURL.$GSADMIN.'/template/css/font-awesome.min.css';
-$GS_style_assets['font-awesome']['local']['ver'] = $font_awesome_ver;
-
-// scrolltofixed
-$GS_script_assets['scrolltofixed']['local']['url']   =  $SITEURL.$GSADMIN.'/template/js/jquery-scrolltofixed.js';
-$GS_script_assets['scrolltofixed']['local']['ver']   = '0.0.1';
-
 /**
- * Register shared javascript/css scripts for loading into the header
- */
-if (!getDef('GSNOCDN',true)){
-	register_script('jquery', $GS_script_assets['jquery']['cdn']['url'], '', FALSE);
-	register_script('jquery-ui',$GS_script_assets['jquery-ui']['cdn']['url'],'',FALSE);
-	register_style('font-awesome', $GS_style_assets['font-awesome']['cdn']['url'], '', 'screen');
-} else {
-	register_script('jquery', $GS_script_assets['jquery']['local']['url'], $GS_script_assets['jquery']['local']['ver'], FALSE);
-	register_script('jquery-ui',$GS_script_assets['jquery-ui']['local']['url'],$GS_script_assets['jquery-ui']['local']['ver'],FALSE);
-	register_style('font-awesome', $GS_style_assets['font-awesome']['local']['url'], $GS_style_assets['font-awesome']['local']['ver'], 'screen');	
-}
-
-register_script('fancybox', $GS_script_assets['fancybox']['local']['url'], $GS_script_assets['fancybox']['local']['ver'],FALSE);
-register_style('fancybox-css', $GS_style_assets['fancybox']['local']['url'], $GS_style_assets['fancybox']['local']['ver'], 'screen');
-
-register_style('jquery-ui', $GS_style_assets['jquery-ui']['local']['url'], $GS_style_assets['jquery-ui']['local']['ver'], 'screen');
-
-register_script('scrolltofixed', $GS_script_assets['scrolltofixed']['local']['url'], $GS_script_assets['scrolltofixed']['local']['ver'],FALSE);
-
-/**
- * Queue our scripts and styles for the backend
- */
-queue_script('jquery', GSBACK);
-queue_script('jquery-ui', GSBACK);
-queue_script('fancybox', GSBACK);
-queue_script('scrolltofixed', GSBACK);
-
-queue_style('fancybox-css',GSBACK);
-queue_style('jquery-ui',GSBACK);
-queue_style('jquery-ui-theme',GSBACK);
-queue_style('font-awesome',GSBACK);
+ * 
+ * 	global array for storing all plugins greated from plugins registerplugin() call
+ *	    $plugin_info[$id] = array(
+ *	       'name'        => $name,
+ *	       'version'     => $ver,
+ *	       'author'      => $auth,
+ *	       'author_url'  => $auth_url,
+ *	       'description' => $desc,
+ *	       'page_type'   => $type,
+ *	       'load_data'   => $loaddata
+ *	    );
+ *
+ *
+ *	global array for storing action hook callbacks
+ *	    $plugins[] = array(
+ *	       'hook'     => hookname,
+ *	       'function' => callback function name,
+ *	       'args'     => (array) arguments to pass to function,
+ *	       'file'     => caller filename obtained from backtrace,
+ *	       'line'     => caller line obtained from backtrace,
+ *	    );
+ *
+ *
+ *	global array for storing filter callbacks
+ *	$filters[] = array(
+ *	    'filter'   => filtername,
+ *	    'function' => callback function name,
+ *	    'args'     => (array) arguments for callback,
+ *	    'active'   => (bool) is processing anti-self-looping flag
+ *	);
+ *
+*/
 
 /**
  * Include any plugins, depending on where the referring 
  * file that calls it we need to set the correct paths. 
+ *
+ * @since  3.4
+ * @uses  $live_plugins
 */
-if (file_exists(GSPLUGINPATH)){
-	$pluginfiles = getFiles(GSPLUGINPATH);
-} 
+function loadPluginData(){
+	if (file_exists(GSPLUGINPATH)){
+		$pluginfiles = getFiles(GSPLUGINPATH);
+	} 
 
-$pluginsLoaded=false;
+	// Check if data\other\plugins.xml exists 
+	if (!file_exists(GSDATAOTHERPATH."plugins.xml")){
+		create_pluginsxml();
+		registerInactivePlugins(get_filename_id() == 'plugins');
+		return true;
+	}
 
+	read_pluginsxml();  // get the live plugins into $live_plugins array
+	if(!is_frontend()) create_pluginsxml(get_filename_id() == 'plugins');  // only on backend check that plugin files have not changed, and regen
+	
+	registerInactivePlugins();
+	return true;
+}
 
-// Check if data\other\plugins.xml exists 
-if (!file_exists(GSDATAOTHERPATH."plugins.xml")){
-	create_pluginsxml();
-} 
+/**
+ * register the plugins that are not enabled
+ * api checks are only done on plugins page
+ *
+ * @todo disabled plugins have a version of (str) 'disabled', should be 0 or null, leaving alone for now for legacy support
+ *
+ * @since 3.4
+ * @uses $live_plugins;
+ * @param  bool $apilookup lookup filename in api to get name and desc
+ */
+function registerInactivePlugins($apilookup = false){
+	GLOBAL $live_plugins;
+	// load plugins into $plugins_info
 
-read_pluginsxml();        // get the live plugins into $live_plugins array
+	foreach ($live_plugins as $file=>$en) {
+		# debugLog("plugin: $file" . " exists: " . file_exists(GSPLUGINPATH . $file) ." enabled: " . $en); 
+		if ($en!=='true' || !file_exists(GSPLUGINPATH . $file)){
+			if($apilookup){
+				// check api to get names of inactive plugins etc.
+		 		$apiback  = get_api_details('plugin', $file);
+		  		$response = json_decode($apiback);
 
-if(!is_frontend()) create_pluginsxml();      // check that plugins have not been removed or added to the directory
+		  		if ($response and $response->status == 'successful') {
+					register_plugin( pathinfo_filename($file), $file, 'disabled', $response->owner, '', i18n_r('PLUGIN_DISABLED'), '', '');
+		  		} else {
+					register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', i18n_r('PLUGIN_DISABLED'), '', '');
+		  		}
 
-// load each of the plugins
-foreach ($live_plugins as $file=>$en) {
-	$pluginsLoaded=true;
-	# debugLog("plugin: $file" . " exists: " . file_exists(GSPLUGINPATH . $file) ." enabled: " . $en); 
-	if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
-		require_once(GSPLUGINPATH . $file);
-	} else {
-		if(!is_frontend() and get_filename_id() == 'plugins'){
-	 		$apiback = get_api_details('plugin', $file);
-	  		$response = json_decode($apiback);
-	  		if ($response and $response->status == 'successful') {
-				register_plugin( pathinfo_filename($file), $file, 'disabled', $response->owner, '', i18n_r('PLUGIN_DISABLED'), '', '');
-	  		} else {
+			} else {
 				register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', i18n_r('PLUGIN_DISABLED'), '', '');
-	  		}
-		} else {
-			register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', i18n_r('PLUGIN_DISABLED'), '', '');
-		}  
+			}  
+		}
 	}
 }
 
@@ -150,16 +109,17 @@ foreach ($live_plugins as $file=>$en) {
  * @since 2.04
  * @uses $live_plugins
  *
- * @param $name
- * @param $active bool default=null, sets plugin active | inactive else toggle
+ * @param str  $name pluginid
+ * @param bool $active default=null, sets plugin active or inactive, default=toggle
  */
 function change_plugin($name,$active=null){
-	global $live_plugins;   
+	global $live_plugins;
 
+	$name = pathinfo_filename($name).'.php'; // normalize to pluginid
 	if (isset($live_plugins[$name])){
 		// set plugin active | inactive
 		if(isset($active) and is_bool($active)) {
-			$live_plugins[$name] = $active ? 'true' : 'false';	  		
+			$live_plugins[$name] = $active ? 'true' : 'false';
 			create_pluginsxml(true);
 			return;
 		}
@@ -171,8 +131,21 @@ function change_plugin($name,$active=null){
 			$live_plugins[$name]="true";
 		}
 
-		create_pluginsxml(true);
+		create_pluginsxml(true); // save change; @todo, currently reloads all files and recreates entire xml not just node, is wasteful
 	}
+}
+
+/**
+ * plugin_active
+ * determine if a plugin is active
+ *
+ * @since 3.4
+ * @param  string $pluginid
+ * @return bool   returns true if active
+ */
+function plugin_active($pluginid){
+	GLOBAL $live_plugins;
+	return isset($live_plugins[$pluginid.'.php']) && ($live_plugins[$pluginid.'.php'] == 'true' || $live_plugins[$pluginid.'.php'] === true);
 }
 
 
@@ -183,73 +156,83 @@ function change_plugin($name,$active=null){
  *
  * @since 2.04
  * @uses $live_plugins
+ * @param obj $data pass in xml data instead of using plugins.xml file load
  *
  */
-function read_pluginsxml(){
+function read_pluginsxml($data = null){
   	global $live_plugins;   
    
-	$data = getXML(GSDATAOTHERPATH . "plugins.xml");
+	if(!$data) $data = getXML(GSDATAOTHERPATH . "plugins.xml");
 	if($data){
-		$componentsec = $data->item;
-		if (count($componentsec) != 0) {
-			foreach ($componentsec as $component) {
-			  $live_plugins[trim((string)$component->plugin)]=trim((string)$component->enabled);
+   		$live_plugins= array(); // clean live_plugins
+		$pluginitem = $data->item;
+		if (count($pluginitem) != 0) {
+			foreach ($pluginitem as $plugin) {
+			  $live_plugins[trim((string)$plugin->plugin)]=trim((string)$plugin->enabled);
 			}
 		}
-	}
+
+		return true;
+	} 
 }
 
 
 /**
  * create_pluginsxml
  * 
- * If the plugins.xml file does not exists, read in each plugin 
- * and add it to the file. 
- * read_pluginsxml() is called again to repopulate $live_plugins
+ * Read in each plugin php file and add it to the plugins.xml file.
+ * read_pluginsxml() is called to populate $live_plugins
+ *
+ * Does nothing if force is false and no file diff found
+ * @todo  if this gets called before live plugins is loaded it will wipe your activated plugin state
  *
  * @since 2.04
  * @uses $live_plugins
  *
+ * @param  bool $force force an update of plugins.xml regardless of diff check
+ *
  */
 function create_pluginsxml($force=false){
-	global $live_plugins;   
-	$phpfiles = array();
+	GLOBAL $live_plugins;
+
+	$pluginfiles = array();
+	$success     = false;
 
 	if (file_exists(GSPLUGINPATH)){
-		$pluginfiles = getFiles(GSPLUGINPATH);
+		$pluginfiles = getFiles(GSPLUGINPATH,'php');
 	}
-	
-	foreach ($pluginfiles as $fi) {
-		if (lowercase(pathinfo($fi, PATHINFO_EXTENSION))=='php') {
-			$phpfiles[] = $fi;
-		}
-	}
-	
+	else return; // plugin files path issue
+
 	if (!$force) {
 		$livekeys = array_keys($live_plugins);
-		if (count(array_diff($livekeys, $phpfiles))>0 || count(array_diff($phpfiles, $livekeys))>0) {
+		// check for file diff and use force to regen if count differs @todo better detection than just count
+		if (count(array_diff($livekeys, $pluginfiles))>0 || count(array_diff($pluginfiles, $livekeys))>0) {
 	  		$force = true;
 		}
 	}
-	
+
+	// create plugins.xml if missing or updating
 	if ($force) {
-		$xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>'); 
-		foreach ($phpfiles as $fi) {
-			$plugins = $xml->addChild('item');  
+		$xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
+		foreach ($pluginfiles as $fi) {
+			$plugins = $xml->addChild('item');
 			$p_note  = $plugins->addChild('plugin');
 			$p_note->addCData($fi);
 			$p_note  = $plugins->addChild('enabled');
-			
+
+			// check live_plugins and set enables
 			if (isset($live_plugins[(string)$fi])){
-				$p_note->addCData($live_plugins[(string)$fi]);     
+				$p_note->addCData($live_plugins[(string)$fi]);
 			} else {
-				$p_note->addCData('false'); 
-			} 
+				$p_note->addCData('false');
+			}
 		}
 
-		XMLsave($xml, GSDATAOTHERPATH."plugins.xml");  
-		read_pluginsxml();
+		$success = XMLsave($xml, GSDATAOTHERPATH."plugins.xml");
+		read_pluginsxml($xml);
 	}
+
+	return $success;
 }
 
 
@@ -354,7 +337,7 @@ function createSideMenu($id, $txt, $action = null, $always = true){
 function createNavTab($tabname, $id, $txt, $action = null) {
 	global $plugin_info;
 	$current = false;
-	if (basename($_SERVER['PHP_SELF']) == 'load.php') {
+	if (basename(getScriptFile()) == 'load.php') {
 		$plugin_id = @$_GET['id'];
 		if ($plugin_info[$plugin_id]['page_type'] == $tabname) $current = true;
 	}
@@ -372,13 +355,13 @@ function createNavTab($tabname, $id, $txt, $action = null) {
  * @param string $ver Optional, default is null. 
  * @param string $auth Optional, default is null. 
  * @param string $auth_url Optional, default is null. 
- * @param string $desc Optional, default is null. 
+ * @param string $desc Optional, default is null.
  * @param string $type Optional, default is null. This is the page type your plugin is classifying itself
- * @param string $loaddata Optional, default is null. This is the function that run on load
+ * @param string $loaddata Optional, default is null. This is the callback funcname to run on load.php
  */
 function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $desc=null, $type=null, $loaddata=null) {
 	global $plugin_info;
-	
+
 	$plugin_info[$id] = array(
 		'name'        => $name,
 		'version'     => $ver,
@@ -388,7 +371,6 @@ function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $des
 		'page_type'   => $type,
 		'load_data'   => $loaddata
 	);
-
 }
 
 
@@ -404,7 +386,6 @@ function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $des
  */
 function add_filter($filter_name, $added_function, $args = array()) {
   	global $filters;
-	global $live_plugins;   
 
 	$bt       = debug_backtrace();
 	$caller   = array_shift($bt);
@@ -431,6 +412,8 @@ function add_filter($filter_name, $added_function, $args = array()) {
  */
 function exec_filter($script,$data=array()) {
 	global $filters;
+
+	if(!$filters) return $data;
 	foreach ($filters as $filter)	{
 		if ($filter['filter'] == $script) {
 			$key = array_search($script,$filters);
@@ -444,242 +427,5 @@ function exec_filter($script,$data=array()) {
 	return $data;
 }
 
-/**
- * Register Script
- *
- * Register a script to include in Themes
- *
- * @since 3.1
- * @uses $GS_scripts
- *
- * @param string $handle name for the script
- * @param string $src location of the src for loading
- * @param string $ver script version
- * @param boolean $in_footer load the script in the footer if true
- */
-function register_script($handle, $src, $ver, $in_footer = false){
-	global $GS_scripts;
-	$GS_scripts[$handle] = array(
-		'name'      => $handle,
-		'src'       => $src,
-		'ver'       => $ver,
-		'in_footer' => $in_footer,
-		'where'     => 0
-	);
-}
 
-/**
- * De-Register Script
- *
- * Deregisters a script
- *
- * @since 3.1
- * @uses $GS_scripts
- *
- * @param string $handle name for the script to remove
- */
-function deregister_script($handle){
-	global $GS_scripts;
-	if (array_key_exists($handle, $GS_scripts)){
-		unset($GS_scripts[$handle]);
-	}
-}
-
-/**
- * Queue Script
- *
- * Queue a script for loading
- *
- * @since 3.1
- * @uses $GS_scripts
- *
- * @param string $handle name for the script to load
- */
-function queue_script($handle,$where){
-	global $GS_scripts;
-	if (array_key_exists($handle, $GS_scripts)){
-		$GS_scripts[$handle]['load']  = true;
-		$GS_scripts[$handle]['where'] = $GS_scripts[$handle]['where'] | $where;
-	}
-}
-
-/**
- * De-Queue Script
- *
- * Remove a queued script
- *
- * @since 3.1
- * @uses $GS_scripts
- *
- * @param string $handle name for the script to load
- */
-function dequeue_script($handle, $where){
-	global $GS_scripts;
-	if (array_key_exists($handle, $GS_scripts)){
-		$GS_scripts[$handle]['load']  = false;
-		$GS_scripts[$handle]['where'] = $GS_scripts[$handle]['where'] & ~ $where;
-	}
-}
-
-/**
- * Get Scripts for front end
- *
- * @since 3.1 *
- * @param boolean $footer Load only script with footer flag set
- */
-function get_scripts_frontend($footer = false){
-	getScripts(GSFRONT,$footer);
-}
-
-/**
- * Get Scripts for backend
- *
- * @since 3.1 *
- * @param boolean $footer Load only script with footer flag set
- */
-function get_scripts_backend($footer = false){
-	getScripts(GSBACK,$footer);
-}
-
-/**
- * Get Scripts
- *
- * Echo and load scripts via queue depending on if in footer and on front or back
- *
- * @since 3.4
- * @uses $GS_scripts
- *
- * @param int $facing GSBACK or GSFRONT constant
- * @param boolean $footer Load only script with footer flag set
- */
-function getScripts($facing = GSBACK, $footer = false){
-	global $GS_scripts;
-	if (!$footer){
-		$facing === GSBACK ? get_styles_backend() : get_styles_frontend();
-	}
-
-	# debugLog($GS_scripts);
-	foreach ($GS_scripts as $script){
-		if ($script['load'] == true && ($script['where'] & $facing) ){
-			if($footer && $script['in_footer'] !== true) continue;
-			echo '<script src="'.$script['src'].( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '"></script>';
-			cdn_fallback($script);	
-		}
-	}	
-}
-
-
-/**
- * Add javascript for cdn fallback to local
- * get_scripts_backend helper
- * @param  array $script gsscript array
- */
-function cdn_fallback($script){
-	GLOBAL $GS_script_assets, $GS_asset_objects;	
-	if (getDef('GSNOCDN',true)) return; // if nocdn skip
-	if($script['name'] == 'jquery' || $script['name'] == 'jquery-ui'){
-		echo "<script>";
-		echo "window.".$GS_asset_objects[$script['name']]." || ";
-		echo "document.write('<!-- CDN FALLING BACK --><script src=\"".$GS_script_assets[$script['name']]['local']['url'].'?v='.$GS_script_assets[$script['name']]['local']['ver']."\"><\/script>');";
-		echo "</script>";
-	}					
-}
-
-/**
- * Queue Style
- *
- * Queue a Style for loading
- *
- * @since 3.1
- * @uses $GS_styles
- *
- * @param string $handle name for the Style to load
- */
-function queue_style($handle,$where = 1){
-	global $GS_styles;
-	if (array_key_exists($handle, $GS_styles)){
-		$GS_styles[$handle]['load'] = true;
-		$GS_styles[$handle]['where'] = $GS_styles[$handle]['where'] | $where;
-	}
-}
-
-/**
- * De-Queue Style
- *
- * Remove a queued Style
- *
- * @since 3.1
- * @uses $GS_styles
- *
- * @param string $handle name for the Style to load
- */
-function dequeue_style($handle,$where){
-	global $GS_styles;
-	if (array_key_exists($handle, $GS_styles)){
-		$GS_styles[$handle]['load'] = false;
-		$GS_styles[$handle]['where'] = $GS_styles[$handle]['where'] & ~$where;
-	}
-}
-
-/**
- * Register Style
- *
- * Register a Style to include in Themes
- *
- * @since 3.1
- * @uses $GS_scripts
- *
- * @param string $handle name for the Style
- * @param string $src location of the src for loading
- * @param string $ver Style version
- * @param string $media load the Style in the footer if true
- */
-function register_style($handle, $src, $ver, $media){
-	global $GS_styles;
-	$GS_styles[$handle] = array(
-		'name'  => $handle,
-		'src'   => $src,
-		'ver'   => $ver,
-		'media' => $media,
-		'where' => 0
-	);	
-}
-
-/**
- * Get Styles Frontend
- * @since 3.1
- */
-function get_styles_frontend(){
-	getStyles(GSFRONT);
-}
-
-/**
- * Get Styles Backend
- * @since 3.1
-  */
-function get_styles_backend(){
-	getStyles(GSBACK);
-}
-
-
-/**
- * Get Styles Backend
- *
- * Echo and load Styles on Front or Back
- *
- * @since 3.4
- * @uses $GS_styles
- *
- */
-function getStyles($facing = GSBACK){
-	global $GS_styles;
-	foreach ($GS_styles as $style){
-		if ($style['where'] & $facing ){
-				if ($style['load'] == true){
-					echo '<link href="'.$style['src']. ( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '" rel="stylesheet" media="'.$style['media'].'">';
-				}
-		}
-	}
-}
-
-?>
+/* ?> */

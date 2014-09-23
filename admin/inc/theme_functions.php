@@ -109,7 +109,7 @@ function get_page_meta_desc($echo=true) {
 /**
  * Get Page Meta Robots
  *
- * @since 3.4.0
+ * @since 3.4
  * @uses $metarNoIndex, $metarNoFollow, $metarNoArchive
  *
  * @param bool $echo Optional, default is true. False will 'return' value
@@ -127,6 +127,19 @@ function get_page_meta_robots($echo=true) {
 	return echoReturn($str,$echo);		
 }
 
+/**
+ * Get Page Meta Title for <title>
+ *
+ * @since 3.4
+ * @uses $title
+ *
+ * @param bool $echo Optional, default is true. False will 'return' value
+ * @return string Echos or returns based on param $echo
+ */
+function get_page_head_title($echo=true){
+	$str = strip_tags(strip_decode(getPageGlobal('title')));
+	return echoReturn(exec_filter('headtitle',$str),$echo);		
+}
 
 /**
  * Get Page Title
@@ -139,7 +152,7 @@ function get_page_meta_robots($echo=true) {
  */
 function get_page_title($echo=true) {
 	$str = strip_decode(getPageGlobal('title'));
-	return echoReturn($str,$echo);	
+	return echoReturn(exec_filter('pagetitle',$str),$echo);	
 }
 
 /**
@@ -148,13 +161,13 @@ function get_page_title($echo=true) {
  * This will remove all HTML from the title before returning
  *
  * @since 1.0
- * @uses $title
+ * @uses get_page_title()
  *
  * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_page_clean_title($echo=true) {
-	$str = strip_tags(strip_decode(getPageGlobal('title')));
+	$str = strip_tags(get_page_title(false));
 	return echoReturn($str,$echo);	
 }
 
@@ -170,7 +183,7 @@ function get_page_clean_title($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_slug($echo=true) {
-	return echoReturn(getPageGlobal('url'),$echo);
+	return echoReturn(exec_filter('pageslug',getPageGlobal('url')),$echo);
 }
 
 /**
@@ -269,9 +282,9 @@ function get_header($full=true) {
 	if (!empty($keywords)) echo '<meta name="keywords" content="'.$keywords.'" />'."\n";
 	
 	// canonical link
-	$canonical = '<link rel="canonical" href="'. get_page_url(true) .'" />'."\n";
+	$canonical =  exec_filter('linkcanonical',get_page_url(true));
 	if ($full and !empty($canonical)) {
-		echo $canonical;
+		echo '<link rel="canonical" href="'.$canonical.'" />'."\n";
 	}
 
 	// script queue
@@ -355,15 +368,15 @@ function get_site_name($echo=true) {
  * @deprecated as of 3.0
  *
  * @since 1.0
- * @uses $EMAIL
+ * @global $SITEEMAIL
  *
  * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
 function get_site_email($echo=true) {
-	global $EMAIL;
-	$str = trim(stripslashes($EMAIL));
-	return echoReturn($str,$echo);	
+	global $SITEEMAIL;
+	$str = trim(stripslashes($SITEEMAIL));
+	return echoReturn($str,$echo);
 }
 
 
@@ -486,6 +499,7 @@ function menu_data($id = null,$xml=false) {
  */
 function get_components_xml(){
     global $components;
+
     if (!$components) {
         if (file_exists(GSDATAOTHERPATH.'components.xml')) {
         	$data = getXML(GSDATAOTHERPATH.'components.xml');
@@ -501,14 +515,17 @@ function get_components_xml(){
  * get xml for an individual component
  * returns an array since duplicates are possible on component slugs
  *
- * @since 3.4.0
+ * @since 3.4
  *
  * @param  str $id component id
  * @return array of simpleXmlObj matching slug
  */
 function get_component_xml($id){
+        // normalize id
+        $id = to7bit($id, 'UTF-8');
+	$id = clean_url($id);
 	if(!$id) return;
-	return get_components_xml()->xpath("item/slug[.='".$id."']/parent::*");
+	return get_components_xml()->xpath("//slug[.='".$id."']/..");	
 }
 
 /**
@@ -538,7 +555,7 @@ function get_component($id, $force = false, $raw = false) {
 
 /**
  * See if a component exists
- * @since 3.4.0
+ * @since 3.4
  * @param  str $id component id
  * @return bool
  */
@@ -549,8 +566,8 @@ function component_exists($id){
 /**
  * Return Component
  * Returns a components output
- * 
- * @since 3.4.0
+ *
+ * @since 3.4
  * @return component buffered output
  */
 function return_component(){
@@ -630,16 +647,13 @@ function is_logged_in(){
  * WHY?
  */	
 function return_page_title() {
-	return get_page_title(FALSE);
+	return get_page_title(false);
 }
 function return_parent() {
-	return get_parent(FALSE);
+	return get_parent(false);
 }
 function return_page_slug() {
-  return get_page_slug(FALSE);
+  return get_page_slug(false);
 }
-function return_site_ver() {
-	return get_site_version(FALSE);
-}	
 
-?>
+/* ?> */

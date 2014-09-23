@@ -81,7 +81,7 @@ function antixss($str){
  */
 function check_for_csrf($action, $file="", $die = true){
 	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
+	if (!getDef('GSNOCSRF',true) || (GSNOCSRF == FALSE) ) {
 		$nonce = $_REQUEST['nonce'];
 		if(!check_nonce($nonce, $action, $file)) {
 			if($die) die("CSRF detected!");
@@ -112,18 +112,20 @@ function get_nonce($action, $file = "", $last = false) {
 	include_once(GSADMININCPATH.'configuration.php');
 	clamp($nonce_timeout, 60, 86400, 3600);// min, max, default in seconds
 
+	// $nonce_timeout = 10;
+
 	if($file == "")
-		$file = $_SERVER['PHP_SELF'];
-	
+		$file = getScriptFile();
+
 	// using user agent since ip can change on proxys
 	$uid = $_SERVER['HTTP_USER_AGENT'];
-	
-	// Limits Nonce to one hour
-	$time = $last ? time() - $nonce_timeout: time(); 
-	
+
+	// set nonce time domain to $nonce_timeout or $nonce_timeout x 2 when last is $true
+	$time = $last ? time() - $nonce_timeout: time();
+	$time = floor($time/$nonce_timeout);
+
 	// Mix with a little salt
-	$hash=sha1($action.$file.$uid.$USR.$SALT.@date('YmdH',$time));
-	
+	$hash=sha1($action.$file.$uid.$USR.$SALT.$time);
 	return $hash;
 }
 
@@ -162,7 +164,7 @@ function validate_safe_file($file, $name, $mime){
 
 	include(GSADMININCPATH.'configuration.php');
 
-	$file_extention = pathinfo($name,PATHINFO_EXTENSION);
+	$file_extention = getFileExtension($name);
 	$file_mime_type = $mime;
 
 	if ($mime_type_whitelist && in_arrayi($file_mime_type, $mime_type_whitelist)) {
@@ -185,16 +187,19 @@ function validate_safe_file($file, $name, $mime){
 
 /**
  * Checks that an existing filepath is safe to use by checking canonicalized absolute pathname.
+ * If file does not exist and realpath fails, we realpath dirname() instead
  *
  * @since 3.1.3
  *
- * @param string $path Unknown Path to file to check for safety
+ * @param string $filepath Unknown Path to file to check for safety
  * @param string $pathmatch Known Path to parent folder to check against
  * @param bool $subdir allow path to be a deeper subfolder
  * @return bool Returns true if files path resolves to your known path
  */
-function filepath_is_safe($path,$pathmatch,$subdir = true){
-	$realpath      = realpath($path);
+function filepath_is_safe($filepath,$pathmatch,$subdir = true){
+	$realpath = realpath($filepath);
+	if(!$realpath) return path_is_safe(dirname($filepath),$pathmatch,$subdir);
+
 	$realpathmatch = realpath($pathmatch);
 	if($subdir) return strpos(dirname($realpath),$realpathmatch) === 0;
 	return dirname($realpath) == $realpathmatch;
@@ -216,6 +221,11 @@ function path_is_safe($path,$pathmatch,$subdir = true){
 	$realpathmatch = realpath($pathmatch);
 	if($subdir) return strpos($realpath,$realpathmatch) === 0;
 	return $realpath == $realpathmatch;
+}
+
+// alias to check a subdir easily
+function subpath_is_safe($path,$dir){
+	return path_is_safe($path.$dir,$path);
 }
 
 /**
@@ -261,3 +271,10 @@ function var_out($var,$filter = "special"){
 		return htmlentities($var);
 	}
 }
+
+//alias var_out for inputs in case we ned to diverge in future
+function var_in($var,$filter = 'special'){
+	return var_out($var,$filter);
+}
+
+/* ?> */

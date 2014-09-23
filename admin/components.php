@@ -15,10 +15,8 @@ include('inc/common.php');
 login_cookie_check();
 
 # variable settings
-$file 		= "components.xml";
-$path 		= GSDATAOTHERPATH;
-$bakpath 	= GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH); // backups/other/
-$update 	= ''; $table = ''; $list='';
+$componentsfile	= GSDATAOTHERPATH.GSCOMPONENTSFILE;
+$update = $table = $list = '';
 
 # check to see if form was submitted
 if (isset($_POST['submitted'])){
@@ -29,8 +27,8 @@ if (isset($_POST['submitted'])){
 
 	check_for_csrf("modify_components");
 
-	# create backup file for undo           
-	createBak($file, $path, $bakpath);
+	# create backup file for undo
+	backup_datafile(GSDATAOTHERPATH.GSCOMPONENTSFILE);
 	
 	# start creation of top of components.xml file
 	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
@@ -69,8 +67,9 @@ if (isset($_POST['submitted'])){
 		}
 	}
 	exec_action('component-save');
-	XMLsave($xml, $path . $file);
-	redirect('components.php?upd=comp-success');
+	XMLsave($xml, GSDATAOTHERPATH.GSCOMPONENTSFILE);
+	$update = 'comp-success';
+	// redirect('components.php?upd=comp-success');
 }
 
 # if undo was invoked
@@ -78,14 +77,18 @@ if (isset($_GET['undo'])) {
 	
 	check_for_csrf("undo");		
 	# perform the undo
-	undo($file, $path, $bakpath);
-	redirect('components.php?upd=comp-restored');
+	restore_datafile(GSDATAOTHERPATH.GSCOMPONENTSFILE);
+	$update = 'comp-restored';
+	// redirect('components.php?upd=comp-restored');
 }
 
 # create components form html
-$data = getXML($path . $file);
+$data = getXML(GSDATAOTHERPATH.GSCOMPONENTSFILE);
 $componentsec = $data->item;
 $count= 0;
+
+// $componentsec = subval_sort($data->item,'title'); // sorted on save probably not necessary at this time
+
 if (count($componentsec) != 0) {
 	foreach ($componentsec as $component) {
 		$table .= '<div class="compdiv codewrap" id="section-'.$count.'"><table class="comptable" ><tr><td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="comptitle editable">'. stripslashes($component->title) .'</b></td>';
@@ -101,11 +104,12 @@ if (count($componentsec) != 0) {
 	}
 }
 	# create list to show on sidebar for easy access
-	$listc = ''; $submitclass = '';
+	$listc = $submitclass = '';
+	$stack = $count < 15 ? ' clear-left' : '';
 	if($count > 1) {
 		$item = 0;
 		foreach($componentsec as $component) {
-			$listc .= '<a id="divlist-' . $item . '" href="#section-' . $item . '" class="component">' . $component->title . '</a>';
+			$listc .= '<a id="divlist-' . $item . '" href="#section-' . $item . '" class="component'.$stack.' comp_'.$component->title.'">' . $component->title . '</a>';
 			$item++;
 		}
 	} elseif ($count == 0) {
@@ -113,7 +117,8 @@ if (count($componentsec) != 0) {
 		
 	}
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('COMPONENTS')); 
+$pagetitle = i18n_r('COMPONENTS');
+get_template('header');
 	
 include('template/include-nav.php'); ?>
 
@@ -121,11 +126,13 @@ include('template/include-nav.php'); ?>
 	
 	<div id="maincontent">
 	<div class="main">
-	<h3 class="floated"><?php echo i18n('EDIT_COMPONENTS');?></h3>
+	<h3 class="floated"><?php echo i18n_r('EDIT_COMPONENTS');?></h3>
 	<div class="edit-nav" >
 		<a href="javascript:void(0)" id="addcomponent" accesskey="<?php echo find_accesskey(i18n_r('ADD_COMPONENT'));?>" ><?php i18n('ADD_COMPONENT');?></a>
-		<?php echo $themeselector; ?>	
+		<?php if(!getDef('GSNOHIGHLIGHT',true)){
+		echo $themeselector; ?>	
 		<label>Theme</label>
+	<?php } ?>	
 		<div class="clear"></div>
 	</div>
 	<form id="compEditForm" class="manyinputs" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >

@@ -19,75 +19,91 @@ $pluginid = isset($_GET['set']) ? $_GET['set'] : null;
 $nonce    = isset($_GET['nonce']) ? $_GET['nonce'] : null;
 
 if ($pluginid){
-	if(check_nonce($nonce, "set", "plugins.php")) {
-	  $plugin = antixss($pluginid);	
-	  change_plugin($plugin);
-	  redirect('plugins.php');
+	if(check_nonce($nonce, "set_".pathinfo_filename($pluginid), "plugins.php")) {
+		$plugin = antixss($pluginid);
+		change_plugin($plugin);
+		redirect('plugins.php?success='.i18n_r('PLUGIN_UPDATED'));
 	}
+	else redirect('plugins.php?error='.i18n_r('ERROR_OCCURED'));
 }
 
 // Variable settings
-$counter     = 0; 
+$counter     = 0;
 $table       = '';
 $needsupdate = false;
-$pluginfiles = getFiles(GSPLUGINPATH);
 
-natcasesort($pluginfiles);
+$plugin_info_sorted = subval_sort($plugin_info,'name');
 
-foreach ($pluginfiles as $fi) {
-	$pathExt  = pathinfo($fi,PATHINFO_EXTENSION );
-	$pathName = pathinfo_filename($fi);
-	$setNonce = '&amp;nonce='.get_nonce("set","plugins.php");
-	
-	if ($pathExt=="php") {
-		if ($live_plugins[$fi]=='true') {
-			$cls_Enabled  = 'hidden';
-			$cls_Disabled = '';
-			$trclass      ='enabled';
-		} else {
-			$cls_Enabled  = '';
-			$cls_Disabled = 'hidden';
-			$trclass      ='disabled';
+foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
+
+	$setNonce = '&amp;nonce='.get_nonce("set_".$pluginid,"plugins.php");
+
+	// @todo disabled plugins have a version of (str) 'disabled', should be 0 or null
+	$pluginver  = $plugininfo['version'] == 'disabled' ? 0 : $plugininfo['version'];
+
+	if (plugin_active($pluginid)) {
+		$cls_Enabled  = 'hidden';
+		$cls_Disabled = '';
+		$trclass      = 'enabled';
+	} else {
+		$cls_Enabled  = '';
+		$cls_Disabled = 'hidden';
+		$trclass      = 'disabled';
+	}
+
+	// get extend api for this plugin filename
+	$api_data   = json_decode(get_api_details('plugin', $pluginid));
+	$updatelink = '';
+
+	// api success
+	if (is_object($api_data) && $api_data->status == 'successful') {
+		$apiver     = $api_data->version;
+		$apipath    = $api_data->path;
+		$apiname    = $api_data->name;
+
+		// show update available link
+		if ($pluginver >0 && version_compare($apiver,$pluginver,'>')) {
+			$updatelink  = '<br /><a class="updatelink" href="'.$apipath.'" target="_blank">'.i18n_r('UPDATE_AVAILABLE').' '.$apiver.'</a>';
+			$needsupdate = true;
 		}
-		$api_data   = json_decode(get_api_details('plugin', $fi));
-		$updatelink = '';
 
-		if (is_object($api_data) && $api_data->status == 'successful') {
-			if ($api_data->version > $plugin_info[$pathName]['version']) {				
-				$updatelink  = '<br /><a class="updatelink" href="'.$api_data->path.'" target="_blank">'.i18n_r('UPDATE_AVAILABLE').' '.$api_data->version.'</a>';
-				$needsupdate = true;
-			}
-			$plugin_title = '<a href="'.$api_data->path.'" target="_blank">'.$api_data->name.'</a>';
-		} else {
-			$plugin_title = $plugin_info[$pathName]['name'];
-		}
-		
-		$table .= '<tr id="tr-'.$counter.'" class="'.$trclass.'" >';
-		$table .= '<td style="width:150px" ><b>'.$plugin_title.'</b></td>';
-		$table .= '<td><span>'.$plugin_info[$pathName]['description'];
-		if ($plugin_info[$pathName]['version']!='disabled'){
-			$table .= '<br /><b>'.i18n_r('PLUGIN_VER') .' '. $plugin_info[$pathName]['version'].'</b> &mdash; '.i18n_r('AUTHOR').': <a href="'.$plugin_info[$pathName]['author_url'].'" target="_blank">'.$plugin_info[$pathName]['author'].'</a></span>';
-		} 
-	  $table.= $updatelink.'</td><td style="width:60px;" class="status" >
-	  		<a href="plugins.php?set='.$fi.$setNonce.'" class="toggleEnable '.$cls_Enabled.'" style="padding: 1px 3px;" title="'.i18n_r('ENABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('ENABLE').'</a>
-	  		<a href="plugins.php?set='.$fi.$setNonce.'" class="cancel toggleEnable '.$cls_Disabled.'" title="'.i18n_r('DISABLE').': '.$plugin_info[$pathName]['name'] .'" >'.i18n_r('DISABLE').'</a>
-	  	</td>';	  
-		$table .= "</tr>\n";
-		$counter++;
-	}	
+		$plugin_title = '<a href="'.$apipath.'" target="_blank">'.$apiname.'</a>';
+	} else {
+		// api fail , does not exist in extend
+		$plugin_title = $plugininfo['name'];
+	}
+
+	$table .= '<tr id="tr-'.$counter.'" class="'.$trclass.'" >';
+	$table .= '<td style="width:150px" ><b>'.$plugin_title.'</b></td>';
+	$table .= '<td><span>'.$plugininfo['description'].'</span>'; // desc empty if inactive
+
+	// if plugin is active, show what we know from register_plugin, version , author
+	if ($pluginver > 0){
+		$table .= '<span><br /><b>'.i18n_r('PLUGIN_VER') .' '. $pluginver.'</b> &mdash; '.i18n_r('AUTHOR').': <a href="'.$plugininfo['author_url'].'" target="_blank">'.$plugininfo['author'].'</a></span>';
+	}
+
+  	$table.= $updatelink.'</td><td style="width:60px;" class="status" >
+  		<a href="plugins.php?set='.$pluginid.$setNonce.'" class="toggleEnable '.$cls_Enabled.'" style="padding: 1px 3px;" title="'.i18n_r('ENABLE').': '.$plugininfo['name'] .'" >'.i18n_r('ENABLE').'</a>
+  		<a href="plugins.php?set='.$pluginid.$setNonce.'" class="cancel toggleEnable '.$cls_Disabled.'" title="'.i18n_r('DISABLE').': '.$plugininfo['name'] .'" >'.i18n_r('DISABLE').'</a>
+  	</td>';
+
+	$table .= "</tr>\n";
+	$counter++;
 }
 
-# set trigger for plugin update notification
+# set file trigger for plugin update notification, not implemented in core for anything
 if ($needsupdate) {
-	touch(GSCACHEPATH.'plugin-update.trigger');	
+	touch(GSCACHEPATH.'plugin-update.trigger');
+	exec_action('plugin-update');
 } else {
 	if (file_exists(GSCACHEPATH.'plugin-update.trigger')) {
-		unlink(GSCACHEPATH.'plugin-update.trigger');
+		delete_file(GSCACHEPATH.'plugin-update.trigger');
 	}
-}	
+}
 
 exec_action('plugin-hook');
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PLUGINS_MANAGEMENT')); 
+$pagetitle = i18n_r('PLUGINS_MANAGEMENT');
+get_template('header');
 
 ?>
 	

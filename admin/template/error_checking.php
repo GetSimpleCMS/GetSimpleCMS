@@ -2,97 +2,103 @@
 /**
  * Error Checking
  *
- * Displays error and success messages	
+ * Displays error and success messages
  *
  * @package GetSimple
- *  
+ *
  * You can pass $update(global) directly if not using a redirrect and querystring
  *
  */
- 	
+
  	// do not use these alerts if ajax requests as they will not be seen, and interfere with other alerts
 	if ( !requestIsAjax() && file_exists(GSUSERSPATH._id($USR).".xml.reset") && get_filename_id()!='index' && get_filename_id()!='resetpassword' ) {
-		echo '<div class="error"><p>'.i18n_r('ER_PWD_CHANGE').'</p></div>';
+		doNotify(sprintf(i18n_r('ER_PWD_CHANGE'),'profile.php'),'error');
 	}
 
 	if ( !requestIsAjax() && (!defined('GSNOAPACHECHECK') || GSNOAPACHECHECK == false) and !server_is_apache()) {
-		echo '<div class="error">'.i18n_r('WARNING').': <a href="health-check.php">'.i18n_r('SERVER_SETUP').' non-Apache</a></div>';
+		doNotify(i18n_r('WARNING').': <a href="health-check.php">'.i18n_r('SERVER_SETUP').' non-Apache</a>','info');
 	}
 
 	if(!isset($update)) $update = '';
-	$err = '';
-	$restored = '';
-	if(isset($_GET['upd'])) $update = ( function_exists( "filter_var") ) ? filter_var ( $_GET['upd'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['upd']);
-	if(isset($_GET['success'])) $success = ( function_exists( "filter_var") ) ? filter_var ( $_GET['success'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['success']);
-	if(isset($_GET['error'])) $error = ( function_exists( "filter_var") ) ? filter_var ( $_GET['error'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['error']);
-	if(isset($_GET['err'])) $err = ( function_exists( "filter_var") ) ? filter_var ( $_GET['err'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['err']);
-	if(isset($_GET['id'])) $errid = ( function_exists( "filter_var") ) ? filter_var ( $_GET['id'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['id']);
-	if(isset($_GET['updated']) && $_GET['updated'] ==1)	$success = i18n_r('SITE_UPDATED');
+	if(isset($_GET['upd'])) 	$update  = var_in($_GET['upd']);
+	if(isset($_GET['success'])) $success = var_in($_GET['success']);
+	if(isset($_GET['error'])) 	$error   = var_in($_GET['error']);
+	// if(isset($_GET['err'])) 	$err     = var_in($_GET['err']); // deprecated not used
+	if(isset($_GET['id'])) 		$errid   = var_in($_GET['id']);
+	if(isset($_GET['old'])) 	$oldid   = var_in($_GET['old']);
+	if(isset($_GET['updated']) && $_GET['updated'] == 1) $success = i18n_r('SITE_UPDATED'); // for update.php only
 
 	switch ( $update ) {
 		case 'bak-success':
-			echo '<div class="updated"><p>'. sprintf(i18n_r('ER_BAKUP_DELETED'), $errid) .'</p></div>';
+			doNotify(sprintf(i18n_r('ER_BAKUP_DELETED'), $errid) .'</p>','success');
 		break;
 		case 'bak-err':
-			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_REQ_PROC_FAIL').'</p></div>';
+			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_REQ_PROC_FAIL'),'error');
 		break;
 		case 'edit-success':
-			echo '<div class="updated"><p>';
-			if ($ptype == 'edit') { 
-				echo sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>';
-			} elseif ($ptype == 'restore') {
-				echo sprintf(i18n_r('ER_HASBEEN_REST'), $id);
+			if ($ptype == 'edit' && !isset($oldid)) {
+				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','success');
+			} elseif ($ptype == 'edit' && isset($oldid)) {
+				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="backup-edit.php?p=restore&id='. $oldid .'&new='.$id.'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','success');
+			} elseif ($ptype == 'restore' && !isset($oldid)) {
+				doNotify(sprintf(i18n_r('ER_HASBEEN_REST'), $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info');
+			} elseif ($ptype == 'restore' && isset($oldid)) {
+				doNotify(sprintf(i18n_r('ER_HASBEEN_REST'), $id) .'. <a href="backup-edit.php?p=restore&id='. $oldid .'&new='.$id.'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info');
 			} elseif ($ptype == 'delete') {
-				echo sprintf(i18n_r('ER_HASBEEN_DEL'), $errid) .'. <a href="backup-edit.php?p=restore&id='. $errid .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>';
+				doNotify(sprintf(i18n_r('ER_HASBEEN_DEL'), $errid) .'. <a href="backup-edit.php?p=restore&id='. $errid .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info');
+			} else if($ptype == 'new'){
+				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="deletefile.php?id='. $id .'&nonce='.get_nonce("delete", "deletefile.php").'">'.i18n_r('UNDO').'</a>','success');
 			}
-			echo '</p></div>';
 		break;
 		case 'clone-success':
-			echo '<div class="updated"><p>'.sprintf(i18n_r('CLONE_SUCCESS'), '<a href="edit.php?id='.$errid.'">'.$errid.'</a>').'.</p></div>';
+			doNotify(sprintf(i18n_r('CLONE_SUCCESS'), '<a href="edit.php?id='.$errid.'">'.$errid.'</a>'),'success');
 		break;
 		case 'edit-index':
-			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_CANNOT_INDEX').'.</p></div>';
+			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_CANNOT_INDEX'),'error');
 		break;
 		case 'edit-error':
-			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '. var_out($ptype) .'.</p></div>';
+			doNotify('<b>'.i18n_r('ERROR').':</b> '. var_out($ptype),'error');
 		break;
 		case 'pwd-success':
-			echo '<div class="updated"><p>'.i18n_r('ER_NEW_PWD_SENT').'. <a href="index.php">'.i18n_r('LOGIN').'</a></p></div>';
+			doNotify(i18n_r('ER_NEW_PWD_SENT').'. <a href="index.php">'.i18n_r('LOGIN').'</a>','info');
 		break;
 		case 'pwd-error':
-			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_SENDMAIL_ERR').'.</p></div>';
+			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_SENDMAIL_ERR').'.','error');
 		break;
 		case 'del-success':
-			echo '<div class="updated"><p>'.i18n_r('ER_FILE_DEL_SUC').': <b>'.$errid.'</b></p></div>';
+			doNotify(i18n_r('ER_FILE_DEL_SUC').': <b>'.$errid.'</b>','success');
 		break;
 		case 'flushcache-success':
-			echo '<div class="updated"><p>'.i18n_r('FLUSHCACHE-SUCCESS').'</p></div>';
+			doNotify(i18n_r('FLUSHCACHE-SUCCESS'),'success');
 		break;
 		case 'del-error':
-			echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_PROBLEM_DEL').'.</p></div>';
+			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_PROBLEM_DEL').'.','error');
 		break;
 		case 'comp-success':
-			echo '<div class="updated"><p>'.i18n_r('ER_COMPONENT_SAVE').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a></p></div>';
+			doNotify(i18n_r('ER_COMPONENT_SAVE').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
 		break;
 		case 'comp-restored':
-			echo '<div class="updated"><p>'.i18n_r('ER_COMPONENT_REST').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a></p></div>';
+			doNotify(i18n_r('ER_COMPONENT_REST').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
 		break;
-		
-		/**/
+		case 'profile-restored':
+			doNotify(i18n_r('ER_PROFILE_RESTORED').'. <a href="profile.php?undo&nonce='.get_nonce("undo").
+				'&userid='.$userid.'">'.i18n_r('UNDO').'</a>','success');
+		break;
+		case 'settings-restored':
+			doNotify(i18n_r('ER_OLD_RESTORED').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
+		break;
+
 		default:
-			if ( isset( $error ) ) echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '. $error .'</div>';
-			else if ($restored == 'true') echo '<div class="updated"><p>'.i18n_r('ER_OLD_RESTORED').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a></p></div>';
-			else if ( isset($_GET['rest']) && $_GET['rest']=='true' ) 
-				echo '<div class="updated"><p>'.i18n_r('ER_OLD_RESTORED').'. <a href="support.php?undo&nonce='.get_nonce("undo", "support.php").'">'.i18n_r('UNDO').'</a></p></div>';
-			elseif (isset($_GET['cancel'])) echo '<div class="error"><p>'.i18n_r('ER_CANCELLED_FAIL').'</p></div>';
-			elseif (isset($error)) echo '<div class="error"><p>'.$error.'</div>';
-			elseif (!empty($err)) echo '<div class="error"><p><b>'.i18n_r('ERROR').':</b> '.$err.'</p></div>';
-			elseif (isset($success)) echo '<div class="updated"><p>'.$success.'</p></div>';
-			elseif ( $restored == 'true') 
-				echo '<div class="updated"><p>'.i18n_r('ER_OLD_RESTORED').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a></p></div>';
+			if     (isset($error))          doNotify('<b>'.i18n_r('ERROR').':</b> '. $error,'error');
+			elseif (isset($_GET['cancel'])) doNotify(i18n_r('ER_CANCELLED_FAIL'),'error');
+			elseif (isset($_GET['logout'])) doNotify(i18n_r('MSG_LOGGEDOUT'),'info');
+			elseif (!empty($err))           doNotify('<b>'.i18n_r('ERROR').':</b> '.$err,'error');
+			elseif (isset($success))        doNotify($success,'success');
 		break;
-		/**/
-		
 	}
-	?>
-	
+
+	function doNotify($msg, $type = '', $persist = false){
+		echo '<div class="updated notify '. ($type == '' ? '' : 'notify_'.$type.' ') . (!$persist ? 'remove' : '') . '"><p>'.$msg.'</p></div>';
+	}
+
+/* ?> */

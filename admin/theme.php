@@ -11,54 +11,49 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
-# variable settings
-$path 			= GSDATAOTHERPATH; 
-$file 			= "website.xml"; 
-$theme_options 	= '';
-
 # was the form submitted?
 if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 
 	check_for_csrf("activate");	
 		
 	# get passed value from form
-	$TEMPLATE = $_POST['template'];
+	$newTemplate = var_in($_POST['template']);
+
+	if(!path_is_safe(GSTHEMESPATH.$newTemplate,GSTHEMESPATH)) die();
+
+	# backup old GSWEBSITEFILE (website.xml) file
+	backup_datafile(GSDATAOTHERPATH.GSWEBSITEFILE);
 	
-	# backup old website.xml file
-	$bakpath = GSBACKUPSPATH .getRelPath(GSDATAOTHERPATH,GSDATAPATH); // backups/other/
-	createBak($file, $path, $bakpath);
-	
-	# udpate website.xml file with new theme
+	# udpate GSWEBSITEFILE (website.xml) file with new theme
 	$xml  = new SimpleXMLExtended('<item></item>');
 	$note = $xml->addChild('SITENAME');
 	$note->addCData($SITENAME);
 	$note = $xml->addChild('SITEURL');
 	$note->addCData($SITEURL);
 	$note = $xml->addChild('TEMPLATE');
-	$note->addCData($TEMPLATE);
+	$note->addCData($newTemplate);
 	$xml->addChild('PRETTYURLS', $PRETTYURLS);
 	$xml->addChild('PERMALINK', $PERMALINK);
-	XMLsave($xml, $path . $file);
+	XMLsave($xml, GSDATAOTHERPATH . GSWEBSITEFILE);
 	
 	$success = i18n_r('THEME_CHANGED');
+
+	$TEMPLATE = $newTemplate; // set new global
 }
 
 # get available themes (only look for folders)
-$themes_handle = opendir(GSTHEMESPATH) or die("Unable to open ".GSTHEMESPATH);
-while ($file = readdir($themes_handle)) {
-	$curpath = GSTHEMESPATH . $file;
-	if( is_dir($curpath) && $file != "." && $file != ".." ) {
-		$sel="";
-		if (file_exists($curpath.'/template.php')){
-			if ($TEMPLATE == $file)	{ 
-				$sel="selected";
-			}
-			$theme_options .= '<option '.$sel.' value="'.$file.'" >'.$file.'</option>';
-		}
-	}
+# @todo replace with getfiles
+
+$themes = getDirs(GSTHEMESPATH,GSTEMPLATEFILE);
+$theme_options 	= '';
+
+foreach($themes as $theme){
+	$sel = $TEMPLATE == $theme ? 'selected' : '';
+	$theme_options .= '<option '.$sel.' value="'.$theme.'" >'.$theme.'</option>';
 }
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT')); 
+$pagetitle = i18n_r('THEME_MANAGEMENT');
+get_template('header');
 
 ?>
 	
@@ -69,7 +64,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('THEME_MANAGEMENT'));
 	<div id="maincontent">
 		<div class="main">
 		<h3><?php i18n('CHOOSE_THEME');?></h3>
-		<form action="<?php echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES); ?>" method="post" accept-charset="utf-8" >
+		<form action="" method="post" accept-charset="utf-8" >
 		<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("activate"); ?>" />			
 		<?php	
 			$theme_path = str_replace(GSROOTPATH,'',GSTHEMESPATH);

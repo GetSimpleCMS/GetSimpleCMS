@@ -21,7 +21,8 @@ $bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backup
 
 login_cookie_check();
 
-// check form referrer - needs siteurl and edit.php in it. 
+// check form referrer - needs siteurl and edit.php in it.
+// @todo why only here, maybe we should add this to everything, although easily circumventable
 if (isset($_SERVER['HTTP_REFERER'])) {
 	if ( !(strpos(str_replace('http://www.', '', $SITEURL), $_SERVER['HTTP_REFERER']) === false) || !(strpos("edit.php", $_SERVER['HTTP_REFERER']) === false)) {
 		echo "<b>Invalid Referer</b><br />-------<br />"; 
@@ -31,28 +32,32 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 }
 
 if (isset($_POST['submitted'])) {
-	check_for_csrf("edit", "edit.php");	
-	
+	check_for_csrf("edit", "edit.php");
+
+	$existingurl = isset($_POST['existing-url']) ? $_POST['existing-url'] : null;
+
 	if ( trim($_POST['post-title']) == '' )	{
 		redirect("edit.php?upd=edit-error&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
-	}	else {
-		
+	}	
+	else {
+
 		$url="";$title="";$metad=""; $metak="";	$cont="";
-		
+		if(isset($_POST['post-title'])){
+			$title = trim(safe_slash_html($_POST['post-title']));
+			$title = truncate($title,GSTITLEMAX); // limit titles to 70 characters
+		}
+
 		// is a slug provided?
-		if ($_POST['post-id']) { 
-			$url = trim($_POST['post-id']);
-			if (isset($i18n['TRANSLITERATION']) && is_array($translit=$i18n['TRANSLITERATION']) && count($translit>0)) {
-				$url = str_replace(array_keys($translit),array_values($translit),$url);
-			}
+		if ($_POST['post-id']) {
+			$url = truncate($_POST['post-id'],GSFILENAMEMAX); // limit slug/filenames to 70 chars
+			// @todo abstract this translit stuff
+			$url = doTransliteration($url);
 			$url = to7bit($url, "UTF-8");
 			$url = clean_url($url); //old way
 		} else {
-			if ($_POST['post-title'])	{ 
-				$url = trim($_POST['post-title']);
-				if (isset($i18n['TRANSLITERATION']) && is_array($translit=$i18n['TRANSLITERATION']) && count($translit>0)) {
-					$url = str_replace(array_keys($translit),array_values($translit),$url);
-				}
+			if ($title)	{
+				$url = $title;
+				$url = doTransliteration($url);
 				$url = to7bit($url, "UTF-8");
 				$url = clean_url($url); //old way
 			} else {
@@ -66,34 +71,24 @@ if (isset($_POST['submitted'])) {
 			$url = 'temp';
 		}
 		
-		$oldslug = "";
+		$oldslug = $existingurl;
 
 		// was the slug changed on an existing page?
-		if ( isset($_POST['existing-url']) ) {
-			$oldslug = $_POST['existing-url'];
-			if ($_POST['post-id'] != $oldslug){
-				// dont change the index page's slug
-				if ($oldslug == 'index') {
-					$url = $oldslug;
-					redirect("edit.php?id=". urlencode($oldslug) ."&upd=edit-index&type=edit");
+		if ( isset($existingurl) ) {
+			if ($_POST['post-id'] != $existingurl){
+				if ($existingurl == 'index') {
+					// prevent change of index page's slug
+					redirect("edit.php?id=". urlencode($existingurl) ."&upd=edit-index&type=edit");
 				} else {
 					exec_action('changedata-updateslug');
-					updateSlugs($oldslug);
-					// do backup
-					$file = GSDATAPAGESPATH . $url .".xml";
-					$existing = GSDATAPAGESPATH . $oldslug .".xml";
-					$bakfile = $bakpagespath. $oldslug .".bak.xml";
-					copy($existing, $bakfile); // copy to backup folder
-					unlink($existing); // delete page, wil resave new one here
-				} 
-			} 
+					updateSlugs($existingurl);
+					delete_page($oldslug);
+				}
+			}
 		}
-		
-		$file = GSDATAPAGESPATH . $url .".xml";
-		
+
 		// format and clean the responses
 		// content
-		if(isset($_POST['post-title'])) 			{ $title       = safe_slash_html($_POST['post-title']);	}
 		if(isset($_POST['post-titlelong']))			{ $titlelong   = safe_slash_html($_POST['post-titlelong']);	}
 		if(isset($_POST['post-summary']))			{ $summary     = safe_slash_html($_POST['post-summary']);	}
  		if(isset($_POST['post-content'])) 			{ $content     = safe_slash_html($_POST['post-content']); }
@@ -118,23 +113,12 @@ if (isset($_POST['submitted'])) {
 		else $metarNoArchive = 0; 
 
 		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
-		if ( (file_exists($file) && $url != $oldslug) ||  in_array($url,$reservedSlugs) ) {
-			$count = "1";
-			$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
-			while ( file_exists($file) ) {
-				$count++;
-				$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
-			}
-			$url = $url .'-'. $count;
+		if ( (file_exists(GSDATAPAGESPATH . $url .".xml") && $url != $oldslug) ||  in_array($url,$reservedSlugs) ) {
+			list($newfilename,$count) = getNextFileName(GSDATAPAGESPATH,$url.'.xml');
+			$url = getFileName($newfilename);
 		}
-		
-		// if we are editing an existing page, create a backup
-		if ( file_exists($file) ) 
-		{
-			$bakfile = $bakpagespath. $url .".bak.xml";
-			copy($file, $bakfile);
-		}
-		
+
+		// create new xml
 		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
 		$xml->addChild('pubDate', date('r'));
 
@@ -164,34 +148,76 @@ if (isset($_POST['submitted'])) {
 		}
 
 		exec_action('changedata-save');
-		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true' && $autoSaveDraft == true) {
-			XMLsave($xml, GSAUTOSAVEPATH.$url);
+
+		// backup before overwriting
+		if(file_exists(GSDATAPAGESPATH . $url .".xml")) backup_page($url);
+
+		if (isset($_POST['autosave']) && $_POST['autosave'] == '1' && $autoSaveDraft == true) {
+			XMLsave($xml, GSAUTOSAVEPATH . $url . '.xml');
 		} else {
-			XMLsave($xml, $file);
+			XMLsave($xml, GSDATAPAGESPATH . $url .".xml");
 		}
-		
+
 		//ending actions
 		exec_action('changedata-aftersave');
 		generate_sitemap();
-		
-		// redirect user back to edit page 
-		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true') {
-			echo 'OK';
-		} else {
-			
-			if ($_POST['redirectto']!='') {
-				$redirect_url = $_POST['redirectto'];
-			} else {
-				$redirect_url = 'edit.php';
-			}
-			
-			if ($url == $oldslug) {
-				redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
-			} else {
-				redirect($redirect_url."?id=". $url ."&old=".$oldslug."&upd=edit-success&type=edit");
+
+		/**
+		 * do changedata ajax save checking for legacy
+		 * @param  str $url     [description]
+		 * @param  str $oldslug [description]
+		 */
+		function changedataAjaxSave($url,$oldslug){
+			if(isset($_POST['ajaxsave'])){
+				// ajax response wrapper, still using html parsing for now
+				echo "<div>";
+
+				// if this was an autosave add autosave response
+				if(isset($_POST['autosave']) && $_POST['autosave'] == '1'){
+					echo '<div class="autosavenotify">'.sprintf(i18n_r('AUTOSAVE_NOTIFY'),output_time(date())).'</div>';
+				}
+
+				// setup error checking vars and include error checking for notifications
+				$id     = $url;
+				$update = 'edit-success';
+				$ptype  = 'edit';
+				if($url !== $oldslug) $oldid = $oldslug; // if slug was changed set $oldid
+				include('template/error_checking.php');
+
+				// send new inputs for slug changes and new nonces
+				echo '<input id="nonce" name="nonce" type="hidden" value="'. get_nonce("edit", "edit.php") .'" />';
+	            echo '<input id="existing-url" name="existing-url" type="hidden" value="'. $url .'" />';
+				echo "</div>";
+				die();
 			}
 		}
+
+		// if ajax we are done
+		changedataAjaxSave($url,$oldslug);
+
+		// redirect user back to edit page
+
+		if ($_POST['redirectto']!='') {
+			$redirect_url = $_POST['redirectto'];
+		} else {
+			$redirect_url = 'edit.php';
+		}
+
+			if(isset($existingurl)){
+				if ($url == $existingurl) {
+					// redirect save new file
+			redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
+		} else {
+					// redirect new slug, undo for old slug
+					redirect($redirect_url."?id=". $url ."&old=".$existingurl."&upd=edit-success&type=edit");
+		}
+
 	}
+			else {
+				// redirect new slug
+				redirect($redirect_url."?id=". $url ."&upd=edit-success&type=new"); 
+			}
+		}
 } else {
 	redirect('pages.php');
 }

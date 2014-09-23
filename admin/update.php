@@ -8,6 +8,24 @@
  * @subpackage Init
  */
 
+
+function check_php_requirements(){
+	$kill = false;
+	$php_required_exts = array('xml','simplexml','dom','json');
+
+	$php_modules = get_loaded_extensions();
+	$php_modules = array_map('strtolower', $php_modules);
+	foreach($php_required_exts as $ext){
+		if(!in_array($ext, $php_modules )){
+			echo("PHP $ext extension NOT INSTALLED<br/>\n");
+			$kill = 1;
+		}
+	}
+	if($kill) die('Getsimple Install Cannot Continue');
+}
+check_php_requirements();
+
+
 $load['plugin'] = true;
 include('inc/common.php');
 
@@ -50,28 +68,49 @@ function msgError($msg){
 	return '<div class="notify notify_error">'.$msg.'</div>';
 }
 
+# create default 404.xml page
+$init = GSDATAOTHERPATH.GSHTTPPREFIX.'404.xml';
+$temp = GSADMININCPATH.'tmp/tmp-404.xml'; 
+if (! file_exists($init)) {
+	if(copy_file($temp,$init)) $message.= msgOK(sprintf(i18n_r('COPY_SUCCESS'),'tmp/404.xml'));
+	else $message.= msgError(sprintf(i18n_r('COPY_FAILURE'),'tmp/404.xml'));
+}
+
+# create default 403.xml page
+$init = GSDATAOTHERPATH.GSHTTPPREFIX.'403.xml';
+$temp = GSADMININCPATH.'tmp/tmp-403.xml'; 
+if (! file_exists($init)) {
+	if(copy_file($temp,$init)) $message.= msgOK(sprintf(i18n_r('COPY_SUCCESS'),'tmp/403.xml'));
+	else $message.= msgError(sprintf(i18n_r('COPY_FAILURE'),'tmp/403.xml'));
+}
+
 /* create new folders */
 foreach($create_dirs as $dir){
 	if (!file_exists($dir)) {  	
-		if (defined('GSCHMOD')) { 
+		if (getDef('GSCHMOD')) {
 		 $chmod_value = GSCHMOD; 
 		} else {
 		 $chmod_value = 0755;
 		}
-		$status = mkdir($dir, $chmod_value);
+		$status = create_dir($dir, $chmod_value);
 		if($status) $message.= msgOK(sprintf(i18n_r('FOLDER_CREATED'),$dir));
 		else $error.= msgError(i18n_r('ERROR_CREATING_FOLDER') . "<br /> - $dir");
 	}
 }
 
+# remove the pages.php plugin if it exists.
+if (file_exists(GSPLUGINPATH.'pages.php'))	{
+	delete_file(GSPLUGINPATH.'pages.php');
+}
+
 /* check for legacy version of user.xml */
+/* check and perform 2.x - 3.x upgrade */
 if (file_exists(GSDATAOTHERPATH .'user.xml')) {
-	
 	
 	# make new users folder
 	if (!file_exists(GSUSERSPATH)) {
-		$status = mkdir(GSUSERSPATH, 0777);
-		chmod(GSUSERSPATH, 0777);
+		$status = create_dir(GSUSERSPATH, 0777);
+		gs_chmod(GSUSERSPATH, 0777);
 		if (!$status) { 
 			$error .= msgError('Unable to create the folder /data/users/');	
 		} else {
@@ -81,8 +120,8 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 
 	# make new backup users folder
 	if (!file_exists(GSBACKUSERSPATH)) {
-		$status = mkdir(GSBACKUSERSPATH, 0777);
-		chmod(GSBACKUSERSPATH, 0777);
+		$status = create_dir(GSBACKUSERSPATH, 0777);
+		gs_chmod(GSBACKUSERSPATH, 0777);
 		if (!$status) {
 			$error .= msgError('Unable to create the folder /backup/users/');	
 		} else {
@@ -93,7 +132,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	# get $USR data
 	$datau      = getXML(GSDATAOTHERPATH .'user.xml');
 	$datac      = getXML(GSDATAOTHERPATH .'cp_settings.xml');
-	$dataw      = getXML(GSDATAOTHERPATH .'website.xml');
+	$dataw      = getXML(GSDATAOTHERPATH .GSWEBSITEFILE);
 	
 	$USR        = _id(stripslashes($datau->USR));
 	$EMAIL      = $datau->EMAIL;
@@ -117,17 +156,16 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	$xml->addChild('TIMEZONE', $TIMEZONE);
 	$xml->addChild('LANG', $LANG);
 	$status = XMLsave($xml, GSUSERSPATH . _id($USR) .'.xml');	
-	chmod(GSUSERSPATH . _id($USR) .'.xml', 0777);
+	gs_chmod(GSUSERSPATH . _id($USR) .'.xml');
 	if (!$status) {
 		$error .= msgError('Unable to create new  '._id($USR).'.xml file!');	
 	} else {
 		$message .= msgOK('Created new '._id($USR).'.xml file');
 	}
 	
-	
 	# rename old wesbite.xml
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_website.xml')) {
-		$status = rename(GSDATAOTHERPATH .'website.xml', GSDATAOTHERPATH .'_legacy_website.xml');
+		$status = rename_file(GSDATAOTHERPATH .'website.xml', GSDATAOTHERPATH .'_legacy_website.xml');
 		if (!$status) {
 			$error .= msgError('Unable to rename website.xml to _legacy_website.xml');	
 		} else {
@@ -142,17 +180,17 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	$xml->addChild('TEMPLATE', $TEMPLATE);
 	$xml->addChild('PRETTYURLS', $PRETTYURLS);
 	$xml->addChild('PERMALINK', $PERMALINK);
-	$status = XMLsave($xml, GSDATAOTHERPATH .'website.xml');	
+	$status = XMLsave($xml, GSDATAOTHERPATH .GSWEBSITEFILE);	
 	if (!$status) {
-		$error .= msgError('Unable to update website.xml file!');	
+		$error .= msgError('Unable to update '.GSWEBSITEFILE.' file!');	
 	} else {
-		$message .= msgOK('Created updated website.xml file');
+		$message .= msgOK('Created updated '.GSWEBSITEFILE.' file');
 	}
 	
 	
 	# rename old user.xml
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_user.xml')) {
-		$status = rename(GSDATAOTHERPATH .'user.xml', GSDATAOTHERPATH .'_legacy_user.xml');
+		$status = rename_file(GSDATAOTHERPATH .'user.xml', GSDATAOTHERPATH .'_legacy_user.xml');
 		if (!$status) {
 			$error .= msgError('Unable to rename user.xml to _legacy_user.xml');	
 		} else {
@@ -162,7 +200,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 
 	# rename old cp_settings.xml
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_cp_settings.xml')) {
-		$status = rename(GSDATAOTHERPATH .'cp_settings.xml', GSDATAOTHERPATH .'_legacy_cp_settings.xml');
+		$status = rename_file(GSDATAOTHERPATH .'cp_settings.xml', GSDATAOTHERPATH .'_legacy_cp_settings.xml');
 		if (!$status) {
 			$error .= msgError('Unable to rename cp_settings.xml to _legacy_cp_settings.xml');	
 		} else {
@@ -185,7 +223,8 @@ $redirect = cookie_check() ? "health-check.php?updated=2" : "index.php?updated=2
 if(isset($error)) $message.= i18n_r('ER_REQ_PROC_FAIL');
 else $message.= "<p><div class=\"notify notify_ok\">".i18n_r('SITE_UPDATED')."</div></p>";
 
-get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE')); 
+$pagetitle = $site_full_name.' &middot; '. i18n_r('SYSTEM_UPDATE');
+get_template('header');
 
 ?>
 	
@@ -193,7 +232,6 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE'));
 </div> 
 </div><!-- Closes header -->
 <div class="wrapper">
-	<?php // include('template/error_checking.php'); ?>
 	
 	<div id="maincontent">
 		<div class="main" >

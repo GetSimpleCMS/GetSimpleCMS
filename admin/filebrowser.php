@@ -24,19 +24,20 @@ $subPath         = (isset($_GET['path'])) ? $_GET['path'] : "";
 
 if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
 
-$returnid        = isset($_GET['returnid']) ? var_out($_GET['returnid']) : "";
+$returnid        = isset($_GET['returnid']) ? var_in($_GET['returnid']) : "";
 $func            = (isset($_GET['func'])) ? $_GET['func'] : "";
 $path            = tsl($path);
 // check if host uses Linux (used for displaying permissions
 $isUnixHost      = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
-$CKEditorFuncNum = isset($_GET['CKEditorFuncNum']) ? var_out($_GET['CKEditorFuncNum']) : '';
-$sitepath        = suggest_site_path();
-$fullPath        = $sitepath . $uploadsPathRel; // url path to image
-$type            = isset($_GET['type']) ? var_out($_GET['type']) : '';
+$CKEditorFuncNum = isset($_GET['CKEditorFuncNum']) ? var_in($_GET['CKEditorFuncNum']) : '';
+$sitepath        = $SITEURL;
+$fullPath        = $SITEURL . $uploadsPathRel; // url path to image
+$type            = isset($_GET['type']) ? var_in($_GET['type']) : '';
 
 global $LANG;
 $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 ?>
+
 <!DOCTYPE html>
 <html lang="<?php echo $LANG_header; ?>">
 <head>
@@ -80,7 +81,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
  <div class="wrapper">
   <div id="maincontent">
 	<div class="main" style="border:none;">
-		<h3><?php echo i18n('UPLOADED_FILES'); ?><span id="filetypetoggle">&nbsp;&nbsp;/&nbsp;&nbsp;<?php echo ($type == 'images' ? i18n('IMAGES') : i18n('SHOW_ALL') ); ?></span></h3>
+		<h3><?php echo i18n_r('UPLOADED_FILES'); ?><span id="filetypetoggle">&nbsp;&nbsp;/&nbsp;&nbsp;<?php echo ($type == 'images' ? i18n('IMAGES') : i18n('SHOW_ALL') ); ?></span></h3>
 <?php
 	$count      = "0";
 	$dircount   = "0";
@@ -104,7 +105,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 				$filesArray[$count]['type'] = $extention;
 				clearstatcache();
 				$ss = @stat($path . $file);
-				$filesArray[$count]['date'] = @date('M j, Y',$ss['ctime']);
+				$filesArray[$count]['date'] = @date('M j, Y',$ss['mtime']);
 				$filesArray[$count]['size'] = fSize($ss['size']);
 				$totalsize = $totalsize + $ss['size'];
 				$count++;
@@ -192,7 +193,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 				echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 			}
 
-			echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
+			echo '<td style="width:85px;text-align:right;" ><span>'. output_date($upload['date']) .'</span></td>';
 			echo '</tr>';
 		}
 

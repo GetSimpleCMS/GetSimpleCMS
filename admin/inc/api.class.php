@@ -64,7 +64,7 @@ class API_Request {
 	 */
 	public function settings_read() {
 		if($this->auth()) {
-			$settings = getXML(GSDATAOTHERPATH.'website.xml');
+			$settings = getXML(GSDATAOTHERPATH.GSWEBSITEFILE);
 			$wrapper = array('status' => 'success', 'message' => 'settings_read ok', 'response' => $settings);
 			return json_encode($wrapper);
 		}
@@ -113,7 +113,7 @@ class API_Request {
 				$page->title = safe_slash_html($this->xml->data->title);
 				$page->pubDate = date('r');
 				$bakfile = $bakpagespath. $id .".bak.xml";
-				copy($thisfile, $bakfile);
+				copy_file($thisfile, $bakfile);
 				$status = XMLsave($page, $thisfile);
 				if ($status) {
 					touch($thisfile);
@@ -161,7 +161,7 @@ class API_Request {
 							$filesArray[$count]['category'] = $extention;
 							clearstatcache();
 							$ss = stat($path . $file);
-							$filesArray[$count]['date'] = date('c',$ss['ctime']);
+							$filesArray[$count]['date'] = date('c',$ss['mtime']);
 							$filesArray[$count]['size'] = $ss['size'];
 						}
 						
@@ -177,4 +177,5 @@ class API_Request {
 	}
 	
 } // end of class
-?>
+
+/* ?> */

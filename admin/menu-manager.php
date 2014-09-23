@@ -20,7 +20,7 @@ if (isset($_POST['menuOrder'])) {
 	foreach ($menuOrder as $slug) {
 		$file = GSDATAPAGESPATH . $slug . '.xml';
 		if (file_exists($file)) {
-			$data = getXML($file);
+			$data = getPageXML($slug);
 			if ($priority != (int) $data->menuOrder) {
 				unset($data->menuOrder);
 				$data->addChild('menuOrder')->addCData($priority);
@@ -37,7 +37,8 @@ if (isset($_POST['menuOrder'])) {
 getPagesXmlValues();
 $pagesSorted = subval_sort($pagesArray,'menuOrder');
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT').' &raquo; '.str_replace(array('<em>','</em>'), '', i18n_r('MENU_MANAGER'))); 
+$pagetitle = strip_tags(i18n_r('MENU_MANAGER')).' &middot; '.i18n_r('PAGE_MANAGEMENT');
+get_template('header');
 
 ?>
 	

@@ -14,13 +14,13 @@ if(isset($_POST['lang']) && trim($_POST['lang']) != '') { $LANG = $_POST['lang']
 include('inc/common.php');
 
 # default variables
-if(defined('GSLOGINSALT')) { $logsalt = GSLOGINSALT;} else { $logsalt = null; }
-$kill       = ''; 
+if(getDef('GSLOGINSALT')) { $logsalt = GSLOGINSALT;} else { $logsalt = null; }
+$kill = ''; // fatal error kill submission reshow form
 $status     = ''; 
-$err        = null; 
-$message    = null; 
+$err = null; // used for errors, show form alow resubmision
+$message = null; // message to show user
 $random     = null;
-$success    = false;
+$success = false; // success true show message if message
 $fullpath   = suggest_site_path();	
 $path_parts = suggest_site_path(true);   
 
@@ -60,7 +60,7 @@ if(isset($_POST['submitted'])) {
 		
 		# create user xml file
 		$file = _id($USR).'.xml';
-		createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
+		backup_datafile(GSUSERSPATH.$file);
 		$xml = new SimpleXMLElement('<item></item>');
 		$xml->addChild('USR', $USR);
 		$xml->addChild('PWD', $PASSWD);
@@ -74,16 +74,16 @@ if(isset($_POST['submitted'])) {
 		
 		# create password change trigger file
 		$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
-		copy(GSUSERSPATH . $file, $flagfile);
+		copy_file(GSUSERSPATH . $file, $flagfile);
 		
-		# create new website.xml file
-		$file = 'website.xml';
+		# create new GSWEBSITEFILE (website.xml) file
+		$file = GSWEBSITEFILE;
 		$xmls = new SimpleXMLExtended('<item></item>');
 		$note = $xmls->addChild('SITENAME');
 		$note->addCData($SITENAME);
 		$note = $xmls->addChild('SITEURL');
 		$note->addCData($SITEURL);
-		$xmls->addChild('TEMPLATE', 'Innovation');
+		$xmls->addChild('TEMPLATE', GSINSTALLTEMPLATE);
 		$xmls->addChild('PRETTYURLS', '');
 		$xmls->addChild('PERMALINK', '');
 		if (! XMLsave($xmls, GSDATAOTHERPATH . $file) ) {
@@ -94,8 +94,8 @@ if(isset($_POST['submitted'])) {
 		$init = GSDATAPAGESPATH.'index.xml'; 
 		$temp = GSADMININCPATH.'tmp/tmp-index.xml';
 		if (! file_exists($init))	{
-			copy($temp,$init);
-			$xml = simplexml_load_file($init); 
+			copy_file($temp,$init);
+			$xml = getXML($init);
 			$xml->pubDate = date('r');
 			$xml->asXML($init);
 		}
@@ -104,47 +104,41 @@ if(isset($_POST['submitted'])) {
 		$init = GSDATAOTHERPATH.'components.xml';
 		$temp = GSADMININCPATH.'tmp/tmp-components.xml'; 
 		if (! file_exists($init)) {
-			copy($temp,$init);
+			copy_file($temp,$init);
 		}
 		
-		# create default 404.xml page
-		$init = GSDATAOTHERPATH.'404.xml';
-		$temp = GSADMININCPATH.'tmp/tmp-404.xml'; 
-		if (! file_exists($init)) {
-			copy($temp,$init);
-		}
-
 		# create root .htaccess file
 		 if ( !function_exists('apache_get_modules') or in_arrayi('mod_rewrite',apache_get_modules())) {
 		 	$temp = GSROOTPATH .'temp.htaccess';
 		 	$init = GSROOTPATH.'.htaccess';
 			
 			if(file_exists($temp)) {				
-				$temp_data = file_get_contents(GSROOTPATH .'temp.htaccess');
+				$temp_data = read_file(GSROOTPATH .'temp.htaccess');
 				$temp_data = str_replace('**REPLACE**',tsl($path_parts), $temp_data);
 				$fp = fopen($init, 'w');
 				fwrite($fp, $temp_data);
 				fclose($fp);
 				if (!file_exists($init)) {
-					$kill .= sprintf(i18n_r('ROOT_HTACCESS_ERROR'), 'temp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
+					$err .= sprintf(i18n_r('ROOT_HTACCESS_ERROR'), 'temp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
 				} else if(file_exists($temp)){
-					unlink($temp);
+					delete_file($temp);
 				}
 			}	
 		} 
 	
 		# create gsconfig.php if it doesn't exist yet.
-		$init = GSROOTPATH.'gsconfig.php';
-		$temp = GSROOTPATH.'temp.gsconfig.php';
+		$tempconfig = 'temp.'.GSCONFIGFILE;
+		$init = GSROOTPATH.GSCONFIGFILE;
+		$temp = GSROOTPATH.$tempconfig;
 		if (file_exists($init)) {
-			if(file_exists($temp)) unlink($temp);
+			if(file_exists($temp)) delete_file($temp);
 			if (file_exists($temp)) {
-				$kill .= sprintf(i18n_r('REMOVE_TEMPCONFIG_ERROR'), 'temp.gsconfig.php') . '<br />';
+				$err .= sprintf(i18n_r('REMOVE_TEMPCONFIG_ERROR'), $tempconfig ) . '<br />';
 			}
 		} else {
-			rename($temp, $init);
+			rename_file($temp, $init);
 			if (!file_exists($init)) {
-				$kill .= sprintf(i18n_r('MOVE_TEMPCONFIG_ERROR'), 'temp.gsconfig.php', 'gsconfig.php') . '<br />';
+				$err .= sprintf(i18n_r('MOVE_TEMPCONFIG_ERROR'), $tempconfig , GSCONFIGFILE) . '<br />';
 			}
 		}
 		
@@ -156,15 +150,17 @@ if(isset($_POST['submitted'])) {
 		$message .= '<p><em>'. i18n_r('EMAIL_THANKYOU') .' '.$site_full_name.'!</em></p>';
 		$status   = sendmail($EMAIL,$subject,$message);
 		# activate default plugins
-		change_plugin('InnovationPlugin.php',true);
+		foreach(explode(',',GSINSTALLPLUGINS) as $actplugin){
+			change_plugin($actplugin,true);
+		}
 
-		# set the login cookie, then redirect user to secure panel		
-		create_cookie();		
+		# set the login cookie, then redirect user to secure panel
+		create_cookie();
 		$success = true;
 	}
 }
-
-get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION')); 
+$pagetitle = $site_full_name.' &middot; '. i18n_r('INSTALLATION');
+get_template('header');
 
 ?>
 	
@@ -186,7 +182,7 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION'));
 				echo '<div class="error">'. $kill .'</div>';
 			}
 			if ($err != '') {
-				$success = false;				
+				// $success = false;
 				echo '<div class="error">'. $err .'</div>';
 			}
 			if ($random != ''){

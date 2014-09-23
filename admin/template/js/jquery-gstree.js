@@ -194,13 +194,21 @@ $.fn.zebraStripe = function(){
 };
 
 /**
+ * addTabletree
+ * 
  * add gstree to tree ready table with data-depths and parent,indent classes
- * @param int minrows minumum rows needed to init, else will skip
- * @param int mindepth minimum depth required to add the header expander controls
+ * 
+ * @param int minrows minumum rows needed to apply tree, else will skip tree creation
+ * @param int mindepth minimum depth required to apply tree, else wil skip
+ * @param int headerdepth minimum depth required to add the header expander controls
  */
-$.fn.addTableTree = function(minrows,mindepth){
+$.fn.addTableTree = function(minrows,mindepth,headerdepth){
 	// console.profile();
 	// @todo for slide animations, temporarily insert tbody at start end of collapse range and animate it, use display:block on tbody
+
+	// minrows      = 10;
+	// mindepth     = 3;
+	// headerdepth  = 3;
         
 	var elem = this;
 	if(!elem[0]){
@@ -208,12 +216,16 @@ $.fn.addTableTree = function(minrows,mindepth){
 		return;
 	}	
 
+	// table is small if table has less rows that minrows
 	var small = minrows !== undefined && $("tbody tr",elem).length < minrows;
 
+	// table is shallow if table has depths less than mindepth
+	var shallow = $("tbody tr[data-depth="+mindepth+"]",elem).length <= 0;
+
 	// skip if no children
-	if(!$("."+treeparentclass,elem)[0] || small){
-		if(!small) Debugger.log("gstree: no depths, skipping");
-		else Debugger.log("gstree: too small, skipping");
+	if(!$("."+treeparentclass,elem)[0] || small || shallow){
+		if(!small || !shallow) Debugger.log("gstree: insufficient depth, skipping");
+		else Debugger.log("gstree: table too small, skipping");
 		return;
 	}
 
@@ -227,7 +239,7 @@ $.fn.addTableTree = function(minrows,mindepth){
 	$('tr td:first-child .tree-indent:last-of-type').html(''); // remove extra indentation
 	
 	// add the header expander controls
-	var deep = mindepth === undefined || $("tbody tr[data-depth="+mindepth+"]",elem).length > 0;	
+	var deep = headerdepth === undefined || $("tbody tr[data-depth="+headerdepth+"]",elem).length > 0;	
 	if(deep) addExpanderTableHeader($('thead > tr:first',elem),customexpander,4);	
 	
 	$("table.striped").zebraStripe();

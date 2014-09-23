@@ -62,8 +62,9 @@ if (file_exists($thumb_folder . 'thumbnail.' . $src)) {
 	}
 }
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT').' &raquo; '.i18n_r('IMAGES')); 
-	
+$pagetitle = i18n_r('IMAGES').' &middot; '.var_out($src).' &middot; '.i18n_r('FILE_MANAGEMENT');
+get_template('header');
+
 include('template/include-nav.php'); ?>
 
 <div class="bodycontent clearfix">

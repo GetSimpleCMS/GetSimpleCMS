@@ -13,6 +13,7 @@ $pagesArray = array();
 add_action('index-header','getPagesXmlValues',array(false));       // make $pagesArray available to the front 
 add_action('header', 'getPagesXmlValues',array(true));             // make $pagesArray available to the back
 add_action('page-delete', 'create_pagesxml',array(true));          // Create pages.array if page deleted
+add_action('page-restored', 'create_pagesxml',array(true));        // Create pages.array if page undo
 add_action('changedata-aftersave', 'create_pagesxml',array(true)); // Create pages.array if page is updated
 
 
@@ -43,8 +44,7 @@ function getPageContent($page,$field='content'){
  *
  */
 function returnPageContent($page, $field='content', $raw = false, $nofilter = false){   
-	$thisfile = file_get_contents(GSDATAPAGESPATH.$page.'.xml');
-	$data = simplexml_load_string($thisfile);
+	$data = getPageXML($id);
 	$content = $data->$field;
 	if($raw) return $content; // return without any processing
 
@@ -177,6 +177,7 @@ function pageCacheCountDiffers(){
  *
  * Populates $pagesArray from page cache file
  * If the file does not exist it is created
+ * @todo refresh does nothing
  * 
  * @since 3.1
  * @param bool $refresh check cache for pages changes and regen
@@ -336,4 +337,4 @@ function pageXMLtoArray($xml){
 	$pagesArray[$key]['filename']=$key.'.xml'; // legacy
 }
 
-?>
+/* ?> */

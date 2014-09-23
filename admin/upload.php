@@ -46,14 +46,14 @@ if (isset($_FILES['file'])) {
 			
 			//set variables
 			$count    = '1';
-			$base     = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
-			$file_loc = $path . $base;
+			$file_base     = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
+			$file_loc = $path . $file_base;
 			
 			//prevent overwriting						
 			if(!isset($_POST['fileoverwrite'])){
 				while ( file_exists($file_loc) ) {
-					$file_loc = $path . $count.'-'. $base;
-					$base     = $count.'-'. $base;
+					$file_loc = $path . $count.'-'. $file_base;
+					$file_base     = $count.'-'. $file_base;
 					$count++;
 				}
 			}
@@ -61,17 +61,13 @@ if (isset($_FILES['file'])) {
 			//validate file
 			if (validate_safe_file($_FILES["file"]["tmp_name"][$i], $_FILES["file"]["name"][$i],  $_FILES["file"]["type"][$i])) {
 				move_uploaded_file($_FILES["file"]["tmp_name"][$i], $file_loc);
-				if (defined('GSCHMOD')) {
-					chmod($file_loc, GSCHMOD);
-				} else {
-					chmod($file_loc, 0644);
-				}
+				gs_chmod($file_loc);
 				exec_action('file-uploaded');
 				
 				// generate thumbnail				
 				require_once('inc/imagemanipulation.php');	
 
-				genStdThumb($subFolder,$base);	
+				genStdThumb($subFolder,$file_base);
 
 				$messages[] = i18n_r('FILE_SUCCESS_MSG');
 				if(requestIsAjax()){
@@ -123,15 +119,15 @@ if (isset($_GET['newfolder'])) {
 	if (file_exists($path.$cleanname) || $cleanname=='') {
 			$error = i18n_r('ERROR_FOLDER_EXISTS');
 	} else {
-		if (defined('GSCHMOD')) { 
+		if (getDef('GSCHMOD')) {
 			$chmod_value = GSCHMOD; 
 		} else {
 			$chmod_value = 0755;
 		}
-		if (mkdir($path . $cleanname, $chmod_value)) {
+		if (create_dir($path . $cleanname, $chmod_value)) {
 			//create folder for thumbnails
 			$thumbFolder = GSTHUMBNAILPATH.$subFolder.$cleanname;
-			if (!(file_exists($thumbFolder))) { mkdir($thumbFolder, $chmod_value); }
+			if (!(file_exists($thumbFolder))) { create_dir($thumbFolder, $chmod_value); }
 			$success = sprintf(i18n_r('FOLDER_CREATED'), $cleanname);
 		}	else { 
 			$error = i18n_r('ERROR_CREATING_FOLDER'); 
@@ -139,7 +135,8 @@ if (isset($_GET['newfolder'])) {
 	}
 }
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT')); 
+$pagetitle = i18n_r('FILE_MANAGEMENT');
+get_template('header');
 
 // check if host uses Linux (used for displaying permissions
 $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
@@ -151,7 +148,7 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 <div class="bodycontent clearfix">
 	<div id="maincontent">
 		<div class="main" >
-		<h3 class="floated"><?php echo i18n('UPLOADED_FILES'); ?><span id="filetypetoggle">&nbsp;&nbsp;/&nbsp;&nbsp;<?php echo i18n('SHOW_ALL'); ?></span></h3>
+		<h3 class="floated"><?php echo i18n_r('UPLOADED_FILES'); ?><span id="filetypetoggle">&nbsp;&nbsp;/&nbsp;&nbsp;<?php echo i18n_r('SHOW_ALL'); ?></span></h3>
 		<div id="file_load">
 		<?php
 			$count      ="0";
@@ -171,7 +168,7 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
             $dirsArray[$dircount]['name'] = $file;
             clearstatcache();
 						$ss = @stat($path . $file);
-						$dirsArray[$dircount]['date'] = @date('M j, Y',$ss['ctime']);
+						$dirsArray[$dircount]['date'] = @date('M j, Y',$ss['mtime']);
             $dircount++;
 					} else {
 						$filesArray[$count]['name'] = $file;
@@ -273,7 +270,7 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 						echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 					}
 					
-		      echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
+		      echo '<td style="width:85px;text-align:right;" ><span>'. output_date($upload['date']) .'</span></td>';
           echo '<td class="delete" >'.$directory_delete.'</td>';
           echo '</tr>';
           $foldercount++;
@@ -319,7 +316,7 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 						echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 					}
 							
-					echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
+					echo '<td style="width:85px;text-align:right;" ><span>'. output_date($upload['date']) .'</span></td>';
 					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. rawurlencode($upload['name']) . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a></td>';
 					echo '</tr>';
 					

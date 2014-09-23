@@ -1,4 +1,4 @@
-<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); } ?>
+<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); } 
 
 /** CSS **/
 
@@ -12,6 +12,8 @@
  *
  */
 
+?>
+/** css.php **/
 /* <style> */
 
 /** GLOBAL RESETS **/
@@ -53,8 +55,22 @@ a img {
 
 /* @todo all these modifier classe need to go togather probably at the end */
 
+.boxsizingBorder {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}
+
 .clear {
 	clear: both;
+}
+
+.clear-left {
+	clear: left;
+}
+
+.clear-right {
+	clear: right;
 }
 
 .unformatted {
@@ -129,17 +145,25 @@ html {
 .header {
 	color: #FFF;
 	border-top: 1px solid <?php echo $primary_1; ?>;
-	background: <?php echo $primary_3; ?>;	/* old browsers */
-		background: -moz-linear-gradient(top, <?php echo $primary_4; ?> 0%, <?php echo $primary_2; ?> 100%);	/* firefox */
+	background: <?php echo $header_base; ?>;	/* old browsers */
+	margin: 0 0 25px 0;
+}
+
+.header.gradient{
+		background: -moz-linear-gradient(top, <?php echo $primary_4; ?> 0%, <?php echo $primary_2; ?> 100%);	 /* firefox */
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,<?php echo $primary_4; ?>), color-stop(100%,<?php echo $primary_2; ?>));	/* webkit */
 		filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='<?php echo $primary_4; ?>', endColorstr='<?php echo $primary_2; ?>',GradientType=0 );	/* ie */
-	margin: 0 0 25px 0;
 }
 
 .header .wrapper {
 	height: 95px;
 	position: relative;
 	border: none;
+}
+
+.header .sitename .icon{
+	font-size: 10px;
+	opacity: .5;
 }
 
 .wrapper .nav {
@@ -157,29 +181,17 @@ html {
 	text-decoration: none !important;
 	display: block;
 	border-radius: 5px 5px 0 0;
+	color: <?php echo $primary_6; ?>;
+	background: <?php echo $primary_1; ?>;
+	text-shadow: 1px 1px 0 rgba(0,0,0,.3);	
 }
 
 /* @todo noooooo */
-.wrapper .nav li a:link,
-.wrapper .nav li a:visited,
-.wrapper #pill li a:link,
-.wrapper #pill li a:visited {
+.wrapper .nav li a,
+.wrapper .nav li a{
 	color: <?php echo $primary_6; ?>;
 	background: <?php echo $primary_1; ?>;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.3);
-}
-
-/* @todo noooooo */
-.wrapper #pill li.debug a:link,
-.wrapper #pill li.debug a:visited,
-.wrapper #pill li.debug a:hover {
-	color: #fff;
-	background: #cc0000;
-	padding: 4px 10px;
-	font-weight: 700 !important;
-	text-decoration: none !important;
-	display: block;
-	border-left: 1px solid <?php echo $primary_3; ?>;
 }
 
 /* @todo: noooooo */
@@ -223,9 +235,7 @@ html {
 
 .wrapper .nav li a:active,
 .wrapper .nav li a:focus,
-.wrapper .nav li a:hover,
-.wrapper #pill li a:hover,
-.wrapper #pill li a:focus {
+.wrapper .nav li a:hover{
 	color: #FFF;
 	background: <?php echo $primary_0; ?>;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.4);
@@ -249,7 +259,8 @@ html {
 	text-decoration: none !important;
 	display: block;
 	border-radius: 0 3px 3px 0;
-	border-left: 1px solid <?php echo $primary_3; ?>;
+	/*border-left: 1px solid <?php echo $primary_3; ?>;*/
+	margin-left:1px;
 }
 
 .wrapper .nav li.rightnav a.last {
@@ -258,39 +269,70 @@ html {
 	text-decoration: none !important;
 	display: block;
 	border-radius: 3px 0 0 3px;
+	margin-left:4px;
 }
 
-/* warning alert on tab */
-.nav li.rightnav .warning, .nav li.rightnav .info {
-	position: absolute;
-	top: -5px;
-	left: -5px;
+.wrapper li.rightnav a.label {
+	padding: 3px 4px;
+	background-color: none;
+	display: inline-block;
+	/*margin:0px 0px;*/
+	border-radius:3px !important;
+	color: #FFFFFF;
+	border: 1px solid rgba(0,0,0,0.5);
+	        background-clip: padding-box;
+       -moz-background-clip: padding;
+    -webkit-background-clip: padding;
+
+            box-sizing: border-box;
+       -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
+.wrapper li.rightnav a.label:hover {
+	border: 1px solid rgba(0,0,0,0.8);
+	box-shadow: rgba(0,0,0, 0.3) 0 0 4px;
+	opacity:.9;
+	transition: all;
+}
+
+.wrapper li.rightnav a.label.label-ghost {
+	background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+/*
+ * DEPRECATED
+ * rightnav status badges
+ * .warning
+ * .info
+*/
 .nav li .warning, .nav li .info {
-	position: absolute;
-	top: -5px;
-	right: -5px;
-	font-size: 10px;
+	/*position: absolute;*/
+	/*top: -5px;*/
+	/*right: -5px;*/
+	font-size: 15px;
 	color: #000;
 	text-shadow: 1px 1px 0 rgba(255,255,255,.5);
 	font-weight: bold;
 	text-align: center;
 	border-radius: 2px;
 	display: block;
-	width: 11px;
+	height: 16px;
+	width: 16px;
+	margin:2px 6px;
 	border: 1px solid #FFCC33;
 	background: #FFFF66;
 	background: -moz-linear-gradient(top, #FFFF66 0%, #FFCC33 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFF66), color-stop(100%,#FFCC33));
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(100%,#FFCC33));
+	opacity:.9;
 }
 
 .nav li .info {
 	font-family: serif;
-	border: 1px solid #2DB1FF;
-	background: #6FCCFF;
+	border: 1px solid #BDBDBD;
+	background: #C7C7C7;
 	background: -moz-linear-gradient(top, #BDF2FF 0%, #6FCCFF 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#BDF2FF), color-stop(100%,#6FCCFF));
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#F7F7F7), color-stop(100%,#999));
 }
 
 .wrapper .nav li a em, .wrapper #pill li a em {
@@ -305,6 +347,19 @@ html {
 	width: 30px;
 	padding: 13px 7px;
 	-webkit-transition: none;
+}
+
+.wrapper #pill li a {
+	color:#FFF;
+	background: #000;
+	opacity: 0.6;
+}
+
+.wrapper #pill li a:hover{
+	color: #FFF;
+	opacity: 0.8;
+	/*background: rgba(0,0,0,0.8);*/
+	text-shadow: 1px 1px 0 rgba(0,0,0,.4);
 }
 
 .wrapper #pill {
@@ -325,7 +380,8 @@ html {
 	text-decoration: none !important;
 	display: block;
 	border-radius: 0 0 3px 0;
-	border-left: 1px solid <?php echo $primary_3; ?>;
+	/*border-left: 1px solid <?php echo $primary_3; ?>;*/
+	margin-left:1px;
 }
 
 .wrapper #pill li.rightnav a {
@@ -410,7 +466,12 @@ h3.floated {
 	color: <?php echo $secondary_1; ?>;
 	float: left;
 	display: block;
-	margin: 0 0 5px 0;
+	margin: 0 0 20px 0;
+}
+
+h3 span {
+	color: #999;
+	font-size: 14px;
 }
 
 h5,
@@ -466,9 +527,13 @@ h5:hover img {
 
 #sidebar.fixed{
 	-transition: top .02s ease-out;
-		-webkit-transition: all .2s ease-in-out;
-		-moz-transition: all .2s ease-in-out;
-		-o-transition: all .2s ease-in-out;
+		-webkit-transition: top .2s ease-in-out;
+		-moz-transition: top .2s ease-in-out;
+		-o-transition: top .2s ease-in-out;
+}
+
+#components.sbfixed #sidebar{
+	z-index: 0 !important; /* allow codemirror to resize over fixed sidebar */
 }
 
 #sidebar .section {
@@ -600,12 +665,13 @@ h5:hover img {
 /* sidebar plugins seperator */
 #sidebar .snav li.last_sb + li.plugin_sb:before, #sidebar hr
 {
-	margin: 3px 3px 3px 16px;
+	margin: 4px 3px 4px 16px;
 	border:none;
-	border-bottom: 1px solid <?php echo $primary_6; ?>;
+	border-bottom: 1px solid <?php echo $primary_0; ?>;
 	content: "";
 	display: block;
 	border-width: thin;
+	opacity: 0.2;
 }
 /**/
 
@@ -613,14 +679,15 @@ h5:hover img {
  * .main top action nav links
  */
 .edit-nav {
-	margin: 0 0 15px 0;
+	/*margin: 0 0 10px 0;*/
+	margin: 0;
 }
 
 .edit-nav a {
 	font-size: 10px;
 	text-transform: uppercase;
 	display: block;
-	padding: 4px 10px;
+	padding: 3px 10px;
 	float: right;
 	margin: 0 0 0 5px;
 		-moz-border-radius: 3px;
@@ -681,7 +748,7 @@ h5:hover img {
 .edit-nav a:visited {
 	line-height: 14px;
 	background-color: <?php echo $primary_1; ?>;
-	color: #ccc;
+	color: <?php echo $primary_6; ?>;
 	font-weight: bold;
 	text-decoration: none;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.2);
@@ -731,7 +798,7 @@ h5:hover img {
 	border-top: 1px solid #eee;
 	vertical-align: top;
 	/*line-height: 20px !important;*/
-	color: #777; 	
+	color: #777;
 }
 
 .wrapper table td {
@@ -904,7 +971,8 @@ form select.text {
 
 form input.text:focus,
 form select.text:focus,
-form textarea.text:focus {
+form textarea.text:focus,
+#post-content:focus {
 	outline: none;
 	border: 1px solid #666 !important;
 		-moz-box-shadow: rgba(0,0,0, 0.10) 0 0 6px;
@@ -913,6 +981,7 @@ form textarea.text:focus {
 }
 
 form textarea {
+	outline: none;
 	width: 100%;
 	height: 420px;
 	line-height: 15px;
@@ -954,7 +1023,6 @@ textarea#codetext {
 	overflow: scroll;
 	overflow-y: scroll;
 	overflow-x: scroll;
-
 }
 
 #menu-items span {
@@ -1137,19 +1205,17 @@ table.cleantable tr td {
 	border: none;
 }
 
-#autosavenotify {
+#pagechangednotify, #autosavenotify, #autosavestatus {
 	padding: 15px 0 0 13px;
 	color: #666;
 	text-shadow: 1px 1px 0 #fff;
 	font-size: 11px;
+	margin: 0;
+	display: none;
 }
 
 #pagechangednotify {
-	margin: 0;
-	padding: 15px 0 0 13px;
 	color: #CC0000;
-	text-shadow: 1px 1px 0 #fff;
-	font-size: 11px;
 }
 
 p.backuplink {
@@ -1194,7 +1260,7 @@ input.submit, .button {
 		-webkit-transition: all .218s;
 		-moz-transition: all .218s;
 		-o-transition: all .218s;
-	color: #333333 !important;
+	color: #333333;
 	background: #dddddd;
 		background: -webkit-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#e1e1e1));
 		background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#e1e1e1));
@@ -1217,6 +1283,13 @@ input.submit:focus, input.submit:hover, .button:hover {
 		-moz-box-shadow: rgba(0,0,0, 0.15) 0 0 4px;
 		-webkit-box-shadow: rgba(0,0,0, 0.15) 0 0 4px;
 	box-shadow: rgba(0,0,0, 0.15) 0 0 4px;
+}
+
+/* disabled buttons */
+input.submit:disabled {
+	color: #BBB;
+	background: #eeeeee;
+	border: solid 1px #BBB;
 }
 
 .button {
@@ -1284,7 +1357,7 @@ form.manyinputs p {
 table.comptable {
 	margin: 0 !important;
 	/*width: 645px;*/
-	background: #fff;
+	/*background: #fff;*/
 	border: none;
 	padding: 0;
 }
@@ -1361,19 +1434,39 @@ table.comptable label {
  *
  * alerts are now notifications
  * use notify and notify_type
- * .error and .upddated are still supported for legacy alerts
+ * .error and .upddated are DEPRECATED but still supported for legacy alerts
+ * use "notify notify_error" etc.
  *
  */
 
+.fullscreen .notify{
+	position: fixed;
+	width: 600px;
+	margin: 5px;
+	right: 60px;
+	opacity: 1;
+	top: 0;
+	background: rgba(119, 119, 119, 0.2);
+	z-index: 9999;
+	font-weight: bold;
+	border: none;
+	padding: 3px 9px;
+}
+
 .updated, .error, .notify {
-	border: 1px solid #E6DB55;
+	/*border: 1px solid #E6DB55;*/
 	border-radius: 2px;
-	background: #FFFBCC;
-		background: -moz-linear-gradient(top, #FFFBCC 0%, #FFFBC1 100%);	/* firefox */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFBCC), color-stop(100%,#FFFBC1));	/* webkit */
+	/*background: #FFFBCC;*/
+	background: <?php echo $notify_6; ?>;
 	line-height: 22px;
 	padding: 5px 10px;
 	margin-bottom: 20px;
+}
+
+.updated a, .error a, .notify a{
+	color: inherit;
+	text-decoration: underline;
+	font-style:bold;
 }
 
 .updated p, .error p, .notify p {
@@ -1382,56 +1475,30 @@ table.comptable label {
 }
 
 .error, .notify_error {
-	color: #990000;
-	border-color: #cc0000;
-	background: #F9DFDD;
-		background: -moz-linear-gradient(top, #FCF0EF 0%, #F9DFDD 100%);	/* firefox */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FCF0EF), color-stop(100%,#F9DFDD));	/* webkit */
+	color: <?php echo $label_4; ?>;
+	background: <?php echo $notify_4; ?>;
 }
 
-.notify_ok {
-	border-color: #258815;
-	color: #258815;
-	background: #f0ffed;	/* Old browsers */
-		background: -moz-linear-gradient(top,  #f0ffed 0%, #dfffd7 100%);	/* FF3.6+ */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f0ffed), color-stop(100%,#dfffd7));	/* Chrome,Safari4+ */
-		background: -webkit-linear-gradient(top,  #f0ffed 0%,#dfffd7 100%);	/* Chrome10+,Safari5.1+ */
-		background: -o-linear-gradient(top,  #f0ffed 0%,#dfffd7 100%);	/* Opera 11.10+ */
-		background: -ms-linear-gradient(top,  #f0ffed 0%,#dfffd7 100%);	/* IE10+ */
-		background: linear-gradient(to bottom,  #f0ffed 0%,#dfffd7 100%);	/* W3C */
-		filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#f0ffed', endColorstr='#dfffd7',GradientType=0 );	/* IE6-9 */
+.notify_ok, .notify_success {
+	color: <?php echo $label_2; ?>;
+	background: <?php echo $notify_2; ?>;
 }
 
 .notify_info {
-	border-color: #2850C1;
-	color: #2850C1;
-	background: #edf4ff;	/* Old browsers */
-		background: -moz-linear-gradient(top,  #edf4ff 0%, #d7e7ff 100%);	/* FF3.6+ */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#edf4ff), color-stop(100%,#d7e7ff));	/* Chrome,Safari4+ */
-		background: -webkit-linear-gradient(top,  #edf4ff 0%,#d7e7ff 100%);	/* Chrome10+,Safari5.1+ */
-		background: -o-linear-gradient(top,  #edf4ff 0%,#d7e7ff 100%);	/* Opera 11.10+ */
-		background: -ms-linear-gradient(top,  #edf4ff 0%,#d7e7ff 100%);	/* IE10+ */
-		background: linear-gradient(to bottom,  #edf4ff 0%,#d7e7ff 100%);	/* W3C */
-		filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#edf4ff', endColorstr='#d7e7ff',GradientType=0 );	/* IE6-9 */
+	color: <?php echo $label_1; ?>;
+	background: <?php echo $notify_1; ?>;
 }
 
 .notify_warning {
-	border-color: #878314;
-	color: #878314;
-	background: #fffed5;	/* Old browsers */
-		background: -moz-linear-gradient(top,  #fffed5 0%, #fffdbf 100%);	/* FF3.6+ */
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fffed5), color-stop(100%,#fffdbf));	/* Chrome,Safari4+ */
-		background: -webkit-linear-gradient(top,  #fffed5 0%,#fffdbf 100%);	/* Chrome10+,Safari5.1+ */
-		background: -o-linear-gradient(top,  #fffed5 0%,#fffdbf 100%);	/* Opera 11.10+ */
-		background: -ms-linear-gradient(top,  #fffed5 0%,#fffdbf 100%);	/* IE10+ */
-		background: linear-gradient(to bottom,  #fffed5 0%,#fffdbf 100%);	/* W3C */
-		filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#fffed5', endColorstr='#fffdbf',GradientType=0 );	/* IE6-9 */
+	color: <?php echo $label_3; ?>;
+	background: <?php echo $notify_3; ?>;	
 }
 
 .deletedrow {
 	background-color: #FFB19B;
 }
 
+/* what is this for , code inside a notify ? */
 .error code,
 .notify code {
 	color: #990000;
@@ -1442,11 +1509,6 @@ table.comptable label {
 	background: #fff;
 	opacity: .8;
 	padding: 1px;
-}
-
-.updated,
-#temp_good_flash {
-	color: #308000;
 }
 
 .hint {
@@ -1502,7 +1564,7 @@ a.updatelink {
 
 a.updatelink:hover {
 	color: #FFF;
-	background-color: #415A66;
+	background-color: <?php echo $primary_3; ?>;
 }
 
 .delete a:hover {
@@ -1522,7 +1584,7 @@ a.updatelink:hover {
 }
 
 a.cancel {
-	display: inline-block;	
+	display: inline-block;
 	color: #D94136;
 	text-decoration: underline;
 	padding: 1px 3px;
@@ -1549,7 +1611,7 @@ a.cancel em {
 	   -moz-transition-property: background-color, color, text-shadow;
 	     -o-transition-property: background-color, color, text-shadow;
 	        transition-property: background-color, color, text-shadow;
-	
+
 	border-radius:3px;
 }
 
@@ -1643,22 +1705,22 @@ table.simple td.title {
 
 /* @todo all these wrappers, why every page has a wrapper */
 .wrapper table td span.ERRmsg {
-	color: #D94136;
+	color: <?php echo $label_4;?> ; /*#D94136;*/
 	font-size: 12px;
 }
 
 .wrapper table td span.OKmsg {
-	color: #308000;
+	color: <?php echo $label_2;?> ; /*#308000;*/
 	font-size: 12px;
 }
 
 .wrapper table td span.WARNmsg {
-	color: #FFA500;
+	color: <?php echo $label_3;?> ; /*#FFA500;*/
 	font-size: 12px;
 }
 
 .wrapper table td span.INFOmsg {
-	color: #2B5CB3;
+	color: <?php echo $label_1;?> ; /*#2B5CB3;*/
 	font-size: 12px;
 }
 
@@ -1735,7 +1797,7 @@ table.simple td.title {
 }
 
 .queue-item-wrap .queue-item .progress {
-	background-color: #FFF;
+	background-color: <?php echo $primary_4; ?>;;
 	margin-top: 5px;
 	width: 97%;
 }
@@ -1769,13 +1831,14 @@ table.simple td.title {
 .queue-item-wrap dz-process-mark
 {
 	display:none;
+	font-weight:bold;
 }
 
 /* processing */
 .queue-item-wrap.dz-processing .dz-process-mark{
 	display:inline;
-	color: #AFC5CF;
-	opacity:.8;
+	color: <?php echo $primary_6; ?>;
+	/*opacity:.8;*/
 }
 
 .queue-item-wrap.dz-success .dz-process-mark,
@@ -1787,25 +1850,26 @@ table.simple td.title {
 /* error */
 .queue-item-wrap.dz-error .dz-error-mark{
 	display: inline;
-	color: #D94136;
+	color: <?php echo $label_4; ?>;
 }
 
 /* error progressbar */
 .queue-item-wrap.dz-error .progress,
 .queue-item-wrap.dz-error .progress-bar
 {
-	background-color: #D94136;
+	background-color: <?php echo $label_4; ?>;
 }
 
 /* error message */
 .queue-item-wrap .dz-error-message{
-	color: #D94136;
+	color: <?php echo $label_4; ?>;
+	font-weight:bold;
 }
 
 /* success */
 .queue-item-wrap.dz-success .dz-success-mark{
 	display:inline;
-	color: #00CA00;
+	color: <?php echo $label_2; ?>;
 }
 
 #sidebar .snav li.upload {
@@ -1818,6 +1882,7 @@ table.simple td.title {
 	color: #FFF;
 	background: <?php echo $primary_1; ?>;
 	font-weight: 100;
+	text-shadow: 1px 1px 1px <?php echo $primary_1; ?>;
 }
 
 /* Image Editor Styles */
@@ -1866,7 +1931,7 @@ textarea.copykit {
 	border-radius: 3px;
 	text-align: center;
 	color: #F2F2F2;
-	margin:3px;
+	margin:0px 3px;
  	background-color: <?php echo $label_0; ?>;
  	/*display: inline-block;*/
 }
@@ -1882,34 +1947,40 @@ textarea.copykit {
 }
 
 .label-info {
-	background-color:  <?php echo $label_1; ?>;
+	background-color:  <?php echo $label_1; ?> !important;
 }
 
 .label-ok {
-	background-color: <?php echo $label_2; ?>;
+	background-color: <?php echo $label_2; ?> !important;
 }
 
 .label-warn {
-	background-color:  <?php echo $label_3; ?>;
+	background-color:  <?php echo $label_3; ?> !important;
 }
 
 .label-error {
-	background-color:  <?php echo $label_4; ?>;
+	background-color:  <?php echo $label_4; ?> !important;
 }
 
 .label-medium {
-	color: <?php echo $primary_0; ?>;
-	background-color:  <?php echo $label_6; ?>;
+	color: <?php echo $primary_0; ?> !important;
+	background-color:  <?php echo $label_6; ?> !important;
 }
 
 .label-light{
-	color: <?php echo $primary_6; ?>;
-	background:  <?php echo $label_5; ?>;
-	border: 1px solid <?php echo $primary_6; ?>;
+	color: <?php echo $primary_6; ?> !important;
+	background:  <?php echo $label_5; ?> !important;
+	border: 1px solid <?php echo $primary_6; ?> !important;
 }
 
 .label-ghost {
-	background-color: rgba(221, 221, 221, 0.5);
+	background-color: rgba(221, 221, 221, 0.5) !important;
+}
+
+.label-gold {
+	color: black !important;
+	text-shadow: none !important;
+	background-color: #FFE000 !important;
 }
 
 .label hr{
@@ -1933,7 +2004,6 @@ div.showstatus{
 /* @todo #ID selector hell, can be fixed up once some heirarchy is established */
 /* healthcheck only */
 #health-check #hc_version.label {
-	width: 292px;
 	text-align: left;
 	padding: 9px 15px;
 	font-weight: normal;
@@ -2334,25 +2404,26 @@ a.disabled:visited {
 
 /* @todo ditch the IDs */
 #theme-edit .updated, #theme-edit .error, #theme-edit .notify {
-	margin: 0 15px 15px 15px;
+	/*margin: 0 15px 15px 15px;*/
 }
 
 #theme-edit #header .wrapper{
 	width:950px;
 }
 
+/* core theme override for theme editor */
 #theme-edit .wrapper{
-	width: 100%;
-	max-width:1680px;
+	/*width: 100%;*/
+	/*max-width:1680px;*/
 }
 
 #theme-edit #footer{
-	margin-left: 15px;
-	margin-right: 15px;
+	/*margin-left: 15px;*/
+	/*margin-right: 15px;*/
 }
 
 #theme-edit .bodycontent {
-	margin:0 15px;
+	/*margin:0 15px;*/
 }
 
 #theme_edit_wrap {
@@ -2456,13 +2527,13 @@ a.disabled:visited {
 }
 
 #theme_filemanager a:hover, #file-manager a.context-menu-active {
-		background-color: #E0E0E0;
+		background-color: #E9E9E9;
 		text-decoration:none;
 		font-weight:normal;
 }
 
 #theme_filemanager a.open {
-		background-color: #E0E0E0;
+		background-color: #DADADA;
 		font-weight:bold;
 }
 
@@ -2634,8 +2705,13 @@ a.disabled:visited {
 }
 
 .codewrap {
-	font-size: 13px;
-	line-height: 13px;
+	/*font-size: 13px;*/
+	/*line-height: 13px;*/
+}
+
+.codewrap textarea, #tabs .codewrap textarea{
+	font-family: "Consolas", "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", "Monaco", "Courier New", "Courier", "monospace";
+	font-size: 12px;
 }
 
 /* codemirror overrides */
@@ -2644,19 +2720,20 @@ a.disabled:visited {
 
 .codewrap .CodeMirror {
 	font-family: Consolas, Monaco, Menlo, 'Ubuntu Mono', 'Droid Sans Mono', monospace;
-	height: auto;
-	/* autosizing max height @todo: breaks gutter height and overrides above */
-	max-height: 550px; 
+	height: auto; /* autosizing max height @todo: breaks gutter height and overrides above */
+	max-height: 550px;
+	line-height:1.2em;
 	background-color:#FEFEFE;
 	/*padding-bottom:20px;*/
 	border: 3px solid rgba(128,128, 128, .15);
-    -webkit-background-clip: padding-box !important; /* for Safari */
     background-clip: padding-box !important; /* for IE9+, Firefox 4+, Opera, Chrome */
-    z-index: 1001;
+    -webkit-background-clip: padding-box !important; /* for Safari */
+    z-index: 1;
+    padding-bottom: 10px; /* padding for hscroll not obfuscate last line */
 }
 
 
-/* codemirror focused border highlight style */
+/* codemirror focused special border highlight style */
 .codewrap .CodeMirror.CodeMirror-focused{
 /*    outline: none;
     border-color: #9ecaed;
@@ -2667,7 +2744,6 @@ a.disabled:visited {
 	max-height: inherit; /* autosizing max height */
 	overflow-y: auto;
 	overflow-x: hidden;
-	/* causing extra scrollbar */
 }
 
 .codewrap .CodeMirror.CodeMirror-fullscreen{
@@ -2680,9 +2756,13 @@ a.disabled:visited {
 	position: fixed !important;
 	top: 0; left: 0;
 	width: 100% !important;
-	z-index: 9999 !important;
+	z-index: 1001 !important;
 	background-color:#FFF;
   	max-height: none !important;
+}
+
+.CodeMirror-hints{
+	z-index: 1002 !important;
 }
 
 .CodeMirror-fullscreen .CodeMirror-scroll, .CodeMirror.ui-resizable-resizing, .CodeMirror.ui-resizable-resizing .CodeMirror-scroll{
@@ -2711,8 +2791,8 @@ a.disabled:visited {
 	position:absolute;
 	top: 5px;
 	right: 5px;
-	width: 16px;
-	height: 16px;
+	/*width: 16px;*/
+	/*height: 16px;*/
 }
 
 .CodeMirror .overlay_but_fullscrn a {
@@ -2726,7 +2806,7 @@ a.disabled:visited {
 	text-align: center;
 	text-decoration:none;
 	box-shadow : none;
-	z-index: 9998;
+	z-index: 10;
 	font-weight: normal;
 	opacity:.2;
 		-webkit-transition: opacity 300ms;
@@ -2734,6 +2814,10 @@ a.disabled:visited {
 		-o-transition: opacity 300ms;
 		-ms-transition: opacity 300ms;
 	transition: opacity 300ms;
+}
+
+.fullscreen .CodeMirror .overlay_but_fullscrn a{
+	font-size:27px;
 }
 
 .CodeMirror .overlay_but_fullscrn a.scrolled {
@@ -2838,6 +2922,7 @@ a.disabled:visited {
  	font-size: 11px;
  	margin-left:0;
  	color: #777;
+	padding: 3px 6px;
 }
 
 .tree-indent {
@@ -2850,7 +2935,7 @@ a.disabled:visited {
 	cursor: pointer;
 	color: #868686;
 	font-size: 0.8em;
-	margin-right: 7px;
+	margin-right: 4px;
 	transition: all 50ms ease-out;
 		-webkit-transition: all 50ms ease-out;
 		-moz-transition: all 50ms ease-out;
@@ -2890,63 +2975,63 @@ a.disabled:visited {
 /* Admin theme colors */
 
 /* background-color */
-  .primary_0-back, .darkest-back               { background-color: <?php echo $primary_0;   ?>;}
-  .primary_1-back, .darker-back                { background-color: <?php echo $primary_1;   ?>;}
-  .primary_2-back, .dark-back                  { background-color: <?php echo $primary_2;   ?>;}
-  .primary_3-back, .middle-back                { background-color: <?php echo $primary_3;   ?>;}
-  .primary_4-back, .light-back                 { background-color: <?php echo $primary_4;   ?>;}
-  .primary_5-back, .lighter-back               { background-color: <?php echo $primary_5;   ?>;}
-  .primary_6-back, .lightest-back              { background-color: <?php echo $primary_6;   ?>;}
-.secondary_0-back, .secondary-darkest-back     { background-color: <?php echo $secondary_0; ?>;}
-.secondary_1-back, .secondary-lightest-back    { background-color: <?php echo $secondary_1; ?>;}
+  .primary_0-back, .darkest-back               { background-color: <?php echo $primary_0;   ?> !important;}
+  .primary_1-back, .darker-back                { background-color: <?php echo $primary_1;   ?> !important;}
+  .primary_2-back, .dark-back                  { background-color: <?php echo $primary_2;   ?> !important;}
+  .primary_3-back, .middle-back                { background-color: <?php echo $primary_3;   ?> !important;}
+  .primary_4-back, .light-back                 { background-color: <?php echo $primary_4;   ?> !important;}
+  .primary_5-back, .lighter-back               { background-color: <?php echo $primary_5;   ?> !important;}
+  .primary_6-back, .lightest-back              { background-color: <?php echo $primary_6;   ?> !important;}
+.secondary_0-back, .secondary-darkest-back     { background-color: <?php echo $secondary_0; ?> !important;}
+.secondary_1-back, .secondary-lightest-back    { background-color: <?php echo $secondary_1; ?> !important;}
 
 /* color */
-  .primary_0-color, .darkest-color             { color: <?php echo $primary_0;   ?>;}
-  .primary_1-color, .darker-color              { color: <?php echo $primary_1;   ?>;}
-  .primary_2-color, .dark-color                { color: <?php echo $primary_2;   ?>;}
-  .primary_3-color, .middle-color              { color: <?php echo $primary_3;   ?>;}
-  .primary_4-color, .light-color               { color: <?php echo $primary_4;   ?>;}
-  .primary_5-color, .lighter-color             { color: <?php echo $primary_5;   ?>;}
-  .primary_6-color, .lightest-color            { color: <?php echo $primary_6;   ?>;}
-.secondary_0-color, .secondary-darkest-color   { color: <?php echo $secondary_0; ?>;}
-.secondary_1-color, .secondary-lightest-color  { color: <?php echo $secondary_1; ?>;}
+  .primary_0-color, .darkest-color             { color: <?php echo $primary_0;   ?> !important;}
+  .primary_1-color, .darker-color              { color: <?php echo $primary_1;   ?> !important;}
+  .primary_2-color, .dark-color                { color: <?php echo $primary_2;   ?> !important;}
+  .primary_3-color, .middle-color              { color: <?php echo $primary_3;   ?> !important;}
+  .primary_4-color, .light-color               { color: <?php echo $primary_4;   ?> !important;}
+  .primary_5-color, .lighter-color             { color: <?php echo $primary_5;   ?> !important;}
+  .primary_6-color, .lightest-color            { color: <?php echo $primary_6;   ?> !important;}
+.secondary_0-color, .secondary-darkest-color   { color: <?php echo $secondary_0; ?> !important;}
+.secondary_1-color, .secondary-lightest-color  { color: <?php echo $secondary_1; ?> !important;}
 
 /* border color */
-  .primary_0-border-color, .darkest-border             { border-color: <?php echo $primary_0;   ?>;}
-  .primary_1-border-color, .darker-border              { border-color: <?php echo $primary_1;   ?>;}
-  .primary_2-border-color, .dark-border                { border-color: <?php echo $primary_2;   ?>;}
-  .primary_3-border-color, .middle-border              { border-color: <?php echo $primary_3;   ?>;}
-  .primary_4-border-color, .light-border               { border-color: <?php echo $primary_4;   ?>;}
-  .primary_5-border-color, .lighter-border             { border-color: <?php echo $primary_5;   ?>;}
-  .primary_6-border-color, .lightest-border            { border-color: <?php echo $primary_6;   ?>;}
-.secondary_0-border-color, .secondary-darkest-border   { border-color: <?php echo $secondary_0; ?>;}
-.secondary_1-border-color, .secondary-lightest-border  { border-color: <?php echo $secondary_1; ?>;}
+  .primary_0-border-color, .darkest-border             { border-color: <?php echo $primary_0;   ?> !important;}
+  .primary_1-border-color, .darker-border              { border-color: <?php echo $primary_1;   ?> !important;}
+  .primary_2-border-color, .dark-border                { border-color: <?php echo $primary_2;   ?> !important;}
+  .primary_3-border-color, .middle-border              { border-color: <?php echo $primary_3;   ?> !important;}
+  .primary_4-border-color, .light-border               { border-color: <?php echo $primary_4;   ?> !important;}
+  .primary_5-border-color, .lighter-border             { border-color: <?php echo $primary_5;   ?> !important;}
+  .primary_6-border-color, .lightest-border            { border-color: <?php echo $primary_6;   ?> !important;}
+.secondary_0-border-color, .secondary-darkest-border   { border-color: <?php echo $secondary_0; ?> !important;}
+.secondary_1-border-color, .secondary-lightest-border  { border-color: <?php echo $secondary_1; ?> !important;}
 
-  .label-info-border                                         { border-color: <?php echo $label_0; ?>;}
-  .label-ok-border                                           { border-color: <?php echo $label_1; ?>;}
-  .label-warn-border                                         { border-color: <?php echo $label_2; ?>;}
-  .label-error-border                                        { border-color: <?php echo $label_3; ?>;}
-  .label-light-border                                        { border-color: <?php echo $label_4; ?>;}
-  .label-medium-border                                       { border-color: <?php echo $label_5; ?>;}
+  .label-info-border                                         { border-color: <?php echo $label_0; ?> !important;}
+  .label-ok-border                                           { border-color: <?php echo $label_1; ?> !important;}
+  .label-warn-border                                         { border-color: <?php echo $label_2; ?> !important;}
+  .label-error-border                                        { border-color: <?php echo $label_3; ?> !important;}
+  .label-light-border                                        { border-color: <?php echo $label_4; ?> !important;}
+  .label-medium-border                                       { border-color: <?php echo $label_5; ?> !important;}
 
 /* debug color */
-  .primary_0-border-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>";}
-  .primary_1-border-debug:after, .darker-debug:after              { content: "<?php echo $primary_1;   ?>";}
-  .primary_2-border-debug:after, .dark-debug:after                { content: "<?php echo $primary_2;   ?>";}
-  .primary_3-border-debug:after, .middle-debug:after              { content: "<?php echo $primary_3;   ?>";}
-  .primary_4-border-debug:after, .light-debug:after               { content: "<?php echo $primary_4;   ?>";}
-  .primary_5-border-debug:after, .lighter-debug:after             { content: "<?php echo $primary_5;   ?>";}
-  .primary_6-border-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>";}
-.secondary_0-border-debug:after, .secondary-darkest-debug:after   { content: "<?php echo $secondary_0; ?>";}
-.secondary_1-border-debug:after, .secondary-lightest-debug:after  { content: "<?php echo $secondary_1; ?>";}
+  .primary_0-border-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>" !important;}
+  .primary_1-border-debug:after, .darker-debug:after              { content: "<?php echo $primary_1;   ?>" !important;}
+  .primary_2-border-debug:after, .dark-debug:after                { content: "<?php echo $primary_2;   ?>" !important;}
+  .primary_3-border-debug:after, .middle-debug:after              { content: "<?php echo $primary_3;   ?>" !important;}
+  .primary_4-border-debug:after, .light-debug:after               { content: "<?php echo $primary_4;   ?>" !important;}
+  .primary_5-border-debug:after, .lighter-debug:after             { content: "<?php echo $primary_5;   ?>" !important;}
+  .primary_6-border-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>" !important;}
+.secondary_0-border-debug:after, .secondary-darkest-debug:after   { content: "<?php echo $secondary_0; ?>" !important;}
+.secondary_1-border-debug:after, .secondary-lightest-debug:after  { content: "<?php echo $secondary_1; ?>" !important;}
 
 /* label colors */
-   .label-default-debug:after                                     { content: "<?php echo $label_0;   ?>";}
-   .label-info-debug:after                                        { content: "<?php echo $label_1;   ?>";}
-   .label-ok-debug:after                                          { content: "<?php echo $label_2;   ?>";}
-   .label-warn-debug:after                                        { content: "<?php echo $label_3;   ?>";}
-   .label-error-debug:after                                       { content: "<?php echo $label_4;   ?>";}
-   .label-light-debug:after                                       { content: "<?php echo $label_5;   ?>";}
-   .label-medium-debug:after                                      { content: "<?php echo $label_6;   ?>";}
+   .label-default-debug:after                                     { content: "<?php echo $label_0;   ?>" !important;}
+   .label-info-debug:after                                        { content: "<?php echo $label_1;   ?>" !important;}
+   .label-ok-debug:after                                          { content: "<?php echo $label_2;   ?>" !important;}
+   .label-warn-debug:after                                        { content: "<?php echo $label_3;   ?>" !important;}
+   .label-error-debug:after                                       { content: "<?php echo $label_4;   ?>" !important;}
+   .label-light-debug:after                                       { content: "<?php echo $label_5;   ?>" !important;}
+   .label-medium-debug:after                                      { content: "<?php echo $label_6;   ?>" !important;}
 
 /* </style> */

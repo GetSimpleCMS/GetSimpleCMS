@@ -11,10 +11,11 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT') ); 
+$pagetitle = i18n_r('SUPPORT');
+get_template('header');
 
 ?>
-	
+
 <?php include('template/include-nav.php'); ?>
 
 <div class="bodycontent clearfix">

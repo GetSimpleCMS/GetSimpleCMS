@@ -55,7 +55,7 @@
 		<!-- breadcrumbs: only show when NOT on homepage -->
 		<p class="breadcrumbs" >
 			<span class="wrapper">
-				<a href="<?php get_site_url(); ?>">Home</a> &nbsp;&nbsp;&#149;&nbsp;&nbsp; <?php Innovation_Parent_Link(get_parent(FALSE)); ?> <b><?php get_page_clean_title(); ?></b>
+				<a href="<?php get_site_url(); ?>">Home</a> &nbsp;&nbsp;&bull;&nbsp;&nbsp; <?php Innovation_Parent_Link(get_parent(FALSE)); ?> <b><?php get_page_clean_title(); ?></b>
 			</span>
 		</p>
 		

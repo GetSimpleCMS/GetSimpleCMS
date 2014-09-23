@@ -7,7 +7,7 @@
  * @package GetSimple
  * @subpackage Backups
  */
- 
+
 # setup
 $load['plugin'] = true;
 include('inc/common.php');
@@ -18,7 +18,7 @@ if ($_GET['id'] != '') {
 	$id   = $_GET['id'];
 	$file = $id .".bak.xml";
 	$path = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
-	
+
 	$data       = getXML($path . $file);
 	$title      = htmldecode($data->title);
 	$pubDate    = $data->pubDate;
@@ -47,37 +47,40 @@ if ($_GET['p'] != '') {
 }
 
 if ($p == 'delete') {
-	check_for_csrf("delete","backup-edit");
-	delete_bak($id);
-	redirect("backups.php?upd=bak-success&id=".$id);
-} 
-
-elseif ($p == 'restore') {
-	check_for_csrf("restore", "backup-edit.php");
-	
-	if (isset($_GET['new'])) {
-		updateSlugs($_GET['new'], $id);
-		restore_bak($id);
-		$existing = GSDATAPAGESPATH . $_GET['new'] .".xml";
-		$bakfile  = $path. $_GET['new'] .".bak.xml";
-		copy($existing, $bakfile);
-		unlink($existing);
-		redirect("edit.php?id=". $id ."&old=".$_GET['new']."&upd=edit-success&type=restore");
-	} else {
-		restore_bak($id);
-		redirect("edit.php?id=". $id ."&upd=edit-success&type=restore");
-	}
-	
+	// deleting page backup
+	check_for_csrf("delete","backup-edit.php");
+	$status = delete_bak($id) ? 'success' : 'error';
+	redirect("backups.php?upd=bak-".$status."&id=".$id);
 }
 
-get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &raquo; '.i18n_r('VIEWPAGE_TITLE')); 
+elseif ($p == 'restore') {
+	// restoring page backup
+	check_for_csrf("restore", "backup-edit.php");
+
+	if (isset($_GET['new'])) {
+		$newid = $_GET['new'];
+		// restore page by old slug id
+		updateSlugs($newid, $id); // update parents and children
+		restore_page($id);        // restore old slug file
+		delete_page($newid);      // backup and delete live new slug file
+
+		redirect("edit.php?id=". $id ."&old=".$_GET['new']."&upd=edit-success&type=restore");
+	} else {
+		restore_page($id);   // restore old slug file
+		redirect("edit.php?id=". $id ."&upd=edit-success&type=restore");
+	}
+
+}
+
+$pagetitle = i18n_r('BAK_MANAGEMENT').' &middot; '.i18n_r('VIEWPAGE_TITLE');
+get_template('header');
 
 ?>
-	
+
 <?php include('template/include-nav.php'); ?>
 
 <div class="bodycontent clearfix">
-	
+
 	<div id="maincontent">
 		<div class="main" >
 		<h3 class="floated"><?php i18n('BACKUP_OF');?> &lsquo;<em><?php echo $url; ?></em>&rsquo;</h3>
@@ -102,7 +105,7 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 			} 
 			?>
 		</td></tr>
-		<tr><td class="title" ><?php i18n('DATE');?>:</td><td><?php echo lngDate($pubDate); ?></td></tr>
+		<tr><td class="title" ><?php i18n('DATE');?>:</td><td><?php echo output_datetime($pubDate); ?></td></tr>
 		<tr><td class="title" ><?php i18n('TAG_KEYWORDS');?>:</td><td><em><?php echo $metak; ?></em></td></tr>
 		<tr><td class="title" ><?php i18n('META_DESC');?>:</td><td><em><?php echo $metad; ?></em></td></tr>
 		<tr><td class="title" ><?php i18n('MENU_TEXT');?>:</td><td><?php echo $menu; ?></td></tr>
@@ -120,7 +123,7 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 		var editor = CKEDITOR.replace( 'codetext', {
 			language        : '<?php echo $EDLANG; ?>',
 			<?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
-				$fullpath = suggest_site_path();
+				$fullpath = $SITEURL;
 			?>
 			contentsCss     : '<?php echo $fullpath.getRelPath(GSTHEMESPATH).$TEMPLATE; ?>/editor.css',
 			<?php } ?>

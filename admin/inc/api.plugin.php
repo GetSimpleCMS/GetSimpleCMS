@@ -102,3 +102,5 @@ function gsapi_display_cp() {
 
 	<?php
 }
+
+/* ?> */

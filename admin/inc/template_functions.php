@@ -57,32 +57,6 @@ function get_filename_id() {
 	return $file;	
 }
 
-/**
- * Delete Pages File
- *
- * Deletes pages data file afer making backup
- *
- * @since 1.0
- * @uses GSBACKUPSPATH
- * @uses GSDATAPAGESPATH
- *
- * @param string $id File ID to delete
- */
-function delete_file($id) {
-
-	$bakfilepath = GSBACKUPSPATH . 'pages' . DIRECTORY_SEPARATOR;
-	$bakfile = $bakfilepath . $id .'.bak.xml';
-
-	$filepath = GSDATAPAGESPATH;
-	$file = $filepath . $id .'.xml';
-
-	if(filepath_is_safe($file,$filepath)){
-		$successbak = copy($file, $bakfile);
-		$successdel = unlink($file);
-		if($successdel && $successbak) return 'success';
-	}
-	return 'error';
-}
 
 /**
  * Check Permissions
@@ -134,10 +108,8 @@ function delete_zip($id) {
 	$file = $filepath . $id;
 
 	if(filepath_is_safe($file,$filepath)){
-		$success =  unlink($file);
-		if($success) return 'success';
+		return delete_file($file);
 	}
-	return 'error';
 } 
 
 /**
@@ -156,18 +128,38 @@ function delete_upload($id, $path = "") {
 	$file =  $filepath . $id;
 
 	if(path_is_safe($filepath,GSDATAUPLOADPATH) && filepath_is_safe($file,$filepath)){
-		$status = unlink(GSDATAUPLOADPATH . $path . $id);
+		$status = delete_file(GSDATAUPLOADPATH . $path . $id);
 		if (file_exists(GSTHUMBNAILPATH.$path."thumbnail.". $id)) {
-			unlink(GSTHUMBNAILPATH.$path."thumbnail.". $id);
+			delete_file(GSTHUMBNAILPATH.$path."thumbnail.". $id);
 		}
 		if (file_exists(GSTHUMBNAILPATH.$path."thumbsm.". $id)) {
-			unlink(GSTHUMBNAILPATH.$path."thumbsm.". $id);
+			delete_file(GSTHUMBNAILPATH.$path."thumbsm.". $id);
 		}
-		if($status) return 'success';
+		return status;
 	}	
-
-	return 'error';
 } 
+
+/**
+ * Delete Upload Directory
+ *
+ * @since 1.0
+ * @uses GSTHUMBNAILPATH
+ * @uses GSDATAUPLOADPATH
+ *
+ * @param string $path relative path to uploaded file folder
+ * @return string
+ */
+function delete_upload_dir($path){
+	$target = GSDATAUPLOADPATH . $path;
+	if (path_is_safe($target,GSDATAUPLOADPATH) && file_exists($target)) {
+		$status = delete_dir($target);
+		
+		// delete thumbs folder
+		if(file_exists(GSTHUMBNAILPATH . $path)) delete_dir(GSTHUMBNAILPATH . $path);
+	
+		return $status;
+} 
+}
 
 /**
  * Delete Cache Files
@@ -175,7 +167,7 @@ function delete_upload($id, $path = "") {
  * @since 3.1.3
  * @uses GSCACHEPATH
  *
- * @returns deleted count on success, null if there are any errors
+ * @return mixed deleted count on success, null if there are any errors
  */
 function delete_cache() { 
 	$cachepath = GSCACHEPATH;
@@ -184,54 +176,207 @@ function delete_cache() {
 	$success = null;
 	
 	foreach(glob($cachepath.'*.txt') as $file){
-		if(unlink($file)) $cnt++;
+		if(delete_file($file)) $cnt++;
 		else $success = false;
 	}	
 
-	if($success == false) return null;
+	if($success === false) return null;
 	return $cnt;
 } 
 
 /**
- * Delete Pages Backup File
+ * gets the backup filepath for a data file
  *
- * @since 1.0
- * @uses GSBACKUPSPATH
- *
- * @param string $id File ID to delete
- * @return string
+ * @since 3.4
+ * @param  str $filepath filepath to get backup path
+ * @return str           converted to backup filepath
  */
-function delete_bak($id) { 
-	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
-	unlink($bakpagespath. $id .".bak.xml");
-	return 'success';
-} 
+function getBackupFilePath($filepath){
+	$pathparts = pathinfo($filepath);
+	$filename  = $pathparts['filename'];
+	$fileext   = $pathparts['extension'];
+	$dirname   = $pathparts['dirname'];
+	$bakpath   = getRelPath($dirname,GSDATAPATH);
+	$bakfilepath = GSBACKUPSPATH.$bakpath.'/'.$filename.'.bak.'.$fileext;
+	// debugLog(get_defined_vars());
+	return $bakfilepath;
+}
 
 /**
- * Restore Pages Backup File
+ * Create Backup of a Data File
+ * Copy file to backups, preserve paths structure
+ * Only files in GSDATAPATH can be backed up!
+ *
+ * @since 3.4
+ *
+ * @param string $filepath filepath of datafile to backup
+ * @return bool success
+ */
+function backup_datafile($filepath){
+	if(!filepath_is_safe($filepath,GSDATAPATH)) return false;
+
+	$bakfilepath = getBackupFilePath($filepath);
+	$bakpath = dirname($bakfilepath);
+ 	// recusive create dirs
+	create_dir($bakpath,getDef('GSCHMODDIR'),true);
+	return copy_file($filepath,$bakfilepath);
+}
+
+/**
+ * Restore Backup copy of a dataFile to where it belongs
+ *
+ * @since 3.4
+ *
+ * @param string $file filepath of data file to restore from backup, locked to GSDATAPATH
+ * @return bool success
+ */
+function restore_datafile($filepath){
+	if(!filepath_is_safe($filepath,GSDATAPATH)) return false;
+	$bakfilepath = getBackupFilePath($filepath);
+
+	// backup original before restoring
+	if(file_exists($filepath)){
+		rename_file($bakfilepath,$bakfilepath.'.tmp');
+		move_file($filepath,$bakfilepath);
+		$bakfilepath .= '.tmp';
+	}
+	return move_file($bakfilepath,$filepath);
+}
+
+/**
+ * Restore From Backup to custom destintation
+ * source locked to GSBACKUPSPATH
+ *
+ * @since 3.4
+ *
+ * @param string $backfilepath filepath to backup file
+ * @param string $destination  filepath retore to
+ * @return bool success
+ */
+function restore_backup($bakfilepath,$destination){
+	if(!filepath_is_safe($bakfilepath,GSBACKUPSPATH)) return false;
+	return copy_file($bakfilepath,$destination);
+}
+
+/**
+ * backup a page
+ *
+ * @since 3.4
+ *
+ * @param  str $id id of page to backup
+ * @return bool     success
+ */
+function backup_page($id){
+	backup_datafile(GSDATAPAGESPATH.$id.'.xml');
+}
+
+/**
+ * Restore a page from backup
+ *
+ * @since 3.4
+ *
+ * @param  str $id id of page
+ * @return bool     success
+ */
+function restore_page($id){
+	restore_datafile(GSDATAPAGESPATH.$id.'.xml');
+}
+
+/**
+ * Delete Pages File
+ *
+ * Deletes pages data file afer making backup
  *
  * @since 1.0
  * @uses GSBACKUPSPATH
  * @uses GSDATAPAGESPATH
  *
- * @param string $id File ID to restore
+ * @param string $id File ID to delete
+ * @param  bool $backup perform backup of file before deleting it
  */
-function restore_bak($id) { 
-	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
-	$file = $bakpagespath. $id .".bak.xml";
-	$newfile = GSDATAPAGESPATH . $id .".xml";
-	$tmpfile = $bakpagespath. $id .".tmp.xml";
-	if ( !file_exists($newfile) ) { 
-		copy($file, $newfile);
-		unlink($file);
-	} else {
-		copy($file, $tmpfile);
-		copy($newfile, $file);
-		copy($tmpfile, $newfile);
-		unlink($tmpfile);
-	}
-	generate_sitemap();
+function delete_page($id, $backup = true){
+	if($backup) backup_datafile(GSDATAPAGESPATH.$id.'.xml');
+	return delete_file(GSDATAPAGESPATH.$id.'.xml');
 } 
+
+/**
+ * Clone a page
+ * Automatically names page id to next incremental copy eg. "slug-n"
+ * Clone title becomes "title [copy]""
+ *
+ * @param  str $id page id to clone
+ * @return mixed   returns new url on succcess, bool false on failure
+ */
+function clone_page($id){
+	list($cloneurl,$count) = getNextFileName(GSDATAPAGESPATH,$id.'.xml');
+	// get page and resave with new slug and title
+	$newxml = getPageXML($id);
+	$newurl = getFileName($cloneurl);
+	$newxml->url = getFileName($cloneurl);
+	$newxml->title = $newxml->title.' ['.sprintf(i18n_r('COPY_N',i18n_r('COPY')),$count).']';
+	$newxml->pubDate = date('r');
+	$status = XMLsave($newxml, GSDATAPAGESPATH.$cloneurl);
+	if($status) return $newurl;
+	return false;
+}
+
+/**
+ * get the next incremental filename
+ *
+ * @since 3.4
+ * @param  str $path path to file
+ * @param  str $file filename with extension
+ * @return array     array('newfilename.ext',count)
+ */
+function getNextFileName($path,$file){
+	$count = 1;
+	$pathparts = pathinfo($path.$file);
+	$filename  = $pathparts['filename'];
+	$fileext   = '.'.$pathparts['extension'];
+
+	$nextfilename =  $filename ."-".$count;
+	$nextfile = $path.$filename . $fileext;
+
+	if (file_exists($nextfile)) {
+		while ( file_exists($nextfile) ) {
+			$count++;
+			$nextfilename = $filename .'-'. $count;
+			$nextfile = $path . $nextfilename . $fileext;
+		}
+	}
+	return array($nextfilename.$fileext,$count);
+}
+
+/**
+ * Delete Pages Backup File
+ *
+ * @since 3.4
+ * @uses GSBACKUPSPATH
+ * @uses GSDATAPAGESPATH
+ * @uses GSGSDATATPATH
+ *
+ * @param string $id File ID to delete
+ * @return bool success
+ */
+function delete_page_backup($id){
+	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
+	return delete_file($bakpagespath. $id .".bak.xml");
+	}
+
+// DEPRECATED 3.4 LEGACY
+function createBak($file, $filepath, $bakpath) {
+	return backup_datafile($filepath . $file);
+} 
+function delete_bak($id) { 
+	return delete_page_backup($id);
+}
+function restore_bak($id) {
+	restore_page($id);
+}
+function undo($file, $filepath, $bakpath) {
+	return restore_datafile($filepath.$file);
+}
+
 
 /**
  * Create Random Password
@@ -289,31 +434,6 @@ function get_FileType($ext) {
 	} else {
 		return i18n_r('FTYPE_MISC');
 	}
-}
-
-/**
- * Create Backup Pages File
- *
- * @since 1.0
- * @uses tsl
- *
- * @param string $file
- * @param string $filepath
- * @param string $bakpath
- * @return bool
- */
-function createBak($file, $filepath, $bakpath) {
-	$bakfile = '';
-	if ( file_exists(tsl($filepath) . $file) ) {
-		$bakfile = $file .".bak";
-		copy($filepath . $file, $bakpath . $bakfile);
-	}
-	
-	if ( file_exists($bakfile) ) {
-		return true;
-	} else {
-		return false;
-	} 
 }
 
 /**
@@ -416,33 +536,7 @@ function pingGoogleSitemaps($url_xml) {
    return( $status );
 }
 
-/**
- * Undo
- *
- * @since 1.0
- * @uses tsl
- *
- * @param string $file filename to undo
- * @param string $filepath filepath to undo
- * @param string $bakpath path to the backup file
- * @return bool
- */
-function undo($file, $filepath, $bakpath) {
-	$undo_file = $filepath . $file;
-	$bak_file  = tsl($bakpath) . $file .".bak";
-	$tmp_file = tsl($bakpath) . $file .".tmp";
-	copy($undo_file, $tmp_file); // rename original to temp shuttle
-	copy($bak_file, $undo_file); // copy backup
-	copy($tmp_file, $bak_file);  // save original as backup
-	unlink($tmp_file); 			 // remove temp shuttle file
 	
-	if (file_exists($tmp_file)) {
-		return false;
-	} else {
-		return true;
-	}
-}
-
 /**
  * File Size
  *
@@ -627,8 +721,8 @@ function check_menu($text) {
  * @return string
  */
 function passhash($p) {
-	if(defined('GSLOGINSALT') && GSLOGINSALT != '') { 
-		$logsalt = sha1(GSLOGINSALT);
+	if(getDef('GSLOGINSALT') && getDef(GSLOGINSALT) != '') {
+		$logsalt = sha1(getDef(GSLOGINSALT));
 	} else { 
 		$logsalt = null; 
 	}
@@ -691,15 +785,14 @@ function updateSlugs($existingUrl, $newurl=null){
 	getPagesXmlValues();
 	  
 	if (!$newurl){
-      		global $url;
+      		global $url; // @todo this is a bad idea
       	} else {
       		$url = $newurl;
       	}
 
 	foreach ($pagesArray as $page){
 		if ( $page['parent'] == $existingUrl ){
-			$thisfile = @file_get_contents(GSDATAPAGESPATH.$page['filename']);
-        		$data = simplexml_load_string($thisfile);
+			$data = getPageXML($page['filename']);
             		$data->parent=$url;
             		XMLsave($data, GSDATAPAGESPATH.$page['filename']);
 		}
@@ -844,7 +937,7 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	$pageTitle = cl($page['title']);
 
 	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. $pageTitle .'</a><div class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</div></td>';
-	$menu .= '<td style="width:80px;text-align:right;" ><span>'. shtDate($page['pubDate']) .'</span></td>';
+	$menu .= '<td style="width:80px;text-align:right;" ><span>'. output_date($page['pubDate']) .'</span></td>';
 	$menu .= '<td class="secondarylink" >';
 	$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
 	$menu .= '</td>';
@@ -1135,7 +1228,7 @@ function get_api_details($type='core', $args=null) {
 
 	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpire) < $cacheAge ) {
 		# grab the api request from the cache
-		$data = file_get_contents(GSCACHEPATH.$cachefile);
+		$data = read_file(GSCACHEPATH.$cachefile);
 		debug_api_details('returning api cache ' . GSCACHEPATH.$cachefile);
 	} else {	
 		# make the api call
@@ -1202,7 +1295,7 @@ function get_api_details($type='core', $args=null) {
 			// $context = stream_context_create();
 			// stream_context_set_option ( $context, array('http' => array('timeout' => $timeout)) );
 			$context = stream_context_create(array('http' => array('timeout' => $timeout))); 
-			$data = @file_get_contents($fetch_this_api,false,$context);	
+			$data = read_file($fetch_this_api,false,$context);	
 			debug_api_details("fopen data: " .$data);		
 		} else {  
 			debug_api_details("No api methods available");						
@@ -1223,9 +1316,7 @@ function get_api_details($type='core', $args=null) {
 		}
 		
 		debug_api_details($data);
-
-			file_put_contents(GSCACHEPATH.$cachefile, $data);
-			chmod(GSCACHEPATH.$cachefile, 0644);
+			save_file(GSCACHEPATH.$cachefile,$data);
 			return $data;
 		}	
 	return $data;
@@ -1257,7 +1348,7 @@ function get_gs_version() {
 /**
  * Creates Sitemap
  *
- * Creates sitemap.xml in the site's root.
+ * Creates GSSITEMAPFILE (sitemap.xml) in the site's root.
  */
 function generate_sitemap() {
 	
@@ -1311,16 +1402,16 @@ function generate_sitemap() {
 		}
 		
 		//create xml file
-		$file = GSROOTPATH .'sitemap.xml';
+		$file = GSROOTPATH .GSSITEMAPFILE;
 		$xml = exec_filter('sitemap',$xml);
 
 		XMLsave($xml, $file);
 		exec_action('sitemap-aftersave');
 	}
 	
-	if (!defined('GSDONOTPING')) {
-		if (file_exists(GSROOTPATH .'sitemap.xml')){
-			if( 200 === ($status=pingGoogleSitemaps($SITEURL.'sitemap.xml')))	{
+	if (!getDef('GSDONOTPING',true)) {
+		if (file_exists(GSROOTPATH .GSSITEMAPFILE)){
+			if( 200 === ($status=pingGoogleSitemaps($SITEURL.GSSITEMAPFILE)))	{
 				#sitemap successfully created & pinged
 				return true;
 			} else {
@@ -1345,6 +1436,7 @@ function archive_targz() {
 	GLOBAL $GSADMIN;
 	
 	if(!function_exists('exec')) {
+    	// @todo catch exec not prermitted
     return false;
     exit;
 	}
@@ -1352,9 +1444,10 @@ function archive_targz() {
 	$timestamp = gmdate('Y-m-d-Hi_s');
 	$saved_zip_file_path = GSBACKUPSPATH.'zip/';
 	$saved_zip_file = $timestamp .'_archive.tar.gz';	
-	$script_contents = "tar -cvzf ".$saved_zip_file_path.$saved_zip_file." ".GSROOTPATH.".htaccess ".GSROOTPATH."gsconfig.php ".GSROOTPATH."data ".GSROOTPATH."plugins ".GSROOTPATH."theme ".GSROOTPATH.$GSADMIN."/lang > /dev/null 2>&1";
+	$script_contents     = "tar -cvzf ".$saved_zip_file_path.$saved_zip_file." ".GSROOTPATH.".htaccess ".GSROOTPATH.GSCONFIGFILE." ".GSROOTPATH."data ".GSROOTPATH."plugins ".GSROOTPATH."theme ".GSROOTPATH.$GSADMIN."/lang > /dev/null 2>&1";
 	
-	exec($script_contents, $output, $rc);
+	debugLog('archive function exec called ' . __FUNCTION__);
+	exec(escapeshellarg($script_contents), $output, $rc);
 	
 	if (file_exists($saved_zip_file_path.$saved_zip_file)) {
 		return true;
@@ -1386,19 +1479,26 @@ function filter_queryString($allowed = array()){
 	return $new_qstring;
 }
 
+/**
+ * truncate a string, multibyte safe
+ *
+ * @since 3.4
+ * @param  str $str      string to truncate
+ * @param  int $numchars number of characters to return
+ * @return str           truncated string
+ */
+function truncate($str,$numchars){
+	return getExcerpt($str,$numchars,false,'',true,false);
+}
 
 /**
  * Get String Excerpt
  *
  * @since 3.3.2
  *
- * @uses mb_strlen
- * @uses mb_strrpos
- * @uses mb_substr
- * @uses strip_tags
  * @uses strIsMultibyte
  * @uses cleanHtml
- * @uses preg_repalce PCRE compiled with "--enable-unicode-properties"
+ * @uses preg_replace PCRE compiled with "--enable-unicode-properties"
  *
  * @param string $n Optional, default is 200.
  * @param bool $striphtml Optional, default true, true will strip html from $content
@@ -1421,7 +1521,7 @@ function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = '...', $bre
 	// if not break, find last word boundary before truncate to avoid splitting last word
 	// solves for unicode whitespace and punctuation and a 1 character lookahead
 	// hack,  replaces punc with space and handles it all the same for obtaining boundary index
-	// REQUIRES that PCRE is compiled with "--enable-unicode-properties, detect or supress ?
+	// REQUIRES that PCRE is compiled with "--enable-unicode-properties, @todo detect or supress ?
 	if(!$break) $excerpt = preg_replace('/\n|\p{Z}|\p{P}+$/u',' ',$substr($str, 0, $len+1)); 
 
 	$lastWordBoundaryIndex = !$break ? $strrpos($excerpt, ' ') : $len;
@@ -1468,6 +1568,28 @@ function cleanHtml($str){
 // @todo: replace function checks with callable checks
 // but it still requires a class or __invoke to pass arguments into the callback
 
+/**
+ * get Page data for http response code
+ * 
+ * returns page xml for http response code, by checking for user page then core page
+ * 
+ * @since 3.4
+ * @param  int $code http response code
+ * @return obj       page xml
+ */
+function getHttpResponsePage($code){
+	GLOBAL $pagesArray;
+
+	if (isset($pagesArray[GSHTTPPREFIX . $code])) {
+		// use user created http response page
+		return getXml(GSDATAPAGESPATH . GSHTTPPREFIX . $code . '.xml');		
+	} elseif (file_exists(GSDATAOTHERPATH . $code . '.xml'))	{
+		// default http response page
+		return getXml(GSDATAOTHERPATH . $code . '.xml');	
+	}	
+}
+
+/* ?> */
 /*
  * FILTER CORE FUNCTIONS
  */

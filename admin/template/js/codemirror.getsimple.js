@@ -19,6 +19,8 @@ function getEditorMode(extension){
 }
 
 jQuery(document).ready(function () {
+	initcodemirror();
+});
 
 	// setup codemirror instances and functions
 
@@ -51,20 +53,15 @@ jQuery(document).ready(function () {
 		// matchTags                 : true, // adds class CodeMirror-matchingtag to tags contents
 		foldGutter                : true,
 		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-		saveFunction              : function(cm) { customSave(cm); },
+		saveFunction              : function(cm) { dosave(); },
 		extraKeys: {
 			// "Ctrl-Q" : function(cm) { foldFunc(cm, cm.getCursor().line); },
 			// "Ctrl-Q" : function(cm) { cmfold(cm) },
 			"F11"    : function(cm) { setFullScreen(cm, !isFullScreen(cm)); },
 			"Esc"    : function(cm) { if (isFullScreen(cm)) setFullScreen(cm, false); },
-			"Ctrl-S" : function(cm) { customSave(cm); },
+			// "Ctrl-S" : function(cm) { customSave(cm); },
 			"Ctrl-Space" : "autocomplete"
 		}
-	};
-
-	CodeMirror.commands.autocomplete = function(cm) {
-		CodeMirror.showHint(cm); // auto
-		// CodeMirror.showHint(cm, CodeMirror.hint.anyword);
 	};
 
 	// do not know what this does, looks like old ctrl+q fold debouncer
@@ -80,6 +77,7 @@ jQuery(document).ready(function () {
 
 	/**
 	 * editorFromTextarea replaces a textarea with a codemirror editor
+	 * @todo  add destroy
 	 * @uses jquery collection $(this)
 	 * @uses editorConfig
 	 * @uses editorUserConfig
@@ -112,14 +110,14 @@ jQuery(document).ready(function () {
 			// create codemirror instance from textarea DOM
 			var editor = CodeMirror.fromTextArea($this.get(0), cm_config);
 
+			// add reference to this editor to the textarea
+			$this.data('editor', editor);
+
 			// lazy load custom themes
 			if(cm_config.theme != editorTheme && cm_config.theme != 'default'){
 				var parts = cm_config.theme.split(' ');
 				loadjscssfile("template/js/codemirror/theme/"+parts[0]+".css", "css",function(){editor.refresh();});
 			}
-
-			// add reference to this editor to the textarea
-			$this.data('editor', editor);
 
 			// init change listener
 			editor.on('change', function(cm){
@@ -149,9 +147,33 @@ jQuery(document).ready(function () {
 			});
 
 			// replace jqueryui resize handle with custom icon
-			$(editor.getWrapperElement()).find($('.ui-resizable-se')).removeClass('ui-icon');
-			$(editor.getWrapperElement()).find($('.ui-resizable-se')).addClass('handle');
-			$(editor.getWrapperElement()).find($('.ui-resizable-se')).html('◢'); // U+25E2	e2 97 a2 BLACK LOWER RIGHT TRIANGLE
+			$(editor.getWrapperElement()).find($('.ui-resizable-se')).removeClass('ui-icon')
+                                                                     .addClass('handle')
+                                                                     .html('&#x25e2;'); // U+25E2	e2 97 a2 BLACK LOWER RIGHT TRIANGLE
+
+			if(CodeMirror){
+				// setup autocomplete
+				CodeMirror.commands.autocomplete = function(cm) {
+
+					var mode = editorGetInnerMode(cm);
+					Debugger.log('innermode: ' + mode);
+					if (mode == 'xml') { //html depends on xml
+						CodeMirror.showHint(cm, CodeMirror.hint.html);
+					} else if (mode == 'javascript') {
+						CodeMirror.showHint(cm, CodeMirror.hint.javascript);
+					} else if (mode == 'css') {
+						CodeMirror.showHint(cm, CodeMirror.hint.css);
+					} else {
+						CodeMirror.showHint(cm, CodeMirror.hint.anyword);
+					}
+				}
+			}
+			// adjust for window resizing awhen in fullscreen
+			editor.on(window, "resize", function(e) {
+				var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
+				if (!showing) return;
+				showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
+			});
 
 			// add fixed fullscreen toggle
 			fullscreen_button(editor);
@@ -159,13 +181,19 @@ jQuery(document).ready(function () {
 		});
 	};
 
-	// apply codemirror to class of .code_edit
-	$(".code_edit").editorFromTextarea();
+	function initcodemirror(){
+		// apply codemirror to class of .code_edit
+		var elem= $(".code_edit").editorFromTextarea();
+		setThemeSelected(editorTheme);
+		cm_theme_update(editorTheme); // @todo: prevent overriding theme in custom configs
+	}
 
-	setThemeSelected(editorTheme);
-	cm_theme_update(editorTheme); // @todo: prevent overriding theme in custom configs
-
-});
+	function editorGetInnerMode(cm){
+		var doc     = cm.getDoc();
+		var cursor = doc.getCursor();
+		var mode    = CodeMirror.innerMode(cm.getMode(), cm.getTokenAt(cursor).state).mode.name;
+		return mode;
+	}
 
 	function editorScrollVisible(cm){
 		var wrap = cm.getWrapperElement();
@@ -197,20 +225,15 @@ jQuery(document).ready(function () {
         $(wrap).data('normalheight',$(wrap).css('height')); // store original height
         wrap.style.height = winHeight() + "px";
         document.documentElement.style.overflow = "hidden";
+        $("body").addClass('fullscreen');
       } else {
         wrap.className = wrap.className.replace(" CodeMirror-fullscreen", "");
         wrap.style.height = $(wrap).data('normalheight'); // restore original height
         document.documentElement.style.overflow = "";
+        $("body").removeClass('fullscreen');
       }
       cm.refresh();
     }
-
-    // adjust for window resizing awhen in fullscreen
-	CodeMirror.on(window, "resize", function(e) {
-        var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
-        if (!showing) return;
-        showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
-    });
 
 	function setThemeSelected(theme){
 		$("#cm_themeselect").val(theme);

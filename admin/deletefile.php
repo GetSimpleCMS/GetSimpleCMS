@@ -25,40 +25,36 @@ if (isset($_GET['id'])) {
 		redirect('pages.php?upd=edit-error&type='.urlencode(i18n_r('HOMEPAGE_DELETE_ERROR')));
 	} else {	
 		updateSlugs($id);
-		$status = delete_file($id);
+		$status = delete_page($id) ? 'success' : 'error';
 		generate_sitemap();
 		exec_action('page-delete');
-		redirect("pages.php?upd=edit-".$status."&id=". $id ."&type=delete");
+		redirect("pages.php?upd=del-".$status."&id=". $id ."&type=delete");
 	}
 } 
 
-// are we deleting archives?
+// Delete archive
 if (isset($_GET['zip'])) { 
 	$zip    = $_GET['zip'];
-	$status = delete_zip($zip);
+	$status = delete_zip($zip) ? 'success' : 'error';
 	
 	redirect("archive.php?upd=del-". $status ."&id=". $zip);
 } 
 
-// are we deleting uploads?
+// Delete upload file
 if (isset($_GET['file'])) {
 	$path   = (isset($_GET['path'])) ? $_GET['path'] : "";
 	$file   = $_GET['file'];
-	$status = delete_upload($file, $path);
+	$status = delete_upload($file, $path) ? 'success' : 'error';
 	
 	redirect("upload.php?upd=del-".$status."&id=". $file . "&path=" . $path);
 } 
 
 
-// are we deleting a folder?
+// Delete upload folders
 if (isset($_GET['folder'])) {
 	$path   = (isset($_GET['path'])) ? $_GET['path'] : "";
 	$folder = $_GET['folder'];
-	$target = GSDATAUPLOADPATH . $path . $folder;
-	if (path_is_safe($target,GSDATAUPLOADPATH) && file_exists($target)) {
-		rmdir($target);
-		// delete thumbs folder
-		rmdir(GSTHUMBNAILPATH . $path . $folder);
-		redirect("upload.php?upd=del-success&id=". $folder . "&path=".$path);
-	}
-} 
+	$status = delete_upload_dir($path . $folder) ? 'success' : 'error';
+
+	redirect("upload.php?upd=del-".$status."&id=". $folder . "&path=".$path);
+}
