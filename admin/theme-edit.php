@@ -45,7 +45,7 @@ $themepath = GSTHEMESPATH.tsl($template);
 if($template_file!='' and !filepath_is_safe($themepath.$template_file,$themepath)) die(i18n_r('INVALID_OPER'));
 
 # if no template is selected, use the default
-if ($template_file == '') {
+if ($template_file == '' && file_exists($themepath.GSTEMPLATEFILE)) {
 	$template_file = GSTEMPLATEFILE;
 }
 
@@ -75,19 +75,19 @@ if(isset($_POST['submitsave'])){
 }
 
 if(isset($_GET['ajax'])){
-	$content = read_file(GSTHEMESPATH . tsl($template) . $template_file);
+	$content = !empty($template_file) ? read_file(GSTHEMESPATH . tsl($template) . $template_file) : '';
 	?>
 		<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
 			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
-			<textarea name="content" id="codetext" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
+			<textarea name="content" id="codetext" wrap='off'><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
 			<input type="hidden" value="<?php echo tsl($template) . $template_file; ?>" name="edited_file" id="edited_file" />
 			<div id="theme-edit-extras-wrap"><?php exec_action('theme-edit-extras'); ?></div>
 			<p id="submit_line" >
 				<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
 			</p>
-		</form>	
-	<?php		
-	die();	
+		</form>
+	<?php
+	die();
 }
 
 $allowed_extensions = explode(',',getDef('GSTHEMEEDITEXTS'));
@@ -104,7 +104,7 @@ $directory = GSTHEMESPATH . $template . '/';
 function createTemplateDropdown(){
 	GLOBAL $template;
 	# create themes dropdown
-	$theme_options = '<select name="theme-folder" id="theme-folder" >';
+	$theme_options = '<select name="t" id="theme-folder" >';
 
 	$templates = directoryToArray(GSTHEMESPATH, false);
 	$theme_dir_array = array();
@@ -127,7 +127,9 @@ function createTemplateDropdown(){
 
 	// edit theme/root files
 	if(getDef('GSTHEMEEDITROOT',true)){
-		$theme_options .= '<option value="." style="font-style:italic">'.i18n_r('THEME_ROOT').'</option>';
+		$sel = '';
+		if($template == '.') $sel = 'selected';
+		$theme_options .= '<option '. $sel .' value="." style="font-style:italic">'.i18n_r('THEME_ROOT').'</option>';
 	}
 	$theme_options .= '</select> ';
 
@@ -239,13 +241,13 @@ function editor_recur_sort(&$array,$comparator) {
    return @uasort($array, $comparator);
 }
 
+// get themes files, sort then generate ul list heirachy
+$recurse = $template !== '.';
+$files   = directoryToMultiArray($directory,$recurse,$allowed_extensions);
+editor_recur_sort($files, 'editor_compareOrder'); // custom sort, dir,file,nat sort
+$fileList = editor_array2ul($files,$recurse,$recurse);
 
 $theme_options = createTemplateDropdown();
-// get themes files, sort then generate ul list heirachy
-$files = directoryToMultiArray($directory,true,$allowed_extensions);
-editor_recur_sort($files, 'editor_compareOrder'); // custom sort, dir,file,nat sort
-
-$fileList = $template == '.' ? editor_array2ul($files,false,false) : editor_array2ul($files);
 
 $pagetitle = i18n_r('THEME_MANAGEMENT');
 get_template('header');
@@ -284,7 +286,14 @@ switch (getFileExtension($template_file)) {
 
 				<!-- Theme Selector -->
 				<div id="theme_edit_select">
-					<div class="well"><?php echo $theme_options; ?>	</div>
+				<form action="<?php myself(); ?>" method="get" accept-charset="utf-8" >
+					<div class="well">
+						<div>
+							<?php echo $theme_options; ?>
+							<noscript><input class="submit" type="submit" name="s" value="<?php i18n('EDIT'); ?>" /></noscript>
+						</div>
+					</div>
+				</form>
 				</div>
 
 				<!-- File Tree -->
@@ -293,11 +302,11 @@ switch (getFileExtension($template_file)) {
 				</div>
 			</div>
 
-			<div id="theme_edit_code" class="codewrap">
+			<div id="theme_edit_code" class="codewrap <?php if(empty($template_file)) echo 'readonly';?>">
 				
 				<div id="theme_editing" class="well">
 				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.getRelPath(GSTHEMESPATH).' <b><span id="theme_editing_file">'. tsl($template).$template_file .'</span></b>'; ?>
-				<?php $content = read_file(GSTHEMESPATH . tsl($template) . $template_file); ?>
+				<?php $content = !empty($template_file) ? read_file(GSTHEMESPATH . tsl($template) . $template_file) : ''; ?>
 				</div>
 		
 		<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >

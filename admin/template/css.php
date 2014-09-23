@@ -2438,7 +2438,6 @@ a.disabled:visited {
 	border-radius: 2px;
 	padding:6px;
 	line-height:27px;
-	height:24px;
 }
 
 #theme_edit_nav {
@@ -2464,6 +2463,11 @@ a.disabled:visited {
 #theme_edit_code {
 	float:left;
 	width:80%;
+	transition: opacity 400ms;
+}
+
+#theme_edit_code.readonly {
+	transition: opacity 200ms;
 }
 
 #theme_edit_code .well{
@@ -2575,6 +2579,9 @@ a.disabled:visited {
 .ext-theme {background-image: url(images/filemanager/preferences-desktop-theme.png);}
 .ext-wait,.ext-blank {background-image: none;}
 
+
+/* generic override modifiers classes */
+
 /* Grayscale */
 .desaturate, .dir-empty{
 		filter: gray; /* IE */
@@ -2607,6 +2614,15 @@ a.disabled:visited {
   -o-transition: none !important;
   -ms-transition: none !important;
   transition: none !important;
+}
+
+.readonly{
+	opacity: 0.3;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }
 
 /* codemirror */

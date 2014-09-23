@@ -893,8 +893,8 @@ jQuery(document).ready(function () {
 		if($('#codetext').data('editor')){
 			$('#codetext').data('editor').setValue('');
 			$('#codetext').data('editor').hasChange = false;
-		}	
-		$('#theme_edit_code').fadeTo('fast',0.3);
+		}
+		$('#theme_edit_code').addClass('readonly')
 
 		$.ajax({
 			type: "GET",
@@ -939,7 +939,7 @@ jQuery(document).ready(function () {
 				clearFileWaits();
 				loadingAjaxIndicator.fadeOut();
 
-				$('#theme_edit_code').fadeTo('fast',1);
+				$('#theme_edit_code').removeClass('readonly');
 
 			}
 		});
@@ -967,10 +967,11 @@ jQuery(document).ready(function () {
 		e.preventDefault();
 		editor = $('#codetext').data('editor');
 		if(editor){
-			$('#theme_edit_code').fadeTo('fast',0.3).fadeTo('fast',1.0);
+			$('#theme_edit_code').addClass('readonly');
 			editor.setValue($(editor.getTextArea()).val());
 			editor.hasChange = false;
-		}	
+			setTimeout(function(){$('#theme_edit_code').removeClass('readonly');},500);
+		}
 		notifyWarn('Updates cancelled').removeit();
 	});
 
@@ -1025,7 +1026,6 @@ jQuery(document).ready(function () {
 		loadingAjaxIndicator.show();
 		// $('#codetext').data('editor').setValue('');
 		// $('#codetext').data('editor').hasChange == false;
-		// $('#theme_edit_code').fadeTo('fast',0.3);
 		
 		cm_save_editors();
 		var url = "path/to/your/script.php"; // the script where you handle the form input.

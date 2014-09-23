@@ -78,6 +78,7 @@ $GS_definitions = array(
 	'GSEDITORTOOL'         => 'basic',                        // (str) wysiwyg editor toobar
 	'GSEDITORCONFIGFILE'   => 'config.js',                    // (str) wysiwyg editor toobar
 	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // url used in email template
+	'GSAJAXSAVE'           => true,                           // use ajax for saving themes, components, and pages
 	'GSCHMOD'              => 0644,                           // chmod mode legacy
 	'GSCHMODFILE'          => 0644,                           // chmod mode for files
 	'GSCHMODDIR'           => 0755,                           // chmod mode for dirs
