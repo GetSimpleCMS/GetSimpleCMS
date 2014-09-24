@@ -418,7 +418,7 @@ function delete_dir($path){
  * @param  str $data data to save to file
  * @return bool success
  */
-function save_file($file,$data){
+function save_file($file,$data=''){
 	$status = file_put_contents($file,$data) !== false; // returns num bytes written, FALSE on failure
 	fileLog(__FUNCTION__,$status,$file);
 	$chmodstatus = gs_chmod($file); // currently ignoring chmod failures

@@ -48,18 +48,18 @@ if($template_file!='' and !filepath_is_safe($themepath.$template_file,$themepath
 if(isset($_POST['submitsave'])){
 
 	check_for_csrf("save");
-	
-	# save edited template file
-	$SavedFile = $_POST['edited_file'];
-	$FileContents = get_magic_quotes_gpc() ? stripslashes($_POST['content']) : $_POST['content'];	
-	// prevent traversal
-	if(!filepath_is_safe(GSTHEMESPATH . $SavedFile,GSTHEMESPATH)) die(i18n_r('INVALID_OPER'));	
-	$fh = fopen(GSTHEMESPATH . $SavedFile, 'w') or die("can't open file");
-	fwrite($fh, $FileContents);
-	fclose($fh);
 
-	$success = sprintf(i18n_r('TEMPLATE_FILE'), $SavedFile);
-	
+	# save edited template file
+	$filename = $_POST['edited_file'];
+	$FileContents = get_magic_quotes_gpc() ? stripslashes($_POST['content']) : $_POST['content'];
+	// prevent traversal
+	if(!filepath_is_safe(GSTHEMESPATH . $filename,GSTHEMESPATH)) die(i18n_r('INVALID_OPER'));
+	$status = save_file(GSTHEMESPATH . $filename,$FileContents);
+	exec_action('theme-aftersave');
+
+	if($status) $success = sprintf(i18n_r('TEMPLATE_FILE'), $filename);
+	else $error = i18n_r('ERROR');
+
 	if(isset($_POST['ajaxsave'])){
 		echo "<div>";
 		include('template/error_checking.php');
