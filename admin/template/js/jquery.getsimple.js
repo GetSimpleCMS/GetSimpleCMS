@@ -592,12 +592,6 @@ jQuery(document).ready(function () {
 	if ($("#edit input#post-title:empty").val() === '') {
 		$("#edit input#post-title").focus();
 	}
-
-	$("#metadata_toggle").on("click", function ($e) {
-		$e.preventDefault();
-		$("#metadata_window").slideToggle('fast');
-		$(this).toggleClass('current');
-	});
  
 	var privateLabel = $("#post-private-wrap label");
 	$("#post-private").change(function () {
@@ -666,6 +660,7 @@ jQuery(document).ready(function () {
 
     // ajax save function for edit.php #editform
     function ajaxSave(urlargs) {
+
         $('input[type=submit]').attr('disabled', 'disabled');
 
         // we are using ajax, so ckeditor wont copy data to our textarea for us, so we do it manually
@@ -750,8 +745,10 @@ jQuery(document).ready(function () {
 
     // ajaxify edit.php submit
     $('body.ajaxsave #editform').on('submit',function(e){
-        e.preventDefault();
-        ajaxSave().done(ajaxSaveCallback);
+        if($('body').hasClass('ajaxsave')){
+            e.preventDefault();
+            ajaxSave().done(ajaxSaveCallback);
+        }
     });
 
     // We register title and slug changes with change() which only fires when you lose focus to prevent midchange saves.
@@ -782,6 +779,7 @@ jQuery(document).ready(function () {
 
 	$(".save-close a").on("click", function ($e) {
 		$e.preventDefault();
+		$('body').removeClass('ajaxsave');
 		$('input[name=redirectto]').val('pages.php');
 		$("#submit_line input.submit").trigger('click');
 	});
