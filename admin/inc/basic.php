@@ -1490,6 +1490,23 @@ function toBytes($str){
 }
 
 /**
+ * convert bytes to mb,gb,or kb
+ * @param  int  $str    size in bytes
+ * @param  boolean $suffix add suffix to end of str
+ * @return str new byte string
+ */
+function toBytesShorthand($str,$suffix = false){
+	$val = trim($str);
+	$last = strtolower($str[strlen($str)-1]);
+		switch($last) {
+			case 'g': $val /= 1024;
+			case 'm': $val /= 1024;
+			case 'k': $val /= 1024;
+		}
+	return $val. ($suffix ? strtoupper($last.'B') : '');
+}
+
+/**
  * Remove Relative Paths
  * @todo this function is a bad idea
  *
@@ -2127,6 +2144,14 @@ function cssCompress($buffer) {
   $buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer); /* remove comments */
   $buffer = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $buffer); /* remove tabs, spaces, newlines, etc. */
   return $buffer;
+}
+
+function getMaxUploadSize(){
+	$max_upload   = toBytes(ini_get('upload_max_filesize'));
+	$max_post     = toBytes(ini_get('post_max_size'));
+	$memory_limit = toBytes(ini_get('memory_limit'));
+	$upload_mb    = min($max_upload, $max_post, $memory_limit);
+	return $upload_mb;
 }
 
 /* ?> */
