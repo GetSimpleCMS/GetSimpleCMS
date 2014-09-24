@@ -557,7 +557,7 @@ $i18n = array(
 "API_CONFIGURATION"       =>	'API Configuration',
 "API_ENABLE"              =>	'Enable the API',
 "API_REGENKEY"            =>	'Regenerate Key',
-"API_DISCLAIMER"          =>	"By enabling this API you are allowing any external application that has a copy of your key to have access to your website's data. <b>Only share this key with applications you trust.</b>",
+"API_DISCLAIMER"          =>	"By enabling this API you are allowing any external application that has a copy of your key to have access to your website's data.<br/><b>Only share this key with applications you trust.</b>",
 "API_REGEN_DISCLAIMER"    =>	"When you regenerate your API Key, you will need to enter the new key into any external application using this API to connect to your website.",
 "API_CONFIRM"             =>	"ARE YOU SURE?",
 

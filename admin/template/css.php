@@ -2436,7 +2436,7 @@ a.disabled:visited {
 	background-color:#F9F9F9;
 	border:1px solid #E8E8E8;
 	border-radius: 2px;
-	padding:6px;
+	padding:2px 6px;
 	line-height:27px;
 }
 
