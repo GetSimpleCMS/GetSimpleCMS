@@ -1765,7 +1765,13 @@ table.simple td.title {
 	color: <?php echo $primary_1 ?>;
 	font-family: sans-serif;
 	opacity: .2;
+	transition: opacity 300ms;
 
+}
+
+.uploaddropzone.dz-drag-hover {
+	opacity: .8;
+	transition: opacity 300ms;
 }
 
 #queue-item-template{
