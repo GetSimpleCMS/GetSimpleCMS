@@ -2848,6 +2848,11 @@ a.disabled:visited {
 	tab border bug https://github.com/jquery/download.jqueryui.com/issues/87
 */
 
+/* jquery resize handle styles */
+.fullscreen .CodeMirror .ui-icon-gripsmall-diagonal-se{
+	display:none !important; /* hide in fullscreen */
+}
+
 .CodeMirror .ui-icon-gripsmall-diagonal-se {
 	opacity:.3;
 }
