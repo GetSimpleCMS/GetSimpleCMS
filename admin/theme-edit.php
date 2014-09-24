@@ -26,7 +26,7 @@ if (isset($_GET['t'])) {
 		$template = $_GET['t'];
 	}
 }
-if (isset($_GET['f'])) {
+if (isset($_GET['f']) && !empty($_GET['f'])) {
 	if (is_file(GSTHEMESPATH . $template.'/'.$_GET['f'])) {
 		$template_file = $_GET['f'];
 	}
@@ -43,11 +43,6 @@ $themepath = GSTHEMESPATH.tsl($template);
 
 // prevent traversal
 if($template_file!='' and !filepath_is_safe($themepath.$template_file,$themepath)) die(i18n_r('INVALID_OPER'));
-
-# if no template is selected, use the default
-if ($template_file == '' && file_exists($themepath.GSTEMPLATEFILE)) {
-	$template_file = GSTEMPLATEFILE;
-}
 
 # check for form submission
 if(isset($_POST['submitsave'])){
@@ -74,21 +69,25 @@ if(isset($_POST['submitsave'])){
 	}
 }
 
+// ajax file get request, send only the form with the file and content
 if(isset($_GET['ajax'])){
 	$content = !empty($template_file) ? read_file(GSTHEMESPATH . tsl($template) . $template_file) : '';
 	?>
-		<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
-			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
-			<textarea name="content" id="codetext" wrap='off'><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
-			<input type="hidden" value="<?php echo tsl($template) . $template_file; ?>" name="edited_file" id="edited_file" />
-			<div id="theme-edit-extras-wrap"><?php exec_action('theme-edit-extras'); ?></div>
-			<p id="submit_line" >
-				<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
-			</p>
-		</form>
+		<div>
+			<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
+				<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
+				<textarea name="content" id="codetext" wrap='off'><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
+				<input type="hidden" value="<?php echo tsl($template) . $template_file;?>"  name="edited_file" id="edited_file" />
+				<div id="theme-edit-extras-wrap"><?php exec_action('theme-edit-extras'); ?></div>
+				<p id="submit_line" >
+					<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
+				</p>
+			</form>
+		</div>
 	<?php
 	die();
 }
+
 
 $allowed_extensions = explode(',',getDef('GSTHEMEEDITEXTS'));
 
@@ -96,6 +95,10 @@ $allowed_extensions = explode(',',getDef('GSTHEMEEDITEXTS'));
 if ($template == '') $template = GSTEMPLATEFILE;
 $directory = GSTHEMESPATH . $template . '/';
 
+# if no template is selected, use the default
+if ($template_file == '' && file_exists($themepath.GSTEMPLATEFILE)) {
+	$template_file = GSTEMPLATEFILE;
+}
 
 //////////////////////////////////////////////////
 // File Manager
@@ -312,7 +315,7 @@ switch (getFileExtension($template_file)) {
 		<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
 			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
 			<textarea name="content" id="codetext" class="code_edit" data-mode="<?php echo $mode; ?>" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
-			<input type="hidden" value="<?php echo tsl($template) . $template_file; ?>" name="edited_file" id="edited_file" />
+			<input type="hidden" value="<?php echo tsl($template) . $template_file; ?>" <?php if(empty($template_file)) echo ' class="nofile"'; ?> name="edited_file" id="edited_file" />
 			<div id="theme-edit-extras-wrap"><?php exec_action('theme-edit-extras'); ?></div>
 			<p id="submit_line" >
 				<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>

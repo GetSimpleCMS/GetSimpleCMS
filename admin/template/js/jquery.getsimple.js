@@ -913,15 +913,23 @@ jQuery(document).ready(function () {
 					$('#theme_filemanager').html(response.find('#theme_filemanager > *') ); 
 				}
 
-				/* load code content */
+				/* load file code content */
 				var newcontent = response.find('#codetext');
 				$('#codetext').val(newcontent.val());
 				
-				/* form */
-				var filename = response.find('#edited_file').val() ;
+				/* update form action for no ajaxsave */
+				/* !important lame JS issue, form must be inside a element in the resposne, innerhtml parents cannot be form tags and they get removed */
+				var themeEditform = response.find('#themeEditForm');
+				var action = $(themeEditform).attr('action');
+				$('#themeEditForm').attr('action',action);
+
+				// update edited_file
+				var filenamefield = response.find('#edited_file');
+				var filename = $(filenamefield).val();
 				$('#edited_file').val(filename);
 				updateNonce(response);
 
+				// update codemirror instance with new code
 				if($('#codetext').data('editor')){
 					$('#codetext').data('editor').setValue(newcontent.val());
 					$('#codetext').data('editor').hasChange = false;
@@ -935,10 +943,10 @@ jQuery(document).ready(function () {
 				/* title */
 				$('#theme_editing_file').html(filename);
 
-
 				clearFileWaits();
 				loadingAjaxIndicator.fadeOut();
 
+				if($(filenamefield).hasClass('nofile')) return;
 				$('#theme_edit_code').removeClass('readonly');
 
 			}
