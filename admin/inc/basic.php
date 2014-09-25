@@ -810,11 +810,13 @@ function encode_quotes($text)  {
 function redirect($url) {
 	global $i18n;
 
+	$url = var_out($url,'url'); // filter url here since it can come from alot of places, specifically redirectto user input
+
 	// handle expired sessions for ajax requests
 	if(requestIsAjax() && !cookie_check()){
 		header('HTTP/1.1 401 Unauthorized');
 		header('WWW-Authenticate: FormBased');
-		// @note this is not a security function for ajax, just a handler
+		// @note this is not a security function for ajax, just a session timeout handler
 		die();
 	}
 
