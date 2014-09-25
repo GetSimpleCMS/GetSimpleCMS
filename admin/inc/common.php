@@ -55,6 +55,7 @@ $GS_constants = array(
 );
 
 $GS_definitions = array(
+	'GSDEFAULTPAGE'        => 'pages.php'                     // Default backend index page
 	'GSHEADERCLASS'        => '',                             // custom class to add to header eg. gradient
 	'GSHTTPPREFIX'         => '',                             // http slug prefix GSHTTPPREFIX.GSSLUGxx
 	'GSSLUGNOTFOUND'       => '404',                          // http slug for not found

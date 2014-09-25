@@ -1636,11 +1636,18 @@ function getHttpResponsePage($code){
 
 	if (isset($pagesArray[GSHTTPPREFIX . $code])) {
 		// use user created http response page
-		return getXml(GSDATAPAGESPATH . GSHTTPPREFIX . $code . '.xml');		
+		return getXml(GSDATAPAGESPATH . GSHTTPPREFIX . $code . '.xml');
 	} elseif (file_exists(GSDATAOTHERPATH . $code . '.xml'))	{
 		// default http response page
-		return getXml(GSDATAOTHERPATH . $code . '.xml');	
-	}	
+		return getXml(GSDATAOTHERPATH . $code . '.xml');
+	}
 }
 
+/**
+ * goto the default backend entrace page
+ */
+function gotoDefaultPage(){
+	if (isset($_GET['redirect'])) redirect(htmlentities($_GET['redirect']));
+	else redirect(getDef('GSDEFAULTPAGE'));
+}
 /* ?> */
