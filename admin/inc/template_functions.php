@@ -371,7 +371,6 @@ function undo($file, $filepath, $bakpath) {
 	return restore_datafile($filepath.$file);
 }
 
-
 /**
  * Create Random Password
  *
@@ -380,17 +379,72 @@ function undo($file, $filepath, $bakpath) {
  * @return string
  */
 function createRandomPassword() {
-    $chars = "Ayz23mFGHBxPQefgnopRScdqrTU4CXYZabstuDEhijkIJKMNVWvw56789";
-    srand((double)microtime()*1000000);
-    $i = 0;
-    $pass = '' ;
-    while ($i <= 5) {
-		$num  = rand() % 33;
-		$tmp  = substr($chars, $num, 1);
-		$pass = $pass . $tmp;
-        $i++;
-    }
-    return $pass;
+	return generateStrongPassword();
+}
+
+/**
+ * generate random password
+ * excludes characters similar in appearing i,l,o,0,1
+ *
+ * @since  3.4
+ * @param  integer $length      length of password
+ * @param  string  $usecharsets string of charsets to include
+ * @param  bool $reuse          true, allow characters to be used more than once
+ * @param  bool    $mt_rand     true, use mt_rand instead of array_rand
+ * @return str                  password
+ */
+function generateStrongPassword($length = 8, $usecharsets = 'luds', $reuse = false, $mt_rand = true)
+{
+	$allchars = array();
+	$password = '';
+
+	$charsets = array(
+		'l' => 'abcdefghjkmnpqrstuvwxyz', // excluding i,l,o
+		'u' => 'ABCDEFGHJKMNPQRSTUVWXYZ',
+		'd' => '23456789', // excluding 0,1
+		's' => '!@#$%&*?',
+	);
+
+	// combine charsets via usecharsets
+	$sets = array_intersect_key($charsets,array_flip(str_split($usecharsets)));
+	$numsets = count($sets);
+
+	if($numsets < 1) die('no charsets specified');
+	if($numsets > $length) die('length is to small');
+
+	// prefill password with one from each set
+	// also add set chars to all chars array
+	foreach($sets as $key => $set)
+	{
+		$setary    = str_split($set);
+		$setaryidx = $mt_rand ? mt_rand(0, count($setary) - 1) : array_rand($setary);
+		$password .= $setary[$setaryidx];
+
+		if(!$reuse){
+			unset($setary[$setaryidx]);
+			$setary = array_values($setary); // reindex array
+		}
+		$allchars  = array_merge($allchars,$setary);
+	}
+
+	// fill rest of password
+	$numchars = count($allchars);
+	for($i = 0; $i < $length - $numsets; $i++){
+		$allcharsidx = $mt_rand ? mt_rand(0, $numchars - 1) : array_rand($allchars);
+		$password .= $allchars[$allcharsidx];
+
+		if(!$reuse){
+			unset($allchars[$allcharsidx]);
+			$allchars = array_values($allchars);
+			$numchars--;
+		}
+	}
+
+	// shuffle for good measure
+	$password = str_shuffle($password);
+
+	if(strlen($password) < $length) die('an error occured');
+	return $password;
 }
 
 /**
