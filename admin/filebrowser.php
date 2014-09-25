@@ -14,6 +14,8 @@
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-filebrowser');
+
 $filesSorted     = null;
 $dirsSorted      = null;
 $uploadsPath     = GSDATAUPLOADPATH;

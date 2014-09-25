@@ -14,6 +14,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-log');
+
 // Variable Settings
 $log_name = isset($_GET['log']) ? $_GET['log'] : '';
 $log_path = GSDATAOTHERPATH.'logs/';

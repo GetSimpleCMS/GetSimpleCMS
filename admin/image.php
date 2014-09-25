@@ -15,6 +15,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-image');
+
 // Variable Settings
 $subPath = (isset($_GET['path'])) ? $_GET['path'] : "";
 if ($subPath != '') $subPath = tsl($subPath);

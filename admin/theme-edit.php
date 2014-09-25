@@ -13,6 +13,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-theme-edit');
+
 # variable settings
 $theme_options 		= ''; 
 $template_file 		= ''; 

@@ -14,9 +14,11 @@ $load['plugin'] = true;
 
 // Include common.php
 include('inc/common.php');
-	
-// Variable settings
 login_cookie_check();
+
+exec_action('load-backups');
+
+
 $path    = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
 $counter = '0';
 $table   = '';

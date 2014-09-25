@@ -11,6 +11,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-theme');
+
 # was the form submitted?
 if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 

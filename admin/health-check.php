@@ -16,6 +16,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-health-check');
+
 $php_modules = get_loaded_extensions();
 
 $pagetitle = i18n_r('WEB_HEALTH_CHECK').' &middot; '.i18n_r('SUPPORT');

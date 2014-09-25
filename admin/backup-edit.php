@@ -13,6 +13,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-backup-edit');
+
 # get page url to display
 if ($_GET['id'] != '') {
 	$id   = $_GET['id'];

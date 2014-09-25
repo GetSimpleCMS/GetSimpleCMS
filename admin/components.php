@@ -14,6 +14,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-components');
+
 # variable settings
 $componentsfile	= GSDATAOTHERPATH.GSCOMPONENTSFILE;
 $update = $table = $list = '';

@@ -15,6 +15,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-plugins');
+
 $pluginid = isset($_GET['set']) ? $_GET['set'] : null;
 $nonce    = isset($_GET['nonce']) ? $_GET['nonce'] : null;
 

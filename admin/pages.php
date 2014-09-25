@@ -15,6 +15,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-pages');
+
 // Variable settings
 $id      =  isset($_GET['id']) ? $_GET['id'] : null;
 $ptype   = isset($_GET['type']) ? $_GET['type'] : null; 

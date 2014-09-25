@@ -14,6 +14,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-upload');
+
 $dirsSorted = $filesSorted = $foldercount = null;
 
 if (isset($_GET['path']) && !empty($_GET['path'])) {

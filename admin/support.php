@@ -11,6 +11,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-support');
+
 $pagetitle = i18n_r('SUPPORT');
 get_template('header');
 

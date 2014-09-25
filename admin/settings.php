@@ -13,6 +13,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-settings');
+
 # variable settings
 $fullpath   = suggest_site_path();
 $lang_array = getFiles(GSLANGPATH);

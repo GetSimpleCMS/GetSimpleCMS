@@ -14,6 +14,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-profile');
+
 $allowedit  = true; // tmp flag for edit permission
 $allowadd   = false; // tmp flag for create permission
 

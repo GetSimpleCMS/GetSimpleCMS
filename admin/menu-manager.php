@@ -13,6 +13,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-menu-manager');
+
 # save page priority order
 if (isset($_POST['menuOrder'])) {
 	$menuOrder = explode(',',$_POST['menuOrder']);
