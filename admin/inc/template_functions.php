@@ -384,12 +384,12 @@ function createRandomPassword() {
 
 /**
  * generate random password
- * excludes characters similar in appearing i,l,o,0,1
+ * excludes characters similar in appearance i,l,o,0,1
  *
  * @since  3.4
  * @param  integer $length      length of password
  * @param  string  $usecharsets string of charsets to include
- * @param  bool $reuse          true, allow characters to be used more than once
+ * @param  bool    $reuse       true, allow characters to be used more than once
  * @param  bool    $mt_rand     true, use mt_rand instead of array_rand
  * @return str                  password
  */
