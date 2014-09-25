@@ -17,7 +17,7 @@ if(!isset($GS_debug)) $GS_debug = array();
 
 // @todo remove for production
 // debug catcher for this core wide change issues
-if(htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES) !== htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES)) die('PHP_SELF mismatch ' . $_SERVER['PHP_SELF']);
+if(htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES) !== htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES)) die('PHP_SELF mismatch ' . htmlentities($_SERVER['PHP_SELF']));
 
 /**
  * Set PHP enviroments
