@@ -185,7 +185,7 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 				$filesSorted = subval_sort($filesArray,'name');
         $dirsSorted = subval_sort($dirsArray,'name');
 			}
-			echo '<div class="edit-nav" >';
+			echo '<div class="edit-nav clearfix" >';
 			echo '<select id="imageFilter">';
 			echo '<option value="All">'.i18n_r('SHOW_ALL').'</option>';
 			if (count($filesSorted) > 0) {
@@ -210,7 +210,7 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 					}
 				}
 			}
-		echo '</select><div class="clear" ></div>';
+		echo '</select>';
 
 	   	exec_action(get_filename_id().'-edit-nav');
 		echo "</div>";
