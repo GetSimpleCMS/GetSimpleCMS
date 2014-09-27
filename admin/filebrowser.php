@@ -10,6 +10,8 @@
  * Version: 1.1 (2011-03-12)
  */
 
+$load['plugin'] = true;
+
 // Setup inclusions
 include('inc/common.php');
 login_cookie_check();
@@ -83,7 +85,12 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
  <div class="wrapper">
   <div id="maincontent">
 	<div class="main" style="border:none;">
-		<h3><?php echo i18n_r('UPLOADED_FILES'); ?><span id="filetypetoggle">&nbsp;&nbsp;/&nbsp;&nbsp;<?php echo ($type == 'images' ? i18n('IMAGES') : i18n('SHOW_ALL') ); ?></span></h3>
+		<h3 class="floated"><?php echo i18n_r('UPLOADED_FILES'); ?><span id="filetypetoggle">&nbsp;&nbsp;/&nbsp;&nbsp;<?php echo ($type == 'images' ? i18n('IMAGES') : i18n('SHOW_ALL') ); ?></span></h3>
+		<div class="edit-nav clearfix" >
+			<?php exec_action(get_filename_id().'-edit-nav'); ?>
+		</div>		
+		<?php exec_action(get_filename_id().'-body'); ?>	
+		
 <?php
 	$count      = "0";
 	$dircount   = "0";

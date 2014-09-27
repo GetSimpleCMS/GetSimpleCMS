@@ -143,10 +143,11 @@ get_template('header');
 		
 		<div class="main">
 			<h3 class="floated"><?php i18n('WEBSITE_SETTINGS');?></h3>
-			<div class="edit-nav" >
+			<div class="edit-nav clearfix" >
 				<a id="flushcache" class="" title="<?php i18n('FLUSHCACHE'); ?>" href="?flushcache"><?php i18n('FLUSHCACHE'); ?></a>
-				<div class="clear"></div>
-			</div>			
+				<?php exec_action(get_filename_id().'-edit-nav'); ?>
+			</div>		
+			<?php exec_action(get_filename_id().'-body'); ?>
 			<div class="leftsec">
 				<p><label for="sitename" ><?php i18n('LABEL_WEBSITE');?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php if(isset($SITENAME1)) { echo stripslashes($SITENAME1); } else { echo stripslashes($SITENAME); } ?>" /></p>
 			</div>

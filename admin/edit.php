@@ -136,7 +136,7 @@ get_template('header');
         <h3 class="floated"><?php if(isset($data_edit)) { i18n('PAGE_EDIT_MODE'); } else { i18n('CREATE_NEW_PAGE'); } ?></h3>   
 
         <!-- pill edit navigation -->
-        <div class="edit-nav" >
+        <div class="edit-nav clearfix" >
             <?php 
             if(isset($id)) {
                 echo '<a href="'. find_url($url, $parent) .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
@@ -146,8 +146,9 @@ get_template('header');
             ?>
             <!-- @todo: fix accesskey for options  -->
             <!-- <a href="javascript:void(0)" id="metadata_toggle" accesskey="<?php echo find_accesskey(i18n_r('PAGE_OPTIONS'));?>" ><?php i18n('PAGE_OPTIONS'); ?></a> -->
-            <div class="clear" ></div>
-        </div>  
+            <?php exec_action(get_filename_id().'-edit-nav'); ?>
+        </div>      
+        <?php exec_action(get_filename_id().'-body'); ?>    
             
         <form class="largeform" id="editform" action="changedata.php" method="post" accept-charset="utf-8" >
         <input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("edit", "edit.php"); ?>" />            

@@ -39,7 +39,9 @@ $sitemapfile = '../'.GSSITEMAPFILE;
 			<div class="edit-nav clearfix" >
 				<a href="<?php echo $sitemapfile;?>" target="_blank" accesskey="<?php echo find_accesskey(i18n_r('VIEW'));?>" ><?php i18n('VIEW'); ?></a>
 				<a href="sitemap.php?refresh" accesskey="<?php echo find_accesskey(i18n_r('REFRESH'));?>" ><?php i18n('REFRESH'); ?></a>
-			</div>
+				<?php exec_action(get_filename_id().'-edit-nav'); ?>
+			</div>		
+			<?php exec_action(get_filename_id().'-body'); ?>	
 			<div class="unformatted">
 				<code><?php
 				if (file_exists($sitemapfile)) {

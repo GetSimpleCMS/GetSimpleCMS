@@ -281,9 +281,12 @@ switch (getFileExtension($template_file)) {
 	
 	<div id="maincontent">
 		<div class="main">
-		<h3><?php i18n('EDIT_THEME'); ?></h3>
-		
-		<!-- float wrapper -->
+		<h3 class="floated"><?php i18n('EDIT_THEME'); ?></h3>
+		<div class="edit-nav clearfix" >
+			<?php exec_action(get_filename_id().'-edit-nav'); ?>
+		</div>		
+		<?php exec_action(get_filename_id().'-body'); ?>				
+	<!-- float wrapper -->
 		<div id="theme_edit_wrap">
 
 			<!-- left nav  -->

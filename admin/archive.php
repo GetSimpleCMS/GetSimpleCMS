@@ -49,8 +49,10 @@ get_template('header');
 		<div class="main" >
 		<h3 class="floated"><?php i18n('WEBSITE_ARCHIVES');?></h3>
 		<div class="edit-nav clearfix" >
-    	<a id="waittrigger" href="archive.php?do&amp;nonce=<?php echo get_nonce("create"); ?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_CREATE_ARC'));?>" title="<?php i18n('CREATE_NEW_ARC');?>" ><?php i18n('ASK_CREATE_ARC');?></a>
+    		<a id="waittrigger" href="archive.php?do&amp;nonce=<?php echo get_nonce("create"); ?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_CREATE_ARC'));?>" title="<?php i18n('CREATE_NEW_ARC');?>" ><?php i18n('ASK_CREATE_ARC');?></a>
+			<?php exec_action(get_filename_id().'-edit-nav'); ?>
 		</div>
+		<?php exec_action(get_filename_id().'-body'); ?>		
 		<p style="display:none" id="waiting" ><?php i18n('CREATE_ARC_WAIT');?></p>
 		<table class="highlight paginate">
 			<thead>

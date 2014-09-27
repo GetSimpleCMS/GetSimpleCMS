@@ -73,8 +73,11 @@ include('template/include-nav.php'); ?>
 	<div id="maincontent">
 			
 		<div class="main">
-		<h3><?php i18n('IMG_CONTROl_PANEL');?></h3>
-	
+		<h3 class="floated"><?php i18n('IMG_CONTROl_PANEL');?></h3>
+		<div class="edit-nav clearfix" >
+			<?php exec_action(get_filename_id().'-edit-nav'); ?>
+		</div>		
+		<?php exec_action(get_filename_id().'-body'); ?>		
 			<?php echo '<p><a href="'.$src_url .rawurlencode($src).'" rel="facybox_i" >'.i18n_r('ORIGINAL_IMG').'</a> <code>'.$imgwidth.'x'.$imgheight .'</code>'. $thumb_exists .'</p>'; ?>
 
 			<form>

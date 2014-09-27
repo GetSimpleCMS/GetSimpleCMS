@@ -25,8 +25,11 @@ get_template('header');
 	<div id="maincontent">
 		<div class="main">
 	
-			<h3><?php i18n('GETTING_STARTED');?></h3>
-			
+			<h3 class="floated"><?php i18n('GETTING_STARTED');?></h3>
+			<div class="edit-nav clearfix" >
+				<?php exec_action(get_filename_id().'-edit-nav'); ?>
+			</div>		
+			<?php exec_action(get_filename_id().'-body'); ?>		
 			<ul>
 				<li><a href="http://get-simple.info/docs/" target="_blank" ><?php i18n('SIDE_DOCUMENTATION'); ?></a></li>
 				<li><a href="http://get-simple.info/forum/" target="_blank" ><?php i18n('SUPPORT_FORUM'); ?></a></li>

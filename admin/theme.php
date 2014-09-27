@@ -65,7 +65,11 @@ get_template('header');
 	
 	<div id="maincontent">
 		<div class="main">
-		<h3><?php i18n('CHOOSE_THEME');?></h3>
+		<h3 class="floated"><?php i18n('CHOOSE_THEME');?></h3>
+		<div class="edit-nav clearfix" >
+			<?php exec_action(get_filename_id().'-edit-nav'); ?>
+		</div>		
+		<?php exec_action(get_filename_id().'-body'); ?>			
 		<form action="" method="post" accept-charset="utf-8" >
 		<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("activate"); ?>" />			
 		<?php	

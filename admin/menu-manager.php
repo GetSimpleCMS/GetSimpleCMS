@@ -50,7 +50,11 @@ get_template('header');
 	
 	<div id="maincontent">
 		<div class="main" >
-			<h3><?php echo str_replace(array('<em>','</em>'), '', i18n_r('MENU_MANAGER')); ?></h3>
+			<h3 class="floated"><?php echo str_replace(array('<em>','</em>'), '', i18n_r('MENU_MANAGER')); ?></h3>
+			<div class="edit-nav clearfix" >
+				<?php exec_action(get_filename_id().'-edit-nav'); ?>
+			</div>		
+			<?php exec_action(get_filename_id().'-body'); ?>				
 			<p><?php i18n('MENU_MANAGER_DESC'); ?></p>
 			<?php
 				if (count($pagesSorted) != 0) { 

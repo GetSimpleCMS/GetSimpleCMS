@@ -129,14 +129,15 @@ include('template/include-nav.php'); ?>
 	<div id="maincontent">
 	<div class="main">
 	<h3 class="floated"><?php echo i18n_r('EDIT_COMPONENTS');?></h3>
-	<div class="edit-nav" >
+	<div class="edit-nav clearfix" >
 		<a href="javascript:void(0)" id="addcomponent" accesskey="<?php echo find_accesskey(i18n_r('ADD_COMPONENT'));?>" ><?php i18n('ADD_COMPONENT');?></a>
 		<?php if(!getDef('GSNOHIGHLIGHT',true)){
 		echo $themeselector; ?>	
 		<label>Theme</label>
 	<?php } ?>	
-		<div class="clear"></div>
-	</div>
+		<?php exec_action(get_filename_id().'-edit-nav'); ?>
+	</div>		
+	<?php exec_action(get_filename_id().'-body'); ?>
 	<form id="compEditForm" class="manyinputs" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 		<input type="hidden" id="id" value="<?php echo $count; ?>" />
 		<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_components"); ?>" />

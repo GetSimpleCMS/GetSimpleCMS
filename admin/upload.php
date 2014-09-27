@@ -210,12 +210,15 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 					}
 				}
 			}
-			echo '</select><div class="clear" ></div></div>';
+		echo '</select><div class="clear" ></div>';
 
-     
+	   	exec_action(get_filename_id().'-edit-nav');
+		echo "</div>";
+		exec_action(get_filename_id().'-body'); 
+
       $pathParts = explode("/",$subPath);
       $urlPath = null;
-     
+
       echo '<div class="h5 clearfix"><div class="crumbs">/ <a href="upload.php">uploads</a> / ';
 
       foreach ($pathParts as $pathPart){

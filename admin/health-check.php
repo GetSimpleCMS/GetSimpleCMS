@@ -35,8 +35,13 @@ echo '<div class="bodycontent clearfix">
 			// Server Setup
 			///////////////////////////////////////////////
 
-			echo '<h3>' . $site_full_name .'</h3>
-			<table class="highlight healthcheck">';
+			echo '<h3 class="floated">' . $site_full_name .'</h3>';
+			echo '<div class="edit-nav clearfix" >';
+			exec_action(get_filename_id().'-edit-nav');
+			echo '</div>';
+			exec_action(get_filename_id().'-body');
+
+			echo '<table class="highlight healthcheck">';
 				
 				# check to see if there is a core update needed
 				$verdata   = getVerCheck();

@@ -193,58 +193,59 @@ $userheading = empty($userid) ? "<span> / ". i18n_r('NEW_USER') ."</span>" : "<s
 		<?php if($adding === true){ ?> <input id="add" name="add" type="hidden" value="1" /> <?php } ?>
 		
 		<div class="main">
-			<div id="profile" class="" >
-				<h3><?php i18n('USER_PROFILE'); echo $userheading; ?></h3>
-				<div class="leftsec">
-					<p><label for="user" ><?php i18n('LABEL_USERNAME');?>:</label><input class="text" id="user" name="user" type="text" <?php echo $adding === true ? '' : 'readonly'; ?> value="<?php echo $userid; ?>" /></p>
-				</div>
-				<div class="rightsec">
-					<p><label for="email" ><?php i18n('LABEL_EMAIL');?>:</label><input class="text" id="email" name="email" type="email" value="<?php echo $data->EMAIL; ?>" /></p>
-					<?php if (! check_email_address($data->EMAIL)) {
-						echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.i18n_r('WARN_EMAILINVALID').'</p>';
-					}?>
-				</div>
-				<div class="clear"></div>
-				<div class="leftsec">
-					<p><label for="name" ><?php i18n('LABEL_DISPNAME');?>:</label>
-					<span style="margin:0px 0 5px 0;font-size:12px;color:#999;" ><?php i18n('DISPLAY_NAME');?></span>			
-					<input class="text" id="name" name="name" type="text" value="<?php echo $data->NAME; ?>" /></p>
-				</div>		
-				<div class="clear"></div>		
-				<div class="leftsec">
-					<p><label for="timezone" ><?php i18n('LOCAL_TIMEZONE');?>:</label>
-					<select class="text" id="timezone" name="timezone"> 
-					<?php if ($data->TIMEZONE == '') { echo '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>'; } else { echo '<option selected="selected"  value="'. $data->TIMEZONE .'">'. $data->TIMEZONE .'</option>'; } ?>
-					<?php include('inc/timezone_options.txt'); ?>
-					</select>
-					</p>
-				</div>
-				<div class="rightsec">
-					<p><label for="lang" ><?php i18n('LANGUAGE');?>: <span class="right"><a href="http://get-simple.info/docs/languages" target="_blank" ><?php i18n('MORE');?></a></span></label>
-					<select name="lang" id="lang" class="text">
-						<?php echo $langs; ?>
-					</select>
-					</p>
-				</div>
-				<div class="clear"></div>
-				<p class="inline" ><input name="show_htmleditor" id="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<label for="show_htmleditor" ><?php i18n('ENABLE_HTML_ED');?></label></p>
-				
-				<?php exec_action('settings-user-extras'); ?>
-				
-				<p style="margin:0px 0 5px 0;font-size:12px;color:#999;" ><?php $adding === true ? i18n('PROVIDE_PASSWORD') : i18n('ONLY_NEW_PASSWORD');?>:</p>
-				<div class="leftsec">
-					<p><label for="sitepwd" ><?php $adding === true ? i18n('PASSWORD') : i18n('NEW_PASSWORD');?>:</label><input autocomplete="off" class="text" id="sitepwd" name="sitepwd" type="password" value="" /></p>
-				</div>
-				<div class="rightsec">
-					<p><label for="sitepwd_confirm" ><?php i18n('CONFIRM_PASSWORD');?>:</label><input autocomplete="off" class="text" id="sitepwd_confirm" name="sitepwd_confirm" type="password" value="" /></p>
-				</div>
-				<div class="clear"></div>
-				
-				<p id="submit_line" >
-					<span><input class="submit" type="submit" name="submitted" value="<?php i18n('BTN_SAVEUPDATES');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="profile.php?cancel"><?php i18n('CANCEL'); ?></a>
+			<h3 class="floated"><?php i18n('USER_PROFILE'); echo $userheading; ?></h3>
+			<div class="edit-nav clearfix" >
+				<?php exec_action(get_filename_id().'-edit-nav'); ?>
+			</div>		
+			<?php exec_action(get_filename_id().'-body'); ?>		
+			<div class="leftsec">
+				<p><label for="user" ><?php i18n('LABEL_USERNAME');?>:</label><input class="text" id="user" name="user" type="text" <?php echo $adding === true ? '' : 'readonly'; ?> value="<?php echo $userid; ?>" /></p>
+			</div>
+			<div class="rightsec">
+				<p><label for="email" ><?php i18n('LABEL_EMAIL');?>:</label><input class="text" id="email" name="email" type="email" value="<?php echo $data->EMAIL; ?>" /></p>
+				<?php if (! check_email_address($data->EMAIL)) {
+					echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.i18n_r('WARN_EMAILINVALID').'</p>';
+				}?>
+			</div>
+			<div class="clear"></div>
+			<div class="leftsec">
+				<p><label for="name" ><?php i18n('LABEL_DISPNAME');?>:</label>
+				<span style="margin:0px 0 5px 0;font-size:12px;color:#999;" ><?php i18n('DISPLAY_NAME');?></span>			
+				<input class="text" id="name" name="name" type="text" value="<?php echo $data->NAME; ?>" /></p>
+			</div>		
+			<div class="clear"></div>		
+			<div class="leftsec">
+				<p><label for="timezone" ><?php i18n('LOCAL_TIMEZONE');?>:</label>
+				<select class="text" id="timezone" name="timezone"> 
+				<?php if ($data->TIMEZONE == '') { echo '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>'; } else { echo '<option selected="selected"  value="'. $data->TIMEZONE .'">'. $data->TIMEZONE .'</option>'; } ?>
+				<?php include('inc/timezone_options.txt'); ?>
+				</select>
 				</p>
-
-			</div><!-- /section -->
+			</div>
+			<div class="rightsec">
+				<p><label for="lang" ><?php i18n('LANGUAGE');?>: <span class="right"><a href="http://get-simple.info/docs/languages" target="_blank" ><?php i18n('MORE');?></a></span></label>
+				<select name="lang" id="lang" class="text">
+					<?php echo $langs; ?>
+				</select>
+				</p>
+			</div>
+			<div class="clear"></div>
+			<p class="inline" ><input name="show_htmleditor" id="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<label for="show_htmleditor" ><?php i18n('ENABLE_HTML_ED');?></label></p>
+			
+			<?php exec_action('settings-user-extras'); ?>
+			
+			<p style="margin:0px 0 5px 0;font-size:12px;color:#999;" ><?php $adding === true ? i18n('PROVIDE_PASSWORD') : i18n('ONLY_NEW_PASSWORD');?>:</p>
+			<div class="leftsec">
+				<p><label for="sitepwd" ><?php $adding === true ? i18n('PASSWORD') : i18n('NEW_PASSWORD');?>:</label><input autocomplete="off" class="text" id="sitepwd" name="sitepwd" type="password" value="" /></p>
+			</div>
+			<div class="rightsec">
+				<p><label for="sitepwd_confirm" ><?php i18n('CONFIRM_PASSWORD');?>:</label><input autocomplete="off" class="text" id="sitepwd_confirm" name="sitepwd_confirm" type="password" value="" /></p>
+			</div>
+			<div class="clear"></div>
+			
+			<p id="submit_line" >
+				<span><input class="submit" type="submit" name="submitted" value="<?php i18n('BTN_SAVEUPDATES');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="profile.php?cancel"><?php i18n('CANCEL'); ?></a>
+			</p>
 		</div><!-- /main -->
 	</form>
 	
