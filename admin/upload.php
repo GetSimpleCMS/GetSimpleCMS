@@ -52,12 +52,9 @@ if (isset($_FILES['file'])) {
 			$file_loc = $path . $file_base;
 			
 			//prevent overwriting						
-			if(!isset($_POST['fileoverwrite'])){
-				while ( file_exists($file_loc) ) {
-					$file_loc = $path . $count.'-'. $file_base;
-					$file_base     = $count.'-'. $file_base;
-					$count++;
-				}
+			if(!isset($_POST['fileoverwrite']) && file_exists($file_loc)){
+				list($file_base,$filecount) = getNextFileName($path,$file_base);
+				$file_loc = $path.$file_base;
 			}
 
 			//validate file

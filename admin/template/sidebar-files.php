@@ -135,7 +135,7 @@ $fileSizeLimitMB = toBytesShorthand($fileSizeLimit.'M',true);
 			},
 			accept: checkfile,
 	        sending: function(file, xhr, formData) {
-                if(file.overwrite) formData.append('fileoverwrite', file.overwrite);
+                if(file.overwrite == 1) formData.append('fileoverwrite', file.overwrite);
 	        }
 		});
 
@@ -156,7 +156,11 @@ $fileSizeLimitMB = toBytesShorthand($fileSizeLimit.'M',true);
 	            			file.overwrite = 1;
 	            			done();
 	            		}	
-	                	else done(i18n('CANCELLED'));
+	                	else {
+	                		file.overwrite = 0;
+	                		done();
+	                		// done(i18n('CANCELLED'));
+	                	}	
 	            	} 
 	            	else if(response == 0) done();
 	            	else done(i18n('ERROR'));
