@@ -256,9 +256,6 @@ extract(getWebsiteData(true));
 debugLog('SITEURL = ' . $SITEURL);
 debugLog('ASSETURL = ' . $ASSETURL);
 
-if(empty($SITEURL))  $SITEURL  = suggest_site_path();
-if(empty($ASSETURL)) $ASSETURL = $SITEURL;
-
 /**
  * Global user data
  *
@@ -317,7 +314,6 @@ $SALT = getDefaultSalt();
 if(!isset($SALT) && $SITEURL !='' && notInInstall()) die(i18n_r('KILL_CANT_CONTINUE')."<br/>".sprintf(i18n_r('NOT_SET'),'SALT') );
 $SESSIONHASH = sha1($SALT . $SITENAME);
 
-
 /**
  * Global editor vars (ckeditor)
  *
@@ -343,6 +339,10 @@ $EDTOOL    = getEditorToolbar();
 
 $TIMEZONE  = getDefaultTimezone();
 setTimezone($TIMEZONE);
+
+
+if(empty($SITEURL))  $SITEURL  = suggest_site_path();
+if(empty($ASSETURL)) $ASSETURL = $SITEURL;
 
 
 $dump = array(
