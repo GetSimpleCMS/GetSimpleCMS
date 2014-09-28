@@ -123,7 +123,7 @@ exec_action('style-save'); // called after css files are included
 
 // save cache
 $ob_get_contents = ob_get_contents();
-save_file($cachefile, compress($ob_get_contents));
+save_file($cachefile, cssCompress($ob_get_contents));
 ob_end_flush();
 
 

@@ -341,10 +341,6 @@ $TIMEZONE  = getDefaultTimezone();
 setTimezone($TIMEZONE);
 
 
-if(empty($SITEURL))  $SITEURL  = suggest_site_path();
-if(empty($ASSETURL)) $ASSETURL = $SITEURL;
-
-
 $dump = array(
 // 'dataw'        => $dataw,
 // 'datau'        => $datau,
@@ -411,6 +407,9 @@ if (notInInstall()) {
 	}
 
 }
+
+if(empty($SITEURL))  $SITEURL  = suggest_site_path();
+if(empty($ASSETURL)) $ASSETURL = $SITEURL;
 
 /**
  * Include other files depending if they are needed or not
