@@ -256,6 +256,9 @@ extract(getWebsiteData(true));
 debugLog('SITEURL = ' . $SITEURL);
 debugLog('ASSETURL = ' . $ASSETURL);
 
+if(empty($SITEURL))  $SITEURL  = suggest_site_path();
+if(empty($ASSETURL)) $ASSETURL = $SITEURL;
+
 /**
  * Global user data
  *

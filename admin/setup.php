@@ -60,7 +60,7 @@ if(isset($_POST['submitted'])) {
 		
 		# create user xml file
 		$file = _id($USR).'.xml';
-		backup_datafile(GSUSERSPATH.$file);
+		if(file_exists(GSUSERSPATH.$file)) backup_datafile(GSUSERSPATH.$file);
 		$xml = new SimpleXMLElement('<item></item>');
 		$xml->addChild('USR', $USR);
 		$xml->addChild('PWD', $PASSWD);
