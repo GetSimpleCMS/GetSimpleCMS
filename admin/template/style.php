@@ -122,8 +122,8 @@ if(file_exists(GSTHEMESPATH.GSCSSCUSTOMFILE) && $useadmincss) include(GSTHEMESPA
 exec_action('style-save'); // called after css files are included
 
 // save cache
-save_file($cachefile, compress(ob_get_contents()));
-
+$ob_get_contents = ob_get_contents();
+save_file($cachefile, compress($ob_get_contents);
 ob_end_flush();
 
 
