@@ -421,7 +421,7 @@ function delete_dir($path){
 function save_file($file,$data=''){
 	$status = file_put_contents($file,$data) !== false; // returns num bytes written, FALSE on failure
 	fileLog(__FUNCTION__,$status,$file);
-	$chmodstatus = gs_chmod($file); // currently ignoring chmod failures
+	if(getDef('GSDOCHMOD',true)) $chmodstatus = gs_chmod($file); // currently ignoring chmod failures
 	return $status;
 }
 
@@ -500,7 +500,7 @@ function delete_file($file){
 
 /**
  * do chmod using gs chmod constants or user
- * returns false if chmod is not avialable for whatever reason
+ * returns false if chmod is not available for whatever reason
  *
  * @since 3.4
  *

@@ -233,7 +233,7 @@ if(!is_frontend()){
  * @global (str) $SITETIMEZONE  default timezone of server, safer to set than guess from server
  * @global (str) $SITELANG      default site ITEF langstring, used for login etc. see $LANG
  * @global (str) $SITEUSR       primary user id that installed GS
- * @global (str) $ASSETURL      url for asset loading in head default same as SITEURL but without the scheme '://url'
+ * @global (str) $ASSETURL      url for asset loading in head depends on GSASSETURLREL and GSASSETSCHEMES settings
  */
 
 GLOBAL
