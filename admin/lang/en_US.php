@@ -64,6 +64,7 @@ $i18n = array(
 "ALL_PAGES"               =>	"Pages",
 "EXPAND_TOP"              =>	"Expand Top Parents",
 "COLLAPSE_TOP"            =>	"Collapse Top Parents",
+"MISSING_PARENT"          =>    " - <i>Missing Parent</i>",
 
 /* 
 * For: edit.php

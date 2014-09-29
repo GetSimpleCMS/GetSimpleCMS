@@ -1010,8 +1010,8 @@ function getPagesRow($page,$level,$index,$parent,$children){
 }
 
 function getPagesRowMissing($ancestor,$level,$children){
-	$menu = '<tr id="tr-'.$ancestor.'" class="tree-error tree-parent depth-'.$level.'" data-depth="'.$level.'"><td colspan="4" class="pagetitle"><a><strong>'. $ancestor.'</strong> Missing Parent</a>';
-	if ( file_exists(GSBACKUPSPATH."pages/".$ancestor.'.bak.xml') ) {
+	$menu = '<tr id="tr-'.$ancestor.'" class="tree-error tree-parent depth-'.$level.'" data-depth="'.$level.'"><td colspan="4" class="pagetitle"><a><strong>'. $ancestor.'</strong> '.i18n_r('MISSING_PARENT').'</a>';
+	if ( fileHasBackup(GSDATAPAGESPATH.$ancestor.'.xml') ) {
 		$menu.= '&nbsp;&nbsp;&nbsp;&nbsp;<a href="backup-edit.php?p=view&amp;id='.$ancestor.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
 	}
 	$menu.= "</td></tr>";
