@@ -592,7 +592,14 @@ jQuery(document).ready(function () {
 	if ($("#edit input#post-title:empty").val() === '') {
 		$("#edit input#post-title").focus();
 	}
- 
+
+	// page options toggle LEGACY for plugins
+	$("#metadata_toggle").on("click", function ($e) {
+		$e.preventDefault();
+		$("#metadata_window").slideToggle('fast');
+		$(this).toggleClass('current');
+	});
+
 	var privateLabel = $("#post-private-wrap label");
 	$("#post-private").change(function () {
 		if ($(this).val() == "Y") {
