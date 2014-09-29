@@ -432,7 +432,7 @@ function save_file($file,$data=''){
  */
 function read_file($file){
 	$data = file_get_contents($file); // php file_get_contents
-	fileLog(__FUNCTION__,isset($data),$file);
+	fileLog(__FUNCTION__,$data!==false,$file);
 	return $data;
 }
 
