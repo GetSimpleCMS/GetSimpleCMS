@@ -10,7 +10,7 @@
 require_once(GSADMININCPATH.'configuration.php');
 
 define('HMACALGO','sha256');
-define('HMACDELIM',':');
+define('COOKIEDELIM',':');
 
 /**
  * Create Cookie
@@ -26,16 +26,46 @@ define('HMACDELIM',':');
 function create_cookie() {
 	global $USR,$SALT,$cookie_time,$cookie_name;
 
-	$saltUSR    = sha1($USR.$SALT);
-	$saltCOOKIE = sha1($cookie_name.$SALT);
-
+	$saltUSR    = sha1($USR);
+	$saltCOOKIE = sha1($cookie_name);
 	$expiration = time() + $cookie_time;
-
-	$hash   = hash_hmac( HMACALGO, $saltUSR . $expiration, $SALT );
-	$cookie = $saltUSR . HMACDELIM . $expiration . HMACDELIM . $hash;
+	$hash       = hash_hmac( HMACALGO, $saltUSR . $expiration, $SALT );
+	$cookie     = $saltUSR . COOKIEDELIM . $expiration . COOKIEDELIM . $hash;
 
 	setcookie($saltCOOKIE, $cookie, $expiration,'/');
 	setcookie('GS_ADMIN_USERNAME', $USR, time() + $cookie_time,'/');
+}
+
+
+/**
+ * Cookie Checker
+ *
+ * @since 1.0
+ * @uses $SALT
+ * @uses $USR
+ * @uses $cookie_name
+ * @uses GSCOOKIEISSITEWIDE
+ *
+ * @return bool
+ */
+function cookie_check() {
+	global $USR,$SALT,$cookie_name,$cookie_time;
+	$saltUSR      = sha1($USR);
+	$saltCOOKIEID = sha1($cookie_name);
+
+	if(!isset($_COOKIE[$saltCOOKIEID])) return false; // cookie doesn't exist
+	else $cookie = $_COOKIE[$saltCOOKIEID];
+
+	$cookie_values = explode( COOKIEDELIM, $cookie );
+	if(count($cookie_values) < 3) return false; // not enough values
+
+	list( $id, $expiration, $hmac ) = $cookie_values; // split values
+
+	if ( $expiration < time() ) return false; // expired
+
+	$hash = hash_hmac( HMACALGO, $saltUSR . $expiration, $SALT );
+
+	return hash_equals($hash,$hmac);
 }
 
 /**
@@ -54,39 +84,6 @@ function kill_cookie($identifier) {
 		$_COOKIE[$saltCOOKIE] = false;
 		setcookie($saltCOOKIE, false, time() - 3600,'/');
 	}
-}
-
-/**
- * Cookie Checker
- *
- * @since 1.0
- * @uses $SALT
- * @uses $USR
- * @uses $cookie_name
- * @uses GSCOOKIEISSITEWIDE
- *
- * @return bool
- */
-function cookie_check() {
-	global $USR,$SALT,$cookie_name,$cookie_time;
-	$saltUSR      = sha1($USR.$SALT);
-	$saltCOOKIEID = sha1($cookie_name.$SALT);
-
-	if(!isset($_COOKIE[$saltCOOKIEID])) return false; // cookie doesn't exist
-	else $cookie = $_COOKIE[$saltCOOKIEID];
-
-	$cookie_values = explode( HMACDELIM, $cookie );
-	if(count($cookie_values) < 3) return false; // not enough values
-
-	list( $id, $expiration, $hmac ) = $cookie_values; // split values
-
-	if ( $expiration < time() ) return false; // expired
-
-	$hash = hash_hmac( HMACALGO, $saltUSR . $expiration, $SALT );
-
-	debugLog($hash);
-
-	return hash_equals($hash,$hmac);
 }
 
 /**
