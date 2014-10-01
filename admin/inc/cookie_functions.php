@@ -9,6 +9,9 @@
 
 require_once(GSADMININCPATH.'configuration.php');
 
+define('HMACALGO','sha256');
+define('HMACDELIM',':');
+
 /**
  * Create Cookie
  *
@@ -22,10 +25,17 @@ require_once(GSADMININCPATH.'configuration.php');
  */
 function create_cookie() {
 	global $USR,$SALT,$cookie_time,$cookie_name;
+
 	$saltUSR    = sha1($USR.$SALT);
 	$saltCOOKIE = sha1($cookie_name.$SALT);
-	setcookie($saltCOOKIE, $saltUSR, time() + $cookie_time,'/'); 
-	setcookie('GS_ADMIN_USERNAME', $USR, time() + $cookie_time,'/');   
+
+	$expiration = time() + $cookie_time;
+
+	$hash   = hash_hmac( HMACALGO, $saltUSR . $expiration, $SALT );
+	$cookie = $saltUSR . HMACDELIM . $expiration . HMACDELIM . $hash;
+
+	setcookie($saltCOOKIE, $cookie, $expiration,'/');
+	setcookie('GS_ADMIN_USERNAME', $USR, time() + $cookie_time,'/');
 }
 
 /**
@@ -58,14 +68,25 @@ function kill_cookie($identifier) {
  * @return bool
  */
 function cookie_check() {
-	global $USR,$SALT,$cookie_name;
+	global $USR,$SALT,$cookie_name,$cookie_time;
 	$saltUSR      = sha1($USR.$SALT);
 	$saltCOOKIEID = sha1($cookie_name.$SALT);
-	if(isset($_COOKIE[$saltCOOKIEID]) && $_COOKIE[$saltCOOKIEID] === $saltUSR) {
-		return true; // Cookie proves logged in status.
-	} else {
-		return false; 
-	}
+
+	if(!isset($_COOKIE[$saltCOOKIEID])) return false; // cookie doesn't exist
+	else $cookie = $_COOKIE[$saltCOOKIEID];
+
+	$cookie_values = explode( HMACDELIM, $cookie );
+	if(count($cookie_values) < 3) return false; // not enough values
+
+	list( $id, $expiration, $hmac ) = $cookie_values; // split values
+
+	if ( $expiration < time() ) return false; // expired
+
+	$hash = hash_hmac( HMACALGO, $saltUSR . $expiration, $SALT );
+
+	debugLog($hash);
+
+	return hash_equals($hash,$hmac);
 }
 
 /**
@@ -101,5 +122,20 @@ function get_cookie($cookie_name) {
 		return $_COOKIE[$cookie_name];
 	}
 }
-	
+
+if (!function_exists('hash_equals')) {
+    /**
+     * Use HMAC with a nonce to compare two strings in a manner that is resistant to timing attacks
+     *
+     * Shim for older PHP versions providing support for the PHP >= 5.6.0 built-in function
+     *
+     * @param $a string first hash
+     * @param $b string second hash
+     * @return boolean true if the strings are the same, false otherwise
+     */
+    function hash_equals($a, $b) {
+		$nonce = mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
+        return hash_hmac('sha256', $a, $nonce, true) === hash_hmac('sha256', $b, $nonce, true);
+	}
+}
 /* ?> */
