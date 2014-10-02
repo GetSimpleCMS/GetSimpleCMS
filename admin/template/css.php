@@ -2173,13 +2173,13 @@ body#index {
 }
 
 #setup #footer,#install #footer,#index #footer, #resetpassword #footer {
-	width: 270px;
+	/*width: 270px;*/
 	border-top: none;
-	margin: 0 auto 20px auto;
+	/*margin: 0 auto 20px auto;*/
 	text-align: center;
 }
 
-#index .footer-left,#resetpassword .footer-left  {
+#setup .footer-left,#install .footer-left,#index .footer-left,#resetpassword .footer-left  {
 	float: none;
 	width: 100%;
 }

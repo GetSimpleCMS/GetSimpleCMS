@@ -108,4 +108,5 @@ get_template('header');
 		
 	</div>
 
+<div class="clear"></div>
 <?php get_template('footer'); ?>
