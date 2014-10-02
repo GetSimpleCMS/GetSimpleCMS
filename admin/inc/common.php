@@ -51,6 +51,8 @@ $GS_constants = array(
 	'GSDEFAULTLANG'         => 'en_US',                       // default language for core
 	'GSTITLEMAX'            => '70',                          // max length allowed for titles
 	'GSFILENAMEMAX'         => '255',                         // max length allowed for file names/slugs
+	'GSCOOKIEALGO'          => 'sha256',                      // cookie hashing algorithm
+	'GSCOOKIEDELIM'         => ':',                           // cookie delimiter
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
 
@@ -84,6 +86,7 @@ $GS_definitions = array(
 	'GSCHMODFILE'          => 0644,                           // chmod mode for files
 	'GSCHMODDIR'           => 0755,                           // chmod mode for dirs
 	'GSDOCHMOD'            => true,                           // perform chmod after creating files or directories
+	'GSOLDCOOKIE'          => false,                          // save old GS_ADMIN_USERNAME cookie
  	'GSDEFINITIONSLOADED'  => true	                          // $GS_definitions IS LOADED FLAG
 );
 
@@ -192,8 +195,8 @@ require_once('basic.php');
 require_once('template_functions.php');
 require_once('theme_functions.php');
 require_once('logging.class.php');
-
 include_once(GSADMININCPATH.'configuration.php');
+require_once(GSADMININCPATH.'cookie_functions.php');
 
 /**
  * Bad stuff protection
@@ -256,6 +259,27 @@ extract(getWebsiteData(true));
 debugLog('SITEURL = ' . $SITEURL);
 debugLog('ASSETURL = ' . $ASSETURL);
 
+
+/**
+ * Globals for salt and authentication data
+ *
+ * @global (obj) $dataa,       authorization xml raw obj from GSDATAOTHERPATH.GSAUTHFILE
+ * @global (str) $SALT,        salt from gsconfig else authorization file
+ * @global (str) $SESSIONHASH  used for stateless session confirmation, or as non-expiring nonce for certain operations
+ */
+
+GLOBAL
+ $dataa, // legacy for anyone using
+ $SALT,
+ $SESSIONHASH
+;
+
+// grab authorization and security data fatal fail if salt is not set
+$SALT = getDefaultSalt();
+if(!isset($SALT) && $SITEURL !='' && notInInstall()) die(i18n_r('KILL_CANT_CONTINUE')."<br/>".sprintf(i18n_r('NOT_SET'),'SALT') );
+$SESSIONHASH = sha1($SALT . $SITENAME);
+
+
 /**
  * Global user data
  *
@@ -295,24 +319,6 @@ i18n_mergeDefault();        // load GSDEFAULTLANG or GSMERGELANG lang into $i18n
 //set php locale
 setCustomLocale(getLocaleConfig());
 
-/**
- * Globals for salt and authentication data
- *
- * @global (obj) $dataa,       authorization xml raw obj from GSDATAOTHERPATH.GSAUTHFILE
- * @global (str) $SALT,        salt from gsconfig else authorization file
- * @global (str) $SESSIONHASH  used for stateless session confirmation, or as non-expiring nonce for certain operations
- */
-
-GLOBAL
- $dataa, // legacy for anyone using
- $SALT,
- $SESSIONHASH
-;
-
-// grab authorization and security data fatal fail if salt is not set
-$SALT = getDefaultSalt();
-if(!isset($SALT) && $SITEURL !='' && notInInstall()) die(i18n_r('KILL_CANT_CONTINUE')."<br/>".sprintf(i18n_r('NOT_SET'),'SALT') );
-$SESSIONHASH = sha1($SALT . $SITENAME);
 
 /**
  * Global editor vars (ckeditor)
@@ -414,7 +420,7 @@ if(empty($ASSETURL)) $ASSETURL = $SITEURL;
 /**
  * Include other files depending if they are needed or not
  */
-require_once(GSADMININCPATH.'cookie_functions.php');
+
 require_once(GSADMININCPATH.'assets.php');
 
 if(isset($load['plugin']) && $load['plugin']){

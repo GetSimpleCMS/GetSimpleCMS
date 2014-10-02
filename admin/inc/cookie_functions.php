@@ -9,9 +9,6 @@
 
 require_once(GSADMININCPATH.'configuration.php');
 
-define('HMACALGO','sha256');
-define('COOKIEDELIM',':');
-
 /**
  * Create Cookie
  *
@@ -20,22 +17,25 @@ define('COOKIEDELIM',':');
  * @uses $SALT
  * @uses $cookie_time
  * @uses $cookie_name
- *
- *
+ * @return setcookie rwsponse, true if headers not sent
  */
 function create_cookie() {
 	global $USR,$SALT,$cookie_time,$cookie_name;
 
-	$saltUSR    = sha1($USR);
-	$saltCOOKIE = sha1($cookie_name);
+	if(!isset($SALT) || empty($SALT)) return;
+	if(!isset($USR) || empty($USR)) return;
+
+	$userid     = $USR;
+	$cookiename = $cookie_name;
 	$expiration = time() + $cookie_time;
-	$hash       = hash_hmac( HMACALGO, $saltUSR . $expiration, $SALT );
-	$cookie     = $saltUSR . COOKIEDELIM . $expiration . COOKIEDELIM . $hash;
 
-	setcookie($saltCOOKIE, $cookie, $expiration,'/');
-	setcookie('GS_ADMIN_USERNAME', $USR, time() + $cookie_time,'/');
+	$id         = $userid . GSCOOKIEDELIM . $expiration;
+	$hash       = hash_hmac( GSCOOKIEALGO, $id, $SALT );
+	$cookie     = $id . GSCOOKIEDELIM . $hash;
+
+	if(getDef('GSOLDCOOKIE',true)) setcookie('GS_ADMIN_USERNAME', $USR, $expiration,'/');
+	return setcookie($cookiename, $cookie, $expiration,'/');
 }
-
 
 /**
  * Cookie Checker
@@ -50,22 +50,24 @@ function create_cookie() {
  */
 function cookie_check() {
 	global $USR,$SALT,$cookie_name,$cookie_time;
-	$saltUSR      = sha1($USR);
-	$saltCOOKIEID = sha1($cookie_name);
+	// $userid     = $USR;
+	$cookiename = $cookie_name;
 
-	if(!isset($_COOKIE[$saltCOOKIEID])) return false; // cookie doesn't exist
-	else $cookie = $_COOKIE[$saltCOOKIEID];
+	if(!isset($SALT) || empty($SALT)) return false; // fail , SALT doesn't exist
+	if(!isset($_COOKIE[$cookiename])) return false; // fail, cookie doesn't exist
+	else $cookie = $_COOKIE[$cookiename];
 
-	$cookie_values = explode( COOKIEDELIM, $cookie );
-	if(count($cookie_values) < 3) return false; // not enough values
+	$cookie_values = explode( GSCOOKIEDELIM, $cookie );
+	if(count($cookie_values) < 3) return false; // fail, not enough values
 
-	list( $id, $expiration, $hmac ) = $cookie_values; // split values
+	list( $userid, $expiration, $hmac ) = $cookie_values; // split values
 
-	if ( $expiration < time() ) return false; // expired
+	if(empty($userid)) return false; // fail, no username
+	if ( $expiration < time() ) return false; // fail, expired
 
-	$hash = hash_hmac( HMACALGO, $saltUSR . $expiration, $SALT );
-
-	return hash_equals($hash,$hmac);
+	$hash   = hash_hmac( GSCOOKIEALGO, $userid . GSCOOKIEDELIM . $expiration, $SALT );
+	$result = hash_equals($hash,$hmac);
+	return $result;
 }
 
 /**
@@ -78,11 +80,11 @@ function cookie_check() {
  */
 function kill_cookie($identifier) {
 	global $SALT;
-	$saltCOOKIE = sha1($identifier.$SALT);
+	$cookiename = $identifier;
 		setcookie('GS_ADMIN_USERNAME', 'null', time() - 3600,'/');  
-	if (isset($_COOKIE[$saltCOOKIE])) {
-		$_COOKIE[$saltCOOKIE] = false;
-		setcookie($saltCOOKIE, false, time() - 3600,'/');
+	if (isset($_COOKIE[$cookiename])) {
+		$_COOKIE[$cookiename] = false;
+		setcookie($cookiename, false, time() - 3600,'/');
 	}
 }
 
@@ -106,7 +108,7 @@ function login_cookie_check() {
 }
 
 /**
- * Get Cookie
+ * Gets a Cookie after confirming logged in session
  *
  * @since 1.0
  * @global $_COOKIE
@@ -115,10 +117,23 @@ function login_cookie_check() {
  * @return bool
  */
 function get_cookie($cookie_name) {
-	if(cookie_check($cookie_name) === true) { 
-		return $_COOKIE[$cookie_name];
+	if(cookie_check() === true) {
+		if(isset($_COOKIE[$cookie_name])) return $_COOKIE[$cookie_name];
 	}
 }
+
+/**
+ * Get the logged in user from cookies
+ * @return 	str userid from cookie
+ */
+function getCookieUser(){
+	GLOBAL $cookie_name;
+	if(cookie_check()){
+		$fields = explode(GSCOOKIEDELIM, $_COOKIE[$cookie_name]);
+		return $fields[0];
+	}
+}
+
 
 if (!function_exists('hash_equals')) {
     /**
@@ -130,9 +145,48 @@ if (!function_exists('hash_equals')) {
      * @param $b string second hash
      * @return boolean true if the strings are the same, false otherwise
      */
-    function hash_equals($a, $b) {
-		$nonce = mcrypt_create_iv(32, MCRYPT_DEV_URANDOM);
-        return hash_hmac('sha256', $a, $nonce, true) === hash_hmac('sha256', $b, $nonce, true);
+	function hash_equals($a, $b)
+	{
+		// We jump trough some hoops to match the internals errors as closely as possible
+		$argc   = func_num_args();
+        $params = func_get_args();
+
+        if ($argc < 2) {
+            trigger_error("hash_equals() expects at least 2 parameters, {$argc} given", E_USER_ERROR);
+            return null;
+        }
+
+        if (!is_string($a)) {
+        	trigger_error("\nFatal error: Argument 1 passed to ".__FUNCTION__." must be an instance of string, " . gettype($a) . " given", E_USER_ERROR);
+            return false;
+        }
+
+        if (!is_string($b)) {
+        	trigger_error("\nFatal error: Argument 2 passed to ".__FUNCTION__." must be an instance of string, " . gettype($b) . " given", E_USER_ERROR);
+            return false;
+        }
+
+		// preffered method of timing attack avoidance is to double hash with nonce to avoid all possible optimizations
+		// MCRYPT_DEV_URANDOM not supported in windows pre 5.3, we could use MCRYPT_RAND, but it is slow and blocking
+        if(function_exists('mcrypt_create_iv') && defined('MCRYPT_DEV_URANDOM')){
+			$nonce = mcrypt_create_iv (32, MCRYPT_DEV_URANDOM);
+        	return hash_hmac('sha256', $a, $nonce, true) === hash_hmac('sha256', $b, $nonce, true);
+        }
+
+        // falling back to binary safe string compare
+        if (strlen($a) !== strlen($b)) {
+        	return false;
+        }
+
+		$len = strlen($a);
+		$result = 0;
+        for ($i = 0; $i < $len; $i++) {
+            $result |= (ord($a[$i]) ^ ord($b[$i]));
+        }
+
+        // They are only identical strings if $result is exactly 0...
+        return 0 === $result;
 	}
 }
+
 /* ?> */

@@ -9,7 +9,7 @@
 $MSG = null;
 # if the login cookie is already set, redirect user to control panel
 if(cookie_check()) {
-	gotoDefaultPage();                                           
+	gotoDefaultPage();
 }
 
 # was the form submitted?

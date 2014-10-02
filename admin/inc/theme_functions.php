@@ -636,7 +636,7 @@ function get_navigation($currentpage,$classPrefix = "") {
  */	
 function is_logged_in(){
 	global $USR;
-	if (isset($USR) && $USR == get_cookie('GS_ADMIN_USERNAME')) {
+	if (isset($USR) && $USR == getCookieUser()) {
 		return true;
 	}
 }	

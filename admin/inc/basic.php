@@ -2047,10 +2047,10 @@ function getWebsiteData($returnGlobals = false){
  */
 function getUserData($returnGlobals = false){
 
-	if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
-		$cookie_user_id = _id($_COOKIE['GS_ADMIN_USERNAME']);
-		if (file_exists(GSUSERSPATH . $cookie_user_id.'.xml')) {
-			$datau      = getXML(GSUSERSPATH  . $cookie_user_id.'.xml');
+	$cookie_user_id = getCookieUser();
+	if (isset($cookie_user_id)) {
+		if (file_exists(GSUSERSPATH . _id($cookie_user_id).'.xml')) {
+			$datau      = getXML(GSUSERSPATH . $cookie_user_id.'.xml');
 			$USR        = stripslashes($datau->USR);
 			$HTMLEDITOR = (string) $datau->HTMLEDITOR;
 			$USRTIMEZONE= (string) $datau->TIMEZONE;
