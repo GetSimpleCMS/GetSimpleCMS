@@ -27,11 +27,11 @@ if(isset($_POST['submitted'])){
 		# get user information from existing XML file
 		
 		if (filepath_is_safe(GSUSERSPATH . $file,GSUSERSPATH) && file_exists(GSUSERSPATH . $file)) {
-			$data  = getXML(GSUSERSPATH . $file);
-			$USR   = strtolower($data->USR);
-			$EMAIL = $data->EMAIL;
+			$data   = getXML(GSUSERSPATH . $file);
+			$userid = strtolower($data->USR);
+			$EMAIL  = $data->EMAIL;
 			
-			if(strtolower($_POST['username']) === $USR) {
+			if(strtolower($_POST['username']) === $userid) {
 				# create new random password
 				$random = createRandomPassword();
 				die($random);
@@ -41,7 +41,7 @@ if(isset($_POST['submitted'])){
 				backup_datafile(GSUSERSPATH.$file);
 				
 				# create password change trigger file
-				$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
+				$flagfile = GSUSERSPATH . _id($userid).".xml.reset";
 				copy_file(GSUSERSPATH . $file, $flagfile);
 				
 				# change password and resave xml file
@@ -51,7 +51,7 @@ if(isset($_POST['submitted'])){
 				# send the email with the new password
 				$subject = $site_full_name .' '. i18n_r('RESET_PASSWORD') .' '. i18n_r('ATTEMPT');
 				$message = "<p>". cl($SITENAME) ." ". i18n_r('RESET_PASSWORD') ." ". i18n_r('ATTEMPT').'</p>';
-				$message .= "<p>". i18n_r('LABEL_USERNAME').": <strong>". $USR."</strong>";
+				$message .= "<p>". i18n_r('LABEL_USERNAME').": <strong>". $userid."</strong>";
 				$message .= "<br>". i18n_r('NEW_PASSWORD').": <strong>". $random."</strong>";
 				$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL . $GSADMIN.'/">'.$SITEURL . $GSADMIN.'/</a></p>';
 				exec_action('resetpw-success');
