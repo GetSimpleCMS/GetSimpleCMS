@@ -95,7 +95,6 @@ GS_defineFromArray($GS_constants);
  */
 global
  $TEMPLATE,       // (str) current theme
- $USR,            // (str) holds the GS_ADMIN_USERNAME cookie value
  $GSADMIN,        // (str) admin foldername
  $GS_debug,       // (array) global array for storing debug log entries
  $components,     // (array) global array for storing components, array of objs from components.xml
@@ -260,7 +259,7 @@ debugLog('ASSETURL = ' . $ASSETURL);
  * Global user data
  *
  * @global  (str) $datau      user xml raw obj from GSUSERSPATH/userid.xml
- * @global  (str) $USR        user id
+ * @global  (str) $USR        holds the GS_ADMIN_USERNAME cookie value
  * @global  (str) $HTMLEDITOR htmleditor toggle for auth user
  * @global  (str) $TIMEZONE   timezone for auth user
  * @global  (str) $LANG       language for auth user
