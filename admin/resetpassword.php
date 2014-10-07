@@ -34,7 +34,6 @@ if(isset($_POST['submitted'])){
 			if(strtolower($_POST['username']) === $userid) {
 				# create new random password
 				$random = createRandomPassword();
-				die($random);
 				// $random = '1234';
 				
 				# create backup
@@ -55,12 +54,11 @@ if(isset($_POST['submitted'])){
 				$message .= "<br>". i18n_r('NEW_PASSWORD').": <strong>". $random."</strong>";
 				$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL . $GSADMIN.'/">'.$SITEURL . $GSADMIN.'/</a></p>';
 				exec_action('resetpw-success');
-				$status = sendmail($EMAIL,$subject,$message) ? 'success' : 'error';
+				$emailstatus = sendmail($EMAIL,$subject,$message);
+				# if email fails, we do nothing, maybe handle this in the future
 				# show the result of the reset attempt
 				usleep($randSleep);
-				$status = 'success'; // we dont care if email fails
-				// @todo status from xml save is the important one
-				redirect("resetpassword.php?upd=pwd-".$status);
+				redirect("resetpassword.php?upd=pwd-". ($status && $emailstatus ? 'success' : 'error');
 			} else{
 				# username doesnt match listed xml username
 				exec_action('resetpw-error');
