@@ -56,14 +56,14 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		}
 
 		// @todo check if file exists, close will fail if bad file added which always returns true
-		$archiv->addFile(GSROOTPATH.'.htaccess', '.htaccess' );
-		$archiv->addFile(GSROOTPATH.'gsconfig.php', 'gsconfig.php' );
+		if(file_exists(GSROOTPATH.'.htaccess'))    $archiv->addFile(GSROOTPATH.'.htaccess', '.htaccess' );
+		if(file_exists(GSROOTPATH.'gsconfig.php')) $archiv->addFile(GSROOTPATH.'gsconfig.php', 'gsconfig.php' );
 		
 		// testing custom extra files, will need a iter wrapper to get dirs
 		if(getDef('GSBACKUPEXTRAS',true)){
 			$extras = explode(GSBACKUPEXTRAS,',');
 			foreach($extras as $extra){
-				$archiv->addFile($extra);
+				if(file_exists($extra)) $archiv->addFile($extra);
 			}
 		}
 
