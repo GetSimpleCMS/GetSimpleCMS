@@ -72,8 +72,8 @@ $GS_definitions = array(
 	'GSALLOWRESETPASS'     => true,                           // (bool) allow front end password resets
 	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // file extensions to show and edit in theme editor
 	'GSASSETSCHEMES'       => false,                          // (bool) should $ASSETURL contain the url scheme http|https
-	'GSASSETURLREL'        => true,                          // (bool) Use root relative urls for $ASSETURL, overrides GSASSETSCHEMES
-	'GSSITEURLREL'         => true,                          // (bool) Use root relative urls for $SITEURL
+	'GSASSETURLREL'        => true,                           // (bool) Use root relative urls for $ASSETURL, overrides GSASSETSCHEMES
+	'GSSITEURLREL'         => true,                           // (bool) Use root relative urls for $SITEURL
 	'GSALLOWDOWNLOADS'     => true,                           // (bool) allow using downloads.php to download files from /uploads and backups/zip
 	'GSEDITORHEIGHT'       => '500',                          // (str) wysiwyg editor height in px
 	'GSEDITORTOOL'         => 'basic',                        // (str) wysiwyg editor toobar
@@ -344,6 +344,7 @@ $dump = array(
 // 'dataw'        => $dataw,
 // 'datau'        => $datau,
 // 'dataa'        => $dataa,
+'GSROOT'       => GSROOTPATH,
 'SITENAME'     => $SITENAME,
 'SITEURL'      => $SITEURL,
 'TEMPLATE'     => $TEMPLATE,
@@ -365,6 +366,7 @@ $dump = array(
 'EDOPTIONS'    => $EDOPTIONS,
 'EDLANG'       => $EDLANG,
 'EDHEIGHT'     => $EDHEIGHT,
+// '_SERVER'      => $_SERVER,
 );
 debugLog($dump);
 

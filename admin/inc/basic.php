@@ -540,6 +540,11 @@ function fileLog($operation,$status = null){
 	return $status;
 }
 
+/**
+ * convert array of file paths to relative paths to gsroot
+ * @param  array $args full filepaths
+ * @return returns array of relative filepaths
+ */
 function convertPathArgs($args){
 	foreach($args as &$arg){
 		if(!is_string($arg)) continue;
@@ -1731,7 +1736,7 @@ function notInInstall(){
 
 /**
  * Returns a path relative to GSROOTPATH or optional root path
- * @todo  probably not fully windows drive safe
+ * @todo  probably not fully windows drive safe, convert slashes to match
  * @since 3.4
  * @param  string $path full file path
  * @param  string $root optional root path, defaults to GSROOTPATH
@@ -1741,6 +1746,74 @@ function getRelPath($path,$root = GSROOTPATH ){
 	$relpath = str_replace($root,'',$path);
 	return $relpath;
 }
+
+/**
+ * Returns a URI path relative to root path
+ * @since 3.4
+ * @param  string $path full URI path
+ * @param  string $root optional root path
+ * @return string       relative URI path
+ */
+function getRelURIPath($path,$root ){
+	$relpath = str_replace($root,'',$path);
+	return $relpath;
+}
+
+/**
+ * get URI relative to SITEURL base
+ * @since  3.4
+ * @return str URI path
+ */
+function getRelRequestURI(){
+	GLOBAL $SITEURL;
+	$pathParts   = str_replace('//','/',parse_url($_SERVER['REQUEST_URI'])); # ignore double slashes in path
+	$queryString = isset($pathParts['query']) ? isset($pathParts['query']) : '';
+	$relativeURI = getRelURIPath($pathParts['path'],getRootRelURIPath($SITEURL));
+	return $relativeURI;
+}
+
+/**
+ * returns relative URI path or matching mask array
+ *
+ * @since  3.4
+ * @param  mixed $mask array or string of path keys
+ * @return return      if mask provided returns an array mathching path values to keys or empty, else returns string of path
+ */
+function getURIPath($mask = null, $pad = false){
+	$relativeURI = getRelRequestURI();
+	$URIpathAry  = explode('/',$relativeURI);
+
+	if(gettype($mask) == 'string') $mask = explode('/',$mask);
+
+	if($mask){
+		// assigning path vars to key mask
+		$maskCnt = count($mask);
+		$URIcnt  = count($URIpathAry);
+		$mask    = array_combine($mask,array_fill(0,$maskCnt,'')); # flip array with empty values so padding has indices to work with
+
+		if($maskCnt == $URIcnt){
+			// mask count matches path count			
+			$mask = array_combine(array_keys($mask),$URIpathAry);
+			return $mask;
+		}
+		else if(($URIcnt > $maskCnt) && $pad){
+			// path is larger than mask, overload if pad
+			// @todo splice left OR splice right option
+			// using pad right for now
+			$mask = array_pad($mask,count($URIpathAry),'');
+			$mask = array_combine(array_keys($mask),$URIpathAry);
+			return $mask;
+		}
+		else {
+			// Mask is larger than URI, ignoring
+		}
+	} 
+	else {
+		// no mask specificed so simple str return
+		return $relativeURI;
+	}
+}
+
 
 /**
  * returns a global, easier inline usage of readonly globals
@@ -1988,14 +2061,14 @@ function setTimezone($timezone){
  * @since  3.4
  * @var str url to normalize
  */
-function getRootRelPath($url){
+function getRootRelURIPath($url){
   $urlparts = parse_url($url);
   $strip    = isset($urlparts['scheme']) ? $urlparts['scheme'] .':' : '';
   $strip   .=  '//';
   $strip   .= isset($urlparts['host']) ? $urlparts['host'] : '';
-  debugLog(__FUNCTION__.' base = ' . $strip);
-  if(strpos($url,$strip) === 0) return debugLog(str_replace($strip,'',$url));
-  return debugLog($url);
+  // debugLog(__FUNCTION__.' base = ' . $strip);
+  if(strpos($url,$strip) === 0) return str_replace($strip,'',$url);
+  return $url;
 }
 
 /**
@@ -2028,9 +2101,9 @@ function getWebsiteData($returnGlobals = false){
 
 	// asseturl is scheme-less ://url if GSASSETSCHEMES is not true
 	// asseturl is root relative if GSASSETURLREL is true
-	if(getDef('GSASSETURLREL')) $ASSETURL = getRootRelPath($ASSETURL);
+	if(getDef('GSASSETURLREL')) $ASSETURL = getRootRelURIPath($ASSETURL);
 	else if(getDef('GSASSETSCHEMES',true) !==true) str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL);
-	if(getDef('GSSITEURLREL'))  $SITEURL  = getRootRelPath($SITEURL);
+	if(getDef('GSSITEURLREL'))  $SITEURL  = getRootRelURIPath($SITEURL);
 
 	unset($thisfilew);
 	if($returnGlobals) return get_defined_vars();
