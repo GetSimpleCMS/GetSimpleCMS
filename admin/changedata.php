@@ -29,6 +29,8 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 login_cookie_check();
 	
 if (isset($_POST['submitted'])) {
+
+	$existingurl = isset($_POST['existing-url']) ? $_POST['existing-url'] : null;
 	
 	// check for csrf
 	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
@@ -73,18 +75,18 @@ if (isset($_POST['submitted'])) {
 		
 		
 		// was the slug changed on an existing page?
-		if ( isset($_POST['existing-url']) ) {
-			if ($_POST['post-id'] != $_POST['existing-url']){
+		if ( isset($existingurl) ) {
+			if ($_POST['post-id'] != $existingurl){
 				// dont change the index page's slug
-				if ($_POST['existing-url'] == 'index') {
-					$url = $_POST['existing-url'];
-					redirect("edit.php?id=". urlencode($_POST['existing-url']) ."&upd=edit-index&type=edit");
+				if ($existingurl == 'index') {
+					$url = $existingurl;
+					redirect("edit.php?id=". urlencode($existingurl) ."&upd=edit-index&type=edit");
 				} else {
 					exec_action('changedata-updateslug');
-					updateSlugs($_POST['existing-url']);
+					updateSlugs($existingurl);
 					$file = GSDATAPAGESPATH . $url .".xml";
-					$existing = GSDATAPAGESPATH . $_POST['existing-url'] .".xml";
-					$bakfile = GSBACKUPSPATH."pages/". $_POST['existing-url'] .".bak.xml";
+					$existing = GSDATAPAGESPATH . $existingurl .".xml";
+					$bakfile = GSBACKUPSPATH."pages/". $existingurl .".bak.xml";
 					copy($existing, $bakfile);
 					unlink($existing);
 				} 
@@ -115,7 +117,8 @@ if (isset($_POST['submitted'])) {
 			}
 		}		
 		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
-		if ( (file_exists($file) && $url != $_POST['existing-url']) ||  in_array($url,$reservedSlugs) ) {
+		// @todo this is a mess, new file existing file should all be determined at beginning of block and defined
+		if ( (file_exists($file) && $url != $existingurl) ||  in_array($url,$reservedSlugs) ) {
 			$count = "1";
 			$file = GSDATAPAGESPATH . $url ."-".$count.".xml";
 			while ( file_exists($file) ) {
@@ -195,10 +198,18 @@ if (isset($_POST['submitted'])) {
 				$redirect_url = 'edit.php';
 			}
 			
-			if ($url == $_POST['existing-url']) {
-				redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
-			} else {
-				redirect($redirect_url."?id=". $url ."&old=".$_POST['existing-url']."&upd=edit-success&type=edit");
+			if(isset($existingurl)){
+				if ($url == $existingurl) {
+					// redirect save new file
+					redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
+				} else {
+					// redirect new slug, undo for old slug
+					redirect($redirect_url."?id=". $url ."&old=".$existingurl."&upd=edit-success&type=edit");
+				}
+			}	
+			else {
+				// redirect new slug
+				redirect($redirect_url."?id=". $url ."&upd=edit-success&type=new"); 
 			}
 		}
 	}
