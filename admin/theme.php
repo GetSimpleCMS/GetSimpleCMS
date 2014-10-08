@@ -43,9 +43,7 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 	$TEMPLATE = $newTemplate; // set new global
 }
 
-# get available themes (only look for folders)
-# @todo replace with getfiles
-
+# get available themes, using folder match required contain template.php
 $themes = getDirs(GSTHEMESPATH,GSTEMPLATEFILE);
 $theme_options 	= '';
 

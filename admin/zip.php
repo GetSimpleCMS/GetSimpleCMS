@@ -55,7 +55,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 			  }
 		}
 
-		// @todo check if file exists, close will fail if bad file added which always returns true
+		// check if file exists, close will fail if bad file added, addfile always returns true
 		if(file_exists(GSROOTPATH.'.htaccess'))    $archiv->addFile(GSROOTPATH.'.htaccess', '.htaccess' );
 		if(file_exists(GSROOTPATH.'gsconfig.php')) $archiv->addFile(GSROOTPATH.'gsconfig.php', 'gsconfig.php' );
 		
@@ -87,7 +87,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		redirect('archive.php?nozip');
 	} 
 	
-	// @todo losing error handling and debugging here
+	// @todo losing error handling and debugging here due to redirects
 	// need some reporting to find old zip issues that are hard to reproduce
 
 	// redirect back to archive page with a success

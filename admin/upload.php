@@ -6,7 +6,7 @@
  *
  * @package GetSimple
  * @subpackage Files
- * @todo Remove relative paths
+ * @todo Remove relative paths ? not sure what this means
  */
  
 // Setup inclusions
@@ -260,7 +260,6 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
         	
           echo '<tr class="All folder '.$upload['name'].'" >';
           echo '<td class="imgthumb" ></td><td>';
-          // $adm = substr($path . rawurlencode($upload['name']) ,  16); // todo: wtf is this for ?
           $adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
           echo '<img src="template/images/folder.png" width="11" /> <a href="upload.php?path='.$adm.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
           echo '<td style="width:80px;text-align:right;" ><span>'.$directory_size.'</span></td>';

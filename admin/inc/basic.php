@@ -383,7 +383,7 @@ function XMLsave($xml, $file) {
  * create a director or path
  *
  * @since 3.4
- * @todo normalize slashes for windows
+ * @todo normalize slashes for windows, apache works fine, iis might not
  * @todo might need a recursive chmod also, mkdir only chmods the basedir allegedly
  *
  * @param  str  $dir          directory or path
@@ -524,7 +524,6 @@ function gs_chmod($path,$chmod = null,$dir = false){
  * log fileio operations
  *
  * since 3.4
- * @todo check args for gsroot and convert to relative paths
  * @param  str   $operation file operation or functionname to log
  * @param  mixed $status    if bool evals to success and fail, else shows status as string
  * @param  mixed  variable length args any other arguments are outputted at end
@@ -542,6 +541,7 @@ function fileLog($operation,$status = null){
 
 /**
  * convert array of file paths to relative paths to gsroot
+ * @since  3.4
  * @param  array $args full filepaths
  * @return returns array of relative filepaths
  */
@@ -951,7 +951,7 @@ function i18n_merge_impl($plugin = '', $lang, &$globali18n) {
 	$filename = $path.$lang.'.php';
 	$prefix   = $plugin ? $plugin.'/' : '';
 
-	// @todo safe checking every lang file is probably overkill, we can just sanitize the crap out of $lang
+	// @todo being overly safe here since we are direclty including input that can come from anywhere
 	if (!filepath_is_safe($filename,$path) || !file_exists($filename)) {
 		return false;
 	}
@@ -1282,8 +1282,8 @@ function _id($text) {
 
 /**
  * Defined Array
- * @todo  unused, what is it for ?
  * Checks an array of PHP constants and verifies they are defined
+ * @todo  unused, what is it for ?
  * 
  * @param array $constants
  * @return bool
