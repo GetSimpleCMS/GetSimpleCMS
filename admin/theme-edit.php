@@ -72,7 +72,7 @@ if(isset($_POST['submitsave'])){
 }
 
 // ajax file get request, send only the form with the file and content
-if(requestIsAjax()){
+if(isset($_GET['ajax'])){
 	$content = !empty($template_file) ? read_file(GSTHEMESPATH . tsl($template) . $template_file) : '';
 	?>
 		<div>
