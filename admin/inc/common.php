@@ -51,26 +51,27 @@ $GS_constants = array(
 	'GSDEFAULTLANG'         => 'en_US',                       // default language for core
 	'GSTITLEMAX'            => '70',                          // max length allowed for titles
 	'GSFILENAMEMAX'         => '255',                         // max length allowed for file names/slugs
+	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
 
 $GS_definitions = array(
-	'GSDEFAULTPAGE'        => 'pages.php',                    // Default backend index page
-	'GSHEADERCLASS'        => '',                             // custom class to add to header eg. gradient
-	'GSHTTPPREFIX'         => '',                             // http slug prefix GSHTTPPREFIX.GSSLUGxx
-	'GSSLUGNOTFOUND'       => '404',                          // http slug for not found
-	'GSSLUGPRIVATE'        => '403',                          // http slug for private pages
-	'GSADMIN'              => 'admin',                        // admin foldername
-	'GSSITEMAPFILE'        => 'sitemap.xml',                  // sitemap file name, must modify in .htaccess as needed
-	'GSERRORLOGFILE'       => 'errorlog.txt',                 // error log filename
+	'GSDEFAULTPAGE'        => 'pages.php',                    // (str) Default backend index page
+	'GSHEADERCLASS'        => '',                             // (str) custom class to add to header eg. gradient
+	'GSHTTPPREFIX'         => '',                             // (str) http slug prefix GSHTTPPREFIX.GSSLUGxx
+	'GSSLUGNOTFOUND'       => '404',                          // (str) http slug for not found
+	'GSSLUGPRIVATE'        => '403',                          // (str) http slug for private pages
+	'GSADMIN'              => 'admin',                        // (str) admin foldername
+	'GSSITEMAPFILE'        => 'sitemap.xml',                  // (str) sitemap file name, must modify in .htaccess as needed
+	'GSERRORLOGFILE'       => 'errorlog.txt',                 // (str) error log filename
 	'GSERRORLOGENABLE'     => true,                           // (bool) should GS log php errors to GSERRORLOGFILE
-	'GSSTYLE'              => 'wide,sbfixed',                 // default style modifiers
-	'GSWIDTH'              => '1024px',                       // pagewidth on backend,(max-width), null,'none',''  for 100% width
-	'GSWIDTHWIDE'          => '1366px',                       // page width on backend pages defined in GSWIDEPAGES, values as above
-	'GSWIDEPAGES'          => 'theme-edit,components',        // pages to apply GSWIDTHWIED on
+	'GSSTYLE'              => 'wide,sbfixed',                 // (str-csv) default style modifiers
+	'GSWIDTH'              => '1024px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width
+	'GSWIDTHWIDE'          => '1366px',                       // (str) page width on backend pages defined in GSWIDEPAGES, values as above
+	'GSWIDEPAGES'          => 'theme-edit,components',        // (str-csv) pages to apply GSWIDTHWIED on
 	'GSALLOWLOGIN'         => true,                           // (bool) allow front end login
 	'GSALLOWRESETPASS'     => true,                           // (bool) allow front end password resets
-	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // file extensions to show and edit in theme editor
+	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // (str-csv) file extensions to show and edit in theme editor
 	'GSASSETSCHEMES'       => false,                          // (bool) should $ASSETURL contain the url scheme http|https
 	'GSASSETURLREL'        => true,                           // (bool) Use root relative urls for $ASSETURL, overrides GSASSETSCHEMES
 	'GSSITEURLREL'         => true,                           // (bool) Use root relative urls for $SITEURL
@@ -78,13 +79,16 @@ $GS_definitions = array(
 	'GSEDITORHEIGHT'       => '500',                          // (str) wysiwyg editor height in px
 	'GSEDITORTOOL'         => 'basic',                        // (str) wysiwyg editor toobar
 	'GSEDITORCONFIGFILE'   => 'config.js',                    // (str) wysiwyg editor toobar
-	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // url used in email template
-	'GSAJAXSAVE'           => true,                           // use ajax for saving themes, components, and pages
-	'GSCHMOD'              => 0644,                           // chmod mode legacy
-	'GSCHMODFILE'          => 0644,                           // chmod mode for files
-	'GSCHMODDIR'           => 0755,                           // chmod mode for dirs
-	'GSDOCHMOD'            => true,                           // perform chmod after creating files or directories
- 	'GSDEFINITIONSLOADED'  => true	                          // $GS_definitions IS LOADED FLAG
+	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // (str) url used in email template
+	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
+	'GSCHMOD'              => 0644,                           // (octal) chmod mode legacy
+	'GSCHMODFILE'          => 0644,                           // (octal) chmod mode for files
+	'GSCHMODDIR'           => 0755,                           // (octal) chmod mode for dirs
+	'GSDOCHMOD'            => true,                           // (bool) perform chmod after creating files or directories
+	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
+	'GSDEBUGAPI'           => false,                          // (bool) debug api calls
+	# -----------------------------------------------------------------------------------------------------------------------------------------------
+ 	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
 );
 
 /* Define Constants */
@@ -459,6 +463,8 @@ if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ requ
 // do the template rendering
 if(GSBASE) require_once(GSADMINPATH.'base.php');
 
+debugLog(get_site_lang());
+debugLog(get_site_lang(true));
 
 // common methods that are required before dpendancy includes
 

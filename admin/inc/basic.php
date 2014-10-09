@@ -133,7 +133,7 @@ function email_template($message) {
 
 
 /**
- * Send Email
+ * Send Email, DOES NOT SANITIZE FOR YOU!
  *
  * @since 1.0
  * @uses GSFROMEMAIL
@@ -222,6 +222,8 @@ class SimpleXMLExtended extends SimpleXMLElement{
 
 /**
  * Is File
+ * Checks if a filepath provided is indeed a file and not .||.., with inaccurate type match
+ * @todo: type match uses strstr, not a very good filter
  *
  * @since 1.0
  * @uses tsl
@@ -1192,7 +1194,7 @@ function htmldecode($text) {
 }
 
 /**
- * multibyte Safe to lower case
+ * convert string to lower case and is multibyte-safe
  *
  * @since 2.04
  *
@@ -1211,7 +1213,7 @@ function lowercase($text) {
 
 
 /**
- * multibyte Safe to UPPER CASE
+ * convert a string to UPPER CASE and is multibyte-safe
  *
  * @since 2.04
  *
@@ -1229,7 +1231,7 @@ function uppercase($text) {
 }
 
 /**
- * multibyte Safe to Title Case
+ * convert string to Title Case and is multibyte-safe
  *
  * @since 3.4
  *
@@ -1251,7 +1253,7 @@ function titlecase($text) {
  * Find AccessKey
  *
  * Provides a simple way to find the accesskey defined by translators as
- * accesskeys are language dependent.
+ * accesskeys are language dependent. accesskeys are wrapped in  <em></em> tags
  * 
  * @param string $string, text from the i18n array
  * @return string
@@ -1266,9 +1268,10 @@ function find_accesskey($string) {
 }
 
 /**
- * Clean ID
+ * clean ids for use as indexes
  *
  * Removes characters that don't work in URLs or IDs
+ * Mostly used for filenames for slugs and user names
  * 
  * @param string $text
  * @return string
@@ -1327,9 +1330,10 @@ function folder_items($folder) {
 
 /**
  * Validate a URL String
+ * does not detect malicious injection at all!
  * 
  * @param string $u
- * @return bool
+ * @return mixed false if filter fails, str otherwise
  */
 function validate_url($u) {
 	return filter_var($u,FILTER_VALIDATE_URL);
@@ -1337,10 +1341,10 @@ function validate_url($u) {
 
 
 /**
- * Format XML to Formatted String
+ * Format XML, adds indentation
  * 
  * @param string $xml
- * @return string
+ * @return string xml str re-formatted with spaces and newlines
  */
 function formatXmlString($xml) {  
 	
@@ -1400,10 +1404,12 @@ function http_protocol() {
 
 /**
  * Get File Mime-Type
- *
+ * 
+ * uses finfo_open if exists, fallback to mime_content_type
+ * 
  * @since 3.1
- * @param $file, absolute path
- * @return string/bool
+ * @param $file, absolute file path
+ * @return mixed string mime type, false on failure
  */
 function file_mime_type($file) {
 	if (!file_exists($file)) {
@@ -1428,7 +1434,6 @@ function file_mime_type($file) {
 
 /**
  * Check Is FrontEnd
- * 
  * Checks to see if the you are on the frontend or not
  *
  * @since 3.1
@@ -1461,17 +1466,16 @@ function get_site_version($echo=true) {
 
 /**
  * Get GetSimple Language
- * @todo  wtf does this do?
+ * 
  * @since 3.1
  * @uses $LANG
  *
- * @param string
+ * @param bool $short return full or short lang codes
  */
 function get_site_lang($short=false) {
 	global $LANG;
 	if ($short) {
-		$LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
-		return $LANG_header;
+		return preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG); # @todo why the complicated regex?
 	} else {
 		return $LANG;
 	}
@@ -1498,12 +1502,13 @@ function toBytes($str){
 
 /**
  * convert bytes to mb,gb,or kb
- * @param  int  $str    size in bytes
+ * 
+ * @param  str  $str    size in bytes
  * @param  boolean $suffix add suffix to end of str
  * @return str new byte string
  */
 function toBytesShorthand($str,$suffix = false){
-	$val = trim($str);
+	$val  = trim($str);
 	$last = strtolower($str[strlen($str)-1]);
 		switch($last) {
 			case 'g': $val /= 1024;
@@ -1514,8 +1519,8 @@ function toBytesShorthand($str,$suffix = false){
 }
 
 /**
- * Remove Relative Paths
- * @todo this function is a bad idea
+ * Remove Relative Paths, NOT TO BE USED FOR SECURITY
+ * removes ../ path info from file path simply
  *
  * @since 3.1
  *
@@ -1674,10 +1679,12 @@ function arrayIsMultid($ary){
 }
 
 /**
- * normalizes toolbar setting, always returns js array string syntax
- * @since 3.3.2
+ * normalizes str or array inputs to js array strings, always returns js array string syntax
+ * used for ckeditro toolbar arrays for the most part
  * 
+ * @since 3.3.2
  * @param mixed $var string or array var to convert to js array syntax
+ * @return str  js array string syntax
  */
 function returnJsArray($var){
 	
@@ -1715,7 +1722,8 @@ function returnJsArray($var){
 
 
 /**
- * Returns status of mode rewrite
+ * Returns status of mode rewrite via apache_get_modules 
+ * or custom HTTP_MOD_REWRITE env set in .htaccess
  * @return bool true if on false if not, null if unknown
  */
 function hasModRewrite(){
@@ -1728,7 +1736,8 @@ function hasModRewrite(){
 }
 
 /**
- *  @return bool true if we not in an install file
+ * checks if is current page is not an install page or stylesheet
+ * @return bool true if we not in an install file
  */
 function notInInstall(){
 	return ( get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update' && get_filename_id() != 'style' );
@@ -1816,6 +1825,24 @@ function getURIPath($mask = null, $pad = false){
 
 
 /**
+ * get web root-relative url
+ * parses the host:// part and removes it
+ *
+ * @since  3.4
+ * @var str url to normalize
+ */
+function getRootRelURIPath($url){
+  $urlparts = parse_url($url);
+  $strip    = isset($urlparts['scheme']) ? $urlparts['scheme'] .':' : '';
+  $strip   .=  '//';
+  $strip   .= isset($urlparts['host']) ? $urlparts['host'] : '';
+  // debugLog(__FUNCTION__.' base = ' . $strip);
+  if(strpos($url,$strip) === 0) return str_replace($strip,'',$url);
+  return $url;
+}
+
+
+/**
  * returns a global, easier inline usage of readonly globals
  * @since  3.4
  * @param  str $var variable name
@@ -1827,8 +1854,10 @@ function getGlobal($var) {
 }
 
 /** 
- * returns a page global 
- * currently an alias for getGlobal
+ * returns a page global
+ * currently an alias for getGlobal, 
+ * used specificly for globals used in theme_function for front end current page vars
+ *
  * @since 3.4
  */
 function getPageGlobal($var){
@@ -1847,12 +1876,12 @@ function echoReturn($str,$echo = true){
 }
 
 /**
- * clamps an integer reference to specified value
+ * clamps / normalizes an integer reference to specified value
  * @since 3.4
- * @param int &$var reference to clamp
- * @param int $min minimum to enforce clamp
- * @param int $max maximum to enforce clamp
- * @param type $default default to set if not set
+ * @param int &$var reference to input to be clamped
+ * @param int $min minimum to enforce clamp value
+ * @param int $max maximum to enforce clamp value
+ * @param type $default default to set if input is not set
  */
 function clamp(&$var,$min=null,$max=null,$default=null){
 	if(is_numeric($var)){
@@ -1863,7 +1892,7 @@ function clamp(&$var,$min=null,$max=null,$default=null){
 }
 
 /**
- * set reference to default value if $var not set
+ * set reference input to a default value if input is not set
  * does no type checking or conversions on default
  * @since 3.4
  * @param $value   reference
@@ -1873,11 +1902,20 @@ function setDefault(&$var = '',$default){
 	if(!isset($var) || empty($var)) $var = $default;
 }
 
-
+/**
+ * check if version checking is allowed via GSNOVERCHECK and not an auth page
+ * @since 3.4
+ * @return bool true is version check is allowed
+ */
 function allowVerCheck(){
 	return !isAuthPage() && !getDef('GSNOVERCHECK');
 }
 
+/**
+ * retrieve the version check data obj
+ * @since  3.4
+ * @return obj api json decoded obj on success
+ */
 function getVerCheck(){
 	# check to see if there is a core update needed
 	$data = get_api_details();
@@ -1889,15 +1927,19 @@ function getVerCheck(){
 }
 
 /**
- * includeTheme
- *
+ * include a theme template file 
+ * will auto include functions.php if exists and $functions is true
+ * automatically falls back to GSTEMPLATEFILE if $template_file is missing
+ * 
+ * @since  3.4
  * @param  str $template      template name
- * @param  str $template_file template filename
+ * @param  str $template_file template filename, fallback to GSTEMPLATEFILE if not exist
+ * @param  bool $functions    true, auto include functions.php
  */
-function includeTheme($template, $template_file = GSTEMPLATEFILE){
+function includeTheme($template, $template_file = GSTEMPLATEFILE, $functions = true){
 	# include the functions.php page if it exists within the theme
-	if ( file_exists(GSTHEMESPATH .$template."/functions.php") ) {
-		include(GSTHEMESPATH .$template."/functions.php");
+	if ( $functions && file_exists(GSTHEMESPATH .$template."/functions.php")) {
+		include_once(GSTHEMESPATH .$template."/functions.php");
 	}
 
 	# include the template and template file set within theme.php and each page
@@ -1996,6 +2038,8 @@ function getEditorHeight(){
 
 /**
  * get the gs editor language
+ * returns GSEDITORLANG if set, else returns i18n[CKEDITOR_LANG] if it exists
+ * 
  * @since 3.4
  * @return str
  */
@@ -2030,7 +2074,7 @@ function getEditorToolbar(){
 }
 
 /**
- * get defined timezone from user->site->gsconfig
+ * get defined timezone from user->site->gsconfig fallbacks
  * @since 3.4
  * @return str timezone identifier
  */
@@ -2051,24 +2095,6 @@ function setTimezone($timezone){
 	if(isset($timezone) && function_exists('date_default_timezone_set') && ($timezone != "" || stripos($timezone, '--')) ) {
 		date_default_timezone_set($timezone);
 	}
-}
-
-
-/**
- * get web root-relative url
- * parses the host:// part and removes it
- *
- * @since  3.4
- * @var str url to normalize
- */
-function getRootRelURIPath($url){
-  $urlparts = parse_url($url);
-  $strip    = isset($urlparts['scheme']) ? $urlparts['scheme'] .':' : '';
-  $strip   .=  '//';
-  $strip   .= isset($urlparts['host']) ? $urlparts['host'] : '';
-  // debugLog(__FUNCTION__.' base = ' . $strip);
-  if(strpos($url,$strip) === 0) return str_replace($strip,'',$url);
-  return $url;
 }
 
 /**

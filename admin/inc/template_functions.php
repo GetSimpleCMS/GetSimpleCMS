@@ -372,28 +372,18 @@ function undo($file, $filepath, $bakpath) {
 }
 
 /**
- * Create Random Password
- *
- * @since 1.0
- *
- * @return string
- */
-function createRandomPassword() {
-	return generateStrongPassword();
-}
-
-/**
- * generate random password
+ * generate psuedo random password
  * excludes characters similar in appearance i,l,o,0,1
+ * using mt_rand for strong can be improved
  *
  * @since  3.4
  * @param  integer $length      length of password
  * @param  string  $usecharsets string of charsets to include
  * @param  bool    $reuse       true, allow characters to be used more than once
- * @param  bool    $mt_rand     true, use mt_rand instead of array_rand
+ * @param  bool    $strong     true, use mt_rand instead of array_rand
  * @return str                  password
  */
-function generateStrongPassword($length = 8, $usecharsets = 'luds', $reuse = false, $mt_rand = true)
+function createRandomPassword($length = 8, $usecharsets = 'luds', $reuse = false, $strong = true)
 {
 	$allchars = array();
 	$password = '';
@@ -417,7 +407,7 @@ function generateStrongPassword($length = 8, $usecharsets = 'luds', $reuse = fal
 	foreach($sets as $key => $set)
 	{
 		$setary    = str_split($set);
-		$setaryidx = $mt_rand ? mt_rand(0, count($setary) - 1) : array_rand($setary);
+		$setaryidx = $strong ? mt_rand(0, count($setary) - 1) : array_rand($setary);
 		$password .= $setary[$setaryidx];
 
 		if(!$reuse){
@@ -430,7 +420,7 @@ function generateStrongPassword($length = 8, $usecharsets = 'luds', $reuse = fal
 	// fill rest of password
 	$numchars = count($allchars);
 	for($i = 0; $i < $length - $numsets; $i++){
-		$allcharsidx = $mt_rand ? mt_rand(0, $numchars - 1) : array_rand($allchars);
+		$allcharsidx = $strong ? mt_rand(0, $numchars - 1) : array_rand($allchars);
 		$password .= $allchars[$allcharsidx];
 
 		if(!$reuse){
@@ -486,7 +476,7 @@ function get_FileType($ext) {
 
 /**
  * ISO Timestamp
- *
+ * @todo  unused
  * @since 1.0
  *
  * @param string $dateTime
@@ -507,17 +497,18 @@ function makeIso8601TimeStamp($dateTime) {
 /**
  * Ping Sitemaps
  *
- * @since 1.0
+ * @since 3.4
  *
  * @param string $url_xml XML sitemap
  * @return bool
  */
-function pingGoogleSitemaps($url_xml) {
+function pingSitemaps($url_xml) {
 	$status = 0;
 	$google = 'www.google.com';
 	$bing   = 'www.bing.com';
 	$ask    = 'submissions.ask.com';
 
+	// google
 	if( $fp=@fsockopen($google, 80) ) {
 
 	  $req =  'GET /webmasters/sitemaps/ping?sitemap=' .
@@ -539,6 +530,7 @@ function pingGoogleSitemaps($url_xml) {
 	  fclose( $fp );
    }
    
+   // bing
    if( $fp=@fsockopen($bing, 80) ) {
 
       $req =  'GET /webmaster/ping.aspx?sitemap=' .
@@ -561,6 +553,7 @@ function pingGoogleSitemaps($url_xml) {
       fclose( $fp );
    }
    
+   // ask com
    if( $fp=@fsockopen($ask, 80) ) {
       $req =  'GET /ping?sitemap=' .
               urlencode( $url_xml ) . " HTTP/1.1\r\n" .
@@ -584,6 +577,13 @@ function pingGoogleSitemaps($url_xml) {
    return( $status );
 }
 
+/**
+ * LEGACY alias pingSitemaps
+ * @since  3.0
+ */
+function pingGoogleSitemaps($url_xml){
+	return pingSitemaps($url_xml);
+}
 
 /**
  * File Size
@@ -607,7 +607,7 @@ function fSize($s) {
 
 /**
  * Validate Email Address
- *
+ * @todo  remove fallbacks, 5.2 is min
  * @since 1.0
  *
  * @param string $email 
@@ -664,25 +664,6 @@ function do_reg($text, $regex) {
 /**
  * Validate XML
  *
- * @since 1.0
- * @uses i18n_r
- * @uses getXML
- *
- * @param string $file File to validate
- * @return string
- */
-function valid_xml($file) {
-	global $i18n;
-	if (is_valid_xml($file)) {
-		return '<span class="OKmsg" >'.i18n_r('XML_VALID').' - '.i18n_r('OK').'</span>';
-	} else {
-		return '<span class="ERRmsg" >'.i18n_r('XML_INVALID').' - '.i18n_r('ERROR').'!</span>';
-	}
-}
-
-/**
- * Validate XML
- *
  * @since 3.3.0
  * @uses getXML
  *
@@ -696,10 +677,9 @@ function is_valid_xml($file) {
 
 /**
  * Generate Salt
+ * @todo  cryptographically weak
  *
  * Returns a new unique salt
- * @updated 3.0
- *
  * @return string
  */
 function generate_salt() {
@@ -1379,9 +1359,15 @@ function get_api_details($type='core', $args=null) {
 	return $data;
 }
 
+/**
+ * [debug_api_details description]
+ * @param  str $msg        msg to log
+ * @param  string $prefix  prefix to log
+ * @return str             log msg
+ */
 function debug_api_details($msg,$prefix = "API: "){
 	GLOBAL $debugApi;
-	if(!$debugApi) return;
+	if(!$debugApi && !getDef('GSDEBUGAPI',true)) return;
 	debugLog($prefix.$msg);
 }
 
@@ -1493,7 +1479,6 @@ function archive_targz() {
 	GLOBAL $GSADMIN;
 	
 	if(!function_exists('exec')) {
-    	// @todo catch exec not prermitted
     	return false;
     	exit;
 	}
@@ -1603,10 +1588,10 @@ function strIsMultibyte($str){
 
 /**
  * clean Html fragments by loading and saving from DOMDocument
- * Will only clean html body fragments,unexpected results with full html doc or containg head or body
+ * Will only clean html body fragments,unexpected results with full html doc or containing <head> or <body>
  * it will also strip these in final result
  * 
- * @note supressig errors on libxml functions to prevent parse errors on no well formed content
+ * @note supressing errors on libxml functions to prevent parse errors on non well-formed content
  * @since 3.3.2
  * @param  string $str string to clean up
  * @return string      return well formed html , with open tags being closed and incomplete open tags removed
@@ -1619,13 +1604,13 @@ function cleanHtml($str){
 	// strip dom tags
 	$html_fragment = preg_replace('/^<!DOCTYPE.+?>|<head.*?>(.*)?<\/head>/', '', str_replace( array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), @$dom_document->saveHTML()));	
 	return $html_fragment;
-}	
+}
 
 
 /**
  * get Page data for http response code
  * 
- * returns page xml for http response code, by checking for user page then core page
+ * returns page xml for http response code, by checking for user page fallback to the core page
  * 
  * @since 3.4
  * @param  int $code http response code
@@ -1638,16 +1623,65 @@ function getHttpResponsePage($code){
 		// use user created http response page
 		return getXml(GSDATAPAGESPATH . GSHTTPPREFIX . $code . '.xml');
 	} elseif (file_exists(GSDATAOTHERPATH . $code . '.xml'))	{
-		// default http response page
+		// use default http response page
 		return getXml(GSDATAOTHERPATH . $code . '.xml');
 	}
 }
 
 /**
- * goto the default backend entrace page
+ * goto the default backend entrance page
+ * determined from $_GET['redirect'] or GSDEFAULTPAGE
+ * @todo  secure redirect better from injection
  */
 function gotoDefaultPage(){
 	if (isset($_GET['redirect'])) redirect(htmlentities($_GET['redirect']));
 	else redirect(getDef('GSDEFAULTPAGE'));
 }
+
+
+/**
+ * get the components xml data
+ * returns an array of xmlobjs
+ *
+ * @since 3.4
+ * 
+ * @uses components
+ * @uses GSDATAOTHERPATH
+ * @uses getXML
+ * @param  boolean $xml [description]
+ * @return components data items xmlobj
+ *
+ */
+function get_components_xml(){
+    global $components;
+
+    if (!$components) {
+        if (file_exists(GSDATAOTHERPATH.'components.xml')) {
+        	$data = getXML(GSDATAOTHERPATH.'components.xml');
+            $components = $data->item;
+        } else {
+            $components = array();
+        }
+    }
+    return $components;
+}
+
+/**
+ * get xml for an individual component
+ * returns an array since duplicates are possible on component slugs
+ *
+ * @since 3.4
+ *
+ * @param  str $id component id
+ * @return array of simpleXmlObj matching slug
+ */
+function get_component_xml($id){
+	// normalize id to mathc how we save it
+	$id = to7bit($id, 'UTF-8');
+	$id = clean_url($id);
+	if(!$id) return;
+	return get_components_xml()->xpath("//slug[.='".$id."']/..");	
+}
+
+
 /* ?> */
