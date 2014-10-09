@@ -211,7 +211,7 @@ $i18n = array(
 "CHOOSE_THEME"            =>	"Choose Your Theme",
 "ACTIVATE_THEME"          =>	"Activate Theme",
 "THEME_SCREENSHOT"        =>	"Theme Screenshot",
-"THEME_PATH"              =>	"Theme Folder Location",
+"THEME_PATH"              =>	"Active Theme Folder Location",
 
 /* 
 * For: resetpassword.php
@@ -501,7 +501,7 @@ $i18n = array(
 "AUTHOR"                  =>	"Author", //plugins.php
 "ENABLE"                  =>	"Activate", //plugins.php
 "DISABLE"                 =>	"Deactivate", //plugins.php
-"NO_THEME_SCREENSHOT"     =>	"Your theme does not have a screenshot preview", //theme.php
+"NO_THEME_SCREENSHOT"     =>	"This theme does not have a screenshot preview", //theme.php
 "UNSAVED_INFORMATION"     =>	"You are about to leave this page and will lose any unsaved information.", //edit.php
 "BACK_TO_WEBSITE"         =>	"Back to Website", //index & resetpassword
 "SUPPORT_FORUM"           =>	"Support Forum", //support.php

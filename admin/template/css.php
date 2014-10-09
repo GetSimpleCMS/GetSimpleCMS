@@ -2361,8 +2361,13 @@ h5 .crumbs, div.h5 .crumbs {
 }
 
 #theme_select {
+	width:270px;
 	font-size:16px;
 	font-weight:bold;
+}
+
+#theme_preview {
+	border: 1px solid #aaa;
 }
 
 #theme-edit #maincontent {
