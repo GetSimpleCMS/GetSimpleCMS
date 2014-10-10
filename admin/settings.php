@@ -49,7 +49,7 @@ if(isset($_POST['submitted'])) {
 		$SITENAME = htmlentities($_POST['sitename'], ENT_QUOTES, 'UTF-8'); 
 	}
 	if(isset($_POST['siteurl'])) { 
-		$SITEURL = tsl($_POST['siteurl']); 
+		$SITEURLNEW = tsl($_POST['siteurl']); 
 	}
 	if(isset($_POST['permalink'])) { 
 		$PERMALINK = var_in(trim($_POST['permalink']));
@@ -83,7 +83,7 @@ if(isset($_POST['submitted'])) {
 	$note = $xmls->addChild('SITENAME');
 	$note->addCData($SITENAME);
 	$note = $xmls->addChild('SITEURL');
-	$note->addCData($SITEURL);
+	$note->addCData($SITEURLNEW);
 	$note = $xmls->addChild('TEMPLATE');
 	$note->addCData($TEMPLATE);
 	$xmls->addChild('PRETTYURLS', $PRETTYURLS);
@@ -149,11 +149,11 @@ get_template('header');
 			</div>		
 			<?php exec_action(get_filename_id().'-body'); ?>
 			<div class="leftsec">
-				<p><label for="sitename" ><?php i18n('LABEL_WEBSITE');?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php if(isset($SITENAME1)) { echo stripslashes($SITENAME1); } else { echo stripslashes($SITENAME); } ?>" /></p>
+				<p><label for="sitename" ><?php i18n('LABEL_WEBSITE');?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php echo stripslashes($SITENAME); ?>" /></p>
 			</div>
 			<div class="rightsec">
-				<p><label for="siteurl" ><?php i18n('LABEL_BASEURL');?>:</label><input class="text" id="siteurl" name="siteurl" type="url" value="<?php if(isset($SITEURL1)) { echo $SITEURL1; } else { echo $SITEURL; } ?>" /></p>
-				<?php	if ( $fullpath != $SITEURL ) {	echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.i18n_r('LABEL_SUGGESTION').': &nbsp; <code>'.$fullpath.'</code></p>';	}	?>
+				<p><label for="siteurl" ><?php i18n('LABEL_BASEURL');?>:</label><input class="text" id="siteurl" name="siteurl" type="url" value="<?php echo getSiteURL(true);?>" /></p>
+				<?php	if ( $fullpath != getSiteURL(true) ) {	echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.i18n_r('LABEL_SUGGESTION').': &nbsp; <code>'.$fullpath.'</code></p>';	}	?>
 			</div>
 			<div class="clear"></div>
 			<div class="leftsec">

@@ -243,6 +243,8 @@ GLOBAL
  $dataw,
  $SITENAME,
  $SITEURL,
+ $SITEURL_ABS,
+ $SITEURL_REL,
  $TEMPLATE,
  $PRETTYURLS,
  $PERMALINK,
@@ -256,8 +258,11 @@ GLOBAL
 // load website data from GSWEBSITEFILE (website.xml)
 extract(getWebsiteData(true));
 
-debugLog('SITEURL = ' . $SITEURL);
-debugLog('ASSETURL = ' . $ASSETURL);
+debugLog('GSSITEURLREL = ' . getDef('GSSITEURLREL',true));
+debugLog('SITEURL      = ' . getSiteURL());
+debugLog('SITEURL_ABS  = ' . getSiteURL(true));
+debugLog('SITEURL_REL  = ' . $SITEURL_REL);
+debugLog('ASSETURL     = ' . $ASSETURL);
 
 /**
  * Global user data
@@ -372,7 +377,7 @@ $dump = array(
 'EDHEIGHT'     => $EDHEIGHT,
 // '_SERVER'      => $_SERVER,
 );
-debugLog($dump);
+// debugLog($dump);
 
 /**
  * Check to make sure site is already installed
@@ -413,8 +418,11 @@ if (notInInstall()) {
 
 }
 
-if(empty($SITEURL))  $SITEURL  = suggest_site_path();
-if(empty($ASSETURL)) $ASSETURL = $SITEURL;
+// fill for install
+if(empty($SITEURL))      $SITEURL  = suggest_site_path();
+if(empty($SITEURL_ABS))  $SITEURL_ABS = $SITEURL;
+if(empty($SITEURL_REL))  $SITEURL_REL = $SITEURL;
+if(empty($ASSETURL))     $ASSETURL = $SITEURL;
 
 /**
  * Include other files depending if they are needed or not
@@ -462,9 +470,6 @@ if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ requ
 
 // do the template rendering
 if(GSBASE) require_once(GSADMINPATH.'base.php');
-
-debugLog(get_site_lang());
-debugLog(get_site_lang(true));
 
 // common methods that are required before dpendancy includes
 

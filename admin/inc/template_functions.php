@@ -1394,14 +1394,13 @@ function get_gs_version() {
  * Creates GSSITEMAPFILE (sitemap.xml) in the site's root.
  */
 function generate_sitemap() {
-	
 	if(getDef('GSNOSITEMAP',true)) return;
-
-	// Variable settings
-	global $SITEURL;
-	$path = GSDATAPAGESPATH;
 	
 	global $pagesArray;
+	// Variable settings
+	$SITEURL = getSiteURL(true);
+	$path = GSDATAPAGESPATH;
+	
 	getPagesXmlValues(false);
 	$pagesSorted = subval_sort($pagesArray,'menuStatus');
 	
@@ -1418,8 +1417,7 @@ function generate_sitemap() {
 				if ($page['private'] != 'Y')
 				{
 					// set <loc>
-					$pageLoc = find_url($page['url'], $page['parent']);
-					
+					$pageLoc = find_url($page['url'], $page['parent'],'full');
 					// set <lastmod>
 					$tmpDate = date("Y-m-d H:i:s", strtotime($page['pubDate']));
 					$pageLastMod = makeIso8601TimeStamp($tmpDate);

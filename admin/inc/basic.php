@@ -695,6 +695,7 @@ if(!function_exists('in_arrayi')) {
 	}
 }
 
+
 /**
  * Creates Standard URL for Pages
  *
@@ -702,56 +703,52 @@ if(!function_exists('in_arrayi')) {
  *
  * @since 2.0
  * @uses $PRETTYURLS
- * @uses $SITEURL
  * @uses $PERMALINK
  * @uses tsl
  *
  * @param string $slug
  * @param string $parent
- * @param string $type Default is 'full', alternative is 'relative'
+ * @param string $absolute force absolute siteurl
  * @return string
  */
-function find_url($slug, $parent, $type='full') {
+function generate_url($slug, $parent, $absolute = false){
 	global $PRETTYURLS;
-	global $SITEURL;
 	global $PERMALINK;
-				
-	if ($type == 'full') {
-		$full = $SITEURL;
-	} elseif($type == 'relative') {
-		$s = pathinfo(htmlentities(getScriptFile(), ENT_QUOTES));
-		$full = $s['dirname'] .'/';
-		$full = str_replace('//', '/', $full);
-	} else {
-		$full = '/';
-	}
-	
+
+	$path = tsl(getSiteURL($absolute));
+	$url  = $path;
+
 	if ($parent != '') {
 		$parent = tsl($parent); 
 	}	
 
-	if ($PRETTYURLS == '1') {      
-		if ($slug != 'index'){  
-			$url = $full . $parent . $slug . '/';
-		} else {
-			$url = $full;
-		}   
-	} else {
-		if ($slug != 'index'){ 
-			$url = $full .'index.php?id='.$slug;
-		} else {
-			$url = $full;
-		}
+	if ($PRETTYURLS == '1') {
+		if ($slug != 'index') $url .= $parent . $slug . '/';
+	} 
+	else {
+		if ($slug != 'index') $url .= 'index.php?id='.$slug;
 	}
 	
 	if (trim($PERMALINK) != '' && $slug != 'index'){
 		$plink = str_replace('%parent%/', $parent, $PERMALINK);
 		$plink = str_replace('%parent%', $parent, $plink);
 		$plink = str_replace('%slug%', $slug, $plink);
-		$url = $full . $plink;
+		$url = $path . $plink;
 	}
 
-	return (string)$url;
+	return debugLog((string)$url);
+}
+
+/** 
+ * LEGACY alias for generate_url, defaults to relative now
+ * @deprecated
+ */
+function find_url($slug, $parent, $type = null) {
+	if(!isset($type)){
+		if(!getDef('GSSITEURLREL',true)) $type = "full"; # only default to full is not GSSITEURLREL
+		else $type = "relative";
+	}	
+	return generate_url($slug, $parent, $type == 'full');
 }
 
 /**
@@ -2106,9 +2103,14 @@ function setTimezone($timezone){
  * @return mixed    depending on returnGlobals returns xml as object or a defined var array for global extraction
  */
 function getWebsiteData($returnGlobals = false){
-	$thisfilew = GSDATAOTHERPATH .GSWEBSITEFILE;
-	if (file_exists($thisfilew)) {
-		$dataw        = getXML($thisfilew);
+	$SITENAME    = '';
+	$SITEURL     = '';
+	$SITEURL_REL = '';
+	$SITEURL_ABS = '';
+	$ASSETURL    = '';
+
+	if (file_exists(GSDATAOTHERPATH .GSWEBSITEFILE)) {
+		$dataw        = getXML(GSDATAOTHERPATH .GSWEBSITEFILE);
 		$SITENAME     = stripslashes( $dataw->SITENAME);
 		$SITEURL      = trim((string) $dataw->SITEURL);
 		$TEMPLATE     = trim((string) $dataw->TEMPLATE);
@@ -2118,20 +2120,22 @@ function getWebsiteData($returnGlobals = false){
 		$SITETIMEZONE = trim((string) $dataw->TIMEZONE);
 		$SITELANG     = trim((string) $dataw->LANG);
 		$SITEUSR      = trim((string) $dataw->USR);
-	} else {
-		$SITENAME = '';
-		$SITEURL  = '';
+
+		$SITEURL_ABS = $SITEURL;
+		$SITEURL_REL = getRootRelURIPath($SITEURL);
+		
+		// asseturl is root relative if GSASSETURLREL is true
+		// else asseturl is scheme-less ://url if GSASSETSCHEMES is not true
+		if(getDef('GSASSETURLREL')) $ASSETURL = $SITEURL_REL;
+		else if(getDef('GSASSETSCHEMES',true) !==true) str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL);
+		else $ASSETURL = $SITEURL;
+
+		// SITEURL is root relative if GSSITEURLREL is true
+		if(getDef('GSSITEURLREL')){
+			$SITEURL = $SITEURL_REL;
+		}
 	}
 
-	$ASSETURL = $SITEURL;
-
-	// asseturl is scheme-less ://url if GSASSETSCHEMES is not true
-	// asseturl is root relative if GSASSETURLREL is true
-	if(getDef('GSASSETURLREL')) $ASSETURL = getRootRelURIPath($ASSETURL);
-	else if(getDef('GSASSETSCHEMES',true) !==true) str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL);
-	if(getDef('GSSITEURLREL'))  $SITEURL  = getRootRelURIPath($SITEURL);
-
-	unset($thisfilew);
 	if($returnGlobals) return get_defined_vars();
 	return $dataw;
 }
@@ -2254,5 +2258,16 @@ function getMaxUploadSize(){
 	$upload_mb    = min($max_upload, $max_post, $memory_limit);
 	return $upload_mb;
 }
+
+/**
+ * get the global siteurl
+ *
+ * @param  $absolute force absolute url
+ * @return str
+ */
+function getSiteURL($absolute = false){
+	return $absolute ? getGlobal('SITEURL_ABS') : getGlobal('SITEURL');
+}
+
 
 /* ?> */
