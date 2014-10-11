@@ -1101,6 +1101,8 @@ label.checkbox {
 	width: 50%;
 	min-width: 300px;
 	max-width: 400px;
+	border-right: 1px solid rgba(0, 0, 0, 0.04);
+	margin-right: -1px;
 }
 
 .wideopt {
@@ -1108,8 +1110,27 @@ label.checkbox {
 	width: 100%;
 }
 
-.leftopt p,.rightopt p,.wideopt p{
-	margin:0 5px 15px 5px;
+.leftopt,.rightopt,.wideopt {
+	padding:10px;
+	box-sizing: border-box;
+	transition: background-color 200ms;	
+}
+
+.leftopt:hover,.rightopt:hover,.wideopt:hover {
+	background-color: rgba(0,0,0,0.02);
+	transition: background-color 400ms;
+}
+
+.leftopt p,.rightopt, p,.wideopt p{
+	margin-bottom: 15px;
+	/*margin:0 10px 15px 10px;*/
+	/*margin: 10px;*/
+}
+
+ .wideopt p:last-child{
+	margin-bottom: 0px;
+	/*margin:0 10px 15px 10px;*/
+	/*margin: 10px;*/
 }
 
 .leftopt input,.rightopt input,.wideopt input{
