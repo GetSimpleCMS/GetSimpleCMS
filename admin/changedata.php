@@ -50,7 +50,6 @@ if (isset($_POST['submitted'])) {
 		// is a slug provided?
 		if ($_POST['post-id']) {
 			$url = truncate($_POST['post-id'],GSFILENAMEMAX); // limit slug/filenames to 70 chars
-			// @todo abstract this translit stuff
 			$url = doTransliteration($url);
 			$url = to7bit($url, "UTF-8");
 			$url = clean_url($url); //old way

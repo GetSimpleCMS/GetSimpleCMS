@@ -15,6 +15,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-plugins');
+
 $pluginid = isset($_GET['set']) ? $_GET['set'] : null;
 $nonce    = isset($_GET['nonce']) ? $_GET['nonce'] : null;
 
@@ -113,8 +115,11 @@ get_template('header');
 	
 	<div id="maincontent">
 		<div class="main" >
-		<h3><?php i18n('PLUGINS_MANAGEMENT'); ?></h3>
-		
+		<h3 class="floated"><?php i18n('PLUGINS_MANAGEMENT'); ?></h3>
+		<div class="edit-nav clearfix" >
+			<?php exec_action(get_filename_id().'-edit-nav'); ?>
+		</div>		
+		<?php exec_action(get_filename_id().'-body'); ?>		
 		<?php if ($counter > 0) { ?>
 			<table class="edittable">
 				<thead>

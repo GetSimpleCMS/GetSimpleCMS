@@ -72,13 +72,6 @@ if ($errorcode == GSSLUGNOTFOUND || $errorcode == GSSLUGPRIVATE) {
 	header($_SERVER["SERVER_PROTOCOL"].' '.$errorcode);
 }
 
-# check for correctly formed url
-if (getDef('GSCANONICAL',true)) {
-	if ($_SERVER['REQUEST_URI'] != find_url($url, $parent, 'relative')) {
-		redirect(find_url($url, $parent));
-	}
-}
-
 if($load['template']){
 	# call pretemplate Hook
 	exec_action('index-pretemplate');

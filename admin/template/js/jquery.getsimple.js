@@ -593,12 +593,13 @@ jQuery(document).ready(function () {
 		$("#edit input#post-title").focus();
 	}
 
+	// page options toggle LEGACY for plugins
 	$("#metadata_toggle").on("click", function ($e) {
 		$e.preventDefault();
 		$("#metadata_window").slideToggle('fast');
 		$(this).toggleClass('current');
 	});
- 
+
 	var privateLabel = $("#post-private-wrap label");
 	$("#post-private").change(function () {
 		if ($(this).val() == "Y") {
@@ -666,6 +667,7 @@ jQuery(document).ready(function () {
 
     // ajax save function for edit.php #editform
     function ajaxSave(urlargs) {
+
         $('input[type=submit]').attr('disabled', 'disabled');
 
         // we are using ajax, so ckeditor wont copy data to our textarea for us, so we do it manually
@@ -750,8 +752,10 @@ jQuery(document).ready(function () {
 
     // ajaxify edit.php submit
     $('body.ajaxsave #editform').on('submit',function(e){
-        e.preventDefault();
-        ajaxSave().done(ajaxSaveCallback);
+        if($('body').hasClass('ajaxsave')){
+            e.preventDefault();
+            ajaxSave().done(ajaxSaveCallback);
+        }
     });
 
     // We register title and slug changes with change() which only fires when you lose focus to prevent midchange saves.
@@ -782,6 +786,7 @@ jQuery(document).ready(function () {
 
 	$(".save-close a").on("click", function ($e) {
 		$e.preventDefault();
+		$('body').removeClass('ajaxsave');
 		$('input[name=redirectto]').val('pages.php');
 		$("#submit_line input.submit").trigger('click');
 	});
@@ -893,8 +898,8 @@ jQuery(document).ready(function () {
 		if($('#codetext').data('editor')){
 			$('#codetext').data('editor').setValue('');
 			$('#codetext').data('editor').hasChange = false;
-		}	
-		$('#theme_edit_code').fadeTo('fast',0.3);
+		}
+		$('#theme_edit_code').addClass('readonly')
 
 		$.ajax({
 			type: "GET",
@@ -913,15 +918,23 @@ jQuery(document).ready(function () {
 					$('#theme_filemanager').html(response.find('#theme_filemanager > *') ); 
 				}
 
-				/* load code content */
+				/* load file code content */
 				var newcontent = response.find('#codetext');
 				$('#codetext').val(newcontent.val());
 				
-				/* form */
-				var filename = response.find('#edited_file').val() ;
+				/* update form action for no ajaxsave */
+				/* !important lame JS issue, form must be inside a element in the resposne, innerhtml parents cannot be form tags and they get removed */
+				var themeEditform = response.find('#themeEditForm');
+				var action = $(themeEditform).attr('action');
+				$('#themeEditForm').attr('action',action);
+
+				// update edited_file
+				var filenamefield = response.find('#edited_file');
+				var filename = $(filenamefield).val();
 				$('#edited_file').val(filename);
 				updateNonce(response);
 
+				// update codemirror instance with new code
 				if($('#codetext').data('editor')){
 					$('#codetext').data('editor').setValue(newcontent.val());
 					$('#codetext').data('editor').hasChange = false;
@@ -935,11 +948,11 @@ jQuery(document).ready(function () {
 				/* title */
 				$('#theme_editing_file').html(filename);
 
-
 				clearFileWaits();
 				loadingAjaxIndicator.fadeOut();
 
-				$('#theme_edit_code').fadeTo('fast',1);
+				if($(filenamefield).hasClass('nofile')) return;
+				$('#theme_edit_code').removeClass('readonly');
 
 			}
 		});
@@ -967,10 +980,11 @@ jQuery(document).ready(function () {
 		e.preventDefault();
 		editor = $('#codetext').data('editor');
 		if(editor){
-			$('#theme_edit_code').fadeTo('fast',0.3).fadeTo('fast',1.0);
+			$('#theme_edit_code').addClass('readonly');
 			editor.setValue($(editor.getTextArea()).val());
 			editor.hasChange = false;
-		}	
+			setTimeout(function(){$('#theme_edit_code').removeClass('readonly');},500);
+		}
 		notifyWarn('Updates cancelled').removeit();
 	});
 
@@ -1025,7 +1039,6 @@ jQuery(document).ready(function () {
 		loadingAjaxIndicator.show();
 		// $('#codetext').data('editor').setValue('');
 		// $('#codetext').data('editor').hasChange == false;
-		// $('#theme_edit_code').fadeTo('fast',0.3);
 		
 		cm_save_editors();
 		var url = "path/to/your/script.php"; // the script where you handle the form input.

@@ -17,7 +17,7 @@ if(!isset($GS_debug)) $GS_debug = array();
 
 // @todo remove for production
 // debug catcher for this core wide change issues
-if(htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES) !== htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES)) die('PHP_SELF mismatch ' . $_SERVER['PHP_SELF']);
+if(htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES) !== htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES)) die('PHP_SELF mismatch ' . htmlentities($_SERVER['PHP_SELF']));
 
 /**
  * Set PHP enviroments
@@ -51,38 +51,44 @@ $GS_constants = array(
 	'GSDEFAULTLANG'         => 'en_US',                       // default language for core
 	'GSTITLEMAX'            => '70',                          // max length allowed for titles
 	'GSFILENAMEMAX'         => '255',                         // max length allowed for file names/slugs
+	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
 
 $GS_definitions = array(
-	'GSHEADERCLASS'        => '',                             // custom class to add to header eg. gradient
-	'GSHTTPPREFIX'         => '',                             // http slug prefix GSHTTPPREFIX.GSSLUGxx
-	'GSSLUGNOTFOUND'       => '404',                          // http slug for not found
-	'GSSLUGPRIVATE'        => '403',                          // http slug for private pages
-	'GSADMIN'              => 'admin',                        // admin foldername
-	'GSSITEMAPFILE'        => 'sitemap.xml',                  // sitemap file name, must modify in .htaccess as needed
-	'GSERRORLOGFILE'       => 'errorlog.txt',                 // error log filename
+	'GSDEFAULTPAGE'        => 'pages.php',                    // (str) Default backend index page
+	'GSHEADERCLASS'        => '',                             // (str) custom class to add to header eg. gradient
+	'GSHTTPPREFIX'         => '',                             // (str) http slug prefix GSHTTPPREFIX.GSSLUGxx
+	'GSSLUGNOTFOUND'       => '404',                          // (str) http slug for not found
+	'GSSLUGPRIVATE'        => '403',                          // (str) http slug for private pages
+	'GSADMIN'              => 'admin',                        // (str) admin foldername
+	'GSSITEMAPFILE'        => 'sitemap.xml',                  // (str) sitemap file name, must modify in .htaccess as needed
+	'GSERRORLOGFILE'       => 'errorlog.txt',                 // (str) error log filename
 	'GSERRORLOGENABLE'     => true,                           // (bool) should GS log php errors to GSERRORLOGFILE
-	'GSSTYLE'              => 'wide,sbfixed',                 // default style modifiers
-	'GSWIDTH'              => '1024px',                       // pagewidth on backend,(max-width), null,'none',''  for 100% width
-	'GSWIDTHWIDE'          => '1366px',                       // page width on backend pages defined in GSWIDEPAGES, values as above
-	'GSWIDEPAGES'          => 'theme-edit,components',        // pages to apply GSWIDTHWIED on
+	'GSSTYLE'              => 'wide,sbfixed',                 // (str-csv) default style modifiers
+	'GSWIDTH'              => '1024px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width
+	'GSWIDTHWIDE'          => '1366px',                       // (str) page width on backend pages defined in GSWIDEPAGES, values as above
+	'GSWIDEPAGES'          => 'theme-edit,components',        // (str-csv) pages to apply GSWIDTHWIED on
 	'GSALLOWLOGIN'         => true,                           // (bool) allow front end login
 	'GSALLOWRESETPASS'     => true,                           // (bool) allow front end password resets
-	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // file extensions to show and edit in theme editor
+	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // (str-csv) file extensions to show and edit in theme editor
 	'GSASSETSCHEMES'       => false,                          // (bool) should $ASSETURL contain the url scheme http|https
-	'GSASSETURLREL'        => true,                          // (bool) Use root relative urls for $ASSETURL, overrides GSASSETSCHEMES
-	'GSSITEURLREL'         => true,                          // (bool) Use root relative urls for $SITEURL
+	'GSASSETURLREL'        => true,                           // (bool) Use root relative urls for $ASSETURL, overrides GSASSETSCHEMES
+	'GSSITEURLREL'         => true,                           // (bool) Use root relative urls for $SITEURL
 	'GSALLOWDOWNLOADS'     => true,                           // (bool) allow using downloads.php to download files from /uploads and backups/zip
 	'GSEDITORHEIGHT'       => '500',                          // (str) wysiwyg editor height in px
 	'GSEDITORTOOL'         => 'basic',                        // (str) wysiwyg editor toobar
 	'GSEDITORCONFIGFILE'   => 'config.js',                    // (str) wysiwyg editor toobar
-	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // url used in email template
-	'GSCHMOD'              => 0644,                           // chmod mode legacy
-	'GSCHMODFILE'          => 0644,                           // chmod mode for files
-	'GSCHMODDIR'           => 0755,                           // chmod mode for dirs
-	'GSDOCHMOD'            => true,                           // perform chmod after creating files or directories
- 	'GSDEFINITIONSLOADED'  => true	                          // $GS_definitions IS LOADED FLAG
+	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // (str) url used in email template
+	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
+	'GSCHMOD'              => 0644,                           // (octal) chmod mode legacy
+	'GSCHMODFILE'          => 0644,                           // (octal) chmod mode for files
+	'GSCHMODDIR'           => 0755,                           // (octal) chmod mode for dirs
+	'GSDOCHMOD'            => true,                           // (bool) perform chmod after creating files or directories
+	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
+	'GSDEBUGAPI'           => false,                          // (bool) debug api calls
+	# -----------------------------------------------------------------------------------------------------------------------------------------------
+ 	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
 );
 
 /* Define Constants */
@@ -93,7 +99,6 @@ GS_defineFromArray($GS_constants);
  */
 global
  $TEMPLATE,       // (str) current theme
- $USR,            // (str) holds the GS_ADMIN_USERNAME cookie value
  $GSADMIN,        // (str) admin foldername
  $GS_debug,       // (array) global array for storing debug log entries
  $components,     // (array) global array for storing components, array of objs from components.xml
@@ -232,13 +237,15 @@ if(!is_frontend()){
  * @global (str) $SITETIMEZONE  default timezone of server, safer to set than guess from server
  * @global (str) $SITELANG      default site ITEF langstring, used for login etc. see $LANG
  * @global (str) $SITEUSR       primary user id that installed GS
- * @global (str) $ASSETURL      url for asset loading in head default same as SITEURL but without the scheme '://url'
+ * @global (str) $ASSETURL      url for asset loading in head depends on GSASSETURLREL and GSASSETSCHEMES settings
  */
 
 GLOBAL
  $dataw,
  $SITENAME,
  $SITEURL,
+ $SITEURL_ABS,
+ $SITEURL_REL,
  $TEMPLATE,
  $PRETTYURLS,
  $PERMALINK,
@@ -252,14 +259,17 @@ GLOBAL
 // load website data from GSWEBSITEFILE (website.xml)
 extract(getWebsiteData(true));
 
-debugLog('SITEURL = ' . $SITEURL);
-debugLog('ASSETURL = ' . $ASSETURL);
+debugLog('GSSITEURLREL = ' . getDef('GSSITEURLREL',true));
+debugLog('SITEURL      = ' . getSiteURL());
+debugLog('SITEURL_ABS  = ' . getSiteURL(true));
+debugLog('SITEURL_REL  = ' . $SITEURL_REL);
+debugLog('ASSETURL     = ' . $ASSETURL);
 
 /**
  * Global user data
  *
  * @global  (str) $datau      user xml raw obj from GSUSERSPATH/userid.xml
- * @global  (str) $USR        user id
+ * @global  (str) $USR        holds the GS_ADMIN_USERNAME cookie value
  * @global  (str) $HTMLEDITOR htmleditor toggle for auth user
  * @global  (str) $TIMEZONE   timezone for auth user
  * @global  (str) $LANG       language for auth user
@@ -313,7 +323,6 @@ $SALT = getDefaultSalt();
 if(!isset($SALT) && $SITEURL !='' && notInInstall()) die(i18n_r('KILL_CANT_CONTINUE')."<br/>".sprintf(i18n_r('NOT_SET'),'SALT') );
 $SESSIONHASH = sha1($SALT . $SITENAME);
 
-
 /**
  * Global editor vars (ckeditor)
  *
@@ -345,6 +354,7 @@ $dump = array(
 // 'dataw'        => $dataw,
 // 'datau'        => $datau,
 // 'dataa'        => $dataa,
+'GSROOT'       => GSROOTPATH,
 'SITENAME'     => $SITENAME,
 'SITEURL'      => $SITEURL,
 'TEMPLATE'     => $TEMPLATE,
@@ -366,8 +376,9 @@ $dump = array(
 'EDOPTIONS'    => $EDOPTIONS,
 'EDLANG'       => $EDLANG,
 'EDHEIGHT'     => $EDHEIGHT,
+// '_SERVER'      => $_SERVER,
 );
-debugLog($dump);
+// debugLog($dump);
 
 /**
  * Check to make sure site is already installed
@@ -407,6 +418,12 @@ if (notInInstall()) {
 	}
 
 }
+
+// fill for install
+if(empty($SITEURL))      $SITEURL  = suggest_site_path();
+if(empty($SITEURL_ABS))  $SITEURL_ABS = $SITEURL;
+if(empty($SITEURL_REL))  $SITEURL_REL = $SITEURL;
+if(empty($ASSETURL))     $ASSETURL = $SITEURL;
 
 /**
  * Include other files depending if they are needed or not
@@ -454,7 +471,6 @@ if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ requ
 
 // do the template rendering
 if(GSBASE) require_once(GSADMINPATH.'base.php');
-
 
 // common methods that are required before dpendancy includes
 

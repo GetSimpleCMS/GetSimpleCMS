@@ -64,6 +64,7 @@ $i18n = array(
 "ALL_PAGES"               =>	"Pages",
 "EXPAND_TOP"              =>	"Expand Top Parents",
 "COLLAPSE_TOP"            =>	"Collapse Top Parents",
+"MISSING_PARENT"          =>    " - <i>Missing Parent</i>",
 
 /* 
 * For: edit.php
@@ -210,7 +211,7 @@ $i18n = array(
 "CHOOSE_THEME"            =>	"Choose Your Theme",
 "ACTIVATE_THEME"          =>	"Activate Theme",
 "THEME_SCREENSHOT"        =>	"Theme Screenshot",
-"THEME_PATH"              =>	"Theme Folder Location",
+"THEME_PATH"              =>	"Active Theme Folder Location",
 
 /* 
 * For: resetpassword.php
@@ -500,7 +501,7 @@ $i18n = array(
 "AUTHOR"                  =>	"Author", //plugins.php
 "ENABLE"                  =>	"Activate", //plugins.php
 "DISABLE"                 =>	"Deactivate", //plugins.php
-"NO_THEME_SCREENSHOT"     =>	"Your theme does not have a screenshot preview", //theme.php
+"NO_THEME_SCREENSHOT"     =>	"This theme does not have a screenshot preview", //theme.php
 "UNSAVED_INFORMATION"     =>	"You are about to leave this page and will lose any unsaved information.", //edit.php
 "BACK_TO_WEBSITE"         =>	"Back to Website", //index & resetpassword
 "SUPPORT_FORUM"           =>	"Support Forum", //support.php
@@ -557,7 +558,7 @@ $i18n = array(
 "API_CONFIGURATION"       =>	'API Configuration',
 "API_ENABLE"              =>	'Enable the API',
 "API_REGENKEY"            =>	'Regenerate Key',
-"API_DISCLAIMER"          =>	"By enabling this API you are allowing any external application that has a copy of your key to have access to your website's data. <b>Only share this key with applications you trust.</b>",
+"API_DISCLAIMER"          =>	"By enabling this API you are allowing any external application that has a copy of your key to have access to your website's data.<br/><b>Only share this key with applications you trust.</b>",
 "API_REGEN_DISCLAIMER"    =>	"When you regenerate your API Key, you will need to enter the new key into any external application using this API to connect to your website.",
 "API_CONFIRM"             =>	"ARE YOU SURE?",
 

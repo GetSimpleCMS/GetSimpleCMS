@@ -26,12 +26,12 @@ if(isset($_POST['submitted'])){
 		
 		# get user information from existing XML file
 		
-		if (filepath_is_safe(GSUSERSPATH . $file,GSUSERSPATH)) {
-			$data  = getXML(GSUSERSPATH . $file);
-			$USR   = strtolower($data->USR);
-			$EMAIL = $data->EMAIL;
+		if (filepath_is_safe(GSUSERSPATH . $file,GSUSERSPATH) && file_exists(GSUSERSPATH . $file)) {
+			$data   = getXML(GSUSERSPATH . $file);
+			$userid = strtolower($data->USR);
+			$EMAIL  = $data->EMAIL;
 			
-			if(strtolower($_POST['username']) === $USR) {
+			if(strtolower($_POST['username']) === $userid) {
 				# create new random password
 				$random = createRandomPassword();
 				// $random = '1234';
@@ -40,7 +40,7 @@ if(isset($_POST['submitted'])){
 				backup_datafile(GSUSERSPATH.$file);
 				
 				# create password change trigger file
-				$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
+				$flagfile = GSUSERSPATH . _id($userid).".xml.reset";
 				copy_file(GSUSERSPATH . $file, $flagfile);
 				
 				# change password and resave xml file
@@ -50,16 +50,15 @@ if(isset($_POST['submitted'])){
 				# send the email with the new password
 				$subject = $site_full_name .' '. i18n_r('RESET_PASSWORD') .' '. i18n_r('ATTEMPT');
 				$message = "<p>". cl($SITENAME) ." ". i18n_r('RESET_PASSWORD') ." ". i18n_r('ATTEMPT').'</p>';
-				$message .= "<p>". i18n_r('LABEL_USERNAME').": <strong>". $USR."</strong>";
+				$message .= "<p>". i18n_r('LABEL_USERNAME').": <strong>". $userid."</strong>";
 				$message .= "<br>". i18n_r('NEW_PASSWORD').": <strong>". $random."</strong>";
 				$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL . $GSADMIN.'/">'.$SITEURL . $GSADMIN.'/</a></p>';
 				exec_action('resetpw-success');
-				$status = sendmail($EMAIL,$subject,$message) ? 'success' : 'error';
+				$emailstatus = sendmail($EMAIL,$subject,$message);
+				# if email fails, we do nothing, maybe handle this in the future
 				# show the result of the reset attempt
 				usleep($randSleep);
-				$status = 'success'; // we dont care if email fails
-				// @todo status from xml save is the important one
-				redirect("resetpassword.php?upd=pwd-".$status);
+				redirect("resetpassword.php?upd=pwd-". ($status && $emailstatus ? 'success' : 'error');
 			} else{
 				# username doesnt match listed xml username
 				exec_action('resetpw-error');
@@ -107,4 +106,5 @@ get_template('header');
 		
 	</div>
 
+<div class="clear"></div>
 <?php get_template('footer'); ?>

@@ -23,12 +23,6 @@ if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && !$nocache
 
 ob_start();
 
-function compress($buffer) {
-  $buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer); /* remove comments */
-  $buffer = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $buffer); /* remove tabs, spaces, newlines, etc. */
-  return $buffer;
-}
-
 $useadminxml = false; // bypass for including admin.xml
 $useadmincss = false; // bypass for including admin.css
 
@@ -128,8 +122,8 @@ if(file_exists(GSTHEMESPATH.GSCSSCUSTOMFILE) && $useadmincss) include(GSTHEMESPA
 exec_action('style-save'); // called after css files are included
 
 // save cache
-save_file($cachefile, compress(ob_get_contents()));
-
+$ob_get_contents = ob_get_contents();
+save_file($cachefile, cssCompress($ob_get_contents));
 ob_end_flush();
 
 

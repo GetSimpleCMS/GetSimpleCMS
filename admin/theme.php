@@ -11,6 +11,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-theme');
+
 # was the form submitted?
 if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 
@@ -41,15 +43,14 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 	$TEMPLATE = $newTemplate; // set new global
 }
 
-# get available themes (only look for folders)
-# @todo replace with getfiles
-
+# get available themes, using folder match required contain template.php
 $themes = getDirs(GSTHEMESPATH,GSTEMPLATEFILE);
 $theme_options 	= '';
 
 foreach($themes as $theme){
-	$sel = $TEMPLATE == $theme ? 'selected' : '';
-	$theme_options .= '<option '.$sel.' value="'.$theme.'" >'.$theme.'</option>';
+	$sel       = $TEMPLATE == $theme ? 'selected' : '';
+	$themename = $TEMPLATE == $theme ? $theme. ' ('.i18n_r('ACTIVE').')' : $theme;
+	$theme_options .= '<option '.$sel.' value="'.$theme.'" >'.$themename.'</option>';
 }
 
 $pagetitle = i18n_r('THEME_MANAGEMENT');
@@ -63,31 +64,37 @@ get_template('header');
 	
 	<div id="maincontent">
 		<div class="main">
-		<h3><?php i18n('CHOOSE_THEME');?></h3>
-		<form action="" method="post" accept-charset="utf-8" >
-		<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("activate"); ?>" />			
-		<?php	
-			$theme_path = str_replace(GSROOTPATH,'',GSTHEMESPATH);
-			if ( $SITEURL ) {	
-				echo '<p><b>'.i18n_r('THEME_PATH').': &nbsp;</b> <code>'.$SITEURL.$theme_path.$TEMPLATE.'/</code></p>';
-			}
-		?>
-		<p><select id="theme_select" class="text" style="width:250px;" name="template" >
-				<?php echo $theme_options; ?>
-			</select>&nbsp;&nbsp;&nbsp;<input class="submit" type="submit" name="submitted" value="<?php i18n('ACTIVATE_THEME');?>" /></p>
-		</form>
-		<?php
-		 	if (file_exists(GSTHEMESPATH.$TEMPLATE.'/images/screenshot.png')) { 
-				echo '<p><img id="theme_preview" style="border:2px solid #333;" src="../'.$theme_path.$TEMPLATE.'/images/screenshot.png" alt="'.i18n_r('THEME_SCREENSHOT').'" /></p>';
-				echo '<span id="theme_no_img" style="visibility:hidden"><p><em>'.i18n_r('NO_THEME_SCREENSHOT').'</em></p></span>';				
-			} else {
-				echo '<p><img id="theme_preview" style="visiblity:hidden;border:2px solid #333;" src="../'.$theme_path.$TEMPLATE.'/images/screenshot.png" alt="'.i18n_r('THEME_SCREENSHOT').'" /></p>';				
-				echo '<span id="theme_no_img"><p><em>'.i18n_r('NO_THEME_SCREENSHOT').'</em></p></span>';
-			}
+			<h3 class="floated"><?php i18n('CHOOSE_THEME');?></h3>
+			<div class="edit-nav clearfix" >
+				<?php exec_action(get_filename_id().'-edit-nav'); ?>
+			</div>		
+			<?php exec_action(get_filename_id().'-body'); ?>			
+			<form action="" method="post" accept-charset="utf-8" >
+				<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("activate"); ?>" />			
+			<?php	
+				$theme_path = str_replace(GSROOTPATH,'',GSTHEMESPATH);
+				if ( $SITEURL ) {	
+					echo '<p><b>'.i18n_r('THEME_PATH').': &nbsp;</b> <code>'.$SITEURL.$theme_path.$TEMPLATE.'/</code></p>';
+				}
+			?>
+				<p>
+					<select id="theme_select" class="text"  name="template" >
+					<?php echo $theme_options; ?>
+					</select>&nbsp;&nbsp;&nbsp;<input class="submit" type="submit" name="submitted" value="<?php i18n('ACTIVATE_THEME');?>" />
+				</p>
+			</form>
+			<?php
+			 	if (file_exists(GSTHEMESPATH.$TEMPLATE.'/images/screenshot.png')) { 
+					echo '<p><img id="theme_preview" src="../'.$theme_path.$TEMPLATE.'/images/screenshot.png" alt="'.i18n_r('THEME_SCREENSHOT').'" /></p>';
+					echo '<span id="theme_no_img" style="visibility:hidden"><p><em>'.i18n_r('NO_THEME_SCREENSHOT').'</em></p></span>';				
+				} else {
+					echo '<p><img id="theme_preview" style="visiblity:hidden;"" src="../'.$theme_path.$TEMPLATE.'/images/screenshot.png" alt="'.i18n_r('THEME_SCREENSHOT').'" /></p>';				
+					echo '<span id="theme_no_img"><p><em>'.i18n_r('NO_THEME_SCREENSHOT').'</em></p></span>';
+				}
 
-			exec_action('theme-extras');
-		?>
-			
+				exec_action('theme-extras');
+			?>
+				
 		</div>
 	
 	</div>

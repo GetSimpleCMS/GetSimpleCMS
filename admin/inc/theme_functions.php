@@ -294,11 +294,9 @@ function get_header($full=true) {
 }
 
 /**
- * Get Page Footer HTML
- *
- * This will return footer html for a particular page. Right now
- * this function only executes a plugin hook so developers can hook into
- * the bottom of a site's template.
+ * Get Page Footer for themes
+ * executes theme-footer hook
+ * Also gets all frontend scripts set to footer
  *
  * @since 2.0
  * @uses exec_action
@@ -306,7 +304,7 @@ function get_header($full=true) {
  * @return string HTML for template header
  */
 function get_footer() {
-	get_scripts_frontend(TRUE);
+	get_scripts_frontend(true);
 	exec_action('theme-footer');
 }
 
@@ -482,50 +480,6 @@ function menu_data($id = null,$xml=false) {
 		return $xml;
 		}
 	}
-}
-
-/**
- * get the components xml data
- * returns an array of xmlobjs
- *
- * @since 3.4
- * 
- * @uses components
- * @uses GSDATAOTHERPATH
- * @uses getXML
- * @param  boolean $xml [description]
- * @return components data items xmlobj
- *
- */
-function get_components_xml(){
-    global $components;
-
-    if (!$components) {
-        if (file_exists(GSDATAOTHERPATH.'components.xml')) {
-        	$data = getXML(GSDATAOTHERPATH.'components.xml');
-            $components = $data->item;
-        } else {
-            $components = array();
-        }
-    }
-    return $components;
-}
-
-/**
- * get xml for an individual component
- * returns an array since duplicates are possible on component slugs
- *
- * @since 3.4
- *
- * @param  str $id component id
- * @return array of simpleXmlObj matching slug
- */
-function get_component_xml($id){
-        // normalize id
-        $id = to7bit($id, 'UTF-8');
-	$id = clean_url($id);
-	if(!$id) return;
-	return get_components_xml()->xpath("//slug[.='".$id."']/..");	
 }
 
 /**

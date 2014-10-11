@@ -74,7 +74,6 @@ a img {
 }
 
 .unformatted {
-	white-space: pre;
 	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
 	line-height: 15px;
 	font-size: 11px;
@@ -82,6 +81,10 @@ a img {
 	padding-bottom: 15px;
 	color: #555;
 	overflow: auto;
+}
+
+.unformatted code{
+	white-space: pre;
 }
 
 #help {
@@ -1765,7 +1768,13 @@ table.simple td.title {
 	color: <?php echo $primary_1 ?>;
 	font-family: sans-serif;
 	opacity: .2;
+	transition: opacity 300ms;
 
+}
+
+.uploaddropzone.dz-drag-hover {
+	opacity: .8;
+	transition: opacity 300ms;
 }
 
 #queue-item-template{
@@ -2167,13 +2176,13 @@ body#index {
 }
 
 #setup #footer,#install #footer,#index #footer, #resetpassword #footer {
-	width: 270px;
+	/*width: 270px;*/
 	border-top: none;
-	margin: 0 auto 20px auto;
+	/*margin: 0 auto 20px auto;*/
 	text-align: center;
 }
 
-#index .footer-left,#resetpassword .footer-left  {
+#setup .footer-left,#install .footer-left,#index .footer-left,#resetpassword .footer-left  {
 	float: none;
 	width: 100%;
 }
@@ -2352,8 +2361,13 @@ h5 .crumbs, div.h5 .crumbs {
 }
 
 #theme_select {
+	width:270px;
 	font-size:16px;
 	font-weight:bold;
+}
+
+#theme_preview {
+	border: 1px solid #aaa;
 }
 
 #theme-edit #maincontent {
@@ -2436,9 +2450,8 @@ a.disabled:visited {
 	background-color:#F9F9F9;
 	border:1px solid #E8E8E8;
 	border-radius: 2px;
-	padding:6px;
+	padding:2px 6px;
 	line-height:27px;
-	height:24px;
 }
 
 #theme_edit_nav {
@@ -2464,6 +2477,11 @@ a.disabled:visited {
 #theme_edit_code {
 	float:left;
 	width:80%;
+	transition: opacity 400ms;
+}
+
+#theme_edit_code.readonly {
+	transition: opacity 200ms;
 }
 
 #theme_edit_code .well{
@@ -2575,6 +2593,9 @@ a.disabled:visited {
 .ext-theme {background-image: url(images/filemanager/preferences-desktop-theme.png);}
 .ext-wait,.ext-blank {background-image: none;}
 
+
+/* generic override modifiers classes */
+
 /* Grayscale */
 .desaturate, .dir-empty{
 		filter: gray; /* IE */
@@ -2607,6 +2628,15 @@ a.disabled:visited {
   -o-transition: none !important;
   -ms-transition: none !important;
   transition: none !important;
+}
+
+.readonly{
+	opacity: 0.3;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }
 
 /* codemirror */
@@ -2831,6 +2861,11 @@ a.disabled:visited {
 /* jquiry-ui theme overrides
 	tab border bug https://github.com/jquery/download.jqueryui.com/issues/87
 */
+
+/* jquery resize handle styles */
+.fullscreen .CodeMirror .ui-icon-gripsmall-diagonal-se{
+	display:none !important; /* hide in fullscreen */
+}
 
 .CodeMirror .ui-icon-gripsmall-diagonal-se {
 	opacity:.3;

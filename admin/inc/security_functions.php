@@ -77,11 +77,11 @@ function antixss($str){
  * @param  string $action action to pass to check_nonce
  * @param  string $file   file to pass to check_nonce
  * @param  bool   $die    if false return instead of die
- * @return 
+ * @return bool   returns true if csrf check fails
  */
 function check_for_csrf($action, $file="", $die = true){
 	// check for csrf
-	if (!getDef('GSNOCSRF',true) || (GSNOCSRF == FALSE) ) {
+	if (!getDef('GSNOCSRF',true)) {
 		$nonce = $_REQUEST['nonce'];
 		if(!check_nonce($nonce, $action, $file)) {
 			if($die) die("CSRF detected!");

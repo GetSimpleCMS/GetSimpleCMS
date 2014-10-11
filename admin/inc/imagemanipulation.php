@@ -9,14 +9,15 @@
 
 function genStdThumb($path,$name){
 
-	//gd check
+	//gd check, do nothing if no gd
 	$php_modules = get_loaded_extensions();
 	if(!in_arrayi('gd', $php_modules)) return;
 
+	// set thumbnail width from GSIMAGEWIDTH
 	if (!getDef('GSIMAGEWIDTH')) {
 		$width = 200; //New width of image  	
 	} else {
-		$width = GSIMAGEWIDTH;
+		$width = getDef('GSIMAGEWIDTH');
 	}
 
 	$ext = getFileExtension($name);
@@ -25,13 +26,14 @@ function genStdThumb($path,$name){
 		
 		$thumbsPath = GSTHUMBNAILPATH.$path;
 		
+		// if thumb path does not exist , create it
 		if (!(file_exists($thumbsPath))) {
 			if (getDef('GSCHMOD')) {
 				$chmod_value = GSCHMOD; 
 			} else {
 				$chmod_value = 0755;
 			}
-			echo $thumbsPath;
+			// echo $thumbsPath;
 			mkdir($thumbsPath, $chmod_value);
 		}
 	}
