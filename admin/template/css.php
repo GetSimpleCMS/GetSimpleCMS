@@ -1091,12 +1091,16 @@ label.checkbox {
 
 .rightopt {
 	float: right;
-	width: 48%;
+	width: 50%;
+	min-width: 300px;
+	max-width: 400px;
 }
 
 .leftopt {
 	float: left;
-	width: 48%;
+	width: 50%;
+	min-width: 300px;
+	max-width: 400px;
 }
 
 .wideopt {
@@ -1105,7 +1109,7 @@ label.checkbox {
 }
 
 .leftopt p,.rightopt p,.wideopt p{
-	margin:0 10px 15px 0;
+	margin:0 10px 20px 10px;
 }
 
 .leftopt input,.rightopt input,.wideopt input{

@@ -66,7 +66,7 @@ body .header{
 
 #maincontent .main {
 	margin-right: 250px;
-	min-width: 260px;
+	min-width: 330px;
 }
 
 #sidebar {
@@ -103,11 +103,11 @@ form.manyinputs textarea{
 
 
 .wideopt {
-	max-width:600px;	
+	max-width:703px;	
 }
 
 .leftopt,.rightopt {
-	max-width:300px;
+	max-width:352px;
 }
 
 .rightopt {
