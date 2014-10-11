@@ -149,24 +149,26 @@ function getPublishedPageHead($editing = true, $path = ''){
     global $id,$draftExists,$pageExists;
     echo '<h3 class="floated">'. ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')).'</h3>';
     if(getDef('GSUSEDRAFTS',true))echo '<div class="title label label-ok">'.i18n_r('LABEL_PUBLISHED').'</div>';
-    echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav" >';
+    echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav clearfix" >';
     if($editing) {
         echo '<a class="pageview" href="'. $path .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
         if($path != '') {echo '<a class="pageclone" href="pages.php?id='. $id .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
     }
-    echo '<div class="clear" ></div>',"\n",'</div>';
+    exec_action(get_filename_id().'-edit-nav'); 
+    echo "\n</div>";
 }
 
 function getDraftPageHead($editing = true, $path = ''){
     global $id,$draftExists,$pageExists;
     echo '<h3 class="floated">'. ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')) .'</h3>';
     echo '<div class="title label label-draft secondary-lightest-back">'.i18n_r('LABEL_DRAFT').'</div>';
-    echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav" >';
+    echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav clearfix" >';
     if($editing) {
         echo '<a class="draftview" href="'. $path .'?draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
         echo '<a class="draftpublish" href="changedata.php?publish&id='.$id.'" accesskey="'. find_accesskey(i18n_r('PUBLISH')). '" >'. i18n_r('PUBLISH'). '</a>';
     }
-    echo '<div class="clear" ></div>',"\n",'</div>';
+    exec_action(get_filename_id().'-edit-nav'); 
+    echo "\n</div>";
 }
 
 if($newdraft) $pageClass.=' newdraft';
@@ -255,7 +257,7 @@ if($newdraft) $pageClass.=' newdraft';
     }
     echo '</div>';
     $draft ? getDraftPageHead(isset($id),$path) : getPublishedPageHead(isset($id),$path);
-
+    exec_action(get_filename_id().'-body'); 
 ?>
         <form class="largeform" id="editform" action="changedata.php" method="post" accept-charset="utf-8" >
         <input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("edit", "edit.php"); ?>" />
