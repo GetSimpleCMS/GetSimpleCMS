@@ -1109,7 +1109,7 @@ label.checkbox {
 }
 
 .leftopt p,.rightopt p,.wideopt p{
-	margin:0 10px 20px 10px;
+	margin:0 5px 15px 5px;
 }
 
 .leftopt input,.rightopt input,.wideopt input{
