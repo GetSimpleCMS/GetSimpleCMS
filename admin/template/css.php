@@ -958,7 +958,7 @@ form p {
 }
 
 form input.text,
-form select.text {
+form select.text,form textarea.text {
 	color: #333;
 	border: 1px solid #aaa;
 	padding: 3px;
@@ -967,9 +967,9 @@ form select.text {
 	/*width: 510px;*/
 	width:100%;
 	border-radius: 2px;
-    -moz-box-sizing: content-box;
-    -webkit-box-sizing: content-box;
-    box-sizing: content-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 form input.text:focus,
