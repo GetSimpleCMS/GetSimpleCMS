@@ -133,7 +133,7 @@ function email_template($message) {
 
 
 /**
- * Send Email
+ * Send Email, DOES NOT SANITIZE FOR YOU!
  *
  * @since 1.0
  * @uses GSFROMEMAIL
@@ -279,6 +279,8 @@ class SimpleXMLExtended extends SimpleXMLElement{
 
 /**
  * Is File
+ * Checks if a filepath provided is indeed a file and not .||.., with inaccurate type match
+ * @todo: type match uses strstr, not a very good filter
  *
  * @since 1.0
  * @uses tsl
@@ -611,7 +613,7 @@ function XMLsave($xml, $file) {
  * create a director or path
  *
  * @since 3.4
- * @todo normalize slashes for windows
+ * @todo normalize slashes for windows, apache works fine, iis might not
  * @todo might need a recursive chmod also, mkdir only chmods the basedir allegedly
  *
  * @param  str  $dir          directory or path
@@ -646,10 +648,10 @@ function delete_dir($path){
  * @param  str $data data to save to file
  * @return bool success
  */
-function save_file($file,$data){
+function save_file($file,$data=''){
 	$status = file_put_contents($file,$data) !== false; // returns num bytes written, FALSE on failure
 	fileLog(__FUNCTION__,$status,$file);
-	$chmodstatus = gs_chmod($file); // currently ignoring chmod failures
+	if(getDef('GSDOCHMOD',true)) $chmodstatus = gs_chmod($file); // currently ignoring chmod failures
 	return $status;
 }
 
@@ -660,7 +662,7 @@ function save_file($file,$data){
  */
 function read_file($file){
 	$data = file_get_contents($file); // php file_get_contents
-	fileLog(__FUNCTION__,isset($data),$file);
+	fileLog(__FUNCTION__,$data!==false,$file);
 	return $data;
 }
 
@@ -729,7 +731,7 @@ function delete_file($file){
 
 /**
  * do chmod using gs chmod constants or user
- * returns false if chmod is not avialable for whatever reason
+ * returns false if chmod is not available for whatever reason
  *
  * @since 3.4
  *
@@ -753,7 +755,6 @@ function gs_chmod($path,$chmod = null,$dir = false){
  * log fileio operations
  *
  * since 3.4
- * @todo check args for gsroot and convert to relative paths
  * @param  str   $operation file operation or functionname to log
  * @param  mixed $status    if bool evals to success and fail, else shows status as string
  * @param  mixed  variable length args any other arguments are outputted at end
@@ -770,6 +771,12 @@ function fileLog($operation,$status = null){
 	return $status;
 }
 
+/**
+ * convert array of file paths to relative paths to gsroot
+ * @since  3.4
+ * @param  array $args full filepaths
+ * @return returns array of relative filepaths
+ */
 function convertPathArgs($args){
 	foreach($args as &$arg){
 		if(!is_string($arg)) continue;
@@ -918,6 +925,7 @@ if(!function_exists('in_arrayi')) {
 	}
 }
 
+
 /**
  * Creates Standard URL for Pages
  *
@@ -925,56 +933,52 @@ if(!function_exists('in_arrayi')) {
  *
  * @since 2.0
  * @uses $PRETTYURLS
- * @uses $SITEURL
  * @uses $PERMALINK
  * @uses tsl
  *
  * @param string $slug
  * @param string $parent
- * @param string $type Default is 'full', alternative is 'relative'
+ * @param string $absolute force absolute siteurl
  * @return string
  */
-function find_url($slug, $parent, $type='full') {
+function generate_url($slug, $parent, $absolute = false){
 	global $PRETTYURLS;
-	global $SITEURL;
 	global $PERMALINK;
-				
-	if ($type == 'full') {
-		$full = $SITEURL;
-	} elseif($type == 'relative') {
-		$s = pathinfo(htmlentities(getScriptFile(), ENT_QUOTES));
-		$full = $s['dirname'] .'/';
-		$full = str_replace('//', '/', $full);
-	} else {
-		$full = '/';
-	}
-	
+
+	$path = tsl(getSiteURL($absolute));
+	$url  = $path;
+
 	if ($parent != '') {
 		$parent = tsl($parent); 
 	}	
 
-	if ($PRETTYURLS == '1') {      
-		if ($slug != 'index'){  
-			$url = $full . $parent . $slug . '/';
-		} else {
-			$url = $full;
-		}   
-	} else {
-		if ($slug != 'index'){ 
-			$url = $full .'index.php?id='.$slug;
-		} else {
-			$url = $full;
-		}
+	if ($PRETTYURLS == '1') {
+		if ($slug != 'index') $url .= $parent . $slug . '/';
+	} 
+	else {
+		if ($slug != 'index') $url .= 'index.php?id='.$slug;
 	}
 	
 	if (trim($PERMALINK) != '' && $slug != 'index'){
 		$plink = str_replace('%parent%/', $parent, $PERMALINK);
 		$plink = str_replace('%parent%', $parent, $plink);
 		$plink = str_replace('%slug%', $slug, $plink);
-		$url = $full . $plink;
+		$url = $path . $plink;
 	}
 
-	return (string)$url;
+	return debugLog((string)$url);
+}
+
+/** 
+ * LEGACY alias for generate_url, defaults to relative now
+ * @deprecated
+ */
+function find_url($slug, $parent, $type = null) {
+	if(!isset($type)){
+		if(!getDef('GSSITEURLREL',true)) $type = "full"; # only default to full is not GSSITEURLREL
+		else $type = "relative";
+	}	
+	return generate_url($slug, $parent, $type == 'full');
 }
 
 /**
@@ -1040,11 +1044,13 @@ function encode_quotes($text)  {
 function redirect($url) {
 	global $i18n;
 
+	$url = var_out($url,'url'); // filter url here since it can come from alot of places, specifically redirectto user input
+
 	// handle expired sessions for ajax requests
 	if(requestIsAjax() && !cookie_check()){
 		header('HTTP/1.1 401 Unauthorized');
 		header('WWW-Authenticate: FormBased');
-		// @note this is not a security function for ajax, just a handler
+		// @note this is not a security function for ajax, just a session timeout handler
 		die();
 	}
 
@@ -1174,7 +1180,7 @@ function i18n_merge_impl($plugin = '', $lang, &$globali18n) {
 	$filename = $path.$lang.'.php';
 	$prefix   = $plugin ? $plugin.'/' : '';
 
-	// @todo safe checking every lang file is probably overkill, we can just sanitize the crap out of $lang
+	// @todo being overly safe here since we are direclty including input that can come from anywhere
 	if (!filepath_is_safe($filename,$path) || !file_exists($filename)) {
 		return false;
 	}
@@ -1415,7 +1421,7 @@ function htmldecode($text) {
 }
 
 /**
- * multibyte Safe to lower case
+ * convert string to lower case and is multibyte-safe
  *
  * @since 2.04
  *
@@ -1434,7 +1440,7 @@ function lowercase($text) {
 
 
 /**
- * multibyte Safe to UPPER CASE
+ * convert a string to UPPER CASE and is multibyte-safe
  *
  * @since 2.04
  *
@@ -1452,7 +1458,7 @@ function uppercase($text) {
 }
 
 /**
- * multibyte Safe to Title Case
+ * convert string to Title Case and is multibyte-safe
  *
  * @since 3.4
  *
@@ -1474,7 +1480,7 @@ function titlecase($text) {
  * Find AccessKey
  *
  * Provides a simple way to find the accesskey defined by translators as
- * accesskeys are language dependent.
+ * accesskeys are language dependent. accesskeys are wrapped in  <em></em> tags
  * 
  * @param string $string, text from the i18n array
  * @return string
@@ -1489,9 +1495,10 @@ function find_accesskey($string) {
 }
 
 /**
- * Clean ID
+ * clean ids for use as indexes
  *
  * Removes characters that don't work in URLs or IDs
+ * Mostly used for filenames for slugs and user names
  * 
  * @param string $text
  * @return string
@@ -1505,8 +1512,8 @@ function _id($text) {
 
 /**
  * Defined Array
- * @todo  unused, what is it for ?
  * Checks an array of PHP constants and verifies they are defined
+ * @todo  unused, what is it for ?
  * 
  * @param array $constants
  * @return bool
@@ -1550,9 +1557,10 @@ function folder_items($folder) {
 
 /**
  * Validate a URL String
+ * does not detect malicious injection at all!
  * 
  * @param string $u
- * @return bool
+ * @return mixed false if filter fails, str otherwise
  */
 function validate_url($u) {
 	return filter_var($u,FILTER_VALIDATE_URL);
@@ -1560,10 +1568,10 @@ function validate_url($u) {
 
 
 /**
- * Format XML to Formatted String
+ * Format XML, adds indentation
  * 
  * @param string $xml
- * @return string
+ * @return string xml str re-formatted with spaces and newlines
  */
 function formatXmlString($xml) {  
 	
@@ -1623,10 +1631,12 @@ function http_protocol() {
 
 /**
  * Get File Mime-Type
- *
+ * 
+ * uses finfo_open if exists, fallback to mime_content_type
+ * 
  * @since 3.1
- * @param $file, absolute path
- * @return string/bool
+ * @param $file, absolute file path
+ * @return mixed string mime type, false on failure
  */
 function file_mime_type($file) {
 	if (!file_exists($file)) {
@@ -1651,7 +1661,6 @@ function file_mime_type($file) {
 
 /**
  * Check Is FrontEnd
- * 
  * Checks to see if the you are on the frontend or not
  *
  * @since 3.1
@@ -1684,17 +1693,16 @@ function get_site_version($echo=true) {
 
 /**
  * Get GetSimple Language
- * @todo  wtf does this do?
+ * 
  * @since 3.1
  * @uses $LANG
  *
- * @param string
+ * @param bool $short return full or short lang codes
  */
 function get_site_lang($short=false) {
 	global $LANG;
 	if ($short) {
-		$LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
-		return $LANG_header;
+		return preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG); # @todo why the complicated regex?
 	} else {
 		return $LANG;
 	}
@@ -1720,8 +1728,26 @@ function toBytes($str){
 }
 
 /**
- * Remove Relative Paths
- * @todo this function is a bad idea
+ * convert bytes to mb,gb,or kb
+ * 
+ * @param  str  $str    size in bytes
+ * @param  boolean $suffix add suffix to end of str
+ * @return str new byte string
+ */
+function toBytesShorthand($str,$suffix = false){
+	$val  = trim($str);
+	$last = strtolower($str[strlen($str)-1]);
+		switch($last) {
+			case 'g': $val /= 1024;
+			case 'm': $val /= 1024;
+			case 'k': $val /= 1024;
+		}
+	return $val. ($suffix ? strtoupper($last.'B') : '');
+}
+
+/**
+ * Remove Relative Paths, NOT TO BE USED FOR SECURITY
+ * removes ../ path info from file path simply
  *
  * @since 3.1
  *
@@ -1772,7 +1798,7 @@ function directoryToArray($directory, $recursive) {
  * @since 3.1.3
  *
  * @param $directory string directory to scan
- * @param $recursive boolean whether to do a recursive scan or not. 
+ * @param $recursive boolean whether to do a recursive scan or not.
  * @param $exts array file extension include filter, array of extensions to include
  * @param $exclude bool true to treat exts as exclusion filter instead of include
  * @return multidimensional array or files and folders {type,path,name}
@@ -1787,6 +1813,7 @@ function directoryToMultiArray($dir,$recursive = true,$exts = null,$exclude = fa
 	foreach ($cdir as $key => $value)	{
 		if (!in_array($value,array(".",".."))) {
 			if (is_dir($dir . DIRECTORY_SEPARATOR . $value)) {
+					if(!$recursive) continue;
 					$path =  preg_replace("#\\\|//#", "/", $dir . '/' . $value . '/');
 					$result[$value] = array();
 					$result[$value]['type'] = "directory";
@@ -1879,10 +1906,12 @@ function arrayIsMultid($ary){
 }
 
 /**
- * normalizes toolbar setting, always returns js array string syntax
- * @since 3.3.2
+ * normalizes str or array inputs to js array strings, always returns js array string syntax
+ * used for ckeditro toolbar arrays for the most part
  * 
+ * @since 3.3.2
  * @param mixed $var string or array var to convert to js array syntax
+ * @return str  js array string syntax
  */
 function returnJsArray($var){
 	
@@ -1920,7 +1949,8 @@ function returnJsArray($var){
 
 
 /**
- * Returns status of mode rewrite
+ * Returns status of mode rewrite via apache_get_modules 
+ * or custom HTTP_MOD_REWRITE env set in .htaccess
  * @return bool true if on false if not, null if unknown
  */
 function hasModRewrite(){
@@ -1933,7 +1963,8 @@ function hasModRewrite(){
 }
 
 /**
- *  @return bool true if we not in an install file
+ * checks if is current page is not an install page or stylesheet
+ * @return bool true if we not in an install file
  */
 function notInInstall(){
 	return ( get_filename_id() != 'install' && get_filename_id() != 'setup' && get_filename_id() != 'update' && get_filename_id() != 'style' );
@@ -1941,7 +1972,7 @@ function notInInstall(){
 
 /**
  * Returns a path relative to GSROOTPATH or optional root path
- * @todo  probably not fully windows drive safe
+ * @todo  probably not fully windows drive safe, convert slashes to match
  * @since 3.4
  * @param  string $path full file path
  * @param  string $root optional root path, defaults to GSROOTPATH
@@ -1951,6 +1982,92 @@ function getRelPath($path,$root = GSROOTPATH ){
 	$relpath = str_replace($root,'',$path);
 	return $relpath;
 }
+
+/**
+ * Returns a URI path relative to root path
+ * @since 3.4
+ * @param  string $path full URI path
+ * @param  string $root optional root path
+ * @return string       relative URI path
+ */
+function getRelURIPath($path,$root ){
+	$relpath = str_replace($root,'',$path);
+	return $relpath;
+}
+
+/**
+ * get URI relative to SITEURL base
+ * @since  3.4
+ * @return str URI path
+ */
+function getRelRequestURI(){
+	GLOBAL $SITEURL;
+	$pathParts   = str_replace('//','/',parse_url($_SERVER['REQUEST_URI'])); # ignore double slashes in path
+	$queryString = isset($pathParts['query']) ? isset($pathParts['query']) : '';
+	$relativeURI = getRelURIPath($pathParts['path'],getRootRelURIPath($SITEURL));
+	return $relativeURI;
+}
+
+/**
+ * returns relative URI path or matching mask array
+ *
+ * @since  3.4
+ * @param  mixed $mask array or string of path keys
+ * @return return      if mask provided returns an array mathching path values to keys or empty, else returns string of path
+ */
+function getURIPath($mask = null, $pad = false){
+	$relativeURI = getRelRequestURI();
+	$URIpathAry  = explode('/',$relativeURI);
+
+	if(gettype($mask) == 'string') $mask = explode('/',$mask);
+
+	if($mask){
+		// assigning path vars to key mask
+		$maskCnt = count($mask);
+		$URIcnt  = count($URIpathAry);
+		$mask    = array_combine($mask,array_fill(0,$maskCnt,'')); # flip array with empty values so padding has indices to work with
+
+		if($maskCnt == $URIcnt){
+			// mask count matches path count			
+			$mask = array_combine(array_keys($mask),$URIpathAry);
+			return $mask;
+		}
+		else if(($URIcnt > $maskCnt) && $pad){
+			// path is larger than mask, overload if pad
+			// @todo splice left OR splice right option
+			// using pad right for now
+			$mask = array_pad($mask,count($URIpathAry),'');
+			$mask = array_combine(array_keys($mask),$URIpathAry);
+			return $mask;
+		}
+		else {
+			// Mask is larger than URI, ignoring
+		}
+	} 
+	else {
+		// no mask specificed so simple str return
+		return $relativeURI;
+	}
+}
+
+
+/**
+ * get web root-relative url
+ * parses the host:// part and removes it
+ *
+ * @since  3.4
+ * @var str url to normalize
+ */
+function getRootRelURIPath($url){
+  $urlparts = parse_url($url);
+  $strip    = isset($urlparts['scheme']) ? $urlparts['scheme'] .':' : '';
+  $strip   .=  '//';
+  $strip   .= isset($urlparts['host']) ? $urlparts['host'] : '';
+  // debugLog(__FUNCTION__.' base = ' . $strip);
+  if(strpos($url,$strip) === 0) return str_replace($strip,'',$url);
+  return $url;
+}
+
 
 /**
  * returns a global, easier inline usage of readonly globals
@@ -1964,8 +2081,10 @@ function getGlobal($var) {
 }
 
 /** 
- * returns a page global 
- * currently an alias for getGlobal
+ * returns a page global
+ * currently an alias for getGlobal, 
+ * used specificly for globals used in theme_function for front end current page vars
+ *
  * @since 3.4
  */
 function getPageGlobal($var){
@@ -1984,12 +2103,12 @@ function echoReturn($str,$echo = true){
 }
 
 /**
- * clamps an integer reference to specified value
+ * clamps / normalizes an integer reference to specified value
  * @since 3.4
- * @param int &$var reference to clamp
- * @param int $min minimum to enforce clamp
- * @param int $max maximum to enforce clamp
- * @param type $default default to set if not set
+ * @param int &$var reference to input to be clamped
+ * @param int $min minimum to enforce clamp value
+ * @param int $max maximum to enforce clamp value
+ * @param type $default default to set if input is not set
  */
 function clamp(&$var,$min=null,$max=null,$default=null){
 	if(is_numeric($var)){
@@ -2000,7 +2119,7 @@ function clamp(&$var,$min=null,$max=null,$default=null){
 }
 
 /**
- * set reference to default value if $var not set
+ * set reference input to a default value if input is not set
  * does no type checking or conversions on default
  * @since 3.4
  * @param $value   reference
@@ -2010,11 +2129,20 @@ function setDefault(&$var = '',$default){
 	if(!isset($var) || empty($var)) $var = $default;
 }
 
-
+/**
+ * check if version checking is allowed via GSNOVERCHECK and not an auth page
+ * @since 3.4
+ * @return bool true is version check is allowed
+ */
 function allowVerCheck(){
 	return !isAuthPage() && !getDef('GSNOVERCHECK');
 }
 
+/**
+ * retrieve the version check data obj
+ * @since  3.4
+ * @return obj api json decoded obj on success
+ */
 function getVerCheck(){
 	# check to see if there is a core update needed
 	$data = get_api_details();
@@ -2026,15 +2154,19 @@ function getVerCheck(){
 }
 
 /**
- * includeTheme
- *
+ * include a theme template file 
+ * will auto include functions.php if exists and $functions is true
+ * automatically falls back to GSTEMPLATEFILE if $template_file is missing
+ * 
+ * @since  3.4
  * @param  str $template      template name
- * @param  str $template_file template filename
+ * @param  str $template_file template filename, fallback to GSTEMPLATEFILE if not exist
+ * @param  bool $functions    true, auto include functions.php
  */
-function includeTheme($template, $template_file = GSTEMPLATEFILE){
+function includeTheme($template, $template_file = GSTEMPLATEFILE, $functions = true){
 	# include the functions.php page if it exists within the theme
-	if ( file_exists(GSTHEMESPATH .$template."/functions.php") ) {
-		include(GSTHEMESPATH .$template."/functions.php");
+	if ( $functions && file_exists(GSTHEMESPATH .$template."/functions.php")) {
+		include_once(GSTHEMESPATH .$template."/functions.php");
 	}
 
 	# include the template and template file set within theme.php and each page
@@ -2133,6 +2265,8 @@ function getEditorHeight(){
 
 /**
  * get the gs editor language
+ * returns GSEDITORLANG if set, else returns i18n[CKEDITOR_LANG] if it exists
+ * 
  * @since 3.4
  * @return str
  */
@@ -2167,7 +2301,7 @@ function getEditorToolbar(){
 }
 
 /**
- * get defined timezone from user->site->gsconfig
+ * get defined timezone from user->site->gsconfig fallbacks
  * @since 3.4
  * @return str timezone identifier
  */
@@ -2190,23 +2324,6 @@ function setTimezone($timezone){
 	}
 }
 
-
-/**
- * get web root relative url
- * 
- * @since  3.4
- * @var str url to normalize
- */
-function getRootRelPath($url){
-  $urlparts = parse_url($url);
-  $strip    = isset($urlparts['scheme']) ? $urlparts['scheme'] .':' : '';
-  $strip   .=  '//';
-  $strip   .= isset($urlparts['host']) ? $urlparts['host'] : '';
-  debugLog(__FUNCTION__.' base = ' . $strip);
-  if(strpos($url,$strip) === 0) return debugLog(str_replace($strip,'',$url));
-  return debugLog($url);
-}
-
 /**
  * gets website data from GSWEBSITEFILE
  *
@@ -2216,9 +2333,14 @@ function getRootRelPath($url){
  * @return mixed    depending on returnGlobals returns xml as object or a defined var array for global extraction
  */
 function getWebsiteData($returnGlobals = false){
-	$thisfilew = GSDATAOTHERPATH .GSWEBSITEFILE;
-	if (file_exists($thisfilew)) {
-		$dataw        = getXML($thisfilew);
+	$SITENAME    = '';
+	$SITEURL     = '';
+	$SITEURL_REL = '';
+	$SITEURL_ABS = '';
+	$ASSETURL    = '';
+
+	if (file_exists(GSDATAOTHERPATH .GSWEBSITEFILE)) {
+		$dataw        = getXML(GSDATAOTHERPATH .GSWEBSITEFILE);
 		$SITENAME     = stripslashes( $dataw->SITENAME);
 		$SITEURL      = trim((string) $dataw->SITEURL);
 		$TEMPLATE     = trim((string) $dataw->TEMPLATE);
@@ -2228,18 +2350,22 @@ function getWebsiteData($returnGlobals = false){
 		$SITETIMEZONE = trim((string) $dataw->TIMEZONE);
 		$SITELANG     = trim((string) $dataw->LANG);
 		$SITEUSR      = trim((string) $dataw->USR);
-	} else {
-		$SITENAME = '';
-		$SITEURL  = '';
+
+		$SITEURL_ABS = $SITEURL;
+		$SITEURL_REL = getRootRelURIPath($SITEURL);
+		
+		// asseturl is root relative if GSASSETURLREL is true
+		// else asseturl is scheme-less ://url if GSASSETSCHEMES is not true
+		if(getDef('GSASSETURLREL')) $ASSETURL = $SITEURL_REL;
+		else if(getDef('GSASSETSCHEMES',true) !==true) str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL);
+		else $ASSETURL = $SITEURL;
+
+		// SITEURL is root relative if GSSITEURLREL is true
+		if(getDef('GSSITEURLREL')){
+			$SITEURL = $SITEURL_REL;
+		}
 	}
 
-	// asseturl is scheme-less ://url if GSASSETSCHEMES is not true
-	$ASSETURL = getDef('GSASSETSCHEMES',true) !==true ? str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL) : $SITEURL;
-
-	if(getDef('GSASSETURLREL')) $ASSETURL = getRootRelPath($SITEURL);
-	if(getDef('GSSITEURLREL'))  $SITEURL  = getRootRelPath($SITEURL);
-
-	unset($thisfilew);
 	if($returnGlobals) return get_defined_vars();
 	return $dataw;
 }
@@ -2343,5 +2469,35 @@ function outputDebugLog(){
 	echo '</pre>';
 	echo '</div>';
 }
+
+/**
+ * compress css
+ * @param  str $buffer css to compress
+ * @return str         compressed css code
+ */
+function cssCompress($buffer) {
+  $buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer); /* remove comments */
+  $buffer = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $buffer); /* remove tabs, spaces, newlines, etc. */
+  return $buffer;
+}
+
+function getMaxUploadSize(){
+	$max_upload   = toBytes(ini_get('upload_max_filesize'));
+	$max_post     = toBytes(ini_get('post_max_size'));
+	$memory_limit = toBytes(ini_get('memory_limit'));
+	$upload_mb    = min($max_upload, $max_post, $memory_limit);
+	return $upload_mb;
+}
+
+/**
+ * get the global siteurl
+ *
+ * @param  $absolute force absolute url
+ * @return str
+ */
+function getSiteURL($absolute = false){
+	return $absolute ? getGlobal('SITEURL_ABS') : getGlobal('SITEURL');
+}
+
 
 /* ?> */

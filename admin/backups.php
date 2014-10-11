@@ -14,9 +14,11 @@ $load['plugin'] = true;
 
 // Include common.php
 include('inc/common.php');
-	
-// Variable settings
 login_cookie_check();
+
+exec_action('load-backups');
+
+
 $path    = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
 $counter = '0';
 $table   = '';
@@ -92,10 +94,15 @@ get_template('header');
 			<h3 class="floated"><?php i18n('PAGE_BACKUPS');?></h3>
 			
 			<?php if ($counter > 0) { ?>
-				<div class="edit-nav clearfix" ><a href="javascript:void(0)" id="filtertable" accesskey="<?php echo find_accesskey(i18n_r('FILTER'));?>" ><?php i18n('FILTER'); ?></a> <a href="backups.php?deleteall&amp;nonce=<?php echo get_nonce("deleteall"); ?>" title="<?php i18n('DELETE_ALL_BAK');?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE_ALL'));?>" class="confirmation"  ><?php i18n('ASK_DELETE_ALL');?></a></div>
-				<div id="filter-search">
-					<form><input type="text" autocomplete="off" class="text" id="q" placeholder="<?php echo strip_tags(lowercase(i18n_r('FILTER'))); ?>..." /> &nbsp; <a href="pages.php" class="cancel"><?php i18n('CANCEL'); ?></a></form>
+				<div class="edit-nav clearfix" >
+					<a href="javascript:void(0)" id="filtertable" accesskey="<?php echo find_accesskey(i18n_r('FILTER'));?>" ><?php i18n('FILTER'); ?></a>
+					<a href="backups.php?deleteall&amp;nonce=<?php echo get_nonce("deleteall"); ?>" title="<?php i18n('DELETE_ALL_BAK');?>" accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE_ALL'));?>" class="confirmation"  ><?php i18n('ASK_DELETE_ALL');?></a>
+					<?php exec_action(get_filename_id().'-edit-nav'); ?>
 				</div>
+				<div id="filter-search">
+					<form><input type="text" autocomplete="off" class="text" id="q" placeholder="<?php echo strip_tags(lowercase(i18n_r('FILTER'))); ?>..." /> &nbsp; <a href="<?php echo getDef('GSDEFAULTPAGE');?>" class="cancel"><?php i18n('CANCEL'); ?></a></form>
+				</div>
+				<?php exec_action(get_filename_id().'-body'); ?>				
 				<table id="editpages" class="highlight paginate">
 					<thead>
 						<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th></tr>

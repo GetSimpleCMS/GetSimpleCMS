@@ -9,7 +9,7 @@
 $MSG = null;
 # if the login cookie is already set, redirect user to control panel
 if(cookie_check()) {
-	redirect($cookie_redirect);                                             
+	gotoDefaultPage();                                           
 }
 
 # was the form submitted?
@@ -69,7 +69,7 @@ if(isset($_POST['submitted'])) {
 			create_cookie();
 			exec_action('successful-login-end');
 			$logFailed->save();			
-			redirect($cookie_redirect);
+			gotoDefaultPage();
 		} else {
 			# NO - show error message
 			exec_action('successful-login-failed'); 

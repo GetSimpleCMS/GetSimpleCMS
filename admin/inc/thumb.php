@@ -106,6 +106,14 @@ if (isset($_REQUEST['y'])) {
   $max_y = intval($_REQUEST['y']);
 }
 
+if (isset($_REQUEST['ox'])) {
+  $cut_x = intval($_REQUEST['ox']);
+}
+
+if (isset($_REQUEST['oy'])) {
+  $cut_y = intval($_REQUEST['oy']);
+}
+
 $path_parts = pathinfo($from_name);
 
 if (!file_exists($images_folder)) die('Images folder does not exist (update $images_folder in the script)');

@@ -7,8 +7,8 @@
  */
 
 $path = (isset($_GET['path'])) ? $_GET['path'] : "";
-$fileSizeLimit = toBytes(ini_get('upload_max_filesize'))/1024;
-$fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
+$fileSizeLimit = getMaxUploadSize();
+$fileSizeLimitMB = toBytesShorthand($fileSizeLimit.'M',true);
 
 ?>
 
@@ -52,7 +52,7 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 	<li id="gs-dropzone" class="uploaddropzone">
 		<span class="dz-message unselectable"><?php i18n('DROP_FILES'); ?></span>
 	</li>
-	<li style="float:right;" id="sb_filesize" ><small><?php i18n('MAX_FILE_SIZE'); ?>: <strong><?php echo (toBytes(ini_get('upload_max_filesize'))/1024)/1024; ?>MB</strong></small></li>
+	<li style="float:right;" id="sb_filesize" ><small><?php i18n('MAX_FILE_SIZE'); ?>: <strong><?php echo $fileSizeLimitMB; ?></strong></small></li>
 </ul>
 
 	<script type="text/javascript">
@@ -115,7 +115,7 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 			// dictDefaultMessage : '',
 			debug: false, // debugging
 			forceFallback: false,
-			maxFilesize: <?php echo $fileSizeLimitMB; ?>, // MB			
+			maxFilesize: <?php echo toBytesShorthand($fileSizeLimit.'M',false); ?>, // MB
 			parallelUploads: 1, // can be bumped
 			url: 'upload.php?path=<?php echo $path;?>',
 			uploadMultiple: true,
@@ -135,7 +135,7 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 			},
 			accept: checkfile,
 	        sending: function(file, xhr, formData) {
-                if(file.overwrite) formData.append('fileoverwrite', file.overwrite);
+                if(file.overwrite == 1) formData.append('fileoverwrite', file.overwrite);
 	        }
 		});
 
@@ -156,7 +156,11 @@ $fileSizeLimitMB = (toBytes(ini_get('upload_max_filesize'))/1024)/1024;
 	            			file.overwrite = 1;
 	            			done();
 	            		}	
-	                	else done(i18n('CANCELLED'));
+	                	else {
+	                		file.overwrite = 0;
+	                		done();
+	                		// done(i18n('CANCELLED'));
+	                	}	
 	            	} 
 	            	else if(response == 0) done();
 	            	else done(i18n('ERROR'));

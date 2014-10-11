@@ -13,6 +13,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-backup-edit');
+
 # get page url to display
 if ($_GET['id'] != '') {
 	$id   = $_GET['id'];
@@ -96,7 +98,7 @@ $draftqs = $draft ? '&amp;draft' : '';
 		<div class="main" >
 		<h3 class="floated"><?php i18n('BACKUP');?> <span> / <?php echo $url; ?></span></h3>
 		<?php if($draft){ ?><div class="title label secondary-lightest-back label-inline"><?php i18n('LABEL_DRAFT'); ?></div> <?php } ?>
-		<div class="edit-nav" >
+		<div class="edit-nav clearfix" >
 			 <a href="backup-edit.php?p=restore<?php echo $draftqs; ?>&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" 
 			 	accesskey="<?php echo find_accesskey(i18n_r('ASK_RESTORE'));?>" ><?php i18n('ASK_RESTORE');?></a> 
 			 <a href="backup-edit.php?p=delete<?php echo $draftqs; ?>&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" 
@@ -104,9 +106,9 @@ $draftqs = $draft ? '&amp;draft' : '';
 			 	id="delback" 
 			 	accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE'));?>" 
 			 	class="delconfirm noajax" ><?php i18n('ASK_DELETE');?></a>
-			<div class="clear"></div>
+			<?php exec_action(get_filename_id().'-edit-nav'); ?>
 		</div>
-		
+		<?php exec_action(get_filename_id().'-body'); ?>				
 		<table class="simple highlight" >
 		<tr><td class="title" ><?php i18n('PAGE_TITLE');?>:</td><td><b><?php echo cl($title); ?></b> <?php echo $private; ?></td></tr>
 		<tr><td class="title" ><?php i18n('BACKUP_OF');?>:</td><td>

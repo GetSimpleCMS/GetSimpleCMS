@@ -15,6 +15,8 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
+exec_action('load-edit');
+
 // Variable settings
 
 // Get passed variables

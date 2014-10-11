@@ -44,7 +44,8 @@ function getPageContent($page,$field='content'){
  *
  */
 function returnPageContent($page, $field='content', $raw = false, $nofilter = false){   
-	$data = getPageXML($id);
+	$data = getPageXML($page);
+	if(!$data) return;
 	$content = $data->$field;
 	if($raw) return $content; // return without any processing
 
@@ -94,7 +95,7 @@ function returnPageField($page,$field){
 	if ($field=="content"){
 		$ret=returnPageContent($page); 
 	} else {
-		if (array_key_exists($field, $pagesArray[(string)$page])){
+		if (isset($pagesArray[(string)$page]) && isset($pagesArray[(string)$page][$field]) ){
 			$ret=strip_decode($pagesArray[(string)$page][(string)$field]);
 		} else {
 			$ret = returnPageContent($page,$field);

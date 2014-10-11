@@ -6,13 +6,15 @@
  *
  * @package GetSimple
  * @subpackage Files
- * @todo Remove relative paths
+ * @todo Remove relative paths ? not sure what this means
  */
  
 // Setup inclusions
 $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
+
+exec_action('load-upload');
 
 $dirsSorted = $filesSorted = $foldercount = null;
 
@@ -50,12 +52,9 @@ if (isset($_FILES['file'])) {
 			$file_loc = $path . $file_base;
 			
 			//prevent overwriting						
-			if(!isset($_POST['fileoverwrite'])){
-				while ( file_exists($file_loc) ) {
-					$file_loc = $path . $count.'-'. $file_base;
-					$file_base     = $count.'-'. $file_base;
-					$count++;
-				}
+			if(!isset($_POST['fileoverwrite']) && file_exists($file_loc)){
+				list($file_base,$filecount) = getNextFileName($path,$file_base);
+				$file_loc = $path.$file_base;
 			}
 
 			//validate file
@@ -186,7 +185,7 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 				$filesSorted = subval_sort($filesArray,'name');
         $dirsSorted = subval_sort($dirsArray,'name');
 			}
-			echo '<div class="edit-nav" >';
+			echo '<div class="edit-nav clearfix" >';
 			echo '<select id="imageFilter">';
 			echo '<option value="All">'.i18n_r('SHOW_ALL').'</option>';
 			if (count($filesSorted) > 0) {
@@ -211,12 +210,15 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 					}
 				}
 			}
-			echo '</select><div class="clear" ></div></div>';
+		echo '</select>';
 
-     
+	   	exec_action(get_filename_id().'-edit-nav');
+		echo "</div>";
+		exec_action(get_filename_id().'-body'); 
+
       $pathParts = explode("/",$subPath);
       $urlPath = null;
-     
+
       echo '<div class="h5 clearfix"><div class="crumbs">/ <a href="upload.php">uploads</a> / ';
 
       foreach ($pathParts as $pathPart){
@@ -258,7 +260,6 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
         	
           echo '<tr class="All folder '.$upload['name'].'" >';
           echo '<td class="imgthumb" ></td><td>';
-          // $adm = substr($path . rawurlencode($upload['name']) ,  16); // todo: wtf is this for ?
           $adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
           echo '<img src="template/images/folder.png" width="11" /> <a href="upload.php?path='.$adm.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
           echo '<td style="width:80px;text-align:right;" ><span>'.$directory_size.'</span></td>';
