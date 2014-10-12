@@ -247,29 +247,53 @@ class SimpleXMLExtended extends SimpleXMLElement{
 			$node->appendChild($cdata);
 		} else {
 			// node has multiple children, ignore
+			// @todo exception here?
 			return;
 		}
 	}
 
+	/**
+	 * adds a cdata child node and value
+	 * @param str $nodename nodename
+	 * @param str $value    teh new node value
+	 */
 	public function addCDataChild($nodename,$value){
 		$this->addChild($nodename)->addCData($value);
 	}
 
+	/**
+	 * sets a nodes value, auto detects if text or cdata node 
+	 * and adds via appropriate mechanism, defaults to text
+	 * @param str $value value to set
+	 */
 	public function setValue($value){
 		if($this->nodeisCData()) $this->updateCData($value);
 		else if($this->nodeisText())  $this[0] = $value;
 		else if($this->getNodeType() === null) $this[0] = $value;
 	}
 
+	/**
+	 * get the nodes type
+	 * @return str returns the nodetype constant of node
+	 * http://php.net/manual/en/dom.constants.php
+	 */
 	public function getNodeType(){
 		$node  = dom_import_simplexml($this);
 		if($node->hasChildNodes()) return $node->firstChild->nodeType;
 	}
 
+	/**
+	 * check id a node is cdata
+	 * @return bool true if cdata
+	 */
 	public function nodeisCData(){
 		return $this->getNodeType() == XML_CDATA_SECTION_NODE;
 	}
 
+	/**
+	 * check id a node is text
+	 * @return bool true if text
+	 */
 	public function nodeisText(){
 		return $this->getNodeType() == XML_TEXT_NODE;
 	}
