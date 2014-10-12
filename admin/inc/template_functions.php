@@ -357,16 +357,27 @@ function delete_page_backup($id){
 	return delete_file($bakpagespath. $id .".bak.xml");
 }
 
-// DEPRECATED 3.4 LEGACY
+/**
+ * @deprecated 3.4 LEGACY
+ */
 function createBak($file, $filepath, $bakpath) {
 	return backup_datafile($filepath . $file);
 }
+/**
+ * @deprecated 3.4 LEGACY
+ */
 function delete_bak($id) { 
 	return delete_page_backup($id);
 }
+/**
+ * @deprecated 3.4 LEGACY
+ */
 function restore_bak($id) {
 	restore_page($id);
 }
+/**
+ * @deprecated 3.4 LEGACY
+ */
 function undo($file, $filepath, $bakpath) {
 	return restore_datafile($filepath.$file);
 }
