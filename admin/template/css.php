@@ -1089,14 +1089,46 @@ label.checkbox {
 	text-shadow: 1px 1px 0 rgba(255,255,255,.3);
 }
 
-.rightopt {
+
+/*
+
+.leftsec,.rightsec {
+	float: left;
+	width: 50%;
+	padding-bottom: 5px;
+}
+
+.widesec {
+	clear: both;
+	width: 100%;
+	padding-bottom: 5px;
+}
+
+.widesec input.text, .rightsec input.text, .leftsec input.text {
+	width: 100%;
+	font-size:12px !important;
+}
+
+.widesec input.text, .rightsec select.text, .leftsec select.text {
+	width: 100%;
+	font-size:12px !important;
+}
+
+.leftsec p,.rightsec p,.widesec p {
+	margin: 0 20px 20px 0;
+}
+*/
+
+.rightopt,
+.rightsec {
 	float: right;
 	width: 50%;
 	min-width: 300px;
 	max-width: 400px;
 }
 
-.leftopt {
+.leftopt,
+.leftsec {
 	float: left;
 	width: 50%;
 	min-width: 300px;
@@ -1105,41 +1137,44 @@ label.checkbox {
 	margin-right: -1px;
 }
 
-.wideopt {
+.wideopt,
+.widesec {
 	clear:both;
 	width: 100%;
 }
 
-.leftopt,.rightopt,.wideopt {
+.leftopt,.rightopt,.wideopt,
+.leftsec,.rightsec,.widesec {
 	padding:10px;
 	box-sizing: border-box;
 	transition: background-color 200ms;	
 }
 
-.leftopt:hover,.rightopt:hover,.wideopt:hover {
+.leftopt:hover,.rightopt:hover,.wideopt:hover,
+.leftsec:hover,.rightsec:hover,.widesec:hover {
 	background-color: rgba(0,0,0,0.02);
 	transition: background-color 400ms;
 }
 
 .leftopt p,.rightopt, p,.wideopt p{
+/*.leftsec p,.rightsec, p,.widesec p*/
 	margin-bottom: 15px;
-	/*margin:0 10px 15px 10px;*/
-	/*margin: 10px;*/
 }
 
- .wideopt p:last-child{
+.wideopt p:last-child,.widesec p:last-child{
 	margin-bottom: 0px;
-	/*margin:0 10px 15px 10px;*/
-	/*margin: 10px;*/
 }
 
-.leftopt input,.rightopt input,.wideopt input{
+.leftopt input,.rightopt input,.wideopt input,
+.leftsec input,.rightsec input,.widesec input{
 	margin:0;
 }
 
-.leftopt select,.rightopt select,.wideopt select{
+.leftopt select,.rightopt select,.wideopt select,
+.leftsec select,.rightsec select,.widesec select{
 	margin:0;
 }
+
 
 input#post-menu-enable {
 	width: 20px;
@@ -1324,31 +1359,6 @@ input.submit:disabled {
 	padding: 3px 7px;
 }
 
-.leftsec,.rightsec {
-	float: left;
-	width: 50%;
-	padding-bottom: 5px;
-}
-
-.widesec {
-	clear: both;
-	width: 100%;
-	padding-bottom: 5px;
-}
-
-.widesec input.text, .rightsec input.text, .leftsec input.text {
-	width: 100%;
-	font-size:12px !important;
-}
-
-.widesec input.text, .rightsec select.text, .leftsec select.text {
-	width: 100%;
-	font-size:12px !important;
-}
-
-.leftsec p,.rightsec p,.widesec p {
-	margin: 0 20px 20px 0;
-}
 
 /* edit css */
 form input.title {

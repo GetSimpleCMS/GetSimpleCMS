@@ -88,7 +88,6 @@ body .header{
 
 textarea, form input.title{
 	/* resize backend textareas */
-	/* outline backend administrative input fields for emphasis */
 	width:100% ;
 }
 
@@ -106,11 +105,11 @@ form.manyinputs textarea{
 	max-width:703px;	
 }
 
-.leftopt,.rightopt {
+.leftopt,.rightopt,.leftsec,.rightsec {
 	max-width:352px;
 }
 
-.rightopt {
+.rightopt,.rightsec {
 	float:left;
 }
 
