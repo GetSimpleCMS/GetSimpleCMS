@@ -936,7 +936,7 @@ function ckeditor_add_page_link(){
 	echo "
 	<script type=\"text/javascript\">
 	//<![CDATA[
-	// DEPRECATED FUNCTION!
+	// ckeditor_add_page_link() DEPRECATED FUNCTION!
 	//]]>
 	</script>";
 }

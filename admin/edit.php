@@ -298,7 +298,7 @@ get_template('header');
 
             # CKEditor setup functions
             exec_action('html-editor-init');
-
+            echo "<!-- html-editor-init -->";
             if (empty($HTMLEDITOR)) echo '</fieldset>';
 
         ?>
