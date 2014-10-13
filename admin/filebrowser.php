@@ -32,7 +32,7 @@ $returnid        = isset($_GET['returnid']) ? var_in($_GET['returnid']) : "";
 $func            = (isset($_GET['func'])) ? $_GET['func'] : "";
 $path            = tsl($path);
 // check if host uses Linux (used for displaying permissions
-$isUnixHost      = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
+$isUnixHost      = !hostIsWindows();
 $CKEditorFuncNum = isset($_GET['CKEditorFuncNum']) ? var_in($_GET['CKEditorFuncNum']) : '';
 $sitepath        = $SITEURL;
 $fullPath        = $SITEURL . $uploadsPathRel; // url path to image

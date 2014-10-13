@@ -1771,6 +1771,11 @@ table.simple td.title {
 }
 
 
+td.file_size,td.file_date,td.file_perms,
+th.file_size,th.file_date,th.file_perms {
+	width:85px;
+}
+
 #sidebar .uploadform {
 	padding: 5px 15px;
 }
@@ -2672,6 +2677,10 @@ a.disabled:visited {
 	-ms-user-select: none;
 	-o-user-select: none;
 	user-select: none;
+}
+
+.right {
+	text-align: right !important;
 }
 
 /* codemirror */

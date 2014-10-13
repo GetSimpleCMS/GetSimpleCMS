@@ -574,7 +574,7 @@ function formatDate($format, $timestamp = null) {
 		$date = date($format, $timestamp);
 	}
 	else {
-		if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+		if (hostIsWindows()) {
 		  # fixes for Windows
 		  $format = preg_replace('#(?<!%)((?:%%)*)%e#', '\1%#d', $format); // strftime %e parameter not supported
 		  $date   = utf8_encode(strftime($format, $timestamp)); // strftime returns ISO-8859-1 encoded string
@@ -2252,6 +2252,11 @@ function cssCompress($buffer) {
   return $buffer;
 }
 
+/**
+ * get the maximum upload size as defined by php ini
+ * @since  3.4
+ * @return int max bytes
+ */
 function getMaxUploadSize(){
 	$max_upload   = toBytes(ini_get('upload_max_filesize'));
 	$max_post     = toBytes(ini_get('post_max_size'));
@@ -2270,5 +2275,13 @@ function getSiteURL($absolute = false){
 	return $absolute ? getGlobal('SITEURL_ABS') : getGlobal('SITEURL');
 }
 
+/**
+ * check if host is windows
+ * @since  3.4
+ * @return bool true if windows
+ */
+function hostIsWindows(){
+	return (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
+}
 
 /* ?> */
