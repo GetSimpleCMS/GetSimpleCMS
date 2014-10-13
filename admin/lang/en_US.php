@@ -42,6 +42,7 @@ $i18n = array(
 "LABEL_USERNAME"          =>	"Username",
 "LABEL_DISPNAME"          =>	"Display Name",
 "LABEL_EMAIL"             =>	"Email Address",
+"LABEL_SITEABOUT"         =>	"Notes about this website",
 "LABEL_INSTALL"           =>	"Install Now!",
 "SELECT_LANGUAGE"         =>	"Select your language",
 "CONTINUE_SETUP"          =>	"Continue with Setup",

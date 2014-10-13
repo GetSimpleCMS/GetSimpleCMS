@@ -2120,6 +2120,7 @@ function getWebsiteData($returnGlobals = false){
 		$SITETIMEZONE = trim((string) $dataw->TIMEZONE);
 		$SITELANG     = trim((string) $dataw->LANG);
 		$SITEUSR      = trim((string) $dataw->USR);
+		$SITEABOUT    = trim((string) $dataw->SITEABOUT);
 
 		$SITEURL_ABS = $SITEURL;
 		$SITEURL_REL = getRootRelURIPath($SITEURL);
