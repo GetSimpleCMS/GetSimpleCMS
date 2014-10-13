@@ -1549,6 +1549,14 @@ table.comptable label {
 	padding: 1px;
 }
 
+.notify .close{
+	float:right;
+}
+
+.notify .close:hover{
+	color: black;
+}
+
 .hint {
 	color: #777;
 	-ms-word-break: break-all;

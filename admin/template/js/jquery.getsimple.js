@@ -87,7 +87,16 @@ $.fn.overrideNodeMethod = function(methodName, action) {
         }
     };
 };
- 
+
+$.fn.addCloseButton = function(){
+	var button = $('<span class="close"><a href="javascript:void(0)"><i class="fa fa-times"></i></a></span>');
+	console.log($(this));
+	$(this).prepend($(button));
+	$(button).on('click',function(){
+		$(this).parent().dequeue().fadeOut(200);
+	});
+}
+
 /*
  * spinner
  *
@@ -181,7 +190,8 @@ function notifyError($msg) {
 function notify($msg, $type) {
 	if ($type == 'ok' || $type == 'warning' || $type == 'info' || $type == 'error') {
 		var $notify = $('<div class="notify notify_' + $type + '"><p>' + $msg + '</p></div>');
-		$('div.bodycontent').before($notify);
+		var notifyelem = $('div.bodycontent').before($notify);
+		$notify.addCloseButton();
 		return $notify;
 	}
 }
@@ -481,6 +491,7 @@ jQuery(document).ready(function () {
  
 		$(".notify").popit(); // allows legacy use
 		$(".notify.remove").removeit();
+		$(".notify").addCloseButton();
 	}
  
 	popAlertMsg();
