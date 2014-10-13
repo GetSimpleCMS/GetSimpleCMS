@@ -1724,12 +1724,13 @@ function returnJsArray($var){
  * @return bool true if on false if not, null if unknown
  */
 function hasModRewrite(){
+	if(getenv('HTTP_MOD_REWRITE') == 'On') return true;
+	
 	if ( function_exists('apache_get_modules') ) {
 		if(in_arrayi('mod_rewrite',apache_get_modules()) ) {	
 			return true;
 		}	
 	}
-	if(getenv('HTTP_MOD_REWRITE') == 'On') return true;
 }
 
 /**
