@@ -1284,7 +1284,12 @@ function get_api_details($type='core', $args=null) {
 
 			// USE CURL
 			$ch = curl_init();
-			
+
+			if(!$ch){
+				debug_api_details("curl init failed");
+				return;
+			}	
+
 			// define missing curlopts php<5.2.3
 			if(!defined('CURLOPT_CONNECTTIMEOUT_MS')) define('CURLOPT_CONNECTTIMEOUT_MS',156);
 			if(!defined('CURLOPT_TIMEOUT_MS')) define('CURLOPT_TIMEOUT_MS',155);			
