@@ -1320,7 +1320,7 @@ function get_gs_version() {
  */
 function generate_sitemap() {
 	if(getDef('GSNOSITEMAP',true)) return;
-	
+
 	global $pagesArray;
 	// Variable settings
 	$SITEURL = getSiteURL(true);
@@ -1591,5 +1591,12 @@ function get_component_xml($id){
 	return get_components_xml()->xpath("//slug[.='".$id."']/..");	
 }
 
+/**
+ * @since  3.4
+ * @deprecated
+ */
+function pingGoogleSitemaps(){
+	return;
+}
 
 /* ?> */
