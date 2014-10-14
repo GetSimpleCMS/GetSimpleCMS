@@ -45,12 +45,13 @@ $GS_constants = array(
 	'GSINSTALLPLUGINS'      => 'InnovationPlugin.php',        // comma delimited list of plugins to activate on install
 	'GSSTYLEWIDE'           => 'wide',                        // wide stylesheet
 	'GSSTYLE_SBFIXED'       => 'sbfixed',                     // fixed sidebar
-	'GSFRONT'               => 1,                             // front end enum
-	'GSBACK'                => 2,                             // back end enum
-	'GSBOTH'                => 3,                             // front and back enum
-	'GSDEFAULTLANG'         => 'en_US',                       // default language for core
-	'GSTITLEMAX'            => '70',                          // max length allowed for titles
-	'GSFILENAMEMAX'         => '255',                         // max length allowed for file names/slugs
+	'GSFRONT'               => 1,                             // (int) front end enum
+	'GSBACK'                => 2,                             // (int) back end enum
+	'GSBOTH'                => 3,                             // (int) front and back enum
+	'GSDEFAULTLANG'         => 'en_US',                       // (str) default language for core
+	'GSTITLEMAX'            => 70,                            // (int) max length allowed for titles
+	'GSFILENAMEMAX'         => 255,                           // (int) max length allowed for file names/slugs
+	'GSPASSLENGTHMIN'       => 4,                             // (itn) min length of passwords
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );

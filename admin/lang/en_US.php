@@ -249,6 +249,7 @@ $i18n = array(
 "PASSWORD_NO_MATCH"       =>	"Passwords do not match",
 "LOCAL_TIMEZONE"          =>	"Local Timezone",
 "NEW_USER"                =>    "New User",
+"PASSWORD_TOO_SHORT"      =>    "Password is not long enough",
 
 /*
 * For: health-check.php
