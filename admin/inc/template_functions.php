@@ -1373,7 +1373,7 @@ function generate_sitemap() {
 
 		$status = XMLsave($xml, $file);
 		exec_action('sitemap-aftersave');
-		#sitemap successfully created - did not ping
+		#sitemap successfully created
 		return $status;
 	}
 	else return true;

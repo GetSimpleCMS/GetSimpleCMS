@@ -14,20 +14,16 @@ include('inc/common.php');
 login_cookie_check();
 
 exec_action('load-sitemap');
+$sitemapfile = '../'.GSSITEMAPFILE;
 
-$sitemap = generate_sitemap();
-if ($sitemap !== true) {
-	$error = $sitemap;
-} else {
-	if (isset($_GET['refresh'])) {
-		$success = i18n_r('SITEMAP_REFRESHED');
-	}
+if(!file_exists($sitemapfile) || isset($_GET['refresh'])){
+	if(generate_sitemap() === true)	$success = i18n_r('SITEMAP_REFRESHED');
+	else $error = i18n_r('SITEMAP_ERROR');
 }
 
 $pagetitle = strip_tags(i18n_r('SIDE_VIEW_SITEMAP'));
 get_template('header');
 
-$sitemapfile = '../'.GSSITEMAPFILE;
 ?>
 
 <?php include('template/include-nav.php'); ?>
