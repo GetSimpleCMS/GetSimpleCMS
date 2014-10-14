@@ -202,7 +202,6 @@ $i18n = array(
 */
 "SITEMAP_ERROR"           =>	"Your sitemap could not be generated",
 "SITEMAP_REFRESHED"       =>	"Your sitemap has been refreshed",
-"SITEMAP_CREATED"         =>	"Your sitemap has been created",
 
 /* 
 * For: theme.php
