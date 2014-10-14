@@ -506,97 +506,6 @@ function makeIso8601TimeStamp($dateTime) {
 }
 
 /**
- * Ping Sitemaps
- *
- * @since 3.4
- *
- * @param string $url_xml XML sitemap
- * @return bool
- */
-function pingSitemaps($url_xml) {
-	$status = 0;
-	$google = 'www.google.com';
-	$bing   = 'www.bing.com';
-	$ask    = 'submissions.ask.com';
-
-	// google
-	if( $fp=@fsockopen($google, 80) ) {
-
-	  $req =  'GET /webmasters/sitemaps/ping?sitemap=' .
-	          urlencode( $url_xml ) . " HTTP/1.1\r\n" .
-	          "Host: $google\r\n" .
-	          "User-Agent: Mozilla/5.0 (compatible; " .
-	          PHP_OS . ") PHP/" . PHP_VERSION . "\r\n" .
-	          "Connection: Close\r\n\r\n";
-
-	  fwrite( $fp, $req );
-
-	  while( !feof($fp) ) {
-	     if( @preg_match('~^HTTP/\d\.\d (\d+)~i', fgets($fp, 128), $m) ) {
-	        $status = intval( $m[1] );
-	        break;
-	     }
-	  }
-
-	  fclose( $fp );
-   }
-   
-   // bing
-   if( $fp=@fsockopen($bing, 80) ) {
-
-      $req =  'GET /webmaster/ping.aspx?sitemap=' .
-              urlencode( $url_xml ) . " HTTP/1.1\r\n" .
-              "Host: $bing\r\n" .
-              "User-Agent: Mozilla/5.0 (compatible; " .
-              PHP_OS . ") PHP/" . PHP_VERSION . "\r\n" .
-              "Connection: Close\r\n\r\n";
-
-      fwrite( $fp, $req );
-
-      while( !feof($fp) ) {
-
-         if( @preg_match('~^HTTP/\d\.\d (\d+)~i', fgets($fp, 128), $m) ) {
-            $status = intval( $m[1] );
-            break;
-         }
-      }
-
-      fclose( $fp );
-   }
-   
-   // ask com
-   if( $fp=@fsockopen($ask, 80) ) {
-      $req =  'GET /ping?sitemap=' .
-              urlencode( $url_xml ) . " HTTP/1.1\r\n" .
-              "Host: $ask\r\n" .
-              "User-Agent: Mozilla/5.0 (compatible; " .
-              PHP_OS . ") PHP/" . PHP_VERSION . "\r\n" .
-              "Connection: Close\r\n\r\n";
-
-      fwrite( $fp, $req );
-
-      while( !feof($fp) ) {
-         if( @preg_match('~^HTTP/\d\.\d (\d+)~i', fgets($fp, 128), $m) ) {
-            $status = intval( $m[1] );
-            break;
-         }
-      }
-
-      fclose( $fp );
-   }
-   
-   return( $status );
-}
-
-/**
- * LEGACY alias pingSitemaps
- * @since  3.0
- */
-function pingGoogleSitemaps($url_xml){
-	return pingSitemaps($url_xml);
-}
-
-/**
  * File Size
  *
  * @since 1.0
@@ -1420,7 +1329,7 @@ function generate_sitemap() {
 	getPagesXmlValues(false);
 	$pagesSorted = subval_sort($pagesArray,'menuStatus');
 	
-	if (count($pagesSorted) != 0)
+	if (count($pagesSorted) > 0)
 	{ 
 		$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset></urlset>');
 		$xml->addAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd', 'http://www.w3.org/2001/XMLSchema-instance');
@@ -1462,27 +1371,12 @@ function generate_sitemap() {
 		$file = GSROOTPATH .GSSITEMAPFILE;
 		$xml  = exec_filter('sitemap',$xml);
 
-		XMLsave($xml, $file);
+		$status = XMLsave($xml, $file);
 		exec_action('sitemap-aftersave');
-	}
-	
-	if (!getDef('GSDONOTPING',true)) {
-		if (file_exists(GSROOTPATH .GSSITEMAPFILE)){
-			if( 200 === ($status=pingGoogleSitemaps($SITEURL.GSSITEMAPFILE)))	{
-				#sitemap successfully created & pinged
-				return true;
-			} else {
-				error_log(i18n_r('SITEMAP_ERRORPING'));
-				return i18n_r('SITEMAP_ERRORPING');
-			}
-		} else {
-			error_log(i18n_r('SITEMAP_ERROR'));
-			return i18n_r('SITEMAP_ERROR');
-		}
-	} else {
 		#sitemap successfully created - did not ping
-		return true;
+		return $status;
 	}
+	else return true;
 }
 
 
