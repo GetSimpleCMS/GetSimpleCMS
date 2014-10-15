@@ -337,7 +337,7 @@ get_template('header');
             </fieldset>            
         </div>
     </div> <!-- / END TABS -->
-                <span class="editing"><?php echo i18n_r('EDITPAGE_TITLE') .': ' . $title; ?></span>
+            <span class="editing"><?php echo sprintf(i18n_r('EDITING_PAGE'),$title); ?></span>
             <div id="submit_line" >
                 <input type="hidden" name="redirectto" value="" />
                 
@@ -360,12 +360,12 @@ get_template('header');
             </div>
             
             <?php if($url != '') { ?>
-                <p class="backuplink" ><?php 
+                <p class="backuplink"><i class="fa fa-clock-o"></i><?php 
                     if (isset($pubDate)) { 
                         echo sprintf(i18n_r('LAST_SAVED'), '<em>'.$author.'</em>').' '. output_datetime($pubDate).'&nbsp;&nbsp; ';
                     }
                     if ( fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
-                        echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
+                        echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a>';
                     } 
                 ?></p>
             <?php } ?>
