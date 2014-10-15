@@ -156,6 +156,34 @@ function get_page_title($echo=true) {
 }
 
 /**
+ * Get Page Title
+ *
+ * @since 3.4
+ * @uses $titlelong
+ *
+ * @param bool $echo Optional, default is true. False will 'return' value
+ * @return string Echos or returns based on param $echo
+ */
+function get_page_title_long($echo=true) {
+	$str = strip_decode(getPageGlobal('titlelong'));
+	return echoReturn(exec_filter('pagetitlelong',$str),$echo);	
+}
+
+/**
+ * Get Page Summary
+ *
+ * @since 3.4
+ * @uses $summary
+ *
+ * @param bool $echo Optional, default is true. False will 'return' value
+ * @return string Echos or returns based on param $echo
+ */
+function get_page_summary($echo=true) {
+	$str = strip_decode(getPageGlobal('summary'));
+	return echoReturn(exec_filter('pagesummary',$str),$echo);	
+}
+
+/**
  * Get Page Clean Title
  *
  * This will remove all HTML from the title before returning
