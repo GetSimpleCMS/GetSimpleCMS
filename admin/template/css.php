@@ -377,21 +377,21 @@ html {
 	float: right;
 }
 
-.wrapper #pill li.leftnav a {
-	padding: 4px 10px;
+.wrapper #pill li.leftnav a,
+.wrapper #pill li.rightnav a {
+	padding: 4px 8px;
 	font-weight: 100 !important;
 	text-decoration: none !important;
 	display: block;
-	border-radius: 0 0 3px 0;
-	/*border-left: 1px solid <?php echo $primary_3; ?>;*/
+	border-radius: 3px;
 	margin-left:1px;
 }
 
 .wrapper #pill li.rightnav a {
-	padding: 4px 10px;
-	font-weight: 100 !important;
-	text-decoration: none !important;
-	display: block;
+	border-radius: 0 0 3px 0;
+}
+
+.wrapper #pill li.leftnav a {
 	border-radius: 0 0 0 3px;
 }
 
@@ -1286,9 +1286,17 @@ p.backuplink {
 	color: #888;
 	font-size: 11px;
 	margin: 20px -20px -20px -20px;
-	padding: 10px 8px 10px 40px;
-	background: #f9f9f9 url('images/clock.png') 20px center no-repeat;
+	padding: 10px 8px 10px 20px;
+	/*background: #f9f9f9 url('images/clock.png') 20px center no-repeat;*/
+	background: #f9f9f9;
 	border-top: 1px solid #eee;
+}
+
+p.backuplink i.fa{
+	font-size: 14px;
+	vertical-align: bottom;
+	margin-right: 8px;
+	line-height: 18px;
 }
 
 p.backuplink a {
@@ -2689,6 +2697,14 @@ a.disabled:visited {
 
 .right {
 	text-align: right !important;
+}
+
+.icon-right{
+	margin-left:4px;
+}
+
+.icon-left{
+	margin-right:4px;
 }
 
 /* codemirror */
