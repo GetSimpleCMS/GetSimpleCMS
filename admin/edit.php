@@ -236,7 +236,11 @@ get_template('header');
                         </p>
                         
                         <p class="inline post-menu clearfix">
-                            <input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> />&nbsp;&nbsp;&nbsp;<label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label><a href="navigation.php" class="viewlink" rel="facybox" ><img src="template/images/search.png" id="tick" alt="<?php echo strip_tags(i18n_r('VIEW')); ?>" /></a>
+                            <input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> />&nbsp;&nbsp;&nbsp;
+                            <label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label>
+                            <a href="navigation.php" class="viewlink" rel="facybox" alt="<?php echo strip_tags(i18n_r('VIEW')); ?>" >
+                                <span class="fa fa-search icon-right" style="opacity:0.2"></span>
+                            </a>
                         </p>
                         <div id="menu-items">
                             <img src="template/images/tick.png" id="tick" />

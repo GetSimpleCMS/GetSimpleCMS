@@ -259,7 +259,7 @@ $isUnixHost = !hostIsWindows();
           echo '<tr class="All folder '.$upload['name'].'" >';
           echo '<td class="imgthumb" ></td><td>';
           $adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
-          echo '<img src="template/images/folder.png" width="11" /> <a href="upload.php?path='.$adm.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
+          echo '<span class="fa fa-folder icon-left"></span><a href="upload.php?path='.$adm.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
           echo '<td class="file_size right"><span>'.$directory_size.'</span></td>';
           
           // get the file permissions.

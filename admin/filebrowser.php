@@ -52,6 +52,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	<style>
 		.wrapper, #maincontent, #imageTable { width: 100% }
 	</style>
+	<?php 	get_scripts_backend(); ?>
 	<script type='text/javascript'>	
 		 
 	function submitLink($funcNum, $url) {
@@ -142,7 +143,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 		foreach ($dirsSorted as $upload) {
 			echo '<tr class="All" >';  
 			echo '<td class="" colspan="5">';
-			$adm = substr($path . $upload['name'] ,  16); 
+			$adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
 			if ($returnid != '') {
 				$returnlink = '&returnid='.$returnid;
 			} else {
@@ -153,7 +154,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 			} else {
 				$funct = '';
 			}
-			echo '<img src="template/images/folder.png" width="11" /> <a href="filebrowser.php?path='.$adm.'&amp;CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.$returnlink.'&amp;'.$funct.'" title="'. $upload['name'] .'"  ><strong>'.$upload['name'].'</strong></a>';
+			echo '<span class="fa fa-folder icon-left"></span><a href="filebrowser.php?path='.$adm.'&amp;CKEditorFuncNum='.$CKEditorFuncNum.'&amp;type='.$type.$returnlink.'&amp;'.$funct.'" title="'. $upload['name'] .'"  ><strong>'.$upload['name'].'</strong></a>';
 			echo '</td>';
 			echo '</tr>';
 		}

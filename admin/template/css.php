@@ -701,7 +701,7 @@ h5:hover img {
 }
 
 .edit-nav select {
-	margin-top: 0;
+	margin: 0 2px 0 10px;
 	float: right;
 	padding: 2px;
 	border: 1px solid #999;
@@ -1287,7 +1287,6 @@ p.backuplink {
 	font-size: 11px;
 	margin: 20px -20px -20px -20px;
 	padding: 10px 8px 10px 20px;
-	/*background: #f9f9f9 url('images/clock.png') 20px center no-repeat;*/
 	background: #f9f9f9;
 	border-top: 1px solid #eee;
 }
