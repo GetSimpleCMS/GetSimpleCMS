@@ -2182,6 +2182,7 @@ body#index {
 #index #maincontent .main,
 #resetpassword #maincontent .main {
 	width: 270px;
+	min-width: 0;
 	border-bottom: 1px solid #999;
 	border-right: 1px solid #999;
 	text-shadow: 1px 1px 0 #fff;
@@ -2192,7 +2193,7 @@ body#index {
 
 #resetpassword form input.text,
 #index form input.text {
-	width: 255px;
+	width: 100%;
 	font-size: 18px;
 	padding: 5px;
 	margin-top: 2px;
