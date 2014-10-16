@@ -304,11 +304,11 @@ jQuery(document).ready(function () {
 		},
 		caps_lock_undetermined: function () {
 			$(this).removeClass('capslock');
-		}
+		},
+		debug: false
 	};
  
 	$("input[type='password']").capslock(options);
- 
  
 	// components.php
 	
