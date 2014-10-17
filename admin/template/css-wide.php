@@ -101,7 +101,7 @@ form.manyinputs textarea{
 }
 
 
-.wideopt {
+.wideopt,.widesec {
 	max-width:703px;	
 }
 
