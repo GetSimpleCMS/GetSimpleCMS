@@ -2533,11 +2533,9 @@ a.disabled:visited {
 #theme_edit_code {
 	float:left;
 	width:80%;
-	transition: opacity 400ms;
 }
 
 #theme_edit_code.readonly {
-	transition: opacity 200ms;
 }
 
 #theme_edit_code .well{
@@ -2686,8 +2684,9 @@ a.disabled:visited {
   transition: none !important;
 }
 
-.readonly{
-	opacity: 0.3;
+.readonly .CodeMirror-code,.readonly #theme_editing_file{
+	/*opacity: 0.3;*/
+	visibility :hidden;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
