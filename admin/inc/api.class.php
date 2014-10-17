@@ -106,13 +106,13 @@ class API_Request {
 		$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/					
 		if($this->auth()) {
 			$id = (string)$this->xml->data->slug;
-			$thisfile = GSDATAPAGESPATH.$id.'.xml';
+			$thisfile = GSDATAPAGESPATH.getBackupName($id,'xml');
 			if (file_exists($thisfile)) {
 				$page = getXML($thisfile);
 				$page->content = safe_slash_html($this->xml->data->content);
 				$page->title = safe_slash_html($this->xml->data->title);
 				$page->pubDate = date('r');
-				$bakfile = $bakpagespath. $id .".bak.xml";
+				$bakfile = $bakpagespath.getBackupName($id,'xml');
 				copy_file($thisfile, $bakfile);
 				$status = XMLsave($page, $thisfile);
 				if ($status) {

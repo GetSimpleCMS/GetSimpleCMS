@@ -191,9 +191,13 @@ function getBackupFilePath($filepath){
 	$fileext   = $pathparts['extension'];
 	$dirname   = $pathparts['dirname'];
 	$bakpath   = getRelPath($dirname,GSDATAPATH);
-	$bakfilepath = GSBACKUPSPATH.$bakpath.'/'.$filename.'.bak.'.$fileext;
+	$bakfilepath = GSBACKUPSPATH.$bakpath.'/'. getBackupName($filename,$fileext);
 	// debugLog(get_defined_vars());
 	return $bakfilepath;
+}
+
+function getBackupName($filename, $fileext){
+	return $filename . getDef('GSBAKFILEPREFIX') . '.' . $fileext . getDef('GSBAKFILESUFFIX');
 }
 
 /**
@@ -354,7 +358,7 @@ function getNextFileName($path,$file){
  */
 function delete_page_backup($id){
 	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
-	return delete_file($bakpagespath. $id .".bak.xml");
+	return delete_file($bakpagespath . getBackupName($id,'xml'));
 }
 
 /**

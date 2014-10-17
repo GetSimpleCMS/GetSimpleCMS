@@ -18,7 +18,7 @@ exec_action('load-backup-edit');
 # get page url to display
 if ($_GET['id'] != '') {
 	$id   = $_GET['id'];
-	$file = $id .".bak.xml";
+	$file = getBackupName($id,'xml');
 	$path = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
 
 	$data       = getXML($path . $file);

@@ -52,6 +52,8 @@ $GS_constants = array(
 	'GSTITLEMAX'            => 70,                            // (int) max length allowed for titles
 	'GSFILENAMEMAX'         => 255,                           // (int) max length allowed for file names/slugs
 	'GSPASSLENGTHMIN'       => 4,                             // (itn) min length of passwords
+	'GSBAKNAMESUFFIX'       => '',                            // (str) backup file naming suffix after extension
+	'GSBAKNAMESUFFIX'       => '.bak',                        // (str) backup file naming prefix before extension
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
@@ -81,7 +83,7 @@ $GS_definitions = array(
 	'GSEDITORTOOL'         => 'basic',                        // (str) wysiwyg editor toobar
 	'GSEDITORCONFIGFILE'   => 'config.js',                    // (str) wysiwyg editor toobar
 	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // (str) url used in email template
-	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
+	'GSAJAXSAVE'           => false,                           // (bool) use ajax for saving themes, components, and pages
 	'GSCHMOD'              => 0644,                           // (octal) chmod mode legacy
 	'GSCHMODFILE'          => 0644,                           // (octal) chmod mode for files
 	'GSCHMODDIR'           => 0755,                           // (octal) chmod mode for dirs
