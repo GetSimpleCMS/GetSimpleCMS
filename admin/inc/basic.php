@@ -736,7 +736,7 @@ function generate_url($slug, $parent, $absolute = false){
 		$url = $path . $plink;
 	}
 
-	return debugLog((string)$url);
+	return (string)$url;
 }
 
 /** 
