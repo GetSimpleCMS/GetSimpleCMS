@@ -111,7 +111,7 @@ if($jcrop){ ?>
 	    <img src="<?php echo $src_url .rawurlencode($src); ?>" id="cropbox" />
 			<div id="handw" class="toggle" ><?php i18n('SELECT_DIMENTIONS'); ?><br /><span id="picw"></span> x <span id="pich"></span></div>
 	    <!-- This is the form that our event handler fills -->
-	    <form id="jcropform" action="<?php myself(); ?>?i=<?php echo rawurlencode($src); ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
+	    <form id="jcropform" action="/"?i=<?php echo rawurlencode($src); ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
 	      <input type="hidden" id="x" name="x" />
 	      <input type="hidden" id="y" name="y" />
 	      <input type="hidden" id="w" name="w" />
