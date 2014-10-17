@@ -1028,6 +1028,13 @@ textarea#codetext {
 	overflow-x: scroll;
 }
 
+.input-warning {
+	display:block;
+	margin:-15px 0 0 0;
+	color:#D94136;
+	font-size:11px;
+}	
+
 #menu-items span {
 	text-transform: lowercase;
 }
