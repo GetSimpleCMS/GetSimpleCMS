@@ -200,6 +200,11 @@ function getBackupName($filename, $fileext){
 	return $filename . getDef('GSBAKFILEPREFIX') . '.' . $fileext . getDef('GSBAKFILESUFFIX');
 }
 
+function getPWDresetName($filename, $fileext){
+	return $filename . getDef('GSRESETFILEPREFIX') . '.' . $fileext . getDef('GSRESETFILESUFFIX');
+}
+
+
 /**
  * Create Backup of a Data File
  * Copy file to backups, preserve paths structure

@@ -52,8 +52,10 @@ $GS_constants = array(
 	'GSTITLEMAX'            => 70,                            // (int) max length allowed for titles
 	'GSFILENAMEMAX'         => 255,                           // (int) max length allowed for file names/slugs
 	'GSPASSLENGTHMIN'       => 4,                             // (itn) min length of passwords
-	'GSBAKNAMESUFFIX'       => '',                            // (str) backup file naming suffix after extension
-	'GSBAKNAMESUFFIX'       => '.bak',                        // (str) backup file naming prefix before extension
+	'GSBAKFILESUFFIX'       => '',                            // (str) backup file naming suffix after extension
+	'GSBAKFILEPREFIX'       => '.bak',                        // (str) backup file naming prefix before extension
+	'GSRESETFILESUFFIX'     => '.reset',                      // (str) password reset file naming suffix before extension
+	'GSRESETFILEPREFIX'     => '',                            // (str) password reset file naming prefix after extension
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
