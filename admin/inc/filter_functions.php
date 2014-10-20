@@ -190,27 +190,31 @@ function filterMatchBoolCmp($a,$b){
 	return $a!==$b;
 }
 
-// VALUES comparison
+// IN VALUES comparison
 // match multiple values
 // eg. filterKeyValueFunc($pagesArray,'menuOrder',array(1,2),'filterInValuesCmp');
 function filterInValuesCmp($a,$b){
 	return !in_array($a,$b);
 }
 
-// not matching multiple values
+// NOT IN VALUES comparison function
 // eg. filterKeyValueFunc($pagesArray,'menuOrder',array(1,2),'filterNotInValuesCmp');
 function filterNotInValuesCmp($a,$b){
 	return in_array($a,$b);
 }
 
-// TAGS comparison
-// splits comma delimited tag string then compares to array provided
+/**
+ * filter TAGS comparison function
+ * splits comma delimited tag string then compares to array provided
+ */
 function filterTagsCmp($a,$b){
 	if( is_array($b) ) return !array_intersect(getTagsAry($a,true),$b);
 	return false;
 }
 
-// TAGS case-insensitive tag comparison
+/** 
+ * filter TAGS case-insensitive comparison function
+ */
 function filterTagsiCmp($a,$b){
 	$a = lowercase($a);
 	return filterTagsCmp($a,$b);
@@ -221,9 +225,11 @@ function filterTagsiCmp($a,$b){
  */
 
 /**
- * return pages with those not containing specified tags, excluded, or the inverse via exclude flag
+ * filter pages by tags
+ * 
+ * return pages with tags matching specified tags, or optionally exclude them via exclude flag
  * accepts an array or a csv string of keywords
- * eg. getPages('filterTags',array('test','test2','?????????'),false,true);
+ * eg. getPages('filterTags',array('test','test2'),false,true);
  * 
  * @since  3.4
  * @param  array   $pages   pagesarray
@@ -235,6 +241,7 @@ function filterTagsiCmp($a,$b){
 function filterTags($pages, $tags, $case = false, $exclude = false){
 	if(!is_array($tags)) $tags  = getTagsAry($tags,$case); // convert to array
 
+	// get pages filtered by key & values on 'meta' and an array of tags
 	if($case) $pagesFiltered    = filterKeyValueFunc($pages,'meta',$tags,'filterTagsCmp');
 	else $pagesFiltered         = filterKeyValueFunc($pages,'meta',array_map('lowercase',$tags),'filterTagsiCmp');
 	
