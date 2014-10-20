@@ -142,7 +142,7 @@ get_template('header');
 <div class="bodycontent clearfix">
 	
 	<div id="maincontent">
-		<form class="largeform" action="/" method="post" accept-charset="utf-8" >
+		<form class="largeform" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 		<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save_settings"); ?>" />
 		
 		<div class="main">

@@ -76,7 +76,7 @@ if(isset($_GET['ajax'])){
 	$content = !empty($template_file) ? read_file(GSTHEMESPATH . tsl($template) . $template_file) : '';
 	?>
 		<div>
-			<form id="themeEditForm" action="/"?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
+			<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
 				<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
 				<textarea name="content" id="codetext" wrap='off'><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
 				<input type="hidden" value="<?php echo tsl($template) . $template_file;?>"  <?php if(empty($template_file)) echo ' class="nofile"'; ?>  name="edited_file" id="edited_file" />
@@ -294,7 +294,7 @@ switch (getFileExtension($template_file)) {
 
 				<!-- Theme Selector -->
 				<div id="theme_edit_select">
-				<form action="/" method="get" accept-charset="utf-8" >
+				<form action="<?php myself(); ?>" method="get" accept-charset="utf-8" >
 					<div class="well">
 						<div>
 							<?php echo $theme_options; ?>
@@ -317,7 +317,7 @@ switch (getFileExtension($template_file)) {
 				<?php $content = !empty($template_file) ? read_file(GSTHEMESPATH . tsl($template) . $template_file) : ''; ?>
 				</div>
 		
-		<form id="themeEditForm" action="/"?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
+		<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
 			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
 			<textarea name="content" id="codetext" class="code_edit" data-mode="<?php echo $mode; ?>" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
 			<input type="hidden" value="<?php echo tsl($template) . $template_file; ?>" <?php if(empty($template_file)) echo ' class="nofile"'; ?> name="edited_file" id="edited_file" />

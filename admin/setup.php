@@ -199,7 +199,7 @@ get_template('header');
 	if (!$success) { ?>
 		<div class="main" >
 			<h3><?php echo $site_full_name .' '. i18n_r('INSTALLATION'); ?></h3>
-			<form action="/" method="post" accept-charset="utf-8" >
+			<form action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 				<input name="siteurl" type="hidden" value="<?php echo $fullpath; ?>" />
 				<input name="lang" type="hidden" value="<?php echo $LANG; ?>" />
 				<p><label for="sitename" ><?php i18n('LABEL_WEBSITE'); ?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php if(isset($_POST['sitename'])) { echo $_POST['sitename']; } ?>" /></p>
