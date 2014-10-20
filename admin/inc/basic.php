@@ -1774,7 +1774,6 @@ function getRelURIPath($path,$root ){
 function getRelRequestURI(){
 	GLOBAL $SITEURL;
 	$pathParts   = str_replace('//','/',parse_url($_SERVER['REQUEST_URI'])); # ignore double slashes in path
-	$queryString = isset($pathParts['query']) ? isset($pathParts['query']) : '';
 	$relativeURI = getRelURIPath($pathParts['path'],getRootRelURIPath($SITEURL));
 	return $relativeURI;
 }
