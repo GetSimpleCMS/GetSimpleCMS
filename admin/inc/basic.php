@@ -2388,15 +2388,16 @@ if (!function_exists('array_column')) {
 
 /**
  * return tags string as array
- * explodes, trims keywords
+ * explodes on delim, lowers case, and trims keyword strings
  * @since 3.4
- * @param string $str string of comman delimited keywords
+ * @param string $str string of delimited keywords
  * @param bool	$case preserve case if true, else lower
+ * @param str	$delim delimiter for splitting
  * @return array      returns array of tags
  */
-function getTagsAry($str,$case = false){
+function tagsToAry($str,$case = false,$delim = ','){
 	if(!$case) $str = lowercase($str);
-	$ary = explode(',',$str);
+	$ary = explode($delim,$str);
 	$ary = array_map('trim',$ary);
 	return $ary;
 }

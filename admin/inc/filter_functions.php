@@ -264,7 +264,7 @@ function filterNotInValuesCmp($a,$b){
  * splits comma delimited tag string then compares to array provided
  */
 function filterTagsCmp($a,$b){
-	if( is_array($b) ) return !array_intersect(getTagsAry($a,true),$b);
+	if( is_array($b) ) return !array_intersect(tagsToAry($a,true),$b);
 	return false;
 }
 
@@ -295,7 +295,7 @@ function filterTagsiCmp($a,$b){
  * @return array            fitlered pagesarray copy
  */
 function filterTags($pages, $tags, $case = false, $exclude = false){
-	if(!is_array($tags)) $tags  = getTagsAry($tags,$case); // convert to array
+	if(!is_array($tags)) $tags  = tagsToAry($tags,$case); // convert to array
 
 	// get pages filtered by key & values on 'meta' and an array of tags
 	if($case) $pagesFiltered    = filterKeyValueFunc($pages,'meta',$tags,'filterTagsCmp');
