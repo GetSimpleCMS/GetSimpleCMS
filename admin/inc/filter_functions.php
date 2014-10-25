@@ -325,7 +325,8 @@ function filterMatchiCmp($a,$b){
 /**
  * BOOLEAN comparison, (bool)$a==(bool)$b
  * casts to boolean before compare
- * @todo  could probably use native str cmp since its binary safe, but may want to add Y/N str noramlizing later on etc.
+ * @todo  could probably use native str cmp since its binary safe, 
+ *        but may want to add "Y"/"N" str noramlizing later on etc. since we are not consistant across settings
  * @param  str $a string to compare
  * @param  str $b string to compare
  * @return bool   false if matches
@@ -361,7 +362,7 @@ function filterNotInValuesCmp($a,$b){
 }
 
 /**
- * match any values, $a contains at least 1 from $b, value OR value
+ * match any values, $a contains at least 1 from $b, (value OR value)
  * @param  str   $a array source to compare
  * @param  array $b array to compare
  * @return bool     false if $a values matche any value in $b
@@ -371,7 +372,7 @@ function filterArrayMatchAnyCmp($a,$b){
 }
 
 /**
- * match all values, $a contains all from $b, value AND value
+ * match all values, $a contains all from $b, (value AND value)
  * @param  str   $a array source to compare
  * @param  array $b array to compare
  * @return bool     false if $a values match all $b values
@@ -448,145 +449,20 @@ function filterTags($pages, $tags, $case = false, $exclusive = false, $exclude =
 	return $pagesFiltered;
 }
 
-/*
- * aliases for filtertasgs exclude toggle
- */
-function filterTagsMatch($pages, $tags, $case = false){
-	filterTags($pages, $tags, $case);
-}
-
-function filterTagsNotMatch($pages, $tags, $case = false){
-	filterTags($pages, $tags, $case, false);
-}
-
 /**
- * *****************************************
- * @todo clean up below this, above mostly tested and complete
- * *****************************************
+ * filter matching parent
+ * @param  array $pages  PAGES collection
+ * @param  string $parent parent slug to filter on 
+ * @return array         PAGES collection
  */
-
-// filter matching parent
-// @todo tolowercase parent since it should be a slug
 function filterParent($pages,$parent=''){
-	return filterKeyValueMatch($pages,'parent',$parent);
+	return filterKeyValueMatch($pages,'parent',lowercase($parent));
 }
 
-// @todo date field filter and sorter
-// probably only need sorter in core
-// filter and sort by date field
-// date format none = gs default,
-// sort flags asc desc
-// filter flags between, null start or null end lg gt
-// equals mask for date match yyyy, mm, dd, no time
-// datetime php min 5.3+ ,  so use unixtime evaluation
-// multi sort 2 columns etc.
-
-//
-// sorters
-// most use subval sort for now
-// @todo any sortkey will remain in array, eg. sortbytitle and path key = 'path'
-
-// @todo
-// how to do sorters
-// most will be a custom comparison sort
-// will need to do case conversions
-// will need date conversions
-// will need multi sort
-// will need multi sort using sort index faster to just sort fields you need and use the slug index
-// as a sort index depending on the sort needed, this also can help avoid
-// requiring a special multidimentional sorts and allowing any sort by slug pattern, and possibly cache sorts easier.
-// subval sort is very inefficient in that it creates a tmp array adds sort key value to it then sorts it and then rebuids to tmp index,
-// it is great but it might be possible to make it more efficient
-// 
-// eg uksort($array, "strnatcasecmp"); then resort main array as multi
-// some more stuff here http://us2.php.net/array_multisort, supports sorting by sort array or multiple columns.
-// multisort does not support local or natural sorting in php < 5.4 and 5.3 respectivly
-// 
-// Sorting utf-8 by locale is iffy
-// strcoll() might be of some use
-// 
-// sorting by at least 2 columns, and fake columns such as external relationships, parent title / parent slug
-
-
-/**
- * sortkey below sorts by a key with uasort without creating a seperate sorting array
- * but it uses a tmp global (@todo make static) and custom comparator
- */
-function sortKey($pages,$key){
-	// return subval_sort($pagesArray,$key);
-
-	GLOBAL $sortkey;
-	$sortkey = $key;
-    function custom_sort($a,$b) {
-    GLOBAL $sortkey;
-       return $a[$sortkey]>$b[$sortkey];
-    }
-    uasort($pages, "custom_sort");
-
-    unset($sortkey);
-    return $pages;
-}
-
-
-// path = get all parents not just first
-// function sortPathTitle($pages)
-// function sortPath($pages)
-
-/**
- * sort by "parent-title / page-title"
- * @param  array $pages pages array
- * @return array        sorted
- */
-function sortParentTitle($pages){
-	$seperator = ' - ';
-	foreach ($pages as $slug => &$page) {
-		$page['path'] = $page['parent'] ? $pages[$page['parent']]["title"] . $seperator : '';
-		$page['path'] .= $page['title'];
-	}
-	return 	subval_sort($pages,'path');
-}
-
-// test using multi sort 
-function sortParentTitleMulti($pages){
-	$sort = array();
-	foreach($pages as $slug => $page) {
-    	$sort['title'][$slug] = $page['title'];
-    	$sort['parenttitle'][$slug] = $page['parent'] ? $pages[$page['parent']]["title"] : '';
-    }
-    _debugLog($sort);
-	# sort by event_type desc and then title asc
-	array_multisort($sort['parenttitle'], SORT_ASC, $sort['title'], SORT_ASC,$pages);
-	return $pages;
-}
-
-/**
- * sorts by "parent-slug / page-slug"
- * @param  array $pages pages array
- * @return array        sorted
- */
-function sortParentPath($pages){
-	$seperator = '/';
-	foreach ($pages as $slug => &$page) {
-		$page['path'] = $page['parent'] ? $pages[$page['parent']]["url"] . $seperator : '';
-		$page['path'] .= $page['url'];
-	}
-	return 	subval_sort($pages,'path');
-}
-
-// in progress
-function sortPageFunc($pages,$func=null){
-     // Define the custom sort function
-	uasort ( $pages,$func);
-    return $pages;
-}
-
-
-function sortPageDateCmp($a,$b){
-	// sort by date field ( using gs format )
-}
 
 /**
  * abstractions / shorthand
+ * these are not for here, they are for theme_functions
  */
 
 function get_pages(){
@@ -604,33 +480,25 @@ function get_page_children($pageId){
 // get direct children no recursive
 function get_page_parent($pageId){
 	$pagesArray = getPages();
-	$parentId = $pagesArray[$pageId]['parent'];
+	$parentId   = $pagesArray[$pageId]['parent'];
 	return $pagesArray[$parentId];
 }
 
 function get_page_parents($pageId){
-	getParentPages($pageId);
+	getParentsPages($pageId);
 }
 
-
-// why did I use self rescursion ?
-// I had a reason for this.
-function getParentPagesRecurse($pageId,$pathAry = array()){
-	$pagesArray = getPages();
-	$pageParent = getPageFieldValue($pageId,'parent');
-	if(empty($pageParent)) return $pathAry;
-
-	foreach($pagesArray as $key => $page){
-		if($key == $pageParent){
-			_debugLog($key,$pageParent);
-			$pathAry[$key] = $page;
-			return getParentPages($key,$pathAry);
-		}
-	}
-
-	return $pathAry;
+function get_page_path($pageId){
+	$parents = getParents($pageId);
+	if($parents) return implode('/',array_reverse($parents)) . '/' . $pageId;
+	return $pageId;
 }
 
+/**
+ * get parents slugs
+ * @param  str $pageId slug of child
+ * @return array       array of parents slugs
+ */
 function getParents($pageId){
 	$pageparents = getPagesFields('parent');
 	// _debugLog($pageparents);
@@ -644,5 +512,26 @@ function getParents($pageId){
 	}
 	return $parents;
 }
+
+/**
+ * get parents slugs
+ * @param  str $pageId slug of child
+ * @return array       PAGES collection of parents
+ */
+function getParentsPages($pageId){
+	$pagesArray  = getPages();
+	$pageparents = getPagesFields('parent');
+	$parent      = $pageId;
+	$parents     = array();
+	// _debuglog($pageparents[$parent]);
+	while(isset($pageparents[$parent])){
+		$parent = $pageparents[$parent];
+		if(isset($pagesArray[$parent])){
+			$parents[$parent] = $pagesArray[$parent];
+		}
+	}
+	return $parents;
+}
+
 
 /*?>*/
