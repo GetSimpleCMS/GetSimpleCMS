@@ -556,29 +556,34 @@ jQuery(document).ready(function () {
 			url: dlink,
 			success: function (data, textStatus, jqXHR) {
 				// Store the response as specified by the jqXHR object
-				responseText = jqXHR.responseText;
+				// responseText = jqXHR.responseText;
+				// responseText = $.parseHTML(data);
 
-				if ($(responseText).find('div.notify_success').html()) {
+				rscript      = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
+				responseText = data.replace(rscript, "");
+				response     = $($.parseHTML(data));
+
+				if ($(response).find('div.notify_success').html()) {
 					// remove scripts to prevent assets from loading when we create temp dom
 					rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
 	 
 					// create temp doms to reliably find elements
-					$('#header').html($("<div>").append(responseText.replace(rscript, "")).find('#header > *'));
-					$('#sidebar').html($("<div>").append(responseText.replace(rscript, "")).find('#sidebar > *'));
-					$('#maincontent').html($("<div>").append(responseText.replace(rscript, "")).find('#maincontent > *'));
+					$('#header').html($("<div>").append($(response)).find('#header > *'));
+					$('#sidebar').html($("<div>").append($(response)).find('#sidebar > *'));
+					$('#maincontent').html($("<div>").append($(response)).find('#maincontent > *'));
 	 
 					// document.body.style.cursor = "default";
 					clearNotify();
-					notifyOk($(responseText).find('div.notify_success').html()).popit().removeit();
+					notifyOk($(response).find('div.notify_success').html()).popit().removeit();
 					initLoaderIndicator();
-				} else if ($(responseText).find('div.notify_error').html()) {
+				} else if ($(response).find('div.notify_error').html()) {
 					document.body.style.cursor = "default";
 					mytd.removeClass('ajaxwait_tint_dark');
 					$('.toggleEnable').removeClass('disabled');
 					loadingAjaxIndicator.fadeOut();
 					mytd.stop();
 					clearNotify();
-					notifyError($(responseText).find('div.notify_error').html());
+					notifyError($(response).find('div.notify_error').html());
 				}
 			},
 			error: function (data, textStatus, jqXHR) {
