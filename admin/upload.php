@@ -138,7 +138,7 @@ $pagetitle = i18n_r('FILE_MANAGEMENT');
 get_template('header');
 
 // check if host uses Linux (used for displaying permissions
-$isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
+$isUnixHost = !hostIsWindows();
 
 ?>
 	
@@ -233,21 +233,19 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 				<form action="upload.php">&nbsp;<input type="hidden" name="path" value="'.$subPath.'" /><input type="hidden" name="nonce" value="'. get_nonce("createfolder") .'" /><input type="text" class="text" name="newfolder" id="foldername" /> <input type="submit" class="submit" value="'.i18n_r('CREATE_FOLDER').'" />&nbsp; <a href="#" class="cancel">'.i18n_r('CANCEL').'</a></form>
 			</div></div>';
       
-			
 	$showperms = $isUnixHost && isDebug() && function_exists('posix_getpwuid');
-			
+
      echo '<table class="highlight" id="imageTable"><thead>'; 
      echo '<tr><th class="imgthumb" ></th><th>'.i18n_r('FILE_NAME').'</th>';
-     echo '<th style="text-align:right;">'.i18n_r('FILE_SIZE').'</th>';
+     echo '<th class="file_size right">'.i18n_r('FILE_SIZE').'</th>';
      if ($showperms){
-     	 echo '<th style="text-align:right;">'.i18n_r('PERMS').'</th>';
+     	 echo '<th class="file_perms right">'.i18n_r('PERMS').'</th>';
      }
-     echo '<th style="text-align:right;">'.i18n_r('DATE').'</th>';
-     echo '<th><!-- actions --></th></tr>';
+     echo '<th class="file_date right">'.i18n_r('DATE').'</th>';
+     echo '<th class="file_actions"><!-- actions --></th></tr>';
      echo '</thead><tbody>';  
      if (count($dirsSorted) != 0) {
      		$foldercount = 0;
-
 
         foreach ($dirsSorted as $upload) {
         	
@@ -261,17 +259,17 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
           echo '<tr class="All folder '.$upload['name'].'" >';
           echo '<td class="imgthumb" ></td><td>';
           $adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
-          echo '<img src="template/images/folder.png" width="11" /> <a href="upload.php?path='.$adm.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
-          echo '<td style="width:80px;text-align:right;" ><span>'.$directory_size.'</span></td>';
+          echo '<span class="fa fa-folder icon-left"></span><a href="upload.php?path='.$adm.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
+          echo '<td class="file_size right"><span>'.$directory_size.'</span></td>';
           
           // get the file permissions.
-					if ($showperms) {
-						$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
-						$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
-						echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
-					}
+		if ($showperms) {
+			$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
+			$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
+			echo '<td class="file_perms right"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
+		}
 					
-		      echo '<td style="width:85px;text-align:right;" ><span>'. output_date($upload['date']) .'</span></td>';
+		  echo '<td class="file_date right"><span>'. output_date($upload['date']) .'</span></td>';
           echo '<td class="delete" >'.$directory_delete.'</td>';
           echo '</tr>';
           $foldercount++;
@@ -307,18 +305,18 @@ $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
 					// name column linked
 					echo '</td><td><a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';
 					// size column
-					echo '<td style="width:80px;text-align:right;" ><span>'. $upload['size'] .'</span></td>';
+					echo '<td class="file_size right"><span>'. $upload['size'] .'</span></td>';
              
 		            
 					// get the file permissions.
-					if ($isUnixHost && isDebug() && function_exists('posix_getpwuid')) {
+					if ($showperms) {
 						$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
 						$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
-						echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
+						echo '<td class="file_perms right"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 					}
 							
-					echo '<td style="width:85px;text-align:right;" ><span>'. output_date($upload['date']) .'</span></td>';
-					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. rawurlencode($upload['name']) . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a></td>';
+					echo '<td class="file_date right"><span>'. output_date($upload['date']) .'</span></td>';
+					echo '<td class="delete"><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. rawurlencode($upload['name']) . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a></td>';
 					echo '</tr>';
 					
 				}

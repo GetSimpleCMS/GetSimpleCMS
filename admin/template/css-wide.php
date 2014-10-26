@@ -66,7 +66,7 @@ body .header{
 
 #maincontent .main {
 	margin-right: 250px;
-	min-width: 260px;
+	min-width: 330px;
 }
 
 #sidebar {
@@ -88,7 +88,6 @@ body .header{
 
 textarea, form input.title{
 	/* resize backend textareas */
-	/* outline backend administrative input fields for emphasis */
 	width:100% ;
 }
 
@@ -102,15 +101,15 @@ form.manyinputs textarea{
 }
 
 
-.wideopt {
-	max-width:600px;	
+.wideopt,.widesec {
+	max-width:703px;	
 }
 
-.leftopt,.rightopt {
-	max-width:300px;
+.leftopt,.rightopt,.leftsec,.rightsec {
+	max-width:352px;
 }
 
-.rightopt {
+.rightopt,.rightsec {
 	float:left;
 }
 

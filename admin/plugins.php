@@ -24,9 +24,9 @@ if ($pluginid){
 	if(check_nonce($nonce, "set_".pathinfo_filename($pluginid), "plugins.php")) {
 		$plugin = antixss($pluginid);
 		change_plugin($plugin);
-		redirect('plugins.php?success='.i18n_r('PLUGIN_UPDATED'));
+		redirect('plugins.php?success='.urlencode(i18n_r('PLUGIN_UPDATED')));
 	}
-	else redirect('plugins.php?error='.i18n_r('ERROR_OCCURED'));
+	else redirect('plugins.php?error='.urlencode(i18n_r('ERROR_OCCURED')));
 }
 
 // Variable settings

@@ -377,21 +377,21 @@ html {
 	float: right;
 }
 
-.wrapper #pill li.leftnav a {
-	padding: 4px 10px;
+.wrapper #pill li.leftnav a,
+.wrapper #pill li.rightnav a {
+	padding: 4px 8px;
 	font-weight: 100 !important;
 	text-decoration: none !important;
 	display: block;
-	border-radius: 0 0 3px 0;
-	/*border-left: 1px solid <?php echo $primary_3; ?>;*/
+	border-radius: 3px;
 	margin-left:1px;
 }
 
 .wrapper #pill li.rightnav a {
-	padding: 4px 10px;
-	font-weight: 100 !important;
-	text-decoration: none !important;
-	display: block;
+	border-radius: 0 0 3px 0;
+}
+
+.wrapper #pill li.leftnav a {
 	border-radius: 0 0 0 3px;
 }
 
@@ -701,7 +701,7 @@ h5:hover img {
 }
 
 .edit-nav select {
-	margin-top: 0;
+	margin: 0 2px 0 10px;
 	float: right;
 	padding: 2px;
 	border: 1px solid #999;
@@ -958,7 +958,7 @@ form p {
 }
 
 form input.text,
-form select.text {
+form select.text,form textarea.text {
 	color: #333;
 	border: 1px solid #aaa;
 	padding: 3px;
@@ -967,9 +967,9 @@ form select.text {
 	/*width: 510px;*/
 	width:100%;
 	border-radius: 2px;
-    -moz-box-sizing: content-box;
-    -webkit-box-sizing: content-box;
-    box-sizing: content-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 form input.text:focus,
@@ -1027,6 +1027,13 @@ textarea#codetext {
 	overflow-y: scroll;
 	overflow-x: scroll;
 }
+
+.input-warning {
+	display:block;
+	margin:-15px 0 0 0;
+	color:#D94136;
+	font-size:11px;
+}	
 
 #menu-items span {
 	text-transform: lowercase;
@@ -1089,32 +1096,92 @@ label.checkbox {
 	text-shadow: 1px 1px 0 rgba(255,255,255,.3);
 }
 
-.rightopt {
-	float: right;
-	width: 48%;
-}
 
-.leftopt {
+/*
+
+.leftsec,.rightsec {
 	float: left;
-	width: 48%;
+	width: 50%;
+	padding-bottom: 5px;
 }
 
-.wideopt {
+.widesec {
+	clear: both;
+	width: 100%;
+	padding-bottom: 5px;
+}
+
+.widesec input.text, .rightsec input.text, .leftsec input.text {
+	width: 100%;
+	font-size:12px !important;
+}
+
+.widesec input.text, .rightsec select.text, .leftsec select.text {
+	width: 100%;
+	font-size:12px !important;
+}
+
+.leftsec p,.rightsec p,.widesec p {
+	margin: 0 20px 20px 0;
+}
+*/
+
+.rightopt,
+.rightsec {
+	float: right;
+	width: 50%;
+	min-width: 300px;
+	max-width: 400px;
+}
+
+.leftopt,
+.leftsec {
+	float: left;
+	width: 50%;
+	min-width: 300px;
+	max-width: 400px;
+	border-right: 1px solid rgba(0, 0, 0, 0.04);
+	margin-right: -1px;
+}
+
+.wideopt,
+.widesec {
 	clear:both;
 	width: 100%;
 }
 
-.leftopt p,.rightopt p,.wideopt p{
-	margin:0 10px 15px 0;
+.leftopt,.rightopt,.wideopt,
+.leftsec,.rightsec,.widesec {
+	padding:10px;
+	box-sizing: border-box;
+	transition: background-color 200ms;	
 }
 
-.leftopt input,.rightopt input,.wideopt input{
+.leftopt:hover,.rightopt:hover,.wideopt:hover,
+.leftsec:hover,.rightsec:hover,.widesec:hover {
+	background-color: rgba(0,0,0,0.02);
+	transition: background-color 400ms;
+}
+
+.leftopt p,.rightopt, p,.wideopt p{
+/*.leftsec p,.rightsec, p,.widesec p*/
+	margin-bottom: 15px;
+}
+
+.wideopt p:last-child,.widesec p:last-child{
+	margin-bottom: 0px;
+}
+
+.leftopt input,.rightopt input,.wideopt input,
+.leftsec input,.rightsec input,.widesec input{
 	margin:0;
 }
 
-.leftopt select,.rightopt select,.wideopt select{
+.leftopt select,.rightopt select,.wideopt select,
+.leftsec select,.rightsec select,.widesec select{
 	margin:0;
 }
+
 
 input#post-menu-enable {
 	width: 20px;
@@ -1226,9 +1293,16 @@ p.backuplink {
 	color: #888;
 	font-size: 11px;
 	margin: 20px -20px -20px -20px;
-	padding: 10px 8px 10px 40px;
-	background: #f9f9f9 url('images/clock.png') 20px center no-repeat;
+	padding: 10px 8px 10px 20px;
+	background: #f9f9f9;
 	border-top: 1px solid #eee;
+}
+
+p.backuplink i.fa{
+	font-size: 14px;
+	vertical-align: bottom;
+	margin-right: 8px;
+	line-height: 18px;
 }
 
 p.backuplink a {
@@ -1299,31 +1373,6 @@ input.submit:disabled {
 	padding: 3px 7px;
 }
 
-.leftsec,.rightsec {
-	float: left;
-	width: 50%;
-	padding-bottom: 5px;
-}
-
-.widesec {
-	clear: both;
-	width: 100%;
-	padding-bottom: 5px;
-}
-
-.widesec input.text, .rightsec input.text, .leftsec input.text {
-	width: 100%;
-	font-size:12px !important;
-}
-
-.widesec input.text, .rightsec select.text, .leftsec select.text {
-	width: 100%;
-	font-size:12px !important;
-}
-
-.leftsec p,.rightsec p,.widesec p {
-	margin: 0 20px 20px 0;
-}
 
 /* edit css */
 form input.title {
@@ -1512,6 +1561,14 @@ table.comptable label {
 	background: #fff;
 	opacity: .8;
 	padding: 1px;
+}
+
+.notify .close{
+	float:right;
+}
+
+.notify .close:hover{
+	color: black;
 }
 
 .hint {
@@ -1735,6 +1792,11 @@ table.simple td.title {
 	font-weight: bold !important;
 }
 
+
+td.file_size,td.file_date,td.file_perms,
+th.file_size,th.file_date,th.file_perms {
+	width:85px;
+}
 
 #sidebar .uploadform {
 	padding: 5px 15px;
@@ -2127,6 +2189,7 @@ body#index {
 #index #maincontent .main,
 #resetpassword #maincontent .main {
 	width: 270px;
+	min-width: 0;
 	border-bottom: 1px solid #999;
 	border-right: 1px solid #999;
 	text-shadow: 1px 1px 0 #fff;
@@ -2137,7 +2200,7 @@ body#index {
 
 #resetpassword form input.text,
 #index form input.text {
-	width: 255px;
+	width: 100%;
 	font-size: 18px;
 	padding: 5px;
 	margin-top: 2px;
@@ -2477,11 +2540,9 @@ a.disabled:visited {
 #theme_edit_code {
 	float:left;
 	width:80%;
-	transition: opacity 400ms;
 }
 
 #theme_edit_code.readonly {
-	transition: opacity 200ms;
 }
 
 #theme_edit_code .well{
@@ -2630,13 +2691,26 @@ a.disabled:visited {
   transition: none !important;
 }
 
-.readonly{
-	opacity: 0.3;
+.readonly .CodeMirror-code,.readonly #theme_editing_file{
+	/*opacity: 0.3;*/
+	visibility :hidden;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	-o-user-select: none;
 	user-select: none;
+}
+
+.right {
+	text-align: right !important;
+}
+
+.icon-right{
+	margin-left:4px;
+}
+
+.icon-left{
+	margin-right:4px;
 }
 
 /* codemirror */

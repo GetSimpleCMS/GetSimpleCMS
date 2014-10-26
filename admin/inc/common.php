@@ -45,12 +45,17 @@ $GS_constants = array(
 	'GSINSTALLPLUGINS'      => 'InnovationPlugin.php',        // comma delimited list of plugins to activate on install
 	'GSSTYLEWIDE'           => 'wide',                        // wide stylesheet
 	'GSSTYLE_SBFIXED'       => 'sbfixed',                     // fixed sidebar
-	'GSFRONT'               => 1,                             // front end enum
-	'GSBACK'                => 2,                             // back end enum
-	'GSBOTH'                => 3,                             // front and back enum
-	'GSDEFAULTLANG'         => 'en_US',                       // default language for core
-	'GSTITLEMAX'            => '70',                          // max length allowed for titles
-	'GSFILENAMEMAX'         => '255',                         // max length allowed for file names/slugs
+	'GSFRONT'               => 1,                             // (int) front end enum
+	'GSBACK'                => 2,                             // (int) back end enum
+	'GSBOTH'                => 3,                             // (int) front and back enum
+	'GSDEFAULTLANG'         => 'en_US',                       // (str) default language for core
+	'GSTITLEMAX'            => 70,                            // (int) max length allowed for titles
+	'GSFILENAMEMAX'         => 255,                           // (int) max length allowed for file names/slugs
+	'GSPASSLENGTHMIN'       => 4,                             // (itn) min length of passwords
+	'GSBAKFILESUFFIX'       => '',                            // (str) backup file naming suffix after extension
+	'GSBAKFILEPREFIX'       => '.bak',                        // (str) backup file naming prefix before extension
+	'GSRESETFILESUFFIX'     => '.reset',                      // (str) password reset file naming suffix before extension
+	'GSRESETFILEPREFIX'     => '',                            // (str) password reset file naming prefix after extension
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
@@ -174,7 +179,7 @@ $reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
 if(defined('GSDEBUG') && (bool) GSDEBUG === true) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
-	// $nocache = true;
+	$nocache = true;
 } else if( defined('GSSUPPRESSERRORS') && (bool)GSSUPPRESSERRORS === true ) {
 	error_reporting(0);
 	ini_set('display_errors', 0);

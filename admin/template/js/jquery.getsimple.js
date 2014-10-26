@@ -75,6 +75,7 @@ $.fn.removeit = function ($delay) {
 };
 
 // overrides a method thats supposed to be called on a single node (a method like val)
+// @todo why did i add this?
 $.fn.overrideNodeMethod = function(methodName, action) {
     var originalVal = $.fn[methodName];
     var thisNode = this;
@@ -87,9 +88,20 @@ $.fn.overrideNodeMethod = function(methodName, action) {
         }
     };
 };
- 
+
+/**
+ * add a close button to element
+ */
+$.fn.addCloseButton = function(){
+	var button = $('<span class="close"><a href="javascript:void(0)"><i class="fa fa-times"></i></a></span>');
+	$(this).prepend($(button));
+	$(button).on('click',function(){
+		$(this).parent().dequeue().fadeOut(200);
+	});
+}
+
 /*
- * spinner
+ * gs spin wrapper for spin.js
  *
  * adds ajax or wait spinner, configured via opts object or presets
  * inherits color from parent if not present
@@ -161,6 +173,7 @@ $.fn.spin.presets = {
 
 }( jQuery));
 
+
 /* notification functions */
 function notifyOk($msg) {
 	return notify($msg, 'ok');
@@ -181,7 +194,8 @@ function notifyError($msg) {
 function notify($msg, $type) {
 	if ($type == 'ok' || $type == 'warning' || $type == 'info' || $type == 'error') {
 		var $notify = $('<div class="notify notify_' + $type + '"><p>' + $msg + '</p></div>');
-		$('div.bodycontent').before($notify);
+		var notifyelem = $('div.bodycontent').before($notify);
+		$notify.addCloseButton();
 		return $notify;
 	}
 }
@@ -209,8 +223,10 @@ function getTagName(elem){
 	return $(elem).prop('tagName');
 }
 
+
 jQuery(document).ready(function () {
 
+	// init jq tabs custom handlers
 	$("#tabs").tabs({
 		activate: function(event, ui) {
 			// set bookmarkable urls
@@ -228,8 +244,10 @@ jQuery(document).ready(function () {
 		}
 	});
 
+	// init aja xindicator
 	var loadingAjaxIndicator;
 	if($('#loader')[0]) initLoaderIndicator();
+
 
 	function initLoaderIndicator(){
 		// replace loader IMG with ajax loader
@@ -282,10 +300,12 @@ jQuery(document).ready(function () {
 	});
  
  
-	//autofocus index.php & resetpassword.php fields on pageload
+	//autofocus index.php & resetpassword.php user fields on pageload
 	$("#index input#userid").focus();
 	$("#resetpassword input[name='username']").focus();
-	var options = {
+	
+	// init capslock warning on password fields
+	var capslockoptions = {
 		caps_lock_on: function () {
 			$(this).addClass('capslock');
 		},
@@ -294,11 +314,10 @@ jQuery(document).ready(function () {
 		},
 		caps_lock_undetermined: function () {
 			$(this).removeClass('capslock');
-		}
+		},
+		debug: false
 	};
- 
-	$("input[type='password']").capslock(options);
- 
+	$("input[type='password']").capslock(capslockoptions);
  
 	// components.php
 	
@@ -313,6 +332,7 @@ jQuery(document).ready(function () {
 		ev.preventDefault();		
 	});
 	
+	// bind delete confirmation dialogs
 	$(".delconfirmcomp").on("click", function ($e) {
 		$e.preventDefault();
 		loadingAjaxIndicator.show();
@@ -325,6 +345,7 @@ jQuery(document).ready(function () {
 		loadingAjaxIndicator.fadeOut(500);
 	});
 
+	// bind component new button
 	$("#addcomponent").on("click", function ($e) {
 		$e.preventDefault();
 		loadingAjaxIndicator.show();
@@ -356,6 +377,7 @@ jQuery(document).ready(function () {
 		$("#divTxt").find('input').get(0).focus();
 	});
 
+	// bind delete component button
 	$("#maincontent").on("click",'.delcomponent', function ($e) {
 		$e.preventDefault();
 		var message = $(this).attr("title");
@@ -374,6 +396,7 @@ jQuery(document).ready(function () {
 		}
 	});
 
+	// bind double click component name
 	$("b.editable").dblclick(function () {
 		var t = $(this).html();
 		$(this).parents('.compdiv').find("input.comptitle").hide();
@@ -383,6 +406,7 @@ jQuery(document).ready(function () {
 		$(this).hide();
 	});
 
+	// update components codetext and slug upon title changes
 	$("#maincontent").on("keyup","input.titlesaver", function () {
 		var myval = $(this).val();
 		$(this).parents('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
@@ -398,10 +422,14 @@ jQuery(document).ready(function () {
  
  
 	// other general functions
+	
+	// suppress current sidemenus
+	// @todo remove this, sometimes this is desired, eg. create new page
 	$(".snav a.current").on("click", function ($e) {
 		$e.preventDefault();
 	});
 
+	// grabs confirmation dialogs from source
 	$(".confirmation").on("click", function ($e) {
 		loadingAjaxIndicator.show();
 		var message = $(this).attr("title");
@@ -413,10 +441,13 @@ jQuery(document).ready(function () {
 		loadingAjaxIndicator.fadeOut(500);
 	});
 
+	// delete confirm for pages
+	// get message, link, tr make ajax call
 	$("#maincontent").on("click",".delconfirm", function () {
 		var message = $(this).attr("title");
-		var dlink = $(this).attr("href");
-		var mytr = $(this).parents("tr");
+		var dlink   = $(this).attr("href");
+		var mytr    = $(this).parents("tr");
+
 		mytr.css("font-style", "italic");
 		var answer = confirm(message);
 		if (answer) {
@@ -457,6 +488,7 @@ jQuery(document).ready(function () {
 		}
 	});
 
+	//wait for archive creation
 	$("#waittrigger").click(function () {
 		loadingAjaxIndicator.fadeIn();
 		$("#waiting").fadeIn(1000).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
@@ -481,10 +513,13 @@ jQuery(document).ready(function () {
  
 		$(".notify").popit(); // allows legacy use
 		$(".notify.remove").removeit();
+		$(".notify").addCloseButton();
 	}
  
 	popAlertMsg();
  
+ 	// fancybox lightbox init
+ 	// rel=fancybox (_i/_s)
 	if (jQuery().fancybox) {
 		$('a[rel*=facybox]').fancybox({
 			type: 'ajax',
@@ -521,29 +556,34 @@ jQuery(document).ready(function () {
 			url: dlink,
 			success: function (data, textStatus, jqXHR) {
 				// Store the response as specified by the jqXHR object
-				responseText = jqXHR.responseText;
+				// responseText = jqXHR.responseText;
+				// responseText = $.parseHTML(data);
 
-				if ($(responseText).find('div.notify_success').html()) {
+				rscript      = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
+				responseText = data.replace(rscript, "");
+				response     = $($.parseHTML(data));
+
+				if ($(response).find('div.notify_success').html()) {
 					// remove scripts to prevent assets from loading when we create temp dom
 					rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
 	 
 					// create temp doms to reliably find elements
-					$('#header').html($("<div>").append(responseText.replace(rscript, "")).find('#header > *'));
-					$('#sidebar').html($("<div>").append(responseText.replace(rscript, "")).find('#sidebar > *'));
-					$('#maincontent').html($("<div>").append(responseText.replace(rscript, "")).find('#maincontent > *'));
+					$('#header').html($("<div>").append($(response)).find('#header > *'));
+					$('#sidebar').html($("<div>").append($(response)).find('#sidebar > *'));
+					$('#maincontent').html($("<div>").append($(response)).find('#maincontent > *'));
 	 
 					// document.body.style.cursor = "default";
 					clearNotify();
-					notifyOk($(responseText).find('div.notify_success').html()).popit().removeit();
+					notifyOk($(response).find('div.notify_success').html()).popit().removeit();
 					initLoaderIndicator();
-				} else if ($(responseText).find('div.notify_error').html()) {
+				} else if ($(response).find('div.notify_error').html()) {
 					document.body.style.cursor = "default";
 					mytd.removeClass('ajaxwait_tint_dark');
 					$('.toggleEnable').removeClass('disabled');
 					loadingAjaxIndicator.fadeOut();
 					mytd.stop();
 					clearNotify();
-					notifyError($(responseText).find('div.notify_error').html());
+					notifyError($(response).find('div.notify_error').html());
 				}
 			},
 			error: function (data, textStatus, jqXHR) {
@@ -589,17 +629,20 @@ jQuery(document).ready(function () {
 		$('.charlimit').trigger('change');
 	}
 
+	// focus page title on new page
 	if ($("#edit input#post-title:empty").val() === '') {
 		$("#edit input#post-title").focus();
 	}
 
-	// page options toggle LEGACY for plugins
+	// LEGACY page options toggle for page options for plugin support
 	$("#metadata_toggle").on("click", function ($e) {
 		$e.preventDefault();
 		$("#metadata_window").slideToggle('fast');
 		$(this).toggleClass('current');
 	});
 
+
+	// page is private toggle changes color
 	var privateLabel = $("#post-private-wrap label");
 	$("#post-private").change(function () {
 		if ($(this).val() == "Y") {
@@ -608,14 +651,18 @@ jQuery(document).ready(function () {
 			privateLabel.css("color", '#333333');
 		}
 	});
+
 	if ($("#post-private").val() == "Y") {
 		privateLabel.css("color", '#cc0000');
 	} else {
 		privateLabel.css("color", '#333333');
 	}
+
+	// menu enabled toggle
 	$("#post-menu-enable").on("click", function () {
 		$("#menu-items").slideToggle("fast");
 	});
+
 	if ($("#post-menu-enable").is(":checked")) {} else {
 		$("#menu-items").css("display", "none");
 	}
@@ -642,6 +689,7 @@ jQuery(document).ready(function () {
         }
     };
 
+    // check that title is not empty
     function checkTitle(){
         if($.trim($("#post-title").val()).length === 0){
             alert(i18n('CANNOT_SAVE_EMPTY'));
@@ -649,6 +697,7 @@ jQuery(document).ready(function () {
         }
     }
 
+    // init auto save for page edit
 	function autoSaveInit(){
 		Debugger.log('auto saving initialized ' + GSAUTOSAVEPERIOD);
 		$('#pagechangednotify').hide();
@@ -657,6 +706,7 @@ jQuery(document).ready(function () {
 		setInterval(autoSaveIntvl, GSAUTOSAVEPERIOD*1000);
     }
 
+    // interval for autosave
     function autoSaveIntvl(){
         if(pageisdirty === true){
             Debugger.log('autoSaveIntvl called, form is dirty: autosaving');
@@ -685,6 +735,7 @@ jQuery(document).ready(function () {
         });
     }
 
+    // perform upating after auto save
     function autoSaveUpdate(success,status){
         $('#autosavestatus').hide();
         $('#autosavenotify').html(status);
@@ -698,6 +749,7 @@ jQuery(document).ready(function () {
         pageisdirty = !success;
     }
 
+    // prerform updating after ajax save
     function ajaxSaveUpdate(success,status){
         notifyOk(status).popit().removeit();
         $('#pagechangednotify').hide();
@@ -710,12 +762,14 @@ jQuery(document).ready(function () {
         pageisdirty = !success;
     }
 
+    // handle ajaxsave success
     function ajaxSaveSucess(response){
         updateEditSlug(response);
         updateNonce(response);
         // @todo change url to new slug so refreshes work        
     }
 
+    // handle ajax save error
     function ajaxSaveError(response){
         ajaxError(response);
         if ($(response).find('div.error').html()) {
@@ -725,6 +779,7 @@ jQuery(document).ready(function () {
         pageisdirty = true;
     }
 
+    // call callbacks for autosave succcess or error
     function autoSaveCallback(response){
         Debugger.log('autoSaveCallback ' + response);
         response = $.parseHTML(response);
@@ -738,6 +793,7 @@ jQuery(document).ready(function () {
         }
     }
 
+    // ajaxsave callback parse response
     function ajaxSaveCallback(response){
         Debugger.log('ajaxSaveCallback ' + response);
         response = $.parseHTML(response);
@@ -771,6 +827,7 @@ jQuery(document).ready(function () {
         autoSaveInd();
     });
 
+    // auto save indicator, show notify, reset button style
     function autoSaveInd(){
         $('#pagechangednotify').show();
         $('input[type=submit]').css('border-color','#CC0000');

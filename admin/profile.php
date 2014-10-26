@@ -108,22 +108,32 @@ if(isset($_POST['submitted'])) {
  	else $htmleditor = '';
 		
 	# check to see if passwords are changing
-	if(isset($_POST['sitepwd'])) { $pwd1 = $_POST['sitepwd']; }
+	if(isset($_POST['sitepwd']))         { $pwd1 = $_POST['sitepwd']; }
 	if(isset($_POST['sitepwd_confirm'])) { $pwd2 = $_POST['sitepwd_confirm']; }
-	if ($pwd1 != $pwd2 || ($adding === true && (empty($pwd1) || $pwd1 !== $pwd2) ) )	{
-		#passwords do not match 
+	
+	// do password checking
+	if ($pwd1 != $pwd2 || ($adding === true && (empty($pwd1) || $pwd1 !== $pwd2))){
+		# passwords do not match if changing or adding users passwords
 		$error = i18n_r('PASSWORD_NO_MATCH');
-	} else {
-		# password cannot be null
-		if ( $pwd1 != '' ) {
-			$password = passhash($pwd1);
-		}
-		
+	}
+	else if($pwd1 != '' && strlen($pwd1) < getDef('GSPASSLENGTHMIN')){
+		# password cannot be shorter than GSPASSLENGTH
+		$error = i18n_r('PASSWORD_TOO_SHORT');
+	}
+	else if( $pwd1 != '' ){
+		# password changed
+		$newpassword = $pwd1; // set new password
+		exec_action('password_changed');
+		$password = passhash($newpassword); // set new password
+	}
+
+	if(!isset($error) || empty($error)){
 		// check valid lang files
 		if(!in_array($lang.'.php', $lang_array) and !in_array($lang.'.PHP', $lang_array)) $lang = ''; 
 
 		# create user xml file
 		backup_datafile(GSUSERSPATH.$file);
+		
 		// remove pass word reset
 		if (file_exists(GSUSERSPATH . _id($userid).'.xml.reset')) { delete_file(GSUSERSPATH . _id($userid).'.xml.reset'); }	
 

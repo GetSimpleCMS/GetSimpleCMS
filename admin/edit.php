@@ -236,7 +236,11 @@ get_template('header');
                         </p>
                         
                         <p class="inline post-menu clearfix">
-                            <input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> />&nbsp;&nbsp;&nbsp;<label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label><a href="navigation.php" class="viewlink" rel="facybox" ><img src="template/images/search.png" id="tick" alt="<?php echo strip_tags(i18n_r('VIEW')); ?>" /></a>
+                            <input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> />&nbsp;&nbsp;&nbsp;
+                            <label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label>
+                            <a href="navigation.php" class="viewlink" rel="facybox" alt="<?php echo strip_tags(i18n_r('VIEW')); ?>" >
+                                <span class="fa fa-search icon-right" style="opacity:0.2"></span>
+                            </a>
                         </p>
                         <div id="menu-items">
                             <img src="template/images/tick.png" id="tick" />
@@ -298,7 +302,7 @@ get_template('header');
 
             # CKEditor setup functions
             exec_action('html-editor-init');
-
+            echo "<!-- html-editor-init -->";
             if (empty($HTMLEDITOR)) echo '</fieldset>';
 
         ?>
@@ -337,7 +341,7 @@ get_template('header');
             </fieldset>            
         </div>
     </div> <!-- / END TABS -->
-                <span class="editing"><?php echo i18n_r('EDITPAGE_TITLE') .': ' . $title; ?></span>
+            <span class="editing"><?php echo sprintf(i18n_r('EDITING_PAGE'),$title); ?></span>
             <div id="submit_line" >
                 <input type="hidden" name="redirectto" value="" />
                 
@@ -360,12 +364,12 @@ get_template('header');
             </div>
             
             <?php if($url != '') { ?>
-                <p class="backuplink" ><?php 
+                <p class="backuplink"><i class="fa fa-clock-o"></i><?php 
                     if (isset($pubDate)) { 
                         echo sprintf(i18n_r('LAST_SAVED'), '<em>'.$author.'</em>').' '. output_datetime($pubDate).'&nbsp;&nbsp; ';
                     }
                     if ( fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
-                        echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
+                        echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a>';
                     } 
                 ?></p>
             <?php } ?>

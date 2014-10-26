@@ -574,7 +574,7 @@ function formatDate($format, $timestamp = null) {
 		$date = date($format, $timestamp);
 	} 
 	else {
-		if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+		if (hostIsWindows()) {
 		  # fixes for Windows
 		  $format = preg_replace('#(?<!%)((?:%%)*)%e#', '\1%#d', $format); // strftime %e parameter not supported
 		  $date   = utf8_encode(strftime($format, $timestamp)); // strftime returns ISO-8859-1 encoded string
@@ -736,7 +736,7 @@ function generate_url($slug, $parent, $absolute = false){
 		$url = $path . $plink;
 	}
 
-	return debugLog((string)$url);
+	return (string)$url;
 }
 
 /** 
@@ -1724,12 +1724,13 @@ function returnJsArray($var){
  * @return bool true if on false if not, null if unknown
  */
 function hasModRewrite(){
+	if(getenv('HTTP_MOD_REWRITE') == 'On') return true;
+	
 	if ( function_exists('apache_get_modules') ) {
 		if(in_arrayi('mod_rewrite',apache_get_modules()) ) {	
 			return true;
 		}	
 	}
-	if(getenv('HTTP_MOD_REWRITE') == 'On') return true;
 }
 
 /**
@@ -1773,7 +1774,6 @@ function getRelURIPath($path,$root ){
 function getRelRequestURI(){
 	GLOBAL $SITEURL;
 	$pathParts   = str_replace('//','/',parse_url($_SERVER['REQUEST_URI'])); # ignore double slashes in path
-	$queryString = isset($pathParts['query']) ? isset($pathParts['query']) : '';
 	$relativeURI = getRelURIPath($pathParts['path'],getRootRelURIPath($SITEURL));
 	return $relativeURI;
 }
@@ -2120,6 +2120,7 @@ function getWebsiteData($returnGlobals = false){
 		$SITETIMEZONE = trim((string) $dataw->TIMEZONE);
 		$SITELANG     = trim((string) $dataw->LANG);
 		$SITEUSR      = trim((string) $dataw->USR);
+		$SITEABOUT    = trim((string) $dataw->SITEABOUT);
 
 		$SITEURL_ABS = $SITEURL;
 		$SITEURL_REL = getRootRelURIPath($SITEURL);
@@ -2251,6 +2252,11 @@ function cssCompress($buffer) {
   return $buffer;
 }
 
+/**
+ * get the maximum upload size as defined by php ini
+ * @since  3.4
+ * @return int max bytes
+ */
 function getMaxUploadSize(){
 	$max_upload   = toBytes(ini_get('upload_max_filesize'));
 	$max_post     = toBytes(ini_get('post_max_size'));
@@ -2269,6 +2275,14 @@ function getSiteURL($absolute = false){
 	return $absolute ? getGlobal('SITEURL_ABS') : getGlobal('SITEURL');
 }
 
+/**
+ * check if host is windows
+ * @since  3.4
+ * @return bool true if windows
+ */
+function hostIsWindows(){
+	return (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
+}
 
 /* ?> */
 
