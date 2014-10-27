@@ -109,7 +109,7 @@ function getPages($filterFunc=null/*,...*/){
  * @return array      new array of fields
  */
 function getPagesFields($field,$pages = array()){
-	if(!$pages) $pages = getPages();
+	if(!$pages) $pages = getPages(); // use global PAGES if not provided
 	return array_column($pages,$field,'url');
 }
 
@@ -495,16 +495,14 @@ function get_page_path($pageId){
 }
 
 /**
- * get parents slugs
+ * get pages parents slugs
  * @param  str $pageId slug of child
  * @return array       array of parents slugs
  */
 function getParents($pageId){
 	$pageparents = getPagesFields('parent');
-	// _debugLog($pageparents);
-	$parent = $pageId;
-	$parents = array();
-	// _debuglog($pageparents[$parent]);
+	$parent      = $pageId;
+	$parents     = array();
 	while(isset($pageparents[$parent])){
 		$parent = $pageparents[$parent];
 		$parents[] = $parent;
@@ -523,7 +521,6 @@ function getParentsPages($pageId){
 	$pageparents = getPagesFields('parent');
 	$parent      = $pageId;
 	$parents     = array();
-	// _debuglog($pageparents[$parent]);
 	while(isset($pageparents[$parent])){
 		$parent = $pageparents[$parent];
 		if(isset($pagesArray[$parent])){
