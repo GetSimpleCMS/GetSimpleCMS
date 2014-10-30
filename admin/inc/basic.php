@@ -729,7 +729,7 @@ function generate_url($slug, $parent, $absolute = false){
 		if ($slug != 'index') $url .= 'index.php?id='.$slug;
 	}
 	
-	if (trim($PERMALINK) != '' && $slug != 'index'){
+	if ($PRETTYURLS == '1' && trim($PERMALINK) != '' && $slug != 'index'){
 		$plink = str_replace('%parent%/', $parent, $PERMALINK);
 		$plink = str_replace('%parent%', $parent, $plink);
 		$plink = str_replace('%slug%', $slug, $plink);
