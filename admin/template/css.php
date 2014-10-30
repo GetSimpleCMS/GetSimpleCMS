@@ -106,6 +106,12 @@ html {
 	color: #c3c3c3;
 }
 
+/* hide input placeholders on focus */
+input:focus::-webkit-input-placeholder { color:transparent; }
+input:focus:-moz-placeholder { color:transparent; } /* FF 4-18 */
+input:focus::-moz-placeholder { color:transparent; } /* FF 19+ */
+input:focus:-ms-input-placeholder { color:transparent; } /* IE 10+ */
+
 /** HEADER / NAVIGATION **/
 .header {
 	color: #FFF;
