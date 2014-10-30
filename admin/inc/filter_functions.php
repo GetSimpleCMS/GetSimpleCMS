@@ -478,13 +478,19 @@ function get_page_children($pageId){
 }
 
 // get direct children no recursive
-function get_page_parent($pageId){
+function get_parent_page($pageId){
 	$pagesArray = getPages();
 	$parentId   = $pagesArray[$pageId]['parent'];
 	return $pagesArray[$parentId];
 }
 
-function get_page_parents($pageId){
+function get_parent_slug($pageId){
+	$pagesArray = getPages();
+	$parentId   = $pagesArray[$pageId]['parent'];
+	return (string) $parentId;
+}
+
+function get_parent_pages($pageId){
 	getParentsPages($pageId);
 }
 
@@ -501,12 +507,14 @@ function get_page_path($pageId){
  */
 function getParents($pageId){
 	$pageparents = getPagesFields('parent');
-	$parent      = $pageId;
+	$parent      = get_parent_slug($pageId);
 	$parents     = array();
+
+	if(empty($parent)) return array();
+
 	while(isset($pageparents[$parent])){
-		$parent = $pageparents[$parent];
-		$parents[] = $parent;
-		_debuglog($parent);
+		$parent    = (string)$pageparents[$parent];
+		if(!empty($parent))	$parents[] = $parent;
 	}
 	return $parents;
 }

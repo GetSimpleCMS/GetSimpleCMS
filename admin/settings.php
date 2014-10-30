@@ -196,7 +196,7 @@ get_template('header');
 							<a href="http://get-simple.info/docs/pretty_urls" target="_blank" ><?php i18n('MORE');?></a>
 						</span>
 					</label>
-					<input class="text" name="permalink" id="permalink" type="text" placeholder="%parent%/%slug%/" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" />
+					<input class="text" name="permalink" id="permalink" type="text" placeholder="<?php echo getDef('GSDEFAULTPERMALINK');?>" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" />
 				</p>
 			</div>
 			<div class="rightsec">

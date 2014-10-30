@@ -650,7 +650,7 @@ function cl($data){
 }
 
 /**
- * Add Trailing Slash if missing
+ * Normalizes trailing slash by removing all and readding it
  *
  * @since 1.0
  *
@@ -658,14 +658,11 @@ function cl($data){
  * @return string
  */
 function tsl($path) {
-	if( substr($path, strlen($path) - 1) != '/' ) {
-		$path .= '/';
-	}
-	return $path;
+	return no_tsl($path).'/';
 }
 
 /**
- * Remove Trailing Slash if missing
+ * Remove all trailing slashes
  *
  * @since 3.4
  *
@@ -673,11 +670,24 @@ function tsl($path) {
  * @return string
  */
 function no_tsl($path) {
-	if( substr($path, -1) == '/' ) {
-		$path =  substr($path,0,-1);
-	}
+	$path = rtrim($path,'/');
 	return $path;
 }
+
+
+/**
+ * Remove all leading slashes
+ *
+ * @since 3.4
+ *
+ * @param string $path
+ * @return string
+ */
+function no_lsl($path) {
+	$path = ltrim($path,'/');
+	return $path;
+}
+
 
 /**
  * Case-Insensitve In-Array
@@ -699,9 +709,14 @@ if(!function_exists('in_arrayi')) {
 /**
  * Creates Standard URL for Pages
  *
- * Default function to create the correct url structure for each front-end page
- *
- * @since 2.0
+ * Default function to create the correct url structure for each front-end pages
+ * uses a very basic str_replace based token replacer, not a parser
+ * TOKENS (%tokenid%)
+ *  %path% - path heirarchy to slug
+ *  %slug% - slug
+ *  %parent% - direct parent of slug
+ * 
+ * @since 3.4
  * @uses $PRETTYURLS
  * @uses $PERMALINK
  * @uses tsl
@@ -711,44 +726,91 @@ if(!function_exists('in_arrayi')) {
  * @param string $absolute force absolute siteurl
  * @return string
  */
-function generate_url($slug, $parent, $absolute = false){
+function generate_url($slug, $absolute = false){
 	global $PRETTYURLS;
 	global $PERMALINK;
 
-	$path = tsl(getSiteURL($absolute));
-	$url  = $path;
+	// force slug to string in case a simpleXml object was passed ( from a page obj for example)
+	$slug   = (string) $slug;
 
-	if ($parent != '') {
-		$parent = tsl($parent); 
-	}	
+	if(empty($slug)) return; // empty slug
 
-	if ($PRETTYURLS == '1') {
-		if ($slug != 'index') $url .= $parent . $slug . '/';
-	} 
-	else {
-		if ($slug != 'index') $url .= 'index.php?id='.$slug;
-	}
-	
-	if (trim($PERMALINK) != '' && $slug != 'index'){
-		$plink = str_replace('%parent%/', $parent, $PERMALINK);
-		$plink = str_replace('%parent%', $parent, $plink);
-		$plink = str_replace('%slug%', $slug, $plink);
-		$url = $path . $plink;
-	}
+	$path   = tsl(getSiteURL($absolute));
+	$url    = $path; // var to build url into
 
-	return (string)$url;
+	if ($PRETTYURLS == '1' && $slug != 'index'){
+		$plink = $PERMALINK;
+		if(empty((trim($PERMALINK)))) $plink = getDef('GSDEFAULTPERMALINK');
+
+		// replace PATH token
+		if(containsToken('path',$plink)){
+			// remove PARENT tokens if path, since it would be pointless and probably accidental
+			$plink = replaceToken('parent','',$plink);	
+			
+			$pagepath = getParents($slug);
+
+			if($pagepath){
+				$pagepath = implode('/',array_reverse($pagepath));
+				$plink    = replaceToken('path', $pagepath, $plink);		
+			} else {
+				// page has no parents, remove token
+				$plink = replaceToken('path', '', $plink);
+			}
+		} else {
+			// replace PARENT token
+			$parent = get_parent_slug($slug);
+			$plink  = replaceToken('parent', $parent, $plink);
+		}
+		
+		// replace SLUG token
+		$plink = replaceToken('slug', $slug, $plink);
+		
+		$plink = str_replace('//','/',$plink); // clean up any double slashes
+
+		// debugLog($url);
+		// debugLog($plink);
+
+		$url = $url . no_lsl($plink); // normalize leading slashes
+
+	} else if ($slug != 'index') $url .= 'index.php?id='.$slug;
+
+	exec_filter('generate_url',$url); // @filter for generating urls after processing, for use with custom tokens etc
+
+	return $url;
+}
+
+/**
+ * replaces a string token with value
+ * @param  str $token token id
+ * @param  str $value value to replace
+ * @param  str $str   source string
+ * @return str        new string
+ */
+function replaceToken($token,$value,$str){
+	return str_replace('%'.$token.'%',$value,$str);
+}
+
+/**
+ * check if a string contains a token
+ * @param  str $token token id
+ * @param  str $str   source string
+ * @return bool       true if token found
+ */
+function containsToken($token,$str){
+	return stripos($str, '%'.$token.'%') !== false;
 }
 
 /** 
  * LEGACY alias for generate_url, defaults to relative now
  * @deprecated
  */
-function find_url($slug, $parent, $type = null) {
+function find_url($slug, $parent = '', $type = null) {
+	// parent is ignored
 	if(!isset($type)){
-		if(!getDef('GSSITEURLREL',true)) $type = "full"; # only default to full is not GSSITEURLREL
+		if(!getDef('GSSITEURLREL',true)) $type = "full"; # only default to full if not GSSITEURLREL
 		else $type = "relative";
 	}	
-	return generate_url($slug, $parent, $type == 'full');
+	return generate_url($slug, $type == 'full');
 }
 
 /**
