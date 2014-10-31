@@ -96,48 +96,53 @@ if(isset($_POST['submitted'])) {
 		if (! file_exists($init))	{
 			copy_file($temp,$init);
 			$xml = getXML($init);
-			$xml->pubDate = date('r');
+			$xml->pubDate = date('r'); # update date
 			$xml->asXML($init);
 		}
 
-		# create default components.xml page
+		# create default components.xml page if not exist
 		$init = GSDATAOTHERPATH.'components.xml';
 		$temp = GSADMININCPATH.'tmp/tmp-components.xml'; 
-		if (! file_exists($init)) {
+		if (!file_exists($init)) {
 			copy_file($temp,$init);
 		}
 		
-		# create root .htaccess file
-		 if ( !function_exists('apache_get_modules') or in_arrayi('mod_rewrite',apache_get_modules())) {
-		 	$temp = GSROOTPATH .'temp.htaccess';
-		 	$init = GSROOTPATH.'.htaccess';
-			
-			if(file_exists($temp)) {				
-				$temp_data = read_file(GSROOTPATH .'temp.htaccess');
-				$temp_data = str_replace('**REPLACE**',tsl($path_parts), $temp_data);
-				$fp = fopen($init, 'w');
-				fwrite($fp, $temp_data);
-				fclose($fp);
-				if (!file_exists($init)) {
-					$err .= sprintf(i18n_r('ROOT_HTACCESS_ERROR'), 'temp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
-				} else if(file_exists($temp)){
-					delete_file($temp);
-				}
-			}	
+		# create root .htaccess file if it does not exist
+		# remove temp, verify and throw errors
+		$temp = GSROOTPATH .'temp.htaccess';
+		$init = GSROOTPATH.'.htaccess';
+		
+		if(file_exists($temp) && !file_exists($init)) {	
+			// open temp htaccess and replace the root holder and save as new file
+			$temp_data = read_file(GSROOTPATH .'temp.htaccess');
+			$temp_data = str_replace('**REPLACE**',tsl($path_parts), $temp_data);
+			save_file($init,$temp_data);
+
+			if (!file_exists($init)) {
+				$err .= sprintf(i18n_r('ROOT_HTACCESS_ERROR'), 'temp.htaccess', '**REPLACE**', tsl($path_parts)) . '<br />';
+			} else if(file_exists($temp)){
+				delete_file($temp);
+			}
 		} 
 	
-		# create gsconfig.php if it doesn't exist yet.
+		# create gsconfig.php if it doesn't exist yet
+		# remove temp file and verify, throw errors
 		$tempconfig = 'temp.'.GSCONFIGFILE;
-		$init = GSROOTPATH.GSCONFIGFILE;
-		$temp = GSROOTPATH.$tempconfig;
+		$init       = GSROOTPATH.GSCONFIGFILE;
+		$temp       = GSROOTPATH.$tempconfig;
+
 		if (file_exists($init)) {
-			if(file_exists($temp)) delete_file($temp);
-			if (file_exists($temp)) {
+			// config already exists
+			if(file_exists($temp)) delete_file($temp); # remove temp file
+			if(file_exists($temp)) {
+				// failed to remove temp.gsonfig
 				$err .= sprintf(i18n_r('REMOVE_TEMPCONFIG_ERROR'), $tempconfig ) . '<br />';
 			}
 		} else {
+			// copy temp.gsconfig to gsconfig
 			rename_file($temp, $init);
 			if (!file_exists($init)) {
+				// failed to create gsconfig
 				$err .= sprintf(i18n_r('MOVE_TEMPCONFIG_ERROR'), $tempconfig , GSCONFIGFILE) . '<br />';
 			}
 		}
@@ -159,6 +164,7 @@ if(isset($_POST['submitted'])) {
 		$success = true;
 	}
 }
+
 $pagetitle = $site_full_name.' &middot; '. i18n_r('INSTALLATION');
 get_template('header');
 

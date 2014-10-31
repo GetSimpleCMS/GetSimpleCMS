@@ -39,7 +39,7 @@ if(isset($_POST['submitted'])){
 				# create backup
 				backup_datafile(GSUSERSPATH.$file);
 				
-				# create password change trigger file
+				# copy user file into password change trigger file
 				$flagfile = GSUSERSPATH . _id($userid).".xml.reset";
 				copy_file(GSUSERSPATH . $file, $flagfile);
 				

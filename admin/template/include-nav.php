@@ -9,8 +9,8 @@
 $debugInfoUrl = 'http://get-simple.info/docs/debugging';
 
 if (cookie_check()) {
-	echo '<ul id="pill"><li class="leftnav"><a href="logout.php" accesskey="'. find_accesskey(i18n_r('TAB_LOGOUT')).'" >'.i18n_r('TAB_LOGOUT').' <i class="fa fa-fw fa-sign-out"></i></a></li>';
-	echo '<li class="rightnav" ><a href="settings.php#profile">'.i18n_r('WELCOME').' <strong>'.$USR.'</strong> !</a></li></ul>';	
+	echo '<ul id="pill"><li class="rightnav"><a href="logout.php" accesskey="'. find_accesskey(i18n_r('TAB_LOGOUT')).'" >'.i18n_r('TAB_LOGOUT').'<i class="fa fa-fw fa-sign-out icon-right"></i></a></li>';
+	echo '<li class="leftnav" ><a href="profile.php"><span class="fa fa-user icon-left"></span>'.i18n_r('WELCOME').' <strong>'.$USR.'</strong> !</a></li></ul>';	
 }
 
 //determine page type if plugin is being shown

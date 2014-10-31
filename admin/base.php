@@ -56,6 +56,8 @@ if(!$data_index && isset($httpcode)) {
 }
 
 $title          = $data_index->title;
+$titlelong      = $data_index->titlelong;
+$summary        = $data_index->summary;
 $date           = $data_index->pubDate;
 $metak          = $data_index->meta;
 $metad          = $data_index->metad;

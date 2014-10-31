@@ -346,7 +346,11 @@ if($newdraft) $pageClass.=' newdraft';
                         </p>
                         
                         <p class="inline post-menu clearfix">
-                            <input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> />&nbsp;&nbsp;&nbsp;<label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label><a href="navigation.php" class="viewlink" rel="facybox" ><img src="template/images/search.png" id="tick" alt="<?php echo strip_tags(i18n_r('VIEW')); ?>" /></a>
+                            <input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> />&nbsp;&nbsp;&nbsp;
+                            <label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label>
+                            <a href="navigation.php" class="viewlink" rel="facybox" alt="<?php echo strip_tags(i18n_r('VIEW')); ?>" >
+                                <span class="fa fa-search icon-right" style="opacity:0.2"></span>
+                            </a>
                         </p>
                         <div id="menu-items">
                             <img src="template/images/tick.png" id="tick" />
@@ -408,7 +412,7 @@ if($newdraft) $pageClass.=' newdraft';
 
             # CKEditor setup functions
             exec_action('html-editor-init');
-
+            echo "<!-- html-editor-init -->";
             if (empty($HTMLEDITOR)) echo '</fieldset>';
 
         ?>
@@ -474,7 +478,7 @@ if($newdraft) $pageClass.=' newdraft';
             </div>
             
             <?php if($url != '') { ?>
-                <p class="backuplink" ><?php 
+                <p class="backuplink"><i class="fa fa-clock-o"></i><?php 
                     if (isset($pubDate)) { 
                         echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'.$author.'</em>').' '. output_datetime($pubDate).'&nbsp;&nbsp; ';
                     }
@@ -482,7 +486,7 @@ if($newdraft) $pageClass.=' newdraft';
                         echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
                     }
                     else if(fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
-                        echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
+                        echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a>';
                     }
                 ?></p>
             <?php } ?>

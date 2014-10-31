@@ -18,7 +18,7 @@ exec_action('load-backup-edit');
 # get page url to display
 if ($_GET['id'] != '') {
 	$id   = $_GET['id'];
-	$file = $id .".bak.xml";
+	$file = getBackupName($id,'xml');
 
 	$draft = isset($_GET['draft']); // (bool) using draft pages
 	if($draft) $path = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/drafts/

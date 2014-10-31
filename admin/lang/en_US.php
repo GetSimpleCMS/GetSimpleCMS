@@ -42,6 +42,7 @@ $i18n = array(
 "LABEL_USERNAME"          =>	"Username",
 "LABEL_DISPNAME"          =>	"Display Name",
 "LABEL_EMAIL"             =>	"Email Address",
+"LABEL_SITEABOUT"         =>	"Notes about this website",
 "LABEL_INSTALL"           =>	"Install Now!",
 "SELECT_LANGUAGE"         =>	"Select your language",
 "CONTINUE_SETUP"          =>	"Continue with Setup",
@@ -56,6 +57,7 @@ $i18n = array(
 "HOMEPAGE_SUBTITLE"       =>	"homepage",
 "PRIVATE_SUBTITLE"        =>	"private",
 "EDITPAGE_TITLE"          =>	"Edit Page",
+"EDITING_PAGE"            =>	"Editing Page: %s",
 "VIEWPAGE_TITLE"          =>	"View Page",
 "DELETEPAGE_TITLE"        =>	"Delete Page",
 "PAGE_MANAGEMENT"         =>	"Page Management",
@@ -209,10 +211,8 @@ $i18n = array(
 /* 
 * For: sitemap.php
 */
-"SITEMAP_CREATED"         =>	"Sitemap Created! We also successfully pinged 4 search engines of the update",
-"SITEMAP_ERRORPING"       =>	"Sitemap Created, however there was an error pinging one or more of the search engines",
 "SITEMAP_ERROR"           =>	"Your sitemap could not be generated",
-"SITEMAP_WAIT"            =>	"<b>Please Wait:</b> Creating website sitemap",
+"SITEMAP_REFRESHED"       =>	"Your sitemap has been refreshed",
 
 /* 
 * For: theme.php
@@ -260,6 +260,7 @@ $i18n = array(
 "PASSWORD_NO_MATCH"       =>	"Passwords do not match",
 "LOCAL_TIMEZONE"          =>	"Local Timezone",
 "NEW_USER"                =>    "New User",
+"PASSWORD_TOO_SHORT"      =>    "Password is not long enough",
 
 /*
 * For: health-check.php
@@ -548,7 +549,6 @@ $i18n = array(
 "AUTOSAVE_NOTIFY"         =>	'Page autosaved at %s', //edit.php
 "MENU_MANAGER"            =>	'<em>M</em>enu Manager', //edit.php
 "GET_PLUGINS_LINK"        =>	'Download <em>M</em>ore Plugins',
-"SITEMAP_REFRESHED"       =>	"Your sitemap has been refreshed", //edit.php
 "LOG_FILE_EMPTY"          =>	"This log file is empty", //log.php
 "SHARE"                   =>	"Share", //footer.php
 "NO_PARENT"               =>	"No Parent", //edit.php

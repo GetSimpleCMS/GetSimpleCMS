@@ -41,5 +41,7 @@
         ?>
     </div><!-- end .wrapper -->
 
+<?php exec_action('pre-body') ?>
 </body>
 </html>
+<?php exec_action('end-flush') ?>
