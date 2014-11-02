@@ -2058,12 +2058,17 @@ function getTransliteration(){
 }
 
 /**
- * set php locale via i18n
+ * set php locale
  * @since 3.4
- * @param str locale str
+ * @param str $locale a csv locale str
  */
 function  setCustomLocale($locale){
-	if ($locale) setlocale(LC_ALL, preg_split('/s*,s*/', $locale));
+	// split locale string into array, removing whitespace and empties
+	if($locale) {
+		$localestr = preg_split('/\s*,\s*/', trim($locale), -1, PREG_SPLIT_NO_EMPTY);
+		$result    = setlocale(LC_ALL, $localestr);
+		return $result;
+}
 }
 
 /**
