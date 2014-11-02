@@ -774,8 +774,7 @@ function generate_url($slug, $absolute = false){
 
 	} else if ($slug != 'index') $url .= 'index.php?id='.$slug;
 
-	exec_filter('generate_url',$url); // @filter for generating urls after processing, for use with custom tokens etc
-
+	$url = exec_filter('generate_url',$url); // @filter for generating urls after processing, for use with custom tokens etc
 	return $url;
 }
 
@@ -1847,21 +1846,39 @@ function getRelRequestURI(){
  * @param  mixed $mask array or string of path keys
  * @return return      if mask provided returns an array mathching path values to keys or empty, else returns string of path
  */
-function getURIPath($mask = null, $pad = false){
+function getURIPath($inputmask = null, $pad = false){
 	$relativeURI = getRelRequestURI();
-	$URIpathAry  = explode('/',$relativeURI);
+	$URIpathAry  = explode('/',no_tsl($relativeURI));
 
-	if(gettype($mask) == 'string') $mask = explode('/',$mask);
+	if(gettype($inputmask) == 'string') $inputmask = explode('/',$inputmask);
 
-	if($mask){
+	debugLog($inputmask);
+	debugLog($relativeURI);
+	debugLog($URIpathAry);
+
+	if($inputmask){
 		// assigning path vars to key mask
-		$maskCnt = count($mask);
+		$maskCnt = count($inputmask);
 		$URIcnt  = count($URIpathAry);
-		$mask    = array_combine($mask,array_fill(0,$maskCnt,'')); # flip array with empty values so padding has indices to work with
+		$mask    = array_combine($inputmask,array_fill(0,$maskCnt,'')); # flip array with empty values so padding has indices to work with
 
 		if($maskCnt == $URIcnt){
 			// mask count matches path count			
 			$mask = array_combine(array_keys($mask),$URIpathAry);
+			return $mask;
+		}
+		else if($URIcnt > $maskCnt && in_array('%path%',$inputmask)){
+			// mask contains %path% token
+			// so splice it out of the path and implode it back in
+			debugLog('%path% token processing');
+			$start = array_search('%path%',$mask);
+			$end   = $start + 6;
+
+			$URIpathAry = spliceCompressArray($URIpathAry,$start,$end);
+			debugLog($URIpathAry);
+			
+			$URIpathAry[$start] = implode('/',$URIpathAry[$start]);
+			$mask = array_combine(array_keys($mask),$URIpathAry);			
 			return $mask;
 		}
 		else if(($URIcnt > $maskCnt) && $pad){
@@ -1875,13 +1892,50 @@ function getURIPath($mask = null, $pad = false){
 		else {
 			// Mask is larger than URI, ignoring
 		}
-	} 
+	}
 	else {
 		// no mask specificed so simple str return
 		return $relativeURI;
 	}
 }
 
+
+function spliceCompressArray($array,$startidx,$endidx){
+
+	// splice startidx - endidx into new array[startidx]
+	// splice 0-startidx
+	// splice endidx-length(array)
+	// combine 3 arrays with new keys for end group
+	
+	if($startidx > $endidx) return $array;
+	if($endidx > count($array)) $endidx = count($array) -1;
+
+	$slice = array_splice($array,$startidx,$endidx-$startidx,'');
+	$array[$startidx] = $slice;
+
+	return $array;
+}
+
+/*
+$test = array('one','two','three','four','five','six','seven','eight');
+shrinkArray($test,2,5);
+
+Array
+(
+    [0] => one
+    [1] => two
+    [2] => Array
+        (
+            [0] => three
+            [1] => four
+            [2] => five
+        )
+
+    [3] => six
+    [4] => seven
+    [5] => eight
+)
+*/
 
 /**
  * get web root-relative url
