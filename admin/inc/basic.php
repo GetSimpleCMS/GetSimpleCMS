@@ -740,7 +740,7 @@ function generate_url($slug, $absolute = false){
 
 	if ($PRETTYURLS == '1' && $slug != 'index'){
 		$plink = $PERMALINK;
-		if(empty((trim($PERMALINK)))) $plink = getDef('GSDEFAULTPERMALINK');
+		if(empty($PERMALINK)) $plink = getDef('GSDEFAULTPERMALINK');
 
 		// replace PATH token
 		if(containsToken('path',$plink)){
