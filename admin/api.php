@@ -13,7 +13,7 @@
 	if (!defined('GSEXTAPI')) exit;
 	
 	// disable libxml error output
-	libxml_use_internal_errors();
+	if(!isDebug()) libxml_use_internal_errors(true);
 
 	// disable entity loading to avoid xxe
 	libxml_disable_entity_loader();
