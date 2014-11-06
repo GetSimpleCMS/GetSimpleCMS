@@ -1844,17 +1844,13 @@ function getRelRequestURI(){
  *
  * @since  3.4
  * @param  mixed $mask array or string of path keys
- * @return return      if mask provided returns an array mathching path values to keys or empty, else returns string of path
+ * @return mixed       if mask was provided returns an array mathching path values to keys or empty, else returns string of path
  */
 function getURIPath($inputmask = null, $pad = false){
-	$relativeURI = getRelRequestURI();
+	$relativeURI = no_tsl(getRelRequestURI());
 	$URIpathAry  = explode('/',no_tsl($relativeURI));
 
 	if(gettype($inputmask) == 'string') $inputmask = explode('/',$inputmask);
-
-	debugLog($inputmask);
-	debugLog($relativeURI);
-	debugLog($URIpathAry);
 
 	if($inputmask){
 		// assigning path vars to key mask
@@ -1870,14 +1866,15 @@ function getURIPath($inputmask = null, $pad = false){
 		else if($URIcnt > $maskCnt && in_array('%path%',$inputmask)){
 			// mask contains %path% token
 			// so splice it out of the path and implode it back in
-			debugLog('%path% token processing');
-			$start = array_search('%path%',$mask);
-			$end   = $start + 6;
+			$start  = array_search('%path%',$mask);
+			$length = ($URIcnt - $maskCnt) + 1;
 
-			$URIpathAry = spliceCompressArray($URIpathAry,$start,$end);
-			debugLog($URIpathAry);
-			
+			$URIpathAry = spliceCompressArray($URIpathAry,$start,$length);			
 			$URIpathAry[$start] = implode('/',$URIpathAry[$start]);
+			
+			// debugLog($URIpathAry);
+			// debugLog($mask);
+
 			$mask = array_combine(array_keys($mask),$URIpathAry);			
 			return $mask;
 		}
@@ -1890,7 +1887,8 @@ function getURIPath($inputmask = null, $pad = false){
 			return $mask;
 		}
 		else {
-			// Mask is larger than URI, ignoring
+			// Mask is larger than URI, return relativeurl as single elem array
+			return array($relativeURI);
 		}
 	}
 	else {
@@ -1899,43 +1897,38 @@ function getURIPath($inputmask = null, $pad = false){
 	}
 }
 
+function pathToAry($path){
+	return explode('/',$path);
+}
 
-function spliceCompressArray($array,$startidx,$endidx){
-
-	// splice startidx - endidx into new array[startidx]
-	// splice 0-startidx
-	// splice endidx-length(array)
-	// combine 3 arrays with new keys for end group
-	
-	if($startidx > $endidx) return $array;
-	if($endidx > count($array)) $endidx = count($array) -1;
-
-	$slice = array_splice($array,$startidx,$endidx-$startidx,'');
+/**
+ * compresses a range into a single element using slice
+ * 
+ * $test = array('one','two','three','four');
+ * spliceCompressArray($test,2,2);
+ * 
+ * Array
+ * (
+ *     [0] => one
+ *     [1] => Array
+ *         (
+ *             [0] => two
+ *             [1] => three
+ *         )
+ * 
+ *     [2] => four
+ * )
+ * @param  array $array    input array
+ * @param  int $startidx   start index to splice at
+ * @param  int $length     length of splice
+ * @return array           new truncated array with range spliced out and reinserted at startidx
+ */
+function spliceCompressArray($array,$startidx,$length){
+	$slice = array_splice($array,$startidx,$length,'');
 	$array[$startidx] = $slice;
-
 	return $array;
 }
 
-/*
-$test = array('one','two','three','four','five','six','seven','eight');
-shrinkArray($test,2,5);
-
-Array
-(
-    [0] => one
-    [1] => two
-    [2] => Array
-        (
-            [0] => three
-            [1] => four
-            [2] => five
-        )
-
-    [3] => six
-    [4] => seven
-    [5] => eight
-)
-*/
 
 /**
  * get web root-relative url

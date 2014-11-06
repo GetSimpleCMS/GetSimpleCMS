@@ -1,3 +1,4 @@
+
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /**
  * Filter Functions
@@ -511,6 +512,8 @@ function getParents($pageId){
 	$parents     = array();
 
 	if(empty($parent)) return array();
+
+	$parents[] = $parent;
 
 	while(isset($pageparents[$parent])){
 		$parent    = (string)$pageparents[$parent];
