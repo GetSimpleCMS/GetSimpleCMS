@@ -2192,7 +2192,7 @@ body#index {
 }
 
 #setup input.text {
-	width: 250px;
+	
 }
 
 #index #maincontent .main,
@@ -2208,7 +2208,8 @@ body#index {
 }
 
 #resetpassword form input.text,
-#index form input.text {
+#index form input.text,
+#setup input.text {
 	width: 100%;
 	font-size: 18px;
 	padding: 5px;
