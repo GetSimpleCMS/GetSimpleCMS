@@ -1306,7 +1306,7 @@ table.cleantable tr td {
 	color: #CC0000;
 }
 
-p.backuplink {
+p.editfooter, p.backuplink {
 	text-shadow: 1px 1px 0 rgba(255,255,255,.3);
 	color: #888;
 	font-size: 11px;
@@ -1316,14 +1316,19 @@ p.backuplink {
 	border-top: 1px solid #eee;
 }
 
-p.backuplink i.fa{
+p.editfooter i.fa, p.backuplink i.fa{
 	font-size: 14px;
 	vertical-align: bottom;
 	margin-right: 8px;
 	line-height: 18px;
 }
 
-p.backuplink a {
+p.editfooter span {
+	display: inline-block;
+	margin-right: 8px;
+}
+
+p.editfooter a,p.backuplink a {
 	font-weight: 100 !important;
 }
 
