@@ -548,6 +548,7 @@ h5:hover img {
 	z-index: 0 !important; /* allow codemirror to resize over fixed sidebar */
 }
 
+/* @todo what is sidebar .section used for ? */
 #sidebar .section {
 	background: #fff;
 	border: 1px solid #ccc;
@@ -742,7 +743,7 @@ h5:hover img {
 	font-weight: normal;
 }
 
-/*.edit-nav a#metadata_toggle {
+.edit-nav a#metadata_toggle {
 	background-image: url('images/plus.png');
 	padding-right: 20px;
 }
@@ -750,7 +751,7 @@ h5:hover img {
 .edit-nav a#metadata_toggle.current {
 	background-image: url('images/minus.png');
 	 padding-right: 20px;
-}*/
+}
 
 .edit-nav {
 	height: 1%;
@@ -972,7 +973,7 @@ form select.text,form textarea.text {
 	border: 1px solid #aaa;
 	padding: 3px;
 	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-	font-size: 11px;
+	font-size: 12px;
 	/*width: 510px;*/
 	width:100%;
 	border-radius: 2px;
