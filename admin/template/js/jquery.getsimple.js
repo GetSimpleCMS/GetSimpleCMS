@@ -534,6 +534,17 @@ jQuery(document).ready(function () {
 		}).on('click',function(e){e.preventDefault();});
 	}
  
+ 	/* Ajax save status indicator control */
+    function ajaxStatusWait(){
+    	$('input[type=submit]').attr('disabled', 'disabled');
+		loadingAjaxIndicator.show();
+    }
+
+    function ajaxStatusComplete(){
+    	$('input[type=submit]').attr('disabled', false);
+		loadingAjaxIndicator.fadeOut(); 
+   	}
+
 	//plugins.php
 	$("#maincontent").on("click", ".toggleEnable", function ($e) {
 		$e.preventDefault();
@@ -727,8 +738,8 @@ jQuery(document).ready(function () {
     // ajax save function for edit.php #editform
     function ajaxSave(urlargs) {
 
-        $('input[type=submit]').attr('disabled', 'disabled');
-
+        // $('input[type=submit]').attr('disabled', 'disabled');
+        ajaxStatusWait();
         // we are using ajax, so ckeditor wont copy data to our textarea for us, so we do it manually
         if($('#post-content').data('htmleditor')){ $('#post-content').val($('#post-content').data('htmleditor').getData()); }
 		// Debugger.log($('#post-content').val());
@@ -764,7 +775,7 @@ jQuery(document).ready(function () {
         $('#pagechangednotify').hide();
         if(success) {
             $('#cancel-updates').hide();
-            $('input[type=submit]').attr('disabled', false);
+            ajaxStatusComplete();
             $('input[type=submit]').css('border-color','#ABABAB');
             warnme = false;
         }
@@ -1102,8 +1113,7 @@ jQuery(document).ready(function () {
 
 		Debugger.log("onsubmit");
 		e.preventDefault();
-
-		loadingAjaxIndicator.show();
+		ajaxStatusWait();
 		// $('#codetext').data('editor').setValue('');
 		// $('#codetext').data('editor').hasChange == false;
 		
@@ -1131,8 +1141,7 @@ jQuery(document).ready(function () {
 				}
 
 				updateNonce(response);
-
-				loadingAjaxIndicator.fadeOut();
+				ajaxStatusComplete();
 				// $('#codetext').data('editor').hasChange = false; // mark clean		
 			}
 		});

@@ -153,6 +153,14 @@ input:focus:-moz-placeholder { color:transparent; } /* FF 4-18 */
 input:focus::-moz-placeholder { color:transparent; } /* FF 19+ */
 input:focus:-ms-input-placeholder { color:transparent; } /* IE 10+ */
 
+/* disable webkit rounded pill like inputs, especially when disabled */
+textarea,
+input[type="text"],
+input[type="button"],
+input[type="submit"] {
+     -webkit-appearance: none;
+}
+
 /** HEADER / NAVIGATION **/
 .header {
 	color: #FFF;
@@ -548,6 +556,7 @@ h5:hover img {
 	z-index: 0 !important; /* allow codemirror to resize over fixed sidebar */
 }
 
+/* @todo what is sidebar .section used for ? */
 #sidebar .section {
 	background: #fff;
 	border: 1px solid #ccc;
@@ -742,7 +751,7 @@ h5:hover img {
 	font-weight: normal;
 }
 
-/*.edit-nav a#metadata_toggle {
+.edit-nav a#metadata_toggle {
 	background-image: url('images/plus.png');
 	padding-right: 20px;
 }
@@ -750,7 +759,7 @@ h5:hover img {
 .edit-nav a#metadata_toggle.current {
 	background-image: url('images/minus.png');
 	 padding-right: 20px;
-}*/
+}
 
 .edit-nav {
 	height: 1%;
@@ -972,7 +981,7 @@ form select.text,form textarea.text {
 	border: 1px solid #aaa;
 	padding: 3px;
 	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-	font-size: 11px;
+	font-size: 12px;
 	/*width: 510px;*/
 	width:100%;
 	border-radius: 2px;
@@ -1297,7 +1306,8 @@ table.cleantable tr td {
 	color: #CC0000;
 }
 
-p.backuplink {
+/* page edit footer , .backuplink deprecated */
+p.editfooter, p.backuplink {
 	text-shadow: 1px 1px 0 rgba(255,255,255,.3);
 	color: #888;
 	font-size: 11px;
@@ -1307,14 +1317,19 @@ p.backuplink {
 	border-top: 1px solid #eee;
 }
 
-p.backuplink i.fa{
+p.editfooter i.fa{
 	font-size: 14px;
 	vertical-align: bottom;
 	margin-right: 8px;
 	line-height: 18px;
 }
 
-p.backuplink a {
+p.editfooter span {
+	display: inline-block;
+	margin-right: 8px;
+}
+
+p.editfooter a, p.backuplink a {
 	font-weight: 100 !important;
 }
 
@@ -2206,7 +2221,7 @@ body#index {
 }
 
 #setup input.text {
-	width: 250px;
+	
 }
 
 #index #maincontent .main,
@@ -2222,7 +2237,8 @@ body#index {
 }
 
 #resetpassword form input.text,
-#index form input.text {
+#index form input.text,
+#setup input.text {
 	width: 100%;
 	font-size: 18px;
 	padding: 5px;

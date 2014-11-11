@@ -115,7 +115,7 @@ get_template('header');
 				<div class="clearfix" style="height:40px;"></div>
 			<?php  }	?>
 		
-			<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php echo i18n_r('PAGE_BACKUPS');?></em></p>
+			<p class="clear"><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php echo i18n_r('PAGE_BACKUPS');?></em></p>
 		</div>
 	</div>
 	

@@ -478,15 +478,16 @@ if($newdraft) $pageClass.=' newdraft';
             </div>
             
             <?php if($url != '') { ?>
-                <p class="backuplink"><i class="fa fa-clock-o"></i><?php 
+                <p class="editfooter"><?php 
                     if (isset($pubDate)) { 
-                        echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'.$author.'</em>').' '. output_datetime($pubDate).'&nbsp;&nbsp; ';
+                        echo '<span><i class="fa fa-clock-o"></i>';
+                        echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'.$author.'</em>').' '. output_datetime($pubDate).'</span>';
                     }
                     if ( $draft && fileHasBackup(GSDATADRAFTSPATH.$url.'.xml') ) {
                         echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
                     }
                     else if(fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
-                        echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a>';
+                        echo '<span>&bull;</span><span><a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
                     }
                 ?></p>
             <?php } ?>
