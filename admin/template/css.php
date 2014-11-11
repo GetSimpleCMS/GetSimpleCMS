@@ -153,6 +153,14 @@ input:focus:-moz-placeholder { color:transparent; } /* FF 4-18 */
 input:focus::-moz-placeholder { color:transparent; } /* FF 19+ */
 input:focus:-ms-input-placeholder { color:transparent; } /* IE 10+ */
 
+/* disable webkit rounded pill like inputs, especially when disabled */
+textarea,
+input[type="text"],
+input[type="button"],
+input[type="submit"] {
+     -webkit-appearance: none;
+}
+
 /** HEADER / NAVIGATION **/
 .header {
 	color: #FFF;
