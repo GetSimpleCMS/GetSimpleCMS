@@ -451,7 +451,7 @@ if(isset($load['plugin']) && $load['plugin']){
 			include_once(GSPLUGINPATH . $file);
 		}
 	}
-	exec_action('plugins-loaded');
+	exec_action('plugins-loaded'); // @hook plugins-loaded plugin files have been included
 
 	// load api
 	if(get_filename_id()=='settings' || get_filename_id()=='load') {
@@ -463,7 +463,7 @@ if(isset($load['plugin']) && $load['plugin']){
 	}
 
 	# main hook for common.php
-	exec_action('common');
+	exec_action('common'); // @hook common.php common has completed doing its thing
 	// debugLog('calling common_callout');
 	if(function_exists('common_callout')) common_callout();
 }

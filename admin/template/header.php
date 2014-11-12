@@ -17,7 +17,7 @@ if( $GSSTYLE_wide )    $bodyclass .= " wide";
 if( getDef('GSAJAXSAVE',true) ) $bodyclass .= " ajaxsave";
 $bodyclass .="\"";
 
-if(get_filename_id()!='index') exec_action('admin-pre-header');
+if(get_filename_id()!='index') exec_action('admin-pre-header'); // @hook admin-pre-header backend before header output
 
 if(!isset($pagetitle)) $pagetitle = i18n_r(get_filename_id().'_title');
 $title = $pagetitle.' &middot; '.cl($SITENAME);
@@ -156,7 +156,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	get_scripts_backend();
 
 	# Plugin hook to allow insertion of stuff into the header
-	if(!isAuthPage()) exec_action('header');
+	if(!isAuthPage()) exec_action('header'); // @hook header backend before html head closes
 
 	?>
 
@@ -176,4 +176,4 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 <body <?php filename_id(); echo ' '.$bodyclass; ?> >
 	<div class="header <?php echo $gradient; ?>" id="header" >
 		<div class="wrapper clearfix">
- <?php exec_action('header-body'); ?>
+ <?php exec_action('header-body'); // @hook header-body backend header body wrapper html ?>

@@ -119,7 +119,7 @@ if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ){
 // include custom theme/admin.css if exists
 if(file_exists(GSTHEMESPATH.GSCSSCUSTOMFILE) && $useadmincss) include(GSTHEMESPATH.GSCSSCUSTOMFILE);
 
-exec_action('style-save'); // called after css files are included
+exec_action('style-save'); // @hook style-save called after css files are included before cache is saved
 
 // save cache
 $ob_get_contents = ob_get_contents();

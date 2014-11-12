@@ -1378,10 +1378,10 @@ function generate_sitemap() {
 		
 		//create xml file
 		$file = GSROOTPATH .GSSITEMAPFILE;
-		$xml  = exec_filter('sitemap',$xml);
+		$xml  = exec_filter('sitemap',$xml); // @filter sitemap filter the sitemap $xml obj
 
 		$status = XMLsave($xml, $file);
-		exec_action('sitemap-aftersave');
+		exec_action('sitemap-aftersave'); // @hook sitemap-aftersave after a sitemap data file was saved
 		#sitemap successfully created
 		return $status;
 	}

@@ -22,11 +22,11 @@
  * @return string Echos.
  */
 function get_page_content() {
-	exec_action('content-top');
+	exec_action('content-top'); // @hook content-top before get content
 	$content = strip_decode(getPageGlobal('content'));
-	$content = exec_filter('content',$content);
+	$content = exec_filter('content',$content); // @filter content filter page content
 	echo $content;
-	exec_action('content-bottom');
+	exec_action('content-bottom');  // @hook content-bottom after get content
 }
 
 /**
@@ -318,7 +318,7 @@ function get_header($full=true) {
 	// script queue
 	get_scripts_frontend();
 	
-	exec_action('theme-header');
+	exec_action('theme-header');  // @hook theme-header after get_header output html
 }
 
 /**
@@ -333,7 +333,7 @@ function get_header($full=true) {
  */
 function get_footer() {
 	get_scripts_frontend(true);
-	exec_action('theme-footer');
+	exec_action('theme-footer');  // @hook theme-footer after get_footer html output
 }
 
 /**

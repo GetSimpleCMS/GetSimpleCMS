@@ -253,7 +253,7 @@ function save_pageCacheXml($xml){
   	// Plugin Authors should add custome fields etc.. here
   	$xml = exec_filter('pagecache',$xml);	
 	if(!empty($xml)) $success = $xml->asXML($file);
-  	exec_action('pagecache-aftersave');	
+  	exec_action('pagecache-aftersave');	// @hook pagecache-aftersave pagecache data file was saved
   	return;
 }
 

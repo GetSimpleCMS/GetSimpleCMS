@@ -824,7 +824,7 @@ function redirect($url) {
 		die();
 	}
 
-	if(function_exists('exec_action')) exec_action('redirect');
+	if(function_exists('exec_action')) exec_action('redirect'); // @hook redirect a redirect is occuring
 
 	$debugredirect = false;
 

@@ -33,15 +33,15 @@ $user_created_404 = GSDATAPAGESPATH . GSSLUGNOTFOUND .'.xml'; // legacy DEPRECAT
 if(!$data_index) {
 	$httpcode = GSSLUGNOTFOUND;
 	$data_index = getHttpResponsePage($httpcode);
-	exec_action('error-404'); // Legacy DEPRECATED
-	exec_action('pagenotfound');
+	exec_action('error-404'); // @hook error-404 Legacy 404 DEPRECATED
+	exec_action('pagenotfound'); // @hook pagenotfound no page requested was not found
 }
 
 // is page private
 if($data_index->private == 'Y' && !is_logged_in()){
 	$httpcode = GSSLUGPRIVATE;
 	$data_index = getHttpResponsePage($httpcode);
-	exec_action('pageisprivate');
+	exec_action('pageisprivate'); // @hook pageisprivate page requested is marked private
 }
 
 // failsafe to standard http responses if we still have no data
@@ -65,8 +65,7 @@ $parent         = $data_index->parent;
 $template_file  = $data_index->template;
 $private        = $data_index->private;
 
-// after fields from dataindex, can modify globals here or do whatever by checking them
-exec_action('index-post-dataindex');
+exec_action('index-post-dataindex'); // @hook index-post-dataindex after global page fields set from dataindex
 
 # if page does not exist, throw http response header then output
 $errorcode = GSHTTPPREFIX !== '' ? str_replace(GSHTTPPREFIX,'',$url) : $url;
@@ -76,13 +75,13 @@ if ($errorcode == GSSLUGNOTFOUND || $errorcode == GSSLUGPRIVATE) {
 
 if($load['template']){
 	# call pretemplate Hook
-	exec_action('index-pretemplate');
+	exec_action('index-pretemplate'); // @hook index-pretemplate before including theme template files
 
 	// include theme
 	includeTheme($TEMPLATE,$template_file);
 
 	# call posttemplate Hook
-	exec_action('index-posttemplate');
+	exec_action('index-posttemplate'); // @hook index-posttemplate after including theme template files
 }
 
 ?>

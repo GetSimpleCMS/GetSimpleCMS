@@ -84,7 +84,7 @@ function check_for_csrf($action, $file="", $die = true){
 	if (!getDef('GSNOCSRF',true)) {
 		$nonce = $_REQUEST['nonce'];
 		if(!check_nonce($nonce, $action, $file)) {
-			exec_action('csrf'); // @hook csrf detected
+			exec_action('csrf'); // @hook csrf a csrf was detected
 			if($die) die("CSRF detected!");
 			return true;
 		}

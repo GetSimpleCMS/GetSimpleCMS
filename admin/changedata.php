@@ -79,7 +79,7 @@ if (isset($_POST['submitted'])) {
 					// prevent change of index page's slug
 					redirect("edit.php?id=". urlencode($existingurl) ."&upd=edit-index&type=edit");
 				} else {
-					exec_action('changedata-updateslug');
+					exec_action('changedata-updateslug'); // @hook changedata-updateslug a slug was changed
 					updateSlugs($existingurl);
 					delete_page($oldslug);
 				}
@@ -146,7 +146,7 @@ if (isset($_POST['submitted'])) {
 			$note->addCData($$field);
 		}
 
-		exec_action('changedata-save');
+		exec_action('changedata-save'); // @hook changedata-save prior to saving a page
 
 		// backup before overwriting
 		if(file_exists(GSDATAPAGESPATH . $url .".xml")) backup_page($url);
@@ -158,7 +158,7 @@ if (isset($_POST['submitted'])) {
 		}
 
 		//ending actions
-		exec_action('changedata-aftersave');
+		exec_action('changedata-aftersave'); // @hook changedata-aftersave after saving a page
 		generate_sitemap();
 
 		/**

@@ -17,7 +17,7 @@ ob_start();
 
 	# end it all :'(
 	kill_cookie($cookie_name);
-	exec_action('logout');
+	exec_action('logout'); // @hook logout logging out after cookie destroyed
 
 	# send back to login screen
 	redirect('index.php?logout');

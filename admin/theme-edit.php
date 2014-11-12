@@ -57,7 +57,7 @@ if(isset($_POST['submitsave'])){
 	// prevent traversal
 	if(!filepath_is_safe(GSTHEMESPATH . $filename,GSTHEMESPATH)) die(i18n_r('INVALID_OPER'));
 	$status = save_file(GSTHEMESPATH . $filename,$FileContents);
-	exec_action('theme-aftersave');
+	exec_action('theme-aftersave'); // @hook theme-aftersave after a theme-edit file save
 
 	if($status) $success = sprintf(i18n_r('TEMPLATE_FILE'), $filename);
 	else $error = i18n_r('ERROR');
@@ -80,7 +80,7 @@ if(isset($_GET['ajax'])){
 				<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
 				<textarea name="content" id="codetext" wrap='off'><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
 				<input type="hidden" value="<?php echo tsl($template) . $template_file;?>"  <?php if(empty($template_file)) echo ' class="nofile"'; ?>  name="edited_file" id="edited_file" />
-				<div id="theme-edit-extras-wrap"><?php exec_action('theme-edit-extras'); ?></div>
+				<div id="theme-edit-extras-wrap"><?php exec_action('theme-edit-extras'); // @hook theme-edit-extras after theme-edit html output?></div>
 				<p id="submit_line" >
 					<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
 				</p>

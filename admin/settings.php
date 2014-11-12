@@ -97,7 +97,7 @@ if(isset($_POST['submitted'])) {
 	$xmls->addChild('SITEUSR', $SITEUSR);
 	$xmls->addChild('SITEABOUT', $SITEABOUT);
 	
-	exec_action('settings-website');
+	exec_action('settings-website'); // @hook settings-website website data file before save
 	
 	if (! XMLsave($xmls, GSDATAOTHERPATH . GSWEBSITEFILE) ) {
 		$error = i18n_r('CHMOD_ERROR');
@@ -218,7 +218,7 @@ get_template('header');
 
 			<div class="clear"></div>
 			
-			<?php exec_action('settings-website-extras'); ?>
+			<?php exec_action('settings-website-extras'); // @hook setting-website-extras after website settings html output ?>
 			<p id="submit_line" >
 				<span>
 					<input class="submit" type="submit" name="submitted" value="<?php i18n('BTN_SAVESETTINGS');?>" />

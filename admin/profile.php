@@ -123,7 +123,7 @@ if(isset($_POST['submitted'])) {
 	else if( $pwd1 != '' ){
 		# password changed
 		$newpassword = $pwd1; // set new password
-		exec_action('password_changed');
+		exec_action('password-changed'); // @hook password-changed a users password was changed
 		$password = passhash($newpassword); // set new password
 	}
 
@@ -242,7 +242,7 @@ $userheading = empty($userid) ? "<span> / ". i18n_r('NEW_USER') ."</span>" : "<s
 			<div class="clear"></div>
 			<p class="inline" ><input name="show_htmleditor" id="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<label for="show_htmleditor" ><?php i18n('ENABLE_HTML_ED');?></label></p>
 			
-			<?php exec_action('settings-user-extras'); ?>
+			<?php exec_action('settings-user-extras'); // @hook settings-user-extras after user profile settings html ?>
 			
 			<p style="margin:0px 0 5px 0;font-size:12px;color:#999;" ><?php $adding === true ? i18n('PROVIDE_PASSWORD') : i18n('ONLY_NEW_PASSWORD');?>:</p>
 			<div class="leftsec">

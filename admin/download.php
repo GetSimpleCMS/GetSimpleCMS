@@ -57,7 +57,7 @@ if(isset($_GET['file'])) {
 	} 
 	
 	# plugin hook
-	exec_action('download-file');
+	exec_action('download-file'); // @hook download-file downloading an archive backup
 	
 	# get file
 	// debugLog(ob_get_level()); // check buffering level for memory issues

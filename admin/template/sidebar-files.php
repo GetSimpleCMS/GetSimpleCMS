@@ -16,7 +16,7 @@ $fileSizeLimitMB = toBytesShorthand($fileSizeLimit.'M',true);
 	<li id="sb_upload"<?php if(!isset($_GET['i'])) echo'class="last_sb"'; ?> ><a href="upload.php" <?php check_menu('upload');  ?>><?php i18n('FILE_MANAGEMENT');?></a></li>
 	<?php if(isset($_GET['i']) && $_GET['i'] != '') { ?><li id="sb_image" class="last_sb"><a href="#" class="current"><?php i18n('IMG_CONTROl_PANEL');?></a></li><?php } ?>
 	
-	<?php exec_action("files-sidebar"); ?>
+	<?php exec_action("files-sidebar"); // @hook files-sidebar sidebar list html output  ?>
 
 	<hr><li class="upload">
 	<a style="margin-left:0" id="fileuploadlink" href="#">

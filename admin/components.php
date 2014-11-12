@@ -68,7 +68,7 @@ if (isset($_POST['submitted'])){
 			$count++;
 		}
 	}
-	exec_action('component-save');
+	exec_action('component-save'); // @hook component-save before saving components data file
 	XMLsave($xml, GSDATAOTHERPATH.GSCOMPONENTSFILE);
 	$update = 'comp-success';
 	// redirect('components.php?upd=comp-success');
@@ -100,7 +100,8 @@ if (count($componentsec) != 0) {
 		$table .= '<input type="hidden" class="compslug" name="slug[]" value="'. $component->slug .'" />';
 		$table .= '<input type="hidden" class="comptitle" name="title[]" value="'. stripslashes($component->title) .'" />';
 		$table .= '<input type="hidden" name="id[]" value="'. $count .'" />';
-		exec_action('component-extras');
+		exec_action('component-extras'); // @hook component-extras called after each component html is added to $table
+		// @todo change this to a function call that outputs, so hooks can output and not have to set $table.=
 		$table .= '</div>';
 		$count++;
 	}
