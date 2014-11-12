@@ -189,6 +189,8 @@ if($newdraft) $pageClass.=' newdraft';
             $publishdata    = getPageXML($id,$nocdata = true);
             $publishAuthor  = (string)$publishdata->author;
             $publishPubdate = output_datetime($publishdata->pubDate);
+
+            if(empty($publishAuthor)) $publishAuthor = i18n_r('UNKNOWN');
 ?>
         <!-- PUBLISHED pagestack -->
         <div class="pagestack existingpage boxsizingBorder">
@@ -215,6 +217,8 @@ if($newdraft) $pageClass.=' newdraft';
             $draftdata = getDraftXML($id,$nocdata = true);
             $draftAuthor = (string)$draftdata->author;
             $draftPubdate = output_datetime($draftdata->pubDate);
+            
+            if(empty($draftAuthor)) $draftAuthor = i18n_r('UNKNOWN');
 ?>
         <!-- DRAFT page stack -->
         <div class="pagestack existingdraft boxsizingBorder">
@@ -481,7 +485,7 @@ if($newdraft) $pageClass.=' newdraft';
                 <p class="editfooter"><?php 
                     if (isset($pubDate)) { 
                         echo '<span><i class="fa fa-clock-o"></i>';
-                        echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'.$author.'</em>').' '. output_datetime($pubDate).'</span>';
+                        echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'.empty($author) ? i18n_r('UNKNOWN') : $author.'</em>').' '. output_datetime($pubDate).'</span>';
                     }
                     if ( $draft && fileHasBackup(GSDATADRAFTSPATH.$url.'.xml') ) {
                         echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';

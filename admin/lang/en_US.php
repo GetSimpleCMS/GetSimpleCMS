@@ -80,6 +80,7 @@ $i18n = array(
 /*
 * For: edit.php
 */
+"UNKNOWN"                 =>    "Unknown",
 "PAGE_NOTEXIST"           =>	"The requested page does not exist",
 "BTN_SAVEPAGE"            =>	"Save Page",
 "BTN_SAVEUPDATES"         =>	"Save Updates",
