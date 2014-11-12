@@ -27,7 +27,7 @@ if (isset($_GET['id'])) {
 		updateSlugs($id);
 		$status = delete_page($id) ? 'success' : 'error';
 		generate_sitemap();
-		exec_action('page-delete');
+		exec_action('page-delete'); // @hook deleting page
 		redirect("pages.php?upd=del-".$status."&id=". $id ."&type=delete");
 	}
 } 
@@ -36,7 +36,7 @@ if (isset($_GET['id'])) {
 if (isset($_GET['zip'])) { 
 	$zip    = $_GET['zip'];
 	$status = delete_zip($zip) ? 'success' : 'error';
-	
+	exec_action('zip-delete');	// @hook deleting archive zip
 	redirect("archive.php?upd=del-". $status ."&id=". $zip);
 } 
 
@@ -45,16 +45,15 @@ if (isset($_GET['file'])) {
 	$path   = (isset($_GET['path'])) ? $_GET['path'] : "";
 	$file   = $_GET['file'];
 	$status = delete_upload($file, $path) ? 'success' : 'error';
-	
+	exec_action('upload-delete');// @hook deleting uploads file
 	redirect("upload.php?upd=del-".$status."&id=". $file . "&path=" . $path);
 } 
-
 
 // Delete upload folders
 if (isset($_GET['folder'])) {
 	$path   = (isset($_GET['path'])) ? $_GET['path'] : "";
 	$folder = $_GET['folder'];
 	$status = delete_upload_dir($path . $folder) ? 'success' : 'error';
-
+	exec_action('upload-folder-delete'); // @hook deleting uploads folder
 	redirect("upload.php?upd=del-".$status."&id=". $folder . "&path=".$path);
 }
