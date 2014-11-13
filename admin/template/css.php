@@ -1824,21 +1824,40 @@ th.file_size,th.file_date,th.file_perms {
 	width:85px;
 }
 
+#sidebar .snav li.upload {
+	display: none;
+		-moz-border-radius: 4px;
+		-khtml-border-radius: 4px;
+		-webkit-border-radius: 4px;
+	border-radius: 4px;
+	margin-left: 13px;
+	color: #FFF;
+	background: <?php echo $primary_1; ?>;
+	font-weight: 100;
+	text-shadow: 1px 1px 1px <?php echo $primary_1; ?>;
+}
+
 #sidebar .uploadform {
 	padding: 5px 15px;
 }
 
-/* upload link larger button for touch devices */
-#fileuploadlink span.touch {
-	display: none;
+#sidebar .snav.dropzoneenabled li.upload,
+#sidebar .snav.dropzoneenabled li.uploaddropzone{
+	display: list-item;
 }
-#fileuploadlink.touch span {
+
+/* upload link larger button for touch devices */
+.touch #fileuploadlink span,
+#fileuploadlink span.touch {
 	display:none;
 }
-#fileuploadlink.touch span.touch {
+.touch #fileuploadlink span.touch {
 	display: block;
 	text-align: center;
 	font-size: 20px;
+}
+.touch li.uploaddropzone{
+	display:none !important;
 }
 
 /* Upload Queue */
@@ -1967,19 +1986,6 @@ th.file_size,th.file_date,th.file_perms {
 .queue-item-wrap.dz-success .dz-success-mark{
 	display:inline;
 	color: <?php echo $label_2; ?>;
-}
-
-#sidebar .snav li.upload {
-	display: none;
-		-moz-border-radius: 4px;
-		-khtml-border-radius: 4px;
-		-webkit-border-radius: 4px;
-	border-radius: 4px;
-	margin-left: 13px;
-	color: #FFF;
-	background: <?php echo $primary_1; ?>;
-	font-weight: 100;
-	text-shadow: 1px 1px 1px <?php echo $primary_1; ?>;
 }
 
 /* Image Editor Styles */

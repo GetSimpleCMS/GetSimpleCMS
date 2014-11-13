@@ -5,7 +5,7 @@
  * @package GetSimple
  */
 
-GLOBAL $SITENAME, $SITEURL, $GSADMIN, $themeselector, $pagetitle;
+GLOBAL $SITENAME, $SITEURL, $GSADMIN, $themeselector, $pagetitle, $SESSIONHASH;
 
 $GSSTYLE = getDef('GSSTYLE') ? GSSTYLE : '';
 $GSSTYLE_sbfixed = in_array('sbfixed',explode(',',$GSSTYLE));
@@ -117,14 +117,21 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
             $contentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGlobal('TEMPLATE').'/editor.css';
         }
     }
+
     ?>
 
     <script type="text/javascript">
+    	// @todo clean this up, use a better bridge to initialize config variables in js
+    	
         // init gs namespace and i18n
-        var GS = {};
-        GS.i18n = <?php echo json_encode($jsi18n); ?>;
+        var GS   = {};
+        GS.i18n  = <?php echo json_encode($jsi18n); ?>;
         GS.debug = <?php echo isDebug() === true ? 'true' : 'false'; ?> ;
 
+		var uploadSession = '<?php echo $SESSIONHASH; ?>';
+		var uploadPath    = '<?php echo (isset($_GET['path'])) ? $_GET['path'] : ""; ?>';
+		var maxFileSize   = '<?php echo toBytesShorthand(getMaxUploadSize().'M',false); ?>';
+		
 		<?php
         if(isset($_COOKIE['gs_editor_theme'])){
             // $editor_theme = var_out($_COOKIE['gs_editor_theme']);

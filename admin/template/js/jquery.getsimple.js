@@ -1338,6 +1338,26 @@ jQuery(document).ready(function () {
 	// end of jQuery ready
 });
 
+function isTouchDevice(){
+		// detect touch devices, only mobiles, commented out feature spec
+		var deviceAgent = navigator.userAgent.toLowerCase();
+		var isTouchDevice = (
+			// Modernizr.touch || 
+			// ('ontouchstart' in document.documentElement) ||
+			deviceAgent.match(/(iphone|ipod|ipad)/) ||
+			deviceAgent.match(/(android)/)  || 
+			deviceAgent.match(/(iemobile)/) || 
+			deviceAgent.match(/iphone/i) || 
+			deviceAgent.match(/ipad/i) || 
+			deviceAgent.match(/ipod/i) || 
+			deviceAgent.match(/blackberry/i) || 
+			deviceAgent.match(/bada/i) || 
+			false
+		);
+
+		return isTouchDevice;
+}		
+
 function dosave(){
 	Debugger.log('saving');
 	// Debugger.log($("#submit_line input.submit"));
