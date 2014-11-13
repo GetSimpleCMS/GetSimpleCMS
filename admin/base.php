@@ -13,7 +13,7 @@ if (isset($_GET['id'])){
 }
 
 // filter to modify page id request
-$id = exec_filter('indexid',$id);
+$id = exec_filter('indexid',$id); // @filter indexid (str) filter the front end index id/slug
  // $_GET['id'] = $id; // support for plugins that are checking get?
 
 $data_index = null;
@@ -24,7 +24,7 @@ if (isset($pagesArray[$id])) {
 }
 
 // filter to modify data_index obj
-$data_index = exec_filter('data_index',$data_index);
+$data_index = exec_filter('data_index',$data_index); // @filter data_index (obj) filter the global $data_index that holds front end page load data
 
 $file_404         = GSDATAOTHERPATH . GSSLUGNOTFOUND .'.xml'; // Legacy DEPRECATED
 $user_created_404 = GSDATAPAGESPATH . GSSLUGNOTFOUND .'.xml'; // legacy DEPRECATED

@@ -842,7 +842,7 @@ function list_pages_json(){
 
 	$pagesSorted = subval_sort($pagesArray_tmp,'sort');
 
-	$links = exec_filter('editorlinks',get_link_menu_array());
+	$links = exec_filter('editorlinks',get_link_menu_array()); // @filter editorlinks (array) filter links array for ckeditor
 	return json_encode($links);
 }
 
@@ -1378,7 +1378,7 @@ function generate_sitemap() {
 		
 		//create xml file
 		$file = GSROOTPATH .GSSITEMAPFILE;
-		$xml  = exec_filter('sitemap',$xml); // @filter sitemap filter the sitemap $xml obj
+		$xml  = exec_filter('sitemap',$xml); // @filter sitemap (obj) filter the sitemap $xml obj
 
 		$status = XMLsave($xml, $file);
 		exec_action('sitemap-aftersave'); // @hook sitemap-aftersave after a sitemap data file was saved
