@@ -201,6 +201,15 @@ $i18n = array(
 "ACTIVE"                  =>	"Active",
 
 /* 
+* For: snippets.php
+*/
+"SNIPPETS"                =>	"Snippets",
+"DELETE_SNIPPET"          =>	"Delete Snippet",
+"EDIT"                    =>	"Edit",
+"ADD_SNIPPET"             =>	"<em>A</em>dd Snippet", // 'a' is the accesskey identifier
+"SAVE_SNIPPETS"           =>	"Save Snippets",
+
+/* 
 * For: sitemap.php
 */
 "SITEMAP_ERROR"           =>	"Your sitemap could not be generated",
@@ -349,6 +358,7 @@ $i18n = array(
 "SIDE_VIEW_SITEMAP"       =>	"<em>V</em>iew Sitemap",
 "SIDE_GEN_SITEMAP"        =>	"Generate Site<em>m</em>ap",
 "SIDE_COMPONENTS"         =>	"<em>E</em>dit Components",
+"SIDE_SNIPPETS"           =>	"Edit Snippets",
 "SIDE_EDIT_THEME"         =>	"Edit T<em>h</em>eme",
 "SIDE_CHOOSE_THEME"       =>	"Choose <em>T</em>heme",
 
@@ -390,6 +400,8 @@ $i18n = array(
 "ER_PROBLEM_DEL"          =>	"There was a problem deleting the file",
 "ER_COMPONENT_SAVE"       =>	"Your components have been saved",
 "ER_COMPONENT_REST"       =>	"Your components have been restored",
+"ER_SNIPPET_SAVE"         =>	"Your snippets have been saved",
+"ER_SNIPPET_REST"         =>	"Your snippets have been restored",
 "ER_CANCELLED_FAIL"       =>	"<b>Cancelled:</b> This update has been cancelled",
 
 /* 
@@ -499,6 +511,7 @@ $i18n = array(
 "DOUBLE_CLICK_EDIT"       =>	"Double Click to Edit", //components
 "THUMB_SAVED"             =>	"Thumbnail Saved", //image
 "EDIT_COMPONENTS"         =>	"Edit Components", //components
+"EDIT_SNIPPETS"           =>	"Edit Snippets", //snippets
 "REQS_MORE_INFO"          =>	"For more information on the required modules, visit the <a href=\"%s\" target=\"_blank\" >requirements page</a>.", //install & health-check
 "SYSTEM_UPDATE"           =>	"System Update", // update.php
 "AUTHOR"                  =>	"Author", //plugins.php
@@ -623,6 +636,7 @@ $i18n = array(
 "DOWNLOAD"                =>	"Download",
 "THEME"                   =>	"Theme",
 "COMPONENT"               =>	"Component",
+"SNIPPET"                 =>	"Snippet",
 "PLUGIN"                  =>	"Plugin",
 "TOTAL"                   =>	"Total",
 "COUNT"                   =>	"Count",

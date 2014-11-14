@@ -1,12 +1,12 @@
 <?php
 /**
- * Components
+ * Snippets
  *
- * Displays and creates static components 	
+ * Displays and creates static snippets 	
  *
  * @package GetSimple
- * @subpackage Components
- * @link http://get-simple.info/docs/what-are-components
+ * @subpackage Snippets
+ * @link http://get-simple.info/docs/what-are-snippets
  */
  
 # setup inclusions
@@ -14,7 +14,7 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
-exec_action('load-components');
+exec_action('load-snippets');
 
 # variable settings
 $update = $table = $list = '';
@@ -27,10 +27,10 @@ if (isset($_POST['submitted'])){
 	$ids    = $_POST['id'];
 	$active = $_POST['active'];
 
-	check_for_csrf("modify_components");
+	check_for_csrf("modify_snippets");
 
 	# create backup file for undo
-	backup_datafile(GSDATAOTHERPATH.GSCOMPONENTSFILE);
+	backup_datafile(GSDATAOTHERPATH.GSSNIPPETSFILE);
 	
 	# start creation of top of components.xml file
 	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
@@ -71,7 +71,7 @@ if (isset($_POST['submitted'])){
 		}
 	}
 	exec_action('component-save'); // @hook component-save before saving components data file
-	XMLsave($xml, GSDATAOTHERPATH.GSCOMPONENTSFILE);
+	XMLsave($xml, GSDATAOTHERPATH.GSSNIPPETSFILE);
 	$update = 'comp-success';
 	// redirect('components.php?upd=comp-success');
 }
@@ -80,16 +80,19 @@ if (isset($_POST['submitted'])){
 if (isset($_GET['undo'])) { 
 	
 	# perform the undo
-	restore_datafile(GSDATAOTHERPATH.GSCOMPONENTSFILE);
+	restore_datafile(GSDATAOTHERPATH.GSSNIPPETSFILE);
 	$update = 'comp-restored';
 	check_for_csrf("undo");		
 	// redirect('components.php?upd=comp-restored');
 }
 
 # create components form html
-$data          = getXML(GSDATAOTHERPATH.GSCOMPONENTSFILE);
-$componentsec  = $data->item;
-$numcomponents = count($componentsec);
+$data          = getXML(GSDATAOTHERPATH.GSSNIPPETSFILE);
+$numcomponents = 0;
+if($data) {
+	$componentsec  = $data->item;
+	$numcomponents = count($componentsec);
+}	
 
 // $componentsec = subval_sort($data->item,'title'); // sorted on save probably not necessary at this time
 
@@ -105,7 +108,7 @@ function getComponentOutput($id,$component,$class = 'code_edit'){
 	$str .= '<td style="text-align:right;" ><code>&lt;?php get_component(<span class="compslugcode">\''.$component->slug.'\'</span>); ?&gt;</code></td>';
 	$str .= '<td class="compactive"><label class="" for="active[]" >'.i18n_r('ACTIVE').'</label>';
 	$str .= '<input type="checkbox" name="active[]" '. (!$disabled ? 'checked="checked"' : '') .' value="'.$id.'" /></td>';
-	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE_COMPONENT').': '. cl($component->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
+	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE_SNIPPET').': '. cl($component->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
 	$str .= '</tr></table>';
 	$str .= '<textarea name="val[]" class="'.$class.'" data-mode="php" '.$readonly.'>'. stripslashes($component->value) .'</textarea>';
 	$str .= '<input type="hidden" class="compslug" name="slug[]" value="'. $component->slug .'" />';
@@ -127,6 +130,7 @@ function getComponentTemplate(){
 }
 
 function outputComponents($data){
+	if(!$data) return;
 	$id = 0;
 	$componentsec = $data->item;
 	if (count($componentsec) != 0) {
@@ -140,6 +144,7 @@ function outputComponents($data){
 }
 
 function outputComponentTags($data){
+	if(!$data) return;
 	$componentsec  = $data->item;
 	$numcomponents = count($componentsec);
 
@@ -159,7 +164,7 @@ function outputComponentTags($data){
 	echo '</div>';
 }
 
-$pagetitle = i18n_r('COMPONENTS');
+$pagetitle = i18n_r('SNIPPETS');
 get_template('header');
 	
 include('template/include-nav.php'); ?>
@@ -168,9 +173,9 @@ include('template/include-nav.php'); ?>
 	
 	<div id="maincontent">
 		<div class="main">
-			<h3 class="floated"><?php echo i18n_r('EDIT_COMPONENTS');?></h3>
+			<h3 class="floated"><?php echo i18n_r('EDIT_SNIPPETS');?></h3>
 			<div class="edit-nav clearfix" >
-				<a href="javascript:void(0)" id="addcomponent" accesskey="<?php echo find_accesskey(i18n_r('ADD_COMPONENT'));?>" ><?php i18n('ADD_COMPONENT');?></a>
+				<a href="javascript:void(0)" id="addcomponent" accesskey="<?php echo find_accesskey(i18n_r('ADD_SNIPPET'));?>" ><?php i18n('ADD_SNIPPET');?></a>
 				<?php if(!getDef('GSNOHIGHLIGHT',true)){
 				echo $themeselector; ?>	
 				<label>Theme</label>
@@ -185,7 +190,7 @@ include('template/include-nav.php'); ?>
 				<div id="divTxt"></div>
 				<?php outputComponents($data); ?>
 				<p id="submit_line" class="<?php echo $numcomponents > 0 ? '' : ' hidden'; ?>" >
-					<span><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_COMPONENTS');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="components.php?cancel"><?php i18n('CANCEL'); ?></a>
+					<span><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_SNIPPETS');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="components.php?cancel"><?php i18n('CANCEL'); ?></a>
 				</p>
 			</form>
 			<div id="comptemplate" class="hidden"><?php echo getComponentTemplate(); ?></div>			
