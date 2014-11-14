@@ -198,6 +198,7 @@ $i18n = array(
 "EDIT"                    =>	"Edit",
 "ADD_COMPONENT"           =>	"<em>A</em>dd Component", // 'a' is the accesskey identifier
 "SAVE_COMPONENTS"         =>	"Save Components",
+"ACTIVE"                  =>	"Active",
 
 /* 
 * For: sitemap.php
@@ -645,7 +646,6 @@ $i18n = array(
 "ENABLED"                 =>	"Enabled",
 "GEN_DISABLE"             =>	"Disable",
 "DISABLED"                =>	"Disabled",
-"ACTIVE"                  =>	"Active",
 "ACTIVATE"                =>	"Activate",
 "ACTIVATED"               =>	"Activated",
 "INACTIVE"                =>	"Inactive",

@@ -1600,6 +1600,10 @@ function get_component_xml($id){
 	return get_components_xml()->xpath("//slug[.='".$id."']/..");	
 }
 
+function componentIsEnabled($id){
+	if($component = get_component_xml($id)) return (bool)(string) $component->disabled;
+}
+
 /**
  * @since  3.4
  * @deprecated

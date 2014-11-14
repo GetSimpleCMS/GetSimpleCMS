@@ -1475,6 +1475,21 @@ table.comptable label {
 	color: #777;
 }
 
+table.comptable .compactive {
+	text-align: center;
+	width: 80px;
+}
+
+table.comptable .compactive label {
+	font-size: 11px;
+	font-weight: normal;
+}
+
+table.comptable .compactive input {
+	vertical-align: middle;
+}
+
+
 /* @todo more wrappers */
 .wrapper a.component {
 	float: left;

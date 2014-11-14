@@ -350,13 +350,27 @@ jQuery(document).ready(function () {
 		$e.preventDefault();
 		loadingAjaxIndicator.show();
 		var id = $("#id").val();
-		$("#divTxt").prepend('<div style="display:none;" class="compdiv codewrap" id="section-' + id + '"> \
-			<table class="comptable"><tr><td><label>Title: </label><input type="text" class="text newtitle" name="title[]" value="" /></td> \
-			<td class="delete"><a href="javascript:void(0)" title="Delete Component:?" class="delcomponent" id="del-' + id + '" rel="' + id + '" >&times;</a> \
-			</td></tr></table> \
-			<textarea name="val[]" class="code_edit" data-mode="php"></textarea><input type="hidden" name="slug[]" value="" /> \
-			<input type="hidden" name="id[]" value="' + id + '" /><div>');
+
+		// copy template and add ids to fields
+		var comptemplate = $('#comptemplate').clone();
+		$(comptemplate).find('.compdiv').prop('id','section-'+id);
+		$(comptemplate).find('.compdiv').css('display','none');
+		$(comptemplate).find('.delcomponent').prop('rel',id);
+		$(comptemplate).find("[name='id[]']").prop('value',id);
+		$(comptemplate).find("[name='active[]']").prop('value',id);
+		$(comptemplate).find("[name='val[]']").addClass('code_edit');
+		// console.log($(comptemplate).children().first().get(0));
+
+		// insert new component
+		var newcomponent = comptemplate.children(':first');
+		$("#divTxt").prepend(newcomponent);
+		
+		// fade in
 		$("#section-" + id).slideToggle('fast');
+
+		// trigger title change
+		$("#section-" + id).find($("b.editable")).comptitleinput();
+
 		id = (id - 1) + 2;
 		$("#id").val(id); // bump count
 		loadingAjaxIndicator.fadeOut(500);
@@ -364,7 +378,7 @@ jQuery(document).ready(function () {
 		
 		// add codeditor to new textarea
 		var textarea = $("#divTxt").find('textarea').first();
-		Debugger.log($.isFunction($.fn.editorFromTextarea));
+		// Debugger.log($.isFunction($.fn.editorFromTextarea));
 		if($.isFunction($.fn.editorFromTextarea)) textarea.editorFromTextarea();
 
 		var editor = textarea.data('editor');
@@ -397,14 +411,18 @@ jQuery(document).ready(function () {
 	});
 
 	// bind double click component name
-	$("b.editable").dblclick(function () {
-		var t = $(this).html();
+	$("#maincontent").on('dblclick',"b.editable",function () {
+		$(this).comptitleinput();
+	});
+
+	$.fn.comptitleinput = function(){
+		var t = $(this).html();		
 		$(this).parents('.compdiv').find("input.comptitle").hide();
 		$(this).after('<div id="changetitle"><label>Title: </b><input class="text newtitle titlesaver" name="title[]" value="' + t + '" /></div>');
-		$(this).next('#changetitle').children('input').focus();
+		$(this).next('#changetitle').find('input.titlesaver').focus();
 		$(this).parents('.compdiv').find("input.compslug").val('');
-		$(this).hide();
-	});
+		$(this).hide();		
+	}
 
 	// update components codetext and slug upon title changes
 	$("#maincontent").on("keyup","input.titlesaver", function () {
@@ -416,11 +434,24 @@ jQuery(document).ready(function () {
 		$(this).parents('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
 		$(this).parents('.compdiv').find("b.editable").html(myval);
 		$(this).parents('.compdiv').find("input.comptitle").val(myval);
-		$("b.editable").show();
-		$('#changetitle').remove();
+		if(myval !== ''){
+			$("b.editable").show();
+			$('#changetitle').remove();
+		}	
 	});
  
  
+	$("#maincontent").on("change","[name='active[]']", function () {
+		var myval = $(this).val();
+		var newval = ''
+		if($(this).is(':checked')) newvar = '1'; 
+		else newvar = '0';
+		Debugger.log(newvar);
+
+
+
+	});		
+
 	// other general functions
 	
 	// suppress current sidemenus

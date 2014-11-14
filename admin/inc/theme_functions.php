@@ -530,14 +530,18 @@ function menu_data($id = null,$xml=false) {
  */
 function get_component($id, $force = false, $raw = false) {
 	$components = get_components_xml();
-	$component  = get_component_xml($id); // this returns an array due to no distinct slug enforcement
+	$component  = get_component_xml($id); 
 	if(!$component) return;
 
-	$enabled = !(bool)($component[0]->disabled == 'true' || $component[0]->disabled == '1');
-	if(!$enabled && !$force) return;
+	// this returns an array due to no unique slug enforcement, so we grab first one atm
+	// @todo find a solution to allowing this or dissallowing duplicate component slugs
+	$component = $component[0];
 
-	if(!$raw) eval("?>" . strip_decode($component[0]->value) . "<?php ");
-	else echo strip_decode($component[0]->value);
+	$disabled = (bool)(string)$component->disabled;
+	if($disabled && !$force) return;
+
+	if(!$raw) eval("?>" . strip_decode($component->value) . "<?php ");
+	else echo strip_decode($component->value);
 }
 
 /**
@@ -548,6 +552,16 @@ function get_component($id, $force = false, $raw = false) {
  */
 function component_exists($id){
 	return !get_component_xml($id);
+}
+
+/**
+ * See if a component is enabled
+ * @since 3.4
+ * @param  str $id component id
+ * @return bool
+ */
+function component_enabled($id){
+	return componentIsEnabled($id);
 }
 
 /**
