@@ -315,9 +315,9 @@ function get_header($full=true) {
 	if (!empty($keywords)) echo '<meta name="keywords" content="'.$keywords.'" />'."\n";
 	
 	// canonical link
-	$canonical =  exec_filter('linkcanonical',get_page_url(true)); // @filter linkcanonical (str) rel canonical link
-	if ($full and !empty($canonical)) {
-		echo '<link rel="canonical" href="'.$canonical.'" />'."\n";
+	if ($full) {
+		$canonical = exec_filter('linkcanonical',get_page_url(true)); // @filter linkcanonical (str) rel canonical link
+		if(!empty($canonical)) echo '<link rel="canonical" href="'.$canonical.'" />'."\n";
 	}
 
 	// script queue
