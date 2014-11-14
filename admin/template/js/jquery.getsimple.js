@@ -440,16 +440,10 @@ jQuery(document).ready(function () {
 		}	
 	});
  
- 
+ 	// handle toggling active, @todo: enable some kind of css style etc here
 	$("#maincontent").on("change","[name='active[]']", function () {
 		var myval = $(this).val();
-		var newval = ''
-		if($(this).is(':checked')) newvar = '1'; 
-		else newvar = '0';
-		Debugger.log(newvar);
-
-
-
+		// if($(this).is(':checked')) // do stuff
 	});		
 
 	// other general functions
