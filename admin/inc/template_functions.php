@@ -146,7 +146,7 @@ function delete_upload($id, $path = "") {
 function delete_upload_dir($path){
 	$target = GSDATAUPLOADPATH . $path;
 	if (path_is_safe($target,GSDATAUPLOADPATH) && file_exists($target)) {
-		$status = delete_dir($target);
+		$status = delete_folder($target);
 		
 		// delete thumbs folder
 		if(file_exists(GSTHUMBNAILPATH . $path)) delete_dir(GSTHUMBNAILPATH . $path);

@@ -404,7 +404,7 @@ function create_dir($path,$recursive = true){
  * @param  str $path path to remove
  * @return bool       success
  */
-function delete_dir($path){
+function delete_folder($path){
 	$status = rmdir($path);
 	return fileLog(__FUNCTION__,$status,$path);
 }
