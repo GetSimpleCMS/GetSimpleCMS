@@ -149,7 +149,8 @@ $i18n = array(
 "BTN_SAVECHANGES"         =>	"Save Changes",
 "EDIT"                    =>	"Edit",
 "THEME_ROOT"              =>    "Configuration Files",
-
+"UNSAVED_PROMPT"          =>    "This page has unsaved changes, continue anyway ?",
+ 
 /* 
 * For: support.php
 */

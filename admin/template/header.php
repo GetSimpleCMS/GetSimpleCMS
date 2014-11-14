@@ -84,7 +84,9 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		'COLLAPSE_TOP',
 		'FILE_EXISTS_PROMPT',
 		'CANCELLED',
-		'UNSAVED_INFORMATION'
+		'UNSAVED_INFORMATION',
+		'UNSAVED_PROMPT'
+
 	);
 
 	// i18n for JS

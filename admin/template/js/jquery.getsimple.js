@@ -949,8 +949,7 @@ jQuery(document).ready(function () {
 	function checkChanged(){
 		// @todo add non codemirror change detection using listeners
 		if($('#codetext').data('editor') && $('#codetext').data('editor').hasChange === true){
-			alert(i18n('UNSAVED_INFORMATION'));
-			return true;
+			return !confirm(i18n('UNSAVED_PROMPT'));
 		}
 	}
 
