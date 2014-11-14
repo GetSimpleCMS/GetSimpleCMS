@@ -169,6 +169,7 @@ input[type="submit"] {
 	margin: 0 0 25px 0;
 }
 
+/* add 'gradient' to GSHEADERCLASS to reimplement */
 .header.gradient{
 		background: -moz-linear-gradient(top, <?php echo $primary_4; ?> 0%, <?php echo $primary_2; ?> 100%);	 /* firefox */
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,<?php echo $primary_4; ?>), color-stop(100%,<?php echo $primary_2; ?>));	/* webkit */

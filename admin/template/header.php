@@ -181,8 +181,8 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 </noscript>
 
 </head>
-<?php $gradient = getDef('GSHEADERCLASS',true) ? getDef('GSHEADERCLASS') : ''?>
+<?php $headerclass = getDef('GSHEADERCLASS',true) ? getDef('GSHEADERCLASS') : ''?>
 <body <?php filename_id(); echo ' '.$bodyclass; ?> >
-	<div class="header <?php echo $gradient; ?>" id="header" >
+	<div class="header <?php echo $headerclass; ?>" id="header" >
 		<div class="wrapper clearfix">
  <?php exec_action('header-body'); // @hook header-body backend header body wrapper html ?>
