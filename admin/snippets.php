@@ -70,18 +70,18 @@ if (isset($_POST['submitted'])){
 			$count++;
 		}
 	}
-	exec_action('component-save'); // @hook component-save before saving components data file
+	exec_action('snippet-save'); // @hook component-save before saving components data file
 	XMLsave($xml, GSDATAOTHERPATH.GSSNIPPETSFILE);
-	$update = 'comp-success';
+	$update = 'snippet-success';
 	// redirect('components.php?upd=comp-success');
 }
 
 # if undo was invoked
-if (isset($_GET['undo'])) { 
+if (isset($_GET['undo'])) {
 	
 	# perform the undo
 	restore_datafile(GSDATAOTHERPATH.GSSNIPPETSFILE);
-	$update = 'comp-restored';
+	$update = 'snippet-restored';
 	check_for_csrf("undo");		
 	// redirect('components.php?upd=comp-restored');
 }
@@ -105,7 +105,7 @@ function getComponentOutput($id,$component,$class = 'code_edit'){
 	$str .= '<div class="compdiv codewrap" id="section-'.$id.'">';
 	$str .= '<table class="comptable" ><tr>';
 	$str .= '<td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="comptitle editable">'. stripslashes($component->title) .'</b></td>';
-	$str .= '<td style="text-align:right;" ><code>&lt;?php get_component(<span class="compslugcode">\''.$component->slug.'\'</span>); ?&gt;</code></td>';
+	$str .= '<td style="text-align:right;" ><code>&lt;?php get_snippet(<span class="compslugcode">\''.$component->slug.'\'</span>); ?&gt;</code></td>';
 	$str .= '<td class="compactive"><label class="" for="active[]" >'.i18n_r('ACTIVE').'</label>';
 	$str .= '<input type="checkbox" name="active[]" '. (!$disabled ? 'checked="checked"' : '') .' value="'.$id.'" /></td>';
 	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE_SNIPPET').': '. cl($component->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
@@ -136,7 +136,7 @@ function outputComponents($data){
 	if (count($componentsec) != 0) {
 		foreach ($componentsec as $component) {
 			$table = getComponentOutput($id,$component);
-			exec_action('component-extras'); // @hook component-extras called after each component html is added to $table
+			exec_action('snippet-extras'); // @hook component-extras called after each component html is added to $table
 			echo $table; // $table is legacy for hooks that modify the var, they should now just output html directly
 			$id++;
 		}
@@ -160,7 +160,7 @@ function outputComponentTags($data){
 		}
 	}
 
-	exec_action('component-list-extras'); // @hook component-list-extras called after component sidebar list items (tags) 		
+	exec_action('snippet-list-extras'); // @hook component-list-extras called after component sidebar list items (tags) 		
 	echo '</div>';
 }
 
@@ -185,12 +185,12 @@ include('template/include-nav.php'); ?>
 			<?php exec_action(get_filename_id().'-body'); ?>
 			<form id="compEditForm" class="manyinputs" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 				<input type="hidden" id="id" value="<?php echo $numcomponents; ?>" />
-				<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_components"); ?>" />
+				<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_snippets"); ?>" />
 
 				<div id="divTxt"></div>
 				<?php outputComponents($data); ?>
 				<p id="submit_line" class="<?php echo $numcomponents > 0 ? '' : ' hidden'; ?>" >
-					<span><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_SNIPPETS');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="components.php?cancel"><?php i18n('CANCEL'); ?></a>
+					<span><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_SNIPPETS');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="snippets.php?cancel"><?php i18n('CANCEL'); ?></a>
 				</p>
 			</form>
 			<div id="comptemplate" class="hidden"><?php echo getComponentTemplate(); ?></div>			

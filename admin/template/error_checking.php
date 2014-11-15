@@ -80,6 +80,12 @@
 		case 'comp-restored':
 			doNotify(i18n_r('ER_COMPONENT_REST').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
 		break;
+		case 'snippet-success':
+			doNotify(i18n_r('ER_SNIPPET_SAVE').'. <a href="snippets.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
+		break;
+		case 'snippet-restored':
+			doNotify(i18n_r('ER_SNIPPET_REST').'. <a href="snippets.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
+		break;
 		case 'profile-restored':
 			doNotify(i18n_r('ER_PROFILE_RESTORED').'. <a href="profile.php?undo&nonce='.get_nonce("undo").
 				'&userid='.$userid.'">'.i18n_r('UNDO').'</a>','success');
