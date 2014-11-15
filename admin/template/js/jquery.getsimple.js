@@ -349,6 +349,8 @@ jQuery(document).ready(function () {
 	$("#addcomponent").on("click", function ($e) {
 		$e.preventDefault();
 		ajaxStatusWait();
+
+		// get current highest id
 		var id = $("#id").val();
 
 		// copy template and add ids to fields
@@ -367,33 +369,40 @@ jQuery(document).ready(function () {
 		
 		// fade in
 		$("#section-" + id).slideToggle('fast');
+
+		// remove template noeditor class
 		$("#section-" + id).find("[name='val[]']").removeClass('noeditor');
 		
 		// trigger title change
 		$("#section-" + id).find($("b.editable")).comptitleinput();
 
+ 		// bump id
 		id = (id - 1) + 2;
-		$("#id").val(id); // bump count
+		$("#id").val(id);
 
-		ajaxStatusComplete();
 		$('#submit_line').fadeIn(); // fadein in case no components exist
+		ajaxStatusComplete();
 		
-		// add codeditor to new textarea
+		// add code ditor
 		var textarea = $("#divTxt").find('textarea.code_edit').first();
-
 		if( $.isFunction($.fn.editorFromTextarea)) textarea.editorFromTextarea();
 
+		// add html editor
 		var textarea = $("#divTxt").find('textarea.html_edit').first();
 		if( $.isFunction($.fn.htmlEditorFromTextarea)) textarea.htmlEditorFromTextarea();
 
+		// set custom code editor height
 		var editor = textarea.data('editor');
-		// retain autosizing but make sure the editor start larger than 1 line high
 		if(editor){
+			// retain autosizing but make sure the editor start larger than 1 line high
 			$(editor.getWrapperElement()).find('.CodeMirror-scroll').css('min-height',100);
 			editor.refresh();
-		}	
+		}
 
-		$("#divTxt").find('input').get(0).focus();
+		// @todo set custom html editor height, using header for now
+
+		$("#divTxt").find('input').get(0).focus(); // focus input so editor gets focused ( if it listens of course )
+		// @todo make better focus events
 	});
 
 	// bind delete component button

@@ -2289,4 +2289,10 @@ function hostIsWindows(){
 	return (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
 }
 
+function catchOutput($function,$args){
+	ob_start();
+	call_user_func_array($function,$args);
+	return ob_get_clean();
+}
+
 /* ?> */

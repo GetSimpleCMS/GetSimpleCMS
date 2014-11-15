@@ -529,19 +529,7 @@ function menu_data($id = null,$xml=false) {
  * @param bool $raw do not process php
  */
 function get_component($id, $force = false, $raw = false) {
-	$components = get_components_xml();
-	$component  = get_component_xml($id); 
-	if(!$component) return;
-
-	// this returns an array due to no unique slug enforcement, so we grab first one atm
-	// @todo find a solution to allowing this or dissallowing duplicate component slugs
-	$component = $component[0];
-
-	$disabled = (bool)(string)$component->disabled;
-	if($disabled && !$force) return;
-
-	if(!$raw) eval("?>" . strip_decode($component->value) . "<?php ");
-	else echo strip_decode($component->value);
+	output_collection_item($id, GSCOMPONENTSFILE, $force, $raw);
 }
 
 /**
@@ -572,10 +560,57 @@ function component_enabled($id){
  * @return component buffered output
  */
 function return_component(){
-	ob_start();
+	$args = func_get_args();	
+	return catchOutput('get_component',$args);
+}
+
+/**
+ * Get Snippet
+ *
+ * This will output the snippet requested. 
+ * snippets are parsed for PHP within them.
+ * Will only return the first snippet matching $id
+ *
+ * @since 3.4
+ *
+ * @param string $id This is the ID of the snippet you want to display
+ * @param bool $force Force return of inactive snippets
+ * @param bool $raw do not process php
+ */
+function get_snippet($id, $force = false) {
+	output_collection_item($id, GSSNIPPETSFILE, $force, true);
+}
+
+/**
+ * See if a snippet exists
+ * @since 3.4
+ * @param  str $id snippet id
+ * @return bool
+ */
+function snippet_exists($id){
+	return !get_snippet_xml($id);
+}
+
+/**
+ * See if a snippet is enabled
+ * @since 3.4
+ * @param  str $id snippet id
+ * @return bool
+ */
+function snippet_enabled($id){
+	return snippetIsEnabled($id);
+}
+
+/**
+ * Return snippet
+ * Returns a snippets output
+ *
+ * @since 3.4
+ * @return snippet buffered output
+ */
+function return_snippet(){
 	$args = func_get_args();
-	call_user_func_array('get_component',$args);
-	return ob_get_clean();
+	return catchOutput('get_snippet',$args);
 }
 
 /**

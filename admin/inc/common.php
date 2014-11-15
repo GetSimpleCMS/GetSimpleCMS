@@ -86,7 +86,7 @@ $GS_definitions = array(
 	'GSEDITORTOOL'         => 'basic',                        // (str) wysiwyg editor toobar
 	'GSEDITORCONFIGFILE'   => 'config.js',                    // (str) wysiwyg editor toobar
 	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // (str) url used in email template
-	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
+	'GSAJAXSAVE'           => false,                           // (bool) use ajax for saving themes, components, and pages
 	'GSCHMOD'              => 0644,                           // (octal) chmod mode legacy
 	'GSCHMODFILE'          => 0644,                           // (octal) chmod mode for files
 	'GSCHMODDIR'           => 0755,                           // (octal) chmod mode for dirs
@@ -108,6 +108,7 @@ global
  $GSADMIN,        // (str) admin foldername
  $GS_debug,       // (array) global array for storing debug log entries
  $components,     // (array) global array for storing components, array of objs from components.xml
+ $snippets,       // (array) global array for storing snippets, array of objs from snippets.xml
  $nocache,        // (bool) disable site wide cache true, not fully implemented
  $microtime_start,// (microtime) used for benchmark timers
  $pagesArray,     // (array) global array for storing pages cache, used for all page fields aside from content

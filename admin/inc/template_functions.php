@@ -1555,7 +1555,6 @@ function gotoDefaultPage(){
 	else redirect(getDef('GSDEFAULTPAGE'));
 }
 
-
 /**
  * get the components xml data
  * returns an array of xmlobjs
@@ -1571,16 +1570,9 @@ function gotoDefaultPage(){
  */
 function get_components_xml(){
     global $components;
-
     if (!$components) {
-        if (file_exists(GSDATAOTHERPATH.'components.xml')) {
-        	$data = getXML(GSDATAOTHERPATH.'components.xml');
-            $components = $data->item;
-        } else {
-            $components = array();
-        }
-    }
-    return $components;
+    	return get_collection_items(GSCOMPONENTSFILE);
+    } 
 }
 
 /**
@@ -1593,15 +1585,129 @@ function get_components_xml(){
  * @return array of simpleXmlObj matching slug
  */
 function get_component_xml($id){
-	// normalize id to mathc how we save it
+	return get_collection_item($id,GSCOMPONENTSFILE);
+}
+
+/**
+ * check if a component is enabled
+ * @since  3.4
+ * @param  str $id component id
+ * @return bool     true if not disabled
+ */
+function componentIsEnabled($id){
+	if($component = get_component_item($id)) return (bool)(string) $component->disabled;
+}
+
+
+/**
+ * get the components xml data
+ * returns an array of xmlobjs
+ *
+ * @since 3.4
+ * 
+ * @uses components
+ * @uses GSDATAOTHERPATH
+ * @uses getXML
+ * @param  boolean $xml [description]
+ * @return components data items xmlobj
+ *
+ */
+function get_snippets_xml(){
+    global $snippets;
+    if (!$snippets) {
+    	return get_collection_items(GSSNIPPETSFILE);
+    } 
+}
+
+/**
+ * get xml for an individual component
+ * returns an array since duplicates are possible on component slugs
+ *
+ * @since 3.4
+ *
+ * @param  str $id component id
+ * @return array of simpleXmlObj matching slug
+ */
+function get_snippet_xml($id){
+	return get_collection_item($id,GSSNIPPETSFILE);
+}
+
+/**
+ * check if a snippet is enabled
+ * @since  3.4
+ * @param  str $id snippet id
+ * @return bool     true if not disabled
+ */
+function snippetIsEnabled($id){
+	if($snippet = get_snippet_item($id)) return (bool)(string) $snippet->disabled;
+}
+
+
+/**
+ * get a collection of otherdata xml items
+ * returns an array of xmlobjs
+ *
+ * @since 3.4
+ * 
+ * @uses GSDATAOTHERPATH
+ * @uses getXML
+ * @param  boolean $asset name of asset to get data form
+ * @return components data items xmlobj
+ *
+ */
+function get_collection_items($asset){	
+	if (file_exists(GSDATAOTHERPATH.$asset)) {
+		$data = getXML(GSDATAOTHERPATH.$asset);
+	    $items = $data->item;
+	} else {
+	    $items = array();
+	}
+    return $items;
+}
+
+/**
+ * get xml for an individual otherdata item
+ * returns an array since duplicates are possible on component slugs
+ *
+ * @since 3.4
+ *
+ * @param  str $id component id
+ * @return array of simpleXmlObj matching slug
+ */
+function get_collection_item($id,$asset){
+	// normalize id to match how we save it
 	$id = to7bit($id, 'UTF-8');
 	$id = clean_url($id);
 	if(!$id) return;
-	return get_components_xml()->xpath("//slug[.='".$id."']/..");	
+	return get_collection_items($asset)->xpath("//slug[.='".$id."']/..");	
 }
 
-function componentIsEnabled($id){
-	if($component = get_component_xml($id)) return (bool)(string) $component->disabled;
+/**
+ * Output a collection item
+ *
+ * This will output the item requested. 
+ * items are parsed for PHP within them if not $raw
+ * Will only return the first component matching $id
+ *
+ * @since 3.4
+ *
+ * @param string $id This is the ID of the component you want to display
+ * @param bool $force Force return of inactive components
+ * @param bool $raw do not process php
+ */
+function output_collection_item($id, $asset, $force = false, $raw = false) {
+	$item  = get_collection_item($id,$asset); 
+	if(!$item) return;
+
+	// this returns an array due to no unique slug enforcement, so we grab first one atm
+	// @todo find a solution to allowing this or dissallowing duplicate component slugs
+	$item = $item[0];
+
+	$disabled = (bool)(string)$item->disabled;
+	if($disabled && !$force) return;
+
+	if(!$raw) eval("?>" . strip_decode($item->value) . "<?php ");
+	else echo strip_decode($item->value);
 }
 
 /**
