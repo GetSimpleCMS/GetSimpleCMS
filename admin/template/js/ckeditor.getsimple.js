@@ -25,6 +25,7 @@ $.fn.htmlEditorFromTextarea = function(config){
 
         var $this = $(this);
         if(!$this.is("textarea")) return; // invalid element
+        if($(this).hasClass("noeditor")) return; // exclude        
 
         // use config arg if present and ignore user configs
         if (typeof config == "undefined" || config === null){

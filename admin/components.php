@@ -123,7 +123,7 @@ function getComponentTemplate(){
 		'disabled' => ''
 	);
 
-	return getComponentOutput('',(object)$component,'');
+	return getComponentOutput('',(object)$component,'code_edit noeditor');
 }
 
 function outputComponents($data){

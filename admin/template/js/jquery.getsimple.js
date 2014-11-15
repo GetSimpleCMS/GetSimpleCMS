@@ -348,7 +348,7 @@ jQuery(document).ready(function () {
 	// bind component new button
 	$("#addcomponent").on("click", function ($e) {
 		$e.preventDefault();
-		loadingAjaxIndicator.show();
+		ajaxStatusWait();
 		var id = $("#id").val();
 
 		// copy template and add ids to fields
@@ -358,8 +358,8 @@ jQuery(document).ready(function () {
 		$(comptemplate).find('.delcomponent').prop('rel',id);
 		$(comptemplate).find("[name='id[]']").prop('value',id);
 		$(comptemplate).find("[name='active[]']").prop('value',id);
-		$(comptemplate).find("[name='val[]']").addClass('code_edit');
-		// console.log($(comptemplate).children().first().get(0));
+		// $(comptemplate).find("[name='val[]']").addClass('code_edit');
+		// Debugger.log($(comptemplate).children().first().get(0));
 
 		// insert new component
 		var newcomponent = comptemplate.children(':first');
@@ -367,19 +367,24 @@ jQuery(document).ready(function () {
 		
 		// fade in
 		$("#section-" + id).slideToggle('fast');
-
+		$("#section-" + id).find("[name='val[]']").removeClass('noeditor');
+		
 		// trigger title change
 		$("#section-" + id).find($("b.editable")).comptitleinput();
 
 		id = (id - 1) + 2;
 		$("#id").val(id); // bump count
-		loadingAjaxIndicator.fadeOut(500);
+
+		ajaxStatusComplete();
 		$('#submit_line').fadeIn(); // fadein in case no components exist
 		
 		// add codeditor to new textarea
-		var textarea = $("#divTxt").find('textarea').first();
-		// Debugger.log($.isFunction($.fn.editorFromTextarea));
-		if($.isFunction($.fn.editorFromTextarea)) textarea.editorFromTextarea();
+		var textarea = $("#divTxt").find('textarea.code_edit').first();
+
+		if( $.isFunction($.fn.editorFromTextarea)) textarea.editorFromTextarea();
+
+		var textarea = $("#divTxt").find('textarea.html_edit').first();
+		if( $.isFunction($.fn.htmlEditorFromTextarea)) textarea.htmlEditorFromTextarea();
 
 		var editor = textarea.data('editor');
 		// retain autosizing but make sure the editor start larger than 1 line high
@@ -1132,13 +1137,12 @@ jQuery(document).ready(function () {
 		// $('#codetext').data('editor').hasChange == false;
 		
 		cm_save_editors();
-		var url = "path/to/your/script.php"; // the script where you handle the form input.
 		var dataString = $("#compEditForm").serialize();			
 
 		$.ajax({
 			type: "POST",
 			cache: false,
-			url: 'components.php',
+			// url: 'components.php',
 			data: dataString+'&submitted=1&ajaxsave=1',
 			success: function( response ) {
 				response = $.parseHTML(response);

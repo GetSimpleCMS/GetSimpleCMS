@@ -96,7 +96,7 @@ if($data) {
 
 // $componentsec = subval_sort($data->item,'title'); // sorted on save probably not necessary at this time
 
-function getComponentOutput($id,$component,$class = 'code_edit'){
+function getComponentOutput($id,$component,$class = 'html_edit'){
 
 	$disabled = (bool)(string)$component->disabled;
 	$readonly = (bool)(string)$component->readonly;
@@ -110,7 +110,7 @@ function getComponentOutput($id,$component,$class = 'code_edit'){
 	$str .= '<input type="checkbox" name="active[]" '. (!$disabled ? 'checked="checked"' : '') .' value="'.$id.'" /></td>';
 	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE_SNIPPET').': '. cl($component->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
 	$str .= '</tr></table>';
-	$str .= '<textarea name="val[]" class="'.$class.'" data-mode="php" '.$readonly.'>'. stripslashes($component->value) .'</textarea>';
+	$str .= '<textarea name="val[]" class="'.$class.'" data-mode="html" '.$readonly.'>'. stripslashes($component->value) .'</textarea>';
 	$str .= '<input type="hidden" class="compslug" name="slug[]" value="'. $component->slug .'" />';
 	$str .= '<input type="hidden" class="comptitle" name="title[]" value="'. stripslashes($component->title) .'" />';
 	$str .= '<input type="hidden" name="id[]" value="'. $id .'" />';
@@ -126,7 +126,7 @@ function getComponentTemplate(){
 		'disabled' => ''
 	);
 
-	return getComponentOutput('',(object)$component,'');
+	return getComponentOutput('',(object)$component,'html_edit noeditor');
 }
 
 function outputComponents($data){

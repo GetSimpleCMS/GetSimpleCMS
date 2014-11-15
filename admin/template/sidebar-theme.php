@@ -15,7 +15,7 @@
 	<?php exec_action("theme-sidebar"); // @hook theme-sidebar sidebar list html output  ?>
 </ul>
 
-<?php if(get_filename_id()==='components' || get_filename_id()==='theme-edit') { ?>
+<?php if(get_filename_id()==='components' || get_filename_id()==='snippets' || get_filename_id()==='theme-edit') { ?>
 <p id="js_submit_line" ></p>
 <?php } ?>
 
