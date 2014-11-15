@@ -1146,6 +1146,7 @@ jQuery(document).ready(function () {
 		// $('#codetext').data('editor').hasChange == false;
 		
 		cm_save_editors();
+		cm_save_htmleditors();
 		var dataString = $("#compEditForm").serialize();			
 
 		$.ajax({
@@ -1234,6 +1235,19 @@ jQuery(document).ready(function () {
 			if(editor) {
 				editor.save();
 			}	
+		});		
+	};
+
+	// save all editors
+	cm_save_htmleditors = function(theme){
+		// Debugger.log(theme);
+		$('.html_edit').each(function(i, textarea){
+			var editor = $(textarea).data('htmleditor');
+			// Debugger.log(editor);
+			if(editor) {
+				Debugger.log('saving html editors');
+				editor.updateElement(); 
+			}
 		});		
 	};
 
