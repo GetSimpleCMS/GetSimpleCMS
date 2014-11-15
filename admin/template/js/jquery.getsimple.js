@@ -227,23 +227,24 @@ function getTagName(elem){
 jQuery(document).ready(function () {
 
 	// init jq tabs custom handlers
-	$("#tabs").tabs({
-		activate: function(event, ui) {
-			// set bookmarkable urls
-			var hash = ui.newTab.context.hash;
-			hash = "tab_"+hash.replace('#','');
-			window.location.replace(('' + window.location).split('#')[0] + '#' + hash);	// should not affect history
-		},
-		create: function (event,ui) {
-			// set active tab from hash
-			if(window.location.hash){
-				var selectedTabHash = window.location.hash.replace(/tab_/,"");
-				var tabIndex = $( "#tabs li a" ).index($("#tabs li a[href='"+selectedTabHash+"']"));
-				if(tabIndex > 0) $( "#tabs" ).tabs("option", "active", tabIndex );
-			}	
-		}
-	});
-
+	if(window.tabs){
+		$("#tabs").tabs({
+			activate: function(event, ui) {
+				// set bookmarkable urls
+				var hash = ui.newTab.context.hash;
+				hash = "tab_"+hash.replace('#','');
+				window.location.replace(('' + window.location).split('#')[0] + '#' + hash);	// should not affect history
+			},
+			create: function (event,ui) {
+				// set active tab from hash
+				if(window.location.hash){
+					var selectedTabHash = window.location.hash.replace(/tab_/,"");
+					var tabIndex = $( "#tabs li a" ).index($("#tabs li a[href='"+selectedTabHash+"']"));
+					if(tabIndex > 0) $( "#tabs" ).tabs("option", "active", tabIndex );
+				}	
+			}
+		});
+	}
 	// init aja xindicator
 	var loadingAjaxIndicator;
 	if($('#loader')[0]) initLoaderIndicator();
@@ -1147,6 +1148,7 @@ jQuery(document).ready(function () {
 		
 		cm_save_editors();
 		cm_save_htmleditors();
+		cm_save_inlinehtmleditors();
 		var dataString = $("#compEditForm").serialize();			
 
 		$.ajax({
@@ -1227,7 +1229,7 @@ jQuery(document).ready(function () {
 	};
 
 	// save all editors
-	cm_save_editors = function(theme){
+	cm_save_editors = function(){
 		// Debugger.log(theme);
 		$('.code_edit').each(function(i, textarea){
 			var editor = $(textarea).data('editor');
@@ -1239,7 +1241,7 @@ jQuery(document).ready(function () {
 	};
 
 	// save all editors
-	cm_save_htmleditors = function(theme){
+	cm_save_htmleditors = function(){
 		// Debugger.log(theme);
 		$('.html_edit').each(function(i, textarea){
 			var editor = $(textarea).data('htmleditor');
@@ -1247,6 +1249,22 @@ jQuery(document).ready(function () {
 			if(editor) {
 				Debugger.log('saving html editors');
 				editor.updateElement(); 
+			}
+		});		
+	};
+
+	// save all editors
+	cm_save_inlinehtmleditors = function(){
+		// Debugger.log(theme);
+		$('[contenteditable="true"]').each(function(i,elem){
+			Debugger.log($(elem).prop('id'));
+			var id = $(this).prop('id');
+			var editor = CKEDITOR.instances[id];
+			// CKEDITOR.instances.[blockID].getData()
+			Debugger.log(editor);
+			if(editor) {
+				Debugger.log('saving html editors');
+				Debugger.log(editor.getData());
 			}
 		});		
 	};
