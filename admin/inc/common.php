@@ -58,6 +58,7 @@ $GS_constants = array(
 	'GSRESETFILESUFFIX'     => '.reset',                      // (str) password reset file naming suffix before extension
 	'GSRESETFILEPREFIX'     => '',                            // (str) password reset file naming prefix after extension
 	'GSSHOWCODEHINTS'       => true,                          // (bool) show code hints on components page and snippets etc.
+	'GSHTMLEDITINLINE'      => true,                          // (bool) show html cke editors inline
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );

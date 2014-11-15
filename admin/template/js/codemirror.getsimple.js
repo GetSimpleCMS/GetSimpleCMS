@@ -90,7 +90,7 @@ jQuery(document).ready(function () {
 
 			var $this = $(this);
 			if(!$this.is("textarea")) return; // invalid element
-			if($(this).hasClass("noeditor")) return; // exclude
+			if($this.hasClass("noeditor")) return; // exclude
 
 			// use config arg if present and ignore user config
 			if (typeof config == "undefined" || config === null){

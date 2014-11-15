@@ -1433,6 +1433,12 @@ form.manyinputs p {
 	padding: 10px 0 35px 0;
 }
 
+.compdiv .cke_textarea_inline {
+	margin:5px -1px;padding:18px;
+	border: 1px solid #E5E5E5;
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+}	
+
 table.comptable {
 	margin: 0 !important;
 	/*width: 645px;*/

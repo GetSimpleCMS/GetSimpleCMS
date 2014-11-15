@@ -107,13 +107,15 @@ function getComponentOutput($id,$component,$class = 'html_edit'){
 	$str .= '<td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="comptitle editable">'. stripslashes($component->title) .'</b></td>';
 	
 	if(getDef('GSSHOWCODEHINTS',true))
-	$str .= '<td style="text-align:right;" ><code>&lt;?php get_snippet(<span class="compslugcode">\''.$component->slug.'\'</span>); ?&gt;</code></td>';
+		$str .= '<td style="text-align:right;" ><code>&lt;?php get_snippet(<span class="compslugcode">\''.$component->slug.'\'</span>); ?&gt;</code></td>';
 	
 	$str .= '<td class="compactive"><label class="" for="active[]" >'.i18n_r('ACTIVE').'</label>';
 	$str .= '<input type="checkbox" name="active[]" '. (!$disabled ? 'checked="checked"' : '') .' value="'.$id.'" /></td>';
 	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE_SNIPPET').': '. cl($component->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
 	$str .= '</tr></table>';
-	$str .= '<textarea name="val[]" class="'.$class.'" data-mode="html" '.$readonly.'>'. stripslashes($component->value) .'</textarea>';
+	
+	$str .= '<textarea name="val[]" class="'. (getDef('GSHTMLEDITINLINE',true) ? 'inline ' : '') .$class.'" data-mode="html" '.$readonly.'>'. stripslashes($component->value) .'</textarea>';
+	// $str .= '<div id="htmleditor'.$id.'" style="margin:5px -1px;padding:18px;border: 1px solid #E5E5E5;box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);" contentEditable="true">'.strip_decode($component->value).'</div>';
 	$str .= '<input type="hidden" class="compslug" name="slug[]" value="'. $component->slug .'" />';
 	$str .= '<input type="hidden" class="comptitle" name="title[]" value="'. stripslashes($component->title) .'" />';
 	$str .= '<input type="hidden" name="id[]" value="'. $id .'" />';

@@ -25,7 +25,7 @@ $.fn.htmlEditorFromTextarea = function(config){
 
         var $this = $(this);
         if(!$this.is("textarea")) return; // invalid element
-        if($(this).hasClass("noeditor")) return; // exclude        
+        if($this.hasClass("noeditor")) return; // exclude        
 
         // use config arg if present and ignore user configs
         if (typeof config == "undefined" || config === null){
@@ -43,7 +43,10 @@ $.fn.htmlEditorFromTextarea = function(config){
         // Debugger.log(html_config);
 
         // create ckeditor instance from textarea
-        var editor = CKEDITOR.replace($this.get(0),html_config);
+        if($this.hasClass('inline'))
+            var editor = CKEDITOR.inline($this.get(0),html_config);
+        else
+            var editor = CKEDITOR.replace($this.get(0),html_config);
 
         // add reference to this editor to the textarea
         $this.data('htmleditor', editor);
