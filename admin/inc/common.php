@@ -57,6 +57,7 @@ $GS_constants = array(
 	'GSBAKFILEPREFIX'       => '.bak',                        // (str) backup file naming prefix before extension
 	'GSRESETFILESUFFIX'     => '.reset',                      // (str) password reset file naming suffix before extension
 	'GSRESETFILEPREFIX'     => '',                            // (str) password reset file naming prefix after extension
+	'GSSHOWCODEHINTS'       => true,                          // (bool) show code hints on components page and snippets etc.
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
