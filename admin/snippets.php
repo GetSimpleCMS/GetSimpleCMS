@@ -176,10 +176,10 @@ include('template/include-nav.php'); ?>
 			<h3 class="floated"><?php echo i18n_r('EDIT_SNIPPETS');?></h3>
 			<div class="edit-nav clearfix" >
 				<a href="javascript:void(0)" id="addcomponent" accesskey="<?php echo find_accesskey(i18n_r('ADD_SNIPPET'));?>" ><?php i18n('ADD_SNIPPET');?></a>
-				<?php if(!getDef('GSNOHIGHLIGHT',true)){
+				<!--<?php if(!getDef('GSNOHIGHLIGHT',true)){
 				echo $themeselector; ?>	
 				<label>Theme</label>
-			<?php } ?>	
+			<?php } ?>	-->
 				<?php exec_action(get_filename_id().'-edit-nav'); ?>
 			</div>		
 			<?php exec_action(get_filename_id().'-body'); ?>
