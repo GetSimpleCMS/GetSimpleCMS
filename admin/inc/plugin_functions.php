@@ -252,7 +252,7 @@ function add_action($hook_name, $added_function, $args = array()) {
 	global $live_plugins; 
   
 	$bt             = debug_backtrace();
-	$shift          = count($bt) - 4;	// plugin name should be  
+	$shift          = count($bt) - 3;	// plugin name should be  
 	$caller         = array_shift($bt);
 	$realPathName   = pathinfo_filename($caller['file']);
 	$realLineNumber = $caller['line'];
