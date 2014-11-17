@@ -1656,7 +1656,6 @@ function snippetIsEnabled($id){
  *
  */
 function get_collection_items($asset){	
-	debugLog(GSDATAOTHERPATH.$asset);
 	if (file_exists(GSDATAOTHERPATH.$asset)) {
 		$data  = getXML(GSDATAOTHERPATH.$asset);
 	    $items = $data->item;
