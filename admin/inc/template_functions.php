@@ -1596,9 +1596,10 @@ function get_component_xml($id){
  * @return bool     true if not disabled
  */
 function componentIsEnabled($id){
-	if($component = get_component_item($id)) return (bool)(string) $component->disabled;
+	$item = get_component_xml($id);
+	if(!$item) return false;
+	return !(bool)(string) $item[0]->disabled;
 }
-
 
 /**
  * get the components xml data
@@ -1639,8 +1640,10 @@ function get_snippet_xml($id){
  * @return bool     true if not disabled
  */
 function snippetIsEnabled($id){
-	if($snippet = get_snippet_item($id)) return (bool)(string) $snippet->disabled;
-}
+	$item = get_snippet_xml($id);
+	if(!$item) return false;
+	return !(bool)(string) $item[0]->disabled;
+}	
 
 
 /**
@@ -1679,7 +1682,11 @@ function get_collection_item($id,$collection){
 	$id = to7bit($id, 'UTF-8');
 	$id = clean_url($id);
 	if(!$id) return;
-	return $collection->xpath("//slug[.='".$id."']/..");	
+	$item = $collection->xpath("//slug[.='".$id."']/..");
+	
+	// this returns an array due to no unique slug enforcement, so we grab first one atm
+	// returning first one available
+	return count($item) > 0 ? $item[0] : null;
 }
 
 /**
@@ -1698,10 +1705,6 @@ function get_collection_item($id,$collection){
 function output_collection_item($id, $collection, $force = false, $raw = false) {
 	$item  = get_collection_item($id,$collection); 
 	if(!$item) return;
-
-	// this returns an array due to no unique slug enforcement, so we grab first one atm
-	// @todo find a solution to allowing this or dissallowing duplicate component slugs
-	$item = $item[0];
 
 	$disabled = (bool)(string)$item->disabled;
 	if($disabled && !$force) return;

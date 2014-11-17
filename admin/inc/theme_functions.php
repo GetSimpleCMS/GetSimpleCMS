@@ -525,7 +525,7 @@ function menu_data($id = null,$xml=false) {
  * @since 1.0
  *
  * @param string $id This is the ID of the component you want to display
- * @param bool $force Force return of inactive components
+ * @param bool $force Force return of disabled components
  * @param bool $raw do not process php
  */
 function get_component($id, $force = false, $raw = false) {
@@ -536,10 +536,12 @@ function get_component($id, $force = false, $raw = false) {
  * See if a component exists
  * @since 3.4
  * @param  str $id component id
+ * @param  bool disabled include disabled snippets 
  * @return bool
  */
-function component_exists($id){
-	return !get_component_xml($id);
+function component_exists($id, $disabled = false){
+	if(!$disabled) return componentIsEnabled($id);
+	return (bool)get_component_xml($id);
 }
 
 /**
@@ -568,7 +570,6 @@ function return_component(){
  * Get Snippet
  *
  * This will output the snippet requested. 
- * snippets are parsed for PHP within them.
  * Will only return the first snippet matching $id
  *
  * @since 3.4
@@ -585,10 +586,12 @@ function get_snippet($id, $force = false) {
  * See if a snippet exists
  * @since 3.4
  * @param  str $id snippet id
+ * @param  bool disabled include disabled snippets
  * @return bool
  */
-function snippet_exists($id){
-	return !get_snippet_xml($id);
+function snippet_exists($id, $disabled = false){
+	if(!$disabled) return snippetIsEnabled($id);
+	return (bool)get_snippet_xml($id);
 }
 
 /**
