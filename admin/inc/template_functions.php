@@ -1573,6 +1573,7 @@ function get_components_xml(){
     if (!$components) {
     	return get_collection_items(GSCOMPONENTSFILE);
     } 
+    return $components;
 }
 
 /**
@@ -1616,7 +1617,8 @@ function get_snippets_xml(){
     global $snippets;
     if (!$snippets) {
     	return get_collection_items(GSSNIPPETSFILE);
-    } 
+    }
+    return $snippets;
 }
 
 /**

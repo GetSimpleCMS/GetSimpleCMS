@@ -120,7 +120,8 @@ function getItemTemplate($class = 'item_edit noeditor'){
 		'title'    => '',
 		'slug'     => '',
 		'value'    => '',
-		'disabled' => ''
+		'disabled' => '',
+		'readonly' => ''
 	);
 
 	return getItemOutput('',(object)$item,$class);
@@ -139,7 +140,7 @@ function outputCollection($data,$id,$class='item_edit'){
 	}
 }
 
-function outputCollectionTags($data){
+function outputCollectionTags($data,$id){
 	if(!$data) return;
 	$numcomponents = count($data);
 
@@ -155,7 +156,7 @@ function outputCollectionTags($data){
 		}
 	}
 
-	exec_action('snippet-list-extras'); // @hook component-list-extras called after component sidebar list items (tags) 		
+	exec_action($id.'-list-extras'); // @hook component-list-extras called after component sidebar list items (tags) 		
 	echo '</div>';
 }
 
@@ -194,7 +195,7 @@ include('template/include-nav.php'); ?>
 	
 	<div id="sidebar">
 		<?php include('template/sidebar-theme.php'); ?>
-		<?php outputCollectionTags($collectionData); ?>
+		<?php outputCollectionTags($collectionData,'components'); ?>
 	</div>
 
 </div>
