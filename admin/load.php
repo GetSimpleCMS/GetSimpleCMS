@@ -37,9 +37,23 @@ get_template('header');
 		<div class="main">
 
 		<?php 
-			if(function_exists($plugin_info[$plugin_id]['load_data'])){
-				call_user_func_array($plugin_info[$plugin_id]['load_data'],array()); 
+
+			$validCallable = false;
+
+			if(is_array($plugin_info[$plugin_id]['load_data'])){
+				// check for valid method
+				if(count($plugin_info[$plugin_id]['load_data']) == 2){
+					$obj    = $plugin_info[$plugin_id]['load_data'][0];
+					$method = $plugin_info[$plugin_id]['load_data'][1];
+					if(method_exists($obj,$method)) $validCallable = true;
+				}
+			}
+			else if(function_exists($plugin_info[$plugin_id]['load_data'])){
+				// check for valid function
+				$validCallable = true;
 			}	
+			
+			if($validCallable) call_user_func_array($plugin_info[$plugin_id]['load_data'],array());
 		?>
 
 		</div>
