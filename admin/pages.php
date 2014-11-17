@@ -73,7 +73,7 @@ get_template('header');
 <div class="bodycontent clearfix">
 	
 	<div id="maincontent">
-	<?php exec_action('pages-main'); ?>
+	<?php exec_action('pages-main'); // @hook pages-main before pages main html output ?>
 		<div class="main">
 			<h3 class="floated"><?php i18n('PAGE_MANAGEMENT'); ?></h3>
 			<div class="edit-nav clearfix" >

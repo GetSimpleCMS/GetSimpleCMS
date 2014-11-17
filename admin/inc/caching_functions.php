@@ -51,7 +51,7 @@ function returnPageContent($page, $field='content', $raw = false, $nofilter = fa
 
 	$content = stripslashes(htmlspecialchars_decode($content, ENT_QUOTES));
 	if ($field=='content' and !$nofilter){
-		$content = exec_filter('content',$content);
+		$content = exec_filter('content',$content); // @filter content (str) filter page content in returnPageContent
 	}
 	return $content;
 }
@@ -251,9 +251,9 @@ function load_pageCache(){
 function save_pageCacheXml($xml){
 	$file=GSDATAOTHERPATH."pages.xml";		
   	// Plugin Authors should add custome fields etc.. here
-  	$xml = exec_filter('pagecache',$xml);	
+  	$xml = exec_filter('pagecache',$xml); // @filter pagecache (obj) filter the page cache xml obj before save
 	if(!empty($xml)) $success = $xml->asXML($file);
-  	exec_action('pagecache-aftersave');	
+  	exec_action('pagecache-aftersave');	// @hook pagecache-aftersave pagecache data file was saved
   	return;
 }
 

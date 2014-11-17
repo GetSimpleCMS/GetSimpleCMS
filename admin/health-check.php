@@ -374,7 +374,7 @@ echo '<div class="bodycontent clearfix">
 			}
 
 			// call healthcheck-extras hook
-			exec_action('healthcheck-extras');
+			exec_action('healthcheck-extras'); // @hook healthcheck-extras after health check html output
 			?>			
 	</div>
 		

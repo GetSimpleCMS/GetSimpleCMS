@@ -321,7 +321,7 @@ $isUnixHost = !hostIsWindows();
 					
 				}
 			}
-			exec_action('file-extras');
+			exec_action('file-extras'); // @hook after file list table rows
 			echo '</tbody></table>';
 			
 			if ($counter > 0) { 

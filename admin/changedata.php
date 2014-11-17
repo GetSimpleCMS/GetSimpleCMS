@@ -91,7 +91,7 @@ if (isset($_POST['submitted'])) {
 			changeChildParents($oldslug,$url); // update childrens parent slugs to the new slug
 			delete_page($oldslug); // backup and delete the page
 		}
-		exec_action('changedata-save');
+		exec_action('changedata-save'); // @hook changedata-save prior to saving a page
 		$xml = exec_filter('page-save',$xml);
 		savePageXml($xml);
 		exec_action('changedata-aftersave');

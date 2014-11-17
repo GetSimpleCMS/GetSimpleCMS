@@ -5,7 +5,7 @@
  * @package GetSimple
  */
 
-GLOBAL $SITENAME, $SITEURL, $GSADMIN, $themeselector, $pagetitle;
+GLOBAL $SITENAME, $SITEURL, $GSADMIN, $themeselector, $pagetitle, $SESSIONHASH;
 
 $GSSTYLE = getDef('GSSTYLE') ? GSSTYLE : '';
 $GSSTYLE_sbfixed = in_array('sbfixed',explode(',',$GSSTYLE));
@@ -17,7 +17,7 @@ if( $GSSTYLE_wide )    $bodyclass .= " wide";
 if( getDef('GSAJAXSAVE',true) ) $bodyclass .= " ajaxsave";
 $bodyclass .="\"";
 
-if(get_filename_id()!='index') exec_action('admin-pre-header');
+if(get_filename_id()!='index') exec_action('admin-pre-header'); // @hook admin-pre-header backend before header output
 
 if(!isset($pagetitle)) $pagetitle = i18n_r(get_filename_id().'_title');
 $title = $pagetitle.' &middot; '.cl($SITENAME);
@@ -85,6 +85,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		'FILE_EXISTS_PROMPT',
 		'CANCELLED',
 		'UNSAVED_INFORMATION',
+		'UNSAVED_PROMPT'
 		'CANNOT_SAVE_EMPTY'
 	);
 
@@ -118,14 +119,21 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
             $contentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGlobal('TEMPLATE').'/editor.css';
         }
     }
+
     ?>
 
     <script type="text/javascript">
+    	// @todo clean this up, use a better bridge to initialize config variables in js
+    	
         // init gs namespace and i18n
         var GS = {};
         GS.i18n = <?php echo json_encode($jsi18n); ?>;
         GS.debug = <?php echo isDebug() === true ? 'true' : 'false'; ?> ;
 
+		var uploadSession = '<?php echo $SESSIONHASH; ?>';
+		var uploadPath    = '<?php echo (isset($_GET['path'])) ? $_GET['path'] : ""; ?>';
+		var maxFileSize   = '<?php echo toBytesShorthand(getMaxUploadSize().'M',false); ?>';
+		
 		<?php
         if(isset($_COOKIE['gs_editor_theme'])){
             // $editor_theme = var_out($_COOKIE['gs_editor_theme']);
@@ -157,7 +165,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	get_scripts_backend();
 
 	# Plugin hook to allow insertion of stuff into the header
-	if(!isAuthPage()) exec_action('header');
+	if(!isAuthPage()) exec_action('header'); // @hook header backend before html head closes
 
 	?>
 
@@ -173,8 +181,8 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 </noscript>
 
 </head>
-<?php $gradient = getDef('GSHEADERCLASS',true) ? getDef('GSHEADERCLASS') : ''?>
+<?php $headerclass = getDef('GSHEADERCLASS',true) ? getDef('GSHEADERCLASS') : ''?>
 <body <?php filename_id(); echo ' '.$bodyclass; ?> >
-	<div class="header <?php echo $gradient; ?>" id="header" >
+	<div class="header <?php echo $headerclass; ?>" id="header" >
 		<div class="wrapper clearfix">
- <?php exec_action('header-body'); ?>
+ <?php exec_action('header-body'); // @hook header-body backend header body wrapper html ?>

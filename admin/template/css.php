@@ -169,6 +169,7 @@ input[type="submit"] {
 	margin: 0 0 25px 0;
 }
 
+/* add 'gradient' to GSHEADERCLASS to reimplement */
 .header.gradient{
 		background: -moz-linear-gradient(top, <?php echo $primary_4; ?> 0%, <?php echo $primary_2; ?> 100%);	 /* firefox */
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,<?php echo $primary_4; ?>), color-stop(100%,<?php echo $primary_2; ?>));	/* webkit */
@@ -1275,11 +1276,13 @@ a.viewlink:hover img {
 	color:#C00;
 }
 
+/* unused */
 form table.formtable select {
 	width: 275px;
 	padding: 3px 4px;
 }
 
+/* unused */
 table.cleantable {
 	border-collapse: collapse;
 	margin: 0 0 0 0;
@@ -1471,6 +1474,21 @@ table.comptable label {
 	margin-right: 3px;
 	color: #777;
 }
+
+table.comptable .compactive {
+	text-align: center;
+	width: 80px;
+}
+
+table.comptable .compactive label {
+	font-size: 11px;
+	font-weight: normal;
+}
+
+table.comptable .compactive input {
+	vertical-align: middle;
+}
+
 
 /* @todo more wrappers */
 .wrapper a.component {
@@ -1822,21 +1840,40 @@ th.file_size,th.file_date,th.file_perms {
 	width:85px;
 }
 
+#sidebar .snav li.upload {
+	display: none;
+		-moz-border-radius: 4px;
+		-khtml-border-radius: 4px;
+		-webkit-border-radius: 4px;
+	border-radius: 4px;
+	margin-left: 13px;
+	color: #FFF;
+	background: <?php echo $primary_1; ?>;
+	font-weight: 100;
+	text-shadow: 1px 1px 1px <?php echo $primary_1; ?>;
+}
+
 #sidebar .uploadform {
 	padding: 5px 15px;
 }
 
-/* upload link larger button for touch devices */
-#fileuploadlink span.touch {
-	display: none;
+#sidebar .snav.dropzoneenabled li.upload,
+#sidebar .snav.dropzoneenabled li.uploaddropzone{
+	display: list-item;
 }
-#fileuploadlink.touch span {
+
+/* upload link larger button for touch devices */
+.touch #fileuploadlink span,
+#fileuploadlink span.touch {
 	display:none;
 }
-#fileuploadlink.touch span.touch {
+.touch #fileuploadlink span.touch {
 	display: block;
 	text-align: center;
 	font-size: 20px;
+}
+.touch li.uploaddropzone{
+	display:none !important;
 }
 
 /* Upload Queue */
@@ -1965,19 +2002,6 @@ th.file_size,th.file_date,th.file_perms {
 .queue-item-wrap.dz-success .dz-success-mark{
 	display:inline;
 	color: <?php echo $label_2; ?>;
-}
-
-#sidebar .snav li.upload {
-	display: none;
-		-moz-border-radius: 4px;
-		-khtml-border-radius: 4px;
-		-webkit-border-radius: 4px;
-	border-radius: 4px;
-	margin-left: 13px;
-	color: #FFF;
-	background: <?php echo $primary_1; ?>;
-	font-weight: 100;
-	text-shadow: 1px 1px 1px <?php echo $primary_1; ?>;
 }
 
 /* Image Editor Styles */

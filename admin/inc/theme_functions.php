@@ -22,11 +22,11 @@
  * @return string Echos.
  */
 function get_page_content() {
-	exec_action('content-top');
+	exec_action('content-top'); // @hook content-top before get content
 	$content = strip_decode(getPageGlobal('content'));
-	$content = exec_filter('content',$content);
+	$content = exec_filter('content',$content); // @filter content (str) filter page content
 	echo $content;
-	exec_action('content-bottom');
+	exec_action('content-bottom');  // @hook content-bottom after get content
 }
 
 /**
@@ -46,7 +46,7 @@ function get_page_excerpt($len=200, $striphtml=true, $ellipsis = '...') {
 	GLOBAL $content;
 	if ($len<1) return '';
 	$content_e = strip_decode($content);
-	$content_e = exec_filter('content',$content_e);
+	$content_e = exec_filter('content',$content_e); // @filter content (str) filter page content in get_page_excerpt
 	echo getExcerpt($content_e, $len, $striphtml, $ellipsis);
 	}
 
@@ -63,7 +63,7 @@ function get_page_excerpt($len=200, $striphtml=true, $ellipsis = '...') {
  */
 function get_page_meta_keywords($echo=true) {
 	$str = encode_quotes(strip_decode(getPageGlobal('metak')));
-	$str = exec_filter('metak',$str);	
+	$str = exec_filter('metak',$str); // @filter metak (str) filter the meta keywords
 	return echoReturn($str,$echo);
 }
 
@@ -101,7 +101,7 @@ function get_page_meta_desc($echo=true) {
 		$description = preg_replace('/ +/', " ", $description);
 	}
 	
-	$str = exec_filter('metad',$description);
+	$str = exec_filter('metad',$description); // @filter metad (str) meta description in get_page_meta_desc
 
 	return echoReturn($str,$echo);	
 }
@@ -122,7 +122,7 @@ function get_page_meta_robots($echo=true) {
 	$arr[] = getPageGlobal('metarNoArchive') == 1 ? 'noarchive' : 'archive';
 
 	$str = implode(',',$arr);
-	$str = exec_filter('metar',$str);
+	$str = exec_filter('metar',$str); // @filter metar (str) meta robots in get_page_meta_robots
 
 	return echoReturn($str,$echo);		
 }
@@ -138,7 +138,8 @@ function get_page_meta_robots($echo=true) {
  */
 function get_page_head_title($echo=true){
 	$str = strip_tags(strip_decode(getPageGlobal('title')));
-	return echoReturn(exec_filter('headtitle',$str),$echo);		
+	$str = exec_filter('headtitle',$str); // @fitler headtitle (str) head title in get_page_head_title
+	return echoReturn($str,$echo);
 }
 
 /**
@@ -152,7 +153,8 @@ function get_page_head_title($echo=true){
  */
 function get_page_title($echo=true) {
 	$str = strip_decode(getPageGlobal('title'));
-	return echoReturn(exec_filter('pagetitle',$str),$echo);	
+	$str = exec_filter('pagetitle',$str); // @fitler pagetitle (str) page title in get_page_title	
+	return echoReturn($str,$echo);	
 }
 
 /**
@@ -166,7 +168,8 @@ function get_page_title($echo=true) {
  */
 function get_page_title_long($echo=true) {
 	$str = strip_decode(getPageGlobal('titlelong'));
-	return echoReturn(exec_filter('pagetitlelong',$str),$echo);	
+	$str = exec_filter('pagetitlelong',$str); // @filter pagetitlelong (str) page title long in get_page_title_long
+	return echoReturn($str,$echo);	
 }
 
 /**
@@ -180,7 +183,8 @@ function get_page_title_long($echo=true) {
  */
 function get_page_summary($echo=true) {
 	$str = strip_decode(getPageGlobal('summary'));
-	return echoReturn(exec_filter('pagesummary',$str),$echo);	
+	$str = exec_filter('pagesummary',$str); // @filter pagesummary (str) page summary in get_page_summary
+	return echoReturn($str,$echo);	
 }
 
 /**
@@ -211,7 +215,8 @@ function get_page_clean_title($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_slug($echo=true) {
-	return echoReturn(exec_filter('pageslug',getPageGlobal('url')),$echo);
+	$str = exec_filter('pageslug',getPageGlobal('url')); // @filter pageslug (str) page slug in get_pagee_slug
+ 	return echoReturn($str,$echo);
 }
 
 /**
@@ -310,15 +315,15 @@ function get_header($full=true) {
 	if (!empty($keywords)) echo '<meta name="keywords" content="'.$keywords.'" />'."\n";
 	
 	// canonical link
-	$canonical =  exec_filter('linkcanonical',get_page_url(true));
-	if ($full and !empty($canonical)) {
-		echo '<link rel="canonical" href="'.$canonical.'" />'."\n";
+	if ($full) {
+		$canonical = exec_filter('linkcanonical',get_page_url(true)); // @filter linkcanonical (str) rel canonical link
+		if(!empty($canonical)) echo '<link rel="canonical" href="'.$canonical.'" />'."\n";
 	}
 
 	// script queue
 	get_scripts_frontend();
 	
-	exec_action('theme-header');
+	exec_action('theme-header');  // @hook theme-header after get_header output html
 }
 
 /**
@@ -333,7 +338,7 @@ function get_header($full=true) {
  */
 function get_footer() {
 	get_scripts_frontend(true);
-	exec_action('theme-footer');
+	exec_action('theme-footer');  // @hook theme-footer after get_footer html output
 }
 
 /**
@@ -525,14 +530,18 @@ function menu_data($id = null,$xml=false) {
  */
 function get_component($id, $force = false, $raw = false) {
 	$components = get_components_xml();
-	$component  = get_component_xml($id); // this returns an array due to no distinct slug enforcement
+	$component  = get_component_xml($id); 
 	if(!$component) return;
 
-	$enabled = !(bool)($component[0]->disabled == 'true' || $component[0]->disabled == '1');
-	if(!$enabled && !$force) return;
+	// this returns an array due to no unique slug enforcement, so we grab first one atm
+	// @todo find a solution to allowing this or dissallowing duplicate component slugs
+	$component = $component[0];
 
-	if(!$raw) eval("?>" . strip_decode($component[0]->value) . "<?php ");
-	else echo strip_decode($component[0]->value);
+	$disabled = (bool)(string)$component->disabled;
+	if($disabled && !$force) return;
+
+	if(!$raw) eval("?>" . strip_decode($component->value) . "<?php ");
+	else echo strip_decode($component->value);
 }
 
 /**
@@ -543,6 +552,16 @@ function get_component($id, $force = false, $raw = false) {
  */
 function component_exists($id){
 	return !get_component_xml($id);
+}
+
+/**
+ * See if a component is enabled
+ * @since 3.4
+ * @param  str $id component id
+ * @return bool
+ */
+function component_enabled($id){
+	return componentIsEnabled($id);
 }
 
 /**
@@ -602,7 +621,7 @@ function get_navigation($currentpage,$classPrefix = "") {
 		}
 	}
 	
-	echo exec_filter('menuitems',$menu);
+	echo exec_filter('menuitems',$menu); // @filter menuitems (str) menu items html in get_navigation
 }
 
 /**

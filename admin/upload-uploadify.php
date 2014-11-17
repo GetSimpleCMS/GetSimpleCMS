@@ -32,7 +32,7 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 		if (validate_safe_file($tempFile, $_FILES["Filedata"]["name"], $_FILES["Filedata"]["type"])) {
 			move_uploaded_file($tempFile, $targetFile);
 			gs_chmod($targetFile);
-			exec_action('file-uploaded');
+			exec_action('file-uploaded'); // @hook file-uploaded a file was uploaded
 		} else {
 			die(i18n_r('ERROR_UPLOAD') . ' - ' . i18n_r('BAD_FILE'));
 			// invalid file

@@ -159,7 +159,8 @@ $i18n = array(
 "BTN_SAVECHANGES"         =>	"Save Changes",
 "EDIT"                    =>	"Edit",
 "THEME_ROOT"              =>    "Configuration Files",
-
+"UNSAVED_PROMPT"          =>    "This page has unsaved changes, continue anyway ?",
+ 
 /* 
 * For: support.php
 */
@@ -208,6 +209,7 @@ $i18n = array(
 "EDIT"                    =>	"Edit",
 "ADD_COMPONENT"           =>	"<em>A</em>dd Component", // 'a' is the accesskey identifier
 "SAVE_COMPONENTS"         =>	"Save Components",
+"ACTIVE"                  =>	"Active",
 
 /* 
 * For: sitemap.php
@@ -660,7 +662,6 @@ $i18n = array(
 "ENABLED"                 =>	"Enabled",
 "GEN_DISABLE"             =>	"Disable",
 "DISABLED"                =>	"Disabled",
-"ACTIVE"                  =>	"Active",
 "ACTIVATE"                =>	"Activate",
 "ACTIVATED"               =>	"Activated",
 "INACTIVE"                =>	"Inactive",

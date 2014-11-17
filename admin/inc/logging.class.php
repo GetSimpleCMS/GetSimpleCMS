@@ -103,13 +103,13 @@ class GS_Logging_Class {
         /* 
          * Clear Log File
          * Deletes Log File
-         * 
+         * @todo abstract to delete_log()
          * @return success
          */    
         public function clear(){
                 if (is_file($this->_xmlfile)) {
                         $res = unlink($this->_xmlfile);
-                        exec_action('logfile_delete');
+                        exec_action('logfile-delete'); // @hook logfile-delete log file was deleted
                         return $res;
                 }
         }

@@ -393,7 +393,7 @@ if($newdraft) $pageClass.=' newdraft';
                     </div>
 
                     <div class="clear"></div>
-                    <?php exec_action('edit-extras'); ?>        
+                    <?php exec_action('edit-extras'); //@hook edit-extras after page edit options html output ?>        
                 </fieldset>
             </div> 
             <!-- / END PAGE OPTIONS -->
@@ -408,14 +408,13 @@ if($newdraft) $pageClass.=' newdraft';
                 <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
                 <div class="codewrap"><textarea id="post-content" class="html_edit boxsizingBorder" name="post-content"><?php echo $content; ?></textarea></div>
 
-            <?php exec_action('edit-content'); ?> 
+            <?php exec_action('edit-content'); //@hook edit-content after page edit content html output ?> 
 
             <?php if(isset($data_edit)) { 
                 echo '<input id="existing-url" type="hidden" name="existing-url" value="'. $url .'" />'; 
             }
 
-            # CKEditor setup functions
-            exec_action('html-editor-init');
+            exec_action('html-editor-init'); //@hook html-edit-init LEGACY deprecated
             echo "<!-- html-editor-init -->";
             if (empty($HTMLEDITOR)) echo '</fieldset>';
 

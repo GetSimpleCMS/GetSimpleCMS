@@ -194,9 +194,9 @@ get_template('header');
 				}
 				
 				if ($kill == '') {
-					echo '<tr><td>Folder Permissions</td><td><span class="OKmsg" >'.i18n_r('OK') .' - '.i18n_r('WRITABLE') .'</span></td></tr>';
+					echo '<tr><td>Folder Permissions</td><td><span class="OKmsg" >'.i18n_r('WRITABLE') .' - '.i18n_r('OK') .'</span></td></tr>';
 				}	else {
-					echo '<tr><td>Folder Permissions</td><td><span class="ERRmsg" >'.i18n_r('ERROR') .' - '.i18n_r('NOT_WRITABLE') .'</span></td></tr>';
+					echo '<tr><td>Folder Permissions</td><td><span class="ERRmsg" >'.i18n_r('NOT_WRITABLE') .' - '.i18n_r('ERROR') .'</span></td></tr>';
 				}
 				
 				if  (in_arrayi('curl', $php_modules) ) {

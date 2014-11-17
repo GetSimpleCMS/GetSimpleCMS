@@ -656,7 +656,7 @@ function create_dir($path,$recursive = true){
  * @param  str $path path to remove
  * @return bool       success
  */
-function delete_dir($path){
+function delete_folder($path){
 	$status = rmdir($path);
 	return fileLog(__FUNCTION__,$status,$path);
 }
@@ -1078,7 +1078,7 @@ function redirect($url) {
 		die();
 	}
 
-	if(function_exists('exec_action')) exec_action('redirect');
+	if(function_exists('exec_action')) exec_action('redirect'); // @hook redirect a redirect is occuring
 
 	$debugredirect = getDef('GSDEBUGREDIRECTS',true);
 
