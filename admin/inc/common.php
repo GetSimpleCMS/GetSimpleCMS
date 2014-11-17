@@ -58,7 +58,7 @@ $GS_constants = array(
 	'GSRESETFILESUFFIX'     => '.reset',                      // (str) password reset file naming suffix before extension
 	'GSRESETFILEPREFIX'     => '',                            // (str) password reset file naming prefix after extension
 	'GSSHOWCODEHINTS'       => true,                          // (bool) show code hints on components page and snippets etc.
-	'GSHTMLEDITINLINE'      => true,                          // (bool) show html cke editors inline
+	'GSHTMLEDITINLINE'      => false,                         // (bool) show html cke editors inline
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
@@ -183,7 +183,7 @@ $reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
 if(defined('GSDEBUG') && (bool) GSDEBUG === true) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
-	$nocache = true;
+	// $nocache = true;
 } else if( defined('GSSUPPRESSERRORS') && (bool)GSSUPPRESSERRORS === true ) {
 	error_reporting(0);
 	ini_set('display_errors', 0);

@@ -59,13 +59,13 @@ if (isset($_POST['submitted'])){
 		$count = 0;
 		foreach ($ids as $comp)	{
 			# create the body of components.xml file
-			$components = $xml->addChild('item');
-			$c_note     = $components->addChild('title');
+			$newitems = $xml->addChild('item');
+			$c_note     = $newitems->addChild('title');
 			$c_note->addCData($comp['title']);
-			$components->addChild('slug', $comp['slug']);
-			$c_note     = $components->addChild('value');
+			$newitems->addChild('slug', $comp['slug']);
+			$c_note     = $newitems->addChild('value');
 			$c_note->addCData($comp['value']);
-			$c_note     = $components->addChild('disabled');
+			$c_note     = $newitems->addChild('disabled');
 			$c_note->addCData($comp['disabled']);			
 			$count++;
 		}
@@ -74,6 +74,7 @@ if (isset($_POST['submitted'])){
 	XMLsave($xml, GSDATAOTHERPATH.GSCOMPONENTSFILE);
 	$update = 'comp-success';
 	// redirect('components.php?upd=comp-success');
+	get_components_xml(true);
 }
 
 # if undo was invoked
@@ -82,12 +83,14 @@ if (isset($_GET['undo'])) {
 	# perform the undo
 	restore_datafile(GSDATAOTHERPATH.GSCOMPONENTSFILE);
 	$update = 'comp-restored';
-	check_for_csrf("undo");		
+	check_for_csrf("undo");
 	// redirect('components.php?upd=comp-restored');
+	get_components_xml(true);
 }
 
 # create components form html
 $collectionData = get_components_xml();
+debugLog($collectionData);
 $numitems       = $collectionData ? count($collectionData) : 0;
 
 function getItemOutput($id,$item,$class = 'item_edit'){

@@ -59,13 +59,13 @@ if (isset($_POST['submitted'])){
 		$count = 0;
 		foreach ($ids as $comp)	{
 			# create the body of components.xml file
-			$components = $xml->addChild('item');
-			$c_note     = $components->addChild('title');
+			$newitems = $xml->addChild('item');
+			$c_note     = $newitems->addChild('title');
 			$c_note->addCData($comp['title']);
-			$components->addChild('slug', $comp['slug']);
-			$c_note     = $components->addChild('value');
+			$newitems->addChild('slug', $comp['slug']);
+			$c_note     = $newitems->addChild('value');
 			$c_note->addCData($comp['value']);
-			$c_note     = $components->addChild('disabled');
+			$c_note     = $newitems->addChild('disabled');
 			$c_note->addCData($comp['disabled']);			
 			$count++;
 		}
@@ -74,6 +74,7 @@ if (isset($_POST['submitted'])){
 	XMLsave($xml, GSDATAOTHERPATH.GSSNIPPETSFILE);
 	$update = 'snippet-success';
 	// redirect('components.php?upd=comp-success');
+	get_snippets_xml(true);
 }
 
 # if undo was invoked
@@ -84,6 +85,7 @@ if (isset($_GET['undo'])) {
 	$update = 'snippet-restored';
 	check_for_csrf("undo");		
 	// redirect('components.php?upd=comp-restored'); // @todo fix redirect is necessary so you cant refresh undo links
+	get_snippets_xml(true);
 }
 
 # create components form html
@@ -122,7 +124,8 @@ function getItemTemplate($class = 'item_edit noeditor'){
 		'title'    => '',
 		'slug'     => '',
 		'value'    => '',
-		'disabled' => ''
+		'disabled' => '',
+		'readonly' => ''
 	);
 
 	return getItemOutput('',(object)$item,$class);
@@ -196,7 +199,7 @@ include('template/include-nav.php'); ?>
 	
 	<div id="sidebar">
 		<?php include('template/sidebar-theme.php'); ?>
-		<?php outputCollectionTags($collectionData,$'snippets'); ?>
+		<?php outputCollectionTags($collectionData,'snippets'); ?>
 	</div>
 
 </div>

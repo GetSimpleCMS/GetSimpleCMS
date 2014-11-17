@@ -1568,10 +1568,10 @@ function gotoDefaultPage(){
  * @return components data items xmlobj
  *
  */
-function get_components_xml(){
+function get_components_xml($refresh = false){
     global $components;
-    if (!$components) {
-    	return get_collection_items(GSCOMPONENTSFILE);
+    if (!$components || $refresh) {
+    	$components = get_collection_items(GSCOMPONENTSFILE);
     } 
     return $components;
 }
@@ -1586,7 +1586,7 @@ function get_components_xml(){
  * @return array of simpleXmlObj matching slug
  */
 function get_component_xml($id){
-	return get_collection_item($id,GSCOMPONENTSFILE);
+	return get_collection_item($id,get_components_xml());
 }
 
 /**
@@ -1606,17 +1606,15 @@ function componentIsEnabled($id){
  *
  * @since 3.4
  * 
- * @uses components
- * @uses GSDATAOTHERPATH
- * @uses getXML
- * @param  boolean $xml [description]
+ * @global snippets
+ * @param  boolean $refresh refresh from file
  * @return components data items xmlobj
  *
  */
-function get_snippets_xml(){
+function get_snippets_xml($refresh = false){
     global $snippets;
-    if (!$snippets) {
-    	return get_collection_items(GSSNIPPETSFILE);
+    if (!$snippets || $refresh) {
+    	$snippets = get_collection_items(GSSNIPPETSFILE);
     }
     return $snippets;
 }
@@ -1631,7 +1629,7 @@ function get_snippets_xml(){
  * @return array of simpleXmlObj matching slug
  */
 function get_snippet_xml($id){
-	return get_collection_item($id,GSSNIPPETSFILE);
+	return get_collection_item($id,get_snippets_xml());
 }
 
 /**
@@ -1658,8 +1656,9 @@ function snippetIsEnabled($id){
  *
  */
 function get_collection_items($asset){	
+	debugLog(GSDATAOTHERPATH.$asset);
 	if (file_exists(GSDATAOTHERPATH.$asset)) {
-		$data = getXML(GSDATAOTHERPATH.$asset);
+		$data  = getXML(GSDATAOTHERPATH.$asset);
 	    $items = $data->item;
 	} else {
 	    $items = array();
@@ -1676,12 +1675,12 @@ function get_collection_items($asset){
  * @param  str $id component id
  * @return array of simpleXmlObj matching slug
  */
-function get_collection_item($id,$asset){
+function get_collection_item($id,$collection){
 	// normalize id to match how we save it
 	$id = to7bit($id, 'UTF-8');
 	$id = clean_url($id);
 	if(!$id) return;
-	return get_collection_items($asset)->xpath("//slug[.='".$id."']/..");	
+	return $collection->xpath("//slug[.='".$id."']/..");	
 }
 
 /**
@@ -1697,8 +1696,8 @@ function get_collection_item($id,$asset){
  * @param bool $force Force return of inactive components
  * @param bool $raw do not process php
  */
-function output_collection_item($id, $asset, $force = false, $raw = false) {
-	$item  = get_collection_item($id,$asset); 
+function output_collection_item($id, $collection, $force = false, $raw = false) {
+	$item  = get_collection_item($id,$collection); 
 	if(!$item) return;
 
 	// this returns an array due to no unique slug enforcement, so we grab first one atm

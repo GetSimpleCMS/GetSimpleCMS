@@ -529,7 +529,7 @@ function menu_data($id = null,$xml=false) {
  * @param bool $raw do not process php
  */
 function get_component($id, $force = false, $raw = false) {
-	output_collection_item($id, GSCOMPONENTSFILE, $force, $raw);
+	output_collection_item($id, get_components_xml(), $force, $raw);
 }
 
 /**
@@ -578,7 +578,7 @@ function return_component(){
  * @param bool $raw do not process php
  */
 function get_snippet($id, $force = false) {
-	output_collection_item($id, GSSNIPPETSFILE, $force, true);
+	output_collection_item($id, get_snippets_xml(), $force, true);
 }
 
 /**
