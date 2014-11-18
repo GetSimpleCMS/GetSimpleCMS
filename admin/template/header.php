@@ -173,7 +173,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	<style>
 		.tab{ display:block; clear:both;}
 		.tab fieldset legend{ display: block; }
-		#cm_themeselect { display:none;}
+		#cm_themeselect, #cm_themeselect_label { display:none;}
 		#theme_filemanager ul ul {
 			display: block;
 		}

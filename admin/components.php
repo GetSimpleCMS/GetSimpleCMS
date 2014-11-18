@@ -174,7 +174,7 @@ include('template/include-nav.php'); ?>
 				<a href="javascript:void(0)" id="addcomponent" accesskey="<?php echo find_accesskey(i18n_r('ADD_COMPONENT'));?>" ><?php i18n('ADD_COMPONENT');?></a>
 				<?php if(!getDef('GSNOHIGHLIGHT',true)){
 				echo $themeselector; ?>	
-				<label>Theme</label>
+				<label id="cm_themeselect_label"><?php i18n('THEME'); ?></label>
 			<?php } ?>	
 				<?php exec_action(get_filename_id().'-edit-nav'); ?>
 			</div>		
