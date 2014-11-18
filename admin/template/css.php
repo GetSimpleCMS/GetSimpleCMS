@@ -2607,7 +2607,7 @@ a.disabled:visited {
 
 #theme_edit_code .CodeMirror{
 	/*border:1px solid #E8E8E8;*/
-	border-radius:2px;
+	/*border-radius:2px;*/ /* causes webkit font rendering bug on opacity transistions and fixed positions WHY? */
 	min-height:550px;
 }
 
