@@ -107,7 +107,7 @@ function getItemOutput($id,$item,$class = 'item_edit'){
 	
 	$str .= '<td class="compactive"><label class="" for="active[]" >'.i18n_r('ACTIVE').'</label>';
 	$str .= '<input type="checkbox" name="active[]" '. (!$disabled ? 'checked="checked"' : '') .' value="'.$id.'" /></td>';
-	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE_SNIPPET').': '. cl($item->title).'?" class="delcomponentitem" rel="'.$id.'" >&times;</a></td>';
+	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE_SNIPPET').': '. cl($item->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
 	$str .= '</tr></table>';
 	
 	$str .= '<textarea name="val[]" class="'. (getDef('GSHTMLEDITINLINE',true) ? 'inline ' : '') .$class.'" data-mode="html" '.$readonly.'>'. stripslashes($item->value) .'</textarea>';
