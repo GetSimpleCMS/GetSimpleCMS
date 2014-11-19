@@ -183,7 +183,7 @@ $reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
 if(defined('GSDEBUG') && (bool) GSDEBUG === true) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
-	$nocache = true;
+	// $nocache = true;
 } else if( defined('GSSUPPRESSERRORS') && (bool)GSSUPPRESSERRORS === true ) {
 	error_reporting(0);
 	ini_set('display_errors', 0);
