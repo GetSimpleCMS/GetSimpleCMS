@@ -356,51 +356,50 @@ jQuery(document).ready(function () {
 
 		// copy template and add ids to fields
 		var comptemplate = $('#comptemplate').clone();
-		$(comptemplate).find('.compdiv').prop('id','section-'+id);
-		$(comptemplate).find('.compdiv').css('display','none');
-		$(comptemplate).find('.delcomponent').prop('rel',id);
-		$(comptemplate).find("[name='id[]']").prop('value',id);
-		$(comptemplate).find("[name='active[]']").prop('value',id);
-		// $(comptemplate).find("[name='val[]']").addClass('code_edit');
-		// Debugger.log($(comptemplate).children().first().get(0));
+		var newcomponent = comptemplate.children(':first');
+
+		newcomponent.prop('id','section-'+id);
+		newcomponent.css('display','none');
+		newcomponent.find('.delcomponent').prop('rel',id);
+		newcomponent.find("[name='id[]']").prop('value',id);
+		newcomponent.find("[name='active[]']").prop('value',id);
 
 		// insert new component
-		var newcomponent = comptemplate.children(':first');
 		$("#divTxt").prepend(newcomponent);
 		
-		// fade in
-		$("#section-" + id).slideToggle('fast');
-
 		// remove template noeditor class
-		$("#section-" + id).find("[name='val[]']").removeClass('noeditor');
+		var input = newcomponent.find("[name='val[]']");
+		input.addClass('oneline');
+		input.removeClass('noeditor');
 		
+		// fade in
+		newcomponent.slideToggle(500);
+
 		// trigger title change
-		$("#section-" + id).find($("b.editable")).comptitleinput();
+		newcomponent.find($("b.editable")).comptitleinput();
 
  		// bump id
-		id = (id - 1) + 2;
-		$("#id").val(id);
+		nextid = (id - 1) + 2;
+		$("#id").val(nextid);
 
 		$('#submit_line').fadeIn(); // fadein in case no components exist
 		ajaxStatusComplete();
 		
 		// add code ditor
-		var textarea = $("#divTxt").find('textarea.code_edit').first();
-		if( $.isFunction($.fn.editorFromTextarea)) textarea.editorFromTextarea();
+		var codeedit = input.hasClass('code_edit');
+		if( codeedit && $.isFunction($.fn.editorFromTextarea)) input.editorFromTextarea();
 
 		// add html editor
-		var textarea = $("#divTxt").find('textarea.html_edit').first();
-		if( $.isFunction($.fn.htmlEditorFromTextarea)) textarea.htmlEditorFromTextarea();
+		var htmledit = input.hasClass('html_edit');
+		if( htmledit && $.isFunction($.fn.htmlEditorFromTextarea)) input.htmlEditorFromTextarea();
 
 		// set custom code editor height
-		var editor = textarea.data('editor');
-		if(editor){
-			// retain autosizing but make sure the editor start larger than 1 line high
-			$(editor.getWrapperElement()).find('.CodeMirror-scroll').css('min-height',100);
-			editor.refresh();
-		}
-
-		// @todo set custom html editor height, using header for now
+		// var editor = input.data('editor');
+		// if(editor){
+		// 	// retain autosizing but make sure the editor start larger than 1 line high
+		// 	$(editor.getWrapperElement()).find('.CodeMirror-scroll').css('min-height',100);
+		// 	editor.refresh();
+		// }
 
 		$("#divTxt").find('input').get(0).focus(); // focus input so editor gets focused ( if it listens of course )
 		// @todo make better focus events

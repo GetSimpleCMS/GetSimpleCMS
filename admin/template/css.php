@@ -1430,14 +1430,28 @@ form.manyinputs p {
 }
 
 .compdiv {
-	padding: 10px 0 35px 0;
+	margin: 10px 0 35px 0;
+	padding:0px;
+}
+
+.compdiv.table {
+	height:20px;
+}
+.compdiv textarea.code_edit.oneline {
+	height:25px !important;
+	white-space: nowrap;
+}
+
+.compdiv textarea.html_edit.oneline {
+	height:180px !important;
+	white-space: nowrap;
 }
 
 .compdiv .cke_textarea_inline {
 	margin:5px -1px;padding:18px;
 	border: 1px solid #E5E5E5;
 	box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
-}	
+}
 
 table.comptable {
 	margin: 0 !important;

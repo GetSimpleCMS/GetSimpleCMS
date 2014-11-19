@@ -158,7 +158,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 <?php       if(getGlobal('EDOPTIONS')) echo ','.trim(getGlobal('EDOPTIONS')); ?>
         };
 
-       <?php if(get_filename_id() == 'snippets') echo "htmlEditorConfig.height = '200px';"; ?>
+       <?php if(get_filename_id() == 'snippets') echo "htmlEditorConfig.height = '100px';"; ?>
 
     </script>
 

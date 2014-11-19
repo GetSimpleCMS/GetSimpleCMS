@@ -76,7 +76,7 @@ $GS_definitions = array(
 	'GSSTYLE'              => 'wide,sbfixed',                 // (str-csv) default style modifiers
 	'GSWIDTH'              => '1024px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width
 	'GSWIDTHWIDE'          => '1366px',                       // (str) page width on backend pages defined in GSWIDEPAGES, values as above
-	'GSWIDEPAGES'          => 'theme-edit,components',        // (str-csv) pages to apply GSWIDTHWIED on
+	'GSWIDEPAGES'          => 'theme-edit,components,snippets', // (str-csv) pages to apply GSWIDTHWIED on
 	'GSALLOWLOGIN'         => true,                           // (bool) allow front end login
 	'GSALLOWRESETPASS'     => true,                           // (bool) allow front end password resets
 	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // (str-csv) file extensions to show and edit in theme editor
@@ -183,7 +183,7 @@ $reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
 if(defined('GSDEBUG') && (bool) GSDEBUG === true) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
-	// $nocache = true;
+	$nocache = true;
 } else if( defined('GSSUPPRESSERRORS') && (bool)GSSUPPRESSERRORS === true ) {
 	error_reporting(0);
 	ini_set('display_errors', 0);
