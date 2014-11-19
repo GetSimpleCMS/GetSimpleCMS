@@ -90,7 +90,6 @@ if (isset($_GET['undo'])) {
 
 # create components form html
 $collectionData = get_components_xml();
-debugLog($collectionData);
 $numitems       = $collectionData ? count($collectionData) : 0;
 
 function getItemOutput($id,$item,$class = 'item_edit'){

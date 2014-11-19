@@ -433,7 +433,7 @@ jQuery(document).ready(function () {
 	$.fn.comptitleinput = function(){
 		var t = $(this).html();		
 		$(this).parents('.compdiv').find("input.comptitle").hide();
-		$(this).after('<div id="changetitle"><label>Title: </b><input class="text newtitle titlesaver" name="title[]" value="' + t + '" /></div>');
+		$(this).after('<div id="changetitle"><label>Title: </b><input class="text newtitle titlesaver" name="titletmp[]" value="' + t + '" /></div>');
 		$(this).next('#changetitle').find('input.titlesaver').focus();
 		$(this).parents('.compdiv').find("input.compslug").val('');
 		$(this).hide();		
