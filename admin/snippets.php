@@ -72,8 +72,8 @@ if (isset($_POST['submitted'])){
 	}
 	exec_action('snippet-save'); // @hook component-save before saving components data file
 	XMLsave($xml, GSDATAOTHERPATH.GSSNIPPETSFILE);
+
 	$update = 'snippet-success';
-	// redirect('components.php?upd=comp-success');
 	get_snippets_xml(true);
 }
 
@@ -82,9 +82,9 @@ if (isset($_GET['undo'])) {
 	
 	# perform the undo
 	restore_datafile(GSDATAOTHERPATH.GSSNIPPETSFILE);
-	$update = 'snippet-restored';
 	check_for_csrf("undo");		
-	// redirect('components.php?upd=comp-restored'); // @todo fix redirect is necessary so you cant refresh undo links
+	if(!requestIsAjax()) redirect('snippets.php?upd=comp-restored'); // redirect to prevent refresh undos
+	$update = 'snippet-restored';
 	get_snippets_xml(true);
 }
 

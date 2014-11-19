@@ -73,7 +73,6 @@ if (isset($_POST['submitted'])){
 	exec_action('component-save'); // @hook component-save before saving components data file
 	XMLsave($xml, GSDATAOTHERPATH.GSCOMPONENTSFILE);
 	$update = 'comp-success';
-	// redirect('components.php?upd=comp-success');
 	get_components_xml(true);
 }
 
@@ -82,9 +81,9 @@ if (isset($_GET['undo'])) {
 	
 	# perform the undo
 	restore_datafile(GSDATAOTHERPATH.GSCOMPONENTSFILE);
-	$update = 'comp-restored';
 	check_for_csrf("undo");
-	// redirect('components.php?upd=comp-restored');
+	if(!requestIsAjax()) redirect('components.php?upd=comp-restored'); // redirect to prevent refresh undos
+	$update = 'comp-restored';
 	get_components_xml(true);
 }
 

@@ -33,7 +33,8 @@
 	
 	<!-- wrap each sidebar section like this -->
 	<div class="section">
-		<?php get_snippet('sidebar');	?>
+		<?php get_component('sidebar');	?>
+		<?php // get_snippet('sidebar');	?>
 	</div>
 
 	
