@@ -3,6 +3,9 @@
  * 
  */
 
+GS.notifyExpireDelay = 10000;
+GS.removeItDelay     = 5000;
+
 /* jshint multistr: true */
 
 /* jQuery reverseOrder
@@ -67,7 +70,7 @@ $.fn.popit = function ($speed) {
  * @param int $delay delay in ms
  */
 $.fn.removeit = function ($delay) {
-	$delay = $delay || 5000;
+	$delay = $delay || GS.removeItDelay;
 	$(this).each(function () {
 		$(this).delay($delay).fadeOut(500);
 	});
@@ -178,7 +181,7 @@ $.fn.spin.presets = {
 function notifyOk($msg) {
 	return notify($msg, 'ok');
 }
- 
+
 function notifyWarn($msg) {
 	return notify($msg, 'warning');
 }
@@ -190,18 +193,62 @@ function notifyInfo($msg) {
 function notifyError($msg) {
 	return notify($msg, 'error');
 }
- 
+
 function notify($msg, $type) {
 	if ($type == 'ok' || $type == 'warning' || $type == 'info' || $type == 'error') {
 		var $notify = $('<div class="notify notify_' + $type + '"><p>' + $msg + '</p></div>');
 		var notifyelem = $('div.bodycontent').before($notify);
 		$notify.addCloseButton();
+		$notify.notifyExpire();
 		return $notify;
 	}
 }
 
-function clearNotify() {
-	$('div.wrapper .notify').remove();
+$.fn.notifyExpire = function($delay){
+	$_this = $(this);
+	$delay = $delay || GS.notifyExpireDelay;	
+	Debugger.log('expiring');
+	Debugger.log($(this));
+	setTimeout(
+		function(e){
+			Debugger.log($_this);
+			$_this.addClass('notify_expired')
+		},
+		$delay
+	);
+}
+
+$.fn.parseNotify = function(){
+	Debugger.log($(this));
+	
+	return $(this).each(function() {
+		// if(!$(this).get(0)) next;
+		var msg     = $(this).html();
+		var persist = $(this).hasClass('persist');
+		var remove  = $(this).hasClass('remove');
+
+		Debugger.log(persist);
+
+		if($(this).hasClass('notify_success')){
+		    clearNotify('ok');
+		    elem = notify(msg,'ok');
+		}
+		else if($(this).hasClass('notify_error'))   elem = notify(msg,'error');
+		else if($(this).hasClass('notify_info'))    elem = notify(msg,'info');
+		else if($(this).hasClass('notify_warning')) elem = notify(msg,'warning');
+		else elem = notify(msg);
+
+		elem = elem.popit(); // pop ajax always?
+
+		if(persist) elem = elem.notifyExpire(); // expire it so we know its old
+		if(remove)  elem = elem.removeIt();
+	});
+}
+
+function clearNotify($type) {
+	Debugger.log('CLEAR NOTIFY '+ $type);
+	if($type !== undefined) return $('div.wrapper .notify.notify_'+$type).remove();
+	return $('div.wrapper .notify').remove();
 }
  
 function basename(str){
@@ -1142,17 +1189,19 @@ jQuery(document).ready(function () {
 			data: dataString+'&submitted=1&ajaxsave=1',
 			success: function( response ) {
 				response = $.parseHTML(response);
-				$('div.wrapper .updated').remove();
-				$('div.wrapper .error').remove();
-				if ($(response).find('div.error').html()) {
-					notifyError($(response).find('div.error').html()).popit().removeit();
-				}
-				else if ($(response).find('div.updated').html()) {
-					notifyOk($(response).find('div.updated').html()).popit().removeit();
-				}	
-				else {
-					notifyError("<p>ERROR</p>").popit().removeit();					
-				}
+				// Debugger.log($(response).find('div.notify'));
+				$(response).find('div.notify').parseNotify();
+
+				// if ($(response).find('div.error').html()) {
+				// 	notifyError($(response).find('div.error').html()).popit();
+				// }
+				// else if ($(response).find('div.updated').html()) {
+				// 	clearNotify('ok');
+				// 	notifyOk($(response).find('div.updated').html()).popit();
+				// }
+				// else {
+				// 	notifyError("<p>ERROR</p>").popit();					
+				// }
 
 				updateNonce(response);
 				ajaxStatusComplete();

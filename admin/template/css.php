@@ -1555,6 +1555,15 @@ table.comptable .compactive input {
 	line-height: 22px;
 	padding: 5px 10px;
 	margin-bottom: 20px;
+
+    -webkit-transition:  1000ms ease-in-out;
+	   -moz-transition:  1000ms ease-in-out;
+	     -o-transition:  1000ms ease-in-out;
+	        transition:  1000ms ease-in-out;
+	-webkit-transition-property: background-color, color, text-shadow;
+	   -moz-transition-property: background-color, color, text-shadow;
+	     -o-transition-property: background-color, color, text-shadow;
+	        transition-property: background-color, color, text-shadow;
 }
 
 .updated a, .error a, .notify a{
@@ -1586,6 +1595,11 @@ table.comptable .compactive input {
 .notify_warning {
 	color: <?php echo $label_3; ?>;
 	background: <?php echo $notify_3; ?>;	
+}
+
+.notify_expired {
+	background: <?php echo $notify_6; ?>;
+	color: black;
 }
 
 .deletedrow {
