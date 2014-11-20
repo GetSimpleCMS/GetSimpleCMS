@@ -449,6 +449,7 @@ if(isset($load['plugin']) && $load['plugin']){
 
 	// Include plugins files in global scope
 	loadPluginData();
+	if(function_exists('plugin_preload_callout')) plugin_preload_callout();	// @callout plugin_preload_callout callout before loading plugin files
 	foreach ($live_plugins as $file=>$en) {
 		if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
 			# debugLog('including plugin: ' . $file);
@@ -469,7 +470,7 @@ if(isset($load['plugin']) && $load['plugin']){
 	# main hook for common.php
 	exec_action('common'); // @hook common.php common has completed doing its thing
 	// debugLog('calling common_callout');
-	if(function_exists('common_callout')) common_callout();
+	if(function_exists('common_callout')) common_callout(); // @callout common_callout callout after common loaded, before templating
 }
 
 /**
@@ -493,12 +494,11 @@ if(GSBASE) require_once(GSADMINPATH.'base.php');
  * @since 3.1
  * @param $txt string
  */
-function debugLog($txt = null) {
+function debugLog($mixed = null) {
 	global $GS_debug;
-	array_push($GS_debug,$txt);
-	if(function_exists('debugLog_callout')) debugLog_callout($txt);
-	// print_r($GS_debug);
-	return $txt;
+	array_push($GS_debug,$mixed);
+	if(function_exists('debugLog_callout')) debugLog_callout($mixed); // @callout debugLog_callout (str) callout for each debugLog call, argument passed
+	return $mixed;
 }
 
 /**
