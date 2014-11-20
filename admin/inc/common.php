@@ -92,6 +92,7 @@ $GS_definitions = array(
 	'GSDOCHMOD'            => true,                           // (bool) perform chmod after creating files or directories
 	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls
+	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
 	# -----------------------------------------------------------------------------------------------------------------------------------------------
  	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
 );
@@ -170,6 +171,8 @@ define('GSCACHEPATH'     , GSDATAPATH      . 'cache/');     // data/cache/
 define('GSBACKUPSPATH'   , GSROOTPATH      . 'backups/');   // backups/
 define('GSBACKUSERSPATH' , GSBACKUPSPATH   . 'users/');     // backups/users
 define('GSTHEMESPATH'    , GSROOTPATH      . 'theme/');     // theme/
+
+
 
 $reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
 
@@ -448,6 +451,7 @@ if(isset($load['plugin']) && $load['plugin']){
 	loadPluginData();
 	foreach ($live_plugins as $file=>$en) {
 		if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
+			# debugLog('including plugin: ' . $file);
 			include_once(GSPLUGINPATH . $file);
 		}
 	}
@@ -468,7 +472,13 @@ if(isset($load['plugin']) && $load['plugin']){
 	if(function_exists('common_callout')) common_callout();
 }
 
+/**
+ * debug plugin global arrays
+ */
+
 // debugLog($live_plugins);
+// debugLog($plugins);
+// debugLog($plugin_info);
 
 
 if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ require_once(GSADMININCPATH.'login_functions.php'); }

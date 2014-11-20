@@ -251,11 +251,14 @@ function add_action($hook_name, $added_function, $args = array()) {
 	global $plugins;
 	global $live_plugins; 
 
-	$plugins[] = array(
+	$plugin_action = array(
 		'hook'     => $hook_name,
 		'function' => $added_function,
 		'args'     => (array) $args,
 	);
+	
+	addPlugindebugging($plugin_action);
+	$plugins[] = $plugin_action;
 }
 
 /**
@@ -352,6 +355,29 @@ function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $des
 	);
 }
 
+/**
+ * adds plugin debugging info to plugin action arrays
+ * add caller file and line #, normalizes to plugin origin file
+ */
+function addPlugindebugging(&$array){
+	GLOBAl $live_plugins;
+
+	if( !(getDef('GSDEBUGHOOKS') || isDebug()) ) return;
+
+	$skip          = 1; // levels to this function, from add_action/add_filter
+	$shift         = 3; // levels to plugin include, from common.php
+
+	$_bt           = debug_backtrace();
+	$bt            = array_slice($_bt,$skip,count($_bt)-$shift);
+	$caller        = array_pop($bt); // last bactrace is the originator plugin file
+	// if we ever load plugins some other way or chained, then we will have to use a loop to find it
+	$pathName      = pathinfo_filename($caller['file']);
+	$lineNumber    = $caller['line'];
+	
+	$array['file'] = $pathName.'.php';
+	$array['line'] = $lineNumber;
+	$array['core'] = !isset($live_plugins[$array['file']]);
+}
 
 /**
  * Add Filter
@@ -366,12 +392,15 @@ function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $des
 function add_filter($filter_name, $added_function, $args = array()) {
   	global $filters;
 
-	$filters[] = array(
+	$plugin_filter = array(
 		'filter'   => $filter_name,
 		'function' => $added_function,
 		'active'   => false,
 		'args'     => (array) $args		
 	);
+
+	addPlugindebugging($plugin_filter);
+	$filters[] = $plugin_filter;
 }
 
 /**
