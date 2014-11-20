@@ -250,36 +250,12 @@ function create_pluginsxml($force=false){
 function add_action($hook_name, $added_function, $args = array()) {
 	global $plugins;
 	global $live_plugins; 
-  
-	$bt             = debug_backtrace();
-	$shift          = count($bt) - 3;	// plugin name should be  
-	$caller         = array_shift($bt);
-	$realPathName   = pathinfo_filename($caller['file']);
-	$realLineNumber = $caller['line'];
 
-	while ($shift > 0) {
-		 $caller = array_shift($bt);
-		 $shift--;
-	}
-
-	$pathName = pathinfo_filename($caller['file']);
-
-	if ((isset ($live_plugins[$pathName.'.php']) && $live_plugins[$pathName.'.php'] == 'true') || $shift < 0 ){
-		if ($realPathName != $pathName) {
-			$pathName   = $realPathName;
-			$lineNumber = $realLineNumber;
-		} else {
-			$lineNumber = $caller['line'];
-		}
-		
-		$plugins[] = array(
-			'hook'     => $hook_name,
-			'function' => $added_function,
-			'args'     => (array) $args,
-			'file'     => $pathName.'.php',
-			'line'     => $caller['line']
-		);
-	  } 
+	$plugins[] = array(
+		'hook'     => $hook_name,
+		'function' => $added_function,
+		'args'     => (array) $args,
+	);
 }
 
 /**
@@ -292,7 +268,10 @@ function add_action($hook_name, $added_function, $args = array()) {
  */
 function exec_action($a) {
 	global $plugins;
-	
+	if(!$plugins){
+		debugLog('plugins empty');
+		return;
+	}
 	foreach ($plugins as $hook)	{
 		if ($hook['hook'] == $a) {
 			call_user_func_array($hook['function'], $hook['args']);
@@ -386,10 +365,6 @@ function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $des
  */
 function add_filter($filter_name, $added_function, $args = array()) {
   	global $filters;
-
-	$bt       = debug_backtrace();
-	$caller   = array_shift($bt);
-	$pathName = pathinfo_filename($caller['file']);
 
 	$filters[] = array(
 		'filter'   => $filter_name,
