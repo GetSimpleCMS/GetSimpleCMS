@@ -560,14 +560,7 @@ jQuery(document).ready(function () {
  
 							$('div.wrapper .updated').remove();
 							$('div.wrapper .error').remove();
-							if ($(response).find('div.error').html()) {
-								$('div.bodycontent').before('<div class="error"><p>' + $(response).find('div.error').html() + '</p></div>');
-								popAlertMsg();
-							}
-							if ($(response).find('div.updated').html()) {
-								$('div.bodycontent').before('<div class="updated"><p>' + $(response).find('div.updated').html() + '</p></div>');
-								popAlertMsg();
-							}
+							$(response).find('div.notify').parseNotify();
 						}
 					});
 					loadingAjaxIndicator.fadeOut(500);
@@ -667,8 +660,8 @@ jQuery(document).ready(function () {
 				rscript      = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
 				responseText = data.replace(rscript, "");
 				response     = $($.parseHTML(data));
-				console.log(response.get(0));
-				if ($(response).find('div.notify_success').html()) {
+
+				if ($(response).find('div.notify_success')) {
 					// remove scripts to prevent assets from loading when we create temp dom
 					rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
 	 
@@ -680,7 +673,7 @@ jQuery(document).ready(function () {
 					// document.body.style.cursor = "default";
 					$(response).find('div.updated').parseNotify();
 					initLoaderIndicator();
-				} else if ($(response).find('div.notify_error').html()) {
+				} else if ($(response).find('div.notify_error')) {
 					document.body.style.cursor = "default";
 					mytd.html(old).removeClass('ajaxwait_tint_dark');
 					$('.toggleEnable').removeClass('disabled');
@@ -879,7 +872,7 @@ jQuery(document).ready(function () {
     // handle ajax save error
     function ajaxSaveError(response){
         ajaxError(response);
-        if ($(response).find('div.updated').html()) {
+        if ($(response).find('div.updated')) {
         	$(response).find('div.updated').parseNotify();
         } else notifyError(i18n('ERROR_OCCURED')).popit().removeit();
         warnme = false;
@@ -890,7 +883,7 @@ jQuery(document).ready(function () {
     function autoSaveCallback(response){
         Debugger.log('autoSaveCallback ' + response);
         response = $.parseHTML(response);
-        if ($(response).find('div.updated').html()) {
+        if ($(response).find('div.updated')) {
             autoSaveUpdate(true,$(response).find('div.autosavenotify').html());
             ajaxSaveSucess(response);
         }
@@ -904,7 +897,7 @@ jQuery(document).ready(function () {
     function ajaxSaveCallback(response){
         Debugger.log('ajaxSaveCallback ' + response);
         response = $.parseHTML(response);
-        if ($(response).find('div.updated').html()) {
+        if ($(response).find('div.updated')) {
             ajaxSaveUpdate(true,$(response).find('div.updated').html());
             ajaxSaveSucess(response);
         }
@@ -1170,12 +1163,9 @@ jQuery(document).ready(function () {
 				response = $.parseHTML(response); // jquery 1.9 html parsing fix
 				$('div.wrapper .updated').remove();
 				$('div.wrapper .error').remove();
-				if ($(response).find('div.error').html()) {
-					notifyError($(response).find('div.error').html()).popit().removeit();
+				if ($(response).find('div.updated')) {
+					$(response).find('div.notify').parseNotify();
 				}
-				if ($(response).find('div.updated').html()) {
-					notifySuccess($(response).find('div.updated').html()).popit().removeit();
-				}	
 				else {
 					notifyError("<p>ERROR</p>").popit().removeit();					
 				}
