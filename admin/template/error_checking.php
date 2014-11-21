@@ -46,8 +46,6 @@
 			doNotify('error','error',$persistant);
 			doNotify('warning','warning',$persistant);			
 		if(!$dbn) break;
-		case '' :
-			if(!$dbn) break;		
 		case 'bak-success':
 			doNotify(sprintf(i18n_r('ER_BAKUP_DELETED'), $errid) .'</p>','success');
 		if(!$dbn) break;
@@ -105,7 +103,7 @@
 		if(!$dbn) break;
 		case 'settings-restored':
 			doNotify(i18n_r('ER_OLD_RESTORED').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success',true);
-		if(!$dbn) break;
+		break;
 
 		default:
 			if     (isset($error))          doNotify('<b>'.i18n_r('ERROR').':</b> '. $error,'error',true);
@@ -119,6 +117,7 @@
 	function doNotify($msg, $type = '', $persist = false){
 		GLOBAL $dbn;
 		if($dbn) $persist = true;
+		debugLog('notify: ' . $type ." - ".$msg);
 		echo '<div class="updated notify '. ($type == '' ? '' : 'notify_'.$type.' ') . (!$persist ? 'remove' : 'persist') . '"><p>'.$msg.'</p></div>';
 	}
 

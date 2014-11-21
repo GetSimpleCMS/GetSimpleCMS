@@ -151,6 +151,12 @@ $.fn.spin = function(opts, color, shim) {
 			}
 		}
 
+		// @todo fix this
+		// $(this).stopspinner = function(){
+		// 	Debugger.log('stop');
+		// 	$(this).data('spinner').stop();
+		// }
+
 	});
 };
 
@@ -255,7 +261,7 @@ $.fn.parseNotify = function(){
 		elem = elem.popit(); // we pop after ajax always and not on load ?
 
 		if(persist) elem = elem.notifyExpire(); // expire persistants so we know they are older
-		if(remove)  elem = elem.removeIt();
+		if(remove)  elem = elem.removeit();
 	});
 }
 
@@ -640,10 +646,11 @@ jQuery(document).ready(function () {
 		loadingAjaxIndicator.show();
  
 		var message = $(this).attr("title");
-		var dlink = $(this).attr("href");
-		var mytd = $(this).parents("td");
-		var mytr = $(this).parents("tr");
+		var dlink   = $(this).attr("href");
+		var mytd    = $(this).parents("td");
+		var mytr    = $(this).parents("tr");
 
+		var old = mytd.html();
 		mytd.html('').addClass('ajaxwait_tint_dark').spin('gstable');
 
 		$('.toggleEnable').addClass('disabled');
@@ -660,7 +667,7 @@ jQuery(document).ready(function () {
 				rscript      = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
 				responseText = data.replace(rscript, "");
 				response     = $($.parseHTML(data));
-
+				console.log(response.get(0));
 				if ($(response).find('div.notify_success').html()) {
 					// remove scripts to prevent assets from loading when we create temp dom
 					rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
@@ -671,17 +678,19 @@ jQuery(document).ready(function () {
 					$('#maincontent').html($("<div>").append($(response)).find('#maincontent > *'));
 	 
 					// document.body.style.cursor = "default";
-					clearNotify();
-					notifySuccess($(response).find('div.notify_success').html()).popit().removeit();
+					$(response).find('div.updated').parseNotify();
 					initLoaderIndicator();
 				} else if ($(response).find('div.notify_error').html()) {
 					document.body.style.cursor = "default";
-					mytd.removeClass('ajaxwait_tint_dark');
+					mytd.html(old).removeClass('ajaxwait_tint_dark');
 					$('.toggleEnable').removeClass('disabled');
 					loadingAjaxIndicator.fadeOut();
-					mytd.stop();
+					Debugger.log(mytd.data('spinner'));
+					mytd.data('spinner').stop(); // @todo not working, spinner keeps spinning
+					$(response).find('div.updated').parseNotify();
+				} else {
 					clearNotify();
-					notifyError($(response).find('div.notify_error').html());
+					notifyError(i18n('ERROR'));
 				}
 			},
 			error: function (data, textStatus, jqXHR) {
@@ -870,8 +879,8 @@ jQuery(document).ready(function () {
     // handle ajax save error
     function ajaxSaveError(response){
         ajaxError(response);
-        if ($(response).find('div.error').html()) {
-            notifyError($(response).find('div.error').html()).popit().removeit();
+        if ($(response).find('div.updated').html()) {
+        	$(response).find('div.updated').parseNotify();
         } else notifyError(i18n('ERROR_OCCURED')).popit().removeit();
         warnme = false;
         pageisdirty = true;
@@ -1204,8 +1213,8 @@ jQuery(document).ready(function () {
 			data: dataString+'&submitted=1&ajaxsave=1',
 			success: function( response ) {
 				response = $.parseHTML(response);
-				// Debugger.log($(response).find('div.notify'));
-				$(response).find('div.notify').parseNotify();
+				// Debugger.log($(response).find('div.updated'));
+				$(response).find('div.updated').parseNotify();
 				updateNonce(response);
 				ajaxStatusComplete();
 				// $('#codetext').data('editor').hasChange = false; // mark clean		
