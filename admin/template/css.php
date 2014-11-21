@@ -2145,6 +2145,9 @@ textarea.copykit {
 .label-button {
 	line-height: 18px !important;
 	font-size: 11px !important;
+	display: inline-block;
+	cursor: pointer;
+	cursor: hand;	
 }
 
 button.label{
@@ -2158,7 +2161,7 @@ button.label{
 	background-color: none;
 }
 
-button.label:hover{
+button.label:hover,.label-button:hover {
 	background-color:  <?php echo $label_1; ?> !important;
 }
 
