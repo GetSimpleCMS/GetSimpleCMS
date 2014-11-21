@@ -1599,7 +1599,7 @@ table.comptable .compactive input {
 
 .notify_expired {
 	background: <?php echo $notify_6; ?>;
-	color: black;
+	color: #222;
 }
 
 .deletedrow {
@@ -1620,11 +1620,14 @@ table.comptable .compactive input {
 }
 
 .notify .close{
-	float:right;
+	float: right;
+	color: black;
+	opacity: 0.2;
 }
 
 .notify .close:hover{
 	color: black;
+	opacity: 0.8;
 }
 
 .hint {

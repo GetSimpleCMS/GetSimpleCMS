@@ -28,13 +28,32 @@
 	if(isset($_GET['old'])) 	$oldid   = var_in($_GET['old']);
 	if(isset($_GET['updated']) && $_GET['updated'] == 1) $success = i18n_r('SITE_UPDATED'); // for update.php only
 
+	$dbn = false; // debug notifications
+
 	switch ( $update ) {
+		case 'test' :
+			$persistant = true;
+			doNotify('info','',$persistant);
+			doNotify('info','info',$persistant);
+			doNotify('success','success',$persistant);
+			doNotify('error','error',$persistant);
+			doNotify('warning','warning',$persistant);
+
+			$persistant = false;
+			doNotify('info','',$persistant);
+			doNotify('info','info',$persistant);
+			doNotify('success','success',$persistant);
+			doNotify('error','error',$persistant);
+			doNotify('warning','warning',$persistant);			
+		if(!$dbn) break;
+		case '' :
+			if(!$dbn) break;		
 		case 'bak-success':
 			doNotify(sprintf(i18n_r('ER_BAKUP_DELETED'), $errid) .'</p>','success');
-		break;
+		if(!$dbn) break;
 		case 'bak-err':
 			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_REQ_PROC_FAIL'),'error');
-		break;
+		if(!$dbn) break;
 		case 'edit-success':
 			if ($ptype == 'edit' && !isset($oldid)) {
 				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','success',true);
@@ -49,44 +68,44 @@
 			} else if($ptype == 'new'){
 				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="deletefile.php?id='. $id .'&nonce='.get_nonce("delete", "deletefile.php").'">'.i18n_r('UNDO').'</a>','success',true);
 			}
-		break;
+		if(!$dbn) break;
 		case 'clone-success':
 			doNotify(sprintf(i18n_r('CLONE_SUCCESS'), '<a href="edit.php?id='.$errid.'">'.$errid.'</a>'),'success');
-		break;
+		if(!$dbn) break;
 		case 'edit-index':
 			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_CANNOT_INDEX'),'error');
-		break;
+		if(!$dbn) break;
 		case 'edit-error':
 			doNotify('<b>'.i18n_r('ERROR').':</b> '. var_out($ptype),'error');
-		break;
+		if(!$dbn) break;
 		case 'pwd-success':
 			doNotify(i18n_r('ER_NEW_PWD_SENT').'. <a href="index.php">'.i18n_r('LOGIN').'</a>','info');
-		break;
+		if(!$dbn) break;
 		case 'pwd-error':
 			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_SENDMAIL_ERR').'.','error');
-		break;
+		if(!$dbn) break;
 		case 'del-success':
 			doNotify(i18n_r('ER_FILE_DEL_SUC').': <b>'.$errid.'</b>','success');
-		break;
+		if(!$dbn) break;
 		case 'flushcache-success':
 			doNotify(i18n_r('FLUSHCACHE-SUCCESS'),'success');
-		break;
+		if(!$dbn) break;
 		case 'del-error':
 			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_PROBLEM_DEL').'.','error');
-		break;
+		if(!$dbn) break;
 		case 'comp-success':
 			doNotify(i18n_r('ER_COMPONENT_SAVE').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success',true);
-		break;
+		if(!$dbn) break;
 		case 'comp-restored':
 			doNotify(i18n_r('ER_COMPONENT_REST').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success',true);
-		break;
+		if(!$dbn) break;
 		case 'profile-restored':
 			doNotify(i18n_r('ER_PROFILE_RESTORED').'. <a href="profile.php?undo&nonce='.get_nonce("undo").
 				'&userid='.$userid.'">'.i18n_r('UNDO').'</a>','success',true);
-		break;
+		if(!$dbn) break;
 		case 'settings-restored':
 			doNotify(i18n_r('ER_OLD_RESTORED').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success',true);
-		break;
+		if(!$dbn) break;
 
 		default:
 			if     (isset($error))          doNotify('<b>'.i18n_r('ERROR').':</b> '. $error,'error',true);
@@ -98,6 +117,8 @@
 	}
 
 	function doNotify($msg, $type = '', $persist = false){
+		GLOBAL $dbn;
+		if($dbn) $persist = true;
 		echo '<div class="updated notify '. ($type == '' ? '' : 'notify_'.$type.' ') . (!$persist ? 'remove' : 'persist') . '"><p>'.$msg.'</p></div>';
 	}
 

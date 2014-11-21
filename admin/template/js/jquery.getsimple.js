@@ -3,8 +3,8 @@
  * 
  */
 
-GS.notifyExpireDelay = 10000;
-GS.removeItDelay     = 5000;
+GS.notifyExpireDelay = 10000; // timout  to expire persistant notifications so they show stale (.notify_expired)
+GS.removeItDelay     = 5000;  // timeout to remove non-persistant notifications
 
 /* jshint multistr: true */
 
@@ -18,6 +18,12 @@ GS.removeItDelay     = 5000;
  */
 (function($){$.fn.capslock=function(options){if(options)$.extend($.fn.capslock.defaults,options);this.each(function(){$(this).bind("caps_lock_on",$.fn.capslock.defaults.caps_lock_on);$(this).bind("caps_lock_off",$.fn.capslock.defaults.caps_lock_off);$(this).bind("caps_lock_undetermined",$.fn.capslock.defaults.caps_lock_undetermined);$(this).keypress(function(e){check_caps_lock(e)})});return this};function check_caps_lock(e){var ascii_code=e.which;var letter=String.fromCharCode(ascii_code);var upper=letter.toUpperCase();var lower=letter.toLowerCase();var shift_key=e.shiftKey;if(upper!==lower){if(letter===upper&&!shift_key){$(e.target).trigger("caps_lock_on")}else if(letter===lower&&!shift_key){$(e.target).trigger("caps_lock_off")}else if(letter===lower&&shift_key){$(e.target).trigger("caps_lock_on")}else if(letter===upper&&shift_key){if(navigator.platform.toLowerCase().indexOf("win")!==-1){$(e.target).trigger("caps_lock_off")}else{if(navigator.platform.toLowerCase().indexOf("mac")!==-1&&$.fn.capslock.defaults.mac_shift_hack){$(e.target).trigger("caps_lock_off")}else{$(e.target).trigger("caps_lock_undetermined")}}}else{$(e.target).trigger("caps_lock_undetermined")}}else{$(e.target).trigger("caps_lock_undetermined")}if($.fn.capslock.defaults.debug){if(console){console.log("Ascii code: "+ascii_code);console.log("Letter: "+letter);console.log("Upper Case: "+upper);console.log("Shift key: "+shift_key)}}}$.fn.capslock.defaults={caps_lock_on:function(){},caps_lock_off:function(){},caps_lock_undetermined:function(){},mac_shift_hack:true,debug:false}})(jQuery);
 
+
+function randomNum(m,n) {
+      m = parseInt(m);
+      n = parseInt(n);
+      return Math.floor( Math.random() * (n - m + 1) ) + m;
+}
 
 /* jcrop display */
 function updateCoords(c) {
@@ -72,7 +78,8 @@ $.fn.popit = function ($speed) {
 $.fn.removeit = function ($delay) {
 	$delay = $delay || GS.removeItDelay;
 	$(this).each(function () {
-		$(this).delay($delay).fadeOut(500);
+		// $(this).delay($delay).fadeOut(500);
+		$(this).delay($delay).slideUp(300);
 	});
 	return $(this);
 };
@@ -97,10 +104,11 @@ $.fn.overrideNodeMethod = function(methodName, action) {
  */
 $.fn.addCloseButton = function(){
 	var button = $('<span class="close"><a href="javascript:void(0)"><i class="fa fa-times"></i></a></span>');
-	$(this).prepend($(button));
 	$(button).on('click',function(){
 		$(this).parent().dequeue().fadeOut(200);
 	});
+	$(this).prepend($(button));
+	return $(this);
 }
 
 /*
@@ -178,6 +186,11 @@ $.fn.spin.presets = {
 
 
 /* notification functions */
+
+function notifySuccess($msg) {
+	return notify($msg, 'success');
+}
+
 function notifyOk($msg) {
 	return notify($msg, 'ok');
 }
@@ -195,52 +208,53 @@ function notifyError($msg) {
 }
 
 function notify($msg, $type) {
-	if ($type == 'ok' || $type == 'warning' || $type == 'info' || $type == 'error') {
+	if ($type == 'ok' || $type== 'success' || $type == 'warning' || $type == 'info' || $type == 'error') {
 		var $notify = $('<div class="notify notify_' + $type + '"><p>' + $msg + '</p></div>');
 		var notifyelem = $('div.bodycontent').before($notify);
 		$notify.addCloseButton();
 		$notify.notifyExpire();
 		return $notify;
-	}
+	} 
+	// @todo else plain
 }
 
 $.fn.notifyExpire = function($delay){
 	$_this = $(this);
 	$delay = $delay || GS.notifyExpireDelay;	
-	Debugger.log('expiring');
-	Debugger.log($(this));
+	// Debugger.log('expiring ' + $delay);
 	setTimeout(
 		function(e){
-			Debugger.log($_this);
+			// Debugger.log($delay);
+			// @todo this is broken, sometimes this fires as soon as its called, perhaps old timer is acting on it?
 			$_this.addClass('notify_expired')
 		},
 		$delay
 	);
+
+	return $(this)
 }
 
 $.fn.parseNotify = function(){
 	Debugger.log($(this));
 	
 	return $(this).each(function() {
-		// if(!$(this).get(0)) next;
 		var msg     = $(this).html();
 		var persist = $(this).hasClass('persist');
 		var remove  = $(this).hasClass('remove');
 
-		Debugger.log(persist);
-
 		if($(this).hasClass('notify_success')){
-		    clearNotify('ok');
-		    elem = notify(msg,'ok');
+			// clear other success messages cause this is probably a repeat or redundant, also undo nonce is stale
+			clearNotify('success');
+		    elem = notify(msg,'success');
 		}
 		else if($(this).hasClass('notify_error'))   elem = notify(msg,'error');
 		else if($(this).hasClass('notify_info'))    elem = notify(msg,'info');
 		else if($(this).hasClass('notify_warning')) elem = notify(msg,'warning');
 		else elem = notify(msg);
 
-		elem = elem.popit(); // pop ajax always?
+		elem = elem.popit(); // we pop after ajax always and not on load ?
 
-		if(persist) elem = elem.notifyExpire(); // expire it so we know its old
+		if(persist) elem = elem.notifyExpire(); // expire persistants so we know they are older
 		if(remove)  elem = elem.removeIt();
 	});
 }
@@ -571,7 +585,7 @@ jQuery(document).ready(function () {
  
 	/*
 	notifyError('This is an ERROR notification');
-	notifyOk('This is an OK notification');
+	notifySuccess('This is an OK notification');
 	notifyWarn('This is an WARNING notification');
 	notifyInfo('This is an INFO notification');
 	notify('message','msgtype');
@@ -585,6 +599,7 @@ jQuery(document).ready(function () {
  
 		$(".notify").popit(); // allows legacy use
 		$(".notify.remove").removeit();
+		$(".notify.persist").notifyExpire();
 		$(".notify").addCloseButton();
 	}
  
@@ -657,7 +672,7 @@ jQuery(document).ready(function () {
 	 
 					// document.body.style.cursor = "default";
 					clearNotify();
-					notifyOk($(response).find('div.notify_success').html()).popit().removeit();
+					notifySuccess($(response).find('div.notify_success').html()).popit().removeit();
 					initLoaderIndicator();
 				} else if ($(response).find('div.notify_error').html()) {
 					document.body.style.cursor = "default";
@@ -834,7 +849,7 @@ jQuery(document).ready(function () {
 
     // prerform updating after ajax save
     function ajaxSaveUpdate(success,status){
-        notifyOk(status).popit().removeit();
+        notifySuccess(status).popit().removeit();
         $('#pagechangednotify').hide();
         if(success) {
             $('#cancel-updates').hide();
@@ -1150,7 +1165,7 @@ jQuery(document).ready(function () {
 					notifyError($(response).find('div.error').html()).popit().removeit();
 				}
 				if ($(response).find('div.updated').html()) {
-					notifyOk($(response).find('div.updated').html()).popit().removeit();
+					notifySuccess($(response).find('div.updated').html()).popit().removeit();
 				}	
 				else {
 					notifyError("<p>ERROR</p>").popit().removeit();					
@@ -1191,18 +1206,6 @@ jQuery(document).ready(function () {
 				response = $.parseHTML(response);
 				// Debugger.log($(response).find('div.notify'));
 				$(response).find('div.notify').parseNotify();
-
-				// if ($(response).find('div.error').html()) {
-				// 	notifyError($(response).find('div.error').html()).popit();
-				// }
-				// else if ($(response).find('div.updated').html()) {
-				// 	clearNotify('ok');
-				// 	notifyOk($(response).find('div.updated').html()).popit();
-				// }
-				// else {
-				// 	notifyError("<p>ERROR</p>").popit();					
-				// }
-
 				updateNonce(response);
 				ajaxStatusComplete();
 				// $('#codetext').data('editor').hasChange = false; // mark clean		
