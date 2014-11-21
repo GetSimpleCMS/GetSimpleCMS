@@ -72,7 +72,7 @@ define('GSIMAGEWIDTH', '200');
 # define('GSTIMEZONE', 'America/Chicago');
 
 # Disable loading of external CDN versions of scripts (jQuery/jQueryUI)
-#define("GSNOCDN",true);
+define("GSNOCDN",true);
 
 # Disable Codemirror theme editor
 #define("GSNOHIGHLIGHT",true);
