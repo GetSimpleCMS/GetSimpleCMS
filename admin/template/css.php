@@ -1575,6 +1575,15 @@ table.comptable .compactive input {
 	line-height: 22px;
 	padding: 5px 10px;
 	margin-bottom: 20px;
+
+    -webkit-transition:  1000ms ease-in-out;
+	   -moz-transition:  1000ms ease-in-out;
+	     -o-transition:  1000ms ease-in-out;
+	        transition:  1000ms ease-in-out;
+	-webkit-transition-property: background-color, color, text-shadow;
+	   -moz-transition-property: background-color, color, text-shadow;
+	     -o-transition-property: background-color, color, text-shadow;
+	        transition-property: background-color, color, text-shadow;
 }
 
 .updated a, .error a, .notify a{
@@ -1608,6 +1617,11 @@ table.comptable .compactive input {
 	background: <?php echo $notify_3; ?>;	
 }
 
+.notify_expired {
+	background: <?php echo $notify_6; ?>;
+	color: #222;
+}
+
 .deletedrow {
 	background-color: #FFB19B;
 }
@@ -1626,11 +1640,14 @@ table.comptable .compactive input {
 }
 
 .notify .close{
-	float:right;
+	float: right;
+	color: black;
+	opacity: 0.2;
 }
 
 .notify .close:hover{
 	color: black;
+	opacity: 0.8;
 }
 
 .hint {
@@ -2070,9 +2087,18 @@ textarea.copykit {
 	border-radius: 3px;
 	text-align: center;
 	color: #F2F2F2;
-	margin:0px 3px;
+	margin:0 3px;
  	background-color: <?php echo $label_0; ?>;
  	/*display: inline-block;*/
+
+    -webkit-transition:  300ms ease-in-out;
+	   -moz-transition:  300ms ease-in-out;
+	     -o-transition:  300ms ease-in-out;
+	        transition:  300ms ease-in-out;
+	-webkit-transition-property: background-color, color, text-shadow;
+	   -moz-transition-property: background-color, color, text-shadow;
+	     -o-transition-property: background-color, color, text-shadow;
+	        transition-property: background-color, color, text-shadow; 	
 }
 
 .wrapper .label a,.label a{
@@ -2102,7 +2128,7 @@ textarea.copykit {
 }
 
 .label-medium {
-	color: <?php echo $primary_0; ?> !important;
+	color: white !important;
 	background-color:  <?php echo $label_6; ?> !important;
 }
 
@@ -2110,6 +2136,7 @@ textarea.copykit {
 	color: <?php echo $primary_6; ?> !important;
 	background:  <?php echo $label_5; ?> !important;
 	border: 1px solid <?php echo $primary_6; ?> !important;
+	padding: 0px 5px; /* minus for border */
 }
 
 .label-ghost {
@@ -2129,10 +2156,33 @@ textarea.copykit {
 }
 
 .edittable .label-ghost{
-	font-size:11px;
-	padding:3px 6px;
+	font-size: 11px;
+	padding: 3px 6px;
 	color: #999999;
 	text-shadow: none;
+}
+
+.label-button {
+	line-height: 18px !important;
+	font-size: 11px !important;
+	display: inline-block;
+	cursor: pointer;
+	cursor: hand;	
+}
+
+button.label{
+	border: none;
+	color: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	cursor: pointer;
+	cursor: hand;
+	padding: 1px 6px;
+	background-color: none;
+}
+
+button.label:hover,.label-button:hover {
+	background-color: <?php echo $secondary_1;?> !important ;	
 }
 
 div.showstatus{

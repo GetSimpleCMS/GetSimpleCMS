@@ -3,6 +3,9 @@
  * 
  */
 
+GS.notifyExpireDelay = 10000; // timout  to expire persistant notifications so they show stale (.notify_expired)
+GS.removeItDelay     = 5000;  // timeout to remove non-persistant notifications
+
 /* jshint multistr: true */
 
 /* jQuery reverseOrder
@@ -15,6 +18,12 @@
  */
 (function($){$.fn.capslock=function(options){if(options)$.extend($.fn.capslock.defaults,options);this.each(function(){$(this).bind("caps_lock_on",$.fn.capslock.defaults.caps_lock_on);$(this).bind("caps_lock_off",$.fn.capslock.defaults.caps_lock_off);$(this).bind("caps_lock_undetermined",$.fn.capslock.defaults.caps_lock_undetermined);$(this).keypress(function(e){check_caps_lock(e)})});return this};function check_caps_lock(e){var ascii_code=e.which;var letter=String.fromCharCode(ascii_code);var upper=letter.toUpperCase();var lower=letter.toLowerCase();var shift_key=e.shiftKey;if(upper!==lower){if(letter===upper&&!shift_key){$(e.target).trigger("caps_lock_on")}else if(letter===lower&&!shift_key){$(e.target).trigger("caps_lock_off")}else if(letter===lower&&shift_key){$(e.target).trigger("caps_lock_on")}else if(letter===upper&&shift_key){if(navigator.platform.toLowerCase().indexOf("win")!==-1){$(e.target).trigger("caps_lock_off")}else{if(navigator.platform.toLowerCase().indexOf("mac")!==-1&&$.fn.capslock.defaults.mac_shift_hack){$(e.target).trigger("caps_lock_off")}else{$(e.target).trigger("caps_lock_undetermined")}}}else{$(e.target).trigger("caps_lock_undetermined")}}else{$(e.target).trigger("caps_lock_undetermined")}if($.fn.capslock.defaults.debug){if(console){console.log("Ascii code: "+ascii_code);console.log("Letter: "+letter);console.log("Upper Case: "+upper);console.log("Shift key: "+shift_key)}}}$.fn.capslock.defaults={caps_lock_on:function(){},caps_lock_off:function(){},caps_lock_undetermined:function(){},mac_shift_hack:true,debug:false}})(jQuery);
 
+
+function randomNum(m,n) {
+      m = parseInt(m);
+      n = parseInt(n);
+      return Math.floor( Math.random() * (n - m + 1) ) + m;
+}
 
 /* jcrop display */
 function updateCoords(c) {
@@ -67,9 +76,10 @@ $.fn.popit = function ($speed) {
  * @param int $delay delay in ms
  */
 $.fn.removeit = function ($delay) {
-	$delay = $delay || 5000;
+	$delay = $delay || GS.removeItDelay;
 	$(this).each(function () {
-		$(this).delay($delay).fadeOut(500);
+		// $(this).delay($delay).fadeOut(500);
+		$(this).delay($delay).slideUp(300);
 	});
 	return $(this);
 };
@@ -94,10 +104,11 @@ $.fn.overrideNodeMethod = function(methodName, action) {
  */
 $.fn.addCloseButton = function(){
 	var button = $('<span class="close"><a href="javascript:void(0)"><i class="fa fa-times"></i></a></span>');
-	$(this).prepend($(button));
 	$(button).on('click',function(){
 		$(this).parent().dequeue().fadeOut(200);
 	});
+	$(this).prepend($(button));
+	return $(this);
 }
 
 /*
@@ -140,6 +151,12 @@ $.fn.spin = function(opts, color, shim) {
 			}
 		}
 
+		// @todo fix this
+		// $(this).stopspinner = function(){
+		// 	Debugger.log('stop');
+		// 	$(this).data('spinner').stop();
+		// }
+
 	});
 };
 
@@ -175,6 +192,11 @@ $.fn.spin.presets = {
 
 
 /* notification functions */
+
+function notifySuccess($msg) {
+	return notify($msg, 'success');
+}
+
 function notifyOk($msg) {
 	return notify($msg, 'ok');
 }
@@ -192,16 +214,61 @@ function notifyError($msg) {
 }
  
 function notify($msg, $type) {
-	if ($type == 'ok' || $type == 'warning' || $type == 'info' || $type == 'error') {
-		var $notify = $('<div class="notify notify_' + $type + '"><p>' + $msg + '</p></div>');
+	if ($type == 'ok' || $type== 'success' || $type == 'warning' || $type == 'info' || $type == 'error') {
+		var $notify = $('<div style="display:none;" class="notify notify_' + $type + '"><p>' + $msg + '</p></div>').clone();
 		var notifyelem = $('div.bodycontent').before($notify);
+		$notify.fadeIn();
 		$notify.addCloseButton();
+		$notify.notifyExpire();
 		return $notify;
 	}
+	// @todo else plain
 }
 
-function clearNotify() {
-	$('div.wrapper .notify').remove();
+$.fn.notifyExpire = function($delay){
+	var self = $(this);
+	$delay = $delay || GS.notifyExpireDelay;	
+	// Debugger.log('expiring ' + $delay);
+	setTimeout(
+		function(e){
+			// @todo this is broken, sometimes this fires as soon as its called, perhaps old timer is acting on it?
+			self.addClass('notify_expired')
+		},
+		$delay
+	);
+
+	return $(this);
+}
+ 
+$.fn.parseNotify = function(){
+	Debugger.log($(this));
+	
+	return $(this).each(function() {
+		var msg     = $(this).html();
+		var persist = $(this).hasClass('persist');
+		var remove  = $(this).hasClass('remove');
+
+		if($(this).hasClass('notify_success')){
+			// clear other success messages cause this is probably a repeat or redundant, also undo nonce is stale
+			clearNotify('success');
+		    elem = notify(msg,'success');
+		}
+		else if($(this).hasClass('notify_error'))   elem = notify(msg,'error');
+		else if($(this).hasClass('notify_info'))    elem = notify(msg,'info');
+		else if($(this).hasClass('notify_warning')) elem = notify(msg,'warning');
+		else elem = notify(msg);
+
+		elem = elem.popit(); // we pop after ajax always and not on load ?
+
+		if(persist) elem = elem.notifyExpire(); // expire persistants so we know they are older
+		if(remove)  elem = elem.removeit();
+	});
+}
+
+function clearNotify($type) {
+	Debugger.log('CLEAR NOTIFY '+ $type);
+	if($type !== undefined) return $('div.wrapper .notify.notify_'+$type).remove();
+	return $('div.wrapper .notify').remove();
 }
  
 function basename(str){
@@ -214,6 +281,13 @@ function basename(str){
  */
 function i18n(key){
 	return GS.i18n[key] || key;
+}
+
+/*
+ * shitty sprintf can only replace %s for now
+ */
+function sprintf(str,value){
+ 	return str.replace(/%s/g,value);
 }
 
 /**
@@ -333,19 +407,6 @@ jQuery(document).ready(function () {
 		ev.preventDefault();		
 	});
 	
-	// bind delete confirmation dialogs
-	$(".delconfirmcomp").on("click", function ($e) {
-		$e.preventDefault();
-		loadingAjaxIndicator.show();
-		var message = $(this).attr("title");
-		var answer = confirm(message);
-		if (answer) {
-			var compid = $(this).attr("rel");
-			$(compid).slideToggle(500).remove();
-		}
-		loadingAjaxIndicator.fadeOut(500);
-	});
-
 	// bind component new button
 	$("#addcomponent").on("click", function ($e) {
 		$e.preventDefault();
@@ -408,16 +469,19 @@ jQuery(document).ready(function () {
 	// bind delete component button
 	$("#maincontent").on("click",'.delcomponent', function ($e) {
 		$e.preventDefault();
+		Debugger.log($(this));
 		var message = $(this).attr("title");
 		var compid = $(this).attr("rel");
 		var answer = confirm(message);
 		if (answer) {
 			loadingAjaxIndicator.show();
 			var myparent = $(this).parents('.compdiv');
-			myparent.slideUp('fast', function () {
+			myparent.slideUp(500, function () {
 				if ($("#divlist-" + compid).length) {
 					$("#divlist-" + compid).remove();
 				}
+				var title = $(myparent).find("[name='title[]']").val();
+				notifyError(sprintf(i18n('COMPONENT_DELETED'),title)).popit();
 				myparent.remove();
 			});
 			loadingAjaxIndicator.fadeOut(1000);
@@ -507,15 +571,8 @@ jQuery(document).ready(function () {
  
 							$('div.wrapper .updated').remove();
 							$('div.wrapper .error').remove();
-							if ($(response).find('div.error').html()) {
-								$('div.bodycontent').before('<div class="error"><p>' + $(response).find('div.error').html() + '</p></div>');
-								popAlertMsg();
+							$(response).find('div.notify').parseNotify();
 							}
-							if ($(response).find('div.updated').html()) {
-								$('div.bodycontent').before('<div class="updated"><p>' + $(response).find('div.updated').html() + '</p></div>');
-								popAlertMsg();
-							}
-						}
 					});
 					loadingAjaxIndicator.fadeOut(500);
 				});
@@ -538,7 +595,7 @@ jQuery(document).ready(function () {
  
 	/*
 	notifyError('This is an ERROR notification');
-	notifyOk('This is an OK notification');
+	notifySuccess('This is an OK notification');
 	notifyWarn('This is an WARNING notification');
 	notifyInfo('This is an INFO notification');
 	notify('message','msgtype');
@@ -552,6 +609,7 @@ jQuery(document).ready(function () {
  
 		$(".notify").popit(); // allows legacy use
 		$(".notify.remove").removeit();
+		$(".notify.persist").notifyExpire();
 		$(".notify").addCloseButton();
 	}
  
@@ -596,6 +654,7 @@ jQuery(document).ready(function () {
 		var mytd = $(this).parents("td");
 		var mytr = $(this).parents("tr");
 
+		var old = mytd.html();
 		mytd.html('').addClass('ajaxwait_tint_dark').spin('gstable');
 
 		$('.toggleEnable').addClass('disabled');
@@ -613,7 +672,7 @@ jQuery(document).ready(function () {
 				responseText = data.replace(rscript, "");
 				response     = $($.parseHTML(data));
 
-				if ($(response).find('div.notify_success').html()) {
+				if ($(response).find('div.notify_success')) {
 					// remove scripts to prevent assets from loading when we create temp dom
 					rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
 	 
@@ -623,17 +682,19 @@ jQuery(document).ready(function () {
 					$('#maincontent').html($("<div>").append($(response)).find('#maincontent > *'));
 	 
 					// document.body.style.cursor = "default";
-					clearNotify();
-					notifyOk($(response).find('div.notify_success').html()).popit().removeit();
+					$(response).find('div.updated').parseNotify();
 					initLoaderIndicator();
-				} else if ($(response).find('div.notify_error').html()) {
+				} else if ($(response).find('div.notify_error')) {
 					document.body.style.cursor = "default";
-					mytd.removeClass('ajaxwait_tint_dark');
+					mytd.html(old).removeClass('ajaxwait_tint_dark');
 					$('.toggleEnable').removeClass('disabled');
 					loadingAjaxIndicator.fadeOut();
-					mytd.stop();
+					Debugger.log(mytd.data('spinner'));
+					mytd.data('spinner').stop(); // @todo not working, spinner keeps spinning
+					$(response).find('div.updated').parseNotify();
+				} else {
 					clearNotify();
-					notifyError($(response).find('div.notify_error').html());
+					notifyError(i18n('ERROR'));
 				}
 			},
 			error: function (data, textStatus, jqXHR) {
@@ -801,7 +862,7 @@ jQuery(document).ready(function () {
 
     // prerform updating after ajax save
     function ajaxSaveUpdate(success,status){
-        notifyOk(status).popit().removeit();
+        notifySuccess(status).popit().removeit();
         $('#pagechangednotify').hide();
         if(success) {
             $('#cancel-updates').hide();
@@ -822,8 +883,8 @@ jQuery(document).ready(function () {
     // handle ajax save error
     function ajaxSaveError(response){
         ajaxError(response);
-        if ($(response).find('div.error').html()) {
-            notifyError($(response).find('div.error').html()).popit().removeit();
+        if ($(response).find('div.updated')) {
+        	$(response).find('div.updated').parseNotify();
         } else notifyError(i18n('ERROR_OCCURED')).popit().removeit();
         warnme = false;
         pageisdirty = true;
@@ -833,7 +894,7 @@ jQuery(document).ready(function () {
     function autoSaveCallback(response){
         Debugger.log('autoSaveCallback ' + response);
         response = $.parseHTML(response);
-        if ($(response).find('div.updated').html()) {
+        if ($(response).find('div.updated')) {
             autoSaveUpdate(true,$(response).find('div.autosavenotify').html());
             ajaxSaveSucess(response);
         }
@@ -847,7 +908,7 @@ jQuery(document).ready(function () {
     function ajaxSaveCallback(response){
         Debugger.log('ajaxSaveCallback ' + response);
         response = $.parseHTML(response);
-        if ($(response).find('div.updated').html()) {
+        if ($(response).find('div.updated')) {
             ajaxSaveUpdate(true,$(response).find('div.updated').html());
             ajaxSaveSucess(response);
         }
@@ -1113,12 +1174,9 @@ jQuery(document).ready(function () {
 				response = $.parseHTML(response); // jquery 1.9 html parsing fix
 				$('div.wrapper .updated').remove();
 				$('div.wrapper .error').remove();
-				if ($(response).find('div.error').html()) {
-					notifyError($(response).find('div.error').html()).popit().removeit();
+				if ($(response).find('div.updated')) {
+					$(response).find('div.notify').parseNotify();
 				}
-				if ($(response).find('div.updated').html()) {
-					notifyOk($(response).find('div.updated').html()).popit().removeit();
-				}	
 				else {
 					notifyError("<p>ERROR</p>").popit().removeit();					
 				}
@@ -1157,18 +1215,8 @@ jQuery(document).ready(function () {
 			data: dataString+'&submitted=1&ajaxsave=1',
 			success: function( response ) {
 				response = $.parseHTML(response);
-				$('div.wrapper .updated').remove();
-				$('div.wrapper .error').remove();
-				if ($(response).find('div.error').html()) {
-					notifyError($(response).find('div.error').html()).popit().removeit();
-				}
-				else if ($(response).find('div.updated').html()) {
-					notifyOk($(response).find('div.updated').html()).popit().removeit();
-				}	
-				else {
-					notifyError("<p>ERROR</p>").popit().removeit();					
-				}
-
+				// Debugger.log($(response).find('div.updated'));
+				$(response).find('div.updated').parseNotify();
 				updateNonce(response);
 				ajaxStatusComplete();
 				// $('#codetext').data('editor').hasChange = false; // mark clean		

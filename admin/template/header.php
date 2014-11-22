@@ -85,7 +85,9 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		'FILE_EXISTS_PROMPT',
 		'CANCELLED',
 		'UNSAVED_INFORMATION',
-		'UNSAVED_PROMPT'
+		'UNSAVED_PROMPT',
+		'CANNOT_SAVE_EMPTY',
+		'COMPONENT_DELETED'
 
 	);
 
