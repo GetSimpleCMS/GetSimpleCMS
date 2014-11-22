@@ -86,7 +86,8 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		'CANCELLED',
 		'UNSAVED_INFORMATION',
 		'UNSAVED_PROMPT',
-		'CANNOT_SAVE_EMPTY'
+		'CANNOT_SAVE_EMPTY',
+		'COMPONENT_DELETED'
 
 	);
 

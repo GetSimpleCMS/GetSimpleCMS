@@ -215,8 +215,9 @@ function notifyError($msg) {
 
 function notify($msg, $type) {
 	if ($type == 'ok' || $type== 'success' || $type == 'warning' || $type == 'info' || $type == 'error') {
-		var $notify = $('<div class="notify notify_' + $type + '"><p>' + $msg + '</p></div>');
+		var $notify = $('<div style="display:none;" class="notify notify_' + $type + '"><p>' + $msg + '</p></div>').clone();
 		var notifyelem = $('div.bodycontent').before($notify);
+		$notify.fadeIn();
 		$notify.addCloseButton();
 		$notify.notifyExpire();
 		return $notify;
@@ -225,19 +226,18 @@ function notify($msg, $type) {
 }
 
 $.fn.notifyExpire = function($delay){
-	$_this = $(this);
+	var self = $(this);
 	$delay = $delay || GS.notifyExpireDelay;	
 	// Debugger.log('expiring ' + $delay);
 	setTimeout(
 		function(e){
-			// Debugger.log($delay);
 			// @todo this is broken, sometimes this fires as soon as its called, perhaps old timer is acting on it?
-			$_this.addClass('notify_expired')
+			self.addClass('notify_expired')
 		},
 		$delay
 	);
 
-	return $(this)
+	return $(this);
 }
 
 $.fn.parseNotify = function(){
@@ -281,6 +281,13 @@ function basename(str){
  */
 function i18n(key){
 	return GS.i18n[key] || key;
+}
+
+/*
+ * shitty sprintf can only replace %s for now
+ */
+function sprintf(str,value){
+ 	return str.replace(/%s/g,value);
 }
 
 /**
@@ -399,19 +406,6 @@ jQuery(document).ready(function () {
 		ev.preventDefault();		
 	});
 	
-	// bind delete confirmation dialogs
-	$(".delconfirmcomp").on("click", function ($e) {
-		$e.preventDefault();
-		loadingAjaxIndicator.show();
-		var message = $(this).attr("title");
-		var answer = confirm(message);
-		if (answer) {
-			var compid = $(this).attr("rel");
-			$(compid).slideToggle(500).remove();
-		}
-		loadingAjaxIndicator.fadeOut(500);
-	});
-
 	// bind component new button
 	$("#addcomponent").on("click", function ($e) {
 		$e.preventDefault();
@@ -422,6 +416,7 @@ jQuery(document).ready(function () {
 		var comptemplate = $('#comptemplate').clone();
 		$(comptemplate).find('.compdiv').prop('id','section-'+id);
 		$(comptemplate).find('.compdiv').css('display','none');
+		
 		$(comptemplate).find('.delcomponent').prop('rel',id);
 		$(comptemplate).find("[name='id[]']").prop('value',id);
 		$(comptemplate).find("[name='active[]']").prop('value',id);
@@ -461,16 +456,19 @@ jQuery(document).ready(function () {
 	// bind delete component button
 	$("#maincontent").on("click",'.delcomponent', function ($e) {
 		$e.preventDefault();
+		Debugger.log($(this));
 		var message = $(this).attr("title");
 		var compid = $(this).attr("rel");
 		var answer = confirm(message);
 		if (answer) {
 			loadingAjaxIndicator.show();
 			var myparent = $(this).parents('.compdiv');
-			myparent.slideUp('fast', function () {
+			myparent.slideUp(500, function () {
 				if ($("#divlist-" + compid).length) {
 					$("#divlist-" + compid).remove();
 				}
+				var title = $(myparent).find("[name='title[]']").val();
+				notifyError(sprintf(i18n('COMPONENT_DELETED'),title)).popit();
 				myparent.remove();
 			});
 			loadingAjaxIndicator.fadeOut(1000);
