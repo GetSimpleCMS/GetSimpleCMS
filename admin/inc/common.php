@@ -43,6 +43,7 @@ $GS_constants = array(
 	'GSADMINTHEMEENABLE'    => true,                          // (bool) custom admin xml enabled
 	'GSCSSCUSTOMFILE'       => 'admin.css',                   // (str) custom css file name
 	'GSCSSCUSTOMENABLE'     => true,                          // (bool) custom css enabled
+	'GSSTYLECACHEENABLE'    => false,                         // (bool) enable style.php cache
 	'GSTEMPLATEFILE'        => 'template.php',                // default template file name
 	'GSINSTALLTEMPLATE'     => 'Innovation',                  // template to set on install
 	'GSINSTALLPLUGINS'      => 'InnovationPlugin.php',        // comma delimited list of plugins to activate on install

@@ -15,7 +15,7 @@ header('Content-type: text/css',true);
 
 # check to see if cache is available for this
 $cachefile = GSCACHEPATH.'stylesheet.txt';
-if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && !$nocache) {
+if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && !$nocache && getDef('GSSTYLECACHEENABLE',true)) {
 	echo "/* Cached copy, generated ".date('H:i', filemtime($cachefile))." '".$cachefile."' */\n";
 	echo read_file($cachefile);
 	exit;
