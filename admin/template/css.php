@@ -2162,7 +2162,7 @@ button.label{
 }
 
 button.label:hover,.label-button:hover {
-	background-color:  <?php echo $label_1; ?> !important;
+	background-color: <?php echo $secondary_1;?> !important ;	
 }
 
 div.showstatus{
