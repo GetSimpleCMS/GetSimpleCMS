@@ -23,12 +23,9 @@ if (file_exists($cachefile) && time() - 600 < filemtime($cachefile) && !$nocache
 
 ob_start();
 
-$useadminxml = false; // bypass for including admin.xml
-$useadmincss = false; // bypass for including admin.css
-
-if (file_exists(GSTHEMESPATH.'admin.xml') && $useadminxml) {
+if (file_exists(GSTHEMESPATH.getDef('GSADMINTHEMEFILE')) && getDef('GSADMINTHEMEENABLE',true)) {
 	#load admin theme xml file
-	$theme = getXML(GSTHEMESPATH.'admin.xml');
+	$theme = getXML(GSTHEMESPATH.getDef('GSADMINTHEMEFILE'));
 
 	$header_base  = trim((string) $theme->header->base);
 
@@ -117,7 +114,7 @@ if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ){
 }
 
 // include custom theme/admin.css if exists
-if(file_exists(GSTHEMESPATH.GSCSSCUSTOMFILE) && $useadmincss) include(GSTHEMESPATH.GSCSSCUSTOMFILE);
+if(file_exists(GSTHEMESPATH.getDef('GSCSSCUSTOMFILE')) && getDef('GSCSSCUSTOMENABLE',true)) include(GSTHEMESPATH.getDef('GSCSSCUSTOMFILE'));
 
 exec_action('style-save'); // @hook style-save called after css files are included before cache is saved
 
