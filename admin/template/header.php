@@ -85,7 +85,9 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		'FILE_EXISTS_PROMPT',
 		'CANCELLED',
 		'UNSAVED_INFORMATION',
-		'UNSAVED_PROMPT'
+		'UNSAVED_PROMPT',
+		'CANNOT_SAVE_EMPTY',
+		'COMPONENT_DELETED',
 		'CANNOT_SAVE_EMPTY'
 	);
 
@@ -173,7 +175,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	<style>
 		.tab{ display:block; clear:both;}
 		.tab fieldset legend{ display: block; }
-		#cm_themeselect { display:none;}
+		#cm_themeselect, #cm_themeselect_label { display:none;}
 		#theme_filemanager ul ul {
 			display: block;
 		}

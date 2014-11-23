@@ -39,7 +39,11 @@ $GS_constants = array(
 	'GSCOMPONENTSFILE'      => 'components.xml',              // website data filename
 	'GSAUTHFILE'            => 'authorization.xml',           // authorizaton salt data filename
 	'GSCSSMAINFILE'         => 'css.php',                     // main css file name
-	'GSCSSCUSTOMFILE'       => 'admin.css',                   // custom css file name
+	'GSADMINTHEMEFILE'      => 'admin.xml',                   // (str) custom admin xml theme file name
+	'GSADMINTHEMEENABLE'    => true,                          // (bool) custom admin xml enabled
+	'GSCSSCUSTOMFILE'       => 'admin.css',                   // (str) custom css file name
+	'GSCSSCUSTOMENABLE'     => true,                          // (bool) custom css enabled
+	'GSSTYLECACHEENABLE'    => false,                         // (bool) enable style.php cache
 	'GSTEMPLATEFILE'        => 'template.php',                // default template file name
 	'GSINSTALLTEMPLATE'     => 'Innovation',                  // template to set on install
 	'GSINSTALLPLUGINS'      => 'InnovationPlugin.php',        // comma delimited list of plugins to activate on install
@@ -96,6 +100,7 @@ $GS_definitions = array(
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls
 	'GSDEBUGREDIRECTS'     => false,                          // (bool) debug mode stop redirects for debugging
 	'GSDEBUGFILEIO'        => false,                          // (bool) debug filio operations
+	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
 	# -----------------------------------------------------------------------------------------------------------------------------------------------
  	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
 );
@@ -176,6 +181,8 @@ define('GSBACKUPSPATH'   , GSROOTPATH      . 'backups/');   // backups/
 define('GSBACKUSERSPATH' , GSBACKUPSPATH   . 'users/');     // backups/users
 define('GSTHEMESPATH'    , GSROOTPATH      . 'theme/');     // theme/
 
+
+
 $reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
 
 /**
@@ -184,7 +191,7 @@ $reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
 if(defined('GSDEBUG') && (bool) GSDEBUG === true) {
 	error_reporting(-1);
 	ini_set('display_errors', 1);
-	$nocache = true;
+	// $nocache = true;
 } else if( defined('GSSUPPRESSERRORS') && (bool)GSSUPPRESSERRORS === true ) {
 	error_reporting(0);
 	ini_set('display_errors', 0);
@@ -451,8 +458,10 @@ if(isset($load['plugin']) && $load['plugin']){
 
 	// Include plugins files in global scope
 	loadPluginData();
+	if(function_exists('plugin_preload_callout')) plugin_preload_callout();	// @callout plugin_preload_callout callout before loading plugin files
 	foreach ($live_plugins as $file=>$en) {
 		if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
+			# debugLog('including plugin: ' . $file);
 			include_once(GSPLUGINPATH . $file);
 		}
 	}
@@ -470,10 +479,16 @@ if(isset($load['plugin']) && $load['plugin']){
 	# main hook for common.php
 	exec_action('common'); // @hook common.php common has completed doing its thing
 	// debugLog('calling common_callout');
-	if(function_exists('common_callout')) common_callout();
+	if(function_exists('common_callout')) common_callout(); // @callout common_callout callout after common loaded, before templating
 }
 
+/**
+ * debug plugin global arrays
+ */
+
 // debugLog($live_plugins);
+// debugLog($plugins);
+// debugLog($plugin_info);
 
 
 if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ require_once(GSADMININCPATH.'login_functions.php'); }
@@ -488,12 +503,11 @@ if(GSBASE) require_once(GSADMINPATH.'base.php');
  * @since 3.1
  * @param $txt string
  */
-function debugLog($txt = null) {
+function debugLog($mixed = null) {
 	global $GS_debug;
-	array_push($GS_debug,$txt);
-	if(function_exists('debugLog_callout')) debugLog_callout($txt);
-	// print_r($GS_debug);
-	return $txt;
+	array_push($GS_debug,$mixed);
+	if(function_exists('debugLog_callout')) debugLog_callout($mixed); // @callout debugLog_callout (str) callout for each debugLog call, argument passed
+	return $mixed;
 }
 
 /**

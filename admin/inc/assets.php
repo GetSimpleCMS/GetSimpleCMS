@@ -156,18 +156,18 @@ $GS_script_assets['ckeditor']['local']['ver']      = $ckeditor_ver;
 // gs codeeditor
 $GS_script_assets['gscodemirror']['local']['url']     = $ASSETPATH.'js/codemirror.getsimple.js';
 $GS_script_assets['gscodemirror']['local']['ver']     = $getsimple_ver;
-$GS_script_assets['gscodemirror']['queue']['script']  = array('codemirror');
-$GS_script_assets['gscodemirror']['queue']['style']   = array('codemirror');
+$GS_script_assets['gscodemirror']['queue']['script']  = 'codemirror';
+$GS_script_assets['gscodemirror']['queue']['style']   = 'codemirror';
 
 // gs htmleditor
 $GS_script_assets['gsckeditor']['local']['url']     = $ASSETPATH.'js/ckeditor.getsimple.js';
 $GS_script_assets['gsckeditor']['local']['ver']     = $getsimple_ver;
-$GS_script_assets['gsckeditor']['queue']['script']  = array('ckeditor');
+$GS_script_assets['gsckeditor']['queue']['script']  = 'ckeditor';
 
 // gs uploader
 $GS_script_assets['gsdropzone']['local']['url']     = $ASSETPATH.'js/dropzone.getsimple.js';
 $GS_script_assets['gsdropzone']['local']['ver']     = $getsimple_ver;
-$GS_script_assets['gsdropzone']['queue']['script']  = array('dropzone');
+$GS_script_assets['gsdropzone']['queue']['script']  = 'dropzone';
 
 /**
  * Register shared javascript/css scripts for loading into the header
@@ -302,15 +302,23 @@ function deregister_script($handle){
 function queue_script($handle,$where){
   global $GS_scripts;
   if (array_key_exists($handle, $GS_scripts)){
-    // load items queue
-    if(isset($GS_scripts[$handle]['queue'])){
-      $config = $GS_scripts[$handle]['queue'];
-      if(isset($config['script'])) array_map('queue_script',$config['script'],array_fill(0,count($config['script']),$where));
-      if(isset($config['style']))  array_map('queue_style',$config['style'],array_fill(0,count($config['style']),$where));
-    }
+        // load items queue
+        if(isset($GS_scripts[$handle]['queue'])){ 
+            $config = $GS_scripts[$handle]['queue'];
+            
+            if(isset($config['script'])){
+                if(!is_array($config['script'])) $config['script'] = explode(',',$config['script']);
+                array_map('queue_script',$config['script'],array_fill(0,count($config['script']),$where));
+            }
 
-    $GS_scripts[$handle]['load']  = true;
-    $GS_scripts[$handle]['where'] = $GS_scripts[$handle]['where'] | $where;
+            if(isset($config['style'])){
+                if(!is_array($config['style']))  $config['style'] = explode(',',$config['style']);
+                array_map('queue_style',$config['style'],array_fill(0,count($config['style']),$where));
+            }
+        }
+
+        $GS_scripts[$handle]['load']  = true;
+        $GS_scripts[$handle]['where'] = $GS_scripts[$handle]['where'] | $where;
   }
 }
 
