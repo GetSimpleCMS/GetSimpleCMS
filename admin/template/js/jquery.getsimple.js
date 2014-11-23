@@ -78,8 +78,8 @@ $.fn.popit = function ($speed) {
 $.fn.removeit = function ($delay) {
 	$delay = $delay || GS.removeItDelay;
 	$(this).each(function () {
-		// $(this).delay($delay).fadeOut(500);
-		$(this).delay($delay).slideUp(300);
+		$(this).delay($delay).fadeOut(500);
+		// $(this).delay($delay).slideUp(300);
 	});
 	return $(this);
 };
