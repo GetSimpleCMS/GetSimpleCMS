@@ -55,12 +55,6 @@ get_template('header');
 				<li><p><a href="log.php?log=failedlogins.log"><?php i18n('VIEW_FAILED_LOGIN');?></a></p></li>
 				<?php exec_action('support-extras'); // @hook support-extras  support links list html ?>
 			</ul>
-
-			<span class="button_wrap">
-				<button class="label label-medium label-button">Add Images</button>
-			</span>
-			<button class="label label-medium">Add Images</button>
-
 		</div>
 	</div>
 	
