@@ -770,14 +770,15 @@ jQuery(document).ready(function () {
 
     // ajaxify edit.php submit
     $('body #editform').on('submit',function(e){
-        e.preventDefault();
         if($('body').hasClass('ajaxsave')){
+        	e.preventDefault();
             if(checkTitle()) ajaxSave().done(ajaxSaveCallback);
             return false;
         } else {
             warnme      = false;
         	pageisdirty = false;
         	return checkTitle();
+        	// return true;
         }
     });
 
@@ -799,7 +800,7 @@ jQuery(document).ready(function () {
         if($.trim($("#post-title").val()).length === 0){
             alert(i18n('CANNOT_SAVE_EMPTY'));
             return false;
-        }
+        } return true;
     }
 
     // init auto save for page edit
