@@ -768,10 +768,17 @@ jQuery(document).ready(function () {
 	// init auto saving
 	if(typeof GSAUTOSAVEPERIOD !== 'undefined' && parseInt(GSAUTOSAVEPERIOD,10) > 0) autoSaveInit();
 
-    $('#editform').submit(function(){
-        warnme = false;
-        pageisdirty = false;
-        return checkTitle();
+    // ajaxify edit.php submit
+    $('body #editform').on('submit',function(e){
+        e.preventDefault();
+        if($('body').hasClass('ajaxsave')){
+            if(checkTitle()) ajaxSave().done(ajaxSaveCallback);
+            return false;
+        } else {
+            warnme      = false;
+        	pageisdirty = false;
+        	return checkTitle();
+        }
     });
 
     /* Warning for unsaved Data */
@@ -903,14 +910,6 @@ jQuery(document).ready(function () {
             ajaxSaveError(response);
         }
     }
-
-    // ajaxify edit.php submit
-    $('body.ajaxsave #editform').on('submit',function(e){
-        if($('body').hasClass('ajaxsave')){
-            e.preventDefault();
-            ajaxSave().done(ajaxSaveCallback);
-        }
-    });
 
     // We register title and slug changes with change() which only fires when you lose focus to prevent midchange saves.
     $('#post-title, #post-id').change(function () {
