@@ -82,10 +82,11 @@ if (isset($_GET['undo'])) {
 	
 	# perform the undo
 	restore_datafile(GSDATAOTHERPATH.GSSNIPPETSFILE);
-	check_for_csrf("undo");		
-	if(!requestIsAjax()) redirect('snippets.php?upd=comp-restored'); // redirect to prevent refresh undos
-	$update = 'snippet-restored';
-	get_snippets_xml(true);
+	check_for_csrf("undo");
+	if(!requestIsAjax()) redirect('snippets.php?upd=snippet-restored'); // redirect to prevent refresh undos
+	// undos are not ajax, what was I thinking
+	// $update = 'snippet-restored';
+	// get_snippets_xml(true);
 }
 
 # create components form html
