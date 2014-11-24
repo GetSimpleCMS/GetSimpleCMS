@@ -685,6 +685,10 @@ function save_file($file,$data=''){
  * @return bool      file contents
  */
 function read_file($file){
+	if(!file_exists($file)){\
+		fileLog(__FUNCTION__,false,$file . ' not exist');
+		return;
+	}
 	$data = file_get_contents($file); // php file_get_contents
 	fileLog(__FUNCTION__,$data!==false,$file);
 	return $data;

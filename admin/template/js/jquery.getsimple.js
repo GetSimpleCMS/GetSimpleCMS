@@ -78,8 +78,8 @@ $.fn.popit = function ($speed) {
 $.fn.removeit = function ($delay) {
 	$delay = $delay || GS.removeItDelay;
 	$(this).each(function () {
-		// $(this).delay($delay).fadeOut(500);
-		$(this).delay($delay).slideUp(300);
+		$(this).delay($delay).fadeOut(500);
+		// $(this).delay($delay).slideUp(300);
 	});
 	return $(this);
 };
@@ -768,10 +768,18 @@ jQuery(document).ready(function () {
 	// init auto saving
 	if(typeof GSAUTOSAVEPERIOD !== 'undefined' && parseInt(GSAUTOSAVEPERIOD,10) > 0) autoSaveInit();
 
-    $('#editform').submit(function(){
-        warnme = false;
-        pageisdirty = false;
-        return checkTitle();
+    // ajaxify edit.php submit
+    $('body #editform').on('submit',function(e){
+        if($('body').hasClass('ajaxsave')){
+        	e.preventDefault();
+            if(checkTitle()) ajaxSave().done(ajaxSaveCallback);
+            return false;
+        } else {
+            warnme      = false;
+        	pageisdirty = false;
+        	return checkTitle();
+        	// return true;
+        }
     });
 
     /* Warning for unsaved Data */
@@ -792,7 +800,7 @@ jQuery(document).ready(function () {
         if($.trim($("#post-title").val()).length === 0){
             alert(i18n('CANNOT_SAVE_EMPTY'));
             return false;
-        }
+        } return true;
     }
 
     // init auto save for page edit
@@ -858,7 +866,8 @@ jQuery(document).ready(function () {
 
     // prerform updating after ajax save
     function ajaxSaveUpdate(success,status){
-        notifySuccess(status).popit().removeit();
+		clearNotify('success');
+        notifySuccess(status).popit();    	
         $('#pagechangednotify').hide();
         if(success) {
             $('#cancel-updates').hide();
@@ -882,7 +891,7 @@ jQuery(document).ready(function () {
         ajaxError(response);
         if ($(response).find('div.updated')) {
         	$(response).find('div.updated').parseNotify();
-        } else notifyError(i18n('ERROR_OCCURED')).popit().removeit();
+        } else notifyError(i18n('ERROR_OCCURED')).popit();
         warnme = false;
         pageisdirty = true;
     }
@@ -913,14 +922,6 @@ jQuery(document).ready(function () {
             ajaxSaveError(response);
         }
     }
-
-    // ajaxify edit.php submit
-    $('body.ajaxsave #editform').on('submit',function(e){
-        if($('body').hasClass('ajaxsave')){
-            e.preventDefault();
-            ajaxSave().done(ajaxSaveCallback);
-        }
-    });
 
     // We register title and slug changes with change() which only fires when you lose focus to prevent midchange saves.
     $('#post-title, #post-id').change(function () {

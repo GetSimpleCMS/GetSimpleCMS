@@ -57,7 +57,9 @@ else{
 if(!$data_index) {
 	if(isset($httpcode)){
 		header($_SERVER["SERVER_PROTOCOL"].' '.$httpcode);
-		$title = "404 Not Found";
+		$title         = "404 Not Found fallback";
+		$url           = GSSLUGNOTFOUND;
+		$template_file = '';
 	} 
 	else{
 		debugLog('data_index and http fallback fail');
