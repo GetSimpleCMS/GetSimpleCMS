@@ -248,7 +248,7 @@ get_template('header');
                                 <span><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span>
                                 <input class="text" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />
                             </div>
-                            <div style="float:right;width:40px;">
+                            <div style="float:right;width:80px;">
                                 <span><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>                                
                                 <select class="text" id="post-menu-order" name="post-menu-order" >
                                 <?php if(isset($menuOrder)) { 
