@@ -3163,7 +3163,7 @@ a.disabled:visited {
 }
 
 .tree-parentcollapsed {
-	display:none;
+	display:none !important;
 }
 
 .tree-error {
