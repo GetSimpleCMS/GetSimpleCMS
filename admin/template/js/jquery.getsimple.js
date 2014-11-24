@@ -1279,35 +1279,57 @@ jQuery(document).ready(function () {
 	///////////////////////////////////////////////////////////////////////////
 
 	var filterSearchInput = $("#filter-search");
+	// toggle filter input
 	$('#filtertable').on("click", function ($e) {
 		$e.preventDefault();
 		filterSearchInput.slideToggle();
 		$(this).toggleClass('current');
 		filterSearchInput.find('#q').focus();
 	});
+	// enter ignore
 	$("#filter-search #q").keydown(function ($e) {
 		if ($e.keyCode == 13) {
 			$e.preventDefault();
 		}
 	});
+	// create index columns
 	$("#editpages tr:has(td.pagetitle)").each(function () {
+		// find all text in pagetitle td, includes show status toggle (menu item)
 		var t = $(this).find('td.pagetitle').text().toLowerCase();
 		$("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
 	});
+	// live search
 	$("#filter-search #q").keyup(function () {
 		var s = $(this).val().toLowerCase().split(" ");
-		$("#editpages tr:hidden").show();
-		$.each(s, function () {
-			$("#editpages tr:visible .indexColumn:not(:contains('" + this + "'))").parent().hide();
-		});
+		doFilter(s);
 	});
+	// cancel filter
 	$("#filter-search .cancel").on("click", function ($e) {
 		$e.preventDefault();
+		resetFilter();
+		showFilter();
+	});
+	
+	function showFilter(){
+		filterSearchInput.slideDown();
+	}
+
+	function hideFilter(){
+		filterSearchInput.slideUp();
+	}
+
+	function doFilter(text){
+		$("#editpages tr:hidden").show();
+		$.each(text, function () {
+			$("#editpages tr:visible .indexColumn:not(:contains('" + this + "'))").parent().hide();
+		});		
+	}
+
+	function resetFilter(){
 		$("#editpages tr").show();
 		$('#filtertable').toggleClass('current');
 		filterSearchInput.find('#q').val('');
-		filterSearchInput.slideUp();
-	});
+	}
  
 
 	///////////////////////////////////////////////////////////////////////////
