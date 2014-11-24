@@ -244,11 +244,11 @@ get_template('header');
                         </p>
                         <div id="menu-items">
                             <img src="template/images/tick.png" id="tick" />
-                            <div style="float:left;width:210px;">
+                            <div style="float:left;width:70%">
                                 <span><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span>
                                 <input class="text" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />
                             </div>
-                            <div style="float:right;width:80px;">
+                            <div style="float:right;width:20%">
                                 <span><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>                                
                                 <select class="text" id="post-menu-order" name="post-menu-order" >
                                 <?php if(isset($menuOrder)) { 
