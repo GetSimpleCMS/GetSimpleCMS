@@ -1664,4 +1664,14 @@ function pingGoogleSitemaps(){
 	return;
 }
 
+/**
+ * Are we previewing a draft
+ * @since  3.4
+ * @return bool returns true if pre-viewing a draft
+ */
+function previewingDraft(){
+	GLOBAL $id;
+	return isset($id) && isset($_GET['draft']) && is_logged_in() && pageHasDraft($id);
+}
+
 /* ?> */

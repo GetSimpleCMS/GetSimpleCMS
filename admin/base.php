@@ -22,7 +22,7 @@ $id = exec_filter('indexid',$id); // @filter indexid (str) filter the front end 
 $data_index = null;
 
 // load page data
-if(isset($_GET['draft']) && is_logged_in() && pageHasDraft($id)){
+if(previewingDraft()){
 	// display draft if specified else
 	$data_index = getDraftXml($id);
 }
