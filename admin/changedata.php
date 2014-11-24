@@ -21,9 +21,12 @@ $draft = (isset($_GET['nodraft']) || isset($_POST['post-nodraft']) || !getDef('G
 
 if(isset($_GET['publish']) && isset($_GET['id'])){
 	$id     = var_in($_GET['id']);
-	$status = publishDraft($id) ? 'success' : 'error';
-	exec_action('draft-publish');
-	redirect("pages.php?id=". $id ."&upd=publish-".$status);
+	$status = publishDraft($id);
+	if($status){
+		exec_action('draft-publish'); // triggers page cache rebuild
+		generate_sitemap(); // regenerates sitemap
+	}
+	redirect("pages.php?id=". $id ."&upd=publish-".$status ? 'success' : 'error');
 	die();
 }
 
@@ -95,6 +98,9 @@ if (isset($_POST['submitted'])) {
 		$xml = exec_filter('page-save',$xml);
 		savePageXml($xml);
 		exec_action('changedata-aftersave');
+		
+		// genen sitemap if published save
+		generate_sitemap();
 	}
 	else {;
 		exec_action('changedata-save-draft');
@@ -102,9 +108,6 @@ if (isset($_POST['submitted'])) {
 		saveDraftXml($xml);
 		exec_action('changedata-aftersave-draft');
 	}
-
-	//ending action
-	generate_sitemap();
 
 	/**
 	 * do changedata ajax save checking for legacy
