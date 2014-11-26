@@ -121,7 +121,8 @@ function getComponentTemplate(){
 		'title'  => '',
 		'slug'   => '',
 		'value'  => '',
-		'disabled' => ''
+		'disabled' => '',
+		'readonly' => ''
 	);
 
 	return getComponentOutput('',(object)$component,'');

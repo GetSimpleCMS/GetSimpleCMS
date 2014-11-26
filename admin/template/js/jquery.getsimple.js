@@ -902,7 +902,7 @@ jQuery(document).ready(function () {
 
     // ajaxsave callback parse response
     function ajaxSaveCallback(response){
-        Debugger.log('ajaxSaveCallback ' + response);
+        // Debugger.log('ajaxSaveCallback ' + response);
         response = $.parseHTML(response);
         if ($(response).find('div.updated')) {
             ajaxSaveUpdate(true,$(response).find('div.updated').html());
