@@ -174,7 +174,7 @@ get_template('header');
 			} elseif ($verstatus == '1') {
 				$ver = '<span class="OKmsg" ><b>'.$site_version_no.'</b> - '. i18n_r('LATEST_VERSION').'</span>';
 			} elseif ($verstatus == '2') {
-				$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - '. (isAlpha() ? i18n_r('ALPHA') : i18n_r('BETA')).'</span>';
+				$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - '. (isAlpha() ? i18n_r('ALPHA_TITLE') : i18n_r('BETA_TITLE')).'</span>';
 			} else {
 				$ver = '<span class="WARNmsg" >'. i18n_r('CANNOT_CHECK') .' <b>'.$site_version_no.'</b><br /><a href="'.$site_link_back_url.'download/" target="_blank" >'. i18n_r('DOWNLOAD').'</a></span>';
 			}
