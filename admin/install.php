@@ -166,20 +166,15 @@ get_template('header');
 			<?php
 			
 			# check to see if there is a core update needed
-			$data = get_api_details();
-			if ($data)	{
-				$apikey = json_decode($data);
-				$verstatus = $apikey->status;
-			}	else {
-				$verstatus = null;
-			}
+			$verdata   = getVerCheck();
+			$verstatus = $verdata->status;
 			
 			if ($verstatus == '0') {
 				$ver = '<span class="ERRmsg" >'. i18n_r('UPG_NEEDED') .' <b>'.$apikey->latest .'</b><br /><a href="'.$site_link_back_url.'download" target="_blank" >'. i18n_r('DOWNLOAD').'</a></span>';
 			} elseif ($verstatus == '1') {
 				$ver = '<span class="OKmsg" ><b>'.$site_version_no.'</b> - '. i18n_r('LATEST_VERSION').'</span>';
 			} elseif ($verstatus == '2') {
-				$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - '. i18n_r('BETA').'</span>';
+				$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - '. (isAlpha() ? i18n_r('ALPHA_TITLE') : i18n_r('BETA_TITLE')).'</span>';
 			} else {
 				$ver = '<span class="WARNmsg" >'. i18n_r('CANNOT_CHECK') .' <b>'.$site_version_no.'</b><br /><a href="'.$site_link_back_url.'download/" target="_blank" >'. i18n_r('DOWNLOAD').'</a></span>';
 			}
