@@ -78,8 +78,8 @@ $.fn.popit = function ($speed) {
 $.fn.removeit = function ($delay) {
 	$delay = $delay || GS.removeItDelay;
 	$(this).each(function () {
-		// $(this).delay($delay).fadeOut(500);
-		$(this).delay($delay).slideUp(300);
+		$(this).delay($delay).fadeOut(500);
+		// $(this).delay($delay).slideUp(300);
 	});
 	return $(this);
 };
@@ -781,10 +781,18 @@ jQuery(document).ready(function () {
 	// init auto saving
 	if(typeof GSAUTOSAVEPERIOD !== 'undefined' && parseInt(GSAUTOSAVEPERIOD,10) > 0) autoSaveInit();
 
-    $('#editform').submit(function(){
-        warnme = false;
-        pageisdirty = false;
-        return checkTitle();
+    // ajaxify edit.php submit
+    $('body #editform').on('submit',function(e){
+        if($('body').hasClass('ajaxsave')){
+        	e.preventDefault();
+            if(checkTitle()) ajaxSave().done(ajaxSaveCallback);
+            return false;
+        } else {
+            warnme      = false;
+        	pageisdirty = false;
+        	return checkTitle();
+        	// return true;
+        }
     });
 
     /* Warning for unsaved Data */
@@ -805,7 +813,7 @@ jQuery(document).ready(function () {
         if($.trim($("#post-title").val()).length === 0){
             alert(i18n('CANNOT_SAVE_EMPTY'));
             return false;
-        }
+        } return true;
     }
 
     // init auto save for page edit
@@ -862,7 +870,8 @@ jQuery(document).ready(function () {
 
     // prerform updating after ajax save
     function ajaxSaveUpdate(success,status){
-        notifySuccess(status).popit().removeit();
+		clearNotify('success');
+        notifySuccess(status).popit();    	
         $('#pagechangednotify').hide();
         if(success) {
             $('#cancel-updates').hide();
@@ -885,7 +894,7 @@ jQuery(document).ready(function () {
         ajaxError(response);
         if ($(response).find('div.updated')) {
         	$(response).find('div.updated').parseNotify();
-        } else notifyError(i18n('ERROR_OCCURED')).popit().removeit();
+        } else notifyError(i18n('ERROR_OCCURED')).popit();
         warnme = false;
         pageisdirty = true;
     }
@@ -906,7 +915,7 @@ jQuery(document).ready(function () {
 
     // ajaxsave callback parse response
     function ajaxSaveCallback(response){
-        Debugger.log('ajaxSaveCallback ' + response);
+        // Debugger.log('ajaxSaveCallback ' + response);
         response = $.parseHTML(response);
         if ($(response).find('div.updated')) {
             ajaxSaveUpdate(true,$(response).find('div.updated').html());
@@ -916,14 +925,6 @@ jQuery(document).ready(function () {
             ajaxSaveError(response);
         }
     }
-
-    // ajaxify edit.php submit
-    $('body.ajaxsave #editform').on('submit',function(e){
-        if($('body').hasClass('ajaxsave')){
-            e.preventDefault();
-            ajaxSave().done(ajaxSaveCallback);
-        }
-    });
 
     // We register title and slug changes with change() which only fires when you lose focus to prevent midchange saves.
     $('#post-title, #post-id').change(function () {
@@ -1321,35 +1322,57 @@ jQuery(document).ready(function () {
 	///////////////////////////////////////////////////////////////////////////
 
 	var filterSearchInput = $("#filter-search");
+	// toggle filter input
 	$('#filtertable').on("click", function ($e) {
 		$e.preventDefault();
 		filterSearchInput.slideToggle();
 		$(this).toggleClass('current');
 		filterSearchInput.find('#q').focus();
 	});
+	// enter ignore
 	$("#filter-search #q").keydown(function ($e) {
 		if ($e.keyCode == 13) {
 			$e.preventDefault();
 		}
 	});
+	// create index columns
 	$("#editpages tr:has(td.pagetitle)").each(function () {
+		// find all text in pagetitle td, includes show status toggle (menu item)
 		var t = $(this).find('td.pagetitle').text().toLowerCase();
 		$("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
 	});
+	// live search
 	$("#filter-search #q").keyup(function () {
 		var s = $(this).val().toLowerCase().split(" ");
-		$("#editpages tr:hidden").show();
-		$.each(s, function () {
-			$("#editpages tr:visible .indexColumn:not(:contains('" + this + "'))").parent().hide();
-		});
+		doFilter(s);
 	});
+	// cancel filter
 	$("#filter-search .cancel").on("click", function ($e) {
 		$e.preventDefault();
+		resetFilter();
+		showFilter();
+	});
+	
+	function showFilter(){
+		filterSearchInput.slideDown();
+	}
+
+	function hideFilter(){
+		filterSearchInput.slideUp();
+	}
+
+	function doFilter(text){
+		$("#editpages tr:hidden").show();
+		$.each(text, function () {
+			$("#editpages tr:visible .indexColumn:not(:contains('" + this + "'))").parent().hide();
+		});		
+	}
+
+	function resetFilter(){
 		$("#editpages tr").show();
 		$('#filtertable').toggleClass('current');
 		filterSearchInput.find('#q').val('');
-		filterSearchInput.slideUp();
-	});
+	}
  
 
 	///////////////////////////////////////////////////////////////////////////

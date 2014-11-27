@@ -92,8 +92,8 @@ if(isset($_POST['submitted'])) {
 	$xmls->addChild('PRETTYURLS', $PRETTYURLS);
 	$xmls->addChild('PERMALINK', $PERMALINK);
 	$xmls->addChild('EMAIL', $SITEEMAIL);
-	$xmls->addChild('TIMEZONE', $TIMEZONE);
-	$xmls->addChild('LANG', $LANG);
+	$xmls->addChild('TIMEZONE', $SITETIMEZONE);
+	$xmls->addChild('LANG', $SITELANG);
 	$xmls->addChild('SITEUSR', $SITEUSR);
 	$xmls->addChild('SITEABOUT', $SITEABOUT);
 	
@@ -104,7 +104,8 @@ if(isset($_POST['submitted'])) {
 	}
 
 	# see new language file immediately
-	include(GSLANGPATH.$LANG.'.php');
+	$newlang = getDefaultLang();
+	include(GSLANGPATH.$newlang.'.php');
 	
 	if (!$error) {
 		$success = i18n_r('ER_SETTINGS_UPD').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>';

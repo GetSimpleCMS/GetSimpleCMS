@@ -12,7 +12,7 @@
 
  	// do not use these alerts if ajax requests as they will not be seen, and interfere with other alerts
 	if ( !requestIsAjax() && file_exists(GSUSERSPATH._id($USR).".xml.reset") && get_filename_id()!='index' && get_filename_id()!='resetpassword' ) {
-		doNotify(sprintf(i18n_r('ER_PWD_CHANGE'),'profile.php'),'error');
+		doNotify(sprintf(i18n_r('ER_PWD_CHANGE'),'profile.php'),'error',true);
 	}
 
 	if ( !requestIsAjax() && (!defined('GSNOAPACHECHECK') || GSNOAPACHECHECK == false) and !server_is_apache()) {
@@ -116,7 +116,7 @@
 			elseif (isset($_GET['cancel'])) doNotify(i18n_r('ER_CANCELLED_FAIL'),'error');
 			elseif (isset($_GET['logout'])) doNotify(i18n_r('MSG_LOGGEDOUT'),'info');
 			elseif (!empty($err))           doNotify('<b>'.i18n_r('ERROR').':</b> '.$err,'error',true);
-			elseif (isset($success))        doNotify($success,'success');
+			elseif (isset($success))        doNotify($success,'success',true);
 		break;
 	}
 

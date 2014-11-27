@@ -2835,6 +2835,10 @@ a.disabled:visited {
 /* codemirror */
 /* CodeMirror WEBKIT SCROLLBARS */
 
+.CodeMirror-gutter-filler, .CodeMirror-scrollbar-filler{
+	background: none !important;
+}
+
 /* scroll on focus only */
 .CodeMirror:not(.CodeMirror-focused) .CodeMirror-hscrollbar,
 .CodeMirror:not(.CodeMirror-focused) .CodeMirror-vscrollbar
@@ -3183,7 +3187,7 @@ a.disabled:visited {
 }
 
 .tree-parentcollapsed {
-	display:none;
+	display:none !important;
 }
 
 .tree-error {
