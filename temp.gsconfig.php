@@ -112,4 +112,9 @@ define('GSSUPPRESSERRORS',true);
 # accepts a lang string, default is 'en_US', false to disable
 # define('GSMERGELANG',false);
 
+# GS prevents backend pages from being loaded in a frame
+# by sending an x-frame header by default to prevent clickjacking attempts
+# setting GSNOFRAME to false will disable this
+# define('GSNOFRAME',false);
+
 ?>
