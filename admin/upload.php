@@ -220,7 +220,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
      echo '<table class="highlight" id="imageTable">'; 
      echo '<tr><th class="imgthumb" ></th><th>'.i18n_r('FILE_NAME').'</th>';
      echo '<th style="text-align:right;">'.i18n_r('FILE_SIZE').'</th>';
-     if (isDebug()){
+	 if ($isUnixHost && isDebug() && function_exists('posix_getpwuid')) {
      	 echo '<th style="text-align:right;">'.i18n_r('PERMS').'</th>';
      }
      echo '<th style="text-align:right;">'.i18n_r('DATE').'</th>';
