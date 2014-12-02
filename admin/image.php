@@ -24,7 +24,7 @@ $src = strippath($_GET['i']);
 $thumb_folder = GSTHUMBNAILPATH.$subPath;
 $src_folder = '../data/uploads/';
 $thumb_folder_rel = '../data/thumbs/'.$subPath;
-if (!is_file($src_folder . $subPath .$src)) redirect("upload.php");
+if (!filepath_is_safe($src_folder . $subPath . $src,GSDATAUPLOADPATH)) redirect("upload.php");
 
 // handle jcrop thumbnail creation
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
