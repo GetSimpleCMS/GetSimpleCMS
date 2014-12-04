@@ -493,6 +493,7 @@ h3.floated {
 h3 span {
 	color: #999;
 	font-size: 14px;
+	margin-left: 10px;
 }
 
 h5,
@@ -1355,8 +1356,14 @@ input.submit {
 	cursor: pointer;
 }*/
 
-input.submit, .button {
-	font: bold 13px Helvetica, Arial, sans-serif;
+input.submit,
+input[type="button"],
+button,
+.button
+{
+	font-weight: bold;
+	font-size: 13px;
+	font-family: Helvetica, Arial, sans-serif;
 	text-decoration: none !important;
 	padding: 7px 15px;
 	text-shadow: 0 1px 0 rgba(255,255,255,.5);
@@ -1378,7 +1385,12 @@ input.submit, .button {
 	box-shadow: rgba(0,0,0, 0.06) 0 0 3px;
 }
 
-input.submit:focus, input.submit:hover, .button:hover {
+input.submit:focus, 
+input.submit:hover, 
+input[type="button"]:hover 
+button:hover,
+.button:hover, 
+{
 	color: #111111;
 	background: #eeeeee;
 		background: -webkit-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#dddddd));
@@ -1396,7 +1408,7 @@ input.submit:disabled {
 	border: solid 1px #BBB;
 }
 
-.button {
+.button-inline {
 	padding: 3px 7px;
 }
 
@@ -2101,10 +2113,24 @@ textarea.copykit {
 	        transition-property: background-color, color, text-shadow; 	
 }
 
+div.label{
+	display:inline-block;
+}
+
+.label-inline {
+	display: inline-block;
+}
+
 .wrapper .label a,.label a{
 	color: white;
 	text-decoration: underline;
 	font-weight: bold !important;
+}
+
+.label-inherit{
+	color: inherit;
+	line-height: inherit;
+	font-size: inherit;
 }
 
 .label a:hover{
@@ -2135,7 +2161,7 @@ textarea.copykit {
 .label-light{
 	color: <?php echo $primary_6; ?> !important;
 	background:  <?php echo $label_5; ?> !important;
-	border: 1px solid <?php echo $primary_6; ?> !important;
+	border: 1px solid <?php echo $primary_5; ?> !important;
 	padding: 0px 5px; /* minus for border */
 }
 
@@ -2810,6 +2836,12 @@ a.disabled:visited {
   transition: none !important;
 }
 
+.border {
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 3px;
+}
+
 .readonly .CodeMirror-code,.readonly #theme_editing_file{
 	/*opacity: 0.3;*/
 	visibility :hidden;
@@ -2934,6 +2966,7 @@ a.disabled:visited {
 .codewrap {
 	/*font-size: 13px;*/
 	/*line-height: 13px;*/
+	margin-bottom : 20px;
 }
 
 .codewrap textarea, #tabs .codewrap textarea{
@@ -2959,6 +2992,9 @@ a.disabled:visited {
     padding-bottom: 10px; /* padding for hscroll not obfuscate last line */
 }
 
+.CodeMirror textarea {
+  left: -9999px;
+}
 
 /* codemirror focused special border highlight style */
 .codewrap .CodeMirror.CodeMirror-focused{
@@ -3247,15 +3283,15 @@ a.disabled:visited {
   .label-medium-border                                       { border-color: <?php echo $label_5; ?> !important;}
 
 /* debug color */
-  .primary_0-border-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>" !important;}
-  .primary_1-border-debug:after, .darker-debug:after              { content: "<?php echo $primary_1;   ?>" !important;}
-  .primary_2-border-debug:after, .dark-debug:after                { content: "<?php echo $primary_2;   ?>" !important;}
-  .primary_3-border-debug:after, .middle-debug:after              { content: "<?php echo $primary_3;   ?>" !important;}
-  .primary_4-border-debug:after, .light-debug:after               { content: "<?php echo $primary_4;   ?>" !important;}
-  .primary_5-border-debug:after, .lighter-debug:after             { content: "<?php echo $primary_5;   ?>" !important;}
-  .primary_6-border-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>" !important;}
-.secondary_0-border-debug:after, .secondary-darkest-debug:after   { content: "<?php echo $secondary_0; ?>" !important;}
-.secondary_1-border-debug:after, .secondary-lightest-debug:after  { content: "<?php echo $secondary_1; ?>" !important;}
+  .primary_0-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>" !important;}
+  .primary_1-debug:after, .darker-debug:after              { content: "<?php echo $primary_1;   ?>" !important;}
+  .primary_2-debug:after, .dark-debug:after                { content: "<?php echo $primary_2;   ?>" !important;}
+  .primary_3-debug:after, .middle-debug:after              { content: "<?php echo $primary_3;   ?>" !important;}
+  .primary_4-debug:after, .light-debug:after               { content: "<?php echo $primary_4;   ?>" !important;}
+  .primary_5-debug:after, .lighter-debug:after             { content: "<?php echo $primary_5;   ?>" !important;}
+  .primary_6-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>" !important;}
+.secondary_0-debug:after, .secondary-darkest-debug:after   { content: "<?php echo $secondary_0; ?>" !important;}
+.secondary_1-debug:after, .secondary-lightest-debug:after  { content: "<?php echo $secondary_1; ?>" !important;}
 
 /* label colors */
    .label-default-debug:after                                     { content: "<?php echo $label_0;   ?>" !important;}

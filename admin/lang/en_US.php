@@ -495,8 +495,10 @@ $i18n = array(
 "MOVE_TEMPCONFIG_ERROR"   =>	"Failed to rename <code>%s</code> to <code>%s</code>! Please do it manually.",
 "KILL_CANT_CONTINUE"      =>	"Cannot continue. Please fix errors and try again.",
 "REFRESH"                 =>	"Refresh",
-"BETA"                    =>	"Beta / Bleeding Edge",
-"ALPHA"                   =>	"Alpha / Non-Stable !",
+"BETA"                    =>	"beta",
+"ALPHA"                   =>	"alpha",
+"BETA_TITLE"              =>	"Beta / Bleeding Edge",
+"ALPHA_TITLE"             =>	"Alpha / Non-Stable !",
 
 /*
 * Misc Cleanup Work
