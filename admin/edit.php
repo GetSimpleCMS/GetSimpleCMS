@@ -193,12 +193,12 @@ if($newdraft) $pageClass.=' newdraft';
             if(empty($publishAuthor)) $publishAuthor = i18n_r('UNKNOWN');
 ?>
         <!-- PUBLISHED pagestack -->
-        <div class="pagestack existingpage boxsizingBorder">
+        <div class="pagestack existingpage shadow peek">
             <div style="float: left;">
                 <i class="fa fa-clock-o">&nbsp;</i><?php echo sprintf(i18n_r('LAST_SAVED'),$publishAuthor)," ",$publishPubdate;?>&nbsp;
             </div>
             <div style="float:right">
-                <a href="edit.php?id=<?php echo $id;?>&amp;nodraft" class="label label-ghost label-inline" style="color:#808080;">
+                <a href="edit.php?id=<?php echo $id;?>&amp;nodraft" class="label label-ghost label-inline">
                     <i class="fa fa-pencil"></i>
                 </a>
                 <div class="label label-ok label-inline"><?php i18n('LABEL_PUBLISHED'); ?></div>
@@ -208,7 +208,6 @@ if($newdraft) $pageClass.=' newdraft';
                 getPublishedPageHead(isset($id),$path);
             ?>
             </div>
-            <div class="shadow"></div>
         </div>
 <?php
         }
@@ -221,7 +220,7 @@ if($newdraft) $pageClass.=' newdraft';
             if(empty($draftAuthor)) $draftAuthor = i18n_r('UNKNOWN');
 ?>
         <!-- DRAFT page stack -->
-        <div class="pagestack existingdraft boxsizingBorder">
+        <div class="pagestack existingdraft shadow peek">
             <div style="float: left;">
                 <i class="fa fa-clock-o">&nbsp;</i><?php echo sprintf(i18n_r('DRAFT_LAST_SAVED'),$draftAuthor)," ",$draftPubdate;?>&nbsp;
             </div>
@@ -236,7 +235,6 @@ if($newdraft) $pageClass.=' newdraft';
                 getDraftPageHead(isset($id),$path);
             ?>
             </div>
-            <div class="shadow"></div>
         </div>
 <?php
         }
@@ -244,7 +242,7 @@ if($newdraft) $pageClass.=' newdraft';
         // editing published page, draft does not exist
 ?>
         <!-- NEWDRAFT page stack -->
-        <div class="pagestack newdraft boxsizingBorder">
+        <div class="pagestack newdraft shadow nopeek">
             <div style="float: left;">
                 <i class="fa fa-info-circle">&nbsp;</i><?php i18n('PAGE_NO_DRAFT'); ?>&nbsp;
             </div>
@@ -254,7 +252,6 @@ if($newdraft) $pageClass.=' newdraft';
                 </a>
                 <div class="label label-ghost label-inline"><?php i18n('LABEL_DRAFT'); ?></div>
             </div>
-            <div class="shadow"></div>
         </div>
 <?php
         }

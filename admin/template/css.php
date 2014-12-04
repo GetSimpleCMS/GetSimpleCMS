@@ -3227,6 +3227,7 @@ a.disabled:visited {
     -webkit-transform-origin-y: 45%;
 }
 
+/* new draft , hide publish */
 #maincontent.newdraft .draftview,#maincontent.newdraft .draftpublish{
 	display:none;
 }
@@ -3249,22 +3250,26 @@ a.disabled:visited {
 	color: #808080;
 	overflow: hidden;
 	white-space:nowrap;
-	transition: height 400ms ease-out,
-				background-color 100ms ;
-	transition-delay: 150ms;
+			transition: height 300ms ease-out,
+						background-color 200ms ;
 
-	-webkit-transition: height 400ms ease-out,
-				background-color 100ms ;
+	-webkit-transition: height 300ms ease-out,
+						background-color 200ms ;
+	
+	        transition-delay: 150ms;
 	-webkit-transition-delay: 150ms;
 
-
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;	
 }
 
 .pagestack .label {
 	font-weight: bold;
 }
 
-.pagestack .shadow{
+.pagestack.shadow:after{
+	content: "";
 	box-shadow: inset 0 -6px 8px -6px rgba(0, 0, 0, 0.2);
 	position: absolute;
 	left: 0;
@@ -3281,22 +3286,26 @@ a.disabled:visited {
 /**
  * pagestack hover expand animations
  */
-.pagestack.existingpage:hover,.pagestack.existingdraft:hover,.pagestack.open{
-	transition: height 200ms ease-out,
-				background-color 100ms ;
+.pagestack:hover{
+			transition: height 200ms ease-out,
+						background-color 200ms ;
+
 	-webkit-transition: height 200ms ease-out,
-				background-color 100ms ;
-	transition-delay: 150ms;
+						background-color 200ms ;
+
+		    transition-delay: 150ms;
 	-webkit-transition-delay: 150ms;
+
 	background-color: #FFFFFF;
-	height:80px;
 }
 
-.pagestack.newdraft:hover,.pagestack.nopeek:hover{
-	transition: height 200ms;
-	transition-delay: 200ms;
-	background-color: #FFFFFF;
-	height:35px;
+.pagestack.peek:hover,.pagestack.open{
+	height: 80px;
+}
+
+/* page stack with no peek content */
+.pagestack.nopeek:hover{
+	height:32px;
 }
 
 /* END */
