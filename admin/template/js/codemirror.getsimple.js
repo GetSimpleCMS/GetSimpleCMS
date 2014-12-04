@@ -105,6 +105,7 @@ jQuery(document).ready(function () {
 			
 			// get mode override from data-mode attr if it exists
 			if($this.data('mode')) cm_config.mode = getEditorMode($this.data('mode'));
+			if($this.prop('readonly')) cm_config.readOnly = true;
 
 			// Debugger.log(cm_config);
 			// create codemirror instance from textarea DOM

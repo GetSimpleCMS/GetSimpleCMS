@@ -29,7 +29,7 @@ if (get_filename_id() == 'load') {
 	<li id="nav_backups" ><a class="backups" href="backups.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_BACKUPS'));?>" ><?php i18n('TAB_BACKUPS');?></a></li>
 	<li id="nav_plugins" ><a class="plugins" href="plugins.php" accesskey="<?php echo find_accesskey(i18n_r('PLUGINS_NAV'));?>" ><?php i18n('PLUGINS_NAV');?></a></li>
 
-	<?php exec_action('nav-tab');	?>
+	<?php exec_action('nav-tab'); // @hook nav-tab backend after navigation tab list html output	?>
 
 	<li id="nav_loaderimg" ><img class="toggle" id="loader" src="template/images/ajax.gif" alt="" /></li>
 

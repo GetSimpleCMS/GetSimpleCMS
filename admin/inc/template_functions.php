@@ -152,7 +152,7 @@ function delete_upload($id, $path = "") {
 function delete_upload_dir($path){
 	$target = GSDATAUPLOADPATH . $path;
 	if (path_is_safe($target,GSDATAUPLOADPATH) && file_exists($target)) {
-		$status = delete_dir($target);
+		$status = delete_folder($target);
 		
 		// delete thumbs folder
 		if(file_exists(GSTHUMBNAILPATH . $path)) delete_dir(GSTHUMBNAILPATH . $path);
@@ -839,7 +839,7 @@ function list_pages_json(){
 
 	$pagesSorted = subval_sort($pagesArray_tmp,'sort');
 
-	$links = exec_filter('editorlinks',get_link_menu_array());
+	$links = exec_filter('editorlinks',get_link_menu_array()); // @filter editorlinks (array) filter links array for ckeditor
 	return json_encode($links);
 }
 
@@ -1375,10 +1375,10 @@ function generate_sitemap() {
 		
 		//create xml file
 		$file = GSROOTPATH .GSSITEMAPFILE;
-		$xml = exec_filter('sitemap',$xml);
+		$xml  = exec_filter('sitemap',$xml); // @filter sitemap (obj) filter the sitemap $xml obj
 
 		$status = XMLsave($xml, $file);
-		exec_action('sitemap-aftersave');
+		exec_action('sitemap-aftersave'); // @hook sitemap-aftersave after a sitemap data file was saved
 		#sitemap successfully created
 		return $status;
 	}
@@ -1598,6 +1598,10 @@ function get_component_xml($id){
 	$id = clean_url($id);
 	if(!$id) return;
 	return get_components_xml()->xpath("//slug[.='".$id."']/..");	
+}
+
+function componentIsEnabled($id){
+	if($component = get_component_xml($id)) return (bool)(string) $component->disabled;
 }
 
 /**

@@ -11,7 +11,7 @@
 	<li id="sb_newpage" ><a href="edit.php" accesskey="<?php echo find_accesskey(i18n_r('SIDE_CREATE_NEW'));?>" <?php if((!isset($_GET['id'])) && (get_filename_id()==='edit'))  { echo 'class="current"'; } ?>><?php i18n('SIDE_CREATE_NEW'); ?></a></li>
 	<?php if((isset($_GET['id']) && $_GET['id'] != '') && (get_filename_id()==='edit')) { ?><li id="sb_pageedit" ><a href="#" class="current"><?php i18n('EDITPAGE_TITLE'); ?></a></li><?php } ?>
 	<li id="sb_menumanager" class="last_sb"><a href="menu-manager.php" accesskey="<?php echo find_accesskey(i18n_r('MENU_MANAGER'));?>" <?php check_menu('menu-manager');  ?>><?php i18n('MENU_MANAGER'); ?></a></li>
-	<?php exec_action("pages-sidebar"); ?>
+	<?php exec_action("pages-sidebar"); // @hook pages-sidebar sidebar list html output  ?>
 </ul>
 
 <?php if(get_filename_id()==='edit') { ?>

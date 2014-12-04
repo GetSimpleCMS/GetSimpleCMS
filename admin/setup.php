@@ -100,6 +100,21 @@ if(isset($_POST['submitted'])) {
 			$xml->asXML($init);
 		}
 
+
+		# create default 404.xml page
+		$init = GSDATAOTHERPATH.'404.xml';
+		$temp = GSADMININCPATH.'tmp/tmp-404.xml'; 
+		if (! file_exists($init)) {
+			copy($temp,$init);
+		}
+
+		# create default 404.xml page
+		$init = GSDATAOTHERPATH.'403.xml';
+		$temp = GSADMININCPATH.'tmp/tmp-403.xml'; 
+		if (! file_exists($init)) {
+			copy($temp,$init);
+		}
+
 		# create default components.xml page if not exist
 		$init = GSDATAOTHERPATH.'components.xml';
 		$temp = GSADMININCPATH.'tmp/tmp-components.xml'; 

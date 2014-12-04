@@ -153,6 +153,14 @@ input:focus:-moz-placeholder { color:transparent; } /* FF 4-18 */
 input:focus::-moz-placeholder { color:transparent; } /* FF 19+ */
 input:focus:-ms-input-placeholder { color:transparent; } /* IE 10+ */
 
+/* disable webkit rounded pill like inputs, especially when disabled */
+textarea,
+input[type="text"],
+input[type="button"],
+input[type="submit"] {
+     -webkit-appearance: none;
+}
+
 /** HEADER / NAVIGATION **/
 .header {
 	color: #FFF;
@@ -161,6 +169,7 @@ input:focus:-ms-input-placeholder { color:transparent; } /* IE 10+ */
 	margin: 0 0 25px 0;
 }
 
+/* add 'gradient' to GSHEADERCLASS to reimplement */
 .header.gradient{
 		background: -moz-linear-gradient(top, <?php echo $primary_4; ?> 0%, <?php echo $primary_2; ?> 100%);	 /* firefox */
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,<?php echo $primary_4; ?>), color-stop(100%,<?php echo $primary_2; ?>));	/* webkit */
@@ -484,6 +493,7 @@ h3.floated {
 h3 span {
 	color: #999;
 	font-size: 14px;
+	margin-left: 10px;
 }
 
 h5,
@@ -548,6 +558,7 @@ h5:hover img {
 	z-index: 0 !important; /* allow codemirror to resize over fixed sidebar */
 }
 
+/* @todo what is sidebar .section used for ? */
 #sidebar .section {
 	background: #fff;
 	border: 1px solid #ccc;
@@ -742,7 +753,7 @@ h5:hover img {
 	font-weight: normal;
 }
 
-/*.edit-nav a#metadata_toggle {
+.edit-nav a#metadata_toggle {
 	background-image: url('images/plus.png');
 	padding-right: 20px;
 }
@@ -750,7 +761,7 @@ h5:hover img {
 .edit-nav a#metadata_toggle.current {
 	background-image: url('images/minus.png');
 	 padding-right: 20px;
-}*/
+}
 
 .edit-nav {
 	height: 1%;
@@ -972,7 +983,7 @@ form select.text,form textarea.text {
 	border: 1px solid #aaa;
 	padding: 3px;
 	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-	font-size: 11px;
+	font-size: 12px;
 	/*width: 510px;*/
 	width:100%;
 	border-radius: 2px;
@@ -1266,11 +1277,13 @@ a.viewlink:hover img {
 	color:#C00;
 }
 
+/* unused */
 form table.formtable select {
 	width: 275px;
 	padding: 3px 4px;
 }
 
+/* unused */
 table.cleantable {
 	border-collapse: collapse;
 	margin: 0 0 0 0;
@@ -1297,7 +1310,8 @@ table.cleantable tr td {
 	color: #CC0000;
 }
 
-p.backuplink {
+/* page edit footer , .backuplink deprecated */
+p.editfooter, p.backuplink {
 	text-shadow: 1px 1px 0 rgba(255,255,255,.3);
 	color: #888;
 	font-size: 11px;
@@ -1307,14 +1321,19 @@ p.backuplink {
 	border-top: 1px solid #eee;
 }
 
-p.backuplink i.fa{
+p.editfooter i.fa{
 	font-size: 14px;
 	vertical-align: bottom;
 	margin-right: 8px;
 	line-height: 18px;
 }
 
-p.backuplink a {
+p.editfooter span {
+	display: inline-block;
+	margin-right: 8px;
+}
+
+p.editfooter a, p.backuplink a {
 	font-weight: 100 !important;
 }
 
@@ -1337,8 +1356,14 @@ input.submit {
 	cursor: pointer;
 }*/
 
-input.submit, .button {
-	font: bold 13px Helvetica, Arial, sans-serif;
+input.submit,
+input[type="button"],
+button,
+.button
+{
+	font-weight: bold;
+	font-size: 13px;
+	font-family: Helvetica, Arial, sans-serif;
 	text-decoration: none !important;
 	padding: 7px 15px;
 	text-shadow: 0 1px 0 rgba(255,255,255,.5);
@@ -1360,7 +1385,12 @@ input.submit, .button {
 	box-shadow: rgba(0,0,0, 0.06) 0 0 3px;
 }
 
-input.submit:focus, input.submit:hover, .button:hover {
+input.submit:focus, 
+input.submit:hover, 
+input[type="button"]:hover 
+button:hover,
+.button:hover, 
+{
 	color: #111111;
 	background: #eeeeee;
 		background: -webkit-gradient(linear,0% 40%,0% 70%,from(#eeeeee),to(#dddddd));
@@ -1378,7 +1408,7 @@ input.submit:disabled {
 	border: solid 1px #BBB;
 }
 
-.button {
+.button-inline {
 	padding: 3px 7px;
 }
 
@@ -1457,6 +1487,21 @@ table.comptable label {
 	color: #777;
 }
 
+table.comptable .compactive {
+	text-align: center;
+	width: 80px;
+}
+
+table.comptable .compactive label {
+	font-size: 11px;
+	font-weight: normal;
+}
+
+table.comptable .compactive input {
+	vertical-align: middle;
+}
+
+
 /* @todo more wrappers */
 .wrapper a.component {
 	float: left;
@@ -1522,6 +1567,15 @@ table.comptable label {
 	line-height: 22px;
 	padding: 5px 10px;
 	margin-bottom: 20px;
+
+    -webkit-transition:  1000ms ease-in-out;
+	   -moz-transition:  1000ms ease-in-out;
+	     -o-transition:  1000ms ease-in-out;
+	        transition:  1000ms ease-in-out;
+	-webkit-transition-property: background-color, color, text-shadow;
+	   -moz-transition-property: background-color, color, text-shadow;
+	     -o-transition-property: background-color, color, text-shadow;
+	        transition-property: background-color, color, text-shadow;
 }
 
 .updated a, .error a, .notify a{
@@ -1555,6 +1609,11 @@ table.comptable label {
 	background: <?php echo $notify_3; ?>;	
 }
 
+.notify_expired {
+	background: <?php echo $notify_6; ?>;
+	color: #222;
+}
+
 .deletedrow {
 	background-color: #FFB19B;
 }
@@ -1573,11 +1632,14 @@ table.comptable label {
 }
 
 .notify .close{
-	float:right;
+	float: right;
+	color: black;
+	opacity: 0.2;
 }
 
 .notify .close:hover{
 	color: black;
+	opacity: 0.8;
 }
 
 .hint {
@@ -1807,21 +1869,40 @@ th.file_size,th.file_date,th.file_perms {
 	width:85px;
 }
 
+#sidebar .snav li.upload {
+	display: none;
+		-moz-border-radius: 4px;
+		-khtml-border-radius: 4px;
+		-webkit-border-radius: 4px;
+	border-radius: 4px;
+	margin-left: 13px;
+	color: #FFF;
+	background: <?php echo $primary_1; ?>;
+	font-weight: 100;
+	text-shadow: 1px 1px 1px <?php echo $primary_1; ?>;
+}
+
 #sidebar .uploadform {
 	padding: 5px 15px;
 }
 
-/* upload link larger button for touch devices */
-#fileuploadlink span.touch {
-	display: none;
+#sidebar .snav.dropzoneenabled li.upload,
+#sidebar .snav.dropzoneenabled li.uploaddropzone{
+	display: list-item;
 }
-#fileuploadlink.touch span {
+
+/* upload link larger button for touch devices */
+.touch #fileuploadlink span,
+#fileuploadlink span.touch {
 	display:none;
 }
-#fileuploadlink.touch span.touch {
+.touch #fileuploadlink span.touch {
 	display: block;
 	text-align: center;
 	font-size: 20px;
+}
+.touch li.uploaddropzone{
+	display:none !important;
 }
 
 /* Upload Queue */
@@ -1952,19 +2033,6 @@ th.file_size,th.file_date,th.file_perms {
 	color: <?php echo $label_2; ?>;
 }
 
-#sidebar .snav li.upload {
-	display: none;
-		-moz-border-radius: 4px;
-		-khtml-border-radius: 4px;
-		-webkit-border-radius: 4px;
-	border-radius: 4px;
-	margin-left: 13px;
-	color: #FFF;
-	background: <?php echo $primary_1; ?>;
-	font-weight: 100;
-	text-shadow: 1px 1px 1px <?php echo $primary_1; ?>;
-}
-
 /* Image Editor Styles */
 textarea.copykit {
 	font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
@@ -2011,15 +2079,38 @@ textarea.copykit {
 	border-radius: 3px;
 	text-align: center;
 	color: #F2F2F2;
-	margin:0px 3px;
+	margin:0 3px;
  	background-color: <?php echo $label_0; ?>;
  	/*display: inline-block;*/
+
+    -webkit-transition:  300ms ease-in-out;
+	   -moz-transition:  300ms ease-in-out;
+	     -o-transition:  300ms ease-in-out;
+	        transition:  300ms ease-in-out;
+	-webkit-transition-property: background-color, color, text-shadow;
+	   -moz-transition-property: background-color, color, text-shadow;
+	     -o-transition-property: background-color, color, text-shadow;
+	        transition-property: background-color, color, text-shadow; 	
+}
+
+div.label{
+	display:inline-block;
+}
+
+.label-inline {
+	display: inline-block;
 }
 
 .wrapper .label a,.label a{
 	color: white;
 	text-decoration: underline;
 	font-weight: bold !important;
+}
+
+.label-inherit{
+	color: inherit;
+	line-height: inherit;
+	font-size: inherit;
 }
 
 .label a:hover{
@@ -2043,14 +2134,15 @@ textarea.copykit {
 }
 
 .label-medium {
-	color: <?php echo $primary_0; ?> !important;
+	color: white !important;
 	background-color:  <?php echo $label_6; ?> !important;
 }
 
 .label-light{
 	color: <?php echo $primary_6; ?> !important;
 	background:  <?php echo $label_5; ?> !important;
-	border: 1px solid <?php echo $primary_6; ?> !important;
+	border: 1px solid <?php echo $primary_5; ?> !important;
+	padding: 0px 5px; /* minus for border */
 }
 
 .label-ghost {
@@ -2070,10 +2162,33 @@ textarea.copykit {
 }
 
 .edittable .label-ghost{
-	font-size:11px;
-	padding:3px 6px;
+	font-size: 11px;
+	padding: 3px 6px;
 	color: #999999;
 	text-shadow: none;
+}
+
+.label-button {
+	line-height: 18px !important;
+	font-size: 11px !important;
+	display: inline-block;
+	cursor: pointer;
+	cursor: hand;	
+}
+
+button.label{
+	border: none;
+	color: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	cursor: pointer;
+	cursor: hand;
+	padding: 1px 6px;
+	background-color: none;
+}
+
+button.label:hover,.label-button:hover {
+	background-color: <?php echo $secondary_1;?> !important ;	
 }
 
 div.showstatus{
@@ -2192,7 +2307,7 @@ body#index {
 }
 
 #setup input.text {
-	width: 250px;
+	
 }
 
 #index #maincontent .main,
@@ -2208,7 +2323,8 @@ body#index {
 }
 
 #resetpassword form input.text,
-#index form input.text {
+#index form input.text,
+#setup input.text {
 	width: 100%;
 	font-size: 18px;
 	padding: 5px;
@@ -2561,7 +2677,7 @@ a.disabled:visited {
 
 #theme_edit_code .CodeMirror{
 	/*border:1px solid #E8E8E8;*/
-	border-radius:2px;
+	/*border-radius:2px;*/ /* causes webkit font rendering bug on opacity transistions and fixed positions WHY? */
 	min-height:550px;
 }
 
@@ -2700,6 +2816,12 @@ a.disabled:visited {
   transition: none !important;
 }
 
+.border {
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 3px;
+}
+
 .readonly .CodeMirror-code,.readonly #theme_editing_file{
 	/*opacity: 0.3;*/
 	visibility :hidden;
@@ -2724,6 +2846,10 @@ a.disabled:visited {
 
 /* codemirror */
 /* CodeMirror WEBKIT SCROLLBARS */
+
+.CodeMirror-gutter-filler, .CodeMirror-scrollbar-filler{
+	background: none !important;
+}
 
 /* scroll on focus only */
 .CodeMirror:not(.CodeMirror-focused) .CodeMirror-hscrollbar,
@@ -2820,6 +2946,7 @@ a.disabled:visited {
 .codewrap {
 	/*font-size: 13px;*/
 	/*line-height: 13px;*/
+	margin-bottom : 20px;
 }
 
 .codewrap textarea, #tabs .codewrap textarea{
@@ -2845,6 +2972,9 @@ a.disabled:visited {
     padding-bottom: 10px; /* padding for hscroll not obfuscate last line */
 }
 
+.CodeMirror textarea {
+  left: -9999px;
+}
 
 /* codemirror focused special border highlight style */
 .codewrap .CodeMirror.CodeMirror-focused{
@@ -3073,7 +3203,7 @@ a.disabled:visited {
 }
 
 .tree-parentcollapsed {
-	display:none;
+	display:none !important;
 }
 
 .tree-error {
@@ -3133,15 +3263,15 @@ a.disabled:visited {
   .label-medium-border                                       { border-color: <?php echo $label_5; ?> !important;}
 
 /* debug color */
-  .primary_0-border-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>" !important;}
-  .primary_1-border-debug:after, .darker-debug:after              { content: "<?php echo $primary_1;   ?>" !important;}
-  .primary_2-border-debug:after, .dark-debug:after                { content: "<?php echo $primary_2;   ?>" !important;}
-  .primary_3-border-debug:after, .middle-debug:after              { content: "<?php echo $primary_3;   ?>" !important;}
-  .primary_4-border-debug:after, .light-debug:after               { content: "<?php echo $primary_4;   ?>" !important;}
-  .primary_5-border-debug:after, .lighter-debug:after             { content: "<?php echo $primary_5;   ?>" !important;}
-  .primary_6-border-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>" !important;}
-.secondary_0-border-debug:after, .secondary-darkest-debug:after   { content: "<?php echo $secondary_0; ?>" !important;}
-.secondary_1-border-debug:after, .secondary-lightest-debug:after  { content: "<?php echo $secondary_1; ?>" !important;}
+  .primary_0-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>" !important;}
+  .primary_1-debug:after, .darker-debug:after              { content: "<?php echo $primary_1;   ?>" !important;}
+  .primary_2-debug:after, .dark-debug:after                { content: "<?php echo $primary_2;   ?>" !important;}
+  .primary_3-debug:after, .middle-debug:after              { content: "<?php echo $primary_3;   ?>" !important;}
+  .primary_4-debug:after, .light-debug:after               { content: "<?php echo $primary_4;   ?>" !important;}
+  .primary_5-debug:after, .lighter-debug:after             { content: "<?php echo $primary_5;   ?>" !important;}
+  .primary_6-debug:after, .lightest-debug:after            { content: "<?php echo $primary_6;   ?>" !important;}
+.secondary_0-debug:after, .secondary-darkest-debug:after   { content: "<?php echo $secondary_0; ?>" !important;}
+.secondary_1-debug:after, .secondary-lightest-debug:after  { content: "<?php echo $secondary_1; ?>" !important;}
 
 /* label colors */
    .label-default-debug:after                                     { content: "<?php echo $label_0;   ?>" !important;}

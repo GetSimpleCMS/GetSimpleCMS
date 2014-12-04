@@ -244,11 +244,11 @@ get_template('header');
                         </p>
                         <div id="menu-items">
                             <img src="template/images/tick.png" id="tick" />
-                            <div style="float:left;width:210px;">
+                            <div style="float:left;width:70%">
                                 <span><label for="post-menu"><?php i18n('MENU_TEXT'); ?></label></span>
                                 <input class="text" id="post-menu" name="post-menu" type="text" value="<?php echo $menu; ?>" />
                             </div>
-                            <div style="float:right;width:40px;">
+                            <div style="float:right;width:20%">
                                 <span><label for="post-menu-order"><?php i18n('PRIORITY'); ?></label></span>                                
                                 <select class="text" id="post-menu-order" name="post-menu-order" >
                                 <?php if(isset($menuOrder)) { 
@@ -279,7 +279,7 @@ get_template('header');
                     </div>
 
                     <div class="clear"></div>
-                    <?php exec_action('edit-extras'); ?>        
+                    <?php exec_action('edit-extras'); //@hook edit-extras after page edit options html output ?>        
                 </fieldset>
             </div> 
             <!-- / END PAGE OPTIONS -->
@@ -294,14 +294,13 @@ get_template('header');
                 <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
                 <div class="codewrap"><textarea id="post-content" class="html_edit boxsizingBorder" name="post-content"><?php echo $content; ?></textarea></div>
 
-            <?php exec_action('edit-content'); ?> 
+            <?php exec_action('edit-content'); //@hook edit-content after page edit content html output ?> 
 
             <?php if(isset($data_edit)) { 
                 echo '<input id="existing-url" type="hidden" name="existing-url" value="'. $url .'" />'; 
             }
 
-            # CKEditor setup functions
-            exec_action('html-editor-init');
+            exec_action('html-editor-init'); //@hook html-edit-init LEGACY deprecated
             echo "<!-- html-editor-init -->";
             if (empty($HTMLEDITOR)) echo '</fieldset>';
 
@@ -364,12 +363,13 @@ get_template('header');
             </div>
             
             <?php if($url != '') { ?>
-                <p class="backuplink"><i class="fa fa-clock-o"></i><?php 
-                    if (isset($pubDate)) { 
-                        echo sprintf(i18n_r('LAST_SAVED'), '<em>'.$author.'</em>').' '. output_datetime($pubDate).'&nbsp;&nbsp; ';
+                <p class="editfooter"><?php 
+                    if (isset($pubDate)) {
+                        echo '<span><i class="fa fa-clock-o"></i>';
+                        echo sprintf(i18n_r('LAST_SAVED'), '<em>'.$author.'</em>').' '. output_datetime($pubDate).'</span>';
                     }
                     if ( fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
-                        echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a>';
+                        echo '<span>&bull;</span><span><a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
                     } 
                 ?></p>
             <?php } ?>

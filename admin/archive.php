@@ -23,8 +23,8 @@ $table = '';
 // if a backup needs to be created
 if(isset($_GET['do'])) {
 	check_for_csrf("create");
-	exec_action('archive-backup');
-	redirect('zip.php?s='.$SESSIONHASH);	
+	exec_action('archive-backup'); // @hook create backup archive requested
+	redirect('zip.php?s='.$SESSIONHASH);
 }
 
 // if a backup has just been created

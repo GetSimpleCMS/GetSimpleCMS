@@ -41,7 +41,7 @@
         ?>
     </div><!-- end .wrapper -->
 
-<?php exec_action('pre-body') ?>
+<?php exec_action('pre-body'); // @hook pre-body before html body closing ?> 
 </body>
 </html>
-<?php exec_action('end-flush') ?>
+<?php exec_action('end-flush'); // @hook end-flush the end before php flushes its output  ?>

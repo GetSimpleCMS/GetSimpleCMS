@@ -404,7 +404,7 @@ function create_dir($path,$recursive = true){
  * @param  str $path path to remove
  * @return bool       success
  */
-function delete_dir($path){
+function delete_folder($path){
 	$status = rmdir($path);
 	return fileLog(__FUNCTION__,$status,$path);
 }
@@ -433,6 +433,10 @@ function save_file($file,$data=''){
  * @return bool      file contents
  */
 function read_file($file){
+	if(!file_exists($file)){\
+		fileLog(__FUNCTION__,false,$file . ' not exist');
+		return;
+	}
 	$data = file_get_contents($file); // php file_get_contents
 	fileLog(__FUNCTION__,$data!==false,$file);
 	return $data;
@@ -762,20 +766,11 @@ function generate_url($slug, $absolute = false){
 			$plink  = replaceToken('parent', $parent, $plink);
 		}
 		
-		// replace SLUG token
-		$plink = replaceToken('slug', $slug, $plink);
-		
-		$plink = str_replace('//','/',$plink); // clean up any double slashes
-
-		// debugLog($url);
-		// debugLog($plink);
-
-		$url = $url . no_lsl($plink); // normalize leading slashes
-
-	} else if ($slug != 'index') $url .= 'index.php?id='.$slug;
-
-	$url = exec_filter('generate_url',$url); // @filter for generating urls after processing, for use with custom tokens etc
-	return $url;
+	if (trim($PERMALINK) != '' && $slug != 'index'){
+		$plink = str_replace('%parent%/', $parent, $PERMALINK);
+		$plink = str_replace('%parent%', $parent, $plink);
+		$plink = str_replace('%slug%', $slug, $plink);
+		$url = $path . $plink;
 }
 
 /**
@@ -885,7 +880,7 @@ function redirect($url) {
 		die();
 	}	
 
-	if(function_exists('exec_action')) exec_action('redirect');
+	if(function_exists('exec_action')) exec_action('redirect'); // @hook redirect a redirect is occuring
 
 	$debugredirect = false;
 

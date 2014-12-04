@@ -92,7 +92,7 @@ get_template('header');
 					echo '<span id="theme_no_img"><p><em>'.i18n_r('NO_THEME_SCREENSHOT').'</em></p></span>';
 				}
 
-				exec_action('theme-extras');
+				exec_action('theme-extras'); //@hook theme-extras after theme html output
 			?>
 				
 		</div>

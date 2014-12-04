@@ -92,19 +92,20 @@ if(isset($_POST['submitted'])) {
 	$xmls->addChild('PRETTYURLS', $PRETTYURLS);
 	$xmls->addChild('PERMALINK', $PERMALINK);
 	$xmls->addChild('EMAIL', $SITEEMAIL);
-	$xmls->addChild('TIMEZONE', $TIMEZONE);
-	$xmls->addChild('LANG', $LANG);
+	$xmls->addChild('TIMEZONE', $SITETIMEZONE);
+	$xmls->addChild('LANG', $SITELANG);
 	$xmls->addChild('SITEUSR', $SITEUSR);
 	$xmls->addChild('SITEABOUT', $SITEABOUT);
 	
-	exec_action('settings-website');
+	exec_action('settings-website'); // @hook settings-website website data file before save
 	
 	if (! XMLsave($xmls, GSDATAOTHERPATH . GSWEBSITEFILE) ) {
 		$error = i18n_r('CHMOD_ERROR');
 	}
 
 	# see new language file immediately
-	include(GSLANGPATH.$LANG.'.php');
+	$newlang = getDefaultLang();
+	include(GSLANGPATH.$newlang.'.php');
 	
 	if (!$error) {
 		$success = i18n_r('ER_SETTINGS_UPD').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>';
@@ -218,7 +219,7 @@ get_template('header');
 
 			<div class="clear"></div>
 			
-			<?php exec_action('settings-website-extras'); ?>
+			<?php exec_action('settings-website-extras'); // @hook setting-website-extras after website settings html output ?>
 			<p id="submit_line" >
 				<span>
 					<input class="submit" type="submit" name="submitted" value="<?php i18n('BTN_SAVESETTINGS');?>" />

@@ -29,7 +29,7 @@ if(isset($_POST['submitted'])) {
 	# check for any errors
 	if ( !$error ) {
 		
-		exec_action('successful-login-start');
+		exec_action('successful-login-start'); // @hook successful-login-start login process started
 		
 		# hash the given password
 		$password  = passhash($password);
@@ -67,12 +67,12 @@ if(isset($_POST['submitted'])) {
 		if( $authenticated ) {
 			# YES - set the login cookie, then redirect user to secure panel		
 			create_cookie();
-			exec_action('successful-login-end');
+			exec_action('successful-login-end');  // @hook successful-login-end login process authentication success
 			$logFailed->save();			
 			gotoDefaultPage();
 		} else {
 			# NO - show error message
-			exec_action('successful-login-failed'); 
+			exec_action('successful-login-failed');  // @hook successful-login-failed login process authentication failed
 			$error = i18n_r('LOGIN_FAILED');
 			$logFailed->save();
 		} 

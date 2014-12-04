@@ -53,7 +53,7 @@ if(isset($_POST['submitted'])){
 				$message .= "<p>". i18n_r('LABEL_USERNAME').": <strong>". $userid."</strong>";
 				$message .= "<br>". i18n_r('NEW_PASSWORD').": <strong>". $random."</strong>";
 				$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL . $GSADMIN.'/">'.$SITEURL . $GSADMIN.'/</a></p>';
-				exec_action('resetpw-success');
+				exec_action('resetpw-success'); // @hook resetpw-success a user password reset occured
 				$emailstatus = sendmail($EMAIL,$subject,$message);
 				# if email fails, we do nothing, maybe handle this in the future
 				# show the result of the reset attempt
@@ -61,7 +61,7 @@ if(isset($_POST['submitted'])){
 				redirect("resetpassword.php?upd=pwd-". ($status && $emailstatus ? 'success' : 'error');
 			} else{
 				# username doesnt match listed xml username
-				exec_action('resetpw-error');
+				exec_action('resetpw-error'); // @hook resetpw-error a user password reset failed
 				usleep($randSleep);
 				redirect("resetpassword.php?upd=pwd-success");
 			} 

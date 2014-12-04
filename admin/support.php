@@ -46,16 +46,15 @@ get_template('header');
 				<li><a href="upload.php"><?php i18n('UPLOADIFY_BUTTON'); ?></a></li>
 				<li><a href="settings.php"><?php i18n('GENERAL_SETTINGS'); ?></a></li>
 				<li><a href="theme.php"><?php i18n('CHOOSE_THEME'); ?></a></li>
-				<?php exec_action('welcome-link'); ?>
-				<?php exec_action('welcome-doc-link'); ?>
+				<?php exec_action('welcome-link'); // @hook welcome-link support welcome list links output ?>
+				<?php exec_action('welcome-doc-link'); // @hook welcome-doc-link support welcome list links output?>
 			</ul>
 			
 			<h3><?php i18n('SUPPORT');?></h3>
 			<ul>
 				<li><p><a href="log.php?log=failedlogins.log"><?php i18n('VIEW_FAILED_LOGIN');?></a></p></li>
-				<?php exec_action('support-extras'); ?>
+				<?php exec_action('support-extras'); // @hook support-extras  support links list html ?>
 			</ul>
-
 		</div>
 	</div>
 	

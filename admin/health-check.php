@@ -56,7 +56,7 @@ echo '<div class="bodycontent clearfix">
 					$ver = '<div id="hc_version" class="label label-ok" >'.$verstring. i18n_r('LATEST_VERSION').'</div>';
 				} elseif ($verstatus == '2') {
 					// bleeding edge
-					$ver = '<div id="hc_version" class="label '.(isAlpha() ? 'label-info' : 'label-info' ).'" >'.$verstring. (isAlpha() ? i18n_r('ALPHA') : i18n_r('BETA')) .'</div>';
+					$ver = '<div id="hc_version" class="label '.(isAlpha() ? 'label-info' : 'label-info' ).'" >'.$verstring. (isAlpha() ? i18n_r('ALPHA_TITLE') : i18n_r('BETA_TITLE')) .'</div>';
 				} else {
 					// cannot check
 					$ver = '<div id="hc_version" class="label label-warn" >'.$verstring. i18n_r('CANNOT_CHECK').'<br /><a href="'.$site_link_back_url.'download">'. i18n_r('CHECK_MANUALLY').'</a></div>';
@@ -374,7 +374,7 @@ echo '<div class="bodycontent clearfix">
 			}
 
 			// call healthcheck-extras hook
-			exec_action('healthcheck-extras');
+			exec_action('healthcheck-extras'); // @hook healthcheck-extras after health check html output
 			?>			
 	</div>
 		

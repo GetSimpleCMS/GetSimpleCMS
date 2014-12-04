@@ -148,16 +148,26 @@ $GS_script_assets['ckeditor']['cdn']['ver']        = $ckeditor_ver;
 $GS_script_assets['ckeditor']['local']['url']      = $ASSETPATH.'js/ckeditor/ckeditor.js';
 $GS_script_assets['ckeditor']['local']['ver']      = $ckeditor_ver;
 
+
+/**
+ * Core alias groups
+ */
+
 // gs codeeditor
-$GS_script_assets['gscodemirror']['local']['url']  = $ASSETPATH.'js/codemirror.getsimple.js';
-$GS_script_assets['gscodemirror']['local']['ver']  = $getsimple_ver;
-$GS_script_assets['gscodemirror']['queue']['script']  = array('codemirror');
-$GS_script_assets['gscodemirror']['queue']['style']   = array('codemirror');
+$GS_script_assets['gscodemirror']['local']['url']     = $ASSETPATH.'js/codemirror.getsimple.js';
+$GS_script_assets['gscodemirror']['local']['ver']     = $getsimple_ver;
+$GS_script_assets['gscodemirror']['queue']['script']  = 'codemirror';
+$GS_script_assets['gscodemirror']['queue']['style']   = 'codemirror';
 
 // gs htmleditor
-$GS_script_assets['gsckeditor']['local']['url']  = $ASSETPATH.'js/ckeditor.getsimple.js';
-$GS_script_assets['gsckeditor']['local']['ver']  = $getsimple_ver;
-$GS_script_assets['gsckeditor']['queue']['script']  = array('ckeditor');
+$GS_script_assets['gsckeditor']['local']['url']     = $ASSETPATH.'js/ckeditor.getsimple.js';
+$GS_script_assets['gsckeditor']['local']['ver']     = $getsimple_ver;
+$GS_script_assets['gsckeditor']['queue']['script']  = 'ckeditor';
+
+// gs uploader
+$GS_script_assets['gsdropzone']['local']['url']     = $ASSETPATH.'js/dropzone.getsimple.js';
+$GS_script_assets['gsdropzone']['local']['ver']     = $getsimple_ver;
+$GS_script_assets['gsdropzone']['queue']['script']  = 'dropzone';
 
 /**
  * Register shared javascript/css scripts for loading into the header
@@ -166,6 +176,7 @@ $GS_script_assets['gsckeditor']['queue']['script']  = array('ckeditor');
 $infooter = false;
 $nocdn    = getDef('GSNOCDN',true);
 
+// preregister all scripts assets into GS_scripts_assets, so they are available for queueing
 preRegisterScript('jquery',       '', !$nocdn , false);
 preRegisterScript('jquery-ui',    '', !$nocdn , false);
 preRegisterScript('font-awesome', '', !$nocdn , $infooter);
@@ -173,18 +184,18 @@ preRegisterScript('getsimple',    '',   false , $infooter);
 preRegisterScript('lazyload',     '',   false , $infooter);
 preRegisterScript('spin',         '',   false , $infooter);
 preRegisterScript('jcrop',        '',   false , $infooter);
-preRegisterScript('dropzone',     '',   false , $infooter);
 preRegisterScript('gstree',       '',   false , $infooter);
 preRegisterScript('ckeditor',     '',   false , $infooter); // cdn disabled, http://cdn.ckeditor.com/, requires explicit setting of config and plugin paths to local
 preRegisterScript('codemirror',   '',   false , $infooter);
+preRegisterScript('dropzone',     '',   false , $infooter);
 preRegisterScript('fancybox',     '',   false , $infooter);
 preRegisterScript('scrolltofixed','',   false , $infooter);
 
 // gs aliases
 preRegisterScript('gshtmleditor', $GS_script_assets['gsckeditor'],     false , $infooter);
-preRegisterScript('gscodeeditor', $GS_script_assets['gscodemirror'], false , $infooter);
-preRegisterScript('gscrop',       $GS_script_assets['jcrop'],        false , $infooter);
-preRegisterScript('gsuploader',   $GS_script_assets['dropzone'],     false , $infooter);
+preRegisterScript('gscodeeditor', $GS_script_assets['gscodemirror'],   false , $infooter);
+preRegisterScript('gscrop',       $GS_script_assets['jcrop'],          false , $infooter);
+preRegisterScript('gsuploader',   $GS_script_assets['gsdropzone'],     false , $infooter);
 
 preRegisterStyle('font-awesome',  '', !$nocdn , 'screen');
 preRegisterStyle('codemirror',    '',   false , 'screen');
@@ -291,15 +302,23 @@ function deregister_script($handle){
 function queue_script($handle,$where){
   global $GS_scripts;
   if (array_key_exists($handle, $GS_scripts)){
-    // load items queue
-    if(isset($GS_scripts[$handle]['queue'])){
-      $config = $GS_scripts[$handle]['queue'];
-      if(isset($config['script'])) array_map('queue_script',$config['script'],array_fill(0,count($config['script']),$where));
-      if(isset($config['style']))  array_map('queue_style',$config['style'],array_fill(0,count($config['style']),$where));
-    }
+        // load items queue
+        if(isset($GS_scripts[$handle]['queue'])){ 
+            $config = $GS_scripts[$handle]['queue'];
+            
+            if(isset($config['script'])){
+                if(!is_array($config['script'])) $config['script'] = explode(',',$config['script']);
+                array_map('queue_script',$config['script'],array_fill(0,count($config['script']),$where));
+            }
 
-    $GS_scripts[$handle]['load']  = true;
-    $GS_scripts[$handle]['where'] = $GS_scripts[$handle]['where'] | $where;
+            if(isset($config['style'])){
+                if(!is_array($config['style']))  $config['style'] = explode(',',$config['style']);
+                array_map('queue_style',$config['style'],array_fill(0,count($config['style']),$where));
+            }
+        }
+
+        $GS_scripts[$handle]['load']  = true;
+        $GS_scripts[$handle]['where'] = $GS_scripts[$handle]['where'] | $where;
   }
 }
 
