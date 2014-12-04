@@ -1230,7 +1230,7 @@ jQuery(document).ready(function () {
 	updateEditSlug = function(html){
 		var newslug = $(html).find('#existing-url').val();
 		if(newslug) $('#existing-url').val(newslug);
-		// Debugger.log(newslug);
+		Debugger.log(newslug);
 	};
 
 	function getExtension(file){
@@ -1426,6 +1426,10 @@ jQuery(document).ready(function () {
 		if(xhr.status == 401){
 			notifyInfo("Redirecting...");
 			window.location.reload();
+		}
+		else if(xhr.status == 302){
+			notifyInfo("Redirecting...");
+			// window.location.reload();
 		}
 	});
 

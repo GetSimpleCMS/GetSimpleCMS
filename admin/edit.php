@@ -413,9 +413,10 @@ if($newdraft) $pageClass.=' newdraft';
 
             <?php exec_action('edit-content'); //@hook edit-content after page edit content html output ?> 
 
-            <?php if(isset($data_edit)) { 
-                echo '<input id="existing-url" type="hidden" name="existing-url" value="'. $url .'" />'; 
-            }
+            <?php 
+                if(isset($data_edit)) { 
+                    echo '<input id="existing-url" type="hidden" name="existing-url" value="'. $url .'" />'; 
+                }
 
             exec_action('html-editor-init'); //@hook html-edit-init LEGACY deprecated
             echo "<!-- html-editor-init -->";

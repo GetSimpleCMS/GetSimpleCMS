@@ -1075,11 +1075,17 @@ function redirect($url) {
 	$url = var_out($url,'url'); // filter url here since it can come from alot of places, specifically redirectto user input
 
 	// handle expired sessions for ajax requests
-	if(requestIsAjax() && !cookie_check()){
-		header('HTTP/1.1 401 Unauthorized');
-		header('WWW-Authenticate: FormBased');
-		// @note this is not a security function for ajax, just a session timeout handler
-		die();
+	if(requestIsAjax()){
+		if(!cookie_check()){
+			header('HTTP/1.1 401 Unauthorized');
+			header('WWW-Authenticate: FormBased');
+			// @note this is not a security function for ajax, just a session timeout handler
+			die();
+		} else {
+			header('HTTP/1.1 302 Redirect');
+			// @note this is not a security function for ajax, just a session timeout handler
+			die();			
+		}
 	}
 
 	if(function_exists('exec_action')) exec_action('redirect'); // @hook redirect a redirect is occuring
