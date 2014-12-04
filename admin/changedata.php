@@ -21,12 +21,15 @@ $draft = (isset($_GET['nodraft']) || isset($_POST['post-nodraft']) || !getDef('G
 
 if(isset($_GET['publish']) && isset($_GET['id'])){
 	$id     = var_in($_GET['id']);
-	$status = publishDraft($id);
+	
+	if(!filepath_is_safe(GSDATADRAFTSPATH.$id.'.xml',GSDATADRAFTSPATH)) $status = false;
+	else $status = publishDraft($id);
+
 	if($status){
 		exec_action('draft-publish'); // triggers page cache rebuild
 		generate_sitemap(); // regenerates sitemap
 	}
-	redirect("pages.php?id=". $id ."&upd=publish-".$status ? 'success' : 'error');
+	redirect("pages.php?id=". $id ."&upd=publish-". ($status ? 'success' : 'error'));
 	die();
 }
 
