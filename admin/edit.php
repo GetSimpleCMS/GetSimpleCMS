@@ -148,7 +148,7 @@ include('template/include-nav.php');
 function getPublishedPageHead($editing = true, $path = ''){
     global $id,$draftExists,$pageExists;
     echo '<h3 class="floated">'. ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')).'</h3>';
-    if(getDef('GSUSEDRAFTS',true))echo '<div class="title label label-ok">'.i18n_r('LABEL_PUBLISHED').'</div>';
+    if(getDef('GSUSEDRAFTS',true) && $pageExists) echo '<div class="title label label-ok">'.i18n_r('LABEL_PUBLISHED').'</div>';
     echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav clearfix" >';
     if($editing) {
         echo '<a class="pageview" href="'. $path .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
@@ -184,7 +184,9 @@ if($newdraft) $pageClass.=' newdraft';
     exec_action('page-stack'); // experimental
 
     if(isset($id) && getDef('GSUSEDRAFTS',true)) {
-        // editing draft page, published page exists
+        /**
+         * Editing draft page, published page exists
+         */
         if($draft && $pageExists){
             $publishdata    = getPageXML($id,$nocdata = true);
             $publishAuthor  = (string)$publishdata->author;
@@ -211,7 +213,9 @@ if($newdraft) $pageClass.=' newdraft';
         </div>
 <?php
         }
-        // editing published page, draft exists
+        /**
+         * Editing published page, draft exists
+         */
         if(!$draft && $draftExists){
             $draftdata = getDraftXML($id,$nocdata = true);
             $draftAuthor = (string)$draftdata->author;
@@ -239,7 +243,9 @@ if($newdraft) $pageClass.=' newdraft';
 <?php
         }
         else if(!$draft && !$draftExists){
-        // editing published page, draft does not exist
+        /**
+         * Editing published page, draft does not exist
+         */
 ?>
         <!-- NEWDRAFT page stack -->
         <div class="pagestack newdraft shadow nopeek">
