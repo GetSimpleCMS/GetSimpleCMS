@@ -164,6 +164,7 @@ function getDraftPageHead($editing = true, $path = ''){
     echo '<div class="title label label-draft secondary-lightest-back">'.i18n_r('LABEL_DRAFT').'</div>';
     echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav clearfix" >';
     if($editing) {
+        //@todo broken on no fancy url
         echo '<a class="draftview" href="'. $path .'?draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
         echo '<a class="draftpublish" href="changedata.php?publish&id='.$id.'" accesskey="'. find_accesskey(i18n_r('PUBLISH')). '" >'. i18n_r('PUBLISH'). '</a>';
     }
@@ -486,14 +487,14 @@ if($newdraft) $pageClass.=' newdraft';
             
             <?php if($url != '') { ?>
                 <p class="editfooter"><?php 
-                    if (isset($pubDate)) { 
+                    if (!$newdraft && isset($pubDate)) { 
                         echo '<span><i class="fa fa-clock-o"></i>';
                         echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'.empty($author) ? i18n_r('UNKNOWN') : $author.'</em>').' '. output_datetime($pubDate).'</span>';
                     }
                     if ( $draft && fileHasBackup(GSDATADRAFTSPATH.$url.'.xml') ) {
-                        echo '&bull;&nbsp;&nbsp; <a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
+                        echo '<span>&bull;</span><a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
                     }
-                    else if(fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
+                    else if( !$draft && fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
                         echo '<span>&bull;</span><span><a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
                     }
                 ?></p>
