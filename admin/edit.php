@@ -164,7 +164,7 @@ include('template/include-nav.php');
 function getPublishedPageHead($editing = true, $path = ''){
     global $id,$draftExists,$pageExists;
     echo '<h3 class="floated">'. ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')).'</h3>';
-    if(getDef('GSUSEDRAFTS',true) && $pageExists) echo '<div class="title label label-ok">'.i18n_r('LABEL_PUBLISHED').'</div>';
+    if(getDef('GSUSEDRAFTS',true) && $pageExists && getDef('GSSDRAFTSPUBLISHEDTAG',true)) echo '<div class="title label label-ok unselectable">'.i18n_r('LABEL_PUBLISHED').'</div>';
     echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav clearfix" >';
     if($editing) {
         echo '<a class="pageview" href="'. $path .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
@@ -177,7 +177,7 @@ function getPublishedPageHead($editing = true, $path = ''){
 function getDraftPageHead($editing = true, $path = ''){
     global $id,$draftExists,$pageExists,$PRETTYURLS;
     echo '<h3 class="floated">'. ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')) .'</h3>';
-    echo '<div class="title label label-draft secondary-lightest-back">'.i18n_r('LABEL_DRAFT').'</div>';
+    echo '<div class="title label label-draft secondary-lightest-back unselectable">'.i18n_r('LABEL_DRAFT').'</div>';
     echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav clearfix" >';
     if($editing) {
         echo '<a class="draftview" href="'. $path . ($PRETTYURLS ? '?' : '&amp;') .'draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
@@ -219,7 +219,7 @@ if($newdraft) $pageClass.=' newdraft';
                 <a href="edit.php?id=<?php echo $id;?>&amp;nodraft" class="label label-ghost label-inline">
                     <i class="fa fa-pencil"></i>
                 </a>
-                <div class="label label-ok label-inline"><?php i18n('LABEL_PUBLISHED'); ?></div>
+                <div class="label label-ok label-inline unselectable"><?php i18n('LABEL_PUBLISHED'); ?></div>
             </div>
             <div class="pagehead clear" >
             <?php
@@ -248,7 +248,7 @@ if($newdraft) $pageClass.=' newdraft';
                 <a href="edit.php?id=<?php echo $id;?>&amp;draft" class="label label-ghost label-inline">
                     <i class="fa fa-pencil"></i>
                 </a>
-                <div class="label secondary-lightest-back label-inline"><?php i18n('LABEL_DRAFT'); ?></div>
+                <div class="label secondary-lightest-back label-inline unselectable"><?php i18n('LABEL_DRAFT'); ?></div>
             </div>
             <div class="pagehead clear" >
             <?php
@@ -272,7 +272,7 @@ if($newdraft) $pageClass.=' newdraft';
                 <a href="edit.php?id=<?php echo $id;?>&amp;draft" class="label label-ghost label-inline">
                     <i class="fa fa-pencil"></i>
                 </a>
-                <div class="label label-ghost label-inline"><?php i18n('LABEL_DRAFT'); ?></div>
+                <div class="label label-ghost label-inline unselectable"><?php i18n('LABEL_DRAFT'); ?></div>
             </div>
         </div>
 <?php
@@ -280,7 +280,7 @@ if($newdraft) $pageClass.=' newdraft';
     }
     echo '</div>';
     $draft ? getDraftPageHead(isset($id),$path) : getPublishedPageHead(isset($id),$path);
-    exec_action(get_filename_id().'-body'); 
+    exec_action(get_filename_id().'-body');
 ?>
         <form class="largeform" id="editform" action="changedata.php" method="post" accept-charset="utf-8" >
         <input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("edit", "edit.php"); ?>" />

@@ -97,6 +97,7 @@ $GS_definitions = array(
 	'GSUSEDRAFTS'          => true,                           // (bool) use page drafts
 	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else `nodraft` or `draft` only
 	'GSDRAFTSTACKDEFAULT'  => true,                           // (bool) default page stack editing to drafts if true
+	'GSSDRAFTSPUBLISHEDTAG'=> true,                           // (bool) show published label on non draft pages if true
 	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
 	'GSDEBUG'              => false,                          // (bool) debug mode
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls

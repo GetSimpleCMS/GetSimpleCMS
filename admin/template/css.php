@@ -2810,10 +2810,6 @@ a.disabled:visited {
    -moz-user-select: none;
    -khtml-user-select: none;
    -webkit-user-select: none;
-   /*
-     Introduced in IE 10.
-     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
-   */
    -ms-user-select: none;
    user-select: none;
 }
@@ -3276,7 +3272,7 @@ a.disabled:visited {
 	bottom: 0;
 	width: 100%;
 	height: 9px;
-	pointer-events:none; /* clickthrough */
+	pointer-events: none; /* clickthrough */
 }
 
 .pagestack .pagehead{

@@ -950,11 +950,13 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	if ($page['title'] == '' )      { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
 	if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <span class="label label-ghost">'.i18n_r('MENUITEM_SUBTITLE').'</span>'; } else { $page['menuStatus'] = ''; }
 	if ($page['private'] != '' )    { $page['private'] = ' <span class="label label-ghost">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } else { $page['private'] = ''; }
+	if (pageHasDraft($page['url'])) { $page['draft']   = ' <span class="label label-ghost">'.lowercase(i18n_r('LABEL_DRAFT')).'</span>'; } else { $page['draft'] = ''; }
 	if ($page['url'] == 'index' )   { $homepage = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; } else { $homepage = ''; }
 
 	$pageTitle = cl($page['title']);
 
-	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. $pageTitle .'</a><div class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</div></td>';
+	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. $pageTitle .'</a>';
+	$menu .= '<div class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] . $page['draft'] . '</div></td>'; // keywords used for filtering
 	$menu .= '<td style="width:80px;text-align:right;" ><span>'. output_date($page['pubDate']) .'</span></td>';
 	$menu .= '<td class="secondarylink" >';
 	$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
