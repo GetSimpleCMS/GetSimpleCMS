@@ -121,7 +121,7 @@ if (isset($_POST['submitted'])) {
 		if(isset($_POST['ajaxsave'])){
 			// force redirects
 			// 
-			// @todo we  update the slug with the assigned slug, but there could be other things plugins need to do when adding a page,
+			// @todo we update the slug with the assigned slug, but there could be other things plugins need to do when adding a page,
 			//  that needs to be available to the page after, things like custom link menus, actions etc.
 			//  for now we redirect, so pagestack works since it is not implemented yet for ajax
 			if($pageIsNew) redirect('edit.php?id='.$url.'&nodraft&upd=edit-success&ptype=new',true);

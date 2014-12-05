@@ -24,7 +24,23 @@ $id    = isset($_GET['id'])    ? var_in( $_GET['id']    ): null;
 $uri   = isset($_GET['uri'])   ? var_in( $_GET['uri']   ): null;
 $ptype = isset($_GET['type'])  ? var_in( $_GET['type']  ): null;
 $nonce = isset($_GET['nonce']) ? var_in( $_GET['nonce'] ): null;
-$draft = (isset($_GET['nodraft']) || !getDef('GSUSEDRAFTS',true)) ? false : true; // (bool) using draft pages
+
+$draft           = false; // init draft edit mode flag
+$draftsActive    = getDef('GSUSEDRAFTS',true); // are drafts active
+$pagestackactive = $draftsActive && getDef('GSUSEPAGESTACK',true) ;
+$pagestackdraft  = $pagestackactive && getDef('GSDRAFTSTACKDEFAULT',true);
+
+// if drafts are enabled
+if($draftsActive){
+    if(!isset($_GET['nodraft']) && $pagestackdraft){
+        // default to edit draft if `nodraft` not set, or GSEDITDRAFTDEFAULT is true
+        $draft = true;
+    }
+    else if(isset($_GET['draft']) && !$pagestackdraft){
+        // allow `draft` to force draft mode if GSEDITDRAFTDEFAULT is not true
+        $draft = true;
+    }
+}
 
 // Page variables reset
 $theme_templates = '';
@@ -183,7 +199,7 @@ if($newdraft) $pageClass.=' newdraft';
 <?php
     exec_action('page-stack'); // experimental
 
-    if(isset($id) && getDef('GSUSEDRAFTS',true)) {
+    if(isset($id) && $pagestackactive) {
         /**
          * Editing draft page, published page exists
          */
@@ -217,8 +233,8 @@ if($newdraft) $pageClass.=' newdraft';
          * Editing published page, draft exists
          */
         if(!$draft && $draftExists){
-            $draftdata = getDraftXML($id,$nocdata = true);
-            $draftAuthor = (string)$draftdata->author;
+            $draftdata    = getDraftXML($id,$nocdata = true);
+            $draftAuthor  = (string)$draftdata->author;
             $draftPubdate = output_datetime($draftdata->pubDate);
             
             if(empty($draftAuthor)) $draftAuthor = i18n_r('UNKNOWN');
@@ -229,7 +245,7 @@ if($newdraft) $pageClass.=' newdraft';
                 <i class="fa fa-clock-o">&nbsp;</i><?php echo sprintf(i18n_r('DRAFT_LAST_SAVED'),$draftAuthor)," ",$draftPubdate;?>&nbsp;
             </div>
             <div style="float:right">
-                <a href="edit.php?id=<?php echo $id;?>" class="label label-ghost label-inline">
+                <a href="edit.php?id=<?php echo $id;?>&amp;draft" class="label label-ghost label-inline">
                     <i class="fa fa-pencil"></i>
                 </a>
                 <div class="label secondary-lightest-back label-inline"><?php i18n('LABEL_DRAFT'); ?></div>
@@ -253,7 +269,7 @@ if($newdraft) $pageClass.=' newdraft';
                 <i class="fa fa-info-circle">&nbsp;</i><?php i18n('PAGE_NO_DRAFT'); ?>&nbsp;
             </div>
             <div style="float:right">
-                <a href="edit.php?id=<?php echo $id;?>&amp;" class="label label-ghost label-inline">
+                <a href="edit.php?id=<?php echo $id;?>&amp;draft" class="label label-ghost label-inline">
                     <i class="fa fa-pencil"></i>
                 </a>
                 <div class="label label-ghost label-inline"><?php i18n('LABEL_DRAFT'); ?></div>
@@ -269,7 +285,7 @@ if($newdraft) $pageClass.=' newdraft';
         <form class="largeform" id="editform" action="changedata.php" method="post" accept-charset="utf-8" >
         <input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("edit", "edit.php"); ?>" />
         <input id="author" name="post-author" type="hidden" value="<?php echo $USR; ?>" />
-        <?php if(getDef('GSUSEDRAFTS',true) && !$draft){ ?><input id="nodraft" name="post-nodraft" type="hidden" value="1" /><?php } ?>
+        <?php if($draftsActive && !$draft){ ?><input id="nodraft" name="post-nodraft" type="hidden" value="1" /><?php } ?>
  
         <!-- page title toggle screen -->
         <p id="edit_window">
