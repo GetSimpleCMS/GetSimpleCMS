@@ -510,6 +510,7 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
 	if ( !$overwrite && (file_exists(GSDATAPAGESPATH . $url .".xml") ||  in_array($url,$reservedSlugs)) ) {
 		list($newfilename,$count) = getNextFileName(GSDATAPAGESPATH,$url.'.xml');
 		$url = $url .'-'. $count;
+		// die($url.' '.$newfilename.' '.$count);
 	}
 
 	// store url and title in data, if passed in param they are ignored
@@ -1068,8 +1069,9 @@ function encode_quotes($text)  {
  * @author schlex
  *
  * @param string $url
+ * @param bool ajax force redirects if ajax
  */
-function redirect($url) {
+function redirect($url,$ajax = false) {
 	global $i18n;
 
 	$url = var_out($url,'url'); // filter url here since it can come from alot of places, specifically redirectto user input
@@ -1081,8 +1083,10 @@ function redirect($url) {
 			header('WWW-Authenticate: FormBased');
 			// @note this is not a security function for ajax, just a session timeout handler
 			die();
-		} else {
+		} else if($ajax){
 			header('HTTP/1.1 302 Redirect');
+			echo $url;
+			// header('Location: '.$url);
 			// @note this is not a security function for ajax, just a session timeout handler
 			die();			
 		}

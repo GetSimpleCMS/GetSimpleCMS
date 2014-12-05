@@ -57,6 +57,7 @@
 			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_REQ_PROC_FAIL'),'error');
 		if(!$dbn) break;
 		case 'edit-success':
+			if(!isset($ptype) && isset($_GET['ptype'])) $ptype = var_in($_GET['ptype']); // preset update tokens
 			$draftqs = (isset($_GET['upd-draft']) || (isset($upddraft) && $upddraft == true )) ? '&draft' : '';
 			if ($ptype == 'edit' && !isset($oldid)) {
 				// page edit changes saved, undo, restore

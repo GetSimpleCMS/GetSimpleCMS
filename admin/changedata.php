@@ -119,8 +119,12 @@ if (isset($_POST['submitted'])) {
 	function changedataAjaxSave($url,$oldslug){
 		global $draft,$pageIsNew;
 		if(isset($_POST['ajaxsave'])){
-			
-			if($pageIsNew) redirect('edit.php?id='.$url);
+			// force redirects
+			// 
+			// @todo we  update the slug with the assigned slug, but there could be other things plugins need to do when adding a page,
+			//  that needs to be available to the page after, things like custom link menus, actions etc.
+			//  for now we redirect, so pagestack works since it is not implemented yet for ajax
+			if($pageIsNew) redirect('edit.php?id='.$url.'&nodraft&upd=edit-success&ptype=new',true);
 
 			// ajax response wrapper, still using html parsing for now
 			echo "<div>";
@@ -141,6 +145,7 @@ if (isset($_POST['submitted'])) {
 			// send new inputs for slug changes and new nonces
 			echo '<input id="nonce" name="nonce" type="hidden" value="'. get_nonce("edit", "edit.php") .'" />';
             echo '<input id="existing-url" name="existing-url" type="hidden" value="'. $url .'" />';
+            echo '<input id="post-id" name="post-id" type="hidden" value="'. $url .'" />';
 			echo "</div>";
 			die();
 		}
