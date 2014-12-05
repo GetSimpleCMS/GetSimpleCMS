@@ -65,7 +65,7 @@ elseif ($p == 'restore') {
 
 	if($draft){
 		restore_draft($id);   // restore old slug file
-		redirect("edit.php?id=". $id ."&upd=edit-success&type=restore");
+		redirect("edit.php?id=". $id ."&upd-draft&upd=edit-success&type=restore");
 	}
 
 	if (isset($_GET['new'])) {

@@ -57,26 +57,32 @@
 			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_REQ_PROC_FAIL'),'error');
 		if(!$dbn) break;
 		case 'edit-success':
+			
 			if(!isset($ptype) && isset($_GET['ptype'])) $ptype = var_in($_GET['ptype']); // preset update tokens
-			$draftqs = (isset($_GET['upd-draft']) || (isset($upddraft) && $upddraft == true )) ? '&draft' : '';
+			
+			if(isset($_GET['upd-draft']) || (isset($upddraft) && $upddraft == true )){
+				$draftqs = '&draft';
+				$dispid      = $id . ' (' . titlecase(i18n_r('LABEL_DRAFT')) .')';
+			} else $dispid = $id;
+
 			if ($ptype == 'edit' && !isset($oldid)) {
 				// page edit changes saved, undo, restore
-				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','success',true);
+				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $dispid) .'. <a href="backup-edit.php?p=restore&id='. $id . $draftqs .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','success',true);
 			} elseif ($ptype == 'edit' && isset($oldid)) {
 				// page edit changes saved, undo, restore with slug change
-				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="backup-edit.php?p=restore&id='. $oldid .'&new='.$id.'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','success',true);
+				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $dispid) .'. <a href="backup-edit.php?p=restore&id='. $oldid .'&new='.$id . $draftqs.'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','success',true);
 			} elseif ($ptype == 'restore' && !isset($oldid)) {
 				// page has been restored, undo, restore
-				doNotify(sprintf(i18n_r('ER_HASBEEN_REST'), $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info',true);
+				doNotify(sprintf(i18n_r('ER_HASBEEN_REST'), $dispid) .'. <a href="backup-edit.php?p=restore&id='. $id . $draftqs .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info',true);
 			} elseif ($ptype == 'restore' && isset($oldid)) {
 				// page has been restored undo, restore with slug change
-				doNotify(sprintf(i18n_r('ER_HASBEEN_REST'), $id) .'. <a href="backup-edit.php?p=restore&id='. $oldid .'&new='.$id.'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info',true);
+				doNotify(sprintf(i18n_r('ER_HASBEEN_REST'), $dispid) .'. <a href="backup-edit.php?p=restore&id='. $oldid .'&new='.$id . $draftqs.'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info',true);
 			} elseif ($ptype == 'delete') {
 				// page has been deleted, undo, restore
 				doNotify(sprintf(i18n_r('ER_HASBEEN_DEL'), $errid) .'. <a href="backup-edit.php?p=restore&id='. $errid .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info',true);
 			} else if($ptype == 'new'){
 				// new page has been saved, undo, no restore, delete file
-				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="deletefile.php?id='. $id .'&nonce='.get_nonce("delete", "deletefile.php").'">'.i18n_r('UNDO').'</a>','success',true);
+				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $dispid) .'. <a href="deletefile.php?id='. $id . $draftqs .'&nonce='.get_nonce("delete", "deletefile.php").'">'.i18n_r('UNDO').'</a>','success',true);
 			}
 		if(!$dbn) break;
 		case 'publish-success':
