@@ -504,7 +504,7 @@ if($newdraft) $pageClass.=' newdraft';
                 <p class="editfooter"><?php 
                     if (!$newdraft && isset($pubDate)) { 
                         echo '<span><i class="fa fa-clock-o"></i>';
-                            echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'. (empty((string) $author) ? i18n_r('UNKNOWN') : $author.'</em>')) .' ' . output_datetime($pubDate).'</span>';
+                            echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'. (empty($author) ? i18n_r('UNKNOWN') : $author.'</em>')) .' ' . output_datetime($pubDate).'</span>';
                     }
                     if ( $draft && fileHasBackup(GSDATADRAFTSPATH.$url.'.xml') ) {
                         echo '<span>&bull;</span><a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
