@@ -24,6 +24,7 @@
  *	    $plugins[] = array(
  *	       'hook'     => hookname,
  *	       'function' => callback function name,
+ *	       'priority' => priority order to execute hook,
  *	       'args'     => (array) arguments to pass to function,
  *	       'file'     => caller filename obtained from backtrace,
  *	       'line'     => caller line obtained from backtrace,
@@ -35,6 +36,7 @@
  *	    'filter'   => filtername,
  *	    'function' => callback function name,
  *	    'args'     => (array) arguments for callback,
+ *      'priority' => priority order to execute filter,
  *	    'active'   => (bool) is processing anti-self-looping flag
  *	);
  *
@@ -359,15 +361,15 @@ function createNavTab($tabname, $id, $txt, $action = null) {
  * @param string $type Optional, default is null. This is the page type your plugin is classifying itself
  * @param string $loaddata Optional, default is null. This is the callback funcname to run on load.php
  */
-function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $desc=null, $type=null, $loaddata=null) {
+function register_plugin($id, $name, $version=null, $author=null, $author_url=null, $description=null, $type=null, $loaddata=null) {
 	global $plugin_info;
 
 	$plugin_info[$id] = array(
 		'name'        => $name,
-		'version'     => $ver,
-		'author'      => $auth,
-		'author_url'  => $auth_url,
-		'description' => $desc,
+		'version'     => $version,
+		'author'      => $author,
+		'author_url'  => $author_url,
+		'description' => $description,
 		'page_type'   => $type,
 		'load_data'   => $loaddata
 	);
