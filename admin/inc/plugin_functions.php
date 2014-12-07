@@ -246,19 +246,25 @@ function create_pluginsxml($force=false){
  * @param string $hook_name
  * @param string $added_function
  * @param array $args
+ * @param int $priority order of execution of hook, lower numbers execute earlier
  */
-function add_action($hook_name, $added_function, $args = array()) {
-	global $plugins;
-	global $live_plugins; 
+function add_action($hook_name, $added_function, $args = array(), $priority = null) {
+	global $plugins, $pluginHooks, $live_plugins,$pluginHookspriority; 
+
+	if($priority === 0) $priority = 1; # fixup 0 
+	clamp($priority,1,10,10); # clamp priority, min:1, max:10, default:10
 
 	$plugin_action = array(
 		'hook'     => $hook_name,
 		'function' => $added_function,
 		'args'     => (array) $args,
+		'priority' => $priority
 	);
 	
-	addPlugindebugging($plugin_action);
-	$plugins[] = $plugin_action;
+	addPlugindebugging($plugin_action); # add debug info , file, line, core
+	$plugins[] = $plugin_action; # add to global plugins
+	$pluginHooks[$hook_name][] = &$plugins[count($plugins)-1]; # add ref to global plugin hook hash array
+	$pluginHookspriority[$hook_name][$priority][] = &$plugins[count($plugins)-1]; # add ref to global plugin hook hash array
 }
 
 /**
@@ -270,13 +276,70 @@ function add_action($hook_name, $added_function, $args = array()) {
  * @param string $a Name of hook to execute
  */
 function exec_action($a) {
-	global $plugins;
-	if(!$plugins){
+	global $plugins,$pluginHooks;
+	if(!$plugins || !$pluginHooks){
 		debugLog('plugins empty');
 		return;
 	}
-	foreach ($plugins as $hook)	{
-		if ($hook['hook'] == $a) {
+
+	if(!isset($pluginHooks[$a]) || !$pluginHooks[$a]) return;
+	
+	// use ref to keep subarray priority sorts, in case we wanted to reuse again
+	$hooks = &$pluginHooks[$a];
+
+	// if just one hook call it
+	if(count($hooks) == 1) return call_user_func_array($hooks[0]['function'], $hooks[0]['args']);
+
+	$priorities = array();
+	$priority   = array();
+	
+	// sort by priority columns
+	foreach ($hooks as $key => $hook){
+		// build priority sort array
+		$priorities[$key] = $hook['priority']; // sort array
+		$priority[$hook['priority']] = '';     // distinct array
+	}
+
+	// sort if needed
+	if(count($priority) > 1) 
+		array_multisort($priorities, SORT_ASC, $hooks);
+
+	foreach ($hooks as $hook){
+		call_user_func_array($hook['function'], $hook['args']);
+	}
+}
+
+/**
+ * Execute Action
+ *
+ * @since 2.0
+ * @uses $plugins
+ *
+ * @param string $a Name of hook to execute
+ */
+function exec_action_ksort($a) {
+	global $plugins,$pluginHookspriority;
+
+	$pluginHooks = $pluginHookspriority;
+	if(!$plugins || !$pluginHooks){
+		debugLog('plugins empty');
+		return;
+	}
+
+	if(!isset($pluginHooks[$a]) || !$pluginHooks[$a]) return;
+	
+	// use ref to keep subarray priority sorts, in case we wanted to reuse again
+	$hooks = &$pluginHooks[$a];
+
+	// if just one hook call it
+	if(count($hooks) == 1 && count($hooks[0]) == 1) return call_user_func_array($hooks[0]['function'], $hooks[0]['args']);
+
+	$priority   = array();
+	
+	ksort($hooks);
+
+	foreach ($hooks as $priority){
+		foreach($priority as $hook){
 			call_user_func_array($hook['function'], $hook['args']);
 		}
 	}
