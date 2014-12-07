@@ -249,7 +249,7 @@ function create_pluginsxml($force=false){
  * @param int $priority order of execution of hook, lower numbers execute earlier
  */
 function add_action($hook_name, $added_function, $args = array(), $priority = null) {
-	global $plugins, $pluginHooks, $live_plugins,$pluginHookspriority; 
+	global $plugins, $pluginHooks, $live_plugins; 
 
 	if($priority === 0) $priority = 1; # fixup 0 
 	clamp($priority,1,10,10); # clamp priority, min:1, max:10, default:10
@@ -288,7 +288,8 @@ function exec_action($a) {
 	$hooks = &$pluginHooks[$a];
 
 	// if just one hook call it
-	if(count($hooks) == 1 && count($hooks[0]) == 1) return call_user_func_array($hooks[0]['function'], $hooks[0]['args']);
+	
+	if(count($hooks) == 1 && count(current($hooks)) == 1) return call_user_func_array(current($hooks)[0]['function'], current($hooks)[0]['args']);
 	
 	ksort($hooks);
 
@@ -406,18 +407,23 @@ function addPlugindebugging(&$array){
  * @param string $id Id of current page
  * @param string $txt Text to add to tabbed link
  */
-function add_filter($filter_name, $added_function, $args = array()) {
-  	global $filters;
+function add_filter($filter_name, $added_function, $args = array(), $priority = null) {
+  	global $filters, $pluginFilters;
+
+	if($priority === 0) $priority = 1; # fixup 0 
+	clamp($priority,1,10,10); # clamp priority, min:1, max:10, default:10
 
 	$plugin_filter = array(
 		'filter'   => $filter_name,
 		'function' => $added_function,
 		'active'   => false,
-		'args'     => (array) $args		
+		'args'     => (array) $args,
+		'priority' => $priority
 	);
 
 	addPlugindebugging($plugin_filter);
 	$filters[] = $plugin_filter;
+	$pluginFilters[$filter_name][$priority][] = &$filters[count($filters)-1]; # add ref to global plugin hook hash array	
 }
 
 /**
@@ -431,18 +437,27 @@ function add_filter($filter_name, $added_function, $args = array()) {
  * @param string $script Filter name to execute
  * @param array $data
  */
-function exec_filter($script,$data=array()) {
-	global $filters;
+function exec_filter($a,$data=array()) {
+	global $pluginFilters;
 
-	if(!$filters) return $data;
-	foreach ($filters as $filter)	{
-		if ($filter['filter'] == $script) {
-			$key = array_search($script,$filters);
-			if (!$filters[$key]['active']) {
-				$filters[$key]['active'] = true;
-				$data = call_user_func_array($filter['function'], array($data));
-				$filters[$key]['active'] = false;
-			}
+	if(!$pluginFilters){
+		debugLog('filters empty');
+		return $data;
+	}
+
+	if(!isset($pluginFilters[$a]) || !$pluginFilters[$a]) return $data;
+	
+	// use ref to keep subarray priority sorts, in case we wanted to reuse again
+	$filters = &$pluginFilters[$a];
+
+	// if just one hook call it
+	if(count($filters) == 1 && count(current($filters)) == 1) return call_user_func_array(current($filters)[0]['function'], array($data));
+	
+	ksort($filters);
+
+	foreach ($filters as $priority){
+		foreach($priority as $filter){
+			call_user_func_array($filter['function'], array($data));	
 		}
 	}
 	return $data;
