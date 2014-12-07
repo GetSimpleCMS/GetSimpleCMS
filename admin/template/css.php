@@ -1652,7 +1652,7 @@ table.comptable .compactive input {
 }
 
 .notify .close{
-	float: right;
+	float:right;
 	color: black;
 	opacity: 0.2;
 }
@@ -2121,6 +2121,10 @@ div.label{
 	display: inline-block;
 }
 
+.label-block{
+	display: block;
+}
+
 .wrapper .label a,.label a{
 	color: white;
 	text-decoration: underline;
@@ -2167,6 +2171,7 @@ div.label{
 
 .label-ghost {
 	background-color: rgba(221, 221, 221, 0.5) !important;
+	color: #999999;
 }
 
 .label-gold {
@@ -2181,10 +2186,14 @@ div.label{
 	margin: 6px -8px;
 }
 
+a.label:hover{
+	opacity:.8;
+	text-decoration: none;
+}
+
 .edittable .label-ghost{
-	font-size: 11px;
-	padding: 3px 6px;
-	color: #999999;
+	font-size:11px;
+	padding:3px 6px;
 	text-shadow: none;
 }
 
@@ -2215,10 +2224,16 @@ div.showstatus{
 	float:right;
 }
 
+.title.label {
+	float: left;
+	margin: 5px 11px;
+	font-weight: bold;
+}
 
 /* @todo #ID selector hell, can be fixed up once some heirarchy is established */
 /* healthcheck only */
 #health-check #hc_version.label {
+	display: block;
 	text-align: left;
 	padding: 9px 15px;
 	font-weight: normal;
@@ -2820,10 +2835,6 @@ a.disabled:visited {
    -moz-user-select: none;
    -khtml-user-select: none;
    -webkit-user-select: none;
-   /*
-     Introduced in IE 10.
-     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
-   */
    -ms-user-select: none;
    user-select: none;
 }
@@ -3237,6 +3248,86 @@ a.disabled:visited {
     -webkit-transform-origin-y: 45%;
 }
 
+/* new draft , hide publish */
+#maincontent.newdraft .draftview,#maincontent.newdraft .draftpublish{
+	display:none;
+}
+
+#maincontent.newdraft .label-draft{
+	background-color: rgba(221, 221, 221, 0.5) !important;
+	color: #999999;
+}
+
+#pagestack{
+	margin: -20px -20px 14px -20px;
+}
+
+.pagestack {
+	position: relative;
+	height:27px;
+	border-bottom: 1px solid #CFCFCF;
+	background-color: #FAFAFA;
+	padding: 7px 4px 0 7px;
+	color: #808080;
+	overflow: hidden;
+	white-space:nowrap;
+			transition: height 300ms ease-out,
+						background-color 200ms ;
+
+	-webkit-transition: height 300ms ease-out,
+						background-color 200ms ;
+	
+	        transition-delay: 150ms;
+	-webkit-transition-delay: 150ms;
+
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;	
+}
+
+.pagestack .label {
+	font-weight: bold;
+}
+
+.pagestack.shadow:after{
+	content: "";
+	box-shadow: inset 0 -6px 8px -6px rgba(0, 0, 0, 0.2);
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 9px;
+	pointer-events: none; /* clickthrough */
+}
+
+.pagestack .pagehead{
+	padding:15px;
+}
+
+/**
+ * pagestack hover expand animations
+ */
+.pagestack:hover{
+			transition: height 200ms ease-out,
+						background-color 200ms ;
+
+	-webkit-transition: height 200ms ease-out,
+						background-color 200ms ;
+
+		    transition-delay: 150ms;
+	-webkit-transition-delay: 150ms;
+
+	background-color: #FFFFFF;
+}
+
+.pagestack.peek:hover,.pagestack.open{
+	height: 80px;
+}
+
+/* page stack with no peek content */
+.pagestack.nopeek:hover{
+	height:32px;
+}
 
 /* END */
 

@@ -67,10 +67,20 @@ $i18n = array(
 "EXPAND_TOP"              =>	"Expand Top Parents",
 "COLLAPSE_TOP"            =>	"Collapse Top Parents",
 "MISSING_PARENT"          =>    " - <i>Missing Parent</i>",
+"EDITING_PAGE_TITLE"      =>	"Editing Page: %s",
 
-/* 
+// drafts
+"EDITING_DRAFT_TITLE"     =>	"Editing Page Draft: %s",
+"LABEL_DRAFT"             =>	"DRAFT",
+"DRAFT_LAST_SAVED"        =>	"Page Draft saved by <em>%s</em> on",
+"PUBLISH"                 =>	"Publish",
+"LABEL_PUBLISHED"         =>	"PUBLISHED",
+"PAGE_NO_DRAFT"           =>    "Page does not have a draft",
+
+/*
 * For: edit.php
 */
+"UNKNOWN"                 =>    "Unknown",
 "PAGE_NOTEXIST"           =>	"The requested page does not exist",
 "BTN_SAVEPAGE"            =>	"Save Page",
 "BTN_SAVEUPDATES"         =>	"Save Updates",
@@ -184,6 +194,7 @@ $i18n = array(
 "ASK_RESTORE"             =>	"<em>R</em>estore", // 'r' is the accesskey identifier
 "ASK_DELETE"              =>	"<em>D</em>elete", // 'd' is the accesskey identifier
 "BACKUP_OF"               =>	"Backup of",
+"BACKUP"                  =>	"Backup",
 "PAGE_TITLE"              =>	"Page Title",
 "YES"                     =>	"Yes",
 "NO"                      =>	"No",
@@ -392,6 +403,7 @@ $i18n = array(
 "ER_HASBEEN_REST"         =>	"<b>%s</b> has been restored",
 "ER_HASBEEN_DEL"          =>	"<b>%s</b> has been deleted",
 "ER_CANNOT_INDEX"         =>	"You cannot change the URL of the index page",
+"ER_CANNOT_DRAFT"         =>	"You cannot change the URL of a draft page",
 "ER_SETTINGS_UPD"         =>	"Your settings have been updated",
 "ER_OLD_RESTORED"         =>	"Your old settings have been restored",
 "ER_PROFILE_RESTORED"     =>	"The Profile has been restored",
@@ -404,6 +416,8 @@ $i18n = array(
 "ER_SNIPPET_SAVE"         =>	"Your snippets have been saved",
 "ER_SNIPPET_REST"         =>	"Your snippets have been restored",
 "ER_CANCELLED_FAIL"       =>	"<b>Cancelled:</b> This update has been cancelled",
+"ER_PUBLISH_SUCCESS"      =>	"Draft of <b>%s</b> has been published",
+"ER_PUBLISH_ERROR"        =>	"There was a problem publishing draft of <b>%s</b>",
 
 /* 
 * For: changedata.php

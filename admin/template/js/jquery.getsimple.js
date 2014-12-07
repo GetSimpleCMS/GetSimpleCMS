@@ -827,11 +827,20 @@ jQuery(document).ready(function () {
 
     // interval for autosave
     function autoSaveIntvl(){
+        Debugger.log('autoSaveIntvl called, form is dirty: autosaving');
         if(pageisdirty === true){
             Debugger.log('autoSaveIntvl called, form is dirty: autosaving');
             ajaxSave('&autosave=1').done(autoSaveCallback);
             pageisdirty = false;
         }
+    }
+
+	function autoSaveDestroy(){
+		Debugger.log('auto saving destroying ' + GSAUTOSAVEPERIOD);
+		$('#pagechangednotify').hide();
+		$('#autosavestatus').show();
+		$('#autosavenotify').show();
+		setInterval(autoSaveIntvl, GSAUTOSAVEPERIOD*1000);
     }
 
     // ajax save function for edit.php #editform
@@ -886,7 +895,8 @@ jQuery(document).ready(function () {
     function ajaxSaveSucess(response){
         updateEditSlug(response);
         updateNonce(response);
-        // @todo change url to new slug so refreshes work        
+        $('#maincontent.newdraft').removeClass('newdraft'); // remove newdraft class / show action buttons
+        // @todo change window url to new slug so refreshes work
     }
 
     // handle ajax save error
@@ -1234,7 +1244,11 @@ jQuery(document).ready(function () {
 	updateEditSlug = function(html){
 		var newslug = $(html).find('#existing-url').val();
 		if(newslug) $('#existing-url').val(newslug);
-		// Debugger.log(newslug);
+		Debugger.log(newslug);
+
+		var newslug = $(html).find('#post-id').val();
+		if(newslug) $('#post-id').val(newslug);
+		Debugger.log(newslug);
 	};
 
 	function getExtension(file){
@@ -1455,17 +1469,24 @@ jQuery(document).ready(function () {
 
 	// catch all ajax error, and redirects for session timeout on HTTP 401 unauthorized
 	$( document ).ajaxError(function( event, xhr, settings ) {
-		// notifyInfo("ajaxComplete: " + xhr.status);
+		Debugger.log("ajaxComplete: " + xhr.status);
+		Debugger.log(event);
+		Debugger.log(xhr);
+		Debugger.log(settings);
 		if(xhr.status == 401){
 			notifyInfo("Redirecting...");
 			window.location.reload();
+		}
+		else if(xhr.status == 302){
+			Debugger.log("Redirecting...");
+			window.location = xhr.responseText;
 		}
 	});
 
 	// custom ajax error handler
 	function ajaxError($response){
 		if(GS.debug === true){
-            alert('An error occured in an XHR call, check console for response');
+            Debugger.log('An error occured in an XHR call, check console for response');
 			Debugger.log($response);
 		}
 	}

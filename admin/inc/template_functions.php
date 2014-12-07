@@ -231,9 +231,10 @@ function backup_datafile($filepath){
  * @since 3.4
  *
  * @param string $file filepath of data file to restore from backup, locked to GSDATAPATH
+ * @param  bool $delete delete the backup
  * @return bool success
  */
-function restore_datafile($filepath){
+function restore_datafile($filepath,$delete = true){
 	if(!filepath_is_safe($filepath,GSDATAPATH)) return false;
 	$bakfilepath = getBackupFilePath($filepath);
 
@@ -243,6 +244,8 @@ function restore_datafile($filepath){
 		move_file($filepath,$bakfilepath);
 		$bakfilepath .= '.tmp';
 	}
+
+	if(!$delete) return copy_file($bakfilepath,$filepath);
 	return move_file($bakfilepath,$filepath);
 }
 
@@ -274,6 +277,18 @@ function backup_page($id){
 }
 
 /**
+ * backup a draft
+ *
+ * @since 3.4
+ *
+ * @param  str $id id of page to backup
+ * @return bool     success
+ */
+function backup_draft($id){
+	backup_datafile(GSDATADRAFTSPATH.$id.'.xml');
+}
+
+/**
  * Restore a page from backup
  *
  * @since 3.4
@@ -283,6 +298,18 @@ function backup_page($id){
  */
 function restore_page($id){
 	restore_datafile(GSDATAPAGESPATH.$id.'.xml');
+}
+
+/**
+ * Restore a page from backup
+ *
+ * @since 3.4
+ *
+ * @param  str $id id of page
+ * @return bool     success
+ */
+function restore_draft($id){
+	restore_datafile(GSDATADRAFTSPATH.$id.'.xml');
 }
 
 /**
@@ -301,6 +328,24 @@ function delete_page($id, $backup = true){
 	if($backup) backup_datafile(GSDATAPAGESPATH.$id.'.xml');
 	return delete_file(GSDATAPAGESPATH.$id.'.xml');
 }
+
+/**
+ * Delete Pages Draft File
+ *
+ * Deletes pages draft data file afer making backup
+ *
+ * @since 3.4
+ * @uses GSBACKUPSPATH
+ * @uses GSDATADRAFTSPATH
+ *
+ * @param string $id File ID to delete
+ * @param  bool $backup perform backup of file before deleting it
+ */
+function delete_draft($id, $backup = true){
+	if($backup) backup_datafile(GSDATADRAFTSPATH.$id.'.xml');
+	return delete_file(GSDATADRAFTSPATH.$id.'.xml');
+}
+
 
 /**
  * Clone a page
@@ -354,9 +399,6 @@ function getNextFileName($path,$file){
  * Delete Pages Backup File
  *
  * @since 3.4
- * @uses GSBACKUPSPATH
- * @uses GSDATAPAGESPATH
- * @uses GSGSDATATPATH
  *
  * @param string $id File ID to delete
  * @return bool success
@@ -389,6 +431,19 @@ function restore_bak($id) {
  */
 function undo($file, $filepath, $bakpath) {
 	return restore_datafile($filepath.$file);
+}
+
+/**
+ * Delete Draft Backup File
+ *
+ * @since 3.4
+ *
+ * @param string $id File ID to delete
+ * @return bool success
+ */
+function delete_draft_backup($id){
+	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/pages/
+	return delete_file($bakpagespath. $id .".bak.xml");
 }
 
 /**
@@ -433,9 +488,9 @@ function createRandomPassword($length = 8, $usecharsets = 'luds', $reuse = false
 		if(!$reuse){
 			unset($setary[$setaryidx]);
 			$setary = array_values($setary); // reindex array
-		}
+    }
 		$allchars  = array_merge($allchars,$setary);
-	}
+}
 
 	// fill rest of password
 	$numchars = count($allchars);
@@ -730,33 +785,30 @@ function get_available_pages() {
 
  
 /**
- * Update Slugs
+ * Change all direct childens parents to new parent
  *
- * @since 2.04
- * @uses $url
- * @uses GSDATAPAGESPATH
- * @uses XMLsave
- *
+ * @since 3.4
+ * @param str $parent parent slug to change
+ * @param str $newparent new slug to change to
  */
-function updateSlugs($existingUrl, $newurl=null){
+function changeChildParents($parent, $newparent=null){
 	global $pagesArray;
 	getPagesXmlValues();
-
-	if (!$newurl){
-      		global $url; // @todo this is a bad idea
-  	} else {
-  		$url = $newurl;
-  	}
-
 	foreach ($pagesArray as $page){
-		if ( $page['parent'] == $existingUrl ){
-			$data = getPageXML($page['filename']);
-    		$data->parent=$url;
+		if ( $page['parent'] == $parent ){
+			$data = getPageXML($page['url']);
+    		$data->parent=$newparent;
     		XMLsave($data, GSDATAPAGESPATH.$page['filename']);
 		}
 	}
 }
 
+// DEPRECATED
+//  LEGACY, uses global url
+function updateSlugs($existingUrl){
+	GLOBAL $url;
+	updateSlugsParents($existingUrl, $url);
+}
 
 /**
  * Get Link Menu Array
@@ -898,11 +950,13 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	if ($page['title'] == '' )      { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
 	if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <span class="label label-ghost">'.i18n_r('MENUITEM_SUBTITLE').'</span>'; } else { $page['menuStatus'] = ''; }
 	if ($page['private'] != '' )    { $page['private'] = ' <span class="label label-ghost">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } else { $page['private'] = ''; }
+	if (pageHasDraft($page['url'])) { $page['draft']   = ' <span class="label label-ghost">'.lowercase(i18n_r('LABEL_DRAFT')).'</span>'; } else { $page['draft'] = ''; }
 	if ($page['url'] == 'index' )   { $homepage = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; } else { $homepage = ''; }
 
 	$pageTitle = cl($page['title']);
 
-	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. $pageTitle .'</a><div class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</div></td>';
+	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. $pageTitle .'</a>';
+	$menu .= '<div class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] . $page['draft'] . '</div></td>'; // keywords used for filtering
 	$menu .= '<td style="width:80px;text-align:right;" ><span>'. output_date($page['pubDate']) .'</span></td>';
 	$menu .= '<td class="secondarylink" >';
 	$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
@@ -1521,7 +1575,7 @@ function cleanHtml($str){
 	// strip dom tags
 	$html_fragment = preg_replace('/^<!DOCTYPE.+?>|<head.*?>(.*)?<\/head>/', '', str_replace( array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), @$dom_document->saveHTML()));	
 	return $html_fragment;
-}
+}	
 
 
 /**
@@ -1538,11 +1592,11 @@ function getHttpResponsePage($code){
 
 	if (isset($pagesArray[GSHTTPPREFIX . $code])) {
 		// use user created http response page
-		return getXml(GSDATAPAGESPATH . GSHTTPPREFIX . $code . '.xml');
+		return getXml(GSDATAPAGESPATH . GSHTTPPREFIX . $code . '.xml');		
 	} elseif (file_exists(GSDATAOTHERPATH . $code . '.xml'))	{
 		// use default http response page
-		return getXml(GSDATAOTHERPATH . $code . '.xml');
-	}
+		return getXml(GSDATAOTHERPATH . $code . '.xml');	
+	}	
 }
 
 /**
@@ -1719,6 +1773,16 @@ function output_collection_item($id, $collection, $force = false, $raw = false) 
  */
 function pingGoogleSitemaps(){
 	return;
+}
+
+/**
+ * Are we previewing a draft
+ * @since  3.4
+ * @return bool returns true if pre-viewing a draft
+ */
+function previewingDraft(){
+	GLOBAL $id;
+	return isset($id) && isset($_GET['draft']) && is_logged_in() && pageHasDraft($id);
 }
 
 /* ?> */

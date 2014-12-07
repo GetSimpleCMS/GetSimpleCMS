@@ -19,7 +19,10 @@ exec_action('load-backup-edit');
 if ($_GET['id'] != '') {
 	$id   = $_GET['id'];
 	$file = getBackupName($id,'xml');
-	$path = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
+
+	$draft = isset($_GET['draft']); // (bool) using draft pages
+	if($draft) $path = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/drafts/
+	else $path = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
 
 	$data       = getXML($path . $file);
 	$title      = htmldecode($data->title);
@@ -51,7 +54,8 @@ if ($_GET['p'] != '') {
 if ($p == 'delete') {
 	// deleting page backup
 	check_for_csrf("delete","backup-edit.php");
-	$status = delete_bak($id) ? 'success' : 'err';
+	if($draft) $status = delete_draft_backup($id) ? 'success' : 'err';
+	else $status = delete_page_backup($id) ? 'success' : 'err';
 	redirect("backups.php?upd=bak-".$status."&id=".$id);
 }
 
@@ -59,23 +63,30 @@ elseif ($p == 'restore') {
 	// restoring page backup
 	check_for_csrf("restore", "backup-edit.php");
 
+	if($draft){
+		restore_draft($id);   // restore old slug file
+		redirect("edit.php?id=". $id ."&upd-draft&upd=edit-success&type=restore");
+	}
+
 	if (isset($_GET['new'])) {
 		$newid = $_GET['new'];
 		// restore page by old slug id
-		updateSlugs($newid, $id); // update parents and children
+		changeChildParents($newid, $id); // update parents and children
 		restore_page($id);        // restore old slug file
 		delete_page($newid);      // backup and delete live new slug file
 
-		redirect("edit.php?id=". $id ."&old=".$_GET['new']."&upd=edit-success&type=restore");
+		redirect("edit.php?id=". $id ."&nodraft&old=".$_GET['new']."&upd=edit-success&type=restore");
 	} else {
 		restore_page($id);   // restore old slug file
-		redirect("edit.php?id=". $id ."&upd=edit-success&type=restore");
+		redirect("edit.php?id=". $id ."&nodraft&upd=edit-success&type=restore");
 	}
 
 }
 
 $pagetitle = i18n_r('BAK_MANAGEMENT').' &middot; '.i18n_r('VIEWPAGE_TITLE');
 get_template('header');
+
+$draftqs = $draft ? '&amp;draft' : '';
 
 ?>
 
@@ -85,12 +96,12 @@ get_template('header');
 
 	<div id="maincontent">
 		<div class="main" >
-		<h3 class="floated"><?php i18n('BACKUP_OF');?> &lsquo;<em><?php echo $url; ?></em>&rsquo;</h3>
-		
+		<h3 class="floated"><?php i18n('BACKUP');?> <span> / <?php echo $url; ?></span></h3>
+		<?php if($draft){ ?><div class="title label secondary-lightest-back label-inline"><?php i18n('LABEL_DRAFT'); ?></div> <?php } ?>
 		<div class="edit-nav clearfix" >
-			 <a href="backup-edit.php?p=restore&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" 
+			 <a href="backup-edit.php?p=restore<?php echo $draftqs; ?>&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" 
 			 	accesskey="<?php echo find_accesskey(i18n_r('ASK_RESTORE'));?>" ><?php i18n('ASK_RESTORE');?></a> 
-			 <a href="backup-edit.php?p=delete&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" 
+			 <a href="backup-edit.php?p=delete<?php echo $draftqs; ?>&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" 
 			 	title="<?php i18n('DELETEPAGE_TITLE'); ?>: <?php echo $title; ?>?" 
 			 	id="delback" 
 			 	accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE'));?>" 

@@ -97,8 +97,15 @@ $GS_definitions = array(
 	'GSCHMODFILE'          => 0644,                           // (octal) chmod mode for files
 	'GSCHMODDIR'           => 0755,                           // (octal) chmod mode for dirs
 	'GSDOCHMOD'            => true,                           // (bool) perform chmod after creating files or directories
+	'GSUSEDRAFTS'          => true,                           // (bool) use page drafts
+	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else `nodraft` or `draft` only
+	'GSDRAFTSTACKDEFAULT'  => true,                           // (bool) default page stack editing to drafts if true
+	'GSSDRAFTSPUBLISHEDTAG'=> true,                           // (bool) show published label on non draft pages if true
 	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
+	'GSDEBUG'              => false,                          // (bool) debug mode
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls
+	'GSDEBUGREDIRECTS'     => false,                          // (bool) debug mode stop redirects for debugging
+	'GSDEBUGFILEIO'        => false,                          // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
 	# -----------------------------------------------------------------------------------------------------------------------------------------------
  	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
@@ -123,7 +130,9 @@ global
  $plugins_info,   // (array) contains registered plugin info for active and inactive plugins
  $live_plugins,   // (array) contains plugin file ids and enable status
  $plugins,        // (array) global array for storing action hook callbacks
+ $pluginHooks,    // (array) global array for storing action hook callbacks hash table
  $filters,        // (array) global array for storing action filter callbacks
+ $pluginFilters,  // (array) global array for storing filter callbacks hash table
  $GS_scripts,     // (array) global array for storing queued asset scripts
  $GS_styles       // (array) global array for storing queued asset styles
 ;
@@ -171,6 +180,7 @@ define('GSDATAOTHERPATH' , GSDATAPATH      . 'other/');     // data/other/
 define('GSDATAPAGESPATH' , GSDATAPATH      . 'pages/');     // data/pages/
 
 define('GSAUTOSAVEPATH'  , GSDATAPAGESPATH . 'autosave/');  // data/pages/autosave/
+define('GSDATADRAFTSPATH', GSDATAPAGESPATH . 'autosave/');  // data/pages/autosave/
 define('GSDATAUPLOADPATH', GSDATAPATH      . 'uploads/');   // data/uploads/
 define('GSTHUMBNAILPATH' , GSDATAPATH      . 'thumbs/');    // data/thumbs/
 define('GSUSERSPATH'     , GSDATAPATH      . 'users/');     // data/users/
@@ -278,7 +288,7 @@ debugLog('GSSITEURLREL = ' . getDef('GSSITEURLREL',true));
 debugLog('SITEURL      = ' . getSiteURL());
 debugLog('SITEURL_ABS  = ' . getSiteURL(true));
 debugLog('SITEURL_REL  = ' . $SITEURL_REL);
-debugLog('ASSETURL     = ' . $ASSETURL);
+debugLog('ASSETURL = ' . $ASSETURL);
 
 /**
  * Global user data
@@ -434,11 +444,11 @@ if (notInInstall()) {
 
 }
 
-// fill for install
-if(empty($SITEURL))      $SITEURL  = suggest_site_path();
+// set these for install, empty if website.xml doesnt exist yet
+if(empty($SITEURL))      $SITEURL     = suggest_site_path();
 if(empty($SITEURL_ABS))  $SITEURL_ABS = $SITEURL;
 if(empty($SITEURL_REL))  $SITEURL_REL = $SITEURL;
-if(empty($ASSETURL))     $ASSETURL = $SITEURL;
+if(empty($ASSETURL))     $ASSETURL    = $SITEURL;
 
 /**
  * Include other files depending if they are needed or not
@@ -462,6 +472,7 @@ if(isset($load['plugin']) && $load['plugin']){
 		if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
 			# debugLog('including plugin: ' . $file);
 			include_once(GSPLUGINPATH . $file);
+			exec_action('plugin-loaded'); // @hook plugin-loaded called after each plugin is included
 		}
 	}
 	exec_action('plugins-loaded'); // @hook plugins-loaded plugin files have been included
@@ -507,6 +518,18 @@ function debugLog($mixed = null) {
 	array_push($GS_debug,$mixed);
 	if(function_exists('debugLog_callout')) debugLog_callout($mixed); // @callout debugLog_callout (str) callout for each debugLog call, argument passed
 	return $mixed;
+}
+
+/**
+ * debug and die
+ * outputs debuglog and dies
+ * @since  3.4
+ * @param  str $msg message to log
+ */
+function debugDie($msg){
+	debugLog($msg);
+	outputDebugLog();
+	die();
 }
 
 /**

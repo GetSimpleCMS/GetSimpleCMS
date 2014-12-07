@@ -87,8 +87,8 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		'UNSAVED_INFORMATION',
 		'UNSAVED_PROMPT',
 		'CANNOT_SAVE_EMPTY',
-		'COMPONENT_DELETED'
-
+		'COMPONENT_DELETED',
+		'CANNOT_SAVE_EMPTY'
 	);
 
 	// i18n for JS
@@ -128,8 +128,8 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
     	// @todo clean this up, use a better bridge to initialize config variables in js
     	
         // init gs namespace and i18n
-        var GS   = {};
-        GS.i18n  = <?php echo json_encode($jsi18n); ?>;
+        var GS = {};
+        GS.i18n = <?php echo json_encode($jsi18n); ?>;
         GS.debug = <?php echo isDebug() === true ? 'true' : 'false'; ?> ;
 
 		var uploadSession = '<?php echo $SESSIONHASH; ?>';

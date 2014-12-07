@@ -25,6 +25,23 @@ $uri   = isset($_GET['uri'])   ? var_in( $_GET['uri']   ): null;
 $ptype = isset($_GET['type'])  ? var_in( $_GET['type']  ): null;
 $nonce = isset($_GET['nonce']) ? var_in( $_GET['nonce'] ): null;
 
+$draft           = false; // init draft edit mode flag
+$draftsActive    = getDef('GSUSEDRAFTS',true); // are drafts active
+$pagestackactive = $draftsActive && getDef('GSUSEPAGESTACK',true) ;
+$pagestackdraft  = $pagestackactive && getDef('GSDRAFTSTACKDEFAULT',true);
+
+// if drafts are enabled
+if($draftsActive){
+    if(!isset($_GET['nodraft']) && $pagestackdraft){
+        // default to edit draft if `nodraft` not set, or GSEDITDRAFTDEFAULT is true
+        $draft = true;
+    }
+    else if(isset($_GET['draft']) && !$pagestackdraft){
+        // allow `draft` to force draft mode if GSEDITDRAFTDEFAULT is not true
+        $draft = true;
+    }
+}
+
 // Page variables reset
 $theme_templates = '';
 $parents_list    = '';
@@ -41,13 +58,27 @@ $url             = '';
 $metak           = '';
 $metad           = '';
 
+$draftExists = false; // (bool) does a draft exist
+$pageExists  = false; // (bool) does a page exist
+$newdraft    = false; // (bool) new (unsaved) draft being edited
+$pageClass   = "";    // (str) classes to add to maincontent
+
 if ($id){
     // get saved page data
-    if (!file_exists(GSDATAPAGESPATH . $id .'.xml')){
+
+    $pageExists  = file_exists(GSDATAPAGESPATH . $id .'.xml');
+    $draftExists = pageHasDraft($id);
+
+    // fail if not using drafts and page does not exist
+    // OR if neither page nor draft exists
+    if ((!$draft && !$pageExists) || (!$draftExists && !$pageExists)){
         redirect('pages.php?error='.urlencode(i18n_r('PAGE_NOTEXIST')));
     }
 
-    $data_edit  = getPageXML($id);
+    // if using drafts and no draft exists, load original
+    if(!$draft || !$draftExists) $data_edit = getPageXML($id);
+    else $data_edit = getDraftXML($id);
+
     $title      = stripslashes($data_edit->title);
     $pubDate    = $data_edit->pubDate;
     $metak      = stripslashes($data_edit->meta);
@@ -70,6 +101,7 @@ if ($id){
     $metarNoFollow = $data_edit->metarNoFollow;
     $metarNoArchive = $data_edit->metarNoArchive;
 } else {
+    $draft = false; // @todo this is to force no draft on new pages until we allow drafts
     // prefill fields if provided
     $title          =  isset( $_GET['title']      ) ? var_in( $_GET['title']      ) : '';
     $template       =  isset( $_GET['template']   ) ? var_in( $_GET['template']   ) : '';
@@ -89,6 +121,8 @@ if ($id){
     $buttonname = i18n_r('BTN_SAVEPAGE');
 }
 
+$newdraft = $draft && !$draftExists; // (bool) is this a new never saved draft?
+$path = find_url($url, $parent);
 
 // make select box of available theme templates
 if ($template == '') { $template = GSTEMPLATEFILE; }
@@ -124,36 +158,135 @@ if ($menu == '') { $menu = $title; }
 $pagetitle = empty($title) ? i18n_r('CREATE_NEW_PAGE') : i18n_r('EDIT').' &middot; '.$title;
 get_template('header');
 
+include('template/include-nav.php');
+
+
+function getPublishedPageHead($editing = true, $path = ''){
+    global $id,$draftExists,$pageExists;
+    echo '<h3 class="floated">'. ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')).'</h3>';
+    if(getDef('GSUSEDRAFTS',true) && $pageExists && getDef('GSSDRAFTSPUBLISHEDTAG',true)) echo '<div class="title label label-ok unselectable">'.i18n_r('LABEL_PUBLISHED').'</div>';
+    echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav clearfix" >';
+    if($editing) {
+        echo '<a class="pageview" href="'. $path .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
+        if($path != '') {echo '<a class="pageclone" href="pages.php?id='. $id .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
+    }
+    exec_action(get_filename_id().'-edit-nav'); 
+    echo "\n</div>";
+}
+
+function getDraftPageHead($editing = true, $path = ''){
+    global $id,$draftExists,$pageExists,$PRETTYURLS;
+    echo '<h3 class="floated">'. ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')) .'</h3>';
+    echo '<div class="title label label-draft secondary-lightest-back unselectable">'.i18n_r('LABEL_DRAFT').'</div>';
+    echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav clearfix" >';
+    if($editing) {
+        echo '<a class="draftview" href="'. $path . ($PRETTYURLS ? '?' : '&amp;') .'draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
+        echo '<a class="draftpublish" href="changedata.php?publish&id='.$id.'" accesskey="'. find_accesskey(i18n_r('PUBLISH')). '" >'. i18n_r('PUBLISH'). '</a>';
+    }
+    exec_action(get_filename_id().'-edit-nav'); 
+    echo "\n</div>";
+}
+
+if($newdraft) $pageClass.=' newdraft';
+
 ?>
 
-<?php include('template/include-nav.php'); ?>
-
 <div class="bodycontent clearfix">
-    
-    <div id="maincontent">
+
+    <div id="maincontent" class="<?php echo $pageClass; ?>">
         <div class="main">
-        
-        <h3 class="floated"><?php if(isset($data_edit)) { i18n('PAGE_EDIT_MODE'); } else { i18n('CREATE_NEW_PAGE'); } ?></h3>   
+        <div id="pagestack">
+<?php
+    exec_action('page-stack'); // experimental
 
-        <!-- pill edit navigation -->
-        <div class="edit-nav clearfix" >
-            <?php 
-            if(isset($id)) {
-                echo '<a href="'. find_url($url, $parent) .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
-                if($url != '') {echo '<a href="pages.php?id='. $url .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
-                echo '<span class="save-close"><a href="javascript:void(0)" >'.i18n_r('SAVE_AND_CLOSE').'</a></span>';
-            } 
+    if(isset($id) && $pagestackactive) {
+        /**
+         * Editing draft page, published page exists
+         */
+        if($draft && $pageExists){
+            $publishdata    = getPageXML($id,$nocdata = true);
+            $publishAuthor  = (string)$publishdata->author;
+            $publishPubdate = output_datetime($publishdata->pubDate);
+
+            if(empty($publishAuthor)) $publishAuthor = i18n_r('UNKNOWN');
+?>
+        <!-- PUBLISHED pagestack -->
+        <div class="pagestack existingpage shadow peek">
+            <div style="float: left;">
+                <i class="fa fa-clock-o">&nbsp;</i><?php echo sprintf(i18n_r('LAST_SAVED'),$publishAuthor)," ",$publishPubdate;?>&nbsp;
+            </div>
+            <div style="float:right">
+                <a href="edit.php?id=<?php echo $id;?>&amp;nodraft" class="label label-ghost label-inline">
+                    <i class="fa fa-pencil"></i>
+                </a>
+                <div class="label label-ok label-inline unselectable"><?php i18n('LABEL_PUBLISHED'); ?></div>
+            </div>
+            <div class="pagehead clear" >
+            <?php
+                getPublishedPageHead(isset($id),$path);
             ?>
-            <!-- @todo: fix accesskey for options  -->
-            <!-- <a href="javascript:void(0)" id="metadata_toggle" accesskey="<?php echo find_accesskey(i18n_r('PAGE_OPTIONS'));?>" ><?php i18n('PAGE_OPTIONS'); ?></a> -->
-            <?php exec_action(get_filename_id().'-edit-nav'); ?>
-        </div>      
-        <?php exec_action(get_filename_id().'-body'); ?>    
+            </div>
+        </div>
+<?php
+        }
+        /**
+         * Editing published page, draft exists
+         */
+        if(!$draft && $draftExists){
+            $draftdata    = getDraftXML($id,$nocdata = true);
+            $draftAuthor  = (string)$draftdata->author;
+            $draftPubdate = output_datetime($draftdata->pubDate);
             
+            if(empty($draftAuthor)) $draftAuthor = i18n_r('UNKNOWN');
+?>
+        <!-- DRAFT page stack -->
+        <div class="pagestack existingdraft shadow peek">
+            <div style="float: left;">
+                <i class="fa fa-clock-o">&nbsp;</i><?php echo sprintf(i18n_r('DRAFT_LAST_SAVED'),$draftAuthor)," ",$draftPubdate;?>&nbsp;
+            </div>
+            <div style="float:right">
+                <a href="edit.php?id=<?php echo $id;?>&amp;draft" class="label label-ghost label-inline">
+                    <i class="fa fa-pencil"></i>
+                </a>
+                <div class="label secondary-lightest-back label-inline unselectable"><?php i18n('LABEL_DRAFT'); ?></div>
+            </div>
+            <div class="pagehead clear" >
+            <?php
+                getDraftPageHead(isset($id),$path);
+            ?>
+            </div>
+        </div>
+<?php
+        }
+        else if(!$draft && !$draftExists){
+        /**
+         * Editing published page, draft does not exist
+         */
+?>
+        <!-- NEWDRAFT page stack -->
+        <div class="pagestack newdraft shadow nopeek">
+            <div style="float: left;">
+                <i class="fa fa-info-circle">&nbsp;</i><?php i18n('PAGE_NO_DRAFT'); ?>&nbsp;
+            </div>
+            <div style="float:right">
+                <a href="edit.php?id=<?php echo $id;?>&amp;draft" class="label label-ghost label-inline">
+                    <i class="fa fa-pencil"></i>
+                </a>
+                <div class="label label-ghost label-inline unselectable"><?php i18n('LABEL_DRAFT'); ?></div>
+            </div>
+        </div>
+<?php
+        }
+    }
+    echo '</div>';
+    $draft ? getDraftPageHead(isset($id),$path) : getPublishedPageHead(isset($id),$path);
+    exec_action(get_filename_id().'-body');
+?>
         <form class="largeform" id="editform" action="changedata.php" method="post" accept-charset="utf-8" >
-        <input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("edit", "edit.php"); ?>" />            
-        <input id="author" name="post-author" type="hidden" value="<?php echo $USR; ?>" />  
-
+        <input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("edit", "edit.php"); ?>" />
+        <input id="author" name="post-author" type="hidden" value="<?php echo $USR; ?>" />
+        <?php if($draftsActive && !$draft){ ?><input id="nodraft" name="post-nodraft" type="hidden" value="1" /><?php } ?>
+ 
         <!-- page title toggle screen -->
         <p id="edit_window">
             <label for="post-title" style="display:none;"><?php i18n('PAGE_TITLE'); ?></label>
@@ -181,7 +314,7 @@ get_template('header');
                         <p>
                             <label for="post-summary" class=""><?php i18n('SUMMARY'); ?>: <span class="countdownwrap"><strong class="countdown" ></strong> <?php i18n('REMAINING'); ?></span></label>
                             <textarea class="text short charlimit" data-maxLength='256' id="post-summary" name="post-summary" ><?php echo $summary; ?></textarea>
-                        </p>                        
+                        </p>
                     </div>
                     <div class="leftopt">
                         <p class="inline clearfix" id="post-private-wrap" >
@@ -199,7 +332,7 @@ get_template('header');
                                 $count = 0;
                                 foreach ($pagesArray as $page) {
                                     if ($page['parent'] != '') { 
-								$parentTitle = returnPageField($page['parent'], "title");
+                                $parentTitle = returnPageField($page['parent'], "title");
                                         $sort = $parentTitle .' '. $page['title'];
                                     } else {
                                         $sort = $page['title'];
@@ -274,7 +407,7 @@ get_template('header');
                     <div class="rightopt">
                         <p>
                             <label for="post-id"><?php i18n('SLUG_URL'); ?>:</label>
-                            <input class="text short" type="text" id="post-id" name="post-id" value="<?php echo $url; ?>" <?php echo ($url=='index'?'readonly="readonly" ':''); ?>/>
+                            <input class="text short" type="text" id="post-id" name="post-id" value="<?php echo $url; ?>" <?php echo (($url=='index' || $draft)?'readonly="readonly" ':''); ?>/>
                         </p>
                     </div>
 
@@ -296,9 +429,10 @@ get_template('header');
 
             <?php exec_action('edit-content'); //@hook edit-content after page edit content html output ?> 
 
-            <?php if(isset($data_edit)) { 
-                echo '<input id="existing-url" type="hidden" name="existing-url" value="'. $url .'" />'; 
-            }
+            <?php 
+                if(isset($data_edit)) { 
+                    echo '<input id="existing-url" type="hidden" name="existing-url" value="'. $url .'" />'; 
+                }
 
             exec_action('html-editor-init'); //@hook html-edit-init LEGACY deprecated
             echo "<!-- html-editor-init -->";
@@ -340,7 +474,7 @@ get_template('header');
             </fieldset>            
         </div>
     </div> <!-- / END TABS -->
-            <span class="editing"><?php echo sprintf(i18n_r('EDITING_PAGE'),$title); ?></span>
+            <span class="editing"><?php echo sprintf($draft ? i18n_r('EDITING_DRAFT_TITLE') : i18n_r('EDITING_PAGE_TITLE'),'<b>'.$title.'</b>'); ?></span>
             <div id="submit_line" >
                 <input type="hidden" name="redirectto" value="" />
                 
@@ -350,11 +484,15 @@ get_template('header');
                     <h6 class="dropdownaction"><?php i18n('ADDITIONAL_ACTIONS'); ?></h6>
                     <ul class="dropdownmenu">
                         <li class="save-close" ><a href="javascript:void(0)" ><?php i18n('SAVE_AND_CLOSE'); ?></a></li>
-                        <?php if($url != '') { ?>
+                        <?php 
+                            if($url != '' && !$draft) { ?>
                             <li><a href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" ><?php i18n('CLONE'); ?></a></li>
                         <?php } ?>
                         <li id="cancel-updates" class="alertme"><a href="pages.php?cancel" ><?php i18n('CANCEL'); ?></a></li>
-                        <?php if($url != 'index' && $url != '') { ?>
+                        <?php if($draft && !$newdraft && $url != 'index' && $url != '') { ?>
+                            <li class="alertme" ><a href="deletefile.php?draft=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
+                        <?php }
+                            else if(!$draft && $url != 'index' && $url != '') { ?>
                             <li class="alertme" ><a href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
                         <?php } ?>
                     </ul>
@@ -364,13 +502,16 @@ get_template('header');
             
             <?php if($url != '') { ?>
                 <p class="editfooter"><?php 
-                    if (isset($pubDate)) {
+                    if (!$newdraft && isset($pubDate)) { 
                         echo '<span><i class="fa fa-clock-o"></i>';
-                        echo sprintf(i18n_r('LAST_SAVED'), '<em>'.$author.'</em>').' '. output_datetime($pubDate).'</span>';
+                            echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'. (empty($author) ? i18n_r('UNKNOWN') : $author.'</em>')) .' ' . output_datetime($pubDate).'</span>';
                     }
-                    if ( fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
+                    if ( $draft && fileHasBackup(GSDATADRAFTSPATH.$url.'.xml') ) {
+                        echo '<span>&bull;</span><a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
+                    }
+                    else if( !$draft && fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
                         echo '<span>&bull;</span><span><a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
-                    } 
+                    }
                 ?></p>
             <?php } ?>
     </form>
