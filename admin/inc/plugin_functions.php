@@ -263,8 +263,7 @@ function add_action($hook_name, $added_function, $args = array(), $priority = nu
 	
 	addPlugindebugging($plugin_action); # add debug info , file, line, core
 	$plugins[] = $plugin_action; # add to global plugins
-	$pluginHooks[$hook_name][] = &$plugins[count($plugins)-1]; # add ref to global plugin hook hash array
-	$pluginHookspriority[$hook_name][$priority][] = &$plugins[count($plugins)-1]; # add ref to global plugin hook hash array
+	$pluginHooks[$hook_name][$priority][] = &$plugins[count($plugins)-1]; # add ref to global plugin hook hash array
 }
 
 /**
@@ -277,50 +276,7 @@ function add_action($hook_name, $added_function, $args = array(), $priority = nu
  */
 function exec_action($a) {
 	global $plugins,$pluginHooks;
-	if(!$plugins || !$pluginHooks){
-		debugLog('plugins empty');
-		return;
-	}
 
-	if(!isset($pluginHooks[$a]) || !$pluginHooks[$a]) return;
-	
-	// use ref to keep subarray priority sorts, in case we wanted to reuse again
-	$hooks = &$pluginHooks[$a];
-
-	// if just one hook call it
-	if(count($hooks) == 1) return call_user_func_array($hooks[0]['function'], $hooks[0]['args']);
-
-	$priorities = array();
-	$priority   = array();
-	
-	// sort by priority columns
-	foreach ($hooks as $key => $hook){
-		// build priority sort array
-		$priorities[$key] = $hook['priority']; // sort array
-		$priority[$hook['priority']] = '';     // distinct array
-	}
-
-	// sort if needed
-	if(count($priority) > 1) 
-		array_multisort($priorities, SORT_ASC, $hooks);
-
-	foreach ($hooks as $hook){
-		call_user_func_array($hook['function'], $hook['args']);
-	}
-}
-
-/**
- * Execute Action
- *
- * @since 2.0
- * @uses $plugins
- *
- * @param string $a Name of hook to execute
- */
-function exec_action_ksort($a) {
-	global $plugins,$pluginHookspriority;
-
-	$pluginHooks = $pluginHookspriority;
 	if(!$plugins || !$pluginHooks){
 		debugLog('plugins empty');
 		return;
@@ -333,8 +289,6 @@ function exec_action_ksort($a) {
 
 	// if just one hook call it
 	if(count($hooks) == 1 && count($hooks[0]) == 1) return call_user_func_array($hooks[0]['function'], $hooks[0]['args']);
-
-	$priority   = array();
 	
 	ksort($hooks);
 
