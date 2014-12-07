@@ -2101,6 +2101,10 @@ div.label{
 	display: inline-block;
 }
 
+.label-block{
+	display: block;
+}
+
 .wrapper .label a,.label a{
 	color: white;
 	text-decoration: underline;
@@ -2209,6 +2213,7 @@ div.showstatus{
 /* @todo #ID selector hell, can be fixed up once some heirarchy is established */
 /* healthcheck only */
 #health-check #hc_version.label {
+	display: block;
 	text-align: left;
 	padding: 9px 15px;
 	font-weight: normal;

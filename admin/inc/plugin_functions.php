@@ -24,6 +24,7 @@
  *	    $plugins[] = array(
  *	       'hook'     => hookname,
  *	       'function' => callback function name,
+ *	       'priority' => priority order to execute hook,
  *	       'args'     => (array) arguments to pass to function,
  *	       'file'     => caller filename obtained from backtrace,
  *	       'line'     => caller line obtained from backtrace,
@@ -35,6 +36,7 @@
  *	    'filter'   => filtername,
  *	    'function' => callback function name,
  *	    'args'     => (array) arguments for callback,
+ *      'priority' => priority order to execute filter,
  *	    'active'   => (bool) is processing anti-self-looping flag
  *	);
  *
@@ -246,19 +248,24 @@ function create_pluginsxml($force=false){
  * @param string $hook_name
  * @param string $added_function
  * @param array $args
+ * @param int $priority order of execution of hook, lower numbers execute earlier
  */
-function add_action($hook_name, $added_function, $args = array()) {
-	global $plugins;
-	global $live_plugins; 
+function add_action($hook_name, $added_function, $args = array(), $priority = null) {
+	global $plugins, $pluginHooks, $live_plugins; 
+
+	if($priority === 0) $priority = 1; # fixup 0 
+	clamp($priority,1,10,10); # clamp priority, min:1, max:10, default:10
 
 	$plugin_action = array(
 		'hook'     => $hook_name,
 		'function' => $added_function,
 		'args'     => (array) $args,
+		'priority' => $priority
 	);
 	
-	addPlugindebugging($plugin_action);
-	$plugins[] = $plugin_action;
+	addPlugindebugging($plugin_action); # add debug info , file, line, core
+	$plugins[] = $plugin_action; # add to global plugins
+	$pluginHooks[$hook_name][$priority][] = &$plugins[count($plugins)-1]; # add ref to global plugin hook hash array
 }
 
 /**
@@ -270,13 +277,26 @@ function add_action($hook_name, $added_function, $args = array()) {
  * @param string $a Name of hook to execute
  */
 function exec_action($a) {
-	global $plugins;
-	if(!$plugins){
+	global $plugins,$pluginHooks;
+
+	if(!$plugins || !$pluginHooks){
 		debugLog('plugins empty');
 		return;
 	}
-	foreach ($plugins as $hook)	{
-		if ($hook['hook'] == $a) {
+
+	if(!isset($pluginHooks[$a]) || !$pluginHooks[$a]) return;
+	
+	// use ref to keep subarray priority sorts, in case we wanted to reuse again
+	$hooks = &$pluginHooks[$a];
+
+	// if just one hook call it
+	
+	if(count($hooks) == 1 && count(current($hooks)) == 1) return call_user_func_array(current($hooks)[0]['function'], current($hooks)[0]['args']);
+	
+	ksort($hooks);
+
+	foreach ($hooks as $priority){
+		foreach($priority as $hook){
 			call_user_func_array($hook['function'], $hook['args']);
 		}
 	}
@@ -341,15 +361,15 @@ function createNavTab($tabname, $id, $txt, $action = null) {
  * @param string $type Optional, default is null. This is the page type your plugin is classifying itself
  * @param string $loaddata Optional, default is null. This is the callback funcname to run on load.php
  */
-function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $desc=null, $type=null, $loaddata=null) {
+function register_plugin($id, $name, $version=null, $author=null, $author_url=null, $description=null, $type=null, $loaddata=null) {
 	global $plugin_info;
 
 	$plugin_info[$id] = array(
 		'name'        => $name,
-		'version'     => $ver,
-		'author'      => $auth,
-		'author_url'  => $auth_url,
-		'description' => $desc,
+		'version'     => $version,
+		'author'      => $author,
+		'author_url'  => $author_url,
+		'description' => $description,
 		'page_type'   => $type,
 		'load_data'   => $loaddata
 	);
@@ -389,18 +409,23 @@ function addPlugindebugging(&$array){
  * @param string $id Id of current page
  * @param string $txt Text to add to tabbed link
  */
-function add_filter($filter_name, $added_function, $args = array()) {
-  	global $filters;
+function add_filter($filter_name, $added_function, $args = array(), $priority = null) {
+  	global $filters, $pluginFilters;
+
+	if($priority === 0) $priority = 1; # fixup 0 
+	clamp($priority,1,10,10); # clamp priority, min:1, max:10, default:10
 
 	$plugin_filter = array(
 		'filter'   => $filter_name,
 		'function' => $added_function,
 		'active'   => false,
-		'args'     => (array) $args		
+		'args'     => (array) $args,
+		'priority' => $priority
 	);
 
 	addPlugindebugging($plugin_filter);
 	$filters[] = $plugin_filter;
+	$pluginFilters[$filter_name][$priority][] = &$filters[count($filters)-1]; # add ref to global plugin hook hash array	
 }
 
 /**
@@ -414,18 +439,27 @@ function add_filter($filter_name, $added_function, $args = array()) {
  * @param string $script Filter name to execute
  * @param array $data
  */
-function exec_filter($script,$data=array()) {
-	global $filters;
+function exec_filter($a,$data=array()) {
+	global $pluginFilters;
 
-	if(!$filters) return $data;
-	foreach ($filters as $filter)	{
-		if ($filter['filter'] == $script) {
-			$key = array_search($script,$filters);
-			if (!$filters[$key]['active']) {
-				$filters[$key]['active'] = true;
-				$data = call_user_func_array($filter['function'], array($data));
-				$filters[$key]['active'] = false;
-			}
+	if(!$pluginFilters){
+		debugLog('filters empty');
+		return $data;
+	}
+
+	if(!isset($pluginFilters[$a]) || !$pluginFilters[$a]) return $data;
+	
+	// use ref to keep subarray priority sorts, in case we wanted to reuse again
+	$filters = &$pluginFilters[$a];
+
+	// if just one hook call it
+	if(count($filters) == 1 && count(current($filters)) == 1) return call_user_func_array(current($filters)[0]['function'], array($data));
+	
+	ksort($filters);
+
+	foreach ($filters as $priority){
+		foreach($priority as $filter){
+			call_user_func_array($filter['function'], array($data));	
 		}
 	}
 	return $data;
