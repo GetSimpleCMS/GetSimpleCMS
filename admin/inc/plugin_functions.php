@@ -456,7 +456,10 @@ function exec_filter($a,$data=array()) {
 	$filters = &$pluginFilters[$a];
 
 	// if just one hook call it
-	if(count($filters) == 1 && count(current($filters)) == 1) return call_user_func_array(current($filters)[0]['function'], array($data));
+	if(count($filters) == 1 && count(current($filters)) == 1){
+		$fitler = current($filters);
+		return call_user_func_array($filter[0]['function'], array($data));
+	}	
 	
 	ksort($filters);
 
