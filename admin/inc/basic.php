@@ -686,7 +686,7 @@ function save_file($file,$data=''){
  * @return bool      file contents
  */
 function read_file($file){
-	if(!file_exists($file)){\
+	if(!file_exists($file)){
 		fileLog(__FUNCTION__,false,$file . ' not exist');
 		return;
 	}
