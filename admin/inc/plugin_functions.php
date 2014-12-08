@@ -457,7 +457,7 @@ function exec_filter($a,$data=array()) {
 
 	// if just one hook call it
 	if(count($filters) == 1 && count(current($filters)) == 1){
-		$fitler = current($filters);
+		$filter = current($filters);
 		return call_user_func_array($filter[0]['function'], array($data));
 	}	
 	
