@@ -42,6 +42,10 @@ $.fn.htmlEditorFromTextarea = function(config){
 
         // Debugger.log(html_config);
 
+        // html_config.resize_dir             = 'both'; // resize in both directions
+        // html_config.toolbarCanCollapse     = true;
+        // html_config.toolbarStartupExpanded = false;
+
         // create ckeditor instance from textarea
         if($this.hasClass('inline'))
             var editor = CKEDITOR.inline($this.get(0),html_config);
@@ -54,6 +58,8 @@ $.fn.htmlEditorFromTextarea = function(config){
         // ctr+s save handler
         CKEDITOR.on('instanceReady', function (ev) {
             ev.editor.setKeystroke(CKEDITOR.CTRL + 83 /*S*/, 'customSave' );
+            ckeditorautoheight(ev.editor);
+            // ckeditorfocus(ev.editor);
         });
 
         // custom save function
@@ -88,6 +94,39 @@ $.fn.htmlEditorFromTextarea = function(config){
 
     });
 };
+
+function ckeditorfocus(editor){
+    var _editor = editor;
+    if (editor) {
+        editor.on('focus', function(event) {
+            Debugger.log('editor focused');
+            var expander = cke_geteditorelement(event.editor).find(".cke_toolbox_collapser");
+            // Debugger.log(expander);
+            // Debugger.log($("#cke_1_toolbar_collapser"));
+            // $(expander).trigger("click");
+            $(expander).click();
+            // ckeditorautoheight(event.editor);
+        });
+    }
+}
+
+function ckeditorautoheight(editor){
+    if (editor) {    
+        var editorname    = editor.name;
+        var editorcontent = "#cke_" + editorname + " iframe";
+        var editoriframe  = $(editorcontent);
+        var contentheight = editoriframe.contents().find("html").height();
+        editoriframe.height(contentheight); // set height
+        Debugger.log('editor focused:' + editorname + " changing height:" + contentheight);
+        // $("#cke_" + editorname + " .cke_contents").attr('style',"height: "+ contentheight +"px;");
+        if(contentheight > 500) contentheight = 500;
+        editor.resize( '100%', contentheight, true );
+    }    
+}
+
+function cke_geteditorelement(editor){
+    return $("#cke_" + editor.name);
+} 
 
 function initckeditor(){
     // apply ckeditor to class of .html_edit

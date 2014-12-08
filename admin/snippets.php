@@ -111,7 +111,7 @@ function getItemOutput($id,$item,$class = 'item_edit'){
 	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE_SNIPPET').': '. cl($item->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
 	$str .= '</tr></table>';
 	
-	$str .= '<textarea name="val[]" class="'. (getDef('GSHTMLEDITINLINE',true) ? 'inline ' : '') .$class.'" data-mode="html" '.$readonly.'>'. stripslashes($item->value) .'</textarea>';
+	$str .= '<textarea id="editor_'.$id.'" name="val[]" class="'. (getDef('GSHTMLEDITINLINE',true) ? 'inline ' : '') .$class.'" data-mode="html" '.$readonly.'>'. stripslashes($item->value) .'</textarea>';
 	// $str .= '<div id="htmleditor'.$id.'" style="margin:5px -1px;padding:18px;border: 1px solid #E5E5E5;box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);" contentEditable="true">'.strip_decode($item->value).'</div>';
 	$str .= '<input type="hidden" class="compslug" name="slug[]" value="'. $item->slug .'" />';
 	$str .= '<input type="hidden" class="comptitle" name="title[]" value="'. stripslashes($item->title) .'" />';
