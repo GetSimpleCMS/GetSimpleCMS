@@ -24,6 +24,7 @@ CKEDITOR.editorConfig = function( config )
     config.filebrowserWindowHeight     = '500';
 
 	config.allowedContent              = true;       // disable acf
+	config.disableAutoInline           = true;       // disable automatic inline editing of elements with contenteditable=true
 
 	config.extraPlugins                = 'codemirror';
 
