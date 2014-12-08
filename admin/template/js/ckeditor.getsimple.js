@@ -58,7 +58,7 @@ $.fn.htmlEditorFromTextarea = function(config){
         // ctr+s save handler
         CKEDITOR.on('instanceReady', function (ev) {
             ev.editor.setKeystroke(CKEDITOR.CTRL + 83 /*S*/, 'customSave' );
-            ckeditorautoheight(ev.editor);
+            // ckeditorautoheight(ev.editor);
             // ckeditorfocus(ev.editor);
         });
 
@@ -117,7 +117,7 @@ function ckeditorautoheight(editor){
         var editoriframe  = $(editorcontent);
         var contentheight = editoriframe.contents().find("html").height();
         editoriframe.height(contentheight); // set height
-        Debugger.log('editor focused:' + editorname + " changing height:" + contentheight);
+        Debugger.log('editor resize:' + editorname + " changing height:" + contentheight);
         // $("#cke_" + editorname + " .cke_contents").attr('style',"height: "+ contentheight +"px;");
         if(contentheight > 500) contentheight = 500;
         editor.resize( '100%', contentheight, true );
