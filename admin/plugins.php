@@ -95,11 +95,11 @@ foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
 
 # set file trigger for plugin update notification, not implemented in core for anything
 if ($needsupdate) {
-	touch(GSCACHEPATH.'plugin-update.trigger');
+	touch(GSCACHEPATH.GSPLUGINTRIGGERFILE);
 	exec_action('plugin-update'); // @hook plugin-update a plugin update is available
 } else {
-	if (file_exists(GSCACHEPATH.'plugin-update.trigger')) {
-		delete_file(GSCACHEPATH.'plugin-update.trigger');
+	if (file_exists(GSCACHEPATH.GSPLUGINTRIGGERFILE)) {
+		delete_file(GSCACHEPATH.GSPLUGINTRIGGERFILE);
 	}
 }
 
