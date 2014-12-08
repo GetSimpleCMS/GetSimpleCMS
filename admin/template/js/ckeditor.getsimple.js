@@ -42,9 +42,19 @@ $.fn.htmlEditorFromTextarea = function(config){
 
         // Debugger.log(html_config);
 
-        // html_config.resize_dir             = 'both'; // resize in both directions
+        html_config.resize_dir             = 'both'; // resize in both directions
         // html_config.toolbarCanCollapse     = true;
         // html_config.toolbarStartupExpanded = false;
+
+        // get overrides from data-mode attr if it exists
+        if($this.data('editorcompact')){
+            Debugger.log('editorcompact');
+            html_config.toolbarCanCollapse     = false;
+            html_config.toolbarStartupExpanded = true;
+            html_config.compact = true;
+        }
+
+        if($this.prop('readonly')) html_config.readOnly = true;
 
         // create ckeditor instance from textarea
         if($this.hasClass('inline'))
@@ -56,10 +66,10 @@ $.fn.htmlEditorFromTextarea = function(config){
         $this.data('htmleditor', editor);
 
         // ctr+s save handler
-        CKEDITOR.on('instanceReady', function (ev) {
+        editor.on('instanceReady', function (ev) {
             ev.editor.setKeystroke(CKEDITOR.CTRL + 83 /*S*/, 'customSave' );
-            // ckeditorautoheight(ev.editor);
-            // ckeditorfocus(ev.editor);
+            cke_autoheight(ev.editor);
+            cke_editorfocus(ev.editor);
         });
 
         // custom save function
@@ -95,22 +105,51 @@ $.fn.htmlEditorFromTextarea = function(config){
     });
 };
 
-function ckeditorfocus(editor){
-    var _editor = editor;
-    if (editor) {
+function cke_editorfocus(editor){
+    if (editor && editor.config.compact == true) {
+        cke_hideui(editor);
         editor.on('focus', function(event) {
             Debugger.log('editor focused');
-            var expander = cke_geteditorelement(event.editor).find(".cke_toolbox_collapser");
-            // Debugger.log(expander);
-            // Debugger.log($("#cke_1_toolbar_collapser"));
-            // $(expander).trigger("click");
-            $(expander).click();
-            // ckeditorautoheight(event.editor);
+            // cke_expandtoolbar(event.editor);
+            editor.resize( '100%', 700, true );            
+            cke_showui(editor); // @todo buggy generates selections where click is active and content moves
+        });
+        editor.on('blur', function(event) {
+            Debugger.log('editor blurred');
+            // cke_collapsetoolbar(event.editor);
+            cke_autoheight(editor);
+            cke_hideui(editor); // @todo buggy, only hide if another cke instance was clicked
         });
     }
 }
 
-function ckeditorautoheight(editor){
+function cke_expandtoolbar(editor){
+    var expander = cke_geteditorelement(editor).find(".cke_toolbox_collapser");
+    Debugger.log(expander.hasClass('cke_toolbox_collapser_min'));
+    if(expander.hasClass('cke_toolbox_collapser_min')) $(expander).click();
+}
+
+function cke_collapsetoolbar(editor){
+    var expander = cke_geteditorelement(editor).find(".cke_toolbox_collapser");
+    Debugger.log(expander.hasClass('cke_toolbox_collapser_min'));
+    if(!expander.hasClass('cke_toolbox_collapser_min')){
+        $(expander).click(); // refocuses editor !
+    }
+}
+
+function cke_showui(editor){
+    editorelem = cke_geteditorelement(editor);
+    editorelem.find(".cke_top").show();
+    editorelem.find(".cke_path").show();
+}
+
+function cke_hideui(editor){
+    editorelem = cke_geteditorelement(editor);
+    editorelem.find(".cke_top").hide();
+    editorelem.find(".cke_path").hide();
+}
+
+function cke_autoheight(editor){
     if (editor) {    
         var editorname    = editor.name;
         var editorcontent = "#cke_" + editorname + " iframe";
@@ -134,5 +173,5 @@ function initckeditor(){
     // Debugger.log(editors);
 
     // backwards compatibility for i18n, set global editor to first editor
-    editor = $(editors[0]).data('htmleditor');
+    // editor = $(editors[0]).data('htmleditor');
 }
