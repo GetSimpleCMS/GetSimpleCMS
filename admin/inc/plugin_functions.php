@@ -291,7 +291,10 @@ function exec_action($a) {
 
 	// if just one hook call it
 	
-	if(count($hooks) == 1 && count(current($hooks)) == 1) return call_user_func_array(current($hooks)[0]['function'], current($hooks)[0]['args']);
+	if(count($hooks) == 1 && count(current($hooks)) == 1) {
+		$hook = current($hooks);
+		return call_user_func_array($hook[0]['function'], $hook[0]['args']);
+	}
 	
 	ksort($hooks);
 
