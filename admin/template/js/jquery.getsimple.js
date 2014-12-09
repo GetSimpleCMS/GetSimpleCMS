@@ -1366,7 +1366,6 @@ jQuery(document).ready(function () {
 		// filterSearchInput.slideToggle();
 		if($(this).hasClass('current')) hideFilter();
 		else showFilter();
-		filterSearchInput.find('#q').focus();
 	});
 	// enter ignore
 	$("#filter-search #q").keydown(function ($e) {
@@ -1405,9 +1404,12 @@ jQuery(document).ready(function () {
 
 	function showFilter(init){
 		if(init) filterSearchInput.show();
-		else filterSearchInput.slideDown();
-		$('#filtertable').addClass('current');		
-		if(!init) setConfig('filtertoggle',true);
+		else{
+			filterSearchInput.slideDown();
+			filterSearchInput.find('#q').focus();			
+			setConfig('filtertoggle',true);
+		}
+		$('#filtertable').addClass('current');
 	}
 
 	function hideFilter(init){

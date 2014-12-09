@@ -1737,7 +1737,7 @@ a.updatelink:hover {
 a.cancel {
 	display: inline-block;
 	color: #D94136;
-	text-decoration: underline;
+	text-decoration: none;
 	padding: 1px 3px;
 	background: none;
 	line-height: 16px;
