@@ -3213,7 +3213,7 @@ a.disabled:visited {
 .tree-expander {
 	cursor: pointer;
 	color: #868686;
-	font-size: 0.8em;
+	font-size: 0.9em !important;
 	margin-right: 4px;
 	transition: all 50ms ease-out;
 		-webkit-transition: all 50ms ease-out;
