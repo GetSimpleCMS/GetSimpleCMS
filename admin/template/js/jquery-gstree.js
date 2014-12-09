@@ -198,9 +198,9 @@ $.fn.zebraStripe = function(){
  * 
  * add gstree to tree ready table with data-depths and parent,indent classes
  * 
- * @param int minrows minumum rows needed to apply tree, else will skip tree creation
- * @param int mindepth minimum depth required to apply tree, else wil skip
- * @param int headerdepth minimum depth required to add the header expander controls
+ * @param int (optional) minrows minumum rows needed to apply tree, else will skip tree creation, default 2
+ * @param int (optional) mindepth minimum depth required to apply tree, else wil skip, default 1
+ * @param int (optional) headerdepth minimum depth required to add the header expander controls, default disabled
  */
 $.fn.addTableTree = function(minrows,mindepth,headerdepth){
 	// console.profile();
@@ -215,6 +215,10 @@ $.fn.addTableTree = function(minrows,mindepth,headerdepth){
 		Debugger.log("gstree: table does not exist, skipping");
 		return;
 	}	
+
+	// defaults
+	if(minrows  == undefined || minrows < 2) minrows  = 2;
+	if(mindepth == undefined) mindepth = 1;
 
 	// table is small if table has less rows that minrows
 	var small = minrows !== undefined && $("tbody tr",elem).length < minrows;
@@ -239,8 +243,8 @@ $.fn.addTableTree = function(minrows,mindepth,headerdepth){
 	$('tr td:first-child .tree-indent:last-of-type').html(''); // remove extra indentation
 	
 	// add the header expander controls
-	var deep = headerdepth === undefined || $("tbody tr[data-depth="+headerdepth+"]",elem).length > 0;	
-	if(deep) addExpanderTableHeader($('thead > tr:first',elem),customexpander,4);	
+	var deep = headerdepth != undefined && $("tbody tr[data-depth="+headerdepth+"]",elem).length > 0;	
+	if(deep) addExpanderTableHeader($('thead > tr:first',elem),customexpander,4); // colspan = 4
 	
 	$("table.striped").zebraStripe();
 
