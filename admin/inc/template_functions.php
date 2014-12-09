@@ -929,7 +929,6 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	// indentation
 	$indent   = '<span class="tree-indent"></span>';
 	$last     = '<span class="tree-indent indent-last">&ndash;</span>';
-	$expander = '<span class="tree-expander tree-expander-expanded"></span>';
 
 	// add indents based on level
 	$indentation .= $level > 0 ? str_repeat($indent, $level-1) : '';
@@ -937,8 +936,6 @@ function getPagesRow($page,$level,$index,$parent,$children){
 
 	// add indents or expanders
 	$isParent = $children > 0;
-	$expander = $isParent ? $expander : '<span class="tree-indent"></span>';
-	// $indentation = $indentation . $expander;
 
 	// depth level identifiers
 	$class  = 'depth-'.$level;
