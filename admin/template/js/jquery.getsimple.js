@@ -972,12 +972,35 @@ jQuery(document).ready(function () {
  
  
 	// pages.php
+	
+	// toggle status
 	$("#show-characters").on("click", function () {
-		if($(this).hasClass('current')) $(".showstatus").hide();
-		else $(".showstatus").show() ;
-		$(this).toggleClass('current');
+		if($(this).hasClass('current')) hidePageStatus();
+		else showPageStatus();
 	});
  
+	function showPageStatus(){
+		$(".showstatus").show();
+		$("#show-characters").addClass('current');
+		setConfig('pagestatustoggle',true);	
+	}
+
+	function hidePageStatus(){
+		$(".showstatus").hide();
+		$("#show-characters").removeClass('current');
+		setConfig('pagestatustoggle',false);
+	}
+
+	function initPageStatus(){
+		var filterstate = getConfig('pagestatustoggle');
+		if(typeof filterstate !== undefined){
+			if(filterstate == true) showPageStatus(true);
+			else hidePageStatus(true);
+		}		
+	}
+	
+	initPageStatus();
+
  
 	// log.php
 	if (jQuery().reverseOrder) {
@@ -1339,8 +1362,10 @@ jQuery(document).ready(function () {
 	// toggle filter input
 	$('#filtertable').on("click", function ($e) {
 		$e.preventDefault();
-		filterSearchInput.slideToggle();
-		$(this).toggleClass('current');
+		
+		// filterSearchInput.slideToggle();
+		if($(this).hasClass('current')) hideFilter();
+		else showFilter();
 		filterSearchInput.find('#q').focus();
 	});
 	// enter ignore
@@ -1368,12 +1393,27 @@ jQuery(document).ready(function () {
 		showFilter();
 	});
 	
-	function showFilter(){
-		filterSearchInput.slideDown();
+	initFilter();
+
+	function initFilter(){
+		var filterstate = getConfig('filtertoggle');
+		if(typeof filterstate !== undefined){
+			if(filterstate == true) showFilter(true);
+			else hideFilter(true);
+		}	
 	}
 
-	function hideFilter(){
+	function showFilter(init){
+		if(init) filterSearchInput.show();
+		else filterSearchInput.slideDown();
+		$('#filtertable').addClass('current');		
+		if(!init) setConfig('filtertoggle',true);
+	}
+
+	function hideFilter(init){
 		filterSearchInput.slideUp();
+		$('#filtertable').removeClass('current');		
+		if(!init) setConfig('filtertoggle',false);		
 	}
 
 	function doFilter(text){
@@ -1385,7 +1425,7 @@ jQuery(document).ready(function () {
 
 	function resetFilter(){
 		$("#editpages tr").show();
-		$('#filtertable').toggleClass('current');
+		// $('#filtertable').removeClass('current');
 		filterSearchInput.find('#q').val('');
 	}
  
@@ -1523,6 +1563,62 @@ function dosave(){
 	Debugger.log('saving');
 	// Debugger.log($("#submit_line input.submit"));
 	$("#submit_line input.submit").trigger('click'); // should do form.submit handlers as well
+}
+
+function supports_html5_storage() {
+	// return Modernizr.localstorage;
+	try {
+		return 'localStorage' in window && window['localStorage'] !== null;
+	} catch (e) {
+		return false;
+	}
+}
+
+function setlocal(settings){
+	if(!supports_html5_storage) return;	
+	var key   = 'gslocalstorage';	
+	
+	if(settings == undefined){
+		Debugger.log('setlocal empty');
+		return;
+	}
+	settings['version'] = '1';
+	jsonstr = JSON.stringify(settings);
+	localStorage[key] = jsonstr;
+	// Debugger.log('setlocal');
+	// Debugger.log(localStorage[key]);
+}
+
+function getlocal(){
+	var tmp = new Object();
+	if(!supports_html5_storage) return;	
+	
+	var key   = 'gslocalstorage';
+	var state = localStorage[key];
+
+	// Debugger.log('getlocal');
+	// Debugger.log(localStorage[key]);
+
+	if(state == undefined) return tmp;
+	state     = JSON.parse(state);
+	return state;
+}
+
+function getConfig(key){
+	var config = getlocal();
+	return config[key];
+}
+
+function setConfig(key,value){
+	// Debugger.log('setconfig ' + key + ' ' + value);
+	var settings  = getlocal();
+	settings[key] = value;
+	setlocal(settings);
+}
+
+function clearConfig(){
+	var key   = 'gslocalstorage';	
+	localStorage.removeItem(key);	
 }
 
 // lazy loader for js and css

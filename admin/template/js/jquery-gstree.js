@@ -267,15 +267,6 @@ function deleteTreeState(elem){
 	localStorage.removeItem(key);
 }
 
-function supports_html5_storage() {
-	// return Modernizr.localstorage;
-	try {
-		return 'localStorage' in window && window['localStorage'] !== null;
-	} catch (e) {
-		return false;
-	}
-}
-
 $.fn.zebraStripe = function(){
 	$("tbody tr:not(.tree-parentcollapsed)",$(this)).each(function(i,elem){
 		if(i%2!=1) $(elem).addClass('odd').removeClass('even'); 

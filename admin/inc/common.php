@@ -100,17 +100,19 @@ $GS_definitions = array(
 	'GSCHMODFILE'          => 0644,                           // (octal) chmod mode for files
 	'GSCHMODDIR'           => 0755,                           // (octal) chmod mode for dirs
 	'GSDOCHMOD'            => true,                           // (bool) perform chmod after creating files or directories
+	# DRAFTS -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSUSEDRAFTS'          => true,                           // (bool) use page drafts
 	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else `nodraft` or `draft` only
 	'GSDRAFTSTACKDEFAULT'  => true,                           // (bool) default page stack editing to drafts if true
 	'GSSDRAFTSPUBLISHEDTAG'=> true,                           // (bool) show published label on non draft pages if true
+	# DEBUGGING ----------------------------------------------------------------------------------------------------------------------------------------
 	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
 	'GSDEBUG'              => false,                          // (bool) debug mode
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls
 	'GSDEBUGREDIRECTS'     => false,                          // (bool) debug mode stop redirects for debugging
 	'GSDEBUGFILEIO'        => false,                          // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
-	# -----------------------------------------------------------------------------------------------------------------------------------------------
+	# ---------------------------------------------------------------------------------------------------------------------------------------------------
  	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
 );
 
