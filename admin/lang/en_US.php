@@ -461,6 +461,7 @@ $i18n = array(
 "WELCOME_MSG"             =>	"Thank you for choosing GetSimple as your content management system!",
 "WELCOME_P"               =>	"GetSimple makes managing a website as simple as possible with its best-in-class user interface. We strive to keep the system easy enough for anyone to use, yet powerful enough for a developer to enable all the features that are needed.</p><p><strong>Some first steps that might be useful:</strong></p>",
 "GETTING_STARTED"         =>	"Getting Started",
+"CSRF"                    =>    "CSRF Detected!",
 
 /* 
 * For: image.php
