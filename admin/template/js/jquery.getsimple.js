@@ -963,6 +963,7 @@ jQuery(document).ready(function () {
 		$("#submit_line input.submit").trigger('click');
 	});
 
+	// save and close
 	$(".save-close a").on("click", function ($e) {
 		$e.preventDefault();
 		$('body').removeClass('ajaxsave');

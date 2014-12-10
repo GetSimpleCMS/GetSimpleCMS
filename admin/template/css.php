@@ -712,7 +712,7 @@ h5:hover img {
 	display: block;
 	padding: 3px 10px;
 	float: right;
-	margin: 0 0 0 5px;
+	margin: 1px 0 0 5px;
 		-moz-border-radius: 3px;
 		-webkit-border-radius: 3px;
 	border-radius: 3px;

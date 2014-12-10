@@ -77,7 +77,9 @@ get_template('header');
 						}
 					}
 					echo '</ul>';
+					echo '<div id="submit_line"><span>';
 					echo '<input type="hidden" name="menuOrder" value=""><input class="submit" type="submit" value="'. i18n_r("SAVE_MENU_ORDER").'" />';
+					echo '</span></div>';
 					echo '</form>';
 				} else {
 					echo '<p>'.i18n_r('NO_MENU_PAGES').'.</p>';	
