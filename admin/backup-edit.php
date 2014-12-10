@@ -66,7 +66,7 @@ elseif ($p == 'restore') {
 	if($draft){
 		restore_draft($id);   // restore old slug file
 		generate_sitemap(); // regenerates sitemap
-		$success = exec_action('restore-draft'); // @hook restore-draft fired when a draft is restored
+		$success = exec_action('draft-restore'); // @hook draft-restore fired when a draft is restored
 		redirect("edit.php?id=". $id ."&upd-draft&upd=edit-success&type=restore");
 	}
 
@@ -83,7 +83,7 @@ elseif ($p == 'restore') {
 	}
 
 	generate_sitemap(); // regenerates sitemap
-	exec_action('restore-page');     // @hook restore-page fird when a page is restored
+	exec_action('page-restore');     // @hook page-restore fird when a page is restored
 }
 
 $pagetitle = i18n_r('BAK_MANAGEMENT').' &middot; '.i18n_r('VIEWPAGE_TITLE');
