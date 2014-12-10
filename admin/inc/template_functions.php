@@ -95,10 +95,28 @@ function ModeOctal2rwx($ModeOctal) { // enter octal mode, e.g. '644' or '2755'
  * @uses GSBACKUPSPATH
  *
  * @param string $id Zip filename to delete
- * @return string
+ * @return bool succces
  */
 function delete_zip($id) { 
 	$filepath = GSBACKUPSPATH . 'zip' . DIRECTORY_SEPARATOR;
+	$file     = $filepath . $id;
+
+	if(filepath_is_safe($file,$filepath)){
+		return delete_file($file);
+	}
+} 
+
+/**
+ * Delete Log File
+ *
+ * @since 3.4
+ * @uses GSDATAOTHERPATH
+ *
+ * @param string $id log filename to delete
+ * @return bool success
+ */
+function delete_logfile($id) { 
+	$filepath = GSDATAOTHERPATH.'logs/';
 	$file     = $filepath . $id;
 
 	if(filepath_is_safe($file,$filepath)){
@@ -115,7 +133,7 @@ function delete_zip($id) {
  *
  * @param string $id Uploaded filename to delete
  * @param string $path Path to uploaded file folder
- * @return string
+ * @return bool success
  */
 function delete_upload($id, $path = "") { 
 	$filepath = GSDATAUPLOADPATH . $path;
@@ -129,7 +147,7 @@ function delete_upload($id, $path = "") {
 		if (file_exists(GSTHUMBNAILPATH.$path."thumbsm.". $id)) {
 			delete_file(GSTHUMBNAILPATH.$path."thumbsm.". $id);
 		}
-		return status;
+		return $status;
 	}	
 } 
 
@@ -141,7 +159,7 @@ function delete_upload($id, $path = "") {
  * @uses GSDATAUPLOADPATH
  *
  * @param string $path relative path to uploaded file folder
- * @return string
+ * @return bool success
  */
 function delete_upload_dir($path){
 	$target = GSDATAUPLOADPATH . $path;

@@ -70,3 +70,11 @@ if (isset($_GET['folder'])) {
 	redirect("upload.php?upd=del-".$status."&id=". $folder . "&path=".$path);
 	die();
 }
+
+// Delete a log file
+if (isset($_GET['log'])) {
+	$log = $_GET['log'];
+	delete_logfile($log);
+	exec_action('logfile-delete'); //@hook logfile-delete deleting log file 
+	redirect('log.php?success='.urlencode('Log '.var_out($log_name) . i18n_r('MSG_HAS_BEEN_CLR')));
+}

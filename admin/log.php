@@ -25,14 +25,6 @@ $whois_url = 'http://whois.arin.net/rest/ip/';
 // filepath_is_safe returns false if file does nt exist
 if(!isset($log_name) || !filepath_is_safe($log_file,$log_path)) $log_data = false;
 
-if (isset($_GET['action']) && $_GET['action'] == 'delete' && strlen($log_name)>0) {
-	// @todo move to deletefile.php
-	check_for_csrf("delete");
-	delete_file($log_file);
-	exec_action('logfile-delete'); //@hook logfile-delete deleting log file 
-	redirect('log.php?success='.urlencode('Log '.$log_name . i18n_r('MSG_HAS_BEEN_CLR')));
-}
-
 if (!isset($log_data)) $log_data = getXML($log_file);
 
 $pagetitle = i18n_r('LOGS').' &middot; '.i18n_r('SUPPORT');
@@ -56,7 +48,7 @@ get_template('header');
 		else { ?>	
 			<h3 class="floated"><?php echo i18n_r('VIEW_LOG_FILE');?><span> / <?php echo var_out($log_name); ?></span></h3>
 			<div class="edit-nav clearfix" >
-				<a href="log.php?log=<?php echo $log_name; ?>&action=delete&nonce=<?php echo get_nonce("delete"); ?>" accesskey="<?php echo find_accesskey(i18n_r('CLEAR_ALL_DATA'));?>" title="<?php i18n('CLEAR_ALL_DATA');?> <?php echo $log_name; ?>?" /><?php i18n('CLEAR_THIS_LOG');?></a>
+				<a href="deletefile.php?log=<?php echo $log_name; ?>&action=delete&nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" accesskey="<?php echo find_accesskey(i18n_r('CLEAR_ALL_DATA'));?>" title="<?php i18n('CLEAR_ALL_DATA');?> <?php echo $log_name; ?>?" /><?php i18n('CLEAR_THIS_LOG');?></a>
 				<?php exec_action(get_filename_id().'-edit-nav'); ?>
 			</div>		
 			<?php exec_action(get_filename_id().'-body'); ?>
