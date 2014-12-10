@@ -65,6 +65,7 @@ elseif ($p == 'restore') {
 
 	if($draft){
 		restore_draft($id);   // restore old slug file
+		generate_sitemap(); // regenerates sitemap
 		$success = exec_action('restore-draft'); // @hook restore-draft fired when a draft is restored
 		redirect("edit.php?id=". $id ."&upd-draft&upd=edit-success&type=restore");
 	}
@@ -81,6 +82,7 @@ elseif ($p == 'restore') {
 		redirect("edit.php?id=". $id ."&nodraft&upd=edit-success&type=restore");
 	}
 
+	generate_sitemap(); // regenerates sitemap
 	exec_action('restore-page');     // @hook restore-page fird when a page is restored
 }
 
