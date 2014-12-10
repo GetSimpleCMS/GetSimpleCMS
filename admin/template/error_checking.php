@@ -107,10 +107,10 @@
 			doNotify('<b>'.i18n_r('ERROR').':</b> '. var_out($ptype),'error');
 		if(!$dbn) break;
 		case 'pwd-success':
-			doNotify(i18n_r('ER_NEW_PWD_SENT').'. <a href="index.php">'.i18n_r('LOGIN').'</a>','info');
+			doNotify(i18n_r('ER_NEW_PWD_SENT').'. <a href="index.php">'.i18n_r('LOGIN').'</a>','info',true,true);
 		if(!$dbn) break;
 		case 'pwd-error':
-			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_SENDMAIL_ERR').'.','error');
+			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_SENDMAIL_ERR').'.','error',true,true);
 		if(!$dbn) break;
 		case 'del-success':
 			doNotify(i18n_r('ER_FILE_DEL_SUC').': <b>'.$errid.'</b>','success');
@@ -140,17 +140,32 @@
 		case 'settings-restored':
 			doNotify(i18n_r('ER_OLD_RESTORED').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success',true);
 		break;
+		case 'login-req':
+			doNotify(i18n_r('FILL_IN_REQ_FIELD'),'error',true,true);
+		break;
+		case 'login-fail':
+			doNotify(i18n_r('LOGIN_FAILED'),'error',true,true);
+		break;
 
 		default:
 			if     (isset($error))          doNotify('<b>'.i18n_r('ERROR').':</b> '. $error,'error',true);
 			elseif (isset($_GET['cancel'])) doNotify(i18n_r('ER_CANCELLED_FAIL'),'error');
-			elseif (isset($_GET['logout'])) doNotify(i18n_r('MSG_LOGGEDOUT'),'info');
+			elseif (isset($_GET['logout'])) doNotify(i18n_r('MSG_LOGGEDOUT'),'info',true,true);
 			elseif (!empty($err))           doNotify('<b>'.i18n_r('ERROR').':</b> '.$err,'error',true);
 			elseif (isset($success))        doNotify($success,'success',true);
 		break;
 	}
 
-	function doNotify($msg, $type = '', $persist = false){
+	/**
+	 * output a notification
+	 * @param  str  $msg     the message text
+	 * @param  string  $type    type of message success, error, info, warn
+	 * @param  boolean $persist trueto make message not expire and dissapear
+	 * @param  boolean $force   force the message to show on auth pages
+	 */
+	function doNotify($msg, $type = '', $persist = false, $force = false){
+		// do not output notifications on auth pages to prevent nonce and data leakage, unless force is true
+		if(isAuthPage() && !$force) return; 
 		GLOBAL $dbn;
 		if($dbn) $persist = true;
 		debugLog('notify: ' . $type ." - ".$msg);
