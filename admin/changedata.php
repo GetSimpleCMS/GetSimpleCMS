@@ -25,7 +25,7 @@ if(isset($_GET['publish']) && isset($_GET['id'])){
 	else $status = publishDraft($id);
 
 	if($status){
-		exec_action('draft-publish'); // triggers page cache rebuild
+		exec_action('draft-publish'); // @hook draft-publish a draft was published
 		generate_sitemap(); // regenerates sitemap
 	}
 	redirect("pages.php?id=". $id ."&upd=publish-". ($status ? 'success' : 'error'));
@@ -92,23 +92,23 @@ if (isset($_POST['submitted'])) {
 	if(!$draft){
 		// if the slug changed update children
 		if ($slugHasChanged){
-			exec_action('changedata-updateslug');
+			exec_action('changedata-updateslug'); // @hook changedata-updateslug a page slug was changed
 			changeChildParents($oldslug,$url); // update childrens parent slugs to the new slug
 			delete_page($oldslug); // backup and delete the page
 		}
 		exec_action('changedata-save'); // @hook changedata-save prior to saving a page
-		$xml = exec_filter('page-save',$xml);
+		$xml = exec_filter('page-save',$xml)
 		savePageXml($xml);
-		exec_action('changedata-aftersave');
+		exec_action('changedata-aftersave'); // @hook changedata-aftersave after a page was saved
 		
 		// genen sitemap if published save
 		generate_sitemap();
 	}
 	else {;
-		exec_action('changedata-save-draft');
+		exec_action('changedata-save-draft'); // @hook changedata-save-draft saving a draft page
 		$xml = exec_filter('draft-save',$xml);
 		saveDraftXml($xml);
-		exec_action('changedata-aftersave-draft');
+		exec_action('changedata-aftersave-draft'); // @hook changedata-aftersave-draft after draft was saved
 	}
 
 	/**

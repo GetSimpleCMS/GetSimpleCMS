@@ -37,7 +37,7 @@ if (isset($_GET['id'])) {
 if (isset($_GET['draft'])) {
 	$id = $_GET['draft'];
 	$status = delete_draft($id) ? 'success' : 'error';
-	exec_action('draft-delete');
+	exec_action('draft-delete'); // @hook draft-delete deleting a page draft
 	redirect("pages.php?upd=edit-".$status."&id=". $id ."&type=delete");
 	die();
 }

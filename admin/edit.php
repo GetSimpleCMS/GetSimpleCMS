@@ -197,7 +197,7 @@ if($newdraft) $pageClass.=' newdraft';
         <div class="main">
         <div id="pagestack">
 <?php
-    exec_action('page-stack'); // experimental
+    exec_action('page-stack'); // @hook page-stack experimental can insert custom page stack here
 
     if(isset($id) && $pagestackactive) {
         /**

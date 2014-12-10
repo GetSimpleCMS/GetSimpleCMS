@@ -492,7 +492,7 @@ if(isset($load['plugin']) && $load['plugin']){
 	}
 
 	# main hook for common.php
-	exec_action('common'); // @hook common.php common has completed doing its thing
+	exec_action('common'); // @hook common common.php has completed loading resoruces, base not yet loaded
 	// debugLog('calling common_callout');
 	if(function_exists('common_callout')) common_callout(); // @callout common_callout callout after common loaded, before templating
 }
