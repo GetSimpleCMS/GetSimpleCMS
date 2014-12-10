@@ -65,6 +65,7 @@ elseif ($p == 'restore') {
 
 	if($draft){
 		restore_draft($id);   // restore old slug file
+		$success = exec_action('restore-draft'); // @hook restore-draft fired when a draft is restored
 		redirect("edit.php?id=". $id ."&upd-draft&upd=edit-success&type=restore");
 	}
 
@@ -72,15 +73,15 @@ elseif ($p == 'restore') {
 		$newid = $_GET['new'];
 		// restore page by old slug id
 		changeChildParents($newid, $id); // update parents and children
-		restore_page($id);        // restore old slug file
-		delete_page($newid);      // backup and delete live new slug file
-
+		$success = restore_page($id);    // restore old slug file
+		delete_page($newid);             // backup and delete live new slug file
 		redirect("edit.php?id=". $id ."&nodraft&old=".$_GET['new']."&upd=edit-success&type=restore");
 	} else {
-		restore_page($id);   // restore old slug file
+		$success = restore_page($id);    // restore old slug file
 		redirect("edit.php?id=". $id ."&nodraft&upd=edit-success&type=restore");
 	}
 
+	exec_action('restore-page');     // @hook restore-page fird when a page is restored
 }
 
 $pagetitle = i18n_r('BAK_MANAGEMENT').' &middot; '.i18n_r('VIEWPAGE_TITLE');
