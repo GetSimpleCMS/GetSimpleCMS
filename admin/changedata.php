@@ -97,16 +97,16 @@ if (isset($_POST['submitted'])) {
 			delete_page($oldslug); // backup and delete the page
 		}
 		exec_action('changedata-save'); // @hook changedata-save prior to saving a page
-		$xml = exec_filter('page-save',$xml)
+		$xml = exec_filter('page-save',$xml) // @filter page-save (obj) xml object of a page save
 		savePageXml($xml);
 		exec_action('changedata-aftersave'); // @hook changedata-aftersave after a page was saved
 		
 		// genen sitemap if published save
 		generate_sitemap();
 	}
-	else {;
+	else {
 		exec_action('changedata-save-draft'); // @hook changedata-save-draft saving a draft page
-		$xml = exec_filter('draft-save',$xml);
+		$xml = exec_filter('draft-save',$xml); // @filter draft-save (obj) xml object of a page draft save
 		saveDraftXml($xml);
 		exec_action('changedata-aftersave-draft'); // @hook changedata-aftersave-draft after draft was saved
 	}
