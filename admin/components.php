@@ -134,7 +134,7 @@ function outputCollection($data,$id,$class='item_edit'){
 	if (count($data) != 0) {
 		foreach ($data as $item) {
 			$table = getItemOutput($id,$item,$class);
-			exec_action($id.'-extras'); // @hook collecitonid-extras called after each component html is added to $table
+			exec_action($id.'-extras'); // @hook collectionid-extras called after each component html is added to $table
 			echo $table; // $table is legacy for hooks that modify the var, they should now just output html directly
 			$id++;
 		}
@@ -157,7 +157,7 @@ function outputCollectionTags($data,$id){
 		}
 	}
 
-	exec_action($id.'-list-extras'); // @hook component-list-extras called after component sidebar list items (tags) 		
+	exec_action($id.'-list-extras'); // @hook collectionid-list-extras called after component sidebar list items (tags) 		
 	echo '</div>';
 }
 

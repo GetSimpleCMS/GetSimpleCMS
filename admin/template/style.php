@@ -77,12 +77,13 @@ foreach($defaultcolors as $var => $color){
 if(empty($header_base)) $header_base = $primary_3;
 
 $labelAlphas = "\n";
+$alphas = array('0.8','0.5','0.1'); // rgba alpha values to generate
 // generate notfication and label backgrounds with custom opacities
+// label_[0-6]_opacity(80,50,10)
+// eg. label_3_80 = label_warn with 80% rgba opacity
 for($i=0;$i<7;$i++){
 	$var  = 'notify_'.$i;
 	$$var = getRGBA($defaultcolors['label_'.$i],'0.1');
-
-	$alphas = array('0.8','0.5','0.1');
 	foreach($alphas as $alpha){
 		$labelAlphas .= '.label_'.$i.'_'.floor($alpha*100).' {background-color: '.getRGBA($defaultcolors['label_'.$i],$alpha)."!important ;}\n";
 	}
@@ -98,9 +99,9 @@ echo $labelAlphas;
 
 // if GSTYLEWIDE ( default )
 if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ){
-	$width      = getDef('GSWIDTH');                  // get page width
-	$width_wide = getDef('GSWIDTHWIDE');              // get wide page width
-	$widepages  = explode(',',getDef('GSWIDEPAGES')); // get ids of pages that are wide
+	$width       = getDef('GSWIDTH');                  // get page width
+	$width_wide  = getDef('GSWIDTHWIDE');              // get wide page width
+	$widepages   = explode(',',getDef('GSWIDEPAGES')); // get ids of pages that are wide
 	$widepagecss = '';
 
 	if($width =='0' or $width == '') $width = 'none'; // allow for no max-width
