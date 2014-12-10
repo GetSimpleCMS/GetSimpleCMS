@@ -12,6 +12,4 @@
 <?php exec_action("settings-sidebar"); // @hook settings-sidebar sidebar list html output  ?>
 </ul>
 
-<?php if(get_filename_id()==='settings') { ?>
 <p id="js_submit_line" ></p>
-<?php } ?>

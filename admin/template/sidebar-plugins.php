@@ -11,3 +11,5 @@
 	<li id="sb_extend" class="last_sb"><a href="<?php echo $site_link_back_url; ?>extend/" target="_blank" accesskey="<?php echo find_accesskey(i18n_r('GET_PLUGINS_LINK'));?>" ><?php i18n('GET_PLUGINS_LINK'); ?></a></li>
 	<?php exec_action("plugins-sidebar"); // @hook plugis-sidebar sidebar list html output  ?>
 </ul>
+
+<p id="js_submit_line" ></p>

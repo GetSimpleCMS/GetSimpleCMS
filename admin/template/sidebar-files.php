@@ -64,3 +64,5 @@ $fileSizeLimitMB = toBytesShorthand(getMaxUploadSize().'M',true);
 		<input type="submit" class="submit" name="submit" value="<?php i18n('UPLOAD'); ?>" />
 	</form>
 </div>
+
+<p id="js_submit_line" ></p>

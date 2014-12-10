@@ -12,3 +12,5 @@
 	<li id="sb_log" class="last_sb"><a href="log.php"  <?php check_menu('log');  ?> ><?php i18n('SIDE_VIEW_LOG'); ?></a></li>
 	<?php exec_action("support-sidebar"); // @hook support-sidebar sidebar list html output  ?>
 </ul>
+
+<p id="js_submit_line" ></p>
