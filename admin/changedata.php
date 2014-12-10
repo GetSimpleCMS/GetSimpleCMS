@@ -97,7 +97,7 @@ if (isset($_POST['submitted'])) {
 			delete_page($oldslug); // backup and delete the page
 		}
 		exec_action('changedata-save'); // @hook changedata-save prior to saving a page
-		$xml = exec_filter('page-save',$xml) // @filter page-save (obj) xml object of a page save
+		$xml = exec_filter('pagesavexml',$xml) // @filter pagesavexml (obj) xml object of a page save
 		savePageXml($xml);
 		exec_action('changedata-aftersave'); // @hook changedata-aftersave after a page was saved
 		
@@ -106,7 +106,7 @@ if (isset($_POST['submitted'])) {
 	}
 	else {
 		exec_action('changedata-save-draft'); // @hook changedata-save-draft saving a draft page
-		$xml = exec_filter('draft-save',$xml); // @filter draft-save (obj) xml object of a page draft save
+		$xml = exec_filter('draftsavexml',$xml); // @filter draftsavexml (obj) xml object of a page draft save
 		saveDraftXml($xml);
 		exec_action('changedata-aftersave-draft'); // @hook changedata-aftersave-draft after draft was saved
 	}
