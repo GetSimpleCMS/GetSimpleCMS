@@ -90,6 +90,10 @@ for($i=0;$i<7;$i++){
 	$labelAlphas .= "\n";
 }
 
+// You can modify style globals here
+exec_action('style-init'); // @hook style-init fired before including css files
+print_r($primary_1);
+
 // include main css file css.php
 include(GSCSSMAINFILE);
 
@@ -117,6 +121,7 @@ if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ){
 // include custom theme/admin.css if exists
 if(file_exists(GSTHEMESPATH.getDef('GSCSSCUSTOMFILE')) && getDef('GSCSSCUSTOMENABLE',true)) include(GSTHEMESPATH.getDef('GSCSSCUSTOMFILE'));
 
+// You can include your own css here
 exec_action('style-save'); // @hook style-save called after css files are included before cache is saved
 
 // save cache
