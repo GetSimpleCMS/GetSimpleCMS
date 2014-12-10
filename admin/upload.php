@@ -115,6 +115,7 @@ if (isset($_GET['newfolder'])) {
 	$newfolder = $_GET['newfolder'];
 	// check for invalid chars
 	$cleanname = clean_url(to7bit(strippath($newfolder), "UTF-8"));
+	$cleanname = basename($cleanname);
 	if (file_exists($path.$cleanname) || $cleanname=='') {
 			$error = i18n_r('ERROR_FOLDER_EXISTS');
 	} else {
