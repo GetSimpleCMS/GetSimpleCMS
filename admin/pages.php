@@ -34,7 +34,7 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 
 	$status = clone_page($_GET['id']);
 	if ($status !== false) {
-		create_pagesxml('true');
+		exec_action('page-clone'); // @hook page-clone page was cloned
 		redirect('pages.php?upd=clone-success&id='.$status);
 	} else {
 		$error = sprintf(i18n_r('CLONE_ERROR'), var_out($_GET['id']));
