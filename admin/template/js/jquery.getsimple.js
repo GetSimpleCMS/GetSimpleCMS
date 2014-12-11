@@ -270,7 +270,7 @@ $.fn.parseNotify = function(){
 
 function clearNotify($type) {
 	Debugger.log('CLEAR NOTIFY '+ $type);
-	if($type !== undefined) return $('div.wrapper .notify.notify_'+$type).remove();
+	if($type !== undefined)	return $('.notify.notify_'+$type).remove();
 	return $('div.wrapper .notify').remove();
 }
  
