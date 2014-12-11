@@ -191,7 +191,7 @@ if($newdraft) $pageClass.=' newdraft';
 
 ?>
 
-<div class="bodycontent clearfix">
+<div id="bodycontent" class="bodycontent clearfix">
 
     <div id="maincontent" class="<?php echo $pageClass; ?>">
         <div class="main">

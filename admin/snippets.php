@@ -170,7 +170,7 @@ get_template('header');
 	
 include('template/include-nav.php'); ?>
 
-<div class="bodycontent clearfix">
+<div id="bodycontent" class="bodycontent clearfix">
 	
 	<div id="maincontent">
 		<div class="main">

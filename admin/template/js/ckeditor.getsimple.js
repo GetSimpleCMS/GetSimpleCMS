@@ -77,6 +77,27 @@ $.fn.htmlEditorFromTextarea = function(config){
             ev.editor.setKeystroke(CKEDITOR.CTRL + 83 /*S*/, 'customSave' );
             if(ev.editor.config.gsautoheight === true) cke_autoheight(ev.editor);
             if(ev.editor.config.gscompact === true) cke_editorfocus(ev.editor);
+
+            this.commands.maximize.on( 'exec', function( evt ) {
+                Debugger.log('maximize cke');
+                Debugger.log($('body').attr('class'));
+                $('body').data('saveclasses',$('body').attr('class'));
+                if(this.state == CKEDITOR.TRISTATE_ON){
+                    $("body").removeClass('fullscreen');
+                }
+                else {
+                    setTimeout(function(e){
+                            if($('body').data('saveclasses') != undefined){
+                                Debugger.log($('body').data('saveclasses'));
+                                $('body').addClass($('body').data('saveclasses'));
+                            }
+                            $("body").addClass('fullscreen');
+                        }
+                        ,500
+                    );
+                }
+            });   
+
         });
 
         // custom save function
@@ -114,6 +135,7 @@ $.fn.htmlEditorFromTextarea = function(config){
 
 function cke_editorfocus(editor){
     if (editor && editor.config.gscompact == true) {
+        // @todo ignore if fullscreen
         cke_hideui(editor);
         editor.on('focus', function(event) {
             // Debugger.log('editor focused');
