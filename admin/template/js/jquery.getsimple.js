@@ -823,7 +823,6 @@ jQuery(document).ready(function () {
     // init auto save for page edit
 	function autoSaveInit(){
 		Debugger.log('auto saving initialized ' + GSAUTOSAVEPERIOD);
-		$('#pagechangednotify').hide();
 		$('#autosavestatus').show();
 		$('#autosavenotify').show();
 		setInterval(autoSaveIntvl, GSAUTOSAVEPERIOD*1000);
@@ -831,7 +830,7 @@ jQuery(document).ready(function () {
 
     // interval for autosave
     function autoSaveIntvl(){
-        Debugger.log('autoSaveIntvl called, form is dirty: autosaving');
+        Debugger.log('autoSaveIntvl called ' + GSAUTOSAVEPERIOD);
         if(pageisdirty === true){
             Debugger.log('autoSaveIntvl called, form is dirty: autosaving');
             ajaxSave('&autosave=1').done(autoSaveCallback);
@@ -841,7 +840,6 @@ jQuery(document).ready(function () {
 
 	function autoSaveDestroy(){
 		Debugger.log('auto saving destroying ' + GSAUTOSAVEPERIOD);
-		$('#pagechangednotify').hide();
 		$('#autosavestatus').show();
 		$('#autosavenotify').show();
 		setInterval(autoSaveIntvl, GSAUTOSAVEPERIOD*1000);
@@ -871,11 +869,11 @@ jQuery(document).ready(function () {
     function autoSaveUpdate(success,status){
         $('#autosavestatus').hide();
         $('#autosavenotify').html(status);
-        $('#pagechangednotify').hide();
         $('input[type=submit]').attr('disabled', false);
         if(success){
+        	Debugger.log("auto save success");
             $('#cancel-updates').hide();
-            $('input[type=submit]').css('border-color','#ABABAB');
+			ajaxStatusComplete();
             warnme = false;
         }
         pageisdirty = !success;
@@ -885,11 +883,9 @@ jQuery(document).ready(function () {
     function ajaxSaveUpdate(success,status){
 		clearNotify('success');
         notifySuccess(status).popit();    	
-        $('#pagechangednotify').hide();
         if(success) {
             $('#cancel-updates').hide();
             ajaxStatusComplete();
-            $('input[type=submit]').css('border-color','#ABABAB');
             warnme = false;
         }
         pageisdirty = !success;
@@ -915,7 +911,7 @@ jQuery(document).ready(function () {
 
     // call callbacks for autosave succcess or error
     function autoSaveCallback(response){
-        Debugger.log('autoSaveCallback ' + response);
+        Debugger.log('autoSaveCallback ');
         response = $.parseHTML(response);
         if ($(response).find('div.updated')) {
             autoSaveUpdate(true,$(response).find('div.autosavenotify').html());
@@ -955,8 +951,8 @@ jQuery(document).ready(function () {
 
     // auto save indicator, show notify, reset button style
     function autoSaveInd(){
-        $('#pagechangednotify').show();
-        $('input[type=submit]').css('border-color','#CC0000');
+        $("body").addClass('dirty');        
+        // $('input[type=submit]').css('border-color','#CC0000');
         $('#cancel-updates').show();
     }
 
@@ -1282,11 +1278,11 @@ jQuery(document).ready(function () {
 	updateEditSlug = function(html){
 		var newslug = $(html).find('#existing-url').val();
 		if(newslug) $('#existing-url').val(newslug);
-		Debugger.log(newslug);
+		// Debugger.log(newslug);
 
 		var newslug = $(html).find('#post-id').val();
 		if(newslug) $('#post-id').val(newslug);
-		Debugger.log(newslug);
+		// Debugger.log(newslug);
 	};
 
 	function getExtension(file){
