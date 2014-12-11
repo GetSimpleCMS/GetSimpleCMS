@@ -91,7 +91,7 @@ if (isset($_GET['undo'])) {
 $collectionData = get_components_xml();
 $numitems       = $collectionData ? count($collectionData) : 0;
 
-function getItemOutput($id,$item,$class = 'item_edit'){
+function getCollectionItemOutputX($id,$item,$class = 'item_edit'){
 
 	$disabled = (bool)(string)$item->disabled;
 	$readonly = (bool)(string)$item->readonly;
@@ -116,7 +116,7 @@ function getItemOutput($id,$item,$class = 'item_edit'){
 	return $str;
 }
 
-function getItemTemplate($class = 'item_edit noeditor'){
+function getItemTemplateX($class = 'item_edit noeditor'){
 	$item = array(
 		'title'    => '',
 		'slug'     => '',
@@ -125,15 +125,15 @@ function getItemTemplate($class = 'item_edit noeditor'){
 		'readonly' => ''
 	);
 
-	return getItemOutput('',(object)$item,$class);
+	return getCollectionItemOutput('',(object)$item,$class);
 }
 
-function outputCollection($data,$id,$class='item_edit'){
+function outputCollectionX($data,$id,$class='item_edit'){
 	if(!$data) return;
 	$id = 0;
 	if (count($data) != 0) {
 		foreach ($data as $item) {
-			$table = getItemOutput($id,$item,$class);
+			$table = getCollectionItemOutput($id,$item,$class);
 			exec_action($id.'-extras'); // @hook collectionid-extras called after each component html is added to $table
 			echo $table; // $table is legacy for hooks that modify the var, they should now just output html directly
 			$id++;
@@ -141,7 +141,7 @@ function outputCollection($data,$id,$class='item_edit'){
 	}
 }
 
-function outputCollectionTags($data,$id){
+function outputCollectionTagsX($data,$id){
 	if(!$data) return;
 	$numcomponents = count($data);
 
@@ -185,18 +185,18 @@ include('template/include-nav.php'); ?>
 				<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_components"); ?>" />
 
 				<div id="divTxt"></div>
-				<?php outputCollection($collectionData,'components','code_edit'); ?>
+				<?php outputCollection('components',$collectionData,''); ?>
 				<p id="submit_line" class="<?php echo $numitems > 0 ? '' : ' hidden'; ?>" >
 					<span><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_COMPONENTS');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="components.php?cancel"><?php i18n('CANCEL'); ?></a>
 				</p>
 			</form>
-			<div id="comptemplate" class="hidden"><?php echo getItemTemplate('code_edit noeditor'); ?></div>			
+			<div id="comptemplate" class="hidden"><?php echo getItemTemplate('components',' noeditor'); ?></div>			
 		</div>
 	</div>
 	
 	<div id="sidebar">
 		<?php include('template/sidebar-theme.php'); ?>
-		<?php outputCollectionTags($collectionData,'components'); ?>
+		<?php outputCollectionTags('components',$collectionData); ?>
 	</div>
 
 </div>

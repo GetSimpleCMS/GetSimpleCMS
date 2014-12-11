@@ -62,10 +62,6 @@ $GS_constants = array(
 	'GSBAKFILEPREFIX'       => '.bak',                        // (str) backup file naming prefix before extension
 	'GSRESETFILESUFFIX'     => '.reset',                      // (str) password reset file naming suffix before extension
 	'GSRESETFILEPREFIX'     => '',                            // (str) password reset file naming prefix after extension
-	'GSSHOWCODEHINTS'       => true,                          // (bool) show code hints on components page and snippets etc.
-	'GSHTMLEDITINLINE'      => false,                         // (bool) show html cke editors inline
-	'GSHTMLEDITCOMPACT'     => true,                          // (bool) show html cke editors compacted, hides ui when not focused
-	'GSHTMLEDITAUTOHEIGHT'  => true,                          // (bool) after init, auto set the ckeditors height
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
@@ -100,6 +96,13 @@ $GS_definitions = array(
 	'GSCHMODFILE'          => 0644,                           // (octal) chmod mode for files
 	'GSCHMODDIR'           => 0755,                           // (octal) chmod mode for dirs
 	'GSDOCHMOD'            => true,                           // (bool) perform chmod after creating files or directories
+	'GSSHOWCODEHINTS'      => true,                           // (bool) show code hints on components page and snippets etc.
+	# EDITORS ------------------------------------------------------------------------------------------------------------------------------------------
+	'GSSNIPPETATTRIB'       => 'getHtmlEditorAttr',           // (str) class to add to htmleditors used to init htmleditor
+	'GSCOMPONENTATTRIB'     => 'getCodeEditorAttr',           // (str) class to add to codeeditors used to init codeeditor
+	'GSHTMLEDITINLINE'      => false,                         // (bool) show html cke editors inline
+	'GSHTMLEDITCOMPACT'     => true,                          // (bool) show html cke editors compacted, hides ui when not focused
+	'GSHTMLEDITAUTOHEIGHT'  => true,                          // (bool) after init, auto set the ckeditors height	
 	# DRAFTS -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSUSEDRAFTS'          => true,                           // (bool) use page drafts
 	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else `nodraft` or `draft` only

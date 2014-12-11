@@ -92,82 +92,9 @@ if (isset($_GET['undo'])) {
 # create components form html
 $collectionData = get_snippets_xml();
 $numitems       = $collectionData ? count($collectionData) : 0;
-
-function getItemOutput($id,$item,$class = 'item_edit'){
-
-	$disabled = (bool)(string)$item->disabled;
-	$readonly = (bool)(string)$item->readonly;
-
-	$str = '';
-	$str .= '<div class="compdiv codewrap" id="section-'.$id.'">';
-	$str .= '<table class="comptable" ><tr>';
-	$str .= '<td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="comptitle editable">'. stripslashes($item->title) .'</b></td>';
-	
-	if(getDef('GSSHOWCODEHINTS',true))
-		$str .= '<td style="text-align:right;" ><code>&lt;?php get_snippet(<span class="compslugcode">\''.$item->slug.'\'</span>); ?&gt;</code></td>';
-	
-	$str .= '<td class="compactive"><label class="" for="active[]" >'.i18n_r('ACTIVE').'</label>';
-	$str .= '<input type="checkbox" name="active[]" '. (!$disabled ? 'checked="checked"' : '') .' value="'.$id.'" /></td>';
-	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE_SNIPPET').': '. cl($item->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
-	$str .= '</tr></table>';
-	
-	$str .= '<textarea id="editor_'.$id.'" name="val[]" data-htmleditautoheight="'.(getDef('GSHTMLEDITAUTOHEIGHT',true) ? 'true' : 'false').'" data-htmleditcompact="'.(getDef('GSHTMLEDITCOMPACT',true) ? 'true' : 'false').'" data-htmleditinline="'.(getDef('GSHTMLEDITINLINE',true) ? 'true' : 'false') .'" class="'.$class.'" data-mode="html" '.$readonly.'>'. stripslashes($item->value) .'</textarea>';
-	// $str .= '<div id="htmleditor'.$id.'" style="margin:5px -1px;padding:18px;border: 1px solid #E5E5E5;box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);" contentEditable="true">'.strip_decode($item->value).'</div>';
-	$str .= '<input type="hidden" class="compslug" name="slug[]" value="'. $item->slug .'" />';
-	$str .= '<input type="hidden" class="comptitle" name="title[]" value="'. stripslashes($item->title) .'" />';
-	$str .= '<input type="hidden" name="id[]" value="'. $id .'" />';
-	$str .= '</div>';
-	return $str;
-}
-
-function getItemTemplate($class = 'item_edit noeditor'){
-	$item = array(
-		'title'    => '',
-		'slug'     => '',
-		'value'    => '',
-		'disabled' => '',
-		'readonly' => ''
-	);
-
-	return getItemOutput('',(object)$item,$class);
-}
-
-function outputCollection($data,$id,$class='item_edit'){
-	if(!$data) return;
-	$id = 0;
-	if (count($data) != 0) {
-		foreach ($data as $item) {
-			$table = getItemOutput($id,$item,$class);
-			exec_action($id.'-extras'); // @hook collectionid-extras called after each component html is added to $table
-			echo $table; // $table is legacy for hooks that modify the var, they should now just output html directly
-			$id++;
-		}
-	}
-}
-
-function outputCollectionTags($data,$id){
-	if(!$data) return;
-	$numcomponents = count($data);
-
-	echo '<div class="compdivlist">';
-
-	# create list to show on sidebar for easy access
-	$class = $numcomponents < 15 ? ' clear-left' : '';
-	if($numcomponents > 1) {
-		$id = 0;
-		foreach($data as $item) {
-			echo '<a id="divlist-' . $id . '" href="#section-' . $id . '" class="component'.$class.' comp_'.$item->title.'">' . $item->title . '</a>';
-			$id++;
-		}
-	}
-
-	exec_action($id.'-list-extras'); // @hook collectionid-list-extras called after component sidebar list items (tags) 		
-	echo '</div>';
-}
-
-$pagetitle = i18n_r('SNIPPETS');
+$pagetitle      = i18n_r('SNIPPETS');
 get_template('header');
-	
+
 include('template/include-nav.php'); ?>
 
 <div id="bodycontent" class="bodycontent clearfix">
@@ -189,18 +116,18 @@ include('template/include-nav.php'); ?>
 				<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_snippets"); ?>" />
 
 				<div id="divTxt"></div>
-				<?php outputCollection($collectionData,'snippets','html_edit'); ?>
+				<?php outputCollection('snippets',$collectionData,''); ?>
 				<p id="submit_line" class="<?php echo $numitems > 0 ? '' : ' hidden'; ?>" >
 					<span><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_SNIPPETS');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="snippets.php?cancel"><?php i18n('CANCEL'); ?></a>
 				</p>
 			</form>
-			<div id="comptemplate" class="hidden"><?php echo getItemTemplate('html_edit noeditor'); ?></div>			
+			<div id="comptemplate" class="hidden"><?php echo getItemTemplate('snippets',' noeditor'); ?></div>			
 		</div>
 	</div>
 	
 	<div id="sidebar">
 		<?php include('template/sidebar-theme.php'); ?>
-		<?php outputCollectionTags($collectionData,'snippets'); ?>
+		<?php outputCollectionTags('snippets',$collectionData); ?>
 	</div>
 
 </div>
