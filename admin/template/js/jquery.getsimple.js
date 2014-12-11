@@ -216,7 +216,10 @@ function notifyError($msg) {
 function notify($msg, $type) {
 	if ($type == 'ok' || $type== 'success' || $type == 'warning' || $type == 'info' || $type == 'error') {
 		var $notify = $('<div style="display:none;" class="notify notify_' + $type + '"><p>' + $msg + '</p></div>').clone();
-		var notifyelem = $('div.bodycontent').before($notify);
+		// check for #bodycontent if .bodycontent does not exist, ckeditor fullscreen removes it
+		if($('div.bodycontent').get(0)) var notifyelem = $('div.bodycontent').before($notify);
+		else if($('#bodycontent').get(0)) var notifyelem = $('#bodycontent').before($notify);
+		else Debugger.log('nowhere to insert notify');
 		$notify.fadeIn();
 		$notify.addCloseButton();
 		$notify.notifyExpire();
@@ -639,7 +642,8 @@ jQuery(document).ready(function () {
 
     function ajaxStatusComplete(){
     	$('input[type=submit]').attr('disabled', false);
-		loadingAjaxIndicator.fadeOut(); 
+		loadingAjaxIndicator.fadeOut();
+		$("body").removeClass('dirty');	
    	}
 
 	//plugins.php
@@ -958,10 +962,20 @@ jQuery(document).ready(function () {
 
 	// adds sidebar submit buttons and fire clicks
 	var edit_line = $('#submit_line span').html();
+	// var edit_ok = '<i class="fa fa-fw fa-check-circle label-ok-color" style="font-size: 24px;"></i></p>';
 	$('#js_submit_line').html(edit_line);
 	$("#js_submit_line input.submit").on("click", function () {
 		$("#submit_line input.submit").trigger('click');
 	});
+
+	// page is dirty
+	var unsaved = '<p id="pagechangednotify">'+ i18n('PAGE_UNSAVED');
+	$('#js_submit_line').after(unsaved);
+
+    $('form input,form textarea,form select').not('#post-title').not('#post-id').bind('change keypress paste textInput input',function(){
+        // Debugger.log('form changed');
+        $("body").addClass('dirty');
+    });
 
 	// save and close
 	$(".save-close a").on("click", function ($e) {

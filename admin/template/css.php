@@ -1310,6 +1310,10 @@ table.cleantable tr td {
 	color: #CC0000;
 }
 
+body.dirty #pagechangednotify{
+	display: block;
+}
+
 /* page edit footer , .backuplink deprecated */
 p.editfooter, p.backuplink {
 	text-shadow: 1px 1px 0 rgba(255,255,255,.3);
@@ -1412,6 +1416,10 @@ input.submit:disabled {
 	padding: 3px 7px;
 }
 
+body.dirty #submit_line input.submit,
+body.dirty #js_submit_line input.submit {
+	border-color: #CC0000;
+}
 
 /* edit css */
 form input.title {
@@ -3366,12 +3374,21 @@ a.disabled:visited {
 .secondary_0-border-color, .secondary-darkest-border   { border-color: <?php echo $secondary_0; ?> !important;}
 .secondary_1-border-color, .secondary-lightest-border  { border-color: <?php echo $secondary_1; ?> !important;}
 
-  .label-info-border                                         { border-color: <?php echo $label_0; ?> !important;}
-  .label-ok-border                                           { border-color: <?php echo $label_1; ?> !important;}
-  .label-warn-border                                         { border-color: <?php echo $label_2; ?> !important;}
-  .label-error-border                                        { border-color: <?php echo $label_3; ?> !important;}
-  .label-light-border                                        { border-color: <?php echo $label_4; ?> !important;}
-  .label-medium-border                                       { border-color: <?php echo $label_5; ?> !important;}
+  .label-default-border                                      { border-color: <?php echo $label_0; ?> !important;}
+  .label-info-border                                         { border-color: <?php echo $label_1; ?> !important;}
+  .label-ok-border                                           { border-color: <?php echo $label_2; ?> !important;}
+  .label-warn-border                                         { border-color: <?php echo $label_3; ?> !important;}
+  .label-error-border                                        { border-color: <?php echo $label_4; ?> !important;}
+  .label-light-border                                        { border-color: <?php echo $label_5; ?> !important;}
+  .label-medium-border                                       { border-color: <?php echo $label_6; ?> !important;}
+
+  .label-default-color                                      { color: <?php echo $label_0; ?> !important;}
+  .label-info-color                                         { color: <?php echo $label_1; ?> !important;}
+  .label-ok-color                                           { color: <?php echo $label_2; ?> !important;}
+  .label-warn-color                                         { color: <?php echo $label_3; ?> !important;}
+  .label-error-color                                        { color: <?php echo $label_4; ?> !important;}
+  .label-light-color                                        { color: <?php echo $label_5; ?> !important;}
+  .label-medium-color                                       { color: <?php echo $label_6; ?> !important;}
 
 /* debug color */
   .primary_0-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>" !important;}

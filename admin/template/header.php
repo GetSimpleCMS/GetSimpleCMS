@@ -88,7 +88,8 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		'UNSAVED_PROMPT',
 		'CANNOT_SAVE_EMPTY',
 		'COMPONENT_DELETED',
-		'CANNOT_SAVE_EMPTY'
+		'CANNOT_SAVE_EMPTY',
+		'PAGE_UNSAVED'
 	);
 
 	// i18n for JS
