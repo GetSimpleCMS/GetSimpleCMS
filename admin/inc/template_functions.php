@@ -1805,6 +1805,11 @@ function previewingDraft(){
 }
 
 
+/**
+ * get htmleditor attributes for textareas
+ * @param  str $class extra classes to add to element
+ * @return str        html fragment
+ */
 function getHtmlEditorAttr($class){
 	if(getDef('GSHTMLEDITINLINE',true)) $class .= ' inline';
  	return ' data-htmleditautoheight="'.(getDef('GSHTMLEDITAUTOHEIGHT',true) ? 'true' : 'false').'" 
@@ -1814,6 +1819,11 @@ function getHtmlEditorAttr($class){
  	 data-mode="html" ';	
 }
 
+/**
+ * get codeeditor attributes for textareas
+ * @param  str $class extra classes to add to element
+ * @return str        html fragment
+ */
 function getCodeEditorAttr($class){
 	return ' data-codeeditautoheight="'.(getDef('GSCODEEDITAUTOHEIGHT',true) ? 'true' : 'false').'" 
 	 data-codeeditcompact="'.(getDef('GSCODEEDITCOMPACT',true) ? 'true' : 'false').'" 
@@ -1821,10 +1831,33 @@ function getCodeEditorAttr($class){
 	 data-mode="php" ';
 }
 
-function getPagesEditorAttr($class){
+/**
+ * get htmlEditor attributes for content textareas
+ * @param  str $class extra classes to add to element
+ * @return str        html fragment
+ */
+function getDefaultHtmlEditorAttr($class){
 	return ' class="html_edit '.$class.'"';
 }
 
+/**
+ * get codeEditor attributes for content textareas
+ * @param  str $class extra classes to add to element
+ * @return str        html fragment
+ */
+function getDefaultCodeEditorAttr($class){
+	return ' class="code_edit '.$class.'"';
+}
+
+/**
+ * get editor attributes for textareas
+ * If func name not provided , we will attempt to get a function name from 'GS'.uppercase($collectionid).'ATTRIB'
+ * eg. GSSNIPPETSATTRIB which it will execute and use for inserting into the textarea
+ * @param  str $collectionid id for this kind of editor
+ * @param  string $class        extra classes
+ * @param  str $funcname     function name to call to get attributes
+ * @return str               html fragment
+ */
 function getEditorAttribCallout($collectionid,$class = '',$funcname = null){
 	if(!$funcname) $call = getDef('GS'.uppercase($collectionid).'ATTRIB');
 	else $call = $funcname;
