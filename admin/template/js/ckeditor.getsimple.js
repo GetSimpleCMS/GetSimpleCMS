@@ -123,7 +123,7 @@ $.fn.htmlEditorFromTextarea = function(config){
             // Debugger.log('ckeditor mode change: '+ _this.mode);
             if ( _this.mode == 'source' ) {
                 var editable = _this.editable();
-                $('textarea.cke_source').editorFromTextarea(); // @todo experminental use our own codemirror in ckeditor
+                // $('textarea.cke_source').editorFromTextarea(); // @todo experminental use our own codemirror in ckeditor
                 editable.attachListener( editable, 'input', function() {
                     // Debugger.log('ckeditor source input change');
                     _this.fire('change');
