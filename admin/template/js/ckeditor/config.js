@@ -27,7 +27,7 @@ CKEDITOR.editorConfig = function( config )
 	config.disableAutoInline           = true;       // disable automatic inline editing of elements with contenteditable=true
 
 	extraPlugins = ['codemirror'];
-	config.extraPlugins = extraPlugins.join( ',' );
+	// config.extraPlugins = extraPlugins.join( ',' );
 
 	config.toolbar_advanced = 
 		[['Bold', 'Italic', 'Underline', '-', 'NumberedList', 'BulletedList', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', '-', 'Link', 'Unlink', 'Image', 'RemoveFormat', '-', 'Table', 'TextColor', 'BGColor', 'ShowBlocks'], ['Source'], ['Maximize'],
