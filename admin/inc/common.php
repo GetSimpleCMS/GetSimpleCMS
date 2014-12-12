@@ -100,7 +100,8 @@ $GS_definitions = array(
 	# EDITORS ------------------------------------------------------------------------------------------------------------------------------------------
 	'GSSNIPPETSATTRIB'      => 'getHtmlEditorAttr',           // (str) class to add to htmleditors used to init htmleditor
 	'GSCOMPONENTSATTRIB'    => 'getCodeEditorAttr',           // (str) class to add to codeeditors used to init codeeditor
-	'GSHTMLEDITINLINE'      => false,                         // (bool) show html cke editors inline
+	'GSPAGESATTRIB'         => 'getHtmlEditorAttr',           // (str) class to add to codeeditors used to init codeeditor
+	'GSHTMLEDITINLINE'      => false,                         // (bool) show html cke editors inline EXPERIMENTAL
 	'GSHTMLEDITCOMPACT'     => true,                          // (bool) show html cke editors compacted, hides ui when not focused
 	'GSHTMLEDITAUTOHEIGHT'  => true,                          // (bool) after init, auto set the ckeditors height	
 	# DRAFTS -------------------------------------------------------------------------------------------------------------------------------------------

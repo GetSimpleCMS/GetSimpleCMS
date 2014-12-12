@@ -1806,6 +1806,7 @@ function previewingDraft(){
 
 
 function getHtmlEditorAttr($class){
+ if(getDef('GSHTMLEDITINLINE',true)) $class .= ' inline';
  return ' data-htmleditautoheight="'.(getDef('GSHTMLEDITAUTOHEIGHT',true) ? 'true' : 'false').'" 
  	data-htmleditcompact="'.(getDef('GSHTMLEDITCOMPACT',true) ? 'true' : 'false').'" 
  	data-htmleditinline="'.(getDef('GSHTMLEDITINLINE',true) ? 'true' : 'false') .'" 

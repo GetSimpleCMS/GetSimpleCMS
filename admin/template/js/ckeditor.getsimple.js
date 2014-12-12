@@ -139,7 +139,7 @@ function cke_editorfocus(editor){
         cke_hideui(editor);
         editor.on('focus', function(event) {
             // Debugger.log('editor focused');
-            cke_setheight(editor,700);
+            cke_setheight(editor,1000); // @todo max height max plus n or just large
             cke_showui(editor);
         });
         editor.on('blur', function(event) {
@@ -170,7 +170,7 @@ function cke_autoheight(editor){
         var contentheight = editoriframe.contents().find("html").height();
         editoriframe.height(contentheight); // set height
         // Debugger.log('editor resize:' + editorname + " changing height:" + contentheight);
-        if(contentheight > 500) contentheight = 500;
+        if(contentheight > 600) contentheight = 600; // @todo max height adjustable somewhere, will be smaller for collections than pages
         cke_setheight(editor,contentheight);
     }    
 }

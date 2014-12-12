@@ -425,7 +425,7 @@ if($newdraft) $pageClass.=' newdraft';
             <?php } ?>
 
                 <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
-                <div class="codewrap"><textarea id="post-content" class="html_edit boxsizingBorder" name="post-content"><?php echo $content; ?></textarea></div>
+                <div class="codewrap"><textarea id="post-content" <?php echo getCollectionItemAttrib('pages','boxsizingBorder'); ?>  name="post-content"><?php echo $content; ?></textarea></div>
 
             <?php exec_action('edit-content'); //@hook edit-content after page edit content html output ?> 
 
