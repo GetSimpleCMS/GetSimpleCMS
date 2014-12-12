@@ -90,84 +90,12 @@ if (isset($_GET['undo'])) {
 # create components form html
 $collectionData = get_components_xml();
 $numitems       = $collectionData ? count($collectionData) : 0;
-
-function getCollectionItemOutputX($id,$item,$class = 'item_edit'){
-
-	$disabled = (bool)(string)$item->disabled;
-	$readonly = (bool)(string)$item->readonly;
-
-	$str = '';
-	$str .= '<div class="compdiv codewrap" id="section-'.$id.'">';
-	$str .= '<table class="comptable" ><tr>';
-	$str .= '<td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="comptitle editable">'. stripslashes($item->title) .'</b></td>';
-	
-	if(getDef('GSSHOWCODEHINTS',true))
-	$str .= '<td style="text-align:right;" ><code>&lt;?php get_component(<span class="compslugcode">\''.$item->slug.'\'</span>); ?&gt;</code></td>';
-	
-	$str .= '<td class="compactive"><label class="" for="active[]" >'.i18n_r('ACTIVE').'</label>';
-	$str .= '<input type="checkbox" name="active[]" '. (!$disabled ? 'checked="checked"' : '') .' value="'.$id.'" /></td>';
-	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE_COMPONENT').': '. cl($item->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
-	$str .= '</tr></table>';
-	$str .= '<textarea name="val[]" class="'.$class.'" data-mode="php" '.$readonly.'>'. stripslashes($item->value) .'</textarea>';
-	$str .= '<input type="hidden" class="compslug" name="slug[]" value="'. $item->slug .'" />';
-	$str .= '<input type="hidden" class="comptitle" name="title[]" value="'. stripslashes($item->title) .'" />';
-	$str .= '<input type="hidden" name="id[]" value="'. $id .'" />';
-	$str .= '</div>';
-	return $str;
-}
-
-function getItemTemplateX($class = 'item_edit noeditor'){
-	$item = array(
-		'title'    => '',
-		'slug'     => '',
-		'value'    => '',
-		'disabled' => '',
-		'readonly' => ''
-	);
-
-	return getCollectionItemOutput('',(object)$item,$class);
-}
-
-function outputCollectionX($data,$id,$class='item_edit'){
-	if(!$data) return;
-	$id = 0;
-	if (count($data) != 0) {
-		foreach ($data as $item) {
-			$table = getCollectionItemOutput($id,$item,$class);
-			exec_action($id.'-extras'); // @hook collectionid-extras called after each component html is added to $table
-			echo $table; // $table is legacy for hooks that modify the var, they should now just output html directly
-			$id++;
-		}
-	}
-}
-
-function outputCollectionTagsX($data,$id){
-	if(!$data) return;
-	$numcomponents = count($data);
-
-	echo '<div class="compdivlist">';
-
-	# create list to show on sidebar for easy access
-	$class = $numcomponents < 15 ? ' clear-left' : '';
-	if($numcomponents > 1) {
-		$id = 0;
-		foreach($data as $item) {
-			echo '<a id="divlist-' . $id . '" href="#section-' . $id . '" class="component'.$class.' comp_'.$item->title.'">' . $item->title . '</a>';
-			$id++;
-		}
-	}
-
-	exec_action($id.'-list-extras'); // @hook collectionid-list-extras called after component sidebar list items (tags) 		
-	echo '</div>';
-}
-
-$pagetitle = i18n_r('COMPONENTS');
+$pagetitle      = i18n_r('COMPONENTS');
 get_template('header');
 	
 include('template/include-nav.php'); ?>
 
 <div class="bodycontent clearfix">
-	
 	<div id="maincontent">
 		<div class="main">
 			<h3 class="floated"><?php echo i18n_r('EDIT_COMPONENTS');?></h3>
@@ -185,12 +113,12 @@ include('template/include-nav.php'); ?>
 				<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_components"); ?>" />
 
 				<div id="divTxt"></div>
-				<?php outputCollection('components',$collectionData,''); ?>
+				<?php outputCollection('components',$collectionData,'','get_component'); ?>
 				<p id="submit_line" class="<?php echo $numitems > 0 ? '' : ' hidden'; ?>" >
 					<span><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_COMPONENTS');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="components.php?cancel"><?php i18n('CANCEL'); ?></a>
 				</p>
 			</form>
-			<div id="comptemplate" class="hidden"><?php echo getItemTemplate('components',' noeditor'); ?></div>			
+			<div id="comptemplate" class="hidden"><?php echo getItemTemplate('components',' noeditor','get_component'); ?></div>			
 		</div>
 	</div>
 	

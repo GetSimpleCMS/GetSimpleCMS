@@ -1821,17 +1821,11 @@ function getCodeEditorAttr($class){
 }
 
 function getCollectionItemAttrib($collectionid,$class){
-	if($collectionid == 'snippets'){
-		$call = getDef('GSSNIPPETATTRIB');
-		return $call($class);
-	}	
-	else if($collectionid == 'components'){
-		$call = getDef('GSCOMPONENTATTRIB');
-		return $call($class);
-	}
+	$call = getDef('GS'.uppercase($collectionid).'ATTRIB');
+	if(function_exists($call)) return $call($class);
 }
 
-function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit'){
+function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit',$code = ''){
 
 	$disabled = (bool)(string)$item->disabled;
 	$readonly = (bool)(string)$item->readonly;
@@ -1841,16 +1835,15 @@ function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit'){
 	$str .= '<table class="comptable" ><tr>';
 	$str .= '<td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="comptitle editable">'. stripslashes($item->title) .'</b></td>';
 	
-	if(getDef('GSSHOWCODEHINTS',true))
-		$str .= '<td style="text-align:right;" ><code>&lt;?php get_snippet(<span class="compslugcode">\''.$item->slug.'\'</span>); ?&gt;</code></td>';
+	if(getDef('GSSHOWCODEHINTS',true) && !empty($code))
+		$str .= '<td style="text-align:right;" ><code>&lt;?php '.$code.'(<span class="compslugcode">\''.$item->slug.'\'</span>); ?&gt;</code></td>';
 	
 	$str .= '<td class="compactive"><label class="" for="active[]" >'.i18n_r('ACTIVE').'</label>';
 	$str .= '<input type="checkbox" name="active[]" '. (!$disabled ? 'checked="checked"' : '') .' value="'.$id.'" /></td>';
-	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE_SNIPPET').': '. cl($item->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
+	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE').' '. cl($item->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
 	$str .= '</tr></table>';
 	
 	$str .= '<textarea id="editor_'.$id.'" name="val[]"'.getCollectionItemAttrib($collectionid,$class).'>'. stripslashes($item->value) .'</textarea>';
-	// $str .= '<div id="htmleditor'.$id.'" style="margin:5px -1px;padding:18px;border: 1px solid #E5E5E5;box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);" contentEditable="true">'.strip_decode($item->value).'</div>';
 	$str .= '<input type="hidden" class="compslug" name="slug[]" value="'. $item->slug .'" />';
 	$str .= '<input type="hidden" class="comptitle" name="title[]" value="'. stripslashes($item->title) .'" />';
 	$str .= '<input type="hidden" name="id[]" value="'. $id .'" />';
@@ -1858,7 +1851,7 @@ function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit'){
 	return $str;
 }
 
-function getItemTemplate($collectionid,$class = 'item_edit noeditor'){
+function getItemTemplate($collectionid,$class = 'item_edit noeditor',$code = ''){
 	$item = array(
 		'title'    => '',
 		'slug'     => '',
@@ -1867,15 +1860,15 @@ function getItemTemplate($collectionid,$class = 'item_edit noeditor'){
 		'readonly' => ''
 	);
 
-	return getCollectionItemOutput($collectionid,'',(object)$item,$class);
+	return getCollectionItemOutput($collectionid,'',(object)$item,$class,$code);
 }
 
-function outputCollection($collectionid,$data,$class='item_edit'){
+function outputCollection($collectionid,$data,$class='item_edit',$code = ''){
 	if(!$data) return;
 	$id = 0;
 	if (count($data) != 0) {
 		foreach ($data as $item) {
-			$table = getCollectionItemOutput($collectionid,$id,$item,$class);
+			$table = getCollectionItemOutput($collectionid,$id,$item,$class,$code);
 			exec_action($collectionid.'-extras'); // @hook collectionid-extras called after each component html is added to $table
 			echo $table; // $table is legacy for hooks that modify the var, they should now just output html directly
 			$id++;

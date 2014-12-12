@@ -116,12 +116,12 @@ include('template/include-nav.php'); ?>
 				<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_snippets"); ?>" />
 
 				<div id="divTxt"></div>
-				<?php outputCollection('snippets',$collectionData,''); ?>
+				<?php outputCollection('snippets',$collectionData,'','get_snippet'); ?>
 				<p id="submit_line" class="<?php echo $numitems > 0 ? '' : ' hidden'; ?>" >
 					<span><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_SNIPPETS');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="snippets.php?cancel"><?php i18n('CANCEL'); ?></a>
 				</p>
 			</form>
-			<div id="comptemplate" class="hidden"><?php echo getItemTemplate('snippets',' noeditor'); ?></div>			
+			<div id="comptemplate" class="hidden"><?php echo getItemTemplate('snippets',' noeditor','get_snippet'); ?></div>			
 		</div>
 	</div>
 	
