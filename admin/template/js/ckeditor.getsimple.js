@@ -141,7 +141,8 @@ function cke_editorfocus(editor){
             // Debugger.log('editor focused');
             cke_setheight(editor,1000); // @todo max height max plus n or just large
             cke_showui(editor);
-        });
+        }).bind('selectstart dragstart', function(evt)
+                                { evt.preventDefault(); return false; });
         editor.on('blur', function(event) {
             // Debugger.log('editor blurred');
             cke_autoheight(editor);
