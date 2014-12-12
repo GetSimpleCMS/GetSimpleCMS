@@ -325,6 +325,7 @@ switch (getFileExtension($template_file)) {
 			<p id="submit_line" >
 				<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
 			<?php if(!getDef('GSNOHIGHLIGHT',true)) echo $themeselector; ?>	
+			<span id="pagechangednotify"><?php i18n('PAGE_UNSAVED');?></span>
 			</p>
 		</form>
 		</div>

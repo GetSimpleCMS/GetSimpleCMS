@@ -82,6 +82,7 @@ $GS_definitions = array(
 	'GSWIDEPAGES'          => 'theme-edit,components,snippets', // (str-csv) pages to apply GSWIDTHWIED on
 	'GSALLOWLOGIN'         => true,                           // (bool) allow front end login
 	'GSALLOWRESETPASS'     => true,                           // (bool) allow front end password resets
+	'GSTHEMEEDITROOT'      => true,                           // (bool) allow editing theme root files
 	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // (str-csv) file extensions to show and edit in theme editor
 	'GSASSETSCHEMES'       => false,                          // (bool) should $ASSETURL contain the url scheme http|https
 	'GSASSETURLREL'        => true,                           // (bool) Use root relative urls for $ASSETURL, overrides GSASSETSCHEMES

@@ -1314,6 +1314,10 @@ body.dirty #pagechangednotify{
 	display: block;
 }
 
+#submit_line #pagechangednotify{
+	padding: 10px 0 0 0;
+}
+
 /* page edit footer , .backuplink deprecated */
 p.editfooter, p.backuplink {
 	text-shadow: 1px 1px 0 rgba(255,255,255,.3);

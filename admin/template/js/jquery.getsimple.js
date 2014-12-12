@@ -964,8 +964,8 @@ jQuery(document).ready(function () {
 		$("#submit_line input.submit").trigger('click');
 	});
 
-	// page is dirty
-	var unsaved = '<p id="pagechangednotify">'+ i18n('PAGE_UNSAVED');
+	// page is dirty, add to sidebars inputs
+	var unsaved = '<p id="pagechangednotify">'+ i18n('PAGE_UNSAVED')+'</p>';
 	$('#js_submit_line').after(unsaved);
 
     $('form input,form textarea,form select').not('#post-title').not('#post-id').bind('change keypress paste textInput input',function(){
@@ -1106,7 +1106,7 @@ jQuery(document).ready(function () {
 		file  = file  === undefined ? '' : file;
 		url   = url   === undefined ? "theme-edit.php?t="+theme+'&f='+file : url;
 		
-		loadingAjaxIndicator.show();
+		ajaxStatusWait();
 		if($('#codetext').data('editor')){
 			$('#codetext').data('editor').setValue('');
 			$('#codetext').data('editor').hasChange = false;
@@ -1161,7 +1161,7 @@ jQuery(document).ready(function () {
 				$('#theme_editing_file').html(filename);
 
 				clearFileWaits();
-				loadingAjaxIndicator.fadeOut();
+				ajaxStatusComplete();
 
 				if($(filenamefield).hasClass('nofile')) return;
 				$('#theme_edit_code').removeClass('readonly');
@@ -1202,7 +1202,7 @@ jQuery(document).ready(function () {
 
 	// theme-edit ajax save
 	themeFileSave = function(cm){
-		loadingAjaxIndicator.show();
+		ajaxStatusWait();
 
 		if($(cm)[0] && $.isFunction(cm.save)){
 			cm.save(); // copy cm back to textarea if editor has save method
@@ -1228,7 +1228,7 @@ jQuery(document).ready(function () {
 
 				updateNonce(response);
 
-				loadingAjaxIndicator.fadeOut();
+				ajaxStatusComplete();
 				$('#codetext').data('editor').hasChange = false; // mark clean		
 			}
 		});
@@ -1245,8 +1245,6 @@ jQuery(document).ready(function () {
 		Debugger.log("onsubmit");
 		e.preventDefault();
 		ajaxStatusWait();
-		// $('#codetext').data('editor').setValue('');
-		// $('#codetext').data('editor').hasChange == false;
 		
 		cm_save_editors();
 		cm_save_htmleditors();
@@ -1264,7 +1262,6 @@ jQuery(document).ready(function () {
 				$(response).find('div.updated').parseNotify();
 				updateNonce(response);
 				ajaxStatusComplete();
-				// $('#codetext').data('editor').hasChange = false; // mark clean		
 			}
 		});
 	};

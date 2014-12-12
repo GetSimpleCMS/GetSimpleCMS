@@ -124,6 +124,7 @@ jQuery(document).ready(function () {
 			// init change listener
 			editor.on('change', function(cm){
 				cm.hasChange = true;
+				$("body").addClass('dirty');
 			});
 
 			// var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder,'...');
