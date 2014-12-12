@@ -1825,8 +1825,9 @@ function getPagesEditorAttr($class){
 	return ' class="html_edit '.$class.'"';
 }
 
-function getCollectionItemAttrib($collectionid,$class){
-	$call = getDef('GS'.uppercase($collectionid).'ATTRIB');
+function getEditorAttribCallout($collectionid,$class = '',$funcname = null){
+	if(!$funcname) $call = getDef('GS'.uppercase($collectionid).'ATTRIB');
+	else $call = $funcname;
 	if(function_exists($call)) return $call($class);
 }
 
@@ -1848,7 +1849,7 @@ function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit',$c
 	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE').' '. cl($item->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
 	$str .= '</tr></table>';
 	
-	$str .= '<textarea id="editor_'.$id.'" name="val[]"'.getCollectionItemAttrib($collectionid,$class).'>'. stripslashes($item->value) .'</textarea>';
+	$str .= '<textarea id="editor_'.$id.'" name="val[]"'.getEditorAttribCallout($collectionid,$class).'>'. stripslashes($item->value) .'</textarea>';
 	$str .= '<input type="hidden" class="compslug" name="slug[]" value="'. $item->slug .'" />';
 	$str .= '<input type="hidden" class="comptitle" name="title[]" value="'. stripslashes($item->title) .'" />';
 	$str .= '<input type="hidden" name="id[]" value="'. $id .'" />';
