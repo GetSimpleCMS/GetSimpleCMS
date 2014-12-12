@@ -1806,19 +1806,23 @@ function previewingDraft(){
 
 
 function getHtmlEditorAttr($class){
- if(getDef('GSHTMLEDITINLINE',true)) $class .= ' inline';
- return ' data-htmleditautoheight="'.(getDef('GSHTMLEDITAUTOHEIGHT',true) ? 'true' : 'false').'" 
- 	data-htmleditcompact="'.(getDef('GSHTMLEDITCOMPACT',true) ? 'true' : 'false').'" 
- 	data-htmleditinline="'.(getDef('GSHTMLEDITINLINE',true) ? 'true' : 'false') .'" 
- 	class="html_edit '.$class.'"
- 	data-mode="html" ';	
+	if(getDef('GSHTMLEDITINLINE',true)) $class .= ' inline';
+ 	return ' data-htmleditautoheight="'.(getDef('GSHTMLEDITAUTOHEIGHT',true) ? 'true' : 'false').'" 
+ 	 data-htmleditcompact="'.(getDef('GSHTMLEDITCOMPACT',true) ? 'true' : 'false').'" 
+ 	 data-htmleditinline="'.(getDef('GSHTMLEDITINLINE',true) ? 'true' : 'false') .'" 
+ 	 class="html_edit '.$class.'"
+ 	 data-mode="html" ';	
 }
 
 function getCodeEditorAttr($class){
- return ' data-codeeditautoheight="'.(getDef('GSCODEEDITAUTOHEIGHT',true) ? 'true' : 'false').'" 
+	return ' data-codeeditautoheight="'.(getDef('GSCODEEDITAUTOHEIGHT',true) ? 'true' : 'false').'" 
 	 data-codeeditcompact="'.(getDef('GSCODEEDITCOMPACT',true) ? 'true' : 'false').'" 
 	 class="code_edit '.$class.'"
 	 data-mode="php" ';
+}
+
+function getPagesEditorAttr($class){
+	return ' class="html_edit '.$class.'"';
 }
 
 function getCollectionItemAttrib($collectionid,$class){

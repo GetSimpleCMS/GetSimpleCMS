@@ -1424,7 +1424,7 @@ body.dirty #js_submit_line input.submit {
 /* edit css */
 form input.title {
 	font-size: 19px;
-	border-color: #999;
+	border-color: rgba(153,153,153,0.2);
 	width: 655px;
 	padding: 3px 4px;
 }

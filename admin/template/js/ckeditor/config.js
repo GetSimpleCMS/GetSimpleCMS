@@ -1,4 +1,4 @@
-﻿
+
 // GetSimpleCMS config file for CKeditor 3.6.2
 
 // default editor config
@@ -26,7 +26,8 @@ CKEDITOR.editorConfig = function( config )
 	config.allowedContent              = true;       // disable acf
 	config.disableAutoInline           = true;       // disable automatic inline editing of elements with contenteditable=true
 
-	config.extraPlugins                = 'codemirror';
+	extraPlugins = ['codemirror'];
+	config.extraPlugins = extraPlugins.join( ',' );
 
 	config.toolbar_advanced = 
 		[['Bold', 'Italic', 'Underline', '-', 'NumberedList', 'BulletedList', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', '-', 'Link', 'Unlink', 'Image', 'RemoveFormat', '-', 'Table', 'TextColor', 'BGColor', 'ShowBlocks'], ['Source'], ['Maximize'],
