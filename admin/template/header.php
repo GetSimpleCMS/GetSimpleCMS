@@ -88,10 +88,13 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	}
 
     // HTMLEDITOR INIT
-    if (getGlobal('HTMLEDITOR') != '') {
-        if (file_exists(GSTHEMESPATH .getGlobal('TEMPLATE')."/editor.css")) {
-            $contentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGlobal('TEMPLATE').'/editor.css';
-        }
+    // ckeditor editorcss
+    if (file_exists(GSTHEMESPATH .getGlobal('TEMPLATE')."/editor.css")) {
+        $contentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGlobal('TEMPLATE').'/editor.css';
+    }
+    // ckeditor customconfig
+    if (file_exists(GSTHEMESPATH .getDef('GSEDITORCONFIGFILE'))) {
+        $configjs =  $SITEURL.getRelPath(GSTHEMESPATH).getDef('GSEDITORCONFIGFILE');
     }
 
     ?>
@@ -126,6 +129,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
         var htmlEditorConfig = {
             language                     : '<?php echo getGlobal('EDLANG'); ?>',
 <?php       if(!empty($contentsCss)) echo "contentsCss                   : '$contentsCss',"; ?>
+<?php       if(!empty($configjs))    echo "customConfig                  : '$configjs',"; ?>
             height                       : '<?php echo getGlobal('EDHEIGHT'); ?>',
             baseHref                     : '<?php echo getGlobal('SITEURL'); ?>'
             <?php if(getGlobal('EDTOOL')) echo ",toolbar: " . returnJsArray(getGlobal('EDTOOL')); ?>
