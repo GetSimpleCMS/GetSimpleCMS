@@ -11,7 +11,7 @@
 $pagesArray = array();
 
 add_action('index-header','getPagesXmlValues',array(false));       // make $pagesArray available to the front 
-add_action('header', 'getPagesXmlValues',array(true));             // make $pagesArray available to the back
+add_action('header', 'getPagesXmlValues',array(get_filename_id() == 'pages'));             // make $pagesArray available to the back
 add_action('page-delete', 'create_pagesxml',array(true));          // Create pages.array if page deleted
 add_action('page-restore', 'create_pagesxml',array(true));         // Create pages.array if page undo
 add_action('page-clone', 'create_pagesxml',array(true));           // Create pages.array if page undo
@@ -222,7 +222,7 @@ function init_pageCache($refresh = false) {
 
 	$file=GSDATAOTHERPATH."pages.xml";
 	
-	if (file_exists($file) and !$refresh){
+	if (file_exists($file) && !$refresh){
 		// if exists load it
 		load_pageCache();
 	} else {
@@ -239,7 +239,7 @@ function init_pageCache($refresh = false) {
  */
 function load_pageCache(){
 	GLOBAL $pagesArray,$pageCacheXml;
-	$file=GSDATAOTHERPATH."pages.xml";	
+	$file = GSDATAOTHERPATH."pages.xml";	
 	$pagesArray=array(); // wipe array
 	$pageCacheXml = getXml($file);
 	pageCacheXMLtoArray($pageCacheXml); // create array from xml
