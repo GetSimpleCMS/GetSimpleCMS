@@ -1576,21 +1576,6 @@ table.comptable .compactive input {
  * use "notify notify_error" etc.
  *
  */
-
-.fullscreen .notify{
-	position: fixed;
-	width: 600px;
-	margin: 5px;
-	right: 60px;
-	opacity: 1;
-	top: 0;
-	background: rgba(119, 119, 119, 0.2);
-	z-index: 9999;
-	font-weight: bold;
-	border: none;
-	padding: 3px 9px;
-}
-
 .updated, .error, .notify {
 	/*border: 1px solid #E6DB55;*/
 	border-radius: 2px;
@@ -1646,6 +1631,30 @@ table.comptable .compactive input {
 	color: #222;
 }
 
+/**
+ * overriding fullscreen overlapping notifications
+ */
+body.fullscreen .notify_expired{
+	display: none !important;
+}
+
+.fullscreen .notify{
+	position: fixed;
+	width: 600px;
+	margin: 5px;
+	right: 60px;
+	opacity: 0.9;
+	top: 0;
+	/*background: rgba(119, 119, 119, 0.65);*/
+	z-index: 9999;
+	font-weight: bold;
+	/*border: none;*/
+	padding: 3px 9px;
+	/*color: #FAFAFA;*/
+	border: 1px solid rgba(128,128,128,0.4);
+}
+
+
 .deletedrow {
 	background-color: #FFB19B;
 }
@@ -1670,8 +1679,13 @@ table.comptable .compactive input {
 }
 
 .notify .close:hover{
-	color: black;
 	opacity: 0.8;
+}
+
+body.fullscreen .notify .close{
+	float:right;
+	color: gray;
+	opacity: 0.2;
 }
 
 .hint {

@@ -214,7 +214,7 @@ function notifyError($msg) {
 }
  
 function notify($msg, $type) {
-	if ($type == 'ok' || $type== 'success' || $type == 'warning' || $type == 'info' || $type == 'error') {
+	// if ($type == 'ok' || $type== 'success' || $type == 'warning' || $type == 'info' || $type == 'error') {
 		var $notify = $('<div style="display:none;" class="notify notify_' + $type + '"><p>' + $msg + '</p></div>').clone();
 		// check for #bodycontent if .bodycontent does not exist, ckeditor fullscreen removes it
 		if($('div.bodycontent').get(0)) var notifyelem = $('div.bodycontent').before($notify);
@@ -224,7 +224,7 @@ function notify($msg, $type) {
 		$notify.addCloseButton();
 		$notify.notifyExpire();
 		return $notify;
-	}
+	// }
 	// @todo else plain
 }
 

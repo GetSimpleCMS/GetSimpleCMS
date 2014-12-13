@@ -229,6 +229,7 @@ jQuery(document).ready(function () {
         wrap.style.height = winHeight() + "px";
         document.documentElement.style.overflow = "hidden";
         $("body").addClass('fullscreen');
+      	notifyInfo(i18n('MINIMIZENOTIFY')).removeit(2000);
       } else {
         wrap.className = wrap.className.replace(" CodeMirror-fullscreen", "");
         wrap.style.height = $(wrap).data('normalheight'); // restore original height
