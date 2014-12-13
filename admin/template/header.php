@@ -60,7 +60,8 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		'CANNOT_SAVE_EMPTY',
 		'COMPONENT_DELETED',
 		'CANNOT_SAVE_EMPTY',
-		'PAGE_UNSAVED'
+		'PAGE_UNSAVED',
+		'MINIMIZENOTIFY'
 	);
 
 	// i18n for JS

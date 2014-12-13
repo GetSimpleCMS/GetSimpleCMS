@@ -578,7 +578,7 @@ $i18n = array(
 "SAVE_MENU_ORDER"         =>	"Save Menu Order", //menu-manager.php
 "MENU_MANAGER_DESC"       =>	"Drag-and-drop the menu items around until you have the order you want, then click the <strong>'Save Menu Order'</strong> button.", //menu-manager.php
 "MENU_MANAGER_SUCCESS"    =>	"The new menu order has been saved", //menu-manager.php
-
+"MINIMIZENOTIFY"          =>    "Editing in fullscreen, press F11 or ESC to minimize",
 
 /* 
 * For: api related pages
