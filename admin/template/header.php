@@ -38,36 +38,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 <?php
 
 	// setup some stuf here for now
-	$cm_themes = array(
-		'3024-day',
-		'3024-night',
-		'ambiance',
-		'base16-light',
-		'base16-dark',
-		'blackboard',
-		'cobalt',
-		'eclipse',
-		'eclipse',
-		'elegant',
-		'erlang-dark',
-		'lesser-dark',
-		'mbo',
-		'midnight',
-		'monokai',
-		'neat',
-		'night',
-		'paraiso-dark',
-		'paraiso-light',
-		'rubyblue',
-		'solarized dark',
-		'solarized light',
-		'the-matrix',
-		'twilight',
-		'tomorrow-night-eighties',
-		'vibrant-ink',
-		'xq-dark',
-		'xq-light'
-	);
+	$cm_themes = explode(',',getDef('GSCODEEDITORTHEMES'));
 
 	// build theme selector
 	$themeselector = '<select id="cm_themeselect">\n<option>default</option>';
