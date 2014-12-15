@@ -85,7 +85,7 @@ get_template('header');
 				<form><input type="text" autocomplete="off" class="text" id="q" placeholder="<?php echo strip_tags(lowercase(i18n_r('FILTER'))); ?>..." /> &nbsp; <a href="pages.php" class="cancel"><?php i18n('CANCEL'); ?></a></form>
 			</div>
 			<?php exec_action(get_filename_id().'-body'); ?>		
-			<table id="editpages" class="edittable highlight striped paginate tree">
+			<table id="editpages" class="edittable highlight striped paginate tree filter">
 				<thead>
 					<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th><th></th></tr>
 				</thead>					

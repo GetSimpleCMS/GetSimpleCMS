@@ -970,7 +970,8 @@ jQuery(document).ready(function () {
 
     $('form input,form textarea,form select').not('#post-title').not('#post-id').bind('change keypress paste textInput input',function(){
         // Debugger.log('form changed');
-        $("body").addClass('dirty');
+        if($("body").hasClass('dirty')) return;
+        if($(this).closest($('form')).find('#submit_line').get(0)) $("body").addClass('dirty');
     });
 
 	// save and close
@@ -1382,10 +1383,13 @@ jQuery(document).ready(function () {
 		}
 	});
 	// create index columns
-	$("#editpages tr:has(td.pagetitle)").each(function () {
+	// if class filter exists then we expect it to have indexcolumn already
+	$("#editpages:not('.filter') tr:has(td.pagetitle)").each(function () {
+		Debugger.log('creating index column');
 		// find all text in pagetitle td, includes show status toggle (menu item)
 		var t = $(this).find('td.pagetitle').text().toLowerCase();
 		$("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
+		this.addClass('filter');
 	});
 	// live search
 	$("#filter-search #q").keyup(function () {
@@ -1427,19 +1431,19 @@ jQuery(document).ready(function () {
 	}
 
 	function doFilter(text){
-		$("#editpages tr:hidden").show();
+		$("table.filter tr:hidden").show();
 		$.each(text, function () {
 			if(this.substring(0,1) == '#') {
 				// tag searching
 				var s = this.substring(1);
-				$("#editpages tr:visible .tagColumn:not(:contains('" + s + "'))").parent().hide();
+				$("table.filter tr:visible .tagColumn:not(:contains('" + s + "'))").parent().hide();
 			}	
-			else $("#editpages tr:visible .indexColumn:not(:contains('" + this + "'))").parent().hide();
+			else $("table.filter tr:visible .indexColumn:not(:contains('" + this + "'))").parent().hide();
 		});
 	}
 
 	function resetFilter(){
-		$("#editpages tr").show();
+		$("table.filter tr").show();
 		// $('#filtertable').removeClass('current');
 		filterSearchInput.find('#q').val('');
 	}
