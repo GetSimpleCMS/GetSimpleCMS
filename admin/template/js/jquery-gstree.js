@@ -327,9 +327,9 @@ $.fn.addTableTree = function(minrows,mindepth,headerdepth){
 	var deep = headerdepth != undefined && $("tbody tr[data-depth="+headerdepth+"]",elem).length > 0;	
 	if(deep) addExpanderTableHeader($('thead > tr:first',elem),customexpander,4); // colspan = 4
 	
-	$("table.striped").zebraStripe();
-
 	restoreTreeState(elem);
+	
+	$("table.striped").zebraStripe();
 
 	// console.profileEnd();
 };
