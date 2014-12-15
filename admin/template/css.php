@@ -2250,6 +2250,10 @@ div.showstatus{
 	float:right;
 }
 
+span.datetoday{
+	font-style: italic;
+}
+
 .title.label {
 	float: left;
 	margin: 5px 11px;

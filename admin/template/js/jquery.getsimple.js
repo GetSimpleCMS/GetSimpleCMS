@@ -1429,8 +1429,13 @@ jQuery(document).ready(function () {
 	function doFilter(text){
 		$("#editpages tr:hidden").show();
 		$.each(text, function () {
-			$("#editpages tr:visible .indexColumn:not(:contains('" + this + "'))").parent().hide();
-		});		
+			if(this.substring(0,1) == '#') {
+				// tag searching
+				var s = this.substring(1);
+				$("#editpages tr:visible .tagColumn:not(:contains('" + s + "'))").parent().hide();
+			}	
+			else $("#editpages tr:visible .indexColumn:not(:contains('" + this + "'))").parent().hide();
+		});
 	}
 
 	function resetFilter(){

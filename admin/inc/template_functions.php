@@ -965,20 +965,23 @@ function getPagesRow($page,$level,$index,$parent,$children){
 
 	$menu .= '<tr id="tr-'.$page['url'] .'" class="'.$class.'" data-depth="'.$level.'">';
 
-	// if ($page['parent'] != '') $page['parent'] = $page['parent']."/"; // why is this here ?
-	if ($page['title'] == '' )      { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
-	if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <span class="label label-ghost">'.i18n_r('MENUITEM_SUBTITLE').'</span>'; } else { $page['menuStatus'] = ''; }
-	if ($page['private'] != '' )    { $page['private'] = ' <span class="label label-ghost">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } else { $page['private'] = ''; }
-	if (pageHasDraft($page['url'])) { $page['draft']   = ' <span class="label label-ghost">'.lowercase(i18n_r('LABEL_DRAFT')).'</span>'; } else { $page['draft'] = ''; }
-	if ($page['url'] == 'index' )   { $homepage = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; } else { $homepage = ''; }
+	$pagetitle = $pagemenustatus = $pageprivate = $pagedraft = $pageindex = '';
 
-	$pageTitle = cl($page['title']);
 
-	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. $pageTitle .'</a>';
-	$menu .= '<div class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] . $page['draft'] . '</div></td>'; // keywords used for filtering
-	$menu .= '<td style="width:80px;text-align:right;" ><span>'. output_date($page['pubDate']) .'</span></td>';
+	if ($page['title'] == '' )        { $pagetitle       = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>';} else { $pagetitle = $page['title']; }
+	if ($page['menuStatus'] != '' )   { $pagemenustatus  = ' <span class="label label-ghost">'.i18n_r('MENUITEM_SUBTITLE').'</span>'; }
+	if ($page['private'] != '' )      { $pageprivate     = ' <span class="label label-ghost">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } 
+	if (pageHasDraft($page['url']))   { $pagedraft       = ' <span class="label label-ghost">'.lowercase(i18n_r('LABEL_DRAFT')).'</span>'; }
+	if ($page['url'] == 'index' )     { $pageindex       = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; }
+	if(dateIsToday($page['pubDate'])) { $pagepubdate     = ' <span class="datetoday">'. output_date($page['pubDate']) . '</span>';} else { $pagepubdate = '<span>'. output_date($page['pubDate']) . "</span>";}
+
+	$pagetitle = cl($pagetitle);
+
+	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. $pagetitle .'</a>';
+	$menu .= '<div class="showstatus toggle" >'. $pageindex . $pagemenustatus . $pageprivate .$pagedraft . '</div></td>'; // keywords used for filtering
+	$menu .= '<td style="width:80px;text-align:right;" ><span>'.$pagepubdate.'</span></td>';
 	$menu .= '<td class="secondarylink" >';
-	$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
+	$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($pagetitle) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
 	$menu .= '</td>';
 
 	if ($page['url'] != 'index' ) {
@@ -987,9 +990,11 @@ function getPagesRow($page,$level,$index,$parent,$children){
 		$menu .= '<td class="delete" ></td>';
 	}
 
+	$menu .= '<td class="tagColumn hidden">'.str_replace(',',' ',$page['meta']) . '</div></td>'; // keywords used for filtering
 	$menu .= '</tr>';
 	return $menu;
 }
+
 
 function getPagesRowMissing($ancestor,$level,$children){
 	$menu = '<tr id="tr-'.$ancestor.'" class="tree-error tree-parent depth-'.$level.'" data-depth="'.$level.'"><td colspan="4" class="pagetitle"><a><strong>'. $ancestor.'</strong> '.i18n_r('MISSING_PARENT').'</a>';
@@ -1933,6 +1938,20 @@ function outputCollectionTags($collectionid,$data){
 
 	exec_action($collectionid.'-list-extras'); // @hook collectionid-list-extras called after component sidebar list items (tags) 		
 	echo '</div>';
+}
+
+/**
+ * date is today
+ * @since 3.4
+ * @param  int $timestamp timestamp
+ * @return bool            true if timestamp is today
+ */
+function dateIsToday($timestamp){
+	$date = new DateTime();
+	$match_date = new DateTime($timestamp);
+	$interval = $date->diff($match_date);
+	debugLog($interval);
+	return $interval->days == 0;
 }
 
 /* ?> */
