@@ -16,6 +16,8 @@ login_cookie_check();
 
 exec_action('load-upload');
 
+$allowCreate = getDef('GSALLOWUPLOADCREATE',true);
+
 $dirsSorted = $filesSorted = $foldercount = null;
 
 if (isset($_GET['path']) && !empty($_GET['path'])) {
@@ -108,7 +110,7 @@ if (isset($_FILES['file'])) {
 }
 
 // if creating new folder
-if (isset($_GET['newfolder'])) {
+if (isset($_GET['newfolder']) && $allowCreate) {
 
 	check_for_csrf("createfolder");	
 	
@@ -198,16 +200,19 @@ $isUnixHost = !hostIsWindows();
 					$filterArray = subval_sort($filterArray,'type');
 					foreach ($filterArray as $type) {
 						
+						$selImage = false;
+						
 						# check for image type
 						if (strstr($type, ' Images')) { 
 							$typeCleaned = 'Images';
 							$typeCleaned_2 = str_replace(' Images', '', $type);
+							if(isset($_GET['type']) && $_GET['type'] == 'images') $selImage = true;
 						} else {
 							$typeCleaned = $type;
 							$typeCleaned_2 = $type;
 						}
-						 
-						echo '<option value="'.$typeCleaned.'">'.$typeCleaned_2.'</option>';
+						
+						echo '<option value="'.$typeCleaned.'" '. ($selImage ? 'selected' : '') .'>'.$typeCleaned_2.'</option>';
 					}
 				}
 			}
@@ -217,35 +222,44 @@ $isUnixHost = !hostIsWindows();
 		echo "</div>";
 		exec_action(get_filename_id().'-body'); 
 
-      $pathParts = explode("/",$subPath);
-      $urlPath = null;
+		$pathParts = explode("/",$subPath);
+		$urlPath = null;
 
-      echo '<div class="h5 clearfix"><div class="crumbs">/ <a href="upload.php">uploads</a> / ';
+		echo '<div class="h5 clearfix"><div class="crumbs">/ <a href="upload.php">uploads</a> / ';
 
-      foreach ($pathParts as $pathPart){
-	       if ($pathPart!=''){
-	          $urlPath .= $pathPart.'/';
-	          
-	          echo '<a href="?path='.$urlPath.'">'.$pathPart.'</a> / ';
-	       }
-      }
-      echo '</div> <div id="new-folder">
-      	<a href="#" id="createfolder">'.i18n_r('CREATE_FOLDER').'</a>
-				<form action="upload.php">&nbsp;<input type="hidden" name="path" value="'.$subPath.'" /><input type="hidden" name="nonce" value="'. get_nonce("createfolder") .'" /><input type="text" class="text" name="newfolder" id="foldername" /> <input type="submit" class="submit" value="'.i18n_r('CREATE_FOLDER').'" />&nbsp; <a href="#" class="cancel">'.i18n_r('CANCEL').'</a></form>
-			</div></div>';
+		foreach ($pathParts as $pathPart){
+		   if ($pathPart!=''){
+		      $urlPath .= $pathPart.'/';
+		      
+		      echo '<a href="?path='.$urlPath.'">'.$pathPart.'</a> / ';
+		   }
+		}
+		echo '</div>';
+      	
+      	if($allowCreate){
+      		echo '<div id="new-folder">
+      			<a href="#" id="createfolder">'.i18n_r('CREATE_FOLDER').'</a>
+				<form action="upload.php">&nbsp;<input type="hidden" name="path" value="'.$subPath.'" />
+					<input type="hidden" name="nonce" value="'. get_nonce("createfolder") .'" />
+					<input type="text" class="text" name="newfolder" id="foldername" /> 
+					<input type="submit" class="submit" value="'.i18n_r('CREATE_FOLDER').'" />&nbsp; 
+					<a href="#" class="cancel">'.i18n_r('CANCEL').'</a>
+				</form>
+			</div>';
+		}
+			
+		echo '</div>';
       
-	$showperms = $isUnixHost && isDebug() && function_exists('posix_getpwuid');
+		$showperms = $isUnixHost && isDebug() && function_exists('posix_getpwuid');
 
-     echo '<table class="highlight" id="imageTable"><thead>'; 
-     echo '<tr><th class="imgthumb" ></th><th>'.i18n_r('FILE_NAME').'</th>';
-     echo '<th class="file_size right">'.i18n_r('FILE_SIZE').'</th>';
-     if ($showperms){
-     	 echo '<th class="file_perms right">'.i18n_r('PERMS').'</th>';
-     }
-     echo '<th class="file_date right">'.i18n_r('DATE').'</th>';
-     echo '<th class="file_actions"><!-- actions --></th></tr>';
-     echo '</thead><tbody>';  
-     if (count($dirsSorted) != 0) {
+		echo '<table class="highlight" id="imageTable"><thead>'; 
+		echo '<tr><th class="imgthumb" ></th><th>'.i18n_r('FILE_NAME').'</th>';
+		echo '<th class="file_size right">'.i18n_r('FILE_SIZE').'</th>';
+		if ($showperms) echo '<th class="file_perms right">'.i18n_r('PERMS').'</th>';
+		echo '<th class="file_date right">'.i18n_r('DATE').'</th>';
+		echo '<th class="file_actions"><!-- actions --></th></tr>';
+		echo '</thead><tbody>';  
+		if (count($dirsSorted) != 0) {
      		$foldercount = 0;
 
         foreach ($dirsSorted as $upload) {
@@ -279,12 +293,13 @@ $isUnixHost = !hostIsWindows();
 			if (count($filesSorted) != 0) { 			
 				foreach ($filesSorted as $upload) {
 					$counter++;
+					// @todo Images Images ? huh
 					if ($upload['type'] == i18n_r('IMAGES') .' Images') {
-						$cclass = 'iimage';
+						$class = 'image';
 					} else {
-						$cclass = '';
+						$class = '';
 					}
-					echo '<tr class="All '.$upload['type'].' '.$cclass.'" >';
+					echo '<tr class="All '.$upload['type'].' '.$class.'" >';
 					echo '<td class="imgthumb" >';
 					if ($upload['type'] == i18n_r('IMAGES') .' Images') {
 						$gallery          = 'rel=" facybox_i"';

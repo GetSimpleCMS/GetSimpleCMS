@@ -3,6 +3,7 @@
  * 
  */
 
+if (typeof GS == "undefined") GS = {};
 GS.notifyExpireDelay = 10000; // timout  to expire persistant notifications so they show stale (.notify_expired)
 GS.removeItDelay     = 5000;  // timeout to remove non-persistant notifications
 
@@ -283,6 +284,8 @@ function basename(str){
  * @todo add sprintf
  */
 function i18n(key){
+	Debugger.log(GS.i18n);
+	if(!GS.i18n) return;
 	return GS.i18n[key] || key;
 }
 
@@ -302,6 +305,56 @@ function getTagName(elem){
 
 
 jQuery(document).ready(function () {
+
+	if($('body#upload') && getUrlParam('CKEditorFuncNum')){
+		Debugger.log('ckeditor browse');
+
+		var funcNum = getUrlParam('CKEditorFuncNum');
+		Debugger.log(funcNum);
+		$('#header').hide();
+		$('body').css('margin-top','10px');
+		// $('#footer').hide();
+		
+		if(getUrlParam('type') == 'images') $('#imageFilter').hide();
+
+		// add cke func num to folder links
+		$('tr.folder a').each(function(item){
+			var href = $(this).prop('href');
+			$(this).prop('href',href+'&CKEditorFuncNum='+funcNum)
+		});
+
+		var path = getUrlParam('path') ? getUrlParam('path')+'/' : '';
+
+		// bind all links to callback
+		$('tr.image a.primarylink').each(function(item){
+			var link = $(this).text();
+
+			$(this).data('ckefileUrl',path+link);
+
+			// add listeners
+			$(this).on('click',function(e){
+				var siteurl = '/master/data/uploads/'
+				var fileUrl = $(this).data('ckefileUrl');
+				window.opener.CKEDITOR.tools.callFunction(funcNum, siteurl+fileUrl);
+				window.close();
+				return false;
+			});
+			Debugger.log(link);
+		});
+
+		// window.opener.CKEDITOR.tools.callFunction(funcNum, fileUrl);		
+	}
+
+	// Helper function to get parameters from the query string.
+	// @todo this is temporary, splitters are much faster than regex, 
+	// plus we will probably need a url mutator library in core soon 
+	function getUrlParam(paramName)
+	{
+	  var reParam = new RegExp('(?:[\?&]|&amp;)' + paramName + '=([^&]+)', 'i') ;
+	  var match = window.location.search.match(reParam) ;
+	 
+	  return (match && match.length > 1) ? match[1] : '' ;
+	}
 
 	// init jq tabs custom handlers
 	if(window.tabs){
@@ -362,7 +415,8 @@ jQuery(document).ready(function () {
  
 	//upload.php
 	attachFilterChangeEvent();
- 
+ 	$("#imageFilter").change(); //@todo if selected
+
 	//image.php 
 	var copyKitTextArea = $('textarea.copykit');
 	$("select#img-info").change(function () {

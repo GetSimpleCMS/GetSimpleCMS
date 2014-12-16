@@ -86,6 +86,7 @@ $GS_definitions = array(
 	'GSASSETURLREL'        => true,                           // (bool) Use root relative urls for $ASSETURL, overrides GSASSETSCHEMES
 	'GSSITEURLREL'         => true,                           // (bool) Use root relative urls for $SITEURL
 	'GSALLOWDOWNLOADS'     => true,                           // (bool) allow using downloads.php to download files from /uploads and backups/zip
+	'GSALLOWUPLOADCREATE'  => true,                           // (bool) allow upload folder creation
 	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // (str) url used in email template
 	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
 	'GSCHMOD'              => 0644,                           // (octal) chmod mode legacy
