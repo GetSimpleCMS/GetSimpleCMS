@@ -1972,12 +1972,13 @@ function dateIsToday($timestamp){
  * @param  string $default  default to use when no match found
  * @return str           the class
  */
-function getFileIconClass($filename,$default = 'file'){
+function getFileIconClass($filename = '',$default = 'file'){
 
-	$ext = '';
-	if($filename !== '') $ext = getFileExtension($filename);
-
-	$token = get_FileTypeToken($ext);
+	$ext = $token = '';
+	if($filename !== ''){
+		$ext   = getFileExtension($filename);
+		$token = get_FileTypeToken($ext);
+	}
 
 	// generic file icons
 	$tokens = array(

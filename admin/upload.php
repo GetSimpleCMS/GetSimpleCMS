@@ -143,6 +143,12 @@ get_template('header');
 // check if host uses Linux (used for displaying permissions
 $isUnixHost = !hostIsWindows();
 
+function getUploadIcon($type){
+	if($type == '.') $class = 'folder';
+	else $class = getFileIconClass($type).'-o';
+	return '<span class="fa fa-fw fa-'.$class.' icon-left"></span>';
+}
+
 ?>
 	
 <?php include('template/include-nav.php'); ?>
@@ -271,7 +277,7 @@ $isUnixHost = !hostIsWindows();
           // echo '<td class="imgthumb"><i class="file ext- fa fa-3x fa-fw fa-folder-o"></i></td>';
           echo '<td class="imgthumb"></td>';
           $adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
-          echo '<td><span class="fa fa-fw fa-'.getFileIconClass('','folder').' icon-left"></span><a href="upload.php?path='.$adm.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
+          echo '<td>'.getUploadIcon('.').'</span><a href="upload.php?path='.$adm.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
           echo '<td class="file_size right"><span>'.$directory_size.'</span></td>';
           
           // get the file permissions.
@@ -287,6 +293,7 @@ $isUnixHost = !hostIsWindows();
           $foldercount++;
         }
      }
+
 			if (count($filesSorted) != 0) { 			
 				foreach ($filesSorted as $upload) {
 					$counter++;
@@ -310,7 +317,7 @@ $isUnixHost = !hostIsWindows();
 						$pathlink     = $path . $upload['name'];
 					}
 					// name column linked
-					echo '</td><td><span class="fa fa-fw fa-'.getFileIconClass($upload['name']).'-o icon-left"></span><a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';
+					echo '</td><td>'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';
 					// size column
 					echo '<td class="file_size right"><span>'. $upload['size'] .'</span></td>';
              
