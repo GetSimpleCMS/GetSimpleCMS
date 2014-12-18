@@ -398,13 +398,14 @@ jQuery(document).ready(function () {
 			Debugger.log('attachFilterChangeEvent');
 			loadingAjaxIndicator.show();
 			var filterx = $(this).val();
+			var filterTitle = $(this).find('option:selected').text();
 			$("#imageTable").find("tr").hide();
 			if (filterx == 'image') {
 				$("#imageTable").find("tr .imgthumb").show();
 			} else {
 				$("#imageTable").find("tr .imgthumb").hide();
 			}
-			$("#filetypetoggle").html('&nbsp;&nbsp;/&nbsp;&nbsp;' + filterx);
+			$("#filetypetoggle").html('&nbsp;&nbsp;/&nbsp;&nbsp;' + filterTitle);
 			$("#imageTable").find("tr." + filterx).show();
 			$("#imageTable").find("tr.folder").show();
 			$("#imageTable").find("tr:first-child").show();
