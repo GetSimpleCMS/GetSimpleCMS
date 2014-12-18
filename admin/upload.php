@@ -159,7 +159,8 @@ $isUnixHost = !hostIsWindows();
 			$totalsize  = 0;
 			$filesArray = array();
 			$dirsArray  = array();
-			
+			$filterArray = array();
+
 			$filenames  = getFiles($path);
 
 			if (count($filenames) != 0) { 
@@ -177,7 +178,7 @@ $isUnixHost = !hostIsWindows();
 					} 
 					else {
 						$filesArray[$count]['name'] = $file;
-						$ext = substr($file, strrpos($file, '.') + 1);
+						$ext      = getFileExtension($file);
 						$filetype = get_FileTypeToken($ext);
 						$filesArray[$count]['type'] = lowercase($filetype);
 						clearstatcache();
@@ -196,24 +197,17 @@ $isUnixHost = !hostIsWindows();
 			echo '<select id="imageFilter">';
 			echo '<option value="all">'.i18n_r('SHOW_ALL').'</option>';
 			
-			// @todo clean this up
 			if (count($filesSorted) > 0) {
 				foreach ($filesSorted as $filter) {
-					$filterArr[] = $filter['type'];
+					$filterArray[$filter['type']] = '';
 				}
-				if (count($filterArr) != 0) { 
-					$filterArray = array_unique($filterArr);
-					$filterArray = subval_sort($filterArray,'type');
-					foreach ($filterArray as $type) {
-						
-						$selImage = false;
-						
-						# check for image type
-						if ($type == "image") { 
-							if(isset($_GET['type']) && $_GET['type'] == 'image') $selImage = true;
-						}
-						
-						echo '<option value="'.$type.'" '. ($selImage ? 'selected' : '') .'>'.i18n_r('FTYPE_'.uppercase($type)).'</option>';
+				if (count($filterArray) != 0) { 
+					ksort($filterArray);
+					foreach ($filterArray as $type => $value) {
+						$sel = false;
+						# check for filter querystring
+						if(isset($_GET['type']) && $_GET['type'] == $type) $sel = true;
+						echo '<option value="'.$type.'" '. ($sel ? 'selected' : '') .'>'.i18n_r('FTYPE_'.uppercase($type)).'</option>';
 					}
 				}
 			}
