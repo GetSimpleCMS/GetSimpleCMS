@@ -399,7 +399,7 @@ jQuery(document).ready(function () {
 			loadingAjaxIndicator.show();
 			var filterx = $(this).val();
 			$("#imageTable").find("tr").hide();
-			if (filterx == 'Images') {
+			if (filterx == 'image') {
 				$("#imageTable").find("tr .imgthumb").show();
 			} else {
 				$("#imageTable").find("tr .imgthumb").hide();

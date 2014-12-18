@@ -428,15 +428,19 @@ $i18n = array(
 /* 
 * For: template_functions.php
 */
-"FTYPE_COMPRESSED"        =>	"Compressed", // file-type
-"FTYPE_VECTOR"            =>	"Vector",     // file-type
-"FTYPE_FLASH"             =>	"Flash",      // file-type
-"FTYPE_VIDEO"             =>	"Video",      // file-type
-"FTYPE_AUDIO"             =>	"Audio",      // file-type
-"FTYPE_WEB"               =>	"Web",        // file-type
-"FTYPE_DOCUMENTS"         =>	"Documents",  // file-type
-"FTYPE_SYSTEM"            =>	"System",     // file-type
-"FTYPE_MISC"              =>	"Misc",       // file-type
+"FTYPE_COMPRESSED"        =>	"Compressed", // file-type archive
+"FTYPE_VECTOR"            =>	"Vector",     // file-type vector
+"FTYPE_FLASH"             =>	"Flash",      // file-type flash
+"FTYPE_VIDEO"             =>	"Video",      // file-type video
+"FTYPE_AUDIO"             =>	"Audio",      // file-type audio
+"FTYPE_WEB"               =>	"Web",        // file-type web
+"FTYPE_DOCUMENT"          =>	"Document",   // file-type document
+"FTYPE_DOCUMENTS"         =>	"Documents",  // file-type document
+"FTYPE_SYSTEM"            =>	"System",     // file-type system file
+"FTYPE_MISC"              =>	"Misc",       // file-type Miscellaneous
+"FTYPE_IMAGE"             =>	"Image",      // file-type image
+"FTYPE_IMAGES"            =>	"Images",     // file-type image
+"FTYPE_SCRIPT"            =>	"Script",     // file-type script
 "IMAGES"                  =>	"Images",
 
 /* 

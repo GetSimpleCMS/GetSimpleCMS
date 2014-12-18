@@ -91,9 +91,10 @@ a img {
 	display: none;
 }
 
-.imgthumb {
+td.imgthumb {
 	display: none;
 	width: 70px;
+	text-align: center;
 }
 
 .imgthumb img {
@@ -1965,7 +1966,7 @@ th.file_size,th.file_date,th.file_perms {
 	font-size: 16px;
 	color: <?php echo $primary_1 ?>;
 	font-family: sans-serif;
-	opacity: .2;
+	opacity: .3;
 	transition: opacity 300ms;
 
 }
@@ -2834,7 +2835,7 @@ a.disabled:visited {
 }
 
 /* File Extension icons*/
-.file {    background-image: url(images/filemanager/text-x-generic.png); }
+.file {    background-image: url(images/filemanager/text-x-generic.png); background-repeat: no-repeat; }
 .ext- {background-image: url(images/filemanager/text-x-preview.png);}
 .ext-js {background-image: url(images/filemanager/application-javascript.png);}
 .ext-html {background-image: url(images/filemanager/text-html.png);}

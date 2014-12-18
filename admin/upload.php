@@ -163,20 +163,23 @@ $isUnixHost = !hostIsWindows();
 			$filenames  = getFiles($path);
 
 			if (count($filenames) != 0) { 
+				
 				foreach ($filenames as $file) {
 					if ($file == "." || $file == ".." || $file == ".htaccess" || $file == "index.php"){
-            // not a upload file
-          	} elseif (is_dir($path . $file)) {
-            $dirsArray[$dircount]['name'] = $file;
-            clearstatcache();
+            			// not a upload file
+          			} 
+          			elseif (is_dir($path . $file)) {
+            			$dirsArray[$dircount]['name'] = $file;
+            			clearstatcache();
 						$ss = @stat($path . $file);
 						$dirsArray[$dircount]['date'] = @date('M j, Y',$ss['mtime']);
-            $dircount++;
-					} else {
+            			$dircount++;
+					} 
+					else {
 						$filesArray[$count]['name'] = $file;
 						$ext = substr($file, strrpos($file, '.') + 1);
-						$extention = get_FileType($ext);
-						$filesArray[$count]['type'] = $extention;
+						$filetype = get_FileTypeToken($ext);
+						$filesArray[$count]['type'] = lowercase($filetype);
 						clearstatcache();
 						$ss = @stat($path . $file);
 						$filesArray[$count]['date'] = @date('M j, Y',$ss['ctime']);
@@ -185,12 +188,15 @@ $isUnixHost = !hostIsWindows();
 						$count++;
 					}
 				}
+				 
 				$filesSorted = subval_sort($filesArray,'name');
-        $dirsSorted = subval_sort($dirsArray,'name');
+       			$dirsSorted  = subval_sort($dirsArray,'name');
 			}
 			echo '<div class="edit-nav clearfix" >';
 			echo '<select id="imageFilter">';
-			echo '<option value="All">'.i18n_r('SHOW_ALL').'</option>';
+			echo '<option value="all">'.i18n_r('SHOW_ALL').'</option>';
+			
+			// @todo clean this up
 			if (count($filesSorted) > 0) {
 				foreach ($filesSorted as $filter) {
 					$filterArr[] = $filter['type'];
@@ -203,19 +209,15 @@ $isUnixHost = !hostIsWindows();
 						$selImage = false;
 						
 						# check for image type
-						if (strstr($type, ' Images')) { 
-							$typeCleaned = 'Images';
-							$typeCleaned_2 = str_replace(' Images', '', $type);
-							if(isset($_GET['type']) && $_GET['type'] == 'images') $selImage = true;
-						} else {
-							$typeCleaned = $type;
-							$typeCleaned_2 = $type;
+						if ($type == "image") { 
+							if(isset($_GET['type']) && $_GET['type'] == 'image') $selImage = true;
 						}
 						
-						echo '<option value="'.$typeCleaned.'" '. ($selImage ? 'selected' : '') .'>'.$typeCleaned_2.'</option>';
+						echo '<option value="'.$type.'" '. ($selImage ? 'selected' : '') .'>'.i18n_r('FTYPE_'.uppercase($type)).'</option>';
 					}
 				}
 			}
+
 		echo '</select>';
 
 	   	exec_action(get_filename_id().'-edit-nav');
@@ -271,10 +273,11 @@ $isUnixHost = !hostIsWindows();
 					}
         	$directory_size = '<span>'.folder_items($path.$upload['name']).' '.i18n_r('ITEMS').'</span>';
         	
-          echo '<tr class="All folder '.$upload['name'].'" >';
-          echo '<td class="imgthumb" ></td><td>';
+          echo '<tr class="all folder '.$upload['name'].'" >';
+          // echo '<td class="imgthumb"><i class="file ext- fa fa-3x fa-fw fa-folder-o"></i></td>';
+          echo '<td class="imgthumb"></td>';
           $adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
-          echo '<span class="fa fa-folder icon-left"></span><a href="upload.php?path='.$adm.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
+          echo '<td><span class="fa fa-fw fa-'.getFileIconClass('','folder').' icon-left"></span><a href="upload.php?path='.$adm.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
           echo '<td class="file_size right"><span>'.$directory_size.'</span></td>';
           
           // get the file permissions.
@@ -293,15 +296,9 @@ $isUnixHost = !hostIsWindows();
 			if (count($filesSorted) != 0) { 			
 				foreach ($filesSorted as $upload) {
 					$counter++;
-					// @todo Images Images ? huh
-					if ($upload['type'] == i18n_r('IMAGES') .' Images') {
-						$class = 'image';
-					} else {
-						$class = '';
-					}
-					echo '<tr class="All '.$upload['type'].' '.$class.'" >';
+					echo '<tr class="all '.$upload['type'].'" >';
 					echo '<td class="imgthumb" >';
-					if ($upload['type'] == i18n_r('IMAGES') .' Images') {
+					if ($upload['type'] == 'image') {
 						$gallery          = 'rel=" facybox_i"';
 						$pathlink         = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subPath;
 						$thumbLink        = $urlPath.'thumbsm.'.$upload['name'];
@@ -319,7 +316,7 @@ $isUnixHost = !hostIsWindows();
 						$pathlink     = $path . $upload['name'];
 					}
 					// name column linked
-					echo '</td><td><a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';
+					echo '</td><td><span class="fa fa-fw fa-'.getFileIconClass($upload['name']).'-o icon-left"></span><a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';
 					// size column
 					echo '<td class="file_size right"><span>'. $upload['size'] .'</span></td>';
              

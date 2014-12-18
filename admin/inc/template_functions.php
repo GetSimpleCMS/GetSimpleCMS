@@ -542,28 +542,33 @@ function createRandomPassword($length = 8, $usecharsets = 'luds', $reuse = false
  * @return string
  */
 function get_FileType($ext) {
+	$ext = lowercase($ext);	
+	return i18n_r('FTYPE_'.get_FileTypeToken($ext));
+}
 
-	$ext = lowercase($ext);
+function get_FileTypeToken($ext){
 	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'pct' || $ext == 'gif' || $ext == 'bmp' || $ext == 'png' ) {
-		return i18n_r('IMAGES') .' Images';
+		return 'IMAGE';
 	} elseif ( $ext == 'zip' || $ext == 'gz' || $ext == 'rar' || $ext == 'tar' || $ext == 'z' || $ext == '7z' || $ext == 'pkg' ) {
-		return i18n_r('FTYPE_COMPRESSED');
+		return 'COMPRESSED';
 	} elseif ( $ext == 'ai' || $ext == 'psd' || $ext == 'eps' || $ext == 'dwg' || $ext == 'tif' || $ext == 'tiff' || $ext == 'svg' ) {
-		return i18n_r('FTYPE_VECTOR');
+		return 'VECTOR';
 	} elseif ( $ext == 'swf' || $ext == 'fla' ) {
-		return i18n_r('FTYPE_FLASH');	
+		return 'FLASH';	
 	} elseif ( $ext == 'mov' || $ext == 'mpg' || $ext == 'avi' || $ext == 'mpeg' || $ext == 'rm' || $ext == 'wmv' ) {
-		return i18n_r('FTYPE_VIDEO');
+		return 'VIDEO';
 	} elseif ( $ext == 'mp3' || $ext == 'wav' || $ext == 'wma' || $ext == 'midi' || $ext == 'mid' || $ext == 'm3u' || $ext == 'ra' || $ext == 'aif' ) {
-		return i18n_r('FTYPE_AUDIO');
-	} elseif ( $ext == 'php' || $ext == 'phps' || $ext == 'asp' || $ext == 'xml' || $ext == 'js' || $ext == 'jsp' || $ext == 'sql' || $ext == 'css' || $ext == 'htm' || $ext == 'html' || $ext == 'xhtml' || $ext == 'shtml' ) {
-		return i18n_r('FTYPE_WEB');
+		return 'AUDIO';
+	} elseif ( $ext == 'xml' || $ext == 'css' || $ext == 'htm' || $ext == 'html' || $ext == 'xhtml' || $ext == 'shtml' ) {
+		return 'WEB';
+	} elseif ( $ext == 'phtml' || $ext == 'php' || $ext == 'php4' || $ext == 'phps' || $ext == 'asp' || $ext == 'js' || $ext == 'jsp' || $ext == 'sql') {
+		return 'SCRIPT';
 	} elseif ( $ext == 'mdb' || $ext == 'accdb' || $ext == 'pdf' || $ext == 'xls' || $ext == 'xlsx' || $ext == 'csv' || $ext == 'tsv' || $ext == 'ppt' || $ext == 'pps' || $ext == 'pptx' || $ext == 'txt' || $ext == 'log' || $ext == 'dat' || $ext == 'text' || $ext == 'doc' || $ext == 'docx' || $ext == 'rtf' || $ext == 'wks' ) {
-		return i18n_r('FTYPE_DOCUMENTS');
+		return 'DOCUMENT';
 	} elseif ( $ext == 'exe' || $ext == 'msi' || $ext == 'bat' || $ext == 'download' || $ext == 'dll' || $ext == 'ini' || $ext == 'cab' || $ext == 'cfg' || $ext == 'reg' || $ext == 'cmd' || $ext == 'sys' ) {
-		return i18n_r('FTYPE_SYSTEM');
+		return 'SYSTEM';
 	} else {
-		return i18n_r('FTYPE_MISC');
+		return 'MISC';
 	}
 }
 
@@ -1956,6 +1961,53 @@ function dateIsToday($timestamp){
 	$interval = $date->diff($match_date);
 	debugLog($interval);
 	return $interval->days == 0;
+}
+
+/**
+ * returns icon classes for file extensions
+ * follow font-awesome naming, can be used for other stuff however
+ * uses get_fileTypeToken to get generic categories ( same as filter ), then further refines icons we have
+ * 
+ * @param  str $filename name of file
+ * @param  string $default  default to use when no match found
+ * @return str           the class
+ */
+function getFileIconClass($filename,$default = 'file'){
+
+	$ext = '';
+	if($filename !== '') $ext = getFileExtension($filename);
+
+	$token = get_FileTypeToken($ext);
+
+	// generic file icons
+	$tokens = array(
+		'IMAGE'      => 'file-image',
+		'COMPRESSED' => 'file-archive',
+		'VECTOR'     => 'file-image',
+		'FLASH'      => 'file-image',
+		'VIDEO'      => 'file-video',
+		'AUDIO'      => 'file-audio',
+		'WEB'        => 'file',
+		'SCRIPT'     => 'file-code',
+		'DOCUMENT'   => 'file-text',
+		'SYSTEM'     => 'file',
+		'MISC'       => 'file'
+	);
+
+	// specific file icons
+	$iconClasses = array(
+		'pdf'    => 'file-pdf',
+		'xls'    => 'file-excel',
+		'xlsx'   => 'file-excel',
+		'doc'    => 'file-word',
+		'docx'   => 'file-word',
+		'ppt'    => 'file-powerpoint'
+	);
+
+	$iconclass = $default;
+	if(isset($tokens[$token]))    $iconclass = $tokens[$token];
+	if(isset($iconClasses[$ext])) $iconclass = $iconClasses[$ext]; // override specific
+	return $iconclass;
 }
 
 /* ?> */
