@@ -208,11 +208,13 @@ function getUploadIcon($type){
 					$filterArray[$filter['type']] = '';
 				}
 				if (count($filterArray) != 0) { 
+					
 					ksort($filterArray);
 					foreach ($filterArray as $type => $value) {
 						$sel = false;
 						# check for filter querystring
 						if(isset($_GET['type']) && $_GET['type'] == $type) $sel = true;
+						if(count($filterArray) == 1 && isset($filterArray['image'])) $sel = true;
 						echo '<option value="'.$type.'" '. ($sel ? 'selected' : '') .'>'.i18n_r('FTYPE_'.uppercase($type)).'</option>';
 					}
 				}
@@ -227,7 +229,9 @@ function getUploadIcon($type){
 		$pathParts = explode("/",$subPath);
 		$urlPath = null;
 
-		echo '<div class="h5 clearfix"><div class="crumbs">/ <a href="upload.php">uploads</a> / ';
+		// preserve querystring, but remove path
+		$root = 'upload.php?' . merge_queryString(array('path'=>null));
+		echo '<div class="h5 clearfix"><div class="crumbs">/ <a href="'.$root.'">uploads</a> / ';
 
 		foreach ($pathParts as $pathPart){
 		   if ($pathPart!=''){

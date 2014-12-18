@@ -1526,6 +1526,21 @@ function filter_queryString($allowed = array()){
 }
 
 /**
+ * returns a query string with only the allowed keys
+ * @since  3.4.0
+ * 
+ * @param  array $merge array of querystring keys to add or modify
+ * @return string built query string
+ */
+function merge_queryString($merge = array()){
+	parse_str($_SERVER['QUERY_STRING'], $query_string);
+	$query_string = array_merge($query_string,$merge);
+	$new_qstring = http_build_query($query_string,'','&amp;');
+	return $new_qstring;
+}
+
+
+/**
  * truncate a string, multibyte safe
  *
  * @since 3.4
