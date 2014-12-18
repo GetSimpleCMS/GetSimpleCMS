@@ -555,9 +555,9 @@ function get_FileTypeToken($ext){
 		return 'VECTOR';
 	} elseif ( $ext == 'swf' || $ext == 'fla' ) {
 		return 'FLASH';	
-	} elseif ( $ext == 'mov' || $ext == 'mpg' || $ext == 'avi' || $ext == 'mpeg' || $ext == 'rm' || $ext == 'wmv' ) {
+	} elseif ( $ext == 'mov' || $ext == 'mpg' || $ext == 'avi' || $ext == 'mpeg' || $ext == 'rm' || $ext == 'wmv' || $ext == 'flv') {
 		return 'VIDEO';
-	} elseif ( $ext == 'mp3' || $ext == 'wav' || $ext == 'wma' || $ext == 'midi' || $ext == 'mid' || $ext == 'm3u' || $ext == 'ra' || $ext == 'aif' ) {
+	} elseif ( $ext == 'mp3' || $ext == 'mp4' || $ext == 'wav' || $ext == 'wma' || $ext == 'midi' || $ext == 'mid' || $ext == 'm3u' || $ext == 'ra' || $ext == 'aif' ) {
 		return 'AUDIO';
 	} elseif ( $ext == 'xml' || $ext == 'css' || $ext == 'htm' || $ext == 'html' || $ext == 'xhtml' || $ext == 'shtml' ) {
 		return 'WEB';
