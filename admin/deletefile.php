@@ -52,7 +52,7 @@ if (isset($_GET['zip'])) {
 } 
 
 // Delete upload file
-if (isset($_GET['file'])) {
+if (isset($_GET['file']) && getDef('GSALLOWUPLOADDELETE',true)) {
 	$path   = (isset($_GET['path'])) ? $_GET['path'] : "";
 	$file   = $_GET['file'];
 	$status = delete_upload($file, $path) ? 'success' : 'error';
@@ -62,7 +62,7 @@ if (isset($_GET['file'])) {
 } 
 
 // Delete upload folders
-if (isset($_GET['folder'])) {
+if (isset($_GET['folder']) && getDef('GSALLOWUPLOADDELETE',true)) {
 	$path   = (isset($_GET['path'])) ? $_GET['path'] : "";
 	$folder = $_GET['folder'];
 	$status = delete_upload_dir($path . $folder) ? 'success' : 'error';

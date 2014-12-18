@@ -1974,7 +1974,6 @@ function dateIsToday($timestamp){
 	$date = new DateTime();
 	$match_date = new DateTime($timestamp);
 	$interval = $date->diff($match_date);
-	debugLog($interval);
 	return $interval->days == 0;
 }
 

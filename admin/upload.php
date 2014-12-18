@@ -16,7 +16,8 @@ login_cookie_check();
 
 exec_action('load-upload');
 
-$allowCreate = getDef('GSALLOWUPLOADCREATE',true);
+$allowcreatefolder = getDef('GSALLOWUPLOADCREATE',true);
+$allowdelete       = getDef('GSALLOWUPLOADDELETE',true);
 
 $dirsSorted = $filesSorted = $foldercount = null;
 
@@ -110,7 +111,7 @@ if (isset($_FILES['file'])) {
 }
 
 // if creating new folder
-if (isset($_GET['newfolder']) && $allowCreate) {
+if (isset($_GET['newfolder']) && $allowcreatefolder) {
 
 	check_for_csrf("createfolder");	
 	
@@ -242,7 +243,7 @@ function getUploadIcon($type){
 		}
 		echo '</div>';
       	
-      	if($allowCreate){
+      	if($allowcreatefolder){
       		echo '<div id="new-folder">
       			<a href="#" id="createfolder">'.i18n_r('CREATE_FOLDER').'</a>
 				<form action="upload.php">&nbsp;<input type="hidden" name="path" value="'.$subPath.'" />
@@ -266,90 +267,93 @@ function getUploadIcon($type){
 		echo '<th class="file_actions"><!-- actions --></th></tr>';
 		echo '</thead><tbody>';  
 		if (count($dirsSorted) != 0) {
-     		$foldercount = 0;
+		$foldercount = 0;
 
-        foreach ($dirsSorted as $upload) {
-        	
-        	# check to see if folder is empty
-        	$directory_delete = null;
-        	if ( check_empty_folder($path.$upload['name']) ) {  
-						$directory_delete = '<a class="delconfirm" title="'.i18n_r('DELETE_FOLDER').': '. rawurlencode($upload['name']) .'" href="deletefile.php?path='.$urlPath.'&amp;folder='. rawurlencode($upload['name']) . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a>';
-					}
-        	$directory_size = '<span>'.folder_items($path.$upload['name']).' '.i18n_r('ITEMS').'</span>';
-        	
-          echo '<tr class="all folder '.$upload['name'].'" >';
-          // echo '<td class="imgthumb"><i class="file ext- fa fa-3x fa-fw fa-folder-o"></i></td>';
-          echo '<td class="imgthumb"></td>';
-          $adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
-          echo '<td>'.getUploadIcon('.').'</span><a href="upload.php?path='.$adm.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
-          echo '<td class="file_size right"><span>'.$directory_size.'</span></td>';
-          
-          // get the file permissions.
-		if ($showperms) {
-			$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
-			$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
-			echo '<td class="file_perms right"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
-		}
+		// show folders
+		foreach ($dirsSorted as $upload) {
+			
+			# check to see if folder is empty
+			$directory_delete = null;
+			if ( check_empty_folder($path.$upload['name']) && $allowdelete ) {  
+				$directory_delete = '<a class="delconfirm" title="'.i18n_r('DELETE_FOLDER').': '. rawurlencode($upload['name']) .'" href="deletefile.php?path='.$urlPath.'&amp;folder='. rawurlencode($upload['name']) . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a>';
+			}
+			$directory_size = '<span>'.folder_items($path.$upload['name']).' '.i18n_r('ITEMS').'</span>';
+			
+			echo '<tr class="all folder '.$upload['name'].'" >';
+			// echo '<td class="imgthumb"><i class="file ext- fa fa-3x fa-fw fa-folder-o"></i></td>';
+			echo '<td class="imgthumb"></td>';
+			$adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
+			$folderhref = 'upload.php?' . merge_queryString(array('path'=>$adm));
+			echo '<td>'.getUploadIcon('.').'</span><a href="'.$folderhref.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
+			echo '<td class="file_size right"><span>'.$directory_size.'</span></td>';
+
+			// get the file permissions.
+			if ($showperms) {
+				$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
+				$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
+				echo '<td class="file_perms right"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
+			}
 		
-		  echo '<td class="file_date right"><span class="'.(dateIsToday($upload['date']) ? 'datetoday' : '').'">'. output_date($upload['date']) .'</span></td>';
-          echo '<td class="delete" >'.$directory_delete.'</td>';
-          echo '</tr>';
-          $foldercount++;
+			echo '<td class="file_date right"><span class="'.(dateIsToday($upload['date']) ? 'datetoday' : '').'">'. output_date($upload['date']) .'</span></td>';
+			echo '<td class="delete" >'.$directory_delete.'</td>';
+			echo '</tr>';
+			$foldercount++;
         }
      }
 
-			if (count($filesSorted) != 0) { 			
-				foreach ($filesSorted as $upload) {
-					$counter++;
-					echo '<tr class="all '.$upload['type'].'" >';
-					echo '<td class="imgthumb" >';
-					if ($upload['type'] == 'image') {
-						$gallery          = 'rel=" facybox_i"';
-						$pathlink         = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subPath;
-						$thumbLink        = $urlPath.'thumbsm.'.$upload['name'];
-						$thumbLinkEncoded = $urlPath.'thumbsm.'.rawurlencode($upload['name']);
-						if (file_exists(GSTHUMBNAILPATH.$thumbLink)) {
-							$imgSrc = '<img src="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH). $thumbLinkEncoded .'" />';
-						} else {
-							$imgSrc = '<img src="inc/thumb.php?src='. $urlPath . rawurlencode($upload['name']) .'&amp;dest='. $thumbLinkEncoded .'&amp;f=1" />';
-						}
-						// thumbnail link lightbox
-						echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel=" facybox_i" >'.$imgSrc.'</a>';
-					} else {
-						$gallery      = '';
-						$controlpanel = '';
-						$pathlink     = $path . $upload['name'];
-					}
-					// name column linked
-					echo '</td><td>'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';
-					// size column
-					echo '<td class="file_size right"><span>'. $upload['size'] .'</span></td>';
-             
-		            
-					// get the file permissions.
-					if ($showperms) {
-						$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
-						$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
-						echo '<td class="file_perms right"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
-					}
-							
-					echo '<td class="file_date right"><span class="'.(dateIsToday($upload['date']) ? 'datetoday' : '').'"">'. output_date($upload['date']) .'</span></td>';
-					echo '<td class="delete"><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. rawurlencode($upload['name']) . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a></td>';
-					echo '</tr>';
-					
+    // show files
+	if (count($filesSorted) != 0) { 			
+		foreach ($filesSorted as $upload) {
+			$counter++;
+			echo '<tr class="all '.$upload['type'].'" >';
+			echo '<td class="imgthumb" >';
+			if ($upload['type'] == 'image') {
+				$gallery          = 'rel=" facybox_i"';
+				$pathlink         = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subPath;
+				$thumbLink        = $urlPath.'thumbsm.'.$upload['name'];
+				$thumbLinkEncoded = $urlPath.'thumbsm.'.rawurlencode($upload['name']);
+				if (file_exists(GSTHUMBNAILPATH.$thumbLink)) {
+					$imgSrc = '<img src="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH). $thumbLinkEncoded .'" />';
+				} else {
+					$imgSrc = '<img src="inc/thumb.php?src='. $urlPath . rawurlencode($upload['name']) .'&amp;dest='. $thumbLinkEncoded .'&amp;f=1" />';
 				}
-			}
-			exec_action('file-extras'); // @hook file-extras after file list table rows
-			echo '</tbody></table>';
-			
-			if ($counter > 0) { 
-				$sizedesc = '('. fSize($totalsize) .')';
+				// thumbnail link lightbox
+				echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel=" facybox_i" >'.$imgSrc.'</a>';
 			} else {
-				$sizedesc = '';
+				$gallery      = '';
+				$controlpanel = '';
+				$pathlink     = $path . $upload['name'];
 			}
-			$totalcount = (int)$counter+(int)$foldercount;
-			echo '<p><em><b><span id="pg_counter">'. $totalcount .'</span></b> '.i18n_r('TOTAL_FILES').' '.$sizedesc.'</em></p>';
-		?>	
+			// name column linked
+			echo '</td><td>'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';
+			// size column
+			echo '<td class="file_size right"><span>'. $upload['size'] .'</span></td>';
+     
+			// get the file permissions.
+			if ($showperms) {
+				$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
+				$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
+				echo '<td class="file_perms right"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
+			}
+					
+			echo '<td class="file_date right"><span class="'.(dateIsToday($upload['date']) ? 'datetoday' : '').'"">'. output_date($upload['date']) .'</span></td>';
+			echo '<td class="delete">';
+			if($allowdelete) echo '<a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. rawurlencode($upload['name']) . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a>';
+			echo '</td></tr>';
+		}
+	}
+	exec_action('file-extras'); // @hook file-extras after file list table rows
+	echo '</tbody></table>';
+	
+	if ($counter > 0) { 
+		$sizedesc = '('. fSize($totalsize) .')';
+	} else {
+		$sizedesc = '';
+	}
+	$totalcount = (int)$counter+(int)$foldercount;
+	echo '<p><em><b><span id="pg_counter">'. $totalcount .'</span></b> '.i18n_r('TOTAL_FILES').' '.$sizedesc.'</em></p>';
+	
+	?>
 		</div>
 		</div>
 	</div>
