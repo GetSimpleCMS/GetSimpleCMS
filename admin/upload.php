@@ -290,8 +290,8 @@ function getUploadIcon($type){
 			$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
 			echo '<td class="file_perms right"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 		}
-					
-		  echo '<td class="file_date right"><span>'. output_date($upload['date']) .'</span></td>';
+		
+		  echo '<td class="file_date right"><span class="'.(dateIsToday($upload['date']) ? 'datetoday' : '').'">'. output_date($upload['date']) .'</span></td>';
           echo '<td class="delete" >'.$directory_delete.'</td>';
           echo '</tr>';
           $foldercount++;
@@ -333,7 +333,7 @@ function getUploadIcon($type){
 						echo '<td class="file_perms right"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 					}
 							
-					echo '<td class="file_date right"><span>'. output_date($upload['date']) .'</span></td>';
+					echo '<td class="file_date right"><span class="'.(dateIsToday($upload['date']) ? 'datetoday' : '').'"">'. output_date($upload['date']) .'</span></td>';
 					echo '<td class="delete"><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. rawurlencode($upload['name']) . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a></td>';
 					echo '</tr>';
 					
