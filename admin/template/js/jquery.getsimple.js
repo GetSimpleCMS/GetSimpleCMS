@@ -319,8 +319,11 @@ jQuery(document).ready(function () {
 		$('body').css('margin-top','10px');
 		if(!GS.debug) $('#footer').hide();
 		$('#sidebar ul li:not(".dispupload")').hide();
-		if(getUrlParam('type') == 'images') $('#imageFilter').hide();
-		$('.thumblinkexternal').show();
+		
+		if(getUrlParam('type') == 'images'){
+			$('#imageFilter').hide();
+			$('.thumblinkexternal').show();
+		}	
 
 		// add cke func num to folder links
 		$('tr.folder a').each(function(item){
