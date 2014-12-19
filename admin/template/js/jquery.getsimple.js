@@ -309,10 +309,10 @@ jQuery(document).ready(function () {
 	if($('body#upload') && getUrlParam('CKEditorFuncNum')){
 		Debugger.log('ckeditor browse');
 
+		//CKEditor=post-content&CKEditorFuncNum=1&langCode=en
 		var funcNum  = getUrlParam('CKEditorFuncNum');
-		// var func     = getUrlParam('CKEditorFuncNum');
-		// var langcode = getUrlParam('CKEditorFuncNum');
-		Debugger.log(funcNum);
+		var editorid = getUrlParam('CKEditor');
+		var langcode = getUrlParam('langCode');
 
 		// hide stuff header, footer, sidebar items, and filter if images
 		$('#header').hide();
@@ -328,8 +328,10 @@ jQuery(document).ready(function () {
 		// add cke func num to folder links
 		$('tr.folder a').each(function(item){
 			var href = $(this).prop('href');
+			// @todo only add if not already set
 			$(this).prop('href',href+'&CKEditorFuncNum='+funcNum)
-			// @todo add other qs as well
+			$(this).prop('href',href+'&CKEditor='+editorid)
+			$(this).prop('href',href+'&langCode='+langcode)
 		});
 
 		var path = getUrlParam('path') ? getUrlParam('path')+'/' : '';
@@ -355,7 +357,7 @@ jQuery(document).ready(function () {
 		$('tr .thumblinkexternal a').each(function(item){
 			var link = $(this).attr('href');
 
-			$(this).data('ckefileUrl',path+link);
+			$(this).data('ckefileUrl',link);
 
 			// add listeners
 			$(this).on('click',function(e){

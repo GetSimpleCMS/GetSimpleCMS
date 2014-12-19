@@ -79,7 +79,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		queue_script('gshtmleditor',GSBACK);
 	}
 
-	if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!getDef('GSNOUPLOADIFY',true)) ){
+	if( ((get_filename_id()=='upload') || (get_filename_id()=='filebrowser') || (get_filename_id()=='image')) && (!getDef('GSNOUPLOADIFY',true)) ){
 		queue_script('gsuploader',GSBACK);
 	}
 

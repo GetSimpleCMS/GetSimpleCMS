@@ -18,7 +18,7 @@ $allowcreatefolder = getDef('GSALLOWUPLOADCREATE',true);
 $allowdelete       = getDef('GSALLOWUPLOADDELETE',true);
 $allowupload       = true;
 
-if(isset($_GET['browse'])){
+if(isset($_GET['browse']) || $browse == true){
 	$allowcreatefolder = false;
 	$allowdelete       = false;
 	$allowupload       = getDef('GSALLOWBROWSEUPLOAD',true);
@@ -312,6 +312,7 @@ function getUploadIcon($type){
     // show files
 	if (count($filesSorted) != 0) { 			
 		foreach ($filesSorted as $upload) {
+			$thumbnailLink = '';
 			$counter++;
 			echo '<tr class="all '.$upload['type'].'" >';
 			echo '<td class="imgthumb" >';
