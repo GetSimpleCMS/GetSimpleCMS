@@ -306,14 +306,14 @@ function getTagName(elem){
 
 jQuery(document).ready(function () {
 
-	if($('body#upload') && getUrlParam('CKEditorFuncNum')){
-		Debugger.log('ckeditor browse');
 
-		//CKEditor=post-content&CKEditorFuncNum=1&langCode=en
-		var funcNum  = getUrlParam('CKEditorFuncNum');
-		var editorid = getUrlParam('CKEditor');
-		var langcode = getUrlParam('langCode');
-
+	if($('body#upload')){
+		if(getUrlParam('CKEditorFuncNum')) uploadCkeditorBrowse();
+		else if (getUrlParam('browse') !== undefined) uploadBrowse();
+	}
+	
+	function uploadBrowse(){
+		Debugger.log('upload browse');
 		// hide stuff header, footer, sidebar items, and filter if images
 		$('#header').hide();
 		$('body').css('margin-top','10px');
@@ -324,15 +324,28 @@ jQuery(document).ready(function () {
 			$('#imageFilter').hide();
 			$('.thumblinkexternal').show();
 		}	
+	}	
+
+	function uploadCkeditorBrowse(){
+
+		uploadBrowse();
+
+		//CKEditor=post-content&CKEditorFuncNum=1&langCode=en
+		var funcnum  = getUrlParam('CKEditorFuncNum');
+		var editorid = getUrlParam('CKEditor');
+		var langcode = getUrlParam('langCode');
+
+		// setup ckeditor callbacks
 
 		// add cke func num to folder links
-		$('tr.folder a').each(function(item){
-			var href = $(this).prop('href');
-			// @todo only add if not already set
-			$(this).prop('href',href+'&CKEditorFuncNum='+funcNum)
-			$(this).prop('href',href+'&CKEditor='+editorid)
-			$(this).prop('href',href+'&langCode='+langcode)
-		});
+		// @todo this is no longer necessary, since i am doing it in php now
+		// 
+		// $('tr.folder a').each(function(item){
+		// 	var href = $(this).prop('href');
+		// 	$(this).prop('href',href+'&CKEditorFuncNum='+funcnum)
+		// 	$(this).prop('href',href+'&CKEditor='+editorid)
+		// 	$(this).prop('href',href+'&langCode='+langcode)
+		// });
 
 		var path = getUrlParam('path') ? getUrlParam('path')+'/' : '';
 
@@ -347,7 +360,7 @@ jQuery(document).ready(function () {
 				e.preventDefault();
 				var siteurl = GS.uploads;
 				var fileUrl = $(this).data('ckefileUrl');
-				window.opener.CKEDITOR.tools.callFunction(funcNum, siteurl+fileUrl);
+				window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
 				window.close();
 				return false;
 			});
@@ -364,11 +377,12 @@ jQuery(document).ready(function () {
 				e.preventDefault();
 				var siteurl = '';
 				var fileUrl = $(this).data('ckefileUrl');
-				window.opener.CKEDITOR.tools.callFunction(funcNum, siteurl+fileUrl);
+				window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
 				window.close();
 				return false;
 			});
 		});
+
 	}
 
 	// Helper function to get parameters from the query string.
@@ -376,10 +390,13 @@ jQuery(document).ready(function () {
 	// plus we will probably need a url mutator library in core soon 
 	function getUrlParam(paramName)
 	{
-	  var reParam = new RegExp('(?:[\?&]|&amp;)' + paramName + '=([^&]+)', 'i') ;
-	  var match = window.location.search.match(reParam) ;
-	 
-	  return (match && match.length > 1) ? match[1] : '' ;
+		var reParam = new RegExp('(?:[\?&]|&amp;)' + paramName + '=?([^&]+)?', 'i') ;
+		var match = window.location.search.match(reParam) ;
+		if(match && match.length > 1){
+			// Debugger.log(match[1]);
+			if(typeof match[1] == 'undefined') return '';
+			return match[1];
+		}
 	}
 
 	// init jq tabs custom handlers
