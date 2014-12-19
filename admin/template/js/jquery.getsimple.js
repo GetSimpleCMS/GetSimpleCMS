@@ -309,40 +309,61 @@ jQuery(document).ready(function () {
 	if($('body#upload') && getUrlParam('CKEditorFuncNum')){
 		Debugger.log('ckeditor browse');
 
-		var funcNum = getUrlParam('CKEditorFuncNum');
+		var funcNum  = getUrlParam('CKEditorFuncNum');
+		// var func     = getUrlParam('CKEditorFuncNum');
+		// var langcode = getUrlParam('CKEditorFuncNum');
 		Debugger.log(funcNum);
+
+		// hide stuff header, footer, sidebar items, and filter if images
 		$('#header').hide();
 		$('body').css('margin-top','10px');
-		// $('#footer').hide();
-		
+		if(!GS.debug) $('#footer').hide();
+		$('#sidebar ul li:not(".dispupload")').hide();
 		if(getUrlParam('type') == 'images') $('#imageFilter').hide();
+		$('.thumblinkexternal').show();
 
 		// add cke func num to folder links
 		$('tr.folder a').each(function(item){
 			var href = $(this).prop('href');
 			$(this).prop('href',href+'&CKEditorFuncNum='+funcNum)
+			// @todo add other qs as well
 		});
 
 		var path = getUrlParam('path') ? getUrlParam('path')+'/' : '';
 
-		// bind all links to callback
-		$('tr.image a.primarylink').each(function(item){
-			var link = $(this).text();
+		// bind all primary links to callback
+		$('tr a.primarylink').each(function(item){
+			var link = $(this).text(); // get url from text, encoding issues?
 
 			$(this).data('ckefileUrl',path+link);
 
-			// add listeners
+			// add listener
 			$(this).on('click',function(e){
-				var siteurl = '/master/data/uploads/'
+				e.preventDefault();
+				var siteurl = GS.uploads;
 				var fileUrl = $(this).data('ckefileUrl');
 				window.opener.CKEDITOR.tools.callFunction(funcNum, siteurl+fileUrl);
 				window.close();
 				return false;
 			});
-			Debugger.log(link);
 		});
 
-		// window.opener.CKEDITOR.tools.callFunction(funcNum, fileUrl);		
+		// handle thumbnails
+		$('tr .thumblinkexternal a').each(function(item){
+			var link = $(this).attr('href');
+
+			$(this).data('ckefileUrl',path+link);
+
+			// add listeners
+			$(this).on('click',function(e){
+				e.preventDefault();
+				var siteurl = '';
+				var fileUrl = $(this).data('ckefileUrl');
+				window.opener.CKEDITOR.tools.callFunction(funcNum, siteurl+fileUrl);
+				window.close();
+				return false;
+			});
+		});
 	}
 
 	// Helper function to get parameters from the query string.

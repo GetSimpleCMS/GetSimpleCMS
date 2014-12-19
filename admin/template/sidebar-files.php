@@ -17,13 +17,12 @@ $fileSizeLimitMB = toBytesShorthand(getMaxUploadSize().'M',true);
 	
 	<?php exec_action("files-sidebar"); // @hook files-sidebar sidebar list html output  ?>
 
-	<hr>
 	<?php 
 	// allow uploads?
 	if(getDef('GSALLOWUPLOADS',true)){ 
 	?>
 	
-	<li class="upload">
+	<li class="upload dispupload">
 		<a style="margin-left:0" id="fileuploadlink" href="#">
 			<span><?php echo i18n_r('UPLOADIFY_BUTTON'); ?></span>
 			<span class="touch"><?php echo i18n_r('UPLOAD'); ?></span>
@@ -55,12 +54,12 @@ $fileSizeLimitMB = toBytesShorthand(getMaxUploadSize().'M',true);
 
 	</li>
 
-	<li id="gs-dropzone" class="uploaddropzone">
+	<li id="gs-dropzone" class="uploaddropzone dispupload">
 		<i class="fa fa-fw fa-upload unselectable" style="font-size:1.8em;vertical-align: middle;"></i>
 		<span class="dz-message unselectable"><?php i18n('DROP_FILES'); ?></span>
 	</li>
 	
-	<li style="float:right;" id="sb_filesize" ><small><?php i18n('MAX_FILE_SIZE'); ?>: <strong><?php echo $fileSizeLimitMB; ?></strong></small></li>
+	<li style="float:right;" id="sb_filesize" class="dispupload"><small><?php i18n('MAX_FILE_SIZE'); ?>: <strong><?php echo $fileSizeLimitMB; ?></strong></small></li>
 	<?php
 	} // end allow uploads
 	?>

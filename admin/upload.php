@@ -14,10 +14,17 @@ $load['plugin'] = true;
 include('inc/common.php');
 login_cookie_check();
 
-exec_action('load-upload');
-
 $allowcreatefolder = getDef('GSALLOWUPLOADCREATE',true);
 $allowdelete       = getDef('GSALLOWUPLOADDELETE',true);
+$allowupload       = true;
+
+if(isset($_GET['browse'])){
+	$allowcreatefolder = false;
+	$allowdelete       = false;
+	$allowupload       = getDef('GSALLOWBROWSEUPLOAD',true);
+}
+
+exec_action('load-upload');
 
 $dirsSorted = $filesSorted = $foldercount = null;
 
@@ -156,7 +163,7 @@ function getUploadIcon($type){
 
 <div class="bodycontent clearfix">
 	<div id="maincontent">
-		<div class="main" >
+		<div class="main" <?php if(!$allowupload) echo 'style="margin-right:0"'; ?>>
 		<h3 class="floated"><?php echo i18n_r('UPLOADED_FILES'); ?><span id="filetypetoggle">&nbsp;&nbsp;/&nbsp;&nbsp;<?php echo i18n_r('SHOW_ALL'); ?></span></h3>
 		<div id="file_load">
 		<?php
@@ -215,6 +222,7 @@ function getUploadIcon($type){
 						$sel = false;
 						# check for filter querystring
 						if(isset($_GET['type']) && $_GET['type'] == $type) $sel = true;
+						if(isset($_GET['type']) && $_GET['type'] == 'images' && $type == 'image') $sel = true; // alias for image (images)
 						if(count($filterArray) == 1 && isset($filterArray['image'])) $sel = true;
 						echo '<option value="'.$type.'" '. ($sel ? 'selected' : '') .'>'.i18n_r('FTYPE_'.uppercase($type)).'</option>';
 					}
@@ -312,6 +320,8 @@ function getUploadIcon($type){
 				$pathlink         = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subPath;
 				$thumbLink        = $urlPath.'thumbsm.'.$upload['name'];
 				$thumbLinkEncoded = $urlPath.'thumbsm.'.rawurlencode($upload['name']);
+				$thumbLinkExternal = $urlPath.'thumbnail.'.$upload['name'];
+
 				if (file_exists(GSTHUMBNAILPATH.$thumbLink)) {
 					$imgSrc = '<img src="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH). $thumbLinkEncoded .'" />';
 				} else {
@@ -319,13 +329,19 @@ function getUploadIcon($type){
 				}
 				// thumbnail link lightbox
 				echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel=" facybox_i" >'.$imgSrc.'</a>';
+
+				# get external thumbnail link
+				if (file_exists(GSTHUMBNAILPATH.$thumbLinkExternal)) {
+					$thumbnailLink = '<span class="thumblinkexternal">&nbsp;&ndash;&nbsp;&nbsp;<a href="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" >'.i18n_r('THUMBNAIL').'</a></span>';
+				}
+
 			} else {
 				$gallery      = '';
 				$controlpanel = '';
 				$pathlink     = $path . $upload['name'];
 			}
 			// name column linked
-			echo '</td><td>'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a></td>';
+			echo '</td><td>'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
 			// size column
 			echo '<td class="file_size right"><span>'. $upload['size'] .'</span></td>';
      
@@ -357,10 +373,11 @@ function getUploadIcon($type){
 		</div>
 		</div>
 	</div>
-	
+	<?php if($allowupload){ ?>
 	<div id="sidebar" >
 	<?php include('template/sidebar-files.php'); ?>
-	</div>	
+	</div>
+	<?php } ?>
 	
 </div>
 <?php get_template('footer'); ?>

@@ -101,6 +101,10 @@ td.imgthumb {
 	border: 1px solid #555;
 }
 
+.thumblinkexternal{
+	display:none;
+}
+
 .hidden {
 	display: none !important;
 }

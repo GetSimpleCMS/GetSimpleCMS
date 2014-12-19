@@ -104,9 +104,11 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
     	// @todo clean this up, use a better bridge to initialize config variables in js
     	
         // init gs namespace and i18n
-        var GS = {};
-        GS.i18n = <?php echo json_encode($jsi18n); ?>;
-        GS.debug = <?php echo isDebug() === true ? 'true' : 'false'; ?> ;
+        var GS     = {};
+        GS.i18n    = <?php echo json_encode($jsi18n); ?>;
+        GS.debug   = <?php echo isDebug() === true ? 'true' : 'false'; ?> ;
+        GS.siteurl = '<?php echo $SITEURL; ?>';
+        GS.uploads = '<?php echo tsl($SITEURL).getRelPath(GSDATAUPLOADPATH); ?>';
 
 		var uploadSession = '<?php echo $SESSIONHASH; ?>';
 		var uploadPath    = '<?php echo (isset($_GET['path'])) ? $_GET['path'] : ""; ?>';
