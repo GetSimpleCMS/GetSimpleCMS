@@ -324,7 +324,7 @@ jQuery(document).ready(function () {
 			$('#imageFilter').hide();
 			$('.thumblinkexternal').show();
 		}	
-	}	
+	}
 
 	function uploadCustomBrowse(){
 		var path = getUrlParam('path') ? getUrlParam('path')+'/' : '';
@@ -354,15 +354,15 @@ jQuery(document).ready(function () {
 				window.close();
 				return false;
 			});
-		});		
-	}
+		});
 
+	}
 	function filebrowsercallback(url,arg1,arg2){
 
 	}
 
 	function uploadCkeditorBrowse(){
-
+		Debugger.log('upload ckeditor browse');
 		uploadBrowse();
 
 		//CKEditor=post-content&CKEditorFuncNum=1&langCode=en
@@ -411,6 +411,15 @@ jQuery(document).ready(function () {
 		});
 
 	}
+
+	// gs event for file uploaded via dropzone
+	$(window).on('fileuploaded',fileuploaded);
+	
+	function fileuploaded(){
+		Debugger.log('fileuploaded');
+		if(getUrlParam('CKEditorFuncNum')) uploadCkeditorBrowse();
+		else if (getUrlParam('browse') !== undefined) uploadBrowse();
+	};
 
 	// Helper function to get parameters from the query string.
 	// @todo this is temporary, splitters are much faster than regex, 
