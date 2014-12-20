@@ -326,6 +326,41 @@ jQuery(document).ready(function () {
 		}	
 	}	
 
+	function uploadCustomBrowse(){
+		var path = getUrlParam('path') ? getUrlParam('path')+'/' : '';
+
+		// bind all primary links to callback
+		$('.primarylink').each(function(item){
+			// add listener
+			$(this).on('click',function(e){
+				e.preventDefault();
+				var siteurl = GS.uploads;
+				var fileUrl = $(this).data('fileurl');
+				window.opener.filebrowsercallback(siteurl+fileUrl);
+				window.close();
+				return false;
+			});
+		});
+
+		// handle thumbnails
+		$('.thumblinkexternal').each(function(item){
+
+			// add listeners
+			$(this).on('click',function(e){
+				e.preventDefault();
+				var siteurl = '';
+				var fileUrl = $(this).data('fileurl');
+				window.opener.filebrowsercallback(siteurl+fileUrl);
+				window.close();
+				return false;
+			});
+		});		
+	}
+
+	function filebrowsercallback(url,arg1,arg2){
+
+	}
+
 	function uploadCkeditorBrowse(){
 
 		uploadBrowse();
@@ -338,7 +373,7 @@ jQuery(document).ready(function () {
 		// setup ckeditor callbacks
 
 		// add cke func num to folder links
-		// @todo this is no longer necessary, since i am doing it in php now
+		// @todo this is no longer necessary, since I am preserving in php
 		// 
 		// $('tr.folder a').each(function(item){
 		// 	var href = $(this).prop('href');
@@ -350,16 +385,12 @@ jQuery(document).ready(function () {
 		var path = getUrlParam('path') ? getUrlParam('path')+'/' : '';
 
 		// bind all primary links to callback
-		$('tr a.primarylink').each(function(item){
-			var link = $(this).text(); // get url from text, encoding issues?
-
-			$(this).data('ckefileUrl',path+link);
-
+		$('.primarylink').each(function(item){
 			// add listener
 			$(this).on('click',function(e){
 				e.preventDefault();
-				var siteurl = GS.uploads;
-				var fileUrl = $(this).data('ckefileUrl');
+				var siteurl = GS.siteurl;
+				var fileUrl = $(this).data('fileurl');
 				window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
 				window.close();
 				return false;
@@ -367,16 +398,12 @@ jQuery(document).ready(function () {
 		});
 
 		// handle thumbnails
-		$('tr .thumblinkexternal a').each(function(item){
-			var link = $(this).attr('href');
-
-			$(this).data('ckefileUrl',link);
-
+		$('.thumblinkexternal').each(function(item){
 			// add listeners
 			$(this).on('click',function(e){
 				e.preventDefault();
-				var siteurl = '';
-				var fileUrl = $(this).data('ckefileUrl');
+				var siteurl = GS.siteurl;
+				var fileUrl = $(this).data('fileurl');
 				window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
 				window.close();
 				return false;

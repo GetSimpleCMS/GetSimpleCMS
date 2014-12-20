@@ -103,6 +103,8 @@ td.imgthumb {
 
 .thumblinkexternal{
 	display:none;
+	margin-left: 15px !important;
+	text-shadow: none;
 }
 
 .hidden {

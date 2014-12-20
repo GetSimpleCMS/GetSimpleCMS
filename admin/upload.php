@@ -189,7 +189,7 @@ function getUploadIcon($type){
 						$ss = @stat($path . $file);
 						$dirsArray[$dircount]['date'] = @date('M j, Y',$ss['mtime']);
             			$dircount++;
-					} 
+					}
 					else {
 						$filesArray[$count]['name'] = $file;
 						$ext      = getFileExtension($file);
@@ -317,11 +317,12 @@ function getUploadIcon($type){
 			echo '<tr class="all '.$upload['type'].'" >';
 			echo '<td class="imgthumb" >';
 			if ($upload['type'] == 'image') {
-				$gallery          = 'rel=" facybox_i"';
-				$pathlink         = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subPath;
-				$thumbLink        = $urlPath.'thumbsm.'.$upload['name'];
-				$thumbLinkEncoded = $urlPath.'thumbsm.'.rawurlencode($upload['name']);
+				$gallery           = 'rel=" facybox_i"';
+				$pathlink          = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subPath;
+				$thumbLink         = $urlPath.'thumbsm.'.$upload['name'];
+				$thumbLinkEncoded  = $urlPath.'thumbsm.'.rawurlencode($upload['name']);
 				$thumbLinkExternal = $urlPath.'thumbnail.'.$upload['name'];
+				$primarylink       = getRelPath(GSDATAUPLOADPATH).$urlPath. rawurlencode($upload['name']);
 
 				if (file_exists(GSTHUMBNAILPATH.$thumbLink)) {
 					$imgSrc = '<img src="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH). $thumbLinkEncoded .'" />';
@@ -333,7 +334,7 @@ function getUploadIcon($type){
 
 				# get external thumbnail link
 				if (file_exists(GSTHUMBNAILPATH.$thumbLinkExternal)) {
-					$thumbnailLink = '<span class="thumblinkexternal">&nbsp;&ndash;&nbsp;&nbsp;<a href="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" >'.i18n_r('THUMBNAIL').'</a></span>';
+					$thumbnailLink = '<a href="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" class="label label-ghost thumblinkexternal" data-fileurl="'.getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'">'.i18n_r('THUMBNAIL').'</a>';
 				}
 
 			} else {
@@ -342,18 +343,19 @@ function getUploadIcon($type){
 				$pathlink     = $path . $upload['name'];
 			}
 			// name column linked
-			echo '</td><td>'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
+			echo '</td><td>'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink" data-fileurl="'.$primarylink.'">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
 			// size column
 			echo '<td class="file_size right"><span>'. $upload['size'] .'</span></td>';
      
-			// get the file permissions.
+			// file perms column
 			if ($showperms) {
 				$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
 				$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
 				echo '<td class="file_perms right"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
 			}
-					
+			// date column
 			echo '<td class="file_date right"><span class="'.(dateIsToday($upload['date']) ? 'datetoday' : '').'"">'. output_date($upload['date']) .'</span></td>';
+			// delete
 			echo '<td class="delete">';
 			if($allowdelete) echo '<a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. rawurlencode($upload['name']) . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a>';
 			echo '</td></tr>';
