@@ -101,6 +101,7 @@ $GS_definitions = array(
 	'GSALLOWUPLOADCREATE'  => true,                           // (bool) allow upload folder creation
 	'GSALLOWUPLOADDELETE'  => true,                           // (bool) allow upload file/folder delete
 	'GSALLOWBROWSEUPLOAD'  => true,                           // (bool) allow uploading when browsing files
+	'GSNOUPLOADIFY'        => true,
 	# EDITORS ------------------------------------------------------------------------------------------------------------------------------------------
 	'GSTHEMEEDITROOT'      => true,                           // (bool) allow editing theme root files
 	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // (str-csv) file extensions to show and edit in theme editor

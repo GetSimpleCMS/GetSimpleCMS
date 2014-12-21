@@ -67,7 +67,7 @@ $fileSizeLimitMB = toBytesShorthand(getMaxUploadSize().'M',true);
 </ul>
 
 <div class="">
-	<form class="uploadform" action="upload.php?path=<?php echo $path; ?>" method="post" enctype="multipart/form-data">
+	<form class="uploadform" action="" method="post" enctype="multipart/form-data">
 		<p><input class="" type="file" name="file[]" id="file" style="width:220px;" multiple /></p>
 		<input type="hidden" name="hash" id="hash" value="<?php echo $SESSIONHASH; ?>" />
 		<input type="submit" class="submit" name="submit" value="<?php i18n('UPLOAD'); ?>" />
