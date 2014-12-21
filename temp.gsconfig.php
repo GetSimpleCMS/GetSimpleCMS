@@ -39,9 +39,6 @@ define('GSIMAGEWIDTH', '200');
 # Enable Canonical Redirects?
 #define('GSCANONICAL', 1);
 
-# Use Uploadify to upload files?
-#define('GSNOUPLOADIFY', 1);
-
 # WYSIWYG editor height (default 500)
 #define('GSEDITORHEIGHT', '400');
 
