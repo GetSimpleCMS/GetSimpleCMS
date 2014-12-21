@@ -2890,6 +2890,10 @@ a.disabled:visited {
 	border-radius: 3px;
 }
 
+.right {
+	float:right;
+}
+
 .readonly .CodeMirror-code,.readonly #theme_editing_file{
 	/*opacity: 0.3;*/
 	visibility :hidden;

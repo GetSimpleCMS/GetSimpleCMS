@@ -309,7 +309,7 @@ jQuery(document).ready(function () {
 
 	if($('body#upload')){
 		if(getUrlParam('CKEditorFuncNum')) uploadCkeditorBrowse();
-		else if (getUrlParam('browse') !== undefined) uploadBrowse();
+		else if (getUrlParam('browse') !== undefined) uploadCustomBrowse();
 	}
 	
 	function uploadBrowse(){
@@ -327,17 +327,18 @@ jQuery(document).ready(function () {
 	}
 
 	function uploadCustomBrowse(){
-		var path = getUrlParam('path') ? getUrlParam('path')+'/' : '';
-
+		uploadBrowse();
 		// bind all primary links to callback
 		$('.primarylink').each(function(item){
 			// add listener
 			$(this).on('click',function(e){
 				e.preventDefault();
-				var siteurl = GS.uploads;
+				var siteurl = GS.siteurl;
 				var fileUrl = $(this).data('fileurl');
-				window.opener.filebrowsercallback(siteurl+fileUrl);
-				window.close();
+				if(window.opener){
+					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search);
+					window.close();
+				} filebrowsercallback(siteurl+fileUrl,window.location.search);
 				return false;
 			});
 		});
@@ -348,17 +349,53 @@ jQuery(document).ready(function () {
 			// add listeners
 			$(this).on('click',function(e){
 				e.preventDefault();
-				var siteurl = '';
+				var siteurl = GS.siteurl;
 				var fileUrl = $(this).data('fileurl');
-				window.opener.filebrowsercallback(siteurl+fileUrl);
-				window.close();
+				if(window.opener){
+					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search);
+					window.close();
+				} filebrowsercallback(siteurl+fileUrl,window.location.search);
 				return false;
 			});
 		});
 
 	}
-	function filebrowsercallback(url,arg1,arg2){
 
+	function filebrowsercallback(url,arg1,arg2){
+		Debugger.log(url);
+		Debugger.log(arg1);
+		$(window).trigger('filebrowserselected',[url,arg1,arg2]);
+	}
+
+
+	$.fn.uploadBrowseThumb = function(){
+		if(getUrlParam('CKEditorFuncNum')) $(this).uploadCKEBrowseThumb();
+		else if (getUrlParam('browse') !== undefined) $(this).uploadCustomBrowseThumb();		
+	}
+
+	$.fn.uploadCustomBrowseThumb = function(){
+		$(this).on('click',function(e){
+			e.preventDefault();
+			var siteurl = '';
+			var fileUrl = $(this).data('fileurl');
+			if(window.opener){
+				window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search);
+				window.close();
+			} filebrowsercallback(siteurl+fileUrl,window.location.search);
+			return false;
+		});		
+	}
+
+	$.fn.uploadCKEBrowseThumb = function(){
+		$(this).on('click',function(e){
+			var funcnum  = getUrlParam('CKEditorFuncNum');
+			e.preventDefault();
+			var siteurl = '';
+			var fileUrl = $(this).data('fileurl');
+			window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
+			window.close();
+			return false;
+		});
 	}
 
 	function uploadCkeditorBrowse(){
@@ -755,12 +792,31 @@ jQuery(document).ready(function () {
  	// fancybox lightbox init
  	// rel=fancybox (_i/_s)
 	if (jQuery().fancybox) {
+
+		// default
 		$('a[rel*=facybox]').fancybox({
 			type: 'ajax',
 			padding: 0,
 			scrolling: 'auto'
 		});
-		$('a[rel*=facybox_i]').fancybox();
+
+		// used for images
+		$('a[rel*=facybox_i]').fancybox({
+			afterShow: function(e) {
+				Debugger.log(this);
+			    var link = $.parseHTML('<a class="label label-ghost right" href="' + this.href + '" data-fileurl="'+ this.href +'">'+i18n("SELECT_FILE")+'</a>');
+			    $(link).uploadBrowseThumb();
+			    this.title = this.title;
+			    $('.fancybox-title').append($(link));
+			},
+			helpers: {
+			    title: {
+			        type: "inside"
+			    }
+			}
+		});
+
+		// used for share
 		$('a[rel*=facybox_s]').fancybox({
 			type: 'ajax',
 			padding: 0,
