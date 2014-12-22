@@ -842,6 +842,8 @@ jQuery(document).ready(function () {
     }
 
     function ajaxStatusComplete(){
+    	pageisdirty = false;
+    	warnme      = false;
     	$('input[type=submit]').attr('disabled', false);
 		loadingAjaxIndicator.fadeOut();
 		$("body").removeClass('dirty');	
@@ -1740,6 +1742,7 @@ jQuery(document).ready(function () {
 		}
 		else if(xhr.status == 302){
 			Debugger.log("Redirecting...");
+			ajaxStatusComplete();	
 			window.location = xhr.responseText;
 		}
 	});
