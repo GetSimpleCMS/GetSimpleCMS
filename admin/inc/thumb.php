@@ -134,7 +134,7 @@ if(!in_arrayi('gd', $php_modules)) die('GD not loaded, cannot generate thumbnail
 
 // Allocate all necessary memory for the image.
 // Special thanks to Alecos for providing the code.
-ini_set('memory_limit', '100M');
+ini_set('memory_limit', '200M');
 
 // include image processing code
 include('image.class.php');
