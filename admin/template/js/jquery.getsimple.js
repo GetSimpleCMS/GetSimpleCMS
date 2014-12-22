@@ -818,14 +818,14 @@ jQuery(document).ready(function () {
 	if (jQuery().fancybox) {
 
 		// default
-		$('a[rel*=facybox]').fancybox({
+		$('a[rel*=fancybox]').fancybox({
 			type: 'ajax',
 			padding: 0,
 			scrolling: 'auto'
 		});
 
 		// used for images
-		$('a[rel*=facybox_i]').fancybox({
+		$('a[rel*=fancybox_i]').fancybox({
 			afterShow: function(e) {				
 				$(this).uploadBrowseThumb();
 			},
@@ -837,7 +837,7 @@ jQuery(document).ready(function () {
 		});
 
 		// used for share
-		$('a[rel*=facybox_s]').fancybox({
+		$('a[rel*=fancybox_s]').fancybox({
 			type: 'ajax',
 			padding: 0,
 			scrolling: 'no'

@@ -34,7 +34,7 @@ get_template('header');
 				<li><a href="http://get-simple.info/docs/" target="_blank" ><?php i18n('SIDE_DOCUMENTATION'); ?></a></li>
 				<li><a href="http://get-simple.info/forum/" target="_blank" ><?php i18n('SUPPORT_FORUM'); ?></a></li>
 				<li><a href="http://get-simple.info/extend/" target="_blank" ><?php echo str_replace(array('<em>','</em>'), '', i18n_r('GET_PLUGINS_LINK')); ?></a></li>
-				<li><a href="share.php?term=<?php i18n('SHARE'); ?>" rel="facybox" ><?php i18n('SHARE'); ?> GetSimple</a></li>
+				<li><a href="share.php?term=<?php i18n('SHARE'); ?>" rel="fancybox" ><?php i18n('SHARE'); ?> GetSimple</a></li>
 				<li><a href="https://github.com/GetSimpleCMS" target="_blank">Github SVN</a></li>
 			</ul>
 			

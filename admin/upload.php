@@ -317,7 +317,7 @@ function getUploadIcon($type){
 			echo '<tr class="all '.$upload['type'].'" >';
 			echo '<td class="imgthumb" >';
 			if ($upload['type'] == 'image') {
-				$gallery           = 'rel=" facybox_i"';
+				$gallery           = 'rel=" fancybox_i"';
 				$pathlink          = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subPath;
 				$thumbLink         = $urlPath.'thumbsm.'.$upload['name'];
 				$thumbLinkEncoded  = $urlPath.'thumbsm.'.rawurlencode($upload['name']);
@@ -330,7 +330,7 @@ function getUploadIcon($type){
 					$imgSrc = '<img src="inc/thumb.php?src='. $urlPath . rawurlencode($upload['name']) .'&amp;dest='. $thumbLinkEncoded .'&amp;f=1" />';
 				}
 				// thumbnail link lightbox
-				echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel=" facybox_i" >'.$imgSrc.'</a>';
+				echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel=" fancybox_i" >'.$imgSrc.'</a>';
 
 				# get external thumbnail link
 				# if not exist generate it
