@@ -333,9 +333,13 @@ function getUploadIcon($type){
 				echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel=" facybox_i" >'.$imgSrc.'</a>';
 
 				# get external thumbnail link
-				if (file_exists(GSTHUMBNAILPATH.$thumbLinkExternal)) {
-					$thumbnailLink = '<a href="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" class="label label-ghost thumblinkexternal" data-fileurl="'.getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'">'.i18n_r('THUMBNAIL').'</a>';
+				# if not exist generate it
+				if (!file_exists(GSTHUMBNAILPATH.$thumbLinkExternal)) {
+					require_once('inc/imagemanipulation.php');
+					genStdThumb($subPath,$upload['name']);					
 				}
+				
+				$thumbnailLink = '<a href="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" class="label label-ghost thumblinkexternal" data-fileurl="'.getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'">'.i18n_r('THUMBNAIL').'</a>';
 
 			} else {
 				$gallery      = '';
