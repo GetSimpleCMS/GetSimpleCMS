@@ -284,7 +284,7 @@ function basename(str){
  * @todo add sprintf
  */
 function i18n(key){
-	Debugger.log(GS.i18n);
+	// Debugger.log(GS.i18n);
 	if(!GS.i18n) return;
 	return GS.i18n[key] || key;
 }
@@ -321,6 +321,8 @@ jQuery(document).ready(function () {
 		$('body').css('margin-top','10px');
 		if(!GS.debug) $('#footer').hide();
 		$('#sidebar ul li:not(".dispupload")').hide();
+		
+		Debugger.log(getUrlParam('type'));
 		
 		if(getUrlParam('type') == 'images' || getUrlParam('type') == 'image'){
 			$('#imageFilter').hide();
@@ -390,9 +392,19 @@ jQuery(document).ready(function () {
 
 	// handle thumbnail lightbox buttons, add custom handlers
 	$.fn.uploadBrowseThumb = function(){
-		if(getUrlParam('CKEditorFuncNum')) $(this).uploadCKEBrowseThumb();
-		else if (getUrlParam('browse') !== undefined) $(this).uploadCustomBrowseThumb();		
+		_this = $(this);
+		var link = $.parseHTML('<a class="label label-ghost right" href="' + _this.get(0).href + '" data-fileurl="'+ _this.get(0).href +'">'+i18n("SELECT_FILE")+'</a>');
+		if(getUrlParam('CKEditorFuncNum')){
+			$(link).uploadCKEBrowseThumb();
+			$('.fancybox-title').append($(link));
+		}	
+		else if (getUrlParam('browse') !== undefined){
+			$(link).uploadCustomBrowseThumb();		
+			$('.fancybox-title').append($(link));
+		}
+			
 	}
+
 
 	$.fn.uploadCustomBrowseThumb = function(){
 		$(this).on('click',function(e){
@@ -654,7 +666,7 @@ jQuery(document).ready(function () {
 	// bind delete component button
 	$("#maincontent").on("click",'.delcomponent', function ($e) {
 		$e.preventDefault();
-		Debugger.log($(this));
+		// Debugger.log($(this));
 		var message = $(this).attr("title");
 		var compid = $(this).attr("rel");
 		var answer = confirm(message);
@@ -764,6 +776,7 @@ jQuery(document).ready(function () {
 				return false;
 			}
 		} else {
+			Debugger.log('confirm answered no');
 			mytr.css('font-style', 'normal');
 			return false;
 		}
@@ -813,12 +826,8 @@ jQuery(document).ready(function () {
 
 		// used for images
 		$('a[rel*=facybox_i]').fancybox({
-			afterShow: function(e) {
-				Debugger.log(this);
-			    var link = $.parseHTML('<a class="label label-ghost right" href="' + this.href + '" data-fileurl="'+ this.href +'">'+i18n("SELECT_FILE")+'</a>');
-			    $(link).uploadBrowseThumb();
-			    this.title = this.title;
-			    $('.fancybox-title').append($(link));
+			afterShow: function(e) {				
+				$(this).uploadBrowseThumb();
 			},
 			helpers: {
 			    title: {
@@ -896,7 +905,7 @@ jQuery(document).ready(function () {
 					mytd.html(old).removeClass('ajaxwait_tint_dark');
 					$('.toggleEnable').removeClass('disabled');
 					loadingAjaxIndicator.fadeOut();
-					Debugger.log(mytd.data('spinner'));
+					// Debugger.log(mytd.data('spinner'));
 					mytd.data('spinner').stop(); // @todo not working, spinner keeps spinning
 					$(response).find('div.updated').parseNotify();
 				} else {
