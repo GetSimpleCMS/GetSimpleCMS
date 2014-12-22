@@ -42,7 +42,7 @@ function genStdThumb($path,$name){
 	
 	//thumbnail for post
 	$imgsize = getimagesize($targetFile);
-		
+
 	switch($ext){
 			case "jpeg":
 			case "jpg":
@@ -58,7 +58,7 @@ function genStdThumb($path,$name){
 					return;
 			break;
 	}
-		
+	
 	$height = $imgsize[1]/$imgsize[0]*$width; //This maintains proportions
 	
 	$src_w = $imgsize[0];
@@ -71,8 +71,9 @@ function genStdThumb($path,$name){
 	
 	if($bool)	{	
 		$thumbnailFile = $thumbsPath . "thumbnail." . $name;
-		
-	    switch(lowercase(substr($targetFile, -3))) {
+		debugLog($thumbnailFile);
+	    switch(getFileExtension($targetFile)) {
+	        case "jpeg":
 	        case "jpg":
 	            $bool2 = imagejpeg($picture,$thumbnailFile,85);
 	        break;
@@ -88,7 +89,7 @@ function genStdThumb($path,$name){
 	imagedestroy($picture);
 	imagedestroy($image);
 
-	return true;
+	return $bool && $bool2;
 }
 
 
