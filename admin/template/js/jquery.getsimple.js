@@ -307,6 +307,8 @@ function getTagName(elem){
 jQuery(document).ready(function () {
 
 
+	// upload.php?browse
+	// filebrowser.php
 	if($('body#upload')){
 		if(getUrlParam('CKEditorFuncNum')) uploadCkeditorBrowse();
 		else if (getUrlParam('browse') !== undefined) uploadCustomBrowse();
@@ -320,7 +322,7 @@ jQuery(document).ready(function () {
 		if(!GS.debug) $('#footer').hide();
 		$('#sidebar ul li:not(".dispupload")').hide();
 		
-		if(getUrlParam('type') == 'images'){
+		if(getUrlParam('type') == 'images' || getUrlParam('type') == 'image'){
 			$('#imageFilter').hide();
 			$('.thumblinkexternal').show();
 		}	
@@ -335,10 +337,11 @@ jQuery(document).ready(function () {
 				e.preventDefault();
 				var siteurl = GS.siteurl;
 				var fileUrl = $(this).data('fileurl');
+				// if popup call openers callback, else call ours
 				if(window.opener){
-					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search);
-					window.close();
-				} filebrowsercallback(siteurl+fileUrl,window.location.search);
+					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'primarylink');
+				} filebrowsercallback(siteurl+fileUrl,window.location.search,'primarylink');
+				filebrowserselectcomplete();				
 				return false;
 			});
 		});
@@ -351,23 +354,41 @@ jQuery(document).ready(function () {
 				e.preventDefault();
 				var siteurl = GS.siteurl;
 				var fileUrl = $(this).data('fileurl');
+				// if popup call openers callback, else call ours
 				if(window.opener){
-					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search);
-					window.close();
-				} filebrowsercallback(siteurl+fileUrl,window.location.search);
+					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'thumblink');
+				} filebrowsercallback(siteurl+fileUrl,window.location.search,'thumblink');
+				filebrowserselectcomplete();
 				return false;
 			});
 		});
 
 	}
 
+	// calback after selection is made, trigger filebrowserselected
 	function filebrowsercallback(url,arg1,arg2){
-		Debugger.log(url);
-		Debugger.log(arg1);
 		$(window).trigger('filebrowserselected',[url,arg1,arg2]);
 	}
 
+	// callback when selection is complete, trigger filebrowserselectcompleted
+	function filebrowserselectcomplete(){
+		$(window).trigger('filebrowserselectcompleted');
+	}
 
+	$(window).on('filebrowserselectcompleted',function(e){
+		if(window.opener) window.close();
+	});
+
+	// return id implementation
+	// an input with the id of returnid will atutomatically receive the url as its value
+	$(window).on('filebrowserselected',function(event,url,search){
+		var returnid = getUrlParam('returnid',search);
+		if(returnid) {
+			$('input #'+returnid).val(url); // set input value to url
+		}
+	});
+
+	// handle thumbnail lightbox buttons, add custom handlers
 	$.fn.uploadBrowseThumb = function(){
 		if(getUrlParam('CKEditorFuncNum')) $(this).uploadCKEBrowseThumb();
 		else if (getUrlParam('browse') !== undefined) $(this).uploadCustomBrowseThumb();		
@@ -379,11 +400,11 @@ jQuery(document).ready(function () {
 			var siteurl = '';
 			var fileUrl = $(this).data('fileurl');
 			if(window.opener){
-				window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search);
+				window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'lightboxlink');
 				window.close();
-			} filebrowsercallback(siteurl+fileUrl,window.location.search);
+			} filebrowsercallback(siteurl+fileUrl,window.location.search,'lightboxlink');
 			return false;
-		});		
+		});
 	}
 
 	$.fn.uploadCKEBrowseThumb = function(){
@@ -398,6 +419,7 @@ jQuery(document).ready(function () {
 		});
 	}
 
+	// @todo abstract all this through custom with custom callbacks and listeners
 	function uploadCkeditorBrowse(){
 		Debugger.log('upload ckeditor browse');
 		uploadBrowse();
@@ -406,18 +428,6 @@ jQuery(document).ready(function () {
 		var funcnum  = getUrlParam('CKEditorFuncNum');
 		var editorid = getUrlParam('CKEditor');
 		var langcode = getUrlParam('langCode');
-
-		// setup ckeditor callbacks
-
-		// add cke func num to folder links
-		// @todo this is no longer necessary, since I am preserving in php
-		// 
-		// $('tr.folder a').each(function(item){
-		// 	var href = $(this).prop('href');
-		// 	$(this).prop('href',href+'&CKEditorFuncNum='+funcnum)
-		// 	$(this).prop('href',href+'&CKEditor='+editorid)
-		// 	$(this).prop('href',href+'&langCode='+langcode)
-		// });
 
 		var path = getUrlParam('path') ? getUrlParam('path')+'/' : '';
 
@@ -461,10 +471,11 @@ jQuery(document).ready(function () {
 	// Helper function to get parameters from the query string.
 	// @todo this is temporary, splitters are much faster than regex, 
 	// plus we will probably need a url mutator library in core soon 
-	function getUrlParam(paramName)
+	function getUrlParam(paramName,search)
 	{
+		if(search == undefined) search = window.location.search;
 		var reParam = new RegExp('(?:[\?&]|&amp;)' + paramName + '=?([^&]+)?', 'i') ;
-		var match = window.location.search.match(reParam) ;
+		var match = search.match(reParam);
 		if(match && match.length > 1){
 			// Debugger.log(match[1]);
 			if(typeof match[1] == 'undefined') return '';
