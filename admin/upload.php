@@ -18,7 +18,7 @@ $allowcreatefolder = getDef('GSALLOWUPLOADCREATE',true);
 $allowdelete       = getDef('GSALLOWUPLOADDELETE',true);
 $allowupload       = true;
 
-if(isset($_GET['browse']) || $browse == true){
+if(isset($_GET['browse']) || (isset($browse) && $browse == true)){
 	$allowcreatefolder = false;
 	$allowdelete       = false;
 	$allowupload       = getDef('GSALLOWBROWSEUPLOAD',true);
