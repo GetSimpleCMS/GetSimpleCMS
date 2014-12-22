@@ -309,6 +309,13 @@ function getUploadIcon($type){
         }
      }
 
+    // will regenerate all thumbnail. thumbsm. in current folder, ideally used when changing smthumb size
+    // can take a very long time if you have massive images, it would be wise to keep folders small if using large gallary images
+    // if you have a lot to regen simply delete the images form the thumbs folder and keep refreshing until they are all regenerated
+	if(isset($_REQUEST['regenthumbsm']) || isset($_REQUEST['regenthumbnail'])) set_time_limit (120);
+	$thumbsm_w = (int)getDef('GSTHUMBSMWIDTH');
+	$thumbsm_h = (int)getDef('GSTHUMBSMHEIGHT');
+
     // show files
 	if (count($filesSorted) != 0) { 			
 		foreach ($filesSorted as $upload) {
@@ -324,17 +331,17 @@ function getUploadIcon($type){
 				$thumbLinkExternal = $urlPath.'thumbnail.'.$upload['name'];
 				$primarylink       = getRelPath(GSDATAUPLOADPATH).$urlPath. rawurlencode($upload['name']);
 
-				if (file_exists(GSTHUMBNAILPATH.$thumbLink)) {
-					$imgSrc = '<img src="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH). $thumbLinkEncoded .'" />';
+				if (!file_exists(GSTHUMBNAILPATH.$thumbLink) || isset($_REQUEST['regenthumbsm'])) {					
+					$imgSrc = '<img src="inc/thumb.php?src='. $urlPath . rawurlencode($upload['name']) .'&amp;dest='. $thumbLinkEncoded .'&amp;f=1&x='.$thumbsm_w.'&y='.$thumbsm_h.'" />';
 				} else {
-					$imgSrc = '<img src="inc/thumb.php?src='. $urlPath . rawurlencode($upload['name']) .'&amp;dest='. $thumbLinkEncoded .'&amp;f=1" />';
+					$imgSrc = '<img src="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH). $thumbLinkEncoded .'" />';
 				}
 				// thumbnail link lightbox
 				echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel=" fancybox_i" >'.$imgSrc.'</a>';
 
 				# get external thumbnail link
 				# if not exist generate it
-				if (!file_exists(GSTHUMBNAILPATH.$thumbLinkExternal)) {
+				if (!file_exists(GSTHUMBNAILPATH.$thumbLinkExternal) || isset($_REQUEST['regenthumbnail'])) {
 					require_once('inc/imagemanipulation.php');
 					genStdThumb($subPath,$upload['name']);					
 				}
