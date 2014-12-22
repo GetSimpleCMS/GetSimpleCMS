@@ -132,9 +132,16 @@ $GS_script_assets['fancybox']['local']['url']      = $ASSETPATH.'js/fancybox/jqu
 $GS_script_assets['fancybox']['local']['ver']      = $fancybox_ver;
  $GS_style_assets['fancybox']['local']['url']      = $ASSETPATH.'js/fancybox/jquery.fancybox.css';
  $GS_style_assets['fancybox']['local']['ver']      = $fancybox_ver;
- // deprecated
- $GS_style_assets['fancybox-css']['local']['url']  = $GS_style_assets['fancybox']['local']['url'];
- $GS_style_assets['fancybox-css']['local']['ver']  = $GS_style_assets['fancybox']['local']['ver'];
+$GS_script_assets['fancybox']['queue']['script']   = 'jquerymousewheel';
+
+
+$GS_script_assets['jquerymousewheel']['local']['url']      = $ASSETPATH.'js/fancybox/jquery.mousewheel-3.0.6.pack.js';
+$GS_script_assets['jquerymousewheel']['local']['ver']      = $getsimple_ver;
+
+
+ // FANCYBOX DEPRECATED
+ $GS_style_assets['fancybox-css']['local']['url']  = $GS_style_assets['fancybox']['local']['url']; // @LEGACY 3.4
+ $GS_style_assets['fancybox-css']['local']['ver']  = $GS_style_assets['fancybox']['local']['ver']; // @LEGACY 3.4
 
 // font-awesome icons
  $GS_style_assets['font-awesome']['cdn']['url']    = '//netdna.bootstrapcdn.com/font-awesome/'.$font_awesome_ver.'/css/font-awesome.min.css';
@@ -189,6 +196,7 @@ preRegisterScript('ckeditor',     '',   false , $infooter); // cdn disabled, htt
 preRegisterScript('codemirror',   '',   false , $infooter);
 preRegisterScript('dropzone',     '',   false , $infooter);
 preRegisterScript('fancybox',     '',   false , $infooter);
+preRegisterScript('jquerymousewheel',     '',   false , $infooter);
 preRegisterScript('scrolltofixed','',   false , $infooter);
 
 // gs aliases
