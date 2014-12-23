@@ -9,6 +9,8 @@
 
 function genStdThumb($path,$name){
 
+	$path = tsl($path);
+
 	//gd check, do nothing if no gd
 	$php_modules = get_loaded_extensions();
 	if(!in_arrayi('gd', $php_modules)) return;
@@ -67,21 +69,21 @@ function genStdThumb($path,$name){
 	$picture = imagecreatetruecolor($width, $height);
 	imagealphablending($picture, false);
 	imagesavealpha($picture, true);
-	$bool = imagecopyresampled($picture, $image, 0, 0, 0, 0, $width, $height, $src_w, $src_h); 
+	$success = imagecopyresampled($picture, $image, 0, 0, 0, 0, $width, $height, $src_w, $src_h); 
 	
-	if($bool)	{	
+	if($success)	{	
 		$thumbnailFile = $thumbsPath . "thumbnail." . $name;
 		debugLog($thumbnailFile);
 	    switch(getFileExtension($targetFile)) {
 	        case "jpeg":
 	        case "jpg":
-	            $bool2 = imagejpeg($picture,$thumbnailFile,85);
+	            $success = imagejpeg($picture,$thumbnailFile,85);
 	        break;
 	        case "png":
-	            imagepng($picture,$thumbnailFile);
+	            $success = imagepng($picture,$thumbnailFile);
 	        break;
 	        case "gif":
-	            imagegif($picture,$thumbnailFile);
+	            $success = imagegif($picture,$thumbnailFile);
 	        break;
 	    }
 	}
@@ -89,7 +91,7 @@ function genStdThumb($path,$name){
 	imagedestroy($picture);
 	imagedestroy($image);
 
-	return $bool && $bool2;
+	return $success;
 }
 
 
