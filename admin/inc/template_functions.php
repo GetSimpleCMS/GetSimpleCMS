@@ -561,7 +561,7 @@ function get_FileTypeToken($ext){
 		return 'AUDIO';
 	} elseif ( $ext == 'xml' || $ext == 'css' || $ext == 'htm' || $ext == 'html' || $ext == 'xhtml' || $ext == 'shtml' ) {
 		return 'WEB';
-	} elseif ( $ext == 'phtml' || $ext == 'php' || $ext == 'php4' || $ext == 'phps' || $ext == 'asp' || $ext == 'js' || $ext == 'jsp' || $ext == 'sql') {
+	} elseif ( $ext == 'phtml' || $ext == 'php' || $ext == 'php3' || $ext == 'php4' || $ext == 'php5' || $ext == 'phps' || $ext == 'asp' || $ext == 'js' || $ext == 'jsp' || $ext == 'sql') {
 		return 'SCRIPT';
 	} elseif ( $ext == 'mdb' || $ext == 'accdb' || $ext == 'pdf' || $ext == 'xls' || $ext == 'xlsx' || $ext == 'csv' || $ext == 'tsv' || $ext == 'ppt' || $ext == 'pps' || $ext == 'pptx' || $ext == 'txt' || $ext == 'log' || $ext == 'dat' || $ext == 'text' || $ext == 'doc' || $ext == 'docx' || $ext == 'rtf' || $ext == 'wks' ) {
 		return 'DOCUMENT';
