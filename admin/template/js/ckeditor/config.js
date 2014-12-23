@@ -22,10 +22,6 @@ CKEDITOR.editorConfig = function( config )
     config.filebrowserBrowseUrl        = 'upload.php?browse&type=all';
     config.filebrowserImageBrowseUrl   = 'upload.php?browse&type=images';
 
-    // legacy browsers
-    // config.filebrowserBrowseUrl        = 'filebrowser.php?type=all';
-    // config.filebrowserImageBrowseUrl   = 'filebrowser.php?type=images';
-
     // customize file browser popup windows below
     // config.filebrowserWindowWidth      = '960';
     // config.filebrowserWindowHeight     = '700';
