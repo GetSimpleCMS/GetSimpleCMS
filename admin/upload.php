@@ -178,7 +178,6 @@ function getUploadIcon($type){
 			$filenames  = getFiles($path);
 
 			if (count($filenames) != 0) { 
-				
 				foreach ($filenames as $file) {
 					if ($file == "." || $file == ".." || $file == ".htaccess" || $file == "index.php"){
             			// not a upload file
@@ -279,7 +278,6 @@ function getUploadIcon($type){
 
 		// show folders
 		foreach ($dirsSorted as $upload) {
-			
 			# check to see if folder is empty
 			$directory_delete = null;
 			if ( check_empty_folder($path.$upload['name']) && $allowdelete ) {  
@@ -324,7 +322,7 @@ function getUploadIcon($type){
 			echo '<tr class="all '.$upload['type'].'" >';
 			echo '<td class="imgthumb" >';
 			if ($upload['type'] == 'image') {
-				$gallery           = 'rel=" fancybox_i"';
+				$gallery           = 'rel="fancybox_i"';
 				$pathlink          = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subPath;
 				$thumbLink         = $urlPath.'thumbsm.'.$upload['name'];
 				$thumbLinkEncoded  = $urlPath.'thumbsm.'.rawurlencode($upload['name']);
@@ -337,7 +335,7 @@ function getUploadIcon($type){
 					$imgSrc = '<img src="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH). $thumbLinkEncoded .'" />';
 				}
 				// thumbnail link lightbox
-				echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel=" fancybox_i" >'.$imgSrc.'</a>';
+				echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel="fancybox_i" >'.$imgSrc.'</a>';
 
 				# get external thumbnail link
 				# if not exist generate it

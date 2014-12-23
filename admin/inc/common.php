@@ -493,7 +493,9 @@ if(isset($load['plugin']) && $load['plugin']){
 	// Include plugins files in global scope
 	loadPluginData();
 	if(function_exists('plugin_preload_callout')) plugin_preload_callout();	// @callout plugin_preload_callout callout before loading plugin files
+
 	foreach ($live_plugins as $file=>$en) {
+		// debugLog(in_array($file,$pluginnames));
 		if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
 			# debugLog('including plugin: ' . $file);
 			include_once(GSPLUGINPATH . $file);

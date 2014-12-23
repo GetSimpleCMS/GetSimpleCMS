@@ -338,6 +338,7 @@ function getFiles($path,$ext = null) {
 	$file_arr = array();
 
 	while ($file = readdir($handle)) {
+		// $file = utf8_encode($file); // @todo handle unicode in filenames on windows
 		if(isset($ext)){
 			$fileext = getFileExtension($file);
 			if ($fileext == $ext) $file_arr[] = $file;

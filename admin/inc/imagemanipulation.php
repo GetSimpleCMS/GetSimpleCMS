@@ -38,7 +38,7 @@ function genStdThumb($path,$name){
 		}
 	}
 
-	$targetFile = GSDATAUPLOADPATH.$path.$name;
+	$targetFile = GSDATAUPLOADPATH.tsl($path).$name;
 	
 	//thumbnail for post
 	$imgsize = getimagesize($targetFile);
