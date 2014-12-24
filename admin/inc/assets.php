@@ -95,6 +95,8 @@ $GS_script_assets['dropzone']['local']['ver']      = $getsimple_ver;
 // jcrop
 $GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/jquery.Jcrop.min.js';
 $GS_script_assets['jcrop']['local']['ver']        = $getsimple_ver;
+$GS_script_assets['jcrop']['queue']['style']      = 'jcrop';
+
  $GS_style_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/jquery.Jcrop.min.css';
  $GS_style_assets['jcrop']['local']['ver']        = $getsimple_ver;
 
