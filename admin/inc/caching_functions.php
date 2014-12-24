@@ -160,21 +160,6 @@ function getChildrenMulti($page,$options=array()){
 }
 
 /**
- * Return true if pagecache differs from pages
- * Uses very basic filecount checks
- * @todo  make more complex checking
- * 
- * @since 3.3.0 
- * @return bool
- */
-function pageCacheCountDiffers(){
-	GLOBAL $pagesArray;
-	$path = GSDATAPAGESPATH;
-	$filenames = getXmlFiles($path);
-	return count($pagesArray)!=count($filenames);
-}
-
-/**
  * LEGACY
  * Get Cached Pages XML File Values
  *
@@ -186,12 +171,40 @@ function pageCacheCountDiffers(){
  * @param bool $refresh check cache for pages changes and regen
  *  
  */
-
 function getPagesXmlValues($refresh=false){
 	GLOBAL $pagesArray;
 	if(!$pagesArray) init_pageCache($refresh);
 	return $pagesArray;
 }
+
+/**
+ * Initialize pagecache
+ * 
+ * @param bool $refresh regenerate cache from pages files if necessary according to check
+ * @param bool force   force regen regardless
+ */
+function init_pageCache($refresh = false) {
+	GLOBAL $pagesArray, $pageCacheXml;
+	
+	if($refresh){
+		if(!$pagesArray){
+			// should always be empty, but in case someone calls this more than once
+			$pageCacheXml = load_pageCacheXml();
+			$pagesArray   = pageCacheXMLtoArray($pageCacheXml);		
+		}
+		// @todo check page time diff before doing this check
+		$refresh  = pageCacheDiffers();
+	}	
+	// if refreshing or init generate/save
+	if($refresh || !$pagesArray){
+		$pageCacheXml = generate_pageCacheXml();
+		$status       = save_pageCacheXml($pageCacheXml);
+		$pagesArray = pageCacheXMLtoArray($pageCacheXml);
+	}
+
+	// debugLog($pagesArray);
+}
+
 
 /**
  * LEGACY
@@ -208,41 +221,67 @@ function create_pagesxml($save=false){
 	if((bool)$save){ 
 		save_pageCacheXml($pageCacheXml); 
 	}
-	pageCacheXMLtoArray($pageCacheXml);
+	$pagesArray = pageCacheXMLtoArray($pageCacheXml);
 }
 
 
+/* 
+ #################
+ # HELPERS
+ #################
+ */
+
+
 /**
- * Initialize pagecache
+ * Return true if pagecache differs from pages
+ * Uses very basic filecount checks
+ * @todo  make more complex checking
  * 
- * @param bool $refresh regenerate cache from pages files
+ * @since 3.3.0 
+ * @return bool
  */
-function init_pageCache($refresh = false) {
-	GLOBAL $pageCacheXml;
-
-	$file=GSDATAOTHERPATH."pages.xml";
-	
-	if (file_exists($file) && !$refresh){
-		// if exists load it
-		load_pageCache();
-	} else {
-		// else generate,save it,set global pagecache array
-  		$pageCacheXml = generate_pageCacheXml();
-		save_pageCacheXml($pageCacheXml);   		
-		pageCacheXMLtoArray($pageCacheXml);
-		return;
-	}
+function pageCacheCountDiffers(){
+	GLOBAL $pagesArray;
+	$path = GSDATAPAGESPATH;
+	$filenames = getXmlFiles($path);
+	debugLog($filenames);
+	return count($pagesArray)!=count($filenames);
 }
 
 /**
- * Loads in pagescache file xml to pagecache array
+ * Return true if pagecache differs from pages
+ * @todo  this will be a problem if pages do not store filename properly
+ * it will always fail, can probably add some kind of time checking
+ * @since 3.3.0 
+ * @return bool
  */
-function load_pageCache(){
-	GLOBAL $pagesArray,$pageCacheXml;
+function pageCacheDiffers(){
+	GLOBAL $pagesArray;
+	if(!$pagesArray) return true;
+	
+	$path          = GSDATAPAGESPATH;
+	$filenames     = getXmlFiles($path);
+	$filenames_old = array_column($pagesArray,'filename');
+
+	if(count($pagesArray) != count($filenames)) return true;
+
+	sort($filenames);
+	sort($filenames_old);
+	$new = md5(implode(',',$filenames));
+	$old = md5(implode(',',$filenames_old));
+
+	// debugLog($old . " " . $new);
+	return $new !== $old;
+
+}
+
+/**
+ * Loads in pagescache file xml 
+ */
+function load_pageCacheXml(){
 	$file = GSDATAOTHERPATH."pages.xml";	
-	$pagesArray=array(); // wipe array
-	$pageCacheXml = getXml($file);
-	pageCacheXMLtoArray($pageCacheXml); // create array from xml
+	$pageCacheXml = getXml($file,false);
+	return $pageCacheXml;
 }
 
 /**
@@ -251,10 +290,11 @@ function load_pageCache(){
  * @return sucess
  */
 function save_pageCacheXml($xml){
-	$file=GSDATAOTHERPATH."pages.xml";		
+	// debugLog(debug_backtrace());
+	$file = GSDATAOTHERPATH."pages.xml";		
   	// Plugin Authors should add custome fields etc.. here
   	$xml = exec_filter('pagecache',$xml); // @filter pagecache (obj) filter the page cache xml obj before save
-	if(!empty($xml)) $success = $xml->asXML($file);
+	if(!empty($xml)) XMLsave($xml,$file);
   	exec_action('pagecache-aftersave');	// @hook pagecache-aftersave pagecache data file was saved
   	return;
 }
@@ -267,7 +307,7 @@ function generate_pageCacheXml(){
 	// read in each pages xml file
 	$path = GSDATAPAGESPATH;
 	$filenames = getXmlFiles($path);
-	$xml = @new SimpleXMLExtended('<channel></channel>');
+	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
 	if (count($filenames) != 0) {
 		foreach ($filenames as $file) {
 			$data = getXml($path.$file);
@@ -294,14 +334,15 @@ function generate_pageCacheXml(){
 }
 
 /**
- * creates pagecache array from pagescache xml
+ * creates pagecache array from $pagesarray xml
  * 
  * @since 3.3.0
- * @uses $pagesArray
- * @param simpleXmlObj $xml xml object of page cache 
+ * @global $pagesArray
+ * @param simpleXmlObj $xml xml object of page cache
+ * @return  array new pagesarray
  */
 function pageCacheXMLtoArray($xml){
-	GLOBAL $pagesArray;
+	$pagesArray = array();
 	$data = $xml;
 	$pages = $data->item;
 	foreach ($pages as $page) {
@@ -314,14 +355,16 @@ function pageCacheXMLtoArray($xml){
 		}
 		$pagesArray[$key]['slug']=$key; // legacy
 		$pagesArray[$key]['filename']=$key.'.xml'; // legacy
-	}	
+	}
+
+	return $pagesArray;
 }
 
 /**
  * Adds a single page to pagecache array from page xml node
  * 
  * @since 3.3.0
- * @uses $pagesArray
+ * @global $pagesArray
  * @param simpleXmlObj $xml xml node of single page
  */
 function pageXMLtoArray($xml){
