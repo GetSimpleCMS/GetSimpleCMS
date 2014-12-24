@@ -121,6 +121,10 @@ $GS_definitions = array(
 	'GSDRAFTSTACKDEFAULT'  => true,                           // (bool) default page stack editing to drafts if true
 	'GSSDRAFTSPUBLISHEDTAG'=> true,                           // (bool) show published label on non draft pages if true
 	'GSAUTOSAVE'           => false,                          // (int)  auto save interval in seconds, disabled if false, only used for drafts currently
+	# IMAGES -------------------------------------------------------------------------------------------------------------------------------------------
+	'GSIMAGEWIDTH'         => 200,                            // (int) thumbnail size
+	'GSTHUMBSMWIDTH'       => 80,                             // (int) thumbsm max height
+	'GSTHUMBSMHEIGHT'      => 160,                            // (int) thumbsm max width
 	# DEBUGGING ----------------------------------------------------------------------------------------------------------------------------------------
 	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
 	'GSDEBUG'              => false,                          // (bool) output debug mode console
@@ -489,6 +493,7 @@ if(isset($load['plugin']) && $load['plugin']){
 	// Include plugins files in global scope
 	loadPluginData();
 	if(function_exists('plugin_preload_callout')) plugin_preload_callout();	// @callout plugin_preload_callout callout before loading plugin files
+
 	foreach ($live_plugins as $file=>$en) {
 		if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
 			# debugLog('including plugin: ' . $file);

@@ -371,7 +371,7 @@ if($newdraft) $pageClass.=' newdraft';
                         <p class="inline post-menu clearfix">
                             <input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> />&nbsp;&nbsp;&nbsp;
                             <label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label>
-                            <a href="navigation.php" class="viewlink" rel="facybox" alt="<?php echo strip_tags(i18n_r('VIEW')); ?>" >
+                            <a href="navigation.php" class="viewlink" rel="fancybox" alt="<?php echo strip_tags(i18n_r('VIEW')); ?>" >
                                 <span class="fa fa-search icon-right" style="opacity:0.2"></span>
                             </a>
                         </p>

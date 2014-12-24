@@ -284,7 +284,7 @@ function basename(str){
  * @todo add sprintf
  */
 function i18n(key){
-	Debugger.log(GS.i18n);
+	// Debugger.log(GS.i18n);
 	if(!GS.i18n) return;
 	return GS.i18n[key] || key;
 }
@@ -307,6 +307,8 @@ function getTagName(elem){
 jQuery(document).ready(function () {
 
 
+	// upload.php?browse
+	// filebrowser.php
 	if($('body#upload')){
 		if(getUrlParam('CKEditorFuncNum')) uploadCkeditorBrowse();
 		else if (getUrlParam('browse') !== undefined) uploadCustomBrowse();
@@ -320,7 +322,9 @@ jQuery(document).ready(function () {
 		if(!GS.debug) $('#footer').hide();
 		$('#sidebar ul li:not(".dispupload")').hide();
 		
-		if(getUrlParam('type') == 'images'){
+		Debugger.log(getUrlParam('type'));
+		
+		if(getUrlParam('type') == 'images' || getUrlParam('type') == 'image'){
 			$('#imageFilter').hide();
 			$('.thumblinkexternal').show();
 		}	
@@ -335,10 +339,11 @@ jQuery(document).ready(function () {
 				e.preventDefault();
 				var siteurl = GS.siteurl;
 				var fileUrl = $(this).data('fileurl');
+				// if popup call openers callback, else call ours
 				if(window.opener){
-					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search);
-					window.close();
-				} filebrowsercallback(siteurl+fileUrl,window.location.search);
+					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'primarylink');
+				} filebrowsercallback(siteurl+fileUrl,window.location.search,'primarylink');
+				filebrowserselectcomplete();				
 				return false;
 			});
 		});
@@ -351,27 +356,55 @@ jQuery(document).ready(function () {
 				e.preventDefault();
 				var siteurl = GS.siteurl;
 				var fileUrl = $(this).data('fileurl');
+				// if popup call openers callback, else call ours
 				if(window.opener){
-					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search);
-					window.close();
-				} filebrowsercallback(siteurl+fileUrl,window.location.search);
+					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'thumblink');
+				} filebrowsercallback(siteurl+fileUrl,window.location.search,'thumblink');
+				filebrowserselectcomplete();
 				return false;
 			});
 		});
 
 	}
 
+	// calback after selection is made, trigger filebrowserselected
 	function filebrowsercallback(url,arg1,arg2){
-		Debugger.log(url);
-		Debugger.log(arg1);
 		$(window).trigger('filebrowserselected',[url,arg1,arg2]);
 	}
 
-
-	$.fn.uploadBrowseThumb = function(){
-		if(getUrlParam('CKEditorFuncNum')) $(this).uploadCKEBrowseThumb();
-		else if (getUrlParam('browse') !== undefined) $(this).uploadCustomBrowseThumb();		
+	// callback when selection is complete, trigger filebrowserselectcompleted
+	function filebrowserselectcomplete(){
+		$(window).trigger('filebrowserselectcompleted');
 	}
+
+	$(window).on('filebrowserselectcompleted',function(e){
+		if(window.opener) window.close();
+	});
+
+	// return id implementation
+	// an input with the id of returnid will atutomatically receive the url as its value
+	$(window).on('filebrowserselected',function(event,url,search){
+		var returnid = getUrlParam('returnid',search);
+		if(returnid) {
+			$('input #'+returnid).val(url); // set input value to url
+		}
+	});
+
+	// handle thumbnail lightbox buttons, add custom handlers
+	$.fn.uploadBrowseThumb = function(){
+		_this = $(this);
+		var link = $.parseHTML('<a class="label label-ghost right" href="' + _this.get(0).href + '" data-fileurl="'+ _this.get(0).href +'">'+i18n("SELECT_FILE")+'</a>');
+		if(getUrlParam('CKEditorFuncNum')){
+			$(link).uploadCKEBrowseThumb();
+			$('.fancybox-title').append($(link));
+		}	
+		else if (getUrlParam('browse') !== undefined){
+			$(link).uploadCustomBrowseThumb();		
+			$('.fancybox-title').append($(link));
+		}
+			
+	}
+
 
 	$.fn.uploadCustomBrowseThumb = function(){
 		$(this).on('click',function(e){
@@ -379,11 +412,11 @@ jQuery(document).ready(function () {
 			var siteurl = '';
 			var fileUrl = $(this).data('fileurl');
 			if(window.opener){
-				window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search);
+				window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'lightboxlink');
 				window.close();
-			} filebrowsercallback(siteurl+fileUrl,window.location.search);
+			} filebrowsercallback(siteurl+fileUrl,window.location.search,'lightboxlink');
 			return false;
-		});		
+		});
 	}
 
 	$.fn.uploadCKEBrowseThumb = function(){
@@ -398,6 +431,7 @@ jQuery(document).ready(function () {
 		});
 	}
 
+	// @todo abstract all this through custom with custom callbacks and listeners
 	function uploadCkeditorBrowse(){
 		Debugger.log('upload ckeditor browse');
 		uploadBrowse();
@@ -406,18 +440,6 @@ jQuery(document).ready(function () {
 		var funcnum  = getUrlParam('CKEditorFuncNum');
 		var editorid = getUrlParam('CKEditor');
 		var langcode = getUrlParam('langCode');
-
-		// setup ckeditor callbacks
-
-		// add cke func num to folder links
-		// @todo this is no longer necessary, since I am preserving in php
-		// 
-		// $('tr.folder a').each(function(item){
-		// 	var href = $(this).prop('href');
-		// 	$(this).prop('href',href+'&CKEditorFuncNum='+funcnum)
-		// 	$(this).prop('href',href+'&CKEditor='+editorid)
-		// 	$(this).prop('href',href+'&langCode='+langcode)
-		// });
 
 		var path = getUrlParam('path') ? getUrlParam('path')+'/' : '';
 
@@ -461,10 +483,11 @@ jQuery(document).ready(function () {
 	// Helper function to get parameters from the query string.
 	// @todo this is temporary, splitters are much faster than regex, 
 	// plus we will probably need a url mutator library in core soon 
-	function getUrlParam(paramName)
+	function getUrlParam(paramName,search)
 	{
+		if(search == undefined) search = window.location.search;
 		var reParam = new RegExp('(?:[\?&]|&amp;)' + paramName + '=?([^&]+)?', 'i') ;
-		var match = window.location.search.match(reParam) ;
+		var match = search.match(reParam);
 		if(match && match.length > 1){
 			// Debugger.log(match[1]);
 			if(typeof match[1] == 'undefined') return '';
@@ -643,7 +666,7 @@ jQuery(document).ready(function () {
 	// bind delete component button
 	$("#maincontent").on("click",'.delcomponent', function ($e) {
 		$e.preventDefault();
-		Debugger.log($(this));
+		// Debugger.log($(this));
 		var message = $(this).attr("title");
 		var compid = $(this).attr("rel");
 		var answer = confirm(message);
@@ -753,6 +776,7 @@ jQuery(document).ready(function () {
 				return false;
 			}
 		} else {
+			Debugger.log('confirm answered no');
 			mytr.css('font-style', 'normal');
 			return false;
 		}
@@ -794,20 +818,16 @@ jQuery(document).ready(function () {
 	if (jQuery().fancybox) {
 
 		// default
-		$('a[rel*=facybox]').fancybox({
+		$('a[rel*=fancybox]').fancybox({
 			type: 'ajax',
 			padding: 0,
 			scrolling: 'auto'
 		});
 
 		// used for images
-		$('a[rel*=facybox_i]').fancybox({
-			afterShow: function(e) {
-				Debugger.log(this);
-			    var link = $.parseHTML('<a class="label label-ghost right" href="' + this.href + '" data-fileurl="'+ this.href +'">'+i18n("SELECT_FILE")+'</a>');
-			    $(link).uploadBrowseThumb();
-			    this.title = this.title;
-			    $('.fancybox-title').append($(link));
+		$('a[rel*=fancybox_i]').fancybox({
+			afterShow: function(e) {				
+				$(this).uploadBrowseThumb();
 			},
 			helpers: {
 			    title: {
@@ -817,7 +837,7 @@ jQuery(document).ready(function () {
 		});
 
 		// used for share
-		$('a[rel*=facybox_s]').fancybox({
+		$('a[rel*=fancybox_s]').fancybox({
 			type: 'ajax',
 			padding: 0,
 			scrolling: 'no'
@@ -831,6 +851,8 @@ jQuery(document).ready(function () {
     }
 
     function ajaxStatusComplete(){
+    	pageisdirty = false;
+    	warnme      = false;
     	$('input[type=submit]').attr('disabled', false);
 		loadingAjaxIndicator.fadeOut();
 		$("body").removeClass('dirty');	
@@ -883,7 +905,7 @@ jQuery(document).ready(function () {
 					mytd.html(old).removeClass('ajaxwait_tint_dark');
 					$('.toggleEnable').removeClass('disabled');
 					loadingAjaxIndicator.fadeOut();
-					Debugger.log(mytd.data('spinner'));
+					// Debugger.log(mytd.data('spinner'));
 					mytd.data('spinner').stop(); // @todo not working, spinner keeps spinning
 					$(response).find('div.updated').parseNotify();
 				} else {
@@ -1729,6 +1751,7 @@ jQuery(document).ready(function () {
 		}
 		else if(xhr.status == 302){
 			Debugger.log("Redirecting...");
+			ajaxStatusComplete();	
 			window.location = xhr.responseText;
 		}
 	});
