@@ -321,6 +321,8 @@ function getUploadIcon($type){
 			$counter++;
 			echo '<tr class="all '.$upload['type'].'" >';
 			echo '<td class="imgthumb" >';
+
+			// handle images
 			if ($upload['type'] == 'image') {
 				$gallery           = 'rel="fancybox_i"';
 				$pathlink          = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subPath;
@@ -329,11 +331,13 @@ function getUploadIcon($type){
 				$thumbLinkExternal = $urlPath.'thumbnail.'.$upload['name'];
 				$primarylink       = getRelPath(GSDATAUPLOADPATH).$urlPath. rawurlencode($upload['name']);
 
+				// 
 				if (!file_exists(GSTHUMBNAILPATH.$thumbLink) || isset($_REQUEST['regenthumbsm'])) {					
 					$imgSrc = '<img src="inc/thumb.php?src='. $urlPath . rawurlencode($upload['name']) .'&amp;dest='. $thumbLinkEncoded .'&amp;f=1&x='.$thumbsm_w.'&y='.$thumbsm_h.'" />';
 				} else {
 					$imgSrc = '<img src="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH). $thumbLinkEncoded .'" />';
 				}
+
 				// thumbnail link lightbox
 				echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel="fancybox_i" >'.$imgSrc.'</a>';
 
@@ -347,12 +351,15 @@ function getUploadIcon($type){
 				$thumbnailLink = '<a href="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" class="label label-ghost thumblinkexternal" data-fileurl="'.getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'">'.i18n_r('THUMBNAIL').'</a>';
 
 			} else {
+				// other files
 				$gallery      = '';
 				$controlpanel = '';
-				$pathlink     = $path . $upload['name'];
+				$pathlink     = tsl($SITEURL).getRelPath($path) . $upload['name'];
 			}
+			
 			// name column linked
 			echo '</td><td>'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink" data-fileurl="'.$primarylink.'">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
+			
 			// size column
 			echo '<td class="file_size right"><span>'. $upload['size'] .'</span></td>';
      
