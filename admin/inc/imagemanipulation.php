@@ -1,5 +1,80 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 
+
+/**
+ * get the filepath for a thumbnail
+ * @param  str $file        filename of the thumbnail
+ * @param  string $upload_path upload path
+ * @param  string $type     the thumbnail type id
+ * @return str              file path to the thumbnail file
+ */
+function getThumbnailFile($file, $upload_path = '',$type = 'thumbnail'){
+	return 	GSTHUMBNAILPATH.tsl($upload_path).(!empty($type) ? '.' : '').$file;
+}
+
+/**
+ * get the url for a thumbnail
+ * @param  str $file        filename of the thumbnail
+ * @param  string $upload_path upload path
+ * @param  string $type        the thumbnail type id
+ * @return str              url to the thumbnail asset
+ */
+function getThumbnailURI($file, $upload_path = '',$type = 'thumbnail'){
+	GLOBAL $SITEURL;
+	return tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).tsl($upload_path).(!empty($type) ? '.' : '').$file;
+}
+
+/**
+ * get the url for an upload file
+ * @param  str $file        filename
+ * @param  string $upload_path uploads path
+ * @return str              url for this upload file asset
+ */
+function getUploadURI($file, $upload_path = ''){
+	GLOBAL $SITEURL;
+	return tsl($SITEURL).getRelPath(GSDATAUPLOADPATH).tsl($upload_path).$file;
+}
+
+/**
+ * get array of thumbnails and info
+ * @param  string  $upload_path the upload sub path
+ * @param  string  $type        optional thumbnail type eg thumbsm, thumbnail to filter by
+ * @param  string  $filename    optional filename to filter
+ * @param  boolean $recurse     optional true: recurse into subdirectories
+ * @return array                assoc array with thumbnail attributes
+ */
+function getThumbnails($upload_path = '', $type = '', $filename = '', $recurse = false){
+	$thumbs_array = array();
+	$files = directoryToArray(GSTHUMBNAILPATH.tsl($upload_path),$recurse);
+	foreach($files as $file){
+		$split     = strpos(basename($file),'.');
+		$thumbtype = substr(basename($file),0,$split);
+		$origfile  = substr(basename($file),$split+1);
+
+		if(!empty($filename) && $filename !== $origfile) continue;
+
+		if(empty($thumbtype) || (!empty($type) && $type !==  $thumbtype)){
+			continue;
+		}
+
+		$thumb = getimagesize($file);
+		debugLog('thumbnail ' . $file);			
+		$thumb['width']       = $thumb[0]; unset($thumb[0]); 
+		$thumb['height']      = $thumb[1]; unset($thumb[1]);
+		$thumb['type']        = $thumb[2]; unset($thumb[2]);
+		$thumb['attrib']      = $thumb[3]; unset($thumb[3]);
+		$thumb['uploadpath']  = tsl(getRelPath($upload_path,GSTHUMBNAILPATH));
+		$thumb['primaryfile'] = GSDATAUPLOADPATH . $thumb['uploadpath'] . $origfile;
+		$thumb['primaryurl']  = getUploadURI($origfile,$thumb['uploadpath']);
+		$thumb['thumbfile']   = getThumbnailFile(basename($file),$upload_path,'');
+		$thumb['thumburl']    = getThumbnailURI(basename($file),$upload_path,'');
+		$thumb['thumbtype']   = $thumbtype;
+		$thumbs_array[] = $thumb;
+	}
+	return $thumbs_array;
+}
+
+
 /**
  * Generate standard thumbnails
  * @param  string $path path to image
@@ -15,13 +90,22 @@ function genStdThumb($subpath,$file){
 		$width = getDef('GSIMAGEWIDTH');
 	}
 
-	generate_thumbnail($subpath,$file,$width);
+	generate_thumbnail($file,$subpath,$width);
 }
 
-function generate_thumbnail($sub_path, $file, $w, $h = null){
+/**
+ * generate a thumbnail
+ * @param  str  $sub_path upload path
+ * @param  str  $file     filename
+ * @param  int  $w        desired width
+ * @param  int  $h        desired max height, optional, will limit height and adjust width accordingly 
+ * @param  boolean $upscale  true, allows image to scale up/zoom to fit thumbnail
+ * @return bool            success
+ */
+function generate_thumbnail($file, $sub_path = '', $w, $h = null, $upscale = false){
 	//gd check, do nothing if no gd
 	$php_modules = get_loaded_extensions();
-	if(!in_arrayi('gd', $php_modules)) return;
+	if(!in_arrayi('gd', $php_modules)) return false;
 
 	$sub_path      = tsl($sub_path);
 	$upload_folder = GSDATAUPLOADPATH.$sub_path;
@@ -31,13 +115,13 @@ function generate_thumbnail($sub_path, $file, $w, $h = null){
 
 	$objImage = new ImageManipulation($upload_folder.$file);
 	if ( $objImage->imageok ) {
+		if($upscale) $objImage->setUpscale();
 		if(isset($h)) $objImage->setImageWidth($w,$h); 
 		else{
 			$objImage->setImageWidth($w);
-			// $objImage->resize($w); // constrains both dimensions to $size
+			// $objImage->resize($w); // constrains both dimensions to $size, same as setImageWidth($w,$w);
 		}
-		$objImage->save($thumb_folder . 'thumbnail.' .$file);
-		debugLog($objImage->image);
+		return $objImage->save($thumb_folder . 'thumbnail.' .$file);
 	} else {
 		return false;
 	}
@@ -45,9 +129,10 @@ function generate_thumbnail($sub_path, $file, $w, $h = null){
 
 
 /**
- * ImageManipulation
+ * ImageManipulation Class
  *
  * @author 	  Tech @ Talk In Code
+ * @modified http://getsimple-cms.info
  * @link http://www.talkincode.com/
  * @version   1.0
  * @copyright 2009 Talk In Code
