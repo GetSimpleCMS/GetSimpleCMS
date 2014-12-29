@@ -248,6 +248,10 @@ class ImageManipulation {
 		$this->image["quality"] = $quality;
 	}
 
+	public function setOutputFormat($format){
+		$this->image["format_out"] = $format;
+	}
+
 	/**
      * Sets the PNG output quality.
      *
