@@ -344,7 +344,7 @@ function getFiles($path,$ext = null) {
 			if ($fileext == $ext) $file_arr[] = $file;
 		}
 		else {
-			if ($file != '.' && $file != '..') {
+			if ($file != '.' && $file != '..' && $file!='thumbs.db') {
 				$file_arr[] = $file;
 			}
 		}	
@@ -1810,11 +1810,11 @@ function removerelativepath($file) {
  * @param $recursive boolean whether to do a recursive scan or not. 
  * @return array or files and folders
  */
-function directoryToArray($directory, $recursive) {
+function directoryToArray($directory, $recursive = true) {
 	$array_items = array();
 	if ($handle = opendir($directory)) {
 		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != "..") {
+			if ($file != "." && $file != ".." && $file != "thumbs.db") {
 				if (is_dir($directory. "/" . $file)) {
 					if($recursive) {
 						$array_items = array_merge($array_items, directoryToArray($directory. "/" . $file, $recursive));
