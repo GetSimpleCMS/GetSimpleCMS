@@ -2104,6 +2104,31 @@ textarea.copykit {
 	margin-bottom: 10px;
 }
 
+.thumbs img{
+	max-height:80px;
+	max-width:80px;
+	margin:2px;
+	border:1px solid black;
+}
+
+.thumbcontainer {
+	display:inline-block;
+	float:left;
+	padding:10px;
+	margin: 10px 10px 10px 0;
+	border-radius:3px;
+}
+
+.thumbcontainer:hover{
+	border:1px solid #ddd;
+	padding:9px;
+}
+
+#img-info {
+	width: auto;
+	margin-bottom: 5px;
+}
+
 #handw {
 	z-index: 1;
 	padding: 8px;
@@ -2125,6 +2150,9 @@ textarea.copykit {
 	margin: 20px 0 0 0;
 }
 
+.jcrop-holder {
+	border:1px solid black !important;
+}
 
 /* Labels */
 .label {
