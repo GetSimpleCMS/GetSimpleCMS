@@ -2105,8 +2105,8 @@ textarea.copykit {
 }
 
 .thumbs img{
-	max-height:80px;
-	max-width:80px;
+	max-height:200px;
+	max-width:200px;
 	margin:2px;
 	border:1px solid black;
 }

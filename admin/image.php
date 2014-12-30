@@ -83,7 +83,8 @@ include('template/include-nav.php'); ?>
 			echo '<div class="thumbs clearfix">';
 
 			echo '<div class="thumbcontainer"><a href="'.$src_url .rawurlencode($src).'" rel="fancybox_i" >';
-			echo '<div><img src="'.$thumb_url . 'thumbsm.'. rawurlencode($src).'"></div>';
+			// echo '<div><img src="'.$thumb_url . 'thumbsm.'. rawurlencode($src).'"></div>';
+			echo '<div><img src="'.$src_url . rawurlencode($src).'"></div>';
 			echo i18n_r('ORIGINAL_IMG') .'<br/><code>'.$imgwidth.'x'.$imgheight .'</code>';
 			echo "</a></div>";
 
@@ -160,13 +161,13 @@ if($jcrop){ ?>
 					// onDblClick: jcropDblClick,
 					boxWidth: $('#jcrop_open').width(), 
 					boxHeight: 800,
-					bgColor: 'black'
-					// bgOpacity: 0.3
-					// bgFade: true,
-					// borderOpacity: 0.8,
-					// handleOpacity: 0.4
-					// drawBorders: false,
-					// handleSize: '5px'
+					bgColor: 'black',
+					bgOpacity: 0.3,
+					bgFade: true,
+					borderOpacity: 0.8,
+					handleOpacity: 0.4,
+					drawBorders: false,
+					handleSize: '5px'
 			  	});
 
 				$('#cropbox').data('jcrop',api);
