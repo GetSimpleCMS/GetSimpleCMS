@@ -414,7 +414,7 @@ jQuery(document).ready(function () {
 	// handle thumbnail lightbox buttons, add custom handlers
 	$.fn.uploadBrowseThumb = function(){
 		_this = $(this);
-		var link = $.parseHTML('<a class="label label-ghost right" href="' + _this.get(0).href + '" data-fileurl="'+ _this.get(0).href +'">'+i18n("SELECT_FILE")+'</a>');
+		var link = $.parseHTML('<div style="display:inline-block;vertical-align:middle;"><a class="label label-ghost right" href="' + _this.get(0).href + '" data-fileurl="'+ _this.get(0).href +'">'+i18n("SELECT_FILE")+'</a></div>');
 		if(getUrlParam('CKEditorFuncNum')){
 			$(link).uploadCKEBrowseThumb();
 			$('.fancybox-title').append($(link));
@@ -917,9 +917,11 @@ jQuery(document).ready(function () {
 			afterShow: function(e) {				
 				$(this).uploadBrowseThumb();
 			},
+			padding : 0,
 			helpers: {
 			    title: {
-			        type: "inside"
+			        // type: "inside"
+			        type: "over"
 			    }
 			}
 		});

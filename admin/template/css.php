@@ -2266,6 +2266,42 @@ a.label:hover{
 	cursor: hand;	
 }
 
+.fancybox-title .label{
+/*.label-ghost {*/
+	background-color: rgba(221, 221, 221, 0.25) !important;
+	color: #888;
+	margin-left: 14px;
+}
+
+.fancybox-title-over-wrap {
+	background: rgba(0, 0, 0, 0.5) !important;
+	border-radius: 0 5px 0 0;
+	padding: 7px 14px 4px 14px !important;
+	box-sizing: border-box;
+	word-break: break-all;
+	color : #F2F2F2 !important;
+}
+
+.fancybox-title-over-wrap .label{
+	color: #F2F2F2;
+	margin-right: -7px;	
+}
+
+.fancybox-title-inside-wrap{
+	/*display: inline-block;*/
+	/*background: rgba(0, 0, 0, 0.5) !important;*/
+	padding: 7px 7px 7px 14px !important;
+	box-sizing: border-box;
+	word-break: break-all;
+	background-color: black;
+	color: #888;
+	border-top: 1px solid rgba(255, 255, 255, 0.5);	
+}
+
+.fancybox-skin{
+	background-color: black !important;
+}
+
 button.label{
 	border: none;
 	color: inherit;
