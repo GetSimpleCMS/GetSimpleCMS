@@ -2133,6 +2133,11 @@ textarea.copykit {
 	margin-bottom: 5px;
 }
 
+
+#cropbox {
+	display:none;
+}
+
 #handw {
 	float:left;
 	z-index: 1;
