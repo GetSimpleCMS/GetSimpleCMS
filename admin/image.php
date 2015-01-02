@@ -129,17 +129,22 @@ if($jcrop){ ?>
 	<div class="main">
 	<h3 class="floated"><?php i18n('CREATE_THUMBNAIL');?></h3>
 	<div class="clearfix" ></div>
+	<div style="color:#666;font-size:11px;"><?php i18n('CROP_INSTR_NEW');?></div><br/>
+	<form id="jcropform" action="<?php myself(); ?>?i=<?php echo rawurlencode($src); ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
 	<div id="jcrop_open">
 	    <img src="<?php echo $src_url .rawurlencode($src); ?>" id="cropbox" />
-		<div id="handw" class="toggle" ><?php i18n('SELECT_DIMENTIONS'); ?><br /><span id="picw"></span> x <span id="pich"></span></div>
+		<div id="handw" class="" ><?php i18n('SELECT_DIMENTIONS'); ?><br /><span id="picw">0</span> x <span id="pich">0</span></div>
+	    <input id="cropsave" type="submit" class="submit" value="<?php i18n('CREATE_THUMBNAIL');?>" /> &nbsp;
+	    <div class="clearfix"></div>
 	    <Br/>
 	    <!-- This is the form that our event handler fills -->
-	    <form id="jcropform" action="<?php myself(); ?>?i=<?php echo rawurlencode($src); ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
-	      <label for="x">X</label><input class="jcropinput" type="" id="x" name="x" />
-	      <label for="y">Y</label><input class="jcropinput" type="" id="y" name="y" />
-	      <label for="w">W</label><input class="jcropinput" type="" id="w" name="w" />
-	      <label for="h">H</label><input class="jcropinput" type="" id="h" name="h" />
-	      <Br><input type="submit" class="submit" value="<?php i18n('CREATE_THUMBNAIL');?>" /> &nbsp; <span style="color:#666;font-size:11px;"><?php i18n('CROP_INSTR_NEW');?></span>
+	    <a id="cropinputoggle" href="javascript:void(0);" data-toggle="cropinputs"><?php i18n('CROP_TOGGLE_INPUTS'); ?></a>
+	    <div id="cropinputs" class="toggle">
+	      <div class="inline"><label for="x">X</label><input class="jcropinput" type="" id="x" name="x" value="0"/></div>
+	      <div class="inline"><label for="y">Y</label><input class="jcropinput" type="" id="y" name="y" value="0"/></div>
+	      <div class="inline"><label for="w">W</label><input class="jcropinput" type="" id="w" name="w" value="0"/></div>
+	      <div class="inline"><label for="h">H</label><input class="jcropinput" type="" id="h" name="h" value="0"/></div>
+	    </div>
 	    </form>
 	</div>
 	</div>
@@ -158,6 +163,7 @@ if($jcrop){ ?>
 				var api = $.Jcrop('#cropbox',{
 					onChange: updateCoords,
 					onSelect: updateCoords,
+					onRelease: updateCoordsReset,
 					// onDblClick: jcropDblClick,
 					boxWidth: $('#jcrop_open').width(), 
 					boxHeight: 800,

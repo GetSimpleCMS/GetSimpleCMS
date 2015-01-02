@@ -1106,6 +1106,10 @@ label span.right a:hover {
 	padding-top: 3px;
 }
 
+span.inline {
+	white-space: nowrap;
+}
+
 label.checkbox {
 	width: 100px;
 	margin-right: 3px;
@@ -2130,6 +2134,7 @@ textarea.copykit {
 }
 
 #handw {
+	float:left;
 	z-index: 1;
 	padding: 8px;
 	background: #000;
@@ -2147,12 +2152,24 @@ textarea.copykit {
 }
 
 #jcropform .submit {
-	margin: 20px 0 0 0;
+	margin: 10px;
+	float:left;
+	vertical-align: middle;
 }
 
 .jcrop-holder {
-	border:1px solid black !important;
+	border: 1px solid black !important;
 }
+
+#jcropform label {
+	width: 10px;
+}
+
+.jcropinput {
+	width: 100px;
+	margin: 5px;
+}
+
 
 /* Labels */
 .label {
@@ -2174,7 +2191,7 @@ textarea.copykit {
 	        transition-property: background-color, color, text-shadow; 	
 }
 
-div.label{
+div.`{
 	display:inline-block;
 }
 
@@ -2978,6 +2995,26 @@ a.disabled:visited {
 
 .icon-left{
 	margin-right:4px;
+}
+
+kbd
+{
+    -moz-border-radius:3px;
+    -moz-box-shadow:0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
+    -webkit-border-radius:3px;
+    -webkit-box-shadow:0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
+    background-color:#f7f7f7;
+    border:1px solid #ccc;
+    border-radius:3px;
+    box-shadow:0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
+    color:#333;
+    display:inline-block;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:11px;
+    line-height:1.4;
+    margin:0 .1em;
+    padding:.1em .6em;
+    text-shadow:0 1px 0 #fff;
 }
 
 /* codemirror */

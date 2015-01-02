@@ -26,9 +26,15 @@ function randomNum(m,n) {
       return Math.floor( Math.random() * (n - m + 1) ) + m;
 }
 
+function updateCoordsReset(){
+	var c = {x:0,y:0,w:0,h:0};
+	updateCoords(c);
+}
+
 /* jcrop display */
 function updateCoords(c) {
 	Debugger.log("updatecoords");
+	Debugger.log(c);	
 	if($('#cropbox').data('animating')) return;
 	var x = Math.round(c.x);
 	var y = Math.round(c.y);
@@ -615,7 +621,7 @@ jQuery(document).ready(function () {
 	}
 
 	function updateCoordsCallback(c) {
-		Debugger.log('updatecoords');
+		Debugger.log('updatecoords animateto callback');
 		Debugger.log(c);
 		if($('#cropbox').data('animating')) return;
 		var x = Math.round(c.x);
@@ -1827,6 +1833,11 @@ jQuery(document).ready(function () {
 			e.preventDefault();
 			return false;
 		}
+	});
+
+	// auto toggle on click id selector from data-toggle attr
+	$('a[data-toggle]').on('click',function(e){
+		if($("#"+$(this).data('toggle')).get(0)) $('#'+$(this).data('toggle')).toggle();
 	});
 
 	// catch all ajax error, and redirects for session timeout on HTTP 401 unauthorized
