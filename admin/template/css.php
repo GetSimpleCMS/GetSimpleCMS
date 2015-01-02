@@ -2111,7 +2111,6 @@ textarea.copykit {
 .thumbs img{
 	max-height:128px;
 	max-width:128px;
-	margin:2px;
 	border:1px solid black;
 }
 
