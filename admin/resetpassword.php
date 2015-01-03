@@ -40,7 +40,7 @@ if(isset($_POST['submitted'])){
 				backup_datafile(GSUSERSPATH.$file);
 				
 				# copy user file into password change trigger file
-				$flagfile = GSUSERSPATH . _id($userid).".xml.reset";
+				$flagfile = GSUSERSPATH . getPWDresetName(_id($userid), 'xml');
 				copy_file(GSUSERSPATH . $file, $flagfile);
 				
 				# change password and resave xml file
