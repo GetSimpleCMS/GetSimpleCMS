@@ -55,7 +55,7 @@ function loadPluginData(){
 	} 
 
 	// Check if data\other\plugins.xml exists 
-	if (!file_exists(GSDATAOTHERPATH."plugins.xml")){
+	if (!file_exists(GSDATAOTHERPATH.getDef('GSPLUGINSFILE'))){
 		create_pluginsxml();
 		registerInactivePlugins(get_filename_id() == 'plugins');
 		return true;
@@ -164,7 +164,7 @@ function plugin_active($pluginid){
 function read_pluginsxml($data = null){
   	global $live_plugins;   
    
-	if(!$data) $data = getXML(GSDATAOTHERPATH . "plugins.xml");
+	if(!$data) $data = getXML(GSDATAOTHERPATH . getDef('GSPLUGINSFILE'));
 	if($data){
    		$live_plugins= array(); // clean live_plugins
 		$pluginitem = $data->item;
@@ -230,7 +230,7 @@ function create_pluginsxml($force=false){
 			}
 		}
 
-		$success = XMLsave($xml, GSDATAOTHERPATH."plugins.xml");
+		$success = XMLsave($xml, GSDATAOTHERPATH.getDef('GSPLUGINSFILE'));
 		read_pluginsxml($xml);
 	}
 

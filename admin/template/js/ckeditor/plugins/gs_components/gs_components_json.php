@@ -14,8 +14,8 @@ include('../../../../../inc/theme_functions.php');
 // function get_components() {
     global $components;
     if (!$components) {
-         if (file_exists(GSDATAOTHERPATH.'components.xml')) {
-            $data = getXML(GSDATAOTHERPATH.'components.xml');
+         if (file_exists(GSDATAOTHERPATH.GSCOMPONENTSFILE)) {
+            $data = getXML(GSDATAOTHERPATH.GSCOMPONENTSFILE);
             $components = $data->item;
         } else {
             $components = array();

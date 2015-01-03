@@ -73,7 +73,7 @@ if(isset($_POST['submitted'])) {
 		}
 		
 		# create password change trigger file
-		$flagfile = GSUSERSPATH . _id($USR).".xml.reset";
+		$flagfile = GSUSERSPATH . getPWDresetName(_id($USR), 'xml');
 		copy_file(GSUSERSPATH . $file, $flagfile);
 		
 		# create new GSWEBSITEFILE (website.xml) file

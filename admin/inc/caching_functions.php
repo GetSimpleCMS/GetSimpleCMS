@@ -279,7 +279,7 @@ function pageCacheDiffers(){
  * Loads in pagescache file xml 
  */
 function load_pageCacheXml(){
-	$file = GSDATAOTHERPATH."pages.xml";	
+	$file = GSDATAOTHERPATH.getDef('GSPAGECACHEFILE');	
 	$pageCacheXml = getXml($file,false);
 	return $pageCacheXml;
 }
@@ -291,7 +291,7 @@ function load_pageCacheXml(){
  */
 function save_pageCacheXml($xml){
 	// debugLog(debug_backtrace());
-	$file = GSDATAOTHERPATH."pages.xml";		
+	$file = GSDATAOTHERPATH.getDef('GSPAGECACHEFILE');		
   	// Plugin Authors should add custome fields etc.. here
   	$xml = exec_filter('pagecache',$xml); // @filter pagecache (obj) filter the page cache xml obj before save
 	if(!empty($xml)) XMLsave($xml,$file);
