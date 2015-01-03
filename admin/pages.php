@@ -18,8 +18,11 @@ login_cookie_check();
 exec_action('load-pages');
 
 // Variable settings
-$id      =  isset($_GET['id']) ? $_GET['id'] : null;
-$ptype   = isset($_GET['type']) ? $_GET['type'] : null; 
+
+// inputs for error_checking
+$id      = isset($_GET['id']) ? var_in($_GET['id']) : null;
+$ptype   = isset($_GET['type']) ? var_in($_GET['type']) : null;
+
 $path    = GSDATAPAGESPATH;
 $counter = '0';
 $table   = '';
@@ -31,7 +34,7 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 
 	$status = clone_page($_GET['id']);
 	if ($status !== false) {
-		create_pagesxml('true');
+		exec_action('page-clone'); // @hook page-clone page was cloned
 		redirect('pages.php?upd=clone-success&id='.$status);
 	} else {
 		$error = sprintf(i18n_r('CLONE_ERROR'), var_out($_GET['id']));
@@ -82,7 +85,7 @@ get_template('header');
 				<form><input type="text" autocomplete="off" class="text" id="q" placeholder="<?php echo strip_tags(lowercase(i18n_r('FILTER'))); ?>..." /> &nbsp; <a href="pages.php" class="cancel"><?php i18n('CANCEL'); ?></a></form>
 			</div>
 			<?php exec_action(get_filename_id().'-body'); ?>		
-			<table id="editpages" class="edittable highlight striped paginate tree">
+			<table id="editpages" class="edittable highlight striped paginate tree filter">
 				<thead>
 					<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th><th></th></tr>
 				</thead>					

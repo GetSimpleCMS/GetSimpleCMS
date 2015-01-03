@@ -20,13 +20,15 @@
 	}
 
 	if(!isset($update)) $update = '';
-	if(isset($_GET['upd'])) 	$update  = var_in($_GET['upd']);
-	if(isset($_GET['success'])) $success = var_in($_GET['success']);
-	if(isset($_GET['error'])) 	$error   = var_in($_GET['error']);
+	if(isset($_GET['upd'])) 	$update  = var_in($_GET['upd']); // preset update tokens
+	if(isset($_GET['id'])) 		$errid   = var_in($_GET['id']);  // preset id argument
+	if(isset($_GET['old'])) 	$oldid   = var_in($_GET['old']); // preset old id argument
+
+	if(isset($_GET['success'])) $success = var_in($_GET['success']); // generic success msg
+	if(isset($_GET['error'])) 	$error   = var_in($_GET['error']);   // generic error msg
 	// if(isset($_GET['err'])) 	$err     = var_in($_GET['err']); // deprecated not used
-	if(isset($_GET['id'])) 		$errid   = var_in($_GET['id']);
-	if(isset($_GET['old'])) 	$oldid   = var_in($_GET['old']);
-	if(isset($_GET['updated']) && $_GET['updated'] == 1) $success = i18n_r('SITE_UPDATED'); // for update.php only
+
+	if(isset($_GET['updated']) && $_GET['updated'] == 1) $success = i18n_r('SITE_UPDATED'); // RESERVED for update.php only for site upgrades
 
 	$dbn = false; // debug notifications
 
@@ -47,40 +49,68 @@
 			doNotify('warning','warning',$persistant);			
 		if(!$dbn) break;
 		case 'bak-success':
+			// backup delete success
 			doNotify(sprintf(i18n_r('ER_BAKUP_DELETED'), $errid) .'</p>','success');
 		if(!$dbn) break;
 		case 'bak-err':
+		    // backup general error
 			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_REQ_PROC_FAIL'),'error');
 		if(!$dbn) break;
 		case 'edit-success':
+			
+			if(!isset($ptype) && isset($_GET['ptype'])) $ptype = var_in($_GET['ptype']); // preset update tokens
+			
+			if(isset($_GET['upd-draft']) || (isset($upddraft) && $upddraft == true )){
+				$draftqs = '&draft';
+				$dispid      = $id . ' (' . titlecase(i18n_r('LABEL_DRAFT')) .')';
+			} else $dispid = $id;
+
 			if ($ptype == 'edit' && !isset($oldid)) {
-				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','success',true);
+				// page edit changes saved, undo, restore
+				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $dispid) .'. <a href="backup-edit.php?p=restore&id='. $id . $draftqs .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','success',true);
 			} elseif ($ptype == 'edit' && isset($oldid)) {
-				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="backup-edit.php?p=restore&id='. $oldid .'&new='.$id.'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','success',true);
+				// page edit changes saved, undo, restore with slug change
+				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $dispid) .'. <a href="backup-edit.php?p=restore&id='. $oldid .'&new='.$id . $draftqs.'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','success',true);
 			} elseif ($ptype == 'restore' && !isset($oldid)) {
-				doNotify(sprintf(i18n_r('ER_HASBEEN_REST'), $id) .'. <a href="backup-edit.php?p=restore&id='. $id .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info',true);
+				// page has been restored, undo, restore
+				doNotify(sprintf(i18n_r('ER_HASBEEN_REST'), $dispid) .'. <a href="backup-edit.php?p=restore&id='. $id . $draftqs .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info',true);
 			} elseif ($ptype == 'restore' && isset($oldid)) {
-				doNotify(sprintf(i18n_r('ER_HASBEEN_REST'), $id) .'. <a href="backup-edit.php?p=restore&id='. $oldid .'&new='.$id.'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info',true);
+				// page has been restored undo, restore with slug change
+				doNotify(sprintf(i18n_r('ER_HASBEEN_REST'), $dispid) .'. <a href="backup-edit.php?p=restore&id='. $oldid .'&new='.$id . $draftqs.'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info',true);
 			} elseif ($ptype == 'delete') {
+				// page has been deleted, undo, restore
 				doNotify(sprintf(i18n_r('ER_HASBEEN_DEL'), $errid) .'. <a href="backup-edit.php?p=restore&id='. $errid .'&nonce='.get_nonce("restore", "backup-edit.php").'">'.i18n_r('UNDO').'</a>','info',true);
 			} else if($ptype == 'new'){
-				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $id) .'. <a href="deletefile.php?id='. $id .'&nonce='.get_nonce("delete", "deletefile.php").'">'.i18n_r('UNDO').'</a>','success',true);
+				// new page has been saved, undo, no restore, delete file
+				doNotify(sprintf(i18n_r('ER_YOUR_CHANGES'), $dispid) .'. <a href="deletefile.php?id='. $id . $draftqs .'&nonce='.get_nonce("delete", "deletefile.php").'">'.i18n_r('UNDO').'</a>','success',true);
 			}
 		if(!$dbn) break;
+		case 'publish-success':
+			doNotify(sprintf(i18n_r('ER_PUBLISH_SUCCESS'),$id),'success');
+		break;
+		case 'publish-error':
+			doNotify(sprintf(i18n_r('ER_PUBLISH_ERROR'),$id),'error');
+		break;
 		case 'clone-success':
 			doNotify(sprintf(i18n_r('CLONE_SUCCESS'), '<a href="edit.php?id='.$errid.'">'.$errid.'</a>'),'success');
 		if(!$dbn) break;
 		case 'edit-index':
+			// cannot edit index slug
 			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_CANNOT_INDEX'),'error');
 		if(!$dbn) break;
+		case 'draft-slug':
+			// cannot edit draft slug
+			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_CANNOT_DRAFT'),'error');
+		break;
 		case 'edit-error':
+			// page edit error generic, passed in via type=
 			doNotify('<b>'.i18n_r('ERROR').':</b> '. var_out($ptype),'error');
 		if(!$dbn) break;
 		case 'pwd-success':
-			doNotify(i18n_r('ER_NEW_PWD_SENT').'. <a href="index.php">'.i18n_r('LOGIN').'</a>','info');
+			doNotify(i18n_r('ER_NEW_PWD_SENT').'. <a href="index.php">'.i18n_r('LOGIN').'</a>','info',true,true);
 		if(!$dbn) break;
 		case 'pwd-error':
-			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_SENDMAIL_ERR').'.','error');
+			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_SENDMAIL_ERR').'.','error',true,true);
 		if(!$dbn) break;
 		case 'del-success':
 			doNotify(i18n_r('ER_FILE_DEL_SUC').': <b>'.$errid.'</b>','success');
@@ -97,6 +127,12 @@
 		case 'comp-restored':
 			doNotify(i18n_r('ER_COMPONENT_REST').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success',true);
 		if(!$dbn) break;
+		case 'snippet-success':
+			doNotify(i18n_r('ER_SNIPPET_SAVE').'. <a href="snippets.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
+		break;
+		case 'snippet-restored':
+			doNotify(i18n_r('ER_SNIPPET_REST').'. <a href="snippets.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
+		break;
 		case 'profile-restored':
 			doNotify(i18n_r('ER_PROFILE_RESTORED').'. <a href="profile.php?undo&nonce='.get_nonce("undo").
 				'&userid='.$userid.'">'.i18n_r('UNDO').'</a>','success',true);
@@ -104,17 +140,32 @@
 		case 'settings-restored':
 			doNotify(i18n_r('ER_OLD_RESTORED').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success',true);
 		break;
+		case 'login-req':
+			doNotify(i18n_r('FILL_IN_REQ_FIELD'),'error',true,true);
+		break;
+		case 'login-fail':
+			doNotify(i18n_r('LOGIN_FAILED'),'error',true,true);
+		break;
 
 		default:
 			if     (isset($error))          doNotify('<b>'.i18n_r('ERROR').':</b> '. $error,'error',true);
 			elseif (isset($_GET['cancel'])) doNotify(i18n_r('ER_CANCELLED_FAIL'),'error');
-			elseif (isset($_GET['logout'])) doNotify(i18n_r('MSG_LOGGEDOUT'),'info');
+			elseif (isset($_GET['logout'])) doNotify(i18n_r('MSG_LOGGEDOUT'),'info',true,true);
 			elseif (!empty($err))           doNotify('<b>'.i18n_r('ERROR').':</b> '.$err,'error',true);
 			elseif (isset($success))        doNotify($success,'success',true);
 		break;
 	}
 
-	function doNotify($msg, $type = '', $persist = false){
+	/**
+	 * output a notification
+	 * @param  str  $msg     the message text
+	 * @param  string  $type    type of message success, error, info, warn
+	 * @param  boolean $persist trueto make message not expire and dissapear
+	 * @param  boolean $force   force the message to show on auth pages
+	 */
+	function doNotify($msg, $type = '', $persist = false, $force = false){
+		// do not output notifications on auth pages to prevent nonce and data leakage, unless force is true
+		if(isAuthPage() && !$force) return; 
 		GLOBAL $dbn;
 		if($dbn) $persist = true;
 		debugLog('notify: ' . $type ." - ".$msg);

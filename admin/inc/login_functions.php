@@ -19,15 +19,15 @@ if(isset($_POST['submitted'])) {
 	$user_xml = GSUSERSPATH . _id($_POST['userid']).'.xml';
 	$userid   = strtolower($_POST['userid']);
 	$password = $_POST['pwd'];
-	$error    = null;
+	$status   = null;
 	
 	# check the username or password fields
 	if ( !$userid || !$password ) {
-		$error = i18n_r('FILL_IN_REQ_FIELD');
+		$status = "login-req";
 	} 
 	
 	# check for any errors
-	if ( !$error ) {
+	if ( !$status ) {
 		
 		exec_action('successful-login-start'); // @hook successful-login-start login process started
 		
@@ -73,12 +73,13 @@ if(isset($_POST['submitted'])) {
 		} else {
 			# NO - show error message
 			exec_action('successful-login-failed');  // @hook successful-login-failed login process authentication failed
-			$error = i18n_r('LOGIN_FAILED');
+			$status = "login-fail";
 			$logFailed->save();
 		} 
 		
 	} # end error check
 	
 } # end submission check
+
 
 /* ?> */

@@ -525,33 +525,23 @@ function menu_data($id = null,$xml=false) {
  * @since 1.0
  *
  * @param string $id This is the ID of the component you want to display
- * @param bool $force Force return of inactive components
+ * @param bool $force Force return of disabled components
  * @param bool $raw do not process php
  */
 function get_component($id, $force = false, $raw = false) {
-	$components = get_components_xml();
-	$component  = get_component_xml($id); 
-	if(!$component) return;
-
-	// this returns an array due to no unique slug enforcement, so we grab first one atm
-	// @todo find a solution to allowing this or dissallowing duplicate component slugs
-	$component = $component[0];
-
-	$disabled = (bool)(string)$component->disabled;
-	if($disabled && !$force) return;
-
-	if(!$raw) eval("?>" . strip_decode($component->value) . "<?php ");
-	else echo strip_decode($component->value);
+	output_collection_item($id, get_components_xml(), $force, $raw);
 }
 
 /**
  * See if a component exists
  * @since 3.4
  * @param  str $id component id
+ * @param  bool disabled include disabled snippets 
  * @return bool
  */
-function component_exists($id){
-	return !get_component_xml($id);
+function component_exists($id, $disabled = false){
+	if(!$disabled) return componentIsEnabled($id);
+	return (bool)get_component_xml($id);
 }
 
 /**
@@ -572,10 +562,58 @@ function component_enabled($id){
  * @return component buffered output
  */
 function return_component(){
-	ob_start();
+	$args = func_get_args();	
+	return catchOutput('get_component',$args);
+}
+
+/**
+ * Get Snippet
+ *
+ * This will output the snippet requested. 
+ * Will only return the first snippet matching $id
+ *
+ * @since 3.4
+ *
+ * @param string $id This is the ID of the snippet you want to display
+ * @param bool $force Force return of inactive snippets
+ * @param bool $raw do not process php
+ */
+function get_snippet($id, $force = false) {
+	output_collection_item($id, get_snippets_xml(), $force, true);
+}
+
+/**
+ * See if a snippet exists
+ * @since 3.4
+ * @param  str $id snippet id
+ * @param  bool disabled include disabled snippets
+ * @return bool
+ */
+function snippet_exists($id, $disabled = false){
+	if(!$disabled) return snippetIsEnabled($id);
+	return (bool)get_snippet_xml($id);
+}
+
+/**
+ * See if a snippet is enabled
+ * @since 3.4
+ * @param  str $id snippet id
+ * @return bool
+ */
+function snippet_enabled($id){
+	return snippetIsEnabled($id);
+}
+
+/**
+ * Return snippet
+ * Returns a snippets output
+ *
+ * @since 3.4
+ * @return snippet buffered output
+ */
+function return_snippet(){
 	$args = func_get_args();
-	call_user_func_array('get_component',$args);
-	return ob_get_clean();
+	return catchOutput('get_snippet',$args);
 }
 
 /**

@@ -54,14 +54,16 @@ jQuery(document).ready(function () {
   		if (this.getQueuedFiles().length == 0) {
 			$('#loader').fadeOut(500);
 
-			// #imageFilter seleced index to restore 
+			// #imageFilter selected index to restore 
 			var filterIdx = $('#imageFilter').prop("selectedIndex");
 
 			$('#maincontent').load(location.href+' #maincontent > *', function(ev){
 				$('#imageFilter').prop("selectedIndex",filterIdx);
 				$('#imageFilter').trigger('change');
-			});  
-  		}	
+				$(window).trigger('fileuploaded');
+			});
+
+  		}
   	});
 
 });

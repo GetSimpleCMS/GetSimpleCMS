@@ -19,8 +19,8 @@ if (!getDef('GSIMAGEWIDTH')) {
 } else {
 	$width = GSIMAGEWIDTH;
 }
-	
-if ($_POST['sessionHash'] === $SESSIONHASH) {
+
+if ($_POST['sessionHash'] === $SESSIONHASH && getDef('GSALLOWUPLOADS',true)) {
 	if (!empty($_FILES)){
 		
 		$tempFile   = $_FILES['Filedata']['tmp_name'];

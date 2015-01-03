@@ -1,4 +1,4 @@
-﻿
+
 // GetSimpleCMS config file for CKeditor 3.6.2
 
 // default editor config
@@ -18,14 +18,18 @@ CKEDITOR.editorConfig = function( config )
 	config.magicline_color             = '#CF3805'; 
     config.entities                    = false;    
 
-    config.filebrowserBrowseUrl        = 'filebrowser.php?type=all';
-    config.filebrowserImageBrowseUrl   = 'filebrowser.php?type=images';
-    config.filebrowserWindowWidth      = '730';
-    config.filebrowserWindowHeight     = '500';
+    
+    config.filebrowserBrowseUrl        = 'upload.php?browse&type=all';
+    config.filebrowserImageBrowseUrl   = 'upload.php?browse&type=images';
+
+    // customize file browser popup windows below
+    // config.filebrowserWindowWidth      = '960';
+    // config.filebrowserWindowHeight     = '700';
 
 	config.allowedContent              = true;       // disable acf
+	config.disableAutoInline           = true;       // disable automatic inline editing of elements with contenteditable=true
 
-	config.extraPlugins                = 'codemirror';
+	// config.extraPlugins                = 'autogrow'; // auto grow plugin
 
 	config.toolbar_advanced = 
 		[['Bold', 'Italic', 'Underline', '-', 'NumberedList', 'BulletedList', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', '-', 'Link', 'Unlink', 'Image', 'RemoveFormat', '-', 'Table', 'TextColor', 'BGColor', 'ShowBlocks'], ['Source'], ['Maximize'],

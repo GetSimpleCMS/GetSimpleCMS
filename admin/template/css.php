@@ -91,13 +91,20 @@ a img {
 	display: none;
 }
 
-.imgthumb {
+td.imgthumb {
 	display: none;
 	width: 70px;
+	text-align: center;
 }
 
 .imgthumb img {
 	border: 1px solid #555;
+}
+
+.thumblinkexternal{
+	display:none;
+	margin-left: 15px !important;
+	text-shadow: none;
 }
 
 .hidden {
@@ -712,7 +719,7 @@ h5:hover img {
 	display: block;
 	padding: 3px 10px;
 	float: right;
-	margin: 0 0 0 5px;
+	margin: 1px 0 0 5px;
 		-moz-border-radius: 3px;
 		-webkit-border-radius: 3px;
 	border-radius: 3px;
@@ -1099,6 +1106,10 @@ label span.right a:hover {
 	padding-top: 3px;
 }
 
+span.inline {
+	white-space: nowrap;
+}
+
 label.checkbox {
 	width: 100px;
 	margin-right: 3px;
@@ -1310,6 +1321,14 @@ table.cleantable tr td {
 	color: #CC0000;
 }
 
+body.dirty #pagechangednotify{
+	display: block;
+}
+
+#submit_line #pagechangednotify{
+	padding: 10px 0 0 0;
+}
+
 /* page edit footer , .backuplink deprecated */
 p.editfooter, p.backuplink {
 	text-shadow: 1px 1px 0 rgba(255,255,255,.3);
@@ -1412,11 +1431,15 @@ input.submit:disabled {
 	padding: 3px 7px;
 }
 
+body.dirty #submit_line input.submit,
+body.dirty #js_submit_line input.submit {
+	border-color: #CC0000;
+}
 
 /* edit css */
 form input.title {
 	font-size: 19px;
-	border-color: #999;
+	border-color: rgba(153,153,153,0.2);
 	width: 655px;
 	padding: 3px 4px;
 }
@@ -1442,7 +1465,27 @@ form.manyinputs p {
 }
 
 .compdiv {
-	padding: 10px 0 35px 0;
+	margin: 10px 0 35px 0;
+	padding:0px;
+}
+
+.compdiv.table {
+	height:20px;
+}
+.compdiv textarea.code_edit.oneline {
+	height:25px !important;
+	white-space: nowrap;
+}
+
+.compdiv textarea.html_edit.oneline {
+	height:180px !important;
+	white-space: nowrap;
+}
+
+.compdiv .cke_textarea_inline {
+	margin:5px -1px;padding:18px;
+	border: 1px solid #E5E5E5;
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
 }
 
 table.comptable {
@@ -1544,21 +1587,6 @@ table.comptable .compactive input {
  * use "notify notify_error" etc.
  *
  */
-
-.fullscreen .notify{
-	position: fixed;
-	width: 600px;
-	margin: 5px;
-	right: 60px;
-	opacity: 1;
-	top: 0;
-	background: rgba(119, 119, 119, 0.2);
-	z-index: 9999;
-	font-weight: bold;
-	border: none;
-	padding: 3px 9px;
-}
-
 .updated, .error, .notify {
 	/*border: 1px solid #E6DB55;*/
 	border-radius: 2px;
@@ -1614,6 +1642,30 @@ table.comptable .compactive input {
 	color: #222;
 }
 
+/**
+ * overriding fullscreen overlapping notifications
+ */
+body.fullscreen .notify_expired{
+	display: none !important;
+}
+
+.fullscreen .notify{
+	position: fixed;
+	width: 600px;
+	margin: 5px;
+	right: 60px;
+	opacity: 0.9;
+	top: 0;
+	/*background: rgba(119, 119, 119, 0.65);*/
+	z-index: 9999;
+	font-weight: bold;
+	/*border: none;*/
+	padding: 3px 9px;
+	/*color: #FAFAFA;*/
+	border: 1px solid rgba(128,128,128,0.4);
+}
+
+
 .deletedrow {
 	background-color: #FFB19B;
 }
@@ -1632,14 +1684,19 @@ table.comptable .compactive input {
 }
 
 .notify .close{
-	float: right;
+	float:right;
 	color: black;
 	opacity: 0.2;
 }
 
 .notify .close:hover{
-	color: black;
 	opacity: 0.8;
+}
+
+body.fullscreen .notify .close{
+	float:right;
+	color: gray;
+	opacity: 0.2;
 }
 
 .hint {
@@ -1717,7 +1774,7 @@ a.updatelink:hover {
 a.cancel {
 	display: inline-block;
 	color: #D94136;
-	text-decoration: underline;
+	text-decoration: none;
 	padding: 1px 3px;
 	background: none;
 	line-height: 16px;
@@ -1919,7 +1976,7 @@ th.file_size,th.file_date,th.file_perms {
 	font-size: 16px;
 	color: <?php echo $primary_1 ?>;
 	font-family: sans-serif;
-	opacity: .2;
+	opacity: .3;
 	transition: opacity 300ms;
 
 }
@@ -2051,7 +2108,37 @@ textarea.copykit {
 	margin-bottom: 10px;
 }
 
+.thumbs img{
+	max-height:128px;
+	max-width:128px;
+	border:1px solid black;
+}
+
+.thumbcontainer {
+	display:inline-block;
+	float:left;
+	padding:10px;
+	margin: 10px 10px 10px 0;
+	border-radius:3px;
+}
+
+.thumbcontainer:hover{
+	border:1px solid #ddd;
+	padding:9px;
+}
+
+#img-info {
+	width: auto;
+	margin-bottom: 5px;
+}
+
+
+#cropbox {
+	display:none;
+}
+
 #handw {
+	float:left;
 	z-index: 1;
 	padding: 8px;
 	background: #000;
@@ -2069,7 +2156,22 @@ textarea.copykit {
 }
 
 #jcropform .submit {
-	margin: 20px 0 0 0;
+	margin: 10px;
+	float:left;
+	vertical-align: middle;
+}
+
+.jcrop-holder {
+	border: 1px solid black !important;
+}
+
+#jcropform label {
+	width: 10px;
+}
+
+.jcropinput {
+	width: 100px;
+	margin: 5px;
 }
 
 
@@ -2093,12 +2195,16 @@ textarea.copykit {
 	        transition-property: background-color, color, text-shadow; 	
 }
 
-div.label{
+div.`{
 	display:inline-block;
 }
 
 .label-inline {
 	display: inline-block;
+}
+
+.label-block{
+	display: block;
 }
 
 .wrapper .label a,.label a{
@@ -2147,6 +2253,7 @@ div.label{
 
 .label-ghost {
 	background-color: rgba(221, 221, 221, 0.5) !important;
+	color: #999999;
 }
 
 .label-gold {
@@ -2161,10 +2268,14 @@ div.label{
 	margin: 6px -8px;
 }
 
+a.label:hover{
+	opacity:.8;
+	text-decoration: none;
+}
+
 .edittable .label-ghost{
-	font-size: 11px;
-	padding: 3px 6px;
-	color: #999999;
+	font-size:11px;
+	padding:3px 6px;
 	text-shadow: none;
 }
 
@@ -2174,6 +2285,42 @@ div.label{
 	display: inline-block;
 	cursor: pointer;
 	cursor: hand;	
+}
+
+.fancybox-title .label{
+/*.label-ghost {*/
+	background-color: rgba(221, 221, 221, 0.25) !important;
+	color: #888;
+	margin-left: 14px;
+}
+
+.fancybox-title-over-wrap {
+	background: rgba(0, 0, 0, 0.5) !important;
+	border-radius: 0 5px 0 0;
+	padding: 7px 14px 4px 14px !important;
+	box-sizing: border-box;
+	word-break: break-all;
+	color : #F2F2F2 !important;
+}
+
+.fancybox-title-over-wrap .label{
+	color: #F2F2F2;
+	margin-right: -7px;	
+}
+
+.fancybox-title-inside-wrap{
+	/*display: inline-block;*/
+	/*background: rgba(0, 0, 0, 0.5) !important;*/
+	padding: 7px 7px 7px 14px !important;
+	box-sizing: border-box;
+	word-break: break-all;
+	background-color: black;
+	color: #888;
+	border-top: 1px solid rgba(255, 255, 255, 0.5);	
+}
+
+.fancybox-skin{
+	background-color: black !important;
 }
 
 button.label{
@@ -2195,10 +2342,20 @@ div.showstatus{
 	float:right;
 }
 
+span.datetoday{
+	font-style: italic;
+}
+
+.title.label {
+	float: left;
+	margin: 5px 11px;
+	font-weight: bold;
+}
 
 /* @todo #ID selector hell, can be fixed up once some heirarchy is established */
 /* healthcheck only */
 #health-check #hc_version.label {
+	display: block;
 	text-align: left;
 	padding: 9px 15px;
 	font-weight: normal;
@@ -2769,7 +2926,7 @@ a.disabled:visited {
 }
 
 /* File Extension icons*/
-.file {    background-image: url(images/filemanager/text-x-generic.png); }
+.file {    background-image: url(images/filemanager/text-x-generic.png); background-repeat: no-repeat; }
 .ext- {background-image: url(images/filemanager/text-x-preview.png);}
 .ext-js {background-image: url(images/filemanager/application-javascript.png);}
 .ext-html {background-image: url(images/filemanager/text-html.png);}
@@ -2800,10 +2957,6 @@ a.disabled:visited {
    -moz-user-select: none;
    -khtml-user-select: none;
    -webkit-user-select: none;
-   /*
-     Introduced in IE 10.
-     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
-   */
    -ms-user-select: none;
    user-select: none;
 }
@@ -2820,6 +2973,10 @@ a.disabled:visited {
 	border-width: 1px;
 	border-style: solid;
 	border-radius: 3px;
+}
+
+.right {
+	float:right;
 }
 
 .readonly .CodeMirror-code,.readonly #theme_editing_file{
@@ -2842,6 +2999,26 @@ a.disabled:visited {
 
 .icon-left{
 	margin-right:4px;
+}
+
+kbd
+{
+    -moz-border-radius:3px;
+    -moz-box-shadow:0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
+    -webkit-border-radius:3px;
+    -webkit-box-shadow:0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
+    background-color:#f7f7f7;
+    border:1px solid #ccc;
+    border-radius:3px;
+    box-shadow:0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
+    color:#333;
+    display:inline-block;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:11px;
+    line-height:1.4;
+    margin:0 .1em;
+    padding:.1em .6em;
+    text-shadow:0 1px 0 #fff;
 }
 
 /* codemirror */
@@ -3182,7 +3359,7 @@ a.disabled:visited {
 .tree-expander {
 	cursor: pointer;
 	color: #868686;
-	font-size: 0.8em;
+	font-size: 0.9em !important;
 	margin-right: 4px;
 	transition: all 50ms ease-out;
 		-webkit-transition: all 50ms ease-out;
@@ -3217,6 +3394,86 @@ a.disabled:visited {
     -webkit-transform-origin-y: 45%;
 }
 
+/* new draft , hide publish */
+#maincontent.newdraft .draftview,#maincontent.newdraft .draftpublish{
+	display:none;
+}
+
+#maincontent.newdraft .label-draft{
+	background-color: rgba(221, 221, 221, 0.5) !important;
+	color: #999999;
+}
+
+#pagestack{
+	margin: -20px -20px 14px -20px;
+}
+
+.pagestack {
+	position: relative;
+	height:27px;
+	border-bottom: 1px solid #CFCFCF;
+	background-color: #FAFAFA;
+	padding: 7px 4px 0 7px;
+	color: #808080;
+	overflow: hidden;
+	white-space:nowrap;
+			transition: height 300ms ease-out,
+						background-color 200ms ;
+
+	-webkit-transition: height 300ms ease-out,
+						background-color 200ms ;
+	
+	        transition-delay: 150ms;
+	-webkit-transition-delay: 150ms;
+
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;	
+}
+
+.pagestack .label {
+	font-weight: bold;
+}
+
+.pagestack.shadow:after{
+	content: "";
+	box-shadow: inset 0 -6px 8px -6px rgba(0, 0, 0, 0.2);
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 9px;
+	pointer-events: none; /* clickthrough */
+}
+
+.pagestack .pagehead{
+	padding:15px;
+}
+
+/**
+ * pagestack hover expand animations
+ */
+.pagestack:hover{
+			transition: height 200ms ease-out,
+						background-color 200ms ;
+
+	-webkit-transition: height 200ms ease-out,
+						background-color 200ms ;
+
+		    transition-delay: 150ms;
+	-webkit-transition-delay: 150ms;
+
+	background-color: #FFFFFF;
+}
+
+.pagestack.peek:hover,.pagestack.open{
+	height: 80px;
+}
+
+/* page stack with no peek content */
+.pagestack.nopeek:hover{
+	height:32px;
+}
 
 /* END */
 
@@ -3255,12 +3512,21 @@ a.disabled:visited {
 .secondary_0-border-color, .secondary-darkest-border   { border-color: <?php echo $secondary_0; ?> !important;}
 .secondary_1-border-color, .secondary-lightest-border  { border-color: <?php echo $secondary_1; ?> !important;}
 
-  .label-info-border                                         { border-color: <?php echo $label_0; ?> !important;}
-  .label-ok-border                                           { border-color: <?php echo $label_1; ?> !important;}
-  .label-warn-border                                         { border-color: <?php echo $label_2; ?> !important;}
-  .label-error-border                                        { border-color: <?php echo $label_3; ?> !important;}
-  .label-light-border                                        { border-color: <?php echo $label_4; ?> !important;}
-  .label-medium-border                                       { border-color: <?php echo $label_5; ?> !important;}
+  .label-default-border                                      { border-color: <?php echo $label_0; ?> !important;}
+  .label-info-border                                         { border-color: <?php echo $label_1; ?> !important;}
+  .label-ok-border                                           { border-color: <?php echo $label_2; ?> !important;}
+  .label-warn-border                                         { border-color: <?php echo $label_3; ?> !important;}
+  .label-error-border                                        { border-color: <?php echo $label_4; ?> !important;}
+  .label-light-border                                        { border-color: <?php echo $label_5; ?> !important;}
+  .label-medium-border                                       { border-color: <?php echo $label_6; ?> !important;}
+
+  .label-default-color                                      { color: <?php echo $label_0; ?> !important;}
+  .label-info-color                                         { color: <?php echo $label_1; ?> !important;}
+  .label-ok-color                                           { color: <?php echo $label_2; ?> !important;}
+  .label-warn-color                                         { color: <?php echo $label_3; ?> !important;}
+  .label-error-color                                        { color: <?php echo $label_4; ?> !important;}
+  .label-light-color                                        { color: <?php echo $label_5; ?> !important;}
+  .label-medium-color                                       { color: <?php echo $label_6; ?> !important;}
 
 /* debug color */
   .primary_0-debug:after, .darkest-debug:after             { content: "<?php echo $primary_0;   ?>" !important;}

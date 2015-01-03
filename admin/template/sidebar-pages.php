@@ -14,10 +14,9 @@
 	<?php exec_action("pages-sidebar"); // @hook pages-sidebar sidebar list html output  ?>
 </ul>
 
-<?php if(get_filename_id()==='edit') { ?>
 <p id="js_submit_line" ></p>
 
-	<p id="pagechangednotify"><?php i18n('PAGE_UNSAVED'); ?></p>
+<?php if(get_filename_id()==='edit') { ?>
 	<?php if(getDef('GSAUTOSAVE')){ ?>
 	<p id="autosavestatus"><?php echo sprintf(i18n_r("AUTOSAVE_STATUS"),getDef('GSAUTOSAVE')); ?></p>
 	<p id="autosavenotify"></p>

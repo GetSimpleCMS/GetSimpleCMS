@@ -15,36 +15,56 @@ var depthprefix              = 'depth-';                          // class prefi
 var datadepthattr            = 'depth';                           // data attribute name for depth information
 
 
+/**
+ * Toggle parent row 
+ */
 function toggleRow(){
 	var row = $(this).closest('.'+treeparentclass);
 	// Debugger.log("toggle row " + $(row));
 
 	var depth = getNodeDepth(row);
-	if(depth < 0 ) return toggleTopAncestors(); // special handler to collapse all top level
+
+	// special handler to collapse all top level
+	if(depth < 0 ) return toggleTopAncestors();
 
 	if($(row).hasClass(nodecollapsedclass)) expandRow(row);
 	else collapseRow(row);
-	$("table.striped").zebraStripe();	
+
+	// refresh zebra striping
+	$("table.striped").zebraStripe();
+	saveTreeState($(this).closest("table.tree"));
 }
 
+/**
+ * Toggle expander to match collapse states
+ */
 function setExpander(elem){
 	var expander = $(elem).find('.'+treeexpanderclass);
 	$(expander).toggleClass(treecollapsedclass,$(elem).hasClass(nodecollapsedclass));
 	$(expander).toggleClass(treeexpandedclass,!$(elem).hasClass(nodecollapsedclass));
 }
 
+/**
+ * Collapse parent row
+ */
 function collapseRow(elem){
 	$(elem).addClass(nodecollapsedclass);
 	hideChildRows(elem);
 	setExpander(elem);
 }
 
+/**
+ * Expand parent row
+ */
 function expandRow(elem){
 	$(elem).removeClass(nodecollapsedclass);
 	showChildRows(elem);
 	setExpander(elem);
 }
 
+/**
+ * Hide all child rows
+ */
 function hideChildRows(elem){
 	var children = getChildrenByDepth(elem);
 	children.each(function(i,elem){
@@ -52,6 +72,9 @@ function hideChildRows(elem){
 	});
 }
 
+/**
+ * Hide child row
+ */
 function hideChildRow(elem){
 	$(elem).addClass(nodeparentcollapsedclass);
 	// $(elem).animate({opacity: 0.1} , 100, function(){ $(this).addClass(nodeparentcollapsedclass);} ); // @todo custom callout
@@ -124,16 +147,27 @@ function getNextSiblingByDepth(elem){
 	return nextsiblings.first();
 }
 
+/**
+ * Main functionality, add expanders to row
+ * @param {obj} elems    elements to affect
+ * @param {str} expander custom expander html to add as expander
+ */
 function addExpanders(elems,expander){
 	if(expander === undefined) expander = '<span class="'+ treeexpanderclass + ' ' + treeexpandedclass +'"></span>';
 	$(elems).each(function(i,elem){
 		// Debugger.log($(elem));
-		$(elem).removeClass("tree-indent").removeClass("indent-last").html(''); // remove any indentation here, now an expander
+		// remove existing old indentation here, now an expander @todo hide in css?
+		$(elem).removeClass("tree-indent").removeClass("indent-last").html(''); 
+
+		// bind click events, prevent text selection on rapic clicking ( bind selectstart hack )
 		$(expander).on('click',toggleRow).bind('selectstart dragstart', function(evt)
 								{ evt.preventDefault(); return false; }).prependTo($(elem));
 	});
 }
 
+/**
+ * add depth indentations
+ */
 function addIndents(elems){
 	$(elems).each(function(i,elem){
 		$('<span class="'+treeindentclass+'"></span>').prependTo($(elem));
@@ -186,6 +220,53 @@ function addExpanderTableHeader(elem,expander,colspan){
 								{ evt.preventDefault(); return false; });
 }
 
+/**
+ * Save the tree state in localstorage
+ */
+function saveTreeState(elem){
+	if(!supports_html5_storage) return;
+	var key = 'gstreestate_'+$(elem).attr('id');	
+	// Debugger.log('table tree store key:'+key);
+
+	var state = new Array();
+
+	$('.'+nodecollapsedclass,$(elem)).each(function(i,elem){
+		// Debugger.log($(elem).attr('id'));
+		state.push($(elem).attr('id'));
+	});
+
+	localStorage[key] = JSON.stringify(state);
+	return true;
+}
+
+/**
+ * Restore the tree state from localstorage
+ */
+function restoreTreeState(elem){
+	if(!supports_html5_storage) return;	
+	var key   = 'gstreestate_'+$(elem).attr('id');
+	// Debugger.log('table tree restore key:'+key);	
+	var state = localStorage[key];
+	if(state == undefined) return;
+	state     = JSON.parse(state);
+
+	$.each(state,function(index,value){
+		// Debugger.log(value);
+		if(value !== 'roottoggle') collapseRow($('#'+value));
+	});
+
+	return true;
+}
+
+/**
+ * delete the tree state localstorage
+ */
+function deleteTreeState(elem){
+	var key = 'gstreestate_'+$(elem).attr('id');
+	Debugger.log('table tree DELETE key:'+key);		
+	localStorage.removeItem(key);
+}
+
 $.fn.zebraStripe = function(){
 	$("tbody tr:not(.tree-parentcollapsed)",$(this)).each(function(i,elem){
 		if(i%2!=1) $(elem).addClass('odd').removeClass('even'); 
@@ -198,9 +279,9 @@ $.fn.zebraStripe = function(){
  * 
  * add gstree to tree ready table with data-depths and parent,indent classes
  * 
- * @param int minrows minumum rows needed to apply tree, else will skip tree creation
- * @param int mindepth minimum depth required to apply tree, else wil skip
- * @param int headerdepth minimum depth required to add the header expander controls
+ * @param int (optional) minrows minumum rows needed to apply tree, else will skip tree creation, default 2
+ * @param int (optional) mindepth minimum depth required to apply tree, else wil skip, default 1
+ * @param int (optional) headerdepth minimum depth required to add the header expander controls, default disabled
  */
 $.fn.addTableTree = function(minrows,mindepth,headerdepth){
 	// console.profile();
@@ -215,6 +296,10 @@ $.fn.addTableTree = function(minrows,mindepth,headerdepth){
 		Debugger.log("gstree: table does not exist, skipping");
 		return;
 	}	
+
+	// defaults
+	if(minrows  == undefined || minrows < 2) minrows  = 2;
+	if(mindepth == undefined) mindepth = 1;
 
 	// table is small if table has less rows that minrows
 	var small = minrows !== undefined && $("tbody tr",elem).length < minrows;
@@ -239,10 +324,14 @@ $.fn.addTableTree = function(minrows,mindepth,headerdepth){
 	$('tr td:first-child .tree-indent:last-of-type').html(''); // remove extra indentation
 	
 	// add the header expander controls
-	var deep = headerdepth === undefined || $("tbody tr[data-depth="+headerdepth+"]",elem).length > 0;	
-	if(deep) addExpanderTableHeader($('thead > tr:first',elem),customexpander,4);	
+	var deep = headerdepth != undefined && $("tbody tr[data-depth="+headerdepth+"]",elem).length > 0;	
+	if(deep) addExpanderTableHeader($('thead > tr:first',elem),customexpander,4); // colspan = 4
+	
+	restoreTreeState(elem);
 	
 	$("table.striped").zebraStripe();
 
 	// console.profileEnd();
 };
+
+

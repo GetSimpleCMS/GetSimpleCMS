@@ -213,12 +213,93 @@ function subval_sort($a,$subkey, $order='asc',$natural = true) {
  * @param string $cdata_text
  */
 class SimpleXMLExtended extends SimpleXMLElement{   
+
+	/**
+	 * add a cdata value
+	 * @uses  dom_import_simplexml
+	 * @param str $cdata_text value to add as cdata
+	 */
 	public function addCData($cdata_text){   
+		$dom  = dom_import_simplexml($this);
+		$cdata = $dom->ownerDocument->createCDATASection($cdata_text);
+		$dom->appendChild($cdata);
+	}
+
+	/**
+	 * update cdata, if empty append cdata, if 1 child remove it and append new cdata
+	 * if mutiple children do nothing, something is wrong
+	 *
+	 * @uses  dom_import_simplexml
+	 * @param  str $cdata_text value to insert as cdata
+	 * @return obj             node
+	 */
+	public function updateCData($cdata_text){
 	$node = dom_import_simplexml($this);   
-	$no   = $node->ownerDocument;   
-	$node->appendChild($no->createCDATASection($cdata_text));   
+		$xml   = $node->ownerDocument;
+		$cdata = $xml->createCDATASection($cdata_text);
+		if($node->childNodes->length == 1){
+			// if exactly one child, remove and append the new cdata
+			$node->removeChild($node->firstChild);
+			$node->appendChild($cdata);
 	} 
+		else if($node->childNodes->length == 0){
+			// if no children just append cdata
+			$node->appendChild($cdata);
+		} else {
+			// node has multiple children, ignore
+			// @todo exception here?
+			return;
 } 
+	}
+
+/**
+	 * adds a cdata child node and value
+	 * @param str $nodename nodename
+	 * @param str $value    teh new node value
+	 */
+	public function addCDataChild($nodename,$value){
+		$this->addChild($nodename)->addCData($value);
+	}
+
+	/**
+	 * sets a nodes value, auto detects if text or cdata node 
+	 * and adds via appropriate mechanism, defaults to text
+	 * @param str $value value to set
+	 */
+	public function setValue($value){
+		if($this->nodeisCData()) $this->updateCData($value);
+		else if($this->nodeisText())  $this[0] = $value;
+		else if($this->getNodeType() === null) $this[0] = $value;
+	}
+
+	/**
+	 * get the nodes type
+	 * @return str returns the nodetype constant of node
+	 * http://php.net/manual/en/dom.constants.php
+	 */
+	public function getNodeType(){
+		$node  = dom_import_simplexml($this);
+		if($node->hasChildNodes()) return $node->firstChild->nodeType;
+	}
+
+	/**
+	 * check id a node is cdata
+	 * @return bool true if cdata
+	 */
+	public function nodeisCData(){
+		return $this->getNodeType() == XML_CDATA_SECTION_NODE;
+	}
+
+	/**
+	 * check id a node is text
+	 * @return bool true if text
+	 */
+	public function nodeisText(){
+		return $this->getNodeType() == XML_TEXT_NODE;
+	}
+
+}
+
 
 /**
  * Is File
@@ -257,12 +338,13 @@ function getFiles($path,$ext = null) {
 	$file_arr = array();
 
 	while ($file = readdir($handle)) {
+		// $file = utf8_encode($file); // @todo handle unicode in filenames on windows
 		if(isset($ext)){
 			$fileext = getFileExtension($file);
 			if ($fileext == $ext) $file_arr[] = $file;
 		}
 		else {
-		if ($file != '.' && $file != '..') {
+			if ($file != '.' && $file != '..' && $file!='thumbs.db') {
 			$file_arr[] = $file;
 		}
 	}
@@ -335,10 +417,11 @@ function get_execution_time($reset=false)
  * @param string $file
  * @return object
  */
-function getXML($file) {
+function getXML($file,$nocdata = true) {
 	$xml = read_file($file);
 	if($xml){
-		$data = simplexml_load_string($xml, 'SimpleXMLExtended', LIBXML_NOCDATA); 
+		$data = simplexml_load_string($xml, 'SimpleXMLExtended', $nocdata ? LIBXML_NOCDATA : null);
+		// debugLog($data);
 		return $data;
 	}	
 }
@@ -350,8 +433,180 @@ function getXML($file) {
  * @param  str $id id of page
  * @return xml     xml object
  */
-function getPageXML($id){
-	return getXML(GSDATAPAGESPATH.$id.'.xml');
+function getPageXML($id,$nocdata = true){
+	return getXML(GSDATAPAGESPATH.$id.'.xml',$nocdata);
+}
+
+/**
+ * get page draft xml shortcut
+ *
+ * @since 3.4
+ * @param  str $id id of page
+ * @return xml     xml object
+ */
+function getDraftXML($id,$nocdata = true){
+	return getXML(GSDATADRAFTSPATH.$id.'.xml',$nocdata);
+}
+
+/**
+ * update single pages field value and resave file
+ *
+ * @param  str $id    id of page
+ * @param  str $field field name
+ * @param  str $value value
+ * @param  bool $cdata true, store as cdata, false textnode, null auto detect from destination
+ * @return [type]        [description]
+ */
+function updatePageField($id,$field,$value,$cdata = null){
+	$xml = getPageXML($id,false);
+	if($cdata === true){
+		$xml->addCDataChild($field,$value);
+	}
+	else if($cdata === false) $xml->$field = $value;
+	else $xml->$field->setValue($value);
+
+	savePageXml($xml,false);
+}
+
+/**
+ * create a page xml obj
+ *
+ * @since 3.4
+ * @param  str      $title     title of page
+ * @param  str      $url       optional, url slug of page, if null title is used
+ * @param  array   	$data      optional, array of data fields for page
+ * @param  boolean 	$overwrite optional, overwrite exisitng slugs, if false auto increments slug id
+ * @return obj                 xml object of page
+ */
+function createPageXml($title, $url = null, $data = array(), $overwrite = false){
+	GLOBAL $reservedSlugs;
+
+	$fields = array(
+		'title',
+		'titlelong',
+		'summary',
+		'url',
+		'author',
+		'template',
+		'parent',
+		'menu',
+		'menuStatus',
+		'menuOrder',
+		'private',
+		'meta',
+		'metad',
+		'metarNoIndex',
+		'metarNoFollow',
+		'metarNoArchive',
+		'content'
+	);
+
+	// setup url, falls back to title if not set
+	if(!isset($url)) $url = $title;
+	debugLog(gettype($url));
+	$url = prepareSlug($url); // prepare slug, clean it, translit, truncate
+
+	$title = truncate($title,GSTITLEMAX); // truncate long titles
+
+	// If overwrite is false do not use existing slugs, get next incremental slug, eg. "slug-count"
+	if ( !$overwrite && (file_exists(GSDATAPAGESPATH . $url .".xml") ||  in_array($url,$reservedSlugs)) ) {
+		list($newfilename,$count) = getNextFileName(GSDATAPAGESPATH,$url.'.xml');
+		$url = $url .'-'. $count;
+		// die($url.' '.$newfilename.' '.$count);
+	}
+
+	// store url and title in data, if passed in param they are ignored
+	$data['url'] = $url;
+	$data['title'] = $title;
+
+	// create new xml
+	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
+	$xml->addChild('pubDate', date('r'));
+
+	foreach($fields as $field){
+		$node = $xml->addChild($field);
+		if(isset($data[$field])) $node->addCData($data[$field]); // saving all cdata for some reason
+	}
+
+	// debugLog(__FUNCTION__ . ': page created with slug of ' . $xml->url);
+	return $xml;
+}
+
+/**
+ * save a page to xml
+ *
+ * @since  3.4
+ * @param  obj $xml simplexmlobj of page
+ * @param  bool $backup backup before overwriting
+ * @return bool success
+ */
+function savePageXml($xml,$backup = true){
+	$url = $xml->url;
+	if(!isset($url) || trim($url) == '') die('empty slug');
+	// backup before overwriting
+	if($backup && file_exists(GSDATAPAGESPATH . $url .".xml")) backup_page($url);
+	return XMLsave($xml, GSDATAPAGESPATH . $url .".xml");
+}
+
+/**
+ * save a page draft to xml
+ *
+ * @since  3.4
+ * @param  obj $xml simplexmlobj of page
+ * @param  bool $backup backup before overwriting
+ * @return bool success
+ */
+function saveDraftXml($xml,$backup = true){
+	$url = $xml->url;
+	if(!isset($url) || trim($url) == '') die('empty slug'); // @todo need some kind of assert here
+	// backup before overwriting
+	if($backup && file_exists(GSDATADRAFTSPATH . $url .".xml")) backup_draft($url);
+	return XMLsave($xml, GSDATADRAFTSPATH . $url .".xml");
+}
+
+/**
+ * publish a draft
+ * @since  3.4
+ * @param  str $id id of page draft to publish
+ * @return bool    status
+ */
+function publishDraft($id){
+	if(!pageHasDraft($id)) return false;
+	backup_page($id); // backup live page
+	backup_datafile(GSDATADRAFTSPATH.$id.'.xml'); // backup draft before moving
+	$status = move_file(GSDATADRAFTSPATH,GSDATAPAGESPATH,$id.'.xml');
+	// restore_datafile(GSDATADRAFTSPATH . $id .".xml"); // debugging replays
+	if($status)	updatePageField($id,'pubDate',date('r')); // update pub date
+	return $status;
+}
+
+/**
+ * check if a page has a draft copy
+ *
+ * @since 3.4
+ * @param str $filepath filepath to data file
+ * @return bool status
+ */
+function pageHasDraft($id){
+	return file_exists(GSDATADRAFTSPATH . $id .".xml");
+}
+
+/**
+ * prepare a slug to gs standads
+ * sanitizes, performs translist for filename, truncates to GSFILENAMEMAX
+ *
+ * @since  3.4
+ * @param  str $slug slug to normalize
+ * @param  str $default default slug to substitute if conversion empties it
+ * @return str       new slug
+ */
+function prepareSlug($slug, $default = 'temp'){
+	$slug = truncate($slug,GSFILENAMEMAX);
+	$slug = doTransliteration($slug);
+	$slug = to7bit($slug, "UTF-8");
+	$slug = clean_url($slug); //old way @todo what does that mean ?
+	if(trim($slug) == '' && $default) return $default;
+	return $slug;
 }
 
 /**
@@ -433,7 +688,7 @@ function save_file($file,$data=''){
  * @return bool      file contents
  */
 function read_file($file){
-	if(!file_exists($file)){\
+	if(!file_exists($file)){
 		fileLog(__FUNCTION__,false,$file . ' not exist');
 		return;
 	}
@@ -446,6 +701,7 @@ function read_file($file){
 function move_file($src,$dest,$filename = null){
 	fileLog(__FUNCTION__,'-','ALIAS calling rename_file');
 	$status = rename_file($src,$dest,$filename);
+	return $status;
 }
 
 /**
@@ -536,6 +792,7 @@ function gs_chmod($path,$chmod = null,$dir = false){
  * @return mixed            returns status untouched, passthrough
  */
 function fileLog($operation,$status = null){
+	if(!getDef('GSDEBUGFILEIO',true)) return $status;
 	$args = array_slice(func_get_args(),2); // grab arguments past first 2 for output
 	if(is_bool($status)) $logstatus = ($status === true) ? uppercase(i18n_r('SUCCESS','SUCCESS')) : uppercase(i18n_r('FAIL','FAIL'));
 	else $logstatus = (string) $status;
@@ -866,23 +1123,32 @@ function encode_quotes($text)  {
  * @author schlex
  *
  * @param string $url
+ * @param bool ajax force redirects if ajax
  */
-function redirect($url) {
+function redirect($url,$ajax = false) {
 	global $i18n;
 
 	$url = var_out($url,'url'); // filter url here since it can come from alot of places, specifically redirectto user input
 
 	// handle expired sessions for ajax requests
-	if(requestIsAjax() && !cookie_check()){
+	if(requestIsAjax()){
+		if(!cookie_check()){
 		header('HTTP/1.1 401 Unauthorized');
 		header('WWW-Authenticate: FormBased');
 		// @note this is not a security function for ajax, just a session timeout handler
 		die();
-	}	
+		} else if($ajax){
+			header('HTTP/1.1 302 Redirect');
+			echo $url;
+			// header('Location: '.$url);
+			// @note this is not a security function for ajax, just a session timeout handler
+			die();			
+		}
+	}
 
 	if(function_exists('exec_action')) exec_action('redirect'); // @hook redirect a redirect is occuring
 
-	$debugredirect = false;
+	$debugredirect = getDef('GSDEBUGREDIRECTS',true);
 
 	if (!headers_sent($filename, $linenum) && !$debugredirect) {
 		header('Location: '.$url);
@@ -1596,11 +1862,11 @@ function removerelativepath($file) {
  * @param $recursive boolean whether to do a recursive scan or not. 
  * @return array or files and folders
  */
-function directoryToArray($directory, $recursive) {
+function directoryToArray($directory, $recursive = true) {
 	$array_items = array();
 	if ($handle = opendir($directory)) {
 		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != "..") {
+			if ($file != "." && $file != ".." && $file != "thumbs.db") {
 				if (is_dir($directory. "/" . $file)) {
 					if($recursive) {
 						$array_items = array_merge($array_items, directoryToArray($directory. "/" . $file, $recursive));
@@ -2391,6 +2657,109 @@ function getSiteURL($absolute = false){
  */
 function hostIsWindows(){
 	return (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
+}
+
+function catchOutput($function,$args){
+	ob_start();
+	call_user_func_array($function,$args);
+	return ob_get_clean();
+}
+
+/**
+ * This file is part of the array_column library
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @copyright Copyright (c) 2013 Ben Ramsey <http://benramsey.com>
+ * @license http://opensource.org/licenses/MIT MIT
+ */
+if (!function_exists('array_column')) {
+    /**
+     * Returns the values from a single column of the input array, identified by
+     * the $columnKey.
+     *
+     * Optionally, you may provide an $indexKey to index the values in the returned
+     * array by the values from the $indexKey column in the input array.
+     *
+     * @param array $input A multi-dimensional array (record set) from which to pull
+     *                     a column of values.
+     * @param mixed $columnKey The column of values to return. This value may be the
+     *                         integer key of the column you wish to retrieve, or it
+     *                         may be the string key name for an associative array.
+     * @param mixed $indexKey (Optional.) The column to use as the index/keys for
+     *                        the returned array. This value may be the integer key
+     *                        of the column, or it may be the string key name.
+     * @return array
+     */
+    function array_column($input = null, $columnKey = null, $indexKey = null)
+    {
+        // Using func_get_args() in order to check for proper number of
+        // parameters and trigger errors exactly as the built-in array_column()
+        // does in PHP 5.5.
+        $argc = func_num_args();
+        $params = func_get_args();
+        if ($argc < 2) {
+            trigger_error("array_column() expects at least 2 parameters, {$argc} given", E_USER_WARNING);
+            return null;
+        }
+        if (!is_array($params[0])) {
+            trigger_error('array_column() expects parameter 1 to be array, ' . gettype($params[0]) . ' given', E_USER_WARNING);
+            return null;
+        }
+        if (!is_int($params[1])
+            && !is_float($params[1])
+            && !is_string($params[1])
+            && $params[1] !== null
+            && !(is_object($params[1]) && method_exists($params[1], '__toString'))
+        ) {
+            trigger_error('array_column(): The column key should be either a string or an integer', E_USER_WARNING);
+            return false;
+        }
+        if (isset($params[2])
+            && !is_int($params[2])
+            && !is_float($params[2])
+            && !is_string($params[2])
+            && !(is_object($params[2]) && method_exists($params[2], '__toString'))
+        ) {
+            trigger_error('array_column(): The index key should be either a string or an integer', E_USER_WARNING);
+            return false;
+        }
+        $paramsInput = $params[0];
+        $paramsColumnKey = ($params[1] !== null) ? (string) $params[1] : null;
+        $paramsIndexKey = null;
+        if (isset($params[2])) {
+            if (is_float($params[2]) || is_int($params[2])) {
+                $paramsIndexKey = (int) $params[2];
+            } else {
+                $paramsIndexKey = (string) $params[2];
+            }
+        }
+        $resultArray = array();
+        foreach ($paramsInput as $row) {
+            $key = $value = null;
+            $keySet = $valueSet = false;
+            if ($paramsIndexKey !== null && array_key_exists($paramsIndexKey, $row)) {
+                $keySet = true;
+                $key = (string) $row[$paramsIndexKey];
+            }
+            if ($paramsColumnKey === null) {
+                $valueSet = true;
+                $value = $row;
+            } elseif (is_array($row) && array_key_exists($paramsColumnKey, $row)) {
+                $valueSet = true;
+                $value = $row[$paramsColumnKey];
+            }
+            if ($valueSet) {
+                if ($keySet) {
+                    $resultArray[$key] = $value;
+                } else {
+                    $resultArray[] = $value;
+                }
+            }
+        }
+        return $resultArray;
+    }
 }
 
 /* ?> */

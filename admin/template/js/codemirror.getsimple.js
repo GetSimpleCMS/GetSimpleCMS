@@ -90,6 +90,7 @@ jQuery(document).ready(function () {
 
 			var $this = $(this);
 			if(!$this.is("textarea")) return; // invalid element
+			if($this.hasClass("noeditor")) return; // exclude
 
 			// use config arg if present and ignore user config
 			if (typeof config == "undefined" || config === null){
@@ -123,6 +124,7 @@ jQuery(document).ready(function () {
 			// init change listener
 			editor.on('change', function(cm){
 				cm.hasChange = true;
+				$("body").addClass('dirty');
 			});
 
 			// var foldFunc = CodeMirror.newFoldFunction(CodeMirror.braceRangeFinder,'...');
@@ -227,6 +229,7 @@ jQuery(document).ready(function () {
         wrap.style.height = winHeight() + "px";
         document.documentElement.style.overflow = "hidden";
         $("body").addClass('fullscreen');
+      	notifyInfo(i18n('MINIMIZENOTIFY')).removeit(2000);
       } else {
         wrap.className = wrap.className.replace(" CodeMirror-fullscreen", "");
         wrap.style.height = $(wrap).data('normalheight'); // restore original height

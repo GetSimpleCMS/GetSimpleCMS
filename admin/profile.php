@@ -149,7 +149,7 @@ if(isset($_POST['submitted'])) {
 		
 		$data = $xml;
 
-		exec_action('settings-user');
+		exec_action('settings-user'); // @hook settings-user pre-save of a users settings
 		
 		if (! XMLsave($xml, GSUSERSPATH . $file) ) {
 			$error = i18n_r('CHMOD_ERROR');
@@ -161,8 +161,8 @@ if(isset($_POST['submitted'])) {
 		if (!$error) {
 			$success = sprintf(i18n_r('ER_YOUR_CHANGES'), $userid).'. <a href="profile.php?undo&nonce='.get_nonce("undo").'&userid='.$userid.'">'.i18n_r('UNDO').'</a>';
 
-			if($adding) exec_action('user-added');
-			else exec_action('user-edited');
+			if($adding) exec_action('user-added'); // @hook user-added a user was added
+			else exec_action('user-edited');       // @hook user-edit a user was edited
 		}
 	}
 }

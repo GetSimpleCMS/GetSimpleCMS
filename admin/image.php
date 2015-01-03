@@ -54,13 +54,14 @@ list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($src_folder .$sub
 
 if (file_exists($thumb_folder . 'thumbnail.' . $src)) {
 	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . 'thumbnail.'.$src);
-	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'" rel="facybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
+	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'" rel="fancybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 }else{
 	// if thumb is missing recreate it
 	require_once('inc/imagemanipulation.php');
 	if(genStdThumb($subPath,$src)){
+		// @todo check if file exists before getimagesize
 		list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . 'thumbnail.'.$src);
-		$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'" rel="facybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
+		$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'" rel="fancybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 	}
 }
 
@@ -73,15 +74,32 @@ include('template/include-nav.php'); ?>
 	<div id="maincontent">
 			
 		<div class="main">
-		<h3 class="floated"><?php i18n('IMG_CONTROl_PANEL');?></h3>
+		<h3 class="floated"><?php i18n('IMG_CONTROl_PANEL');?><span> / <?php echo var_out($subPath .$src);?></span></h3>
 		<div class="edit-nav clearfix" >
 			<?php exec_action(get_filename_id().'-edit-nav'); ?>
-		</div>		
-		<?php exec_action(get_filename_id().'-body'); ?>		
-			<?php echo '<p><a href="'.$src_url .rawurlencode($src).'" rel="facybox_i" >'.i18n_r('ORIGINAL_IMG').'</a> <code>'.$imgwidth.'x'.$imgheight .'</code>'. $thumb_exists .'</p>'; ?>
+		</div>	
+		<?php exec_action(get_filename_id().'-body');
+			
+			echo '<div class="thumbs clearfix">';
+
+			echo '<div class="thumbcontainer"><a href="'.$src_url .rawurlencode($src).'" rel="fancybox_i" >';
+			// echo '<div><img src="'.$thumb_url . 'thumbsm.'. rawurlencode($src).'"></div>';
+			echo '<div><img src="'.$src_url . rawurlencode($src).'"></div>';
+			echo i18n_r('ORIGINAL_IMG') .'<br/><code>'.$imgwidth.'x'.$imgheight .'</code>';
+			echo "</a></div>";
+
+			echo '<div class="thumbcontainer"><a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'" rel="fancybox_i" >';
+			echo '<div><img  src="'.$thumb_url . 'thumbnail.'. rawurlencode($src).'"></div>';
+			echo i18n_r('CURRENT_THUMBNAIL') .'<br/><code>'.$thwidth.'x'.$thheight .'</code>';
+			echo "</a></div>";
+			
+			echo "</div>";
+
+
+			?>
 
 			<form>
-				<select class="text" id="img-info" style="width:50%" >
+				<select class="text" id="img-info" >
 					<option selected value="code-img-link" ><?php i18n('LINK_ORIG_IMG');?></option>
 					<option value="code-img-html" ><?php i18n('HTML_ORIG_IMG');?></option>
 					<?php if(!empty($thumb_exists)) { ?>
@@ -107,18 +125,28 @@ include('template/include-nav.php'); ?>
 <?php
 $jcrop = !empty($thumb_exists);
 if($jcrop){ ?>
-	<div id="jcrop_open" class="main">
+	
+	<div class="main">
+	<h3 class="floated"><?php i18n('CREATE_THUMBNAIL');?></h3>
+	<div class="clearfix" ></div>
+	<div style="color:#666;font-size:11px;"><?php i18n('CROP_INSTR_NEW');?></div><br/>
+	<form id="jcropform" action="<?php myself(); ?>?i=<?php echo rawurlencode($src); ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
+	<div id="jcrop_open">
 	    <img src="<?php echo $src_url .rawurlencode($src); ?>" id="cropbox" />
-			<div id="handw" class="toggle" ><?php i18n('SELECT_DIMENTIONS'); ?><br /><span id="picw"></span> x <span id="pich"></span></div>
+		<div id="handw" class="" ><?php i18n('SELECT_DIMENTIONS'); ?><br /><span id="picw">0</span> x <span id="pich">0</span></div>
+	    <input id="cropsave" type="submit" class="submit" value="<?php i18n('CREATE_THUMBNAIL');?>" /> &nbsp;
+	    <div class="clearfix"></div>
+	    <Br/>
 	    <!-- This is the form that our event handler fills -->
-	    <form id="jcropform" action="<?php myself(); ?>?i=<?php echo rawurlencode($src); ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
-	      <input type="hidden" id="x" name="x" />
-	      <input type="hidden" id="y" name="y" />
-	      <input type="hidden" id="w" name="w" />
-	      <input type="hidden" id="h" name="h" />
-	      <input type="submit" class="submit" value="<?php i18n('CREATE_THUMBNAIL');?>" /> &nbsp; <span style="color:#666;font-size:11px;"><?php i18n('CROP_INSTR_NEW');?></span>
-
+	    <a id="cropinputoggle" href="javascript:void(0);" data-toggle="cropinputs"><?php i18n('CROP_TOGGLE_INPUTS'); ?></a>
+	    <div id="cropinputs" class="toggle">
+	      <div class="inline"><label for="x">X</label><input class="jcropinput" type="" id="x" name="x" value="0"/></div>
+	      <div class="inline"><label for="y">Y</label><input class="jcropinput" type="" id="y" name="y" value="0"/></div>
+	      <div class="inline"><label for="w">W</label><input class="jcropinput" type="" id="w" name="w" value="0"/></div>
+	      <div class="inline"><label for="h">H</label><input class="jcropinput" type="" id="h" name="h" value="0"/></div>
+	    </div>
 	    </form>
+	</div>
 	</div>
 	
 <?php } ?>
@@ -133,23 +161,41 @@ if($jcrop){ ?>
 	    		
 			$(window).load(function(){
 				var api = $.Jcrop('#cropbox',{
-			    onChange: updateCoords,
-			    onSelect: updateCoords,
-			    boxWidth: 585, 
-			    boxHeight: 500
-			  }); 
-			  var isCtrl = false;
-				$(document).keyup(function (e) {
-					api.setOptions({ aspectRatio: 0 });
-					api.focus();
-					if(e.which == 17) isCtrl=false;
-				}).keydown(function (e) {
-					if(e.which == 17) isCtrl=true;
-					if(e.which == 66 && isCtrl == true) {
-						api.setOptions({ aspectRatio: 1 });
-						api.focus();
+					onChange: updateCoords,
+					onSelect: updateCoords,
+					onRelease: updateCoordsReset,
+					// onDblClick: jcropDblClick,
+					boxWidth: $('#jcrop_open').width(), 
+					boxHeight: 800,
+					bgColor: 'black',
+					bgOpacity: 0.3,
+					bgFade: true,
+					borderOpacity: 0.8,
+					handleOpacity: 0.4,
+					drawBorders: false,
+					handleSize: '5px'
+			  	});
+
+				$('#cropbox').data('jcrop',api);
+
+				$('.jcrop-tracker').bind('keydown mousemove mousedown',function (e) {
+					// console.log('event: ' + e.type);
+					var options = api.getOptions();
+					if(e.ctrlKey || e.metaKey) {
+						if(options.aspectRatio != 1){
+							console.log("aspectratio ON");
+							api.setOptions({ aspectRatio: 1 });
+							// api.focus(); // probably not needed setoptions reloads the entire thing
+						}
+					} else {
+						if(options.aspectRatio == 1){
+							console.log("aspectratio OFF");
+							api.setOptions({ aspectRatio: 0 });
+							// api.focus();
+						}							
 					}
 				});
+
 			});
 		
 		});

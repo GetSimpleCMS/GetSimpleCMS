@@ -45,7 +45,8 @@
 
 <div id="sidebar">
   <div class="section">
-     <?php get_component('sidebar');	?>
+     <?php get_component('sidebar');  ?>
+     <?php // get_snippet('sidebar');	?>
  </div>
  <div class="section credits">
      <p><?php echo date('Y'); ?> - <strong><?php get_site_name(); ?></strong></p>

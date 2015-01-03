@@ -13,7 +13,7 @@
 
         include(GSADMININCPATH ."configuration.php");
         if (cookie_check()) {
-            echo '<p><a href="pages.php">'.i18n_r('PAGE_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="upload.php">'.i18n_r('FILE_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="theme.php">'.i18n_r('THEME_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="backups.php">'.i18n_r('BAK_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="plugins.php">'.i18n_r('PLUGINS_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="settings.php">'.i18n_r('GENERAL_SETTINGS').'</a> &nbsp;&bull;&nbsp; <a href="support.php">'.i18n_r('SUPPORT').'</a> &nbsp;&bull;&nbsp; <a href="share.php?term='.i18n_r('SHARE').'" rel="facybox_s" >'.i18n_r('SHARE').'</a></p>';
+            echo '<p><a href="pages.php">'.i18n_r('PAGE_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="upload.php">'.i18n_r('FILE_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="theme.php">'.i18n_r('THEME_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="backups.php">'.i18n_r('BAK_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="plugins.php">'.i18n_r('PLUGINS_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="settings.php">'.i18n_r('GENERAL_SETTINGS').'</a> &nbsp;&bull;&nbsp; <a href="support.php">'.i18n_r('SUPPORT').'</a> &nbsp;&bull;&nbsp; <a href="share.php?term='.i18n_r('SHARE').'" rel="fancybox_s" >'.i18n_r('SHARE').'</a></p>';
         }
 
         if(!isAuthPage()){ ?>
@@ -41,7 +41,7 @@
         ?>
     </div><!-- end .wrapper -->
 
-<?php exec_action('pre-body'); // @hook pre-body before html body closing ?> 
+<?php exec_action('footer-body-end'); // @hook footer-body-end before html body closing ?> 
 </body>
 </html>
-<?php exec_action('end-flush'); // @hook end-flush the end before php flushes its output  ?>
+<?php exec_action('footer-end'); // @hook footer-end the end before php flushes its output  ?>

@@ -3,6 +3,7 @@
  * 
  */
 
+if (typeof GS == "undefined") GS = {};
 GS.notifyExpireDelay = 10000; // timout  to expire persistant notifications so they show stale (.notify_expired)
 GS.removeItDelay     = 5000;  // timeout to remove non-persistant notifications
 
@@ -25,19 +26,47 @@ function randomNum(m,n) {
       return Math.floor( Math.random() * (n - m + 1) ) + m;
 }
 
+function updateCoordsReset(){
+	var c = {x:0,y:0,w:0,h:0};
+	updateCoords(c);
+}
+
 /* jcrop display */
 function updateCoords(c) {
-	var x = Math.floor(c.x);
-	var y = Math.floor(c.y);
-	var w = Math.floor(c.w);
-	var h = Math.floor(c.h);
-	$('#handw').show();
+	Debugger.log("updatecoords");
+	Debugger.log(c);	
+	if($('#cropbox').data('animating')) return;
+	var x = Math.round(c.x);
+	var y = Math.round(c.y);
+	var w = Math.round(c.w);
+	var h = Math.round(c.h);
+	
+	// more accurate but precison issues causes changes as xy chnages	
+	// var w = Math.round(c.x2) - x; 
+	// var h = Math.round(c.y2) - y;
+
+	$('#handw').show();	
 	$('#x').val(x);
 	$('#y').val(y);
 	$('#w').val(w);
 	$('#h').val(h);
-	$('#pich').html(h);
 	$('#picw').html(w);
+	$('#pich').html(h);
+}
+
+/**
+ * updates coordinate inputs, do not update if change is less than 1px to handle precision issues
+ */
+function updateCoord(id,value){
+	if(!$('#'+id).val()){
+		$('#'+id).val(value);
+		return true;
+	}
+	if( Math.abs(parseInt($('#'+id).val(),10) - value ) != 1){
+		$('#'+id).val(value);
+		return true;
+	}
+	return false;	
 }
 
 Debugger = function () {};
@@ -200,7 +229,7 @@ function notifySuccess($msg) {
 function notifyOk($msg) {
 	return notify($msg, 'ok');
 }
-
+ 
 function notifyWarn($msg) {
 	return notify($msg, 'warning');
 }
@@ -212,16 +241,19 @@ function notifyInfo($msg) {
 function notifyError($msg) {
 	return notify($msg, 'error');
 }
-
+ 
 function notify($msg, $type) {
-	if ($type == 'ok' || $type== 'success' || $type == 'warning' || $type == 'info' || $type == 'error') {
+	// if ($type == 'ok' || $type== 'success' || $type == 'warning' || $type == 'info' || $type == 'error') {
 		var $notify = $('<div style="display:none;" class="notify notify_' + $type + '"><p>' + $msg + '</p></div>').clone();
-		var notifyelem = $('div.bodycontent').before($notify);
+		// check for #bodycontent if .bodycontent does not exist, ckeditor fullscreen removes it
+		if($('div.bodycontent').get(0)) var notifyelem = $('div.bodycontent').before($notify);
+		else if($('#bodycontent').get(0)) var notifyelem = $('#bodycontent').before($notify);
+		else Debugger.log('nowhere to insert notify');
 		$notify.fadeIn();
 		$notify.addCloseButton();
 		$notify.notifyExpire();
 		return $notify;
-	} 
+	// }
 	// @todo else plain
 }
 
@@ -239,7 +271,7 @@ $.fn.notifyExpire = function($delay){
 
 	return $(this);
 }
-
+ 
 $.fn.parseNotify = function(){
 	Debugger.log($(this));
 	
@@ -267,7 +299,7 @@ $.fn.parseNotify = function(){
 
 function clearNotify($type) {
 	Debugger.log('CLEAR NOTIFY '+ $type);
-	if($type !== undefined) return $('div.wrapper .notify.notify_'+$type).remove();
+	if($type !== undefined)	return $('.notify.notify_'+$type).remove();
 	return $('div.wrapper .notify').remove();
 }
  
@@ -280,6 +312,8 @@ function basename(str){
  * @todo add sprintf
  */
 function i18n(key){
+	// Debugger.log(GS.i18n);
+	if(!GS.i18n) return;
 	return GS.i18n[key] || key;
 }
 
@@ -300,24 +334,213 @@ function getTagName(elem){
 
 jQuery(document).ready(function () {
 
-	// init jq tabs custom handlers
-	$("#tabs").tabs({
-		activate: function(event, ui) {
-			// set bookmarkable urls
-			var hash = ui.newTab.context.hash;
-			hash = "tab_"+hash.replace('#','');
-			window.location.replace(('' + window.location).split('#')[0] + '#' + hash);	// should not affect history
-		},
-		create: function (event,ui) {
-			// set active tab from hash
-			if(window.location.hash){
-				var selectedTabHash = window.location.hash.replace(/tab_/,"");
-				var tabIndex = $( "#tabs li a" ).index($("#tabs li a[href='"+selectedTabHash+"']"));
-				if(tabIndex > 0) $( "#tabs" ).tabs("option", "active", tabIndex );
-			}	
+	// upload.php?browse
+	// filebrowser.php
+	if($('body#upload')){
+		if(getUrlParam('CKEditorFuncNum')) uploadCkeditorBrowse();
+		else if (getUrlParam('browse') !== undefined) uploadCustomBrowse();
+	}
+	
+	function uploadBrowse(){
+		Debugger.log('upload browse');
+		// hide stuff header, footer, sidebar items, and filter if images
+		$('#header').hide();
+		$('body').css('margin-top','10px');
+		if(!GS.debug) $('#footer').hide();
+		$('#sidebar ul li:not(".dispupload")').hide();
+		
+		Debugger.log(getUrlParam('type'));
+		
+		if(getUrlParam('type') == 'images' || getUrlParam('type') == 'image'){
+			$('#imageFilter').hide();
+			$('.thumblinkexternal').show();
+		}	
+	}
+
+	function uploadCustomBrowse(){
+		uploadBrowse();
+		// bind all primary links to callback
+		$('.primarylink').each(function(item){
+			// add listener
+			$(this).on('click',function(e){
+				e.preventDefault();
+				var siteurl = GS.siteurl;
+				var fileUrl = $(this).data('fileurl');
+				// if popup call openers callback, else call ours
+				if(window.opener){
+					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'primarylink');
+				} filebrowsercallback(siteurl+fileUrl,window.location.search,'primarylink');
+				filebrowserselectcomplete();				
+				return false;
+			});
+		});
+
+		// handle thumbnails
+		$('.thumblinkexternal').each(function(item){
+
+			// add listeners
+			$(this).on('click',function(e){
+				e.preventDefault();
+				var siteurl = GS.siteurl;
+				var fileUrl = $(this).data('fileurl');
+				// if popup call openers callback, else call ours
+				if(window.opener){
+					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'thumblink');
+				} filebrowsercallback(siteurl+fileUrl,window.location.search,'thumblink');
+				filebrowserselectcomplete();
+				return false;
+			});
+		});
+
+	}
+
+	// calback after selection is made, trigger filebrowserselected
+	function filebrowsercallback(url,arg1,arg2){
+		$(window).trigger('filebrowserselected',[url,arg1,arg2]);
+	}
+
+	// callback when selection is complete, trigger filebrowserselectcompleted
+	function filebrowserselectcomplete(){
+		$(window).trigger('filebrowserselectcompleted');
+	}
+
+	$(window).on('filebrowserselectcompleted',function(e){
+		if(window.opener) window.close();
+	});
+
+	// return id implementation
+	// an input with the id of returnid will atutomatically receive the url as its value
+	$(window).on('filebrowserselected',function(event,url,search){
+		var returnid = getUrlParam('returnid',search);
+		if(returnid) {
+			$('input #'+returnid).val(url); // set input value to url
 		}
 	});
 
+	// handle thumbnail lightbox buttons, add custom handlers
+	$.fn.uploadBrowseThumb = function(){
+		_this = $(this);
+		var link = $.parseHTML('<div style="display:inline-block;vertical-align:middle;"><a class="label label-ghost right" href="' + _this.get(0).href + '" data-fileurl="'+ _this.get(0).href +'">'+i18n("SELECT_FILE")+'</a></div>');
+		if(getUrlParam('CKEditorFuncNum')){
+			$(link).uploadCKEBrowseThumb();
+			$('.fancybox-title').append($(link));
+		}	
+		else if (getUrlParam('browse') !== undefined){
+			$(link).uploadCustomBrowseThumb();		
+			$('.fancybox-title').append($(link));
+		}
+			
+	}
+
+
+	$.fn.uploadCustomBrowseThumb = function(){
+		$(this).on('click',function(e){
+			e.preventDefault();
+			var siteurl = '';
+			var fileUrl = $(this).data('fileurl');
+			if(window.opener){
+				window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'lightboxlink');
+				window.close();
+			} filebrowsercallback(siteurl+fileUrl,window.location.search,'lightboxlink');
+			return false;
+		});
+	}
+
+	$.fn.uploadCKEBrowseThumb = function(){
+		$(this).on('click',function(e){
+			var funcnum  = getUrlParam('CKEditorFuncNum');
+			e.preventDefault();
+			var siteurl = '';
+			var fileUrl = $(this).data('fileurl');
+			window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
+			window.close();
+			return false;
+		});
+	}
+
+	// @todo abstract all this through custom with custom callbacks and listeners
+	function uploadCkeditorBrowse(){
+		Debugger.log('upload ckeditor browse');
+		uploadBrowse();
+
+		//CKEditor=post-content&CKEditorFuncNum=1&langCode=en
+		var funcnum  = getUrlParam('CKEditorFuncNum');
+		var editorid = getUrlParam('CKEditor');
+		var langcode = getUrlParam('langCode');
+
+		var path = getUrlParam('path') ? getUrlParam('path')+'/' : '';
+
+		// bind all primary links to callback
+		$('.primarylink').each(function(item){
+			// add listener
+			$(this).on('click',function(e){
+				e.preventDefault();
+				var siteurl = GS.siteurl;
+				var fileUrl = $(this).data('fileurl');
+				window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
+				window.close();
+				return false;
+			});
+		});
+
+		// handle thumbnails
+		$('.thumblinkexternal').each(function(item){
+			// add listeners
+			$(this).on('click',function(e){
+				e.preventDefault();
+				var siteurl = GS.siteurl;
+				var fileUrl = $(this).data('fileurl');
+				window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
+				window.close();
+				return false;
+			});
+		});
+
+	}
+
+	// gs event for file uploaded via dropzone
+	$(window).on('fileuploaded',fileuploaded);
+	
+	function fileuploaded(){
+		Debugger.log('fileuploaded');
+		if(getUrlParam('CKEditorFuncNum')) uploadCkeditorBrowse();
+		else if (getUrlParam('browse') !== undefined) uploadBrowse();
+	};
+
+	// Helper function to get parameters from the query string.
+	// @todo this is temporary, splitters are much faster than regex, 
+	// plus we will probably need a url mutator library in core soon 
+	function getUrlParam(paramName,search)
+	{
+		if(search == undefined) search = window.location.search;
+		var reParam = new RegExp('(?:[\?&]|&amp;)' + paramName + '=?([^&]+)?', 'i') ;
+		var match = search.match(reParam);
+		if(match && match.length > 1){
+			// Debugger.log(match[1]);
+			if(typeof match[1] == 'undefined') return '';
+			return match[1];
+		}
+	}
+
+	// init jq tabs custom handlers
+	if(window.tabs){
+		$("#tabs").tabs({
+			activate: function(event, ui) {
+				// set bookmarkable urls
+				var hash = ui.newTab.context.hash;
+				hash = "tab_"+hash.replace('#','');
+				window.location.replace(('' + window.location).split('#')[0] + '#' + hash);	// should not affect history
+			},
+			create: function (event,ui) {
+				// set active tab from hash
+				if(window.location.hash){
+					var selectedTabHash = window.location.hash.replace(/tab_/,"");
+					var tabIndex = $( "#tabs li a" ).index($("#tabs li a[href='"+selectedTabHash+"']"));
+					if(tabIndex > 0) $( "#tabs" ).tabs("option", "active", tabIndex );
+				}	
+			}
+		});
+	}
 	// init aja xindicator
 	var loadingAjaxIndicator;
 	if($('#loader')[0]) initLoaderIndicator();
@@ -341,13 +564,14 @@ jQuery(document).ready(function () {
 			Debugger.log('attachFilterChangeEvent');
 			loadingAjaxIndicator.show();
 			var filterx = $(this).val();
+			var filterTitle = $(this).find('option:selected').text();
 			$("#imageTable").find("tr").hide();
-			if (filterx == 'Images') {
+			if (filterx == 'image') {
 				$("#imageTable").find("tr .imgthumb").show();
 			} else {
 				$("#imageTable").find("tr .imgthumb").hide();
 			}
-			$("#filetypetoggle").html('&nbsp;&nbsp;/&nbsp;&nbsp;' + filterx);
+			$("#filetypetoggle").html('&nbsp;&nbsp;/&nbsp;&nbsp;' + filterTitle);
 			$("#imageTable").find("tr." + filterx).show();
 			$("#imageTable").find("tr.folder").show();
 			$("#imageTable").find("tr:first-child").show();
@@ -358,21 +582,89 @@ jQuery(document).ready(function () {
  
 	//upload.php
 	attachFilterChangeEvent();
- 
-	//image.php 
-	var copyKitTextArea = $('textarea.copykit');
+ 	$("#imageFilter").change(); //@todo if selected
+
+	$("form :input").on("keypress", function(e) {
+	    return e.keyCode != 13;
+	});
+
+	//image.php
+
+	// jcrop manual input control
+	$('.jcropinput').keypress(function(e) {
+	    if(e.which == 13) {
+	        $(this).trigger('change');
+	    }
+	});
+
+	$('.jcropinput').on('change',function(e){
+		var array = [
+			parseInt($('#x').val(),10),
+			parseInt($('#y').val(),10),
+			parseInt($('#x').val(),10) + parseInt($('#w').val(),10),
+			parseInt($('#y').val(),10) + parseInt($('#h').val(),10)
+		];
+
+		// Debugger.log(array);
+		$('#cropbox').data('animating',true);
+		$('#cropbox').data('focused',this);
+		$(this).focus();
+		$(this).select();
+		$('#cropbox').data('jcrop').animateTo(array,jcropDoneAnimating);
+	});
+
+	function jcropDoneAnimating(){
+		Debugger.log("done animating");
+		$('#cropbox').data('animating',false);
+		var coords = this.tellSelect();
+		updateCoordsCallback(coords);
+	}
+
+	function updateCoordsCallback(c) {
+		Debugger.log('updatecoords animateto callback');
+		Debugger.log(c);
+		if($('#cropbox').data('animating')) return;
+		var x = Math.round(c.x);
+		var y = Math.round(c.y);
+		// var w = Math.round(c.w);
+		// var h = Math.round(c.h);
+		var w = Math.round(c.x2) - x;
+		var h = Math.round(c.y2) - y;
+
+		$('#handw').show();
+
+		updateCoord('x',x);
+		updateCoord('y',y);
+		
+		if(updateCoord('w',w)) $('#picw').html(w);
+		if(updateCoord('h',h)) $('#pich').html(h);
+
+		// Debugger.log($('#cropbox').data('focused'));
+		// refocus input
+		$('#cropbox').data('focused').focus();
+		$('#cropbox').data('focused').select();
+	}
+
 	$("select#img-info").change(function () {
 		var codetype = $(this).val();
 		var code = $('p#' + codetype).html();
 		var originalBG = $('textarea.copykit').css('background-color');
 		var fadeColor = "#FFFFD1";
-		copyKitTextArea.fadeOut(500).fadeIn(500).html(code);
+		// $('textarea.copykit').fadeOut(500).fadeIn(500).html(code);
+		$('textarea.copykit').html(code);
+		$('textarea.copykit').focus();
+		// $('textarea.copykit').select();		
 	});
 	$(".select-all").on("click", function () {
-		copyKitTextArea.focus().select();
+		$('textarea.copykit').focus();
+		$('textarea.copykit').select();
 		return false;
 	});
- 
+	$('textarea.copykit').on("dblclick", function () {
+		$('textarea.copykit').focus();
+		$('textarea.copykit').select();
+		return false;
+	}); 
  
 	//autofocus index.php & resetpassword.php user fields on pageload
 	$("#index input#userid").focus();
@@ -409,54 +701,66 @@ jQuery(document).ready(function () {
 	// bind component new button
 	$("#addcomponent").on("click", function ($e) {
 		$e.preventDefault();
-		loadingAjaxIndicator.show();
+		ajaxStatusWait();
+
+		// get current highest id
 		var id = $("#id").val();
 
 		// copy template and add ids to fields
 		var comptemplate = $('#comptemplate').clone();
-		$(comptemplate).find('.compdiv').prop('id','section-'+id);
-		$(comptemplate).find('.compdiv').css('display','none');
-		
-		$(comptemplate).find('.delcomponent').prop('rel',id);
-		$(comptemplate).find("[name='id[]']").prop('value',id);
-		$(comptemplate).find("[name='active[]']").prop('value',id);
-		$(comptemplate).find("[name='val[]']").addClass('code_edit');
-		// console.log($(comptemplate).children().first().get(0));
+		var newcomponent = comptemplate.children(':first');
+
+		newcomponent.prop('id','section-'+id);
+		newcomponent.css('display','none');
+		newcomponent.find('.delcomponent').prop('rel',id);
+		newcomponent.find("[name='id[]']").prop('value',id);
+		newcomponent.find("[name='active[]']").prop('value',id);
 
 		// insert new component
-		var newcomponent = comptemplate.children(':first');
 		$("#divTxt").prepend(newcomponent);
 		
+		// remove template noeditor class
+		var input = newcomponent.find("[name='val[]']");
+		input.addClass('oneline');
+		input.removeClass('noeditor');
+		
 		// fade in
-		$("#section-" + id).slideToggle('fast');
+		newcomponent.slideToggle(500);
 
 		// trigger title change
-		$("#section-" + id).find($("b.editable")).comptitleinput();
+		newcomponent.find($("b.editable")).comptitleinput();
 
-		id = (id - 1) + 2;
-		$("#id").val(id); // bump count
-		loadingAjaxIndicator.fadeOut(500);
+ 		// bump id
+		nextid = (id - 1) + 2;
+		$("#id").val(nextid);
+
 		$('#submit_line').fadeIn(); // fadein in case no components exist
+		ajaxStatusComplete();
 		
-		// add codeditor to new textarea
-		var textarea = $("#divTxt").find('textarea').first();
-		// Debugger.log($.isFunction($.fn.editorFromTextarea));
-		if($.isFunction($.fn.editorFromTextarea)) textarea.editorFromTextarea();
+		// add code ditor
+		var codeedit = input.hasClass('code_edit');
+		if( codeedit && $.isFunction($.fn.editorFromTextarea)) input.editorFromTextarea();
 
-		var editor = textarea.data('editor');
-		// retain autosizing but make sure the editor start larger than 1 line high
-		if(editor){
-			$(editor.getWrapperElement()).find('.CodeMirror-scroll').css('min-height',100);
-			editor.refresh();
-		}	
+		// add html editor
+		var htmledit = input.hasClass('html_edit');
+		if( htmledit && $.isFunction($.fn.htmlEditorFromTextarea)) input.htmlEditorFromTextarea();
 
-		$("#divTxt").find('input').get(0).focus();
+		// set custom code editor height
+		// var editor = input.data('editor');
+		// if(editor){
+		// 	// retain autosizing but make sure the editor start larger than 1 line high
+		// 	$(editor.getWrapperElement()).find('.CodeMirror-scroll').css('min-height',100);
+		// 	editor.refresh();
+		// }
+
+		$("#divTxt").find('input').get(0).focus(); // focus input so editor gets focused ( if it listens of course )
+		// @todo make better focus events
 	});
 
 	// bind delete component button
 	$("#maincontent").on("click",'.delcomponent', function ($e) {
 		$e.preventDefault();
-		Debugger.log($(this));
+		// Debugger.log($(this));
 		var message = $(this).attr("title");
 		var compid = $(this).attr("rel");
 		var answer = confirm(message);
@@ -483,7 +787,7 @@ jQuery(document).ready(function () {
 	$.fn.comptitleinput = function(){
 		var t = $(this).html();		
 		$(this).parents('.compdiv').find("input.comptitle").hide();
-		$(this).after('<div id="changetitle"><label>Title: </b><input class="text newtitle titlesaver" name="title[]" value="' + t + '" /></div>');
+		$(this).after('<div id="changetitle"><label>Title: </b><input class="text newtitle titlesaver" name="titletmp[]" value="' + t + '" /></div>');
 		$(this).next('#changetitle').find('input.titlesaver').focus();
 		$(this).parents('.compdiv').find("input.compslug").val('');
 		$(this).hide();		
@@ -559,13 +863,14 @@ jQuery(document).ready(function () {
 							$('div.wrapper .updated').remove();
 							$('div.wrapper .error').remove();
 							$(response).find('div.notify').parseNotify();
-						}
+							}
 					});
 					loadingAjaxIndicator.fadeOut(500);
 				});
 				return false;
 			}
 		} else {
+			Debugger.log('confirm answered no');
 			mytr.css('font-style', 'normal');
 			return false;
 		}
@@ -605,13 +910,30 @@ jQuery(document).ready(function () {
  	// fancybox lightbox init
  	// rel=fancybox (_i/_s)
 	if (jQuery().fancybox) {
-		$('a[rel*=facybox]').fancybox({
-			type: 'ajax',
+
+		// default
+		$('a[rel*=fancybox]').fancybox({
+			// type: 'ajax',
 			padding: 0,
 			scrolling: 'auto'
 		});
-		$('a[rel*=facybox_i]').fancybox();
-		$('a[rel*=facybox_s]').fancybox({
+
+		// used for images
+		$('a[rel*=fancybox_i]').fancybox({
+			afterShow: function(e) {				
+				$(this).uploadBrowseThumb();
+			},
+			padding : 0,
+			helpers: {
+			    title: {
+			        // type: "inside"
+			        type: "over"
+			    }
+			}
+		});
+
+		// used for share
+		$('a[rel*=fancybox_s]').fancybox({
 			type: 'ajax',
 			padding: 0,
 			scrolling: 'no'
@@ -625,8 +947,11 @@ jQuery(document).ready(function () {
     }
 
     function ajaxStatusComplete(){
+    	pageisdirty = false;
+    	warnme      = false;
     	$('input[type=submit]').attr('disabled', false);
-		loadingAjaxIndicator.fadeOut(); 
+		loadingAjaxIndicator.fadeOut();
+		$("body").removeClass('dirty');	
    	}
 
 	//plugins.php
@@ -637,9 +962,9 @@ jQuery(document).ready(function () {
 		loadingAjaxIndicator.show();
  
 		var message = $(this).attr("title");
-		var dlink   = $(this).attr("href");
-		var mytd    = $(this).parents("td");
-		var mytr    = $(this).parents("tr");
+		var dlink = $(this).attr("href");
+		var mytd = $(this).parents("td");
+		var mytr = $(this).parents("tr");
 
 		var old = mytd.html();
 		mytd.html('').addClass('ajaxwait_tint_dark').spin('gstable');
@@ -676,7 +1001,7 @@ jQuery(document).ready(function () {
 					mytd.html(old).removeClass('ajaxwait_tint_dark');
 					$('.toggleEnable').removeClass('disabled');
 					loadingAjaxIndicator.fadeOut();
-					Debugger.log(mytd.data('spinner'));
+					// Debugger.log(mytd.data('spinner'));
 					mytd.data('spinner').stop(); // @todo not working, spinner keeps spinning
 					$(response).find('div.updated').parseNotify();
 				} else {
@@ -806,7 +1131,6 @@ jQuery(document).ready(function () {
     // init auto save for page edit
 	function autoSaveInit(){
 		Debugger.log('auto saving initialized ' + GSAUTOSAVEPERIOD);
-		$('#pagechangednotify').hide();
 		$('#autosavestatus').show();
 		$('#autosavenotify').show();
 		setInterval(autoSaveIntvl, GSAUTOSAVEPERIOD*1000);
@@ -814,11 +1138,19 @@ jQuery(document).ready(function () {
 
     // interval for autosave
     function autoSaveIntvl(){
+        Debugger.log('autoSaveIntvl called ' + GSAUTOSAVEPERIOD);
         if(pageisdirty === true){
             Debugger.log('autoSaveIntvl called, form is dirty: autosaving');
             ajaxSave('&autosave=1').done(autoSaveCallback);
             pageisdirty = false;
         }
+    }
+
+	function autoSaveDestroy(){
+		Debugger.log('auto saving destroying ' + GSAUTOSAVEPERIOD);
+		$('#autosavestatus').show();
+		$('#autosavenotify').show();
+		setInterval(autoSaveIntvl, GSAUTOSAVEPERIOD*1000);
     }
 
     // ajax save function for edit.php #editform
@@ -845,11 +1177,11 @@ jQuery(document).ready(function () {
     function autoSaveUpdate(success,status){
         $('#autosavestatus').hide();
         $('#autosavenotify').html(status);
-        $('#pagechangednotify').hide();
         $('input[type=submit]').attr('disabled', false);
         if(success){
+        	Debugger.log("auto save success");
             $('#cancel-updates').hide();
-            $('input[type=submit]').css('border-color','#ABABAB');
+			ajaxStatusComplete();
             warnme = false;
         }
         pageisdirty = !success;
@@ -859,11 +1191,9 @@ jQuery(document).ready(function () {
     function ajaxSaveUpdate(success,status){
 		clearNotify('success');
         notifySuccess(status).popit();    	
-        $('#pagechangednotify').hide();
         if(success) {
             $('#cancel-updates').hide();
             ajaxStatusComplete();
-            $('input[type=submit]').css('border-color','#ABABAB');
             warnme = false;
         }
         pageisdirty = !success;
@@ -873,7 +1203,8 @@ jQuery(document).ready(function () {
     function ajaxSaveSucess(response){
         updateEditSlug(response);
         updateNonce(response);
-        // @todo change url to new slug so refreshes work        
+        $('#maincontent.newdraft').removeClass('newdraft'); // remove newdraft class / show action buttons
+        // @todo change window url to new slug so refreshes work
     }
 
     // handle ajax save error
@@ -888,7 +1219,7 @@ jQuery(document).ready(function () {
 
     // call callbacks for autosave succcess or error
     function autoSaveCallback(response){
-        Debugger.log('autoSaveCallback ' + response);
+        Debugger.log('autoSaveCallback ');
         response = $.parseHTML(response);
         if ($(response).find('div.updated')) {
             autoSaveUpdate(true,$(response).find('div.autosavenotify').html());
@@ -928,18 +1259,30 @@ jQuery(document).ready(function () {
 
     // auto save indicator, show notify, reset button style
     function autoSaveInd(){
-        $('#pagechangednotify').show();
-        $('input[type=submit]').css('border-color','#CC0000');
+        $("body").addClass('dirty');        
+        // $('input[type=submit]').css('border-color','#CC0000');
         $('#cancel-updates').show();
     }
 
 	// adds sidebar submit buttons and fire clicks
 	var edit_line = $('#submit_line span').html();
+	// var edit_ok = '<i class="fa fa-fw fa-check-circle label-ok-color" style="font-size: 24px;"></i></p>';
 	$('#js_submit_line').html(edit_line);
 	$("#js_submit_line input.submit").on("click", function () {
 		$("#submit_line input.submit").trigger('click');
 	});
 
+	// page is dirty, add to sidebars inputs
+	var unsaved = '<p id="pagechangednotify">'+ i18n('PAGE_UNSAVED')+'</p>';
+	$('#js_submit_line').after(unsaved);
+
+    $('form input,form textarea,form select').not('#post-title').not('#post-id').bind('change keypress paste textInput input',function(){
+        // Debugger.log('form changed');
+        if($("body").hasClass('dirty')) return;
+        if($(this).closest($('form')).find('#submit_line').get(0)) $("body").addClass('dirty');
+    });
+
+	// save and close
 	$(".save-close a").on("click", function ($e) {
 		$e.preventDefault();
 		$('body').removeClass('ajaxsave');
@@ -949,12 +1292,35 @@ jQuery(document).ready(function () {
  
  
 	// pages.php
+	
+	// toggle status
 	$("#show-characters").on("click", function () {
-		if($(this).hasClass('current')) $(".showstatus").hide();
-		else $(".showstatus").show() ;
-		$(this).toggleClass('current');
+		if($(this).hasClass('current')) hidePageStatus();
+		else showPageStatus();
 	});
  
+	function showPageStatus(){
+		$(".showstatus").show();
+		$("#show-characters").addClass('current');
+		setConfig('pagestatustoggle',true);	
+	}
+
+	function hidePageStatus(){
+		$(".showstatus").hide();
+		$("#show-characters").removeClass('current');
+		setConfig('pagestatustoggle',false);
+	}
+
+	function initPageStatus(){
+		var filterstate = getConfig('pagestatustoggle');
+		if(typeof filterstate !== undefined){
+			if(filterstate == true) showPageStatus(true);
+			else hidePageStatus(true);
+		}		
+	}
+	
+	initPageStatus();
+
  
 	// log.php
 	if (jQuery().reverseOrder) {
@@ -1049,7 +1415,7 @@ jQuery(document).ready(function () {
 		file  = file  === undefined ? '' : file;
 		url   = url   === undefined ? "theme-edit.php?t="+theme+'&f='+file : url;
 		
-		loadingAjaxIndicator.show();
+		ajaxStatusWait();
 		if($('#codetext').data('editor')){
 			$('#codetext').data('editor').setValue('');
 			$('#codetext').data('editor').hasChange = false;
@@ -1104,7 +1470,7 @@ jQuery(document).ready(function () {
 				$('#theme_editing_file').html(filename);
 
 				clearFileWaits();
-				loadingAjaxIndicator.fadeOut();
+				ajaxStatusComplete();
 
 				if($(filenamefield).hasClass('nofile')) return;
 				$('#theme_edit_code').removeClass('readonly');
@@ -1145,7 +1511,7 @@ jQuery(document).ready(function () {
 
 	// theme-edit ajax save
 	themeFileSave = function(cm){
-		loadingAjaxIndicator.show();
+		ajaxStatusWait();
 
 		if($(cm)[0] && $.isFunction(cm.save)){
 			cm.save(); // copy cm back to textarea if editor has save method
@@ -1171,7 +1537,7 @@ jQuery(document).ready(function () {
 
 				updateNonce(response);
 
-				loadingAjaxIndicator.fadeOut();
+				ajaxStatusComplete();
 				$('#codetext').data('editor').hasChange = false; // mark clean		
 			}
 		});
@@ -1188,17 +1554,16 @@ jQuery(document).ready(function () {
 		Debugger.log("onsubmit");
 		e.preventDefault();
 		ajaxStatusWait();
-		// $('#codetext').data('editor').setValue('');
-		// $('#codetext').data('editor').hasChange == false;
 		
 		cm_save_editors();
-		var url = "path/to/your/script.php"; // the script where you handle the form input.
+		cm_save_htmleditors();
+		cm_save_inlinehtmleditors();
 		var dataString = $("#compEditForm").serialize();			
 
 		$.ajax({
 			type: "POST",
 			cache: false,
-			url: 'components.php',
+			// url: 'components.php',
 			data: dataString+'&submitted=1&ajaxsave=1',
 			success: function( response ) {
 				response = $.parseHTML(response);
@@ -1206,7 +1571,6 @@ jQuery(document).ready(function () {
 				$(response).find('div.updated').parseNotify();
 				updateNonce(response);
 				ajaxStatusComplete();
-				// $('#codetext').data('editor').hasChange = false; // mark clean		
 			}
 		});
 	};
@@ -1220,6 +1584,10 @@ jQuery(document).ready(function () {
 	updateEditSlug = function(html){
 		var newslug = $(html).find('#existing-url').val();
 		if(newslug) $('#existing-url').val(newslug);
+		// Debugger.log(newslug);
+
+		var newslug = $(html).find('#post-id').val();
+		if(newslug) $('#post-id').val(newslug);
 		// Debugger.log(newslug);
 	};
 
@@ -1263,7 +1631,7 @@ jQuery(document).ready(function () {
 	};
 
 	// save all editors
-	cm_save_editors = function(theme){
+	cm_save_editors = function(){
 		// Debugger.log(theme);
 		$('.code_edit').each(function(i, textarea){
 			var editor = $(textarea).data('editor');
@@ -1271,6 +1639,35 @@ jQuery(document).ready(function () {
 			if(editor) {
 				editor.save();
 			}	
+		});		
+	};
+
+	// save all editors
+	cm_save_htmleditors = function(){
+		// Debugger.log(theme);
+		$('.html_edit').each(function(i, textarea){
+			var editor = $(textarea).data('htmleditor');
+			// Debugger.log(editor);
+			if(editor) {
+				Debugger.log('saving html editors');
+				editor.updateElement(); 
+			}
+		});		
+	};
+
+	// save all editors
+	cm_save_inlinehtmleditors = function(){
+		// Debugger.log(theme);
+		$('[contenteditable="true"]').each(function(i,elem){
+			Debugger.log($(elem).prop('id'));
+			var id = $(this).prop('id');
+			var editor = CKEDITOR.instances[id];
+			// CKEDITOR.instances.[blockID].getData()
+			Debugger.log(editor);
+			if(editor) {
+				Debugger.log('saving html editors');
+				Debugger.log(editor.getData());
+			}
 		});		
 	};
 
@@ -1282,9 +1679,10 @@ jQuery(document).ready(function () {
 	// toggle filter input
 	$('#filtertable').on("click", function ($e) {
 		$e.preventDefault();
-		filterSearchInput.slideToggle();
-		$(this).toggleClass('current');
-		filterSearchInput.find('#q').focus();
+		
+		// filterSearchInput.slideToggle();
+		if($(this).hasClass('current')) hideFilter();
+		else showFilter();
 	});
 	// enter ignore
 	$("#filter-search #q").keydown(function ($e) {
@@ -1293,15 +1691,19 @@ jQuery(document).ready(function () {
 		}
 	});
 	// create index columns
-	$("#editpages tr:has(td.pagetitle)").each(function () {
+	// if class filter exists then we expect it to have indexcolumn already
+	$("#editpages:not('.filter') tr:has(td.pagetitle)").each(function () {
+		Debugger.log('creating index column');
 		// find all text in pagetitle td, includes show status toggle (menu item)
 		var t = $(this).find('td.pagetitle').text().toLowerCase();
 		$("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
+		this.addClass('filter');
 	});
 	// live search
 	$("#filter-search #q").keyup(function () {
 		var s = $(this).val().toLowerCase().split(" ");
-		doFilter(s);
+		if(s == '') resetFilter();
+		else doFilter(s);
 	});
 	// cancel filter
 	$("#filter-search .cancel").on("click", function ($e) {
@@ -1310,24 +1712,47 @@ jQuery(document).ready(function () {
 		showFilter();
 	});
 	
-	function showFilter(){
-		filterSearchInput.slideDown();
+	initFilter();
+
+	function initFilter(){
+		var filterstate = getConfig('filtertoggle');
+		if(typeof filterstate !== undefined){
+			if(filterstate == true) showFilter(true);
+			else hideFilter(true);
+		}	
 	}
 
-	function hideFilter(){
+	function showFilter(init){
+		if(init) filterSearchInput.show();
+		else{
+			filterSearchInput.slideDown();
+			filterSearchInput.find('#q').focus();			
+			setConfig('filtertoggle',true);
+		}
+		$('#filtertable').addClass('current');
+	}
+
+	function hideFilter(init){
 		filterSearchInput.slideUp();
+		$('#filtertable').removeClass('current');		
+		if(!init) setConfig('filtertoggle',false);		
 	}
 
 	function doFilter(text){
-		$("#editpages tr:hidden").show();
+		$("table.filter tr:hidden").show();
 		$.each(text, function () {
-			$("#editpages tr:visible .indexColumn:not(:contains('" + this + "'))").parent().hide();
-		});		
+			if(this.substring(0,1) == '#') {
+				// tag searching
+				var s = this.substring(1);
+				$("table.filter tr:visible .tagColumn:not(:contains('" + s + "'))").parent().hide();
+			}	
+			else $("table.filter tr:visible .indexColumn:not(:contains('" + this + "'))").parent().hide();
+		});
 	}
 
 	function resetFilter(){
-		$("#editpages tr").show();
-		$('#filtertable').toggleClass('current');
+		$("table.filter tr").show();
+		// $('#filtertable').removeClass('current');
 		filterSearchInput.find('#q').val('');
 	}
  
@@ -1410,19 +1835,32 @@ jQuery(document).ready(function () {
 		}
 	});
 
+	// auto toggle on click id selector from data-toggle attr
+	$('a[data-toggle]').on('click',function(e){
+		if($("#"+$(this).data('toggle')).get(0)) $('#'+$(this).data('toggle')).toggle();
+	});
+
 	// catch all ajax error, and redirects for session timeout on HTTP 401 unauthorized
 	$( document ).ajaxError(function( event, xhr, settings ) {
-		// notifyInfo("ajaxComplete: " + xhr.status);
+		Debugger.log("ajaxComplete: " + xhr.status);
+		Debugger.log(event);
+		Debugger.log(xhr);
+		Debugger.log(settings);
 		if(xhr.status == 401){
 			notifyInfo("Redirecting...");
 			window.location.reload();
+		}
+		else if(xhr.status == 302){
+			Debugger.log("Redirecting...");
+			ajaxStatusComplete();	
+			window.location = xhr.responseText;
 		}
 	});
 
 	// custom ajax error handler
 	function ajaxError($response){
 		if(GS.debug === true){
-            alert('An error occured in an XHR call, check console for response');
+            Debugger.log('An error occured in an XHR call, check console for response');
 			Debugger.log($response);
 		}
 	}
@@ -1458,6 +1896,62 @@ function dosave(){
 	Debugger.log('saving');
 	// Debugger.log($("#submit_line input.submit"));
 	$("#submit_line input.submit").trigger('click'); // should do form.submit handlers as well
+}
+
+function supports_html5_storage() {
+	// return Modernizr.localstorage;
+	try {
+		return 'localStorage' in window && window['localStorage'] !== null;
+	} catch (e) {
+		return false;
+	}
+}
+
+function setlocal(settings){
+	if(!supports_html5_storage) return;	
+	var key   = 'gslocalstorage';	
+	
+	if(settings == undefined){
+		Debugger.log('setlocal empty');
+		return;
+	}
+	settings['version'] = '1';
+	jsonstr = JSON.stringify(settings);
+	localStorage[key] = jsonstr;
+	// Debugger.log('setlocal');
+	// Debugger.log(localStorage[key]);
+}
+
+function getlocal(){
+	var tmp = new Object();
+	if(!supports_html5_storage) return;	
+	
+	var key   = 'gslocalstorage';
+	var state = localStorage[key];
+
+	// Debugger.log('getlocal');
+	// Debugger.log(localStorage[key]);
+
+	if(state == undefined) return tmp;
+	state     = JSON.parse(state);
+	return state;
+}
+
+function getConfig(key){
+	var config = getlocal();
+	return config[key];
+}
+
+function setConfig(key,value){
+	// Debugger.log('setconfig ' + key + ' ' + value);
+	var settings  = getlocal();
+	settings[key] = value;
+	setlocal(settings);
+}
+
+function clearConfig(){
+	var key   = 'gslocalstorage';	
+	localStorage.removeItem(key);	
 }
 
 // lazy loader for js and css

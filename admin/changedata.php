@@ -14,209 +14,160 @@ $load['plugin'] = true;
 
 // Include common.php
 include('inc/common.php');
-
-$autoSaveDraft = false; // auto save to autosave drafts
-
-$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/					
-
 login_cookie_check();
 
-// check form referrer - needs siteurl and edit.php in it.
-// @todo why only here, maybe we should add this to everything, although easily circumventable
-if (isset($_SERVER['HTTP_REFERER'])) {
-	if ( !(strpos(str_replace('http://www.', '', $SITEURL), $_SERVER['HTTP_REFERER']) === false) || !(strpos("edit.php", $_SERVER['HTTP_REFERER']) === false)) {
-		echo "<b>Invalid Referer</b><br />-------<br />"; 
-		echo 'Invalid Referer: ' . htmlentities($_SERVER['HTTP_REFERER'], ENT_QUOTES);
-		die('Invalid Referer');
+$draft = (isset($_GET['nodraft']) || isset($_POST['post-nodraft']) || !getDef('GSUSEDRAFTS',true)) ? false : true; // (bool) using draft pages
+
+if(isset($_GET['publish']) && isset($_GET['id'])){
+	$id = var_in($_GET['id']);
+	
+	if(!filepath_is_safe(GSDATADRAFTSPATH.$id.'.xml',GSDATADRAFTSPATH)) $status = false;
+	else $status = publishDraft($id);
+
+	if($status){
+		exec_action('draft-publish'); // @hook draft-publish a draft was published
+		generate_sitemap(); // regenerates sitemap
 	}
+	redirect("pages.php?id=". $id ."&upd=publish-". ($status ? 'success' : 'error'));
+	die();
 }
 
 if (isset($_POST['submitted'])) {
 	check_for_csrf("edit", "edit.php");
-
-	$existingurl = isset($_POST['existing-url']) ? $_POST['existing-url'] : null;
-
-	if ( trim($_POST['post-title']) == '' )	{
+	// check for missing required fields
+	if ( !isset($_POST['post-title']) || trim($_POST['post-title']) == '' )	{
+		// no title, throw CANNOT_SAVE_EMPTY
+		// @todo this loses $id, we only get here if js is disabled
 		redirect("edit.php?upd=edit-error&type=".urlencode(i18n_r('CANNOT_SAVE_EMPTY')));
-	}	
-	else {
-
-		$url="";$title="";$metad=""; $metak="";	$cont="";
-		if(isset($_POST['post-title'])){
-			$title = trim(safe_slash_html($_POST['post-title']));
-			$title = truncate($title,GSTITLEMAX); // limit titles to 70 characters
-		}
-
-		// is a slug provided?
-		if ($_POST['post-id']) {
-			$url = truncate($_POST['post-id'],GSFILENAMEMAX); // limit slug/filenames to 70 chars
-			$url = doTransliteration($url);
-			$url = to7bit($url, "UTF-8");
-			$url = clean_url($url); //old way
-		} else {
-			if ($title)	{
-				$url = $title;
-				$url = doTransliteration($url);
-				$url = to7bit($url, "UTF-8");
-				$url = clean_url($url); //old way
-			} else {
-				$url = "temp";
-			}
-		}
-	
-	
-		//check again to see if the URL is empty
-		if ( trim($url) == '' )	{
-			$url = 'temp';
-		}
-		
-		$oldslug = $existingurl;
-
-		// was the slug changed on an existing page?
-		if ( isset($existingurl) ) {
-			if ($_POST['post-id'] != $existingurl){
-				if ($existingurl == 'index') {
-					// prevent change of index page's slug
-					redirect("edit.php?id=". urlencode($existingurl) ."&upd=edit-index&type=edit");
-				} else {
-					exec_action('changedata-updateslug'); // @hook changedata-updateslug a slug was changed
-					updateSlugs($existingurl);
-					delete_page($oldslug);
-				}
-			}
-		}
-
-		// format and clean the responses
-		// content
-		if(isset($_POST['post-titlelong']))			{ $titlelong   = safe_slash_html($_POST['post-titlelong']);	}
-		if(isset($_POST['post-summary']))			{ $summary     = safe_slash_html($_POST['post-summary']);	}
- 		if(isset($_POST['post-content'])) 			{ $content     = safe_slash_html($_POST['post-content']); }
- 		// options
- 		if(isset($_POST['post-author'])) 			{ $author      = safe_slash_html($_POST['post-author']);	}
- 		if(isset($_POST['post-template'])) 			{ $template    = $_POST['post-template']; }
- 		if(isset($_POST['post-parent'])) 			{ $parent      = $_POST['post-parent']; }
- 		if(isset($_POST['post-menu'])) 				{ $menu        = safe_slash_html($_POST['post-menu']); }
- 		if(isset($_POST['post-menu-enable'])) 		{ $menuStatus  = "Y"; } else { $menuStatus = ""; }
- 		if(isset($_POST['post-menu-order'])) 		{ $menuOrder   = is_numeric($_POST['post-menu-order']) ? $_POST['post-menu-order'] : "0"; }
- 		if(isset($_POST['post-private']) ) 			{ $private     = safe_slash_html($_POST['post-private']); }
- 		// meta
-		if(isset($_POST['post-metak'])) 			{ $meta        = $metak = safe_slash_html($_POST['post-metak']);	}
-		if(isset($_POST['post-metad'])) 			{ $metad       = safe_slash_html($_POST['post-metad']);	}
-		
-		//robots
-		if(isset($_POST['post-metar-noindex']))	 	$metarNoIndex   = 1;
-		else $metarNoIndex = 0; 
-		if(isset($_POST['post-metar-nofollow']))	$metarNoFollow  = 1;
-		else $metarNoFollow = 0; 
-		if(isset($_POST['post-metar-noarchive']))	$metarNoArchive = 1;
-		else $metarNoArchive = 0; 
-
-		// If saving a new file do not overwrite existing, get next incremental filename, file-count.xml
-		if ( (file_exists(GSDATAPAGESPATH . $url .".xml") && $url != $oldslug) ||  in_array($url,$reservedSlugs) ) {
-			list($newfilename,$count) = getNextFileName(GSDATAPAGESPATH,$url.'.xml');
-			$url = getFileName($newfilename);
-		}
-
-		// create new xml
-		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
-		$xml->addChild('pubDate', date('r'));
-
-		$fields = array(
-			'title',
-			'titlelong',
-			'summary',
-			'url',
-			'author',
-			'template',
-			'parent',
-			'menu',
-			'menuStatus',
-			'menuOrder',
-			'private',
-			'meta',
-			'metad',
-			'metarNoIndex',
-			'metarNoFollow',
-			'metarNoArchive',
-			'content'
-		);
-
-		foreach($fields as $field){
-			$note = $xml->addChild($field);
-			$note->addCData($$field);
-		}
-
-		exec_action('changedata-save'); // @hook changedata-save prior to saving a page
-
-		// backup before overwriting
-		if(file_exists(GSDATAPAGESPATH . $url .".xml")) backup_page($url);
-
-		if (isset($_POST['autosave']) && $_POST['autosave'] == '1' && $autoSaveDraft == true) {
-			XMLsave($xml, GSAUTOSAVEPATH . $url . '.xml');
-		} else {
-			XMLsave($xml, GSDATAPAGESPATH . $url .".xml");
-		}
-
-		//ending actions
-		exec_action('changedata-aftersave'); // @hook changedata-aftersave after saving a page
-		generate_sitemap();
-
-		/**
-		 * do changedata ajax save checking for legacy
-		 * @param  str $url     [description]
-		 * @param  str $oldslug [description]
-		 */
-		function changedataAjaxSave($url,$oldslug){
-			if(isset($_POST['ajaxsave'])){
-				// ajax response wrapper, still using html parsing for now
-				echo "<div>";
-
-				// if this was an autosave add autosave response
-				if(isset($_POST['autosave']) && $_POST['autosave'] == '1'){
-					echo '<div class="autosavenotify">'.sprintf(i18n_r('AUTOSAVE_NOTIFY'),output_time(date())).'</div>';
-				}
-
-				// setup error checking vars and include error checking for notifications
-				$id     = $url;
-				$update = 'edit-success';
-				$ptype  = 'edit';
-				if($url !== $oldslug) $oldid = $oldslug; // if slug was changed set $oldid
-				include('template/error_checking.php');
-
-				// send new inputs for slug changes and new nonces
-				echo '<input id="nonce" name="nonce" type="hidden" value="'. get_nonce("edit", "edit.php") .'" />';
-	            echo '<input id="existing-url" name="existing-url" type="hidden" value="'. $url .'" />';
-				echo "</div>";
-				die();
-			}
-		}
-
-		// if ajax we are done
-		changedataAjaxSave($url,$oldslug);
-
-		// redirect user back to edit page
-
-		if ($_POST['redirectto']!='') {
-			$redirect_url = $_POST['redirectto'];
-		} else {
-			$redirect_url = 'edit.php';
-		}
-
-			if(isset($existingurl)){
-				if ($url == $existingurl) {
-					// redirect save new file
-			redirect($redirect_url."?id=". $url ."&upd=edit-success&type=edit");
-		} else {
-					// redirect new slug, undo for old slug
-					redirect($redirect_url."?id=". $url ."&old=".$existingurl."&upd=edit-success&type=edit");
-		}
-
 	}
-			else {
-				// redirect new slug
-				redirect($redirect_url."?id=". $url ."&upd=edit-success&type=new"); 
-			}
+
+	// flag for new page, true, false existing
+	$pageIsNew = !isset($_POST['existing-url']) || trim($_POST['existing-url']) == '';
+
+	$postslug = $oldslug = null;
+	$oldslug  = (isset($_POST['existing-url']) && trim($_POST['existing-url']) !=='') ? $_POST['existing-url'] : null;
+	$postslug = (isset($_POST['post-id']) && trim($_POST['post-id']) !=='') ? $_POST['post-id'] : null;
+
+	$slugHasChanged = !$pageIsNew && ($oldslug !== $postslug); # flag, this edit changed the slug
+	$overwrite      = !$pageIsNew && !$slugHasChanged;         # flag, overwrite an existing slug
+
+	// setup title
+	$title = safe_slash_html($_POST['post-title']);
+
+	// if attempting to change index throw ER_CANNOT_INDEX
+	if ($slugHasChanged && $oldslug === 'index') redirect("edit.php?id=". urlencode($oldslug) ."&upd=edit-index&type=edit");
+	// if attemping to change slug on draft page throw ER_CANNOT_DRAFT
+	if ($slugHasChanged && $draft) redirect("edit.php?id=". urlencode($oldslug) ."&upd=draft-slug&type=edit");
+
+	// format and clean the inputs
+	$data = array();
+
+	// main
+	if(isset($_POST['post-titlelong']))			{ $data['titlelong']   = safe_slash_html($_POST['post-titlelong']);	}
+	if(isset($_POST['post-summary']))			{ $data['summary']     = safe_slash_html($_POST['post-summary']);	}
+	if(isset($_POST['post-content'])) 			{ $data['content']     = safe_slash_html($_POST['post-content']); }
+	// options
+	if(isset($_POST['post-author'])) 			{ $data['author']      = safe_slash_html($_POST['post-author']);	}
+	if(isset($_POST['post-template'])) 			{ $data['template']    = $_POST['post-template']; }
+	if(isset($_POST['post-parent'])) 			{ $data['parent']      = $_POST['post-parent']; }
+	if(isset($_POST['post-menu'])) 				{ $data['menu']        = safe_slash_html($_POST['post-menu']); }
+	if(isset($_POST['post-menu-enable'])) 		{ $data['menuStatus']  = "Y"; } else { $menuStatus = ""; }
+	if(isset($_POST['post-menu-order'])) 		{ $data['menuOrder']   = is_numeric($_POST['post-menu-order']) ? $_POST['post-menu-order'] : "0"; }
+	if(isset($_POST['post-private']) ) 			{ $data['private']     = safe_slash_html($_POST['post-private']); }
+	// meta
+	if(isset($_POST['post-metak'])) 			{ $data['meta']        = $metak = safe_slash_html($_POST['post-metak']);	}
+	if(isset($_POST['post-metad'])) 			{ $data['metad']       = safe_slash_html($_POST['post-metad']);	}
+	//robots
+	if(isset($_POST['post-metar-noindex']))	 	$data['metarNoIndex']   = 1;
+	else $data['metarNoIndex'] = 0; 
+	if(isset($_POST['post-metar-nofollow']))	$data['metarNoFollow']  = 1;
+	else $data['metarNoFollow'] = 0; 
+	if(isset($_POST['post-metar-noarchive']))	$data['metarNoArchive'] = 1;
+	else $data['metarNoArchive'] = 0; 
+
+	// overwrite set for editing pages only, else we autoincrement slug if newpage or slughaschanged
+	$xml = createPageXml($title,$postslug,$data,$overwrite);
+	$url = (string)$xml->url; // legacy global for hooks
+
+	if(!$draft){
+		// if the slug changed update children
+		if ($slugHasChanged){
+			exec_action('changedata-updateslug'); // @hook changedata-updateslug a page slug was changed
+			changeChildParents($oldslug,$url); // update childrens parent slugs to the new slug
+			delete_page($oldslug); // backup and delete the page
 		}
+		exec_action('changedata-save'); // @hook changedata-save prior to saving a page
+		$xml = exec_filter('pagesavexml',$xml); // @filter pagesavexml (obj) xml object of a page save
+		savePageXml($xml);
+		exec_action('changedata-aftersave'); // @hook changedata-aftersave after a page was saved
+		
+		// genen sitemap if published save
+		generate_sitemap();
+	}
+	else {
+		exec_action('changedata-save-draft'); // @hook changedata-save-draft saving a draft page
+		$xml = exec_filter('draftsavexml',$xml); // @filter draftsavexml (obj) xml object of a page draft save
+		saveDraftXml($xml);
+		exec_action('changedata-aftersave-draft'); // @hook changedata-aftersave-draft after draft was saved
+	}
+
+	/**
+	 * do changedata ajax save checking for legacy
+	 * @param  str $url     [description]
+	 * @param  str $oldslug [description]
+	 */
+	function changedataAjaxSave($url,$oldslug){
+		global $draft,$pageIsNew;
+		if(isset($_POST['ajaxsave'])){
+			// force redirects
+			// 
+			// @todo we update the slug with the assigned slug, but there could be other things plugins need to do when adding a page,
+			//  that needs to be available to the page after, things like custom link menus, actions etc.
+			//  for now we redirect, so pagestack works since it is not implemented yet for ajax
+			if($pageIsNew) redirect('edit.php?id='.$url.'&nodraft&upd=edit-success&ptype=new',true);
+
+			// ajax response wrapper, still using html parsing for now
+			echo "<div>";
+
+			// if this was an autosave add autosave response
+			if(isset($_POST['autosave']) && $_POST['autosave'] == '1'){
+				echo '<div class="autosavenotify">'.sprintf(i18n_r('AUTOSAVE_NOTIFY'),output_time(date())).'</div>';
+			}
+
+			// setup error checking vars and include error checking for notifications
+			$id     = $url;
+			$update = 'edit-success';
+			$ptype  = 'edit';
+			if($url !== $oldslug) $oldid = $oldslug; // if slug was changed set $oldid
+			$upddraft = $draft;
+			include('template/error_checking.php');
+
+			// send new inputs for slug changes and new nonces
+			echo '<input id="nonce" name="nonce" type="hidden" value="'. get_nonce("edit", "edit.php") .'" />';
+            echo '<input id="existing-url" name="existing-url" type="hidden" value="'. $url .'" />';
+            echo '<input id="post-id" name="post-id" type="hidden" value="'. $url .'" />';
+			echo "</div>";
+			die();
+		}
+	}
+
+	// if ajax we are done
+	changedataAjaxSave($url,$oldslug);
+
+	// redirect user back to edit page or redirectto
+	if (isset($_POST['redirectto']) && $_POST['redirectto']!='') $redirect_url = $_POST['redirectto'];
+	else $redirect_url = 'edit.php';
+
+	if($pageIsNew) $redirect_url .= "?id=". $url ."&upd=edit-success&type=new"; // new page
+	if($slugHasChanged) $redirect_url .= "?id=". $url ."&old=".$oldslug."&upd=edit-success&type=edit"; // update with new slug
+	else $redirect_url .= "?id=". $url ."&upd=edit-success&type=edit"; // update
+
+	if($draft) $redirect_url .= "&upd-draft";
+	// add nodraft arg if we are force editing a live page
+	if(getDef('GSUSEDRAFTS',true) && !$draft) $redirect_url .= '&nodraft';
+	redirect($redirect_url);
+
 } else {
+	// nothing submitted
 	redirect('pages.php');
 }

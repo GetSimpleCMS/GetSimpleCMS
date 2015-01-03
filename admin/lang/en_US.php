@@ -67,10 +67,20 @@ $i18n = array(
 "EXPAND_TOP"              =>	"Expand Top Parents",
 "COLLAPSE_TOP"            =>	"Collapse Top Parents",
 "MISSING_PARENT"          =>    " - <i>Missing Parent</i>",
+"EDITING_PAGE_TITLE"      =>	"Editing Page: %s",
 
-/* 
+// drafts
+"EDITING_DRAFT_TITLE"     =>	"Editing Page Draft: %s",
+"LABEL_DRAFT"             =>	"DRAFT",
+"DRAFT_LAST_SAVED"        =>	"Page Draft saved by <em>%s</em> on",
+"PUBLISH"                 =>	"Publish",
+"LABEL_PUBLISHED"         =>	"PUBLISHED",
+"PAGE_NO_DRAFT"           =>    "Page does not have a draft",
+
+/*
 * For: edit.php
 */
+"UNKNOWN"                 =>    "Unknown",
 "PAGE_NOTEXIST"           =>	"The requested page does not exist",
 "BTN_SAVEPAGE"            =>	"Save Page",
 "BTN_SAVEUPDATES"         =>	"Save Updates",
@@ -184,6 +194,7 @@ $i18n = array(
 "ASK_RESTORE"             =>	"<em>R</em>estore", // 'r' is the accesskey identifier
 "ASK_DELETE"              =>	"<em>D</em>elete", // 'd' is the accesskey identifier
 "BACKUP_OF"               =>	"Backup of",
+"BACKUP"                  =>	"Backup",
 "PAGE_TITLE"              =>	"Page Title",
 "YES"                     =>	"Yes",
 "NO"                      =>	"No",
@@ -200,6 +211,15 @@ $i18n = array(
 "SAVE_COMPONENTS"         =>	"Save Components",
 "ACTIVE"                  =>	"Active",
 "COMPONENT_DELETED"       =>    "Component was deleted <b>%s</b>",
+
+/* 
+* For: snippets.php
+*/
+"SNIPPETS"                =>	"Snippets",
+"DELETE_SNIPPET"          =>	"Delete Snippet",
+"EDIT"                    =>	"Edit",
+"ADD_SNIPPET"             =>	"<em>A</em>dd Snippet", // 'a' is the accesskey identifier
+"SAVE_SNIPPETS"           =>	"Save Snippets",
 
 /* 
 * For: sitemap.php
@@ -350,6 +370,7 @@ $i18n = array(
 "SIDE_VIEW_SITEMAP"       =>	"<em>V</em>iew Sitemap",
 "SIDE_GEN_SITEMAP"        =>	"Generate Site<em>m</em>ap",
 "SIDE_COMPONENTS"         =>	"<em>E</em>dit Components",
+"SIDE_SNIPPETS"           =>	"Edit Snippets",
 "SIDE_EDIT_THEME"         =>	"Edit T<em>h</em>eme",
 "SIDE_CHOOSE_THEME"       =>	"Choose <em>T</em>heme",
 
@@ -382,6 +403,7 @@ $i18n = array(
 "ER_HASBEEN_REST"         =>	"<b>%s</b> has been restored",
 "ER_HASBEEN_DEL"          =>	"<b>%s</b> has been deleted",
 "ER_CANNOT_INDEX"         =>	"You cannot change the URL of the index page",
+"ER_CANNOT_DRAFT"         =>	"You cannot change the URL of a draft page",
 "ER_SETTINGS_UPD"         =>	"Your settings have been updated",
 "ER_OLD_RESTORED"         =>	"Your old settings have been restored",
 "ER_PROFILE_RESTORED"     =>	"The Profile has been restored",
@@ -391,7 +413,11 @@ $i18n = array(
 "ER_PROBLEM_DEL"          =>	"There was a problem deleting the file",
 "ER_COMPONENT_SAVE"       =>	"Your components have been saved",
 "ER_COMPONENT_REST"       =>	"Your components have been restored",
+"ER_SNIPPET_SAVE"         =>	"Your snippets have been saved",
+"ER_SNIPPET_REST"         =>	"Your snippets have been restored",
 "ER_CANCELLED_FAIL"       =>	"<b>Cancelled:</b> This update has been cancelled",
+"ER_PUBLISH_SUCCESS"      =>	"Draft of <b>%s</b> has been published",
+"ER_PUBLISH_ERROR"        =>	"There was a problem publishing draft of <b>%s</b>",
 
 /* 
 * For: changedata.php
@@ -402,15 +428,19 @@ $i18n = array(
 /* 
 * For: template_functions.php
 */
-"FTYPE_COMPRESSED"        =>	"Compressed", // file-type
-"FTYPE_VECTOR"            =>	"Vector",     // file-type
-"FTYPE_FLASH"             =>	"Flash",      // file-type
-"FTYPE_VIDEO"             =>	"Video",      // file-type
-"FTYPE_AUDIO"             =>	"Audio",      // file-type
-"FTYPE_WEB"               =>	"Web",        // file-type
-"FTYPE_DOCUMENTS"         =>	"Documents",  // file-type
-"FTYPE_SYSTEM"            =>	"System",     // file-type
-"FTYPE_MISC"              =>	"Misc",       // file-type
+"FTYPE_COMPRESSED"        =>	"Compressed", // file-type archive
+"FTYPE_VECTOR"            =>	"Vector",     // file-type vector
+"FTYPE_FLASH"             =>	"Flash",      // file-type flash
+"FTYPE_VIDEO"             =>	"Video",      // file-type video
+"FTYPE_AUDIO"             =>	"Audio",      // file-type audio
+"FTYPE_WEB"               =>	"Web",        // file-type web
+"FTYPE_DOCUMENT"          =>	"Document",   // file-type document
+"FTYPE_DOCUMENTS"         =>	"Documents",  // file-type document
+"FTYPE_SYSTEM"            =>	"System",     // file-type system file
+"FTYPE_MISC"              =>	"Misc",       // file-type Miscellaneous
+"FTYPE_IMAGE"             =>	"Image",      // file-type image
+"FTYPE_IMAGES"            =>	"Images",     // file-type image
+"FTYPE_SCRIPT"            =>	"Script",     // file-type script
 "IMAGES"                  =>	"Images",
 
 /* 
@@ -435,6 +465,7 @@ $i18n = array(
 "WELCOME_MSG"             =>	"Thank you for choosing GetSimple as your content management system!",
 "WELCOME_P"               =>	"GetSimple makes managing a website as simple as possible with its best-in-class user interface. We strive to keep the system easy enough for anyone to use, yet powerful enough for a developer to enable all the features that are needed.</p><p><strong>Some first steps that might be useful:</strong></p>",
 "GETTING_STARTED"         =>	"Getting Started",
+"CSRF"                    =>    "CSRF Detected!",
 
 /* 
 * For: image.php
@@ -447,7 +478,8 @@ $i18n = array(
 "ORIGINAL_IMG"            =>	"Original Image",
 "CLIPBOARD_INSTR"         =>	"Select All",
 "CREATE_THUMBNAIL"        =>	"Create Thumbnail",
-"CROP_INSTR_NEW"          =>	"<em>ctrl-B</em> or <em>command-B</em> for square",
+"CROP_INSTR_NEW"          =>	"Click and drag to crop, hold <kbd>Ctrl</kbd> or <kbd>&#8984; Command</kbd> for square, <kbd>esc</kbd> to clear",
+"CROP_TOGGLE_INPUTS"      =>    "Show / Hide Advanced",
 "SELECT_DIMENTIONS"       =>	"Selection Dimentions",
 "HTML_ORIG_IMG"           =>	"Original Image HTML",
 "LINK_ORIG_IMG"           =>	"Original Image Link",
@@ -502,6 +534,7 @@ $i18n = array(
 "DOUBLE_CLICK_EDIT"       =>	"Double Click to Edit", //components
 "THUMB_SAVED"             =>	"Thumbnail Saved", //image
 "EDIT_COMPONENTS"         =>	"Edit Components", //components
+"EDIT_SNIPPETS"           =>	"Edit Snippets", //snippets
 "REQS_MORE_INFO"          =>	"For more information on the required modules, visit the <a href=\"%s\" target=\"_blank\" >requirements page</a>.", //install & health-check
 "SYSTEM_UPDATE"           =>	"System Update", // update.php
 "AUTHOR"                  =>	"Author", //plugins.php
@@ -550,7 +583,7 @@ $i18n = array(
 "SAVE_MENU_ORDER"         =>	"Save Menu Order", //menu-manager.php
 "MENU_MANAGER_DESC"       =>	"Drag-and-drop the menu items around until you have the order you want, then click the <strong>'Save Menu Order'</strong> button.", //menu-manager.php
 "MENU_MANAGER_SUCCESS"    =>	"The new menu order has been saved", //menu-manager.php
-
+"MINIMIZENOTIFY"          =>    "Editing in fullscreen, press F11 or ESC to minimize",
 
 /* 
 * For: api related pages
@@ -626,6 +659,7 @@ $i18n = array(
 "DOWNLOAD"                =>	"Download",
 "THEME"                   =>	"Theme",
 "COMPONENT"               =>	"Component",
+"SNIPPET"                 =>	"Snippet",
 "PLUGIN"                  =>	"Plugin",
 "TOTAL"                   =>	"Total",
 "COUNT"                   =>	"Count",

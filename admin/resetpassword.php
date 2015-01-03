@@ -58,7 +58,7 @@ if(isset($_POST['submitted'])){
 				# if email fails, we do nothing, maybe handle this in the future
 				# show the result of the reset attempt
 				usleep($randSleep);
-				redirect("resetpassword.php?upd=pwd-". ($status && $emailstatus ? 'success' : 'error');
+				redirect("resetpassword.php?upd=pwd-". ($status && $emailstatus ? 'success' : 'error'));
 			} else{
 				# username doesnt match listed xml username
 				exec_action('resetpw-error'); // @hook resetpw-error a user password reset failed

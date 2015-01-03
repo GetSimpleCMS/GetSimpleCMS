@@ -38,36 +38,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 <?php
 
 	// setup some stuf here for now
-	$cm_themes = array(
-		'3024-day',
-		'3024-night',
-		'ambiance',
-		'base16-light',
-		'base16-dark',
-		'blackboard',
-		'cobalt',
-		'eclipse',
-		'eclipse',
-		'elegant',
-		'erlang-dark',
-		'lesser-dark',
-		'mbo',
-		'midnight',
-		'monokai',
-		'neat',
-		'night',
-		'paraiso-dark',
-		'paraiso-light',
-		'rubyblue',
-		'solarized dark',
-		'solarized light',
-		'the-matrix',
-		'twilight',
-		'tomorrow-night-eighties',
-		'vibrant-ink',
-		'xq-dark',
-		'xq-light'
-	);
+	$cm_themes = explode(',',getDef('GSCODEEDITORTHEMES'));
 
 	// build theme selector
 	$themeselector = '<select id="cm_themeselect">\n<option>default</option>';
@@ -87,8 +58,11 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		'UNSAVED_INFORMATION',
 		'UNSAVED_PROMPT',
 		'CANNOT_SAVE_EMPTY',
-		'COMPONENT_DELETED'
-
+		'COMPONENT_DELETED',
+		'CANNOT_SAVE_EMPTY',
+		'PAGE_UNSAVED',
+		'MINIMIZENOTIFY',
+		'SELECT_FILE'
 	);
 
 	// i18n for JS
@@ -102,11 +76,11 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		queue_script('gscodeeditor', GSBACK);
 	}
 
-	if( ((get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGlobal('HTMLEDITOR') ){
+	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGlobal('HTMLEDITOR') ){
 		queue_script('gshtmleditor',GSBACK);
 	}
 
-	if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!getDef('GSNOUPLOADIFY',true)) ){
+	if( ((get_filename_id()=='upload') || (get_filename_id()=='filebrowser') || (get_filename_id()=='image')) && (getDef('GSUSEGSUPLOADER',true)) ){
 		queue_script('gsuploader',GSBACK);
 	}
 
@@ -116,10 +90,13 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	}
 
     // HTMLEDITOR INIT
-    if (getGlobal('HTMLEDITOR') != '') {
-        if (file_exists(GSTHEMESPATH .getGlobal('TEMPLATE')."/editor.css")) {
-            $contentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGlobal('TEMPLATE').'/editor.css';
-        }
+    // ckeditor editorcss
+    if (file_exists(GSTHEMESPATH .getGlobal('TEMPLATE')."/editor.css")) {
+        $contentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGlobal('TEMPLATE').'/editor.css';
+    }
+    // ckeditor customconfig
+    if (file_exists(GSTHEMESPATH .getDef('GSEDITORCONFIGFILE'))) {
+        $configjs =  $SITEURL.getRelPath(GSTHEMESPATH).getDef('GSEDITORCONFIGFILE');
     }
 
     ?>
@@ -128,9 +105,11 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
     	// @todo clean this up, use a better bridge to initialize config variables in js
     	
         // init gs namespace and i18n
-        var GS   = {};
-        GS.i18n  = <?php echo json_encode($jsi18n); ?>;
-        GS.debug = <?php echo isDebug() === true ? 'true' : 'false'; ?> ;
+        var GS     = {};
+        GS.i18n    = <?php echo json_encode($jsi18n); ?>;
+        GS.debug   = <?php echo isDebug() === true ? 'true' : 'false'; ?> ;
+        GS.siteurl = '<?php echo $SITEURL; ?>';
+        GS.uploads = '<?php echo tsl($SITEURL).getRelPath(GSDATAUPLOADPATH); ?>';
 
 		var uploadSession = '<?php echo $SESSIONHASH; ?>';
 		var uploadPath    = '<?php echo (isset($_GET['path'])) ? $_GET['path'] : ""; ?>';
@@ -154,11 +133,14 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
         var htmlEditorConfig = {
             language                     : '<?php echo getGlobal('EDLANG'); ?>',
 <?php       if(!empty($contentsCss)) echo "contentsCss                   : '$contentsCss',"; ?>
+<?php       if(!empty($configjs))    echo "customConfig                  : '$configjs',"; ?>
             height                       : '<?php echo getGlobal('EDHEIGHT'); ?>',
             baseHref                     : '<?php echo getGlobal('SITEURL'); ?>'
             <?php if(getGlobal('EDTOOL')) echo ",toolbar: " . returnJsArray(getGlobal('EDTOOL')); ?>
 <?php       if(getGlobal('EDOPTIONS')) echo ','.trim(getGlobal('EDOPTIONS')); ?>
         };
+
+       <?php if(get_filename_id() == 'snippets') echo "htmlEditorConfig.height = '100px';"; ?>
 
     </script>
 

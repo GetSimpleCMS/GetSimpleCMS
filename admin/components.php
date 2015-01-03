@@ -17,7 +17,6 @@ login_cookie_check();
 exec_action('load-components');
 
 # variable settings
-$componentsfile	= GSDATAOTHERPATH.GSCOMPONENTSFILE;
 $update = $table = $list = '';
 
 # check to see if form was submitted
@@ -60,13 +59,13 @@ if (isset($_POST['submitted'])){
 		$count = 0;
 		foreach ($ids as $comp)	{
 			# create the body of components.xml file
-			$components = $xml->addChild('item');
-			$c_note     = $components->addChild('title');
+			$newitems = $xml->addChild('item');
+			$c_note     = $newitems->addChild('title');
 			$c_note->addCData($comp['title']);
-			$components->addChild('slug', $comp['slug']);
-			$c_note     = $components->addChild('value');
+			$newitems->addChild('slug', $comp['slug']);
+			$c_note     = $newitems->addChild('value');
 			$c_note->addCData($comp['value']);
-			$c_note     = $components->addChild('disabled');
+			$c_note     = $newitems->addChild('disabled');
 			$c_note->addCData($comp['disabled']);			
 			$count++;
 		}
@@ -74,7 +73,7 @@ if (isset($_POST['submitted'])){
 	exec_action('component-save'); // @hook component-save before saving components data file
 	XMLsave($xml, GSDATAOTHERPATH.GSCOMPONENTSFILE);
 	$update = 'comp-success';
-	// redirect('components.php?upd=comp-success');
+	get_components_xml(true);
 }
 
 # if undo was invoked
@@ -82,92 +81,21 @@ if (isset($_GET['undo'])) {
 	
 	# perform the undo
 	restore_datafile(GSDATAOTHERPATH.GSCOMPONENTSFILE);
+	check_for_csrf("undo");
+	if(!requestIsAjax()) redirect('components.php?upd=comp-restored'); // redirect to prevent refresh undos
 	$update = 'comp-restored';
-	check_for_csrf("undo");		
-	// redirect('components.php?upd=comp-restored');
+	get_components_xml(true);
 }
 
 # create components form html
-$data          = getXML(GSDATAOTHERPATH.GSCOMPONENTSFILE);
-$componentsec  = $data->item;
-$numcomponents = count($componentsec);
-
-// $componentsec = subval_sort($data->item,'title'); // sorted on save probably not necessary at this time
-
-function getComponentOutput($id,$component,$class = 'code_edit'){
-
-	$disabled = (bool)(string)$component->disabled;
-	$readonly = (bool)(string)$component->readonly;
-
-	$str = '';
-	$str .= '<div class="compdiv codewrap" id="section-'.$id.'">';
-	$str .= '<table class="comptable" ><tr>';
-	$str .= '<td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="comptitle editable">'. stripslashes($component->title) .'</b></td>';
-	$str .= '<td style="text-align:right;" ><code>&lt;?php get_component(<span class="compslugcode">\''.$component->slug.'\'</span>); ?&gt;</code></td>';
-	$str .= '<td class="compactive"><label class="" for="active[]" >'.i18n_r('ACTIVE').'</label>';
-	$str .= '<input type="checkbox" name="active[]" '. (!$disabled ? 'checked="checked"' : '') .' value="'.$id.'" /></td>';
-	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE_COMPONENT').': '. cl($component->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
-	$str .= '</tr></table>';
-	$str .= '<textarea name="val[]" class="'.$class.'" data-mode="php" '.$readonly.'>'. stripslashes($component->value) .'</textarea>';
-	$str .= '<input type="hidden" class="compslug" name="slug[]" value="'. $component->slug .'" />';
-	$str .= '<input type="hidden" class="comptitle" name="title[]" value="'. stripslashes($component->title) .'" />';
-	$str .= '<input type="hidden" name="id[]" value="'. $id .'" />';
-	$str .= '</div>';
-	return $str;
-}
-
-function getComponentTemplate(){
-	$component = array(
-		'title'  => '',
-		'slug'   => '',
-		'value'  => '',
-		'disabled' => '',
-		'readonly' => ''
-	);
-
-	return getComponentOutput('',(object)$component,'');
-}
-
-function outputComponents($data){
-	$id = 0;
-	$componentsec = $data->item;
-	if (count($componentsec) != 0) {
-		foreach ($componentsec as $component) {
-			$table = getComponentOutput($id,$component);
-			exec_action('component-extras'); // @hook component-extras called after each component html is added to $table
-			echo $table; // $table is legacy for hooks that modify the var, they should now just output html directly
-			$id++;
-		}
-	}
-}
-
-function outputComponentTags($data){
-	$componentsec  = $data->item;
-	$numcomponents = count($componentsec);
-
-	echo '<div class="compdivlist">';
-
-	# create list to show on sidebar for easy access
-	$class = $numcomponents < 15 ? ' clear-left' : '';
-	if($numcomponents > 1) {
-		$item = 0;
-		foreach($componentsec as $component) {
-			echo '<a id="divlist-' . $item . '" href="#section-' . $item . '" class="component'.$class.' comp_'.$component->title.'">' . $component->title . '</a>';
-			$item++;
-		}
-	}
-
-	exec_action('component-list-extras'); // @hook component-list-extras called after component sidebar list items (tags) 		
-	echo '</div>';
-}
-
-$pagetitle = i18n_r('COMPONENTS');
+$collectionData = get_components_xml();
+$numitems       = $collectionData ? count($collectionData) : 0;
+$pagetitle      = i18n_r('COMPONENTS');
 get_template('header');
 	
 include('template/include-nav.php'); ?>
 
 <div class="bodycontent clearfix">
-	
 	<div id="maincontent">
 		<div class="main">
 			<h3 class="floated"><?php echo i18n_r('EDIT_COMPONENTS');?></h3>
@@ -176,27 +104,27 @@ include('template/include-nav.php'); ?>
 				<?php if(!getDef('GSNOHIGHLIGHT',true)){
 				echo $themeselector; ?>	
 				<label id="cm_themeselect_label"><?php i18n('THEME'); ?></label>
-			<?php } ?>	
+			<?php } ?>
 				<?php exec_action(get_filename_id().'-edit-nav'); ?>
 			</div>		
 			<?php exec_action(get_filename_id().'-body'); ?>
 			<form id="compEditForm" class="manyinputs" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
-				<input type="hidden" id="id" value="<?php echo $numcomponents; ?>" />
+				<input type="hidden" id="id" value="<?php echo $numitems; ?>" />
 				<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_components"); ?>" />
 
 				<div id="divTxt"></div>
-				<?php outputComponents($data); ?>
-				<p id="submit_line" class="<?php echo $numcomponents > 0 ? '' : ' hidden'; ?>" >
+				<?php outputCollection('components',$collectionData,'','get_component'); ?>
+				<p id="submit_line" class="<?php echo $numitems > 0 ? '' : ' hidden'; ?>" >
 					<span><input type="submit" class="submit" name="submitted" id="button" value="<?php i18n('SAVE_COMPONENTS');?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="components.php?cancel"><?php i18n('CANCEL'); ?></a>
 				</p>
 			</form>
-			<div id="comptemplate" class="hidden"><?php echo getComponentTemplate(); ?></div>			
+			<div id="comptemplate" class="hidden"><?php echo getItemTemplate('components',' noeditor','get_component'); ?></div>			
 		</div>
 	</div>
 	
 	<div id="sidebar">
 		<?php include('template/sidebar-theme.php'); ?>
-		<?php outputComponentTags($data); ?>
+		<?php outputCollectionTags('components',$collectionData); ?>
 	</div>
 
 </div>

@@ -29,33 +29,35 @@ if(function_exists('mb_internal_encoding')) mb_internal_encoding("UTF-8"); // se
  */
 $GS_constants = array(
 	'GSROOTPATH'            => getGSRootPath(),               // root path of getsimple
-	"GSDATEFORMAT"          =>	"M j, Y",                     // short date-only format fallback
-	"GSDATEANDTIMEFORMAT"   =>	"F jS, Y - g:i A",            // date/time format fallback
-	"GSTIMEFORMAT"          =>	"g:i A",                      // time only format fallback
-	'GSTARTTIME'            => microtime(),                   // micro time stamp for gs loaded
- 	'GSBASE'                => false,                         // front end flag
-	'GSCONFIGFILE'          => 'gsconfig.php',                // config filename
-	'GSWEBSITEFILE'         => 'website.xml',                 // website data filename
-	'GSCOMPONENTSFILE'      => 'components.xml',              // website data filename
-	'GSAUTHFILE'            => 'authorization.xml',           // authorizaton salt data filename
-	'GSCSSMAINFILE'         => 'css.php',                     // main css file name
+	"GSDATEFORMAT"          => "M j, Y",                      // (str) short date-only format fallback
+	"GSDATEANDTIMEFORMAT"   => "F jS, Y - g:i A",             // (str) date/time format fallback
+	"GSTIMEFORMAT"          => "g:i A",                       // (str) time only format fallback
+	'GSSTARTTIME'           => microtime(),                   // (int) micro time stamp for gs loaded
+ 	'GSBASE'                => false,                         // (bool) front end flag
+	'GSCONFIGFILE'          => 'gsconfig.php',                // (str) config filename
+	'GSWEBSITEFILE'         => 'website.xml',                 // (str) website data filename
+	'GSCOMPONENTSFILE'      => 'components.xml',              // (str) components data filename
+	'GSSNIPPETSFILE'        => 'snippets.xml',                // (str) snippets data filename
+	'GSAUTHFILE'            => 'authorization.xml',           // (str) authorizaton salt data filename
+	'GSPLUGINTRIGGERFILE'   => 'plugin-update.trigger',       // (str) plugin update trigger filename
+	'GSCSSMAINFILE'         => 'css.php',                     // (str) main css filename
 	'GSADMINTHEMEFILE'      => 'admin.xml',                   // (str) custom admin xml theme file name
 	'GSADMINTHEMEENABLE'    => true,                          // (bool) custom admin xml enabled
 	'GSCSSCUSTOMFILE'       => 'admin.css',                   // (str) custom css file name
 	'GSCSSCUSTOMENABLE'     => true,                          // (bool) custom css enabled
 	'GSSTYLECACHEENABLE'    => false,                         // (bool) enable style.php cache
-	'GSTEMPLATEFILE'        => 'template.php',                // default template file name
-	'GSINSTALLTEMPLATE'     => 'Innovation',                  // template to set on install
-	'GSINSTALLPLUGINS'      => 'InnovationPlugin.php',        // comma delimited list of plugins to activate on install
-	'GSSTYLEWIDE'           => 'wide',                        // wide stylesheet
-	'GSSTYLE_SBFIXED'       => 'sbfixed',                     // fixed sidebar
-	'GSFRONT'               => 1,                             // (int) front end enum
-	'GSBACK'                => 2,                             // (int) back end enum
-	'GSBOTH'                => 3,                             // (int) front and back enum
+	'GSTEMPLATEFILE'        => 'template.php',                // (str) default template file name
+	'GSINSTALLTEMPLATE'     => 'Innovation',                  // (str) template to set on install
+	'GSINSTALLPLUGINS'      => 'InnovationPlugin.php',        // (str) csv comma delimited list of plugins to activate on install
+	'GSSTYLEWIDE'           => 'wide',                        // (str) wide stylesheet constant
+	'GSSTYLE_SBFIXED'       => 'sbfixed',                     // (str) fixed sidebar constant
+	'GSFRONT'               => 1,                             // (int) front end enum constant
+	'GSBACK'                => 2,                             // (int) back end enum constant
+	'GSBOTH'                => 3,                             // (int) front and back enum constant
 	'GSDEFAULTLANG'         => 'en_US',                       // (str) default language for core
 	'GSTITLEMAX'            => 70,                            // (int) max length allowed for titles
 	'GSFILENAMEMAX'         => 255,                           // (int) max length allowed for file names/slugs
-	'GSPASSLENGTHMIN'       => 4,                             // (itn) min length of passwords
+	'GSPASSLENGTHMIN'       => 4,                             // (int) min length of passwords
 	'GSBAKFILESUFFIX'       => '',                            // (str) backup file naming suffix after extension
 	'GSBAKFILEPREFIX'       => '.bak',                        // (str) backup file naming prefix before extension
 	'GSRESETFILESUFFIX'     => '.reset',                      // (str) password reset file naming suffix before extension
@@ -67,39 +69,71 @@ $GS_constants = array(
 
 $GS_definitions = array(
 	'GSDEFAULTPAGE'        => 'pages.php',                    // (str) Default backend index page
-	'GSHEADERCLASS'        => '',                             // (str) custom class to add to header eg. gradient
+	'GSHEADERCLASS'        => '',                             // (str) custom class to add to header eg. `gradient` to add 3.3 gradients back
 	'GSHTTPPREFIX'         => '',                             // (str) http slug prefix GSHTTPPREFIX.GSSLUGxx
 	'GSSLUGNOTFOUND'       => '404',                          // (str) http slug for not found
 	'GSSLUGPRIVATE'        => '403',                          // (str) http slug for private pages
 	'GSADMIN'              => 'admin',                        // (str) admin foldername
 	'GSSITEMAPFILE'        => 'sitemap.xml',                  // (str) sitemap file name, must modify in .htaccess as needed
-	'GSERRORLOGFILE'       => 'errorlog.txt',                 // (str) error log filename
 	'GSERRORLOGENABLE'     => true,                           // (bool) should GS log php errors to GSERRORLOGFILE
-	'GSSTYLE'              => 'wide,sbfixed',                 // (str-csv) default style modifiers
-	'GSWIDTH'              => '1024px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width
-	'GSWIDTHWIDE'          => '1366px',                       // (str) page width on backend pages defined in GSWIDEPAGES, values as above
-	'GSWIDEPAGES'          => 'theme-edit,components',        // (str-csv) pages to apply GSWIDTHWIED on
-	'GSALLOWLOGIN'         => true,                           // (bool) allow front end login
-	'GSALLOWRESETPASS'     => true,                           // (bool) allow front end password resets
-	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // (str-csv) file extensions to show and edit in theme editor
+	'GSERRORLOGFILE'       => 'errorlog.txt',                 // (str) error log filename
 	'GSASSETSCHEMES'       => false,                          // (bool) should $ASSETURL contain the url scheme http|https
 	'GSASSETURLREL'        => true,                           // (bool) Use root relative urls for $ASSETURL, overrides GSASSETSCHEMES
 	'GSSITEURLREL'         => true,                           // (bool) Use root relative urls for $SITEURL
-	'GSALLOWDOWNLOADS'     => true,                           // (bool) allow using downloads.php to download files from /uploads and backups/zip
-	'GSEDITORHEIGHT'       => '500',                          // (str) wysiwyg editor height in px
-	'GSEDITORTOOL'         => 'basic',                        // (str) wysiwyg editor toobar
-	'GSEDITORCONFIGFILE'   => 'config.js',                    // (str) wysiwyg editor toobar
 	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // (str) url used in email template
 	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
+	# STYLES -------------------------------------------------------------------------------------------------------------------------------------------
+	'GSSTYLE'              => 'wide,sbfixed',                 // (str-csv) default style modifiers
+	'GSWIDTH'              => '1024px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width
+	'GSWIDTHWIDE'          => '1366px',                       // (str) page width on backend pages defined in GSWIDEPAGES, values as above
+	'GSWIDEPAGES'          => 'theme-edit,components,snippets', // (str-csv) pages to apply GSWIDTHWIED on
+	# CHMOD --------------------------------------------------------------------------------------------------------------------------------------------
 	'GSCHMOD'              => 0644,                           // (octal) chmod mode legacy
 	'GSCHMODFILE'          => 0644,                           // (octal) chmod mode for files
 	'GSCHMODDIR'           => 0755,                           // (octal) chmod mode for dirs
 	'GSDOCHMOD'            => true,                           // (bool) perform chmod after creating files or directories
+	'GSSHOWCODEHINTS'      => true,                           // (bool) show code hints on components page and snippets etc.
+	# ALLOW --------------------------------------------------------------------------------------------------------------------------------------------
+	'GSALLOWLOGIN'         => true,                           // (bool) allow front end login
+	'GSALLOWRESETPASS'     => true,                           // (bool) allow front end password resets
+	'GSALLOWDOWNLOADS'     => true,                           // (bool) allow using downloads.php to download files from /uploads and backups/zip
+	# ALLOW UPLOADS ------------------------------------------------------------------------------------------------------------------------------------
+	'GSALLOWUPLOADS'       => true,                           // (bool) allow upload files
+	'GSALLOWUPLOADCREATE'  => true,                           // (bool) allow upload folder creation
+	'GSALLOWUPLOADDELETE'  => true,                           // (bool) allow upload file/folder delete
+	'GSALLOWBROWSEUPLOAD'  => true,                           // (bool) allow uploading when browsing files
+	'GSUSEGSUPLOADER'      => true,                           // (bool) use ajax upload library gsupload (dropzone) for uploads, else standard form 
+	# EDITORS ------------------------------------------------------------------------------------------------------------------------------------------
+	'GSTHEMEEDITROOT'      => true,                           // (bool) allow editing theme root files
+	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // (str-csv) file extensions to show and edit in theme editor
+	'GSEDITORHEIGHT'       => '500',                          // (str) wysiwyg editor height in px
+	'GSEDITORTOOL'         => 'basic',                        // (str) wysiwyg editor toobar
+	'GSEDITORCONFIGFILE'   => 'custom_config.js',             // (str) custom user cke config filename override in themes/
+	'GSSNIPPETSATTRIB'     => 'getHtmlEditorAttr',            // (str) callback funcname for htmleditors used to init htmleditor
+	'GSCOMPONENTSATTRIB'   => 'getCodeEditorAttr',            // (str) callback funcname for codeeditors used to init codeeditor
+	'GSPAGESATTRIB'        => 'getDefaultHtmlEditorAttr',     // (str) callback funcname for page html editor
+	'GSHTMLEDITINLINE'     => false,                          // (bool) show html cke editors inline EXPERIMENTAL
+	'GSHTMLEDITCOMPACT'    => true,                           // (bool) show html cke editors compacted, hides ui when not focused
+	'GSHTMLEDITAUTOHEIGHT' => true,                           // (bool) after init, auto set the ckeditors height	
+	'GSCODEEDITORTHEMES'   => '3024-day,3024-night,ambiance,base16-light,base16-dark,blackboard,cobalt,eclipse,eclipse,elegant,erlang-dark,lesser-dark,mbo,midnight,monokai,neat,night,paraiso-dark,paraiso-light,rubyblue,solarized dark,solarized light,the-matrix,twilight,tomorrow-night-eighties,vibrant-ink,xq-dark,xq-light', # themes for codemirror
+	# DRAFTS -------------------------------------------------------------------------------------------------------------------------------------------
+	'GSUSEDRAFTS'          => true,                           // (bool) use page drafts
+	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else `nodraft` or `draft` only
+	'GSDRAFTSTACKDEFAULT'  => true,                           // (bool) default page stack editing to drafts if true
+	'GSSDRAFTSPUBLISHEDTAG'=> true,                           // (bool) show published label on non draft pages if true
+	'GSAUTOSAVE'           => false,                          // (int)  auto save interval in seconds, disabled if false, only used for drafts currently
+	# IMAGES -------------------------------------------------------------------------------------------------------------------------------------------
+	'GSIMAGEWIDTH'         => 200,                            // (int) thumbnail size
+	'GSTHUMBSMWIDTH'       => 80,                             // (int) thumbsm max height
+	'GSTHUMBSMHEIGHT'      => 160,                            // (int) thumbsm max width
+	# DEBUGGING ----------------------------------------------------------------------------------------------------------------------------------------
 	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
-	'GSDEBUGAPI'           => false,                          // (bool) debug api calls
+	'GSDEBUG'              => false,                          // (bool) output debug mode console
+	'GSDEBUGAPI'           => false,                          // (bool) debug api calls to debuglog
+	'GSDEBUGREDIRECTS'     => false,                          // (bool) if debug mode enabled, prevent redirects for debugging
+	'GSDEBUGFILEIO'        => false,                          // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
-	'GSNOCDN'              => true,                           // (bool) toggles CDN usage for asset libraries
-	# -----------------------------------------------------------------------------------------------------------------------------------------------
+	# ---------------------------------------------------------------------------------------------------------------------------------------------------
  	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
 );
 
@@ -114,6 +148,7 @@ global
  $GSADMIN,        // (str) admin foldername
  $GS_debug,       // (array) global array for storing debug log entries
  $components,     // (array) global array for storing components, array of objs from components.xml
+ $snippets,       // (array) global array for storing snippets, array of objs from snippets.xml
  $nocache,        // (bool) disable site wide cache true, not fully implemented
  $microtime_start,// (microtime) used for benchmark timers
  $pagesArray,     // (array) global array for storing pages cache, used for all page fields aside from content
@@ -121,7 +156,9 @@ global
  $plugins_info,   // (array) contains registered plugin info for active and inactive plugins
  $live_plugins,   // (array) contains plugin file ids and enable status
  $plugins,        // (array) global array for storing action hook callbacks
+ $pluginHooks,    // (array) global array for storing action hook callbacks hash table
  $filters,        // (array) global array for storing action filter callbacks
+ $pluginFilters,  // (array) global array for storing filter callbacks hash table
  $GS_scripts,     // (array) global array for storing queued asset scripts
  $GS_styles       // (array) global array for storing queued asset styles
 ;
@@ -169,6 +206,7 @@ define('GSDATAOTHERPATH' , GSDATAPATH      . 'other/');     // data/other/
 define('GSDATAPAGESPATH' , GSDATAPATH      . 'pages/');     // data/pages/
 
 define('GSAUTOSAVEPATH'  , GSDATAPAGESPATH . 'autosave/');  // data/pages/autosave/
+define('GSDATADRAFTSPATH', GSDATAPAGESPATH . 'autosave/');  // data/pages/autosave/
 define('GSDATAUPLOADPATH', GSDATAPATH      . 'uploads/');   // data/uploads/
 define('GSTHUMBNAILPATH' , GSDATAPATH      . 'thumbs/');    // data/thumbs/
 define('GSUSERSPATH'     , GSDATAPATH      . 'users/');     // data/users/
@@ -434,7 +472,7 @@ if (notInInstall()) {
 
 }
 
-// fill for install
+// set these for install, empty if website.xml doesnt exist yet
 if(empty($SITEURL))      $SITEURL  = suggest_site_path();
 if(empty($SITEURL_ABS))  $SITEURL_ABS = $SITEURL;
 if(empty($SITEURL_REL))  $SITEURL_REL = $SITEURL;
@@ -458,10 +496,12 @@ if(isset($load['plugin']) && $load['plugin']){
 	// Include plugins files in global scope
 	loadPluginData();
 	if(function_exists('plugin_preload_callout')) plugin_preload_callout();	// @callout plugin_preload_callout callout before loading plugin files
+
 	foreach ($live_plugins as $file=>$en) {
 		if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
 			# debugLog('including plugin: ' . $file);
 			include_once(GSPLUGINPATH . $file);
+			exec_action('plugin-loaded'); // @hook plugin-loaded called after each plugin is included
 		}
 	}
 	exec_action('plugins-loaded'); // @hook plugins-loaded plugin files have been included
@@ -476,7 +516,7 @@ if(isset($load['plugin']) && $load['plugin']){
 	}
 
 	# main hook for common.php
-	exec_action('common'); // @hook common.php common has completed doing its thing
+	exec_action('common'); // @hook common common.php has completed loading resoruces, base not yet loaded
 	// debugLog('calling common_callout');
 	if(function_exists('common_callout')) common_callout(); // @callout common_callout callout after common loaded, before templating
 }
@@ -507,6 +547,18 @@ function debugLog($mixed = null) {
 	array_push($GS_debug,$mixed);
 	if(function_exists('debugLog_callout')) debugLog_callout($mixed); // @callout debugLog_callout (str) callout for each debugLog call, argument passed
 	return $mixed;
+}
+
+/**
+ * debug and die
+ * outputs debuglog and dies
+ * @since  3.4
+ * @param  str $msg message to log
+ */
+function debugDie($msg){
+	debugLog($msg);
+	outputDebugLog();
+	die();
 }
 
 /**

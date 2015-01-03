@@ -16,7 +16,10 @@ class Zubrag_image {
   var $quality = 100;
   var $max_x = 100;
   var $max_y = 100;
-  var $cut_x = 0;
+  // cuts are based on original size not max
+  // cut_x = min(w,h) would give you a square image
+  // this is pointless without offsets or at least auto centering, as you can only crop from 0,0
+  var $cut_x = 0; 
   var $cut_y = 0;
  
   function SaveImage($im, $filename) {

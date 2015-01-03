@@ -17,8 +17,12 @@ $fileSizeLimitMB = toBytesShorthand(getMaxUploadSize().'M',true);
 	
 	<?php exec_action("files-sidebar"); // @hook files-sidebar sidebar list html output  ?>
 
-	<hr>
-	<li class="upload">
+	<?php 
+	// allow uploads?
+	if(getDef('GSALLOWUPLOADS',true)){ 
+	?>
+	
+	<li class="upload dispupload">
 		<a style="margin-left:0" id="fileuploadlink" href="#">
 			<span><?php echo i18n_r('UPLOADIFY_BUTTON'); ?></span>
 			<span class="touch"><?php echo i18n_r('UPLOAD'); ?></span>
@@ -50,17 +54,24 @@ $fileSizeLimitMB = toBytesShorthand(getMaxUploadSize().'M',true);
 
 	</li>
 
-	<li id="gs-dropzone" class="uploaddropzone">
+	<li id="gs-dropzone" class="uploaddropzone dispupload">
+		<i class="fa fa-fw fa-upload unselectable" style="font-size:1.8em;vertical-align: middle;"></i>
 		<span class="dz-message unselectable"><?php i18n('DROP_FILES'); ?></span>
 	</li>
 	
-	<li style="float:right;" id="sb_filesize" ><small><?php i18n('MAX_FILE_SIZE'); ?>: <strong><?php echo $fileSizeLimitMB; ?></strong></small></li>
+	<li style="float:right;" id="sb_filesize" class="dispupload"><small><?php i18n('MAX_FILE_SIZE'); ?>: <strong><?php echo $fileSizeLimitMB; ?></strong></small></li>
+	<?php
+	} // end allow uploads
+	?>
+
 </ul>
 
 <div class="">
-	<form class="uploadform" action="upload.php?path=<?php echo $path; ?>" method="post" enctype="multipart/form-data">
+	<form class="uploadform" action="" method="post" enctype="multipart/form-data">
 		<p><input class="" type="file" name="file[]" id="file" style="width:220px;" multiple /></p>
 		<input type="hidden" name="hash" id="hash" value="<?php echo $SESSIONHASH; ?>" />
 		<input type="submit" class="submit" name="submit" value="<?php i18n('UPLOAD'); ?>" />
 	</form>
 </div>
+
+<p id="js_submit_line" ></p>

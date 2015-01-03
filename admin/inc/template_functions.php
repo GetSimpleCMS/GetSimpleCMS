@@ -101,11 +101,29 @@ function ModeOctal2rwx($ModeOctal) {
  * @uses GSBACKUPSPATH
  *
  * @param string $id Zip filename to delete
- * @return string
+ * @return bool succces
  */
 function delete_zip($id) { 
 	$filepath = GSBACKUPSPATH . 'zip' . DIRECTORY_SEPARATOR;
 	$file = $filepath . $id;
+
+	if(filepath_is_safe($file,$filepath)){
+		return delete_file($file);
+	}
+} 
+
+/**
+ * Delete Log File
+ *
+ * @since 3.4
+ * @uses GSDATAOTHERPATH
+ *
+ * @param string $id log filename to delete
+ * @return bool success
+ */
+function delete_logfile($id) { 
+	$filepath = GSDATAOTHERPATH.'logs/';
+	$file     = $filepath . $id;
 
 	if(filepath_is_safe($file,$filepath)){
 		return delete_file($file);
@@ -121,7 +139,7 @@ function delete_zip($id) {
  *
  * @param string $id Uploaded filename to delete
  * @param string $path Path to uploaded file folder
- * @return string
+ * @return bool success
  */
 function delete_upload($id, $path = "") { 
 	$filepath = GSDATAUPLOADPATH . $path;
@@ -135,7 +153,7 @@ function delete_upload($id, $path = "") {
 		if (file_exists(GSTHUMBNAILPATH.$path."thumbsm.". $id)) {
 			delete_file(GSTHUMBNAILPATH.$path."thumbsm.". $id);
 		}
-		return status;
+		return $status;
 	}	
 } 
 
@@ -147,7 +165,7 @@ function delete_upload($id, $path = "") {
  * @uses GSDATAUPLOADPATH
  *
  * @param string $path relative path to uploaded file folder
- * @return string
+ * @return bool success
  */
 function delete_upload_dir($path){
 	$target = GSDATAUPLOADPATH . $path;
@@ -237,9 +255,10 @@ function backup_datafile($filepath){
  * @since 3.4
  *
  * @param string $file filepath of data file to restore from backup, locked to GSDATAPATH
+ * @param  bool $delete delete the backup
  * @return bool success
  */
-function restore_datafile($filepath){
+function restore_datafile($filepath,$delete = true){
 	if(!filepath_is_safe($filepath,GSDATAPATH)) return false;
 	$bakfilepath = getBackupFilePath($filepath);
 
@@ -249,6 +268,8 @@ function restore_datafile($filepath){
 		move_file($filepath,$bakfilepath);
 		$bakfilepath .= '.tmp';
 	}
+
+	if(!$delete) return copy_file($bakfilepath,$filepath);
 	return move_file($bakfilepath,$filepath);
 }
 
@@ -280,6 +301,18 @@ function backup_page($id){
 }
 
 /**
+ * backup a draft
+ *
+ * @since 3.4
+ *
+ * @param  str $id id of page to backup
+ * @return bool     success
+ */
+function backup_draft($id){
+	backup_datafile(GSDATADRAFTSPATH.$id.'.xml');
+}
+
+/**
  * Restore a page from backup
  *
  * @since 3.4
@@ -289,6 +322,18 @@ function backup_page($id){
  */
 function restore_page($id){
 	restore_datafile(GSDATAPAGESPATH.$id.'.xml');
+}
+
+/**
+ * Restore a page from backup
+ *
+ * @since 3.4
+ *
+ * @param  str $id id of page
+ * @return bool     success
+ */
+function restore_draft($id){
+	restore_datafile(GSDATADRAFTSPATH.$id.'.xml');
 }
 
 /**
@@ -307,6 +352,24 @@ function delete_page($id, $backup = true){
 	if($backup) backup_datafile(GSDATAPAGESPATH.$id.'.xml');
 	return delete_file(GSDATAPAGESPATH.$id.'.xml');
 } 
+
+/**
+ * Delete Pages Draft File
+ *
+ * Deletes pages draft data file afer making backup
+ *
+ * @since 3.4
+ * @uses GSBACKUPSPATH
+ * @uses GSDATADRAFTSPATH
+ *
+ * @param string $id File ID to delete
+ * @param  bool $backup perform backup of file before deleting it
+ */
+function delete_draft($id, $backup = true){
+	if($backup) backup_datafile(GSDATADRAFTSPATH.$id.'.xml');
+	return delete_file(GSDATADRAFTSPATH.$id.'.xml');
+}
+
 
 /**
  * Clone a page
@@ -360,9 +423,6 @@ function getNextFileName($path,$file){
  * Delete Pages Backup File
  *
  * @since 3.4
- * @uses GSBACKUPSPATH
- * @uses GSDATAPAGESPATH
- * @uses GSGSDATATPATH
  *
  * @param string $id File ID to delete
  * @return bool success
@@ -395,6 +455,19 @@ function restore_bak($id) {
  */
 function undo($file, $filepath, $bakpath) {
 	return restore_datafile($filepath.$file);
+}
+
+/**
+ * Delete Draft Backup File
+ *
+ * @since 3.4
+ *
+ * @param string $id File ID to delete
+ * @return bool success
+ */
+function delete_draft_backup($id){
+	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/pages/
+	return delete_file($bakpagespath. $id .".bak.xml");
 }
 
 /**
@@ -475,28 +548,33 @@ function createRandomPassword($length = 8, $usecharsets = 'luds', $reuse = false
  * @return string
  */
 function get_FileType($ext) {
+	$ext = lowercase($ext);	
+	return i18n_r('FTYPE_'.get_FileTypeToken($ext));
+}
 
-	$ext = lowercase($ext);
+function get_FileTypeToken($ext){
 	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'pct' || $ext == 'gif' || $ext == 'bmp' || $ext == 'png' ) {
-		return i18n_r('IMAGES') .' Images';
+		return 'IMAGE';
 	} elseif ( $ext == 'zip' || $ext == 'gz' || $ext == 'rar' || $ext == 'tar' || $ext == 'z' || $ext == '7z' || $ext == 'pkg' ) {
-		return i18n_r('FTYPE_COMPRESSED');
+		return 'COMPRESSED';
 	} elseif ( $ext == 'ai' || $ext == 'psd' || $ext == 'eps' || $ext == 'dwg' || $ext == 'tif' || $ext == 'tiff' || $ext == 'svg' ) {
-		return i18n_r('FTYPE_VECTOR');
+		return 'VECTOR';
 	} elseif ( $ext == 'swf' || $ext == 'fla' ) {
-		return i18n_r('FTYPE_FLASH');	
-	} elseif ( $ext == 'mov' || $ext == 'mpg' || $ext == 'avi' || $ext == 'mpeg' || $ext == 'rm' || $ext == 'wmv' ) {
-		return i18n_r('FTYPE_VIDEO');
-	} elseif ( $ext == 'mp3' || $ext == 'wav' || $ext == 'wma' || $ext == 'midi' || $ext == 'mid' || $ext == 'm3u' || $ext == 'ra' || $ext == 'aif' ) {
-		return i18n_r('FTYPE_AUDIO');
-	} elseif ( $ext == 'php' || $ext == 'phps' || $ext == 'asp' || $ext == 'xml' || $ext == 'js' || $ext == 'jsp' || $ext == 'sql' || $ext == 'css' || $ext == 'htm' || $ext == 'html' || $ext == 'xhtml' || $ext == 'shtml' ) {
-		return i18n_r('FTYPE_WEB');
+		return 'FLASH';	
+	} elseif ( $ext == 'mov' || $ext == 'mpg' || $ext == 'avi' || $ext == 'mpeg' || $ext == 'rm' || $ext == 'wmv' || $ext == 'flv') {
+		return 'VIDEO';
+	} elseif ( $ext == 'mp3' || $ext == 'mp4' || $ext == 'wav' || $ext == 'wma' || $ext == 'midi' || $ext == 'mid' || $ext == 'm3u' || $ext == 'ra' || $ext == 'aif' ) {
+		return 'AUDIO';
+	} elseif ( $ext == 'xml' || $ext == 'css' || $ext == 'htm' || $ext == 'html' || $ext == 'xhtml' || $ext == 'shtml' ) {
+		return 'WEB';
+	} elseif ( $ext == 'phtml' || $ext == 'php' || $ext == 'php3' || $ext == 'php4' || $ext == 'php5' || $ext == 'phps' || $ext == 'asp' || $ext == 'js' || $ext == 'jsp' || $ext == 'sql') {
+		return 'SCRIPT';
 	} elseif ( $ext == 'mdb' || $ext == 'accdb' || $ext == 'pdf' || $ext == 'xls' || $ext == 'xlsx' || $ext == 'csv' || $ext == 'tsv' || $ext == 'ppt' || $ext == 'pps' || $ext == 'pptx' || $ext == 'txt' || $ext == 'log' || $ext == 'dat' || $ext == 'text' || $ext == 'doc' || $ext == 'docx' || $ext == 'rtf' || $ext == 'wks' ) {
-		return i18n_r('FTYPE_DOCUMENTS');
+		return 'DOCUMENT';
 	} elseif ( $ext == 'exe' || $ext == 'msi' || $ext == 'bat' || $ext == 'download' || $ext == 'dll' || $ext == 'ini' || $ext == 'cab' || $ext == 'cfg' || $ext == 'reg' || $ext == 'cmd' || $ext == 'sys' ) {
-		return i18n_r('FTYPE_SYSTEM');
+		return 'SYSTEM';
 	} else {
-		return i18n_r('FTYPE_MISC');
+		return 'MISC';
 	}
 }
 
@@ -735,31 +813,29 @@ function get_available_pages() {
 }
  
 /**
- * Updates parent Slugs
+ * Change all direct childens parents to new parent
  *
- * @since 2.04
- * @uses $url
- * @uses GSDATAPAGESPATH
- * @uses XMLsave
- *
+ * @since 3.4
+ * @param str $parent parent slug to change
+ * @param str $newparent new slug to change to
  */
-function updateSlugs($existingUrl, $newurl=null){
+function changeChildParents($parent, $newparent=null){
 	global $pagesArray;
 	getPagesXmlValues();
-	  
-	if (!$newurl){
-      		global $url; // @todo this is a bad idea
-      	} else {
-      		$url = $newurl;
-      	}
-
 	foreach ($pagesArray as $page){
-		if ( $page['parent'] == $existingUrl ){
-			$data = getPageXML($page['filename']);
-            		$data->parent=$url;
+		if ( $page['parent'] == $parent ){
+			$data = getPageXML($page['url']);
+    		$data->parent=$newparent;
             		XMLsave($data, GSDATAPAGESPATH.$page['filename']);
 		}
 	  }
+}
+
+// DEPRECATED
+//  LEGACY, uses global url
+function updateSlugs($existingUrl){
+	GLOBAL $url;
+	updateSlugsParents($existingUrl, $url);
 }
 
 /**
@@ -874,7 +950,6 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	// indentation
 	$indent   = '<span class="tree-indent"></span>';
 	$last     = '<span class="tree-indent indent-last">&ndash;</span>';
-	$expander = '<span class="tree-expander tree-expander-expanded"></span>';
 
 	// add indents based on level
 	$indentation .= $level > 0 ? str_repeat($indent, $level-1) : '';
@@ -882,7 +957,9 @@ function getPagesRow($page,$level,$index,$parent,$children){
 
 	// add indents or expanders
 	$isParent = $children > 0;
-	$expander = $isParent ? $expander : '<span class="tree-indent"></span>';
+	// add expanders in php
+	// $expander = '<span class="tree-expander tree-expander-expanded"></span>';
+	// $expander = $isParent ? $expander : '<span class="tree-indent"></span>';
 	// $indentation = $indentation . $expander;
 
 	// depth level identifiers
@@ -891,29 +968,40 @@ function getPagesRow($page,$level,$index,$parent,$children){
 
 	$menu .= '<tr id="tr-'.$page['url'] .'" class="'.$class.'" data-depth="'.$level.'">';
 
-	// if ($page['parent'] != '') $page['parent'] = $page['parent']."/"; // why is this here ?
-	if ($page['title'] == '' )      { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
-	if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <span class="label label-ghost">'.i18n_r('MENUITEM_SUBTITLE').'</span>'; } else { $page['menuStatus'] = ''; }
-	if ($page['private'] != '' )    { $page['private'] = ' <span class="label label-ghost">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } else { $page['private'] = ''; }
-	if ($page['url'] == 'index' )   { $homepage = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; } else { $homepage = ''; }
+	$pagetitle = $pagemenustatus = $pageprivate = $pagedraft = $pageindex = '';
 
-	$pageTitle = cl($page['title']);
 
-	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. $pageTitle .'</a><div class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</div></td>';
-	$menu .= '<td style="width:80px;text-align:right;" ><span>'. output_date($page['pubDate']) .'</span></td>';
+	if ($page['title'] == '' )        { $pagetitle       = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>';} else { $pagetitle = $page['title']; }
+	if ($page['menuStatus'] != '' )   { $pagemenustatus  = ' <span class="label label-ghost">'.i18n_r('MENUITEM_SUBTITLE').'</span>'; }
+	if ($page['private'] != '' )      { $pageprivate     = ' <span class="label label-ghost">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } 
+	if (pageHasDraft($page['url']))   { $pagedraft       = ' <span class="label label-ghost">'.lowercase(i18n_r('LABEL_DRAFT')).'</span>'; }
+	if ($page['url'] == 'index' )     { $pageindex       = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; }
+	if(dateIsToday($page['pubDate'])) { $pagepubdate     = ' <span class="datetoday">'. output_date($page['pubDate']) . '</span>';} else { $pagepubdate = '<span>'. output_date($page['pubDate']) . "</span>";}
+
+	$pagetitle = cl($pagetitle);
+
+	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. $pagetitle .'</a>';
+	$menu .= '<div class="showstatus toggle" >'. $pageindex . $pagemenustatus . $pageprivate .$pagedraft . '</div></td>'; // keywords used for filtering
+	$menu .= '<td style="width:80px;text-align:right;" ><span>'.$pagepubdate.'</span></td>';
 	$menu .= '<td class="secondarylink" >';
-	$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
+	$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($pagetitle) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
 	$menu .= '</td>';
 
+	// add delete buttons, exclude index page
 	if ($page['url'] != 'index' ) {
 		$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. cl($page['title']) .'" >&times;</a></td>';
 	} else {
 		$menu .= '<td class="delete" ></td>';
 	}
 
+	// add indexcolumn and tagcolumn for filtering
+	$menu .= '<td class="indexColumn hidden">'.strip_tags(lowercase($pagetitle . $pageindex . $pagemenustatus . $pageprivate .$pagedraft)) .'</div></td>'; // keywords used for filtering
+	$menu .= '<td class="tagColumn hidden">'.str_replace(',',' ',$page['meta']) . '</div></td>'; // keywords used for filtering
+	
 	$menu .= '</tr>';
 	return $menu;
 }
+
 
 function getPagesRowMissing($ancestor,$level,$children){
 	$menu = '<tr id="tr-'.$ancestor.'" class="tree-error tree-parent depth-'.$level.'" data-depth="'.$level.'"><td colspan="4" class="pagetitle"><a><strong>'. $ancestor.'</strong> '.i18n_r('MISSING_PARENT').'</a>';
@@ -1436,6 +1524,21 @@ function filter_queryString($allowed = array()){
 }
 
 /**
+ * returns a query string with only the allowed keys
+ * @since  3.4.0
+ * 
+ * @param  array $merge array of querystring keys to add or modify
+ * @return string built query string
+ */
+function merge_queryString($merge = array()){
+	parse_str($_SERVER['QUERY_STRING'], $query_string);
+	$query_string = array_merge($query_string,$merge);
+	$new_qstring = http_build_query($query_string,'','&amp;');
+	return $new_qstring;
+}
+
+
+/**
  * truncate a string, multibyte safe
  *
  * @since 3.4
@@ -1555,7 +1658,6 @@ function gotoDefaultPage(){
 	else redirect(getDef('GSDEFAULTPAGE'));
 }
 
-
 /**
  * get the components xml data
  * returns an array of xmlobjs
@@ -1569,17 +1671,11 @@ function gotoDefaultPage(){
  * @return components data items xmlobj
  *
  */
-function get_components_xml(){
+function get_components_xml($refresh = false){
     global $components;
-
-    if (!$components) {
-        if (file_exists(GSDATAOTHERPATH.'components.xml')) {
-        	$data = getXML(GSDATAOTHERPATH.'components.xml');
-            $components = $data->item;
-        } else {
-            $components = array();
-        }
-    }
+    if (!$components || $refresh) {
+    	$components = get_collection_items(GSCOMPONENTSFILE);
+    } 
     return $components;
 }
 
@@ -1593,15 +1689,131 @@ function get_components_xml(){
  * @return array of simpleXmlObj matching slug
  */
 function get_component_xml($id){
-	// normalize id to mathc how we save it
+	return get_collection_item($id,get_components_xml());
+        }
+
+/**
+ * check if a component is enabled
+ * @since  3.4
+ * @param  str $id component id
+ * @return bool     true if not disabled
+ */
+function componentIsEnabled($id){
+	$item = get_component_xml($id);
+	if(!$item) return false;
+	return !(bool)(string) $item[0]->disabled;
+    }
+
+/**
+ * get the components xml data
+ * returns an array of xmlobjs
+ *
+ * @since 3.4
+ * 
+ * @global snippets
+ * @param  boolean $refresh refresh from file
+ * @return components data items xmlobj
+ *
+ */
+function get_snippets_xml($refresh = false){
+    global $snippets;
+    if (!$snippets || $refresh) {
+    	$snippets = get_collection_items(GSSNIPPETSFILE);
+}
+    return $snippets;
+}
+
+/**
+ * get xml for an individual component
+ * returns an array since duplicates are possible on component slugs
+ *
+ * @since 3.4
+ *
+ * @param  str $id component id
+ * @return array of simpleXmlObj matching slug
+ */
+function get_snippet_xml($id){
+	return get_collection_item($id,get_snippets_xml());
+}
+
+/**
+ * check if a snippet is enabled
+ * @since  3.4
+ * @param  str $id snippet id
+ * @return bool     true if not disabled
+ */
+function snippetIsEnabled($id){
+	$item = get_snippet_xml($id);
+	if(!$item) return false;
+	return !(bool)(string) $item[0]->disabled;
+}	
+
+
+/**
+ * get a collection of otherdata xml items
+ * returns an array of xmlobjs
+ *
+ * @since 3.4
+ * 
+ * @uses GSDATAOTHERPATH
+ * @uses getXML
+ * @param  boolean $asset name of asset to get data form
+ * @return components data items xmlobj
+ *
+ */
+function get_collection_items($asset){	
+	if (file_exists(GSDATAOTHERPATH.$asset)) {
+		$data  = getXML(GSDATAOTHERPATH.$asset);
+	    $items = $data->item;
+	} else {
+	    $items = array();
+	}
+    return $items;
+}
+
+/**
+ * get xml for an individual otherdata item
+ * returns an array since duplicates are possible on component slugs
+ *
+ * @since 3.4
+ *
+ * @param  str $id component id
+ * @return array of simpleXmlObj matching slug
+ */
+function get_collection_item($id,$collection){
+	// normalize id to match how we save it
 	$id = to7bit($id, 'UTF-8');
 	$id = clean_url($id);
 	if(!$id) return;
-	return get_components_xml()->xpath("//slug[.='".$id."']/..");	
+	$item = $collection->xpath("//slug[.='".$id."']/..");
+	
+	// this returns an array due to no unique slug enforcement, so we grab first one atm
+	// returning first one available
+	return count($item) > 0 ? $item[0] : null;
 }
 
-function componentIsEnabled($id){
-	if($component = get_component_xml($id)) return (bool)(string) $component->disabled;
+/**
+ * Output a collection item
+ *
+ * This will output the item requested. 
+ * items are parsed for PHP within them if not $raw
+ * Will only return the first component matching $id
+ *
+ * @since 3.4
+ *
+ * @param string $id This is the ID of the component you want to display
+ * @param bool $force Force return of inactive components
+ * @param bool $raw do not process php
+ */
+function output_collection_item($id, $collection, $force = false, $raw = false) {
+	$item  = get_collection_item($id,$collection); 
+	if(!$item) return;
+
+	$disabled = (bool)(string)$item->disabled;
+	if($disabled && !$force) return;
+
+	if(!$raw) eval("?>" . strip_decode($item->value) . "<?php ");
+	else echo strip_decode($item->value);
 }
 
 /**
@@ -1610,6 +1822,208 @@ function componentIsEnabled($id){
  */
 function pingGoogleSitemaps(){
 	return;
+}
+
+/**
+ * Are we previewing a draft
+ * @since  3.4
+ * @return bool returns true if pre-viewing a draft
+ */
+function previewingDraft(){
+	GLOBAL $id;
+	return isset($id) && isset($_GET['draft']) && is_logged_in() && pageHasDraft($id);
+}
+
+
+/**
+ * get htmleditor attributes for textareas
+ * @param  str $class extra classes to add to element
+ * @return str        html fragment
+ */
+function getHtmlEditorAttr($class){
+	if(getDef('GSHTMLEDITINLINE',true)) $class .= ' inline';
+ 	return ' data-htmleditautoheight="'.(getDef('GSHTMLEDITAUTOHEIGHT',true) ? 'true' : 'false').'" 
+ 	 data-htmleditcompact="'.(getDef('GSHTMLEDITCOMPACT',true) ? 'true' : 'false').'" 
+ 	 data-htmleditinline="'.(getDef('GSHTMLEDITINLINE',true) ? 'true' : 'false') .'" 
+ 	 class="html_edit '.$class.'"
+ 	 data-mode="html" ';	
+}
+
+/**
+ * get codeeditor attributes for textareas
+ * @param  str $class extra classes to add to element
+ * @return str        html fragment
+ */
+function getCodeEditorAttr($class){
+	return ' data-codeeditautoheight="'.(getDef('GSCODEEDITAUTOHEIGHT',true) ? 'true' : 'false').'" 
+	 data-codeeditcompact="'.(getDef('GSCODEEDITCOMPACT',true) ? 'true' : 'false').'" 
+	 class="code_edit '.$class.'"
+	 data-mode="php" ';
+}
+
+/**
+ * get htmlEditor attributes for content textareas
+ * @param  str $class extra classes to add to element
+ * @return str        html fragment
+ */
+function getDefaultHtmlEditorAttr($class){
+	return ' class="html_edit '.$class.'"';
+}
+
+/**
+ * get codeEditor attributes for content textareas
+ * @param  str $class extra classes to add to element
+ * @return str        html fragment
+ */
+function getDefaultCodeEditorAttr($class){
+	return ' class="code_edit '.$class.'"';
+}
+
+/**
+ * get editor attributes for textareas
+ * If func name not provided , we will attempt to get a function name from 'GS'.uppercase($collectionid).'ATTRIB'
+ * eg. GSSNIPPETSATTRIB which it will execute and use for inserting into the textarea
+ * @param  str $collectionid id for this kind of editor
+ * @param  string $class        extra classes
+ * @param  str $funcname     function name to call to get attributes
+ * @return str               html fragment
+ */
+function getEditorAttribCallout($collectionid,$class = '',$funcname = null){
+	if(!$funcname) $call = getDef('GS'.uppercase($collectionid).'ATTRIB');
+	else $call = $funcname;
+	if(function_exists($call)) return $call($class);
+}
+
+function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit',$code = ''){
+
+	$disabled = (bool)(string)$item->disabled;
+	$readonly = (bool)(string)$item->readonly;
+
+	$str = '';
+	$str .= '<div class="compdiv codewrap" id="section-'.$id.'">';
+	$str .= '<table class="comptable" ><tr>';
+	$str .= '<td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="comptitle editable">'. stripslashes($item->title) .'</b></td>';
+	
+	if(getDef('GSSHOWCODEHINTS',true) && !empty($code))
+		$str .= '<td style="text-align:right;" ><code>&lt;?php '.$code.'(<span class="compslugcode">\''.$item->slug.'\'</span>); ?&gt;</code></td>';
+	
+	$str .= '<td class="compactive"><label class="" for="active[]" >'.i18n_r('ACTIVE').'</label>';
+	$str .= '<input type="checkbox" name="active[]" '. (!$disabled ? 'checked="checked"' : '') .' value="'.$id.'" /></td>';
+	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE').' '. cl($item->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
+	$str .= '</tr></table>';
+	
+	$str .= '<textarea id="editor_'.$id.'" name="val[]"'.getEditorAttribCallout($collectionid,$class).'>'. stripslashes($item->value) .'</textarea>';
+	$str .= '<input type="hidden" class="compslug" name="slug[]" value="'. $item->slug .'" />';
+	$str .= '<input type="hidden" class="comptitle" name="title[]" value="'. stripslashes($item->title) .'" />';
+	$str .= '<input type="hidden" name="id[]" value="'. $id .'" />';
+	$str .= '</div>';
+	return $str;
+}
+
+function getItemTemplate($collectionid,$class = 'item_edit noeditor',$code = ''){
+	$item = array(
+		'title'    => '',
+		'slug'     => '',
+		'value'    => '',
+		'disabled' => '',
+		'readonly' => ''
+	);
+
+	return getCollectionItemOutput($collectionid,'',(object)$item,$class,$code);
+}
+
+function outputCollection($collectionid,$data,$class='item_edit',$code = ''){
+	if(!$data) return;
+	$id = 0;
+	if (count($data) != 0) {
+		foreach ($data as $item) {
+			$table = getCollectionItemOutput($collectionid,$id,$item,$class,$code);
+			exec_action($collectionid.'-extras'); // @hook collectionid-extras called after each component html is added to $table
+			echo $table; // $table is legacy for hooks that modify the var, they should now just output html directly
+			$id++;
+		}
+	}
+}
+
+function outputCollectionTags($collectionid,$data){
+	if(!$data) return;
+	$numcomponents = count($data);
+
+	echo '<div class="compdivlist">';
+
+	# create list to show on sidebar for easy access
+	$class = $numcomponents < 15 ? ' clear-left' : '';
+	if($numcomponents > 1) {
+		$id = 0;
+		foreach($data as $item) {
+			echo '<a id="divlist-' . $id . '" href="#section-' . $id . '" class="component'.$class.' comp_'.$item->title.'">' . $item->title . '</a>';
+			$id++;
+		}
+	}
+
+	exec_action($collectionid.'-list-extras'); // @hook collectionid-list-extras called after component sidebar list items (tags) 		
+	echo '</div>';
+}
+
+/**
+ * date is today
+ * @since 3.4
+ * @param  int $timestamp timestamp
+ * @return bool            true if timestamp is today
+ */
+function dateIsToday($timestamp){
+	$date = new DateTime();
+	$match_date = new DateTime($timestamp);
+	$interval = $date->diff($match_date);
+	return $interval->days == 0;
+}
+
+/**
+ * returns icon classes for file extensions
+ * follow font-awesome naming, can be used for other stuff however
+ * uses get_fileTypeToken to get generic categories ( same as filter ), then further refines icons we have
+ * 
+ * @param  str $filename name of file
+ * @param  string $default  default to use when no match found
+ * @return str           the class
+ */
+function getFileIconClass($filename = '',$default = 'file'){
+
+	$ext = $token = '';
+	if($filename !== ''){
+		$ext   = getFileExtension($filename);
+		$token = get_FileTypeToken($ext);
+	}
+
+	// generic file icons
+	$tokens = array(
+		'IMAGE'      => 'file-image',
+		'COMPRESSED' => 'file-archive',
+		'VECTOR'     => 'file-image',
+		'FLASH'      => 'file-image',
+		'VIDEO'      => 'file-video',
+		'AUDIO'      => 'file-audio',
+		'WEB'        => 'file',
+		'SCRIPT'     => 'file-code',
+		'DOCUMENT'   => 'file-text',
+		'SYSTEM'     => 'file',
+		'MISC'       => 'file'
+	);
+
+	// specific file icons
+	$iconClasses = array(
+		'pdf'    => 'file-pdf',
+		'xls'    => 'file-excel',
+		'xlsx'   => 'file-excel',
+		'doc'    => 'file-word',
+		'docx'   => 'file-word',
+		'ppt'    => 'file-powerpoint'
+	);
+
+	$iconclass = $default;
+	if(isset($tokens[$token]))    $iconclass = $tokens[$token];
+	if(isset($iconClasses[$ext])) $iconclass = $iconClasses[$ext]; // override specific
+	return $iconclass;
 }
 
 /* ?> */

@@ -85,10 +85,17 @@ function check_for_csrf($action, $file="", $die = true){
 		$nonce = $_REQUEST['nonce'];
 		if(!check_nonce($nonce, $action, $file)) {
 			exec_action('csrf'); // @hook csrf a csrf was detected
-			if($die) die("CSRF detected!");
+			if(requestIsAjax()){
+				$error = i18n_r("CSRF","CRSF Detected!");
+				echo "<div>"; // jquery bug will not parse 1 html element so we wrap it
+				include('template/error_checking.php');
+				echo "</div>";
+				die();
+			}
+			if($die) die(i18n_r("CSRF","CRSF Detected!"));
 			return true;
 		}
-	}	
+	}
 }
 
 
