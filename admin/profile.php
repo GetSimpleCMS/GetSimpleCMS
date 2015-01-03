@@ -135,7 +135,8 @@ if(isset($_POST['submitted'])) {
 		backup_datafile(GSUSERSPATH.$file);
 		
 		// remove pass word reset
-		if (file_exists(GSUSERSPATH . _id($userid).'.xml.reset')) { delete_file(GSUSERSPATH . _id($userid).'.xml.reset'); }	
+		$resetfile = GSUSERSPATH . getPWDresetName(_id($userid), 'xml');
+		if (file_exists($resetfile)) delete_file($resetfile);
 
 		// create new xml
 		$xml = new SimpleXMLElement('<item></item>');

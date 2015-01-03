@@ -172,9 +172,9 @@ echo '<div class="bodycontent clearfix">
 					$filesArray = array(
 						GSDATAOTHERPATH.GSAUTHFILE,
 						GSDATAOTHERPATH.GSWEBSITEFILE,
-						GSDATAOTHERPATH."pages.xml",
-						GSDATAOTHERPATH."components.xml",
-						GSDATAOTHERPATH."plugins.xml"
+						GSDATAOTHERPATH.getDef('GSPAGECACHEFILE'),
+						GSDATAOTHERPATH.getDef('GSPLUGINSFILE'),
+						GSDATAOTHERPATH.getDef('GSCOMPONENTSFILE')
 					);
 
 					foreach($dirsArray as $path){
@@ -230,7 +230,7 @@ echo '<div class="bodycontent clearfix">
 			<table class="highlight healthcheck">';
 			
 					$dirsArray = array(
-						GSDATAOTHERPATH.'plugins.xml',
+						GSDATAOTHERPATH.getDef('GSPLUGINSFILE'),
 						GSDATAOTHERPATH.GSAUTHFILE,
 						GSDATAPAGESPATH, 
 						GSDATAOTHERPATH, 

@@ -130,7 +130,7 @@ if($jcrop){ ?>
 	<h3 class="floated"><?php i18n('CREATE_THUMBNAIL');?></h3>
 	<div class="clearfix" ></div>
 	<div style="color:#666;font-size:11px;"><?php i18n('CROP_INSTR_NEW');?></div><br/>
-	<form id="jcropform" action="<?php myself(); ?>?i=<?php echo rawurlencode($src); ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
+	<form id="jcropform" class="noenter" action="<?php myself(); ?>?i=<?php echo rawurlencode($src); ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
 	<div id="jcrop_open">
 	    <img src="<?php echo $src_url .rawurlencode($src); ?>" id="cropbox" />
 		<div id="handw" class="" ><?php i18n('SELECT_DIMENTIONS'); ?><br /><span id="picw">0</span> x <span id="pich">0</span></div>

@@ -584,7 +584,7 @@ jQuery(document).ready(function () {
 	attachFilterChangeEvent();
  	$("#imageFilter").change(); //@todo if selected
 
-	$("form :input").on("keypress", function(e) {
+	$("form.noenter :input").on("keypress", function(e) {
 	    return e.keyCode != 13;
 	});
 
