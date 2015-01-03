@@ -1,4 +1,3 @@
-
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /**
  * Filter Functions
@@ -17,8 +16,8 @@
  * Array Helpers
  * **************************************************************************** 
  * 
- * php <php 5.6 do not support array_filter by keys and values, so we use our own
- * these are not backports however
+ * php <php 5.6 does not support array_filter by keys and values, so we use our own methods
+ * these are not backports! however
  * 
  */
 
@@ -479,11 +478,6 @@ function get_page_children($pageId){
 }
 
 // get direct children no recursive
-function get_parent_page($pageId){
-	$pagesArray = getPages();
-	$parentId   = $pagesArray[$pageId]['parent'];
-	return $pagesArray[$parentId];
-}
 
 function get_parent_slug($pageId){
 	$pagesArray = getPages();
@@ -491,7 +485,17 @@ function get_parent_slug($pageId){
 	return (string) $parentId;
 }
 
-function get_parent_pages($pageId){
+function get_parents_slugs($pageId){
+	return getParents($pageId);
+}
+
+function get_parent_page($pageId){
+	$pagesArray = getPages();
+	$parentId   = $pagesArray[$pageId]['parent'];
+	return $pagesArray[$parentId];
+}
+
+function get_parents_pages($pageId){
 	getParentsPages($pageId);
 }
 
@@ -502,7 +506,8 @@ function get_page_path($pageId){
 }
 
 /**
- * get pages parents slugs
+ * get page parents slugs
+ * returns an array of all this pages parents slugs
  * @param  str $pageId slug of child
  * @return array       array of parents slugs
  */
@@ -523,7 +528,8 @@ function getParents($pageId){
 }
 
 /**
- * get parents slugs
+ * get page parent pages
+ * returns an array of all this pages parents page-arrays
  * @param  str $pageId slug of child
  * @return array       PAGES collection of parents
  */
