@@ -488,13 +488,14 @@ function filterParent($pages,$parent=''){
 /**
  * abstractions / shorthand
  * these are not for here, they are for theme_functions
+ * but 
  */
 
 function get_pages(){
 	return getPages();
 }
 
-function getPageFieldValue($pageId,$field){
+function get_page_field_value($pageId,$field){
 	return returnPageField($pageId,$field);
 }
 
@@ -505,7 +506,7 @@ function get_page_children($pageId){
 // get direct children no recursive
 
 function get_parent_slug($pageId){
-	$parentId  = returnPageField($pageId,'parent');
+	$parentId  = get_page_field_value($pageId,'parent');
 	return (string) $parentId;
 }
 
