@@ -62,6 +62,15 @@ foreach ($pagesArray as $key =>$page) {
 }
 // $pagesArray = $pagesArray_tmp;
 $pagesSorted = subval_sort($pagesArray_tmp,'sort');
+
+debugLog($pagesArray);
+
+function prepare_pubDate($page,$key){
+	return strtotime($key);
+}
+
+// $pagesSorted = sortCustomIndexCallback($pagesArray,'pubDate','prepare_pubDate');
+
 $table = get_pages_menu('','',0);
 
 $pagetitle = i18n_r('PAGE_MANAGEMENT');

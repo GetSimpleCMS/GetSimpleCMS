@@ -3,7 +3,10 @@
  * Filter Functions
  *
  * Page getters, filters, sorters
- * callables are actually (str) function names, may support callables in future PHP > 5.2 requirements
+ * callables are actually (str) function names, may support actual callables in future PHP > 5.2 requirements
+ * 
+ * @since  3.4
+ * @author shawn_a
  * @todo  create wiki docs
  * @link http://get-simple.info/docs/filters
  *
@@ -11,76 +14,22 @@
  * @subpackage Filter-Functions
  */
 
-/**
- * **************************************************************************** 
- * Array Helpers
- * **************************************************************************** 
- * 
- * php <php 5.6 does not support array_filter by keys and values, so we use our own methods
- * these are not backports! however
- * 
- */
-
-/**
- * filter an array using a callback function on subarrays
- * 
- * @param  array $array        array to filter
- * @param  callable $callback  callback that returns true or false
- * @param  array $callbackargs arguments for callback function, callable(array[n],args)
- * @return array filtered array
- */
-function filterArray($array,$callback,$callbackargs){
-	if (function_exists($callback)){
-		foreach ($array as $key => $value) {
-			// filter from array if callback returns true
-			// callback($subarray,$callbackargs)
-			if( $callback($value,$callbackargs) ){
-				unset($array[$key]);
-			}	
-		}
-		return $array;
-	}
-	return $array;	
-}
-
-/**
- * filter sub arrays using a callback function on keys
- * 
- * @param  array $array     array of arrays to filter
- * @param  callable $callback callback function that return true or false
- * @param  array $args     array or arguments for callback, callable(array[n]->key(array[n]),args)
- * @return array           array of arrays with select keys removed
- */
-function filterSubArrayKey($array,$callback,$callbackargs){
-	if (function_exists($callback)){
-
-		foreach ($array as &$subarray) {
-			foreach ($subarray as $key => $value) {
-				// filter from array if callback returns true
-				// callback($key,$callbackargs)					
-				if( $callback($key,$callbackargs) ){
-					unset($subarray[$key]);
-				}
-			}
-		}
-	} 
-	// else debugLog(array(__FUNCTION__,'callback not reachable: ' . $callback));
-	return $array;
-}
-
 /*
  * **************************************************************************** 
  * FILTER CORE FUNCTIONS
  * **************************************************************************** 
  *
- * internal pages array are reffered to as `PAGES`
- * custom arrays are reffered to as `PAGES collecton`
+ * definitions:
+ * `PAGE` An individual page object typically a simpleXml obj but can also be an array
+ * `PAGES` internal pages array, array of PAGE objects, usually the default $pagesArray cache
+ * `PAGES collection` custom pages arrays, array of PAGE objects, usually a filtered array of pages
+ * `pageId` a page unique id aka slug
  * 
  */
 
 /**
  * get PAGES
- * optionally filter with provided filterfunction
+ * optionally PAGES collection , by filtering with provided filterfunction
  *
  * @since  3.4
  * @param  callable $filterFunc function name for filter callout
@@ -99,7 +48,7 @@ function getPages($filterFunc=null/*,...*/){
 
 /**
  * get all values of a single field from PAGES, array_column
- * uses PAGES if a page collection is not passed
+ * uses PAGES if a PAGE collection is not passed
  * 
  * @since  3.4
  * @uses  array_column, backported
@@ -404,14 +353,14 @@ function filterArrayMatchAllCmp($a,$b){
 
 /**
  * ****************************************************************************
- * filter shortcuts
+ * Filter shortcuts/aliases
  * ****************************************************************************
  */
 
 
 /**
- * filter TAGS preprocess comparison functions
- * splits meta comma delimited string then compares to array provided
+ * filter TAGS pre-process comparison functions
+ * pre process splits $a(meta) comma delimited string then compares to array provided
  */
 // match any
 function filterTagsMatchAnyCmp($a,$b){
@@ -430,13 +379,6 @@ function filterTagsMatchAlliCmp($a,$b){
 	return filterTagsMatchAllCmp(lowercase($a),$b);
 }
 
-
-// invert a filtered page set
-function filterInverse($pagesFiltered,$pages = array()){
-	if(!$pages) $pages = getPages();
-	return array_diff_key($pages,$pagesFiltered);
-}
-
 /**
  * filter pages by tags
  * 
@@ -450,9 +392,9 @@ function filterInverse($pagesFiltered,$pages = array()){
  * @param  array   $pages   pagesarray
  * @param  mixed   $tags    array or keyword string of tags to filter by
  * @param  boolean $case    preserve case if true, default case-insensitive
- * @param  boolean $exclusive require match ALL if true
+ * @param  boolean $exclusive require match ALL if true, else match ANY
  * @param  boolean $exclude invert filter, return pages not matching tags
- * @return array            fitlered pagesarray copy
+ * @return array            filtered PAGES collection
  */
 function filterTags($pages, $tags, $case = false, $exclusive = false, $exclude = false){
 	
@@ -484,6 +426,17 @@ function filterParent($pages,$parent=''){
 	return filterKeyValueMatch($pages,'parent',lowercase($parent));
 }
 
+
+/**
+ * invert a filtered page set by using it to filter PAGES
+ * @param  array $pagesFiltered  a filtered PAGE collection
+ * @param  array  $pages         PAGES
+ * @return array                 items of $pages not in $pagesFiltered
+ */
+function filterInverse($pagesFiltered,$pages = array()){
+	if(!$pages) $pages = getPages();
+	return array_diff_key($pages,$pagesFiltered);
+}
 
 /**
  * abstractions / shorthand
@@ -524,17 +477,34 @@ function filterParent($pages,$parent=''){
 // }
 
 
+/**
+ * get PAGE path
+ * @param  str $pageId slug of PAGE to get path to
+ * @return str         path/to/pageId
+ */
 function getPagePath($pageId){
 	$parents = getParents($pageId);
 	if($parents) return implode('/',array_reverse($parents)) . '/' . $pageId;
 	return $pageId;
 }
 
+/**
+ * get PAGE parent slug
+ * alias for $pagesArray['slug']['parent']
+ * @param  str $pageId slug of PAGE to get parent of
+ * @return str         parent of this page
+ */
 function getParent($pageId){
 	$parentId  = returnPageField($pageId,'parent');
 	return (string) $parentId;
 }
 
+/**
+ * get PAGE parent PAGE
+ * alias for $pagesArray[$pagesArray['slug']['parent']]
+ * @param  str $pageId slug of PAGE to get path for
+ * @return str         parent PAGE object
+ */
 function getParentPage($pageId){
 	$pagesArray = getPages();
 	$parentId   = $pagesArray[$pageId]['parent'];
@@ -542,7 +512,7 @@ function getParentPage($pageId){
 }
 
 /**
- * get page parents slugs
+ * get PAGE parents slugs
  * returns an array of all this pages parents slugs
  * @param  str $pageId slug of child
  * @return array       array of parents slugs

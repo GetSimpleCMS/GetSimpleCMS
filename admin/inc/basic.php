@@ -2582,7 +2582,12 @@ function getUserData($returnGlobals = false){
 	return $datau;
 }
 
-
+/**
+ * get default salt
+ * auto handle GSUSECUSTOMSALT and GSAUTHFILE
+ * @since  3.4
+ * @return str salt
+ */
 function getDefaultSalt(){
 	$salt = null;
 	if (defined('GSUSECUSTOMSALT')) {
@@ -2602,6 +2607,7 @@ function getDefaultSalt(){
 
 /**
  * get the default language user->site->gsconfig->GSDEFAULTLANG->filesystem fallback
+ * @since  3.4
  * @return str IETF langcode
  */
 function getDefaultLang(){
@@ -2630,6 +2636,7 @@ function getDefaultLang(){
 
 /**
  * perform transliteration conversion on string
+ * @since  3.4
  * @param  str $str string to convert
  * @return str      str after transliteration replacement array ran on it
  */
@@ -2640,6 +2647,10 @@ function doTransliteration($str){
 	return $str;
 }
 
+/**
+ * output debuglog
+ * @since  3.4
+ */
 function outputDebugLog(){
 	global $GS_debug;
 	echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
@@ -2654,6 +2665,7 @@ function outputDebugLog(){
 
 /**
  * compress css
+ * @since  3.4
  * @param  str $buffer css to compress
  * @return str         compressed css code
  */
@@ -2678,7 +2690,7 @@ function getMaxUploadSize(){
 
 /**
  * get the global siteurl
- *
+ * @since 3.4
  * @param  $absolute force absolute url
  * @return str
  */
@@ -2695,223 +2707,17 @@ function hostIsWindows(){
 	return (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
 }
 
+/**
+ * cath output via buffering
+ * @since  3.4
+ * @param  str $function function to execute
+ * @param  mixed $args   arguments for function
+ * @return str           output of function output buffer
+ */
 function catchOutput($function,$args){
 	ob_start();
 	call_user_func_array($function,$args);
 	return ob_get_clean();
-}
-
-/**
- * This file is part of the array_column library
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @copyright Copyright (c) 2013 Ben Ramsey <http://benramsey.com>
- * @license http://opensource.org/licenses/MIT MIT
- */
-if (!function_exists('array_column')) {
-    /**
-     * Returns the values from a single column of the input array, identified by
-     * the $columnKey.
-     *
-     * Optionally, you may provide an $indexKey to index the values in the returned
-     * array by the values from the $indexKey column in the input array.
-     *
-     * @param array $input A multi-dimensional array (record set) from which to pull
-     *                     a column of values.
-     * @param mixed $columnKey The column of values to return. This value may be the
-     *                         integer key of the column you wish to retrieve, or it
-     *                         may be the string key name for an associative array.
-     * @param mixed $indexKey (Optional.) The column to use as the index/keys for
-     *                        the returned array. This value may be the integer key
-     *                        of the column, or it may be the string key name.
-     * @return array
-     */
-    function array_column($input = null, $columnKey = null, $indexKey = null)
-    {
-        // Using func_get_args() in order to check for proper number of
-        // parameters and trigger errors exactly as the built-in array_column()
-        // does in PHP 5.5.
-        $argc = func_num_args();
-        $params = func_get_args();
-        if ($argc < 2) {
-            trigger_error("array_column() expects at least 2 parameters, {$argc} given", E_USER_WARNING);
-            return null;
-        }
-        if (!is_array($params[0])) {
-            trigger_error('array_column() expects parameter 1 to be array, ' . gettype($params[0]) . ' given', E_USER_WARNING);
-            return null;
-        }
-        if (!is_int($params[1])
-            && !is_float($params[1])
-            && !is_string($params[1])
-            && $params[1] !== null
-            && !(is_object($params[1]) && method_exists($params[1], '__toString'))
-        ) {
-            trigger_error('array_column(): The column key should be either a string or an integer', E_USER_WARNING);
-            return false;
-        }
-        if (isset($params[2])
-            && !is_int($params[2])
-            && !is_float($params[2])
-            && !is_string($params[2])
-            && !(is_object($params[2]) && method_exists($params[2], '__toString'))
-        ) {
-            trigger_error('array_column(): The index key should be either a string or an integer', E_USER_WARNING);
-            return false;
-        }
-        $paramsInput = $params[0];
-        $paramsColumnKey = ($params[1] !== null) ? (string) $params[1] : null;
-        $paramsIndexKey = null;
-        if (isset($params[2])) {
-            if (is_float($params[2]) || is_int($params[2])) {
-                $paramsIndexKey = (int) $params[2];
-            } else {
-                $paramsIndexKey = (string) $params[2];
-            }
-        }
-        $resultArray = array();
-        foreach ($paramsInput as $row) {
-            $key = $value = null;
-            $keySet = $valueSet = false;
-            if ($paramsIndexKey !== null && array_key_exists($paramsIndexKey, $row)) {
-                $keySet = true;
-                $key = (string) $row[$paramsIndexKey];
-            }
-            if ($paramsColumnKey === null) {
-                $valueSet = true;
-                $value = $row;
-            } elseif (is_array($row) && array_key_exists($paramsColumnKey, $row)) {
-                $valueSet = true;
-                $value = $row[$paramsColumnKey];
-            }
-            if ($valueSet) {
-                if ($keySet) {
-                    $resultArray[$key] = $value;
-                } else {
-                    $resultArray[] = $value;
-                }
-            }
-        }
-        return $resultArray;
-    }
-}
-
-/* ?> */
-
-/**
- * This file is part of the array_column library
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- *
- * @copyright Copyright (c) 2013 Ben Ramsey <http://benramsey.com>
- * @license http://opensource.org/licenses/MIT MIT
- */
-
-if (!function_exists('array_column')) {
-
-    /**
-     * Returns the values from a single column of the input array, identified by
-     * the $columnKey.
-     *
-     * Optionally, you may provide an $indexKey to index the values in the returned
-     * array by the values from the $indexKey column in the input array.
-     *
-     * @param array $input A multi-dimensional array (record set) from which to pull
-     *                     a column of values.
-     * @param mixed $columnKey The column of values to return. This value may be the
-     *                         integer key of the column you wish to retrieve, or it
-     *                         may be the string key name for an associative array.
-     * @param mixed $indexKey (Optional.) The column to use as the index/keys for
-     *                        the returned array. This value may be the integer key
-     *                        of the column, or it may be the string key name.
-     * @return array
-     */
-    function array_column($input = null, $columnKey = null, $indexKey = null)
-    {
-        // Using func_get_args() in order to check for proper number of
-        // parameters and trigger errors exactly as the built-in array_column()
-        // does in PHP 5.5.
-        $argc = func_num_args();
-        $params = func_get_args();
-
-        if ($argc < 2) {
-            trigger_error("array_column() expects at least 2 parameters, {$argc} given", E_USER_WARNING);
-            return null;
-        }
-
-        if (!is_array($params[0])) {
-            trigger_error('array_column() expects parameter 1 to be array, ' . gettype($params[0]) . ' given', E_USER_WARNING);
-            return null;
-        }
-
-        if (!is_int($params[1])
-            && !is_float($params[1])
-            && !is_string($params[1])
-            && $params[1] !== null
-            && !(is_object($params[1]) && method_exists($params[1], '__toString'))
-        ) {
-            trigger_error('array_column(): The column key should be either a string or an integer', E_USER_WARNING);
-            return false;
-        }
-
-        if (isset($params[2])
-            && !is_int($params[2])
-            && !is_float($params[2])
-            && !is_string($params[2])
-            && !(is_object($params[2]) && method_exists($params[2], '__toString'))
-        ) {
-            trigger_error('array_column(): The index key should be either a string or an integer', E_USER_WARNING);
-            return false;
-        }
-
-        $paramsInput = $params[0];
-        $paramsColumnKey = ($params[1] !== null) ? (string) $params[1] : null;
-
-        $paramsIndexKey = null;
-        if (isset($params[2])) {
-            if (is_float($params[2]) || is_int($params[2])) {
-                $paramsIndexKey = (int) $params[2];
-            } else {
-                $paramsIndexKey = (string) $params[2];
-            }
-        }
-
-        $resultArray = array();
-
-        foreach ($paramsInput as $row) {
-
-            $key = $value = null;
-            $keySet = $valueSet = false;
-
-            if ($paramsIndexKey !== null && array_key_exists($paramsIndexKey, $row)) {
-                $keySet = true;
-                $key = (string) $row[$paramsIndexKey];
-            }
-
-            if ($paramsColumnKey === null) {
-                $valueSet = true;
-                $value = $row;
-            } elseif (is_array($row) && array_key_exists($paramsColumnKey, $row)) {
-                $valueSet = true;
-                $value = $row[$paramsColumnKey];
-            }
-
-            if ($valueSet) {
-                if ($keySet) {
-                    $resultArray[$key] = $value;
-                } else {
-                    $resultArray[] = $value;
-                }
-            }
-
-        }
-
-        return $resultArray;
-    }
-
 }
 
 /**
@@ -2930,4 +2736,178 @@ function tagsToAry($str,$case = false,$delim = ','){
 	return $ary;
 }
 
-?>
+/**
+ * **************************************************************************** 
+ * Array Helpers
+ * **************************************************************************** 
+ * 
+ * php <php 5.6 does not support array_filter by keys and values, so we use our own methods
+ * these are not backports! however
+ * 
+ */
+
+/**
+ * filter an array using a callback function on subarrays
+ * 
+ * @param  array $array        array to filter
+ * @param  callable $callback  callback that returns true or false
+ * @param  array $callbackargs arguments for callback function, callable(array[n],args)
+ * @return array filtered array
+ */
+function filterArray($array,$callback,$callbackargs){
+	if (function_exists($callback)){
+		foreach ($array as $key => $value) {
+			// filter from array if callback returns true
+			if( $callback($value,$callbackargs) ){
+				unset($array[$key]);
+			}	
+		}
+		return $array;
+	}
+	else {
+		debugLog(__FUNCTION__ . ': callback not reachable: ' . $callback);
+	}
+	return $array;	
+}
+
+/**
+ * filter sub arrays using a callback function on keys
+ * 
+ * @param  array $array     array of arrays to filter
+ * @param  callable $callback callback function that return true or false
+ * @param  array $args     array or arguments for callback, callable(array[n]->key(array[n]),args)
+ * @return array           array of arrays with select keys removed
+ */
+function filterSubArrayKey($array,$callback,$callbackargs){
+	if (function_exists($callback)){
+		foreach ($array as &$subarray) {
+			foreach ($subarray as $key => $value) {
+				// filter from array if callback returns true
+				if( $callback($key,$callbackargs) ){
+					unset($subarray[$key]);
+				}
+			}
+		}
+	} 
+	else {
+		debugLog(__FUNCTION__ . ': callback not reachable: ' . $callback);
+	}
+	return $array;
+}
+
+/**
+ * This file is part of the array_column library
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @copyright Copyright (c) 2013 Ben Ramsey <http://benramsey.com>
+ * @license http://opensource.org/licenses/MIT MIT
+ */
+
+if (!function_exists('array_column')) {
+
+    /**
+     * Returns the values from a single column of the input array, identified by
+     * the $columnKey.
+     *
+     * Optionally, you may provide an $indexKey to index the values in the returned
+     * array by the values from the $indexKey column in the input array.
+     *
+     * @param array $input A multi-dimensional array (record set) from which to pull
+     *                     a column of values.
+     * @param mixed $columnKey The column of values to return. This value may be the
+     *                         integer key of the column you wish to retrieve, or it
+     *                         may be the string key name for an associative array.
+     * @param mixed $indexKey (Optional.) The column to use as the index/keys for
+     *                        the returned array. This value may be the integer key
+     *                        of the column, or it may be the string key name.
+     * @return array
+     */
+    function array_column($input = null, $columnKey = null, $indexKey = null)
+    {
+        // Using func_get_args() in order to check for proper number of
+        // parameters and trigger errors exactly as the built-in array_column()
+        // does in PHP 5.5.
+        $argc = func_num_args();
+        $params = func_get_args();
+
+        if ($argc < 2) {
+            trigger_error("array_column() expects at least 2 parameters, {$argc} given", E_USER_WARNING);
+            return null;
+        }
+
+        if (!is_array($params[0])) {
+            trigger_error('array_column() expects parameter 1 to be array, ' . gettype($params[0]) . ' given', E_USER_WARNING);
+            return null;
+        }
+
+        if (!is_int($params[1])
+            && !is_float($params[1])
+            && !is_string($params[1])
+            && $params[1] !== null
+            && !(is_object($params[1]) && method_exists($params[1], '__toString'))
+        ) {
+            trigger_error('array_column(): The column key should be either a string or an integer', E_USER_WARNING);
+            return false;
+        }
+
+        if (isset($params[2])
+            && !is_int($params[2])
+            && !is_float($params[2])
+            && !is_string($params[2])
+            && !(is_object($params[2]) && method_exists($params[2], '__toString'))
+        ) {
+            trigger_error('array_column(): The index key should be either a string or an integer', E_USER_WARNING);
+            return false;
+        }
+
+        $paramsInput = $params[0];
+        $paramsColumnKey = ($params[1] !== null) ? (string) $params[1] : null;
+
+        $paramsIndexKey = null;
+        if (isset($params[2])) {
+            if (is_float($params[2]) || is_int($params[2])) {
+                $paramsIndexKey = (int) $params[2];
+            } else {
+                $paramsIndexKey = (string) $params[2];
+            }
+        }
+
+        $resultArray = array();
+
+        foreach ($paramsInput as $row) {
+
+            $key = $value = null;
+            $keySet = $valueSet = false;
+
+            if ($paramsIndexKey !== null && array_key_exists($paramsIndexKey, $row)) {
+                $keySet = true;
+                $key = (string) $row[$paramsIndexKey];
+            }
+
+            if ($paramsColumnKey === null) {
+                $valueSet = true;
+                $value = $row;
+            } elseif (is_array($row) && array_key_exists($paramsColumnKey, $row)) {
+                $valueSet = true;
+                $value = $row[$paramsColumnKey];
+            }
+
+            if ($valueSet) {
+                if ($keySet) {
+                    $resultArray[$key] = $value;
+                } else {
+                    $resultArray[] = $value;
+                }
+            }
+
+        }
+
+        return $resultArray;
+    }
+
+}
+
+
+/* ?> */
