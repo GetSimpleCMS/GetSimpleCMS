@@ -491,43 +491,54 @@ function filterParent($pages,$parent=''){
  * but 
  */
 
-function get_pages(){
-	return getPages();
-}
+// function get_pages(){
+// 	return getPages();
+// }
 
-function get_page_field_value($pageId,$field){
-	return returnPageField($pageId,$field);
-}
+// function get_page_field_value($pageId,$field){
+// 	return returnPageField($pageId,$field);
+// }
 
-function get_page_children($pageId){
-	return getPages('filterParent',$pageId);
-}
+// function get_page_children($pageId){
+// 	return getPages('filterParent',$pageId);
+// }
 
-// get direct children no recursive
+// function get_parent_slug($pageId){
+// 	return getParent($pageId);
+// }
 
-function get_parent_slug($pageId){
-	$parentId  = get_page_field_value($pageId,'parent');
-	return (string) $parentId;
-}
+// function get_parents_slugs($pageId){
+// 	return getParents($pageId);
+// }
 
-function get_parents_slugs($pageId){
-	return getParents($pageId);
-}
+// function get_parent_page($pageId){
+// 	return getParentPage($pageId);
+// }
 
-function get_parent_page($pageId){
-	$pagesArray = getPages();
-	$parentId   = $pagesArray[$pageId]['parent'];
-	return $pagesArray[$parentId];
-}
+// function get_parents_pages($pageId){
+// 	return getParentsPages($pageId);
+// }
 
-function get_parents_pages($pageId){
-	getParentsPages($pageId);
-}
+// function get_page_path($pageId){
+// 	return getPagePath($pageId);
+// }
 
-function get_page_path($pageId){
+
+function getPagePath($pageId){
 	$parents = getParents($pageId);
 	if($parents) return implode('/',array_reverse($parents)) . '/' . $pageId;
 	return $pageId;
+}
+
+function getParent($pageId){
+	$parentId  = returnPageField($pageId,'parent');
+	return (string) $parentId;
+}
+
+function getParentPage($pageId){
+	$pagesArray = getPages();
+	$parentId   = $pagesArray[$pageId]['parent'];
+	return $pagesArray[$parentId];
 }
 
 /**
@@ -538,7 +549,7 @@ function get_page_path($pageId){
  */
 function getParents($pageId){
 	$pageparents = getPagesFields('parent');
-	$parent      = get_parent_slug($pageId);
+	$parent      = getParent($pageId);
 	$parents     = array();
 
 	if(empty($parent)) return array();

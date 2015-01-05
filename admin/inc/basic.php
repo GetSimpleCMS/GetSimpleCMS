@@ -1050,7 +1050,7 @@ function generate_permalink($slug, $permalink = null){
 
 	// replace PARENT token
 	if(containsToken('parent',$plink)){
-		$parent = get_parent_slug($slug);
+		$parent = getParent($slug);
 		$plink  = replaceToken('parent', $parent, $plink);
 	}
 	
