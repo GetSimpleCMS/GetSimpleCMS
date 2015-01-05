@@ -334,6 +334,7 @@ function isFile($file, $path, $type = 'xml') {
  * @return array
  */
 function getFiles($path,$ext = null) {
+
 	$handle   = opendir($path) or die("getFiles: Unable to open $path");
 	$file_arr = array();
 
@@ -345,9 +346,9 @@ function getFiles($path,$ext = null) {
 		}
 		else {
 			if ($file != '.' && $file != '..' && $file!='thumbs.db') {
-			$file_arr[] = $file;
+				$file_arr[] = $file;
+			}
 		}
-	}
 	}
 
 	closedir($handle);
@@ -383,7 +384,7 @@ function getDirs($path,$filereq = null) {
  */
 function getXmlFiles($path) {
 	return getFiles($path,'xml');
-		}
+}
 
 /**
  * execution timer
@@ -971,11 +972,6 @@ if(!function_exists('in_arrayi')) {
  * Creates Standard URL for Pages
  *
  * Default function to create the correct url structure for each front-end pages
- * uses a very basic str_replace based token replacer, not a parser
- * TOKENS (%tokenid%)
- *  %path% - path heirarchy to slug
- *  %slug% - slug
- *  %parent% - direct parent of slug
  * 
  * @since 3.4
  * @uses $PRETTYURLS
@@ -1001,35 +997,71 @@ function generate_url($slug, $absolute = false){
 	$url    = $path; // var to build url into
 
 	if ($PRETTYURLS == '1' && $slug != 'index'){
+		$url .= generate_permalink($slug);
+	} 
+	else if (!empty($PERMALINK) && $slug != 'index'){
+		$url .= generate_permalink($slug,$PERMALINK);
+	}
+	else if ($slug != 'index') $url .= 'index.php?id='.$slug;
+
+	$url = exec_filter('generate_url',$url); // @filter generate_url (str) for generating urls after processing, for use with custom tokens etc
+	return $url;
+}
+
+/**
+ * generate permalink url from tokenized permalink structure
+ * uses a very basic str_replace based token replacer, not a parser
+ * TOKENS (%tokenid%)
+ *  %path% - path heirarchy to slug
+ *  %slug% - slug
+ *  %parent% - direct parent of slug
+ *
+ * supports prettyurl or any other permalink structure
+ * eg. ?id=%slug%&parent=%parent%&path=%path%
+ * 
+ * @param  (str) $slug      slug to resolve permalink for	
+ * @param  (str) $permalink (optional) permalink structure
+ * @return (str)            	
+ */
+function generate_permalink($slug, $permalink = null){
+	GLOBAL $PERMALINK;
+	
+	$slug = (string) $slug;
+
+	if(!isset($permalink)){
 		$plink = $PERMALINK;
 		if(empty($PERMALINK)) $plink = getDef('GSDEFAULTPERMALINK');
+	} else $plink = $permalink;
 
-		// replace PATH token
-		if(containsToken('path',$plink)){
-			// remove PARENT tokens if path, since it would be pointless and probably accidental
-			$plink = replaceToken('parent','',$plink,$delim);	
-			
-			$pagepath = getParents($slug);
-
-			if($pagepath){
-				$pagepath = implode('/',array_reverse($pagepath));
-				$plink    = replaceToken('path',$pagepath,$plink,$delim);		
-			} else {
-				// page has no parents, remove token
-				$plink = replaceToken('path', '',$plink,$delim);
-			}
+	// replace PATH token
+	if(containsToken('path',$plink)){
+		// remove PARENT tokens if path, since it would be pointless and probably accidental
+		// leaving in for now lets not make assumptions
+		// $plink = replaceToken('parent','',$plink);
+		$pagepath = getParents($slug);
+		if($pagepath){
+			$pagepath = implode('/',array_reverse($pagepath));
+			$plink    = replaceToken('path', $pagepath, $plink);		
 		} else {
-			// replace PARENT token
-			$parent = get_parent_slug($slug);
-			$plink  = replaceToken('parent', $parent, $plink,$delim);
+			// page has no parents, remove token
+			$plink = replaceToken('path', '', $plink);
 		}
+	} 
+
+	// replace PARENT token
+	if(containsToken('parent',$plink)){
+		$parent = get_parent_slug($slug);
+		$plink  = replaceToken('parent', $parent, $plink);
 	}
-	if (trim($PERMALINK) != '' && $slug != 'index'){
-		$plink = replaceToken('%parent%/', $parent, $PERMALINK,$delim);
-		$plink = replaceToken('%parent%', $parent, $plink,$delim);
-		$plink = replaceToken('%slug%', $slug, $plink,$delim);
-		$url = $path . $plink;
-	}
+	
+	// replace SLUG token
+	$plink = replaceToken('slug', $slug, $plink);
+	
+	$plink = str_replace('//','/',$plink); // clean up any double slashes
+
+	// debugLog($url);
+	// debugLog($plink);
+	return no_lsl($plink);
 }
 
 /** 

@@ -258,7 +258,7 @@ function pageCacheCountDiffers(){
 function pageCacheDiffers(){
 	GLOBAL $pagesArray;
 	if(!$pagesArray) return true;
-	
+
 	$path          = GSDATAPAGESPATH;
 	$filenames     = getXmlFiles($path);
 	$filenames_old = array_column($pagesArray,'filename');
@@ -272,7 +272,6 @@ function pageCacheDiffers(){
 
 	// debugLog($old . " " . $new);
 	return $new !== $old;
-
 }
 
 /**
@@ -307,21 +306,44 @@ function generate_pageCacheXml(){
 	// read in each pages xml file
 	$path = GSDATAPAGESPATH;
 	$filenames = getXmlFiles($path);
-	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
+	$cacheXml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
 	if (count($filenames) != 0) {
 		foreach ($filenames as $file) {
-			$data = getXml($path.$file);
-						
-			$id=$data->url;
-			$pages = $xml->addChild('item');
+			
+			// load page xml
+			$pageXml  = getXml($path.$file);
+			if(!$pageXml) continue;
+			$id = $pageXml->url; // page id
+
+			$cacheItems = $cacheXml->addChild('item');
 			// $pages->addChild('url', $id);
-			$children = $data->children();
+			$children = $pageXml->children();
+
 			foreach ($children as $item => $itemdata) {
+				// add all fields skip content
 				if ($item!="content"){
-					$note = $pages->addChild($item);
+					$note = $cacheItems->addChild($item);
 					$note->addCData($itemdata);
 				}
 			}
+
+			// cyclical, depends on pagecache to generate permalink
+			// @todo this is a test
+			GLOBAL $pagesArray;
+			if($pagesArray){
+				// add route
+				$routesNode = $cacheItems->addChild('routes');
+				$routeNode = $routesNode->addChild('route');
+				
+				// can lead to infinite loops
+				$permaroute = no_tsl(generate_permalink($id));
+				
+				$pathNode = $routeNode->addChild('path');
+				$pathNode->addCData($permaroute);
+				$keyNode = $routeNode->addChild('key');
+				$keyNode->addCData(md5($permaroute));
+			}
+
 			// removed from xml , redundant
 			# $note = $pages->addChild('slug');
 			# $note->addCData($id);
@@ -330,7 +352,7 @@ function generate_pageCacheXml(){
 		}
 	}
 
-	return $xml;
+	return $cacheXml;
 }
 
 /**

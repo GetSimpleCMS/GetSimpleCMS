@@ -505,8 +505,7 @@ function get_page_children($pageId){
 // get direct children no recursive
 
 function get_parent_slug($pageId){
-	$pagesArray = getPages();
-	$parentId   = $pagesArray[$pageId]['parent'];
+	$parentId  = returnPageField($pageId,'parent');
 	return (string) $parentId;
 }
 

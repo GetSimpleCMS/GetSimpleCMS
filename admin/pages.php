@@ -42,6 +42,7 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 	}
 }
 
+init_pageCache(true);
 getPagesXmlValues(true);
 
 $count = 0;

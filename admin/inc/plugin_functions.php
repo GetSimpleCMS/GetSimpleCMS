@@ -446,7 +446,7 @@ function exec_filter($a,$data=array()) {
 	global $pluginFilters;
 
 	if(!$pluginFilters){
-		debugLog('filters empty');
+		// debugLog('filters empty');
 		return $data;
 	}
 
