@@ -993,6 +993,7 @@ function generate_url($slug, $absolute = false){
 
 	// force slug to string in case a simpleXml object was passed ( from a page obj for example)
 	$slug   = (string) $slug;
+	$delim  = getDef('GSTOKENDELIM');
 
 	if(empty($slug)) return; // empty slug
 
@@ -1006,49 +1007,29 @@ function generate_url($slug, $absolute = false){
 		// replace PATH token
 		if(containsToken('path',$plink)){
 			// remove PARENT tokens if path, since it would be pointless and probably accidental
-			$plink = replaceToken('parent','',$plink);	
+			$plink = replaceToken('parent','',$plink,$delim);	
 			
 			$pagepath = getParents($slug);
 
 			if($pagepath){
 				$pagepath = implode('/',array_reverse($pagepath));
-				$plink    = replaceToken('path', $pagepath, $plink);		
+				$plink    = replaceToken('path',$pagepath,$plink,$delim);		
 			} else {
 				// page has no parents, remove token
-				$plink = replaceToken('path', '', $plink);
+				$plink = replaceToken('path', '',$plink,$delim);
 			}
 		} else {
 			// replace PARENT token
 			$parent = get_parent_slug($slug);
-			$plink  = replaceToken('parent', $parent, $plink);
+			$plink  = replaceToken('parent', $parent, $plink,$delim);
 		}
-		
+	}
 	if (trim($PERMALINK) != '' && $slug != 'index'){
-		$plink = str_replace('%parent%/', $parent, $PERMALINK);
-		$plink = str_replace('%parent%', $parent, $plink);
-		$plink = str_replace('%slug%', $slug, $plink);
+		$plink = replaceToken('%parent%/', $parent, $PERMALINK,$delim);
+		$plink = replaceToken('%parent%', $parent, $plink,$delim);
+		$plink = replaceToken('%slug%', $slug, $plink,$delim);
 		$url = $path . $plink;
-}
-
-/**
- * replaces a string token with value
- * @param  str $token token id
- * @param  str $value value to replace
- * @param  str $str   source string
- * @return str        new string
- */
-function replaceToken($token,$value,$str){
-	return str_replace('%'.$token.'%',$value,$str);
-}
-
-/**
- * check if a string contains a token
- * @param  str $token token id
- * @param  str $str   source string
- * @return bool       true if token found
- */
-function containsToken($token,$str){
-	return stripos($str, '%'.$token.'%') !== false;
+	}
 }
 
 /** 
@@ -1062,6 +1043,29 @@ function find_url($slug, $parent = '', $type = null) {
 		else $type = "relative";
 	}	
 	return generate_url($slug, $type == 'full');
+}
+
+/**
+ * replaces a string token with value
+ * @param  str $token token id
+ * @param  str $value value to replace
+ * @param  str $str   source string
+ * @return str        new string
+ */
+function replaceToken($token,$value,$str, $delim = null){
+	if(!isset($delim)) $delim = getDef('GSTOKENDELIM');
+	return str_replace($delim.$token.$delim,$value,$str);
+}
+
+/**
+ * check if a string contains a token
+ * @param  str $token token id
+ * @param  str $str   source string
+ * @return bool       true if token found
+ */
+function containsToken($token,$str,$delim = null){
+	if(!isset($delim)) $delim = getDef('GSTOKENDELIM');	
+	return stripos($str, $delim.$token.$delim) !== false;
 }
 
 /**
