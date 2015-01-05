@@ -43,6 +43,11 @@
 // 
 // sorting by at least 2 columns, and fake columns such as external relationships, parent title / parent slug
 
+// sorters need 2 callouts
+// a comparison
+// a preparer for the 2 values, but how can we optimize so we only run that once, preparer could be run on entire array
+// a preparer will have to adjust for stuff like menuOrder 0 etc and no menuOrder sort fallbacks
+// if a perparer exists then we need a sortkey
 
 /**
  * sortkey below sorts by a key with uasort without creating a seperate sorting array
@@ -53,16 +58,79 @@ function sortKey($pages,$key){
 
 	GLOBAL $sortkey;
 	$sortkey = $key;
+    
     function custom_sort($a,$b) {
-    GLOBAL $sortkey;
-       return $a[$sortkey]>$b[$sortkey];
+    	GLOBAL $sortkey;
+       	return $a[$sortkey]>$b[$sortkey];
     }
+
     uasort($pages, "custom_sort");
 
     unset($sortkey);
     return $pages;
 }
 
+/**
+ * sort by field using prepare filter on items
+ * builds the sort key using a callback function
+ * If data massaging needs to be done you can use a prepare callback on the entire table once, to avoid
+ * complex comparisons or conversions inside a comparison callback
+ * or you can pass in a pre sorted sorting array
+ * http://php.net/manual/en/array.sorting.php
+ * strcmp — Binary safe string comparison
+ * strcasecmp — Binary safe case-insensitive string comparison
+ * strnatcmp — String comparisons using a "natural order" algorithm
+ * strnatcasecmp — Case insensitive string comparisons using a "natural order" algorithm
+ * 
+ * @param  [type] $pages   [description]
+ * @param  [type] $field   [description]
+ * @param  [type] $prepare [description]
+ * @return [type]          [description]
+ */
+function sortCustomIndexCallback($array,$key=null,$prepare=null){
+	$sortvalue = array();
+
+	if(isset($prepare) && function_exists($prepare)){
+		foreach($array as $sortkey=>$page){
+			if(isset($key)) $sortvalue[$sortkey] = $prepare($page,$page[$key]);
+			else $sortvalue[$sortkey] = $prepare($page);
+		}
+	}
+	_debugLog($sortvalue);
+
+	return sortCustomIndex($array,$key,$sortvalue);
+}
+
+function sortCustomIndex($array,$key=null,$sortindex = array()){	
+	
+	if(!$sortindex && isset($key)){
+		$sortindex = array_column($array,$key);
+		$sortindex = uasort($sortindex, "strnatcmp");
+	}
+	return arrayMergeSort($sortindex,$array);
+	// return inPlaceKeySort($pages,$sortvalue);
+}
+
+
+// use array merge to merge sorted
+function arrayMergeSort($sort,$array,$keyed = true){
+	// natsort($sort);
+	uasort($sort, "strnatcmp"); // sort values maintain index, use custom cmp
+	return array_merge($sort, $array);
+}
+
+// use global and uksort
+function inPlaceKeySort($array,$sort){
+	GLOBAL $sortvalue;
+	$sortvalue = $sort;
+	function custom_sort($a,$b) {
+		GLOBAL $sortvalue;
+		return strnatcmp($sortvalue[$a], $sortvalue[$b]);
+	}
+
+	if($sort) uksort($array, 'custom_sort');
+	return $array;	
+}
 
 // path = get all parents not just first
 // function sortPathTitle($pages)

@@ -90,7 +90,7 @@ function filterSubArrayKey($array,$callback,$callbackargs){
 function getPages($filterFunc=null/*,...*/){
 	GLOBAL $pagesArray;
 
-	if(function_exists($filterFunc)){
+	if(isset($filterFunc) && function_exists($filterFunc)){
 		$args    = func_get_args();
 		$args[0] = $pagesArray; // replace first argument (filterfunc) with PAGES
 		return call_user_func_array($filterFunc, $args);
@@ -167,33 +167,6 @@ function filterPagesFunc($pages,$func,$arg){
  */
 
 /**
- * wrapper for comparison function using PAGE key
- * compare(key,mykey)
- *
- * @since  3.4
- * @param  str $key    key
- * @param  mixed $args arguments for comparison func
- * @return bool        returns bool from comparison func to remove KEY from PAGE
- */
-function filterKeyCmpFunc($key,$args/* array(key,comparisonfunc )*/){
-	list($fieldkey,$func) = $args;
-	if (function_exists($func))	return $func($key,$fieldkey);
-	return false;
-}
-
-/**
- * main filter on page field key using a custom comparator function
- * @since  3.4
- * @param  array    $pages PAGES collection
- * @param  str      $key   field key name to filter on
- * @param  callable $func  callback function name
- * @return array           filtered PAGES array
- */
-function filterKeyFunc($pages,$key,$func){
-	return filterPageFieldFunc($pages,'filterKeyCmpFunc',array($key,$func));
-}
-
-/**
  * Filters page field keys
  * 
  * filter on key index match array of keys
@@ -229,21 +202,6 @@ function filterKeyMatch($pages,$key){
  * FILTER PAGE HELPERS
  * ****************************************************************************  
  */
-
-/**
- * wrapper for a comparison function using PAGE field
- * compare(page[key],mykey->value) and returns its result
- *
- * @since  3.4
- * @param  array $page single page array
- * @param  mixed $args arguments for func
- * @return bool       returns bool from comparison function to remove PAGE from PAGES
- */
-function filterKeyValueCmpFunc($page,$args/* array(key,value,comparisonfunc )*/){
-	list($fieldkey,$fieldvalue,$func) = $args;
-	if (function_exists($func))	return $func($page[$fieldkey],$fieldvalue);
-	return false;
-}
 
 /**
  * filter PAGES on keys and values, using a key value comparison function 
@@ -288,6 +246,21 @@ function filterKeyValueMatch_i($pages,$key,$value){
 }
 
 /**
+ * filter on key value MATCHES boolean value (bool casting performed)
+ * eg. $newPages = getPages('filterKeyValueMatchBool','menuStatus',true);
+ * 
+ * @since 3.4
+ * @param  array    $pages PAGES collection
+ * @param  str      $key   field key name to filter on
+ * @param  str      $value value to match field
+ * @return array           filtered PAGES array
+ */
+function filterKeyValueMatch_bool($pages,$key,$value){
+ 	return filterKeyValueFunc($pages,$key,$value,'filterMatchBoolCmp');
+}
+
+
+/**
  * **************************************************************************** 
  * filter comparison functions
  * **************************************************************************** 
@@ -297,6 +270,52 @@ function filterKeyValueMatch_i($pages,$key,$value){
  * @todo  natives comparators return 0 if equal , wrappers should evaluate with (!== 0 || false) so we can use sort comparators for filters
  * @todo  convert to standard string or array comparators , and use sort result sets
  */
+
+/**
+ * comparison function wrapper
+ * wrapper for filterKeyCmpFunc on sub array keys
+ * PAGES FIELD KEY comparison performed
+ * @since  3.4
+ * @param  array    $pages PAGES collection
+ * @param  str      $key   field key name to filter on
+ * @param  callable $func  callback function name
+ * @return array           filtered PAGES array
+ */
+function filterKeyFunc($pages,$key,$func){
+	return filterPageFieldFunc($pages,'filterKeyCmpFunc',array($key,$func));
+}
+
+/**
+ * comparison function wrapper
+ * KEY comparison performed, filters keys using key comparison
+ * compare(key,mykey)
+ *
+ * @since  3.4
+ * @param  str $key    key to compare
+ * @param  mixed $args arguments for comparison func
+ * @return bool        returns bool from comparison func to remove KEY from PAGE
+ */
+function filterKeyCmpFunc($key,$args/* array(key,comparisonfunc )*/){
+	list($fieldkey,$func) = $args;
+	if (function_exists($func))	return $func($key,$fieldkey);
+	return false;
+}
+
+/**
+ * comparison function wrapper 
+ * PAGE FIELD KEY VALUE comparison
+ * compare(page[key],mykey->value) and returns its result
+ *
+ * @since  3.4
+ * @param  array $page single page array
+ * @param  mixed $args arguments for func
+ * @return bool       returns bool from comparison function to remove PAGE from PAGES
+ */
+function filterKeyValueCmpFunc($page,$args/* array(key,value,comparisonfunc )*/){
+	list($fieldkey,$fieldvalue,$func) = $args;
+	if (function_exists($func))	return $func($page[$fieldkey],$fieldvalue);
+	return false;
+}
 
 /**
  * EQUALS comparison, $a==$b
@@ -411,6 +430,12 @@ function filterTagsMatchAlliCmp($a,$b){
 	return filterTagsMatchAllCmp(lowercase($a),$b);
 }
 
+
+// invert a filtered page set
+function filterInverse($pagesFiltered,$pages = array()){
+	if(!$pages) $pages = getPages();
+	return array_diff_key($pages,$pagesFiltered);
+}
 
 /**
  * filter pages by tags
