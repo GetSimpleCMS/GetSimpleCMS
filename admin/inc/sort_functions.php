@@ -1,9 +1,24 @@
-<?php
+<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
+/**
+ * Sort Functions
+ *
+ * Page sorts, sorters
+ * 
+ * @since  3.4
+ * @author shawn_a
+ * @todo  create wiki docs
+ * @link http://get-simple.info/docs/sorting
+ *
+ * @package GetSimple
+ * @subpackage Sort-Functions
+ */
+
 
 /////////////
 // TESTING //
 /////////////
 
+// NOTES, random noise
 // if we have multiple menus, then there will be no concept of parents, we would be sorting by menus
 // of course we can retian a single menu or parent heirarchy for page organization and legacy support
 
@@ -101,25 +116,43 @@ function sortCustomIndexCallback($array,$key=null,$prepare=null){
 	return sortCustomIndex($array,$key,$sortvalue);
 }
 
+/**
+ * sort keyed multidimentional array 
+ * by sub key, or a keyed custom sort index
+ * array['key'] = array[$key]
+ * @since  3.4
+ * @param  array $array     multidimensional array to sort
+ * @param  str $key         (optional) sub array key to sort by
+ * @param  array  $sortindex(optional) key value array for sorting $array
+ * @return array            $array sorted by sortindex or key
+ */
 function sortCustomIndex($array,$key=null,$sortindex = array()){	
 	
 	if(!$sortindex && isset($key)){
-		$sortindex = array_column($array,$key);
-		$sortindex = uasort($sortindex, "strnatcmp");
-	}
+		$sortindex = array_column($array,$key,'url');
+		uasort($sortindex, "strnatcmp");
+	} else uasort($sortindex, "strnatcmp"); // sort values maintain index, use custom cmp
+
+	_debugLog($sortindex);
 	return arrayMergeSort($sortindex,$array);
 	// return inPlaceKeySort($pages,$sortvalue);
 }
 
-
-// use array merge to merge sorted
+/**
+ * sort an array via another pre-sorted array
+ * uses array_merge to sort array by another sorted keyed array or array of keys
+ * @since  3.4
+ * @param  array  $sort  keyed array to sort from
+ * @param  array  $array keyed array to sort
+ * @param  boolean $keyed true indicates sort array is already keyed, else array of keys
+ * @return array         sorted array
+ */
 function arrayMergeSort($sort,$array,$keyed = true){
-	// natsort($sort);
-	uasort($sort, "strnatcmp"); // sort values maintain index, use custom cmp
+	if(!$keyed) $sort = array_flip($sort);
 	return array_merge($sort, $array);
 }
 
-// use global and uksort
+// use global and uksort test
 function inPlaceKeySort($array,$sort){
 	GLOBAL $sortvalue;
 	$sortvalue = $sort;
