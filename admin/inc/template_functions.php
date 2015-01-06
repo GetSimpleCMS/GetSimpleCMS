@@ -1972,10 +1972,7 @@ function outputCollectionTags($collectionid,$data){
  * @return bool            true if timestamp is today
  */
 function dateIsToday($timestamp){
-	$date = new DateTime();
-	$match_date = new DateTime($timestamp);
-	$interval = $date->diff($match_date);
-	return $interval->days == 0;
+	return debugLog(date('Ymd') == date('Ymd', strtotime($timestamp)));
 }
 
 /**
