@@ -220,6 +220,20 @@ function sortPageFunc($pages,$func=null){
 }
 
 
+// sandbox
 function sortPageDateCmp($a,$b){
 	// sort by date field ( using gs format )
+	strtotime($a) - strtotime($b);
+}
+
+function reindexPages($pages = array()){
+	if(!$pages){
+		GLOBAL $pagesArray;
+		$pages = $pagesArray;
+	}	
+	reindexArray($pages,'url');
+}
+
+function reindexArray($array,$key){
+	array_column($array,null,$key);
 }
