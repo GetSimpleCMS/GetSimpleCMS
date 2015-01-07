@@ -60,6 +60,8 @@
 			
 			if(!isset($ptype) && isset($_GET['ptype'])) $ptype = var_in($_GET['ptype']); // preset update tokens
 			
+			$draftqs = '';
+
 			if(isset($_GET['upd-draft']) || (isset($upddraft) && $upddraft == true )){
 				$draftqs = '&draft';
 				$dispid      = $id . ' (' . titlecase(i18n_r('LABEL_DRAFT')) .')';
