@@ -317,8 +317,11 @@ function getUploadIcon($type){
     // show files
 	if (count($filesSorted) != 0) { 			
 		foreach ($filesSorted as $upload) {
-			$thumbnailLink = '';
+			
 			$counter++;
+			$thumbnailLink = '';
+			$primarylink = '';
+			
 			echo '<tr class="all '.$upload['type'].'" >';
 			echo '<td class="imgthumb" >';
 
@@ -331,7 +334,7 @@ function getUploadIcon($type){
 				$thumbLinkExternal = $urlPath.'thumbnail.'.$upload['name'];
 				$primarylink       = getRelPath(GSDATAUPLOADPATH).$urlPath. rawurlencode($upload['name']);
 
-				// 
+				// get thumbsm
 				if (!file_exists(GSTHUMBNAILPATH.$thumbLink) || isset($_REQUEST['regenthumbsm'])) {					
 					$imgSrc = '<img src="inc/thumb.php?src='. $urlPath . rawurlencode($upload['name']) .'&amp;dest='. $thumbLinkEncoded .'&amp;f=1&x='.$thumbsm_w.'&y='.$thumbsm_h.'" />';
 				} else {

@@ -7,7 +7,7 @@
  */
 
 $path = (isset($_GET['path'])) ? $_GET['path'] : "";
-$fileSizeLimitMB = toBytesShorthand(getMaxUploadSize().'M',true);
+$fileSizeLimitMB = toBytesShorthand(getMaxUploadSize(),'M',true);
 
 ?>
 

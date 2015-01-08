@@ -180,6 +180,10 @@ class ImageManipulation {
      */
 	public function ImageManipulation($imgfile)
 	{
+
+		$imageinfo = getimagesize($imgfile);
+		// debugLog($imageinfo);
+		
 		//detect image format
 		//@todo: abstract use mime, and realpathparts not regex
 		$this->image["format"] = $this->getFileImageType($imgfile);
@@ -209,12 +213,51 @@ class ImageManipulation {
 
 		// Image is ok
 		$this->imageok = true;
-		
+
 		// Work out image size
-		$this->image['srcfile'] = $imgfile;
-		$this->image["sizex"]   = imagesx($this->image["src"]);
-		$this->image["sizey"]   = imagesy($this->image["src"]);
-		$this->image["ratio"]   = $this->getRatio();
+		$this->image['srcfile']  = $imgfile;
+		$this->image['sizex']    = $imageinfo[0];
+		$this->image['sizey']    = $imageinfo[1];
+
+		$this->image['channels'] = $imageinfo[2];
+		$this->image['bits']     = $imageinfo['bits'];
+		$this->image['mime']     = $imageinfo['mime'];
+		$this->image['width']    = $this->image["sizex"];
+		$this->image['height']   = $this->image["sizey"];
+		$this->image["ratio"]    = $this->getRatio();
+	}
+
+	public function getImageMemory($adjust = 1.8){
+		$image_width    = $this->image['width'];
+		$image_height   = $this->image['height'];
+		$image_bits     = $this->image['bits'];
+		$image_channels = 4; // pngs do not calculate properly, stick to 4
+		
+		// bpp = (bitdepth) * (channels)
+		// bits = (height) * (width) * (bpp)
+		// bytes = bits / 8
+		$size = round( ($image_width * $image_height * ($image_bits * $image_channels) / 8) ); 
+		$cropsize = 0;
+
+		if($this->crop == true){
+			// $size = $size*2;
+			list($image_width,$image_height) = $this->getCropSize();
+			$cropsize += round( ($image_width * $image_height * ($image_bits * $image_channels) / 8) );
+		}
+
+		// print_r('src:'.toBytesShorthand($size,'m',true)."<br>");
+		// print_r('crop:'.toBytesShorthand($cropsize,'m',true)."<br>");
+		$size = $size + $cropsize;
+		return $size = $size * $adjust;
+	}
+
+
+	public function getCropSize(){
+		if($this->crop == true){
+			$width  = $this->image['sizex'] - $this->image['targetx'];
+			$height = $this->image['sizey'] - $this->image['targety'];
+			return array($width,$height);
+		}
 	}
 
     /**
@@ -309,10 +352,11 @@ class ImageManipulation {
      */
 	public function setCrop($x, $y, $w, $h)
 	{
-		$this->image["targetx"] = $x;
-		$this->image["targety"] = $y;
-		$this->image["sizex"] = $w;
-		$this->image["sizey"] = $h;
+		$this->crop = true;
+		$this->image["targetx"] = (int)$x;
+		$this->image["targety"] = (int)$y;
+		$this->image["sizex"]   = (int)$w;
+		$this->image["sizey"]   = (int)$h;
 	}
 
 	/**
@@ -368,7 +412,6 @@ class ImageManipulation {
 				return;
 			}
 		}
-		
 		$this->image["des"] = ImageCreateTrueColor($this->image["sizex"], $this->image["sizey"]);
 		$this->preserveAlpha();
 		imagecopyresampled($this->image["des"], $this->image["src"], 0, 0, $this->image["targetx"], $this->image["targety"], $this->image["sizex"], $this->image["sizey"], $this->image["sizex"], $this->image["sizey"]);
@@ -433,7 +476,6 @@ class ImageManipulation {
 
 		$success = false;
 		$this->createResampledImage();
-
 		if ( $format == "GIF" ) {
 			// GIF
 			// fallback to JPG is not supported

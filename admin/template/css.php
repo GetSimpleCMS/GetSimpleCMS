@@ -115,6 +115,9 @@ html {
 	overflow-y: scroll;
 }
 
+/**
+ * this doesnt always work, actual div with div.clear must be inserted after
+ */
 .clearfix:before, .clearfix:after {
 	content: "\0020";
 	display: block;

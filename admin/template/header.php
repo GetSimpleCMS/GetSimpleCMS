@@ -113,7 +113,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 
 		var uploadSession = '<?php echo $SESSIONHASH; ?>';
 		var uploadPath    = '<?php echo (isset($_GET['path'])) ? $_GET['path'] : ""; ?>';
-		var maxFileSize   = '<?php echo toBytesShorthand(getMaxUploadSize().'M',false); ?>';
+		var maxFileSize   = '<?php echo toBytesShorthand(getMaxUploadSize(),'M'); ?>';
 		
 		<?php
         if(isset($_COOKIE['gs_editor_theme'])){

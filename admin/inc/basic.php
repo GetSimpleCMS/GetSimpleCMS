@@ -1842,7 +1842,8 @@ function get_site_lang($short=false) {
 
 /**
  * Convert to Bytes
- *
+ * convert M/G/K byte string to bytes
+ * 100M returns 100*1024*1024
  * @since 3.0
  *
  * @param $str string
@@ -1860,21 +1861,24 @@ function toBytes($str){
 }
 
 /**
- * convert bytes to mb,gb,or kb
- * 
+ * convert bytes to M/G/K string
  * @param  str  $str    size in bytes
- * @param  boolean $suffix add suffix to end of str
+ * @param  str $suffix G/M/K string
+ * @param  boolean $outputsuffix add suffix to end of str
+ * @param  int $precision precision for rounding
  * @return str new byte string
  */
-function toBytesShorthand($str,$suffix = false){
+function toBytesShorthand($str,$suffix = 'M',$outputsuffix = false, $precision = 2){
 	$val  = trim($str);
-	$last = strtolower($str[strlen($str)-1]);
-		switch($last) {
-			case 'g': $val /= 1024;
-			case 'm': $val /= 1024;
-			case 'k': $val /= 1024;
-		}
-	return $val. ($suffix ? strtoupper($last.'B') : '');
+	$suffix = strtolower($suffix);
+	switch($suffix) {
+		case 'g': $val /= 1024;
+		case 'm': $val /= 1024;
+		case 'k': $val /= 1024;
+	}
+
+	$val = round($val,(int)$precision);
+	return $val. ($outputsuffix ? strtoupper($suffix.'B') : '');
 }
 
 /**
