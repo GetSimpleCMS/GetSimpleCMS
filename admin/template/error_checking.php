@@ -154,7 +154,7 @@
 			elseif (isset($_GET['cancel'])) doNotify(i18n_r('ER_CANCELLED_FAIL'),'error');
 			elseif (isset($_GET['logout'])) doNotify(i18n_r('MSG_LOGGEDOUT'),'info',true,true);
 			elseif (!empty($err))           doNotify('<b>'.i18n_r('ERROR').':</b> '.$err,'error',true);
-			elseif (isset($success))        doNotify($success,'success',true);
+			elseif (isset($success))        doNotify($success,'success',false);
 		break;
 	}
 
