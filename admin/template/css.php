@@ -2114,7 +2114,7 @@ textarea.copykit {
 .thumbs img{
 	max-height:128px;
 	max-width:128px;
-	border:1px solid black;
+	border:1px solid #555;
 }
 
 .thumbcontainer {
@@ -2165,7 +2165,7 @@ textarea.copykit {
 }
 
 .jcrop-holder {
-	border: 1px solid black !important;
+	border: 1px solid #555 !important;
 }
 
 #jcropform label {
