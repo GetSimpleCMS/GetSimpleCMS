@@ -2804,6 +2804,18 @@ function filterSubArrayKey($array,$callback,$callbackargs){
 }
 
 /**
+ * matchArray
+ * @param  array  $needle   input array to check
+ * @param  array  $haystack subject array to check against
+ * @param  boolean $keys    if true, compare $needle against $haystack keys instead of values
+ * @return boolean          true if all values of needle are in array
+ */
+function matchArrayAll($needle,$haystack,$keys = false){
+	if($keys) return count(array_intersect(array_flip($haystack),$needle)) == count($needle);
+	return count(array_intersect($haystack,$needle)) == count($needle);
+}
+
+/**
  * This file is part of the array_column library
  *
  * For the full copyright and license information, please view the LICENSE

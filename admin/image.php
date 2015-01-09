@@ -35,16 +35,27 @@ $thumb_url        = tsl($SITEURL).$thumb_folder_rel;
 if (!is_file($src_folder . $subPath .$src)) redirect("upload.php");
 
 // handle jcrop thumbnail creation
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	require_once('inc/imagemanipulation.php');
-	$objImage = new ImageManipulation($src_folder . $subPath .$src);
-	if ( $objImage->imageok ) {
-		$objImage->setCrop($_POST['x'], $_POST['y'], $_POST['w'], $_POST['h']);
-		//$objImage->show();
-		$objImage->save($thumb_folder . 'thumbnail.' .$src);
-		$success = i18n_r('THUMB_SAVED');
-	} else {
-		i18n('ERROR');
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && matchArrayAll(array('x','y','w','h'),$_POST,true) ) {
+	
+	exec_action('image-crop');
+
+	$x = (int)$_POST['x'];
+	$y = (int)$_POST['y'];
+	$w = (int)$_POST['w'];
+	$h = (int)$_POST['h'];
+
+	$max = 10000; // set a max to prevent excessive processing injections
+
+	if( $x<$max || $y<$max || $w<$max || $h<$max ){
+		require_once('inc/imagemanipulation.php');
+		$objImage = new ImageManipulation($src_folder . $subPath .$src);
+		if ( $objImage->imageok ) {
+			$objImage->setCrop($x,$y,$w,$h);
+			$objImage->save($thumb_folder . 'thumbnail.' .$src);
+			$success = i18n_r('THUMB_SAVED');
+		} else {
+			$error = i18n('ERROR');
+		}
 	}
 }
 
