@@ -65,42 +65,21 @@
 // if a perparer exists then we need a sortkey
 
 /**
- * sortkey below sorts by a key with uasort without creating a seperate sorting array
- * but it uses a tmp global (@todo make static) and custom comparator
- */
-function sortKey($pages,$key){
-	// return subval_sort($pagesArray,$key);
-
-	GLOBAL $sortkey;
-	$sortkey = $key;
-    
-    function custom_sort($a,$b) {
-    	GLOBAL $sortkey;
-       	return $a[$sortkey]>$b[$sortkey];
-    }
-
-    uasort($pages, "custom_sort");
-
-    unset($sortkey);
-    return $pages;
-}
-
-/**
- * sort by field using prepare filter on items
- * builds the sort key using a callback function
- * If data massaging needs to be done you can use a prepare callback on the entire table once, to avoid
- * complex comparisons or conversions inside a comparison callback
- * or you can pass in a pre sorted sorting array
- * http://php.net/manual/en/array.sorting.php
- * strcmp — Binary safe string comparison
- * strcasecmp — Binary safe case-insensitive string comparison
- * strnatcmp — String comparisons using a "natural order" algorithm
- * strnatcasecmp — Case insensitive string comparisons using a "natural order" algorithm
+ * sort by field or custom sort index after using a prepare filter on pages
+ * builds the sort index using a callback function
  * 
- * @param  [type] $pages   [description]
- * @param  [type] $field   [description]
- * @param  [type] $prepare [description]
- * @return [type]          [description]
+ * If data massaging needs to be done for a sort key you should use a prepare callback 
+ * This operates on the entire array and is therefore more efficient than doing
+ * heavy conversions or comparisons inside a comparison callback
+ * eg. 
+ *   function prepare_pubDate($page,$key){
+ *       return strtotime($key);
+ *   }
+ *   $pagesSorted = sortCustomIndexCallback($pagesArray,'pubDate','prepare_pubDate');
+ * @param  array $pages   input multi array
+ * @param  str $key       array key to sort by
+ * @param  str $prepare   callback function for each subarray
+ * @return array          returns array sorted by key or prepared sort index
  */
 function sortCustomIndexCallback($array,$key=null,$prepare=null){
 	$sortvalue = array();
@@ -111,50 +90,67 @@ function sortCustomIndexCallback($array,$key=null,$prepare=null){
 			else $sortvalue[$sortkey] = $prepare($page);
 		}
 	}
-	_debugLog($sortvalue);
-
+	// _debugLog($sortvalue);
 	return sortCustomIndex($array,$key,$sortvalue);
 }
 
 /**
- * sort keyed multidimentional array 
+ * sort keyed multidimensional array 
  * by sub key, or a keyed custom sort index
- * array['key'] = array[$key]
+ * 
+ * array['id'] = array[$key]
  * @since  3.4
  * @param  array $array     multidimensional array to sort
- * @param  str $key         (optional) sub array key to sort by
- * @param  array  $sortindex(optional) key value array for sorting $array
+ * @param  str   $key       (optional) sub array key to sort by
+ * @param  array $sortindex (optional) key value array for sorting $array
+ * @param  str   $compare   (optional) comparison function
  * @return array            $array sorted by sortindex or key
  */
-function sortCustomIndex($array,$key=null,$sortindex = array()){	
+function sortCustomIndex($array, $key=null, $sortindex = array(), $compare = 'strnatcmp'){	
 	
 	if(!$sortindex && isset($key)){
 		$sortindex = array_column($array,$key,'url');
-		uasort($sortindex, "strnatcmp");
-	} else uasort($sortindex, "strnatcmp"); // sort values maintain index, use custom cmp
+		uasort($sortindex, $compare);
+	} else uasort($sortindex, $compare); // sort values maintain index, use custom cmp
 
-	_debugLog($sortindex);
-	return arrayMergeSort($sortindex,$array);
-	// return inPlaceKeySort($pages,$sortvalue);
+	// _debugLog($sortindex);
+	return arrayMergeSort($array,$sortindex);
+	// return inPlaceKeySort($array,$sortindex);
 }
 
 /**
  * sort an array via another pre-sorted array
  * uses array_merge to sort array by another sorted keyed array or array of keys
  * @since  3.4
- * @param  array  $sort  keyed array to sort from
  * @param  array  $array keyed array to sort
+ * @param  array  $sort  keyed array to sort from
  * @param  boolean $keyed true indicates sort array is already keyed, else array of keys
  * @return array         sorted array
  */
-function arrayMergeSort($sort,$array,$keyed = true){
+function arrayMergeSort($array,$sort,$keyed = true){
 	if(!$keyed) $sort = array_flip($sort);
 	return array_merge($sort, $array);
 }
 
-// use global and uksort test
-function inPlaceKeySort($array,$sort){
+
+/**
+ * tests below
+ * need converting
+ */
+
+
+/**
+ * sort array in place using sort array
+ * uses tmp global variable and custom function to sort array 
+ * by another sorted keyed array or array of keys
+ * @param  array  $array keyed array to sort
+ * @param  array  $sort  keyed array to sort from
+ * @param  boolean $keyed true indicates sort array is already keyed, else array of keys
+ * @return array         sorted array
+ */
+function inPlaceKeySort($array,$sort,$keyed = true){
 	GLOBAL $sortvalue;
+	if(!$keyed) $sort = array_flip($sort);
 	$sortvalue = $sort;
 	function custom_sort($a,$b) {
 		GLOBAL $sortvalue;
@@ -162,8 +158,30 @@ function inPlaceKeySort($array,$sort){
 	}
 
 	if($sort) uksort($array, 'custom_sort');
-	return $array;	
+	unset($sortvalue);
+	return $array;
 }
+
+
+/**
+ * sort multidimensional array by subarray
+ * @param  str $pages array
+ * @param  str $key   keyname to sort by
+ * @return array      sorted array
+ */
+function sortKey($array,$key){
+	// return subval_sort($pagesArray,$key);
+	GLOBAL $sortkey;
+	$sortkey = $key;
+    function custom_sort($a,$b) {
+    	GLOBAL $sortkey;
+       	return $a[$sortkey]>$b[$sortkey];
+    }
+    uasort($array, "custom_sort");
+    unset($sortkey);
+    return $array;
+}
+
 
 // path = get all parents not just first
 // function sortPathTitle($pages)
@@ -199,7 +217,7 @@ function sortParentTitleMulti($pages){
 }
 
 /**
- * sorts by "parent-slug / page-slug"
+ * sorts by "parent_slug / page_slug"
  * @param  array $pages pages array
  * @return array        sorted
  */
@@ -219,13 +237,14 @@ function sortPageFunc($pages,$func=null){
     return $pages;
 }
 
-
-// sandbox
-function sortPageDateCmp($a,$b){
-	// sort by date field ( using gs format )
-	strtotime($a) - strtotime($b);
-}
-
+/**
+ * reindex PAGES
+ * will reset keys from url,
+ * if you have a pagesarray that lost its keys after
+ * using a function that does not maintain key indexes
+ * @param  array  $pages PAGES, else use pagesArray
+ * @return array  	     PAGES rekeyed
+ */
 function reindexPages($pages = array()){
 	if(!$pages){
 		GLOBAL $pagesArray;
@@ -234,6 +253,7 @@ function reindexPages($pages = array()){
 	reindexArray($pages,'url');
 }
 
+// use array_column with null key to rekey an array
 function reindexArray($array,$key){
 	array_column($array,null,$key);
 }
