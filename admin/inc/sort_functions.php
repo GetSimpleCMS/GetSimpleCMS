@@ -113,7 +113,7 @@ function sortCustomIndex($array, $key=null, $sortindex = array(), $compare = 'st
 		uasort($sortindex, $compare);
 	} else uasort($sortindex, $compare); // sort values maintain index, use custom cmp
 
-	// _debugLog($sortindex);
+	// debugLog($sortindex);
 	return arrayMergeSort($array,$sortindex);
 	// return inPlaceKeySort($array,$sortindex);
 }
@@ -201,6 +201,7 @@ function sortParentTitle($pages){
 	return 	subval_sort($pages,'path');
 }
 
+// sort by "parent-title / page-title"
 // test using multi sort 
 function sortParentTitleMulti($pages){
 	$sort = array();
@@ -210,7 +211,7 @@ function sortParentTitleMulti($pages){
     		$sort['parenttitle'][$slug] = $page['parent'] ? $pages[$page['parent']]["title"] : '';
     	} else $sort['parenttitle'][$slug] = '';
     }
-    _debugLog($sort);
+    // debugLog($sort);
 	# sort by event_type desc and then title asc
 	array_multisort($sort['parenttitle'], SORT_ASC, $sort['title'], SORT_ASC,$pages);
 	return $pages;

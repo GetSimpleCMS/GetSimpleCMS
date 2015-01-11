@@ -488,6 +488,12 @@ function getPagePath($pageId){
 	return $pageId;
 }
 
+function getPagePathField($pageId,$field){
+	$parents = getParentFields($pageId,$field);
+	if($parents) return implode('/',array_reverse($parents)) . '/' . getPageFieldValue($pageId,$field);
+	return $pageId;
+}
+
 /**
  * get PAGE parent slug
  * alias for $pagesArray['slug']['parent']
@@ -518,6 +524,9 @@ function getParentPage($pageId){
  * @return array       array of parents slugs
  */
 function getParents($pageId){
+
+	return getParentFields($pageId);
+
 	$pageparents = getPagesFields('parent');
 	$parent      = getParent($pageId);
 	$parents     = array();
@@ -531,6 +540,34 @@ function getParents($pageId){
 		if(!empty($parent))	$parents[] = $parent;
 	}
 	return $parents;
+}
+
+
+function getPageFieldValue($pageId,$field){
+	return returnPageField($pageId,$field);
+}
+
+
+/**
+ * get PAGE parents slugs
+ * returns an array of all this pages parents slugs
+ * @param  str $pageId slug of child
+ * @return array       array of parents slugs
+ */
+function getParentFields($pageId,$key = 'parent'){
+	$pageparents  = getPagesFields('parent');
+	$parentValues = getPagesFields($key);
+	$parent       = getParent($pageId);
+	$values       = array();
+
+	if(empty($parent)) return array();
+
+	while(isset($pageparents[$parent]) && isset($parentValues[$parent])){
+		$value    = (string)$parentValues[$parent];
+		$parent   = (string)$pageparents[$parent];
+		if(!empty($value))	$values[] = $value;
+	}
+	return $values;
 }
 
 /**

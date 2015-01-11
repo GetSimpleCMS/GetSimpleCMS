@@ -45,31 +45,39 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 init_pageCache(true);
 getPagesXmlValues(true);
 
-$count = 0;
-$pagesArray_tmp = array();
+/**
+ * sorting prepare function tests
+ * @todo
+ */
 
-foreach ($pagesArray as $key =>$page) {
-	if ($page['parent'] != '') { 
-		$parentTitle = returnPageField($page['parent'], "title");
-		$sort = $parentTitle .' '. $page['title'];		
-		$sort = $parentTitle .' '. $page['title'];
-	} else {
-		$sort = $page['title'];
-	}
-	$page = array_merge($page, array('sort' => $sort));
-	$pagesArray_tmp[$key] = $page;
-	$count++;
-}
-// $pagesArray = $pagesArray_tmp;
-$pagesSorted = subval_sort($pagesArray_tmp,'sort');
-
-debugLog($pagesArray);
-
+/**
+ * prepare pubDate strtotime it
+ */
 function prepare_pubDate($page,$key){
 	return strtotime($key);
 }
 
+/**
+ * sort by menuOrder
+ * menu order=0 or ""  or menuStatus=Y are lowest priority
+ * (!pages are saved with 0 as default for none, and are not in the menu manager)
+ */
+function prepare_menuOrder($page,$key){
+	if((int)$key == 0 || $page['menuStatus'] !== 'Y') return 99999;
+	return (int)$key;
+}
+
+/**
+ * sort by menuOrder -> parent titles/slug title -> DESC
+ */
+function prepare_pagePathTitles($page,$key){
+	$menuOrder = prepare_menuOrder($page,$key);
+	return $menuOrder .= ' ' .getPagePathField($page['url'],'title');
+}
+
 // $pagesSorted = sortCustomIndexCallback($pagesArray,'pubDate','prepare_pubDate');
+$pagesSorted = sortCustomIndexCallback($pagesArray,'menuOrder','prepare_pagePathTitles');
+$count = count($pagesSorted);
 
 $table = get_pages_menu('','',0);
 
