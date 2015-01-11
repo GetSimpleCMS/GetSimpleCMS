@@ -259,6 +259,7 @@ function notify($msg, $type) {
 
 $.fn.notifyExpire = function($delay){
 	var self = $(this);
+	if($(this).hasClass('notify_error')) return $(this); // do not expire errors
 	$delay = $delay || GS.notifyExpireDelay;	
 	// Debugger.log('expiring ' + $delay);
 	setTimeout(

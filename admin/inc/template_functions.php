@@ -981,7 +981,7 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	$pagetitle = cl($pagetitle);
 
 	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. $pagetitle .'</a>';
-	$menu .= '<div class="showstatus toggle" >'. $pageindex . $pagemenustatus . $pageprivate .$pagedraft . '</div></td>'; // keywords used for filtering
+	$menu .= '<div class="showstatus toggle" >'. $pageindex .  $pagedraft . $pageprivate . $pagemenustatus .'</div></td>'; // keywords used for filtering
 	$menu .= '<td style="width:80px;text-align:right;" ><span>'.$pagepubdate.'</span></td>';
 	$menu .= '<td class="secondarylink" >';
 	$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($pagetitle) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
