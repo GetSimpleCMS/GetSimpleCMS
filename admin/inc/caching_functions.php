@@ -10,8 +10,8 @@
 
 $pagesArray = array();
 
-add_action('index-header','getPagesXmlValues',array(false));       // make $pagesArray available to the front 
-add_action('header', 'getPagesXmlValues',array(get_filename_id() == 'pages'));             // make $pagesArray available to the back
+// add_action('index-header','getPagesXmlValues',array(false));       // make $pagesArray available to the front 
+// add_action('header', 'getPagesXmlValues',array(get_filename_id() == 'pages'));             // make $pagesArray available to the back
 add_action('page-delete', 'create_pagesxml',array(true));          // Create pages.array if page deleted
 add_action('page-restore', 'create_pagesxml',array(true));         // Create pages.array if page undo
 add_action('page-clone', 'create_pagesxml',array(true));           // Create pages.array if page undo
@@ -186,20 +186,23 @@ function getPagesXmlValues($refresh=false){
 function init_pageCache($refresh = false) {
 	GLOBAL $pagesArray, $pageCacheXml;
 	
+	debugLog("page cache: initialized");
+
+	if(!$refresh){
+		$pageCacheXml = load_pageCacheXml();
+		$pagesArray   = pageCacheXMLtoArray($pageCacheXml);
+		if($pagesArray) return; // return if success, else continue to regen
+	}
+
+	// @todo check page time diff before doing this check
+	// we can make always refresh by adding an OR here, and always check 
+	$refresh  = !$pagesArray || ($refresh && pageCacheDiffers());
+
+	// if refreshing or is still empty re-generate/save
 	if($refresh){
-		if(!$pagesArray){
-			// should always be empty, but in case someone calls this more than once
-			$pageCacheXml = load_pageCacheXml();
-			$pagesArray   = pageCacheXMLtoArray($pageCacheXml);		
-		}
-		// @todo check page time diff before doing this check
-		$refresh  = pageCacheDiffers();
-	}	
-	// if refreshing or init generate/save
-	if($refresh || !$pagesArray){
 		$pageCacheXml = generate_pageCacheXml();
 		$status       = save_pageCacheXml($pageCacheXml);
-		$pagesArray = pageCacheXMLtoArray($pageCacheXml);
+		$pagesArray   = pageCacheXMLtoArray($pageCacheXml);
 	}
 
 	// debugLog($pagesArray);
@@ -244,7 +247,7 @@ function pageCacheCountDiffers(){
 	GLOBAL $pagesArray;
 	$path = GSDATAPAGESPATH;
 	$filenames = getXmlFiles($path);
-	debugLog($filenames);
+	// debugLog($filenames);
 	return count($pagesArray)!=count($filenames);
 }
 
@@ -271,6 +274,7 @@ function pageCacheDiffers(){
 	$old = md5(implode(',',$filenames_old));
 
 	// debugLog($old . " " . $new);
+	debugLog("page cache: update needed? " . ($new !== $old ? 'true' : 'false') );
 	return $new !== $old;
 }
 
@@ -295,6 +299,7 @@ function save_pageCacheXml($xml){
   	$xml = exec_filter('pagecache',$xml); // @filter pagecache (obj) filter the page cache xml obj before save
 	if(!empty($xml)) XMLsave($xml,$file);
   	exec_action('pagecache-aftersave');	// @hook pagecache-aftersave pagecache data file was saved
+	debugLog("page cache: saved");
   	return;
 }
 
@@ -303,6 +308,8 @@ function save_pageCacheXml($xml){
  * @return simpleXmlobj pagecache xml
  */
 function generate_pageCacheXml(){
+	debugLog('page cache: re-generated from disk');
+
 	// read in each pages xml file
 	$path = GSDATAPAGESPATH;
 	$filenames = getXmlFiles($path);
@@ -326,23 +333,8 @@ function generate_pageCacheXml(){
 					$note->addCData($itemdata);
 				}
 			}
-
-			// cyclical, depends on pagecache to generate permalink
-			// @todo this is a test
-			GLOBAL $pagesArray;
-			if($pagesArray){
-				// add route
-				$routesNode = $cacheItems->addChild('routes');
-				$routeNode = $routesNode->addChild('route');
-				
-				// can lead to infinite loops
-				$permaroute = no_tsl(generate_permalink($id));
-				
-				$pathNode = $routeNode->addChild('path');
-				$pathNode->addCData($permaroute);
-				$keyNode = $routeNode->addChild('key');
-				$keyNode->addCData(md5($permaroute));
-			}
+			
+			pageCacheAddRoutes($id,$cacheItems);
 
 			// removed from xml , redundant
 			# $note = $pages->addChild('slug');
@@ -351,9 +343,26 @@ function generate_pageCacheXml(){
 			# $note->addCData($file);
 		}
 	}
-
 	return $cacheXml;
 }
+
+function pageCacheAddRoutes($id,&$cacheItems){
+	GLOBAL $pagesArray;
+	if(!$pagesArray) return false;
+
+	// add route
+	$routesNode = $cacheItems->addChild('routes');
+	$routeNode = $routesNode->addChild('route');
+
+	// can lead to infinite loops
+	$permaroute = no_tsl(generate_permalink($id));
+
+	$pathNode = $routeNode->addChild('path');
+	$pathNode->addCData($permaroute);
+	$keyNode = $routeNode->addChild('key');
+	$keyNode->addCData(md5($permaroute));
+}
+
 
 /**
  * creates pagecache array from $pagesarray xml

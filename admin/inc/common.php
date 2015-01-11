@@ -494,8 +494,10 @@ if(isset($load['plugin']) && $load['plugin']){
 	include_once(GSADMININCPATH.'plugin_functions.php');
 
 	// include core plugin for page caching, requires plugin functions for hooks
+	// @todo must stay here for now, since it requires plugin_functions
 	include_once('caching_functions.php');
-
+	init_pageCache();
+	
 	// Include plugins files in global scope
 	loadPluginData();
 	if(function_exists('plugin_preload_callout')) plugin_preload_callout();	// @callout plugin_preload_callout callout before loading plugin files
