@@ -170,7 +170,7 @@
 		if(isAuthPage() && !$force) return; 
 		GLOBAL $dbn;
 		if($dbn) $persist = true;
-		debugLog('notify: ' . $type ." - ".$msg);
+		debugLog('notify: ' . $type ." - ".cl($msg));
 		echo '<div class="updated notify '. ($type == '' ? '' : 'notify_'.$type.' ') . (!$persist ? 'remove' : 'persist') . '"><p>'.$msg.'</p></div>';
 	}
 
