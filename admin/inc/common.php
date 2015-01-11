@@ -66,6 +66,7 @@ $GS_constants = array(
 	'GSRESETFILEPREFIX'     => '',                            // (str) password reset file naming prefix after extension
 	'GSDEFAULTPERMALINK'    => '%path%/%slug%/',              // (str) default permalink structure to use if prettyurls is enabled, and custom not exist 
 	'GSTOKENDELIM'          => '%',                           // (str) delimiter for token boundaries
+	'GSLOGINQSALLOWED'      => 'id,draft,nodraft',            // (str) csv query string keys to allow during login redirects
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
@@ -134,7 +135,7 @@ $GS_definitions = array(
 	'GSDEBUG'              => false,                          // (bool) output debug mode console
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls to debuglog
 	'GSDEBUGREDIRECTS'     => false,                          // (bool) if debug mode enabled, prevent redirects for debugging
-	'GSDEBUGFILEIO'        => false,                          // (bool) debug filio operations
+	'GSDEBUGFILEIO'        => true,                          // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
 	# ---------------------------------------------------------------------------------------------------------------------------------------------------
  	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG

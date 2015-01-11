@@ -81,7 +81,7 @@ function login_cookie_check() {
 	if(cookie_check()) {
 		create_cookie();
 	} else {
-		$qstring      = filter_queryString(array('id'));
+		$qstring      = filter_queryString(explode(getDef('GSLOGINQSALLOWED')));
 		$redirect_url = $cookie_login.'?redirect='.myself(false).'?'.$qstring;
 		redirect($redirect_url);
 	}
