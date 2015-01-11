@@ -75,6 +75,7 @@ $.fn.htmlEditorFromTextarea = function(config){
         // ctr+s save handler
         editor.on('instanceReady', function (ev) {
             ev.editor.setKeystroke(CKEDITOR.CTRL + 83 /*S*/, 'customSave' );
+            ev.editor.setKeystroke(CKEDITOR.SHIFT + CKEDITOR.CTRL + 83 /*S*/, 'customAltSave' );
             if(ev.editor.config.gsautoheight === true) cke_autoheight(ev.editor);
             if(ev.editor.config.gscompact === true) cke_editorfocus(ev.editor);
 
@@ -105,6 +106,13 @@ $.fn.htmlEditorFromTextarea = function(config){
             exec : function( editor ){
                 // Debugger.log('customsave');
                 dosave(); // gs global save function
+            }
+        });
+
+        editor.addCommand( 'customAltSave',{
+            exec : function( editor ){
+                // Debugger.log('customsave');
+                dosavealt(); // gs global save function
             }
         });
 

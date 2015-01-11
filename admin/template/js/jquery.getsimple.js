@@ -1829,6 +1829,12 @@ jQuery(document).ready(function () {
 		var ctrlpress = navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey;
 		// detect CTRL+S do save on all pages
 		if(ctrlpress && (e.which == 83)) {
+			if(e.shiftKey){
+				// bypass ajax saving
+				dosavealt();
+				Debugger.log('Ctrl+Shift+S pressed');
+				return;
+			}
 			Debugger.log('Ctrl+S pressed');
 			dosave();
 			e.preventDefault();
@@ -1898,6 +1904,12 @@ function dosave(){
 	// Debugger.log($("#submit_line input.submit"));
 	$("#submit_line input.submit").trigger('click'); // should do form.submit handlers as well
 }
+
+function dosavealt(){
+	$('body').removeClass('ajaxsave');
+	dosave();
+}
+
 
 function supports_html5_storage() {
 	// return Modernizr.localstorage;

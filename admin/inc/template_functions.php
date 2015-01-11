@@ -1101,6 +1101,7 @@ function getPageDepths($mypages=array()){
 
 					// this will cause issues if used for something else that tried to use a required field, since this will be missing all of them
 					// @todo add a status flag instead of null ['url'] ?
+					// @todo add full page template here , abstract page schema somewhere
 					$newpages[$pageId]                = array(); 
 					// $newpages[$pageId]['url']         = $ancestor;
 					$newpages[$pageId]['order']       = $iter;
