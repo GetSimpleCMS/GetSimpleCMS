@@ -836,9 +836,9 @@ function suggest_site_path($parts=false, $protocolRelative = false) {
  */
 function myself($echo=true) {
 	if ($echo) {
-		echo htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES);
+		echo htmlentities(basename($_SERVER['PHP_SELF']), ENT_QUOTES);
 	} else {
-		return htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES);
+		return htmlentities(basename($_SERVER['PHP_SELF']), ENT_QUOTES);
 	}
 }
 
