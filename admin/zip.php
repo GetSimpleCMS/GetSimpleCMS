@@ -35,7 +35,10 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		$archiv  = new ZipArchive();
 		$archiv->open($saved_zip_file, ZipArchive::CREATE);
 		$dirIter = new RecursiveDirectoryIterator($sourcePath);
-		$iter    = new RecursiveIteratorIterator($dirIter);
+		$iter = new RecursiveIteratorIterator($dirIter,
+			         	RecursiveIteratorIterator::LEAVES_ONLY,
+			        	RecursiveIteratorIterator::CATCH_GET_CHILD
+			    	);
 		
 		foreach($iter as $element) {
 		    /* @var $element SplFileInfo */

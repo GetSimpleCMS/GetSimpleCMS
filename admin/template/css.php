@@ -558,7 +558,7 @@ h5:hover img {
 }
 
 #sidebar.fixed{
-	-transition: top .02s ease-out;
+	-transition: top .2s ease-out;
 		-webkit-transition: top .2s ease-in-out;
 		-moz-transition: top .2s ease-in-out;
 		-o-transition: top .2s ease-in-out;

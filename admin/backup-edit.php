@@ -24,6 +24,8 @@ if ($_GET['id'] != '') {
 	if($draft) $path = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/drafts/
 	else $path = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
 
+	if(!filepath_is_safe($path.$file,$path)) die();
+
 	$data       = getXML($path . $file);
 	$title      = htmldecode($data->title);
 	$pubDate    = $data->pubDate;
@@ -72,6 +74,7 @@ elseif ($p == 'restore') {
 
 	if (isset($_GET['new'])) {
 		$newid = $_GET['new'];
+        // @todo traversal protect $newid
 		// restore page by old slug id
 		changeChildParents($newid, $id); // update parents and children
 		$success = restore_page($id);    // restore old slug file

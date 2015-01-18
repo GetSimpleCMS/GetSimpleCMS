@@ -293,12 +293,17 @@ function getUploadIcon($type){
 			echo '<td>'.getUploadIcon('.').'</span><a href="'.$folderhref.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
 			echo '<td class="file_size right"><span>'.$directory_size.'</span></td>';
 
-			// get the file permissions.
-			if ($showperms) {
-				$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
-				$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
-				echo '<td class="file_perms right"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
+		  // get the file permissions.
+		if ($showperms) {
+			$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
+			if($isUnixHost){
+				$fileOwner = function_exists('posix_getpwuid') ? posix_getpwuid(fileowner($path.$upload['name'])) : '';
+				$fileOwnerName = isset($fileOwner['name']) ? $fileOwner['name'] : '';
+			} else {
+				$fileOwnerName = getenv('USERNAME');
 			}
+			echo '<td style="width:70px;text-align:right;"><span>'.$fileOwnerName.'/'.$filePerms.'</span></td>';
+		}
 		
 			echo '<td class="file_date right"><span class="'.(dateIsToday($upload['date']) ? 'datetoday' : '').'">'. output_date($upload['date']) .'</span></td>';
 			echo '<td class="delete" >'.$directory_delete.'</td>';
@@ -369,11 +374,14 @@ function getUploadIcon($type){
 			// file perms column
 			if ($showperms) {
 				$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
-				$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
-				echo '<td class="file_perms right"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
+				if($isUnixHost){
+					$fileOwner = function_exists('posix_getpwuid') ? posix_getpwuid(fileowner($path.$upload['name'])) : '';
+					$fileOwnerName = isset($fileOwner['name']) ? $fileOwner['name'] : '';
+				} else {
+					$fileOwnerName = getenv('USERNAME');
+				}
+				echo '<td style="width:70px;text-align:right;"><span>'.$fileOwnerName.'/'.$filePerms.'</span></td>';
 			}
-			// date column
-			echo '<td class="file_date right"><span class="'.(dateIsToday($upload['date']) ? 'datetoday' : '').'"">'. output_date($upload['date']) .'</span></td>';
 			// delete
 			echo '<td class="delete">';
 			if($allowdelete) echo '<a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. rawurlencode($upload['name']) . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a>';

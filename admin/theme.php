@@ -69,7 +69,7 @@ get_template('header');
 				<?php exec_action(get_filename_id().'-edit-nav'); ?>
 			</div>		
 			<?php exec_action(get_filename_id().'-body'); ?>			
-			<form action="" method="post" accept-charset="utf-8" >
+		<form action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 				<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("activate"); ?>" />			
 			<?php	
 				$theme_path = str_replace(GSROOTPATH,'',GSTHEMESPATH);

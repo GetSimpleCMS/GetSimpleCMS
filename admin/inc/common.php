@@ -182,7 +182,6 @@ if(!GSBASE){
 }
 else {
 	$base = GSBASE; // LEGACY frontend flag DEPRECATED
-
 	// set loaders, if you want to override these do it your main common wrapper or index.php
 	if(!isset($load['plugin']))   $load['plugin']   = true;   // load plugin system
 	if(!isset($load['template'])) $load['template'] = true; // load template system
@@ -255,6 +254,11 @@ require_once('sort_functions.php');
 require_once('logging.class.php');
 
 include_once(GSADMININCPATH.'configuration.php');
+
+if(getDef('GSNOFRAME',true) !== false){
+	// Adds X-Frame-Options to HTTP header, so that page can only be shown in an iframe of the same site.
+	header('X-Frame-Options: DENY'); // FF 3.6.9+ Chrome 4.1+ IE 8+ Safari 4+ Opera 10.5+	
+}
 
 /**
  * Bad stuff protection

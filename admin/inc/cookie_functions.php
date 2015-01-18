@@ -9,6 +9,34 @@
 
 require_once(GSADMININCPATH.'configuration.php');
 
+
+/**
+ * set a gs cookie
+ * @since  3.3.5
+ * @param  str $id    cookie id
+ * @param  str $value value of cookie
+ * @return bool       true if headers not sent
+ */
+function gs_setcookie($id,$value){
+	GLOBAL $cookie_time, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly;
+	
+	$expire = time() + $cookie_time;
+	// debugLog('set cookie: '.implode(',',array($id, $value, $cookie_time, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly)));
+  	return setcookie($id, $value, $expire, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly); 
+}
+
+/**
+ * Unset a gs cookie
+ * @since  3.3.5
+ * @param  str $id id of cookie
+ * @return bool       true if headers not sent
+ */
+function gs_unsetcookie($id){
+	GLOBAL $cookie_time, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly;
+	// debugLog('unset cookie: '.implode(',',array($id, false, $cookie_time, $cookie_path, $cookie_domain, $cookie_secure, $cookie_httponly)));
+	return setcookie($id,false,1,$cookie_path,$cookie_domain,$cookie_secure, $cookie_httponly);
+}
+
 /**
  * Create Cookie
  *
@@ -22,10 +50,11 @@ require_once(GSADMININCPATH.'configuration.php');
  */
 function create_cookie() {
 	global $USR,$SALT,$cookie_time,$cookie_name;
-	$saltUSR    = sha1($USR.$SALT);
-	$saltCOOKIE = sha1($cookie_name.$SALT);
-	setcookie($saltCOOKIE, $saltUSR, time() + $cookie_time,'/'); 
-	setcookie('GS_ADMIN_USERNAME', $USR, time() + $cookie_time,'/');   
+  $saltUSR    = sha1($USR.$SALT);
+  $saltCOOKIE = sha1($cookie_name.$SALT);
+
+  gs_setcookie('GS_ADMIN_USERNAME', $USR);   
+  gs_setcookie($saltCOOKIE, $saltUSR);
 }
 
 /**
@@ -37,12 +66,12 @@ function create_cookie() {
  * @params string $identifier Name of the cookie to kill
  */
 function kill_cookie($identifier) {
-	global $SALT;
+  global $SALT,$cookie_time;
 	$saltCOOKIE = sha1($identifier.$SALT);
-		setcookie('GS_ADMIN_USERNAME', 'null', time() - 3600,'/');  
+ 	gs_unsetcookie('GS_ADMIN_USERNAME');  
 	if (isset($_COOKIE[$saltCOOKIE])) {
-		$_COOKIE[$saltCOOKIE] = false;
-		setcookie($saltCOOKIE, false, time() - 3600,'/');
+		$_COOKIE[$saltCOOKIE] = FALSE;
+		gs_unsetcookie($saltCOOKIE);
 	}
 }
 

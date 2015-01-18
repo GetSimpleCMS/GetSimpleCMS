@@ -111,9 +111,9 @@ define('GSSUPPRESSERRORS',true);
 
 # Disable logins , set false, default is true
 # define('GSALLOWLOGIN',false);
+# GS prevents backend pages from being loaded in a frame
+# by sending an x-frame header by default to prevent clickjacking attempts
+# setting GSNOFRAME to false will disable this
+# define('GSNOFRAME',false);
 
-define('GSWIDTH','1024px'); // css value px,%  0 or '' will be treated as 100%
-define('GSWIDTHWIDE','1336px');
-define('GSWIDEPAGES','components,theme-edit');
-
-/* ?> */
+?>

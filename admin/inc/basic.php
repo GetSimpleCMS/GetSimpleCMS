@@ -1509,9 +1509,9 @@ function suggest_site_path($parts=false, $protocolRelative = false) {
  */
 function myself($echo=true) {
 	if ($echo) {
-		echo htmlentities(getScriptFile(), ENT_QUOTES);
+		echo htmlentities(basename(getScriptFile()), ENT_QUOTES);
 	} else {
-		return htmlentities(getScriptFile(), ENT_QUOTES);
+		return htmlentities(basename(getScriptFile()), ENT_QUOTES);
 	}
 }
 
