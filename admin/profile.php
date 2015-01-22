@@ -238,10 +238,10 @@ if (count($lang_array) != 0) {
 $pagetitle = i18n_r('USER_PROFILE');
 get_template('header');
 
-$userheading = empty($userid) ? "<span> ". i18n_r('NEW_USER') ."</span>" : "<span> $userid </span>";
+$userheading = empty($userid) ? "<span>/ ". i18n_r('NEW_USER') ."</span>" : "<span>/ $userid </span>";
 
-if($adding)  $userheading = '<span>adding</span> ' . $userheading;
-if($editing) $userheading = '<span>editing</span> ' . $userheading;
+// if($adding)  $userheading = '<span>adding</span> ' . $userheading;
+// if($editing) $userheading = '<span>editing</span> ' . $userheading;
 
 ?>
 
