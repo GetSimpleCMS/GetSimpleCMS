@@ -157,7 +157,6 @@ $i18n = array(
 "EDIT_THEME"              =>	"Theme Editor",
 "EDITING_FILE"            =>	"Editing File",
 "BTN_SAVECHANGES"         =>	"Save Changes",
-"EDIT"                    =>	"Edit",
 "THEME_ROOT"              =>    "Configuration Files",
 "UNSAVED_PROMPT"          =>    "This page has unsaved changes, continue anyway ?",
  
@@ -206,7 +205,6 @@ $i18n = array(
 */
 "COMPONENTS"              =>	"Components",
 "DELETE_COMPONENT"        =>	"Delete Component",
-"EDIT"                    =>	"Edit",
 "ADD_COMPONENT"           =>	"<em>A</em>dd Component", // 'a' is the accesskey identifier
 "SAVE_COMPONENTS"         =>	"Save Components",
 "ACTIVE"                  =>	"Active",
