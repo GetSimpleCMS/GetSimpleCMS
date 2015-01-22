@@ -16,127 +16,157 @@ login_cookie_check();
 
 exec_action('load-profile');
 
-$allowedit  = true; // tmp flag for edit permission
-$allowadd   = false; // tmp flag for create permission
-
-$showpermfail = false; // true, throw errors on failed permission attempts, else silently ignores your requests
-$permerror = '';      // init
-
 // @todo these flags will probably be implemented as functions that can be manipulated and called out
 // they will be context aware of the user being edited etc, to handle group heiracrhy and protected accounts
+$allowedit    = true; // tmp flag for edit permission
+$allowadd     = true; // tmp flag for create permission
 
+$showpermfail = true; // true, throw errors on failed permission attempts, else silently ignores your requests
+
+// init
 $adding     = false; // flag for doing user creation
+$editing    = false; // flag for doing user edit
 $userid     = $USR;
 $lang_array = getFiles(GSLANGPATH);
 
 $pwd1 = $error = $success = $pwd2 = $editorchck = null;
+$permerror = '';
 
-// if not submitting setup userid based on edit or add of custom userid
-if(!isset($_POST['submitted'])){
-	if(isset($_GET['userid'])){
-		// Editing an existing user
-		$userid = _id($_GET['userid']); // set user id first so allowedit mechanism can check $userid directly
-		if($userid !== $USR && !$allowedit) {
-			$userid = $USR; // revert to $USR if not allowed
-			// NOT ALLOWED TO EDIT
-			$permerror = i18n_r('ER_REQ_PROC_FAIL');
-		}
-	}
-	else if(isset($_GET['add'])){
-		// adding a new user
-		if(!$allowadd) {
-			$userid = $USR;
-			// NOT ALLOWED TO ADD
-			$permerror = i18n_r('ER_REQ_PROC_FAIL');
-		}
-		else {
-			$adding = true;
-			$userid = '';
-		}
+if(isset($_REQUEST['add']))     $adding  = true;
+else if(isset($_GET['userid'])) $editing = true;
+
+if($adding){
+	if(!$allowadd){
+		$userid    = $USR;
+		$permerror = i18n_r('ER_REQ_PROC_FAIL');
+		$adding    = false;
+	} 
+	else{
+		$userid = '';
 	}
 }
+
+if($editing){
+	$userid = _id($_GET['userid']);
+	
+	if($userid !== $USR){
+
+		if(file_exists(GSUSERSPATH. _id($userid).'.xml')){
+			if(!$allowedit){
+				$permerror = i18n_r('ER_REQ_PROC_FAIL');
+				$editing = false;
+			}
+		} 
+		else {
+			$permerror = i18n_r('INVALID_USER');
+			$editing = false;
+		}
+
+		if(!$editing) $userid = $USR; // FAIL, set userid back to USR
+	}
+}
+
 
 // throw errors
 if(!empty($permerror) && $showpermfail) $error = $permerror;
 
-// check if editing user is valid
+// load user data if editing
 if(!empty($userid)){
 	$file = _id($userid) .'.xml';
-	// file tranversal protection and checks if file exists at the same time
+	// file traversal protection and checks if file exists at the same time
 	if(!filepath_is_safe(GSUSERSPATH . $file,GSUSERSPATH)) die(i18n_r('ER_REQ_PROC_FAIL'));
-
+	
+	if($editing && !file_exists(GSUSERSPATH.$file)) $error = i18n_r('INVALID_USER');
 	// else populate data for user
-	$data  = getXML(GSUSERSPATH . $file);
-	$password = $data->PWD;
+	$data     = getXML(GSUSERSPATH . $file);
+	$password = $data->PWD; // set password, since we dont need to resave it all the time
+}
+else{
+	// empty user defaults
+	$data = new stdClass();
+	$data->HTMLEDITOR = true;
+	$data->LANG     = $SITELANG;
+	$data->EMAIL    = '';
+	$data->TIMEZONE = $SITETIMEZONE;
+	$data->NAME     = '';
 }
 
 # if the undo command was invoked
 if (isset($_GET['undo'])) {
 	if($_GET['userid'] !== $userid) die(i18n_r('ER_REQ_PROC_FAIL')); // if not allowedtoedit then userid is $USR now, so stop undo actions
-	check_for_csrf("undo");	
-	# perform undo
-	$success = restore_datafile(GSUSERSPATH.$file);
-	# redirect back to yourself to show the new restored data
+	check_for_csrf("undo");
+	// perform undo
+	
+	// undo add new user
+	if(isset($_GET['new'])){
+		delete_file(GSUSERSPATH.$file);
+		redirect('profile.php?success='.urlencode(strip_tags(sprintf(i18n_r('ER_HASBEEN_DEL'),$userid))));
+	}
+
+	// undo edit user
+	restore_datafile(GSUSERSPATH.$file);
 	redirect('profile.php?upd=profile-restored&userid='.$userid);
 }
 
 # was the form submitted?
-if(isset($_POST['submitted'])) {
+if(isset($_POST['submitted']) && isset($_POST['user'])){
+	check_for_csrf("save_profile");
 
-	check_for_csrf("save_profile");	
-		   
-	// if adding a new user
-	if(isset($_POST['add']) && $_POST['add'] == 1 && $allowadd && isset($_POST['user'])) {
-		$adding = true;
-		$userid = strtolower($_POST['user']);
-		$file   = _id($userid) .'.xml';
-		if(path_is_safe(GSUSERSPATH . $file,GSUSERSPATH)) die(i18n('INVALID_USER'));
-		if(!path_is_safe(dirname(GSUSERSPATH . $file),GSUSERSPATH,true)) die(i18n('INVALID_USER'));
-	}
-	else if(isset($_POST['user']) && $allowedit){
-		// editing an existing user other than self
-		// @todo use custom nonce or hash checking to make sure username was not changed
-		$userid = strtolower($_POST['user']);
-		$file   = _id($userid) .'.xml';
-		if(!path_is_safe(dirname(GSUSERSPATH . $file),GSUSERSPATH,true)) die(i18n('INVALID_USER'));
-	}
- 	if(isset($_POST['name']))				$name       = var_in($_POST['name']);
- 	if(isset($_POST['email']))  			$email      = var_in($_POST['email'],'email');
- 	if(isset($_POST['timezone']))  			$timezone   = var_in($_POST['timezone']);
- 	if(isset($_POST['lang']))  				$lang       = var_in($_POST['lang']);
- 	if(isset($_POST['show_htmleditor']))	$htmleditor = var_in($_POST['show_htmleditor']);
- 	else $htmleditor = '';
+	do{
+		// if editing and post userid not match get userid
+		// @todo perhaps use nonce here instead
+		if($editing && $userid !== _id($_POST['user'])){
+			$error = i18n_r('ER_REQ_PROC_FAIL');
+			break;
+		}
+
+		$userid = _id($_POST['user']);
+		$file   = $userid .'.xml';
+
+
+		if($adding && path_is_safe(GSUSERSPATH . $file,GSUSERSPATH)){
+		    $error = i18n_r('INVALID_USER'); // user already exists
+		    break;
+		}    
 		
-	# check to see if passwords are changing
-	if(isset($_POST['sitepwd']))         { $pwd1 = $_POST['sitepwd']; }
-	if(isset($_POST['sitepwd_confirm'])) { $pwd2 = $_POST['sitepwd_confirm']; }
-	
-	// do password checking
-	if ($pwd1 != $pwd2 || ($adding === true && (empty($pwd1) || $pwd1 !== $pwd2))){
-		# passwords do not match if changing or adding users passwords
-		$error = i18n_r('PASSWORD_NO_MATCH');
-	}
-	else if($pwd1 != '' && strlen($pwd1) < getDef('GSPASSLENGTHMIN')){
-		# password cannot be shorter than GSPASSLENGTH
-		$error = i18n_r('PASSWORD_TOO_SHORT');
-	}
-	else if( $pwd1 != '' ){
-		# password changed
-		$newpassword = $pwd1; // set new password
-		exec_action('password-changed'); // @hook password-changed a users password was changed
-		$password = passhash($newpassword); // set new password
-	}
+		if(!path_is_safe(dirname(GSUSERSPATH . $file),GSUSERSPATH,true)){
+			$error = i18n_r('INVALID_USER');
+			break;
+		}
 
-	if(!isset($error) || empty($error)){
+		debugLog("saving profile " . $userid);
+
+	 	if(isset($_POST['name']))				$name       = var_in($_POST['name']);
+	 	if(isset($_POST['email']))  			$email      = var_in($_POST['email'],'email');
+	 	if(isset($_POST['timezone']))  			$timezone   = var_in($_POST['timezone']);
+	 	if(isset($_POST['lang']))  				$lang       = var_in($_POST['lang']);
+	 	if(isset($_POST['show_htmleditor']))	$htmleditor = var_in($_POST['show_htmleditor']);
+	 	else $htmleditor = '';
+		
+		# check to see if passwords are changing
+		if(isset($_POST['sitepwd']))         { $pwd1 = $_POST['sitepwd']; }
+		if(isset($_POST['sitepwd_confirm'])) { $pwd2 = $_POST['sitepwd_confirm']; }
+		
+		// do password checking
+		if ($pwd1 != $pwd2 || ($adding === true && (empty($pwd1) || $pwd1 !== $pwd2))){
+			# passwords do not match if changing or adding users passwords
+			$error = i18n_r('PASSWORD_NO_MATCH');
+			$password = '';
+		}
+		else if($pwd1 != '' && strlen($pwd1) < getDef('GSPASSLENGTHMIN')){
+			# password cannot be shorter than GSPASSLENGTH
+			$error    = i18n_r('PASSWORD_TOO_SHORT');
+			$password = '';
+		}
+		else if( $pwd1 != '' ){
+			# password changed
+			$newpassword = $pwd1; // set new password
+			exec_action('password-changed'); // @hook password-changed a users password was changed
+			$password = passhash($newpassword); // set new password
+		}
+
 		// check valid lang files
-		if(!in_array($lang.'.php', $lang_array) and !in_array($lang.'.PHP', $lang_array)) $lang = ''; 
-
-		# create user xml file
-		backup_datafile(GSUSERSPATH.$file);
-		
-		// remove pass word reset
-		$resetfile = GSUSERSPATH . getPWDresetName(_id($userid), 'xml');
-		if (file_exists($resetfile)) delete_file($resetfile);
+		if(isset($lang_array) && !in_array($lang.'.php', $lang_array) && !in_array($lang.'.PHP', $lang_array)) $lang = ''; 
 
 		// create new xml
 		$xml = new SimpleXMLElement('<item></item>');
@@ -147,25 +177,43 @@ if(isset($_POST['submitted'])) {
 		$xml->addChild('HTMLEDITOR', $htmleditor);
 		$xml->addChild('TIMEZONE', $timezone);
 		$xml->addChild('LANG', $lang);
-		
 		$data = $xml;
+
+		if(!empty($error) || empty($password)) break;
+
+		# create user xml file
+		backup_datafile(GSUSERSPATH.$file);
+		
+		// remove pass word reset
+		$resetfile = GSUSERSPATH . getPWDresetName(_id($userid), 'xml');
+		if (file_exists($resetfile)) delete_file($resetfile);
+
 
 		exec_action('settings-user'); // @hook settings-user pre-save of a users settings
 		
 		if (! XMLsave($xml, GSUSERSPATH . $file) ) {
 			$error = i18n_r('CHMOD_ERROR');
+			break;
 		}
 
 		# see new language file immediately
 		if(!empty($lang)) include(GSLANGPATH.$lang.'.php');
 		
-		if (!$error) {
-			$success = sprintf(i18n_r('ER_YOUR_CHANGES'), $userid).'. <a href="profile.php?undo&nonce='.get_nonce("undo").'&userid='.$userid.'">'.i18n_r('UNDO').'</a>';
+		if($editing ) $success = sprintf(i18n_r('ER_YOUR_CHANGES'), $userid).'. <a href="profile.php?undo&nonce='.get_nonce("undo").'&userid='.$userid.'">'.i18n_r('UNDO').'</a>';
+		else if($adding) $success = sprintf(i18n_r('ER_YOUR_CHANGES'), $userid).'. <a href="profile.php?undo&new&nonce='.get_nonce("undo").'&userid='.$userid.'">'.i18n_r('UNDO').'</a>';
 
-			if($adding) exec_action('user-added'); // @hook user-added a user was added
-			else exec_action('user-edited');       // @hook user-edit a user was edited
+		if($adding) exec_action('user-added'); // @hook user-added a user was added
+		else exec_action('user-edited');       // @hook user-edit a user was edited
+		
+		if($adding){
+			// redirect("?userid=".$userid.'&success='.$success);
+			// cant redirect since we have no notifications for saving profiles
+			// done adding
+			$adding  = false;
+			$editing = true;
 		}
 	}
+	while (false);
 }
 
 # are any of the control panel checkboxes checked?
@@ -190,25 +238,30 @@ if (count($lang_array) != 0) {
 $pagetitle = i18n_r('USER_PROFILE');
 get_template('header');
 
-$userheading = empty($userid) ? "<span> / ". i18n_r('NEW_USER') ."</span>" : "<span> / $userid </span>";
+$userheading = empty($userid) ? "<span> ". i18n_r('NEW_USER') ."</span>" : "<span> $userid </span>";
+
+if($adding)  $userheading = '<span>adding</span> ' . $userheading;
+if($editing) $userheading = '<span>editing</span> ' . $userheading;
 
 ?>
-	
+
 <?php include('template/include-nav.php'); ?>
 
 <div class="bodycontent clearfix">
 	
 	<div id="maincontent">
-		<form class="largeform" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
-		<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save_profile"); ?>" />
-		<?php if($adding === true){ ?> <input id="add" name="add" type="hidden" value="1" /> <?php } ?>
-		
 		<div class="main">
 			<h3 class="floated"><?php i18n('USER_PROFILE'); echo $userheading; ?></h3>
 			<div class="edit-nav clearfix" >
 				<?php exec_action(get_filename_id().'-edit-nav'); ?>
 			</div>		
-			<?php exec_action(get_filename_id().'-body'); ?>		
+			<?php exec_action(get_filename_id().'-body'); ?>
+			
+			<!-- user form -->
+			<form class="largeform" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
+			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save_profile"); ?>" />
+			<?php if($adding === true){ ?> <input id="add" name="add" type="hidden" value="1" /> <?php } ?>
+		
 			<div class="leftsec">
 				<p><label for="user" ><?php i18n('LABEL_USERNAME');?>:</label><input class="text" id="user" name="user" type="text" <?php echo $adding === true ? '' : 'readonly'; ?> value="<?php echo $userid; ?>" /></p>
 			</div>
