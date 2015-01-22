@@ -86,6 +86,8 @@ if(isset($_POST['submitted'])) {
 		$xmls->addChild('TEMPLATE', GSINSTALLTEMPLATE);
 		$xmls->addChild('PRETTYURLS', '');
 		$xmls->addChild('PERMALINK', '');
+		$xmls->addChild('SITEUSR', $USR);
+		$xmls->addChild('SITEABOUT', '');
 		if (! XMLsave($xmls, GSDATAOTHERPATH . $file) ) {
 			$kill = i18n_r('CHMOD_ERROR');
 		}

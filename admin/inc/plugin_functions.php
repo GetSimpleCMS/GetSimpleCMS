@@ -407,10 +407,10 @@ function addPlugindebugging(&$array){
  *
  * @since 2.0
  * @uses $filters
- * @uses $live_plugins
- *
- * @param string $id Id of current page
- * @param string $txt Text to add to tabbed link
+ * @param str $filter_name id of filter
+ * @param str $added_function callable function name
+ * @param array $args arguments for $added_function
+ * @param int $priority order of execution of hook, lower numbers execute earlier
  */
 function add_filter($filter_name, $added_function, $args = array(), $priority = null) {
   	global $filters, $pluginFilters;
@@ -459,7 +459,7 @@ function exec_filter($a,$data=array()) {
 	if(count($filters) == 1 && count(current($filters)) == 1){
 		$filter = current($filters);
 		return call_user_func_array($filter[0]['function'], array($data));
-	}	
+	}
 	
 	ksort($filters);
 
@@ -471,5 +471,78 @@ function exec_filter($a,$data=array()) {
 	return $data;
 }
 
+
+/**
+ * Add Security Filter
+ *
+ * @since 3.4
+ * @uses $secfilters
+ * @uses $securityFilters
+ * @param str $filter_name id of filter
+ * @param str $added_function callable function name
+ * @param array $args arguments for $added_function
+ * @param int $priority order of execution of hook, lower numbers execute earlier
+ */
+function add_secfilter($filter_name, $added_function, $args = array(), $priority = null) {
+  	global $secfilters, $securityFilters;
+
+	if($priority === 0) $priority = 1; # fixup 0 
+	clamp($priority,1,10,10); # clamp priority, min:1, max:10, default:10
+
+	$filter = array(
+		'filter'   => $filter_name,
+		'function' => $added_function,
+		'active'   => false,
+		'args'     => (array) $args,
+		'priority' => $priority
+	);
+
+	addPlugindebugging($filter);
+	$secfilters[] = $filter;
+	$securityFilters[$filter_name][$priority][] = &$secfilters[count($secfilters)-1]; # add ref to global plugin hook hash array	
+}
+
+/**
+ * Execute Security Filter
+ * return security check boolean, strict datatyping, 
+ * defaults to true if not explicit false
+ *
+ * @since 3.4
+ * @uses $securityFilters
+ *
+ * @param string $script Filter name to execute
+ * @param array $data
+ */
+function exec_secfilter($a, $result = true, $data=array()) {
+	global $securityFilters;
+
+	if(!$securityFilters){
+		// debugLog('filters empty');
+		return $result;
+	}
+
+	if(!isset($securityFilters[$a]) || !$securityFilters[$a]) return $result;
+	
+	// use ref to keep subarray priority sorts, in case we wanted to reuse again
+	$filters = &$securityFilters[$a];
+
+	// if just one hook call it
+	if(count($filters) == 1 && count(current($filters)) == 1){
+		$filter = current($filters);
+		$newresult = call_user_func_array($filter[0]['function'], array($a, $result, $data));
+		return is_bool($newresult) ? $newresult : $result;
+	}
+	
+	ksort($filters);
+
+	foreach ($filters as $priority){
+		foreach($priority as $filter){
+			$newresult = call_user_func_array($filter['function'], array($a, $result, $data));
+			$result = is_bool($newresult) ? $newresult : $result;
+		}
+	}
+	
+	return $result;
+}
 
 /* ?> */

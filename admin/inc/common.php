@@ -72,6 +72,7 @@ $GS_constants = array(
 );
 
 $GS_definitions = array(
+	'GSSUPERUSER'          => '',                             // (str) userid for superuser, defaults to website data/global $SITEUSR if it exists
 	'GSDEFAULTPAGE'        => 'pages.php',                    // (str) Default backend index page
 	'GSHEADERCLASS'        => '',                             // (str) custom class to add to header eg. `gradient` to add 3.3 gradients back
 	'GSHTTPPREFIX'         => '',                             // (str) http slug prefix GSHTTPPREFIX.GSSLUGxx
@@ -101,6 +102,8 @@ $GS_definitions = array(
 	'GSALLOWLOGIN'         => true,                           // (bool) allow front end login
 	'GSALLOWRESETPASS'     => true,                           // (bool) allow front end password resets
 	'GSALLOWDOWNLOADS'     => true,                           // (bool) allow using downloads.php to download files from /uploads and backups/zip
+	'GSPROFILEALLOWADD'    => true,                           // (bool) allow superuser to add new users
+	'GSPROFILEALLOWEDIT'   => true,                           // (bool) allow superuser to edit other users
 	# ALLOW UPLOADS ------------------------------------------------------------------------------------------------------------------------------------
 	'GSALLOWUPLOADS'       => true,                           // (bool) allow upload files
 	'GSALLOWUPLOADCREATE'  => true,                           // (bool) allow upload folder creation
@@ -161,8 +164,10 @@ global
  $live_plugins,   // (array) contains plugin file ids and enable status
  $plugins,        // (array) global array for storing action hook callbacks
  $pluginHooks,    // (array) global array for storing action hook callbacks hash table
- $filters,        // (array) global array for storing action filter callbacks
+ $filters,        // (array) global array for storing filter callbacks
  $pluginFilters,  // (array) global array for storing filter callbacks hash table
+ $secfilters,     // (array) global array for storing security filters
+ $securityFilters,// (array) global array for storing security filters hash table
  $GS_scripts,     // (array) global array for storing queued asset scripts
  $GS_styles       // (array) global array for storing queued asset styles
 ;
@@ -297,7 +302,7 @@ if(!is_frontend()){
  * @global (str) $SITEEMAIL     default site email for sending email primarily or contacting administrator
  * @global (str) $SITETIMEZONE  default timezone of server, safer to set than guess from server
  * @global (str) $SITELANG      default site ITEF langstring, used for login etc. see $LANG
- * @global (str) $SITEUSR       primary user id that installed GS
+ * @global (str) $SITEUSR       primary user id that installed GS, superuser
  * @global (str) $ASSETURL      url for asset loading in head depends on GSASSETURLREL and GSASSETSCHEMES settings
  */
 
@@ -320,6 +325,8 @@ GLOBAL
 // load website data from GSWEBSITEFILE (website.xml)
 extract(getWebsiteData(true));
 
+
+debugLog('SITEUSR      = ' . $SITEUSR);
 debugLog('GSSITEURLREL = ' . getDef('GSSITEURLREL',true));
 debugLog('SITEURL      = ' . getSiteURL());
 debugLog('SITEURL_ABS  = ' . getSiteURL(true));

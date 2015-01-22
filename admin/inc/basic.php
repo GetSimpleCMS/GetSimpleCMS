@@ -2538,7 +2538,7 @@ function getWebsiteData($returnGlobals = false){
 		$SITEEMAIL    = trim((string) $dataw->EMAIL);
 		$SITETIMEZONE = trim((string) $dataw->TIMEZONE);
 		$SITELANG     = trim((string) $dataw->LANG);
-		$SITEUSR      = trim((string) $dataw->USR);
+		$SITEUSR      = trim((string) $dataw->SITEUSR);
 		$SITEABOUT    = trim((string) $dataw->SITEABOUT);
 
 		$SITEURL_ABS = $SITEURL;
@@ -2588,6 +2588,22 @@ function getUserData($returnGlobals = false){
 	unset($cookie_user_id);
 	if($returnGlobals) return get_defined_vars();
 	return $datau;
+}
+
+/**
+ * get the super user
+ * super user is either the user that installed GS or GSSUPERUSER if set
+ * @since  3.4
+ * @return str superuser id
+ */
+function getSuperUserId(){
+	GLOBAL $SITEUSR;
+	$usr = '';
+	if(getDef('GSSUPERUSER')) $usr = getDef('GSSUPERUSER');
+	if(!empty($usr)) return $usr;
+	if(!empty($SITEUSR)) return $SITEUSR;
+	// @todo check if only 1 user exists and make that the super user
+	return;
 }
 
 /**

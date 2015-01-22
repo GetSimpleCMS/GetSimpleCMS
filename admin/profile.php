@@ -16,12 +16,11 @@ login_cookie_check();
 
 exec_action('load-profile');
 
-// @todo these flags will probably be implemented as functions that can be manipulated and called out
-// they will be context aware of the user being edited etc, to handle group heiracrhy and protected accounts
-$allowedit    = true; // tmp flag for edit permission
-$allowadd     = true; // tmp flag for create permission
-
 $showpermfail = true; // true, throw errors on failed permission attempts, else silently ignores your requests
+
+// default permissions, allow based on is user superuser and gs permission definitions
+$allowadd  = ($USR == getSuperUserId()) && getDef('GSPROFILEALLOWADD',true);
+$allowedit = ($USR == getSuperUserId()) && getDef('GSPROFILEALLOWEDIT',true);
 
 // init
 $adding     = false; // flag for doing user creation
@@ -36,7 +35,7 @@ if(isset($_REQUEST['add']))     $adding  = true;
 else if(isset($_GET['userid'])) $editing = true;
 
 if($adding){
-	if(!$allowadd){
+	if(!exec_secfilter('profile-adduser',$allowadd)){
 		$userid    = $USR;
 		$permerror = i18n_r('ER_REQ_PROC_FAIL');
 		$adding    = false;
@@ -52,7 +51,7 @@ if($editing){
 	if($userid !== $USR){
 
 		if(file_exists(GSUSERSPATH. _id($userid).'.xml')){
-			if(!$allowedit){
+			if(!exec_secfilter('profile-edituser',$allowedit)){
 				$permerror = i18n_r('ER_REQ_PROC_FAIL');
 				$editing = false;
 			}
@@ -161,7 +160,7 @@ if(isset($_POST['submitted']) && isset($_POST['user'])){
 		else if( $pwd1 != '' ){
 			# password changed
 			$newpassword = $pwd1; // set new password
-			exec_action('password-changed'); // @hook password-changed a users password was changed
+			exec_action('profile-password-changed'); // @hook profile-password-changed a users password was changed
 			$password = passhash($newpassword); // set new password
 		}
 
@@ -189,7 +188,8 @@ if(isset($_POST['submitted']) && isset($_POST['user'])){
 		if (file_exists($resetfile)) delete_file($resetfile);
 
 
-		exec_action('settings-user'); // @hook settings-user pre-save of a users settings
+		exec_action('settings-user'); // @hook settings-user LEGACY pre-save of a users settings
+		exec_action('profile-save');  // @hook profiel-user pre-save of a users settings
 		
 		if (! XMLsave($xml, GSUSERSPATH . $file) ) {
 			$error = i18n_r('CHMOD_ERROR');
@@ -202,8 +202,8 @@ if(isset($_POST['submitted']) && isset($_POST['user'])){
 		if($editing ) $success = sprintf(i18n_r('ER_YOUR_CHANGES'), $userid).'. <a href="profile.php?undo&nonce='.get_nonce("undo").'&userid='.$userid.'">'.i18n_r('UNDO').'</a>';
 		else if($adding) $success = sprintf(i18n_r('ER_YOUR_CHANGES'), $userid).'. <a href="profile.php?undo&new&nonce='.get_nonce("undo").'&userid='.$userid.'">'.i18n_r('UNDO').'</a>';
 
-		if($adding) exec_action('user-added'); // @hook user-added a user was added
-		else exec_action('user-edited');       // @hook user-edit a user was edited
+		if($adding) exec_action('profile-added'); // @hook user-added a user was added
+		else exec_action('profile-edited');       // @hook user-edit  a user was edited
 		
 		if($adding){
 			// redirect("?userid=".$userid.'&success='.$success);
@@ -296,7 +296,13 @@ $userheading = empty($userid) ? "<span>/ ". i18n_r('NEW_USER') ."</span>" : "<sp
 			<div class="clear"></div>
 			<p class="inline" ><input name="show_htmleditor" id="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<label for="show_htmleditor" ><?php i18n('ENABLE_HTML_ED');?></label></p>
 			
-			<?php exec_action('settings-user-extras'); // @hook settings-user-extras after user profile settings html ?>
+			<?php
+				if($editing) exec_action('profile-extras-edit'); // @hook profile-extras-edit extra profile settings when editing existing users
+				if($adding)  exec_action('profile-extras-add');  // @hook profile-extras-add extra profile settings when  adding new user
+			
+				if(!$editing && !$adding) exec_action('settings-user-extras'); // @hook settings-user-extras LEGACY extra user profile settings html, not enabled for edit and adds in 3.4
+				exec_action('profile-extras'); // @hook profile-extras extra profile settings
+			?>
 			
 			<p style="margin:0px 0 5px 0;font-size:12px;color:#999;" ><?php $adding === true ? i18n('PROVIDE_PASSWORD') : i18n('ONLY_NEW_PASSWORD');?>:</p>
 			<div class="leftsec">
