@@ -138,7 +138,7 @@ function get_page_meta_robots($echo=true) {
  */
 function get_page_head_title($echo=true){
 	$str = strip_tags(strip_decode(getPageGlobal('title')));
-	$str = exec_filter('headtitle',$str); // @fitler headtitle (str) head title in get_page_head_title
+	$str = exec_filter('headtitle',$str); // @filter headtitle (str) head title in get_page_head_title
 	return echoReturn($str,$echo);
 }
 
@@ -153,7 +153,7 @@ function get_page_head_title($echo=true){
  */
 function get_page_title($echo=true) {
 	$str = strip_decode(getPageGlobal('title'));
-	$str = exec_filter('pagetitle',$str); // @fitler pagetitle (str) page title in get_page_title	
+	$str = exec_filter('pagetitle',$str); // @filter pagetitle (str) page title in get_page_title	
 	return echoReturn($str,$echo);	
 }
 

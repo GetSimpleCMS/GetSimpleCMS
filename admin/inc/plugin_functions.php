@@ -243,7 +243,7 @@ function create_pluginsxml($force=false){
  *
  * @since 2.0
  * @uses $plugins
- * @uses $live_plugins
+ * @uses $pluginHooks
  *
  * @param string $hook_name
  * @param string $added_function
@@ -251,21 +251,19 @@ function create_pluginsxml($force=false){
  * @param int $priority order of execution of hook, lower numbers execute earlier
  */
 function add_action($hook_name, $added_function, $args = array(), $priority = null) {
-	global $plugins, $pluginHooks, $live_plugins; 
+	GLOBAL $plugins, $pluginHooks; 
+	return add_hook($plugins, $pluginHooks, $hook_name, $added_function, $args, $priority);
+}
 
-	if($priority === 0) $priority = 1; # fixup 0 
-	clamp($priority,1,10,10); # clamp priority, min:1, max:10, default:10
-
-	$plugin_action = array(
-		'hook'     => $hook_name,
-		'function' => $added_function,
-		'args'     => (array) $args,
-		'priority' => $priority
-	);
-	
-	addPlugindebugging($plugin_action); # add debug info , file, line, core
-	$plugins[] = $plugin_action; # add to global plugins
-	$pluginHooks[$hook_name][$priority][] = &$plugins[count($plugins)-1]; # add ref to global plugin hook hash array
+/**
+ * remove an action
+ * @since 3.4
+ * @param string $hook_name id of action
+ * @param string $hook_function function to remove
+ */
+function remove_action($hook_name,$hook_function){
+	GLOBAL $pluginHooks;
+	return remove_hook($pluginHooks,$hook_name,$hook_function);
 }
 
 /**
@@ -278,31 +276,11 @@ function add_action($hook_name, $added_function, $args = array(), $priority = nu
  */
 function exec_action($a) {
 	global $plugins,$pluginHooks;
+ 	return exec_hook($plugins, $pluginHooks, $a, 'exec_action_callback');
+}
 
-	if(!$plugins || !$pluginHooks){
-		debugLog('plugins empty');
-		return;
-	}
-
-	if(!isset($pluginHooks[$a]) || !$pluginHooks[$a]) return;
-	
-	// use ref to keep subarray priority sorts, in case we wanted to reuse again
-	$hooks = &$pluginHooks[$a];
-
-	// if just one hook call it
-	
-	if(count($hooks) == 1 && count(current($hooks)) == 1) {
-		$hook = current($hooks);
-		return call_user_func_array($hook[0]['function'], $hook[0]['args']);
-	}
-	
-	ksort($hooks);
-
-	foreach ($hooks as $priority){
-		foreach($priority as $hook){
-			call_user_func_array($hook['function'], $hook['args']);
-		}
-	}
+function exec_action_callback($hook){
+	return call_user_func_array($hook['function'], $hook['args']);
 }
 
 /**
@@ -414,21 +392,7 @@ function addPlugindebugging(&$array){
  */
 function add_filter($filter_name, $added_function, $args = array(), $priority = null) {
   	global $filters, $pluginFilters;
-
-	if($priority === 0) $priority = 1; # fixup 0 
-	clamp($priority,1,10,10); # clamp priority, min:1, max:10, default:10
-
-	$plugin_filter = array(
-		'filter'   => $filter_name,
-		'function' => $added_function,
-		'active'   => false,
-		'args'     => (array) $args,
-		'priority' => $priority
-	);
-
-	addPlugindebugging($plugin_filter);
-	$filters[] = $plugin_filter;
-	$pluginFilters[$filter_name][$priority][] = &$filters[count($filters)-1]; # add ref to global plugin hook hash array	
+	return add_hook($filters, $pluginFilters, $filter_name, $added_function, $args, $priority);
 }
 
 /**
@@ -442,35 +406,19 @@ function add_filter($filter_name, $added_function, $args = array(), $priority = 
  * @param string $script Filter name to execute
  * @param array $data
  */
-function exec_filter($a,$data=array()) {
-	global $pluginFilters;
-
-	if(!$pluginFilters){
-		// debugLog('filters empty');
-		return $data;
-	}
-
-	if(!isset($pluginFilters[$a]) || !$pluginFilters[$a]) return $data;
-	
-	// use ref to keep subarray priority sorts, in case we wanted to reuse again
-	$filters = &$pluginFilters[$a];
-
-	// if just one hook call it
-	if(count($filters) == 1 && count(current($filters)) == 1){
-		$filter = current($filters);
-		return call_user_func_array($filter[0]['function'], array($data));
-	}
-	
-	ksort($filters);
-
-	foreach ($filters as $priority){
-		foreach($priority as $filter){
-			call_user_func_array($filter['function'], array($data));	
-		}
-	}
-	return $data;
+function exec_filter($filter_name,$data=array()) {
+	global $filters,$pluginFilters;
+ 	return exec_hook($filters, $pluginFilters, $filter_name, 'exec_filter_callback', $data);
 }
 
+function exec_filter_callback($hook,$data=array()){
+	debugLog($hook);
+	debugLog($data);
+	$data = call_user_func_array($hook['function'], array($data));
+	debugLog($data);
+	return $data;
+	// return call_user_func_array($hook['function'], $hook['args']);
+}
 
 /**
  * Add Security Filter
@@ -544,5 +492,111 @@ function exec_secfilter($a, $result = true, $data=array()) {
 	
 	return $result;
 }
+
+
+/**
+ * hook functions
+ */
+
+
+/**
+ * Add generic hook wrapper
+ * FOR INTERNAL USE
+ * @since 3.4
+ * @param array $hook_array array for hooks
+ * @param array $hook_hash_array array for hooks hash
+ * @param string $hook_name if of hook action
+ * @param string $hook_function callable function
+ * @param array $args arguments to pass to $hook_function
+ * @param int $priority order of execution of hook, lower numbers execute earlier
+ */
+function add_hook(&$hook_array, &$hook_hash_array, $hook_name, $hook_function, $args = array(), $priority = null) {
+	
+	if($priority === 0) $priority = 1; # fixup 0 
+	clamp($priority,1,10,10); # clamp priority, min:1, max:10, default:10
+
+	$hook = array(
+		'hook'     => $hook_name,
+		'function' => $hook_function,
+		'args'     => (array) $args,
+		'priority' => $priority
+	);
+	
+	addPlugindebugging($hook); # add debug info , file, line, core
+	$hook_array[] = $hook; # add to global plugins
+	$hook_hash_array[$hook_name][$priority][] = &$hook_array[count($hook_array)-1]; # add ref to global plugin hook hash array
+}
+
+/**
+ * remove an generic hook wrapper
+ * FOR INTERNAL USE
+ * @since 3.4
+ * @param array  $hook_hash_array hook array
+ * @param string $hook_name
+ * @param string $hook_function
+ */
+function remove_hook(&$hook_hash_array, $hook_name, $hook_function){
+	// loop priorities
+	foreach($hook_hash_array[$hook_name] as $prioritykey => $hooks){
+		// loop hook arrays
+		foreach($hooks as $hookkey => $hook){
+			if($hook['function'] == $hook_function){
+				// set hook array ref to null
+				// unset hook hash array
+				$hook_hash_array[$hook_name][$prioritykey][$hookkey] = null;
+				unset($hook_hash_array[$hook_name][$prioritykey][$hookkey]);
+				
+				// debugLog('removing hook: '. $hook_name);
+				return true;
+			}
+		}
+	}
+}
+
+
+/**
+ * Execute hook wrapper
+ * INTERNAL USE ONLY
+ * @since 3.4
+ *
+ * @param array $hook_array hook array
+ * @param array $hook_hash_array hook hash array
+ * @param string $hook_name name of hook to execute
+ */
+function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback, $data = array()) {
+	if(!$hook_array || !$hook_hash_array){
+		debugLog('hook array is empty');
+		return;
+	}
+
+	if(!isset($hook_hash_array[$hook_name]) || !$hook_hash_array[$hook_name]) return;
+	
+	// use ref to keep subarray priority sorts, in case we wanted to reuse again
+	$hooks = &$hook_hash_array[$hook_name];
+
+	// if there is only one hook call it, skip sort and looping
+	if(count($hooks) == 1){
+		// since we do not know the priority index key
+		// reset priority array to first element, then use current
+		if(count(current(reset($hooks))) == 1){
+			$hook = current($hooks);
+			if(!isset($hook)) return;
+			return $callback($hook[0],$data);
+		}
+	}
+
+	// @todo possible optimization , no need to always sort unless hook was added
+	ksort($hooks);
+
+	foreach ($hooks as $priority){
+		foreach($priority as $hook){
+			if(!isset($hook)) continue;
+			$callback($hook,$data);
+		}
+	}
+
+	return $data;
+}
+
 
 /* ?> */

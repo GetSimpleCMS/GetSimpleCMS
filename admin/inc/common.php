@@ -138,7 +138,7 @@ $GS_definitions = array(
 	'GSDEBUG'              => false,                          // (bool) output debug mode console
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls to debuglog
 	'GSDEBUGREDIRECTS'     => false,                          // (bool) if debug mode enabled, prevent redirects for debugging
-	'GSDEBUGFILEIO'        => true,                          // (bool) debug filio operations
+	'GSDEBUGFILEIO'        => false,                          // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
 	# ---------------------------------------------------------------------------------------------------------------------------------------------------
  	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
@@ -543,8 +543,37 @@ if(isset($load['plugin']) && $load['plugin']){
  */
 
 // debugLog($live_plugins);
-// debugLog($plugins);
 // debugLog($plugin_info);
+// debugLog($plugins);
+// debugLog($pluginHooks);
+
+
+function debug_action_test(){
+	add_action('header','testhooks');
+	function testhooks(){
+		_debugLog('hook test',__FUNCTION__);
+	}
+
+	remove_action('header','testhooks');
+}
+
+function debug_filter_test(){
+	add_filter('test','testfilter');
+	function testfilter($data){
+		_debugLog($data);
+		_debugLog('filter test',__FUNCTION__);
+		$data.= ' FILTERED';
+		debugLog($data);
+		return $data;
+	}
+	$filtervalue = exec_filter('test','this is a test');
+	_debugLog("END ",$filtervalue);
+	// remove_filter('test','testfilter');
+	// debugLog(exec_filter('test','this is a test'));
+}
+
+// debugLog($filters);
+// debug_filter_test();
 
 
 if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ require_once(GSADMININCPATH.'login_functions.php'); }
@@ -552,7 +581,7 @@ if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ requ
 // do the template rendering
 if(GSBASE) require_once(GSADMINPATH.'base.php');
 
-// common methods that are required before dpendancy includes
+// common methods that are required before dependancy includes
 
 /**
  * Debug Console Log
