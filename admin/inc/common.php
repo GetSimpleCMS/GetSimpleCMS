@@ -548,32 +548,7 @@ if(isset($load['plugin']) && $load['plugin']){
 // debugLog($pluginHooks);
 
 
-function debug_action_test(){
-	add_action('header','testhooks');
-	function testhooks(){
-		_debugLog('hook test',__FUNCTION__);
-	}
 
-	remove_action('header','testhooks');
-}
-
-function debug_filter_test(){
-	add_filter('test','testfilter');
-	function testfilter($data){
-		_debugLog($data);
-		_debugLog('filter test',__FUNCTION__);
-		$data.= ' FILTERED';
-		debugLog($data);
-		return $data;
-	}
-	$filtervalue = exec_filter('test','this is a test');
-	_debugLog("END ",$filtervalue);
-	// remove_filter('test','testfilter');
-	// debugLog(exec_filter('test','this is a test'));
-}
-
-// debugLog($filters);
-// debug_filter_test();
 
 
 if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ require_once(GSADMININCPATH.'login_functions.php'); }

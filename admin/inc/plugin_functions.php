@@ -396,6 +396,17 @@ function add_filter($filter_name, $added_function, $args = array(), $priority = 
 }
 
 /**
+ * remove a filter
+ * @since 3.4
+ * @param string $hook_name id of action
+ * @param string $hook_function function to remove
+ */
+function remove_filter($filter_name,$hook_function){
+	GLOBAL $pluginFilters;
+	return remove_hook($pluginFilters,$filter_name,$hook_function);
+}
+
+/**
  * Execute Filter
  *
  * Allows changing of the passed variable
@@ -408,17 +419,17 @@ function add_filter($filter_name, $added_function, $args = array(), $priority = 
  */
 function exec_filter($filter_name,$data=array()) {
 	global $filters,$pluginFilters;
- 	return exec_hook($filters, $pluginFilters, $filter_name, 'exec_filter_callback', $data);
+ 	return exec_hook($filters, $pluginFilters, $filter_name, 'exec_filter_callback', $data, 'exec_filter_complete');
 }
 
-function exec_filter_callback($hook,$data=array()){
-	debugLog($hook);
-	debugLog($data);
+function exec_filter_callback($hook,&$data=array()){
 	$data = call_user_func_array($hook['function'], array($data));
-	debugLog($data);
-	return $data;
-	// return call_user_func_array($hook['function'], $hook['args']);
 }
+
+function exec_filter_complete($data=array()){
+	return $data;
+}
+
 
 /**
  * Add Security Filter
@@ -433,66 +444,32 @@ function exec_filter_callback($hook,$data=array()){
  */
 function add_secfilter($filter_name, $added_function, $args = array(), $priority = null) {
   	global $secfilters, $securityFilters;
-
-	if($priority === 0) $priority = 1; # fixup 0 
-	clamp($priority,1,10,10); # clamp priority, min:1, max:10, default:10
-
-	$filter = array(
-		'filter'   => $filter_name,
-		'function' => $added_function,
-		'active'   => false,
-		'args'     => (array) $args,
-		'priority' => $priority
-	);
-
-	addPlugindebugging($filter);
-	$secfilters[] = $filter;
-	$securityFilters[$filter_name][$priority][] = &$secfilters[count($secfilters)-1]; # add ref to global plugin hook hash array	
+	return add_hook($secfilters, $Filters, $filter_name, $added_function, $args, $priority);  	
 }
 
 /**
  * Execute Security Filter
- * return security check boolean, strict datatyping, 
- * defaults to true if not explicit false
  *
- * @since 3.4
- * @uses $securityFilters
+ * Allows changing of the passed variable
+ *
+ * @since 2.0
+ * @uses $filters
  *
  * @param string $script Filter name to execute
  * @param array $data
  */
-function exec_secfilter($a, $result = true, $data=array()) {
-	global $securityFilters;
-
-	if(!$securityFilters){
-		// debugLog('filters empty');
-		return $result;
-	}
-
-	if(!isset($securityFilters[$a]) || !$securityFilters[$a]) return $result;
-	
-	// use ref to keep subarray priority sorts, in case we wanted to reuse again
-	$filters = &$securityFilters[$a];
-
-	// if just one hook call it
-	if(count($filters) == 1 && count(current($filters)) == 1){
-		$filter = current($filters);
-		$newresult = call_user_func_array($filter[0]['function'], array($a, $result, $data));
-		return is_bool($newresult) ? $newresult : $result;
-	}
-	
-	ksort($filters);
-
-	foreach ($filters as $priority){
-		foreach($priority as $filter){
-			$newresult = call_user_func_array($filter['function'], array($a, $result, $data));
-			$result = is_bool($newresult) ? $newresult : $result;
-		}
-	}
-	
-	return $result;
+function exec_secfilter($filter_name,$data=array()) {
+	global $secfilters,$securityFilters;
+ 	return exec_hook($secfilters, $securityFilters, $filter_name, 'exec_secfilter_callback', $data, 'exec_secfilter_complete');
 }
 
+function exec_secfilter_callback($hook,&$data=array()){
+	$data = call_user_func_array($hook['function'], array($data));
+}
+
+function exec_secfilter_complete($data=array()){
+	return $data;
+}
 
 /**
  * hook functions
@@ -545,7 +522,15 @@ function remove_hook(&$hook_hash_array, $hook_name, $hook_function){
 				// unset hook hash array
 				$hook_hash_array[$hook_name][$prioritykey][$hookkey] = null;
 				unset($hook_hash_array[$hook_name][$prioritykey][$hookkey]);
+
+				// remove priority array if empty
+				if(count($hook_hash_array[$hook_name][$prioritykey]) == 0)
+					unset($hook_hash_array[$hook_name][$prioritykey]);
 				
+				// remove hook array if empty
+				if(count($hook_hash_array[$hook_name]) == 0)
+					unset($hook_hash_array[$hook_name]);
+
 				// debugLog('removing hook: '. $hook_name);
 				return true;
 			}
@@ -563,7 +548,7 @@ function remove_hook(&$hook_hash_array, $hook_name, $hook_function){
  * @param array $hook_hash_array hook hash array
  * @param string $hook_name name of hook to execute
  */
-function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback, $data = array()) {
+function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', $data = array(), $complete = '') {
 	if(!$hook_array || !$hook_hash_array){
 		debugLog('hook array is empty');
 		return;
@@ -580,8 +565,9 @@ function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback, $data
 		// reset priority array to first element, then use current
 		if(count(current(reset($hooks))) == 1){
 			$hook = current($hooks);
-			if(!isset($hook)) return;
-			return $callback($hook[0],$data);
+			// if(!isset($hook) || !isset($hook[0])) return;
+			$callback($hook[0],$data);
+			if(function_exists($complete)) return $complete($data);			
 		}
 	}
 
@@ -595,7 +581,8 @@ function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback, $data
 		}
 	}
 
-	return $data;
+	if(function_exists($complete)) return $complete($data);
+
 }
 
 
