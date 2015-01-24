@@ -237,52 +237,6 @@ function create_pluginsxml($force=false){
 	return $success;
 }
 
-
-/**
- * Add Action
- *
- * @since 2.0
- * @uses $plugins
- * @uses $pluginHooks
- *
- * @param string $hook_name
- * @param string $added_function
- * @param array $args
- * @param int $priority order of execution of hook, lower numbers execute earlier
- */
-function add_action($hook_name, $added_function, $args = array(), $priority = null) {
-	GLOBAL $plugins, $pluginHooks; 
-	return add_hook($plugins, $pluginHooks, $hook_name, $added_function, $args, $priority);
-}
-
-/**
- * remove an action
- * @since 3.4
- * @param string $hook_name id of action
- * @param string $hook_function function to remove
- */
-function remove_action($hook_name,$hook_function){
-	GLOBAL $pluginHooks;
-	return remove_hook($pluginHooks,$hook_name,$hook_function);
-}
-
-/**
- * Execute Action
- *
- * @since 2.0
- * @uses $plugins
- *
- * @param string $a Name of hook to execute
- */
-function exec_action($a) {
-	global $plugins,$pluginHooks;
- 	return exec_hook($plugins, $pluginHooks, $a, 'exec_action_callback');
-}
-
-function exec_action_callback($hook){
-	return call_user_func_array($hook['function'], $hook['args']);
-}
-
 /**
  * Create Side Menu
  *
@@ -379,6 +333,52 @@ function addPlugindebugging(&$array){
 	$array['line'] = $lineNumber;
 	$array['core'] = !isset($live_plugins[$array['file']]);
 }
+
+/**
+ * Add Action
+ *
+ * @since 2.0
+ * @uses $plugins
+ * @uses $pluginHooks
+ *
+ * @param string $hook_name
+ * @param string $added_function
+ * @param array $args
+ * @param int $priority order of execution of hook, lower numbers execute earlier
+ */
+function add_action($hook_name, $added_function, $args = array(), $priority = null) {
+	GLOBAL $plugins, $pluginHooks; 
+	return add_hook($plugins, $pluginHooks, $hook_name, $added_function, $args, $priority);
+}
+
+/**
+ * remove an action
+ * @since 3.4
+ * @param string $hook_name id of action
+ * @param string $hook_function function to remove
+ */
+function remove_action($hook_name,$hook_function){
+	GLOBAL $pluginHooks;
+	return remove_hook($pluginHooks,$hook_name,$hook_function);
+}
+
+/**
+ * Execute Action
+ *
+ * @since 2.0
+ * @uses $plugins
+ *
+ * @param string $a Name of hook to execute
+ */
+function exec_action($a) {
+	global $plugins,$pluginHooks;
+ 	return exec_hook($plugins, $pluginHooks, $a, 'exec_action_callback');
+}
+
+function exec_action_callback($hook){
+	return call_user_func_array($hook['function'], $hook['args']);
+}
+
 
 /**
  * Add Filter
@@ -488,7 +488,6 @@ function exec_secfilter_complete($data=array()){
 }
 
 
-
 /**
  * hook functions
  */
@@ -535,10 +534,13 @@ function remove_hook(&$hook_hash_array, $hook_name, $hook_function){
 	foreach($hook_hash_array[$hook_name] as $prioritykey => $hooks){
 		// loop hook arrays
 		foreach($hooks as $hookkey => $hook){
+
+			// check all hooks for our function
 			if($hook['function'] == $hook_function){
+				
 				// set hook array ref to null
-				// unset hook hash array
 				$hook_hash_array[$hook_name][$prioritykey][$hookkey] = null;
+				// unset hook hash array
 				unset($hook_hash_array[$hook_name][$prioritykey][$hookkey]);
 
 				// remove priority array if empty
@@ -561,7 +563,6 @@ function remove_hook(&$hook_hash_array, $hook_name, $hook_function){
  * Execute hook wrapper
  * INTERNAL USE ONLY
  * @since 3.4
- *
  * @param array $hook_array hook array
  * @param array $hook_hash_array hook hash array
  * @param string $hook_name name of hook to execute
@@ -574,7 +575,8 @@ function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', 
 
 	if(!isset($hook_hash_array[$hook_name]) || !$hook_hash_array[$hook_name]) return;
 	
-	// use ref to keep subarray priority sorts, in case we wanted to reuse again
+	// use ref to keep subarray priority sorts, in case we wanted to reuse again, 
+	// probably sorts faster when ordered also
 	$hooks = &$hook_hash_array[$hook_name];
 	// _debugLog($hooks);
 	// if there is only one hook call it, skip sort and looping
