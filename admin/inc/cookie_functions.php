@@ -4,7 +4,7 @@
  * Cookie Functions
  *
  * @package GetSimple
- * @subpackage Login
+ * @subpackage Cookie-Functions
  */
 
 require_once(GSADMININCPATH.'configuration.php');
@@ -110,7 +110,7 @@ function login_cookie_check() {
 	if(cookie_check()) {
 		create_cookie();
 	} else {
-		$qstring      = filter_queryString(explode(getDef('GSLOGINQSALLOWED')));
+		$qstring      = filter_queryString(explode(',',getDef('GSLOGINQSALLOWED')));
 		$redirect_url = $cookie_login.'?redirect='.myself(false).'?'.$qstring;
 		redirect($redirect_url);
 	}
