@@ -444,7 +444,19 @@ function exec_filter_complete($data=array()){
  */
 function add_secfilter($filter_name, $added_function, $args = array(), $priority = null) {
   	global $secfilters, $securityFilters;
-	return add_hook($secfilters, $Filters, $filter_name, $added_function, $args, $priority);  	
+	return add_hook($secfilters, $securityFilters, $filter_name, $added_function, $args, $priority);  	
+}
+
+
+/**
+ * remove a security filter
+ * @since 3.4
+ * @param string $filter_name id of action
+ * @param string $hook_function function to remove
+ */
+function remove_secfilter($filter_name,$hook_function){
+	GLOBAL $secFilters;
+	return remove_hook($secFilters, $filter_name, $hook_function);
 }
 
 /**
@@ -458,18 +470,24 @@ function add_secfilter($filter_name, $added_function, $args = array(), $priority
  * @param string $script Filter name to execute
  * @param array $data
  */
-function exec_secfilter($filter_name,$data=array()) {
+function exec_secfilter($filter_name, $result = true, $data=array()) {
 	global $secfilters,$securityFilters;
- 	return exec_hook($secfilters, $securityFilters, $filter_name, 'exec_secfilter_callback', $data, 'exec_secfilter_complete');
+ 	$newresult = exec_hook($secfilters, $securityFilters, $filter_name, 'exec_secfilter_callback', array($result,$data), 'exec_secfilter_complete');
+ 	return is_bool($newresult) ? $newresult : $result;
 }
 
 function exec_secfilter_callback($hook,&$data=array()){
-	$data = call_user_func_array($hook['function'], array($data));
+	$result    = &$data[0];
+	$rdata     = $data[1];
+	$newresult = call_user_func_array($hook['function'], array($result, $rdata));
+	$result    = is_bool($newresult) ? $newresult : $result;
 }
 
 function exec_secfilter_complete($data=array()){
-	return $data;
+	return $data[0];
 }
+
+
 
 /**
  * hook functions
@@ -558,14 +576,14 @@ function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', 
 	
 	// use ref to keep subarray priority sorts, in case we wanted to reuse again
 	$hooks = &$hook_hash_array[$hook_name];
-
+	// _debugLog($hooks);
 	// if there is only one hook call it, skip sort and looping
 	if(count($hooks) == 1){
 		// since we do not know the priority index key
 		// reset priority array to first element, then use current
 		if(count(current(reset($hooks))) == 1){
 			$hook = current($hooks);
-			// if(!isset($hook) || !isset($hook[0])) return;
+			if(!isset($hook) || !isset($hook[0])) return;
 			$callback($hook[0],$data);
 			if(function_exists($complete)) return $complete($data);			
 		}

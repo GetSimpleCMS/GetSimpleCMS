@@ -35,7 +35,7 @@ if(isset($_REQUEST['add']))     $adding  = true;
 else if(isset($_GET['userid'])) $editing = true;
 
 if($adding){
-	if(!exec_secfilter('profile-adduser',$allowadd)){
+	if(!exec_secfilter('profile-adduser', $allowadd)){
 		$userid    = $USR;
 		$permerror = i18n_r('ER_REQ_PROC_FAIL');
 		$adding    = false;
@@ -51,7 +51,7 @@ if($editing){
 	if($userid !== $USR){
 
 		if(file_exists(GSUSERSPATH. _id($userid).'.xml')){
-			if(!exec_secfilter('profile-edituser',$allowedit,array($userid))){
+			if(!exec_secfilter('profile-edituser',$allowedit, array($userid))){
 				$permerror = i18n_r('ER_REQ_PROC_FAIL');
 				$editing = false;
 			}
