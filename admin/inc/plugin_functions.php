@@ -419,7 +419,8 @@ function remove_filter($filter_name,$hook_function){
  */
 function exec_filter($filter_name,$data=array()) {
 	global $filters,$pluginFilters;
- 	return exec_hook($filters, $pluginFilters, $filter_name, 'exec_filter_callback', $data, 'exec_filter_complete');
+ 	$res = exec_hook($filters, $pluginFilters, $filter_name, 'exec_filter_callback', $data, 'exec_filter_complete');
+ 	if($res == null) return $data;
 }
 
 function exec_filter_callback($hook,&$data=array()){
