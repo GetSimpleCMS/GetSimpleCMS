@@ -975,7 +975,7 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	if ($page['menuStatus'] != '' )   { $pagemenustatus  = ' <span class="label label-ghost">'.i18n_r('MENUITEM_SUBTITLE').'</span>'; }
 	if ($page['private'] != '' )      { $pageprivate     = ' <span class="label label-ghost">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } 
 	if (pageHasDraft($page['url']))   { $pagedraft       = ' <span class="label label-ghost">'.lowercase(i18n_r('LABEL_DRAFT')).'</span>'; }
-	if ($page['url'] == 'index' )     { $pageindex       = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; }
+	if ($page['url'] == getDef('GSINDEXSLUG'))     { $pageindex       = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; }
 	if(dateIsToday($page['pubDate'])) { $pagepubdate     = ' <span class="datetoday">'. output_date($page['pubDate']) . '</span>';} else { $pagepubdate = '<span>'. output_date($page['pubDate']) . "</span>";}
 
 	$pagetitle = cl($pagetitle);

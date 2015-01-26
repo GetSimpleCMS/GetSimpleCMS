@@ -12,7 +12,8 @@ if (isset($_GET['id'])){
 	$id = str_replace ('/','',$id);
 	$id = lowercase($id);
 } else {
-	$id = "index";
+	$id = getDef('GSINDEXSLUG');
+	if(!pageExists($id)) $id = 'index';
 }
 
 // filter to modify page id request

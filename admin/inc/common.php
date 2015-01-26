@@ -87,6 +87,7 @@ $GS_definitions = array(
 	'GSSITEURLREL'         => true,                           // (bool) Use root relative urls for $SITEURL
 	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // (str) url used in email template
 	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
+	'GSINDEXSLUG'          => 'index',                        // (str) slug to use as index when no slug provided
 	# STYLES -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSSTYLE'              => 'wide,sbfixed',                 // (str-csv) default style modifiers
 	'GSWIDTH'              => '1024px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width

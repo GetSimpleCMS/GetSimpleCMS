@@ -508,7 +508,6 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
 
 	// setup url, falls back to title if not set
 	if(!isset($url)) $url = $title;
-	debugLog(gettype($url));
 	$url = prepareSlug($url); // prepare slug, clean it, translit, truncate
 
 	$title = truncate($title,GSTITLEMAX); // truncate long titles
@@ -594,6 +593,21 @@ function publishDraft($id){
  */
 function pageHasDraft($id){
 	return file_exists(GSDATADRAFTSPATH . $id .".xml");
+}
+
+/**
+ * check if a page exists.
+ * check pagecache first then check page file exist
+ * 
+ * @since  3.4
+ * @param  str $id slug id
+ * @return bool     true if page exists
+ */
+function pageExists($id){
+	GLOBAL $pagesArray;
+	if(isset($pagesArray[$id])) return true;
+	return file_exists(GSDATAPAGESPATH . $id .'.xml');
+	return false;
 }
 
 /**
@@ -1000,13 +1014,15 @@ function generate_url($slug, $absolute = false){
 	$path   = tsl(getSiteURL($absolute));
 	$url    = $path; // var to build url into
 
-	if ($PRETTYURLS == '1' && $slug != 'index'){
-		$url .= generate_permalink($slug);
-	} 
-	else if (!empty($PERMALINK) && $slug != 'index'){
-		$url .= generate_permalink($slug,$PERMALINK);
+	if($slug != getDef('GSINDEXSLUG')){
+		if ($PRETTYURLS == '1'){
+			$url .= generate_permalink($slug);
+		} 
+		else if (!empty($PERMALINK)){
+			$url .= generate_permalink($slug,$PERMALINK);
+		}
+		else $url .= 'index.php?id='.$slug;
 	}
-	else if ($slug != 'index') $url .= 'index.php?id='.$slug;
 
 	$url = exec_filter('generate_url',$url); // @filter generate_url (str) for generating urls after processing, for use with custom tokens etc
 	return $url;
