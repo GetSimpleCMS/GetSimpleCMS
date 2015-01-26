@@ -3,7 +3,7 @@
  * Security
  *
  * @package GetSimple
- * @subpackage init
+ * @subpackage Security-Functions
  */
 
 /*

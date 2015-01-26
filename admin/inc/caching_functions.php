@@ -1,12 +1,15 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
-/****************************************************
-*
-* @File:		caching_functions.php
-* @Package:		GetSimple
-* @since:		3.1
-* @Action:		Plugin to create pages.xml and new functions  
-*
-*****************************************************/
+/**
+ * page cache functions
+ *
+ * These functions are used to maintain a page cache
+ * so that information on all pages is available without loading page files
+ * 
+ * @file		caching_functions.php
+ * @package		GetSimple
+ * @subpackage  Caching-Functions
+ * @since		3.1
+ */
 
 $pagesArray = array();
 
