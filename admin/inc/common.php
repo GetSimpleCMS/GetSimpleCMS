@@ -73,6 +73,7 @@ $GS_constants = array(
 
 $GS_definitions = array(
 	'GSSUPERUSER'          => '',                             // (str) userid for superuser, defaults to website data/global $SITEUSR if it exists
+	'GSTABS'               => 'pages,upload,components,snippets,theme,backups,plugins', // (str) csv list of page ids and order to show tabs
 	'GSDEFAULTPAGE'        => 'pages.php',                    // (str) Default backend index page
 	'GSHEADERCLASS'        => '',                             // (str) custom class to add to header eg. `gradient` to add 3.3 gradients back
 	'GSHTTPPREFIX'         => '',                             // (str) http slug prefix GSHTTPPREFIX.GSSLUGxx

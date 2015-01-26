@@ -339,13 +339,17 @@ $i18n = array(
 */
 "WELCOME"                 =>	"Welcome", // used as 'Welcome USERNAME!'
 "TAB_PAGES"               =>	"<em>P</em>ages",
-"TAB_FILES"               =>	"F<em>i</em>les",
+"TAB_FILES"               =>	"F<em>i</em>les", // legacy
+"TAB_UPLOAD"              =>	"F<em>i</em>les",
 "TAB_THEME"               =>	"<em>T</em>heme",
 "TAB_BACKUPS"             =>	"<em>B</em>ackups",
-"PLUGINS_NAV"             =>	"Plu<em>g</em>ins",
+"PLUGINS_NAV"             =>	"Plu<em>g</em>ins", // legacy
+"TAB_PLUGINS"             =>	"Plu<em>g</em>ins",
 "TAB_SETTINGS"            =>	"<em>S</em>ettings",
 "TAB_SUPPORT"             =>	"Supp<em>o</em>rt",
 "TAB_LOGOUT"              =>	"<em>L</em>ogout",
+"TAB_COMPONENTS"          =>    "Components",
+"TAB_SNIPPETS"            =>    "Snippets",
 
 /* 
 * For: sidebar-files.php
