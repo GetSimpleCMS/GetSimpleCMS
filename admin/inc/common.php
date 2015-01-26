@@ -88,6 +88,7 @@ $GS_definitions = array(
 	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // (str) url used in email template
 	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
 	'GSINDEXSLUG'          => 'index',                        // (str) slug to use as index when no slug provided
+	'GSPLUGINORDER'        => '',                             // (str) csv list of plugin ids to load first and in order, kludge and not supported
 	# STYLES -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSSTYLE'              => 'wide,sbfixed',                 // (str-csv) default style modifiers
 	'GSWIDTH'              => '1024px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width
@@ -517,7 +518,7 @@ if(isset($load['plugin']) && $load['plugin']){
 
 	foreach ($live_plugins as $file=>$en) {
 		if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
-			# debugLog('including plugin: ' . $file);
+			// debugLog('including plugin: ' . $file);
 			include_once(GSPLUGINPATH . $file);
 			exec_action('plugin-loaded'); // @hook plugin-loaded called after each plugin is included
 		}

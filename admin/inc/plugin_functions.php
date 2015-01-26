@@ -43,16 +43,14 @@
 */
 
 /**
- * Include any plugins, depending on where the referring 
- * file that calls it we need to set the correct paths. 
+ * Initialize plugins data
+ * create GSPLUGINSFILE if not exist
+ * else load in plugins and register the inactive ones
  *
  * @since  3.4
- * @uses  $live_plugins
 */
 function loadPluginData(){
-	if (file_exists(GSPLUGINPATH)){
-		$pluginfiles = getFiles(GSPLUGINPATH);
-	} 
+	GLOBAL $live_plugins;
 
 	// Check if data\other\plugins.xml exists 
 	if (!file_exists(GSDATAOTHERPATH.getDef('GSPLUGINSFILE'))){
@@ -65,6 +63,16 @@ function loadPluginData(){
 	if(!is_frontend()) create_pluginsxml(get_filename_id() == 'plugins');  // only on backend check that plugin files have not changed, and regen
 	
 	registerInactivePlugins();
+
+	if(getDef('GSPLUGINORDER',true)){
+		$reorderplugins = explode(',',getDef('GSPLUGINORDER'));
+		debugLog("reorder plugins".print_r($reorderplugins,true));
+		$reorderplugins = array_reverse($reorderplugins);
+		foreach($reorderplugins as $reorderplugin){
+			$live_plugins=array($reorderplugin=>$live_plugins[$reorderplugin]) + $live_plugins; 
+		}
+	}
+
 	return true;
 }
 
