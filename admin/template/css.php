@@ -226,14 +226,16 @@ input[type="submit"] {
 }
 
 /* @todo: noooooo */
-#edit .wrapper .nav li a.pages,
+/*#edit .wrapper .nav li a.pages,
 #pages .wrapper .nav li a.pages,
 #menu-manager .wrapper .nav li a.pages,
 #plugins .wrapper .nav li a.plugins,
 #settings .wrapper .nav li a.settings,
 #components .wrapper .nav li a.theme,
+#snippets .wrapper .nav li a.theme,
 #theme .wrapper .nav li a.theme,
 #sitemap .wrapper .nav li a.theme,
+#theme-edit .wrapper .nav li a.theme-edit,
 #theme-edit .wrapper .nav li a.theme,
 #navigation .wrapper .nav li a.theme,
 #upload .wrapper .nav li a.files,
@@ -250,9 +252,10 @@ input[type="submit"] {
 #load .wrapper .theme li a.theme,
 #load .wrapper .files li a.files,
 #load .wrapper .backups li a.backups,
-#load	.wrapper .support li a.support,
+#load	.wrapper .support li a.support,*/
 #load .wrapper .nav li a.current,
-#loadtab .wrapper .nav li a.current {
+#loadtab .wrapper .nav li a.current,
+.wrapper .nav li a.current {
 	color: <?php echo $primary_1; ?>;
 	background: #f6f6f6;
 		background: -moz-linear-gradient(top, #FFF 3%, #F6F6F6 100%);	/* firefox */

@@ -26,12 +26,51 @@ if (get_filename_id() == 'load') {
 
 <?php 
 
-	$tabs = explode(',',getDef('GSTABS'));
+	$tabdefinition = array(
+		'pages'    => array('edit','menu-manager'),
+		'upload'   => array(),
+		'theme'    => array('theme-edit','components','snippets','sitemap'),
+		'backups'  => array('archive'),
+		'plugins'  => array(),
+		'support'  => array('health-check','log'),
+		'settings' => array('profile')
+	);
+
+	$sidemenudefinition = array(
+		'pages'        => '',
+		'edit'         => 'pages',
+		'menu-manager' => 'pages',
+		'upload'       => '',
+		'theme'        => '',
+		'theme-edit'   => 'theme',
+		'components'   => 'theme',
+		'snippets'     => 'theme',
+		'sitemap'      => 'theme',
+		'backups'      => '',
+		'archive'      => 'backups',
+		'plugins'      => '',
+		'support'      => '',
+		'health-check' => 'support',
+		'log'          => 'support',
+		'settings'     => '',
+		'profile'      => 'settings'
+	);
+	
+	$tabs    = explode(',',getDef('GSTABS'));
+	$tabs  = array_keys($sidemenudefinition); // debug all
+	print_r(implode(',',$tabs));
+	$current = get_filename_id();
+	// if current tab is not in GSTABS, then set its parent tab as current
+	if(!in_array($current,$tabs)){
+		if(isset($sidemenudefinition[$current]) && !empty($sidemenudefinition[$current])) $current = $sidemenudefinition[$current];
+	}
+
 	if($tabs){
 		foreach($tabs as $tab){
 			if(empty($tab)) continue;
 			$tabtitle = i18n_r('TAB_'.uppercase($tab));
-			echo '<li id="nav_'.$tab.'" ><a class="'.$tab.'" href="'.$tab.'.php" accesskey="'. find_accesskey($tabtitle).'" >'.$tabtitle.'</a></li>';
+			$class = $tab == $current ? ' current' : '';
+			echo '<li id="nav_'.$tab.'" ><a class="'.$tab.$class.'" href="'.$tab.'.php" accesskey="'. find_accesskey($tabtitle).'" >'.$tabtitle.'</a></li>';
 		}
 	}
 	

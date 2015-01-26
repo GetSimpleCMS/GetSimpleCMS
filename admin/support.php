@@ -52,7 +52,13 @@ get_template('header');
 			
 			<h3><?php i18n('SUPPORT');?></h3>
 			<ul>
-				<li><p><a href="log.php?log=failedlogins.log"><?php i18n('VIEW_FAILED_LOGIN');?></a></p></li>
+				<li><a href="log.php?log=failedlogins.log"><?php i18n('VIEW_FAILED_LOGIN');?></a></li>
+				<li><a href="plugins.php"><?php i18n('PLUGINS_MANAGEMENT');?></a></li>
+				<li><a href="backups.php"><?php i18n('PAGE_BACKUPS');?></a></li>
+				<li><a href="archive.php"><?php i18n('WEBSITE_ARCHIVES');?></a></li>
+				<li><a href="theme.php"><?php i18n('THEME_MANAGEMENT');?></a></li>
+				<li><a href="sitemap.php"><?php i18n('VIEW_SITEMAP');?></a></li>
+				<br/>
 				<?php exec_action('support-extras'); // @hook support-extras  support links list html ?>
 			</ul>
 		</div>
