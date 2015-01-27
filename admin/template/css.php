@@ -1016,6 +1016,19 @@ form textarea.text:focus,
 	box-shadow: rgba(0,0,0, 0.10) 0 0 6px;
 }
 
+form input.text.error,
+form select.text.error,
+form textarea.text.error,
+#post-content.error {
+	line-height: 1em;
+	outline: none;
+	background-color:inherit;
+	border: 1px solid #CB2F3F !important;
+		-moz-box-shadow: rgba(128, 0,0, 0.2) 0 0 6px;
+		-webkit-box-shadow: rgba(128, 0,0, 0.2) 0 0 6px;
+	box-shadow: rgba(128,0,0, 0.2) 0 0 6px;
+}
+
 form textarea {
 	outline: none;
 	width: 100%;

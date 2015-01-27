@@ -803,13 +803,32 @@ jQuery(document).ready(function () {
 		var myval = $(this).val();
 		$(this).parents('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
 		$(this).parents('.compdiv').find("b.editable").html(myval);
-		$(this).parents('.compdiv').find("input.comptitle").val(myval);
-		if(myval !== ''){
+		if(myval !== '' && validateCompSlug(myval)){
+			$(this).parents('.compdiv').find("input.comptitle").val(myval);
 			$("b.editable").show();
 			$('#changetitle').remove();
 		}	
+		else {
+			Debugger.log('slug is NOT unique');
+			$(this).addClass('error');
+		}
 	});
  
+ 	/**
+ 	 * validate compslug by checking unique ness
+ 	 */
+	function validateCompSlug($id){
+		var slugs = $( "input.comptitle" )
+		 	.map(function() {
+		 		return $(this).val();
+			})
+			.get()
+
+		// Debugger.log(slugs);
+		return jQuery.inArray($id, slugs)==-1;			
+
+	}
+
  	// handle toggling active, @todo: enable some kind of css style etc here
 	$("#maincontent").on("change","[name='active[]']", function () {
 		var myval = $(this).val();
