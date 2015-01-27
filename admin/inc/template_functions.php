@@ -1277,6 +1277,7 @@ function get_api_details($type='core', $args=null) {
 	else debug_api_details('cache check: disabled');
 
 	$cacheAge = file_exists(GSCACHEPATH.$cachefile) ? filemtime(GSCACHEPATH.$cachefile) : '';
+	debug_api_details('cache age: ' . output_datetime($cacheAge));
 
 	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpire) < $cacheAge ) {
 		# grab the api request from the cache

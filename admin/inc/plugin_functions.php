@@ -8,7 +8,7 @@
 
 /**
  * 
- * 	global array for storing all plugins greated from plugins registerplugin() call
+ * 	global array for storing all plugins greated from plugins register_plugin() call
  *	    $plugin_info[$id] = array(
  *	       'name'        => $name,
  *	       'version'     => $ver,
@@ -146,14 +146,14 @@ function change_plugin($name,$active=null){
 }
 
 /**
- * plugin_active
+ * check if a plugin is active
  * determine if a plugin is active
  *
  * @since 3.4
  * @param  string $pluginid
  * @return bool   returns true if active
  */
-function plugin_active($pluginid){
+function pluginIsActive($pluginid){
 	GLOBAL $live_plugins;
 	return isset($live_plugins[$pluginid.'.php']) && ($live_plugins[$pluginid.'.php'] == 'true' || $live_plugins[$pluginid.'.php'] === true);
 }

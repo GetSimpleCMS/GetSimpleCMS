@@ -43,7 +43,7 @@ foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
 	// @todo disabled plugins have a version of (str) 'disabled', should be 0 or null
 	$pluginver  = $plugininfo['version'] == 'disabled' ? 0 : $plugininfo['version'];
 
-	if (plugin_active($pluginid)) {
+	if (pluginIsActive($pluginid)) {
 		$cls_Enabled  = 'hidden';
 		$cls_Disabled = '';
 		$trclass      = 'enabled';
@@ -54,7 +54,7 @@ foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
 	}
 
 	// get extend api for this plugin filename
-	$api_data   = json_decode(get_api_details('plugin', $pluginid));
+	$api_data   = json_decode(get_api_details('plugin', $pluginid.'.php'));
 	$updatelink = '';
 
 	// api success
