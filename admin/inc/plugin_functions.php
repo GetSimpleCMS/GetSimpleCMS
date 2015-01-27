@@ -97,9 +97,8 @@ function registerInactivePlugins($apilookup = false){
 				// check api to get names of inactive plugins etc.
 		 		$apiback  = get_api_details('plugin', $file);
 		  		$response = json_decode($apiback);
-
 		  		if ($response and $response->status == 'successful') {
-					register_plugin( pathinfo_filename($file), $file, 'disabled', $response->owner, '', i18n_r('PLUGIN_DISABLED'), '', '');
+					register_plugin( pathinfo_filename($file), $response->name, 'disabled', $response->owner, '', i18n_r('PLUGIN_DISABLED'), '', '');
 		  		} else {
 					register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', i18n_r('PLUGIN_DISABLED'), '', '');
 		  		}

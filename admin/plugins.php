@@ -34,6 +34,34 @@ $counter     = 0;
 $table       = '';
 $needsupdate = false;
 
+
+/**
+ * update plugin_info with additional info from api
+ */
+function plugin_info_update(){
+	GLOBAL $plugin_info;
+
+	foreach($plugin_info as $key=>$plugin){
+		$api_data   = json_decode(get_api_details('plugin', $key.'.php'));
+		
+		// on api success
+		if (is_object($api_data) && $api_data->status == 'successful') {
+			$apiver     = $api_data->version;
+			$apipath    = $api_data->path;
+			$apiname    = $api_data->name;
+
+			$plugin_info[$key]['name']    = $apiname;
+			// $plugin_info[$key]['apiname'] = $apiname;
+			$plugin_info[$key]['apipath'] = $apipath;
+			$plugin_info[$key]['apiver']  = $apiver;
+		}
+	}
+}
+
+plugin_info_update();
+
+debugLog($plugin_info);
+
 $plugin_info_sorted = subval_sort($plugin_info,'name');
 
 foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
@@ -54,22 +82,19 @@ foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
 	}
 
 	// get extend api for this plugin filename
-	$api_data   = json_decode(get_api_details('plugin', $pluginid.'.php'));
 	$updatelink = '';
 
 	// api success
-	if (is_object($api_data) && $api_data->status == 'successful') {
-		$apiver     = $api_data->version;
-		$apipath    = $api_data->path;
-		$apiname    = $api_data->name;
-
+	if (isset($plugininfo['apipath'])) {
+		$apiver  = $plugininfo['apiver'];
+		$apipath = $plugininfo['apipath'];
 		// show update available link
 		if ($pluginver >0 && version_compare($apiver,$pluginver,'>')) {
 			$updatelink  = '<br /><a class="updatelink" href="'.$apipath.'" target="_blank">'.i18n_r('UPDATE_AVAILABLE').' '.$apiver.'</a>';
 			$needsupdate = true;
 		}
 
-		$plugin_title = '<a href="'.$apipath.'" target="_blank">'.$apiname.'</a>';
+		$plugin_title = '<a href="'.$apipath.'" target="_blank">'.$plugininfo['name'].'</a>';
 	} else {
 		// api fail , does not exist in extend
 		$plugin_title = $plugininfo['name'];
