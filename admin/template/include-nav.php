@@ -25,36 +25,6 @@ if (get_filename_id() == 'load') {
 <ul class="nav <?php echo $plugin_class; ?>">
 
 <?php 
-
-	$tabdefinition = array(
-		'pages'    => array('edit','menu-manager'),
-		'upload'   => array(),
-		'theme'    => array('theme-edit','components','snippets','sitemap'),
-		'backups'  => array('archive'),
-		'plugins'  => array(),
-		'support'  => array('health-check','log'),
-		'settings' => array('profile')
-	);
-
-	$sidemenudefinition = array(
-		'pages'        => '',
-		'edit'         => 'pages',
-		'menu-manager' => 'pages',
-		'upload'       => '',
-		'theme'        => '',
-		'theme-edit'   => 'theme',
-		'components'   => 'theme',
-		'snippets'     => 'theme',
-		'sitemap'      => 'theme',
-		'backups'      => '',
-		'archive'      => 'backups',
-		'plugins'      => '',
-		'support'      => '',
-		'health-check' => 'support',
-		'log'          => 'support',
-		'settings'     => '',
-		'profile'      => 'settings'
-	);
 	
 	$tabs    = explode(',',getDef('GSTABS'));
 	// $tabs  = array_keys($sidemenudefinition); // debug all
