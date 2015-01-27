@@ -58,7 +58,6 @@ if (get_filename_id() == 'load') {
 	
 	$tabs    = explode(',',getDef('GSTABS'));
 	// $tabs  = array_keys($sidemenudefinition); // debug all
-	// print_r(implode(',',$tabs));
 	$current = get_filename_id();
 	// if current tab is not in GSTABS, then set its parent tab as current
 	if(!in_array($current,$tabs)){

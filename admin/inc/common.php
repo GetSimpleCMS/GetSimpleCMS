@@ -73,7 +73,7 @@ $GS_constants = array(
 
 $GS_definitions = array(
 	'GSSUPERUSER'          => '',                             // (str) userid for superuser, defaults to website data/global $SITEUSR if it exists
-	'GSTABS'               => 'pages,upload,components,snippets,theme,backups,plugins', // (str) csv list of page ids and order to show tabs
+	'GSTABS'               => 'pages,upload,theme,backups,plugins', // (str) csv list of page ids and order to show tabs
 	'GSDEFAULTPAGE'        => 'pages.php',                    // (str) Default backend index page
 	'GSHEADERCLASS'        => '',                             // (str) custom class to add to header eg. `gradient` to add 3.3 gradients back
 	'GSHTTPPREFIX'         => '',                             // (str) http slug prefix GSHTTPPREFIX.GSSLUGxx
@@ -228,8 +228,41 @@ define('GSBACKUSERSPATH' , GSBACKUPSPATH   . 'users/');     // backups/users
 define('GSTHEMESPATH'    , GSROOTPATH      . 'theme/');     // theme/
 
 
-
+// reserved slug names, slugs named these will interfere with gs folder access
+// these are cehcked against in changedata.php and auto incremented to avoid conflicts
 $reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
+
+// tab sidemenu structure reference
+$tabdefinition = array(
+	'pages'    => array('edit','menu-manager'),
+	'upload'   => array(),
+	'theme'    => array('theme-edit','components','snippets','sitemap'),
+	'backups'  => array('archive'),
+	'plugins'  => array(),
+	'support'  => array('health-check','log'),
+	'settings' => array('profile')
+);
+
+// sidemenu parent tabs reference
+$sidemenudefinition = array(
+	'pages'        => '',
+	'edit'         => 'pages',
+	'menu-manager' => 'pages',
+	'upload'       => '',
+	'theme'        => '',
+	'theme-edit'   => 'theme',
+	'components'   => 'theme',
+	'snippets'     => 'theme',
+	'sitemap'      => 'theme',
+	'backups'      => '',
+	'archive'      => 'backups',
+	'plugins'      => '',
+	'support'      => '',
+	'health-check' => 'support',
+	'log'          => 'support',
+	'settings'     => '',
+	'profile'      => 'settings'
+);
 
 /**
  * Init debug mode
