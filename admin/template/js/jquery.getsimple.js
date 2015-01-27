@@ -787,7 +787,7 @@ jQuery(document).ready(function () {
 
 	$.fn.comptitleinput = function(){
 		var t = $(this).html();		
-		$(this).parents('.compdiv').find("input.comptitle").hide();
+		$(this).parents('.compdiv').find("input.comptitle").val('').hide(); // wipe comptitle
 		$(this).after('<div id="changetitle"><label>Title: </b><input class="text newtitle titlesaver" name="titletmp[]" value="' + t + '" /></div>');
 		$(this).next('#changetitle').find('input.titlesaver').focus();
 		$(this).parents('.compdiv').find("input.compslug").val('');
@@ -801,15 +801,18 @@ jQuery(document).ready(function () {
 		$(this).parents('.compdiv').find("b.editable").html(myval);
 	}).on("focusout", "input.titlesaver", function () {
 		var myval = $(this).val();
+		myval = myval.toLowerCase().trim();
 		$(this).parents('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
 		$(this).parents('.compdiv').find("b.editable").html(myval);
 		if(myval !== '' && validateCompSlug(myval)){
+			// Debugger.log('slug IS unique: "' + myval + '"');
 			$(this).parents('.compdiv').find("input.comptitle").val(myval);
 			$("b.editable").show();
 			$('#changetitle').remove();
+			$(this).val(myval+'new'); // put cleaner slug back
 		}	
 		else {
-			Debugger.log('slug is NOT unique');
+			Debugger.log('slug is NOT unique: ' + myval );
 			$(this).addClass('error');
 		}
 	});
