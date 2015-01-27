@@ -99,7 +99,7 @@ if(isset($_POST['submitted'])) {
 			copy_file($temp,$init);
 			$xml = getXML($init);
 			$xml->pubDate = date('r'); # update date
-			$xml->asXML($init);
+			XMLsave($xml,$init);
 		}
 
 
