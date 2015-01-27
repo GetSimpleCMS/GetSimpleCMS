@@ -59,9 +59,6 @@ function plugin_info_update(){
 }
 
 plugin_info_update();
-
-debugLog($plugin_info);
-
 $plugin_info_sorted = subval_sort($plugin_info,'name');
 
 foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
