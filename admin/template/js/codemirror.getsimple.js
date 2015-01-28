@@ -77,7 +77,6 @@ jQuery(document).ready(function () {
 
 	/**
 	 * editorFromTextarea replaces a textarea with a codemirror editor
-	 * @todo  add destroy
 	 * @uses jquery collection $(this)
 	 * @uses editorConfig
 	 * @uses editorUserConfig
@@ -159,7 +158,7 @@ jQuery(document).ready(function () {
 				CodeMirror.commands.autocomplete = function(cm) {
 
 					var mode = editorGetInnerMode(cm);
-					Debugger.log('innermode: ' + mode);
+					// Debugger.log('innermode: ' + mode);
 					if (mode == 'xml') { //html depends on xml
 						CodeMirror.showHint(cm, CodeMirror.hint.html);
 					} else if (mode == 'javascript') {
@@ -171,6 +170,7 @@ jQuery(document).ready(function () {
 					}
 				}
 			}
+
 			// adjust for window resizing awhen in fullscreen
 			editor.on(window, "resize", function(e) {
 				var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
@@ -187,13 +187,22 @@ jQuery(document).ready(function () {
 	function initcodemirror(){
 		// apply codemirror to class of .code_edit
 		var elem= $(".code_edit").editorFromTextarea();
+		initCmThemeSelector();
+	}
+
+	function initCmThemeSelector(){
 		setThemeSelected(editorTheme);
 		cm_theme_update(editorTheme); // @todo: prevent overriding theme in custom configs
 	}
 
+	// @todo I guess these should all extend CodeMirror
+	function editorDestroy(cm){
+		cm.totextarea();
+	}
+
 	function editorGetInnerMode(cm){
 		var doc     = cm.getDoc();
-		var cursor = doc.getCursor();
+		var cursor  = doc.getCursor();
 		var mode    = CodeMirror.innerMode(cm.getMode(), cm.getTokenAt(cursor).state).mode.name;
 		return mode;
 	}

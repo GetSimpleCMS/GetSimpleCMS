@@ -150,7 +150,6 @@ $.fn.addCloseButton = function(){
  * @since 3.4
  *
  */
-
 $.fn.spin = function(opts, color, shim) {
 
 	return this.each(function() {
@@ -1578,9 +1577,9 @@ jQuery(document).ready(function () {
 		e.preventDefault();
 		ajaxStatusWait();
 		
-		cm_save_editors();
-		cm_save_htmleditors();
-		cm_save_inlinehtmleditors();
+		save_codeeditors();
+		save_htmleditors();
+		save_inlinehtmleditors();
 		var dataString = $("#compEditForm").serialize();			
 
 		$.ajax({
@@ -1654,7 +1653,7 @@ jQuery(document).ready(function () {
 	};
 
 	// save all editors
-	cm_save_editors = function(){
+	save_codeeditors = function(){
 		// Debugger.log(theme);
 		$('.code_edit').each(function(i, textarea){
 			var editor = $(textarea).data('editor');
@@ -1666,7 +1665,7 @@ jQuery(document).ready(function () {
 	};
 
 	// save all editors
-	cm_save_htmleditors = function(){
+	save_htmleditors = function(){
 		// Debugger.log(theme);
 		$('.html_edit').each(function(i, textarea){
 			var editor = $(textarea).data('htmleditor');
@@ -1679,7 +1678,7 @@ jQuery(document).ready(function () {
 	};
 
 	// save all editors
-	cm_save_inlinehtmleditors = function(){
+	save_inlinehtmleditors = function(){
 		// Debugger.log(theme);
 		$('[contenteditable="true"]').each(function(i,elem){
 			Debugger.log($(elem).prop('id'));
@@ -1900,6 +1899,16 @@ jQuery(document).ready(function () {
 
 	// end of jQuery ready
 });
+
+
+function initCmThemeSelector(){
+	setThemeSelected(editorTheme);
+	cm_theme_update(editorTheme); // @todo: prevent overriding theme in custom configs
+}
+
+function setThemeSelected(theme){
+	$("#cm_themeselect").val(theme);
+}
 
 function isTouchDevice(){
 		// detect touch devices, only mobiles, commented out feature spec
