@@ -300,30 +300,37 @@ function get_page_url($echo=false) {
  * @return string HTML for template header
  */
 function get_header($full=true) {
+	echo build_header($full);
+	exec_action('theme-header');  // @hook theme-header after get_header output html
+}
+
+function build_header($full){
 	include(GSADMININCPATH.'configuration.php');
 	
+	$str = '';
+
 	// meta description	
 	$description = get_page_meta_desc(false);
-	if(!empty($description)) echo '<meta name="description" content="'.$description.'" />'."\n";
+	if(!empty($description)) $str.= '<meta name="description" content="'.$description.'" />'."\n";
 	
 	// meta robots
 	$metarobots = get_page_meta_robots(false);
-	if(!empty($metarobots)) echo '<meta name="robots" content="'.$metarobots.'" />'."\n";
+	if(!empty($metarobots)) $str.= '<meta name="robots" content="'.$metarobots.'" />'."\n";
 
 	// meta keywords
 	$keywords = get_page_meta_keywords(false);
-	if (!empty($keywords)) echo '<meta name="keywords" content="'.$keywords.'" />'."\n";
+	if (!empty($keywords)) $str.= '<meta name="keywords" content="'.$keywords.'" />'."\n";
 	
 	// canonical link
 	if ($full) {
 		$canonical = exec_filter('linkcanonical',get_page_url(true)); // @filter linkcanonical (str) rel canonical link
-		if(!empty($canonical)) echo '<link rel="canonical" href="'.$canonical.'" />'."\n";
+		if(!empty($canonical)) $str.= '<link rel="canonical" href="'.$canonical.'" />'."\n";
 	}
 
 	// script queue
-	get_scripts_frontend();
-	
-	exec_action('theme-header');  // @hook theme-header after get_header output html
+	$str .= getScripts(GSFRONT);
+	$str = exec_filter('theme-header',$str);
+	return $str;
 }
 
 /**
@@ -340,6 +347,26 @@ function get_footer() {
 	get_scripts_frontend(true);
 	exec_action('theme-footer');  // @hook theme-footer after get_footer html output
 }
+
+
+/**
+ * Get Styles Frontend
+ * @since 3.1
+ */
+function get_styles_frontend(){
+  echo getStyles(GSFRONT);
+}
+
+/**
+ * Get Scripts for front end
+ *
+ * @since 3.1 *
+ * @param boolean $footer Load only script with footer flag set
+ */
+function get_scripts_frontend($footer = false){
+  echo getScripts(GSFRONT,$footer);
+}
+
 
 /**
  * Get Site URL

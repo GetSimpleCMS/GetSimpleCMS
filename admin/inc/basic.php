@@ -2429,6 +2429,7 @@ function getTransliteration(){
  * set php locale
  * @since 3.4
  * @param str $locale a csv locale str
+ * @return str current locale
  */
 function  setCustomLocale($locale){
 	// split locale string into array, removing whitespace and empties

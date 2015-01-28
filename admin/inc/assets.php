@@ -351,23 +351,13 @@ function dequeue_script($handle, $where){
 }
 
 /**
- * Get Scripts for front end
- *
- * @since 3.1 *
- * @param boolean $footer Load only script with footer flag set
- */
-function get_scripts_frontend($footer = false){
-  getScripts(GSFRONT,$footer);
-}
-
-/**
  * Get Scripts for backend
  *
  * @since 3.1 *
  * @param boolean $footer Load only script with footer flag set
  */
 function get_scripts_backend($footer = false){
-  getScripts(GSBACK,$footer);
+  echo getScripts(GSBACK,$footer);
 }
 
 /**
@@ -383,6 +373,9 @@ function get_scripts_backend($footer = false){
  */
 function getScripts($facing = GSBACK, $footer = false){
   global $GS_scripts;
+
+  $str = '';
+
   if (!$footer){
     $facing === GSBACK ? get_styles_backend() : get_styles_frontend();
   }
@@ -391,10 +384,12 @@ function getScripts($facing = GSBACK, $footer = false){
   foreach ($GS_scripts as $script){
     if ($script['load'] == true && ($script['where'] & $facing) ){
       if($footer !== $script['in_footer']) continue;
-      echo '<script src="'.$script['src'].( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '"></script>'."\n";
+      $str.= '<script src="'.$script['src'].( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '"></script>'."\n";
       cdn_fallback($script);  
     }
-  } 
+  }
+
+  return $str;
 }
 
 
@@ -404,14 +399,21 @@ function getScripts($facing = GSBACK, $footer = false){
  * @param  array $script gsscript array
  */
 function cdn_fallback($script){
-  GLOBAL $GS_script_assets, $GS_asset_objects;  
+  echo build_cdn_fallback($script);
+}
+
+function build_cdn_fallback($script){
+  GLOBAL $GS_script_assets, $GS_asset_objects; 
+  $str = '';
   if (getDef('GSNOCDN',true)) return; // if nocdn skip
   if($script['name'] == 'jquery' || $script['name'] == 'jquery-ui'){
-    echo "<script>";
-    echo "window.".$GS_asset_objects[$script['name']]." || ";
-    echo "document.write('<!-- CDN FALLING BACK --><script src=\"".$GS_script_assets[$script['name']]['local']['url'].'?v='.$GS_script_assets[$script['name']]['local']['ver']."\"><\/script>');";
-    echo "</script>\n";
-  }         
+    $str .= "<script>";
+    $str .= "window.".$GS_asset_objects[$script['name']]." || ";
+    $str .= "document.write('<!-- CDN FALLING BACK --><script src=\"".$GS_script_assets[$script['name']]['local']['url'].'?v='.$GS_script_assets[$script['name']]['local']['ver']."\"><\/script>');";
+    $str .= "</script>\n";
+  }
+
+  return $str;    
 }
 
 /**
@@ -504,20 +506,13 @@ function register_style($handle, $src, $ver, $media, $queue = null){
   );
 }
 
-/**
- * Get Styles Frontend
- * @since 3.1
- */
-function get_styles_frontend(){
-  getStyles(GSFRONT);
-}
 
 /**
  * Get Styles Backend
  * @since 3.1
   */
 function get_styles_backend(){
-  getStyles(GSBACK);
+  echo getStyles(GSBACK);
 }
 
 
@@ -532,13 +527,15 @@ function get_styles_backend(){
  */
 function getStyles($facing = GSBACK){
   global $GS_styles;
+  $str = '';
   foreach ($GS_styles as $style){
     if ($style['where'] & $facing ){
         if ($style['load'] == true){
-          echo '<link href="'.$style['src']. ( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '" rel="stylesheet" media="'.$style['media'].'">'."\n";
+          $str .= '<link href="'.$style['src']. ( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '" rel="stylesheet" media="'.$style['media'].'">'."\n";
         }
     }
   }
+  return $str;
 }
 
 /* ?> */
