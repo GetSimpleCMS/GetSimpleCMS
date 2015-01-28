@@ -419,10 +419,8 @@ if($newdraft) $pageClass.=' newdraft';
 
 <!-- ------- PAGE CONTENT --------------------------------------------------- -->            
             <div id="page_content" class="tab">
-            <?php if (empty($HTMLEDITOR)) { ?>
             <fieldset>
             <legend>Page Content</legend>
-            <?php } ?>
 
                 <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
                 <div class="codewrap"><textarea id="post-content" <?php echo getEditorAttribCallout('pages','boxsizingBorder'); ?>  name="post-content"><?php echo $content; ?></textarea></div>
@@ -436,9 +434,9 @@ if($newdraft) $pageClass.=' newdraft';
 
             exec_action('html-editor-init'); //@hook html-edit-init LEGACY deprecated
             echo "<!-- html-editor-init -->";
-            if (empty($HTMLEDITOR)) echo '</fieldset>';
 
         ?>
+            </fieldset>
         </div>
         <!-- / END PAGE CONTENT -->
 
@@ -473,6 +471,11 @@ if($newdraft) $pageClass.=' newdraft';
             <div class="clear"></div>    
             </fieldset>            
         </div>
+        
+        <?php 
+            exec_action('edit-tab'); // @hook edit-tab add extra tabs to edit.php
+        ?>
+
     </div> <!-- / END TABS -->
             <span class="editing"><?php echo sprintf($draft ? i18n_r('EDITING_DRAFT_TITLE') : i18n_r('EDITING_PAGE_TITLE'),'<b>'.$title.'</b>'); ?></span>
             <div id="submit_line" >

@@ -524,6 +524,22 @@ jQuery(document).ready(function () {
 
 	// init jq tabs custom handlers
 	if(window.tabs){
+
+		var $tabs = new Array('page_content','page_options','page_meta');
+
+		// dynamically add new tabs
+		// #tabs .tab , tab title obtained from fieldset <legend>
+		$("#tabs .tab").each(function(e){
+			var $id = $(this).attr('id');
+			if(jQuery.inArray($id,$tabs)==-1){
+				// Debugger.log("new tab: " + $id);
+				// tabtitle = $(this).data('title');
+				tabtitle = $(this).find('legend').text();
+				newtab = $('<li class="tab-custom"><a href="#'+$id+'"><span>'+tabtitle+'</span></a></li>');
+				$('#tabs ul.tab-list').append(newtab);
+			}
+		});
+
 		$("#tabs").tabs({
 			activate: function(event, ui) {
 				// set bookmarkable urls
