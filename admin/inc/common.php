@@ -340,6 +340,8 @@ if(!is_frontend()){
  * @global (str) $SITELANG      default site ITEF langstring, used for login etc. see $LANG
  * @global (str) $SITEUSR       primary user id that installed GS, superuser
  * @global (str) $ASSETURL      url for asset loading in head depends on GSASSETURLREL and GSASSETSCHEMES settings
+ * @global (str) $OLDLOCALE     store old locale before setcustomlocale
+ * @global (str) $NEWLOCALE     store new locale before setcustomlocale
  */
 
 GLOBAL
@@ -355,7 +357,9 @@ GLOBAL
  $SITETIMEZONE,
  $SITELANG,
  $SITEUSR,
- $ASSETURL
+ $ASSETURL,
+ $OLDLOCALE,
+ $NEWLOCALE
 ;
 
 // load website data from GSWEBSITEFILE (website.xml)
@@ -405,8 +409,9 @@ $LANG = getDefaultLang();   // set global language from config heirarchy
 i18n_merge(null);           // load $LANG file into $i18n
 i18n_mergeDefault();        // load GSDEFAULTLANG or GSMERGELANG lang into $i18n to override ugly missing {} tokens if set
 
-//set php locale
-setCustomLocale(getLocaleConfig());
+//set php locale, after language, since we get locale from language files
+$OLDLOCALE = setlocale(LC_ALL,0);
+$NEWLOCALE = setCustomLocale(getLocaleConfig());
 
 /**
  * Globals for salt and authentication data
@@ -480,9 +485,11 @@ $dump = array(
 'EDOPTIONS'    => $EDOPTIONS,
 'EDLANG'       => $EDLANG,
 'EDHEIGHT'     => $EDHEIGHT,
+'OLDLOCALE'    => $OLDLOCALE,
+'NEWLOCALE'    => $NEWLOCALE
 // '_SERVER'      => $_SERVER,
 );
-// debugLog($dump);
+debugLog($dump);
 
 /**
  * Check to make sure site is already installed

@@ -2429,15 +2429,16 @@ function getTransliteration(){
  * set php locale
  * @since 3.4
  * @param str $locale a csv locale str
- * @return str current locale
+ * @return str set locale, false on fail
  */
 function  setCustomLocale($locale){
 	// split locale string into array, removing whitespace and empties
 	if($locale) {
 		$localestr = preg_split('/\s*,\s*/', trim($locale), -1, PREG_SPLIT_NO_EMPTY);
+		debugLog('setting locale: ' . implode(',',$localestr));
 		$result    = setlocale(LC_ALL, $localestr);
 		return $result;
-}
+	}
 }
 
 /**
