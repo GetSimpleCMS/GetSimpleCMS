@@ -74,8 +74,6 @@ if (isset($_FILES['file'])) {
 				exec_action('file-uploaded');
 				
 				// generate thumbnail				
-				require_once('inc/imagemanipulation.php');	
-
 				genStdThumb($subFolder,$file_base);
 
 				$messages[] = i18n_r('FILE_SUCCESS_MSG');
@@ -352,7 +350,6 @@ function getUploadIcon($type){
 				# get external thumbnail link
 				# if not exist generate it
 				if (!file_exists(GSTHUMBNAILPATH.$thumbLinkExternal) || isset($_REQUEST['regenthumbnail'])) {
-					require_once('inc/imagemanipulation.php');
 					genStdThumb($subPath,$upload['name']);					
 				}
 				

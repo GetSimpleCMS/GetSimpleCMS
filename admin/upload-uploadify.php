@@ -41,7 +41,6 @@ if ($_POST['sessionHash'] === $SESSIONHASH && getDef('GSALLOWUPLOADS',true)) {
 			$path = (isset($_POST['path'])) ? $_POST['path']."/" : "";
 			$thumbsPath = GSTHUMBNAILPATH.$path;
 			
-		require('inc/imagemanipulation.php');	
 		genStdThumb(isset($_POST['path']) ? $_POST['path']."/" : '',$name);	
 			
 		
