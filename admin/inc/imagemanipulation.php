@@ -1,5 +1,6 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 
+
 /**
  * ImageManipulation Class
  *
@@ -238,6 +239,12 @@ class ImageManipulation {
 	public function setUpscale($bool = true){
 		$this->image['upscale'] = $bool;
 	}
+
+	public function setQuality($quality = 75){
+		// debugLog("setting quality: " . $quality);
+		$this->setJpegQuality($quality);
+		$this->setPngQuality($quality);
+	}
 	
 	/**
      * Sets the JPEG output quality.
@@ -249,10 +256,6 @@ class ImageManipulation {
 		$this->image["quality"] = $quality;
 	}
 
-	public function setOutputFormat($format){
-		$this->image["format_out"] = $format;
-	}
-
 	/**
      * Sets the PNG output quality.
      *
@@ -261,9 +264,13 @@ class ImageManipulation {
 	public function setPngQuality($quality=0)
 	{
         if (PHP_VERSION >= '5.1.2') {		
-        	$quality = 9 - min( round($this->quality / 10), 9 );	
+        	$quality = 9 - min( round($this->image['quality'] / 10), 9 );	
 			$this->image["pngquality"] = $quality;
 		}	
+	}
+
+	public function setOutputFormat($format){
+		$this->image["format_out"] = $format;
 	}
 	
 	/**
@@ -316,7 +323,7 @@ class ImageManipulation {
      */
 	public function show()
 	{
-		$this->save("",false);
+		$this->save("",true);
 	}
 
 	/**
@@ -324,8 +331,13 @@ class ImageManipulation {
 	 *
 	 * @param string $save The new image filename.
      */	
-	public function save($file="",$headers = false)
+	public function save($file=null, $show = false)
 	{
+
+		// debugDie(print_r($this,true));
+
+		if(isset($file) && empty($file)) $file = null;
+		$showsave = $show && isset($file);
 
 		if(isset($this->image['format_out'])) $format = $this->image["format_out"];
 		else{
@@ -335,40 +347,59 @@ class ImageManipulation {
 			$this->image["format_out"] = $format;
 		}
 
-		if($headers){
+		if($show){
+			// if showing output headers
 			header("Content-Type: image/".$format);
-			$file = null;
 		} else {
 			if(empty($file)) {
 				$this->image['success'] = false;
 				return false;
 			}
-			$this->image['outfile'] = $file;
 		}
+		
+		$this->image['outfile'] = $file;
 
 		$success = false;
 		$this->createResampledImage();
+
+		// If $file is null these will output images instead of saving them
 		if ( $format == "GIF" ) {
 			// GIF
-			// fallback to JPG is not supported
-			if(function_exists('imageGIF')) $success = imageGIF($this->image["des"], $file);
+			// gif might not supported in certain versions of GD
+			if(function_exists('imageGIF')){
+				$success = imageGIF($this->image["des"], $file);
+			}
 			else {
-				// gif not supported
-				// $format == "JPG"; // fallback?
+				$success = false;
+				debugLog(__FUNCTION__ . 'unsupported output format: ' . $format);
+				$this->image['success'] = $success; 
+				return $success;
 			}
 		}
-		else if ($format == "JPG" || $format == "JPEG" ) {
+		elseif ($format == "JPG" || $format == "JPEG" ) {
 			// JPEG
 			$success = imageJPEG($this->image["des"], $file, $this->image["quality"]);
-		} elseif ( $format == "PNG" ) {
+		}
+		elseif ( $format == "PNG" ) {
 			// PNG
-			$success = imagePNG($this->image["des"], $file);
-		} elseif ( $format == "WBMP" ) {
+			$success = imagePNG($this->image["des"], $file, $this->image["pngquality"]);
+		}
+		elseif ( $format == "WBMP" ) {
 			// WBMP
 			$success = imageWBMP($this->image["des"], $file);
 		}
+		else{
+			$success = fasle;
+			debugLog(__FUNCTION__ . 'invalid output format');
+			$this->image['success'] = $success;
+			return $success;
+		}
 
 		$this->image['success'] = $success;
+		
+		// if saved and we also want to show, readfile
+		if($showsave) readfile($this->image['outfile']);
+
 		return $success;
 	}
 }

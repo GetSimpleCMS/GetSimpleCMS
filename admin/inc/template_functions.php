@@ -2081,18 +2081,21 @@ function getThumbnails($upload_path = '', $type = '', $filename = '', $recurse =
 			continue;
 		}
 
+		// debugLog('thumbnail ' . $file);
 		$thumb = getimagesize($file);
-		debugLog('thumbnail ' . $file);			
 		$thumb['width']       = $thumb[0]; unset($thumb[0]); 
 		$thumb['height']      = $thumb[1]; unset($thumb[1]);
 		$thumb['type']        = $thumb[2]; unset($thumb[2]);
 		$thumb['attrib']      = $thumb[3]; unset($thumb[3]);
+
 		$thumb['uploadpath']  = tsl(getRelPath($upload_path,GSTHUMBNAILPATH));
 		$thumb['primaryfile'] = GSDATAUPLOADPATH . $thumb['uploadpath'] . $origfile;
+		$thumb['filesize']    = filesize($file);
 		$thumb['primaryurl']  = getUploadURI($origfile,$thumb['uploadpath']);
 		$thumb['thumbfile']   = getThumbnailFile(basename($file),$upload_path,'');
 		$thumb['thumburl']    = getThumbnailURI(basename($file),$upload_path,'');
 		$thumb['thumbtype']   = $thumbtype;
+		
 		$thumbs_array[] = $thumb;
 	}
 	return $thumbs_array;
@@ -2114,19 +2117,22 @@ function genStdThumb($subpath,$file){
 		$width = getDef('GSIMAGEWIDTH');
 	}
 
-	generate_thumbnail($file,$subpath,$width);
+	generate_thumbnail($file,$subpath, 'thumbnail.'.$file, $width);
 }
 
 /**
  * generate a thumbnail
  * @param  str  $sub_path upload path
  * @param  str  $file     filename
+ * @param  str  $out_file outfile name, can be null if show is true
  * @param  int  $w        desired width
- * @param  int  $h        desired max height, optional, will limit height and adjust width accordingly 
+ * @param  int  $h        desired max height, optional, will limit height and adjust width accordingly
+ * @param  int  $quality  quality of image jpg and png
+ * @param  bool $show     output to browser if true
  * @param  boolean $upscale  true, allows image to scale up/zoom to fit thumbnail
  * @return bool            success
  */
-function generate_thumbnail($file, $sub_path = '', $w, $h = null, $upscale = false){
+function generate_thumbnail($file, $sub_path = '', $out_file = '', $w, $h = null, $quality = null, $show = false, $upscale = false){
 	//gd check, do nothing if no gd
 	$php_modules = get_loaded_extensions();
 	if(!in_arrayi('gd', $php_modules)) return false;
@@ -2134,19 +2140,22 @@ function generate_thumbnail($file, $sub_path = '', $w, $h = null, $upscale = fal
 	$sub_path      = tsl($sub_path);
 	$upload_folder = GSDATAUPLOADPATH.$sub_path;
 	$thumb_folder  = GSTHUMBNAILPATH.$sub_path;
+	$thumb_file    = isset($out_file) && !empty($out_file) ? $thumb_folder.$out_file : '';
 
 	create_dir($thumb_folder);
 
-	require_once('inc/imagemanipulation.php');
+	require_once('imagemanipulation.php');
 	$objImage = new ImageManipulation($upload_folder.$file);
 	if ( $objImage->imageok ) {
 		if($upscale) $objImage->setUpscale();
-		if(isset($h)) $objImage->setImageWidth($w,$h); 
+		if($quality) $objImage->setQuality($quality);
+		if(isset($h)) $objImage->setImageWidth($w,$h);
 		else{
 			$objImage->setImageWidth($w);
 			// $objImage->resize($w); // constrains both dimensions to $size, same as setImageWidth($w,$w);
 		}
-		return $objImage->save($thumb_folder . 'thumbnail.' .$file);
+		$objImage->save($thumb_file, $show);
+		return $objImage;
 	} else {
 		return false;
 	}

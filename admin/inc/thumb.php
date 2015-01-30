@@ -3,6 +3,8 @@ include('common.php');
 login_cookie_check();
 
 /**
+ * ONLY AVAILABLE IF AUTHENTICATED
+ * 
  * Thumbnail Image Generator
  *
  * REQUIREMENTS:
@@ -21,15 +23,15 @@ login_cookie_check();
  *
  * Sample usage: 
  * 1. save thumb on server: 
- * http://www.zubrag.com/thumb.php?src=test.jpg&dest=thumb.jpg&x=100&y=50
+ * thumb.php?src=test.jpg&dest=thumb.jpg&x=100&y=50
  * 2. output thumb to browser:
- * http://www.zubrag.com/thumb.php?src=test.jpg&x=50&y=50&f=0
+ * thumb.php?src=test.jpg&x=50&y=50&f=0
  *
- * @link //www.zubrag.com/scripts/
  * @version 1.3
  *
  * @package GetSimple
  * @subpackage Images
+*  @example http://127.0.0.1/getsimple/admin/inc/thumb.php?src=test/image.jpg&dest=test/thumbsm.image.jpg&f=1&x=80&y=160
  */ 
 
 // Below are default values (if parameter is not passed)
@@ -55,20 +57,6 @@ $max_y = 130;
 $cut_x = 0;
 $cut_y = 0;
 
-// Folder where source images are stored (thumbnails will be generated from these images).
-// MUST end with slash.
-$images_folder = GSDATAUPLOADPATH;
-
-// Folder to save thumbnails, full path from the root folder, MUST end with slash.
-// Only needed if you save generated thumbnails on the server.
-// Sample for windows:     c:/wwwroot/thumbs/
-// Sample for unix/linux:  /home/site.com/htdocs/thumbs/
-$thumbs_folder = GSTHUMBNAILPATH;
-
-
-///////////////////////////////////////////////////
-/////////////// DO NOT EDIT BELOW
-///////////////////////////////////////////////////
 
 $to_name = '';
 
@@ -116,41 +104,55 @@ if (isset($_REQUEST['oy'])) {
 
 $path_parts = pathinfo($from_name);
 
-if (!file_exists($images_folder)) die('Images folder does not exist (update $images_folder in the script)');
-if ($save_to_file && !file_exists($thumbs_folder)) die('Thumbnails folder does not exist (update $thumbs_folder in the script)');
 
-$dirs=explode('/' ,$path_parts['dirname']);
-$folder=$thumbs_folder;
-foreach ($dirs as $dir){
-	$folder.=DIRECTORY_SEPARATOR.$dir;
-	if (!is_dir($folder)){
-		mkdir ($folder); 
-	}
+// @todo not supported yet
+// $img->image_type   = $image_type;
+
+$file     = basename($from_name);
+$sub_path = dirname($from_name);
+$outfile  = $save_to_file ? basename($to_name) : null;
+// debugLog($file);
+// debugLog($sub_path);
+// debugLog($outfile);
+
+
+// Debugging Request
+// returns the imagemanipulation object json encoded, 
+// add base64 encoded image data ['data']
+// add filesize ['bytes']
+// add url to image if it was saved ['url']
+if(isset($_REQUEST['debug'])){
+    ob_start();
+    // $outfile = null;
 }
 
-//gd check
-$php_modules = get_loaded_extensions();
-if(!in_arrayi('gd', $php_modules)) die('GD not loaded, cannot generate thumbnail');
+$image = generate_thumbnail($file, $sub_path, $outfile, $max_y, $max_x, $image_quality, true);
 
-// Allocate all necessary memory for the image.
-// Special thanks to Alecos for providing the code.
-ini_set('memory_limit', '200M');
+if(isset($_REQUEST['debug'])){
+    $output = ob_get_contents(); // get the image as a string in a variable
+    ob_end_clean(); //Turn off output buffering and clean it
+    header("Content-Type: text/json");
+    
+    // add filesize and base64 encoded image
+    $image->image['bytes'] = strlen($output); // size in bytes
+    $image->image['data'] = base64_encode($output);
+    
+    // remove resources and filepaths
+    unset($image->image['src']);
+    unset($image->image['des']);
+    unset($image->image['srcfile']);
+    unset($image->image['outfile']);
 
-// include image processing code
-include('image.class.php');
+    // add url to thumbnail
+    if(isset($image->image['outfile'])) 
+        $image->image['thumb_url'] = getThumbnailURI($outfile,$sub_path,'');
+    
+    // echo "<pre>",print_r($image->image,true),"</pre>";
+    
+    // json encode
+    echo json_encode($image);
+}
 
-$img = new Zubrag_image;
-
-// initialize
-$img->max_x        = $max_x;
-$img->max_y        = $max_y;
-$img->cut_x        = $cut_x;
-$img->cut_y        = $cut_y;
-$img->quality      = $image_quality;
-$img->save_to_file = $save_to_file;
-$img->image_type   = $image_type;
-
-// generate thumbnail
-$img->GenerateThumbFile($images_folder . $from_name, $thumbs_folder . $to_name);
+exit;
 
 /* ?> */
