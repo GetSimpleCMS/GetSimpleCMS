@@ -98,10 +98,10 @@ include('template/include-nav.php'); ?>
 			
 		<div class="main">
 		<h3 class="floated"><?php i18n('IMG_CONTROl_PANEL');?><span class="crumbs">
-		<a href="upload.php">upload</a> / <?php echo  breadcrumbs(var_out($subPath.$src),'upload.php?path=');?></span></h3>
+		<a href="upload.php"><?php echo i18n_r('FILES'); ?></a> / <?php echo  breadcrumbs(var_out($subPath.$src),'upload.php?path=');?></span></h3>
 		<div class="edit-nav clearfix" >
 			<?php exec_action(get_filename_id().'-edit-nav'); ?>
-		</div>	
+		</div>
 		<?php exec_action(get_filename_id().'-body');
 			
 			echo '<div class="thumbs clearfix">';

@@ -128,6 +128,7 @@ $i18n = array(
 "DELETE_FILE"             =>	"Delete File",
 "TOTAL_FILES"             =>	"total files &amp; folders",
 "FILE_EXISTS_PROMPT"      =>    "File Exists, Overwrite?",
+"FILES"                   =>    "files",
 
 /* 
 * For: logout.php

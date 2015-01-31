@@ -237,7 +237,7 @@ function getUploadIcon($type){
 
 		// preserve querystring, but remove path
 		$root = 'upload.php?' . merge_queryString(array('path'=>null));
-		echo '<div class="h5 clearfix"><div class="crumbs">/ <a href="'.$root.'">uploads</a> / ';
+		echo '<div class="h5 clearfix"><div class="crumbs">/ <a href="'.$root.'">'.i18n_r('FILES').'</a> / ';
 
 		foreach ($pathParts as $pathPart){
 		   if ($pathPart!=''){
