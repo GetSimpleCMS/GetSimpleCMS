@@ -1778,14 +1778,15 @@ body.fullscreen .notify .close{
 
 a.updatelink {
 	display: inline-block;
-	color: #CF3805;
+	/*color: #CF3805;*/
+	color: <?php echo $secondary_1; ?>;
 	padding: 1px 3px;
 	margin-left:-3px;
 }
 
 a.updatelink:hover {
 	color: #FFF;
-	background-color: <?php echo $primary_3; ?>;
+	background-color: <?php echo $primary_1; ?>;
 }
 
 .delete a:hover {
