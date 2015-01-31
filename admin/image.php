@@ -71,12 +71,25 @@ if (file_exists($thumb_folder . 'thumbnail.' . $src)) {
 	if(genStdThumb($subPath,$src)){
 		// @todo check if file exists before getimagesize
 		list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . 'thumbnail.'.$src);
-		$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'" rel="fancybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
+		$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'?t='.time().' rel="fancybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 	}
 }
 
 $pagetitle = i18n_r('IMAGES').' &middot; '.var_out($src).' &middot; '.i18n_r('FILE_MANAGEMENT');
 get_template('header');
+
+function breadcrumbs($path,$root = ''){
+	$paths = explode('/',dirname($path));
+	$pathlink = $root;
+	$array = '';
+	foreach($paths as $crumb){
+		$pathlink .= $crumb.'/';
+		$array[] ='<a href="'.$pathlink.'">'.$crumb.'</a>';
+	}
+
+	$array[] = basename($path);
+	return implode(' / ',$array);
+}
 
 include('template/include-nav.php'); ?>
 
@@ -84,7 +97,8 @@ include('template/include-nav.php'); ?>
 	<div id="maincontent">
 			
 		<div class="main">
-		<h3 class="floated"><?php i18n('IMG_CONTROl_PANEL');?><span> / <?php echo var_out($subPath .$src);?></span></h3>
+		<h3 class="floated"><?php i18n('IMG_CONTROl_PANEL');?><span class="crumbs">
+		<a href="upload.php">upload</a> / <?php echo  breadcrumbs(var_out($subPath.$src),'upload.php?path=');?></span></h3>
 		<div class="edit-nav clearfix" >
 			<?php exec_action(get_filename_id().'-edit-nav'); ?>
 		</div>	

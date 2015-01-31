@@ -320,10 +320,10 @@ header('content-type: text/html; charset=utf-8');
 // no-cache headers
 if(!is_frontend()){
 	$timestamp = gmdate("D, d M Y H:i:s") . " GMT";
-	header("Expires: " . $timestamp);
+	header('Expires: 0'); // Proxies.
 	header("Last-Modified: " . $timestamp);
-	header("Pragma: no-cache");
-	header("Cache-Control: no-cache, must-revalidate");
+	header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+	header('Pragma: no-cache'); // HTTP 1.0.
 }
 
 /**

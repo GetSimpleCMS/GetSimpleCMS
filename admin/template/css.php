@@ -509,6 +509,20 @@ h3 span {
 	margin-left: 10px;
 }
 
+h3 span.crumbs a{
+	color: #999;
+	font-weight:normal;
+}
+
+h3 span.crumbs a:hover{
+	color: #000;
+}
+
+h3 span.crumbs a span{
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
 h5,
 div.h5 {
 	margin: 10px 0 10px 0;
