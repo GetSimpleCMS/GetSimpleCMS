@@ -79,7 +79,12 @@ $pagetitle = i18n_r('IMAGES').' &middot; '.var_out($src).' &middot; '.i18n_r('FI
 get_template('header');
 
 function breadcrumbs($path,$root = ''){
-	$paths = explode('/',dirname($path));
+	$paths = dirname($path);
+	$file  = basename($path);
+	$paths = str_replace('.','',$paths);
+	if(empty($paths)) return $file;
+
+	$paths = explode('/',$paths);
 	$pathlink = $root;
 	$array = '';
 	foreach($paths as $crumb){
