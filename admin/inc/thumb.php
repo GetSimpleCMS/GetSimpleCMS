@@ -116,6 +116,7 @@ $outfile  = $save_to_file ? basename($to_name) : null;
 // debugLog($sub_path);
 // debugLog($outfile);
 
+if(!filepath_is_safe(GSDATAUPLOADPATH.$sub_path.$file,GSDATAUPLOADPATH)) die('invalid image');
 
 // Debugging Request
 // returns the imagemanipulation object json encoded, 

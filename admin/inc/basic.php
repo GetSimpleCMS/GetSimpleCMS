@@ -349,7 +349,7 @@ function getFiles($path,$ext = null) {
 			if ($fileext == $ext) $file_arr[] = $file;
 		}
 		else {
-			if ($file != '.' && $file != '..' && $file!='thumbs.db') {
+			if ($file != '.' && $file != '..' && $file!='thumbs.db' && $file!='Thumbs.db') {
 				$file_arr[] = $file;
 			}
 		}
