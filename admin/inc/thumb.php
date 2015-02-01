@@ -116,6 +116,7 @@ $outfile  = $save_to_file ? basename($to_name) : null;
 // debugLog($sub_path);
 // debugLog($outfile);
 
+// travesal protection
 if(!filepath_is_safe(GSDATAUPLOADPATH.$sub_path.$file,GSDATAUPLOADPATH)) die('invalid image');
 
 // Debugging Request
@@ -128,7 +129,7 @@ if(isset($_REQUEST['debug']) || isset($_REQUEST['json'])){
     // $outfile = null;
 }
 
-$image = generate_thumbnail($file, $sub_path, $outfile, $max_y, $max_x, $image_quality, true);
+$image = generate_thumbnail($file, $sub_path, $outfile, $max_y, $max_x, $image_quality, true, $image_type);
 
 if(isset($_REQUEST['debug']) || isset($_REQUEST['json'])){
     $output = ob_get_contents(); // get the image as a string in a variable
@@ -144,6 +145,8 @@ if(isset($_REQUEST['debug']) || isset($_REQUEST['json'])){
     unset($image->image['des']);
     unset($image->image['srcfile']);
     unset($image->image['outfile']);
+
+    // $image->image['debuglog'] = strip_tags($GS_DEBUG);;
 
     // add url to thumbnail
     if(isset($image->image['outfile'])) 

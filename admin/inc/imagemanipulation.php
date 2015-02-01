@@ -270,7 +270,9 @@ class ImageManipulation {
 	}
 
 	public function setOutputFormat($format){
-		$this->image["format_out"] = $format;
+		$enum = array(1 => 'GIF', 2 => 'JPG', 3 => 'PNG', 4 => 'BMP');
+		if(is_int($format)) $format = $enum[$format];
+		$this->image["format_out"] = strtoupper($format);
 	}
 	
 	/**

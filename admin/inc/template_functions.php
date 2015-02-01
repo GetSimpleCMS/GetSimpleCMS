@@ -2132,7 +2132,7 @@ function genStdThumb($subpath,$file){
  * @param  boolean $upscale  true, allows image to scale up/zoom to fit thumbnail
  * @return bool            success
  */
-function generate_thumbnail($file, $sub_path = '', $out_file = '', $w, $h = null, $quality = null, $show = false, $upscale = false){
+function generate_thumbnail($file, $sub_path = '', $out_file = null, $w, $h = null, $quality = null, $show = false, $output_format = null, $upscale = false){
 	//gd check, do nothing if no gd
 	$php_modules = get_loaded_extensions();
 	if(!in_arrayi('gd', $php_modules)) return false;
@@ -2150,6 +2150,7 @@ function generate_thumbnail($file, $sub_path = '', $out_file = '', $w, $h = null
 		if($upscale) $objImage->setUpscale();
 		if($quality) $objImage->setQuality($quality);
 		if(isset($h)) $objImage->setImageWidth($w,$h);
+		if(isset($output_format)) $objImage->setOutputFormat($output_format);
 		else{
 			$objImage->setImageWidth($w);
 			// $objImage->resize($w); // constrains both dimensions to $size, same as setImageWidth($w,$w);
