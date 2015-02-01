@@ -20,7 +20,8 @@ login_cookie_check();
  * - q - quality (applicable only to JPG, 1 to 100, 100 - best)
  * - t - thumb type. "-1" - same as source, 1 = GIF, 2 = JPG, 3 = PNG
  * - f - save to file (1) or output to browser (0).
- *
+ * - json - return image in json object including obj info and base64 image
+ * 
  * Sample usage: 
  * 1. save thumb on server: 
  * thumb.php?src=test.jpg&dest=thumb.jpg&x=100&y=50
@@ -121,14 +122,14 @@ $outfile  = $save_to_file ? basename($to_name) : null;
 // add base64 encoded image data ['data']
 // add filesize ['bytes']
 // add url to image if it was saved ['url']
-if(isset($_REQUEST['debug'])){
+if(isset($_REQUEST['debug']) || isset($_REQUEST['json'])){
     ob_start();
     // $outfile = null;
 }
 
 $image = generate_thumbnail($file, $sub_path, $outfile, $max_y, $max_x, $image_quality, true);
 
-if(isset($_REQUEST['debug'])){
+if(isset($_REQUEST['debug']) || isset($_REQUEST['json'])){
     $output = ob_get_contents(); // get the image as a string in a variable
     ob_end_clean(); //Turn off output buffering and clean it
     header("Content-Type: text/json");
