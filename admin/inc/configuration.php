@@ -20,6 +20,7 @@ $cookie_path        = '/';         // cookie path
 $cookie_domain      = null;        // cookie domain
 $cookie_secure      = null;        // cookie secure only
 $cookie_httponly    = true;        // cookie http only
+$cookie_redirect    = 'pages.php'; // legacy redirect
 
 $api_url            = 'http://get-simple.info/api/start/v3.php';
 # $api_timeout        = 800; // time in ms defaults to 500

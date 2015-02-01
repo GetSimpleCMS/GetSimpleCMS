@@ -284,6 +284,7 @@ if(defined('GSERRORLOGENABLE') && (bool) GSERRORLOGENABLE === true){
 	ini_set('error_log', GSDATAOTHERPATH .'logs/'. GSERRORLOGFILE);
 }
 
+
 /**
  * Basic file inclusions
  */
@@ -295,6 +296,11 @@ require_once('sort_functions.php');
 require_once('logging.class.php');
 
 include_once(GSADMININCPATH.'configuration.php');
+
+// @deprecated LEGACY $cookie_redirect
+if(getDef('GSDEFAULTPAGE',true)){
+	$cookie_redirect = getDef('GSDEFAULTPAGE');    // legacy redirect
+}
 
 if(getDef('GSNOFRAME',true) !== false){
 	// Adds X-Frame-Options to HTTP header, so that page can only be shown in an iframe of the same site.
