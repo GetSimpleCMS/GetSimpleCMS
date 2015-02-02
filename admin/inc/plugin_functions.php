@@ -504,7 +504,7 @@ function exec_secfilter_callback($hook,&$data=array()){
 	else $args = $data;
 
 	// does not pass by reference, so we dont have to copy $data
-	// function(currentresult,execarg,execarg,...,numargs,userarg,userarg,..)
+	// function(currentresult,numargs,execarg,execarg,...,userarg,userarg,..)
 	$newresult = call_user_func_array($hook['function'], $args);
 	$result    = is_bool($newresult) ? $newresult : $result;
 }
