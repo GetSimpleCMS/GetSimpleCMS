@@ -495,7 +495,7 @@ $dump = array(
 'NEWLOCALE'    => $NEWLOCALE
 // '_SERVER'      => $_SERVER,
 );
-debugLog($dump);
+// debugLog($dump);
 
 /**
  * Check to make sure site is already installed

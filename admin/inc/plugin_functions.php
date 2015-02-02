@@ -431,7 +431,7 @@ function exec_filter($filter_name,$data=array()) {
 }
 
 function exec_filter_callback($hook,&$data=array()){
-	$data = call_user_func_array($hook['function'], array($data));
+	$data = call_user_func_array($hook['function'], array_merge(array($data),$hook['args']));
 }
 
 function exec_filter_complete($data=array()){
@@ -478,16 +478,34 @@ function remove_secfilter($filter_name,$hook_function){
  * @param string $script Filter name to execute
  * @param array $data
  */
-function exec_secfilter($filter_name, $result = true, $data=array()) {
+function exec_secfilter($filter_name, $result = true) {
 	global $secfilters,$securityFilters;
- 	$newresult = exec_hook($secfilters, $securityFilters, $filter_name, 'exec_secfilter_callback', array($result,$data), 'exec_secfilter_complete');
+	
+	// handle variadic
+	if(func_num_args() > 1){
+		$args = func_get_args();
+		array_shift($args);
+	} else $args = array($result);
+
+ 	$newresult = exec_hook($secfilters, $securityFilters, $filter_name, 'exec_secfilter_callback', $args, 'exec_secfilter_complete');
  	return is_bool($newresult) ? $newresult : $result;
 }
 
 function exec_secfilter_callback($hook,&$data=array()){
-	$result    = &$data[0];
-	$rdata     = $data[1];
-	$newresult = call_user_func_array($hook['function'], array($result, $rdata));
+	$result  = &$data[0]; // last result or exec result reference
+
+	// get num variable args	
+	// copy args, and remove result
+	$numargs = count($data)-1;
+	$args = $data;
+	array_shift($args);
+
+	if($hook['args']) $args = array_merge(array($result),array($numargs),$args,$hook['args']);
+	else $args = $data;
+
+	// does not pass by reference, so we dont have to copy $data
+	// function(currentresult,execarg,execarg,...,numargs,userarg,userarg,..)
+	$newresult = call_user_func_array($hook['function'], $args);
 	$result    = is_bool($newresult) ? $newresult : $result;
 }
 
@@ -497,7 +515,7 @@ function exec_secfilter_complete($data=array()){
 
 
 /**
- * hook functions
+ * hook helper functions
  */
 
 
@@ -514,6 +532,8 @@ function exec_secfilter_complete($data=array()){
  */
 function add_hook(&$hook_array, &$hook_hash_array, $hook_name, $hook_function, $args = array(), $priority = null) {
 	
+	if(isset($priority) && !is_int($priority)) die('priority is not NAN'); 
+
 	if($priority === 0) $priority = 1; # fixup 0 
 	clamp($priority,1,10,10); # clamp priority, min:1, max:10, default:10
 
@@ -523,7 +543,6 @@ function add_hook(&$hook_array, &$hook_hash_array, $hook_name, $hook_function, $
 		'args'     => (array) $args,
 		'priority' => $priority
 	);
-	
 	addPlugindebugging($hook); # add debug info , file, line, core
 	$hook_array[] = $hook; # add to global plugins
 	$hook_hash_array[$hook_name][$priority][] = &$hook_array[count($hook_array)-1]; # add ref to global plugin hook hash array
@@ -595,6 +614,7 @@ function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', 
 			$hook = current($hooks);
 			if(!isset($hook) || !isset($hook[0])) return;
 			$callback($hook[0],$data);
+			// if callback call it
 			if(function_exists($complete)) return $complete($data);			
 		}
 	}
@@ -609,6 +629,7 @@ function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', 
 		}
 	}
 
+	// if complete handler call it
 	if(function_exists($complete)) return $complete($data);
 
 }
