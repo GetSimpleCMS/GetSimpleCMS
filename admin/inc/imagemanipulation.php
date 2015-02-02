@@ -391,7 +391,7 @@ class ImageManipulation {
 			$success = imageWBMP($this->image["des"], $file);
 		}
 		else{
-			$success = fasle;
+			$success = false;
 			debugLog(__FUNCTION__ . 'invalid output format');
 			$this->image['success'] = $success;
 			return $success;
