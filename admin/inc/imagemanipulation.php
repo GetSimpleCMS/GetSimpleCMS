@@ -270,8 +270,11 @@ class ImageManipulation {
 	}
 
 	public function setOutputFormat($format){
-		$enum = array(1 => 'GIF', 2 => 'JPG', 3 => 'PNG', 4 => 'BMP');
-		if(is_int($format)) $format = $enum[$format];
+		$enum = array(1 => 'GIF', 2 => 'JPG', 3 => 'PNG', 4 => 'WBMP');
+		if(is_int($format) && isset($enum[$format])){
+			$format = $enum[$format];
+		}
+		if(!in_array($format,$enum)) return false;
 		$this->image["format_out"] = strtoupper($format);
 	}
 	
