@@ -25,6 +25,7 @@ class ImageManipulation {
 	public $image = array('targetx'=>0, 
 						  'targety'=>0,
 						  'quality'=>75,
+						  'pngquality'=>6,
 						  'upscale'=>false
 						);
 	

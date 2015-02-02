@@ -2129,6 +2129,7 @@ function genStdThumb($subpath,$file){
  * @param  int  $h        desired max height, optional, will limit height and adjust width accordingly
  * @param  int  $quality  quality of image jpg and png
  * @param  bool $show     output to browser if true
+ * @param  str $output_format optional output format, if not determining from out_file can be excusivly set (1|'GIF', 2|'JPG,'' 3|'PNG')
  * @param  boolean $upscale  true, allows image to scale up/zoom to fit thumbnail
  * @return bool            success
  */

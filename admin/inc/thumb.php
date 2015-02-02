@@ -129,6 +129,9 @@ if(isset($_REQUEST['debug']) || isset($_REQUEST['json'])){
     // $outfile = null;
 }
 
+// @todo: if needing to save as attachement from post, might need this else second request might be made losing data
+// header('Content-Disposition: Attachment;filename='.$outfile);
+
 $image = generate_thumbnail($file, $sub_path, $outfile, $max_y, $max_x, $image_quality, true, $image_type);
 
 if(isset($_REQUEST['debug']) || isset($_REQUEST['json'])){
