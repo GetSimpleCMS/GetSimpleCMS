@@ -868,7 +868,7 @@ function formatDate($format, $timestamp = null, $uselocale = true) {
 		}
  	}
 
-	if($uselocale) restoreLocale();
+	if($uselocale) restoreOldLocale();
   
 	return $date;
 }
@@ -2461,15 +2461,18 @@ function setOldLocale(){
  * set a new locale from i18n
  */
 function setNewLocale(){
+	GLOBAL $NEWLCOALE;
 	setOldLocale();
-	return setCustomLocale(getLocaleConfig());
+	$NEWLOCALE = setCustomLocale(getLocaleConfig());
+	return $NEWLOCALE;
 }
 
 /**
  * restore OLDLOCALE
  */
-function restoreLocale(){
-	GLOBAL $OLDLOCALE;
+function restoreOldLocale(){
+	GLOBAL $OLDLOCALE,$NEWLOCALE;
+	$NEWLOCALE = null;
 	setCustomLocale($OLDLOCALE);
 }
 
