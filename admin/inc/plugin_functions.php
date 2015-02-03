@@ -450,9 +450,9 @@ function exec_filter_complete($data=array()){
  * @param array $args arguments for $added_function
  * @param int $priority order of execution of hook, lower numbers execute earlier
  */
-function add_secfilter($filter_name, $added_function, $args = array(), $priority = null) {
+function add_secfilter($filter_name, $added_function, $args = array(), $priority = null, $numexpectedargs = 1) {
   	global $secfilters, $securityFilters;
-	return add_hook($secfilters, $securityFilters, $filter_name, $added_function, $args, $priority);  	
+	return add_hook($secfilters, $securityFilters, $filter_name, $added_function, $args, $priority, $numexpectedargs);  	
 }
 
 
@@ -480,31 +480,14 @@ function remove_secfilter($filter_name,$hook_function){
  */
 function exec_secfilter($filter_name, $result = true) {
 	global $secfilters,$securityFilters;
-	
-	// handle variadic
-	if(func_num_args() > 1){
-		$args = func_get_args();
-		array_shift($args);
-	} else $args = array($result);
-
+	$args      = prepareHookExecArgs($args = func_get_args());
  	$newresult = exec_hook($secfilters, $securityFilters, $filter_name, 'exec_secfilter_callback', $args, 'exec_secfilter_complete');
  	return is_bool($newresult) ? $newresult : $result;
 }
 
 function exec_secfilter_callback($hook,&$data=array()){
-	$result  = &$data[0]; // last result or exec result reference
-
-	// get num variable args	
-	// copy args, and remove result
-	$numargs = count($data)-1;
-	$args = $data;
-	array_shift($args);
-
-	if($hook['args']) $args = array_merge(array($result),array($numargs),$args,$hook['args']);
-	else $args = $data;
-
-	// does not pass by reference, so we dont have to copy $data
-	// function(currentresult,numargs,execarg,execarg,...,userarg,userarg,..)
+	$result    = &$data[0]; // last result or exec result reference
+	$args      = prepareHookCallbackArgs($hook,$data);
 	$newresult = call_user_func_array($hook['function'], $args);
 	$result    = is_bool($newresult) ? $newresult : $result;
 }
@@ -518,6 +501,43 @@ function exec_secfilter_complete($data=array()){
  * hook helper functions
  */
 
+/**
+ * prepare arguments for hook exec by removing required arguments
+ * @param  array  $args    args array
+ * @param  integer $numargs number of non optional arguments
+ * @return array           arrguemnts array with required arguments sliced off
+ */
+function prepareHookExecArgs($args,$numargs = 1){
+	if(count($args) > $numargs){
+		$args = array_slice($args,$numargs);
+	}
+	return $args;
+}
+
+/**
+ * prepare hook arguments for callbacks
+ * based on $hook['numargs'] build arguments for callback
+ * exec arguments are padded or truncated as per numargs
+ * return a new array of the two combined with exec args prepended `[execnumargs + hook['args']]`
+ * if numargs is negative, exec args will be appended instead `[hook['args'] + execnumargs]`
+ * 
+ * @since  3.4
+ * @param  array $hook hook item array
+ * @param  array $args argument array for hook
+ * @return array new array of arguments
+ */
+function prepareHookCallbackArgs($hook,$args){
+	// get number of expected args, 
+	// pad or truncate, and then merge the two	
+	$callbacknumargs = (int)$hook['numargs'];
+	$args = array_pad($args,abs($callbacknumargs),'');
+	$args = array_slice($args,0,abs($callbacknumargs));
+	debugLog($callbacknumargs);
+	debugLog($args);
+	// combine exec args and user args
+	$args = $callbacknumargs < 0 ? array_merge($hook['args'],$args) : array_merge($args,$hook['args']);
+	return $args;
+}
 
 /**
  * Add generic hook wrapper
@@ -530,7 +550,7 @@ function exec_secfilter_complete($data=array()){
  * @param array $args arguments to pass to $hook_function
  * @param int $priority order of execution of hook, lower numbers execute earlier
  */
-function add_hook(&$hook_array, &$hook_hash_array, $hook_name, $hook_function, $args = array(), $priority = null) {
+function add_hook(&$hook_array, &$hook_hash_array, $hook_name, $hook_function, $args = array(), $priority = null, $expectedargs = 0) {
 	
 	if(isset($priority) && !is_int($priority)) die('priority is not NAN'); 
 
@@ -541,7 +561,8 @@ function add_hook(&$hook_array, &$hook_hash_array, $hook_name, $hook_function, $
 		'hook'     => $hook_name,
 		'function' => $hook_function,
 		'args'     => (array) $args,
-		'priority' => $priority
+		'priority' => $priority,
+		'numargs'  => $expectedargs,
 	);
 	addPlugindebugging($hook); # add debug info , file, line, core
 	$hook_array[] = $hook; # add to global plugins
