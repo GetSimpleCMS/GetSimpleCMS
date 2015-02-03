@@ -853,7 +853,7 @@ function formatDate($format, $timestamp = null, $uselocale = true) {
 
 	// debugLog(__FUNCTION__.' '.$format.' '.$timestamp.' '.$uselocale);
 
-	if($uselocale) setNewLocale();
+	if($uselocale) setNewLocale(LC_TIME);
 
 	if (strpos($format, '%') === false) {
 		$date = date($format, $timestamp);
@@ -868,7 +868,7 @@ function formatDate($format, $timestamp = null, $uselocale = true) {
 		}
  	}
 
-	if($uselocale) restoreOldLocale();
+	if($uselocale) restoreOldLocale(LC_TIME);
   
 	return $date;
 }
@@ -2438,12 +2438,12 @@ function getTransliteration(){
  * @param str $locale a csv locale str
  * @return str set locale, false on fail
  */
-function  setCustomLocale($locale){
+function  setCustomLocale($locale,$category = LC_ALL){
 	// split locale string into array, removing whitespace and empties
 	if($locale) {
 		$localestr = preg_split('/\s*,\s*/', trim($locale), -1, PREG_SPLIT_NO_EMPTY);
 		debugLog('setting locale: ' . implode(',',$localestr));
-		$result    = setlocale(LC_ALL, $localestr);
+		$result    = setlocale($category, $localestr);
 		return $result;
 	}
 }
@@ -2451,29 +2451,29 @@ function  setCustomLocale($locale){
 /**
  * save old locale to global for restore
  */
-function setOldLocale(){
+function setOldLocale($category = LC_ALL){
 	GLOBAL $OLDLOCALE;
-	$OLDLOCALE = setlocale(LC_ALL,0);
+	$OLDLOCALE = setlocale($category,0);
 	return $OLDLOCALE;
 }
 
 /**
  * set a new locale from i18n
  */
-function setNewLocale(){
+function setNewLocale($category = LC_ALL){
 	GLOBAL $NEWLCOALE;
 	setOldLocale();
-	$NEWLOCALE = setCustomLocale(getLocaleConfig());
+	$NEWLOCALE = setCustomLocale(getLocaleConfig(),$category);
 	return $NEWLOCALE;
 }
 
 /**
  * restore OLDLOCALE
  */
-function restoreOldLocale(){
+function restoreOldLocale($category = LC_ALL){
 	GLOBAL $OLDLOCALE,$NEWLOCALE;
 	$NEWLOCALE = null;
-	setCustomLocale($OLDLOCALE);
+	setCustomLocale($OLDLOCALE,$category);
 }
 
 /**
