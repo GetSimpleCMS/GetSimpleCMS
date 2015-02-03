@@ -853,12 +853,15 @@ function formatDate($format, $timestamp = null, $uselocale = true) {
 
 	// debugLog(__FUNCTION__.' '.$format.' '.$timestamp.' '.$uselocale);
 
-	if($uselocale) setNewLocale(LC_TIME);
-
+	// if no strfttime tokens found just use date
+	// @todo add a date token -> strftime token converter here
 	if (strpos($format, '%') === false) {
 		$date = date($format, $timestamp);
 	} 
 	else {
+		// set locale temporarily for strfttime
+		if($uselocale) setNewLocale(LC_TIME);
+		
 		if (hostIsWindows()) {
 		  # fixes for Windows
 		  $format = preg_replace('#(?<!%)((?:%%)*)%e#', '\1%#d', $format); // strftime %e parameter not supported
@@ -866,10 +869,10 @@ function formatDate($format, $timestamp = null, $uselocale = true) {
 		} else {
 		  $date = strftime($format, $timestamp);
 		}
+		
+		if($uselocale) restoreOldLocale(LC_TIME);
  	}
 
-	if($uselocale) restoreOldLocale(LC_TIME);
-  
 	return $date;
 }
 
