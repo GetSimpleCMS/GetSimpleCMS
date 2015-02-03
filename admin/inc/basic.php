@@ -845,10 +845,15 @@ function convertPathArgs($args){
  * 
  * @param  string $format    A strftime or date format
  * @param  time $timestamp   A timestamp
+ * @param  bool $uselocale   if true, set and unset locale
  * @return string            returns a formated date string
   */
-function formatDate($format, $timestamp = null) {
+function formatDate($format, $timestamp = null, $uselocale = true) {
 	if(!$timestamp) $timestamp = time();	
+
+	// debugLog(__FUNCTION__.' '.$format.' '.$timestamp.' '.$uselocale);
+
+	if($uselocale) setNewLocale();
 
 	if (strpos($format, '%') === false) {
 		$date = date($format, $timestamp);
@@ -862,6 +867,8 @@ function formatDate($format, $timestamp = null) {
 		  $date = strftime($format, $timestamp);
 		}
  	}
+
+	if($uselocale) restoreLocale();
   
 	return $date;
 }
@@ -2439,6 +2446,31 @@ function  setCustomLocale($locale){
 		$result    = setlocale(LC_ALL, $localestr);
 		return $result;
 	}
+}
+
+/**
+ * save old locale to global for restore
+ */
+function setOldLocale(){
+	GLOBAL $OLDLOCALE;
+	$OLDLOCALE = setlocale(LC_ALL,0);
+	return $OLDLOCALE;
+}
+
+/**
+ * set a new locale from i18n
+ */
+function setNewLocale(){
+	setOldLocale();
+	return setCustomLocale(getLocaleConfig());
+}
+
+/**
+ * restore OLDLOCALE
+ */
+function restoreLocale(){
+	GLOBAL $OLDLOCALE;
+	setCustomLocale($OLDLOCALE);
 }
 
 /**

@@ -415,9 +415,8 @@ $LANG = getDefaultLang();   // set global language from config heirarchy
 i18n_merge(null);           // load $LANG file into $i18n
 i18n_mergeDefault();        // load GSDEFAULTLANG or GSMERGELANG lang into $i18n to override ugly missing {} tokens if set
 
-//set php locale, after language, since we get locale from language files
-$OLDLOCALE = setlocale(LC_ALL,0);
-$NEWLOCALE = setCustomLocale(getLocaleConfig());
+//save php locale
+setOldLocale();
 
 /**
  * Globals for salt and authentication data
