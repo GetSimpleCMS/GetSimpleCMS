@@ -384,6 +384,7 @@ echo '<div class="bodycontent clearfix">
 		<?php 
 		include('template/sidebar-support.php'); 
 		if($errorCnt > 0){
+			exec_action('healthcheck-error'); // @hook healthcheck-error errors detected on health check
 			echo '<div id="hc_alert">'.i18n_r('STATUS').': <a href="#error"><span class="label label-error">'.i18n_r('ERROR').'</span></a></div>';
 		}
 		?>
