@@ -89,7 +89,7 @@ CKEDITOR.on( 'dialogDefinition', function( ev )	{
 			advTab.remove( 'advLangDir' );
 			advTab.remove( 'advLangCode' );
 			advTab.remove( 'advContentType' );
-			advTab.remove( 'advTitle' );
+			// advTab.remove( 'advTitle' );
 			advTab.remove( 'advCharset' );
 		}
 
