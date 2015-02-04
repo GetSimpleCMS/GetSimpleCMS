@@ -1668,6 +1668,13 @@ jQuery(document).ready(function () {
 		editorTheme = theme; // update global
 	};
 
+	cm_set_mode = function(mode){
+		if($(this).data('editor')){
+			$(this).data('editor').setOption('mode',mode);
+			$(this).data('editor').refresh();
+		}
+	}
+
 	// save all editors
 	save_codeeditors = function(){
 		// Debugger.log(theme);
