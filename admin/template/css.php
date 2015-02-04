@@ -1151,7 +1151,8 @@ label.checkbox {
 }
 
 /* meta dropdown style */
-#metadata_window,fieldset {
+fieldset,
+#metadata_window{
 	margin: 0 2px 0 0;
 	background: #f9f9f9;
 	border: 1px solid #e8e8e8;
@@ -1160,6 +1161,14 @@ label.checkbox {
 	text-shadow: 1px 1px 0 rgba(255,255,255,.3);
 }
 
+
+#page_content fieldset{
+	margin:0;
+	background:none;
+	border:none;
+	padding: 5px 0;
+	border-radius: 0;
+}
 
 /*
 
@@ -1471,10 +1480,15 @@ body.dirty #js_submit_line input.submit {
 
 /* edit css */
 form input.title {
-	font-size: 19px;
-	border-color: rgba(153,153,153,0.2);
+	font-size: 25px;
+	border-color: rgba(153,153,153,0.05);
 	width: 655px;
 	padding: 3px 4px;
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+form input.title:hover{
+	border-color: rgba(153,153,153,0.4);
 }
 
 form input.secondary {
@@ -3345,10 +3359,19 @@ kbd
 /* prevent ui tabs fouc */
 .tab {
 	display:none;
+	margin-bottom:10px;	
 }
 
 .tab fieldset legend{
 	display: none;
+}
+
+.tab fieldset legend{
+	font-size: 16px;
+	border: 1px solid #808080;
+	padding: 1px 10px;
+	background-color: #FFF;
+	border-radius: 3px;
 }
 
 .outline {
