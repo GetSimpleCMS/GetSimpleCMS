@@ -16,7 +16,7 @@ include('inc/common.php');
 // Variable Settings
 login_cookie_check();
 
-$log_name = isset($_GET['log']) ? $_GET['log'] : '';
+$log_name = var_out(isset($_GET['log']) ? $_GET['log'] : '');
 $log_path = GSDATAOTHERPATH.'logs/';
 $log_file = $log_path . $log_name;
 
@@ -50,7 +50,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('SUPPORT').' &raquo; '.i
 	
 	<div id="maincontent">
 		<div class="main">
-			<h3 class="floated"><?php i18n('VIEWING');?> <?php i18n('LOG_FILE');?>: &lsquo;<em><?php echo var_out($log_name); ?></em>&rsquo;</h3>
+			<h3 class="floated"><?php i18n('VIEWING');?> <?php i18n('LOG_FILE');?>: &lsquo;<em><?php echo $log_name; ?></em>&rsquo;</h3>
 			<div class="edit-nav" >
 				<a href="log.php?log=<?php echo $log_name; ?>&action=delete&nonce=<?php echo get_nonce("delete"); ?>" accesskey="<?php echo find_accesskey(i18n_r('CLEAR_ALL_DATA'));?>" title="<?php i18n('CLEAR_ALL_DATA');?> <?php echo $log_name; ?>?" /><?php i18n('CLEAR_THIS_LOG');?></a>
 				<div class="clear"></div>

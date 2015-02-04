@@ -31,7 +31,6 @@ function genStdThumb($path,$name){
 			} else {
 				$chmod_value = 0755;
 			}
-			echo $thumbsPath;
 			mkdir($thumbsPath, $chmod_value);
 		}
 	}

@@ -12,6 +12,12 @@
 	if (empty($_POST)) exit;
 	if (!defined('GSEXTAPI')) exit;
 	
+	// disable libxml error output
+	if(!isDebug()) libxml_use_internal_errors(true);
+
+	// disable entity loading to avoid xxe
+	libxml_disable_entity_loader();
+
 	#step 1 - check post for data
 	if (!isset($_POST['data'])) {
 		$message = array('status' => 'error', 'message' => i18n_r('API_ERR_MISSINGPARAM'));
@@ -35,8 +41,6 @@
 	#step 4 - process request
 	$method = (string)$in->method;
 	echo call_user_func(array($request, $method), '');
-
-
 
 exit;
 

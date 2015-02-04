@@ -17,8 +17,9 @@
 // charset utf-8
 header('content-type: text/html; charset=utf-8');
 
-// no-cache headers
+// headers for backend
 if(!isset($base)){
+	// no-cache headers
 	$timestamp = gmdate("D, d M Y H:i:s") . " GMT";
 	header("Expires: " . $timestamp);
 	header("Last-Modified: " . $timestamp);
@@ -83,6 +84,11 @@ if(!is_frontend()){
 	} else {
 		$GSADMIN = 'admin';
 	}
+}
+
+if(getDef('GSNOFRAME',true) !== false){
+	// Adds X-Frame-Options to HTTP header, so that page can only be shown in an iframe of the same site.
+	header('X-Frame-Options: DENY'); // FF 3.6.9+ Chrome 4.1+ IE 8+ Safari 4+ Opera 10.5+	
 }
 
 /**

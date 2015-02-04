@@ -220,7 +220,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
      echo '<table class="highlight" id="imageTable">'; 
      echo '<tr><th class="imgthumb" ></th><th>'.i18n_r('FILE_NAME').'</th>';
      echo '<th style="text-align:right;">'.i18n_r('FILE_SIZE').'</th>';
-     if (isDebug()){
+	 if (isDebug()) {
      	 echo '<th style="text-align:right;">'.i18n_r('PERMS').'</th>';
      }
      echo '<th style="text-align:right;">'.i18n_r('DATE').'</th>';
@@ -244,11 +244,16 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
           echo '<td style="width:80px;text-align:right;" ><span>'.$directory_size.'</span></td>';
           
           // get the file permissions.
-					if ($isUnixHost && isDebug() && function_exists('posix_getpwuid')) {
-						$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
-						$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
-						echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
-					}
+		if (isDebug()) {
+			$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
+			if($isUnixHost){
+				$fileOwner = function_exists('posix_getpwuid') ? posix_getpwuid(fileowner($path.$upload['name'])) : '';
+				$fileOwnerName = isset($fileOwner['name']) ? $fileOwner['name'] : '';
+			} else {
+				$fileOwnerName = getenv('USERNAME');
+			}
+			echo '<td style="width:70px;text-align:right;"><span>'.$fileOwnerName.'/'.$filePerms.'</span></td>';
+		}
 					
 		      echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
           echo '<td class="delete" >'.$directory_delete.'</td>';
@@ -287,12 +292,17 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
              
 		            
 					// get the file permissions.
-					if ($isUnixHost && isDebug() && function_exists('posix_getpwuid')) {
+					if (isDebug()) {
 						$filePerms = substr(sprintf('%o', fileperms($path.$upload['name'])), -4);
-						$fileOwner = posix_getpwuid(fileowner($path.$upload['name']));
-						echo '<td style="width:70px;text-align:right;"><span>'.$fileOwner['name'].'/'.$filePerms.'</span></td>';
+						if($isUnixHost){
+							$fileOwner = function_exists('posix_getpwuid') ? posix_getpwuid(fileowner($path.$upload['name'])) : '';
+							$fileOwnerName = isset($fileOwner['name']) ? $fileOwner['name'] : '';
+						} else {
+							$fileOwnerName = getenv('USERNAME');
+						}
+						echo '<td style="width:70px;text-align:right;"><span>'.$fileOwnerName.'/'.$filePerms.'</span></td>';
 					}
-							
+
 					echo '<td style="width:85px;text-align:right;" ><span>'. shtDate($upload['date']) .'</span></td>';
 					echo '<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. rawurlencode($upload['name']) . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a></td>';
 					echo '</tr>';

@@ -280,6 +280,13 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $fl
       } else {
         $thisfile = file_get_contents($path.$file);
         $data = simplexml_load_string($thisfile);
+        
+        if(!$data){
+        	// handle corrupt page xml
+        	debugLog("page $file is corrupt");
+        	continue;
+        }
+        
         $count++;   
         $id=$data->url;
         
