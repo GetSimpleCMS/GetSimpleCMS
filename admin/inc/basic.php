@@ -277,11 +277,26 @@ class SimpleXMLExtended extends SimpleXMLElement{
 	}
 
 	/**
+	 * sets a nodes value if it exists, and adds node if it doesn't
+	 * sets via setValue, defaults to textnode
+	 * @param str $key   node id
+	 * @param str $value value to set
+	 */
+	public function editAddChild($key,$value = ''){
+		if(!$this->$key){
+			$this->addChild($key,$value);
+			return;
+		}
+		$this->$key->setValue($value);
+	}
+
+	/**
 	 * get the nodes type
 	 * @return str returns the nodetype constant of node
 	 * http://php.net/manual/en/dom.constants.php
 	 */
 	public function getNodeType(){
+		if(!is_object($this)) return false;
 		$node  = dom_import_simplexml($this);
 		if($node->hasChildNodes()) return $node->firstChild->nodeType;
 	}
@@ -1230,7 +1245,10 @@ function redirect($url,$ajax = false) {
 			echo '</noscript>';
 		}
 
-		echo i18n_r('ERROR').": Headers already sent in ".$filename." on line ".$linenum."<br/><br/>\n\n";
+		if(headers_sent()){
+			echo i18n_r('ERROR').": Headers already sent in ".$filename." on line ".$linenum."<br/><br/>\n\n";
+		}
+		
 		printf(i18n_r('REDIRECT_MSG'), $url);
 
 		if(!isAuthPage()) {
@@ -2585,7 +2603,7 @@ function getWebsiteData($returnGlobals = false){
 	$ASSETURL    = '';
 
 	if (file_exists(GSDATAOTHERPATH .GSWEBSITEFILE)) {
-		$dataw        = getXML(GSDATAOTHERPATH .GSWEBSITEFILE);
+		$dataw        = getXML(GSDATAOTHERPATH .GSWEBSITEFILE,false);
 		$SITENAME     = stripslashes( $dataw->SITENAME);
 		$SITEURL      = trim((string) $dataw->SITEURL);
 		$TEMPLATE     = trim((string) $dataw->TEMPLATE);
@@ -2596,6 +2614,7 @@ function getWebsiteData($returnGlobals = false){
 		$SITELANG     = trim((string) $dataw->LANG);
 		$SITEUSR      = trim((string) $dataw->SITEUSR);
 		$SITEABOUT    = trim((string) $dataw->SITEABOUT);
+		$SAFEMODE     = trim((string) $dataw->SAFEMODE == '1');
 
 		$SITEURL_ABS = $SITEURL;
 		$SITEURL_REL = getRootRelURIPath($SITEURL);
@@ -2815,6 +2834,28 @@ function tagsToAry($str,$case = false,$delim = ','){
 	$ary = array_map('trim',$ary);
 	return $ary;
 }
+
+function toggleSafeMode($enable = true){
+	GLOBAL $SAFEMODE, $dataw;
+	$SAFEMODE = $enable;
+	backup_datafile(GSDATAOTHERPATH . GSWEBSITEFILE);
+	
+	if(!$dataw){
+		if(file_exists(GSDATAOTHERPATH . GSWEBSITEFILE)){
+			$dataw = getXML(GSDATAOTHERPATH . GSWEBSITEFILE,false);
+		} else return false;	
+	}
+	$dataw->editAddChild('SAFEMODE',$enable ? 1 : 0);
+	return XMLSave($dataw,GSDATAOTHERPATH . GSWEBSITEFILE);
+}
+
+function enableSafeMode(){
+	return toggleSafeMode(true);
+}	
+
+function disableSafeMode(){
+	return toggleSafeMode(false);
+}	
 
 /**
  * **************************************************************************** 

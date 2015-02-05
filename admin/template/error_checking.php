@@ -11,6 +11,11 @@
  */
 
  	// do not use these alerts if ajax requests as they will not be seen, and interfere with other alerts
+	if ( !requestIsAjax() && $SAFEMODE == 1 ) {
+		if(getDef('GSSAFEMODE',true)) doNotify(i18n_r('ER_SAFEMODE'),'error',true);
+		else doNotify(i18n_r('ER_SAFEMODE').', <a href="?safemodeoff">'.i18n_r('DISABLE').'</a>','error',true);
+	}
+
 	if ( !requestIsAjax() && file_exists(GSUSERSPATH._id($USR).".xml.reset") && get_filename_id()!='index' && get_filename_id()!='resetpassword' ) {
 		doNotify(sprintf(i18n_r('ER_PWD_CHANGE'),'profile.php'),'error',true);
 	}

@@ -33,7 +33,7 @@ if (isset($_GET['flushcache'])) {
 if (isset($_GET['undo'])) {
 	check_for_csrf("undo");
 	# perform undo
-	restore_datafile(GSWEBSITEFILE);
+	restore_datafile(GSDATAOTHERPATH . GSWEBSITEFILE);
 	generate_sitemap();
 	
 	# redirect back to yourself to show the new restored data
@@ -80,7 +80,7 @@ if(isset($_POST['submitted'])) {
 	if(!in_array($LANG.'.php', $lang_array) and !in_array($LANG.'.PHP', $lang_array)) die(); 
 
 	# create website xml file
-	backup_datafile(GSWEBSITEFILE);
+	backup_datafile(GSDATAOTHERPATH . GSWEBSITEFILE);
 
 	// new xml
 	$xmls = new SimpleXMLExtended('<item></item>');

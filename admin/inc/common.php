@@ -66,7 +66,7 @@ $GS_constants = array(
 	'GSRESETFILEPREFIX'     => '',                            // (str) password reset file naming prefix after extension
 	'GSDEFAULTPERMALINK'    => '%path%/%slug%/',              // (str) default permalink structure to use if prettyurls is enabled, and custom not exist 
 	'GSTOKENDELIM'          => '%',                           // (str) delimiter for token boundaries
-	'GSLOGINQSALLOWED'      => 'id,draft,nodraft',            // (str) csv query string keys to allow during login redirects
+	'GSLOGINQSALLOWED'      => 'id,draft,nodraft,safemode',   // (str) csv query string keys to allow during login redirects
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
@@ -143,6 +143,7 @@ $GS_definitions = array(
 	'GSDEBUGREDIRECTS'     => false,                          // (bool) if debug mode enabled, prevent redirects for debugging
 	'GSDEBUGFILEIO'        => false,                          // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
+	'GSSAFEMODE'           => false,                          // (bool) enable safe mode, safe mode disables plugins and components
 	# ---------------------------------------------------------------------------------------------------------------------------------------------------
  	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
 );
@@ -189,11 +190,11 @@ if(!GSBASE){
 	}
 }
 else {
-	$base = GSBASE; // LEGACY frontend flag DEPRECATED
+	$base = GSBASE; // @global $base LEGACY frontend flag DEPRECATED
 	// set loaders, if you want to override these do it your main common wrapper or index.php
 	if(!isset($load['plugin']))   $load['plugin']   = true;   // load plugin system
 	if(!isset($load['template'])) $load['template'] = true; // load template system
-	if(!isset($load['login']))    $load['login']    = false; // load template system
+	if(!isset($load['login']))    $load['login']    = false; // load login system
 }
 
 /*
@@ -348,6 +349,7 @@ if(!is_frontend()){
  * @global (str) $ASSETURL      url for asset loading in head depends on GSASSETURLREL and GSASSETSCHEMES settings
  * @global (str) $OLDLOCALE     store old locale before setcustomlocale
  * @global (str) $NEWLOCALE     store new locale before setcustomlocale
+ * @global (bool) $SAFEMODE     safemode flag, disables plugins etc
  */
 
 GLOBAL
@@ -365,13 +367,14 @@ GLOBAL
  $SITEUSR,
  $ASSETURL,
  $OLDLOCALE,
- $NEWLOCALE
+ $NEWLOCALE,
+ $SAFEMODE
 ;
 
 // load website data from GSWEBSITEFILE (website.xml)
 extract(getWebsiteData(true));
 
-
+// debugging paths
 debugLog('SITEUSR      = ' . $SITEUSR);
 debugLog('GSSITEURLREL = ' . getDef('GSSITEURLREL',true));
 debugLog('SITEURL      = ' . getSiteURL());
@@ -536,28 +539,40 @@ if (notInInstall()) {
 }
 
 // set these for install, empty if website.xml doesnt exist yet
-if(empty($SITEURL))      $SITEURL  = suggest_site_path();
+if(empty($SITEURL))      $SITEURL     = suggest_site_path();
 if(empty($SITEURL_ABS))  $SITEURL_ABS = $SITEURL;
 if(empty($SITEURL_REL))  $SITEURL_REL = $SITEURL;
-if(empty($ASSETURL))     $ASSETURL = $SITEURL;
+if(empty($ASSETURL))     $ASSETURL    = $SITEURL;
 
 /**
  * Include other files depending if they are needed or not
  */
 require_once(GSADMININCPATH.'cookie_functions.php');
 require_once(GSADMININCPATH.'assets.php');
+include_once(GSADMININCPATH.'plugin_functions.php');
+
+// include core plugin for page caching, requires plugin functions for hooks
+// @todo must stay after plugin_function for now, since it requires plugin_functions
+include_once(GSADMININCPATH.'caching_functions.php');
+init_pageCache();
+
+if($SAFEMODE && is_logged_in() && isset($_REQUEST['safemodeoff'])){
+	disableSafeMode();
+	redirect(myself(false));
+}
+
+if($SAFEMODE || getDef('GSSAFEMODE',true)){
+	$SAFEMODE = true;
+	debugLog("SAFEMODE ON");
+	$load['plugin'] = false;
+}	
+
 
 if(isset($load['plugin']) && $load['plugin']){
 
 	// load plugins functions
 	$live_plugins = array();  // global array for storing active plugins
-	include_once(GSADMININCPATH.'plugin_functions.php');
 
-	// include core plugin for page caching, requires plugin functions for hooks
-	// @todo must stay here for now, since it requires plugin_functions
-	include_once('caching_functions.php');
-	init_pageCache();
-	
 	// Include plugins files in global scope
 	loadPluginData();
 	if(function_exists('plugin_preload_callout')) plugin_preload_callout();	// @callout plugin_preload_callout callout before loading plugin files
@@ -596,7 +611,11 @@ if(isset($load['plugin']) && $load['plugin']){
 // debugLog($pluginHooks);
 
 
-
+if(!function_exists('exec_action')){
+	function exec_action($hook){
+		debugLog("hook: $hook cannot execute, plugins are disabled");
+	}
+}
 
 
 if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ require_once(GSADMININCPATH.'login_functions.php'); }

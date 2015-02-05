@@ -30,6 +30,9 @@ define('GSIMAGEWIDTH', '200');
 # Turn on debug mode
 #define('GSDEBUG', TRUE);
 
+# Turn on safe mode
+#define('GSSAFEMODE', TRUE);
+
 # Turn off CSRF protection. Uncomment this if you keep receiving the error message "CSRF error detected..."
 #define('GSNOCSRF', TRUE);
 

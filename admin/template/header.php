@@ -1,21 +1,24 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /**
  * Header Admin Template
- *
+ * 
  * @package GetSimple
  */
 
-GLOBAL $SITENAME, $SITEURL, $GSADMIN, $themeselector, $pagetitle, $SESSIONHASH;
+// this is included anonymously, MUST SET GLOBALS!
+GLOBAL $SITENAME, $SITEURL, $GSADMIN, $themeselector, $pagetitle, $SESSIONHASH, $SAFEMODE;
 
-$GSSTYLE = getDef('GSSTYLE') ? GSSTYLE : '';
+// special style flags
+$GSSTYLE         = getDef('GSSTYLE') ? GSSTYLE : '';
 $GSSTYLE_sbfixed = in_array('sbfixed',explode(',',$GSSTYLE));
 $GSSTYLE_wide    = in_array('wide',explode(',',$GSSTYLE));
 
-$bodyclass="class=\"";
-if( $GSSTYLE_sbfixed ) $bodyclass .= " sbfixed";
-if( $GSSTYLE_wide )    $bodyclass .= " wide";
+// set up body classes
+$bodyclass='';
+if( $GSSTYLE_sbfixed )          $bodyclass .= " sbfixed";
+if( $GSSTYLE_wide )             $bodyclass .= " wide";
+if( $SAFEMODE )                 $bodyclass .= " safemode";
 if( getDef('GSAJAXSAVE',true) ) $bodyclass .= " ajaxsave";
-$bodyclass .="\"";
 
 if(get_filename_id()!='index') exec_action('admin-pre-header'); // @hook admin-pre-header backend before header output
 
@@ -166,7 +169,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 
 </head>
 <?php $headerclass = getDef('GSHEADERCLASS',true) ? getDef('GSHEADERCLASS') : ''?>
-<body <?php filename_id(); echo ' '.$bodyclass; ?> >
+<body <?php filename_id(); echo ' class="'.$bodyclass.'"'; ?> >
 	<div class="header <?php echo $headerclass; ?>" id="header" >
 		<div class="wrapper clearfix">
  <?php exec_action('header-body'); // @hook header-body backend header body wrapper html ?>
