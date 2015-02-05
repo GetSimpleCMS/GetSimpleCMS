@@ -556,17 +556,17 @@ include_once(GSADMININCPATH.'plugin_functions.php');
 include_once(GSADMININCPATH.'caching_functions.php');
 init_pageCache();
 
-if($SAFEMODE && is_logged_in() && isset($_REQUEST['safemodeoff'])){
-	disableSafeMode();
-	redirect(myself(false));
+if($SAFEMODE){
+	if(isset($_REQUEST['safemodeoff']) && is_logged_in()){
+		disableSafeMode();
+		redirect(myself(false));
+	} 
+	else {
+		$SAFEMODE = true;
+		debugLog("SAFEMODE ON");
+		$load['plugin'] = false;
+	}	
 }
-
-if($SAFEMODE || getDef('GSSAFEMODE',true)){
-	$SAFEMODE = true;
-	debugLog("SAFEMODE ON");
-	$load['plugin'] = false;
-}	
-
 
 if(isset($load['plugin']) && $load['plugin']){
 
@@ -609,14 +609,6 @@ if(isset($load['plugin']) && $load['plugin']){
 // debugLog($plugin_info);
 // debugLog($plugins);
 // debugLog($pluginHooks);
-
-
-if(!function_exists('exec_action')){
-	function exec_action($hook){
-		debugLog("hook: $hook cannot execute, plugins are disabled");
-	}
-}
-
 
 if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ require_once(GSADMININCPATH.'login_functions.php'); }
 

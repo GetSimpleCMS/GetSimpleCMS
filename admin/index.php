@@ -13,12 +13,12 @@ $load['plugin'] = true;
 $load['login']  = true;
 
 // wrap all include and header output in output buffering to prevent sending before headers.
-// ob_start();
+ob_start();
 	include('inc/common.php');
 	if(!getDef('GSALLOWLOGIN',true)) redirect($SITEURL);
 	$pagetitle = i18n_r('LOGIN');
 	get_template('header');
-// ob_end_flush();
+ob_end_flush();
 
 ?>
 
