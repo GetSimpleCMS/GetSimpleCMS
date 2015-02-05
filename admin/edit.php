@@ -401,6 +401,7 @@ if($newdraft) $pageClass.=' newdraft';
                                     ?>
                                 </select>
                             </div> 
+                            <div class="clear"></div>
                         </div>                
                     <div class="clear"></div>
                     </div>
