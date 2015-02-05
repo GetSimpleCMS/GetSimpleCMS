@@ -132,7 +132,7 @@ function email_template($message) {
 	</body>
 	</html>
 	';
-	return $data;
+	return exec_filter('email_template',$data); // @hook email_template email template
 }
 
 
