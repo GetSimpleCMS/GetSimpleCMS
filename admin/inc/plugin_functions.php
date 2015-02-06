@@ -9,6 +9,8 @@
 /**
  * 
  * 	global array for storing all plugins greated from plugins register_plugin() call
+ *  	$live_plugins[$id] = (bool) enabled
+ *
  *	    $plugin_info[$id] = array(
  *	       'name'        => $name,
  *	       'version'     => $ver,
@@ -24,20 +26,22 @@
  *	    $plugins[] = array(
  *	       'hook'     => hookname,
  *	       'function' => callback function name,
- *	       'priority' => priority order to execute hook,
  *	       'args'     => (array) arguments to pass to function,
- *	       'file'     => caller filename obtained from backtrace,
- *	       'line'     => caller line obtained from backtrace,
+ *	       'priority' => priority order to execute hook,
+ *	       'file'     => DEBUG caller filename obtained from backtrace,
+ *	       'line'     => DEBUG caller line obtained from backtrace
  *	    );
  *
  *
  *	global array for storing filter callbacks
- *	$filters[] = array(
- *	    'filter'   => filtername,
- *	    'function' => callback function name,
- *	    'args'     => (array) arguments for callback,
- *      'priority' => priority order to execute filter,
- *	    'active'   => (bool) is processing anti-self-looping flag
+ *	   $filters[] = array(
+ *	       'filter'   => filtername,
+ *	       'function' => callback function name,
+ *	       'args'     => (array) arguments for callback,
+ *         'priority' => priority order to execute filter,
+ *	       'active'   => (bool) is processing anti-self-looping flag
+ *	       'file'     => DEBUG caller filename obtained from backtrace,
+ *	       'line'     => DEBUG caller line obtained from backtrace	       
  *	);
  *
 */
@@ -90,12 +94,12 @@ function loadPluginData(){
  * @param  bool $apilookup lookup filename in api to get name and desc
  */
 function registerInactivePlugins($apilookup = false){
-	GLOBAL $live_plugins;
+	GLOBAL $live_plugins,$SAFEMODE;
 	// load plugins into $plugins_info
 
 	foreach ($live_plugins as $file=>$en) {
-		# debugLog("plugin: $file" . " exists: " . file_exists(GSPLUGINPATH . $file) ." enabled: " . $en); 
-		if ($en!=='true' || !file_exists(GSPLUGINPATH . $file)){
+		// debugLog("plugin: $file" . " exists: " . file_exists(GSPLUGINPATH . $file) ." enabled: " . $en); 
+		if ($en!=='true' || !file_exists(GSPLUGINPATH . $file) || $SAFEMODE){
 			if($apilookup){
 				// check api to get names of inactive plugins etc.
 		 		$apiback  = get_api_details('plugin', $file);
