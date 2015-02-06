@@ -68,6 +68,29 @@ function get_page_meta_keywords($echo=true) {
 }
 
 /**
+ * get page tags as unordred list or array
+ * @since  3.4
+ * @param bool $echo Optional, default is true. False will 'return' value
+ * @param  bool $asarray if echo is false and asarray is true, returns an array of tags
+ * @return array html string or array of tags for page
+ */
+function get_page_meta_keywords_list($echo = true, $asarray = false){
+	$tags = getPageGlobal('metak');
+	$tags = exec_filter('metak-list',$tags); // @filter metak-list (str) filter the meta keywords in list output
+	$tags = tagsToAry($tags);
+	
+	if(!$echo && $asarray) return $tags;
+	
+	$str  = "<ul>";
+	foreach($tags as $tag){
+		if(!empty($tag)) $str.="<li>$tag</li>";
+	}
+	$str .= "</ul>";
+	return echoReturn($str);
+}
+
+
+/**
  * Get Page Meta Description
  *
  * @since 2.0
@@ -225,7 +248,6 @@ function get_page_slug($echo=true) {
  * This will return the slug value of a particular page's parent
  *
  * @since 1.0
- * @uses $parent
  *
  * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
@@ -265,11 +287,6 @@ function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
  * This will return the full url
  *
  * @since 1.0
- * @uses $parent
- * @uses $url
- * @uses $SITEURL
- * @uses $PRETTYURLS
- * @uses find_url
  *
  * @param bool $echo Optional, default is false. True will 'return' value 
  * @todo $echo is backwards!
