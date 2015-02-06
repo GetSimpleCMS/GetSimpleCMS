@@ -164,7 +164,7 @@ global
  $microtime_start,// (microtime) used for benchmark timers
  $pagesArray,     // (array) global array for storing pages cache, used for all page fields aside from content
  $pageCacheXml,   // (obj) page cache raw xml simpleXMLobj
- $plugins_info,   // (array) contains registered plugin info for active and inactive plugins
+ $plugin_info,    // (array) contains registered plugin info for active and inactive plugins
  $live_plugins,   // (array) contains plugin file ids and enable status
  $plugins,        // (array) global array for storing action hook callbacks
  $pluginHooks,    // (array) global array for storing action hook callbacks hash table
@@ -565,17 +565,18 @@ if($SAFEMODE){
 		$SAFEMODE = true;
 		debugLog("SAFEMODE ON");
 		$load['plugin'] = false;
+		loadPluginData();
 	}	
 }
 
+// load plugins functions
+
 if(isset($load['plugin']) && $load['plugin']){
 
-	// load plugins functions
-	$live_plugins = array();  // global array for storing active plugins
+	if(function_exists('plugin_preload_callout')) plugin_preload_callout();	// @callout plugin_preload_callout callout before loading plugin files
 
 	// Include plugins files in global scope
 	loadPluginData();
-	if(function_exists('plugin_preload_callout')) plugin_preload_callout();	// @callout plugin_preload_callout callout before loading plugin files
 
 	foreach ($live_plugins as $file=>$en) {
 		if ($en=='true' && file_exists(GSPLUGINPATH . $file)){

@@ -50,7 +50,10 @@
  * @since  3.4
 */
 function loadPluginData(){
-	GLOBAL $live_plugins;
+	GLOBAL $live_plugins, $plugin_info, $live_plugins;
+
+	$live_plugins = array();
+	$plugin_info  = array();
 
 	// Check if data\other\plugins.xml exists 
 	if (!file_exists(GSDATAOTHERPATH.getDef('GSPLUGINSFILE'))){
