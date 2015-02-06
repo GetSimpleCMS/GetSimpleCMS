@@ -19,7 +19,9 @@ login_cookie_check();
 $draft = (isset($_GET['nodraft']) || isset($_POST['post-nodraft']) || !getDef('GSUSEDRAFTS',true)) ? false : true; // (bool) using draft pages
 
 if(isset($_GET['publish']) && isset($_GET['id'])){
-	$id = var_in($_GET['id']);
+
+	$id = var_in(_id($_GET['id']));
+	safemodefail('publish','edit.php?id='. $id);
 	
 	if(!filepath_is_safe(GSDATADRAFTSPATH.$id.'.xml',GSDATADRAFTSPATH)) $status = false;
 	else $status = publishDraft($id);
@@ -35,6 +37,9 @@ if(isset($_GET['publish']) && isset($_GET['id'])){
 if (isset($_POST['submitted'])) {
 	check_for_csrf("edit", "edit.php");
 	// check for missing required fields
+
+	safemodefail('changedata-save','edit.php?id='. $_POST['post-id']);
+
 	if ( !isset($_POST['post-title']) || trim($_POST['post-title']) == '' )	{
 		// no title, throw CANNOT_SAVE_EMPTY
 		// @todo this loses $id, we only get here if js is disabled

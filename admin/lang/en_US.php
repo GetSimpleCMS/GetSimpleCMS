@@ -434,6 +434,7 @@ $i18n = array(
 "ER_PUBLISH_SUCCESS"      =>	"Draft of <b>%s</b> has been published",
 "ER_PUBLISH_ERROR"        =>	"There was a problem publishing draft of <b>%s</b>",
 "ER_SAFEMODE"             =>    "Safe Mode is Active",
+"ER_SAFEMODE_DISALLOW"    =>    "Operation not allowed in Safe Mode",
 
 /* 
 * For: changedata.php

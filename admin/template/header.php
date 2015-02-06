@@ -18,7 +18,7 @@ $bodyclass='';
 if( $GSSTYLE_sbfixed )          $bodyclass .= " sbfixed";
 if( $GSSTYLE_wide )             $bodyclass .= " wide";
 if( $SAFEMODE )                 $bodyclass .= " safemode";
-if( getDef('GSAJAXSAVE',true) ) $bodyclass .= " ajaxsave";
+if( !$SAFEMODE && getDef('GSAJAXSAVE',true) ) $bodyclass .= " ajaxsave"; // ajaxsave enabled if GSAJAXSAVE and not SAFEMODE
 
 if(get_filename_id()!='index') exec_action('admin-pre-header'); // @hook admin-pre-header backend before header output
 
@@ -101,6 +101,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
     if (file_exists(GSTHEMESPATH .getDef('GSEDITORCONFIGFILE'))) {
         $configjs =  $SITEURL.getRelPath(GSTHEMESPATH).getDef('GSEDITORCONFIGFILE');
     }
+	get_scripts_backend();
 
     ?>
 
@@ -143,13 +144,17 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 <?php       if(getGlobal('EDOPTIONS')) echo ','.trim(getGlobal('EDOPTIONS')); ?>
         };
 
-       <?php if(get_filename_id() == 'snippets') echo "htmlEditorConfig.height = '100px';"; ?>
+       <?php 
 
+       if(get_filename_id() == 'snippets') echo "htmlEditorConfig.height = '100px';"; ?>
+
+		jQuery(document).ready(function () {
+	       	$('body#edit.safemode :input').prop("disabled", true);
+	    });
     </script>
 
 	<?php
 
-	get_scripts_backend();
 
 	# Plugin hook to allow insertion of stuff into the header
 	if(!isAuthPage()) exec_action('header'); // @hook header backend before html head closes

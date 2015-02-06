@@ -2857,6 +2857,15 @@ function disableSafeMode(){
 	return toggleSafeMode(false);
 }	
 
+function safemodefail($action = '',$url = ''){
+	GLOBAL $SAFEMODE;
+	// @todo add secfilter here to override default behavior
+	if($SAFEMODE){
+		redirect($url ."&error=".urlencode(i18n_r('ER_SAFEMODE_DISALLOW')));
+		die();
+	}	
+}
+
 /**
  * **************************************************************************** 
  * Array Helpers
