@@ -72,7 +72,8 @@ $.fn.htmlEditorFromTextarea = function(config){
         // add reference to this editor to the textarea
         $this.data('htmleditor', editor);
 
-        // ctr+s save handler
+        // ctrl+s ajax save handler
+        // ctrl+shift+s bypass ajaxsave
         editor.on('instanceReady', function (ev) {
             ev.editor.setKeystroke(CKEDITOR.CTRL + 83 /*S*/, 'customSave' );
             ev.editor.setKeystroke(CKEDITOR.SHIFT + CKEDITOR.CTRL + 83 /*S*/, 'customAltSave' );

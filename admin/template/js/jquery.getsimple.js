@@ -1620,10 +1620,13 @@ jQuery(document).ready(function () {
 		});
 	};
 
-	// ajaxify components submit
+	// ajaxify components submit if ajaxsave enabled
 	$('body.ajaxsave #compEditForm').on('submit',function(e){
-		e.preventDefault();
-		componentSave(e);
+        if($('body').hasClass('ajaxsave')){
+			e.preventDefault();
+			componentSave(e);
+			return false;
+		}
 	});
 	
 	componentSave = function(e){
@@ -1907,7 +1910,8 @@ jQuery(document).ready(function () {
 	// initialize fixed sidebar
 	scrollsidebar();
 
-	// CTRL+s save hotkey listener
+	// CTRL+s ajax save hotkey listener
+	// CTRL+SHIFT+s ajax save bypass
 	$(document).bind('keydown', function(e) {
 		// Debugger.log('keydown: ' + e.which);
 		var ctrlpress = navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey;
