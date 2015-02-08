@@ -1577,17 +1577,17 @@ table.comptable label {
 	color: #777;
 }
 
-table.comptable .compactive {
+table.comptable td.compactive {
 	text-align: center;
 	width: 80px;
 }
 
-table.comptable .compactive label {
+table.comptable td.compactive label {
 	font-size: 11px;
 	font-weight: normal;
 }
 
-table.comptable .compactive input {
+table.comptable td.compactive input {
 	vertical-align: middle;
 }
 

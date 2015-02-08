@@ -1910,14 +1910,14 @@ function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit',$c
 		$str .= '<td style="text-align:right;" ><code>&lt;?php '.$code.'(<span class="compslugcode">\''.$item->slug.'\'</span>); ?&gt;</code></td>';
 	
 	$str .= '<td class="compactive"><label class="" for="active[]" >'.i18n_r('ACTIVE').'</label>';
-	$str .= '<input type="checkbox" name="active[]" '. (!$disabled ? 'checked="checked"' : '') .' value="'.$id.'" /></td>';
+	$str .= '<input type="checkbox" class="compactive" name="component['.$id.'][active]" '. (!$disabled ? 'checked="checked"' : '') .' value="'.$id.'" /></td>';
 	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE').' '. cl($item->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
 	$str .= '</tr></table>';
 	
-	$str .= '<textarea id="editor_'.$id.'" name="val[]"'.getEditorAttribCallout($collectionid,$class).'>'. stripslashes($item->value) .'</textarea>';
-	$str .= '<input type="hidden" class="compslug" name="slug[]" value="'. $item->slug .'" />';
-	$str .= '<input type="hidden" class="comptitle" name="title[]" value="'. stripslashes($item->title) .'" />';
-	$str .= '<input type="hidden" name="id[]" value="'. $id .'" />';
+	$str .= '<textarea id="editor_'.$id.'" name="component['.$id.'][val]"'.getEditorAttribCallout($collectionid,$class).'>'. stripslashes($item->value) .'</textarea>';
+	$str .= '<input type="hidden" class="compslug" name="component['.$id.'][slug]" value="'. $item->slug .'" />';
+	$str .= '<input type="hidden" class="comptitle" name="component['.$id.'][title]" value="'. stripslashes($item->title) .'" />';
+	$str .= '<input type="hidden" class="compid" name="component['.$id.'][id]" value="'. $id .'" />';
 	$str .= '</div>';
 	return $str;
 }
@@ -1965,6 +1965,34 @@ function outputCollectionTags($collectionid,$data){
 
 	exec_action($collectionid.'-list-extras'); // @hook collectionid-list-extras called after component sidebar list items (tags) 		
 	echo '</div>';
+}
+
+function addComponentItem($xml,$title,$value,$active,$slug = null){
+
+	if ($title != null && !empty($title)) {
+		if ( $slug == null || _id($slug) == '') {
+			$slug  = to7bit($title, 'UTF-8');
+			$slug  = clean_url($slug); 
+		}
+		
+		$title    = safe_slash_html($title);
+		$value    = safe_slash_html($value);
+		$disabled = $active;
+	
+		if(!is_object($xml)) $xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
+
+		# create the body of components.xml file
+		$component = $xml->addChild('item');
+		$c_note     = $component->addChild('title');
+		$c_note->addCData($title);
+		$component->addChild('slug', $slug);
+		$c_note     = $component->addChild('value');
+		$c_note->addCData($value);
+		$c_note     = $component->addChild('disabled');
+		$c_note->addCData($disabled);
+	}
+	// debugLog(var_dump($component->asXML()));
+	return $xml;
 }
 
 /**

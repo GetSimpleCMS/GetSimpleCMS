@@ -21,11 +21,6 @@ $update = $table = $list = '';
 
 # check to see if form was submitted
 if (isset($_POST['submitted'])){
-	$value  = $_POST['val'];
-	$slug   = $_POST['slug'];
-	$title  = $_POST['title'];
-	$ids    = $_POST['id'];
-	$active = $_POST['active'];
 
 	check_for_csrf("modify_components");
 
@@ -33,47 +28,25 @@ if (isset($_POST['submitted'])){
 	backup_datafile(GSDATAOTHERPATH.GSCOMPONENTSFILE);
 	
 	# start creation of top of components.xml file
-	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
-	if (count($ids) != 0) { 
+	if (count($_POST['component']) != 0) { 
+		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
 		
-		$ct = 0; $coArray = array();
-		foreach ($ids as $id)		{
-			if ($title[$ct] != null) {
-				if ( $slug[$ct] == null )	{
-					$slug_tmp  = to7bit($title[$ct], 'UTF-8');
-					$slug[$ct] = clean_url($slug_tmp); 
-					$slug_tmp  = '';
-				}
-				
-				$coArray[$ct]['id']    = $ids[$ct];
-				$coArray[$ct]['slug']  = $slug[$ct];
-				$coArray[$ct]['title'] = safe_slash_html($title[$ct]);
-				$coArray[$ct]['value'] = safe_slash_html($value[$ct]);
-				$coArray[$ct]['disabled'] = !in_array($coArray[$ct]['id'],$active);
-			}
-			$ct++;
-		}
+		foreach ($_POST['component'] as $component)	{
+
+			$id     = $component['id']; // unused
+			$slug   = $component['slug'];
+			$value  = $component['val'];
+			$title  = $component['title'];
+			$active = isset($component['active']) ? 0 : 1; // checkbox
+
+			$componentXML = addComponentItem($xml,$title,$value,$active,$slug);
+		}		
 		
-		$ids = subval_sort($coArray,'title');
-		
-		$count = 0;
-		foreach ($ids as $comp)	{
-			# create the body of components.xml file
-			$newitems = $xml->addChild('item');
-			$c_note     = $newitems->addChild('title');
-			$c_note->addCData($comp['title']);
-			$newitems->addChild('slug', $comp['slug']);
-			$c_note     = $newitems->addChild('value');
-			$c_note->addCData($comp['value']);
-			$c_note     = $newitems->addChild('disabled');
-			$c_note->addCData($comp['disabled']);			
-			$count++;
-		}
+		exec_action('component-save'); // @hook component-save before saving components data file
+		XMLsave($xml, GSDATAOTHERPATH.GSCOMPONENTSFILE);
+		get_components_xml(true);
 	}
-	exec_action('component-save'); // @hook component-save before saving components data file
-	XMLsave($xml, GSDATAOTHERPATH.GSCOMPONENTSFILE);
 	$update = 'comp-success';
-	get_components_xml(true);
 }
 
 # if undo was invoked

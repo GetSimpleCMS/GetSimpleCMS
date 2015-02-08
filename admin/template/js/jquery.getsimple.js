@@ -730,14 +730,22 @@ jQuery(document).ready(function () {
 		newcomponent.css('display','none');
 		newcomponent.find('.delcomponent').prop('rel',id);
 		newcomponent.find('.delcomponent').hide();
-		newcomponent.find("[name='id[]']").prop('value',id);
-		newcomponent.find("[name='active[]']").prop('value',id);
+		
+		newcomponent.find("[name='component[][id]']").prop('value',id);
+		newcomponent.find("[name='component[][active]']").prop('value',id);
+		
+
+		newcomponent.find("[name='component[][val]']").prop('name',"component["+id+"][val]");
+		newcomponent.find(".compid").prop('name',"component["+id+"][id]");
+		newcomponent.find(".compactive").prop('name',"component["+id+"][active]");
+		newcomponent.find(".comptitle").prop('name',"component["+id+"][title]");
+		newcomponent.find(".compslug").prop('name',"component["+id+"][slug]");
 
 		// insert new component
 		$("#divTxt").prepend(newcomponent);
 		
 		// remove template noeditor class
-		var input = newcomponent.find("[name='val[]']");
+		var input = newcomponent.find("[name='component["+id+"][val]']");
 		input.addClass('oneline');
 		input.removeClass('noeditor');
 		
@@ -799,7 +807,7 @@ jQuery(document).ready(function () {
 			$(myparent).find('input').prop('disabled',true); // disable all inputs
 			$(myparent).addClass('deleted'); 
 
-			var title = $(myparent).find("[name='title[]']").val();
+			var title = $(myparent).find("input.comptitle").val();
 			notifyError(sprintf(i18n('COMPONENT_DELETED'),title)).popit();
 
 			pageIsDirty();
@@ -813,7 +821,7 @@ jQuery(document).ready(function () {
 	function removeDeletedComponents(){
 		$(".compdiv.deleted").each(function(){
 			$(this).slideUp(500, function () {
-				var compid = $(this).find("[name='id[]']").val();				
+				var compid = $(this).find("input.compid").val();				
 				if ($("#divlist-" + compid).length) {
 					$("#divlist-" + compid).remove();
 				}
@@ -852,6 +860,7 @@ jQuery(document).ready(function () {
 			$("b.editable").show();
 			$(this).parents('.compdiv').find('.delcomponent').show();
 			$(this).val(myval+'new'); // put cleaner slug back
+			$(this).parents('.compdiv').find("input.comptitle").val(myval);			
 			
 			$('#changetitle').remove(); // remove self parent last
 		}
@@ -877,7 +886,7 @@ jQuery(document).ready(function () {
 	}
 
  	// handle toggling active, @todo: enable some kind of css style etc here
-	$("#maincontent").on("change","[name='active[]']", function () {
+	$("#maincontent").on("change","input.compactive", function () {
 		var myval = $(this).val();
 		// if($(this).is(':checked')) // do stuff
 	});		
@@ -1627,6 +1636,7 @@ jQuery(document).ready(function () {
 			componentSave(e);
 			return false;
 		}
+		pageIsClean();
 	});
 	
 	componentSave = function(e){
@@ -2005,6 +2015,7 @@ function dosave(){
 
 function dosavealt(){
 	$('body').removeClass('ajaxsave');
+	pageIsDirty = false;
 	dosave();
 }
 
