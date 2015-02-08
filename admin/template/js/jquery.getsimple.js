@@ -729,6 +729,7 @@ jQuery(document).ready(function () {
 		newcomponent.prop('id','section-'+id);
 		newcomponent.css('display','none');
 		newcomponent.find('.delcomponent').prop('rel',id);
+		newcomponent.find('.delcomponent').hide();
 		newcomponent.find("[name='id[]']").prop('value',id);
 		newcomponent.find("[name='active[]']").prop('value',id);
 
@@ -778,22 +779,48 @@ jQuery(document).ready(function () {
 		$e.preventDefault();
 		// Debugger.log($(this));
 		var message = $(this).attr("title");
-		var compid = $(this).attr("rel");
 		var answer = confirm(message);
 		if (answer) {
 			loadingAjaxIndicator.show();
 			var myparent = $(this).parents('.compdiv');
-			myparent.slideUp(500, function () {
+
+			$(myparent).css('opacity','0.3');
+			
+			var editor = $(myparent).find('textarea.code_edit').data('editor');
+			if(editor){
+				codeedit_readonly(editor);
+			}
+
+			editor = $(myparent).find('textarea.html_edit').data('htmleditor');
+			if(editor){
+				htmledit_readonly(editor);
+			}
+
+			$(myparent).find('input').prop('disabled',true); // disable all inputs
+			$(myparent).addClass('deleted'); 
+
+			var title = $(myparent).find("[name='title[]']").val();
+			notifyError(sprintf(i18n('COMPONENT_DELETED'),title)).popit();
+
+			pageIsDirty();
+			$(this).remove(); // remove delete button
+
+			loadingAjaxIndicator.fadeOut(1000);
+			// removeDeletedComponents();
+		}
+	});
+
+	function removeDeletedComponents(){
+		$(".compdiv.deleted").each(function(){
+			$(this).slideUp(500, function () {
+				var compid = $(this).find("[name='id[]']").val();				
 				if ($("#divlist-" + compid).length) {
 					$("#divlist-" + compid).remove();
 				}
-				var title = $(myparent).find("[name='title[]']").val();
-				notifyError(sprintf(i18n('COMPONENT_DELETED'),title)).popit();
-				myparent.remove();
+				this.remove();
 			});
-			loadingAjaxIndicator.fadeOut(1000);
-		}
-	});
+		});
+	}
 
 	// bind double click component name
 	$("#maincontent").on('dblclick',"b.editable",function () {
@@ -802,6 +829,7 @@ jQuery(document).ready(function () {
 
 	$.fn.comptitleinput = function(){
 		var t = $(this).html();		
+		if($(this).parents('.compdiv').find("input.comptitle").prop('disabled') == true) return; // deleted ignore
 		$(this).parents('.compdiv').find("input.comptitle").val('').hide(); // wipe comptitle
 		$(this).after('<div id="changetitle"><label>Title: </b><input class="text newtitle titlesaver" name="titletmp[]" value="' + t + '" /></div>');
 		$(this).next('#changetitle').find('input.titlesaver').focus();
@@ -821,11 +849,12 @@ jQuery(document).ready(function () {
 		$(this).parents('.compdiv').find("b.editable").html(myval);
 		if(myval !== '' && validateCompSlug(myval)){
 			// Debugger.log('slug IS unique: "' + myval + '"');
-			$(this).parents('.compdiv').find("input.comptitle").val(myval);
 			$("b.editable").show();
-			$('#changetitle').remove();
+			$(this).parents('.compdiv').find('.delcomponent').show();
 			$(this).val(myval+'new'); // put cleaner slug back
-		}	
+			
+			$('#changetitle').remove(); // remove self parent last
+		}
 		else {
 			Debugger.log('slug is NOT unique: ' + myval );
 			$(this).addClass('error');
@@ -1317,8 +1346,18 @@ jQuery(document).ready(function () {
     $('form input,form textarea,form select').not('#post-title').not('#post-id').bind('change keypress paste textInput input',function(){
         // Debugger.log('form changed');
         if($("body").hasClass('dirty')) return;
-        if($(this).closest($('form')).find('#submit_line').get(0)) $("body").addClass('dirty');
+        pageIsDirty($(this));
     });
+
+    function pageIsDirty(elem){
+        if($(elem).closest($('form')).find('#submit_line').get(0)) $("body").addClass('dirty');    	
+        pageisdirty = true;
+    }
+
+    function pageIsClean(elem){
+        $("body").removeClass('dirty');    	
+        pageisdirty = false;
+    }
 
 	// save and close
 	$(".save-close a").on("click", function ($e) {
@@ -1609,6 +1648,7 @@ jQuery(document).ready(function () {
 				$(response).find('div.updated').parseNotify();
 				updateNonce(response);
 				ajaxStatusComplete();
+				removeDeletedComponents();
 			}
 		});
 	};

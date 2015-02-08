@@ -142,17 +142,24 @@ $.fn.htmlEditorFromTextarea = function(config){
     });
 };
 
+
+function htmledit_readonly(editor){
+    editor.setReadOnly();
+    cke_setheight(editor,100);    
+}
+
 function cke_editorfocus(editor){
     if (editor && editor.config.gscompact == true) {
         // @todo ignore if fullscreen
         cke_hideui(editor);
-        editor.on('focus', function(event) {
+        $(editor).on('focus', function(event) {
             // Debugger.log('editor focused');
             cke_setheight(editor,1000); // @todo max height max plus n or just large
             cke_showui(editor);
         }).bind('selectstart dragstart', function(evt)
                                 { evt.preventDefault(); return false; });
-        editor.on('blur', function(event) {
+        
+        $(editor).on('blur', function(event) {
             // Debugger.log('editor blurred');
             cke_autoheight(editor);
             cke_hideui(editor); 

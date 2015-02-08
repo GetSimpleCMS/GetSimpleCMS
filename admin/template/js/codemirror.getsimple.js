@@ -184,6 +184,12 @@ jQuery(document).ready(function () {
 		});
 	};
 
+
+	function codeedit_readonly(editor){
+		editor.setOption('readOnly',true);
+		editor.refresh();		
+	}
+
 	function initcodemirror(){
 		// apply codemirror to class of .code_edit
 		var elem= $(".code_edit").editorFromTextarea();
