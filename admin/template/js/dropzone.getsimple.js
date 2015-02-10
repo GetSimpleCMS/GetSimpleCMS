@@ -73,16 +73,19 @@ jQuery(document).ready(function () {
 	 */
 	function checkfile(file,done){
         $.ajax({
-            url: 'uploadify-check-exists.php?path='+uploadPath,
+            url: 'upload-precheck.php?path='+uploadPath,
             data: {filename: file.name, name: file.name, type: file.type},
             type: 'POST',
             success: function(response)
             {
-            	if(response == 1){
+
+            	jsonresponse = $.parseJSON(response);
+            	// Debugger.log(jsonresponse);
+            	if(jsonresponse.file_exists == true){
             		resp = confirm(file.name + "\n\n" + i18n('FILE_EXISTS_PROMPT') )
-            		console.log(resp);
             		if(resp){
             			// overwrite on ok
+            			// @todo using int not boolean so we can add states in the future like rename, keep original etc.
             			file.overwrite = 1;
             			done();
             		}
@@ -92,8 +95,8 @@ jQuery(document).ready(function () {
                 		done();
                 		// done(i18n('CANCELLED'));
                 	}	
-            	} 
-            	else if(response == 0) done();
+            	}
+            	else if(jsonresponse.file_exists == false) done();
             	else done(i18n('ERROR'));
             },
             error: function(response)

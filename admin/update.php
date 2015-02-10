@@ -48,15 +48,19 @@ $create_dirs = array(
 	GSBACKUPSPATH .'zip/'	
 );
 
+// files to be created
 $create_files = array();
 
+// deprecatd files to be removed
 $delete_files = array(
 	GSADMININCPATH.'xss.php',
 	GSADMININCPATH.'nonce.php',
 	GSADMININCPATH.'install.php',
 	GSADMINPATH.'load-ajax.php',
 	GSADMINPATH.'cron.php',
-	GSADMINPATH.'loadtab.php'
+	GSADMINPATH.'loadtab.php',
+	GSADMINPATH.'upload-uploadify.php',
+	GSADMINPATH.'uploadify-check-exists.php'
 );
 
 
