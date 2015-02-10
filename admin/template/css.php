@@ -98,7 +98,9 @@ td.imgthumb {
 }
 
 .imgthumb img {
-	border: 1px solid #555;
+	/*border: 1px solid #555;*/
+	border: 1px solid #5E5E5E !important;
+	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;			
 }
 
 .thumblinkexternal{
@@ -2159,7 +2161,9 @@ textarea.copykit {
 .thumbs img{
 	max-height:128px;
 	max-width:128px;
-	border:1px solid #555;
+	border: 1px solid #5E5E5E !important;
+	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;		
+	margin-bottom: 4px;
 }
 
 .thumbcontainer {
@@ -2183,6 +2187,7 @@ textarea.copykit {
 
 #cropbox {
 	display:none;
+	margin-bottom: 3px;
 }
 
 #handw {
@@ -2210,7 +2215,8 @@ textarea.copykit {
 }
 
 .jcrop-holder {
-	border: 1px solid #555 !important;
+	border: 1px solid #5E5E5E !important;
+	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;	
 }
 
 #jcropform label {
@@ -3376,6 +3382,11 @@ kbd
 
 .outline {
 	border: 1px dotted gray;
+}
+
+.shadowbox {
+	border: 1px solid #5E5E5E !important;
+	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;		
 }
 
 /* Allow Font Awesome Icons in lieu of jQuery UI and only apply when using a FA icon */

@@ -118,7 +118,7 @@ include('template/include-nav.php'); ?>
 			echo "</a></div>";
 
 			echo '<div class="thumbcontainer"><a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'" rel="fancybox_i" >';
-			echo '<div><img  src="'.$thumb_url . 'thumbnail.'. rawurlencode($src).'?'.time().'"></div>';
+			echo '<div><img src="'.$thumb_url . 'thumbnail.'. rawurlencode($src).'?'.time().'"></div>';
 			echo i18n_r('CURRENT_THUMBNAIL') .'<br/><code>'.$thwidth.'x'.$thheight .'</code>';
 			echo "</a></div>";
 			
@@ -162,8 +162,10 @@ if($jcrop){ ?>
 	<form id="jcropform" class="noenter" action="<?php myself(); ?>?i=<?php echo rawurlencode($src); ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
 	<div id="jcrop_open">
 	    <img src="<?php echo $src_url .rawurlencode($src); ?>" id="cropbox" />
+		<div>
 		<div id="handw" class="" ><?php i18n('SELECT_DIMENTIONS'); ?><br /><span id="picw">0</span> x <span id="pich">0</span></div>
 	    <input id="cropsave" type="submit" class="submit" value="<?php i18n('CREATE_THUMBNAIL');?>" /> &nbsp;
+	    </div>
 	    <div class="clearfix"></div>
 	    <Br/>
 	    <!-- This is the form that our event handler fills -->
