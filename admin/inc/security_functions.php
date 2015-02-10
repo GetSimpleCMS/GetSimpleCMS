@@ -202,11 +202,12 @@ function validate_safe_file($file, $name, $mime){
  * @param string $filepath Unknown Path to file to check for safety
  * @param string $pathmatch Known Path to parent folder to check against
  * @param bool $subdir allow path to be a deeper subfolder
+ * @param bool $newfile if true fallback and realpath basename, caution, use with other filename sanitizers
  * @return bool Returns true if files path resolves to your known path
  */
-function filepath_is_safe($filepath,$pathmatch,$subdir = true){
+function filepath_is_safe($filepath, $pathmatch, $subdir = true, $newfile = false){
 	$realpath = realpath($filepath);
-	if(!$realpath) return path_is_safe(dirname($filepath),$pathmatch,$subdir);
+	if(!$realpath && $newfile) return path_is_safe(dirname($filepath),$pathmatch,$subdir);
 
 	$realpathmatch = realpath($pathmatch);
 	if($subdir) return strpos(dirname($realpath),$realpathmatch) === 0;

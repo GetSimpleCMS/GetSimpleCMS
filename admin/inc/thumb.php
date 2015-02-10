@@ -95,6 +95,7 @@ if (isset($_REQUEST['y'])) {
   $max_y = intval($_REQUEST['y']);
 }
 
+// @todo cuts not implemented
 if (isset($_REQUEST['ox'])) {
   $cut_x = intval($_REQUEST['ox']);
 }
@@ -106,9 +107,6 @@ if (isset($_REQUEST['oy'])) {
 $path_parts = pathinfo($from_name);
 
 
-// @todo not supported yet
-// $img->image_type   = $image_type;
-
 $file     = basename($from_name);
 $sub_path = dirname($from_name);
 $outfile  = $save_to_file ? basename($to_name) : null;
@@ -117,7 +115,7 @@ $outfile  = $save_to_file ? basename($to_name) : null;
 // debugLog($outfile);
 
 // travesal protection
-if(!filepath_is_safe(GSDATAUPLOADPATH.$sub_path.$file,GSDATAUPLOADPATH)) die('invalid image');
+if(!filepath_is_safe(GSDATAUPLOADPATH.$sub_path.$file,GSDATAUPLOADPATH,true,true)) die('invalid image');
 
 // Debugging Request
 // returns the imagemanipulation object json encoded, 
@@ -129,10 +127,10 @@ if(isset($_REQUEST['debug']) || isset($_REQUEST['json'])){
     // $outfile = null;
 }
 
-// @todo: if needing to save as attachement from post, might need this else second request might be made losing data
+// @todo: if needing to save as attachement from post, might need this else second request might be made with post data missing
 // header('Content-Disposition: Attachment;filename='.$outfile);
 
-$image = generate_thumbnail($file, $sub_path, $outfile, $max_y, $max_x, $image_quality, true, $image_type);
+$image = generate_thumbnail($file, $sub_path, $outfile, $max_y, $max_x, $image_quality, $show = true, $image_type);
 
 if(isset($_REQUEST['debug']) || isset($_REQUEST['json'])){
     $output = ob_get_contents(); // get the image as a string in a variable
