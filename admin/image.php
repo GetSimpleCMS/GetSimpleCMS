@@ -118,7 +118,7 @@ include('template/include-nav.php'); ?>
 			echo "</a></div>";
 
 			echo '<div class="thumbcontainer"><a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'" rel="fancybox_i" >';
-			echo '<div><img  src="'.$thumb_url . 'thumbnail.'. rawurlencode($src).'"></div>';
+			echo '<div><img  src="'.$thumb_url . 'thumbnail.'. rawurlencode($src).'?'.time().'"></div>';
 			echo i18n_r('CURRENT_THUMBNAIL') .'<br/><code>'.$thwidth.'x'.$thheight .'</code>';
 			echo "</a></div>";
 			
