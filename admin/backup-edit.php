@@ -19,6 +19,8 @@ if ($_GET['id'] != '') {
 	$file = $id .".bak.xml";
 	$path = GSBACKUPSPATH .'pages/';
 	
+	if(!filepath_is_safe($path.$file,$path)) die();
+
 	$data = getXML($path . $file);
 	$title = htmldecode($data->title);
 	$pubDate = $data->pubDate;
@@ -71,6 +73,7 @@ elseif ($p == 'restore') {
 		restore_bak($id);
 		$existing = GSDATAPAGESPATH . $_GET['new'] .".xml";
 		$bakfile = GSBACKUPSPATH."pages/". $_GET['new'] .".bak.xml";
+		if(!filepath_is_safe($existing,GSDATAPAGESPATH)) die();
 		copy($existing, $bakfile);
 		unlink($existing);
 		redirect("edit.php?id=". $id ."&old=".$_GET['new']."&upd=edit-success&type=restore");
