@@ -1352,8 +1352,10 @@ jQuery(document).ready(function () {
 	var unsaved = '<p id="pagechangednotify">'+ i18n('PAGE_UNSAVED')+'</p>';
 	$('#js_submit_line').after(unsaved);
 
-    $('form input,form textarea,form select').not('#post-title').not('#post-id').bind('change keypress paste textInput input',function(){
-        // Debugger.log('form changed');
+
+	// form watcher
+    $('form input,form textarea,form select').not('#post-title').not('#post-id').not('#userid').not(':password').bind('change keypress paste textInput input',function(){
+        Debugger.log('form changed');
         if($("body").hasClass('dirty')) return;
         pageIsDirty($(this));
     });
