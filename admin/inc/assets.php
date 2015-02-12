@@ -43,25 +43,32 @@ $GS_asset_objects = array(); // holds asset js object names
 $GS_asset_objects['jquery']    = 'jQuery';
 $GS_asset_objects['jquery-ui'] = 'jQuery.ui'; 
 
-$getsimple_ver     = GSVERSION;
-$jquery_ver        = '1.9.0';
-$jqueryui_ver      = '1.10.0';
-$font_awesome_ver  = '4.2.0';
-$fancybox_ver      = '2.0.4';
-$scrolltofixed_ver = '0.0.1';
-$codemirror_ver	   = '3.2.0';
-$ckeditor_ver      = '4.4.1';
+
+$VERSIONS = array(
+  'getsimple'     =>  GSVERSION,
+  'jquery'        => '1.9.0',
+  'jqueryui'      => '1.10.0',
+  'font-awesome'  => '4.2.0',
+  'fancybox'      => '2.1.5',
+  'scrolltofixed' => '0.0.1',
+  'codemirror'    => '3.2.0',
+  'ckeditor'      => '4.4.6',
+  'dropzone'      => '3.8.4',
+  'jcrop'         => '0.9.12',
+  'spin.js'          => '2.0.1',
+  'jquery-mousewheel' => '3.1.12'
+);
 
 // long form
 // $GS_script_assets = array(
 // 	'jquery' => array(
 // 		'cdn' => array(
-// 			'url' => '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js',
-// 			'ver' => $jquery_ver	
+// 			'url' => '//ajax.googleapis.com/ajax/libs/jquery/'.$VERSIONS['jquery'].'/jquery.min.js',
+// 			'ver' => $VERSIONS['jquery']	
 // 		),
 // 		'local' => array(
-// 			'url' => $ASSETURL.$GSADMIN.'/template/js/jquery/jquery-'.$jquery_ver.'.min.js',
-// 			'ver' => $jquery_ver		
+// 			'url' => $ASSETURL.$GSADMIN.'/template/js/jquery/jquery-'.$VERSIONS['jquery'].'.min.js',
+// 			'ver' => $VERSIONS['jquery']
 // 		)
 // 	)	
 // )
@@ -74,31 +81,31 @@ $ASSETPATH = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH));
 
 // core
 $GS_script_assets['getsimple']['local']['url']     = $ASSETPATH.'js/jquery.getsimple.js';
-$GS_script_assets['getsimple']['local']['ver']     = $getsimple_ver;
+$GS_script_assets['getsimple']['local']['ver']     = $VERSIONS['getsimple'];
 
 // lazyload (lazy loading assets js/css)
 $GS_script_assets['lazyload']['local']['url']      = $ASSETPATH.'js/lazyload.js';
-$GS_script_assets['lazyload']['local']['ver']      = $getsimple_ver;
+$GS_script_assets['lazyload']['local']['ver']      = $VERSIONS['getsimple'];
 
 // gstree (collpaseble heirarchy table tree) 
 $GS_script_assets['gstree']['local']['url']        = $ASSETPATH.'js/jquery-gstree.js';
-$GS_script_assets['gstree']['local']['ver']        = $getsimple_ver;
+$GS_script_assets['gstree']['local']['ver']        = $VERSIONS['getsimple'];
 
 // spin (ajax spinners)
 $GS_script_assets['spin']['local']['url']          = $ASSETPATH.'js/spin.js';
-$GS_script_assets['spin']['local']['ver']          = $getsimple_ver;
+$GS_script_assets['spin']['local']['ver']          = $VERSIONS['spin.js'];
 
 // dropzone (ajax/html uploader w drag and drop)
 $GS_script_assets['dropzone']['local']['url']      = $ASSETPATH.'js/dropzone.js';
-$GS_script_assets['dropzone']['local']['ver']      = $getsimple_ver;
+$GS_script_assets['dropzone']['local']['ver']      = $VERSIONS['getsimple'];
 
 // jcrop
 $GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/jquery.Jcrop.min.js';
-$GS_script_assets['jcrop']['local']['ver']        = $getsimple_ver;
+$GS_script_assets['jcrop']['local']['ver']        = $VERSIONS['getsimple'];
 $GS_script_assets['jcrop']['queue']['style']      = 'jcrop';
 
  $GS_style_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/jquery.Jcrop.min.css';
- $GS_style_assets['jcrop']['local']['ver']        = $getsimple_ver;
+ $GS_style_assets['jcrop']['local']['ver']        = $VERSIONS['getsimple'];
 
 
 /**
@@ -106,39 +113,39 @@ $GS_script_assets['jcrop']['queue']['style']      = 'jcrop';
  */
 
 // jquery
-$GS_script_assets['jquery']['cdn']['url']          = '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js';
-$GS_script_assets['jquery']['cdn']['ver']          = $jquery_ver;
-$GS_script_assets['jquery']['local']['url']        = $ASSETPATH.'js/jquery/jquery-'.$jquery_ver.'.min.js';
-$GS_script_assets['jquery']['local']['ver']        = $jquery_ver;
+$GS_script_assets['jquery']['cdn']['url']          = '//ajax.googleapis.com/ajax/libs/jquery/'.$VERSIONS['jquery'].'/jquery.min.js';
+$GS_script_assets['jquery']['cdn']['ver']          = $VERSIONS['jquery'];
+$GS_script_assets['jquery']['local']['url']        = $ASSETPATH.'js/jquery/jquery-'.$VERSIONS['jquery'].'.min.js';
+$GS_script_assets['jquery']['local']['ver']        = $VERSIONS['jquery'];
 
 // jquery-ui
-$GS_script_assets['jquery-ui']['cdn']['url']       = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jqueryui_ver.'/jquery-ui.min.js';
-$GS_script_assets['jquery-ui']['cdn']['ver']       = $jqueryui_ver;
-$GS_script_assets['jquery-ui']['local']['url']     = $ASSETPATH.'js/jqueryui/js/jquery-ui-'.$jqueryui_ver.'.custom.min.js';
-$GS_script_assets['jquery-ui']['local']['ver']     = $jqueryui_ver;
- $GS_style_assets['jquery-ui']['local']['url']     =  $ASSETPATH.'js/jqueryui/css/custom/jquery-ui-'.$jqueryui_ver.'.custom.min.css';
- $GS_style_assets['jquery-ui']['local']['ver']     =  $jqueryui_ver;
+$GS_script_assets['jquery-ui']['cdn']['url']       = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$VERSIONS['jqueryui'].'/jquery-ui.min.js';
+$GS_script_assets['jquery-ui']['cdn']['ver']       = $VERSIONS['jqueryui'];
+$GS_script_assets['jquery-ui']['local']['url']     = $ASSETPATH.'js/jqueryui/js/jquery-ui-'.$VERSIONS['jqueryui'].'.custom.min.js';
+$GS_script_assets['jquery-ui']['local']['ver']     = $VERSIONS['jqueryui'];
+ $GS_style_assets['jquery-ui']['local']['url']     = $ASSETPATH.'js/jqueryui/css/custom/jquery-ui-'.$VERSIONS['jqueryui'].'.custom.min.css';
+ $GS_style_assets['jquery-ui']['local']['ver']     = $VERSIONS['jqueryui'];
 
 // scrolltofixed
 $GS_script_assets['scrolltofixed']['local']['url'] = $ASSETPATH.'js/jquery-scrolltofixed.js';
-$GS_script_assets['scrolltofixed']['local']['ver'] = $scrolltofixed_ver;
+$GS_script_assets['scrolltofixed']['local']['ver'] = $VERSIONS['scrolltofixed'];
 
 // codemirror
 $GS_script_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror-compressed.js';
-$GS_script_assets['codemirror']['local']['ver']    = $codemirror_ver;
+$GS_script_assets['codemirror']['local']['ver']    = $VERSIONS['codemirror'];
  $GS_style_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror.min.css';
- $GS_style_assets['codemirror']['local']['ver']    = $codemirror_ver;
+ $GS_style_assets['codemirror']['local']['ver']    = $VERSIONS['codemirror'];
 
 // fancybox
 $GS_script_assets['fancybox']['local']['url']      = $ASSETPATH.'js/fancybox/jquery.fancybox.pack.js';
-$GS_script_assets['fancybox']['local']['ver']      = $fancybox_ver;
+$GS_script_assets['fancybox']['local']['ver']      = $VERSIONS['fancybox'];
  $GS_style_assets['fancybox']['local']['url']      = $ASSETPATH.'js/fancybox/jquery.fancybox.css';
- $GS_style_assets['fancybox']['local']['ver']      = $fancybox_ver;
-$GS_script_assets['fancybox']['queue']['script']   = 'jquerymousewheel';
+ $GS_style_assets['fancybox']['local']['ver']      = $VERSIONS['fancybox'];
+$GS_script_assets['fancybox']['queue']['script']   = 'jquery-mousewheel';
 
 
-$GS_script_assets['jquerymousewheel']['local']['url']      = $ASSETPATH.'js/fancybox/jquery.mousewheel-3.0.6.pack.js';
-$GS_script_assets['jquerymousewheel']['local']['ver']      = $getsimple_ver;
+$GS_script_assets['jquery-mousewheel']['local']['url']      = $ASSETPATH.'js/fancybox/jquery.mousewheel-3.0.6.pack.js';
+$GS_script_assets['jquery-mousewheel']['local']['ver']      = $VERSIONS['jquery-mousewheel'];
 
 
  // FANCYBOX DEPRECATED
@@ -146,16 +153,16 @@ $GS_script_assets['jquerymousewheel']['local']['ver']      = $getsimple_ver;
  $GS_style_assets['fancybox-css']['local']['ver']  = $GS_style_assets['fancybox']['local']['ver']; // @LEGACY 3.4
 
 // font-awesome icons
- $GS_style_assets['font-awesome']['cdn']['url']    = '//netdna.bootstrapcdn.com/font-awesome/'.$font_awesome_ver.'/css/font-awesome.min.css';
- $GS_style_assets['font-awesome']['cdn']['ver']    = $font_awesome_ver;
+ $GS_style_assets['font-awesome']['cdn']['url']    = '//netdna.bootstrapcdn.com/font-awesome/'.$VERSIONS['font-awesome'].'/css/font-awesome.min.css';
+ $GS_style_assets['font-awesome']['cdn']['ver']    = $VERSIONS['font-awesome'];
  $GS_style_assets['font-awesome']['local']['url']  = $ASSETPATH.'css/font-awesome.min.css';
- $GS_style_assets['font-awesome']['local']['ver']  = $font_awesome_ver;
+ $GS_style_assets['font-awesome']['local']['ver']  = $VERSIONS['font-awesome'];
 
 // ckeditor
-$GS_script_assets['ckeditor']['cdn']['url']        = '//cdn.ckeditor.com/'.$ckeditor_ver.'/full/ckeditor.js';
-$GS_script_assets['ckeditor']['cdn']['ver']        = $ckeditor_ver;
+$GS_script_assets['ckeditor']['cdn']['url']        = '//cdn.ckeditor.com/'.$VERSIONS['ckeditor'].'/full/ckeditor.js';
+$GS_script_assets['ckeditor']['cdn']['ver']        = $VERSIONS['ckeditor'];
 $GS_script_assets['ckeditor']['local']['url']      = $ASSETPATH.'js/ckeditor/ckeditor.js';
-$GS_script_assets['ckeditor']['local']['ver']      = $ckeditor_ver;
+$GS_script_assets['ckeditor']['local']['ver']      = $VERSIONS['ckeditor'];
 
 
 /**
@@ -164,18 +171,18 @@ $GS_script_assets['ckeditor']['local']['ver']      = $ckeditor_ver;
 
 // gs codeeditor
 $GS_script_assets['gscodemirror']['local']['url']     = $ASSETPATH.'js/codemirror.getsimple.js';
-$GS_script_assets['gscodemirror']['local']['ver']     = $getsimple_ver;
+$GS_script_assets['gscodemirror']['local']['ver']     = $VERSIONS['getsimple'];
 $GS_script_assets['gscodemirror']['queue']['script']  = 'codemirror';
 $GS_script_assets['gscodemirror']['queue']['style']   = 'codemirror';
 
 // gs htmleditor
 $GS_script_assets['gsckeditor']['local']['url']     = $ASSETPATH.'js/ckeditor.getsimple.js';
-$GS_script_assets['gsckeditor']['local']['ver']     = $getsimple_ver;
+$GS_script_assets['gsckeditor']['local']['ver']     = $VERSIONS['getsimple'];
 $GS_script_assets['gsckeditor']['queue']['script']  = 'ckeditor';
 
 // gs uploader
 $GS_script_assets['gsdropzone']['local']['url']     = $ASSETPATH.'js/dropzone.getsimple.js';
-$GS_script_assets['gsdropzone']['local']['ver']     = $getsimple_ver;
+$GS_script_assets['gsdropzone']['local']['ver']     = $VERSIONS['getsimple'];
 $GS_script_assets['gsdropzone']['queue']['script']  = 'dropzone';
 
 /**
@@ -198,7 +205,7 @@ preRegisterScript('ckeditor',     '',   false , $infooter); // cdn disabled, htt
 preRegisterScript('codemirror',   '',   false , $infooter);
 preRegisterScript('dropzone',     '',   false , $infooter);
 preRegisterScript('fancybox',     '',   false , $infooter);
-preRegisterScript('jquerymousewheel',     '',   false , $infooter);
+preRegisterScript('jquery-mousewheel',     '',   false , $infooter);
 preRegisterScript('scrolltofixed','',   false , $infooter);
 
 // gs aliases
