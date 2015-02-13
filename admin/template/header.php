@@ -146,9 +146,6 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 
        if(get_filename_id() == 'snippets') echo "htmlEditorConfig.height = '100px';"; ?>
 
-		jQuery(document).ready(function () {
-	       	$('body#edit.safemode :input').prop("disabled", true);
-	    });
     </script>
 
 	<?php
@@ -156,6 +153,14 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	// load scripts after globals set
 	get_scripts_backend();
 
+	?>
+    <script type="text/javascript">
+		jQuery(document).ready(function () {
+	       	$('body#edit.safemode :input').prop("disabled", true);
+	    });
+    </script>
+
+    <?php
 	# Plugin hook to allow insertion of stuff into the header
 	if(!isAuthPage()) exec_action('header'); // @hook header backend before html head closes
 

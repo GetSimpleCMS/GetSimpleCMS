@@ -1698,9 +1698,10 @@ jQuery(document).ready(function () {
 
 	// update editor theme and lazy load css file async and update theme on callback
 	cm_theme_update = function(theme){
-		// Debugger.log('updating codemirror theme: ' + theme);
+		Debugger.log('updating codemirror theme: ' + theme);
 		var parts = theme.split(' ');
 		callback = function () {
+				Debugger.log('cm_theme_update callback');
 				cm_theme_update_editors(theme);
 			};
 		if(theme == "default") cm_theme_update_editors(theme);
@@ -1712,7 +1713,6 @@ jQuery(document).ready(function () {
 		// Debugger.log(theme);
 		$('.code_edit').each(function(i, textarea){
 			var editor = $(textarea).data('editor');
-			// Debugger.log(editor);
 			// update all editor themes, unless they were modified manually
 			if(editor && editor.getOption('theme') == editorTheme) {
 				editor.setOption('theme',theme);	
@@ -2080,6 +2080,7 @@ function clearConfig(){
 
 // lazy loader for js and css
 loadjscssfile = function(filename, filetype, callback){
+	Debugger.log('lazyloading ' + filename)
 	if (filetype=="js"){ //if filename is a external JavaScript file
 		LazyLoad.js(filename,callback);
 	}
