@@ -101,8 +101,6 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
     if (file_exists(GSTHEMESPATH .getDef('GSEDITORCONFIGFILE'))) {
         $configjs =  $SITEURL.getRelPath(GSTHEMESPATH).getDef('GSEDITORCONFIGFILE');
     }
-	get_scripts_backend();
-
     ?>
 
     <script type="text/javascript">
@@ -155,6 +153,8 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 
 	<?php
 
+	// load scripts after globals set
+	get_scripts_backend();
 
 	# Plugin hook to allow insertion of stuff into the header
 	if(!isAuthPage()) exec_action('header'); // @hook header backend before html head closes
