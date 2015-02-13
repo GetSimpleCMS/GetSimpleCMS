@@ -294,6 +294,7 @@ if($newdraft) $pageClass.=' newdraft';
         </p>
 
         <!-- TABS -->
+        <div class="gsui"><!-- jqueryui gsui custom scope -->
         <div id="tabs">
                 <ul class="tab-list">
                     <li><a href="#page_content"><span><?php i18n('CONTENT'); ?></span></a></li>
@@ -302,7 +303,7 @@ if($newdraft) $pageClass.=' newdraft';
                 </ul>
 
 
-<!-- ------- PAGE OPTIONS --------------------------------------------------- -->
+    <!-- ------- PAGE OPTIONS --------------------------------------------------- -->
             <div id="page_options" class="tab">
                 <fieldset>
                     <legend>Page Options</legend>
@@ -418,106 +419,107 @@ if($newdraft) $pageClass.=' newdraft';
             </div> 
             <!-- / END PAGE OPTIONS -->
 
-<!-- ------- PAGE CONTENT --------------------------------------------------- -->            
+    <!-- ------- PAGE CONTENT --------------------------------------------------- -->            
             <div id="page_content" class="tab">
-            <fieldset>
-            <legend>Page Content</legend>
+                <fieldset>
+                <legend>Page Content</legend>
 
-                <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
-                <div class="codewrap"><textarea id="post-content" <?php echo getEditorAttribCallout('pages','boxsizingBorder'); echo $SAFEMODE ? 'readonly' : ''; ?>  name="post-content"><?php echo $content;  ?></textarea></div>
+                    <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
+                    <div class="codewrap"><textarea id="post-content" <?php echo getEditorAttribCallout('pages','boxsizingBorder'); echo $SAFEMODE ? 'readonly' : ''; ?>  name="post-content"><?php echo $content;  ?></textarea></div>
 
-            <?php exec_action('edit-content'); //@hook edit-content after page edit content html output ?> 
+                <?php exec_action('edit-content'); //@hook edit-content after page edit content html output ?> 
 
-            <?php 
-                if(isset($data_edit)) { 
-                    echo '<input id="existing-url" type="hidden" name="existing-url" value="'. $url .'" />'; 
-                }
+                <?php 
+                    if(isset($data_edit)) { 
+                        echo '<input id="existing-url" type="hidden" name="existing-url" value="'. $url .'" />'; 
+                    }
 
-            exec_action('html-editor-init'); //@hook html-edit-init LEGACY deprecated
-            echo "<!-- html-editor-init -->";
+                exec_action('html-editor-init'); //@hook html-edit-init LEGACY deprecated
+                echo "<!-- html-editor-init -->";
 
-        ?>
-            </fieldset>
-        </div>
-        <!-- / END PAGE CONTENT -->
-
-<!-- ------- PAGE META OPTIONS --------------------------------------------------- -->
-        <div id="page_meta" class="tab">
-            <fieldset>    
-            <legend>Page Meta</legend>                
-            <div class="leftopt">             
-                <p class="inline clearfix">
-                    <label for="post-metak"><?php i18n('TAG_KEYWORDS'); ?>:</label>
-                    <input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" />
-                </p>
-                <p class="clearfix">
-                    <label for="post-metad" class="clearfix"><?php i18n('META_DESC'); ?>: <span class="countdownwrap"><strong class="countdown" ></strong> <?php i18n('REMAINING'); ?></span></label>
-                    <textarea class="text short charlimit" data-maxLength='155' id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
-                </p>
-            </div>    
-            <div class="rightopt">
-                <p class="inline clearfix">
-                <label>Robots:</label><br/>
-                    <label class="checkbox" for="post-metar-noindex" >NOINDEX</label>
-                    <input type="checkbox" id="post-metar-noindex" name="post-metar-noindex" <?php echo $sel_ri; ?> />
-                    <br/>               
-                    <label class="checkbox" for="post-metar-nofollow" >NOFOLLOW</label>
-                    <input type="checkbox" id="post-metar-nofollow" name="post-metar-nofollow" <?php echo $sel_rf; ?> />
-                    <br/>
-                    <label class="checkbox" for="post-metar-noarchive" >NOARCHIVE</label>
-                    <input type="checkbox" id="post-metar-noarchive" name="post-metar-noarchive" <?php echo $sel_ra; ?> />
-                    <br/>
-                </p>   
+            ?>
+                </fieldset>
             </div>
-            <div class="clear"></div>    
-            </fieldset>            
-        </div>
+    <!-- / END PAGE CONTENT -->
+
+    <!-- ------- PAGE META OPTIONS --------------------------------------------------- -->
+            <div id="page_meta" class="tab">
+                <fieldset>    
+                <legend>Page Meta</legend>                
+                <div class="leftopt">             
+                    <p class="inline clearfix">
+                        <label for="post-metak"><?php i18n('TAG_KEYWORDS'); ?>:</label>
+                        <input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" />
+                    </p>
+                    <p class="clearfix">
+                        <label for="post-metad" class="clearfix"><?php i18n('META_DESC'); ?>: <span class="countdownwrap"><strong class="countdown" ></strong> <?php i18n('REMAINING'); ?></span></label>
+                        <textarea class="text short charlimit" data-maxLength='155' id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
+                    </p>
+                </div>    
+                <div class="rightopt">
+                    <p class="inline clearfix">
+                    <label>Robots:</label><br/>
+                        <label class="checkbox" for="post-metar-noindex" >NOINDEX</label>
+                        <input type="checkbox" id="post-metar-noindex" name="post-metar-noindex" <?php echo $sel_ri; ?> />
+                        <br/>               
+                        <label class="checkbox" for="post-metar-nofollow" >NOFOLLOW</label>
+                        <input type="checkbox" id="post-metar-nofollow" name="post-metar-nofollow" <?php echo $sel_rf; ?> />
+                        <br/>
+                        <label class="checkbox" for="post-metar-noarchive" >NOARCHIVE</label>
+                        <input type="checkbox" id="post-metar-noarchive" name="post-metar-noarchive" <?php echo $sel_ra; ?> />
+                        <br/>
+                    </p>   
+                </div>
+                <div class="clear"></div>    
+                </fieldset>            
+            </div>
         
         <?php 
             exec_action('edit-tab'); // @hook edit-tab add extra tabs to edit.php
         ?>
 
-    </div> <!-- / END TABS -->
-            <span class="editing"><?php echo sprintf($draft ? i18n_r('EDITING_DRAFT_TITLE') : i18n_r('EDITING_PAGE_TITLE'),'<b>'.$title.'</b>'); ?></span>
-            <div id="submit_line" >
-                <input type="hidden" name="redirectto" value="" />
-                
-                <span><input id="page_submit" class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" /></span>
-                
-                <div id="dropdown">
-                    <h6 class="dropdownaction"><?php i18n('ADDITIONAL_ACTIONS'); ?></h6>
-                    <ul class="dropdownmenu">
-                        <li class="save-close" ><a href="javascript:void(0)" ><?php i18n('SAVE_AND_CLOSE'); ?></a></li>
-                        <?php 
-                            if($url != '' && !$draft) { ?>
-                            <li><a href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" ><?php i18n('CLONE'); ?></a></li>
-                        <?php } ?>
-                        <li id="cancel-updates" class="alertme"><a href="pages.php?cancel" ><?php i18n('CANCEL'); ?></a></li>
-                        <?php if($draft && !$newdraft && $url != 'index' && $url != '') { ?>
-                            <li class="alertme" ><a href="deletefile.php?draft=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
-                        <?php }
-                            else if(!$draft && $url != 'index' && $url != '') { ?>
-                            <li class="alertme" ><a href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
-                        <?php } ?>
-                    </ul>
-                </div>
-                
-            </div>
+        </div> <!-- / END TABS -->
+        </div>
+
+        <span class="editing"><?php echo sprintf($draft ? i18n_r('EDITING_DRAFT_TITLE') : i18n_r('EDITING_PAGE_TITLE'),'<b>'.$title.'</b>'); ?></span>
+        <div id="submit_line" >
+            <input type="hidden" name="redirectto" value="" />
             
-            <?php if($url != '') { ?>
-                <p class="editfooter"><?php 
-                    if (!$newdraft && isset($pubDate)) { 
-                        echo '<span><i class="fa fa-clock-o"></i>';
-                            echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'. (empty($author) ? i18n_r('UNKNOWN') : $author.'</em>')) .' ' . output_datetime($pubDate).'</span>';
-                    }
-                    if ( $draft && fileHasBackup(GSDATADRAFTSPATH.$url.'.xml') ) {
-                        echo '<span>&bull;</span><a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
-                    }
-                    else if( !$draft && fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
-                        echo '<span>&bull;</span><span><a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
-                    }
-                ?></p>
-            <?php } ?>
+            <span><input id="page_submit" class="submit" type="submit" name="submitted" value="<?php echo $buttonname; ?>" /></span>
+            
+            <div id="dropdown">
+                <h6 class="dropdownaction"><?php i18n('ADDITIONAL_ACTIONS'); ?></h6>
+                <ul class="dropdownmenu">
+                    <li class="save-close" ><a href="javascript:void(0)" ><?php i18n('SAVE_AND_CLOSE'); ?></a></li>
+                    <?php 
+                        if($url != '' && !$draft) { ?>
+                        <li><a href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" ><?php i18n('CLONE'); ?></a></li>
+                    <?php } ?>
+                    <li id="cancel-updates" class="alertme"><a href="pages.php?cancel" ><?php i18n('CANCEL'); ?></a></li>
+                    <?php if($draft && !$newdraft && $url != 'index' && $url != '') { ?>
+                        <li class="alertme" ><a href="deletefile.php?draft=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
+                    <?php }
+                        else if(!$draft && $url != 'index' && $url != '') { ?>
+                        <li class="alertme" ><a href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
+                    <?php } ?>
+                </ul>
+            </div>
+        </div>
+            
+    <?php if($url != '') { ?>
+        <p class="editfooter"><?php 
+            if (!$newdraft && isset($pubDate)) { 
+                echo '<span><i class="fa fa-clock-o"></i>';
+                    echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'. (empty($author) ? i18n_r('UNKNOWN') : $author.'</em>')) .' ' . output_datetime($pubDate).'</span>';
+            }
+            if ( $draft && fileHasBackup(GSDATADRAFTSPATH.$url.'.xml') ) {
+                echo '<span>&bull;</span><a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
+            }
+            else if( !$draft && fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
+                echo '<span>&bull;</span><span><a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
+            }
+        ?></p>
+    <?php } ?>
     </form>
     </div><!-- end main -->
     </div><!-- end maincontent -->

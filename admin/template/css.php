@@ -3302,10 +3302,6 @@ kbd
 	opacity:.6;
 }
 
-/* jquiry-ui theme overrides
-	tab border bug https://github.com/jquery/download.jqueryui.com/issues/87
-*/
-
 /* jquery resize handle styles */
 .fullscreen .CodeMirror .ui-icon-gripsmall-diagonal-se{
 	display:none !important; /* hide in fullscreen */
@@ -3319,32 +3315,39 @@ kbd
 	opacity:.6;
 }
 
-#maincontent .ui-tabs .ui-tabs-panel {
+.gsui .ui-tabs .ui-tabs-panel {
 	border-width: 0 !important;
 	padding: 0;
 	margin:10px 0;
 }
 
-#maincontent .ui-widget-content {
+.gsui .ui-widget-content {
 	border-width:0 !important;
 }
 
-#maincontent a.ui-tabs-anchor, #maincontent a.ui-tabs-anchor:hover{
+.gsui a.ui-tabs-anchor, .gsui a.ui-tabs-anchor:hover{
 	outline:0;
 	font-weight:normal;
 }
 
-#maincontent .ui-tabs .ui-tabs-nav {
+.gsui .ui-tabs .ui-tabs-nav {
 	padding:0 !important;
 }
 
-#maincontent .ui-tabs .ui-tabs-nav.ui-widget-header {
+.gsui .ui-tabs .ui-tabs-nav.ui-widget-header {
 	border-top:none !important;
 	border-left:none !important;
 	border-right:none !important;
 	background:none !important;
 	border-bottom: 1px solid #aaa;
 	border-radius:0 !important;
+}
+
+/* 
+ * jquery-ui bug tab border https://github.com/jquery/download.jqueryui.com/issues/87
+ */
+.gsui .ui-tabs .ui-tabs-nav li {
+	border-bottom-width: 0;
 }
 
 /* jui tabs */
