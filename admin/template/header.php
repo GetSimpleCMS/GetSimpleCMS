@@ -89,7 +89,10 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 
 	if(get_filename_id()=='image'){
 		queue_script('gscrop',GSBACK);
-		queue_style('gscrop',GSBACK);
+	}
+
+	if(get_filename_id()=='menu-manager'){
+		queue_script('nestable',GSBACK);
 	}
 
     // HTMLEDITOR INIT
