@@ -45,17 +45,17 @@ $GS_asset_objects['jquery-ui'] = 'jQuery.ui';
 
 
 $VERSIONS = array(
-  'getsimple'     =>  GSVERSION,
-  'jquery'        => '1.9.0',
-  'jqueryui'      => '1.10.0',
-  'font-awesome'  => '4.2.0',
-  'fancybox'      => '2.1.5',
-  'scrolltofixed' => '0.0.1',
-  'codemirror'    => '3.2.0',
-  'ckeditor'      => '4.4.6',
-  'dropzone'      => '3.8.4',
-  'jcrop'         => '0.9.12',
-  'spin.js'          => '2.0.1',
+  'getsimple'         =>  GSVERSION,
+  'jquery'            => '1.9.0',
+  'jqueryui'          => '1.10.0',
+  'font-awesome'      => '4.2.0',
+  'fancybox'          => '2.1.5',
+  'scrolltofixed'     => '0.0.1',
+  'codemirror'        => '3.2.0',
+  'ckeditor'          => '4.4.6',
+  'dropzone'          => '3.8.4',
+  'jcrop'             => '0.9.12',
+  'spin.js'           => '2.0.1',
   'jquery-mousewheel' => '3.1.12'
 );
 
@@ -133,7 +133,7 @@ $GS_script_assets['scrolltofixed']['local']['ver'] = $VERSIONS['scrolltofixed'];
 // codemirror
 $GS_script_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror-compressed.js';
 $GS_script_assets['codemirror']['local']['ver']    = $VERSIONS['codemirror'];
- $GS_style_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror.min.css';
+ $GS_style_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror.css';
  $GS_style_assets['codemirror']['local']['ver']    = $VERSIONS['codemirror'];
 
 // fancybox
