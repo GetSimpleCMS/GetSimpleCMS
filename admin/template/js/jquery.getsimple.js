@@ -1698,10 +1698,10 @@ jQuery(document).ready(function () {
 
 	// update editor theme and lazy load css file async and update theme on callback
 	cm_theme_update = function(theme){
-		Debugger.log('updating codemirror theme: ' + theme);
+		// Debugger.log('updating codemirror theme: ' + theme);
 		var parts = theme.split(' ');
 		callback = function () {
-				Debugger.log('cm_theme_update callback');
+				// Debugger.log('cm_theme_update callback');
 				cm_theme_update_editors(theme);
 			};
 		if(theme == "default") cm_theme_update_editors(theme);
