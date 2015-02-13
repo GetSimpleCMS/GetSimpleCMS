@@ -53,10 +53,10 @@ $VERSIONS = array(
   'font-awesome'      => '4.3.0',
   'jcrop'             => '0.9.12',
   'jquery'            => '1.11.3',
-  'jquery-mousewheel' => '3.1.12'
+  'jquery-mousewheel' => '3.1.12',
   'jqueryui'          => '1.10.0',
   'scrolltofixed'     => '0.0.1',
-  'spin.js'           => '2.0.1',
+  'spin.js'           => '2.0.1'
 );
 
 // long form
