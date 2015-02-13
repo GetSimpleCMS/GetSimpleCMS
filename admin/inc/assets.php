@@ -46,17 +46,17 @@ $GS_asset_objects['jquery-ui'] = 'jQuery.ui';
 
 $VERSIONS = array(
   'getsimple'         =>  GSVERSION,
-  'jquery'            => '1.9.0',
-  'jqueryui'          => '1.10.0',
-  'font-awesome'      => '4.3.0',
-  'fancybox'          => '2.1.5',
-  'scrolltofixed'     => '0.0.1',
-  'codemirror'        => '4.1.2',
   'ckeditor'          => '4.4.6',
+  'codemirror'        => '4.12',
   'dropzone'          => '4.0.1',
+  'fancybox'          => '2.1.5',
+  'font-awesome'      => '4.3.0',
   'jcrop'             => '0.9.12',
-  'spin.js'           => '2.0.1',
+  'jquery'            => '1.9.0',
   'jquery-mousewheel' => '3.1.12'
+  'jqueryui'          => '1.10.0',
+  'scrolltofixed'     => '0.0.1',
+  'spin.js'           => '2.0.1',
 );
 
 // long form
