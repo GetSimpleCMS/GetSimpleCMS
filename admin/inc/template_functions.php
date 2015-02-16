@@ -825,17 +825,17 @@ function changeChildParents($parent, $newparent=null){
 	foreach ($pagesArray as $page){
 		if ( $page['parent'] == $parent ){
 			$data = getPageXML($page['url']);
-    		$data->parent=$newparent;
-            		XMLsave($data, GSDATAPAGESPATH.$page['filename']);
+			$data->parent=$newparent;
+			XMLsave($data, GSDATAPAGESPATH.$page['filename']);
 		}
-	  }
+	}
 }
 
 // DEPRECATED
 //  LEGACY, uses global url
 function updateSlugs($existingUrl){
 	GLOBAL $url;
-	updateSlugsParents($existingUrl, $url);
+	changeChildParents($existingUrl, $url);
 }
 
 /**
@@ -855,6 +855,7 @@ function get_link_menu_array($parent='', $array=array(), $level=0) {
 	// pagesarray is sorted by file load, no specific or normalized sort order
 	// pagesSorted attempts to sort by heirarchy parent children, in alphabetic order
 
+	// @todo sort parent invalid filter
 	$items = filterParent(getPages('sortParent'),$parent);
 
 	if (count($items)>0){
@@ -869,7 +870,7 @@ function get_link_menu_array($parent='', $array=array(), $level=0) {
 				} else {
 					$dash .= '- '; // inner level
 				}
-			} 
+			}
 			array_push($array, array( $dash . $page['title'], find_url($page['url'], $page['parent'])));
 			// recurse submenus
 			$array=get_link_menu_array((string)$page['url'], $array,$level+1);	 
@@ -1034,29 +1035,67 @@ function getParentsHashTable($pages = array(), $useref = true){
 	return $ary;
 }
 
+
+/**
+ * create a parent child bucket
+ *
+ * @since 3.4
+ *
+ * @param  array   $pages  pagesarray
+ * @param  boolean $useref true: use references for values, false: empty
+ * @return array   returns array keyed by parents, then keyed by url with values page refs or empty
+ */
+function getParentsSlugHashTable($pages = array(), $useref = true){
+	$pagesArray = $pages ? $pages : getPagesXmlValues();
+	$ary        = array();
+
+	foreach($pagesArray as $key => &$page){
+		$parent = isset($page['parent']) ? $page['parent'] : '';
+		$pageId = isset($page['url']) ? $page['url'] : null;
+		
+		if(!empty($parent)){
+			if (isset($ary[$parent])) $ary[$parent]['children'][] = $page['url'];
+			else $ary[$parent] = array('id'=>$parent,'children'=>array($page['url']));
+		} 
+		// else $ary[] = array('id'=>$page['url']);
+	}
+
+	return $ary;
+}
+
 /**
  * gets a page array with heirachy data added to it
+ * converts pages parent adjacancy list to flat table
+ * id.[parent] -> rank[order],level[depth]
  *
  * @since 3.4
  * @param  array  $mypages pages array
  * @return array           pages array with order,depth,numchildren added
  */
-function getPageDepths($mypages=array()){
+function getPageDepths($pages=array(), $init = true){
 	static $parents;     // parent lookup table
-	static $pages;       // pagesarray
+	// static $pages;       // pagesarray
 	static $newpages;    // new pagesarray
 	static $keys;        // track processed pageIds
 
-	static $parent = ''; // current parent being processed
-	static $level  = 0;  // depth / indentation level
-	static $iter   = 0;  // order / weight iteration counter
+	static $parent; // current parent being processed
+	static $level;  // depth / indentation level
+	static $iter;   // order / weight iteration counter
 
 	$thisfunc = __FUNCTION__;
 
-	if(!$keys)     $keys     = array();
-	if(!$pages)    $pages    = $mypages;
-	if(!$newpages) $newpages = array();
-	if(!$parents)  $parents  = getParentsHashTable($pages); // use parent child lookup table for speed
+	if($init){
+		$parent = ''; // current parent being processed
+		$level  = 0;  // depth / indentation level
+		$iter   = 0;  // order / weight iteration counter
+	}
+
+	if(!$keys || $init)     $keys     = array();
+	// if(!$pages || $init)    $pages    = $mypages;
+	if(!$newpages || $init) $newpages = array();
+	if(!$parents  || $init)  $parents  = getParentsHashTable($pages); // use parent child lookup table for speed
+
+	_debugLog(!$keys);
 
 	foreach ($parents[$parent] as $key => &$page) {
 		$iter++;
@@ -1076,7 +1115,7 @@ function getPageDepths($mypages=array()){
 		if(isset($parents[$pageId])){
 			$level++;
 			$parent = $pageId;
-			$thisfunc();
+			$thisfunc(array(),false);
 			$level--;
 		} else $parent ='';
 	}
@@ -1108,7 +1147,7 @@ function getPageDepths($mypages=array()){
 					$newpages[$pageId]['depth']       = $level-1;
 					$newpages[$pageId]['numchildren'] = $numChildren;
 					$parent = $ancestor;
-		 			$thisfunc();
+					$thisfunc(array(),false);
 		 		}
 		 	}
 		}
@@ -1154,15 +1193,15 @@ function get_pages_menu($parent = '',$menu = '',$level = '') {
 			if($depth === null){
 			 // set sub level starting depth
 			 $depth = $page['depth']; continue;
-		}	
+			}	
 			else if(($page['depth'] == $depth)) return $menu; // we are back to starting depth so stop
 			$level = $level - ($depth+1);
-	}	
+		}	
 
 		// provide special row if this is a missing parent
 		if( !isset($page['url']) ) $menu .= getPagesRowMissing($key,$level,$numChildren); // use URL check for missing parents for now
 		else $menu .= getPagesRow($page,$level,'','',$numChildren);
-	  		}
+  	}
 
 	return $menu;
 }
