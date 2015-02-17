@@ -557,7 +557,7 @@ h5:hover img {
 
 .bodycontent ul,
 .bodycontent ol {
-	margin: 0 0 20px 30px;
+	/*margin: 0 0 20px 30px;*/
 }
 
 .bodycontent ul p,
@@ -2733,7 +2733,13 @@ h5 .crumbs, div.h5 .crumbs {
 	margin: 0 0 25px 0;
 }
 
-#menu-order li {
+#menu-order-nestable{
+	max-width: none;
+}
+
+#menu-order li,
+#menu-order-nestable li .dd-handle,
+#menu-manager .dd-handle {
 	text-shadow: 1px 1px 0 rgba(255,255,255,.3);
 	cursor: move;
 	display: block;
@@ -2741,22 +2747,37 @@ h5 .crumbs, div.h5 .crumbs {
 	border: 1px solid #eee;
 	background: #fbfbfb;
 	padding: 5px 10px;
+	font-weight:normal;
+	max-width:none;
+    -webkit-border-radius: 0;
+    border-radius: 0;
 }
 
-#menu-order li:hover {
+#menu-order li:hover,
+#menu-order-nestable li .dd-handle:hover {
 	border: 1px solid #ccc;
 	background: #f6f6f6;
+    -webkit-border-radius: 0;
+    border-radius: 0;
 }
 
-#menu-order li em {
+#menu-order li em, 
+#menu-order-nestable li em,
+.dd-dragel li em {
 	float: right;
 	color: #666;
 }
 
-#menu-order li.placeholder-menu {
+.dd-dragel {
+	opacity:0.85;
+}
+
+#menu-order li.placeholder-menu, 
+{
 	height: 18px;
 	background: #FFB164;
 	border: 1px solid #FF9933;
+	border-radius: 0;
 }
 
 #theme_select {

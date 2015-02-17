@@ -84,8 +84,45 @@ get_template('header');
 				} else {
 					echo '<p>'.i18n_r('NO_MENU_PAGES').'.</p>';	
 				}
-			?>
 			
+			/**
+			 * NESTABLE TESTING
+			 */
+			exec_action('menu-manager-extras');
+
+			$pages = getParentsHashTable();
+			// _debugLog($pages);
+			$str = getTree($pages);
+			echo '<br/><h3>Nestable Test</h3><div id="menu-order-nestable" class="dd">'.$str.'</div>';
+
+			function getTree($parents,$key = '',$str='',$level = 1,$index = 0,$outer = null,$inner = 'treecallout'){
+				// _debugLog($key,$level);
+				global $index;
+				$str .= '<ol id="" class="dd-list">';
+				foreach($parents[$key] as $parent=>$child){
+					$index++;
+					// _debugLog($parent);
+					$str .= $inner($child,$level,$index);
+					if(isset($parents[$parent])) {
+						$str.= getTree($parents,$parent,'',$level+1,$index);
+					}
+					$str .= $inner($child,$level,$index,false);
+				}
+				$str .= '</ol>';
+				return $str;
+			}
+
+			function treeCallout($child,$level,$index = 1,$open = true){
+				return $open ? '<li class="dd-item clearfix" data-id="'.$child['url'].'"><div class="dd-handle"><strong>#'.$index.'</strong> '.$child['url'].'<em><div class="">'.$child['title'].'</div></em></div>' : '</li>';
+			}
+
+			
+			/**
+			 * /END NESTABLE TESTING
+			 */
+			
+			?>
+
 			<script>
 				$("#menu-order").sortable({
 					cursor: 'move',
@@ -100,6 +137,15 @@ get_template('header');
 					}
 				});
 				$("#menu-order").disableSelection();
+
+
+				$('.dd').nestable({ /* config options */ });
+
+				$('.dd').on('change', function() {
+					/* on change event */
+					Debugger.log(JSON.stringify($(this).nestable('serialize')));
+				});
+
 			</script>
 			
 		</div>
