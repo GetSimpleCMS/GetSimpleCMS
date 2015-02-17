@@ -2772,8 +2772,7 @@ h5 .crumbs, div.h5 .crumbs {
 	opacity:0.85;
 }
 
-#menu-order li.placeholder-menu, 
-{
+#menu-order li.placeholder-menu {
 	height: 18px;
 	background: #FFB164;
 	border: 1px solid #FF9933;
