@@ -90,16 +90,22 @@ get_template('header');
 			 */
 			exec_action('menu-manager-extras');
 
-			$pages = getParentsHashTable();
-			// _debugLog($pages);
-			$str = getTree($pages);
+			// sort by menu order
+			$pagesSorted = filterKeyValueMatch(sortCustomIndex($pagesArray,'menuOrder'),'menuStatus','Y');
+			debugLog(getPagesFields('menuOrder',$pagesSorted));
+			// create hash table from sorted filtered pages
+			$parents = getParentsHashTable($pagesSorted);
+			// _debugLog($parents);
+			$str = getTree($parents);
+
 			echo '<br/><h3>Nestable Test</h3><div id="menu-order-nestable" class="dd">'.$str.'</div>';
 
-			function getTree($parents,$key = '',$str='',$level = 1,$index = 0,$outer = null,$inner = 'treecallout'){
+			function getTree($parents,$key = '',$str='',$level = 1,$index = 0,$outer = 'treeCalloutOuter',$inner = 'treeCalloutInner'){
 				// _debugLog($key,$level);
 				global $index;
-				$str .= '<ol id="" class="dd-list">';
+				$str .= $outer($level,$index);
 				foreach($parents[$key] as $parent=>$child){
+					if($child['menuStatus'] !== 'Y')continue;
 					$index++;
 					// _debugLog($parent);
 					$str .= $inner($child,$level,$index);
@@ -108,14 +114,18 @@ get_template('header');
 					}
 					$str .= $inner($child,$level,$index,false);
 				}
-				$str .= '</ol>';
+				$str .= $outer($level,$index,false);;
 				return $str;
 			}
 
-			function treeCallout($child,$level,$index = 1,$open = true){
+			function treeCalloutInner($child,$level,$index = 1,$open = true){
 				return $open ? '<li class="dd-item clearfix" data-id="'.$child['url'].'"><div class="dd-handle"><strong>#'.$index.'</strong> '.$child['url'].'<em><div class="">'.$child['title'].'</div></em></div>' : '</li>';
 			}
 
+
+			function treeCalloutOuter($level,$index = 1,$open = true){
+				return $open ? '<ol id="" class="dd-list">' : '</ol>';
+			}
 			
 			/**
 			 * /END NESTABLE TESTING
@@ -143,7 +153,8 @@ get_template('header');
 
 				$('.dd').on('change', function() {
 					/* on change event */
-					Debugger.log(JSON.stringify($(this).nestable('serialize')));
+					var order = JSON.stringify($(this).nestable('serialize'));
+					$('[name=menuOrder]').val(order);
 				});
 
 			</script>

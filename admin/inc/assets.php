@@ -2,7 +2,7 @@
 
 /**
  * Getsimple Assets Init
- *
+ * @todo  add asset filters to allow for compressors modification etc
  * @package GetSimple
  * @subpackage assets
  */

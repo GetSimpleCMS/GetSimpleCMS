@@ -4,6 +4,7 @@
  *
  * Page getters, filters, sorters
  * callables are actually (str) function names, may support actual callables in future PHP > 5.2 requirements
+ * @todo  organize by public and private methods, it is hard to figure out which are which and which are abstractions
  * 
  * @since  3.4
  * @author shawn_a
@@ -22,7 +23,7 @@
  * definitions:
  * `PAGE` An individual page object typically a simpleXml obj but can also be an array
  * `PAGES` internal pages array, array of PAGE objects, usually the default $pagesArray cache
- * `PAGES collection` custom pages arrays, array of PAGE objects, usually a filtered array of pages
+ * `PAGE/S Collection` custom pages arrays, array of PAGE objects, usually a filtered array of pages
  * `pageId` a page unique id aka slug
  * 
  */
@@ -42,7 +43,7 @@ function getPages($filterFunc=null/*,...*/){
 	if(isset($filterFunc) && function_exists($filterFunc)){
 		$args    = func_get_args();
 		$args[0] = $pagesArray; // replace first argument (filterfunc) with PAGES
-		return call_user_func_array($filterFunc, $args);
+		return call_user_func_array($filterFunc, $args); // @todo why not call filterPageFunc() ?
 	} else return $pagesArray;
 }
 
@@ -153,7 +154,8 @@ function filterKeyMatch($pages,$key){
  */
 
 /**
- * filter PAGES on keys and values, using a key value comparison function 
+ * filter PAGES on keys and values, using a key value comparison function
+ * wrapper for key value match funcs
  * 
  * @since  3.4
  * @param  array    $pages PAGES collection
@@ -168,7 +170,7 @@ function filterKeyValueFunc($pages,$key,$value,$func){
 
 /**
  * filter on key value MATCHES value
- * eg. $newPages = getPages('filterKeyValueMatch','menuStatus','Y');
+ * eg. $menuPages = getPages('filterKeyValueMatch','menuStatus','Y');
  * 
  * @since 3.4
  * @param  array    $pages PAGES collection
@@ -182,7 +184,7 @@ function filterKeyValueMatch($pages,$key,$value){
 
 /**
  * filter on key value MATCHES value (case-insentitive)
- * eg. $newPages = getPages('filterKeyValueMatch','menuStatus','y');
+ * eg. $menuPages = getPages('filterKeyValueMatch','menuStatus','y');
  * 
  * @since 3.4
  * @param  array    $pages PAGES collection
@@ -196,7 +198,7 @@ function filterKeyValueMatch_i($pages,$key,$value){
 
 /**
  * filter on key value MATCHES boolean value (bool casting performed)
- * eg. $newPages = getPages('filterKeyValueMatchBool','menuStatus',true);
+ * eg. $menuPages = getPages('filterKeyValueMatchBool','menuStatus',true);
  * 
  * @since 3.4
  * @param  array    $pages PAGES collection

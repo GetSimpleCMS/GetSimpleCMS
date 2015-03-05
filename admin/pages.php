@@ -72,25 +72,6 @@ function prepare_menuOrder($page,$key){
  * this is obviously overkill since we are heirachial anyway we only need to title sort
  * and this is not cached at all
  */
-function prepare_pagePathTitles($page,$key){
-	$menuOrder = prepare_menuOrder($page,$key);
-	// 1 parent title/parent title/slug title
-	return $menuOrder .= ' ' .getPagePathField($page['url'],'title');
-}
-
-function prepare_parentTitle($page,$key){
-	 	if ($page['parent'] != '') { 
-	 		$parentTitle = returnPageField($page['parent'], "title");
-	 		return lowercase($parentTitle .' '. $key);		
-	 	} 
-	 	else {
-	 		return lowercase($key);
-	 	}
-}
-
-function prepare_menuOrderParentTitle($page,$key){
-	return prepare_menuOrder($page,$page['menuOrder']) . ' ' . prepare_parentTitle($page,$key);
-}
 
 $pagesSorted = sortCustomIndexCallback($pagesArray,'title','prepare_menuOrderParentTitle');
 // debugLog($pagesSorted);

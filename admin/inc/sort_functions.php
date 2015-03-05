@@ -258,3 +258,29 @@ function reindexPages($pages = array()){
 function reindexArray($array,$key){
 	array_column($array,null,$key);
 }
+
+
+/**
+ * SAMPLES for TESTING
+ * sort preparers
+ */
+
+function prepare_pagePathTitles($page,$key){
+	$menuOrder = prepare_menuOrder($page,$key);
+	// 1 parent title/parent title/slug title
+	return $menuOrder .= ' ' .getPagePathField($page['url'],'title');
+}
+
+function prepare_parentTitle($page,$key){
+	 	if ($page['parent'] != '') { 
+	 		$parentTitle = returnPageField($page['parent'], "title");
+	 		return lowercase($parentTitle .' '. $key);		
+	 	} 
+	 	else {
+	 		return lowercase($key);
+	 	}
+}
+
+function prepare_menuOrderParentTitle($page,$key){
+	return prepare_menuOrder($page,$page['menuOrder']) . ' ' . prepare_parentTitle($page,$key);
+}

@@ -2871,8 +2871,9 @@ function safemodefail($action = '',$url = ''){
  * Array Helpers
  * **************************************************************************** 
  * 
- * php <php 5.6 does not support array_filter by keys and values, so we use our own methods
- * these are not backports! however
+ * php <php 5.6 does not support array_filter by keys and values, so we use our own methods, however
+ * These are not ports for this, just custom handlers I wrote!
+ * @todo  add optimizations for native array_filter by key=>value >5.6
  * 
  */
 
