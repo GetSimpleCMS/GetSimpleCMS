@@ -557,7 +557,7 @@ h5:hover img {
 
 .bodycontent ul,
 .bodycontent ol {
-	/*margin: 0 0 20px 30px;*/
+	margin: 0 0 20px 30px;
 }
 
 .bodycontent ul p,
@@ -2737,6 +2737,11 @@ h5 .crumbs, div.h5 .crumbs {
 	max-width: none;
 }
 
+#menu-order-nestable ul,
+#menu-order-nestable ol{
+	margin:0;
+}
+
 #menu-order li,
 #menu-order-nestable li .dd-handle,
 #menu-manager .dd-handle {
@@ -2762,8 +2767,8 @@ h5 .crumbs, div.h5 .crumbs {
 }
 
 #menu-order li em, 
-#menu-order-nestable li em,
-.dd-dragel li em {
+#menu-order-nestable li .itemtitle,
+.dd-dragel li .itemtitle {
 	float: right;
 	color: #666;
 }
