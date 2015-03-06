@@ -526,22 +526,7 @@ function getParentPage($pageId){
  * @return array       array of parents slugs
  */
 function getParents($pageId){
-
 	return getParentFields($pageId);
-
-	$pageparents = getPagesFields('parent');
-	$parent      = getParent($pageId);
-	$parents     = array();
-
-	if(empty($parent)) return array();
-
-	$parents[] = $parent;
-
-	while(isset($pageparents[$parent])){
-		$parent    = (string)$pageparents[$parent];
-		if(!empty($parent))	$parents[] = $parent;
-	}
-	return $parents;
 }
 
 
@@ -556,7 +541,7 @@ function getPageFieldValue($pageId,$field){
  * @param  str $pageId slug of child
  * @return array       array of parents slugs
  */
-function getParentFields($pageId,$key = 'parent'){
+function getParentFields($pageId,$key = 'url'){
 	$pageparents  = getPagesFields('parent');
 	$parentValues = getPagesFields($key);
 	$parent       = getParent($pageId);
