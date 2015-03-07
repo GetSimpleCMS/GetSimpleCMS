@@ -141,7 +141,7 @@ $GS_definitions = array(
 	'GSDEBUG'              => false,                          // (bool) output debug mode console
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls to debuglog
 	'GSDEBUGREDIRECTS'     => false,                          // (bool) if debug mode enabled, prevent redirects for debugging
-	'GSDEBUGFILEIO'        => false,                          // (bool) debug filio operations
+	'GSDEBUGFILEIO'        => true,                          // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
 	'GSSAFEMODE'           => false,                          // (bool) enable safe mode, safe mode disables plugins and components
 	# ---------------------------------------------------------------------------------------------------------------------------------------------------

@@ -47,6 +47,11 @@ function getPages($filterFunc=null/*,...*/){
 	} else return $pagesArray;
 }
 
+function getPage($slug){
+	global $pagesArray;
+	return isset($pagesArray[$slug]) ? $pagesArray[$slug] : null;
+}
+
 /**
  * get all values of a single field from PAGES, array_column
  * uses PAGES if a PAGE collection is not passed

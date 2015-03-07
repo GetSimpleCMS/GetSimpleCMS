@@ -17,7 +17,15 @@ exec_action('load-menu-manager');
 
 # save page priority order
 if (isset($_POST['menuOrder'])) {
-	menuOrderSave();
+	if(!isset($_POST['menuid'])) $menuid = 'default';
+	else $menuid = _id($_POST['menuid']);
+	$status = save_file(GSDATAOTHERPATH.'menu_'.$menuid.'.json',json_encode(menuOrderSave(),true));
+	$success = $status ? 'Success' : 'Error';
+}
+
+function initMenus(){
+	global $menucache;
+	$menucache = array();
 }
 
 function menuOrderSave(){
@@ -26,25 +34,31 @@ function menuOrderSave(){
 	recurseJson($menuOrder);
 	// cleanJson($menuOrder);
 	debugLog($menuOrder);
-
+	return $menuOrder;
 }
 
-function recurseJson(&$array,$parent = null,$index = 0,$depth = 0){
+function recurseJson(&$array,$parent = null,$depth = 0,$index = 0){
 	// debugLog(__FUNCTION__ . ' ' . count($array));
+	static $index;
+	if($depth == 0) $index = 0;
 	$depth++;
+	$order= 0;
 	foreach($array as $key=>&$value){
 		if(isset($value['id'])){
+			$order++;
 			$index++;
 			// $array[$value['id']] = $value;
 			if(isset($parent)) $value['parent'] = $parent;
-			$value['url'] = generate_url($value['id']);
-			$value['path'] = generate_permalink($value['id'],'%path%/%slug%');
-			$value['depth'] = $depth;
-			$value['index'] = $index;
+			$value['data'] = array();
+			$value['data']['url'] = generate_url($value['id']);
+			$value['data']['path'] = generate_permalink($value['id'],'%path%/%slug%');
+			$value['data']['depth'] = $depth;
+			$value['data']['index'] = $index;
+			$value['data']['order'] = $order;
 			if(isset($value['children'])){
 				$value['numchildren'] = count($value['children']);
 				$children = &$value['children'];
-				recurseJson($children,$value['id'],$index,$depth);
+				recurseJson($children,$value['id'],$depth,$index);
 			}
 		}
 	}
@@ -91,7 +105,7 @@ $pagetitle = strip_tags(i18n_r('MENU_MANAGER')).' &middot; '.i18n_r('PAGE_MANAGE
 get_template('header');
 
 ?>
-	
+
 <?php include('template/include-nav.php'); ?>
 
 <div class="bodycontent clearfix">
@@ -105,7 +119,8 @@ get_template('header');
 			<?php exec_action(get_filename_id().'-body'); ?>				
 			<p><?php i18n('MENU_MANAGER_DESC'); ?></p>
 			<?php
-				if (count($pagesSorted) != 0) { 
+				$legacymenu = false;
+				if (count($pagesSorted) != 0 && $legacymenu == true) { 
 					echo '<form method="post" action="menu-manager.php">';
 					echo '<ul id="menu-order" >';
 					foreach ($pagesSorted as $page) {
@@ -130,97 +145,106 @@ get_template('header');
 					echo '</span></div>';
 					echo '</form>';
 				} else {
-					echo '<p>'.i18n_r('NO_MENU_PAGES').'.</p>';	
+					// echo '<p>'.i18n_r('NO_MENU_PAGES').'.</p>';	
 				}
 			
 			/**
 			 * NESTABLE TESTING
 			 */
+			
+			if(!file_exists(GSDATAOTHERPATH.'menu_default.json')){
+				// sort by menu order, filter menustatus, removes unaccessible menu items from tree
+				$pagesSorted = filterKeyValueMatch(sortCustomIndex($pagesArray,'menuOrder'),'menuStatus','Y');
+				// debugLog(getPagesFields('menuOrder',$pagesSorted));
+				debugLog($pagesSorted);
+				// create hash table from sorted filtered pages
+				$parents = getParentsHashTable($pagesSorted);
+			
+				// debugLog($parents);
+				$str = getTree($parents);
+				echo '<div id="menu-order-nestable" class="dd">'.$str.'</div>';
+			} 
+			else {
+				$menudata = read_file(GSDATAOTHERPATH.'menu_default.json');
+				$menudata = json_decode($menudata,true);
+				$str = getMenuTree($menudata);
+				echo '<div id="menu-order-nestable" class="dd">'.$str.'</div>';
+			}
+			// $str = getTree(getParentsHashTable(sortCustomIndex($pagesArray,'menuOrder')),'','',1,0,'treeFilterCallout');
+			// echo '<br/><h3>Nestable Unfiltered Test<span>shows non menus in lineage, buggy</span></h3><div id="menu-order-nestable" class="dd">'.$str.'</div>';
+
+			echo '<form method="post" action="menu-manager.php">';
+			echo '<div id="submit_line"><span>';
+			echo '<input type="hidden" name="menuOrder" value=""><input class="submit" type="submit" value="'. i18n_r("SAVE_MENU_ORDER").'" />';
+			echo '</span></div>';
+			echo '</form>';
+
 			exec_action('menu-manager-extras');
 
-			// sort by menu order, filter menustatus, removes unaccessible menu items from tree
-			$pagesSorted = filterKeyValueMatch(sortCustomIndex($pagesArray,'menuOrder'),'menuStatus','Y');
-			// debugLog(getPagesFields('menuOrder',$pagesSorted));
-			debugLog($pagesSorted);
-			// create hash table from sorted filtered pages
-			$parents = getParentsHashTable($pagesSorted);
-			
-			// debugLog($parents);
-			$str = getTree($parents);
-			echo '<br/><h3>Nestable Filtered Test<span>hides menus with no direct lineage</span></h3><div id="menu-order-nestable" class="dd">'.$str.'</div>';
 
-			$str = getTree(getParentsHashTable(sortCustomIndex($pagesArray,'menuOrder')),'','',1,0,'treeFilterCallout');
-			echo '<br/><h3>Nestable Unfiltered Test<span>shows non menus in lineage, buggy</span></h3><div id="menu-order-nestable" class="dd">'.$str.'</div>';
-
-			function getPageMenuTitle($page){
-				return ($page['menu'] == '' ? $page['title'] : $page['menu']) . ' [' . $page['menuStatus'] . '] ';
+			function getPageMenuTitle($slug){
+				$page = getPage($slug);
+				return ($page['menu'] == '' ? $page['title'] : $page['menu']);
 			}
 
-			function getTree($parents,$key = '',$str='',$level = 1,$index = 0, $filter = null, $outer = 'treeCalloutOuter',$inner = 'treeCalloutInner'){
+			function getTree($parents,$key = '',$str='',$level = 0,$index = 0, $filter = null, $outer = 'treeCalloutOuter',$inner = 'treeCalloutInner'){
 				// _debugLog($key,$level);
-				global $index;
-				$str .= $outer($level,$index);
+				static $index;
+				if($level == 0) $index = 0;
+				$level++;
+				$order = 0;
+				$str .= $outer($level,$index,$order);
 				foreach($parents[$key] as $parent=>$child){
+					$order++;
 					if(isset($filter) && function_exists($filter) && $filter($child,$level,$index)) continue;
 					$index++;
 					// _debugLog($parent);
-					$str .= $inner($child,$level,$index);
+					$str .= $inner($child['url'],$level,$index,$order);
 					if(isset($parents[$parent])) {
-						$str.= getTree($parents,$parent,'',$level+1,$index);
+						$str.= getTree($parents,$parent,'',$level+1);
 					}
-					$str .= $inner($child,$level,$index,false);
+					$str .= $inner($child['url'],$level,$index,$order,false);
 				}
-				$str .= $outer($level,$index,false);;
+				$str .= $outer($child['url'],$level,$index,$order,false);
 				return $str;
 			}
 
-
-			function get_menu_tree($parent = '',$menu = '',$level = '') {
-				global $pagesSorted;
-				
-				$pages = getPageDepths($pagesSorted); // use parent hash table for speed
-				$depth = null;
-
-				// get depth of requested parent, then get all subsequent children until we get back to our starting depth
-				foreach($pages as $key => $page){
-
-					// check for cyclical parent child and die
-					if(isset($page['parent']) && $page['parent'] === $key) die("self parent > " . $key); 
-
-					$level       = isset($page['depth']) ? $page['depth'] : 0;
-					$numChildren = isset($page['numchildren']) ? $page['numchildren'] : 0;
-
-					// if sublevel
-					if($parent !== ''){
-						// skip until we get to parent
-						if($parent !== $key && $depth === null) continue;
-
-						if($depth === null){
-						 // set sub level starting depth
-						 $depth = $page['depth']; continue;
-						}	
-						else if(($page['depth'] == $depth)) return $menu; // we are back to starting depth so stop
-						$level = $level - ($depth+1);
-					}	
-
-					// provide special row if this is a missing parent
-					if( !isset($page['url']) ) $menu .= getPagesRowMissing($key,$level,$numChildren); // use URL check for missing parents for now
-					else $menu .= treeCalloutInner($page,$level,'','',$numChildren == 0);
-			  	}
-
-				return $menu;
+			function getMenuTree($parents,$str='',$level = 0, $index = 0, $filter = null, $outer = 'treeCalloutOuter',$inner = 'treeCalloutInner'){
+				if(!$parents) return;
+				static  $index;
+				if($level == 0) $index = 0;
+				$order = 0;
+				$str .= $outer($level,$index,$order);
+				foreach($parents as $key=>$parent){
+					if(!isset($parent['id'])) continue;
+					if(isset($filter) && function_exists($filter) && $filter($id)) continue;
+					$level = isset($parent['depth']) ? $parent['depth'] : $level+1;
+					$index = isset($parent['index']) ? $parent['index'] : $index+1;
+					$order = isset($parent['order']) ? $parent['order'] : $order+1;
+					
+					$str .= $inner($parent['id'],$level,$index,$order);
+					if(isset($parent['children'])) {
+						$str.= getMenuTree($parent['children'],'',$level);
+					}
+					$level--;
+					$str .= $inner($parent['id'],$level,$index,$order,false);
+				}
+				$str .= $outer($parent['id'],$level,$index,$order,false);
+				return $str;
 			}
 
-			function treeCalloutInner($child,$level,$index = 1,$open = true){
-				return $open ? '<li class="dd-item clearfix" data-id="'.$child['url'].'"><div class="dd-handle"><strong>#'.$index.'</strong> '.getPageMenuTitle($child).' <em> - ' .$child['url'].'</em><div class="itemtitle"><em>'.$child['title'].'</div></em></div>' : '</li>';
+			function treeCalloutInner($id,$level,$index = 1,$order = 0,$open = true){
+				$child = getPage($id);
+				$str = $open ? '<li class="dd-item clearfix" data-id="'.$child['url'].'"><div class="dd-handle"><strong>'.$index.'.'.$level.'.'.$order.'</strong> '.getPageMenuTitle($child['url']).' <em>[' .$child['url'].']</em><div class="itemtitle"><em>'.$child['title'].'</div></em></div>' : '</li>';
+				return $str;
 			}
 
-
-			function treeCalloutOuter($level,$index = 1,$open = true){
+			function treeCalloutOuter($id,$level,$index = 1,$order = 0,$open = true){
 				return $open ? '<ol id="" class="dd-list">' : '</ol>';
 			}
 			
-			function treeFilterCallout($child,$level,$index){
+			function treeFilterCallout($id,$level,$index,$order){
+				$child = getPage($id);
 				return $child['menuStatus'] !== 'Y';
 			}
 
@@ -264,54 +288,6 @@ get_template('header');
 	</div>
 
 </div>
-<?php get_template('footer'); 
+<?php get_template('footer');
 
-
-function heirarchyToAdjacency(){
-
-}
-
-function flatToParentHashtable(){
-	// array('parentid'=>$parentId);
-}
-
-// save menu json array
-// 
-/* 
-
-[{"id":"index-2"},{"id":"index"},{"id":"oldslug"},{"id":"parent-1","children":[{"id":"child-1b","children":[{"id":"child-1b-1"}]},{"id":"child-1a"}]},{"id":"ckeditor-test"},{"id":"menuorder-test"}]
-
-[
-    {
-        "id": "index-2"
-    },
-    {
-        "id": "index"
-    },
-    {
-        "id": "oldslug"
-    },
-    {
-        "children": [
-            {
-                "children": [
-                    {
-                        "id": "child-1b-1"
-                    }
-                ],
-                "id": "child-1b"
-            },
-            {
-                "id": "child-1a"
-            }
-        ],
-        "id": "parent-1"
-    },
-    {
-        "id": "ckeditor-test"
-    },
-    {
-        "id": "menuorder-test"
-    }
-]
-*/
+/* ?> */
