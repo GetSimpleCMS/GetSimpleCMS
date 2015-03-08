@@ -17,6 +17,7 @@ exec_action('load-menu-manager');
 
 # save page priority order
 if (isset($_POST['menuOrder'])) {
+	if(trim($_POST['menuOrder']) == '') die('no data');
 	if(!isset($_POST['menuid'])) $menuid = 'default';
 	else $menuid = _id($_POST['menuid']);
 	$status = save_file(GSDATAOTHERPATH.'menu_'.$menuid.'.json',json_encode(menuOrderSave(),true));
@@ -29,11 +30,12 @@ function initMenus(){
 }
 
 function menuOrderSave(){
+	global $pagesArray;
 	$menuOrder = json_decode($_POST['menuOrder'],true);
-	debugLog($menuOrder);
+	// debugLog($menuOrder);
 	recurseJson($menuOrder);
-	// cleanJson($menuOrder);
-	debugLog($menuOrder);
+	// debugLog($menuOrder);
+	create_pagesxml('true');
 	return $menuOrder;
 }
 
@@ -41,20 +43,25 @@ function recurseJson(&$array,$parent = null,$depth = 0,$index = 0){
 	// debugLog(__FUNCTION__ . ' ' . count($array));
 	static $index;
 	if($depth == 0) $index = 0;
+	$order = 0;
 	$depth++;
-	$order= 0;
+	
 	foreach($array as $key=>&$value){
 		if(isset($value['id'])){
 			$order++;
 			$index++;
-			// $array[$value['id']] = $value;
+
 			if(isset($parent)) $value['parent'] = $parent;
-			$value['data'] = array();
-			$value['data']['url'] = generate_url($value['id']);
-			$value['data']['path'] = generate_permalink($value['id'],'%path%/%slug%');
+			
+			storeMenuInPage($value['id'],(isset($parent) ? $parent : ''),$index);
+
+			$value['data']          = array();
+			$value['data']['url']   = generate_url($value['id']);
+			$value['data']['path']  = generate_permalink($value['id'],'%path%/%slug%');
 			$value['data']['depth'] = $depth;
 			$value['data']['index'] = $index;
 			$value['data']['order'] = $order;
+
 			if(isset($value['children'])){
 				$value['numchildren'] = count($value['children']);
 				$children = &$value['children'];
@@ -64,16 +71,19 @@ function recurseJson(&$array,$parent = null,$depth = 0,$index = 0){
 	}
 }
 
-function cleanJson(&$array){
-	foreach($array as $key=>&$value){
-		// debugLog($key." ".$value['id'] . ' ' . is_numeric($key));
-		$children = &$value['children'];
-		if(isset($value['children'])) cleanJson($children);
-		if(is_numeric($key)){
-			debugLog("unsetting " . $key .'=>' . $value['id']);
-			$array[$key] = null;
-			unset($array[$key]);
-		}	
+function storeMenuInPage($pageid,$parent,$order){
+	
+	// debugLog(func_get_args());
+	// debugLog(returnPageField($pageid,'url'));
+	// debugLog(returnPageField($pageid,'parent'));
+	// debugLog(returnPageField($pageid,'menuOrder'));
+	if((string)returnPageField($pageid,'parent') == $parent && (int)returnPageField($pageid,'menuOrder') == $order) return;
+	$file = GSDATAPAGESPATH . $pageid . '.xml';
+	if (file_exists($file)) {
+		$data = getPageXML($pageid);
+		$data->parent->updateCData($parent);
+		$data->menuOrder->updateCData($order);
+		XMLsave($data,$file);
 	}
 }
 
