@@ -1095,7 +1095,6 @@ function getPageDepths($pages=array(), $init = true){
 	if(!$newpages || $init) $newpages = array();
 	if(!$parents  || $init)  $parents  = getParentsHashTable($pages); // use parent child lookup table for speed
 
-	_debugLog(!$keys);
 
 	foreach ($parents[$parent] as $key => &$page) {
 		$iter++;
