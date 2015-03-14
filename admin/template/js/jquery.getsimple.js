@@ -1356,6 +1356,8 @@ jQuery(document).ready(function () {
 	// form watcher
     $('form input,form textarea,form select').not('#post-title').not('#post-id').not('#userid').not(':password').bind('change keypress paste textInput input',function(){
         Debugger.log('form changed');
+        if("#install") return;
+        if("#setup") return;
         if($("body").hasClass('dirty')) return;
         pageIsDirty($(this));
     });
