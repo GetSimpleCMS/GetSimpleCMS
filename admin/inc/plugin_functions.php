@@ -440,7 +440,10 @@ function exec_filter($filter_name,$data=array()) {
 }
 
 function exec_filter_callback($hook,&$data=array()){
+	debugLog($hook);
+	debugLog($data);
 	$data = call_user_func_array($hook['function'], array_merge(array($data),$hook['args']));
+	debugLog($data);
 }
 
 function exec_filter_complete($data=array()){

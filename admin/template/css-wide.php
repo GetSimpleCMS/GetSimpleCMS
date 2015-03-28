@@ -106,7 +106,7 @@ form.manyinputs textarea{
 }
 
 .leftopt,.rightopt,.leftsec,.rightsec {
-	max-width:400px;
+	max-width:520px;
 }
 
 .rightopt,.rightsec {

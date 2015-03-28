@@ -490,6 +490,36 @@
 
             this.reset();
         },
+        _animate: function(prevRect, target) {
+                var ms = 300;
+                _this = this;
+                if (ms) {
+                    var currentRect = target.get(0).getBoundingClientRect();
+                    var previousRect = prevRect.get(0).getBoundingClientRect();
+                    // var currentRect = target;
+
+                    target.css('-webkit-transition', 'none');
+                    target.css('-webkit-transform', 'translate3d('
+                        + (previousRect.left - currentRect.left) + 'px,'
+                        + (previousRect.top - currentRect.top) + 'px,0)'
+                    );
+
+                    target.offsetWidth; // repaint
+                    
+                    console.log(previousRect.top +'-'+ currentRect.top);
+                    // return ;
+
+                    target.css('-webkit-transition', 'all ' + ms + 'ms');
+                    target.css('-webkit-transform', 'translate3d(0,0,0)');
+                    // return ;
+                    clearTimeout(target.animated);
+                    target.animated = setTimeout(function () {
+                        target.css('-webkit-transition', '');
+                        target.css('-webkit-transform', '');
+                        target.animated = false;
+                    }, ms);
+                }
+            },
 
         dragMove: function(e) {
             var list, parent, prev, next, depth,
@@ -631,6 +661,16 @@
                 var before = e.pageY < (this.pointEl.offset().top + this.pointEl.height() / 2);
                 parent = this.placeEl.parent();
                 // if empty create new list to replace empty placeholder
+                
+                // console.log(this.pointEl.get(0));
+                // console.log(this.placeEl.get(0));
+
+                if(this.pointEl.animated) return;
+                if(this.placeEl.animated) return;
+
+                // this._animate(this.placeEl,this.pointEl);
+                // this._animate(this.pointEl,this.placeEl);
+                
                 if(isEmpty) {
                     list = $(document.createElement(opt.listNodeName)).addClass(opt.listClass);
                     list.append(this.placeEl);
@@ -639,7 +679,7 @@
                 else if(before) {
                     this.pointEl.before(this.placeEl);
                 }
-                else {
+                else {  
                     this.pointEl.after(this.placeEl);
                 }
                 if(!parent.children().length) {
@@ -650,6 +690,10 @@
                 }
                 // parent root list has changed
                 this.dragRootEl = pointElRoot;
+                
+                // this._animate(this.placeEl,this.pointEl);
+                this._animate(this.pointEl,this.placeEl);
+
                 if(isNewRoot) {
                     this.hasNewRoot = this.el[0] !== this.dragRootEl[0];
                 }

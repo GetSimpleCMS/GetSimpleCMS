@@ -1232,8 +1232,7 @@ fieldset,
 	transition: background-color 200ms;	
 }
 
-.leftopt:hover,.rightopt:hover,.wideopt:hover,
-.leftsec:hover,.rightsec:hover,.widesec:hover {
+.leftopt:hover,.rightopt:hover,.wideopt:hover
 	background-color: rgba(0,0,0,0.02);
 	transition: background-color 400ms;
 }
