@@ -3283,11 +3283,11 @@ kbd
 	z-index: 10;
 	font-weight: normal;
 	opacity:.2;
-		-webkit-transition: opacity 300ms;
+/*		-webkit-transition: opacity 300ms;
 		-moz-transition: opacity 300ms;
 		-o-transition: opacity 300ms;
 		-ms-transition: opacity 300ms;
-	transition: opacity 300ms;
+	transition: opacity 300ms;*/
 }
 
 .fullscreen .CodeMirror .overlay_but_fullscrn a{
