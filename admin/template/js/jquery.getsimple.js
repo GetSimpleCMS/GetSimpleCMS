@@ -1508,6 +1508,7 @@ jQuery(document).ready(function () {
 		ajaxStatusWait();
 		if($('#codetext').data('editor')){
 			$('#codetext').data('editor').setValue('');
+			$('#codetext').data('editor').clearHistory();
 			$('#codetext').data('editor').hasChange = false;
 		}
 		$('#theme_edit_code').addClass('readonly')
@@ -1549,6 +1550,7 @@ jQuery(document).ready(function () {
 				if($('#codetext').data('editor')){
 					$('#codetext').data('editor').setValue(newcontent.val());
 					$('#codetext').data('editor').hasChange = false;
+					$('#codetext').data('editor').clearHistory();
 					/* update editor mode */
 					$('#codetext').data('editor').setOption('mode',getEditorMode(getExtension(filename)));
 					$('#codetext').data('editor').refresh();
@@ -1592,6 +1594,7 @@ jQuery(document).ready(function () {
 		editor = $('#codetext').data('editor');
 		if(editor){
 			$('#theme_edit_code').addClass('readonly');
+			editor.clearHistory();
 			editor.setValue($(editor.getTextArea()).val());
 			editor.hasChange = false;
 			setTimeout(function(){$('#theme_edit_code').removeClass('readonly');},500);
