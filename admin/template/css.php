@@ -3271,7 +3271,7 @@ kbd
 
 .CodeMirror .overlay_but_fullscrn a {
 	position: relative;
-	padding: 0 2px;
+	padding: 2px 0;
 	background-color: #777777;
 	border-radius: 4px;
 	color: whitesmoke;
