@@ -601,7 +601,7 @@ jQuery(document).ready(function () {
  	$("#imageFilter").change(); //@todo if selected
 
  	// supress form submit on input enter press, unless form has class .enterbumit
-	$("form :input").on("keypress", function(e) {
+	$(document).on("keypress", ":input",function(e) {
 		Debugger.log($($(this).get(0).form).hasClass('entersubmit'));
 		if(e.keyCode != 13) return;
 		if($($(this).get(0).form).hasClass('entersubmit')) return;
