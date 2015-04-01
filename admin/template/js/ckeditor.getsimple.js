@@ -152,7 +152,7 @@ function htmledit_readonly(editor){
 function cke_editorfocus(editor){
     if (editor && editor.config.gscompact == true) {
         // @todo ignore if fullscreen
-        cke_hideui(editor); // @todo hide all others?
+        cke_hideui(editor); // @todo fall back to also hide all others if blur not working?
         editor.on('focus', function(event) {
             // Debugger.log('editor focused');
             cke_setheight(editor,1000); // @todo max height max plus n or just large
@@ -163,7 +163,6 @@ function cke_editorfocus(editor){
         $(editor).bind('selectstart dragstart', function(evt)
                                 { evt.preventDefault(); return false; });
 
-        // @todo blur not working, workaround, at least close all others on focus
         editor.on('blur', function(event) {
             // Debugger.log('editor blurred');
             cke_autoheight(editor);
