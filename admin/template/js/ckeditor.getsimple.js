@@ -152,15 +152,19 @@ function htmledit_readonly(editor){
 function cke_editorfocus(editor){
     if (editor && editor.config.gscompact == true) {
         // @todo ignore if fullscreen
-        cke_hideui(editor);
-        $(editor).on('focus', function(event) {
+        cke_hideui(editor); // @todo hide all others?
+        editor.on('focus', function(event) {
             // Debugger.log('editor focused');
             cke_setheight(editor,1000); // @todo max height max plus n or just large
             cke_showui(editor);
-        }).bind('selectstart dragstart', function(evt)
+        });
+
+        // bind click events, prevent text selection on rapic clicking ( bind selectstart hack )
+        $(editor).bind('selectstart dragstart', function(evt)
                                 { evt.preventDefault(); return false; });
-        
-        $(editor).on('blur', function(event) {
+
+        // @todo blur not working, workaround, at least close all others on focus
+        editor.on('blur', function(event) {
             // Debugger.log('editor blurred');
             cke_autoheight(editor);
             cke_hideui(editor); 
@@ -212,6 +216,6 @@ function initckeditor(){
     var editors = $(".html_edit").htmlEditorFromTextarea();
     // Debugger.log(editors);
 
-    // backwards compatibility for i18n, set global editor to first editor
+    // @tddo backwards compatibility for i18n, set global editor to first editor
     // editor = $(editors[0]).data('htmleditor');
 }
