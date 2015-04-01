@@ -378,6 +378,7 @@ function pageCacheAddRoutes($id,&$cacheItems){
 function pageCacheXMLtoArray($xml){
 	$pagesArray = array();
 	$data = $xml;
+	if(!$xml || !$xml->item) return $pagesArray;
 	$pages = $data->item;
 	foreach ($pages as $page) {
 		$key=(string)$page->url;
