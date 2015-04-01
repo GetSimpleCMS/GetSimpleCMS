@@ -1221,43 +1221,44 @@ function get_pages_menu($parent = '',$menu = '',$level = '') {
  * 
  * @returns string
  */
-function get_pages_menu_dropdown($parentitem, $menu,$level) {
-	
-	global $pagesSorted;
-	global $parent; 
-	
-	$items=array();
+function get_pages_menu_dropdown($parentitem, $menu, $level) {
 
-	foreach ($pagesSorted as $page) {
-		if ($page['parent']==$parentitem){
-			$items[(string)$page['url']]=$page;
-		}	
-	}	
+    global $pagesSorted;
+    global $parent;
 
-	if (count($items)>0){
-		foreach ($items as $page) {
-		  	$dash="";
+    $items=array();
+    foreach ($pagesSorted as $page) {
+        if ($page['parent']==$parentitem){
+            $items[(string)$page['url']]=$page;
+        }
+    }
+    if (count($items)>0) {
+        $menu_items = array();
+        $spacer = "\n						";
+        foreach ($items as $page) {
+            $dash = "";
+            if ($page['parent'] != '') {
+                $page['parent'] = $page['parent']."/";
+            }
+            for ($i=0;$i<=$level-1;$i++){
+                if ($i!=$level-1){
+                    $dash .= '<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>';
+    			      } else {
+    			          $dash .= '<span>&nbsp;&nbsp;&nbsp;&ndash;&nbsp;&nbsp;</span>';
+    			      }
+    	  	  }
+    	  	  if ($parent == (string)$page['url']) {
+    	  	      $sel = ' selected="select"';
+    	  	  } else {
+    	  	      $sel = '';
+    	  	  }
+    	  	  $menu_items[] = '<option value="' . $page['url'] . '"' . $sel. '>' . $dash . $page['url'] . '</option>';
 
-		  	if ($page['parent'] != '') {
-	  			$page['parent'] = $page['parent']."/";
-	  		}
-
-			for ($i=0;$i<=$level-1;$i++){
-				if ($i!=$level-1){
-	  				$dash .= '<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>';
-				} else {
-					$dash .= '<span>&nbsp;&nbsp;&ndash;&nbsp;&nbsp;&nbsp;</span>';
-				}
-			} 
-
-			if ($parent == (string)$page['url']) { $sel="selected"; } else { $sel=""; }
-
-			$menu .= '<option '.$sel.' value="'.$page['url'] .'" >'.$dash.$page['url'].'</option>';
-			$menu = get_pages_menu_dropdown((string)$page['url'], $menu,$level+1);	  	
-		}
-	}
-
-	return $menu;
+    	  	  $menu = $spacer . implode($spacer, $menu_items) . "\n";
+    	  	  $menu = get_pages_menu_dropdown((string)$page['url'], $menu,$level+1);
+    	  }
+    }
+    return $menu;
 }
 
 /**
