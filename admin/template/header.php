@@ -144,7 +144,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 
        <?php 
 
-       if(get_filename_id() == 'snippets') echo "htmlEditorConfig.height = '100px';"; ?>
+       if(get_filename_id() == 'snippets') echo "htmlEditorConfig.height = '130px';"; ?>
 
     </script>
 
