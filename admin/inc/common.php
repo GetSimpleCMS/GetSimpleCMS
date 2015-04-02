@@ -125,7 +125,7 @@ $GS_definitions = array(
 	'GSHTMLEDITINLINE'     => false,                          // (bool) show html cke editors inline EXPERIMENTAL
 	'GSHTMLEDITCOMPACT'    => true,                           // (bool) show html cke editors compacted, hides ui when not focused
 	'GSHTMLEDITAUTOHEIGHT' => true,                           // (bool) after init, auto set the ckeditors height	
-	'GSCODEEDITORTHEMES'   => '3024-day,3024-night,ambiance,base16-light,base16-dark,blackboard,cobalt,eclipse,eclipse,elegant,erlang-dark,lesser-dark,mbo,midnight,monokai,neat,night,paraiso-dark,paraiso-light,rubyblue,solarized dark,solarized light,the-matrix,twilight,tomorrow-night-eighties,vibrant-ink,xq-dark,xq-light', # themes for codemirror
+	'GSCODEEDITORTHEMES'   => '3024-day,3024-night,ambiance,base16-light,base16-dark,blackboard,cobalt,colorforth,eclipse,eclipse,elegant,erlang-dark,lesser-dark,mbo,midnight,monokai,neat,night,paraiso-dark,paraiso-light,rubyblue,solarized dark,solarized light,the-matrix,twilight,tomorrow-night-eighties,vibrant-ink,xq-dark,xq-light', # themes for codemirror
 	# DRAFTS -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSUSEDRAFTS'          => true,                           // (bool) use page drafts
 	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else `nodraft` or `draft` only

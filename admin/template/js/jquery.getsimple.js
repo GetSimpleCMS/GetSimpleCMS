@@ -600,8 +600,12 @@ jQuery(document).ready(function () {
 	attachFilterChangeEvent();
  	$("#imageFilter").change(); //@todo if selected
 
-	$("form.noenter :input").on("keypress", function(e) {
-	    return e.keyCode != 13;
+ 	// supress form submit on input enter press, unless form has class .enterbumit
+	$(document).on("keypress", "input",function(e) {
+		Debugger.log($($(this).get(0).form).hasClass('entersubmit'));
+		if(e.keyCode != 13) return;
+		if($($(this).get(0).form).hasClass('entersubmit')) return;
+	    return false;
 	});
 
 	//image.php

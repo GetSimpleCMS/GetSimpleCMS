@@ -80,6 +80,8 @@ $.fn.htmlEditorFromTextarea = function(config){
             if(ev.editor.config.gsautoheight === true) cke_autoheight(ev.editor);
             if(ev.editor.config.gscompact === true) cke_editorfocus(ev.editor);
 
+            ev.editor.on('resize',cke_editorResized);
+
             this.commands.maximize.on( 'exec', function( evt ) {
                 Debugger.log('maximize cke');
                 Debugger.log($('body').attr('class'));
@@ -149,18 +151,25 @@ function htmledit_readonly(editor){
     cke_setheight(editor,100);    
 }
 
+function cke_editorResized(ev){
+    // Debugger.log('editor was resized');
+}
+
 function cke_editorfocus(editor){
     if (editor && editor.config.gscompact == true) {
         // @todo ignore if fullscreen
-        cke_hideui(editor);
-        $(editor).on('focus', function(event) {
+        cke_hideui(editor); // @todo fall back to also hide all others if blur not working?
+        editor.on('focus', function(event) {
             // Debugger.log('editor focused');
             cke_setheight(editor,1000); // @todo max height max plus n or just large
             cke_showui(editor);
-        }).bind('selectstart dragstart', function(evt)
+        });
+
+        // bind click events, prevent text selection on rapic clicking ( bind selectstart hack )
+        $(editor).bind('selectstart dragstart', function(evt)
                                 { evt.preventDefault(); return false; });
-        
-        $(editor).on('blur', function(event) {
+
+        editor.on('blur', function(event) {
             // Debugger.log('editor blurred');
             cke_autoheight(editor);
             cke_hideui(editor); 
@@ -180,24 +189,40 @@ function cke_hideui(editor){
     editorelem.find(".cke_path").hide();
 }
 
+/**
+ * ckeditor set height auto
+ * get content height, and set ckeditor to match, with max clamp
+ * @todo for some reason i was setting the iframe size before and after cke resize, workaround, or left over old code?
+ * 
+ * @param  obj editor
+ */
 function cke_autoheight(editor){
     if (editor && !cke_editorisinline(editor)) {
-        var editorname    = editor.name;
-        var editorcontent = "#cke_" + editorname + " iframe";
-        var editoriframe  = $(editorcontent);
-        var contentheight = editoriframe.contents().find("html").height();
-        editoriframe.height(contentheight); // set height
-        // Debugger.log('editor resize:' + editorname + " changing height:" + contentheight);
+        // get content height for autosize
+        var contentheight = cke_getcontentheight(editor);
+        // Debugger.log('editor resize:' + editor.name + " changing height:" + contentheight);
         if(contentheight > 600) contentheight = 600; // @todo max height adjustable somewhere, will be smaller for collections than pages
         cke_setheight(editor,contentheight);
     }    
 }
 
+function cke_getcontentheight(editor){
+    var editorname    = editor.name;
+    var editorcontent = "#cke_" + editorname + " iframe";
+    var editoriframe  = $(editorcontent);
+    var contentheight = $(editoriframe.get(0).contentWindow.document).height();
+    // var contentheight = editoriframe.get(0).contentWindow.document.body.offsetHeight;
+    return contentheight;
+}
+
 function cke_setheight(editor,height){
     if(cke_editorisinline(editor)) return; // cannot set height if editor is inline
+    // Debugger.log('ckeditor setting height ' + height);
     editor.resize( '100%', height, true );
-    var editorcontent = "#cke_" + editor.name + " iframe";
-    $(editorcontent).css('height',height+'px');
+    
+    // set iframe height , but why ?
+    // var editorcontent = "#cke_" + editor.name + " iframe";
+    // $(editorcontent).css('height',height+'px');
 }
 
 function cke_geteditorelement(editor){
@@ -212,6 +237,6 @@ function initckeditor(){
     var editors = $(".html_edit").htmlEditorFromTextarea();
     // Debugger.log(editors);
 
-    // backwards compatibility for i18n, set global editor to first editor
+    // @tddo backwards compatibility for i18n, set global editor to first editor
     // editor = $(editors[0]).data('htmleditor');
 }

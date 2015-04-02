@@ -147,7 +147,7 @@ function change_plugin($name,$active=null){
 			$live_plugins[$name]="true";
 		}
 
-		if($live_plugins[$name] == 'false') exec_hook('plugin-inactivate'); // @hook plugin-inactivate a plugin was inactivated
+		if($live_plugins[$name] == 'false') exec_action('plugin-inactivate'); // @hook plugin-inactivate a plugin was inactivated
 
 		create_pluginsxml(true); // save change; @todo, currently reloads all files and recreates entire xml not just node, is wasteful
 	}
