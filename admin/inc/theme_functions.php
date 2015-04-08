@@ -678,12 +678,13 @@ function return_snippet(){
  * @param string $classPrefix Prefix that gets added to the parent and slug classnames
  * @return string 
  */	
-function get_navigation($currentpage,$classPrefix = "") {
+function get_navigation($currentpage,$classPrefix = "", $outer = array()) {
 
 	$menu = '';
 
 	global $pagesArray;
 	
+	if($outer) $menu .= $outer[0];
 	$pagesSorted = subval_sort($pagesArray,'menuOrder');
 	if (count($pagesSorted) != 0) { 
 		foreach ($pagesSorted as $page) {
@@ -701,9 +702,14 @@ function get_navigation($currentpage,$classPrefix = "") {
 				$menu .= '<li class="'. $classes .'"><a href="'. find_url($page['url'],$page['parent']) . '" title="'. encode_quotes(cl($page['title'])) .'">'.strip_decode($page['menu']).'</a></li>'."\n";
 			}
 		}
+	if($outer) $menu .= $outer[1];		
 	}
 	
 	echo exec_filter('menuitems',$menu); // @filter menuitems (str) menu items html in get_navigation
+}
+
+function get_navigation_ul($currentpage,$classPrefix = ""){
+	return get_navigation($currentpage,$classPrefix,array("<ul>","</ul>"));
 }
 
 /**

@@ -11,7 +11,6 @@
 # Setup
 $load['plugin'] = true;
 include 'inc/common.php';
-include 'inc/menu_functions.php';
 
 login_cookie_check();
 

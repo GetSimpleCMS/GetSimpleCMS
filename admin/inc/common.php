@@ -294,6 +294,7 @@ require_once('template_functions.php');
 require_once('theme_functions.php');
 require_once('filter_functions.php');
 require_once('sort_functions.php');
+require_once('menu_functions.php');
 require_once('logging.class.php');
 
 include_once(GSADMININCPATH.'configuration.php');

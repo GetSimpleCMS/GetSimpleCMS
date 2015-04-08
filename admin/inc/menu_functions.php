@@ -7,7 +7,7 @@
  */
 
 
-function getMenuFromPages(){
+function getMenuFromPages($inmenu = true){
 	/**
 	 * get pages ( filtered by menustatus )
 	 * create parent hash table with references
@@ -17,9 +17,10 @@ function getMenuFromPages(){
 	 * create flat hash ref array for fast hash lookups ( like parent hash array but with refs to tree )
 	 * flat array ust be storable and restorable, refs must be rebuilt after form input and read from file.
 	 */
-	$pagesSorted = filterKeyValueMatch(getPages(),'menuStatus','');
-	$parents     = getParentsHashTable();
+	$pagesSorted = filterKeyValueMatch(sortCustomIndex(getpages(),'menuOrder'),'menuStatus','Y');
+	$parents     = getParentsHashTable($inmenu ? $pagesSorted : null, true , true);
 	$flattree    = buildTreewHash($parents,'',false,true,'url');
+	// @todo does not retain pages with broken paths, problem for menus that should probably still show them.
 	$indexAry    = recurseJson($flattree);
 	$tree['NESTED'] = &$flattree;
 	// $tree['FLAT']   = &$indexAry['flat'];
@@ -33,7 +34,7 @@ function buildRefArrayRecursive($menu,$flattree = array()){
 	// if(!$flattree) $flattree = array();
 	foreach($menu as $item){
 		$flatree['item']['id'] = &$item;
-		if(isset($item['children'])) buildRefArray($item['children'],$flattree);
+		if(isset($item['children'])) buildRefArrayRecursive($item['children'],$flattree);
 	}
 
 	return $flattree;
@@ -175,7 +176,8 @@ function getPageMenuTitle($slug){
 	return ($page['menu'] == '' ? $page['title'] : $page['menu']);
 }
 
-function getTree($parents,$key = '',$str='',$level = 0,$index = 0, $filter = null, $outer = 'treeCalloutOuter',$inner = 'treeCalloutInner'){
+// can be used on native arrays like parenthashtables
+function getTree($parents,$key = '',$str='',$level = 0,$index = 0, $filter = null, $inner = 'treeCalloutInner', $outer = 'treeCalloutOuter'){
 	// _debugLog($key,$level);
 	static $index;
 	if($level == 0) $index = 0;
@@ -188,7 +190,7 @@ function getTree($parents,$key = '',$str='',$level = 0,$index = 0, $filter = nul
 		$index++;
 		$str .= $inner($child['url'],$level,$index,$order);
 		if(isset($parents[$parent])) {
-			$str.= getTree($parents,$parent,'',$level+1,0,$filter,$outer,$inner);
+			$str.= getTree($parents,$parent,'',$level+1,0,$filter,$inner,$outer);
 		}
 		$str .= $inner($child['url'],$level,$index,$order,false);
 	}
@@ -196,7 +198,9 @@ function getTree($parents,$key = '',$str='',$level = 0,$index = 0, $filter = nul
 	return $str;
 }
 
-function getMenuTree($parents,$str='',$level = 0, $index = 0, $filter = null, $outer = 'treeCalloutOuter',$inner = 'treeCalloutInner'){
+// passes page id to callouts, use for your own arrays, also adds depth, index, and order if not exist, can be used on arrays with nested trees assumes
+// 'children' subkey
+function getMenuTree($parents,$str='',$level = 0, $index = 0, $filter = null, $inner = 'treeCalloutInner',$outer = 'treeCalloutOuter'){
 	if(!$parents) return;
 	static  $index;
 	if($level == 0) $index = 0;
@@ -221,18 +225,19 @@ function getMenuTree($parents,$str='',$level = 0, $index = 0, $filter = null, $o
 	return $str;
 }
 
-function getMenuTreeMin($parents,$str='',$outer = 'treeCalloutOuter',$inner = 'treeCalloutInner'){
+// passes page to callouts, assumes everything you need in the array, to be used with menu/ index/ or ref arrays
+function getMenuTreeMin($parents,$str='',$inner = 'treeCalloutInner',$outer = 'treeCalloutOuter'){
 	if(!$parents) return;
 	$str .= $outer();
 	foreach($parents as $key=>$parent){
 		if(!isset($parent['id'])) continue;
 		$str .= $inner($parent);
 		if(isset($parent['children'])) {
-			$str.= getMenuTree($parent['children'],'',$outer,$inner);
+			$str.= getMenuTreeMin($parent['children'],'',$inner,$outer);
 		}
 		$str .= $inner($parent,false);
 	}
-	$str .= $outer($parent,false);
+	$str .= $outer(null,false);
 	return $str;
 }
 
@@ -250,6 +255,26 @@ function treeCalloutOuter($id,$level,$index = 1,$order = 0,$open = true){
 function treeFilterCallout($id,$level,$index,$order){
 	$child = getPage($id);
 	return $child['menuStatus'] !== 'Y';
+}
+
+function menuCalloutInner($page,$open = true){
+	if(!$open) return '</li>';
+
+	$depth = $page['data']['depth'];
+	$page = getPage($page['id']);
+	
+	$menutext = $page['menu'] == '' ? $page['title'] : $page['menu'];
+	$menutitle = $page['title'] == '' ? $page['menu'] : $page['title'];
+	$class = $page['parent'] . ' D' . $depth; 
+	
+	$str = '<li data-id="'.$page['url'].'" class="'.$class.'">';
+	$str .= '<a href="'. find_url($page['url']) . '" title="'. encode_quotes(cl($menutitle)) .'">'.strip_decode($menutext).'</a>'."\n";
+
+	return $str;
+}
+
+function menuCalloutOuter($page = null,$open = true){
+	return $open ? '<ul id="">' : '</ul>';
 }
 
 function selectCalloutInner($id, $level, $index, $order, $open = true){

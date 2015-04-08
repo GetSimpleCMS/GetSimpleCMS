@@ -1022,13 +1022,14 @@ function getPagesRowMissing($ancestor,$level,$children){
  * @param  boolean $useref true: use references for values, false: empty
  * @return array   returns array keyed by parents, then keyed by url with values page refs or empty
  */
-function getParentsHashTable($pages = array(), $useref = true){
+function getParentsHashTable($pages = array(), $useref = true, $fixorphans = false){
 	$pagesArray = $pages ? $pages : getPagesXmlValues();
 	$ary        = array();
 
 	foreach($pagesArray as $key => &$page){
 		$parent = isset($page['parent']) ? $page['parent'] : '';
 		$pageId = isset($page['url']) ? $page['url'] : null;
+		if($fixorphans && !isset($pagesArray[$parent])) $parent = ''; // move orphans to root
 		if($pageId) $ary[$parent][$pageId] = $useref ? $page : '';
 	}
 
