@@ -17,9 +17,9 @@ $GS_styles        = array();  // used for queing Styles
 // asseturl is scheme-less ://url if GSASSETSCHEMES is not true
 $ASSETURL = getDef('GSASSETSCHEMES',true) !==true ? str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL) : $SITEURL;
 
-define('GSFRONT',1);
-define('GSBACK',2);
-define('GSBOTH',3);
+if (!defined('GSFRONT')) define('GSFRONT',1);
+if (!defined('GSBACK'))  define('GSBACK',2);
+if (!defined('GSBOTH'))  define('GSBOTH',3);
 
 $GS_script_assets = array(); // defines asset scripts
 $GS_style_assets  = array();  // defines asset styles
