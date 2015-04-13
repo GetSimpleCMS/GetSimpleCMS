@@ -113,7 +113,7 @@ define('GSSUPPRESSERRORS',true);
 # define('GSMERGELANG',false);
 
 # GS can prevent backend or frontend pages from being loaded inside a frame 
-# this is done by sending an x-frame header, and helps protect against clickjacking attacks
+# this is done by sending an x-frame-options header, and helps protect against clickjacking attacks
 # This is enabled by default for backend pages (true/GSBACK)
 # setting GSNOFRAME to (false) will disable this behavior
 # You can also customize this by passing the gs location definitions,

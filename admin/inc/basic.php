@@ -1319,7 +1319,7 @@ function returnJsArray($var){
  */
 function header_xframeoptions($value = null){
 	if(!isset($value)){
-		if(getDef('GSXFRAMEDEFAULT',true)) $value = getDef('GSXFRAMEDEFAULT');
+		if(getDef('GSNOFRAMEDEFAULT',true)) $value = getDef('GSNOFRAMEDEFAULT');
 		else $value = 'DENY';
 	}	
 	header('X-Frame-Options: ' . $value); // FF 3.6.9+ Chrome 4.1+ IE 8+ Safari 4+ Opera 10.5+
