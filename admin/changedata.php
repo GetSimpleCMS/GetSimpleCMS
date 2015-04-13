@@ -178,9 +178,9 @@ if (isset($_POST['submitted'])) {
 
 		exec_action('changedata-save');
 		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true' && $autoSaveDraft == true) {
-			XMLsave($xml, GSAUTOSAVEPATH.$url);
+			$status = XMLsave($xml, GSAUTOSAVEPATH.$url);
 		} else {
-			XMLsave($xml, $file);
+			$status = XMLsave($xml, $file);
 		}
 		
 		//ending actions
@@ -189,9 +189,11 @@ if (isset($_POST['submitted'])) {
 		
 		// redirect user back to edit page 
 		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true') {
-			echo 'OK';
+			echo $status ? 'OK' : 'ERROR';
 		} else {
-			
+
+			if(!$status) redirect("edit.php?id=". $url ."&upd=edit-error&type=edit"); 
+
 			if ($_POST['redirectto']!='') {
 				$redirect_url = $_POST['redirectto'];
 			} else {
