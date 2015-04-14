@@ -25,7 +25,7 @@ $error = $success = $prettychck = null;
 # if the flush cache command was invoked
 if (isset($_GET['flushcache'])) {
 	delete_cache();
-	exec_action('flushcache'); // @hook flushcache cache was deleted
+	exec_action('flushcache'); // @hook flushcache cache was deleted via interactive action
 	$update = 'flushcache-success';
 }
 

@@ -1015,7 +1015,7 @@ function getPagesRowMissing($ancestor,$level,$children){
 
 /**
  * create a parent child bucket
- *
+ * [parent] => ['id','id']
  * @since 3.4
  *
  * @param  array   $pages  pagesarray
@@ -1025,20 +1025,35 @@ function getPagesRowMissing($ancestor,$level,$children){
 function getParentsHashTable($pages = array(), $useref = true, $fixorphans = false){
 	$pagesArray = $pages ? $pages : getPagesXmlValues();
 	$ary        = array();
+	$lastkey    = '';
 
 	foreach($pagesArray as $key => &$page){
 		$parent = isset($page['parent']) ? $page['parent'] : '';
 		$pageId = isset($page['url']) ? $page['url'] : null;
-		if($fixorphans && !isset($pagesArray[$parent])) $parent = ''; // move orphans to root
+
+		// move orphans to root
+		// if($fixorphans && !isset($pagesArray[$parent])) $parent = ''; 
+		// move orphans to last parent
+		if($fixorphans && $parent !== '' && !isset($pagesArray[$parent])) $parent = getClosestParentInMenu($key);
+		debugLog($lastkey);
 		if($pageId) $ary[$parent][$pageId] = $useref ? $page : '';
+		$lastkey = $key;
 	}
 
 	return $ary;
 }
 
 
+function getClosestParentInMenu($pageId){
+	$parents = getParentFields($pageId,'url','filterParentMenu');
+	// $parents = getParentFields($pageId,'url');
+	_debugLog($pageId,$parents);
+	return array_pop($parents);
+}
+
 /**
- * create a parent child bucket
+ * create a parent child bucket with `id,children` subarrays
+ * [parent] => [children:['id',&id'],id:'id']
  *
  * @since 3.4
  *

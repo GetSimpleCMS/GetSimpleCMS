@@ -47,6 +47,13 @@ function getPages($filterFunc=null/*,...*/){
 	} else return $pagesArray;
 }
 
+/**
+ * get a page
+ * 
+ * @since  3.4
+ * @param  string $slug slug of page to return
+ * @return array       page array
+ */
 function getPage($slug){
 	global $pagesArray;
 	return isset($pagesArray[$slug]) ? $pagesArray[$slug] : null;
@@ -546,7 +553,7 @@ function getPageFieldValue($pageId,$field){
  * @param  str $pageId slug of child
  * @return array       array of parents slugs
  */
-function getParentFields($pageId,$key = 'url'){
+function getParentFields($pageId,$key = 'url',$filter = null){
 	$pageparents  = getPagesFields('parent');
 	$parentValues = getPagesFields($key);
 	$parent       = getParent($pageId);
@@ -557,9 +564,16 @@ function getParentFields($pageId,$key = 'url'){
 	while(isset($pageparents[$parent]) && isset($parentValues[$parent])){
 		$value    = (string)$parentValues[$parent];
 		$parent   = (string)$pageparents[$parent];
-		if(!empty($value))	$values[] = $value;
+		if(isset($filter) && !$filter($value) && !empty($value)) $values[] = $value;
+		else if(!isset($filter) && !empty($value)) $values[] = $value;
 	}
 	return $values;
+}
+
+function filterParentMenu($page){
+	$page = getPage($page);
+	// _debugLog($page);
+	return $page['menuStatus'] !== 'Y';
 }
 
 /**
