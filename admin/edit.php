@@ -180,7 +180,7 @@ function getDraftPageHead($editing = true, $path = ''){
     echo '<div class="title label label-draft secondary-lightest-back unselectable">'.i18n_r('LABEL_DRAFT').'</div>';
     echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav clearfix" >';
     if($editing) {
-        echo '<a class="draftview" href="'. $path . ($PRETTYURLS ? '?' : '&amp;') .'draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
+        echo '<a class="draftview" href="'. $path . (($PRETTYURLS || $id == 'index') ? '?' : '&amp;') .'draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
         echo '<a class="draftpublish" href="changedata.php?publish&id='.$id.'" accesskey="'. find_accesskey(i18n_r('PUBLISH')). '" >'. i18n_r('PUBLISH'). '</a>';
     }
     exec_action(get_filename_id().'-edit-nav'); 
