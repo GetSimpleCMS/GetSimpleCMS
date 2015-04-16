@@ -323,7 +323,7 @@ function getUploadIcon($type){
 			
 			$counter++;
 			$thumbnailLink = '';
-			$primarylink = '';
+			$primarylink = getRelPath(GSDATAUPLOADPATH).$urlPath. rawurlencode($upload['name']);
 			
 			echo '<tr class="all '.$upload['type'].'" >';
 			echo '<td class="imgthumb" >';
@@ -335,7 +335,6 @@ function getUploadIcon($type){
 				$thumbLink         = $urlPath.'thumbsm.'.$upload['name'];
 				$thumbLinkEncoded  = $urlPath.'thumbsm.'.rawurlencode($upload['name']);
 				$thumbLinkExternal = $urlPath.'thumbnail.'.$upload['name'];
-				$primarylink       = getRelPath(GSDATAUPLOADPATH).$urlPath. rawurlencode($upload['name']);
 
 				// get thumbsm
 				if (!file_exists(GSTHUMBNAILPATH.$thumbLink) || isset($_REQUEST['regenthumbsm'])) {					
