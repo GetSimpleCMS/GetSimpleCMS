@@ -95,15 +95,21 @@ function echoPageField($page,$field){
  * 
  */
 function returnPageField($page,$field){   
-	$pagesArray = getPagesXmlValues();	
+	$pagesArray = getPagesXmlValues();
+	$s_page = (string)$page;
 
 	if ($field=="content"){
 		$ret=returnPageContent($page); 
 	} else {
-		if (isset($pagesArray[(string)$page]) && isset($pagesArray[(string)$page][$field]) ){
-			$ret=strip_decode($pagesArray[(string)$page][(string)$field]);
-		} else {
-			$ret = returnPageContent($page,$field);
+		if ( !array_key_exists($s_page, $pagesArray) ) {
+			$ret=false;
+		}
+		else {
+			if (isset($pagesArray[$s_page]) && isset($pagesArray[$s_page][$field]) ){
+				$ret=strip_decode($pagesArray[$s_page][(string)$field]);
+			} else {
+				$ret = returnPageContent($page,$field);
+			}
 		}
 	} 
 	return $ret;
