@@ -392,7 +392,7 @@ function getScripts($facing = GSBACK, $footer = false){
     if ($script['load'] == true && ($script['where'] & $facing) ){
       if($footer !== $script['in_footer']) continue;
       $str.= '<script src="'.$script['src'].( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '"></script>'."\n";
-      cdn_fallback($script);  
+      $str.= cdn_fallback($script);  
     }
   }
 
@@ -406,7 +406,7 @@ function getScripts($facing = GSBACK, $footer = false){
  * @param  array $script gsscript array
  */
 function cdn_fallback($script){
-  echo build_cdn_fallback($script);
+  return build_cdn_fallback($script);
 }
 
 function build_cdn_fallback($script){
