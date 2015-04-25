@@ -2249,7 +2249,7 @@ textarea.copykit {
 	        transition-property: background-color, color, text-shadow; 	
 }
 
-div.`{
+div.label{
 	display:inline-block;
 }
 
