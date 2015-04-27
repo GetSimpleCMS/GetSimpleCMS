@@ -745,14 +745,15 @@ jQuery(document).ready(function () {
 	};
 	
 	function focusCompEditor(selector){
-		var editor = $(selector + ' textarea');		
+		var editor = $(selector + ' textarea');
+		// Debugger.log('focusing editor ' + selector);
 		editor.focus();
 	}
 
 	// auto focus component editors
-	$('#components div.compdivlist a').on('click', function(ev){
+	$('#components').on('click','div.compdivlist a', function(ev){
 		focusCompEditor($(this).attr('href'));
-		ev.preventDefault();		
+		ev.preventDefault();	
 	});
 	
 	// bind component new button
@@ -898,11 +899,13 @@ jQuery(document).ready(function () {
 		$(this).parents('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
 		$(this).parents('.compdiv').find("b.editable").html(myval);
 		if(myval !== '' && validateCompSlug(myval)){
+			var compid = $(this).parents('.compdiv').find("input.compid").val();
+			updateCompDivList(compid,myval);
 			$('input:submit').prop('disabled',false);
 			// Debugger.log('slug IS unique: "' + myval + '"');
 			$("b.editable").show();
 			$(this).parents('.compdiv').find('.delcomponent').show();
-			$(this).val(myval+'new'); // put cleaner slug back
+			$(this).val(myval); // put cleaner slug back
 			$(this).parents('.compdiv').find("input.compslug").val(myval);			
 			$(this).parents('.compdiv').find("input.comptitle").val(myval);
 			$('#changetitle').remove(); // remove self parent last
@@ -917,6 +920,22 @@ jQuery(document).ready(function () {
 		}
 	});
  
+ 	/**
+ 	 * update compdivlist tag
+ 	 */
+	function updateCompDivList(compid,value){
+		//Debugger.log('updating compdivlist ' + compid + ' to ' + value);
+		if ($("#divlist-" + compid).length) {
+			// update
+			$("#divlist-" + compid).text(value);
+		}
+		else{
+			// add new
+			var compdivlist = '<a id="divlist-'+compid+'" href="#section-'+compid+'" class="component clear-left comp_'+value+'">'+value+'</a>';
+			$(".compdivlist").append(compdivlist);
+		}	
+	}
+
  	/**
  	 * validate compslug by checking unique ness
  	 */
