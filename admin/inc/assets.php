@@ -500,7 +500,7 @@ function preRegisterStyle($id,$config = array(), $CDN = false, $media = 'screen'
  * @param string $media the media for this stylesheet
  * @param array $queue array of style assets to auto queue
  */
-function register_style($handle, $src, $ver, $media, $queue = null){
+function register_style($handle, $src, $ver, $media = 'all', $queue = null){
   global $GS_styles;
   $GS_styles[$handle] = array(
     'name'  => $handle,
