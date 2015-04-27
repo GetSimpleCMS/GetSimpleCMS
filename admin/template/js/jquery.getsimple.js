@@ -706,6 +706,43 @@ jQuery(document).ready(function () {
 	$("input[type='password']").capslock(capslockoptions);
  
 	// components.php
+
+	// ajaxify components submit if ajaxsave enabled
+	$('body.ajaxsave #compEditForm').on('submit',function(e){
+        if($('body').hasClass('ajaxsave')){
+			e.preventDefault();
+			componentSave(e);
+			return false;
+		}
+		pageIsClean();
+	});
+	
+	componentSave = function(e){
+
+		Debugger.log("onsubmit");
+		e.preventDefault();
+		ajaxStatusWait();
+		
+		save_codeeditors();
+		save_htmleditors();
+		save_inlinehtmleditors();
+		var dataString = $("#compEditForm").serialize();			
+
+		$.ajax({
+			type: "POST",
+			cache: false,
+			// url: 'components.php',
+			data: dataString+'&submitted=1&ajaxsave=1',
+			success: function( response ) {
+				response = $.parseHTML(response);
+				// Debugger.log($(response).find('div.updated'));
+				$(response).find('div.updated').parseNotify();
+				updateNonce(response);
+				ajaxStatusComplete();
+				removeDeletedComponents();
+			}
+		});
+	};
 	
 	function focusCompEditor(selector){
 		var editor = $(selector + ' textarea');		
@@ -840,6 +877,7 @@ jQuery(document).ready(function () {
 	});
 
 	$.fn.comptitleinput = function(){
+		$('input:submit').prop('disabled',true);
 		var t = $(this).html();		
 		if($(this).parents('.compdiv').find("input.comptitle").prop('disabled') == true) return; // deleted ignore
 		$(this).parents('.compdiv').find("input.comptitle").val('').hide(); // wipe comptitle
@@ -860,16 +898,21 @@ jQuery(document).ready(function () {
 		$(this).parents('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
 		$(this).parents('.compdiv').find("b.editable").html(myval);
 		if(myval !== '' && validateCompSlug(myval)){
+			$('input:submit').prop('disabled',false);
 			// Debugger.log('slug IS unique: "' + myval + '"');
 			$("b.editable").show();
 			$(this).parents('.compdiv').find('.delcomponent').show();
 			$(this).val(myval+'new'); // put cleaner slug back
-			$(this).parents('.compdiv').find("input.comptitle").val(myval);			
-			
+			$(this).parents('.compdiv').find("input.compslug").val(myval);			
+			$(this).parents('.compdiv').find("input.comptitle").val(myval);
 			$('#changetitle').remove(); // remove self parent last
 		}
+		else if(myval == ''){
+			Debugger.log('slug is not valid: "' + myval + '"');
+			$(this).addClass('error');			
+		}
 		else {
-			Debugger.log('slug is NOT unique: ' + myval );
+			Debugger.log('slug is NOT unique: "' + myval + '"');
 			$(this).addClass('error');
 		}
 	});
@@ -880,7 +923,7 @@ jQuery(document).ready(function () {
 	function validateCompSlug($id){
 		var slugs = $( "input.comptitle" )
 		 	.map(function() {
-		 		return $(this).val();
+		 		return $(this).val().toLowerCase();
 			})
 			.get()
 
@@ -1636,43 +1679,6 @@ jQuery(document).ready(function () {
 
 				ajaxStatusComplete();
 				$('#codetext').data('editor').hasChange = false; // mark clean		
-			}
-		});
-	};
-
-	// ajaxify components submit if ajaxsave enabled
-	$('body.ajaxsave #compEditForm').on('submit',function(e){
-        if($('body').hasClass('ajaxsave')){
-			e.preventDefault();
-			componentSave(e);
-			return false;
-		}
-		pageIsClean();
-	});
-	
-	componentSave = function(e){
-
-		Debugger.log("onsubmit");
-		e.preventDefault();
-		ajaxStatusWait();
-		
-		save_codeeditors();
-		save_htmleditors();
-		save_inlinehtmleditors();
-		var dataString = $("#compEditForm").serialize();			
-
-		$.ajax({
-			type: "POST",
-			cache: false,
-			// url: 'components.php',
-			data: dataString+'&submitted=1&ajaxsave=1',
-			success: function( response ) {
-				response = $.parseHTML(response);
-				// Debugger.log($(response).find('div.updated'));
-				$(response).find('div.updated').parseNotify();
-				updateNonce(response);
-				ajaxStatusComplete();
-				removeDeletedComponents();
 			}
 		});
 	};

@@ -28,25 +28,29 @@ if (isset($_POST['submitted'])){
 	backup_datafile(GSDATAOTHERPATH.GSCOMPONENTSFILE);
 	
 	# start creation of top of components.xml file
-	if (count($_POST['component']) != 0) { 
+	if (count($_POST['component']) != 0) {
+		$status = $error = null;
 		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
 		
 		foreach ($_POST['component'] as $component)	{
-
 			$id     = $component['id']; // unused
 			$slug   = $component['slug'];
 			$value  = $component['val'];
 			$title  = $component['title'];
 			$active = isset($component['active']) ? 0 : 1; // checkbox
-
+			
+			// add corrupt data protection, prevent deleting components if something critical is missing
+			if(empty($slug)) $error = 'an error occured, missing slug';
 			$componentXML = addComponentItem($xml,$title,$value,$active,$slug);
 		}		
 		
-		exec_action('component-save'); // @hook component-save before saving components data file
-		XMLsave($xml, GSDATAOTHERPATH.GSCOMPONENTSFILE);
-		get_components_xml(true);
+		if(!$error){
+			exec_action('component-save'); // @hook component-save before saving components data file
+			$status = XMLsave($xml, GSDATAOTHERPATH.GSCOMPONENTSFILE);
+			get_components_xml(true);
+		}	
 	}
-	$update = 'comp-success';
+	$update = $status ? 'comp-success' : 'error';
 }
 
 # if undo was invoked
