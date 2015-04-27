@@ -747,13 +747,15 @@ jQuery(document).ready(function () {
 	function focusCompEditor(selector){
 		var editor = $(selector + ' textarea');
 		// Debugger.log('focusing editor ' + selector);
-		editor.focus();
+		if(editor.data('htmleditor'))editor.data('htmleditor').focus(); // ckeditor does not pass focus events for some reason
+		else editor.focus();
 	}
 
 	// auto focus component editors
-	$('#components').on('click','div.compdivlist a', function(ev){
+	$('#components,#snippets').on('click','div.compdivlist a', function(ev){
 		focusCompEditor($(this).attr('href'));
-		ev.preventDefault();	
+		// @todo jump page to #anchor or position also, allowing default seems to work, but might not be optimal
+		// ev.preventDefault();	
 	});
 	
 	// bind component new button
