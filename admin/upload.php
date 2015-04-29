@@ -335,12 +335,13 @@ function getUploadIcon($type){
 				$thumbLink         = $urlPath.'thumbsm.'.$upload['name'];
 				$thumbLinkEncoded  = $urlPath.'thumbsm.'.rawurlencode($upload['name']);
 				$thumbLinkExternal = $urlPath.'thumbnail.'.$upload['name'];
+				$ext = getFileExtension($upload['name']);
 
 				// get thumbsm
 				if (!file_exists(GSTHUMBNAILPATH.$thumbLink) || isset($_REQUEST['regenthumbsm'])) {					
-					$imgSrc = '<img src="inc/thumb.php?src='. $urlPath . rawurlencode($upload['name']) .'&amp;dest='. $thumbLinkEncoded .'&amp;f=1&x='.$thumbsm_w.'&y='.$thumbsm_h.'" />';
+					$imgSrc = '<img class="'.$ext.'" src="inc/thumb.php?src='. $urlPath . rawurlencode($upload['name']) .'&amp;dest='. $thumbLinkEncoded .'&amp;f=1&x='.$thumbsm_w.'&y='.$thumbsm_h.'" />';
 				} else {
-					$imgSrc = '<img src="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH). $thumbLinkEncoded .'" />';
+					$imgSrc = '<img class="'.$ext.'" src="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH). $thumbLinkEncoded .'" />';
 				}
 
 				// thumbnail link lightbox
