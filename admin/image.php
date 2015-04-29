@@ -35,8 +35,8 @@ $thumb_url        = tsl($SITEURL).$thumb_folder_rel;
 if (!filepath_is_safe($src_folder . $subPath . $src,GSDATAUPLOADPATH)) redirect("upload.php");
 
 // handle jcrop thumbnail creation
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && matchArrayAll(array('x','y','w','h'),$_POST,true) ) {
-	
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && ( matchArrayAll(array('x','y','w','h'),array_keys($_POST)) )) {
+
 	exec_action('image-crop');
 
 	$x = (int)$_POST['x'];
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && matchArrayAll(array('x','y','w','h')
 
 	$max = 10000; // set a max to prevent excessive processing injections
 
-	if( $x<$max || $y<$max || $w<$max || $h<$max ){
+	if( $x<$max && $y<$max && $w<$max && $h<$max ){
 		require_once('inc/imagemanipulation.php');
 		$objImage = new ImageManipulation($src_folder . $subPath .$src);
 		if ( $objImage->imageok ) {
