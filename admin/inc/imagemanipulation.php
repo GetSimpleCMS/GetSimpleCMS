@@ -230,6 +230,7 @@ class ImageManipulation {
 	}
 
 	/**
+	 * auto crop to square, fill
 	 * 
 	 * since we use one operation for resizing and cropping, cropping is done on original canvas size
 	 * cropping must occur after resize operations, because we override/modify thumb dimensions, this also allows us to recaculate them if needed
