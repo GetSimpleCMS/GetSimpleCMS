@@ -18,9 +18,10 @@ login_cookie_check();
  * - w or x - max width
  * - h or y- max height
  * - q - quality (applicable only to JPG, 1 to 100, 100 - best)
- * - t - thumb type. "-1" - same as source, 1 = GIF, 2 = JPG, 3 = PNG
+ * - t - thumb type. "-1" - same as source, 1 = GIF, 2 = JPG, 3 = PNG, ignored if dest extension exists
  * - f - save to file (1) or output to browser (0).
  * - json - return image in json object including obj info and base64 image
+ * - c - crop options, 0 = left/top, 1 = center, 2 = right/bottom ( only maked sense with w=h square images )
  * 
  * Sample usage: 
  * 1. save thumb on server: 
