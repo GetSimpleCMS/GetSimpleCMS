@@ -23,10 +23,37 @@ add_action('changedata-aftersave', 'create_pagesxml',array(true)); // Create pag
 
 
 /**
+ * Return Page Content
+ *
+ * Return the content of the requested page. 
+ * Retreives from page file if content does not exist in cache
+ * NOTE Performs content filter before returning by default.
+ * LEGACY, use returnPageField for other fields, $field provided for legacy use only.
+ * @since 3.1
+ * @param $page - slug of the page to retrieve content
+ * @param $raw false - if true return raw xml, no strip, no filter
+ * @param $nofilter false - if true skip content filter execution
+ *
+ */
+function returnPageContent($page, $field='content', $raw = false, $nofilter = false){ 
+	
+	if($field !=='content'){
+		debugLog('LEGACY NOTICE: '.__FUNCTION__.' is DEPRECATED for fields other than content use returnPageField instead');
+		$data = returnPageField($page,$field,$raw);
+	}
+	else {
+		$data = returnPageField($page,'content',true);
+		$data = $nofilter || $raw ? $data : filterPageContent($page,$data);
+	}
+
+	return $data;
+}
+
+/**
  * Get Page Content
  *
  * Retrieve and display the content of the requested page. 
- * As the Content is not cahed the file is read in.
+ * As the Content is not cached the file is read in.
  *
  * @since 2.0
  * @param $page - slug of the page to retrieve content
@@ -36,29 +63,48 @@ function getPageContent($page,$field='content'){
 	echo returnPageContent($page,$field);
 }
 
+
 /**
- * Return Page Content
+ * helper for filtering content
+ * filter content handler for pageid, or content
+ * @param  str $page    pageid
+ * @param  str $content content data
+ * @return str          result of content filtering
+ */
+function filterPageContent($page, $content = null){
+	if(!$content) $content = getPageField($page,'content');
+	$content = exec_filter('content',$content); // @filter content (str) filter page content in returnPageContent
+	return $content;
+}
+
+
+/**
+ * Return Page Field
  *
- * Return the content of the requested page. 
- * As the Content is not cahed the file is read in.
+ * Retrieve the requested field from the given page cache, fallback to page file
+ * If the field is "content" and not raw it will run it through content filter
  *
  * @since 3.1
- * @param $page - slug of the page to retrieve content
- * @param $raw false - if true return raw xml, no strip, no filter
- * @param $nofilter false - if true skip content filter execution
- *
+ * @param $page  slug of the page to retrieve content
+ * @param $field the Field to display
+ * @param $raw   if true, prevent any processing of data, use with caution as result can vary if falls back to page file
+ * @param $cache if false, bypass cache and get directly from page file
+ * 
  */
-function returnPageContent($page, $field='content', $raw = false, $nofilter = false){   
-	$data = getPageXML($page);
-	if(!$data) return;
-	$content = $data->$field;
-	if($raw) return $content; // return without any processing
+function returnPageField($page, $field, $raw = false, $cache = true){   
+	$pagesArray = getPagesXmlValues();
 
-	$content = stripslashes(htmlspecialchars_decode($content, ENT_QUOTES));
-	if ($field=='content' and !$nofilter){
-		$content = exec_filter('content',$content); // @filter content (str) filter page content in returnPageContent
+	if ($cache && isset($pagesArray[(string)$page]) && isset($pagesArray[(string)$page][$field]) ){
+		$ret = $raw ? $pagesArray[(string)$page][(string)$field] : strip_decode($pagesArray[(string)$page][(string)$field]);
+	} else {
+		$ret = returnPageFieldFromFile($page,$field,$raw);
 	}
-	return $content;
+
+	if ($field=="content" && !$raw){
+		$ret = filterPageContent($page,$ret);
+	}
+
+	return $ret;
 }
 
 /**
@@ -82,33 +128,23 @@ function echoPageField($page,$field){
 	getPageField($page,$field);
 }
 
-
 /**
- * Return Page Field
- *
- * Retrieve the requested field from the given page. 
- * If the field is "content" it will call returnPageContent()
- *
- * @since 3.1
- * @param $page - slug of the page to retrieve content
- * @param $field - the Field to display
- * 
+ * get page field directly from page file, bypasses page cache
+ * @since  3.4
+ * @param  str  $page  page id
+ * @param  str  $field field id
+ * @param  boolean $raw  return raw xml
+ * @return returns field data from page xml
  */
-function returnPageField($page,$field){   
-	$pagesArray = getPagesXmlValues();	
+function returnPageFieldFromFile($page, $field, $raw = false){   
+	$data = getPageXML($page);
+	if(!$data) return;
 
-	if ($field=="content"){
-		$ret=returnPageContent($page); 
-	} else {
-		if (isset($pagesArray[(string)$page]) && isset($pagesArray[(string)$page][$field]) ){
-			$ret=strip_decode($pagesArray[(string)$page][(string)$field]);
-		} else {
-			$ret = returnPageContent($page,$field);
-		}
-	} 
-	return $ret;
+	$data = $data->$field;
+	if($raw) return $data; // return without any processing
+	$data = stripslashes(htmlspecialchars_decode($data, ENT_QUOTES));
+	return $data;
 }
-
 
 /**
  * Get Page Children
