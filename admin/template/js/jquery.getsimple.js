@@ -31,44 +31,6 @@ function updateCoordsReset(){
 	updateCoords(c);
 }
 
-/* jcrop display */
-function updateCoords(c) {
-	Debugger.log("updatecoords");
-	Debugger.log(c);	
-	if($('#cropbox').data('animating')) return;
-	var x = Math.round(c.x);
-	var y = Math.round(c.y);
-	var w = Math.round(c.w);
-	var h = Math.round(c.h);
-	
-	// more accurate but precison issues causes changes as xy chnages	
-	// var w = Math.round(c.x2) - x; 
-	// var h = Math.round(c.y2) - y;
-
-	$('#handw').show();	
-	$('#x').val(x);
-	$('#y').val(y);
-	$('#w').val(w);
-	$('#h').val(h);
-	$('#picw').html(w);
-	$('#pich').html(h);
-}
-
-/**
- * updates coordinate inputs, do not update if change is less than 1px to handle precision issues
- */
-function updateCoord(id,value){
-	if(!$('#'+id).val()){
-		$('#'+id).val(value);
-		return true;
-	}
-	if( Math.abs(parseInt($('#'+id).val(),10) - value ) != 1){
-		$('#'+id).val(value);
-		return true;
-	}
-	return false;	
-}
-
 Debugger = function () {};
 Debugger.log = function (message) {
 	try {
@@ -610,6 +572,44 @@ jQuery(document).ready(function () {
 
 	//image.php
 
+	/* jcrop display */
+	updateCoords = function(c) {
+		// Debugger.log("updatecoords");
+		// Debugger.log(c);	
+		if($('#cropbox').data('animating')) return;
+		var x = Math.round(c.x);
+		var y = Math.round(c.y);
+		var w = Math.round(c.w);
+		var h = Math.round(c.h);
+		
+		// more accurate but precison issues causes changes as xy chnages	
+		// var w = Math.round(c.x2) - x; 
+		// var h = Math.round(c.y2) - y;
+
+		$('#handw').show();	
+		$('#x').val(x);
+		$('#y').val(y);
+		$('#w').val(w);
+		$('#h').val(h);
+		$('#picw').html(w);
+		$('#pich').html(h);
+	}
+
+	/**
+	 * updates coordinate inputs, do not update if change is less than 1px to handle precision issues
+	 */
+	function updateCoord(id,value){
+		if(!$('#'+id).val()){
+			$('#'+id).val(value);
+			return true;
+		}
+		if( Math.abs(parseInt($('#'+id).val(),10) - value ) != 1){
+			$('#'+id).val(value);
+			return true;
+		}
+		return false;	
+	}
+
 	// jcrop manual input control
 	$('.jcropinput').keypress(function(e) {
 	    if(e.which == 13) {
@@ -617,6 +617,7 @@ jQuery(document).ready(function () {
 	    }
 	});
 
+	// handle manual inputs by detecting changes, animating jcrop, getting new values back and dealing with focus stealing.
 	$('.jcropinput').on('change',function(e){
 		var array = [
 			parseInt($('#x').val(),10),
@@ -626,8 +627,11 @@ jQuery(document).ready(function () {
 		];
 
 		// Debugger.log(array);
+		$('.jcropinput').prop('disabled',true);
 		$('#cropbox').data('animating',true);
 		$('#cropbox').data('focused',this);
+		// @todo move focus to next input if tab was pressed
+		// var next = $(":input:eq(" + ($(":input").index(this) + 1) + ")");
 		$(this).focus();
 		$(this).select();
 		$('#cropbox').data('jcrop').animateTo(array,jcropDoneAnimating);
@@ -636,13 +640,15 @@ jQuery(document).ready(function () {
 	function jcropDoneAnimating(){
 		Debugger.log("done animating");
 		$('#cropbox').data('animating',false);
+		$('.jcropinput').prop('disabled',false);
+		// update our coords to match real coords from jcrop, handles overages etc.
 		var coords = this.tellSelect();
 		updateCoordsCallback(coords);
 	}
 
 	function updateCoordsCallback(c) {
-		Debugger.log('updatecoords animateto callback');
-		Debugger.log(c);
+		// Debugger.log('updatecoords animateto callback');
+		// Debugger.log(c);
 		if($('#cropbox').data('animating')) return;
 		var x = Math.round(c.x);
 		var y = Math.round(c.y);
