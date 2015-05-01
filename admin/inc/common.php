@@ -66,7 +66,7 @@ $GS_constants = array(
 	'GSRESETFILEPREFIX'     => '',                            // (str) password reset file naming prefix after extension
 	'GSDEFAULTPERMALINK'    => '%path%/%slug%/',              // (str) default permalink structure to use if prettyurls is enabled, and custom not exist 
 	'GSTOKENDELIM'          => '%',                           // (str) delimiter for token boundaries
-	'GSLOGINQSALLOWED'      => 'id,draft,nodraft,safemode',   // (str) csv query string keys to allow during login redirects
+	'GSLOGINQSALLOWED'      => 'id,draft,nodraft,safemode,i,path',   // (str) csv query string keys to allow during login redirects
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
