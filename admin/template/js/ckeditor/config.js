@@ -25,6 +25,10 @@ CKEDITOR.editorConfig = function( config )
  * DO NOT EDIT BELOW THIS LINE
  */
 
+// prevent removal of empty inline tags
+CKEDITOR.dtd.$removeEmpty['i']    = false;
+CKEDITOR.dtd.$removeEmpty['span'] = false;
+
 // Override default block element source formatting
 CKEDITOR.on( 'instanceReady', function( ev ) {
 	var blockTags = ['div','h1','h2','h3','h4','h5','h6','p','pre','li','blockquote','ul','ol','table','thead','tbody','tfoot','td','th',];
