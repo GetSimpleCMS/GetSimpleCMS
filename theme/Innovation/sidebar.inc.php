@@ -15,7 +15,7 @@
 			if($innov_settings){
 				foreach($innov_settings as $id=>$setting){
 					if ($setting  != '' ){
-						echo '<a href="'.$setting.'"><img src="'.get_theme_url(false).'/assets/images/'.$id.'.png" alt="'.$id.'"/></a>';
+						echo '<a href="',$setting,'"><img src="',get_theme_url(false),'/assets/images/',$id,'.png" alt="',$id,'"/></a>';
 					}
 				}
 			}

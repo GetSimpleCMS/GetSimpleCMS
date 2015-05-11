@@ -136,7 +136,7 @@ if (isset($_POST['submitted'])) {
 
 			// if this was an autosave add autosave response
 			if(isset($_POST['autosave']) && $_POST['autosave'] == '1'){
-				echo '<div class="autosavenotify">'.sprintf(i18n_r('AUTOSAVE_NOTIFY'),output_time(date())).'</div>';
+				echo '<div class="autosavenotify">',sprintf(i18n_r('AUTOSAVE_NOTIFY'),output_time(date())),'</div>';
 			}
 
 			// setup error checking vars and include error checking for notifications
@@ -148,9 +148,9 @@ if (isset($_POST['submitted'])) {
 			include('template/error_checking.php');
 
 			// send new inputs for slug changes and new nonces
-			echo '<input id="nonce" name="nonce" type="hidden" value="'. get_nonce("edit", "edit.php") .'" />';
-            echo '<input id="existing-url" name="existing-url" type="hidden" value="'. $url .'" />';
-            echo '<input id="post-id" name="post-id" type="hidden" value="'. $url .'" />';
+			echo '<input id="nonce" name="nonce" type="hidden" value="', get_nonce("edit", "edit.php") ,'" />';
+            echo '<input id="existing-url" name="existing-url" type="hidden" value="', $url ,'" />';
+            echo '<input id="post-id" name="post-id" type="hidden" value="', $url ,'" />';
 			echo "</div>";
 			die();
 		}

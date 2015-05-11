@@ -271,7 +271,7 @@ function createSideMenu($id, $txt, $action = null, $always = true){
 		$current = true;
 	}
 	if ($always || $current) {
-		echo '<li id="sb_'.$id.'" class="plugin_sb"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
+		echo '<li id="sb_',$id,'" class="plugin_sb"><a href="load.php?id=',$id,($action ? '&amp;'.$action : ''),'" ',($current ? 'class="current"' : ''),' >',$txt,'</a></li>';
 	}
 }
 
@@ -294,7 +294,7 @@ function createNavTab($tabname, $id, $txt, $action = null) {
 		$plugin_id = @$_GET['id'];
 		if ($plugin_info[$plugin_id]['page_type'] == $tabname) $current = true;
 	}
-	echo '<li id="nav_'.$id.'" class="plugin_tab"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
+	echo '<li id="nav_',$id,'" class="plugin_tab"><a href="load.php?id=',$id,($action ? '&amp;'.$action : ''),'" ',($current ? 'class="current"' : ''),' >',$txt,'</a></li>';
 }
 
 /**

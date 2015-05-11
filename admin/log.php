@@ -39,7 +39,7 @@ get_template('header');
 	<div id="maincontent">
 		<div class="main">
 		<?php if(empty($log_name)){
-			echo '<h3 class="floated">'.i18n_r('VIEW_LOG_FILE').'</h3><div class="clear"></div>';
+			echo '<h3 class="floated">',i18n_r('VIEW_LOG_FILE'),'</h3><div class="clear"></div>';
 			echo '<ul>';
 			echo '<li><a href="log.php?log=failedlogins.log">Failed Logins</a></li>';
 			echo '<li><a href="log.php?log=logins.log">Logins</a></li>';
@@ -54,7 +54,7 @@ get_template('header');
 			<?php exec_action(get_filename_id().'-body'); ?>
 			
 			<?php if (!$log_data){
-				 echo '<p><em>'.i18n_r('LOG_FILE_EMPTY').'</em></p>'; 
+				 echo '<p><em>',i18n_r('LOG_FILE_EMPTY'),'</em></p>'; 
 			} else { ?>	 
 			<ol class="more" >
 				<?php 
@@ -65,7 +65,7 @@ get_template('header');
 						echo '<li><p style="font-size:11px;line-height:15px;" >';
 						foreach($log->children() as $child) {
 						  $name = $child->getName();
-						  echo '<b>'. stripslashes(ucwords($name)) .'</b>: ';
+						  echo '<b>', stripslashes(ucwords($name)) ,'</b>: ';
 						  
 						  $d = $log->$name;
 						  $n = lowercase($child->getName());

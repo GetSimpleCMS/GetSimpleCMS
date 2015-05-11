@@ -70,19 +70,19 @@ get_template('header');
 							if ($page['menu'] == '') { 
 								$page['menu'] = $page['title']; 
 							}
-							echo '<li class="clearfix" rel="'.$page['slug'].'">
-											<strong>#'.$page['menuOrder'].'</strong>&nbsp;&nbsp;
-											'. $page['menu'] .' <em>'. $page['title'] .'</em>
+							echo '<li class="clearfix" rel="',$page['slug'],'">
+											<strong>#',$page['menuOrder'],'</strong>&nbsp;&nbsp;
+											', $page['menu'] ,' <em>', $page['title'] ,'</em>
 										</li>';
 						}
 					}
 					echo '</ul>';
 					echo '<div id="submit_line"><span>';
-					echo '<input type="hidden" name="menuOrder" value=""><input class="submit" type="submit" value="'. i18n_r("SAVE_MENU_ORDER").'" />';
+					echo '<input type="hidden" name="menuOrder" value=""><input class="submit" type="submit" value="', i18n_r("SAVE_MENU_ORDER"),'" />';
 					echo '</span></div>';
 					echo '</form>';
 				} else {
-					echo '<p>'.i18n_r('NO_MENU_PAGES').'.</p>';	
+					echo '<p>',i18n_r('NO_MENU_PAGES'),'.</p>';	
 				}
 			?>
 			

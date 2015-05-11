@@ -78,9 +78,9 @@ get_template('header');
 						if(!getdef('GSALLOWDOWNLOADS',true)) $download_link = $name;
 						else $download_link = '<a title="'.i18n_r('DOWNLOAD_ARCHIVES').' '. $name .'" href="download.php?file='. $path . $file .'&amp;nonce='.get_nonce("archive", "download.php").'">'.$name .'</a>';
 						echo '<tr>
-								<td>'.$download_link.'</td>
-								<td style="width:70px;text-align:right;" ><span>'.$size.'</span></td>
-								<td class="delete" ><a class="delconfirm" title="'.i18n_r('DELETE_ARCHIVE').': '. $name .'?" href="deletefile.php?zip='. $file .'&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a></td>
+								<td>',$download_link,'</td>
+								<td style="width:70px;text-align:right;" ><span>',$size,'</span></td>
+								<td class="delete" ><a class="delconfirm" title="',i18n_r('DELETE_ARCHIVE'),': ', $name ,'?" href="deletefile.php?zip=', $file ,'&amp;nonce=',get_nonce("delete", "deletefile.php"),'">&times;</a></td>
 							  </tr>';
 						$count++;
 					}
@@ -89,7 +89,7 @@ get_template('header');
 			</tbody>
 			</table>
 			<p><em><b><span id="pg_counter"><?php echo $count; ?></span></b> <?php i18n('TOTAL_ARCHIVES');?></em></p>
-			<?php if(!getdef('GSALLOWDOWNLOADS',true)) echo '<p><em class="hint">' . i18n_r('ARCHIVE_DL_DISABLED').'</em></p>' ; ?>
+			<?php if(!getdef('GSALLOWDOWNLOADS',true)) echo '<p><em class="hint">' , i18n_r('ARCHIVE_DL_DISABLED'),'</em></p>' ; ?>
 		</div>
 	</div>
 	

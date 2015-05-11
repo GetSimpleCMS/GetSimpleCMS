@@ -111,15 +111,15 @@ include('template/include-nav.php'); ?>
 			
 			echo '<div class="thumbs clearfix">';
 
-			echo '<div class="thumbcontainer"><a href="'.$src_url .rawurlencode($src).'" rel="fancybox_i" >';
+			echo '<div class="thumbcontainer"><a href="',$src_url ,rawurlencode($src),'" rel="fancybox_i" >';
 			// echo '<div><img src="'.$thumb_url . 'thumbsm.'. rawurlencode($src).'"></div>';
-			echo '<div><img src="'.$src_url . rawurlencode($src).'"></div>';
-			echo i18n_r('ORIGINAL_IMG') .'<br/><code>'.$imgwidth.'x'.$imgheight .'</code>';
+			echo '<div><img src="',$src_url , rawurlencode($src),'"></div>';
+			echo i18n_r('ORIGINAL_IMG') ,'<br/><code>',$imgwidth,'x',$imgheight ,'</code>';
 			echo "</a></div>";
 
-			echo '<div class="thumbcontainer"><a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'" rel="fancybox_i" >';
-			echo '<div><img src="'.$thumb_url . 'thumbnail.'. rawurlencode($src).'?'.time().'"></div>';
-			echo i18n_r('CURRENT_THUMBNAIL') .'<br/><code>'.$thwidth.'x'.$thheight .'</code>';
+			echo '<div class="thumbcontainer"><a href="',$thumb_url , 'thumbnail.', rawurlencode($src) ,'" rel="fancybox_i" >';
+			echo '<div><img src="',$thumb_url , 'thumbnail.', rawurlencode($src),'?',time(),'"></div>';
+			echo i18n_r('CURRENT_THUMBNAIL') ,'<br/><code>',$thwidth,'x',$thheight ,'</code>';
 			echo "</a></div>";
 			
 			echo "</div>";
@@ -137,16 +137,16 @@ include('template/include-nav.php'); ?>
 					<option value="code-imgthumb-html" ><?php i18n('HTML_THUMB_ORIG');?></option>
 					<?php } ?>
 				</select>
-				<textarea class="copykit" ><?php echo $src_url. rawurlencode($src); ?></textarea>
+				<textarea class="copykit" ><?php echo $src_url, rawurlencode($src); ?></textarea>
 				<p style="color:#666;font-size:11px;margin:-10px 0 0 0"><a href="javascript:void(0)" class="select-all" ><?php i18n('CLIPBOARD_INSTR');?></a></p>
 			</form>
 			<div class="toggle">
-				<p id="code-img-html">&lt;img src="<?php echo $src_url. rawurlencode($src); ?>" class="gs_image" height="<?php echo $imgheight; ?>" width="<?php echo $imgwidth; ?>" alt=""></p>
-				<p id="code-img-link"><?php echo $src_url. rawurlencode($src); ?></p>
+				<p id="code-img-html">&lt;img src="<?php echo $src_url, rawurlencode($src); ?>" class="gs_image" height="<?php echo $imgheight; ?>" width="<?php echo $imgwidth; ?>" alt=""></p>
+				<p id="code-img-link"><?php echo $src_url, rawurlencode($src); ?></p>
 				<?php if(!empty($thumb_exists)) { ?>
-				<p id="code-thumb-html">&lt;img src="<?php echo $thumb_url.'thumbnail.'. rawurlencode($src); ?>" class="gs_image gs_thumb" height="<?php echo $thheight; ?>" width="<?php echo $thwidth; ?>" alt=""></p>
-				<p id="code-thumb-link"><?php echo $thumb_url.'thumbnail.'.rawurlencode($src); ?></p>
-				<p id="code-imgthumb-html">&lt;a href="<?php echo $src_url. rawurlencode($src); ?>" class="gs_image_link" >&lt;img src="<?php echo $thumb_url.'thumbnail.'.rawurlencode($src); ?>" class="gs_thumb" height="<?php echo $thheight; ?>" width="<?php echo $thwidth; ?>" alt="" />&lt;/a></p>
+				<p id="code-thumb-html">&lt;img src="<?php echo $thumb_url,'thumbnail.', rawurlencode($src); ?>" class="gs_image gs_thumb" height="<?php echo $thheight; ?>" width="<?php echo $thwidth; ?>" alt=""></p>
+				<p id="code-thumb-link"><?php echo $thumb_url,'thumbnail.',rawurlencode($src); ?></p>
+				<p id="code-imgthumb-html">&lt;a href="<?php echo $src_url, rawurlencode($src); ?>" class="gs_image_link" >&lt;img src="<?php echo $thumb_url,'thumbnail.',rawurlencode($src); ?>" class="gs_thumb" height="<?php echo $thheight; ?>" width="<?php echo $thwidth; ?>" alt="" />&lt;/a></p>
 				<?php } ?>
 			</div>
 	</div>
@@ -161,7 +161,7 @@ if($jcrop){ ?>
 	<div style="color:#666;font-size:11px;"><?php i18n('CROP_INSTR_NEW');?></div><br/>
 	<form id="jcropform" class="noenter" action="<?php myself(); ?>?i=<?php echo rawurlencode($src); ?>&amp;path=<?php echo $subPath; ?>" method="post" onsubmit="return checkCoords();">
 	<div id="jcrop_open">
-	    <img src="<?php echo $src_url .rawurlencode($src); ?>" id="cropbox" />
+	    <img src="<?php echo $src_url ,rawurlencode($src); ?>" id="cropbox" />
 		<div>
 		<div id="handw" class="" ><?php i18n('SELECT_DIMENTIONS'); ?><br /><span id="picw">0</span> x <span id="pich">0</span></div>
 	    <input id="cropsave" type="submit" class="submit" value="<?php i18n('CREATE_THUMBNAIL');?>" /> &nbsp;

@@ -1235,18 +1235,18 @@ function redirect($url,$ajax = false) {
 		header('Location: '.$url);
 	} else {
 		// @todo not sure this ever gets used or headers_sent is reliable ( turn output buffering off to test )
-		echo "<html><head><title>".i18n_r('REDIRECT')."</title></head><body>";
+		echo "<html><head><title>",i18n_r('REDIRECT'),"</title></head><body>";
 		if ( !isDebug() ) {
 			echo '<script type="text/javascript">';
-			echo 'window.location.href="'.$url.'";';
+			echo 'window.location.href="',$url,'";';
 			echo '</script>';
 			echo '<noscript>';
-			echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
+			echo '<meta http-equiv="refresh" content="0;url=',$url,'" />';
 			echo '</noscript>';
 		}
 
 		if(headers_sent()){
-			echo i18n_r('ERROR').": Headers already sent in ".$filename." on line ".$linenum."<br/><br/>\n\n";
+			echo i18n_r('ERROR'),": Headers already sent in ",$filename," on line ",$linenum,"<br/><br/>\n\n";
 		}
 		
 		printf(i18n_r('REDIRECT_MSG'), $url);
@@ -2752,11 +2752,11 @@ function doTransliteration($str){
  */
 function outputDebugLog(){
 	global $GS_debug;
-	echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
+	echo '<h2>',i18n_r('DEBUG_CONSOLE'),'</h2><div id="gsdebug">';
 	echo '<pre>';
 	foreach ($GS_debug as $log){
 			if(is_array($log)) print_r($log).'<br/>';
-			else print($log.'<br/>');
+			else echo$log,'<br/>';
 	}
 	echo '</pre>';
 	echo '</div>';

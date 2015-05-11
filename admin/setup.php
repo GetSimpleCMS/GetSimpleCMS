@@ -195,27 +195,27 @@ get_template('header');
 		<?php
 			# display error or success messages 
 			if ($status == 'success') {
-				echo '<div class="updated">'. i18n_r('NOTE_REGISTRATION') .' '. $_POST['email'] .'</div>';
+				echo '<div class="updated">', i18n_r('NOTE_REGISTRATION') ,' ', $_POST['email'] ,'</div>';
 			} 
 			elseif ($status == 'error') {
-				echo '<div class="error">'. i18n_r('NOTE_REGERROR') .'.</div>';
+				echo '<div class="error">', i18n_r('NOTE_REGERROR') ,'.</div>';
 			}
 			if ($kill != '') {
 				$success = false;
-				echo '<div class="error">'. $kill .'</div>';
+				echo '<div class="error">', $kill ,'</div>';
 			}
 			if ($err != '') {
 				// $success = false;
-				echo '<div class="error">'. $err .'</div>';
+				echo '<div class="error">', $err ,'</div>';
 			}
 			if ($random != ''){
-				echo '<div class="updated">'.i18n_r('NOTE_USERNAME').' <b>'. stripslashes($_POST['user']) .'</b> '.i18n_r('NOTE_PASSWORD').' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="support.php?updated=2">'.i18n_r('EMAIL_LOGIN').'</a></div>';
+				echo '<div class="updated">',i18n_r('NOTE_USERNAME'),' <b>', stripslashes($_POST['user']) ,'</b> ',i18n_r('NOTE_PASSWORD'),' <b>', $random ,'</b> &nbsp&raquo;&nbsp; <a href="support.php?updated=2">',i18n_r('EMAIL_LOGIN'),'</a></div>';
 				$_POST = null;
 			}
 
 	if (!$success) { ?>
 		<div class="main" >
-			<h3><?php echo $site_full_name .' '. i18n_r('INSTALLATION'); ?></h3>
+			<h3><?php echo $site_full_name ,' ', i18n_r('INSTALLATION'); ?></h3>
 			<form action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 				<input name="siteurl" type="hidden" value="<?php echo $fullpath; ?>" />
 				<input name="lang" type="hidden" value="<?php echo $LANG; ?>" />

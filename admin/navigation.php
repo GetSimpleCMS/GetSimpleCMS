@@ -42,9 +42,9 @@ global $LANG; $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 	<div class="navigate">
 	<?php
 		if (count($pagesSorted) != 0) { 
-			echo '<h1>'.i18n_r('CURRENT_MENU').'</h1>
+			echo '<h1>',i18n_r('CURRENT_MENU'),'</h1>
 			<table>';
-			echo '<tr ><th>'.i18n_r('PRIORITY').'</th><th>'.i18n_r('MENU_TEXT').'</th><th>'.i18n_r('PAGE_TITLE').'</th></tr>';
+			echo '<tr ><th>',i18n_r('PRIORITY'),'</th><th>',i18n_r('MENU_TEXT'),'</th><th>',i18n_r('PAGE_TITLE'),'</th></tr>';
 			foreach ($pagesSorted as $page) {
 				$sel = '';
 				if ($page['menuStatus'] != '') { 
@@ -56,15 +56,15 @@ global $LANG; $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 						$page['menu'] = $page['title']; 
 					}
 					echo '<tr>
-					<td><strong>#'.$page['menuOrder'].'</strong></td>
-					<td>'. $page['menu'] .'</td>
-					<td>'. $page['title'] .'</td>
+					<td><strong>#',$page['menuOrder'],'</strong></td>
+					<td>', $page['menu'] ,'</td>
+					<td>', $page['title'] ,'</td>
 					</tr>';
 				}
 			}
 			echo '</table>';
 		} else {
-			echo '<p>'.i18n_r('NO_MENU_PAGES').'.</p>';	
+			echo '<p>',i18n_r('NO_MENU_PAGES'),'.</p>';	
 		}
 						
 	?>

@@ -91,10 +91,10 @@ function innovation_show() {
 	
 	<?php 
 	if($success) { 
-		echo '<p style="color:#669933;"><b>'. $success .'</b></p>';
+		echo '<p style="color:#669933;"><b>', $success ,'</b></p>';
 	} 
 	if($error) { 
-		echo '<p style="color:#cc0000;"><b>'. $error .'</b></p>';
+		echo '<p style="color:#cc0000;"><b>', $error ,'</b></p>';
 	}
 	?>
 	
@@ -104,7 +104,7 @@ function innovation_show() {
 			foreach($services as $var){
 				$value = '';
 				if(isset($innovation_data->$var)) $value = $innovation_data->$var;
-				echo '<p><label for="inn_'.$var.'" >' . i18n($thisfile_innov.'/'.strtoupper($var).'_URL') .'</label><input id="inn_'.$var.'" name="'.$var.'" class="text" value="'.$value.'" type="url" /></p>';
+				echo '<p><label for="inn_',$var,'" >' , i18n($thisfile_innov.'/'.strtoupper($var).'_URL') ,'</label><input id="inn_',$var,'" name="',$var,'" class="text" value="',$value,'" type="url" /></p>';
 			}
 		?>
 
