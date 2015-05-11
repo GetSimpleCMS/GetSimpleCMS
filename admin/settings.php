@@ -162,14 +162,14 @@ get_template('header');
 					<label for="siteurl" ><?php i18n('LABEL_BASEURL');?>:</label>
 					<input class="text" id="siteurl" name="siteurl" type="url" value="<?php echo getSiteURL(true);?>" />
 				</p>
-				<?php	if ( $fullpath != getSiteURL(true) ) {	echo '<span class="input-warning" >'.i18n_r('LABEL_SUGGESTION').': &nbsp; <code>'.$fullpath.'</code></span>';	}	?>
+				<?php	if ( $fullpath != getSiteURL(true) ) {	echo '<span class="input-warning" >',i18n_r('LABEL_SUGGESTION'),': &nbsp; <code>',$fullpath,'</code></span>';	}	?>
 			</div>
 			<div class="clear"></div>
 			<div class="leftsec">
 				<p>
 				<label for="timezone" ><?php i18n('LOCAL_TIMEZONE');?>:</label>
 				<select class="text" id="timezone" name="timezone"> 
-				<?php if ($SITETIMEZONE == '') { echo '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>'; } else { echo '<option selected="selected"  value="'. $SITETIMEZONE .'">'. $SITETIMEZONE .'</option>'; } ?>
+				<?php if ($SITETIMEZONE == '') { echo '<option value="" selected="selected" >-- ',i18n_r('NONE'),' --</option>'; } else { echo '<option selected="selected"  value="', $SITETIMEZONE ,'">', $SITETIMEZONE ,'</option>'; } ?>
 				<?php include('inc/timezone_options.txt'); ?>
 				</select>
 				</p>
@@ -207,7 +207,7 @@ get_template('header');
 					<input class="text" id="email" name="email" type="email" value="<?php echo $SITEEMAIL; ?>" />
 				</p>
 				<?php if (! check_email_address($SITEEMAIL)) {
-					echo '<span class="input-warning">'.i18n_r('WARN_EMAILINVALID').'</span>';
+					echo '<span class="input-warning">',i18n_r('WARN_EMAILINVALID'),'</span>';
 				}?>
 			</div>
 			<div class="clear"></div>

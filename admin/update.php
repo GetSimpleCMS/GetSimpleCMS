@@ -17,7 +17,7 @@ function check_php_requirements(){
 	$php_modules = array_map('strtolower', $php_modules);
 	foreach($php_required_exts as $ext){
 		if(!in_array($ext, $php_modules )){
-			echo("PHP $ext extension NOT INSTALLED<br/>\n");
+			echo"PHP $ext extension NOT INSTALLED<br/>\n";
 			$kill = 1;
 		}
 	}
@@ -243,7 +243,7 @@ get_template('header');
 			
 			<?php 
 				echo "$message";
-				echo '<p><a href="'.$redirect.'">'.i18n_r('CONTINUE_SETUP').'</a></p>';
+				echo '<p><a href="',$redirect,'">',i18n_r('CONTINUE_SETUP'),'</a></p>';
 			?>
 			
 		</div>

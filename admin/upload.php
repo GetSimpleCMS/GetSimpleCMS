@@ -206,7 +206,7 @@ function getUploadIcon($type){
 			}
 			echo '<div class="edit-nav clearfix" >';
 			echo '<select id="imageFilter">';
-			echo '<option value="all">'.i18n_r('SHOW_ALL').'</option>';
+			echo '<option value="all">',i18n_r('SHOW_ALL'),'</option>';
 			
 			if (count($filesSorted) > 0) {
 				foreach ($filesSorted as $filter) {
@@ -221,7 +221,7 @@ function getUploadIcon($type){
 						if(isset($_GET['type']) && $_GET['type'] == $type) $sel = true;
 						if(isset($_GET['type']) && $_GET['type'] == 'images' && $type == 'image') $sel = true; // alias for image (images)
 						if(count($filterArray) == 1 && isset($filterArray['image'])) $sel = true;
-						echo '<option value="'.$type.'" '. ($sel ? 'selected' : '') .'>'.i18n_r('FTYPE_'.uppercase($type)).'</option>';
+						echo '<option value="',$type,'" ', ($sel ? 'selected' : '') ,'>',i18n_r('FTYPE_'.uppercase($type)),'</option>';
 					}
 				}
 			}
@@ -237,25 +237,25 @@ function getUploadIcon($type){
 
 		// preserve querystring, but remove path
 		$root = 'upload.php?' . merge_queryString(array('path'=>null));
-		echo '<div class="h5 clearfix"><div class="crumbs">/ <a href="'.$root.'">'.i18n_r('FILES').'</a> / ';
+		echo '<div class="h5 clearfix"><div class="crumbs">/ <a href="',$root,'">',i18n_r('FILES'),'</a> / ';
 
 		foreach ($pathParts as $pathPart){
 		   if ($pathPart!=''){
 		      $urlPath .= $pathPart.'/';
 		      
-		      echo '<a href="?path='.$urlPath.'">'.$pathPart.'</a> / ';
+		      echo '<a href="?path=',$urlPath,'">',$pathPart,'</a> / ';
 		   }
 		}
 		echo '</div>';
       	
       	if($allowcreatefolder){
       		echo '<div id="new-folder">
-      			<a href="#" id="createfolder">'.i18n_r('CREATE_FOLDER').'</a>
-				<form action="upload.php">&nbsp;<input type="hidden" name="path" value="'.$subPath.'" />
-					<input type="hidden" name="nonce" value="'. get_nonce("createfolder") .'" />
+      			<a href="#" id="createfolder">',i18n_r('CREATE_FOLDER'),'</a>
+				<form action="upload.php">&nbsp;<input type="hidden" name="path" value="',$subPath,'" />
+					<input type="hidden" name="nonce" value="', get_nonce("createfolder") ,'" />
 					<input type="text" class="text" name="newfolder" id="foldername" /> 
-					<input type="submit" class="submit" value="'.i18n_r('CREATE_FOLDER').'" />&nbsp; 
-					<a href="#" class="cancel">'.i18n_r('CANCEL').'</a>
+					<input type="submit" class="submit" value="',i18n_r('CREATE_FOLDER'),'" />&nbsp; 
+					<a href="#" class="cancel">',i18n_r('CANCEL'),'</a>
 				</form>
 			</div>';
 		}
@@ -265,10 +265,10 @@ function getUploadIcon($type){
 		$showperms = $isUnixHost && isDebug() && function_exists('posix_getpwuid');
 
 		echo '<table class="highlight" id="imageTable"><thead>'; 
-		echo '<tr><th class="imgthumb" ></th><th>'.i18n_r('FILE_NAME').'</th>';
-		echo '<th class="file_size right">'.i18n_r('FILE_SIZE').'</th>';
-		if ($showperms) echo '<th class="file_perms right">'.i18n_r('PERMS').'</th>';
-		echo '<th class="file_date right">'.i18n_r('DATE').'</th>';
+		echo '<tr><th class="imgthumb" ></th><th>',i18n_r('FILE_NAME'),'</th>';
+		echo '<th class="file_size right">',i18n_r('FILE_SIZE'),'</th>';
+		if ($showperms) echo '<th class="file_perms right">',i18n_r('PERMS'),'</th>';
+		echo '<th class="file_date right">',i18n_r('DATE'),'</th>';
 		echo '<th class="file_actions"><!-- actions --></th></tr>';
 		echo '</thead><tbody>';  
 		if (count($dirsSorted) != 0) {
@@ -283,13 +283,13 @@ function getUploadIcon($type){
 			}
 			$directory_size = '<span>'.folder_items($path.$upload['name']).' '.i18n_r('ITEMS').'</span>';
 			
-			echo '<tr class="all folder '.$upload['name'].'" >';
+			echo '<tr class="all folder ',$upload['name'],'" >';
 			// echo '<td class="imgthumb"><i class="file ext- fa fa-3x fa-fw fa-folder-o"></i></td>';
 			echo '<td class="imgthumb"></td>';
 			$adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
 			$folderhref = 'upload.php?' . merge_queryString(array('path'=>$adm));
-			echo '<td>'.getUploadIcon('.').'</span><a href="'.$folderhref.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
-			echo '<td class="file_size right"><span>'.$directory_size.'</span></td>';
+			echo '<td>',getUploadIcon('.'),'</span><a href="',$folderhref,'" ><strong>',htmlspecialchars($upload['name']),'</strong></a></td>';
+			echo '<td class="file_size right"><span>',$directory_size,'</span></td>';
 
 		  // get the file permissions.
 		if ($showperms) {
@@ -300,11 +300,11 @@ function getUploadIcon($type){
 			} else {
 				$fileOwnerName = getenv('USERNAME');
 			}
-			echo '<td style="width:70px;text-align:right;"><span>'.$fileOwnerName.'/'.$filePerms.'</span></td>';
+			echo '<td style="width:70px;text-align:right;"><span>',$fileOwnerName,'/',$filePerms,'</span></td>';
 		}
 		
-			echo '<td class="file_date right"><span class="'.(dateIsToday($upload['date']) ? 'datetoday' : '').'">'. output_date($upload['date']) .'</span></td>';
-			echo '<td class="delete" >'.$directory_delete.'</td>';
+			echo '<td class="file_date right"><span class="',(dateIsToday($upload['date']) ? 'datetoday' : ''),'">', output_date($upload['date']) ,'</span></td>';
+			echo '<td class="delete" >',$directory_delete,'</td>';
 			echo '</tr>';
 			$foldercount++;
         }
@@ -325,7 +325,7 @@ function getUploadIcon($type){
 			$thumbnailLink = '';
 			$primarylink = getRelPath(GSDATAUPLOADPATH).$urlPath. rawurlencode($upload['name']);
 			
-			echo '<tr class="all '.$upload['type'].'" >';
+			echo '<tr class="all ',$upload['type'],'" >';
 			echo '<td class="imgthumb" >';
 
 			// handle images
@@ -345,7 +345,7 @@ function getUploadIcon($type){
 				}
 
 				// thumbnail link lightbox
-				echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel="fancybox_i" >'.$imgSrc.'</a>';
+				echo '<a href="', tsl($SITEURL),getRelPath($path), rawurlencode($upload['name']) ,'" title="', rawurlencode($upload['name']) ,'" rel="fancybox_i" >',$imgSrc,'</a>';
 
 				# get external thumbnail link
 				# if not exist generate it
@@ -363,10 +363,10 @@ function getUploadIcon($type){
 			}
 			
 			// name column linked
-			echo '</td><td>'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink" data-fileurl="'.$primarylink.'">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
+			echo '</td><td>',getUploadIcon($upload['name']),'<a title="',i18n_r('VIEW_FILE'),': ', htmlspecialchars($upload['name']) ,'" href="', $pathlink ,'" class="primarylink" data-fileurl="',$primarylink,'">',htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
 			
 			// size column
-			echo '<td class="file_size right"><span>'. $upload['size'] .'</span></td>';
+			echo '<td class="file_size right"><span>', $upload['size'] ,'</span></td>';
      
 			// file perms column
 			if ($showperms) {
@@ -377,13 +377,13 @@ function getUploadIcon($type){
 				} else {
 					$fileOwnerName = getenv('USERNAME');
 				}
-				echo '<td style="width:70px;text-align:right;"><span>'.$fileOwnerName.'/'.$filePerms.'</span></td>';
+				echo '<td style="width:70px;text-align:right;"><span>',$fileOwnerName,'/',$filePerms,'</span></td>';
 			}
 
-			echo '<td class="file_date right"><span class="'.(dateIsToday($upload['date']) ? 'datetoday' : '').'">'. output_date($upload['date']) .'</span></td>';			
+			echo '<td class="file_date right"><span class="',(dateIsToday($upload['date']) ? 'datetoday' : ''),'">', output_date($upload['date']) ,'</span></td>';			
 			// delete
 			echo '<td class="delete">';
-			if($allowdelete) echo '<a class="delconfirm" title="'.i18n_r('DELETE_FILE').': '. htmlspecialchars($upload['name']) .'" href="deletefile.php?file='. rawurlencode($upload['name']) . '&amp;path=' . $urlPath . '&amp;nonce='.get_nonce("delete", "deletefile.php").'">&times;</a>';
+			if($allowdelete) echo '<a class="delconfirm" title="',i18n_r('DELETE_FILE'),': ', htmlspecialchars($upload['name']) ,'" href="deletefile.php?file=', rawurlencode($upload['name']) , '&amp;path=' , $urlPath , '&amp;nonce=',get_nonce("delete", "deletefile.php").'">&times;</a>';
 			echo '</td></tr>';
 		}
 	}
@@ -396,7 +396,7 @@ function getUploadIcon($type){
 		$sizedesc = '';
 	}
 	$totalcount = (int)$counter+(int)$foldercount;
-	echo '<p><em><b><span id="pg_counter">'. $totalcount .'</span></b> '.i18n_r('TOTAL_FILES').' '.$sizedesc.'</em></p>';
+	echo '<p><em><b><span id="pg_counter">', $totalcount ,'</span></b> ',i18n_r('TOTAL_FILES'),' ',$sizedesc,'</em></p>';
 	
 	?>
 		</div>

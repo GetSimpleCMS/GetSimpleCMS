@@ -17,7 +17,7 @@ function check_php_requirements(){
 	$php_modules = array_map('strtolower', $php_modules);
 	foreach($php_required_exts as $ext){
 		if(!in_array($ext, $php_modules )){
-			echo("PHP $ext extension NOT INSTALLED<br/>\n");
+			echo"PHP $ext extension NOT INSTALLED<br/>\n";
 			$kill = 1;
 		}
 	}
@@ -154,13 +154,13 @@ get_template('header');
 	
 <?php
 	if ($kill != '') {
-		echo '<div class="error">'. $kill .'</div>';
+		echo '<div class="error">', $kill ,'</div>';
 	}	
 ?>
 
 	<div id="maincontent">
 	<div class="main" >
-	<h3><?php echo $site_full_name .' '. i18n_r('INSTALLATION'); ?></h3>
+	<h3><?php echo $site_full_name ,' ', i18n_r('INSTALLATION'); ?></h3>
 
 			<table class="highlight healthcheck">
 			<?php
@@ -183,55 +183,55 @@ get_template('header');
 			<tr><td>
 			<?php
 				if (version_compare(PHP_VERSION, "5.2", "<")) {
-					echo 'PHP '.i18n_r('VERSION') .'</td><td><span class="ERRmsg" ><b>'. PHP_VERSION.'</b> - PHP 5.2 '.i18n_r('OR_GREATER_REQ') .' - '.i18n_r('ERROR') .'</span></td></tr>';
+					echo 'PHP ',i18n_r('VERSION') ,'</td><td><span class="ERRmsg" ><b>', PHP_VERSION,'</b> - PHP 5.2 ',i18n_r('OR_GREATER_REQ') ,' - ',i18n_r('ERROR') ,'</span></td></tr>';
 				} else {
-					echo 'PHP '.i18n_r('VERSION') .'</td><td><span class="OKmsg" ><b>'. PHP_VERSION.'</b> - '.i18n_r('OK') .'</span></td></tr>';
+					echo 'PHP ',i18n_r('VERSION') ,'</td><td><span class="OKmsg" ><b>', PHP_VERSION,'</b> - ',i18n_r('OK') ,'</span></td></tr>';
 				}
 				
 				if ($kill == '') {
-					echo '<tr><td>Folder Permissions</td><td><span class="OKmsg" >'.i18n_r('WRITABLE') .' - '.i18n_r('OK') .'</span></td></tr>';
+					echo '<tr><td>Folder Permissions</td><td><span class="OKmsg" >',i18n_r('WRITABLE') ,' - ',i18n_r('OK') ,'</span></td></tr>';
 				}	else {
-					echo '<tr><td>Folder Permissions</td><td><span class="ERRmsg" >'.i18n_r('NOT_WRITABLE') .' - '.i18n_r('ERROR') .'</span></td></tr>';
+					echo '<tr><td>Folder Permissions</td><td><span class="ERRmsg" >',i18n_r('NOT_WRITABLE') ,' - ',i18n_r('ERROR') ,'</span></td></tr>';
 				}
 				
 				if  (in_arrayi('curl', $php_modules) ) {
-					echo '<tr><td>cURL Module</td><td><span class="OKmsg" >'.i18n_r('INSTALLED') .' - '.i18n_r('OK') .'</span></td></tr>';
+					echo '<tr><td>cURL Module</td><td><span class="OKmsg" >',i18n_r('INSTALLED') ,' - ',i18n_r('OK') ,'</span></td></tr>';
 				} else{
-					echo '<tr><td>cURL Module</td><td><span class="WARNmsg" >'.i18n_r('NOT_INSTALLED') .' - '.i18n_r('WARNING') .'</span></td></tr>';
+					echo '<tr><td>cURL Module</td><td><span class="WARNmsg" >',i18n_r('NOT_INSTALLED') ,' - ',i18n_r('WARNING') ,'</span></td></tr>';
 				}
 				
 				if  (in_arrayi('gd', $php_modules) ) {
-					echo '<tr><td>GD Library</td><td><span class="OKmsg" >'.i18n_r('INSTALLED').' - '.i18n_r('OK') .'</span></td></tr>';
+					echo '<tr><td>GD Library</td><td><span class="OKmsg" >',i18n_r('INSTALLED'),' - ',i18n_r('OK') ,'</span></td></tr>';
 				} else{
-					echo '<tr><td>GD Library</td><td><span class="WARNmsg" >'.i18n_r('NOT_INSTALLED').' - '.i18n_r('WARNING') .'</span></td></tr>';
+					echo '<tr><td>GD Library</td><td><span class="WARNmsg" >',i18n_r('NOT_INSTALLED'),' - ',i18n_r('WARNING') ,'</span></td></tr>';
 				}
 				
 				if  (in_arrayi('zip', $php_modules) ) {
-					echo '<tr><td>ZipArchive</td><td><span class="OKmsg" >'.i18n_r('INSTALLED').' - '.i18n_r('OK').'</span></td></tr>';
+					echo '<tr><td>ZipArchive</td><td><span class="OKmsg" >',i18n_r('INSTALLED'),' - ',i18n_r('OK'),'</span></td></tr>';
 				} else{
-					echo '<tr><td>ZipArchive</td><td><span class="WARNmsg" >'.i18n_r('NOT_INSTALLED').' - '.i18n_r('WARNING').'</span></td></tr>';
+					echo '<tr><td>ZipArchive</td><td><span class="WARNmsg" >',i18n_r('NOT_INSTALLED'),' - ',i18n_r('WARNING'),'</span></td></tr>';
 				}
 
 				if (! in_arrayi('SimpleXML', $php_modules) ) {
-					echo '<tr><td>SimpleXML Module</td><td><span class="ERRmsg" >'.i18n_r('NOT_INSTALLED').' - '.i18n_r('ERROR').'</span></td></tr>';
+					echo '<tr><td>SimpleXML Module</td><td><span class="ERRmsg" >',i18n_r('NOT_INSTALLED'),' - ',i18n_r('ERROR'),'</span></td></tr>';
 				} else {
-					echo '<tr><td>SimpleXML Module</td><td><span class="OKmsg" >'.i18n_r('INSTALLED').' - '.i18n_r('OK').'</span></td></tr>';
+					echo '<tr><td>SimpleXML Module</td><td><span class="OKmsg" >',i18n_r('INSTALLED'),' - ',i18n_r('OK'),'</span></td></tr>';
 				}
 
 				if (server_is_apache()) {
-					echo '<tr><td>Apache web server</td><td><span class="OKmsg" >'.$_SERVER['SERVER_SOFTWARE'].' - '.i18n_r('OK').'</span></td></tr>';
+					echo '<tr><td>Apache web server</td><td><span class="OKmsg" >',$_SERVER['SERVER_SOFTWARE'],' - ',i18n_r('OK'),'</span></td></tr>';
 					if ( function_exists('apache_get_modules') ) {
 						if(! in_arrayi('mod_rewrite',apache_get_modules())) {
-							echo '<tr><td>Apache Mod Rewrite</td><td><span class="WARNmsg" >'.i18n_r('NOT_INSTALLED').' - '.i18n_r('WARNING').'</span></td></tr>';
+							echo '<tr><td>Apache Mod Rewrite</td><td><span class="WARNmsg" >',i18n_r('NOT_INSTALLED'),' - ',i18n_r('WARNING'),'</span></td></tr>';
 						} else {
-							echo '<tr><td>Apache Mod Rewrite</td><td><span class="OKmsg" >'.i18n_r('INSTALLED').' - '.i18n_r('OK').'</span></td></tr>';
+							echo '<tr><td>Apache Mod Rewrite</td><td><span class="OKmsg" >',i18n_r('INSTALLED'),' - ',i18n_r('OK'),'</span></td></tr>';
 						}
 					} else {
-						echo '<tr><td>Apache Mod Rewrite</td><td><span class="OKmsg" >'.i18n_r('INSTALLED').' - '.i18n_r('OK').'</span></td></tr>';
+						echo '<tr><td>Apache Mod Rewrite</td><td><span class="OKmsg" >',i18n_r('INSTALLED'),' - ',i18n_r('OK'),'</span></td></tr>';
 					}
 				} else {
 					if (!getDef('GSNOAPACHECHECK') || GSNOAPACHECHECK == false) {
-						echo '<tr><td>Apache web server</td><td><span class="ERRmsg" >'.$_SERVER['SERVER_SOFTWARE'].' - <b>'.i18n_r('ERROR').'</b></span></td></tr>';
+						echo '<tr><td>Apache web server</td><td><span class="ERRmsg" >',$_SERVER['SERVER_SOFTWARE'],' - <b>',i18n_r('ERROR'),'</b></span></td></tr>';
 					}
 				}
 

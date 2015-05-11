@@ -163,12 +163,12 @@ include('template/include-nav.php');
 
 function getPublishedPageHead($editing = true, $path = ''){
     global $id,$draftExists,$pageExists;
-    echo '<h3 class="floated">'. ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')).'</h3>';
-    if(getDef('GSUSEDRAFTS',true) && $pageExists && getDef('GSSDRAFTSPUBLISHEDTAG',true)) echo '<div class="title label label-ok unselectable">'.i18n_r('LABEL_PUBLISHED').'</div>';
+    echo '<h3 class="floated">', ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')),'</h3>';
+    if(getDef('GSUSEDRAFTS',true) && $pageExists && getDef('GSSDRAFTSPUBLISHEDTAG',true)) echo '<div class="title label label-ok unselectable">',i18n_r('LABEL_PUBLISHED'),'</div>';
     echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav clearfix" >';
     if($editing) {
-        echo '<a class="pageview" href="'. $path .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
-        if($path != '') {echo '<a class="pageclone" href="pages.php?id='. $id .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
+        echo '<a class="pageview" href="', $path ,'" target="_blank" accesskey="', find_accesskey(i18n_r('VIEW')), '" >', i18n_r('VIEW'), '</a>';
+        if($path != '') {echo '<a class="pageclone" href="pages.php?id=', $id ,'&amp;action=clone&amp;nonce=',get_nonce("clone","pages.php"),'" >',i18n_r('CLONE'),'</a>'; }
     }
     exec_action(get_filename_id().'-edit-nav'); 
     echo "\n</div>";
@@ -176,12 +176,12 @@ function getPublishedPageHead($editing = true, $path = ''){
 
 function getDraftPageHead($editing = true, $path = ''){
     global $id,$draftExists,$pageExists,$PRETTYURLS;
-    echo '<h3 class="floated">'. ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')) .'</h3>';
-    echo '<div class="title label label-draft secondary-lightest-back unselectable">'.i18n_r('LABEL_DRAFT').'</div>';
+    echo '<h3 class="floated">', ($editing ? i18n_r('PAGE_EDIT_MODE') : i18n_r('CREATE_NEW_PAGE')) ,'</h3>';
+    echo '<div class="title label label-draft secondary-lightest-back unselectable">',i18n_r('LABEL_DRAFT'),'</div>';
     echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav clearfix" >';
     if($editing) {
-        echo '<a class="draftview" href="'. $path . (($PRETTYURLS || $id == 'index') ? '?' : '&amp;') .'draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
-        echo '<a class="draftpublish" href="changedata.php?publish&id='.$id.'" accesskey="'. find_accesskey(i18n_r('PUBLISH')). '" >'. i18n_r('PUBLISH'). '</a>';
+        echo '<a class="draftview" href="', $path , (($PRETTYURLS || $id == 'index') ? '?' : '&amp;') ,'draft" target="_blank" accesskey="', find_accesskey(i18n_r('VIEW')), '" >', i18n_r('VIEW'). '</a>';
+        echo '<a class="draftpublish" href="changedata.php?publish&id=',$id,'" accesskey="', find_accesskey(i18n_r('PUBLISH')), '" >', i18n_r('PUBLISH'), '</a>';
     }
     exec_action(get_filename_id().'-edit-nav'); 
     echo "\n</div>";
@@ -357,7 +357,7 @@ if($newdraft) $pageClass.=' newdraft';
                                 }
                                 
                                 // Create base option
-                                echo '<option '.$none.' value="" >'.$noneText.'</option>';
+                                echo '<option ',$none,' value="" >',$noneText,'</option>';
                                 echo $ret;
                                 ?>
                             </select>
@@ -389,14 +389,14 @@ if($newdraft) $pageClass.=' newdraft';
                                     if($menuOrder == 0) {
                                         echo '<option value="" selected>-</option>'; 
                                     } else {
-                                        echo '<option value="'.$menuOrder.'" selected>'.$menuOrder.'</option>'; 
+                                        echo '<option value="',$menuOrder,'" selected>',$menuOrder,'</option>'; 
                                     }
                                 } ?>
                                     <option value="">-</option>
                                     <?php
                                     $i = 1;
                                     while ($i <= 30) { 
-                                        echo '<option value="'.$i.'">'.$i.'</option>';
+                                        echo '<option value="',$i,'">',$i,'</option>';
                                         $i++;
                                     }
                                     ?>
@@ -431,7 +431,7 @@ if($newdraft) $pageClass.=' newdraft';
 
                 <?php 
                     if(isset($data_edit)) { 
-                        echo '<input id="existing-url" type="hidden" name="existing-url" value="'. $url .'" />'; 
+                        echo '<input id="existing-url" type="hidden" name="existing-url" value="', $url ,'" />'; 
                     }
 
                 exec_action('html-editor-init'); //@hook html-edit-init LEGACY deprecated
@@ -510,13 +510,13 @@ if($newdraft) $pageClass.=' newdraft';
         <p class="editfooter"><?php 
             if (!$newdraft && isset($pubDate)) { 
                 echo '<span><i class="fa fa-clock-o"></i>';
-                    echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'. (empty($author) ? i18n_r('UNKNOWN') : $author.'</em>')) .' ' . output_datetime($pubDate).'</span>';
+                    echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'. (empty($author) ? i18n_r('UNKNOWN') : $author.'</em>')) ,' ' . output_datetime($pubDate).'</span>';
             }
             if ( $draft && fileHasBackup(GSDATADRAFTSPATH.$url.'.xml') ) {
-                echo '<span>&bull;</span><a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
+                echo '<span>&bull;</span><a href="backup-edit.php?p=view&amp;draft&amp;id=',$url,'" target="_blank" ><i class="fa fa-file-archive-o"></i>',i18n_r('BACKUP_AVAILABLE'),'</a></span>';
             }
             else if( !$draft && fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
-                echo '<span>&bull;</span><span><a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
+                echo '<span>&bull;</span><span><a href="backup-edit.php?p=view&amp;id=',$url,'" target="_blank" ><i class="fa fa-file-archive-o"></i>',i18n_r('BACKUP_AVAILABLE'),'</a></span>';
             }
         ?></p>
     <?php } ?>

@@ -268,7 +268,7 @@ $userheading = empty($userid) ? "<span>/ ". i18n_r('NEW_USER') ."</span>" : "<sp
 			<div class="rightsec">
 				<p><label for="email" ><?php i18n('LABEL_EMAIL');?>:</label><input class="text" id="email" name="email" type="email" value="<?php echo $data->EMAIL; ?>" /></p>
 				<?php if (! check_email_address($data->EMAIL)) {
-					echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.i18n_r('WARN_EMAILINVALID').'</p>';
+					echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >',i18n_r('WARN_EMAILINVALID'),'</p>';
 				}?>
 			</div>
 			<div class="clear"></div>
@@ -281,7 +281,7 @@ $userheading = empty($userid) ? "<span>/ ". i18n_r('NEW_USER') ."</span>" : "<sp
 			<div class="leftsec">
 				<p><label for="timezone" ><?php i18n('LOCAL_TIMEZONE');?>:</label>
 				<select class="text" id="timezone" name="timezone"> 
-				<?php if ($data->TIMEZONE == '') { echo '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>'; } else { echo '<option selected="selected"  value="'. $data->TIMEZONE .'">'. $data->TIMEZONE .'</option>'; } ?>
+				<?php if ($data->TIMEZONE == '') { echo '<option value="" selected="selected" >-- ',i18n_r('NONE'),' --</option>'; } else { echo '<option selected="selected"  value="', $data->TIMEZONE ,'">', $data->TIMEZONE ,'</option>'; } ?>
 				<?php include('inc/timezone_options.txt'); ?>
 				</select>
 				</p>

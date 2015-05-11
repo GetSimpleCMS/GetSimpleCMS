@@ -176,7 +176,7 @@
 		GLOBAL $dbn;
 		if($dbn) $persist = true;
 		debugLog('notify: ' . $type ." - ".cl($msg));
-		echo '<div class="updated notify '. ($type == '' ? '' : 'notify_'.$type.' ') . (!$persist ? 'remove' : 'persist') . '"><p>'.$msg.'</p></div>';
+		echo '<div class="updated notify ', ($type == '' ? '' : 'notify_'.$type.' ') , (!$persist ? 'remove' : 'persist') , '"><p>',$msg,'</p></div>';
 	}
 
 /* ?> */

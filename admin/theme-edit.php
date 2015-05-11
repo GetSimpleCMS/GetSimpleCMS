@@ -65,7 +65,7 @@ if(isset($_POST['submitsave'])){
 	if(isset($_POST['ajaxsave'])){
 		echo "<div>";
 		include('template/error_checking.php');
-		echo '<input id="nonce" name="nonce" type="hidden" value="'. get_nonce("save") .'" />';
+		echo '<input id="nonce" name="nonce" type="hidden" value="', get_nonce("save") ,'" />';
 		echo "</div>";
 		die();
 	}
@@ -79,7 +79,7 @@ if(isset($_GET['ajax'])){
 			<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
 				<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
 				<textarea name="content" id="codetext" wrap='off'><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
-				<input type="hidden" value="<?php echo tsl($template) . $template_file;?>"  <?php if(empty($template_file)) echo ' class="nofile"'; ?>  name="edited_file" id="edited_file" />
+				<input type="hidden" value="<?php echo tsl($template) , $template_file;?>"  <?php if(empty($template_file)) echo ' class="nofile"'; ?>  name="edited_file" id="edited_file" />
 				<div id="theme-edit-extras-wrap"><?php exec_action('theme-edit-extras'); // @hook theme-edit-extras after theme-edit html output?></div>
 				<p id="submit_line" >
 					<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
@@ -313,14 +313,14 @@ switch (getFileExtension($template_file)) {
 			<div id="theme_edit_code" class="codewrap <?php if(empty($template_file)) echo 'readonly';?>">
 				
 				<div id="theme_editing" class="well">
-				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.getRelPath(GSTHEMESPATH).' <b><span id="theme_editing_file">'. tsl($template).$template_file .'</span></b>'; ?>
+				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL,getRelPath(GSTHEMESPATH),' <b><span id="theme_editing_file">', tsl($template),$template_file ,'</span></b>'; ?>
 				<?php $content = !empty($template_file) ? read_file(GSTHEMESPATH . tsl($template) . $template_file) : ''; ?>
 				</div>
 		
 		<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
 			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
 			<textarea name="content" id="codetext" class="code_edit" data-mode="<?php echo $mode; ?>" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
-			<input type="hidden" value="<?php echo tsl($template) . $template_file; ?>" <?php if(empty($template_file)) echo ' class="nofile"'; ?> name="edited_file" id="edited_file" />
+			<input type="hidden" value="<?php echo tsl($template) , $template_file; ?>" <?php if(empty($template_file)) echo ' class="nofile"'; ?> name="edited_file" id="edited_file" />
 			<div id="theme-edit-extras-wrap"><?php exec_action('theme-edit-extras'); ?></div>
 			<p id="submit_line" >
 				<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>

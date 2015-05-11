@@ -36,7 +36,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 	<?php } ?>
 	<meta name="robots" content="noindex, nofollow">
-	<link rel="stylesheet" type="text/css" href="template/style.php?<?php echo 's='.$GSSTYLE.'&amp;v='.GSVERSION; ?>" media="screen" />
+	<link rel="stylesheet" type="text/css" href="template/style.php?<?php echo 's=',$GSSTYLE,'&amp;v=',GSVERSION; ?>" media="screen" />
 	<!--[if IE 6]><link rel="stylesheet" type="text/css" href="template/css/ie6.css?v=<?php echo GSVERSION; ?>" media="screen" /><![endif]-->
 <?php
 
@@ -111,7 +111,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
         GS.i18n    = <?php echo json_encode($jsi18n); ?>;
         GS.debug   = <?php echo isDebug() === true ? 'true' : 'false'; ?> ;
         GS.siteurl = '<?php echo $SITEURL; ?>';
-        GS.uploads = '<?php echo tsl($SITEURL).getRelPath(GSDATAUPLOADPATH); ?>';
+        GS.uploads = '<?php echo tsl($SITEURL),getRelPath(GSDATAUPLOADPATH); ?>';
 
 		var uploadSession = '<?php echo $SESSIONHASH; ?>';
 		var uploadPath    = '<?php echo (isset($_GET['path'])) ? $_GET['path'] : ""; ?>';
@@ -122,12 +122,12 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
             // $editor_theme = var_out($_COOKIE['gs_editor_theme']);
             $editor_theme = var_out($_COOKIE['gs_editor_theme']);
             echo "// codemirror editortheme\n";
-            echo '		var editorTheme = "'.$editor_theme."\";\n";
+            echo '		var editorTheme = "',$editor_theme,"\";\n";
         }
 
         if(getDef('GSAUTOSAVE',true)){
         	echo "		// edit autosave\n";
-        	echo '		var GSAUTOSAVEPERIOD = ' . getDef('GSAUTOSAVE').";\n";
+        	echo '		var GSAUTOSAVEPERIOD = ' , getDef('GSAUTOSAVE'),";\n";
         } else echo "      var GSAUTOSAVEPERIOD = false;\n";
         ?>
 

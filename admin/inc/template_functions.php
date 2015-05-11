@@ -38,7 +38,7 @@ function get_template($name, $title='** Change Me - Default Page Title **') {
  * @return string
  */
 function filename_id() {
-	echo "id=\"". get_filename_id() ."\"";	
+	echo "id=\"", get_filename_id() ,"\"";	
 }
 
 /**
@@ -1996,7 +1996,7 @@ function outputCollectionTags($collectionid,$data){
 	if($numcomponents > 1) {
 		$id = 0;
 		foreach($data as $item) {
-			echo '<a id="divlist-' . $id . '" href="#section-' . $id . '" class="component'.$class.' comp_'.$item->title.'">' . $item->title . '</a>';
+			echo '<a id="divlist-' , $id , '" href="#section-' , $id , '" class="component',$class,' comp_',$item->title,'">' , $item->title , '</a>';
 			$id++;
 		}
 	}

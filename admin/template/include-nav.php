@@ -9,8 +9,8 @@
 $debugInfoUrl = 'http://get-simple.info/docs/debugging';
 
 if (cookie_check()) {
-	echo '<ul id="pill"><li class="rightnav"><a href="logout.php" accesskey="'. find_accesskey(i18n_r('TAB_LOGOUT')).'" >'.i18n_r('TAB_LOGOUT').'<i class="fa fa-fw fa-sign-out icon-right"></i></a></li>';
-	echo '<li class="leftnav" ><a href="profile.php"><span class="fa fa-user icon-left"></span>'.i18n_r('WELCOME').' <strong>'.$USR.'</strong> !</a></li></ul>';	
+	echo '<ul id="pill"><li class="rightnav"><a href="logout.php" accesskey="', find_accesskey(i18n_r('TAB_LOGOUT')),'" >',i18n_r('TAB_LOGOUT'),'<i class="fa fa-fw fa-sign-out icon-right"></i></a></li>';
+	echo '<li class="leftnav" ><a href="profile.php"><span class="fa fa-user icon-left"></span>',i18n_r('WELCOME'),' <strong>',$USR,'</strong> !</a></li></ul>';	
 }
 
 //determine page type if plugin is being shown
@@ -39,7 +39,7 @@ if (get_filename_id() == 'load') {
 			if(empty($tab)) continue;
 			$tabtitle = i18n_r('TAB_'.uppercase($tab));
 			$class = $tab == $current ? ' current' : '';
-			echo '<li id="nav_'.$tab.'" ><a class="'.$tab.$class.'" href="'.$tab.'.php" accesskey="'. find_accesskey($tabtitle).'" >'.$tabtitle.'</a></li>';
+			echo '<li id="nav_',$tab,'" ><a class="',$tab,$class,'" href="',$tab,'.php" accesskey="', find_accesskey($tabtitle),'" >',$tabtitle,'</a></li>';
 		}
 	}
 	
@@ -54,16 +54,16 @@ if (get_filename_id() == 'load') {
 	<?php
 
 	// nav status labels
-	if(isDebug()) echo '<li class="rightnav"><a class="label label-error label_4_80" href="'.$debugInfoUrl.'" target="_blank" title="'.i18n_r('DEBUG_MODE').' - '.i18n_r('ON').'"><span><span class="fa fa-fw fa-wrench"></span></span></a></li>';
+	if(isDebug()) echo '<li class="rightnav"><a class="label label-error label_4_80" href="',$debugInfoUrl,'" target="_blank" title="',i18n_r('DEBUG_MODE'),' - ',i18n_r('ON'),'"><span><span class="fa fa-fw fa-wrench"></span></span></a></li>';
 
 	if( allowVerCheck() ) {
 		$verstatus = getVerCheck()->status;
 		if($verstatus == 0){
 			// update available newer than current
-			echo '<li class="rightnav"><a class="label label-gold" href="health-check.php" title="'.i18n_r('UPG_NEEDED').'"><span class="fa fa-fw fa-lg fa-cloud-download"></span></a></li>';
+			echo '<li class="rightnav"><a class="label label-gold" href="health-check.php" title="',i18n_r('UPG_NEEDED'),'"><span class="fa fa-fw fa-lg fa-cloud-download"></span></a></li>';
 		}
 	}
-	if(isBeta() || isAlpha()) echo '<li class="rightnav"><a class="label label-ghost" href="health-check.php" title="'.(isAlpha() ? i18n_r('ALPHA') : i18n_r('BETA')).' - '.i18n_r('WEB_HEALTH_CHECK').'"><span><span class="fa fa-fw fa-flask"></span> '. (isAlpha() ? i18n_r('ALPHA') : i18n_r('BETA')) .'</span></a></li>';
+	if(isBeta() || isAlpha()) echo '<li class="rightnav"><a class="label label-ghost" href="health-check.php" title="',(isAlpha() ? i18n_r('ALPHA') : i18n_r('BETA')),' - ',i18n_r('WEB_HEALTH_CHECK'),'"><span><span class="fa fa-fw fa-flask"></span> ', (isAlpha() ? i18n_r('ALPHA') : i18n_r('BETA')) .'</span></a></li>';
 
 	?>
 

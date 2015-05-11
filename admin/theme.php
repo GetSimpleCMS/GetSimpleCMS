@@ -74,7 +74,7 @@ get_template('header');
 			<?php	
 				$theme_path = str_replace(GSROOTPATH,'',GSTHEMESPATH);
 				if ( $SITEURL ) {	
-					echo '<p><b>'.i18n_r('THEME_PATH').': &nbsp;</b> <code>'.$SITEURL.$theme_path.$TEMPLATE.'/</code></p>';
+					echo '<p><b>',i18n_r('THEME_PATH'),': &nbsp;</b> <code>',$SITEURL,$theme_path,$TEMPLATE,'/</code></p>';
 				}
 			?>
 				<p>
@@ -85,11 +85,11 @@ get_template('header');
 			</form>
 			<?php
 			 	if (file_exists(GSTHEMESPATH.$TEMPLATE.'/images/screenshot.png')) { 
-					echo '<p><img id="theme_preview" src="../'.$theme_path.$TEMPLATE.'/images/screenshot.png" alt="'.i18n_r('THEME_SCREENSHOT').'" /></p>';
-					echo '<span id="theme_no_img" style="visibility:hidden"><p><em>'.i18n_r('NO_THEME_SCREENSHOT').'</em></p></span>';				
+					echo '<p><img id="theme_preview" src="../',$theme_path,$TEMPLATE,'/images/screenshot.png" alt="',i18n_r('THEME_SCREENSHOT'),'" /></p>';
+					echo '<span id="theme_no_img" style="visibility:hidden"><p><em>',i18n_r('NO_THEME_SCREENSHOT'),'</em></p></span>';				
 				} else {
-					echo '<p><img id="theme_preview" style="visiblity:hidden;"" src="../'.$theme_path.$TEMPLATE.'/images/screenshot.png" alt="'.i18n_r('THEME_SCREENSHOT').'" /></p>';				
-					echo '<span id="theme_no_img"><p><em>'.i18n_r('NO_THEME_SCREENSHOT').'</em></p></span>';
+					echo '<p><img id="theme_preview" style="visiblity:hidden;"" src="../',$theme_path,$TEMPLATE,'/images/screenshot.png" alt="',i18n_r('THEME_SCREENSHOT'),'" /></p>';				
+					echo '<span id="theme_no_img"><p><em>',i18n_r('NO_THEME_SCREENSHOT'),'</em></p></span>';
 				}
 
 				exec_action('theme-extras'); //@hook theme-extras after theme html output

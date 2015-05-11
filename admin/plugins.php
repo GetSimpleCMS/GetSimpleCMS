@@ -157,7 +157,7 @@ get_template('header');
 		<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php i18n('PLUGINS_INSTALLED'); ?>
 		<?php 
 		if ($counter == 0) { 
-			echo ' - <a href="'.$site_link_back_url.'extend/" target="_blank" >'. str_replace(array('<em>','</em>'), '', i18n_r('GET_PLUGINS_LINK')) .'</a>';
+			echo ' - <a href="',$site_link_back_url,'extend/" target="_blank" >', str_replace(array('<em>','</em>'), '', i18n_r('GET_PLUGINS_LINK')) ,'</a>';
 		}
 		?>	
 		</em></p>
