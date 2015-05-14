@@ -125,15 +125,6 @@ class ImageManipulation {
 		return $size = $size * $adjust;
 	}
 
-
-	public function getCropSize(){
-		if($this->crop == true){
-			$width  = $this->image['sizex'] - $this->image['targetx'];
-			$height = $this->image['sizey'] - $this->image['targety'];
-			return array($width,$height);
-		}
-	}
-
     /**
      * Sets the height of the image to be created. The width of the image
 	 * is worked out depending on the value of the height.
@@ -176,15 +167,19 @@ class ImageManipulation {
 	{
 		$ratio = $this->image["ratio"];
 		// debugLog($ratio);
-		if(floor($ratio) > 0){
+		if($ratio > 1){
 			$this->image["orientation"] = 'landscape';
 			$this->image["sizex_thumb"] = (int) $size;			
 			$this->image["sizey_thumb"] = round($size/$ratio);
 		}
-		else {
+		else if($ratio < 1){
 			$this->image["orientation"] = 'portrait';		
 			$this->image["sizex_thumb"] = round($size*$ratio);			
 			$this->image["sizey_thumb"] = (int) $size;			
+		}
+		else if($ratio == 1){
+			$this->image["orientation"] = 'square';
+			$this->image["sizex_thumb"] = $this->image["sizey_thumb"] = (int) $size;
 		}
 		// debugLog(print_r($this->image,true));
 	}
@@ -211,12 +206,13 @@ class ImageManipulation {
 
 	public function getRatio()
 	{
+		if(isset($this->image['ratio'])) return $this->image['ratio'];
 		return $this->image["sizex"] / $this->image["sizey"];
 	}
 
 	/**
      * This method sets the cropping values of the image. Be sure
-	 * to set the height and with of the image if you want the
+	 * to set the height and width of the image if you want the
 	 * image to be a certain size after cropping.
      *
      * @param int $x The x coordinates to start cropping from.
@@ -226,11 +222,71 @@ class ImageManipulation {
      */
 	public function setCrop($x, $y, $w, $h)
 	{
-		$this->crop = true;
+		$this->image['crop']    = true;
 		$this->image["targetx"] = (int)$x;
 		$this->image["targety"] = (int)$y;
 		$this->image["sizex"]   = (int)$w;
 		$this->image["sizey"]   = (int)$h;
+	}
+
+	/**
+	 * auto crop to square, fill
+	 * 
+	 * since we use one operation for resizing and cropping, cropping is done on original canvas size
+	 * cropping must occur after resize operations, because we override/modify thumb dimensions, this also allows us to recaculate them if needed
+	 * @todo  We could modify this to defer this part until the actual copyresampled occurs if its a problem, or modify resize operations to use crop dimensions instead
+	 *        , add fit by adding larger crop size than original, we also need to make background color optional
+	 * @param integer $crop crop align 0=left/top, 1=center, 2=right/bottom
+	 */
+	public function setAutoCrop($crop = 1){
+
+		// image is already square, no crop
+		if($this->image['ratio'] == 1) return;
+
+		$this->image['cropautotype'] = $crop;
+
+		switch($crop) {
+			case 0: $offset = 0; // left/top
+			break;
+			case 1: $offset = $this->getCropOffset() / 2; // center
+			break;
+			case 2: $offset = $this->getCropOffset(); // right/bottom
+			break;
+			return;
+		}
+
+		if($this->image['ratio'] > 1){
+			// cropping a landscape image
+			$this->setCrop($offset,0,$this->image['height'],$this->image['height']);
+			if(isset($this->image['sizey_thumb'])) $this->image['sizey_thumb'] = $this->image['sizex_thumb'];
+		}
+		else {
+			//cropping a portrait image
+			$this->setCrop(0,$offset,$this->image['width'],$this->image['width']);
+			if(isset($this->image['sizex_thumb'])) $this->image['sizex_thumb'] = $this->image['sizey_thumb'];
+		}
+
+		// $this->image['ratio'] = 1; // hack to allow setting resize after crop
+	}
+
+	/**
+	 * gets the ratio diff for cropping, more pixel accuate than using ratio math
+	 */
+	public function getCropOffset(){
+		if($this->image['ratio'] > 1){
+			return $this->image['width'] - $this->image['height'];
+		}
+		else {
+			return $this->image['height'] - $this->image['width'];
+		}
+	}
+
+	public function getCropSize(){
+		if($this->crop == true){
+			$width  = $this->image['sizex'] - $this->image['targetx'];
+			$height = $this->image['sizey'] - $this->image['targety'];
+			return array($width,$height);
+		}
 	}
 
 	/**

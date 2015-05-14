@@ -3596,6 +3596,25 @@ kbd
 	height:32px;
 }
 
+/* checkered background for transparent images */
+.checkered, 
+.imgthumb img.gif,
+.imgthumb img.png,
+.thumbcontainer img.gif,
+.thumbcontainer img.png,
+img.fancybox-image {
+  background-color: #FEFEFE;
+  background-image: -webkit-linear-gradient(45deg, #DFDFDF 25%, transparent 25%, transparent 75%, #DFDFDF 75%, #DFDFDF), -webkit-linear-gradient(45deg, #DFDFDF 25%, transparent 25%, transparent 75%, #DFDFDF 75%, #DFDFDF);
+  background-image: -moz-linear-gradient(45deg, #DFDFDF 25%, transparent 25%, transparent 75%, #DFDFDF 75%, #DFDFDF), -moz-linear-gradient(45deg, #DFDFDF 25%, transparent 25%, transparent 75%, #DFDFDF 75%, #DFDFDF);
+  background-image: -o-linear-gradient(45deg, #DFDFDF 25%, transparent 25%, transparent 75%, #DFDFDF 75%, #DFDFDF), -o-linear-gradient(45deg, #DFDFDF 25%, transparent 25%, transparent 75%, #DFDFDF 75%, #DFDFDF);
+  background-image: -ms-linear-gradient(45deg, #DFDFDF 25%, transparent 25%, transparent 75%, #DFDFDF 75%, #DFDFDF), -ms-linear-gradient(45deg, #DFDFDF 25%, transparent 25%, transparent 75%, #DFDFDF 75%, #DFDFDF);
+  background-image: linear-gradient(45deg, #DFDFDF 25%, transparent 25%, transparent 75%, #DFDFDF 75%, #DFDFDF), linear-gradient(45deg, #DFDFDF 25%, transparent 25%, transparent 75%, #DFDFDF 75%, #DFDFDF);
+  -webkit-background-size:16px 16px;
+  -moz-background-size:16px 16px;
+  background-size:16px 16px;
+  background-position:0 0, 8px 8px;
+}
+
 /* END */
 
 /* Admin theme colors */

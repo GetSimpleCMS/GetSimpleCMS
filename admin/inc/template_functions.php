@@ -2178,7 +2178,7 @@ function getThumbnails($upload_path = '', $type = '', $filename = '', $recurse =
 		$thumb['thumburl']    = getThumbnailURI(basename($file),$upload_path,'');
 		$thumb['thumbtype']   = $thumbtype;
 		
-		$thumbs_array[] = $thumb;
+		$thumbs_array[$upload_path.basename($file)] = $thumb;
 	}
 	return $thumbs_array;
 }
@@ -2215,7 +2215,7 @@ function genStdThumb($subpath,$file){
  * @param  boolean $upscale  true, allows image to scale up/zoom to fit thumbnail
  * @return bool            success
  */
-function generate_thumbnail($file, $sub_path = '', $out_file = null, $w, $h = null, $quality = null, $show = false, $output_format = null, $upscale = false){
+function generate_thumbnail($file, $sub_path = '', $out_file = null, $w = null, $h = null, $crop = null, $quality = null, $show = false, $output_format = null, $upscale = false){
 	//gd check, do nothing if no gd
 	$php_modules = get_loaded_extensions();
 	if(!in_arrayi('gd', $php_modules)) return false;
@@ -2230,14 +2230,22 @@ function generate_thumbnail($file, $sub_path = '', $out_file = null, $w, $h = nu
 	require_once('imagemanipulation.php');
 	$objImage = new ImageManipulation($upload_folder.$file);
 	if ( $objImage->imageok ) {
-		if($upscale) $objImage->setUpscale();
-		if($quality) $objImage->setQuality($quality);
-		if(isset($h)) $objImage->setImageWidth($w,$h);
-		if(isset($output_format)) $objImage->setOutputFormat($output_format);
-		else{
-			$objImage->setImageWidth($w);
+		if($upscale) $objImage->setUpscale(); // allow magnification
+		if($quality) $objImage->setQuality($quality); // set quality for jpg or png
+		if(isset($output_format)) $objImage->setOutputFormat($output_format); // setoutput format, ignored if out_file specifies extension
+		
+		if(isset($w) && isset($h)) $objImage->setImageWidth($w,$h); // if height set scale width and height
+		elseif(isset($w)){
+			$objImage->setImageWidth($w); // if only specifiying width, scale to width only
 			// $objImage->resize($w); // constrains both dimensions to $size, same as setImageWidth($w,$w);
 		}
+		elseif(isset($h)){
+			$objImage->setImageHeight($h); // if only specifiying width, scale to width only
+		}		
+		
+		if(isset($crop)) $objImage->setAutoCrop($crop);
+
+		// die(print_r($objImage));
 		$objImage->save($thumb_file, $show);
 		return $objImage;
 	} else {

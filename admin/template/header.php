@@ -134,7 +134,15 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
         } else echo "      var GSAUTOSAVEPERIOD = false;\n";
         ?>
 
-        // ckeditor config obj
+        // ckeditor config obj shim for config
+        if(typeof CKEDITOR == 'undefined'){
+			CKEDITOR           = {};
+			CKEDITOR.SHIM      = true;
+			CKEDITOR.ENTER_P   = 1;
+			CKEDITOR.ENTER_BR  = 2;
+			CKEDITOR.ENTER_DIV = 3;
+        }
+
         var htmlEditorConfig = {
             language                     : '<?php echo getGlobal('EDLANG'); ?>',
 <?php       if(!empty($contentsCss)) echo "contentsCss                   : '$contentsCss',"; ?>
@@ -145,8 +153,12 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 <?php       if(getGlobal('EDOPTIONS')) echo ','.trim(getGlobal('EDOPTIONS')); ?>
         };
 
-       <?php 
+        // wipe the ckeditor shim, so it does not interfere with the real one
+        if(typeof CKEDITOR !== 'undefined'){
+            if(CKEDITOR.SHIM == true) CKEDITOR = null;
+        }
 
+       <?php 
        if(get_filename_id() == 'snippets') echo "htmlEditorConfig.height = '130px';"; ?>
 
     </script>
@@ -159,6 +171,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	?>
     <script type="text/javascript">
 		jQuery(document).ready(function () {
+			// disable page editing during safemode
 	       	$('body#edit.safemode :input').prop("disabled", true);
 	    });
     </script>

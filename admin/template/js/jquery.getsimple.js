@@ -31,44 +31,6 @@ function updateCoordsReset(){
 	updateCoords(c);
 }
 
-/* jcrop display */
-function updateCoords(c) {
-	Debugger.log("updatecoords");
-	Debugger.log(c);	
-	if($('#cropbox').data('animating')) return;
-	var x = Math.round(c.x);
-	var y = Math.round(c.y);
-	var w = Math.round(c.w);
-	var h = Math.round(c.h);
-	
-	// more accurate but precison issues causes changes as xy chnages	
-	// var w = Math.round(c.x2) - x; 
-	// var h = Math.round(c.y2) - y;
-
-	$('#handw').show();	
-	$('#x').val(x);
-	$('#y').val(y);
-	$('#w').val(w);
-	$('#h').val(h);
-	$('#picw').html(w);
-	$('#pich').html(h);
-}
-
-/**
- * updates coordinate inputs, do not update if change is less than 1px to handle precision issues
- */
-function updateCoord(id,value){
-	if(!$('#'+id).val()){
-		$('#'+id).val(value);
-		return true;
-	}
-	if( Math.abs(parseInt($('#'+id).val(),10) - value ) != 1){
-		$('#'+id).val(value);
-		return true;
-	}
-	return false;	
-}
-
 Debugger = function () {};
 Debugger.log = function (message) {
 	try {
@@ -610,6 +572,44 @@ jQuery(document).ready(function () {
 
 	//image.php
 
+	/* jcrop display */
+	updateCoords = function(c) {
+		// Debugger.log("updatecoords");
+		// Debugger.log(c);	
+		if($('#cropbox').data('animating')) return;
+		var x = Math.round(c.x);
+		var y = Math.round(c.y);
+		var w = Math.round(c.w);
+		var h = Math.round(c.h);
+		
+		// more accurate but precison issues causes changes as xy chnages	
+		// var w = Math.round(c.x2) - x; 
+		// var h = Math.round(c.y2) - y;
+
+		$('#handw').show();	
+		$('#x').val(x);
+		$('#y').val(y);
+		$('#w').val(w);
+		$('#h').val(h);
+		$('#picw').html(w);
+		$('#pich').html(h);
+	}
+
+	/**
+	 * updates coordinate inputs, do not update if change is less than 1px to handle precision issues
+	 */
+	function updateCoord(id,value){
+		if(!$('#'+id).val()){
+			$('#'+id).val(value);
+			return true;
+		}
+		if( Math.abs(parseInt($('#'+id).val(),10) - value ) != 1){
+			$('#'+id).val(value);
+			return true;
+		}
+		return false;	
+	}
+
 	// jcrop manual input control
 	$('.jcropinput').keypress(function(e) {
 	    if(e.which == 13) {
@@ -617,6 +617,7 @@ jQuery(document).ready(function () {
 	    }
 	});
 
+	// handle manual inputs by detecting changes, animating jcrop, getting new values back and dealing with focus stealing.
 	$('.jcropinput').on('change',function(e){
 		var array = [
 			parseInt($('#x').val(),10),
@@ -626,8 +627,11 @@ jQuery(document).ready(function () {
 		];
 
 		// Debugger.log(array);
+		$('.jcropinput').prop('disabled',true);
 		$('#cropbox').data('animating',true);
 		$('#cropbox').data('focused',this);
+		// @todo move focus to next input if tab was pressed
+		// var next = $(":input:eq(" + ($(":input").index(this) + 1) + ")");
 		$(this).focus();
 		$(this).select();
 		$('#cropbox').data('jcrop').animateTo(array,jcropDoneAnimating);
@@ -636,13 +640,15 @@ jQuery(document).ready(function () {
 	function jcropDoneAnimating(){
 		Debugger.log("done animating");
 		$('#cropbox').data('animating',false);
+		$('.jcropinput').prop('disabled',false);
+		// update our coords to match real coords from jcrop, handles overages etc.
 		var coords = this.tellSelect();
 		updateCoordsCallback(coords);
 	}
 
 	function updateCoordsCallback(c) {
-		Debugger.log('updatecoords animateto callback');
-		Debugger.log(c);
+		// Debugger.log('updatecoords animateto callback');
+		// Debugger.log(c);
 		if($('#cropbox').data('animating')) return;
 		var x = Math.round(c.x);
 		var y = Math.round(c.y);
@@ -706,16 +712,56 @@ jQuery(document).ready(function () {
 	$("input[type='password']").capslock(capslockoptions);
  
 	// components.php
+
+	// ajaxify components submit if ajaxsave enabled
+	$('body.ajaxsave #compEditForm').on('submit',function(e){
+        if($('body').hasClass('ajaxsave')){
+			e.preventDefault();
+			componentSave(e);
+			return false;
+		}
+		pageIsClean();
+	});
+	
+	componentSave = function(e){
+
+		Debugger.log("onsubmit");
+		e.preventDefault();
+		ajaxStatusWait();
+		
+		save_codeeditors();
+		save_htmleditors();
+		save_inlinehtmleditors();
+		var dataString = $("#compEditForm").serialize();			
+
+		$.ajax({
+			type: "POST",
+			cache: false,
+			// url: 'components.php',
+			data: dataString+'&submitted=1&ajaxsave=1',
+			success: function( response ) {
+				response = $.parseHTML(response);
+				// Debugger.log($(response).find('div.updated'));
+				$(response).find('div.updated').parseNotify();
+				updateNonce(response);
+				ajaxStatusComplete();
+				removeDeletedComponents();
+			}
+		});
+	};
 	
 	function focusCompEditor(selector){
-		var editor = $(selector + ' textarea');		
-		editor.focus();
+		var editor = $(selector + ' textarea');
+		// Debugger.log('focusing editor ' + selector);
+		if(editor.data('htmleditor'))editor.data('htmleditor').focus(); // ckeditor does not pass focus events for some reason
+		else editor.focus();
 	}
 
 	// auto focus component editors
-	$('#components div.compdivlist a').on('click', function(ev){
+	$('#components,#snippets').on('click','div.compdivlist a', function(ev){
 		focusCompEditor($(this).attr('href'));
-		ev.preventDefault();		
+		// @todo jump page to #anchor or position also, allowing default seems to work, but might not be optimal
+		// ev.preventDefault();	
 	});
 	
 	// bind component new button
@@ -840,6 +886,7 @@ jQuery(document).ready(function () {
 	});
 
 	$.fn.comptitleinput = function(){
+		$('input:submit').prop('disabled',true);
 		var t = $(this).html();		
 		if($(this).parents('.compdiv').find("input.comptitle").prop('disabled') == true) return; // deleted ignore
 		$(this).parents('.compdiv').find("input.comptitle").val('').hide(); // wipe comptitle
@@ -860,27 +907,50 @@ jQuery(document).ready(function () {
 		$(this).parents('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
 		$(this).parents('.compdiv').find("b.editable").html(myval);
 		if(myval !== '' && validateCompSlug(myval)){
+			var compid = $(this).parents('.compdiv').find("input.compid").val();
+			updateCompDivList(compid,myval);
+			$('input:submit').prop('disabled',false);
 			// Debugger.log('slug IS unique: "' + myval + '"');
 			$("b.editable").show();
 			$(this).parents('.compdiv').find('.delcomponent').show();
-			$(this).val(myval+'new'); // put cleaner slug back
-			$(this).parents('.compdiv').find("input.comptitle").val(myval);			
-			
+			$(this).val(myval); // put cleaner slug back
+			$(this).parents('.compdiv').find("input.compslug").val(myval);			
+			$(this).parents('.compdiv').find("input.comptitle").val(myval);
 			$('#changetitle').remove(); // remove self parent last
 		}
+		else if(myval == ''){
+			Debugger.log('slug is not valid: "' + myval + '"');
+			$(this).addClass('error');			
+		}
 		else {
-			Debugger.log('slug is NOT unique: ' + myval );
+			Debugger.log('slug is NOT unique: "' + myval + '"');
 			$(this).addClass('error');
 		}
 	});
  
+ 	/**
+ 	 * update compdivlist tag
+ 	 */
+	function updateCompDivList(compid,value){
+		//Debugger.log('updating compdivlist ' + compid + ' to ' + value);
+		if ($("#divlist-" + compid).length) {
+			// update
+			$("#divlist-" + compid).text(value);
+		}
+		else{
+			// add new
+			var compdivlist = '<a id="divlist-'+compid+'" href="#section-'+compid+'" class="component clear-left comp_'+value+'">'+value+'</a>';
+			$(".compdivlist").append(compdivlist);
+		}	
+	}
+
  	/**
  	 * validate compslug by checking unique ness
  	 */
 	function validateCompSlug($id){
 		var slugs = $( "input.comptitle" )
 		 	.map(function() {
-		 		return $(this).val();
+		 		return $(this).val().toLowerCase();
 			})
 			.get()
 
@@ -1636,43 +1706,6 @@ jQuery(document).ready(function () {
 
 				ajaxStatusComplete();
 				$('#codetext').data('editor').hasChange = false; // mark clean		
-			}
-		});
-	};
-
-	// ajaxify components submit if ajaxsave enabled
-	$('body.ajaxsave #compEditForm').on('submit',function(e){
-        if($('body').hasClass('ajaxsave')){
-			e.preventDefault();
-			componentSave(e);
-			return false;
-		}
-		pageIsClean();
-	});
-	
-	componentSave = function(e){
-
-		Debugger.log("onsubmit");
-		e.preventDefault();
-		ajaxStatusWait();
-		
-		save_codeeditors();
-		save_htmleditors();
-		save_inlinehtmleditors();
-		var dataString = $("#compEditForm").serialize();			
-
-		$.ajax({
-			type: "POST",
-			cache: false,
-			// url: 'components.php',
-			data: dataString+'&submitted=1&ajaxsave=1',
-			success: function( response ) {
-				response = $.parseHTML(response);
-				// Debugger.log($(response).find('div.updated'));
-				$(response).find('div.updated').parseNotify();
-				updateNonce(response);
-				ajaxStatusComplete();
-				removeDeletedComponents();
 			}
 		});
 	};

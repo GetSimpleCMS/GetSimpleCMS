@@ -42,17 +42,19 @@ $.fn.htmlEditorFromTextarea = function(config){
 
         // get overrides from data-mode attr if it exists
         
-        // compact hides ui parts when editor is not focused
+        // autoheight will try to detect the content height and set its height to it
         if($this.data('htmleditautoheight') === true){
-            // Debugger.log('editorcompact');
+            // Debugger.log('editorautoheight');
             html_config.gsautoheight = true;
         }
 
+        // compact hides ui parts when editor is not focused, namely toolbar        
         if($this.data('htmleditcompact') === true){
             // Debugger.log('editorcompact');
             html_config.gscompact = true;
         }
 
+        // inline will insert the ckeditor inline editor ( no source mode at this time )
         if($this.data('htmleditinline') === true){
             // Debugger.log('editorinline');
             html_config.gscompact = false; // disable compact
@@ -60,7 +62,11 @@ $.fn.htmlEditorFromTextarea = function(config){
         }
 
         // read only does not allow editing
-        if($this.prop('readonly')) html_config.readOnly = true;
+        if($this.prop('readonly')){
+            // Debugger.log('editor is readonly');
+            html_config.readOnly = true;
+        }
+        
         // Debugger.log(html_config);
 
         // create ckeditor instance from textarea

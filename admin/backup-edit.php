@@ -64,10 +64,11 @@ if ($p == 'delete') {
 elseif ($p == 'restore') {
 	// restoring page backup
 	check_for_csrf("restore", "backup-edit.php");
-
+	$redirect = "";
+	
 	if($draft){
 		restore_draft($id);   // restore old slug file
-		generate_sitemap(); // regenerates sitemap
+		// generate_sitemap(); // regenerates sitemap, we do not need to do this for drafts.
 		$success = exec_action('draft-restore'); // @hook draft-restore fired when a draft is restored
 		redirect("edit.php?id=". $id ."&upd-draft&upd=edit-success&type=restore");
 	}
@@ -79,14 +80,15 @@ elseif ($p == 'restore') {
 		changeChildParents($newid, $id); // update parents and children
 		$success = restore_page($id);    // restore old slug file
 		delete_page($newid);             // backup and delete live new slug file
-		redirect("edit.php?id=". $id ."&nodraft&old=".$_GET['new']."&upd=edit-success&type=restore");
+		$redirect = ("edit.php?id=". $id ."&nodraft&old=".$_GET['new']."&upd=edit-success&type=restore");
 	} else {
 		$success = restore_page($id);    // restore old slug file
-		redirect("edit.php?id=". $id ."&nodraft&upd=edit-success&type=restore");
+		$redirect = ("edit.php?id=". $id ."&nodraft&upd=edit-success&type=restore");
 	}
-
+	
 	generate_sitemap(); // regenerates sitemap
 	exec_action('page-restore');     // @hook page-restore fird when a page is restored
+	if($redirect) redirect($redirect);
 }
 
 $pagetitle = i18n_r('BAK_MANAGEMENT').' &middot; '.i18n_r('VIEWPAGE_TITLE');

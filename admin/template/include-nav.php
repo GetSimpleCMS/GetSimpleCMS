@@ -54,7 +54,7 @@ if (get_filename_id() == 'load') {
 	<?php
 
 	// nav status labels
-	if(isDebug()) echo '<li class="rightnav"><a class="label label-error label_4_80" href="'.$debugInfoUrl.'" target="_blank" title="'.i18n_r('DEBUG_MODE').'"><span><span class="fa fa-fw fa-wrench"></span></span></a></li>';
+	if(isDebug()) echo '<li class="rightnav"><a class="label label-error label_4_80" href="'.$debugInfoUrl.'" target="_blank" title="'.i18n_r('DEBUG_MODE').' - '.i18n_r('ON').'"><span><span class="fa fa-fw fa-wrench"></span></span></a></li>';
 
 	if( allowVerCheck() ) {
 		$verstatus = getVerCheck()->status;
@@ -63,7 +63,7 @@ if (get_filename_id() == 'load') {
 			echo '<li class="rightnav"><a class="label label-gold" href="health-check.php" title="'.i18n_r('UPG_NEEDED').'"><span class="fa fa-fw fa-lg fa-cloud-download"></span></a></li>';
 		}
 	}
-	if(isBeta() || isAlpha()) echo '<li class="rightnav"><a class="label label-ghost" href="health-check.php" title="'.i18n_r('WEB_HEALTH_CHECK').'"><span><span class="fa fa-fw fa-flask"></span> '. (isAlpha() ? i18n_r('ALPHA') : i18n_r('BETA')) .'</span></a></li>';
+	if(isBeta() || isAlpha()) echo '<li class="rightnav"><a class="label label-ghost" href="health-check.php" title="'.(isAlpha() ? i18n_r('ALPHA') : i18n_r('BETA')).' - '.i18n_r('WEB_HEALTH_CHECK').'"><span><span class="fa fa-fw fa-flask"></span> '. (isAlpha() ? i18n_r('ALPHA') : i18n_r('BETA')) .'</span></a></li>';
 
 	?>
 

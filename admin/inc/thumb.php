@@ -14,13 +14,14 @@ login_cookie_check();
  *
  * Parameters:
  * - src - path to source image
- * - dest - path to thumb (where to save it)
- * - x - max width
- * - y - max height
+ * - dest - path to thumb (where to save it) optional if output to browser
+ * - w or x - max width
+ * - h or y- max height
  * - q - quality (applicable only to JPG, 1 to 100, 100 - best)
- * - t - thumb type. "-1" - same as source, 1 = GIF, 2 = JPG, 3 = PNG
+ * - t - thumb type. "-1" - same as source, 1 = GIF, 2 = JPG, 3 = PNG, ignored if dest extension exists
  * - f - save to file (1) or output to browser (0).
  * - json - return image in json object including obj info and base64 image
+ * - c - crop options, 0 = left/top, 1 = center, 2 = right/bottom ( only maked sense with w=h square images )
  * 
  * Sample usage: 
  * 1. save thumb on server: 
@@ -32,18 +33,19 @@ login_cookie_check();
  *
  * @package GetSimple
  * @subpackage Images
-*  @example http://127.0.0.1/getsimple/admin/inc/thumb.php?src=test/image.jpg&dest=test/thumbsm.image.jpg&f=1&x=80&y=160
+*  @example http://127.0.0.1/getsimple/admin/inc/thumb.php?src=test/image.jpg&dest=test/thumbsm.image.jpg&f=1&w=80&h=160
  */ 
 
 // Below are default values (if parameter is not passed)
 
-// save to file (true) or output to browser (false)
+// output and save to file (true)
+// output to browser only (false)
 $save_to_file = true;
 
 // Quality for JPEG and PNG.
 // 0 (worst quality, smaller file) to 100 (best quality, bigger file)
 // Note: PNG quality is only supported starting PHP 5.1.2
-$image_quality = 65;
+$image_quality = 75;
 
 // resulting image type (1 = GIF, 2 = JPG, 3 = PNG)
 // enter code of the image type if you want override it
@@ -51,13 +53,15 @@ $image_quality = 65;
 $image_type = -1;
 
 // maximum thumb side size
-$max_x = 65;
-$max_y = 130;
+$max_x = null;
+$max_y = null;
 
 // cut image before resizing. Set to 0 to skip this.
 $cut_x = 0;
 $cut_y = 0;
 
+// auto crop image square, fit 1=left/top, 2=center, 3=right/bottom
+$crop = null;
 
 $to_name = '';
 
@@ -75,7 +79,8 @@ else {
 if (isset($_REQUEST['dest'])) {
   $to_name = str_replace('../','', urldecode($_REQUEST['dest']));
 }
-else if ($save_to_file) {
+
+if ($save_to_file && (!isset($to_name) || empty($to_name))) {
   die("Thumbnail file name must be specified.");
 }
 
@@ -84,7 +89,7 @@ if (isset($_REQUEST['q'])) {
 }
 
 if (isset($_REQUEST['t'])) {
-  $image_type = intval($_REQUEST['t']);
+  $image_type = $_REQUEST['t'];
 }
 
 if (isset($_REQUEST['x'])) {
@@ -93,6 +98,19 @@ if (isset($_REQUEST['x'])) {
 
 if (isset($_REQUEST['y'])) {
   $max_y = intval($_REQUEST['y']);
+}
+
+// allow w&h instead of x&y (which are confusing)
+if (isset($_REQUEST['w'])) {
+  $max_x = intval($_REQUEST['w']);
+}
+
+if (isset($_REQUEST['h'])) {
+  $max_y = intval($_REQUEST['h']);
+}
+
+if(isset($_REQUEST['c'])){
+	$crop = intval($_REQUEST['c']);
 }
 
 // @todo cuts not implemented
@@ -110,6 +128,11 @@ $path_parts = pathinfo($from_name);
 $file     = basename($from_name);
 $sub_path = dirname($from_name);
 $outfile  = $save_to_file ? basename($to_name) : null;
+
+// if empty do not resize
+if(empty($max_y)) $max_y = null;
+if(empty($max_x)) $max_x = null;
+
 // debugLog($file);
 // debugLog($sub_path);
 // debugLog($outfile);
@@ -129,8 +152,7 @@ if(isset($_REQUEST['debug']) || isset($_REQUEST['json'])){
 
 // @todo: if needing to save as attachement from post, might need this else second request might be made with post data missing
 // header('Content-Disposition: Attachment;filename='.$outfile);
-
-$image = generate_thumbnail($file, $sub_path, $outfile, $max_y, $max_x, $image_quality, $show = true, $image_type);
+$image = generate_thumbnail($file, $sub_path, $outfile, $max_x, $max_y, $crop, $image_quality, $show = true, $image_type);
 
 if(isset($_REQUEST['debug']) || isset($_REQUEST['json'])){
     $output = ob_get_contents(); // get the image as a string in a variable
@@ -139,7 +161,7 @@ if(isset($_REQUEST['debug']) || isset($_REQUEST['json'])){
     
     // add filesize and base64 encoded image
     $image->image['bytes'] = strlen($output); // size in bytes
-    $image->image['data'] = base64_encode($output);
+    $image->imagedata = base64_encode($output);
     
     // remove resources and filepaths
     unset($image->image['src']);
