@@ -46,7 +46,7 @@
     height: 30px;
     margin: 5px 0;
     padding: 5px 10px;
-    color: #333;
+    /*color: #333;*/
     text-decoration: none;
     font-weight: bold;
     border: 1px solid #ccc;
@@ -61,8 +61,8 @@
 }
 
 .dd-handle:hover {
-    color: #2ea8e5;
-    background: #fff;
+    /*color: #2ea8e5;*/
+    /*background: #fff;*/
 }
 
 .dd-item > button {
@@ -86,7 +86,7 @@
     font-weight: bold;
 }
 
-.dd-item > button:before {
+/*.dd-item > button:before {
     content: '+';
     display: block;
     position: absolute;
@@ -97,7 +97,7 @@
 
 .dd-item > button[data-action="collapse"]:before {
     content: '-';
-}
+}*/
 
 .dd-placeholder,
 .dd-empty {

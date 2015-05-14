@@ -987,7 +987,20 @@ sup {
 }
 
 #maincontent .main .section {
-	padding-top: 40px;
+	padding-top: 20px;
+}
+
+#styleguide .section:hover {
+	margin:-1px;
+	border:1px dashed rgba(0,0,0,0.25);
+}
+
+#maincontent .main .section:after {
+	content: "\0020";
+	display: block;
+	height: 0;
+	visibility: hidden;
+	clear:both;	
 }
 
 #themecontent{
@@ -1232,7 +1245,7 @@ fieldset,
 	transition: background-color 200ms;	
 }
 
-.leftopt:hover,.rightopt:hover,.wideopt:hover
+.leftopt:hover,.rightopt:hover,.wideopt:hover{
 	background-color: rgba(0,0,0,0.02);
 	transition: background-color 400ms;
 }
@@ -2248,7 +2261,7 @@ textarea.copykit {
 	        transition-property: background-color, color, text-shadow; 	
 }
 
-div.`{
+div.label{
 	display:inline-block;
 }
 
@@ -2776,6 +2789,10 @@ h5 .crumbs, div.h5 .crumbs {
 	opacity:0.85;
 }
 
+.dd-item > button {
+	text-indent : 0 !important;
+}
+
 #menu-order li.placeholder-menu {
 	height: 18px;
 	background: #FFB164;
@@ -2918,6 +2935,15 @@ a.disabled:visited {
 
 #cm_themeselect {
 	float: right;
+}
+
+#cm_themeselect_label {
+font-size: 12px;
+  color: #BBB;
+  margin: 0 3px;
+  line-height: 22px;
+  float: right;
+  /* font-weight: normal; */
 }
 
 #theme_filemanager {
