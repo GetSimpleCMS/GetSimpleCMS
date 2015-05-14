@@ -1017,7 +1017,6 @@ function getPagesRowMissing($ancestor,$level,$children){
  * create a parent child bucket
  * [parent] => ['id','id']
  * @since 3.4
- *
  * @param  array   $pages  pagesarray
  * @param  boolean $useref true: use references for values, false: empty
  * @return array   returns array keyed by parents, then keyed by url with values page refs or empty
@@ -1032,23 +1031,14 @@ function getParentsHashTable($pages = array(), $useref = true, $fixorphans = fal
 		$pageId = isset($page['url']) ? $page['url'] : null;
 
 		// move orphans to root
-		// if($fixorphans && !isset($pagesArray[$parent])) $parent = ''; 
+		if($fixorphans && !isset($pagesArray[$parent])) $parent = ''; 
 		// move orphans to last parent
-		if($fixorphans && $parent !== '' && !isset($pagesArray[$parent])) $parent = getClosestParentInMenu($key);
-		debugLog($lastkey);
+		// if($fixorphans && $parent !== '' && !isset($pagesArray[$parent])) $parent = getClosestParentInMenu($key);
 		if($pageId) $ary[$parent][$pageId] = $useref ? $page : '';
 		$lastkey = $key;
 	}
 
 	return $ary;
-}
-
-
-function getClosestParentInMenu($pageId){
-	$parents = getParentFields($pageId,'url','filterParentMenu');
-	// $parents = getParentFields($pageId,'url');
-	_debugLog($pageId,$parents);
-	return array_pop($parents);
 }
 
 /**
@@ -1077,6 +1067,17 @@ function getParentsSlugHashTable($pages = array(), $useref = true){
 	}
 
 	return $ary;
+}
+
+/**
+ * get closest parent in menu
+ * @since  3.4
+ * @param  str $pageId pageid for page
+ * @return str         parent pageid
+ */
+function getClosestParentInMenu($pageId){
+	$parents = getParentFields($pageId,'url','filterParentMenu');
+	return array_pop($parents);
 }
 
 /**

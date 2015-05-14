@@ -51,23 +51,6 @@ getPagesXmlValues(true);
  */
 
 /**
- * prepare pubDate strtotime it
- */
-function prepare_pubDate($page,$key){
-	return strtotime($key);
-}
-
-/**
- * sort by menuOrder
- * menu order=0 or ""  or menuStatus=Y are lowest priority
- * (!pages are saved with 0 as default for none, and are not in the menu manager)
- */
-function prepare_menuOrder($page,$key){
-	if((int)$key == 0 || $page['menuStatus'] !== 'Y') return 99999;
-	return (int)$key;
-}
-
-/**
  * sort by menuOrder -> parent titles/slug title -> DESC
  * this is obviously overkill since we are heirachial anyway we only need to title sort
  * and this is not cached at all

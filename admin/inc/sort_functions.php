@@ -72,10 +72,10 @@
  * This operates on the entire array and is therefore more efficient than doing
  * heavy conversions or comparisons inside a comparison callback
  * eg. 
- *   function prepare_pubDate($page,$key){
+ *   function prepare_date($page,$key){
  *       return strtotime($key);
  *   }
- *   $pagesSorted = sortCustomIndexCallback($pagesArray,'pubDate','prepare_pubDate');
+ *   $pagesSorted = sortCustomIndexCallback($pagesArray,'pubDate','prepare_date');
  * @param  array $pages   input multi array
  * @param  str $key       array key to sort by
  * @param  str $prepare   callback function for each subarray
@@ -279,6 +279,23 @@ function prepare_parentTitle($page,$key){
 	 	else {
 	 		return lowercase($key);
 	 	}
+}
+
+/**
+ * prepare pubDate strtotime it for sorting
+ */
+function prepare_date($page,$key){
+	return strtotime($key);
+}
+
+/**
+ * sort by menuOrder
+ * menu order=0 or ""  or menuStatus=Y are lowest priority
+ * (!pages are saved with 0 as default for none, and are not in the menu manager)
+ */
+function prepare_menuOrder($page,$key){
+	if((int)$key == 0 || $page['menuStatus'] !== 'Y') return 99999;
+	return (int)$key;
 }
 
 function prepare_menuOrderParentTitle($page,$key){

@@ -7,31 +7,49 @@
  */
 
 
-function getMenuFromPages($inmenu = true){
-	/**
-	 * get pages ( filtered by menustatus )
-	 * create parent hash table with references
-	 * build nested array tree
-	 * recurse over tree and add depth, order, numchildren, (path and url)
-	 * @todo
-	 * create flat hash ref array for fast hash lookups ( like parent hash array but with refs to tree )
-	 * flat array ust be storable and restorable, refs must be rebuilt after form input and read from file.
-	 */
-	$pagesSorted = filterKeyValueMatch(sortCustomIndex(getpages(),'menuOrder'),'menuStatus','Y');
-	$parents     = getParentsHashTable($inmenu ? $pagesSorted : null, true , true);
-	$flattree    = buildTreewHash($parents,'',false,true,'url');
-	// @todo does not retain pages with broken paths, problem for menus that should probably still show them.
-	$indexAry    = recurseJson($flattree);
-	$tree['NESTED'] = &$flattree;
-	// $tree['FLAT']   = &$indexAry['flat'];
-	$tree['INDEX']  = $indexAry['indices'];
-	return $tree;
+/**
+ * get nested menus from pages legacy function
+ * ( optionally filtered by menustatus )
+ * create parent hash table with references
+ * build nested array tree
+ * recurse over tree and add depth, order, numchildren, (path and url)
+ * @todo
+ * create flat hash ref array for fast hash lookups ( like parent hash array but with refs to tree )
+ * flat array ust be storable and restorable, refs must be rebuilt after form input and read from file.
+ */
+function getMenuFromPages($pages = null, $inmenu = false){
+	
+	if(!isset($page)) $pages = getPagesSortedByTitle();
+	// $pages           = getPagesSortedByMenu();
+	$pages           = $inmenu ? filterKeyValueMatch($pages,'menuStatus','Y') : null;
+	$parents         = getParentsHashTable($pages, true , true);
+	$flattree        = buildTreewHash($parents,'',false,true,'url');
+	// @todo when inmenu does not retain pages with broken paths, problem for menus that should probably still show them.
+	$nestary         = recurseJson($flattree);
+	
+	$nesttree['NESTED']  = &$flattree;
+	// $nesttree['FLAT']    = &$indexAry['flat'];
+	$nesttree['INDEX']   = $nestary['indices'];
+	// buildRefArray();
+	return $nesttree;
 }
 
+function getPagesSortedByTitle(){
+	return sortCustomIndexCallback(getpages(),'title','prepare_menuOrderParentTitle');
+}
 
+function getPagesSortedByMenu(){
+	return sortCustomIndex(getpages(),'menuOrder');
+}
+
+/**
+ * builds a flat reference tree from a nested tree
+ * @unused
+ * @param  array $menu     nested array
+ * @param  array $flattree destination array
+ * @return array           flat indexed array
+ */
 function buildRefArrayRecursive($menu,$flattree = array()){
-	// static $flattree;
-	// if(!$flattree) $flattree = array();
 	foreach($menu as $item){
 		$flatree['item']['id'] = &$item;
 		if(isset($item['children'])) buildRefArrayRecursive($item['children'],$flattree);
@@ -40,7 +58,14 @@ function buildRefArrayRecursive($menu,$flattree = array()){
 	return $flattree;
 }
 
-
+/**
+ * get nested array reference from flat index 
+ * using flat index to resolve to nested
+ * uses resolve_tree() to resolve flat path to nested
+ * @param  array &$menu  nested array
+ * @param  str $id       flat index
+ * @return array         reference to nested subarray
+ */
 function &getRefArray(&$menu,$id){
 	if(isset($menu['FLAT']) && isset($menu['FLAT'][$id])) return $menu['FLAT'][$id];
 	$index = $menu['INDEX'][$id];
@@ -50,6 +75,13 @@ function &getRefArray(&$menu,$id){
 	return $ref;
 }
 
+/**
+ * Build flat reference array onto nested tree
+ * requires INDEX subarray
+ * adds FLAT subarray references
+ * @param  array &$menu  nested tree array
+ * @return array         nested tree with flat reference array added
+ */
 function buildRefArray(&$menu){
 	foreach($menu['INDEX'] as $key=>$index){
 		$index = trim($index,'.');
@@ -59,11 +91,6 @@ function buildRefArray(&$menu){
 		if(isset($ref)) $menu['FLAT'][$key] = &$ref;
 	}
 	return $menu;
-}
-
-function initMenus(){
-	global $menucache;
-	$menucache = array();
 }
 
 function saveMenu($menuid,$data){
@@ -84,74 +111,14 @@ function menuOrderSave(){
 	global $pagesArray;
 	$menuOrder = json_decode($_POST['menuOrder'],true);
 	// debugLog($menuOrder);
-	recurseJson($menuOrder);
+	$indexAry = recurseJson($menuOrder);
 	// debugLog($menuOrder);
-	create_pagesxml('true');
+	debugLog($indexAry);
+	updatePagesMenuData($indexAry);
 	return $menuOrder;
 }
 
-function recurseJson(&$array,$parent = null,$depth = 0,$index = 0,&$indexAry = array()){
-	debugLog(__FUNCTION__ . ' ' . count($array));
-	
-	// use temporary index to store currentpath
-	if(!isset($indexAry['currpath'])) $indexAry['currpath'] = array();
-	
-	static $index;
-	if($depth == 0) $index = 0;
-	$order = 0;
-	$depth++;
-	
-	array_push($indexAry['currpath'],$parent);
-
-	foreach($array as $key=>&$value){
-		if(isset($value['id'])){
-			$order++;
-			$index++;
-
-			if(isset($parent)) $value['parent'] = $parent;
-			
-			// storeMenuInPage($value['id'],(isset($parent) ? $parent : ''),$index);
-
-			$value['data']          = array();
-			$value['data']['url']   = generate_url($value['id']);
-			$value['data']['path']  = generate_permalink($value['id'],'%path%/%slug%');
-			$value['data']['depth'] = $depth;
-			$value['data']['index'] = $index;
-			$value['data']['order'] = $order;
-			
-			$indexAry['flat'][$value['id']] = &$value;
-			$indexAry['indices'][$value['id']] = implode('.',$indexAry['currpath']).'.'.$value['id'];
-
-			if(isset($value['children'])){
-				$value['numchildren'] = count($value['children']);
-				$children = &$value['children'];
-				recurseJson($children,$value['id'],$depth,$index,$indexAry);
-			} else $value['numchildren'] = 0;
-		}
-	}
-
-	array_pop($indexAry['currpath']);
-	if(!$indexAry['currpath']) unset($indexAry['currpath']);
-	return $indexAry;
-}
-
-function storeMenuInPage($pageid,$parent,$order){
-	
-	// debugLog(func_get_args());
-	// debugLog(returnPageField($pageid,'url'));
-	// debugLog(returnPageField($pageid,'parent'));
-	// debugLog(returnPageField($pageid,'menuOrder'));
-	if((string)returnPageField($pageid,'parent') == $parent && (int)returnPageField($pageid,'menuOrder') == $order) return;
-	$file = GSDATAPAGESPATH . $pageid . '.xml';
-	if (file_exists($file)) {
-		$data = getPageXML($pageid);
-		$data->parent->updateCData($parent);
-		$data->menuOrder->updateCData($order);
-		XMLsave($data,$file);
-	}
-}
-
-function legacyMenuOrderSave(){
+function MenuOrderSave_OLD(){
 	$menuOrder = explode(',',$_POST['menuOrder']);
 	$priority = 0;
 	foreach ($menuOrder as $slug) {
@@ -171,12 +138,137 @@ function legacyMenuOrderSave(){
 	return $success;
 }
 
+
+/**
+ * recurse a json menu object/array and add relative fields to it
+ * adds url, path, depth, index, order nesting information
+ * array(
+ *  'id' => 'index',
+ *  'data' =>  array(
+ *    'url' => '/dev/getsimple/master/',
+ *    'path' => 'index',
+ *    'depth' => 1
+ *    'index' => 9,
+ *    'order' => 7
+ *  ),
+ *  'parent' => '',
+ *  'numchildren' => 1,
+ *  'children' => array()
+ * );
+ * 
+ * @param  array  &$array    reference to array, so values can be refs
+ * @param  str     $parent   parent for recursion
+ * @param  integer $depth    depth for recursion
+ * @param  integer $index    index ofr recursion
+ * @param  array   &$indexAry indexarray reference for recursion
+ * @return array             new array with added data
+ */
+function recurseJson(&$array,$parent = null,$depth = 0,$index = 0,&$indexAry = array()){
+	// debugLog(__FUNCTION__ . ' ' . count($array));
+	
+	// use temporary index to store currentpath
+	if(!isset($indexAry['currpath'])) $indexAry['currpath'] = array();
+	
+	static $index;
+	if($depth == 0) $index = 0;
+	$order = 0;
+	$depth++;
+	
+	array_push($indexAry['currpath'],$parent);
+
+	foreach($array as $key=>&$value){
+		if(isset($value['id'])){
+			$order++;
+			$index++;
+
+			$value['parent']        = isset($parent) ? $parent : '';
+			$value['data']          = array();
+			$value['data']['url']   = generate_url($value['id']);
+			$value['data']['path']  = generate_permalink($value['id'],'%path%/%slug%');
+			$value['data']['depth'] = $depth;
+			$value['data']['index'] = $index;
+			$value['data']['order'] = $order;
+			
+			$indexAry['flat'][$value['id']] = &$value; // flat cannot be saved to json because of references
+			// create a indices to paths, so we can rebuild flat array references on json load, if serializing this is not needed
+			$indexAry['indices'][$value['id']] = implode('.',$indexAry['currpath']).'.'.$value['id'];
+
+			if(isset($value['children'])){
+				$value['numchildren'] = count($value['children']);
+				$children = &$value['children'];
+				recurseJson($children,$value['id'],$depth,$index,$indexAry);
+			} else $value['numchildren'] = 0;
+		}
+	}
+
+	array_pop($indexAry['currpath']);
+	if(!$indexAry['currpath']) unset($indexAry['currpath']);
+	return $indexAry;
+}
+
+/**
+ * update page menu data from menu
+ * @param  array $menu menu array
+ */
+function updatePagesMenuData($menu){
+	
+	$pages = getPages();
+	foreach($pages as $page){
+		$id = $page['url'];
+
+		// if not in menu wipe page data
+		if(!isset($menu['flat'][$id])){
+			storeMenuDataInPage($id);
+			continue;
+		}
+		// debugLog($menu['flat'][$id]);
+
+		$parent = $menu['flat'][$id]['parent'];
+		$order  = $menu['flat'][$id]['data']['index'];
+		storeMenuDataInPage($id,$parent,$order);
+	}
+
+	// regen page cache
+	create_pagesxml('true');
+}
+
+/**
+ * set page data menu information
+ * update page with parent and order, only if differs
+ * @param  str $pageid page id to save
+ * @param  str $parent page parent
+ * @param  int $order page order
+ */
+function storeMenuDataInPage($pageid,$parent = '',$order =''){
+	// do not save page if nothing changed
+	if((string)returnPageField($pageid,'parent') == $parent && (int)returnPageField($pageid,'menuOrder') == $order) return;
+
+	$file = GSDATAPAGESPATH . $pageid . '.xml';
+	if (file_exists($file)) {
+		$data = getPageXML($pageid);
+		$data->parent->updateCData($parent);
+		$data->menuOrder->updateCData($order);
+		XMLsave($data,$file);
+	}
+}
+
+/**
+ * shortcut to get page menu title
+ * if menu title not explicitly set fallback to page title
+ * @param  str $slug page id
+ * @return str page title
+ */
 function getPageMenuTitle($slug){
 	$page = getPage($slug);
 	return ($page['menu'] == '' ? $page['title'] : $page['menu']);
 }
 
-// can be used on native arrays like parenthashtables
+// passes page id to callouts, can be used on native parenthash arrays like parenthashtable, where children are values of page references or array, keys are parents
+// array(
+// 'parent' => array(
+// 	 &$pagesArray['child1'],
+// 	),
+// )
 function getTree($parents,$key = '',$str='',$level = 0,$index = 0, $filter = null, $inner = 'treeCalloutInner', $outer = 'treeCalloutOuter'){
 	// _debugLog($key,$level);
 	static $index;
@@ -200,6 +292,13 @@ function getTree($parents,$key = '',$str='',$level = 0,$index = 0, $filter = nul
 
 // passes page id to callouts, use for your own arrays, also adds depth, index, and order if not exist, can be used on arrays with nested trees assumes
 // 'children' subkey
+// 
+// array(
+// 	array(
+// 	 'id' => [page or menu array],
+// 	 'children' => array()
+// 	),
+// )
 function getMenuTree($parents,$str='',$level = 0, $index = 0, $filter = null, $inner = 'treeCalloutInner',$outer = 'treeCalloutOuter'){
 	if(!$parents) return;
 	static  $index;
@@ -225,6 +324,7 @@ function getMenuTree($parents,$str='',$level = 0, $index = 0, $filter = null, $i
 	return $str;
 }
 
+// minimal tree output
 // passes page to callouts, assumes everything you need in the array, to be used with menu/ index/ or ref arrays
 function getMenuTreeMin($parents,$str='',$inner = 'treeCalloutInner',$outer = 'treeCalloutOuter'){
 	if(!$parents) return;
@@ -244,7 +344,10 @@ function getMenuTreeMin($parents,$str='',$inner = 'treeCalloutInner',$outer = 't
 function treeCalloutInner($id,$level,$index = 1,$order = 0,$open = true){
 	$child = getPage($id);
 	$debug = '<strong>'.$index.'.'.$level.'.'.$order.'</strong>';
-	$str = $open ? '<li class="dd-item clearfix" data-id="'.$child['url'].'"><div class="dd-handle"> '.getPageMenuTitle($child['url']).' <em>[' .$child['url'].']</em><div class="itemtitle"><em>'.$child['title'].'</em></div></div>' : '</li>';
+	
+	$class = $child['menuStatus'] == 'Y' ? ' menu' : '';
+	
+	$str = $open ? '<li class="dd-item clearfix'.$class.'" data-id="'.$child['url'].'"><div class="dd-handle"> '.getPageMenuTitle($child['url']).'<div class="itemtitle"><em>'.$child['title'].'</em></div></div>' : '</li>';
 	return $str;
 }
 
@@ -266,7 +369,7 @@ function menuCalloutInner($page,$open = true){
 	$menutext = $page['menu'] == '' ? $page['title'] : $page['menu'];
 	$menutitle = $page['title'] == '' ? $page['menu'] : $page['title'];
 	$class = $page['parent'] . ' D' . $depth; 
-	
+
 	$str = '<li data-id="'.$page['url'].'" class="'.$class.'">';
 	$str .= '<a href="'. find_url($page['url']) . '" title="'. encode_quotes(cl($menutitle)) .'">'.strip_decode($menutext).'</a>'."\n";
 
@@ -325,6 +428,7 @@ function pagesToMenu($pages,$parent = 'index'){
 	return $array;
 }
 
+// @todo build a nested tree array from flat array with `parent` and children array, children key is `children`
 function buildTree(array $elements, $parentId = '') {
     $branch = array();
 
@@ -343,6 +447,7 @@ function buildTree(array $elements, $parentId = '') {
 
 /**
  * builds nested array from parent hash array
+ * 
  * @param  array  $elements     source array
  * @param  string  $parentId    starting parent
  * @param  boolean $preserve    true, preserve all fields, else only id and children are kept
@@ -391,14 +496,22 @@ function buildTreewHash($elements, $parentId = '', $preserve = false, $assoc = t
     return $branch;
 }
 
-
+/**
+ * resolves a tree path to nested array
+ * @since 3.4
+ * @param  array &$tree array reference to tree
+ * @param  array $path  array of path to desired branch/leaf
+ * @return array        subarray from tree matching path
+ */
 function &resolve_tree(&$tree, $path) {
 	if(empty($path)) return $tree;
 	return resolve_tree($tree[$path[0]], array_slice($path, 1));
-	// @todo why does this not work the same? very odd
+	// @todo why does this not work the same? must be some odd reference pass issue
 	// return empty($path) ? $tree : resolve_tree($tree[$path[0]], array_slice($path, 1));
 }
 
+// unused, testing
+// pathing for arrays using delimited path or wildcards
 function path(&$array, $path, $default = NULL, $delimiter = '.')
 {
     if ( ! is_array($array))

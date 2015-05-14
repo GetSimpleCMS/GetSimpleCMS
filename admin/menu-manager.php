@@ -54,6 +54,7 @@ get_template('header');
 			<?php exec_action(get_filename_id() . '-body');?>
 			<p><?php i18n('MENU_MANAGER_DESC');?></p>
 			<?php
+
 $legacymenu = false;
 if (count($pagesSorted) != 0 && $legacymenu == true) {
 	echo '<form method="post" action="menu-manager.php">';
@@ -121,10 +122,12 @@ $parents = getParentsHashTable();
 
 exec_action('menu-manager-extras');
 
-$tree = readMenu('default');
-// debugLog($tree);
 $regen = false;
-if (!$tree || $regen) {
+$usecache = false;
+
+if($usecache) $tree = readMenu('default');
+
+if ($regen || !$usecache) {
 	debugLog('tree not found');
 	$tree = getMenuFromPages();
 	_debugLog($tree);
@@ -209,8 +212,10 @@ echo '<li id="nestable-template" class="dd-item clearfix" data-id="template"><di
 				});
 				$("#menu-order").disableSelection();
 
-
-				$('.dd').nestable({ /* config options */ });
+				$('.dd').nestable({
+					expandBtnHTML : '<button data-action="expand"><i class="tree-expander fa fa-play fa-fw"></i></button>',
+					collapseBtnHTML : '<button data-action="collapse"><i class="tree-expander fa fa-play fa-fw fa-rotate-90"></i></button>'
+				});
 
 				$('.dd').on('change', function() {
 					/* on change event */
@@ -219,9 +224,10 @@ echo '<li id="nestable-template" class="dd-item clearfix" data-id="template"><di
 					$('[name=menuOrder]').val(order);
 				});
 
+				$('.dd').trigger('change');
 				$('#nestable-template').hide();
 				$(".dd >ol").append($('#nestable-template').clone());
-				$('.dd').nestable('collapseAll');
+				// $('.dd').nestable('collapseAll');
 
 				// var size = parentLi.children('ol').first().children('li').length; // get parents ol li items
 				// if(size == 1) parentLi.find('button[data-action=collapse]').show(); // unhide the collapse button

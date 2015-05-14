@@ -456,6 +456,7 @@ function filterInverse($pagesFiltered,$pages = array()){
  * abstractions / shorthand
  * these are not for here, they are for theme_functions
  * but 
+ * @todo  clean up and move abstractions for themes
  */
 
 // function get_pages(){
@@ -490,6 +491,16 @@ function filterInverse($pagesFiltered,$pages = array()){
 // 	return getPagePath($pageId);
 // }
 
+
+/**
+ * get page field value
+ * @param  str $pageId pageid
+ * @param  str $field  fieldid
+ * @return mixed field value
+ */
+function getPageFieldValue($pageId,$field){
+	return returnPageField($pageId,$field);
+}
 
 /**
  * get PAGE path
@@ -541,12 +552,6 @@ function getParents($pageId){
 	return getParentFields($pageId);
 }
 
-
-function getPageFieldValue($pageId,$field){
-	return returnPageField($pageId,$field);
-}
-
-
 /**
  * get PAGE parents slugs
  * returns an array of all this pages parents slugs
@@ -570,9 +575,13 @@ function getParentFields($pageId,$key = 'url',$filter = null){
 	return $values;
 }
 
+/**
+ * eval page is in menu
+ * @param  str $page pageid
+ * @return bool true if parent not in menu
+ */
 function filterParentMenu($page){
 	$page = getPage($page);
-	// _debugLog($page);
 	return $page['menuStatus'] !== 'Y';
 }
 
