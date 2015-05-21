@@ -1173,7 +1173,7 @@ fieldset,
 	border: 1px solid #e8e8e8;
 	padding: 15px 10px 5px 10px;
 	border-radius: 2px;
-	text-shadow: 1px 1px 0 rgba(255,255,255,.3);
+	/*text-shadow: 1px 1px 0 rgba(255,255,255,.3);*/
 }
 
 
