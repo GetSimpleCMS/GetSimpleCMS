@@ -13,7 +13,7 @@ $path = (isset($_GET['path'])) ? $_GET['path'] : "";
 	
 	<?php exec_action("files-sidebar"); ?>
 
-<?php if (!defined('GSNOUPLOADIFY')) { ?>	
+<?php if (!getDef('GSNOUPLOADIFY',true)) { ?>	
 	<li class="upload" id="sb_uploadify" >
 		<div id="uploadify"></div>
 	<?php 
