@@ -115,7 +115,7 @@ if ($url == '404') {
 }
 
 # check for correctly formed url
-if (defined('GSCANONICAL')) {
+if (getDef('GSCANONICAL',true)) {
 	if ($_SERVER['REQUEST_URI'] != find_url($url, $parent, 'relative')) {
 		redirect(find_url($url, $parent));
 	}
