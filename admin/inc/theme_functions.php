@@ -86,7 +86,6 @@ function get_page_meta_keywords($echo=true) {
 function get_page_meta_desc($echo=true) {
 	global $metad;
 	$myVar = encode_quotes(strip_decode($metad));
-	
 	if ($echo) {
 		echo $myVar;
 	} else {
@@ -267,26 +266,19 @@ function get_header($full=true) {
 	
 	// meta description	
 	if ($metad != '') {
-		$description = get_page_meta_desc(FALSE);
-	} 
+		$desc = get_page_meta_desc(FALSE);
+	}
 	else if(getDef('GSAUTOMETAD',true))
 	{
-		// get meta from content excerpt
-		if (function_exists('mb_substr')) { 
-			$description = trim(mb_substr(strip_tags(strip_decode($content)), 0, 160));
-		} else {
-			$description = trim(substr(strip_tags(strip_decode($content)), 0, 160));
-		}
-
-		$description = str_replace('"','', $description);
-		$description = str_replace("'",'', $description);
-		$description = preg_replace('/\n/', " ", $description);
-		$description = preg_replace('/\r/', " ", $description);
-		$description = preg_replace('/\t/', " ", $description);
-		$description = preg_replace('/ +/', " ", $description);
+		// use content excerpt, NOT filtered
+		$desc = strip_decode($content);
+		$desc = cleanHtml($desc,array('style')); // remove style elements
+		$desc = getExcerpt($desc,160); // grab 160 chars
+		$desc = strip_whitespace($desc); // remove newlines, tab chars
+		$desc = str_replace(array("'",'\"'),'', $desc); // remove quotes
 	}
 
-	if(!empty($description)) echo '<meta name="description" content="'.$description.'" />'."\n";
+	if(!empty($desc)) echo '<meta name="description" content="'.$desc.'" />'."\n";
 
 	// meta keywords
 	$keywords = get_page_meta_keywords(FALSE);

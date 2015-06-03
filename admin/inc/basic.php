@@ -1326,4 +1326,18 @@ function header_xframeoptions($value = null){
 }
 
 
+/**
+ * strip non printing white space from string
+ * eg. strip_whitespace("Line   1\n\tLine 2\r\t\tLine 3  \r\n\t\t\tLine 4\n  ");
+ * @since 3.3.6
+ * @param  str $str     input string
+ * @param  string $replace replacement character
+ * @return str          new string
+ */
+function strip_whitespace($str,$replace = ' '){
+	$chars = array("\r\n", "\n", "\r", "\t");
+	$str   = str_replace($chars, $replace, $str);
+	return preg_replace('/['.$replace.']+/', $replace, $str);
+}
+
 ?>

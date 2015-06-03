@@ -1208,7 +1208,8 @@ function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = '...', $bre
 	// if not break, find last word boundary before truncate to avoid splitting last word
 	// solves for unicode whitespace and punctuation and a 1 character lookahead
 	// hack,  replaces punc with space and handles it all the same for obtaining boundary index
-	// REQUIRES that PCRE is compiled with "--enable-unicode-properties, detect or supress ?
+	// REQUIRES that PCRE is compiled with "--enable-unicode-properties, 
+	// @todo detect or supress requirement
 	if(!$break) $excerpt = preg_replace('/\n|\p{Z}|\p{P}+$/u',' ',$substr($str, 0, $len+1)); 
 
 	$lastWordBoundaryIndex = !$break ? $strrpos($excerpt, ' ') : $len;
@@ -1233,20 +1234,34 @@ function strIsMultibyte($str){
 
 /**
  * clean Html fragments by loading and saving from DOMDocument
- * Will only clean html body fragments,unexpected results with full html doc or containg head or body
- * it will also strip these in final result
+ * Will only clean html body fragments,unexpected results with full html doc or containing head or body
+ * which are always stripped
  * 
- * @note supressig errors on libxml functions to prevent parse errors on no well formed content
+ * @note supressing errors on libxml functions to prevent parse errors on not well-formed content
  * @since 3.3.2
  * @param  string $str string to clean up
+ * @param  array $strip_tags optional elements to remove eg. array('style')
  * @return string      return well formed html , with open tags being closed and incomplete open tags removed
  */
-function cleanHtml($str){
+function cleanHtml($str,$strip_tags = array()){
 	// setup encoding, required for proper dom loading
-	$charsetstr = '<meta http-equiv="content-type" content="text/html; charset=utf-8">'.$str;
+	// @note
+	// $dom_document = new DOMDocument('1.0', 'utf-8'); // this does not deal with transcoding issues, loadhtml will treat string as ISO-8859-1 unless the doc specifies it 
+	// $dom_document->loadHTML(mb_convert_encoding($str, 'HTML-ENTITIES', 'UTF-8')); // aternate option that might work...
+	
 	$dom_document = new DOMDocument();
-	@$dom_document->loadHTML($charsetstr);
-	// strip dom tags
+	$charsetstr = '<meta http-equiv="content-type" content="text/html; charset=utf-8">';
+	@$dom_document->loadHTML($charsetstr.$str);
+	
+	foreach($strip_tags as $tag){
+    	$elem = $dom_document->getElementsByTagName($tag);
+    	while ( ($node = $elem->item(0)) ) {
+        	$node->parentNode->removeChild($node);
+	    }
+	}
+
+	// strip dom tags that we added, and ones that savehtml adds
+	// strip doctype, head, html, body tags
 	$html_fragment = preg_replace('/^<!DOCTYPE.+?>|<head.*?>(.*)?<\/head>/', '', str_replace( array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), @$dom_document->saveHTML()));	
 	return $html_fragment;
 }	
