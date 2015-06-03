@@ -272,7 +272,7 @@ function get_header($full=true) {
 	{
 		// use content excerpt, NOT filtered
 		$desc = strip_decode($content);
-		$desc = cleanHtml($desc,array('style'',script')); // remove unwanted elements that strip_tags fails to remove
+		$desc = cleanHtml($desc,array('style','script')); // remove unwanted elements that strip_tags fails to remove
 		$desc = getExcerpt($desc,160); // grab 160 chars
 		$desc = strip_whitespace($desc); // remove newlines, tab chars
 		$desc = str_replace(array("'",'\"'),'', $desc); // remove quotes
