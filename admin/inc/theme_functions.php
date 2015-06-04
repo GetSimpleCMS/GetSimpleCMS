@@ -26,6 +26,7 @@ function get_page_content() {
 	exec_action('content-top');
 	$content = strip_decode($content);
 	$content = exec_filter('content',$content);
+	if(getDef('GSCONTENTSTRIP',true)) $content = strip_content($content);
 	echo $content;
 	exec_action('content-bottom');
 }
@@ -48,6 +49,7 @@ function get_page_excerpt($len=200, $striphtml=true, $ellipsis = '...') {
 	if ($len<1) return '';
 	$content_e = strip_decode($content);
 	$content_e = exec_filter('content',$content_e);
+	if(getDef('GSCONTENTSTRIP',true)) $content_e = strip_content($content_e);	
 	echo getExcerpt($content_e, $len, $striphtml, $ellipsis);
 }
 
@@ -272,6 +274,7 @@ function get_header($full=true) {
 	{
 		// use content excerpt, NOT filtered
 		$desc = strip_decode($content);
+		if(getDef('GSCONTENTSTRIP',true)) $desc = strip_content($desc);
 		$desc = cleanHtml($desc,array('style','script')); // remove unwanted elements that strip_tags fails to remove
 		$desc = getExcerpt($desc,160); // grab 160 chars
 		$desc = strip_whitespace($desc); // remove newlines, tab chars
