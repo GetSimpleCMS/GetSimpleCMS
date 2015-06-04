@@ -1340,4 +1340,16 @@ function strip_whitespace($str,$replace = ' '){
 	return preg_replace('/['.$replace.']+/', $replace, $str);
 }
 
+/**
+ * strip shortcodes based on pattern
+ * @since  3.3.6
+ * @param  str $str     input string
+ * @param  string $pattern regex pattern to strip
+ * @return str          new string
+ */
+function strip_content($str, $pattern = '/[({]%.*?%[})]/'){
+	if(getDef('GSCONTENTSTRIPPATTERN',true)) $pattern = getDef('GSCONTENTSTRIPPATTERN');
+	return 	preg_replace($pattern, '', $str);
+}
+
 ?>
