@@ -275,10 +275,11 @@ function get_header($full=true) {
 		$desc = cleanHtml($desc,array('style','script')); // remove unwanted elements that strip_tags fails to remove
 		$desc = getExcerpt($desc,160); // grab 160 chars
 		$desc = strip_whitespace($desc); // remove newlines, tab chars
-		$desc = str_replace(array("'",'\"'),'', $desc); // remove quotes
+		$desc = htmlspecialchars($desc,ENT_QUOTES );
+		$desc = trim($desc);
 	}
 
-	if(!empty($desc)) echo '<meta name="description" content="'.trim($desc).'" />'."\n";
+	if(!empty($desc)) echo '<meta name="description" content="'.$desc.'" />'."\n";
 
 	// meta keywords
 	$keywords = get_page_meta_keywords(FALSE);
