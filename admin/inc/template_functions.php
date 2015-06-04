@@ -1206,10 +1206,11 @@ function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = '...', $bre
 	if ($strlen($str) < $len) return $str;
 
 	// if not break, find last word boundary before truncate to avoid splitting last word
-	// solves for unicode whitespace and punctuation and a 1 character lookahead
-	// hack,  replaces punc with space and handles it all the same for obtaining boundary index
+	// solves for unicode whitespace \p{Z} and punctuation \p{P} and a 1 character lookahead hack,
+	// replaces punc with space so it handles the same for obtaining word boundary index
 	// REQUIRES that PCRE is compiled with "--enable-unicode-properties, 
-	// @todo detect or supress requirement
+	// @todo detect or supress requirement, perhaps defined('PREG_BAD_UTF8_OFFSET_ERROR'), translit puntuation only might be an alternative
+	debugLog(defined('PREG_BAD_UTF8_OFFSET_ERROR'));
 	if(!$break) $excerpt = preg_replace('/\n|\p{Z}|\p{P}+$/u',' ',$substr($str, 0, $len+1)); 
 
 	$lastWordBoundaryIndex = !$break ? $strrpos($excerpt, ' ') : $len;
