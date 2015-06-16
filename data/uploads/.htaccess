@@ -32,4 +32,8 @@
 
 # Disable php execution
 SetHandler GS_DISABLED_SECURITY
-php_flag engine off
+<IfModule mod_php5.c>
+	php_flag engine off
+</IfModule>
+
+
