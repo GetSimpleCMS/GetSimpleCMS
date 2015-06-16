@@ -33,13 +33,13 @@ if (isset($_GET['f'])) {
 	}
 }
 
-$themepath = GSTHEMESPATH.$template.DIRECTORY_SEPARATOR;
-if($template_file!='' and !filepath_is_safe($themepath.$template_file,$themepath)) die();
-
 # if no template is selected, use the default
 if ($template_file == '') {
 	$template_file = 'template.php';
 }
+
+$themepath = GSTHEMESPATH.$template.DIRECTORY_SEPARATOR;
+if(!filepath_is_safe($themepath.$template_file,GSTHEMESPATH,true)) die();
 
 # check for form submission
 if((isset($_POST['submitsave']))){
