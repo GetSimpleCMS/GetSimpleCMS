@@ -56,7 +56,7 @@ if (isset($_FILES['file'])) {
 			}
 			
 			//validate file
-			if (validate_safe_file($_FILES["file"]["tmp_name"][$i], $_FILES["file"]["name"][$i],  $_FILES["file"]["type"][$i])) {
+			if (validate_safe_file($_FILES["file"]["tmp_name"][$i], $_FILES["file"]["name"][$i])) {
 				move_uploaded_file($_FILES["file"]["tmp_name"][$i], $file_loc);
 				if (defined('GSCHMOD')) {
 					chmod($file_loc, GSCHMOD);
