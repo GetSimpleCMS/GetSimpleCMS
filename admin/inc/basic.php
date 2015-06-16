@@ -786,6 +786,11 @@ function pathinfo_filename($file) {
 	}
 }
 
+
+function getFileExtension($file){
+	return lowercase(pathinfo($file,PATHINFO_EXTENSION));
+}
+
 /**
  * Suggest Site Path
  *

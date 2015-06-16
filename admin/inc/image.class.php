@@ -103,9 +103,12 @@ class Zubrag_image {
     return $im;
   }
  
-  // generate thumb from image and save it
+   // generate thumb from image and save it
   function GenerateThumbFile($from_name, $to_name) {
  
+	if(!validImageFilename($from_name)) die('invalid src filetype');
+	if(!validImageFilename($to_name)) die('invalid dest filetype');
+
     // if src is URL then download file first
     $temp = false;
     if (substr($from_name,0,7) == 'http://') {
