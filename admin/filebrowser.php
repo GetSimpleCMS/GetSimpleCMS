@@ -20,7 +20,7 @@ $path = (isset($_GET['path'])) ? "../data/uploads/".$_GET['path'] : "../data/upl
 $subPath = (isset($_GET['path'])) ? $_GET['path'] : "";
 if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
 $returnid = isset($_GET['returnid']) ? var_out($_GET['returnid']) : "";
-$func = (isset($_GET['func'])) ? $_GET['func'] : "";
+$func = (isset($_GET['func'])) ? var_out($_GET['func']) : "";
 $path = tsl($path);
 // check if host uses Linux (used for displaying permissions
 $isUnixHost = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? false : true);
@@ -52,7 +52,6 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
             }
         <?php 
 			if (isset($_GET['func'])){
-			$func = @$_GET['func'];
 		?>
 				if(window.opener){
 					if(typeof window.opener.<?php echo $func; ?> == 'function') {
