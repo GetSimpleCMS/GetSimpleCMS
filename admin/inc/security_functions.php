@@ -48,6 +48,7 @@ $file_ext_blacklist = array(
  * @return string
  */
 function antixss($str){
+	$strdirty = $str;
 	// attributes blacklist:
 	$attr = array('style','on[a-z]+');
 	// elements blacklist:
@@ -64,9 +65,10 @@ function antixss($str){
 		$regex = '<'.$e.'(\s+[a-z][a-z\-]*\s*=\s*(\'[^\']*\'|"[^"]*"|[^\'">][^\s>]*))*\s*>.*?<\/'.$e.'\s*>';
 	    $str = preg_replace('#'.$regex.'#is', '', $str);
 	}
+
+	// if($strdirty !== $str) debugLog("string cleaned: removed ". (strlen($strdirty) - strlen($str)) .' chars');
 	return $str;
 }
-
 
 /**
  * Get Nonce
@@ -117,39 +119,39 @@ function check_nonce($nonce, $action, $file = ""){
 	return ( $nonce === get_nonce($action, $file) || $nonce === get_nonce($action, $file, true) );
 }
 
-/*
+/**
  * Validate Safe File
- *
+ * NEVER USE MIME CHECKING FROM BROWSERS, eg. $_FILES['userfile']['type'] cannot be trusted
  * @since 3.1
  * @uses file_mime_type
  * @uses $mime_type_blacklist
  * @uses $file_ext_blacklist
  *
  * @param string $file, absolute path
- * @param string $name, default null
- * @param string $type, default 'upload'
+ * @param string $name, filename
+ * @param string $mime, optional
  * @return bool
  */	
-function validate_safe_file($file, $name, $mime){
+function validate_safe_file($file, $name, $mime = null){
 	global $mime_type_blacklist, $file_ext_blacklist, $mime_type_whitelist, $file_ext_whitelist;
 
 	include(GSADMININCPATH.'configuration.php');
 
-	$file_extention = pathinfo($name,PATHINFO_EXTENSION);
-	$file_mime_type = $mime;
+	$file_extension = lowercase(pathinfo($name,PATHINFO_EXTENSION));
 
-	if ($mime_type_whitelist && in_arrayi($file_mime_type, $mime_type_whitelist)) {
-		return true;	
-	} elseif ($file_ext_whitelist && $in_arrayi($file_extention, $file_ext_whitelist)) {
-		return true;	
+	if ($mime && $mime_type_whitelist && in_arrayi($mime, $mime_type_whitelist)) {
+		return true;
+	}
+	if ($file_ext_whitelist && in_arrayi($file_extension, $file_ext_whitelist)) {
+		return true;
 	}
 
 	// skip blackist checks if whitelists exist
 	if($mime_type_whitelist || $file_ext_whitelist) return false;
 
-	if (in_arrayi($file_mime_type, $mime_type_blacklist)) {
+	if ($mime && in_arrayi($mime, $mime_type_blacklist)) {
 		return false;	
-	} elseif (in_arrayi($file_extention, $file_ext_blacklist)) {
+	} elseif (in_arrayi($file_extension, $file_ext_blacklist)) {
 		return false;	
 	} else {
 		return true;	
@@ -217,6 +219,7 @@ function var_out($var,$filter = "special"){
 			"url"     => FILTER_SANITIZE_URL,
 			"email"   => FILTER_SANITIZE_EMAIL,
 			"special" => FILTER_SANITIZE_SPECIAL_CHARS,
+			"full"    => FILTER_SANITIZE_FULL_SPECIAL_CHARS
 		);
 		if(isset($aryFilter[$filter])) return filter_var( $var, $aryFilter[$filter]);
 		return filter_var( $var, FILTER_SANITIZE_SPECIAL_CHARS);
@@ -224,4 +227,9 @@ function var_out($var,$filter = "special"){
 	else {
 		return htmlentities($var);
 	}
+}
+
+function validImageFilename($file){
+	$image_exts = array('jpg','jpeg','gif','png');
+	return in_array(getFileExtension($file),$image_exts);
 }
