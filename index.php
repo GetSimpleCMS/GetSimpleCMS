@@ -12,6 +12,9 @@
 /* pre-common setup, load gsconfig and get GSADMIN path */
 
 	/* GSCONFIG definitions */
+	if(!defined('GSFRONT')) define('GSFRONT',1);
+	if(!defined('GSBACK'))  define('GSBACK',2);
+	if(!defined('GSBOTH'))  define('GSBOTH',3);	
 	if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
 	if(!defined('GSSTYLE_SBFIXED')) define('GSSTYLE_SBFIXED','sbfixed'); // fixed sidebar
 
@@ -112,7 +115,7 @@ if ($url == '404') {
 }
 
 # check for correctly formed url
-if (defined('GSCANONICAL')) {
+if (getDef('GSCANONICAL',true)) {
 	if ($_SERVER['REQUEST_URI'] != find_url($url, $parent, 'relative')) {
 		redirect(find_url($url, $parent));
 	}

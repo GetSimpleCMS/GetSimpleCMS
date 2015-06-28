@@ -97,7 +97,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PLUGINS_MANAGEMENT'));
 		<h3><?php i18n('PLUGINS_MANAGEMENT'); ?></h3>
 		
 		<?php if ($counter > 0) { ?>
-			<table class="edittable">
+			<table class="edittable highlight">
 				<tr><th><?php i18n('PLUGIN_NAME'); ?></th><th><?php i18n('PLUGIN_DESC'); ?></th><th><?php i18n('STATUS'); ?></th></tr>
 				<?php echo $table; ?>
 			</table>

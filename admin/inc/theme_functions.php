@@ -26,6 +26,7 @@ function get_page_content() {
 	exec_action('content-top');
 	$content = strip_decode($content);
 	$content = exec_filter('content',$content);
+	if(getDef('GSCONTENTSTRIP',true)) $content = strip_content($content);
 	echo $content;
 	exec_action('content-bottom');
 }
@@ -48,6 +49,7 @@ function get_page_excerpt($len=200, $striphtml=true, $ellipsis = '...') {
 	if ($len<1) return '';
 	$content_e = strip_decode($content);
 	$content_e = exec_filter('content',$content_e);
+	if(getDef('GSCONTENTSTRIP',true)) $content_e = strip_content($content_e);	
 	echo getExcerpt($content_e, $len, $striphtml, $ellipsis);
 }
 
@@ -86,7 +88,6 @@ function get_page_meta_keywords($echo=true) {
 function get_page_meta_desc($echo=true) {
 	global $metad;
 	$myVar = encode_quotes(strip_decode($metad));
-	
 	if ($echo) {
 		echo $myVar;
 	} else {
@@ -267,26 +268,21 @@ function get_header($full=true) {
 	
 	// meta description	
 	if ($metad != '') {
-		$description = get_page_meta_desc(FALSE);
-	} 
+		$desc = get_page_meta_desc(FALSE);
+	}
 	else if(getDef('GSAUTOMETAD',true))
 	{
-		// get meta from content excerpt
-		if (function_exists('mb_substr')) { 
-			$description = trim(mb_substr(strip_tags(strip_decode($content)), 0, 160));
-		} else {
-			$description = trim(substr(strip_tags(strip_decode($content)), 0, 160));
-		}
-
-		$description = str_replace('"','', $description);
-		$description = str_replace("'",'', $description);
-		$description = preg_replace('/\n/', " ", $description);
-		$description = preg_replace('/\r/', " ", $description);
-		$description = preg_replace('/\t/', " ", $description);
-		$description = preg_replace('/ +/', " ", $description);
+		// use content excerpt, NOT filtered
+		$desc = strip_decode($content);
+		if(getDef('GSCONTENTSTRIP',true)) $desc = strip_content($desc);
+		$desc = cleanHtml($desc,array('style','script')); // remove unwanted elements that strip_tags fails to remove
+		$desc = getExcerpt($desc,160); // grab 160 chars
+		$desc = strip_whitespace($desc); // remove newlines, tab chars
+		$desc = encode_quotes($desc);
+		$desc = trim($desc);
 	}
 
-	if(!empty($description)) echo '<meta name="description" content="'.$description.'" />'."\n";
+	if(!empty($desc)) echo '<meta name="description" content="'.$desc.'" />'."\n";
 
 	// meta keywords
 	$keywords = get_page_meta_keywords(FALSE);

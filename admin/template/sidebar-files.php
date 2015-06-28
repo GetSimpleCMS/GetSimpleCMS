@@ -13,7 +13,7 @@ $path = (isset($_GET['path'])) ? $_GET['path'] : "";
 	
 	<?php exec_action("files-sidebar"); ?>
 
-<?php if (!defined('GSNOUPLOADIFY')) { ?>	
+<?php if (!getDef('GSNOUPLOADIFY',true)) { ?>	
 	<li class="upload" id="sb_uploadify" >
 		<div id="uploadify"></div>
 	<?php 
@@ -77,7 +77,7 @@ $path = (isset($_GET['path'])) ? $_GET['path'] : "";
 
 <?php 
 # show normal upload form if Uploadify is turned off 
-if (defined('GSNOUPLOADIFY')) { ?>
+if (getDef('GSNOUPLOADIFY',true)) { ?>
 	<form class="uploadform" action="upload.php?path=<?php echo $path; ?>" method="post" enctype="multipart/form-data">
 		<p><input type="file" name="file[]" id="file" style="width:220px;" multiple /></p>
 		<input type="hidden" name="hash" id="hash" value="<?php echo $SESSIONHASH; ?>" />

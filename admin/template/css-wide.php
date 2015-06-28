@@ -16,7 +16,7 @@
 	width:99%;
 }
 
-.wrapper .nav li:first-child {
+.wrapper .nav li:first-child, #sitename {
 	/* breathing space for tabs */
 	margin-left: 35px;
 }
@@ -29,6 +29,7 @@
 #maincontent{
 	/* wrapper for admin inputs */
 	width:80%;
+	/* margin-left: 35px; */
 }
 
 textarea, form input.title{

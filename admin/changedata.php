@@ -96,13 +96,13 @@ if (isset($_POST['submitted'])) {
 		$file = GSDATAPAGESPATH . $url .".xml";
 		
 		// format and clean the responses
-		if(isset($_POST['post-title'])) 			{	$title = safe_slash_html($_POST['post-title']);	}
-		if(isset($_POST['post-metak'])) 			{	$metak = safe_slash_html($_POST['post-metak']);	}
-		if(isset($_POST['post-metad'])) 			{	$metad = safe_slash_html($_POST['post-metad']);	}
+		if(isset($_POST['post-title'])) 			{	$title = var_out(xss_clean($_POST['post-title']));	}
+		if(isset($_POST['post-metak'])) 			{	$metak = safe_slash_html(strip_tags($_POST['post-metak']));	}
+		if(isset($_POST['post-metad'])) 			{	$metad = safe_slash_html(strip_tags($_POST['post-metad']));	}
 		if(isset($_POST['post-author'])) 			{	$author = safe_slash_html($_POST['post-author']);	}
 		if(isset($_POST['post-template'])) 		{ $template = $_POST['post-template']; }
 		if(isset($_POST['post-parent'])) 			{ $parent = $_POST['post-parent']; }
-		if(isset($_POST['post-menu'])) 				{ $menu = safe_slash_html($_POST['post-menu']); }
+		if(isset($_POST['post-menu'])) 				{ $menu = var_out(xss_clean($_POST['post-menu'])); }
 		if(isset($_POST['post-menu-enable'])) { $menuStatus = "Y"; } else { $menuStatus = ""; }
 		if(isset($_POST['post-private']) ) 		{ $private = safe_slash_html($_POST['post-private']); }
 		if(isset($_POST['post-content'])) 		{	$content = safe_slash_html($_POST['post-content']);	}
@@ -178,9 +178,9 @@ if (isset($_POST['submitted'])) {
 
 		exec_action('changedata-save');
 		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true' && $autoSaveDraft == true) {
-			XMLsave($xml, GSAUTOSAVEPATH.$url);
+			$status = XMLsave($xml, GSAUTOSAVEPATH.$url);
 		} else {
-			XMLsave($xml, $file);
+			$status = XMLsave($xml, $file);
 		}
 		
 		//ending actions
@@ -189,9 +189,11 @@ if (isset($_POST['submitted'])) {
 		
 		// redirect user back to edit page 
 		if (isset($_POST['autosave']) && $_POST['autosave'] == 'true') {
-			echo 'OK';
+			echo $status ? 'OK' : 'ERROR';
 		} else {
-			
+
+			if(!$status) redirect("edit.php?id=". $url ."&upd=edit-error&type=edit"); 
+
 			if ($_POST['redirectto']!='') {
 				$redirect_url = $_POST['redirectto'];
 			} else {

@@ -53,6 +53,10 @@ if(function_exists('mb_internal_encoding')) mb_internal_encoding("UTF-8"); // se
 /**
  *  GSCONFIG definitions
  */
+
+if(!defined('GSFRONT')) define('GSFRONT',1);
+if(!defined('GSBACK'))  define('GSBACK',2);
+if(!defined('GSBOTH'))  define('GSBOTH',3);
 if(!defined('GSSTYLEWIDE')) define('GSSTYLEWIDE','wide'); // wide style sheet
 if(!defined('GSSTYLE_SBFIXED')) define('GSSTYLE_SBFIXED','sbfixed'); // fixed sidebar
 
@@ -86,9 +90,12 @@ if(!is_frontend()){
 	}
 }
 
-if(getDef('GSNOFRAME',true) !== false){
-	// Adds X-Frame-Options to HTTP header, so that page can only be shown in an iframe of the same site.
-	header('X-Frame-Options: DENY'); // FF 3.6.9+ Chrome 4.1+ IE 8+ Safari 4+ Opera 10.5+	
+// Add X-Frame-Options to HTTP header, so that page can only be shown in an iframe of the same site.
+if(!defined('GSNOFRAME')) define('GSNOFRAME',true);
+if(getDef('GSNOFRAME') !== false){
+	if(getDef('GSNOFRAME') === GSBOTH) header_xframeoptions();
+	else if((getDef('GSNOFRAME') === true || getDef('GSNOFRAME') === GSBACK) && !is_frontend()) header_xframeoptions();
+	else if(getDef('GSNOFRAME') === GSFRONT && is_frontend()) header_xframeoptions();
 }
 
 /**

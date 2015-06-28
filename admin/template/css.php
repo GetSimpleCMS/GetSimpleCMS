@@ -2095,3 +2095,8 @@ a.disabled:visited {
 	text-decoration: none !important;
 	color: #CCC !important;	
 }
+
+/* override handle uicolor #FFFFFF, prevents invisible seperators */
+.cke_toolbar_separator {
+	box-shadow: 1px 0 1px rgba(0, 0, 0, 0.14) !important;
+}
