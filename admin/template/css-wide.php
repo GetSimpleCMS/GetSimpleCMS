@@ -16,7 +16,7 @@
 	width:99%;
 }
 
-.wrapper .nav li:first-child {
+.wrapper .nav li:first-child, #sitename {
 	/* breathing space for tabs */
 	margin-left: 35px;
 }
