@@ -21,7 +21,7 @@ if (get_filename_id() == 'load') {
 }
 
 ?>
-<h1 class="sitename"><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?> <i class="icon fa fa-external-link"></i></a></h1>
+<h1 id="sitename"><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); ?> <i class="icon fa fa-external-link"></i></a></h1>
 <ul class="nav <?php echo $plugin_class; ?>">
 
 <?php 

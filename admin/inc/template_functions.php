@@ -2253,5 +2253,4 @@ function generate_thumbnail($file, $sub_path = '', $out_file = null, $w = null, 
 	}
 }
 
-
 /* ?> */

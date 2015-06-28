@@ -6,44 +6,39 @@
  * @subpackage menus_functions.php
  */
 
+define('GSMENUNESTINDEX','nested');
+define('GSMENUFLATINDEX','flat');
+define('GSMENUINDEXINDEX','indices');
 
 /**
- * get nested menus from pages legacy function
- * ( optionally filtered by menustatus )
- * create parent hash table with references
- * build nested array tree
- * recurse over tree and add depth, order, numchildren, (path and url)
+ * build a nested menu array from pages array parent/menuorder
+ * ( optionally filter by menustatus )
+ * createa a parent hash table with references
+ * builds nested array tree
+ * recurses over tree and add depth, order, numchildren, (path and url)
  * @todo
  * create flat hash ref array for fast hash lookups ( like parent hash array but with refs to tree )
  * flat array ust be storable and restorable, refs must be rebuilt after form input and read from file.
  */
-function getMenuFromPages($pages = null, $inmenu = false){
+function importMenuFromPages($pages = null, $inmenu = false){
 	
 	if(!isset($page)) $pages = getPagesSortedByTitle();
 	// $pages           = getPagesSortedByMenu();
 	$pages           = $inmenu ? filterKeyValueMatch($pages,'menuStatus','Y') : null;
 	$parents         = getParentsHashTable($pages, true , true);
 	$flattree        = buildTreewHash($parents,'',false,true,'url');
-	// @todo when inmenu does not retain pages with broken paths, problem for menus that should probably still show them.
+	// @todo when inmenu, does not retain pages with broken paths, problem for menus that should probably still show them.
 	$nestary         = recurseJson($flattree);
 	
-	$nesttree['NESTED']  = &$flattree;
+	$nesttree[GSMENUNESTINDEX]  = &$flattree;
 	// $nesttree['FLAT']    = &$indexAry['flat'];
-	$nesttree['INDEX']   = $nestary['indices'];
+	$nesttree[GSMENUINDEXINDEX]   = $nestary[GSMENUINDEXINDEX];
 	// buildRefArray();
 	return $nesttree;
 }
 
-function getPagesSortedByTitle(){
-	return sortCustomIndexCallback(getpages(),'title','prepare_menuOrderParentTitle');
-}
-
-function getPagesSortedByMenu(){
-	return sortCustomIndex(getpages(),'menuOrder');
-}
-
 /**
- * builds a flat reference tree from a nested tree
+ * builds a flat reference map from a nested tree
  * @unused
  * @param  array $menu     nested array
  * @param  array $flattree destination array
@@ -62,16 +57,17 @@ function buildRefArrayRecursive($menu,$flattree = array()){
  * get nested array reference from flat index 
  * using flat index to resolve to nested
  * uses resolve_tree() to resolve flat path to nested
+ * @
  * @param  array &$menu  nested array
  * @param  str $id       flat index
  * @return array         reference to nested subarray
  */
 function &getRefArray(&$menu,$id){
-	if(isset($menu['FLAT']) && isset($menu['FLAT'][$id])) return $menu['FLAT'][$id];
-	$index = $menu['INDEX'][$id];
+	if(isset($menu[GSMENUFLATINDEX]) && isset($menu[GSMENUFLATINDEX][$id])) return $menu[GSMENUFLATINDEX][$id];
+	$index = $menu[GSMENUINDEXINDEX][$id];
 	$index = trim($index,'.');
 	$index = str_replace('.','.children.',$index);
-	$ref = &resolve_tree($menu['NESTED'],explode('.',$index));
+	$ref = &resolve_tree($menu[GSMENUNESTINDEX],explode('.',$index));
 	return $ref;
 }
 
@@ -83,39 +79,56 @@ function &getRefArray(&$menu,$id){
  * @return array         nested tree with flat reference array added
  */
 function buildRefArray(&$menu){
-	foreach($menu['INDEX'] as $key=>$index){
+	foreach($menu[GSMENUINDEXINDEX] as $key=>$index){
 		$index = trim($index,'.');
 		$index = str_replace('.','.children.',$index);
 		// _debugLog($key,$index);
-		$ref = &resolve_tree($menu['NESTED'],explode('.',$index));
-		if(isset($ref)) $menu['FLAT'][$key] = &$ref;
+		$ref = &resolve_tree($menu[GSMENUNESTINDEX],explode('.',$index));
+		if(isset($ref)) $menu[GSMENUFLATINDEX][$key] = &$ref;
 	}
 	return $menu;
 }
 
-function saveMenu($menuid,$data){
-	$menufile = '.json';
-	if(isset($data['FLAT'])) unset($data['FLAT']);
-	$status   = save_file(GSDATAOTHERPATH.'menu_'.$menuid,json_encode($data));
+/**
+ * save menu file
+ * @param  str $menuid menu id
+ * @param  array $data array of menu data
+ * @return bool        success
+ */
+function menuSave($menuid,$data){
+	$menufileext = '.json';
+	if(isset($data[GSMENUFLATINDEX])) unset($data[GSMENUFLATINDEX]);
+	$status = save_file(GSDATAOTHERPATH.'menu_'.$menuid.$menufileext,json_encode($data,true));
 	return $status;
 }
 
-function readMenu($menuid){
-	$menufile = '.json';
-	$menu     = read_file(GSDATAOTHERPATH.'menu_'.$menuid);
+/**
+ * read menu file
+ * @param  str $menuid menu id
+ * @return array menudata
+ * @return array menudata
+ */
+function menuRead($menuid){
+	$menufileext = '.json';
+	$menu     = read_file(GSDATAOTHERPATH.'menu_'.$menuid.$menufileext);
 	$menu     = json_decode($menu,true);
 	return $menu;
 }
 
-function menuOrderSave(){
-	global $pagesArray;
-	$menuOrder = json_decode($_POST['menuOrder'],true);
-	// debugLog($menuOrder);
-	$indexAry = recurseJson($menuOrder);
-	// debugLog($menuOrder);
-	debugLog($indexAry);
-	updatePagesMenuData($indexAry);
-	return $menuOrder;
+/**
+ * save basic json menu
+ * convert basic menu string to gs menu array
+ * @param  str $jsonmenu json string of menu data
+ * @return array gs menu data array
+ */
+function newMenuSave($menuid,$menu,$legacy = true){
+	$menu     = json_decode($menu,true);
+	_debugLog(__FUNCTION__,$menu);
+	$menudata = recurseJson($menu); // build full menu data
+	_debugLog(__FUNCTION__,$menudata);
+	if($legacy) exportMenuToPages($menudata); // legacy page support
+	$menudata[GSMENUNESTINDEX]=$menu;
+	return menuSave($menuid,$menudata);
 }
 
 function MenuOrderSave_OLD(){
@@ -140,8 +153,10 @@ function MenuOrderSave_OLD(){
 
 
 /**
+ * 
  * recurse a json menu object/array and add relative fields to it
  * adds url, path, depth, index, order nesting information
+ * 
  * array(
  *  'id' => 'index',
  *  'data' =>  array(
@@ -207,25 +222,23 @@ function recurseJson(&$array,$parent = null,$depth = 0,$index = 0,&$indexAry = a
 }
 
 /**
- * update page menu data from menu
+ * save menu data to page files, refresh page cache
+ * @uses  saveMenuDataToPage
  * @param  array $menu menu array
  */
-function updatePagesMenuData($menu){
-	
+function exportMenuToPages($menu){
 	$pages = getPages();
 	foreach($pages as $page){
 		$id = $page['url'];
-
 		// if not in menu wipe page data
 		if(!isset($menu['flat'][$id])){
-			storeMenuDataInPage($id);
+			saveMenuDataToPage($id);
 			continue;
 		}
 		// debugLog($menu['flat'][$id]);
-
 		$parent = $menu['flat'][$id]['parent'];
 		$order  = $menu['flat'][$id]['data']['index'];
-		storeMenuDataInPage($id,$parent,$order);
+		saveMenuDataToPage($id,$parent,$order);
 	}
 
 	// regen page cache
@@ -234,12 +247,13 @@ function updatePagesMenuData($menu){
 
 /**
  * set page data menu information
- * update page with parent and order, only if differs
+ * update page with parent and order, only if it differs
  * @param  str $pageid page id to save
  * @param  str $parent page parent
  * @param  int $order page order
+ * @return  bool success
  */
-function storeMenuDataInPage($pageid,$parent = '',$order =''){
+function saveMenuDataToPage($pageid,$parent = '',$order =''){
 	// do not save page if nothing changed
 	if((string)returnPageField($pageid,'parent') == $parent && (int)returnPageField($pageid,'menuOrder') == $order) return;
 
@@ -248,19 +262,8 @@ function storeMenuDataInPage($pageid,$parent = '',$order =''){
 		$data = getPageXML($pageid);
 		$data->parent->updateCData($parent);
 		$data->menuOrder->updateCData($order);
-		XMLsave($data,$file);
+		return XMLsave($data,$file);
 	}
-}
-
-/**
- * shortcut to get page menu title
- * if menu title not explicitly set fallback to page title
- * @param  str $slug page id
- * @return str page title
- */
-function getPageMenuTitle($slug){
-	$page = getPage($slug);
-	return ($page['menu'] == '' ? $page['title'] : $page['menu']);
 }
 
 // passes page id to callouts, can be used on native parenthash arrays like parenthashtable, where children are values of page references or array, keys are parents
@@ -510,110 +513,16 @@ function &resolve_tree(&$tree, $path) {
 	// return empty($path) ? $tree : resolve_tree($tree[$path[0]], array_slice($path, 1));
 }
 
-// unused, testing
-// pathing for arrays using delimited path or wildcards
-function path(&$array, $path, $default = NULL, $delimiter = '.')
-{
-    if ( ! is_array($array))
-    {
-        // This is not an array!
-        return $default;
-    }
-
-    if (is_array($path))
-    {
-        // The path has already been separated into keys
-        $keys = $path;
-    }
-    else
-    {
-        if (array_key_exists($path, $array))
-        {
-            // No need to do extra processing
-            return $array[$path];
-        }
-
-        if ($delimiter === NULL)
-        {
-            // Use the default delimiter
-            $delimiter = $delimiter;
-        }
-
-        // Remove starting delimiters and spaces
-        $path = ltrim($path, "{$delimiter} ");
-
-        // Remove ending delimiters, spaces, and wildcards
-        $path = rtrim($path, "{$delimiter} *");
-
-        // Split the keys by delimiter
-        $keys = explode($delimiter, $path);
-    }
-
-    do
-    {
-        $key = array_shift($keys);
-
-        if (ctype_digit($key))
-        {
-            // Make the key an integer
-            $key = (int) $key;
-        }
-
-        if (isset($array[$key]))
-        {
-            if ($keys)
-            {
-                if (is_array($array[$key]))
-                {
-                    // Dig down into the next part of the path
-                    $array = $array[$key];
-                }
-                else
-                {
-                    // Unable to dig deeper
-                    break;
-                }
-            }
-            else
-            {
-                // Found the path requested
-                return $array[$key];
-            }
-        }
-        elseif ($key === '*')
-        {
-            // Handle wildcards
-
-            $values = array();
-            foreach ($array as $arr)
-            {
-                if ($value = path($arr, implode('.', $keys)))
-                {
-                    $values[] = $value;
-                }
-            }
-
-            if ($values)
-            {
-                // Found the values requested
-                return $values;
-            }
-            else
-            {
-                // Unable to dig deeper
-                break;
-            }
-        }
-        else
-        {
-            // Unable to dig deeper
-            break;
-        }
-    }
-    while ($keys);
-
-    // Unable to find the value requested
-    return $default;
+/**
+ * shortcut to get page menu title
+ * if menu title not explicitly set fallback to page title
+ * @param  str $slug page id
+ * @return str page title
+ */
+function getPageMenuTitle($slug){
+	$page = getPage($slug);
+	return ($page['menu'] == '' ? $page['title'] : $page['menu']);
 }
+
 
 /* ?> */

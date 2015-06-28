@@ -301,3 +301,17 @@ function prepare_menuOrder($page,$key){
 function prepare_menuOrderParentTitle($page,$key){
 	return prepare_menuOrder($page,$page['menuOrder']) . ' ' . prepare_parentTitle($page,$key);
 }
+
+
+/**
+ * SORT WRAPPER FUNCS
+ * page sorts with predefined sort preparers
+ */
+
+function getPagesSortedByTitle(){
+	return sortCustomIndexCallback(getpages(),'title','prepare_menuOrderParentTitle');
+}
+
+function getPagesSortedByMenu(){
+	return sortCustomIndex(getpages(),'menuOrder');
+}

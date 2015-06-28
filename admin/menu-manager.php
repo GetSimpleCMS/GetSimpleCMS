@@ -28,7 +28,8 @@ if (isset($_POST['menuOrder'])) {
 		$menuid = _id($_POST['menuid']);
 	}
 
-	$status = save_file(GSDATAOTHERPATH . 'menu_' . $menuid . '.json', json_encode(menuOrderSave(), true));
+	// $status = save_file(GSDATAOTHERPATH . 'menu_' . $menuid . '.json', json_encode(menuOrderSave($_POST['menuOrder']), true));
+	$status   = newMenuSave($menuid,$_POST['menuOrder']);
 	$success = $status ? 'Success' : 'Error';
 }
 
@@ -123,18 +124,19 @@ $parents = getParentsHashTable();
 exec_action('menu-manager-extras');
 
 $regen = false;
-$usecache = false;
+$usecache = true;
 
-if($usecache) $tree = readMenu('default');
+if($usecache) $tree = menuRead('default');
+debugLog($tree);
 
 if ($regen || !$usecache) {
 	debugLog('tree not found');
-	$tree = getMenuFromPages();
+	$tree = importMenuFromPages();
 	_debugLog($tree);
 	// _debugLog($tree['INDEX']);
-	saveMenu('default', $tree);
+	menuSave('default', $tree);
 	buildRefArray($tree);
-	_debugLog($tree['FLAT']);
+	_debugLog($tree[GSMENUFLATINDEX]);
 } else {
 	buildRefArray($tree);
 	// _debugLog($tree['FLAT']);
@@ -175,7 +177,8 @@ if ($regen || !$usecache) {
 // $tree = json_decode($tree,true);
 // $status = save_file(GSDATAOTHERPATH.'menu_'.$menufile,json_encode($tree,true));
 
-$str = getMenuTree($tree['NESTED']);
+_debugLog($tree[GSMENUNESTINDEX]);
+$str = getMenuTree($tree[GSMENUNESTINDEX]);
 
 echo '<div class="rightsec">';
 echo '<div id="menu-order-nestable" class="dd">' . $str . '</div>';

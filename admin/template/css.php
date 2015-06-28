@@ -194,7 +194,7 @@ input[type="submit"] {
 	border: none;
 }
 
-.header .sitename .icon{
+.header #sitename .icon{
 	font-size: 10px;
 	opacity: .5;
 }
