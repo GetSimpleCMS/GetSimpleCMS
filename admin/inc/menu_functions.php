@@ -26,13 +26,13 @@ function importMenuFromPages($pages = null, $inmenu = false){
 	// $pages           = getPagesSortedByMenu();
 	$pages           = $inmenu ? filterKeyValueMatch($pages,'menuStatus','Y') : null;
 	$parents         = getParentsHashTable($pages, true , true);
-	$flattree        = buildTreewHash($parents,'',false,true,'url');
+	$tree            = buildTreewHash($parents,'',false,true,'url');
 	// @todo when inmenu, does not retain pages with broken paths, problem for menus that should probably still show them.
-	$nestary         = recurseJson($flattree);
+	$nestary         = recurseJson($tree); // recurse the tree and add stuff
 	
-	$nesttree[GSMENUNESTINDEX]  = &$flattree;
-	// $nesttree['FLAT']    = &$indexAry['flat'];
-	$nesttree[GSMENUINDEXINDEX]   = $nestary[GSMENUINDEXINDEX];
+	$nesttree[GSMENUNESTINDEX]  = &$tree;
+	$nesttree[GSMENUFLATINDEX]  = &$nestary[GSMENUFLATINDEX];
+	$nesttree[GSMENUINDEXINDEX] = $nestary[GSMENUINDEXINDEX];
 	// buildRefArray();
 	return $nesttree;
 }
@@ -98,7 +98,7 @@ function buildRefArray(&$menu){
 function menuSave($menuid,$data){
 	$menufileext = '.json';
 	if(isset($data[GSMENUFLATINDEX])) unset($data[GSMENUFLATINDEX]);
-	$status = save_file(GSDATAOTHERPATH.'menu_'.$menuid.$menufileext,json_encode($data,true));
+	$status = save_file(GSDATAOTHERPATH.'menu_'.$menuid.$menufileext,json_encode($data));
 	return $status;
 }
 
@@ -123,11 +123,12 @@ function menuRead($menuid){
  */
 function newMenuSave($menuid,$menu,$legacy = true){
 	$menu     = json_decode($menu,true);
-	_debugLog(__FUNCTION__,$menu);
 	$menudata = recurseJson($menu); // build full menu data
+	$menudata[GSMENUNESTINDEX] = $menu;
+	_debugLog(__FUNCTION__,$menu);
 	_debugLog(__FUNCTION__,$menudata);
 	if($legacy) exportMenuToPages($menudata); // legacy page support
-	$menudata[GSMENUNESTINDEX]=$menu;
+	// $menudata[GSMENUNESTINDEX]=$menudata[GSMENUFLATINDEX];
 	return menuSave($menuid,$menudata);
 }
 
@@ -155,9 +156,21 @@ function MenuOrderSave_OLD(){
 /**
  * 
  * recurse a json menu object/array and add relative fields to it
- * adds url, path, depth, index, order nesting information
  * 
- * array(
+ * adds url, path, depth, index, order nesting information
+ * reindex as assoc array using 'id'
+ * children subarray has same structure as roots
+ *
+ * input array (REF)
+ *
+ *  [0] = array(
+ *    'id' => 'index',
+ *    'children' => array()
+ *  );
+ * 
+ * output array (REF)
+ * 
+ * ['index'] = array(
  *  'id' => 'index',
  *  'data' =>  array(
  *    'url' => '/dev/getsimple/master/',
@@ -170,6 +183,9 @@ function MenuOrderSave_OLD(){
  *  'numchildren' => 1,
  *  'children' => array()
  * );
+ *
+ * returns a flat array containing flat references
+ * and an indices array containing indexes and nested array paths
  * 
  * @param  array  &$array    reference to array, so values can be refs
  * @param  str     $parent   parent for recursion
@@ -195,25 +211,35 @@ function recurseJson(&$array,$parent = null,$depth = 0,$index = 0,&$indexAry = a
 		if(isset($value['id'])){
 			$order++;
 			$index++;
+			
+			// skip rekeyed copies		
+			// if(isset($value['data'])) continue;
+
+			$id = $value['id'];
 
 			$value['parent']        = isset($parent) ? $parent : '';
 			$value['data']          = array();
-			$value['data']['url']   = generate_url($value['id']);
-			$value['data']['path']  = generate_permalink($value['id'],'%path%/%slug%');
+			$value['data']['url']   = generate_url($id);
+			$value['data']['path']  = generate_permalink($id,'%path%/%slug%');
 			$value['data']['depth'] = $depth;
 			$value['data']['index'] = $index;
 			$value['data']['order'] = $order;
-			
-			$indexAry['flat'][$value['id']] = &$value; // flat cannot be saved to json because of references
-			// create a indices to paths, so we can rebuild flat array references on json load, if serializing this is not needed
-			$indexAry['indices'][$value['id']] = implode('.',$indexAry['currpath']).'.'.$value['id'];
 
-			if(isset($value['children'])){
-				$value['numchildren'] = count($value['children']);
-				$children = &$value['children'];
-				recurseJson($children,$value['id'],$depth,$index,$indexAry);
-			} else $value['numchildren'] = 0;
+			// rekey array
+			$array[$id]  = $value;
+			// unset($array[$key]);
+
+			$indexAry['flat'][$id] = &$array[$id]; // flat cannot be saved to json because of references
+			// create a indices to paths, so we can rebuild flat array references on json load, if serializing this is not needed
+			$indexAry['indices'][$id] = implode('.',$indexAry['currpath']).'.'.$id;
+
+			if(isset($array[$id]['children'])){
+				$array[$id]['numchildren'] = count($array[$id]['children']);
+				$children = &$array[$id]['children'];
+				recurseJson($children,$id,$depth,$index,$indexAry);
+			} else $array[$id]['numchildren'] = 0;
 		}
+
 	}
 
 	array_pop($indexAry['currpath']);
@@ -228,6 +254,10 @@ function recurseJson(&$array,$parent = null,$depth = 0,$index = 0,&$indexAry = a
  */
 function exportMenuToPages($menu){
 	$pages = getPages();
+	if(!$menu){ 
+		debugLog('no menu to save');
+		return;
+	}
 	foreach($pages as $page){
 		$id = $page['url'];
 		// if not in menu wipe page data
@@ -449,7 +479,7 @@ function buildTree(array $elements, $parentId = '') {
 }
 
 /**
- * builds nested array from parent hash array
+ * builds nested array from parent hash table array
  * 
  * @param  array  $elements     source array
  * @param  string  $parentId    starting parent

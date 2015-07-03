@@ -990,7 +990,7 @@ function getPagesRow($page,$level,$index,$parent,$children){
 
 	// add delete buttons, exclude index page
 	if ($page['url'] != 'index' ) {
-		$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. cl($page['title']) .'" >&times;</a></td>';
+		$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. var_out($page['title']) .'" >&times;</a></td>';
 	} else {
 		$menu .= '<td class="delete" ></td>';
 	}

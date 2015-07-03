@@ -28,8 +28,8 @@ if (isset($_POST['menuOrder'])) {
 		$menuid = _id($_POST['menuid']);
 	}
 
-	// $status = save_file(GSDATAOTHERPATH . 'menu_' . $menuid . '.json', json_encode(menuOrderSave($_POST['menuOrder']), true));
-	$status   = newMenuSave($menuid,$_POST['menuOrder']);
+	// $status = save_file(GSDATAOTHERPATH . 'menu_' . $menuid . '.json', json_encode(menuOrderSave($_POST['menuOrder'])));
+	$status  = newMenuSave($menuid,$_POST['menuOrder']);
 	$success = $status ? 'Success' : 'Error';
 }
 
@@ -123,7 +123,7 @@ $parents = getParentsHashTable();
 
 exec_action('menu-manager-extras');
 
-$regen = false;
+$regen    = true;
 $usecache = true;
 
 if($usecache) $tree = menuRead('default');
@@ -132,11 +132,14 @@ debugLog($tree);
 if ($regen || !$usecache) {
 	debugLog('tree not found');
 	$tree = importMenuFromPages();
-	_debugLog($tree);
+	// _debugLog($tree);
 	// _debugLog($tree['INDEX']);
-	menuSave('default', $tree);
+	// menuSave('default', $tree);
 	buildRefArray($tree);
-	_debugLog($tree[GSMENUFLATINDEX]);
+	_debugLog($tree);
+	// $status  = newMenuSave('default',json_encode($tree));
+	$success = $status ? 'Success' : 'Error';
+	debugLog('tree import:'.$success);
 } else {
 	buildRefArray($tree);
 	// _debugLog($tree['FLAT']);
@@ -175,7 +178,7 @@ if ($regen || !$usecache) {
 // $menufile = 'serialized.json';
 // $tree = read_file(GSDATAOTHERPATH.'menu_'.$menufile);
 // $tree = json_decode($tree,true);
-// $status = save_file(GSDATAOTHERPATH.'menu_'.$menufile,json_encode($tree,true));
+// $status = save_file(GSDATAOTHERPATH.'menu_'.$menufile,json_encode($tree));
 
 _debugLog($tree[GSMENUNESTINDEX]);
 $str = getMenuTree($tree[GSMENUNESTINDEX]);
@@ -216,8 +219,8 @@ echo '<li id="nestable-template" class="dd-item clearfix" data-id="template"><di
 				$("#menu-order").disableSelection();
 
 				$('.dd').nestable({
-					expandBtnHTML : '<button data-action="expand"><i class="tree-expander fa fa-play fa-fw"></i></button>',
-					collapseBtnHTML : '<button data-action="collapse"><i class="tree-expander fa fa-play fa-fw fa-rotate-90"></i></button>'
+					expandBtnHTML : '<button   class="borderless" data-action="expand"><i class="tree-expander fa fa-play fa-fw"></i></button>',
+					collapseBtnHTML : '<button class="borderless" data-action="collapse"><i class="tree-expander fa fa-play fa-fw fa-rotate-90"></i></button>'
 				});
 
 				$('.dd').on('change', function() {

@@ -3442,6 +3442,11 @@ kbd
 	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;		
 }
 
+.borderless{
+	border:none;
+	box-shadow: none;
+}
+
 /* Allow Font Awesome Icons in lieu of jQuery UI and only apply when using a FA icon */
 .ui-icon[class*=" icon-"] {
     /* Remove the jQuery UI Icon */
@@ -3461,6 +3466,8 @@ kbd
     /* Bump it - jQuery UI is -8px */
     margin-left: -7px;
 }
+
+
 
 /* gstree styles */
 .tree-roottoggle .label{
