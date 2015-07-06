@@ -838,6 +838,13 @@ form textarea {
 	 -o-tab-size:4; 
 }
 
+form input.text:disabled,
+form select.text:disabled,
+form textarea.text:disabled {
+	color: #808080;
+	background: #eeeeee;
+}
+
 form input[readonly], form select[readonly], form textarea[readonly] {
 	background: #eeeeee;
 	border: 1px solid #999;
