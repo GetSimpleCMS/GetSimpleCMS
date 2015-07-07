@@ -143,7 +143,7 @@ get_template('header');
 		</div>		
 		<?php exec_action(get_filename_id().'-body'); ?>		
 		<?php if ($counter > 0) { ?>
-			<table class="edittable">
+			<table class="edittable highlight">
 				<thead>
 					<tr><th><?php i18n('PLUGIN_NAME'); ?></th><th><?php i18n('PLUGIN_DESC'); ?></th><th><?php i18n('STATUS'); ?></th></tr>
 				</thead>

@@ -197,6 +197,14 @@ else {
 	if(!isset($load['login']))    $load['login']    = false; // load login system
 }
 
+// Add X-Frame-Options to HTTP header, so that page can only be shown in an iframe of the same site.
+if(!defined('GSNOFRAME')) define('GSNOFRAME',true);
+if(getDef('GSNOFRAME') !== false){
+	if(getDef('GSNOFRAME') === GSBOTH) header_xframeoptions();
+	else if((getDef('GSNOFRAME') === true || getDef('GSNOFRAME') === GSBACK) && !is_frontend()) header_xframeoptions();
+	else if(getDef('GSNOFRAME') === GSFRONT && is_frontend()) header_xframeoptions();
+}
+
 /*
  * Apply default definitions
  */

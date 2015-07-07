@@ -25,6 +25,7 @@ function get_page_content() {
 	exec_action('content-top'); // @hook content-top before get content
 	$content = strip_decode(getPageGlobal('content'));
 	$content = exec_filter('content',$content); // @filter content (str) filter page content
+	if(getDef('GSCONTENTSTRIP',true)) $content = strip_content($content);
 	echo $content;
 	exec_action('content-bottom');  // @hook content-bottom after get content
 }
@@ -47,6 +48,7 @@ function get_page_excerpt($len=200, $striphtml=true, $ellipsis = '...') {
 	if ($len<1) return '';
 	$content_e = strip_decode($content);
 	$content_e = exec_filter('content',$content_e); // @filter content (str) filter page content in get_page_excerpt
+	if(getDef('GSCONTENTSTRIP',true)) $content_e = strip_content($content_e);	
 	echo getExcerpt($content_e, $len, $striphtml, $ellipsis);
 	}
 
@@ -102,29 +104,23 @@ function get_page_meta_keywords_list($echo = true, $asarray = false){
  */
 function get_page_meta_desc($echo=true) {
 	$metad = getPageGlobal('metad');
-	$description = '';
-
+	$desc = '';
 	if ($metad != '') {
-		$description = encode_quotes(strip_decode($metad));
+		$desc = encode_quotes(strip_decode($metad));
 	}
 	else if(getDef('GSAUTOMETAD',true))
 	{
-		// get meta from content excerpt
-		if (function_exists('mb_substr')) { 
-			$description = trim(mb_substr(strip_tags(strip_decode($content)), 0, 160));
-		} else {
-			$description = trim(substr(strip_tags(strip_decode($content)), 0, 160));
-		}
-
-		$description = str_replace('"','', $description);
-		$description = str_replace("'",'', $description);
-		$description = preg_replace('/\n/', " ", $description);
-		$description = preg_replace('/\r/', " ", $description);
-		$description = preg_replace('/\t/', " ", $description);
-		$description = preg_replace('/ +/', " ", $description);
+		// use content excerpt, NOT filtered
+		$desc = strip_decode($content);
+		if(getDef('GSCONTENTSTRIP',true)) $desc = strip_content($desc);
+		$desc = cleanHtml($desc,array('style','script')); // remove unwanted elements that strip_tags fails to remove
+		$desc = getExcerpt($desc,160); // grab 160 chars
+		$desc = strip_whitespace($desc); // remove newlines, tab chars
+		$desc = encode_quotes($desc);
+		$desc = trim($desc);
 	}
 	
-	$str = exec_filter('metad',$description); // @filter metad (str) meta description in get_page_meta_desc
+	$str = exec_filter('metad',$desc); // @filter metad (str) meta description in get_page_meta_desc
 
 	return echoReturn($str,$echo);	
 }

@@ -3052,4 +3052,44 @@ if (!function_exists('array_column')) {
 }
 
 
+/**
+ * sends an x-frame-options heaeder
+ * @since  3.4
+ * @param  string $value header value to send, default `DENY`
+ */
+function header_xframeoptions($value = null){
+	if(!isset($value)){
+		if(getDef('GSNOFRAMEDEFAULT',true)) $value = getDef('GSNOFRAMEDEFAULT');
+		else $value = 'DENY';
+	}	
+	header('X-Frame-Options: ' . $value); // FF 3.6.9+ Chrome 4.1+ IE 8+ Safari 4+ Opera 10.5+
+}
+
+
+/**
+ * strip non printing white space from string
+ * eg. strip_whitespace("Line   1\n\tLine 2\r\t\tLine 3  \r\n\t\t\tLine 4\n  ");
+ * @since 3.3.6
+ * @param  str $str     input string
+ * @param  string $replace replacement character
+ * @return str          new string
+ */
+function strip_whitespace($str,$replace = ' '){
+	$chars = array("\r\n", "\n", "\r", "\t");
+	$str   = str_replace($chars, $replace, $str);
+	return preg_replace('/['.$replace.']+/', $replace, $str);
+}
+
+/**
+ * strip shortcodes based on pattern
+ * @since  3.3.6
+ * @param  str $str     input string
+ * @param  string $pattern regex pattern to strip
+ * @return str          new string
+ */
+function strip_content($str, $pattern = '/[({]%.*?%[})]/'){
+	if(getDef('GSCONTENTSTRIPPATTERN',true)) $pattern = getDef('GSCONTENTSTRIPPATTERN');
+	return 	preg_replace($pattern, '', $str);
+}
+
 /* ?> */

@@ -27,6 +27,11 @@ body .header{
 	width:100%;
 }
 
+.wrapper .nav li:first-child, #sitename {
+ 	/* breathing space for tabs */
+ 	margin-left: 35px;
+ }
+
 .wrapper h1 {
 	/*margin-left: 15px;*/
 }
@@ -62,6 +67,7 @@ body .header{
 	/* wrapper for admin inputs */
 	width:100%;
 	float:left;
+	/* margin-left: 35px; */
 }
 
 #maincontent .main {
