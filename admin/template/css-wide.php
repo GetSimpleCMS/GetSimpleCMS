@@ -27,11 +27,6 @@ body .header{
 	width:100%;
 }
 
-.wrapper .nav li:first-child, #sitename {
- 	/* breathing space for tabs */
- 	margin-left: 35px;
- }
-
 .wrapper h1 {
 	/*margin-left: 15px;*/
 }
