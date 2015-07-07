@@ -384,16 +384,14 @@ jQuery(document).ready(function () {
 		_this = $(this);
 		var link = $.parseHTML('<div style="display:inline-block;vertical-align:middle;"><a class="label label-ghost right" href="' + _this.get(0).href + '" data-fileurl="'+ _this.get(0).href +'">'+i18n("SELECT_FILE")+'</a></div>');
 		if(getUrlParam('CKEditorFuncNum')){
-			$(link).uploadCKEBrowseThumb();
-			$('.fancybox-title').append($(link));
-		}	
-		else if (getUrlParam('browse') !== undefined){
-			$(link).uploadCustomBrowseThumb();		
+			$(link).find('a').uploadCKEBrowseThumb();
 			$('.fancybox-title').append($(link));
 		}
-			
+		else if (getUrlParam('browse') !== undefined){
+			$(link).find('a').uploadCustomBrowseThumb();		
+			$('.fancybox-title').append($(link));
+		}
 	}
-
 
 	$.fn.uploadCustomBrowseThumb = function(){
 		$(this).on('click',function(e){
@@ -1068,7 +1066,7 @@ jQuery(document).ready(function () {
 			scrolling: 'auto'
 		});
 
-		// used for images
+		// used for images in upload filebrowser "select file"
 		$('a[rel*=fancybox_i]').fancybox({
 			afterShow: function(e) {				
 				$(this).uploadBrowseThumb();
