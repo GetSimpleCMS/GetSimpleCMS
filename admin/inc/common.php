@@ -90,6 +90,7 @@ $GS_definitions = array(
 	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
 	'GSINDEXSLUG'          => 'index',                        // (str) slug to use as index when no slug provided
 	'GSPLUGINORDER'        => '',                             // (str) csv list of live_plugins keys to load first and in order, kludge and not supported
+	'GSNOFRAME'            => true,                           // (mixed) allow GS to be loaded in frames via x-frame policy
 	# STYLES -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSSTYLE'              => 'wide,sbfixed',                 // (str-csv) default style modifiers
 	'GSWIDTH'              => '1024px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width
@@ -195,14 +196,6 @@ else {
 	if(!isset($load['plugin']))   $load['plugin']   = true;   // load plugin system
 	if(!isset($load['template'])) $load['template'] = true; // load template system
 	if(!isset($load['login']))    $load['login']    = false; // load login system
-}
-
-// Add X-Frame-Options to HTTP header, so that page can only be shown in an iframe of the same site.
-if(!defined('GSNOFRAME')) define('GSNOFRAME',true);
-if(getDef('GSNOFRAME') !== false){
-	if(getDef('GSNOFRAME') === GSBOTH) header_xframeoptions();
-	else if((getDef('GSNOFRAME') === true || getDef('GSNOFRAME') === GSBACK) && !is_frontend()) header_xframeoptions();
-	else if(getDef('GSNOFRAME') === GSFRONT && is_frontend()) header_xframeoptions();
 }
 
 /*
@@ -311,9 +304,11 @@ if(getDef('GSDEFAULTPAGE',true)){
 	$cookie_redirect = getDef('GSDEFAULTPAGE');    // legacy redirect
 }
 
-if(getDef('GSNOFRAME',true) !== false){
-	// Adds X-Frame-Options to HTTP header, so that page can only be shown in an iframe of the same site.
-	header('X-Frame-Options: DENY'); // FF 3.6.9+ Chrome 4.1+ IE 8+ Safari 4+ Opera 10.5+	
+// Add X-Frame-Options to HTTP header, so that page can only be shown in an iframe of the same site.
+if(getDef('GSNOFRAME') !== false){
+	if(getDef('GSNOFRAME') === GSBOTH) header_xframeoptions();
+	else if((getDef('GSNOFRAME') === true || getDef('GSNOFRAME') === GSBACK) && !is_frontend()) header_xframeoptions();
+	else if(getDef('GSNOFRAME') === GSFRONT && is_frontend()) header_xframeoptions();
 }
 
 /**
