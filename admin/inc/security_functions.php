@@ -66,7 +66,8 @@ function antixss($str){
 
 	foreach($elem as $e) {
 		$regex = '<'.$e.'(\s+[a-z][a-z\-]*\s*=\s*(\'[^\']*\'|"[^"]*"|[^\'">][^\s>]*))*\s*>.*?<\/'.$e.'\s*>';
-
+	}
+	
 	// if($strdirty !== $str) debugLog("string cleaned: removed ". (strlen($strdirty) - strlen($str)) .' chars');
 
 	return $str;
@@ -329,4 +330,5 @@ function validImageFilename($file){
 	$image_exts = array('jpg','jpeg','gif','png');
 	return in_array(getFileExtension($file),$image_exts);
 }
+
 /* ?> */
