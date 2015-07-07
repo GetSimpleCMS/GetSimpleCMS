@@ -66,8 +66,9 @@ function antixss($str){
 
 	foreach($elem as $e) {
 		$regex = '<'.$e.'(\s+[a-z][a-z\-]*\s*=\s*(\'[^\']*\'|"[^"]*"|[^\'">][^\s>]*))*\s*>.*?<\/'.$e.'\s*>';
+    	$str   = preg_replace('#'.$regex.'#is', '', $str);
 	}
-	
+
 	// if($strdirty !== $str) debugLog("string cleaned: removed ". (strlen($strdirty) - strlen($str)) .' chars');
 
 	return $str;
