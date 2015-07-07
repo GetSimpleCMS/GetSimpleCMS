@@ -16,19 +16,19 @@ login_cookie_check();
 
 exec_action('load-menu-manager');
 
-# save page priority order
+# save menu
 if (isset($_POST['menuOrder'])) {
 	if (trim($_POST['menuOrder']) == '') {
 		die('no data');
 	}
 
+	// check menuid else default
 	if (!isset($_POST['menuid'])) {
 		$menuid = 'default';
 	} else {
 		$menuid = _id($_POST['menuid']);
 	}
 
-	// $status = save_file(GSDATAOTHERPATH . 'menu_' . $menuid . '.json', json_encode(menuOrderSave($_POST['menuOrder'])));
 	$status  = newMenuSave($menuid,$_POST['menuOrder']);
 	$success = $status ? 'Success' : 'Error';
 }

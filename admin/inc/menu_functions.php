@@ -9,6 +9,7 @@
 define('GSMENUNESTINDEX','nested');
 define('GSMENUFLATINDEX','flat');
 define('GSMENUINDEXINDEX','indices');
+define('GSMENULEGACY',true);
 
 /**
  * build a nested menu array from pages array parent/menuorder
@@ -22,9 +23,9 @@ define('GSMENUINDEXINDEX','indices');
  */
 function importMenuFromPages($pages = null, $inmenu = false){
 	
-	if(!isset($page)) $pages = getPagesSortedByTitle();
+	if(!isset($page)) $pages = getPagesSortedByMenuTitle();
 	// $pages           = getPagesSortedByMenu();
-	$pages           = $inmenu ? filterKeyValueMatch($pages,'menuStatus','Y') : null;
+	$pages           = $inmenu ? filterKeyValueMatch($pages,'menuStatus','Y') : $pages;
 	$parents         = getParentsHashTable($pages, true , true);
 	$tree            = buildTreewHash($parents,'',false,true,'url');
 	// @todo when inmenu, does not retain pages with broken paths, problem for menus that should probably still show them.
@@ -121,13 +122,13 @@ function menuRead($menuid){
  * @param  str $jsonmenu json string of menu data
  * @return array gs menu data array
  */
-function newMenuSave($menuid,$menu,$legacy = true){
+function newMenuSave($menuid,$menu){
 	$menu     = json_decode($menu,true);
 	$menudata = recurseJson($menu); // build full menu data
 	$menudata[GSMENUNESTINDEX] = $menu;
 	_debugLog(__FUNCTION__,$menu);
 	_debugLog(__FUNCTION__,$menudata);
-	if($legacy) exportMenuToPages($menudata); // legacy page support
+	if(getDef('GSMENULEGACY',true)) exportMenuToPages($menudata); // legacy page support
 	// $menudata[GSMENUNESTINDEX]=$menudata[GSMENUFLATINDEX];
 	return menuSave($menuid,$menudata);
 }
@@ -375,12 +376,15 @@ function getMenuTreeMin($parents,$str='',$inner = 'treeCalloutInner',$outer = 't
 }
 
 function treeCalloutInner($id,$level,$index = 1,$order = 0,$open = true){
-	$child = getPage($id);
-	$debug = '<strong>'.$index.'.'.$level.'.'.$order.'</strong>';
-	
-	$class = $child['menuStatus'] == 'Y' ? ' menu' : '';
-	
-	$str = $open ? '<li class="dd-item clearfix'.$class.'" data-id="'.$child['url'].'"><div class="dd-handle"> '.getPageMenuTitle($child['url']).'<div class="itemtitle"><em>'.$child['title'].'</em></div></div>' : '</li>';
+	$child     = getPage($id);
+	$menuTitle = getPageMenuTitle($child['url']);
+	$pageTitle = $child['title'];
+	// $pageTitle = '<strong>'.$child['title'].'.'.$level.'.'.$order.'</strong>';
+	$pageTitle = $child['title'].'.'.$child['menuOrder'] .'.'.$child['menuStatus'];
+	_debugLog($id,$child['menuStatus']);
+	$class     = $child['menuStatus'] == 'Y' ? ' menu' : ' nomenu';
+
+	$str = $open ? '<li class="dd-item clearfix" data-id="'.$child['url'].'"><div class="dd-itemwrap '.$class.'"><div class="dd-handle"> '.$menuTitle.'<div class="itemtitle"><em>'.$pageTitle.'</em></div></div></div>' : '</li>';
 	return $str;
 }
 

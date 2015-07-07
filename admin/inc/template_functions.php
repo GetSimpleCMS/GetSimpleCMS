@@ -23,7 +23,7 @@ function get_template($name, $title='** Change Me - Default Page Title **') {
 	$file = "template/" . $name . ".php";
 	include($file);
 	$template = ob_get_contents();
-	ob_end_clean(); 
+	ob_end_clean();
 	echo $template;
 }
 

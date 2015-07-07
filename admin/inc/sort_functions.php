@@ -308,7 +308,7 @@ function prepare_menuOrderParentTitle($page,$key){
  * page sorts with predefined sort preparers
  */
 
-function getPagesSortedByTitle(){
+function getPagesSortedByMenuTitle(){
 	return sortCustomIndexCallback(getpages(),'title','prepare_menuOrderParentTitle');
 }
 

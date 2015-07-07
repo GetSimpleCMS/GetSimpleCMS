@@ -2740,6 +2740,7 @@ h5 .crumbs, div.h5 .crumbs {
 	opacity: 1;
 }
 
+/* menu manager */
 .wrapper #maincontent ul#menu-order {
 	list-style: none;
 	margin: 0 0 25px 0;
@@ -2770,6 +2771,13 @@ h5 .crumbs, div.h5 .crumbs {
     border-radius: 0;
 }
 
+#menu-manager li .dd-itemwrap.menu {
+	color: #666;
+}	
+#menu-manager li .dd-itemwrap {
+	color: #aaa;
+}	
+
 #menu-order li:hover,
 #menu-order-nestable li .dd-handle:hover {
 	border: 1px solid #ccc;
@@ -2782,7 +2790,6 @@ h5 .crumbs, div.h5 .crumbs {
 #menu-order-nestable li .itemtitle,
 .dd-dragel li .itemtitle {
 	float: right;
-	color: #666;
 }
 
 .dd-dragel {

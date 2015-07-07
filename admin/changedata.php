@@ -77,7 +77,7 @@ if (isset($_POST['submitted'])) {
 	if(isset($_POST['post-parent'])) 			{ $data['parent']      = $_POST['post-parent']; }
 	if(isset($_POST['post-menu'])) 				{ $data['menu']        = safe_slash_html($_POST['post-menu']); }
 	if(isset($_POST['post-menu-enable'])) 		{ $data['menuStatus']  = "Y"; } else { $menuStatus = ""; }
-	if(isset($_POST['post-menu-order'])) 		{ $data['menuOrder']   = is_numeric($_POST['post-menu-order']) ? $_POST['post-menu-order'] : "0"; }
+	if(isset($_POST['post-menu-order'])) 		{ $data['menuOrder']   = is_numeric($_POST['post-menu-order']) ? $_POST['post-menu-order'] : ""; }
 	if(isset($_POST['post-private']) ) 			{ $data['private']     = safe_slash_html($_POST['post-private']); }
 	// meta
 	if(isset($_POST['post-metak'])) 			{ $data['meta']        = $metak = safe_slash_html($_POST['post-metak']);	}
