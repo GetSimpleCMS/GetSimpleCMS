@@ -294,8 +294,9 @@ $userheading = empty($userid) ? "<span>/ ". i18n_r('NEW_USER') ."</span>" : "<sp
 				</p>
 			</div>
 			<div class="clear"></div>
-			<p class="inline" ><input name="show_htmleditor" id="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<label for="show_htmleditor" ><?php i18n('ENABLE_HTML_ED');?></label></p>
-			
+			<div class="widesec">
+				<p class="inline" ><input name="show_htmleditor" id="show_htmleditor" type="checkbox" value="1" <?php echo $editorchck; ?> /> &nbsp;<label for="show_htmleditor" ><?php i18n('ENABLE_HTML_ED');?></label></p>
+			</div>
 			<?php
 				if($editing) exec_action('profile-extras-edit'); // @hook profile-extras-edit extra profile settings when editing existing users
 				if($adding)  exec_action('profile-extras-add');  // @hook profile-extras-add extra profile settings when  adding new user
@@ -304,7 +305,7 @@ $userheading = empty($userid) ? "<span>/ ". i18n_r('NEW_USER') ."</span>" : "<sp
 				exec_action('profile-extras'); // @hook profile-extras extra profile settings
 			?>
 			
-			<p style="margin:0px 0 5px 0;font-size:12px;color:#999;" ><?php $adding === true ? i18n('PROVIDE_PASSWORD') : i18n('ONLY_NEW_PASSWORD');?>:</p>
+			<p class="section" style="margin:0px 0 5px 10px;font-size:12px;color:#999;" ><?php $adding === true ? i18n('PROVIDE_PASSWORD') : i18n('ONLY_NEW_PASSWORD');?>:</p>
 			<div class="leftsec">
 				<p><label for="sitepwd" ><?php $adding === true ? i18n('PASSWORD') : i18n('NEW_PASSWORD');?>:</label><input autocomplete="off" class="text" id="sitepwd" name="sitepwd" type="password" value="" /></p>
 			</div>

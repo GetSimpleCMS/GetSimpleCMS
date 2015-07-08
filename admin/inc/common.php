@@ -132,7 +132,7 @@ $GS_definitions = array(
 	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else `nodraft` or `draft` only
 	'GSDRAFTSTACKDEFAULT'  => true,                           // (bool) default page stack editing to drafts if true
 	'GSSDRAFTSPUBLISHEDTAG'=> true,                           // (bool) show published label on non draft pages if true
-	'GSAUTOSAVE'           => false,                          // (int)  auto save enabled, disabled if false, only used for drafts currently
+	'GSAUTOSAVE'           => false,                          // (bool) auto save enabled, disabled if false, only used for drafts currently
 	'GSAUTOSAVEINTERVAL'   => 6,                              // (int)  auto save interval in seconds,  only used for drafts currently
 	# IMAGES -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSIMAGEWIDTH'         => 200,                            // (int) thumbnail size

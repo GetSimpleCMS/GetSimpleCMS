@@ -187,10 +187,12 @@ get_template('header');
 				</p>
 			</div>
 			<div class="clear"></div>
+			<div class="widesec">
 				<p class="inline" >
 					<input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;
 					<label for="prettyurls" ><?php i18n('USE_FANCY_URLS');?></label>
 				</p>
+			</div>
 			<div class="leftsec">
 				<p>
 					<label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: 
