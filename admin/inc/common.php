@@ -87,7 +87,6 @@ $GS_definitions = array(
 	'GSASSETURLREL'        => true,                           // (bool) Use root relative urls for $ASSETURL, overrides GSASSETSCHEMES
 	'GSSITEURLREL'         => true,                           // (bool) Use root relative urls for $SITEURL
 	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // (str) url used in email template
-	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
 	'GSINDEXSLUG'          => 'index',                        // (str) slug to use as index when no slug provided
 	'GSPLUGINORDER'        => '',                             // (str) csv list of live_plugins keys to load first and in order, kludge and not supported
 	'GSNOFRAME'            => true,                           // (mixed) allow GS to be loaded in frames via x-frame policy
@@ -115,6 +114,7 @@ $GS_definitions = array(
 	'GSALLOWBROWSEUPLOAD'  => true,                           // (bool) allow uploading when browsing files
 	'GSUSEGSUPLOADER'      => true,                           // (bool) use ajax upload library gsupload (dropzone) for uploads, else standard form 
 	# EDITORS ------------------------------------------------------------------------------------------------------------------------------------------
+	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
 	'GSTHEMEEDITROOT'      => true,                           // (bool) allow editing theme root files
 	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // (str-csv) file extensions to show and edit in theme editor
 	'GSEDITORHEIGHT'       => '500',                          // (str) wysiwyg editor height in px
@@ -132,7 +132,8 @@ $GS_definitions = array(
 	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else `nodraft` or `draft` only
 	'GSDRAFTSTACKDEFAULT'  => true,                           // (bool) default page stack editing to drafts if true
 	'GSSDRAFTSPUBLISHEDTAG'=> true,                           // (bool) show published label on non draft pages if true
-	'GSAUTOSAVE'           => false,                          // (int)  auto save interval in seconds, disabled if false, only used for drafts currently
+	'GSAUTOSAVE'           => false,                          // (int)  auto save enabled, disabled if false, only used for drafts currently
+	'GSAUTOSAVEINTERVAL'   => 6,                              // (int)  auto save interval in seconds,  only used for drafts currently
 	# IMAGES -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSIMAGEWIDTH'         => 200,                            // (int) thumbnail size
 	'GSTHUMBSMWIDTH'       => 80,                             // (int) thumbsm max height

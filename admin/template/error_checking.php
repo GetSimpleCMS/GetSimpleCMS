@@ -111,7 +111,7 @@
 		break;
 		case 'edit-error':
 			// page edit error generic, passed in via type=
-			doNotify('<b>'.i18n_r('ERROR').':</b> '. var_out($ptype),'error');
+			doNotify('<b>'.i18n_r('ERROR').':</b> '. i18n_r('ERROR_OCCURED'),'error');
 		if(!$dbn) break;
 		case 'pwd-success':
 			doNotify(i18n_r('ER_NEW_PWD_SENT').'. <a href="index.php">'.i18n_r('LOGIN').'</a>','info',true,true);

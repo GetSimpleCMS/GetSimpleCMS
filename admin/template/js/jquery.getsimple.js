@@ -235,7 +235,7 @@ $.fn.notifyExpire = function($delay){
 }
  
 $.fn.parseNotify = function(){
-	Debugger.log($(this));
+	// Debugger.log($(this));
 	
 	return $(this).each(function() {
 		var msg     = $(this).html();
@@ -267,6 +267,12 @@ function clearNotify($type) {
  
 function basename(str){
 	return str.substring(0,str.lastIndexOf('/') );
+}
+
+function hasNotify(elem){
+	var status = $(elem).find('div.updated').get(0) != undefined;
+	Debugger.log("hasNotify: " + status);
+	return status;
 }
 	
 /**
@@ -1239,6 +1245,7 @@ jQuery(document).ready(function () {
 	}
 
 	// init auto saving
+    var autoSaveTimer = null;
 	if(typeof GSAUTOSAVEPERIOD !== 'undefined' && parseInt(GSAUTOSAVEPERIOD,10) > 0) autoSaveInit();
 
     // ajaxify edit.php submit
@@ -1281,7 +1288,7 @@ jQuery(document).ready(function () {
 		Debugger.log('auto saving initialized ' + GSAUTOSAVEPERIOD);
 		$('#autosavestatus').show();
 		$('#autosavenotify').show();
-		setInterval(autoSaveIntvl, GSAUTOSAVEPERIOD*1000);
+		autoSaveTimer = setInterval(autoSaveIntvl,GSAUTOSAVEPERIOD*1000);
     }
 
     // interval for autosave
@@ -1295,10 +1302,11 @@ jQuery(document).ready(function () {
     }
 
 	function autoSaveDestroy(){
-		Debugger.log('auto saving destroying ' + GSAUTOSAVEPERIOD);
-		$('#autosavestatus').show();
+		Debugger.log('auto saving destroyed ' + GSAUTOSAVEPERIOD);
+		$('#autosavestatus').hide();
 		$('#autosavenotify').show();
-		setInterval(autoSaveIntvl, GSAUTOSAVEPERIOD*1000);
+		clearInterval(autoSaveTimer);
+		// setInterval(autoSaveIntvl, null);
     }
 
     // ajax save function for edit.php #editform
@@ -1322,33 +1330,45 @@ jQuery(document).ready(function () {
     }
 
     // perform upating after auto save
-    function autoSaveUpdate(success,status){
+    function autoSaveUpdate(success,response){
+		var status = $(response).find('div.updated');
+		status.parseNotify();
+		
+		var autosavenotify = $(response).find('div.autosavenotify').html()
+
+        $('#autosavenotify').html(autosavenotify);
         $('#autosavestatus').hide();
-        $('#autosavenotify').html(status);
         $('input[type=submit]').attr('disabled', false);
         if(success){
         	Debugger.log("auto save success");
             $('#cancel-updates').hide();
 			ajaxStatusComplete();
             warnme = false;
-        }
-        pageisdirty = !success;
+        	pageisdirty = false;
+        } 
+        else {
+        	ajaxSaveError();
+        	autoSaveDestroy();
+        }	
     }
 
     // prerform updating after ajax save
-    function ajaxSaveUpdate(success,status){
+    function ajaxSaveUpdate(success,response){
 		clearNotify('success');
-        notifySuccess(status).popit();    	
-        if(success) {
+		var status = $(response).find('div.updated');
+		status.parseNotify();
+
+        if(success == true) {
             $('#cancel-updates').hide();
             ajaxStatusComplete();
             warnme = false;
-        }
-        pageisdirty = !success;
+        	pageisdirty = false;
+        } 
+        else ajaxSaveError();
     }
 
     // handle ajaxsave success
-    function ajaxSaveSucess(response){
+    function ajaxSaveSuccess(response){
         updateEditSlug(response);
         updateNonce(response);
         $('#maincontent.newdraft').removeClass('newdraft'); // remove newdraft class / show action buttons
@@ -1358,20 +1378,23 @@ jQuery(document).ready(function () {
     // handle ajax save error
     function ajaxSaveError(response){
         ajaxError(response);
-        if ($(response).find('div.updated')) {
-        	$(response).find('div.updated').parseNotify();
-        } else notifyError(i18n('ERROR_OCCURED')).popit();
-        warnme = false;
-        pageisdirty = true;
+        // if ($(response).find('div.updated').get(0)) {
+        	// $(response).find('div.updated').parseNotify();
+        // } else notifyError(i18n('ERROR_OCCURED')).popit();
+        warnme = true;
+        ajaxStatusComplete();
+        pageIsDirty();
+        autoSaveInd();
     }
 
     // call callbacks for autosave succcess or error
     function autoSaveCallback(response){
-        Debugger.log('autoSaveCallback ');
+        // Debugger.log('autoSaveCallback ' + response);
         response = $.parseHTML(response);
-        if ($(response).find('div.updated')) {
-            autoSaveUpdate(true,$(response).find('div.autosavenotify').html());
-            ajaxSaveSucess(response);
+        if (hasNotify(response)) {
+        	var success = $(response).find('div.updated.notify_success').get(0) != undefined; // success kludge for now
+            autoSaveUpdate(success,response);
+            ajaxSaveSuccess(response);
         }
         else {
             ajaxSaveError(response);
@@ -1381,13 +1404,15 @@ jQuery(document).ready(function () {
 
     // ajaxsave callback parse response
     function ajaxSaveCallback(response){
-        // Debugger.log('ajaxSaveCallback ' + response);
+        // Debugger.log('ajaxSaveCallback: ' + response);
         response = $.parseHTML(response);
-        if ($(response).find('div.updated')) {
-            ajaxSaveUpdate(true,$(response).find('div.updated').html());
-            ajaxSaveSucess(response);
+        if (hasNotify(response)) {
+        	var success = $(response).find('div.updated.notify_success').get(0) != undefined; // success kludge for now
+        	ajaxSaveUpdate(success,response);
+            if(success == true) ajaxSaveSuccess(response);
         }
         else {
+        	// Debugger.log('ajaxSaveCallback: error response');
             ajaxSaveError(response);
         }
     }

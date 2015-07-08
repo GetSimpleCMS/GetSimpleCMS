@@ -587,6 +587,7 @@ $i18n = array(
 "CLONE_ERROR"             =>	"There was a problem trying to clone <b>%s</b>",  //pages.php
 "AUTOSAVE_STATUS"         =>	'Autosaving is ON (%ss)', //edit.php
 "AUTOSAVE_NOTIFY"         =>	'Page autosaved at %s', //edit.php
+"AUTOSAVE_ERROR"          =>	'Autosaving is OFF (ERROR)', //edit.php
 "MENU_MANAGER"            =>	'<em>M</em>enu Manager', //edit.php
 "GET_PLUGINS_LINK"        =>	'Download <em>M</em>ore Plugins',
 "LOG_FILE_EMPTY"          =>	"This log file is empty", //log.php

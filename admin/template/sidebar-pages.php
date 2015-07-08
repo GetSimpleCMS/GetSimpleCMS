@@ -17,8 +17,8 @@
 <p id="js_submit_line" ></p>
 
 <?php if(get_filename_id()==='edit') { ?>
-	<?php if(getDef('GSAUTOSAVE')){ ?>
-	<p id="autosavestatus"><?php echo sprintf(i18n_r("AUTOSAVE_STATUS"),getDef('GSAUTOSAVE')); ?></p>
+	<?php if(getDef('GSAUTOSAVE',true)){ ?>
+	<p id="autosavestatus"><?php echo sprintf(i18n_r("AUTOSAVE_STATUS"),(int)getDef('GSAUTOSAVEINTERVAL')); ?></p>
 	<p id="autosavenotify"></p>
 	<?php }
 } ?>
