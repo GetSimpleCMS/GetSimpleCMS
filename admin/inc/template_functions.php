@@ -349,8 +349,13 @@ function restore_draft($id){
  * @param  bool $backup perform backup of file before deleting it
  */
 function delete_page($id, $backup = true){
-	if($backup) backup_datafile(GSDATAPAGESPATH.$id.'.xml');
-	return delete_file(GSDATAPAGESPATH.$id.'.xml');
+	$filepath = GSDATAPAGESPATH;
+	$file     = $filepath . $id . '.xml';
+
+	if(filepath_is_safe($file,$filepath)){
+		if($backup) backup_datafile($file);
+		return delete_file($file);
+	}
 } 
 
 /**
@@ -366,8 +371,13 @@ function delete_page($id, $backup = true){
  * @param  bool $backup perform backup of file before deleting it
  */
 function delete_draft($id, $backup = true){
-	if($backup) backup_datafile(GSDATADRAFTSPATH.$id.'.xml');
-	return delete_file(GSDATADRAFTSPATH.$id.'.xml');
+	$filepath = GSDATADRAFTSPATH;
+	$file     = $filepath . $id . '.xml';
+
+	if(filepath_is_safe($file,$filepath)){
+		if($backup) backup_datafile($file);
+		return delete_file($file);
+	}
 }
 
 
@@ -428,9 +438,30 @@ function getNextFileName($path,$file){
  * @return bool success
  */
 function delete_page_backup($id){
-	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
-	return delete_file($bakpagespath . getBackupName($id,'xml'));
+	$filepath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
+	$file     = $filepath . getBackupName($id,'xml')
+
+	if(filepath_is_safe($file,$filepath)){
+		return delete_file($file);
 	}
+}
+
+/**
+ * Delete Draft Backup File
+ *
+ * @since 3.4
+ *
+ * @param string $id File ID to delete
+ * @return bool success
+ */
+function delete_draft_backup($id){
+	$filepath = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/pages/
+	$file = $filepath . $bakpagespath. $id .".bak.xml"
+	
+	if(filepath_is_safe($file,$filepath)){
+		return delete_file($file,$filepath);
+	}	
+}
 
 /**
  * @deprecated 3.4 LEGACY
@@ -455,19 +486,6 @@ function restore_bak($id) {
  */
 function undo($file, $filepath, $bakpath) {
 	return restore_datafile($filepath.$file);
-}
-
-/**
- * Delete Draft Backup File
- *
- * @since 3.4
- *
- * @param string $id File ID to delete
- * @return bool success
- */
-function delete_draft_backup($id){
-	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/pages/
-	return delete_file($bakpagespath. $id .".bak.xml");
 }
 
 /**
