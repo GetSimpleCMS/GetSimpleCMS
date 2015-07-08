@@ -19,33 +19,22 @@ Options +FollowSymLinks
 DirectoryIndex index.php
 
 # blocks direct access to the XML files - they hold all the data!
-<Files ~ "\.xml$">
+# excludes, sitemap, browserconfig, crossdomain
+<FilesMatch "(?<!sitemap|browserconfig|crossdomain)\.xml$">
+   Order allow,deny
+   Deny from all
 	<IfModule !mod_authz_core.c>
-    Deny from all
+		Deny from all
 	</IfModule>
 	<IfModule mod_access_compat.c>
 		Deny from all
 	</IfModule>
 	<IfModule mod_authz_core.c>
 		<IfModule !mod_access_compat.c>
-		Require all denied
-	</IfModule>
+			Require all denied
+		</IfModule>
 	</IfModule>	
-</Files>
-
-<Files sitemap.xml>
-	<IfModule !mod_authz_core.c>
-    Allow from all
-	</IfModule>
-	<IfModule mod_access_compat.c>
-		Allow from all
-	</IfModule>
-	<IfModule mod_authz_core.c>
-		<IfModule !mod_access_compat.c>
-		Require all granted
-	</IfModule>
-	</IfModule>	
-</Files>
+</FilesMatch>
 
 # handle rewrites for fancy urls
 <IfModule mod_rewrite.c>
