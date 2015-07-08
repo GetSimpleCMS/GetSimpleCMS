@@ -32,7 +32,6 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	<title><?php echo $title ?></title>
 	<?php if(!isAuthPage()) { ?> <meta name="generator" content="GetSimple - <?php echo GSVERSION; ?>" />
 	<link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
-	<link rel="author" href="humans.txt" />
 	<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 	<?php } ?>
 	<meta name="robots" content="noindex, nofollow">

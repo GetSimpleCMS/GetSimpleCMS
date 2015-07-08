@@ -439,7 +439,7 @@ function getNextFileName($path,$file){
  */
 function delete_page_backup($id){
 	$filepath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
-	$file     = $filepath . getBackupName($id,'xml')
+	$file     = $filepath . getBackupName($id,'xml');
 
 	if(filepath_is_safe($file,$filepath)){
 		return delete_file($file);
@@ -456,7 +456,7 @@ function delete_page_backup($id){
  */
 function delete_draft_backup($id){
 	$filepath = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/pages/
-	$file = $filepath . $bakpagespath. $id .".bak.xml"
+	$file = $filepath . $bakpagespath. $id .".bak.xml";
 	
 	if(filepath_is_safe($file,$filepath)){
 		return delete_file($file,$filepath);
