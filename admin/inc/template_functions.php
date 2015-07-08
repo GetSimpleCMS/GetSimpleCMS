@@ -1219,7 +1219,7 @@ function get_pages_menu($parent = '',$menu = '',$level = '') {
  * 
  * @returns string
  */
-function get_pages_menu_dropdown($parentitem, $menu,$level) {
+function get_pages_menu_dropdown($parentitem, $menu, $level, $id = null, $idlevel = null) {
 	
 	global $pagesSorted;
 	global $parent; 
@@ -1248,10 +1248,21 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
 				}
 			} 
 
-			if ($parent == (string)$page['url']) { $sel="selected"; } else { $sel=""; }
+			if ($parent == (string)$page['url']){ $sel="selected"; } else { $sel=""; }
+			
+			// disable all children
+			$disabled = '';
+			if($id == $parentitem){
+				$idlevel = $level;
+			}
+			if($idlevel && ($level >= $idlevel)) $disabled = 'disabled';
+			if($idlevel && ($level < $idlevel)){
+				$disabled = '';
+				$idlevel = null;
+			}
 
-			$menu .= '<option '.$sel.' value="'.$page['url'] .'" >'.$dash.$page['url'].'</option>';
-			$menu = get_pages_menu_dropdown((string)$page['url'], $menu,$level+1);	  	
+			$menu .= '<option '.$sel.' value="'.$page['url'] .'" '.$disabled.'>'.$dash.$page['url'].'</option>';
+			$menu = get_pages_menu_dropdown((string)$page['url'], $menu,$level+1, $id, $idlevel);	  	
 		}
 	}
 

@@ -333,7 +333,7 @@ if($newdraft) $pageClass.=' newdraft';
                                 $count = 0;
                                 foreach ($pagesArray as $page) {
                                     if ($page['parent'] != '') { 
-                                $parentTitle = returnPageField($page['parent'], "title");
+                                		$parentTitle = returnPageField($page['parent'], "title");
                                         $sort = $parentTitle .' '. $page['title'];
                                     } else {
                                         $sort = $page['title'];
@@ -344,8 +344,8 @@ if($newdraft) $pageClass.=' newdraft';
                                 }
                                 // $pagesArray = $pagesArray_tmp;
                                 $pagesSorted = subval_sort($pagesArray_tmp,'sort');
-                                $ret=get_pages_menu_dropdown('','',0);
-                                $ret=str_replace('value="'.$id.'"', 'value="'.$id.'" disabled', $ret);
+                                $ret = get_pages_menu_dropdown('','',0, (string)$id);
+                                $ret = str_replace('value="'.$id.'"', 'value="'.$id.'" disabled', $ret);
                                 
                                 // handle 'no parents' correctly
                                 if ($parent == '') { 
