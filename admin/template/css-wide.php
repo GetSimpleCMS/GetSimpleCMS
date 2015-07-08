@@ -62,6 +62,7 @@ body .header{
 	/* wrapper for admin inputs */
 	width:100%;
 	float:left;
+	/* margin-left: 35px; */
 }
 
 #maincontent .main {

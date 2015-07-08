@@ -1079,6 +1079,13 @@ textarea.short {
 	height:62px;
 }
 
+form input.text:disabled,
+form select.text:disabled,
+form textarea.text:disabled {
+	color: #808080;
+	background: #eeeeee;
+}
+
 form input[readonly], form select[readonly], form textarea[readonly] {
 	background: #eeeeee;
 	border: 1px solid #999;
@@ -2857,6 +2864,11 @@ a.disabled:visited {
 	cursor: default;
 	text-decoration: none !important;
 	color: #CCC !important;
+}
+
+/* override handle uicolor #FFFFFF, prevents invisible seperators */
+.cke_toolbar_separator {
+	box-shadow: 1px 0 1px rgba(0, 0, 0, 0.14) !important;
 }
 
 /*

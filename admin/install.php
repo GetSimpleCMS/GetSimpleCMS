@@ -231,7 +231,7 @@ get_template('header');
 					}
 				} else {
 					if (!getDef('GSNOAPACHECHECK') || GSNOAPACHECHECK == false) {
-						echo '<tr><td>Apache web server</td><td><span class="ERRmsg" >'.$_SERVER['SERVER_SOFTWARE'].' - <b>'.i18n_r('ERROR').'</b></span></td></tr>';
+						echo '<tr><td>Apache web server</td><td><span class="WARNmsg" >'.$_SERVER['SERVER_SOFTWARE'].' - <b>'.i18n_r('WARNING').'</b></span></td></tr>';
 					}
 				}
 

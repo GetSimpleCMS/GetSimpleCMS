@@ -129,8 +129,9 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
         }
 
         if(getDef('GSAUTOSAVE',true)){
+        	$autosaveintvl = getdef('GSAUTOSAVEINTERVAL');
         	echo "		// edit autosave\n";
-        	echo '		var GSAUTOSAVEPERIOD = ' . getDef('GSAUTOSAVE').";\n";
+        	echo '		var GSAUTOSAVEPERIOD = ' . (!is_int($autosaveintvl) ? 10 : $autosaveintvl).";\n";
         } else echo "      var GSAUTOSAVEPERIOD = false;\n";
         ?>
 

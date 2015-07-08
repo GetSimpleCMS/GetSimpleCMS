@@ -349,8 +349,13 @@ function restore_draft($id){
  * @param  bool $backup perform backup of file before deleting it
  */
 function delete_page($id, $backup = true){
-	if($backup) backup_datafile(GSDATAPAGESPATH.$id.'.xml');
-	return delete_file(GSDATAPAGESPATH.$id.'.xml');
+	$filepath = GSDATAPAGESPATH;
+	$file     = $filepath . $id . '.xml';
+
+	if(filepath_is_safe($file,$filepath)){
+		if($backup) backup_datafile($file);
+		return delete_file($file);
+	}
 } 
 
 /**
@@ -366,8 +371,13 @@ function delete_page($id, $backup = true){
  * @param  bool $backup perform backup of file before deleting it
  */
 function delete_draft($id, $backup = true){
-	if($backup) backup_datafile(GSDATADRAFTSPATH.$id.'.xml');
-	return delete_file(GSDATADRAFTSPATH.$id.'.xml');
+	$filepath = GSDATADRAFTSPATH;
+	$file     = $filepath . $id . '.xml';
+
+	if(filepath_is_safe($file,$filepath)){
+		if($backup) backup_datafile($file);
+		return delete_file($file);
+	}
 }
 
 
@@ -428,9 +438,30 @@ function getNextFileName($path,$file){
  * @return bool success
  */
 function delete_page_backup($id){
-	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
-	return delete_file($bakpagespath . getBackupName($id,'xml'));
+	$filepath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
+	$file     = $filepath . getBackupName($id,'xml')
+
+	if(filepath_is_safe($file,$filepath)){
+		return delete_file($file);
 	}
+}
+
+/**
+ * Delete Draft Backup File
+ *
+ * @since 3.4
+ *
+ * @param string $id File ID to delete
+ * @return bool success
+ */
+function delete_draft_backup($id){
+	$filepath = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/pages/
+	$file = $filepath . $bakpagespath. $id .".bak.xml"
+	
+	if(filepath_is_safe($file,$filepath)){
+		return delete_file($file,$filepath);
+	}	
+}
 
 /**
  * @deprecated 3.4 LEGACY
@@ -455,19 +486,6 @@ function restore_bak($id) {
  */
 function undo($file, $filepath, $bakpath) {
 	return restore_datafile($filepath.$file);
-}
-
-/**
- * Delete Draft Backup File
- *
- * @since 3.4
- *
- * @param string $id File ID to delete
- * @return bool success
- */
-function delete_draft_backup($id){
-	$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/pages/
-	return delete_file($bakpagespath. $id .".bak.xml");
 }
 
 /**
@@ -979,9 +997,7 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	if ($page['url'] == getDef('GSINDEXSLUG'))     { $pageindex       = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; }
 	if(dateIsToday($page['pubDate'])) { $pagepubdate     = ' <span class="datetoday">'. output_date($page['pubDate']) . '</span>';} else { $pagepubdate = '<span>'. output_date($page['pubDate']) . "</span>";}
 
-	$pagetitle = cl($pagetitle);
-
-	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. $pagetitle .'</a>';
+	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. cl($pagetitle) .'</a>';
 	$menu .= '<div class="showstatus toggle" >'. $pageindex .  $pagedraft . $pageprivate . $pagemenustatus .'</div></td>'; // keywords used for filtering
 	$menu .= '<td style="width:80px;text-align:right;" ><span>'.$pagepubdate.'</span></td>';
 	$menu .= '<td class="secondarylink" >';
@@ -1237,7 +1253,7 @@ function get_pages_menu($parent = '',$menu = '',$level = '') {
  * 
  * @returns string
  */
-function get_pages_menu_dropdown($parentitem, $menu,$level) {
+function get_pages_menu_dropdown($parentitem, $menu, $level, $id = null, $idlevel = null) {
 	
 	global $pagesSorted;
 	global $parent; 
@@ -1266,10 +1282,21 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
 				}
 			} 
 
-			if ($parent == (string)$page['url']) { $sel="selected"; } else { $sel=""; }
+			if ($parent == (string)$page['url']){ $sel="selected"; } else { $sel=""; }
+			
+			// disable all children
+			$disabled = '';
+			if($id == $parentitem){
+				$idlevel = $level;
+			}
+			if($idlevel && ($level >= $idlevel)) $disabled = 'disabled';
+			if($idlevel && ($level < $idlevel)){
+				$disabled = '';
+				$idlevel = null;
+			}
 
-			$menu .= '<option '.$sel.' value="'.$page['url'] .'" >'.$dash.$page['url'].'</option>';
-			$menu = get_pages_menu_dropdown((string)$page['url'], $menu,$level+1);	  	
+			$menu .= '<option '.$sel.' value="'.$page['url'] .'" '.$disabled.'>'.$dash.$page['url'].'</option>';
+			$menu = get_pages_menu_dropdown((string)$page['url'], $menu,$level+1, $id, $idlevel);	  	
 		}
 	}
 
@@ -1634,9 +1661,11 @@ function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = '...', $bre
 	if ($strlen($str) < $len) return $str;
 
 	// if not break, find last word boundary before truncate to avoid splitting last word
-	// solves for unicode whitespace and punctuation and a 1 character lookahead
-	// hack,  replaces punc with space and handles it all the same for obtaining boundary index
-	// REQUIRES that PCRE is compiled with "--enable-unicode-properties, @todo detect or supress ?
+	// solves for unicode whitespace \p{Z} and punctuation \p{P} and a 1 character lookahead hack,
+	// replaces punc with space so it handles the same for obtaining word boundary index
+	// REQUIRES that PCRE is compiled with "--enable-unicode-properties, 
+	// @todo detect or supress requirement, perhaps defined('PREG_BAD_UTF8_OFFSET_ERROR'), translit puntuation only might be an alternative
+	// debugLog(defined('PREG_BAD_UTF8_OFFSET_ERROR'));
 	if(!$break) $excerpt = preg_replace('/\n|\p{Z}|\p{P}+$/u',' ',$substr($str, 0, $len+1)); 
 
 	$lastWordBoundaryIndex = !$break ? $strrpos($excerpt, ' ') : $len;
@@ -1667,14 +1696,28 @@ function strIsMultibyte($str){
  * @note supressing errors on libxml functions to prevent parse errors on non well-formed content
  * @since 3.3.2
  * @param  string $str string to clean up
+ * @param  array $strip_tags optional elements to remove eg. array('style')
  * @return string      return well formed html , with open tags being closed and incomplete open tags removed
  */
-function cleanHtml($str){
+function cleanHtml($str,$strip_tags = array()){
 	// setup encoding, required for proper dom loading
-	$charsetstr = '<meta http-equiv="content-type" content="text/html; charset=utf-8">'.$str;
+	// @note
+	// $dom_document = new DOMDocument('1.0', 'utf-8'); // this does not deal with transcoding issues, loadhtml will treat string as ISO-8859-1 unless the doc specifies it 
+	// $dom_document->loadHTML(mb_convert_encoding($str, 'HTML-ENTITIES', 'UTF-8')); // aternate option that might work...
+	
 	$dom_document = new DOMDocument();
-	@$dom_document->loadHTML($charsetstr);
-	// strip dom tags
+	$charsetstr = '<meta http-equiv="content-type" content="text/html; charset=utf-8">';
+	@$dom_document->loadHTML($charsetstr.$str);
+	
+	foreach($strip_tags as $tag){
+    	$elem = $dom_document->getElementsByTagName($tag);
+    	while ( ($node = $elem->item(0)) ) {
+        	$node->parentNode->removeChild($node);
+	    }
+	}
+
+	// strip dom tags that we added, and ones that savehtml adds
+	// strip doctype, head, html, body tags
 	$html_fragment = preg_replace('/^<!DOCTYPE.+?>|<head.*?>(.*)?<\/head>/', '', str_replace( array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), @$dom_document->saveHTML()));	
 	return $html_fragment;
 }	

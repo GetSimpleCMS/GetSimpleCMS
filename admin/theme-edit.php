@@ -41,10 +41,14 @@ if(isset($_POST['themesave'])){
 	return;
 }
 
-$themepath = GSTHEMESPATH.tsl($template);
 
-// prevent traversal
-if($template_file!='' and !filepath_is_safe($themepath.$template_file,$themepath)) die(i18n_r('INVALID_OPER'));
+# if no template is selected, use the default
+if ($template_file == '') {
+	$template_file = 'template.php';
+}
+
+$themepath = GSTHEMESPATH.tsl($template);
+if(!filepath_is_safe($themepath.$template_file,GSTHEMESPATH,true)) die();
 
 # check for form submission
 if(isset($_POST['submitsave'])){

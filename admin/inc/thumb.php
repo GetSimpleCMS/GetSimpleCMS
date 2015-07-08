@@ -138,7 +138,8 @@ if(empty($max_x)) $max_x = null;
 // debugLog($outfile);
 
 // travesal protection
-if(!filepath_is_safe(GSDATAUPLOADPATH.$sub_path.$file,GSDATAUPLOADPATH,true,true)) die('invalid image');
+if(!filepath_is_safe(GSDATAUPLOADPATH.$sub_path.$file,GSDATAUPLOADPATH,true)) die('invalid src image');
+if(!path_is_safe(GSTHUMBNAILPATH.dirname($to_name),GSTHUMBNAILPATH,true)) die('invalid dest image');
 
 // Debugging Request
 // returns the imagemanipulation object json encoded, 

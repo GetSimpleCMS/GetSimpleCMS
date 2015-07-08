@@ -102,8 +102,8 @@ if (isset($_POST['submitted'])) {
 			delete_page($oldslug); // backup and delete the page
 		}
 		exec_action('changedata-save'); // @hook changedata-save prior to saving a page
-		$xml = exec_filter('pagesavexml',$xml); // @filter pagesavexml (obj) xml object of a page save
-		savePageXml($xml);
+		$xml    = exec_filter('pagesavexml',$xml); // @filter pagesavexml (obj) xml object of a page save
+		$status = savePageXml($xml);
 		exec_action('changedata-aftersave'); // @hook changedata-aftersave after a page was saved
 		
 		// genen sitemap if published save
@@ -111,37 +111,42 @@ if (isset($_POST['submitted'])) {
 	}
 	else {
 		exec_action('changedata-save-draft'); // @hook changedata-save-draft saving a draft page
-		$xml = exec_filter('draftsavexml',$xml); // @filter draftsavexml (obj) xml object of a page draft save
-		saveDraftXml($xml);
+		$xml    = exec_filter('draftsavexml',$xml); // @filter draftsavexml (obj) xml object of a page draft save
+		$status = saveDraftXml($xml);
 		exec_action('changedata-aftersave-draft'); // @hook changedata-aftersave-draft after draft was saved
 	}
 
+	// $status = false; // debug failures
+	
 	/**
 	 * do changedata ajax save checking for legacy
 	 * @param  str $url     [description]
 	 * @param  str $oldslug [description]
 	 */
-	function changedataAjaxSave($url,$oldslug){
+	function changedataAjaxSave($url,$oldslug,$status){
 		global $draft,$pageIsNew;
 		if(isset($_POST['ajaxsave'])){
+
+
 			// force redirects
 			// 
 			// @todo we update the slug with the assigned slug, but there could be other things plugins need to do when adding a page,
 			//  that needs to be available to the page after, things like custom link menus, actions etc.
 			//  for now we redirect, so pagestack works since it is not implemented yet for ajax
-			if($pageIsNew) redirect('edit.php?id='.$url.'&nodraft&upd=edit-success&ptype=new',true);
+			if($status && $pageIsNew) redirect('edit.php?id='.$url.'&nodraft&upd=edit-success&ptype=new',true);
 
 			// ajax response wrapper, still using html parsing for now
 			echo "<div>";
 
 			// if this was an autosave add autosave response
 			if(isset($_POST['autosave']) && $_POST['autosave'] == '1'){
-				echo '<div class="autosavenotify">'.sprintf(i18n_r('AUTOSAVE_NOTIFY'),output_time(date())).'</div>';
+				if($status) echo '<div class="autosavenotify">'.sprintf(i18n_r('AUTOSAVE_NOTIFY'),output_time(date())).'</div>';
+				else echo '<div class="autosavenotify">'.i18n_r('AUTOSAVE_ERROR').'</div>';
 			}
 
 			// setup error checking vars and include error checking for notifications
 			$id     = $url;
-			$update = 'edit-success';
+			$update = $status ? 'edit-success' : 'edit-error';
 			$ptype  = 'edit';
 			if($url !== $oldslug) $oldid = $oldslug; // if slug was changed set $oldid
 			$upddraft = $draft;
@@ -149,6 +154,8 @@ if (isset($_POST['submitted'])) {
 
 			// send new inputs for slug changes and new nonces
 			echo '<input id="nonce" name="nonce" type="hidden" value="'. get_nonce("edit", "edit.php") .'" />';
+			if(!$status) die("</div>"); // do not update slugs etc on failures
+
             echo '<input id="existing-url" name="existing-url" type="hidden" value="'. $url .'" />';
             echo '<input id="post-id" name="post-id" type="hidden" value="'. $url .'" />';
 			echo "</div>";
@@ -157,7 +164,9 @@ if (isset($_POST['submitted'])) {
 	}
 
 	// if ajax we are done
-	changedataAjaxSave($url,$oldslug);
+	changedataAjaxSave($url,$oldslug,$status);
+
+	if(!$status) redirect("edit.php?id=". $url ."&upd=edit-error&type=edit"); 
 
 	// redirect user back to edit page or redirectto
 	if (isset($_POST['redirectto']) && $_POST['redirectto']!='') $redirect_url = $_POST['redirectto'];

@@ -1,4 +1,4 @@
-
+﻿
 // GetSimpleCMS config file for CKeditor 3.6.2
 
 // default editor config
@@ -53,10 +53,10 @@ CKEDITOR.editorConfig = function( config )
  * GS Default overrides and extras
  * DO NOT EDIT BELOW THIS LINE
  */
-
 // prevent removal of empty inline tags
-// CKEDITOR.dtd.$removeEmpty['i'] = false;
-// CKEDITOR.dtd.$removeEmpty['span'] = false;
+CKEDITOR.dtd.$removeEmpty['i']    = false;
+CKEDITOR.dtd.$removeEmpty['span'] = false;
+
 
 // Override default block element source formatting
 CKEDITOR.on( 'instanceReady', function( ev ) {
