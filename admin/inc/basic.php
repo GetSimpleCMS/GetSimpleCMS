@@ -1357,13 +1357,16 @@ function i18n_merge_impl($plugin = '', $lang, &$globali18n) {
 	$prefix   = $plugin ? $plugin.'/' : '';
 
 	// @todo being overly safe here since we are direclty including input that can come from anywhere
-	if (!filepath_is_safe($filename,$path) || !file_exists($filename)) {
+	if (!file_exists($filename) || !filepath_is_safe($filename,$path)) {
 		return false;
 	}
 
+	// prevent lang includes from outputing data, injections, or breaking headers using OB
+	ob_start();
 	include($filename); 
+	ob_end_clean();	
 
-	// if core lang and glboal is empty assign
+	// if core lang and global is empty assign
 	if(!$plugin && !$globali18n && count($i18n) > 0){
 		$globali18n = $i18n;
 	 	return true;
