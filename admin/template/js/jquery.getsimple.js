@@ -2041,6 +2041,12 @@ jQuery(document).ready(function () {
 	// addTableTree(minrows,mindepth,headerdepth)
 	$('table.tree').addTableTree(1,1,1);
 
+	// allow clicking on current sidebar menus
+	$('#sidebar .current').on('click',function(e){
+		Debugger.log('refresh');
+		window.location.reload();
+	})
+
 	// end of jQuery ready
 });
 
@@ -2164,3 +2170,4 @@ if(!document.__defineGetter__) {
     document.__defineGetter__("cookie", function() { return '';} );
     document.__defineSetter__("cookie", function() {} );
 }
+
