@@ -2573,8 +2573,8 @@ function getEditorToolbar(){
  */
 function getDefaultTimezone(){
 	GLOBAL $USRTIMEZONE, $SITETIMEZONE;
-	if(isset($USRTIMEZONE)) return $USRTIMEZONE;
-	if(isset($SITETIMEZONE)) return $SITETIMEZONE;
+	if(!empty($USRTIMEZONE)) return $USRTIMEZONE;
+	if(!empty($SITETIMEZONE)) return $SITETIMEZONE;
 	if(getDef('GSTIMEZONE')) return getDef('GSTIMEZONE');
 }
 

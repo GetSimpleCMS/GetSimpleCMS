@@ -469,8 +469,10 @@ $EDTOOL    = getEditorToolbar();
 
 $TIMEZONE  = getDefaultTimezone();
 setTimezone($TIMEZONE);
+debugLog("TIMEZONE: " . $TIMEZONE);
 
 
+// Debug useful globals
 $dump = array(
 // 'dataw'        => $dataw,
 // 'datau'        => $datau,
