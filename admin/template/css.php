@@ -715,7 +715,7 @@ h5:hover img {
 }
 
 /* sidebar plugins seperator */
-#sidebar .snav li.last_sb + li.plugin_sb:before, #sidebar hr
+#sidebar .snav li.last_sb + li:not(.upload):before, #sidebar hr
 {
 	margin: 4px 3px 4px 16px;
 	border:none;
