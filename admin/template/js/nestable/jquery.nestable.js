@@ -692,7 +692,7 @@
                 this.dragRootEl = pointElRoot;
                 
                 // this._animate(this.placeEl,this.pointEl);
-                this._animate(this.pointEl,this.placeEl);
+                // this._animate(this.pointEl,this.placeEl);
 
                 if(isNewRoot) {
                     this.hasNewRoot = this.el[0] !== this.dragRootEl[0];

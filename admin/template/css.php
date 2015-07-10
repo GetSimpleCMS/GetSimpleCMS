@@ -1905,7 +1905,7 @@ table.simple td.title {
 }
 
 #footer p {
-	margin: 0 0 8px 0;
+	margin: 4px 3px;
 }
 
 #footer a:link,
@@ -2266,6 +2266,11 @@ textarea.copykit {
 	   -moz-transition-property: background-color, color, text-shadow;
 	     -o-transition-property: background-color, color, text-shadow;
 	        transition-property: background-color, color, text-shadow; 	
+}
+
+.label-reset {
+	color: white !important;
+	text-shadow: none !important;
 }
 
 div.label{
@@ -2779,7 +2784,7 @@ h5 .crumbs, div.h5 .crumbs {
 }
 
 #menu-manager li .dd-itemwrap.menu {
-	color: #666;
+	color: #000;
 }	
 #menu-manager li .dd-itemwrap {
 	color: #aaa;
@@ -2809,8 +2814,10 @@ h5 .crumbs, div.h5 .crumbs {
 
 #menu-order li.placeholder-menu {
 	height: 18px;
-	background: #FFB164;
-	border: 1px solid #FF9933;
+	/*background: #FFB164;*/
+	background: #FFFFD5;
+	/*border: 1px solid #FF9933;*/
+	border: 1px dashed #bbb;
 	border-radius: 0;
 }
 

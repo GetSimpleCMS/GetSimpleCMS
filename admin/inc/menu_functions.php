@@ -11,6 +11,30 @@ define('GSMENUFLATINDEX','flat');
 define('GSMENUINDEXINDEX','indices');
 define('GSMENULEGACY',true);
 
+
+/**
+ * imports menu from pages legacy style, menuOrder only sorted
+ * @return array new menu sorted by menuOrder
+ */
+function importLegacyMenuFlat(){
+	$pages = getPagesSortedByMenu();
+	$pages = filterKeyValueMatch($pages,'menuStatus','Y');
+	$menu  = importMenuFromPages($pages,true);
+	return $menu; 
+}
+
+/**
+ * imports menu from pages tree style, parent, title, menuorder sorted
+ * @return array new menu nested tree sorted by heirarchy and menuOrder
+ */
+function importLegacyMenuTree(){
+	$pages = getPagesSortedByMenuTitle();
+	$pages = filterKeyValueMatch($pages,'menuStatus','Y');
+	// @todo when menu filtered, does not retain pages with broken paths, problem for menus that should probably still show them
+	$menu  = importMenuFromPages($pages);
+	return $menu;
+}
+
 /**
  * build a nested menu array from pages array parent/menuorder
  * ( optionally filter by menustatus )
@@ -21,15 +45,14 @@ define('GSMENULEGACY',true);
  * create flat hash ref array for fast hash lookups ( like parent hash array but with refs to tree )
  * flat array ust be storable and restorable, refs must be rebuilt after form input and read from file.
  */
-function importMenuFromPages($pages = null, $inmenu = false){
+function importMenuFromPages($pages = null, $flatten = false){
 	
-	if(!isset($page)) $pages = getPagesSortedByMenuTitle();
-	// $pages           = getPagesSortedByMenu();
-	$pages           = $inmenu ? filterKeyValueMatch($pages,'menuStatus','Y') : $pages;
-	$parents         = getParentsHashTable($pages, true , true);
-	$tree            = buildTreewHash($parents,'',false,true,'url');
-	// @todo when inmenu, does not retain pages with broken paths, problem for menus that should probably still show them.
-	$nestary         = recurseJson($tree); // recurse the tree and add stuff
+	// if importing from 3.3.x do not generate tree, generate flat menu instead for legacy menuordering by menuOrder
+	if($flatten) $parents = array(''=>$pages);
+	else         $parents = getParentsHashTable($pages, true , true);
+	
+	$tree    = buildTreewHash($parents,'',false,true,'url');
+	$nestary = recurseJson($tree); // recurse the tree and add stuff
 	
 	$nesttree[GSMENUNESTINDEX]  = &$tree;
 	$nesttree[GSMENUFLATINDEX]  = &$nestary[GSMENUFLATINDEX];
@@ -378,10 +401,10 @@ function getMenuTreeMin($parents,$str='',$inner = 'treeCalloutInner',$outer = 't
 function treeCalloutInner($id,$level,$index = 1,$order = 0,$open = true){
 	$child     = getPage($id);
 	$menuTitle = getPageMenuTitle($child['url']);
-	$pageTitle = $child['title'];
+	$pageTitle = truncate($child['title'],30);
 	// $pageTitle = '<strong>'.$child['title'].'.'.$level.'.'.$order.'</strong>';
-	$pageTitle = $child['title'].'.'.$child['menuOrder'] .'.'.$child['menuStatus'];
-	_debugLog($id,$child['menuStatus']);
+	$pageTitle = $pageTitle.'.'.$child['menuOrder'] .'.'.$child['menuStatus'];
+	// _debugLog($id,$child['menuStatus']);
 	$class     = $child['menuStatus'] == 'Y' ? ' menu' : ' nomenu';
 
 	$str = $open ? '<li class="dd-item clearfix" data-id="'.$child['url'].'"><div class="dd-itemwrap '.$class.'"><div class="dd-handle"> '.$menuTitle.'<div class="itemtitle"><em>'.$pageTitle.'</em></div></div></div>' : '</li>';

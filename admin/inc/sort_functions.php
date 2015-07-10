@@ -291,17 +291,17 @@ function prepare_date($page,$key){
 /**
  * sort by menuOrder
  * menu order=0 or ""  or menuStatus=Y are lowest priority
- * (!pages are saved with 0 as default for none, and are not in the menu manager)
+ * (pages are saved with 0 as default for none, and are not in the menu manager)
  */
 function prepare_menuOrder($page,$key){
-	if((int)$key == 0 || $page['menuStatus'] !== 'Y') return 99999;
+	if(empty($key) && $page['menuStatus'] == 'Y') return 0;
+	if((int)$key == 0 && $page['menuStatus'] !== 'Y') return 99999;
 	return (int)$key;
 }
 
 function prepare_menuOrderParentTitle($page,$key){
 	return prepare_menuOrder($page,$page['menuOrder']) . ' ' . prepare_parentTitle($page,$key);
 }
-
 
 /**
  * SORT WRAPPER FUNCS

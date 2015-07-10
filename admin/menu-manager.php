@@ -56,7 +56,7 @@ get_template('header');
 			<p><?php i18n('MENU_MANAGER_DESC');?></p>
 			<?php
 
-$legacymenu = false;
+$legacymenu = true;
 if (count($pagesSorted) != 0 && $legacymenu == true) {
 	echo '<form method="post" action="menu-manager.php">';
 	echo '<ul id="menu-order" >';
@@ -131,7 +131,8 @@ debugLog($tree);
 
 if ($regen || !$usecache) {
 	debugLog('tree not found');
-	$tree = importMenuFromPages();
+	$tree = importLegacyMenuTree();
+	$tree = importLegacyMenuFlat();
 	// _debugLog($tree);
 	// _debugLog($tree['INDEX']);
 	// menuSave('default', $tree);
@@ -145,7 +146,7 @@ if ($regen || !$usecache) {
 	// _debugLog($tree['FLAT']);
 }
 
-// _debuglog($tree['FLAT']);
+// _debuglog($tree[GSMENUFLATINDEX]);
 // _debuglog($tree['FLAT']['index']);
 // _debuglog($tree['FLAT']['index-2']['numchildren']);
 
@@ -183,7 +184,7 @@ if ($regen || !$usecache) {
 _debugLog($tree[GSMENUNESTINDEX]);
 $str = getMenuTree($tree[GSMENUNESTINDEX]);
 
-echo '<div class="rightsec">';
+echo '<div class="widesec">';
 echo '<div id="menu-order-nestable" class="dd">' . $str . '</div>';
 echo '</div>';
 
