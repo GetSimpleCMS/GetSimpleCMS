@@ -79,8 +79,8 @@ if(isset($_POST['submitted'])) {
 		$SITEURL = tsl($_POST['siteurl']); 
 	}
 	if(isset($_POST['permalink'])) { 
-		$PERMALINK = var_out(trim($_POST['permalink'])); 
-	}	
+		$PERMALINK = trim($_POST['permalink']); 
+	}
 	if(isset($_POST['template'])) { 
 		$TEMPLATE = $_POST['template']; 
 	}
@@ -95,10 +95,10 @@ if(isset($_POST['submitted'])) {
 		$USR = strtolower($_POST['user']); 
 	}
  	if(isset($_POST['name'])) { 
-		$NAME = var_out($_POST['name']); 
+		$NAME = $_POST['name']; 
 	} 
 	if(isset($_POST['email'])) { 
-		$EMAIL = var_out($_POST['email'],'email'); 
+		$EMAIL = $_POST['email']; 
 	} 
 	if(isset($_POST['timezone'])) { 
 		$TIMEZONE = var_out($_POST['timezone']); 
@@ -133,9 +133,9 @@ if(isset($_POST['submitted'])) {
 		if (file_exists(GSUSERSPATH . _id($USR).'.xml.reset')) { unlink(GSUSERSPATH . _id($USR).'.xml.reset'); }	
 		$xml = new SimpleXMLElement('<item></item>');
 		$xml->addChild('USR', $USR);
-		$xml->addChild('NAME', $NAME);
+		$xml->addChild('NAME', var_out($NAME));
 		$xml->addChild('PWD', $PASSWD);
-		$xml->addChild('EMAIL', $EMAIL);
+		$xml->addChild('EMAIL', var_out($EMAIL,'email'));
 		$xml->addChild('HTMLEDITOR', $HTMLEDITOR);
 		$xml->addChild('TIMEZONE', $TIMEZONE);
 		$xml->addChild('LANG', $LANG);
@@ -156,7 +156,7 @@ if(isset($_POST['submitted'])) {
 		$note = $xmls->addChild('TEMPLATE');
 		$note->addCData($TEMPLATE);
 		$xmls->addChild('PRETTYURLS', $PRETTYURLS);
-		$xmls->addChild('PERMALINK', $PERMALINK);
+		$xmls->addChild('PERMALINK', var_out($PERMALINK));
 		
 		exec_action('settings-website');
 		
@@ -222,7 +222,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('GENERAL_SETTINGS'));
 		<p class="inline" ><input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;<label for="prettyurls" ><?php i18n('USE_FANCY_URLS');?></label></p>
 				
 		<div class="leftsec">
-			<p><label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: <span class="right"><a href="http://get-simple.info/docs/pretty_urls" target="_blank" ><?php i18n('MORE');?></a></span></label><input class="text" name="permalink" id="permalink" type="text" placeholder="%parent%/%slug%/" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" /></p>
+			<p><label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: <span class="right"><a href="http://get-simple.info/docs/pretty_urls" target="_blank" ><?php i18n('MORE');?></a></span></label><input class="text" name="permalink" id="permalink" type="text" placeholder="%parent%/%slug%/" value="<?php if(isset($PERMALINK)) { echo var_out($PERMALINK); } ?>" /></p>
 		<a id="flushcache" class="button" href="?flushcache"><?php i18n('FLUSHCACHE'); ?></a>
 		</div>
 		<div class="clear"></div>
@@ -237,7 +237,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('GENERAL_SETTINGS'));
 			<p><label for="user" ><?php i18n('LABEL_USERNAME');?>:</label><input class="text" id="user" name="user" type="text" readonly value="<?php if(isset($USR1)) { echo $USR1; } else { echo $USR; } ?>" /></p>
 		</div>
 		<div class="rightsec">
-			<p><label for="email" ><?php i18n('LABEL_EMAIL');?>:</label><input class="text" id="email" name="email" type="email" value="<?php if(isset($EMAIL1)) { echo $EMAIL1; } else { echo $EMAIL; } ?>" /></p>
+			<p><label for="email" ><?php i18n('LABEL_EMAIL');?>:</label><input class="text" id="email" name="email" type="email" value="<?php if(isset($EMAIL1)) { echo $EMAIL1; } else { echo var_out($EMAIL,'email'); } ?>" /></p>
 			<?php if (! check_email_address($EMAIL)) {
 				echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.i18n_r('WARN_EMAILINVALID').'</p>';
 			}?>
@@ -246,7 +246,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('GENERAL_SETTINGS'));
 		<div class="leftsec">
 			<p><label for="name" ><?php i18n('LABEL_DISPNAME');?>:</label>
 			<span style="margin:0px 0 5px 0;font-size:12px;color:#999;" ><?php i18n('DISPLAY_NAME');?></span>			
-			<input class="text" id="name" name="name" type="text" value="<?php if(isset($NAME1)) { echo $NAME1; } else { echo $NAME; } ?>" /></p>
+			<input class="text" id="name" name="name" type="text" value="<?php if(isset($NAME1)) { echo $NAME1; } else { echo var_out($NAME); } ?>" /></p>
 		</div>		
 		<div class="clear"></div>		
 		<div class="leftsec">
