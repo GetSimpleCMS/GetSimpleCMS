@@ -109,7 +109,7 @@ if (count($pagesSorted) != 0 && $legacymenu == true) {
 // 	echo '<div id="menu-order-nestable" class="dd">'.$str.'</div>';
 // 	echo '</div>';
 // }
-// $str = getTree(getParentsHashTable(sortCustomIndex($pagesArray,'menuOrder')),'','',1,0,'treeFilterCallout');
+// $str = getTree(getParentsHashTable(sortCustomIndex($pagesArray,'menuOrder')),'',1,0,'treeFilterCallout');
 // echo '<br/><h3>Nestable Unfiltered Test<span>shows non menus in lineage, buggy</span></h3><div id="menu-order-nestable" class="dd">'.$str.'</div>';
 
 // OUTPUT PAGE SELECT
@@ -118,7 +118,7 @@ $parents = getParentsHashTable();
 // debugLog($parents);
 
 // echo "<select>";
-// echo getTree($parents,'','',0, 0, null, 'selectCalloutOuter','selectCalloutInner');
+// echo getTree($parents,'',0, 0, null, 'selectCalloutOuter','selectCalloutInner');
 // echo "</select>";
 
 exec_action('menu-manager-extras');
@@ -132,12 +132,13 @@ debugLog($tree);
 if ($regen || !$usecache) {
 	debugLog('tree not found');
 	$tree = importLegacyMenuTree();
-	$tree = importLegacyMenuFlat();
+	// $tree = importLegacyMenuFlat();
 	// _debugLog($tree);
 	// _debugLog($tree['INDEX']);
 	// menuSave('default', $tree);
 	buildRefArray($tree);
 	_debugLog($tree);
+	$status = false;
 	// $status  = newMenuSave('default',json_encode($tree));
 	$success = $status ? 'Success' : 'Error';
 	debugLog('tree import:'.$success);
@@ -182,7 +183,8 @@ if ($regen || !$usecache) {
 // $status = save_file(GSDATAOTHERPATH.'menu_'.$menufile,json_encode($tree));
 
 _debugLog($tree[GSMENUNESTINDEX]);
-$str = getMenuTree($tree[GSMENUNESTINDEX]);
+// $str = getMenuTree($tree[GSMENUNESTINDEX]);
+$str = getMenuTree($tree[GSMENUNESTINDEX],'mmCalloutInner','mmCalloutOuter');
 
 echo '<div class="widesec">';
 echo '<div id="menu-order-nestable" class="dd">' . $str . '</div>';
@@ -242,6 +244,39 @@ echo '<li id="nestable-template" class="dd-item clearfix" data-id="template"><di
 			</script>
 
 		<div class="dd" id="nestable-json"></div>
+
+
+		<?php
+			echo "<h3>DEBUGGING TREE OUTPUT</h3>";
+			
+			echo "<h2>getMenuTree</h2>";
+			// echo getMenuTree($tree[GSMENUNESTINDEX]);
+			
+			echo "<h2>getMenuTreeExtra</h2>";
+			// echo getMenuTreeExtra($tree[GSMENUNESTINDEX]);
+			// echo getMenuTreeExtra(buildTreewHash(getParentsHashTable(getPagesSortedByMenuTitle(), true , true),'',false,true,'url'));
+			
+			echo "<h2>getTree</h2>";
+			// echo getTree(getParentsHashTable(getPagesSortedByMenuTitle(), true , true));
+
+
+			echo "<h3>DEBUGGING TREE OUTPUT SUBMENU</h3>";
+			
+			echo "<h2>getMenuTree</h2>";
+			// submenus do not readjust the adjacency data
+			echo getMenuTree(array($tree[GSMENUFLATINDEX]['child-1c'])); # get parent and children
+			// echo getMenuTree($tree[GSMENUFLATINDEX]['child-1c']); # get children only
+			
+			echo "<h2>getMenuTreeExtra</h2>";
+			$pages = buildTreewHash(getParentsHashTable(getPagesSortedByMenuTitle(), true , true),'',false,true,'url');
+			echo getMenuTreeExtra(array($pages['parent-1b']['children']['child-1c'])); # get parent and children
+			// echo getMenuTreeExtra($pages['parent-1b']['children']['child-1c']); # get children only
+			
+			echo "<h2>getTree</h2>";
+			// echo getTree(getParentsHashTable(getPagesSortedByMenuTitle(), true , true),'child-1c');
+
+
+		?>
 
 		</div>
 	</div>
