@@ -560,6 +560,12 @@ h5:hover img {
 	margin: 0 0 20px 30px;
 }
 
+/* fix nested ul margins */
+.bodycontent li ul,
+.bodycontent li ol {
+	margin-bottom: 0px;
+}
+
 .bodycontent ul p,
 .bodycontent ol p {
 	margin: 0 0 10px 0;
