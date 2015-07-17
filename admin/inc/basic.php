@@ -2299,6 +2299,15 @@ function getRootRelURIPath($url){
   return $url;
 }
 
+/**
+ * GS get global wrapper
+ * @since 3.4
+ * @param  str $var name of var
+ * @return mixed    getsimple global variable
+ */
+function getGSVar($var){
+	return getGlobal($var);
+}
 
 /**
  * returns a global, easier inline usage of readonly globals
@@ -2318,7 +2327,7 @@ function getGlobal($var) {
  *
  * @since 3.4
  */
-function getPageGlobal($var){
+function getGSPageVar($var){
 	return getGlobal($var);
 }
 
@@ -2797,7 +2806,7 @@ function getMaxUploadSize(){
  * @return str
  */
 function getSiteURL($absolute = false){
-	return $absolute ? getGlobal('SITEURL_ABS') : getGlobal('SITEURL');
+	return $absolute ? getGSVar('SITEURL_ABS') : getGSVar('SITEURL');
 }
 
 /**

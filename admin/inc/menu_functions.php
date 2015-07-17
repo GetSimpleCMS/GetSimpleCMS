@@ -331,7 +331,7 @@ function getTree($parents,$key = '',$level = 0,$index = 0, $inner = 'treeCallout
  * @param  string  $outer   outer element callout functionname
  * @return str              output string
  */
-function getMenuTreeExtra($parents,$level = 0, $index = 0, $inner = 'treeCalloutInner', $outer = 'treeCalloutOuter', $filter = null){
+function getMenuTree($parents,$level = 0, $index = 0, $inner = 'treeCalloutInner', $outer = 'treeCalloutOuter', $filter = null){
     if(!$parents) return;
     static $index; // only way to track index properly I believe
     // if($level == 0) $index = 0; // not sure what this was for, probably to reset index for roots for semantic versioning of paths ( doesnt work though )
@@ -357,7 +357,7 @@ function getMenuTreeExtra($parents,$level = 0, $index = 0, $inner = 'treeCallout
         
         $str .= callIfCallable($inner,$child,true,$level,$index,$order);
         if(isset($child['children'])) {
-            $str.= getMenuTreeExtra($child['children'],$level,$index);
+            $str.= getMenuTree($child['children'],$level,$index);
         }
         $level--;
         $str .= callIfCallable($inner,$child,false,$level,$index,$order);
@@ -390,7 +390,7 @@ function getMenuTreeExtra($parents,$level = 0, $index = 0, $inner = 'treeCallout
  * @param string  $outer   outer element callout functionname
  * @return str             output string
  */
-function getMenuTree($parents,$inner = 'treeCalloutInner',$outer = 'treeCalloutOuter',$filter = null){
+function getMenuTreeMin($parents,$inner = 'treeCalloutInner',$outer = 'treeCalloutOuter',$filter = null){
     if(!$parents) return;
     $str  = '';
     $str .= callIfCallable($outer);
@@ -403,7 +403,7 @@ function getMenuTree($parents,$inner = 'treeCalloutInner',$outer = 'treeCalloutO
         // if(callIfCallable($filter) === true) continue;
         $str .= callIfCallable($inner,$child);
         if(isset($child['children'])) {
-            $str.= getMenuTree($child['children'],$inner,$outer,$filter);
+            $str.= getMenuTreeMin($child['children'],$inner,$outer,$filter);
         }
         $str .= callIfCallable($inner,$child,false);
     }
@@ -439,7 +439,7 @@ function treeCalloutInner($item, $open = true, $level = '', $index = '', $order 
     }
 
     $title =  $item['id'];
-    // $title = debugTreeCallout(func_get_args());
+    $title = debugTreeCallout(func_get_args());
     return $open ? '<li data-depth='.$level.'>'.$title : "</li>";
 }
 
@@ -540,28 +540,43 @@ function menuRead($menuid){
  * @param  string $menuid menuid to retreive
  * @return array         menu array
  */
-function getMenu($menuid = 'default',$force = false){
+function getMenuDataArray($menuid = 'default',$force = false){
     GLOBAL $SITEMENU;
     // return cached local
     if(isset($SITEMENU[$menuid]) && !$force) return $SITEMENU[$menuid];
     
     // load from file
     $menu = menuRead($menuid);
-    if($menu)$SITEMENU[$menuid] = $menu;
+    if($menu) $SITEMENU[$menuid] = $menu;
     return $SITEMENU[$menuid];
 }
 
 /**
- * get menu page using flat reference to nested
+ * get sub menu using flat reference to nested
+ * @since 3.4
  * @param  string $page   slug of page
  * @param  string $menuid menu id to fetch
  * @return array  menu sub array of page
  */
-function getMenuPage($page,$menuid = 'default'){
-    $menu = getMenu($menuid);
+function getMenuData($menuid = 'default'){
+    $menu = getMenuDataArray($menuid);
+    if(!isset($menu)) return;
+    // if(!isset($menu[GSMENUNESTINDEX])) buildRefArray(); should not be necessary
+    if(isset($menu[GSMENUNESTINDEX])) return $menu[GSMENUNESTINDEX];
+}
+
+/**
+ * get sub menu using flat reference to nested
+ * @param  string $page   slug of page
+ * @param  string $menuid menu id to fetch
+ * @return array  menu sub array of page
+ */
+function getSubMenuData($page, $parent = false, $menuid = 'default'){
+    $menu = getMenuDataArray($menuid);
     if(!isset($menu)) return;
     // if(!isset($menu[GSMENUFLATINDEX])) buildRefArray(); should not be necessary
-    if(isset($menu[GSMENUFLATINDEX][$page])) return $menu[GSMENUFLATINDEX][$page];
+    if(isset($menu[GSMENUFLATINDEX][$page])) return $parent ? array($menu[GSMENUFLATINDEX][$page]) : $menu[GSMENUFLATINDEX][$page];
+    debugLog(__FUNCTION__ .': slug not found - ' . $page);
 }
 
 /**
@@ -729,8 +744,9 @@ function buildRefArrayRecursive($menu,$flattree = array()){
 }
 
 /**
- * get nested array reference from flat index 
- * using flat index to resolve to nested
+ * dynamically get nested array reference from flat index 
+ * caches it from flat array, and dynamically add if it doesnt exist already
+ * using index to resolve to nested
  * uses resolve_tree() to resolve flat path to nested
  * @param  array &$menu  nested array
  * @param  str $id       flat index
@@ -747,8 +763,10 @@ function &getRefArray(&$menu,$id){
 
 /**
  * Build flat reference array onto nested tree
- * requires INDEX subarray
- * adds FLAT subarray references
+ * using an index array of index keys and path values
+ * adds FLAT subarray with references to the nested array onto the $menu array
+ * array['flat']['childpage']=>&array['nested']['parent']['children']['childpage']
+ * @since  3.4
  * @param  array &$menu  nested tree array
  * @return array         nested tree with flat reference array added
  */
@@ -764,7 +782,10 @@ function buildRefArray(&$menu){
 }
 
 /**
- * resolves a tree path to nested array
+ * recursivly resolves a tree path to nested array sub array
+ * 
+ * $tree = array('path'=>array('to'=> array('branch'=>item)))
+ * $path = array('path','to','branch')
  * @since 3.4
  * @param  array &$tree array reference to tree
  * @param  array $path  array of path to desired branch/leaf
@@ -776,6 +797,8 @@ function &resolve_tree(&$tree, $path) {
     // @todo why does this not work the same? must be some odd reference pass issue
     // return empty($path) ? $tree : resolve_tree($tree[$path[0]], array_slice($path, 1));
 }
+
+
 
 function menuCalloutInner($page,$open = true){
     if(!$open) return '</li>';

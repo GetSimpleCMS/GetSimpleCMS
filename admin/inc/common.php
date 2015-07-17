@@ -175,7 +175,8 @@ global
  $secfilters,     // (array) global array for storing security filters
  $securityFilters,// (array) global array for storing security filters hash table
  $GS_scripts,     // (array) global array for storing queued asset scripts
- $GS_styles       // (array) global array for storing queued asset styles
+ $GS_styles,      // (array) global array for storing queued asset styles
+ $GSSITEMENU      // (array) global array for storing menu caches
 ;
 
 if(isset($_GET['nocache'])){
