@@ -9,8 +9,20 @@
 define('GSMENUNESTINDEX','nested');
 define('GSMENUFLATINDEX','flat');
 define('GSMENUINDEXINDEX','indices');
-define('GSMENULEGACY',true);
+define('GSMENULEGACY',false);
 
+
+function initUpgradeMenus(){
+	$menu   = importLegacyMenuFlat();
+	$status = menuSave('legacy',$menu);
+	debugLog(__FUNCTION__ . ": legacy menu save status " . ($status ? 'success' : 'fail'));
+
+	$menu   = importLegacyMenuTree();
+	$status = menuSave('default',$menu);
+	debugLog(__FUNCTION__ . ": default menu save status " . ($status ? 'success' : 'fail'));
+
+	return $status;
+}
 
 /**
  * imports menu from pages flat legacy style, menuOrder sorted only
@@ -642,7 +654,7 @@ function saveMenuDataToPage($pageid,$parent = '',$order =''){
  */
 function newMenuSave($menuid,$menu){
     $menu     = json_decode($menu,true);
-    $menudata = recurseTree($menu); // build full menu data
+    $menudata = recurseUpgradeTree($menu); // build full menu data
     $menudata[GSMENUNESTINDEX] = $menu;
     _debugLog(__FUNCTION__,$menu);
     _debugLog(__FUNCTION__,$menudata);

@@ -16,17 +16,17 @@ login_cookie_check();
 
 exec_action('load-menu-manager');
 
+// check menuid else default
+if (!isset($_REQUEST['menuid'])) {
+	$menuid = 'default';
+} else {
+	$menuid = _id($_REQUEST['menuid']);
+}
+
 # save menu
 if (isset($_POST['menuOrder'])) {
 	if (trim($_POST['menuOrder']) == '') {
 		die('no data');
-	}
-
-	// check menuid else default
-	if (!isset($_POST['menuid'])) {
-		$menuid = 'default';
-	} else {
-		$menuid = _id($_POST['menuid']);
 	}
 
 	$status  = newMenuSave($menuid,$_POST['menuOrder']);
@@ -56,135 +56,44 @@ get_template('header');
 			<p><?php i18n('MENU_MANAGER_DESC');?></p>
 			<?php
 
-$legacymenu = true;
-if (count($pagesSorted) != 0 && $legacymenu == true) {
-	echo '<form method="post" action="menu-manager.php">';
-	echo '<ul id="menu-order" >';
-	foreach ($pagesSorted as $page) {
-		$sel = '';
-		if ($page['menuStatus'] != '') {
+legacyMenuManager($pagesSorted);
 
-			if ($page['menuOrder'] == '') {
-				$page['menuOrder'] = "N/A";
+function legacyMenuManager($pages){
+
+	if (count($pages) != 0) {
+		echo '<form method="post" action="menu-manager.php">';
+		echo '<ul id="menu-order" >';
+		foreach ($pages as $page) {
+			$sel = '';
+			if ($page['menuStatus'] != '') {
+
+				if ($page['menuOrder'] == '') {
+					$page['menuOrder'] = "N/A";
+				}
+				if ($page['menu'] == '') {
+					$page['menu'] = $page['title'];
+				}
+				echo '<li class="clearfix" rel="' . $page['slug'] . '">
+												<strong>#' . $page['menuOrder'] . '</strong>&nbsp;&nbsp;
+												' . $page['menu'] . ' <em>' . $page['title'] . '</em>
+											</li>';
 			}
-			if ($page['menu'] == '') {
-				$page['menu'] = $page['title'];
-			}
-			echo '<li class="clearfix" rel="' . $page['slug'] . '">
-											<strong>#' . $page['menuOrder'] . '</strong>&nbsp;&nbsp;
-											' . $page['menu'] . ' <em>' . $page['title'] . '</em>
-										</li>';
 		}
+		echo '</ul>';
+		echo '<div id="submit_line"><span>';
+		echo '<input type="hidden" name="menuOrder" value=""><input class="submit" type="submit" value="' . i18n_r("SAVE_MENU_ORDER") . '" />';
+		echo '</span></div>';
+		echo '</form>';
+	} else {
+		echo '<p>'.i18n_r('NO_MENU_PAGES').'.</p>';
 	}
-	echo '</ul>';
-	echo '<div id="submit_line"><span>';
-	echo '<input type="hidden" name="menuOrder" value=""><input class="submit" type="submit" value="' . i18n_r("SAVE_MENU_ORDER") . '" />';
-	echo '</span></div>';
-	echo '</form>';
-} else {
-	// echo '<p>'.i18n_r('NO_MENU_PAGES').'.</p>';
 }
-
-/**
- * NESTABLE TESTING
- */
-
-// if(!file_exists(GSDATAOTHERPATH.'menu_default.json')){
-// 	// sort by menu order, filter menustatus, removes unaccessible menu items from tree
-// 	$pagesSorted = filterKeyValueMatch(sortCustomIndex($pagesArray,'menuOrder'),'menuStatus','Y');
-// 	// debugLog(getPagesFields('menuOrder',$pagesSorted));
-// 	// debugLog($pagesSorted);
-// 	// create hash table from sorted filtered pages
-// 	$parents = getParentsHashTable($pagesSorted);
-
-// 	// debugLog($parents);
-// 	$str = getTree($parents);
-// 	echo '<div id="menu-order-nestable" class="dd">'.$str.'</div>';
-// }
-// else {
-// 	$menudata = read_file(GSDATAOTHERPATH.'menu_default.json');
-// 	$menudata = json_decode($menudata,true);
-// 	$str = getMenuTree($menudata);
-// 	echo '<div class="leftsec">';
-// 	echo '<div id="menu-order-nestable" class="dd">'.$str.'</div>';
-// 	echo '</div>';
-// }
-// $str = getTree(getParentsHashTable(sortCustomIndex($pagesArray,'menuOrder')),'',1,0,'treeFilterCallout');
-// echo '<br/><h3>Nestable Unfiltered Test<span>shows non menus in lineage, buggy</span></h3><div id="menu-order-nestable" class="dd">'.$str.'</div>';
-
-// OUTPUT PAGE SELECT
-// $selectpages = filterKeyValueMatch(sortCustomIndex($pagesArray,'menuOrder'),'menuStatus','Y');
-$parents = getParentsHashTable();
-// debugLog($parents);
-
-// echo "<select>";
-// echo getTree($parents,'',0, 0, null, 'selectCalloutOuter','selectCalloutInner');
-// echo "</select>";
 
 exec_action('menu-manager-extras');
 
-$regen    = true;
-$usecache = true;
-
-if($usecache) $tree = menuRead('default');
+$tree = getMenuData($menuid);
 debugLog($tree);
-
-if ($regen || !$usecache) {
-	debugLog('tree not found');
-	$tree = importLegacyMenuTree();
-	// $tree = importLegacyMenuFlat();
-	// _debugLog($tree);
-	// _debugLog($tree['INDEX']);
-	// menuSave('default', $tree);
-	buildRefArray($tree);
-	_debugLog($tree);
-	$status = false;
-	// $status  = newMenuSave('default',json_encode($tree));
-	$success = $status ? 'Success' : 'Error';
-	debugLog('tree import:'.$success);
-} else {
-	buildRefArray($tree);
-	// _debugLog($tree['FLAT']);
-}
-
-// _debuglog($tree[GSMENUFLATINDEX]);
-// _debuglog($tree['FLAT']['index']);
-// _debuglog($tree['FLAT']['index-2']['numchildren']);
-
-// $tree['REFTEST'] = &$tree['NESTED']['parent-1']['children']['child-1c']['children'];
-// $tree['REFTEST'] = &resolve_tree($tree['MENU'],explode('.','parent-1.children.child-1c.children'));
-
-// var_export($tree['NESTED']['index']);
-
-// _debugLog($tree['REFTEST']);
-// _debugLog(serialize($tree));
-// _debugLog(json_encode($tree));
-
-// _debugLog($indexAry);
-
-// _debugLog($tree);
-
-// _debugLog(serialize($indexAry));
-
-// $test = array('MENUTREE'=>&$tree,'MENUFLAT'=>&$indexAry);
-
-// _debugLog(json_encode($test));
-
-// SERIALIZE TEST, preserves refs
-// $menufile = 'serialized.php';
-// $status = save_file(GSDATAOTHERPATH.'menu_'.$menufile,serialize($tree));
-// $tree = read_file(GSDATAOTHERPATH.'menu_'.$menufile);
-// $tree = unserialize($tree);
-
-// JSON Test, does not preserve refs, but we can store ref arrays and rebuild with flat map.
-// $menufile = 'serialized.json';
-// $tree = read_file(GSDATAOTHERPATH.'menu_'.$menufile);
-// $tree = json_decode($tree,true);
-// $status = save_file(GSDATAOTHERPATH.'menu_'.$menufile,json_encode($tree));
-
-_debugLog($tree[GSMENUNESTINDEX]);
-// $str = getMenuTree($tree[GSMENUNESTINDEX]);
-$str = getMenuTree($tree[GSMENUNESTINDEX],'mmCalloutInner','mmCalloutOuter');
+$str  = getMenuTreeMin($tree,'mmCalloutInner','mmCalloutOuter');
 
 echo '<div class="widesec">';
 echo '<div id="menu-order-nestable" class="dd">' . $str . '</div>';
@@ -243,54 +152,7 @@ echo '<li id="nestable-template" class="dd-item clearfix" data-id="template"><di
 
 			</script>
 
-		<div class="dd" id="nestable-json"></div>
-
-
-		<?php
-			echo "<h3>DEBUGGING TREE OUTPUT</h3>";
-			
-			echo "<h2>getMenuTree</h2>";
-			// echo getMenuTree($tree[GSMENUNESTINDEX]);
-			
-			echo "<h2>getMenuTreeExtra</h2>";
-			// echo getMenuTreeExtra($tree[GSMENUNESTINDEX]);
-			// echo getMenuTreeExtra(buildTreewHash(getParentsHashTable(getPagesSortedByMenuTitle(), true , true),'',false,true,'url'));
-			
-			echo "<h2>getTree</h2>";
-			// echo getTree(getParentsHashTable(getPagesSortedByMenuTitle(), true , true));
-
-
-			echo "<h3>DEBUGGING TREE OUTPUT SUBMENU</h3>";
-			
-			echo "<h2>getMenuTree</h2>";
-			// submenus do not readjust the adjacency data
-			// echo getMenuTree(array($tree[GSMENUFLATINDEX]['child-1c'])); # get parent and children
-			// echo getMenuTree($tree[GSMENUFLATINDEX]['child-1c']); # get children only
-			
-			echo "<h2>getMenuTreeExtra</h2>";
-			$pages = buildTreewHash(getParentsHashTable(getPagesSortedByMenuTitle(), true , true),'',false,true,'url');
-			// echo getMenuTreeExtra(array($pages['parent-1b']['children']['child-1c'])); # get parent and children
-			// echo getMenuTreeExtra($pages['parent-1b']['children']['child-1c']); # get children only
-			// echo getMenuTreeExtra(array($tree[GSMENUFLATINDEX]['child-1c'])); # get parent and children from flat
-			// echo getMenuTreeExtra($tree[GSMENUNESTINDEX]); # get parent and children from flat
-
-			echo "<h2>getTree</h2>";
-			$pages = getParentsHashTable(getPagesSortedByMenuTitle(), true , true);
-			$pages ['tmp']['child-1c'] = findInParenthash($pages,'child-1c');
-			// echo getTree($pages,'tmp'); // cannot do parent with this, since it is a subarray of its parent
-
-			// kludge to find paretns in parenthash table
-			function &findInParenthash($parents,$slug){
-				foreach($parents as $children){
-					foreach($children as $key=>$child){
-						if($key == $slug) return $child;
-					}	
-				}
-			}
-
-			debugLog(getPageDepthsNew(getPages()));
-
-		?>
+			<div class="dd" id="nestable-json"></div>
 
 		</div>
 	</div>
