@@ -264,17 +264,31 @@ echo '<li id="nestable-template" class="dd-item clearfix" data-id="template"><di
 			
 			echo "<h2>getMenuTree</h2>";
 			// submenus do not readjust the adjacency data
-			echo getMenuTree(array($tree[GSMENUFLATINDEX]['child-1c'])); # get parent and children
+			// echo getMenuTree(array($tree[GSMENUFLATINDEX]['child-1c'])); # get parent and children
 			// echo getMenuTree($tree[GSMENUFLATINDEX]['child-1c']); # get children only
 			
 			echo "<h2>getMenuTreeExtra</h2>";
 			$pages = buildTreewHash(getParentsHashTable(getPagesSortedByMenuTitle(), true , true),'',false,true,'url');
-			echo getMenuTreeExtra(array($pages['parent-1b']['children']['child-1c'])); # get parent and children
+			// echo getMenuTreeExtra(array($pages['parent-1b']['children']['child-1c'])); # get parent and children
 			// echo getMenuTreeExtra($pages['parent-1b']['children']['child-1c']); # get children only
-			
-			echo "<h2>getTree</h2>";
-			// echo getTree(getParentsHashTable(getPagesSortedByMenuTitle(), true , true),'child-1c');
+			// echo getMenuTreeExtra(array($tree[GSMENUFLATINDEX]['child-1c'])); # get parent and children from flat
+			// echo getMenuTreeExtra($tree[GSMENUNESTINDEX]); # get parent and children from flat
 
+			echo "<h2>getTree</h2>";
+			$pages = getParentsHashTable(getPagesSortedByMenuTitle(), true , true);
+			$pages ['tmp']['child-1c'] = findInParenthash($pages,'child-1c');
+			// echo getTree($pages,'tmp'); // cannot do parent with this, since it is a subarray of its parent
+
+			// kludge to find paretns in parenthash table
+			function &findInParenthash($parents,$slug){
+				foreach($parents as $children){
+					foreach($children as $key=>$child){
+						if($key == $slug) return $child;
+					}	
+				}
+			}
+
+			debugLog(getPageDepthsNew(getPages()));
 
 		?>
 

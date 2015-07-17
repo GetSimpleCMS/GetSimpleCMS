@@ -1,7 +1,7 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 
 /**
- * Getsimple Menu Functions
+ * GetSimple Menu and Hierarchy Functions
  * @package GetSimple
  * @subpackage menus_functions.php
  */
@@ -27,7 +27,7 @@ function importLegacyMenuFlat(){
 /**
  * imports menu from pages nested tree style, parent, title, menuorder sorted
  * @since  3.4
- * @return array new menu nested tree sorted by heirarchy and menuOrder
+ * @return array new menu nested tree sorted by hierarchy and menuOrder
  */
 function importLegacyMenuTree(){
     $pages = getPagesSortedByMenuTitle();
@@ -40,7 +40,7 @@ function importLegacyMenuTree(){
 /**
  * build a nested menu array from pages array parent/menuorder
  * ( optionally filter by menustatus )
- * createa a parent hash table with references
+ * create a parent hash table with references
  * builds nested array tree
  * recurses over tree and add depth, order, numchildren, (path and url)
  * @since  3.4
@@ -247,7 +247,7 @@ function recurseTreeCallout(&$value,$id = '',$parent = ''){
  * RECURSIVE TREE ITERATOR PARENT HASH TABLE
  * tree output from parent hashtable array
  * get tree from parent->child parenthashtable, where child is a pagesArray ref or copy of pages, heirachy info is ignored
- * passes page id ['url'] to callouts, can be used on native parenthash arrays like parenthashtable, 
+ * passes child array to callouts, can be used on native parenthash arrays like parenthashtable, 
  * where children are values of page references or array, keys are parents
  * 
  * generates $level, $index, $order for you
@@ -259,7 +259,8 @@ function recurseTreeCallout(&$value,$id = '',$parent = ''){
  * )
  *
  * itemcallout($id,$level,$index,$order,$open)
- * 
+ *
+ * @note CANNOT SHOW PARENT NODE IN SUBMENU TREE $key, since we can only find children not parents
  * @param  array   $parents array of parents
  * @param  string  $key     starting parent key
  * @param  string  $str     str for recursion append
@@ -272,15 +273,17 @@ function recurseTreeCallout(&$value,$id = '',$parent = ''){
  */
 function getTree($parents,$key = '',$level = 0,$index = 0, $inner = 'treeCalloutInner', $outer = 'treeCalloutOuter', $filter = null){
     if(!$parents) return;
-    static $index;
+    static $index; // needs to be static since parent hash is is no heigharchy order
+
     if($level == 0) $index = 0;
     $order = 0;
-    $str = '';
-    $str .= callIfCallable($outer,null,true,$level,$index,$order);
+    $str   = '';
+    $str  .= callIfCallable($outer,null,true,$level,$index,$order);
 
     foreach($parents[$key] as $parent=>$child){
+        if(!is_array($child)) continue;
         if(callIfCallable($filter) === true) continue;
-        
+
         $level = $level+1;
         $index = $index+1;
         $order = $order+1;
@@ -301,11 +304,10 @@ function getTree($parents,$key = '',$level = 0,$index = 0, $inner = 'treeCallout
  * RECURSIVE TREE ITERATOR NESTED ARRAY
  * tree output nested from children array
  * get tree from nested tree array with or without hierarchy info
- * passes page id ['id'] to callouts, can be used on menuarrays where children are subarrays with 'id' and 'children' fields
+ * passes menu child item to callouts, can be used on menuarrays where children are subarrays with 'id' and 'children' fields
  * 
  * supports adjacency info, but will calculate $level, $index, $order for you if it does not exist
  * 
- * passes page id to callouts, use for your own arrays, also adds depth, index, and order if not exist, can be used on arrays with nested trees assumes
  * 'children' subkey
  * 
  * array(
@@ -331,28 +333,31 @@ function getTree($parents,$key = '',$level = 0,$index = 0, $inner = 'treeCallout
  */
 function getMenuTreeExtra($parents,$level = 0, $index = 0, $inner = 'treeCalloutInner', $outer = 'treeCalloutOuter', $filter = null){
     if(!$parents) return;
-    static  $index;
-    // if($level == 0) $index = 0;
+    static $index; // only way to track index properly I believe
+    // if($level == 0) $index = 0; // not sure what this was for, probably to reset index for roots for semantic versioning of paths ( doesnt work though )
 
     $order = 0;
     $str   = '';
     $str  .= callIfCallable($outer,null,true,$level,$index,$order);
 
-    // if a page subarray was passed
+    // if a page subarray was directly passed, auto negotiate children
     if(isset($parents['id']) && isset($parents['children'])) $parents = $parents['children'];
 
     foreach($parents as $key=>$child){
         if(!isset($child['id'])) continue;
         if(callIfCallable($filter) === true) continue;
-        // use internal ordering if not present in array
-        // @todo menus use datasubkeys, incompatible
-        $index = isset($child['index']) ? $child['index'] : $index+1;
-        $level = isset($child['depth']) ? $child['depth'] : $level+1;
-        $order = isset($child['order']) ? $child['order'] : $order+1;
+
+        // $index = isset($child['index']) ? $child['index'] : $index+1;
+        // $level = isset($child['depth']) ? $child['depth'] : $level+1;
+        // $order = isset($child['order']) ? $child['order'] : $order+1;
+
+        $index = $index+1;
+        $level = $level+1;
+        $order = $order+1;
         
         $str .= callIfCallable($inner,$child,true,$level,$index,$order);
         if(isset($child['children'])) {
-            $str.= getMenuTreeExtra($child['children'],$level);
+            $str.= getMenuTreeExtra($child['children'],$level,$index);
         }
         $level--;
         $str .= callIfCallable($inner,$child,false,$level,$index,$order);
@@ -365,7 +370,7 @@ function getMenuTreeExtra($parents,$level = 0, $index = 0, $inner = 'treeCallout
  * RECURSIVE TREE ITERATOR NESTED ARRAY
  * minimal tree output from nested children array
  * assumes `id` and `children` subkey
- * passes page array to callouts, assumes everything you need is in the array, to be used with menu/ index/ or ref arrays
+ * passes menu child array to callouts, assumes everything you need is in the array, to be used with menu/ index/ or ref arrays
  * does not calculate heirachy data or use it
  *
  * array(
@@ -378,7 +383,7 @@ function getMenuTreeExtra($parents,$level = 0, $index = 0, $inner = 'treeCallout
  * )
  * 
  * itemcallout($page,$open);
- *
+ * 
  * @param array   $parents parents array
  * @param str     $str     recursive str for append
  * @param string  $inner   inner element callout functionname
@@ -390,11 +395,10 @@ function getMenuTree($parents,$inner = 'treeCalloutInner',$outer = 'treeCalloutO
     $str  = '';
     $str .= callIfCallable($outer);
     
-    // if a page subarray was passed
+    // if a page subarray was directly passed, auto negotiate children
     if(isset($parents['id']) && isset($parents['children'])) $parents = $parents['children'];
 
     foreach($parents as $key=>$child){
-        debugLog($child);
         if(!isset($child['id'])) continue;
         // if(callIfCallable($filter) === true) continue;
         $str .= callIfCallable($inner,$child);
@@ -427,26 +431,18 @@ function treeCalloutOuter($item = null,$open = true){
  * @param  boolean $open is this nest open or closing
  * @return str     string to return to recursive callee
  */
-function treeCalloutInner($item,$open = true){
-    if(!isset($item['id'])) $item['id'] = $item['url'];
-    $title = $item['id'];
-    $title .= debugTreeCallout(func_get_args());
-    return $open ? "<li>".$title : "</li>";
+function treeCalloutInner($item, $open = true, $level = '', $index = '', $order = ''){
+    // handle pages instead of menu items, pages do not have an id field
+    if(!isset($item['id'])){
+        if(!isset($item['url'])) return; // fail
+        else $item['id'] = $item['url'];
+    }
+
+    $title =  $item['id'];
+    // $title = debugTreeCallout(func_get_args());
+    return $open ? '<li data-depth='.$level.'>'.$title : "</li>";
 }
 
-function debugTreeCallout($args){
-    // debugging
-    $debug = '';
-    $item = $args[0];
-    if(!isset($item['data'])){
-        $item['data']['depth'] = $args[2];
-        $item['data']['index'] = $args[3];
-        $item['data']['order'] = $args[4];
-        // $debug .= ' [' . $args[2] . ']';
-    }
-    $debug .= ' [' . $item['data']['index'].' -'.$item['data']['depth'].'.'.$item['data']['order'] . ']';
-    return $debug;
-}
 
 /**
  * menu manager tree callout function
@@ -516,6 +512,7 @@ function menuSave($menuid,$data){
 
 /**
  * read menu file
+ * rebuild flat reference array
  * @since  3.4
  * @param  str $menuid menu id
  * @return array menudata
@@ -524,10 +521,48 @@ function menuSave($menuid,$data){
 function menuRead($menuid){
     $menufileext = '.json';
     $menu        = read_file(GSDATAOTHERPATH.'menu_'.$menuid.$menufileext);
+    
+    if(!$menu){
+        debugLog('menuRead: failed to load menu - ' . $menuid);
+        return;
+    }
+
     $menu        = json_decode($menu,true);
+    buildRefArray($menu); // rebuild flat array refs from index map
     return $menu;
 }
 
+/**
+ * get a menu object
+ * lazyload into SITEMENU global
+ * @since  3.4
+ * @uses  $SITEMENU
+ * @param  string $menuid menuid to retreive
+ * @return array         menu array
+ */
+function getMenu($menuid = 'default',$force = false){
+    GLOBAL $SITEMENU;
+    // return cached local
+    if(isset($SITEMENU[$menuid]) && !$force) return $SITEMENU[$menuid];
+    
+    // load from file
+    $menu = menuRead($menuid);
+    if($menu)$SITEMENU[$menuid] = $menu;
+    return $SITEMENU[$menuid];
+}
+
+/**
+ * get menu page using flat reference to nested
+ * @param  string $page   slug of page
+ * @param  string $menuid menu id to fetch
+ * @return array  menu sub array of page
+ */
+function getMenuPage($page,$menuid = 'default'){
+    $menu = getMenu($menuid);
+    if(!isset($menu)) return;
+    // if(!isset($menu[GSMENUFLATINDEX])) buildRefArray(); should not be necessary
+    if(isset($menu[GSMENUFLATINDEX][$page])) return $menu[GSMENUFLATINDEX][$page];
+}
 
 /**
  * save menu data to page files, refresh page cache
@@ -776,6 +811,21 @@ function selectCalloutOuter(){
 function treeFilterCallout($id,$level,$index,$order){
     $child = getPage($id);
     return $child['menuStatus'] !== 'Y';
+}
+
+// debugging
+function debugTreeCallout($args){
+    $item = $args[0];
+    // use internal
+    if(is_array($args) && !isset($item['data'])){
+        $item['data']['depth'] = $args[2];
+        $item['data']['index'] = $args[3];
+        $item['data']['order'] = $args[4];
+        // $debug .= ' [' . $args[2] . ']';
+    }
+    $debug = '<strong>#'.$args[3].'</strong> '.$item['id'];
+    $debug .= ' [ ' . $item['data']['index'].' - '.$item['data']['depth'].'.'.$item['data']['order'] . ' ]';
+    return $debug;
 }
 
 /* ?> */

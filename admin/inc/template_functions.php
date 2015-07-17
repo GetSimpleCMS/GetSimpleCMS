@@ -1076,9 +1076,9 @@ function getParentsSlugHashTable($pages = array(), $useref = true){
 		$pageId = isset($page['url']) ? $page['url'] : null;
 		
 		if(!empty($parent)){
-			if (isset($ary[$parent])) $ary[$parent]['children'][] = $page['url'];
-			else $ary[$parent] = array('id'=>$parent,'children'=>array($page['url']));
-		} 
+			if (isset($ary[$parent])) $ary[$parent]['children'][$page['url']] = ($useref ? $page : $page['url']);
+			else $ary[$parent] = array('id'=>$parent,'children'=>array([$page['url']] => ($useref ? $page : $page['url'])));
+		}
 		// else $ary[] = array('id'=>$page['url']);
 	}
 
@@ -1097,8 +1097,25 @@ function getClosestParentInMenu($pageId){
 }
 
 /**
- * gets a page array with heirachy data added to it
- * converts pages parent adjacancy list to flat table
+ * same as getPageDepths, uses menu cache
+ * @param  array $pages pages array
+ * @return array        pages with new info added
+ */
+function getPageDepthsNew($pages){
+	global $tree;
+	foreach($pages as &$page){
+		$treeinfo = $tree[GSMENUFLATINDEX][$page['url']];
+		debugLog($treeinfo);
+		$page['order']       = $treeinfo['data']['order'];
+		$page['depth']       = $treeinfo['data']['depth'];
+		$page['numchildren'] = $treeinfo['numchildren'];
+	}
+	return $pages;
+}
+
+/**
+ * adds heirachy info to pages
+ * uses parent, order to add flat info
  * id.[parent] -> rank[order],level[depth]
  *
  * @since 3.4
