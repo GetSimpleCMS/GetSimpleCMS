@@ -66,9 +66,10 @@ function importMenuFromPages($pages = null, $flatten = false){
     else $parents = getParentsHashTable($pages, true , true); // get parent hash table of pages, useref, fixoprphans
     
     $tree    = buildTreewHash($parents,'',false,true,'url'); // get a nested array from hashtable, from root, norefs, assoc array
-    // debugLog($tree);
+    debugLog($tree);
     $flatary = recurseUpgradeTree($tree); // recurse the tree and add stuff to $tree, return flat reference array
-    // debugLog($flatary);
+    debugLog($tree);
+    debugLog($flatary);
 
     $nesttree[GSMENUNESTINDEX]  = &$tree; //add tree array to menu
     $nesttree[GSMENUFLATINDEX]  = &$flatary[GSMENUFLATINDEX]; // add flat array to menu
@@ -189,8 +190,14 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
     // use temporary index to store currentpath
     if(!isset($indexAry['currpath'])) $indexAry['currpath'] = array();
     
-    static $index;
-    if($depth == 0) $index = 0;
+    // init static $index primed from param
+    if($index !== null){
+        $indexstart = $index;
+        static $index;
+        $index = $indexstart;
+    }
+    else static $index;
+
     $order = 0;
     $depth++;
     
@@ -198,11 +205,11 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
 
     foreach($array as $key=>&$value){
         if(isset($value['id'])){
+            // skip rekeyed copies , need some kind of flag here
+            if(isset($value['data'])) continue;
+
             $order++;
-            $index++;
-            
-            // skip rekeyed copies  
-            // if(isset($value['data'])) continue;
+            $index++;            
 
             $id = $value['id'];
 
@@ -214,18 +221,21 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
 
             recurseTreeCallout($value,$id,$parent);
 
-            // rekey array, needed for non assoc arrays
-            // $array[$id]  = $value;
-            // unset($array[$key]); // remove old key
+            // rekey array, needed for non assoc arrays, such as mm submit
+            if($key !== $id){
+                $array[$id]  = $value;
+                unset($array[$key]); // remove old key
+            }
 
-            $indexAry['flat'][$id] = &$array[$id]; // flat cannot be saved to json because of references
-            // create a indices to paths, so we can rebuild flat array references on json load, if serializing this is not needed
+            $indexAry['flat'][$id] = &$array[$id]; 
+            // flat cannot be saved to json because of references soooo
+            // create an indices to paths map, so we can rebuild flat array references on json load, if serializing this is not needed
             $indexAry['indices'][$id] = implode('.',$indexAry['currpath']).'.'.$id;
 
             if(isset($array[$id]['children'])){
                 $array[$id]['numchildren'] = count($array[$id]['children']);
                 $children = &$array[$id]['children'];
-                recurseUpgradeTree($children,$id,$depth,$index,$indexAry); // @todo replace with __FUNCTION__
+                recurseUpgradeTree($children,$id,$depth,null,$indexAry); // @todo replace with __FUNCTION__
             } else $array[$id]['numchildren'] = 0;
         }
 
@@ -285,9 +295,15 @@ function recurseTreeCallout(&$value,$id = '',$parent = ''){
  */
 function getTree($parents,$key = '',$level = 0,$index = 0, $inner = 'treeCalloutInner', $outer = 'treeCalloutOuter', $filter = null){
     if(!$parents) return;
-    static $index; // needs to be static since parent hash is is no heigharchy order
 
-    if($level == 0) $index = 0;
+    // init static $index primed from param
+    if($index !== null){
+        $indexstart = $index;
+        static $index;
+        $index = $indexstart;
+    }
+    else static $index;
+
     $order = 0;
     $str   = '';
     $str  .= callIfCallable($outer,null,true,$level,$index,$order);
@@ -303,7 +319,7 @@ function getTree($parents,$key = '',$level = 0,$index = 0, $inner = 'treeCallout
         $str .= callIfCallable($inner,$child,true,$level,$index,$order);
 
         if(isset($parents[$parent])) {
-            $str.= getTree($parents,$parent,$level,$index,$inner,$outer,$filter);
+            $str.= getTree($parents,$parent,$level,null,$inner,$outer,$filter);
         }
         $level--;
         $str .= callIfCallable($inner,$child,false,$level,$index,$order);
@@ -337,7 +353,7 @@ function getTree($parents,$key = '',$level = 0,$index = 0, $inner = 'treeCallout
  * @param  string  $key     starting parent key
  * @param  string  $str     str for recursion append
  * @param  integer $level   level for recursion incr
- * @param  integer $index   index for recursion incr
+ * @param  integer $index   index for recursion incr, static reset if empty
  * @param  str     $filter  filter callout functionname
  * @param  string  $inner   inner element callout functionname
  * @param  string  $outer   outer element callout functionname
@@ -345,8 +361,14 @@ function getTree($parents,$key = '',$level = 0,$index = 0, $inner = 'treeCallout
  */
 function getMenuTree($parents,$level = 0, $index = 0, $inner = 'treeCalloutInner', $outer = 'treeCalloutOuter', $filter = null){
     if(!$parents) return;
-    static $index; // only way to track index properly I believe
-    // if($level == 0) $index = 0; // not sure what this was for, probably to reset index for roots for semantic versioning of paths ( doesnt work though )
+
+    // init static $index primed from param
+    if($index !== null){
+        $indexstart = $index;
+        static $index;
+        $index = $indexstart;
+    }
+    else static $index;
 
     $order = 0;
     $str   = '';
@@ -369,7 +391,7 @@ function getMenuTree($parents,$level = 0, $index = 0, $inner = 'treeCalloutInner
         
         $str .= callIfCallable($inner,$child,true,$level,$index,$order);
         if(isset($child['children'])) {
-            $str.= getMenuTree($child['children'],$level,$index);
+            $str.= getMenuTree($child['children'],$level,null,$inner,$outer,$filter);
         }
         $level--;
         $str .= callIfCallable($inner,$child,false,$level,$index,$order);
@@ -455,6 +477,17 @@ function treeCalloutInner($item, $open = true, $level = '', $index = '', $order 
     return $open ? '<li data-depth='.$level.'>'.$title : "</li>";
 }
 
+/**
+ * menu manager tree outer callout function
+ * @since  3.4
+ * @param  array  $item item to feed this recursive iteration
+ * @param  boolean $open is this nest open or closing
+ * @return str     string to return to recursive callee
+ */
+function mmCalloutOuter($page = null,$open = true){
+    // debugLog(__FUNCTION__);
+    return $open ? '<ol id="" class="dd-list">' : '</ol>';
+}
 
 /**
  * menu manager tree callout function
@@ -464,27 +497,18 @@ function treeCalloutInner($item, $open = true, $level = '', $index = '', $order 
  * @return str     string to return to recursive callee
  */
 function mmCalloutInner($item,$open = true){
+    // debugLog(__FUNCTION__);
     $page      = is_array($item) && isset($item['id']) ? getPage($item['id']) : getPage($item);
     $menuTitle = getPageMenuTitle($page['url']);
     $pageTitle = truncate($page['title'],30);
     // $pageTitle = '<strong>'.$page['title'].'.'.$level.'.'.$order.'</strong>';
-    $pageTitle = $pageTitle.'.'.$page['menuOrder'] .'.'.$page['menuStatus'];
+    // $pageTitle = $pageTitle.'.'.$page['menuOrder'] .'.'.$page['menuStatus'];
+    $pageTitle = $pageTitle.'.'.$item['data']['index'] .'.'.$page['menuStatus'];
     // _debugLog($page,$page['menuStatus']);
     $class     = $page['menuStatus'] == 'Y' ? ' menu' : ' nomenu';
 
     $str = $open ? '<li class="dd-item clearfix" data-id="'.$page['url'].'"><div class="dd-itemwrap '.$class.'"><div class="dd-handle"> '.$menuTitle.'<div class="itemtitle"><em>'.$pageTitle.'</em></div></div></div>' : '</li>';
     return $str;
-}
-
-/**
- * menu manager tree outer callout function
- * @since  3.4
- * @param  array  $item item to feed this recursive iteration
- * @param  boolean $open is this nest open or closing
- * @return str     string to return to recursive callee
- */
-function mmCalloutOuter($page = null,$open = true){
-    return $open ? '<ol id="" class="dd-list">' : '</ol>';
 }
 
 /**
@@ -516,6 +540,12 @@ function getPageMenuTitle($slug){
  * @return bool        success
  */
 function menuSave($menuid,$data){
+
+    if(!$data || !$data[GSMENUNESTINDEX]){
+        debugLog('menuread: menu is empty - ' .$menuid);
+        return false;
+    }
+
     $menufileext = '.json';
     if(isset($data[GSMENUFLATINDEX])) unset($data[GSMENUFLATINDEX]);
     $status = save_file(GSDATAOTHERPATH.'menu_'.$menuid.$menufileext,json_encode($data));
@@ -540,7 +570,8 @@ function menuRead($menuid){
     }
 
     $menu        = json_decode($menu,true);
-    buildRefArray($menu); // rebuild flat array refs from index map
+    if($menu[GSMENUNESTINDEX]) buildRefArray($menu); // rebuild flat array refs from index map
+    else debugLog('menuread: menu is empty - ' .$menuid);
     return $menu;
 }
 
@@ -852,12 +883,12 @@ function treeFilterCallout($id,$level,$index,$order){
 function debugTreeCallout($args){
     $item = $args[0];
     // use internal
-    if(is_array($args) && !isset($item['data'])){
-        $item['data']['depth'] = $args[2];
-        $item['data']['index'] = $args[3];
-        $item['data']['order'] = $args[4];
-        // $debug .= ' [' . $args[2] . ']';
-    }
+    // if(is_array($args) && !isset($item['data'])){
+    //     $item['data']['depth'] = $args[2];
+    //     $item['data']['index'] = $args[3];
+    //     $item['data']['order'] = $args[4];
+    //     // $debug .= ' [' . $args[2] . ']';
+    // }
     $debug = '<strong>#'.$args[3].'</strong> '.$item['id'];
     $debug .= ' [ ' . $item['data']['index'].' - '.$item['data']['depth'].'.'.$item['data']['order'] . ' ]';
     return $debug;

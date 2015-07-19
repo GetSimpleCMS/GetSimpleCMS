@@ -25,7 +25,7 @@ if (!isset($_REQUEST['menuid'])) {
 
 # save menu
 if (isset($_POST['menuOrder'])) {
-	if (trim($_POST['menuOrder']) == '') {
+	if (trim($_POST['menuOrder']) == '' || trim($_POST['menuOrder']) == '[]') {
 		die('no data');
 	}
 
@@ -89,8 +89,6 @@ function legacyMenuManager($pages){
 	}
 }
 
-exec_action('menu-manager-extras');
-
 $tree = getMenuData($menuid);
 debugLog($tree);
 $str  = getMenuTreeMin($tree,'mmCalloutInner','mmCalloutOuter');
@@ -102,13 +100,16 @@ echo '</div>';
 echo '<div class="clearfix"></div>';
 // echo '<div class="clear">';
 
+exec_action('menu-manager-extras');
+
 echo '<form method="post" action="menu-manager.php">';
 echo '<div id="submit_line"><span>';
 echo '<input type="hidden" name="menuOrder" value=""><input class="submit" type="submit" value="' . i18n_r("SAVE_MENU_ORDER") . '" />';
 echo '</span></div>';
 echo '</form>';
 
-echo '<li id="nestable-template" class="dd-item clearfix" data-id="template"><div class="dd-handle"> template<div class="itemtitle"><em>template title</em></div></div></li>';
+// echo '<li id="nestable-template" class="dd-item clearfix" data-id="template"><div class="dd-handle"> template<div class="itemtitle"><em>template title</em></div></div></li>';
+
 /**
  * /END NESTABLE TESTING
  */
@@ -143,8 +144,8 @@ echo '<li id="nestable-template" class="dd-item clearfix" data-id="template"><di
 				});
 
 				$('.dd').trigger('change');
-				$('#nestable-template').hide();
-				$(".dd >ol").append($('#nestable-template').clone());
+				// $('#nestable-template').hide();
+				// $(".dd >ol").append($('#nestable-template').clone());
 				// $('.dd').nestable('collapseAll');
 
 				// var size = parentLi.children('ol').first().children('li').length; // get parents ol li items
