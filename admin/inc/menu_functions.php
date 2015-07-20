@@ -434,12 +434,18 @@ function getMenuTreeMin($parents,$inner = 'treeCalloutInner',$outer = 'treeCallo
 
     foreach($parents as $key=>$child){
         if(!isset($child['id'])) continue;
-        // if(callIfCallable($filter) === true) continue;
-        $str .= callIfCallable($inner,$child);
+        
+        if(callIfCallable($filter,$child) === true){
+            debugLog(__FUNCTION__ . ' filtered: ' . $child['id'] . ' + ' . $child['numchildren']);
+            // continue;  // skips children
+            $skip = true;
+        } 
+
+        if(!$skip) $str .= callIfCallable($inner,$child);
         if(isset($child['children'])) {
             $str.= getMenuTreeMin($child['children'],$inner,$outer,$filter);
         }
-        $str .= callIfCallable($inner,$child,false);
+        if(!$skip) $str .= callIfCallable($inner,$child,false);
     }
     $str .= callIfCallable($outer,null,false);
     return $str;
@@ -509,6 +515,12 @@ function mmCalloutInner($item,$open = true){
 
     $str = $open ? '<li class="dd-item clearfix" data-id="'.$page['url'].'"><div class="dd-itemwrap '.$class.'"><div class="dd-handle"> '.$menuTitle.'<div class="itemtitle"><em>'.$pageTitle.'</em></div></div></div>' : '</li>';
     return $str;
+}
+
+function mmCalloutFilter($item){
+    // debugLog($item['id'] . ' ' . !getPage($item['id']));
+    if(!getPage($item['id'])) return true;
+    return $item['id'] == 'child-1c';
 }
 
 /**

@@ -91,7 +91,7 @@ function legacyMenuManager($pages){
 
 $tree = getMenuData($menuid);
 debugLog($tree);
-$str  = getMenuTreeMin($tree,'mmCalloutInner','mmCalloutOuter');
+$str  = getMenuTreeMin($tree,'mmCalloutInner','mmCalloutOuter','mmCalloutFilter');
 
 echo '<div class="widesec">';
 echo '<div id="menu-order-nestable" class="dd">' . $str . '</div>';
@@ -104,7 +104,9 @@ exec_action('menu-manager-extras');
 
 echo '<form method="post" action="menu-manager.php">';
 echo '<div id="submit_line"><span>';
-echo '<input type="hidden" name="menuOrder" value=""><input class="submit" type="submit" value="' . i18n_r("SAVE_MENU_ORDER") . '" />';
+echo '<input type="text" class="hidden" name="menuid" value="'.$menuid.'">';
+echo '<textarea type="text" class="text hidden" name="menuOrder" value=""></textarea>';
+echo '<input class="submit" type="submit" value="' . i18n_r("SAVE_MENU_ORDER") . '" />';
 echo '</span></div>';
 echo '</form>';
 
