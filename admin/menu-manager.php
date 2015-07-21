@@ -91,7 +91,7 @@ function legacyMenuManager($pages){
 
 $tree = getMenuData($menuid);
 debugLog($tree);
-$str  = getMenuTreeMin($tree,'mmCalloutInner','mmCalloutOuter','mmCalloutFilter');
+$str  = callIfCallable('mmCalloutOuter') . getMenuTreeMin($tree,'mmCalloutInner','mmCalloutOuter','mmCalloutFilter') . callIfCallable('mmCalloutOuter',null,false);
 
 echo '<div class="widesec">';
 echo '<div id="menu-order-nestable" class="dd">' . $str . '</div>';
@@ -134,7 +134,7 @@ echo '</form>';
 				$("#menu-order").disableSelection();
 
 				$('.dd').nestable({
-					expandBtnHTML : '<button   class="borderless" data-action="expand"><i class="tree-expander fa fa-play fa-fw"></i></button>',
+					expandBtnHTML   : '<button class="borderless" data-action="expand"><i class="tree-expander fa fa-play fa-fw"></i></button>',
 					collapseBtnHTML : '<button class="borderless" data-action="collapse"><i class="tree-expander fa fa-play fa-fw fa-rotate-90"></i></button>'
 				});
 
@@ -156,6 +156,9 @@ echo '</form>';
 			</script>
 
 			<div class="dd" id="nestable-json"></div>
+
+			<?php # echo callIfCallable('treeCalloutOuter') . getMenuTreeMin($tree,'treeCalloutInner','treeCalloutOuter','mmCalloutFilter') . callIfCallable('treeCalloutOuter',null,false); ?>
+
 
 		</div>
 	</div>
