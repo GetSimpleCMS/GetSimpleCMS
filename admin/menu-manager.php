@@ -157,8 +157,10 @@ echo '</form>';
 
 			<div class="dd" id="nestable-json"></div>
 
-			<?php # echo callIfCallable('treeCalloutOuter') . getMenuTreeMin($tree,'treeCalloutInner','treeCalloutOuter','mmCalloutFilter') . callIfCallable('treeCalloutOuter',null,false); ?>
-
+			<?php 
+				// echo getMenuTree($tree,'treeCalloutInner', 'treeCalloutOuter', 'mmCalloutFilter');
+				// echo getMenuTreeMin($tree,'treeCalloutInner', 'treeCalloutOuter', 'mmCalloutFilter');
+			?>
 
 		</div>
 	</div>
