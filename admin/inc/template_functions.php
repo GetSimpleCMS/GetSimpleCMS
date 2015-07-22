@@ -884,12 +884,14 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
  *
  * @param string $type, default is 'core'
  * @param array $args, default is empty
+ * @param  bool $cached force cached check only, do not use curl
  * 
  * @returns string
  */
 
-function get_api_details($type='core', $args=null) {
+function get_api_details($type='core', $args=null, $cached = false) {
 	GLOBAL $debugApi,$nocache,$nocurl;
+	$debugApi = true;
 
 	include(GSADMININCPATH.'configuration.php');
 
@@ -926,11 +928,14 @@ function get_api_details($type='core', $args=null) {
 
 	$cacheAge = file_exists(GSCACHEPATH.$cachefile) ? filemtime(GSCACHEPATH.$cachefile) : '';
 
-	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpire) < $cacheAge ) {
+	if ($cached || (!$nocache && !empty($cacheAge) && (time() - $cacheExpire) < $cacheAge )) {
 		# grab the api request from the cache
 		$data = file_get_contents(GSCACHEPATH.$cachefile);
 		debug_api_details('returning api cache ' . GSCACHEPATH.$cachefile);
 	} else {	
+
+		if($cached) return '{"status":-1}';
+
 		# make the api call
 		if (function_exists('curl_init') && function_exists('curl_exec') && !$nocurl) {
 
