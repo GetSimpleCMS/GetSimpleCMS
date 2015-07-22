@@ -86,7 +86,7 @@ function importMenuFromPages($pages = null, $flatten = false){
 
 /**
  * builds a nested array from a parent hash table array
- *
+ * faster than using 
  * input, parent=>children hash table
  * ['parentid'] = array('child1'=>(data),'child2'=>(data))
  *
@@ -224,7 +224,7 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
             $value['data']['index'] = $index;
             $value['data']['order'] = $order;
 
-            recurseTreeCallout($value,$id,$parent);
+            recurseUpgradeTreeCallout($value,$id,$parent); // pass $value by ref for modification
 
             // rekey array, needed for non assoc arrays, such as mm submit
             if($key !== $id){
@@ -254,12 +254,12 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
 /**
  * callout for recurse, to add custom data
  * @since  3.4
- * @param  array &$value ref array
+ * @param  array &$value  ref array to manipulate
  * @param  string $id     $id of value
  * @param  string $parent parent of value
- * @return array          copy of array
+ * @return array          unused copy of array
  */
-function recurseTreeCallout(&$value,$id = '',$parent = ''){
+function recurseUpgradeTreeCallout(&$value,$id = '',$parent = ''){
     $value['data']['url']   = generate_url($id);
     $value['data']['path']  = generate_permalink($id,'%path%/%slug%');
     return $value; // non ref
@@ -288,6 +288,7 @@ function recurseTreeCallout(&$value,$id = '',$parent = ''){
  * itemcallout($id,$level,$index,$order,$open)
  *
  * @note CANNOT SHOW PARENT NODE IN SUBMENU TREE $key, since we can only find children not parents
+ * @note not particulary used, but saving in case
  * @param  array   $parents array of parents
  * @param  string  $key     starting parent key
  * @param  string  $str     str for recursion append
@@ -298,7 +299,7 @@ function recurseTreeCallout(&$value,$id = '',$parent = ''){
  * @param  string  $outer   outer element callout functionname
  * @return str              output string
  */
-function getTree($parents,$key = '',$level = 0,$index = 0, $inner = 'treeCalloutInner', $outer = 'treeCalloutOuter', $filter = null){
+function getTreeFromParentHashTable($parents,$key = '',$level = 0,$index = 0, $inner = 'treeCalloutInner', $outer = 'treeCalloutOuter', $filter = null){
     if(!$parents) return;
 
     // init static $index primed from param
@@ -324,7 +325,7 @@ function getTree($parents,$key = '',$level = 0,$index = 0, $inner = 'treeCallout
         $str .= callIfCallable($inner,$child,true,$level,$index,$order);
 
         if(isset($parents[$parent])) {
-            $str.= getTree($parents,$parent,$level,null,$inner,$outer,$filter);
+            $str.= getTreeFromParentHashTable($parents,$parent,$level,null,$inner,$outer,$filter);
         }
         $level--;
         $str .= callIfCallable($inner,$child,false,$level,$index,$order);
@@ -491,6 +492,7 @@ function getMenuTreeRecurse($parents, $inner = 'treeCalloutInner', $outer = 'tre
         $str .= callIfCallable($inner,$child,false,$level,$index,$order); # </li>
         $level--;
     }
+
     return $str;
 }
 
@@ -704,9 +706,15 @@ function menuRead($menuid){
     return $menu;
 }
 
+
 /**
- * get a menu object
+ * GETTERS
+ */
+
+/**
+ * get a menu object from cache or file
  * lazyload into SITEMENU global
+ * 
  * @since  3.4
  * @uses  $SITEMENU
  * @param  string $menuid menuid to retreive
@@ -724,7 +732,8 @@ function getMenuDataArray($menuid = 'default',$force = false){
 }
 
 /**
- * get sub menu using flat reference to nested
+ * get menu data array
+ * 
  * @since 3.4
  * @param  string $page   slug of page
  * @param  string $menuid menu id to fetch
@@ -738,8 +747,13 @@ function getMenuData($menuid = 'default'){
 }
 
 /**
- * get sub menu using flat reference to nested
+ * get menu data sub array 
+ * 
+ * with or without parent item included
+ * uses menu flat reference to nested array to resolve
+ * @since  3.4
  * @param  string $page   slug of page
+ * @param  bool   $parent include parent in sub menu if true
  * @param  string $menuid menu id to fetch
  * @return array  menu sub array of page
  */
@@ -748,8 +762,14 @@ function getSubMenuData($page, $parent = false, $menuid = 'default'){
     if(!isset($menu)) return;
     // if(!isset($menu[GSMENUFLATINDEX])) buildRefArray(); should not be necessary
     if(isset($menu[GSMENUFLATINDEX][$page])) return $parent ? array($menu[GSMENUFLATINDEX][$page]) : $menu[GSMENUFLATINDEX][$page];
-    debugLog(__FUNCTION__ .': slug not found - ' . $page);
+    debugLog(__FUNCTION__ .': slug not found in menu('.$menuid.') - ' . $page);
 }
+
+
+/**
+ * EXPORT / LEGACY
+ */
+
 
 /**
  * save menu data to page files, refresh page cache
