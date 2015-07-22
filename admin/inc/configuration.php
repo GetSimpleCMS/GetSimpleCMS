@@ -23,7 +23,7 @@ $cookie_httponly    = true;        // cookie http only
 
 $api_url            = 'http://get-simple.info/api/start/v3.php';
 # $api_timeout        = 800; // time in ms defaults to 500
-
+$debugApi           = true;
 
 if (isset($_GET['redirect'])){
 	$cookie_redirect = $_GET['redirect'];
