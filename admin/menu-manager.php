@@ -91,7 +91,8 @@ function legacyMenuManager($pages){
 
 $tree = getMenuData($menuid);
 debugLog($tree);
-$str  = callIfCallable('mmCalloutOuter') . getMenuTreeMin($tree,'mmCalloutInner','mmCalloutOuter','mmCalloutFilter') . callIfCallable('mmCalloutOuter',null,false);
+$str  = getMenuTree($tree,'mmCalloutInner', 'mmCalloutOuter', 'mmCalloutFilter');
+// $str  = callIfCallable('mmCalloutOuter') . getMenuTreeMin($tree,'mmCalloutInner','mmCalloutOuter','mmCalloutFilter') . callIfCallable('mmCalloutOuter',null,false);
 
 echo '<div class="widesec">';
 echo '<div id="menu-order-nestable" class="dd">' . $str . '</div>';

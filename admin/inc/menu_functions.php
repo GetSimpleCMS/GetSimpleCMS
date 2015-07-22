@@ -624,8 +624,8 @@ function mmCalloutInner($item,$open = true){
     // $pageTitle = '<strong>'.$page['title'].'.'.$level.'.'.$order.'</strong>';
     // $pageTitle = $pageTitle.'.'.$page['menuOrder'] .'.'.$page['menuStatus'];
     $pageTitle = $pageTitle.'.'.$item['data']['index'] .'.'.$page['menuStatus'];
-    // _debugLog($page,$page['menuStatus']);
-    $class     = $page['menuStatus'] == 'Y' ? ' menu' : ' nomenu';
+    // _debugLog($page['url'],$page['menuStatus']);
+    $class     = $page['menuStatus'] === 'Y' ? ' menu' : ' nomenu';
 
     $str = $open ? '<li class="dd-item clearfix" data-id="'.$page['url'].'">'."\n".'<div class="dd-itemwrap '.$class.'"><div class="dd-handle"> '.$menuTitle.'<div class="itemtitle"><em>'.$pageTitle."</em></div></div></div>\n" : "</li>\n";
     return $str;
@@ -634,11 +634,12 @@ function mmCalloutInner($item,$open = true){
 function mmCalloutFilter($item){
     $skip = GSMENUFILTERSKIP;
     // $skip = GSMENUFILTERCONTINUE;
-    // $skip = GSMENUFILTERSHIFT;
+    // $skip = GSMENUFILTERSHIFT;\
     
     // debugLog($item['id'] . ' ' . !getPage($item['id']));
-    if(!getPage($item['id'])) return $skip; // if page not exist skip it and children
-
+    // if(!getPage($item['id'])) return $skip; // if page not exist skip it and children
+    debugLog($item['id'].' '.getPageFieldValue($item['id'],'menuStatus'));
+    if(getPageFieldValue($item['id'],'menuStatus') !== 'Y') return GSMENUFILTERCONTINUE;
     // if($item['id'] =='index') return $skip;
 }
 
