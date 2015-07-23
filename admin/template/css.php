@@ -1667,8 +1667,10 @@ table.simple td.title {
 		-moz-border-radius: 4px;
 	display: block;
 	font-weight: bold;
-	color: #AFC5CF;
-	background: #182227;
+	/*color: #AFC5CF;*/
+	/*background: #182227;*/
+	color: <?php echo $primary_6; ?>;
+	background: <?php echo $primary_1; ?>;	
 	text-shadow: 1px 1px 0px #0E1316;
 	transition: all .3s ease-in-out;
 		-webkit-transition: all .3s ease-in-out;
