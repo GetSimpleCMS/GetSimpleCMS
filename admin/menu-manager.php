@@ -90,7 +90,7 @@ function legacyMenuManager($pages){
 }
 
 $tree = getMenuData($menuid);
-debugLog($tree);
+// debugLog($tree);
 $str  = getMenuTree($tree,'mmCalloutInner', 'mmCalloutOuter', 'mmCalloutFilter');
 // $str  = callIfCallable('mmCalloutOuter') . getMenuTreeMin($tree,'mmCalloutInner','mmCalloutOuter','mmCalloutFilter') . callIfCallable('mmCalloutOuter',null,false);
 
@@ -159,8 +159,8 @@ echo '</form>';
 			<div class="dd" id="nestable-json"></div>
 
 			<?php 
-				// echo getMenuTree($tree,'treeCalloutInner', 'treeCalloutOuter', 'mmCalloutFilter');
 				// echo getMenuTreeMin($tree,'treeCalloutInner', 'treeCalloutOuter', 'mmCalloutFilter');
+				echo getMenuTree($tree,'menuCalloutInner', 'treeCalloutOuter', 'menuCalloutFilter');
 			?>
 
 		</div>

@@ -634,19 +634,51 @@ function mmCalloutInner($item,$open = true){
     return $str;
 }
 
+
+/**
+ * tree filter filters pages not exist
+ * @param  array $item menu child
+ * @return mixed       filter result
+ */
 function mmCalloutFilter($item){
+    $skip = GSMENUFILTERSKIP;    
+    if($item['id'] =='index') return $skip;
+}
 
-	// _debugLog(__FUNCTION__,$item['id']);
 
-    $skip = GSMENUFILTERSKIP;
-    // $skip = GSMENUFILTERCONTINUE;
-    // $skip = GSMENUFILTERSHIFT;\
-    
-    // debugLog($item['id'] . ' ' . !getPage($item['id']));
-    // if(!getPage($item['id'])) return $skip; // if page not exist skip it and children
-    debugLog($item['id'].' '.getPageFieldValue($item['id'],'menuStatus'));
+function menuCalloutInner($item, $open = true, $level = '', $index = '', $order = ''){
+	
+	if(!$open) return '</li>';
+
+	$page        = getPage($item['id']);
+	
+	$classPrefix = '';
+	$currentpage = '';
+
+	$sel = $classes = $menu = '';
+
+	if ($page['menuStatus'] == 'Y') { 
+		$parentClass = !empty($page['parent']) ? $classPrefix.$page['parent'] . " " : "";
+		// @tood parent is wrong and does not reflect menu parent, only page parent, does not respect filters either
+		$slugclass   = $classPrefix.(string)$page['url'];
+		$classes     = trim($parentClass.$slugclass);
+		// class="parent prefix.slug current active"
+		if ((string)$currentpage == (string)$page['url']) $classes .= " current active";
+		$title = getPageMenuTitle($item['id']); // @todo check in menu for title then fallback to this
+		$menu .= '<li class="'. $classes .'"><a href="'. find_url($page['url'],$page['parent']) . '" title="'. encode_quotes(cl($title)) .'">'.var_out(strip_decode($title)).'</a>'."\n";
+	}
+
+	return $menu;
+}
+
+/**
+ * tree filter filters pages not exist, or not in menu
+ * @param  array $item menu child
+ * @return mixed       filter result
+ */
+function menuCalloutFilter($item){
+	if($item['id'] =='index') return GSMENUFILTERCONTINUE;
     if(getPageFieldValue($item['id'],'menuStatus') !== 'Y') return GSMENUFILTERCONTINUE;
-    // if($item['id'] =='index') return $skip;
 }
 
 /**
@@ -999,7 +1031,7 @@ function &resolve_tree(&$tree, $path) {
 
 
 
-function menuCalloutInner($page,$open = true){
+function menuCalloutInnerTest($page,$open = true){
     if(!$open) return '</li>';
 
     $depth = $page['data']['depth'];
@@ -1015,7 +1047,7 @@ function menuCalloutInner($page,$open = true){
     return $str;
 }
 
-function menuCalloutOuter($page = null,$open = true){
+function menuCalloutOuterTest($page = null,$open = true){
     return $open ? '<ul id="">' : '</ul>';
 }
 
