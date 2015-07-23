@@ -71,10 +71,10 @@ function importMenuFromPages($pages = null, $flatten = false){
     else $parents = getParentsHashTable($pages, true , true); // get parent hash table of pages, useref, fixoprphans
     
     $tree    = buildTreewHash($parents,'',false,true,'url'); // get a nested array from hashtable, from root, norefs, assoc array
-    debugLog($tree);
+    // debugLog($tree);
     $flatary = recurseUpgradeTree($tree); // recurse the tree and add stuff to $tree, return flat reference array
-    debugLog($tree);
-    debugLog($flatary);
+    // debugLog($tree);
+    // debugLog($flatary);
 
     $nesttree[GSMENUNESTINDEX]  = &$tree; //add tree array to menu
     $nesttree[GSMENUFLATINDEX]  = &$flatary[GSMENUFLATINDEX]; // add flat array to menu
@@ -210,38 +210,40 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
 
     foreach($array as $key=>&$value){
         if(isset($value['id'])){
-            // skip rekeyed copies , need some kind of flag here
-            if(isset($value['data'])) continue;
+            $id = $value['id'];
+
+            // rekey array if not using id keys, needed for non assoc arrays, such as mm submit etc
+            // this is not preffered but provided as a failsafe, reindex beforehand reindexMenuArray() to avoid modify ref in loop errors
+            // skip rekeyed copies, we need a flag since array is reference, or else it will process the rekeyed elements twice
+            if(isset($value['rekeyed'])) continue;
+            if($key !== $id){
+                $array[$id] = $value; // this modifies &$array and may cause problems
+				$array[$id]['rekeyed'] = true;
+                unset($array[$key]); // remove old key
+                $value = &$array[$id];
+            }
 
             $order++;
             $index++;            
 
-            $id = $value['id'];
-
-            // $value['parent']        = isset($parent) ? $parent : '';
-            $value['data']          = array();
-            $value['data']['depth'] = $depth;
-            $value['data']['index'] = $index;
-            $value['data']['order'] = $order;
+			$value['parent']    = isset($parent) ? $parent : '';
+			$value['depth']     = $depth;
+			$value['index']     = $index;
+			$value['order']     = $order;
 
             recurseUpgradeTreeCallout($value,$id,$parent); // pass $value by ref for modification
 
-            // rekey array, needed for non assoc arrays, such as mm submit
-            if($key !== $id){
-                $array[$id]  = $value;
-                unset($array[$key]); // remove old key
-            }
-
-            $indexAry['flat'][$id] = &$array[$id]; 
-            // flat cannot be saved to json because of references soooo
+            // add to flat array
+            // flat cannot be saved to json because of references soooo we also create an index array
+            $indexAry['flat'][$id] = &$value; 
             // create an indices to paths map, so we can rebuild flat array references on json load, if serializing this is not needed
             $indexAry['indices'][$id] = implode('.',$indexAry['currpath']).'.'.$id;
 
-            if(isset($array[$id]['children'])){
-                $array[$id]['numchildren'] = count($array[$id]['children']);
-                $children = &$array[$id]['children'];
+            if(isset($value['children'])){
+                $value['numchildren'] = count($value['children']);
+                $children = &$value['children'];
                 recurseUpgradeTree($children,$id,$depth,null,$indexAry); // @todo replace with __FUNCTION__
-            } else $array[$id]['numchildren'] = 0;
+            } else $value['numchildren'] = 0;
         }
 
     }
@@ -260,8 +262,8 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
  * @return array          unused copy of array
  */
 function recurseUpgradeTreeCallout(&$value,$id = '',$parent = ''){
-    $value['data']['url']   = generate_url($id);
-    $value['data']['path']  = generate_permalink($id,'%path%/%slug%');
+    $value['url']   = generate_url($id);
+    $value['path']  = generate_permalink($id,'%path%/%slug%');
     return $value; // non ref
 }
 
@@ -507,7 +509,7 @@ function getMenuTreeRecurse($parents, $inner = 'treeCalloutInner', $outer = 'tre
  */
 function debugFilteredItem($item,$filtertype){
     return '';
-    $str = '<strong>#'.$item['data']['index'].'</strong><div class="label label-error">removed</div> ' . $item['id']."<br/>";
+    $str = '<strong>#'.$item['index'].'</strong><div class="label label-error">removed</div> ' . $item['id']."<br/>";
     if(isset($item['children']) && $filtertype == GSMENUFILTERSKIP) $str .= '<br> ------ <div class="label label-error">removed</div><strong>'.$item['numchildren'].' children</strong>';
     return $str;
 }
@@ -626,7 +628,7 @@ function mmCalloutInner($item,$open = true){
     $pageTitle = truncate($page['title'],30);
     // $pageTitle = '<strong>'.$page['title'].'.'.$level.'.'.$order.'</strong>';
     // $pageTitle = $pageTitle.'.'.$page['menuOrder'] .'.'.$page['menuStatus'];
-    $pageTitle = $pageTitle.'.'.$item['data']['index'] .'.'.$page['menuStatus'];
+    $pageTitle = $pageTitle.'.'.$item['index'] .'.'.$page['menuStatus'];
     // _debugLog($page['url'],$page['menuStatus']);
     $class     = $page['menuStatus'] === 'Y' ? ' menu' : ' nomenu';
 
@@ -831,7 +833,7 @@ function exportMenuToPages($menu){
         }
         // debugLog($menu[GSMENUFLATINDEX][$id]);
         $parent = $menu[GSMENUFLATINDEX][$id]['parent'];
-        $order  = $menu[GSMENUFLATINDEX][$id]['data']['index'];
+        $order  = $menu[GSMENUFLATINDEX][$id]['index'];
         saveMenuDataToPage($id,$parent,$order);
     }
 
@@ -866,6 +868,29 @@ function saveMenuDataToPage($pageid,$parent = '',$order =''){
  */
 
 /**
+ * reindex a nested menu array recursively
+ * array[0] => array('id' => 'index')
+ * array['index'] => array('id' => 'index'), and same for all children indexes
+ * @since  3.4
+ * @param  array $menu menu array
+ * @return array       array reindexed
+ */
+function reindexMenuArray($menu){
+	foreach($menu as $key=>$item){
+		$id = $item['id'];
+		if($id !== $key){
+			$menu[$id]  = $item;
+			$menu[$key] = null;
+			unset($menu[$key]);
+			if(isset($menu[$id]['children'])) $menu[$id]['children'] = reindexMenuArray($menu[$id]['children']);
+		}
+		else if(isset($item[$id]['children'])) $item[$id]['children'] = reindexMenuArray($item[$id]['children']);
+	}
+
+	return $menu;
+}
+
+/**
  * save basic json menu
  * convert basic menu string to gs menu array
  * @param  str $jsonmenu json string of menu data
@@ -873,12 +898,13 @@ function saveMenuDataToPage($pageid,$parent = '',$order =''){
  */
 function newMenuSave($menuid,$menu){
     $menu     = json_decode($menu,true);
+	$menu     = reindexMenuArray($menu);   // add id as keys
+	// echo print_r(var_dump($menu),true); die();
     $menudata = recurseUpgradeTree($menu); // build full menu data
     $menudata[GSMENUNESTINDEX] = $menu;
-    _debugLog(__FUNCTION__,$menu);
-    _debugLog(__FUNCTION__,$menudata);
+    // _debugLog(__FUNCTION__,$menu);
+    // _debugLog(__FUNCTION__,$menudata);
     if(getDef('GSMENULEGACY',true)) exportMenuToPages($menudata); // legacy page support
-    // $menudata[GSMENUNESTINDEX]=$menudata[GSMENUFLATINDEX];
     return menuSave($menuid,$menudata);
 }
 
@@ -1034,7 +1060,7 @@ function &resolve_tree(&$tree, $path) {
 function menuCalloutInnerTest($page,$open = true){
     if(!$open) return '</li>';
 
-    $depth = $page['data']['depth'];
+    $depth = $page['depth'];
     $page = getPage($page['id']);
     
     $menutext = $page['menu'] == '' ? $page['title'] : $page['menu'];
@@ -1077,8 +1103,8 @@ function debugTreeCallout($args){
     //     $item['data']['order'] = $args[4];
     //     // $debug .= ' [' . $args[2] . ']';
     // }
-    $debug = '<strong>#'.(isset($args[3]) ? $args[3] :$item['data']['index']).'</strong> '.$item['id'];
-    $debug .= ' [ ' . $item['data']['index'].' - '.$item['data']['depth'].'.'.$item['data']['order'] . ' ]';
+    $debug = '<strong>#'.(isset($args[3]) ? $args[3] :$item['index']).'</strong> '.$item['id'];
+    $debug .= ' [ ' . $item['index'].' - '.$item['depth'].'.'.$item['order'] . ' ]';
     return $debug;
 }
 

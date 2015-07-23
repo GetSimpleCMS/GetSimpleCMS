@@ -1106,8 +1106,8 @@ function getPageDepthsNew($pages){
 	foreach($pages as &$page){
 		$treeinfo = $tree[GSMENUFLATINDEX][$page['url']];
 		debugLog($treeinfo);
-		$page['order']       = $treeinfo['data']['order'];
-		$page['depth']       = $treeinfo['data']['depth'];
+		$page['order']       = $treeinfo['order'];
+		$page['depth']       = $treeinfo['depth'];
 		$page['numchildren'] = $treeinfo['numchildren'];
 	}
 	return $pages;
