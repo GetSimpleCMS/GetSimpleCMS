@@ -676,6 +676,12 @@ function return_snippet(){
  */	
 function get_navigation($currentpage = '',$classPrefix = "", $outer = array()) {
 
+	$tree = getMenuData('default');
+	_debugLog($tree);
+	$menu =  getMenuTree($tree,false,'menuCalloutInner', 'treeCalloutOuter', 'menuCalloutFilter',array('currentpage'=>$currentpage,'classPrefix'=>$classPrefix));
+	echo $menu;
+	return $menu;
+
 	$menu = '';
 
 	global $pagesArray;

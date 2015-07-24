@@ -346,8 +346,12 @@ function getTreeFromParentHashTable($parents,$key = '',$level = 0,$index = 0, $i
  * @param  str     $filter  filter callout functionname
  * @return str              output string 
  */
-function getMenuTree($menu,$inner = 'treeCalloutInner', $outer = 'treeCalloutOuter', $filter = null,$args = array()){
-    return callIfCallable($outer) . getMenuTreeRecurse($menu,$inner,$outer,$filter) . callIfCallable($outer,null,false);
+function getMenuTree($menu,$wrap = false,$inner = 'treeCalloutInner', $outer = 'treeCalloutOuter', $filter = null,$args = array()){
+    $str = '';
+    if($wrap) $str .= callIfCallable($outer);
+    $str .= getMenuTreeRecurse($menu,$inner,$outer,$filter,0,0,$args);
+    if($wrap) $str  .= callIfCallable($outer,null,false);
+    return $str;
 }
 
 
@@ -651,13 +655,11 @@ function mmCalloutFilter($item){
 function menuCalloutInner($item, $open = true, $level = '', $index = '', $order = '',$args = array()){
 	
 	if(!$open) return '</li>';
-
+	
 	$page        = getPage($item['id']);
 	$classPrefix = $currentpage = '';
-
-	extract($args);
-	// $currentpage = isset($args['currentpage']) $args['currentpage'] : '';
-
+	extract($args); // extract arguments into cope
+	
 	$classes = $menu = '';
 	$class = array();
 
