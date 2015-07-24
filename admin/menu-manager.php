@@ -160,7 +160,7 @@ echo '</form>';
 
 			<?php 
 				// echo getMenuTreeMin($tree,'treeCalloutInner', 'treeCalloutOuter', 'mmCalloutFilter');
-				echo getMenuTree($tree,'menuCalloutInner', 'treeCalloutOuter', 'menuCalloutFilter');
+				echo getMenuTree($tree,'menuCalloutInner', 'treeCalloutOuter', 'menuCalloutFilter',array('currentpage'=>'index','classprefix'=>'GS_'));
 			?>
 
 		</div>
