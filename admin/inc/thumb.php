@@ -108,6 +108,10 @@ if (isset($_REQUEST['y'])) {
 
 $path_parts = pathinfo($from_name);
 
+// travesal protection
+if(!filepath_is_safe(GSDATAUPLOADPATH.$from_name,GSDATAUPLOADPATH,true)) die('invalid src image');
+if(!path_is_safe(GSTHUMBNAILPATH.dirname($to_name),GSTHUMBNAILPATH,true)) die('invalid dest image');
+
 if (!file_exists($images_folder)) die('Images folder does not exist (update $images_folder in the script)');
 if ($save_to_file && !file_exists($thumbs_folder)) die('Thumbnails folder does not exist (update $thumbs_folder in the script)');
 

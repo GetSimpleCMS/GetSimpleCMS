@@ -28,7 +28,7 @@ $file_ext_blacklist = array(
 	# HTML may contain cookie-stealing JavaScript and web bugs
 	'html', 'htm', 'js', 'jsb', 'mhtml', 'mht',
 	# PHP scripts may execute arbitrary code on the server
-	'php', 'phtml', 'php3', 'php4', 'php5', 'phps',
+	'php', 'pht', 'phtm', 'phtml', 'php3', 'php4', 'php5', 'ph3', 'ph4', 'ph5', 'phps',
 	# Other types that may be interpreted by some servers
 	'shtml', 'jhtml', 'pl', 'py', 'cgi', 'sh', 'ksh', 'bsh', 'c', 'htaccess', 'htpasswd',
 	# May contain harmful executables for Windows victims
@@ -48,6 +48,7 @@ $file_ext_blacklist = array(
  * @return string
  */
 function antixss($str){
+	$strdirty = $str;
 	// attributes blacklist:
 	$attr = array('style','on[a-z]+');
 	// elements blacklist:
@@ -64,9 +65,47 @@ function antixss($str){
 		$regex = '<'.$e.'(\s+[a-z][a-z\-]*\s*=\s*(\'[^\']*\'|"[^"]*"|[^\'">][^\s>]*))*\s*>.*?<\/'.$e.'\s*>';
 	    $str = preg_replace('#'.$regex.'#is', '', $str);
 	}
+
+	// if($strdirty !== $str) debugLog("string cleaned: removed ". (strlen($strdirty) - strlen($str)) .' chars');
 	return $str;
 }
 
+function xss_clean($data){
+	$datadirty = $data;
+	// Fix &entity\n;
+	$data = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $data);
+	$data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
+	$data = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $data);
+	$data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
+	
+	// Remove any attribute starting with "on" or xmlns
+	$data = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
+	
+	// Remove javascript: and vbscript: protocols
+	$data = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $data);
+	$data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2novbscript...', $data);
+	$data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $data);
+	
+	// Only works in IE: <span style="width: expression(alert('Ping!'));"></span>
+	$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
+	$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
+	$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu', '$1>', $data);
+	
+	// Remove namespaced elements (we do not need them)
+	$data = preg_replace('#</*\w+:\w[^>]*+>#i', '', $data);
+	
+	do
+	{
+		// Remove really unwanted tags
+		$old_data = $data;
+		$data = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $data);
+	}
+	while ($old_data !== $data);
+	
+	// we are done...
+	// if($datadirty !== $data) debugLog("string cleaned: removed ". (strlen($datadirty) - strlen($data)) .' chars');
+	return $data;
+}
 
 /**
  * Get Nonce
@@ -117,39 +156,39 @@ function check_nonce($nonce, $action, $file = ""){
 	return ( $nonce === get_nonce($action, $file) || $nonce === get_nonce($action, $file, true) );
 }
 
-/*
+/**
  * Validate Safe File
- *
+ * NEVER USE MIME CHECKING FROM BROWSERS, eg. $_FILES['userfile']['type'] cannot be trusted
  * @since 3.1
  * @uses file_mime_type
  * @uses $mime_type_blacklist
  * @uses $file_ext_blacklist
  *
  * @param string $file, absolute path
- * @param string $name, default null
- * @param string $type, default 'upload'
+ * @param string $name, filename
+ * @param string $mime, optional
  * @return bool
  */	
-function validate_safe_file($file, $name, $mime){
+function validate_safe_file($file, $name, $mime = null){
 	global $mime_type_blacklist, $file_ext_blacklist, $mime_type_whitelist, $file_ext_whitelist;
 
 	include(GSADMININCPATH.'configuration.php');
 
-	$file_extention = pathinfo($name,PATHINFO_EXTENSION);
-	$file_mime_type = $mime;
+	$file_extension = lowercase(pathinfo($name,PATHINFO_EXTENSION));
 
-	if ($mime_type_whitelist && in_arrayi($file_mime_type, $mime_type_whitelist)) {
-		return true;	
-	} elseif ($file_ext_whitelist && $in_arrayi($file_extention, $file_ext_whitelist)) {
-		return true;	
+	if ($mime && $mime_type_whitelist && in_arrayi($mime, $mime_type_whitelist)) {
+		return true;
+	}
+	if ($file_ext_whitelist && in_arrayi($file_extension, $file_ext_whitelist)) {
+		return true;
 	}
 
 	// skip blackist checks if whitelists exist
 	if($mime_type_whitelist || $file_ext_whitelist) return false;
 
-	if (in_arrayi($file_mime_type, $mime_type_blacklist)) {
+	if ($mime && in_arrayi($mime, $mime_type_blacklist)) {
 		return false;	
-	} elseif (in_arrayi($file_extention, $file_ext_blacklist)) {
+	} elseif (in_arrayi($file_extension, $file_ext_blacklist)) {
 		return false;	
 	} else {
 		return true;	
@@ -217,6 +256,7 @@ function var_out($var,$filter = "special"){
 			"url"     => FILTER_SANITIZE_URL,
 			"email"   => FILTER_SANITIZE_EMAIL,
 			"special" => FILTER_SANITIZE_SPECIAL_CHARS,
+			"full"    => FILTER_SANITIZE_FULL_SPECIAL_CHARS
 		);
 		if(isset($aryFilter[$filter])) return filter_var( $var, $aryFilter[$filter]);
 		return filter_var( $var, FILTER_SANITIZE_SPECIAL_CHARS);
@@ -224,4 +264,9 @@ function var_out($var,$filter = "special"){
 	else {
 		return htmlentities($var);
 	}
+}
+
+function validImageFilename($file){
+	$image_exts = array('jpg','jpeg','gif','png');
+	return in_array(getFileExtension($file),$image_exts);
 }

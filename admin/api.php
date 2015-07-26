@@ -10,7 +10,7 @@
 	
 	#step 1 - check for post
 	if (empty($_POST)) exit;
-	if (!defined('GSEXTAPI')) exit;
+	if (!getDef('GSEXTAPI',true)) exit;
 	
 	// disable libxml error output
 	if(!isDebug()) libxml_use_internal_errors(true);

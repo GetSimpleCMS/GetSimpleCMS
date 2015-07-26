@@ -30,7 +30,7 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 		$targetFile =  str_replace('//','/',$targetPath) . $name;
 		
 		//validate file
-		if (validate_safe_file($tempFile, $_FILES["Filedata"]["name"], $_FILES["Filedata"]["type"])) {
+		if (validate_safe_file($tempFile, $_FILES["Filedata"]["name"])) {
 			move_uploaded_file($tempFile, $targetFile);
 			if (defined('GSCHMOD')) {
 				chmod($targetFile, GSCHMOD);

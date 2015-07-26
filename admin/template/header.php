@@ -39,7 +39,7 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	<script type="text/javascript" src="template/js/jquery.getsimple.js?v=<?php echo GSVERSION; ?>"></script>
 
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->
-	<?php if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!defined('GSNOUPLOADIFY')) ) { ?>
+	<?php if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!getDef('GSNOUPLOADIFY',true)) ) { ?>
 	<script type="text/javascript" src="template/js/uploadify/jquery.uploadify.js?v=3.0"></script>
 	<?php } ?>
 	<?php if(get_filename_id()=='image') { ?>

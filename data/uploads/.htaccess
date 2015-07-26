@@ -21,4 +21,19 @@
 		Require all granted
 	</IfModule>
 
-</IfModule>	
+</IfModule>
+
+# Deny access to all script files
+<FilesMatch "(?i)\.((php[0-9]?)|(ph[0-9]?)|phtm|phtml|pl|py|jsp|asp|htm|shtml|sh|cgi|)$">
+    ForceType text/plain
+	Deny from all
+	Require all denied
+</FilesMatch>
+
+# Disable php execution
+SetHandler GS_DISABLED_SECURITY
+<IfModule mod_php5.c>
+	php_flag engine off
+</IfModule>
+
+
