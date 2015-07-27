@@ -89,9 +89,9 @@ function legacyMenuManager($pages){
 	}
 }
 
-$tree = getMenuData($menuid);
+$tree = getMenuDataNested($menuid);
 // debugLog($tree);
-$str  = getMenuTree($tree,'mmCalloutInner', 'mmCalloutOuter', 'mmCalloutFilter');
+$str  = getMenuTree($tree,true,'mmCalloutInner', 'mmCalloutOuter', 'mmCalloutFilter');
 // $str  = callIfCallable('mmCalloutOuter') . getMenuTreeMin($tree,'mmCalloutInner','mmCalloutOuter','mmCalloutFilter') . callIfCallable('mmCalloutOuter',null,false);
 
 echo '<div class="widesec">';
@@ -159,8 +159,14 @@ echo '</form>';
 			<div class="dd" id="nestable-json"></div>
 
 			<?php 
-				// echo getMenuTreeMin($tree,'treeCalloutInner', 'treeCalloutOuter', 'mmCalloutFilter');
-				echo getMenuTree($tree,'menuCalloutInner', 'treeCalloutOuter', 'menuCalloutFilter',array('currentpage'=>'index','classPrefix'=>'GS_'));
+				// echo getMenuTree($tree,true,'treeCalloutInner', 'treeCalloutOuter', 'menuCalloutFilter');
+				// echo getMenuTree($tree,true,'menuCalloutInner', 'treeCalloutOuter', 'menuCalloutFilter',array('currentpage'=>'index','classPrefix'=>'GS_'));
+				// get_navigation_advanced('index');
+				// get_navigation_advanced('index','','parent-1b',0);
+				echo "<ul>";
+				get_navigation('index');
+				echo "</ul>";
+
 			?>
 
 		</div>

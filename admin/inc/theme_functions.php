@@ -676,11 +676,11 @@ function return_snippet(){
  */	
 function get_navigation($currentpage = '',$classPrefix = "", $outer = array()) {
 
-	$tree = getMenuData('default');
-	_debugLog($tree);
-	$menu =  getMenuTree($tree,false,'menuCalloutInner', 'treeCalloutOuter', 'menuCalloutFilter',array('currentpage'=>$currentpage,'classPrefix'=>$classPrefix));
-	echo $menu;
-	return $menu;
+	$currentpage = (string)$currentpage;
+
+	// testing new
+	$menu = get_navigation_advanced($currentpage,$classPrefix);
+	return print($menu);
 
 	$menu = '';
 
@@ -712,6 +712,15 @@ function get_navigation($currentpage = '',$classPrefix = "", $outer = array()) {
 
 function get_navigation_ul($currentpage,$classPrefix = ""){
 	return get_navigation($currentpage,$classPrefix,array("<ul>","</ul>"));
+}
+
+function get_navigation_advanced($currentpage, $classPrefix = '', $slug = '', $maxdepth = 5){
+	// testing new
+	$menuid = 'default';
+	// $menuid = 'legacy';
+	$tree = getMenuData($slug,true,$menuid);
+	$menu =  getMenuTree($tree,false,'menuCalloutInner', 'treeCalloutOuter', 'menuCalloutFilter',array('currentpage'=>$currentpage,'classPrefix'=>$classPrefix,'maxdepth'=>$maxdepth));
+	return $menu;
 }
 
 /**
