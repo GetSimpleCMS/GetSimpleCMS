@@ -859,6 +859,7 @@ jQuery(document).ready(function () {
 			}
 
 			$(myparent).find('input').prop('disabled',true); // disable all inputs
+			$(myparent).find('textarea').prop('disabled',true); // disable textarea
 			$(myparent).addClass('deleted'); 
 
 			var title = $(myparent).find("input.comptitle").val();
