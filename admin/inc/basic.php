@@ -3113,9 +3113,11 @@ function strip_content($str, $pattern = '/[({]%.*?%[})]/'){
  * @return mixed         function return or $return on fail
  */
 function callIfCallable($funcname){
+    if(!is_callable($funcname)) return;
+    
     $args = func_get_args();
     array_shift($args);
-    if(is_callable($funcname)) return  call_user_func_array($funcname,$args);
+    return call_user_func_array($funcname,$args);
 }
 
 /* ?> */

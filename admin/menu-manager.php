@@ -17,19 +17,17 @@ login_cookie_check();
 exec_action('load-menu-manager');
 
 // check menuid else default
-if (!isset($_REQUEST['menuid'])) {
-	$menuid = 'default';
-} else {
-	$menuid = _id($_REQUEST['menuid']);
-}
+if (isset($_GET['menuid'])) $menuid = _id($_GET['menuid']);
+else $menuid = 'default';
 
 # save menu
 if (isset($_POST['menuOrder'])) {
+	if(!isset($_POST['menuid'])) die('missing menuid');
 	if (trim($_POST['menuOrder']) == '' || trim($_POST['menuOrder']) == '[]') {
 		die('no data');
 	}
 
-	$status  = newMenuSave($menuid,$_POST['menuOrder']);
+	$status  = newMenuSave(_id($_POST['menuid']),$_POST['menuOrder']);
 	$success = $status ? 'Success' : 'Error';
 }
 
@@ -56,42 +54,11 @@ get_template('header');
 			<p><?php i18n('MENU_MANAGER_DESC');?></p>
 			<?php
 
-legacyMenuManager($pagesSorted);
-
-function legacyMenuManager($pages){
-
-	if (count($pages) != 0) {
-		echo '<form method="post" action="menu-manager.php">';
-		echo '<ul id="menu-order" >';
-		foreach ($pages as $page) {
-			$sel = '';
-			if ($page['menuStatus'] != '') {
-
-				if ($page['menuOrder'] == '') {
-					$page['menuOrder'] = "N/A";
-				}
-				if ($page['menu'] == '') {
-					$page['menu'] = $page['title'];
-				}
-				echo '<li class="clearfix" rel="' . $page['slug'] . '">
-												<strong>#' . $page['menuOrder'] . '</strong>&nbsp;&nbsp;
-												' . $page['menu'] . ' <em>' . $page['title'] . '</em>
-											</li>';
-			}
-		}
-		echo '</ul>';
-		echo '<div id="submit_line"><span>';
-		echo '<input type="hidden" name="menuOrder" value=""><input class="submit" type="submit" value="' . i18n_r("SAVE_MENU_ORDER") . '" />';
-		echo '</span></div>';
-		echo '</form>';
-	} else {
-		echo '<p>'.i18n_r('NO_MENU_PAGES').'.</p>';
-	}
-}
+// legacyMenuManagerOutput($pagesSorted);
 
 $tree = getMenuDataNested($menuid);
 // debugLog($tree);
-$str  = getMenuTree($tree,true,'mmCalloutInner', 'mmCalloutOuter', 'mmCalloutFilter');
+$str  = getMenuTree($tree,true,'mmCallout', 'mmCalloutFilter');
 // $str  = callIfCallable('mmCalloutOuter') . getMenuTreeMin($tree,'mmCalloutInner','mmCalloutOuter','mmCalloutFilter') . callIfCallable('mmCalloutOuter',null,false);
 
 echo '<div class="widesec">';
@@ -159,13 +126,13 @@ echo '</form>';
 			<div class="dd" id="nestable-json"></div>
 
 			<?php 
-				// echo getMenuTree($tree,true,'treeCalloutInner', 'treeCalloutOuter', 'menuCalloutFilter');
-				// echo getMenuTree($tree,true,'menuCalloutInner', 'treeCalloutOuter', 'menuCalloutFilter',array('currentpage'=>'index','classPrefix'=>'GS_'));
+				// echo getMenuTree($tree,true,'treeCallout', 'menuCalloutFilter');
+				// echo getMenuTree($tree,true,'menuCallout', 'menuCalloutFilter',array('currentpage'=>'index','classPrefix'=>'GS_'));
 				// get_navigation_advanced('index');
 				// get_navigation_advanced('index','','parent-1b',0);
-				echo "<ul>";
-				get_navigation('index');
-				echo "</ul>";
+				// echo "<ul>";
+				// get_navigation('index');
+				// echo "</ul>";
 
 			?>
 
