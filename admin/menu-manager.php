@@ -56,6 +56,14 @@ get_template('header');
 
 // legacyMenuManagerOutput($pagesSorted);
 
+GLOBAL $sortkeys;
+// debugLog(getPages());
+$presort = sortCustomIndexCallback(getPages(),'pubDate','prepare_date');
+$sortkeys = array_keys($presort);
+
+// debugLog($presort);
+// debugLog($sortkeys);
+
 $tree = getMenuDataNested($menuid);
 // debugLog($tree);
 $str  = getMenuTree($tree,true,'mmCallout', 'mmCalloutFilter');

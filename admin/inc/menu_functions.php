@@ -75,7 +75,7 @@ function importMenuFromPages($pages = null, $flatten = false){
     // if importing from 3.3.x do not generate tree, generate flat menu instead for legacy menuordering by menuOrder
     if($flatten) $parents = array(''=>$pages);
     else $parents = getParentsHashTable($pages, true , true); // get parent hash table of pages, useref, fixoprphans
-    
+
     $tree    = buildTreewHash($parents,'',false,true,'url'); // get a nested array from hashtable, from root, norefs, assoc array
     // debugLog($tree);
     $flatary = recurseUpgradeTree($tree); // recurse the tree and add stuff to $tree, return flat reference array
@@ -92,8 +92,8 @@ function importMenuFromPages($pages = null, $flatten = false){
 
 /**
  * builds a nested array from a parent hash table array
- * faster than using 
- * input, parent=>children hash table
+ *
+ * input [parent]=>array(children) hash table
  * ['parentid'] = array('child1'=>(data),'child2'=>(data))
  *
  * output (nested)
@@ -413,6 +413,16 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
 
     // detect if a page subarray was directly passed, auto negotiate children
     if(isset($parents['id']) && isset($parents['children'])) $parents = $parents['children'];
+    
+    // test sorting, using sort index is the fastest to prevent resorting subarrays
+    $sort = true;
+
+    GLOBAL $sortkeys;
+    if($sortkeys && $sort){
+    	$parents = arrayMergeSort($parents,$sortkeys,false);
+    	// debugLog($parents);
+    	// debugLog(array_keys($parents));
+    }
 
     foreach($parents as $key=>$child){
         if(!isset($child['id'])) continue;
@@ -839,20 +849,24 @@ function menuRead($menuid){
  * @return bool         status, true if update was performed
  */
 function updateMenuItem($slug,$page){
+	
 	$menu = getMenuDataArray();
+	if(!isset($menu[GSMENUFLATINDEX][(string)$slug])) return;
+
 	$item = $menu[GSMENUFLATINDEX][$slug];
 	
-	$newparent = $page['parent'];
-
+	// do parent update if changed
+	// @todo index will be worthless afterwards
 	if($item['parent'] !== $page['parent']){
-
+		debugLog('changing menu item parent');
+		$newparent = $page['parent'];
 		// remove old
 		$menu[GSMENUFLATINDEX][$slug] = null;
 		unset($menu[GSMENUFLATINDEX][$slug]);
 		
-		// do parent update
 		$item['parent'] = $newparent; // set new parent
 
+		// no parent
 		if(empty($newparent)){
 			// move to root
 			$item['depth'] = 0;
@@ -860,16 +874,52 @@ function updateMenuItem($slug,$page){
 			$menu[GSMENUFLATINDEX][$slug] = &$menu[GSMENUNESTINDEX][$slug]; // new ref
 		}
 		else {
-			$item['depth'] = $menu[GSMENUFLATINDEX][$newparent]['depth'] + 1;
 			// move to item children
-			$menu[GSMENUFLATINDEX][$newparent]['children'][$slug] = $item;
+			$item['depth'] = $menu[GSMENUFLATINDEX][$newparent]['depth'] + 1; // bump depth
 			$menu[GSMENUFLATINDEX][$newparent]['numchildren']++; // bump new parents number of children
+			
+			$menu[GSMENUFLATINDEX][$newparent]['children'][$slug] = $item;
 			$menu[GSMENUFLATINDEX][$slug] = &$menu[GSMENUFLATINDEX][$newparent]['children'][$item['id']]; // new ref
 		}
 	}
 
+	// slug changed
 	if($item['id'] !== $page['url']){
-		// do parent update
+
+		$oldslug = $item['id'];
+		$slug    = $page['url'];
+		
+		debugLog('changing menu item slug ' . $oldslug . ' -> ' .$slug);
+
+		$parent  = $item['parent']; // set new parent
+
+		// $menu[GSMENUFLATINDEX][$slug] = $item;
+
+		// remove old
+		$menu[GSMENUFLATINDEX][$oldslug] = null;
+		unset($menu[GSMENUFLATINDEX][$oldslug]);
+
+		$item['id'] = $slug;
+
+		if(empty($parent)){
+			$menu[GSMENUNESTINDEX][$slug] = $item;
+			$menu[GSMENUFLATINDEX][$slug] = &$menu[GSMENUNESTINDEX][$slug]; // new ref
+		} else {
+			$menu[GSMENUFLATINDEX][$parent]['children'][$slug] = $item;
+			$menu[GSMENUFLATINDEX][$slug] = &$menu[GSMENUFLATINDEX][$parent]['children'][$slug]; // new ref
+		}
+
+	}
+
+	$item = &$menu[GSMENUFLATINDEX][$slug];
+	
+	// fix items custom fields
+	recurseUpgradeTreeCallout($item,$slug);
+
+	// fixup all childrens depths, parents, and custom fields ( url, path )
+	if(isset($item['children'])){
+		recurseUpgradeTree($item['children'],$slug,$item['depth']);
+		debugLog($item);
 	}
 
 	return $menu;
@@ -954,6 +1004,8 @@ function buildRefArray(&$menu){
         $ref = &resolve_tree($menu[GSMENUNESTINDEX],explode('.',$index));
         if(isset($ref)) $menu[GSMENUFLATINDEX][$key] = &$ref;
     }
+    GLOBAL $pagesArray;
+    $menu['pagesarray'] = &$pagesArray;
     return $menu;
 }
 

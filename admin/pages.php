@@ -58,7 +58,7 @@ getPagesXmlValues(true);
 
 // $pagesSorted = sortCustomIndexCallback($pagesArray,'title','prepare_menuOrderParentTitle');
 $pagesSorted = getPagesSortedByMenuTitle();
-debugLog($pagesSorted);
+// debugLog($pagesSorted);
 $count       = count($pagesSorted);
 $table       = get_pages_menu('','',0);
 $pagetitle   = i18n_r('PAGE_MANAGEMENT');

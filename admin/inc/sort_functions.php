@@ -76,18 +76,23 @@
  *       return strtotime($key);
  *   }
  *   $pagesSorted = sortCustomIndexCallback($pagesArray,'pubDate','prepare_date');
+ * @todo   why is arg2 $item[$key] value when it is already contained inside it ( I must have added this later on ), should pass $key instead
  * @param  array $pages   input multi array
- * @param  str $key       array key to sort by
+ * @param  str $key       array key to sort by, if prepare function used key is used for arg2
  * @param  str $prepare   callback function for each subarray
  * @return array          returns array sorted by key or prepared sort index
  */
 function sortCustomIndexCallback($array,$key=null,$prepare=null){
 	$sortvalue = array();
 
+	if(!$array){
+		debugLog("sort array is empty");
+		return;
+	}
 	if(isset($prepare) && function_exists($prepare)){
-		foreach($array as $sortkey=>$page){
-			if(isset($key)) $sortvalue[$sortkey] = $prepare($page,$page[$key]);
-			else $sortvalue[$sortkey] = $prepare($page);
+		foreach($array as $sortkey=>$item){
+			if(isset($key)) $sortvalue[$sortkey] = $prepare($item,$item[$key]);
+			else $sortvalue[$sortkey] = $prepare($item);
 		}
 	}
 	// _debugLog($sortvalue);
@@ -101,7 +106,7 @@ function sortCustomIndexCallback($array,$key=null,$prepare=null){
  * array['id'] = array[$key]
  * @since  3.4
  * @param  array $array     multidimensional array to sort
- * @param  str   $key       (optional) sub array key to sort by
+ * @param  str   $key       (optional) sub array key to sort by, unused if sortindex supplied
  * @param  array $sortindex (optional) key value array for sorting $array
  * @param  str   $compare   (optional) comparison function
  * @return array            $array sorted by sortindex or key
@@ -134,7 +139,7 @@ function arrayMergeSort($array,$sort,$keyed = true){
 
 
 /**
- * tests below
+ * tests below, older functions
  * need converting
  */
 
@@ -263,6 +268,7 @@ function reindexArray($array,$key){
 /**
  * SAMPLES for TESTING
  * sort preparers
+ * not sure why I chose to pass in $key and $page, $page will always contain $key
  */
 
 function prepare_pagePathTitles($page,$key){
