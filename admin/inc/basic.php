@@ -2297,6 +2297,7 @@ function getRootRelURIPath($url){
   $strip    = isset($urlparts['scheme']) ? $urlparts['scheme'] .':' : '';
   $strip   .=  '//';
   $strip   .= isset($urlparts['host']) ? $urlparts['host'] : '';
+  $strip   .= isset($urlparts['port']) ? ':'.$urlparts['port'] : '';
   // debugLog(__FUNCTION__.' base = ' . $strip);
   if(strpos($url,$strip) === 0) return str_replace($strip,'',$url);
   return $url;
