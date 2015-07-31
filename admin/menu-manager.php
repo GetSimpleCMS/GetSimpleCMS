@@ -70,6 +70,11 @@ $str  = getMenuTree($tree,true,'mmCallout', 'mmCalloutFilter');
 // $str  = callIfCallable('mmCalloutOuter') . getMenuTreeMin($tree,'mmCalloutInner','mmCalloutOuter','mmCalloutFilter') . callIfCallable('mmCalloutOuter',null,false);
 
 echo '<div class="widesec">';
+
+// toggler
+echo '<div id="roottoggle" class="unselectable tree-roottoggle nohighlight"><i class="tree-expander fa-rotate-90 fa fa-play fa-fw"></i><span class="label">Collapse Top Parents</span></div>';
+
+// nestable container
 echo '<div id="menu-order-nestable" class="dd">' . $str . '</div>';
 echo '</div>';
 
@@ -78,6 +83,7 @@ echo '<div class="clearfix"></div>';
 
 exec_action('menu-manager-extras');
 
+// form
 echo '<form method="post" action="menu-manager.php">';
 echo '<div id="submit_line"><span>';
 echo '<input type="text" class="hidden" name="menuid" value="'.$menuid.'">';
@@ -129,9 +135,43 @@ echo '</form>';
 				// var size = parentLi.children('ol').first().children('li').length; // get parents ol li items
 				// if(size == 1) parentLi.find('button[data-action=collapse]').show(); // unhide the collapse button
 
+				$('#roottoggle').on('click',function(){
+					toggleMMTopAncestors();
+				});
+
+				function toggleMMTopAncestors(){
+					var treeprefix = 'tree-';
+					var nodecollapedclass = treeprefix + 'collapsed'
+					var rootcollapsed = $("#roottoggle").hasClass("rootcollapsed");
+
+					var treeexpanderclass  = treeprefix + 'expander';           // class for expander handles
+					var treeexpandedclass = 'fa-rotate-90';
+					var treecollapsedclass = '';
+					
+					// toggle label text
+					var langstr = !rootcollapsed ? i18n('EXPAND_TOP') : i18n('COLLAPSE_TOP');
+					$('#roottoggle .label').html(langstr);
+					$("#roottoggle").toggleClass("rootcollapsed");
+					$('#roottoggle').toggleClass(nodecollapsedclass,!rootcollapsed);
+					
+					var iconexpanded = '<i class="'+treeexpanderclass+' '+treeexpandedclass+' fa fa-play fa-fw"></i>';
+					var iconcollapsed = '<i class="'+treeexpanderclass+' '+treecollapsedclass+' fa fa-play fa-fw"></i>';
+
+					if(rootcollapsed){
+						// $('.dd').nestable('expandAll');
+						$('.dd').nestable('expandAllRoot');
+						$('#roottoggle .tree-expander').addClass(treeexpandedclass);
+					}
+					else {
+						// $('.dd').nestable('collapseAll');
+						$('.dd').nestable('collapseAllRoot');
+						$('#roottoggle .tree-expander').removeClass(treeexpandedclass);
+					}
+				}
+
 			</script>
 
-			<div class="dd" id="nestable-json"></div>
+			<!-- <div class="dd" id="nestable-json"></div> -->
 
 			<?php 
 				// echo getMenuTree($tree,true,'treeCallout', 'menuCalloutFilter');

@@ -374,6 +374,20 @@
             });
         },
 
+        expandAllRoot: function() {
+            var list = this;
+            list.el.children(list.options.listNodeName).children().each(function() {
+                list.expandItem($(this));
+            });
+        },
+
+        collapseAllRoot: function() {
+            var list = this;
+            list.el.children(list.options.listNodeName).children().each(function() {
+                list.collapseItem($(this));
+            });
+        },
+
         setParent: function(li) {
             if(li.children(this.options.listNodeName).length) {
                 li.prepend($(this.options.expandBtnHTML));
@@ -506,7 +520,7 @@
 
                     target.offsetWidth; // repaint
                     
-                    console.log(previousRect.top +'-'+ currentRect.top);
+                    // console.log(previousRect.top +'-'+ currentRect.top);
                     // return ;
 
                     target.css('-webkit-transition', 'all ' + ms + 'ms');
@@ -702,7 +716,7 @@
 
     };
 
-    $.fn.nestable = function(params) {
+    $.fn.nestable = function(params,args) {
         var lists = this,
             retval = this;
 
@@ -722,7 +736,8 @@
             }
             else {
                 if(typeof params === 'string' && typeof plugin[params] === 'function') {
-                    retval = plugin[params]();
+                    if(typeof args !== 'array') args = [args];
+                    retval = plugin[params].apply(plugin,args);
                 }
             }
         });

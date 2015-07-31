@@ -415,7 +415,7 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
     if(isset($parents['id']) && isset($parents['children'])) $parents = $parents['children'];
     
     // test sorting, using sort index is the fastest to prevent resorting subarrays
-    $sort = true;
+    $sort = false;
 
     GLOBAL $sortkeys;
     if($sortkeys && $sort){
