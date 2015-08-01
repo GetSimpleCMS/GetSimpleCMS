@@ -490,7 +490,8 @@ function updatePageField($id,$field,$value,$cdata = null){
 
 /**
  * create a page xml obj
- *
+ * will only save standard GS fields, additional fields are ignored
+ * 
  * @since 3.4
  * @param  str      $title     title of page
  * @param  str      $url       optional, url slug of page, if null title is used
@@ -542,9 +543,11 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
 	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
 	$xml->addChild('pubDate', date('r'));
 
+	$data['content'] = exec_filter('contentsave',$data['content']); // @filer contentsave filter content in createPageXml
+
 	foreach($fields as $field){
 		$node = $xml->addChild($field);
-		if(isset($data[$field])) $node->addCData($data[$field]); // saving all cdata for some reason
+		if(isset($data[$field])) $node->addCData($data[$field]); // saving all as cdata, probably unnecessary
 	}
 
 	// debugLog(__FUNCTION__ . ': page created with slug of ' . $xml->url);
@@ -2294,6 +2297,7 @@ function getRootRelURIPath($url){
   $strip    = isset($urlparts['scheme']) ? $urlparts['scheme'] .':' : '';
   $strip   .=  '//';
   $strip   .= isset($urlparts['host']) ? $urlparts['host'] : '';
+  $strip   .= isset($urlparts['port']) ? ':'.$urlparts['port'] : '';
   // debugLog(__FUNCTION__.' base = ' . $strip);
   if(strpos($url,$strip) === 0) return str_replace($strip,'',$url);
   return $url;
@@ -2582,9 +2586,10 @@ function getEditorToolbar(){
  */
 function getDefaultTimezone(){
 	GLOBAL $USRTIMEZONE, $SITETIMEZONE;
-	if(isset($USRTIMEZONE)) return $USRTIMEZONE;
-	if(isset($SITETIMEZONE)) return $SITETIMEZONE;
+	if(!empty($USRTIMEZONE)) return $USRTIMEZONE;
+	if(!empty($SITETIMEZONE)) return $SITETIMEZONE;
 	if(getDef('GSTIMEZONE')) return getDef('GSTIMEZONE');
+	return date_default_timezone_get();
 }
 
 /**

@@ -71,8 +71,8 @@ function getPageContent($page,$field='content'){
  * @param  str $content content data
  * @return str          result of content filtering
  */
-function filterPageContent($page, $content = null){
-	if(!$content) $content = getPageField($page,'content');
+function filterPageContent($page, $content){
+	// if(!$content) $content = getPageField($page,'content');
 	$content = exec_filter('content',$content); // @filter content (str) filter page content in returnPageContent
 	return $content;
 }
