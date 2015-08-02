@@ -91,6 +91,7 @@ if(!is_frontend()){
 }
 
 if(!defined('GSNOFRAME')) define('GSNOFRAME',true);
+if(!defined('GSNOFRAMEDEFAULT')) define('GSNOFRAMEDEFAULT','SAMEORIGIN');
 
 // Add X-Frame-Options to HTTP header, so that page can only be shown in an iframe of the same site.
 if(getDef('GSNOFRAME') !== false){
