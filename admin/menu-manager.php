@@ -67,7 +67,7 @@ $sortkeys = array_keys($presort);
 $tree = getMenuDataNested($menuid);
 // debugLog($tree);
 $str  = getMenuTree($tree,true,'mmCallout', 'mmCalloutFilter');
-// $str  = callIfCallable('mmCalloutOuter') . getMenuTreeMin($tree,'mmCalloutInner','mmCalloutOuter','mmCalloutFilter') . callIfCallable('mmCalloutOuter',null,false);
+$count = 'N/A';
 
 echo '<div class="widesec">';
 
@@ -82,6 +82,9 @@ echo '<div class="clearfix"></div>';
 // echo '<div class="clear">';
 
 exec_action('menu-manager-extras');
+
+
+echo '<p><em><b><span id="pg_counter">'.$count.'</span></b> '.i18n_r('TOTAL_ITEMS').'</em></p>';
 
 // form
 echo '<form method="post" action="menu-manager.php">';
@@ -115,38 +118,41 @@ echo '</form>';
 				});
 				$("#menu-order").disableSelection();
 
-				$('.dd').nestable({
+				// init nestable
+				$('#menu-order-nestable').nestable({
 					expandBtnHTML   : '<button class="borderless" data-action="expand"><i class="tree-expander fa fa-play fa-fw"></i></button>',
 					collapseBtnHTML : '<button class="borderless" data-action="collapse"><i class="tree-expander fa fa-play fa-fw fa-rotate-90"></i></button>'
 				});
 
-				$('.dd').on('change', function() {
+				// init nestable on change handler
+				$('#menu-order-nestable').on('change', function() {
 					/* on change event */
 					var order = JSON.stringify($(this).nestable('serialize'));
 					Debugger.log(order);
 					$('[name=menuOrder]').val(order);
+
+					updateCount();
 				});
 
-				$('.dd').trigger('change');
+				// init inputs
+				$('#menu-order-nestable').trigger('change');
+
+				// test template new item
 				// $('#nestable-template').hide();
 				// $(".dd >ol").append($('#nestable-template').clone());
-				// $('.dd').nestable('collapseAll');
-
-				// var size = parentLi.children('ol').first().children('li').length; // get parents ol li items
-				// if(size == 1) parentLi.find('button[data-action=collapse]').show(); // unhide the collapse button
 
 				$('#roottoggle').on('click',function(){
 					toggleMMTopAncestors();
 				});
 
 				function toggleMMTopAncestors(){
-					var treeprefix = 'tree-';
-					var nodecollapedclass = treeprefix + 'collapsed'
-					var rootcollapsed = $("#roottoggle").hasClass("rootcollapsed");
-
-					var treeexpanderclass  = treeprefix + 'expander';           // class for expander handles
-					var treeexpandedclass = 'fa-rotate-90';
-					var treecollapsedclass = '';
+					var treeprefix         = 'tree-';
+					var nodecollapedclass  = treeprefix + 'collapsed'
+					var rootcollapsed      = $("#roottoggle").hasClass("rootcollapsed");
+					
+					var treeexpanderclass  = treeprefix + 'expander'; // class for expander
+					var treeexpandedclass  = ' fa fa-play fa-fw fa-rotate-90';
+					var treecollapsedclass = ' fa fa-play fa-fw';
 					
 					// toggle label text
 					var langstr = !rootcollapsed ? i18n('EXPAND_TOP') : i18n('COLLAPSE_TOP');
@@ -154,24 +160,25 @@ echo '</form>';
 					$("#roottoggle").toggleClass("rootcollapsed");
 					$('#roottoggle').toggleClass(nodecollapsedclass,!rootcollapsed);
 					
-					var iconexpanded = '<i class="'+treeexpanderclass+' '+treeexpandedclass+' fa fa-play fa-fw"></i>';
-					var iconcollapsed = '<i class="'+treeexpanderclass+' '+treecollapsedclass+' fa fa-play fa-fw"></i>';
-
 					if(rootcollapsed){
-						// $('.dd').nestable('expandAll');
-						$('.dd').nestable('expandAllRoot');
-						$('#roottoggle .tree-expander').addClass(treeexpandedclass);
+						// expand top levels
+						$('#menu-order-nestable').nestable('expandAllRoot');
+						$('#roottoggle .tree-expander').removeClass(treecollapsedclass).addClass(treeexpandedclass);
 					}
 					else {
-						// $('.dd').nestable('collapseAll');
-						$('.dd').nestable('collapseAllRoot');
-						$('#roottoggle .tree-expander').removeClass(treeexpandedclass);
+						// collapse top levels
+						$('#menu-order-nestable').nestable('collapseAllRoot');
+						$('#roottoggle .tree-expander').removeClass(treeexpandedclass).addClass(treecollapsedclass);
 					}
 				}
 
-			</script>
+				function updateCount(){
+					// update item count
+					var count = $('#menu-order-nestable ol > li').length;
+					$('#pg_counter').text(count);
+				}
 
-			<!-- <div class="dd" id="nestable-json"></div> -->
+			</script>
 
 			<?php 
 				// echo getMenuTree($tree,true,'treeCallout', 'menuCalloutFilter');

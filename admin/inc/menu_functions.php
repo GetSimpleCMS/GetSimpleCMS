@@ -849,12 +849,14 @@ function menuRead($menuid){
  * @return bool         status, true if update was performed
  */
 function updateMenuItem($slug,$page){
-	
+	debugLog(__FUNCTION__ . ' ' . $slug);	
 	$menu = getMenuDataArray();
 	if(!isset($menu[GSMENUFLATINDEX][(string)$slug])) return;
 
 	$item = $menu[GSMENUFLATINDEX][$slug];
 	
+	$update = false;
+
 	// do parent update if changed
 	// @todo index will be worthless afterwards
 	if($item['parent'] !== $page['parent']){
@@ -881,6 +883,7 @@ function updateMenuItem($slug,$page){
 			$menu[GSMENUFLATINDEX][$newparent]['children'][$slug] = $item;
 			$menu[GSMENUFLATINDEX][$slug] = &$menu[GSMENUFLATINDEX][$newparent]['children'][$item['id']]; // new ref
 		}
+		$update = true;
 	}
 
 	// slug changed
@@ -908,22 +911,92 @@ function updateMenuItem($slug,$page){
 			$menu[GSMENUFLATINDEX][$parent]['children'][$slug] = $item;
 			$menu[GSMENUFLATINDEX][$slug] = &$menu[GSMENUFLATINDEX][$parent]['children'][$slug]; // new ref
 		}
-
+		$update = true;
 	}
 
-	$item = &$menu[GSMENUFLATINDEX][$slug];
-	
-	// fix items custom fields
-	recurseUpgradeTreeCallout($item,$slug);
+	if($update){
 
-	// fixup all childrens depths, parents, and custom fields ( url, path )
-	if(isset($item['children'])){
-		recurseUpgradeTree($item['children'],$slug,$item['depth']);
-		debugLog($item);
+		$item = &$menu[GSMENUFLATINDEX][$slug];
+		
+		// fix items custom fields
+		recurseUpgradeTreeCallout($item,$slug);
+
+		// fixup all childrens depths, parents, and custom fields ( url, path )
+		if(isset($item['children'])){
+			recurseUpgradeTree($item['children'],$slug,$item['depth']);
+			debugLog($item);
+		}
 	}
 
 	return $menu;
 	// update data callouts, or rebuild nest to reset the index, order, and
+}
+
+function deleteMenuItem($slug){
+	debugLog(__FUNCTION__ . ' ' . $slug);
+	$menu = getMenuDataArray();
+	if(!isset($menu[GSMENUFLATINDEX][(string)$slug])) return;
+	// remove
+	$menu[GSMENUFLATINDEX][$slug] = null;
+	unset($menu[GSMENUFLATINDEX][$slug]);
+	return $menu;
+}
+
+function insertMenuItem($slug){
+	debugLog(__FUNCTION__ . ' ' . $slug);
+	$slug = (string) $slug;
+	$menu = getMenuDataArray();
+
+	$menu[GSMENUNESTINDEX][$slug] = array('id'=>$slug,'parent'=>'');
+	$menu[GSMENUFLATINDEX][$slug] = &$menu[GSMENUNESTINDEX][$slug];
+
+	$menu = updateMenuItem($slug,getPage($slug));
+	return $menu;
+}
+
+/**
+ * sync menu cache to pages array changes
+ * diffs between menu and page cache and insert/delete/update changes
+ * @return array new menu
+ */
+function updateMenuSync(){
+	debugLog(__FUNCTION__);	
+	$menu  = getMenuDataArray();
+	$pages = getPages();
+
+	$pages['parent-1b'] = null;
+	unset($pages['parent-1b']);
+
+	$menu[GSMENUFLATINDEX]['draft-example'] = null;
+	unset($menu[GSMENUFLATINDEX]['draft-example']);
+
+	$menuindex  = array_keys($menu[GSMENUFLATINDEX]);
+	$pagesindex = array_keys($pages);
+	
+	$diff = array_diff_dual($pagesindex,$menuindex);
+	
+	// debugLog($menuindex);
+	// debugLog($pagesindex);
+	// debugLog($diff);
+
+	foreach($diff as $item){
+		if(!isset($menu[GSMENUFLATINDEX][$item])) $menu = insertMenuItem($item);
+		else if(!isset($pages[$item])) $menu = deleteMenuItem($item);
+		else $menu = updateMenuItem($item);
+	}
+
+	return $menu;
+}
+
+/**
+ * array diff from 2 arrays, returns both diffs not just one
+ * @since  3.4
+ * @param  array $array1 first array
+ * @param  array $array2 second array
+ * @return array         diff array, elements missing from either array are included
+ */
+function array_diff_dual($array1,$array2){
+	return array_merge(array_diff($array1, $array2), array_diff($array2, $array1));
 }
 
 /**
