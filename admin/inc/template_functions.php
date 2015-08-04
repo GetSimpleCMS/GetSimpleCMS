@@ -259,8 +259,9 @@ function backup_datafile($filepath){
  * @return bool success
  */
 function restore_datafile($filepath,$delete = true){
-	if(!filepath_is_safe($filepath,GSDATAPATH)) return false;
 	$bakfilepath = getBackupFilePath($filepath);
+	
+	if(!filepath_is_safe($bakfilepath,GSBACKUPSPATH)) return false;
 
 	// backup original before restoring
 	if(file_exists($filepath)){
