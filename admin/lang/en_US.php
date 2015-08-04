@@ -200,6 +200,7 @@ $i18n = array(
 "NO"                      =>	"No",
 "DATE"                    =>	"Date",
 "PERMS"                   =>	"Perms",
+"RESTOREERROR"            =>    "Restore Failed",
 
 /* 
 * For: components.php

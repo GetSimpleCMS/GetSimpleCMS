@@ -297,7 +297,7 @@ function restore_backup($bakfilepath,$destination){
  * @return bool     success
  */
 function backup_page($id){
-	backup_datafile(GSDATAPAGESPATH.$id.'.xml');
+	return backup_datafile(GSDATAPAGESPATH.$id.'.xml');
 }
 
 /**
@@ -309,7 +309,7 @@ function backup_page($id){
  * @return bool     success
  */
 function backup_draft($id){
-	backup_datafile(GSDATADRAFTSPATH.$id.'.xml');
+	return backup_datafile(GSDATADRAFTSPATH.$id.'.xml');
 }
 
 /**
@@ -321,7 +321,7 @@ function backup_draft($id){
  * @return bool     success
  */
 function restore_page($id){
-	restore_datafile(GSDATAPAGESPATH.$id.'.xml');
+	return restore_datafile(GSDATAPAGESPATH.$id.'.xml');
 }
 
 /**
@@ -333,7 +333,7 @@ function restore_page($id){
  * @return bool     success
  */
 function restore_draft($id){
-	restore_datafile(GSDATADRAFTSPATH.$id.'.xml');
+	return restore_datafile(GSDATADRAFTSPATH.$id.'.xml');
 }
 
 /**
