@@ -199,7 +199,7 @@ function getChildrenMulti($page,$options=array()){
 }
 
 /**
- * LEGACY
+ * LEGACY, replaced by getPages()
  * Get Cached Pages XML File Values
  *
  * Populates $pagesArray from page cache file
@@ -218,32 +218,38 @@ function getPagesXmlValues($refresh=false){
 
 /**
  * Initialize pagecache
- * 
- * @param bool $refresh regenerate cache from pages files if necessary according to check
- * @param bool force   force regen regardless
+ * load pagesarray from pages.xml, rebuild from xml files if missing, or requested
+ * Will do tentative refresh if differs, if required
+ * @since  3.4
+ * @param bool $refresh regenerate cache from pages files IF necessary according to check
+ * @param bool $force   force regeneration
  */
-function init_pageCache($refresh = false) {
+function init_pageCache($refresh = false, $force = false) {
 	GLOBAL $pagesArray, $pageCacheXml;
 	
-	debugLog("page cache: initialized");
-
-	if(!$refresh){
+	debugLog("page cache: initializing");
+	
+	// load from pages.xml
+	if(!$force){
 		$pageCacheXml = load_pageCacheXml();
 		$pagesArray   = pageCacheXMLtoArray($pageCacheXml);
-		if($pagesArray) return; // return if success, else continue to regen
+		// force update if pagecache failed to load
+		if(!$pagesArray) $force = true; 
 	}
 
-	// @todo check page time diff before doing this check
-	// we can make always refresh by adding an OR here, and always check 
-	$refresh  = !$pagesArray || ($refresh && pageCacheDiffers());
+	// if not force, check pagecachediff, *pagecachediffers requires pagecache to be loaded first
+	$refresh = $force || ($refresh && pageCacheDiffers());
 
-	// if refreshing or is still empty re-generate/save
+	if(!$refresh) return; // pagecache loaded ok
+
+	// regenerate from files if force, empty, or refresh request
 	if($refresh){
+		debugLog("page cache: refreshing");
 		$pageCacheXml = generate_pageCacheXml();
 		$status       = save_pageCacheXml($pageCacheXml);
 		$pagesArray   = pageCacheXMLtoArray($pageCacheXml);
+		updatePagesMenu(); // update pages menu cache
 	}
-
 	// debugLog($pagesArray);
 }
 
@@ -257,6 +263,10 @@ function init_pageCache($refresh = false) {
  * @return null 
  */
 function create_pagesxml($save=false){
+	debugLog("page cache: LEGACY " . __FUNCTION__ . ' save - ' . $save);
+	init_pageCache(true,true);
+	return;
+
 	global $pagesArray, $pageCacheXml;
   	$pageCacheXml = generate_pageCacheXml();
 	
@@ -313,7 +323,7 @@ function pageCacheDiffers(){
 	$old = md5(implode(',',$filenames_old));
 
 	// debugLog($old . " " . $new);
-	debugLog("page cache: update needed? " . ($new !== $old ? 'true' : 'false') );
+	debugLog("page cache: cache differs -  " . ($new !== $old ? 'true' : 'false') );
 	return $new !== $old;
 }
 
@@ -347,12 +357,13 @@ function save_pageCacheXml($xml){
  * @return simpleXmlobj pagecache xml
  */
 function generate_pageCacheXml(){
-	debugLog('page cache: re-generated from disk');
+	debugLog('page cache: re-generating from pages files');
 
 	// read in each pages xml file
-	$path = GSDATAPAGESPATH;
+	$path      = GSDATAPAGESPATH;
 	$filenames = getXmlFiles($path);
-	$cacheXml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
+	$cacheXml  = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
+
 	if (count($filenames) != 0) {
 		foreach ($filenames as $file) {
 			
@@ -414,7 +425,7 @@ function pageCacheAddRoutes($id,&$cacheItems){
 function pageCacheXMLtoArray($xml){
 	$pagesArray = array();
 	$data = $xml;
-	if(!$xml || !$xml->item) return $pagesArray;
+	if(!$xml || !$xml->item) return $pagesArray; // @todo probably should catch this instead
 	$pages = $data->item;
 	foreach ($pages as $page) {
 		$key=(string)$page->url;
@@ -452,6 +463,8 @@ function pageXMLtoArray($xml){
 	}
 	$pagesArray[$key]['slug']=$key; // legacy
 	$pagesArray[$key]['filename']=$key.'.xml'; // legacy
+
+	return $pagesArray[$key];
 }
 
 /* ?> */

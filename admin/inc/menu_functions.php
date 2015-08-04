@@ -14,7 +14,9 @@ define('GSMENUFILTERSKIP',1);     // skip all children
 define('GSMENUFILTERCONTINUE',2); // skip parent, continue with children inheriting closest parent
 define('GSMENUFILTERSHIFT',3);    // skip parent, shift all children to root
 
-define('GSMENULEGACY',false);
+define('GSMENUPAGESMENUID','corepages'); // default id for the page menu cache
+
+define('GSMENULEGACY',true);
 // define('GSMENUFILTERDEBUG',true);
 
 
@@ -29,7 +31,7 @@ function initUpgradeMenus(){
     debugLog(__FUNCTION__ . ": legacy menu save status " . ($status ? 'success' : 'fail'));
 
     $menu   = importLegacyMenuTree();
-    $status &= menuSave('default',$menu);
+    $status &= menuSave(GSMENUPAGESMENUID,$menu);
     debugLog(__FUNCTION__ . ": default menu save status " . ($status ? 'success' : 'fail'));
 
     return $status;
@@ -241,9 +243,9 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
 
             // add to flat array
             // flat cannot be saved to json because of references soooo we also create an index array
-            $indexAry['flat'][$id] = &$value; 
+            $indexAry[GSMENUFLATINDEX][$id] = &$value; 
             // create an indices to paths map, so we can rebuild flat array references on json load, if serializing this is not needed
-            $indexAry['indices'][$id] = implode('.',$indexAry['currpath']).'.'.$id;
+            $indexAry[GSMENUINDEXINDEX][$id] = implode('.',$indexAry['currpath']).'.'.$id;
 
             if(isset($value['children'])){
                 $value['numchildren'] = count($value['children']);
@@ -270,6 +272,7 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
 function recurseUpgradeTreeCallout(&$value,$id = '',$parent = ''){
     $value['url']   = generate_url($id);
     $value['path']  = generate_permalink($id,'%path%/%slug%');
+    debugLog($value);
     return $value; // non ref
 }
 
@@ -665,11 +668,12 @@ function mmCallout($item, $outer = false, $open = true){
 
     $page      = is_array($item) && isset($item['id']) ? getPage($item['id']) : getPage($item);
     $menuTitle = getPageMenuTitle($page['url']);
-    $pageTitle = truncate($page['title'],30);
     // $pageTitle = '<strong>'.$page['title'].'.'.$level.'.'.$order.'</strong>';
     // $pageTitle = $pageTitle.'.'.$page['menuOrder'] .'.'.$page['menuStatus'];
-    $pageTitle = $pageTitle.'.'.$item['index'] .'.'.$page['menuStatus'];
+    $pageTitle = $item['id'].'.'.$item['index'] .'.'.$page['menuStatus'];
     // _debugLog($page['url'],$page['menuStatus']);
+    
+    $pageTitle = truncate($pageTitle,30);
     $class     = $page['menuStatus'] === 'Y' ? ' menu' : ' nomenu';
 
     $str = $open ? '<li class="dd-item clearfix" data-id="'.$page['url'].'">'."\n".'<div class="dd-itemwrap '.$class.'"><div class="dd-handle"> '.$menuTitle.'<div class="itemtitle"><em>'.$pageTitle."</em></div></div></div>\n" : "</li>\n";
@@ -807,9 +811,11 @@ function newMenuSave($menuid,$menu){
  * @return bool        success
  */
 function menuSave($menuid,$data){
+	GLOBAL $SITEMENU;
+	$SITEMENU[$menuid] = $data;
 
     if(!$data || !$data[GSMENUNESTINDEX]){
-        debugLog('menuread: menu is empty - ' .$menuid);
+        debugLog('menusave: menu is empty - ' .$menuid);
         return false;
     }
 
@@ -848,10 +854,11 @@ function menuRead($menuid){
  * @param  array  $page page array
  * @return bool         status, true if update was performed
  */
-function updateMenuItem($slug,$page){
-	debugLog(__FUNCTION__ . ' ' . $slug);	
-	$menu = getMenuDataArray();
-	if(!isset($menu[GSMENUFLATINDEX][(string)$slug])) return;
+function updateMenuItem($menu,$slug,$page,$force = false){
+	debugLog(__FUNCTION__ . ' slug: ' . $slug);	
+	
+	if(empty($slug)){ debugLog(__FUNCTION__." empty slug!"); return; }
+	if(!isset($menu[GSMENUFLATINDEX][(string)$slug])) return $menu;
 
 	$item = $menu[GSMENUFLATINDEX][$slug];
 	
@@ -860,8 +867,8 @@ function updateMenuItem($slug,$page){
 	// do parent update if changed
 	// @todo index will be worthless afterwards
 	if($item['parent'] !== $page['parent']){
-		debugLog('changing menu item parent');
 		$newparent = $page['parent'];
+		debugLog('changing menu item parent [' . $item['parent'] . '] -> [' . $newparent . ']');
 		// remove old
 		$menu[GSMENUFLATINDEX][$slug] = null;
 		unset($menu[GSMENUFLATINDEX][$slug]);
@@ -890,7 +897,7 @@ function updateMenuItem($slug,$page){
 	if($item['id'] !== $page['url']){
 
 		$oldslug = $item['id'];
-		$slug    = $page['url'];
+		$slug    = $page['url']; // new slug from page
 		
 		debugLog('changing menu item slug ' . $oldslug . ' -> ' .$slug);
 
@@ -911,30 +918,41 @@ function updateMenuItem($slug,$page){
 			$menu[GSMENUFLATINDEX][$parent]['children'][$slug] = $item;
 			$menu[GSMENUFLATINDEX][$slug] = &$menu[GSMENUFLATINDEX][$parent]['children'][$slug]; // new ref
 		}
+
+		// remove index
+		$menu[GSMENUINDEXINDEX][$slug] = null;
+		unset($menu[GSMENUINDEXINDEX][$slug]);
+
+		// add new index
+		$menu[GSMENUINDEXINDEX][$slug] = '.'.$slug;
+
 		$update = true;
 	}
 
-	if($update){
+	if($update || $force){
 
 		$item = &$menu[GSMENUFLATINDEX][$slug];
 		
 		// fix items custom fields
+		// update data callouts, or rebuild nest to reset the order,depth
 		recurseUpgradeTreeCallout($item,$slug);
 
 		// fixup all childrens depths, parents, and custom fields ( url, path )
 		if(isset($item['children'])){
-			recurseUpgradeTree($item['children'],$slug,$item['depth']);
-			debugLog($item);
+			$index = recurseUpgradeTree($item['children'],$slug,$item['depth']);
+			// $menu[GSMENUINDEXINDEX][$slug] = $index;
+			$menu[GSMENUINDEXINDEX] = array_merge($menu[GSMENUINDEXINDEX],$index[GSMENUINDEXINDEX]);
+			// debugLog($index);
+			// debugLog($item);
 		}
 	}
 
+	// debugLog($item);
 	return $menu;
-	// update data callouts, or rebuild nest to reset the index, order, and
 }
 
-function deleteMenuItem($slug){
+function deleteMenuItem($menu,$slug){
 	debugLog(__FUNCTION__ . ' ' . $slug);
-	$menu = getMenuDataArray();
 	if(!isset($menu[GSMENUFLATINDEX][(string)$slug])) return;
 	// remove
 	$menu[GSMENUFLATINDEX][$slug] = null;
@@ -942,61 +960,79 @@ function deleteMenuItem($slug){
 	return $menu;
 }
 
-function insertMenuItem($slug){
+function insertMenuItem($menu,$slug){
 	debugLog(__FUNCTION__ . ' ' . $slug);
 	$slug = (string) $slug;
-	$menu = getMenuDataArray();
 
 	$menu[GSMENUNESTINDEX][$slug] = array('id'=>$slug,'parent'=>'');
 	$menu[GSMENUFLATINDEX][$slug] = &$menu[GSMENUNESTINDEX][$slug];
 
-	$menu = updateMenuItem($slug,getPage($slug));
+	$menu = updateMenuItem($menu,$slug,getPage($slug));
 	return $menu;
 }
 
 /**
  * sync menu cache to pages array changes
  * diffs between menu and page cache and insert/delete/update changes
+ *
+ * @param array $menu menu array
+ * @param array $pages pages array
  * @return array new menu
  */
-function updateMenuSync(){
-	debugLog(__FUNCTION__);	
-	$menu  = getMenuDataArray();
-	$pages = getPages();
+function updateMenuSync($menu,$pages){
+	// debugLog(__FUNCTION__);	
+	// $menu  = getMenuDataArray();
+	// $pages = getPages();
 
-	$pages['parent-1b'] = null;
-	unset($pages['parent-1b']);
+	// $pages['parent-1b'] = null;
+	// unset($pages['parent-1b']);
 
-	$menu[GSMENUFLATINDEX]['draft-example'] = null;
-	unset($menu[GSMENUFLATINDEX]['draft-example']);
+	// $menu[GSMENUFLATINDEX]['draft-example'] = null;
+	// unset($menu[GSMENUFLATINDEX]['draft-example']);
 
 	$menuindex  = array_keys($menu[GSMENUFLATINDEX]);
 	$pagesindex = array_keys($pages);
 	
 	$diff = array_diff_dual($pagesindex,$menuindex);
 	
-	// debugLog($menuindex);
-	// debugLog($pagesindex);
-	// debugLog($diff);
+	debugLog($menuindex);
+	debugLog($pagesindex);
+	debugLog($diff);
+	return $menu;
 
 	foreach($diff as $item){
-		if(!isset($menu[GSMENUFLATINDEX][$item])) $menu = insertMenuItem($item);
-		else if(!isset($pages[$item])) $menu = deleteMenuItem($item);
-		else $menu = updateMenuItem($item);
+		if(!isset($menu[GSMENUFLATINDEX][$item])) $menu = insertMenuItem($menu,$item);
+		else if(!isset($pages[$item])) $menu = deleteMenuItem($menu,$item);
+		else $menu = updateMenuItem($menu,$item,$page);
 	}
 
 	return $menu;
 }
 
-/**
- * array diff from 2 arrays, returns both diffs not just one
- * @since  3.4
- * @param  array $array1 first array
- * @param  array $array2 second array
- * @return array         diff array, elements missing from either array are included
- */
-function array_diff_dual($array1,$array2){
-	return array_merge(array_diff($array1, $array2), array_diff($array2, $array1));
+function deletePagesMenuItem($slug){
+	$menu   = deleteMenuItem(getMenuDataArray(),$slug);
+	$status = menuSave(GSMENUPAGESMENUID,$menu);
+	return $status;
+}
+
+function insertPagesMenuItem($slug){
+	$menu   = insertMenuItem(getMenuDataArray(),$slug);
+	$status = menuSave(GSMENUPAGESMENUID,$menu);
+	return $status;
+}
+
+function updatePagesMenuItem($slug,$page,$force = false){
+	$menu   = updateMenuItem(getMenuDataArray(),$slug,$page,$force);
+	// debugLog($menu);
+	$status = menuSave(GSMENUPAGESMENUID,$menu);
+	return $status;
+}
+
+function updatePagesMenu(){
+	// return;
+	$menu   = updateMenuSync(getMenuDataArray(),getPages());
+	// $status = menuSave(GSMENUPAGESMENUID,$menu);
+	return $status;
 }
 
 /**
@@ -1012,7 +1048,7 @@ function array_diff_dual($array1,$array2){
  * @param  string $menuid menuid to retreive
  * @return array         menu array
  */
-function getMenuDataArray($menuid = 'default',$force = false){
+function getMenuDataArray($menuid = GSMENUPAGESMENUID,$force = false){
     GLOBAL $SITEMENU;
     // return cached local
     if(isset($SITEMENU[$menuid]) && !$force) return $SITEMENU[$menuid];
@@ -1031,7 +1067,7 @@ function getMenuDataArray($menuid = 'default',$force = false){
  * @param  string $menuid menu id to fetch
  * @return array  menu sub array of page
  */
-function getMenuDataNested($menuid = 'default'){
+function getMenuDataNested($menuid = GSMENUPAGESMENUID){
     $menu = getMenuDataArray($menuid);
     if(!isset($menu)) return;
     // if(!isset($menu[GSMENUNESTINDEX])) buildRefArray(); should not be necessary
@@ -1049,7 +1085,7 @@ function getMenuDataNested($menuid = 'default'){
  * @param  string $menuid menu id to fetch
  * @return array  menu sub array of page
  */
-function getMenuData($page = '', $parent = false, $menuid = 'default'){
+function getMenuData($page = '', $parent = false, $menuid = GSMENUPAGESMENUID){
     if(empty($page)) return getMenuDataNested($menuid);
     else $menudata = getMenuDataArray($menuid);
 
@@ -1077,8 +1113,8 @@ function buildRefArray(&$menu){
         $ref = &resolve_tree($menu[GSMENUNESTINDEX],explode('.',$index));
         if(isset($ref)) $menu[GSMENUFLATINDEX][$key] = &$ref;
     }
-    GLOBAL $pagesArray;
-    $menu['pagesarray'] = &$pagesArray;
+    // GLOBAL $pagesArray;
+    // $menu['pagesarray'] = &$pagesArray;
     return $menu;
 }
 
