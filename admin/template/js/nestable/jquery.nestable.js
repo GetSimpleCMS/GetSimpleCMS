@@ -361,29 +361,39 @@
         },
 
         expandAll: function() {
-            var list = this;
-            list.el.find(list.options.itemNodeName).each(function() {
-                list.expandItem($(this));
-            });
+            var list  = this;
+            var items = list.el.find(list.options.itemNodeName);
+            list.expandCollection(items);
         },
 
         collapseAll: function() {
             var list = this;
-            list.el.find(list.options.itemNodeName).each(function() {
-                list.collapseItem($(this));
-            });
+            var items = list.el.find(list.options.itemNodeName);
+            list.collpaseCollection(items);
         },
 
         expandAllRoot: function() {
             var list = this;
-            list.el.children(list.options.listNodeName).children().each(function() {
+            var items = list.el.children(list.options.listNodeName).children();
+            list.expandCollection(items);
+        },
+
+        collapseAllRoot: function() {
+            var list  = this;
+            var items = list.el.children(list.options.listNodeName).children();
+            list.collapseCollection(items);
+        },
+
+        expandCollection: function(items) {
+            var list = this;
+            items.each(function() {
                 list.expandItem($(this));
             });
         },
 
-        collapseAllRoot: function() {
+        collapseCollection: function(items) {
             var list = this;
-            list.el.children(list.options.listNodeName).children().each(function() {
+            items.each(function() {
                 list.collapseItem($(this));
             });
         },

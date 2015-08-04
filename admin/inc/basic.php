@@ -2895,6 +2895,18 @@ function safemodefail($action = '',$url = ''){
  */
 
 /**
+ * array diff from 2 arrays, returns both diffs not just one
+ * @since  3.4
+ * @param  array $array1 first array
+ * @param  array $array2 second array
+ * @return array         diff array, elements missing from either array are included
+ */
+function array_diff_dual($array1,$array2){
+	return array_merge(array_diff($array1, $array2), array_diff($array2, $array1));
+}
+
+
+/**
  * filter an array using a callback function on subarrays
  * 
  * @param  array $array        array to filter
