@@ -838,14 +838,14 @@ function menuSave($menuid,$data){
  */
 function menuRead($menuid){
     $menufileext = '.json';
-    $menu        = read_file(GSDATAOTHERPATH.'menu_'.$menuid.$menufileext);
+    $menu = read_file(GSDATAOTHERPATH.'menu_'.$menuid.$menufileext);
     
     if(!$menu){
         debugLog('menuRead: failed to load menu - ' . $menuid);
         return;
     }
 
-    $menu        = json_decode($menu,true);
+    $menu = json_decode($menu,true);
     if($menu[GSMENUNESTINDEX]) buildRefArray($menu); // rebuild flat array refs from index map
     else debugLog('menuread: menu is empty - ' .$menuid);
     return $menu;
@@ -853,6 +853,10 @@ function menuRead($menuid){
 
 /**
  * updates a single menu item
+ * @todo  probably need to simplify this and figure out how it should work.
+ * grab source and destination readd, rebuild subtrees, rebuild ref array
+ * can simply move subarrays and rekey entire thing fairly fast
+ * 
  * @param  string $slug id of item
  * @param  array  $page page array
  * @return bool         status, true if update was performed
@@ -893,6 +897,7 @@ function updateMenuItem($menu,$slug,$page = null,$force = false){
 			$menu[GSMENUFLATINDEX][$newparent]['children'][$slug] = $item;
 			$menu[GSMENUFLATINDEX][$slug] = &$menu[GSMENUFLATINDEX][$newparent]['children'][$slug]; // new ref
 		}
+
 		$update = true;
 	}
 
@@ -922,10 +927,6 @@ function updateMenuItem($menu,$slug,$page = null,$force = false){
 			$menu[GSMENUFLATINDEX][$slug] = &$menu[GSMENUFLATINDEX][$parent]['children'][$slug]; // new ref
 		}
 
-		// remove index
-		// $menu[GSMENUINDEXINDEX][$slug] = null;
-		// unset($menu[GSMENUINDEXINDEX][$slug]);
-
 		// add new index
 		$menu[GSMENUINDEXINDEX][$slug] = '.'.$slug;
 	
@@ -950,6 +951,66 @@ function updateMenuItem($menu,$slug,$page = null,$force = false){
 
 	// debugLog($item);
 	unset($item);
+	return $menu;
+}
+
+function menuItemRekey($menu,$slug,$newslug){
+	$item = getMenuItem($menu,$slug);
+	$item['id'] = $newslug;
+	reindexMenuArray($menu);
+	$menu = menuItemUpdateChildren($menu,$item);
+	return $menu;
+}
+
+/**
+ * move item to new parent,update children
+ * @param  [type] $menu   [description]
+ * @param  string $parent [description]
+ * @return [type]         [description]
+ */		
+function menuItemMove($menu,$slug,$parentslug = ''){
+
+	$item   = getMenuItem($menu,$slug);
+
+	$item['parent'] = $parentslug;
+	$item['depth']  = 0;
+	
+	$menu = menuItemUpdateChildren($menu,$item);
+
+	$menu = deleteMenuItemData($menu,$slug);
+	$menu = menuItemAddChild($menu,$parentslug,$item);
+	return $menu;
+}
+
+function menuItemUpdateChildren($menu,$item){
+	if(isset($item['children'])){
+		$index = recurseUpgradeTree($item['children'],$item['id'],$item['depth']);
+		// add new children back to indices
+		$menu[GSMENUINDEXINDEX] = array_merge($menu[GSMENUINDEXINDEX],$index[GSMENUINDEXINDEX]);
+	}
+	return $menu;
+}
+
+function menuItemAddChild($menu,$parentslug = '',$child){
+	if(!empty($parentslug)){
+		$parent = getMenuItem($menu,$parentslug);
+		$parent['children'][$child['id']] = $child;
+		debugLog($parent);
+		$parent['numchildren']++; // bump new parents number of children
+		$child['depth'] = $parent['depth'] + 1; // bump depth
+		menuItemReplace($menu,$parentslug,$parent);
+		$menu[GSMENUINDEXINDEX][$child['id']] = $menu[GSMENUINDEXINDEX][$parentslug] . '.' . $child['id'];
+	}
+	else{
+		$menu[GSMENUNESTINDEX][$child['id']] = $child;
+		$menu[GSMENUINDEXINDEX][$child['id']] = '.'.$child['id'];
+	}	
+	
+	return $menu;
+}
+
+function menuItemReplace($menu,$slug,$item){
+	$menu[GSMENUFLATINDEX][$slug] = $item;
 	return $menu;
 }
 
@@ -1190,6 +1251,18 @@ function &resolve_tree(&$tree, $path) {
     // return empty($path) ? $tree : resolve_tree($tree[$path[0]], array_slice($path, 1));
 }
 
+function getMenuItem($menu,$id = ''){
+    if(isset($menu[GSMENUFLATINDEX]) && isset($menu[GSMENUFLATINDEX][$id])) return $menu[GSMENUFLATINDEX][$id];
+}
+
+function getMenuItemParent($menu,$slug = ''){
+	$item = getMenuItem($menu,$slug);
+	if(!$item) return;
+
+	if(!empty($item['parent'])){
+    	return $menu[GSMENUFLATINDEX][$item['parent']];
+    }
+}
 
 /**
  * EXPORT / LEGACY
