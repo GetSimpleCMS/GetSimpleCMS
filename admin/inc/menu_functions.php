@@ -766,6 +766,7 @@ function getPageMenuTitle($slug){
  */
 function reindexMenuArray($menu){
 	foreach($menu as $key=>$item){
+        // debugLog($item);
 		$id = $item['id'];
 		if($id !== $key){
 			$menu[$id]  = $item;
@@ -850,6 +851,10 @@ function menuRead($menuid){
     else debugLog('menuread: menu is empty - ' .$menuid);
     return $menu;
 }
+
+/**
+ * Menu Manipulation
+ */
 
 /**
  * updates a single menu item
@@ -957,16 +962,28 @@ function updateMenuItem($menu,$slug,$page = null,$force = false){
 function menuItemRekey($menu,$slug,$newslug){
 	$item = getMenuItem($menu,$slug);
 	$item['id'] = $newslug;
-	reindexMenuArray($menu);
-	$menu = menuItemUpdateChildren($menu,$item);
+	$menu[GSMENUNESTINDEX] = reindexMenuArray($menu[GSMENUNESTINDEX]); // reindex to pick up new id
+
+    // upadate indices
+    $menu[GSMENUINDEXINDEX][$newslug] = str_replace($slug,$newslug,$menu[GSMENUINDEXINDEX][$slug]);
+    unset($menu[GSMENUINDEXINDEX][$slug]);
+    
+    // rebuildrefs for flat getMenuItem will need it to be up to date
+    buildRefArray($menu);
+    $item = getMenuItem($menu,$newslug);
+    $menu = menuItemReplace($menu,$newslug,$item); // replace item with updated item  
+    $menu = deleteMenuItemData($menu,$slug);
+    $menu = menuItemUpdateChildren($menu,$item);
 	return $menu;
 }
 
 /**
  * move item to new parent,update children
- * @param  [type] $menu   [description]
- * @param  string $parent [description]
- * @return [type]         [description]
+ * @since  3.4
+ * @param  array $menu   menu array
+ * @param  string $slug   menu item slug to move
+ * @param  string $parentslug new parent slug to move to
+ * @return array         menu array
  */		
 function menuItemMove($menu,$slug,$parentslug = ''){
 
@@ -982,6 +999,12 @@ function menuItemMove($menu,$slug,$parentslug = ''){
 	return $menu;
 }
 
+/**
+ * update mwnu items children using recursive upgrade
+ * @param  array $menu menu array
+ * @param  array $item menu item array
+ * @return array       menu array
+ */
 function menuItemUpdateChildren($menu,$item){
 	if(isset($item['children'])){
 		$index = recurseUpgradeTree($item['children'],$item['id'],$item['depth']);
@@ -991,26 +1014,43 @@ function menuItemUpdateChildren($menu,$item){
 	return $menu;
 }
 
+/**
+ * add menu item child to parent or root
+ * @param  array $menu       menu array
+ * @param  string $parentslug slug of parent
+ * @param  array $child      item to add
+ * @return array             menu array
+ */
 function menuItemAddChild($menu,$parentslug = '',$child){
 	if(!empty($parentslug)){
-		$parent = getMenuItem($menu,$parentslug);
-		$parent['children'][$child['id']] = $child;
-		debugLog($parent);
+        // adding item to parent
+		$parent = getMenuItem($menu,$parentslug); // get parent item
+		$parent['children'][$child['id']] = $child; // append child to parent item
 		$parent['numchildren']++; // bump new parents number of children
 		$child['depth'] = $parent['depth'] + 1; // bump depth
-		menuItemReplace($menu,$parentslug,$parent);
+		$menu = menuItemReplace($menu,$parentslug,$parent); // replace item with updated item
 		$menu[GSMENUINDEXINDEX][$child['id']] = $menu[GSMENUINDEXINDEX][$parentslug] . '.' . $child['id'];
 	}
 	else{
+        // adding item to root
 		$menu[GSMENUNESTINDEX][$child['id']] = $child;
 		$menu[GSMENUINDEXINDEX][$child['id']] = '.'.$child['id'];
 	}	
+
+    // recurseUpgradeTreeCallout($menu[GSMENUINDEXINDEX][$child['id']],$child['id']);
 	
 	return $menu;
 }
 
+/**
+ * menu item replace, in place replace item with new item
+ * @param  array  $menu menu array
+ * @param  str    $slug menu item slug to replace
+ * @param  array  $item new menu item array
+ * @return array        menu array
+ */
 function menuItemReplace($menu,$slug,$item){
-	$menu[GSMENUFLATINDEX][$slug] = $item;
+	$menu[GSMENUFLATINDEX][$slug] = &$item;
 	return $menu;
 }
 
@@ -1138,8 +1178,10 @@ function insertPagesMenuItem($slug){
 }
 
 function updatePagesMenuItem($slug,$page,$force = false){
-	$menu   = updateMenuItem(getMenuDataArray(),$slug,$page,$force);
-	// debugLog($menu);
+    $menu = menuItemRekey(getMenuDataArray(),$slug,$page['url']);
+
+	// $menu   = updateMenuItem(getMenuDataArray(),$slug,$page,$force);
+	debugLog($menu);
 	$status = menuSave(GSMENUPAGESMENUID,$menu);
 	return $status;
 }
