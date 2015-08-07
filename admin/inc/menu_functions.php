@@ -977,15 +977,17 @@ function menuItemRekey($menu,$slug,$newslug){
 	debugLog($menu[GSMENUNESTINDEX]['parent-1b']);
     // update indices
     $menu[GSMENUINDEXINDEX][$newslug] = str_replace($slug,$newslug,$menu[GSMENUINDEXINDEX][$slug]);
-    unset($menu[GSMENUINDEXINDEX][$slug]);
+    // unset($menu[GSMENUINDEXINDEX][$slug]); // needs to remain for rebuild ref so it can be deleted
     
     // rebuildrefs for flat getMenuItem will need it to be up to date
-    buildRefArray($menu);
+    buildRefArray($menu); // @todo this is returning empty arrays for missing NEST items, and readding the via resolveref
+
     // $menu = menuItemReplace($menu,$newslug,$item); // replace item with updated item  
     debugLog($menu[GSMENUNESTINDEX]['parent-1b']);
-    // $menu = deleteMenuItemData($menu,$slug); // broken
-    $item = getMenuItem($menu,$newslug);
-    $menu = menuItemUpdateChildren($menu,$item);
+    // debugLog($menu[GSMENUNESTINDEX]['parent-1b_NEW']);
+    $menu = deleteMenuItemData($menu,$slug);
+    // $item = getMenuItem($menu,$newslug);
+    // $menu = menuItemUpdateChildren($menu,$item);
     // debugLog(getMenuItem($menu,$newslug));
 	return $menu;
 }
@@ -1078,7 +1080,7 @@ function deleteMenuItemData($menu,$slug){
 
 	debugLog(__FUNCTION__ . ' ' . $slug);
 
-	if(!isset($menu[GSMENUFLATINDEX][$slug])) return;
+	if(!isset($menu[GSMENUFLATINDEX][$slug])) return $menu;
 
 	// get parent before it is cleared
 	$parent = '';
@@ -1283,6 +1285,7 @@ function buildRefArray(&$menu){
         $index = str_replace('.','.children.',$index);
         // _debugLog($key,$index);
         $ref = &resolve_tree($menu[GSMENUNESTINDEX],explode('.',$index));
+        // _debugLog($index,$ref);
         if(isset($ref)) $menu[GSMENUFLATINDEX][$key] = &$ref;
     }
     // GLOBAL $pagesArray;
