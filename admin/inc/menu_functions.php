@@ -766,7 +766,7 @@ function getPageMenuTitle($slug){
  */
 function reindexMenuArray($menu){
 	foreach($menu as $key=>$item){
-        // debugLog($item);
+        if(!isset($item['id'])) debugLog($item);
 		$id = $item['id'];
 		if($id !== $key){
 			$menu[$id]  = $item;
@@ -774,7 +774,8 @@ function reindexMenuArray($menu){
 			unset($menu[$key]);
 			if(isset($menu[$id]['children'])) $menu[$id]['children'] = reindexMenuArray($menu[$id]['children']);
 		}
-		else if(isset($item['children'])) $item['children'] = reindexMenuArray($item['children']);
+		// else if(isset($item['children'])) $item['children'] = reindexMenuArray($item['children']);
+		else if(isset($menu[$id]['children'])) $menu[$id]['children'] = reindexMenuArray($menu[$id]['children']);
 	}
 
 	return $menu;
@@ -961,19 +962,31 @@ function updateMenuItem($menu,$slug,$page = null,$force = false){
 
 function menuItemRekey($menu,$slug,$newslug){
 	$item = getMenuItem($menu,$slug);
+	if(!$item){
+		debugLog(__FUNCTION__ . ' ' . $slug . ' is empty');
+		return;
+	}
 	$item['id'] = $newslug;
-	$menu[GSMENUNESTINDEX] = reindexMenuArray($menu[GSMENUNESTINDEX]); // reindex to pick up new id
 
-    // upadate indices
+	debugLog($item);
+    $menu = menuItemReplace($menu,$slug,$item); // replace item with updated item 
+    // $menu[GSMENUNESTINDEX]['parent-1b']['children'][$slug] = $item;
+	// debugLog($menu[GSMENUNESTINDEX]['parent-1b']);
+	$menu[GSMENUNESTINDEX] = reindexMenuArray($menu[GSMENUNESTINDEX]); // reindex to pick up new id
+	// @todo reindex breaks this
+	debugLog($menu[GSMENUNESTINDEX]['parent-1b']);
+    // update indices
     $menu[GSMENUINDEXINDEX][$newslug] = str_replace($slug,$newslug,$menu[GSMENUINDEXINDEX][$slug]);
     unset($menu[GSMENUINDEXINDEX][$slug]);
     
     // rebuildrefs for flat getMenuItem will need it to be up to date
     buildRefArray($menu);
+    // $menu = menuItemReplace($menu,$newslug,$item); // replace item with updated item  
+    debugLog($menu[GSMENUNESTINDEX]['parent-1b']);
+    // $menu = deleteMenuItemData($menu,$slug); // broken
     $item = getMenuItem($menu,$newslug);
-    $menu = menuItemReplace($menu,$newslug,$item); // replace item with updated item  
-    $menu = deleteMenuItemData($menu,$slug);
     $menu = menuItemUpdateChildren($menu,$item);
+    // debugLog(getMenuItem($menu,$newslug));
 	return $menu;
 }
 
@@ -1050,7 +1063,8 @@ function menuItemAddChild($menu,$parentslug = '',$child){
  * @return array        menu array
  */
 function menuItemReplace($menu,$slug,$item){
-	$menu[GSMENUFLATINDEX][$slug] = &$item;
+	$menu[GSMENUFLATINDEX][$slug] = $item;
+	debugLog($menu[GSMENUFLATINDEX][$slug]);
 	return $menu;
 }
 
