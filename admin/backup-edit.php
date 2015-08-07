@@ -67,9 +67,9 @@ elseif ($p == 'restore') {
 	$redirect = "";
 	
 	if($draft){
-		restore_draft($id);   // restore old slug file
+		$success = restore_draft($id);   // restore old slug file
 		// generate_sitemap(); // regenerates sitemap, we do not need to do this for drafts.
-		$success = exec_action('draft-restore'); // @hook draft-restore fired when a draft is restored
+		exec_action('draft-restore'); // @hook draft-restore fired when a draft is restored
 		redirect("edit.php?id=". $id ."&upd-draft&upd=edit-success&type=restore");
 	}
 
@@ -86,9 +86,14 @@ elseif ($p == 'restore') {
 		$redirect = ("edit.php?id=". $id ."&nodraft&upd=edit-success&type=restore");
 	}
 	
-	generate_sitemap(); // regenerates sitemap
-	exec_action('page-restore');     // @hook page-restore fird when a page is restored
-	if($redirect) redirect($redirect);
+	if($success){
+		generate_sitemap(); // regenerates sitemap
+		exec_action('page-restore');     // @hook page-restore fird when a page is restored
+		if($redirect) redirect($redirect);
+	}
+	else {
+		$error = i18n_r('RESTOREERROR');
+	}
 }
 
 $pagetitle = i18n_r('BAK_MANAGEMENT').' &middot; '.i18n_r('VIEWPAGE_TITLE');
