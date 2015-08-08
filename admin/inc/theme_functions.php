@@ -714,12 +714,12 @@ function get_navigation_ul($currentpage,$classPrefix = ""){
 	return get_navigation($currentpage,$classPrefix,array("<ul>","</ul>"));
 }
 
-function get_navigation_advanced($currentpage, $classPrefix = '', $slug = '', $maxdepth = 5){
+function get_navigation_advanced($currentpage, $classPrefix = '', $slug = '', $maxdepth = 1){
 	// testing new
-	$menuid = 'default';
+	$menuid = GSMENUPAGESMENUID;
 	// $menuid = 'legacy';
 	$tree = getMenuData($slug,true,$menuid);
-	$menu =  getMenuTree($tree,false,'menuCalloutInner', 'treeCalloutOuter', 'menuCalloutFilter',array('currentpage'=>$currentpage,'classPrefix'=>$classPrefix,'maxdepth'=>$maxdepth));
+	$menu =  getMenuTree($tree,false,'menuCallout','menuCalloutFilter',array('currentpage'=>$currentpage,'classPrefix'=>$classPrefix,'maxdepth'=>$maxdepth));
 	return $menu;
 }
 

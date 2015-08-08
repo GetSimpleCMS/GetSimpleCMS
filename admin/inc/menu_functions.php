@@ -17,7 +17,7 @@ define('GSMENUFILTERSHIFT',3);    // skip parent, shift all children to root
 define('GSMENUPAGESMENUID','corepages'); // default id for the page menu cache
 
 define('GSMENULEGACY',true);
-define('GSMENUFILTERDEBUG',true);
+// define('GSMENUFILTERDEBUG',true);
 
 
 /**
@@ -733,8 +733,8 @@ function menuCalloutFilter($item,$level,$index,$order,$args){
 	// page not in menu
     if(getPageFieldValue($item['id'],'menuStatus') !== 'Y') return $skip;
     // max depth limiter
-    _debugLog(func_get_args());
-    if(isset($args['maxdepth']) && ($level > ($args['maxdepth']+1))) return $skip;
+    // _debugLog(func_get_args());
+    if(isset($args['maxdepth']) && ($level > ($args['maxdepth']))) return $skip;
 
 	//tests
     // if($item['id'] == 'parent-1b') return $skip;
