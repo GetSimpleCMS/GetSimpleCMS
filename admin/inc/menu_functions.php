@@ -672,7 +672,7 @@ function mmCallout($item, $outer = false, $open = true){
     // $pageTitle = $pageTitle.'.'.$page['menuOrder'] .'.'.$page['menuStatus'];
     $pageTitle = $item['id'].'.'.$item['index'] .'.'.$page['menuStatus'];
     // _debugLog($page['url'],$page['menuStatus']);
-    
+    if(empty($menuTitle)) $menuTitle = $item['id'];
     $pageTitle = truncate($pageTitle,30);
     $class     = $page['menuStatus'] === 'Y' ? ' menu' : ' nomenu';
 
@@ -687,7 +687,7 @@ function mmCallout($item, $outer = false, $open = true){
  * @return mixed       filter result
  */
 function  mmCalloutFilter($item){
-	if(!getPage($item['id'])) return GSMENUFILTERCONTINUE;
+	// if(!getPage($item['id'])) return GSMENUFILTERCONTINUE;
 }
 
 /**
@@ -753,7 +753,7 @@ function menuCalloutFilter($item,$level,$index,$order,$args){
  */
 function getPageMenuTitle($slug){
     $page = getPage($slug);
-    return ($page['menu'] == '' ? $page['title'] : $page['menu']);
+    return (trim($page['menu']) == '' ? $page['title'] : $page['menu']);
 }
 
 /**
@@ -766,7 +766,7 @@ function getPageMenuTitle($slug){
  */
 function reindexMenuArray($menu){
 	foreach($menu as $key=>$item){
-        if(!isset($item['id'])) debugLog($item);
+        if(!isset($item['id'])) continue;
 		$id = $item['id'];
 		if($id !== $key){
 			$menu[$id]  = $item;
@@ -960,7 +960,7 @@ function updateMenuItem($menu,$slug,$page = null,$force = false){
 	return $menu;
 }
 
-function menuItemRekey($menu,$slug,$newslug){
+function menuItemRekey_old($menu,$slug,$newslug){
 	$item = getMenuItem($menu,$slug);
 	if(!$item){
 		debugLog(__FUNCTION__ . ' ' . $slug . ' is empty');
@@ -973,23 +973,38 @@ function menuItemRekey($menu,$slug,$newslug){
     // $menu[GSMENUNESTINDEX]['parent-1b']['children'][$slug] = $item;
 	// debugLog($menu[GSMENUNESTINDEX]['parent-1b']);
 	$menu[GSMENUNESTINDEX] = reindexMenuArray($menu[GSMENUNESTINDEX]); // reindex to pick up new id
-	// @todo reindex breaks this
-	debugLog($menu[GSMENUNESTINDEX]['parent-1b']);
+
     // update indices
     $menu[GSMENUINDEXINDEX][$newslug] = str_replace($slug,$newslug,$menu[GSMENUINDEXINDEX][$slug]);
     // unset($menu[GSMENUINDEXINDEX][$slug]); // needs to remain for rebuild ref so it can be deleted
-    
-    // rebuildrefs for flat getMenuItem will need it to be up to date
-    buildRefArray($menu); // @todo this is returning empty arrays for missing NEST items, and readding the via resolveref
 
-    // $menu = menuItemReplace($menu,$newslug,$item); // replace item with updated item  
-    debugLog($menu[GSMENUNESTINDEX]['parent-1b']);
-    // debugLog($menu[GSMENUNESTINDEX]['parent-1b_NEW']);
-    $menu = deleteMenuItemData($menu,$slug);
-    // $item = getMenuItem($menu,$newslug);
-    // $menu = menuItemUpdateChildren($menu,$item);
+    // _debugLog('pre rebuild ref',$menu[GSMENUNESTINDEX]['parent-1']);    
+    _debugLog('pre rebuild ref',$menu[GSMENUINDEXINDEX]['parent-1']);    
+    // rebuildrefs for flat getMenuItem will need it to be up to date
+    buildRefArray($menu); // not restoring the ref for
+
+    _debugLog('pre delete',$menu[GSMENUFLATINDEX][$slug]);
+    _debugLog('pre delete',$menu[GSMENUNESTINDEX][$slug]);
+    $menu = deleteMenuItemData($menu,$slug); // not working
+    _debugLog('post delete',$menu[GSMENUFLATINDEX][$slug]);
+    _debugLog('post delete',$menu[GSMENUNESTINDEX][$slug]);
+    $item = getMenuItem($menu,$newslug);
+    $menu = menuItemUpdateChildren($menu,$item);
     // debugLog(getMenuItem($menu,$newslug));
 	return $menu;
+}
+
+// working for sub parent, not working for root
+function menuItemRekey($menu,$oldslug,$newslug){
+    $item = getMenuItem($menu,$oldslug);
+    if(!$item) return $menu;
+
+    $item['id'] = $newslug;
+    $menu = menuItemAddChild($menu,$item['parent'],$item);
+    $menu = menuItemUpdateChildren($menu,$item);
+    $menu[GSMENUINDEXINDEX][$newslug] = str_replace($oldslug,$newslug,$menu[GSMENUINDEXINDEX][$oldslug]);
+    $menu = deleteMenuItemData($menu,$oldslug); // not working
+    return $menu;
 }
 
 /**
@@ -1001,8 +1016,8 @@ function menuItemRekey($menu,$slug,$newslug){
  * @return array         menu array
  */		
 function menuItemMove($menu,$slug,$parentslug = ''){
-
 	$item   = getMenuItem($menu,$slug);
+    if(!$item) return $menu;
 
 	$item['parent'] = $parentslug;
 	$item['depth']  = 0;
@@ -1047,12 +1062,13 @@ function menuItemAddChild($menu,$parentslug = '',$child){
 		$menu[GSMENUINDEXINDEX][$child['id']] = $menu[GSMENUINDEXINDEX][$parentslug] . '.' . $child['id'];
 	}
 	else{
+        $menu = menuItemReplace($menu,$child['id'],$child); // replace item with updated item
         // adding item to root
 		$menu[GSMENUNESTINDEX][$child['id']] = $child;
 		$menu[GSMENUINDEXINDEX][$child['id']] = '.'.$child['id'];
 	}	
 
-    // recurseUpgradeTreeCallout($menu[GSMENUINDEXINDEX][$child['id']],$child['id']);
+    recurseUpgradeTreeCallout($menu[GSMENUFLATINDEX][$child['id']],$child['id']);
 	
 	return $menu;
 }
@@ -1066,7 +1082,7 @@ function menuItemAddChild($menu,$parentslug = '',$child){
  */
 function menuItemReplace($menu,$slug,$item){
 	$menu[GSMENUFLATINDEX][$slug] = $item;
-	debugLog($menu[GSMENUFLATINDEX][$slug]);
+	// debugLog($menu[GSMENUFLATINDEX][$slug]);
 	return $menu;
 }
 
