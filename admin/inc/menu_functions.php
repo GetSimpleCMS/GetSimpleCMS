@@ -17,7 +17,7 @@ define('GSMENUFILTERSHIFT',3);    // skip parent, shift all children to root
 define('GSMENUPAGESMENUID','corepages'); // default id for the page menu cache
 
 define('GSMENULEGACY',true);
-// define('GSMENUFILTERDEBUG',true);
+define('GSMENUFILTERDEBUG',true);
 
 
 /**
@@ -422,6 +422,7 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
 
     GLOBAL $sortkeys;
     if($sortkeys && $sort){
+        // @todo since the recurssive function only operates on parent subarray, we do not have acces to menu itself, we could always sort my indices , and allow presorting the menu itself by sorting indices or $menu[GSMENUSORTINDEX]
     	$parents = arrayMergeSort($parents,$sortkeys,false);
     	// debugLog($parents);
     	// debugLog(array_keys($parents));
@@ -858,6 +859,7 @@ function menuRead($menuid){
  */
 
 /**
+ * UNUSED
  * updates a single menu item
  * @todo  probably need to simplify this and figure out how it should work.
  * grab source and destination readd, rebuild subtrees, rebuild ref array
@@ -960,6 +962,7 @@ function updateMenuItem($menu,$slug,$page = null,$force = false){
 	return $menu;
 }
 
+// unused
 function menuItemRekey_old($menu,$slug,$newslug){
 	$item = getMenuItem($menu,$slug);
 	if(!$item){
@@ -1003,7 +1006,7 @@ function menuItemRekey($menu,$oldslug,$newslug){
     $menu = menuItemAddChild($menu,$item['parent'],$item);
     $menu = menuItemUpdateChildren($menu,$item);
     $menu[GSMENUINDEXINDEX][$newslug] = str_replace($oldslug,$newslug,$menu[GSMENUINDEXINDEX][$oldslug]);
-    $menu = deleteMenuItemData($menu,$oldslug); // not working
+    $menu = deleteMenuItemData($menu,$oldslug);
     return $menu;
 }
 
