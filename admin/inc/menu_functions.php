@@ -869,7 +869,7 @@ function menuRead($menuid){
  * @param  array  $page page array
  * @return bool         status, true if update was performed
  */
-function updateMenuItem($menu,$slug,$page = null,$oldslug = null){
+function updateMenuItem($menu,$slug,$page = null,$newslug = null){
 
     if(empty($slug)){ debugLog(__FUNCTION__." empty slug!"); return; }
     if(!isset($menu[GSMENUFLATINDEX][(string)$slug])) return $menu;
@@ -889,7 +889,7 @@ function updateMenuItem($menu,$slug,$page = null,$oldslug = null){
     // @todo perhaps slug changes should be performed before parent changes, to deal with add remove sync issues with manual changes    
     if(isset($newslug) || (isset($page) && $item['id'] !== $page['url'])){
 
-        debugLog(__FUNCTION__ . ' changing menu item slug ' . $oldslug . ' -> ' .$slug);
+        debugLog(__FUNCTION__ . ' changing menu item slug ' . $slug . ' -> ' .$newslug);
         $oldslug = $item['id'];
         $newslug = isset($newslug) ? $newslug : $page['url'];
         $menu = menuItemRekey($menu,$oldslug,$newslug);
@@ -1021,10 +1021,11 @@ function menuItemMove($menu,$slug,$parentslug = ''){
 	$item['parent'] = $parentslug;
 	$item['depth']  = 0;
 	
-	$menu = menuItemUpdateChildren($menu,$item);
+	// $menu = menuItemUpdateChildren($menu,$item);
 
-	$menu = deleteMenuItemData($menu,$slug);
-	$menu = menuItemAddChild($menu,$parentslug,$item);
+    $menu = deleteMenuItemData($menu,$slug);
+    $menu = menuItemAddChild($menu,$parentslug,$item);
+    $menu = menuItemUpdateChildren($menu,getMenuItem($menu,$parentslug));
 	return $menu;
 }
 
@@ -1039,6 +1040,7 @@ function menuItemUpdateChildren($menu,$item){
 	if(isset($item['children'])){
 		$index = recurseUpgradeTree($item['children'],$item['id'],$item['depth']);
 		// add new children back to indices
+        debugLog($index[GSMENUINDEXINDEX]); 
 		$menu[GSMENUINDEXINDEX] = array_merge($menu[GSMENUINDEXINDEX],$index[GSMENUINDEXINDEX]);
 	}
 	return $menu;
@@ -1052,13 +1054,13 @@ function menuItemUpdateChildren($menu,$item){
  * @return array             menu array
  */
 function menuItemAddChild($menu,$parentslug = '',$child){
-    debugLog(__FUNCTION__ . ' ' . $parentslug);    
+    debugLog(__FUNCTION__ . ' ' . $parentslug . ' | ' . $child['id']);    
 	if(!empty($parentslug)){
         // adding item to parent
 		$parent = getMenuItem($menu,$parentslug); // get parent item
-		$parent['children'][$child['id']] = $child; // append child to parent item
-		$parent['numchildren']++; // bump new parents number of children
-		$child['depth'] = $parent['depth'] + 1; // bump depth
+		$child['depth'] = $parent['depth'] + 1;   // bump depth
+        $parent['children'][$child['id']] = $child; // append child to parent item
+        $parent['numchildren']++; // bump new parents number of children
 		$menu = menuItemReplace($menu,$parentslug,$parent); // replace item with updated item
 		$menu[GSMENUINDEXINDEX][$child['id']] = $menu[GSMENUINDEXINDEX][$parentslug] . '.' . $child['id'];
 	}
@@ -1082,7 +1084,7 @@ function menuItemAddChild($menu,$parentslug = '',$child){
  * @return array        menu array
  */
 function menuItemReplace($menu,$slug,$item){
-    debugLog(__FUNCTION__ . ' ' . $slug);    
+    debugLog(__FUNCTION__ . ' ' . $slug . ' = ' . $item['id']);    
 	$menu[GSMENUFLATINDEX][$slug] = $item;
 	// debugLog($menu[GSMENUFLATINDEX][$slug]);
 	return $menu;
@@ -1212,8 +1214,8 @@ function insertPagesMenuItem($slug){
 	return $status;
 }
 
-function updatePagesMenuItem($slug,$page,$force = false){
-	$menu   = updateMenuItem(getMenuDataArray(),$slug,$page,$force);
+function updatePagesMenuItem($slug,$page,$newslug){
+	$menu   = updateMenuItem(getMenuDataArray(),$slug,$page,$newslug);
 	debugLog($menu);
 	$status = menuSave(GSMENUPAGESMENUID,$menu);
 	return $status;
