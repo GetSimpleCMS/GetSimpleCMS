@@ -765,11 +765,11 @@ function getPageMenuTitle($slug){
  * @param  array $menu menu array
  * @return array       array reindexed
  */
-function reindexMenuArray($menu){
+function reindexMenuArray($menu, $force = false){
 	foreach($menu as $key=>$item){
         if(!isset($item['id'])) continue;
 		$id = $item['id'];
-		if($id !== $key){
+		if($id !== $key || $force){
 			$menu[$id]  = $item;
 			$menu[$key] = null;
 			unset($menu[$key]);
@@ -885,11 +885,14 @@ function updateMenuItem($menu,$slug,$page = null,$newslug = null){
         $menu  = menuItemMove($menu,$slug,$parentslug);
     }
 
+    // debugLog($menu);
+
     // slug changed
     // @todo perhaps slug changes should be performed before parent changes, to deal with add remove sync issues with manual changes    
     if(isset($newslug) || (isset($page) && $item['id'] !== $page['url'])){
-
+        // $item = getMenuItem($menu,$slug);
         debugLog(__FUNCTION__ . ' changing menu item slug ' . $slug . ' -> ' .$newslug);
+        debugLog($item);
         $oldslug = $item['id'];
         $newslug = isset($newslug) ? $newslug : $page['url'];
         $menu = menuItemRekey($menu,$oldslug,$newslug);
@@ -1021,12 +1024,10 @@ function menuItemMove($menu,$slug,$parentslug = ''){
 	$item['parent'] = $parentslug;
 	$item['depth']  = 0;
 	
-	// $menu = menuItemUpdateChildren($menu,$item);
-
     $menu = deleteMenuItemData($menu,$slug);
     $menu = menuItemAddChild($menu,$parentslug,$item);
     $menu = menuItemUpdateChildren($menu,getMenuItem($menu,$parentslug));
-	return $menu;
+    return $menu;
 }
 
 /**
@@ -1037,7 +1038,8 @@ function menuItemMove($menu,$slug,$parentslug = ''){
  */
 function menuItemUpdateChildren($menu,$item){
     debugLog(__FUNCTION__ . ' ' . $item['id']);
-	if(isset($item['children'])){
+    if(isset($item['children'])){
+        debugLog(__FUNCTION__ . ' updating, ' . $item['numchildren']);
 		$index = recurseUpgradeTree($item['children'],$item['id'],$item['depth']);
 		// add new children back to indices
         debugLog($index[GSMENUINDEXINDEX]); 
@@ -1072,6 +1074,8 @@ function menuItemAddChild($menu,$parentslug = '',$child){
 	}	
 
     recurseUpgradeTreeCallout($menu[GSMENUFLATINDEX][$child['id']],$child['id']);
+
+    buildRefArray($menu); // update flat menu
 	
 	return $menu;
 }
