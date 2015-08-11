@@ -1065,13 +1065,13 @@ function menuItemAddChild($menu,$parentslug = '',$child){
         $parent['numchildren']++; // bump new parents number of children
 		$menu = menuItemReplace($menu,$parentslug,$parent); // replace item with updated item
 		$menu[GSMENUINDEXINDEX][$child['id']] = $menu[GSMENUINDEXINDEX][$parentslug] . '.' . $child['id'];
-	}
-	else{
+    }
+    else{
         $menu = menuItemReplace($menu,$child['id'],$child); // replace item with updated item
         // adding item to root
-		$menu[GSMENUNESTINDEX][$child['id']] = $child;
-		$menu[GSMENUINDEXINDEX][$child['id']] = '.'.$child['id'];
-	}	
+        $menu[GSMENUNESTINDEX][$child['id']] = $child;
+        $menu[GSMENUINDEXINDEX][$child['id']] = '.'.$child['id'];
+    }
 
     recurseUpgradeTreeCallout($menu[GSMENUFLATINDEX][$child['id']],$child['id']);
 
@@ -1226,8 +1226,8 @@ function updatePagesMenuItem($slug,$page,$newslug){
 }
 
 function updatePagesMenu(){
-	// return;
-	$menu   = updateMenuSync(getMenuDataArray(),getPages());
+	return;
+    $menu   = updateMenuSync(getMenuDataArray(),getPages());
 	$status = menuSave(GSMENUPAGESMENUID,$menu);
 	return $status;
 }
@@ -1307,12 +1307,17 @@ function buildRefArray(&$menu){
         $index = trim($index,'.');
         $index = str_replace('.','.children.',$index);
         // _debugLog($key,$index);
-        $ref = &resolve_tree($menu[GSMENUNESTINDEX],explode('.',$index));
+        $path = explode('.',$index);
+        // if the root item no longer exists skip so we do not recreate it via resolvetree
+        if(!isset($menu[GSMENUNESTINDEX][$path[0]]) || $menu[GSMENUNESTINDEX][$path[0]] === null){
+            continue;
+        }
+        $ref = &resolve_tree($menu[GSMENUNESTINDEX],$path);
+        // debugLog($key . ' ' . gettype($ref) . ' ' . count($ref) . ' ' . $index . ' ' . $ref['id']);
         // _debugLog($index,$ref);
-        if(isset($ref)) $menu[GSMENUFLATINDEX][$key] = &$ref;
+        if((count($ref) > 0) && isset($ref) && $ref !== null) $menu[GSMENUFLATINDEX][$key] = &$ref;
+        unset($index);
     }
-    // GLOBAL $pagesArray;
-    // $menu['pagesarray'] = &$pagesArray;
     return $menu;
 }
 
@@ -1321,6 +1326,7 @@ function buildRefArray(&$menu){
  * 
  * $tree = array('path'=>array('to'=> array('branch'=>item)))
  * $path = array('path','to','branch')
+ * @todo  fix this so that is does not return null refs when given a path that does not exist in tree
  * @since 3.4
  * @param  array &$tree array reference to tree
  * @param  array $path  array of path to desired branch/leaf
@@ -1329,8 +1335,9 @@ function buildRefArray(&$menu){
 function &resolve_tree(&$tree, $path) {
     if(empty($path)) return $tree;
     return resolve_tree($tree[$path[0]], array_slice($path, 1));
-    // @todo why does this not work the same? must be some odd reference passing issue
+    // @todo curious as to why does this not work the same as above, must be some odd reference passing issue
     // return empty($path) ? $tree : resolve_tree($tree[$path[0]], array_slice($path, 1));
+    return $tree;
 }
 
 function getMenuItem($menu,$id = ''){
