@@ -831,6 +831,12 @@ function menuSave($menuid,$data){
     return $status;
 }
 
+function menuReadFile($menuid){
+    $menufileext = '.json';
+    $menu = read_file(GSDATAOTHERPATH.'menu_'.$menuid.$menufileext);
+    return $menu;
+}
+
 /**
  * read menu file
  * rebuild flat reference array
@@ -840,9 +846,9 @@ function menuSave($menuid,$data){
  * @return array menudata
  */
 function menuRead($menuid){
-    $menufileext = '.json';
-    $menu = read_file(GSDATAOTHERPATH.'menu_'.$menuid.$menufileext);
-    
+
+	$menu = menuReadFile($menuid);
+
     if(!$menu){
         debugLog('menuRead: failed to load menu - ' . $menuid);
         return;
@@ -1021,6 +1027,7 @@ function menuItemMove($menu,$slug,$parentslug = ''){
 	$item   = getMenuItem($menu,$slug);
     if(!$item) return $menu;
 
+    $oldparent = $item['parent'];
 	$item['parent'] = $parentslug;
 	$item['depth']  = 0;
 	
@@ -1028,6 +1035,16 @@ function menuItemMove($menu,$slug,$parentslug = ''){
     $menu = menuItemAddChild($menu,$parentslug,$item);
     $menu = menuItemUpdateChildren($menu,getMenuItem($menu,$parentslug));
     return $menu;
+}
+
+function &menuGetItem($menu){
+	return getRefArray();
+}
+
+function arrayItemExists($array,$slug,$parentslug = ''){
+	return !array_key_exists($parentslug,$array) || !isset($array[$parentslug]['children'][$slug]['id']);
+	// if(array_key_exists($parentslug,$array)) return 'set ' . get_type($array[$parentslug]['children'][$slug]);
+	// else return "not set";
 }
 
 /**
@@ -1056,8 +1073,12 @@ function menuItemUpdateChildren($menu,$item){
  * @return array             menu array
  */
 function menuItemAddChild($menu,$parentslug = '',$child){
-    debugLog(__FUNCTION__ . ' ' . $parentslug . ' | ' . $child['id']);    
+    debugLog(__FUNCTION__ . ' ' . $parentslug . ' | ' . $child['id']); 
+    debugLog(array_keys($menu[GSMENUNESTINDEX]['parent-1b']['children']['child-1c']['children']));
+
 	if(!empty($parentslug)){
+        debugLog(array_keys($menu[GSMENUNESTINDEX]['parent-1b']['children']['child-1c']['children']));
+
         // adding item to parent
 		$parent = getMenuItem($menu,$parentslug); // get parent item
 		$child['depth'] = $parent['depth'] + 1;   // bump depth
@@ -1072,9 +1093,10 @@ function menuItemAddChild($menu,$parentslug = '',$child){
         $menu[GSMENUNESTINDEX][$child['id']] = $child;
         $menu[GSMENUINDEXINDEX][$child['id']] = '.'.$child['id'];
     }
-
+    
     recurseUpgradeTreeCallout($menu[GSMENUFLATINDEX][$child['id']],$child['id']);
 
+	// debugLog($menu[GSMENUINDEXINDEX]);
     buildRefArray($menu); // update flat menu
 	
 	return $menu;
@@ -1089,7 +1111,10 @@ function menuItemAddChild($menu,$parentslug = '',$child){
  */
 function menuItemReplace($menu,$slug,$item){
     debugLog(__FUNCTION__ . ' ' . $slug . ' = ' . $item['id']);    
-	$menu[GSMENUFLATINDEX][$slug] = $item;
+	// $menu[GSMENUFLATINDEX][$slug] = $item;
+	$menuitem = getRefArray($menu,$slug);
+	$menuitem = $item;
+
 	// debugLog($menu[GSMENUFLATINDEX][$slug]);
 	return $menu;
 }
@@ -1116,9 +1141,22 @@ function deleteMenuItemData($menu,$slug){
 
 	// remove nest via keys to avoid ref problems
 	if(!empty($parent)){
-		$menu[GSMENUNESTINDEX][$parent]['children'][$slug] = null;
-		unset($menu[GSMENUNESTINDEX][$parent]['children'][$slug]);
+		debugLog(__FUNCTION__ .' delete from parent - ' . $parent);
+		// child item
+		// reduce number of children
+		debugLog($menu[GSMENUFLATINDEX][$parent]['numchildren']);
+		$menu[GSMENUFLATINDEX][$parent]['numchildren']--;
+		debugLog($menu[GSMENUFLATINDEX][$parent]['numchildren']);
+		// remove children array if no children left
+		if($menu[GSMENUFLATINDEX][$parent]['numchildren'] < 1) unset($menu[GSMENUFLATINDEX][$parent]['children']);
+		else {
+			// remove child, not working now
+			// @todo was using GSMENUNEST single parent support, needs to work with all levels
+			$menu[GSMENUFLATINDEX][$parent]['children'][$slug] = null;
+			unset($menu[GSMENUFLATINDEX][$parent]['children'][$slug]);
+		}
 	} else {
+		// root item
 		debugLog('unsetting - root index - ' . $slug);
 		$menu[GSMENUNESTINDEX][$slug] = null;
 		unset($menu[GSMENUNESTINDEX][$slug]);
@@ -1143,7 +1181,7 @@ function deleteMenuItem($menu,$slug){
 			$menu[GSMENUNESTINDEX][$item['id']] = $item;
 			$menu[GSMENUFLATINDEX][$item['id']] = &$menu[GSMENUNESTINDEX][$item['id']];
 			// @todo could handle custom parents if in page here, if check page parent and pass it on
-			$menu = updateMenuItem($menu,$item['id'],null,true);
+			$menu = updateMenuItem($menu,$item['id'],null);
 			unset($item);
 		}
 	}
@@ -1163,7 +1201,7 @@ function insertMenuItem($menu,$slug){
 	// add new index
 	$menu[GSMENUINDEXINDEX][$slug] = '.'.$slug;
 
-	$menu = updateMenuItem($menu,$slug,getPage($slug),true);
+	$menu = updateMenuItem($menu,$slug,getPage($slug));
 	return $menu;
 }
 
@@ -1218,7 +1256,7 @@ function insertPagesMenuItem($slug){
 	return $status;
 }
 
-function updatePagesMenuItem($slug,$page,$newslug){
+function updatePagesMenuItem($slug,$page,$newslug = null){
 	$menu   = updateMenuItem(getMenuDataArray(),$slug,$page,$newslug);
 	debugLog($menu);
 	$status = menuSave(GSMENUPAGESMENUID,$menu);
@@ -1303,6 +1341,7 @@ function getMenuData($page = '', $parent = false, $menuid = GSMENUPAGESMENUID){
  * @return array         nested tree with flat reference array added
  */
 function buildRefArray(&$menu){
+	// debugLog(array_keys($menu[GSMENUFLATINDEX]));
     foreach($menu[GSMENUINDEXINDEX] as $key=>$index){
         $index = trim($index,'.');
         $index = str_replace('.','.children.',$index);
@@ -1310,12 +1349,13 @@ function buildRefArray(&$menu){
         $path = explode('.',$index);
         // if the root item no longer exists skip so we do not recreate it via resolvetree
         if(!isset($menu[GSMENUNESTINDEX][$path[0]]) || $menu[GSMENUNESTINDEX][$path[0]] === null){
+            // @todo does not work on nested move to root, might not be needed now
             continue;
         }
         $ref = &resolve_tree($menu[GSMENUNESTINDEX],$path);
         // debugLog($key . ' ' . gettype($ref) . ' ' . count($ref) . ' ' . $index . ' ' . $ref['id']);
         // _debugLog($index,$ref);
-        if((count($ref) > 0) && isset($ref) && $ref !== null) $menu[GSMENUFLATINDEX][$key] = &$ref;
+        if(isset($ref) && (count($ref) > 0) && $ref !== null) $menu[GSMENUFLATINDEX][$key] = &$ref;
         unset($index);
     }
     return $menu;
@@ -1327,14 +1367,18 @@ function buildRefArray(&$menu){
  * $tree = array('path'=>array('to'=> array('branch'=>item)))
  * $path = array('path','to','branch')
  * @todo  fix this so that is does not return null refs when given a path that does not exist in tree
+ * function returns references, $tree param was reference, creating cyclical refs, duh
  * @since 3.4
- * @param  array &$tree array reference to tree
+ * @param  array $tree array reference to tree
  * @param  array $path  array of path to desired branch/leaf
  * @return array        subarray from tree matching path
  */
-function &resolve_tree(&$tree, $path) {
+function &resolve_tree($tree, $path) {
     if(empty($path)) return $tree;
-    return resolve_tree($tree[$path[0]], array_slice($path, 1));
+    // debugLog($tree[$path[0]]);
+    if(!empty($tree) && isset($tree)){
+    	return resolve_tree($tree[$path[0]], array_slice($path, 1));
+    }
     // @todo curious as to why does this not work the same as above, must be some odd reference passing issue
     // return empty($path) ? $tree : resolve_tree($tree[$path[0]], array_slice($path, 1));
     return $tree;
@@ -1344,13 +1388,22 @@ function getMenuItem($menu,$id = ''){
     if(isset($menu[GSMENUFLATINDEX]) && isset($menu[GSMENUFLATINDEX][$id])) return $menu[GSMENUFLATINDEX][$id];
 }
 
+function &getMenuItemRef($menu,$id = '',$useflat = true){
+	if(!isset($menu[GSMENUINDEXINDEX][$id])) return;
+	$path = $menu[GSMENUINDEXINDEX][$id];
+	$ref = &resolve_tree($menu[GSMENUNESTINDEX],$path);
+	if(isset($ref) && (count($ref) > 0) && $ref !== null) return $ref;
+}
+
 function getMenuItemParent($menu,$slug = ''){
 	$item = getMenuItem($menu,$slug);
 	if(!$item) return;
 
 	if(!empty($item['parent'])){
-    	return $menu[GSMENUFLATINDEX][$item['parent']];
+    	$ref = getMenuItemRef($menu,$item['parent']);
+    	return $ref['children'];
     }
+    else return $menu;
 }
 
 /**
@@ -1524,7 +1577,7 @@ function &getRefArray(&$menu,$id){
     $index = $menu[GSMENUINDEXINDEX][$id];
     $index = trim($index,'.');
     $index = str_replace('.','.children.',$index);
-    $ref = &resolve_tree($menu[GSMENUNESTINDEX],explode('.',$index));
+    $ref = resolve_tree($menu[GSMENUNESTINDEX],explode('.',$index));
     return $ref;
 }
 
