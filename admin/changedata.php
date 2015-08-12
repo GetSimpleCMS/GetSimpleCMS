@@ -100,15 +100,11 @@ if (isset($_POST['submitted'])) {
 			exec_action('changedata-updateslug'); // @hook changedata-updateslug a page slug was changed
 			changeChildParents($oldslug,$url); // update childrens parent slugs to the new slug
 			delete_page($oldslug); // backup and delete the page
-			// $newpage = pageXMLtoArray($xml);
-			// updatePagesMenuItem($oldslug,$newpage,$url); // update pages menu
 		}
 		exec_action('changedata-save'); // @hook changedata-save prior to saving a page
 		$xml    = exec_filter('pagesavexml',$xml); // @filter pagesavexml (obj) xml object of a page save
 		$status = savePageXml($xml);
 		exec_action('changedata-aftersave'); // @hook changedata-aftersave after a page was saved
-		if($slugHasChanged) updatePagesMenuItem($oldslug,getPage($url),$url); // update pages menu
-		else updatePagesMenuItem($url,getPage($url)); // update pages menu
 		// genen sitemap if published save
 		generate_sitemap();
 	}
