@@ -272,7 +272,7 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $fl
   }
   
   $count=0;
-  $xml = @new SimpleXMLExtended('<channel></channel>');
+  $xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');  
   if (count($filenames) != 0) {
     foreach ($filenames as $file) {
       if ($file == "." || $file == ".." || is_dir(GSDATAPAGESPATH.$file) || $file == ".htaccess"  ) {
@@ -320,7 +320,7 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $fl
 
     // sanity check in case the filter does not come back properly or returns null
     if($xml){ 
-    	$success = $xml->asXML($filem);
+    	$success = XMLsave($xml,$filem);
   	}	
   	// debugLog("create_pagesxml saved: ". $success);
   	exec_action('pagecache-aftersave');
