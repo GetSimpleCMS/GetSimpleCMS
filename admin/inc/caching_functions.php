@@ -91,6 +91,7 @@ function echoPageField($page,$field){
 function returnPageContent($page, $field='content', $raw = false, $nofilter = false){   
 	$thisfile = file_get_contents(GSDATAPAGESPATH.$page.'.xml');
 	$data = simplexml_load_string($thisfile);
+	if(!$data) return;
 	$content = $data->$field;
 	if(!$raw) $content = stripslashes(htmlspecialchars_decode($content, ENT_QUOTES));
 	if ($field=='content' and !$nofilter){
@@ -117,7 +118,7 @@ function returnPageField($page,$field){
 	if ($field=="content"){
 	  $ret=returnPageContent($page); 
 	} else {
-		if (array_key_exists($field, $pagesArray[(string)$page])){
+		if (isset($pagesArray[(string)$page]) && array_key_exists($field, $pagesArray[(string)$page])){
 	  		$ret=strip_decode(@$pagesArray[(string)$page][(string)$field]);
 		} else {
 			$ret = returnPageContent($page,$field);
