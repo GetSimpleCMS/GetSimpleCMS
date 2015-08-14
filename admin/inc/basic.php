@@ -672,6 +672,35 @@ function XMLsave($xml, $file) {
 	$data = @$xml->asXML();
 	return save_file($file,$data);
 }
+
+/**
+ * JSON Save
+ *
+ * @since 3.4
+ *
+ * @param mixed $data  json string, array , or object
+ * @param string $file Filename that it will be saved as
+ * @return bool
+ */
+function JSONsave($data, $file) {
+
+	if(!defined('GSFORMATJSON')) define('GSFORMATJSON',true); // debug
+	if(getDef('GSFORMATJSON',true)) $data = formatJsonString($data); // format xml if config setting says so
+	else if(!is_string($data)){
+		$data = json_encode($data);
+	}
+	$data = exec_filter('jsonsave',$data); // @filter xmlsave executed before writing string to file
+	// $success = file_put_contents($file, $data); // 3.3.x
+	$success = save_file($file,$data); // 3.4.x
+	
+	// debugLog('JSONsave: ' . $file . ' ' . get_execution_time());	
+	
+	if (defined('GSCHMOD')) {
+		return $success && chmod($file, GSCHMOD);
+	} else {
+		return $success && chmod($file, 0755);
+	}
+}
 	
 /**
  * create a director or path
@@ -1793,6 +1822,18 @@ function formatXmlString($xml) {
 	endwhile; 
 	
 	return $result;
+}
+
+/**
+ * format a json string
+ * @since  3.4
+ * @param  str $data json string, if not a json string will attempt to converted to one
+ * @return str       formatted json string
+ */
+function formatJsonString($data){
+	if(is_string($data)) $data = json_decode($data,true);
+	include_once(GSADMININCPATH.'nicejson.php');
+	return _json_encode($data,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 }
 
 /**

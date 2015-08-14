@@ -827,7 +827,7 @@ function menuSave($menuid,$data){
     	$data[GSMENUFLATINDEX] = null;
     	unset($data[GSMENUFLATINDEX]);
     }
-    $status = save_file(GSDATAOTHERPATH.'menu_'.$menuid.$menufileext,json_encode($data));
+    $status = JSONsave($data,GSDATAOTHERPATH.'menu_'.$menuid.$menufileext);
     return $status;
 }
 
