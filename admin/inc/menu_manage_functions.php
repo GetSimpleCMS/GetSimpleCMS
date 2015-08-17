@@ -58,3 +58,12 @@ function menuItemParentChanged($menu,$slug){
 	return $menu;
 }
 
+function menuIndexPrune($menu,$index){
+	// detect menu removals and prune them
+	$removed = array_diff(array_keys($menu[GSMENUFLATINDEX]), array_keys($index));
+	debugLog($removed);
+	foreach($removed as $key){
+		$menu = menuItemDelete($menu,$key);
+	}
+	return $menu
+}

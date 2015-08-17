@@ -198,8 +198,10 @@ function buildTreewHash($elements, $parentId = '', $preserve = false, $assoc = t
  * @return array             new array with added data
  */
 function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$indexAry = array()){
-    // debugLog(__FUNCTION__ . ' ' . count($array));
     
+    $thisfunc = __FUNCTION__;
+    // debugLog($thisfunc . ' ' . count($array));
+
     // use temporary index to store currentpath
     if(!isset($indexAry['currpath'])) $indexAry['currpath'] = array();
     
@@ -234,24 +236,28 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
             $order++;
             $index++;            
 
-			$value['parent']    = isset($parent) ? $parent : '';
-			$value['depth']     = $depth;
-			$value['index']     = $index;
-			$value['order']     = $order;
+            $flatvalue = array();
+            $flatvalue['id']        = $id; 
+			$flatvalue['parent']    = isset($parent) ? $parent : '';
+			$flatvalue['depth']     = $depth;
+			$flatvalue['index']     = $index;
+			$flatvalue['order']     = $order;
+            $flatvalue['dotpath']   = implode('.',$indexAry['currpath']).'.'.$id;
+            $value['dotpath']   = implode('.',$indexAry['currpath']).'.'.$id;
 
-            recurseUpgradeTreeCallout($value,$id,$parent); // pass $value by ref for modification
-
-            // add to flat array
-            // flat cannot be saved to json because of references soooo we also create an index array
-            $indexAry[GSMENUFLATINDEX][$id] = &$value; 
-            // create an indices to paths map, so we can rebuild flat array references on json load, if serializing this is not needed
-            $indexAry[GSMENUINDEXINDEX][$id] = implode('.',$indexAry['currpath']).'.'.$id;
+            recurseUpgradeTreeCallout($flatvalue,$id,$parent); // pass $value by ref for modification
 
             if(isset($value['children'])){
-                $value['numchildren'] = count($value['children']);
+                $flatvalue['numchildren'] = count($value['children']);
                 $children = &$value['children'];
-                recurseUpgradeTree($children,$id,$depth,null,$indexAry); // @todo replace with __FUNCTION__
-            } else $value['numchildren'] = 0;
+                $thisfunc($children,$id,$depth,null,$indexAry); // @todo replace with __FUNCTION__
+            } else $flatvalue['numchildren'] = 0;
+
+            // add index array
+            $indexAry[GSMENUINDEXINDEX][$id] = $flatvalue['dotpath'];
+            // add to flat array
+            $indexAry[GSMENUFLATINDEX][$id] = $flatvalue;
+            if(isset($value['children'])) $indexAry[GSMENUFLATINDEX][$id]['children'] = array_keys($value['children']);
         }
 
     }
@@ -660,7 +666,13 @@ function mmCalloutOuter($page = null,$open = true){
  * @param  boolean $open is this nest open or closing
  * @return str     string to return to recursive callee
  */
-function mmCallout($item, $outer = false, $open = true){
+function mmCallout($item, $outer = false, $open = true,$level = '',$index = '' ,$order = '',$args = array()){
+
+    // @note
+    // hacking flat array conversion in, using args to pass menudata down, since recurse does not pass entire menu down to callouts.
+    // The recursive tree will have to have the entire menu passed in, or the tree has to be ref linked to flat
+    // either one means passing around the entire menu to recursion, or walking the entire tree to build the refs
+    if(isset($args[0])) $item = getMenuItem($args[0],$item['id']);
 
     if($outer) return $open ? '<ol id="" class="dd-list">' : "</ol>";
 
@@ -824,8 +836,8 @@ function menuSave($menuid,$data){
 
     $menufileext = '.json';
     if(isset($data[GSMENUFLATINDEX])){
-    	$data[GSMENUFLATINDEX] = null;
-    	unset($data[GSMENUFLATINDEX]);
+    	// $data[GSMENUFLATINDEX] = null;
+    	// unset($data[GSMENUFLATINDEX]);
     }
     $status = JSONsave($data,GSDATAOTHERPATH.'menu_'.$menuid.$menufileext);
     return $status;
@@ -855,8 +867,8 @@ function menuRead($menuid){
     }
 
     $menu = json_decode($menu,true);
-    if($menu[GSMENUNESTINDEX]) buildRefArray($menu); // rebuild flat array refs from index map
-    else debugLog('menuread: menu is empty - ' .$menuid);
+    // if($menu[GSMENUNESTINDEX]) buildRefArray($menu); // rebuild flat array refs from index map
+    // else debugLog('menuread: menu is empty - ' .$menuid);
     return $menu;
 }
 
@@ -897,6 +909,21 @@ function getMenuDataNested($menuid = GSMENUPAGESMENUID){
     if(!isset($menu)) return;
     // if(!isset($menu[GSMENUNESTINDEX])) buildRefArray(); should not be necessary
     if(isset($menu[GSMENUNESTINDEX])) return $menu[GSMENUNESTINDEX];
+}
+
+/**
+ * get menu data flat
+ * 
+ * @since 3.4
+ * @param  string $page   slug of page
+ * @param  string $menuid menu id to fetch
+ * @return array  menu sub array of page
+ */
+function getMenuDataFlat($menuid = GSMENUPAGESMENUID){
+    $menu = getMenuDataArray($menuid);
+    if(!isset($menu)) return;
+    // if(!isset($menu[GSMENUNESTINDEX])) buildRefArray(); should not be necessary
+    if(isset($menu[GSMENUFLATINDEX])) return $menu[GSMENUFLATINDEX];
 }
 
 /**
