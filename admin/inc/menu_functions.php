@@ -74,19 +74,19 @@ function importLegacyMenuTree(){
  */
 function importMenuFromPages($pages = null, $flatten = false){
     
-    // if importing from 3.3.x do not generate tree, generate flat menu instead for legacy menuordering by menuOrder
+    // flatten if importing from 3.3.x, doed not generate tree, generates flat menu instead for legacy menuordering by menuOrder
     if($flatten) $parents = array(''=>$pages);
     else $parents = getParentsHashTable($pages, true , true); // get parent hash table of pages, useref, fixoprphans
 
-    $tree    = buildTreewHash($parents,'',false,true,'url'); // get a nested array from hashtable, from root, norefs, assoc array
+    $tree    = buildTreewHash($parents,'',false,true,'url'); // get a nested array from hashtable, from root, no preserve, assoc array, use url key
     // debugLog($tree);
-    $flatary = recurseUpgradeTree($tree); // recurse the tree and add stuff to $tree, return flat reference array
+    $flatary = recurseUpgradeTree($tree); // recurse the tree and add stuff to $tree, returns flat array
     // debugLog($tree);
     // debugLog($flatary);
 
     $nesttree[GSMENUNESTINDEX]  = &$tree; //add tree array to menu
     $nesttree[GSMENUFLATINDEX]  = &$flatary[GSMENUFLATINDEX]; // add flat array to menu
-    $nesttree[GSMENUINDEXINDEX] = $flatary[GSMENUINDEXINDEX]; // add index array to menu
+    // $nesttree[GSMENUINDEXINDEX] = $flatary[GSMENUINDEXINDEX]; // add index array to menu
     // debugLog($nesttree);
     
     return $nesttree;
@@ -225,7 +225,10 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
             // rekey array if not using id keys, needed for non assoc arrays, such as mm submit etc
             // this is not preffered but provided as a failsafe, reindex beforehand reindexMenuArray() to avoid modify ref in loop errors
             // skip rekeyed copies, we need a flag since array is reference, or else it will process the rekeyed elements twice
-            if(isset($value['rekeyed'])) continue;
+            if(isset($value['rekeyed'])){
+            	unset($value['rekeyed']);
+            	continue;
+            }	
             if($key !== $id){
                 $array[$id] = $value; // this modifies &$array and may cause problems
 				$array[$id]['rekeyed'] = true;
@@ -237,29 +240,28 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
             $index++;            
 
             $flatvalue = array();
-            $flatvalue['id']        = $id; 
-			$flatvalue['parent']    = isset($parent) ? $parent : '';
-			$flatvalue['depth']     = $depth;
-			$flatvalue['index']     = $index;
-			$flatvalue['order']     = $order;
-            $flatvalue['dotpath']   = implode('.',$indexAry['currpath']).'.'.$id;
-            $value['dotpath']   = implode('.',$indexAry['currpath']).'.'.$id;
+            $flatvalue['id']                = $id; 
+			$flatvalue['data']['parent']    = isset($parent) ? $parent : '';
+			$flatvalue['data']['depth']     = $depth;
+			$flatvalue['data']['index']     = $index;
+			$flatvalue['data']['order']     = $order;
+            $flatvalue['data']['dotpath']   = implode('.',$indexAry['currpath']).'.'.$id;
 
             recurseUpgradeTreeCallout($flatvalue,$id,$parent); // pass $value by ref for modification
 
             if(isset($value['children'])){
-                $flatvalue['numchildren'] = count($value['children']);
+                $flatvalue['data']['numchildren'] = count($value['children']);
                 $children = &$value['children'];
-                $thisfunc($children,$id,$depth,null,$indexAry); // @todo replace with __FUNCTION__
-            } else $flatvalue['numchildren'] = 0;
+                $thisfunc($children,$id,$depth,null,$indexAry); // recursive call
+            } else $flatvalue['data']['numchildren'] = 0;
 
             // add index array
-            $indexAry[GSMENUINDEXINDEX][$id] = $flatvalue['dotpath'];
+            // $indexAry[GSMENUINDEXINDEX][$id] = $flatvalue['data']['dotpath'];
             // add to flat array
             $indexAry[GSMENUFLATINDEX][$id] = $flatvalue;
             if(isset($value['children'])) $indexAry[GSMENUFLATINDEX][$id]['children'] = array_keys($value['children']);
+            $value['data'] = &$flatvalue['data'];
         }
-
     }
 
     array_pop($indexAry['currpath']); // remove last path, closing out level
@@ -276,12 +278,11 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
  * @return array          unused copy of array
  */
 function recurseUpgradeTreeCallout(&$value,$id = '',$parent = ''){
-    $value['url']   = generate_url($id);
-    $value['path']  = generate_permalink($id,'%path%/%slug%');
+    $value['data']['url']   = generate_url($id);
+    $value['data']['path']  = generate_permalink($id,'%path%/%slug%');
     // debugLog($value);
     return $value; // non ref
 }
-
 
 /**
  * OUTPUT BUILDER FUNCTIONS
@@ -683,7 +684,7 @@ function mmCallout($item, $outer = false, $open = true,$level = '',$index = '' ,
     $menuTitle = getPageMenuTitle($page['url']);
     // $pageTitle = '<strong>'.$page['title'].'.'.$level.'.'.$order.'</strong>';
     // $pageTitle = $pageTitle.'.'.$page['menuOrder'] .'.'.$page['menuStatus'];
-    $pageTitle = $item['id'].'.'.$item['index'] .'.'.$page['menuStatus'];
+    $pageTitle = $item['id'].'.'.$item['data']['index'] .'.'.$page['menuStatus'];
     // _debugLog($page['url'],$page['menuStatus']);
     if(empty($menuTitle)) $menuTitle = $item['id'];
     $pageTitle = truncate($pageTitle,30);
@@ -1038,9 +1039,15 @@ function exportMenuToPages($menu){
             continue;
         }
         // debugLog($menu[GSMENUFLATINDEX][$id]);
-        $parent = $menu[GSMENUFLATINDEX][$id]['parent'];
-        $order  = $menu[GSMENUFLATINDEX][$id]['index'];
-        saveMenuDataToPage($id,$parent,$order);
+        $parent = $menu[GSMENUFLATINDEX][$id]['data']['parent'];
+        
+        // @todo: setting order will cause excessive updating of all files after an edited one
+        // nor is order actually needed with multidimensional menus anymore
+        // if this causes issues, it could be added back in for legacy purposes only
+        
+        // $order  = $menu[GSMENUFLATINDEX][$id]['data']['order'];
+        // saveMenuDataToPage($id,$parent,$order);
+        saveMenuDataToPage($id,$parent);
     }
 
     // regen page cache
@@ -1057,9 +1064,11 @@ function exportMenuToPages($menu){
  * @return  bool success
  */
 function saveMenuDataToPage($pageid,$parent = '',$order =''){
-    // do not save page if nothing changed
+    
+    // skip updates if nothing changed
     if((string)returnPageField($pageid,'parent') == $parent && (int)returnPageField($pageid,'menuOrder') == $order) return;
 
+    // set new parent and order
     $file = GSDATAPAGESPATH . $pageid . '.xml';
     if (file_exists($file)) {
         $data = getPageXML($pageid);
