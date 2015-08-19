@@ -136,7 +136,7 @@ function buildTreewHash($elements, $parentId = '', $preserve = false, $assoc = t
                 if($preserve){
                     $element[$childrenKey] = $children;
                     $branch[$branchKey] = $element;
-                }   
+                }
                 else $branch[$branchKey] = array($id => $elementKey, $childrenKey => $children);
             }
         } 
@@ -162,7 +162,7 @@ function buildTreewHash($elements, $parentId = '', $preserve = false, $assoc = t
  * 
  * reindexes as assoc array using 'id'
  * 
- * children subarray has same structure as roots
+ * nested children subarray has same structure as roots, flat only contains slugs
  *
  * input array (&REF)
  *
@@ -172,29 +172,34 @@ function buildTreewHash($elements, $parentId = '', $preserve = false, $assoc = t
  *  );
  * 
  * output array (&REF)
- * 
- * ['index'] = array(
- *  'id' => 'index',
- *  'data' =>  array(
- *    'url' => '/dev/getsimple/master/',
- *    'path' => 'index',
- *    'depth' => 1,
- *    'index' => 9,
- *    'order' => 7
+ * ['nest']
+ *  ['index'] = array(
+ *    'id' => 'index',
+ *    'data' =>  &$flat['index']['data'],
+ *    'children' => array(slug,slug)
+ * 	)
+ * )
+ *
+ * ['flat']
+ *  ['index']  
+ *    'data' => array(
+ *        'url' => '/dev/getsimple/master/',
+ *        'path' => 'index',
+ *        'depth' => 1,
+ *        'index' => 9,
+ *        'order' => 7
+ *        'parent' => '',
+ *        'numchildren' => 1
+ *    )
  *  ),
- *  'parent' => '',
- *  'numchildren' => 1,
- *  'children' => array()
- * );
  *
  * returns a flat array containing flat references
- * and an indices array containing indexes and nested array paths
- * 
+ * @todo this will have to be modified to allow it to retain flat data that does not change
  * @param  array  &$array    reference to array, so values can be refs
  * @param  str     $parent   parent for recursion
  * @param  integer $depth    depth for recursion
  * @param  integer $index    index ofr recursion
- * @param  array   &$indexAry indexarray reference for recursion
+ * @param  array   &$indexAry indexarray result flat array
  * @return array             new array with added data
  */
 function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$indexAry = array()){
@@ -318,6 +323,7 @@ function recurseUpgradeTreeCallout(&$value,$id = '',$parent = ''){
  */
 function getTreeFromParentHashTable($parents,$key = '',$level = 0,$index = 0, $callout = 'treeCalloutInner', $filter = null){
     if(!$parents) return;
+    $thisfunc = __FUNCTION__;
 
     // init static $index primed from param
     if($index !== null){
@@ -342,7 +348,7 @@ function getTreeFromParentHashTable($parents,$key = '',$level = 0,$index = 0, $c
         $str .= callIfCallable($callout,$child,false,true,$level,$index,$order);
 
         if(isset($parents[$parent])) {
-            $str.= getTreeFromParentHashTable($parents,$parent,$level,null,$callout,$filter);
+            $str.= $thisfunc($parents,$parent,$level,null,$callout,$filter);
         }
         $level--;
         $str .= callIfCallable($callout,$child,false,false,$level,$index,$order);
@@ -581,8 +587,9 @@ function debugFilteredItem($item,$filtertype){
  */
 function getMenuTreeMin($parents,$callout = 'treeCallout',$filter = null){
     if(!$parents) return;
+    $thisfunc = __FUNCTION__;
     $str  = '';
-  
+
     // if a page subarray was directly passed, auto negotiate children
     if(isset($parents['id']) && isset($parents['children'])) $parents = $parents['children'];
 
@@ -596,7 +603,7 @@ function getMenuTreeMin($parents,$callout = 'treeCallout',$filter = null){
             // call outer open
             $str .= callIfCallable($callout,$child,true); # <ol>
             // recurse
-            $str .= getMenuTreeMin($child['children'],$callout,$filter);  # <li>...   
+            $str .= $thisfunc($child['children'],$callout,$filter);  # <li>...   
             // call outer close
             $str .= callIfCallable($callout,$child,true,false); # </ol>
         }
@@ -606,18 +613,6 @@ function getMenuTreeMin($parents,$callout = 'treeCallout',$filter = null){
     }
     
     return $str;
-}
-
-/**
- * generic tree outer callout function for recursive tree functions
- * outputs a basic list
- * @since  3.4
- * @param  array  $item item to feed this recursive iteration
- * @param  boolean $open is this nest open or closing
- * @return str     string to return to recursive callee
- */
-function treeCalloutOuter($item = null,$open = true){
-    // return $open ? "\n<ul>" : "\n</ul>";
 }
 
 /**
@@ -647,17 +642,6 @@ function treeCallout($item, $outer = false, $open = true, $level = '', $index = 
 
 function treeCalloutFilter(){
 	if(!getPage($item['id'])) return GSMENUFILTERCONTINUE;
-}
-
-/**
- * menu manager tree outer callout function
- * @since  3.4
- * @param  array  $item item to feed this recursive iteration
- * @param  boolean $open is this nest open or closing
- * @return str     string to return to recursive callee
- */
-function mmCalloutOuter($page = null,$open = true){
-    // return $open ? '<ol id="" class="dd-list">' : "</ol>";
 }
 
 /**
@@ -779,6 +763,7 @@ function getPageMenuTitle($slug){
  * @return array       array reindexed
  */
 function reindexMenuArray($menu, $force = false){
+	$thisfunc = __FUNCTION__;
 	foreach($menu as $key=>$item){
         if(!isset($item['id'])) continue;
 		$id = $item['id'];
@@ -786,10 +771,8 @@ function reindexMenuArray($menu, $force = false){
 			$menu[$id]  = $item;
 			$menu[$key] = null;
 			unset($menu[$key]);
-			if(isset($menu[$id]['children'])) $menu[$id]['children'] = reindexMenuArray($menu[$id]['children']);
 		}
-		// else if(isset($item['children'])) $item['children'] = reindexMenuArray($item['children']);
-		else if(isset($menu[$id]['children'])) $menu[$id]['children'] = reindexMenuArray($menu[$id]['children']);
+		if(isset($menu[$id]['children'])) $menu[$id]['children'] = $thisfunc($menu[$id]['children']);
 	}
 
 	return $menu;
@@ -941,11 +924,12 @@ function getMenuDataFlat($menuid = GSMENUPAGESMENUID){
 function getMenuData($page = '', $parent = false, $menuid = GSMENUPAGESMENUID){
     if(empty($page)) return getMenuDataNested($menuid);
     else $menudata = getMenuDataArray($menuid);
-
     if(!isset($menudata)) return;
-    // if(!isset($menudata[GSMENUFLATINDEX])) buildRefArray(); // should not be necessary
-    // debugLog($menudata);   
-    if(isset($menudata[GSMENUFLATINDEX][$page])) return $parent ? array($menudata[GSMENUFLATINDEX][$page]) : $menudata[GSMENUFLATINDEX][$page];
+    // debugLog($menudata);
+    if(isset($menudata[GSMENUFLATINDEX][$page])){
+    	$tree = resolve_tree($menudata[GSMENUNESTINDEX], $menudata[GSMENUFLATINDEX][$page]['data']['dotpath']);
+    	return $parent ? array($page => $tree) : $tree;
+    }
     debugLog(__FUNCTION__ .': slug not found in menu('.$menuid.') - ' . $page);
 }
 
@@ -989,12 +973,23 @@ function buildRefArray(&$menu){
  * @since 3.4
  * @param  array $tree array reference to tree
  * @param  array $path  array of path to desired branch/leaf
+ * @param  string $childkey subkey if children are in subarrays
  * @return array        subarray from tree matching path
  */
-function &resolve_tree($tree, $path) {
+function &resolve_tree($tree, $path, $childkey = 'children') {
+	$thisfunc = __FUNCTION__;
+	if(is_string($path)) $path = explode('.',trim($path,'.'));
     if(empty($path)) return $tree;
+
+    $empty = null;
     if(!empty($tree) && isset($tree)){
-    	return resolve_tree($tree[$path[0]], array_slice($path, 1));
+    	if(isset($childkey)){
+    		if(isset($tree[$path[0]][$childkey])){
+    			return $thisfunc($tree[$path[0]][$childkey], array_slice($path, 1));
+    		}
+    		else return $empty;
+    	}
+    	return $thisfunc($tree[$path[0]], array_slice($path, 1));
     }
     // @todo curious as to why does this not work the same as above, must be some odd reference passing issue
     // return empty($path) ? $tree : resolve_tree($tree[$path[0]], array_slice($path, 1));

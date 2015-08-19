@@ -127,16 +127,19 @@ function menuNestRebuild(&$menu,$slug = '',$data = false,$ref = false){
 }
 
 /**
- * build data references onto menu nest array, modifies $menu by reference
- * nest menu should already exist
+ * build data references onto menu nest array, 
+ * modifies $menu by reference
+ * nest menu should already exist, will not create it
  * @param  array &$menu    menu array by ref
  * @param  array &$parents menu nest sub array, optional
  */
 function menuNestAddDataRefs(&$menu,&$parents = null){
-	if(!$parents) $parents = &$menu[GSMENUNESTINDEX]; // primer
+	if(!$parents) $parents = &$menu[GSMENUNESTINDEX]; // primer for nest array
+	// detect if root or children node passed in, auto negotiate
     if(isset($parents['id']) && isset($parents['children'])) $parents = $parents['children'];
+    // recurse children
     foreach($parents as $key=>&$child){
-		$child['data'] = &$menu[GSMENUFLATINDEX][$child['id']]['data'];
+		$child['data'] = &$menu[GSMENUFLATINDEX][$child['id']]['data']; // add data flat refs
 		if(isset($child['children'])) menuNestAddDataRefs($menu,$child['children']);
 	}
 }
