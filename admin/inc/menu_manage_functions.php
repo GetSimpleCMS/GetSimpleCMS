@@ -69,6 +69,10 @@ function menuIndexPrune($menu,$index){
 }
 
 /**
+ * REBUILDERS
+ */
+
+/**
  * rebuild a menus nested array
  * wipes nest, rebuilds it and adds it back in
  * @param  array $menu menu array
@@ -86,7 +90,7 @@ function menuRebuildNestArray($menu){
 	unset($menu[GSMENUFLATINDEX]['']);
 	
 	// add new nest tree onto menu
-	unset($menu[GSMENUNESTINDEX]);
+	if(isset($menu[GSMENUNESTINDEX])) unset($menu[GSMENUNESTINDEX]);
 	$menu[GSMENUNESTINDEX] = $newtree['children'];
 
 	return $menu;
@@ -102,7 +106,8 @@ function menuRebuildNestArray($menu){
  * @param  boolean $ref   use references to flat menu for data
  * @return array          new nest array
  */
-function menuNestRebuild(&$menu,$slug = '',$data = false,$ref = false){
+function menuNestRebuild(&$menu,$slug = '',$data = false,$ref = true){
+	$thisfunc = __FUNCTION__;	
 	$tree = array();
 	$tree = $menu[$slug];
 	
@@ -120,7 +125,7 @@ function menuNestRebuild(&$menu,$slug = '',$data = false,$ref = false){
 	// recurse children
 	foreach($menu[$slug]['children'] as $child){
 		if(isset($menu[$child])){
-			$tree['children'][$child] = menuNestRebuild($menu,$child,$data,$ref);
+			$tree['children'][$child] = $thisfunc($menu,$child,$data,$ref);
 		}
 	}
 	return $tree;
@@ -134,13 +139,14 @@ function menuNestRebuild(&$menu,$slug = '',$data = false,$ref = false){
  * @param  array &$parents menu nest sub array, optional
  */
 function menuNestAddDataRefs(&$menu,&$parents = null){
+	$thisfunc = __FUNCTION__;
 	if(!$parents) $parents = &$menu[GSMENUNESTINDEX]; // primer for nest array
 	// detect if root or children node passed in, auto negotiate
     if(isset($parents['id']) && isset($parents['children'])) $parents = $parents['children'];
     // recurse children
     foreach($parents as $key=>&$child){
 		$child['data'] = &$menu[GSMENUFLATINDEX][$child['id']]['data']; // add data flat refs
-		if(isset($child['children'])) menuNestAddDataRefs($menu,$child['children']);
+		if(isset($child['children'])) $thisfunc($menu,$child['children']);
 	}
 }
 

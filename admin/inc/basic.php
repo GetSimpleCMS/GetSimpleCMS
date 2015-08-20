@@ -446,6 +446,10 @@ function getXML($file,$nocdata = true) {
 	}	
 }
 
+function getPageFilename($id, $draft = false){
+	return ($draft ? GSDATAPAGESPATH : GSDATADRAFTSPATH) . $id .'.xml';
+}
+
 /**
  * get page xml shortcut
  *
@@ -454,7 +458,7 @@ function getXML($file,$nocdata = true) {
  * @return xml     xml object
  */
 function getPageXML($id,$nocdata = true){
-	return getXML(GSDATAPAGESPATH.$id.'.xml',$nocdata);
+	return getXML(getPageFilename($id),$nocdata);
 }
 
 /**
@@ -465,7 +469,7 @@ function getPageXML($id,$nocdata = true){
  * @return xml     xml object
  */
 function getDraftXML($id,$nocdata = true){
-	return getXML(GSDATADRAFTSPATH.$id.'.xml',$nocdata);
+	return getXML(getPageFilename($id,true),$nocdata);
 }
 
 /**

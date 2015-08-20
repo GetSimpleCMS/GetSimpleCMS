@@ -18,7 +18,7 @@ exec_action('load-menu-manager');
 
 // check menuid else default
 if (isset($_GET['menuid'])) $menuid = _id($_GET['menuid']);
-else $menuid = GSMENUPAGESMENUID;
+else $menuid = GSMENUIDCORE;
 
 # save menu
 if (isset($_POST['menuOrder'])) {

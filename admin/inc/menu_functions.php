@@ -6,19 +6,32 @@
  * @subpackage menus_functions.php
  */
 
-define('GSMENUNESTINDEX','nested');
-define('GSMENUFLATINDEX','flat');
-define('GSMENUINDEXINDEX','indices');
 
+// define('GSMENULEGACY',true); // use legacy menus, single level flat menu
+
+// menu ids
+define('GSMENUIDCORE','corepages'); // default id for the core page menu cache
+define('GSMENUIDCOREMENU','corepages_menu'); // default id for the page menu cache
+define('GSMENUIDLEGACY','legacy'); // default id for the page menu cache
+
+// menu array key indexs
+define('GSMENUNESTINDEX','nested'); // menu array key for nested tree subarray
+define('GSMENUFLATINDEX','flat'); // menu array key for flat parent hash tree subarray
+define('GSMENUINDEXINDEX','indices'); // menu array key for indices tree subarray
+
+// menu filter result enums
 define('GSMENUFILTERSKIP',1);     // skip all children
 define('GSMENUFILTERCONTINUE',2); // skip parent, continue with children inheriting closest parent
 define('GSMENUFILTERSHIFT',3);    // skip parent, shift all children to root
 
-define('GSMENUPAGESMENUID','corepages'); // default id for the page menu cache
+// callouts
+define('GSMENUTREECALLOUT','menuCallout'); // menu tree callout
+define('GSMENUFILTERCALLOUT','menuFilterCallout'); // menu filter callout
+define('GSMENUMGRCALLOUT','mmCallout'); // menu manager tree callout
+define('GSMENUMGRFILTERCALLOUT','mmFilterCallout'); // menu manager filter callout
 
-define('GSMENULEGACY',true);
 // define('GSMENUFILTERDEBUG',true);
-
+define('GSMENUDEFAULT',GSMENUIDCOREMENU);
 
 /**
  * initialize upgrade, menu imports
@@ -31,10 +44,68 @@ function initUpgradeMenus(){
     debugLog(__FUNCTION__ . ": legacy menu save status " . ($status ? 'success' : 'fail'));
 
     $menu   = importLegacyMenuTree();
-    $status &= menuSave(GSMENUPAGESMENUID,$menu);
-    debugLog(__FUNCTION__ . ": default menu save status " . ($status ? 'success' : 'fail'));
+    $status &= menuSave(GSMENUIDCORE,$menu);
+    debugLog(__FUNCTION__ . ": core menu save status " . ($status ? 'success' : 'fail'));
+
+    $menu   = importLegacyMenuTree(true);
+    _debugLog(array_keys($menu[GSMENUFLATINDEX]));
+    // $status &= menuSave(GSMENUIDCOREMENU,$menu);
+    // debugLog(__FUNCTION__ . ": core inmenu menu save status " . ($status ? 'success' : 'fail'));
+	saveCoreMenu();
 
     return $status;
+}
+
+function saveCoreMenu(){
+	// @todo this moves orphan menus oddly, probably because they are no longer sorted the same after converted to heirarchy
+	// 51:_debugLog(array_keys($menu[GSMENUFLATINDEX]));171 ms 2.52 mb
+	// array_keys($menu[GSMENUFLATINDEX]) → array•10 {
+	// [0] → str•5 'child'
+	// [1] → str•14 'child-1c-1b-1a' <-----
+	// [2] → str•12 'index_custom'
+	// [3] → str•11 'draft-child'
+	// [4] → str•8 'child-1a'
+	// [5] → str•10 'child-1b-1'
+	// [6] → str•8 'child-1b'
+	// [7] → str•9 'parent-1b'
+	// [8] → str•6 'test-2'
+	// [9] → str•5 'index'
+	// }
+	// 
+	// 65:_debugLog(array_keys($menu[GSMENUFLATINDEX]));176 ms 2.53 mb
+	// array_keys($menu[GSMENUFLATINDEX]) → array•10 {
+	// [0] → str•5 'child'
+	// [1] → str•12 'index_custom'
+	// [2] → str•11 'draft-child'
+	// [3] → str•8 'child-1a'
+	// [4] → str•10 'child-1b-1'
+	// [5] → str•8 'child-1b'
+	// [6] → str•14 'child-1c-1b-1a' <-----
+	// [7] → str•9 'parent-1b'
+	// [8] → str•6 'test-2'
+	// [9] → str•5 'index'
+	// }
+	$menu  = getMenuDataArray();
+	// $pages = getPagesSortedByMenu();
+	$pages = filterKeyValueMatch(getPages(),'menuStatus','Y');
+	$slugs = $pages;
+	$menu[GSMENUFLATINDEX] = array_intersect_key($menu[GSMENUFLATINDEX],$slugs);
+	_debugLog(array_keys($menu[GSMENUFLATINDEX]));
+
+	// remove children that no longer exist
+	foreach($menu[GSMENUFLATINDEX] as $item){
+		if(isset($item['children'])){
+			foreach($item['children'] as $key=>$child){
+				if(!isset($menu[GSMENUFLATINDEX][$child])){
+					unset($item['children'][$key]);
+				}
+			}
+		}	
+	}
+	$menu   = menuRebuildNestArray($menu);
+	debugLog($menu[GSMENUFLATINDEX]);
+    $status = menuSave(GSMENUIDCOREMENU,$menu);
+    debugLog(__FUNCTION__ . ": core inmenu menu save status " . ($status ? 'success' : 'fail'));	
 }
 
 /**
@@ -54,9 +125,9 @@ function importLegacyMenuFlat(){
  * @since  3.4
  * @return array new menu nested tree sorted by hierarchy and menuOrder
  */
-function importLegacyMenuTree(){
+function importLegacyMenuTree($menu = false){
     $pages = getPagesSortedByMenuTitle();
-    // $pages = filterKeyValueMatch($pages,'menuStatus','Y');
+    if($menu) $pages = filterKeyValueMatch($pages,'menuStatus','Y');
     // @todo when menu filtered, does not retain pages with broken paths, problem for menus that should probably still show them
     $menu  = importMenuFromPages($pages);
     return $menu;
@@ -294,71 +365,6 @@ function recurseUpgradeTreeCallout(&$value,$id = '',$parent = ''){
  */
 
 /**
- * RECURSIVE TREE ITERATOR PARENT HASH TABLE
- * tree output from parent hashtable array
- * get tree from parent->child parenthashtable, where child is a pagesArray ref or copy of pages, heirachy info is ignored
- * passes child array to callouts, can be used on native parenthash arrays like parenthashtable, 
- * where children are values of page references or array, keys are parents
- * 
- * generates $level, $index, $order for you
- * 
- * array(
- *     'parent' => array(
- *         &$pagesArray['url'=>'child1'],
- *      ),
- * )
- *
- * itemcallout($id,$level,$index,$order,$open)
- *
- * @note CANNOT SHOW PARENT NODE IN SUBMENU TREE $key, since we can only find children not parents
- * @note not particulary used, but saving in case
- * @param  array   $parents array of parents
- * @param  string  $key     starting parent key
- * @param  string  $str     str for recursion append
- * @param  integer $level   level for recursion incr
- * @param  integer $index   index for recursion incr
- * @param  string  $callout   inner element callout functionname
- * @param  str     $filter  filter callout functionname
- * @return str              output string
- */
-function getTreeFromParentHashTable($parents,$key = '',$level = 0,$index = 0, $callout = 'treeCalloutInner', $filter = null){
-    if(!$parents) return;
-    $thisfunc = __FUNCTION__;
-
-    // init static $index primed from param
-    if($index !== null){
-        $indexstart = $index;
-        static $index;
-        $index = $indexstart;
-    }
-    else static $index;
-
-    $order = 0;
-    $str   = '';
-    $str  .= callIfCallable($callout,null,true,true,$level,$index,$order);
-
-    foreach($parents[$key] as $parent=>$child){
-        if(!is_array($child)) continue;
-        if(callIfCallable($filter) === true) continue;
-
-        $level = $level+1;
-        $index = $index+1;
-        $order = $order+1;
-
-        $str .= callIfCallable($callout,$child,false,true,$level,$index,$order);
-
-        if(isset($parents[$parent])) {
-            $str.= $thisfunc($parents,$parent,$level,null,$callout,$filter);
-        }
-        $level--;
-        $str .= callIfCallable($callout,$child,false,false,$level,$index,$order);
-    }
-    $str .= callIfCallable($callout,null,true,false,$level,$index,$order);
-    return $str;
-}
-
-
-/**
  * wrapper for getting menu tree
  * @since  3.4
  * @param  array   $parents array of parents
@@ -430,12 +436,12 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
     // detect if a page subarray was directly passed, auto negotiate children
     if(isset($parents['id']) && isset($parents['children'])) $parents = $parents['children'];
     
+    // sorting test
     // test sorting, using sort index is the fastest to prevent resorting subarrays
     $sort = false;
-
     GLOBAL $sortkeys;
     if($sortkeys && $sort){
-        // @todo since the recurssive function only operates on parent subarray, we do not have acces to menu itself, we could always sort my indices , and allow presorting the menu itself by sorting indices or $menu[GSMENUSORTINDEX]
+        // @todo since the recursive function only operates on parent subarray, we do not have access to menu itself, we could always sort my indices , and allow presorting the menu itself by sorting indices or $menu[GSMENUSORTINDEX]
     	$parents = arrayMergeSort($parents,$sortkeys,false);
     	// debugLog($parents);
     	// debugLog(array_keys($parents));
@@ -447,7 +453,7 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
         // do filtering
         $filterRes = callIfCallable($filter,$child,$level,$index,$order,$args); // get filter result
         if($filterRes){
-            debugLog(__FUNCTION__ . ' filtered: (' . $filterRes . ') ' . $child['id'] . ' + ' . $child['numchildren']);
+            debugLog(__FUNCTION__ . ' filtered: (' . $filterRes . ') ' . $child['id'] . ' + ' . $child['data']['numchildren']);
             
             // filter skip, children skipped also, default
             if($filterRes === true || $filterRes === GSMENUFILTERSKIP){
@@ -797,7 +803,7 @@ function newMenuSave($menuid,$menu){
     $menudata[GSMENUNESTINDEX] = $menu;
     // _debugLog(__FUNCTION__,$menu);
     // _debugLog(__FUNCTION__,$menudata);
-    if(getDef('GSMENULEGACY',true)) exportMenuToPages($menudata); // legacy page support
+    if(getDef('GSMENULEGACY',true) && $menuid === GSMENUIDCORE) exportMenuToPages($menudata); // legacy page support
     return menuSave($menuid,$menudata);
 }
 
@@ -819,17 +825,13 @@ function menuSave($menuid,$data){
     }
 
     $menufileext = '.json';
-    if(isset($data[GSMENUFLATINDEX])){
-    	// $data[GSMENUFLATINDEX] = null;
-    	// unset($data[GSMENUFLATINDEX]);
-    }
-    $status = JSONsave($data,GSDATAOTHERPATH.'menu_'.$menuid.$menufileext);
+    $status = JSONsave($data,GSDATAMENUPATH.'menu_'.$menuid.$menufileext);
     return $status;
 }
 
 function menuReadFile($menuid){
     $menufileext = '.json';
-    $menu = read_file(GSDATAOTHERPATH.'menu_'.$menuid.$menufileext);
+    $menu = read_file(GSDATAMENUPATH.'menu_'.$menuid.$menufileext);
     return $menu;
 }
 
@@ -851,8 +853,7 @@ function menuRead($menuid){
     }
 
     $menu = json_decode($menu,true);
-    // if($menu[GSMENUNESTINDEX]) buildRefArray($menu); // rebuild flat array refs from index map
-    // else debugLog('menuread: menu is empty - ' .$menuid);
+    if(!isset($menu[GSMENUNESTINDEX])) menuRebuildNestArray($menu);
     return $menu;
 }
 
@@ -869,7 +870,8 @@ function menuRead($menuid){
  * @param  string $menuid menuid to retreive
  * @return array         menu array
  */
-function getMenuDataArray($menuid = GSMENUPAGESMENUID,$force = false){
+function getMenuDataArray($menuid = null,$force = false){
+	if(!$menuid) $menuid = GSMENUIDCORE;
     GLOBAL $SITEMENU;
     // return cached local
     if(isset($SITEMENU[$menuid]) && !$force) return $SITEMENU[$menuid];
@@ -881,32 +883,33 @@ function getMenuDataArray($menuid = GSMENUPAGESMENUID,$force = false){
 }
 
 /**
- * get menu data array
+ * get menu data nested array
  * 
  * @since 3.4
  * @param  string $page   slug of page
  * @param  string $menuid menu id to fetch
  * @return array  menu sub array of page
  */
-function getMenuDataNested($menuid = GSMENUPAGESMENUID){
+function getMenuDataNested($menuid = null){
+	if(!$menuid) $menuid = GSMENUIDCORE;
     $menu = getMenuDataArray($menuid);
     if(!isset($menu)) return;
-    // if(!isset($menu[GSMENUNESTINDEX])) buildRefArray(); should not be necessary
+    if(!isset($menu[GSMENUNESTINDEX])) menuRebuildNestArray($menu);
     if(isset($menu[GSMENUNESTINDEX])) return $menu[GSMENUNESTINDEX];
 }
 
 /**
- * get menu data flat
+ * get menu data flat array
  * 
  * @since 3.4
  * @param  string $page   slug of page
  * @param  string $menuid menu id to fetch
  * @return array  menu sub array of page
  */
-function getMenuDataFlat($menuid = GSMENUPAGESMENUID){
+function getMenuDataFlat($menuid = null){
+	if(!$menuid) $menuid = GSMENUIDCORE;	
     $menu = getMenuDataArray($menuid);
     if(!isset($menu)) return;
-    // if(!isset($menu[GSMENUNESTINDEX])) buildRefArray(); should not be necessary
     if(isset($menu[GSMENUFLATINDEX])) return $menu[GSMENUFLATINDEX];
 }
 
@@ -921,7 +924,8 @@ function getMenuDataFlat($menuid = GSMENUPAGESMENUID){
  * @param  string $menuid menu id to fetch
  * @return array  menu sub array of page
  */
-function getMenuData($page = '', $parent = false, $menuid = GSMENUPAGESMENUID){
+function getMenuTreeData($page = '', $parent = false, $menuid = null){
+	if(!$menuid) $menuid = GSMENUIDCORE;
     if(empty($page)) return getMenuDataNested($menuid);
     else $menudata = getMenuDataArray($menuid);
     if(!isset($menudata)) return;
@@ -934,42 +938,10 @@ function getMenuData($page = '', $parent = false, $menuid = GSMENUPAGESMENUID){
 }
 
 /**
- * Build flat reference array onto nested tree
- * using an index array of index keys and path values
- * adds FLAT subarray with references to the nested array onto the $menu array
- * array['flat']['childpage']=>&array['nested']['parent']['children']['childpage']
- * @since  3.4
- * @param  array &$menu  nested tree array
- * @return array         nested tree with flat reference array added
- */
-function buildRefArray(&$menu){
-	// debugLog(array_keys($menu[GSMENUFLATINDEX]));
-    foreach($menu[GSMENUINDEXINDEX] as $key=>$index){
-        $index = trim($index,'.');
-        $index = str_replace('.','.children.',$index);
-        // _debugLog($key,$index);
-        $path = explode('.',$index);
-        // if the root item no longer exists skip so we do not recreate it via resolvetree
-        if(!isset($menu[GSMENUNESTINDEX][$path[0]]) || $menu[GSMENUNESTINDEX][$path[0]] === null){
-            // @todo does not work on nested move to root, might not be needed now
-            continue;
-        }
-        $ref = &resolve_tree($menu[GSMENUNESTINDEX],$path);
-        // debugLog($key . ' ' . gettype($ref) . ' ' . count($ref) . ' ' . $index . ' ' . $ref['id']);
-        // _debugLog($index,$ref);
-        if(isset($ref) && (count($ref) > 0) && $ref !== null) $menu[GSMENUFLATINDEX][$key] = &$ref;
-        unset($index);
-    }
-    return $menu;
-}
-
-/**
  * recursivly resolves a tree path to nested array sub array
  * 
  * $tree = array('path'=>array('to'=> array('branch'=>item)))
  * $path = array('path','to','branch')
- * @todo  fix this so that is does not return null refs when given a path that does not exist in tree
- * function returns references, $tree param was reference, creating cyclical refs, duh
  * @since 3.4
  * @param  array $tree array reference to tree
  * @param  array $path  array of path to desired branch/leaf
@@ -991,11 +963,16 @@ function &resolve_tree($tree, $path, $childkey = 'children') {
     	}
     	return $thisfunc($tree[$path[0]], array_slice($path, 1));
     }
-    // @todo curious as to why does this not work the same as above, must be some odd reference passing issue
-    // return empty($path) ? $tree : resolve_tree($tree[$path[0]], array_slice($path, 1));
     return $tree;
 }
 
+/**
+ * get a menu item flat
+ * @since  3.4
+ * @param  array $menu menu array
+ * @param  string $id   page id
+ * @return array       menu item array
+ */
 function getMenuItem($menu,$id = ''){
     if(isset($menu[GSMENUFLATINDEX]) && isset($menu[GSMENUFLATINDEX][$id])) return $menu[GSMENUFLATINDEX][$id];
 }
@@ -1028,7 +1005,7 @@ function exportMenuToPages($menu){
     }
     foreach($pages as $page){
         $id = $page['url'];
-        // if not in menu wipe page data
+        // if not in menu wipe page menu data
         if(!isset($menu[GSMENUFLATINDEX][$id])){
             saveMenuDataToPage($id);
             continue;
@@ -1064,15 +1041,14 @@ function saveMenuDataToPage($pageid,$parent = '',$order =''){
     if((string)returnPageField($pageid,'parent') == $parent && (int)returnPageField($pageid,'menuOrder') == $order) return;
 
     // set new parent and order
-    $file = GSDATAPAGESPATH . $pageid . '.xml';
+    $file = getPageFilename($pageid);
     if (file_exists($file)) {
         $data = getPageXML($pageid);
         $data->parent->updateCData($parent);
         $data->menuOrder->updateCData($order);
-        return XMLsave($data,$file);
+        return savePageXml($data,fasle);
     }
 }
-
 
 
 /**
@@ -1082,7 +1058,7 @@ function saveMenuDataToPage($pageid,$parent = '',$order =''){
 /**
  * 3.3.x menu save directly to pages
  */
-function MenuOrderSave_OLD(){
+function MenuOrderSave_LEGACY(){
     $menuOrder = explode(',',$_POST['menuOrder']);
     $priority = 0;
     foreach ($menuOrder as $slug) {
@@ -1102,133 +1078,6 @@ function MenuOrderSave_OLD(){
     return $success;
 }
 
-
-function pagesToMenuOLD($pages,$parent = ''){
-    static $array;
-    if($parent == '') $array = array();
-    foreach($pages[$parent] as $key=>$page){
-        $newparent = $page['title'];
-        _debugLog($key,$page);
-        // _debugLog($key,$newparent);
-        if($newparent != '' && isset($pages[$newparent])) $array[] = array('id' => $page['url'],'children' => pagesToMenu($pages,$newparent));
-        else $array[]['id'] = $page['url'];
-    }
-    
-    return $array;
-}
-
-function pagesToMenu($pages,$parent = 'index'){
-    static $array;
-    if($parent == '') $array = array();
-    debugLog($parent);
-
-    debugLog($pages[$parent]);
-    foreach($pages[$parent] as $key=>$page){
-        $newparent = $page['url'];
-        // debugLog($key,$newparent);
-        // _debugLog($key,$newparent);
-        if(isset($pages[$newparent])){
-            _debugLog($newparent,count($pages[$newparent]));
-            $newarray = pagesToMenu($pages,$newparent);
-            // $array[$parent]['children'][] = $newarray;
-            // 
-            $array[$parent][] = array('id' => $parent,'children' => $newarray);
-        } 
-        else $array[$parent][] = array('id' => $parent);
-    }
-    
-    return $array;
-}
-
-// @todo build a nested tree array from flat array with `parent` and children array, children key is `children`
-function buildTree(array $elements, $parentId = '') {
-    $branch = array();
-
-    foreach ($elements as $element) {
-        if ($element['parent'] == $parentId) {
-            $children = buildTree($elements, $element['url']);
-            if ($children) {
-                $element['children'] = $children;
-            }
-            $branch[] = $element;
-        }
-    }
-
-    return $branch;
-}
-
-
-/**
- * builds a flat reference map from a nested tree
- * @unused
- * @param  array $menu     nested array
- * @param  array $flattree destination array
- * @return array           flat indexed array
- */
-function buildRefArrayRecursive($menu,$flattree = array()){
-    foreach($menu as $item){
-        $flatree['item']['id'] = &$item;
-        if(isset($item['children'])) buildRefArrayRecursive($item['children'],$flattree);
-    }
-
-    return $flattree;
-}
-
-/**
- * dynamically get nested array reference from flat index 
- * caches it from flat array, and dynamically add if it doesnt exist already
- * using index to resolve to nested
- * uses resolve_tree() to resolve flat path to nested
- * @param  array &$menu  nested array
- * @param  str $id       flat index
- * @return array         reference to nested subarray
- */
-function &getRefArray(&$menu,$id){
-    if(isset($menu[GSMENUFLATINDEX]) && isset($menu[GSMENUFLATINDEX][$id])) return $menu[GSMENUFLATINDEX][$id];
-    $index = $menu[GSMENUINDEXINDEX][$id];
-    $index = trim($index,'.');
-    $index = str_replace('.','.children.',$index);
-    $ref = resolve_tree($menu[GSMENUNESTINDEX],explode('.',$index));
-    return $ref;
-}
-
-
-function menuCalloutInnerTest($page,$open = true){
-    if(!$open) return '</li>';
-
-    $depth = $page['depth'];
-    $page = getPage($page['id']);
-    
-    $menutext = $page['menu'] == '' ? $page['title'] : $page['menu'];
-    $menutitle = $page['title'] == '' ? $page['menu'] : $page['title'];
-    $class = $page['parent'] . ' D' . $depth; 
-
-    $str = '<li data-id="'.$page['url'].'" class="'.$class.'">';
-    $str .= '<a href="'. find_url($page['url']) . '" title="'. encode_quotes(cl($menutitle)) .'">'.strip_decode($menutext).'</a>'."\n";
-
-    return $str;
-}
-
-function menuCalloutOuterTest($page = null,$open = true){
-    return $open ? '<ul id="">' : '</ul>';
-}
-
-function selectCalloutInner($id, $level, $index, $order, $open = true){
-    if(!$open) return;
-    $page = getPage($id);
-    $disabled = $page['menuStatus'] == 'Y' ? 'disabled' : '';
-    return '<option id="'.$id.'" '.$disabled. '>' .str_repeat('-',$level-1) . $page['title']. '</option>';
-}
-
-function selectCalloutOuter(){
-
-}
-
-function treeFilterCallout($id,$level,$index,$order){
-    $child = getPage($id);
-    return $child['menuStatus'] !== 'Y';
-}
-
 // debugging
 function debugTreeCallout($args){
     $item = $args[0];
@@ -1244,6 +1093,71 @@ function debugTreeCallout($args){
     $debug .= ' [ ' . $args[3].' - '.$args[2].'.'.$args[4]. ' ]';
     return $debug;
 }
+
+/**
+ * RECURSIVE TREE ITERATOR PARENT HASH TABLE
+ * tree output from parent hashtable array
+ * get tree from parent->child parenthashtable, where child is a pagesArray ref or copy of pages, heirachy info is ignored
+ * passes child array to callouts, can be used on native parenthash arrays like parenthashtable, 
+ * where children are values of page references or array, keys are parents
+ * 
+ * generates $level, $index, $order for you
+ * 
+ * array(
+ *     'parent' => array(
+ *         &$pagesArray['url'=>'child1'],
+ *      ),
+ * )
+ *
+ * itemcallout($id,$level,$index,$order,$open)
+ *
+ * @note CANNOT SHOW PARENT NODE IN SUBMENU TREE $key, since we can only find children not parents
+ * @note not particulary used, but saving in case
+ * @param  array   $parents array of parents
+ * @param  string  $key     starting parent key
+ * @param  string  $str     str for recursion append
+ * @param  integer $level   level for recursion incr
+ * @param  integer $index   index for recursion incr
+ * @param  string  $callout   inner element callout functionname
+ * @param  str     $filter  filter callout functionname
+ * @return str              output string
+ */
+function getTreeFromParentHashTable($parents,$key = '',$level = 0,$index = 0, $callout = 'treeCalloutInner', $filter = null){
+    if(!$parents) return;
+    $thisfunc = __FUNCTION__;
+
+    // init static $index primed from param
+    if($index !== null){
+        $indexstart = $index;
+        static $index;
+        $index = $indexstart;
+    }
+    else static $index;
+
+    $order = 0;
+    $str   = '';
+    $str  .= callIfCallable($callout,null,true,true,$level,$index,$order);
+
+    foreach($parents[$key] as $parent=>$child){
+        if(!is_array($child)) continue;
+        if(callIfCallable($filter) === true) continue;
+
+        $level = $level+1;
+        $index = $index+1;
+        $order = $order+1;
+
+        $str .= callIfCallable($callout,$child,false,true,$level,$index,$order);
+
+        if(isset($parents[$parent])) {
+            $str.= $thisfunc($parents,$parent,$level,null,$callout,$filter);
+        }
+        $level--;
+        $str .= callIfCallable($callout,$child,false,false,$level,$index,$order);
+    }
+    $str .= callIfCallable($callout,null,true,false,$level,$index,$order);
+    return $str;
+}
+
 
 function legacyMenuManagerOutput($pages){
 

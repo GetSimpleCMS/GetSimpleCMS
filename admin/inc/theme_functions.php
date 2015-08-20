@@ -674,51 +674,19 @@ function return_snippet(){
  * @param string $classPrefix Prefix that gets added to the parent and slug classnames
  * @return string 
  */	
-function get_navigation($currentpage = '',$classPrefix = "", $outer = array()) {
-
+function get_navigation($currentpage = '',$classPrefix = "") {
 	$currentpage = (string)$currentpage;
-
-	// testing new
 	$menu = get_navigation_advanced($currentpage,$classPrefix);
-	return print($menu);
-
-	$menu = '';
-
-	global $pagesArray;
-	
-	if($outer) $menu .= $outer[0];
-	$pagesSorted = subval_sort($pagesArray,'menuOrder');
-	if (count($pagesSorted) != 0) { 
-		foreach ($pagesSorted as $page) {
-			$sel = $classes = '';
-			$url_nav = (string)$page['url'];
-			
-			if ($page['menuStatus'] == 'Y') { 
-				$parentClass = !empty($page['parent']) ? $classPrefix.$page['parent'] . " " : "";
-				$classes     = trim( $parentClass.$classPrefix.$url_nav);
-
-				if ((string)$currentpage == $url_nav) $classes .= " current active";
-				if ($page['menu']  == '') { $page['menu']  = $page['title']; }
-				if ($page['title'] == '') { $page['title'] = $page['menu']; }
-
-				$menu .= '<li class="'. $classes .'"><a href="'. find_url($page['url'],$page['parent']) . '" title="'. encode_quotes(cl($page['title'])) .'">'.strip_decode($page['menu']).'</a></li>'."\n";
-			}
-		}
-	if($outer) $menu .= $outer[1];		
-	}
-	
 	echo exec_filter('menuitems',$menu); // @filter menuitems (str) menu items html in get_navigation
 }
 
-function get_navigation_ul($currentpage,$classPrefix = ""){
-	return get_navigation($currentpage,$classPrefix,array("<ul>","</ul>"));
-}
-
 function get_navigation_advanced($currentpage, $classPrefix = '', $slug = '', $maxdepth = 1){
-	// testing new
-	$menuid = GSMENUPAGESMENUID;
-	// $menuid = 'legacy';
-	$tree = getMenuData($slug,true,$menuid);
+	// get legacy menu
+	if(getDef('GSMENULEGACY',true)) $menuid = GSMENUIDLEGACY; 
+    else if(getDef('GSMENUDEFAULT',true)) $menuid = GSMENUDEFAULT;
+    else $menuid = GSMENUIDCOREMENU;
+
+	$tree = getMenuTreeData($slug,true,$menuid);
 	$menu =  getMenuTree($tree,false,'menuCallout','menuCalloutFilter',array('currentpage'=>$currentpage,'classPrefix'=>$classPrefix,'maxdepth'=>$maxdepth));
 	return $menu;
 }

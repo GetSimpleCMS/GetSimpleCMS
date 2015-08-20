@@ -45,7 +45,8 @@ $create_dirs = array(
 	GSBACKUPSPATH . getRelPath(GSDATAOTHERPATH,GSDATAPATH), // backups/other/
 	GSBACKUPSPATH . getRelPath(GSDATAPAGESPATH,GSDATAPATH), // backups/pages/
 	GSBACKUSERSPATH,
-	GSBACKUPSPATH .'zip/'	
+	GSBACKUPSPATH .'zip/',
+	GSDATAMENUPATH
 );
 
 // files to be created

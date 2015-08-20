@@ -219,6 +219,7 @@ define('GSLANGPATH'      , GSADMINPATH     . 'lang/');      // lang/
 define('GSDATAPATH'      , GSROOTPATH      . 'data/');      // data/
 define('GSDATAOTHERPATH' , GSDATAPATH      . 'other/');     // data/other/
 define('GSDATAPAGESPATH' , GSDATAPATH      . 'pages/');     // data/pages/
+define('GSDATAMENUPATH'  , GSDATAPATH      . 'menus/');     // data/menus/
 
 define('GSAUTOSAVEPATH'  , GSDATAPAGESPATH . 'autosave/');  // data/pages/autosave/
 define('GSDATADRAFTSPATH', GSDATAPAGESPATH . 'autosave/');  // data/pages/autosave/
@@ -581,7 +582,7 @@ if($SAFEMODE){
 
 if(isset($load['plugin']) && $load['plugin']){
 
-	if(function_exists('plugin_preload_callout')) plugin_preload_callout();	// @callout plugin_preload_callout callout before loading plugin files
+	callIfCallable('plugin_preload_callout'); // @callout plugin_preload_callout callout before loading plugin files
 
 	// Include plugins files in global scope
 	loadPluginData();
@@ -607,7 +608,7 @@ if(isset($load['plugin']) && $load['plugin']){
 	# main hook for common.php
 	exec_action('common'); // @hook common common.php has completed loading resoruces, base not yet loaded
 	// debugLog('calling common_callout');
-	if(function_exists('common_callout')) common_callout(); // @callout common_callout callout after common loaded, before templating
+	callIfCallable('common_callout'); // @callout common_callout callout after common loaded, before templating
 }
 
 /**
@@ -634,7 +635,8 @@ if(GSBASE) require_once(GSADMINPATH.'base.php');
 function debugLog($mixed = null) {
 	global $GS_debug;
 	array_push($GS_debug,$mixed);
-	if(function_exists('debugLog_callout')) debugLog_callout($mixed); // @callout debugLog_callout (str) callout for each debugLog call, argument passed
+	callIfCallable('debugLog_callout', $mixed); // @callout debugLog_callout (str) callout for each debugLog call, argument passed
+	// if(function_exists('debugLog_callout')) debugLog_callout($mixed); // @callout debugLog_callout (str) callout for each debugLog call, argument passed
 	return $mixed;
 }
 
