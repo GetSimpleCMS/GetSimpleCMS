@@ -101,7 +101,7 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 			 <a href="backup-edit.php?p=restore&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" 
 			 	accesskey="<?php echo find_accesskey(i18n_r('ASK_RESTORE'));?>" ><?php i18n('ASK_RESTORE');?></a> 
 			 <a href="backup-edit.php?p=delete&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" 
-			 	title="<?php i18n('DELETEPAGE_TITLE'); ?>: <?php echo $title; ?>?" 
+			 	title="<?php i18n('DELETEPAGE_TITLE'); ?>: <?php echo var_out($title); ?>?" 
 			 	id="delback" 
 			 	accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE'));?>" 
 			 	class="delconfirm noajax" ><?php i18n('ASK_DELETE');?></a>

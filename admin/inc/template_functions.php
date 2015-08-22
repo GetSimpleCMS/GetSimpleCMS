@@ -811,7 +811,7 @@ function get_pages_menu($parent, $menu,$level) {
 			$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
 			$menu .= '</td>';
 			if ($page['url'] != 'index' ) {
-				$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. cl($page['title']) .'" >&times;</a></td>';
+				$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. var_out($page['title']) .'" >&times;</a></td>';
 			} else {
 				$menu .= '<td class="delete" ></td>';
 			}
@@ -884,14 +884,19 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
  *
  * @param string $type, default is 'core'
  * @param array $args, default is empty
+ * @param  bool $cached force cached check only, do not use curl
  * 
  * @returns string
  */
 
-function get_api_details($type='core', $args=null) {
+function get_api_details($type='core', $args=null, $cached = false) {
 	GLOBAL $debugApi,$nocache,$nocurl;
 
 	include(GSADMININCPATH.'configuration.php');
+
+	if($cached){
+		debug_api_details("API REQEUSTS DISABLED, using cache files only");
+	}
 
 	# core api details
 	if ($type=='core') {
@@ -921,15 +926,24 @@ function get_api_details($type='core', $args=null) {
 	$cachefile = md5($fetch_this_api).'.txt';
 	$cacheExpire = 39600; // 11 minutes
 	
-	if(!$nocache) debug_api_details('cache check for ' . $fetch_this_api.' ' .$cachefile);
+	if(!$nocache || $cached) debug_api_details('cache file check - ' . $fetch_this_api.' ' .$cachefile);
 	else debug_api_details('cache check: disabled');
 
 	$cacheAge = file_exists(GSCACHEPATH.$cachefile) ? filemtime(GSCACHEPATH.$cachefile) : '';
 
+
+	// api disabled and no cache file exists
+	if($cached && empty($cacheAge)){
+		debug_api_details('cache file does not exist - ' . GSCACHEPATH.$cachefile);
+		debug_api_details();
+		return '{"status":-1}';
+	}
+
 	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpire) < $cacheAge ) {
+		debug_api_details('cache file time - ' . $cacheAge . ' (' . (time() - $cacheAge) . ')' );
 		# grab the api request from the cache
 		$data = file_get_contents(GSCACHEPATH.$cachefile);
-		debug_api_details('returning api cache ' . GSCACHEPATH.$cachefile);
+		debug_api_details('returning cache file - ' . GSCACHEPATH.$cachefile);
 	} else {	
 		# make the api call
 		if (function_exists('curl_init') && function_exists('curl_exec') && !$nocurl) {
@@ -998,7 +1012,8 @@ function get_api_details($type='core', $args=null) {
 			$data = @file_get_contents($fetch_this_api,false,$context);	
 			debug_api_details("fopen data: " .$data);		
 		} else {
-			debug_api_details("No api methods available");						
+			debug_api_details("No api methods available");
+			debug_api_details();						
 			return;
 		}	
 	
@@ -1019,14 +1034,17 @@ function get_api_details($type='core', $args=null) {
 
 		file_put_contents(GSCACHEPATH.$cachefile, $data);
 		chmod(GSCACHEPATH.$cachefile, 0644);
+		debug_api_details();		
 		return $data;
 	}
+	debug_api_details();	
 	return $data;
 }
 
-function debug_api_details($msg,$prefix = "API: "){
+function debug_api_details($msg = null ,$prefix = "API: "){
 	GLOBAL $debugApi;
 	if(!$debugApi) return;
+	if(!isset($msg)) $msg = str_repeat('-',80);
 	debugLog($prefix.$msg);
 }
 

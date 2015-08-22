@@ -121,4 +121,7 @@ define('GSSUPPRESSERRORS',true);
 # define('GSNOFRAME',GSBOTH); # prevent in frames ALWAYS
 #define('GSNOFRAME',false);  # prevent in frames NEVER
 
+# GS can format its xml files before saving them if you require human readable source for them
+# define('GSFORMATXML',true);
+
 ?>
