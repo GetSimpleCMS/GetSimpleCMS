@@ -56,6 +56,13 @@ function initUpgradeMenus(){
     return $status;
 }
 
+/**
+ * save core menu cache
+ * get coremenu, remove all non menu items, 
+ * rebuild nest, save
+ * @since  3.4
+ * @return success status
+ */
 function saveCoreMenu(){
 	// @todo this moves orphan menus oddly, probably because they are no longer sorted the same after converted to heirarchy
 	// 51:_debugLog(array_keys($menu[GSMENUFLATINDEX]));171 ms 2.52 mb
@@ -92,7 +99,7 @@ function saveCoreMenu(){
 	$menu[GSMENUFLATINDEX] = array_intersect_key($menu[GSMENUFLATINDEX],$slugs);
 	_debugLog(array_keys($menu[GSMENUFLATINDEX]));
 
-	// remove children that no longer exist
+	// remove children that longer exist
 	foreach($menu[GSMENUFLATINDEX] as $item){
 		if(isset($item['children'])){
 			foreach($item['children'] as $key=>$child){
@@ -102,7 +109,7 @@ function saveCoreMenu(){
 			}
 		}	
 	}
-	$menu   = menuRebuildNestArray($menu);
+	// $menu   = menuRebuildNestArray($menu);
 	debugLog($menu[GSMENUFLATINDEX]);
     $status = menuSave(GSMENUIDCOREMENU,$menu);
     debugLog(__FUNCTION__ . ": core inmenu menu save status " . ($status ? 'success' : 'fail'));	
@@ -126,7 +133,10 @@ function importLegacyMenuFlat(){
  * @return array new menu nested tree sorted by hierarchy and menuOrder
  */
 function importLegacyMenuTree($menu = false){
-    $pages = getPagesSortedByMenuTitle();
+	//@todo sorting by anything other than parent child heirarvhy if filtering menu status results in odd ordering
+	//sortParentPath is probably required
+    // $pages = getPagesSortedByMenuTitle();
+    $pages = sortCustomIndexCallback(getpages(),'title','prepare_pagePathTitles');
     if($menu) $pages = filterKeyValueMatch($pages,'menuStatus','Y');
     // @todo when menu filtered, does not retain pages with broken paths, problem for menus that should probably still show them
     $menu  = importMenuFromPages($pages);
