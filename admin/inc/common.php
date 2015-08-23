@@ -90,7 +90,7 @@ $GS_definitions = array(
 	'GSINDEXSLUG'          => 'index',                        // (str) slug to use as index when no slug provided
 	'GSPLUGINORDER'        => '',                             // (str) csv list of live_plugins keys to load first and in order, kludge and not supported
 	'GSNOFRAME'            => true,                           // (mixed) allow GS to be loaded in frames via x-frame policy
-	'GSNOFRAMEDEFAULT'     => 'SAMEORIGIN'                    // (string) GSNOFRAME X-Frame-Options default value
+	'GSNOFRAMEDEFAULT'     => 'SAMEORIGIN',                    // (string) GSNOFRAME X-Frame-Options default value
 	# STYLES -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSSTYLE'              => 'wide,sbfixed',                 // (str-csv) default style modifiers
 	'GSWIDTH'              => '1024px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width
