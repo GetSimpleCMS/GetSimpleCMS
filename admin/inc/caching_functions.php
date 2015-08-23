@@ -127,6 +127,15 @@ function getPageField($page,$field){
 function echoPageField($page,$field){
 	getPageField($page,$field);
 }
+function returnPageContent($page, $field='content', $raw = false, $nofilter = false){   
+	$thisfile = file_get_contents(GSDATAPAGESPATH.$page.'.xml');
+	$data = simplexml_load_string($thisfile);
+	if(!$data) return;
+	$content = $data->$field;
+	if(!$raw) $content = stripslashes(htmlspecialchars_decode($content, ENT_QUOTES));
+	if ($field=='content' and !$nofilter){
+		$content = exec_filter('content',$content);
+	}
 
 /**
  * get page field directly from page file, bypasses page cache

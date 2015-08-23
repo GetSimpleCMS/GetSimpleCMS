@@ -102,7 +102,7 @@ function registerInactivePlugins($apilookup = false){
 		if ($en!=='true' || !file_exists(GSPLUGINPATH . $file) || $SAFEMODE){
 			if($apilookup){
 				// check api to get names of inactive plugins etc.
-		 		$apiback  = get_api_details('plugin', $file);
+	  $apiback = get_api_details('plugin', $file, getDef('GSNOPLUGINCHECK',true));
 		  		$response = json_decode($apiback);
 		  		if ($response and $response->status == 'successful') {
 					register_plugin( pathinfo_filename($file), $response->name, 'disabled', $response->owner, '', i18n_r('PLUGIN_DISABLED'), '', '');

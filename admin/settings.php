@@ -91,7 +91,7 @@ if(isset($_POST['submitted'])) {
 	$note = $xmls->addChild('TEMPLATE');
 	$note->addCData($TEMPLATE);
 	$xmls->addChild('PRETTYURLS', $PRETTYURLS);
-	$xmls->addChild('PERMALINK', $PERMALINK);
+	$xmls->addChild('PERMALINK', var_out($PERMALINK));
 	$xmls->addChild('EMAIL', $SITEEMAIL);
 	$xmls->addChild('TIMEZONE', $SITETIMEZONE);
 	$xmls->addChild('LANG', $SITELANG);
@@ -200,13 +200,13 @@ get_template('header');
 							<a href="http://get-simple.info/docs/pretty_urls" target="_blank" ><?php i18n('MORE');?></a>
 						</span>
 					</label>
-					<input class="text" name="permalink" id="permalink" type="text" placeholder="<?php echo getDef('GSDEFAULTPERMALINK');?>" value="<?php if(isset($PERMALINK)) { echo $PERMALINK; } ?>" />
+					<input class="text" name="permalink" id="permalink" type="text" placeholder="<?php echo getDef('GSDEFAULTPERMALINK');?>" value="<?php if(isset($PERMALINK)) { echo var_out($PERMALINK); } ?>" />
 				</p>
 			</div>
 			<div class="rightsec">
 				<p>
 					<label for="email" ><?php i18n('LABEL_EMAIL');?>:</label>
-					<input class="text" id="email" name="email" type="email" value="<?php echo $SITEEMAIL; ?>" />
+					<input class="text" id="email" name="email" type="email" value="<?php echo var_out($SITEEMAIL); ?>" />
 				</p>
 				<?php if (! check_email_address($SITEEMAIL)) {
 					echo '<span class="input-warning">'.i18n_r('WARN_EMAILINVALID').'</span>';
@@ -216,7 +216,7 @@ get_template('header');
 			<div class="widesec">
 				<p>
 					<label for="about" ><?php i18n('LABEL_SITEABOUT');?>:</label>
-					<textarea class="text short" id="about" name="about" type="about" /><?php echo $SITEABOUT; ?></textarea>
+					<textarea class="text short" id="about" name="about" type="about" /><?php echo var_out($SITEABOUT); ?></textarea>
 				</p>
 			</div>
 
