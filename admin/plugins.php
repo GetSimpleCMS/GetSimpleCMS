@@ -42,7 +42,7 @@ function plugin_info_update(){
 	GLOBAL $plugin_info;
 
 	foreach($plugin_info as $key=>$plugin){
-		$api_data   = json_decode(get_api_details('plugin', $key.'.php'));
+		$api_data   = json_decode(get_api_details('plugin', $key.'.php',getDef('GSNOPLUGINCHECK',true)));
 		
 		// on api success
 		if (is_object($api_data) && $api_data->status == 'successful') {

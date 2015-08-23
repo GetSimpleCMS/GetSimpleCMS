@@ -26,10 +26,8 @@
 # disable script execution
 AddHandler cgi-script .php .pl .py .jsp .asp .htm .shtml .sh .cgi
 Options -ExecCGI
-
-
-# Deny access to all script files
-<FilesMatch "(?i)\.((php[0-9]?)|(ph[0-9]?)|phtm|phtml|pl|py|jsp|asp|htm|shtml|sh|cgi|)$">
+# 500 error apache 1.3, case insensitive, so we have ot use this nonesense
+<FilesMatch "\.(([pP][hH][pP][0-9]?)|([pP][hH][0-9]?)|[pP][hH][tT][mM]|[pP][hH][tT][mM][lL]|[pP][lL]|[pP][yY]|[jJ][sS][pP]|[aA][sS][pP]|[hH][tT][mM]|[sS][hH][tT][mM][lL]|[sS][hH]|[cC][gG][iI])$"> 
     ForceType text/plain
 	Deny from all
 	Require all denied
