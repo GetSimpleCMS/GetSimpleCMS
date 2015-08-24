@@ -67,7 +67,7 @@ $sortkeys = array_keys($presort);
 $tree = getMenuDataNested($menuid);
 // $tree = array('id' => '','children' => $tree); // loop tree and create cyclical references to parents to use flat array instead of nested
 debugLog($tree);
-$str  = getMenuTree($tree,true,'mmCallout', 'mmCalloutFilter',array(getMenuDataArray()));
+$str  = getMenuTree($tree,true,GSMENUMGRCALLOUT, GSMENUMGRFILTERCALLOUT,array(getMenuDataArray()));
 $count = 'N/A';
 
 echo '<div class="widesec">';

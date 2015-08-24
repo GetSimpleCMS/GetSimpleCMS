@@ -687,7 +687,7 @@ function get_navigation_advanced($currentpage, $classPrefix = '', $slug = '', $m
     else $menuid = GSMENUIDCOREMENU;
 
 	$tree = getMenuTreeData($slug,true,$menuid);
-	$menu =  getMenuTree($tree,false,'menuCallout','menuCalloutFilter',array('currentpage'=>$currentpage,'classPrefix'=>$classPrefix,'maxdepth'=>$maxdepth));
+	$menu =  getMenuTree($tree,false,GSMENUNAVCALLOUT,GSMENUNAVFILTERCALLOUT,array('currentpage'=>$currentpage,'classPrefix'=>$classPrefix,'maxdepth'=>$maxdepth));
 	return $menu;
 }
 

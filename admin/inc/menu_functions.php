@@ -25,11 +25,16 @@ define('GSMENUFILTERSKIP',1);     // skip all children
 define('GSMENUFILTERCONTINUE',2); // skip parent, continue with children inheriting closest parent
 define('GSMENUFILTERSHIFT',3);    // skip parent, shift all children to root
 
-// callouts
+// menu tree recursion callouts
+// generic
 define('GSMENUTREECALLOUT','menuCallout'); // menu tree callout
-define('GSMENUFILTERCALLOUT','menuFilterCallout'); // menu filter callout
+define('GSMENUTREEFILTERCALLOUT','menuCalloutFilter'); // menu tree filter callout
+// navigation
+define('GSMENUNAVCALLOUT','menuCallout'); // menu nav callout
+define('GSMENUNAVFILTERCALLOUT','menuCalloutFilter'); // menu nav filter callout
+// menu manager
 define('GSMENUMGRCALLOUT','mmCallout'); // menu manager tree callout
-define('GSMENUMGRFILTERCALLOUT','mmFilterCallout'); // menu manager filter callout
+define('GSMENUMGRFILTERCALLOUT','mmCalloutFilter'); // menu manager filter callout
 
 // define('GSMENUFILTERDEBUG',true);
 define('GSMENUDEFAULT',GSMENUIDCOREMENU);
@@ -70,8 +75,8 @@ function saveCoreMenu()
 	$menu  = getMenuDataArray();
 	$pages = filterKeyValueMatch(getPages(),'menuStatus','Y'); // get menu pages form pagecache
 	$slugs = $pages;
+	// filter non menu pages
 	$menu[GSMENUFLATINDEX] = array_intersect_key($menu[GSMENUFLATINDEX],$slugs);
-	_debugLog(array_keys($menu[GSMENUFLATINDEX]));
 
 	// remove children that longer exist
 	foreach($menu[GSMENUFLATINDEX] as $item){
@@ -84,7 +89,6 @@ function saveCoreMenu()
 		}	
 	}
 	$menu   = menuRebuildNestArray($menu);
-	debugLog($menu[GSMENUFLATINDEX]);
     $status = menuSave(GSMENUIDCOREMENU,$menu);
     debugLog(__FUNCTION__ . ": core inmenu menu save status " . ($status ? 'success' : 'fail'));	
     return $status;
@@ -109,17 +113,14 @@ function importLegacyMenuFlat(){
  */
 function importLegacyMenuTree($menu = false){
     $pages = getPagesSortedByMenuTitle();
-    // $pages = sortCustomIndexCallback(getpages(),'title','prepare_pagePathTitles');
-    if($menu) $pages = filterKeyValueMatch($pages,'menuStatus','Y');
-    debugLog(array_keys($pages));
     // @todo when menu filtered, does not retain pages with broken paths, problem for menus that should probably still show them
+    if($menu) $pages = filterKeyValueMatch($pages,'menuStatus','Y');
     $menu  = importMenuFromPages($pages);
     return $menu;
 }
 
 /**
  * build a nested menu array from pages array parent/menuorder
- * ( optionally filter by menustatus )
  * create a parent hash table with references
  * builds nested array tree
  * recurses over tree and add depth, order, numchildren, (path and url)
@@ -136,13 +137,13 @@ function importMenuFromPages($pages = null, $flatten = false){
     $tree    = buildTreewHash($parents,'',false,true,'url'); // get a nested array from hashtable, from root, no preserve, assoc array, use url key
     // debugLog($tree);
     $flatary = recurseUpgradeTree($tree); // recurse the tree and add stuff to $tree, returns flat array
-    // debugLog($tree);
-    // debugLog($flatary);
+    // debugLog($tree); // debug ref array
+    // debugLog($flatary); // debug return array
 
     $nesttree[GSMENUNESTINDEX]  = &$tree; //add tree array to menu
     $nesttree[GSMENUFLATINDEX]  = &$flatary[GSMENUFLATINDEX]; // add flat array to menu
     // $nesttree[GSMENUINDEXINDEX] = $flatary[GSMENUINDEXINDEX]; // add index array to menu
-    // debugLog($nesttree);
+    // debugLog($nesttree); // debug full
     
     return $nesttree;
 }
@@ -420,12 +421,14 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
     // detect if a page subarray was directly passed, auto negotiate children
     if(isset($parents['id']) && isset($parents['children'])) $parents = $parents['children'];
     
-    // sorting test
+    // @todo: sorting test
     // test sorting, using sort index is the fastest to prevent resorting subarrays
     $sort = false;
     GLOBAL $sortkeys;
     if($sortkeys && $sort){
-        // @todo since the recursive function only operates on parent subarray, we do not have access to menu itself, we could always sort my indices , and allow presorting the menu itself by sorting indices or $menu[GSMENUSORTINDEX]
+        // @todo since the recursive function only operates on parent subarray, we do not have access to menu itself, 
+        // we could always sort by indices , and allow presorting the menu itself by sorting indices or $menu[GSMENUSORTINDEX]
+    	// either way arraymergesort can do it
     	$parents = arrayMergeSort($parents,$sortkeys,false);
     	// debugLog($parents);
     	// debugLog(array_keys($parents));
@@ -500,9 +503,9 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
                 // call callbacks with null child
                 for($i=0; $i<$level-1; $i++){
                     $str .= callIfCallable($callout,null,false,true,$level,$index,$order,$args); # <li>
-                    // $str .= '<li style="display:none">';
+                    // $str .= '<li style="display:none">'; // sample
                     $str .= callIfCallable($callout,null,true,true,$level,$index,$order,$args); # <ol>                    
-                    // $str .= '<ul style="display:none">';
+                    // $str .= '<ul style="display:none">'; // sample
                 }
                 return $str;
             }
@@ -557,7 +560,7 @@ function debugFilteredItem($item,$filtertype){
  * minimal tree output from nested children array
  * assumes `id` and `children` subkey
  * passes menu child array to callouts, assumes everything you need is in the array, to be used with menu/ index/ or ref arrays
- * does not calculate heirachy data or use it
+ * does not calculate heirachy data nor does it use it
  *
  * array(
  *   'id' => 'parent',
@@ -610,15 +613,18 @@ function getMenuTreeMin($parents,$callout = 'treeCallout',$filter = null){
  * outputs a basic list
  * @since  3.4
  * @param  array  $item item to feed this recursive iteration
+ * @param  boolean $outer is this a outer wrap node if true
  * @param  boolean $open is this nest open or closing
  * @return str     string to return to recursive callee
  */
 function treeCallout($item, $outer = false, $open = true, $level = '', $index = '', $order = ''){
     
+    // outer wrap
     if($outer) return $open ? "\n<ul>" : "\n</ul>";
 
     // if item is null return hidden list , ( this is for GSMENUFILTERSHIFT handling )
     if($item === null) return $open ? '<li style="display:none">' : "</li>";
+    
     // handle pages instead of menu items, pages do not have an id field
     if(!isset($item['id'])){
         if(!isset($item['url'])) return; // fail
@@ -638,6 +644,7 @@ function treeCalloutFilter(){
  * menu manager tree callout function
  * @since  3.4
  * @param  array  $item item to feed this recursive iteration
+ * @param  boolean $outer is this a outer wrap node if true 
  * @param  boolean $open is this nest open or closing
  * @return str     string to return to recursive callee
  */
