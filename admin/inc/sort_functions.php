@@ -268,15 +268,30 @@ function reindexArray($array,$key){
 /**
  * SAMPLES for TESTING
  * sort preparers
- * not sure why I chose to pass in $key and $page, $page will always contain $key
+ * @todo : not sure why I chose to pass in $key and $page, $page will always contain $key
+ * probably can be removed now
  */
 
+/**
+ * sort preparer for path titles
+ * "parenttitle parenttitle pagetitle"
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
+ */
 function prepare_pagePathTitles($page,$key){
 	$menuOrder = prepare_menuOrder($page,$key);
-	// 1 parent title/parent title/slug title
+	// parent title/parent title/slug title
 	return $menuOrder .= ' ' .getPagePathField($page['url'],'title');
 }
 
+/**
+ * sort preparer parent title
+ * "parentitle pagetitle"
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
+ */
 function prepare_parentTitle($page,$key){
 	 	if ($page['parent'] != '') { 
 	 		$parentTitle = returnPageField($page['parent'], "title");
@@ -289,15 +304,21 @@ function prepare_parentTitle($page,$key){
 
 /**
  * prepare pubDate strtotime it for sorting
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
  */
 function prepare_date($page,$key){
 	return strtotime($key);
 }
 
 /**
- * sort by menuOrder
+ * sort preparer by menuOrder
  * menu order=0 or ""  or menuStatus=Y are lowest priority
  * (pages are saved with 0 as default for none, and are not in the menu manager)
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
  */
 function prepare_menuOrder($page,$key){
 	if(empty($key) && $page['menuStatus'] == 'Y') return 0;
@@ -305,6 +326,14 @@ function prepare_menuOrder($page,$key){
 	return (int)$key;
 }
 
+/**
+ * sort preparer for menuorder parent title
+ * menuorder parenttitle pagetitle
+ * "0 parent slug"
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
+ */
 function prepare_menuOrderParentTitle($page,$key){
 	return prepare_menuOrder($page,$page['menuOrder']) . ' ' . prepare_parentTitle($page,$key);
 }

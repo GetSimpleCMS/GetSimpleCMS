@@ -6,6 +6,7 @@
  * @subpackage menus_functions.php
  */
 
+include_once(GSADMININCPATH.'menu_manage_functions.php');
 
 // define('GSMENULEGACY',true); // use legacy menus, single level flat menu
 
@@ -39,19 +40,21 @@ define('GSMENUDEFAULT',GSMENUIDCOREMENU);
  * @return bool status of menu generation upgrade
  */
 function initUpgradeMenus(){
+    // import menu data from pages to flat legacy menu
     $menu   = importLegacyMenuFlat();
     $status = menuSave('legacy',$menu);
     debugLog(__FUNCTION__ . ": legacy menu save status " . ($status ? 'success' : 'fail'));
 
+    // import ALL core pages to core nested tree
     $menu   = importLegacyMenuTree();
     $status &= menuSave(GSMENUIDCORE,$menu);
     debugLog(__FUNCTION__ . ": core menu save status " . ($status ? 'success' : 'fail'));
 
-    $menu   = importLegacyMenuTree(true);
-    _debugLog(array_keys($menu[GSMENUFLATINDEX]));
+    // generate core pages menu items only menu
+    // $menu   = importLegacyMenuTree(true);
     // $status &= menuSave(GSMENUIDCOREMENU,$menu);
-    // debugLog(__FUNCTION__ . ": core inmenu menu save status " . ($status ? 'success' : 'fail'));
-	saveCoreMenu();
+    $status &= saveCoreMenu();
+    debugLog(__FUNCTION__ . ": core inmenu menu save status " . ($status ? 'success' : 'fail'));
 
     return $status;
 }
@@ -63,38 +66,9 @@ function initUpgradeMenus(){
  * @since  3.4
  * @return success status
  */
-function saveCoreMenu(){
-	// @todo this moves orphan menus oddly, probably because they are no longer sorted the same after converted to heirarchy
-	// 51:_debugLog(array_keys($menu[GSMENUFLATINDEX]));171 ms 2.52 mb
-	// array_keys($menu[GSMENUFLATINDEX]) → array•10 {
-	// [0] → str•5 'child'
-	// [1] → str•14 'child-1c-1b-1a' <-----
-	// [2] → str•12 'index_custom'
-	// [3] → str•11 'draft-child'
-	// [4] → str•8 'child-1a'
-	// [5] → str•10 'child-1b-1'
-	// [6] → str•8 'child-1b'
-	// [7] → str•9 'parent-1b'
-	// [8] → str•6 'test-2'
-	// [9] → str•5 'index'
-	// }
-	// 
-	// 65:_debugLog(array_keys($menu[GSMENUFLATINDEX]));176 ms 2.53 mb
-	// array_keys($menu[GSMENUFLATINDEX]) → array•10 {
-	// [0] → str•5 'child'
-	// [1] → str•12 'index_custom'
-	// [2] → str•11 'draft-child'
-	// [3] → str•8 'child-1a'
-	// [4] → str•10 'child-1b-1'
-	// [5] → str•8 'child-1b'
-	// [6] → str•14 'child-1c-1b-1a' <-----
-	// [7] → str•9 'parent-1b'
-	// [8] → str•6 'test-2'
-	// [9] → str•5 'index'
-	// }
+function saveCoreMenu()
 	$menu  = getMenuDataArray();
-	// $pages = getPagesSortedByMenu();
-	$pages = filterKeyValueMatch(getPages(),'menuStatus','Y');
+	$pages = filterKeyValueMatch(getPages(),'menuStatus','Y'); // get menu pages form pagecache
 	$slugs = $pages;
 	$menu[GSMENUFLATINDEX] = array_intersect_key($menu[GSMENUFLATINDEX],$slugs);
 	_debugLog(array_keys($menu[GSMENUFLATINDEX]));
@@ -109,10 +83,11 @@ function saveCoreMenu(){
 			}
 		}	
 	}
-	// $menu   = menuRebuildNestArray($menu);
+	$menu   = menuRebuildNestArray($menu);
 	debugLog($menu[GSMENUFLATINDEX]);
     $status = menuSave(GSMENUIDCOREMENU,$menu);
     debugLog(__FUNCTION__ . ": core inmenu menu save status " . ($status ? 'success' : 'fail'));	
+    return $status;
 }
 
 /**
@@ -133,11 +108,10 @@ function importLegacyMenuFlat(){
  * @return array new menu nested tree sorted by hierarchy and menuOrder
  */
 function importLegacyMenuTree($menu = false){
-	//@todo sorting by anything other than parent child heirarvhy if filtering menu status results in odd ordering
-	//sortParentPath is probably required
-    // $pages = getPagesSortedByMenuTitle();
-    $pages = sortCustomIndexCallback(getpages(),'title','prepare_pagePathTitles');
+    $pages = getPagesSortedByMenuTitle();
+    // $pages = sortCustomIndexCallback(getpages(),'title','prepare_pagePathTitles');
     if($menu) $pages = filterKeyValueMatch($pages,'menuStatus','Y');
+    debugLog(array_keys($pages));
     // @todo when menu filtered, does not retain pages with broken paths, problem for menus that should probably still show them
     $menu  = importMenuFromPages($pages);
     return $menu;

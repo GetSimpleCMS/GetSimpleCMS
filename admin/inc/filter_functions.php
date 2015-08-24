@@ -513,9 +513,18 @@ function getPagePath($pageId){
 	return $pageId;
 }
 
-function getPagePathField($pageId,$field){
+/**
+ * get page path fields
+ * gets the field values for all parents in path and implodes them by delim
+ * parent field - parent field - page field
+ * @param  str $pageId slug of page
+ * @param  str $field  field name
+ * @param  str $delim  delimiter for implode
+ * @return str         concatenated string of parent fields
+ */
+function getPagePathField($pageId,$field,$delim = '/'){
 	$parents = getParentFields($pageId,$field);
-	if($parents) return implode('/',array_reverse($parents)) . '/' . getPageFieldValue($pageId,$field);
+	if($parents) return implode('/',array_reverse($parents)) . $delim . getPageFieldValue($pageId,$field);
 	return $pageId;
 }
 
