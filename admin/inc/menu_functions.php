@@ -71,7 +71,7 @@ function initUpgradeMenus(){
  * @since  3.4
  * @return success status
  */
-function saveCoreMenu()
+function saveCoreMenu(){
 	$menu  = getMenuDataArray();
 	$pages = filterKeyValueMatch(getPages(),'menuStatus','Y'); // get menu pages form pagecache
 	$slugs = $pages;
