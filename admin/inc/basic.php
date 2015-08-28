@@ -676,7 +676,9 @@ function XMLsave($xml, $file) {
 	if(getDef('GSFORMATXML',true)) $data = formatXmlString($data); // format xml if config setting says so
 	$data = exec_filter('xmlsave',$data); // @filter xmlsave executed before writing string to file
 	$success = save_file($file, $data); // LOCK_EX ?
-}	
+	return $success;
+}
+
 /**
  * create a director or path
  *
