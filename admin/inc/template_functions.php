@@ -1078,7 +1078,7 @@ function getParentsSlugHashTable($pages = array(), $useref = true){
 		
 		if(!empty($parent)){
 			if (isset($ary[$parent])) $ary[$parent]['children'][$page['url']] = ($useref ? $page : $page['url']);
-			else $ary[$parent] = array('id'=>$parent,'children'=>array([$page['url']] => ($useref ? $page : $page['url'])));
+			else $ary[$parent] = array('id'=>$parent,'children'=>array($page['url'] => ($useref ? $page : $page['url']) ) );
 		}
 		// else $ary[] = array('id'=>$page['url']);
 	}
