@@ -20,7 +20,7 @@ add_action('page-restore', 'create_pagesxml',array(true));         // Create pag
 add_action('page-clone', 'create_pagesxml',array(true));           // Create pages.array if page undo
 add_action('draft-publish', 'create_pagesxml',array(true));        // Create pages.array if page is updated
 add_action('changedata-aftersave', 'create_pagesxml',array(true)); // Create pages.array if page is updated
-add_action('pagecache-aftersave', 'initUpgradeMenus');             // regenerate menu cache
+// add_action('pagecache-aftersave', 'initUpgradeMenus');             // regenerate menu cache
 
 
 /**
