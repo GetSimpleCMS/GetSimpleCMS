@@ -577,7 +577,7 @@ h5:hover img {
 }
 
 #sidebar.fixed{
-	-transition: top .2s ease-out;
+	transition: top .2s ease-out;
 		-webkit-transition: top .2s ease-in-out;
 		-moz-transition: top .2s ease-in-out;
 		-o-transition: top .2s ease-in-out;
@@ -1453,6 +1453,8 @@ button,
 		-moz-box-shadow: rgba(0,0,0, 0.06) 0 0 3px;
 		-webkit-box-shadow: rgba(0,0,0, 0.06) 0 0 3px;
 	box-shadow: rgba(0,0,0, 0.06) 0 0 3px;
+	display:inline-block;
+	margin:3px 0;
 }
 
 input.submit:focus, 
