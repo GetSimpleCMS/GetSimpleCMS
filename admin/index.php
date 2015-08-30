@@ -31,7 +31,7 @@ ob_end_flush();
 		<div class="main" >
 			<h3><?php echo cl($SITENAME); ?></h3>
 			<?php exec_action('index-login'); //@hook index-login ?>
-			<form class="login" action="<?php '?'. htmlentities($_SERVER['QUERY_STRING'], ENT_QUOTES); ?>" method="post">
+			<form class="login entersubmit" action="<?php '?'. htmlentities($_SERVER['QUERY_STRING'], ENT_QUOTES); ?>" method="post">
 				<p><b><?php i18n('USERNAME'); ?>:</b><br /><input type="text" class="text" id="userid" name="userid" /></p>
 				<p><b><?php i18n('PASSWORD'); ?>:</b><br /><input type="password" class="text" id="pwd" name="pwd" /></p>
 				<p><input type="submit" name="submitted" class="submit" value="<?php i18n('LOGIN'); ?>" /></p>

@@ -93,7 +93,7 @@ get_template('header');
 		<h3><?php i18n('RESET_PASSWORD'); ?></h3>
 		<p class="desc"><?php i18n('MSG_PLEASE_EMAIL'); ?></p>
 		
-		<form class="login" action="" method="post" >
+		<form class="login" action="" class="entersubmit" method="post" >
 			<input name="nonce" id="nonce" type="hidden" value="<?php echo get_nonce("reset_password");?>"/>
 			<p><b><?php i18n('LABEL_USERNAME'); ?>:</b><br /><input class="text" name="username" type="text" value="" /></p>
 			<p><input class="submit" type="submit" name="submitted" value="<?php echo i18n_r('SEND_NEW_PWD'); ?>" /></p>
