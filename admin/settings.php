@@ -73,7 +73,7 @@ if(isset($_POST['submitted'])) {
 		$SITELANG = var_in($_POST['lang']);
 	}
 	if(isset($_POST['about'])) {
-		$SITEABOUT = var_in($_POST['about']);
+		$SITEABOUT = ($_POST['about']);
 	}
 
 	// check valid lang files
