@@ -682,6 +682,7 @@ function XMLsave($xml, $file) {
 	$success = save_file($file, $data); // LOCK_EX ?
 	return $success;
 }
+
 /**
  * JSON Save
  *

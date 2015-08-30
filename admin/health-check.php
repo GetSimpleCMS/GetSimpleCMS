@@ -293,13 +293,13 @@ echo '<div class="bodycontent clearfix">
 						GSROOTPATH,
 						GSDATAPATH, 
 						GSDATAUPLOADPATH, 
-						GSUSERSPATH, 
-						GSCACHEPATH,
+						// GSUSERSPATH, 
+						// GSCACHEPATH,
 						GSTHUMBNAILPATH, 
-						GSDATAPAGESPATH, 
+						// GSDATAPAGESPATH, 
 						GSPLUGINPATH, 
-						GSDATAOTHERPATH, 
-						GSDATAOTHERPATH.'logs/', 
+						// GSDATAOTHERPATH, 
+						// GSDATAOTHERPATH.'logs/', 
 						GSTHEMESPATH
 					);
 
