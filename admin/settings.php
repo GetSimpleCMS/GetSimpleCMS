@@ -111,9 +111,12 @@ if(isset($_POST['submitted'])) {
 	if (!$error) {
 		$success = i18n_r('ER_SETTINGS_UPD').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>';
 		generate_sitemap();
+		GLOBAL $SITEURLABS;
+		if($SITEURLNEW !== $SITEURLABS) $SITEURLABS = $SITEURLNEW;
 	}
 		
 }
+
 
 # are any of the control panel checkboxes checked?
 if ($PRETTYURLS != '' ) { $prettychck = 'checked'; }
