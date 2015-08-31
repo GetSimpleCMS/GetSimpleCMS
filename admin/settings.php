@@ -216,7 +216,7 @@ get_template('header');
 			<div class="widesec">
 				<p>
 					<label for="about" ><?php i18n('LABEL_SITEABOUT');?>:</label>
-					<textarea class="text short" id="about" name="about" type="about" /><?php echo var_out($SITEABOUT); ?></textarea>
+					<textarea class="text short" id="about" name="about" type="about" /><?php echo ($SITEABOUT); ?></textarea>
 				</p>
 			</div>
 
