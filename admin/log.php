@@ -48,7 +48,7 @@ get_template('header');
 		else { ?>	
 			<h3 class="floated"><?php echo i18n_r('VIEW_LOG_FILE');?><span> / <?php echo var_out($log_name); ?></span></h3>
 			<div class="edit-nav clearfix" >
-				<a href="log.php?log=<?php echo $log_name; ?>&action=delete&nonce=<?php echo get_nonce("delete"); ?>" accesskey="<?php echo find_accesskey(i18n_r('CLEAR_ALL_DATA'));?>" title="<?php i18n('CLEAR_ALL_DATA');?> <?php echo $log_name; ?>?" /><?php i18n('CLEAR_THIS_LOG');?></a>
+				<a href="deletefile.php?log=<?php echo $log_name; ?>&action=delete&nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" accesskey="<?php echo find_accesskey(i18n_r('CLEAR_ALL_DATA'));?>" title="<?php i18n('CLEAR_ALL_DATA');?> <?php echo $log_name; ?>?" /><?php i18n('CLEAR_THIS_LOG');?></a>
 				<?php exec_action(get_filename_id().'-edit-nav'); ?>
 			</div>		
 			<?php exec_action(get_filename_id().'-body'); ?>
