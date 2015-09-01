@@ -141,7 +141,7 @@ $GS_definitions = array(
 	'GSTHUMBSMHEIGHT'      => 160,                            // (int) thumbsm max width
 	# DEBUGGING ----------------------------------------------------------------------------------------------------------------------------------------
 	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
-	'GSDEBUG'              => false,                          // (bool) output debug mode console
+	'GSDEBUG'              => true,                          // (bool) output debug mode console
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls to debuglog
 	'GSDEBUGREDIRECTS'     => false,                          // (bool) if debug mode enabled, prevent redirects for debugging
 	'GSDEBUGFILEIO'        => false,                          // (bool) debug filio operations
@@ -272,10 +272,12 @@ $sidemenudefinition = array(
  * Init debug mode
  */
 if(defined('GSDEBUG') && (bool) GSDEBUG === true) {
+	debugLog('GSDEBUG: TRUE');
 	error_reporting(-1);
 	ini_set('display_errors', 1);
 	// $nocache = true;
 } else if( defined('GSSUPPRESSERRORS') && (bool)GSSUPPRESSERRORS === true ) {
+	debugLog('GSSUPPRESSERRORS: TRUE');	
 	error_reporting(0);
 	ini_set('display_errors', 0);
 }
@@ -284,10 +286,10 @@ if(defined('GSDEBUG') && (bool) GSDEBUG === true) {
  * Enable php error logging
  */
 if(defined('GSERRORLOGENABLE') && (bool) GSERRORLOGENABLE === true){
+	debugLog('GSERRORLOGENABLE: TRUE');
 	ini_set('log_errors', 1);
 	ini_set('error_log', GSDATAOTHERPATH .'logs/'. GSERRORLOGFILE);
 }
-
 
 /**
  * Basic file inclusions

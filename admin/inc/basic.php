@@ -2605,7 +2605,7 @@ function getDefaultTimezone(){
 	if(!empty($USRTIMEZONE)) return $USRTIMEZONE;
 	if(!empty($SITETIMEZONE)) return $SITETIMEZONE;
 	if(getDef('GSTIMEZONE')) return getDef('GSTIMEZONE');
-	return date_default_timezone_get();
+	return @date_default_timezone_get();
 }
 
 /**
