@@ -18,7 +18,6 @@ define('GSMENUIDLEGACY','legacy'); // default id for the page menu cache
 // menu array key indexs
 define('GSMENUNESTINDEX','nested'); // menu array key for nested tree subarray
 define('GSMENUFLATINDEX','flat'); // menu array key for flat parent hash tree subarray
-define('GSMENUINDEXINDEX','indices'); // menu array key for indices tree subarray
 
 // menu filter result enums
 define('GSMENUFILTERSKIP',1);     // skip all children
@@ -130,7 +129,7 @@ function importLegacyMenuTree($menu = false){
  */
 function importMenuFromPages($pages = null, $flatten = false){
     
-    // flatten if importing from 3.3.x, doed not generate tree, generates flat menu instead for legacy menuordering by menuOrder
+    // flatten if importing from 3.3.x, does not generate tree, generates flat menu instead for legacy menuordering by menuOrder
     if($flatten) $parents = array(''=>$pages);
     else $parents = getParentsHashTable($pages, true , true); // get parent hash table of pages, useref, fixoprphans
 
@@ -142,7 +141,6 @@ function importMenuFromPages($pages = null, $flatten = false){
 
     $nesttree[GSMENUNESTINDEX]  = &$tree; //add tree array to menu
     $nesttree[GSMENUFLATINDEX]  = &$flatary[GSMENUFLATINDEX]; // add flat array to menu
-    // $nesttree[GSMENUINDEXINDEX] = $flatary[GSMENUINDEXINDEX]; // add index array to menu
     // debugLog($nesttree); // debug full
     
     return $nesttree;
@@ -240,7 +238,7 @@ function buildTreewHash($elements, $parentId = '', $preserve = false, $assoc = t
  *  ['index']  
  *    'data' => array(
  *        'url' => '/dev/getsimple/master/',
- *        'path' => 'index',
+ *        'path' => 'inde10x',
  *        'depth' => 1,
  *        'index' => 9,
  *        'order' => 7
@@ -283,13 +281,13 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
         if(isset($value['id'])){
             $id = $value['id'];
 
-            // rekey array if not using id keys, needed for non assoc arrays, such as mm submit etc
+            // hack to rekey array if not using id keys, needed for non assoc arrays, such as mm submit etc
             // this is not preffered but provided as a failsafe, reindex beforehand reindexMenuArray() to avoid modify ref in loop errors
             // skip rekeyed copies, we need a flag since array is reference, or else it will process the rekeyed elements twice
             if(isset($value['rekeyed'])){
             	unset($value['rekeyed']);
             	continue;
-            }	
+            }
             if($key !== $id){
                 $array[$id] = $value; // this modifies &$array and may cause problems
 				$array[$id]['rekeyed'] = true;
@@ -316,8 +314,6 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
                 $thisfunc($children,$id,$depth,null,$indexAry); // recursive call
             } else $flatvalue['data']['numchildren'] = 0;
 
-            // add index array
-            // $indexAry[GSMENUINDEXINDEX][$id] = $flatvalue['data']['dotpath'];
             // add to flat array
             $indexAry[GSMENUFLATINDEX][$id] = $flatvalue;
             if(isset($value['children'])) $indexAry[GSMENUFLATINDEX][$id]['children'] = array_keys($value['children']);

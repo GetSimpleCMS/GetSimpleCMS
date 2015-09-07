@@ -374,7 +374,6 @@ function generate_pageCacheXml(){
 			$id = $pageXml->url; // page id
 
 			$cacheItems = $cacheXml->addChild('item');
-			// $pages->addChild('url', $id);
 			$children = $pageXml->children();
 
 			foreach ($children as $item => $itemdata) {
@@ -385,13 +384,13 @@ function generate_pageCacheXml(){
 				}
 			}
 			
-			pageCacheAddRoutes($id,$cacheItems);
-
 			// removed from xml , redundant
 			# $note = $pages->addChild('slug');
 			# $note->addCData($id);
 			# $note = $pages->addChild('filename'); 
 			# $note->addCData($file);
+
+			pageCacheAddRoutes($id,$cacheItems);
 		}
 	}
 	return $cacheXml;
@@ -405,7 +404,7 @@ function pageCacheAddRoutes($id,&$cacheItems){
 	$routesNode = $cacheItems->addChild('routes');
 	$routeNode = $routesNode->addChild('route');
 
-	// can lead to infinite loops
+	// @todo can lead to infinite loops if genetate_permalink triggers a cache rebuild
 	$permaroute = no_tsl(generate_permalink($id));
 
 	$pathNode = $routeNode->addChild('path');
