@@ -440,13 +440,15 @@ function exec_filter($filter_name,$data=array()) {
 }
 
 function exec_filter_callback($hook,&$data=array()){
+	if(!pluginhookstat('filter',$hook['hook'])) return $data; // skip
 	$data = call_user_func_array($hook['function'], array_merge(array($data),$hook['args']));
+	pluginhookstat('filter',$hook['hook'],false);
+	return $data;
 }
 
 function exec_filter_complete($data=array()){
 	return $data;
 }
-
 
 /**
  * Add Security Filter
@@ -510,6 +512,45 @@ function exec_secfilter_complete($data=array()){
  * hook helper functions
  */
 
+
+/**
+ * plugin hook call stat bucket
+ * bumps call count and sets or clears active flag for cyclical loop checks
+ * @todo  could make active an active call count and allow nested filters by count, say allow 1 instead of none if it was desirable
+ * @since  3.4
+ * @param  str  $id     hook type id
+ * @param  str  $hook   hook name
+ * @param  boolean $active mark active
+ * @return bool          false if start already flagged
+ */
+function pluginhookstat($id,$hook,$active = true){
+	global $plugincallstats;
+
+	if(!isset($plugincallstats[$id])) $plugincallstats[$id] = array();
+	if(!isset($plugincallstats[$id][$hook])){
+		$plugincallstats[$id][$hook] = array();
+		$plugincallstats[$id][$hook]['active'] = false;
+		$plugincallstats[$id][$hook]['cnt'] = 0;
+	}
+
+	// closing call
+	if(!$active){
+		$plugincallstats[$id][$hook]['active'] === false;
+		return false;
+	}
+
+	// open call, loop flag
+	if(isset($plugincallstats[$id][$hook]['active']) && $plugincallstats[$id][$hook]['active'] === true) return false;
+	
+    // set active
+	$plugincallstats[$id][$hook]['active'] == true;
+
+	// bump call count
+	$plugincallstats[$id][$hook]['cnt']++;
+	// debugLog($plugincallstats);
+	return true;
+}
+
 /**
  * prepare arguments for hook exec by removing required arguments
  * @param  array  $args    args array
@@ -561,7 +602,10 @@ function prepareHookCallbackArgs($hook,$args){
  */
 function add_hook(&$hook_array, &$hook_hash_array, $hook_name, $hook_function, $args = array(), $priority = null, $expectedargs = 0) {
 	
-	if(isset($priority) && !is_int($priority)) die('priority is not NAN'); 
+	if(isset($priority) && !is_int($priority)){
+		debugLog(__FUNCTION__ . ': invalid priority');
+		$priority = null;
+	}
 
 	if($priority === 0) $priority = 1; # fixup 0 
 	clamp($priority,1,10,10); # clamp priority, min:1, max:10, default:10
@@ -623,6 +667,7 @@ function remove_hook(&$hook_hash_array, $hook_name, $hook_function){
  * @param array $hook_array hook array
  * @param array $hook_hash_array hook hash array
  * @param string $hook_name name of hook to execute
+ * @return returns hook callback result
  */
 function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', $data = array(), $complete = '') {
 	if(!$hook_array || !$hook_hash_array){
@@ -643,9 +688,10 @@ function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', 
 		if(count(current(reset($hooks))) == 1){
 			$hook = current($hooks);
 			if(!isset($hook) || !isset($hook[0])) return;
-			$callback($hook[0],$data);
+			$res = $callback($hook[0],$data);
 			// if callback call it
-			if(function_exists($complete)) return $complete($data);			
+			if(function_exists($complete)) return $complete($data);
+			return $res;		
 		}
 	}
 
@@ -655,12 +701,13 @@ function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', 
 	foreach ($hooks as $priority){
 		foreach($priority as $hook){
 			if(!isset($hook)) continue;
-			$callback($hook,$data);
+			$res = $callback($hook,$data);
 		}
 	}
 
 	// if complete handler call it
 	if(function_exists($complete)) return $complete($data);
+	return $res;
 
 }
 
