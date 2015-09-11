@@ -176,7 +176,8 @@ global
  $secfilters,     // (array) global array for storing security filters
  $securityFilters,// (array) global array for storing security filters hash table
  $GS_scripts,     // (array) global array for storing queued asset scripts
- $GS_styles       // (array) global array for storing queued asset styles
+ $GS_styles,      // (array) global array for storing queued asset styles
+ $plugincallstats // (array) global array for storing plugin call stats
 ;
 
 if(isset($_GET['nocache'])){
