@@ -845,6 +845,26 @@ function menuRead($menuid){
 }
 
 /**
+ * get available menu files, strips core menus
+ * @return array array of menuids available
+ */
+function getMenus(){
+    $files = getFiles(GSDATAMENUPATH,'json');
+    $coreMenus = array('menu_'.GSMENUIDCORE,'menu_'.GSMENUIDCOREMENU,'menu_'.GSMENUIDLEGACY);
+    $menus = array();
+
+    // remove core files
+    foreach($files as $key=>$menufile){
+        $menuid = getFileName($menufile);
+        if(in_array($menuid,$coreMenus)) continue;
+        $menus[] = $menuid;
+    }
+
+    debugLog($menus);
+    return $menus;
+}
+
+/**
  * GETTERS
  */
 

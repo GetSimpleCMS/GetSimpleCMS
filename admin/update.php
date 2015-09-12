@@ -215,6 +215,8 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	/* end update */
 } 
 
+initUpgradeMenus();
+
 // redirect to health check or login and show updated notice
 $redirect = cookie_check() ? "health-check.php?updated=1" : "index.php?updated=1";
 

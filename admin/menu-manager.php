@@ -64,6 +64,7 @@ $sortkeys = array_keys($presort);
 // debugLog($presort);
 // debugLog($sortkeys);
 
+getMenus();
 $tree = getMenuDataNested($menuid);
 // $tree = array('id' => '','children' => $tree); // loop tree and create cyclical references to parents to use flat array instead of nested
 debugLog($tree);
