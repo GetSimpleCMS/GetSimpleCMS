@@ -639,8 +639,7 @@ if(GSBASE) require_once(GSADMINPATH.'base.php');
 function debugLog($mixed = null) {
 	global $GS_debug;
 	array_push($GS_debug,$mixed);
-	callIfCallable('debugLog_callout', $mixed); // @callout debugLog_callout (str) callout for each debugLog call, argument passed
-	// if(function_exists('debugLog_callout')) debugLog_callout($mixed); // @callout debugLog_callout (str) callout for each debugLog call, argument passed
+	if(function_exists('debugLog_callout')) debugLog_callout($mixed); // @callout debugLog_callout (str) callout for each debugLog call, argument passed
 	return $mixed;
 }
 
