@@ -2855,6 +2855,7 @@ h5 .crumbs, div.h5 .crumbs {
 	height: 500px;
 	overflow: scroll;
 	margin-bottom: 20px;
+	text-align: left;
 }
 
 /* ajaxwait deprecated , use js spin() */
