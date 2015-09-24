@@ -12,8 +12,8 @@ include_once(GSADMININCPATH.'menu_manage_functions.php');
 
 // menu ids
 define('GSMENUIDCORE','corepages'); // default id for the core page menu cache
-define('GSMENUIDCOREMENU','corepages_menu'); // default id for the page menu cache
-define('GSMENUIDLEGACY','legacy'); // default id for the page menu cache
+define('GSMENUIDCOREMENU','corepages_menu'); // default id for the core page DYNAMIC menu cache
+define('GSMENUIDLEGACY','legacy'); // default id for the 3.3.x legacy flat menu cache
 
 // menu array key indexs
 define('GSMENUNESTINDEX','nested'); // menu array key for nested tree subarray
@@ -816,10 +816,16 @@ function menuSave($menuid,$data){
     return $status;
 }
 
+/**
+ * get menu data from file resolved menu id
+ * @since  3.4
+ * @param  str $menuid menu id
+ * @return str         raw file data
+ */
 function menuReadFile($menuid){
     $menufileext = '.json';
-    $menu = read_file(GSDATAMENUPATH.'menu_'.$menuid.$menufileext);
-    return $menu;
+    $menustr = read_file(GSDATAMENUPATH.'menu_'.$menuid.$menufileext);
+    return $menustr;
 }
 
 /**
@@ -846,6 +852,7 @@ function menuRead($menuid){
 
 /**
  * get available menu files, strips core menus
+ * @since  3.4
  * @return array array of menuids available
  */
 function getMenus(){
@@ -874,15 +881,16 @@ function getMenus(){
  * 
  * @since  3.4
  * @uses  $SITEMENU
- * @param  string $menuid menuid to retreive
+ * @param string $menuid menuid to retreive
+ * @param bool $reload force reading from file else use global
  * @return array         menu array
  */
-function getMenuDataArray($menuid = null,$force = false){
+function getMenuDataArray($menuid = null,$reload = false){
 	if(!$menuid) $menuid = GSMENUIDCORE;
     GLOBAL $SITEMENU;
     // return cached local
-    if(isset($SITEMENU[$menuid]) && !$force) return $SITEMENU[$menuid];
-    
+    if(isset($SITEMENU[$menuid]) && !$reload) return $SITEMENU[$menuid];
+
     // load from file
     $menu = menuRead($menuid);
     if($menu) $SITEMENU[$menuid] = $menu;

@@ -547,7 +547,7 @@ function getParent($pageId){
  */
 function getParentPage($pageId){
 	$pagesArray = getPages();
-	$parentId   = $pagesArray[$pageId]['parent'];
+	$parentId   = getParent($pageId);
 	return $pagesArray[$parentId];
 }
 
@@ -565,22 +565,22 @@ function getParents($pageId){
  * get PAGE parents slugs
  * returns an array of all this pages parents slugs
  * @param  str $pageId slug of child
- * @return array       array of parents slugs
+ * @param  str $key field to return from parents
+ * @return array       array of parents fields
  */
-function getParentFields($pageId,$key = 'url',$filter = null){
-	$pageparents  = getPagesFields('parent');
-	$parentValues = getPagesFields($key);
-	$parent       = getParent($pageId);
-	$values       = array();
+function getParentFields($pageId,$key = 'url',$filterFunc = null){
 
-	if(empty($parent)) return array();
+	$menu = getMenuDataFlat();
+	$path = $menu[$pageId]['data']['dotpath'];
+	$parents = explode(".",trim($path,'.'));
+	array_pop($parents);
+	$values  = array();
 
-	while(isset($pageparents[$parent]) && isset($parentValues[$parent])){
-		$value    = (string)$parentValues[$parent];
-		$parent   = (string)$pageparents[$parent];
-		if(isset($filter) && !$filter($value) && !empty($value)) $values[] = $value;
-		else if(!isset($filter) && !empty($value)) $values[] = $value;
+	foreach($parents as $parent){
+		$value = ($key == 'url') ? $parent : getPageFieldValue($parent,$key); // optimize if we are asking for parent slugs, we already have them
+		if(callIfCallable($filterFunc) !== true) $values[] = $value;
 	}
+
 	return $values;
 }
 
@@ -614,5 +614,16 @@ function getParentsPages($pageId){
 	return $parents;
 }
 
+/**
+ * page is in menu
+ * @since  3.4
+ * @param  str $slug   page id
+ * @param  sgtr $menuid menuid to check
+ * @return bool         true if in menu specified
+ */
+function pageIsInMenu($slug,$menuid = null){
+	$menu = getMenuDataFlat($menuid);
+	return isset($menu[$slug]);
+}
 
 /*?>*/

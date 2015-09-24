@@ -6,13 +6,13 @@ function menuItemRename($menu,$slug,$data){
 
 	$menu[GSMENUFLATINDEX][$data['id']] = $data;
 	$menu[GSMENUFLATINDEX][$data['id']]['children'] = $item['children'];
-	// update children ?
+	menuItemRefreshChildren($menu,$slug);
 	return $menu;
 }
 
 function menuItemUpdate($menu,$slug,$data){
 	$menu[GSMENUFLATINDEX][$slug] = $data;
-	// update children ?
+	menuItemRefreshChildren($menu,$slug);
 	return $menu;
 }
 
@@ -34,10 +34,10 @@ function menuItemDeleteParent($menu,$slug){
 	foreach($item['children'] as $child){
 		$child['parent'] = '';
 		menuItemAdd($menu,$child['id'],$child);
-		// update children  ?
+		menuItemRefreshChildren($menu,$slug);
 	}
 	menuItemDelete($slug);
-	return $menu;	
+	return $menu;
 }
 
 function menuItemAdd($menu,$slug,$data){
@@ -55,6 +55,7 @@ function menuItemParentChanged($menu,$slug){
 	// [ ] move to root
 	// [ ] move to another parent
 	// [ ] deleted, in which case children move to root
+	$menu = menuIndexPrune($menu,array_keys($menu[GSMENUFLATINDEX])); // self prune
 	return $menu;
 }
 
@@ -68,13 +69,24 @@ function menuIndexPrune($menu,$index){
 	return $menu;
 }
 
+function menuItemRefreshChildren($menu,$slug){
+	// fix up children values
+	// this is a problem since the menu is not saved yet , and these callouts will eventually need the menu
+	foreach($menu[GSMENUFLATINDEX][$index]['children'] as $key => $value){
+		recurseUpgradeTreeCallout($menu[GSMENUFLATINDEX][$key],$id = $key,$parent = $slug);
+		debugLog($menu[GSMENUFLATINDEX][$index]);
+	}
+
+	return $menu;
+}
+
 /**
  * REBUILDERS
  */
 
 /**
  * rebuild a menus nested array
- * wipes nest, rebuilds it and adds it back in
+ * wipes GSMENUNESTINDEX, rebuilds it and adds it back in
  * @param  array $menu menu array
  * @return array       new menu array
  */
@@ -151,7 +163,7 @@ function menuNestAddDataRefs(&$menu,&$parents = null){
 }
 
 /**
- * get only root menu items from flat array
+ * get only parent root menu items from flat array
  * will return orphans as root items
  * @param  array $menu menu array
  * @return array       menu containing only root level parents
