@@ -3196,13 +3196,13 @@ function strip_content($str, $pattern = '/[({]%.*?%[})]/'){
 }
 
 /**
- * call function if its callable, pass arguments
+ * call function if its callable, passes variable arguments
  * @since  3.4
  * @param  str $funcname functionname
  * @param  str $return   return value if functioname is invalid
  * @return mixed         function return or $return on fail
  */
-function callIfCallable($funcname){
+function callIfCallable($funcname/*,... variable args*/){
     if(!is_callable($funcname)) return;
     
     $args = func_get_args();

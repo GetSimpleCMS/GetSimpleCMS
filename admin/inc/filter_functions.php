@@ -570,18 +570,15 @@ function getParents($pageId){
  */
 function getParentFields($pageId,$key = 'url',$filterFunc = null){
 
-	$menu = getMenuDataFlat();
-	$path = $menu[$pageId]['data']['dotpath'];
-	$parents = explode(".",trim($path,'.'));
-	array_pop($parents);
-	$values  = array();
-
+	$resArray = array();
+	$parents = menuItemGetParents($pageId);
+	if(!$parents) return;
 	foreach($parents as $parent){
 		$value = ($key == 'url') ? $parent : getPageFieldValue($parent,$key); // optimize if we are asking for parent slugs, we already have them
-		if(callIfCallable($filterFunc) !== true) $values[] = $value;
+		if(callIfCallable($filterFunc,$parent,$key) !== true) $resArray[] = $value;
 	}
 
-	return $values;
+	return $resArray;
 }
 
 /**

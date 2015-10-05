@@ -45,8 +45,28 @@ function menuItemAdd($menu,$slug,$data){
 	return $menu;
 }
 
-function getMenuItem_new($menu,$slug){
-	return $menu[GSMENUFLATINDEX][$slug];
+
+function menuItemGetParent($pageId,$menuid){
+	$menu = getMenuDataFlat($menuid);
+	$pareent = $menu[$pageId]['parent'];
+	return $parent;
+}
+
+/**
+ * 
+ * @param  [type]  $pageId      [description]
+ * @param  [type]  $menuid      [description]
+ * @param  boolean $includeself [description]
+ * @return [type]               [description]
+ */
+function menuItemGetParents($pageId,$menuid = null,$includeself = false){
+	$menu = getMenuDataFlat($menuid);
+	$item = getMenuItem($menu);
+	if(!$item) return;
+	$path = $menu[$pageId]['data']['dotpath'];
+	$parents = explode(".",trim($path,'.'));
+	if($includeself !== true) array_pop($parents); // remove self from path
+	return $parents;
 }
 
 function menuItemParentChanged($menu,$slug){
