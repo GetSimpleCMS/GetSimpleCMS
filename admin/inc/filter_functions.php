@@ -508,7 +508,7 @@ function getPageFieldValue($pageId,$field){
  * @return str         path/to/pageId
  */
 function getPagePath($pageId){
-	$path = menuItemGetField($pageid,'path',$menuid = null){	
+	$path = menuItemGetField($pageid,'path',$menuid = null);
 	return $path;
 }
 
@@ -578,33 +578,16 @@ function getParentFields($pageId,$key = 'url',$filterFunc = null){
 }
 
 /**
- * eval page is in menu
- * @param  str $page pageid
- * @return bool true if parent not in menu
- */
-function filterParentMenu($pageid){
-	$page = getPage($pageid);
-	return $page['menuStatus'] !== 'Y';
-}
-
-/**
  * get page parent pages
  * returns an array of all this pages parents page-arrays
  * @param  str $pageId slug of child
  * @return array       PAGES collection of parents
  */
 function getParentsPages($pageId){
-	$pagesArray  = getPages();
-	$pageparents = getPagesFields('parent');
-	$parent      = $pageId;
-	$parents     = array();
-	while(isset($pageparents[$parent])){
-		$parent = $pageparents[$parent];
-		if(isset($pagesArray[$parent])){
-			$parents[$parent] = $pagesArray[$parent];
-		}
-	}
-	return $parents;
+	$pages   = getPages();
+	$parents = getParents($pageId);
+	if(!$parents) return array();
+	return array_intersect_key($pages,array_flip($parents));
 }
 
 /**
@@ -617,6 +600,15 @@ function getParentsPages($pageId){
 function pageIsInMenu($slug,$menuid = null){
 	$menu = getMenuDataFlat($menuid);
 	return isset($menu[$slug]);
+}
+
+/**
+ * get only pages with these keys
+ * @param  array $keys array of keys to keep
+ * @return array       pages array with only the matching pages
+ */
+function getPagesMulti($keys){
+	return array_intersect_key(getPages(),array_flip($keys));
 }
 
 /*?>*/
