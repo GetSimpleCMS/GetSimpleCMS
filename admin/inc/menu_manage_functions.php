@@ -46,27 +46,24 @@ function menuItemAdd($menu,$slug,$data){
 }
 
 
-function menuItemGetParent($pageId,$menuid){
-	$menu = getMenuDataFlat($menuid);
-	$pareent = $menu[$pageId]['parent'];
-	return $parent;
+/**
+ * get a menu item flat
+ * @since  3.4
+ * @param  array $menu menu array
+ * @param  string $id   page id
+ * @return array       menu item array
+ */
+function getMenuItem($menu,$id = ''){
+    if(isset($menu[GSMENUFLATINDEX]) && isset($menu[GSMENUFLATINDEX][$id])) return $menu[GSMENUFLATINDEX][$id];
 }
 
-/**
- * 
- * @param  [type]  $pageId      [description]
- * @param  [type]  $menuid      [description]
- * @param  boolean $includeself [description]
- * @return [type]               [description]
- */
-function menuItemGetParents($pageId,$menuid = null,$includeself = false){
-	$menu = getMenuDataFlat($menuid);
-	$item = getMenuItem($menu);
+function getMenuItemParent($menu,$slug = ''){
+	$item = getMenuItem($menu,$slug);
 	if(!$item) return;
-	$path = $menu[$pageId]['data']['dotpath'];
-	$parents = explode(".",trim($path,'.'));
-	if($includeself !== true) array_pop($parents); // remove self from path
-	return $parents;
+
+	if(!empty($item['parent'])){
+    	return getMenuItem($menu,$item['parent']);
+    }
 }
 
 function menuItemParentChanged($menu,$slug){
@@ -197,4 +194,40 @@ function getMenuItemRoots($menu){
 		}
 	}
 	return $roots;
+}
+
+
+// menuid menuitem wrappers
+
+function menuItemGetData($pageid,$menuid = null){
+	$menu = getMenuDataFlat($menuid);
+	$item = getMenuItem($menu,$pageid);
+	return $item;
+}
+
+function menuItemGetField($pageid,$field,$menuid = null){
+	$item = menuItemGetData($pageid,$menuid);
+	if(!$item || !isset($item['data']['field'])) return;
+	return $item['data'][$field];
+}
+
+function menuItemGetParent($pageid,$menuid = null){
+	$data = menuItemGetField($pageid,'parent',$menuid);
+	if(!$data) return;
+	return $data;
+}
+
+/**
+ * 
+ * @param  [type]  $pageid      [description]
+ * @param  [type]  $menuid      [description]
+ * @param  boolean $includeself [description]
+ * @return [type]               [description]
+ */
+function menuItemGetParents($pageid,$menuid = null,$includeself = false){
+	$path    = menuItemGetField($pageid,'dotpath',$menuid);
+	if(!$path) return;
+	$parents = explode(".",trim($path,'.'));
+	if($includeself !== true) array_pop($parents); // remove self from path
+	return $parents;
 }

@@ -1049,8 +1049,6 @@ function getParentsHashTable($pages = array(), $useref = true, $fixorphans = fal
 
 		// move orphans to root
 		if($fixorphans && !isset($pagesArray[$parent])) $parent = ''; 
-		// move orphans to last parent
-		// if($fixorphans && $parent !== '' && !isset($pagesArray[$parent])) $parent = getClosestParentInMenu($key);
 		if($pageId) $ary[$parent][$pageId] = $useref ? $page : '';
 		$lastkey = $key;
 	}
@@ -1084,17 +1082,6 @@ function getParentsSlugHashTable($pages = array(), $useref = true){
 	}
 
 	return $ary;
-}
-
-/**
- * get closest parent in menu
- * @since  3.4
- * @param  str $pageId pageid for page
- * @return str         parent pageid
- */
-function getClosestParentInMenu($pageId){
-	$parents = getParentFields($pageId,'url','filterParentMenu');
-	return array_pop($parents);
 }
 
 /**

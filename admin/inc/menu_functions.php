@@ -982,26 +982,6 @@ function &resolve_tree($tree, $path, $childkey = 'children') {
 }
 
 /**
- * get a menu item flat
- * @since  3.4
- * @param  array $menu menu array
- * @param  string $id   page id
- * @return array       menu item array
- */
-function getMenuItem($menu,$id = ''){
-    if(isset($menu[GSMENUFLATINDEX]) && isset($menu[GSMENUFLATINDEX][$id])) return $menu[GSMENUFLATINDEX][$id];
-}
-
-function getMenuItemParent($menu,$slug = ''){
-	$item = getMenuItem($menu,$slug);
-	if(!$item) return;
-
-	if(!empty($item['parent'])){
-    	return getMenuItem($menu,$item['parent']);
-    }
-}
-
-/**
  * EXPORT / LEGACY
  */
 

@@ -508,9 +508,8 @@ function getPageFieldValue($pageId,$field){
  * @return str         path/to/pageId
  */
 function getPagePath($pageId){
-	$parents = getParents($pageId);
-	if($parents) return implode('/',array_reverse($parents)) . '/' . $pageId;
-	return $pageId;
+	$path = menuItemGetField($pageid,'path',$menuid = null){	
+	return $path;
 }
 
 /**
@@ -535,8 +534,7 @@ function getPagePathField($pageId,$field,$delim = '/'){
  * @return str         parent of this page
  */
 function getParent($pageId){
-	$parentId  = returnPageField($pageId,'parent');
-	return (string) $parentId;
+	return menuItemGetParent($pageId);
 }
 
 /**
@@ -546,9 +544,8 @@ function getParent($pageId){
  * @return str         parent PAGE object
  */
 function getParentPage($pageId){
-	$pagesArray = getPages();
-	$parentId   = getParent($pageId);
-	return $pagesArray[$parentId];
+	$parentId = getParent($pageId);
+	return getPage($pageId);
 }
 
 /**
@@ -569,7 +566,6 @@ function getParents($pageId){
  * @return array       array of parents fields
  */
 function getParentFields($pageId,$key = 'url',$filterFunc = null){
-
 	$resArray = array();
 	$parents = menuItemGetParents($pageId);
 	if(!$parents) return;
@@ -586,8 +582,8 @@ function getParentFields($pageId,$key = 'url',$filterFunc = null){
  * @param  str $page pageid
  * @return bool true if parent not in menu
  */
-function filterParentMenu($page){
-	$page = getPage($page);
+function filterParentMenu($pageid){
+	$page = getPage($pageid);
 	return $page['menuStatus'] !== 'Y';
 }
 
