@@ -670,6 +670,9 @@ function remove_hook(&$hook_hash_array, $hook_name, $hook_function){
  * @return returns hook callback result
  */
 function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', $data = array(), $complete = '') {
+	
+	// debugLog(__FUNCTION__ . ": " . $hook_name . ' - ' . $callback);
+
 	if(!$hook_array || !$hook_hash_array){
 		// debugLog('hook array is empty');
 		return;

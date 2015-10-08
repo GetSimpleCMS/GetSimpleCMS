@@ -321,6 +321,7 @@ function prepare_date($page,$key){
  * @return str         prepared string
  */
 function prepare_menuOrder($page,$key){
+	$key = trim($key);
 	if(empty($key) && $page['menuStatus'] == 'Y') return 0;
 	if((int)$key == 0 && $page['menuStatus'] !== 'Y') return 99999;
 	return (int)$key;

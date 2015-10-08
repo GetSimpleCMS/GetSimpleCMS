@@ -64,7 +64,14 @@ $sortkeys = array_keys($presort);
 // debugLog($presort);
 // debugLog($sortkeys);
 
-getMenus();
+$menus = getMenus();
+
+echo "<select>";
+foreach($menus as $menu){
+	echo "<option>$menu</option>";
+}
+echo "</select>";
+
 $tree = getMenuDataNested($menuid);
 // $tree = array('id' => '','children' => $tree); // loop tree and create cyclical references to parents to use flat array instead of nested
 debugLog($tree);

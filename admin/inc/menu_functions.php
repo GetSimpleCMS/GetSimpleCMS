@@ -8,7 +8,7 @@
 
 include_once(GSADMININCPATH.'menu_manage_functions.php');
 
-// define('GSMENULEGACY',true); // use legacy menus, single level flat menu
+define('GSMENULEGACY',true); // use legacy menus, single level flat menu
 
 // menu ids
 define('GSMENUIDCORE','corepages'); // default id for the core page menu cache
@@ -36,7 +36,10 @@ define('GSMENUMGRCALLOUT','mmCallout'); // menu manager tree callout
 define('GSMENUMGRFILTERCALLOUT','mmCalloutFilter'); // menu manager filter callout
 
 // define('GSMENUFILTERDEBUG',true);
-define('GSMENUDEFAULT',GSMENUIDCOREMENU);
+
+// which menu to use for default if legacy is disabled
+define('GSMENUDEFAULT',GSMENUIDCOREMENU); 
+
 
 /**
  * initialize upgrade, menu imports
@@ -65,27 +68,37 @@ function initUpgradeMenus(){
 
 /**
  * save core menu cache
- * get coremenu, remove all non menu items, 
+ * get coremenu, remove all non menu items, including orphans
  * rebuild nest, save
  * @since  3.4
+ * @param  bool $fixorphans if not true, orphans will be removed from the menu, else they will remain in place not sorted
  * @return success status
  */
-function saveCoreMenu(){
+function saveCoreMenu($fixorphans = false){
 	$menu  = getMenuDataArray();
 	$pages = filterKeyValueMatch(getPages(),'menuStatus','Y'); // get menu pages form pagecache
 	$slugs = $pages;
 	// filter non menu pages
 	$menu[GSMENUFLATINDEX] = array_intersect_key($menu[GSMENUFLATINDEX],$slugs);
 
-	// remove children that longer exist
+	// remove children attribs that are not in this menu from parent items
 	foreach($menu[GSMENUFLATINDEX] as $item){
+		$orphan = false;
+
+		if(!empty($item['data']['parent']) && !isset($menu[GSMENUFLATINDEX][$item['data']['parent']])){
+			$orphan = true;
+		}
+
 		if(isset($item['children'])){
 			foreach($item['children'] as $key=>$child){
 				if(!isset($menu[GSMENUFLATINDEX][$child])){
-					unset($item['children'][$key]);
+					unset($item['children'][$key]); // child is not a menu item remove it
+				} else{
+					if($orphan && $fixorphans !== true) unset($menu[GSMENUFLATINDEX][$child]); // child exists, but we are an ophan, remove child also
 				}
 			}
-		}	
+		}
+		if($orphan && $fixorphans !== true) unset($menu[GSMENUFLATINDEX][$item['id']]);
 	}
 	$menu   = menuRebuildNestArray($menu);
     $status = menuSave(GSMENUIDCOREMENU,$menu);
@@ -796,7 +809,6 @@ function newMenuSave($menuid,$menu){
 
 /**
  * save menu file
- * remove GSMENUFLATINDEX if it exists ( cannot save refs in json )
  * @since  3.4
  * @param  str $menuid menu id
  * @param  array $data array of menu data
@@ -806,6 +818,7 @@ function menuSave($menuid,$data){
 	GLOBAL $SITEMENU;
 	$SITEMENU[$menuid] = $data;
 
+    // remove GSMENUFLATINDEX if it exists ( cannot save refs in json )
     if(!$data || !$data[GSMENUNESTINDEX]){
         debugLog('menusave: menu is empty - ' .$menuid);
         return false;
@@ -1011,8 +1024,10 @@ function exportMenuToPages($menu){
         // @todo: setting order will cause excessive updating of all files after an edited one
         // nor is order actually needed with multidimensional menus anymore
         // if this causes issues, it could be added back in for legacy purposes only
+        // index is probably better to use also since legacy menus do not do a menu title sort, it is strictly menuOrder
         
-        // $order  = $menu[GSMENUFLATINDEX][$id]['data']['order'];
+        // debugLog($menu[GSMENUFLATINDEX][$id]);
+        // $order  = $menu[GSMENUFLATINDEX][$id]['data']['index'];
         // saveMenuDataToPage($id,$parent,$order);
         saveMenuDataToPage($id,$parent);
     }
@@ -1030,18 +1045,17 @@ function exportMenuToPages($menu){
  * @param  int $order page order
  * @return  bool success
  */
-function saveMenuDataToPage($pageid,$parent = '',$order =''){
-    
+function saveMenuDataToPage($pageid,$parent = '',$order = ''){
     // skip updates if nothing changed
-    if((string)returnPageField($pageid,'parent') == $parent && (int)returnPageField($pageid,'menuOrder') == $order) return;
+    if((string)returnPageField($pageid,'parent') == (string)$parent && (int)returnPageField($pageid,'menuOrder') == (int)$order) return;
 
     // set new parent and order
     $file = getPageFilename($pageid);
     if (file_exists($file)) {
         $data = getPageXML($pageid);
         $data->parent->updateCData($parent);
-        $data->menuOrder->updateCData($order);
-        return savePageXml($data,fasle);
+        if(isset($order)) $data->menuOrder->updateCData($order);
+        return savePageXml($data,false);
     }
 }
 

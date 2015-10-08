@@ -508,7 +508,7 @@ function getPageFieldValue($pageId,$field){
  * @return str         path/to/pageId
  */
 function getPagePath($pageId){
-	$path = menuItemGetField($pageid,'path',$menuid = null);
+	$path = menuItemGetField($pageid,'path');
 	return $path;
 }
 
