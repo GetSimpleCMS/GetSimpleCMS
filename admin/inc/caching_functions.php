@@ -72,7 +72,7 @@ function getPageContent($page,$field='content'){
  * @return str          result of content filtering
  */
 function filterPageContent($page, $content){
-	// if(!$content) $content = getPageField($page,'content');
+	// if(!$content) $content = getPageField($page,'content',true); // could cause infinite loops, must be raw
 	$content = exec_filter('content',$content); // @filter content (str) filter page content in returnPageContent
 	return $content;
 }
@@ -100,6 +100,7 @@ function returnPageField($page, $field, $raw = false, $cache = true){
 		$ret = returnPageFieldFromFile($page,$field,$raw);
 	}
 
+	// @todo this needs to come out of there, its dumb, special handling for special fields needs to be external
 	if ($field=="content" && !$raw){
 		$ret = filterPageContent($page,$ret);
 	}

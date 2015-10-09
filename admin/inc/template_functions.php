@@ -704,7 +704,11 @@ function do_reg($text, $regex) {
  */
 function is_valid_xml($file) {
 	$xmlv = getXML($file);
-	if ($xmlv) return true;
+	if (gettype($xmlv) !== 'object' || !in_array(get_class($xmlv),array('SimpleXMLExtended','SimpleXML'))) {
+		// debugLog($xmlv);
+		return;
+	}
+	return true;
 }
 
 /**
