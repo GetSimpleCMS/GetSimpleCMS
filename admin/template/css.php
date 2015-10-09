@@ -3059,6 +3059,12 @@ a.disabled:visited {
 	user-select: none;
 }
 
+#theme_editing_file {
+	font-weight:bold;
+	padding-left: 5px;
+	font-size: 15px;
+}
+
 .right {
 	text-align: right !important;
 }
