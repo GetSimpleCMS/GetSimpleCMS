@@ -857,6 +857,7 @@ h5:hover img {
 	padding: 4px;
 	vertical-align: top;
 	/*line-height: 20px !important;*/
+	word-break: break-all;	
 }
 
 .wrapper table th {
