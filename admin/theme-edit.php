@@ -42,13 +42,19 @@ if(isset($_POST['themesave'])){
 }
 
 
-# if no template is selected, use the default
-if ($template_file == '') {
-	$template_file = 'template.php';
-}
-
 $themepath = GSTHEMESPATH.tsl($template);
-if(!filepath_is_safe($themepath.$template_file,GSTHEMESPATH,true)) die();
+
+// allow themeroot
+if($template == '.' && getDef('GSTHEMEEDITROOT',true)){
+	if(!path_is_safe($themepath.$template_file,GSTHEMESPATH,true)) die();
+}
+else{
+	# if no template is selected, use the default
+	if ($template_file == '') {
+		$template_file = 'template.php';
+	}
+	if(!filepath_is_safe($themepath.$template_file,GSTHEMESPATH,true)) die();
+} 
 
 # check for form submission
 if(isset($_POST['submitsave'])){
