@@ -1621,6 +1621,18 @@ jQuery(document).ready(function () {
 				responseText = data.replace(rscript, "");
 				response     = $($.parseHTML(data));
 
+				// Debugger.log(response);
+				if(response.length == 0){
+					alert("unable to open file");
+					newcontent = "unable to open file";
+					clearFileWaits();
+					ajaxStatusComplete();
+					var filenamefield = response.find('#edited_file');
+					var filename = $(filenamefield).val();			
+					if($(filenamefield).hasClass('nofile')) return;
+					return;
+				}
+
 				/* load dir tree */
 				// using this var to prevent reloads on the filetree for now, 
 				// can go away when we are sending proper ajax responses and not full html pages.
