@@ -3161,7 +3161,7 @@ function getChmodValue($path){
 function checkWritable($path,$perms = null){
 	$writeOctal = getChmodValue($path);
 	if(!isset($perms)) $perms = check_perms($path);
-	debugLog(__FUNCTION__ . ' ' . $path . ' ' . $perms .' > '. decoct($writeOctal));
+	// debugLog(__FUNCTION__ . ' ' . $path . ' ' . $perms .' > '. decoct($writeOctal));
 	$iswritable = is_writable($path);
 	$iswritable = $perms >= decoct($writeOctal);
 	return $iswritable;
