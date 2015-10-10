@@ -149,6 +149,9 @@ include('template/include-nav.php'); ?>
 				<p id="code-imgthumb-html">&lt;a href="<?php echo $src_url. rawurlencode($src); ?>" class="gs_image_link" >&lt;img src="<?php echo $thumb_url.'thumbnail.'.rawurlencode($src); ?>" class="gs_thumb" height="<?php echo $thheight; ?>" width="<?php echo $thwidth; ?>" alt="" />&lt;/a></p>
 				<?php } ?>
 			</div>
+			<?php 
+				exec_action('image-extras'); // @hook image-extras provide extra image features here
+			?>
 	</div>
 
 <?php
