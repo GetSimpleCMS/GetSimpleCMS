@@ -1626,7 +1626,7 @@ jQuery(document).ready(function () {
 					notifyError(i18n('ERROR_OCCURED')).popit();
 					clearFileWaits();
 					ajaxStatusComplete();
-					 $('input[type=submit]').attr('disabled', true); // keep disabled
+					 $('input:submit').attr('disabled', true); // keep disabled
 					 $('#theme_editing_file').html(filename);
 					return;
 				}
