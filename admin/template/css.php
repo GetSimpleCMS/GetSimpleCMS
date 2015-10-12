@@ -3049,14 +3049,20 @@ a.disabled:visited {
 	float:right;
 }
 
-.readonly .CodeMirror-code,.readonly #theme_editing_file{
-	/*opacity: 0.3;*/
+.readonly .CodeMirror > div,.readonly #theme_editing_file{
 	visibility :hidden;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	-o-user-select: none;
 	user-select: none;
+}
+
+.readonly .CodeMirror:after{
+	margin: 10px;
+	content: "...";
+	opacity: .5;
+	color: gray;
 }
 
 #theme_editing_file {
