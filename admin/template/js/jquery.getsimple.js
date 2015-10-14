@@ -554,7 +554,7 @@ jQuery(document).ready(function () {
 					$('#createfolder').show();
 					counter = parseInt($("#pg_counter").text());
 					$("#pg_counter").html(counter++);
-					$("tr." + newfolder + " td").css("background-color", "#F9F8B6");
+					$("tr." + escape(newfolder) + " td").css("background-color", "#F9F8B6");
 					loadingAjaxIndicator.fadeOut();
 				});
 			}
