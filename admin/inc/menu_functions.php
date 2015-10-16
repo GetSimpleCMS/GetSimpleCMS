@@ -1,12 +1,27 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 
 /**
- * GetSimple Menu and Hierarchy Functions
+ * GetSimple Menu handlers and Hierarchy Functions
  * @package GetSimple
  * @subpackage menus_functions.php
  */
 
-include_once(GSADMININCPATH.'menu_manage_functions.php');
+/*
+ * **************************************************************************** 
+ * MENU CORE FUNCTIONS
+ * **************************************************************************** 
+ *
+ * definitions:
+ * `MENU` An individual menu object typically multidimensional array with sub indexes for flat and nested configuration, internally stored in $SITEMENUS
+ * `MENU FLAT` subarray is a parent hash array, with `children` index array and a `data` array
+ * `MENU NEST` subarray is a heirachy nested parent child array, linked to `FLAT` via references which have to built from file load, as json does not store refs
+ * `menuid` the menu id, used as slug to store filenames
+ * `corepages menuid` is the internal CORE menu and is essentially the page index map
+ * `corepages_menu menuid` is the internal CORE menu but caches for front end menus, as it contains only the menu items
+ * `legacy menuid` is the flat 3.3.x version of the menu as it appeared in 3.3.x without multilevel menus, primarily ordered by menuorder
+ */
+
+include_once(GSADMININCPATH.'menu_manage_functions.php'); // menu manipulation functions
 
 define('GSMENULEGACY',true); // use legacy menus, single level flat menu
 

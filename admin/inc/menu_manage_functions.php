@@ -1,5 +1,10 @@
-<?php
+<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 
+/**
+ * GetSimple Menu Manage and Manipuation functions
+ * @package GetSimple
+ * @subpackage menus_manage_functions.php
+ */
 
 function menuItemRename($menu,$slug,$data){
 	$item = $menu[GSMENUFLATINDEX][$slug];

@@ -18,29 +18,43 @@ exec_action('load-menu-manager');
 
 // check menuid else default
 if (isset($_GET['menuid'])) $menuid = _id($_GET['menuid']);
-else $menuid = GSMENUIDCORE;
+else $menuid = GSMENUIDCORE; // default to menu core index
 
 # save menu
 if (isset($_POST['menuOrder'])) {
-	if(!isset($_POST['menuid'])) die('missing menuid');
+	if(!isset($_POST['menuid'])) die('post is missing menuid');
 	if (trim($_POST['menuOrder']) == '' || trim($_POST['menuOrder']) == '[]') {
-		die('no data');
+		die('post has no data');
 	}
 
 	$status  = newMenuSave(_id($_POST['menuid']),$_POST['menuOrder']);
 	$success = $status ? 'Success' : 'Error';
 }
 
-# get pages
-getPagesXmlValues();
-$pagesSorted = subval_sort($pagesArray, 'menuOrder');
-
 $pagetitle = strip_tags(i18n_r('MENU_MANAGER')) . ' &middot; ' . i18n_r('PAGE_MANAGEMENT');
 get_template('header');
 
-?>
+include 'template/include-nav.php';
 
-<?php include 'template/include-nav.php';?>
+function getMenuSelect(){
+	$menus = getMenus();
+	echo "<select>";
+	foreach($menus as $menu){
+		echo "<option>$menu</option>";
+	}
+	echo "</select>";
+}
+
+function getMenuManagerTree($menuid){
+	$tree = getMenuDataNested($menuid);
+	// debugLog($tree);
+	return getMenuTree($tree,true,GSMENUMGRCALLOUT, GSMENUMGRFILTERCALLOUT,array(getMenuDataArray()));
+}
+
+$treestr  = getMenuManagerTree($menuid);
+$count = '-'; // empty, updated via js
+
+?>
 
 <div class="bodycontent clearfix">
 
@@ -52,65 +66,28 @@ get_template('header');
 			</div>
 			<?php exec_action(get_filename_id() . '-body');?>
 			<p><?php i18n('MENU_MANAGER_DESC');?></p>
+			<div class="widesec">
+				<!-- toggler -->
+				<div id="roottoggle" class="unselectable tree-roottoggle nohighlight"><i class="tree-expander fa-rotate-90 fa fa-play fa-fw"></i><span class="label">Collapse Top Parents</span></div>
+				<!-- nestable container -->
+				<div id="menu-order-nestable" class="dd"><?php echo $treestr; ?></div>
+			</div>
+			<div class="clearfix"></div>
 			<?php
+			exec_action('menu-manager-extras'); // @hook menu-manager-extras add additional menu manager features here
+			?>
+			<p><em><b><span id="pg_counter"><?php echo $count; ?></span></b> <?php echo i18n_r('TOTAL_ITEMS');?></em></p>
 
-// legacyMenuManagerOutput($pagesSorted);
+			<!-- form -->
+			<form method="post" action="menu-manager.php">
+			<div id="submit_line"><span>
+			<input type="text" class="hidden" name="menuid" value="'.$menuid.'">
+			<textarea type="text" class="text hidden" name="menuOrder" value=""></textarea>
+			<input class="submit" type="submit" value="<?php echo i18n_r("SAVE_MENU_ORDER"); ?>" />
+			</span></div>
+			</form>
 
-GLOBAL $sortkeys;
-// debugLog(getPages());
-$presort = sortCustomIndexCallback(getPages(),'pubDate','prepare_date');
-$sortkeys = array_keys($presort);
-
-// debugLog($presort);
-// debugLog($sortkeys);
-
-$menus = getMenus();
-
-echo "<select>";
-foreach($menus as $menu){
-	echo "<option>$menu</option>";
-}
-echo "</select>";
-
-$tree = getMenuDataNested($menuid);
-// $tree = array('id' => '','children' => $tree); // loop tree and create cyclical references to parents to use flat array instead of nested
-debugLog($tree);
-$str  = getMenuTree($tree,true,GSMENUMGRCALLOUT, GSMENUMGRFILTERCALLOUT,array(getMenuDataArray()));
-$count = 'N/A';
-
-echo '<div class="widesec">';
-
-// toggler
-echo '<div id="roottoggle" class="unselectable tree-roottoggle nohighlight"><i class="tree-expander fa-rotate-90 fa fa-play fa-fw"></i><span class="label">Collapse Top Parents</span></div>';
-
-// nestable container
-echo '<div id="menu-order-nestable" class="dd">' . $str . '</div>';
-echo '</div>';
-
-echo '<div class="clearfix"></div>';
-// echo '<div class="clear">';
-
-exec_action('menu-manager-extras');
-
-
-echo '<p><em><b><span id="pg_counter">'.$count.'</span></b> '.i18n_r('TOTAL_ITEMS').'</em></p>';
-
-// form
-echo '<form method="post" action="menu-manager.php">';
-echo '<div id="submit_line"><span>';
-echo '<input type="text" class="hidden" name="menuid" value="'.$menuid.'">';
-echo '<textarea type="text" class="text hidden" name="menuOrder" value=""></textarea>';
-echo '<input class="submit" type="submit" value="' . i18n_r("SAVE_MENU_ORDER") . '" />';
-echo '</span></div>';
-echo '</form>';
-
-// echo '<li id="nestable-template" class="dd-item clearfix" data-id="template"><div class="dd-handle"> template<div class="itemtitle"><em>template title</em></div></div></li>';
-
-/**
- * /END NESTABLE TESTING
- */
-
-?>
+			<?php // echo '<li id="nestable-template" class="dd-item clearfix" data-id="template"><div class="dd-handle"> template<div class="itemtitle"><em>template title</em></div></div></li>'; ?>
 
 			<script>
 				$("#menu-order").sortable({
@@ -190,6 +167,7 @@ echo '</form>';
 			</script>
 
 			<?php 
+				// TESTING
 				// echo getMenuTree($tree,true,'treeCallout', 'menuCalloutFilter');
 				// echo getMenuTree($tree,true,'menuCallout', 'menuCalloutFilter',array('currentpage'=>'index','classPrefix'=>'GS_'));
 				// get_navigation_advanced('index');
