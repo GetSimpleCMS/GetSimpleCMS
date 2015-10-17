@@ -65,7 +65,7 @@ list($imgwidth, $imgheight, $imgtype, $imgattr) = getimagesize($src_folder .$sub
 
 if (file_exists($thumb_folder . 'thumbnail.' . $src)) {
 	list($thwidth, $thheight, $thtype, $athttr) = getimagesize($thumb_folder . 'thumbnail.'.$src);
-	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'" rel="fancybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
+	$thumb_exists = ' &nbsp; | &nbsp; <a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) . '?t='.time(). '" rel="fancybox_i" >'.i18n_r('CURRENT_THUMBNAIL').'</a> <code>'.$thwidth.'x'.$thheight.'</code>';
 }else{
 	// if thumb is missing recreate it
 	if(genStdThumb($subPath,$src)){
@@ -117,7 +117,7 @@ include('template/include-nav.php'); ?>
 			echo i18n_r('ORIGINAL_IMG') .'<br/><code>'.$imgwidth.'x'.$imgheight .'</code>';
 			echo "</a></div>";
 
-			echo '<div class="thumbcontainer"><a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'" rel="fancybox_i" >';
+			echo '<div class="thumbcontainer"><a href="'.$thumb_url . 'thumbnail.'. rawurlencode($src) .'?t='.time().'" rel="fancybox_i" >';
 			echo '<div><img src="'.$thumb_url . 'thumbnail.'. rawurlencode($src).'?'.time().'"></div>';
 			echo i18n_r('CURRENT_THUMBNAIL') .'<br/><code>'.$thwidth.'x'.$thheight .'</code>';
 			echo "</a></div>";
@@ -149,6 +149,9 @@ include('template/include-nav.php'); ?>
 				<p id="code-imgthumb-html">&lt;a href="<?php echo $src_url. rawurlencode($src); ?>" class="gs_image_link" >&lt;img src="<?php echo $thumb_url.'thumbnail.'.rawurlencode($src); ?>" class="gs_thumb" height="<?php echo $thheight; ?>" width="<?php echo $thwidth; ?>" alt="" />&lt;/a></p>
 				<?php } ?>
 			</div>
+			<?php 
+				exec_action('image-extras'); // @hook image-extras provide extra image features here
+			?>
 	</div>
 
 <?php

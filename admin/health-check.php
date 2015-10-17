@@ -247,16 +247,20 @@ echo '<div class="bodycontent clearfix">
 						GSTHEMESPATH
 					);
 
-					if (getDef('GSCHMOD')) {
-						$writeOctal = GSCHMOD; 
-					} else {
+					if (getDef('GSCHMODFILE')) {
+						$writeOctal = getDef('GSCHMODFILE');
+					}
+					else if (getDef('GSCHMOD')) {
+						$writeOctal = getDef('GSCHMOD'); 
+					} 
+					else {
 						$writeOctal = 0755;
 					}
 
 					foreach($dirsArray as $path){
 						$relpath = '/'.getRelPath($path);
 						$isFile = substr($relpath, -4,1) == '.';
-						if(!$isFile) $writeOctal = 0744;
+						if(!$isFile) $writeOctal = getDef('GSCHMODDIR');
 
 						if($isFile) $relpath = i18n_r('FILE_NAME').": $relpath";
 						
@@ -270,7 +274,10 @@ echo '<div class="bodycontent clearfix">
 
 						$me = check_perms($path);
 						echo '('.ModeOctal2rwx($me) .") $me ";
-						if( $me >= decoct($writeOctal) ) { 
+						
+						$writable = checkWritable($path);
+
+						if( $writable ) { 
 							echo i18n_r('WRITABLE').'<td><span class="label label-ok" > '.i18n_r('OK').'</span></td>'; 
 						} 
 						else { 

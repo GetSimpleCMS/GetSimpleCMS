@@ -234,7 +234,7 @@ function get_page_clean_title($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_slug($echo=true) {
-	$str = exec_filter('pageslug',getGSPageVar('url')); // @filter pageslug (str) page slug in get_pagee_slug
+	$str = exec_filter('pageslug',getPageGlobal('url')); // @filter pageslug (str) page slug in get_page_slug, needed if plugins modify routing hooks and global url does not match page rendered
  	return echoReturn($str,$echo);
 }
 

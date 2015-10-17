@@ -3210,4 +3210,43 @@ function callIfCallable($funcname/*,... variable args*/){
     return call_user_func_array($funcname,$args);
 }
 
+/**
+ * get the chmod value for a file path
+ * will check if path is a directory or file and return appropriate value
+ * @since  3.4
+ * @param str $path file path
+ * @return chmod value
+ */
+function getChmodValue($path){
+	if(is_dir($path)) $writeOctal = getDef('GSCHMODDIR');
+	else {
+		if (getDef('GSCHMODFILE')) {
+			$writeOctal = getDef('GSCHMODFILE');
+		}	
+		else if (getDef('GSCHMOD')) {
+			$writeOctal = getDef('GSCHMOD'); 
+		}
+		else {
+			$writeOctal = 0755;
+		}
+	}
+	return $writeOctal;
+}
+
+/** 
+ * check if a file or path is writable
+ * @since 3.4
+ * @param  string $path file path
+ * @param  str    $perms permission decimanl string to check against
+ * @return boolean is writable
+ */
+function checkWritable($path,$perms = null){
+	$writeOctal = getChmodValue($path);
+	if(!isset($perms)) $perms = check_perms($path);
+	// debugLog(__FUNCTION__ . ' ' . $path . ' ' . $perms .' > '. decoct($writeOctal));
+	$iswritable = is_writable($path);
+	$iswritable = $perms >= decoct($writeOctal);
+	return $iswritable;
+}
+
 /* ?> */

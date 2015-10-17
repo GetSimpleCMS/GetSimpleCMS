@@ -704,7 +704,11 @@ function do_reg($text, $regex) {
  */
 function is_valid_xml($file) {
 	$xmlv = getXML($file);
-	if ($xmlv) return true;
+	if (gettype($xmlv) !== 'object' || !in_array(get_class($xmlv),array('SimpleXMLExtended','SimpleXML'))) {
+		// debugLog($xmlv);
+		return;
+	}
+	return true;
 }
 
 /**
@@ -1537,34 +1541,34 @@ function generate_sitemap() {
 		
 		foreach ($pagesSorted as $page)
 		{
-			if ($page['url'] != '404')
-			{		
-				if ($page['private'] != 'Y')
-				{
-					// set <loc>
-					$pageLoc = find_url($page['url'], $page['parent'],'full');
-					// set <lastmod>
-					$tmpDate = date("Y-m-d H:i:s", strtotime($page['pubDate']));
-					$pageLastMod = makeIso8601TimeStamp($tmpDate);
-					
-					// set <changefreq>
-					$pageChangeFreq = 'weekly';
-					
-					// set <priority>
-					if ($page['menuStatus'] == 'Y') {
-						$pagePriority = '1.0';
-					} else {
-						$pagePriority = '0.5';
-					}
-					
-					//add to sitemap
-					$url_item = $xml->addChild('url');
-					$url_item->addChild('loc', $pageLoc);
-					$url_item->addChild('lastmod', $pageLastMod);
-					$url_item->addChild('changefreq', $pageChangeFreq);
-					$url_item->addChild('priority', $pagePriority);
-				}
+			if ($page['url'] == '404') continue;  // exclude 404 page
+			if ($page['url'] == '403') continue;  // exclude 403 page
+			if ($page['private'] == 'Y') continue; // exclude private
+			if (isset($page['metarNoIndex']) && $page['metarNoIndex'] == '1') continue; // exclude noindex
+
+			// set <loc>
+			$pageLoc = find_url($page['url'], $page['parent'],'full');
+			// set <lastmod>
+			$tmpDate = date("Y-m-d H:i:s", strtotime($page['pubDate']));
+			$pageLastMod = makeIso8601TimeStamp($tmpDate);
+			
+			// set <changefreq>
+			$pageChangeFreq = 'weekly'; // change freq
+			
+			// set <priority>
+			// @todo withc multi menu support, which menu ? any ? add supporting functions
+			if ($page['menuStatus'] == 'Y') {
+				$pagePriority = '1.0'; // in menu priority
+			} else {
+				$pagePriority = '0.5'; // not in menu priority
 			}
+			
+			//add to sitemap
+			$url_item = $xml->addChild('url');
+			$url_item->addChild('loc', $pageLoc);
+			$url_item->addChild('lastmod', $pageLastMod);
+			$url_item->addChild('changefreq', $pageChangeFreq);
+			$url_item->addChild('priority', $pagePriority);
 		}
 		
 		//create xml file

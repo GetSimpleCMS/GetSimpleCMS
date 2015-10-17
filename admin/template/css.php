@@ -863,6 +863,7 @@ h5:hover img {
 	padding: 4px;
 	vertical-align: top;
 	/*line-height: 20px !important;*/
+	word-break: break-all;	
 }
 
 .wrapper table th {
@@ -3119,14 +3120,26 @@ font-size: 12px;
 	float:right;
 }
 
-.readonly .CodeMirror-code,.readonly #theme_editing_file{
-	/*opacity: 0.3;*/
+.readonly .CodeMirror > div,.readonly #theme_editing_file{
 	visibility :hidden;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	-o-user-select: none;
 	user-select: none;
+}
+
+.readonly .CodeMirror:after{
+	margin: 10px;
+	content: "...";
+	opacity: .5;
+	color: gray;
+}
+
+#theme_editing_file {
+	font-weight:bold;
+	padding-left: 5px;
+	font-size: 15px;
 }
 
 .right {

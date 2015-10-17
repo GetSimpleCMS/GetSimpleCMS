@@ -1104,7 +1104,7 @@ jQuery(document).ready(function () {
     function ajaxStatusComplete(){
     	pageisdirty = false;
     	warnme      = false;
-    	$('input[type=submit]').attr('disabled', false);
+    	$('input:submit').attr('disabled', false);
 		loadingAjaxIndicator.fadeOut();
 		$("body").removeClass('dirty');	
    	}
@@ -1574,17 +1574,16 @@ jQuery(document).ready(function () {
 		});
 	}	
 
-	// theme-edit fileselector change
+	// theme-edit fileselector file select / change
 	// delegated on() handlers survive ajax replacement
 	$(document).on('click',"#theme_filemanager a.file",function(e){
 		// Debugger.log('filechange');
 		e.preventDefault();
-		var thmfld = $("#theme-folder").val();
 		// Debugger.log($(this).attr('href'));
-		if (checkChanged()) return;
-		clearFileOpen();
-		$(this).addClass('open').addClass('ext-wait');
-		$(this).parent().spin('gsfilemanager'); // ajax spinner
+		if (checkChanged()) return; // check for unsaved changes
+		clearFileOpen(); // clear the opened file ui states
+		$(this).addClass('open').addClass('ext-wait'); // add ajax wait icon to file icon
+		$(this).parent().spin('gsfilemanager'); // sitewide ajax spinner
 		updateTheme('','_noload',$(this).attr('href')+'&ajax=1'); // ajax request
 	});
 
@@ -1602,14 +1601,14 @@ jQuery(document).ready(function () {
 		theme = theme === undefined ? '' : theme;
 		file  = file  === undefined ? '' : file;
 		url   = url   === undefined ? "theme-edit.php?t="+theme+'&f='+file : url;
-		
+		// Debugger.log(url);
 		ajaxStatusWait();
 		if($('#codetext').data('editor')){
 			$('#codetext').data('editor').setValue('');
 			$('#codetext').data('editor').clearHistory();
 			$('#codetext').data('editor').hasChange = false;
 		}
-		$('#theme_edit_code').addClass('readonly')
+		$('#theme_edit_code').addClass('readonly');
 
 		$.ajax({
 			type: "GET",
@@ -1620,6 +1619,17 @@ jQuery(document).ready(function () {
 				rscript      = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;						
 				responseText = data.replace(rscript, "");
 				response     = $($.parseHTML(data));
+
+				// Debugger.log(response);
+				if(response.length == 0){
+					// alert("unable to open file");
+					notifyError(i18n('ERROR_OCCURED')).popit();
+					clearFileWaits();
+					ajaxStatusComplete();
+					 $('input:submit').attr('disabled', true); // keep disabled
+					 $('#theme_editing_file').html(filename);
+					return;
+				}
 
 				/* load dir tree */
 				// using this var to prevent reloads on the filetree for now, 
@@ -1638,7 +1648,7 @@ jQuery(document).ready(function () {
 				var action = $(themeEditform).attr('action');
 				$('#themeEditForm').attr('action',action);
 
-				// update edited_file
+				// update edited_file input field
 				var filenamefield = response.find('#edited_file');
 				var filename = $(filenamefield).val();
 				$('#edited_file').val(filename);

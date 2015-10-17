@@ -42,13 +42,26 @@ if(isset($_POST['themesave'])){
 }
 
 
-# if no template is selected, use the default
-if ($template_file == '') {
-	$template_file = 'template.php';
-}
-
 $themepath = GSTHEMESPATH.tsl($template);
-if(!filepath_is_safe($themepath.$template_file,GSTHEMESPATH,true)) die();
+
+// @todo add a way to exclude symblinks via config to add files here, or add them via alternative pathing
+// allow plugins all directories to this and allow other paths by adding a registration method and a secfilter here
+
+// allow themeroot, specially handle travesal protection, this breaks symblinks probably
+if($template == '.' && getDef('GSTHEMEEDITROOT',true)){
+	if(empty($template_file)){
+		if(!path_is_safe($themepath.$template_file,GSTHEMESPATH,true)) die();
+	}
+	else if(!filepath_is_safe($themepath.$template_file,GSTHEMESPATH,true)) die();
+}
+else{
+	# if no template is selected, use the default
+	if ($template_file == '') {
+		$template_file = 'template.php';
+	}
+	if(!filepath_is_safe($themepath.$template_file,GSTHEMESPATH,true)) die();
+} 
+
 
 # check for form submission
 if(isset($_POST['submitsave'])){
@@ -317,7 +330,7 @@ switch (getFileExtension($template_file)) {
 			<div id="theme_edit_code" class="codewrap <?php if(empty($template_file)) echo 'readonly';?>">
 				
 				<div id="theme_editing" class="well">
-				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.getRelPath(GSTHEMESPATH).' <b><span id="theme_editing_file">'. tsl($template).$template_file .'</span></b>'; ?>
+				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.getRelPath(GSTHEMESPATH).'<span id="theme_editing_file">'. tsl($template).$template_file .'</span>'; ?>
 				<?php $content = !empty($template_file) ? read_file(GSTHEMESPATH . tsl($template) . $template_file) : ''; ?>
 				</div>
 		
