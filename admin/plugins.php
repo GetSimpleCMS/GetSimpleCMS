@@ -97,7 +97,7 @@ foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
 		$plugin_title = $plugininfo['name'];
 	}
 
-	$table .= '<tr id="tr-'.$counter.'" class="'.$trclass.'" >';
+	$table .= '<tr id="tr-'.$counter.'" class="'.$trclass.' '.$pluginid.'" >';
 	$table .= '<td style="width:150px" ><b>'.$plugin_title.'</b></td>';
 	$table .= '<td><span>'.$plugininfo['description'].'</span>'; // desc empty if inactive
 
