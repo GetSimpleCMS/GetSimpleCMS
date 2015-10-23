@@ -11,7 +11,7 @@
  * MENU CORE FUNCTIONS
  * **************************************************************************** 
  *
- * definitions:
+ * glossary:
  * `MENU` An individual menu object typically multidimensional array with sub indexes for flat and nested configuration, internally stored in $SITEMENUS
  * `MENU FLAT` subarray is a parent hash array, with `children` index array and a `data` array
  * `MENU NEST` subarray is a heirachy nested parent child array, linked to `FLAT` via references which have to built from file load, as json does not store refs

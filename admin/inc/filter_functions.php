@@ -20,7 +20,7 @@
  * FILTER CORE FUNCTIONS
  * **************************************************************************** 
  *
- * definitions:
+ * glossary:
  * `PAGE` An individual page object typically a simpleXml obj but can also be an array
  * `PAGES` internal pages array, array of PAGE objects, usually the default $pagesArray cache
  * `PAGE/S Collection` custom pages arrays, array of PAGE objects, usually a filtered array of pages
