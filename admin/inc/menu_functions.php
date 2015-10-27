@@ -913,11 +913,15 @@ function getMenus(){
  * @param bool $reload force reading from file else use global
  * @return array         menu array
  */
-function getMenuDataArray($menuid = null,$reload = false){
+function getMenuDataArray($menuid = null){
 	if(!$menuid) $menuid = GSMENUIDCORE;
     GLOBAL $SITEMENU;
+
     // return cached local
-    if(isset($SITEMENU[$menuid]) && !$reload) return $SITEMENU[$menuid];
+    if(isset($SITEMENU[$menuid])){
+    	if(!$SITEMENU[$menuid]) debugLog("MENU IS EMPTY");
+    	return $SITEMENU[$menuid];
+    }	
 
     // load from file
     $menu = menuRead($menuid);

@@ -205,14 +205,14 @@ function getMenuItemRoots($menu){
 // menuid menuitem wrappers
 
 function menuItemGetData($pageid,$menuid = null){
-	$menu = getMenuDataFlat($menuid);
+	$menu = getMenuDataArray($menuid);
 	$item = getMenuItem($menu,$pageid);
 	return $item;
 }
 
 function menuItemGetField($pageid,$field,$menuid = null){
 	$item = menuItemGetData($pageid,$menuid);
-	if(!$item || !isset($item['data']['field'])) return;
+	if(!$item || !isset($item['data'][$field])) return;
 	return $item['data'][$field];
 }
 

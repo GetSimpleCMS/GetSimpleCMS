@@ -528,13 +528,22 @@ function getPagePathField($pageId,$field,$delim = '/'){
 }
 
 /**
+ * wrapper for getting parents via core menu
+ * @param  str $pageId page id
+ * @return str         parent id
+ */
+function getParentByCoreMenu($pageId){
+	return menuItemGetParent($pageId,GSMENUIDCORE);
+}
+
+/**
  * get PAGE parent slug
- * alias for $pagesArray['slug']['parent']
+ * gets parent info from coremenu
  * @param  str $pageId slug of PAGE to get parent of
  * @return str         parent of this page
  */
 function getParent($pageId){
-	return menuItemGetParent($pageId);
+	return getParentByCoreMenu($pageId);
 }
 
 /**
@@ -545,7 +554,7 @@ function getParent($pageId){
  */
 function getParentPage($pageId){
 	$parentId = getParent($pageId);
-	return getPage($pageId);
+	return getPage($parentId);
 }
 
 /**
@@ -580,6 +589,7 @@ function getParentFields($pageId,$key = 'url',$filterFunc = null){
 /**
  * get page parent pages
  * returns an array of all this pages parents page-arrays
+ * @todo  ordering must be proper
  * @param  str $pageId slug of child
  * @return array       PAGES collection of parents
  */
