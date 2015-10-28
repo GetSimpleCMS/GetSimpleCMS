@@ -114,9 +114,12 @@ function filterPageFieldFunc($pages,$func,$arg){
  * @param  mixed $arg   args for filter function
  * @return array        new pagesarray
  */
-function filterPagesFunc($pages,$func,$arg){
-	if (function_exists($func)){
-		$pages = $func($pages,$arg);
+function filterPagesFunc($pages,$filterFunc){
+	if (function_exists($filterFunc)){
+		$args = func_get_args(); // grab arguments past first 2 for output
+		unset($args[1]);
+		debugLog($args);
+		$pages = call_user_func_array($filterFunc, $args); // @todo why not call filterPageFunc() ?		
 	}
 	return $pages;
 }
@@ -452,6 +455,20 @@ function filterInverse($pagesFiltered,$pages = array()){
 	return array_diff_key($pages,$pagesFiltered);
 }
 
+
+/**
+ * filter a pages collection by an array of slugs, optionally sort to match order
+ * @since  3.4
+ * @param  array $keys array of keys to keep
+ * @param  bool $sort sort filtered pages array by keys order if true
+ * @return array       pages array with only the matching pages
+ */
+function filterPagesSlugs($pages,$slugs,$sort = false){
+	$ary = array_intersect_key($pages,array_flip($slugs)); // filter
+	if(!$sort) return $ary;
+	return arrayMergeSort($ary,$slugs,false); // sort
+}
+
 /**
  * abstractions / shorthand
  * these are not for here, they are for theme_functions
@@ -594,10 +611,9 @@ function getParentFields($pageId,$key = 'url',$filterFunc = null){
  * @return array       PAGES collection of parents
  */
 function getParentsPages($pageId){
-	$pages   = getPages();
 	$parents = getParents($pageId);
 	if(!$parents) return array();
-	return array_intersect_key($pages,array_flip($parents));
+	return getPagesMulti($parents,true);
 }
 
 /**
@@ -613,12 +629,15 @@ function pageIsInMenu($slug,$menuid = null){
 }
 
 /**
- * get only pages with these keys
+ * get a pages collection with these slugs, optionally sort pages to match order
+ * @since  3.4
  * @param  array $keys array of keys to keep
+ * @param  bool $sort sort filtered pages array by keys order if true
  * @return array       pages array with only the matching pages
  */
-function getPagesMulti($keys){
-	return array_intersect_key(getPages(),array_flip($keys));
+function getPagesMulti($keys,$sort = false){
+	return filterPagesSlugs(getPages(),$keys,$sort);
 }
+
 
 /*?>*/
