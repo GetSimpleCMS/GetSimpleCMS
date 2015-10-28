@@ -91,6 +91,7 @@ function echoPageField($page,$field){
 function returnPageContent($page, $field='content', $raw = false, $nofilter = false){   
 	$thisfile = file_get_contents(GSDATAPAGESPATH.$page.'.xml');
 	$data = simplexml_load_string($thisfile);
+	if(!$data) return;
 	$content = $data->$field;
 	if(!$raw) $content = stripslashes(htmlspecialchars_decode($content, ENT_QUOTES));
 	if ($field=='content' and !$nofilter){
@@ -117,7 +118,7 @@ function returnPageField($page,$field){
 	if ($field=="content"){
 	  $ret=returnPageContent($page); 
 	} else {
-		if (array_key_exists($field, $pagesArray[(string)$page])){
+		if (isset($pagesArray[(string)$page]) && array_key_exists($field, $pagesArray[(string)$page])){
 	  		$ret=strip_decode(@$pagesArray[(string)$page][(string)$field]);
 		} else {
 			$ret = returnPageContent($page,$field);
@@ -272,7 +273,7 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $fl
   }
   
   $count=0;
-  $xml = @new SimpleXMLExtended('<channel></channel>');
+  $xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');  
   if (count($filenames) != 0) {
     foreach ($filenames as $file) {
       if ($file == "." || $file == ".." || is_dir(GSDATAPAGESPATH.$file) || $file == ".htaccess"  ) {
@@ -320,7 +321,7 @@ if ((isset($_GET['upd']) && $_GET['upd']=="edit-success") || $flag===true || $fl
 
     // sanity check in case the filter does not come back properly or returns null
     if($xml){ 
-    	$success = $xml->asXML($filem);
+    	$success = XMLsave($xml,$filem);
   	}	
   	// debugLog("create_pagesxml saved: ". $success);
   	exec_action('pagecache-aftersave');

@@ -305,9 +305,16 @@ function getXML($file) {
  */
 function XMLsave($xml, $file) {
 	# get_execution_time(true);
-	if(!is_object($xml)) return false;
-	$success = @$xml->asXML($file) === TRUE;
-	# debugLog('XMLsave: ' . $file . ' ' . get_execution_time());	
+	if(!is_object($xml)){
+		debugLog(__FUNCTION__ . ' failed to save xml');
+		return false;
+	}	
+	$data = @$xml->asXML();
+	if(getDef('GSFORMATXML',true)) $data = formatXmlString($data); // format xml if config setting says so
+	$data = exec_filter('xmlsave',$data); // @filter xmlsave executed before writing string to file
+	$success = file_put_contents($file, $data); // LOCK_EX ?
+	
+	// debugLog('XMLsave: ' . $file . ' ' . get_execution_time());	
 	
 	if (defined('GSCHMOD')) {
 		return $success && chmod($file, GSCHMOD);
@@ -1015,7 +1022,7 @@ function validate_url($u) {
  * @param string $xml
  * @return string
  */
-function formatXmlString($xml) {  
+function formatXmlString_legacy($xml) {  
   
   // add marker linefeeds to aid the pretty-tokeniser (adds a linefeed between all tag-end boundaries)
   $xml = preg_replace('/(>)(<)(\/*)/', "$1\n$2$3", $xml);
@@ -1054,6 +1061,25 @@ function formatXmlString($xml) {
   
   return $result;
 }
+
+/**
+   * formats the xml output readable, accepts simplexmlobject or string
+   * @param mixed  $data instance of SimpleXmlObject or string
+   * @return string of indented xml-elements
+   */
+  function formatXmlString($data){
+ 
+	if(gettype($data) === 'object') $data = $data->asXML();
+
+    //Format XML to save indented tree rather than one line
+  	$dom = new DOMDocument('1.0');
+  	$dom->preserveWhiteSpace = false;
+  	$dom->formatOutput = true;
+  	$dom->loadXML($data);
+ 
+  	$ret = $dom->saveXML();
+  	return $ret;
+  }
 
 /**
  * Check Server Protocol
@@ -1333,7 +1359,10 @@ function header_xframeoptions($value = null){
 
 /**
  * strip non printing white space from string
- * eg. strip_whitespace("Line   1\n\tLine 2\r\t\tLine 3  \r\n\t\t\tLine 4\n  ");
+ * replaces various newlines and tab chars with replacement character
+ * then cleans up multiple replacement characters
+ * 
+ * eg. strip_whitespace("Line   1\n\tLine 2\r\t\tLine 3  \r\n\t\t\tLine 4\n  "," ");
  * @since 3.3.6
  * @param  str $str     input string
  * @param  string $replace replacement character

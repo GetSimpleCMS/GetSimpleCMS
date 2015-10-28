@@ -108,7 +108,7 @@ foreach ($live_plugins as $file=>$en) {
 	require_once(GSPLUGINPATH . $file);
   } else {
 	if(!is_frontend() and get_filename_id() == 'plugins'){
-	  $apiback = get_api_details('plugin', $file);
+	  $apiback = get_api_details('plugin', $file, getDef('GSNOPLUGINCHECK',true));
 	  $response = json_decode($apiback);
 	  if ($response and $response->status == 'successful') {
 		register_plugin( pathinfo_filename($file), $file, 'disabled', $response->owner, '', i18n_r('PLUGIN_DISABLED'), '', '');
