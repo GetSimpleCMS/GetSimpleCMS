@@ -245,7 +245,7 @@ function backup_datafile($filepath){
 	$bakfilepath = getBackupFilePath($filepath);
 	$bakpath = dirname($bakfilepath);
  	// recusive create dirs
-	create_dir($bakpath,true);
+	create_dir($bakpath,getDef('GSCHMODDIR'),true);
 	return copy_file($filepath,$bakfilepath);
 }
 
@@ -1323,6 +1323,7 @@ function get_api_details($type='core', $args=null, $cached = false) {
 	GLOBAL $debugApi,$nocache,$nocurl;
 
 	include(GSADMININCPATH.'configuration.php');
+	// $nocache = true;
 
 	if($cached){
 		debug_api_details("API REQEUSTS DISABLED, using cache files only");
