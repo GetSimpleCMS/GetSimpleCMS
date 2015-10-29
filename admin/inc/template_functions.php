@@ -1335,6 +1335,7 @@ function get_api_details($type='core', $args=null, $cached = false) {
 	GLOBAL $debugApi,$nocache,$nocurl;
 
 	include(GSADMININCPATH.'configuration.php');
+	// $nocache = true;
 
 	if($cached){
 		debug_api_details("API REQEUSTS DISABLED, using cache files only");
@@ -1412,9 +1413,14 @@ function get_api_details($type='core', $args=null, $cached = false) {
 			curl_setopt($ch, CURLOPT_URL, $fetch_this_api);
 
 			if($debugApi){
-				// $verbose = fopen(GSDATAOTHERPATH .'logs/curllog.txt', 'w+');			
-				$verbose = tmpfile();				
-				// curl_setopt($ch, CURLOPT_WRITEHEADER, $verbose );
+
+				$curllog = true;
+				if($curllog){
+					$verbose = fopen(GSDATAOTHERPATH .'logs/curllog.txt', 'w+');
+					curl_setopt($ch, CURLOPT_WRITEHEADER, $verbose );
+				}	
+				else $verbose = tmpfile();				
+
 				curl_setopt($ch, CURLOPT_HEADER, true); 
 				curl_setopt($ch, CURLOPT_VERBOSE, true);
 				curl_setopt($ch, CURLOPT_STDERR, $verbose );
