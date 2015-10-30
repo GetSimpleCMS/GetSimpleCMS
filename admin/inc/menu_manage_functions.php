@@ -184,7 +184,7 @@ function getMenuItemRoots($menu){
 // menuid menuitem wrappers
 
 /**
- * get a menu item flat
+ * get a menu item flat form menudata
  * @since  3.4
  * @param  array $menu menu array
  * @param  string $id   page id
@@ -194,6 +194,13 @@ function getMenuItem($menu,$id = ''){
     if(isset($menu[GSMENUFLATINDEX]) && isset($menu[GSMENUFLATINDEX][$id])) return $menu[GSMENUFLATINDEX][$id];
 }
 
+/**
+ * get menu items parent item from menu data
+ * @since  3.4
+ * @param  array $menu menu data
+ * @param  string $slug page slug
+ * @return array       menu item or null if no parent
+ */
 function getMenuItemParent($menu,$slug = ''){
 	$item = getMenuItem($menu,$slug);
 	if(!$item) return;
@@ -203,18 +210,40 @@ function getMenuItemParent($menu,$slug = ''){
     }
 }
 
+/**
+ * get item by id from specific menuid
+ * @since  3.4
+ * @param  string $pageid page slug
+ * @param  string $menuid menu id
+ * @return array  menu item array
+ */
 function menuItemGetData($pageid,$menuid = null){
 	$menu = getMenuDataArray($menuid);
 	$item = getMenuItem($menu,$pageid);
 	return $item;
 }
 
+/**
+ * get menu item data field from specific menu
+ * @since  3.4
+ * @param  string $pageid page slug
+ * @param  string $field field name
+ * @param  string $menuid menu id
+ * @return mixed  menu item field
+ */
 function menuItemGetField($pageid,$field,$menuid = null){
 	$item = menuItemGetData($pageid,$menuid);
 	if(!$item || !isset($item['data'][$field])) return;
 	return $item['data'][$field];
 }
 
+/**
+ * get menu item parent item from specific menu
+ * @since  3.4
+ * @param  string $pageid page slug
+ * @param  string $menuid menu id
+ * @return array  menu item array
+ */
 function menuItemGetParent($pageid,$menuid = null){
 	$data = menuItemGetField($pageid,'parent',$menuid);
 	if(!$data) return;
@@ -222,11 +251,11 @@ function menuItemGetParent($pageid,$menuid = null){
 }
 
 /**
- * 
- * @param  [type]  $pageid      [description]
- * @param  [type]  $menuid      [description]
- * @param  boolean $includeself [description]
- * @return [type]               [description]
+ * get menu items ids of parents from menu id, optionally include self
+ * @param  string  $pageid      page slug
+ * @param  string  $menuid      menu id
+ * @param  boolean $includeself if true include pageid in output array
+ * @return array                array of menu items ids
  */
 function menuItemGetParents($pageid,$menuid = null,$includeself = false){
 	$path    = menuItemGetField($pageid,'dotpath',$menuid);

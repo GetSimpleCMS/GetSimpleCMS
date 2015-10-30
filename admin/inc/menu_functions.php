@@ -445,11 +445,11 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
     // detect if a page subarray was directly passed, auto negotiate children
     if(isset($parents['id']) && isset($parents['children'])) $parents = $parents['children'];
 
-    // @todo: sorting test
+    // @todo: inline sorting test
     // test sorting, using sort index is the fastest to prevent resorting subarrays
     $sort = false;
-    GLOBAL $sortkeys;
-    if($sortkeys && $sort){
+    if($sort){
+    	GLOBAL $sortkeys;
         // @todo since the recursive function only operates on parent subarray, we do not have access to menu itself, 
         // we could always sort by indices , and allow presorting the menu itself by sorting indices or $menu[GSMENUSORTINDEX]
     	// either way arraymergesort can do it
@@ -754,27 +754,11 @@ function menuCalloutFilter($item,$level,$index,$order,$args){
     // max depth limiter
     // _debugLog(func_get_args());
     if(isset($args['maxdepth']) && ($level > ($args['maxdepth']))) return $skip;
-
-	//tests
-    // if($item['id'] == 'parent-1b') return $skip;
-    // if($item['id'] == 'child-1c') return GSMENUFILTERSHIFT;
 }
 
 /**
  * HELPERS
  */
-
-/**
- * shortcut to get pages menu title
- * if menu title not explicitly set fallback to page title
- * @since  3.4
- * @param  str $slug page id
- * @return str page title
- */
-function getPageMenuTitle($slug){
-    $page = getPage($slug);
-    return (trim($page['menu']) == '' ? $page['title'] : $page['menu']);
-}
 
 /**
  * reindex a nested menu array recursively
@@ -1106,6 +1090,7 @@ function saveMenuDataToPage($pageid,$parent = '',$order = ''){
 
 /**
  * GARBAGE
+ * @todo : cleanup
  */
 
 /**
