@@ -23,7 +23,7 @@
 
 include_once(GSADMININCPATH.'menu_manage_functions.php'); // menu manipulation functions
 
-define('GSMENULEGACY',true); // use legacy menus, single level flat menu
+define('GSMENULEGACY',false); // use legacy menus, single level flat menu
 
 // menu ids
 define('GSMENUIDCORE','corepages'); // default id for the core page menu cache
@@ -444,7 +444,7 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
 
     // detect if a page subarray was directly passed, auto negotiate children
     if(isset($parents['id']) && isset($parents['children'])) $parents = $parents['children'];
-    
+
     // @todo: sorting test
     // test sorting, using sort index is the fastest to prevent resorting subarrays
     $sort = false;
@@ -459,6 +459,7 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
     }
 
     foreach($parents as $key=>$child){
+
         if(!isset($child['id'])) continue;
 
         // do filtering
@@ -904,7 +905,7 @@ function getMenus(){
  */
 
 /**
- * get a menu object from cache or file
+ * get a menu object from global or file
  * lazyload into SITEMENU global
  * 
  * @since  3.4
@@ -961,7 +962,7 @@ function getMenuDataFlat($menuid = null){
 }
 
 /**
- * get menu data sub array 
+ * get menu data as nested sub array
  * 
  * with or without parent item included
  * uses menu flat reference to nested array to resolve
@@ -973,13 +974,29 @@ function getMenuDataFlat($menuid = null){
  */
 function getMenuTreeData($page = '', $parent = false, $menuid = null){
 	if(!$menuid) $menuid = GSMENUIDCORE;
-    if(empty($page)) return getMenuDataNested($menuid);
+   
+    if(empty($page)) return getMenuDataNested($menuid); // no page, return full nest
     else $menudata = getMenuDataArray($menuid);
+   
     if(!isset($menudata)) return;
-    // debugLog($menudata);
-    if(isset($menudata[GSMENUFLATINDEX][$page])){
-    	$tree = resolve_tree($menudata[GSMENUNESTINDEX], $menudata[GSMENUFLATINDEX][$page]['data']['dotpath']);
-    	return $parent ? array($page => $tree) : $tree;
+
+    $item = getMenuItem($menudata,$page);
+
+    if($item){
+    	// if include parent
+	    if($parent) {
+	    	// if a child get parent and navigate from there
+	    	// else we can grab directly from root
+	    	$parenttree = getMenuItemParent($menudata,$page);
+	    	if($parenttree){
+	    		$parent = resolve_tree($menudata[GSMENUNESTINDEX], $parenttree['data']['dotpath']);
+	    		$tree = array($page => $parent[$page]);
+	    	}
+	    	else $tree = array($page => $menudata[GSMENUNESTINDEX][$page]);
+	    }
+    	else $tree = resolve_tree($menudata[GSMENUNESTINDEX], $item['data']['dotpath']);
+
+    	return $tree;
     }
     debugLog(__FUNCTION__ .': slug not found in menu('.$menuid.') - ' . $page);
 }
@@ -997,18 +1014,26 @@ function getMenuTreeData($page = '', $parent = false, $menuid = null){
  */
 function &resolve_tree($tree, $path, $childkey = 'children') {
 	$thisfunc = __FUNCTION__;
+	
+	// explode dotpath, if not an array
 	if(is_string($path)) $path = explode('.',trim($path,'.'));
-    if(empty($path)) return $tree;
+    
+    // return full tree if no path
+    if(empty($path)) return $tree; 
 
-    $empty = null;
+    $empty = null; // placeholder for ref null
+
     if(!empty($tree) && isset($tree)){
+    	
+    	// using children subarray
     	if(isset($childkey)){
     		if(isset($tree[$path[0]][$childkey])){
-    			return $thisfunc($tree[$path[0]][$childkey], array_slice($path, 1));
+    			return $thisfunc($tree[$path[0]][$childkey], array_slice($path, 1), $childkey); // recurse
     		}
-    		else return $empty;
+    		else return $empty; // childkey not found, return null
     	}
-    	return $thisfunc($tree[$path[0]], array_slice($path, 1));
+
+    	return $thisfunc($tree[$path[0]], array_slice($path, 1), $childkey); // recurse
     }
     return $tree;
 }

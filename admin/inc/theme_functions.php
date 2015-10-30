@@ -234,7 +234,7 @@ function get_page_clean_title($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_slug($echo=true) {
-	$str = exec_filter('pageslug',getPageGlobal('url')); // @filter pageslug (str) page slug in get_page_slug, needed if plugins modify routing hooks and global url does not match page rendered
+	$str = exec_filter('pageslug',getGSPageVar('url')); // @filter pageslug (str) page slug in get_page_slug, needed if plugins modify routing hooks and global url does not match page rendered
  	return echoReturn($str,$echo);
 }
 
@@ -680,14 +680,16 @@ function get_navigation($currentpage = '',$classPrefix = "") {
 	echo exec_filter('menuitems',$menu); // @filter menuitems (str) menu items html in get_navigation
 }
 
-function get_navigation_advanced($currentpage, $classPrefix = '', $slug = '', $maxdepth = 1){
+function get_navigation_advanced($currentpage, $classPrefix = '', $slug = '', $maxdepth = 3){
 	// get legacy menu
 	if(getDef('GSMENULEGACY',true)) $menuid = GSMENUIDLEGACY; 
     else if(getDef('GSMENUDEFAULT',true)) $menuid = GSMENUDEFAULT;
     else $menuid = GSMENUIDCOREMENU;
 
-	$tree = getMenuTreeData($slug,true,$menuid);
+	$tree = getMenuTreeData($slug,false,$menuid);
+
 	$menu =  getMenuTree($tree,false,GSMENUNAVCALLOUT,GSMENUNAVFILTERCALLOUT,array('currentpage'=>$currentpage,'classPrefix'=>$classPrefix,'maxdepth'=>$maxdepth));
+
 	return $menu;
 }
 

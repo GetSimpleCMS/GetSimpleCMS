@@ -50,27 +50,6 @@ function menuItemAdd($menu,$slug,$data){
 	return $menu;
 }
 
-
-/**
- * get a menu item flat
- * @since  3.4
- * @param  array $menu menu array
- * @param  string $id   page id
- * @return array       menu item array
- */
-function getMenuItem($menu,$id = ''){
-    if(isset($menu[GSMENUFLATINDEX]) && isset($menu[GSMENUFLATINDEX][$id])) return $menu[GSMENUFLATINDEX][$id];
-}
-
-function getMenuItemParent($menu,$slug = ''){
-	$item = getMenuItem($menu,$slug);
-	if(!$item) return;
-
-	if(!empty($item['parent'])){
-    	return getMenuItem($menu,$item['parent']);
-    }
-}
-
 function menuItemParentChanged($menu,$slug){
 	// [ ] parent changed, so refire any pathing functions.
 	// [ ] parent was removed,renamed, or moved so path changes on its children
@@ -203,6 +182,26 @@ function getMenuItemRoots($menu){
 
 
 // menuid menuitem wrappers
+
+/**
+ * get a menu item flat
+ * @since  3.4
+ * @param  array $menu menu array
+ * @param  string $id   page id
+ * @return array       menu item array
+ */
+function getMenuItem($menu,$id = ''){
+    if(isset($menu[GSMENUFLATINDEX]) && isset($menu[GSMENUFLATINDEX][$id])) return $menu[GSMENUFLATINDEX][$id];
+}
+
+function getMenuItemParent($menu,$slug = ''){
+	$item = getMenuItem($menu,$slug);
+	if(!$item) return;
+
+	if(!empty($item['data']['parent'])){
+    	return getMenuItem($menu,$item['data']['parent']);
+    }
+}
 
 function menuItemGetData($pageid,$menuid = null){
 	$menu = getMenuDataArray($menuid);
