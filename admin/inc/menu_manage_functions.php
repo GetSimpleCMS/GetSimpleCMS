@@ -252,6 +252,7 @@ function menuItemGetParent($pageid,$menuid = null){
 
 /**
  * get menu items ids of parents from menu id, optionally include self
+ * @since  3.4
  * @param  string  $pageid      page slug
  * @param  string  $menuid      menu id
  * @param  boolean $includeself if true include pageid in output array
@@ -265,6 +266,13 @@ function menuItemGetParents($pageid,$menuid = null,$includeself = false){
 	return $parents;
 }
 
+/**
+ * get menu item ids of children from menu id
+ * @since  3.4
+ * @param  string  $pageid      page slug
+ * @param  string  $menuid      menu id
+ * @return array                array of menu items ids
+ */
 function menuItemGetChildren($pageid,$menuid = null){
 	$item = menuItemGetData($pageid,$menuid);
 	if(isset($item['children'])) return $item['children'];
