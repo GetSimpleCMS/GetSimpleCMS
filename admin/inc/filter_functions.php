@@ -440,7 +440,9 @@ function filterTags($pages, $tags, $case = false, $exclusive = false, $exclude =
  * @return array         PAGES collection
  */
 function filterParent($pages,$parent=''){
-	return filterKeyValueMatch($pages,'parent',lowercase($parent));
+	$children = menuItemGetChildren($parent);
+	return getPagesMulti($pages,$children);
+	// return filterKeyValueMatch($pages,'parent',lowercase($parent));
 }
 
 

@@ -264,3 +264,8 @@ function menuItemGetParents($pageid,$menuid = null,$includeself = false){
 	if($includeself !== true) array_pop($parents); // remove self from path
 	return $parents;
 }
+
+function menuItemGetChildren($pageid,$menuid = null){
+	$item = menuItemGetData($pageid,$menuid);
+	if(isset($item['children'])) return $item['children'];
+}
