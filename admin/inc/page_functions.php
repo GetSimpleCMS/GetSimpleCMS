@@ -301,7 +301,7 @@ function getParents($pageId){
  * get PAGE parents fields
  * returns an 1D array of a pages parents field values
  * @param  str $pageId slug of child
- * @param  str $key field to return from parents
+ * @param  str $key    key of field to return from parents
  * @param  str $filterfunc optional function
  * @return array       array of parents fields
  */
@@ -318,7 +318,7 @@ function getParentFields($pageId,$key = 'url',$filterFunc = null){
 }
 
 /**
- * get page parent pages
+ * get all page parent pages
  * returns an array of all this pages parents page-arrays
  * @param  str $pageId slug of child
  * @return array       PAGES collection of parents
@@ -428,7 +428,7 @@ function getPagePathField($pageId,$field,$delim = '/'){
 }
 
 /**
- * WRAPPERS IMPORT
+ * WRAPPERS MENU @IMPORT
  */
 
 /**

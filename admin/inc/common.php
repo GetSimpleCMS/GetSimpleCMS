@@ -67,6 +67,8 @@ $GS_constants = array(
 	'GSDEFAULTPERMALINK'    => '%path%/%slug%/',              // (str) default permalink structure to use if prettyurls is enabled, and custom not exist 
 	'GSTOKENDELIM'          => '%',                           // (str) delimiter for token boundaries
 	'GSLOGINQSALLOWED'      => 'id,draft,nodraft,safemode,i,path',   // (str) csv query string keys to allow during login redirects
+	'GSPAGECACHEEXCLUDE'    => 'content',                     // (str) csv list of page fields to exlclude from page cache
+	'GSBACKUPEXTRAS'        => '',                            // (str) csv extra backup locations to add to archives
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
@@ -147,6 +149,8 @@ $GS_definitions = array(
 	'GSDEBUGFILEIO'        => true,                          // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
 	'GSSAFEMODE'           => false,                          // (bool) enable safe mode, safe mode disables plugins and components
+	'GSFORMATXML'          => true,                          // (bool) format xml files before saving them, making them more legible
+	'GSFORMATJSON'         => true,                          // (bool) format JSON files before saving them, making them more legible
 	# ---------------------------------------------------------------------------------------------------------------------------------------------------
  	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
 );

@@ -693,8 +693,6 @@ function XMLsave($xml, $file) {
  * @return bool
  */
 function JSONsave($data, $file) {
-
-	if(!defined('GSFORMATJSON')) define('GSFORMATJSON',true); // debug
 	if(getDef('GSFORMATJSON',true)) $data = formatJsonString($data); // format xml if config setting says so
 	else if(!is_string($data)){
 		$data = json_encode($data);
@@ -2101,16 +2099,20 @@ function directoryToMultiArray($dir,$recursive = true,$exts = null,$exclude = fa
 
 /**
  * Returns definition safely
+ * All definition calls should use this as a wrapper, 
+ * so it can be changed in the future from definitions to a file based config
  * 
  * @since 3.1.3
  * 
  * @param str $id 
  * @param bool $isbool treat definition as boolean and cast it
- * @return * returns definition or null if not defined
+ * @param bool $iscsv  treat definition as array and explode csv
+ * @return mixed       returns definition or null if not defined
  */
-function getDef($id,$isbool = false){
+function getDef($id, $isbool = false, $iscsv = false){
 	if( defined($id) ) {
 		if($isbool) return (bool) constant($id);
+		if($iscsv)  return explode(',',constant($id)); // explode csv @todo trim whitespace, would prevent valid spaces
 		return constant($id);
 	}
 }

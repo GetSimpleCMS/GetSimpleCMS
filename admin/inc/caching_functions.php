@@ -200,12 +200,15 @@ function generate_pageCacheXml(){
 			$cacheItems = $cacheXml->addChild('item');
 			$children = $pageXml->children();
 
+			$pageCacheExclude = getDef('GSPAGECACHEEXCLUDE',false,true);
+
 			foreach ($children as $item => $itemdata) {
-				// add all fields skip content
-				if ($item!="content"){
-					$note = $cacheItems->addChild($item);
-					$note->addCData($itemdata);
-				}
+				
+				// add all fields skip excludes
+				if (isset($pageCacheExclude) && in_array($item, $pageCacheExclude)) continue;
+
+				$note = $cacheItems->addChild($item);
+				$note->addCData($itemdata);
 			}
 			
 			// removed from xml , redundant
@@ -220,6 +223,13 @@ function generate_pageCacheXml(){
 	return $cacheXml;
 }
 
+/**
+ * Add routing info to page cache dynamically
+ * @todo  tentative
+ * @param  [type] $id          [description]
+ * @param  [type] &$cacheItems [description]
+ * @return [type]              [description]
+ */
 function pageCacheAddRoutes($id,&$cacheItems){
 	GLOBAL $pagesArray;
 	if(!$pagesArray) return false;
@@ -228,7 +238,7 @@ function pageCacheAddRoutes($id,&$cacheItems){
 	$routesNode = $cacheItems->addChild('routes');
 	$routeNode = $routesNode->addChild('route');
 
-	// @todo can lead to infinite loops if genetate_permalink triggers a cache rebuild
+	// @todo can lead to infinite loops if generate_permalink triggers a cache rebuild
 	$permaroute = no_tsl(generate_permalink($id));
 
 	$pathNode = $routeNode->addChild('path');

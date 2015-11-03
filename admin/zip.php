@@ -64,7 +64,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		
 		// testing custom extra files, will need a iter wrapper to get dirs
 		if(getDef('GSBACKUPEXTRAS',true)){
-			$extras = explode(GSBACKUPEXTRAS,',');
+			$extras = getDef('GSBACKUPEXTRAS',false,true);
 			foreach($extras as $extra){
 				if(file_exists($extra)) $archiv->addFile($extra);
 			}
