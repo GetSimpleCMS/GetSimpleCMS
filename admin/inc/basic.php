@@ -459,6 +459,10 @@ function getXML($file,$nocdata = true) {
 	}	
 }
 
+function getPageFilename($id, $draft = false){
+	return ($draft ? GSDATADRAFTSPATH : GSDATAPAGESPATH) . $id .'.xml';
+}
+
 /**
  * get page xml shortcut
  *
@@ -467,7 +471,7 @@ function getXML($file,$nocdata = true) {
  * @return xml     xml object
  */
 function getPageXML($id,$nocdata = true){
-	return getXML(GSDATAPAGESPATH.$id.'.xml',$nocdata);
+	return getXML(getPageFilename($id),$nocdata);
 }
 
 /**
@@ -478,7 +482,7 @@ function getPageXML($id,$nocdata = true){
  * @return xml     xml object
  */
 function getDraftXML($id,$nocdata = true){
-	return getXML(GSDATADRAFTSPATH.$id.'.xml',$nocdata);
+	return getXML(getPageFilename($id,true),$nocdata);
 }
 
 /**
@@ -774,7 +778,7 @@ function delete_folder($path){
  * @return bool success
  */
 function save_file($file,$data=''){
-	$status = file_put_contents($file,$data) !== false; // returns num bytes written, FALSE on failure
+	$status = file_put_contents(trim($file),$data) !== false; // returns num bytes written, FALSE on failure
 	fileLog(__FUNCTION__,$status,$file);
 	if(getDef('GSDOCHMOD',true)) $chmodstatus = gs_chmod($file); // currently ignoring chmod failures
 	return $status;
@@ -960,10 +964,11 @@ function formatDate($format, $timestamp = null, $uselocale = true) {
  *
  * @since 3.4
  * @param  str $dt Date/Time String
+ * @param boolean $unixtime	is $dt string unixtimestamp, skips strtotime
  * @return str
  */
-function output_time($dt = null) {
-	if(isset($dt)) $dt = strtotime($dt);
+function output_time($dt = null, $unixtime = false) {
+	if(isset($dt) && !$unixtime) $dt = strtotime($dt);
 	if(getTimeFormat()) return formatDate(getTimeFormat(),$dt);
 }
 
@@ -972,12 +977,13 @@ function output_time($dt = null) {
  *
  * @since 1.0
  * @param string $dt Date/Time string
+ * @param boolean $unixtime	is $dt string unixtimestamp, skips strtotime
  * @return string
  */
-function output_datetime($dt = null) {
-	if(isset($dt)) $dt = strtotime($dt);
+function output_datetime($dt = null, $unixtime = false) {
+	if(isset($dt) && !$unixtime) $dt = strtotime($dt);
 	if(getDateTimeFormat()) return formatDate(getDateTimeFormat(),$dt);
-	}
+}
 
 /**
  * Date only Output using locale
@@ -1106,7 +1112,10 @@ function generate_url($slug, $absolute = false){
 	if($slug != getDef('GSINDEXSLUG')){
 		if ($PRETTYURLS == '1'){
 			$url .= generate_permalink($slug);
-		}
+		} 
+		// else if (!empty($PERMALINK)){
+		// 	$url .= generate_permalink($slug,$PERMALINK);
+		// }
 		else $url .= 'index.php?id='.$slug;
 	}
 
@@ -2122,16 +2131,20 @@ function directoryToMultiArray($dir,$recursive = true,$exts = null,$exclude = fa
 
 /**
  * Returns definition safely
+ * All definition calls should use this as a wrapper, 
+ * so it can be changed in the future from definitions to a file based config
  * 
  * @since 3.1.3
  * 
  * @param str $id 
  * @param bool $isbool treat definition as boolean and cast it
- * @return * returns definition or null if not defined
+ * @param bool $iscsv  treat definition as array and explode csv
+ * @return mixed       returns definition or null if not defined
  */
-function getDef($id,$isbool = false){
+function getDef($id, $isbool = false, $iscsv = false){
 	if( defined($id) ) {
 		if($isbool) return (bool) constant($id);
+		if($iscsv)  return explode(',',constant($id)); // explode csv @todo trim whitespace, would prevent valid spaces
 		return constant($id);
 	}
 }

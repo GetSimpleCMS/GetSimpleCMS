@@ -67,6 +67,7 @@ $GS_constants = array(
 	'GSDEFAULTPERMALINK'    => '%path%/%slug%/',              // (str) default permalink structure to use if prettyurls is enabled, and custom not exist 
 	'GSTOKENDELIM'          => '%',                           // (str) delimiter for token boundaries
 	'GSLOGINQSALLOWED'      => 'id,draft,nodraft,safemode,i,path',   // (str) csv query string keys to allow during login redirects
+	'GSPAGECACHEEXCLUDE'    => 'content',                     // (str) csv list of page fields to exlclude from page cache
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
@@ -111,7 +112,7 @@ $GS_definitions = array(
 	'GSPROFILEALLOWADD'    => true,                           // (bool) allow superuser to add new users
 	'GSPROFILEALLOWEDIT'   => true,                           // (bool) allow superuser to edit other users
 	'GSEXECANON'           => false,                          // (bool) allow callbacks to be anonymous closures, security implications
-	# UPLOADS ------------------------------------------------------------------------------------------------------------------------------------
+	# ALLOW UPLOADS ------------------------------------------------------------------------------------------------------------------------------------
 	'GSALLOWUPLOADS'       => true,                           // (bool) allow upload files
 	'GSALLOWUPLOADCREATE'  => true,                           // (bool) allow upload folder creation
 	'GSALLOWUPLOADDELETE'  => true,                           // (bool) allow upload file/folder delete
