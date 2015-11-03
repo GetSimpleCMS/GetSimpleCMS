@@ -21,6 +21,7 @@
  * `legacy menuid` is the flat 3.3.x version of the menu as it appeared in 3.3.x without multilevel menus, primarily ordered by menuorder
  */
 
+// @todo these are not broken out yet
 include_once(GSADMININCPATH.'menu_manage_functions.php'); // menu manipulation functions
 
 define('GSMENULEGACY',false); // use legacy menus, single level flat menu

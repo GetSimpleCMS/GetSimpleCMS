@@ -428,6 +428,18 @@ function getPagePathField($pageId,$field,$delim = '/'){
 }
 
 /**
+ * shortcut to get pages menu title
+ * if menu title not explicitly set fallback to page title
+ * @since  3.4
+ * @param  str $slug page id
+ * @return str page title
+ */
+function getPageMenuTitle($slug){
+    $page = getPage($slug);
+    return (trim($page['menu']) == '' ? $page['title'] : $page['menu']);
+}
+
+/**
  * WRAPPERS MENU @IMPORT
  */
 
