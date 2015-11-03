@@ -1367,13 +1367,14 @@ function get_api_details($type='core', $args=null, $cached = false) {
 
 	# check to see if cache is available for this
 	$cachefile = md5($fetch_this_api).'.txt';
-	$cacheExpire = 39600; // 11 minutes
+	$cacheExpireSecs = 39600; // seconds, 11 hours
+	// $cacheExpireSecs = 60; // 1 minute
 
 	if(!$nocache || $cached) debug_api_details('cache file check - ' . $fetch_this_api.' ' .$cachefile);
 	else debug_api_details('cache check: disabled');
 
 	$cacheAge = file_exists(GSCACHEPATH.$cachefile) ? filemtime(GSCACHEPATH.$cachefile) : '';
-	debug_api_details('cache age: ' . output_datetime($cacheAge));
+	debug_api_details('cache file tstamp: ' . output_datetime($cacheAge,true));
 
 
 	// api disabled and no cache file exists
@@ -1383,8 +1384,8 @@ function get_api_details($type='core', $args=null, $cached = false) {
 		return '{"status":-1}';
 	}
 
-	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpire) < $cacheAge ) {
-		debug_api_details('cache file time - ' . $cacheAge . ' (' . (time() - $cacheAge) . ')' );
+	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpireSecs) < $cacheAge ) {
+		debug_api_details('cache file time - ' . $cacheAge . ' (' . (time() - $cacheAge) . ' seconds ago)' );
 		# grab the api request from the cache
 		$data = read_file(GSCACHEPATH.$cachefile);
 		debug_api_details('returning cache file - ' . GSCACHEPATH.$cachefile);

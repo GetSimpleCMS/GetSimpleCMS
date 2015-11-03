@@ -938,10 +938,11 @@ function formatDate($format, $timestamp = null, $uselocale = true) {
  *
  * @since 3.4
  * @param  str $dt Date/Time String
+ * @param boolean $unixtime	is $dt string unixtimestamp, skips strtotime
  * @return str
  */
-function output_time($dt = null) {
-	if(isset($dt)) $dt = strtotime($dt);
+function output_time($dt = null, $unixtime = false) {
+	if(isset($dt) && !$unixtime) $dt = strtotime($dt);
 	if(getTimeFormat()) return formatDate(getTimeFormat(),$dt);
 }
 
@@ -950,12 +951,13 @@ function output_time($dt = null) {
  *
  * @since 1.0
  * @param string $dt Date/Time string
+ * @param boolean $unixtime	is $dt string unixtimestamp, skips strtotime
  * @return string
  */
-function output_datetime($dt = null) {
-	if(isset($dt)) $dt = strtotime($dt);
+function output_datetime($dt = null, $unixtime = false) {
+	if(isset($dt) && !$unixtime) $dt = strtotime($dt);
 	if(getDateTimeFormat()) return formatDate(getDateTimeFormat(),$dt);
-	}
+}
 
 /**
  * Date only Output using locale
