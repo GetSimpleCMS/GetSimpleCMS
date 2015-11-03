@@ -46,7 +46,7 @@ function getPage($slug){
 }
 
 /**
- * get all values of a single field from PAGES, array_column
+ * get all values of a single field from PAGES, uses array_column
  * uses PAGES if a PAGE collection is not passed
  * 
  * @since  3.4
@@ -262,6 +262,20 @@ function returnPageFieldFromFile($page, $field, $raw = false){
 	return $data;
 }
 
+
+/**
+ * shortcut to get pages menu title
+ * if menu title not explicitly set fallback to page title
+ * @since  3.4
+ * @param  str $slug page id
+ * @return str page title
+ */
+function getPageMenuTitle($slug){
+    $page = getPage($slug);
+    return (trim($page['menu']) == '' ? $page['title'] : $page['menu']);
+}
+
+
 /**
  * PARENT GETTERS
  */
@@ -425,18 +439,6 @@ function getPagePathField($pageId,$field,$delim = '/'){
 	$parents = getParentFields($pageId,$field);
 	if($parents) return implode('/',array_reverse($parents)) . $delim . getPageFieldValue($pageId,$field);
 	return $pageId;
-}
-
-/**
- * shortcut to get pages menu title
- * if menu title not explicitly set fallback to page title
- * @since  3.4
- * @param  str $slug page id
- * @return str page title
- */
-function getPageMenuTitle($slug){
-    $page = getPage($slug);
-    return (trim($page['menu']) == '' ? $page['title'] : $page['menu']);
 }
 
 /**
