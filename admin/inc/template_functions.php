@@ -1413,9 +1413,13 @@ function get_api_details($type='core', $args=null, $cached = false) {
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_URL, $fetch_this_api);
 
+			curl_setopt($ch, CURLOPT_FAILONERROR, true);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+
 			if($debugApi){
 
-				$curllog = true;
+				$curllog = false;
 				if($curllog){
 					$verbose = fopen(GSDATAOTHERPATH .'logs/curllog.txt', 'w+');
 					curl_setopt($ch, CURLOPT_WRITEHEADER, $verbose );
@@ -1424,10 +1428,10 @@ function get_api_details($type='core', $args=null, $cached = false) {
 
 				curl_setopt($ch, CURLOPT_HEADER, true); 
 				curl_setopt($ch, CURLOPT_VERBOSE, true);
-				curl_setopt($ch, CURLOPT_STDERR, $verbose );
-				curl_setopt($ch, CURLINFO_HEADER_OUT, true);								
+				curl_setopt($ch, CURLOPT_STDERR, $verbose ); // @todo not actually logging errors
+				curl_setopt($ch, CURLINFO_HEADER_OUT, true);							
 			}
-				
+
 			$data = curl_exec($ch);
 
 			if($debugApi){
@@ -1435,12 +1439,12 @@ function get_api_details($type='core', $args=null, $cached = false) {
 				debug_api_details("curl version: ");
 				debug_api_details(print_r(curl_version(),true));	
 			
-				debug_api_details("curl info:");
+				debug_api_details("curl info: ");
 				debug_api_details(print_r(curl_getinfo($ch),true));
 			
 				if (!$data) {
-					debug_api_details("curl error number:" .curl_errno($ch));
-					debug_api_details("curl error:" . curl_error($ch));
+					debug_api_details("curl error number: " .curl_errno($ch));
+					debug_api_details("curl error: " . curl_error($ch));
 				}
 
 				debug_api_details("curl Verbose: ");
