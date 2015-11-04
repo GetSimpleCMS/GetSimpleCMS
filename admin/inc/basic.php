@@ -447,7 +447,7 @@ function getXML($file,$nocdata = true) {
 }
 
 function getPageFilename($id, $draft = false){
-	return ($draft ? GSDATADRAFTSPATH : GSDATAPAGESPATH) . $id .'.xml';
+	return ($draft ? GSDATADRAFTSPATH : GSDATAPAGESPATH) . (string)$id .'.xml';
 }
 
 /**

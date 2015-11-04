@@ -61,57 +61,68 @@ function getPagesFields($field,$pages = array()){
 	return array_column($pages,$field,'url');
 }
 
-
-/**
- * abstractions / shorthand
- * these are not for here, they are for theme_functions
- * but 
- * @todo  clean up and move abstractions for themes
- */
-
-// function get_pages(){
-// 	return getPages();
-// }
-
-// function get_page_field_value($pageId,$field){
-// 	return returnPageField($pageId,$field);
-// }
-
-// function get_page_children($pageId){
-// 	return getPages('filterParent',$pageId);
-// }
-
-// function get_parent_slug($pageId){
-// 	return getParent($pageId);
-// }
-
-// function get_parents_slugs($pageId){
-// 	return getParents($pageId);
-// }
-
-// function get_parent_page($pageId){
-// 	return getParentPage($pageId);
-// }
-
-// function get_parents_pages($pageId){
-// 	return getParentsPages($pageId);
-// }
-
-// function get_page_path($pageId){
-// 	return getPagePath($pageId);
-// }
-
-
 /**
  * get page field value
+ * @since  3.4
  * @param  str $pageId pageid
  * @param  str $field  fieldid
  * @return mixed field value
+ * @param $raw   if true, prevent any processing of data, Caution, datatypes will vary if fallbacks to file occur
+ * @param $cache if false, bypass cache and get directly from page file 
  */
-function getPageFieldValue($pageId,$field){
-	return returnPageField($pageId,$field);
+function getPageFieldValue($pageId,$field,$raw = false, $cache = true){
+	$page = getPage((string)$pageId);
+	if ($cache && isset($page,$page[$field])){
+		if(!$raw) return strip_decode($page[$field]);
+		return $page[$field];
+	} else {
+		return getPageFieldFromFile($pageId,$field,$raw);
+	}
 }
 
+/**
+ * get page field directly from page file, bypasses page cache
+ * @since  3.4
+ * @param  str  $page  page id
+ * @param  str  $field field id
+ * @param  boolean $raw  return raw xml
+ * @return returns field data from page xml
+ */
+function getPageFieldFromFile($page, $field, $raw = false){   
+	$data = getPageXML($page);
+	if(!$data) return;
+
+	$data = $data->$field;
+	if($raw) return $data; // return without any processing
+	$data = stripslashes(htmlspecialchars_decode($data, ENT_QUOTES));
+	return $data;
+}
+
+/**
+ * get a content field from a page
+ * @param  str  $pageId   slug of page
+ * @param  boolean $filtered perform content filter if true
+ * @param  string  $field    content field key
+ * @return str            content string
+ */
+function getPageContentField($pageId, $filtered = true, $field = 'content'){
+	$content = getPageFieldValue($field);
+	if($fitlered) return filterPageContent($content);
+	return $content;
+}
+
+/**
+ * helper for filtering content
+ * filter content handler for pageid, or content
+ * @param  str $page    pageid
+ * @param  str $content content data
+ * @return str          result of content filtering
+ */
+function filterPageContent($page, $content){
+	// if(!$content) $content = getPageField($page,'content',true); // could cause infinite loops, must be raw
+	$content = exec_filter('content',$content); // @filter content (str) filter page content in returnPageContent
+	return $content;
+}
 
 /**
  * page is in menu
@@ -136,132 +147,6 @@ function pageIsInMenu($slug,$menuid = null){
 function getPagesMulti($keys,$sort = false){
 	return filterPagesSlugs(getPages(),$keys,$sort);
 }
-
-/**
- * Return Page Content
- *
- * Return the content of the requested page. 
- * Retreives from page file if content does not exist in cache
- * NOTE Performs content filter before returning by default.
- * LEGACY, use returnPageField for other fields, $field provided for legacy use only.
- * @since 3.1
- * @param $page - slug of the page to retrieve content
- * @param $raw false - if true return raw xml, no strip, no filter
- * @param $nofilter false - if true skip content filter execution
- *
- */
-function returnPageContent($page, $field='content', $raw = false, $nofilter = false){ 
-	
-	if($field !=='content'){
-		debugLog('LEGACY NOTICE: '.__FUNCTION__.' is DEPRECATED for fields other than content use returnPageField instead');
-		$data = returnPageField($page,$field,$raw);
-	}
-	else {
-		$data = returnPageField($page,'content',true);
-		$data = $nofilter || $raw ? $data : filterPageContent($page,$data);
-	}
-
-	return $data;
-}
-
-/**
- * Get Page Content
- *
- * Retrieve and display the content of the requested page. 
- * As the Content is not cached the file is read in.
- *
- * @since 2.0
- * @param $page - slug of the page to retrieve content
- *
- */
-function getPageContent($page,$field='content'){   
-	echo returnPageContent($page,$field);
-}
-
-
-/**
- * helper for filtering content
- * filter content handler for pageid, or content
- * @param  str $page    pageid
- * @param  str $content content data
- * @return str          result of content filtering
- */
-function filterPageContent($page, $content){
-	// if(!$content) $content = getPageField($page,'content',true); // could cause infinite loops, must be raw
-	$content = exec_filter('content',$content); // @filter content (str) filter page content in returnPageContent
-	return $content;
-}
-
-
-/**
- * Return Page Field
- *
- * Retrieve the requested field from the given page cache, fallback to page file
- * If the field is "content" and not raw it will run it through content filter
- *
- * @since 3.1
- * @param $page  slug of the page to retrieve content
- * @param $field the Field to display
- * @param $raw   if true, prevent any processing of data, use with caution as result can vary if falls back to page file
- * @param $cache if false, bypass cache and get directly from page file
- * 
- */
-function returnPageField($page, $field, $raw = false, $cache = true){   
-	$pagesArray = getPagesXmlValues();
-
-	if ($cache && isset($pagesArray[(string)$page]) && isset($pagesArray[(string)$page][$field]) ){
-		$ret = $raw ? $pagesArray[(string)$page][(string)$field] : strip_decode($pagesArray[(string)$page][(string)$field]);
-	} else {
-		$ret = returnPageFieldFromFile($page,$field,$raw);
-	}
-
-	// @todo this needs to come out of there, its dumb, special handling for special fields needs to be external
-	if ($field=="content" && !$raw){
-		$ret = filterPageContent($page,$ret);
-	}
-
-	return $ret;
-}
-
-/**
- * Get Page Field
- *
- * Retrieve and display the requested field from the given page. 
- *
- * @since 3.1
- * @param $page - slug of the page to retrieve content
- * @param $field - the Field to display
- * 
- */
-function getPageField($page,$field){   
-	echo returnPageField($page,$field);
-}
-
-/**
- * alias for getPageField()
- */
-function echoPageField($page,$field){
-	getPageField($page,$field);
-}
-
-/**
- * get page field directly from page file, bypasses page cache
- * @since  3.4
- * @param  str  $page  page id
- * @param  str  $field field id
- * @param  boolean $raw  return raw xml
- * @return returns field data from page xml
- */
-function returnPageFieldFromFile($page, $field, $raw = false){   
-	$data = getPageXML($page);
-	if(!$data) return;
-
-	$data = $data->$field;
-	if($raw) return $data; // return without any processing
-	$data = stripslashes(htmlspecialchars_decode($data, ENT_QUOTES));
-	return $data;
-}
-
 
 /**
  * shortcut to get pages menu title
@@ -472,5 +357,120 @@ function getChildrenByCoreMenu($pageId){
 	return menuItemGetChildren($pageId,GSMENUIDCORE);
 }
 
+
+/**
+ * LEGACY
+ */
+
+/**
+ * Return Page Field
+ *
+ * Retrieve the requested field from the given page cache, fallback to page file
+ * If the field is "content" and not raw it will run it through content filter
+ * @deprecated 3.4 should not return fields with different processing
+ * @since 3.1
+ * @param $page  slug of the page to retrieve content
+ * @param $field the Field to display
+ * @param $raw   if true, prevent any processing of data, use with caution as result can vary if falls back to page file
+ * @param $cache if false, bypass cache and get directly from page file
+ * 
+ */
+function returnPageField($page, $field, $raw = false, $cache = true){   
+	if($field == 'content') return getPageContentField($page,!$raw);
+	return getPageFieldValue($page,$field,$raw,$cache);
+}
+
+/**
+ * Get Page Field
+ *
+ * Retrieve and display the requested field from the given page. 
+ * @deprecated 3.4 get functions should not echo
+ * @since 3.1
+ * @param $page - slug of the page to retrieve content
+ * @param $field - the Field to display
+ * 
+ */
+function getPageField($page,$field){   
+	echo returnPageField($page,$field);
+}
+
+/**
+ * alias for getPageField()
+ * @deprecated 3.4 pointless
+ */
+function echoPageField($page,$field){
+	getPageField($page,$field);
+}
+
+/**
+ * Return Page Content
+ *
+ * Return the content of the requested page. 
+ * Retreives from page file if content does not exist in cache
+ * NOTE Performs content filter before returning by default.
+ * @deprecated 3.4 confusing named function
+ * @since 3.1
+ * @param $page - slug of the page to retrieve content
+ * @param $raw false - if true return raw xml, no strip, no filter
+ * @param $nofilter false - if true skip content filter execution
+ *
+ */
+function returnPageContent($page, $field='content', $raw = false, $nofilter = false){ 
+	if($field == 'content') return getPageContentField($page, !$nofilter);
+	return getPageFieldValue($page, $field, $raw, $cache);
+}
+
+/**
+ * Get Page Content
+ *
+ * Retrieve and display the content of the requested page. 
+ * As the Content is not cached the file is read in.
+ * @deprecated due to echo nonsense
+ * @since 2.0
+ * @param $page - slug of the page to retrieve content
+ *
+ */
+function getPageContent($page,$field='content'){   
+	echo returnPageField($page,$field);
+}
+
+/**
+ * abstractions / shorthand
+ * these are not for here, they are for theme_functions
+ * but 
+ * @todo  clean up and move abstractions for themes
+ */
+
+// function get_pages(){
+// 	return getPages();
+// }
+
+// function get_page_field_value($pageId,$field){
+// 	return returnPageField($pageId,$field);
+// }
+
+// function get_page_children($pageId){
+// 	return getPages('filterParent',$pageId);
+// }
+
+// function get_parent_slug($pageId){
+// 	return getParent($pageId);
+// }
+
+// function get_parents_slugs($pageId){
+// 	return getParents($pageId);
+// }
+
+// function get_parent_page($pageId){
+// 	return getParentPage($pageId);
+// }
+
+// function get_parents_pages($pageId){
+// 	return getParentsPages($pageId);
+// }
+
+// function get_page_path($pageId){
+// 	return getPagePath($pageId);
+// }
 
 /*?>*/
