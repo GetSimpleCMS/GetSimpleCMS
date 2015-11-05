@@ -73,9 +73,6 @@ function initUpgradeMenus(){
     $status &= menuSave(GSMENUIDCORE,$menu);
     debugLog(__FUNCTION__ . ": core menu save status " . ($status ? 'success' : 'fail'));
 
-    // generate core pages menu items only menu
-    // $menu   = importLegacyMenuTree(true);
-    // $status &= menuSave(GSMENUIDCOREMENU,$menu);
     $status &= saveCoreMenu();
     debugLog(__FUNCTION__ . ": core inmenu menu save status " . ($status ? 'success' : 'fail'));
 

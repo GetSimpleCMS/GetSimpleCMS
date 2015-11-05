@@ -100,6 +100,7 @@ function getPageFieldFromFile($page, $field, $raw = false){
 
 /**
  * get a content field from a page
+ * supports custom content field keys
  * @param  str  $pageId   slug of page
  * @param  boolean $filtered perform content filter if true
  * @param  string  $field    content field key
@@ -107,20 +108,20 @@ function getPageFieldFromFile($page, $field, $raw = false){
  */
 function getPageContentField($pageId, $filtered = true, $field = 'content'){
 	$content = getPageFieldValue($field);
-	if($fitlered) return filterPageContent($content);
+	if($filtered) return filterPageContent($content,$field);
 	return $content;
 }
 
 /**
  * helper for filtering content
- * filter content handler for pageid, or content
- * @param  str $page    pageid
+ * supports custom content field keys, could in theory filter any field
  * @param  str $content content data
+ * @param  str $field   content field key
  * @return str          result of content filtering
  */
-function filterPageContent($page, $content){
-	// if(!$content) $content = getPageField($page,'content',true); // could cause infinite loops, must be raw
-	$content = exec_filter('content',$content); // @filter content (str) filter page content in returnPageContent
+function filterPageContent($content,$field = 'content'){
+	$hook = $field; // can modify for filter hook prefix postfix conventions enforcement eg. "content_blargh"
+	$content = exec_filter($hook,$content); // @filter content (str) filter page content in returnPageContent
 	return $content;
 }
 
