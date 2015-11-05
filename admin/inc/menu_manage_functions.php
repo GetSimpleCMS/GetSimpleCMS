@@ -6,50 +6,65 @@
  * @subpackage menus_manage_functions.php
  */
 
-function menuItemRename($menu,$slug,$data){
-	$item = $menu[GSMENUFLATINDEX][$slug];
+// @untested
+// change slug, new slug = $data['id']
+function menuItemRename($menu,$slug,$newslug){
 
-	$menu[GSMENUFLATINDEX][$data['id']] = $data;
-	$menu[GSMENUFLATINDEX][$data['id']]['children'] = $item['children'];
-	menuItemRefreshChildren($menu,$slug);
+	$menu[GSMENUFLATINDEX][$slug]['id'] = $newslug;
+	$menu[GSMENUFLATINDEX][$newslug] = $menu[GSMENUFLATINDEX][$slug];
+	menuItemRefreshChildren($menu,$newslug);
+	$menuItemDelete($menu,$slug);
+	// regen nest
 	return $menu;
 }
 
+// @untested
 function menuItemUpdate($menu,$slug,$data){
-	$menu[GSMENUFLATINDEX][$slug] = $data;
+	$menu[GSMENUFLATINDEX][$slug]['data'] = $data;
 	menuItemRefreshChildren($menu,$slug);
 	return $menu;
 }
 
+// @untested
 function menuItemMove($menu,$slug,$newparent){
 	$item = getMenuItem($menu,$slug);
 	menuItemDelete($menu,$slug);
 	menuItemAdd($menu,$newparent,$item);
+	menuItemRefreshChildren($menu,$slug);	
 	return $menu;
 }
 
+// @untested
 function menuItemDelete($menu,$slug){
+	// if menu item has children hand off
+	if(isset($menu[GSMENUFLATINDEX][$slug]['children'])) return menuItemDeleteParent($menu,$slug);
 	unset($menu[GSMENUFLATINDEX][$slug]);
 	return $menu;
 }
 
+// refactored up to here, ready for testing
+
+// @untested
 function menuItemDeleteParent($menu,$slug){
-	$item = getMenuItem($menu,$slug);
+	
+	$item = $menu[GSMENUFLATINDEX][$slug];
 	// move children to root
 	foreach($item['children'] as $child){
-		$child['parent'] = '';
-		menuItemAdd($menu,$child['id'],$child);
-		menuItemRefreshChildren($menu,$slug);
+		$child['parent'] = ''; // wipe parent
+		menuItemAdd($menu,$slug,$child); // move to root
+		menuItemRefreshChildren($menu,$slug); // update children
 	}
-	menuItemDelete($slug);
+	menuItemDelete($slug); // delete parent
 	return $menu;
 }
 
+// @untested
 function menuItemAdd($menu,$slug,$data){
 	$menu[GSMENUFLATINDEX][$slug] = $data;
 	return $menu;
 }
 
+// @untested
 function menuItemParentChanged($menu,$slug){
 	// [ ] parent changed, so refire any pathing functions.
 	// [ ] parent was removed,renamed, or moved so path changes on its children
@@ -60,6 +75,7 @@ function menuItemParentChanged($menu,$slug){
 	return $menu;
 }
 
+// @untested
 function menuIndexPrune($menu,$index){
 	// detect menu removals and prune them
 	$removed = array_diff(array_keys($menu[GSMENUFLATINDEX]), array_keys($index));
@@ -70,10 +86,14 @@ function menuIndexPrune($menu,$index){
 	return $menu;
 }
 
+// @untested
 function menuItemRefreshChildren($menu,$slug){
 	// fix up children values
 	// this is a problem since the menu is not saved yet , and these callouts will eventually need the menu
 	foreach($menu[GSMENUFLATINDEX][$index]['children'] as $key => $value){
+		// update parent on children
+		$menu[GSMENUFLATINDEX][$key]['data']['parent'] = $slug;
+		// update paths
 		recurseUpgradeTreeCallout($menu[GSMENUFLATINDEX][$key],$id = $key,$parent = $slug);
 		debugLog($menu[GSMENUFLATINDEX][$index]);
 	}

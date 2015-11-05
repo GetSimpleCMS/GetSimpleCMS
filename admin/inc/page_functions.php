@@ -114,7 +114,7 @@ function getPageContentField($pageId, $filtered = true, $field = 'content'){
 
 /**
  * helper for filtering content
- * supports custom content field keys, could in theory filter any field
+ * supports custom content field keys
  * @param  str $content content data
  * @param  str $field   content field key
  * @return str          result of content filtering
