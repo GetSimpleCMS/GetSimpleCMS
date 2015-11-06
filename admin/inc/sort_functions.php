@@ -261,7 +261,7 @@ function reindexPages($pages = array()){
 
 // use array_column with null key to rekey an array
 function reindexArray($array,$key){
-	array_column($array,null,$key);
+	return array_column($array,null,$key);
 }
 
 

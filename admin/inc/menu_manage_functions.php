@@ -6,14 +6,127 @@
  * @subpackage menus_manage_functions.php
  */
 
-// @untested
-// change slug, new slug = $data['id']
-function menuItemRename($menu,$slug,$newslug){
 
+/**
+ * menu rebuild using recurseUpgradeTree
+ * @param  [type] $slug    [description]
+ * @param  [type] $newslug [description]
+ * @return [type]          [description]
+ */
+function menuItemRebuildChange($args){
+	/**
+	 * as an alternative to using individual functions to manipulate flat array and then rebuild nest
+	 * I can manipulate nest and recurseUpgrade as we would when submitting a new menu
+	 * This might take longer but only needs to be done on heirarchy changes and involves signifigantly less logic
+	 * possible actions
+	 * array('rename',$slug, $newslug);
+	 * array('move',$slug, $newparent);
+	 * array('delete', $slug);
+	 * array('insert', $slug, $parent, $after, $data);
+	 */
+	debugLog($args);
+	$action = $args[0];
+
+	// change raw menu, rebuild menu recurse
+	$menu = getMenuDataArray();
+
+	if($action == 'insert'){
+		$slug       = $args[1];
+		$parentslug = $args[2];
+		$after      = $args[3];
+
+		$item = array($slug => array('id' => $slug));
+		$item = array(array('id' => $slug));
+
+		if($parentslug){
+			$parent = &getMenuItemTreeRef($menu, $parentslug);
+			$pos = array_insert_after($parent['children'],$after,$item);
+		}
+		else {
+			$pos = array_insert_after($menu[GSMENUNESTINDEX],$after,$item);
+		}
+	}
+
+	if($action == 'rename'){
+		$slug    = $args[1];
+		$newslug = $args[2];
+
+		$item = &getMenuItemTreeRef($menu,$slug);
+		// manipulate
+		$item['id'] = $newslug;
+	}
+	
+	// change a parent, move the item to new parent or root
+	if($action == 'move'){
+		$slug = $args[1];
+		$newparent = $args[2];
+
+		$item = getMenuItemTreeRef($menu,$slug);
+		_debugLog($item);
+
+		// insert
+		if($newparent) {
+			$parent = &getMenuItemTreeRef($menu, $newparent);
+			$parent['children'][] = $item;
+		}
+		else {
+			// $menu[GSMENUNESTINDEX][$newparent]['children'][] = $item;
+			$menu[GSMENUNESTINDEX][$slug] = $item;
+		}
+
+		_debugLog($menu[GSMENUNESTINDEX]['index']);
+
+		// @todo delete not working, probably need to copy refernce or delete first
+		$action = 'delete';
+	}
+
+	// remove an item, shift its children
+	if($action == 'delete'){
+		$slug = $args[1];
+
+		$item = &getMenuItemTreeRef($menu,$slug);
+
+		// move children to root to save
+		if(isset($item['children'])){
+			$menu[GSMENUNESTINDEX] = array_merge($menu[GSMENUNESTINDEX],$item['children']);
+		}
+		// $item = null; unset($item); // does not unset, but sure is easier
+
+		// delete
+		$parentslug = $menu[GSMENUFLATINDEX][$slug]['data']['parent'];
+		if($parentslug) {
+			$parent = &getMenuItemTreeRef($menu, $parentslug);
+			// remove from parent
+			$key = array_search($slug, $parent['children']);
+	   		if($key !== false) unset($parent['children'][$key]);
+		}
+		else {
+			// $menu[GSMENUNESTINDEX][$slug] = null;
+			unset($menu[GSMENUNESTINDEX][$slug]);
+		}
+	}
+
+	// @todo possible copy here to break refs, no longer needed
+	$menunest = $menu[GSMENUNESTINDEX];
+
+	// reindex
+	$menunest = reindexMenuArray($menunest,true); // reindex if slug change
+    
+	// rebuild
+    $menunew = array(); // new array
+    $menunew = recurseUpgradeTree($menunest); // build full menu data, modify menunest ref
+    $menunew[GSMENUNESTINDEX] = $menunest;     // re-join
+
+	_debugLog($menunew);
+    return $menunew;
+}
+
+// @tested
+function menuItemRename($menu,$slug,$newslug){
 	$menu[GSMENUFLATINDEX][$slug]['id'] = $newslug;
-	$menu[GSMENUFLATINDEX][$newslug] = $menu[GSMENUFLATINDEX][$slug];
-	menuItemRefreshChildren($menu,$newslug);
-	$menuItemDelete($menu,$slug);
+	debugLog($menu[GSMENUFLATINDEX]);
+	$menu[GSMENUFLATINDEX] = reindexArray($menu[GSMENUFLATINDEX],'id'); // reindex so we save position in array
+	$menu = menuItemPathChanged($menu,$newslug);
 	// regen nest
 	return $menu;
 }
@@ -36,6 +149,7 @@ function menuItemMove($menu,$slug,$newparent){
 
 // @untested
 function menuItemDelete($menu,$slug){
+	debugLog(__FUNCTION__);
 	// if menu item has children hand off
 	if(isset($menu[GSMENUFLATINDEX][$slug]['children'])) return menuItemDeleteParent($menu,$slug);
 	unset($menu[GSMENUFLATINDEX][$slug]);
@@ -46,20 +160,22 @@ function menuItemDelete($menu,$slug){
 
 // @untested
 function menuItemDeleteParent($menu,$slug){
-	
+	debugLog(__FUNCTION__);	
 	$item = $menu[GSMENUFLATINDEX][$slug];
 	// move children to root
-	foreach($item['children'] as $child){
-		$child['parent'] = ''; // wipe parent
-		menuItemAdd($menu,$slug,$child); // move to root
-		menuItemRefreshChildren($menu,$slug); // update children
+	foreach($item['children'] as $childslug){
+		$child = $menu[GSMENUFLATINDEX][$childslug];
+		$child['data']['parent'] = ''; // wipe parent
+		menuItemAdd($menu,$childslug,$child); // move to root
+		menuItemRefreshChildren($menu,$childslug); // update children
 	}
-	menuItemDelete($slug); // delete parent
+	unset($menu[GSMENUFLATINDEX][$slug]);
 	return $menu;
 }
 
 // @untested
 function menuItemAdd($menu,$slug,$data){
+	debugLog(__FUNCTION__);
 	$menu[GSMENUFLATINDEX][$slug] = $data;
 	return $menu;
 }
@@ -86,24 +202,50 @@ function menuIndexPrune($menu,$index){
 	return $menu;
 }
 
-// @untested
+// @tested
 function menuItemRefreshChildren($menu,$slug){
+	// return;
 	// fix up children values
 	// this is a problem since the menu is not saved yet , and these callouts will eventually need the menu
-	foreach($menu[GSMENUFLATINDEX][$index]['children'] as $key => $value){
-		// update parent on children
-		$menu[GSMENUFLATINDEX][$key]['data']['parent'] = $slug;
+	if(!isset($menu[GSMENUFLATINDEX][$slug]['children'])) return $menu;
+
+	foreach($menu[GSMENUFLATINDEX][$slug]['children'] as $key => $value){
+		// update parent on children in case it changed
+		$menu[GSMENUFLATINDEX][$value]['data']['parent'] = $slug;
+		// update dot path if any parent changed
+		$menu = menuItemRebuilDotpath($menu,$value);
 		// update paths
-		recurseUpgradeTreeCallout($menu[GSMENUFLATINDEX][$key],$id = $key,$parent = $slug);
-		debugLog($menu[GSMENUFLATINDEX][$index]);
+		// recurseUpgradeTreeCallout($menu[GSMENUFLATINDEX][$value],$id = $value,$parent = $slug);
+		$menu = menuItemRefreshChildren($menu,$value);
 	}
 
 	return $menu;
 }
 
 /**
+ * A menu path changed update any pathing dependancies
+ * rebuild dot path, rebuild all children, to fix up parent and dotpaths, etc
+ * @param  menu $menu menu data array
+ * @param  string $slug slug that changed
+ * @return array       menu data array
+ */
+function menuItemPathChanged($menu,$slug){
+	$menu = menuItemRebuilDotpath($menu,$slug);
+	$menu = menuItemRefreshChildren($menu,$slug);
+	return $menu;
+}
+
+/**
  * REBUILDERS
  */
+
+function menuItemRebuilDotpath($menu,$slug){
+	$parent     = getMenuItemParent($menu,$slug);
+	$parentpath = $parent['data']['dotpath'];
+	$dotpath    = $parentpath . '.' . $slug;
+	$menu[GSMENUFLATINDEX][$slug]['data']['dotpath'] = $dotpath;
+	return $menu;
+}
 
 /**
  * rebuild a menus nested array
@@ -200,8 +342,23 @@ function getMenuItemRoots($menu){
 	return $roots;
 }
 
+/**
+ * get a menu item as tree with reference
+ * @param  array &$menu menu data
+ * @param  string $slug  slug of page
+ * @return array        nested array of menu item
+ */
+function &getMenuItemTreeRef(&$menu, $slug){
+	$parenttree = getMenuItemParent($menu,$slug);
+	// @todo abstract getMenuTreeByRef
+	if($parenttree){
+		$item = &resolve_tree($menu[GSMENUNESTINDEX], $parenttree['data']['dotpath']);
+		$item = $item[$slug];
+	}
+	else $item = &$menu[GSMENUNESTINDEX][$slug];
 
-// menuid menuitem wrappers
+	return $item;
+}
 
 /**
  * get a menu item flat form menudata
@@ -229,6 +386,8 @@ function getMenuItemParent($menu,$slug = ''){
     	return getMenuItem($menu,$item['data']['parent']);
     }
 }
+
+// MENUID MENUITEM WRAPPERS
 
 /**
  * get item by id from specific menuid

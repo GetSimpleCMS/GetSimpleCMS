@@ -3042,6 +3042,39 @@ function matchArrayAll($needle,$haystack,$keys = false){
 }
 
 /**
+ * Inserts any number of scalars or arrays at the point
+ * in the haystack immediately after the search key ($needle) was found,
+ * or at the end if the needle is not found or not supplied.
+ * Modifies $haystack in place.
+ * @since  3.4
+ * @author  TomAuger http://codepad.org/5WlKFKfz
+ * @param array &$haystack the associative array to search. This will be modified by the function
+ * @param string $needle the key to search for
+ * @param mixed $stuff one or more arrays or scalars to be inserted into $haystack
+ * @return int the index at which $needle was found
+ */                         
+function array_insert_after(&$haystack, $needle = '', $stuff){
+    if (! is_array($haystack) ) return $haystack;
+
+    $new_array = array();
+    for ($i = 2; $i < func_num_args(); ++$i){
+        $arg = func_get_arg($i);
+        if (is_array($arg)) $new_array = array_merge($new_array, $arg);
+        else $new_array[] = $arg;
+    }
+
+    $i = 0;
+    foreach($haystack as $key => $value){
+        ++$i;
+        if ($key == $needle) break;
+    }
+
+    $haystack = array_merge(array_slice($haystack, 0, $i, true), $new_array, array_slice($haystack, $i, null, true));
+
+    return $i;
+}
+
+/**
  * This file is part of the array_column library
  *
  * For the full copyright and license information, please view the LICENSE

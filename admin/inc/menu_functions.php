@@ -762,6 +762,7 @@ function menuCalloutFilter($item,$level,$index,$order,$args){
  * reindex a nested menu array recursively
  * array[0] => array('id' => 'index')
  * array['index'] => array('id' => 'index'), and same for all children indexes
+ * DOES NOT PRESERVE ORDER IF CHANGING A KEY, workaorund by using force
  * @since  3.4
  * @param  array $menu menu array
  * @return array       array reindexed
@@ -771,14 +772,14 @@ function reindexMenuArray($menu, $force = false){
 	foreach($menu as $key=>$item){
         if(!isset($item['id'])) continue;
 		$id = $item['id'];
-		if($id !== $key || $force){
-			$menu[$id]  = $item;
+		if(($id !== $key) || $force){
+			$tmpitem = $item; // preserve, so we can wipe if force, since keys will match id and be removed
 			$menu[$key] = null;
 			unset($menu[$key]);
+			$menu[$id]  = $tmpitem;
 		}
-		if(isset($menu[$id]['children'])) $menu[$id]['children'] = $thisfunc($menu[$id]['children']);
+		if(isset($menu[$id]['children'])) $menu[$id]['children'] = $thisfunc($menu[$id]['children'], $force);
 	}
-
 	return $menu;
 }
 
@@ -796,6 +797,7 @@ function reindexMenuArray($menu, $force = false){
  */
 function newMenuSave($menuid,$menu){
     $menu     = json_decode($menu,true);   // convert to array
+    debugDie($menu);
 	$menu     = reindexMenuArray($menu);   // add id as keys
     $menudata = recurseUpgradeTree($menu); // build full menu data
     $menudata[GSMENUNESTINDEX] = $menu;
