@@ -302,13 +302,21 @@ if(defined('GSERRORLOGENABLE') && (bool) GSERRORLOGENABLE === true){
  * Basic file inclusions
  */
 require_once('basic.php');
+// debugLog('headers sent: basic.php ' . headers_sent());
 require_once('template_functions.php');
+// debugLog('headers sent: template_functions.php ' . headers_sent());
 require_once('theme_functions.php');
+// debugLog('headers sent: theme_functions.php ' . headers_sent());
 require_once('page_functions.php');
+// debugLog('headers sent: page_functions.php ' . headers_sent());
 require_once('filter_functions.php');
+// debugLog('headers sent: filter_functions.php ' . headers_sent());
 require_once('sort_functions.php');
+// debugLog('headers sent: sort_functions.php ' . headers_sent());
 require_once('menu_functions.php');
+// debugLog('headers sent: menu_functions.php ' . headers_sent());
 require_once('logging.class.php');
+// debugLog('headers sent: logging.class.php ' . headers_sent());
 
 include_once(GSADMININCPATH.'configuration.php');
 
@@ -328,6 +336,7 @@ if(getDef('GSNOFRAME') !== false){
  * Bad stuff protection
  */
 require_once('security_functions.php');
+// debugLog('headers sent: security_functions.php ' . headers_sent());
 
 if (version_compare(PHP_VERSION, "5")  >= 0) {
 	foreach ($_GET as &$xss) $xss = antixss($xss);
@@ -565,13 +574,19 @@ if(empty($ASSETURL))     $ASSETURL    = $SITEURL;
 /**
  * Include other files depending if they are needed or not
  */
+
 require_once(GSADMININCPATH.'cookie_functions.php');
+// debugLog('headers sent: cookie_functions.php ' . headers_sent());
 require_once(GSADMININCPATH.'assets.php');
+// debugLog('headers sent: asset.php ' . headers_sent());
 include_once(GSADMININCPATH.'plugin_functions.php');
+// debugLog('headers sent: plugin_functions.php ' . headers_sent());
 
 // include core plugin for page caching, requires plugin functions for hooks
 // @todo must stay after plugin_function for now, since it requires plugin_functions
 include_once(GSADMININCPATH.'caching_functions.php');
+// debugLog('headers sent: caching_functions.php ' . headers_sent());
+
 init_pageCache();
 
 if($SAFEMODE){
@@ -601,6 +616,7 @@ if(isset($load['plugin']) && $load['plugin']){
 			// debugLog('including plugin: ' . $file);
 			include_once(GSPLUGINPATH . $file);
 			exec_action('plugin-loaded'); // @hook plugin-loaded called after each plugin is included
+			// debugLog('headers sent: ' . $file . ' - ' . headers_sent());
 		}
 	}
 	exec_action('plugins-loaded'); // @hook plugins-loaded plugin files have been included
