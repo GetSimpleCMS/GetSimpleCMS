@@ -75,8 +75,10 @@ function menuItemRebuildChange($args,$menu = null){
 		if($slug == $newslug) return $menu;
 
 		$item = &getMenuItemTreeRef($menu,$slug);
+		// debugLog($item);
 		// manipulate
 		$item['id'] = $newslug;
+		// debugLog($item);
 	}
 	
 	// change a parent, move the item to new parent or root
@@ -162,7 +164,7 @@ function menuItemRebuildChange($args,$menu = null){
 }
 
 function menuItemRebuildUndo($slug){
-	
+
 }
 
 // @tested
