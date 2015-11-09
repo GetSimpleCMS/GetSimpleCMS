@@ -842,7 +842,14 @@ function get_available_pages() {
  * @param str $parent parent slug to change
  * @param str $newparent new slug to change to
  */
-function changeChildParents($parent, $newparent=null){
+function changeChildParents($parent, $newparent=''){
+	global $SITEMENU;
+	$menudata = menuItemRebuildChange(array('rename',$parent,$newparent));
+	debugLog("menunew",$menudata); // NOT WORKING
+	$SITEMENU[GSMENUIDCORE] = $menudata;
+	return;
+
+	// @todo this is not needed if legacy, as menu saves will write out updates to pages
 	global $pagesArray;
 	getPagesXmlValues();
 	foreach ($pagesArray as $page){

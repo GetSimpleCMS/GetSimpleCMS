@@ -29,6 +29,18 @@ function menuItemRebuildChange($args,$menu = null){
 	 * array('insert', $slug, $parent, $after, $data);
 	 * 
 	 * rename and move not implemented yet, rare
+     *
+     * TESTS
+     * -[ ] rename root level
+     * -[ ] rename child level
+     * -[ ] insert at root level
+     * -[ ] insert at child level
+     * -[ ] insert after both
+     * -[ ] move to root level
+     * -[ ] move to parent level
+     * -[ ] delete root level
+     * -[ ] delete child level
+     * -[ ] delete with and without preserve parents flag
      * 
 	 */
 	
@@ -90,7 +102,10 @@ function menuItemRebuildChange($args,$menu = null){
 		}
 
 		// debugLog($menu[GSMENUNESTINDEX][$newparent]);
+		
 		// perform delete next
+		// since this uses getMenuItemTreeRef, it assumes that flatindex has not been modified and still points to the old item
+		// alternative would be to provide a safe nest loop resolver that does not use the flat dotpath resolver
 		$action = 'delete';
 		$arg[2] = false;
 	}
@@ -144,6 +159,10 @@ function menuItemRebuildChange($args,$menu = null){
 
 	// debugLog($menunew);
     return $menunew;
+}
+
+function menuItemRebuildUndo($slug){
+	
 }
 
 // @tested

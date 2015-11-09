@@ -88,7 +88,7 @@ elseif ($p == 'restore') {
 	
 	if($success){
 		generate_sitemap(); // regenerates sitemap
-		exec_action('page-restore');     // @hook page-restore fird when a page is restored
+		exec_action('page-restore');     // @hook page-restore fired when a page is restored
 		if($redirect) redirect($redirect);
 	}
 	else {
