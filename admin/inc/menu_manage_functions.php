@@ -9,28 +9,35 @@
 
 /**
  * menu rebuild using recurseUpgradeTree
- * @param  [type] $slug    [description]
- * @param  [type] $newslug [description]
- * @return [type]          [description]
+ * DO NOT REFACTOR
+ * @since  3.4
+ * @param  $args  argument array
  */
-function menuItemRebuildChange($args){
+function menuItemRebuildChange($args,$menu = null){
 	/**
 	 * as an alternative to using individual functions to manipulate flat array and then rebuild nest
 	 * I can manipulate nest and then `recurseUpgrade` as we would when submitting a new menu
 	 * This might take longer but only needs to be done on heirarchy changes and involves signifigantly less logic
 	 * might even keep in one function to not ahve to move references around via arguments and returns
+	 * cons is you have to rebuild the entire thing, there is no subtree rebuild however i could write one, 
+	 * but if we want to retain indexes and order then it needs to be rebuilt anyway
 	 * DO NOT REFACTOR
 	 * possible actions
 	 * array('rename',$slug, $newslug);
 	 * array('move',$slug, $newparent);
 	 * array('delete', $slug, $preservechildren = true);
 	 * array('insert', $slug, $parent, $after, $data);
+	 * 
+	 * rename and move not implemented yet, rare
+     * 
 	 */
+	
 	// debugLog($args);
 	$action = $args[0];
 
 	// change raw menu, rebuild menu recurse
-	$menu = getMenuDataArray();
+	// cannot chain actions since menu is not passed in.
+	if(!$menu) $menu = getMenuDataArray();
 
 	if($action == 'insert'){
 		$slug       = $args[1];
@@ -52,7 +59,7 @@ function menuItemRebuildChange($args){
 	if($action == 'rename'){
 		$slug    = $args[1];
 		$newslug = $args[2];
-
+		debugLog("rename $slug , $newslug");
 		if($slug == $newslug) return $menu;
 
 		$item = &getMenuItemTreeRef($menu,$slug);
@@ -64,10 +71,11 @@ function menuItemRebuildChange($args){
 	if($action == 'move'){
 		$slug = $args[1];
 		$newparent = $args[2];
+		debugLog("moving $slug to $newparent");
 
 		$item = &getMenuItemTreeRef($menu,$slug);
-		debugLog($item);
-
+		// debugLog($item);
+		if(!$item) debugLog("item not found - $slug");
 		// parent is the same
 		if($item['data']['parent'] == $newparent) return $menu;
 
@@ -81,6 +89,7 @@ function menuItemRebuildChange($args){
 			$menu[GSMENUNESTINDEX][$slug] = $item;
 		}
 
+		// debugLog($menu[GSMENUNESTINDEX][$newparent]);
 		// perform delete next
 		$action = 'delete';
 		$arg[2] = false;
@@ -122,7 +131,7 @@ function menuItemRebuildChange($args){
 		}
 	}
 
-	// @todo possible copy here to break refs, they are no longer needed
+	// @todo possible to break refs, they are no longer needed
 	$menunest = $menu[GSMENUNESTINDEX];
 
 	// reindex
@@ -133,7 +142,7 @@ function menuItemRebuildChange($args){
     $menunew = recurseUpgradeTree($menunest); // build full menu data, modify menunest ref
     $menunew[GSMENUNESTINDEX] = $menunest;     // re-join ref
 
-	debugLog($menunew);
+	// debugLog($menunew);
     return $menunew;
 }
 
@@ -366,10 +375,9 @@ function getMenuItemRoots($menu){
  */
 function &getMenuItemTreeRef(&$menu, $slug){
 	$parenttree = getMenuItemParent($menu,$slug);
-	// @todo abstract getMenuTreeByRef
 	if($parenttree){
 		$item = &resolve_tree($menu[GSMENUNESTINDEX], $parenttree['data']['dotpath']);
-		$item = &$item[$slug];
+		$item = &$item[$slug]; // @todo <- dreference problem
 	}
 	else $item = &$menu[GSMENUNESTINDEX][$slug];
 

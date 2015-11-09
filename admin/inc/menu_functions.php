@@ -996,7 +996,7 @@ function getMenuTreeData($page = '', $parent = false, $menuid = null){
  * @param  string $childkey subkey if children are in subarrays
  * @return array        subarray from tree matching path
  */
-function &resolve_tree($tree, $path, $childkey = 'children') {
+function &resolve_tree(&$tree, $path, $childkey = 'children') {
 	$thisfunc = __FUNCTION__;
 	
 	// explode dotpath, if not an array
