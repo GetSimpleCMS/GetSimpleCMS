@@ -837,14 +837,15 @@ function get_available_pages() {
  
 /**
  * Change all direct childens parents to new parent
- *
  * @since 3.4
  * @param str $parent parent slug to change
  * @param str $newparent new slug to change to
  */
-function changeChildParents($oldid, $newid){
+function changeChildParents($id, $newid = null){
 	global $SITEMENU;
-	$menudata = menuItemRebuildChange(array('rename',$oldid,$newid));
+	// do delete if newid is null
+	if(!isset($newid)) $menudata = menuItemRebuildChange(array('delete',$id));
+	else $menudata = menuItemRebuildChange(array('rename',$id,$newid));
 	debugLog("menunew",$menudata); // NOT WORKING
 	$SITEMENU[GSMENUIDCORE] = $menudata;
 	if(isset($menudata)) menuSave(GSMENUIDCORE,$menudata);

@@ -3068,7 +3068,7 @@ function array_insert_after(&$haystack, $needle = '', $stuff){
         ++$i;
         if ($key == $needle) break;
     }
-
+	if($i==0) $i = count($haystack);
     $haystack = array_merge(array_slice($haystack, 0, $i, true), $new_array, array_slice($haystack, $i, null, true));
 
     return $i;

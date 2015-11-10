@@ -31,30 +31,33 @@ function menuItemRebuildChange($args,$menu = null){
 	 * rename and move not implemented yet, rare
      *
      * TESTS
-     * -[ ] rename root level
-     * -[ ] rename child level
-     * -[ ] insert at root level
-     * -[ ] insert at child level
+     * -[x] rename root level
+     * -[x] rename child level
+     * -[x] insert at root level
+     * -[x] insert at child level
      * -[ ] insert after both
      * -[ ] move to root level
      * -[ ] move to parent level
-     * -[ ] delete root level
-     * -[ ] delete child level
+     * -[ ] move from root level
+     * -[ ] move from parent level
+     * -[x] delete root level
+     * -[x] delete child level
      * -[ ] delete with and without preserve parents flag
      * 
 	 */
 	
 	// debugLog($args);
 	$action = $args[0];
+	$slug   = $args[1];
 
 	// change raw menu, rebuild menu recurse
 	// cannot chain actions since menu is not passed in.
 	if(!$menu) $menu = getMenuDataArray();
 
 	if($action == 'insert'){
-		$slug       = $args[1];
+		debugLog("inserting $slug");
 		$parentslug = $args[2];
-		$after      = $args[3];
+		$after      = isset($args[3]) ? $args[3] : '';
 
 		$item = array($slug => array('id' => $slug));
 		$item = array(array('id' => $slug));
@@ -69,7 +72,6 @@ function menuItemRebuildChange($args,$menu = null){
 	}
 
 	if($action == 'rename'){
-		$slug    = $args[1];
 		$newslug = $args[2];
 		debugLog("rename $slug , $newslug");
 		if($slug == $newslug) return $menu;
@@ -83,13 +85,12 @@ function menuItemRebuildChange($args,$menu = null){
 	
 	// change a parent, move the item to new parent or root
 	if($action == 'move'){
-		$slug = $args[1];
 		$newparent = $args[2];
 		debugLog("moving $slug to $newparent");
 
 		$item = &getMenuItemTreeRef($menu,$slug);
 		// debugLog($item);
-		if(!$item) debugLog("item not found - $slug");
+		if(!isset($item)) debugLog("item not found - $slug");
 		// parent is the same
 		if($item['data']['parent'] == $newparent) return $menu;
 
@@ -111,14 +112,14 @@ function menuItemRebuildChange($args,$menu = null){
 		$action = 'delete';
 		$arg[2] = false;
 	}
-
+ 
 	// remove an item, shift its children
 	if($action == 'delete'){
-		$slug = $args[1];
 		if(!isset($args[2])) $arg[2] = true;
 		$preservechildren = isset($arg[2]) && $args[2] === true;
 
 		$item = &getMenuItemTreeRef($menu,$slug);
+		debugLog("deleteing $slug");
 		if(!$item) return $menu;
 
 		// move children to root to save
@@ -201,7 +202,7 @@ function menuItemDelete($menu,$slug){
 	unset($menu[GSMENUFLATINDEX][$slug]);
 	return $menu;
 }
-
+ 
 // refactored up to here, ready for testing
 
 // @untested

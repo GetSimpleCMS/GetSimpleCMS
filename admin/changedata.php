@@ -109,7 +109,8 @@ if (isset($_POST['submitted'])) {
 		exec_action('changedata-aftersave'); // @hook changedata-aftersave after a page was saved
 
 		// do menu update to check for parent changes
-		$menudata = menuItemRebuildChange(array('move',$url,(string)$xml->parent));
+		if($pageIsNew) $menudata = menuItemRebuildChange(array('insert',$url,(string)$xml->parent));
+		else $menudata = menuItemRebuildChange(array('move',$url,(string)$xml->parent));
 		if(isset($menudata)) menuSave(GSMENUIDCORE,$menudata);
 		
 		// genen sitemap if published save
