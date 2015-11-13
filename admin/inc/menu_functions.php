@@ -56,6 +56,8 @@ define('GSMENUMGRFILTERCALLOUT','mmCalloutFilter'); // menu manager filter callo
 // which menu to use for default if legacy is disabled
 define('GSMENUDEFAULT',GSMENUIDCOREMENU); 
 
+define('GSMENUINLINEUPDATES',true); // perform inline page updates to menu
+// this allows parent changes in page edits
 
 /**
  * initialize upgrade, menu imports
@@ -797,7 +799,6 @@ function reindexMenuArray($menu, $force = false){
  */
 function newMenuSave($menuid,$menu){
     $menu     = json_decode($menu,true);   // convert to array
-    debugDie($menu);
 	$menu     = reindexMenuArray($menu);   // add id as keys
     $menudata = recurseUpgradeTree($menu); // build full menu data
     $menudata[GSMENUNESTINDEX] = $menu;
@@ -816,7 +817,10 @@ function newMenuSave($menuid,$menu){
  */
 function menuSave($menuid,$data){
 	GLOBAL $SITEMENU;
+	// real time update sitemenu
 	$SITEMENU[$menuid] = $data;
+	
+	// if($menuid == GSMENUIDCORE) saveCoreMenu(); // create menu cache for corepages
 
     // remove GSMENUFLATINDEX if it exists ( cannot save refs in json )
     if(!$data || !$data[GSMENUNESTINDEX]){

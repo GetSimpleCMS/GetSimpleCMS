@@ -238,7 +238,7 @@ function pageCacheAddRoutes($id,&$cacheItems){
 	$routesNode = $cacheItems->addChild('routes');
 	$routeNode = $routesNode->addChild('route');
 
-	// @todo can lead to infinite loops if generate_permalink triggers a cache rebuild
+	// @todo can lead to infinite loops if generate_permalink triggers a cache rebuild somehow
 	$permaroute = no_tsl(generate_permalink($id));
 
 	$pathNode = $routeNode->addChild('path');

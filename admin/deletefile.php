@@ -24,7 +24,7 @@ if (isset($_GET['id'])) {
 	if ($id == 'index') {
 		redirect('pages.php?upd=edit-error&type='.urlencode(i18n_r('HOMEPAGE_DELETE_ERROR')));
 	} else {	
-		changeChildParents($id);
+		pageSlugHasChanged($id);
 		$status = delete_page($id) ? 'success' : 'error';
 		generate_sitemap();
 		exec_action('page-delete'); // @hook page-delete deleting page

@@ -81,7 +81,7 @@ $count = '-'; // empty, updated via js
 			<!-- form -->
 			<form method="post" action="menu-manager.php">
 			<div id="submit_line"><span>
-			<input type="text" class="hidden" name="menuid" value="'.$menuid.'">
+			<input type="text" class="hidden" name="menuid" value="<?php echo $menuid;?>">
 			<textarea type="text" class="text hidden" name="menuOrder" value=""></textarea>
 			<input class="submit" type="submit" value="<?php echo i18n_r("SAVE_MENU_ORDER"); ?>" />
 			</span></div>

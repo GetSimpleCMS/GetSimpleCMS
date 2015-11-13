@@ -3055,20 +3055,36 @@ function matchArrayAll($needle,$haystack,$keys = false){
  */                         
 function array_insert_after(&$haystack, $needle = '', $stuff){
     if (! is_array($haystack) ) return $haystack;
-
+    
     $new_array = array();
     for ($i = 2; $i < func_num_args(); ++$i){
         $arg = func_get_arg($i);
         if (is_array($arg)) $new_array = array_merge($new_array, $arg);
         else $new_array[] = $arg;
     }
+    
+    // if needle is empty and empty is not an index in $haystack , skip loop
+    if(empty($needle) && !isset($haystack[$needle])){
+    	$haystack[] = $new_array;
+    	debugLog(__FUNCTION__ . "skipping key loop");
+    	return count($haystack)-1;
+    }
 
+    // hunt for key
     $i = 0;
     foreach($haystack as $key => $value){
         ++$i;
         if ($key == $needle) break;
     }
-	if($i==0) $i = count($haystack);
+
+    // key not found or is last element, do simple append
+    if($i == count($haystack)){
+    	$haystack[] = $new_array;
+    	debugLog(__FUNCTION__ . "skipping merge loop");    	
+    	return count($haystack)-1;
+    }
+
+    // split and reassemble array
     $haystack = array_merge(array_slice($haystack, 0, $i, true), $new_array, array_slice($haystack, $i, null, true));
 
     return $i;

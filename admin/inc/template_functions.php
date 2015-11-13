@@ -836,18 +836,22 @@ function get_available_pages() {
 }
  
 /**
- * Change all direct childens parents to new parent
+ * A page slug has changed perform necessary operations
+ * update childrens parents
  * @since 3.4
  * @param str $parent parent slug to change
  * @param str $newparent new slug to change to
  */
-function changeChildParents($id, $newid = null){
+function pageSlugHasChanged($slug, $newslug = null){
 	global $SITEMENU;
+	
+	// do insert if old slug is null
+	if(!isset($slug)) $menudata = menuItemRebuildChange(array('insert',$newslug));
 	// do delete if newid is null
-	if(!isset($newid)) $menudata = menuItemRebuildChange(array('delete',$id));
-	else $menudata = menuItemRebuildChange(array('rename',$id,$newid));
+	else if(!isset($newslug)) $menudata = menuItemRebuildChange(array('delete',$slug));
+	// do rename if slug actually changed
+	else $menudata = menuItemRebuildChange(array('rename',$slug,$newslug));
 	debugLog("menunew",$menudata); // NOT WORKING
-	$SITEMENU[GSMENUIDCORE] = $menudata;
 	if(isset($menudata)) menuSave(GSMENUIDCORE,$menudata);
 	return;
 
@@ -867,7 +871,7 @@ function changeChildParents($id, $newid = null){
 //  LEGACY, uses global url
 function updateSlugs($existingUrl){
 	GLOBAL $url;
-	changeChildParents($existingUrl, $url);
+	pageSlugHasChanged($existingUrl, $url);
 }
 
 /**

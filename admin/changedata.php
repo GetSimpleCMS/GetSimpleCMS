@@ -98,7 +98,7 @@ if (isset($_POST['submitted'])) {
 		// if the slug changed update children
 		if ($slugHasChanged){
 			exec_action('changedata-updateslug'); // @hook changedata-updateslug a page slug was changed
-			changeChildParents($oldslug,$url); // update childrens parent slugs to the new slug
+			pageSlugHasChanged($oldslug,$url); // update childrens parent slugs to the new slug
 			delete_page($oldslug); // backup and delete the page
 		}
 
@@ -108,9 +108,15 @@ if (isset($_POST['submitted'])) {
 		$status = savePageXml($xml);
 		exec_action('changedata-aftersave'); // @hook changedata-aftersave after a page was saved
 
-		// do menu update to check for parent changes
-		if($pageIsNew) $menudata = menuItemRebuildChange(array('insert',$url,(string)$xml->parent));
-		else $menudata = menuItemRebuildChange(array('move',$url,(string)$xml->parent));
+		// do menu update/insert
+		if($pageIsNew){
+			// insert using parent inline or default
+			if(getDef('GSMENUINLINEUPDATES',true)) $menudata = menuItemRebuildChange(array('insert',$url,(string)$xml->parent));
+			else $menudata = menuItemRebuildChange(array('insert',$url);
+		else{
+			// do inline parent changes
+			if(getDef('GSMENUINLINEUPDATES',true)) $menudata = menuItemRebuildChange(array('move',$url,(string)$xml->parent));
+		}
 		if(isset($menudata)) menuSave(GSMENUIDCORE,$menudata);
 		
 		// genen sitemap if published save
