@@ -112,7 +112,8 @@ if (isset($_POST['submitted'])) {
 		if($pageIsNew){
 			// insert using parent inline or default
 			if(getDef('GSMENUINLINEUPDATES',true)) $menudata = menuItemRebuildChange(array('insert',$url,(string)$xml->parent));
-			else $menudata = menuItemRebuildChange(array('insert',$url);
+			else $menudata = menuItemRebuildChange(array('insert',$url));
+		}
 		else{
 			// do inline parent changes
 			if(getDef('GSMENUINLINEUPDATES',true)) $menudata = menuItemRebuildChange(array('move',$url,(string)$xml->parent));
