@@ -12,6 +12,7 @@ include('inc/common.php');
 login_cookie_check();
 
 exec_action('load-support');
+add_action('support-extras','initUpgradeMenus'); // menu upgrade test
 
 $pagetitle = i18n_r('SUPPORT');
 get_template('header');

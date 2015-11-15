@@ -163,6 +163,11 @@ if(isset($_POST['submitted'])) {
 				$err .= sprintf(i18n_r('MOVE_TEMPCONFIG_ERROR'), $tempconfig , GSCONFIGFILE) . '<br />';
 			}
 		}
+
+		// upgrade menus
+		if (!file_exists(GSDATAMENUPATH . GSMENUIDCORE.'.json')) {
+			initUpgradeMenus();
+		}
 		
 		# send email to new administrator
 		$subject  = $site_full_name .' '. i18n_r('EMAIL_COMPLETE');

@@ -3062,13 +3062,15 @@ function array_insert_after(&$haystack, $needle = '', $stuff){
         if (is_array($arg)) $new_array = array_merge($new_array, $arg);
         else $new_array[] = $arg;
     }
-    
+   
+  	// @todo use more efficient assoc push than array_merge slice if we re just pushing
+
     // if needle is empty and empty is not an index in $haystack , skip loop
-    if(empty($needle) && !isset($haystack[$needle])){
-    	$haystack[] = $new_array;
-    	debugLog(__FUNCTION__ . "skipping key loop");
-    	return count($haystack)-1;
-    }
+    // if(empty($needle) && !isset($haystack[$needle])){
+    // 	array_push($haystack,$new_array);
+    // 	debugLog(__FUNCTION__ . " skipping key loop");
+    // 	return count($haystack)-1;
+    // }
 
     // hunt for key
     $i = 0;
@@ -3078,11 +3080,11 @@ function array_insert_after(&$haystack, $needle = '', $stuff){
     }
 
     // key not found or is last element, do simple append
-    if($i == count($haystack)){
-    	$haystack[] = $new_array;
-    	debugLog(__FUNCTION__ . "skipping merge loop");    	
-    	return count($haystack)-1;
-    }
+    // if($i == count($haystack)){
+    // 	$haystack[] = $new_array;
+    // 	debugLog(__FUNCTION__ . " skipping merge loop");    	
+    // 	return count($haystack)-1;
+    // }
 
     // split and reassemble array
     $haystack = array_merge(array_slice($haystack, 0, $i, true), $new_array, array_slice($haystack, $i, null, true));

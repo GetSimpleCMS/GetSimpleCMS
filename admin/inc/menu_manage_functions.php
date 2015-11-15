@@ -61,6 +61,10 @@ function menuItemRebuildChange($args,$menu = null){
      * -[x] delete child level
      * -[x] delete with and without preserve parents flag
      * 
+     * optimizations
+     * rekeymenu can maybe be avoided, or limited to only when needed not always
+     * avoid recurseupgrade tree for simple inserts ?
+     * 
 	 */
 	
 	// debugLog($args);
@@ -71,15 +75,17 @@ function menuItemRebuildChange($args,$menu = null){
 
 	if($action == 'insert'){
 
-		$item = &getMenuItemTreeRef($menu,$slug);
-		if($item) return $menu; // item alrady exists do not insert
+		// @todo this could insert the slug onto $menu if it doesnt exist
+		// should always check for an item before calling return by 
+		// reference functions since they can create items or return null
+		// $nonexistingitem = &getMenuItemTreeRef($menu,'idontexist');
  
 		$parentslug = isset($args[2]) ? $args[2] : '';
 		$after      = isset($args[3]) ? $args[3] : '';
 		debugLog(__FUNCTION__ . " inserting $slug under $parentslug after $after");
 
-		$item = array($slug => array('id' => $slug));
-		// $item = array(array('id' => $slug));
+		// $item = array($slug => array('id' => $slug));
+		$item = array(array('id' => $slug));
 
 		if(!empty($parentslug)){
 			$parent = &getMenuItemTreeRef($menu, $parentslug);
@@ -184,14 +190,16 @@ function menuItemRebuildChange($args,$menu = null){
 
 	// reindex
 	$menunest = $menu[GSMENUNESTINDEX];
+	debugLog($menunest);
 	$menunest = reindexMenuArray($menunest,true); // reindex if slug change
+	debugLog($menunest);
     
 	// rebuild
     $menunew = array(); // new array
     $menunew = recurseUpgradeTree($menunest); // build full menu data, modify menunest ref
     $menunew[GSMENUNESTINDEX] = $menunest;    // re-join ref
 
-	// debugLog($menunew);
+	debugLog($menunew);
     return $menunew;
 }
 
@@ -274,11 +282,17 @@ function getMenuItemRoots($menu){
 
 /**
  * get a menu item as tree with reference
+ * @todo  maybe pass parent in case item does not yet exist in flat array
  * @param  array &$menu menu data
  * @param  string $slug  slug of page
+ * @param  bool $returnnull if true return nulls instead of creating items
  * @return array        nested array of menu item
  */
-function &getMenuItemTreeRef(&$menu, $slug){
+function &getMenuItemTreeRef(&$menu, $slug, $create = false){
+
+	// return null, or else return by reference will create the item
+	if(!$create && !isset($menu[GSMENUFLATINDEX][$slug])) return $null;
+
 	$parenttree = getMenuItemParent($menu,$slug);
 	if($parenttree){
 		$item = &resolve_tree($menu[GSMENUNESTINDEX], $parenttree['data']['dotpath']);
