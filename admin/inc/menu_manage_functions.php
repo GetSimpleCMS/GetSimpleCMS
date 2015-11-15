@@ -78,7 +78,8 @@ function menuItemRebuildChange($args,$menu = null){
 		// @todo this could insert the slug onto $menu if it doesnt exist
 		// should always check for an item before calling return by 
 		// reference functions since they can create items or return null
-		// $nonexistingitem = &getMenuItemTreeRef($menu,'idontexist');
+		$item = &getMenuItemTreeRef($menu,'idontexist');
+		if(!$item) return $menu;
  
 		$parentslug = isset($args[2]) ? $args[2] : '';
 		$after      = isset($args[3]) ? $args[3] : '';

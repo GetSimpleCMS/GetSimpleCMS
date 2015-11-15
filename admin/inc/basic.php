@@ -3064,6 +3064,7 @@ function array_insert_after(&$haystack, $needle = '', $stuff){
     }
    
   	// @todo use more efficient assoc push than array_merge slice if we re just pushing
+  	// just array_merge no splice is needed
 
     // if needle is empty and empty is not an index in $haystack , skip loop
     // if(empty($needle) && !isset($haystack[$needle])){
