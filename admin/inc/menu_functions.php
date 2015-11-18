@@ -911,8 +911,6 @@ function getMenus(){
  */
 function getMenuDataArray($menuid = null){
 
-	// debugDie(debug_backtrace());
-
 	if(!$menuid) $menuid = GSMENUIDCORE;
     GLOBAL $SITEMENU;
 

@@ -142,7 +142,8 @@ $GS_definitions = array(
 	'GSTHUMBSMWIDTH'       => 80,                             // (int) thumbsm max height
 	'GSTHUMBSMHEIGHT'      => 160,                            // (int) thumbsm max width
 	# DEBUGGING ----------------------------------------------------------------------------------------------------------------------------------------
-	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
+	'GSDEBUGINSTALL'       => true,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
+	'GSDEBUGINSTALLWIPE'   => true,                          // (bool) debug installs, wipes website.xml on logouts
 	'GSDEBUG'              => true,                          // (bool) output debug mode console
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls to debuglog
 	'GSDEBUGREDIRECTS'     => false,                          // (bool) if debug mode enabled, prevent redirects for debugging
@@ -670,10 +671,26 @@ function debugLog($mixed = null) {
  * @since  3.4
  * @param  str $msg message to log
  */
-function debugDie($msg){
+function debugLogDie($msg){
 	debugLog($msg);
 	outputDebugLog();
 	die();
+}
+
+/**
+ * debug a backtrace
+ * eg. 	`debugLogTrace(__FUNCTION__,123456);`
+ * @param  str $msg exception message
+ * @param  int $code exception code, useful as id for grouping etc
+ * @param  int $cols $colwidth for dividers
+ * @since 3.4
+ */
+function debugLogTrace($msg = '',$code = '',$cols = 100){
+	$e      = new Exception($msg,(int)$code);
+	$emsg   = $e->getMessage();
+	$etrace = $e->getTraceAsString();
+	$ecode  = $e->getCode() > 0 ? $e->getCode() : '';
+	debugLog("$msg\nDEBUG BACKTRACE $ecode\n".str_repeat('=', $cols)."\n".$etrace."\n".str_repeat('-', $cols));
 }
 
 /**
