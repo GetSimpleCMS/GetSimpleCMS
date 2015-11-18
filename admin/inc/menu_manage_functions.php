@@ -37,7 +37,8 @@ function menuItemRebuildChange($args,$menu = null){
 	 * This might take longer but only needs to be done on heirarchy changes and involves signifigantly less logic
 	 * might even keep in one function to not have to move references around via arguments and returns
 	 * cons is you have to rebuild the entire thing, there is no subtree rebuild however it could,
-	 * but if we want to retain indexe and order fields then it needs to be rebuilt anyway
+	 * but if we want to retain index and order fields then it needs to be rebuilt anyway
+	 * a bit sloppy , but fairly useful as it allows menu mods inline from page edits without pesky popups
 	 * 
 	 * POSSIBLE ACTIONS
 	 * array('rename',$slug, $newslug);

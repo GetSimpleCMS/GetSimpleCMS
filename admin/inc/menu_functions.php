@@ -12,8 +12,8 @@
  * **************************************************************************** 
  *
  * glossary:
- * `MENU` An individual menu object typically multidimensional array with sub indexes for flat and nested configuration, internally stored in $SITEMENUS
- * `MENU FLAT` subarray is a parent hash array, with `children` index array and a `data` array
+ * `MENU` An individual menu object typically a multidimensional array with sub indexes for flat and nested configuration, internally stored in $SITEMENUS
+ * `MENU FLAT` subarray is a parent hash array, with `id`,`children` index array and a `data` array
  * `MENU NEST` subarray is a heirachy nested parent child array, linked to `FLAT` via references which have to built from file load, as json does not store refs
  * `menuid` the menu id, used as slug to store filenames
  * `corepages menuid` is the internal CORE menu and is essentially the page index map
@@ -24,12 +24,15 @@
 // @todo these are not broken out yet
 include_once(GSADMININCPATH.'menu_manage_functions.php'); // menu manipulation functions
 
-define('GSMENULEGACY',false); // use legacy menus, single level flat menu
+// DEFINITIONS
+
+// this allows parent changes in page edits, in progress
+define('GSMENUINLINEUPDATES',true); // perform inline page updates to menu
 
 // menu ids
 define('GSMENUIDCORE','corepages'); // default id for the core page menu cache
 define('GSMENUIDCOREMENU','corepages_menu'); // default id for the core page DYNAMIC menu cache
-define('GSMENUIDLEGACY','legacy'); // default id for the 3.3.x legacy flat menu cache
+define('GSMENUIDLEGACY','legacy'); // default id for the 3.3.x legacy flat menu cache, NEVER GETS UPDATED!
 
 // menu array key indexs
 define('GSMENUNESTINDEX','nested'); // menu array key for nested tree subarray
@@ -53,11 +56,27 @@ define('GSMENUMGRFILTERCALLOUT','mmCalloutFilter'); // menu manager filter callo
 
 // define('GSMENUFILTERDEBUG',true);
 
-// which menu to use for default if legacy is disabled
-define('GSMENUDEFAULT',GSMENUIDCOREMENU); 
 
-define('GSMENUINLINEUPDATES',true); // perform inline page updates to menu
-// this allows parent changes in page edits
+// SETTINGS
+define('GSMENUSAVENEST',true); // save nested arrays in menu files, they will be rebuilt on read if false, with `data` references to flat
+// this serves as a trade-off, smaller files, faster reading, no data duplication
+// real time nest regeneration, which uses data refs to flat array, allows fast reads, and smaller memory footprints at the cost of the recursive walk to rebuild it everytime.
+// probably be ideal for page catalogs and core menus of extremly large size or if we wanted large amounts of data to be stored in menus
+// vs
+// larger files containing flat and nest are available upon load, which is ideal for smaller menu caches
+// 
+// This allows some degree of tuning, and both solutions are almost always faster than recursive looping over a flat adjacency hierarchy
+// This way menus are available as both parent hash tables and nested trees both of which are often needed,
+// currently there is no reference map from hash to nest, but there is a resolveTree from dotpath method which is fairly fast, and avoids cyclical references, but I suppose it could be added.
+// I initially intended there to be a ref map, so a nest could be grabbed directly eg. $item[$slug]['branch'], and this can still be implemented.
+// I contemplated using native xml or dom, whle ideal for tree manupulation using xpathing etc, it was bloated and slow with regards to parsing and interaction.
+// this is still pretty sloppy, I admit and would serve much better as a class
+// 
+
+define('GSMENULEGACY',false); // use legacy menus, single level flat menu, save out to pages
+
+define('GSMENUDEFAULT',GSMENUIDCOREMENU); // which menu to use for default if legacy is disabled
+
 
 /**
  * initialize upgrade, menu imports
@@ -830,10 +849,12 @@ function menuSave($menuid,$data){
 	if($menuid == GSMENUIDCORE) saveCoreMenu(); // create menu cache for corepages
 
     // remove GSMENUFLATINDEX if it exists ( cannot save refs in json )
-    if(!$data || !$data[GSMENUNESTINDEX]){
+    if(!$data || !$data[GSMENUFLATINDEX]){
         debugLog('menusave: menu is empty - ' .$menuid);
         return false;
     }
+
+    if(!getDef('GSMENUSAVENEST',true)) unset($data[GSMENUNESTINDEX]);
 
     $menufileext = '.json';
     $status = JSONsave($data,GSDATAMENUPATH.'menu_'.$menuid.$menufileext);
