@@ -387,14 +387,14 @@ function filterTags($pages, $tags, $case = false, $exclusive = false, $exclude =
 }
 
 /**
- * filter matching parent
+ * filter matching parent, returns only direct children of parent
  * @param  array $pages  PAGES collection
  * @param  string $parent parent slug to filter on 
  * @return array         PAGES collection
  */
 function filterParent($pages,$parent=''){
 	$children = getChildren($parent);
-	return getPagesMulti($pages,$children,true);
+	return getPagesMulti($children,true);
 }
 
 
@@ -418,6 +418,7 @@ function filterInverse($pagesFiltered,$pages = array()){
  * @return array       pages array with only the matching pages
  */
 function filterPagesSlugs($pages,$slugs,$sort = false){
+	if(!$slugs) return; // nothing to filter? then you get nothing back
 	$ary = array_intersect_key($pages,array_flip($slugs)); // filter
 	if(!$sort) return $ary;
 	return arrayMergeSort($ary,$slugs,false); // sort
