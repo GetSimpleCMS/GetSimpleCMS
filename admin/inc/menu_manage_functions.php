@@ -60,6 +60,7 @@ function menuItemRebuildChange($args,$menu = null){
      * -[x] delete root level
      * -[x] delete child level
      * -[x] delete with and without preserve parents flag
+     * -[ ] clone page, uses its own action
      * 
      * optimizations
      * rekeymenu can maybe be avoided, or limited to only when needed not always
@@ -74,12 +75,14 @@ function menuItemRebuildChange($args,$menu = null){
 	if(!$menu) $menu = getMenuDataArray();
 
 	if($action == 'insert'){
-
+		debugLog(__FUNCTION__);
 		// @todo this could insert the slug onto $menu if it doesnt exist
 		// should always check for an item before calling return by 
 		// reference functions since they can create items or return null
-		$item = &getMenuItemTreeRef($menu,'idontexist');
-		if(!$item) return $menu;
+		
+		// check if item already exists
+		$itemcheck = &getMenuItemTreeRef($menu,$slug);
+		if($itemcheck) return $menu;
  
 		$parentslug = isset($args[2]) ? $args[2] : '';
 		$after      = isset($args[3]) ? $args[3] : '';

@@ -891,8 +891,9 @@ function get_link_menu_array($parent='', $array=array(), $level=0) {
 	// pagesarray is sorted by file load, no specific or normalized sort order
 	// pagesSorted attempts to sort by heirarchy parent children, in alphabetic order
 
-	// @todo sort parent invalid filter
-	$items = filterParent(getPages('sortParent'),$parent);
+	// @todo MENU sort parent invalid filter, plus this is probably wrong anyway, should return entire subtree
+	$items = getPages('sortParent'); 
+	if(!empty($parent)) $items = filterParent($items,$parent);
 
 	if (count($items)>0){
 		foreach ($items as $page) {

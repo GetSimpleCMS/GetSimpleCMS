@@ -35,6 +35,11 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 	$status = clone_page($_GET['id']);
 	if ($status !== false) {
 		exec_action('page-clone'); // @hook page-clone page was cloned
+
+		// update menu, @todo not handling parent if inline
+		$menudata = menuItemRebuildChange(array('insert',$status));
+		if(isset($menudata)) menuSave(GSMENUIDCORE,$menudata);
+
 		redirect('pages.php?upd=clone-success&id='.$status);
 	} else {
 		$error = sprintf(i18n_r('CLONE_ERROR'), var_out($_GET['id']));

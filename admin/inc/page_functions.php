@@ -257,8 +257,7 @@ function getParentsMulti($page,$keys=array()){
  *
  * @since 3.1
  * @param $page - slug of the page to retrieve content
- * 
- * @returns - Array of slug names 
+ * @return Array of slug names 
  * 
  */
 function getChildren($page){
