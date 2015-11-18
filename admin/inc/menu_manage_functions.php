@@ -12,7 +12,7 @@
  * - [ ] Restore Page
  * - [ ] Restore Slug Change
  * - [ ] publish draft
- * - [ ] 
+ * - [ ] toggling permalink should rebuild any cached urls or paths in menus or pagesarray
  *
  * inline modifications
  * page edit parent change GSMENUINLINEUPDATES
@@ -60,7 +60,7 @@ function menuItemRebuildChange($args,$menu = null){
      * -[x] delete root level
      * -[x] delete child level
      * -[x] delete with and without preserve parents flag
-     * -[ ] clone page, uses its own action
+     * -[ ] clone page, uses its own action, inline parents (NI)
      * 
      * optimizations
      * rekeymenu can maybe be avoided, or limited to only when needed not always
@@ -124,8 +124,10 @@ function menuItemRebuildChange($args,$menu = null){
 		debugLog(__FUNCTION__ . " moving $slug to $newparent");
 
 		$item = &getMenuItemTreeRef($menu,$slug);
-		// debugLog($item);
+		debugLog($menu);
+		debugLog($item);
 		if(!isset($item)) debugLog("item not found - $slug");
+
 		// parent is the same
 		if($item['data']['parent'] == $newparent) return $menu;
 

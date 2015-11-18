@@ -167,6 +167,16 @@ if(isset($_POST['submitted'])) {
 		// upgrade menus
 		if (!file_exists(GSDATAMENUPATH . GSMENUIDCORE.'.json')) {
 			initUpgradeMenus();
+			// catch 22 recurse upgrade tree callouts try to generate permalinks 
+			// from parents which come from the menu, which is not yet saved.
+			// 
+			// BT->
+			// recurseUpgradeTreeCallout FIRST TIME
+			// generate_permalink
+			// ^-- modified to allow pass in pathing data, so it will not be gabbed from menu data
+			// getParents
+			// getParentsByCoreMenu
+			// menuItemGetParents
 		}
 		
 		# send email to new administrator
@@ -214,7 +224,7 @@ get_template('header');
 				echo '<div class="error">'. $err .'</div>';
 			}
 			if ($random != ''){
-				echo '<div class="updated">'.i18n_r('NOTE_USERNAME').' <b>'. stripslashes($_POST['user']) .'</b> '.i18n_r('NOTE_PASSWORD').' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="support.php?updated=2">'.i18n_r('EMAIL_LOGIN').'</a></div>';
+				echo '<div class="updated">'.i18n_r('NOTE_USERNAME').'<b> '. stripslashes($_POST['user']) .'</b></br> '.i18n_r('NOTE_PASSWORD').' <b>'. $random .'</b></br> &nbsp&raquo;&nbsp; <a href="support.php?updated=2">'.i18n_r('EMAIL_LOGIN').'</a></div>';
 				$_POST = null;
 			}
 

@@ -334,7 +334,7 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
 			$flatvalue['data']['order']     = $order;
             $flatvalue['data']['dotpath']   = implode('.',$indexAry['currpath']).'.'.$id;
 
-            recurseUpgradeTreeCallout($flatvalue,$id,$parent); // pass $value by ref for modification
+            recurseUpgradeTreeCallout($flatvalue,$id,$parent,$indexAry['currpath']); // pass $value by ref for modification
 
             if(isset($value['children'])){
                 $flatvalue['data']['numchildren'] = count($value['children']);
@@ -362,9 +362,16 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
  * @param  string $parent parent of value
  * @return array          unused copy of array
  */
-function recurseUpgradeTreeCallout(&$value,$id = '',$parent = ''){
-    $value['data']['url']   = generate_url($id);
-    $value['data']['path']  = generate_permalink($id,'%path%/%slug%');
+function recurseUpgradeTreeCallout(&$value,$id = '',$parent = null,$currpath = null){
+	$pathdata = array('parent' => $parent,'parents' => $currpath);
+	    
+    // cache actual permalink
+    $value['data']['url']   = generate_url($id,false,$pathdata);
+    
+    // cache reference urls
+    $value['data']['path']  = generate_permalink($id,'%path%/%slug%',$pathdata);
+    $value['data']['qs']    = generate_permalink($id,'id=%slug%&path=%path%',$pathdata);
+    
     // debugLog($value);
     return $value; // non ref
 }
@@ -820,7 +827,7 @@ function menuSave($menuid,$data){
 	// real time update sitemenu
 	$SITEMENU[$menuid] = $data;
 	
-	// if($menuid == GSMENUIDCORE) saveCoreMenu(); // create menu cache for corepages
+	if($menuid == GSMENUIDCORE) saveCoreMenu(); // create menu cache for corepages
 
     // remove GSMENUFLATINDEX if it exists ( cannot save refs in json )
     if(!$data || !$data[GSMENUNESTINDEX]){
@@ -903,6 +910,9 @@ function getMenus(){
  * @return array         menu array
  */
 function getMenuDataArray($menuid = null){
+
+	// debugDie(debug_backtrace());
+
 	if(!$menuid) $menuid = GSMENUIDCORE;
     GLOBAL $SITEMENU;
 
