@@ -1068,7 +1068,7 @@ if(!function_exists('in_arrayi')) {
  * @param string $absolute force absolute siteurl
  * @return string
  */
-function generate_url($slug, $absolute = false){
+function generate_url($slug, $absolute = false, $pathdata = null){
 	global $PRETTYURLS;
 	global $PERMALINK;
 
@@ -1083,10 +1083,10 @@ function generate_url($slug, $absolute = false){
 
 	if($slug != getDef('GSINDEXSLUG')){
 		if ($PRETTYURLS == '1'){
-			$url .= generate_permalink($slug);
+			$url .= generate_permalink($slug,null,$pathdata);
 		} 
 		else if (!empty($PERMALINK)){
-			$url .= generate_permalink($slug,$PERMALINK);
+			$url .= generate_permalink($slug,$PERMALINK,$pathadta);
 		}
 		else $url .= 'index.php?id='.$slug;
 	}
@@ -1107,10 +1107,11 @@ function generate_url($slug, $absolute = false){
  * eg. ?id=%slug%&parent=%parent%&path=%path%
  * 
  * @param  (str) $slug      slug to resolve permalink for	
- * @param  (str) $permalink (optional) permalink structure
+ * @param  (str) $permalink (optional) permalink structure, falls back to $PERMALINK then to GSDEFAULTPERMALINK
+ * @param  (array) $data 	(optional) pass in pathing data override keys 'parents','parent'
  * @return (str)            	
  */
-function generate_permalink($slug, $permalink = null){
+function generate_permalink($slug, $permalink = null, $pathdata = null){
 	GLOBAL $PERMALINK;
 	
 	$slug = (string) $slug;
@@ -1125,19 +1126,19 @@ function generate_permalink($slug, $permalink = null){
 		// remove PARENT tokens if path, since it would be pointless and probably accidental
 		// leaving in for now lets not make assumptions
 		// $plink = replaceToken('parent','',$plink);
-		$pagepath = getParents($slug);
-		if($pagepath){
-			$pagepath = implode('/',array_reverse($pagepath));
+		$pagepath = isset($pathdata,$pathdata['parents']) ? $pathdata['parents'] : getParents($slug);
+		if(isset($pagepath)){
+			$pagepath = no_tsl(implode('/',array_reverse($pagepath))); // build path and remove trailing slash
 			$plink    = replaceToken('path', $pagepath, $plink);		
 		} else {
 			// page has no parents, remove token
 			$plink = replaceToken('path', '', $plink);
 		}
-	} 
+	}
 
 	// replace PARENT token
 	if(containsToken('parent',$plink)){
-		$parent = getParent($slug);
+		$parent = isset($pathdata,$pathdata['parent']) ? $pathdata['parent'] : getParent($slug);
 		$plink  = replaceToken('parent', $parent, $plink);
 	}
 	
