@@ -142,7 +142,7 @@ $GS_definitions = array(
 	'GSTHUMBSMWIDTH'       => 80,                             // (int) thumbsm max height
 	'GSTHUMBSMHEIGHT'      => 160,                            // (int) thumbsm max width
 	# DEBUGGING ----------------------------------------------------------------------------------------------------------------------------------------
-	'GSDEBUGINSTALL'       => true,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
+	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
 	'GSDEBUGINSTALLWIPE'   => true,                          // (bool) debug installs, wipes website.xml on logouts
 	'GSDEBUG'              => true,                          // (bool) output debug mode console
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls to debuglog

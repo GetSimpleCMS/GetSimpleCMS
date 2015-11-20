@@ -72,6 +72,11 @@ define('GSMENUSAVENEST',true); // save nested arrays in menu files, they will be
 // I contemplated using native xml or dom, whle ideal for tree manupulation using xpathing etc, it was bloated and slow with regards to parsing and interaction.
 // this is still pretty sloppy, I admit and would serve much better as a class
 // 
+// Another alternate is to store the nest tree with no data item, and only rebuild the references on load, not the entire tree, this might be slightly faster than rebuilding from scratch, 
+// but probably not by much since you are basically recursing the tree anyway.
+// 
+// For these scenarios some perf testing needs to be performed based on page count and complexity of nest, most of this was designed with heavily nested 500 page count testbeds.
+// 
 
 define('GSMENULEGACY',false); // use legacy menus, single level flat menu, save out to pages
 
