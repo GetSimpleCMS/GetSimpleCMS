@@ -1091,7 +1091,12 @@ function exportMenuToPages($menu){
         // nor is order actually needed with multidimensional menus anymore
         // if this causes issues, it could be added back in for legacy purposes only
         // index is probably better to use also since legacy menus do not do a menu title sort, it is strictly menuOrder
-        
+        // but index saving cause ALL items after to update, order as a suborder of parent might be better but still odd
+        // BUT order has to be saved to keep legacy menus in order or else the order will change as they are sorting by something that doesnt exist.
+        // either way i doubt any plugins are using a tree and sorting by menuorder also , it makes no sense, since menu order is 1 dimensional, but someone might be using menuorder for page sorting for other reasons.
+        // who knows.
+        // we can only save menu pages but we still have to do a check on the files by reading them, however we can make them match pagecache and sync to it
+        // save only index to menu items, might be the best tradeoff, to minimize fileio
         // debugLog($menu[GSMENUFLATINDEX][$id]);
         // $order  = $menu[GSMENUFLATINDEX][$id]['data']['index'];
         // saveMenuDataToPage($id,$parent,$order);
