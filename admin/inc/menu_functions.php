@@ -127,19 +127,34 @@ function saveCoreMenu($fixorphans = false){
 	foreach($menu[GSMENUFLATINDEX] as $item){
 		$orphan = false;
 
+		// item is a an orphan, (parent is not in menu)
 		if(!empty($item['data']['parent']) && !isset($menu[GSMENUFLATINDEX][$item['data']['parent']])){
 			$orphan = true;
 		}
 
 		if(isset($item['children'])){
 			foreach($item['children'] as $key=>$child){
-				if(!isset($menu[GSMENUFLATINDEX][$child])){
-					unset($item['children'][$key]); // child is not a menu item remove it
+
+				// clean up children that do not exist
+				if(!isset($menu[GSMENUFLATINDEX][$child])){				
+					// child not in menu
+					// debugLog(__FUNCTION__ . " unsetting $child");
+					unset($menu[GSMENUFLATINDEX][$item['id']]['children'][$key]);
+					
+					// check if we didnt already remove this item first
+					if(isset($menu[GSMENUFLATINDEX][$item['id']])){
+						// update numchildren and wipe subarray
+						$menu[GSMENUFLATINDEX][$item['id']]['data']['numchildren'] = count($menu[GSMENUFLATINDEX][$item['id']]['children']);
+						if($menu[GSMENUFLATINDEX][$item['id']]['data']['numchildren'] == 0) unset($menu[GSMENUFLATINDEX][$item['id']]['children']);
+					}
 				} else{
-					if($orphan && $fixorphans !== true) unset($menu[GSMENUFLATINDEX][$child]); // child exists, but we are an ophan, remove child also
+					// child exists, but not fixing orphans, so remove children
+					if($orphan && $fixorphans !== true) unset($menu[GSMENUFLATINDEX][$child]);
 				}
 			}
 		}
+
+		// remove self if orphan
 		if($orphan && $fixorphans !== true) unset($menu[GSMENUFLATINDEX][$item['id']]);
 	}
 	$menu   = menuRebuildNestArray($menu);
@@ -360,6 +375,7 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
 			$flatvalue['data']['index']     = $index;
 			$flatvalue['data']['order']     = $order;
             $flatvalue['data']['dotpath']   = implode('.',$indexAry['currpath']).'.'.$id;
+            recurseUpgradeTreeCallout($flatvalue,$id,$parent,$indexAry['currpath']); // pass $value by ref for modification            
 
             $indexAry[GSMENUFLATINDEX][$id] = array(); // position first
 
@@ -375,8 +391,6 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
             if(isset($value['children'])) $indexAry[GSMENUFLATINDEX][$id]['children'] = array_keys($value['children']);
             $value['data'] = &$flatvalue['data'];
 
-            // @todo this is children first , needs to change to parent first
-            recurseUpgradeTreeCallout($flatvalue,$id,$parent,$indexAry['currpath']); // pass $value by ref for modification            
         }
     }
 
