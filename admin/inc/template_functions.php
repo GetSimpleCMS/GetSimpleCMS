@@ -972,7 +972,11 @@ function ckeditor_add_page_link(){
 
 /**
  * get table row for pages display
- *
+ * 
+ * @todo micro optimizations here are useful, minimize function calls
+ * further optimizations, aside from caching this entirely
+ * pass in i18n strings for flags or cache, formatted output_date, pageHasDraft can also be cached for signifigant speedups (100ms on 500 pages)
+ * 
  * @since 3.4
  * @param  array $page   page array
  * @param  int $level    current level
@@ -982,6 +986,7 @@ function ckeditor_add_page_link(){
  * @return str           html for table row
  */
 function getPagesRow($page,$level,$index,$parent,$children){
+	// debugLog($page['url'].'|'.$level.'|'.$children);
 
 	$indentation = $menu = '';
 
@@ -1006,26 +1011,25 @@ function getPagesRow($page,$level,$index,$parent,$children){
 
 	$menu .= '<tr id="tr-'.$page['url'] .'" class="'.$class.'" data-depth="'.$level.'">';
 
-	$pagetitle = $pagemenustatus = $pageprivate = $pagedraft = $pageindex = '';
-
+	$pagetitle = $pagemenustatus = $pageprivate = $pagedraft = $pageindex = $pagepubdate = '';
 
 	if ($page['title'] == '' )        { $pagetitle       = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>';} else { $pagetitle = $page['title']; }
-	if ($page['menuStatus'] != '' )   { $pagemenustatus  = ' <span class="label label-ghost">'.i18n_r('MENUITEM_SUBTITLE').'</span>'; }
-	if ($page['private'] != '' )      { $pageprivate     = ' <span class="label label-ghost">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } 
-	if (pageHasDraft($page['url']))   { $pagedraft       = ' <span class="label label-ghost">'.lowercase(i18n_r('LABEL_DRAFT')).'</span>'; }
-	if ($page['url'] == getDef('GSINDEXSLUG'))     { $pageindex       = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; }
+	if ($page['menuStatus'] != '' )   { $pagemenustatus  = ' <span class="label label-ghost">'.i18n('MENUITEM_SUBTITLE',false).'</span>'; }
+	if ($page['private'] != '' )      { $pageprivate     = ' <span class="label label-ghost">'.i18n('PRIVATE_SUBTITLE',false).'</span>'; } 
+	if (pageHasDraft($page['url']))   { $pagedraft       = ' <span class="label label-ghost">'.lowercase(i18n('LABEL_DRAFT',false)).'</span>'; }
+	if ($page['url'] == getDef('GSINDEXSLUG'))     { $pageindex       = ' <span class="label label-ghost">'.i18n('HOMEPAGE_SUBTITLE',false).'</span>'; }
 	if(dateIsToday($page['pubDate'])) { $pagepubdate     = ' <span class="datetoday">'. output_date($page['pubDate']) . '</span>';} else { $pagepubdate = '<span>'. output_date($page['pubDate']) . "</span>";}
 
-	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. cl($pagetitle) .'</a>';
+	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n('EDITPAGE_TITLE',false).': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. cl($pagetitle) .'</a>';
 	$menu .= '<div class="showstatus toggle" >'. $pageindex .  $pagedraft . $pageprivate . $pagemenustatus .'</div></td>'; // keywords used for filtering
 	$menu .= '<td style="width:80px;text-align:right;" ><span>'.$pagepubdate.'</span></td>';
 	$menu .= '<td class="secondarylink" >';
-	$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($pagetitle) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
+	$menu .= '<a title="'.i18n('VIEWPAGE_TITLE',false).': '. var_out($pagetitle) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
 	$menu .= '</td>';
 
 	// add delete buttons, exclude index page
 	if ($page['url'] != 'index' ) {
-		$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. var_out($page['title']) .'" >&times;</a></td>';
+		$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n('DELETEPAGE_TITLE',false).': '. var_out($page['title']) .'" >&times;</a></td>';
 	} else {
 		$menu .= '<td class="delete" ></td>';
 	}
@@ -1035,6 +1039,7 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	$menu .= '<td class="tagColumn hidden">'.str_replace(',',' ',$page['meta']) . '</div></td>'; // keywords used for filtering
 	
 	$menu .= '</tr>';
+
 	return $menu;
 }
 
@@ -1103,114 +1108,6 @@ function getParentsSlugHashTable($pages = array(), $useref = true){
 }
 
 /**
- * same as getPageDepths, uses menu cache
- * @param  array $pages pages array
- * @return array        pages with new info added
- */
-function getPageDepthsNew($pages){
-	global $tree;
-	foreach($pages as &$page){
-		$treeinfo = $tree[GSMENUFLATINDEX][$page['url']];
-		debugLog($treeinfo);
-		$page['order']       = $treeinfo['order'];
-		$page['depth']       = $treeinfo['depth'];
-		$page['numchildren'] = $treeinfo['numchildren'];
-	}
-	return $pages;
-}
-
-/**
- * adds heirachy info to pages
- * uses parent, order to add flat info
- * id.[parent] -> rank[order],level[depth]
- *
- * @since 3.4
- * @param  array  $mypages pages array
- * @return array           pages array with order,depth,numchildren added
- */
-function getPageDepths($pages=array(), $init = true){
-	static $parents;     // parent lookup table
-	// static $pages;       // pagesarray
-	static $newpages;    // new pagesarray
-	static $keys;        // track processed pageIds
-
-	static $parent; // current parent being processed
-	static $level;  // depth / indentation level
-	static $iter;   // order / weight iteration counter
-
-	$thisfunc = __FUNCTION__;
-
-	if($init){
-		$parent = ''; // current parent being processed
-		$level  = 0;  // depth / indentation level
-		$iter   = 0;  // order / weight iteration counter
-	}
-
-	if(!$keys || $init)     $keys     = array();
-	// if(!$pages || $init)    $pages    = $mypages;
-	if(!$newpages || $init) $newpages = array();
-	if(!$parents  || $init)  $parents  = getParentsHashTable($pages); // use parent child lookup table for speed
-
-	foreach ($parents[$parent] as $key => &$page) {
-		$iter++;
-		$keys[$key]  = '';
-
-		// assert cyclical parent child
-		if($page['parent'] == $page['url']) die("self parent ". $key);
-
-		$pageId      = (string) $key;
-		$numChildren = isset($parents[$pageId]) ? count($parents[$pageId]) : 0;
-
-		$newpages[$pageId]                = $page;
-		$newpages[$pageId]['order']       = $iter;
-		$newpages[$pageId]['depth']       = $level;
-		$newpages[$pageId]['numchildren'] = $numChildren;
-
-		if(isset($parents[$pageId])){
-			$level++;
-			$parent = $pageId;
-			$thisfunc(array(),false);
-			$level--;
-		} else $parent ='';
-	}
-
-	// do missing ancestor checks, orphans are not previously processed since they have no root
-	if($level == 0 and $parent==''){
-		// debugLog('missing ancestor check');
-		$level++;
-		$ancestors = array_diff(array_keys($parents),array_keys($keys) );
-		// debugLog($ancestors);
-
-		foreach($ancestors as $key => $ancestor){
-			if($ancestor !=='') {
-				// check again to see if it was already removed from a previous loop
-		 		if(!isset($keys[$ancestor])) {
-		 			// Add this mising page to new array, then recurse on its children
-		 			$iter++;
-					$keys[$ancestor]  = '';
-
-					$pageId      = $ancestor;
-					$numChildren = isset($parents[$pageId]) ? count($parents[$pageId]) : 0;
-
-					// this will cause issues if used for something else that tried to use a required field, since this will be missing all of them
-					// @todo add a status flag instead of null ['url'] ?
-					// @todo add full page template here , abstract page schema somewhere
-					$newpages[$pageId]                = array(); 
-					// $newpages[$pageId]['url']         = $ancestor;
-					$newpages[$pageId]['order']       = $iter;
-					$newpages[$pageId]['depth']       = $level-1;
-					$newpages[$pageId]['numchildren'] = $numChildren;
-					$parent = $ancestor;
-					$thisfunc(array(),false);
-		 		}
-		 	}
-		}
-	}
-
-	return $newpages;
-}
-
-/**
  * Recursive list of pages
  *
  * Returns a recursive list of items for the main page
@@ -1225,6 +1122,37 @@ function getPageDepths($pages=array(), $init = true){
  * @returns string
  */
 function get_pages_menu($parent = '',$menu = '',$level = '') {
+	// return get_pages_menu_old();
+	$items = getMenuDataFlat();
+	foreach($items as $item){
+		$slug = $item['id'];
+		// debugLog($slug);
+		if(isset($item['data']['parent']) && $item['data']['parent'] === $slug) die("self parent > " . $slug); 
+
+		$level       = $item['data']['depth']-1;
+		$numChildren = $item['data']['numchildren'];
+		$page        = getPage($slug);
+		// provide special row if this is a missing parent
+		if( !isset($page) ) $menu .= getPagesRowMissing($slug,$level,$numChildren); // use URL check for missing parents for now
+		else $menu .= getPagesRow($page,$level,'','',$numChildren);
+	}
+
+	return $menu;
+}
+
+function pagesTreeCallout($item, $outer = false, $open = true,$level = '',$index = '' ,$order = '',$args = array()){
+	if($outer || !$open) return;
+	$slug        = $item['id'];
+	$level       = $item['data']['depth']-1;
+	$numChildren = $item['data']['numchildren'];
+	$page        = getPage($slug);
+	// provide special row if this is a missing parent
+	if( !isset($page) ) $menu .= getPagesRowMissing($slug,$level,$numChildren); // use URL check for missing parents for now
+	else $menu .= getPagesRow($page,$level,'','',$numChildren);		
+	return getPagesRow($page,$level,'','',$item['data']['numchildren']);
+}
+
+function get_pages_menu_old($parent = '',$menu = '',$level = '') {
 	global $pagesSorted;
 	
 	$pages = getPageDepths($pagesSorted); // use parent hash table for speed
@@ -1752,6 +1680,9 @@ function strIsMultibyte($str){
  * @return string      return well formed html , with open tags being closed and incomplete open tags removed
  */
 function cleanHtml($str,$strip_tags = array()){
+	
+	if(empty($str)) return $str;
+
 	// setup encoding, required for proper dom loading
 	// @note
 	// $dom_document = new DOMDocument('1.0', 'utf-8'); // this does not deal with transcoding issues, loadhtml will treat string as ISO-8859-1 unless the doc specifies it 
