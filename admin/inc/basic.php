@@ -417,14 +417,15 @@ function getXmlFiles($path) {
 function get_execution_time($reset=false)
 {
 	GLOBAL $microtime_start;
-		if($reset) $microtime_start = null;
+	if($reset) $microtime_start = null;
 		
-		if($microtime_start === null)
-		{
-				$microtime_start = microtime(true);
-				return 0.0; 
-		}    
-		return round(microtime(true) - $microtime_start,5); 
+	if($microtime_start === null)
+	{
+		$microtime_start = microtime(true);
+		return 0.0;
+	}    
+	// return (microtime(true) - $microtime_start); 
+	return round(microtime(true) - $microtime_start,5); 
 }
 
 /**
@@ -1157,12 +1158,21 @@ function generate_permalink($slug, $permalink = null, $pathdata = null){
  * @deprecated
  */
 function find_url($slug, $parent = '', $type = null) {
+	return(get_url($slug));
+
 	// parent is ignored
 	if(!isset($type)){
 		if(!getDef('GSSITEURLREL',true)) $type = "full"; # only default to full if not GSSITEURLREL
 		else $type = "relative";
 	}	
 	return generate_url($slug, $type == 'full');
+}
+
+// @todo cached url getter cleanup
+// get url from pages or menus, not sure where I want routes saved
+function get_url($slug,$cached = true){
+	if(!$cached) return generate_url($slug);
+	return menuItemGetField($slug,'url');
 }
 
 /**
@@ -1338,8 +1348,9 @@ function i18n($name, $echo=true, $default = true) {
 	}
 	else return;
 
-	return echoReturn($myVar,$echo);
-	}
+	if(!$echo) return $myVar;
+	echo $myVar;
+}
 
 /**
  * Return i18n
