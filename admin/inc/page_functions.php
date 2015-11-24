@@ -107,7 +107,7 @@ function getPageFieldFromFile($page, $field, $raw = false){
  * @return str            content string
  */
 function getPageContentField($pageId, $filtered = true, $field = 'content'){
-	$content = getPageFieldValue($field);
+	$content = getPageFieldValue($pageId,$field);
 	if($filtered) return filterPageContent($content,$field);
 	return $content;
 }
