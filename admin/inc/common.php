@@ -186,6 +186,8 @@ global
  $GSSITEMENU      // (array) global array for storing menu caches
 ;
 
+$microtime_start = microtime(true);
+
 if(isset($_GET['nocache'])){
 	// @todo: disables caching, this should probably only be allowed for auth users, it is also not well inplemented
 	$nocache = true;

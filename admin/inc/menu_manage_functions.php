@@ -218,6 +218,7 @@ function menuItemRebuildChange($args,$menu = null){
  * @return array       new menu array
  */
 function menuRebuildNestArray($menu){
+	debugLog(__FUNCTION__);
 	// create temporary root '' parent , to help prime root recusrion, then removes it when done
 	$menu[GSMENUFLATINDEX]['']['children'] = array_keys(getMenuItemRoots($menu));
 	
