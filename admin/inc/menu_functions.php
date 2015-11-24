@@ -26,9 +26,6 @@ include_once(GSADMININCPATH.'menu_manage_functions.php'); // menu manipulation f
 
 // DEFINITIONS
 
-// this allows parent changes in page edits, in progress
-define('GSMENUINLINEUPDATES',true); // perform inline page updates to menu
-
 // menu ids
 define('GSMENUIDCORE','corepages'); // default id for the core page menu cache
 define('GSMENUIDCOREMENU','corepages_menu'); // default id for the core page DYNAMIC menu cache
@@ -53,6 +50,9 @@ define('GSMENUNAVFILTERCALLOUT','menuCalloutFilter'); // menu nav filter callout
 // menu manager
 define('GSMENUMGRCALLOUT','mmCallout'); // menu manager tree callout
 define('GSMENUMGRFILTERCALLOUT','mmCalloutFilter'); // menu manager filter callout
+// menu manager
+define('GSMENUPAGESCALLOUT','pagesTreeCallout'); // pages tree tree callout
+define('GSMENUPAGESFILTERCALLOUT','pagesTreeFilter'); // pages tree filter callout
 
 // define('GSMENUFILTERDEBUG',true);
 
@@ -78,9 +78,12 @@ define('GSMENUSAVENEST',true); // save nested arrays in menu files, they will be
 // For these scenarios some perf testing needs to be performed based on page count and complexity of nest, most of this was designed with heavily nested 500 page count testbeds.
 // 
 
-define('GSMENULEGACY',false); // use legacy menus, single level flat menu, save out to pages
-
 define('GSMENUDEFAULT',GSMENUIDCOREMENU); // which menu to use for default if legacy is disabled
+
+define('GSMENULEGACY',false); // use legacy menu, single level flat menu
+define('GSMENUEXPORTPAGES',false); // write menu out to page files
+// this allows parent changes in page edits, in progress
+define('GSMENUINLINEUPDATES',true); // perform inline page updates to menu
 
 
 /**
@@ -358,7 +361,7 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
 			$flatvalue['data']['order']     = $order;
             $flatvalue['data']['dotpath']   = implode('.',$indexAry['currpath']).'.'.$id;
 
-            recurseUpgradeTreeCallout($flatvalue,$id,$parent,$indexAry['currpath']); // pass $value by ref for modification
+            $indexAry[GSMENUFLATINDEX][$id] = array(); // position first
 
             if(isset($value['children'])){
                 $flatvalue['data']['numchildren'] = count($value['children']);
@@ -368,8 +371,12 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
 
             // add to flat array
             $indexAry[GSMENUFLATINDEX][$id] = $flatvalue;
+
             if(isset($value['children'])) $indexAry[GSMENUFLATINDEX][$id]['children'] = array_keys($value['children']);
             $value['data'] = &$flatvalue['data'];
+
+            // @todo this is children first , needs to change to parent first
+            recurseUpgradeTreeCallout($flatvalue,$id,$parent,$indexAry['currpath']); // pass $value by ref for modification            
         }
     }
 
@@ -833,9 +840,11 @@ function newMenuSave($menuid,$menu){
 	$menu     = reindexMenuArray($menu);   // add id as keys
     $menudata = recurseUpgradeTree($menu); // build full menu data
     $menudata[GSMENUNESTINDEX] = $menu;
+
+    debugLog(array_slice($menudata[GSMENUFLATINDEX], 0, 7));
+    // return;
     // _debugLog(__FUNCTION__,$menu);
     // _debugLog(__FUNCTION__,$menudata);
-    if(getDef('GSMENULEGACY',true) && $menuid === GSMENUIDCORE) exportMenuToPages($menudata); // legacy page support
     return menuSave($menuid,$menudata);
 }
 
@@ -851,14 +860,19 @@ function menuSave($menuid,$data){
 	// real time update sitemenu
 	$SITEMENU[$menuid] = $data;
 	
-	if($menuid == GSMENUIDCORE) saveCoreMenu(); // create menu cache for corepages
+	// handle core menu specific
+	if($menuid === GSMENUIDCORE){
+		saveCoreMenu(); // create menu cache for corepages
+    	if(getDef('GSMENUEXPORTPAGES',true)) exportMenuToPages($data); // legacy page support
+    }
 
-    // remove GSMENUFLATINDEX if it exists ( cannot save refs in json )
     if(!$data || !$data[GSMENUFLATINDEX]){
         debugLog('menusave: menu is empty - ' .$menuid);
         return false;
     }
-
+ 
+    // optionally remove GSMENUNESTINDEX if it exists ( cannot save refs in json )
+    // so this will duplicate data, tradeoff of saving or regenerating on load toggle
     if(!getDef('GSMENUSAVENEST',true)) unset($data[GSMENUNESTINDEX]);
 
     $menufileext = '.json';
