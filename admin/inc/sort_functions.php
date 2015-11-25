@@ -187,55 +187,6 @@ function sortKey($array,$key){
     return $array;
 }
 
-
-// path = get all parents not just first
-// function sortPathTitle($pages)
-// function sortPath($pages)
-
-/**
- * sort by "parent-title / page-title"
- * @param  array $pages pages array
- * @return array        sorted
- */
-function sortParentTitle($pages){
-	$seperator = ' - ';
-	foreach ($pages as $slug => &$page) {
-		$page['path'] = $page['parent'] ? $pages[$page['parent']]["title"] . $seperator : '';
-		$page['path'] .= $page['title'];
-	}
-	return 	subval_sort($pages,'path');
-}
-
-// sort by "parent-title / page-title"
-// test using multi sort 
-function sortParentTitleMulti($pages){
-	$sort = array();
-	foreach($pages as $slug => $page) {
-    	$sort['title'][$slug] = $page['title'];
-    	if(isset($page['parent']) && isset($pages[$page['parent']])){
-    		$sort['parenttitle'][$slug] = $page['parent'] ? $pages[$page['parent']]["title"] : '';
-    	} else $sort['parenttitle'][$slug] = '';
-    }
-    // debugLog($sort);
-	# sort by event_type desc and then title asc
-	array_multisort($sort['parenttitle'], SORT_ASC, $sort['title'], SORT_ASC,$pages);
-	return $pages;
-}
-
-/**
- * sorts by "parent_slug / page_slug"
- * @param  array $pages pages array
- * @return array        sorted
- */
-function sortParentPath($pages){
-	$seperator = '/';
-	foreach ($pages as $slug => &$page) {
-		$page['path'] = $page['parent'] ? $pages[$page['parent']]["url"] . $seperator : '';
-		$page['path'] .= $page['url'];
-	}
-	return 	subval_sort($pages,'path');
-}
-
 // in progress
 function sortPageFunc($pages,$func=null){
      // Define the custom sort function
@@ -244,33 +195,21 @@ function sortPageFunc($pages,$func=null){
 }
 
 /**
- * reindex PAGES
- * will reset keys from url,
- * if you have a pagesarray that lost its keys after
- * using a function that does not maintain key indexes
- * @param  array  $pages PAGES, else use pagesArray
- * @return array  	     PAGES rekeyed
- */
-function reindexPages($pages = array()){
-	if(!$pages){
-		GLOBAL $pagesArray;
-		$pages = $pagesArray;
-	}	
-	reindexArray($pages,'url');
-}
-
-// use array_column with null key to rekey an array
-function reindexArray($array,$key){
-	return array_column($array,null,$key);
-}
-
-
-/**
  * SAMPLES for TESTING
  * sort preparers
  * @todo : not sure why I chose to pass in $key and $page, $page will always contain $key
  * probably can be removed now
  */
+
+/**
+ * prepare pubDate strtotime it for sorting
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
+ */
+function prepare_date($page,$key){
+	return strtotime($key);
+}
 
 /**
  * sort preparer for path titles
@@ -293,24 +232,14 @@ function prepare_pagePathTitles($page,$key){
  * @return str         prepared string
  */
 function prepare_parentTitle($page,$key){
-	 	if ($page['parent'] != '') { 
-	 		$parentTitle = returnPageField($page['parent'], "title");
-	 		return lowercase($parentTitle .' '. $key);		
-	 	} 
-	 	else {
-	 		return lowercase($key);
-	 	}
-}
-
-/**
- * prepare pubDate strtotime it for sorting
- * @param  array $page page array
- * @param  str   $key  key of field
- * @return str         prepared string
- */
-function prepare_date($page,$key){
-	return strtotime($key);
-}
+	if ($page['parent'] != '') { 
+		$parentTitle = returnPageField($page['parent'], "title");
+		return lowercase($parentTitle .' '. $key);		
+	} 
+	else {
+		return lowercase($key);
+	}
+} 
 
 /**
  * sort preparer by menuOrder
@@ -347,6 +276,7 @@ function prepare_menuOrderParentTitle($page,$key){
 function getPagesSortedByMenuTitle(){
 	return sortCustomIndexCallback(getpages(),'title','prepare_menuOrderParentTitle');
 }
+
 
 function getPagesSortedByMenu(){
 	return sortCustomIndex(getpages(),'menuOrder');

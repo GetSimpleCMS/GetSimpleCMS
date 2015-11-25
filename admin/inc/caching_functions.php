@@ -127,10 +127,11 @@ function pageCacheCountDiffers(){
 
 /**
  * Return true if pagecache differs from pages
- * @todo  this will be a problem if pages do not store filename properly
+ * @todo  this will be a problem if pages do not store `filename` properly
  * it will always fail, can probably add some kind of time checking
+ * 
  * @since 3.3.0 
- * @return bool
+ * @return bool diff array
  */
 function pageCacheDiffers(){
 	GLOBAL $pagesArray;
@@ -140,16 +141,17 @@ function pageCacheDiffers(){
 	$filenames     = getXmlFiles($path);
 	$filenames_old = array_column($pagesArray,'filename');
 
+	// fast count compare
 	if(count($pagesArray) != count($filenames)) return true;
 
-	sort($filenames);
-	sort($filenames_old);
-	$new = md5(implode(',',$filenames));
-	$old = md5(implode(',',$filenames_old));
+	// filename diff compare
+	$diff = array_diff_dual($filenames, $filenames_old);
+	// debugLog($diff);
+	
+	// advanced compare, md5, timestamp etc. NOT IMPLEMENTED
 
-	// debugLog($old . " " . $new);
-	debugLog("page cache: cache differs -  " . ($new !== $old ? 'true' : 'false') );
-	return $new !== $old;
+	debugLog("page cache: cache differs check -  " . (count($diff) > 0 ? 'true' : 'false') . ' (' . count($diff).')');
+	return $diff;
 }
 
 /**
@@ -236,14 +238,16 @@ function pageCacheAddRoutes($id,&$cacheItems){
 	
 	// @todo can lead to infinite loops if generate_permalink triggers a cache rebuild somehow
 	$permaroute = generate_url($id);
-
 	$cacheItems->addChild('route')->updateCData($permaroute);
+	
+	$cacheItems->addChild('parent')->updateCData(getParentByCoreMenu($id));
 
 	return;
-	// @todo add routes test
+	// @todo add routes test, store multiple routes as arrays
+	// but this is not compatible with getPageField functions
 
 	$routesNode = $cacheItems->addChild('routes');
-	$routeNode = $routesNode->addChild('route');
+	$routeNode  = $routesNode->addChild('route');
 	
 	$pathNode = $routeNode->addChild('path');
 	$pathNode->addCData($permaroute);
@@ -265,7 +269,9 @@ function pageCacheXMLtoArray($xml){
 	$pagesArray = array();
 	$data = $xml;
 	if(!$xml || !$xml->item) return $pagesArray; // @todo probably should catch this instead
+	
 	$pages = $data->item;
+	
 	foreach ($pages as $page) {
 		$key=(string)$page->url;
 		$pagesArray[$key]=array();
@@ -274,6 +280,7 @@ function pageCacheXMLtoArray($xml){
 		foreach ($children as $opt=>$val) {
 			$pagesArray[$key][(string)$opt]=(string)$val;
 		}
+
 		$pagesArray[$key]['slug']=$key; // legacy
 		$pagesArray[$key]['filename']=$key.'.xml'; // legacy
 	}

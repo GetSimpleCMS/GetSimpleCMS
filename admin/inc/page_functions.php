@@ -134,8 +134,7 @@ function filterPageContent($content,$field = 'content'){
  */
 function pageIsInMenu($slug,$menuid = null){
 	if(!$menuid) $menuid = GSMENUIDCOREMENU;
-	$menu = getMenuDataFlat($menuid);
-	return isset($menu[$slug]);
+	return isset(menuItemGetData($slug,$menuid));
 }
 
 /**
@@ -432,6 +431,22 @@ function returnPageContent($page, $field='content', $raw = false, $nofilter = fa
  */
 function getPageContent($page,$field='content'){   
 	echo returnPageField($page,$field);
+}
+
+/**
+ * reindex PAGES
+ * will reset keys from url,
+ * if you have a pagesarray that lost its keys after
+ * using a function that does not maintain key indexes
+ * @param  array  $pages PAGES, else use pagesArray
+ * @return array  	     PAGES rekeyed
+ */
+function reindexPages($pages = array()){
+	if(!$pages){
+		GLOBAL $pagesArray;
+		$pages = $pagesArray;
+	}	
+	reindexArray($pages,'url');
 }
 
 /**

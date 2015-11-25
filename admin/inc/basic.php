@@ -514,7 +514,7 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
 		'url',
 		'author',
 		'template',
-		'parent',
+		// 'parent',
 		'menu',
 		'menuStatus',
 		'menuOrder',
@@ -1053,6 +1053,32 @@ if(!function_exists('in_arrayi')) {
 	}
 }
 
+/** 
+ * LEGACY, alias for getPageUrl
+ * @deprecated
+ */
+function find_url($slug, $parent = '', $type = null) {
+	return(getPageUrl($slug,true,$type));
+}
+
+/**
+ * get url for page, cached or regenerated
+ * @since 3.4
+ * @param  str  $slug      slug to get url for 
+ * @param  boolean $cached get from pagecache or regenerate
+ * @param  str $type       get specific type, full or relative
+ * @return str             permalink string
+ */	
+function getPageUrl($slug, $cached = true, $type = null){
+
+	// returns cached url unless a type is specified or nocache requested
+	if(isset($type) || !$cached){
+		return generate_url($slug, $type);
+	}
+
+	// get from page cache
+	return getPageFieldValue($slug,'route');
+}
 
 /**
  * Creates Standard URL for Pages
@@ -1074,20 +1100,16 @@ function generate_url($slug, $absolute = false, $pathdata = null){
 	global $PERMALINK;
 
 	// force slug to string in case a simpleXml object was passed ( from a page obj for example)
-	$slug   = (string) $slug;
-	$delim  = getDef('GSTOKENDELIM');
-
+	$slug = (string) $slug;
 	if(empty($slug)) return; // empty slug
 
-	$path   = tsl(getSiteURL($absolute));
-	$url    = $path; // var to build url into
+	$path = tsl(getSiteURL($absolute));
+	$url  = $path; // var to build url into
 
+	// not index
 	if($slug != getDef('GSINDEXSLUG')){
-		if ($PRETTYURLS == '1'){
-			$url .= generate_permalink($slug,null,$pathdata);
-		} 
-		else if (!empty($PERMALINK)){
-			$url .= generate_permalink($slug,$PERMALINK,$pathadta);
+		if ($PRETTYURLS == '1' || !empty($PERMALINK)){
+			$url .= generate_permalink($slug,$PERMALINK,$pathdata);
 		}
 		else $url .= 'index.php?id='.$slug;
 	}
@@ -1097,7 +1119,9 @@ function generate_url($slug, $absolute = false, $pathdata = null){
 }
 
 /**
- * generate permalink url from tokenized permalink structure
+ * generate permalinks urls from tokenized permalink structure
+ * INTERNAL, use generate_url() wrapper
+ * 
  * uses a very basic str_replace based token replacer, not a parser
  * TOKENS (%tokenid%)
  *  %path% - path heirarchy to slug
@@ -1106,20 +1130,17 @@ function generate_url($slug, $absolute = false, $pathdata = null){
  *
  * supports prettyurl or any other permalink structure
  * eg. ?id=%slug%&parent=%parent%&path=%path%
- * 
+ * @since  3.4
  * @param  (str) $slug      slug to resolve permalink for	
- * @param  (str) $permalink (optional) permalink structure, falls back to $PERMALINK then to GSDEFAULTPERMALINK
+ * @param  (str) $permalink permalink structure, falls back to GSDEFAULTPERMALINK if null
  * @param  (array) $data 	(optional) pass in pathing data override keys 'parents','parent'
  * @return (str)            	
  */
-function generate_permalink($slug, $permalink = null, $pathdata = null){
-	GLOBAL $PERMALINK;
-	
+function generate_permalink($slug, $permalink = null, $pathdata = null){	
 	$slug = (string) $slug;
 
 	if(!isset($permalink)){
-		$plink = $PERMALINK;
-		if(empty($PERMALINK)) $plink = getDef('GSDEFAULTPERMALINK');
+		$plink = getDef('GSDEFAULTPERMALINK');
 	} else $plink = $permalink;
 
 	// replace PATH token
@@ -1151,33 +1172,6 @@ function generate_permalink($slug, $permalink = null, $pathdata = null){
 	// debugLog($url);
 	// debugLog($plink);
 	return no_lsl($plink);
-}
-
-/** 
- * LEGACY alias for generate_url, defaults to relative now
- * @deprecated
- */
-function find_url($slug, $parent = '', $type = null) {
-	return(getPageUrl($slug));
-
-	// parent is ignored
-	if(!isset($type)){
-		if(!getDef('GSSITEURLREL',true)) $type = "full"; # only default to full if not GSSITEURLREL
-		else $type = "relative";
-	}	
-	return generate_url($slug, $type == 'full');
-}
-
-/**
- * get url for page, cached or regenerated
- * @since 3.4
- * @param  str  $slug   slug to get url for 
- * @param  boolean $cached get from pagecache or regenerate
- * @return str          permalink
- */	
-function getPageUrl($slug,$cached = true){
-	if(!$cached) return generate_url($slug);
-	return getPageFieldValue($slug,'route');
 }
 
 /**
@@ -2984,6 +2978,17 @@ function safemodefail($action = '',$url = ''){
  * @todo  add optimizations for native array_filter by key=>value >5.6
  * 
  */
+
+/**
+ * resets array keys from field
+ * uses array_column with null key to rekey an array
+ * @since  3.4
+ * @param  array $array array to rekey
+ * @param  str $key key of field to get new keys from
+ */
+function reindexArray($array,$key){
+	return array_column($array,null,$key);
+}
 
 /**
  * array diff from 2 arrays, returns both diffs not just one
