@@ -111,13 +111,16 @@ function get_page_meta_desc($echo=true) {
 	else if(getDef('GSAUTOMETAD',true))
 	{
 		// use content excerpt, NOT filtered
-		$desc = strip_decode($content);
-		if(getDef('GSCONTENTSTRIP',true)) $desc = strip_content($desc);
-		$desc = cleanHtml($desc,array('style','script')); // remove unwanted elements that strip_tags fails to remove
-		$desc = getExcerpt($desc,160); // grab 160 chars
-		$desc = strip_whitespace($desc); // remove newlines, tab chars
-		$desc = encode_quotes($desc);
-		$desc = trim($desc);
+		$desc = '';
+		if(!empty($content)){
+			$desc = strip_decode($content);
+			if(getDef('GSCONTENTSTRIP',true)) $desc = strip_content($desc);
+			$desc = cleanHtml($desc,array('style','script')); // remove unwanted elements that strip_tags fails to remove
+			$desc = getExcerpt($desc,160); // grab 160 chars
+			$desc = strip_whitespace($desc); // remove newlines, tab chars
+			$desc = encode_quotes($desc);
+			$desc = trim($desc);
+		}
 	}
 	
 	$str = exec_filter('metad',$desc); // @filter metad (str) meta description in get_page_meta_desc
@@ -289,7 +292,7 @@ function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_url($echo=false) {
-	return echoReturn(find_url(getGSPageVar('url'), getGSPageVar('parent')),!$echo);
+	return echoReturn(find_url((string)getGSPageVar('url'),(string)getGSPageVar('parent')),!$echo);
 }
 
 /**
@@ -317,6 +320,7 @@ function get_header($full=true) {
 	exec_action('theme-header');  // @hook theme-header after get_header output html
 }
 
+// @todo cleanup
 function build_header($full){
 	include(GSADMININCPATH.'configuration.php');
 	
@@ -673,23 +677,21 @@ function return_snippet(){
  * @param string $currentpage This is the ID of the current page the visitor is on
  * @param string $classPrefix Prefix that gets added to the parent and slug classnames
  * @return string 
- */	
+ */
 function get_navigation($currentpage = '',$classPrefix = "") {
 	$currentpage = (string)$currentpage;
 	$menu = get_navigation_advanced($currentpage,$classPrefix);
 	echo exec_filter('menuitems',$menu); // @filter menuitems (str) menu items html in get_navigation
 }
-
-function get_navigation_advanced($currentpage, $classPrefix = '', $slug = '', $maxdepth = 3){
+// @todo clean up
+function get_navigation_advanced($currentpage, $classPrefix = '', $slug = '', $maxdepth = null){
 	// get legacy menu
 	if(getDef('GSMENULEGACY',true)) $menuid = GSMENUIDLEGACY; 
     else if(getDef('GSMENUDEFAULT',true)) $menuid = GSMENUDEFAULT;
     else $menuid = GSMENUIDCOREMENU;
 
 	$tree = getMenuTreeData($slug,false,$menuid);
-
 	$menu =  getMenuTree($tree,false,GSMENUNAVCALLOUT,GSMENUNAVFILTERCALLOUT,array('currentpage'=>$currentpage,'classPrefix'=>$classPrefix,'maxdepth'=>$maxdepth));
-
 	return $menu;
 }
 

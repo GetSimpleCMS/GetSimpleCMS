@@ -1158,7 +1158,7 @@ function generate_permalink($slug, $permalink = null, $pathdata = null){
  * @deprecated
  */
 function find_url($slug, $parent = '', $type = null) {
-	return(get_url($slug));
+	return(getPageUrl($slug));
 
 	// parent is ignored
 	if(!isset($type)){
@@ -1168,11 +1168,16 @@ function find_url($slug, $parent = '', $type = null) {
 	return generate_url($slug, $type == 'full');
 }
 
-// @todo cached url getter cleanup
-// get url from pages or menus, not sure where I want routes saved
-function get_url($slug,$cached = true){
+/**
+ * get url for page, cached or regenerated
+ * @since 3.4
+ * @param  str  $slug   slug to get url for 
+ * @param  boolean $cached get from pagecache or regenerate
+ * @return str          permalink
+ */	
+function getPageUrl($slug,$cached = true){
 	if(!$cached) return generate_url($slug);
-	return menuItemGetField($slug,'url');
+	return getPageFieldValue($slug,'route');
 }
 
 /**
@@ -1308,8 +1313,8 @@ function redirect($url,$ajax = false) {
 			if (isDebug()){
 				debugLog(debug_backtrace());
 				outputDebugLog();
-				}
 			}
+		}
 		
 		echo "</body></html>";
 	}

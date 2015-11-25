@@ -62,10 +62,7 @@ init_pageCache(true,true); // force rebuild of pagecache
  * and this is not cached at all
  */
 
-// $pagesSorted = sortCustomIndexCallback($pagesArray,'title','prepare_menuOrderParentTitle');
-$pagesSorted = getPagesSortedByMenuTitle();
-// debugLog($pagesSorted);
-$count       = count($pagesSorted);
+$count       = count($pagesArray);
 $table       = get_pages_menu('','',0);
 $pagetitle   = i18n_r('PAGE_MANAGEMENT');
 

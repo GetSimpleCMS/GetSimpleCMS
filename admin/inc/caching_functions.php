@@ -233,16 +233,21 @@ function generate_pageCacheXml(){
 function pageCacheAddRoutes($id,&$cacheItems){
 	GLOBAL $pagesArray;
 	if(!$pagesArray) return false;
+	
+	// @todo can lead to infinite loops if generate_permalink triggers a cache rebuild somehow
+	$permaroute = generate_url($id);
 
-	// add route
+	$cacheItems->addChild('route')->updateCData($permaroute);
+
+	return;
+	// @todo add routes test
+
 	$routesNode = $cacheItems->addChild('routes');
 	$routeNode = $routesNode->addChild('route');
-
-	// @todo can lead to infinite loops if generate_permalink triggers a cache rebuild somehow
-	$permaroute = no_tsl(generate_permalink($id));
-
+	
 	$pathNode = $routeNode->addChild('path');
 	$pathNode->addCData($permaroute);
+
 	$keyNode = $routeNode->addChild('key');
 	$keyNode->addCData(md5($permaroute));
 }
