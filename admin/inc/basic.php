@@ -1080,6 +1080,32 @@ if(!function_exists('in_arrayi')) {
 	}
 }
 
+/** 
+ * LEGACY, alias for getPageUrl
+ * @deprecated
+ */
+function find_url($slug, $parent = '', $type = null) {
+	return(getPageUrl($slug,true,$type));
+}
+
+/**
+ * get url for page, cached or regenerated
+ * @since 3.4
+ * @param  str  $slug      slug to get url for 
+ * @param  boolean $cached get from pagecache or regenerate
+ * @param  str $type       get specific type, full or relative
+ * @return str             permalink string
+ */	
+function getPageUrl($slug, $cached = true, $type = null){
+
+	// returns cached url unless a type is specified or nocache requested
+	if(isset($type) || !$cached){
+		return generate_url($slug, $type);
+	}
+
+	// get from page cache
+	return getPageFieldValue($slug,'route');
+}
 
 /**
  * Creates Standard URL for Pages
@@ -1096,26 +1122,25 @@ if(!function_exists('in_arrayi')) {
  * @param string $absolute force absolute siteurl
  * @return string
  */
-function generate_url($slug, $absolute = false){
+function generate_url($slug, $absolute = false, $pathdata = null){
 	global $PRETTYURLS;
 	global $PERMALINK;
 
 	// force slug to string in case a simpleXml object was passed ( from a page obj for example)
-	$slug   = (string) $slug;
-	$delim  = getDef('GSTOKENDELIM');
-
+	$slug = (string) $slug;
 	if(empty($slug)) return; // empty slug
 
-	$path   = tsl(getSiteURL($absolute));
-	$url    = $path; // var to build url into
+	$path = tsl(getSiteURL($absolute));
+	$url  = $path; // var to build url into
 
+	// not index
 	if($slug != getDef('GSINDEXSLUG')){
 		if ($PRETTYURLS == '1'){
-			$url .= generate_permalink($slug);
+			$url .= generate_permalink($slug,null,$pathdata);
 		} 
-		// else if (!empty($PERMALINK)){
-		// 	$url .= generate_permalink($slug,$PERMALINK);
-		// }
+		else if (!empty($PERMALINK)){
+			$url .= generate_permalink($slug,$PERMALINK,$pathadta);
+		}
 		else $url .= 'index.php?id='.$slug;
 	}
 
@@ -1124,7 +1149,9 @@ function generate_url($slug, $absolute = false){
 }
 
 /**
- * generate permalink url from tokenized permalink structure
+ * generate permalinks urls from tokenized permalink structure
+ * INTERNAL, use generate_url() wrapper
+ * 
  * uses a very basic str_replace based token replacer, not a parser
  * TOKENS (%tokenid%)
  *  %path% - path heirarchy to slug
@@ -1133,19 +1160,17 @@ function generate_url($slug, $absolute = false){
  *
  * supports prettyurl or any other permalink structure
  * eg. ?id=%slug%&parent=%parent%&path=%path%
- * 
+ * @since  3.4
  * @param  (str) $slug      slug to resolve permalink for	
- * @param  (str) $permalink (optional) permalink structure
+ * @param  (str) $permalink (optional) permalink structure, falls back to GSDEFAULTPERMALINK if null
+ * @param  (array) $pathdata 	(optional) pass in pathing data override keys 'parents','parent'
  * @return (str)            	
  */
-function generate_permalink($slug, $permalink = null){
-	GLOBAL $PERMALINK;
-	
+function generate_permalink($slug, $permalink = null, $pathdata = null){	
 	$slug = (string) $slug;
 
 	if(!isset($permalink)){
-		$plink = $PERMALINK;
-		if(empty($PERMALINK)) $plink = getDef('GSDEFAULTPERMALINK');
+		$plink = getDef('GSDEFAULTPERMALINK');
 	} else $plink = $permalink;
 
 	// replace PATH token
@@ -1153,9 +1178,9 @@ function generate_permalink($slug, $permalink = null){
 		// remove PARENT tokens if path, since it would be pointless and probably accidental
 		// leaving in for now lets not make assumptions
 		// $plink = replaceToken('parent','',$plink);
-		$pagepath = getParents($slug);
-		if($pagepath){
-			$pagepath = implode('/',array_reverse($pagepath));
+		$pagepath = isset($pathdata,$pathdata['parents']) ? $pathdata['parents'] : getParents($slug);
+		if(isset($pagepath)){
+			$pagepath = no_tsl(implode('/',array_reverse($pagepath))); // build path and remove trailing slash
 			$plink    = replaceToken('path', $pagepath, $plink);		
 		} else {
 			// page has no parents, remove token
@@ -1165,7 +1190,7 @@ function generate_permalink($slug, $permalink = null){
 
 	// replace PARENT token
 	if(containsToken('parent',$plink)){
-		$parent = getParent($slug);
+		$parent = isset($pathdata,$pathdata['parent']) ? $pathdata['parent'] : getParent($slug);
 		$plink  = replaceToken('parent', $parent, $plink);
 	}
 	
@@ -1177,19 +1202,6 @@ function generate_permalink($slug, $permalink = null){
 	// debugLog($url);
 	// debugLog($plink);
 	return no_lsl($plink);
-}
-
-/** 
- * LEGACY alias for generate_url, defaults to relative now
- * @deprecated
- */
-function find_url($slug, $parent = '', $type = null) {
-	// parent is ignored
-	if(!isset($type)){
-		if(!getDef('GSSITEURLREL',true)) $type = "full"; # only default to full if not GSSITEURLREL
-		else $type = "relative";
-	}	
-	return generate_url($slug, $type == 'full');
 }
 
 /**
@@ -3006,6 +3018,18 @@ function safemodefail($action = '',$url = ''){
  * these are not backports! however
  * 
  */
+
+/**
+ * array diff from 2 arrays, returns both diffs not just one
+ * @since  3.4
+ * @param  array $array1 first array
+ * @param  array $array2 second array
+ * @return array         diff array, elements missing from either array are included
+ */
+function array_diff_dual($array1,$array2){
+	return array_merge(array_diff($array1, $array2), array_diff($array2, $array1));
+}
+
 
 /**
  * filter an array using a callback function on subarrays

@@ -42,8 +42,9 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 	}
 }
 
-init_pageCache(true);
-getPagesXmlValues(true);
+getMenuDataArray();
+init_pageCache(true,false); // force rebuild of pagecache (refresh,force)
+// getPagesXmlValues(true);
 
 /**
  * sorting prepare function tests

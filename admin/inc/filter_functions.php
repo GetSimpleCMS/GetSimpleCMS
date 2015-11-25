@@ -307,7 +307,7 @@ function filterMatchBoolCmp($a,$b){
 
 /**
  * IN VALUES comparison, $a IN values('b0','b1','b2')
- * matches $a to multiple values $b
+ * matches $a in multiple values $b
  * eg. filterKeyValueFunc($pagesArray,'menuOrder',array(1,2),'filterInValuesCmp');
  * @param  str   $a string to compare
  * @param  array $b array of values to compare
@@ -319,7 +319,7 @@ function filterInValuesCmp($a,$b){
 
 /**
  * NOT IN VALUES comparison, $a NOT IN values('b0','b1','b2')
- * matches $a to multiple values $b
+ * matches $a not in multiple values $b
  * eg. filterKeyValueFunc($pagesArray,'menuOrder',array(1,2),'filterNotInValuesCmp');
  * @param  str   $a string to compare
  * @param  array $b array of values to compare
@@ -430,7 +430,7 @@ function filterParent($pages,$parent=''){
 /**
  * invert a filtered page set by using it to filter PAGES
  * @param  array $pagesFiltered  a filtered PAGE collection
- * @param  array  $pages         PAGES
+ * @param  array  $pages         (optional) PAGES collection to filteragainst, else use all pages
  * @return array                 items of $pages not in $pagesFiltered
  */
 function filterInverse($pagesFiltered,$pages = array()){
