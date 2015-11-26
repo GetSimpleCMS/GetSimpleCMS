@@ -134,7 +134,7 @@ function filterPageContent($content,$field = 'content'){
  */
 function pageIsInMenu($slug,$menuid = null){
 	if(!$menuid) $menuid = GSMENUIDCOREMENU;
-	return isset(menuItemGetData($slug,$menuid));
+	return null !== menuItemGetData($slug,$menuid);
 }
 
 /**
