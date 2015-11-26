@@ -197,7 +197,7 @@ function generate_pageCacheXml(){
 			// load page xml
 			$pageXml  = getXml($path.$file);
 			if(!$pageXml) continue;
-			$id = $pageXml->url; // page id
+			$id = (string)$pageXml->url; // page id
 
 			$cacheItems = $cacheXml->addChild('item');
 			$children = $pageXml->children();

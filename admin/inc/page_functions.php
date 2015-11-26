@@ -335,7 +335,7 @@ function getPagePathField($pageId,$field,$delim = '/'){
  * @return str         parent id
  */
 function getParentByCoreMenu($pageId){
-	return menuItemGetParent($pageId,GSMENUIDCORE);
+	return menuItemGetParent((string)$pageId,GSMENUIDCORE);
 }
 
 /**
