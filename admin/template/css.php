@@ -3745,3 +3745,7 @@ img.fancybox-image {
    .label-medium-debug:after                                      { content: "<?php echo $label_6;   ?>" !important;}
 
 /* </style> */
+
+#sa_debug_footer {
+    text-align: right !important;
+} 

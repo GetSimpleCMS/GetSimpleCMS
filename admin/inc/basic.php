@@ -414,8 +414,7 @@ function getXmlFiles($path) {
  * @param bool $reset resets global to timestamp
  * @return 
  */
-function get_execution_time($reset=false)
-{
+function get_execution_time($reset=false){
 	GLOBAL $microtime_start;
 	if($reset) $microtime_start = null;
 		
@@ -423,9 +422,9 @@ function get_execution_time($reset=false)
 	{
 		$microtime_start = microtime(true);
 		return 0.0;
-	}    
+	}
 	// return (microtime(true) - $microtime_start); 
-	return round(microtime(true) - $microtime_start,5); 
+	return round(microtime(true) - $microtime_start,3); 
 }
 
 /**
@@ -763,12 +762,14 @@ function save_file($file,$data=''){
  * @return bool      file contents
  */
 function read_file($file){
+	// get_execution_time(true);
 	if(!file_exists($file)){
 		fileLog(__FUNCTION__,false,$file . ' not exist');
 		return;
 	}
 	$data = file_get_contents($file); // php file_get_contents
 	fileLog(__FUNCTION__,$data!==false,$file);
+	// fileLog(__FUNCTION__,$data!==false,$file,get_execution_time().'s');
 	return $data;
 }
 
@@ -873,7 +874,6 @@ function fileLog($operation,$status = null){
 	else $logstatus = (string) $status;
 	$args = convertPathArgs($args);
 	debugLog("&bull; fileio: [$logstatus] ".uppercase($operation).": ".implode(" - ",$args));
-
 	return $status;
 }
 

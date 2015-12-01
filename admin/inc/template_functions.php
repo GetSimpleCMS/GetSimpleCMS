@@ -1122,7 +1122,9 @@ function getParentsSlugHashTable($pages = array(), $useref = true){
  * @returns string
  */
 function get_pages_menu($parent = '',$menu = '',$level = '') {
-	// return get_pages_menu_old();
+	return get_pages_menu_old();
+	// return get_pages_tree();
+
 	$items = getMenuDataFlat();
 	foreach($items as $item){
 		$slug = $item['id'];
@@ -1140,6 +1142,11 @@ function get_pages_menu($parent = '',$menu = '',$level = '') {
 	return $menu;
 }
 
+// nested test (500 items), about 100-200ms slower than flat, probably due to callouts, possibly recursion overhead or unotimizations
+function get_pages_menu_recursive(){
+	$tree = getMenuDataNested();
+	return getMenuTree($tree,true,GSMENUPAGESCALLOUT, null,array(getMenuDataArray()));
+}
 function pagesTreeCallout($item, $outer = false, $open = true,$level = '',$index = '' ,$order = '',$args = array()){
 	if($outer || !$open) return;
 	$slug        = $item['id'];
@@ -1147,15 +1154,30 @@ function pagesTreeCallout($item, $outer = false, $open = true,$level = '',$index
 	$numChildren = $item['data']['numchildren'];
 	$page        = getPage($slug);
 	// provide special row if this is a missing parent
-	if( !isset($page) ) $menu .= getPagesRowMissing($slug,$level,$numChildren); // use URL check for missing parents for now
-	else $menu .= getPagesRow($page,$level,'','',$numChildren);		
-	return getPagesRow($page,$level,'','',$item['data']['numchildren']);
+	if( !isset($page) ) return getPagesRowMissing($slug,$level,$numChildren); // use URL check for missing parents for now
+	else return getPagesRow($page,$level,'','',$numChildren);		
 }
 
-function get_pages_menu_old($parent = '',$menu = '',$level = '') {
-	global $pagesSorted;
-	
-	$pages = getPageDepths($pagesSorted); // use parent hash table for speed
+
+/**
+ * same as getPageDepths, uses menu cache
+ * @param  array $pages pages array
+ * @return array        pages with new info added
+ */
+function getPageDepthsNew($pages){
+	$items = getMenuDataFlat();	
+	foreach($pages as &$page){
+		$item = $items[$page['url']];
+		// debugLog($item);
+		$page['order']       = $item['data']['order'];
+		$page['depth']       = $item['data']['depth']-1;
+		$page['numchildren'] = $item['data']['numchildren'];
+	}
+	return $pages;
+}
+
+function get_pages_menu_old($parent = '',$menu = '',$level = '') {	
+	$pages = getPageDepthsNew(getpages()); // use parent hash table for speed
 	$depth = null;
 
 	// get depth of requested parent, then get all subsequent children until we get back to our starting depth
