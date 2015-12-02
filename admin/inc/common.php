@@ -147,7 +147,7 @@ $GS_definitions = array(
 	'GSDEBUG'              => true,                          // (bool) output debug mode console
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls to debuglog
 	'GSDEBUGREDIRECTS'     => false,                          // (bool) if debug mode enabled, prevent redirects for debugging
-	'GSDEBUGFILEIO'        => true,                          // (bool) debug filio operations
+	'GSDEBUGFILEIO'        => false,                          // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
 	'GSSAFEMODE'           => false,                          // (bool) enable safe mode, safe mode disables plugins and components
 	'GSFORMATXML'          => true,                          // (bool) format xml files before saving them, making them more legible
@@ -638,6 +638,8 @@ if(isset($load['plugin']) && $load['plugin']){
 	// debugLog('calling common_callout');
 	callIfCallable('common_callout'); // @callout common_callout callout after common loaded, before templating
 }
+
+if(isset($_REQUEST['refreshcache'])) exec_action('request-refreshcache'); // @hook request-cacherefresh force pagecache refresh
 
 /**
  * debug plugin global arrays

@@ -62,7 +62,7 @@ init_pageCache(true,false); // force rebuild of pagecache (refresh,force)
  * and this is not cached at all
  */
 
-$count       = count($pagesArray);
+$count       = count(getMenuDataFlat());
 $table       = get_pages_menu('','',0);
 $pagetitle   = i18n_r('PAGE_MANAGEMENT');
 
