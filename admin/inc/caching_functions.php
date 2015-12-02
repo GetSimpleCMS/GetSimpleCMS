@@ -20,6 +20,7 @@ add_action('page-restore', 'create_pagesxml',array(true));         // Create pag
 add_action('page-clone', 'create_pagesxml',array(true));           // Create pages.array if page undo
 add_action('draft-publish', 'create_pagesxml',array(true));        // Create pages.array if page is updated
 add_action('changedata-aftersave', 'create_pagesxml',array(true)); // Create pages.array if page is updated
+add_action('request-refreshcache', 'create_pagesxml',array(true)); // Create pages.array if page is updated
 
 
 /**
@@ -265,6 +266,10 @@ function init_pageCache($refresh = false, $force = false) {
  * @return null 
  */
 function create_pagesxml($save=false){
+	debugLog("page cache: LEGACY " . __FUNCTION__ . ' save - ' . $save);
+	init_pageCache(true,true);
+	return;
+
 	global $pagesArray, $pageCacheXml;
   	$pageCacheXml = generate_pageCacheXml();
 	
@@ -358,11 +363,13 @@ function save_pageCacheXml($xml){
  */
 function generate_pageCacheXml(){
 	debugLog('page cache: re-generating from pages files');
+	set_time_limit(30);
 
 	// read in each pages xml file
 	$path      = GSDATAPAGESPATH;
 	$filenames = getXmlFiles($path);
 	$cacheXml  = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
+	$menudata  = array();
 
 	if (count($filenames) != 0) {
 		foreach ($filenames as $file) {
@@ -370,7 +377,17 @@ function generate_pageCacheXml(){
 			// load page xml
 			$pageXml  = getXml($path.$file);
 			if(!$pageXml) continue;
-			$id = $pageXml->url; // page id
+			$id = (string)$pageXml->url; // page id
+
+			// auto import pages, fixes slugs to match filenams
+			if($id !== _id(getFileName($file))){
+				$id = _id(getFileName($file));
+				// debugLog($pageXml);
+				$pageXml->url->setValue($id); // update id
+				$pageXml->title->setValue((string)$pageXml->title . ' - copy'); // update title
+				debugLog(__FUNCTION__ . ' ' .$id);
+				XMLsave($pageXml, $path.$file);
+			}
 
 			$cacheItems = $cacheXml->addChild('item');
 			// $pages->addChild('url', $id);
@@ -383,8 +400,8 @@ function generate_pageCacheXml(){
 				// add all fields skip excludes
 				if (isset($pageCacheExclude) && in_array($item, $pageCacheExclude)) continue;
 
-				$note = $cacheItems->addChild($item);
-				$note->addCData($itemdata);
+				$node = $cacheItems->addChild($item);
+				$node->addCData($itemdata);
 			}
 			
 			pageCacheAddRoutes($id,$cacheItems);
@@ -394,8 +411,11 @@ function generate_pageCacheXml(){
 			# $note->addCData($id);
 			# $note = $pages->addChild('filename'); 
 			# $note->addCData($file);
+
+			pageCacheAddRoutes($id,$cacheItems);
 		}
 	}
+
 	return $cacheXml;
 }
 
