@@ -5,3 +5,6 @@
 /lib
 
 thumbs.db
+
+# PHPStorm files
+.idea
