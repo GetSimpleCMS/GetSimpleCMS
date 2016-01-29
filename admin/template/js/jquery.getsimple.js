@@ -266,6 +266,11 @@ jQuery(document).ready(function () {
 						type: "GET",
 						url: dlink,
 						success: function (response) {
+							if ($(response).find('div.error').html()) {
+								$('div.bodycontent').before('<div class="error"><p>' + $(response).find('div.error').html() + '</p></div>');
+								popAlertMsg();
+								return;
+							}
 							mytr.remove();
 							if ($("#pg_counter").length) {
 								counter = $("#pg_counter").html();
@@ -274,10 +279,6 @@ jQuery(document).ready(function () {
  
 							$('div.wrapper .updated').remove();
 							$('div.wrapper .error').remove();
-							if ($(response).find('div.error').html()) {
-								$('div.bodycontent').before('<div class="error"><p>' + $(response).find('div.error').html() + '</p></div>');
-								popAlertMsg();
-							}
 							if ($(response).find('div.updated').html()) {
 								$('div.bodycontent').before('<div class="updated"><p>' + $(response).find('div.updated').html() + '</p></div>');
 								popAlertMsg();
@@ -554,7 +555,7 @@ jQuery(document).ready(function () {
 					$('#createfolder').show();
 					counter = parseInt($("#pg_counter").text());
 					$("#pg_counter").html(counter++);
-					$("tr." + newfolder + " td").css("background-color", "#F9F8B6");
+					$("tr." + escape(newfolder) + " td").css("background-color", "#F9F8B6");
 					loadingAjaxIndicator.fadeOut();
 				});
 			}
