@@ -283,10 +283,9 @@ function get_FileType($ext) {
  * @return bool
  */
 function createBak($file, $filepath, $bakpath) {
-	$bakfile = '';
+	$bakfile = $bakpath . $file .".bak";
 	if ( file_exists(tsl($filepath) . $file) ) {
-		$bakfile = $file .".bak";
-		copy($filepath . $file, $bakpath . $bakfile);
+		copy($filepath . $file, $bakfile);
 	}
 	
 	if ( file_exists($bakfile) ) {
