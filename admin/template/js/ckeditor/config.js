@@ -1,15 +1,29 @@
 ﻿
-// GetSimpleCMS config file for CKeditor 3.6.2
+// GetSimpleCMS config file for CKeditor
 
 // default editor config
 CKEDITOR.editorConfig = function( config )
 {
 	// Define changes to default configuration here.
-	config.resize_dir                  = 'vertical' // vertical resize
-	config.toolbarCanCollapse          = false; // hide toolbar collapse button
-	config.dialog_backgroundCoverColor = '#000000'; // veil color for dialog popups
+    config.skin                        = 'getsimple';
+	
+    config.defaultLanguage             = 'en';
+	config.resize_dir                  = 'vertical'; // vertical resize
+	config.toolbarCanCollapse          = false;      // hide toolbar collapse button
+    config.forcePasteAsPlainText       = true;
+    config.tabSpaces                   = 10;    
+
+	config.dialog_backgroundCoverColor = '#000000';  // veil color for dialog popups
+    config.uiColor                     = '#FFFFFF';
 	config.magicline_color             = '#CF3805'; 
-	config.allowedContent              = true; // disable acf
+    config.entities                    = false;    
+
+    // customize file browser popup windows below
+    // config.filebrowserWindowWidth      = '960';
+    // config.filebrowserWindowHeight     = '700';
+
+	config.allowedContent              = true;       // disable acf
+	config.disableAutoInline           = true;       // disable automatic inline editing of elements with contenteditable=true
 
 	config.toolbar_advanced = 
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
@@ -18,6 +32,10 @@ CKEDITOR.editorConfig = function( config )
 
 	config.toolbar_basic = 
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']];
+
+	// add about if debug mode
+	config.toolbar_advanced.push(Array("About"));
+	config.toolbar_basic.push(Array("About"));
 
 };
 
@@ -35,11 +53,11 @@ CKEDITOR.dtd.$removeEmpty['span'] = false;
 CKEDITOR.on( 'instanceReady', function( ev ) {
 	var blockTags = ['div','h1','h2','h3','h4','h5','h6','p','pre','li','blockquote','ul','ol','table','thead','tbody','tfoot','td','th',];
 	var rules = {
-		indent : true,
-		breakBeforeOpen : true,
-		breakAfterOpen : false,
+		indent           : true,
+		breakBeforeOpen  : true,
+		breakAfterOpen   : false,
 		breakBeforeClose : false,
-		breakAfterClose : true
+		breakAfterClose  : true
 	};
 
 	for (var i=0; i<blockTags.length; i++) {
