@@ -28,7 +28,7 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 	}
 	
 	# get passed value from form
-	$TEMPLATE = var_in($_POST['template']);
+	$TEMPLATE = var_out($_POST['template']);
 	if(!path_is_safe(GSTHEMESPATH.$TEMPLATE,GSTHEMESPATH)) die();
 
 	# backup old website.xml file
