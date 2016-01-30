@@ -1,7 +1,160 @@
-﻿function escape_jsdiff(c){c=c.replace(/&/g,"\x26amp;");c=c.replace(/</g,"\x26lt;");c=c.replace(/>/g,"\x26gt;");return c=c.replace(/"/g,"\x26quot;")}
-function diffString(c,b){c=c.replace(/\s+$/,"");b=b.replace(/\s+$/,"");var d=diff(""==c?[]:c.split(/\s+/),""==b?[]:b.split(/\s+/)),e="",a=c.match(/\s+/g);null==a?a=["\n"]:a.push("\n");var g=b.match(/\s+/g);null==g?g=["\n"]:g.push("\n");if(0==d.n.length)for(var f=0;f<d.o.length;f++)e+="\x3cdel\x3e"+escape_jsdiff(d.o[f])+a[f]+"\x3c/del\x3e";else{if(null==d.n[0].text)for(b=0;b<d.o.length&&null==d.o[b].text;b++)e+="\x3cdel\x3e"+escape_jsdiff(d.o[b])+a[b]+"\x3c/del\x3e";for(f=0;f<d.n.length;f++)if(null==
-d.n[f].text)e+="\x3cins\x3e"+escape_jsdiff(d.n[f])+g[f]+"\x3c/ins\x3e";else{var h="";for(b=d.n[f].row+1;b<d.o.length&&null==d.o[b].text;b++)h+="\x3cdel\x3e"+escape_jsdiff(d.o[b])+a[b]+"\x3c/del\x3e";e+=" "+d.n[f].text+g[f]+h}}return e}function randomColor(){return"rgb("+100*Math.random()+"%, "+100*Math.random()+"%, "+100*Math.random()+"%)"}
-function diffString2(c,b){c=c.replace(/\s+$/,"");b=b.replace(/\s+$/,"");var d=diff(""==c?[]:c.split(/\s+/),""==b?[]:b.split(/\s+/)),e=c.match(/\s+/g);null==e?e=["\n"]:e.push("\n");var a=b.match(/\s+/g);null==a?a=["\n"]:a.push("\n");for(var g="",f=0;f<d.o.length;f++)randomColor(),g=null!=d.o[f].text?g+(escape_jsdiff(d.o[f].text)+e[f]):g+("\x3cdel\x3e"+escape_jsdiff(d.o[f])+e[f]+"\x3c/del\x3e");e="";for(f=0;f<d.n.length;f++)e=null!=d.n[f].text?e+(escape_jsdiff(d.n[f].text)+a[f]):e+("\x3cins\x3e"+escape_jsdiff(d.n[f])+
-a[f]+"\x3c/ins\x3e");return{o:g,n:e}}
-function diff(c,b){for(var d={},e={},a=0;a<b.length;a++)null==d[b[a]]&&(d[b[a]]={rows:[],o:null}),d[b[a]].rows.push(a);for(a=0;a<c.length;a++)null==e[c[a]]&&(e[c[a]]={rows:[],n:null}),e[c[a]].rows.push(a);for(a in d)1==d[a].rows.length&&"undefined"!=typeof e[a]&&1==e[a].rows.length&&(b[d[a].rows[0]]={text:b[d[a].rows[0]],row:e[a].rows[0]},c[e[a].rows[0]]={text:c[e[a].rows[0]],row:d[a].rows[0]});for(a=0;a<b.length-1;a++)null!=b[a].text&&null==b[a+1].text&&b[a].row+1<c.length&&null==c[b[a].row+1].text&&
-b[a+1]==c[b[a].row+1]&&(b[a+1]={text:b[a+1],row:b[a].row+1},c[b[a].row+1]={text:c[b[a].row+1],row:a+1});for(a=b.length-1;0<a;a--)null!=b[a].text&&null==b[a-1].text&&0<b[a].row&&null==c[b[a].row-1].text&&b[a-1]==c[b[a].row-1]&&(b[a-1]={text:b[a-1],row:b[a].row-1},c[b[a].row-1]={text:c[b[a].row-1],row:a-1});return{o:c,n:b}};
+﻿/*
+ * Javascript Diff Algorithm
+ *  By John Resig (http://ejohn.org/)
+ *  Modified by Chu Alan "sprite"
+ *  diffstring2 random colors removed by Richard Bondi for use with jsdifflib
+ *
+ * Released under the MIT license.
+ *
+ * More Info:
+ *  http://ejohn.org/projects/javascript-diff-algorithm/
+ *
+ */
+
+function escape_jsdiff(s) {
+    var n = s;
+    n = n.replace(/&/g, "&amp;");
+    n = n.replace(/</g, "&lt;");
+    n = n.replace(/>/g, "&gt;");
+    n = n.replace(/"/g, "&quot;");
+
+    return n;
+}
+
+function diffString( o, n ) {
+  o = o.replace(/\s+$/, '');
+  n = n.replace(/\s+$/, '');
+
+  var out = diff(o == "" ? [] : o.split(/\s+/), n == "" ? [] : n.split(/\s+/) );
+  var str = "";
+
+  var oSpace = o.match(/\s+/g);
+  if (oSpace == null) {
+    oSpace = ["\n"];
+  } else {
+    oSpace.push("\n");
+  }
+  var nSpace = n.match(/\s+/g);
+  if (nSpace == null) {
+    nSpace = ["\n"];
+  } else {
+    nSpace.push("\n");
+  }
+
+  if (out.n.length == 0) {
+      for (var i = 0; i < out.o.length; i++) {
+        str += '<del>' + escape_jsdiff(out.o[i]) + oSpace[i] + "</del>";
+      }
+  } else {
+    if (out.n[0].text == null) {
+      for (n = 0; n < out.o.length && out.o[n].text == null; n++) {
+        str += '<del>' + escape_jsdiff(out.o[n]) + oSpace[n] + "</del>";
+      }
+    }
+
+    for ( var i = 0; i < out.n.length; i++ ) {
+      if (out.n[i].text == null) {
+        str += '<ins>' + escape_jsdiff(out.n[i]) + nSpace[i] + "</ins>";
+      } else {
+        var pre = "";
+
+        for (n = out.n[i].row + 1; n < out.o.length && out.o[n].text == null; n++ ) {
+          pre += '<del>' + escape_jsdiff(out.o[n]) + oSpace[n] + "</del>";
+        }
+        str += " " + out.n[i].text + nSpace[i] + pre;
+      }
+    }
+  }
+
+  return str;
+}
+
+function randomColor() {
+    return "rgb(" + (Math.random() * 100) + "%, " +
+                    (Math.random() * 100) + "%, " +
+                    (Math.random() * 100) + "%)";
+}
+function diffString2( o, n ) {
+  o = o.replace(/\s+$/, '');
+  n = n.replace(/\s+$/, '');
+
+  var out = diff(o == "" ? [] : o.split(/\s+/), n == "" ? [] : n.split(/\s+/) );
+
+  var oSpace = o.match(/\s+/g);
+  if (oSpace == null) {
+    oSpace = ["\n"];
+  } else {
+    oSpace.push("\n");
+  }
+  var nSpace = n.match(/\s+/g);
+  if (nSpace == null) {
+    nSpace = ["\n"];
+  } else {
+    nSpace.push("\n");
+  }
+
+  var os = "";
+  var colors = new Array();
+  for (var i = 0; i < out.o.length; i++) {
+      colors[i] = randomColor();
+
+      if (out.o[i].text != null) {
+          os += escape_jsdiff(out.o[i].text) + oSpace[i];
+      } else {
+          os += "<del>" + escape_jsdiff(out.o[i]) + oSpace[i] + "</del>";
+      }
+  }
+
+  var ns = "";
+  for (var i = 0; i < out.n.length; i++) {
+      if (out.n[i].text != null) {
+          ns += escape_jsdiff(out.n[i].text) + nSpace[i];
+      } else {
+          ns += "<ins>" + escape_jsdiff(out.n[i]) + nSpace[i] + "</ins>";
+      }
+  }
+
+  return { o : os , n : ns };
+}
+
+function diff( o, n ) {
+  var ns = new Object();
+  var os = new Object();
+
+  for ( var i = 0; i < n.length; i++ ) {
+    if ( ns[ n[i] ] == null )
+      ns[ n[i] ] = { rows: new Array(), o: null };
+    ns[ n[i] ].rows.push( i );
+  }
+
+  for ( var i = 0; i < o.length; i++ ) {
+    if ( os[ o[i] ] == null )
+      os[ o[i] ] = { rows: new Array(), n: null };
+    os[ o[i] ].rows.push( i );
+  }
+
+  for ( var i in ns ) {
+    if ( ns[i].rows.length == 1 && typeof(os[i]) != "undefined" && os[i].rows.length == 1 ) {
+      n[ ns[i].rows[0] ] = { text: n[ ns[i].rows[0] ], row: os[i].rows[0] };
+      o[ os[i].rows[0] ] = { text: o[ os[i].rows[0] ], row: ns[i].rows[0] };
+    }
+  }
+
+  for ( var i = 0; i < n.length - 1; i++ ) {
+    if ( n[i].text != null && n[i+1].text == null && n[i].row + 1 < o.length && o[ n[i].row + 1 ].text == null &&
+         n[i+1] == o[ n[i].row + 1 ] ) {
+      n[i+1] = { text: n[i+1], row: n[i].row + 1 };
+      o[n[i].row+1] = { text: o[n[i].row+1], row: i + 1 };
+    }
+  }
+
+  for ( var i = n.length - 1; i > 0; i-- ) {
+    if ( n[i].text != null && n[i-1].text == null && n[i].row > 0 && o[ n[i].row - 1 ].text == null &&
+         n[i-1] == o[ n[i].row - 1 ] ) {
+      n[i-1] = { text: n[i-1], row: n[i].row - 1 };
+      o[n[i].row-1] = { text: o[n[i].row-1], row: i - 1 };
+    }
+  }
+
+  return { o: o, n: n };
+}

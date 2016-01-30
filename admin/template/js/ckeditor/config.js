@@ -37,6 +37,18 @@ CKEDITOR.editorConfig = function( config )
 	config.toolbar_advanced.push(Array("About"));
 	config.toolbar_basic.push(Array("About"));
 
+
+	config.extraPlugins = 'autogrow,autosave,codemirror,codesnippet,floating-tools,markdown,showprotected,stylesheetparser,tabletools,tableresize,token';
+	// config.removePlugins = 'stylesheetparser';
+	// stylesheet-parse needs a styles plugin ?
+	// markdown is broken
+	// 
+	// ,elementspath,enterkey,entities,popup,filebrowser,find,fakeobjects,flash,,floatingspace,listblock,richcombo,font,format,forms,
+	// horizontalrule,htmlwriter,iframe,image,indent,indentblock,indentlist,justify,menubutton,
+	// language,link,list,liststyle,magicline,markdown,maximize,newpage,pagebreak,pastefromword,pastetext,preview,print,removeformat,
+	// resize,save,scayt,selectall,showblocks,showborders,,smiley,sourcearea,specialchar,stylescombo,
+	// tab,table,,,templates,,undo,wsc,wysiwygarea';
+
 };
 
 
