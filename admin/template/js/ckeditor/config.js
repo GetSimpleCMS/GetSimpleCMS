@@ -1,4 +1,4 @@
-﻿
+
 // GetSimpleCMS config file for CKeditor
 
 // default editor config
@@ -37,17 +37,29 @@ CKEDITOR.editorConfig = function( config )
 	config.toolbar_advanced.push(Array("About"));
 	config.toolbar_basic.push(Array("About"));
 
+	// config.protectedSource.push( /<\?[\s\S]*?\?>/g ); // PHP code
 
-	config.extraPlugins = 'autogrow,autosave,codemirror,codesnippet,floating-tools,markdown,showprotected,stylesheetparser,tabletools,tableresize,token';
+	var extraPlugins = new Array();
+	extraPlugins.push('autogrow');
+    extraPlugins.push('autosave');
+	extraPlugins.push('codemirror');
+	extraPlugins.push('codesnippet');
+	extraPlugins.push('floating-tools');
+	extraPlugins.push('markdown');
+	extraPlugins.push('showprotected');
+	extraPlugins.push('stylesheetparser');
+	extraPlugins.push('tabletools');
+	extraPlugins.push('tableresize');
+	extraPlugins.push('token');
+
+	config.extraPlugins = extraPlugins.join(',');
+	
 	// config.removePlugins = 'stylesheetparser';
-	// stylesheet-parse needs a styles plugin ?
-	// markdown is broken
-	// 
-	// ,elementspath,enterkey,entities,popup,filebrowser,find,fakeobjects,flash,,floatingspace,listblock,richcombo,font,format,forms,
+	// elementspath,enterkey,entities,popup,filebrowser,find,fakeobjects,flash,,floatingspace,listblock,richcombo,font,format,forms,
 	// horizontalrule,htmlwriter,iframe,image,indent,indentblock,indentlist,justify,menubutton,
 	// language,link,list,liststyle,magicline,markdown,maximize,newpage,pagebreak,pastefromword,pastetext,preview,print,removeformat,
-	// resize,save,scayt,selectall,showblocks,showborders,,smiley,sourcearea,specialchar,stylescombo,
-	// tab,table,,,templates,,undo,wsc,wysiwygarea';
+	// resize,save,scayt,selectall,showblocks,showborders,smiley,sourcearea,specialchar,stylescombo,
+	// tab,table,templates,,undo,wsc,wysiwygarea';
 
 };
 
