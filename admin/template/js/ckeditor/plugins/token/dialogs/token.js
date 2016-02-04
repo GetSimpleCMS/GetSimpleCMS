@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @fileOverview Definition for token plugin dialog.
  *
  */

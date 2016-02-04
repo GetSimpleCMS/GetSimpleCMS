@@ -12,7 +12,7 @@ function escapeRegExp(string){
 ( function() {
 	CKEDITOR.plugins.add( 'token', {
 		requires: 'widget,dialog',
-		lang: 'en',
+		lang: 'en,ru',
 		icons: 'token',
 		hidpi: true,
 
@@ -45,7 +45,7 @@ function escapeRegExp(string){
 				pathName: lang.pathName,
 				// We need to have wrapping element, otherwise there are issues in
 				// add dialog.
-				template: '<span class="cke_token">' + tokenStart + tokenEnd + '</span>',
+				template: '<span class="cke_token"></span>',
 
 				downcast: function() {
 					return new CKEDITOR.htmlParser.text( tokenStart + this.data.name + tokenEnd );
