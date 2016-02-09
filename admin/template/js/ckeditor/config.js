@@ -40,21 +40,51 @@ CKEDITOR.editorConfig = function( config )
 	// config.protectedSource.push( /<\?[\s\S]*?\?>/g ); // PHP code
 
 	var extraPlugins = new Array();
-	extraPlugins.push('autogrow');
-    extraPlugins.push('autosave');
-	extraPlugins.push('codemirror');
-	extraPlugins.push('codesnippet');
-	extraPlugins.push('floating-tools');
-	extraPlugins.push('markdown');
-	extraPlugins.push('showprotected');
-	extraPlugins.push('stylesheetparser');
-	extraPlugins.push('tabletools');
-	extraPlugins.push('tableresize');
-	extraPlugins.push('token');
+	extraPlugins.push('autogrow');         // auto grow ckeditor height on content
+    extraPlugins.push('autosave');         // autosaves to localstorage and allows restoring
+	extraPlugins.push('codemirror');       // enables codemirror code editor for source mod
+	extraPlugins.push('codesnippet');      // enables code insertion
+	extraPlugins.push('floating-tools');   // enables a floating toolbar on highlight
+	extraPlugins.push('markdown');         // enables a amrkdown editor, slightly buggy for pre and code
+	extraPlugins.push('showprotected');    // allows you to see protected source as an icon in editor
+	extraPlugins.push('stylesheetparser'); // auto parsed contents.css and populated the format combo
+	extraPlugins.push('tabletools');       // add additional tools for tables
+	extraPlugins.push('tableresize');      // add drag resizing of tables
+	extraPlugins.push('token');            // add a token insertion widget
 
 	config.extraPlugins = extraPlugins.join(',');
+
+	config.autoGrow_minHeight   = 200; 
+	config.autoGrow_maxHeight   = 600;
+	config.autoGrow_bottomSpace = 50;
+
+	// Configure tokens plugin
+	config.tokenStart = '{%';
+	config.tokenEnd = '%}';
+	config.availableTokens = [
+	    ["Sidebar", "sidebar"],
+	    ["Tagline", "tagline"],
+	];
 	
-	// config.removePlugins = 'stylesheetparser';
+	// configure codesnippet plugin
+	config.codeSnippet_theme = 'monokai_sublime';
+	config.codeSnippet_languages = {
+	    javascript: 'JavaScript',
+	    php: 'PHP',
+	    html: 'HTML',
+	    css: 'CSS',
+	    C: 'C++',
+	    json: 'JSON',
+	    sql: 'SQL',
+	    xml: 'XML'
+
+
+	};
+
+
+
+	// config.removePlugins = 'pluginid';
+	// ckeditor full plugins
 	// elementspath,enterkey,entities,popup,filebrowser,find,fakeobjects,flash,,floatingspace,listblock,richcombo,font,format,forms,
 	// horizontalrule,htmlwriter,iframe,image,indent,indentblock,indentlist,justify,menubutton,
 	// language,link,list,liststyle,magicline,markdown,maximize,newpage,pagebreak,pastefromword,pastetext,preview,print,removeformat,
