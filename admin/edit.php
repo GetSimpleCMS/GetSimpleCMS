@@ -304,6 +304,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 			if(isset($EDTOOL)) $EDTOOL = returnJsArray($EDTOOL);
 			if(isset($toolbar)) $toolbar = returnJsArray($toolbar); // handle plugins that corrupt this
 
+			else if(strpos(trim($EDTOOL),'[[')!==0 && strpos(trim($EDTOOL),'[')===0){ $EDTOOL = "[$EDTOOL]"; }
+
+			if(isset($toolbar) && strpos(trim($toolbar),'[[')!==0 && strpos($toolbar,'[')===0){ $toolbar = "[$toolbar]"; }
 			$toolbar = isset($EDTOOL) ? ",toolbar: ".trim($EDTOOL,",") : '';
 			$options = isset($EDOPTIONS) ? ','.trim($EDOPTIONS,",") : '';
 
@@ -324,7 +327,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 						contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
 					<?php } ?>
 					entities : false,
-					uiColor : '#FFFFFF',
+					// uiColor : '#FFFFFF',
 					height: '<?php echo $EDHEIGHT; ?>',
 					baseHref : '<?php echo $SITEURL; ?>',
 					tabSpaces:10,
@@ -335,12 +338,31 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 					<?php echo $toolbar; ?>
 					<?php echo $options; ?>					
 			});
+
 			CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
-				function InstanceReadyEvent() {
-					this.document.on("keyup", function () {
-							$('#editform #post-content').trigger('change');
-				  });
+
+			function InstanceReadyEvent(ev) {
+				_this = this;
+
+				this.document.on("keyup", function () {
+					$('#editform #post-content').trigger('change');
+					_this.resetDirty();
+				});
+
+			    this.timer = setInterval(function(){trackChanges(_this)},500);
+			}		
+
+			/**
+			 * keep track of changes for editor
+			 * until cke 4.2 is released with onchange event
+			 */
+			function trackChanges(editor) {
+				// console.log('check changes');
+				if ( editor.checkDirty() ) {
+					$('#editform #post-content').trigger('change');
+					editor.resetDirty();			
 				}
+			};
 
 			</script>
 			

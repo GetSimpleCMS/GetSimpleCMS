@@ -1,13 +1,29 @@
-﻿
-// GetSimpleCMS config file for CKeditor 3.6.2
+
+// GetSimpleCMS config file for CKeditor
 
 // default editor config
 CKEDITOR.editorConfig = function( config )
 {
 	// Define changes to default configuration here.
-	config.resize_dir = 'vertical' // vertical resize
-	config.toolbarCanCollapse = false; // hide toolbar collapse button
-	config.dialog_backgroundCoverColor = '#000000';
+    config.skin                        = 'getsimple';
+	
+    config.defaultLanguage             = 'en';
+	config.resize_dir                  = 'vertical'; // vertical resize
+	config.toolbarCanCollapse          = false;      // hide toolbar collapse button
+    config.forcePasteAsPlainText       = true;
+    config.tabSpaces                   = 10;    
+
+	config.dialog_backgroundCoverColor = '#000000';  // veil color for dialog popups
+    config.uiColor                     = '#FFFFFF';
+	config.magicline_color             = '#CF3805'; 
+    config.entities                    = false;    
+
+    // customize file browser popup windows below
+    // config.filebrowserWindowWidth      = '960';
+    // config.filebrowserWindowHeight     = '700';
+
+	config.allowedContent              = true;       // disable acf
+	config.disableAutoInline           = true;       // disable automatic inline editing of elements with contenteditable=true
 
 	config.toolbar_advanced = 
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
@@ -17,6 +33,76 @@ CKEDITOR.editorConfig = function( config )
 	config.toolbar_basic = 
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']];
 
+	/*
+	 * add 'about' for debug
+	 */
+	// config.toolbar_advanced.push(Array("About"));
+	// config.toolbar_basic.push(Array("About"));
+
+	/*
+	 * Protected source example
+	 */
+	// config.protectedSource.push( /<\?[\s\S]*?\?>/g ); // PHP code
+
+	var extraPlugins = new Array();
+	extraPlugins.push('autogrow');         // auto grow ckeditor height on content
+	// extraPlugins.push('autosave');         // autosaves to localstorage and allows restoring
+	// extraPlugins.push('codemirror');       // enables codemirror code editor for source mod
+	// extraPlugins.push('codesnippet');      // enables code insertion, 'CodeSnippet'
+	// extraPlugins.push('floating-tools');   // enables a floating toolbar on highlight
+	// extraPlugins.push('markdown');         // enables a amrkdown editor, slightly buggy for pre and code, 'Markdown'
+	// extraPlugins.push('showprotected');    // allows you to see protected source as an icon in editor
+	// extraPlugins.push('stylesheetparser'); // auto parsed contents.css and populated the format combo
+	// extraPlugins.push('tabletools');       // add additional tools for tables
+	// extraPlugins.push('tableresize');      // add drag resizing of tables
+	// extraPlugins.push('token');            // add a token insertion widget, 'CreateToken'
+
+	config.extraPlugins = extraPlugins.join(',');
+
+	/*
+	 * Configure autoGrow plugin
+	 */
+	// config.autoGrow_minHeight   = 200; 
+	// config.autoGrow_maxHeight   = 600;
+	// config.autoGrow_bottomSpace = 50;
+
+	/*
+	 * Configure tokens plugin
+	 */
+	// config.tokenStart = '{%';
+	// config.tokenEnd = '%}';
+	// config.availableTokens = [
+	//     ["Sidebar", "sidebar"],
+	//     ["Tagline", "tagline"],
+	// ];
+	
+	/*
+	 * configure codesnippet plugin
+	 */
+	// config.codeSnippet_theme = 'monokai_sublime';
+	// config.codeSnippet_languages = {
+	//     javascript: 'JavaScript',
+	//     php: 'PHP',
+	//     html: 'HTML',
+	//     css: 'CSS',
+	//     C: 'C++',
+	//     json: 'JSON',
+	//     sql: 'SQL',
+	//     xml: 'XML'
+	// };
+
+	/*
+	 * Remove plugin example
+	 */
+	// config.removePlugins = 'pluginid';
+	
+	/* ckeditor full package included plugins
+	 * elementspath,enterkey,entities,popup,filebrowser,find,fakeobjects,flash,,floatingspace,listblock,richcombo,
+	 * font,format,forms,horizontalrule,htmlwriter,iframe,image,indent,indentblock,indentlist,justify,menubutton,
+	 * language,link,list,liststyle,magicline,markdown,maximize,newpage,pagebreak,pastefromword,pastetext,preview,
+	 * print,removeformat,resize,save,scayt,selectall,showblocks,showborders,smiley,sourcearea,specialchar,stylescombo,
+	 * tab,table,templates,,undo,wsc,wysiwygarea';
+	*/
 };
 
 

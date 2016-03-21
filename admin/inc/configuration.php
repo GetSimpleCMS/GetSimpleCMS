@@ -27,7 +27,7 @@ $api_url            = 'http://get-simple.info/api/start/v3.php';
 
 if (isset($_GET['redirect'])){
 	$cookie_redirect = $_GET['redirect'];
-} else {
+} else {	
 	$cookie_redirect = 'pages.php';
 }
 

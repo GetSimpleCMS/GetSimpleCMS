@@ -142,7 +142,7 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 			contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
 			<?php } ?>
 			entities : false,
-			uiColor : '#FFFFFF',
+			// uiColor : '#FFFFFF',
 			height: '<?php echo $EDHEIGHT; ?>',
 			baseHref : '<?php echo $SITEURL; ?>',
 			toolbar : [['Source']],
