@@ -42,21 +42,11 @@ CKEDITOR.editorConfig = function( config )
 	/*
 	 * Protected source example
 	 */
-	// config.protectedSource.push( /<\?[\s\S]*?\?>/g ); // PHP code
+	// config.protectedSource.push( /<\?[\s\S]*?\?>/g ); // PHP code, greedy
 
 	var extraPlugins = new Array();
 	extraPlugins.push('autogrow');         // auto grow ckeditor height on content
-	// extraPlugins.push('autosave');         // autosaves to localstorage and allows restoring
-	// extraPlugins.push('codemirror');       // enables codemirror code editor for source mod
-	// extraPlugins.push('codesnippet');      // enables code insertion, 'CodeSnippet'
-	// extraPlugins.push('floating-tools');   // enables a floating toolbar on highlight
-	// extraPlugins.push('markdown');         // enables a amrkdown editor, slightly buggy for pre and code, 'Markdown'
-	// extraPlugins.push('showprotected');    // allows you to see protected source as an icon in editor
-	// extraPlugins.push('stylesheetparser'); // auto parsed contents.css and populated the format combo
-	// extraPlugins.push('tabletools');       // add additional tools for tables
-	// extraPlugins.push('tableresize');      // add drag resizing of tables
-	// extraPlugins.push('token');            // add a token insertion widget, 'CreateToken'
-
+	extraPlugins.push('codesnippet');      // enables code insertion, 'CodeSnippet'
 	config.extraPlugins = extraPlugins.join(',');
 
 	/*
@@ -66,16 +56,6 @@ CKEDITOR.editorConfig = function( config )
 	// config.autoGrow_maxHeight   = 600;
 	// config.autoGrow_bottomSpace = 50;
 
-	/*
-	 * Configure tokens plugin
-	 */
-	// config.tokenStart = '{%';
-	// config.tokenEnd = '%}';
-	// config.availableTokens = [
-	//     ["Sidebar", "sidebar"],
-	//     ["Tagline", "tagline"],
-	// ];
-	
 	/*
 	 * configure codesnippet plugin
 	 */
