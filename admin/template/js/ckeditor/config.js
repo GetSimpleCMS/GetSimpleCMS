@@ -28,7 +28,7 @@ CKEDITOR.editorConfig = function( config )
 	config.toolbar_advanced = 
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
 		'/',
-		['Styles','Format','Font','FontSize']];	
+		['Styles','Format','Font','FontSize','CodeSnippet']];	
 
 	config.toolbar_basic = 
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']];
@@ -54,17 +54,17 @@ CKEDITOR.editorConfig = function( config )
 	/*
 	 * configure codesnippet plugin
 	 */
-	// config.codeSnippet_theme = 'monokai_sublime';
-	// config.codeSnippet_languages = {
-	//     javascript: 'JavaScript',
-	//     php: 'PHP',
-	//     html: 'HTML',
-	//     css: 'CSS',
-	//     C: 'C++',
-	//     json: 'JSON',
-	//     sql: 'SQL',
-	//     xml: 'XML'
-	// };
+	config.codeSnippet_theme = 'monokai_sublime';
+	config.codeSnippet_languages = {
+	    javascript: 'JavaScript',
+	    php: 'PHP',
+	    html: 'HTML',
+	    css: 'CSS',
+	    C: 'C++',
+	    json: 'JSON',
+	    sql: 'SQL',
+	    xml: 'XML'
+	};
 
 	/*
 	 * Remove plugin example
