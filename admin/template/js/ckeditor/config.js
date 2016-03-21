@@ -5,25 +5,25 @@
 CKEDITOR.editorConfig = function( config )
 {
 	// Define changes to default configuration here.
-    config.skin                        = 'getsimple';
+	config.skin                        = 'getsimple';
 	
-    config.defaultLanguage             = 'en';
+	config.defaultLanguage             = 'en';
 	config.resize_dir                  = 'vertical'; // vertical resize
 	config.toolbarCanCollapse          = false;      // hide toolbar collapse button
-    config.forcePasteAsPlainText       = true;
-    config.tabSpaces                   = 10;    
+	config.forcePasteAsPlainText       = true;
+	config.tabSpaces                   = 10;    
 
 	config.dialog_backgroundCoverColor = '#000000';  // veil color for dialog popups
-    config.uiColor                     = '#FFFFFF';
+	config.uiColor                     = '#FFFFFF';
 	config.magicline_color             = '#CF3805'; 
-    config.entities                    = false;    
-
-    // customize file browser popup windows below
-    // config.filebrowserWindowWidth      = '960';
-    // config.filebrowserWindowHeight     = '700';
+	config.entities                    = false;    
 
 	config.allowedContent              = true;       // disable acf
 	config.disableAutoInline           = true;       // disable automatic inline editing of elements with contenteditable=true
+	
+	// customize file browser popup windows below
+	// config.filebrowserWindowWidth      = '960';
+	// config.filebrowserWindowHeight     = '700';
 
 	config.toolbar_advanced = 
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
@@ -38,11 +38,6 @@ CKEDITOR.editorConfig = function( config )
 	 */
 	// config.toolbar_advanced.push(Array("About"));
 	// config.toolbar_basic.push(Array("About"));
-
-	/*
-	 * Protected source example
-	 */
-	// config.protectedSource.push( /<\?[\s\S]*?\?>/g ); // PHP code, greedy
 
 	var extraPlugins = new Array();
 	extraPlugins.push('autogrow');         // auto grow ckeditor height on content
@@ -272,8 +267,8 @@ var getById = CKEgetById; // alias for legacy
 // Fix for IE onbeforeunload bubbling up from dialogs
 CKEDITOR.on('instanceReady', function(event) {
   event.editor.on('dialogShow', function(dialogShowEvent) {
-    if(CKEDITOR.env.ie) {
-      $(dialogShowEvent.data._.element.$).find('a[href*="void(0)"]').removeAttr('href');
-    }
+	if(CKEDITOR.env.ie) {
+	  $(dialogShowEvent.data._.element.$).find('a[href*="void(0)"]').removeAttr('href');
+	}
   });
 });
