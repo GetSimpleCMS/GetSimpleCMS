@@ -26,17 +26,11 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 	# backup old GSWEBSITEFILE (website.xml) file
 	backup_datafile(GSDATAOTHERPATH.GSWEBSITEFILE);
 	
-	# udpate GSWEBSITEFILE (website.xml) file with new theme
-	$xml  = new SimpleXMLExtended('<item></item>');
-	$note = $xml->addChild('SITENAME');
-	$note->addCData($SITENAME);
-	$note = $xml->addChild('SITEURL');
-	$note->addCData($SITEURL);
-	$note = $xml->addChild('TEMPLATE');
-	$note->addCData($newTemplate);
-	$xml->addChild('PRETTYURLS', $PRETTYURLS);
-	$xml->addChild('PERMALINK', $PERMALINK);
-	XMLsave($xml, GSDATAOTHERPATH . GSWEBSITEFILE);
+    # udpate GSWEBSITEFILE (website.xml) file with new theme
+	$xml = getXML($path . $file);
+	$xml->TEMPLATE = null;
+	$xml->TEMPLATE->addCData($TEMPLATE);
+	$status = XMLsave($xml, $path . $file);
 	
 	$success = i18n_r('THEME_CHANGED');
 
