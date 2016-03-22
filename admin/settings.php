@@ -116,12 +116,12 @@ if(isset($_POST['submitted'])) {
 	# check to see if passwords are changing
 	if(isset($_POST['sitepwd'])) { $pwd1 = $_POST['sitepwd']; }
 	if(isset($_POST['sitepwd_confirm'])) { $pwd2 = $_POST['sitepwd_confirm']; }
-	if ($pwd1 != $pwd2)	{
+	if ($pwd1 != $pwd2 && $pwd2 != '')	{
 		#passwords do not match 
 		$error = i18n_r('PASSWORD_NO_MATCH');
 	} else {
 		# password cannot be null
-		if ( $pwd1 != '' ) { 
+		if ( $pwd1 != '' && $pwd2 != '') { 
 			$PASSWD = passhash($pwd1); 
 		}	
 		
