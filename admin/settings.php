@@ -131,7 +131,7 @@ if(isset($_POST['submitted'])) {
 		# create user xml file
 		createBak($file, GSUSERSPATH, GSBACKUSERSPATH);
 		if (file_exists(GSUSERSPATH . _id($USR).'.xml.reset')) { unlink(GSUSERSPATH . _id($USR).'.xml.reset'); }	
-		$xml = new SimpleXMLElement('<item></item>');
+		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');		
 		$xml->addChild('USR', $USR);
 		$xml->addChild('NAME', var_out($NAME));
 		$xml->addChild('PWD', $PASSWD);
@@ -148,7 +148,7 @@ if(isset($_POST['submitted'])) {
 		
 		# create website xml file
 		createBak($wfile, GSDATAOTHERPATH, GSBACKUPSPATH.'other/');
-		$xmls = new SimpleXMLExtended('<item></item>');
+		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
 		$note = $xmls->addChild('SITENAME');
 		$note->addCData($SITENAME);
 		$note = $xmls->addChild('SITEURL');
