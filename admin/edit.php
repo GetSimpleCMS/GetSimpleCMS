@@ -315,7 +315,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 
 			<script type="text/javascript">
-			
+			CKEDITOR.timestamp = '<?php get_gs_version(); ?>';
 			var editor = CKEDITOR.replace( 'post-content', {
 					skin : 'getsimple',
 					forcePasteAsPlainText : true,

@@ -132,6 +132,7 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 		<?php if ($HTMLEDITOR != '') { ?>
 		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
 		<script type="text/javascript">
+		CKEDITOR.timestamp = '<?php get_gs_version(); ?>';		
 		var editor = CKEDITOR.replace( 'codetext', {
 			skin : 'getsimple',
 			language : '<?php echo $EDLANG; ?>',
