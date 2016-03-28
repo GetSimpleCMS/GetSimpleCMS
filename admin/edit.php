@@ -312,10 +312,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 
 		?>
 		<?php if ($HTMLEDITOR != '') { ?>
-		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
+		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js?t=<?php echo get_gs_version(); ?>"></script>
 
 			<script type="text/javascript">
-			
+			CKEDITOR.timestamp = '<?php echo get_gs_version(); ?>';
 			var editor = CKEDITOR.replace( 'post-content', {
 					skin : 'getsimple',
 					forcePasteAsPlainText : true,
