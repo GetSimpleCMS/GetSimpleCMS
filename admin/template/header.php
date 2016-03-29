@@ -90,6 +90,12 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 </head>
 
 <body <?php filename_id(); echo ' '.$bodyclass; ?> >	
+	<?php 
+	// ckeditor skin caching force update
+	if(isset($_GET['updated'])) { 
+		echo '<img style="display:none;" src="template/js/ckeditor/skins/getsimple/icons.png?t='.get_gs_version().'">';
+	}
+	?>
 	<div class="header" id="header" >
 		<div class="wrapper clearfix">
  <?php exec_action('header-body'); ?>
