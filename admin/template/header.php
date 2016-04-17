@@ -84,7 +84,9 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 		GS.i18n = new Array();
 		GS.i18n['PLUGIN_UPDATED'] = '<?php i18n("PLUGIN_UPDATED"); ?>';
 		GS.i18n['ERROR'] = '<?php i18n("ERROR"); ?>';
-
+		<?php if(isset($_GET['updated'])) { ?>
+			$.ajax({url: "template/js/ckeditor/skins/getsimple/icons.png", success: null, cache: false});
+		<?php } ?>	
 	</script>
 
 </head>
@@ -93,7 +95,7 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 	<?php 
 	// ckeditor skin caching force update
 	if(isset($_GET['updated'])) { 
-		echo '<img style="display:none;" src="template/js/ckeditor/skins/getsimple/icons.png?t='.get_gs_version().'">';
+		// echo '<img style="display:none;" src="template/js/ckeditor/skins/getsimple/icons.png?t='.get_gs_version().'">';
 	}
 	?>
 	<div class="header" id="header" >
