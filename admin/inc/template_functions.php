@@ -396,7 +396,7 @@ function pingGoogleSitemaps($url_xml) {
 function undo($file, $filepath, $bakpath) {
 	$undo_file = $filepath . $file;
 	$bak_file  = tsl($bakpath) . $file .".bak";
-	$tmp_file  = tsl($bakpath) . $file .".tmp";
+	$tmp_file = tsl($bakpath) . $file .".tmp";
 	copy($undo_file, $tmp_file); // rename original to temp shuttle
 	copy($bak_file, $undo_file); // copy backup
 	copy($tmp_file, $bak_file);  // save original as backup
@@ -612,21 +612,21 @@ function get_available_pages() {
       $count = 0;
       foreach ($pagesSorted as $page) {
       	if ($page['private']!='Y'){
-	        $text = (string)$page['menu'];
-	        $pri = (string)$page['menuOrder'];
-	        $parent = (string)$page['parent'];
-	        $title = (string)$page['title'];
-	        $slug = (string)$page['url'];
-	        $menuStatus = (string)$page['menuStatus'];
-	        $private = (string)$page['private'];
-					$pubDate = (string)$page['pubDate'];
-	        
-	        $url = find_url($slug,$parent);
-	        
-	        $specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
-	        
-	        $extract[] = $specific;
-		}
+        $text = (string)$page['menu'];
+        $pri = (string)$page['menuOrder'];
+        $parent = (string)$page['parent'];
+        $title = (string)$page['title'];
+        $slug = (string)$page['url'];
+        $menuStatus = (string)$page['menuStatus'];
+        $private = (string)$page['private'];
+				$pubDate = (string)$page['pubDate'];
+        
+        $url = find_url($slug,$parent);
+        
+        $specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
+        
+        $extract[] = $specific;
+      } 
       } 
       return $extract;
     }
@@ -645,12 +645,12 @@ function get_available_pages() {
 function updateSlugs($existingUrl, $newurl=null){
 	global $pagesArray;
 	getPagesXmlValues();
-	  
-	if (!$newurl){
-      		global $url;
-      	} else {
-      		$url = $newurl;
-      	}
+      
+      if (!$newurl){
+      	global $url;
+      } else {
+      	$url = $newurl;
+      }
 
 	foreach ($pagesArray as $page){
 		if ( $page['parent'] == $existingUrl ){
@@ -658,11 +658,11 @@ function updateSlugs($existingUrl, $newurl=null){
         		$data = simplexml_load_string($thisfile);
             		$data->parent=$url;
             		XMLsave($data, GSDATAPAGESPATH.$page['filename']);
-		}
-	  }
+        }
+      }
 }
 
-
+          
 /**
  * Get Link Menu Array
  * 
@@ -698,17 +698,17 @@ function get_link_menu_array($parent='', $array=array(), $level=0) {
 			for ($i=0;$i<=$level-1;$i++){
 				if ($i!=$level-1){
 	  				$dash .= utf8_encode("\xA0\xA0"); // outer level
-				} else {
+          } else {
 					$dash .= '- '; // inner level
-				}
-			} 
+            }   
+          } 
 			array_push($array, array( $dash . $page['title'], find_url($page['url'], $page['parent'])));
 			// recurse submenus
 			$array=get_link_menu_array((string)$page['url'], $array,$level+1);	 
-		}
-	}
+        }
+      }
 	return $array;
-}
+} 
 
 /**
  * List Pages Json
@@ -725,7 +725,7 @@ function get_link_menu_array($parent='', $array=array(), $level=0) {
  *
  * @returns array
  */
-function list_pages_json(){	
+function list_pages_json() {
 	GLOBAL $pagesArray,$pagesSorted;
 
 	$pagesArray_tmp = array();
@@ -734,18 +734,18 @@ function list_pages_json(){
 		if ($page['parent'] != '') { 
 			$parentTitle = returnPageField($page['parent'], "title");
 			$sort = $parentTitle .' '. $page['title'];		
-		} else {
+			} else {
 			$sort = $page['title'];
-		}
+			}
 		$page = array_merge($page, array('sort' => $sort));
 		$pagesArray_tmp[$count] = $page;
-		$count++;
-	}
+			$count++;
+			}
 	$pagesSorted = subval_sort($pagesArray_tmp,'sort');
 
 	$links = exec_filter('editorlinks',get_link_menu_array());
 	return json_encode($links);
-}
+		}
 
 /**
  * @deprecated since 3.3.0
@@ -908,7 +908,7 @@ function get_api_details($type='core', $args=null, $cached = false) {
 		$fetch_this_api = $apiurl.$args;
 	}
 	else if ($type=='custom' && $args) {
-		# custom api details. requires a passed url
+	# custom api details. requires a passed url
 		$fetch_this_api = $args;
 	} else return;
 	
@@ -924,7 +924,7 @@ function get_api_details($type='core', $args=null, $cached = false) {
 	# check to see if cache is available for this
 	$cachefile = md5($fetch_this_api).'.txt';
 	$cacheExpire = 39600; // 11 minutes
-	
+
 	if(!$nocache || $cached) debug_api_details('cache file check - ' . $fetch_this_api.' ' .$cachefile);
 	else debug_api_details('cache check: disabled');
 
@@ -1070,7 +1070,7 @@ function get_gs_version() {
  * Creates sitemap.xml in the site's root.
  */
 function generate_sitemap() {
-
+	
 	if(getDef('GSNOSITEMAP',true)) return;
 
 	// Variable settings
@@ -1088,36 +1088,36 @@ function generate_sitemap() {
 		$xml->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 		
 		foreach ($pagesSorted as $page)
-		{
+		{	
 			if ($page['url'] != '404')
 			{		
-				if ($page['private'] != 'Y')
-				{
-					// set <loc>
-					$pageLoc = find_url($page['url'], $page['parent']);
-					
-					// set <lastmod>
+			if ($page['private'] != 'Y')
+			{
+				// set <loc>
+				$pageLoc = find_url($page['url'], $page['parent']);
+				
+				// set <lastmod>
 					$tmpDate = date("Y-m-d H:i:s", strtotime($page['pubDate']));
-					$pageLastMod = makeIso8601TimeStamp($tmpDate);
-					
-					// set <changefreq>
-					$pageChangeFreq = 'weekly';
-					
-					// set <priority>
-					if ($page['menuStatus'] == 'Y') {
-						$pagePriority = '1.0';
-					} else {
-						$pagePriority = '0.5';
-					}
-					
-					//add to sitemap
-					$url_item = $xml->addChild('url');
-					$url_item->addChild('loc', $pageLoc);
-					$url_item->addChild('lastmod', $pageLastMod);
-					$url_item->addChild('changefreq', $pageChangeFreq);
-					$url_item->addChild('priority', $pagePriority);
+				$pageLastMod = makeIso8601TimeStamp($tmpDate);
+				
+				// set <changefreq>
+				$pageChangeFreq = 'weekly';
+				
+				// set <priority>
+				if ($page['menuStatus'] == 'Y') {
+					$pagePriority = '1.0';
+				} else {
+					$pagePriority = '0.5';
 				}
+				
+				//add to sitemap
+				$url_item = $xml->addChild('url');
+				$url_item->addChild('loc', $pageLoc);
+				$url_item->addChild('lastmod', $pageLastMod);
+				$url_item->addChild('changefreq', $pageChangeFreq);
+				$url_item->addChild('priority', $pagePriority);
 			}
+		}
 		}
 		
 		//create xml file

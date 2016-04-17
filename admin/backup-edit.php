@@ -130,8 +130,9 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 		</div>
 		
 		<?php if ($HTMLEDITOR != '') { ?>
-		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
+		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js?t=<?php echo get_gs_version(); ?>"></script>
 		<script type="text/javascript">
+		CKEDITOR.timestamp = '<?php echo get_gs_version(); ?>';		
 		var editor = CKEDITOR.replace( 'codetext', {
 			skin : 'getsimple',
 			language : '<?php echo $EDLANG; ?>',
@@ -142,7 +143,7 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 			contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
 			<?php } ?>
 			entities : false,
-			uiColor : '#FFFFFF',
+			// uiColor : '#FFFFFF',
 			height: '<?php echo $EDHEIGHT; ?>',
 			baseHref : '<?php echo $SITEURL; ?>',
 			toolbar : [['Source']],

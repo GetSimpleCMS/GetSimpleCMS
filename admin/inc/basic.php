@@ -315,7 +315,7 @@ function XMLsave($xml, $file) {
 	$success = file_put_contents($file, $data); // LOCK_EX ?
 	
 	// debugLog('XMLsave: ' . $file . ' ' . get_execution_time());	
-	
+	if(getDef('GSDOCHMOD') === false) return $success;
 	if (defined('GSCHMOD')) {
 		return $success && chmod($file, GSCHMOD);
 	} else {
