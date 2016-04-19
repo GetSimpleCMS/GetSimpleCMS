@@ -104,6 +104,8 @@ CKEDITOR.on( 'instanceReady', function( ev ) {
 	for (var i=0; i<blockTags.length; i++) {
 		ev.editor.dataProcessor.writer.setRules( blockTags[i], rules );
 	}
+
+    // ev.editor.dataProcessor.writer.selfClosingEnd = '>'; // self closing defautls to />
 }); 
 
 // Disable some dialog fields we do not need

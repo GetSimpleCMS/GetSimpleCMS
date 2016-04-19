@@ -130,9 +130,9 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 		</div>
 		
 		<?php if ($HTMLEDITOR != '') { ?>
-		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js?t=<?php echo get_gs_version(); ?>"></script>
+		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js<?php echo getDef("GSCKETSTAMP",true) ? "?t=".getDef("GSCKETSTAMP") : ""; ?>"></script>
 		<script type="text/javascript">
-		CKEDITOR.timestamp = '<?php echo get_gs_version(); ?>';		
+		<?php if(getDef("GSCKETSTAMP",true)) echo "CKEDITOR.timestamp = '".getDef("GSCKETSTAMP") . "';\n"; ?>
 		var editor = CKEDITOR.replace( 'codetext', {
 			skin : 'getsimple',
 			language : '<?php echo $EDLANG; ?>',
