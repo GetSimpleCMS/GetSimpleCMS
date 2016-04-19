@@ -11,7 +11,7 @@
 &lt;h2&gt;Header 2&lt;/h2&gt;
 &lt;p&gt;Lorem ipsum &lt;em&gt;dolor sit amet&lt;/em&gt;, &lt;strong&gt;consectetur adipiscing elit&lt;/strong&gt;. Donec &lt;code&gt;this is code&lt;/code&gt; venenatis augue. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Integer vulputate pretium augue.&lt;/p&gt;
 &lt;h3&gt;Header 3&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;#header h1 a { 
+&lt;pre&gt;&lt;code class=&quot;language-css&quot;&gt;#header h1 a { 
 	display: block; 
 	width: 300px; 
 	height: 80px; 

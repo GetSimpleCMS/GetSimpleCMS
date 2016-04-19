@@ -1,22 +1,83 @@
-﻿
-// GetSimpleCMS config file for CKeditor 3.6.2
+
+// GetSimpleCMS config file for CKeditor
 
 // default editor config
 CKEDITOR.editorConfig = function( config )
 {
 	// Define changes to default configuration here.
-	config.resize_dir = 'vertical' // vertical resize
-	config.toolbarCanCollapse = false; // hide toolbar collapse button
-	config.dialog_backgroundCoverColor = '#000000';
+	config.skin                        = 'getsimple';
+	
+	config.defaultLanguage             = 'en';
+	config.resize_dir                  = 'vertical'; // vertical resize
+	config.toolbarCanCollapse          = false;      // hide toolbar collapse button
+	config.forcePasteAsPlainText       = true;
+	config.tabSpaces                   = 10;    
+
+	config.dialog_backgroundCoverColor = '#000000';  // veil color for dialog popups
+	config.uiColor                     = '#FFFFFF';
+	config.magicline_color             = '#CF3805'; 
+	config.entities                    = false;    
+
+	config.allowedContent              = true;       // disable acf
+	config.disableAutoInline           = true;       // disable automatic inline editing of elements with contenteditable=true
+	
+	// customize file browser popup windows below
+	// config.filebrowserWindowWidth      = '960';
+	// config.filebrowserWindowHeight     = '700';
 
 	config.toolbar_advanced = 
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Table', 'TextColor', 'BGColor', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source'],
 		'/',
-		['Styles','Format','Font','FontSize']];	
+		['Styles','Format','Font','FontSize','CodeSnippet']];	
 
 	config.toolbar_basic = 
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']];
 
+	/*
+	 * add 'about' for debug
+	 */
+	// config.toolbar_advanced.push(Array("About"));
+	// config.toolbar_basic.push(Array("About"));
+
+	var extraPlugins = new Array();
+	extraPlugins.push('autogrow');         // auto grow ckeditor height on content
+	extraPlugins.push('codesnippet');      // enables code insertion, 'CodeSnippet'
+	config.extraPlugins = extraPlugins.join(',');
+
+	/*
+	 * Configure autoGrow plugin
+	 */
+	// config.autoGrow_minHeight   = 200; 
+	// config.autoGrow_maxHeight   = 600;
+	// config.autoGrow_bottomSpace = 50;
+
+	/*
+	 * configure codesnippet plugin
+	 */
+	config.codeSnippet_theme = 'monokai_sublime';
+	config.codeSnippet_languages = {
+	    javascript: 'JavaScript',
+	    php: 'PHP',
+	    html: 'HTML',
+	    css: 'CSS',
+	    C: 'C++',
+	    json: 'JSON',
+	    sql: 'SQL',
+	    xml: 'XML'
+	};
+
+	/*
+	 * Remove plugin example
+	 */
+	// config.removePlugins = 'pluginid';
+	
+	/* ckeditor full package included plugins
+	 * elementspath,enterkey,entities,popup,filebrowser,find,fakeobjects,flash,,floatingspace,listblock,richcombo,
+	 * font,format,forms,horizontalrule,htmlwriter,iframe,image,indent,indentblock,indentlist,justify,menubutton,
+	 * language,link,list,liststyle,magicline,markdown,maximize,newpage,pagebreak,pastefromword,pastetext,preview,
+	 * print,removeformat,resize,save,scayt,selectall,showblocks,showborders,smiley,sourcearea,specialchar,stylescombo,
+	 * tab,table,templates,,undo,wsc,wysiwygarea';
+	*/
 };
 
 
@@ -43,6 +104,8 @@ CKEDITOR.on( 'instanceReady', function( ev ) {
 	for (var i=0; i<blockTags.length; i++) {
 		ev.editor.dataProcessor.writer.setRules( blockTags[i], rules );
 	}
+
+    // ev.editor.dataProcessor.writer.selfClosingEnd = '>'; // self closing defautls to />
 }); 
 
 // Disable some dialog fields we do not need
@@ -206,8 +269,8 @@ var getById = CKEgetById; // alias for legacy
 // Fix for IE onbeforeunload bubbling up from dialogs
 CKEDITOR.on('instanceReady', function(event) {
   event.editor.on('dialogShow', function(dialogShowEvent) {
-    if(CKEDITOR.env.ie) {
-      $(dialogShowEvent.data._.element.$).find('a[href*="void(0)"]').removeAttr('href');
-    }
+	if(CKEDITOR.env.ie) {
+	  $(dialogShowEvent.data._.element.$).find('a[href*="void(0)"]').removeAttr('href');
+	}
   });
 });

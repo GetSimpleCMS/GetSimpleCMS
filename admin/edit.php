@@ -312,10 +312,10 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 
 		?>
 		<?php if ($HTMLEDITOR != '') { ?>
-		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
+		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js<?php echo getDef("GSCKETSTAMP",true) ? "?t=".getDef("GSCKETSTAMP") : ""; ?>"></script>
 
 			<script type="text/javascript">
-			
+			<?php if(getDef("GSCKETSTAMP",true)) echo "CKEDITOR.timestamp = '".getDef("GSCKETSTAMP") . "';\n"; ?>
 			var editor = CKEDITOR.replace( 'post-content', {
 					skin : 'getsimple',
 					forcePasteAsPlainText : true,
@@ -327,7 +327,7 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 						contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
 					<?php } ?>
 					entities : false,
-					uiColor : '#FFFFFF',
+					// uiColor : '#FFFFFF',
 					height: '<?php echo $EDHEIGHT; ?>',
 					baseHref : '<?php echo $SITEURL; ?>',
 					tabSpaces:10,
@@ -338,12 +338,31 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('EDIT').' '.$title);
 					<?php echo $toolbar; ?>
 					<?php echo $options; ?>					
 			});
+
 			CKEDITOR.instances["post-content"].on("instanceReady", InstanceReadyEvent);
-				function InstanceReadyEvent() {
-					this.document.on("keyup", function () {
-							$('#editform #post-content').trigger('change');
-				  });
+
+			function InstanceReadyEvent(ev) {
+				_this = this;
+
+				this.document.on("keyup", function () {
+					$('#editform #post-content').trigger('change');
+					_this.resetDirty();
+				});
+
+			    this.timer = setInterval(function(){trackChanges(_this)},500);
+			}		
+
+			/**
+			 * keep track of changes for editor
+			 * until cke 4.2 is released with onchange event
+			 */
+			function trackChanges(editor) {
+				// console.log('check changes');
+				if ( editor.checkDirty() ) {
+					$('#editform #post-content').trigger('change');
+					editor.resetDirty();			
 				}
+			};
 
 			</script>
 			

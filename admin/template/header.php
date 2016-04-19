@@ -84,7 +84,6 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 		GS.i18n = new Array();
 		GS.i18n['PLUGIN_UPDATED'] = '<?php i18n("PLUGIN_UPDATED"); ?>';
 		GS.i18n['ERROR'] = '<?php i18n("ERROR"); ?>';
-
 	</script>
 
 </head>
