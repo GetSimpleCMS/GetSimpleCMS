@@ -90,6 +90,10 @@ if(!is_frontend()){
 	}
 }
 
+// definition defaults
+
+if(!defined('GSUPLOADSLC'))	define('GSUPLOADSLC',true);
+
 if(!defined('GSNOFRAME')) define('GSNOFRAME',true);
 if(!defined('GSNOFRAMEDEFAULT')) define('GSNOFRAMEDEFAULT','SAMEORIGIN');
 
