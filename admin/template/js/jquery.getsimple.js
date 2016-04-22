@@ -567,7 +567,7 @@ jQuery(document).ready(function () {
 		var elem = $('body.sbfixed #sidebar');
 
 		if(!jQuery().scrollToFixed || !elem[0]){
-			Debugger.log("sbfixed not enabled or scrolltofixed not loaded");
+			// Debugger.log("sbfixed not enabled or scrolltofixed not loaded");
 			return;
 		}
 
