@@ -637,7 +637,7 @@ if($SAFEMODE){
 	if(isset($_REQUEST['safemodeoff']) && is_logged_in()){
 		disableSafeMode();
 		redirect(myself(false));
-	} 
+	}
 	else {
 		$SAFEMODE = true;
 		debugLog("SAFEMODE ON");
