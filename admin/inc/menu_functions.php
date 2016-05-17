@@ -54,8 +54,8 @@ define('GSMENUMGRFILTERCALLOUT','mmCalloutFilter'); // menu manager filter callo
 define('GSMENUPAGESCALLOUT','pagesTreeCallout'); // pages tree tree callout
 define('GSMENUPAGESFILTERCALLOUT','pagesTreeFilter'); // pages tree filter callout
 
-// define('GSMENUFILTERDEBUG',true);
-
+// define('GSMENUFILTERDEBUG',true); // show filtered items in output
+define('GSMENUFILTERLOG',false); // show filtered items in debug log
 
 // SETTINGS
 define('GSMENUSAVENEST',true); // save nested arrays in menu files, they will be rebuilt on read if false, with `data` references to flat
@@ -517,7 +517,7 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
         // do filtering
         $filterRes = callIfCallable($filter,$child,$level,$index,$order,$args); // get filter result
         if($filterRes){
-            debugLog(__FUNCTION__ . ' filtered: (' . $filterRes . ') ' . $child['id'] . ' + ' . $child['data']['numchildren']);
+            if(getDef('GSMENUFILTERLOG')) debugLog(__FUNCTION__ . ' filtered: (' . $filterRes . ') ' . $child['id'] . ' + ' . $child['data']['numchildren']);
             
             // filter skip, children skipped also, default
             if($filterRes === true || $filterRes === GSMENUFILTERSKIP){
