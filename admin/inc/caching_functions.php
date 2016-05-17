@@ -242,6 +242,8 @@ function init_pageCache($refresh = false, $force = false) {
 	// if not force, check pagecachediff, *pagecachediffers requires pagecache to be loaded first
 	$refresh = $force || ($refresh && pageCacheDiffers());
 
+	debugLog("page cache: loaded");
+
 	if(!$refresh) return; // pagecache loaded ok
 
 	// regenerate from files if force, empty, or refresh request

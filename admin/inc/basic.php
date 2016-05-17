@@ -432,12 +432,33 @@ function get_execution_time($reset=false)
 	GLOBAL $microtime_start;
 		if($reset) $microtime_start = null;
 		
-		if($microtime_start === null)
-		{
-				$microtime_start = microtime(true);
-				return 0.0; 
-		}    
-		return round(microtime(true) - $microtime_start,5); 
+	if($microtime_start === null)
+	{
+		$microtime_start = microtime(true);
+		return 0.0;
+	}
+	// return (microtime(true) - $microtime_start);
+	$microtime_last = microtime(true);
+	return round($microtime_last - $microtime_start,3); 
+}
+
+
+/**
+ * execution timer
+ * 
+ * @since 3.2
+ * @uses $microtime_start
+ * 
+ * @param bool $reset resets global to timestamp
+ * @return 
+ */
+function get_execution_duration($reset=true){
+	GLOBAL $microtime_last,$microtime_start;
+	if($microtime_start === null) $microtime_last = $microtime_start;	
+	$microtime = microtime(true);
+	$ret = round($microtime - $microtime_last,3); 
+	if($reset) $microtime_last = $microtime;
+	return $ret;
 }
 
 /**
