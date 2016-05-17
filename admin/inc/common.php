@@ -599,11 +599,12 @@ include_once(GSADMININCPATH.'caching_functions.php');
 
 if(defined('GSINITPAGECACHE') && constant('GSINITPAGECACHE') == true) init_pageCache(); // in case autoloading doesnt work for a particular instance.
 
+if(getDef('GSSAFEMODE',true)) $SAFEMODE = true;
 if($SAFEMODE){
 	if(isset($_REQUEST['safemodeoff']) && is_logged_in()){
 		disableSafeMode();
 		redirect(myself(false));
-	} 
+	}
 	else {
 		$SAFEMODE = true;
 		debugLog("SAFEMODE ON");
