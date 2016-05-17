@@ -145,14 +145,19 @@ $GS_definitions = array(
 	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
 	'GSDEBUGINSTALLWIPE'   => true,                          // (bool) debug installs, wipes website.xml on logouts
 	'GSDEBUG'              => true,                          // (bool) output debug mode console
-	'GSDEBUGAPI'           => false,                          // (bool) debug api calls to debuglog
+	'GSDEBUGAPI'           => false,                         // (bool) debug api calls to debuglog
 	'GSDEBUGREDIRECTS'     => false,                          // (bool) if debug mode enabled, prevent redirects for debugging
-	'GSDEBUGFILEIO'        => false,                          // (bool) debug filio operations
+	'GSDEBUGFILEIO'        => true,                          // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
-	'GSSAFEMODE'           => false,                          // (bool) enable safe mode, safe mode disables plugins and components
+	'GSDEBUGLOGTIME'       => true,                          // (bool) timestamp debuglog str entries
+	'GSDEBUGLOGDUR'        => true,                          // (bool) duration timestamp debuglog str entries
+	# INIT ----------------------------------------------------------------------------------------------------------------------------------------------
+	'GSSAFEMODE'           => false,                         // (bool) enable safe mode, safe mode disables plugins and components
 	'GSFORMATXML'          => true,                          // (bool) format xml files before saving them, making them more legible
 	'GSFORMATJSON'         => true,                          // (bool) format JSON files before saving them, making them more legible
-	# ---------------------------------------------------------------------------------------------------------------------------------------------------
+	'GSINITPAGECACHE'      => false,                         // (bool) initialize page cache always, for dealing with autoload failures
+	'GSDEBUGARRAYS'        => false,                         // (bool) will dump all arrays on init for debugging
+	# SANITY --------------------------------------------------------------------------------------------------------------------------------------------
  	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
 );
 
@@ -170,6 +175,7 @@ global
  $snippets,       // (array) global array for storing snippets, array of objs from snippets.xml
  $nocache,        // (bool) disable site wide cache true, not fully implemented
  $microtime_start,// (microtime) used for benchmark timers
+ $microtime_last, // (microtime) used for benchmark timers
  $pagesArray,     // (array) global array for storing pages cache, used for all page fields aside from content
  $pageCacheXml,   // (obj) page cache raw xml simpleXMLobj
  $plugin_info,    // (array) contains registered plugin info for active and inactive plugins
@@ -187,6 +193,7 @@ global
 ;
 
 $microtime_start = microtime(true);
+$microtime_last = $microtime_start;
 
 if(isset($_GET['nocache'])){
 	// @todo: disables caching, this should probably only be allowed for auth users, it is also not well inplemented
@@ -590,7 +597,7 @@ include_once(GSADMININCPATH.'plugin_functions.php');
 include_once(GSADMININCPATH.'caching_functions.php');
 // debugLog('headers sent: caching_functions.php ' . headers_sent());
 
-init_pageCache();
+if(defined('GSINITPAGECACHE') && constant('GSINITPAGECACHE') == true) init_pageCache(); // in case autoloading doesnt work for a particular instance.
 
 if($SAFEMODE){
 	if(isset($_REQUEST['safemodeoff']) && is_logged_in()){
@@ -645,10 +652,12 @@ if(isset($_REQUEST['refreshcache'])) exec_action('request-refreshcache'); // @ho
  * debug plugin global arrays
  */
 
-// debugLog($live_plugins);
-// debugLog($plugin_info);
-// debugLog($plugins);
-// debugLog($pluginHooks);
+if(defined('GSDEBUGARRAYS') && constant('GSDEBUGARRAYS') == true){
+	debugLog($live_plugins);
+	debugLog($plugin_info);
+	debugLog($plugins);
+	debugLog($pluginHooks);
+}
 
 if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ require_once(GSADMININCPATH.'login_functions.php'); }
 
@@ -664,6 +673,8 @@ if(GSBASE) require_once(GSADMINPATH.'base.php');
  */
 function debugLog($mixed = null) {
 	global $GS_debug;
+	// add stamp and or elapsed times to strings
+	if(gettype($mixed) == "string" && function_exists('get_execution_time') && defined('GSDEBUGLOGTIME') && constant('GSDEBUGLOGTIME') == true) $mixed = '|'.str_pad(get_execution_time(),5,0,STR_PAD_RIGHT) . "|" . (defined('GSDEBUGLOGDUR') && constant('GSDEBUGLOGDUR') == true ? str_pad(get_execution_duration(),5,0,STR_PAD_RIGHT) . '|' : '') . $mixed;
 	array_push($GS_debug,$mixed);
 	if(function_exists('debugLog_callout')) debugLog_callout($mixed); // @callout debugLog_callout (str) callout for each debugLog call, argument passed
 	return $mixed;

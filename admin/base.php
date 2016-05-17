@@ -3,8 +3,8 @@
 # Hook to load page Cache
 exec_action('index-header');
 
-if(!$plugins) debugLog("GS ERROR: plugins is empty!");
-if(!$pagesArray) debugLog("GS ERROR: pagesArray is empty!");
+if(!$plugins) debugLog("GS WARNING: plugins is empty or not loaded!");
+if(!$pagesArray) debugLog("GS WARNING: pagesArray is empty or not loaded!");
 
 # get page id (url slug) that is being passed via .htaccess mod_rewrite
 if (isset($_GET['id'])){
@@ -27,7 +27,7 @@ if(previewingDraft()){
 	// display draft if specified else
 	$data_index = getDraftXml($id);
 }
-else if(isset($pagesArray[$id])) {
+else if(pageExists($id)) {
 	// apply page data if page id exists
 	$data_index = getPageXml($id);
 }
