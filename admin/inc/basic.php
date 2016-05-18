@@ -2986,7 +2986,7 @@ function safemodefail($action = '',$url = ''){
  * **************************************************************************** 
  * 
  * php <php 5.6 does not support array_filter by keys and values, so we use our own methods, however
- * These are not ports for this, just custom handlers I wrote!
+ * These are not ports of the native functions, just custom handlers I wrote!
  * @todo  add optimizations for native array_filter by key=>value >5.6
  * 
  */
@@ -3287,6 +3287,7 @@ function strip_content($str, $pattern = '/[({]%.*?%[})]/'){
 
 /**
  * call function if its callable, passes variable arguments
+ * Not the fastest way to call a function, avoid using in loops
  * @since  3.4
  * @param  str $funcname functionname
  * @param  str $return   return value if functioname is invalid

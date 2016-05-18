@@ -1045,6 +1045,7 @@ function getPagesRow($page,$level,$index,$parent,$children){
 
 
 function getPagesRowMissing($ancestor,$level,$children){
+	debugLog(__FUNCTION__);
 	$menu = '<tr id="tr-'.$ancestor.'" class="tree-error tree-parent depth-'.$level.'" data-depth="'.$level.'"><td colspan="4" class="pagetitle"><a><strong>'. $ancestor.'</strong> '.i18n_r('MISSING_PARENT').'</a>';
 	if ( fileHasBackup(GSDATAPAGESPATH.$ancestor.'.xml') ) {
 		$menu.= '&nbsp;&nbsp;&nbsp;&nbsp;<a href="backup-edit.php?p=view&amp;id='.$ancestor.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
@@ -1119,12 +1120,16 @@ function getParentsSlugHashTable($pages = array(), $useref = true){
  * @param string $menu
  * @param int $level
  * 
- * @returns string
+ * @return string
  */
 function get_pages_menu($parent = '',$menu = '',$level = '') {
 	// return get_pages_menu_old();
-	// return get_pages_menu_recursive();
+	return get_pages_menu_recursive(); 
+	// return get_pages_menu_flat();
+}
 
+// output pages menu tree using flat method
+function get_pages_menu_flat(){
 	$items = getMenuDataFlat();
 	foreach($items as $item){
 		$slug = $item['id'];
@@ -1139,14 +1144,16 @@ function get_pages_menu($parent = '',$menu = '',$level = '') {
 		else $menu .= getPagesRow($page,$level,'','',$numChildren);
 	}
 
-	return $menu;
+	return $menu;	
 }
 
-// nested test (500 items), about 100-200ms slower than flat, possibly recursion /callout overhead or unotimizations
+// output pages menu tree using recursive tree method
 function get_pages_menu_recursive(){
 	$tree = getMenuDataNested();
 	return getMenuTree($tree,true,GSMENUPAGESCALLOUT, null,array(getMenuDataArray()));
 }
+
+// Page menu row callout
 function pagesTreeCallout($item, $outer = false, $open = true,$level = '',$index = '' ,$order = '',$args = array()){
 	if($outer || !$open) return;
 	$slug        = $item['id'];
@@ -1165,8 +1172,13 @@ function pagesTreeCallout($item, $outer = false, $open = true,$level = '',$index
  * @return array        pages with new info added
  */
 function getPageDepthsNew($pages){
-	$items = getMenuDataFlat();	
+	$items = getMenuDataFlat();
+	// debugLog($items);
 	foreach($pages as &$page){
+		if(!isset($items[$page['url']])){
+			debugLog("missing " . $page['url']);
+			return;
+		}
 		$item = $items[$page['url']];
 		// debugLog($item);
 		$page['order']       = $item['data']['order'];
@@ -1207,6 +1219,7 @@ function get_pages_menu_old($parent = '',$menu = '',$level = '') {
 		else $menu .= getPagesRow($page,$level,'','',$numChildren);
   	}
 
+	debugLog(__FUNCTION__);
 	return $menu;
 }
 
@@ -1726,10 +1739,6 @@ function cleanHtml($str,$strip_tags = array()){
 	$html_fragment = preg_replace('/^<!DOCTYPE.+?>|<head.*?>(.*)?<\/head>/', '', str_replace( array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), @$dom_document->saveHTML()));	
 	return $html_fragment;
 }	
-
-// @todo: now that I have some structure, i can probably reduce this into some array_filter functions, depending on speed these might be easier and faster to use.
-// @todo: replace function checks with callable checks
-// but it still requires a class or __invoke to pass arguments into the callback
 
 /**
  * get Page data for http response code

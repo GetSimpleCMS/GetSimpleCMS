@@ -47,8 +47,7 @@ function getMenuSelect(){
 
 function getMenuManagerTree($menuid){
 	$tree = getMenuDataNested($menuid);
-	// debugLog($tree);
-	return getMenuTree($tree,true,GSMENUMGRCALLOUT, GSMENUMGRFILTERCALLOUT,array(getMenuDataArray()));
+	return getMenuTree($tree,true,GSMENUMGRCALLOUT, GSMENUMGRFILTERCALLOUT);
 }
 
 $treestr  = getMenuManagerTree($menuid);

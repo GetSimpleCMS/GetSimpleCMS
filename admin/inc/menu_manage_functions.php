@@ -32,24 +32,27 @@
  */
 function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	/**
-	 * serial changes
-	 * with 1000 items, this takes 1 second, much too long for serial events
-	 * and cant defer rebuilds as items will be missing and getMenuItemTreeRef will fail
-	 * 
 	 * 
 	 * as an alternative to using individual functions to manipulate flat array and then rebuild nest
-	 * I can manipulate nest and then `recurseUpgrade` as we would when submitting a new menu
+	 * This can manipulate nest and then `recurseUpgrade` as we would when submitting a new menu
 	 * This might take longer but only needs to be done on heirarchy changes and involves signifigantly less logic
 	 * might even keep in one function to not have to move references around via arguments and returns
-	 * cons is you have to rebuild the entire thing, there is no subtree rebuild however it could,
-	 * but if we want to retain index and order fields then it needs to be rebuilt anyway
-	 * a bit sloppy , but fairly useful as it allows menu mods inline from page edits without pesky popups
+	 * cons is you have to rebuild the entire thing, there is no subtree rebuild, however it could be added,
+	 * it is a bit sloppy , but fairly useful as it allows menu mods inline from page edits without pesky popups
+	 * can also defer rebuild until after a few changes, but not all.
+	 *
+	 * performing serial changes using this function, is problematic, 
+	 * with 1000 items, this takes 1 second to rebuild, much too long for doing more than one
+	 * this is because menuRebuildTree, although it is possible to defer rebuild, 
+	 * and unfortunatly we cant defer rebuilds until after all items , as items will be missing and getMenuItemTreeRef check will fail
+	 * 
 	 * 
 	 * POSSIBLE ACTIONS
 	 * array('rename',$slug, $newslug);
 	 * array('move',$slug, $newparent); // move $after not imlemented
 	 * array('delete', $slug, $preservechildren = true);
 	 * array('insert', $slug, $parent, $after);
+	 * array('modify',$slug,$data('title'));
 	 * 
 	 * rename+move in one pass is not implemented yet, rare, called in chain by passing meu back in as arg for now
      *
@@ -80,6 +83,12 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	$slug   = $args[1];
 
 	if(!$menu) $menu = getMenuDataArray();
+
+	if($action == 'modify'){
+		$item = &getMenuItemTreeRef($menu,$slug);
+		array_merge($item['data'],$data);
+		array_merge($menu[GSMENUFLATINDEX]['data'],$data);
+	}
 
 	if($action == 'insert'){
 		debugLog(__FUNCTION__ . ' ' .get_execution_time() . 's ');
@@ -473,8 +482,8 @@ function menuPageCacheSync(){
 
 	if(!$pages || $deltaprune == count($pages) || $deltaadd == count($pages)) return debugLog(__FUNCTION__ . " something went wrong");
 	
-	debugLog(count($deltaprune));
-	debugLog(count($deltaadd));
+	debugLog(__FUNCTION__ . " prune " . count($deltaprune));
+	debugLog(__FUNCTION__ . " insert " . count($deltaadd));
 
 	if(!$deltaprune && !$deltaadd) return array();
 

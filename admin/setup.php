@@ -167,7 +167,7 @@ if(isset($_POST['submitted'])) {
 		// upgrade menus
 		if (!file_exists(GSDATAMENUPATH . GSMENUIDCORE.'.json')) {
 			initUpgradeMenus();
-			// catch 22 recurse upgrade tree callouts try to generate permalinks 
+			// @todo catch 22 recurse upgrade tree callouts try to generate permalinks 
 			// from parents which come from the menu, which is not yet saved.
 			// 
 			// BT->

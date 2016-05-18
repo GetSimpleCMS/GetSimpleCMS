@@ -69,6 +69,8 @@ $GS_constants = array(
 	'GSLOGINQSALLOWED'      => 'id,draft,nodraft,safemode,i,path',   // (str) csv query string keys to allow during login redirects
 	'GSPAGECACHEEXCLUDE'    => 'content',                     // (str) csv list of page fields to exlclude from page cache
 	'GSBACKUPEXTRAS'        => '',                            // (str) csv extra backup locations to add to archives
+	'GSAUTOFIXPAGESLUGS'    => false,                         // (bool) auto fix slugs to match filenames, for manualy file copy etc.
+	'GSAUTOFIXPAGEFILES'    => false,                         // (bool) auto fix filenames to match slugs, for manualy file copy etc.
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
@@ -177,7 +179,7 @@ global
  $microtime_start,// (microtime) used for benchmark timers
  $microtime_last, // (microtime) used for benchmark timers
  $pagesArray,     // (array) global array for storing pages cache, used for all page fields aside from content
- $pageCacheXml,   // (obj) page cache raw xml simpleXMLobj
+ $pageCacheXml,   // (obj) page cache raw xml simpleXMLobj //@todo REMOVE memory waste, not needed when not debugging
  $plugin_info,    // (array) contains registered plugin info for active and inactive plugins
  $live_plugins,   // (array) contains plugin file ids and enable status
  $plugins,        // (array) global array for storing action hook callbacks
@@ -617,7 +619,7 @@ if($SAFEMODE){
 
 if(isset($load['plugin']) && $load['plugin']){
 
-	callIfCallable('plugin_preload_callout'); // @callout plugin_preload_callout callout before loading plugin files
+	// callIfCallable('plugin_preload_callout'); // @callout plugin_preload_callout callout before loading plugin files
 
 	// Include plugins files in global scope
 	loadPluginData();
@@ -644,7 +646,7 @@ if(isset($load['plugin']) && $load['plugin']){
 	# main hook for common.php
 	exec_action('common'); // @hook common common.php has completed loading resoruces, base not yet loaded
 	// debugLog('calling common_callout');
-	callIfCallable('common_callout'); // @callout common_callout callout after common loaded, before templating
+	// callIfCallable('common_callout'); // @callout common_callout callout after common loaded, before templating
 }
 
 if(isset($_REQUEST['refreshcache'])) exec_action('request-refreshcache'); // @hook request-cacherefresh force pagecache refresh

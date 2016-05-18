@@ -27,6 +27,7 @@
         <div class="clear"></div>
         <?php
             get_scripts_backend(true);
+            debugLog("footer");
             exec_action('footer'); 
         }
         ?>

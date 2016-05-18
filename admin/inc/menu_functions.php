@@ -35,7 +35,7 @@ define('GSMENUIDLEGACY','legacy'); // default id for the 3.3.x legacy flat menu 
 define('GSMENUNESTINDEX','nested'); // menu array key for nested tree subarray
 define('GSMENUFLATINDEX','flat'); // menu array key for flat parent hash tree subarray
 
-// menu filter result enums
+// menu filter result enums, works with getMenuTreeRecurse
 define('GSMENUFILTERSKIP',1);     // skip all children
 define('GSMENUFILTERCONTINUE',2); // skip parent, continue with children inheriting closest parent
 define('GSMENUFILTERSHIFT',3);    // skip parent, shift all children to root
@@ -55,7 +55,7 @@ define('GSMENUPAGESCALLOUT','pagesTreeCallout'); // pages tree tree callout
 define('GSMENUPAGESFILTERCALLOUT','pagesTreeFilter'); // pages tree filter callout
 
 // define('GSMENUFILTERDEBUG',true); // show filtered items in output
-define('GSMENUFILTERLOG',false); // show filtered items in debug log
+define('GSMENUFILTERLOG',true); // show filtered items in debug log
 
 // SETTINGS
 define('GSMENUSAVENEST',true); // save nested arrays in menu files, they will be rebuilt on read if false, with `data` references to flat
@@ -218,7 +218,7 @@ function importMenuFromPages($pages = null, $flatten = false){
 
 /**
  * builds a nested array from a parent hash table array
- *
+ * 
  * input [parent]=>array(children) hash table
  * ['parentid'] = array('child1'=>(data),'child2'=>(data))
  *
@@ -318,7 +318,9 @@ function buildTreewHash($elements, $parentId = '', $preserve = false, $assoc = t
  *  ),
  *
  * returns a flat array containing flat references
- * @todo this will have to be modified to allow it to retain flat data that does not change
+ * @todo this will have to be modified to allow it to retain flat data that does not change, how do we pass it in ? menuid, menu obj?
+ * @todo  do a merge with incoming data vs flat array existing, add flags for hadchange, 
+ * so we can limit all processing to only items that are changing, no need to rebuild paths etc for all items.
  * @param  array  &$array    reference to array, so values can be refs
  * @param  str     $parent   parent for recursion
  * @param  integer $depth    depth for recursion
@@ -417,6 +419,10 @@ function recurseUpgradeTreeCallout(&$value,$id = '',$parent = null,$currpath = n
     $value['data']['path']  = generate_permalink($id,'%path%/%slug%',$pathdata);
     $value['data']['qs']    = generate_permalink($id,'id=%slug%&path=%path%',$pathdata);
     
+    // @todo testing array merging, still need to handle arbitrary menus
+    $item = menuItemGetData($id);
+    if($item && $item['data']) $value['data'] = array_merge($item['data'],$value['data']);
+
     // debugLog($value);
     return $value; // non ref
 }
@@ -437,6 +443,7 @@ function recurseUpgradeTreeCallout(&$value,$id = '',$parent = null,$currpath = n
  */
 function getMenuTree($menu, $wrap = false, $callback = 'treeCallout', $filter = null, $args = array()){
     $str = '';
+    debugLog(__FUNCTION__ . " " . count($menu) . " items");
     if($wrap) $str .= callIfCallable($callback,null,true);
     $str .= getMenuTreeRecurse($menu,$callback,$filter,0,0,$args);
     if($wrap) $str  .= callIfCallable($callback,null,true,false);
@@ -498,7 +505,7 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
     if(isset($parents['id']) && isset($parents['children'])) $parents = $parents['children'];
 
     // @todo: inline sorting test
-    // test sorting, using sort index is the fastest to prevent resorting subarrays
+    // test sorting, this would allow sub array sorting in real time, using sort index is the fastest to prevent resorting subarrays
     $sort = false;
     if($sort){
     	GLOBAL $sortkeys;
@@ -515,9 +522,9 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
         if(!isset($child['id'])) continue;
 
         // do filtering
-        $filterRes = callIfCallable($filter,$child,$level,$index,$order,$args); // get filter result
+        $filterRes = !$filter ? false : callIfCallable($filter,$child,$level,$index,$order,$args); // get filter result
         if($filterRes){
-            if(getDef('GSMENUFILTERLOG')) debugLog(__FUNCTION__ . ' filtered: (' . $filterRes . ') ' . $child['id'] . ' + ' . $child['data']['numchildren']);
+            if(getDef('GSMENUFILTERLOG',true)) debugLog(__FUNCTION__ . ' filtered: (' . $filterRes . ') ' . $child['id'] . ' + ' . $child['data']['numchildren']);
             
             // filter skip, children skipped also, default
             if($filterRes === true || $filterRes === GSMENUFILTERSKIP){
@@ -567,8 +574,8 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
 
                 // close open depths
                 for($i=0; $i<$level-1; $i++){
-                    $str .= callIfCallable($callout,$child,false,false,$level,$index,$order,$args); # </li>
-                    $str .= callIfCallable($callout,$child,true,false,$level,$index,$order,$args); # </ol>
+                    $str .= $callout($child,false,false,$level,$index,$order,$args); # </li>
+                    $str .= $callout($child,true,false,$level,$index,$order,$args); # </ol>
                 }
 
                 $str .= debugFilteredItem($child,$filterRes);
@@ -579,9 +586,9 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
                 // reopen open depths as hidden to clean up now extraneous lists
                 // call callbacks with null child
                 for($i=0; $i<$level-1; $i++){
-                    $str .= callIfCallable($callout,null,false,true,$level,$index,$order,$args); # <li>
+                    $str .= $callout(null,false,true,$level,$index,$order,$args); # <li>
                     // $str .= '<li style="display:none">'; // sample
-                    $str .= callIfCallable($callout,null,true,true,$level,$index,$order,$args); # <ol>                    
+                    $str .= $callout(null,true,true,$level,$index,$order,$args); # <ol>                    
                     // $str .= '<ul style="display:none">'; // sample
                 }
                 return $str;
@@ -594,7 +601,7 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
         $order = $order+1;
 
         // call inner open
-        $str .= callIfCallable($callout,$child,false,true,$level,$index,$order,$args); # <li>
+        $str .= $callout($child,false,true,$level,$index,$order,$args); # <li>
         // has children 
         if(isset($child['children'])) {
             
@@ -604,15 +611,15 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
             // call outer open
             // only call outers if recurse return is not empty, in case all children were filtered, otherwise you get an empty outer
             if(!empty($newstr)){
-            	$str .= callIfCallable($callout,$child,true,true,$level,$index,$order,$args); # <ol>
+            	$str .= $callout($child,true,true,$level,$index,$order,$args); # <ol>
             	$str .= $newstr;
             	// call outer close
-           		$str .= callIfCallable($callout,$child,true,false,$level,$index,$order,$args); # </ol>
+           		$str .= $callout($child,true,false,$level,$index,$order,$args); # </ol>
         	}
         }
         
         // call inner close
-        $str .= callIfCallable($callout,$child,false,false,$level,$index,$order,$args); # </li>
+        $str .= $callout($child,false,false,$level,$index,$order,$args); # </li>
         $level--;
     }
 
@@ -667,19 +674,19 @@ function getMenuTreeMin($parents,$callout = 'treeCallout',$filter = null){
         if(!isset($child['id'])) continue;
         
         // call inner open
-        $str .= callIfCallable($callout,$child,false); # <li>
+        $str .= $callout($child,false); # <li>
         // has children 
         if(isset($child['children'])) {
             // call outer open
-            $str .= callIfCallable($callout,$child,true); # <ol>
+            $str .= $callout($child,true); # <ol>
             // recurse
             $str .= $thisfunc($child['children'],$callout,$filter);  # <li>...   
             // call outer close
-            $str .= callIfCallable($callout,$child,true,false); # </ol>
+            $str .= $callout($child,true,false); # </ol>
         }
         
         // call inner close
-        $str .= callIfCallable($callout,$child,false,false); # </li>
+        $str .= $callout($child,false,false); # </li>
     }
     
     return $str;
@@ -720,9 +727,13 @@ function treeCalloutFilter(){
 /**
  * menu manager tree callout function
  * @since  3.4
- * @param  array  $item item to feed this recursive iteration
+ * @param  array  $item item data to feed this callout
  * @param  boolean $outer is this a outer wrap node if true 
  * @param  boolean $open is this nest open or closing
+ * @param  int $level 
+ * @param  int $index 
+ * @param  int $order
+ * @param  array $args user args passed through callee
  * @return str     string to return to recursive callee
  */
 function mmCallout($item, $outer = false, $open = true,$level = '',$index = '' ,$order = '',$args = array()){
@@ -730,15 +741,17 @@ function mmCallout($item, $outer = false, $open = true,$level = '',$index = '' ,
     // @note
     // hacking flat array conversion in, using args to pass menudata down, since recurse does not pass entire menu down to callouts.
     // The recursive tree will have to have the entire menu passed in, or the tree has to be ref linked to flat
-    // either one means passing around the entire menu to recursion, or walking the entire tree to build the refs
-    if(isset($args[0])) $item = getMenuItem($args[0],$item['id']);
-
+    // either one means passing around the entire menu to recursion, or walking the entire tree to build the refs    
+    // @todo I do not think this is still nevessary, we can just make sure the nest is a mirror or ref of flat always
+	
     if($outer) return $open ? '<ol id="" class="dd-list">' : "</ol>";
-
     // if item is null return hidden list , ( this is for GSMENUFILTERSHIFT handling )
     if($item === null) return $open ? '<li style="display:none">' : '</li>';
+    if(!$open) return "</li>\n";
 
-    $page      = is_array($item) && isset($item['id']) ? getPage($item['id']) : getPage($item);
+    // if(isset($args[0])) $item = getMenuItem($args[0],$item['id']);
+    // $page      = is_array($item) && isset($item['id']) ? getPage($item['id']) : getPage($item);
+    $page = getPage($item['id']);
     $menuTitle = getPageMenuTitle($page['url']);
     // $pageTitle = '<strong>'.$page['title'].'.'.$level.'.'.$order.'</strong>';
     // $pageTitle = $pageTitle.'.'.$page['menuOrder'] .'.'.$page['menuStatus'];
@@ -748,45 +761,37 @@ function mmCallout($item, $outer = false, $open = true,$level = '',$index = '' ,
     $pageTitle = truncate($pageTitle,30);
     $class     = $page['menuStatus'] === 'Y' ? ' menu' : ' nomenu';
 
-    $str = $open ? '<li class="dd-item clearfix" data-id="'.$page['url'].'">'."\n".'<div class="dd-itemwrap '.$class.'"><div class="dd-handle"> '.$menuTitle.'<div class="itemtitle"><em>'.$pageTitle."</em></div></div></div>\n" : "</li>\n";
-    return $str;
+    return '<li class="dd-item clearfix" data-id="'.$page['url'].'">'."\n".'<div class="dd-itemwrap '.$class.'"><div class="dd-handle"> '.$menuTitle.'<div class="itemtitle"><em>'.$pageTitle."</em></div></div></div>\n";
 }
 
 
 /**
- * tree filter filters pages not exist
- * @param  array $item menu child
- * @return mixed       filter result
- */
-function  mmCalloutFilter($item){
-	// if(!getPage($item['id'])) return GSMENUFILTERCONTINUE;
-}
-
-/**
- * menu inner item callout
+ * menu item callout
  */
 function menuCallout($item, $outer = false, $open = true, $level = '', $index = '', $order = '',$args = array()){
     
     if($outer) return $open ? "\n<ul>" : "\n</ul>";
-
     // if item is null return hidden list , ( this is for GSMENUFILTERSHIFT handling )
     if($item === null) return $open ? '<li style="display:none">' : '</li>';	
 	if(!$open) return '</li>';
 	
-	$page        = getPage($item['id']);
 	$classPrefix = $currentpage = '';
-	extract($args); // extract arguments into cope
+	extract($args); // extract arguments into scope
 	
-	$classes = $menu = '';
-	$class = array();
+	$classstr = $menu = '';
+	$classarr = array(); // classes string
 
-	if(!empty($item['parent'])) $class['parent'] = $item['parent'];
-	$class['url']    = $item['id'];
-	$classes         = trim($classPrefix.implode(' '.$classPrefix,$class));
-	// class="prefix.parent prefix.slug current active"
-	if ($currentpage == $page['url']) $classes .= " current active";
-	$title = getPageMenuTitle($item['id']); // @todo check in menu for title then fallback to this
-	$menu .= '<li class="'. $classes .'"><a href="'. find_url($page['url'],$page['parent']) . '" title="'. encode_quotes(cl($title)) .'">'.var_out(strip_decode($title)).'</a>'."\n";
+	// debugLog($item);
+	if(!empty($item['data']['parent'])) $classarr['parent'] = $item['data']['parent'];
+	$classarr['url']    = $item['id'];
+	$classstr         = trim($classPrefix.implode(' '.$classPrefix,$class));
+	// eg. class="prefix.parent prefix.slug current active"
+	
+	// set current class
+	if ($currentpage == $item['id']) $classstr .= " current active";
+	// $title = getPageMenuTitle($item['id']); // @todo check in menu for title then fallback to this, we are gonna want titles in the menu files
+	$title = $item['id'];
+	$menu .= '<li class="'. $classes .'"><a href="'.$item['data']['url'] . '" title="'. encode_quotes(cl($title)) .'">'.var_out(strip_decode($title)).'</a>'."\n";
 	
 	return $menu;
 }
@@ -800,9 +805,9 @@ function menuCallout($item, $outer = false, $open = true, $level = '', $index = 
 function menuCalloutFilter($item,$level,$index,$order,$args){
 	$skip = GSMENUFILTERSKIP;
 	// page not exist
-	if(!getPage($item['id'])) return $skip;
+	// if(!getPage($item['id'])) return $skip; // requires page cache just to show menu
 	// page not in menu
-    if(getPageFieldValue($item['id'],'menuStatus') !== 'Y') return $skip;
+    // if(getPageFieldValue($item['id'],'menuStatus') !== 'Y') return $skip;
     // max depth limiter
     // _debugLog(func_get_args());
     if(isset($args['maxdepth']) && ($level > ($args['maxdepth']))) return $skip;
@@ -854,6 +859,8 @@ function newMenuSave($menuid,$menu){
 	$menu     = reindexMenuArray($menu);   // add id as keys
     $menudata = recurseUpgradeTree($menu); // build full menu data
     $menudata[GSMENUNESTINDEX] = $menu;
+	debugLog($menudata[GSMENUFLATINDEX]['xss-copy']);
+	return;
 
     debugLog(array_slice($menudata[GSMENUFLATINDEX], 0, 7));
     // return;
@@ -1245,25 +1252,25 @@ function getTreeFromParentHashTable($parents,$key = '',$level = 0,$index = 0, $c
 
     $order = 0;
     $str   = '';
-    $str  .= callIfCallable($callout,null,true,true,$level,$index,$order);
+    $str  .= $callout(null,true,true,$level,$index,$order);
 
     foreach($parents[$key] as $parent=>$child){
         if(!is_array($child)) continue;
-        if(callIfCallable($filter) === true) continue;
+		if(callIfCallable($filter) === true) continue;
 
         $level = $level+1;
         $index = $index+1;
         $order = $order+1;
 
-        $str .= callIfCallable($callout,$child,false,true,$level,$index,$order);
+        $str .= $callout($child,false,true,$level,$index,$order);
 
         if(isset($parents[$parent])) {
             $str.= $thisfunc($parents,$parent,$level,null,$callout,$filter);
         }
         $level--;
-        $str .= callIfCallable($callout,$child,false,false,$level,$index,$order);
+        $str .= $callout($child,false,false,$level,$index,$order);
     }
-    $str .= callIfCallable($callout,null,true,false,$level,$index,$order);
+    $str .= $callout(null,true,false,$level,$index,$order);
     return $str;
 }
 

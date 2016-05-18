@@ -48,7 +48,7 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 }
 
 getMenuDataArray();
-init_pageCache(true,false); // force rebuild of pagecache (refresh,force)
+// init_pageCache(true,false); // force rebuild of pagecache (refresh,force)
 // getPagesXmlValues(true);
 
 /**
