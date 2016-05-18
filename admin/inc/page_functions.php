@@ -24,8 +24,7 @@
  * @return array  new pagesarray
  */
 function getPages($filterFunc=null/*,...*/){
-	GLOBAL $pagesArray;
-
+	$pagesArray = getPagesXmlValues();
 	if(isset($filterFunc) && function_exists($filterFunc)){
 		$args    = func_get_args();
 		$args[0] = $pagesArray; // replace first argument (filterfunc) with PAGES
@@ -41,7 +40,7 @@ function getPages($filterFunc=null/*,...*/){
  * @return array       page array
  */
 function getPage($slug){
-	global $pagesArray;
+	$pagesArray = getPagesXmlValues();
 	return isset($pagesArray[$slug]) ? $pagesArray[$slug] : null;
 }
 
@@ -72,16 +71,19 @@ function getPagesFields($field,$pages = array()){
  */
 function getPageFieldValue($pageId,$field,$raw = false, $cache = true){
 	$page = getPage((string)$pageId);
+	// debugLog($page);
 	if ($cache && isset($page,$page[$field])){
 		if(!$raw) return strip_decode($page[$field]);
 		return $page[$field];
 	} else {
+		debugLog("Getting page directly from file!");
 		return getPageFieldFromFile($pageId,$field,$raw);
 	}
 }
 
 /**
  * get page field directly from page file, bypasses page cache
+ * @todo  problems with this function if filenames were autoadded but not lowercase, this will fail.
  * @since  3.4
  * @param  str  $page  page id
  * @param  str  $field field id
