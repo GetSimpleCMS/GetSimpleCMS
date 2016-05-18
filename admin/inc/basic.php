@@ -1097,14 +1097,7 @@ function find_url($slug, $parent = '', $type = null) {
  * @return str             permalink string
  */	
 function getPageUrl($slug, $cached = true, $type = null){
-
-	// returns cached url unless a type is specified or nocache requested
-	if(isset($type) || !$cached){
-		return generate_url($slug, $type);
-	}
-
-	// get from page cache
-	return getPageFieldValue($slug,'route');
+	return generate_url($slug);
 }
 
 /**
@@ -1143,7 +1136,6 @@ function generate_url($slug, $absolute = false, $pathdata = null){
 		}
 		else $url .= 'index.php?id='.$slug;
 	}
-
 	$url = exec_filter('generate_url',$url); // @filter generate_url (str) for generating urls after processing, for use with custom tokens etc
 	return $url;
 }
@@ -1162,17 +1154,16 @@ function generate_url($slug, $absolute = false, $pathdata = null){
  * eg. ?id=%slug%&parent=%parent%&path=%path%
  * @since  3.4
  * @param  (str) $slug      slug to resolve permalink for	
- * @param  (str) $permalink (optional) permalink structure, falls back to GSDEFAULTPERMALINK if null
- * @param  (array) $pathdata 	(optional) pass in pathing data override keys 'parents','parent'
+ * @param  (str) $permalink permalink structure, falls back to GSDEFAULTPERMALINK if null
+ * @param  (array) $data 	(optional) pass in pathing data override keys 'parents','parent'
+ * @param  (array) $pathdata (optional) pass in path data so it we do not need any callouts or dependancies to generate ( prevents loops on init or setup )
  * @return (str)            	
  */
 function generate_permalink($slug, $permalink = null, $pathdata = null){	
 	$slug = (string) $slug;
-
-	if(!isset($permalink)){
+	if(!isset($permalink) || empty($permalink)){
 		$plink = getDef('GSDEFAULTPERMALINK');
 	} else $plink = $permalink;
-
 	// replace PATH token
 	if(containsToken('path',$plink)){
 		// remove PARENT tokens if path, since it would be pointless and probably accidental
@@ -1337,8 +1328,8 @@ function redirect($url,$ajax = false) {
 			if (isDebug()){
 				debugLog(debug_backtrace());
 				outputDebugLog();
-				}
 			}
+		}
 		
 		echo "</body></html>";
 	}
@@ -1377,8 +1368,9 @@ function i18n($name, $echo=true, $default = true) {
 	}
 	else return;
 
-	return echoReturn($myVar,$echo);
-	}
+	if(!$echo) return $myVar;
+	echo $myVar;
+}
 
 /**
  * Return i18n
@@ -2895,6 +2887,7 @@ function doTransliteration($str){
  */
 function outputDebugLog(){
 	global $GS_debug;
+    debugLog("DEBUGLOG END");	
 	echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
 	echo '<pre>';
 	foreach ($GS_debug as $log){
