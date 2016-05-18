@@ -190,22 +190,20 @@ function generate_pageCacheXml(){
 
 	if (count($filenames) != 0) {
 		foreach ($filenames as $file) {
-			
+			$filename = $file;
 			// load page xml
 			$pageXml  = getXml($path.$file);
 			if(!$pageXml) continue;
 
 			$id = (string)$pageXml->url; // page id
 
-			// auto import pages, fixes slugs to match filenams
-			if($id !== _id(getFileName($file))){
-				$id = _id(getFileName($file));
-				// debugLog($pageXml);
-				$pageXml->url->setValue($id); // update id
-				$pageXml->title->setValue((string)$pageXml->title . ' - copy'); // update title
-				debugLog(__FUNCTION__ . ' ' .$id);
-				XMLsave($pageXml, $path.$file);
+			// AUTO CLEAN UP, fixes slugs to match filenames
+			if($id !== _id(getFileName($file)) && getDef("GSAUTOFIXPAGESLUGS",true)){
+				$id = fixupPageSlugs($path,$file,$id,$pageXml);
+				$pageXml->url = $id;
 			}
+			// AUTO CLEAN UP, fixes filenames to match slugs
+			if($id !== getFileName($file) && getDef("GSAUTOFIXPAGEFILES",true)) $filename = fixupPageFilenames($path,$file,$id,$pageXml);
 
 			$cacheItems = $cacheXml->addChild('item');
 			$children   = $pageXml->children();
@@ -224,14 +222,36 @@ function generate_pageCacheXml(){
 			// removed from xml , redundant
 			$node = $cacheItems->addChild('slug');
 			$node->addCData($id);
-			$node = $cacheItems->addChild('filename'); 
-			$node->addCData($file);
+			$node = $cacheItems->addChild('filename'); // add actual filename to page cache for _id mismatches, this might be used in the future
+			$node->addCData($filename);
 
 			pageCacheAddRoutes($id,$cacheItems);
 		}
 	}
 
 	return $cacheXml;
+}
+
+function fixupPageSlugs($path,$file,$id,$pageXml){
+	$id = _id(getFileName($file)); // set slug to filename
+	$pageXml->url->setValue($id); // update id
+	debugLog(__FUNCTION__ . ' ' .$id . '  ' . $file);
+	XMLsave($pageXml, $path.$file); // save as new filename to match clean slug
+	return $id;
+}
+
+function fixupPageFilenames($path,$file,$id,$pageXml){
+	// collision protection not implemented
+	// get slug from filename and increment if exists
+	// if(file_exists(GSDATAPAGESPATH . $id .".xml")){
+	// 	list($id,$count) = getNextFileName(GSDATAPAGESPATH,$id.'.xml');
+	// 	$id = $id .'-'. $count;
+	// }
+	debugLog(__FUNCTION__ . ' ' .$id . ' -> ' . $file);
+	backup_datafile(GSDATAPAGESPATH.$file);
+	delete_file($path.$file);
+	XMLsave($pageXml, $path.$id.'.xml'); // save as new filename to match clean slug
+	return $path.$id.'.xml';
 }
 
 /**
@@ -252,8 +272,10 @@ function pageCacheAddRoutes($id,&$cacheItems){
 	if(menuItemGetData($id)) $cacheItems->addChild('parent')->updateCData(getParentByCoreMenu($id));
 
 	return;
-	// @todo add routes test, store multiple routes as arrays
-	// but this is not compatible with getPageField functions
+	// @todo TESTING theory , add routes sample test, store multiple routes as arrays in page xml
+	// @REMOVE
+	// NOTE this is not compatible with getPageField functions as they expect single node values
+	// so we might not actually want to do this, despite how flexible it is
 
 	$routesNode = $cacheItems->addChild('routes');
 	$routeNode  = $routesNode->addChild('route');
@@ -289,9 +311,6 @@ function pageCacheXMLtoArray($xml){
 		foreach ($children as $opt=>$val) {
 			$pagesArray[$key][(string)$opt]=(string)$val;
 		}
-
-		// $pagesArray[$key]['slug']=$key; // legacy
-		// $pagesArray[$key]['filename']=$key.'.xml'; // legacy
 	}
 
 	return $pagesArray;
@@ -304,7 +323,7 @@ function pageCacheXMLtoArray($xml){
  * @global $pagesArray
  * @param simpleXmlObj $xml xml node of single page
  */
-function pageXMLtoArray($xml){
+function pageXMLtoArray($xml,$filename = null){
 	GLOBAL $pagesArray;
 	$data = $xml;
 	$key=(string)$data->url;		
@@ -317,7 +336,7 @@ function pageXMLtoArray($xml){
 		}
 	}
 	$pagesArray[$key]['slug']=$key; // legacy
-	$pagesArray[$key]['filename']=$key.'.xml'; // legacy
+	$pagesArray[$key]['filename']= $filename ? $filename : $key.'.xml'; // legacy
 
 	return $pagesArray[$key];
 }
