@@ -225,7 +225,7 @@ function generate_pageCacheXml(){
 			$node = $cacheItems->addChild('filename'); // add actual filename to page cache for _id mismatches, this might be used in the future
 			$node->addCData($filename);
 
-			pageCacheAddRoutes($id,$cacheItems);
+			pageCacheAddRoutes($id,$cacheItems); // @todo not working
 		}
 	}
 
