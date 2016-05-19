@@ -783,15 +783,15 @@ function menuCallout($item, $outer = false, $open = true, $level = '', $index = 
 
 	// debugLog($item);
 	if(!empty($item['data']['parent'])) $classarr['parent'] = $item['data']['parent'];
-	$classarr['url']    = $item['id'];
-	$classstr         = trim($classPrefix.implode(' '.$classPrefix,$class));
+	$classarr['url']  = $item['id'];
+	$classstr         = trim($classPrefix.implode(' '.$classPrefix,$classarr));
 	// eg. class="prefix.parent prefix.slug current active"
 	
 	// set current class
 	if ($currentpage == $item['id']) $classstr .= " current active";
 	// $title = getPageMenuTitle($item['id']); // @todo check in menu for title then fallback to this, we are gonna want titles in the menu files
 	$title = $item['id'];
-	$menu .= '<li class="'. $classes .'"><a href="'.$item['data']['url'] . '" title="'. encode_quotes(cl($title)) .'">'.var_out(strip_decode($title)).'</a>'."\n";
+	$menu .= '<li class="'. $classstr .'"><a href="'.$item['data']['url'] . '" title="'. encode_quotes(cl($title)) .'">'.var_out(strip_decode($title)).'</a>'."\n";
 	
 	return $menu;
 }
