@@ -61,7 +61,7 @@ if ($p == 'delete') {
 	redirect("backups.php?upd=bak-".$status."&id=".$id);
 }
 
-elseif ($p == 'restore') {
+elseif ($p == 'restore') { // UNDO
 	// restoring page backup
 	check_for_csrf("restore", "backup-edit.php");
 	$redirect = "";

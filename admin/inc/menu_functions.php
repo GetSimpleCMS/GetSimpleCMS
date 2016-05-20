@@ -377,14 +377,18 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
 			$flatvalue['data']['index']     = $index;
 			$flatvalue['data']['order']     = $order;
             $flatvalue['data']['dotpath']   = implode('.',$indexAry['currpath']).'.'.$id;
-            recurseUpgradeTreeCallout($flatvalue,$id,$parent,$indexAry['currpath']); // pass $value by ref for modification            
+            recurseUpgradeTreeCallout($flatvalue,$id,$parent,$indexAry['currpath']); // passing $flatvalue by ref for modification            
 
             $indexAry[GSMENUFLATINDEX][$id] = array(); // position first
 
+            // we have children, add numchildren data , get children branch as ref and pass to recursion
             if(isset($value['children'])){
                 $flatvalue['data']['numchildren'] = count($value['children']);
                 $children = &$value['children'];
-                $thisfunc($children,$id,$depth,null,$indexAry); // recursive call
+                
+                // RECURSE CHILDREN
+                $thisfunc($children,$id,$depth,null,$indexAry); // recursive call, $children is REF
+
             } else $flatvalue['data']['numchildren'] = 0;
 
             // add to flat array
@@ -396,7 +400,8 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
         }
     }
 
-    array_pop($indexAry['currpath']); // remove last path, closing out level
+    array_pop($indexAry['currpath']); // remove last path, back up one level
+
     if(!$indexAry['currpath']) unset($indexAry['currpath']); // if empty (exiting root level) remove it
     return $indexAry;
 }
@@ -419,7 +424,7 @@ function recurseUpgradeTreeCallout(&$value,$id = '',$parent = null,$currpath = n
     $value['data']['path']  = generate_permalink($id,'%path%/%slug%',$pathdata);
     $value['data']['qs']    = generate_permalink($id,'id=%slug%&path=%path%',$pathdata);
     
-    // @todo testing array merging, still need to handle arbitrary menus
+    // @todo testing array merging, still need to handle arbitrary menus, and if we can skip above processes if they did not actually change
     $item = menuItemGetData($id);
     if($item && $item['data']) $value['data'] = array_merge($item['data'],$value['data']);
 
@@ -505,13 +510,14 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
     if(isset($parents['id']) && isset($parents['children'])) $parents = $parents['children'];
 
     // @todo: inline sorting test
-    // test sorting, this would allow sub array sorting in real time, using sort index is the fastest to prevent resorting subarrays
+    // testing sorting, this would allow sub array sorting in real time, using sort index is the fastest to prevent resorting subarrays
+    // but you could resort dynamically if need be, maybe a callout here ?
     $sort = false;
     if($sort){
-    	GLOBAL $sortkeys;
-        // @todo since the recursive function only operates on parent subarray, we do not have access to menu itself, 
+    	GLOBAL $sortkeys; // sort index example
+        // since this is a recursive tree function, it only operates on parent subarray, we do not have access to menu itself, so we cannot pre sort the entire thing
         // we could always sort by indices , and allow presorting the menu itself by sorting indices or $menu[GSMENUSORTINDEX]
-    	// either way arraymergesort can do it
+    	// either way arraymergesort can do it, but we must sort each branch/iteration
     	$parents = arrayMergeSort($parents,$sortkeys,false);
     	// debugLog($parents);
     	// debugLog(array_keys($parents));
@@ -859,10 +865,8 @@ function newMenuSave($menuid,$menu){
 	$menu     = reindexMenuArray($menu);   // add id as keys
     $menudata = recurseUpgradeTree($menu); // build full menu data
     $menudata[GSMENUNESTINDEX] = $menu;
-	debugLog($menudata[GSMENUFLATINDEX]['xss-copy']);
-	return;
-
-    debugLog(array_slice($menudata[GSMENUFLATINDEX], 0, 7));
+	// return;
+    // debugLog(array_slice($menudata[GSMENUFLATINDEX], 0, 7));
     // return;
     // _debugLog(__FUNCTION__,$menu);
     // _debugLog(__FUNCTION__,$menudata);
@@ -1061,8 +1065,8 @@ function getMenuTreeData($page = '', $parent = false, $menuid = null){
 /**
  * recursivly resolves a tree path to nested array sub array
  * 
- * $tree = array('path'=>array('to'=> array('branch'=>item)))
- * $path = array('path','to','branch')
+ * $treearray = array('path'=>array('to'=> array('branch'=>item)))
+ * $pathwewant = array('path','to','branch')
  * @since 3.4
  * @param  array $tree array reference to tree
  * @param  array $path  array of path to desired branch/leaf

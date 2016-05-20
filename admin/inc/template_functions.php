@@ -856,6 +856,7 @@ function pageSlugHasChanged($slug, $newslug = null){
 	return;
 
 	// @todo this is not needed if legacy, as menu saves will write out updates to pages
+	// Update Childrens parent fields
 	global $pagesArray;
 	getPagesXmlValues();
 	foreach ($pagesArray as $page){
@@ -1109,27 +1110,24 @@ function getParentsSlugHashTable($pages = array(), $useref = true){
 }
 
 /**
- * Recursive list of pages
- *
- * Returns a recursive list of items for the main page
+ * Returns table rows of items for main page list pages.php
  *
  * @since 3.0
- * @uses $pagesSorted
- *
- * @param string $parent
- * @param string $menu
- * @param int $level
+ * @param string $parent starting parent
+ * @param string $menu   which menu to display heirachy from
+ * @param int $level     starting level
  * 
  * @return string
  */
 function get_pages_menu($parent = '',$menu = '',$level = '') {
 	// return get_pages_menu_old();
-	return get_pages_menu_recursive(); 
-	// return get_pages_menu_flat();
+	// return get_pages_menu_recursive(); 
+	return get_pages_menu_flat();
 }
 
 // output pages menu tree using flat method
 function get_pages_menu_flat(){
+	$menu = '';
 	$items = getMenuDataFlat();
 	foreach($items as $item){
 		$slug = $item['id'];

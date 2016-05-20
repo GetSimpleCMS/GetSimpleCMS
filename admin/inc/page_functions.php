@@ -171,7 +171,7 @@ function getPageMenuTitle($slug){
  * get PAGE parent slug
  * gets parent info from coremenu
  * @param  str $pageId slug of PAGE to get parent of
- * @return str         parent of this page
+ * @return str         parent id of this page
  */
 function getParent($pageId){
 	return getParentByCoreMenu($pageId);
