@@ -61,17 +61,20 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
      * -[x] rename child level
      * -[x] insert at root level
      * -[x] insert at child level
-     * -[x] insert after both (NI)
-     * -[ ] move to root level
+     * -[ ] insert after both (NI)
+     * -[ ] move to root level // moves to bottom no sort done
      * -[ ] move to parent level
      * -[ ] move from root level
      * -[ ] move from parent level
      * -[x] delete root level
      * -[x] delete child level
      * -[x] delete with and without preserve parents flag
-     * -[ ] clone page, uses its own action, inline parents (NI)
+     * -[x] clone page, uses its own action, inline parents (NI)
+     *
+     * @todo  undo functionality, since we have no history atm, we cannot undo menu changes, if we change parent inline, then undo, then nothihg changes
+     * for new we insert, for delete we delet, for slug change we rename, but we do not move, since we have no previous parent atm
      * 
-     * optimizations
+     * @todo optimizations
      * rekeymenu can maybe be avoided, or limited to only when needed not always
      * rekey on slug changes, rename
      * avoid recurseupgrade tree for simple inserts ?
@@ -91,7 +94,6 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	}
 
 	if($action == 'insert'){
-		debugLog(__FUNCTION__ . ' ' .get_execution_time() . 's ');
 		// @todo this could insert the slug directly onto flat $menu to optimize, since a reindex wouldnt be needed
 		
 		// check if item already exists
@@ -100,22 +102,26 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
  
 		$parentslug = isset($args[2]) ? $args[2] : '';
 		$after      = isset($args[3]) ? $args[3] : '';
-		debugLog(__FUNCTION__ . " inserting '$slug' under '$parentslug' after '$after'");
+		debugLog(__FUNCTION__ . " inserting [$slug] under [$parentslug] after [$after]");
 
-		$item = array($slug => array('id' => $slug)); // pre indexed
+		$item = array($slug => array('id' => $slug,'data' => array())); // pre indexed
 		// $item = array(array('id' => $slug)); // non indexed requires reindex
-
+		$cnt = count($menu[GSMENUNESTINDEX]);
 		if(!empty($parentslug)){
 			$parent = &getMenuItemTreeRef($menu, $parentslug);
 			if(!isset($parent['children'])) $parent['children'] = array();
 			$pos = array_insert_after($parent['children'],$after,$item);
 			// debugLog($parent);
-			debugLog(__FUNCTION__ ." inserted at parent at position $pos");
+			debugLog(__FUNCTION__ ." inserted at parent at position [$pos]");
 			// debugLogDie();
+			if(isset($parent['children'][$slug])) debugLog($parent['children'][$slug]);
+			else debugLog("FAILED TO INSERT");
 		}
 		else {
 			$pos = array_insert_after($menu[GSMENUNESTINDEX],$after,$item);
-			debugLog(__FUNCTION__ ." inserted at root at position $pos");
+			debugLog(__FUNCTION__ ." inserted at root at position [$pos]");		
+			if(isset($menu[GSMENUNESTINDEX][$slug])) debugLog($menu[GSMENUNESTINDEX][$slug]);
+			else debugLog("FAILED TO INSERT");
 		}
 		// debugLog($menu[GSMENUNESTINDEX]);
 		// debugLog($menu[GSMENUNESTINDEX]['index']);
@@ -124,7 +130,7 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 
 	if($action == 'rename'){
 		$newslug = $args[2];
-		debugLog(__FUNCTION__ . " renaming $slug , $newslug");
+		debugLog(__FUNCTION__ . " renaming [$slug] to [$newslug]");
 		if($slug == $newslug) return $menu;
 
 		$item = &getMenuItemTreeRef($menu,$slug);
@@ -140,12 +146,12 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	// change a parent, move the item to new parent or root
 	if($action == 'move'){
 		$newparent = $args[2];
-		debugLog(__FUNCTION__ . " moving $slug to $newparent");
+		debugLog(__FUNCTION__ . " moving [$slug] to [$newparent]");
 
 		$item = &getMenuItemTreeRef($menu,$slug);
 		debugLog($menu);
 		debugLog($item);
-		if(!isset($item)) debugLog("item not found - $slug");
+		if(!isset($item)) debugLog("item not found - [$slug]");
 
 		// parent is the same
 		if($item['data']['parent'] == $newparent) return $menu;
@@ -177,7 +183,7 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 
 		$item = &getMenuItemTreeRef($menu,$slug);
 
-		debugLog(__FUNCTION__ . " deleteing $slug");
+		debugLog(__FUNCTION__ . " deleteing [$slug]");
 		if(!$item) return $menu;
 
 		// if preserving children, move them to root
@@ -201,7 +207,7 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 				$key = array_search($slug, array_keys($parent['children']));
 				// debugLog("deleting $slug at $key ");
 	   			if($key !== false) unset($parent['children'][$key]);
-	   			else debugLog("delete search $slug not found");
+	   			else debugLog("delete search [$slug] not found");
 	   		}
 		}
 		else {
@@ -228,6 +234,11 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	$menunew = menuRebuildTree($menu);
 	debugLog(count($menunew[GSMENUFLATINDEX]) . " MENU ITEMS");	
 	return $menunew;
+}
+
+function menuIntegrityCheck($menu){
+	// compare keys from nest to flat, check for invalid keys, int and "data"
+	// check for all structure flaws, null objects etc.
 }
 
 function menuRebuildTree($menu){
@@ -490,7 +501,7 @@ function menuPageCacheSync(){
 	if($deltaadd)   $menunew = menuIndexAdd($menu,$deltaadd);
 	if($deltaprune)	$menunew = menuIndexPrune($menu,$deltaprune);
 
-	$menunew     = menuRebuildTree($menu);
+	$menunew     = menuRebuildTree($menunew);
 	$menusuccess = menuSave(GSMENUIDCORE,$menunew);
 	return array(count($deltaadd),count($deltaprune));
 }
