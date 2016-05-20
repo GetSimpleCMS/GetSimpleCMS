@@ -115,13 +115,13 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 			debugLog(__FUNCTION__ ." inserted at parent at position [$pos]");
 			// debugLogDie();
 			if(isset($parent['children'][$slug])) debugLog($parent['children'][$slug]);
-			else debugLog("FAILED TO INSERT");
+			else debugLog(__FUNCTION__ . " FAILED TO INSERT");
 		}
 		else {
 			$pos = array_insert_after($menu[GSMENUNESTINDEX],$after,$item);
 			debugLog(__FUNCTION__ ." inserted at root at position [$pos]");		
 			if(isset($menu[GSMENUNESTINDEX][$slug])) debugLog($menu[GSMENUNESTINDEX][$slug]);
-			else debugLog("FAILED TO INSERT");
+			else debugLog(__FUNCTION__ . " FAILED TO INSERT");
 		}
 		// debugLog($menu[GSMENUNESTINDEX]);
 		// debugLog($menu[GSMENUNESTINDEX]['index']);
@@ -134,13 +134,16 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		if($slug == $newslug) return $menu;
 
 		$item = &getMenuItemTreeRef($menu,$slug);
-		// debugLog($item);
-		// manipulate
+		// $parent = &getMenuItemTreeRef($menu,$item['data']['parent']); // debug check parent to see if rekey works
 		$item['id'] = $newslug;
-		// debugLog($item);
 		
 		$menu[GSMENUFLATINDEX][$newslug] = $menu[GSMENUFLATINDEX][$slug]; // rename flat
 		unset($menu[GSMENUFLATINDEX][$slug]);
+
+		if(isset($menu[GSMENUFLATINDEX][$newslug])) debugLog($menu[GSMENUFLATINDEX][$newslug]);
+		else debugLog(__FUNCTION__ . " FAILED TO RENAME");
+
+		if(isset($menu[GSMENUFLATINDEX][$slug])) debugLog(__FUNCTION__ . " FAILED TO REMOVE OLD");
 	}
 	
 	// change a parent, move the item to new parent or root
@@ -149,12 +152,18 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		debugLog(__FUNCTION__ . " moving [$slug] to [$newparent]");
 
 		$item = &getMenuItemTreeRef($menu,$slug);
-		debugLog($menu);
-		debugLog($item);
-		if(!isset($item)) debugLog("item not found - [$slug]");
+		// debugLog($menu);
+		// debugLog($item);
+		if(!isset($item)){
+			debugLog("item not found - [$slug]");
+			return $menu;
+		}	
 
 		// parent is the same
-		if($item['data']['parent'] == $newparent) return $menu;
+		if($item['data']['parent'] == $newparent){
+			debugLog(__FUNCTION__ . " item is already there, skipping");
+			return $menu;
+		}	
 
 		// insert
 		if($newparent) {
@@ -224,9 +233,12 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	// reindex
 	$menunest = $menu[GSMENUNESTINDEX];
 	// debugLog($menunest);
-	if($action == 'rename') $menunest = reindexMenuArray($menunest,true); // reindex if slug changes only
-	// @todo recurseUpgradeTree will fail to pick up data from old slug
-	// debugLog($menunest);
+	
+	if($action == 'rename'){
+		$menunest = reindexMenuArray($menunest,true); // reindex if slug changes only
+		// @todo recurseUpgradeTree will fail to pick up data from old slug
+		// debugLog($menunest);
+	}
     
 	// rebuild
 	if(!$rebuild) return $menu;

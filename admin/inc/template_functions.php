@@ -851,7 +851,7 @@ function pageSlugHasChanged($slug, $newslug = null){
 	else if(!isset($newslug)) $menudata = menuItemRebuildChange(array('delete',$slug));
 	// do rename if slug actually changed
 	else $menudata = menuItemRebuildChange(array('rename',$slug,$newslug));
-	debugLog("menunew",$menudata); // NOT WORKING
+	debugLog("menunew",$menudata); // @todo NOT WORKING
 	if(isset($menudata)) menuSave(GSMENUIDCORE,$menudata);
 	return;
 
