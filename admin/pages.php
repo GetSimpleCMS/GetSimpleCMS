@@ -31,16 +31,16 @@ $table   = '';
 if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone') {
 
 	check_for_csrf("clone", "pages.php");
-
-	$status = clone_page($_GET['id']);
-	if ($status !== false) {
+	$oldid = _id($_GET['id']);
+	$newid = clone_page($oldid);
+	if ($newid !== false) {
 		exec_action('page-clone'); // @hook page-clone page was cloned
 
-		// update menu, @todo not handling parent if inline
-		$menudata = menuItemRebuildChange(array('insert',$status));
+		// update menu, @todo not handling parent ?
+		$menudata = menuItemRebuildChange(array('insert',$newid,getParent($oldid),$oldid));
 		if(isset($menudata)) menuSave(GSMENUIDCORE,$menudata);
 
-		redirect('pages.php?upd=clone-success&id='.$status);
+		redirect('pages.php?upd=clone-success&id='.$newid);
 	} else {
 		$error = sprintf(i18n_r('CLONE_ERROR'), var_out($_GET['id']));
 		redirect('pages.php?error='.$error);
