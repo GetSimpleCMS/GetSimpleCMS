@@ -533,7 +533,7 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
 		'url',
 		'author',
 		'template',
-		// 'parent',
+		'parent', // @todo testing no parent to find page['parent'] issues that need changing
 		'menu',
 		'menuStatus',
 		'menuOrder',
@@ -2865,7 +2865,7 @@ function doTransliteration($str){
  */
 function outputDebugLog(){
 	global $GS_debug;
-    debugLog("DEBUGLOG END");	
+    debugLog("DEBUGLOG END");
 	echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
 	echo '<pre>';
 	foreach ($GS_debug as $log){
@@ -3097,9 +3097,6 @@ function array_insert_after(&$haystack, $needle = '', $stuff){
         else $new_array[] = $arg;
     }
    
-  	// @todo use more efficient assoc push than array_merge slice if we re just pushing
-  	// just array_merge no splice is needed
-
     // if needle is empty and empty is not an index in $haystack , skip loop
     // if(empty($needle) && !isset($haystack[$needle])){
     // 	array_push($haystack,$new_array);
@@ -3115,16 +3112,16 @@ function array_insert_after(&$haystack, $needle = '', $stuff){
     }
 
     // key not found or is last element, do simple append
-    // if($i == count($haystack)){
-    // 	$haystack[] = $new_array;
-    // 	debugLog(__FUNCTION__ . " skipping merge loop");    	
-    // 	return count($haystack)-1;
-    // }
+    if($i == count($haystack)){
+    	debugLog(__FUNCTION__ . " skipping slice");
+    	$haystack = array_merge($haystack,$new_array);
+    	return count($haystack);
+    }
 
     // split and reassemble array
     $haystack = array_merge(array_slice($haystack, 0, $i, true), $new_array, array_slice($haystack, $i, null, true));
 
-    return $i;
+    return $i+1;
 }
 
 /**
