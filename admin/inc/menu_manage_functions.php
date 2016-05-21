@@ -237,6 +237,7 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	if($action == 'rename'){
 		$menunest = reindexMenuArray($menunest,true); // reindex if slug changes only
 		// @todo recurseUpgradeTree will fail to pick up data from old slug
+		$menu[GSMENUNESTINDEX] = $menunest;
 		// debugLog($menunest);
 	}
     
@@ -251,6 +252,7 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 function menuIntegrityCheck($menu){
 	// compare keys from nest to flat, check for invalid keys, int and "data"
 	// check for all structure flaws, null objects etc.
+	// keys not match id
 }
 
 function menuRebuildTree($menu){
