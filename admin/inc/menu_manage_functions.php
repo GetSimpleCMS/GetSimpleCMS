@@ -56,16 +56,16 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	 * 
 	 * rename+move in one pass is not implemented yet, rare, called in chain by passing meu back in as arg for now
      *
-     * TESTS
+     * TESTS / Problems
      * -[x] rename root level
      * -[x] rename child level
      * -[x] insert at root level
      * -[x] insert at child level
      * -[ ] insert after both (NI)
-     * -[ ] move to root level // moves to bottom no sort done
-     * -[ ] move to parent level
-     * -[ ] move from root level
-     * -[ ] move from parent level
+     * -[x] move to root level // moves to bottom no sort done, fails to create flat 
+     * -[x] move to parent level // retains kereyed key in nest xml
+     * -[ ] move from root level both
+     * -[ ] move from parent level both
      * -[x] delete root level
      * -[x] delete child level
      * -[x] delete with and without preserve parents flag
@@ -148,12 +148,12 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	
 	// change a parent, move the item to new parent or root
 	if($action == 'move'){
-		$newparent = $args[2];
+		$newparent = trim($args[2]);
 		debugLog(__FUNCTION__ . " moving [$slug] to [$newparent]");
 
-		$item = &getMenuItemTreeRef($menu,$slug);
-		// debugLog($menu);
-		// debugLog($item);
+		$itemref = &getMenuItemTreeRef($menu,$slug);
+		$item = &$itemref; // break refs, probably not needed
+		unset($itemref);
 		if(!isset($item)){
 			debugLog("item not found - [$slug]");
 			return $menu;
@@ -166,22 +166,23 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		}	
 
 		// insert
-		if($newparent) {
-			$parent = &getMenuItemTreeRef($menu, $newparent);
-			$parent['children'][] = $item;
+		if(empty($newparent)) {
+			debugLog(__FUNCTION__ . " NEWPARENT IS EMPTY, MOVING TO ROOT");
+			$menu[GSMENUNESTINDEX][$slug] = $item; // @todo copy ?
 		}
 		else {
-			$menu[GSMENUNESTINDEX][$newparent]['children'][] = $item;
-			$menu[GSMENUNESTINDEX][$slug] = $item;
+			$parent = &getMenuItemTreeRef($menu, $newparent); // @todo careful can create node it is looking for, eg. "" parent
+			$parent['children'][$slug] = $item;
 		}
-
-		// debugLog($menu[GSMENUNESTINDEX][$newparent]);
 		
 		// perform delete of original next
 		// since this uses getMenuItemTreeRef, it assumes that flatindex has not been modified and still points to the old item
 		// alternative would be to provide a safe nest loop resolver that does not use the flat dotpath resolver
 		$action = 'delete';
-		$arg[2] = false;
+		$arg[2] = false; // set preserve children to false
+
+		unset($item);
+		unset($parent);
 	}
  
 	// remove an item, shift its children
@@ -201,10 +202,11 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 			$menu[GSMENUNESTINDEX] = array_merge($menu[GSMENUNESTINDEX],$item['children']);
 		}
 
-		// delete by array path
-		$parentslug = $menu[GSMENUFLATINDEX][$slug]['data']['parent'];
+		$parentslug = trim($menu[GSMENUFLATINDEX][$slug]['data']['parent']);
 		
-		if($parentslug) {
+		// delete by array path if has parent
+		if(!empty($parentslug)) {
+			debugLog(__FUNCTION__ . " delete via parent subtree " . $parentslug);
 			$parent = &getMenuItemTreeRef($menu, $parentslug);
 			
 			// remove from parent by key else find by index
@@ -230,11 +232,9 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	unset($item);
 	unset($parent);
 
-	// reindex
-	$menunest = $menu[GSMENUNESTINDEX];
-	// debugLog($menunest);
-	
 	if($action == 'rename'){
+		// reindex
+		$menunest = $menu[GSMENUNESTINDEX];
 		$menunest = reindexMenuArray($menunest,true); // reindex if slug changes only
 		// @todo recurseUpgradeTree will fail to pick up data from old slug
 		$menu[GSMENUNESTINDEX] = $menunest;
@@ -242,7 +242,10 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	}
     
 	// rebuild
-	if(!$rebuild) return $menu;
+	if(!$rebuild){
+		debugLog(__FUNCTION__ . ' SKIPPING REBUILD');
+		return $menu;
+	}	
 
 	$menunew = menuRebuildTree($menu);
 	debugLog(count($menunew[GSMENUFLATINDEX]) . " MENU ITEMS");	
@@ -253,6 +256,8 @@ function menuIntegrityCheck($menu){
 	// compare keys from nest to flat, check for invalid keys, int and "data"
 	// check for all structure flaws, null objects etc.
 	// keys not match id
+	// check for temp keys "rekeyed"
+	// check parents are correct, empty if root etc.
 }
 
 function menuRebuildTree($menu){

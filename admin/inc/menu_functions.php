@@ -356,12 +356,16 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
             // hack to rekey array if not using id keys, needed for non assoc arrays, such as mm submit etc
             // this is not preffered but provided as a failsafe, reindex beforehand reindexMenuArray() to avoid modify ref in loop errors
             // skip rekeyed copies, we need a flag since array is reference, or else it will process the rekeyed elements twice
+            // @todo this doesnt work properly, leaves rekeyed in nest array , and then skips in future events.
             if(isset($value['rekeyed'])){
-            	unset($value['rekeyed']);
+            	debugLog(__FUNCTION__ . " rekeyed SKIPPING " . $key . " != " . $id);            	
+            	unset($value['rekeyed']); // @todo we do not always get here, and therefore do not clear out these keys always causing issues with future runs, probably only hapens when a flat key was inserted, not moved.
             	continue;
             }
             if($key !== $id){
-                $array[$id] = $value; // this modifies &$array and may cause problems
+            	debugLog(__FUNCTION__ . " rekeying " . $key . " != " . $id);
+            	_debugLog($value);
+                $array[$id] = $value; // @todo this modifies &$array and may cause problems
 				$array[$id]['rekeyed'] = true;
                 unset($array[$key]); // remove old key
                 $value = &$array[$id];

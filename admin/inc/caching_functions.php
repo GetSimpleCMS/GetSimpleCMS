@@ -76,7 +76,7 @@ function init_pageCache($refresh = false, $force = false) {
 		$status       = save_pageCacheXml($pageCacheXml);
 		$pagesArray   = pageCacheXMLtoArray($pageCacheXml);
 		// updatePagesMenu(); // update pages menu cache
-		menuPageCacheSync();
+		if(isset($_REQUEST['refreshcache'])) menuPageCacheSync();
 	}
 	// debugLog($pagesArray);
 }
