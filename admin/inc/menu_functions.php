@@ -771,7 +771,9 @@ function mmCallout($item, $outer = false, $open = true,$level = '',$index = '' ,
     $pageTitle = truncate($pageTitle,30);
     $class     = $page['menuStatus'] === 'Y' ? ' menu' : ' nomenu';
 
-    return '<li class="dd-item clearfix" data-id="'.$page['url'].'">'."\n".'<div class="dd-itemwrap '.$class.'"><div class="dd-handle"> '.$menuTitle.'<div class="itemtitle"><em>'.$pageTitle."</em></div></div></div>\n";
+    $datas = 'data-menutitle="'.$menuTitle.'"';
+
+    return '<li class="dd-item clearfix" '.$datas.' data-id="'.$page['url'].'">'."\n".'<div class="dd-itemwrap '.$class.'"><div class="dd-handle"> '.$menuTitle.'<div class="itemtitle"><em>'.$pageTitle."</em></div></div></div>\n";
 }
 
 
@@ -870,7 +872,7 @@ function newMenuSave($menuid,$menu){
     $menudata = recurseUpgradeTree($menu); // build full menu data
     $menudata[GSMENUNESTINDEX] = $menu;
 	// return;
-    // debugLog(array_slice($menudata[GSMENUFLATINDEX], 0, 7));
+    // debugLog(array_slice($menudata[GSMENUFLATINDEX], 0, 7)); // debug a tiny sampling
     // return;
     // _debugLog(__FUNCTION__,$menu);
     // _debugLog(__FUNCTION__,$menudata);
