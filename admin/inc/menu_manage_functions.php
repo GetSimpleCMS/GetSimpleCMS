@@ -61,18 +61,18 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
      * -[x] rename child level
      * -[x] insert at root level
      * -[x] insert at child level
-     * -[ ] insert after both (NI)
+     * -[x] insert after both (NI)
      * -[x] move to root level // moves to bottom no sort done, fails to create flat 
-     * -[x] move to parent level // retains kereyed key in nest xml
-     * -[ ] move from root level both
-     * -[ ] move from parent level both
+     * -[x] move to parent level
+     * -[x] move from root level both
+     * -[x] move from parent level both
      * -[x] delete root level
      * -[x] delete child level
      * -[x] delete with and without preserve parents flag
      * -[x] clone page, uses its own action, inline parents (NI)
      *
      * @todo  undo functionality, since we have no history atm, we cannot undo menu changes, if we change parent inline, then undo, then nothihg changes
-     * for new we insert, for delete we delet, for slug change we rename, but we do not move, since we have no previous parent atm
+     * for new we insert, for delete we delete, for slug change we rename, but we do not move, since we have no previous parent atm
      * 
      * @todo optimizations
      * rekeymenu can maybe be avoided, or limited to only when needed not always
@@ -151,9 +151,7 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		$newparent = trim($args[2]);
 		debugLog(__FUNCTION__ . " moving [$slug] to [$newparent]");
 
-		$itemref = &getMenuItemTreeRef($menu,$slug);
-		$item = &$itemref; // break refs, probably not needed
-		unset($itemref);
+		$item = &getMenuItemTreeRef($menu,$slug);
 		if(!isset($item)){
 			debugLog("item not found - [$slug]");
 			return $menu;
