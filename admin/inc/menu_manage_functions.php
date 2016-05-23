@@ -102,29 +102,25 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
  
 		$parentslug = isset($args[2]) ? $args[2] : '';
 		$after      = isset($args[3]) ? $args[3] : '';
-		debugLog(__FUNCTION__ . " inserting [$slug] under [$parentslug] after [$after]");
+		$data       = isset($args[4]) ? $args[4] : '';
+		debugLog(__FUNCTION__ . " inserting [$slug] under [$parentslug] after [$after]"); // debugging
 
 		$item = array($slug => array('id' => $slug,'data' => array())); // pre indexed
 		// $item = array(array('id' => $slug)); // non indexed requires reindex
-		$cnt = count($menu[GSMENUNESTINDEX]);
 		if(!empty($parentslug)){
 			$parent = &getMenuItemTreeRef($menu, $parentslug);
 			if(!isset($parent['children'])) $parent['children'] = array();
 			$pos = array_insert_after($parent['children'],$after,$item);
-			// debugLog($parent);
-			debugLog(__FUNCTION__ ." inserted at parent at position [$pos]");
-			// debugLogDie();
-			if(isset($parent['children'][$slug])) debugLog($parent['children'][$slug]);
-			else debugLog(__FUNCTION__ . " FAILED TO INSERT");
+			debugLog(__FUNCTION__ ." inserted at parent at position [$pos]"); // debugging
+			if(!isset($parent['children'][$slug]))debugLog(__FUNCTION__ . " FAILED TO INSERT");
+			// else debugLog($parent['children'][$slug]); // debugging
 		}
 		else {
 			$pos = array_insert_after($menu[GSMENUNESTINDEX],$after,$item);
-			debugLog(__FUNCTION__ ." inserted at root at position [$pos]");		
-			if(isset($menu[GSMENUNESTINDEX][$slug])) debugLog($menu[GSMENUNESTINDEX][$slug]);
-			else debugLog(__FUNCTION__ . " FAILED TO INSERT");
+			debugLog(__FUNCTION__ ." inserted at root at position [$pos]"); // debugging
+			if(!isset($menu[GSMENUNESTINDEX][$slug])) debugLog(__FUNCTION__ . " FAILED TO INSERT");
+			// else debugLog($menu[GSMENUNESTINDEX][$slug]); // debugging
 		}
-		// debugLog($menu[GSMENUNESTINDEX]);
-		// debugLog($menu[GSMENUNESTINDEX]['index']);
 		$menu[GSMENUFLATINDEX][$slug] = array('id' => $slug); // insert flat
 	}
 
@@ -140,8 +136,8 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		$menu[GSMENUFLATINDEX][$newslug] = $menu[GSMENUFLATINDEX][$slug]; // rename flat
 		unset($menu[GSMENUFLATINDEX][$slug]);
 
-		if(isset($menu[GSMENUFLATINDEX][$newslug])) debugLog($menu[GSMENUFLATINDEX][$newslug]);
-		else debugLog(__FUNCTION__ . " FAILED TO RENAME");
+		if(!isset($menu[GSMENUFLATINDEX][$newslug])) debugLog(__FUNCTION__ . " FAILED TO RENAME");
+		// else debugLog($menu[GSMENUFLATINDEX][$newslug]); // debugging
 
 		if(isset($menu[GSMENUFLATINDEX][$slug])) debugLog(__FUNCTION__ . " FAILED TO REMOVE OLD");
 	}
@@ -159,13 +155,13 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 
 		// parent is the same
 		if($item['data']['parent'] == $newparent){
-			debugLog(__FUNCTION__ . " item is already there, skipping");
+			debugLog(__FUNCTION__ . " item is already there, skipping"); // debugging
 			return $menu;
 		}	
 
 		// insert
 		if(empty($newparent)) {
-			debugLog(__FUNCTION__ . " NEWPARENT IS EMPTY, MOVING TO ROOT");
+			debugLog(__FUNCTION__ . " NEWPARENT IS EMPTY, MOVING TO ROOT"); // debugging
 			$menu[GSMENUNESTINDEX][$slug] = $item; // @todo copy ?
 		}
 		else {
@@ -191,7 +187,7 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 
 		$item = &getMenuItemTreeRef($menu,$slug);
 
-		debugLog(__FUNCTION__ . " deleteing [$slug]");
+		debugLog(__FUNCTION__ . " deleteing [$slug]"); // debugging
 		if(!$item) return $menu;
 
 		// if preserving children, move them to root
@@ -204,7 +200,7 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		
 		// delete by array path if has parent
 		if(!empty($parentslug)) {
-			debugLog(__FUNCTION__ . " delete via parent subtree " . $parentslug);
+			debugLog(__FUNCTION__ . " delete via parent subtree " . $parentslug); // debugging
 			$parent = &getMenuItemTreeRef($menu, $parentslug);
 			
 			// remove from parent by key else find by index
@@ -256,6 +252,7 @@ function menuIntegrityCheck($menu){
 	// keys not match id
 	// check for temp keys "rekeyed"
 	// check parents are correct, empty if root etc.
+	// provide health check warnings on post limits, max memory, max records for large menus
 }
 
 function menuRebuildTree($menu){
