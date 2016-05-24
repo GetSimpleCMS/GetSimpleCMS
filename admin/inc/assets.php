@@ -56,7 +56,7 @@ $VERSIONS = array(
   'jqueryui'          => '1.11.3',
   'jquery-mousewheel' => '3.1.12',
   'scrolltofixed'     => '0.0.1',
-  'spin.js'           => '2.0.1'
+  'spin'              => '2.0.1'
 );
 
 // long form
@@ -84,19 +84,19 @@ $GS_script_assets['getsimple']['local']['url']     = $ASSETPATH.'js/jquery.getsi
 $GS_script_assets['getsimple']['local']['ver']     = $VERSIONS['getsimple'];
 
 // lazyload (lazy loading assets js/css)
-$GS_script_assets['lazyload']['local']['url']      = $ASSETPATH.'js/lazyload.js';
+$GS_script_assets['lazyload']['local']['url']      = $ASSETPATH.'js/lazyload/lazyload.js';
 $GS_script_assets['lazyload']['local']['ver']      = $VERSIONS['getsimple'];
 
 // gstree (collpaseble heirarchy table tree) 
-$GS_script_assets['gstree']['local']['url']        = $ASSETPATH.'js/jquery-gstree.js';
+$GS_script_assets['gstree']['local']['url']        = $ASSETPATH.'js/jquery.gstree.js';
 $GS_script_assets['gstree']['local']['ver']        = $VERSIONS['getsimple'];
 
 // spin (ajax spinners)
-$GS_script_assets['spin']['local']['url']          = $ASSETPATH.'js/spin.js';
+$GS_script_assets['spin']['local']['url']          = $ASSETPATH.'js/spin/spin.js';
 $GS_script_assets['spin']['local']['ver']          = $VERSIONS['spin.js'];
 
 // dropzone (ajax/html uploader w drag and drop)
-$GS_script_assets['dropzone']['local']['url']      = $ASSETPATH.'js/dropzone.js';
+$GS_script_assets['dropzone']['local']['url']      = $ASSETPATH.'js/dropzone/dropzone.js';
 $GS_script_assets['dropzone']['local']['ver']      = $VERSIONS['dropzone'];
 
 // jcrop
@@ -127,7 +127,7 @@ $GS_script_assets['jquery-ui']['local']['ver']     = $VERSIONS['jqueryui'];
  $GS_style_assets['jquery-ui']['local']['ver']     = $VERSIONS['jqueryui'];
 
 // scrolltofixed
-$GS_script_assets['scrolltofixed']['local']['url'] = $ASSETPATH.'js/jquery-scrolltofixed.js';
+$GS_script_assets['scrolltofixed']['local']['url'] = $ASSETPATH.'js/scrolltofixed/jquery-scrolltofixed.js';
 $GS_script_assets['scrolltofixed']['local']['ver'] = $VERSIONS['scrolltofixed'];
 
 // codemirror
