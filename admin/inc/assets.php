@@ -93,7 +93,7 @@ $GS_script_assets['gstree']['local']['ver']        = $VERSIONS['getsimple'];
 
 // spin (ajax spinners)
 $GS_script_assets['spin']['local']['url']          = $ASSETPATH.'js/spin/spin.js';
-$GS_script_assets['spin']['local']['ver']          = $VERSIONS['spin.js'];
+$GS_script_assets['spin']['local']['ver']          = $VERSIONS['spin'];
 
 // dropzone (ajax/html uploader w drag and drop)
 $GS_script_assets['dropzone']['local']['url']      = $ASSETPATH.'js/dropzone/dropzone.js';
