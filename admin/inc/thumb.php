@@ -126,7 +126,7 @@ $path_parts = pathinfo($from_name);
 
 
 $file     = basename($from_name);
-$sub_path = dirname($from_name);
+$sub_path = tsl(dirname($from_name));
 $outfile  = $save_to_file ? basename($to_name) : null;
 
 // if empty do not resize
