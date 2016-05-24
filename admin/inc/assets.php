@@ -100,11 +100,11 @@ $GS_script_assets['dropzone']['local']['url']      = $ASSETPATH.'js/dropzone/dro
 $GS_script_assets['dropzone']['local']['ver']      = $VERSIONS['dropzone'];
 
 // jcrop
-$GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/jquery.Jcrop.min.js';
+$GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/Jcrop.min.js';
 $GS_script_assets['jcrop']['local']['ver']        = $VERSIONS['jcrop'];
 $GS_script_assets['jcrop']['queue']['style']      = 'jcrop';
 
- $GS_style_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/jquery.Jcrop.min.css';
+ $GS_style_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/Jcrop.min.css';
  $GS_style_assets['jcrop']['local']['ver']        = $VERSIONS['jcrop'];
 
 
