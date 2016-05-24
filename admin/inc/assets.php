@@ -48,10 +48,10 @@ $VERSIONS = array(
   'getsimple'         =>  GSVERSION,
   'ckeditor'          => '4.4.6',
   'codemirror'        => '5.1.0',
-  'dropzone'          => '4.0.1',
+  'dropzone'          => '4.3.0',
   'fancybox'          => '2.1.5',
   'font-awesome'      => '4.3.0',
-  'jcrop'             => '0.9.12',
+  'jcrop'             => '2.0.4',
   'jquery'            => '2.1.3',
   'jqueryui'          => '1.11.3',
   'jquery-mousewheel' => '3.1.12',
@@ -100,7 +100,7 @@ $GS_script_assets['dropzone']['local']['url']      = $ASSETPATH.'js/dropzone/dro
 $GS_script_assets['dropzone']['local']['ver']      = $VERSIONS['dropzone'];
 
 // jcrop
-$GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/Jcrop.min.js';
+$GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/Jcrop.js';
 $GS_script_assets['jcrop']['local']['ver']        = $VERSIONS['jcrop'];
 $GS_script_assets['jcrop']['queue']['style']      = 'jcrop';
 

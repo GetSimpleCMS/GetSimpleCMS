@@ -192,12 +192,15 @@ if($jcrop){ ?>
 
 	<script>
 	  jQuery(document).ready(function() { 
-	    		
+	    	
+	  		jcrop_container = $("#cropbox");
+
 			$(window).load(function(){
-				var api = $.Jcrop('#cropbox',{
+				jcrop_container.Jcrop({
 					onChange: updateCoords,
 					onSelect: updateCoords,
 					onRelease: updateCoordsReset,
+					croprotend: jcropDoneAnimating,
 					// onDblClick: jcropDblClick,
 					boxWidth: $('#jcrop_open').width(), 
 					boxHeight: 800,
@@ -210,21 +213,51 @@ if($jcrop){ ?>
 					handleSize: '5px'
 			  	});
 
-				$('#cropbox').data('jcrop',api);
+				getApi = function(){
+					return 	jcrop_container.Jcrop('api');
+				}
 
-				$('.jcrop-tracker').bind('keydown mousemove mousedown',function (e) {
+				jcrop_container.data('jcrop',getApi());
+
+				getOptions = function(){
+					api = getApi();
+					return api.opt;
+				}
+
+				jcropClear = function(){
+					getApi().deleteAll();
+				}
+
+				// @todo must recreate a selection when manually entering new coords
+				$.Jcrop.prototype.deleteAll = function() {
+				  var _this = this;
+				  this.ui.multi.forEach(function(item){
+				    // _this.deleteSelection(item);
+				  	_this.removeSelection(item)   // Doesn't remove the shades
+				  });
+				  $('.jcrop-shades > div').width(0).height(0); // remove shades
+				  updateCoordsReset();
+				};
+
+				$('.jcrop-active').bind('keydown mousemove mousedown',function (e) {
 					// console.log('event: ' + e.type);
-					var options = api.getOptions();
+					if(e.type == 'keydown' && e.keyCode == 27){
+						jcropClear();
+					}
+					
+					var options = getOptions();
+
 					if(e.ctrlKey || e.metaKey) {
+						// console.log(options);
 						if(options.aspectRatio != 1){
 							console.log("aspectratio ON");
-							api.setOptions({ aspectRatio: 1 });
-							// api.focus(); // probably not needed setoptions reloads the entire thing
+							getApi().setOptions({ aspectRatio: 1 });
+							// jcrop_api.focus(); // probably not needed setoptions reloads the entire thing
 						}
 					} else {
 						if(options.aspectRatio == 1){
 							console.log("aspectratio OFF");
-							api.setOptions({ aspectRatio: 0 });
+							getApi().setOptions({ aspectRatio: 0 });
 							// api.focus();
 						}							
 					}

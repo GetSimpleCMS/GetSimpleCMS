@@ -2196,7 +2196,7 @@ textarea.copykit {
 
 
 #cropbox {
-	display:none;
+	/*display:none;*/
 	margin-bottom: 3px;
 }
 

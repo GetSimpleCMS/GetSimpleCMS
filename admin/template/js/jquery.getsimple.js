@@ -626,8 +626,10 @@ jQuery(document).ready(function () {
 		var array = [
 			parseInt($('#x').val(),10),
 			parseInt($('#y').val(),10),
-			parseInt($('#x').val(),10) + parseInt($('#w').val(),10),
-			parseInt($('#y').val(),10) + parseInt($('#h').val(),10)
+			parseInt($('#w').val(),10),
+			parseInt($('#h').val(),10),
+			// parseInt($('#x').val(),10) + parseInt($('#w').val(),10),
+			// parseInt($('#y').val(),10) + parseInt($('#h').val(),10)
 		];
 
 		// Debugger.log(array);
@@ -638,15 +640,18 @@ jQuery(document).ready(function () {
 		// var next = $(":input:eq(" + ($(":input").index(this) + 1) + ")");
 		$(this).focus();
 		$(this).select();
-		$('#cropbox').data('jcrop').animateTo(array,jcropDoneAnimating);
+        $('#cropbox').data('jcrop').ui.selection.animateTo(array,jcropDoneAnimating);
+		// $('#cropbox').data('jcrop').animateTo(array,jcropDoneAnimating);
 	});
 
-	function jcropDoneAnimating(){
-		Debugger.log("done animating");
+	jcropDoneAnimating = function(){
+		// Debugger.log("done animating");
 		$('#cropbox').data('animating',false);
 		$('.jcropinput').prop('disabled',false);
 		// update our coords to match real coords from jcrop, handles overages etc.
-		var coords = this.tellSelect();
+		// var coords = this.tellSelect();
+		var selection = $('#cropbox').data('jcrop').getSelection();
+		var coords = $('#cropbox').data('jcrop').unscale(selection);
 		updateCoordsCallback(coords);
 	}
 
