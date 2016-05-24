@@ -104,7 +104,7 @@ $GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/Jcrop.m
 $GS_script_assets['jcrop']['local']['ver']        = $VERSIONS['jcrop'];
 $GS_script_assets['jcrop']['queue']['style']      = 'jcrop';
 
- $GS_style_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/Jcrop.min.css';
+ $GS_style_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/css/Jcrop.min.css';
  $GS_style_assets['jcrop']['local']['ver']        = $VERSIONS['jcrop'];
 
 
