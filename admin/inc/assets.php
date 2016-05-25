@@ -54,7 +54,7 @@ $VERSIONS = array(
   'jcrop'             => '2.0.4',
   'jquery'            => '2.1.3',
   'jqueryui'          => '1.11.3',
-  'jquery-mousewheel' => '3.1.12',
+  'jquery-mousewheel' => '3.1.13',
   'scrolltofixed'     => '0.0.1',
   'spin'              => '2.0.1'
 );
@@ -144,7 +144,7 @@ $GS_script_assets['fancybox']['local']['ver']      = $VERSIONS['fancybox'];
 $GS_script_assets['fancybox']['queue']['script']   = 'jquery-mousewheel';
 
 
-$GS_script_assets['jquery-mousewheel']['local']['url']      = $ASSETPATH.'js/fancybox/jquery.mousewheel-3.0.6.pack.js';
+$GS_script_assets['jquery-mousewheel']['local']['url']      = $ASSETPATH.'js/mousewheel/jquery.mousewheel.min.js';
 $GS_script_assets['jquery-mousewheel']['local']['ver']      = $VERSIONS['jquery-mousewheel'];
 
 
