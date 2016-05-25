@@ -52,13 +52,16 @@ $VERSIONS = array(
   'fancybox'          => '2.1.5',
   'font-awesome'      => '4.6.3',
   'jcrop'             => '2.0.4',
-  'jquery'            => '2.1.3',
-  'jqueryui'          => '1.11.3',
+  'jquery'            => '2.2.4',
+  'jqueryui'          => '1.11.4',
+  'jqueryuicss'       => '1.11.3',
   'jquery-mousewheel' => '3.1.13',
   'scrolltofixed'     => '1.0.7',
   'spin'              => '2.3.2',
   'lazyload'          => '0.0.1'
 );
+
+$jqueryuitheme = "custom";
 
 // long form
 // $GS_script_assets = array(
@@ -122,9 +125,9 @@ $GS_script_assets['jquery']['local']['ver']        = $VERSIONS['jquery'];
 // jquery-ui
 $GS_script_assets['jquery-ui']['cdn']['url']       = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$VERSIONS['jqueryui'].'/jquery-ui.min.js';
 $GS_script_assets['jquery-ui']['cdn']['ver']       = $VERSIONS['jqueryui'];
-$GS_script_assets['jquery-ui']['local']['url']     = $ASSETPATH.'js/jqueryui/js/jquery-ui-'.$VERSIONS['jqueryui'].'.custom.min.js';
+$GS_script_assets['jquery-ui']['local']['url']     = $ASSETPATH.'js/jqueryui/js/jquery-ui-'.$VERSIONS['jqueryui'].'.min.js';
 $GS_script_assets['jquery-ui']['local']['ver']     = $VERSIONS['jqueryui'];
- $GS_style_assets['jquery-ui']['local']['url']     = $ASSETPATH.'js/jqueryui/css/custom/jquery-ui-'.$VERSIONS['jqueryui'].'.custom.min.css';
+ $GS_style_assets['jquery-ui']['local']['url']     = $ASSETPATH.'js/jqueryui/css/'.$jqueryuitheme.'/jquery-ui-'.$VERSIONS['jqueryuicss'].'.custom.css';
  $GS_style_assets['jquery-ui']['local']['ver']     = $VERSIONS['jqueryui'];
 
 // scrolltofixed
