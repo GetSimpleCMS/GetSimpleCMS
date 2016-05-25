@@ -651,7 +651,6 @@ jQuery(document).ready(function () {
 		// $('#cropbox').data('jcrop').animateTo(array,jcropDoneAnimating);
 	});
 
-	// @todo is being called twice
 	jcropDoneAnimating = function(){
 		// Debugger.log("done animating");
 		$('#cropbox').data('animating',false);
