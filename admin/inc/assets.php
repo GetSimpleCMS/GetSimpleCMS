@@ -56,7 +56,8 @@ $VERSIONS = array(
   'jqueryui'          => '1.11.3',
   'jquery-mousewheel' => '3.1.13',
   'scrolltofixed'     => '0.0.1',
-  'spin'              => '2.0.1'
+  'spin'              => '2.3.2',
+  'lazyload'          => '0.0.1'
 );
 
 // long form
@@ -85,7 +86,7 @@ $GS_script_assets['getsimple']['local']['ver']     = $VERSIONS['getsimple'];
 
 // lazyload (lazy loading assets js/css)
 $GS_script_assets['lazyload']['local']['url']      = $ASSETPATH.'js/lazyload/lazyload.js';
-$GS_script_assets['lazyload']['local']['ver']      = $VERSIONS['getsimple'];
+$GS_script_assets['lazyload']['local']['ver']      = $VERSIONS['lazyload'];
 
 // gstree (collpaseble heirarchy table tree) 
 $GS_script_assets['gstree']['local']['url']        = $ASSETPATH.'js/jquery.gstree.js';
