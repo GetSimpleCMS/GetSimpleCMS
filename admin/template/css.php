@@ -2171,9 +2171,12 @@ textarea.copykit {
 .thumbs img{
 	max-height:128px;
 	max-width:128px;
-	border: 1px solid #5E5E5E !important;
-	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;		
 	margin-bottom: 4px;
+}
+
+.thumbs img,.jcrop-active {
+	border: 1px solid #5E5E5E;
+	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;	
 }
 
 .thumbcontainer {
@@ -2193,7 +2196,6 @@ textarea.copykit {
 	width: auto;
 	margin-bottom: 5px;
 }
-
 
 #cropbox {
 	display:none;
@@ -2222,11 +2224,6 @@ textarea.copykit {
 	margin: 10px;
 	float:left;
 	vertical-align: middle;
-}
-
-.jcrop-active {
-	border: 1px solid #5E5E5E;
-	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;	
 }
 
 #jcropform label {
