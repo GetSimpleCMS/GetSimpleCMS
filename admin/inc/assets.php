@@ -50,7 +50,7 @@ $VERSIONS = array(
   'codemirror'        => '5.1.0',
   'dropzone'          => '4.3.0',
   'fancybox'          => '2.1.5',
-  'font-awesome'      => '4.3.0',
+  'font-awesome'      => '4.6.3',
   'jcrop'             => '2.0.4',
   'jquery'            => '2.1.3',
   'jqueryui'          => '1.11.3',
@@ -156,7 +156,7 @@ $GS_script_assets['jquery-mousewheel']['local']['ver']      = $VERSIONS['jquery-
 // font-awesome icons
  $GS_style_assets['font-awesome']['cdn']['url']    = '//netdna.bootstrapcdn.com/font-awesome/'.$VERSIONS['font-awesome'].'/css/font-awesome.min.css';
  $GS_style_assets['font-awesome']['cdn']['ver']    = $VERSIONS['font-awesome'];
- $GS_style_assets['font-awesome']['local']['url']  = $ASSETPATH.'css/font-awesome.min.css';
+ $GS_style_assets['font-awesome']['local']['url']  = $ASSETPATH.'fontawesome/css/font-awesome.min.css';
  $GS_style_assets['font-awesome']['local']['ver']  = $VERSIONS['font-awesome'];
 
 // ckeditor
