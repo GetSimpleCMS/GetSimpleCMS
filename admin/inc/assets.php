@@ -55,7 +55,7 @@ $VERSIONS = array(
   'jquery'            => '2.1.3',
   'jqueryui'          => '1.11.3',
   'jquery-mousewheel' => '3.1.13',
-  'scrolltofixed'     => '0.0.1',
+  'scrolltofixed'     => '1.0.7',
   'spin'              => '2.3.2',
   'lazyload'          => '0.0.1'
 );
