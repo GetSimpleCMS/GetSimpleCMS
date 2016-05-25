@@ -200,7 +200,6 @@ if($jcrop){ ?>
 					onChange: updateCoords,
 					onSelect: updateCoords,
 					onRelease: updateCoordsReset,
-					croprotend: jcropDoneAnimating,
 					// onDblClick: jcropDblClick,
 					boxWidth: $('#jcrop_open').width(), 
 					boxHeight: 800,
@@ -228,19 +227,21 @@ if($jcrop){ ?>
 					getApi().deleteAll();
 				}
 
-				// @todo must recreate a selection when manually entering new coords
+				// custom function to clear selection, jcrop no longer includes this functionality
 				$.Jcrop.prototype.deleteAll = function() {
 				  var _this = this;
 				  this.ui.multi.forEach(function(item){
-				    // _this.deleteSelection(item);
-				  	_this.removeSelection(item)   // Doesn't remove the shades
+				    // _this.deleteSelection(item); // not sure the difference
+				  	_this.removeSelection(item)
 				  });
 				  $('.jcrop-shades > div').width(0).height(0); // remove shades
 				  updateCoordsReset();
 				};
 
+				// bind to events to catch control/command for aspect control and Esq for clear
+				// @todo blocking F5 in chrome for some reason, it should not block any propagation
 				$('.jcrop-active').bind('keydown mousemove mousedown',function (e) {
-					// console.log('event: ' + e.type);
+					// console.log('event: ' + e.type + " " + e.keyCode);
 					if(e.type == 'keydown' && e.keyCode == 27){
 						jcropClear();
 					}
@@ -250,13 +251,15 @@ if($jcrop){ ?>
 					if(e.ctrlKey || e.metaKey) {
 						// console.log(options);
 						if(options.aspectRatio != 1){
-							console.log("aspectratio ON");
+							// console.log("aspectratio ON");
 							getApi().setOptions({ aspectRatio: 1 });
 							// jcrop_api.focus(); // probably not needed setoptions reloads the entire thing
+							return;
 						}
-					} else {
+					} 
+					else {
 						if(options.aspectRatio == 1){
-							console.log("aspectratio OFF");
+							// console.log("aspectratio OFF");
 							getApi().setOptions({ aspectRatio: 0 });
 							// api.focus();
 						}							

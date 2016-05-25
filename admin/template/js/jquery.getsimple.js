@@ -640,10 +640,18 @@ jQuery(document).ready(function () {
 		// var next = $(":input:eq(" + ($(":input").index(this) + 1) + ")");
 		$(this).focus();
 		$(this).select();
+
+		// create selection if none exist
+		if(!$('#cropbox').data('jcrop').ui.multi[0]){
+			// Debugger.log("No jcrop selection found");
+			$('#cropbox').data('jcrop').newSelection();
+		}	
+
         $('#cropbox').data('jcrop').ui.selection.animateTo(array,jcropDoneAnimating);
 		// $('#cropbox').data('jcrop').animateTo(array,jcropDoneAnimating);
 	});
 
+	// @todo is being called twice
 	jcropDoneAnimating = function(){
 		// Debugger.log("done animating");
 		$('#cropbox').data('animating',false);
