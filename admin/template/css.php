@@ -2224,8 +2224,8 @@ textarea.copykit {
 	vertical-align: middle;
 }
 
-.jcrop-holder {
-	border: 1px solid #5E5E5E !important;
+.jcrop-active {
+	border: 1px solid #5E5E5E;
 	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;	
 }
 
