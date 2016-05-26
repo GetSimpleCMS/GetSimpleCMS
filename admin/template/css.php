@@ -857,7 +857,10 @@ h5:hover img {
 	padding: 4px;
 	vertical-align: top;
 	/*line-height: 20px !important;*/
-	word-break: break-all;	
+}
+
+.wrapper table td.break {
+	word-break: break-all;
 }
 
 .wrapper table th {
@@ -3042,7 +3045,7 @@ a.disabled:visited {
 	border-radius: 3px;
 }
 
-.right {
+.floatright {
 	float:right;
 }
 

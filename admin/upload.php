@@ -288,7 +288,7 @@ function getUploadIcon($type){
 			echo '<td class="imgthumb"></td>';
 			$adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
 			$folderhref = 'upload.php?' . merge_queryString(array('path'=>$adm));
-			echo '<td>'.getUploadIcon('.').'</span><a href="'.$folderhref.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
+			echo '<td class="break">'.getUploadIcon('.').'</span><a href="'.$folderhref.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
 			echo '<td class="file_size right"><span>'.$directory_size.'</span></td>';
 
 		  // get the file permissions.
@@ -363,7 +363,7 @@ function getUploadIcon($type){
 			}
 			
 			// name column linked
-			echo '</td><td>'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink" data-fileurl="'.$primarylink.'">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
+			echo '</td><td class="break">'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink" data-fileurl="'.$primarylink.'">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
 			
 			// size column
 			echo '<td class="file_size right"><span>'. $upload['size'] .'</span></td>';

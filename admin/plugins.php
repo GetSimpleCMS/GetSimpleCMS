@@ -98,8 +98,8 @@ foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
 	}
 
 	$table .= '<tr id="tr-'.$counter.'" class="'.$trclass.'" >';
-	$table .= '<td style="width:150px" ><b>'.$plugin_title.'</b></td>';
-	$table .= '<td><span>'.$plugininfo['description'].'</span>'; // desc empty if inactive
+	$table .= '<td style="width:150px" class="break" ><b>'.$plugin_title.'</b></td>';
+	$table .= '<td class="break"><span>'.$plugininfo['description'].'</span>'; // desc empty if inactive
 
 	// if plugin is active, show what we know from register_plugin, version , author
 	if ($pluginver > 0){

@@ -1002,7 +1002,7 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	if ($page['url'] == getDef('GSINDEXSLUG'))     { $pageindex       = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; }
 	if(dateIsToday($page['pubDate'])) { $pagepubdate     = ' <span class="datetoday">'. output_date($page['pubDate']) . '</span>';} else { $pagepubdate = '<span>'. output_date($page['pubDate']) . "</span>";}
 
-	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. cl($pagetitle) .'</a>';
+	$menu .= '<td class="pagetitle break">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. cl($pagetitle) .'</a>';
 	$menu .= '<div class="showstatus toggle" >'. $pageindex .  $pagedraft . $pageprivate . $pagemenustatus .'</div></td>'; // keywords used for filtering
 	$menu .= '<td style="width:80px;text-align:right;" ><span>'.$pagepubdate.'</span></td>';
 	$menu .= '<td class="secondarylink" >';
