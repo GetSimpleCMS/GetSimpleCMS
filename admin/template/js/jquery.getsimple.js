@@ -913,15 +913,21 @@ jQuery(document).ready(function () {
 		$(this).hide();		
 	}
 
+	// basic replacement clean a slug in js, probably will need to update this to use ajax to use php version or duplicate in js
+	function slugClean(string){
+		string = string.toLowerCase();
+		return string.replace(/\s/g, "_");
+	}
+
 	// update components codetext and slug upon title changes
 	$("#maincontent").on("keyup","input.titlesaver", function () {
 		var myval = $(this).val();
-		$(this).parents('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
+		$(this).parents('.compdiv').find(".compslugcode").html("'" + slugClean(myval) + "'");
 		$(this).parents('.compdiv').find("b.editable").html(myval);
 	}).on("focusout", "input.titlesaver", function () {
 		var myval = $(this).val();
 		myval = myval.toLowerCase().trim();
-		$(this).parents('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
+		$(this).parents('.compdiv').find(".compslugcode").html("'" + slugClean(myval) + "'");
 		$(this).parents('.compdiv').find("b.editable").html(myval);
 		if(myval !== '' && validateCompSlug(myval)){
 			var compid = $(this).parents('.compdiv').find("input.compid").val();
