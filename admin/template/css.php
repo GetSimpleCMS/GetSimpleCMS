@@ -1249,7 +1249,7 @@ fieldset,
 	transition: background-color 400ms;
 }
 
-.leftopt p,.rightopt, p,.wideopt p{
+.leftopt p,.rightopt p,.wideopt p{
 /*.leftsec p,.rightsec, p,.widesec p*/
 	margin-bottom: 15px;
 }
