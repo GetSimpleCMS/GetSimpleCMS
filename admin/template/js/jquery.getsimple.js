@@ -2056,6 +2056,10 @@ jQuery(document).ready(function () {
 			ajaxStatusComplete();	
 			window.location = xhr.responseText;
 		}
+		else{
+			// xhr.status = 0 ?
+			Debugger.log("AJAX ERRROR OCCURED");
+		}
 	});
 
 	// custom ajax error handler
