@@ -525,7 +525,6 @@ function getParentPage($pageId){
  */
 function getParents($pageId){
 
-	return getParentFields($pageId);
 
 	$pageparents = getPagesFields('parent');
 	$parent      = getParent($pageId);
