@@ -2072,13 +2072,12 @@ function outputCollectionTags($collectionid,$data){
 }
 
 function addComponentItem($xml,$title,$value,$active,$slug = null){
-
-	if ($title != null && !empty($title)) {
-		if ( $slug == null || _id($slug) == '') {
-			$slug  = to7bit($title, 'UTF-8');
-			$slug  = clean_url($slug); 
+	if ($title != null && !empty(trim($title))) {
+		if ( $slug == null or empty(trim($slug))){
+			$slug = $title;
 		}
-		
+		$slug = prepareSlug($slug);
+
 		$title    = safe_slash_html($title);
 		$value    = safe_slash_html($value);
 		$disabled = $active;
