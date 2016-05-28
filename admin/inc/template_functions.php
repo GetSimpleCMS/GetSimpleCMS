@@ -2071,12 +2071,20 @@ function outputCollectionTags($collectionid,$data){
 	echo '</div>';
 }
 
-function addComponentItem($xml,$title,$value,$active,$slug = null){
-	if ($title != null && !empty(trim($title))) {
-		if ( $slug == null or empty(trim($slug))){
+function getCollectionItemSlug($slug,$default = null){
+	if ( $slug == null or empty(trim($slug))){
+		if ($title != null && !empty(trim($title))) {
 			$slug = $title;
 		}
-		$slug = prepareSlug($slug);
+	}	
+	$slug = prepareSlug($slug);
+	if(empty(trim($slug))) return; // errormode return null
+	return $slug;
+}
+
+function addComponentItem($xml,$title,$value,$active,$slug = null){
+		$slug = getCollectionItemSlug($slug,$title);
+		if($slug == null) return; // errormode return null
 
 		$title    = safe_slash_html($title);
 		$value    = safe_slash_html($value);
@@ -2093,7 +2101,6 @@ function addComponentItem($xml,$title,$value,$active,$slug = null){
 		$c_note->addCData($value);
 		$c_note     = $component->addChild('disabled');
 		$c_note->addCData($disabled);
-	}
 	// debugLog(var_dump($component->asXML()));
 	return $xml;
 }
