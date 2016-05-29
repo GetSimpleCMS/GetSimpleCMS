@@ -925,8 +925,8 @@ jQuery(document).ready(function () {
 		$(this).parents('.compdiv').find(".compslugcode").html("'" + slugClean(myval) + "'");
 		$(this).parents('.compdiv').find("b.editable").html(myval);
 	}).on("focusout", "input.titlesaver", function () {
-		var myval = $(this).val();
-		myval = myval.toLowerCase().trim();
+		var rawval = myval = $(this).val();
+		myval.toLowerCase().trim();
 		$(this).parents('.compdiv').find(".compslugcode").html("'" + slugClean(myval) + "'");
 		$(this).parents('.compdiv').find("b.editable").html(myval);
 		if(myval !== '' && validateCompSlug(myval)){
@@ -938,7 +938,7 @@ jQuery(document).ready(function () {
 			$(this).parents('.compdiv').find('.delcomponent').show();
 			$(this).val(myval); // put cleaner slug back
 			$(this).parents('.compdiv').find("input.compslug").val(myval);			
-			$(this).parents('.compdiv').find("input.comptitle").val(myval);
+			$(this).parents('.compdiv').find("input.comptitle").val(rawval.trim());
 			$('#changetitle').remove(); // remove self parent last
 		}
 		else if(myval == ''){

@@ -30,7 +30,7 @@ if (isset($_POST['submitted'])){
 	# start creation of top of components.xml file
 	if (count($_POST['component']) != 0) {
 		$status = $error = null;
-		$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
+		$compxml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
 		
 		foreach ($_POST['component'] as $component)	{
 			$id     = $component['id']; // unused
@@ -45,16 +45,17 @@ if (isset($_POST['submitted'])){
 				if(empty($slug)) $error = 'an error occured, missing slug';
 			}
 			else {
-				if(is_object(get_collection_item($slug,$xml))){
+				if(is_object(get_collection_item($slug,$compxml))){
 					$error = sprintf(i18n_r('DUP_SLUG',"Duplicate slug - [%s]"),$slug);
 				}
-				$status = addComponentItem($xml,$title,$value,$active,$slug); // @todo, check for problems $xml is passed by identifier
+				$status = addComponentItem($compxml,$title,$value,$active,$slug); // @todo, check for problems $xml is passed by identifier
 				if(!$status) $error = i18n_r("ERROR_OCCURRED");
 			}
 		}
 		if(!$error){
 			exec_action('component-save'); // @hook component-save before saving components data file
-			$status = XMLsave($xml, GSDATAOTHERPATH.GSCOMPONENTSFILE);
+			$status = XMLsave($compxml, GSDATAOTHERPATH.GSCOMPONENTSFILE);
+			if(!$status) $error = i18n_r("ERROR_OCCURRED");
 			get_components_xml(true);
 		}	
 	}
