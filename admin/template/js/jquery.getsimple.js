@@ -825,8 +825,9 @@ jQuery(document).ready(function () {
 		nextid = (id - 1) + 2;
 		$("#id").val(nextid);
 
-		$('#submit_line').fadeIn(); // fadein in case no components exist
+		$('#submit_line').fadeIn(); // fadein submit in case first component
 		ajaxStatusComplete();
+		pageIsDirty(input);
 		
 		// add code ditor
 		var codeedit = input.hasClass('code_edit');
@@ -872,12 +873,12 @@ jQuery(document).ready(function () {
 
 			$(myparent).find('input').prop('disabled',true); // disable all inputs
 			$(myparent).find('textarea').prop('disabled',true); // disable textarea
-			$(myparent).addClass('deleted'); 
+			$(myparent).addClass('deleted');
 
 			var title = $(myparent).find("input.comptitle").val();
 			notifyError(sprintf(i18n('COMPONENT_DELETED'),title)).popit();
 
-			pageIsDirty();
+			pageIsDirty(this);
 			$(this).remove(); // remove delete button
 
 			loadingAjaxIndicator.fadeOut(1000);
@@ -1478,7 +1479,9 @@ jQuery(document).ready(function () {
         pageIsDirty($(this));
     });
 
+    // mark page dirty find parent form of elem, and style its submit_line and global pagedirty
     function pageIsDirty(elem){
+    	if(!elem) elem = $('form input');
         if($(elem).closest($('form')).find('#submit_line').get(0)) $("body").addClass('dirty');    	
         pageisdirty = true;
     }
