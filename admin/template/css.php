@@ -1152,6 +1152,11 @@ label span.right a:hover {
 	padding-top: 3px;
 }
 
+/* keep checkbox labels on same line */
+.inline input[type='checkbox']+label {
+    display: inline; 
+}
+
 span.inline {
 	white-space: nowrap;
 }
