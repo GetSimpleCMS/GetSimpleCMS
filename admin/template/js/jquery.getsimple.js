@@ -1369,7 +1369,7 @@ jQuery(document).ready(function () {
         else {
         	ajaxSaveError();
         	autoSaveDestroy();
-        }	
+        }
     }
 
     // prerform updating after ajax save
@@ -1395,16 +1395,31 @@ jQuery(document).ready(function () {
         // @todo change window url to new slug so refreshes work
     }
 
+	function sleep(milliseconds) {
+	  var start = new Date().getTime();
+	  for (var i = 0; i < 1e7; i++) {
+	    if ((new Date().getTime() - start) > milliseconds){
+	      break;
+	    }
+	  }
+	}
+
     // handle ajax save error
     function ajaxSaveError(response){
         ajaxError(response);
-        // if ($(response).find('div.updated').get(0)) {
-        	// $(response).find('div.updated').parseNotify();
-        // } else notifyError(i18n('ERROR_OCCURED')).popit();
+        if ($(response).find('div.updated').get(0)) {
+        	$(response).find('div.updated').parseNotify();
+        } else notifyError(i18n('ERROR_OCCURED')).popit();
         warnme = true;
         ajaxStatusComplete();
         pageIsDirty();
         autoSaveInd();
+
+		disableAjaxSave();
+
+        // auto submit
+		// sleep(3);
+		// dosavealt();
     }
 
     // call callbacks for autosave succcess or error
@@ -2046,30 +2061,27 @@ jQuery(document).ready(function () {
 
 	// catch all ajax error, and redirects for session timeout on HTTP 401 unauthorized
 	$( document ).ajaxError(function( event, xhr, settings ) {
-		Debugger.log("ajaxComplete: " + xhr.status);
-		Debugger.log(event);
-		Debugger.log(xhr);
-		Debugger.log(settings);
+		Debugger.log("ajaxError xhr status:" + xhr.status + " " + xhr.statusText);
 		if(xhr.status == 401){
 			notifyInfo("Redirecting...");
 			window.location.reload();
 		}
-		else if(xhr.status == 302){
+		else if(xhr.status == 302 || xhr.status == 300){
+			// IE11 will not return status from redirect headers if no location provided, 300 does however
 			Debugger.log("Redirecting...");
-			ajaxStatusComplete();	
+			ajaxStatusComplete();
 			window.location = xhr.responseText;
 		}
 		else{
-			// xhr.status = 0 ?
-			Debugger.log("AJAX ERRROR OCCURED");
+			if(settings.type == "POST" && settings.url == "changedata.php") ajaxSaveError();
 		}
 	});
 
 	// custom ajax error handler
 	function ajaxError($response){
 		if(GS.debug === true){
-            Debugger.log('An error occured in an XHR call, check console for response');
-			Debugger.log($response);
+            Debugger.log('An error occured in an XHR call, check console above for response');
+			if($response) Debugger.log($response);
 		}
 	}
 
@@ -2128,6 +2140,9 @@ function dosavealt(){
 	dosave();
 }
 
+function disableAjaxSave(){
+	$('body').removeClass('ajaxsave');
+}
 
 function supports_html5_storage() {
 	// return Modernizr.localstorage;
