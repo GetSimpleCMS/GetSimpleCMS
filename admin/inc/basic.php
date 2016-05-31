@@ -1228,11 +1228,11 @@ function redirect($url,$ajax = false) {
 		// @note this is not a security function for ajax, just a session timeout handler
 		die();
 		} else if($ajax){
-			header('HTTP/1.1 302 Redirect');
-			echo $url;
+			header('HTTP/1.1 300 Redirect');
 			// header('Location: '.$url);
-			// @note this is not a security function for ajax, just a session timeout handler
-			die();			
+			echo $url;
+			// @note this is not a security function for ajax, just a session timeout handler, also uses for post redirects, new page etc.
+			die();
 		}
 	}
 
