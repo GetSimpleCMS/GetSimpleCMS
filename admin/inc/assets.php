@@ -236,12 +236,12 @@ queue_script('spin'          , GSBACK);
 queue_script('gstree'        , GSBACK);
 queue_script('fancybox'      , GSBACK);
 queue_script('scrolltofixed' , GSBACK);
-queue_style('gsinline'      , GSBACK);
 
 queue_style('fancybox'       , GSBACK);
 queue_style('jquery-ui'      , GSBACK);
 // queue_style('jquery-ui-theme', GSBACK); // unused, reserved for custom GS jquery ui theme if ever needed
 queue_style('font-awesome'   , GSBACK);
+
 
 // inline tests
 // $GS_script_assets['gsinlinejs']['local']['url']     = null;
@@ -307,6 +307,20 @@ function register_script($handle, $src, $ver, $in_footer = false, $queue = null)
   );
 }
 
+/**
+ * Register Script Inline Code
+ *
+ * Register a script to include in Themes
+ *
+ * @since 3.4
+ * @uses $GS_scripts
+ *
+ * @param string $handle name for the script
+ * @param string $src raw code text
+ * @param string $ver script version
+ * @param boolean $in_footer load the script in the footer if true
+ * @param array $queue array of script or style assets to auto queue
+ */
 function register_script_code($handle, $src, $ver, $in_footer = false, $queue = null){
   global $GS_scripts;
   register_script($handle, null, $ver, $in_footer, $queue);
@@ -542,6 +556,21 @@ function register_style($handle, $src, $ver, $media = 'all', $queue = null){
   );
 }
 
+
+/**
+ * Register inline Style
+ *
+ * Register a an inline block of style code
+ *
+ * @since 3.4
+ * @uses $GS_styles
+ *
+ * @param string $handle name for the Style
+ * @param string $src raw style code
+ * @param string $ver Style version
+ * @param string $media the media for this stylesheet
+ * @param array $queue array of style assets to auto queue
+ */
 function register_style_code($handle, $src, $ver, $media = 'all', $queue = null){
   global $GS_styles;
   register_style($handle, null, $ver, $media, $queue );
