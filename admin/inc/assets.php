@@ -434,7 +434,7 @@ function getScripts($facing = GSBACK, $footer = false){
         continue;
       }
       $str.= '<script src="'.$script['src'].( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '"></script>'."\n";
-      $str.= cdn_fallback($script);  
+      if(getDef('GSCDNFALLBACK',true) || !is_frontend()) $str.= cdn_fallback($script);
     }
   }
 
