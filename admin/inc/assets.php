@@ -246,13 +246,13 @@ queue_style('font-awesome'   , GSBACK);
 // inline tests
 // $GS_script_assets['gsinlinejs']['local']['url']     = null;
 // $GS_script_assets['gsinlinejs']['local']['ver']     = $VERSIONS['getsimple'];
-// $GS_script_assets['gsinlinejs']['local']['code']   = "<script>alert(\"inline\");</script>";
+// $GS_script_assets['gsinlinejs']['local']['code']   = "alert(\"inline\");";
 // preRegisterScript('gsinlinejs',   '',   false , $infooter);
 // queue_script('gsinlinejs',GSBOTH);
-	
+
 // $GS_style_assets['gsinlinecss']['local']['url']     = null;
 // $GS_style_assets['gsinlinecss']['local']['ver']     = $VERSIONS['getsimple'];
-// $GS_style_assets['gsinlinecss']['local']['code'] = "<style>body{background:#FF00FF !important;}</style>";
+// $GS_style_assets['gsinlinecss']['local']['code'] = "body{background:#FF00FF !important;}";
 // preRegisterStyle('gsinlinecss',   '',   false , '');
 // queue_style('gsinlinecss',GSBOTH);
 
@@ -321,7 +321,7 @@ function register_script($handle, $src, $ver, $in_footer = false, $queue = null)
  * @param boolean $in_footer load the script in the footer if true
  * @param array $queue array of script or style assets to auto queue
  */
-function register_script_code($handle, $src, $ver, $in_footer = false, $queue = null){
+function register_script_code($handle, $src, $ver = '0', $in_footer = false, $queue = null){
   global $GS_scripts;
   register_script($handle, null, $ver, $in_footer, $queue);
   $GS_scripts[$handle]['code'] = $src;
@@ -430,7 +430,7 @@ function getScripts($facing = GSBACK, $footer = false){
     if ($script['load'] == true && ($script['where'] & $facing) ){
       if($footer !== $script['in_footer']) continue;
       if(isset($script['code'])){
-        $str .= $script['code'];
+        $str .= "<script>".$script['code']."</script>";
         continue;
       }
       $str.= '<script src="'.$script['src'].( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '"></script>'."\n";
@@ -571,7 +571,7 @@ function register_style($handle, $src, $ver, $media = 'all', $queue = null){
  * @param string $media the media for this stylesheet
  * @param array $queue array of style assets to auto queue
  */
-function register_style_code($handle, $src, $ver, $media = 'all', $queue = null){
+function register_style_code($handle, $src, $ver = '0', $media = 'all', $queue = null){
   global $GS_styles;
   register_style($handle, null, $ver, $media, $queue );
   $GS_styles[$handle]['code'] = $src;
@@ -602,7 +602,7 @@ function getStyles($facing = GSBACK){
     if ($style['where'] & $facing ){
         if ($style['load'] == true){
 	      if(isset($style['code'])){
-	      	$str .= $style['code'];
+	      	$str .= "<style>".$style['code']."</style>";
 	      	continue;
 	      }
           $str .= '<link href="'.$style['src']. ( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '" rel="stylesheet" media="'.$style['media'].'">'."\n";
