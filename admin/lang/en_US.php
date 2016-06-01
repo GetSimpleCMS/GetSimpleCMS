@@ -210,7 +210,7 @@ $i18n = array(
 "ADD_COMPONENT"           =>	"<em>A</em>dd Component", // 'a' is the accesskey identifier
 "SAVE_COMPONENTS"         =>	"Save Components",
 "ACTIVE"                  =>	"Active",
-"COMPONENT_DELETED"       =>    "Component was deleted <b>%s</b>",
+"COMPONENT_DELETED"       =>    "Component will be deleted upon next save <b>%s</b>",
 
 /* 
 * For: snippets.php
