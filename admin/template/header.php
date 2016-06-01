@@ -90,7 +90,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		queue_script('gscrop',GSBACK);
 		queue_style('gscrop',GSBACK);
 	}
-
+	
     // HTMLEDITOR INIT
     // ckeditor editorcss
     if (file_exists(GSTHEMESPATH .getGlobal('TEMPLATE')."/editor.css")) {

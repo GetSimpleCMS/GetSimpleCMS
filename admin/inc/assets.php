@@ -236,12 +236,25 @@ queue_script('spin'          , GSBACK);
 queue_script('gstree'        , GSBACK);
 queue_script('fancybox'      , GSBACK);
 queue_script('scrolltofixed' , GSBACK);
+queue_style('gsinline'      , GSBACK);
 
 queue_style('fancybox'       , GSBACK);
 queue_style('jquery-ui'      , GSBACK);
 // queue_style('jquery-ui-theme', GSBACK); // unused, reserved for custom GS jquery ui theme if ever needed
 queue_style('font-awesome'   , GSBACK);
 
+// inline tests
+// $GS_script_assets['gsinlinejs']['local']['url']     = null;
+// $GS_script_assets['gsinlinejs']['local']['ver']     = $VERSIONS['getsimple'];
+// $GS_script_assets['gsinlinejs']['local']['code']   = "<script>alert(\"inline\");</script>";
+// preRegisterScript('gsinlinejs',   '',   false , $infooter);
+// queue_script('gsinlinejs',GSBOTH);
+	
+// $GS_style_assets['gsinlinecss']['local']['url']     = null;
+// $GS_style_assets['gsinlinecss']['local']['ver']     = $VERSIONS['getsimple'];
+// $GS_style_assets['gsinlinecss']['local']['code'] = "<style>body{background:#FF00FF !important;}</style>";
+// preRegisterStyle('gsinlinecss',   '',   false , '');
+// queue_style('gsinlinecss',GSBOTH);
 
 /**
  * ASSET FUNCTIONS
@@ -262,6 +275,7 @@ function preRegisterScript($id,$config = array(),$CDN = false,$footer = false){
   if(!$config && isset($GS_script_assets[$id])) $config = $GS_script_assets[$id];
   if(!$config) return;
   $queue = isset($config['queue']) ? $config['queue'] : null;
+  if(isset($config['local']['code'])) return register_script_code($id, $config['local']['code'], $config['local']['ver'], $footer, $queue);
   if($CDN && isset($config['cdn'])) return register_script($id, $config['cdn']['url'], '', $footer, $queue); // no version for CDN benefits
   else return register_script($id, $config['local']['url'], $config['local']['ver'], $footer, $queue);
 }
@@ -291,6 +305,12 @@ function register_script($handle, $src, $ver, $in_footer = false, $queue = null)
     'load'      => false,
     'queue'     => $queue
   );
+}
+
+function register_script_code($handle, $src, $ver, $in_footer = false, $queue = null){
+  global $GS_scripts;
+  register_script($handle, null, $ver, $in_footer, $queue);
+  $GS_scripts[$handle]['code'] = $src;
 }
 
 /**
@@ -395,6 +415,10 @@ function getScripts($facing = GSBACK, $footer = false){
   foreach ($GS_scripts as $script){
     if ($script['load'] == true && ($script['where'] & $facing) ){
       if($footer !== $script['in_footer']) continue;
+      if(isset($script['code'])){
+        $str .= $script['code'];
+        continue;
+      }
       $str.= '<script src="'.$script['src'].( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '"></script>'."\n";
       $str.= cdn_fallback($script);  
     }
@@ -485,6 +509,7 @@ function preRegisterStyle($id,$config = array(), $CDN = false, $media = 'screen'
   if(!$config && isset($GS_style_assets[$id])) $config = $GS_style_assets[$id];
   if(!$config) return;
   $queue = isset($config['queue']) ? $config['queue'] : null;
+  if(isset($config['local']['code'])) return register_style_code($id, $config['local']['code'], $config['local']['ver'], $media,$queue);
   if($CDN && isset($config['cdn'])) return register_style($id, $config['cdn']['url'], '', $media,$queue); // no version for CDN benefits
   else return register_style($id, $config['local']['url'], $config['local']['ver'], $media,$queue);
 }
@@ -517,6 +542,11 @@ function register_style($handle, $src, $ver, $media = 'all', $queue = null){
   );
 }
 
+function register_style_code($handle, $src, $ver, $media = 'all', $queue = null){
+  global $GS_styles;
+  register_style($handle, null, $ver, $media, $queue );
+  $GS_styles[$handle]['code'] = $src;
+}
 
 /**
  * Get Styles Backend
@@ -542,6 +572,10 @@ function getStyles($facing = GSBACK){
   foreach ($GS_styles as $style){
     if ($style['where'] & $facing ){
         if ($style['load'] == true){
+	      if(isset($style['code'])){
+	      	$str .= $style['code'];
+	      	continue;
+	      }
           $str .= '<link href="'.$style['src']. ( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '" rel="stylesheet" media="'.$style['media'].'">'."\n";
         }
     }
