@@ -414,7 +414,8 @@ if($newdraft) $pageClass.=' newdraft';
                     </div>
 
                     <div class="clear"></div>
-                    <?php exec_action('edit-extras'); //@hook edit-extras after page edit options html output ?>        
+                    <?php exec_action('edit-extras'); //@hook edit-extras legacy alias for edit-options, after page edit options html output ?>        
+                    <?php exec_action('edit-options'); //@hook edit-options after page edit options html output ?>        
                 </fieldset>
             </div> 
             <!-- / END PAGE OPTIONS -->
