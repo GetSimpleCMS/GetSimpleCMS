@@ -470,8 +470,9 @@ if($newdraft) $pageClass.=' newdraft';
                         <br/>
                     </p>   
                 </div>
-                <div class="clear"></div>    
-                </fieldset>            
+                <div class="clear"></div>
+                <?php exec_action('edit-meta'); //@hook edit-meta after page edit meta options html output ?>                        
+                </fieldset>
             </div>
         
         <?php 
