@@ -148,6 +148,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
             baseHref                     : '<?php echo getGlobal('SITEURL'); ?>'
             <?php if(getGlobal('EDTOOL')) echo ",toolbar: " . returnJsArray(getGlobal('EDTOOL')); ?>
 <?php       if(getGlobal('EDOPTIONS')) echo ','.trim(getGlobal('EDOPTIONS')); ?>
+			<?php if(getDef("GSCKETSTAMP",true)) echo ",timestamp : '".getDef("GSCKETSTAMP") . "'\n"; ?>
         };
 
         // wipe the ckeditor shim, so it does not interfere with the real one

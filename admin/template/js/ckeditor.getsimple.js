@@ -5,6 +5,7 @@ var htmlEditorUserConfig;
 
 jQuery(document).ready(function () {
     initckeditor();
+    if(htmlEditorConfig.timestamp) CKEDITOR.timestamp = htmlEditorConfig.timestamp;
 });
 
 // setup codemirror instances and functions
