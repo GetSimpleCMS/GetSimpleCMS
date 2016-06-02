@@ -39,6 +39,9 @@ define('GSIMAGEWIDTH', '200');
 # Set override CHMOD mode
 #define('GSCHMOD', 0755);
 
+# Disable chmod operations
+# define('GSDOCHMOD',false);
+
 # Enable Canonical Redirects?
 #define('GSCANONICAL', 1);
 

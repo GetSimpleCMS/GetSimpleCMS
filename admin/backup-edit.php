@@ -144,8 +144,9 @@ $draftqs = $draft ? '&amp;draft' : '';
 		</div>
 		
 		<?php if ($HTMLEDITOR != '') { ?>
-		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
+		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js<?php echo getDef("GSCKETSTAMP",true) ? "?t=".getDef("GSCKETSTAMP") : ""; ?>"></script>
 		<script type="text/javascript">
+		<?php if(getDef("GSCKETSTAMP",true)) echo "CKEDITOR.timestamp = '".getDef("GSCKETSTAMP") . "';\n"; ?>
 		var editor = CKEDITOR.replace( 'codetext', {
 			language        : '<?php echo $EDLANG; ?>',
 			<?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 

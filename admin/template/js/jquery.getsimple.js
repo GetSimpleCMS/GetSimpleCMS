@@ -2005,7 +2005,7 @@ jQuery(document).ready(function () {
 					$('#createfolder').show();
 					counter = parseInt($("#pg_counter").text(),10);
 					$("#pg_counter").html(counter++);
-					$("tr." + newfolder + " td").css("background-color", "#F9F8B6");
+					$("tr." + escape(newfolder) + " td").css("background-color", "#F9F8B6");
 					loadingAjaxIndicator.fadeOut();
 				});
 			}
@@ -2017,7 +2017,7 @@ jQuery(document).ready(function () {
 		var elem = $('body.sbfixed #sidebar');
 
 		if(!jQuery().scrollToFixed || !elem[0]){
-			Debugger.log("sbfixed not enabled or scrolltofixed not loaded");
+			// Debugger.log("sbfixed not enabled or scrolltofixed not loaded");
 			return;
 		}
 

@@ -158,7 +158,6 @@ get_template('header');
 			</div>		
 			<?php exec_action(get_filename_id().'-body'); ?>
 			<div class="leftsec">
-				<p><label for="sitename" ><?php i18n('LABEL_WEBSITE');?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php echo stripslashes($SITENAME); ?>" /></p>
 			</div>
 			<div class="rightsec">
 				<p>

@@ -109,12 +109,13 @@ $GS_definitions = array(
 	'GSALLOWDOWNLOADS'     => true,                           // (bool) allow using downloads.php to download files from /uploads and backups/zip
 	'GSPROFILEALLOWADD'    => true,                           // (bool) allow superuser to add new users
 	'GSPROFILEALLOWEDIT'   => true,                           // (bool) allow superuser to edit other users
-	# ALLOW UPLOADS ------------------------------------------------------------------------------------------------------------------------------------
+	# UPLOADS ------------------------------------------------------------------------------------------------------------------------------------
 	'GSALLOWUPLOADS'       => true,                           // (bool) allow upload files
 	'GSALLOWUPLOADCREATE'  => true,                           // (bool) allow upload folder creation
 	'GSALLOWUPLOADDELETE'  => true,                           // (bool) allow upload file/folder delete
 	'GSALLOWBROWSEUPLOAD'  => true,                           // (bool) allow uploading when browsing files
 	'GSUSEGSUPLOADER'      => true,                           // (bool) use ajax upload library gsupload (dropzone) for uploads, else standard form 
+	'GSUPLOADSLC'          => true,                           // (bool) if true force upload filenames to lowercase
 	# EDITORS ------------------------------------------------------------------------------------------------------------------------------------------
 	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
 	'GSTHEMEEDITROOT'      => true,                           // (bool) allow editing theme root files
@@ -467,6 +468,7 @@ GLOBAL
 ;
 
 // init editor globals
+if(!defined('GSCKETSTAMP')) define('GSCKETSTAMP',get_gs_version()); // ckeditor asset querystring for cache control 
 $EDHEIGHT  = getEditorHeight();
 $EDLANG    = getEditorLang();
 $EDOPTIONS = getEditorOptions();
