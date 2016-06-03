@@ -2418,7 +2418,7 @@ span.datetoday{
 .title.label {
 	float: left;
 	margin: 5px 11px;
-	font-weight: bold;
+	/*font-weight: bold;*/
 }
 
 /* @todo #ID selector hell, can be fixed up once some heirarchy is established */
@@ -3536,7 +3536,7 @@ kbd
 }
 
 .pagestack .label {
-	font-weight: bold;
+	/*font-weight: bold;*/
 }
 
 .pagestack.shadow:after{

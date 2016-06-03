@@ -132,7 +132,7 @@ $GS_definitions = array(
 	'GSCODEEDITORTHEMES'   => '3024-day,3024-night,ambiance,base16-light,base16-dark,blackboard,cobalt,colorforth,eclipse,elegant,erlang-dark,lesser-dark,mbo,midnight,monokai,neat,night,paraiso-dark,paraiso-light,rubyblue,solarized dark,solarized light,the-matrix,twilight,tomorrow-night-eighties,vibrant-ink,xq-dark,xq-light', # themes for codemirror
 	# DRAFTS -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSUSEDRAFTS'          => true,                           // (bool) use page drafts
-	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else `nodraft` or `draft` only
+	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else manually pass `nodraft` or `draft` qs
 	'GSDRAFTSTACKDEFAULT'  => true,                           // (bool) default page stack editing to drafts if true
 	'GSSDRAFTSPUBLISHEDTAG'=> true,                           // (bool) show published label on non draft pages if true
 	'GSAUTOSAVE'           => false,                          // (bool) auto save enabled, disabled if false, only used for drafts currently

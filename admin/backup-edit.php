@@ -76,9 +76,11 @@ elseif ($p == 'restore') {
 	if (isset($_GET['new'])) {
 		$newid = $_GET['new'];
         // @todo traversal protect $newid
-		// restore page by old slug id
+		// Undo slug change, restore page by old slug id
 		changeChildParents($newid, $id); // update parents and children
 		$success = restore_page($id);    // restore old slug file
+		restore_draft($id);              // restore draft
+		delete_draft($newid);            // delete live new slug draft
 		delete_page($newid);             // backup and delete live new slug file
 		$redirect = ("edit.php?id=". $id ."&nodraft&old=".$_GET['new']."&upd=edit-success&type=restore");
 	} else {

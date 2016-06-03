@@ -614,6 +614,21 @@ function pageHasDraft($id){
 }
 
 /**
+ * change draft pages slug, used when a page slug changes
+ * @since  3.4
+ * @param  String $id    Old page id
+ * @param  String $newid New page id
+ * @return bool          save status
+ */
+function changeDraftSlug($id,$newid){
+	if(!pageHasDraft($id)) return;
+	$draftXml = getDraftXML($id);
+	$draftXml->url = $newid;
+	delete_draft($id);
+	return saveDraftXml($draftXml,false);
+}
+
+/**
  * check if a page exists.
  * check pagecache first then check page file exist
  * 
