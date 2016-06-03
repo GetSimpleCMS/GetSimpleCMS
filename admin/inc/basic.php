@@ -564,10 +564,27 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
  */
 function savePageXml($xml,$backup = true){
 	$url = $xml->url;
-	if(!isset($url) || trim($url) == '') die('empty slug');
+	if(!isset($url) || trim($url) == '') die(__FUNCTION__ . ' empty slug');
 	// backup before overwriting
 	if($backup && file_exists(GSDATAPAGESPATH . $url .".xml")) backup_page($url);
 	return XMLsave($xml, GSDATAPAGESPATH . $url .".xml");
+}
+
+/**
+ * save a page to xml
+ *
+ * @since  3.4
+ * @param  obj $xml simplexmlobj of page
+ * @param  string $path path to save page data file to
+ * @param  bool $backup backup before overwriting
+ * @return bool success
+ */
+function savePageAltXml($xml,$path,$backup = true){
+	$url = $xml->url;
+	if(!isset($url) || trim($url) == '') die(__FUNCTION__ . ' empty slug');
+	// backup before overwriting
+	if($backup && file_exists($path . $url .".xml")) backup_datafile($path.$url.'.xml');
+	return XMLsave($xml, $path . $url .".xml");
 }
 
 /**
@@ -580,7 +597,7 @@ function savePageXml($xml,$backup = true){
  */
 function saveDraftXml($xml,$backup = true){
 	$url = $xml->url;
-	if(!isset($url) || trim($url) == '') die('empty slug'); // @todo need some kind of assert here
+	if(!isset($url) || trim($url) == '') die(__FUNCTION__ . ' empty slug'); // @todo need some kind of assert here
 	// backup before overwriting
 	if($backup && file_exists(GSDATADRAFTSPATH . $url .".xml")) backup_draft($url);
 	return XMLsave($xml, GSDATADRAFTSPATH . $url .".xml");
