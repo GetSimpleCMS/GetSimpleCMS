@@ -34,15 +34,25 @@ CKEDITOR.editorConfig = function( config )
 		[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']];
 
 	/*
-	 * add 'about' for debug
+	 * Add 'about' button for debug
 	 */
 	// config.toolbar_advanced.push(Array("About"));
 	// config.toolbar_basic.push(Array("About"));
 
 	var extraPlugins = new Array();
-	extraPlugins.push('autogrow');         // auto grow ckeditor height on content
-	extraPlugins.push('codesnippet');      // enables code insertion, 'CodeSnippet'
+	extraPlugins.push('codesnippet');         // enables code insertion, toolbar id 'CodeSnippet'
+	// extraPlugins.push('autogrow');         // auto grow ckeditor height on content, see config.autoGrow_maxHeight
+	// extraPlugins.push('floating-tools');   // enables a floating text toolbar
+	// extraPlugins.push('fixed');            // enables a fixed toolbar ( sticks to center though )
 	config.extraPlugins = extraPlugins.join(',');
+
+	/*
+	 * Configure Floating tools
+	 */
+	// config.floatingtools_basic = config.toolbar_basic; // copy our basic toolbar
+	// config.floatingtools_Basic = [['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link']]; // define a custom same syntax as cke
+	// config.floatingtools_advanced = config.toolbar_advanced; // copy our advanced toolbar
+	// config.floatingtools = 'basic'; // pick which toolbar definition to use `floatingtools_TOOLBAR_ID`
 
 	/*
 	 * Configure autoGrow plugin

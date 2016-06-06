@@ -171,7 +171,7 @@ jQuery(document).ready(function () {
 	// auto focus component editors
 	$('#components div.compdivlist a').on('click', function(ev){
 		focusCompEditor($(this).attr('href'));
-		e.preventDefault();		
+		ev.preventDefault();		
 	});	
 	
 	$(".delconfirmcomp").live("click", function ($e) {
@@ -567,7 +567,7 @@ jQuery(document).ready(function () {
 		var elem = $('body.sbfixed #sidebar');
 
 		if(!jQuery().scrollToFixed || !elem[0]){
-			Debugger.log("sbfixed not enabled or scrolltofixed not loaded");
+			// Debugger.log("sbfixed not enabled or scrolltofixed not loaded");
 			return;
 		}
 

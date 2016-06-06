@@ -37,8 +37,8 @@ function clean_url($text)  {
  * @param string $text
  * @return string
  */
-function clean_img_name($text)  { 
-	$text = strip_tags(lowercase($text)); 
+function clean_img_name($text)  {
+	$text = getDef('GSUPLOADSLC',true) ? strip_tags(lowercase($text)) : strip_tags($text);
 	$code_entities_match = array(' ?',' ','--','&quot;','!','#','$','%','^','&','*','(',')','+','{','}','|',':','"','<','>','?','[',']','\\',';',"'",',','/','*','+','~','`','='); 
 	$code_entities_replace = array('','-','-','','','','','','','','','','','','','','','','','','','','','',''); 
 	$text = str_replace($code_entities_match, $code_entities_replace, $text); 
@@ -315,7 +315,7 @@ function XMLsave($xml, $file) {
 	$success = file_put_contents($file, $data); // LOCK_EX ?
 	
 	// debugLog('XMLsave: ' . $file . ' ' . get_execution_time());	
-	
+	if(getDef('GSDOCHMOD') === false) return $success;
 	if (defined('GSCHMOD')) {
 		return $success && chmod($file, GSCHMOD);
 	} else {

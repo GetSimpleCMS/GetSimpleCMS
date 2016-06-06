@@ -78,7 +78,7 @@ if(isset($_POST['submitted'])) {
 		
 		# create new website.xml file
 		$file = 'website.xml';
-		$xmls = new SimpleXMLExtended('<item></item>');
+		$xmls = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');		
 		$note = $xmls->addChild('SITENAME');
 		$note->addCData($SITENAME);
 		$note = $xmls->addChild('SITEURL');
