@@ -130,26 +130,20 @@ function registerInactivePlugins($apilookup = false){
  */
 function change_plugin($name,$active=null){
 	global $live_plugins;
-
-	$name = pathinfo_filename($name).'.php'; // normalize to pluginid
+	
+	$name = pathinfo_filename($name).'.php';
 	if (isset($live_plugins[$name])){
-		// set plugin active | inactive
 		if(isset($active) and is_bool($active)) {
-			$live_plugins[$name] = $active ? 'true' : 'false';
-			create_pluginsxml(true);
-			return;
-		}
-
-		// else we toggle
-		if ($live_plugins[$name]=="true"){
-			$live_plugins[$name]="false";
+			// set plugin active | inactive
+			$active = $active ? "true" : "false";
 		} else {
-			$live_plugins[$name]="true";
+			// else we toggle
+			$active = $live_plugins[$name] == "true" ? "false" : "true";
 		}
-
-		if($live_plugins[$name] == 'false') exec_action('plugin-inactivate'); // @hook plugin-inactivate a plugin was inactivated
-
-		create_pluginsxml(true); // save change; @todo, currently reloads all files and recreates entire xml not just node, is wasteful
+		$live_plugins[$name] = $active;
+		exec_action(($active == "true" ? "" : "de") . "activate-" . substr($name, 0, -4));
+		// save change; @todo, currently reloads all files and recreates entire xml not just node, is wasteful
+		create_pluginsxml(true);
 	}
 }
 
