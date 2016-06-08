@@ -23,10 +23,11 @@ $nonce    = isset($_GET['nonce']) ? $_GET['nonce'] : null;
 if ($pluginid){
 	if(check_nonce($nonce, "set_".pathinfo_filename($pluginid), "plugins.php")) {
 		$plugin = antixss($pluginid);
-		change_plugin($plugin);
-		redirect('plugins.php?success='.urlencode(i18n_r('PLUGIN_UPDATED')));
+		$success = change_plugin($plugin);
+		if(!is_null($success)) redirect('plugins.php?success='.urlencode(i18n_r('PLUGIN_UPDATED')));
 	}
-	else redirect('plugins.php?error='.urlencode(i18n_r('ERROR_OCCURED')));
+
+	redirect('plugins.php?error='.urlencode(i18n_r('ERROR_OCCURED')));
 }
 
 // Variable settings

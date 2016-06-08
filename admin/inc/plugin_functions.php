@@ -121,36 +121,36 @@ function registerInactivePlugins($apilookup = false){
  * change_plugin
  * 
  * Enable/Disable a plugin
- *
+ * NOTE THAT LIVE_PLUGINS USES STRINGS `true` `false`
+ * 
  * @since 2.04
  * @uses $live_plugins
  *
- * @param str  $name pluginid
+ * @param str  $pluginid pluginid
  * @param bool $active default=null, sets plugin active or inactive, default=toggle
+ * @return bool returns $active state, null on errors
  */
-function change_plugin($name,$active=null){
+function change_plugin($pluginid,$active=null){
 	global $live_plugins;
+	
+	$pluginid = pathinfo_filename($pluginid).'.php'; // normalize to pluginid
+	if(!isset($live_plugins[$pluginid])) return; // plugin id not found
 
-	$name = pathinfo_filename($name).'.php'; // normalize to pluginid
-	if (isset($live_plugins[$name])){
-		// set plugin active | inactive
-		if(isset($active) and is_bool($active)) {
-			$live_plugins[$name] = $active ? 'true' : 'false';
-			create_pluginsxml(true);
-			return;
-		}
+	// toggles if $active was not specified (null)
+	if(is_null($active)) $active = ($live_plugins[$pluginid] === 'true') ? false : true; // invert
+	else if(!is_bool($active)) return; // invalid $active arg passed
 
-		// else we toggle
-		if ($live_plugins[$name]=="true"){
-			$live_plugins[$name]="false";
-		} else {
-			$live_plugins[$name]="true";
-		}
+	// update plugin state
+	$live_plugins[$pluginid] = $active ? 'true' : 'false';
+	
+	$status = create_pluginsxml(true); // save change; @todo, currently reloads all files and recreates entire xml not just node, is wasteful
+	if(!isset($status)) return; // save failed, do no hooks
 
-		if($live_plugins[$name] == 'false') exec_action('plugin-inactivate'); // @hook plugin-inactivate a plugin was inactivated
+	// do hooks
+	if($active === true) exec_action('plugin-activate'); // @hook plugin-activate a plugin was activated
+	else exec_action('plugin-deactivate'); // @hook plugin-deactivate a plugin was deactivated
 
-		create_pluginsxml(true); // save change; @todo, currently reloads all files and recreates entire xml not just node, is wasteful
-	}
+	return $active; // return final state of plugin active
 }
 
 /**
