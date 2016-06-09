@@ -69,8 +69,9 @@ if (isset($_GET['undo'])) {
 	restore_datafile(GSDATAOTHERPATH.GSCOMPONENTSFILE);
 	check_for_csrf("undo");
 	if(!requestIsAjax()) redirect('components.php?upd=comp-restored'); // redirect to prevent refresh undos
-	$update = 'comp-restored';
-	get_components_xml(true);
+	// undos are not ajax, ??	
+	// $update = 'comp-restored';
+	// get_components_xml(true);
 }
 
 # create components form html
