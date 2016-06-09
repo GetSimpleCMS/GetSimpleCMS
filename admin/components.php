@@ -42,7 +42,7 @@ if (isset($_POST['submitted'])){
 			$slug = getCollectionItemSlug($slug,$title);
 			if($slug == null){
 				// add corrupt data protection, prevent deleting components if something critical is missing
-				if(empty($slug)) $error = 'an error occured, missing slug';
+				$error = 'an error occured, missing slug';
 			}
 			else {
 				if(is_object(get_collection_item($slug,$compxml))){

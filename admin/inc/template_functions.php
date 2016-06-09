@@ -2080,14 +2080,15 @@ function outputCollectionTags($collectionid,$data){
  * @param  string $default fallback slug
  * @return string          clean slug
  */
-function getCollectionItemSlug($slug,$default = 'unknown'){
+function getCollectionItemSlug($slug,$title = 'unknown'){
 	$slug = trim($slug);
-	if ( $slug == null or empty($slug)){
-		if ($default != null && !empty($default)) {
-			$slug = $default;
+	if ( $slug == null || empty($slug)){
+		if (!empty($title)){
+			if(trim($title) == '') return;
 		}
+		$slug = $title;
 	}
-	$slug = prepareSlug($slug);
+	$slug = prepareSlug($slug,$title);
 	if(empty($slug)) return; // errormode return null
 	return $slug;
 }
