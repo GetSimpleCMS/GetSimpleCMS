@@ -1588,6 +1588,9 @@ table.comptable tr td input.newtitle {
 }
 
 table.comptable .comptitle {
+	min-width:16px;
+	min-height:16px;
+	display:inline-block;
 	color: #000;
 }
 
