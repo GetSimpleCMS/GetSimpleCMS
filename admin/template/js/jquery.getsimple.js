@@ -782,6 +782,7 @@ jQuery(document).ready(function () {
 	
 	// bind component new button
 	$("#addcomponent").on("click", function ($e) {
+
 		$e.preventDefault();
 		ajaxStatusWait();
 
@@ -846,6 +847,8 @@ jQuery(document).ready(function () {
 		// }
 
 		$("#divTxt").find('input').get(0).focus(); // focus input so editor gets focused ( if it listens of course )
+		$('input:submit').prop('disabled',true);
+
 		// @todo make better focus events
 	});
 
