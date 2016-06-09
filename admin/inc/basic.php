@@ -3199,4 +3199,16 @@ function checkWritable($path,$perms = null){
 	return $iswritable;
 }
 
+
+/**
+ * string to boolean using custom rules
+ * @since  3.4
+ * @param  mixed $val input value
+ * @return bool      converted boolean
+ */
+function strToBool($val){
+	if($val == true || $val == 'true' || $val == '1') return true;
+	return false;
+}
+
 /* ?> */

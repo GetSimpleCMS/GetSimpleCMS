@@ -131,26 +131,55 @@ function registerInactivePlugins($apilookup = false){
  * @return bool returns $active state, null on errors
  */
 function change_plugin($pluginid,$active=null){
-	global $live_plugins;
-	
-	$pluginid = pathinfo_filename($pluginid).'.php'; // normalize to pluginid
-	if(!isset($live_plugins[$pluginid])) return; // plugin id not found
-
 	// toggles if $active was not specified (null)
-	if(is_null($active)) $active = ($live_plugins[$pluginid] === 'true') ? false : true; // invert
-	else if(!is_bool($active)) return; // invalid $active arg passed
+	if(is_null($active)) $active = !pluginIsActive($pluginid); // invert
 
 	// update plugin state
-	$live_plugins[$pluginid] = $active ? 'true' : 'false';
-	
-	$status = create_pluginsxml(true); // save change; @todo, currently reloads all files and recreates entire xml not just node, is wasteful
+	$status = setPluginState($pluginid,$active);
 	if(!isset($status)) return; // save failed, do no hooks
 
+	return $active; // return final state of plugin active
+}
+
+/**
+ * set a plugins active state 
+ * wrapper for setting plugins active inactive, since it uses string booleans and is confusing
+ * @since  3.4
+ * @param string $pluginid accepts pluginid or plugin filename, normalizes to filename
+ * @param mixed $state    accepts true, false, 'true', 'false'
+ */
+function setPluginState($pluginid,$state){
+	global $live_plugins;
+
+	$pluginid = pathinfo_filename($pluginid).'.php'; // normalize to pluginid
+	if(!pluginIsInstalled($pluginid)) return; // plugin id not found
+	
+	$state = strToBool($state);
+
+	// save string bools
+	if($state) $live_plugins[$pluginid] = 'true';
+	else $live_plugins[$pluginid] = 'false';
+
+	$status = create_pluginsxml(true);
 	// do hooks
-	if($active === true) exec_action('plugin-activate'); // @hook plugin-activate a plugin was activated
+	if($state === true) exec_action('plugin-activate'); // @hook plugin-activate a plugin was activated
 	else exec_action('plugin-deactivate'); // @hook plugin-deactivate a plugin was deactivated
 
-	return $active; // return final state of plugin active
+	// debugDie($live_plugins);
+
+	return $status;
+}
+
+/**
+ * check if a plugin is installed
+ * @since  3.4
+ * @param  string $pluginid pluginid
+ * @return bool             true if plugin is found in live_plugins array
+ */
+function pluginIsInstalled($pluginid){
+	GLOBAL $live_plugins;
+	$pluginid = pathinfo_filename($pluginid).'.php'; // normalize to pluginid
+	return(isset($live_plugins[$pluginid])); // plugin id not found
 }
 
 /**
@@ -163,9 +192,9 @@ function change_plugin($pluginid,$active=null){
  */
 function pluginIsActive($pluginid){
 	GLOBAL $live_plugins;
-	return isset($live_plugins[$pluginid.'.php']) && ($live_plugins[$pluginid.'.php'] == 'true' || $live_plugins[$pluginid.'.php'] === true);
+	$pluginid = pathinfo_filename($pluginid).'.php'; // normalize to pluginid		
+	return isset($live_plugins[$pluginid]) && ($live_plugins[$pluginid] == 'true' || $live_plugins[$pluginid] === true);
 }
-
 
 /**
  * read_pluginsxml

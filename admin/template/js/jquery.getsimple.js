@@ -1158,7 +1158,7 @@ jQuery(document).ready(function () {
 				responseText = data.replace(rscript, "");
 				response     = $($.parseHTML(data));
 
-				if ($(response).find('div.notify_success')) {
+				if ($(response).find('div.notify_success').get(0)) {
 					// remove scripts to prevent assets from loading when we create temp dom
 					rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
 	 
@@ -1170,17 +1170,23 @@ jQuery(document).ready(function () {
 					// document.body.style.cursor = "default";
 					$(response).find('div.updated').parseNotify();
 					initLoaderIndicator();
-				} else if ($(response).find('div.notify_error')) {
+				} else{
+					// reset throw error
 					document.body.style.cursor = "default";
 					mytd.html(old).removeClass('ajaxwait_tint_dark');
 					$('.toggleEnable').removeClass('disabled');
 					loadingAjaxIndicator.fadeOut();
 					// Debugger.log(mytd.data('spinner'));
 					mytd.data('spinner').stop(); // @todo not working, spinner keeps spinning
-					$(response).find('div.updated').parseNotify();
-				} else {
-					clearNotify();
-					notifyError(i18n('ERROR'));
+					if ($(response).find('div.notify_error').get(0)) {
+						$(response).find('div.updated').parseNotify();
+					}
+					else {
+						console.log("PLUGIN AJAX ERROR");
+						clearNotify();
+						notifyError(i18n('ERROR'));
+						ajaxError();
+					}
 				}
 			},
 			error: function (data, textStatus, jqXHR) {
