@@ -2071,14 +2071,24 @@ function outputCollectionTags($collectionid,$data){
 	echo '</div>';
 }
 
-function getCollectionItemSlug($slug,$default = null){
-	if ( $slug == null or empty(trim($slug))){
-		if ($title != null && !empty(trim($title))) {
-			$slug = $title;
+
+/**
+ * getCollectionItemSlug
+ * get collection item slug, clean with default fallback
+ * @since  3.4
+ * @param  string $slug    slug
+ * @param  string $default fallback slug
+ * @return string          clean slug
+ */
+function getCollectionItemSlug($slug,$default = 'unknown'){
+	$slug = trim($slug);
+	if ( $slug == null or empty($slug)){
+		if ($default != null && !empty($default)) {
+			$slug = $default;
 		}
-	}	
+	}
 	$slug = prepareSlug($slug);
-	if(empty(trim($slug))) return; // errormode return null
+	if(empty($slug)) return; // errormode return null
 	return $slug;
 }
 
