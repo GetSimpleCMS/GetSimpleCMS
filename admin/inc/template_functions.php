@@ -1693,6 +1693,16 @@ function getpageExcerpt($pageid,$len = 200, $striphtml = true, $ellipsis = '...'
 }
 
 /**
+ * PRCE compiled test
+ * test if PCRE is compiled with UTF-8 and unicode property support
+ */
+function PCRETest(){
+	if ( ! @preg_match('/^.$/u', 'ñ')) return false // UTF-8 support
+	if ( ! @preg_match('/^\pL$/u', 'ñ')) return false // Unicode property support (enable-unicode-properties)
+	return true;
+}
+
+/**
  * check if a string is multbyte
  * @since 3.3.2
  * 
