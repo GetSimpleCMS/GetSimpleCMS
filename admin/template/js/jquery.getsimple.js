@@ -730,7 +730,7 @@ jQuery(document).ready(function () {
 	// components.php
 
 	// ajaxify components submit if ajaxsave enabled
-	$('body.ajaxsave #compEditForm').on('submit',function(e){
+	$('body #compEditForm').on('submit',function(e){
         if($('body').hasClass('ajaxsave')){
 			e.preventDefault();
 			componentSave(e);
