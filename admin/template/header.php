@@ -124,7 +124,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
             echo '		var editorTheme = "'.$editor_theme."\";\n";
         }
 
-        if(getDef('GSAUTOSAVE',true)){
+        if(get_filename_id()=='edit' && getDef('GSAUTOSAVE',true)){
         	$autosaveintvl = getdef('GSAUTOSAVEINTERVAL');
         	echo "		// edit autosave\n";
         	echo '		var GSAUTOSAVEPERIOD = ' . (!is_int($autosaveintvl) ? 10 : $autosaveintvl).";\n";
