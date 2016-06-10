@@ -66,7 +66,6 @@ foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
 
 	$setNonce = '&amp;nonce='.get_nonce("set_".$pluginid,"plugins.php");
 
-	// @todo disabled plugins have a version of (str) 'disabled', should be 0 or null
 	$pluginver  = $plugininfo['version'] == 'disabled' ? 0 : $plugininfo['version'];
 
 	if (pluginIsActive($pluginid)) {

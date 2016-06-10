@@ -1697,8 +1697,8 @@ function getpageExcerpt($pageid,$len = 200, $striphtml = true, $ellipsis = '...'
  * test if PCRE is compiled with UTF-8 and unicode property support
  */
 function PCRETest(){
-	if ( ! @preg_match('/^.$/u', 'ñ')) return false // UTF-8 support
-	if ( ! @preg_match('/^\pL$/u', 'ñ')) return false // Unicode property support (enable-unicode-properties)
+	if ( ! @preg_match('/^.$/u', 'ñ')) return false; // UTF-8 support
+	if ( ! @preg_match('/^\pL$/u', 'ñ')) return false; // Unicode property support (enable-unicode-properties)
 	return true;
 }
 
