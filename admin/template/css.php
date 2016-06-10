@@ -1348,13 +1348,7 @@ a.viewlink:hover img {
 	color:#C00;
 }
 
-/* unused */
-form table.formtable select {
-	width: 275px;
-	padding: 3px 4px;
-}
-
-/* unused */
+/* unused , removes borders from tables, unneeded inside wrapper */
 table.cleantable {
 	border-collapse: collapse;
 	margin: 0 0 0 0;
