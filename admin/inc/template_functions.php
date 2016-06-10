@@ -1682,6 +1682,13 @@ function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = '...', $bre
 	return trim($str) . $ellipsis;	
 }
 
+/*
+ * wrapper for getExcerpt for specific page
+ */
+function getpageExcerpt($pageid,$len = 200, $striphtml = true, $ellipsis = '...', $break = false, $cleanhtml = true){
+	return getExcerpt(returnPageContent($pageid),$len,$striphtml,$ellipsis,$break,$cleanhtml);
+}
+
 /**
  * check if a string is multbyte
  * @since 3.3.2

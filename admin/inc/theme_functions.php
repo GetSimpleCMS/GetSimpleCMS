@@ -50,7 +50,7 @@ function get_page_excerpt($len=200, $striphtml=true, $ellipsis = '...') {
 	$content_e = exec_filter('content',$content_e); // @filter content (str) filter page content in get_page_excerpt
 	if(getDef('GSCONTENTSTRIP',true)) $content_e = strip_content($content_e);	
 	echo getExcerpt($content_e, $len, $striphtml, $ellipsis);
-	}
+}
 
 
 /**
