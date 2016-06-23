@@ -23,11 +23,16 @@ if (!defined('GSIMAGEWIDTH')) {
 if ($_POST['sessionHash'] === $SESSIONHASH) {
 	if (!empty($_FILES)){
 		
-		$tempFile = $_FILES['Filedata']['tmp_name'];
-		$name = clean_img_name(to7bit($_FILES['Filedata']['name']));
-		$targetPath = (isset($_POST['path'])) ? GSDATAUPLOADPATH.$_POST['path']."/" : GSDATAUPLOADPATH;
+		$tempFile  = $_FILES['Filedata']['tmp_name'];
+		
+		$file      = $_FILES['Filedata']['name'];
+		$extension = pathinfo($file,PATHINFO_EXTENSION);
 
-		$targetFile =  str_replace('//','/',$targetPath) . $name;
+  		$name      = pathinfo($file,PATHINFO_FILENAME);
+		$name      = clean_img_name(to7bit($name));
+
+		$targetPath = (isset($_POST['path'])) ? GSDATAUPLOADPATH.$_POST['path']."/" : GSDATAUPLOADPATH;
+		$targetFile =  str_replace('//','/',$targetPath) . $name . '.'.$extension;
 		
 		//validate file
 		if (validate_safe_file($tempFile, $_FILES["Filedata"]["name"])) {

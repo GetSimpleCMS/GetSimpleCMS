@@ -45,8 +45,14 @@ if (isset($_FILES['file'])) {
 			
 			//set variables
 			$count = '1';
-			$base = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
-			$file_loc = $path . $base;
+			$file = $_FILES["file"]["name"][$i];
+
+			$extension = pathinfo($file,PATHINFO_EXTENSION);
+
+	  		$name      = pathinfo($file,PATHINFO_FILENAME);
+			$name = $base = clean_img_name(to7bit($name));
+
+			$file_loc = $path . $name . '.' . $extension;
 			
 			//prevent overwriting
 			while ( file_exists($file_loc) ) {
