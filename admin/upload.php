@@ -50,9 +50,10 @@ if (isset($_FILES['file'])) {
 			$extension = pathinfo($file,PATHINFO_EXTENSION);
 
 	  		$name      = pathinfo($file,PATHINFO_FILENAME);
-			$name = $base = clean_img_name(to7bit($name));
+			$name      = clean_img_name(to7bit($name));
+			$base      = $name . '.' . $extension;
 
-			$file_loc = $path . $name . '.' . $extension;
+			$file_loc = $path . $base;
 			
 			//prevent overwriting
 			while ( file_exists($file_loc) ) {
