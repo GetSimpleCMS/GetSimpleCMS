@@ -103,6 +103,7 @@ if (isset($_POST['submitted'])) {
 			changeDraftSlug($oldslug,$url);
 		}
 		exec_action('changedata-save'); // @hook changedata-save prior to saving a page
+		exec_action('changedata-save-published'); // @hook changedata-save-published prior to saving a page
 		$xml    = exec_filter('pagesavexml',$xml); // @filter pagesavexml (obj) xml object of a page save
 		$status = savePageXml($xml);
 		exec_action('changedata-aftersave'); // @hook changedata-aftersave after a page was saved
@@ -111,6 +112,7 @@ if (isset($_POST['submitted'])) {
 		generate_sitemap();
 	}
 	else {
+		exec_action('changedata-save'); // @hook changedata-save prior to saving a page
 		exec_action('changedata-save-draft'); // @hook changedata-save-draft saving a draft page
 		$xml    = exec_filter('draftsavexml',$xml); // @filter draftsavexml (obj) xml object of a page draft save
 		$status = saveDraftXml($xml);
