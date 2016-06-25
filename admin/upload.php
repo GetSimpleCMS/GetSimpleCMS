@@ -57,9 +57,13 @@ if (isset($_FILES['file'])) {
 		} else {
 			
 			//set variables
-			$count    = '1';
-			$file_base     = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
-			$file_loc = $path . $file_base;
+			$count     = '1';
+			$file      = $_FILES["file"]["name"][$i];
+			$fileext   = getFileExtension($file);
+			$filename  = getFileName($file);
+			
+			$file_base = clean_img_name(to7bit($filename)) . '.'.$fileext;
+			$file_loc  = $path . $file_base;
 			
 			//prevent overwriting						
 			if(!isset($_POST['fileoverwrite']) && file_exists($file_loc)){
@@ -68,7 +72,7 @@ if (isset($_FILES['file'])) {
 			}
 
 			//validate file
-			if (validate_safe_file($_FILES["file"]["tmp_name"][$i], $_FILES["file"]["name"][$i])) {
+			if (validate_safe_file($_FILES["file"]["tmp_name"][$i], $file_base)) {
 				move_uploaded_file($_FILES["file"]["tmp_name"][$i], $file_loc);
 				gs_chmod($file_loc);
 				exec_action('file-uploaded');
