@@ -27,6 +27,7 @@ body {
 	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
 	font-size: 12px;
 	background: #f6f6f6;
+	color: black;
 }
 
 a img,
