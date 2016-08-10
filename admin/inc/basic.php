@@ -1386,4 +1386,26 @@ function strip_content($str, $pattern = '/[({]%.*?%[})]/'){
 	return 	preg_replace($pattern, '', $str);
 }
 
+/**
+ * perform transliteration conversion on string
+ * @since  3.3.11
+ * @param  str $str string to convert
+ * @return str      str after transliteration replacement array ran on it
+ */
+function doTransliteration($str){
+	if (getTransliteration() && is_array($translit=getTransliteration()) && count($translit>0)) {
+		$str = str_replace(array_keys($translit),array_values($translit),$str);
+	}
+	return $str;
+}
+
+/**
+ * get transliteration set as defined in i18n
+ * @since 3.3.11
+ * @return str
+ */
+function getTransliteration(){
+	return i18n_r("TRANSLITERATION");
+}
+
 ?>
