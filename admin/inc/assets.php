@@ -81,8 +81,6 @@ $jqueryuitheme = "custom";
  * Core assets
  */
 
-$ASSETPATH = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH));
-
 // core
 $GS_script_assets['getsimple']['local']['url']     = $ASSETPATH.'js/jquery.getsimple.js';
 $GS_script_assets['getsimple']['local']['ver']     = $VERSIONS['getsimple'];

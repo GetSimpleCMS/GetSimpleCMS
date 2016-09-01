@@ -2666,6 +2666,7 @@ function getWebsiteData($returnGlobals = false){
 	$SITEURL_REL = '';
 	$SITEURL_ABS = '';
 	$ASSETURL    = '';
+	$ASSETPATH   = '';
 
 	if (file_exists(GSDATAOTHERPATH .GSWEBSITEFILE)) {
 		$dataw        = getXML(GSDATAOTHERPATH .GSWEBSITEFILE,false);
@@ -2683,17 +2684,23 @@ function getWebsiteData($returnGlobals = false){
 
 		$SITEURL_ABS = $SITEURL;
 		$SITEURL_REL = getRootRelURIPath($SITEURL);
-		
+		// $ASSETURL    = $SITEURL;
+
 		// asseturl is root relative if GSASSETURLREL is true
 		// else asseturl is scheme-less ://url if GSASSETSCHEMES is not true
-		if(getDef('GSASSETURLREL')) $ASSETURL = $SITEURL_REL;
+		if(getDef('GSASSETURLREL',true)) $ASSETURL = $SITEURL_REL;
 		else if(getDef('GSASSETSCHEMES',true) !==true) str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL);
 		else $ASSETURL = $SITEURL;
+
+		$ASSETPATH = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH,GSADMINPATH));
 
 		// SITEURL is root relative if GSSITEURLREL is true
 		if(getDef('GSSITEURLREL')){
 			$SITEURL = $SITEURL_REL;
 		}
+	}
+	else {
+		debugLog("website file not found " . GSDATAOTHERPATH .GSWEBSITEFILE);
 	}
 
 	if($returnGlobals) return get_defined_vars();
