@@ -568,7 +568,7 @@ if(empty($SITEURL))      $SITEURL     = suggest_site_path();
 if(empty($SITEURL_ABS))  $SITEURL_ABS = $SITEURL;
 if(empty($SITEURL_REL))  $SITEURL_REL = $SITEURL;
 if(empty($ASSETURL))     $ASSETURL    = $SITEURL;
-if(empty($ASSETPATH))    $ASSETPATH  = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH));
+if(empty($ASSETPATH))    $ASSETPATH   = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH,GSADMINPATH));
 
 /**
  * Include other files depending if they are needed or not
