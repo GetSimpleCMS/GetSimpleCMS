@@ -159,14 +159,9 @@ CKEDITOR.on( 'dialogDefinition', function( ev )	{
 		}
 });
 
-// linkdefault = "url";
+// linkdefault = "url"; // default link menu to url instead of page dropdown
 
 var menuItems;
-
-$.getJSON("inc/ajax.php?list_pages_json=1", function (data){
-	menuItems = data;
-	if (typeof editor !== "undefined")  CKEsetupLinks(editor);
-});
 
 /**
  * CKEditor Add Local Page Link
@@ -285,11 +280,19 @@ CKEgetById = function(array, id, recurse) {
 
 var getById = CKEgetById; // alias for legacy
 
-// Fix for IE onbeforeunload bubbling up from dialogs
 CKEDITOR.on('instanceReady', function(event) {
-  event.editor.on('dialogShow', function(dialogShowEvent) {
-	if(CKEDITOR.env.ie) {
-	  $(dialogShowEvent.data._.element.$).find('a[href*="void(0)"]').removeAttr('href');
+	// populate link menu store in global for cache
+	if(!menuItems){
+		$.getJSON("inc/ajax.php?list_pages_json=1", function (data){
+			menuItems = data;
+			CKEsetupLinks(event.editor);
+		});
 	}
-  });
+		
+	// Fix for IE onbeforeunload bubbling up from dialogs
+	event.editor.on('dialogShow', function(dialogShowEvent) {
+		if(CKEDITOR.env.ie) {
+			$(dialogShowEvent.data._.element.$).find('a[href*="void(0)"]').removeAttr('href');
+		}
+	});
 });

@@ -418,9 +418,12 @@ jQuery(document).ready(function () {
 			e.preventDefault();
 			var siteurl = '';
 			var fileUrl = $(this).data('fileurl');
-			window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
-			window.close();
-			return false;
+			if(!CKEDITOR) console.log("CKEDITOR does not exist");
+			else {
+				window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
+				window.close();
+				return false;
+			}	
 		});
 	}
 
@@ -443,9 +446,12 @@ jQuery(document).ready(function () {
 				e.preventDefault();
 				var siteurl = GS.siteurl;
 				var fileUrl = $(this).data('fileurl');
-				window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
-				window.close();
-				return false;
+				if(!CKEDITOR) console.log("CKEDITOR does not exist");
+				else {				
+					window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
+					window.close();
+					return false;
+				}	
 			});
 		});
 
@@ -456,9 +462,12 @@ jQuery(document).ready(function () {
 				e.preventDefault();
 				var siteurl = GS.siteurl;
 				var fileUrl = $(this).data('fileurl');
-				window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
-				window.close();
-				return false;
+				if(!CKEDITOR) console.log("CKEDITOR does not exist");
+				else {
+					window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
+					window.close();
+					return false;
+				}	
 			});
 		});
 
