@@ -20,6 +20,9 @@ CKEDITOR.editorConfig = function( config )
 
 	config.allowedContent              = true;       // disable acf
 	config.disableAutoInline           = true;       // disable automatic inline editing of elements with contenteditable=true
+
+	config.filebrowserBrowseUrl        = 'upload.php?browse&type=all';
+	config.filebrowserImageBrowseUrl   = 'upload.php?browse&type=images';	
 	
 	// customize file browser popup windows below
 	// config.filebrowserWindowWidth      = '960';
