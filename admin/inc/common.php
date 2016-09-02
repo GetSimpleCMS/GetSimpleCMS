@@ -733,8 +733,8 @@ function getGSRootPath($calculate = false){
 		$file = str_replace("\\", "/", $file);    // normalize slashes
 		
 		// tts
-		$file = trim($file,"/");
-		$path = trim($path,"/");
+		// $file = trim($file,"/");
+		// $path = trim($path,"/");
 
  		// convert to arrays
 		$pathpartsfile = explode("/",$file);
