@@ -2358,6 +2358,7 @@ a.label:hover{
 	background-color: rgba(221, 221, 221, 0.25) !important;
 	color: #888;
 	margin-left: 14px;
+	word-break: normal;
 }
 
 .fancybox-title-over-wrap {
