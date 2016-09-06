@@ -85,7 +85,7 @@ $GS_definitions = array(
 	'GSERRORLOGFILE'       => 'errorlog.txt',                 // (str) error log filename
 	'GSASSETSCHEMES'       => false,                          // (bool) should $ASSETURL contain the url scheme http|https
 	'GSASSETURLREL'        => false,                           // (bool) Use root relative urls for $ASSETURL, overrides GSASSETSCHEMES
-	'GSSITEURLREL'         => true,                           // (bool) Use root relative urls for $SITEURL
+	'GSSITEURLREL'         => false,                           // (bool) Use root relative urls for $SITEURL
 	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // (str) url used in email template
 	'GSINDEXSLUG'          => 'index',                        // (str) slug to use as index when no slug provided
 	'GSPLUGINORDER'        => '',                             // (str) csv list of live_plugins keys to load first and in order, kludge and not supported
@@ -110,6 +110,7 @@ $GS_definitions = array(
 	'GSALLOWDOWNLOADS'     => true,                           // (bool) allow using downloads.php to download files from /uploads and backups/zip
 	'GSPROFILEALLOWADD'    => true,                           // (bool) allow superuser to add new users
 	'GSPROFILEALLOWEDIT'   => true,                           // (bool) allow superuser to edit other users
+	'GSEXECANON'           => false,                         // (bool) allow callbacks to be anonymous closures, security implications
 	# UPLOADS ------------------------------------------------------------------------------------------------------------------------------------
 	'GSALLOWUPLOADS'       => true,                           // (bool) allow upload files
 	'GSALLOWUPLOADCREATE'  => true,                           // (bool) allow upload folder creation

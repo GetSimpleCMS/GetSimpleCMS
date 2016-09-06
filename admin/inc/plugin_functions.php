@@ -421,9 +421,8 @@ function exec_action($a) {
 }
 
 function exec_action_callback($hook){
-	return call_user_func_array($hook['function'], $hook['args']);
+	return call_gs_func_array($hook['function'], $hook['args']);
 }
-
 
 /**
  * Add Filter

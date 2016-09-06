@@ -3218,4 +3218,45 @@ function strToBool($val){
 	return false;
 }
 
+/**
+ * call_gs_func_array
+ * wrapper for call_user_func_array
+ * @since  3.4
+ * @param  mixed $callable a callable
+ * @param  array  $args     param_arr
+ * @return mixed            callback return
+ */
+function call_gs_func_array($callable,$args = array()){
+	$valid = false;
+	// static class 
+	if(is_array($callable)){
+		// check for valid method
+		if(count($callable) == 2){
+			$obj    = $callable[0];
+			$method = $callable[1];
+			if(method_exists($obj,$method))	$valid = true;
+		}
+	}
+	else if(is_closure($callable) && getDef('GSEXECANON',true)){
+		// check for valid closure
+		$valid = true;
+	}
+	else if(is_string($callable) && function_exists($callable)){
+		// check for valid function
+		$valid = true;
+	}
+
+	if($valid) return call_user_func_array($callable,$args);
+}
+
+/**
+ * check if function is closure
+ * @since  3.4
+ * @param  mixed  $f function
+ * @return boolean   true if closure
+ */
+function is_closure($func) {
+    return is_object($func) && ($func instanceof Closure);
+}		
+
 /* ?> */
