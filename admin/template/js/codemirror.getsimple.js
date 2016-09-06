@@ -20,6 +20,14 @@ function getEditorMode(extension){
 
 jQuery(document).ready(function () {
 	initcodemirror();
+
+	// jquery tabs workaround, refresh editor on tab activate
+	$( "#tabs" ).on( "tabsactivate", function( event, ui ) {
+		$('.code_edit',ui.newPanel).each(function(i, textarea){
+			var editor = $(textarea).data('editor');
+			editor.refresh();
+		});
+	});
 });
 
 	// setup codemirror instances and functions
