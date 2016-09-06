@@ -3209,6 +3209,7 @@ kbd
 	/*font-size: 13px;*/
 	/*line-height: 13px;*/
 	margin-bottom : 20px;
+	text-shadow: none;
 }
 
 .codewrap textarea, #tabs .codewrap textarea{
