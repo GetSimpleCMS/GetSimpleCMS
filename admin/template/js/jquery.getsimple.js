@@ -754,8 +754,8 @@ jQuery(document).ready(function () {
 		e.preventDefault();
 		ajaxStatusWait();
 		
-		save_codeeditors();
-		save_htmleditors();
+		save_all_editors();
+
 		save_inlinehtmleditors();
 		var dataString = $("#compEditForm").serialize();			
 
@@ -1353,7 +1353,9 @@ jQuery(document).ready(function () {
         // $('input[type=submit]').attr('disabled', 'disabled');
         ajaxStatusWait();
         // we are using ajax, so ckeditor wont copy data to our textarea for us, so we do it manually
-        if($('#post-content').data('htmleditor')){ $('#post-content').val($('#post-content').data('htmleditor').getData()); }
+		save_all_editors();
+        // if($('#post-content').data('htmleditor')){ $('#post-content').val($('#post-content').data('htmleditor').getData()); }
+
 		// Debugger.log($('#post-content').val());
 
         var dataString = $("#editform").serialize();
@@ -1860,6 +1862,13 @@ jQuery(document).ready(function () {
 		}
 	}
 
+	save_all_editors = function(){
+		console.log("saving code editors");
+		save_codeeditors();
+		console.log("saving html editors");		
+		save_htmleditors();
+	}
+
 	// save all editors
 	save_codeeditors = function(){
 		// Debugger.log(theme);
@@ -1879,7 +1888,6 @@ jQuery(document).ready(function () {
 			var editor = $(textarea).data('htmleditor');
 			// Debugger.log(editor);
 			if(editor) {
-				Debugger.log('saving html editors');
 				editor.updateElement(); 
 			}
 		});		
