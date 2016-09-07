@@ -489,6 +489,15 @@ function updatePageField($id,$field,$value,$cdata = null){
 }
 
 /**
+ * get a page obj template
+ * returns an empty simplexml GS page object
+ * @return obj simplexml page obj, empty
+ */
+function getPageObject(){
+	return createPageXml('');
+}
+
+/**
  * create a page xml obj
  * will only save standard GS fields, additional fields are ignored
  * 
@@ -543,7 +552,7 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
 	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
 	$xml->addChild('pubDate', date('r'));
 
-	$data['content'] = exec_filter('contentsave',$data['content']); // @filer contentsave filter content in createPageXml
+	if(isset($data['content'])) $data['content'] = exec_filter('contentsave',$data['content']); // @filer contentsave filter content in createPageXml
 
 	foreach($fields as $field){
 		$node = $xml->addChild($field);
