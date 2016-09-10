@@ -245,7 +245,7 @@ class SimpleXMLExtended extends SimpleXMLElement{
 			// if exactly one child, remove and append the new cdata
 			$node->removeChild($node->firstChild);
 			$node->appendChild($cdata);
-	} 
+		} 
 		else if($node->childNodes->length == 0){
 			// if no children just append cdata
 			$node->appendChild($cdata);
@@ -253,7 +253,7 @@ class SimpleXMLExtended extends SimpleXMLElement{
 			// node has multiple children, ignore
 			// @todo exception here?
 			return;
-} 
+		} 
 	}
 
 /**
