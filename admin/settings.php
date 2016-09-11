@@ -82,21 +82,18 @@ if(isset($_POST['submitted'])) {
 	# create website xml file
 	backup_datafile(GSDATAOTHERPATH . GSWEBSITEFILE);
 
-	// new xml
-	$xmls = new SimpleXMLExtended('<item></item>');
-	$note = $xmls->addChild('SITENAME');
-	$note->addCData($SITENAME);
-	$note = $xmls->addChild('SITEURL');
-	$note->addCData($SITEURLNEW);
-	$note = $xmls->addChild('TEMPLATE');
-	$note->addCData($TEMPLATE);
-	$xmls->addChild('PRETTYURLS', $PRETTYURLS);
-	$xmls->addChild('PERMALINK', var_out($PERMALINK));
-	$xmls->addChild('EMAIL', $SITEEMAIL);
-	$xmls->addChild('TIMEZONE', $SITETIMEZONE);
-	$xmls->addChild('LANG', $SITELANG);
-	$xmls->addChild('SITEUSR', $SITEUSR);
-	$xmls->addChild('SITEABOUT', $SITEABOUT);
+    # udpate GSWEBSITEFILE (website.xml) file with new settings
+	$xmls = getXML(GSDATAOTHERPATH.GSWEBSITEFILE,false);
+	$xmls->editAddCData('SITENAME',$SITENAME);
+	$xmls->editAddCData('SITEURL',$SITEURLNEW);
+	$xmls->editAddCData('TEMPLATE',$TEMPLATE);
+	$xmls->editAddChild('PRETTYURLS', $PRETTYURLS);
+	$xmls->editAddChild('PERMALINK', var_out($PERMALINK));
+	$xmls->editAddChild('EMAIL', $SITEEMAIL);
+	$xmls->editAddChild('TIMEZONE', $SITETIMEZONE);
+	$xmls->editAddChild('LANG', $SITELANG);
+	$xmls->editAddChild('SITEUSR', $SITEUSR);
+	$xmls->editAddChild('SITEABOUT', $SITEABOUT);
 	
 	exec_action('settings-website'); // @hook settings-website website data file before save
 	

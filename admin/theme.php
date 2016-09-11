@@ -26,7 +26,7 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 	# backup old GSWEBSITEFILE (website.xml) file
 	backup_datafile(GSDATAOTHERPATH.GSWEBSITEFILE);
 	
-    # udpate GSWEBSITEFILE (website.xml) file with new theme
+	# udpate GSWEBSITEFILE (website.xml) file with new theme
 	$xml = getXML(GSDATAOTHERPATH.GSWEBSITEFILE);
 	$xml->editAddCData('TEMPLATE',$newTemplate);
 	$status = XMLsave($xml,GSDATAOTHERPATH.GSWEBSITEFILE);
