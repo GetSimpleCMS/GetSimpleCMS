@@ -291,6 +291,19 @@ class SimpleXMLExtended extends SimpleXMLElement{
 	}
 
 	/**
+	 * sets a nodes cdata value if it exists, and adds cdata node if it doesn't
+	 * @param str $key   node id
+	 * @param str $value value to set
+	 */
+	public function editAddCData($key,$value = ''){
+		if(!$this->$key){
+			$this->addCDataChild($key,$value);
+			return;
+		}
+		$this->$key->updateCData($value);
+	}
+
+	/**
 	 * get the nodes type
 	 * @return str returns the nodetype constant of node
 	 * http://php.net/manual/en/dom.constants.php

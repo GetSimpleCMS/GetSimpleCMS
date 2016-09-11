@@ -28,7 +28,7 @@ if( (isset($_POST['submitted'])) && (isset($_POST['template'])) ) {
 	
     # udpate GSWEBSITEFILE (website.xml) file with new theme
 	$xml = getXML(GSDATAOTHERPATH.GSWEBSITEFILE);
-	$xml->TEMPLATE->setValue($newTemplate);
+	$xml->editAddCData('TEMPLATE',$newTemplate);
 	$status = XMLsave($xml,GSDATAOTHERPATH.GSWEBSITEFILE);
 	
 	$success = i18n_r('THEME_CHANGED');
