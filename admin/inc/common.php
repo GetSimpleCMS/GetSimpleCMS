@@ -403,6 +403,8 @@ debugLog('SITEURL_ABS  = ' . getSiteURL(true));
 debugLog('SITEURL_REL  = ' . $SITEURL_REL);
 debugLog('ASSETURL     = ' . $ASSETURL);
 debugLog('ASSETPATH    = ' . $ASSETPATH);
+debugLog('SITELANG     = ' . $SITELANG);
+debugLog('GSLANG       = ' . getDef('GSLANG'));
 // debugDie();
 
 /**
@@ -438,6 +440,7 @@ GLOBAL
 
 // load language
 $LANG = getDefaultLang();   // set global language from config heirarchy
+debugLog("LANG = ".$LANG);
 i18n_merge(null);           // load $LANG file into $i18n
 i18n_mergeDefault();        // load GSDEFAULTLANG or GSMERGELANG lang into $i18n to override ugly missing {} tokens if set
 

@@ -77,7 +77,7 @@ if(isset($_POST['submitted'])) {
 	}
 
 	// check valid lang files
-	if(!in_array($LANG.'.php', $lang_array) and !in_array($LANG.'.PHP', $lang_array)) die(); 
+	if(!in_array($SITELANG.'.php', $lang_array) and !in_array($SITELANG.'.PHP', $lang_array)) die("invalid lang"); 
 
 	# create website xml file
 	backup_datafile(GSDATAOTHERPATH . GSWEBSITEFILE);
@@ -119,14 +119,14 @@ if(isset($_POST['submitted'])) {
 if ($PRETTYURLS != '' ) { $prettychck = 'checked'; }
 
 # get all available language files
-if ($LANG == ''){ $LANG = GSDEFAULTLANG; }
+if ($SITELANG == ''){ $SITELANG = GSDEFAULTLANG; }
 
 if (count($lang_array) != 0) {
 	sort($lang_array);
 	$sel = ''; $langs = '';
 	foreach ($lang_array as $lfile){
 		$lfile = basename($lfile,".php");
-		if ($LANG == $lfile) { $sel="selected"; }
+		if ($SITELANG == $lfile) { $sel="selected"; }
 		$langs .= '<option '.$sel.' value="'.$lfile.'" >'.$lfile.'</option>';
 		$sel = '';
 	}

@@ -2806,8 +2806,8 @@ function getDefaultSalt(){
 function getDefaultLang(){
 	GLOBAL $USRLANG, $SITELANG;
 
-	if(isset($USRLANG)) return $USRLANG;
-	if(isset($SITELANG)) return $SITELANG;
+	if(isset($USRLANG) && !empty($USRLANG))  return $USRLANG;
+	if(isset($SITELANG) && !empty($SITELANG)) return $SITELANG;
 	if(getDef('GSLANG')) return getDef('GSLANG');
 
 	// get language files
