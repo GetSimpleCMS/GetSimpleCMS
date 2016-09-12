@@ -101,19 +101,14 @@ if(isset($_POST['submitted'])) {
 		$error = i18n_r('CHMOD_ERROR');
 	}
 
-	# see new language file immediately
-	$newlang = getDefaultLang();
-	include(GSLANGPATH.$newlang.'.php');
-	
 	if (!$error) {
-		$success = i18n_r('ER_SETTINGS_UPD').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>';
 		generate_sitemap();
 		GLOBAL $SITEURLABS;
 		if($SITEURLNEW !== $SITEURLABS) $SITEURLABS = $SITEURLNEW;
+		// ALWAYS RELOAD ON SETTINGS SAVE, TO APPLY SITE WIDE VARAIBLE CHANGES
+		redirect('settings.php?upd=settings-success');
 	}
-		
 }
-
 
 # are any of the control panel checkboxes checked?
 if ($PRETTYURLS != '' ) { $prettychck = 'checked'; }
