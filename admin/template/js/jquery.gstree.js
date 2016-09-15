@@ -203,7 +203,6 @@ function toggleTopAncestors(){
 	// console.profileEnd();
 }
 
-
 // add tree to editpages table
 function addExpanderTableHeader(elem,expander,colspan){
 	var rootcollapsed = $("#roottoggle").hasClass("rootcollapsed");
@@ -219,7 +218,6 @@ function addExpanderTableHeader(elem,expander,colspan){
 	$('<tr id="roottoggle" class="tree-roottoggle nohighlight '+ state +'" data-depth="-1"><td colspan="'+colspan+'">'+expander+'<span class="label">'+ langstr +'</span></td></tr>').insertAfter(elem);
 
 	// init expander
-	$('#roottoggle').toggleClass("nodecollapsedclass",rootcollapsed);
 	setExpander($('#roottoggle'));
 
 	$('#roottoggle .'+treeexpanderclass).on('click',toggleTopAncestors).bind('selectstart dragstart', function(evt)
