@@ -1977,6 +1977,7 @@ jQuery(document).ready(function () {
 	}
 
 	function doFilter(text){
+		$("table.filter").addClass("filtered");
 		$("table.filter tr:hidden").show();
 		$.each(text, function () {
 			if(this.substring(0,1) == '#') {
@@ -1989,6 +1990,7 @@ jQuery(document).ready(function () {
 	}
 
 	function resetFilter(){
+		$("table.filter").removeClass("filtered");		
 		$("table.filter tr").show();
 		// $('#filtertable').removeClass('current');
 		filterSearchInput.find('#q').val('');

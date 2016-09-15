@@ -3460,6 +3460,15 @@ kbd
 	position: relative;
 }
 
+/**
+ * disable tree expanders when table is filtered, to avoid showing children
+ */
+table.filter.filtered .tree-expander{
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.2;
+}
+
 .tree-expander {
 	cursor: pointer;
 	color: #868686;
