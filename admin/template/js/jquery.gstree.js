@@ -206,14 +206,22 @@ function toggleTopAncestors(){
 
 // add tree to editpages table
 function addExpanderTableHeader(elem,expander,colspan){
-	// Debugger.log($(elem));
 	var rootcollapsed = $("#roottoggle").hasClass("rootcollapsed");
+	
+	// init state if all are alrady collapsed, start out collapsed
+	var state = "";
+	if(allCollapsed()){
+		// overrrides to start collapsed
+		rootcollapsed = true;
+		state = 'rootcollapsed ' + nodecollapsedclass;	
+	}
 	var langstr = rootcollapsed ? i18n('EXPAND_TOP') : i18n('COLLAPSE_TOP');
+	$('<tr id="roottoggle" class="tree-roottoggle nohighlight '+ state +'" data-depth="-1"><td colspan="'+colspan+'">'+expander+'<span class="label">'+ langstr +'</span></td></tr>').insertAfter(elem);
 
-	$('<tr id="roottoggle" class="tree-roottoggle nohighlight" data-depth="-1"><td colspan="'+colspan+'">'+expander+'<span class="label">'+ langstr +'</span></td></tr>').insertAfter(elem);
 	// init expander
-	$('#roottoggle').toggleClass("collapsed",rootcollapsed);
+	$('#roottoggle').toggleClass("nodecollapsedclass",rootcollapsed);
 	setExpander($('#roottoggle'));
+
 	$('#roottoggle .'+treeexpanderclass).on('click',toggleTopAncestors).bind('selectstart dragstart', function(evt)
 								{ evt.preventDefault(); return false; });
 	$('#roottoggle .label').on('click',toggleTopAncestors).bind('selectstart dragstart', function(evt)
@@ -275,6 +283,23 @@ $.fn.zebraStripe = function(){
 };
 
 /**
+ * check if all roots are collpased
+ * @return bool true if all roots are collpased
+ */
+function allCollapsed(){
+	depth = 0;
+	rootClass = "."+treeparentclass+"[data-"+datadepthattr+"='" + (depth) + "']";
+	rootelems = $(rootClass);
+
+	rootClass = "."+treeparentclass+ ".tree-collapsed" + "[data-"+datadepthattr+"='" + (depth) + "']";
+	rootcollapsedelems = $(rootClass);
+	iscollapsed = rootelems.length == rootcollapsedelems.length;
+
+	if(iscollapsed) console.log("all roots collapsed");
+	return iscollapsed;
+}
+
+/**
  * addTabletree
  * 
  * add gstree to tree ready table with data-depths and parent,indent classes
@@ -322,12 +347,13 @@ $.fn.addTableTree = function(minrows,mindepth,headerdepth){
 	addIndents($('tr td:first-child',elem)); // preload indents for roots and childless
 	addExpanders($('tr.tree-parent td:first-child .tree-indent:last-of-type',elem),customexpander); // add expanders to last indent
 	$('tr td:first-child .tree-indent:last-of-type').html(''); // remove extra indentation
+
+	restoreTreeState(elem);
 	
 	// add the header expander controls
 	var deep = headerdepth != undefined && $("tbody tr[data-depth="+headerdepth+"]",elem).length > 0;	
 	if(deep) addExpanderTableHeader($('thead > tr:first',elem),customexpander,4); // colspan = 4
 	
-	restoreTreeState(elem);
 	
 	$("table.striped").zebraStripe();
 
