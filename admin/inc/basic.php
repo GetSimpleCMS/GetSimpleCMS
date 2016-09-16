@@ -2669,7 +2669,7 @@ function getDefaultTimezone(){
  * @param str timezone identifier http://us3.php.net/manual/en/timezones.php
  */
 function setTimezone($timezone){
-	if(isset($timezone) && function_exists('date_default_timezone_set') && ($timezone != "" || stripos($timezone, '--')) ) {
+	if(isset($timezone) && ($timezone != "" || stripos($timezone, '--')) ) {
 		date_default_timezone_set($timezone);
 	}
 }
