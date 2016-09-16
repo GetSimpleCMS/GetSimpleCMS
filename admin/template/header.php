@@ -100,6 +100,13 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
     if (file_exists(GSTHEMESPATH .getDef('GSEDITORCONFIGFILE'))) {
         $configjs =  $SITEURL.getRelPath(GSTHEMESPATH).getDef('GSEDITORCONFIGFILE');
     }
+
+    function isAutoSave(){
+    	if(getDef('GSUSEDRAFTS',true)){
+    		return !isset($_GET['nodraft']);
+    	}
+    	return true;
+    }
     ?>
 
     <script type="text/javascript">
@@ -124,7 +131,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
             echo '		var editorTheme = "'.$editor_theme."\";\n";
         }
 
-        if(get_filename_id()=='edit' && getDef('GSAUTOSAVE',true)){
+        if(get_filename_id()=='edit' && isAutoSave()){
         	$autosaveintvl = getdef('GSAUTOSAVEINTERVAL');
         	echo "		// edit autosave\n";
         	echo '		var GSAUTOSAVEPERIOD = ' . (!is_int($autosaveintvl) ? 10 : $autosaveintvl).";\n";
