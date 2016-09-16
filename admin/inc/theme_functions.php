@@ -267,12 +267,7 @@ function get_parent($echo=true) {
  */
 function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
 	global $TIMEZONE;
-	if ($TIMEZONE != '') {
-		if (function_exists('date_default_timezone_set')) {
-			date_default_timezone_set($TIMEZONE);
-		}
-	}
-	
+	if ($TIMEZONE != '') date_default_timezone_set($TIMEZONE);
 	$str = formatDate($i, strtotime(getPageGlobal('date')));
 	return echoReturn($str,$echo);	
 }
