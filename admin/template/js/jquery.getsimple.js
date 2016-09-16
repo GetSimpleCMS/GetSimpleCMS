@@ -1284,7 +1284,12 @@ jQuery(document).ready(function () {
 
 	// init auto saving
     var autoSaveTimer = null;
-	if(typeof GSAUTOSAVEPERIOD !== 'undefined' && parseInt(GSAUTOSAVEPERIOD,10) > 0) autoSaveInit();
+
+	function isAutoSave(){
+		return (typeof GSAUTOSAVEPERIOD !== 'undefined') && parseInt(GSAUTOSAVEPERIOD,10) > 0;
+	}
+
+	if(isAutoSave()) autoSaveInit();
 
     // ajaxify edit.php submit
     $('body #editform').on('submit',function(e){
@@ -1308,6 +1313,12 @@ jQuery(document).ready(function () {
     $('#cancel-updates').hide();
 
     window.onbeforeunload = function () {
+    	// force autosave before leaving
+    	if(isAutoSave()){
+    		warnme = false;
+    		autoSaveIntvl(); // aynchronous save, chance of failure
+    		autoSaveDestroy();
+    	}
         if (warnme || pageisdirty === true) {
             return i18n('UNSAVED_INFORMATION');
         }
@@ -1385,7 +1396,7 @@ jQuery(document).ready(function () {
 			ajaxStatusComplete();
             warnme = false;
         	pageisdirty = false;
-        } 
+        }
         else {
         	ajaxSaveError();
         	autoSaveDestroy();
