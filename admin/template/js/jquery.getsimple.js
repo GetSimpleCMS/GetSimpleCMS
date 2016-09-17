@@ -1358,6 +1358,15 @@ jQuery(document).ready(function () {
 		// setInterval(autoSaveIntvl, null);
     }
 
+    // auto save on draft preview
+    if(isAutoSave()){
+    	$('body#edit a.draftview').on("click",function(e){
+    		warnme = false;
+    		autoSaveIntvl(); // aynchronous save, chance of failure
+    		autoSaveDestroy();
+    	});
+    }
+
     // ajax save function for edit.php #editform
     function ajaxSave(urlargs) {
 
