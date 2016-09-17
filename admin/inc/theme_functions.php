@@ -714,6 +714,11 @@ function is_logged_in(){
 		return true;
 	}
 }	
+
+function page_is_draft(){
+	GLOBAL $data_index;
+	return $data_index->draft == true;
+}
 	
 /**
  * aliases
