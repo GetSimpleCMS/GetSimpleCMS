@@ -248,6 +248,7 @@ function server_is_apache() {
  * @return string         return filtered string
  */
 function var_out($var,$filter = "special"){
+	$var = (string)$var;
 
 	// php 5.2 shim
 	if(!defined('FILTER_SANITIZE_FULL_SPECIAL_CHARS')){
