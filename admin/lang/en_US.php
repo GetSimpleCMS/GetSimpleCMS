@@ -252,12 +252,13 @@ $i18n = array(
 "GENERAL_SETTINGS"        =>	"General Settings",
 "WEBSITE_SETTINGS"        =>	"Website Settings",
 "LANGUAGE"                =>	"Language",
-"USE_FANCY_URLS"          =>	"Use Fancy URLs - <b style=\"font-weight:100\">Requires that your host has <code>mod_rewrite</code> enabled</b>",
-"PERMALINK"               =>	"Custom Permalink Structure",
+"USE_FANCY_URLS"          =>	"Enable Custom URLs - <b style=\"font-weight:100\">Typically requires that your host has <code>mod_rewrite</code> enabled</b>",
+"PERMALINK"               =>	"Custom URL Structure",
 "MORE"                    =>	"more",
 "HELP"                    =>	"help",
 "FLUSHCACHE"              =>	"Flush All Caches",
 "FLUSHCACHE-SUCCESS"      =>	"Caches Flushed Successfully",
+"URL_SETTINGS"            =>    "Custom URL Settings",
 
 /*
  * For: Profile.php

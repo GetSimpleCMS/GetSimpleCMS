@@ -1105,9 +1105,6 @@ function generate_url($slug, $absolute = false){
 	if($slug != getDef('GSINDEXSLUG')){
 		if ($PRETTYURLS == '1'){
 			$url .= generate_permalink($slug);
-		} 
-		else if (!empty($PERMALINK)){
-			$url .= generate_permalink($slug,$PERMALINK);
 		}
 		else $url .= 'index.php?id='.$slug;
 	}

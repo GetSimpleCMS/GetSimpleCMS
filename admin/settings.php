@@ -20,7 +20,7 @@ $fullpath   = suggest_site_path();
 $lang_array = getFiles(GSLANGPATH);
 
 # initialize these all as null
-$error = $success = $prettychck = null;
+$error = $success = $prettychck = $prettyinput = '';
 
 # if the flush cache command was invoked
 if (isset($_GET['flushcache'])) {
@@ -111,7 +111,8 @@ if(isset($_POST['submitted'])) {
 }
 
 # are any of the control panel checkboxes checked?
-if ($PRETTYURLS != '' ) { $prettychck = 'checked'; }
+$prettyinput = 'disabled';
+if ($PRETTYURLS != '' ) { $prettychck = 'checked'; $prettyinput = '';}
 
 # get all available language files
 if ($SITELANG == ''){ $SITELANG = GSDEFAULTLANG; }
@@ -182,23 +183,7 @@ get_template('header');
 				</p>
 			</div>
 			<div class="clear"></div>
-			<div class="widesec">
-				<p class="inline" >
-					<input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;
-					<label for="prettyurls" ><?php i18n('USE_FANCY_URLS');?></label>
-				</p>
-			</div>
 			<div class="leftsec">
-				<p>
-					<label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: 
-						<span class="right">
-							<a href="http://get-simple.info/docs/pretty_urls" target="_blank" ><?php i18n('MORE');?></a>
-						</span>
-					</label>
-					<input class="text" name="permalink" id="permalink" type="text" placeholder="<?php echo getDef('GSDEFAULTPERMALINK');?>" value="<?php if(isset($PERMALINK)) { echo var_out($PERMALINK); } ?>" />
-				</p>
-			</div>
-			<div class="rightsec">
 				<p>
 					<label for="email" ><?php i18n('LABEL_EMAIL');?>:</label>
 					<input class="text" id="email" name="email" type="email" value="<?php echo var_out($SITEEMAIL); ?>" />
@@ -207,16 +192,30 @@ get_template('header');
 					echo '<span class="input-warning">'.i18n_r('WARN_EMAILINVALID').'</span>';
 				}?>
 			</div>
-			<div class="clear"></div>
 			<div class="widesec">
 				<p>
 					<label for="about" ><?php i18n('LABEL_SITEABOUT');?>:</label>
 					<textarea class="text short" id="about" name="about" type="about" /><?php echo ($SITEABOUT); ?></textarea>
 				</p>
 			</div>
-
 			<div class="clear"></div>
-			
+			<p></p>
+			<h3><?php i18n('URL_SETTINGS');?></h3>
+			<div class="wideopt">
+				<p class="inline" >
+					<input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;
+					<label for="prettyurls" ><?php i18n('USE_FANCY_URLS');?></label>
+				</p>
+				<p>
+					<label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: 
+						<span class="right">
+							<a href="http://get-simple.info/docs/pretty_urls" target="_blank" ><?php i18n('MORE');?></a>
+						</span>
+					</label>
+					<input class="text" name="permalink" id="permalink" type="text" placeholder="<?php echo getDef('GSDEFAULTPERMALINK');?>" value="<?php if(isset($PERMALINK)) { echo var_out($PERMALINK); } ?>" <?php echo $prettyinput;?> />
+				</p>
+			</div>
+			<div class="clear"></div>
 			<?php exec_action('settings-website-extras'); // @hook setting-website-extras after website settings html output ?>
 			<p id="submit_line" >
 				<span>

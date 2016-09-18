@@ -2143,6 +2143,10 @@ jQuery(document).ready(function () {
 		window.location.reload();
 	})
 
+	$('body#settings #prettyurls').change(function() {
+		$('#permalink').attr('disabled', !this.checked);
+	});
+
 	// end of jQuery ready
 });
 
