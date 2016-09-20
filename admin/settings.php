@@ -20,7 +20,8 @@ $fullpath   = suggest_site_path();
 $lang_array = getFiles(GSLANGPATH);
 
 # initialize these all as null
-$error = $success = $prettychck = $prettyinput = '';
+$error = $success = $prettychck = null;
+$prettyinput = '';
 
 # if the flush cache command was invoked
 if (isset($_GET['flushcache'])) {
