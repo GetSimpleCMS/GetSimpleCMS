@@ -1686,7 +1686,7 @@ function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = '...', $bre
  * wrapper for getExcerpt for specific page
  * strip is performed but no filters are executed
  */
-function getpageExcerpt($pageid,$len = 200, $striphtml = true, $ellipsis = '...', $break = false, $cleanhtml = true){
+function getPageExcerpt($pageid,$len = 200, $striphtml = true, $ellipsis = '...', $break = false, $cleanhtml = true){
 	$content = returnPageContent($pageid);
 	if(getDef('GSCONTENTSTRIP',true)) $content = strip_content($content);	
 	return getExcerpt($content,$len,$striphtml,$ellipsis,$break,$cleanhtml);
