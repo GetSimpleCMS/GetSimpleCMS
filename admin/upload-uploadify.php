@@ -48,11 +48,9 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 			// invalid file
 		}
 		 
-		$path = (isset($_POST['path'])) ? $_POST['path']."/" : "";
-		$thumbsPath = GSTHUMBNAILPATH.$path;
-			
+		$path = (isset($_POST['path'])) ? $_POST['path']."/" : "";			
 		require('inc/imagemanipulation.php');	
-		genStdThumb(isset($_POST['path']) ? $_POST['path']."/" : '',$name);	
+		genStdThumb(isset($_POST['path']) ? $_POST['path']."/" : '',$name.'.'.$extension);	
 
 		die('1');
 		// success
