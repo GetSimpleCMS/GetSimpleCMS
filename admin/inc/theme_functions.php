@@ -85,6 +85,7 @@ function get_page_meta_keywords($echo=true) {
  * @param bool $echo Optional, default is true. False will 'return' value
  * @return string Echos or returns based on param $echo
  */
+function get_page_meta_description($echo=true) {return get_page_meta_desc($echo);}
 function get_page_meta_desc($echo=true) {
 	global $metad;
 	$myVar = encode_quotes(strip_decode($metad));
