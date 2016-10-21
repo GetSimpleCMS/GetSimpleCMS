@@ -29,16 +29,13 @@ exec_action('load-upload');
 $dirsSorted = $filesSorted = $foldercount = null;
 
 if (isset($_GET['path']) && !empty($_GET['path'])) {
-	$path = str_replace('../','', $_GET['path']);
-	$path = tsl(GSDATAUPLOADPATH.$path);
-
+	$path      = str_replace('../','', $_GET['path']);
+	$subFolder = tsl($path);
+	$path      = tsl(GSDATAUPLOADPATH.$path);
 	// die if path is outside of uploads
 	if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
-	$subPath   = str_replace('../','', $_GET['path']);
-	$subFolder = tsl($subPath);
 } else { 
 	$path      = GSDATAUPLOADPATH;
-	$subPath   = ''; 
 	$subFolder = '';
 }
 
@@ -236,7 +233,7 @@ function getUploadIcon($type){
 		echo "</div>";
 		exec_action(get_filename_id().'-body'); 
 
-		$pathParts = explode("/",$subPath);
+		$pathParts = explode("/",$subFolder);
 		$urlPath = null;
 
 		// preserve querystring, but remove path
