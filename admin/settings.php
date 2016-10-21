@@ -21,6 +21,7 @@ $lang_array = getFiles(GSLANGPATH);
 
 # initialize these all as null
 $error = $success = $prettychck = null;
+$prettyinput = '';
 
 # if the flush cache command was invoked
 if (isset($_GET['flushcache'])) {
@@ -77,26 +78,23 @@ if(isset($_POST['submitted'])) {
 	}
 
 	// check valid lang files
-	if(!in_array($LANG.'.php', $lang_array) and !in_array($LANG.'.PHP', $lang_array)) die(); 
+	if(!in_array($SITELANG.'.php', $lang_array) and !in_array($SITELANG.'.PHP', $lang_array)) die("invalid lang"); 
 
 	# create website xml file
 	backup_datafile(GSDATAOTHERPATH . GSWEBSITEFILE);
 
-	// new xml
-	$xmls = new SimpleXMLExtended('<item></item>');
-	$note = $xmls->addChild('SITENAME');
-	$note->addCData($SITENAME);
-	$note = $xmls->addChild('SITEURL');
-	$note->addCData($SITEURLNEW);
-	$note = $xmls->addChild('TEMPLATE');
-	$note->addCData($TEMPLATE);
-	$xmls->addChild('PRETTYURLS', $PRETTYURLS);
-	$xmls->addChild('PERMALINK', var_out($PERMALINK));
-	$xmls->addChild('EMAIL', $SITEEMAIL);
-	$xmls->addChild('TIMEZONE', $SITETIMEZONE);
-	$xmls->addChild('LANG', $SITELANG);
-	$xmls->addChild('SITEUSR', $SITEUSR);
-	$xmls->addChild('SITEABOUT', $SITEABOUT);
+    # udpate GSWEBSITEFILE (website.xml) file with new settings
+	$xmls = getXML(GSDATAOTHERPATH.GSWEBSITEFILE,false);
+	$xmls->editAddCData('SITENAME',$SITENAME);
+	$xmls->editAddCData('SITEURL',$SITEURLNEW);
+	$xmls->editAddCData('TEMPLATE',$TEMPLATE);
+	$xmls->editAddChild('PRETTYURLS', $PRETTYURLS);
+	$xmls->editAddChild('PERMALINK', var_out($PERMALINK));
+	$xmls->editAddChild('EMAIL', $SITEEMAIL);
+	$xmls->editAddChild('TIMEZONE', $SITETIMEZONE);
+	$xmls->editAddChild('LANG', $SITELANG);
+	$xmls->editAddChild('SITEUSR', $SITEUSR);
+	$xmls->editAddChild('SITEABOUT', $SITEABOUT);
 	
 	exec_action('settings-website'); // @hook settings-website website data file before save
 	
@@ -104,32 +102,28 @@ if(isset($_POST['submitted'])) {
 		$error = i18n_r('CHMOD_ERROR');
 	}
 
-	# see new language file immediately
-	$newlang = getDefaultLang();
-	include(GSLANGPATH.$newlang.'.php');
-	
 	if (!$error) {
-		$success = i18n_r('ER_SETTINGS_UPD').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>';
 		generate_sitemap();
 		GLOBAL $SITEURLABS;
 		if($SITEURLNEW !== $SITEURLABS) $SITEURLABS = $SITEURLNEW;
+		// ALWAYS RELOAD ON SETTINGS SAVE, TO APPLY SITE WIDE VARAIBLE CHANGES
+		redirect('settings.php?upd=settings-success');
 	}
-		
 }
 
-
 # are any of the control panel checkboxes checked?
-if ($PRETTYURLS != '' ) { $prettychck = 'checked'; }
+$prettyinput = 'disabled';
+if ($PRETTYURLS != '' ) { $prettychck = 'checked'; $prettyinput = '';}
 
 # get all available language files
-if ($LANG == ''){ $LANG = GSDEFAULTLANG; }
+if ($SITELANG == ''){ $SITELANG = GSDEFAULTLANG; }
 
 if (count($lang_array) != 0) {
 	sort($lang_array);
 	$sel = ''; $langs = '';
 	foreach ($lang_array as $lfile){
 		$lfile = basename($lfile,".php");
-		if ($LANG == $lfile) { $sel="selected"; }
+		if ($SITELANG == $lfile) { $sel="selected"; }
 		$langs .= '<option '.$sel.' value="'.$lfile.'" >'.$lfile.'</option>';
 		$sel = '';
 	}
@@ -158,7 +152,7 @@ get_template('header');
 			</div>		
 			<?php exec_action(get_filename_id().'-body'); ?>
 			<div class="leftsec">
-				<p><label for="sitename" ><?php i18n('LABEL_WEBSITE');?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php echo stripslashes($SITENAME); ?>" /></p>
+				<p><label for="sitenameinput" ><?php i18n('LABEL_WEBSITE');?>:</label><input class="text" id="sitenameinput" name="sitename" type="text" value="<?php echo stripslashes($SITENAME); ?>" /></p>
 			</div>
 			<div class="rightsec">
 				<p>
@@ -190,23 +184,7 @@ get_template('header');
 				</p>
 			</div>
 			<div class="clear"></div>
-			<div class="widesec">
-				<p class="inline" >
-					<input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;
-					<label for="prettyurls" ><?php i18n('USE_FANCY_URLS');?></label>
-				</p>
-			</div>
 			<div class="leftsec">
-				<p>
-					<label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: 
-						<span class="right">
-							<a href="http://get-simple.info/docs/pretty_urls" target="_blank" ><?php i18n('MORE');?></a>
-						</span>
-					</label>
-					<input class="text" name="permalink" id="permalink" type="text" placeholder="<?php echo getDef('GSDEFAULTPERMALINK');?>" value="<?php if(isset($PERMALINK)) { echo var_out($PERMALINK); } ?>" />
-				</p>
-			</div>
-			<div class="rightsec">
 				<p>
 					<label for="email" ><?php i18n('LABEL_EMAIL');?>:</label>
 					<input class="text" id="email" name="email" type="email" value="<?php echo var_out($SITEEMAIL); ?>" />
@@ -215,16 +193,30 @@ get_template('header');
 					echo '<span class="input-warning">'.i18n_r('WARN_EMAILINVALID').'</span>';
 				}?>
 			</div>
-			<div class="clear"></div>
 			<div class="widesec">
 				<p>
 					<label for="about" ><?php i18n('LABEL_SITEABOUT');?>:</label>
 					<textarea class="text short" id="about" name="about" type="about" /><?php echo ($SITEABOUT); ?></textarea>
 				</p>
 			</div>
-
 			<div class="clear"></div>
-			
+			<p></p>
+			<h3><?php i18n('URL_SETTINGS');?></h3>
+			<div class="wideopt">
+				<p class="inline" >
+					<input name="prettyurls" id="prettyurls" type="checkbox" value="1" <?php echo $prettychck; ?>  /> &nbsp;
+					<label for="prettyurls" ><?php i18n('USE_FANCY_URLS');?></label>
+				</p>
+				<p>
+					<label for="permalink"  class="clearfix"><?php i18n('PERMALINK');?>: 
+						<span class="right">
+							<a href="http://get-simple.info/docs/pretty_urls" target="_blank" ><?php i18n('MORE');?></a>
+						</span>
+					</label>
+					<input class="text" name="permalink" id="permalink" type="text" placeholder="<?php echo getDef('GSDEFAULTPERMALINK');?>" value="<?php if(isset($PERMALINK)) { echo var_out($PERMALINK); } ?>" <?php echo $prettyinput;?> />
+				</p>
+			</div>
+			<div class="clear"></div>
 			<?php exec_action('settings-website-extras'); // @hook setting-website-extras after website settings html output ?>
 			<p id="submit_line" >
 				<span>

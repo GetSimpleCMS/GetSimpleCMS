@@ -305,6 +305,13 @@ function get_Server_Software() {
  * @return string         return filtered string
  */
 function var_out($var,$filter = "special"){
+
+	// php 5.2 shim
+	if(!defined('FILTER_SANITIZE_FULL_SPECIAL_CHARS')){
+		define('FILTER_SANITIZE_FULL_SPECIAL_CHARS',522);
+		if($filter == "full") return htmlspecialchars($var, ENT_QUOTES);
+	}
+
 	if(function_exists( "filter_var") ){
 		$aryFilter = array(
 			"string"  => FILTER_SANITIZE_STRING,

@@ -29,16 +29,13 @@ exec_action('load-upload');
 $dirsSorted = $filesSorted = $foldercount = null;
 
 if (isset($_GET['path']) && !empty($_GET['path'])) {
-	$path = str_replace('../','', $_GET['path']);
-	$path = tsl(GSDATAUPLOADPATH.$path);
-
+	$path      = str_replace('../','', $_GET['path']);
+	$subFolder = tsl($path);
+	$path      = tsl(GSDATAUPLOADPATH.$path);
 	// die if path is outside of uploads
 	if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
-	$subPath   = str_replace('../','', $_GET['path']);
-	$subFolder = tsl($subPath);
 } else { 
 	$path      = GSDATAUPLOADPATH;
-	$subPath   = ''; 
 	$subFolder = '';
 }
 
@@ -57,9 +54,13 @@ if (isset($_FILES['file'])) {
 		} else {
 			
 			//set variables
-			$count    = '1';
-			$file_base     = clean_img_name(to7bit($_FILES["file"]["name"][$i]));
-			$file_loc = $path . $file_base;
+			$count     = '1';
+			$file      = $_FILES["file"]["name"][$i];
+			$fileext   = getFileExtension($file);
+			$filename  = getFileName($file);
+			
+			$file_base = clean_img_name(to7bit($filename)) . '.'.$fileext;
+			$file_loc  = $path . $file_base;
 			
 			//prevent overwriting						
 			if(!isset($_POST['fileoverwrite']) && file_exists($file_loc)){
@@ -68,7 +69,7 @@ if (isset($_FILES['file'])) {
 			}
 
 			//validate file
-			if (validate_safe_file($_FILES["file"]["tmp_name"][$i], $_FILES["file"]["name"][$i])) {
+			if (validate_safe_file($_FILES["file"]["tmp_name"][$i], $file_base)) {
 				move_uploaded_file($_FILES["file"]["tmp_name"][$i], $file_loc);
 				gs_chmod($file_loc);
 				exec_action('file-uploaded');
@@ -232,7 +233,7 @@ function getUploadIcon($type){
 		echo "</div>";
 		exec_action(get_filename_id().'-body'); 
 
-		$pathParts = explode("/",$subPath);
+		$pathParts = explode("/",$subFolder);
 		$urlPath = null;
 
 		// preserve querystring, but remove path
@@ -288,7 +289,7 @@ function getUploadIcon($type){
 			echo '<td class="imgthumb"></td>';
 			$adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
 			$folderhref = 'upload.php?' . merge_queryString(array('path'=>$adm));
-			echo '<td>'.getUploadIcon('.').'</span><a href="'.$folderhref.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
+			echo '<td class="break">'.getUploadIcon('.').'</span><a href="'.$folderhref.'" ><strong>'.htmlspecialchars($upload['name']).'</strong></a></td>';
 			echo '<td class="file_size right"><span>'.$directory_size.'</span></td>';
 
 		  // get the file permissions.
@@ -363,7 +364,7 @@ function getUploadIcon($type){
 			}
 			
 			// name column linked
-			echo '</td><td>'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink" data-fileurl="'.$primarylink.'">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
+			echo '</td><td class="break">'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink" data-fileurl="'.$primarylink.'">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
 			
 			// size column
 			echo '<td class="file_size right"><span>'. $upload['size'] .'</span></td>';

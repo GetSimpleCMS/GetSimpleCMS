@@ -1,40 +1,37 @@
-﻿
-// GetSimpleCMS config file for CKeditor 3.6.2
+
+// GetSimpleCMS config file for CKeditor
 
 // default editor config
 CKEDITOR.editorConfig = function( config )
 {
 	// Define changes to default configuration here.
-    config.skin                        = 'getsimple';
+	config.skin                        = 'getsimple';
 	
-    config.defaultLanguage             = 'en';
+	config.defaultLanguage             = 'en';
 	config.resize_dir                  = 'vertical'; // vertical resize
 	config.toolbarCanCollapse          = false;      // hide toolbar collapse button
-    config.forcePasteAsPlainText       = true;
-    config.tabSpaces                   = 10;    
+	config.forcePasteAsPlainText       = true;
+	config.tabSpaces                   = 10;    
 
 	config.dialog_backgroundCoverColor = '#000000';  // veil color for dialog popups
-    config.uiColor                     = '#FFFFFF';
+	config.uiColor                     = '#FFFFFF';
 	config.magicline_color             = '#CF3805'; 
-    config.entities                    = false;    
-
-    
-    config.filebrowserBrowseUrl        = 'upload.php?browse&type=all';
-    config.filebrowserImageBrowseUrl   = 'upload.php?browse&type=images';
-
-    // customize file browser popup windows below
-    // config.filebrowserWindowWidth      = '960';
-    // config.filebrowserWindowHeight     = '700';
+	config.entities                    = false;    
 
 	config.allowedContent              = true;       // disable acf
 	config.disableAutoInline           = true;       // disable automatic inline editing of elements with contenteditable=true
 
-	// config.extraPlugins                = 'autogrow'; // auto grow plugin
+	config.filebrowserBrowseUrl        = 'upload.php?browse&type=all';
+	config.filebrowserImageBrowseUrl   = 'upload.php?browse&type=images';	
+	
+	// customize file browser popup windows below
+	// config.filebrowserWindowWidth      = '960';
+	// config.filebrowserWindowHeight     = '700';
 
 	config.toolbar_advanced = 
 		[['Bold', 'Italic', 'Underline', '-', 'NumberedList', 'BulletedList', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', '-', 'Link', 'Unlink', 'Image', 'RemoveFormat', '-', 'Table', 'TextColor', 'BGColor', 'ShowBlocks'], ['Source'], ['Maximize'],
 		'/',
-		['Styles','Format','Font','FontSize']];	
+		['Styles','Format','Font','FontSize','CodeSnippet']];	
 
 	config.toolbar_basic = 
 		[['Bold', 'Italic', 'Underline', '-', 'NumberedList', 'BulletedList', '-', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', '-', 'Link', 'Unlink', 'Image', 'RemoveFormat'], ['Source'], ['Maximize'] ];
@@ -45,18 +42,72 @@ CKEDITOR.editorConfig = function( config )
 		config.toolbar_basic.push(Array("About"));
 	}
 
-};
+	/*
+	 * Add 'about' button for debug
+	 */
+	// config.toolbar_advanced.push(Array("About"));
+	// config.toolbar_basic.push(Array("About"));
 
+	var extraPlugins = new Array();
+	extraPlugins.push('codesnippet');         // enables code insertion, toolbar id 'CodeSnippet'
+	// extraPlugins.push('autogrow');         // auto grow ckeditor height on content, see config.autoGrow_maxHeight
+	// extraPlugins.push('floating-tools');   // enables a floating text toolbar
+	// extraPlugins.push('fixed');            // enables a fixed toolbar ( sticks to center though )
+	config.extraPlugins = extraPlugins.join(',');
+
+	/*
+	 * Configure Floating tools
+	 */
+	// config.floatingtools_basic = config.toolbar_basic; // copy our basic toolbar
+	// config.floatingtools_Basic = [['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link']]; // define a custom same syntax as cke
+	// config.floatingtools_advanced = config.toolbar_advanced; // copy our advanced toolbar
+	// config.floatingtools = 'basic'; // pick which toolbar definition to use `floatingtools_TOOLBAR_ID`
+
+	/*
+	 * Configure autoGrow plugin
+	 */
+	// config.autoGrow_minHeight   = 200; 
+	// config.autoGrow_maxHeight   = 600;
+	// config.autoGrow_bottomSpace = 50;
+
+	/*
+	 * configure codesnippet plugin
+	 */
+	config.codeSnippet_theme = 'monokai_sublime';
+	config.codeSnippet_languages = {
+	    javascript: 'JavaScript',
+	    php: 'PHP',
+	    html: 'HTML',
+	    css: 'CSS',
+	    C: 'C++',
+	    json: 'JSON',
+	    sql: 'SQL',
+	    xml: 'XML'
+	};
+
+	/*
+	 * Remove plugin example
+	 */
+	// config.removePlugins = 'pluginid';
+	
+	/* ckeditor full package included plugins
+	 * elementspath,enterkey,entities,popup,filebrowser,find,fakeobjects,flash,,floatingspace,listblock,richcombo,
+	 * font,format,forms,horizontalrule,htmlwriter,iframe,image,indent,indentblock,indentlist,justify,menubutton,
+	 * language,link,list,liststyle,magicline,markdown,maximize,newpage,pagebreak,pastefromword,pastetext,preview,
+	 * print,removeformat,resize,save,scayt,selectall,showblocks,showborders,smiley,sourcearea,specialchar,stylescombo,
+	 * tab,table,templates,,undo,wsc,wysiwygarea';
+	*/
+};
 
 
 /** ------------------------------------------------------------------------
  * GS Default overrides and extras
  * DO NOT EDIT BELOW THIS LINE
  */
+
 // prevent removal of empty inline tags
 CKEDITOR.dtd.$removeEmpty['i']    = false;
 CKEDITOR.dtd.$removeEmpty['span'] = false;
-
 
 // Override default block element source formatting
 CKEDITOR.on( 'instanceReady', function( ev ) {
@@ -72,6 +123,8 @@ CKEDITOR.on( 'instanceReady', function( ev ) {
 	for (var i=0; i<blockTags.length; i++) {
 		ev.editor.dataProcessor.writer.setRules( blockTags[i], rules );
 	}
+
+    // ev.editor.dataProcessor.writer.selfClosingEnd = '>'; // self closing defautls to />
 }); 
 
 // Disable some dialog fields we do not need
@@ -79,28 +132,26 @@ CKEDITOR.on( 'dialogDefinition', function( ev )	{
 		var dialogName = ev.data.name;
 		var dialogDefinition = ev.data.definition;
 		ev.data.definition.resizable = CKEDITOR.DIALOG_RESIZE_NONE;
-		var infoTab;
-		var advTab;
 
 		if ( dialogName == 'link' ) {
-			infoTab = dialogDefinition.getContents( 'info' );
+			var infoTab = dialogDefinition.getContents( 'info' );
 			//dialogDefinition.removeContents( 'target' );
-			advTab = dialogDefinition.getContents( 'advanced' );
+			var advTab = dialogDefinition.getContents( 'advanced' );
 			advTab.remove( 'advLangDir' );
 			advTab.remove( 'advLangCode' );
 			advTab.remove( 'advContentType' );
-			// advTab.remove( 'advTitle' );
+			advTab.remove( 'advTitle' );
 			advTab.remove( 'advCharset' );
 		}
 
 		if ( dialogName == 'image' ) {
-			infoTab = dialogDefinition.getContents( 'info' );
+			var infoTab = dialogDefinition.getContents( 'info' );
 			infoTab.remove( 'txtBorder' );
 			infoTab.remove( 'txtHSpace' );
 			infoTab.remove( 'txtVSpace' );
 			infoTab.remove( 'btnResetSize' );
 			dialogDefinition.removeContents( 'Link' );
-			advTab = dialogDefinition.getContents( 'advanced' );
+			var advTab = dialogDefinition.getContents( 'advanced' );
 			advTab.remove( 'cmbLangDir' );
 			advTab.remove( 'txtLangCode' );
 			advTab.remove( 'txtGenLongDescr' );
@@ -108,34 +159,27 @@ CKEDITOR.on( 'dialogDefinition', function( ev )	{
 		}
 });
 
-// set default link to url
-// linkdefault = "url";
+// linkdefault = "url"; // default link menu to url instead of page dropdown
 
 var menuItems;
-
-$.getJSON("inc/ajax.php?list_pages_json=1", function (data){
-	menuItems = data;
-	CKEsetupLinks();
-});
 
 /**
  * CKEditor Add Local Page Link
  * This is used by the CKEditor to link to internal pages
  * @param editorObj	an editor instance
- */
-CKEsetupLinks = function(){
+**/
+CKEsetupLinks = function(editorObj){
 
-	// if (typeof editorObj === "undefined") return;
+	if (typeof editorObj === "undefined") return;
+	
 	CKEDITOR.on( 'dialogDefinition', function( ev )	{
-		// console.log(ev.editor);
-		// console.log(ev.data.name);
-		// console.log(menuItems);
-		if ((ev.data.name != 'link') || !menuItems) return;
 
+		if ((ev.editor != editorObj) || (ev.data.name != 'link') || !menuItems) return;
+		
 		// modify dialog definition for "link" dialog else return
-
+		
 		var definition = ev.data.definition;
-
+		
 		// override onfocus handler
 		// Supposed to select the select box, not working
 		definition.onFocus = CKEDITOR.tools.override(definition.onFocus, function(original) {
@@ -169,7 +213,7 @@ CKEsetupLinks = function(){
 			}]
 		});
 
-		// hide and show tabs and stuff as type i changed
+		// hide and show tabs and stuff as typ eis changed
 		content.onChange = CKEDITOR.tools.override(content.onChange, function(original) {
 			return function() {
 				original.call(this);
@@ -177,7 +221,7 @@ CKEsetupLinks = function(){
 				var element = dialog.getContentElement('info', 'localPageOptions').getElement().getParent().getParent();
 				if (this.getValue() == 'localPage') {
 					element.show();
-					if (ev.editor.config.linkShowTargetTab) {
+					if (editorObj.config.linkShowTargetTab) {
 						dialog.showPage('target');
 					}
 					var uploadTab = dialog.definition.getContents('upload');
@@ -219,7 +263,7 @@ CKEsetupLinks = function(){
 			}
 		};
 	},null,null,1); 
-};
+}
 
 
 // Helper function to get a CKEDITOR.dialog.contentDefinition object by its ID.
@@ -235,3 +279,20 @@ CKEgetById = function(array, id, recurse) {
 };
 
 var getById = CKEgetById; // alias for legacy
+
+CKEDITOR.on('instanceReady', function(event) {
+	// populate link menu store in global for cache
+	if(!menuItems){
+		$.getJSON("inc/ajax.php?list_pages_json=1", function (data){
+			menuItems = data;
+			CKEsetupLinks(event.editor);
+		});
+	}
+		
+	// Fix for IE onbeforeunload bubbling up from dialogs
+	event.editor.on('dialogShow', function(dialogShowEvent) {
+		if(CKEDITOR.env.ie) {
+			$(dialogShowEvent.data._.element.$).find('a[href*="void(0)"]').removeAttr('href');
+		}
+	});
+});

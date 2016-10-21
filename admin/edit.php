@@ -414,7 +414,8 @@ if($newdraft) $pageClass.=' newdraft';
                     </div>
 
                     <div class="clear"></div>
-                    <?php exec_action('edit-extras'); //@hook edit-extras after page edit options html output ?>        
+                    <?php exec_action('edit-extras'); //@hook edit-extras legacy alias for edit-options, after page edit options html output ?>        
+                    <?php exec_action('edit-options'); //@hook edit-options after page edit options html output ?>        
                 </fieldset>
             </div> 
             <!-- / END PAGE OPTIONS -->
@@ -470,8 +471,9 @@ if($newdraft) $pageClass.=' newdraft';
                         <br/>
                     </p>   
                 </div>
-                <div class="clear"></div>    
-                </fieldset>            
+                <div class="clear"></div>
+                <?php exec_action('edit-meta'); //@hook edit-meta after page edit meta options html output ?>                        
+                </fieldset>
             </div>
         
         <?php 
@@ -493,13 +495,17 @@ if($newdraft) $pageClass.=' newdraft';
                     <li class="save-close" ><a href="javascript:void(0)" ><?php i18n('SAVE_AND_CLOSE'); ?></a></li>
                     <?php 
                         if($url != '' && !$draft) { ?>
+                        <!-- clone -->
                         <li><a href="pages.php?id=<?php echo $url; ?>&amp;action=clone&amp;nonce=<?php echo get_nonce("clone","pages.php"); ?>" ><?php i18n('CLONE'); ?></a></li>
                     <?php } ?>
+                    <!-- cancel -->
                     <li id="cancel-updates" class="alertme"><a href="pages.php?cancel" ><?php i18n('CANCEL'); ?></a></li>
-                    <?php if($draft && !$newdraft && $url != 'index' && $url != '') { ?>
+                    <?php if($draft && !$newdraft && $url != '') { ?>
+                        <!-- delete draft page -->
                         <li class="alertme" ><a href="deletefile.php?draft=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
                     <?php }
                         else if(!$draft && $url != 'index' && $url != '') { ?>
+                        <!-- delete published page -->
                         <li class="alertme" ><a href="deletefile.php?id=<?php echo $url; ?>&amp;nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" ><?php echo strip_tags(i18n_r('ASK_DELETE')); ?></a></li>
                     <?php } ?>
                 </ul>

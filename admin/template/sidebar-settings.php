@@ -12,4 +12,9 @@
 <?php exec_action("settings-sidebar"); // @hook settings-sidebar sidebar list html output  ?>
 </ul>
 
+<!-- sample css stuff -->
+<!-- <div class="section">Section<p class="small">p small</p><input class="text" placeholder="input"></div>
+<div class="edit-nav"><a href="#">Link</a><a href="#">Link</a></div>
+<div class="clear"></div> -->
+
 <p id="js_submit_line" ></p>

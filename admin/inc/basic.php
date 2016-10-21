@@ -37,8 +37,8 @@ function clean_url($text)  {
  * @param string $text
  * @return string
  */
-function clean_img_name($text)  { 
-	$text = strip_tags(lowercase($text)); 
+function clean_img_name($text)  {
+	$text = getDef('GSUPLOADSLC',true) ? strip_tags(lowercase($text)) : strip_tags($text);
 	$code_entities_match   = array(' ?',' ','--','&quot;','!','#','$','%','^','&','*','(',')','+','{','}','|',':','"','<','>','?','[',']','\\',';',"'",',','/','*','+','~','`','='); 
 	$code_entities_replace = array('','-','-','','','','','','','','','','','','','','','','','','','','','',''); 
 	$text = str_replace($code_entities_match, $code_entities_replace, $text); 
@@ -245,7 +245,7 @@ class SimpleXMLExtended extends SimpleXMLElement{
 			// if exactly one child, remove and append the new cdata
 			$node->removeChild($node->firstChild);
 			$node->appendChild($cdata);
-	} 
+		} 
 		else if($node->childNodes->length == 0){
 			// if no children just append cdata
 			$node->appendChild($cdata);
@@ -253,7 +253,7 @@ class SimpleXMLExtended extends SimpleXMLElement{
 			// node has multiple children, ignore
 			// @todo exception here?
 			return;
-} 
+		} 
 	}
 
 /**
@@ -288,6 +288,19 @@ class SimpleXMLExtended extends SimpleXMLElement{
 			return;
 		}
 		$this->$key->setValue($value);
+	}
+
+	/**
+	 * sets a nodes cdata value if it exists, and adds cdata node if it doesn't
+	 * @param str $key   node id
+	 * @param str $value value to set
+	 */
+	public function editAddCData($key,$value = ''){
+		if(!$this->$key){
+			$this->addCDataChild($key,$value);
+			return;
+		}
+		$this->$key->updateCData($value);
 	}
 
 	/**
@@ -513,6 +526,15 @@ function updatePageField($id,$field,$value,$cdata = null){
 }
 
 /**
+ * get a page obj template
+ * returns an empty simplexml GS page object
+ * @return obj simplexml page obj, empty
+ */
+function getPageObject(){
+	return createPageXml('');
+}
+
+/**
  * create a page xml obj
  * will only save standard GS fields, additional fields are ignored
  * 
@@ -567,7 +589,7 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
 	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
 	$xml->addChild('pubDate', date('r'));
 
-	$data['content'] = exec_filter('contentsave',$data['content']); // @filer contentsave filter content in createPageXml
+	if(isset($data['content'])) $data['content'] = exec_filter('contentsave',$data['content']); // @filer contentsave filter content in createPageXml
 
 	foreach($fields as $field){
 		$node = $xml->addChild($field);
@@ -588,10 +610,27 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
  */
 function savePageXml($xml,$backup = true){
 	$url = $xml->url;
-	if(!isset($url) || trim($url) == '') die('empty slug');
+	if(!isset($url) || trim($url) == '') die(__FUNCTION__ . ' empty slug');
 	// backup before overwriting
 	if($backup && file_exists(GSDATAPAGESPATH . $url .".xml")) backup_page($url);
 	return XMLsave($xml, GSDATAPAGESPATH . $url .".xml");
+}
+
+/**
+ * save a page to xml
+ *
+ * @since  3.4
+ * @param  obj $xml simplexmlobj of page
+ * @param  string $path path to save page data file to
+ * @param  bool $backup backup before overwriting
+ * @return bool success
+ */
+function savePageAltXml($xml,$path,$backup = true){
+	$url = $xml->url;
+	if(!isset($url) || trim($url) == '') die(__FUNCTION__ . ' empty slug');
+	// backup before overwriting
+	if($backup && file_exists($path . $url .".xml")) backup_datafile($path.$url.'.xml');
+	return XMLsave($xml, $path . $url .".xml");
 }
 
 /**
@@ -604,7 +643,7 @@ function savePageXml($xml,$backup = true){
  */
 function saveDraftXml($xml,$backup = true){
 	$url = $xml->url;
-	if(!isset($url) || trim($url) == '') die('empty slug'); // @todo need some kind of assert here
+	if(!isset($url) || trim($url) == '') die(__FUNCTION__ . ' empty slug'); // @todo need some kind of assert here
 	// backup before overwriting
 	if($backup && file_exists(GSDATADRAFTSPATH . $url .".xml")) backup_draft($url);
 	return XMLsave($xml, GSDATADRAFTSPATH . $url .".xml");
@@ -635,6 +674,21 @@ function publishDraft($id){
  */
 function pageHasDraft($id){
 	return file_exists(GSDATADRAFTSPATH . $id .".xml");
+}
+
+/**
+ * change draft pages slug, used when a page slug changes
+ * @since  3.4
+ * @param  String $id    Old page id
+ * @param  String $newid New page id
+ * @return bool          save status
+ */
+function changeDraftSlug($id,$newid){
+	if(!pageHasDraft($id)) return;
+	$draftXml = getDraftXML($id);
+	$draftXml->url = $newid;
+	delete_draft($id);
+	return saveDraftXml($draftXml,false);
 }
 
 /**
@@ -1121,7 +1175,7 @@ function generate_url($slug, $absolute = false, $pathdata = null){
 
 	// not index
 	if($slug != getDef('GSINDEXSLUG')){
-		if ($PRETTYURLS == '1' || !empty($PERMALINK)){
+		if ($PRETTYURLS == '1'){
 			$url .= generate_permalink($slug,$PERMALINK,$pathdata);
 		}
 		else $url .= 'index.php?id='.$slug;
@@ -1282,11 +1336,11 @@ function redirect($url,$ajax = false) {
 		// @note this is not a security function for ajax, just a session timeout handler
 		die();
 		} else if($ajax){
-			header('HTTP/1.1 302 Redirect');
-			echo $url;
+			header('HTTP/1.1 300 Redirect');
 			// header('Location: '.$url);
-			// @note this is not a security function for ajax, just a session timeout handler
-			die();			
+			echo $url;
+			// @note this is not a security function for ajax, just a session timeout handler, also uses for post redirects, new page etc.
+			die();
 		}
 	}
 
@@ -2695,7 +2749,7 @@ function getDefaultTimezone(){
  * @param str timezone identifier http://us3.php.net/manual/en/timezones.php
  */
 function setTimezone($timezone){
-	if(isset($timezone) && function_exists('date_default_timezone_set') && ($timezone != "" || stripos($timezone, '--')) ) {
+	if(isset($timezone) && ($timezone != "" || stripos($timezone, '--')) ) {
 		date_default_timezone_set($timezone);
 	}
 }
@@ -2714,6 +2768,7 @@ function getWebsiteData($returnGlobals = false){
 	$SITEURL_REL = '';
 	$SITEURL_ABS = '';
 	$ASSETURL    = '';
+	$ASSETPATH   = '';
 
 	if (file_exists(GSDATAOTHERPATH .GSWEBSITEFILE)) {
 		$dataw        = getXML(GSDATAOTHERPATH .GSWEBSITEFILE,false);
@@ -2731,17 +2786,23 @@ function getWebsiteData($returnGlobals = false){
 
 		$SITEURL_ABS = $SITEURL;
 		$SITEURL_REL = getRootRelURIPath($SITEURL);
-		
+		// $ASSETURL    = $SITEURL;
+
 		// asseturl is root relative if GSASSETURLREL is true
 		// else asseturl is scheme-less ://url if GSASSETSCHEMES is not true
-		if(getDef('GSASSETURLREL')) $ASSETURL = $SITEURL_REL;
+		if(getDef('GSASSETURLREL',true)) $ASSETURL = $SITEURL_REL;
 		else if(getDef('GSASSETSCHEMES',true) !==true) str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL);
 		else $ASSETURL = $SITEURL;
+
+		$ASSETPATH = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH,GSADMINPATH));
 
 		// SITEURL is root relative if GSSITEURLREL is true
 		if(getDef('GSSITEURLREL')){
 			$SITEURL = $SITEURL_REL;
 		}
+	}
+	else {
+		debugLog("website file not found " . GSDATAOTHERPATH .GSWEBSITEFILE);
 	}
 
 	if($returnGlobals) return get_defined_vars();
@@ -2825,8 +2886,8 @@ function getDefaultSalt(){
 function getDefaultLang(){
 	GLOBAL $USRLANG, $SITELANG;
 
-	if(isset($USRLANG)) return $USRLANG;
-	if(isset($SITELANG)) return $SITELANG;
+	if(isset($USRLANG) && !empty($USRLANG))  return $USRLANG;
+	if(isset($SITELANG) && !empty($SITELANG)) return $SITELANG;
 	if(getDef('GSLANG')) return getDef('GSLANG');
 
 	// get language files
@@ -3336,5 +3397,58 @@ function checkWritable($path,$perms = null){
 	$iswritable = $perms >= decoct($writeOctal);
 	return $iswritable;
 }
+
+
+/**
+ * string to boolean using custom rules
+ * @since  3.4
+ * @param  mixed $val input value
+ * @return bool      converted boolean
+ */
+function strToBool($val){
+	if($val == true || $val == 'true' || $val == '1') return true;
+	return false;
+}
+
+/**
+ * call_gs_func_array
+ * wrapper for call_user_func_array
+ * @since  3.4
+ * @param  mixed $callable a callable
+ * @param  array  $args     param_arr
+ * @return mixed            callback return
+ */
+function call_gs_func_array($callable,$args = array()){
+	$valid = false;
+	// static class 
+	if(is_array($callable)){
+		// check for valid method
+		if(count($callable) == 2){
+			$obj    = $callable[0];
+			$method = $callable[1];
+			if(method_exists($obj,$method))	$valid = true;
+		}
+	}
+	else if(is_closure($callable) && getDef('GSEXECANON',true)){
+		// check for valid closure
+		$valid = true;
+	}
+	else if(is_string($callable) && function_exists($callable)){
+		// check for valid function
+		$valid = true;
+	}
+
+	if($valid) return call_user_func_array($callable,$args);
+}
+
+/**
+ * check if function is closure
+ * @since  3.4
+ * @param  mixed  $f function
+ * @return boolean   true if closure
+ */
+function is_closure($func) {
+    return is_object($func) && ($func instanceof Closure);
+}		
 
 /* ?> */

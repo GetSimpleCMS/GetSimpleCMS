@@ -92,7 +92,6 @@ for($i=0;$i<7;$i++){
 
 // You can modify style globals here
 exec_action('style-init'); // @hook style-init fired before including css files
-print_r($primary_1);
 
 // include main css file css.php
 include(GSCSSMAINFILE);

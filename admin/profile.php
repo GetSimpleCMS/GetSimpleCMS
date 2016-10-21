@@ -84,7 +84,7 @@ else{
 	// empty user defaults
 	$data = new stdClass();
 	$data->HTMLEDITOR = true;
-	$data->LANG     = $SITELANG;
+	$data->LANG     = '';
 	$data->EMAIL    = '';
 	$data->TIMEZONE = $SITETIMEZONE;
 	$data->NAME     = '';
@@ -223,17 +223,16 @@ if ($data->HTMLEDITOR != '' ) { $editorchck = 'checked'; }
 # get all available language files
 // if ($data->LANG == ''){ $LANG = GSDEFAULTLANG; }
 
+$langs = '<option value="">-- '.i18n_r('NONE').' --</option>';
 if (count($lang_array) != 0) {
 	sort($lang_array);
-	$sel = ''; $langs = '';
+	$sel = '';
 	foreach ($lang_array as $lfile){
 		$lfile = basename($lfile,".php");
 		if ($data->LANG == $lfile) { $sel="selected"; }
 		$langs .= '<option '.$sel.' value="'.$lfile.'" >'.$lfile.'</option>';
 		$sel = '';
 	}
-} else {
-	$langs = '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>';
 }
 
 $pagetitle = i18n_r('USER_PROFILE');

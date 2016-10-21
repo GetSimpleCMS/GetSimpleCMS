@@ -1,10 +1,11 @@
 // var htmlEditorConfig;
 var htmlEditorUserConfig;
-// var editor;
+// var editor; // legacy global editor , disabled
 // @todo global js editor for plugins to add links to i18n_navigation
 
 jQuery(document).ready(function () {
     initckeditor();
+    if(htmlEditorConfig.timestamp) CKEDITOR.timestamp = htmlEditorConfig.timestamp;
 });
 
 // setup codemirror instances and functions
@@ -244,5 +245,5 @@ function initckeditor(){
     // Debugger.log(editors);
 
     // @tddo backwards compatibility for i18n, set global editor to first editor
-    // editor = $(editors[0]).data('htmleditor');
+    // editor = $(editors[0]).data('htmleditor'); // hack in single editor, config.js and legacy uses this
 }

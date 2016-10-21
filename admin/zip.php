@@ -62,7 +62,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		if(file_exists(GSROOTPATH.'.htaccess'))    $archiv->addFile(GSROOTPATH.'.htaccess', '.htaccess' );
 		if(file_exists(GSROOTPATH.'gsconfig.php')) $archiv->addFile(GSROOTPATH.'gsconfig.php', 'gsconfig.php' );
 		
-		// testing custom extra files, will need a iter wrapper to get dirs
+		// @todo testing custom extra files, will need a iter wrapper to get dirs, will add extra files to root
 		if(getDef('GSBACKUPEXTRAS',true)){
 			$extras = getDef('GSBACKUPEXTRAS',false,true);
 			foreach($extras as $extra){

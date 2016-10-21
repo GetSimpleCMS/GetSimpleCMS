@@ -136,20 +136,23 @@
 		if(!$dbn) break;
 		case 'snippet-success':
 			doNotify(i18n_r('ER_SNIPPET_SAVE').'. <a href="snippets.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
-		break;
+		if(!$dbn) break;
 		case 'snippet-restored':
 			doNotify(i18n_r('ER_SNIPPET_REST').'. <a href="snippets.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success');
-		break;
+		if(!$dbn) break;
 		case 'profile-restored':
 			doNotify(i18n_r('ER_PROFILE_RESTORED').'. <a href="profile.php?undo&nonce='.get_nonce("undo").
 				'&userid='.$userid.'">'.i18n_r('UNDO').'</a>','success',true);
 		if(!$dbn) break;
+		case 'settings-success':
+			doNotify(i18n_r('ER_SETTINGS_UPD').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success',true);
+		if(!$dbn) break;
 		case 'settings-restored':
 			doNotify(i18n_r('ER_OLD_RESTORED').'. <a href="settings.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success',true);
-		break;
+		if(!$dbn) break;
 		case 'login-req':
 			doNotify(i18n_r('FILL_IN_REQ_FIELD'),'error',true,true);
-		break;
+		if(!$dbn) break;
 		case 'login-fail':
 			doNotify(i18n_r('LOGIN_FAILED'),'error',true,true);
 		break;

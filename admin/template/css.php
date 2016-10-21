@@ -36,6 +36,7 @@ body {
 	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
 	font-size: 12px;
 	background: #f6f6f6;
+	color: black;
 }
 
 a {
@@ -863,7 +864,10 @@ h5:hover img {
 	padding: 4px;
 	vertical-align: top;
 	/*line-height: 20px !important;*/
-	word-break: break-all;	
+}
+
+.wrapper table td.break {
+	word-break: break-all;
 }
 
 .wrapper table th {
@@ -1168,6 +1172,11 @@ label span.right a:hover {
 	padding-top: 3px;
 }
 
+/* keep checkbox labels on same line */
+.inline input[type='checkbox']+label {
+    display: inline; 
+}
+
 span.inline {
 	white-space: nowrap;
 }
@@ -1264,7 +1273,7 @@ fieldset,
 	transition: background-color 400ms;
 }
 
-.leftopt p,.rightopt, p,.wideopt p{
+.leftopt p,.rightopt p,.wideopt p{
 /*.leftsec p,.rightsec, p,.widesec p*/
 	margin-bottom: 15px;
 }
@@ -1358,13 +1367,7 @@ a.viewlink:hover img {
 	color:#C00;
 }
 
-/* unused */
-form table.formtable select {
-	width: 275px;
-	padding: 3px 4px;
-}
-
-/* unused */
+/* unused , removes borders from tables, unneeded inside wrapper */
 table.cleantable {
 	border-collapse: collapse;
 	margin: 0 0 0 0;
@@ -1598,6 +1601,9 @@ table.comptable tr td input.newtitle {
 }
 
 table.comptable .comptitle {
+	min-width:16px;
+	min-height:16px;
+	display:inline-block;
 	color: #000;
 }
 
@@ -2189,9 +2195,12 @@ textarea.copykit {
 .thumbs img{
 	max-height:128px;
 	max-width:128px;
-	border: 1px solid #5E5E5E !important;
-	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;		
 	margin-bottom: 4px;
+}
+
+.thumbs img,.jcrop-active {
+	border: 1px solid #5E5E5E;
+	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;	
 }
 
 .thumbcontainer {
@@ -2211,7 +2220,6 @@ textarea.copykit {
 	width: auto;
 	margin-bottom: 5px;
 }
-
 
 #cropbox {
 	display:none;
@@ -2240,11 +2248,6 @@ textarea.copykit {
 	margin: 10px;
 	float:left;
 	vertical-align: middle;
-}
-
-.jcrop-holder {
-	border: 1px solid #5E5E5E !important;
-	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;	
 }
 
 #jcropform label {
@@ -2379,6 +2382,7 @@ a.label:hover{
 	background-color: rgba(221, 221, 221, 0.25) !important;
 	color: #888;
 	margin-left: 14px;
+	word-break: normal;
 }
 
 .fancybox-title-over-wrap {
@@ -2436,7 +2440,7 @@ span.datetoday{
 .title.label {
 	float: left;
 	margin: 5px 11px;
-	font-weight: bold;
+	/*font-weight: bold;*/
 }
 
 /* @todo #ID selector hell, can be fixed up once some heirarchy is established */
@@ -3116,7 +3120,7 @@ font-size: 12px;
 	border-radius: 3px;
 }
 
-.right {
+.floatright {
 	float:right;
 }
 
@@ -3277,6 +3281,7 @@ kbd
 	/*font-size: 13px;*/
 	/*line-height: 13px;*/
 	margin-bottom : 20px;
+	text-shadow: none;
 }
 
 .codewrap textarea, #tabs .codewrap textarea{
@@ -3533,6 +3538,15 @@ kbd
 	position: relative;
 }
 
+/**
+ * disable tree expanders when table is filtered, to avoid showing children
+ */
+table.filter.filtered .tree-expander{
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.2;
+}
+
 .tree-expander {
 	cursor: pointer;
 	color: #868686;
@@ -3609,7 +3623,7 @@ kbd
 }
 
 .pagestack .label {
-	font-weight: bold;
+	/*font-weight: bold;*/
 }
 
 .pagestack.shadow:after{

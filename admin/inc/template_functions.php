@@ -1016,11 +1016,11 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	if ($page['title'] == '' )        { $pagetitle       = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>';} else { $pagetitle = $page['title']; }
 	if ($page['menuStatus'] != '' )   { $pagemenustatus  = ' <span class="label label-ghost">'.i18n('MENUITEM_SUBTITLE',false).'</span>'; }
 	if ($page['private'] != '' )      { $pageprivate     = ' <span class="label label-ghost">'.i18n('PRIVATE_SUBTITLE',false).'</span>'; } 
-	if (pageHasDraft($page['url']))   { $pagedraft       = ' <span class="label label-ghost">'.lowercase(i18n('LABEL_DRAFT',false)).'</span>'; }
-	if ($page['url'] == getDef('GSINDEXSLUG'))     { $pageindex       = ' <span class="label label-ghost">'.i18n('HOMEPAGE_SUBTITLE',false).'</span>'; }
+	if (getDef('GSUSEDRAFTS') && pageHasDraft($page['url']))   { $pagedraft       = ' <span class="label label-ghost">'.lowercase(i18n_r('LABEL_DRAFT',false)).'</span>'; }
+	if ($page['url'] == getDef('GSINDEXSLUG'))     { $pageindex       = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE',false).'</span>'; }
 	if(dateIsToday($page['pubDate'])) { $pagepubdate     = ' <span class="datetoday">'. output_date($page['pubDate']) . '</span>';} else { $pagepubdate = '<span>'. output_date($page['pubDate']) . "</span>";}
 
-	$menu .= '<td class="pagetitle">'. $indentation .'<a title="'.i18n('EDITPAGE_TITLE',false).': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. cl($pagetitle) .'</a>';
+	$menu .= '<td class="pagetitle break">'. $indentation .'<a title="'.i18n('EDITPAGE_TITLE',false).': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. cl($pagetitle) .'</a>';
 	$menu .= '<div class="showstatus toggle" >'. $pageindex .  $pagedraft . $pageprivate . $pagemenustatus .'</div></td>'; // keywords used for filtering
 	$menu .= '<td style="width:80px;text-align:right;" ><span>'.$pagepubdate.'</span></td>';
 	$menu .= '<td class="secondarylink" >';
@@ -1687,6 +1687,26 @@ function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = '...', $bre
 	return trim($str) . $ellipsis;	
 }
 
+/*
+ * wrapper for getExcerpt for specific page
+ * strip is performed but no filters are executed
+ */
+function getPageExcerpt($pageid,$len = 200, $striphtml = true, $ellipsis = '...', $break = false, $cleanhtml = true){
+	$content = returnPageContent($pageid);
+	if(getDef('GSCONTENTSTRIP',true)) $content = strip_content($content);	
+	return getExcerpt($content,$len,$striphtml,$ellipsis,$break,$cleanhtml);
+}
+
+/**
+ * PRCE compiled test
+ * test if PCRE is compiled with UTF-8 and unicode property support
+ */
+function PCRETest(){
+	if ( ! @preg_match('/^.$/u', 'ñ')) return false; // UTF-8 support
+	if ( ! @preg_match('/^\pL$/u', 'ñ')) return false; // Unicode property support (enable-unicode-properties)
+	return true;
+}
+
 /**
  * check if a string is multbyte
  * @since 3.3.2
@@ -2075,14 +2095,32 @@ function outputCollectionTags($collectionid,$data){
 	echo '</div>';
 }
 
-function addComponentItem($xml,$title,$value,$active,$slug = null){
 
-	if ($title != null && !empty($title)) {
-		if ( $slug == null || _id($slug) == '') {
-			$slug  = to7bit($title, 'UTF-8');
-			$slug  = clean_url($slug); 
+/**
+ * getCollectionItemSlug
+ * get collection item slug, clean with default fallback
+ * @since  3.4
+ * @param  string $slug    slug
+ * @param  string $default fallback slug
+ * @return string          clean slug
+ */
+function getCollectionItemSlug($slug,$title = 'unknown'){
+	$slug = trim($slug);
+	if ( $slug == null || empty($slug)){
+		if (!empty($title)){
+			if(trim($title) == '') return;
 		}
-		
+		$slug = $title;
+	}
+	$slug = prepareSlug($slug,$title);
+	if(empty($slug)) return; // errormode return null
+	return $slug;
+}
+
+function addComponentItem($xml,$title,$value,$active,$slug = null){
+		$slug = getCollectionItemSlug($slug,$title);
+		if($slug == null) return; // errormode return null
+
 		$title    = safe_slash_html($title);
 		$value    = safe_slash_html($value);
 		$disabled = $active;
@@ -2098,7 +2136,6 @@ function addComponentItem($xml,$title,$value,$active,$slug = null){
 		$c_note->addCData($value);
 		$c_note     = $component->addChild('disabled');
 		$c_note->addCData($disabled);
-	}
 	// debugLog(var_dump($component->asXML()));
 	return $xml;
 }

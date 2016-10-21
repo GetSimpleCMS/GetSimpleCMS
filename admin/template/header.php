@@ -89,7 +89,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	if(get_filename_id()=='image'){
 		queue_script('gscrop',GSBACK);
 	}
-
+	
 	if(get_filename_id()=='menu-manager'){
 		queue_script('nestable',GSBACK);
 	}
@@ -102,6 +102,13 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
     // ckeditor customconfig
     if (file_exists(GSTHEMESPATH .getDef('GSEDITORCONFIGFILE'))) {
         $configjs =  $SITEURL.getRelPath(GSTHEMESPATH).getDef('GSEDITORCONFIGFILE');
+    }
+
+    function isAutoSave(){
+    	if(getDef('GSUSEDRAFTS',true)){
+    		return !isset($_GET['nodraft']);
+    	}
+    	return true;
     }
     ?>
 
@@ -127,7 +134,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
             echo '		var editorTheme = "'.$editor_theme."\";\n";
         }
 
-        if(getDef('GSAUTOSAVE',true)){
+        if(get_filename_id()=='edit' && isAutoSave()){
         	$autosaveintvl = getdef('GSAUTOSAVEINTERVAL');
         	echo "		// edit autosave\n";
         	echo '		var GSAUTOSAVEPERIOD = ' . (!is_int($autosaveintvl) ? 10 : $autosaveintvl).";\n";
@@ -151,6 +158,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
             baseHref                     : '<?php echo getGSVar('SITEURL'); ?>'
             <?php if(getGSVar('EDTOOL')) echo ",toolbar: " . returnJsArray(getGSVar('EDTOOL')); ?>
 <?php       if(getGSVar('EDOPTIONS')) echo ','.trim(getGSVar('EDOPTIONS')); ?>
+			<?php if(getDef("GSCKETSTAMP",true)) echo ",timestamp : '".getDef("GSCKETSTAMP") . "'\n"; ?>
         };
 
         // wipe the ckeditor shim, so it does not interfere with the real one

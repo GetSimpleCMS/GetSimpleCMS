@@ -26,6 +26,7 @@ $data_index = null;
 if(previewingDraft()){
 	// display draft if specified else
 	$data_index = getDraftXml($id);
+	$data_index->draft = true;
 }
 else if(pageExists($id)) {
 	// apply page data if page id exists

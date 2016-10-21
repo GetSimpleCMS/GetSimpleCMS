@@ -50,7 +50,7 @@ function get_page_excerpt($len=200, $striphtml=true, $ellipsis = '...') {
 	$content_e = exec_filter('content',$content_e); // @filter content (str) filter page content in get_page_excerpt
 	if(getDef('GSCONTENTSTRIP',true)) $content_e = strip_content($content_e);	
 	echo getExcerpt($content_e, $len, $striphtml, $ellipsis);
-	}
+}
 
 
 /**
@@ -270,12 +270,7 @@ function get_parent($echo=true) {
  */
 function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
 	global $TIMEZONE;
-	if ($TIMEZONE != '') {
-		if (function_exists('date_default_timezone_set')) {
-			date_default_timezone_set($TIMEZONE);
-		}
-	}
-	
+	if ($TIMEZONE != '') date_default_timezone_set($TIMEZONE);
 	$str = formatDate($i, strtotime(getGSPageVar('date')));
 	return echoReturn($str,$echo);	
 }
@@ -712,6 +707,11 @@ function is_logged_in(){
 		return true;
 	}
 }	
+
+function page_is_draft(){
+	GLOBAL $data_index;
+	return $data_index->draft == true;
+}
 	
 /**
  * aliases
