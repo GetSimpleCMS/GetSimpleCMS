@@ -838,24 +838,20 @@ function get_available_pages() {
 /**
  * A page slug has changed perform necessary operations
  * update childrens parents
+ * @todo  which menus get updated ?
  * @since 3.4
- * @param str $parent parent slug to change
- * @param str $newparent new slug to change to
+ * @param str $slug parent slug to change
+ * @param str $newslug new slug to change to
  */
 function pageSlugHasChanged($slug, $newslug = null){
-	global $SITEMENU;
-	
-	// do insert if old slug is null
-	if(!isset($slug)) $menudata = menuItemRebuildChange(array('insert',$newslug));
-	// do delete if newid is null
-	else if(!isset($newslug)) $menudata = menuItemRebuildChange(array('delete',$slug));
-	// do rename if slug actually changed
-	else $menudata = menuItemRebuildChange(array('rename',$slug,$newslug));
-	if(isset($menudata)) menuSave(GSMENUIDCORE,$menudata);
-	return;
+	pageSlugHasChanges($slug,$newslug);
+}
 
-	// @todo this is not needed if legacy, as menu saves will write out updates to pages
-	// Update Childrens parent fields
+/**
+ * LEGACY method of pageSlugHasChanged function
+ */
+function updatePagesParents($parent,$newparent){
+	// Update pages childrens parent fields
 	global $pagesArray;
 	getPagesXmlValues();
 	foreach ($pagesArray as $page){
@@ -864,7 +860,7 @@ function pageSlugHasChanged($slug, $newslug = null){
 			$data->parent=$newparent;
 			XMLsave($data, GSDATAPAGESPATH.$page['filename']);
 		}
-	}
+	}	
 }
 
 // DEPRECATED

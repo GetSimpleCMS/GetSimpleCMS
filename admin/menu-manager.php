@@ -36,11 +36,17 @@ get_template('header');
 
 include 'template/include-nav.php';
 
+/** not implemented  **/
 function getMenuSelect(){
-	$menus = getMenus();
+	$menus = getMenus(true);
+	if(!$menus) return;
+	
+	GLOBAL $menuid;
 	echo "<select>";
 	foreach($menus as $menu){
-		echo "<option>$menu</option>";
+		$menu = str_replace("menu_","",$menu);
+		$selected = $menuid == $menu ? "selected" : "";
+		echo "<option $selected>$menu</option>";
 	}
 	echo "</select>";
 }
@@ -61,6 +67,7 @@ $count = '-'; // empty, updated via js
 		<div class="main" >
 			<h3 class="floated"><?php echo str_replace(array('<em>', '</em>'), '', i18n_r('MENU_MANAGER'));?></h3>
 			<div class="edit-nav clearfix" >
+				<?php getMenuSelect(); ?>
 				<?php exec_action(get_filename_id() . '-edit-nav');?>
 			</div>
 			<?php exec_action(get_filename_id() . '-body');?>

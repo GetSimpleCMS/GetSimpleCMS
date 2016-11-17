@@ -255,6 +255,9 @@ function menuIntegrityCheck($menu){
 	// provide health check warnings on post limits, max memory, max records for large menus
 }
 
+/**
+ * wrapper for recurseUpgradeTree, rebuilding a menu tree
+ */
 function menuRebuildTree($menu){
 	$menunest = $menu[GSMENUNESTINDEX];	
 
@@ -654,4 +657,58 @@ function menuNestAddDataRefs(&$menu,&$parents = null){
 		$child['data'] = &$menu[GSMENUFLATINDEX][$child['id']]['data']; // add data flat refs
 		if(isset($child['children'])) $thisfunc($menu,$child['children']);
 	}
+}
+
+/**
+ * @todo these page trigger functions are only affecting coremenu
+ * this might need to update slug changes for all menus, so they do not just stop working
+ * this is the problem with using slugs and not unique page ids for pages
+ */
+
+/**
+ * a page was saved
+ * if GSMENUINLINEUPDATES true, process parents
+ * else only insert into menu
+ * @param  stringq $id   page id
+ * @param  object  $xml   page simplexmlobj
+ * @param  bool    $isnew page is new
+ * @return  bool menusave status
+ */
+function pageWasSaved($id,$xml,$isnew){
+	if(!getDef('GSMENUINLINEUPDATES',true)) return;
+
+	$action = $isnew ? "insert" : "move";
+	if(getDef('GSMENUINLINEUPDATES',true)) $menudata = menuItemRebuildChange(array($action,$id,(string)$xml->parent));
+	else if($acton=="insert") $menudata = menuItemRebuildChange(array($action,$id));
+
+	if(isset($menudata)) return menuSave(GSMENUIDCORE,$menudata);	
+}
+
+/**
+ * a page was cloned
+ * insert new into menu
+ * @param  string $id new page id
+ * @param  string $oldid old page id
+ * @return bool   menu save status
+ */
+function pageWasCloned($id,$oldid){
+	// update menu, @todo not handling parent ?
+	$menudata = menuItemRebuildChange(array('insert',$id,getParent($oldid),$oldid));
+	if(isset($menudata)) return menuSave(GSMENUIDCORE,$menudata);	
+}
+
+/**
+ * page has a page id change
+ * @param  string $id    page id
+ * @param  string $newid new page id
+ * @return bool          menu save status
+ */
+function pageSlugHasChanges($id,$newid){
+	// do insert if old slug is null
+	if(!isset($id)) $menudata = menuItemRebuildChange(array('insert',$newid));
+	// do delete if newid is null
+	else if(!isset($newid)) $menudata = menuItemRebuildChange(array('delete',$id));
+	// do rename if slug actually changed
+	else $menudata = menuItemRebuildChange(array('rename',$id,$newid));
+	if(isset($menudata)) return menuSave(GSMENUIDCORE,$menudata);
 }

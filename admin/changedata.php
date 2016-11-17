@@ -110,18 +110,7 @@ if (isset($_POST['submitted'])) {
 		$status = savePageXml($xml);
 		exec_action('changedata-aftersave'); // @hook changedata-aftersave after a page was saved
 
-		// do menu update/insert
-		if($pageIsNew){
-			// insert using parent inline or default
-			if(getDef('GSMENUINLINEUPDATES',true)) $menudata = menuItemRebuildChange(array('insert',$url,(string)$xml->parent));
-			else $menudata = menuItemRebuildChange(array('insert',$url));
-		}
-		else{
-			// do inline parent changes
-			if(getDef('GSMENUINLINEUPDATES',true)) $menudata = menuItemRebuildChange(array('move',$url,(string)$xml->parent));
-		}
-		if(isset($menudata)) menuSave(GSMENUIDCORE,$menudata);
-		
+		pageWasSaved($url,$xml,$pageIsNew);	// menu handler
 		// genen sitemap if published save
 		generate_sitemap();
 	}

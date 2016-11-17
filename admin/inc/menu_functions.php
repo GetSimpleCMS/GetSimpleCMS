@@ -82,8 +82,8 @@ define('GSMENUDEFAULT',GSMENUIDCOREMENU); // which menu to use for default if le
 
 define('GSMENULEGACY',false); // use legacy menu, single level flat menu
 define('GSMENUEXPORTPAGES',false); // write menu out to page files
-// this allows parent changes in page edits, in progress
-define('GSMENUINLINEUPDATES',true); // perform inline page updates to menu
+
+define('GSMENUINLINEUPDATES',true); // perform inline page updates to menu, this allows parent changes in page edits, in progress only updates coremenu
 
 
 /**
@@ -950,7 +950,7 @@ function menuRead($menuid){
  * @since  3.4
  * @return array array of menuids available
  */
-function getMenus(){
+function getMenus($coremenus = false){
     $files = getFiles(GSDATAMENUPATH,'json');
     $coreMenus = array('menu_'.GSMENUIDCORE,'menu_'.GSMENUIDCOREMENU,'menu_'.GSMENUIDLEGACY);
     $menus = array();
@@ -958,7 +958,7 @@ function getMenus(){
     // remove core files
     foreach($files as $key=>$menufile){
         $menuid = getFileName($menufile);
-        if(in_array($menuid,$coreMenus)) continue;
+        if(!$coremenus && in_array($menuid,$coreMenus)) continue;
         $menus[] = $menuid;
     }
 

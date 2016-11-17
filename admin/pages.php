@@ -36,10 +36,7 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 	if ($newid !== false) {
 		exec_action('page-clone'); // @hook page-clone page was cloned
 
-		// update menu, @todo not handling parent ?
-		$menudata = menuItemRebuildChange(array('insert',$newid,getParent($oldid),$oldid));
-		if(isset($menudata)) menuSave(GSMENUIDCORE,$menudata);
-
+		pageWasCloned($newid,$oldid); // menu handler
 		redirect('pages.php?upd=clone-success&id='.$newid);
 	} else {
 		$error = sprintf(i18n_r('CLONE_ERROR'), var_out($_GET['id']));
