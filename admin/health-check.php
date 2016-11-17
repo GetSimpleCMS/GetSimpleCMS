@@ -401,11 +401,11 @@ echo '<div class="bodycontent clearfix">
 </div>
 
 <?php
-$properties = array('SCRIPT_FILENAME', 'SCRIPT_NAME', 'PHP_SELF', 'REQUEST_URI');
-debugLog(sprintf("% 15s: %s<bR>\n", '__FILE__', __FILE__));
-foreach($properties as $property){
-    debugLog(sprintf('% 15s: %s', $property, $_SERVER[$property]."<bR>\n"));
-}
+	debugLog("__FILE__" . ": " .__FILE__);
+	$properties = array('SCRIPT_FILENAME', 'SCRIPT_NAME', 'PHP_SELF', 'REQUEST_URI');
+	foreach($properties as $property){
+	    debugLog($property .": " . $_SERVER[$property]);
+	}
 ?>
 
 <?php get_template('footer'); ?>
