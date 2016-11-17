@@ -62,7 +62,7 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
      * -[x] insert at root level
      * -[x] insert at child level
      * -[x] insert after both (NI)
-     * -[x] move to root level // moves to bottom no sort done, fails to create flat 
+     * -[x] move to root level // @todo moves to bottom no sort done, fails to create flat 
      * -[x] move to parent level
      * -[x] move from root level both
      * -[x] move from parent level both
@@ -247,6 +247,19 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 }
 
 function menuIntegrityCheck($menu){
+	$assert = "";
+	if(isset($menu[GSMENUNESTINDEX][""])) $assert = debugLog(__FUNCTION__ . ": ASSERT nested menu has empty key");
+	if(isset($menu[GSMENUFLATINDEX][""])) $assert = debugLog(__FUNCTION__ . ": ASSERT flat menu has empty key");
+
+	foreach($menu[GSMENUFLATINDEX] as $key=>$menuitem){
+		if(!$menuitem) $assert = debugLog(__FUNCTION__ . ": ASSERT flat menu has empty array");
+		if(!isset($menuitem['data'])) $assert = debugLog(__FUNCTION__ . ": ASSERT flat menu has empty data array");
+		if($key !== $menuitem['id']) $assert = debugLog(__FUNCTION__ . ": ASSERT flat menu key=id mismatch");
+		if(!is_string($key)) $assert = debugLog(__FUNCTION__ . ": ASSERT flat menu has integer key");
+	}
+
+	if($assert) die($assert);
+	
 	// compare keys from nest to flat, check for invalid keys, int and "data"
 	// check for all structure flaws, null objects etc.
 	// keys not match id

@@ -318,6 +318,7 @@ function buildTreewHash($elements, $parentId = '', $preserve = false, $assoc = t
  *  ),
  *
  * returns a flat array containing flat references
+ * @todo keeps all fields in $menu from post,	this might not be prefferable, so passing ref to recurseUpgradeTree might not be desired
  * @todo this will have to be modified to allow it to retain flat data that does not change, how do we pass it in ? menuid, menu obj?
  * @todo  do a merge with incoming data vs flat array existing, add flags for hadchange, 
  * so we can limit all processing to only items that are changing, no need to rebuild paths etc for all items.
@@ -381,7 +382,7 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
 			$flatvalue['data']['index']     = $index;
 			$flatvalue['data']['order']     = $order;
             $flatvalue['data']['dotpath']   = implode('.',$indexAry['currpath']).'.'.$id;
-            recurseUpgradeTreeCallout($flatvalue,$id,$parent,$indexAry['currpath']); // passing $flatvalue by ref for modification            
+            recurseUpgradeTreeCallout($flatvalue,$id,$parent,$indexAry['currpath'],$value); // passing $flatvalue by ref for modification            
 
             $indexAry[GSMENUFLATINDEX][$id] = array(); // position first
 
@@ -413,12 +414,14 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
 /**
  * callout for recurse, to add custom data
  * @since  3.4
- * @param  array &$value  ref array to manipulate
+ * @param  array &$value  ref array to manipulate dest array
  * @param  string $id     $id of value
  * @param  string $parent parent of value
+ * @param  string $currpath current path 
+ * @param  array $menuvalue menu value source array (form/post)
  * @return array          unused copy of array
  */
-function recurseUpgradeTreeCallout(&$value,$id = '',$parent = null,$currpath = null){
+function recurseUpgradeTreeCallout(&$value,$id = '',$parent = null,$currpath = null,$menuvalue = array()){
 	$pathdata = array('parent' => $parent,'parents' => $currpath);
 	    
     // cache actual permalink
@@ -428,10 +431,16 @@ function recurseUpgradeTreeCallout(&$value,$id = '',$parent = null,$currpath = n
     $value['data']['path']  = generate_permalink($id,'%path%/%slug%',$pathdata);
     $value['data']['qs']    = generate_permalink($id,'id=%slug%&path=%path%',$pathdata);
     
-    // @todo testing array merging, still need to handle arbitrary menus, and if we can skip above processes if they did not actually change
-    $item = menuItemGetData($id);
-    if($item && $item['data']) $value['data'] = array_merge($item['data'],$value['data']);
+    // @todo testing , working
+    // field import from form post
+    if(isset($menuvalue['menutitle'])) $value['data']['menutitle'] = $menuvalue['menutitle'];
 
+    //@todo testing working, overriding
+    //merge in data from menuitem
+    $item = menuItemGetData($id);
+    if($item && $item['data']) $value['data'] = array_merge($item['data'],$value['data']); // value overrides item
+	
+	// @todo still need to handle arbitrary menus, and if we can skip above processes if they did not actually change
     // debugLog($value);
     return $value; // non ref
 }
@@ -748,12 +757,13 @@ function treeCalloutFilter(){
  */
 function mmCallout($item, $outer = false, $open = true,$level = '',$index = '' ,$order = '',$args = array()){
 
-    // @note
-    // hacking flat array conversion in, using args to pass menudata down, since recurse does not pass entire menu down to callouts.
-    // The recursive tree will have to have the entire menu passed in, or the tree has to be ref linked to flat
-    // either one means passing around the entire menu to recursion, or walking the entire tree to build the refs    
-    // @todo I do not think this is still nevessary, we can just make sure the nest is a mirror or ref of flat always
-	
+	/**    
+	 * @note
+     * hacking flat array conversion in, using args to pass menudata down, since recurse does not pass entire menu down to callouts.
+     * The recursive tree will have to have the entire menu passed in, or the tree has to be ref linked to flat
+     * either one means passing around the entire menu to recursion, or walking the entire tree to build the refs    
+     * @todo I do not think this is still nevessary, we can just make sure the nest is a mirror or ref of flat always
+	**/
     if($outer) return $open ? '<ol id="" class="dd-list">' : "</ol>";
     // if item is null return hidden list , ( this is for GSMENUFILTERSHIFT handling )
     if($item === null) return $open ? '<li style="display:none">' : '</li>';
@@ -872,7 +882,7 @@ function newMenuSave($menuid,$menu){
     $menudata = recurseUpgradeTree($menu); // build full menu data
     $menudata[GSMENUNESTINDEX] = $menu;
 	// return;
-    // debugLog(array_slice($menudata[GSMENUFLATINDEX], 0, 7)); // debug a tiny sampling
+    debugLog(array_slice($menudata[GSMENUFLATINDEX], 0, 7)); // debug a tiny sampling
     // return;
     // _debugLog(__FUNCTION__,$menu);
     // _debugLog(__FUNCTION__,$menudata);
@@ -888,6 +898,8 @@ function newMenuSave($menuid,$menu){
  */
 function menuSave($menuid,$data){
 	GLOBAL $SITEMENU;
+	
+	menuIntegrityCheck($data);
 	// real time update sitemenu
 	$SITEMENU[$menuid] = $data;
 	
@@ -961,8 +973,6 @@ function getMenus($coremenus = false){
         if(!$coremenus && in_array($menuid,$coreMenus)) continue;
         $menus[] = $menuid;
     }
-
-    debugLog($menus);
     return $menus;
 }
 
