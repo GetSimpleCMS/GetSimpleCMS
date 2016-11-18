@@ -58,7 +58,8 @@ $VERSIONS = array(
   'jquery-mousewheel' => '3.1.13',
   'scrolltofixed'     => '1.0.7',
   'spin'              => '2.3.2',
-  'lazyload'          => '0.0.1'
+  'lazyload'          => '0.0.1',
+  'nestable'          => '1.2.2'
 );
 
 $jqueryuitheme = "custom";
