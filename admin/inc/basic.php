@@ -507,7 +507,7 @@ function getDraftXML($id,$nocdata = true){
 
 /**
  * update single pages field value and resave file
- *
+ * @since  3.4
  * @param  str $id    id of page
  * @param  str $field field name
  * @param  str $value value

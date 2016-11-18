@@ -27,6 +27,7 @@ if(isset($_GET['publish']) && isset($_GET['id'])){
 	else $status = publishDraft($id);
 
 	if($status){
+		pageWasPublished($id,getPageXml($id));
 		exec_action('draft-publish'); // @hook draft-publish a draft was published
 		generate_sitemap(); // regenerates sitemap
 	}

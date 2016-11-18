@@ -57,23 +57,6 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	 * rename+move in one pass is not implemented yet, rare, called in chain by passing meu back in as arg for now
      * both = parent and child test, with children
      * 
-     * TESTS / Problems
-     * -[X] rename root level
-     * -[X] rename child level
-     * -[X] insert at root level
-     * -[X] insert at child level
-     * -[ ] insert after both (NI)
-     * -[X] move to root level // @todo moves to bottom no sort done ?
-     * -[X] move to parent level
-     * -[ ] move parent to parent level (!! child gets duplicated at root of nest, and has wrong depth in flat)
-     * -[X] move from root level both
-     * -[x] move from parent level both
-     * -[x] delete root level both
-     * -[x] delete child level both
-     * -[ ] delete with and without preserve parents flag
-     * -[ ] clone page, uses its own action, inline parents (NI)
-     * -[ ] publish page?
-     * 
      * @todo  undo functionality, since we have no history atm, we cannot undo menu changes, if we change parent inline, then undo, then nothihg changes
      * for new we insert, for delete we delete, for slug change we rename, but we do not move, since we have no previous parent atm
      * 
@@ -90,22 +73,29 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 
 	if(!$menu) $menu = getMenuDataArray();
 
+	/**
+	 * MODIFY
+	 */
 	if($action == 'modify'){
 		$item = &getMenuItemTreeRef($menu,$slug);
 		array_merge($item['data'],$data);
 		array_merge($menu[GSMENUFLATINDEX]['data'],$data);
 	}
 
+	/**
+	 * INSERT
+	 * @todo this will have to accept data arg if we are to pass in full data structures on insert or run modify after insert
+	 * could also optimize rebuld if not needed to just insert to flatarray		
+	 */
 	if($action == 'insert'){
-		// @todo this could insert the slug directly onto flat $menu to optimize, since a reindex wouldnt be needed
-		
+
 		// check if item already exists
 		$itemcheck = &getMenuItemTreeRef($menu,$slug);
 		if($itemcheck) return $menu;
  
 		$parentslug = isset($args[2]) ? $args[2] : '';
 		$after      = isset($args[3]) ? $args[3] : '';
-		$data       = isset($args[4]) ? $args[4] : '';
+		$data       = isset($args[4]) ? $args[4] : ''; // not implemented
 		debugLog(__FUNCTION__ . " inserting [$slug] under [$parentslug] after [$after]"); // debugging
 
 		$item = array($slug => array('id' => $slug,'data' => array())); // pre indexed
@@ -130,6 +120,9 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		$menu[GSMENUFLATINDEX][$slug] = array('id' => $slug); // insert flat
 	}
 
+	/**
+	 * RENAME
+	 */
 	if($action == 'rename'){
 		$newslug = $args[2];
 		debugLog(__FUNCTION__ . " renaming [$slug] to [$newslug]");
@@ -148,7 +141,10 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		if(isset($menu[GSMENUFLATINDEX][$slug])) debugLog(__FUNCTION__ . " FAILED TO REMOVE OLD");
 	}
 	
-	// change a parent, move the item to new parent or root
+	/**
+	 * MOVE -> (DELETE)optional
+	 * change a parent, move the item to new parent or root
+	 */
 	if($action == 'move'){
 		$newparent = trim($args[2]);
 		debugLog(__FUNCTION__ . " moving [$slug] to [$newparent]");
@@ -181,12 +177,16 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		$action = 'delete';
 		$args[2] = false; // set preserve children to false
 
+		// cleanup, destroy refs
 		unset($item);
 		unset($parent);
 		// debugLog($menu);
 	}
- 
-	// remove an item, shift its children
+ 	
+ 	/**
+ 	 * DELETE
+	 * remove an item, shift its children if preservechldren true
+ 	 */
 	if($action == 'delete'){
 
 		$preservechildren = true;
@@ -233,11 +233,14 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		unset($menu[GSMENUFLATINDEX][$slug]); // break flat
 	}
 
-	// break refs, they are no longer needed
+	// cleanup, destroy refs
 	unset($item);
 	unset($parent);
 	// debugLog($menu);
 
+	/**
+	 * RENAME
+	 */
 	if($action == 'rename'){
 		// reindex
 		$menunest = $menu[GSMENUNESTINDEX];
@@ -253,11 +256,16 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		return $menu;
 	}	
 
+	// rebuild entire flat tree from modified nest
 	$menunew = menuRebuildTree($menu);
 	debugLog(count($menunew[GSMENUFLATINDEX]) . " MENU ITEMS");	
 	return $menunew;
 }
 
+/**
+ * pre save integrity check of menu structures
+ * try to detect fatal errors
+ */
 function menuIntegrityCheck($menu){
 	// compare keys from nest to flat, check for invalid keys, int and "data"
 	// check for all structure flaws, null objects etc.
@@ -742,4 +750,8 @@ function pageSlugHasChanges($id,$newid){
 	// do rename if slug actually changed
 	else $menudata = menuItemRebuildChange(array('rename',$id,$newid));
 	if(isset($menudata)) return menuSave(GSMENUIDCORE,$menudata);
+}
+
+function pageWasPublished($id,$xml){
+	pageWasSaved($id,$xml,false);
 }
