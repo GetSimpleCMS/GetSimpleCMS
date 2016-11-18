@@ -102,6 +102,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
     }
 
     function isAutoSave(){
+    	if(!getDef('GSAJAXSAVE',true)) return false;
     	if(getDef('GSUSEDRAFTS',true)){
     		return !isset($_GET['nodraft']);
     	}
