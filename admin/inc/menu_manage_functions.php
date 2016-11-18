@@ -55,22 +55,25 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	 * array('modify',$slug,$data('title'));
 	 * 
 	 * rename+move in one pass is not implemented yet, rare, called in chain by passing meu back in as arg for now
-     *
+     * both = parent and child test, with children
+     * 
      * TESTS / Problems
-     * -[x] rename root level
-     * -[x] rename child level
-     * -[x] insert at root level
-     * -[x] insert at child level
-     * -[x] insert after both (NI)
-     * -[x] move to root level // @todo moves to bottom no sort done, fails to create flat 
-     * -[x] move to parent level
-     * -[x] move from root level both
+     * -[X] rename root level
+     * -[X] rename child level
+     * -[X] insert at root level
+     * -[X] insert at child level
+     * -[ ] insert after both (NI)
+     * -[X] move to root level // @todo moves to bottom no sort done ?
+     * -[X] move to parent level
+     * -[ ] move parent to parent level (!! child gets duplicated at root of nest, and has wrong depth in flat)
+     * -[X] move from root level both
      * -[x] move from parent level both
-     * -[x] delete root level
-     * -[x] delete child level
-     * -[x] delete with and without preserve parents flag
-     * -[x] clone page, uses its own action, inline parents (NI)
-     *
+     * -[x] delete root level both
+     * -[x] delete child level both
+     * -[ ] delete with and without preserve parents flag
+     * -[ ] clone page, uses its own action, inline parents (NI)
+     * -[ ] publish page?
+     * 
      * @todo  undo functionality, since we have no history atm, we cannot undo menu changes, if we change parent inline, then undo, then nothihg changes
      * for new we insert, for delete we delete, for slug change we rename, but we do not move, since we have no previous parent atm
      * 
@@ -110,13 +113,16 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		if(!empty($parentslug)){
 			$parent = &getMenuItemTreeRef($menu, $parentslug);
 			if(!isset($parent['children'])) $parent['children'] = array();
+			
 			$pos = array_insert_after($parent['children'],$after,$item);
+			
 			debugLog(__FUNCTION__ ." inserted at parent at position [$pos]"); // debugging
 			if(!isset($parent['children'][$slug]))debugLog(__FUNCTION__ . " FAILED TO INSERT");
 			// else debugLog($parent['children'][$slug]); // debugging
 		}
 		else {
 			$pos = array_insert_after($menu[GSMENUNESTINDEX],$after,$item);
+			
 			debugLog(__FUNCTION__ ." inserted at root at position [$pos]"); // debugging
 			if(!isset($menu[GSMENUNESTINDEX][$slug])) debugLog(__FUNCTION__ . " FAILED TO INSERT");
 			// else debugLog($menu[GSMENUNESTINDEX][$slug]); // debugging
@@ -149,19 +155,19 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 
 		$item = &getMenuItemTreeRef($menu,$slug);
 		if(!isset($item)){
-			debugLog("item not found - [$slug]");
+			debugLog(__FUNCTION__ . " moving item not found - [$slug]");
 			return $menu;
 		}	
 
 		// parent is the same
 		if($item['data']['parent'] == $newparent){
-			debugLog(__FUNCTION__ . " item is already there, skipping"); // debugging
+			debugLog(__FUNCTION__ . " moving parent is already there, skipping"); // debugging
 			return $menu;
 		}	
 
 		// insert
 		if(empty($newparent)) {
-			debugLog(__FUNCTION__ . " NEWPARENT IS EMPTY, MOVING TO ROOT"); // debugging
+			debugLog(__FUNCTION__ . " moving NEWPARENT IS EMPTY, MOVING TO ROOT"); // debugging
 			$menu[GSMENUNESTINDEX][$slug] = $item; // @todo copy ?
 		}
 		else {
@@ -173,25 +179,30 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		// since this uses getMenuItemTreeRef, it assumes that flatindex has not been modified and still points to the old item
 		// alternative would be to provide a safe nest loop resolver that does not use the flat dotpath resolver
 		$action = 'delete';
-		$arg[2] = false; // set preserve children to false
+		$args[2] = false; // set preserve children to false
 
 		unset($item);
 		unset($parent);
+		// debugLog($menu);
 	}
  
 	// remove an item, shift its children
 	if($action == 'delete'){
 
 		$preservechildren = true;
-		if(isset($arg[2]) && $args[2] === false) $preservechildren = false;
+		if(isset($args[2]) && $args[2] === false) $preservechildren = false;
 
 		$item = &getMenuItemTreeRef($menu,$slug);
 
-		debugLog(__FUNCTION__ . " deleteing [$slug]"); // debugging
-		if(!$item) return $menu;
+		debugLog(__FUNCTION__ . " deleteing [".$item['id']."]"); // debugging
+		if(!$item){
+			debugLog(__FUNCTION__ . " nothing to delete returning"); // debugging			
+			return $menu;
+		}
 
 		// if preserving children, move them to root
 		if($preservechildren && isset($item['children'])){
+			debugLog(__FUNCTION__ . " preserving [$slug][children], moving to root"); // debugging
 			// move to root, @todo could optionally move to closest parent using insert after logic
 			$menu[GSMENUNESTINDEX] = array_merge($menu[GSMENUNESTINDEX],$item['children']);
 		}
@@ -225,6 +236,7 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	// break refs, they are no longer needed
 	unset($item);
 	unset($parent);
+	// debugLog($menu);
 
 	if($action == 'rename'){
 		// reindex
@@ -247,25 +259,31 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 }
 
 function menuIntegrityCheck($menu){
-	$assert = "";
-	if(isset($menu[GSMENUNESTINDEX][""])) $assert = debugLog(__FUNCTION__ . ": ASSERT nested menu has empty key");
-	if(isset($menu[GSMENUFLATINDEX][""])) $assert = debugLog(__FUNCTION__ . ": ASSERT flat menu has empty key");
-
-	foreach($menu[GSMENUFLATINDEX] as $key=>$menuitem){
-		if(!$menuitem) $assert = debugLog(__FUNCTION__ . ": ASSERT flat menu has empty array");
-		if(!isset($menuitem['data'])) $assert = debugLog(__FUNCTION__ . ": ASSERT flat menu has empty data array");
-		if($key !== $menuitem['id']) $assert = debugLog(__FUNCTION__ . ": ASSERT flat menu key=id mismatch");
-		if(!is_string($key)) $assert = debugLog(__FUNCTION__ . ": ASSERT flat menu has integer key");
-	}
-
-	if($assert) die($assert);
-	
 	// compare keys from nest to flat, check for invalid keys, int and "data"
 	// check for all structure flaws, null objects etc.
 	// keys not match id
 	// check for temp keys "rekeyed"
 	// check parents are correct, empty if root etc.
 	// provide health check warnings on post limits, max memory, max records for large menus
+	$assert = "";
+	if(isset($menu[GSMENUNESTINDEX][""])) $assert .= debugLog(__FUNCTION__ . ": ASSERT nested menu has empty key<br>");
+	if(isset($menu[GSMENUFLATINDEX][""])) $assert .= debugLog(__FUNCTION__ . ": ASSERT flat menu has empty key<br>");
+
+	foreach($menu[GSMENUFLATINDEX] as $key=>$menuitem){
+		if(!$menuitem) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT flat menu has empty array<br>");
+		if(!isset($menuitem['data'])) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT flat menu has empty data array<br>");
+		if($key !== $menuitem['id']) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT flat menu key=id mismatch<br>");
+		if(!is_string($key)) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT flat menu has integer key<br>");
+	}
+
+	foreach($menu[GSMENUNESTINDEX] as $key=>$menuitem){
+		if(!$menuitem) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT NEST menu has empty array<br>");
+		if(!isset($menuitem['data'])) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT NEST menu has empty data array<br>");
+		if($key !== $menuitem['id']) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT NEST menu key=id mismatch<br>");
+		if(!is_string($key)) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT NEST menu has integer key<br>");
+	}
+
+	if(!empty($assert)) die($assert);
 }
 
 /**
