@@ -1976,7 +1976,7 @@ function get_site_lang($short=false) {
  * @return string
  */
 function toBytes($str){
-	$val = trim($str);
+	$val = trim($str, 'gmkGMK');
 	$last = strtolower($str[strlen($str)-1]);
 		switch($last) {
 			case 'g': $val *= 1024;
