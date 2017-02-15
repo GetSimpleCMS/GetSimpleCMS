@@ -451,13 +451,21 @@ function get_execution_time($reset=false)
  * @return object
  */
 function getXML($file,$nocdata = true) {
+	$xml = read_file($file.'.json');
+	if($xml){
+		$data = json_decode($xml, TRUE);
+		// debugLog($data);
+		return $data;
+	}	
+}
+/*function getXML($file,$nocdata = true) {
 	$xml = read_file($file);
 	if($xml){
 		$data = simplexml_load_string($xml, 'SimpleXMLExtended', $nocdata ? LIBXML_NOCDATA : null);
 		// debugLog($data);
 		return $data;
 	}	
-}
+}*/
 
 /**
  * get page xml shortcut
@@ -727,6 +735,8 @@ function XMLsave($xml, $file) {
 		return false;
 	}	
 	$data = @$xml->asXML();
+        $json = json_encode($xml); // simple convert XML to JSON
+        save_file($file.'.json', $json); // save pre-JSON file
 	if(getDef('GSFORMATXML',true)) $data = formatXmlString($data); // format xml if config setting says so
 	$data = exec_filter('xmlsave',$data); // @filter xmlsave executed before writing string to file
 	$success = save_file($file, $data); // LOCK_EX ?
@@ -2689,7 +2699,19 @@ function getWebsiteData($returnGlobals = false){
 
 	if (file_exists(GSDATAOTHERPATH .GSWEBSITEFILE)) {
 		$dataw        = getXML(GSDATAOTHERPATH .GSWEBSITEFILE,false);
-		$SITENAME     = stripslashes( $dataw->SITENAME);
+		$SITENAME     = stripslashes( $dataw['SITENAME']);
+		$SITEURL      = trim((string) $dataw['SITEURL']);
+		$TEMPLATE     = trim((string) $dataw['TEMPLATE']);
+		$PRETTYURLS   = trim((string) $dataw['PRETTYURLS']);
+		$PERMALINK    = trim((string) $dataw['PERMALINK']);
+		$SITEEMAIL    = trim((string) $dataw['EMAIL']);
+		$SITETIMEZONE = trim((string) $dataw['TIMEZONE']);
+		$SITELANG     = trim((string) $dataw['LANG']);
+		$SITEUSR      = trim((string) $dataw['SITEUSR']);
+		$SITEABOUT    = trim((string) $dataw['SITEABOUT']);
+		$SAFEMODE     = trim((string) $dataw['SAFEMODE'] == '1');
+                
+                /*$SITENAME     = stripslashes( $dataw->SITENAME);
 		$SITEURL      = trim((string) $dataw->SITEURL);
 		$TEMPLATE     = trim((string) $dataw->TEMPLATE);
 		$PRETTYURLS   = trim((string) $dataw->PRETTYURLS);
@@ -2699,7 +2721,7 @@ function getWebsiteData($returnGlobals = false){
 		$SITELANG     = trim((string) $dataw->LANG);
 		$SITEUSR      = trim((string) $dataw->SITEUSR);
 		$SITEABOUT    = trim((string) $dataw->SITEABOUT);
-		$SAFEMODE     = trim((string) $dataw->SAFEMODE == '1');
+		$SAFEMODE     = trim((string) $dataw->SAFEMODE == '1');*/
 
 		$SITEURL_ABS = $SITEURL;
 		$SITEURL_REL = getRootRelURIPath($SITEURL);
@@ -2740,10 +2762,15 @@ function getUserData($returnGlobals = false){
 		$cookie_user_id = _id($_COOKIE['GS_ADMIN_USERNAME']);
 		if (file_exists(GSUSERSPATH . $cookie_user_id.'.xml')) {
 			$datau      = getXML(GSUSERSPATH  . $cookie_user_id.'.xml');
-			$USR        = stripslashes($datau->USR);
+			$USR        = stripslashes($datau['USR']);
+			$HTMLEDITOR = (string) $datau['HTMLEDITOR'];
+			$USRTIMEZONE= (string) $datau['TIMEZONE'];
+			$USRLANG    = (string) $datau['LANG'];
+                        
+                        /*$USR        = stripslashes($datau->USR);
 			$HTMLEDITOR = (string) $datau->HTMLEDITOR;
 			$USRTIMEZONE= (string) $datau->TIMEZONE;
-			$USRLANG    = (string) $datau->LANG;
+			$USRLANG    = (string) $datau->LANG;*/
 		} else {
 			$USR = null;
 		}
@@ -2788,7 +2815,9 @@ function getDefaultSalt(){
 		// use from GSAUTHFILE
 		if (file_exists(GSDATAOTHERPATH .GSAUTHFILE)) {
 			$dataa = getXML(GSDATAOTHERPATH .GSAUTHFILE);
-			$salt  = stripslashes($dataa->apikey);
+			$salt  = stripslashes($dataa['apikey']);
+                        
+                        /*$salt  = stripslashes($dataa->apikey);*/
 		}
 	}
 
