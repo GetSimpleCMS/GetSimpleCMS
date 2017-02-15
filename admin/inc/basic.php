@@ -760,6 +760,18 @@ function XMLsave($xml, $file) {
 	return $success;
 }
 
+function XMLFormatsave($xml, $file) {
+	if(!is_object($xml)){
+		debugLog(__FUNCTION__ . ' failed to save json');
+		return false;
+	}	
+	$data = @$xml->asXML();
+	if(getDef('GSFORMATjson',true)) $data = formatXmlString($data); // format xml if config setting says so
+	$data = exec_filter('xmlsave',$data); // @filter xmlsave executed before writing string to file
+        $success = save_file($file, $data); // LOCK_EX ?
+	return $success;
+}
+
 /**
  * create a director or path
  *
@@ -880,7 +892,6 @@ function copy_file($src,$dest,$filename = null){
  * @return bool       success
  */
 function delete_file($file){
-        unlink($file.'.json');
 	$status = unlink($file); // php unlink
 	return fileLog(__FUNCTION__,$status,$file);
 }
