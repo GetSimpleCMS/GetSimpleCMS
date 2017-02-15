@@ -298,7 +298,7 @@ function restore_backup($bakfilepath,$destination){
  * @return bool     success
  */
 function backup_page($id){
-	return backup_datafile(GSDATAPAGESPATH.$id.'.xml');
+	return backup_datafile(GSDATAPAGESPATH.$id.'.json');
 }
 
 /**
@@ -310,7 +310,7 @@ function backup_page($id){
  * @return bool     success
  */
 function backup_draft($id){
-	return backup_datafile(GSDATADRAFTSPATH.$id.'.xml');
+	return backup_datafile(GSDATADRAFTSPATH.$id.'.json');
 }
 
 /**
@@ -322,7 +322,7 @@ function backup_draft($id){
  * @return bool     success
  */
 function restore_page($id){
-	return restore_datafile(GSDATAPAGESPATH.$id.'.xml');
+	return restore_datafile(GSDATAPAGESPATH.$id.'.json');
 }
 
 /**
@@ -334,7 +334,7 @@ function restore_page($id){
  * @return bool     success
  */
 function restore_draft($id){
-	return restore_datafile(GSDATADRAFTSPATH.$id.'.xml');
+	return restore_datafile(GSDATADRAFTSPATH.$id.'.json');
 }
 
 /**
@@ -351,7 +351,7 @@ function restore_draft($id){
  */
 function delete_page($id, $backup = true){
 	$filepath = GSDATAPAGESPATH;
-	$file     = $filepath . $id . '.xml';
+	$file     = $filepath . $id . '.json';
 
 	if(filepath_is_safe($file,$filepath)){
 		if($backup) backup_datafile($file);
@@ -373,7 +373,7 @@ function delete_page($id, $backup = true){
  */
 function delete_draft($id, $backup = true){
 	$filepath = GSDATADRAFTSPATH;
-	$file     = $filepath . $id . '.xml';
+	$file     = $filepath . $id . '.json';
 
 	if(filepath_is_safe($file,$filepath)){
 		if($backup) backup_datafile($file);
@@ -391,7 +391,7 @@ function delete_draft($id, $backup = true){
  * @return mixed   returns new url on succcess, bool false on failure
  */
 function clone_page($id){
-	list($cloneurl,$count) = getNextFileName(GSDATAPAGESPATH,$id.'.xml');
+	list($cloneurl,$count) = getNextFileName(GSDATAPAGESPATH,$id.'.json');
 	// get page and resave with new slug and title
 	$newxml = getPageXML($id);
 	$newurl = getFileName($cloneurl);
@@ -440,7 +440,7 @@ function getNextFileName($path,$file){
  */
 function delete_page_backup($id){
 	$filepath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
-	$file     = $filepath . getBackupName($id,'xml');
+	$file     = $filepath . getBackupName($id,'json');
 
 	if(filepath_is_safe($file,$filepath)){
 		return delete_file($file);
@@ -457,7 +457,7 @@ function delete_page_backup($id){
  */
 function delete_draft_backup($id){
 	$filepath = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/pages/
-	$file = $filepath . $bakpagespath. $id .".bak.xml";
+	$file = $filepath . $bakpagespath. $id .".bak.json";
 	
 	if(filepath_is_safe($file,$filepath)){
 		return delete_file($file,$filepath);
@@ -1027,7 +1027,7 @@ function getPagesRow($page,$level,$index,$parent,$children){
 
 function getPagesRowMissing($ancestor,$level,$children){
 	$menu = '<tr id="tr-'.$ancestor.'" class="tree-error tree-parent depth-'.$level.'" data-depth="'.$level.'"><td colspan="4" class="pagetitle"><a><strong>'. $ancestor.'</strong> '.i18n_r('MISSING_PARENT').'</a>';
-	if ( fileHasBackup(GSDATAPAGESPATH.$ancestor.'.xml') ) {
+	if ( fileHasBackup(GSDATAPAGESPATH.$ancestor.'.json') ) {
 		$menu.= '&nbsp;&nbsp;&nbsp;&nbsp;<a href="backup-edit.php?p=view&amp;id='.$ancestor.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
 	}
 	$menu.= "</td></tr>";
@@ -1767,10 +1767,10 @@ function getHttpResponsePage($code){
 
 	if (isset($pagesArray[GSHTTPPREFIX . $code])) {
 		// use user created http response page
-		return getXml(GSDATAPAGESPATH . GSHTTPPREFIX . $code . '.xml');		
-	} elseif (file_exists(GSDATAOTHERPATH . $code . '.xml'))	{
+		return getXml(GSDATAPAGESPATH . GSHTTPPREFIX . $code . '.json');		
+	} elseif (file_exists(GSDATAOTHERPATH . $code . '.json'))	{
 		// use default http response page
-		return getXml(GSDATAOTHERPATH . $code . '.xml');	
+		return getXml(GSDATAOTHERPATH . $code . '.json');	
 	}	
 }
 

@@ -426,7 +426,7 @@ function pageCacheXMLtoArray($xml){
 			$pagesArray[$key][(string)$opt]=(string)$val;
 		}
 		$pagesArray[$key]['slug']=$key; // legacy
-		$pagesArray[$key]['filename']=$key.'.xml'; // legacy
+		$pagesArray[$key]['filename']=$key.'.json'; // legacy
 	}
 
 	return $pagesArray;
@@ -452,7 +452,7 @@ function pageXMLtoArray($xml){
 		}
 	}
 	$pagesArray[$key]['slug']=$key; // legacy
-	$pagesArray[$key]['filename']=$key.'.xml'; // legacy
+	$pagesArray[$key]['filename']=$key.'.json'; // legacy
 }
 
 /* ?> */

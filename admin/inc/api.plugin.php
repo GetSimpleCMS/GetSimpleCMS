@@ -27,7 +27,7 @@ register_plugin(
 add_action('settings-sidebar','createSideMenu',array($thisfileapi, i18n_r('API_CONFIGURATION'))); 
 
 function gsapi_display_cp() {
-	$thisdatafile = GSDATAOTHERPATH.'appid.xml';
+	$thisdatafile = GSDATAOTHERPATH.'appid.json';
 	
 	# if form as submitted
 	if (isset($_POST['submit'])) {

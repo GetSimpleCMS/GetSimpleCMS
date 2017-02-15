@@ -16,7 +16,7 @@ class API_Request {
 	 * @return bool
 	 */	
 	private function auth() {
-		$appid_file = getXML(GSDATAOTHERPATH.'appid.xml');
+		$appid_file = getXML(GSDATAOTHERPATH.'appid.json');
 		if ($appid_file->status == 'true') {
 			if ( (string)$appid_file->key == (string)$this->xml->key) {
 				return true;
@@ -42,8 +42,8 @@ class API_Request {
 	public function page_read() {
 		if($this->auth()) {
 			$id = (string)$this->xml->data->slug;
-			if (file_exists(GSDATAPAGESPATH.$id.'.xml')) {
-				$page = getXML(GSDATAPAGESPATH.$id.'.xml');
+			if (file_exists(GSDATAPAGESPATH.$id.'.json')) {
+				$page = getXML(GSDATAPAGESPATH.$id.'.json');
 				$page->content = strip_decode($page->content);
 				$page->metak = strip_decode($page->metak);
 				$page->metad = strip_decode($page->metad);
@@ -106,13 +106,13 @@ class API_Request {
 		$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/					
 		if($this->auth()) {
 			$id = (string)$this->xml->data->slug;
-			$thisfile = GSDATAPAGESPATH.getBackupName($id,'xml');
+			$thisfile = GSDATAPAGESPATH.getBackupName($id,'json');
 			if (file_exists($thisfile)) {
 				$page = getXML($thisfile);
 				$page->content = safe_slash_html($this->xml->data->content);
 				$page->title = safe_slash_html($this->xml->data->title);
 				$page->pubDate = date('r');
-				$bakfile = $bakpagespath.getBackupName($id,'xml');
+				$bakfile = $bakpagespath.getBackupName($id,'json');
 				copy_file($thisfile, $bakfile);
 				$status = XMLsave($page, $thisfile);
 				if ($status) {

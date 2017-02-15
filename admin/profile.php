@@ -50,7 +50,7 @@ if($editing){
 	
 	if($userid !== $USR){
 
-		if(file_exists(GSUSERSPATH. _id($userid).'.xml')){
+		if(file_exists(GSUSERSPATH. _id($userid).'.json')){
 			if(!exec_secfilter('profile-edituser',$allowedit, array($userid))){ // @secfilter profile-edituser verify profile edit existing user
 				$permerror = i18n_r('ER_REQ_PROC_FAIL');
 				$editing = false;
@@ -71,7 +71,7 @@ if(!empty($permerror) && $showpermfail) $error = $permerror;
 
 // load user data if editing
 if(!empty($userid)){
-	$file = _id($userid) .'.xml';
+	$file = _id($userid) .'.json';
 	// file traversal protection and checks if file exists at the same time
 	if(!filepath_is_safe(GSUSERSPATH . $file,GSUSERSPATH)) die(i18n_r('ER_REQ_PROC_FAIL'));
 	
@@ -120,7 +120,7 @@ if(isset($_POST['submitted']) && isset($_POST['user'])){
 		}
 
 		$userid = _id($_POST['user']);
-		$file   = $userid .'.xml';
+		$file   = $userid .'.json';
 
 
 		if($adding && path_is_safe(GSUSERSPATH . $file,GSUSERSPATH)){
@@ -184,7 +184,7 @@ if(isset($_POST['submitted']) && isset($_POST['user'])){
 		backup_datafile(GSUSERSPATH.$file);
 		
 		// remove pass word reset
-		$resetfile = GSUSERSPATH . getPWDresetName(_id($userid), 'xml');
+		$resetfile = GSUSERSPATH . getPWDresetName(_id($userid), 'json');
 		if (file_exists($resetfile)) delete_file($resetfile);
 
 		exec_action('settings-user'); // @hook settings-user LEGACY pre-save of a users settings

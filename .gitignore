@@ -3,5 +3,6 @@
 *.settings
 *.sublime-*
 /lib
-
+gsconfig.php
 thumbs.db
+/nbproject/private/

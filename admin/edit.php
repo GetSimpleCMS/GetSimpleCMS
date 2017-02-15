@@ -66,7 +66,7 @@ $pageClass   = "";    // (str) classes to add to maincontent
 if ($id){
     // get saved page data
 
-    $pageExists  = file_exists(GSDATAPAGESPATH . $id .'.xml');
+    $pageExists  = file_exists(GSDATAPAGESPATH . $id .'.json');
     $draftExists = pageHasDraft($id);
 
     // fail if not using drafts and page does not exist
@@ -518,10 +518,10 @@ if($newdraft) $pageClass.=' newdraft';
                 echo '<span><i class="fa fa-clock-o"></i>';
                     echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'. (empty($author) ? i18n_r('UNKNOWN') : $author.'</em>')) .' ' . output_datetime($pubDate).'</span>';
             }
-            if ( $draft && fileHasBackup(GSDATADRAFTSPATH.$url.'.xml') ) {
+            if ( $draft && fileHasBackup(GSDATADRAFTSPATH.$url.'.json') ) {
                 echo '<span>&bull;</span><a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
             }
-            else if( !$draft && fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
+            else if( !$draft && fileHasBackup(GSDATAPAGESPATH.$url.'.json') ) {
                 echo '<span>&bull;</span><span><a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
             }
         ?></p>

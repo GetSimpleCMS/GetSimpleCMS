@@ -22,7 +22,7 @@ if(isset($_POST['submitted'])){
 	if(isset($_POST['username']) and !empty($_POST['username']))	{
 
 		# user filename
-		$file = _id($_POST['username']).'.xml';
+		$file = _id($_POST['username']).'.json';
 		
 		# get user information from existing XML file
 		
@@ -40,7 +40,7 @@ if(isset($_POST['submitted'])){
 				backup_datafile(GSUSERSPATH.$file);
 				
 				# copy user file into password change trigger file
-				$flagfile = GSUSERSPATH . getPWDresetName(_id($userid), 'xml');
+				$flagfile = GSUSERSPATH . getPWDresetName(_id($userid), 'json');
 				copy_file(GSUSERSPATH . $file, $flagfile);
 				
 				# change password and resave xml file
