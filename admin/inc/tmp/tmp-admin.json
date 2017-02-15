@@ -1,0 +1,20 @@
+{
+    "item": {
+        "title": "GetSimple Default Admin",
+        "author": "Chris Cagle",
+        "link": "http://www.cagintranet.com/",
+        "primary": {
+            "darkest": "#0E1316",
+            "darker": "#182227",
+            "dark": "#283840",
+            "middle": "#415A66",
+            "light": "#618899",
+            "lighter": "#E8EDF0",
+            "lightest": "#AFC5CF"
+        },
+        "secondary": {
+            "darkest": "#9F2C04",
+            "lightest": "#CF3805"
+        }
+    }
+}

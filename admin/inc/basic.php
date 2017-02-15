@@ -880,7 +880,6 @@ function copy_file($src,$dest,$filename = null){
  * @return bool       success
  */
 function delete_file($file){
-        unlink($file.'.json');
 	$status = unlink($file); // php unlink
 	return fileLog(__FUNCTION__,$status,$file);
 }
