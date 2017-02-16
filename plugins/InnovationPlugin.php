@@ -77,7 +77,7 @@ function innovation_show() {
 				if(isset($resp[$var])) $xml->addChild($var, $resp[$var]);
 			}
 							
-			if (! $xml->asXML($innovation_file)) {
+			if (! XMLsave($xml, $innovation_file)) {
 				$error = i18n_r('CHMOD_ERROR');
 			} else {
 				$innovation_data = getXML($innovation_file);
