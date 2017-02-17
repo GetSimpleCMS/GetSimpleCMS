@@ -1889,8 +1889,8 @@ function snippetIsEnabled($id){
  */
 function get_collection_items($asset){	
 	if (file_exists(GSDATAOTHERPATH.$asset)) {
-		$data  = getXML(GSDATAOTHERPATH.$asset);
-	    $items = $data->item;
+            $data  = getXML(GSDATAOTHERPATH.$asset);
+	    $items = new ObjectFromXML($data->item);
 	} else {
 	    $items = array();
 	}
@@ -2022,8 +2022,8 @@ function getEditorAttribCallout($collectionid,$class = '',$funcname = null){
 
 function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit',$code = ''){
 
-	$disabled = (bool)(string)$item->disabled;
-	$readonly = (bool)(string)$item->readonly;
+	$disabled = (bool)(string)@$item->disabled;
+	$readonly = (bool)(string)@$item->readonly;
 
 	$str = '';
 	$str .= '<div class="compdiv codewrap" id="section-'.$id.'">';

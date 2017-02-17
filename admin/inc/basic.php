@@ -206,6 +206,26 @@ function subval_sort($a,$subkey, $order='asc',$natural = true) {
 	}
 }
 
+class ObjectFromXML {
+
+    public function __construct($attributes = '[]') {
+        $jsonarray = json_decode(json_encode($attributes));
+        if (count($jsonarray) != 0) {
+            foreach ($jsonarray as $name => $value) {
+                $this->{$name} = $value;
+            }
+        }
+    }
+
+    public function __get($key) {
+        if (isset($this->{$key})) {
+            return $this->{$key};
+        }
+        return NULL;
+    }
+
+}
+
 /**
  * SimpleXMLExtended Class
  *
@@ -455,8 +475,6 @@ function getXML($file,$nocdata = true) {
 	if($xml){
             try {
                 $rawdata = json_decode($xml, TRUE);
-                //echo $file.' |<pre>';
-                //print_r($rawdata);
                 $data = new SimpleXMLExtended('<?xml version="1.0"?><item></item>', LIBXML_NOCDATA);
                 array_to_xml($rawdata, $data);
 		// debugLog($data);
