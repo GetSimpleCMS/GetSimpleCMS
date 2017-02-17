@@ -16,7 +16,7 @@
  * @return string
  */
 function Innovation_Parent_Link($name) {
-	$file = GSDATAPAGESPATH . $name .'.xml';
+	$file = GSDATAPAGESPATH . $name .'.json';
 	if (file_exists($file)) {
 		$p = getXML($file);
 		$title = $p->title;
@@ -34,7 +34,7 @@ function Innovation_Parent_Link($name) {
  * @return bool
  */
 function Innovation_Settings() {
-	$file = GSDATAOTHERPATH . 'InnovationSettings.xml';
+	$file = GSDATAOTHERPATH . 'InnovationSettings.json';
 	if (file_exists($file)) {
 		$p = getXML($file);
 		return $p;

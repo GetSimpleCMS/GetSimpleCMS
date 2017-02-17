@@ -206,6 +206,26 @@ function subval_sort($a,$subkey, $order='asc',$natural = true) {
 	}
 }
 
+class ObjectFromXML {
+
+    public function __construct($attributes = '[]') {
+        $jsonarray = json_decode(json_encode($attributes));
+        if (count($jsonarray) != 0) {
+            foreach ($jsonarray as $name => $value) {
+                $this->{$name} = $value;
+            }
+        }
+    }
+
+    public function __get($key) {
+        if (isset($this->{$key})) {
+            return $this->{$key};
+        }
+        return NULL;
+    }
+
+}
+
 /**
  * SimpleXMLExtended Class
  *
@@ -343,10 +363,10 @@ class SimpleXMLExtended extends SimpleXMLElement{
  *
  * @param string $file
  * @param string $path
- * @param string $type Optiona, default is 'xml'
+ * @param string $type Optiona, default is 'json'
  * @return bool
  */
-function isFile($file, $path, $type = 'xml') {
+function isFile($file, $path, $type = 'json') {
 	if( is_file(tsl($path) . $file) && $file != "." && $file != ".." && (strstr($file, $type))  ) {
 		return true;
 	} else {
@@ -415,7 +435,7 @@ function getDirs($path,$filereq = null) {
  * @return array
  */
 function getXmlFiles($path) {
-	return getFiles($path,'xml');
+	return getFiles($path,'json');
 }
 
 /**
@@ -453,10 +473,32 @@ function get_execution_time($reset=false)
 function getXML($file,$nocdata = true) {
 	$xml = read_file($file);
 	if($xml){
-		$data = simplexml_load_string($xml, 'SimpleXMLExtended', $nocdata ? LIBXML_NOCDATA : null);
+            try {
+                $rawdata = json_decode($xml, TRUE);
+                $data = new SimpleXMLExtended('<?xml version="1.0"?><item></item>', LIBXML_NOCDATA);
+                array_to_xml($rawdata, $data);
 		// debugLog($data);
 		return $data;
+            } catch (Exception $exc) {
+                echo $file;
+                echo $exc->getTraceAsString();
+                die;
+            }
 	}	
+}
+
+function array_to_xml( $data, &$xml_data ) {
+    foreach( $data as $key => $value ) {
+        if( is_numeric($key) ){
+            $key = 'item'.$key; //dealing with <0/>..<n/> issues
+        }
+        if( is_array($value) ) {
+            $subnode = $xml_data->addChild($key);
+            array_to_xml($value, $subnode);
+        } else {
+            $xml_data->addChild("$key",htmlspecialchars("$value"));
+        }
+     }
 }
 
 /**
@@ -467,7 +509,7 @@ function getXML($file,$nocdata = true) {
  * @return xml     xml object
  */
 function getPageXML($id,$nocdata = true){
-	return getXML(GSDATAPAGESPATH.$id.'.xml',$nocdata);
+	return getXML(GSDATAPAGESPATH.$id.'.json',$nocdata);
 }
 
 /**
@@ -478,7 +520,7 @@ function getPageXML($id,$nocdata = true){
  * @return xml     xml object
  */
 function getDraftXML($id,$nocdata = true){
-	return getXML(GSDATADRAFTSPATH.$id.'.xml',$nocdata);
+	return getXML(GSDATADRAFTSPATH.$id.'.json',$nocdata);
 }
 
 /**
@@ -551,8 +593,8 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
 	$title = truncate($title,GSTITLEMAX); // truncate long titles
 
 	// If overwrite is false do not use existing slugs, get next incremental slug, eg. "slug-count"
-	if ( !$overwrite && (file_exists(GSDATAPAGESPATH . $url .".xml") ||  in_array($url,$reservedSlugs)) ) {
-		list($newfilename,$count) = getNextFileName(GSDATAPAGESPATH,$url.'.xml');
+	if ( !$overwrite && (file_exists(GSDATAPAGESPATH . $url .".json") ||  in_array($url,$reservedSlugs)) ) {
+		list($newfilename,$count) = getNextFileName(GSDATAPAGESPATH,$url.'.json');
 		$url = $url .'-'. $count;
 		// die($url.' '.$newfilename.' '.$count);
 	}
@@ -588,8 +630,8 @@ function savePageXml($xml,$backup = true){
 	$url = $xml->url;
 	if(!isset($url) || trim($url) == '') die(__FUNCTION__ . ' empty slug');
 	// backup before overwriting
-	if($backup && file_exists(GSDATAPAGESPATH . $url .".xml")) backup_page($url);
-	return XMLsave($xml, GSDATAPAGESPATH . $url .".xml");
+	if($backup && file_exists(GSDATAPAGESPATH . $url .".json")) backup_page($url);
+	return XMLsave($xml, GSDATAPAGESPATH . $url .".json");
 }
 
 /**
@@ -605,8 +647,8 @@ function savePageAltXml($xml,$path,$backup = true){
 	$url = $xml->url;
 	if(!isset($url) || trim($url) == '') die(__FUNCTION__ . ' empty slug');
 	// backup before overwriting
-	if($backup && file_exists($path . $url .".xml")) backup_datafile($path.$url.'.xml');
-	return XMLsave($xml, $path . $url .".xml");
+	if($backup && file_exists($path . $url .".json")) backup_datafile($path.$url.'.json');
+	return XMLsave($xml, $path . $url .".json");
 }
 
 /**
@@ -621,8 +663,8 @@ function saveDraftXml($xml,$backup = true){
 	$url = $xml->url;
 	if(!isset($url) || trim($url) == '') die(__FUNCTION__ . ' empty slug'); // @todo need some kind of assert here
 	// backup before overwriting
-	if($backup && file_exists(GSDATADRAFTSPATH . $url .".xml")) backup_draft($url);
-	return XMLsave($xml, GSDATADRAFTSPATH . $url .".xml");
+	if($backup && file_exists(GSDATADRAFTSPATH . $url .".json")) backup_draft($url);
+	return XMLsave($xml, GSDATADRAFTSPATH . $url .".json");
 }
 
 /**
@@ -634,9 +676,9 @@ function saveDraftXml($xml,$backup = true){
 function publishDraft($id){
 	if(!pageHasDraft($id)) return false;
 	backup_page($id); // backup live page
-	backup_datafile(GSDATADRAFTSPATH.$id.'.xml'); // backup draft before moving
-	$status = move_file(GSDATADRAFTSPATH,GSDATAPAGESPATH,$id.'.xml');
-	// restore_datafile(GSDATADRAFTSPATH . $id .".xml"); // debugging replays
+	backup_datafile(GSDATADRAFTSPATH.$id.'.json'); // backup draft before moving
+	$status = move_file(GSDATADRAFTSPATH,GSDATAPAGESPATH,$id.'.json');
+	// restore_datafile(GSDATADRAFTSPATH . $id .".json"); // debugging replays
 	if($status)	updatePageField($id,'pubDate',date('r')); // update pub date
 	return $status;
 }
@@ -649,7 +691,7 @@ function publishDraft($id){
  * @return bool status
  */
 function pageHasDraft($id){
-	return file_exists(GSDATADRAFTSPATH . $id .".xml");
+	return file_exists(GSDATADRAFTSPATH . $id .".json");
 }
 
 /**
@@ -678,7 +720,7 @@ function changeDraftSlug($id,$newid){
 function pageExists($id){
 	GLOBAL $pagesArray;
 	if(isset($pagesArray[$id])) return true;
-	return file_exists(GSDATAPAGESPATH . $id .'.xml');
+	return file_exists(GSDATAPAGESPATH . $id .'.json');
 	return false;
 }
 
@@ -723,13 +765,28 @@ function fileHasBackup($filepath){
  */
 function XMLsave($xml, $file) {
 	if(!is_object($xml)){
-		debugLog(__FUNCTION__ . ' failed to save xml');
+		debugLog(__FUNCTION__ . ' failed to save json');
 		return false;
 	}	
 	$data = @$xml->asXML();
-	if(getDef('GSFORMATXML',true)) $data = formatXmlString($data); // format xml if config setting says so
-	$data = exec_filter('xmlsave',$data); // @filter xmlsave executed before writing string to file
+        $xmltojson = simplexml_load_string($data, 'SimpleXMLExtended', LIBXML_NOCDATA);
+        $data = json_encode($xmltojson); // simple convert XML to JSON
+        //save_file($file.'.json', $json); // save pre-JSON file
+	//if(getDef('GSFORMATjson',true)) $data = formatXmlString($data); // format xml if config setting says so
+	//$data = exec_filter('xmlsave',$data); // @filter xmlsave executed before writing string to file
 	$success = save_file($file, $data); // LOCK_EX ?
+	return $success;
+}
+
+function XMLFormatsave($xml, $file) {
+	if(!is_object($xml)){
+		debugLog(__FUNCTION__ . ' failed to save json');
+		return false;
+	}	
+	$data = @$xml->asXML();
+	if(getDef('GSFORMATjson',true)) $data = formatXmlString($data); // format xml if config setting says so
+	$data = exec_filter('xmlsave',$data); // @filter xmlsave executed before writing string to file
+        $success = save_file($file, $data); // LOCK_EX ?
 	return $success;
 }
 
@@ -2738,8 +2795,8 @@ function getUserData($returnGlobals = false){
 
 	if (isset($_COOKIE['GS_ADMIN_USERNAME'])) {
 		$cookie_user_id = _id($_COOKIE['GS_ADMIN_USERNAME']);
-		if (file_exists(GSUSERSPATH . $cookie_user_id.'.xml')) {
-			$datau      = getXML(GSUSERSPATH  . $cookie_user_id.'.xml');
+		if (file_exists(GSUSERSPATH . $cookie_user_id.'.json')) {
+			$datau      = getXML(GSUSERSPATH  . $cookie_user_id.'.json');
 			$USR        = stripslashes($datau->USR);
 			$HTMLEDITOR = (string) $datau->HTMLEDITOR;
 			$USRTIMEZONE= (string) $datau->TIMEZONE;

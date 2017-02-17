@@ -208,17 +208,15 @@ function pluginIsActive($pluginid){
  */
 function read_pluginsxml($data = null){
   	global $live_plugins;   
-   
-	if(!$data) $data = getXML(GSDATAOTHERPATH . getDef('GSPLUGINSFILE'));
-	if($data){
+        if (!$data) $data = getXML(GSDATAOTHERPATH . getDef('GSPLUGINSFILE'));;
+        if($data){
    		$live_plugins= array(); // clean live_plugins
-		$pluginitem = $data->item;
+		$pluginitem = json_decode(json_encode($data->item));
 		if (count($pluginitem) != 0) {
 			foreach ($pluginitem as $plugin) {
 			  $live_plugins[trim((string)$plugin->plugin)]=trim((string)$plugin->enabled);
 			}
 		}
-
 		return true;
 	} 
 }
@@ -276,7 +274,7 @@ function create_pluginsxml($force=false){
 		}
 
 		$success = XMLsave($xml, GSDATAOTHERPATH.getDef('GSPLUGINSFILE'));
-		read_pluginsxml($xml);
+		read_pluginsxml();
 	}
 
 	return $success;

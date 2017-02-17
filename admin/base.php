@@ -36,8 +36,8 @@ else if(isset($pagesArray[$id])) {
 // filter to modify data_index obj
 $data_index = exec_filter('data_index',$data_index); // @filter data_index (obj) filter the global $data_index that holds front end page load data
 
-$file_404         = GSDATAOTHERPATH . GSSLUGNOTFOUND .'.xml'; // Legacy DEPRECATED
-$user_created_404 = GSDATAPAGESPATH . GSSLUGNOTFOUND .'.xml'; // legacy DEPRECATED
+$file_404         = GSDATAOTHERPATH . GSSLUGNOTFOUND .'.json'; // Legacy DEPRECATED
+$user_created_404 = GSDATAPAGESPATH . GSSLUGNOTFOUND .'.json'; // legacy DEPRECATED
 
 // page not found handling
 if(!$data_index) {

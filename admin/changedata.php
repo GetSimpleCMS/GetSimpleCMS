@@ -23,7 +23,7 @@ if(isset($_GET['publish']) && isset($_GET['id'])){
 	$id = var_in(_id($_GET['id']));
 	safemodefail('publish','edit.php?id='. $id);
 	
-	if(!filepath_is_safe(GSDATADRAFTSPATH.$id.'.xml',GSDATADRAFTSPATH)) $status = false;
+	if(!filepath_is_safe(GSDATADRAFTSPATH.$id.'.json',GSDATADRAFTSPATH)) $status = false;
 	else $status = publishDraft($id);
 
 	if($status){

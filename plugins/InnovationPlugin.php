@@ -9,7 +9,7 @@ Author URI: http://chriscagle.me
 
 # get correct id for plugin
 $thisfile_innov=basename(__FILE__, ".php");
-$innovation_file=GSDATAOTHERPATH .'InnovationSettings.xml';
+$innovation_file=GSDATAOTHERPATH .'InnovationSettings.json';
 
 # add in this plugin's language file
 i18n_merge($thisfile_innov) || i18n_merge($thisfile_innov, GSDEFAULTLANG);
@@ -77,7 +77,7 @@ function innovation_show() {
 				if(isset($resp[$var])) $xml->addChild($var, $resp[$var]);
 			}
 							
-			if (! $xml->asXML($innovation_file)) {
+			if (! XMLsave($xml, $innovation_file)) {
 				$error = i18n_r('CHMOD_ERROR');
 			} else {
 				$innovation_data = getXML($innovation_file);

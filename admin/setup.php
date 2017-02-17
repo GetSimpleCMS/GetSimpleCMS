@@ -59,7 +59,7 @@ if(isset($_POST['submitted'])) {
 		$PASSWD = passhash($random);
 		
 		# create user xml file
-		$file = _id($USR).'.xml';
+		$file = _id($USR).'.json';
 		if(file_exists(GSUSERSPATH.$file)) backup_datafile(GSUSERSPATH.$file);
 		$xml = new SimpleXMLElement('<item></item>');
 		$xml->addChild('USR', $USR);
@@ -73,7 +73,7 @@ if(isset($_POST['submitted'])) {
 		}
 		
 		# create password change trigger file
-		$flagfile = GSUSERSPATH . getPWDresetName(_id($USR), 'xml');
+		$flagfile = GSUSERSPATH . getPWDresetName(_id($USR), 'json');
 		copy_file(GSUSERSPATH . $file, $flagfile);
 		
 		# create new GSWEBSITEFILE (website.xml) file
@@ -93,8 +93,8 @@ if(isset($_POST['submitted'])) {
 		}
 		
 		# create default index.xml page
-		$init = GSDATAPAGESPATH.'index.xml'; 
-		$temp = GSADMININCPATH.'tmp/tmp-index.xml';
+		$init = GSDATAPAGESPATH.'index.json'; 
+		$temp = GSADMININCPATH.'tmp/tmp-index.json';
 		if (! file_exists($init))	{
 			copy_file($temp,$init);
 			$xml = getXML($init);
@@ -104,22 +104,22 @@ if(isset($_POST['submitted'])) {
 
 
 		# create default 404.xml page
-		$init = GSDATAOTHERPATH.'404.xml';
-		$temp = GSADMININCPATH.'tmp/tmp-404.xml'; 
+		$init = GSDATAOTHERPATH.'404.json';
+		$temp = GSADMININCPATH.'tmp/tmp-404.json'; 
 		if (! file_exists($init)) {
 			copy($temp,$init);
 		}
 
 		# create default 404.xml page
-		$init = GSDATAOTHERPATH.'403.xml';
-		$temp = GSADMININCPATH.'tmp/tmp-403.xml'; 
+		$init = GSDATAOTHERPATH.'403.json';
+		$temp = GSADMININCPATH.'tmp/tmp-403.json'; 
 		if (! file_exists($init)) {
 			copy($temp,$init);
 		}
 
 		# create default components.xml page if not exist
-		$init = GSDATAOTHERPATH.'components.xml';
-		$temp = GSADMININCPATH.'tmp/tmp-components.xml'; 
+		$init = GSDATAOTHERPATH.'components.json';
+		$temp = GSADMININCPATH.'tmp/tmp-components.json'; 
 		if (!file_exists($init)) {
 			copy_file($temp,$init);
 		}

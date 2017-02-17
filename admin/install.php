@@ -55,7 +55,7 @@ $dirsArray = array(
 // tmp-404.xml used as temporary write tester
 // removed afterwards
 foreach ($dirsArray as $dir) {
-	$tmpfile = GSADMININCPATH.'tmp/tmp-404.xml';
+	$tmpfile = GSADMININCPATH.'tmp/tmp-404.json';
 	if (file_exists($dir)) {
 		gs_chmod($dir, 0755);
 		$result_755 = copy_file($tmpfile, $dir .'tmp.tmp');

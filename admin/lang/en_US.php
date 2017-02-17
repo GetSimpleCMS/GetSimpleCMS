@@ -577,8 +577,8 @@ $i18n = array(
 "ARCHIVE_DATE"            =>	"Archive Date", //archive.php
 "CKEDITOR_LANG"           =>	"en", // edit.php ; set CKEditor language, don't forget to include CKEditor language file in translation zip	
 # new to 3.1 
-"XML_INVALID"             =>	"XML Invalid", //template-functions.php
-"XML_VALID"               =>	"XML Valid",
+"XML_INVALID"             =>	"JSON Invalid", //template-functions.php
+"XML_VALID"               =>	"JSON Valid",
 "UPDATE_AVAILABLE"        =>	"Update to", //plugins.php
 "STATUS"                  =>	"Status", //plugins.php
 "CLONE"                   =>	"Clone", //edit.php

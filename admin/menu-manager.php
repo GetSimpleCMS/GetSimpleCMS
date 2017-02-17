@@ -20,7 +20,7 @@ if (isset($_POST['menuOrder'])) {
 	$menuOrder = explode(',',$_POST['menuOrder']);
 	$priority = 0;
 	foreach ($menuOrder as $slug) {
-		$file = GSDATAPAGESPATH . $slug . '.xml';
+		$file = GSDATAPAGESPATH . $slug . '.json';
 		if (file_exists($file)) {
 			$data = getPageXML($slug);
 			if ($priority != (int) $data->menuOrder) {

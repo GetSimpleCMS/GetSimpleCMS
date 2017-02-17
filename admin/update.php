@@ -73,19 +73,19 @@ function msgError($msg){
 }
 
 # create default 404.xml page
-$init = GSDATAOTHERPATH.GSHTTPPREFIX.'404.xml';
-$temp = GSADMININCPATH.'tmp/tmp-404.xml'; 
+$init = GSDATAOTHERPATH.GSHTTPPREFIX.'404.json';
+$temp = GSADMININCPATH.'tmp/tmp-404.json'; 
 if (! file_exists($init)) {
-	if(copy_file($temp,$init)) $message.= msgOK(sprintf(i18n_r('COPY_SUCCESS'),'tmp/404.xml'));
-	else $message.= msgError(sprintf(i18n_r('COPY_FAILURE'),'tmp/404.xml'));
+	if(copy_file($temp,$init)) $message.= msgOK(sprintf(i18n_r('COPY_SUCCESS'),'tmp/404.json'));
+	else $message.= msgError(sprintf(i18n_r('COPY_FAILURE'),'tmp/404.json'));
 }
 
 # create default 403.xml page
-$init = GSDATAOTHERPATH.GSHTTPPREFIX.'403.xml';
-$temp = GSADMININCPATH.'tmp/tmp-403.xml'; 
+$init = GSDATAOTHERPATH.GSHTTPPREFIX.'403.json';
+$temp = GSADMININCPATH.'tmp/tmp-403.json'; 
 if (! file_exists($init)) {
-	if(copy_file($temp,$init)) $message.= msgOK(sprintf(i18n_r('COPY_SUCCESS'),'tmp/403.xml'));
-	else $message.= msgError(sprintf(i18n_r('COPY_FAILURE'),'tmp/403.xml'));
+	if(copy_file($temp,$init)) $message.= msgOK(sprintf(i18n_r('COPY_SUCCESS'),'tmp/403.json'));
+	else $message.= msgError(sprintf(i18n_r('COPY_FAILURE'),'tmp/403.json'));
 }
 
 /* create new folders */
@@ -109,7 +109,7 @@ if (file_exists(GSPLUGINPATH.'pages.php'))	{
 
 /* check for legacy version of user.xml */
 /* check and perform 2.x - 3.x upgrade */
-if (file_exists(GSDATAOTHERPATH .'user.xml')) {
+if (file_exists(GSDATAOTHERPATH .'user.json')) {
 	
 	# make new users folder
 	if (!file_exists(GSUSERSPATH)) {
@@ -134,8 +134,8 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	}
 
 	# get $USR data
-	$datau      = getXML(GSDATAOTHERPATH .'user.xml');
-	$datac      = getXML(GSDATAOTHERPATH .'cp_settings.xml');
+	$datau      = getXML(GSDATAOTHERPATH .'user.json');
+	$datac      = getXML(GSDATAOTHERPATH .'cp_settings.json');
 	$dataw      = getXML(GSDATAOTHERPATH .GSWEBSITEFILE);
 	
 	$USR        = _id(stripslashes($datau->USR));
@@ -159,8 +159,8 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	$xml->addChild('HTMLEDITOR', $HTMLEDITOR);
 	$xml->addChild('TIMEZONE', $TIMEZONE);
 	$xml->addChild('LANG', $LANG);
-	$status = XMLsave($xml, GSUSERSPATH . _id($USR) .'.xml');	
-	gs_chmod(GSUSERSPATH . _id($USR) .'.xml');
+	$status = XMLsave($xml, GSUSERSPATH . _id($USR) .'.json');	
+	gs_chmod(GSUSERSPATH . _id($USR) .'.json');
 	if (!$status) {
 		$error .= msgError('Unable to create new  '._id($USR).'.xml file!');	
 	} else {
@@ -168,12 +168,12 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	}
 	
 	# rename old wesbite.xml
-	if (!file_exists(GSDATAOTHERPATH .'_legacy_website.xml')) {
-		$status = rename_file(GSDATAOTHERPATH .'website.xml', GSDATAOTHERPATH .'_legacy_website.xml');
+	if (!file_exists(GSDATAOTHERPATH .'_legacy_website.json')) {
+		$status = rename_file(GSDATAOTHERPATH .'website.json', GSDATAOTHERPATH .'_legacy_website.json');
 		if (!$status) {
-			$error .= msgError('Unable to rename website.xml to _legacy_website.xml');	
+			$error .= msgError('Unable to rename website.xml to _legacy_website.json');	
 		} else {
-			$message .= msgOK('Renamed website.xml to _legacy_website.xml');
+			$message .= msgOK('Renamed website.xml to _legacy_website.json');
 		}
 	}
 	
@@ -193,22 +193,22 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	
 	
 	# rename old user.xml
-	if (!file_exists(GSDATAOTHERPATH .'_legacy_user.xml')) {
-		$status = rename_file(GSDATAOTHERPATH .'user.xml', GSDATAOTHERPATH .'_legacy_user.xml');
+	if (!file_exists(GSDATAOTHERPATH .'_legacy_user.json')) {
+		$status = rename_file(GSDATAOTHERPATH .'user.json', GSDATAOTHERPATH .'_legacy_user.json');
 		if (!$status) {
-			$error .= msgError('Unable to rename user.xml to _legacy_user.xml');	
+			$error .= msgError('Unable to rename user.xml to _legacy_user.json');	
 		} else {
-			$message .= msgOK('Renamed user.xml to _legacy_user.xml');
+			$message .= msgOK('Renamed user.xml to _legacy_user.json');
 		}
 	}
 
 	# rename old cp_settings.xml
-	if (!file_exists(GSDATAOTHERPATH .'_legacy_cp_settings.xml')) {
-		$status = rename_file(GSDATAOTHERPATH .'cp_settings.xml', GSDATAOTHERPATH .'_legacy_cp_settings.xml');
+	if (!file_exists(GSDATAOTHERPATH .'_legacy_cp_settings.json')) {
+		$status = rename_file(GSDATAOTHERPATH .'cp_settings.json', GSDATAOTHERPATH .'_legacy_cp_settings.json');
 		if (!$status) {
-			$error .= msgError('Unable to rename cp_settings.xml to _legacy_cp_settings.xml');	
+			$error .= msgError('Unable to rename cp_settings.xml to _legacy_cp_settings.json');	
 		} else {
-			$message .= msgOK('Renamed cp_settings.xml to _legacy_cp_settings.xml');
+			$message .= msgOK('Renamed cp_settings.xml to _legacy_cp_settings.json');
 		}
 	}
 	/* end update */
