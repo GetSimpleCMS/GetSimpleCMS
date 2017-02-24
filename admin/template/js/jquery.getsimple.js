@@ -1769,7 +1769,6 @@ jQuery(document).ready(function () {
 
 	// ajaxify theme submit
 	$('body.ajaxsave #themeEditForm').on('submit',function(e){
-		console.log("themesave");
 		if($('body.ajaxsave').get(0)){
 			console.log("themesave ajax");
 			e.preventDefault();
