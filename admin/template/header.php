@@ -74,18 +74,22 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->
 	<?php
 
+	// load gscodeeditor
 	if (!getDef('GSNOHIGHLIGHT',true) || getDef('GSNOHIGHLIGHT')!=true){
 		queue_script('gscodeeditor', GSBACK);
 	}
 
-	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGlobal('HTMLEDITOR') ){
+	// load gshtmleditor
+	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGlobal('HTMLEDITOR') || (get_filename_id()=='upload' && isset($_GET['browse']))){
 		queue_script('gshtmleditor',GSBACK);
 	}
 
+	// load gsuploader
 	if( ((get_filename_id()=='upload') || (get_filename_id()=='filebrowser') || (get_filename_id()=='image')) && (getDef('GSUSEGSUPLOADER',true)) ){
 		queue_script('gsuploader',GSBACK);
 	}
 
+	// load gscrop image editor
 	if(get_filename_id()=='image'){
 		queue_script('gscrop',GSBACK);
 		queue_style('gscrop',GSBACK);
