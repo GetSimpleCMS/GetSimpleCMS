@@ -2032,19 +2032,23 @@ th.file_size,th.file_date,th.file_perms {
 
 .uploaddropzone {
 	display: none;
-	border: 3px dashed <?php echo $primary_1 ?>;
-	border-radius: 3px;
+	border: 2px dashed <?php echo $primary_1 ?>;
+	border-radius: 2px;
 	margin: 8px 0 5px 15px !important;
 	text-align: center;
 	height: 40px;
 	line-height: 40px;
 	font-weight: bold;
-	font-size: 16px;
+	font-size: 14px;
 	color: <?php echo $primary_1 ?>;
 	font-family: sans-serif;
-	opacity: .3;
+	opacity: .5;
 	transition: opacity 300ms;
+}
 
+.uploaddropzone i.fa {
+	font-size:1.2em;
+	vertical-align: middle;
 }
 
 .uploaddropzone.dz-drag-hover {

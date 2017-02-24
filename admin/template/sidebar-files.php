@@ -55,7 +55,7 @@ $fileSizeLimitMB = toBytesShorthand(getMaxUploadSize(),'M',true);
 	</li>
 
 	<li id="gs-dropzone" class="uploaddropzone dispupload">
-		<i class="fa fa-fw fa-upload unselectable" style="font-size:1.8em;vertical-align: middle;"></i>
+		<i class="fa fa-fw fa-upload unselectable"></i>
 		<span class="dz-message unselectable"><?php i18n('DROP_FILES'); ?></span>
 	</li>
 	
