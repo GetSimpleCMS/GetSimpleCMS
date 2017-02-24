@@ -1627,7 +1627,7 @@ jQuery(document).ready(function () {
 	$("#theme-folder").on('change',function (e) {
 		var thmfld = $(this).val();
 		if (checkChanged()) return; // todo: change selection back
-		$('#theme_filemanager').html('Loading...');
+		$('#theme_filemanager').html('...');
 		updateTheme(thmfld);
 	});
 
