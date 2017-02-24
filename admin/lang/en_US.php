@@ -17,7 +17,7 @@ $i18n = array(
 /* 
 * For: install.php
 */
-"PHPVER_ERROR"            =>	"<b>Unable to continue:</b> PHP 5.1.3 or greater is required, you have ",
+"PHPVER_ERROR"            =>	"<b>Unable to continue:</b> PHP 5.2 or greater is required, you have ",
 "SIMPLEXML_ERROR"         =>	"<b>Unable to continue:</b> <em>SimpleXML</em> is not installed",
 "CURL_WARNING"            =>	"<b>Warning:</b> <em>cURL</em> Not Installed",
 "WEBSITENAME_ERROR"       =>	"<b>Error:</b> There was a problem with your website title",
