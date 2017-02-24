@@ -268,6 +268,8 @@ function editor_recur_sort(&$array,$comparator) {
 $recurse = $template !== '.';
 $files   = directoryToMultiArray($directory,$recurse,$allowed_extensions);
 editor_recur_sort($files, 'editor_compareOrder'); // custom sort, dir,file,nat sort
+$files = exec_filter("themeeditfiles",$files); // @filter themeeditfiles (array) theme editor list of files in folder
+
 if(!$files) $fileList = '<span class="label label-warn">'.i18n_r("NO_FILE").'</span>';
 else $fileList = editor_array2ul($files,$recurse,$recurse);
 
