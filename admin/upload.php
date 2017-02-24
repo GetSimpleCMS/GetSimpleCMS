@@ -352,7 +352,7 @@ function getUploadIcon($type){
 				# get external thumbnail link
 				# if not exist generate it
 				if (!file_exists(GSTHUMBNAILPATH.$thumbLinkExternal) || isset($_REQUEST['regenthumbnail'])) {
-					genStdThumb($subPath,$upload['name']);					
+					genStdThumb($subFolder,$upload['name']);					
 				}
 				
 				$thumbnailLink = '<a href="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" class="label label-ghost thumblinkexternal" data-fileurl="'.getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'">'.i18n_r('THUMBNAIL').'</a>';
