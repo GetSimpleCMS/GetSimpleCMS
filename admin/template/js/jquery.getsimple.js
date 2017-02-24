@@ -1769,8 +1769,12 @@ jQuery(document).ready(function () {
 
 	// ajaxify theme submit
 	$('body.ajaxsave #themeEditForm').on('submit',function(e){
-		e.preventDefault();
-		themeFileSave($('#codetext').data('editor'));
+		console.log("themesave");
+		if($('body.ajaxsave').get(0)){
+			console.log("themesave ajax");
+			e.preventDefault();
+			themeFileSave($('#codetext').data('editor'));
+		}	
 	});
 
 	$('#themeEditForm .cancel').on('click',function(e){
@@ -2091,8 +2095,8 @@ jQuery(document).ready(function () {
 		if(ctrlpress && (e.which == 83)) {
 			if(e.shiftKey){
 				// bypass ajax saving
-				dosavealt();
 				Debugger.log('Ctrl+Shift+S pressed');
+				dosavealt();
 				return;
 			}
 			Debugger.log('Ctrl+S pressed');
@@ -2187,7 +2191,7 @@ function dosave(){
 }
 
 function dosavealt(){
-	$('body').removeClass('ajaxsave');
+	disableAjaxSave();
 	pageIsDirty = false;
 	dosave();
 }
