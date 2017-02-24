@@ -252,7 +252,8 @@ function getUploadIcon($type){
       	if($allowcreatefolder){
       		echo '<div id="new-folder">
       			<a href="#" id="createfolder">'.i18n_r('CREATE_FOLDER').'</a>
-				<form action="upload.php">&nbsp;<input type="hidden" name="path" value="'.$subPath.'" />
+				<form action="upload.php">&nbsp;
+					<input type="hidden" name="path" value="'.$subFolder.'" />
 					<input type="hidden" name="nonce" value="'. get_nonce("createfolder") .'" />
 					<input type="text" class="text" name="newfolder" id="foldername" /> 
 					<input type="submit" class="submit" value="'.i18n_r('CREATE_FOLDER').'" />&nbsp; 
