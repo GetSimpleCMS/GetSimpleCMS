@@ -333,7 +333,7 @@ function getUploadIcon($type){
 			// handle images
 			if ($upload['type'] == 'image') {
 				$gallery           = 'rel="fancybox_i"';
-				$pathlink          = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subPath;
+				$pathlink          = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subFolder;
 				$thumbLink         = $urlPath.'thumbsm.'.$upload['name'];
 				$thumbLinkEncoded  = $urlPath.'thumbsm.'.rawurlencode($upload['name']);
 				$thumbLinkExternal = $urlPath.'thumbnail.'.$upload['name'];
