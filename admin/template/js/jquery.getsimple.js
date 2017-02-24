@@ -1703,7 +1703,7 @@ jQuery(document).ready(function () {
 					clearFileWaits();
 					ajaxStatusComplete();
 					 $('input:submit').attr('disabled', true); // keep disabled
-					 $('#theme_editing_file').html(filename);
+					 $('#theme_editing_file').html("");
 					return;
 				}
 
