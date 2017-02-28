@@ -28,8 +28,8 @@ exec_action('load-upload');
 
 $dirsSorted = $filesSorted = $foldercount = null;
 
-if (isset($_GET['path']) && !empty($_GET['path'])) {
-	$path      = str_replace('../','', $_GET['path']);
+if (isset($_REQUEST['path']) && !empty($_REQUEST['path'])) {
+	$path      = str_replace('../','', $_REQUEST['path']);
 	$subFolder = tsl($path);
 	$path      = tsl(GSDATAUPLOADPATH.$path);
 	// die if path is outside of uploads
@@ -52,7 +52,6 @@ if (isset($_FILES['file'])) {
 		if ($_FILES["file"]["error"][$i] > 0)	{
 			$errors[] = i18n_r('ERROR_UPLOAD');
 		} else {
-			
 			//set variables
 			$count     = '1';
 			$file      = $_FILES["file"]["name"][$i];
@@ -79,20 +78,19 @@ if (isset($_FILES['file'])) {
 
 				$messages[] = i18n_r('FILE_SUCCESS_MSG');
 				if(requestIsAjax()){
+					// die("request is ajax");
 					header("HTTP/1.0 200");
+					echo "<div class=\"updated\"><a href=\"".$SITEURL."data/uploads/".$subFolder.$filename.".".$fileext."\">".i18n('SUCCESS')."</a></div>";
 					die();
-				}	
+				}
 			} else {
 				$messages[] = $_FILES["file"]["name"][$i] .' - '.i18n_r('ERROR_UPLOAD');
 				if(requestIsAjax()){
 					header("HTTP/1.0 403");
-					i18n('ERROR_UPLOAD');
+					echo "<div class=\"updated\"><a href=\"".$SITEURL."data/uploads/".$subFolder.$filename.".".$fileext."\">".i18n('ERROR_UPLOAD')."</a></div>";					
 					die();
 				}	
 			}
-			
-			//successfull message
-			
 		}
 	 }
 	 // after uploading all files process messages
@@ -157,7 +155,7 @@ function getUploadIcon($type){
 }
 
 ?>
-	
+
 <?php include('template/include-nav.php'); ?>
 
 <div class="bodycontent clearfix">

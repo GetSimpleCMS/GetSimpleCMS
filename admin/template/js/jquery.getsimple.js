@@ -565,7 +565,7 @@ jQuery(document).ready(function () {
 			$("#filetypetoggle").html('&nbsp;&nbsp;/&nbsp;&nbsp;' + filterTitle);
 			$("#imageTable").find("tr." + filterx).show();
 			$("#imageTable").find("tr.folder").show();
-			$("#imageTable").find("tr:first-child").show();
+			// $("#imageTable").find("tr:first-child").show(); // @why was this here ?
 			$("#imageTable").find("tr.deletedrow").hide();
 			loadingAjaxIndicator.fadeOut(500);
 		});
