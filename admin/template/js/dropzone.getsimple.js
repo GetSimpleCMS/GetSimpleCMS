@@ -46,12 +46,12 @@ jQuery(document).ready(function () {
 			$('#loader').fadeOut(500);
 
 			// store #imageFilter selected index to restore after load
-			var filterIdx = $('#imageFilter').prop("selectedIndex");
-
+			// var filterVal = $('#imageFilter').val();
+			
 			// load upload page new
 			$('#maincontent').load(location.href+' #maincontent > *', function(ev){
-				$('#imageFilter').prop("selectedIndex",filterIdx);
-				$('#imageFilter').trigger('change');
+				// $('#imageFilter').val(filterVal);
+				// $('#imageFilter').trigger('change');
 				$(window).trigger('fileuploaded');
 			});
   		}
