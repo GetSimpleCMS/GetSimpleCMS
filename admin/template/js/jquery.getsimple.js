@@ -69,6 +69,7 @@ $.fn.popit = function ($speed) {
 $.fn.removeit = function ($delay) {
 	$delay = $delay || GS.removeItDelay;
 	$(this).each(function () {
+		$(this).addClass("notify_timeout"); // timing out flag
 		$(this).delay($delay).fadeOut(500);
 		// $(this).delay($delay).slideUp(300);
 	});
@@ -244,6 +245,8 @@ $.fn.parseNotify = function(){
 
 		if($(this).hasClass('notify_success')){
 			// clear other success messages cause this is probably a repeat or redundant, also undo nonce is stale
+			// @todo probably only allow clearing messages of a same classtype, otherwise we cant have mutiple successes ( say image upload etc.)
+			// or persist until timeout, then switch to expire, short persistent!
 			clearNotify('success');
 		    elem = notify(msg,'success');
 		}
@@ -261,7 +264,7 @@ $.fn.parseNotify = function(){
 
 function clearNotify($type) {
 	Debugger.log('CLEAR NOTIFY '+ $type);
-	if($type !== undefined)	return $('.notify.notify_'+$type).remove();
+	if($type !== undefined)	return $('.notify.notify_'+$type).not('.notify_timeout').remove();
 	return $('div.wrapper .notify').remove();
 }
  
