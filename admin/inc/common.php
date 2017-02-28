@@ -671,7 +671,7 @@ function debugLog($mixed = null) {
  * @param  str $msg message to log
  */
 function debugDie($msg = ""){
-	debugLog(debug_backtrace());
+	if(empty($msg))debugLog(debug_backtrace());
 	debugLog($msg);
 	outputDebugLog();
 	die();

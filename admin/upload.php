@@ -39,25 +39,45 @@ if (isset($_REQUEST['path']) && !empty($_REQUEST['path'])) {
 	$subFolder = '';
 }
 
+function reArrayFiles(&$file_post) {
+	$file_ary   = array();
+	$file_count = count($file_post['name']);
+	$file_keys  = array_keys($file_post);
+	for ($i=0; $i<$file_count; $i++) {
+		foreach ($file_keys as $key) {
+			if(is_array($file_post[$key])) $file_ary[$i][$key] = $file_post[$key][$i];
+			else $file_ary[$i][$key] = $file_post[$key]; // single file submitted without array[] name
+		}
+	}
+    return $file_ary;
+}
+
 // if a file was uploaded
+
+// I wish all uploads used a standard mechanism
+if(isset($_FILES['upload'])) $_FILES['file'] = $_FILES['upload'];
+
 if (isset($_FILES['file'])) {
-	
-	$uploadsCount = count($_FILES['file']['name']);
+
+	$_FILES['file'] = reArrayFiles($_FILES['file']);
+	$filesArray = $_FILES['file'];
+
+	$uploadsCount = count($filesArray);
 
 	if($uploadsCount > 0) {
 	 $errors   = array();
 	 $messages = array();
 
 	 for ($i=0; $i < $uploadsCount; $i++) {
-		if ($_FILES["file"]["error"][$i] > 0)	{
+		if ($filesArray[$i]["error"] > 0){
 			$errors[] = i18n_r('ERROR_UPLOAD');
 		} else {
 			//set variables
 			$count     = '1';
-			$file      = $_FILES["file"]["name"][$i];
+			$file      = $filesArray[$i]["name"];
 			$fileext   = getFileExtension($file);
 			$filename  = getFileName($file);
-			
+
 			$file_base = clean_img_name(to7bit($filename)) . '.'.$fileext;
 			$file_loc  = $path . $file_base;
 			
@@ -68,8 +88,8 @@ if (isset($_FILES['file'])) {
 			}
 
 			//validate file
-			if (validate_safe_file($_FILES["file"]["tmp_name"][$i], $file_base)) {
-				move_uploaded_file($_FILES["file"]["tmp_name"][$i], $file_loc);
+			if (validate_safe_file($filesArray[$i]["tmp_name"], $file_base)) {
+				move_uploaded_file($filesArray[$i]["tmp_name"], $file_loc);
 				gs_chmod($file_loc);
 				exec_action('file-uploaded');
 				
@@ -80,14 +100,15 @@ if (isset($_FILES['file'])) {
 				if(requestIsAjax()){
 					// die("request is ajax");
 					header("HTTP/1.0 200");
-					echo "<div class=\"updated\"><a href=\"".$SITEURL."data/uploads/".$subFolder.$filename.".".$fileext."\">".i18n('SUCCESS')."</a></div>";
+					$fileurl = $SITEURL."data/uploads/".$subFolder.$filename.".".$fileext;
+					echo "<div class=\"updated\"><a href=\"$fileurl\">".i18n_r('SUCCESS')."</a></div>";
 					die();
 				}
 			} else {
-				$messages[] = $_FILES["file"]["name"][$i] .' - '.i18n_r('ERROR_UPLOAD');
+				$messages[] = $filesArray[$i]["name"] .' - '.i18n_r('ERROR_UPLOAD');
 				if(requestIsAjax()){
 					header("HTTP/1.0 403");
-					echo "<div class=\"updated\"><a href=\"".$SITEURL."data/uploads/".$subFolder.$filename.".".$fileext."\">".i18n('ERROR_UPLOAD')."</a></div>";					
+					echo "<div class=\"updated\"><a href=\"".$SITEURL."data/uploads/".$subFolder.$filename.".".$fileext."\">".i18n_r('ERROR_UPLOAD')."</a></div>";					
 					die();
 				}	
 			}
@@ -103,7 +124,7 @@ if (isset($_FILES['file'])) {
 
 			if(requestIsAjax()){
 				header("HTTP/1.0 403");
-				i18n('ERROR_UPLOAD');
+				echo "<div class=\"updated\">".i18n_r('ERROR_UPLOAD')."</a></div>";
 				die();
 			}
 
