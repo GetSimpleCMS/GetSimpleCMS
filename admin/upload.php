@@ -284,7 +284,7 @@ function getUploadIcon($type){
 			$directory_size = '<span>'.folder_items($path.$upload['name']).' '.i18n_r('ITEMS').'</span>';
 			
 			echo '<tr class="all folder '.$upload['name'].'" >';
-			// echo '<td class="imgthumb"><i class="file ext- fa fa-3x fa-fw fa-folder-o"></i></td>';
+			// echo '<td class="imgthumb"><i class="file ext- fa fa-3x fa-fw fa-folder-o"></i></td>'; // folder thumbnails ?
 			echo '<td class="imgthumb"></td>';
 			$adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
 			$folderhref = 'upload.php?' . merge_queryString(array('path'=>$adm));

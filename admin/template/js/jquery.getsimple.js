@@ -557,7 +557,7 @@ jQuery(document).ready(function () {
 			var filterx = $(this).val();
 			var filterTitle = $(this).find('option:selected').text();
 			$("#imageTable").find("tr").hide();
-			if (filterx == 'image') {
+			if (filterx == 'image' || $("body#upload").hasClass("forcethumbs")) {
 				$("#imageTable").find("tr .imgthumb").show();
 			} else {
 				$("#imageTable").find("tr .imgthumb").hide();

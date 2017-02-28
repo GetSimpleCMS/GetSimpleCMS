@@ -18,6 +18,8 @@ $bodyclass='';
 if( $GSSTYLE_sbfixed )          $bodyclass .= " sbfixed";
 if( $GSSTYLE_wide )             $bodyclass .= " wide";
 if( $SAFEMODE )                 $bodyclass .= " safemode";
+if( getDef("GSTHUMBSSHOW",true))$bodyclass .= " forcethumbs";
+
 if( !$SAFEMODE && getDef('GSAJAXSAVE',true) ) $bodyclass .= " ajaxsave"; // ajaxsave enabled if GSAJAXSAVE and not SAFEMODE
 
 if(get_filename_id()!='index') exec_action('admin-pre-header'); // @hook admin-pre-header backend before header output

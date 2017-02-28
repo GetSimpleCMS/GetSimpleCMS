@@ -146,6 +146,7 @@ $GS_definitions = array(
 	'GSIMAGEWIDTH'         => 200,                            // (int) thumbnail size
 	'GSTHUMBSMWIDTH'       => 80,                             // (int) thumbsm max height
 	'GSTHUMBSMHEIGHT'      => 160,                            // (int) thumbsm max width
+	'GSTHUMBSSHOW'         => false,                          // (bool) always show thumbnails
 	# DEBUGGING ----------------------------------------------------------------------------------------------------------------------------------------
 	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
 	'GSDEBUG'              => true,                          // (bool) output debug mode console
