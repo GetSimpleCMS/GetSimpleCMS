@@ -28,6 +28,9 @@ exec_action('load-upload');
 
 $dirsSorted = $filesSorted = $foldercount = null;
 
+// force autoupload path
+if(isset($_REQUEST['autoupload']) && getDef("GSAUTOUPLOADPATH",true)) $_REQUEST['path'] = getDef("GSAUTOUPLOADPATH");
+
 if (isset($_REQUEST['path']) && !empty($_REQUEST['path'])) {
 	$path      = str_replace('../','', $_REQUEST['path']);
 	$subFolder = tsl($path);
@@ -100,15 +103,17 @@ if (isset($_FILES['file'])) {
 				if(requestIsAjax()){
 					// die("request is ajax");
 					header("HTTP/1.0 200");
-					$fileurl = $SITEURL."data/uploads/".$subFolder.$filename.".".$fileext;
-					echo "<div class=\"updated\"><a href=\"$fileurl\">".i18n_r('SUCCESS')."</a></div>";
+					// $fileurl = $SITEURL."data/uploads/";
+					$fileurl   = getUploadURI($file_base,$subFolder);
+					$fileasset = 'image.php?i='.urlencode($file_base)."&path=".urlencode($subFolder);
+					echo '<div class="updated notify_success remove">'.i18n_r('FILE_SUCCESS_MSG').' [<a data-url = "'.$fileurl.'" href="'.$fileasset.'" target="_BLANK">'.i18n_r('IMG_CONTROl_PANEL').'</a>] </div>';
 					die();
 				}
 			} else {
 				$messages[] = $filesArray[$i]["name"] .' - '.i18n_r('ERROR_UPLOAD');
 				if(requestIsAjax()){
 					header("HTTP/1.0 403");
-					echo "<div class=\"updated\"><a href=\"".$SITEURL."data/uploads/".$subFolder.$filename.".".$fileext."\">".i18n_r('ERROR_UPLOAD')."</a></div>";					
+					echo "<div class=\"updated notify_error\"><a href=\"".$SITEURL."data/uploads/".$subFolder.$filename.".".$fileext."\">".i18n_r('ERROR_UPLOAD')."</a></div>";					
 					die();
 				}	
 			}
@@ -366,15 +371,18 @@ function getUploadIcon($type){
 				}
 
 				// thumbnail link lightbox
-				echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel="fancybox_i" >'.$imgSrc.'</a>';
+				echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" data-fileurl="'.$primarylink.'" rel="fancybox_i" >'.$imgSrc.'</a>';
 
 				# get external thumbnail link
 				# if not exist generate it
 				if (!file_exists(GSTHUMBNAILPATH.$thumbLinkExternal) || isset($_REQUEST['regenthumbnail'])) {
-					genStdThumb($subFolder,$upload['name']);					
+					genStdThumb($subFolder,$upload['name']);
 				}
 				
-				$thumbnailLink = '<a href="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" class="label label-ghost thumblinkexternal" data-fileurl="'.getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'">'.i18n_r('THUMBNAIL').'</a>';
+				// thumbnail link lightbox
+				$thumbnaillightbox = '<a href="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" class="label-ghost thumbpreview" title="'. rawurlencode($upload['name']) .'" data-fileurl="'.getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" rel="fancybox"><span class="fa fa-search-plus"></span></a>';
+				$thumbnailLink     = '<span class="inline"><a href="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" class="browseselect label label-ghost thumblinkexternal" data-id="thumblinkexternal" data-fileurl="'.getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'">'.i18n_r('THUMBNAIL').'</a>';
+				$thumbnailLink    .= $thumbnaillightbox."</span>";
 
 			} else {
 				// other files
@@ -384,7 +392,7 @@ function getUploadIcon($type){
 			}
 			
 			// name column linked
-			echo '</td><td class="break">'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink" data-fileurl="'.$primarylink.'">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
+			echo '</td><td class="break">'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="browseselect primarylink" data-id="primarylink" data-fileurl="'.$primarylink.'">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
 			
 			// size column
 			echo '<td class="file_size right"><span>'. $upload['size'] .'</span></td>';

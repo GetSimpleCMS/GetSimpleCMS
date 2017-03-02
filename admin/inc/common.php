@@ -110,7 +110,7 @@ $GS_definitions = array(
 	'GSALLOWDOWNLOADS'     => true,                           // (bool) allow using downloads.php to download files from /uploads and backups/zip
 	'GSPROFILEALLOWADD'    => true,                           // (bool) allow superuser to add new users
 	'GSPROFILEALLOWEDIT'   => true,                           // (bool) allow superuser to edit other users
-	'GSEXECANON'           => false,                         // (bool) allow callbacks to be anonymous closures, security implications
+	'GSEXECANON'           => false,                          // (bool) allow callbacks to be anonymous closures, security implications
 	# UPLOADS ------------------------------------------------------------------------------------------------------------------------------------
 	'GSALLOWUPLOADS'       => true,                           // (bool) allow upload files
 	'GSALLOWUPLOADCREATE'  => true,                           // (bool) allow upload folder creation
@@ -118,6 +118,7 @@ $GS_definitions = array(
 	'GSALLOWBROWSEUPLOAD'  => true,                           // (bool) allow uploading when browsing files
 	'GSUSEGSUPLOADER'      => true,                           // (bool) use ajax upload library gsupload (dropzone) for uploads, else standard form 
 	'GSUPLOADSLC'          => true,                           // (bool) if true force upload filenames to lowercase
+	'GSAUTOUPLOADPATH'     => "autoupload",                   // (str) subpath to put uploads in when performing autouploads
 	# EDITORS ------------------------------------------------------------------------------------------------------------------------------------------
 	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
 	'GSTHEMEEDITROOT'      => true,                           // (bool) allow editing theme root files

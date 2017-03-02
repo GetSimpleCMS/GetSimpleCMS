@@ -104,10 +104,13 @@ td.imgthumb {
 	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;			
 }
 
-.thumblinkexternal{
+.thumblinkexternal,.thumbpreview{
 	display:none;
-	margin-left: 15px !important;
 	text-shadow: none;
+}
+
+.thumblinkexternal{
+	margin-left: 15px !important;
 }
 
 .hidden {
@@ -2366,9 +2369,10 @@ a.label:hover{
 	word-break: normal;
 }
 
-.fancybox-title-over-wrap {
+.fancybox-title-over-wrap,.fancybox-title.fancybox-title-float-wrap .child{
 	background: rgba(0, 0, 0, 0.5) !important;
 	border-radius: 0 5px 0 0;
+	-webkit-border-radius: 0 5px 0 0;
 	padding: 7px 14px 4px 14px !important;
 	box-sizing: border-box;
 	word-break: break-all;
@@ -2389,6 +2393,12 @@ a.label:hover{
 	background-color: black;
 	color: #888;
 	border-top: 1px solid rgba(255, 255, 255, 0.5);	
+}
+
+.fancybox-title.fancybox-title-float-wrap .child {
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	padding: 4px 14px 3px 14px !important;	
 }
 
 .fancybox-skin{

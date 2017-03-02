@@ -82,7 +82,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	}
 
 	// load gshtmleditor
-	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGlobal('HTMLEDITOR') || (get_filename_id()=='upload' && isset($_GET['browse']))){
+	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGlobal('HTMLEDITOR')){
 		queue_script('gshtmleditor',GSBACK);
 	}
 

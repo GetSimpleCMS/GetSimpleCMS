@@ -148,10 +148,8 @@ $.fn.htmlEditorFromTextarea = function(config){
                 });
             }
         });
-
     });
 };
-
 
 function htmledit_readonly(editor){
     editor.setReadOnly();
@@ -247,3 +245,19 @@ function initckeditor(){
     // @tddo backwards compatibility for i18n, set global editor to first editor
     // editor = $(editors[0]).data('htmleditor'); // hack in single editor, config.js and legacy uses this
 }
+
+// filebrowser handlers
+function ckeditorCallFunction(funcnum,result){
+    if(!CKEDITOR){
+        Debugger.log("CKEDITOR does not exist");
+    }   
+    else {
+        CKEDITOR.tools.callFunction(funcnum, result);
+    }           
+}
+
+$(window).on('filebrowserselected',function(event,url,search){
+    if(!getUrlParam('CKEditor',search)) return;
+    var funcnum  = getUrlParam('CKEditorFuncNum',search);
+    ckeditorCallFunction(funcnum,url);
+});
