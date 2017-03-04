@@ -116,11 +116,10 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
     }
 
     function isAutoSave(){
-    	if(!getDef('GSAJAXSAVE',true)) return false;
-    	if(getDef('GSUSEDRAFTS',true)){
-    		return !isset($_GET['nodraft']);
+    	if(getDef('GSUSEDRAFTS',true) && !isset($_REQUEST['nodraft']) && isset($_REQUEST['id'])){
+    		return true;
     	}
-    	return true;
+    	return false;
     }
     ?>
 
