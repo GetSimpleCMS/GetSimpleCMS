@@ -326,7 +326,7 @@ $i18n = array(
 * For: archive.php
 */
 "SUCC_WEB_ARCHIVE"        =>	"An archive of your website has been successfully created",
-"SUCC_WEB_ARC_DEL"        =>	"The seleted archive has been successfully deleted",
+"SUCC_WEB_ARC_DEL"        =>	"The selected archive has been successfully deleted",
 "WEBSITE_ARCHIVES"        =>	"Website Archives",
 "ARCHIVE_DELETED"         =>	"Archive deleted successfully",
 "CREATE_NEW_ARC"          =>	"Create a New Archive",
@@ -498,7 +498,7 @@ $i18n = array(
 "CREATE_THUMBNAIL"        =>	"Create Thumbnail",
 "CROP_INSTR_NEW"          =>	"Click and drag to crop, hold <kbd>Ctrl</kbd> or <kbd>&#8984; Command</kbd> for square, <kbd>esc</kbd> to clear",
 "CROP_TOGGLE_INPUTS"      =>    "Show / Hide Advanced",
-"SELECT_DIMENTIONS"       =>	"Selection Dimentions",
+"SELECT_DIMENTIONS"       =>	"Selection Dimensions",
 "HTML_ORIG_IMG"           =>	"Original Image HTML",
 "LINK_ORIG_IMG"           =>	"Original Image Link",
 "HTML_THUMBNAIL"          =>	"Thumbnail HTML",
@@ -771,7 +771,7 @@ $i18n = array(
 "VALID"                   =>    "Valid",
 "INVALID"                 =>    "Invalid",
 "INVALID_OPER"            =>    "Invalid Operation",
-"ERROR_OCCURED"           =>    "An Error has Occured"
+"ERROR_OCCURED"           =>    "An Error has Occurred"
 
 // already defined generics
 # "ENABLE"                =>    "Activate"
