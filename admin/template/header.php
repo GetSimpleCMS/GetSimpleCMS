@@ -18,6 +18,8 @@ $bodyclass='';
 if( $GSSTYLE_sbfixed )          $bodyclass .= " sbfixed";
 if( $GSSTYLE_wide )             $bodyclass .= " wide";
 if( $SAFEMODE )                 $bodyclass .= " safemode";
+if( getDef("GSTHUMBSSHOW",true))$bodyclass .= " forcethumbs";
+
 if( !$SAFEMODE && getDef('GSAJAXSAVE',true) ) $bodyclass .= " ajaxsave"; // ajaxsave enabled if GSAJAXSAVE and not SAFEMODE
 
 if(get_filename_id()!='index') exec_action('admin-pre-header'); // @hook admin-pre-header backend before header output
@@ -74,18 +76,22 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->
 	<?php
 
+	// load gscodeeditor
 	if (!getDef('GSNOHIGHLIGHT',true) || getDef('GSNOHIGHLIGHT')!=true){
 		queue_script('gscodeeditor', GSBACK);
 	}
 
-	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGSVar('HTMLEDITOR') ){
+	// load gshtmleditor
+	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGSVar('HTMLEDITOR')){
 		queue_script('gshtmleditor',GSBACK);
 	}
 
+	// load gsuploader
 	if( ((get_filename_id()=='upload') || (get_filename_id()=='filebrowser') || (get_filename_id()=='image')) && (getDef('GSUSEGSUPLOADER',true)) ){
 		queue_script('gsuploader',GSBACK);
 	}
 
+	// load gscrop image editor
 	if(get_filename_id()=='image'){
 		queue_script('gscrop',GSBACK);
 	}
@@ -95,20 +101,28 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	}
 
     // HTMLEDITOR INIT
-    // ckeditor editorcss
+    // ckeditor contentsCss(editor.css) from theme
     if (file_exists(GSTHEMESPATH .getGSVar('TEMPLATE')."/editor.css")) {
-        $contentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGSVar('TEMPLATE').'/editor.css';
+        $CKEcontentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGSVar('TEMPLATE').'/editor.css';
+    }
+    // ckeditor contentsCss(contents.css) override from user
+    if (file_exists(GSTHEMESPATH .getDef('GSEDITORCSSFILE'))) {
+        $CKEcontentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getDef('GSEDITORCSSFILE');
     }
     // ckeditor customconfig
     if (file_exists(GSTHEMESPATH .getDef('GSEDITORCONFIGFILE'))) {
-        $configjs =  $SITEURL.getRelPath(GSTHEMESPATH).getDef('GSEDITORCONFIGFILE');
+        $CKEconfigjs =  $SITEURL.getRelPath(GSTHEMESPATH).getDef('GSEDITORCONFIGFILE');
+    }
+    // ckeditor stylesheet
+    if (file_exists(GSTHEMESPATH.getDef('GSEDITORSTYLESFILE'))) {
+        $CKEstyleSet = getDef('GSEDITORSTYLESID').":".$SITEURL.getRelPath(GSTHEMESPATH).getDef('GSEDITORSTYLESFILE');
     }
 
     function isAutoSave(){
-    	if(getDef('GSUSEDRAFTS',true)){
-    		return !isset($_GET['nodraft']);
+    	if(getDef('GSUSEDRAFTS',true) && !isset($_REQUEST['nodraft']) && isset($_REQUEST['id'])){
+    		return true;
     	}
-    	return true;
+    	return false;
     }
     ?>
 
@@ -152,8 +166,9 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 
         var htmlEditorConfig = {
             language                     : '<?php echo getGSVar('EDLANG'); ?>',
-<?php       if(!empty($contentsCss)) echo "contentsCss                   : '$contentsCss',"; ?>
-<?php       if(!empty($configjs))    echo "customConfig                  : '$configjs',"; ?>
+<?php       if(!empty($CKEcontentsCss)) echo "contentsCss                   : '$CKEcontentsCss',"; ?>
+<?php       if(!empty($CKEconfigjs))    echo "customConfig                  : '$CKEconfigjs',"; ?>
+<?php       if(!empty($CKEstyleSet))    echo "stylesSet                     : '$CKEstyleSet',"; ?>
             height                       : '<?php echo getGSVar('EDHEIGHT'); ?>',
             baseHref                     : '<?php echo getGSVar('SITEURL'); ?>'
             <?php if(getGSVar('EDTOOL')) echo ",toolbar: " . returnJsArray(getGSVar('EDTOOL')); ?>

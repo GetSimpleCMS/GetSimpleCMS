@@ -21,9 +21,12 @@ CKEDITOR.editorConfig = function( config )
 	config.allowedContent              = true;       // disable acf
 	config.disableAutoInline           = true;       // disable automatic inline editing of elements with contenteditable=true
 
+
 	config.filebrowserBrowseUrl        = 'upload.php?browse&type=all';
 	config.filebrowserImageBrowseUrl   = 'upload.php?browse&type=images';	
-	
+	config.filebrowserUploadUrl        = 'upload.php?ajax=1&autoupload';
+	// config.uploadUrl = "../admin/upload.php"
+
 	// customize file browser popup windows below
 	// config.filebrowserWindowWidth      = '960';
 	// config.filebrowserWindowHeight     = '700';
@@ -53,6 +56,10 @@ CKEDITOR.editorConfig = function( config )
 	// extraPlugins.push('autogrow');         // auto grow ckeditor height on content, see config.autoGrow_maxHeight
 	// extraPlugins.push('floating-tools');   // enables a floating text toolbar
 	// extraPlugins.push('fixed');            // enables a fixed toolbar ( sticks to center though )
+	extraPlugins.push('uploadimage');         // 
+	extraPlugins.push('uploadwidget');        // 
+	extraPlugins.push('filetools');        // 
+	extraPlugins.push('notificationaggregator');        // 
 	config.extraPlugins = extraPlugins.join(',');
 
 	/*
@@ -296,3 +303,48 @@ CKEDITOR.on('instanceReady', function(event) {
 		}
 	});
 });
+
+// add to config.js
+CKEDITOR.on( 'instanceReady', function( ev ) {
+	// code for fileupload and response
+	ev.editor.on( 'fileUploadRequest', function( evt ) {
+		var fileLoader = evt.data.fileLoader,
+		formData       = new FormData(),
+		xhr            = fileLoader.xhr;
+		xhr.open( 'POST', fileLoader.uploadUrl, true );
+		formData.append( 'autoupload',"");
+		formData.append( 'ajax', '1' );
+		formData.append( 'file[]', fileLoader.file, fileLoader.fileName );
+		fileLoader.xhr.send( formData );
+		// Prevent default behavior.
+		evt.cancel();
+	}, null, null, 4 ); // Listener with priority 4 will be executed before priority 5.
+
+	ev.editor.on( 'fileUploadResponse', function( evt ) {
+			evt.stop(); // Prevent the default response handler.
+			var data = evt.data,
+			xhr      = data.fileLoader.xhr,
+			response = xhr.responseText;
+			response = $.parseHTML(response);
+			// gotta use filter not find since its root of fragment
+			if ($(response).filter('div.updated').html()) {
+				resphtml = $(response).filter('div.updated');
+				url      = $('a',resphtml).attr('data-url');
+				data.url = url;
+				// Debugger.log(url);
+				resphtml.parseNotify();
+				// $('div.bodycontent').before('<div class="updated"><p>' + resphtml.html() + '</p></div>');
+				return;
+			}
+
+			if ($(response).filter('div.error').html()) {
+				resphtml     = $(response).filter('div.error');
+				msg          = resphtml;
+				data.message = msg;
+				resphtml.parseNotify();		
+				// $('div.bodycontent').before('<div class="error"><p>' + resphtml.html() + '</p></div>');
+				evt.cancel();
+				return;
+			}
+	} );
+}); 

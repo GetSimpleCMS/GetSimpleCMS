@@ -132,7 +132,7 @@ function email_template($message) {
 	</body>
 	</html>
 	';
-	return exec_filter('email_template',$data); // @hook email_template email template
+	return exec_filter('email_template',$data); // @filter email_template (str) email template
 }
 
 
@@ -2046,7 +2046,7 @@ function get_site_lang($short=false) {
  * @return string
  */
 function toBytes($str){
-	$val = trim($str);
+	$val = trim($str, 'gmkGMK');
 	$last = strtolower($str[strlen($str)-1]);
 		switch($last) {
 			case 'g': $val *= 1024;
@@ -2228,7 +2228,7 @@ function isBeta(){
  * @return bool true if ajax
  */
 function requestIsAjax(){
-	return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || isset($_GET['ajax']);
+	return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || isset($_REQUEST['ajax']);
 }
 
 /**

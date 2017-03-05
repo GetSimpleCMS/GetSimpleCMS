@@ -69,6 +69,7 @@ $.fn.popit = function ($speed) {
 $.fn.removeit = function ($delay) {
 	$delay = $delay || GS.removeItDelay;
 	$(this).each(function () {
+		$(this).addClass("notify_timeout"); // timing out flag
 		$(this).delay($delay).fadeOut(500);
 		// $(this).delay($delay).slideUp(300);
 	});
@@ -244,6 +245,8 @@ $.fn.parseNotify = function(){
 
 		if($(this).hasClass('notify_success')){
 			// clear other success messages cause this is probably a repeat or redundant, also undo nonce is stale
+			// @todo probably only allow clearing messages of a same classtype, otherwise we cant have mutiple successes ( say image upload etc.)
+			// or persist until timeout, then switch to expire, short persistent!
 			clearNotify('success');
 		    elem = notify(msg,'success');
 		}
@@ -261,7 +264,7 @@ $.fn.parseNotify = function(){
 
 function clearNotify($type) {
 	Debugger.log('CLEAR NOTIFY '+ $type);
-	if($type !== undefined)	return $('.notify.notify_'+$type).remove();
+	if($type !== undefined)	return $('.notify.notify_'+$type).not('.notify_timeout').remove();
 	return $('div.wrapper .notify').remove();
 }
  
@@ -303,195 +306,123 @@ function getTagName(elem){
 jQuery(document).ready(function () {
 
 	// upload.php?browse
-	// filebrowser.php
+	// legacy filebrowser.php
 	if($('body#upload')){
-		if(getUrlParam('CKEditorFuncNum')) uploadCkeditorBrowse();
-		else if (getUrlParam('browse') !== undefined) uploadCustomBrowse();
+		if (getUrlParam('browse') !== undefined) uploadBrowseInit();
 	}
 	
-	function uploadBrowse(){
-		Debugger.log('upload browse');
+	// do browse mode on upload.php, hide stuff, headers etc.
+	function uploadBrowseInit(){
+		Debugger.log('upload browse - filebrowser mode');
 		// hide stuff header, footer, sidebar items, and filter if images
 		$('#header').hide();
 		$('body').css('margin-top','10px');
 		if(!GS.debug) $('#footer').hide();
 		$('#sidebar ul li:not(".dispupload")').hide();
-		
+		$('#footer .footer-left').hide();
 		Debugger.log(getUrlParam('type'));
 		
+		// image browser, or type is image
 		if(getUrlParam('type') == 'images' || getUrlParam('type') == 'image'){
 			$('#imageFilter').hide();
-			$('.thumblinkexternal').show();
+			$('.thumblinkexternal').show(); // enable thumbnail select
+			$('.thumbpreview').show();      // enable thumb preview link
+			$('td.imgthumb').show();
+		}
+		uploadBrowseEventInit()
+	}
+
+	// uploadbrowse init event handlers, button clicks for selects
+	function uploadBrowseEventInit(){
+		$("body").on("click",".browseselect",filebrowserButtonHandler); // this is delegated for lightbox buttons that are added later
+	}
+	
+	// handler for all file select buttons
+	function filebrowserButtonHandler(e,id){
+		e.preventDefault();		
+		var siteurl = GS.siteurl;
+		var fileUrl = $(this).data('fileurl');
+		if(id == undefined) id = $(this).data('id'); // get id from data-id attr
+		filebrowserSelect(siteurl+fileUrl,window.location.search,id);
+	}
+
+	// function callback for handling file selections, url to file and 2 arbitrary arguments ( id, and querystring )
+	// trigger browse events, on parent if popup or self
+	function filebrowserSelect(url,arg1,arg2){
+		if(window.opener){
+			window.opener.filebrowsercallback(url,arg1,arg2);
+		}
+		else {
+			filebrowsercallback(url,arg1,arg2);
 		}	
+		filebrowserselectcomplete(url,arg1,arg2);
 	}
 
-	function uploadCustomBrowse(){
-		uploadBrowse();
-		// bind all primary links to callback
-		$('.primarylink').each(function(item){
-			// add listener
-			$(this).on('click',function(e){
-				e.preventDefault();
-				var siteurl = GS.siteurl;
-				var fileUrl = $(this).data('fileurl');
-				// if popup call openers callback, else call ours
-				if(window.opener){
-					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'primarylink');
-				} filebrowsercallback(siteurl+fileUrl,window.location.search,'primarylink');
-				filebrowserselectcomplete();				
-				return false;
-			});
-		});
-
-		// handle thumbnails
-		$('.thumblinkexternal').each(function(item){
-
-			// add listeners
-			$(this).on('click',function(e){
-				e.preventDefault();
-				var siteurl = GS.siteurl;
-				var fileUrl = $(this).data('fileurl');
-				// if popup call openers callback, else call ours
-				if(window.opener){
-					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'thumblink');
-				} filebrowsercallback(siteurl+fileUrl,window.location.search,'thumblink');
-				filebrowserselectcomplete();
-				return false;
-			});
-		});
-
-	}
-
-	// calback after selection is made, trigger filebrowserselected
+	// calback after selection is made, trigger filebrowserselected event
+	// cross js or window popup handler
 	function filebrowsercallback(url,arg1,arg2){
+		// Debugger.log("filebrowsercallback");
+		// Debugger.log(url);
+		// Debugger.log(arg1);
+		// Debugger.log(arg2);
 		$(window).trigger('filebrowserselected',[url,arg1,arg2]);
 	}
 
 	// callback when selection is complete, trigger filebrowserselectcompleted
 	function filebrowserselectcomplete(){
+		// Debugger.log('filebrowserselectcompleted');
 		$(window).trigger('filebrowserselectcompleted');
 	}
 
-	$(window).on('filebrowserselectcompleted',function(e){
-		if(window.opener) window.close();
+	// make funcs globally available
+	window.filebrowsercallback       = filebrowsercallback;
+	window.filebrowserselectcomplete = filebrowserselectcomplete;
+	window.getUrlParam               = getUrlParam;
+
+	// test handlers
+	// $(window).on('filebrowserselected',function(e,url,search){
+	// 	Debugger.log("filebrowserselected");
+	// });
+
+	// $(window).on('filebrowserselectcompleted',function(e){
+	// 	Debugger.log("filebrowserselectcompleted");
+	// });
+
+	// setup ckeditor events, must declare here as ckeditor.getsimple.js is not in scope of filebrowser
+	$(window).on('filebrowserselectcompleted',function(e,url,search){
+	    if(!getUrlParam('CKEditor',search)) return;	    
+	    window.close(); // must close self, be in scope of popup as we have no reference to close children
 	});
 
-	// return id implementation
-	// an input with the id of returnid will atutomatically receive the url as its value
-	$(window).on('filebrowserselected',function(event,url,search){
+	// return id implementation, legacy
+	// an input with the id of returnid will automatically receive the url as its value
+	$(window).on('filebrowserselected',function(e,url,search){
+		// Debugger.log("filebrowserselected callback returnid handler");
 		var returnid = getUrlParam('returnid',search);
 		if(returnid) {
 			$('input #'+returnid).val(url); // set input value to url
 		}
 	});
 
-	// handle thumbnail lightbox buttons, add custom handlers
-	$.fn.uploadBrowseThumb = function(){
-		_this = $(this);
-		var link = $.parseHTML('<div style="display:inline-block;vertical-align:middle;"><a class="label label-ghost floatright" href="' + _this.get(0).href + '" data-fileurl="'+ _this.get(0).href +'">'+i18n("SELECT_FILE")+'</a></div>');
-		if(getUrlParam('CKEditorFuncNum')){
-			$(link).find('a').uploadCKEBrowseThumb();
-			$('.fancybox-title').append($(link));
-		}
-		else if (getUrlParam('browse') !== undefined){
-			$(link).find('a').uploadCustomBrowseThumb();		
-			$('.fancybox-title').append($(link));
-		}
-	}
-
-	$.fn.uploadCustomBrowseThumb = function(){
-		$(this).on('click',function(e){
-			e.preventDefault();
-			var siteurl = '';
-			var fileUrl = $(this).data('fileurl');
-			if(window.opener){
-				window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'lightboxlink');
-				window.close();
-			} filebrowsercallback(siteurl+fileUrl,window.location.search,'lightboxlink');
-			return false;
-		});
-	}
-
-	$.fn.uploadCKEBrowseThumb = function(){
-		$(this).on('click',function(e){
-			var funcnum  = getUrlParam('CKEditorFuncNum');
-			e.preventDefault();
-			var siteurl = '';
-			var fileUrl = $(this).data('fileurl');
-			if(!CKEDITOR) console.log("CKEDITOR does not exist");
-			else {
-				window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
-				window.close();
-				return false;
-			}	
-		});
-	}
-
-	// @todo abstract all this through custom with custom callbacks and listeners
-	function uploadCkeditorBrowse(){
-		Debugger.log('upload ckeditor browse');
-		uploadBrowse();
-
-		//CKEditor=post-content&CKEditorFuncNum=1&langCode=en
-		var funcnum  = getUrlParam('CKEditorFuncNum');
-		var editorid = getUrlParam('CKEditor');
-		var langcode = getUrlParam('langCode');
-
-		var path = getUrlParam('path') ? getUrlParam('path')+'/' : '';
-
-		// bind all primary links to callback
-		$('.primarylink').each(function(item){
-			// add listener
-			$(this).on('click',function(e){
-				e.preventDefault();
-				var siteurl = GS.siteurl;
-				var fileUrl = $(this).data('fileurl');
-				if(!CKEDITOR) console.log("CKEDITOR does not exist");
-				else {				
-					window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
-					window.close();
-					return false;
-				}	
-			});
-		});
-
-		// handle thumbnails
-		$('.thumblinkexternal').each(function(item){
-			// add listeners
-			$(this).on('click',function(e){
-				e.preventDefault();
-				var siteurl = GS.siteurl;
-				var fileUrl = $(this).data('fileurl');
-				if(!CKEDITOR) console.log("CKEDITOR does not exist");
-				else {
-					window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
-					window.close();
-					return false;
-				}	
-			});
-		});
-
-	}
-
 	// gs event for file uploaded via dropzone
 	$(window).on('fileuploaded',fileuploaded);
 	
 	function fileuploaded(){
+		// filuploaded callback, gotta reset up all events so new files are recognized evertime page is changed
 		Debugger.log('fileuploaded');
-		if(getUrlParam('CKEditorFuncNum')) uploadCkeditorBrowse();
-		else if (getUrlParam('browse') !== undefined) uploadBrowse();
+		if (getUrlParam('browse') !== undefined) uploadBrowseInit();
 	};
 
 	// Helper function to get parameters from the query string.
 	// @todo this is temporary, splitters are much faster than regex, 
 	// plus we will probably need a url mutator library in core soon 
+	// !this seems to be causing problems where my js just stops here, nothing happens no errors, and no logs after this point.
 	function getUrlParam(paramName,search)
 	{
 		if(search == undefined) search = window.location.search;
 		var reParam = new RegExp('(?:[\?&]|&amp;)' + paramName + '=?([^&]+)?', 'i') ;
 		var match = search.match(reParam);
 		if(match && match.length > 1){
-			// Debugger.log(match[1]);
 			if(typeof match[1] == 'undefined') return '';
 			return match[1];
 		}
@@ -557,7 +488,7 @@ jQuery(document).ready(function () {
 			var filterx = $(this).val();
 			var filterTitle = $(this).find('option:selected').text();
 			$("#imageTable").find("tr").hide();
-			if (filterx == 'image') {
+			if (filterx == 'image' || $("body#upload").hasClass("forcethumbs")) {
 				$("#imageTable").find("tr .imgthumb").show();
 			} else {
 				$("#imageTable").find("tr .imgthumb").hide();
@@ -565,7 +496,7 @@ jQuery(document).ready(function () {
 			$("#filetypetoggle").html('&nbsp;&nbsp;/&nbsp;&nbsp;' + filterTitle);
 			$("#imageTable").find("tr." + filterx).show();
 			$("#imageTable").find("tr.folder").show();
-			$("#imageTable").find("tr:first-child").show();
+			// $("#imageTable").find("tr:first-child").show(); // @why was this here ?
 			$("#imageTable").find("tr.deletedrow").hide();
 			loadingAjaxIndicator.fadeOut(500);
 		});
@@ -1093,6 +1024,14 @@ jQuery(document).ready(function () {
  
 	popAlertMsg();
  
+ 	// callback handlers for thumbnail lightbox buttons, add custom handlers , called by fancybox init
+	$.fn.fancyboxBrowseThumb = function(){
+		_this = $(this);
+		var fileurl = $(this)[0].element.data("fileurl"); // get data-fileurl from parent link
+		var link = $.parseHTML('<div style="display:inline-block;vertical-align:middle;"><a class="browseselect label label-ghost floatright" href="' + _this.get(0).href + '" data-id="lightboxlink" data-fileurl="'+ fileurl +'">'+i18n("SELECT_FILE")+'</a></div>');
+		$('.fancybox-title').append($(link));
+	}
+
  	// fancybox lightbox init
  	// rel=fancybox (_i/_s)
 	if (jQuery().fancybox) {
@@ -1107,7 +1046,7 @@ jQuery(document).ready(function () {
 		// used for images in upload filebrowser "select file"
 		$('a[rel*=fancybox_i]').fancybox({
 			afterShow: function(e) {				
-				$(this).uploadBrowseThumb();
+				$(this).fancyboxBrowseThumb();
 			},
 			padding : 0,
 			helpers: {
@@ -1526,12 +1465,17 @@ jQuery(document).ready(function () {
 
 
 	// form watcher
-    $('form input,form textarea,form select').not('#post-title').not('#post-id').not('#userid').not(':password').bind('change keypress paste textInput input',function(){
+    $('form input,form textarea,form select').not('#post-title').not('#post-id').not('#userid').not(':password').not(":submit").bind('change keypress paste textInput input',function(e){
         Debugger.log('form changed');
-        if("#install") return;
-        if("#setup") return;
+        if($("#install").length) return;
+        if($("#setup").length) return;
         if($("body").hasClass('dirty')) return;
         pageIsDirty($(this));
+    });
+
+    // mark page clean on submit or else we get before unload warnings
+    $('#submit_line input.submit').on("click",function(e){
+    	pageIsClean();
     });
 
     // mark page dirty find parent form of elem, and style its submit_line and global pagedirty
@@ -1627,7 +1571,7 @@ jQuery(document).ready(function () {
 	$("#theme-folder").on('change',function (e) {
 		var thmfld = $(this).val();
 		if (checkChanged()) return; // todo: change selection back
-		$('#theme_filemanager').html('Loading...');
+		$('#theme_filemanager').html('...');
 		updateTheme(thmfld);
 	});
 
@@ -1703,7 +1647,7 @@ jQuery(document).ready(function () {
 					clearFileWaits();
 					ajaxStatusComplete();
 					 $('input:submit').attr('disabled', true); // keep disabled
-					 $('#theme_editing_file').html(filename);
+					 $('#theme_editing_file').html("");
 					return;
 				}
 
@@ -1769,8 +1713,11 @@ jQuery(document).ready(function () {
 
 	// ajaxify theme submit
 	$('body.ajaxsave #themeEditForm').on('submit',function(e){
-		e.preventDefault();
-		themeFileSave($('#codetext').data('editor'));
+		if($('body.ajaxsave').get(0)){
+			console.log("themesave ajax");
+			e.preventDefault();
+			themeFileSave($('#codetext').data('editor'));
+		}	
 	});
 
 	$('#themeEditForm .cancel').on('click',function(e){
@@ -2091,8 +2038,8 @@ jQuery(document).ready(function () {
 		if(ctrlpress && (e.which == 83)) {
 			if(e.shiftKey){
 				// bypass ajax saving
-				dosavealt();
 				Debugger.log('Ctrl+Shift+S pressed');
+				dosavealt();
 				return;
 			}
 			Debugger.log('Ctrl+S pressed');
@@ -2187,7 +2134,7 @@ function dosave(){
 }
 
 function dosavealt(){
-	$('body').removeClass('ajaxsave');
+	disableAjaxSave();
 	pageIsDirty = false;
 	dosave();
 }

@@ -96,10 +96,11 @@ if(isset($_GET['ajax'])){
 			<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
 				<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
 				<textarea name="content" id="codetext" wrap='off'><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
-				<input type="hidden" value="<?php echo tsl($template) . $template_file;?>"  <?php if(empty($template_file)) echo ' class="nofile"'; ?>  name="edited_file" id="edited_file" />
+				<input name="edited_file" id="edited_file" type="hidden" value="<?php echo ($template=="." ? "" : tsl($template)) . $template_file;?>"  <?php if(empty($template_file)) echo ' class="nofile"'; ?> />
+				
 				<div id="theme-edit-extras-wrap"><?php exec_action('theme-edit-extras'); // @hook theme-edit-extras after theme-edit html output?></div>
 				<p id="submit_line" >
-					<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
+					<span><input name="submitsave" class="submit" type="submit"  value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>
 				</p>
 			</form>
 		</div>
@@ -267,7 +268,10 @@ function editor_recur_sort(&$array,$comparator) {
 $recurse = $template !== '.';
 $files   = directoryToMultiArray($directory,$recurse,$allowed_extensions);
 editor_recur_sort($files, 'editor_compareOrder'); // custom sort, dir,file,nat sort
-$fileList = editor_array2ul($files,$recurse,$recurse);
+$files = exec_filter("themeeditfiles",$files); // @filter themeeditfiles (array) theme editor list of files in folder
+
+if(!$files) $fileList = '<span class="label label-warn">'.i18n_r("NO_FILE").'</span>';
+else $fileList = editor_array2ul($files,$recurse,$recurse);
 
 $theme_options = createTemplateDropdown();
 
@@ -330,14 +334,16 @@ switch (getFileExtension($template_file)) {
 			<div id="theme_edit_code" class="codewrap <?php if(empty($template_file)) echo 'readonly';?>">
 				
 				<div id="theme_editing" class="well">
-				<?php i18n('EDITING_FILE'); ?>: <?php echo $SITEURL.getRelPath(GSTHEMESPATH).'<span id="theme_editing_file">'. tsl($template).$template_file .'</span>'; ?>
-				<?php $content = !empty($template_file) ? read_file(GSTHEMESPATH . tsl($template) . $template_file) : ''; ?>
+				<?php 
+				echo i18n('EDITING_FILE') .":".$SITEURL.getRelPath(GSTHEMESPATH);
+				echo '<span id="theme_editing_file">'. ($template=="." ? "" : tsl($template)).$template_file .'</span>';
+				$content = !empty($template_file) ? read_file(GSTHEMESPATH . tsl($template) . $template_file) : ''; ?>
 				</div>
 		
 		<form id="themeEditForm" action="<?php myself(); ?>?t=<?php echo $template; ?>&amp;f=<?php echo $template_file; ?>" method="post" >
 			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save"); ?>" />
 			<textarea name="content" id="codetext" class="code_edit" data-mode="<?php echo $mode; ?>" wrap='off' ><?php echo htmlentities($content, ENT_QUOTES, 'UTF-8'); ?></textarea>
-			<input type="hidden" value="<?php echo tsl($template) . $template_file; ?>" <?php if(empty($template_file)) echo ' class="nofile"'; ?> name="edited_file" id="edited_file" />
+			<input type="hidden" value="<?php echo ($template == "." ? "" : tsl($template)) . $template_file; ?>" <?php if(empty($template_file)) echo ' class="nofile"'; ?> name="edited_file" id="edited_file" />
 			<div id="theme-edit-extras-wrap"><?php exec_action('theme-edit-extras'); ?></div>
 			<p id="submit_line" >
 				<span><input class="submit" type="submit" name="submitsave" value="<?php i18n('BTN_SAVECHANGES'); ?>" /></span> &nbsp;&nbsp;<?php i18n('OR'); ?>&nbsp;&nbsp; <a class="cancel" href="theme-edit.php?cancel"><?php i18n('CANCEL'); ?></a>

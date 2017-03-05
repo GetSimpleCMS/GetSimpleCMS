@@ -21,12 +21,12 @@ DirectoryIndex index.php
 # blocks direct access to the XML files - they hold all the data!
 # excludes, sitemap, browserconfig, crossdomain
 <FilesMatch "(?<!sitemap|browserconfig|crossdomain)\.xml$">
-   Order allow,deny
-   Deny from all
 	<IfModule !mod_authz_core.c>
+   		Order allow,deny
 		Deny from all
 	</IfModule>
 	<IfModule mod_access_compat.c>
+   		Order allow,deny
 		Deny from all
 	</IfModule>
 	<IfModule mod_authz_core.c>

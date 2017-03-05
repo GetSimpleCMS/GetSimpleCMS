@@ -28,8 +28,11 @@ exec_action('load-upload');
 
 $dirsSorted = $filesSorted = $foldercount = null;
 
-if (isset($_GET['path']) && !empty($_GET['path'])) {
-	$path      = str_replace('../','', $_GET['path']);
+// force autoupload path
+if(isset($_REQUEST['autoupload']) && getDef("GSAUTOUPLOADPATH",true)) $_REQUEST['path'] = getDef("GSAUTOUPLOADPATH");
+
+if (isset($_REQUEST['path']) && !empty($_REQUEST['path'])) {
+	$path      = str_replace('../','', $_REQUEST['path']);
 	$subFolder = tsl($path);
 	$path      = tsl(GSDATAUPLOADPATH.$path);
 	// die if path is outside of uploads
@@ -39,26 +42,45 @@ if (isset($_GET['path']) && !empty($_GET['path'])) {
 	$subFolder = '';
 }
 
+function reArrayFiles(&$file_post) {
+	$file_ary   = array();
+	$file_count = count($file_post['name']);
+	$file_keys  = array_keys($file_post);
+	for ($i=0; $i<$file_count; $i++) {
+		foreach ($file_keys as $key) {
+			if(is_array($file_post[$key])) $file_ary[$i][$key] = $file_post[$key][$i];
+			else $file_ary[$i][$key] = $file_post[$key]; // single file submitted without array[] name
+		}
+	}
+    return $file_ary;
+}
+
 // if a file was uploaded
+
+// I wish all uploads used a standard mechanism
+if(isset($_FILES['upload'])) $_FILES['file'] = $_FILES['upload'];
+
 if (isset($_FILES['file'])) {
-	
-	$uploadsCount = count($_FILES['file']['name']);
+
+	$_FILES['file'] = reArrayFiles($_FILES['file']);
+	$filesArray = $_FILES['file'];
+
+	$uploadsCount = count($filesArray);
 
 	if($uploadsCount > 0) {
 	 $errors   = array();
 	 $messages = array();
 
 	 for ($i=0; $i < $uploadsCount; $i++) {
-		if ($_FILES["file"]["error"][$i] > 0)	{
+		if ($filesArray[$i]["error"] > 0){
 			$errors[] = i18n_r('ERROR_UPLOAD');
 		} else {
-			
 			//set variables
 			$count     = '1';
-			$file      = $_FILES["file"]["name"][$i];
+			$file      = $filesArray[$i]["name"];
 			$fileext   = getFileExtension($file);
 			$filename  = getFileName($file);
-			
+
 			$file_base = clean_img_name(to7bit($filename)) . '.'.$fileext;
 			$file_loc  = $path . $file_base;
 			
@@ -69,8 +91,8 @@ if (isset($_FILES['file'])) {
 			}
 
 			//validate file
-			if (validate_safe_file($_FILES["file"]["tmp_name"][$i], $file_base)) {
-				move_uploaded_file($_FILES["file"]["tmp_name"][$i], $file_loc);
+			if (validate_safe_file($filesArray[$i]["tmp_name"], $file_base)) {
+				move_uploaded_file($filesArray[$i]["tmp_name"], $file_loc);
 				gs_chmod($file_loc);
 				exec_action('file-uploaded');
 				
@@ -79,20 +101,22 @@ if (isset($_FILES['file'])) {
 
 				$messages[] = i18n_r('FILE_SUCCESS_MSG');
 				if(requestIsAjax()){
+					// die("request is ajax");
 					header("HTTP/1.0 200");
+					// $fileurl = $SITEURL."data/uploads/";
+					$fileurl   = getUploadURI($file_base,$subFolder);
+					$fileasset = 'image.php?i='.urlencode($file_base)."&path=".urlencode($subFolder);
+					echo '<div class="updated notify_success remove">'.i18n_r('FILE_SUCCESS_MSG').' [<a data-url = "'.$fileurl.'" href="'.$fileasset.'" target="_BLANK">'.i18n_r('IMG_CONTROl_PANEL').'</a>] </div>';
 					die();
-				}	
+				}
 			} else {
-				$messages[] = $_FILES["file"]["name"][$i] .' - '.i18n_r('ERROR_UPLOAD');
+				$messages[] = $filesArray[$i]["name"] .' - '.i18n_r('ERROR_UPLOAD');
 				if(requestIsAjax()){
 					header("HTTP/1.0 403");
-					i18n('ERROR_UPLOAD');
+					echo "<div class=\"updated notify_error\"><a href=\"".$SITEURL."data/uploads/".$subFolder.$filename.".".$fileext."\">".i18n_r('ERROR_UPLOAD')."</a></div>";					
 					die();
 				}	
 			}
-			
-			//successfull message
-			
 		}
 	 }
 	 // after uploading all files process messages
@@ -105,7 +129,7 @@ if (isset($_FILES['file'])) {
 
 			if(requestIsAjax()){
 				header("HTTP/1.0 403");
-				i18n('ERROR_UPLOAD');
+				echo "<div class=\"updated\">".i18n_r('ERROR_UPLOAD')."</a></div>";
 				die();
 			}
 
@@ -157,7 +181,7 @@ function getUploadIcon($type){
 }
 
 ?>
-	
+
 <?php include('template/include-nav.php'); ?>
 
 <div class="bodycontent clearfix">
@@ -252,7 +276,8 @@ function getUploadIcon($type){
       	if($allowcreatefolder){
       		echo '<div id="new-folder">
       			<a href="#" id="createfolder">'.i18n_r('CREATE_FOLDER').'</a>
-				<form action="upload.php">&nbsp;<input type="hidden" name="path" value="'.$subPath.'" />
+				<form action="upload.php">&nbsp;
+					<input type="hidden" name="path" value="'.$subFolder.'" />
 					<input type="hidden" name="nonce" value="'. get_nonce("createfolder") .'" />
 					<input type="text" class="text" name="newfolder" id="foldername" /> 
 					<input type="submit" class="submit" value="'.i18n_r('CREATE_FOLDER').'" />&nbsp; 
@@ -285,7 +310,7 @@ function getUploadIcon($type){
 			$directory_size = '<span>'.folder_items($path.$upload['name']).' '.i18n_r('ITEMS').'</span>';
 			
 			echo '<tr class="all folder '.$upload['name'].'" >';
-			// echo '<td class="imgthumb"><i class="file ext- fa fa-3x fa-fw fa-folder-o"></i></td>';
+			// echo '<td class="imgthumb"><i class="file ext- fa fa-3x fa-fw fa-folder-o"></i></td>'; // folder thumbnails ?
 			echo '<td class="imgthumb"></td>';
 			$adm = getRelPath($path,GSDATAUPLOADPATH) . rawurlencode($upload['name']);
 			$folderhref = 'upload.php?' . merge_queryString(array('path'=>$adm));
@@ -332,7 +357,7 @@ function getUploadIcon($type){
 			// handle images
 			if ($upload['type'] == 'image') {
 				$gallery           = 'rel="fancybox_i"';
-				$pathlink          = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subPath;
+				$pathlink          = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subFolder;
 				$thumbLink         = $urlPath.'thumbsm.'.$upload['name'];
 				$thumbLinkEncoded  = $urlPath.'thumbsm.'.rawurlencode($upload['name']);
 				$thumbLinkExternal = $urlPath.'thumbnail.'.$upload['name'];
@@ -346,15 +371,18 @@ function getUploadIcon($type){
 				}
 
 				// thumbnail link lightbox
-				echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" rel="fancybox_i" >'.$imgSrc.'</a>';
+				echo '<a href="'. tsl($SITEURL).getRelPath($path). rawurlencode($upload['name']) .'" title="'. rawurlencode($upload['name']) .'" data-fileurl="'.$primarylink.'" rel="fancybox_i" >'.$imgSrc.'</a>';
 
 				# get external thumbnail link
 				# if not exist generate it
 				if (!file_exists(GSTHUMBNAILPATH.$thumbLinkExternal) || isset($_REQUEST['regenthumbnail'])) {
-					genStdThumb($subPath,$upload['name']);					
+					genStdThumb($subFolder,$upload['name']);
 				}
 				
-				$thumbnailLink = '<a href="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" class="label label-ghost thumblinkexternal" data-fileurl="'.getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'">'.i18n_r('THUMBNAIL').'</a>';
+				// thumbnail link lightbox
+				$thumbnaillightbox = '<a href="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" class="label-ghost thumbpreview" title="'. rawurlencode($upload['name']) .'" data-fileurl="'.getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" rel="fancybox"><span class="fa fa-search-plus"></span></a>';
+				$thumbnailLink     = '<span class="inline"><a href="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" class="browseselect label label-ghost thumblinkexternal" data-id="thumblinkexternal" data-fileurl="'.getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'">'.i18n_r('THUMBNAIL').'</a>';
+				$thumbnailLink    .= $thumbnaillightbox."</span>";
 
 			} else {
 				// other files
@@ -364,7 +392,7 @@ function getUploadIcon($type){
 			}
 			
 			// name column linked
-			echo '</td><td class="break">'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="primarylink" data-fileurl="'.$primarylink.'">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
+			echo '</td><td class="break">'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="browseselect primarylink" data-id="primarylink" data-fileurl="'.$primarylink.'">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
 			
 			// size column
 			echo '<td class="file_size right"><span>'. $upload['size'] .'</span></td>';
