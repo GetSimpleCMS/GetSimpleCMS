@@ -1465,12 +1465,17 @@ jQuery(document).ready(function () {
 
 
 	// form watcher
-    $('form input,form textarea,form select').not('#post-title').not('#post-id').not('#userid').not(':password').bind('change keypress paste textInput input',function(){
+    $('form input,form textarea,form select').not('#post-title').not('#post-id').not('#userid').not(':password').not(":submit").bind('change keypress paste textInput input',function(e){
         Debugger.log('form changed');
-        if("#install") return;
-        if("#setup") return;
+        if($("#install").length) return;
+        if($("#setup").length) return;
         if($("body").hasClass('dirty')) return;
         pageIsDirty($(this));
+    });
+
+    // mark page clean on submit or else we get before unload warnings
+    $('#submit_line input.submit').on("click",function(e){
+    	pageIsClean();
     });
 
     // mark page dirty find parent form of elem, and style its submit_line and global pagedirty
