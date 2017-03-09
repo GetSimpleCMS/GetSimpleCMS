@@ -277,7 +277,7 @@ echo '<div class="bodycontent clearfix">
 						$writable = checkWritable($path);
 						
 						if( $writable ) {
-							if(!checkPermsWritable($path)){
+							if(!checkPermsWritable($path) && getDef('GSCHMODCHECK',true)){
 								echo '<a name="warn"></a><span class="WARNmsg">GSCONFIG ' .getChmodValue($path,true). '</span><td><span class="label label-ok" >'.i18n_r('OK').'</span></td>'; 
 							}
 							else {
