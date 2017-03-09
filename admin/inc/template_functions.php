@@ -68,11 +68,11 @@ function get_filename_id() {
  * @param string $path File and/or path
  */
 function check_perms($path) { 
-  clearstatcache(); 
-  if(!file_exists($path)) return false;  
-  $configmod = substr(sprintf('%o', fileperms($path)), -4);  
-	return $configmod;
-} 
+    clearstatcache(); 
+    if(!file_exists($path)) return false;  
+    $configmod = substr(sprintf('%o', fileperms($path)), -4);  
+    return $configmod;
+}
 
 
 /**

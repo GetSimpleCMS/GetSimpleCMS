@@ -3191,22 +3191,22 @@ function strip_content($str, $pattern = '/[({]%.*?%[})]/'){
  * will check if path is a directory or file and return appropriate value
  * @since  3.4
  * @param str $path file path
- * @return chmod value
+ * @return decimal chmod value
  */
-function getChmodValue($path){
-	if(is_dir($path)) $writeOctal = getDef('GSCHMODDIR');
+function getChmodValue($path,$string = false){
+	if(is_dir($path)) $writeDec = getDef('GSCHMODDIR');
 	else {
 		if (getDef('GSCHMODFILE')) {
-			$writeOctal = getDef('GSCHMODFILE');
+			$writeDec = getDef('GSCHMODFILE');
 		}	
 		else if (getDef('GSCHMOD')) {
-			$writeOctal = getDef('GSCHMOD'); 
+			$writeDec = getDef('GSCHMOD'); 
 		}
 		else {
-			$writeOctal = 0755;
+			$writeDec = octdec(0755);
 		}
 	}
-	return $writeOctal;
+	return $string ? decoct($writeDec) : $writeDec;
 }
 
 /** 
@@ -3216,15 +3216,19 @@ function getChmodValue($path){
  * @param  str    $perms permission decimanl string to check against
  * @return boolean is writable
  */
-function checkWritable($path,$perms = null){
-	$writeOctal = getChmodValue($path);
-	if(!isset($perms)) $perms = check_perms($path);
-	// debugLog(__FUNCTION__ . ' ' . $path . ' ' . $perms .' > '. decoct($writeOctal));
+function checkWritable($path){
 	$iswritable = is_writable($path);
-	$iswritable = $perms >= decoct($writeOctal);
+	fileLog(__FUNCTION__,$iswritable,$path);
 	return $iswritable;
 }
 
+function checkPermsWritable($path,$perms = null){
+	$writeOctal = decoct(getChmodValue($path));
+	if(!isset($perms)) $perms = check_perms($path);
+	$iswritable = $perms >= $writeOctal;
+	fileLog(__FUNCTION__,$iswritable,$perms, $writeOctal);
+	return $iswritable;
+}
 
 /**
  * string to boolean using custom rules

@@ -275,11 +275,16 @@ echo '<div class="bodycontent clearfix">
 						echo '('.ModeOctal2rwx($me) .") $me ";
 						
 						$writable = checkWritable($path);
-
-						if( $writable ) { 
-							echo i18n_r('WRITABLE').'<td><span class="label label-ok" > '.i18n_r('OK').'</span></td>'; 
+						
+						if( $writable ) {
+							if(!checkPermsWritable($path)){
+								echo '<a name="warn"></a><span class="WARNmsg">GSCONFIG ' .getChmodValue($path,true). '</span><td><span class="label label-ok" >'.i18n_r('OK').'</span></td>'; 
+							}
+							else {
+								echo i18n_r('WRITABLE').'<td><span class="label label-ok" > '.i18n_r('OK').'</span></td>'; 
+							}	
 						} 
-						else { 
+						else {
 							echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('NOT_WRITABLE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 
 							$errorCnt++;											
 						} 
