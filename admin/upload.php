@@ -42,6 +42,12 @@ if (isset($_REQUEST['path']) && !empty($_REQUEST['path'])) {
 	$subFolder = '';
 }
 
+/**
+ * convert $_FILES array buckets into file arrays, pivot
+ * @since  3.4 
+ * @param  array &$file_post $_FILES array
+ * @return array             new array
+ */
 function reArrayFiles(&$file_post) {
 	$file_ary   = array();
 	$file_count = count($file_post['name']);
