@@ -119,7 +119,7 @@ if (isset($_FILES['file'])) {
 				$messages[] = $filesArray[$i]["name"] .' - '.i18n_r('ERROR_UPLOAD');
 				if(requestIsAjax()){
 					header("HTTP/1.0 403");
-					echo "<div class=\"updated notify_error\"><a href=\"".$SITEURL."data/uploads/".$subFolder.$filename.".".$fileext."\">".i18n_r('ERROR_UPLOAD')."</a></div>";					
+					echo "<div class=\"updated notify_error\">".i18n_r('ERROR_UPLOAD')."</div>";					
 					die();
 				}	
 			}
@@ -135,7 +135,7 @@ if (isset($_FILES['file'])) {
 
 			if(requestIsAjax()){
 				header("HTTP/1.0 403");
-				echo "<div class=\"updated\">".i18n_r('ERROR_UPLOAD')."</a></div>";
+				echo "<div class=\"updated notify_error\">".i18n_r('ERROR_UPLOAD')."</a></div>";
 				die();
 			}
 
