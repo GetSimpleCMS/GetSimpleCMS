@@ -746,9 +746,10 @@ function XMLsave($xml, $file) {
  */
 function create_dir($path,$recursive = true){
 	if(is_dir($path)) return fileLog(__FUNCTION__,true,'dir already exists',$path);
-	$status = mkdir($path,getDef('GSCHMODDIR'),$recursive); // php mkdir
+	if(!getDef("GSDOCHMOD",true) && !$recursive) $status = mkdir($path); // php mkdir use default chmod 0777, ignored if recursive
+	else $status = mkdir($path,getChmodValue($path),$recursive); // php mkdir
 	return 	fileLog(__FUNCTION__. ':' . ($recursive ? ' [recursive=true] ' : ''),$status,$path);
-	}
+}
 
 /**
  * Delete a folder, must be empty
@@ -3194,16 +3195,34 @@ function strip_content($str, $pattern = '/[({]%.*?%[})]/'){
  * @return decimal chmod value
  */
 function getChmodValue($path,$string = false){
-	if(is_dir($path)) $writeDec = getDef('GSCHMODDIR');
+	if(!file_exists($path)){
+		debugLog(__FUNCTION__ . " path not exist");
+		$chmod = getDefChmod((substr($path, -1) == "/"),$string); // basic path parser
+		debugLog(decoct($chmod));
+		return $chmod;
+	}
+	if(is_dir($path)) return getDefChmod(true,$string);
+	return getDefChmod(false,$string);
+}
+
+/**
+ * get the chmod value default for dir or file
+ * use when path or file is not yet created
+ * @since  3.4
+ * @param bool $path true if dir
+ * @return decimal chmod value
+ */
+function getDefChmod($isdir,$string = false){
+	if($isdir) $writeDec = getDef('GSCHMODDIR'); // dir chmod
 	else {
-		if (getDef('GSCHMODFILE')) {
-			$writeDec = getDef('GSCHMODFILE');
-		}	
-		else if (getDef('GSCHMOD')) {
-			$writeDec = getDef('GSCHMOD'); 
+		if (getDef('GSCHMODFILE',true)) {
+			$writeDec = getDef('GSCHMODFILE'); // file chmod
+		}
+		else if (getDef('GSCHMOD',true)) {
+			$writeDec = getDef('GSCHMOD'); // fallback legacy chmod
 		}
 		else {
-			$writeDec = octdec(0755);
+			$writeDec = octdec(0755); // catch
 		}
 	}
 	return $string ? decoct($writeDec) : $writeDec;

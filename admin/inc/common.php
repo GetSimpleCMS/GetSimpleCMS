@@ -102,8 +102,8 @@ $GS_definitions = array(
 	'GSCHMOD'              => 0644,                           // (octal) chmod mode legacy
 	'GSCHMODFILE'          => 0644,                           // (octal) chmod mode for files
 	'GSCHMODDIR'           => 0755,                           // (octal) chmod mode for dirs
-	'GSDOCHMOD'            => true,                           // (bool) perform chmod after creating files or directories
-	'GSCHMODCHECK'        => false,                          // (bool) warn on gschmod mismatches in health check
+	'GSDOCHMOD'            => true,                           // (bool) perform chmod when creating files or directories
+	'GSCHMODCHECK'        => false,                           // (bool) warn on gschmod mismatches in health check
 	'GSSHOWCODEHINTS'      => true,                           // (bool) show code hints on components page and snippets etc.
 	# ALLOW --------------------------------------------------------------------------------------------------------------------------------------------
 	'GSALLOWLOGIN'         => true,                           // (bool) allow front end login

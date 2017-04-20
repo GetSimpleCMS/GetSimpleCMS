@@ -158,15 +158,10 @@ if (isset($_GET['newfolder']) && $allowcreatefolder) {
 	if (file_exists($path.$cleanname) || $cleanname=='') {
 			$error = i18n_r('ERROR_FOLDER_EXISTS');
 	} else {
-		if (getDef('GSCHMOD')) {
-			$chmod_value = GSCHMOD; 
-		} else {
-			$chmod_value = 0755;
-		}
-		if (create_dir($path . $cleanname, $chmod_value)) {
+		if (create_dir($path . $cleanname) {
 			//create folder for thumbnails
 			$thumbFolder = GSTHUMBNAILPATH.$subFolder.$cleanname;
-			if (!(file_exists($thumbFolder))) { create_dir($thumbFolder, $chmod_value); }
+			if (!(file_exists($thumbFolder))) { create_dir($thumbFolder); }
 			$success = sprintf(i18n_r('FOLDER_CREATED'), $cleanname);
 		}	else { 
 			$error = i18n_r('ERROR_CREATING_FOLDER'); 

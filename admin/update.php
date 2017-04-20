@@ -90,13 +90,8 @@ if (! file_exists($init)) {
 
 /* create new folders */
 foreach($create_dirs as $dir){
-	if (!file_exists($dir)) {  	
-		if (getDef('GSCHMOD')) {
-		 $chmod_value = GSCHMOD; 
-		} else {
-		 $chmod_value = 0755;
-		}
-		$status = create_dir($dir, $chmod_value);
+	if (!file_exists($dir)) {
+		$status = create_dir($dir);
 		if($status) $message.= msgOK(sprintf(i18n_r('FOLDER_CREATED'),$dir));
 		else $error.= msgError(i18n_r('ERROR_CREATING_FOLDER') . "<br /> - $dir");
 	}
@@ -113,8 +108,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	
 	# make new users folder
 	if (!file_exists(GSUSERSPATH)) {
-		$status = create_dir(GSUSERSPATH, 0777);
-		gs_chmod(GSUSERSPATH, 0777);
+		$status = create_dir(GSUSERSPATH);
 		if (!$status) { 
 			$error .= msgError('Unable to create the folder /data/users/');	
 		} else {
@@ -124,8 +118,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 
 	# make new backup users folder
 	if (!file_exists(GSBACKUSERSPATH)) {
-		$status = create_dir(GSBACKUSERSPATH, 0777);
-		gs_chmod(GSBACKUSERSPATH, 0777);
+		$status = create_dir(GSBACKUSERSPATH);
 		if (!$status) {
 			$error .= msgError('Unable to create the folder /backup/users/');	
 		} else {

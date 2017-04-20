@@ -245,7 +245,7 @@ function backup_datafile($filepath){
 	$bakfilepath = getBackupFilePath($filepath);
 	$bakpath = dirname($bakfilepath);
  	// recusive create dirs
-	create_dir($bakpath,getDef('GSCHMODDIR'),true);
+	create_dir($bakpath,true);
 	return copy_file($filepath,$bakfilepath);
 }
 
