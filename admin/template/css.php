@@ -92,7 +92,7 @@ a img {
 	display: none;
 }
 
-td.imgthumb {
+.imgthumb {
 	display: none;
 	width: 70px;
 	text-align: center;

@@ -327,7 +327,7 @@ jQuery(document).ready(function () {
 			$('#imageFilter').hide();
 			$('.thumblinkexternal').show(); // enable thumbnail select
 			$('.thumbpreview').show();      // enable thumb preview link
-			$('td.imgthumb').show();
+			$('tr .imgthumb').show();
 		}
 		uploadBrowseEventInit()
 	}
@@ -487,7 +487,7 @@ jQuery(document).ready(function () {
 			loadingAjaxIndicator.show();
 			var filterx = $(this).val();
 			var filterTitle = $(this).find('option:selected').text();
-			$("#imageTable").find("tbody tr").hide();
+			$("#imageTable tbody").find("tr").hide();
 			if (filterx == 'image' || $("body#upload").hasClass("forcethumbs")) {
 				$("#imageTable").find("tr .imgthumb").show();
 			} else {
