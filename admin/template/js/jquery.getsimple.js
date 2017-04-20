@@ -487,7 +487,7 @@ jQuery(document).ready(function () {
 			loadingAjaxIndicator.show();
 			var filterx = $(this).val();
 			var filterTitle = $(this).find('option:selected').text();
-			$("#imageTable").find("tr").hide();
+			$("#imageTable").find("tbody tr").hide();
 			if (filterx == 'image' || $("body#upload").hasClass("forcethumbs")) {
 				$("#imageTable").find("tr .imgthumb").show();
 			} else {
