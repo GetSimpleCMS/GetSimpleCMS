@@ -514,8 +514,16 @@ function valid_xml($file) {
  * @return string
  */
 function generate_salt() {
-	return substr(sha1(mt_rand()),0,22);
-}
+  if(version_compare(PHP_VERSION, '5.3.0') >= 0){
+    return bin2hex(openssl_random_pseudo_bytes(16));
+  }else{
+     /* Known to be terribly insecure. Default seeded with an cryptographically
+      * insecure, 32 bit integer, and PHP versions prior to 5.3 lack built in access
+      * to secure random.
+      */
+     return sha1(mt_rand());
+  }
+} 
 
 /**
  * Get Admin Path
