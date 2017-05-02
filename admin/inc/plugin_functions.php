@@ -249,6 +249,8 @@ function create_pluginsxml($force=false){
 		$pluginfiles = getFiles(GSPLUGINPATH,'php');
 	}
 	else return; // plugin files path issue
+	
+	sort($pluginfiles);
 
 	if (!$force) {
 		$livekeys = array_keys($live_plugins);
