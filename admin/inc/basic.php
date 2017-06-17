@@ -565,7 +565,7 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
 	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
 	$xml->addChild('pubDate', date('r'));
 
-	if(isset($data['content'])) $data['content'] = exec_filter('contentsave',$data['content']); // @filer contentsave filter content in createPageXml
+	if(isset($data['content'])) $data['content'] = exec_filter('contentsave',$data['content']); // @filter contentsave filter content in createPageXml
 
 	foreach($fields as $field){
 		$node = $xml->addChild($field);
