@@ -679,6 +679,7 @@ jQuery(document).ready(function () {
 		pageIsClean();
 	});
 	
+	// component save
 	componentSave = function(e){
 
 		Debugger.log("onsubmit");
@@ -701,6 +702,7 @@ jQuery(document).ready(function () {
 				$(response).find('div.updated').parseNotify();
 				updateNonce(response);
 				ajaxStatusComplete();
+				clearNotify('error');	
 				removeDeletedComponents();
 			}
 		});
