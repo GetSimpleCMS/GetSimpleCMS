@@ -61,14 +61,14 @@ function clean_img_name($text)  {
  * @return string 
  */
 function to7bit($text,$from_enc="UTF-8") {
+	$text = doTransliteration($text); // use i18n transliteration table to convert
 	if (function_exists('mb_convert_encoding')) {
 			$text = mb_convert_encoding($text,'HTML-ENTITIES',$from_enc);
-		} 
+	}
 	else {
 		$text = htmlspecialchars_decode(utf8_decode(htmlentities($text, ENT_COMPAT, 'utf-8', false)));
 	}
-	
-	// replace basic latin
+	// replace basic latin if transliteration failed
 	// sz/ligatures, *ligatures, o/u/a/umlauts, any?
 	$text = preg_replace(
 			array('/&szlig;/','/&(..)lig;/',
@@ -2780,6 +2780,7 @@ function getSuperUserId(){
  * @return str salt
  */
 function getDefaultSalt(){
+	GLOBAL $dataa; // legacy deprecated
 	$salt = null;
 	if (defined('GSUSECUSTOMSALT')) {
 		// use GSUSECUSTOMSALT
