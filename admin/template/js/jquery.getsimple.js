@@ -302,6 +302,18 @@ function getTagName(elem){
 	return $(elem).prop('tagName');
 }
 
+var pageisdirty = false;
+// mark page dirty find parent form of elem, and style its submit_line and global pagedirty
+function pageIsDirty(elem){
+	if(!elem) elem = $('form input');
+    if($(elem).closest($('form')).find('#submit_line').get(0)) $("body").addClass('dirty');  // if has submit line mark dirty  	
+    pageisdirty = true;
+}
+
+function pageIsClean(elem){
+    $("body").removeClass('dirty');    	
+    pageisdirty = false;
+}
 
 jQuery(document).ready(function () {
 
@@ -1249,7 +1261,7 @@ jQuery(document).ready(function () {
     /* Warning for unsaved Data */
     var yourText    = null;
     var warnme      = false;
-    var pageisdirty = false;
+    // var pageisdirty = false;
 
     $('#cancel-updates').hide();
 
@@ -1288,7 +1300,9 @@ jQuery(document).ready(function () {
             Debugger.log('autoSaveIntvl called, form is dirty: autosaving');
             ajaxSave('&autosave=1').done(autoSaveCallback);
             pageisdirty = false;
+            return;
         }
+        // Debugger.log('autoSaveIntvl called, form is clean: skipping');
     }
 
 	function autoSaveDestroy(){
@@ -1479,18 +1493,6 @@ jQuery(document).ready(function () {
     $('#submit_line input.submit').on("click",function(e){
     	pageIsClean();
     });
-
-    // mark page dirty find parent form of elem, and style its submit_line and global pagedirty
-    function pageIsDirty(elem){
-    	if(!elem) elem = $('form input');
-        if($(elem).closest($('form')).find('#submit_line').get(0)) $("body").addClass('dirty');    	
-        pageisdirty = true;
-    }
-
-    function pageIsClean(elem){
-        $("body").removeClass('dirty');    	
-        pageisdirty = false;
-    }
 
 	// save and close
 	$(".save-close a").on("click", function ($e) {
