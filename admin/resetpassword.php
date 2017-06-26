@@ -14,6 +14,8 @@ include('inc/common.php');
 
 if(getDef('GSALLOWRESETPASS',true) === false) die();
 
+exec_action('load-resetpw');
+
 if(isset($_POST['submitted'])){
 	check_for_csrf("reset_password");	
 		
@@ -31,7 +33,9 @@ if(isset($_POST['submitted'])){
 			$userid = strtolower($data->USR);
 			$EMAIL  = $data->EMAIL;
 			
-			if(strtolower($_POST['username']) === $userid) {
+			$allow = exec_filter('resetpw',true); // @filter resetpw filter bool allow
+
+			if($allow && strtolower($_POST['username']) === $userid) {
 				# create new random password
 				$random = createRandomPassword();
 				// $random = '1234';
@@ -89,7 +93,7 @@ get_template('header');
 	
 	<div id="maincontent">
 		<div class="main" >
-		
+		<?php exec_action('reestpw-main'); // @hook resetpw-main before passwword reset main html output ?>
 		<h3><?php i18n('RESET_PASSWORD'); ?></h3>
 		<p class="desc"><?php i18n('MSG_PLEASE_EMAIL'); ?></p>
 		
@@ -97,6 +101,9 @@ get_template('header');
 			<input name="nonce" id="nonce" type="hidden" value="<?php echo get_nonce("reset_password");?>"/>
 			<p><b><?php i18n('LABEL_USERNAME'); ?>:</b><br /><input class="text" name="username" type="text" value="" /></p>
 			<p><input class="submit" type="submit" name="submitted" value="<?php echo i18n_r('SEND_NEW_PWD'); ?>" /></p>
+			<?php 
+				exec_action('resetpw-extras'); // @hook resetpw-extras
+			?>
 		</form>
 		<p class="cta"><a href="<?php echo $SITEURL; ?>"><?php i18n('BACK_TO_WEBSITE'); ?></a> &nbsp;
 		<?php if(getDef('GSALLOWLOGIN',true)) { ?> | &nbsp; <a href="index.php"><?php echo i18n_r('CONTROL_PANEL'); ?></a>
