@@ -447,7 +447,7 @@ function get_site_credits($text ='Powered by ') {
  * @return array|string Type 'string' in this case will be XML 
  */
 function menu_data($id = null,$xml=false) {
-    $menu_extract = '';
+    $menu_extract = array();
 
     global $pagesArray; 
     $pagesSorted = subval_sort($pagesArray,'menuOrder');
@@ -472,9 +472,9 @@ function menu_data($id = null,$xml=false) {
               return $specific; 
               exit; 
           } else {
-              $menu_extract .= $specific;
+              $menu_extract[] = $specific;
           }
-        } 
+        }
         return $menu_extract;
       } else {
         $xml = '<?xml version="1.0" encoding="UTF-8"?><channel>';    
