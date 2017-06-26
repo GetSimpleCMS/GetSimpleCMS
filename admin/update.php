@@ -207,6 +207,19 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	/* end update */
 } 
 
+// 3.4.0
+// update new permalink setting, if permalink, enable pretty urls toggle
+$dataw       = getXML(GSDATAOTHERPATH .GSWEBSITEFILE);
+$permalink   = trim((string) $dataw->PERMALINK);
+$fileversion = trim((string) $dataw->GSVERSION);
+if($fileversion!='3.4.0'){
+	if(!empty($permalink)) $dataw->editAddChild('PRETTYURLS', '1');
+	$dataw->editAddChild('GSVERSION', '3.4.0');
+}
+if (!XMLsave($dataw, GSDATAOTHERPATH . GSWEBSITEFILE) ) {
+	$error .= i18n_r('CHMOD_ERROR');
+}
+
 // redirect to health check or login and show updated notice
 $redirect = cookie_check() ? "health-check.php?updated=1" : "index.php?updated=1";
 
