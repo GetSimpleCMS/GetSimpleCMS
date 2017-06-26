@@ -1274,8 +1274,10 @@ jQuery(document).ready(function () {
     		autoSaveDestroy();
     	}
         if (warnme || pageisdirty === true) {
+        	// console.log("page is dirty");
             return i18n('UNSAVED_INFORMATION');
         }
+        return;
     };
 
     // check that title is not empty
@@ -1482,6 +1484,7 @@ jQuery(document).ready(function () {
 
 
 	// form watcher
+	// @todo catches quick forms
     $('form input,form textarea,form select').not('#post-title').not('#post-id').not('#userid').not(':password').not(":submit").bind('change keypress paste textInput input',function(e){
         Debugger.log('form changed');
         if($("#install").length) return;

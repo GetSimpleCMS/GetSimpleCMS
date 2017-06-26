@@ -99,7 +99,7 @@ get_template('header');
 		
 		<form class="login" action="" class="entersubmit" method="post" >
 			<input name="nonce" id="nonce" type="hidden" value="<?php echo get_nonce("reset_password");?>"/>
-			<p><b><?php i18n('LABEL_USERNAME'); ?>:</b><br /><input class="text" name="username" type="text" value="" /></p>
+			<p><b><?php i18n('LABEL_USERNAME'); ?>:</b><br /><input id="userid" class="text" name="username" type="text" value="" /></p>
 			<p><input class="submit" type="submit" name="submitted" value="<?php echo i18n_r('SEND_NEW_PWD'); ?>" /></p>
 			<?php 
 				exec_action('resetpw-extras'); // @hook resetpw-extras
