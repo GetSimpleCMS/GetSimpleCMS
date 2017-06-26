@@ -87,7 +87,9 @@ if (isset($_FILES['file'])) {
 			$fileext   = getFileExtension($file);
 			$filename  = getFileName($file);
 
-			$file_base = clean_img_name(to7bit($filename)) . '.'.$fileext;
+			$file_clean = clean_img_name(to7bit($filename));
+			if(empty($file_clean)) $file_clean = "upload"; // fallback for empty filenames after translit and filter
+			$file_base =  $file_clean . '.'. $fileext;
 			$file_loc  = $path . $file_base;
 			
 			//prevent overwriting						
