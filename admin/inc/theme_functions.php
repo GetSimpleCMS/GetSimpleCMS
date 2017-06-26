@@ -472,7 +472,7 @@ function menu_data($id = null,$xml=false) {
               return $specific; 
               exit; 
           } else {
-              $menu_extract[] = $specific;
+              $menu_extract .= $specific;
           }
         } 
         return $menu_extract;
