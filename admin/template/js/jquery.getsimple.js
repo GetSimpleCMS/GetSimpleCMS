@@ -1040,6 +1040,7 @@ jQuery(document).ready(function () {
  
  	// callback handlers for thumbnail lightbox buttons, add custom handlers , called by fancybox init
 	$.fn.fancyboxBrowseThumb = function(){
+		if (getUrlParam('browse') == undefined) return; // add select button to fanxybox in browseer mode
 		_this = $(this);
 		var fileurl = $(this)[0].element.data("fileurl"); // get data-fileurl from parent link
 		var link = $.parseHTML('<div style="display:inline-block;vertical-align:middle;"><a class="browseselect label label-ghost floatright" href="' + _this.get(0).href + '" data-id="lightboxlink" data-fileurl="'+ fileurl +'">'+i18n("SELECT_FILE")+'</a></div>');
