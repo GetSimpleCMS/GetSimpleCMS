@@ -79,6 +79,8 @@ if(isset($_POST['submitted'])) {
 		
 	} # end error check
 	
+	$update = $status;
+	
 } # end submission check
 
 

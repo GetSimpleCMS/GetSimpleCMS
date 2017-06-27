@@ -1484,11 +1484,12 @@ jQuery(document).ready(function () {
 
 
 	// form watcher
-	// @todo catches quick forms
+	// @todo catches quick forms, convert to inclusive not exclusive
     $('form input,form textarea,form select').not('#post-title').not('#post-id').not('#userid').not(':password').not(":submit").bind('change keypress paste textInput input',function(e){
         Debugger.log('form changed');
         if($("#install").length) return;
         if($("#setup").length) return;
+        if($("#resetpassword").length) return;
         if($("body").hasClass('dirty')) return;
         pageIsDirty($(this));
     });
