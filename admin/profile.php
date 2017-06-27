@@ -258,7 +258,7 @@ $userheading = empty($userid) ? "<span>/ ". i18n_r('NEW_USER') ."</span>" : "<sp
 			<?php exec_action(get_filename_id().'-body'); ?>
 			
 			<!-- user form -->
-			<form class="largeform" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
+			<form class="largeform watch" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save_profile"); ?>" />
 			<?php if($adding === true){ ?> <input id="add" name="add" type="hidden" value="1" /> <?php } ?>
 		

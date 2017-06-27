@@ -303,6 +303,7 @@ function getTagName(elem){
 }
 
 var pageisdirty = false;
+
 // mark page dirty find parent form of elem, and style its submit_line and global pagedirty
 function pageIsDirty(elem){
 	if(!elem) elem = $('form input');
@@ -1484,12 +1485,9 @@ jQuery(document).ready(function () {
 
 
 	// form watcher
-	// @todo catches quick forms, convert to inclusive not exclusive
-    $('form input,form textarea,form select').not('#post-title').not('#post-id').not('#userid').not(':password').not(":submit").bind('change keypress paste textInput input',function(e){
-        Debugger.log('form changed');
-        if($("#install").length) return;
-        if($("#setup").length) return;
-        if($("#resetpassword").length) return;
+	// forms with class watch will mark page dirty and prevent leaving
+    $('form.watch input,form.watch textarea,form.watch select').not(':password').not(":submit").bind('change keypress paste textInput input',function(e){
+        // Debugger.log('form changed');
         if($("body").hasClass('dirty')) return;
         pageIsDirty($(this));
     });
