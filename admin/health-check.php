@@ -231,6 +231,8 @@ echo '<div class="bodycontent clearfix">
 			<table class="highlight healthcheck">';
 			
 					$dirsArray = array(
+						// "NONEXISTANTDIR/",
+						// "NONEXISTANTFILE",
 						GSDATAOTHERPATH.getDef('GSPLUGINSFILE'),
 						GSDATAOTHERPATH.GSAUTHFILE,
 						GSDATAPAGESPATH, 
@@ -247,40 +249,41 @@ echo '<div class="bodycontent clearfix">
 						GSTHEMESPATH
 					);
 
-					if (getDef('GSCHMODFILE')) {
-						$writeOctal = getDef('GSCHMODFILE');
-					}
-					else if (getDef('GSCHMOD')) {
-						$writeOctal = getDef('GSCHMOD'); 
-					} 
-					else {
-						$writeOctal = 0755;
-					}
-
 					foreach($dirsArray as $path){
-						$relpath = '/'.getRelPath($path);
-						$isFile = substr($relpath, -4,1) == '.';
-						if(!$isFile) $writeOctal = getDef('GSCHMODDIR');
-
-						if($isFile) $relpath = i18n_r('FILE_NAME').": $relpath";
-						
-						echo "<tr><td class=\"hc_item\">$relpath</td><td>";
-						
-						if($isFile and !file_exists($path)) {
-							echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('MISSING_FILE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 							
-							$errorCnt++;				
-							continue;
+						$relpath    = '/'.getRelPath($path);
+						$isFile     = substr($relpath, -4,1) == '.';
+						$writeOctal = getChmodValue($path);
+						if($isFile){
+							echo "<tr><td class=\"hc_item\">".i18n_r('FILE_NAME').": $relpath</td><td>";
+							if(!file_exists($path)) {
+								echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('MISSING_FILE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 							
+								$errorCnt++;				
+								continue;
+							}	
+						}
+						else{
+							echo "<tr><td class=\"hc_item\">$relpath</td><td>";
 						}
 
 						$me = check_perms($path);
+						if($me == false){
+							echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('MISSING_FILE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 							
+							$errorCnt++;
+							continue;						
+						} 
 						echo '('.ModeOctal2rwx($me) .") $me ";
 						
 						$writable = checkWritable($path);
-
-						if( $writable ) { 
-							echo i18n_r('WRITABLE').'<td><span class="label label-ok" > '.i18n_r('OK').'</span></td>'; 
+						
+						if( $writable ) {
+							if(!checkPermsWritable($path) && getDef('GSCHMODCHECK',true)){
+								echo '<a name="warn"></a><span class="WARNmsg">GSCONFIG ' .getChmodValue($path,true). '</span><td><span class="label label-ok" >'.i18n_r('OK').'</span></td>'; 
+							}
+							else {
+								echo i18n_r('WRITABLE').'<td><span class="label label-ok" > '.i18n_r('OK').'</span></td>'; 
+							}	
 						} 
-						else { 
+						else {
 							echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('NOT_WRITABLE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 
 							$errorCnt++;											
 						} 

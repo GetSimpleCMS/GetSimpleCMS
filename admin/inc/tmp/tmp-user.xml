@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<!--  Sample user file for GetSimpleCMS -->
+<!-- password is 1234, <pwd> is sha1 of password, assuming you have no GSLOGINSALT set in your gsconfig -->
+<item><USR>user</USR><NAME>Display Name</NAME><PWD>7110eda4d09e062aa5e4a390b0a572ac0d2c0220</PWD><EMAIL>norepy@example.com</EMAIL><HTMLEDITOR>1</HTMLEDITOR><TIMEZONE>America/Chicago</TIMEZONE><LANG>en_US</LANG></item>

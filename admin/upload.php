@@ -42,6 +42,12 @@ if (isset($_REQUEST['path']) && !empty($_REQUEST['path'])) {
 	$subFolder = '';
 }
 
+/**
+ * convert $_FILES array buckets into file arrays, pivot
+ * @since  3.4 
+ * @param  array &$file_post $_FILES array
+ * @return array             new array
+ */
 function reArrayFiles(&$file_post) {
 	$file_ary   = array();
 	$file_count = count($file_post['name']);
@@ -81,7 +87,9 @@ if (isset($_FILES['file'])) {
 			$fileext   = getFileExtension($file);
 			$filename  = getFileName($file);
 
-			$file_base = clean_img_name(to7bit($filename)) . '.'.$fileext;
+			$file_clean = clean_img_name(to7bit($filename));
+			if(empty($file_clean)) $file_clean = "upload"; // fallback for empty filenames after translit and filter
+			$file_base =  $file_clean . '.'. $fileext;
 			$file_loc  = $path . $file_base;
 			
 			//prevent overwriting						
@@ -113,7 +121,7 @@ if (isset($_FILES['file'])) {
 				$messages[] = $filesArray[$i]["name"] .' - '.i18n_r('ERROR_UPLOAD');
 				if(requestIsAjax()){
 					header("HTTP/1.0 403");
-					echo "<div class=\"updated notify_error\"><a href=\"".$SITEURL."data/uploads/".$subFolder.$filename.".".$fileext."\">".i18n_r('ERROR_UPLOAD')."</a></div>";					
+					echo "<div class=\"updated notify_error\">".i18n_r('ERROR_UPLOAD')."</div>";					
 					die();
 				}	
 			}
@@ -129,7 +137,7 @@ if (isset($_FILES['file'])) {
 
 			if(requestIsAjax()){
 				header("HTTP/1.0 403");
-				echo "<div class=\"updated\">".i18n_r('ERROR_UPLOAD')."</a></div>";
+				echo "<div class=\"updated notify_error\">".i18n_r('ERROR_UPLOAD')."</a></div>";
 				die();
 			}
 
@@ -152,15 +160,10 @@ if (isset($_GET['newfolder']) && $allowcreatefolder) {
 	if (file_exists($path.$cleanname) || $cleanname=='') {
 			$error = i18n_r('ERROR_FOLDER_EXISTS');
 	} else {
-		if (getDef('GSCHMOD')) {
-			$chmod_value = GSCHMOD; 
-		} else {
-			$chmod_value = 0755;
-		}
-		if (create_dir($path . $cleanname, $chmod_value)) {
+		if (create_dir($path . $cleanname)) {
 			//create folder for thumbnails
 			$thumbFolder = GSTHUMBNAILPATH.$subFolder.$cleanname;
-			if (!(file_exists($thumbFolder))) { create_dir($thumbFolder, $chmod_value); }
+			if (!(file_exists($thumbFolder))) { create_dir($thumbFolder); }
 			$success = sprintf(i18n_r('FOLDER_CREATED'), $cleanname);
 		}	else { 
 			$error = i18n_r('ERROR_CREATING_FOLDER'); 

@@ -61,14 +61,14 @@ function clean_img_name($text)  {
  * @return string 
  */
 function to7bit($text,$from_enc="UTF-8") {
+	$text = doTransliteration($text); // use i18n transliteration table to convert
 	if (function_exists('mb_convert_encoding')) {
 			$text = mb_convert_encoding($text,'HTML-ENTITIES',$from_enc);
-		} 
+	}
 	else {
 		$text = htmlspecialchars_decode(utf8_decode(htmlentities($text, ENT_COMPAT, 'utf-8', false)));
 	}
-	
-	// replace basic latin
+	// replace basic latin if transliteration failed
 	// sz/ligatures, *ligatures, o/u/a/umlauts, any?
 	$text = preg_replace(
 			array('/&szlig;/','/&(..)lig;/',
@@ -589,7 +589,7 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
 	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
 	$xml->addChild('pubDate', date('r'));
 
-	if(isset($data['content'])) $data['content'] = exec_filter('contentsave',$data['content']); // @filer contentsave filter content in createPageXml
+	if(isset($data['content'])) $data['content'] = exec_filter('contentsave',$data['content']); // @filter contentsave filter content in createPageXml
 
 	foreach($fields as $field){
 		$node = $xml->addChild($field);
@@ -797,9 +797,10 @@ function JSONsave($data, $file) {
  */
 function create_dir($path,$recursive = true){
 	if(is_dir($path)) return fileLog(__FUNCTION__,true,'dir already exists',$path);
-	$status = mkdir($path,getDef('GSCHMODDIR'),$recursive); // php mkdir
+	if(!getDef("GSDOCHMOD",true) && !$recursive) $status = mkdir($path); // php mkdir use default chmod 0777, ignored if recursive
+	else $status = mkdir($path,getChmodValue($path),$recursive); // php mkdir
 	return 	fileLog(__FUNCTION__. ':' . ($recursive ? ' [recursive=true] ' : ''),$status,$path);
-	}
+}
 
 /**
  * Delete a folder, must be empty
@@ -2862,6 +2863,7 @@ function getSuperUserId(){
  * @return str salt
  */
 function getDefaultSalt(){
+	GLOBAL $dataa; // legacy deprecated
 	$salt = null;
 	if (defined('GSUSECUSTOMSALT')) {
 		// use GSUSECUSTOMSALT
@@ -3364,22 +3366,40 @@ function callIfCallable($funcname/*,... variable args*/){
  * will check if path is a directory or file and return appropriate value
  * @since  3.4
  * @param str $path file path
- * @return chmod value
+ * @return decimal chmod value
  */
-function getChmodValue($path){
-	if(is_dir($path)) $writeOctal = getDef('GSCHMODDIR');
+function getChmodValue($path,$string = false){
+	if(!file_exists($path)){
+		debugLog(__FUNCTION__ . " path not exist");
+		$chmod = getDefChmod((substr($path, -1) == "/"),$string); // basic path parser
+		debugLog(decoct($chmod));
+		return $chmod;
+	}
+	if(is_dir($path)) return getDefChmod(true,$string);
+	return getDefChmod(false,$string);
+}
+
+/**
+ * get the chmod value default for dir or file
+ * use when path or file is not yet created
+ * @since  3.4
+ * @param bool $path true if dir
+ * @return decimal chmod value
+ */
+function getDefChmod($isdir,$string = false){
+	if($isdir) $writeDec = getDef('GSCHMODDIR'); // dir chmod
 	else {
-		if (getDef('GSCHMODFILE')) {
-			$writeOctal = getDef('GSCHMODFILE');
-		}	
-		else if (getDef('GSCHMOD')) {
-			$writeOctal = getDef('GSCHMOD'); 
+		if (getDef('GSCHMODFILE',true)) {
+			$writeDec = getDef('GSCHMODFILE'); // file chmod
+		}
+		else if (getDef('GSCHMOD',true)) {
+			$writeDec = getDef('GSCHMOD'); // fallback legacy chmod
 		}
 		else {
-			$writeOctal = 0755;
+			$writeDec = octdec(0755); // catch
 		}
 	}
-	return $writeOctal;
+	return $string ? decoct($writeDec) : $writeDec;
 }
 
 /** 
@@ -3389,15 +3409,19 @@ function getChmodValue($path){
  * @param  str    $perms permission decimanl string to check against
  * @return boolean is writable
  */
-function checkWritable($path,$perms = null){
-	$writeOctal = getChmodValue($path);
-	if(!isset($perms)) $perms = check_perms($path);
-	// debugLog(__FUNCTION__ . ' ' . $path . ' ' . $perms .' > '. decoct($writeOctal));
+function checkWritable($path){
 	$iswritable = is_writable($path);
-	$iswritable = $perms >= decoct($writeOctal);
+	fileLog(__FUNCTION__,$iswritable,$path);
 	return $iswritable;
 }
 
+function checkPermsWritable($path,$perms = null){
+	$writeOctal = decoct(getChmodValue($path));
+	if(!isset($perms)) $perms = check_perms($path);
+	$iswritable = $perms >= $writeOctal;
+	fileLog(__FUNCTION__,$iswritable,$perms, $writeOctal);
+	return $iswritable;
+}
 
 /**
  * string to boolean using custom rules

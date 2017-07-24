@@ -92,7 +92,7 @@ $GS_definitions = array(
 	'GSSITEURLREL'         => false,                           // (bool) Use root relative urls for $SITEURL
 	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // (str) url used in email template
 	'GSINDEXSLUG'          => 'index',                        // (str) slug to use as index when no slug provided
-	'GSPLUGINORDER'        => '',                             // (str) csv list of live_plugins keys to load first and in order, kludge and not supported
+	'GSPLUGINORDER'        => '',                             // (str-csv) csv list of live_plugins keys to load first and in order, kludge and not supported
 	'GSNOFRAME'            => true,                           // (mixed) allow GS to be loaded in frames via x-frame policy
 	'GSNOFRAMEDEFAULT'     => 'SAMEORIGIN',                   // (string) GSNOFRAME X-Frame-Options default value
 	'GSCDNFALLBACK'        => true,                           // (bool) if true, CDN assets queued on GSFRONT will fallback to local version
@@ -101,12 +101,13 @@ $GS_definitions = array(
 	'GSSTYLE'              => 'wide,sbfixed',                 // (str-csv) default style modifiers
 	'GSWIDTH'              => '1024px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width
 	'GSWIDTHWIDE'          => '1366px',                       // (str) page width on backend pages defined in GSWIDEPAGES, values as above
-	'GSWIDEPAGES'          => 'theme-edit,components,snippets', // (str-csv) pages to apply GSWIDTHWIED on
+	'GSWIDEPAGES'          => 'theme-edit,components,snippets', // (str-csv) pages to apply GSWIDTHWIDE on
 	# CHMOD --------------------------------------------------------------------------------------------------------------------------------------------
 	'GSCHMOD'              => 0644,                           // (octal) chmod mode legacy
 	'GSCHMODFILE'          => 0644,                           // (octal) chmod mode for files
 	'GSCHMODDIR'           => 0755,                           // (octal) chmod mode for dirs
-	'GSDOCHMOD'            => true,                           // (bool) perform chmod after creating files or directories
+	'GSDOCHMOD'            => true,                           // (bool) perform chmod when creating files or directories
+	'GSCHMODCHECK'        => false,                           // (bool) warn on gschmod mismatches in health check
 	'GSSHOWCODEHINTS'      => true,                           // (bool) show code hints on components page and snippets etc.
 	# ALLOW --------------------------------------------------------------------------------------------------------------------------------------------
 	'GSALLOWLOGIN'         => true,                           // (bool) allow front end login
@@ -210,7 +211,7 @@ $microtime_start = microtime(true);
 $microtime_last = $microtime_start;
 
 if(isset($_GET['nocache'])){
-	// @todo: disables caching, this should probably only be allowed for auth users, it is also not well inplemented
+	// @todo: disables caching, this should probably only be allowed for auth users, it is also not well implemented
 	$nocache = true;
 }
 

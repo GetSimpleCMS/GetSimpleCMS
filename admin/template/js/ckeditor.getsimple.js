@@ -88,6 +88,8 @@ $.fn.htmlEditorFromTextarea = function(config){
             if(ev.editor.config.gscompact === true) cke_editorfocus(ev.editor);
 
             ev.editor.on('resize',cke_editorResized);
+            
+            if(!this.commands.maximize) return; // maximize not available in inline mode
 
             this.commands.maximize.on( 'exec', function( evt ) {
                 Debugger.log('maximize cke');

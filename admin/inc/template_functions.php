@@ -68,11 +68,11 @@ function get_filename_id() {
  * @param string $path File and/or path
  */
 function check_perms($path) { 
-  clearstatcache(); 
-  if(!file_exists($path)) return false;  
-  $configmod = substr(sprintf('%o', fileperms($path)), -4);  
-	return $configmod;
-} 
+    clearstatcache(); 
+    if(!file_exists($path)) return false;  
+    $configmod = substr(sprintf('%o', fileperms($path)), -4);  
+    return $configmod;
+}
 
 
 /**
@@ -245,7 +245,7 @@ function backup_datafile($filepath){
 	$bakfilepath = getBackupFilePath($filepath);
 	$bakpath = dirname($bakfilepath);
  	// recusive create dirs
-	create_dir($bakpath,getDef('GSCHMODDIR'),true);
+	create_dir($bakpath,true);
 	return copy_file($filepath,$bakfilepath);
 }
 

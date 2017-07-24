@@ -95,7 +95,7 @@ include('template/include-nav.php'); ?>
 				<?php exec_action(get_filename_id().'-edit-nav'); ?>
 			</div>		
 			<?php exec_action(get_filename_id().'-body'); ?>
-			<form id="compEditForm" class="manyinputs" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
+			<form id="compEditForm" class="manyinputs watch" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 				<input type="hidden" id="id" value="<?php echo $numitems; ?>" />
 				<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_components"); ?>" />
 

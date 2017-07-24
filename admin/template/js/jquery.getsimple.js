@@ -302,6 +302,19 @@ function getTagName(elem){
 	return $(elem).prop('tagName');
 }
 
+var pageisdirty = false;
+
+// mark page dirty find parent form of elem, and style its submit_line and global pagedirty
+function pageIsDirty(elem){
+	if(!elem) elem = $('form input');
+    if($(elem).closest($('form')).find('#submit_line').get(0)) $("body").addClass('dirty');  // if has submit line mark dirty  	
+    pageisdirty = true;
+}
+
+function pageIsClean(elem){
+    $("body").removeClass('dirty');    	
+    pageisdirty = false;
+}
 
 jQuery(document).ready(function () {
 
@@ -327,7 +340,7 @@ jQuery(document).ready(function () {
 			$('#imageFilter').hide();
 			$('.thumblinkexternal').show(); // enable thumbnail select
 			$('.thumbpreview').show();      // enable thumb preview link
-			$('td.imgthumb').show();
+			$('tr .imgthumb').show();
 		}
 		uploadBrowseEventInit()
 	}
@@ -487,7 +500,7 @@ jQuery(document).ready(function () {
 			loadingAjaxIndicator.show();
 			var filterx = $(this).val();
 			var filterTitle = $(this).find('option:selected').text();
-			$("#imageTable").find("tr").hide();
+			$("#imageTable tbody").find("tr").hide();
 			if (filterx == 'image' || $("body#upload").hasClass("forcethumbs")) {
 				$("#imageTable").find("tr .imgthumb").show();
 			} else {
@@ -679,6 +692,7 @@ jQuery(document).ready(function () {
 		pageIsClean();
 	});
 	
+	// component save
 	componentSave = function(e){
 
 		Debugger.log("onsubmit");
@@ -701,6 +715,7 @@ jQuery(document).ready(function () {
 				$(response).find('div.updated').parseNotify();
 				updateNonce(response);
 				ajaxStatusComplete();
+				clearNotify('error');	
 				removeDeletedComponents();
 			}
 		});
@@ -1026,6 +1041,7 @@ jQuery(document).ready(function () {
  
  	// callback handlers for thumbnail lightbox buttons, add custom handlers , called by fancybox init
 	$.fn.fancyboxBrowseThumb = function(){
+		if (getUrlParam('browse') == undefined) return; // add select button to fanxybox in browseer mode
 		_this = $(this);
 		var fileurl = $(this)[0].element.data("fileurl"); // get data-fileurl from parent link
 		var link = $.parseHTML('<div style="display:inline-block;vertical-align:middle;"><a class="browseselect label label-ghost floatright" href="' + _this.get(0).href + '" data-id="lightboxlink" data-fileurl="'+ fileurl +'">'+i18n("SELECT_FILE")+'</a></div>');
@@ -1247,7 +1263,7 @@ jQuery(document).ready(function () {
     /* Warning for unsaved Data */
     var yourText    = null;
     var warnme      = false;
-    var pageisdirty = false;
+    // var pageisdirty = false;
 
     $('#cancel-updates').hide();
 
@@ -1259,8 +1275,10 @@ jQuery(document).ready(function () {
     		autoSaveDestroy();
     	}
         if (warnme || pageisdirty === true) {
+        	// console.log("page is dirty");
             return i18n('UNSAVED_INFORMATION');
         }
+        return;
     };
 
     // check that title is not empty
@@ -1286,7 +1304,9 @@ jQuery(document).ready(function () {
             Debugger.log('autoSaveIntvl called, form is dirty: autosaving');
             ajaxSave('&autosave=1').done(autoSaveCallback);
             pageisdirty = false;
+            return;
         }
+        // Debugger.log('autoSaveIntvl called, form is clean: skipping');
     }
 
 	function autoSaveDestroy(){
@@ -1465,10 +1485,9 @@ jQuery(document).ready(function () {
 
 
 	// form watcher
-    $('form input,form textarea,form select').not('#post-title').not('#post-id').not('#userid').not(':password').not(":submit").bind('change keypress paste textInput input',function(e){
-        Debugger.log('form changed');
-        if($("#install").length) return;
-        if($("#setup").length) return;
+	// forms with class watch will mark page dirty and prevent leaving
+    $('form.watch input,form.watch textarea,form.watch select').not(':password').not(":submit").bind('change keypress paste textInput input',function(e){
+        // Debugger.log('form changed');
         if($("body").hasClass('dirty')) return;
         pageIsDirty($(this));
     });
@@ -1477,18 +1496,6 @@ jQuery(document).ready(function () {
     $('#submit_line input.submit').on("click",function(e){
     	pageIsClean();
     });
-
-    // mark page dirty find parent form of elem, and style its submit_line and global pagedirty
-    function pageIsDirty(elem){
-    	if(!elem) elem = $('form input');
-        if($(elem).closest($('form')).find('#submit_line').get(0)) $("body").addClass('dirty');    	
-        pageisdirty = true;
-    }
-
-    function pageIsClean(elem){
-        $("body").removeClass('dirty');    	
-        pageisdirty = false;
-    }
 
 	// save and close
 	$(".save-close a").on("click", function ($e) {

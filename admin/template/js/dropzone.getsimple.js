@@ -33,6 +33,13 @@ jQuery(document).ready(function () {
 		if(!this.options.debug)	removeFromQueue(file);
 	});
 
+	// error handler, remove queue item after success
+	myDropzone.on("error", function(file,response,xhr) {
+		response  = $($.parseHTML(response));
+		var error = $(response).filter("div.updated").text();
+		$(file.previewElement).find('.dz-error-message').text(error);		
+	});
+
 	// total progress handler for total queue length
 	// myDropzone.on("totaluploadprogress", function(progress) {
 	// 	// Debugger.log(progress);
