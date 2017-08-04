@@ -328,7 +328,9 @@ function getPagePathField($pageId,$field,$delim = '/'){
 }
 
 /**
- * WRAPPERS MENU @IMPORT
+ * WRAPPERS MENU 
+ * @IMPORT 
+ * @private
  */
 
 /**
@@ -356,6 +358,23 @@ function getParentsByCoreMenu($pageId){
  */
 function getChildrenByCoreMenu($pageId){
 	return menuItemGetChildren($pageId,GSMENUIDCORE);
+}
+
+/**
+ * reindex PAGES
+ * will reset keys from url,
+ * if you have a pagesarray that lost its keys after
+ * using a function that does not maintain key indexes
+ * @since  3.4
+ * @param  array  $pages PAGES, else use pagesArray
+ * @return array  	     PAGES rekeyed
+ */
+function reindexPages($pages = array()){
+	if(!$pages){
+		GLOBAL $pagesArray;
+		$pages = $pagesArray;
+	}	
+	reindexArray($pages,'url');
 }
 
 
@@ -433,22 +452,6 @@ function returnPageContent($page, $field='content', $raw = false, $nofilter = fa
  */
 function getPageContent($page,$field='content'){   
 	echo returnPageField($page,$field);
-}
-
-/**
- * reindex PAGES
- * will reset keys from url,
- * if you have a pagesarray that lost its keys after
- * using a function that does not maintain key indexes
- * @param  array  $pages PAGES, else use pagesArray
- * @return array  	     PAGES rekeyed
- */
-function reindexPages($pages = array()){
-	if(!$pages){
-		GLOBAL $pagesArray;
-		$pages = $pagesArray;
-	}	
-	reindexArray($pages,'url');
 }
 
 /**

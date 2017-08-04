@@ -267,12 +267,14 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
  * try to detect fatal errors
  */
 function menuIntegrityCheck($menu){
-	// compare keys from nest to flat, check for invalid keys, int and "data"
-	// check for all structure flaws, null objects etc.
-	// keys not match id
-	// check for temp keys "rekeyed"
-	// check parents are correct, empty if root etc.
-	// provide health check warnings on post limits, max memory, max records for large menus
+	// @todo
+	// -[x] compare keys from nest to flat, check for invalid keys, int and "data"
+	// -[x] check for all structure flaws, null objects etc.
+	// -[x] keys not match id
+	// -[ ] cross compare flat nest equality
+	// -[ ] check for temp keys "rekeyed"
+	// -[ ] check parents are correct, empty if root etc.
+	// -[ ] provide health check warnings on post limits, max memory, max records for large menus
 	$assert = "";
 	if(isset($menu[GSMENUNESTINDEX][""])) $assert .= debugLog(__FUNCTION__ . ": ASSERT nested menu has empty key<br>");
 	if(isset($menu[GSMENUFLATINDEX][""])) $assert .= debugLog(__FUNCTION__ . ": ASSERT flat menu has empty key<br>");
