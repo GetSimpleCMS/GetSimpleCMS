@@ -83,7 +83,7 @@ define('GSMENUDEFAULT',GSMENUIDCOREMENU); // which menu to use for default if le
 define('GSMENULEGACY',false); // use legacy menu, single level flat menu
 define('GSMENUEXPORTPAGES',false); // write menu out to page files
 
-define('GSMENUINLINEUPDATES',true); // perform inline page updates to menu, this allows parent changes in page edits, in progress only updates coremenu
+define('GSMENUINLINEUPDATES',true); // perform inline page updates to menu, this allows parent changes in page edits, @todo in progress only updates coremenu
 
 
 /**
@@ -318,10 +318,11 @@ function buildTreewHash($elements, $parentId = '', $preserve = false, $assoc = t
  *  ),
  *
  * returns a flat array containing flat references
- * @todo keeps all fields in $menu from post,	this might not be prefferable, so passing ref to recurseUpgradeTree might not be desired
- * @todo this will have to be modified to allow it to retain flat data that does not change, how do we pass it in ? menuid, menu obj?
- * @todo  do a merge with incoming data vs flat array existing, add flags for hadchange, 
- * so we can limit all processing to only items that are changing, no need to rebuild paths etc for all items.
+ * 
+ * @todo keeps all fields in $menu from post, this might not be prefferable, so passing ref to recurseUpgradeTree might not be desired
+ * @todo [progress] this will have to be modified to allow it to retain flat data that does not change, is grab from menuItemGetData merge in callout good enough ?
+ * @todo [progress] do a merge with incoming data vs flat array existing, add flags for hadchange, so we can limit all processing to only items that are changing, no need to rebuild paths etc for all items.
+ * 
  * @param  array  &$array    reference to array, so values can be refs
  * @param  str     $parent   parent for recursion
  * @param  integer $depth    depth for recursion
@@ -357,10 +358,10 @@ function recurseUpgradeTree(&$array,$parent = null,$depth = 0,$index = 0,&$index
             // hack to rekey array if not using id keys, needed for non assoc arrays, such as mm submit etc
             // this is not preffered but provided as a failsafe, reindex beforehand reindexMenuArray() to avoid modify ref in loop errors
             // skip rekeyed copies, we need a flag since array is reference, or else it will process the rekeyed elements twice
-            // @todo this doesnt work properly, leaves rekeyed in nest array , and then skips in future events.
+            // @todo (1) this doesnt work properly, leaves rekeyed in nest array , and then skips in future events.
             if(isset($value['rekeyed'])){
             	debugLog(__FUNCTION__ . " rekeyed SKIPPING " . $key . " != " . $id);            	
-            	unset($value['rekeyed']); // @todo we do not always get here, and therefore do not clear out these keys always causing issues with future runs, probably only hapens when a flat key was inserted, not moved.
+            	unset($value['rekeyed']); // @todo (1) we do not always get here, and therefore do not clear out these keys always causing issues with future runs, probably only hapens when a flat key was inserted, not moved.
             	continue;
             }
             if($key !== $id){
@@ -431,16 +432,16 @@ function recurseUpgradeTreeCallout(&$value,$id = '',$parent = null,$currpath = n
     $value['data']['path']  = generate_permalink($id,'%path%/%slug%',$pathdata);
     $value['data']['qs']    = generate_permalink($id,'id=%slug%&path=%path%',$pathdata);
     
-    // @todo testing , working
+    // @todo testing , [working]
     // field import from form post
     if(isset($menuvalue['menutitle'])) $value['data']['menutitle'] = $menuvalue['menutitle'];
 
-    //@todo testing working, overriding
+    // @todo testing [working], overriding
+    // @todo if we can skip processes if they did not actually change, maybe use a submit haschange flag js driven from nestable
     //merge in data from menuitem
     $item = menuItemGetData($id);
     if($item && $item['data']) $value['data'] = array_merge($item['data'],$value['data']); // value overrides item
-	
-	// @todo still need to handle arbitrary menus, and if we can skip above processes if they did not actually change
+    
     // debugLog($value);
     return $value; // non ref
 }
@@ -552,7 +553,7 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
             }
 
             // filter continue,  children inherit previous parent
-            // @todo breaks $order
+            // @todo (4) breaks $order
             if($filterRes === GSMENUFILTERCONTINUE) {
 
                 $str .= debugFilteredItem($child,$filterRes);
@@ -575,7 +576,8 @@ function getMenuTreeRecurse($parents, $callout= 'treeCallout', $filter = null, $
 
                 // if siblings exist, loop and perform recursion on all other siblings after this one being skipped
                 // this is to alleviate the escaping
-              	// @todo this breaks $order values, as they are reset on each call
+                
+              	// @todo (4) this breaks $order values, as they are reset on each call
               	// if we are already on level 1, we can probably skip this and switch to GSMENUFILTERCONTINUE instead
               	// and insert at root inline...
                 if(count($parents) > 1){
@@ -756,21 +758,11 @@ function treeCalloutFilter(){
  * @return str     string to return to recursive callee
  */
 function mmCallout($item, $outer = false, $open = true,$level = '',$index = '' ,$order = '',$args = array()){
-
-	/**    
-	 * @note
-     * hacking flat array conversion in, using args to pass menudata down, since recurse does not pass entire menu down to callouts.
-     * The recursive tree will have to have the entire menu passed in, or the tree has to be ref linked to flat
-     * either one means passing around the entire menu to recursion, or walking the entire tree to build the refs    
-     * @todo I do not think this is still nevessary, we can just make sure the nest is a mirror or ref of flat always
-	**/
     if($outer) return $open ? '<ol id="" class="dd-list">' : "</ol>";
     // if item is null return hidden list , ( this is for GSMENUFILTERSHIFT handling )
     if($item === null) return $open ? '<li style="display:none">' : '</li>';
     if(!$open) return "</li>\n";
 
-    // if(isset($args[0])) $item = getMenuItem($args[0],$item['id']);
-    // $page      = is_array($item) && isset($item['id']) ? getPage($item['id']) : getPage($item);
     $page = getPage($item['id']);
     $menuTitle = getPageMenuTitle($page['url']);
     // $pageTitle = '<strong>'.$page['title'].'.'.$level.'.'.$order.'</strong>';
@@ -1248,7 +1240,7 @@ function debugTreeCallout($args){
  * itemcallout($id,$level,$index,$order,$open)
  *
  * @note CANNOT SHOW PARENT NODE IN SUBMENU TREE $key, since we can only find children not parents
- * @note not particulary used, but saving in case
+ * @note not used, but saving in case I need this function again
  * @param  array   $parents array of parents
  * @param  string  $key     starting parent key
  * @param  string  $str     str for recursion append

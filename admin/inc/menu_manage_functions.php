@@ -55,13 +55,12 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 	 * array('modify',$slug,$data('title'));
 	 * 
 	 * rename+move in one pass is not implemented yet, rare, called in chain by passing meu back in as arg for now
-     * both = parent and child test, with children
      * 
-     * @todo  undo functionality, since we have no history atm, we cannot undo menu changes, if we change parent inline, then undo, then nothihg changes
+     * @todo undo functionality, since we have no history atm, we cannot undo menu changes, if we change parent inline, then undo, then nothihg changes
      * for new we insert, for delete we delete, for slug change we rename, but we do not move, since we have no previous parent atm
      * 
-     * @todo optimizations
-     * rekeymenu can maybe be avoided, or limited to only when needed not always
+     * @todo (1) optimizations
+     * rekeymenu can be limited to only when needed
      * rekey on slug changes, rename
      * avoid recurseupgrade tree for simple inserts ?
      * 
@@ -164,10 +163,10 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		// insert
 		if(empty($newparent)) {
 			debugLog(__FUNCTION__ . " moving NEWPARENT IS EMPTY, MOVING TO ROOT"); // debugging
-			$menu[GSMENUNESTINDEX][$slug] = $item; // @todo copy ?
+			$menu[GSMENUNESTINDEX][$slug] = $item; // @todo do copy no ref?
 		}
 		else {
-			$parent = &getMenuItemTreeRef($menu, $newparent); // @todo careful can create node it is looking for, eg. "" parent
+			$parent = &getMenuItemTreeRef($menu, $newparent); // @todo careful can create node it is looking for, eg. "" parent, see if avoidable
 			$parent['children'][$slug] = $item;
 		}
 		
@@ -203,7 +202,8 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		// if preserving children, move them to root
 		if($preservechildren && isset($item['children'])){
 			debugLog(__FUNCTION__ . " preserving [$slug][children], moving to root"); // debugging
-			// move to root, @todo could optionally move to closest parent using insert after logic
+			// move to root
+			// @todo move to root, could optionally move to closest parent using insert after logic
 			$menu[GSMENUNESTINDEX] = array_merge($menu[GSMENUNESTINDEX],$item['children']);
 		}
 
@@ -245,7 +245,7 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
 		// reindex
 		$menunest = $menu[GSMENUNESTINDEX];
 		$menunest = reindexMenuArray($menunest,true); // reindex if slug changes only
-		// @todo recurseUpgradeTree will fail to pick up data from old slug
+		// @todo (1) recurseUpgradeTree will fail to pick up extra data from old slug
 		$menu[GSMENUNESTINDEX] = $menunest;
 		// debugLog($menunest);
 	}
@@ -267,31 +267,45 @@ function menuItemRebuildChange($args,$menu = null, $rebuild = true){
  * try to detect fatal errors
  */
 function menuIntegrityCheck($menu){
-	// @todo
+	// @todo integrity checks
 	// -[x] compare keys from nest to flat, check for invalid keys, int and "data"
 	// -[x] check for all structure flaws, null objects etc.
 	// -[x] keys not match id
-	// -[ ] cross compare flat nest equality
-	// -[ ] check for temp keys "rekeyed"
+	// -[x] cross compare flat nest equality, count, keys
+	// -[x] check for temp keys "rekeyed"
 	// -[ ] check parents are correct, empty if root etc.
 	// -[ ] provide health check warnings on post limits, max memory, max records for large menus
+	
 	$assert = "";
-	if(isset($menu[GSMENUNESTINDEX][""])) $assert .= debugLog(__FUNCTION__ . ": ASSERT nested menu has empty key<br>");
-	if(isset($menu[GSMENUFLATINDEX][""])) $assert .= debugLog(__FUNCTION__ . ": ASSERT flat menu has empty key<br>");
+
+	if(!is_array($menu[GSMENUNESTINDEX])) $assert .= debugLog(__FUNCTION__ . ": ASSERT nested menu is empty<br>");
+	if(!is_array($menu[GSMENUFLATINDEX])) $assert .= debugLog(__FUNCTION__ . ": ASSERT flat menu is empty<br>");
+
+	$keys = array_flip(array_keys($menu[GSMENUNESTINDEX]));
+	$cnt = 0;
+
+	if(isset($menu[GSMENUNESTINDEX][""])) $assert .= debugLog(__FUNCTION__ . ": ASSERT NEST menu has empty key<br>");
+	if(isset($menu[GSMENUFLATINDEX][""])) $assert .= debugLog(__FUNCTION__ . ": ASSERT FLAT menu has empty key<br>");
 
 	foreach($menu[GSMENUFLATINDEX] as $key=>$menuitem){
-		if(!$menuitem) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT flat menu has empty array<br>");
-		if(!isset($menuitem['data'])) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT flat menu has empty data array<br>");
-		if($key !== $menuitem['id']) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT flat menu key=id mismatch<br>");
-		if(!is_string($key)) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT flat menu has integer key<br>");
+		if(!$menuitem)                	$assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT FLAT menu has empty array<br>");
+		if(!isset($menuitem['data'])) 	$assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT FLAT menu has empty data array<br>");
+		if($key !== $menuitem['id'])  	$assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT FLAT menu key=id mismatch<br>");
+		if(!is_string($key))          	$assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT FLAT menu has integer key<br>");
 	}
 
 	foreach($menu[GSMENUNESTINDEX] as $key=>$menuitem){
-		if(!$menuitem) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT NEST menu has empty array<br>");
-		if(!isset($menuitem['data'])) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT NEST menu has empty data array<br>");
-		if($key !== $menuitem['id']) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT NEST menu key=id mismatch<br>");
-		if(!is_string($key)) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT NEST menu has integer key<br>");
+		if(!$menuitem)                  $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT NEST menu has empty array<br>");
+		if(!isset($menuitem['data']))   $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT NEST menu has empty data array<br>");
+		if($key !== $menuitem['id'])    $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT NEST menu key=id mismatch<br>");
+		if(!is_string($key))            $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT NEST menu has integer key<br>");
+		if(isset($menuitem['rekeyed'])) $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT NEST menu has rekeyed flag key<br>");
+		if(!isset($keys[$key]))         $assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT NEST menu has unkown key<br>");
+		$cnt++;
 	}
+
+	if($cnt > count($keys)) 			$assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT FLAT menu has extra keys<br>");
+	if($cnt < count($keys)) 			$assert .= debugLog(__FUNCTION__ . " " . $key . " : ASSERT FLAT menu is missing keys<br>");
 
 	if(!empty($assert)) die($assert);
 }
@@ -402,7 +416,7 @@ function &getMenuItemTreeRef(&$menu, $slug, $create = false){
 	$parenttree = getMenuItemParent($menu,$slug);
 	if($parenttree){
 		$item = &resolve_tree($menu[GSMENUNESTINDEX], $parenttree['data']['dotpath']);
-		$item = &$item[$slug]; // @todo <- dreference problem
+		$item = &$item[$slug]; // @todo <- dreference problem [clarify]
 	}
 	else $item = &$menu[GSMENUNESTINDEX][$slug];
 
@@ -507,13 +521,17 @@ function menuItemGetChildren($pageid,$menuid = null){
 }
 
 
-// @untested
+/** 
+  * remove items from menu, used to sync from pages
+  * @untested
+  * @since  3.4
+  * @param  string $menu menu to modify
+  * @param  string $items item array
+  */
 function menuIndexPrune($menu,$items){
-	// detect menu removals and prune them
 	debugLog(__FUNCTION__ . ' ' . count($items));
 	// debugLog($items);
 	if(!$items) return;
-
 	foreach($items as $key){
 		$menu = menuItemRebuildChange(array('delete',$key),$menu,false);
 		// $menu = menuItemDelete($menu,$key);
@@ -521,21 +539,26 @@ function menuIndexPrune($menu,$items){
 	return $menu;
 }
 
+/** 
+  * add items to menu, used to sync from pages
+  * @untested
+  * @since  3.4
+  * @param  string $menu menu to modify
+  * @param  string $items item array
+  */
 function menuIndexAdd($menu,$items){
-	// detect menu removals and add them
 	debugLog(__FUNCTION__ . ' ' . count($items));
 	// debugLog($items);
 	if(!$items) return;
-
 	foreach($items as $key){
-		$parent = getPageFieldValue($key,'parent'); // @todo allow import of parent
+		$parent = getPageFieldValue($key,'parent'); // @todo allow import of parent, [clarify]
 		$menu   = menuItemRebuildChange(array('insert',$key,$parent),$menu,false);		
 	}
 	return $menu;
 }
 
 /**
- * update menu from page cache
+ * update menu from page cache changes
  * will compare slugs in menu to slugs in pagecache and diff add or prune
  * then rebuild menutree and save
  * @since  3.4
@@ -562,110 +585,6 @@ function menuPageCacheSync(){
 	$menunew     = menuRebuildTree($menunew);
 	$menusuccess = menuSave(GSMENUIDCORE,$menunew);
 	return array(count($deltaadd),count($deltaprune));
-}
-
-/* unused */
-// @tested
-function menuItemRename($menu,$slug,$newslug){
-	$menu[GSMENUFLATINDEX][$slug]['id'] = $newslug;
-	debugLog($menu[GSMENUFLATINDEX]);
-	$menu[GSMENUFLATINDEX] = reindexArray($menu[GSMENUFLATINDEX],'id'); // reindex so we save position in array
-	$menu = menuItemPathChanged($menu,$newslug);
-	// regen nest
-	return $menu;
-}
-
-// @untested
-function menuItemUpdate($menu,$slug,$data){
-	$menu[GSMENUFLATINDEX][$slug]['data'] = $data;
-	menuItemRefreshChildren($menu,$slug);
-	return $menu;
-}
-
-// @untested
-function menuItemMove($menu,$slug,$newparent){
-	$item = getMenuItem($menu,$slug);
-	menuItemDelete($menu,$slug);
-	menuItemAdd($menu,$newparent,$item);
-	menuItemRefreshChildren($menu,$slug);	
-	return $menu;
-}
-
-// @untested
-function menuItemDelete($menu,$slug){
-	debugLog(__FUNCTION__);
-	// if menu item has children hand off
-	if(isset($menu[GSMENUFLATINDEX][$slug]['children'])) return menuItemDeleteParent($menu,$slug);
-	unset($menu[GSMENUFLATINDEX][$slug]);
-	return $menu;
-}
- 
-// refactored up to here, ready for testing
-
-// @untested
-function menuItemDeleteParent($menu,$slug){
-	debugLog(__FUNCTION__);	
-	$item = $menu[GSMENUFLATINDEX][$slug];
-	// move children to root
-	foreach($item['children'] as $childslug){
-		$child = $menu[GSMENUFLATINDEX][$childslug];
-		$child['data']['parent'] = ''; // wipe parent
-		menuItemAdd($menu,$childslug,$child); // move to root
-		menuItemRefreshChildren($menu,$childslug); // update children
-	}
-	unset($menu[GSMENUFLATINDEX][$slug]);
-	return $menu;
-}
-
-// @untested
-function menuItemAdd($menu,$slug,$data){
-	debugLog(__FUNCTION__);
-	$menu[GSMENUFLATINDEX][$slug] = $data;
-	return $menu;
-}
-
-// @untested
-function menuItemParentChanged($menu,$slug){
-	// [ ] parent changed, so refire any pathing functions.
-	// [ ] parent was removed,renamed, or moved so path changes on its children
-	// [ ] move to root
-	// [ ] move to another parent
-	// [ ] deleted, in which case children move to root
-	$menu = menuIndexPrune($menu,array_keys($menu[GSMENUFLATINDEX])); // self prune
-	return $menu;
-}
-
-// @tested
-function menuItemRefreshChildren($menu,$slug){
-	// return;
-	// fix up children values
-	// this is a problem since the menu is not saved yet , and these callouts will eventually need the menu
-	if(!isset($menu[GSMENUFLATINDEX][$slug]['children'])) return $menu;
-
-	foreach($menu[GSMENUFLATINDEX][$slug]['children'] as $key => $value){
-		// update parent on children in case it changed
-		$menu[GSMENUFLATINDEX][$value]['data']['parent'] = $slug;
-		// update dot path if any parent changed
-		$menu = menuItemRebuilDotpath($menu,$value);
-		// update paths
-		// recurseUpgradeTreeCallout($menu[GSMENUFLATINDEX][$value],$id = $value,$parent = $slug);
-		$menu = menuItemRefreshChildren($menu,$value);
-	}
-
-	return $menu;
-}
-
-/**
- * A menu path changed update any pathing dependancies
- * rebuild dot path, rebuild all children, to fix up parent and dotpaths, etc
- * @param  menu $menu menu data array
- * @param  string $slug slug that changed
- * @return array       menu data array
- */
-function menuItemPathChanged($menu,$slug){
-	$menu = menuItemRebuilDotpath($menu,$slug);
-	$menu = menuItemRefreshChildren($menu,$slug);
-	return $menu;
 }
 
 /**

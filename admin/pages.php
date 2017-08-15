@@ -49,11 +49,7 @@ getMenuDataArray();
 // getPagesXmlValues(true);
 
 /**
- * sorting prepare function tests
- * @todo
- */
-
-/**
+ * @todo sorting prepare function tests
  * sort by menuOrder -> parent titles/slug title -> DESC
  * this is obviously overkill since we are heirachial anyway we only need to title sort
  * and this is not cached at all
