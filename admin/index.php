@@ -38,10 +38,10 @@ ob_end_flush();
 			<form class="login entersubmit" action="<?php '?'. htmlentities($_SERVER['QUERY_STRING'], ENT_QUOTES); ?>" method="post">
 				<p><b><?php i18n('USERNAME'); ?>:</b><br /><input type="text" class="text" id="userid" name="userid" /></p>
 				<p><b><?php i18n('PASSWORD'); ?>:</b><br /><input type="password" class="text" id="pwd" name="pwd" /></p>
-				<p><input type="submit" name="submitted" class="submit" value="<?php i18n('LOGIN'); ?>" /></p>
 				<?php 
 					exec_action('login-extras'); // @hook login-extras
 				?>
+				<p><input type="submit" name="submitted" class="submit" value="<?php i18n('LOGIN'); ?>" /></p>
 			</form>
 			<p class="cta" ><a href="<?php echo $SITEURL; ?>"><?php i18n('BACK_TO_WEBSITE'); ?></a> &nbsp; <?php if(getDef('GSALLOWRESETTPASSWORD',true)!== false){ ?>| &nbsp; <a href="resetpassword.php"><?php i18n('FORGOT_PWD'); ?></a> <?php } ?></p>
 			<div class="reqs" ><?php exec_action('login-reqs'); // @hook login-reqs ?></div>
