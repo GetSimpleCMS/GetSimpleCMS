@@ -84,7 +84,7 @@ if (isset($_FILES['file'])) {
 			//set variables
 			$count     = '1';
 			$file      = $filesArray[$i]["name"];
-			$fileext   = getFileExtension($file);
+			$fileext   = getFileExtension($file,getDef("GSUPLOADSEXTLC",true));
 			$filename  = getFileName($file);
 
 			$file_clean = clean_img_name(to7bit($filename));
@@ -92,7 +92,7 @@ if (isset($_FILES['file'])) {
 			$file_base =  $file_clean . '.'. $fileext;
 			$file_loc  = $path . $file_base;
 			
-			//prevent overwriting						
+			//prevent overwriting
 			if(!isset($_POST['fileoverwrite']) && file_exists($file_loc)){
 				list($file_base,$filecount) = getNextFileName($path,$file_base);
 				$file_loc = $path.$file_base;
@@ -207,7 +207,7 @@ function getUploadIcon($type){
 				foreach ($filenames as $file) {
 					if ($file == "." || $file == ".." || $file == ".htaccess" || $file == "index.php"){
             			// not a upload file
-          			} 
+          			}
           			elseif (is_dir($path . $file)) {
             			$dirsArray[$dircount]['name'] = $file;
             			clearstatcache();

@@ -123,6 +123,7 @@ $GS_definitions = array(
 	'GSALLOWBROWSEUPLOAD'  => true,                           // (bool) allow uploading when browsing files
 	'GSUSEGSUPLOADER'      => true,                           // (bool) use ajax upload library gsupload (dropzone) for uploads, else standard form 
 	'GSUPLOADSLC'          => true,                           // (bool) if true force upload filenames to lowercase
+	'GSUPLOADSEXTLC'       => true,                           // (bool) if true force upload extensions to lowercase
 	'GSAUTOUPLOADPATH'     => "autoupload",                   // (str) subpath to put uploads in when performing autouploads
 	# EDITORS ------------------------------------------------------------------------------------------------------------------------------------------
 	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
