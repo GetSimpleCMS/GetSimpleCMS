@@ -1563,12 +1563,28 @@ function pathinfo_filename($file) {
 	}
 }
 
-function getFileName($file){
-	return pathinfo_filename($file);
+/**
+ * get the extension of a filename
+ * @since  3.4
+ * @param  string  $file      filename
+ * @param  boolean $lowercase convert to lowercase
+ * @return string             filename extension part
+ */
+function getFileName($file,$lowercase = false){
+	$file = pathinfo_filename($file);
+	return $lowercase ? lowercase($file) : $file;
 }
 
-function getFileExtension($file){
-	return lowercase(pathinfo($file,PATHINFO_EXTENSION));
+/**
+ * get the extension of a filename
+ * @since  3.4
+ * @param  string  $file      filename
+ * @param  boolean $lowercase convert to lowercase
+ * @return string             filename extension part
+ */
+function getFileExtension($file,$lowercase = true){
+	$ext = pathinfo($file,PATHINFO_EXTENSION);
+	return $lowercase ? lowercase($ext) : $ext;
 }
 
 /**
