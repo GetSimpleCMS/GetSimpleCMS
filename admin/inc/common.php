@@ -164,6 +164,7 @@ $GS_definitions = array(
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
 	'GSDEBUGLOGTIME'       => true,                          // (bool) timestamp debuglog str entries
 	'GSDEBUGLOGDUR'        => true,                          // (bool) duration timestamp debuglog str entries
+	'GSDEBUGHEADERS'       => false,                         // (bool) enable header output debugging ( helpful for finding whitespace or headers already sent errors )
 	# INIT ----------------------------------------------------------------------------------------------------------------------------------------------
 	'GSSAFEMODE'           => false,                         // (bool) enable safe mode, safe mode disables plugins and components
 	'GSFORMATXML'          => true,                          // (bool) format xml files before saving them, making them more legible
@@ -329,21 +330,28 @@ if(defined('GSERRORLOGENABLE') && (bool) GSERRORLOGENABLE === true){
  * Basic file inclusions
  */
 require_once('basic.php');
-// debugLog('headers sent: basic.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: basic.php ' . headers_sent());
 require_once('template_functions.php');
-// debugLog('headers sent: template_functions.php ' . headers_sent());
+
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: template_functions.php ' . headers_sent());
 require_once('theme_functions.php');
-// debugLog('headers sent: theme_functions.php ' . headers_sent());
+
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: theme_functions.php ' . headers_sent());
 require_once('page_functions.php');
-// debugLog('headers sent: page_functions.php ' . headers_sent());
+
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: page_functions.php ' . headers_sent());
 require_once('filter_functions.php');
-// debugLog('headers sent: filter_functions.php ' . headers_sent());
+
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: filter_functions.php ' . headers_sent());
 require_once('sort_functions.php');
-// debugLog('headers sent: sort_functions.php ' . headers_sent());
-require_once('menu_functions.php');
-// debugLog('headers sent: menu_functions.php ' . headers_sent());
+
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: sort_functions.php ' . headers_sent());
+
 require_once('logging.class.php');
-// debugLog('headers sent: logging.class.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: logging.class.php ' . headers_sent());
+
+require_once('menu_functions.php');
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: menu_functions.php ' . headers_sent());
 
 include_once(GSADMININCPATH.'configuration.php');
 
