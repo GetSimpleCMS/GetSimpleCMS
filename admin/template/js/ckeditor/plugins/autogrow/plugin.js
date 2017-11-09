@@ -1,5 +1,5 @@
-﻿/**
- * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+/**
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
 
@@ -69,7 +69,7 @@
 			} );
 		}
 
-		// Coordinate with the "maximize" plugin. (#9311)
+		// Coordinate with the "maximize" plugin. (http://dev.ckeditor.com/ticket/9311)
 		editor.on( 'afterCommandExec', function( evt ) {
 			if ( evt.data.name == 'maximize' && evt.editor.mode == 'wysiwyg' ) {
 				if ( evt.data.command.state == CKEDITOR.TRISTATE_ON )
@@ -82,7 +82,10 @@
 		editor.on( 'contentDom', refreshCache );
 
 		refreshCache();
-		editor.config.autoGrow_onStartup && editor.execCommand( 'autogrow' );
+
+		if ( editor.config.autoGrow_onStartup && editor.editable().isVisible() ) {
+			editor.execCommand( 'autogrow' );
+		}
 
 		function refreshCache() {
 			doc = editor.document;
@@ -90,6 +93,14 @@
 
 			// Quirks mode overflows body, standards overflows document element.
 			scrollable = CKEDITOR.env.quirks ? doc.getBody() : doc.getDocumentElement();
+
+			// Reset scrollable body height and min-height css values.
+			// While set by outside code it may break resizing. (http://dev.ckeditor.com/ticket/14620)
+			var body = CKEDITOR.env.quirks ? scrollable : scrollable.findOne( 'body' );
+			if ( body ) {
+				body.setStyle( 'height', 'auto' );
+				body.setStyle( 'min-height', CKEDITOR.env.safari ? '0%' : 'auto' ); // Safari does not support 'min-height: auto'.
+			}
 
 			marker = CKEDITOR.dom.element.createFromHtml(
 				'<span style="margin:0;padding:0;border:0;clear:both;width:1px;height:1px;display:block;">' +
@@ -103,7 +114,7 @@
 
 			return (
 				!editor.window ||
-				// Disable autogrow when the editor is maximized. (#6339)
+				// Disable autogrow when the editor is maximized. (http://dev.ckeditor.com/ticket/6339)
 				maximizeCommand && maximizeCommand.state == CKEDITOR.TRISTATE_ON
 			);
 		}
@@ -132,7 +143,7 @@
 			newHeight = Math.max( newHeight, configMinHeight );
 			newHeight = Math.min( newHeight, configMaxHeight );
 
-			// #10196 Do not resize editor if new height is equal
+			// http://dev.ckeditor.com/ticket/10196 Do not resize editor if new height is equal
 			// to the one set by previous resizeEditor() call.
 			if ( newHeight != currentHeight && lastHeight != newHeight ) {
 				newHeight = editor.fire( 'autoGrow', { currentHeight: currentHeight, newHeight: newHeight } ).newHeight;

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or http://ckeditor.com/license
  */
 
-CKEDITOR.plugins.setLang( 'codesnippet', 'de', {
+CKEDITOR.plugins.setLang( 'codesnippet', 'de-ch', {
 	button: 'Codeschnipsel einfügen',
 	codeContents: 'Codeinhalt',
 	emptySnippetError: 'Ein Codeschnipsel darf nicht leer sein.',

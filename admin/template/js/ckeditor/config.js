@@ -52,14 +52,24 @@ CKEDITOR.editorConfig = function( config )
 	// config.toolbar_basic.push(Array("About"));
 
 	var extraPlugins = new Array();
+	
+	/**
+	 * testing additional plugins
+	 * (most are not included, and must be installed by user)
+	 */
 	extraPlugins.push('codesnippet');         // enables code insertion, toolbar id 'CodeSnippet'
 	// extraPlugins.push('autogrow');         // auto grow ckeditor height on content, see config.autoGrow_maxHeight
 	// extraPlugins.push('floating-tools');   // enables a floating text toolbar
 	// extraPlugins.push('fixed');            // enables a fixed toolbar ( sticks to center though )
-	extraPlugins.push('uploadimage');         // 
-	extraPlugins.push('uploadwidget');        // 
-	extraPlugins.push('filetools');        // 
-	extraPlugins.push('notificationaggregator');        // 
+	
+	/*
+	 * testing ckeditor drag drop image uploading
+	 * /
+	// extraPlugins.push('uploadimage');         // testing drag drop uploads 
+	// extraPlugins.push('uploadwidget');        // dependancy
+	// extraPlugins.push('filetools');        	  // dependancy
+	// extraPlugins.push('notificationaggregator');// dependancy
+
 	config.extraPlugins = extraPlugins.join(',');
 
 	/*
