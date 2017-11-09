@@ -57,7 +57,7 @@ CKEDITOR.editorConfig = function( config )
 	 * testing additional plugins
 	 * (most are not included, and must be installed by user)
 	 */
-	extraPlugins.push('codesnippet');         // enables code insertion, toolbar id 'CodeSnippet'
+	extraPlugins.push('codesnippet');         // (included) enables code insertion, toolbar id 'CodeSnippet'
 	// extraPlugins.push('autogrow');         // auto grow ckeditor height on content, see config.autoGrow_maxHeight
 	// extraPlugins.push('floating-tools');   // enables a floating text toolbar
 	// extraPlugins.push('fixed');            // enables a fixed toolbar ( sticks to center though )
