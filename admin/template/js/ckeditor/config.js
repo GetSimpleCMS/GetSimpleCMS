@@ -5,7 +5,7 @@
 CKEDITOR.editorConfig = function( config )
 {
 	// Define changes to default configuration here.
-	config.skin                        = 'getsimple';
+	config.skin                        = 'getsimple'; // clone of moono color
 	
 	config.defaultLanguage             = 'en';
 	config.resize_dir                  = 'vertical'; // vertical resize
@@ -21,11 +21,9 @@ CKEDITOR.editorConfig = function( config )
 	config.allowedContent              = true;       // disable acf
 	config.disableAutoInline           = true;       // disable automatic inline editing of elements with contenteditable=true
 
-
 	config.filebrowserBrowseUrl        = 'upload.php?browse&type=all';
 	config.filebrowserImageBrowseUrl   = 'upload.php?browse&type=images';	
 	config.filebrowserUploadUrl        = 'upload.php?ajax=1&autoupload';
-	// config.uploadUrl = "../admin/upload.php"
 
 	// customize file browser popup windows below
 	// config.filebrowserWindowWidth      = '960';
@@ -45,26 +43,22 @@ CKEDITOR.editorConfig = function( config )
 		config.toolbar_basic.push(Array("About"));
 	}
 
-	/*
-	 * Add 'about' button for debug
-	 */
-	// config.toolbar_advanced.push(Array("About"));
-	// config.toolbar_basic.push(Array("About"));
-
 	var extraPlugins = new Array();
+	extraPlugins.push('codesnippet');         // (included) enables code insertion, toolbar id 'CodeSnippet'
 	
 	/**
 	 * testing additional plugins
-	 * (most are not included, and must be installed by user)
+	 * ( PLUGINS NOT INCLDUED, must be installed by user)
 	 */
-	extraPlugins.push('codesnippet');         // (included) enables code insertion, toolbar id 'CodeSnippet'
 	// extraPlugins.push('autogrow');         // auto grow ckeditor height on content, see config.autoGrow_maxHeight
 	// extraPlugins.push('floating-tools');   // enables a floating text toolbar
 	// extraPlugins.push('fixed');            // enables a fixed toolbar ( sticks to center though )
 	
 	/*
 	 * testing ckeditor drag drop image uploading
+	 * PLUGINS NOT INCLUDED
 	 * /
+	// config.uploadUrl = "../admin/upload.php";
 	// extraPlugins.push('uploadimage');         // testing drag drop uploads 
 	// extraPlugins.push('uploadwidget');        // dependancy
 	// extraPlugins.push('filetools');        	  // dependancy
