@@ -15,7 +15,7 @@ define('IN_GS', TRUE); // GS enviroment flag
 GLOBAL $GS_debug; // GS debug trace array
 if(!isset($GS_debug)) $GS_debug = array();
 
-// @todo remove for production
+// @todo REMOVE FOR PRODUCTION
 // debug catcher for this core wide change issues
 if(htmlentities($_SERVER['SCRIPT_NAME'], ENT_QUOTES) !== htmlentities($_SERVER['PHP_SELF'], ENT_QUOTES)) die('PHP_SELF mismatch ' . htmlentities($_SERVER['PHP_SELF']));
 
@@ -28,7 +28,7 @@ if(function_exists('mb_internal_encoding')) mb_internal_encoding("UTF-8"); // se
  *  GSCONFIG definitions
  */
 $GS_constants = array(
-	'GSROOTPATH'            => getGSRootPath(),               // root path of getsimple
+	'GSROOTPATH'            => getGSRootPath(false),          // root path of getsimple
 	"GSDATEFORMAT"          => "M j, Y",                      // (str) short date-only format fallback
 	"GSDATEANDTIMEFORMAT"   => "F jS, Y - g:i A",             // (str) date/time format fallback
 	"GSTIMEFORMAT"          => "g:i A",                       // (str) time only format fallback
@@ -84,23 +84,26 @@ $GS_definitions = array(
 	'GSERRORLOGENABLE'     => true,                           // (bool) should GS log php errors to GSERRORLOGFILE
 	'GSERRORLOGFILE'       => 'errorlog.txt',                 // (str) error log filename
 	'GSASSETSCHEMES'       => false,                          // (bool) should $ASSETURL contain the url scheme http|https
-	'GSASSETURLREL'        => true,                           // (bool) Use root relative urls for $ASSETURL, overrides GSASSETSCHEMES
-	'GSSITEURLREL'         => true,                           // (bool) Use root relative urls for $SITEURL
+	'GSASSETURLREL'        => false,                           // (bool) Use root relative urls for $ASSETURL, overrides GSASSETSCHEMES
+	'GSSITEURLREL'         => false,                           // (bool) Use root relative urls for $SITEURL
 	'GSEMAILLINKBACK'      => 'http://get-simple.info/',      // (str) url used in email template
 	'GSINDEXSLUG'          => 'index',                        // (str) slug to use as index when no slug provided
-	'GSPLUGINORDER'        => '',                             // (str) csv list of live_plugins keys to load first and in order, kludge and not supported
+	'GSPLUGINORDER'        => '',                             // (str-csv) csv list of live_plugins keys to load first and in order, kludge and not supported
 	'GSNOFRAME'            => true,                           // (mixed) allow GS to be loaded in frames via x-frame policy
-	'GSNOFRAMEDEFAULT'     => 'SAMEORIGIN',                    // (string) GSNOFRAME X-Frame-Options default value
+	'GSNOFRAMEDEFAULT'     => 'SAMEORIGIN',                   // (string) GSNOFRAME X-Frame-Options default value
+	'GSCDNFALLBACK'        => true,                           // (bool) if true, CDN assets queued on GSFRONT will fallback to local version
+	'GSLOGINUPGRADES'      => true,                           // (bool) if true, temporarily close front end during upgrades, must login to upgrade
 	# STYLES -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSSTYLE'              => 'wide,sbfixed',                 // (str-csv) default style modifiers
 	'GSWIDTH'              => '1024px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width
 	'GSWIDTHWIDE'          => '1366px',                       // (str) page width on backend pages defined in GSWIDEPAGES, values as above
-	'GSWIDEPAGES'          => 'theme-edit,components,snippets', // (str-csv) pages to apply GSWIDTHWIED on
+	'GSWIDEPAGES'          => 'theme-edit,components,snippets', // (str-csv) pages to apply GSWIDTHWIDE on
 	# CHMOD --------------------------------------------------------------------------------------------------------------------------------------------
 	'GSCHMOD'              => 0644,                           // (octal) chmod mode legacy
 	'GSCHMODFILE'          => 0644,                           // (octal) chmod mode for files
 	'GSCHMODDIR'           => 0755,                           // (octal) chmod mode for dirs
-	'GSDOCHMOD'            => true,                           // (bool) perform chmod after creating files or directories
+	'GSDOCHMOD'            => true,                           // (bool) perform chmod when creating files or directories
+	'GSCHMODCHECK'        => false,                           // (bool) warn on gschmod mismatches in health check
 	'GSSHOWCODEHINTS'      => true,                           // (bool) show code hints on components page and snippets etc.
 	# ALLOW --------------------------------------------------------------------------------------------------------------------------------------------
 	'GSALLOWLOGIN'         => true,                           // (bool) allow front end login
@@ -108,19 +111,26 @@ $GS_definitions = array(
 	'GSALLOWDOWNLOADS'     => true,                           // (bool) allow using downloads.php to download files from /uploads and backups/zip
 	'GSPROFILEALLOWADD'    => true,                           // (bool) allow superuser to add new users
 	'GSPROFILEALLOWEDIT'   => true,                           // (bool) allow superuser to edit other users
-	# ALLOW UPLOADS ------------------------------------------------------------------------------------------------------------------------------------
+	'GSEXECANON'           => false,                          // (bool) allow callbacks to be anonymous closures, security implications
+	# UPLOADS ------------------------------------------------------------------------------------------------------------------------------------
 	'GSALLOWUPLOADS'       => true,                           // (bool) allow upload files
 	'GSALLOWUPLOADCREATE'  => true,                           // (bool) allow upload folder creation
 	'GSALLOWUPLOADDELETE'  => true,                           // (bool) allow upload file/folder delete
 	'GSALLOWBROWSEUPLOAD'  => true,                           // (bool) allow uploading when browsing files
 	'GSUSEGSUPLOADER'      => true,                           // (bool) use ajax upload library gsupload (dropzone) for uploads, else standard form 
+	'GSUPLOADSLC'          => true,                           // (bool) if true force upload filenames to lowercase
+	'GSUPLOADSEXTLC'       => true,                           // (bool) if true force upload extensions to lowercase
+	'GSAUTOUPLOADPATH'     => "autoupload",                   // (str) subpath to put uploads in when performing autouploads
 	# EDITORS ------------------------------------------------------------------------------------------------------------------------------------------
 	'GSAJAXSAVE'           => true,                           // (bool) use ajax for saving themes, components, and pages
 	'GSTHEMEEDITROOT'      => true,                           // (bool) allow editing theme root files
 	'GSTHEMEEDITEXTS'      => 'php,css,js,html,htm,txt,xml,', // (str-csv) file extensions to show and edit in theme editor
 	'GSEDITORHEIGHT'       => '500',                          // (str) wysiwyg editor height in px
 	'GSEDITORTOOL'         => 'basic',                        // (str) wysiwyg editor toobar
-	'GSEDITORCONFIGFILE'   => 'custom_config.js',             // (str) custom user cke config filename override in themes/
+	'GSEDITORCONFIGFILE'   => 'config.js',                    // (str) custom user cke config filename override in themes/
+	'GSEDITORSTYLESFILE'   => 'styles.js',                    // (str) custom user cke config filename override in themes/
+	'GSEDITORCSSFILE'      => 'contents.css',                 // (str) custom user cke config filename override in themes/
+	'GSEDITORSTYLESID'     => 'userstyles',                   // (str) custom user cke config filename override in themes/
 	'GSSNIPPETSATTRIB'     => 'getHtmlEditorAttr',            // (str) callback funcname for htmleditors used to init htmleditor
 	'GSCOMPONENTSATTRIB'   => 'getCodeEditorAttr',            // (str) callback funcname for codeeditors used to init codeeditor
 	'GSPAGESATTRIB'        => 'getDefaultHtmlEditorAttr',     // (str) callback funcname for page html editor
@@ -130,26 +140,30 @@ $GS_definitions = array(
 	'GSCODEEDITORTHEMES'   => '3024-day,3024-night,ambiance,base16-light,base16-dark,blackboard,cobalt,colorforth,eclipse,elegant,erlang-dark,lesser-dark,mbo,midnight,monokai,neat,night,paraiso-dark,paraiso-light,rubyblue,solarized dark,solarized light,the-matrix,twilight,tomorrow-night-eighties,vibrant-ink,xq-dark,xq-light', # themes for codemirror
 	# DRAFTS -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSUSEDRAFTS'          => true,                           // (bool) use page drafts
-	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else `nodraft` or `draft` only
+	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else manually pass `nodraft` or `draft` qs
 	'GSDRAFTSTACKDEFAULT'  => true,                           // (bool) default page stack editing to drafts if true
 	'GSSDRAFTSPUBLISHEDTAG'=> true,                           // (bool) show published label on non draft pages if true
-	'GSAUTOSAVE'           => false,                          // (bool) auto save enabled, disabled if false, only used for drafts currently
+	'GSAUTOSAVE'           => true,                           // (bool) auto save enabled, disabled if false, only used for drafts currently
 	'GSAUTOSAVEINTERVAL'   => 6,                              // (int)  auto save interval in seconds,  only used for drafts currently
 	# IMAGES -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSIMAGEWIDTH'         => 200,                            // (int) thumbnail size
 	'GSTHUMBSMWIDTH'       => 80,                             // (int) thumbsm max height
 	'GSTHUMBSMHEIGHT'      => 160,                            // (int) thumbsm max width
+	'GSTHUMBSSHOW'         => false,                          // (bool) always show thumbnails
 	# DEBUGGING ----------------------------------------------------------------------------------------------------------------------------------------
 	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
 	'GSDEBUG'              => true,                          // (bool) output debug mode console
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls to debuglog
 	'GSDEBUGREDIRECTS'     => false,                          // (bool) if debug mode enabled, prevent redirects for debugging
-	'GSDEBUGFILEIO'        => false,                          // (bool) debug filio operations
+	'GSDEBUGFILEIO'        => true,                          // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
 	'GSSAFEMODE'           => false,                          // (bool) enable safe mode, safe mode disables plugins and components
 	# ---------------------------------------------------------------------------------------------------------------------------------------------------
  	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
 );
+
+// check php env for GSROOTHPATH to allow for symlink GSADMIN etc.
+if(getenv('GSROOTPATH') && !defined('GSROOTPATH')) define('GSROOTPATH',getenv('GSROOTPATH'));
 
 /* Define Constants */
 GS_defineFromArray($GS_constants);
@@ -181,7 +195,7 @@ global
 ;
 
 if(isset($_GET['nocache'])){
-	// @todo: disables caching, this should probably only be allowed for auth users, it is also not well inplemented
+	// @todo: disables caching, this should probably only be allowed for auth users, it is also not well implemented
 	$nocache = true;
 }
 
@@ -210,7 +224,8 @@ $GSADMIN = rtrim(GSADMIN,'/\\'); // global GS admin root folder name
 /**
  * Define Paths
  */
-define('GSADMINPATH'     , GSROOTPATH      . $GSADMIN.'/'); // admin/
+define('GSPATH'          , getGSRootPath()                );// /
+define('GSADMINPATH'     , GSPATH          . $GSADMIN.'/'); // admin/
 define('GSADMININCPATH'  , GSADMINPATH     . 'inc/');       // admin/inc/
 define('GSADMINTPLPATH'  , GSADMINPATH     . 'template/');  // admin/template/
 define('GSPLUGINPATH'    , GSROOTPATH      . 'plugins/');   // plugins/
@@ -234,7 +249,7 @@ define('GSTHEMESPATH'    , GSROOTPATH      . 'theme/');     // theme/
 
 
 // reserved slug names, slugs named these will interfere with gs folder access
-// these are cehcked against in changedata.php and auto incremented to avoid conflicts
+// these are checked against in changedata.php and auto incremented to avoid conflicts
 $reservedSlugs = array($GSADMIN,'data','theme','plugins','backups');
 
 // tab sidemenu structure reference
@@ -374,21 +389,30 @@ GLOBAL
  $SITELANG,
  $SITEUSR,
  $ASSETURL,
+ $ASSETPATH,
  $OLDLOCALE,
  $NEWLOCALE,
  $SAFEMODE
 ;
 
+
 // load website data from GSWEBSITEFILE (website.xml)
 extract(getWebsiteData(true));
 
 // debugging paths
+debugLog('GSBASE       = ' . GSBASE);
+debugLog('GSROOTPATH   = ' . GSROOTPATH);
+debugLog('GSADMINPATH  = ' . GSADMINPATH);
 debugLog('SITEUSR      = ' . $SITEUSR);
 debugLog('GSSITEURLREL = ' . getDef('GSSITEURLREL',true));
 debugLog('SITEURL      = ' . getSiteURL());
 debugLog('SITEURL_ABS  = ' . getSiteURL(true));
 debugLog('SITEURL_REL  = ' . $SITEURL_REL);
 debugLog('ASSETURL     = ' . $ASSETURL);
+debugLog('ASSETPATH    = ' . $ASSETPATH);
+debugLog('SITELANG     = ' . $SITELANG);
+debugLog('GSLANG       = ' . getDef('GSLANG'));
+// debugDie();
 
 /**
  * Global user data
@@ -423,6 +447,7 @@ GLOBAL
 
 // load language
 $LANG = getDefaultLang();   // set global language from config heirarchy
+debugLog("LANG = ".$LANG);
 i18n_merge(null);           // load $LANG file into $i18n
 i18n_mergeDefault();        // load GSDEFAULTLANG or GSMERGELANG lang into $i18n to override ugly missing {} tokens if set
 
@@ -466,6 +491,7 @@ GLOBAL
 ;
 
 // init editor globals
+if(!defined('GSCKETSTAMP')) define('GSCKETSTAMP',get_gs_version()); // ckeditor asset querystring for cache control 
 $EDHEIGHT  = getEditorHeight();
 $EDLANG    = getEditorLang();
 $EDOPTIONS = getEditorOptions();
@@ -518,13 +544,13 @@ if (notInInstall()) {
 	# if there is no SITEURL set, then it's a fresh install. Start installation process
 	# siteurl check is not good for pre 3.0 since it will be empty, so skip and run update first.
 	if ($SITEURL == '' &&  get_gs_version() >= 3.0)	{
-		serviceUnavailable();
+		if(getDef('GSLOGINUPGRADES',true)) serviceUnavailable();
 		redirect($fullpath . $GSADMIN.'/install.php');
 	}
 	else {
 	# if an update file was included in the install package, redirect there first
 		if (file_exists(GSADMINPATH.'update.php') && !isset($_GET['updated']) && !getDef('GSDEBUGINSTALL'))	{
-			serviceUnavailable();
+			if(getDef('GSLOGINUPGRADES',true)) serviceUnavailable();
 			redirect($fullpath . $GSADMIN.'/update.php');
 		}
 	}
@@ -553,6 +579,7 @@ if(empty($SITEURL))      $SITEURL     = suggest_site_path();
 if(empty($SITEURL_ABS))  $SITEURL_ABS = $SITEURL;
 if(empty($SITEURL_REL))  $SITEURL_REL = $SITEURL;
 if(empty($ASSETURL))     $ASSETURL    = $SITEURL;
+if(empty($ASSETPATH))    $ASSETPATH   = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH,GSADMINPATH));
 
 /**
  * Include other files depending if they are needed or not
@@ -646,7 +673,8 @@ function debugLog($mixed = null) {
  * @since  3.4
  * @param  str $msg message to log
  */
-function debugDie($msg){
+function debugDie($msg = ""){
+	if(empty($msg))debugLog(debug_backtrace());
 	debugLog($msg);
 	outputDebugLog();
 	die();
@@ -689,7 +717,63 @@ function serviceUnavailable(){
 	}
 }
 
-function getGSRootPath(){
+function getGSRootPath($calculate = false){
+
+	if($calculate){
+		/**
+		 * calculate root path if different than admin path
+		 * @todo  experimental
+		 *
+		 * get data path, getcwd problems?
+		 * get actual path SCRIPT_NAME
+		 * path compare
+		 * normalize paths
+		 * explode paths
+		 * reverse array
+		 * array diff
+		 * get key of fisrt diff, this is our path index
+		 * slice the array then change the first dir to the real dir
+		 * reverse, implode with slashes
+		 */
+
+		global $GSADMIN;
+
+		// debugLog(phpinfo(32));
+		$file = getcwd(); // get workign path, __DIR__ is NOT the same @todo add double check here
+		$path = dirname($_SERVER['SCRIPT_NAME']); // get script path
+		$file = str_replace("\\", "/", $file);    // normalize slashes
+		
+		// tts
+		// $file = trim($file,"/");
+		// $path = trim($path,"/");
+
+ 		// convert to arrays
+		$pathpartsfile = explode("/",$file);
+		$pathpartsfile = array_reverse($pathpartsfile);
+		debugLog($pathpartsfile);
+		
+		$pathpartspath = explode("/",$path);		
+		$pathpartspath = array_reverse($pathpartspath);
+		debugLog($pathpartspath);
+		
+		// find index of first diff
+		$pathdiff        = array_diff($pathpartspath,$pathpartsfile);
+		$pathdiffindices = array_keys($pathdiff);
+		$pathdiffindex   = isset($pathdiffindices[0]) ? $pathdiffindices[0] : 0;
+		
+		// remove everyting after the first diff
+		$pathpartsfile = array_slice($pathpartsfile,$pathdiffindex,count($pathpartsfile));
+		// replace dir with real dir using index
+		$pathpartsfile[0] = $pathpartspath[$pathdiffindex];
+		debugLog($pathpartsfile);
+
+		// reassemble
+		$pathpartsfile = array_reverse($pathpartsfile);
+		$file = implode(DIRECTORY_SEPARATOR,$pathpartsfile);
+		
+		debugLog($file);
+		return $file.DIRECTORY_SEPARATOR;
+	}
 	return dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR;
 }
 

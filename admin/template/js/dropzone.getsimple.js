@@ -1,5 +1,6 @@
 jQuery(document).ready(function () {
 
+	// init sidebar config object for dropzone
 	dropzoneSidebarConfig = {
 		clickable: '#fileuploadlink',
 		fallback              : 
@@ -19,9 +20,52 @@ jQuery(document).ready(function () {
 		if(isTouchDevice()) $('.snav').addClass('touch');
 	}
 
+	// add dropzone to element
 	myDropzone = $('#gs-dropzone').addDropZone(dropzoneSidebarConfig);
 
-	// Remove the queue item
+	// processing handler, show spinner during processing
+	myDropzone.on("processing", function(file) {
+		$('#loader').show();
+	});
+
+	// success handler, remove queue item after success
+	myDropzone.on("success", function(file) {
+		if(!this.options.debug)	removeFromQueue(file);
+	});
+
+	// error handler, remove queue item after success
+	myDropzone.on("error", function(file,response,xhr) {
+		response  = $($.parseHTML(response));
+		var error = $(response).filter("div.updated").text();
+		$(file.previewElement).find('.dz-error-message').text(error);		
+	});
+
+	// total progress handler for total queue length
+	// myDropzone.on("totaluploadprogress", function(progress) {
+	// 	// Debugger.log(progress);
+	// 	// $(file.previewElement).delay(5000).slideUp();
+	// });
+	
+	// queue complete handler, hide spinner, load new page content to update file list
+	// @todo atm the entire page is updated after all files are loaded, in future will update in real time using json
+	myDropzone.on("complete", function(file) {
+  		if (this.getQueuedFiles().length == 0) {
+			$('#loader').fadeOut(500);
+
+			// store #imageFilter selected index to restore after load
+			// var filterVal = $('#imageFilter').val();
+			
+			// load upload page new
+			$('#maincontent').load(location.href+' #maincontent > *', function(ev){
+				// $('#imageFilter').val(filterVal);
+				// $('#imageFilter').trigger('change');
+				$(window).trigger('fileuploaded');
+			});
+  		}
+  	});
+
+
+	// callback for remove the queue item
 	removeFromQueue = function(file){
 		var slideDuration = 600;
 		var removeDelay = 5000;
@@ -32,41 +76,8 @@ jQuery(document).ready(function () {
 			removeDelay
 		);
 	}
-
-	// while processing, show spinner
-	myDropzone.on("processing", function(file) {
-		$('#loader').show();
-		});
-
-	// after success, remove queue item
-	myDropzone.on("success", function(file) {
-		if(!this.options.debug)	removeFromQueue(file);
-		});
-
-	// progress of total queue
-	// myDropzone.on("totaluploadprogress", function(progress) {
-	// 	// Debugger.log(progress);
-	// 	// $(file.previewElement).delay(5000).slideUp();
-	// });
-	
-	// queue complete hide spinner, load content 
-	myDropzone.on("complete", function(file) {
-  		if (this.getQueuedFiles().length == 0) {
-			$('#loader').fadeOut(500);
-
-			// #imageFilter selected index to restore 
-			var filterIdx = $('#imageFilter').prop("selectedIndex");
-
-			$('#maincontent').load(location.href+' #maincontent > *', function(ev){
-				$('#imageFilter').prop("selectedIndex",filterIdx);
-				$('#imageFilter').trigger('change');
-				$(window).trigger('fileuploaded');
-			});
-
-  		}
-  	});
-
 });
+
 	/**
 	 * drop zone accept callout, checks if file exists
 	 * if exists confirm overwrite, if no then it cancels

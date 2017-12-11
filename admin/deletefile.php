@@ -28,7 +28,7 @@ if (isset($_GET['id'])) {
 		$status = delete_page($id) ? 'success' : 'error';
 		generate_sitemap();
 		exec_action('page-delete'); // @hook page-delete deleting page
-		redirect("pages.php?upd=del-".$status."&id=". $id ."&type=delete");
+		redirect("pages.php?upd=edit-".$status."&id=". $id ."&type=delete");
 		die();
 	}
 }

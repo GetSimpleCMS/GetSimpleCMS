@@ -17,10 +17,9 @@ $i18n = array(
 /* 
 * For: install.php
 */
-"PHPVER_ERROR"            =>	"<b>Unable to continue:</b> PHP 5.1.3 or greater is required, you have ",
+"PHPVER_ERROR"            =>	"<b>Unable to continue:</b> PHP 5.2 or greater is required, you have ",
 "SIMPLEXML_ERROR"         =>	"<b>Unable to continue:</b> <em>SimpleXML</em> is not installed",
 "CURL_WARNING"            =>	"<b>Warning:</b> <em>cURL</em> Not Installed",
-"TZ_WARNING"              =>	"<b>Warning:</b> <em>date_default_timezone_set</em> is missing",
 "WEBSITENAME_ERROR"       =>	"<b>Error:</b> There was a problem with your website title",
 "WEBSITEURL_ERROR"        =>	"<b>Error:</b> There was a problem with your website URL",
 "USERNAME_ERROR"          =>	"<b>Error:</b> Username was not set",
@@ -210,7 +209,7 @@ $i18n = array(
 "ADD_COMPONENT"           =>	"<em>A</em>dd Component", // 'a' is the accesskey identifier
 "SAVE_COMPONENTS"         =>	"Save Components",
 "ACTIVE"                  =>	"Active",
-"COMPONENT_DELETED"       =>    "Component was deleted <b>%s</b>",
+"COMPONENT_DELETED"       =>    "Component will be deleted upon next save <b>%s</b>",
 
 /* 
 * For: snippets.php
@@ -253,12 +252,13 @@ $i18n = array(
 "GENERAL_SETTINGS"        =>	"General Settings",
 "WEBSITE_SETTINGS"        =>	"Website Settings",
 "LANGUAGE"                =>	"Language",
-"USE_FANCY_URLS"          =>	"Use Fancy URLs - <b style=\"font-weight:100\">Requires that your host has <code>mod_rewrite</code> enabled</b>",
-"PERMALINK"               =>	"Custom Permalink Structure",
+"USE_FANCY_URLS"          =>	"Enable Custom URLs - <b style=\"font-weight:100\">Typically requires that your host has <code>mod_rewrite</code> enabled</b>",
+"PERMALINK"               =>	"Custom URL Structure",
 "MORE"                    =>	"more",
 "HELP"                    =>	"help",
 "FLUSHCACHE"              =>	"Flush All Caches",
 "FLUSHCACHE-SUCCESS"      =>	"Caches Flushed Successfully",
+"URL_SETTINGS"            =>    "Custom URL Settings",
 
 /*
  * For: Profile.php
@@ -295,7 +295,7 @@ $i18n = array(
 "WARNING"                 =>	"Warning",
 "DATA_FILE_CHECK"         =>	"Data File Integrity Check",
 "PAGE_FILE_CHECK"         =>	"Page File Integrity Check",
-"DIR_PERMISSIONS"         =>	"Directory Permissions",
+"DIR_PERMISSIONS"         =>	"Directory / File Permissions",
 "EXISTANCE"               =>	"%s Existence",
 "MISSING_FILE"            =>	"Missing file",
 "BAD_FILE"                =>	"Bad file",
@@ -326,7 +326,7 @@ $i18n = array(
 * For: archive.php
 */
 "SUCC_WEB_ARCHIVE"        =>	"An archive of your website has been successfully created",
-"SUCC_WEB_ARC_DEL"        =>	"The seleted archive has been successfully deleted",
+"SUCC_WEB_ARC_DEL"        =>	"The selected archive has been successfully deleted",
 "WEBSITE_ARCHIVES"        =>	"Website Archives",
 "ARCHIVE_DELETED"         =>	"Archive deleted successfully",
 "CREATE_NEW_ARC"          =>	"Create a New Archive",
@@ -498,7 +498,7 @@ $i18n = array(
 "CREATE_THUMBNAIL"        =>	"Create Thumbnail",
 "CROP_INSTR_NEW"          =>	"Click and drag to crop, hold <kbd>Ctrl</kbd> or <kbd>&#8984; Command</kbd> for square, <kbd>esc</kbd> to clear",
 "CROP_TOGGLE_INPUTS"      =>    "Show / Hide Advanced",
-"SELECT_DIMENTIONS"       =>	"Selection Dimentions",
+"SELECT_DIMENTIONS"       =>	"Selection Dimensions",
 "HTML_ORIG_IMG"           =>	"Original Image HTML",
 "LINK_ORIG_IMG"           =>	"Original Image Link",
 "HTML_THUMBNAIL"          =>	"Thumbnail HTML",
@@ -621,6 +621,55 @@ $i18n = array(
 
 
 "X"                       =>	"not translated",
+/*
+ * Default transliteration
+ */
+"TRANSLITERATION" => array(
+  // Roman
+  'á'=>'a', 'é'=>'e', 'í'=>'i', 'ó'=>'o', 'ú'=>'u',
+  'Á'=>'a', 'É'=>'e', 'Í'=>'i', 'Ó'=>'o', 'Ú'=>'u',
+  'à'=>'a', 'è'=>'e', 'ì'=>'i', 'ò'=>'o', 'ù'=>'u',
+  'À'=>'a', 'È'=>'e', 'Ì'=>'i', 'Ò'=>'o', 'Ù'=>'u',
+  'ä'=>'a', 'ë'=>'e', 'ï'=>'i', 'ö'=>'o', 'ü'=>'u',
+  'Ä'=>'a', 'Ë'=>'e', 'Ï'=>'i', 'Ö'=>'o', 'Ü'=>'u',
+  'â'=>'a', 'ê'=>'e', 'î'=>'i', 'ô'=>'o', 'û'=>'u',
+  'Â'=>'a', 'Ê'=>'e', 'Î'=>'i', 'Ô'=>'o', 'Û'=>'u',
+  'ñ'=>'n', 'ç'=>'c',
+  'Ñ'=>'n', 'Ç'=>'c',
+  '¿'=>'', '¡'=>'',
+  // special Czech chars with diacritics (except some)
+  "ě"=>"e","Ě"=>"E","š"=>"s","Š"=>"S","č"=>"c",
+  "Č"=>"c","ř"=>"r","Ř"=>"r","ž"=>"z","Ž"=>"z",
+  "ý"=>"y","Ý"=>"y",
+  "ů"=>"u","Ů"=>"u","ť"=>"t","Ť"=>"t",
+  "ď"=>"d","Ď"=>"d","ň"=>"n","Ň"=>"n",
+  //special Slovakian chars with diacritics (except some)
+  "ĺ"=>"l","ľ"=>"l","ŕ"=>"r", 
+  "Ĺ"=>"l","Ľ"=>"L","Ŕ"=>"r",
+  // Polish
+  "Ą"=>"a","Ć"=>"c","Ę"=>"e",
+  "Ł"=>"l","Ń"=>"n",
+  "Ś"=>"s","Ź"=>"z","Ż"=>"z",
+  "ą"=>"a","ć"=>"c","ę"=>"e",
+  "ł"=>"l","ń"=>"n",
+  "ś"=>"s","ź"=>"z","ż"=>"z",
+  // Russian
+  "А"=>"a","Б"=>"b","В"=>"v",
+  "Г"=>"g","Д"=>"d","Е"=>"e","Ё"=>"yo","Ж"=>"zh",
+  "З"=>"z","И"=>"i","Й"=>"j","К"=>"k","Л"=>"l",
+  "М"=>"m","Н"=>"n","О"=>"o","П"=>"p","Р"=>"r",
+  "С"=>"s","Т"=>"t","У"=>"u","Ф"=>"f","Х"=>"h",
+  "Ц"=>"c","Ч"=>"ch","Ш"=>"sh","Щ"=>"shh","Ъ"=>"'",
+  "Ы"=>"y","Ь"=>"","Э"=>"e","Ю"=>"yu","Я"=>"ya",
+  "а"=>"a","б"=>"b","в"=>"v","г"=>"g","д"=>"d",
+  "е"=>"e","ё"=>"yo","ж"=>"zh","з"=>"z","и"=>"i",
+  "й"=>"j","к"=>"k","л"=>"l","м"=>"m","н"=>"n",
+  "о"=>"o","п"=>"p","р"=>"r","с"=>"s","т"=>"t",
+  "у"=>"u","ф"=>"f","х"=>"h","ц"=>"c","ч"=>"ch",
+  "ш"=>"sh","щ"=>"shh","ъ"=>"","ы"=>"y","ь"=>"",
+  
+  "э"=>"e","ю"=>"yu","я"=>"ya"
+),
 
 /*
 * Additions for 3.1
@@ -722,7 +771,7 @@ $i18n = array(
 "VALID"                   =>    "Valid",
 "INVALID"                 =>    "Invalid",
 "INVALID_OPER"            =>    "Invalid Operation",
-"ERROR_OCCURED"           =>    "An Error has Occured"
+"ERROR_OCCURED"           =>    "An Error has Occurred"
 
 // already defined generics
 # "ENABLE"                =>    "Activate"

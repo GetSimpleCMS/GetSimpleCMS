@@ -58,7 +58,7 @@ get_template('header');
 			<p><?php i18n('MENU_MANAGER_DESC'); ?></p>
 			<?php
 				if (count($pagesSorted) != 0) { 
-					echo '<form method="post" action="menu-manager.php">';
+					echo '<form class="watch" method="post" action="menu-manager.php">';
 					echo '<ul id="menu-order" >';
 					foreach ($pagesSorted as $page) {
 						$sel = '';

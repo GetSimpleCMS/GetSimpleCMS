@@ -31,9 +31,15 @@ http://get-simple.info/docs/requirements
 
 PHP 5.2+
 
-### Module Requirements ###
+### PHP Required Extensions ###
 
-SimpleXML
+SimpleXML  
+xml  
+json  
+dom  
+
+curl (optional)  
+gd (optional)  
 
 ### Browser Requirements ###
 

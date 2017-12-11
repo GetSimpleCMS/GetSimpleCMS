@@ -84,7 +84,7 @@ else{
 	// empty user defaults
 	$data = new stdClass();
 	$data->HTMLEDITOR = true;
-	$data->LANG     = $SITELANG;
+	$data->LANG     = '';
 	$data->EMAIL    = '';
 	$data->TIMEZONE = $SITETIMEZONE;
 	$data->NAME     = '';
@@ -223,17 +223,16 @@ if ($data->HTMLEDITOR != '' ) { $editorchck = 'checked'; }
 # get all available language files
 // if ($data->LANG == ''){ $LANG = GSDEFAULTLANG; }
 
+$langs = '<option value="">-- '.i18n_r('NONE').' --</option>';
 if (count($lang_array) != 0) {
 	sort($lang_array);
-	$sel = ''; $langs = '';
+	$sel = '';
 	foreach ($lang_array as $lfile){
 		$lfile = basename($lfile,".php");
 		if ($data->LANG == $lfile) { $sel="selected"; }
 		$langs .= '<option '.$sel.' value="'.$lfile.'" >'.$lfile.'</option>';
 		$sel = '';
 	}
-} else {
-	$langs = '<option value="" selected="selected" >-- '.i18n_r('NONE').' --</option>';
 }
 
 $pagetitle = i18n_r('USER_PROFILE');
@@ -259,7 +258,7 @@ $userheading = empty($userid) ? "<span>/ ". i18n_r('NEW_USER') ."</span>" : "<sp
 			<?php exec_action(get_filename_id().'-body'); ?>
 			
 			<!-- user form -->
-			<form class="largeform" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
+			<form class="largeform watch" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 			<input id="nonce" name="nonce" type="hidden" value="<?php echo get_nonce("save_profile"); ?>" />
 			<?php if($adding === true){ ?> <input id="add" name="add" type="hidden" value="1" /> <?php } ?>
 		
@@ -267,7 +266,7 @@ $userheading = empty($userid) ? "<span>/ ". i18n_r('NEW_USER') ."</span>" : "<sp
 				<p><label for="user" ><?php i18n('LABEL_USERNAME');?>:</label><input class="text" id="user" name="user" type="text" <?php echo $adding === true ? '' : 'readonly'; ?> value="<?php echo $userid; ?>" /></p>
 			</div>
 			<div class="rightsec">
-				<p><label for="email" ><?php i18n('LABEL_EMAIL');?>:</label><input class="text" id="email" name="email" type="email" value="<?php echo $data->EMAIL; ?>" /></p>
+				<p><label for="email" ><?php i18n('LABEL_EMAIL');?>:</label><input class="text" id="email" name="email" type="email" value="<?php echo var_out($data->EMAIL,'email'); ?>" /></p>
 				<?php if (! check_email_address($data->EMAIL)) {
 					echo '<p style="margin:-15px 0 20px 0;color:#D94136;font-size:11px;" >'.i18n_r('WARN_EMAILINVALID').'</p>';
 				}?>
@@ -276,7 +275,7 @@ $userheading = empty($userid) ? "<span>/ ". i18n_r('NEW_USER') ."</span>" : "<sp
 			<div class="leftsec">
 				<p><label for="name" ><?php i18n('LABEL_DISPNAME');?>:</label>
 				<span style="margin:0px 0 5px 0;font-size:12px;color:#999;" ><?php i18n('DISPLAY_NAME');?></span>			
-				<input class="text" id="name" name="name" type="text" value="<?php echo $data->NAME; ?>" /></p>
+				<input class="text" id="name" name="name" type="text" value="<?php echo var_out($data->NAME); ?>" /></p>
 			</div>		
 			<div class="clear"></div>		
 			<div class="leftsec">

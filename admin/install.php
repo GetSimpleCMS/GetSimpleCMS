@@ -126,7 +126,7 @@ if (! file_exists($api_file)) {
 	} else {
 		$saltval = generate_salt();
 	}
-	$xml = new SimpleXMLExtended('<item></item>');
+	$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');	
 	$note = $xml->addChild('apikey');
 	$note->addCData($saltval);
 	if(! XMLsave($xml, $api_file) ){

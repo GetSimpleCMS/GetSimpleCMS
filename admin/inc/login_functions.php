@@ -42,7 +42,10 @@ if(isset($_POST['submitted'])) {
 			$USR    = strtolower($data->USR);
 
 			# do the username and password match?
-			if ( ($userid === $USR) && ($password === $PASSWD) ) {
+			
+			$allow = exec_filter('login',true); // @filter login filter bool allow
+
+			if ($allow && ($userid === $USR) && ($password === $PASSWD) ) {
 				$authenticated = true;
 				# add login success to failed logins log
 				$logFailed = new GS_Logging_Class('logins.log');
@@ -78,6 +81,8 @@ if(isset($_POST['submitted'])) {
 		} 
 		
 	} # end error check
+	
+	$update = $status;
 	
 } # end submission check
 

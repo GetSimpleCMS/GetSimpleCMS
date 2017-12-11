@@ -69,6 +69,7 @@ $.fn.popit = function ($speed) {
 $.fn.removeit = function ($delay) {
 	$delay = $delay || GS.removeItDelay;
 	$(this).each(function () {
+		$(this).addClass("notify_timeout"); // timing out flag
 		$(this).delay($delay).fadeOut(500);
 		// $(this).delay($delay).slideUp(300);
 	});
@@ -244,6 +245,8 @@ $.fn.parseNotify = function(){
 
 		if($(this).hasClass('notify_success')){
 			// clear other success messages cause this is probably a repeat or redundant, also undo nonce is stale
+			// @todo probably only allow clearing messages of a same classtype, otherwise we cant have mutiple successes ( say image upload etc.)
+			// or persist until timeout, then switch to expire, short persistent!
 			clearNotify('success');
 		    elem = notify(msg,'success');
 		}
@@ -261,7 +264,7 @@ $.fn.parseNotify = function(){
 
 function clearNotify($type) {
 	Debugger.log('CLEAR NOTIFY '+ $type);
-	if($type !== undefined)	return $('.notify.notify_'+$type).remove();
+	if($type !== undefined)	return $('.notify.notify_'+$type).not('.notify_timeout').remove();
 	return $('div.wrapper .notify').remove();
 }
  
@@ -299,190 +302,140 @@ function getTagName(elem){
 	return $(elem).prop('tagName');
 }
 
+var pageisdirty = false;
+
+// mark page dirty find parent form of elem, and style its submit_line and global pagedirty
+function pageIsDirty(elem){
+	if(!elem) elem = $('form input');
+    if($(elem).closest($('form')).find('#submit_line').get(0)) $("body").addClass('dirty');  // if has submit line mark dirty  	
+    pageisdirty = true;
+}
+
+function pageIsClean(elem){
+    $("body").removeClass('dirty');    	
+    pageisdirty = false;
+}
 
 jQuery(document).ready(function () {
 
 	// upload.php?browse
-	// filebrowser.php
+	// legacy filebrowser.php
 	if($('body#upload')){
-		if(getUrlParam('CKEditorFuncNum')) uploadCkeditorBrowse();
-		else if (getUrlParam('browse') !== undefined) uploadCustomBrowse();
+		if (getUrlParam('browse') !== undefined) uploadBrowseInit();
 	}
 	
-	function uploadBrowse(){
-		Debugger.log('upload browse');
+	// do browse mode on upload.php, hide stuff, headers etc.
+	function uploadBrowseInit(){
+		Debugger.log('upload browse - filebrowser mode');
 		// hide stuff header, footer, sidebar items, and filter if images
 		$('#header').hide();
 		$('body').css('margin-top','10px');
 		if(!GS.debug) $('#footer').hide();
 		$('#sidebar ul li:not(".dispupload")').hide();
-		
+		$('#footer .footer-left').hide();
 		Debugger.log(getUrlParam('type'));
 		
+		// image browser, or type is image
 		if(getUrlParam('type') == 'images' || getUrlParam('type') == 'image'){
 			$('#imageFilter').hide();
-			$('.thumblinkexternal').show();
+			$('.thumblinkexternal').show(); // enable thumbnail select
+			$('.thumbpreview').show();      // enable thumb preview link
+			$('tr .imgthumb').show();
+		}
+		uploadBrowseEventInit()
+	}
+
+	// uploadbrowse init event handlers, button clicks for selects
+	function uploadBrowseEventInit(){
+		$("body").on("click",".browseselect",filebrowserButtonHandler); // this is delegated for lightbox buttons that are added later
+	}
+	
+	// handler for all file select buttons
+	function filebrowserButtonHandler(e,id){
+		e.preventDefault();		
+		var siteurl = GS.siteurl;
+		var fileUrl = $(this).data('fileurl');
+		if(id == undefined) id = $(this).data('id'); // get id from data-id attr
+		filebrowserSelect(siteurl+fileUrl,window.location.search,id);
+	}
+
+	// function callback for handling file selections, url to file and 2 arbitrary arguments ( id, and querystring )
+	// trigger browse events, on parent if popup or self
+	function filebrowserSelect(url,arg1,arg2){
+		if(window.opener){
+			window.opener.filebrowsercallback(url,arg1,arg2);
+		}
+		else {
+			filebrowsercallback(url,arg1,arg2);
 		}	
+		filebrowserselectcomplete(url,arg1,arg2);
 	}
 
-	function uploadCustomBrowse(){
-		uploadBrowse();
-		// bind all primary links to callback
-		$('.primarylink').each(function(item){
-			// add listener
-			$(this).on('click',function(e){
-				e.preventDefault();
-				var siteurl = GS.siteurl;
-				var fileUrl = $(this).data('fileurl');
-				// if popup call openers callback, else call ours
-				if(window.opener){
-					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'primarylink');
-				} filebrowsercallback(siteurl+fileUrl,window.location.search,'primarylink');
-				filebrowserselectcomplete();				
-				return false;
-			});
-		});
-
-		// handle thumbnails
-		$('.thumblinkexternal').each(function(item){
-
-			// add listeners
-			$(this).on('click',function(e){
-				e.preventDefault();
-				var siteurl = GS.siteurl;
-				var fileUrl = $(this).data('fileurl');
-				// if popup call openers callback, else call ours
-				if(window.opener){
-					window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'thumblink');
-				} filebrowsercallback(siteurl+fileUrl,window.location.search,'thumblink');
-				filebrowserselectcomplete();
-				return false;
-			});
-		});
-
-	}
-
-	// calback after selection is made, trigger filebrowserselected
+	// calback after selection is made, trigger filebrowserselected event
+	// cross js or window popup handler
 	function filebrowsercallback(url,arg1,arg2){
+		// Debugger.log("filebrowsercallback");
+		// Debugger.log(url);
+		// Debugger.log(arg1);
+		// Debugger.log(arg2);
 		$(window).trigger('filebrowserselected',[url,arg1,arg2]);
 	}
 
 	// callback when selection is complete, trigger filebrowserselectcompleted
 	function filebrowserselectcomplete(){
+		// Debugger.log('filebrowserselectcompleted');
 		$(window).trigger('filebrowserselectcompleted');
 	}
 
-	$(window).on('filebrowserselectcompleted',function(e){
-		if(window.opener) window.close();
+	// make funcs globally available
+	window.filebrowsercallback       = filebrowsercallback;
+	window.filebrowserselectcomplete = filebrowserselectcomplete;
+	window.getUrlParam               = getUrlParam;
+
+	// test handlers
+	// $(window).on('filebrowserselected',function(e,url,search){
+	// 	Debugger.log("filebrowserselected");
+	// });
+
+	// $(window).on('filebrowserselectcompleted',function(e){
+	// 	Debugger.log("filebrowserselectcompleted");
+	// });
+
+	// setup ckeditor events, must declare here as ckeditor.getsimple.js is not in scope of filebrowser
+	$(window).on('filebrowserselectcompleted',function(e,url,search){
+	    if(!getUrlParam('CKEditor',search)) return;	    
+	    window.close(); // must close self, be in scope of popup as we have no reference to close children
 	});
 
-	// return id implementation
-	// an input with the id of returnid will atutomatically receive the url as its value
-	$(window).on('filebrowserselected',function(event,url,search){
+	// return id implementation, legacy
+	// an input with the id of returnid will automatically receive the url as its value
+	$(window).on('filebrowserselected',function(e,url,search){
+		// Debugger.log("filebrowserselected callback returnid handler");
 		var returnid = getUrlParam('returnid',search);
 		if(returnid) {
 			$('input #'+returnid).val(url); // set input value to url
 		}
 	});
 
-	// handle thumbnail lightbox buttons, add custom handlers
-	$.fn.uploadBrowseThumb = function(){
-		_this = $(this);
-		var link = $.parseHTML('<div style="display:inline-block;vertical-align:middle;"><a class="label label-ghost right" href="' + _this.get(0).href + '" data-fileurl="'+ _this.get(0).href +'">'+i18n("SELECT_FILE")+'</a></div>');
-		if(getUrlParam('CKEditorFuncNum')){
-			$(link).find('a').uploadCKEBrowseThumb();
-			$('.fancybox-title').append($(link));
-		}
-		else if (getUrlParam('browse') !== undefined){
-			$(link).find('a').uploadCustomBrowseThumb();		
-			$('.fancybox-title').append($(link));
-		}
-	}
-
-	$.fn.uploadCustomBrowseThumb = function(){
-		$(this).on('click',function(e){
-			e.preventDefault();
-			var siteurl = '';
-			var fileUrl = $(this).data('fileurl');
-			if(window.opener){
-				window.opener.filebrowsercallback(siteurl+fileUrl,window.location.search,'lightboxlink');
-				window.close();
-			} filebrowsercallback(siteurl+fileUrl,window.location.search,'lightboxlink');
-			return false;
-		});
-	}
-
-	$.fn.uploadCKEBrowseThumb = function(){
-		$(this).on('click',function(e){
-			var funcnum  = getUrlParam('CKEditorFuncNum');
-			e.preventDefault();
-			var siteurl = '';
-			var fileUrl = $(this).data('fileurl');
-			window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
-			window.close();
-			return false;
-		});
-	}
-
-	// @todo abstract all this through custom with custom callbacks and listeners
-	function uploadCkeditorBrowse(){
-		Debugger.log('upload ckeditor browse');
-		uploadBrowse();
-
-		//CKEditor=post-content&CKEditorFuncNum=1&langCode=en
-		var funcnum  = getUrlParam('CKEditorFuncNum');
-		var editorid = getUrlParam('CKEditor');
-		var langcode = getUrlParam('langCode');
-
-		var path = getUrlParam('path') ? getUrlParam('path')+'/' : '';
-
-		// bind all primary links to callback
-		$('.primarylink').each(function(item){
-			// add listener
-			$(this).on('click',function(e){
-				e.preventDefault();
-				var siteurl = GS.siteurl;
-				var fileUrl = $(this).data('fileurl');
-				window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
-				window.close();
-				return false;
-			});
-		});
-
-		// handle thumbnails
-		$('.thumblinkexternal').each(function(item){
-			// add listeners
-			$(this).on('click',function(e){
-				e.preventDefault();
-				var siteurl = GS.siteurl;
-				var fileUrl = $(this).data('fileurl');
-				window.opener.CKEDITOR.tools.callFunction(funcnum, siteurl+fileUrl);
-				window.close();
-				return false;
-			});
-		});
-
-	}
-
 	// gs event for file uploaded via dropzone
 	$(window).on('fileuploaded',fileuploaded);
 	
 	function fileuploaded(){
+		// filuploaded callback, gotta reset up all events so new files are recognized evertime page is changed
 		Debugger.log('fileuploaded');
-		if(getUrlParam('CKEditorFuncNum')) uploadCkeditorBrowse();
-		else if (getUrlParam('browse') !== undefined) uploadBrowse();
+		if (getUrlParam('browse') !== undefined) uploadBrowseInit();
 	};
 
 	// Helper function to get parameters from the query string.
 	// @todo this is temporary, splitters are much faster than regex, 
 	// plus we will probably need a url mutator library in core soon 
+	// !this seems to be causing problems where my js just stops here, nothing happens no errors, and no logs after this point.
 	function getUrlParam(paramName,search)
 	{
 		if(search == undefined) search = window.location.search;
 		var reParam = new RegExp('(?:[\?&]|&amp;)' + paramName + '=?([^&]+)?', 'i') ;
 		var match = search.match(reParam);
 		if(match && match.length > 1){
-			// Debugger.log(match[1]);
 			if(typeof match[1] == 'undefined') return '';
 			return match[1];
 		}
@@ -547,8 +500,8 @@ jQuery(document).ready(function () {
 			loadingAjaxIndicator.show();
 			var filterx = $(this).val();
 			var filterTitle = $(this).find('option:selected').text();
-			$("#imageTable").find("tr").hide();
-			if (filterx == 'image') {
+			$("#imageTable tbody").find("tr").hide();
+			if (filterx == 'image' || $("body#upload").hasClass("forcethumbs")) {
 				$("#imageTable").find("tr .imgthumb").show();
 			} else {
 				$("#imageTable").find("tr .imgthumb").hide();
@@ -556,7 +509,7 @@ jQuery(document).ready(function () {
 			$("#filetypetoggle").html('&nbsp;&nbsp;/&nbsp;&nbsp;' + filterTitle);
 			$("#imageTable").find("tr." + filterx).show();
 			$("#imageTable").find("tr.folder").show();
-			$("#imageTable").find("tr:first-child").show();
+			// $("#imageTable").find("tr:first-child").show(); // @why was this here ?
 			$("#imageTable").find("tr.deletedrow").hide();
 			loadingAjaxIndicator.fadeOut(500);
 		});
@@ -626,8 +579,10 @@ jQuery(document).ready(function () {
 		var array = [
 			parseInt($('#x').val(),10),
 			parseInt($('#y').val(),10),
-			parseInt($('#x').val(),10) + parseInt($('#w').val(),10),
-			parseInt($('#y').val(),10) + parseInt($('#h').val(),10)
+			parseInt($('#w').val(),10),
+			parseInt($('#h').val(),10),
+			// parseInt($('#x').val(),10) + parseInt($('#w').val(),10),
+			// parseInt($('#y').val(),10) + parseInt($('#h').val(),10)
 		];
 
 		// Debugger.log(array);
@@ -638,15 +593,25 @@ jQuery(document).ready(function () {
 		// var next = $(":input:eq(" + ($(":input").index(this) + 1) + ")");
 		$(this).focus();
 		$(this).select();
-		$('#cropbox').data('jcrop').animateTo(array,jcropDoneAnimating);
+
+		// create selection if none exist
+		if(!$('#cropbox').data('jcrop').ui.multi[0]){
+			// Debugger.log("No jcrop selection found");
+			$('#cropbox').data('jcrop').newSelection();
+		}	
+
+        $('#cropbox').data('jcrop').ui.selection.animateTo(array,jcropDoneAnimating);
+		// $('#cropbox').data('jcrop').animateTo(array,jcropDoneAnimating);
 	});
 
-	function jcropDoneAnimating(){
-		Debugger.log("done animating");
+	jcropDoneAnimating = function(){
+		// Debugger.log("done animating");
 		$('#cropbox').data('animating',false);
 		$('.jcropinput').prop('disabled',false);
 		// update our coords to match real coords from jcrop, handles overages etc.
-		var coords = this.tellSelect();
+		// var coords = this.tellSelect();
+		var selection = $('#cropbox').data('jcrop').getSelection();
+		var coords = $('#cropbox').data('jcrop').unscale(selection);
 		updateCoordsCallback(coords);
 	}
 
@@ -718,7 +683,7 @@ jQuery(document).ready(function () {
 	// components.php
 
 	// ajaxify components submit if ajaxsave enabled
-	$('body.ajaxsave #compEditForm').on('submit',function(e){
+	$('body #compEditForm').on('submit',function(e){
         if($('body').hasClass('ajaxsave')){
 			e.preventDefault();
 			componentSave(e);
@@ -727,14 +692,15 @@ jQuery(document).ready(function () {
 		pageIsClean();
 	});
 	
+	// component save
 	componentSave = function(e){
 
 		Debugger.log("onsubmit");
 		e.preventDefault();
 		ajaxStatusWait();
 		
-		save_codeeditors();
-		save_htmleditors();
+		save_all_editors();
+
 		save_inlinehtmleditors();
 		var dataString = $("#compEditForm").serialize();			
 
@@ -749,6 +715,7 @@ jQuery(document).ready(function () {
 				$(response).find('div.updated').parseNotify();
 				updateNonce(response);
 				ajaxStatusComplete();
+				clearNotify('error');	
 				removeDeletedComponents();
 			}
 		});
@@ -770,6 +737,7 @@ jQuery(document).ready(function () {
 	
 	// bind component new button
 	$("#addcomponent").on("click", function ($e) {
+
 		$e.preventDefault();
 		ajaxStatusWait();
 
@@ -813,8 +781,9 @@ jQuery(document).ready(function () {
 		nextid = (id - 1) + 2;
 		$("#id").val(nextid);
 
-		$('#submit_line').fadeIn(); // fadein in case no components exist
+		$('#submit_line').fadeIn(); // fadein submit in case first component
 		ajaxStatusComplete();
+		pageIsDirty(input);
 		
 		// add code ditor
 		var codeedit = input.hasClass('code_edit');
@@ -833,6 +802,8 @@ jQuery(document).ready(function () {
 		// }
 
 		$("#divTxt").find('input').get(0).focus(); // focus input so editor gets focused ( if it listens of course )
+		$('input:submit').prop('disabled',true);
+
 		// @todo make better focus events
 	});
 
@@ -860,12 +831,12 @@ jQuery(document).ready(function () {
 
 			$(myparent).find('input').prop('disabled',true); // disable all inputs
 			$(myparent).find('textarea').prop('disabled',true); // disable textarea
-			$(myparent).addClass('deleted'); 
+			$(myparent).addClass('deleted');
 
 			var title = $(myparent).find("input.comptitle").val();
 			notifyError(sprintf(i18n('COMPONENT_DELETED'),title)).popit();
 
-			pageIsDirty();
+			pageIsDirty(this);
 			$(this).remove(); // remove delete button
 
 			loadingAjaxIndicator.fadeOut(1000);
@@ -901,15 +872,21 @@ jQuery(document).ready(function () {
 		$(this).hide();		
 	}
 
+	// basic replacement clean a slug in js, probably will need to update this to use ajax to use php version or duplicate in js
+	function slugClean(string){
+		string = string.toLowerCase();
+		return string.replace(/\s/g, "_");
+	}
+
 	// update components codetext and slug upon title changes
 	$("#maincontent").on("keyup","input.titlesaver", function () {
 		var myval = $(this).val();
-		$(this).parents('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
+		$(this).parents('.compdiv').find(".compslugcode").html("'" + slugClean(myval) + "'");
 		$(this).parents('.compdiv').find("b.editable").html(myval);
 	}).on("focusout", "input.titlesaver", function () {
-		var myval = $(this).val();
-		myval = myval.toLowerCase().trim();
-		$(this).parents('.compdiv').find(".compslugcode").html("'" + myval.toLowerCase() + "'");
+		var rawval = myval = $(this).val();
+		myval.toLowerCase().trim();
+		$(this).parents('.compdiv').find(".compslugcode").html("'" + slugClean(myval) + "'");
 		$(this).parents('.compdiv').find("b.editable").html(myval);
 		if(myval !== '' && validateCompSlug(myval)){
 			var compid = $(this).parents('.compdiv').find("input.compid").val();
@@ -920,7 +897,7 @@ jQuery(document).ready(function () {
 			$(this).parents('.compdiv').find('.delcomponent').show();
 			$(this).val(myval); // put cleaner slug back
 			$(this).parents('.compdiv').find("input.compslug").val(myval);			
-			$(this).parents('.compdiv').find("input.comptitle").val(myval);
+			$(this).parents('.compdiv').find("input.comptitle").val(rawval.trim());
 			$('#changetitle').remove(); // remove self parent last
 		}
 		else if(myval == ''){
@@ -1062,6 +1039,15 @@ jQuery(document).ready(function () {
  
 	popAlertMsg();
  
+ 	// callback handlers for thumbnail lightbox buttons, add custom handlers , called by fancybox init
+	$.fn.fancyboxBrowseThumb = function(){
+		if (getUrlParam('browse') == undefined) return; // add select button to fanxybox in browseer mode
+		_this = $(this);
+		var fileurl = $(this)[0].element.data("fileurl"); // get data-fileurl from parent link
+		var link = $.parseHTML('<div style="display:inline-block;vertical-align:middle;"><a class="browseselect label label-ghost floatright" href="' + _this.get(0).href + '" data-id="lightboxlink" data-fileurl="'+ fileurl +'">'+i18n("SELECT_FILE")+'</a></div>');
+		$('.fancybox-title').append($(link));
+	}
+
  	// fancybox lightbox init
  	// rel=fancybox (_i/_s)
 	if (jQuery().fancybox) {
@@ -1076,7 +1062,7 @@ jQuery(document).ready(function () {
 		// used for images in upload filebrowser "select file"
 		$('a[rel*=fancybox_i]').fancybox({
 			afterShow: function(e) {				
-				$(this).uploadBrowseThumb();
+				$(this).fancyboxBrowseThumb();
 			},
 			padding : 0,
 			helpers: {
@@ -1139,7 +1125,7 @@ jQuery(document).ready(function () {
 				responseText = data.replace(rscript, "");
 				response     = $($.parseHTML(data));
 
-				if ($(response).find('div.notify_success')) {
+				if ($(response).find('div.notify_success').get(0)) {
 					// remove scripts to prevent assets from loading when we create temp dom
 					rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
 	 
@@ -1151,17 +1137,23 @@ jQuery(document).ready(function () {
 					// document.body.style.cursor = "default";
 					$(response).find('div.updated').parseNotify();
 					initLoaderIndicator();
-				} else if ($(response).find('div.notify_error')) {
+				} else{
+					// reset throw error
 					document.body.style.cursor = "default";
 					mytd.html(old).removeClass('ajaxwait_tint_dark');
 					$('.toggleEnable').removeClass('disabled');
 					loadingAjaxIndicator.fadeOut();
 					// Debugger.log(mytd.data('spinner'));
 					mytd.data('spinner').stop(); // @todo not working, spinner keeps spinning
-					$(response).find('div.updated').parseNotify();
-				} else {
-					clearNotify();
-					notifyError(i18n('ERROR'));
+					if ($(response).find('div.notify_error').get(0)) {
+						$(response).find('div.updated').parseNotify();
+					}
+					else {
+						console.log("PLUGIN AJAX ERROR");
+						clearNotify();
+						notifyError(i18n('ERROR'));
+						ajaxError();
+					}
 				}
 			},
 			error: function (data, textStatus, jqXHR) {
@@ -1247,7 +1239,12 @@ jQuery(document).ready(function () {
 
 	// init auto saving
     var autoSaveTimer = null;
-	if(typeof GSAUTOSAVEPERIOD !== 'undefined' && parseInt(GSAUTOSAVEPERIOD,10) > 0) autoSaveInit();
+
+	function isAutoSave(){
+		return (typeof GSAUTOSAVEPERIOD !== 'undefined') && parseInt(GSAUTOSAVEPERIOD,10) > 0;
+	}
+
+	if(isAutoSave()) autoSaveInit();
 
     // ajaxify edit.php submit
     $('body #editform').on('submit',function(e){
@@ -1266,14 +1263,22 @@ jQuery(document).ready(function () {
     /* Warning for unsaved Data */
     var yourText    = null;
     var warnme      = false;
-    var pageisdirty = false;
+    // var pageisdirty = false;
 
     $('#cancel-updates').hide();
 
     window.onbeforeunload = function () {
+    	// force autosave before leaving
+    	if(isAutoSave()){
+    		warnme = false;
+    		autoSaveIntvl(); // aynchronous save, chance of failure
+    		autoSaveDestroy();
+    	}
         if (warnme || pageisdirty === true) {
+        	// console.log("page is dirty");
             return i18n('UNSAVED_INFORMATION');
         }
+        return;
     };
 
     // check that title is not empty
@@ -1299,7 +1304,9 @@ jQuery(document).ready(function () {
             Debugger.log('autoSaveIntvl called, form is dirty: autosaving');
             ajaxSave('&autosave=1').done(autoSaveCallback);
             pageisdirty = false;
+            return;
         }
+        // Debugger.log('autoSaveIntvl called, form is clean: skipping');
     }
 
 	function autoSaveDestroy(){
@@ -1310,13 +1317,24 @@ jQuery(document).ready(function () {
 		// setInterval(autoSaveIntvl, null);
     }
 
+    // auto save on draft preview
+    if(isAutoSave()){
+    	$('body#edit a.draftview').on("click",function(e){
+    		warnme = false;
+    		autoSaveIntvl(); // aynchronous save, chance of failure
+    		autoSaveDestroy();
+    	});
+    }
+
     // ajax save function for edit.php #editform
     function ajaxSave(urlargs) {
 
         // $('input[type=submit]').attr('disabled', 'disabled');
         ajaxStatusWait();
         // we are using ajax, so ckeditor wont copy data to our textarea for us, so we do it manually
-        if($('#post-content').data('htmleditor')){ $('#post-content').val($('#post-content').data('htmleditor').getData()); }
+		save_all_editors();
+        // if($('#post-content').data('htmleditor')){ $('#post-content').val($('#post-content').data('htmleditor').getData()); }
+
 		// Debugger.log($('#post-content').val());
 
         var dataString = $("#editform").serialize();
@@ -1346,11 +1364,11 @@ jQuery(document).ready(function () {
 			ajaxStatusComplete();
             warnme = false;
         	pageisdirty = false;
-        } 
+        }
         else {
         	ajaxSaveError();
         	autoSaveDestroy();
-        }	
+        }
     }
 
     // prerform updating after ajax save
@@ -1376,16 +1394,31 @@ jQuery(document).ready(function () {
         // @todo change window url to new slug so refreshes work
     }
 
+	function sleep(milliseconds) {
+	  var start = new Date().getTime();
+	  for (var i = 0; i < 1e7; i++) {
+	    if ((new Date().getTime() - start) > milliseconds){
+	      break;
+	    }
+	  }
+	}
+
     // handle ajax save error
     function ajaxSaveError(response){
         ajaxError(response);
-        // if ($(response).find('div.updated').get(0)) {
-        	// $(response).find('div.updated').parseNotify();
-        // } else notifyError(i18n('ERROR_OCCURED')).popit();
+        if ($(response).find('div.updated').get(0)) {
+        	$(response).find('div.updated').parseNotify();
+        } else notifyError(i18n('ERROR_OCCURED')).popit();
         warnme = true;
         ajaxStatusComplete();
         pageIsDirty();
         autoSaveInd();
+
+		disableAjaxSave();
+
+        // auto submit
+		// sleep(3);
+		// dosavealt();
     }
 
     // call callbacks for autosave succcess or error
@@ -1452,23 +1485,17 @@ jQuery(document).ready(function () {
 
 
 	// form watcher
-    $('form input,form textarea,form select').not('#post-title').not('#post-id').not('#userid').not(':password').bind('change keypress paste textInput input',function(){
-        Debugger.log('form changed');
-        if("#install") return;
-        if("#setup") return;
+	// forms with class watch will mark page dirty and prevent leaving
+    $('form.watch input,form.watch textarea,form.watch select').not(':password').not(":submit").bind('change keypress paste textInput input',function(e){
+        // Debugger.log('form changed');
         if($("body").hasClass('dirty')) return;
         pageIsDirty($(this));
     });
 
-    function pageIsDirty(elem){
-        if($(elem).closest($('form')).find('#submit_line').get(0)) $("body").addClass('dirty');    	
-        pageisdirty = true;
-    }
-
-    function pageIsClean(elem){
-        $("body").removeClass('dirty');    	
-        pageisdirty = false;
-    }
+    // mark page clean on submit or else we get before unload warnings
+    $('#submit_line input.submit').on("click",function(e){
+    	pageIsClean();
+    });
 
 	// save and close
 	$(".save-close a").on("click", function ($e) {
@@ -1551,7 +1578,7 @@ jQuery(document).ready(function () {
 	$("#theme-folder").on('change',function (e) {
 		var thmfld = $(this).val();
 		if (checkChanged()) return; // todo: change selection back
-		$('#theme_filemanager').html('Loading...');
+		$('#theme_filemanager').html('...');
 		updateTheme(thmfld);
 	});
 
@@ -1627,7 +1654,7 @@ jQuery(document).ready(function () {
 					clearFileWaits();
 					ajaxStatusComplete();
 					 $('input:submit').attr('disabled', true); // keep disabled
-					 $('#theme_editing_file').html(filename);
+					 $('#theme_editing_file').html("");
 					return;
 				}
 
@@ -1693,8 +1720,11 @@ jQuery(document).ready(function () {
 
 	// ajaxify theme submit
 	$('body.ajaxsave #themeEditForm').on('submit',function(e){
-		e.preventDefault();
-		themeFileSave($('#codetext').data('editor'));
+		if($('body.ajaxsave').get(0)){
+			console.log("themesave ajax");
+			e.preventDefault();
+			themeFileSave($('#codetext').data('editor'));
+		}	
 	});
 
 	$('#themeEditForm .cancel').on('click',function(e){
@@ -1806,6 +1836,13 @@ jQuery(document).ready(function () {
 		}
 	}
 
+	save_all_editors = function(){
+		console.log("saving code editors");
+		save_codeeditors();
+		console.log("saving html editors");		
+		save_htmleditors();
+	}
+
 	// save all editors
 	save_codeeditors = function(){
 		// Debugger.log(theme);
@@ -1825,7 +1862,6 @@ jQuery(document).ready(function () {
 			var editor = $(textarea).data('htmleditor');
 			// Debugger.log(editor);
 			if(editor) {
-				Debugger.log('saving html editors');
 				editor.updateElement(); 
 			}
 		});		
@@ -1915,6 +1951,7 @@ jQuery(document).ready(function () {
 	}
 
 	function doFilter(text){
+		$("table.filter").addClass("filtered");
 		$("table.filter tr:hidden").show();
 		$.each(text, function () {
 			if(this.substring(0,1) == '#') {
@@ -1927,6 +1964,7 @@ jQuery(document).ready(function () {
 	}
 
 	function resetFilter(){
+		$("table.filter").removeClass("filtered");		
 		$("table.filter tr").show();
 		// $('#filtertable').removeClass('current');
 		filterSearchInput.find('#q').val('');
@@ -1969,7 +2007,7 @@ jQuery(document).ready(function () {
 					$('#createfolder').show();
 					counter = parseInt($("#pg_counter").text(),10);
 					$("#pg_counter").html(counter++);
-					$("tr." + newfolder + " td").css("background-color", "#F9F8B6");
+					$("tr." + escape(newfolder) + " td").css("background-color", "#F9F8B6");
 					loadingAjaxIndicator.fadeOut();
 				});
 			}
@@ -1981,7 +2019,7 @@ jQuery(document).ready(function () {
 		var elem = $('body.sbfixed #sidebar');
 
 		if(!jQuery().scrollToFixed || !elem[0]){
-			Debugger.log("sbfixed not enabled or scrolltofixed not loaded");
+			// Debugger.log("sbfixed not enabled or scrolltofixed not loaded");
 			return;
 		}
 
@@ -2007,8 +2045,8 @@ jQuery(document).ready(function () {
 		if(ctrlpress && (e.which == 83)) {
 			if(e.shiftKey){
 				// bypass ajax saving
-				dosavealt();
 				Debugger.log('Ctrl+Shift+S pressed');
+				dosavealt();
 				return;
 			}
 			Debugger.log('Ctrl+S pressed');
@@ -2025,26 +2063,27 @@ jQuery(document).ready(function () {
 
 	// catch all ajax error, and redirects for session timeout on HTTP 401 unauthorized
 	$( document ).ajaxError(function( event, xhr, settings ) {
-		Debugger.log("ajaxComplete: " + xhr.status);
-		Debugger.log(event);
-		Debugger.log(xhr);
-		Debugger.log(settings);
+		Debugger.log("ajaxError xhr status:" + xhr.status + " " + xhr.statusText);
 		if(xhr.status == 401){
 			notifyInfo("Redirecting...");
 			window.location.reload();
 		}
-		else if(xhr.status == 302){
+		else if(xhr.status == 302 || xhr.status == 300){
+			// IE11 will not return status from redirect headers if no location provided, 300 does however
 			Debugger.log("Redirecting...");
-			ajaxStatusComplete();	
+			ajaxStatusComplete();
 			window.location = xhr.responseText;
+		}
+		else{
+			if(settings.type == "POST" && settings.url == "changedata.php") ajaxSaveError();
 		}
 	});
 
 	// custom ajax error handler
 	function ajaxError($response){
 		if(GS.debug === true){
-            Debugger.log('An error occured in an XHR call, check console for response');
-			Debugger.log($response);
+            Debugger.log('An error occured in an XHR call, check console above for response');
+			if($response) Debugger.log($response);
 		}
 	}
 
@@ -2057,6 +2096,10 @@ jQuery(document).ready(function () {
 		Debugger.log('refresh');
 		window.location.reload();
 	})
+
+	$('body#settings #prettyurls').change(function() {
+		$('#permalink').attr('disabled', !this.checked);
+	});
 
 	// end of jQuery ready
 });
@@ -2098,11 +2141,14 @@ function dosave(){
 }
 
 function dosavealt(){
-	$('body').removeClass('ajaxsave');
+	disableAjaxSave();
 	pageIsDirty = false;
 	dosave();
 }
 
+function disableAjaxSave(){
+	$('body').removeClass('ajaxsave');
+}
 
 function supports_html5_storage() {
 	// return Modernizr.localstorage;

@@ -90,13 +90,8 @@ if (! file_exists($init)) {
 
 /* create new folders */
 foreach($create_dirs as $dir){
-	if (!file_exists($dir)) {  	
-		if (getDef('GSCHMOD')) {
-		 $chmod_value = GSCHMOD; 
-		} else {
-		 $chmod_value = 0755;
-		}
-		$status = create_dir($dir, $chmod_value);
+	if (!file_exists($dir)) {
+		$status = create_dir($dir);
 		if($status) $message.= msgOK(sprintf(i18n_r('FOLDER_CREATED'),$dir));
 		else $error.= msgError(i18n_r('ERROR_CREATING_FOLDER') . "<br /> - $dir");
 	}
@@ -113,8 +108,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	
 	# make new users folder
 	if (!file_exists(GSUSERSPATH)) {
-		$status = create_dir(GSUSERSPATH, 0777);
-		gs_chmod(GSUSERSPATH, 0777);
+		$status = create_dir(GSUSERSPATH);
 		if (!$status) { 
 			$error .= msgError('Unable to create the folder /data/users/');	
 		} else {
@@ -124,8 +118,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 
 	# make new backup users folder
 	if (!file_exists(GSBACKUSERSPATH)) {
-		$status = create_dir(GSBACKUSERSPATH, 0777);
-		gs_chmod(GSBACKUSERSPATH, 0777);
+		$status = create_dir(GSBACKUSERSPATH);
 		if (!$status) {
 			$error .= msgError('Unable to create the folder /backup/users/');	
 		} else {
@@ -213,6 +206,19 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	}
 	/* end update */
 } 
+
+// 3.4.0
+// update new permalink setting, if permalink, enable pretty urls toggle
+$dataw       = getXML(GSDATAOTHERPATH .GSWEBSITEFILE);
+$permalink   = trim((string) $dataw->PERMALINK);
+$fileversion = trim((string) $dataw->GSVERSION);
+if($fileversion!='3.4.0'){
+	if(!empty($permalink)) $dataw->editAddChild('PRETTYURLS', '1');
+	$dataw->editAddChild('GSVERSION', '3.4.0');
+}
+if (!XMLsave($dataw, GSDATAOTHERPATH . GSWEBSITEFILE) ) {
+	$error .= i18n_r('CHMOD_ERROR');
+}
 
 // redirect to health check or login and show updated notice
 $redirect = cookie_check() ? "health-check.php?updated=1" : "index.php?updated=1";

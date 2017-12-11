@@ -46,18 +46,22 @@ $GS_asset_objects['jquery-ui'] = 'jQuery.ui';
 
 $VERSIONS = array(
   'getsimple'         =>  GSVERSION,
-  'ckeditor'          => '4.4.6',
-  'codemirror'        => '5.1.0',
-  'dropzone'          => '4.0.1',
-  'fancybox'          => '2.1.5',
-  'font-awesome'      => '4.3.0',
-  'jcrop'             => '0.9.12',
-  'jquery'            => '2.1.3',
-  'jqueryui'          => '1.11.3',
-  'jquery-mousewheel' => '3.1.12',
-  'scrolltofixed'     => '0.0.1',
-  'spin.js'           => '2.0.1'
+  'ckeditor'          => '4.7.3',
+  'codemirror'        => '5.1.0', // 5.31.0
+  'dropzone'          => '5.1.1',
+  'fancybox'          => '2.1.5', // 3.2.0 available
+  'font-awesome'      => '4.7.0',
+  'jcrop'             => '2.0.4',
+  'jquery'            => '2.2.4',
+  'jqueryui'          => '1.11.4',
+  'jqueryuicss'       => '1.11.3',
+  'jquery-mousewheel' => '3.1.13',
+  'scrolltofixed'     => '1.0.8',
+  'spin'              => '2.3.2',
+  'lazyload'          => '0.0.1'
 );
+
+$jqueryuitheme = "custom";
 
 // long form
 // $GS_script_assets = array(
@@ -77,34 +81,32 @@ $VERSIONS = array(
  * Core assets
  */
 
-$ASSETPATH = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH));
-
 // core
 $GS_script_assets['getsimple']['local']['url']     = $ASSETPATH.'js/jquery.getsimple.js';
 $GS_script_assets['getsimple']['local']['ver']     = $VERSIONS['getsimple'];
 
 // lazyload (lazy loading assets js/css)
-$GS_script_assets['lazyload']['local']['url']      = $ASSETPATH.'js/lazyload.js';
-$GS_script_assets['lazyload']['local']['ver']      = $VERSIONS['getsimple'];
+$GS_script_assets['lazyload']['local']['url']      = $ASSETPATH.'js/lazyload/lazyload.js';
+$GS_script_assets['lazyload']['local']['ver']      = $VERSIONS['lazyload'];
 
 // gstree (collpaseble heirarchy table tree) 
-$GS_script_assets['gstree']['local']['url']        = $ASSETPATH.'js/jquery-gstree.js';
+$GS_script_assets['gstree']['local']['url']        = $ASSETPATH.'js/jquery.gstree.js';
 $GS_script_assets['gstree']['local']['ver']        = $VERSIONS['getsimple'];
 
 // spin (ajax spinners)
-$GS_script_assets['spin']['local']['url']          = $ASSETPATH.'js/spin.js';
-$GS_script_assets['spin']['local']['ver']          = $VERSIONS['spin.js'];
+$GS_script_assets['spin']['local']['url']          = $ASSETPATH.'js/spin/spin.js';
+$GS_script_assets['spin']['local']['ver']          = $VERSIONS['spin'];
 
 // dropzone (ajax/html uploader w drag and drop)
-$GS_script_assets['dropzone']['local']['url']      = $ASSETPATH.'js/dropzone.js';
+$GS_script_assets['dropzone']['local']['url']      = $ASSETPATH.'js/dropzone/dropzone.js';
 $GS_script_assets['dropzone']['local']['ver']      = $VERSIONS['dropzone'];
 
 // jcrop
-$GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/jquery.Jcrop.min.js';
+$GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/Jcrop.js';
 $GS_script_assets['jcrop']['local']['ver']        = $VERSIONS['jcrop'];
 $GS_script_assets['jcrop']['queue']['style']      = 'jcrop';
 
- $GS_style_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/jquery.Jcrop.min.css';
+ $GS_style_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/css/Jcrop.min.css';
  $GS_style_assets['jcrop']['local']['ver']        = $VERSIONS['jcrop'];
 
 
@@ -121,13 +123,13 @@ $GS_script_assets['jquery']['local']['ver']        = $VERSIONS['jquery'];
 // jquery-ui
 $GS_script_assets['jquery-ui']['cdn']['url']       = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$VERSIONS['jqueryui'].'/jquery-ui.min.js';
 $GS_script_assets['jquery-ui']['cdn']['ver']       = $VERSIONS['jqueryui'];
-$GS_script_assets['jquery-ui']['local']['url']     = $ASSETPATH.'js/jqueryui/js/jquery-ui-'.$VERSIONS['jqueryui'].'.custom.min.js';
+$GS_script_assets['jquery-ui']['local']['url']     = $ASSETPATH.'js/jqueryui/js/jquery-ui-'.$VERSIONS['jqueryui'].'.min.js';
 $GS_script_assets['jquery-ui']['local']['ver']     = $VERSIONS['jqueryui'];
- $GS_style_assets['jquery-ui']['local']['url']     = $ASSETPATH.'js/jqueryui/css/custom/jquery-ui-'.$VERSIONS['jqueryui'].'.custom.min.css';
+ $GS_style_assets['jquery-ui']['local']['url']     = $ASSETPATH.'js/jqueryui/css/'.$jqueryuitheme.'/jquery-ui-'.$VERSIONS['jqueryuicss'].'.custom.css';
  $GS_style_assets['jquery-ui']['local']['ver']     = $VERSIONS['jqueryui'];
 
 // scrolltofixed
-$GS_script_assets['scrolltofixed']['local']['url'] = $ASSETPATH.'js/jquery-scrolltofixed.js';
+$GS_script_assets['scrolltofixed']['local']['url'] = $ASSETPATH.'js/scrolltofixed/jquery-scrolltofixed.js';
 $GS_script_assets['scrolltofixed']['local']['ver'] = $VERSIONS['scrolltofixed'];
 
 // codemirror
@@ -144,7 +146,7 @@ $GS_script_assets['fancybox']['local']['ver']      = $VERSIONS['fancybox'];
 $GS_script_assets['fancybox']['queue']['script']   = 'jquery-mousewheel';
 
 
-$GS_script_assets['jquery-mousewheel']['local']['url']      = $ASSETPATH.'js/fancybox/jquery.mousewheel-3.0.6.pack.js';
+$GS_script_assets['jquery-mousewheel']['local']['url']      = $ASSETPATH.'js/mousewheel/jquery.mousewheel.min.js';
 $GS_script_assets['jquery-mousewheel']['local']['ver']      = $VERSIONS['jquery-mousewheel'];
 
 
@@ -155,7 +157,7 @@ $GS_script_assets['jquery-mousewheel']['local']['ver']      = $VERSIONS['jquery-
 // font-awesome icons
  $GS_style_assets['font-awesome']['cdn']['url']    = '//netdna.bootstrapcdn.com/font-awesome/'.$VERSIONS['font-awesome'].'/css/font-awesome.min.css';
  $GS_style_assets['font-awesome']['cdn']['ver']    = $VERSIONS['font-awesome'];
- $GS_style_assets['font-awesome']['local']['url']  = $ASSETPATH.'css/font-awesome.min.css';
+ $GS_style_assets['font-awesome']['local']['url']  = $ASSETPATH.'fontawesome/css/font-awesome.min.css';
  $GS_style_assets['font-awesome']['local']['ver']  = $VERSIONS['font-awesome'];
 
 // ckeditor
@@ -239,6 +241,19 @@ queue_style('jquery-ui'      , GSBACK);
 queue_style('font-awesome'   , GSBACK);
 
 
+// inline tests
+// $GS_script_assets['gsinlinejs']['local']['url']     = null;
+// $GS_script_assets['gsinlinejs']['local']['ver']     = $VERSIONS['getsimple'];
+// $GS_script_assets['gsinlinejs']['local']['code']   = "alert(\"inline\");";
+// preRegisterScript('gsinlinejs',   '',   false , $infooter);
+// queue_script('gsinlinejs',GSBOTH);
+
+// $GS_style_assets['gsinlinecss']['local']['url']     = null;
+// $GS_style_assets['gsinlinecss']['local']['ver']     = $VERSIONS['getsimple'];
+// $GS_style_assets['gsinlinecss']['local']['code'] = "body{background:#FF00FF !important;}";
+// preRegisterStyle('gsinlinecss',   '',   false , '');
+// queue_style('gsinlinecss',GSBOTH);
+
 /**
  * ASSET FUNCTIONS
  */
@@ -258,6 +273,7 @@ function preRegisterScript($id,$config = array(),$CDN = false,$footer = false){
   if(!$config && isset($GS_script_assets[$id])) $config = $GS_script_assets[$id];
   if(!$config) return;
   $queue = isset($config['queue']) ? $config['queue'] : null;
+  if(isset($config['local']['code'])) return register_script_code($id, $config['local']['code'], $config['local']['ver'], $footer, $queue);
   if($CDN && isset($config['cdn'])) return register_script($id, $config['cdn']['url'], '', $footer, $queue); // no version for CDN benefits
   else return register_script($id, $config['local']['url'], $config['local']['ver'], $footer, $queue);
 }
@@ -287,6 +303,26 @@ function register_script($handle, $src, $ver, $in_footer = false, $queue = null)
     'load'      => false,
     'queue'     => $queue
   );
+}
+
+/**
+ * Register Script Inline Code
+ *
+ * Register a script to include in Themes
+ *
+ * @since 3.4
+ * @uses $GS_scripts
+ *
+ * @param string $handle name for the script
+ * @param string $src raw code text
+ * @param string $ver script version
+ * @param boolean $in_footer load the script in the footer if true
+ * @param array $queue array of script or style assets to auto queue
+ */
+function register_script_code($handle, $src, $ver = '0', $in_footer = false, $queue = null){
+  global $GS_scripts;
+  register_script($handle, null, $ver, $in_footer, $queue);
+  $GS_scripts[$handle]['code'] = $src;
 }
 
 /**
@@ -391,8 +427,12 @@ function getScripts($facing = GSBACK, $footer = false){
   foreach ($GS_scripts as $script){
     if ($script['load'] == true && ($script['where'] & $facing) ){
       if($footer !== $script['in_footer']) continue;
+      if(isset($script['code'])){
+        $str .= "<script>".$script['code']."</script>";
+        continue;
+      }
       $str.= '<script src="'.$script['src'].( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '"></script>'."\n";
-      $str.= cdn_fallback($script);  
+      if(getDef('GSCDNFALLBACK',true) || !is_frontend()) $str.= cdn_fallback($script);
     }
   }
 
@@ -481,6 +521,7 @@ function preRegisterStyle($id,$config = array(), $CDN = false, $media = 'screen'
   if(!$config && isset($GS_style_assets[$id])) $config = $GS_style_assets[$id];
   if(!$config) return;
   $queue = isset($config['queue']) ? $config['queue'] : null;
+  if(isset($config['local']['code'])) return register_style_code($id, $config['local']['code'], $config['local']['ver'], $media,$queue);
   if($CDN && isset($config['cdn'])) return register_style($id, $config['cdn']['url'], '', $media,$queue); // no version for CDN benefits
   else return register_style($id, $config['local']['url'], $config['local']['ver'], $media,$queue);
 }
@@ -515,6 +556,26 @@ function register_style($handle, $src, $ver, $media = 'all', $queue = null){
 
 
 /**
+ * Register inline Style
+ *
+ * Register a an inline block of style code
+ *
+ * @since 3.4
+ * @uses $GS_styles
+ *
+ * @param string $handle name for the Style
+ * @param string $src raw style code
+ * @param string $ver Style version
+ * @param string $media the media for this stylesheet
+ * @param array $queue array of style assets to auto queue
+ */
+function register_style_code($handle, $src, $ver = '0', $media = 'all', $queue = null){
+  global $GS_styles;
+  register_style($handle, null, $ver, $media, $queue );
+  $GS_styles[$handle]['code'] = $src;
+}
+
+/**
  * Get Styles Backend
  * @since 3.1
   */
@@ -538,6 +599,10 @@ function getStyles($facing = GSBACK){
   foreach ($GS_styles as $style){
     if ($style['where'] & $facing ){
         if ($style['load'] == true){
+	      if(isset($style['code'])){
+	      	$str .= "<style>".$style['code']."</style>";
+	      	continue;
+	      }
           $str .= '<link href="'.$style['src']. ( !empty($script['ver']) ? '?v='.$script['ver'] : '' ) . '" rel="stylesheet" media="'.$style['media'].'">'."\n";
         }
     }

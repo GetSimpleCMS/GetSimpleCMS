@@ -55,7 +55,7 @@ $fileSizeLimitMB = toBytesShorthand(getMaxUploadSize(),'M',true);
 	</li>
 
 	<li id="gs-dropzone" class="uploaddropzone dispupload">
-		<i class="fa fa-fw fa-upload unselectable" style="font-size:1.8em;vertical-align: middle;"></i>
+		<i class="fa fa-fw fa-upload unselectable"></i>
 		<span class="dz-message unselectable"><?php i18n('DROP_FILES'); ?></span>
 	</li>
 	
@@ -68,6 +68,7 @@ $fileSizeLimitMB = toBytesShorthand(getMaxUploadSize(),'M',true);
 
 <div class="">
 	<form class="uploadform" action="" method="post" enctype="multipart/form-data">
+    	<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo getMaxUploadSize();?>" />	
 		<p><input class="" type="file" name="file[]" id="file" style="width:220px;" multiple /></p>
 		<input type="hidden" name="hash" id="hash" value="<?php echo $SESSIONHASH; ?>" />
 		<input type="submit" class="submit" name="submit" value="<?php i18n('UPLOAD'); ?>" />

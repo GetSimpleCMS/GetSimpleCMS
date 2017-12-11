@@ -76,9 +76,11 @@ elseif ($p == 'restore') {
 	if (isset($_GET['new'])) {
 		$newid = $_GET['new'];
         // @todo traversal protect $newid
-		// restore page by old slug id
+		// Undo slug change, restore page by old slug id
 		changeChildParents($newid, $id); // update parents and children
 		$success = restore_page($id);    // restore old slug file
+		restore_draft($id);              // restore draft
+		delete_draft($newid);            // delete live new slug draft
 		delete_page($newid);             // backup and delete live new slug file
 		$redirect = ("edit.php?id=". $id ."&nodraft&old=".$_GET['new']."&upd=edit-success&type=restore");
 	} else {
@@ -144,8 +146,9 @@ $draftqs = $draft ? '&amp;draft' : '';
 		</div>
 		
 		<?php if ($HTMLEDITOR != '') { ?>
-		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
+		<script type="text/javascript" src="template/js/ckeditor/ckeditor.js<?php echo getDef("GSCKETSTAMP",true) ? "?t=".getDef("GSCKETSTAMP") : ""; ?>"></script>
 		<script type="text/javascript">
+		<?php if(getDef("GSCKETSTAMP",true)) echo "CKEDITOR.timestamp = '".getDef("GSCKETSTAMP") . "';\n"; ?>
 		var editor = CKEDITOR.replace( 'codetext', {
 			language        : '<?php echo $EDLANG; ?>',
 			<?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
