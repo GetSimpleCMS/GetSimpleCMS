@@ -158,6 +158,8 @@ $GS_definitions = array(
 	'GSDEBUGFILEIO'        => true,                          // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
 	'GSSAFEMODE'           => false,                          // (bool) enable safe mode, safe mode disables plugins and components
+	# VARIABLES -----------------------------------------------------------------------------------------------------------------------------------------
+	'GSMETADLEN'           => 160,                            // (int) optional meta description max length enforced
 	# ---------------------------------------------------------------------------------------------------------------------------------------------------
  	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
 );
