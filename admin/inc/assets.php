@@ -47,7 +47,7 @@ $GS_asset_objects['jquery-ui'] = 'jQuery.ui';
 $VERSIONS = array(
   'getsimple'         =>  GSVERSION,
   'ckeditor'          => '4.7.3',
-  'codemirror'        => '5.1.0', // 5.31.0
+  'codemirror'        => '5.32.0',
   'dropzone'          => '5.1.1',
   'fancybox'          => '2.1.5', // 3.2.0 available
   'font-awesome'      => '4.7.0',
@@ -133,9 +133,9 @@ $GS_script_assets['scrolltofixed']['local']['url'] = $ASSETPATH.'js/scrolltofixe
 $GS_script_assets['scrolltofixed']['local']['ver'] = $VERSIONS['scrolltofixed'];
 
 // codemirror
-$GS_script_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror-compressed.js';
+$GS_script_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror.min.js';
 $GS_script_assets['codemirror']['local']['ver']    = $VERSIONS['codemirror'];
- $GS_style_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror.css';
+ $GS_style_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror.min.css';
  $GS_style_assets['codemirror']['local']['ver']    = $VERSIONS['codemirror'];
 
 // fancybox

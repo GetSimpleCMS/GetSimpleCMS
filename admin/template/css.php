@@ -1724,7 +1724,7 @@ body.fullscreen .notify_expired{
 	right: 60px;
 	opacity: 0.9;
 	top: 0;
-	/*background: rgba(119, 119, 119, 0.65);*/
+	background: rgba(255, 255, 255, 0.9);
 	z-index: 9999;
 	font-weight: bold;
 	/*border: none;*/
@@ -2919,6 +2919,16 @@ a.disabled:visited {
 	padding-left: 12px;
 	margin-bottom:14px;
 }
+
+
+/*
+* {
+    -webkit-backface-visibility: visible !important;
+    backface-visibility: visible !important;
+}
+.CodeMirror {
+    -webkit-font-smoothing: subpixel-antialiased !important;
+}*/
 
 #theme_edit_code .CodeMirror{
 	/*border:1px solid #E8E8E8;*/
