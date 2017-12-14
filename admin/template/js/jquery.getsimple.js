@@ -1065,6 +1065,8 @@ jQuery(document).ready(function () {
 				$(this).fancyboxBrowseThumb();
 			},
 			padding : 0,
+			minWidth:200,
+			minHeight:200,
 			helpers: {
 			    title: {
 			        // type: "inside"
