@@ -1918,6 +1918,7 @@ jQuery(document).ready(function () {
 	// live search
 	$("#filter-search #q").keyup(function () {
 		var s = $(this).val().toLowerCase().split(" ");
+		Debugger.log(s);
 		if(s == '') resetFilter();
 		else doFilter(s);
 	});
