@@ -98,6 +98,7 @@ echo '<div class="bodycontent clearfix">
 						"curl|cURL Module|warn",
 						"gd|GD Library|warn",
 						"zip|ZipArchive|warn",
+						"zlib|Zlib|warn",
 						"SimpleXML|SimpleXML Module|error",
 					);
 		
