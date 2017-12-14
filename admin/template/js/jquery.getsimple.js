@@ -1905,14 +1905,16 @@ jQuery(document).ready(function () {
 		}
 	});
 	// create index columns
-	// if class filter exists then we expect it to have indexcolumn already
+	// if class filter exists on TR then we expect it to have indexcolumn already
+	// @todo automate filtering tables, use filter flag and use another method to determine generate indexcols(not exist)
 	$("#editpages:not('.filter') tr:has(td.pagetitle)").each(function () {
-		Debugger.log('creating index column');
+		// Debugger.log('creating index column');
 		// find all text in pagetitle td, includes show status toggle (menu item)
 		var t = $(this).find('td.pagetitle').text().toLowerCase();
-		$("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
-		this.addClass('filter');
+		$("<td class='indexColumn'></td>").hide().text(t).appendTo(this);		
 	});
+	$("#editpages").addClass('filter');
+
 	// live search
 	$("#filter-search #q").keyup(function () {
 		var s = $(this).val().toLowerCase().split(" ");
