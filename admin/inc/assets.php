@@ -86,7 +86,7 @@ $GS_script_assets['getsimple']['local']['url']     = $ASSETPATH.'js/jquery.getsi
 $GS_script_assets['getsimple']['local']['ver']     = $VERSIONS['getsimple'];
 
 // lazyload (lazy loading assets js/css)
-$GS_script_assets['lazyload']['local']['url']      = $ASSETPATH.'js/lazyload/lazyload.js';
+$GS_script_assets['lazyload']['local']['url']      = $ASSETPATH.'js/lazyload/lazyload.min.js';
 $GS_script_assets['lazyload']['local']['ver']      = $VERSIONS['lazyload'];
 
 // gstree (collpaseble heirarchy table tree) 
@@ -94,15 +94,15 @@ $GS_script_assets['gstree']['local']['url']        = $ASSETPATH.'js/jquery.gstre
 $GS_script_assets['gstree']['local']['ver']        = $VERSIONS['getsimple'];
 
 // spin (ajax spinners)
-$GS_script_assets['spin']['local']['url']          = $ASSETPATH.'js/spin/spin.js';
+$GS_script_assets['spin']['local']['url']          = $ASSETPATH.'js/spin/spin.min.js';
 $GS_script_assets['spin']['local']['ver']          = $VERSIONS['spin'];
 
 // dropzone (ajax/html uploader w drag and drop)
-$GS_script_assets['dropzone']['local']['url']      = $ASSETPATH.'js/dropzone/dropzone.js';
+$GS_script_assets['dropzone']['local']['url']      = $ASSETPATH.'js/dropzone/dropzone.min.js';
 $GS_script_assets['dropzone']['local']['ver']      = $VERSIONS['dropzone'];
 
 // jcrop
-$GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/Jcrop.js';
+$GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/Jcrop.min.js';
 $GS_script_assets['jcrop']['local']['ver']        = $VERSIONS['jcrop'];
 $GS_script_assets['jcrop']['queue']['style']      = 'jcrop';
 
