@@ -486,13 +486,12 @@ function get_site_credits($text ='Powered by ') {
  */
 function menu_data($id = null,$xml=false) {
     global $pagesArray; 
-    
-    $menu_extract = '';
     $pagesSorted = subval_sort($pagesArray,'menuOrder');
 
     if (count($pagesSorted) != 0) { 
 		$count = 0;
 		if (!$xml){
+    		$menu_extract = array();
 			foreach ($pagesSorted as $page) {
 				$text       = (string)$page['menu'];
 				$pri        = (string)$page['menuOrder'];
