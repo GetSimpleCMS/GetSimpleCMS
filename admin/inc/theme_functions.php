@@ -14,7 +14,7 @@
  * Get Page Content
  *
  * @since 1.0
- * @uses $content 
+ * @uses $content
  * @uses exec_action
  * @uses exec_filter
  * @uses strip_decode
@@ -48,7 +48,7 @@ function get_page_excerpt($len=200, $striphtml=true, $ellipsis = '...') {
 	if ($len<1) return '';
 	$content_e = strip_decode($content);
 	$content_e = exec_filter('content',$content_e); // @filter content (str) filter page content in get_page_excerpt
-	if(getDef('GSCONTENTSTRIP',true)) $content_e = strip_content($content_e);	
+	if(getDef('GSCONTENTSTRIP',true)) $content_e = strip_content($content_e);
 	echo getExcerpt($content_e, $len, $striphtml, $ellipsis);
 }
 
@@ -80,9 +80,9 @@ function get_page_meta_keywords_list($echo = true, $asarray = false){
 	$tags = getPageGlobal('metak');
 	$tags = exec_filter('metak-list',$tags); // @filter metak-list (str) filter the meta keywords in list output
 	$tags = tagsToAry($tags);
-	
+
 	if(!$echo && $asarray) return $tags;
-	
+
 	$str  = "<ul>";
 	foreach($tags as $tag){
 		if(!empty($tag)) $str.="<li>$tag</li>";
@@ -119,10 +119,10 @@ function get_page_meta_desc($echo=true) {
 		$desc = encode_quotes($desc);
 		$desc = trim($desc);
 	}
-	
+
 	$str = exec_filter('metad',$desc); // @filter metad (str) meta description in get_page_meta_desc
 
-	return echoReturn($str,$echo);	
+	return echoReturn($str,$echo);
 }
 
 /**
@@ -143,7 +143,7 @@ function get_page_meta_robots($echo=true) {
 	$str = implode(',',$arr);
 	$str = exec_filter('metar',$str); // @filter metar (str) meta robots in get_page_meta_robots
 
-	return echoReturn($str,$echo);		
+	return echoReturn($str,$echo);
 }
 
 /**
@@ -172,8 +172,8 @@ function get_page_head_title($echo=true){
  */
 function get_page_title($echo=true) {
 	$str = strip_decode(getPageGlobal('title'));
-	$str = exec_filter('pagetitle',$str); // @filter pagetitle (str) page title in get_page_title	
-	return echoReturn($str,$echo);	
+	$str = exec_filter('pagetitle',$str); // @filter pagetitle (str) page title in get_page_title
+	return echoReturn($str,$echo);
 }
 
 /**
@@ -188,7 +188,7 @@ function get_page_title($echo=true) {
 function get_page_title_long($echo=true) {
 	$str = strip_decode(getPageGlobal('titlelong'));
 	$str = exec_filter('pagetitlelong',$str); // @filter pagetitlelong (str) page title long in get_page_title_long
-	return echoReturn($str,$echo);	
+	return echoReturn($str,$echo);
 }
 
 /**
@@ -203,7 +203,7 @@ function get_page_title_long($echo=true) {
 function get_page_summary($echo=true) {
 	$str = strip_decode(getPageGlobal('summary'));
 	$str = exec_filter('pagesummary',$str); // @filter pagesummary (str) page summary in get_page_summary
-	return echoReturn($str,$echo);	
+	return echoReturn($str,$echo);
 }
 
 /**
@@ -219,7 +219,7 @@ function get_page_summary($echo=true) {
  */
 function get_page_clean_title($echo=true) {
 	$str = strip_tags(get_page_title(false));
-	return echoReturn($str,$echo);	
+	return echoReturn($str,$echo);
 }
 
 /**
@@ -269,7 +269,7 @@ function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
 	global $TIMEZONE;
 	if ($TIMEZONE != '') date_default_timezone_set($TIMEZONE);
 	$str = formatDate($i, strtotime(getPageGlobal('date')));
-	return echoReturn($str,$echo);	
+	return echoReturn($str,$echo);
 }
 
 /**
@@ -279,7 +279,7 @@ function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
  *
  * @since 1.0
  *
- * @param bool $echo Optional, default is false. True will 'return' value 
+ * @param bool $echo Optional, default is false. True will 'return' value
  * @todo $echo is backwards!
  * @return string Echos or returns based on param $echo
  */
@@ -290,7 +290,7 @@ function get_page_url($echo=false) {
 /**
  * Get Page Header HTML
  *
- * This will return header html for a particular page. This will include the 
+ * This will return header html for a particular page. This will include the
  * meta desriptions & keywords, canonical and title tags
  *
  * @since 1.0
@@ -314,13 +314,13 @@ function get_header($full=true) {
 
 function build_header($full){
 	include(GSADMININCPATH.'configuration.php');
-	
+
 	$str = '';
 
-	// meta description	
+	// meta description
 	$description = get_page_meta_desc(false);
 	if(!empty($description)) $str.= '<meta name="description" content="'.$description.'" />'."\n";
-	
+
 	// meta robots
 	$metarobots = get_page_meta_robots(false);
 	if(!empty($metarobots)) $str.= '<meta name="robots" content="'.$metarobots.'" />'."\n";
@@ -328,7 +328,7 @@ function build_header($full){
 	// meta keywords
 	$keywords = get_page_meta_keywords(false);
 	if (!empty($keywords)) $str.= '<meta name="keywords" content="'.$keywords.'" />'."\n";
-	
+
 	// canonical link
 	if ($full) {
 		$canonical = exec_filter('linkcanonical',get_page_url(true)); // @filter linkcanonical (str) rel canonical link
@@ -395,7 +395,7 @@ function get_site_url($echo=true) {
 /**
  * Get Theme URL
  *
- * This will return the current active theme's full URL 
+ * This will return the current active theme's full URL
  *
  * @since 1.0
  * @uses $SITEURL
@@ -407,7 +407,7 @@ function get_site_url($echo=true) {
 function get_theme_url($echo=true) {
 	global $SITEURL, $TEMPLATE;
 	$str = trim($SITEURL . getRelPath(GSTHEMESPATH) . $TEMPLATE);
-	return echoReturn($str,$echo);	
+	return echoReturn($str,$echo);
 }
 
 /**
@@ -428,9 +428,9 @@ function get_site_name($echo=true) {
 
 /**
  * Get Administrator's Email Address
- * 
+ *
  * This will return the value set in the control panel
- * 
+ *
  * @deprecated as of 3.0
  *
  * @since 1.0
@@ -450,8 +450,8 @@ function get_site_email($echo=true) {
  * Get Site Credits
  *
  * This will return HTML that displays 'Powered by GetSimple X.XX'
- * It will always be nice if developers left this in their templates 
- * to help promote GetSimple. 
+ * It will always be nice if developers left this in their templates
+ * to help promote GetSimple.
  *
  * @since 1.0
  * @uses $site_link_back_url from configuration.php
@@ -460,11 +460,11 @@ function get_site_email($echo=true) {
  * @uses GSADMININCPATH
  *
  * @param string $text Optional, default is 'Powered by'
- * @return string 
+ * @return string
  */
 function get_site_credits($text ='Powered by ') {
 	include(GSADMININCPATH.'configuration.php');
-	
+
 	$site_credit_link = '<a href="'.$site_link_back_url.'" target="_blank" >'.$text.' '.$site_full_name.'</a>';
 	echo stripslashes($site_credit_link);
 }
@@ -480,17 +480,17 @@ function get_site_credits($text ='Powered by ') {
  * @uses getXML
  * @uses subval_sort
  *
- * @param bool $xml Optional, default is false. 
+ * @param bool $xml Optional, default is false.
  *				True will return value in XML format. False will return an array
- * @return array|string Type 'string' in this case will be XML 
+ * @return array|string Type 'string' in this case will be XML
  */
 function menu_data($id = null,$xml=false) {
-    global $pagesArray; 
-    
-    $menu_extract = '';
+    global $pagesArray;
+
     $pagesSorted = subval_sort($pagesArray,'menuOrder');
 
-    if (count($pagesSorted) != 0) { 
+    if (count($pagesSorted) != 0) {
+		$menu_extract = [];
 		$count = 0;
 		if (!$xml){
 			foreach ($pagesSorted as $page) {
@@ -502,23 +502,23 @@ function menu_data($id = null,$xml=false) {
 				$menuStatus = (string)$page['menuStatus'];
 				$private    = (string)$page['private'];
 				$pubDate    = (string)$page['pubDate'];
-			  
+
 				$url = find_url($slug,$parent);
 				$specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
 
-				if ($id == $slug) { 
-					return $specific; 
-					exit; 
+				if ($id == $slug) {
+					return $specific;
+					exit;
 				} else {
 					$menu_extract[] = $specific;
 				}
-			} 
+			}
 
 			return $menu_extract;
-		} 
+		}
 		else {
-
-			$xml = '<?xml version="1.0" encoding="UTF-8"?><channel>';    
+			$menu_extract = '';
+			$xml = '<?xml version="1.0" encoding="UTF-8"?><channel>';
 			foreach ($pagesSorted as $page) {
 				$text       = $page['menu'];
 				$pri        = $page['menuOrder'];
@@ -528,7 +528,7 @@ function menu_data($id = null,$xml=false) {
 				$pubDate    = $page['pubDate'];
 				$menuStatus = $page['menuStatus'];
 				$private    = $page['private'];
-					
+
 				$url = find_url($slug,$parent);
 
 				$xml.="<item>";
@@ -544,8 +544,8 @@ function menu_data($id = null,$xml=false) {
 				$xml.="</item>";
 			}
 
-		$xml.="</channel>";
-		return $xml;
+			$xml.="</channel>";
+			return $xml;
 		}
 	}
 }
@@ -553,7 +553,7 @@ function menu_data($id = null,$xml=false) {
 /**
  * Get Component
  *
- * This will output the component requested. 
+ * This will output the component requested.
  * Components are parsed for PHP within them.
  * Will only return the first component matching $id
  *
@@ -571,7 +571,7 @@ function get_component($id, $force = false, $raw = false) {
  * See if a component exists
  * @since 3.4
  * @param  str $id component id
- * @param  bool disabled include disabled snippets 
+ * @param  bool disabled include disabled snippets
  * @return bool
  */
 function component_exists($id, $disabled = false){
@@ -597,14 +597,14 @@ function component_enabled($id){
  * @return component buffered output
  */
 function return_component(){
-	$args = func_get_args();	
+	$args = func_get_args();
 	return catchOutput('get_component',$args);
 }
 
 /**
  * Get Snippet
  *
- * This will output the snippet requested. 
+ * This will output the snippet requested.
  * Will only return the first snippet matching $id
  *
  * @since 3.4
@@ -662,26 +662,26 @@ function return_snippet(){
  * @uses getXML
  * @uses subval_sort
  * @uses find_url
- * @uses strip_quotes 
- * @uses exec_filter 
+ * @uses strip_quotes
+ * @uses exec_filter
  *
  * @param string $currentpage This is the ID of the current page the visitor is on
  * @param string $classPrefix Prefix that gets added to the parent and slug classnames
- * @return string 
- */	
+ * @return string
+ */
 function get_navigation($currentpage = "",$classPrefix = "") {
 
 	$menu = '';
 
 	global $pagesArray;
-	
+
 	$pagesSorted = subval_sort($pagesArray,'menuOrder');
-	if (count($pagesSorted) != 0) { 
+	if (count($pagesSorted) != 0) {
 		foreach ($pagesSorted as $page) {
 			$sel = $classes = '';
 			$url_nav = (string)$page['url'];
-			
-			if ($page['menuStatus'] == 'Y') { 
+
+			if ($page['menuStatus'] == 'Y') {
 				$parentClass = !empty($page['parent']) ? $classPrefix.$page['parent'] . " " : "";
 				$classes     = trim( $parentClass.$classPrefix.$url_nav);
 
@@ -693,13 +693,13 @@ function get_navigation($currentpage = "",$classPrefix = "") {
 			}
 		}
 	}
-	
+
 	echo exec_filter('menuitems',$menu); // @filter menuitems (str) menu items html in get_navigation
 }
 
 /**
  * Check if a user is logged in
- * 
+ *
  * This will return true if user is logged in
  *
  * @since 3.2
@@ -707,24 +707,24 @@ function get_navigation($currentpage = "",$classPrefix = "") {
  * @uses $USR
  *
  * @return bool
- */	
+ */
 function is_logged_in(){
 	global $USR;
 	if (isset($USR) && $USR == get_cookie('GS_ADMIN_USERNAME')) {
 		return true;
 	}
-}	
+}
 
 function page_is_draft(){
 	GLOBAL $data_index;
 	return $data_index->draft == true;
 }
-	
+
 /**
  * aliases
  * @deprecated as of 2.03
  * WHY?
- */	
+ */
 function return_page_title() {
 	return get_page_title(false);
 }
