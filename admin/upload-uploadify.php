@@ -27,7 +27,7 @@ if ($_POST['sessionHash'] === $SESSIONHASH) {
 		
 		$file      = $_FILES['Filedata']['name'];
 		$extension = pathinfo($file,PATHINFO_EXTENSION);
-
+		if(getDef('GSUPLOADSLC',true)) $extension = lowercase($extension);
   		$name      = pathinfo($file,PATHINFO_FILENAME);
 		$name      = clean_img_name(to7bit($name));
 

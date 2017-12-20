@@ -48,7 +48,7 @@ if (isset($_FILES['file'])) {
 			$file = $_FILES["file"]["name"][$i];
 
 			$extension = pathinfo($file,PATHINFO_EXTENSION);
-
+			if(getDef('GSUPLOADSLC',true)) $extension = lowercase($extension);
 	  		$name      = pathinfo($file,PATHINFO_FILENAME);
 			$name      = clean_img_name(to7bit($name));
 			$base      = $name . '.' . $extension;
