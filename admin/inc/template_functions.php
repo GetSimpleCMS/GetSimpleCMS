@@ -514,7 +514,7 @@ function valid_xml($file) {
  * @return string
  */
 function generate_salt() {
-  if(version_compare(PHP_VERSION, '5.3.0') >= 0){
+  if(version_compare(PHP_VERSION, '5.3.0') >= 0 && function_exists("openssl_random_pseudo_bytes")){
     return bin2hex(openssl_random_pseudo_bytes(16));
   }else{
      /* Known to be terribly insecure. Default seeded with an cryptographically
