@@ -3,7 +3,7 @@
 	Author:     Siamak Mokhtari (http://github.com/siamak/)
 	CodeMirror template by Siamak Mokhtari (https://github.com/siamak/atom-panda-syntax)
 */
-.cm-s-panda-syntax {
+.cm-s-panda-syntax.CodeMirror {
 	background: #292A2B;
 	color: #E6E6E6;
 	line-height: 1.5;

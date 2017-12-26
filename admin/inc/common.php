@@ -103,7 +103,7 @@ $GS_definitions = array(
 	'GSCHMODFILE'          => 0644,                           // (octal) chmod mode for files
 	'GSCHMODDIR'           => 0755,                           // (octal) chmod mode for dirs
 	'GSDOCHMOD'            => true,                           // (bool) perform chmod when creating files or directories
-	'GSCHMODCHECK'        => false,                           // (bool) warn on gschmod mismatches in health check
+	'GSCHMODCHECK'         => false,                           // (bool) warn on gschmod mismatches in health check
 	'GSSHOWCODEHINTS'      => true,                           // (bool) show code hints on components page and snippets etc.
 	# ALLOW --------------------------------------------------------------------------------------------------------------------------------------------
 	'GSALLOWLOGIN'         => true,                           // (bool) allow front end login
@@ -137,7 +137,7 @@ $GS_definitions = array(
 	'GSHTMLEDITINLINE'     => false,                          // (bool) show html cke editors inline EXPERIMENTAL
 	'GSHTMLEDITCOMPACT'    => true,                           // (bool) show html cke editors compacted, hides ui when not focused
 	'GSHTMLEDITAUTOHEIGHT' => true,                           // (bool) after init, auto set the ckeditors height	
-	'GSCODEEDITORTHEMES'   => '3024-day,3024-night,abcdef,ambiance-mobile,ambiance,base16-dark,base16-light,bespin,blackboard,cobalt,colorforth,default,dracula,duotone-dark,duotone-light,eclipse,elegant,erlang-dark,hopscotch,icecoder,isotope,lesser-dark,liquibyte,material,mbo,mdn-like,midnight,monokai,neat,neo,night,panda-syntax,paraiso-dark,paraiso-light,pastel-on-dark,railscasts,rubyblue,seti,solarized,the-matrix,tomorrow-night-bright,tomorrow-night-eighties,ttcn,twilight,vibrant-ink,xq-dark,xq-light,yeti,zenburn', # themes for codemirror
+	'GSCODEEDITORTHEMES'   => '3024-day,3024-night,abcdef,ambiance-mobile,ambiance,base16-dark,base16-light,bespin,blackboard,cobalt,colorforth,default,dracula,duotone-dark,duotone-light,eclipse,elegant,erlang-dark,hopscotch,icecoder,isotope,lesser-dark,liquibyte,material,mbo,mdn-like,midnight,monokai,neat,neo,night,panda-syntax,paraiso-dark,paraiso-light,pastel-on-dark,railscasts,rubyblue,seti,solarized light,solarized dark,the-matrix,tomorrow-night-bright,tomorrow-night-eighties,ttcn,twilight,vibrant-ink,xq-dark,xq-light,yeti,zenburn', # themes for codemirror
 	# DRAFTS -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSUSEDRAFTS'          => true,                           // (bool) use page drafts
 	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else manually pass `nodraft` or `draft` qs

@@ -2,7 +2,7 @@
 ICEcoder default theme by Matt Pass, used in code editor available at https://icecoder.net
 */
 
-.cm-s-icecoder { color: #666; background: #1d1d1b; }
+.cm-s-icecoder.CodeMirror { color: #666; background: #1d1d1b; }
 
 .cm-s-icecoder span.cm-keyword { color: #eee; font-weight:bold; }  /* off-white 1 */
 .cm-s-icecoder span.cm-atom { color: #e1c76e; }                    /* yellow */
