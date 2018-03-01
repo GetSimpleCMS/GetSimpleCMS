@@ -113,14 +113,13 @@ function get_page_meta_desc($echo=true) {
 		// use content excerpt, NOT filtered
 		$desc = '';
 		if(!empty($content)){
-			$desc = strip_decode($content);
-		$desc = strip_decode(getPageGlobal('content'));
-		if(getDef('GSCONTENTSTRIP',true)) $desc = strip_content($desc);
-		$desc = cleanHtml($desc,array('style','script')); // remove unwanted elements that strip_tags fails to remove
-		$desc = getExcerpt($desc,getDef('GSMETADLEN')); // grab 160 chars
-		$desc = strip_whitespace($desc); // remove newlines, tab chars
-		$desc = encode_quotes($desc);
-		$desc = trim($desc);
+			$desc = strip_decode(getGSPageVar('content'));
+			if(getDef('GSCONTENTSTRIP',true)) $desc = strip_content($desc);
+			$desc = cleanHtml($desc,array('style','script')); // remove unwanted elements that strip_tags fails to remove
+			$desc = getExcerpt($desc,getDef('GSMETADLEN')); // grab 160 chars
+			$desc = strip_whitespace($desc); // remove newlines, tab chars
+			$desc = encode_quotes($desc);
+			$desc = trim($desc);
 		}
 	}
 	
