@@ -98,6 +98,7 @@ echo '<div class="bodycontent clearfix">
 						"curl|cURL Module|warn",
 						"gd|GD Library|warn",
 						"zip|ZipArchive|warn",
+						"zlib|Zlib|warn",
 						"SimpleXML|SimpleXML Module|error",
 					);
 		
@@ -275,16 +276,22 @@ echo '<div class="bodycontent clearfix">
 						
 						$writable = checkWritable($path);
 						
+						// check if actually writable
 						if( $writable ) {
+							// optional warn if writable but chmod mismatch
 							if(!checkPermsWritable($path) && getDef('GSCHMODCHECK',true)){
-								echo '<a name="warn"></a><span class="WARNmsg">GSCONFIG ' .getChmodValue($path,true). '</span><td><span class="label label-ok" >'.i18n_r('OK').'</span></td>'; 
+								echo '<a name="warn"></a><span class="WARNmsg">GSCONFIG ' .getChmodValue($path,true). '</span><td><span class="label label-warn" >'.i18n_r('WARNING').'</span></td>'; 
 							}
 							else {
 								echo i18n_r('WRITABLE').'<td><span class="label label-ok" > '.i18n_r('OK').'</span></td>'; 
-							}	
+							}
 						} 
 						else {
-							echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('NOT_WRITABLE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 
+							if(getDef('GSCHMODCHECK',true)){
+								echo '<a name="error"></a><span class="ERRmsg">GSCONFIG ' .getChmodValue($path,true). '</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 
+							} else {
+								echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('NOT_WRITABLE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 
+							}	
 							$errorCnt++;											
 						} 
 						echo '</td></tr>';

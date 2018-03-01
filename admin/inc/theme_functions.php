@@ -114,12 +114,13 @@ function get_page_meta_desc($echo=true) {
 		$desc = '';
 		if(!empty($content)){
 			$desc = strip_decode($content);
-			if(getDef('GSCONTENTSTRIP',true)) $desc = strip_content($desc);
-			$desc = cleanHtml($desc,array('style','script')); // remove unwanted elements that strip_tags fails to remove
-			$desc = getExcerpt($desc,160); // grab 160 chars
-			$desc = strip_whitespace($desc); // remove newlines, tab chars
-			$desc = encode_quotes($desc);
-			$desc = trim($desc);
+		$desc = strip_decode(getPageGlobal('content'));
+		if(getDef('GSCONTENTSTRIP',true)) $desc = strip_content($desc);
+		$desc = cleanHtml($desc,array('style','script')); // remove unwanted elements that strip_tags fails to remove
+		$desc = getExcerpt($desc,getDef('GSMETADLEN')); // grab 160 chars
+		$desc = strip_whitespace($desc); // remove newlines, tab chars
+		$desc = encode_quotes($desc);
+		$desc = trim($desc);
 		}
 	}
 	
@@ -490,13 +491,12 @@ function get_site_credits($text ='Powered by ') {
  */
 function menu_data($id = null,$xml=false) {
     global $pagesArray; 
-    
-    $menu_extract = '';
     $pagesSorted = subval_sort($pagesArray,'menuOrder');
 
     if (count($pagesSorted) != 0) { 
 		$count = 0;
 		if (!$xml){
+    		$menu_extract = array();
 			foreach ($pagesSorted as $page) {
 				$text       = (string)$page['menu'];
 				$pri        = (string)$page['menuOrder'];

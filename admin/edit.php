@@ -454,7 +454,7 @@ if($newdraft) $pageClass.=' newdraft';
                     </p>
                     <p class="clearfix">
                         <label for="post-metad" class="clearfix"><?php i18n('META_DESC'); ?>: <span class="countdownwrap"><strong class="countdown" ></strong> <?php i18n('REMAINING'); ?></span></label>
-                        <textarea class="text short charlimit" data-maxLength='155' id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
+                        <textarea class="text short charlimit" data-maxLength='<?php echo getDef('GSMETADLEN'); ?>' id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
                     </p>
                 </div>    
                 <div class="rightopt">
