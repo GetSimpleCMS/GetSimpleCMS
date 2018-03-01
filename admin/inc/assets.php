@@ -46,17 +46,17 @@ $GS_asset_objects['jquery-ui'] = 'jQuery.ui';
 
 $VERSIONS = array(
   'getsimple'         =>  GSVERSION,
-  'ckeditor'          => '4.4.6',
-  'codemirror'        => '5.1.0',
-  'dropzone'          => '4.3.0',
-  'fancybox'          => '2.1.5',
-  'font-awesome'      => '4.6.3',
+  'ckeditor'          => '4.8.0',
+  'codemirror'        => '5.32.0',
+  'dropzone'          => '5.1.1',
+  'fancybox'          => '2.1.5', // 3.2.0 available
+  'font-awesome'      => '4.7.0',
   'jcrop'             => '2.0.4',
-  'jquery'            => '2.2.4',
+  'jquery'            => '3.2.1',
   'jqueryui'          => '1.11.4',
   'jqueryuicss'       => '1.11.3',
   'jquery-mousewheel' => '3.1.13',
-  'scrolltofixed'     => '1.0.7',
+  'scrolltofixed'     => '1.0.8',
   'spin'              => '2.3.2',
   'lazyload'          => '0.0.1',
   'nestable'          => '1.2.2'
@@ -87,7 +87,7 @@ $GS_script_assets['getsimple']['local']['url']     = $ASSETPATH.'js/jquery.getsi
 $GS_script_assets['getsimple']['local']['ver']     = $VERSIONS['getsimple'];
 
 // lazyload (lazy loading assets js/css)
-$GS_script_assets['lazyload']['local']['url']      = $ASSETPATH.'js/lazyload/lazyload.js';
+$GS_script_assets['lazyload']['local']['url']      = $ASSETPATH.'js/lazyload/lazyload.min.js';
 $GS_script_assets['lazyload']['local']['ver']      = $VERSIONS['lazyload'];
 
 // gstree (collpaseble heirarchy table tree) 
@@ -95,15 +95,15 @@ $GS_script_assets['gstree']['local']['url']        = $ASSETPATH.'js/jquery.gstre
 $GS_script_assets['gstree']['local']['ver']        = $VERSIONS['getsimple'];
 
 // spin (ajax spinners)
-$GS_script_assets['spin']['local']['url']          = $ASSETPATH.'js/spin/spin.js';
+$GS_script_assets['spin']['local']['url']          = $ASSETPATH.'js/spin/spin.min.js';
 $GS_script_assets['spin']['local']['ver']          = $VERSIONS['spin'];
 
 // dropzone (ajax/html uploader w drag and drop)
-$GS_script_assets['dropzone']['local']['url']      = $ASSETPATH.'js/dropzone/dropzone.js';
+$GS_script_assets['dropzone']['local']['url']      = $ASSETPATH.'js/dropzone/dropzone.min.js';
 $GS_script_assets['dropzone']['local']['ver']      = $VERSIONS['dropzone'];
 
 // jcrop
-$GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/Jcrop.js';
+$GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/Jcrop.min.js';
 $GS_script_assets['jcrop']['local']['ver']        = $VERSIONS['jcrop'];
 $GS_script_assets['jcrop']['queue']['style']      = 'jcrop';
 
@@ -142,9 +142,9 @@ $GS_script_assets['scrolltofixed']['local']['url'] = $ASSETPATH.'js/scrolltofixe
 $GS_script_assets['scrolltofixed']['local']['ver'] = $VERSIONS['scrolltofixed'];
 
 // codemirror
-$GS_script_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror-compressed.js';
+$GS_script_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror.min.js';
 $GS_script_assets['codemirror']['local']['ver']    = $VERSIONS['codemirror'];
- $GS_style_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror.css';
+ $GS_style_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror.min.css';
  $GS_style_assets['codemirror']['local']['ver']    = $VERSIONS['codemirror'];
 
 // fancybox

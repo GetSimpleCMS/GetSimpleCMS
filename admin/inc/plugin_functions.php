@@ -629,20 +629,20 @@ function prepareHookCallbackArgs($hook,$args){
  * @param int $priority order of execution of hook, lower numbers execute earlier
  */
 function add_hook(&$hook_array, &$hook_hash_array, $hook_name, $hook_function, $args = array(), $priority = null, $expectedargs = 0) {
-	
-	if(isset($priority) && !is_int($priority)){
+	$_priority = $priority; // copy arg, so backtrace does not reflect current value, see PHP7 changes
+	if(isset($_priority) && !is_int($_priority)){
 		debugLog(__FUNCTION__ . ': invalid priority');
-		$priority = null;
+		$_priority = null;
 	}
 
-	if($priority === 0) $priority = 1; # fixup 0 
-	clamp($priority,1,10,10); # clamp priority, min:1, max:10, default:10
+	if($_priority === 0) $_priority = 1; # fixup 0 
+	clamp($_priority,1,10,10); # clamp priority, min:1, max:10, default:10
 
 	$hook = array(
 		'hook'     => $hook_name,
 		'function' => $hook_function,
 		'args'     => (array) $args,
-		'priority' => $priority,
+		'priority' => $_priority,
 		'numargs'  => $expectedargs,
 	);
 	addPlugindebugging($hook); # add debug info , file, line, core
