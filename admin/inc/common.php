@@ -330,25 +330,21 @@ if(defined('GSERRORLOGENABLE') && (bool) GSERRORLOGENABLE === true){
  */
 require_once('basic.php');
 if(defined("GSDEBUGHEADERS")) debugLog('headers sent: basic.php ' . headers_sent());
+
 require_once('template_functions.php');
-
 if(defined("GSDEBUGHEADERS")) debugLog('headers sent: template_functions.php ' . headers_sent());
+
 require_once('theme_functions.php');
-
 if(defined("GSDEBUGHEADERS")) debugLog('headers sent: theme_functions.php ' . headers_sent());
-require_once('page_functions.php');
 
-if(defined("GSDEBUGHEADERS")) debugLog('headers sent: page_functions.php ' . headers_sent());
 require_once('filter_functions.php');
-
 if(defined("GSDEBUGHEADERS")) debugLog('headers sent: filter_functions.php ' . headers_sent());
-require_once('sort_functions.php');
 
+require_once('sort_functions.php');
 if(defined("GSDEBUGHEADERS")) debugLog('headers sent: sort_functions.php ' . headers_sent());
 
 require_once('logging.class.php');
 if(defined("GSDEBUGHEADERS")) debugLog('headers sent: logging.class.php ' . headers_sent());
-
 
 include_once(GSADMININCPATH.'configuration.php');
 
@@ -619,18 +615,19 @@ if(empty($ASSETPATH))    $ASSETPATH   = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH,
  * Include other files depending if they are needed or not
  */
 require_once(GSADMININCPATH.'cookie_functions.php');
-// debugLog('headers sent: cookie_functions.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: cookie_functions.php ' . headers_sent());
+
 require_once(GSADMININCPATH.'assets.php');
-// debugLog('headers sent: asset.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: asset.php ' . headers_sent());
+
 include_once(GSADMININCPATH.'plugin_functions.php');
-// debugLog('headers sent: plugin_functions.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: plugin_functions.php ' . headers_sent());
 
 // include core plugin for page caching, requires plugin functions for hooks
 // @todo must stay after plugin_function for now, since it requires plugin_functions
 include_once(GSADMININCPATH.'caching_functions.php');
-// debugLog('headers sent: caching_functions.php ' . headers_sent());
-
 if(defined('GSINITPAGECACHE') && constant('GSINITPAGECACHE') == true) init_pageCache(); // in case autoloading doesnt work for a particular instance.
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: caching_functions.php ' . headers_sent());
 
 if(getDef('GSSAFEMODE',true)) $SAFEMODE = true;
 if($SAFEMODE){
@@ -660,7 +657,7 @@ if(isset($load['plugin']) && $load['plugin']){
 			// debugLog('including plugin: ' . $file);
 			include_once(GSPLUGINPATH . $file);
 			exec_action('plugin-loaded'); // @hook plugin-loaded called after each plugin is included
-			// debugLog('headers sent: ' . $file . ' - ' . headers_sent());
+			if(defined("GSDEBUGHEADERS")) debugLog('headers sent: ' . $file . ' - ' . headers_sent());
 		}
 	}
 	exec_action('plugins-loaded'); // @hook plugins-loaded plugin files have been included
@@ -671,6 +668,7 @@ if(isset($load['plugin']) && $load['plugin']){
 		settings page since that is where its sidebar item is. */
 		if (getDef('GSEXTAPI',true)) {
 			include_once('api.plugin.php');
+			if(defined("GSDEBUGHEADERS")) debugLog('headers sent: api.plugin.php ' . headers_sent());
 		}
 	}
 
@@ -696,7 +694,10 @@ if(defined('GSDEBUGARRAYS') && constant('GSDEBUGARRAYS') == true){
 if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ require_once(GSADMININCPATH.'login_functions.php'); }
 
 // do the template rendering
-if(GSBASE) require_once(GSADMINPATH.'base.php');
+if(GSBASE) {
+	require_once(GSADMINPATH.'base.php');
+	if(defined("GSDEBUGHEADERS")) debugLog('headers sent: base.php ' . headers_sent());
+}
 
 // common methods that are required before dependancy includes
 
