@@ -162,12 +162,14 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 
         var htmlEditorConfig = {
             language                     : '<?php echo getGSVar('EDLANG'); ?>',
-<?php       if(!empty($contentsCss)) echo "contentsCss                   : '$contentsCss',"; ?>
-<?php       if(!empty($configjs))    echo "customConfig                  : '$configjs',"; ?>
+<?php       if(!empty($CKEcontentsCss)) echo "contentsCss                   : '$CKEcontentsCss',"; ?>
+<?php       if(!empty($CKEconfigjs))    echo "customConfig                  : '$CKEconfigjs',"; ?>
+<?php       if(!empty($CKEstyleSet))    echo "stylesSet                     : '$CKEstyleSet',"; ?>
             height                       : '<?php echo getGSVar('EDHEIGHT'); ?>',
             baseHref                     : '<?php echo getGSVar('SITEURL'); ?>'
             <?php if(getGSVar('EDTOOL')) echo ",toolbar: " . returnJsArray(getGSVar('EDTOOL')); ?>
 <?php       if(getGSVar('EDOPTIONS')) echo ','.trim(getGSVar('EDOPTIONS')); ?>
+			<?php if(getDef("GSCKETSTAMP",true)) echo ",timestamp : '".getDef("GSCKETSTAMP") . "'\n"; ?>
         };
 
         // wipe the ckeditor shim, so it does not interfere with the real one
