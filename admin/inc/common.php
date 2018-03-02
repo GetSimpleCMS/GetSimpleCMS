@@ -67,6 +67,10 @@ $GS_constants = array(
 	'GSDEFAULTPERMALINK'    => '%path%/%slug%/',              // (str) default permalink structure to use if prettyurls is enabled, and custom not exist 
 	'GSTOKENDELIM'          => '%',                           // (str) delimiter for token boundaries
 	'GSLOGINQSALLOWED'      => 'id,draft,nodraft,safemode,i,path',   // (str) csv query string keys to allow during login redirects
+	'GSPAGECACHEEXCLUDE'    => 'content',                     // (str) csv list of page fields to exlclude from page cache
+	'GSBACKUPEXTRAS'        => '',                            // (str) csv extra backup locations to add to archives
+	'GSAUTOFIXPAGESLUGS'    => false,                         // (bool) auto fix slugs to match filenames, for manualy file copy etc.
+	'GSAUTOFIXPAGEFILES'    => false,                         // (bool) auto fix filenames to match slugs, for manualy file copy etc.
 	# -----------------------------------------------------------------------------------------------------------------------------------------------	
 	'GSCONSTANTSLOADED'     => true                           // $GS_constants IS LOADED FLAG
 );
@@ -141,7 +145,7 @@ $GS_definitions = array(
 	# DRAFTS -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSUSEDRAFTS'          => true,                           // (bool) use page drafts
 	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else manually pass `nodraft` or `draft` qs
-	'GSDRAFTSTACKDEFAULT'  => true,                           // (bool) default page stack editing to drafts if true
+	'GSDRAFTSTACKDEFAULT'  => false,                           // (bool) default page stack editing to drafts if true
 	'GSSDRAFTSPUBLISHEDTAG'=> true,                           // (bool) show published label on non draft pages if true
 	'GSAUTOSAVE'           => true,                           // (bool) auto save enabled, disabled if false, only used for drafts currently
 	'GSAUTOSAVEINTERVAL'   => 6,                              // (int)  auto save interval in seconds,  only used for drafts currently
@@ -152,17 +156,22 @@ $GS_definitions = array(
 	'GSTHUMBSSHOW'         => false,                          // (bool) always show thumbnails
 	# DEBUGGING ----------------------------------------------------------------------------------------------------------------------------------------
 	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
+	'GSDEBUGINSTALLWIPE'   => false,                          // (bool) debug installs, wipes website.xml on logouts
 	'GSDEBUG'              => true,                          // (bool) output debug mode console
-	'GSDEBUGAPI'           => false,                          // (bool) debug api calls to debuglog
+	'GSDEBUGAPI'           => false,                         // (bool) debug api calls to debuglog
 	'GSDEBUGREDIRECTS'     => false,                         // (bool) if debug mode enabled, prevent redirects for debugging
 	'GSDEBUGFILEIO'        => true,                          // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
-	'GSSAFEMODE'           => false,                          // (bool) enable safe mode, safe mode disables plugins and components
-	# VARIABLES -----------------------------------------------------------------------------------------------------------------------------------------
-	'GSMETADLEN'           => 160,                            // (int) optional meta description max length enforced
-	'GSBACKUPROOT'         => false,                          // (bool) include all root files in archive backups
-	// 'GSBACKUPEXTRAS'       => '',                          // (str) testing add stuff to backup, only accepts files for now
-	# ---------------------------------------------------------------------------------------------------------------------------------------------------
+	'GSDEBUGLOGTIME'       => true,                          // (bool) timestamp debuglog str entries
+	'GSDEBUGLOGDUR'        => true,                          // (bool) duration timestamp debuglog str entries
+	'GSDEBUGHEADERS'       => false,                         // (bool) enable header output debugging ( helpful for finding whitespace or headers already sent errors )
+	# INIT ----------------------------------------------------------------------------------------------------------------------------------------------
+	'GSSAFEMODE'           => false,                         // (bool) enable safe mode, safe mode disables plugins and components
+	'GSFORMATXML'          => true,                          // (bool) format xml files before saving them, making them more legible
+	'GSFORMATJSON'         => true,                          // (bool) format JSON files before saving them, making them more legible
+	'GSINITPAGECACHE'      => false,                         // (bool) initialize page cache always, for dealing with autoload failures
+	'GSDEBUGARRAYS'        => false,                         // (bool) will dump all arrays on init for debugging
+	# SANITY --------------------------------------------------------------------------------------------------------------------------------------------
  	'GSDEFINITIONSLOADED'  => true	                          // (bool) $GS_definitions IS LOADED FLAG
 );
 
@@ -183,8 +192,9 @@ global
  $snippets,       // (array) global array for storing snippets, array of objs from snippets.xml
  $nocache,        // (bool) disable site wide cache true, not fully implemented
  $microtime_start,// (microtime) used for benchmark timers
+ $microtime_last, // (microtime) used for benchmark timers
  $pagesArray,     // (array) global array for storing pages cache, used for all page fields aside from content
- $pageCacheXml,   // (obj) page cache raw xml simpleXMLobj
+ $pageCacheXml,   // (obj) page cache raw xml simpleXMLobj //@todo REMOVE memory waste, not needed when not debugging
  $plugin_info,    // (array) contains registered plugin info for active and inactive plugins
  $live_plugins,   // (array) contains plugin file ids and enable status
  $plugins,        // (array) global array for storing action hook callbacks
@@ -195,8 +205,12 @@ global
  $securityFilters,// (array) global array for storing security filters hash table
  $GS_scripts,     // (array) global array for storing queued asset scripts
  $GS_styles,      // (array) global array for storing queued asset styles
- $plugincallstats // (array) global array for storing plugin call stats
+ $plugincallstats,// (array) global array for storing plugin call stats
+ $GSSITEMENU      // (array) global array for storing menu caches
 ;
+
+$microtime_start = microtime(true);
+$microtime_last = $microtime_start;
 
 if(isset($_GET['nocache'])){
 	// @todo: disables caching, this should probably only be allowed for auth users, it is also not well implemented
@@ -239,6 +253,7 @@ define('GSLANGPATH'      , GSADMINPATH     . 'lang/');      // lang/
 define('GSDATAPATH'      , GSROOTPATH      . 'data/');      // data/
 define('GSDATAOTHERPATH' , GSDATAPATH      . 'other/');     // data/other/
 define('GSDATAPAGESPATH' , GSDATAPATH      . 'pages/');     // data/pages/
+define('GSDATAMENUPATH'  , GSDATAPATH      . 'menus/');     // data/menus/
 
 define('GSAUTOSAVEPATH'  , GSDATAPAGESPATH . 'autosave/');  // data/pages/autosave/
 define('GSDATADRAFTSPATH', GSDATAPAGESPATH . 'autosave/');  // data/pages/autosave/
@@ -315,11 +330,28 @@ if(defined('GSERRORLOGENABLE') && (bool) GSERRORLOGENABLE === true){
  * Basic file inclusions
  */
 require_once('basic.php');
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: basic.php ' . headers_sent());
 require_once('template_functions.php');
+
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: template_functions.php ' . headers_sent());
 require_once('theme_functions.php');
+
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: theme_functions.php ' . headers_sent());
+require_once('page_functions.php');
+
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: page_functions.php ' . headers_sent());
 require_once('filter_functions.php');
+
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: filter_functions.php ' . headers_sent());
 require_once('sort_functions.php');
+
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: sort_functions.php ' . headers_sent());
+
 require_once('logging.class.php');
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: logging.class.php ' . headers_sent());
+
+require_once('menu_functions.php');
+if(defined("GSDEBUGHEADERS")) debugLog('headers sent: menu_functions.php ' . headers_sent());
 
 include_once(GSADMININCPATH.'configuration.php');
 
@@ -339,6 +371,7 @@ if(getDef('GSNOFRAME') !== false){
  * Bad stuff protection
  */
 require_once('security_functions.php');
+// debugLog('headers sent: security_functions.php ' . headers_sent());
 
 if (version_compare(PHP_VERSION, "5")  >= 0) {
 	foreach ($_GET as &$xss) $xss = antixss($xss);
@@ -588,20 +621,27 @@ if(empty($ASSETPATH))    $ASSETPATH   = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH,
 /**
  * Include other files depending if they are needed or not
  */
+
 require_once(GSADMININCPATH.'cookie_functions.php');
+// debugLog('headers sent: cookie_functions.php ' . headers_sent());
 require_once(GSADMININCPATH.'assets.php');
+// debugLog('headers sent: asset.php ' . headers_sent());
 include_once(GSADMININCPATH.'plugin_functions.php');
+// debugLog('headers sent: plugin_functions.php ' . headers_sent());
 
 // include core plugin for page caching, requires plugin functions for hooks
 // @todo must stay after plugin_function for now, since it requires plugin_functions
 include_once(GSADMININCPATH.'caching_functions.php');
-init_pageCache();
+// debugLog('headers sent: caching_functions.php ' . headers_sent());
 
+if(defined('GSINITPAGECACHE') && constant('GSINITPAGECACHE') == true) init_pageCache(); // in case autoloading doesnt work for a particular instance.
+
+if(getDef('GSSAFEMODE',true)) $SAFEMODE = true;
 if($SAFEMODE){
 	if(isset($_REQUEST['safemodeoff']) && is_logged_in()){
 		disableSafeMode();
 		redirect(myself(false));
-	} 
+	}
 	else {
 		$SAFEMODE = true;
 		debugLog("SAFEMODE ON");
@@ -614,7 +654,7 @@ if($SAFEMODE){
 
 if(isset($load['plugin']) && $load['plugin']){
 
-	if(function_exists('plugin_preload_callout')) plugin_preload_callout();	// @callout plugin_preload_callout callout before loading plugin files
+	// callIfCallable('plugin_preload_callout'); // @callout plugin_preload_callout callout before loading plugin files
 
 	// Include plugins files in global scope
 	loadPluginData();
@@ -624,6 +664,7 @@ if(isset($load['plugin']) && $load['plugin']){
 			// debugLog('including plugin: ' . $file);
 			include_once(GSPLUGINPATH . $file);
 			exec_action('plugin-loaded'); // @hook plugin-loaded called after each plugin is included
+			// debugLog('headers sent: ' . $file . ' - ' . headers_sent());
 		}
 	}
 	exec_action('plugins-loaded'); // @hook plugins-loaded plugin files have been included
@@ -640,17 +681,21 @@ if(isset($load['plugin']) && $load['plugin']){
 	# main hook for common.php
 	exec_action('common'); // @hook common common.php has completed loading resoruces, base not yet loaded
 	// debugLog('calling common_callout');
-	if(function_exists('common_callout')) common_callout(); // @callout common_callout callout after common loaded, before templating
+	// callIfCallable('common_callout'); // @callout common_callout callout after common loaded, before templating
 }
+
+if(isset($_REQUEST['refreshcache'])) exec_action('request-refreshcache'); // @hook request-cacherefresh force pagecache refresh
 
 /**
  * debug plugin global arrays
  */
 
-// debugLog($live_plugins);
-// debugLog($plugin_info);
-// debugLog($plugins);
-// debugLog($pluginHooks);
+if(defined('GSDEBUGARRAYS') && constant('GSDEBUGARRAYS') == true){
+	debugLog($live_plugins);
+	debugLog($plugin_info);
+	debugLog($plugins);
+	debugLog($pluginHooks);
+}
 
 if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ require_once(GSADMININCPATH.'login_functions.php'); }
 
@@ -666,6 +711,8 @@ if(GSBASE) require_once(GSADMINPATH.'base.php');
  */
 function debugLog($mixed = null) {
 	global $GS_debug;
+	// add stamp and or elapsed times to strings
+	if(gettype($mixed) == "string" && function_exists('get_execution_time') && defined('GSDEBUGLOGTIME') && constant('GSDEBUGLOGTIME') == true) $mixed = '|'.str_pad(get_execution_time(),5,0,STR_PAD_RIGHT) . "|" . (defined('GSDEBUGLOGDUR') && constant('GSDEBUGLOGDUR') == true ? str_pad(get_execution_duration(),5,0,STR_PAD_RIGHT) . '|' : '') . $mixed;
 	array_push($GS_debug,$mixed);
 	if(function_exists('debugLog_callout')) debugLog_callout($mixed); // @callout debugLog_callout (str) callout for each debugLog call, argument passed
 	return $mixed;
@@ -682,6 +729,22 @@ function debugDie($msg = ""){
 	debugLog($msg);
 	outputDebugLog();
 	die();
+}
+
+/**
+ * debug a backtrace
+ * eg. 	`debugLogTrace(__FUNCTION__,123456);`
+ * @param  str $msg exception message
+ * @param  int $code exception code, useful as id for grouping etc
+ * @param  int $cols $colwidth for dividers
+ * @since 3.4
+ */
+function debugLogTrace($msg = '',$code = '',$cols = 100){
+	$e      = new Exception($msg,(int)$code);
+	$emsg   = $e->getMessage();
+	$etrace = $e->getTraceAsString();
+	$ecode  = $e->getCode() > 0 ? $e->getCode() : '';
+	debugLog("$msg\nDEBUG BACKTRACE $ecode\n".str_repeat('=', $cols)."\n".$etrace."\n".str_repeat('-', $cols));
 }
 
 /**
@@ -779,6 +842,14 @@ function getGSRootPath($calculate = false){
 		return $file.DIRECTORY_SEPARATOR;
 	}
 	return dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR;
+}
+
+// debugging svn branch, set in configuration for now
+if(isDebug() && isset($devbranch)) add_action("footer","debugBranch",array($devbranch,(isset($devissue) ? $devissue : null)),1);
+function debugBranch($branch = 'master',$issue = null){
+   	echo '<div class="border"><p><i class="fa fa-fw fa-github-square"></i><b>GITHUB BRANCH:</b> '.$branch;
+   	if(isset($issue)) echo ' - <a class="label-reset label label-info" href="https://github.com/GetSimpleCMS/GetSimpleCMS/issues/'.$issue.'" target="_BLANK">GITHUB ISSUE</a>';
+   	echo '</p></div><br>';
 }
 
 /* ?> */

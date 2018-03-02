@@ -564,6 +564,12 @@ h5:hover img {
 	margin: 0 0 20px 30px;
 }
 
+/* fix nested ul margins */
+.bodycontent li ul,
+.bodycontent li ol {
+	margin-bottom: 0px;
+}
+
 .bodycontent ul p,
 .bodycontent ol p {
 	margin: 0 0 10px 0;
@@ -995,7 +1001,20 @@ sup {
 }
 
 #maincontent .main .section {
-	padding-top: 40px;
+	padding-top: 20px;
+}
+
+#styleguide .section:hover {
+	margin:-1px;
+	border:1px dashed rgba(0,0,0,0.25);
+}
+
+#maincontent .main .section:after {
+	content: "\0020";
+	display: block;
+	height: 0;
+	visibility: hidden;
+	clear:both;	
 }
 
 #themecontent{
@@ -1180,7 +1199,7 @@ fieldset,
 	border: 1px solid #e8e8e8;
 	padding: 15px 10px 5px 10px;
 	border-radius: 2px;
-	text-shadow: 1px 1px 0 rgba(255,255,255,.3);
+	/*text-shadow: 1px 1px 0 rgba(255,255,255,.3);*/
 }
 
 
@@ -1252,8 +1271,7 @@ fieldset,
 	transition: background-color 200ms;	
 }
 
-.leftopt:hover,.rightopt:hover,.wideopt:hover,
-.leftsec:hover,.rightsec:hover,.widesec:hover {
+.leftopt:hover,.rightopt:hover,.wideopt:hover{
 	background-color: rgba(0,0,0,0.02);
 	transition: background-color 400ms;
 }
@@ -1905,7 +1923,7 @@ table.simple td.title {
 }
 
 #footer p {
-	margin: 0 0 8px 0;
+	margin: 4px 3px;
 }
 
 #footer a:link,
@@ -2267,6 +2285,11 @@ textarea.copykit {
 	   -moz-transition-property: background-color, color, text-shadow;
 	     -o-transition-property: background-color, color, text-shadow;
 	        transition-property: background-color, color, text-shadow; 	
+}
+
+.label-reset {
+	color: white !important;
+	text-shadow: none !important;
 }
 
 div.label{
@@ -2756,12 +2779,25 @@ h5 .crumbs, div.h5 .crumbs {
 	opacity: 1;
 }
 
+/* menu manager */
 .wrapper #maincontent ul#menu-order {
 	list-style: none;
 	margin: 0 0 25px 0;
 }
 
-#menu-order li {
+#menu-order-nestable{
+	max-width: none;
+	margin-top: 6px;
+}
+
+#menu-order-nestable ul,
+#menu-order-nestable ol{
+	margin:0;
+}
+
+#menu-order li,
+#menu-order-nestable li .dd-handle,
+#menu-manager .dd-handle {
 	text-shadow: 1px 1px 0 rgba(255,255,255,.3);
 	cursor: move;
 	display: block;
@@ -2769,22 +2805,48 @@ h5 .crumbs, div.h5 .crumbs {
 	border: 1px solid #eee;
 	background: #fbfbfb;
 	padding: 5px 10px;
+	font-weight:normal;
+	max-width:none;
+    -webkit-border-radius: 0;
+    border-radius: 0;
 }
 
-#menu-order li:hover {
+#menu-manager li .dd-itemwrap.menu {
+	color: #000;
+}	
+#menu-manager li .dd-itemwrap {
+	color: #aaa;
+}	
+
+#menu-order li:hover,
+#menu-order-nestable li .dd-handle:hover {
 	border: 1px solid #ccc;
 	background: #f6f6f6;
+    -webkit-border-radius: 0;
+    border-radius: 0;
 }
 
-#menu-order li em {
+#menu-order li em, 
+#menu-order-nestable li .itemtitle,
+.dd-dragel li .itemtitle {
 	float: right;
-	color: #666;
+}
+
+.dd-dragel {
+	opacity:0.85;
+}
+
+.dd-item > button {
+	text-indent : 0 !important;
 }
 
 #menu-order li.placeholder-menu {
 	height: 18px;
-	background: #FFB164;
-	border: 1px solid #FF9933;
+	/*background: #FFB164;*/
+	background: #FFFFD5;
+	/*border: 1px solid #FF9933;*/
+	border: 1px dashed #bbb;
+	border-radius: 0;
 }
 
 #theme_select {
@@ -2938,6 +3000,15 @@ a.disabled:visited {
 
 #cm_themeselect {
 	float: right;
+}
+
+#cm_themeselect_label {
+font-size: 12px;
+  color: #BBB;
+  margin: 0 3px;
+  line-height: 22px;
+  float: right;
+  /* font-weight: normal; */
 }
 
 #theme_filemanager {
@@ -3449,6 +3520,11 @@ kbd
 	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;		
 }
 
+.borderless{
+	border:none;
+	box-shadow: none;
+}
+
 /* Allow Font Awesome Icons in lieu of jQuery UI and only apply when using a FA icon */
 .ui-icon[class*=" icon-"] {
     /* Remove the jQuery UI Icon */
@@ -3468,6 +3544,8 @@ kbd
     /* Bump it - jQuery UI is -8px */
     margin-left: -7px;
 }
+
+
 
 /* gstree styles */
 .tree-roottoggle .label{
@@ -3705,3 +3783,7 @@ img.fancybox-image {
    .label-medium-debug:after                                      { content: "<?php echo $label_6;   ?>" !important;}
 
 /* </style> */
+
+#sa_debug_footer {
+    text-align: right !important;
+} 

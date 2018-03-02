@@ -61,7 +61,7 @@ if ($p == 'delete') {
 	redirect("backups.php?upd=bak-".$status."&id=".$id);
 }
 
-elseif ($p == 'restore') {
+elseif ($p == 'restore') { // UNDO
 	// restoring page backup
 	check_for_csrf("restore", "backup-edit.php");
 	$redirect = "";
@@ -77,20 +77,21 @@ elseif ($p == 'restore') {
 		$newid = $_GET['new'];
         // @todo traversal protect $newid
 		// Undo slug change, restore page by old slug id
-		changeChildParents($newid, $id); // update parents and children
+		pageSlugHasChanged($newid, $id); // update parents and children
 		$success = restore_page($id);    // restore old slug file
 		restore_draft($id);              // restore draft
 		delete_draft($newid);            // delete live new slug draft
 		delete_page($newid);             // backup and delete live new slug file
 		$redirect = ("edit.php?id=". $id ."&nodraft&old=".$_GET['new']."&upd=edit-success&type=restore");
 	} else {
+		pageSlugHasChanged(null, $id); // update parents and children		
 		$success = restore_page($id);    // restore old slug file
 		$redirect = ("edit.php?id=". $id ."&nodraft&upd=edit-success&type=restore");
 	}
 	
 	if($success){
 		generate_sitemap(); // regenerates sitemap
-		exec_action('page-restore');     // @hook page-restore fird when a page is restored
+		exec_action('page-restore');     // @hook page-restore fired when a page is restored
 		if($redirect) redirect($redirect);
 	}
 	else {

@@ -209,7 +209,8 @@ echo '<div class="bodycontent clearfix">
 						foreach($data as $file) {
 							if( isFile($file, $path) ) {
 								$relpath = '/'.getRelPath($path);
-								echo '<tr><td class="hc_item" >'.$relpath . $file .'</td>';
+								$fsize = filesize($path . $file);
+								echo '<tr><td class="hc_item" >'.$relpath . $file .'</td><td>'.fSize($fsize).'</td>';
 								if(is_valid_xml($path . $file)){
 									echo '<td>' . i18n_r('XML_VALID').'</td><td><span class="label label-ok">'.i18n_r('OK') .'</span></td>';
 								}									
@@ -408,5 +409,13 @@ echo '<div class="bodycontent clearfix">
 	</div>	
 
 </div>
+
+<?php
+	debugLog("__FILE__" . ": " .__FILE__);
+	$properties = array('SCRIPT_FILENAME', 'SCRIPT_NAME', 'PHP_SELF', 'REQUEST_URI');
+	foreach($properties as $property){
+	    debugLog($property .": " . $_SERVER[$property]);
+	}
+?>
 
 <?php get_template('footer'); ?>

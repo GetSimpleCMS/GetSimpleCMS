@@ -396,7 +396,7 @@ class ImageManipulation {
 	public function save($file=null, $show = false)
 	{
 
-		// debugDie(print_r($this,true));
+		// debugLogDie(print_r($this,true));
 
 		if(isset($file) && empty($file)) $file = null;
 		$showsave = $show && isset($file);

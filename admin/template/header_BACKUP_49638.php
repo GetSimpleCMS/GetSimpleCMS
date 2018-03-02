@@ -81,8 +81,14 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		queue_script('gscodeeditor', GSBACK);
 	}
 
+<<<<<<< .merge_file_GjFCzk
+	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGSVar('HTMLEDITOR') ){
+||||||| .merge_file_ymZG11
+	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGlobal('HTMLEDITOR') ){
+=======
 	// load gshtmleditor
-	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGSVar('HTMLEDITOR')){
+	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGlobal('HTMLEDITOR')){
+>>>>>>> .merge_file_1fcgyM
 		queue_script('gshtmleditor',GSBACK);
 	}
 
@@ -101,13 +107,23 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	}
 
     // HTMLEDITOR INIT
-    // ckeditor contentsCss(editor.css) from theme
+<<<<<<< .merge_file_GjFCzk
+    // ckeditor editorcss
     if (file_exists(GSTHEMESPATH .getGSVar('TEMPLATE')."/editor.css")) {
-        $CKEcontentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGSVar('TEMPLATE').'/editor.css';
+        $contentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGSVar('TEMPLATE').'/editor.css';
+||||||| .merge_file_ymZG11
+    // ckeditor editorcss
+    if (file_exists(GSTHEMESPATH .getGlobal('TEMPLATE')."/editor.css")) {
+        $contentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGlobal('TEMPLATE').'/editor.css';
+=======
+    // ckeditor contentsCss(editor.css) from theme
+    if (file_exists(GSTHEMESPATH .getGlobal('TEMPLATE')."/editor.css")) {
+        $CKEcontentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGlobal('TEMPLATE').'/editor.css';
     }
     // ckeditor contentsCss(contents.css) override from user
     if (file_exists(GSTHEMESPATH .getDef('GSEDITORCSSFILE'))) {
         $CKEcontentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getDef('GSEDITORCSSFILE');
+>>>>>>> .merge_file_1fcgyM
     }
     // ckeditor customconfig
     if (file_exists(GSTHEMESPATH .getDef('GSEDITORCONFIGFILE'))) {
@@ -165,14 +181,32 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
         }
 
         var htmlEditorConfig = {
+<<<<<<< .merge_file_GjFCzk
             language                     : '<?php echo getGSVar('EDLANG'); ?>',
-<?php       if(!empty($CKEcontentsCss)) echo "contentsCss                   : '$CKEcontentsCss',"; ?>
-<?php       if(!empty($CKEconfigjs))    echo "customConfig                  : '$CKEconfigjs',"; ?>
-<?php       if(!empty($CKEstyleSet))    echo "stylesSet                     : '$CKEstyleSet',"; ?>
+<?php       if(!empty($contentsCss)) echo "contentsCss                   : '$contentsCss',"; ?>
+<?php       if(!empty($configjs))    echo "customConfig                  : '$configjs',"; ?>
             height                       : '<?php echo getGSVar('EDHEIGHT'); ?>',
             baseHref                     : '<?php echo getGSVar('SITEURL'); ?>'
             <?php if(getGSVar('EDTOOL')) echo ",toolbar: " . returnJsArray(getGSVar('EDTOOL')); ?>
 <?php       if(getGSVar('EDOPTIONS')) echo ','.trim(getGSVar('EDOPTIONS')); ?>
+||||||| .merge_file_ymZG11
+            language                     : '<?php echo getGlobal('EDLANG'); ?>',
+<?php       if(!empty($contentsCss)) echo "contentsCss                   : '$contentsCss',"; ?>
+<?php       if(!empty($configjs))    echo "customConfig                  : '$configjs',"; ?>
+            height                       : '<?php echo getGlobal('EDHEIGHT'); ?>',
+            baseHref                     : '<?php echo getGlobal('SITEURL'); ?>'
+            <?php if(getGlobal('EDTOOL')) echo ",toolbar: " . returnJsArray(getGlobal('EDTOOL')); ?>
+<?php       if(getGlobal('EDOPTIONS')) echo ','.trim(getGlobal('EDOPTIONS')); ?>
+=======
+            language                     : '<?php echo getGlobal('EDLANG'); ?>',
+<?php       if(!empty($CKEcontentsCss)) echo "contentsCss                   : '$CKEcontentsCss',"; ?>
+<?php       if(!empty($CKEconfigjs))    echo "customConfig                  : '$CKEconfigjs',"; ?>
+<?php       if(!empty($CKEstyleSet))    echo "stylesSet                     : '$CKEstyleSet',"; ?>
+            height                       : '<?php echo getGlobal('EDHEIGHT'); ?>',
+            baseHref                     : '<?php echo getGlobal('SITEURL'); ?>'
+            <?php if(getGlobal('EDTOOL')) echo ",toolbar: " . returnJsArray(getGlobal('EDTOOL')); ?>
+<?php       if(getGlobal('EDOPTIONS')) echo ','.trim(getGlobal('EDOPTIONS')); ?>
+>>>>>>> .merge_file_1fcgyM
 			<?php if(getDef("GSCKETSTAMP",true)) echo ",timestamp : '".getDef("GSCKETSTAMP") . "'\n"; ?>
         };
 

@@ -23,7 +23,7 @@ function get_template($name, $title='** Change Me - Default Page Title **') {
 	$file = "template/" . $name . ".php";
 	include($file);
 	$template = ob_get_contents();
-	ob_end_clean(); 
+	ob_end_clean();
 	echo $template;
 }
 
@@ -844,13 +844,22 @@ function get_available_pages() {
 }
  
 /**
- * Change all direct childens parents to new parent
- *
+ * A page slug has changed perform necessary operations
+ * update childrens parents
+ * @todo  which menus get updated ?
  * @since 3.4
- * @param str $parent parent slug to change
- * @param str $newparent new slug to change to
+ * @param str $slug parent slug to change
+ * @param str $newslug new slug to change to
  */
-function changeChildParents($parent, $newparent=null){
+function pageSlugHasChanged($slug, $newslug = null){
+	pageSlugHasChanges($slug,$newslug);
+}
+
+/**
+ * LEGACY method of pageSlugHasChanged function
+ */
+function updatePagesParents($parent,$newparent){
+	// Update pages childrens parent fields
 	global $pagesArray;
 	getPagesXmlValues();
 	foreach ($pagesArray as $page){
@@ -859,14 +868,14 @@ function changeChildParents($parent, $newparent=null){
 			$data->parent=$newparent;
 			XMLsave($data, GSDATAPAGESPATH.$page['filename']);
 		}
-	}
+	}	
 }
 
 // DEPRECATED
 //  LEGACY, uses global url
 function updateSlugs($existingUrl){
 	GLOBAL $url;
-	changeChildParents($existingUrl, $url);
+	pageSlugHasChanged($existingUrl, $url);
 }
 
 /**
@@ -886,8 +895,9 @@ function get_link_menu_array($parent='', $array=array(), $level=0) {
 	// pagesarray is sorted by file load, no specific or normalized sort order
 	// pagesSorted attempts to sort by heirarchy parent children, in alphabetic order
 
-	// @todo sort parent invalid filter
-	$items = filterParent(getPages('sortParent'),$parent);
+	// @todo MENU sort parent invalid filter, plus this is probably wrong anyway, should return entire subtree
+	$items = getPages('sortParent'); 
+	if(!empty($parent)) $items = filterParent($items,$parent);
 
 	if (count($items)>0){
 		foreach ($items as $page) {
@@ -966,7 +976,11 @@ function ckeditor_add_page_link(){
 
 /**
  * get table row for pages display
- *
+ * 
+ * @todo micro optimizations here are useful, minimize function calls
+ * further optimizations, aside from caching this entirely
+ * pass in i18n strings for flags or cache, formatted output_date, pageHasDraft can also be cached for signifigant speedups (100ms on 500 pages)
+ * 
  * @since 3.4
  * @param  array $page   page array
  * @param  int $level    current level
@@ -976,6 +990,7 @@ function ckeditor_add_page_link(){
  * @return str           html for table row
  */
 function getPagesRow($page,$level,$index,$parent,$children){
+	// debugLog($page['url'].'|'.$level.'|'.$children);
 
 	$indentation = $menu = '';
 
@@ -1000,26 +1015,25 @@ function getPagesRow($page,$level,$index,$parent,$children){
 
 	$menu .= '<tr id="tr-'.$page['url'] .'" class="'.$class.'" data-depth="'.$level.'">';
 
-	$pagetitle = $pagemenustatus = $pageprivate = $pagedraft = $pageindex = '';
-
+	$pagetitle = $pagemenustatus = $pageprivate = $pagedraft = $pageindex = $pagepubdate = '';
 
 	if ($page['title'] == '' )        { $pagetitle       = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>';} else { $pagetitle = $page['title']; }
-	if ($page['menuStatus'] != '' )   { $pagemenustatus  = ' <span class="label label-ghost">'.i18n_r('MENUITEM_SUBTITLE').'</span>'; }
-	if ($page['private'] != '' )      { $pageprivate     = ' <span class="label label-ghost">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } 
-	if (getDef('GSUSEDRAFTS') && pageHasDraft($page['url']))   { $pagedraft       = ' <span class="label label-ghost">'.lowercase(i18n_r('LABEL_DRAFT')).'</span>'; }
-	if ($page['url'] == getDef('GSINDEXSLUG'))     { $pageindex       = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; }
+	if ($page['menuStatus'] != '' )   { $pagemenustatus  = ' <span class="label label-ghost">'.i18n('MENUITEM_SUBTITLE',false).'</span>'; }
+	if ($page['private'] != '' )      { $pageprivate     = ' <span class="label label-ghost">'.i18n('PRIVATE_SUBTITLE',false).'</span>'; } 
+	if (getDef('GSUSEDRAFTS') && pageHasDraft($page['url']))   { $pagedraft       = ' <span class="label label-ghost">'.lowercase(i18n_r('LABEL_DRAFT',false)).'</span>'; }
+	if ($page['url'] == getDef('GSINDEXSLUG'))     { $pageindex       = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE',false).'</span>'; }
 	if(dateIsToday($page['pubDate'])) { $pagepubdate     = ' <span class="datetoday">'. output_date($page['pubDate']) . '</span>';} else { $pagepubdate = '<span>'. output_date($page['pubDate']) . "</span>";}
 
-	$menu .= '<td class="pagetitle break">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. cl($pagetitle) .'</a>';
+	$menu .= '<td class="pagetitle break">'. $indentation .'<a title="'.i18n('EDITPAGE_TITLE',false).': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. cl($pagetitle) .'</a>';
 	$menu .= '<div class="showstatus toggle" >'. $pageindex .  $pagedraft . $pageprivate . $pagemenustatus .'</div></td>'; // keywords used for filtering
 	$menu .= '<td style="width:80px;text-align:right;" ><span>'.$pagepubdate.'</span></td>';
 	$menu .= '<td class="secondarylink" >';
-	$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($pagetitle) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
+	$menu .= '<a title="'.i18n('VIEWPAGE_TITLE',false).': '. var_out($pagetitle) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
 	$menu .= '</td>';
 
 	// add delete buttons, exclude index page
 	if ($page['url'] != 'index' ) {
-		$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. var_out($page['title']) .'" >&times;</a></td>';
+		$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n('DELETEPAGE_TITLE',false).': '. var_out($page['title']) .'" >&times;</a></td>';
 	} else {
 		$menu .= '<td class="delete" ></td>';
 	}
@@ -1029,11 +1043,13 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	$menu .= '<td class="tagColumn hidden">'.str_replace(',',' ',$page['meta']) . '</div></td>'; // keywords used for filtering
 	
 	$menu .= '</tr>';
+
 	return $menu;
 }
 
 
 function getPagesRowMissing($ancestor,$level,$children){
+	debugLog(__FUNCTION__);
 	$menu = '<tr id="tr-'.$ancestor.'" class="tree-error tree-parent depth-'.$level.'" data-depth="'.$level.'"><td colspan="4" class="pagetitle"><a><strong>'. $ancestor.'</strong> '.i18n_r('MISSING_PARENT').'</a>';
 	if ( fileHasBackup(GSDATAPAGESPATH.$ancestor.'.xml') ) {
 		$menu.= '&nbsp;&nbsp;&nbsp;&nbsp;<a href="backup-edit.php?p=view&amp;id='.$ancestor.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
@@ -1044,29 +1060,33 @@ function getPagesRowMissing($ancestor,$level,$children){
 
 /**
  * create a parent child bucket
- *
+ * [parent] => ['id','id']
  * @since 3.4
- *
  * @param  array   $pages  pagesarray
  * @param  boolean $useref true: use references for values, false: empty
  * @return array   returns array keyed by parents, then keyed by url with values page refs or empty
  */
-function getParentsHashTable($pages = array(), $useref = true){
+function getParentsHashTable($pages = array(), $useref = true, $fixorphans = false){
 	$pagesArray = $pages ? $pages : getPagesXmlValues();
 	$ary        = array();
+	$lastkey    = '';
 
 	foreach($pagesArray as $key => &$page){
 		$parent = isset($page['parent']) ? $page['parent'] : '';
 		$pageId = isset($page['url']) ? $page['url'] : null;
+
+		// move orphans to root
+		if($fixorphans && !isset($pagesArray[$parent])) $parent = ''; 
 		if($pageId) $ary[$parent][$pageId] = $useref ? $page : '';
+		$lastkey = $key;
 	}
 
 	return $ary;
 }
 
-
 /**
- * create a parent child bucket
+ * create a parent child bucket with `id,children` subarrays
+ * [parent] => [children:['id',&id'],id:'id']
  *
  * @since 3.4
  *
@@ -1083,9 +1103,9 @@ function getParentsSlugHashTable($pages = array(), $useref = true){
 		$pageId = isset($page['url']) ? $page['url'] : null;
 		
 		if(!empty($parent)){
-			if (isset($ary[$parent])) $ary[$parent]['children'][] = $page['url'];
-			else $ary[$parent] = array('id'=>$parent,'children'=>array($page['url']));
-		} 
+			if (isset($ary[$parent])) $ary[$parent]['children'][$page['url']] = ($useref ? $page : $page['url']);
+			else $ary[$parent] = array('id'=>$parent,'children'=>array($page['url'] => ($useref ? $page : $page['url']) ) );
+		}
 		// else $ary[] = array('id'=>$page['url']);
 	}
 
@@ -1093,115 +1113,84 @@ function getParentsSlugHashTable($pages = array(), $useref = true){
 }
 
 /**
- * gets a page array with heirachy data added to it
- * converts pages parent adjacancy list to flat table
- * id.[parent] -> rank[order],level[depth]
- *
- * @since 3.4
- * @param  array  $mypages pages array
- * @return array           pages array with order,depth,numchildren added
- */
-function getPageDepths($pages=array(), $init = true){
-	static $parents;     // parent lookup table
-	// static $pages;       // pagesarray
-	static $newpages;    // new pagesarray
-	static $keys;        // track processed pageIds
-
-	static $parent; // current parent being processed
-	static $level;  // depth / indentation level
-	static $iter;   // order / weight iteration counter
-
-	$thisfunc = __FUNCTION__;
-
-	if($init){
-		$parent = ''; // current parent being processed
-		$level  = 0;  // depth / indentation level
-		$iter   = 0;  // order / weight iteration counter
-	}
-
-	if(!$keys || $init)     $keys     = array();
-	// if(!$pages || $init)    $pages    = $mypages;
-	if(!$newpages || $init) $newpages = array();
-	if(!$parents  || $init)  $parents  = getParentsHashTable($pages); // use parent child lookup table for speed
-
-
-	foreach ($parents[$parent] as $key => &$page) {
-		$iter++;
-		$keys[$key]  = '';
-
-		// assert cyclical parent child
-		if($page['parent'] == $page['url']) die("self parent ". $key);
-
-		$pageId      = (string) $key;
-		$numChildren = isset($parents[$pageId]) ? count($parents[$pageId]) : 0;
-
-		$newpages[$pageId]                = $page;
-		$newpages[$pageId]['order']       = $iter;
-		$newpages[$pageId]['depth']       = $level;
-		$newpages[$pageId]['numchildren'] = $numChildren;
-
-		if(isset($parents[$pageId])){
-			$level++;
-			$parent = $pageId;
-			$thisfunc(array(),false);
-			$level--;
-		} else $parent ='';
-	}
-
-	// do missing ancestor checks, orphans are not previously processed since they have no root
-	if($level == 0 and $parent==''){
-		// debugLog('missing ancestor check');
-		$level++;
-		$ancestors = array_diff(array_keys($parents),array_keys($keys) );
-		// debugLog($ancestors);
-
-		foreach($ancestors as $key => $ancestor){
-			if($ancestor !=='') {
-				// check again to see if it was already removed from a previous loop
-		 		if(!isset($keys[$ancestor])) {
-		 			// Add this mising page to new array, then recurse on its children
-		 			$iter++;
-					$keys[$ancestor]  = '';
-
-					$pageId      = $ancestor;
-					$numChildren = isset($parents[$pageId]) ? count($parents[$pageId]) : 0;
-
-					// this will cause issues if used for something else that tried to use a required field, since this will be missing all of them
-					// @todo add a status flag instead of null ['url'] ?
-					// @todo add full page template here , abstract page schema somewhere
-					$newpages[$pageId]                = array(); 
-					// $newpages[$pageId]['url']         = $ancestor;
-					$newpages[$pageId]['order']       = $iter;
-					$newpages[$pageId]['depth']       = $level-1;
-					$newpages[$pageId]['numchildren'] = $numChildren;
-					$parent = $ancestor;
-					$thisfunc(array(),false);
-		 		}
-		 	}
-		}
-	}
-
-	return $newpages;
-}
-
-/**
- * Recursive list of pages
- *
- * Returns a recursive list of items for the main page
+ * Returns table rows of items for main page list pages.php
  *
  * @since 3.0
- * @uses $pagesSorted
- *
- * @param string $parent
- * @param string $menu
- * @param int $level
+ * @param string $parent starting parent
+ * @param string $menu   which menu to display heirachy from
+ * @param int $level     starting level
  * 
- * @returns string
+ * @return string
  */
 function get_pages_menu($parent = '',$menu = '',$level = '') {
-	global $pagesSorted;
-	
-	$pages = getPageDepths($pagesSorted); // use parent hash table for speed
+	// return get_pages_menu_old();
+	// return get_pages_menu_recursive(); 
+	return get_pages_menu_flat();
+}
+
+// output pages menu tree using flat method
+function get_pages_menu_flat(){
+	$menu = '';
+	$items = getMenuDataFlat();
+	foreach($items as $item){
+		$slug = $item['id'];
+		// debugLog($slug);
+		if(isset($item['data']['parent']) && $item['data']['parent'] === $slug) die("self parent > " . $item['filename']); 
+
+		$level       = $item['data']['depth']-1;
+		$numChildren = $item['data']['numchildren'];
+		$page        = getPage($slug);
+		// provide special row if this is a missing parent
+		if( !isset($page) ) $menu .= getPagesRowMissing($slug,$level,$numChildren); // use URL check for missing parents for now
+		else $menu .= getPagesRow($page,$level,'','',$numChildren);
+	}
+
+	return $menu;	
+}
+
+// output pages menu tree using recursive tree method
+function get_pages_menu_recursive(){
+	$tree = getMenuDataNested();
+	return getMenuTree($tree,true,GSMENUPAGESCALLOUT, null,array(getMenuDataArray()));
+}
+
+// Page menu row callout
+function pagesTreeCallout($item, $outer = false, $open = true,$level = '',$index = '' ,$order = '',$args = array()){
+	if($outer || !$open) return;
+	$slug        = $item['id'];
+	$level       = $item['data']['depth']-1;
+	$numChildren = $item['data']['numchildren'];
+	$page        = getPage($slug);
+	// provide special row if this is a missing parent
+	if( !isset($page) ) return getPagesRowMissing($slug,$level,$numChildren); // use URL check for missing parents for now
+	else return getPagesRow($page,$level,'','',$numChildren);		
+}
+
+
+/**
+ * same as getPageDepths, uses menu cache
+ * @param  array $pages pages array
+ * @return array        pages with new info added
+ */
+function getPageDepthsNew($pages){
+	$items = getMenuDataFlat();
+	// debugLog($items);
+	foreach($pages as &$page){
+		if(!isset($items[$page['url']])){
+			debugLog("missing " . $page['url']);
+			return;
+		}
+		$item = $items[$page['url']];
+		// debugLog($item);
+		$page['order']       = $item['data']['order'];
+		$page['depth']       = $item['data']['depth']-1;
+		$page['numchildren'] = $item['data']['numchildren'];
+	}
+	return $pages;
+}
+
+function get_pages_menu_old($parent = '',$menu = '',$level = '') {	
+	$pages = getPageDepthsNew(getpages()); // use parent hash table for speed
 	$depth = null;
 
 	// get depth of requested parent, then get all subsequent children until we get back to our starting depth
@@ -1231,6 +1220,7 @@ function get_pages_menu($parent = '',$menu = '',$level = '') {
 		else $menu .= getPagesRow($page,$level,'','',$numChildren);
   	}
 
+	debugLog(__FUNCTION__);
 	return $menu;
 }
 
@@ -1323,6 +1313,7 @@ function get_api_details($type='core', $args=null, $cached = false) {
 	GLOBAL $debugApi,$nocache,$nocurl;
 
 	include(GSADMININCPATH.'configuration.php');
+	// $nocache = true;
 
 	if($cached){
 		debug_api_details("API REQEUSTS DISABLED, using cache files only");
@@ -1354,13 +1345,14 @@ function get_api_details($type='core', $args=null, $cached = false) {
 
 	# check to see if cache is available for this
 	$cachefile = md5($fetch_this_api).'.txt';
-	$cacheExpire = 39600; // 11 minutes
+	$cacheExpireSecs = 39600; // seconds, 11 hours
+	// $cacheExpireSecs = 60; // 1 minute
 
 	if(!$nocache || $cached) debug_api_details('cache file check - ' . $fetch_this_api.' ' .$cachefile);
 	else debug_api_details('cache check: disabled');
 
 	$cacheAge = file_exists(GSCACHEPATH.$cachefile) ? filemtime(GSCACHEPATH.$cachefile) : '';
-	debug_api_details('cache age: ' . output_datetime($cacheAge));
+	debug_api_details('cache file tstamp: ' . output_datetime($cacheAge,true));
 
 
 	// api disabled and no cache file exists
@@ -1370,8 +1362,8 @@ function get_api_details($type='core', $args=null, $cached = false) {
 		return '{"status":-1}';
 	}
 
-	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpire) < $cacheAge ) {
-		debug_api_details('cache file time - ' . $cacheAge . ' (' . (time() - $cacheAge) . ')' );
+	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpireSecs) < $cacheAge ) {
+		debug_api_details('cache file time - ' . $cacheAge . ' (' . (time() - $cacheAge) . ' seconds ago)' );
 		# grab the api request from the cache
 		$data = read_file(GSCACHEPATH.$cachefile);
 		debug_api_details('returning cache file - ' . GSCACHEPATH.$cachefile);
@@ -1399,16 +1391,25 @@ function get_api_details($type='core', $args=null, $cached = false) {
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_URL, $fetch_this_api);
 
+			curl_setopt($ch, CURLOPT_FAILONERROR, true);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+
 			if($debugApi){
-				// $verbose = fopen(GSDATAOTHERPATH .'logs/curllog.txt', 'w+');			
-				$verbose = tmpfile();				
-				// curl_setopt($ch, CURLOPT_WRITEHEADER, $verbose );
+
+				$curllog = false;
+				if($curllog){
+					$verbose = fopen(GSDATAOTHERPATH .'logs/curllog.txt', 'w+');
+					curl_setopt($ch, CURLOPT_WRITEHEADER, $verbose );
+				}	
+				else $verbose = tmpfile();				
+
 				curl_setopt($ch, CURLOPT_HEADER, true); 
 				curl_setopt($ch, CURLOPT_VERBOSE, true);
-				curl_setopt($ch, CURLOPT_STDERR, $verbose );
-				curl_setopt($ch, CURLINFO_HEADER_OUT, true);								
+				curl_setopt($ch, CURLOPT_STDERR, $verbose ); // @todo not actually logging errors
+				curl_setopt($ch, CURLINFO_HEADER_OUT, true);							
 			}
-				
+
 			$data = curl_exec($ch);
 
 			if($debugApi){
@@ -1416,12 +1417,12 @@ function get_api_details($type='core', $args=null, $cached = false) {
 				debug_api_details("curl version: ");
 				debug_api_details(print_r(curl_version(),true));	
 			
-				debug_api_details("curl info:");
+				debug_api_details("curl info: ");
 				debug_api_details(print_r(curl_getinfo($ch),true));
 			
 				if (!$data) {
-					debug_api_details("curl error number:" .curl_errno($ch));
-					debug_api_details("curl error:" . curl_error($ch));
+					debug_api_details("curl error number: " .curl_errno($ch));
+					debug_api_details("curl error: " . curl_error($ch));
 				}
 
 				debug_api_details("curl Verbose: ");
@@ -1735,6 +1736,9 @@ function strIsMultibyte($str){
  * @return string      return well formed html , with open tags being closed and incomplete open tags removed
  */
 function cleanHtml($str,$strip_tags = array()){
+	
+	if(empty($str)) return $str;
+
 	// setup encoding, required for proper dom loading
 	// @note
 	// $dom_document = new DOMDocument('1.0', 'utf-8'); // this does not deal with transcoding issues, loadhtml will treat string as ISO-8859-1 unless the doc specifies it 
@@ -1756,10 +1760,6 @@ function cleanHtml($str,$strip_tags = array()){
 	$html_fragment = preg_replace('/^<!DOCTYPE.+?>|<head.*?>(.*)?<\/head>/', '', str_replace( array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), @$dom_document->saveHTML()));	
 	return $html_fragment;
 }	
-
-// @todo: now that I have some structure, i can probably reduce this into some array_filter functions, depending on speed these might be easier and faster to use.
-// @todo: replace function checks with callable checks
-// but it still requires a class or __invoke to pass arguments into the callback
 
 /**
  * get Page data for http response code
@@ -2347,6 +2347,5 @@ function generate_thumbnail($file, $sub_path = '', $out_file = null, $w = null, 
 		return false;
 	}
 }
-
 
 /* ?> */

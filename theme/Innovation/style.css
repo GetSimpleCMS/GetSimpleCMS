@@ -325,3 +325,67 @@ footer a:hover, footer a:focus {
 	color:#555;
 	text-decoration:underline;
 }
+
+
+/**
+ * Dropdown Menu
+ */
+
+header nav ul li{ 
+	position:relative; 
+}
+
+header nav ul li ul { 
+	position:absolute; 
+	background: White;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 10px;
+	z-index : 9999;
+	min-width : 150px;
+	display:none;
+    padding: 2px;
+    margin: 0;
+}
+header nav ul li ul li ul{
+	left : 99%;
+	top : 0px;
+}
+header nav ul li ul li{ 
+	float:none;  
+}
+header nav ul li ul li+li{
+    border-top : 1px dashed #4878A1;
+}
+header nav ul li ul li a:link, 
+header nav ul li ul li a:visited{
+    background-color : transparent;
+    color : Black;
+    text-shadow: 0px 0px 0px rgba(0,0,0, .3);
+    padding-top : 5px;
+    padding-bottom : 5px;
+}
+
+header nav ul:hover li{ 
+	display:block; 
+}
+header nav ul li:hover ul { 
+	display:block; 
+}
+header nav ul li:hover ul li ul{ 
+	display: none; 
+}
+header nav ul li ul li:hover ul{ 
+	display: block; 
+}
+header nav ul li ul li:hover ul li ul{ 
+	display: none; 
+}
+header nav ul li ul li ul li:hover ul{ 
+	display: block; 
+}
+header nav ul li ul li.current > a { 
+	color:#4878A1; 
+	font-weight:800;
+	background-color : transparent!important;
+} 

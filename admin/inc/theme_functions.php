@@ -23,7 +23,7 @@
  */
 function get_page_content() {
 	exec_action('content-top'); // @hook content-top before get content
-	$content = strip_decode(getPageGlobal('content'));
+	$content = strip_decode(getGSPageVar('content'));
 	$content = exec_filter('content',$content); // @filter content (str) filter page content
 	if(getDef('GSCONTENTSTRIP',true)) $content = strip_content($content);
 	echo $content;
@@ -64,7 +64,7 @@ function get_page_excerpt($len=200, $striphtml=true, $ellipsis = '...') {
  * @return string Echos or returns based on param $echo
  */
 function get_page_meta_keywords($echo=true) {
-	$str = encode_quotes(strip_decode(getPageGlobal('metak')));
+	$str = encode_quotes(strip_decode(getGSPageVar('metak')));
 	$str = exec_filter('metak',$str); // @filter metak (str) filter the meta keywords
 	return echoReturn($str,$echo);
 }
@@ -77,7 +77,7 @@ function get_page_meta_keywords($echo=true) {
  * @return array html string or array of tags for page
  */
 function get_page_meta_keywords_list($echo = true, $asarray = false){
-	$tags = getPageGlobal('metak');
+	$tags = getGSPageVar('metak');
 	$tags = exec_filter('metak-list',$tags); // @filter metak-list (str) filter the meta keywords in list output
 	$tags = tagsToAry($tags);
 	
@@ -103,7 +103,7 @@ function get_page_meta_keywords_list($echo = true, $asarray = false){
  * @return string Echos or returns based on param $echo
  */
 function get_page_meta_desc($echo=true) {
-	$metad = getPageGlobal('metad');
+	$metad = getGSPageVar('metad');
 	$desc = '';
 	if ($metad != '') {
 		$desc = encode_quotes(strip_decode($metad));
@@ -111,13 +111,16 @@ function get_page_meta_desc($echo=true) {
 	else if(getDef('GSAUTOMETAD',true))
 	{
 		// use content excerpt, NOT filtered
-		$desc = strip_decode(getPageGlobal('content'));
-		if(getDef('GSCONTENTSTRIP',true)) $desc = strip_content($desc);
-		$desc = cleanHtml($desc,array('style','script')); // remove unwanted elements that strip_tags fails to remove
-		$desc = getExcerpt($desc,getDef('GSMETADLEN')); // grab 160 chars
-		$desc = strip_whitespace($desc); // remove newlines, tab chars
-		$desc = encode_quotes($desc);
-		$desc = trim($desc);
+		$desc = '';
+		if(!empty($content)){
+			$desc = strip_decode(getGSPageVar('content'));
+			if(getDef('GSCONTENTSTRIP',true)) $desc = strip_content($desc);
+			$desc = cleanHtml($desc,array('style','script')); // remove unwanted elements that strip_tags fails to remove
+			$desc = getExcerpt($desc,getDef('GSMETADLEN')); // grab 160 chars
+			$desc = strip_whitespace($desc); // remove newlines, tab chars
+			$desc = encode_quotes($desc);
+			$desc = trim($desc);
+		}
 	}
 	
 	$str = exec_filter('metad',$desc); // @filter metad (str) meta description in get_page_meta_desc
@@ -136,9 +139,9 @@ function get_page_meta_desc($echo=true) {
  */
 function get_page_meta_robots($echo=true) {
 	$arr = array();
-	$arr[] = getPageGlobal('metarNoIndex') == 1 ? 'noindex' : 'index';
-	$arr[] = getPageGlobal('metarNoFollow') == 1 ? 'nofollow' : 'follow';
-	$arr[] = getPageGlobal('metarNoArchive') == 1 ? 'noarchive' : 'archive';
+	$arr[] = getGSPageVar('metarNoIndex') == 1 ? 'noindex' : 'index';
+	$arr[] = getGSPageVar('metarNoFollow') == 1 ? 'nofollow' : 'follow';
+	$arr[] = getGSPageVar('metarNoArchive') == 1 ? 'noarchive' : 'archive';
 
 	$str = implode(',',$arr);
 	$str = exec_filter('metar',$str); // @filter metar (str) meta robots in get_page_meta_robots
@@ -156,7 +159,7 @@ function get_page_meta_robots($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_head_title($echo=true){
-	$str = strip_tags(strip_decode(getPageGlobal('title')));
+	$str = strip_tags(strip_decode(getGSPageVar('title')));
 	$str = exec_filter('headtitle',$str); // @filter headtitle (str) head title in get_page_head_title
 	return echoReturn($str,$echo);
 }
@@ -171,7 +174,7 @@ function get_page_head_title($echo=true){
  * @return string Echos or returns based on param $echo
  */
 function get_page_title($echo=true) {
-	$str = strip_decode(getPageGlobal('title'));
+	$str = strip_decode(getGSPageVar('title'));
 	$str = exec_filter('pagetitle',$str); // @filter pagetitle (str) page title in get_page_title	
 	return echoReturn($str,$echo);	
 }
@@ -186,7 +189,7 @@ function get_page_title($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_title_long($echo=true) {
-	$str = strip_decode(getPageGlobal('titlelong'));
+	$str = strip_decode(getGSPageVar('titlelong'));
 	$str = exec_filter('pagetitlelong',$str); // @filter pagetitlelong (str) page title long in get_page_title_long
 	return echoReturn($str,$echo);	
 }
@@ -201,7 +204,7 @@ function get_page_title_long($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_summary($echo=true) {
-	$str = strip_decode(getPageGlobal('summary'));
+	$str = strip_decode(getGSPageVar('summary'));
 	$str = exec_filter('pagesummary',$str); // @filter pagesummary (str) page summary in get_page_summary
 	return echoReturn($str,$echo);	
 }
@@ -234,7 +237,7 @@ function get_page_clean_title($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_slug($echo=true) {
-	$str = exec_filter('pageslug',getPageGlobal('url')); // @filter pageslug (str) page slug in get_page_slug, needed if plugins modify routing hooks and global url does not match page rendered
+	$str = exec_filter('pageslug',getGSPageVar('url')); // @filter pageslug (str) page slug in get_page_slug, needed if plugins modify routing hooks and global url does not match page rendered
  	return echoReturn($str,$echo);
 }
 
@@ -249,7 +252,7 @@ function get_page_slug($echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_parent($echo=true) {
-	return echoReturn(getPageGlobal('parent'),$echo);
+	return echoReturn(getGSPageVar('parent'),$echo);
 }
 
 /**
@@ -268,7 +271,7 @@ function get_parent($echo=true) {
 function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
 	global $TIMEZONE;
 	if ($TIMEZONE != '') date_default_timezone_set($TIMEZONE);
-	$str = formatDate($i, strtotime(getPageGlobal('date')));
+	$str = formatDate($i, strtotime(getGSPageVar('date')));
 	return echoReturn($str,$echo);	
 }
 
@@ -284,7 +287,7 @@ function get_page_date($i = "l, F jS, Y - g:i A", $echo=true) {
  * @return string Echos or returns based on param $echo
  */
 function get_page_url($echo=false) {
-	return echoReturn(find_url(getPageGlobal('url'), getPageGlobal('parent')),!$echo);
+	return echoReturn(find_url((string)getGSPageVar('url'),(string)getGSPageVar('parent')),!$echo);
 }
 
 /**
@@ -312,6 +315,7 @@ function get_header($full=true) {
 	exec_action('theme-header');  // @hook theme-header after get_header output html
 }
 
+// @todo cleanup
 function build_header($full){
 	include(GSADMININCPATH.'configuration.php');
 	
@@ -389,7 +393,7 @@ function get_scripts_frontend($footer = false){
  * @return string Echos or returns based on param $echo
  */
 function get_site_url($echo=true) {
-	return echoReturn(getPageGlobal('SITEURL'),$echo);
+	return echoReturn(getGSPageVar('SITEURL'),$echo);
 }
 
 /**
@@ -667,33 +671,22 @@ function return_snippet(){
  * @param string $currentpage This is the ID of the current page the visitor is on
  * @param string $classPrefix Prefix that gets added to the parent and slug classnames
  * @return string 
- */	
-function get_navigation($currentpage = "",$classPrefix = "") {
-
-	$menu = '';
-
-	global $pagesArray;
-	
-	$pagesSorted = subval_sort($pagesArray,'menuOrder');
-	if (count($pagesSorted) != 0) { 
-		foreach ($pagesSorted as $page) {
-			$sel = $classes = '';
-			$url_nav = (string)$page['url'];
-			
-			if ($page['menuStatus'] == 'Y') { 
-				$parentClass = !empty($page['parent']) ? $classPrefix.$page['parent'] . " " : "";
-				$classes     = trim( $parentClass.$classPrefix.$url_nav);
-
-				if ((string)$currentpage == $url_nav) $classes .= " current active";
-				if ($page['menu']  == '') { $page['menu']  = $page['title']; }
-				if ($page['title'] == '') { $page['title'] = $page['menu']; }
-
-				$menu .= '<li class="'. $classes .'"><a href="'. find_url($page['url'],$page['parent']) . '" title="'. encode_quotes(cl($page['title'])) .'">'.strip_decode($page['menu']).'</a></li>'."\n";
-			}
-		}
-	}
-	
+ */
+function get_navigation($currentpage = '',$classPrefix = "") {
+	$currentpage = (string)$currentpage;
+	$menu = get_navigation_advanced($currentpage,$classPrefix);
 	echo exec_filter('menuitems',$menu); // @filter menuitems (str) menu items html in get_navigation
+}
+// @todo clean up
+function get_navigation_advanced($currentpage, $classPrefix = '', $slug = '', $maxdepth = null){
+	// get legacy menu
+	if(getDef('GSMENULEGACY',true)) $menuid = GSMENUIDLEGACY; 
+    else if(getDef('GSMENUDEFAULT',true)) $menuid = GSMENUDEFAULT;
+    else $menuid = GSMENUIDCOREMENU;
+
+	$tree = getMenuTreeData($slug,false,$menuid);
+	$menu =  getMenuTree($tree,false,GSMENUNAVCALLOUT,null,array('currentpage'=>$currentpage,'classPrefix'=>$classPrefix,'maxdepth'=>$maxdepth));
+	return $menu;
 }
 
 /**

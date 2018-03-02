@@ -427,17 +427,37 @@ function getXmlFiles($path) {
  * @param bool $reset resets global to timestamp
  * @return 
  */
-function get_execution_time($reset=false)
-{
+function get_execution_time($reset=false){
 	GLOBAL $microtime_start;
-		if($reset) $microtime_start = null;
+	if($reset) $microtime_start = null;
 		
-		if($microtime_start === null)
-		{
-				$microtime_start = microtime(true);
-				return 0.0; 
-		}    
-		return round(microtime(true) - $microtime_start,5); 
+	if($microtime_start === null)
+	{
+		$microtime_start = microtime(true);
+		return 0.0;
+	}
+	// return (microtime(true) - $microtime_start);
+	$microtime_last = microtime(true);
+	return round($microtime_last - $microtime_start,3); 
+}
+
+
+/**
+ * execution timer
+ * 
+ * @since 3.2
+ * @uses $microtime_start
+ * 
+ * @param bool $reset resets global to timestamp
+ * @return 
+ */
+function get_execution_duration($reset=true){
+	GLOBAL $microtime_last,$microtime_start;
+	if($microtime_start === null) $microtime_last = $microtime_start;	
+	$microtime = microtime(true);
+	$ret = round($microtime - $microtime_last,3); 
+	if($reset) $microtime_last = $microtime;
+	return $ret;
 }
 
 /**
@@ -459,6 +479,10 @@ function getXML($file,$nocdata = true) {
 	}	
 }
 
+function getPageFilename($id, $draft = false){
+	return ($draft ? GSDATADRAFTSPATH : GSDATAPAGESPATH) . (string)$id .'.xml';
+}
+
 /**
  * get page xml shortcut
  *
@@ -467,7 +491,7 @@ function getXML($file,$nocdata = true) {
  * @return xml     xml object
  */
 function getPageXML($id,$nocdata = true){
-	return getXML(GSDATAPAGESPATH.$id.'.xml',$nocdata);
+	return getXML(getPageFilename($id),$nocdata);
 }
 
 /**
@@ -478,12 +502,12 @@ function getPageXML($id,$nocdata = true){
  * @return xml     xml object
  */
 function getDraftXML($id,$nocdata = true){
-	return getXML(GSDATADRAFTSPATH.$id.'.xml',$nocdata);
+	return getXML(getPageFilename($id,true),$nocdata);
 }
 
 /**
  * update single pages field value and resave file
- *
+ * @since  3.4
  * @param  str $id    id of page
  * @param  str $field field name
  * @param  str $value value
@@ -531,7 +555,7 @@ function createPageXml($title, $url = null, $data = array(), $overwrite = false)
 		'url',
 		'author',
 		'template',
-		'parent',
+		'parent', // @todo testing no parent to find page['parent'] issues that need changing
 		'menu',
 		'menuStatus',
 		'menuOrder',
@@ -734,6 +758,33 @@ function XMLsave($xml, $file) {
 }
 
 /**
+ * JSON Save
+ *
+ * @since 3.4
+ *
+ * @param mixed $data  json string, array , or object
+ * @param string $file Filename that it will be saved as
+ * @return bool
+ */
+function JSONsave($data, $file) {
+	if(getDef('GSFORMATJSON',true)) $data = formatJsonString($data); // format xml if config setting says so
+	else if(!is_string($data)){
+		$data = json_encode($data);
+	}
+	$data = exec_filter('jsonsave',$data); // @filter xmlsave executed before writing string to file
+	// $success = file_put_contents($file, $data); // 3.3.x
+	$success = save_file($file,$data); // 3.4.x
+	
+	// debugLog('JSONsave: ' . $file . ' ' . get_execution_time());	
+	
+	if (defined('GSCHMOD')) {
+		return $success && chmod($file, GSCHMOD);
+	} else {
+		return $success && chmod($file, 0755);
+	}
+}
+	
+/**
  * create a director or path
  *
  * @since 3.4
@@ -774,7 +825,7 @@ function delete_folder($path){
  * @return bool success
  */
 function save_file($file,$data=''){
-	$status = file_put_contents($file,$data) !== false; // returns num bytes written, FALSE on failure
+	$status = file_put_contents(trim($file),$data) !== false; // returns num bytes written, FALSE on failure
 	fileLog(__FUNCTION__,$status,$file);
 	if(getDef('GSDOCHMOD',true)) $chmodstatus = gs_chmod($file); // currently ignoring chmod failures
 	return $status;
@@ -786,12 +837,14 @@ function save_file($file,$data=''){
  * @return bool      file contents
  */
 function read_file($file){
+	// get_execution_time(true);
 	if(!file_exists($file)){
 		fileLog(__FUNCTION__,false,$file . ' not exist');
 		return;
 	}
 	$data = file_get_contents($file); // php file_get_contents
 	fileLog(__FUNCTION__,$data!==false,$file);
+	// fileLog(__FUNCTION__,$data!==false,$file,get_execution_time().'s');
 	return $data;
 }
 
@@ -896,7 +949,6 @@ function fileLog($operation,$status = null){
 	else $logstatus = (string) $status;
 	$args = convertPathArgs($args);
 	debugLog("&bull; fileio: [$logstatus] ".uppercase($operation).": ".implode(" - ",$args));
-
 	return $status;
 }
 
@@ -960,10 +1012,11 @@ function formatDate($format, $timestamp = null, $uselocale = true) {
  *
  * @since 3.4
  * @param  str $dt Date/Time String
+ * @param boolean $unixtime	is $dt string unixtimestamp, skips strtotime
  * @return str
  */
-function output_time($dt = null) {
-	if(isset($dt)) $dt = strtotime($dt);
+function output_time($dt = null, $unixtime = false) {
+	if(isset($dt) && !$unixtime) $dt = strtotime($dt);
 	if(getTimeFormat()) return formatDate(getTimeFormat(),$dt);
 }
 
@@ -972,12 +1025,13 @@ function output_time($dt = null) {
  *
  * @since 1.0
  * @param string $dt Date/Time string
+ * @param boolean $unixtime	is $dt string unixtimestamp, skips strtotime
  * @return string
  */
-function output_datetime($dt = null) {
-	if(isset($dt)) $dt = strtotime($dt);
+function output_datetime($dt = null, $unixtime = false) {
+	if(isset($dt) && !$unixtime) $dt = strtotime($dt);
 	if(getDateTimeFormat()) return formatDate(getDateTimeFormat(),$dt);
-	}
+}
 
 /**
  * Date only Output using locale
@@ -1074,6 +1128,25 @@ if(!function_exists('in_arrayi')) {
 	}
 }
 
+/** 
+ * LEGACY, alias for getPageUrl
+ * @deprecated
+ */
+function find_url($slug, $parent = '', $type = null) {
+	return(getPageUrl($slug,true,$type));
+}
+
+/**
+ * get url for page, cached or regenerated
+ * @since 3.4
+ * @param  str  $slug      slug to get url for 
+ * @param  boolean $cached get from pagecache or regenerate
+ * @param  str $type       get specific type, full or relative
+ * @return str             permalink string
+ */	
+function getPageUrl($slug, $cached = true, $type = null){
+	return generate_url($slug);
+}
 
 /**
  * Creates Standard URL for Pages
@@ -1090,32 +1163,32 @@ if(!function_exists('in_arrayi')) {
  * @param string $absolute force absolute siteurl
  * @return string
  */
-function generate_url($slug, $absolute = false){
+function generate_url($slug, $absolute = false, $pathdata = null){
 	global $PRETTYURLS;
 	global $PERMALINK;
 
 	// force slug to string in case a simpleXml object was passed ( from a page obj for example)
-	$slug   = (string) $slug;
-	$delim  = getDef('GSTOKENDELIM');
-
+	$slug = (string) $slug;
 	if(empty($slug)) return; // empty slug
 
-	$path   = tsl(getSiteURL($absolute));
-	$url    = $path; // var to build url into
+	$path = tsl(getSiteURL($absolute));
+	$url  = $path; // var to build url into
 
+	// not index
 	if($slug != getDef('GSINDEXSLUG')){
 		if ($PRETTYURLS == '1'){
-			$url .= generate_permalink($slug);
+			$url .= generate_permalink($slug,$PERMALINK,$pathdata);
 		}
 		else $url .= 'index.php?id='.$slug;
 	}
-
 	$url = exec_filter('generate_url',$url); // @filter generate_url (str) for generating urls after processing, for use with custom tokens etc
 	return $url;
 }
 
 /**
- * generate permalink url from tokenized permalink structure
+ * generate permalinks urls from tokenized permalink structure
+ * INTERNAL, use generate_url() wrapper
+ * 
  * uses a very basic str_replace based token replacer, not a parser
  * TOKENS (%tokenid%)
  *  %path% - path heirarchy to slug
@@ -1124,39 +1197,36 @@ function generate_url($slug, $absolute = false){
  *
  * supports prettyurl or any other permalink structure
  * eg. ?id=%slug%&parent=%parent%&path=%path%
- * 
+ * @since  3.4
  * @param  (str) $slug      slug to resolve permalink for	
- * @param  (str) $permalink (optional) permalink structure
+ * @param  (str) $permalink permalink structure, falls back to GSDEFAULTPERMALINK if null
+ * @param  (array) $data 	(optional) pass in pathing data override keys 'parents','parent'
+ * @param  (array) $pathdata (optional) pass in path data so it we do not need any callouts or dependancies to generate ( prevents loops on init or setup )
  * @return (str)            	
  */
-function generate_permalink($slug, $permalink = null){
-	GLOBAL $PERMALINK;
-	
+function generate_permalink($slug, $permalink = null, $pathdata = null){	
 	$slug = (string) $slug;
-
-	if(!isset($permalink)){
-		$plink = $PERMALINK;
-		if(empty($PERMALINK)) $plink = getDef('GSDEFAULTPERMALINK');
+	if(!isset($permalink) || empty($permalink)){
+		$plink = getDef('GSDEFAULTPERMALINK');
 	} else $plink = $permalink;
-
 	// replace PATH token
 	if(containsToken('path',$plink)){
 		// remove PARENT tokens if path, since it would be pointless and probably accidental
 		// leaving in for now lets not make assumptions
 		// $plink = replaceToken('parent','',$plink);
-		$pagepath = getParents($slug);
-		if($pagepath){
-			$pagepath = implode('/',array_reverse($pagepath));
+		$pagepath = isset($pathdata,$pathdata['parents']) ? $pathdata['parents'] : getParents($slug);
+		if(isset($pagepath)){
+			$pagepath = no_tsl(implode('/',array_reverse($pagepath))); // build path and remove trailing slash
 			$plink    = replaceToken('path', $pagepath, $plink);		
 		} else {
 			// page has no parents, remove token
 			$plink = replaceToken('path', '', $plink);
 		}
-	} 
+	}
 
 	// replace PARENT token
 	if(containsToken('parent',$plink)){
-		$parent = getParent($slug);
+		$parent = isset($pathdata,$pathdata['parent']) ? $pathdata['parent'] : getParent($slug);
 		$plink  = replaceToken('parent', $parent, $plink);
 	}
 	
@@ -1168,19 +1238,6 @@ function generate_permalink($slug, $permalink = null){
 	// debugLog($url);
 	// debugLog($plink);
 	return no_lsl($plink);
-}
-
-/** 
- * LEGACY alias for generate_url, defaults to relative now
- * @deprecated
- */
-function find_url($slug, $parent = '', $type = null) {
-	// parent is ignored
-	if(!isset($type)){
-		if(!getDef('GSSITEURLREL',true)) $type = "full"; # only default to full if not GSSITEURLREL
-		else $type = "relative";
-	}	
-	return generate_url($slug, $type == 'full');
 }
 
 /**
@@ -1316,8 +1373,8 @@ function redirect($url,$ajax = false) {
 			if (isDebug()){
 				debugLog(debug_backtrace());
 				outputDebugLog();
-				}
 			}
+		}
 		
 		echo "</body></html>";
 	}
@@ -1356,8 +1413,9 @@ function i18n($name, $echo=true, $default = true) {
 	}
 	else return;
 
-	return echoReturn($myVar,$echo);
-	}
+	if(!$echo) return $myVar;
+	echo $myVar;
+}
 
 /**
  * Return i18n
@@ -1874,7 +1932,7 @@ function formatXmlString_legacy($xml) {
    * @param mixed  $data instance of SimpleXmlObject or string
    * @return string of indented xml-elements
    */
-  function formatXmlString($data){
+function formatXmlString($data){
  
 	if(gettype($data) === 'object') $data = $data->asXML();
 
@@ -1886,7 +1944,19 @@ function formatXmlString_legacy($xml) {
  
   	$ret = $dom->saveXML();
   	return $ret;
-  }
+}
+
+/**
+ * format a json string
+ * @since  3.4
+ * @param  str $data json string, if not a json string will attempt to converted to one
+ * @return str       formatted json string
+ */
+function formatJsonString($data){
+	if(is_string($data)) $data = json_decode($data,true);
+	include_once(GSADMININCPATH.'nicejson.php');
+	return _json_encode($data,JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+}
 
 /**
  * Check Server Protocol
@@ -2122,16 +2192,20 @@ function directoryToMultiArray($dir,$recursive = true,$exts = null,$exclude = fa
 
 /**
  * Returns definition safely
+ * All definition calls should use this as a wrapper, 
+ * so it can be changed in the future from definitions to a file based config
  * 
  * @since 3.1.3
  * 
  * @param str $id 
  * @param bool $isbool treat definition as boolean and cast it
- * @return * returns definition or null if not defined
+ * @param bool $iscsv  treat definition as array and explode csv
+ * @return mixed       returns definition or null if not defined
  */
-function getDef($id,$isbool = false){
+function getDef($id, $isbool = false, $iscsv = false){
 	if( defined($id) ) {
 		if($isbool) return (bool) constant($id);
+		if($iscsv)  return explode(',',constant($id)); // explode csv @todo trim whitespace, would prevent valid spaces
 		return constant($id);
 	}
 }
@@ -2396,6 +2470,15 @@ function getRootRelURIPath($url){
   return $url;
 }
 
+/**
+ * GS get global wrapper
+ * @since 3.4
+ * @param  str $var name of var
+ * @return mixed    getsimple global variable
+ */
+function getGSVar($var){
+	return getGlobal($var);
+}
 
 /**
  * returns a global, easier inline usage of readonly globals
@@ -2415,7 +2498,7 @@ function getGlobal($var) {
  *
  * @since 3.4
  */
-function getPageGlobal($var){
+function getGSPageVar($var){
 	return getGlobal($var);
 }
 
@@ -2861,6 +2944,7 @@ function doTransliteration($str){
  */
 function outputDebugLog(){
 	global $GS_debug;
+    debugLog("DEBUGLOG END");
 	echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
 	echo '<pre>';
 	foreach ($GS_debug as $log){
@@ -2903,7 +2987,7 @@ function getMaxUploadSize(){
  * @return str
  */
 function getSiteURL($absolute = false){
-	return $absolute ? getGlobal('SITEURL_ABS') : getGlobal('SITEURL');
+	return $absolute ? getGSVar('SITEURL_ABS') : getGSVar('SITEURL');
 }
 
 /**
@@ -2980,10 +3064,34 @@ function safemodefail($action = '',$url = ''){
  * Array Helpers
  * **************************************************************************** 
  * 
- * php <php 5.6 does not support array_filter by keys and values, so we use our own methods
- * these are not backports! however
+ * php <php 5.6 does not support array_filter by keys and values, so we use our own methods, however
+ * These are not ports of the native functions, just custom handlers I wrote!
+ * @todo  add optimizations for native array_filter by key=>value >5.6
  * 
  */
+
+/**
+ * resets array keys from field
+ * uses array_column with null key to rekey an array
+ * @since  3.4
+ * @param  array $array array to rekey
+ * @param  str $key key of field to get new keys from
+ */
+function reindexArray($array,$key){
+	return array_column($array,null,$key);
+}
+
+/**
+ * array diff from 2 arrays, returns both diffs not just one
+ * @since  3.4
+ * @param  array $array1 first array
+ * @param  array $array2 second array
+ * @return array         diff array, elements missing from either array are included
+ */
+function array_diff_dual($array1,$array2){
+	return array_merge(array_diff($array1, $array2), array_diff($array2, $array1));
+}
+
 
 /**
  * filter an array using a callback function on subarrays
@@ -3044,6 +3152,55 @@ function filterSubArrayKey($array,$callback,$callbackargs){
 function matchArrayAll($needle,$haystack,$keys = false){
 	if($keys) return count(array_intersect(array_flip($haystack),$needle)) == count($needle);
 	return count(array_intersect($haystack,$needle)) == count($needle);
+}
+
+/**
+ * Inserts any number of scalars or arrays at the point
+ * in the haystack immediately after the search key ($needle) was found,
+ * or at the end if the needle is not found or not supplied.
+ * Modifies $haystack in place.
+ * @since  3.4
+ * @author  TomAuger http://codepad.org/5WlKFKfz
+ * @param array &$haystack the associative array to search. This will be modified by the function
+ * @param string $needle the key to search for
+ * @param mixed $stuff one or more arrays or scalars to be inserted into $haystack
+ * @return int the index at which $needle was found
+ */                         
+function array_insert_after(&$haystack, $needle = '', $stuff){
+    if (! is_array($haystack) ) return $haystack;
+    
+    $new_array = array();
+    for ($i = 2; $i < func_num_args(); ++$i){
+        $arg = func_get_arg($i);
+        if (is_array($arg)) $new_array = array_merge($new_array, $arg);
+        else $new_array[] = $arg;
+    }
+   
+    // if needle is empty and empty is not an index in $haystack , skip loop
+    // if(empty($needle) && !isset($haystack[$needle])){
+    // 	array_push($haystack,$new_array);
+    // 	debugLog(__FUNCTION__ . " skipping key loop");
+    // 	return count($haystack)-1;
+    // }
+
+    // hunt for key
+    $i = 0;
+    foreach($haystack as $key => $value){
+        ++$i;
+        if ($key == $needle) break;
+    }
+
+    // key not found or is last element, do simple append
+    if($i == count($haystack)){
+    	debugLog(__FUNCTION__ . " skipping slice");
+    	$haystack = array_merge($haystack,$new_array);
+    	return count($haystack);
+    }
+
+    // split and reassemble array
+    $haystack = array_merge(array_slice($haystack, 0, $i, true), $new_array, array_slice($haystack, $i, null, true));
+
+    return $i+1;
 }
 
 /**
@@ -3202,6 +3359,22 @@ function strip_whitespace($str,$replace = ' '){
 function strip_content($str, $pattern = '/[({]%.*?%[})]/'){
 	if(getDef('GSCONTENTSTRIPPATTERN',true)) $pattern = getDef('GSCONTENTSTRIPPATTERN');
 	return 	preg_replace($pattern, '', $str);
+}
+
+/**
+ * call function if its callable, passes variable arguments
+ * Not the fastest way to call a function, avoid using in loops
+ * @since  3.4
+ * @param  str $funcname functionname
+ * @param  str $return   return value if functioname is invalid
+ * @return mixed         function return or $return on fail
+ */
+function callIfCallable($funcname/*,... variable args*/){
+    if(!is_callable($funcname)) return;
+    
+    $args = func_get_args();
+    array_shift($args);
+    return call_user_func_array($funcname,$args);
 }
 
 /**

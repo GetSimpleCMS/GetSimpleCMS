@@ -68,6 +68,9 @@ $i18n = array(
 "MISSING_PARENT"          =>    " - <i>Missing Parent</i>",
 "EDITING_PAGE_TITLE"      =>	"Editing Page: %s",
 
+// menu manager
+"TOTAL_ITEMS"             =>     "Total Items",
+
 // drafts
 "EDITING_DRAFT_TITLE"     =>	"Editing Page Draft: %s",
 "LABEL_DRAFT"             =>	"DRAFT",

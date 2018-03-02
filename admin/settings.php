@@ -26,7 +26,7 @@ $prettyinput = '';
 # if the flush cache command was invoked
 if (isset($_GET['flushcache'])) {
 	delete_cache();
-	exec_action('flushcache'); // @hook flushcache cache was deleted
+	exec_action('flushcache'); // @hook flushcache cache was deleted via interactive action
 	$update = 'flushcache-success';
 }
 
@@ -74,7 +74,7 @@ if(isset($_POST['submitted'])) {
 		$SITELANG = var_in($_POST['lang']);
 	}
 	if(isset($_POST['about'])) {
-		$SITEABOUT = var_in($_POST['about']);
+		$SITEABOUT = ($_POST['about']);
 	}
 
 	// check valid lang files

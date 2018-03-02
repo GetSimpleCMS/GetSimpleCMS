@@ -21,9 +21,11 @@ $cookie_domain      = null;        // cookie domain
 $cookie_secure      = null;        // cookie secure only
 $cookie_httponly    = true;        // cookie http only
 
+// version api
 $api_url            = 'http://get-simple.info/api/start/v3.php';
-# $api_timeout        = 800; // time in ms defaults to 500
-# $debugApi           = true;
+$api_timeout        = 1000; // time in ms defaults to 500
+// $debugApi           = true;
+
 $nonce_timeout      = 3600; // in seconds, default 1 hour
 
 if (isset($_GET['redirect'])){
@@ -33,5 +35,9 @@ if (isset($_GET['redirect'])){
 }
 
 if (!defined('GSVERSION')) define('GSVERSION', $site_version_no);
+
+// DEVELOPMENT REMOVE FROM PROD
+$devbranch = 'feature_276_menumanager';
+$devissue  = '276';
 
 /* ?> */

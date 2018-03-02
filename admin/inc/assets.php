@@ -2,7 +2,7 @@
 
 /**
  * Getsimple Assets Init
- *
+ * @todo  add asset filters to allow for compressors modification etc
  * @package GetSimple
  * @subpackage assets
  */
@@ -58,7 +58,8 @@ $VERSIONS = array(
   'jquery-mousewheel' => '3.1.13',
   'scrolltofixed'     => '1.0.8',
   'spin'              => '2.3.2',
-  'lazyload'          => '0.0.1'
+  'lazyload'          => '0.0.1',
+  'nestable'          => '1.2.2'
 );
 
 $jqueryuitheme = "custom";
@@ -108,6 +109,14 @@ $GS_script_assets['jcrop']['queue']['style']      = 'jcrop';
 
  $GS_style_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/css/Jcrop.min.css';
  $GS_style_assets['jcrop']['local']['ver']        = $VERSIONS['jcrop'];
+
+
+// jcrop
+$GS_script_assets['nestable']['local']['url']     = $ASSETPATH.'js/nestable/jquery.nestable.js';
+$GS_script_assets['nestable']['local']['ver']     = $VERSIONS['nestable'];
+$GS_script_assets['nestable']['queue']['style']   = 'nestable';
+ $GS_style_assets['nestable']['local']['url']     = $ASSETPATH.'js/nestable/jquery.nestable.css';
+ $GS_style_assets['nestable']['local']['ver']     = $VERSIONS['nestable'];
 
 
 /**
@@ -209,6 +218,7 @@ preRegisterScript('dropzone',     '',   false , $infooter);
 preRegisterScript('fancybox',     '',   false , $infooter);
 preRegisterScript('jquery-mousewheel',     '',   false , $infooter);
 preRegisterScript('scrolltofixed','',   false , $infooter);
+preRegisterScript('nestable',     '',   false , $infooter);
 
 // gs aliases
 preRegisterScript('gshtmleditor', $GS_script_assets['gsckeditor'],     false , $infooter);
@@ -222,6 +232,7 @@ preRegisterStyle('jcrop',         '',   false , 'screen');
 preRegisterStyle('fancybox-css',  '',   false , 'screen'); // DEPRECATED legacy , styleid not matching scriptid is confusing.
 preRegisterStyle('fancybox',      '',   false , 'screen');
 preRegisterStyle('jquery-ui',     '',   false , 'screen');
+preRegisterStyle('nestable',      '',   false , 'screen');
 
 /**
  * Queue our scripts and styles for the backend

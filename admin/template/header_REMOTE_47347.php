@@ -82,7 +82,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	}
 
 	// load gshtmleditor
-	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGSVar('HTMLEDITOR')){
+	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGlobal('HTMLEDITOR')){
 		queue_script('gshtmleditor',GSBACK);
 	}
 
@@ -94,16 +94,13 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	// load gscrop image editor
 	if(get_filename_id()=='image'){
 		queue_script('gscrop',GSBACK);
+		queue_style('gscrop',GSBACK);
 	}
 	
-	if(get_filename_id()=='menu-manager'){
-		queue_script('nestable',GSBACK);
-	}
-
     // HTMLEDITOR INIT
     // ckeditor contentsCss(editor.css) from theme
-    if (file_exists(GSTHEMESPATH .getGSVar('TEMPLATE')."/editor.css")) {
-        $CKEcontentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGSVar('TEMPLATE').'/editor.css';
+    if (file_exists(GSTHEMESPATH .getGlobal('TEMPLATE')."/editor.css")) {
+        $CKEcontentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGlobal('TEMPLATE').'/editor.css';
     }
     // ckeditor contentsCss(contents.css) override from user
     if (file_exists(GSTHEMESPATH .getDef('GSEDITORCSSFILE'))) {
@@ -165,14 +162,14 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
         }
 
         var htmlEditorConfig = {
-            language                     : '<?php echo getGSVar('EDLANG'); ?>',
+            language                     : '<?php echo getGlobal('EDLANG'); ?>',
 <?php       if(!empty($CKEcontentsCss)) echo "contentsCss                   : '$CKEcontentsCss',"; ?>
 <?php       if(!empty($CKEconfigjs))    echo "customConfig                  : '$CKEconfigjs',"; ?>
 <?php       if(!empty($CKEstyleSet))    echo "stylesSet                     : '$CKEstyleSet',"; ?>
-            height                       : '<?php echo getGSVar('EDHEIGHT'); ?>',
-            baseHref                     : '<?php echo getGSVar('SITEURL'); ?>'
-            <?php if(getGSVar('EDTOOL')) echo ",toolbar: " . returnJsArray(getGSVar('EDTOOL')); ?>
-<?php       if(getGSVar('EDOPTIONS')) echo ','.trim(getGSVar('EDOPTIONS')); ?>
+            height                       : '<?php echo getGlobal('EDHEIGHT'); ?>',
+            baseHref                     : '<?php echo getGlobal('SITEURL'); ?>'
+            <?php if(getGlobal('EDTOOL')) echo ",toolbar: " . returnJsArray(getGlobal('EDTOOL')); ?>
+<?php       if(getGlobal('EDOPTIONS')) echo ','.trim(getGlobal('EDOPTIONS')); ?>
 			<?php if(getDef("GSCKETSTAMP",true)) echo ",timestamp : '".getDef("GSCKETSTAMP") . "'\n"; ?>
         };
 

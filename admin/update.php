@@ -45,7 +45,8 @@ $create_dirs = array(
 	GSBACKUPSPATH . getRelPath(GSDATAOTHERPATH,GSDATAPATH), // backups/other/
 	GSBACKUPSPATH . getRelPath(GSDATAPAGESPATH,GSDATAPATH), // backups/pages/
 	GSBACKUSERSPATH,
-	GSBACKUPSPATH .'zip/'	
+	GSBACKUPSPATH .'zip/',
+	GSDATAMENUPATH
 );
 
 // files to be created
@@ -219,6 +220,10 @@ if($fileversion!='3.4.0'){
 if (!XMLsave($dataw, GSDATAOTHERPATH . GSWEBSITEFILE) ) {
 	$error .= i18n_r('CHMOD_ERROR');
 }
+
+if (!file_exists(GSDATAMENUPATH . GSMENUIDCORE.'.json')) {
+	initUpgradeMenus();	
+}	
 
 // redirect to health check or login and show updated notice
 $redirect = cookie_check() ? "health-check.php?updated=1" : "index.php?updated=1";

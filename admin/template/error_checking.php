@@ -11,8 +11,8 @@
  */
 
  	// do not use these alerts if ajax requests as they will not be seen, and interfere with other alerts
-	if ( !requestIsAjax() && $SAFEMODE == 1 ) {
-		if(getDef('GSSAFEMODE',true)) doNotify(i18n_r('ER_SAFEMODE'),'error',true);
+	if ( !requestIsAjax() && $SAFEMODE) {
+		if(getDef('GSSAFEMODE',true)) doNotify(i18n_r('ER_SAFEMODE'),'error',true); // cannot disable if set via gsconfig
 		else doNotify(i18n_r('ER_SAFEMODE').', <a href="?safemodeoff">'.i18n_r('DISABLE').'</a>','error',true);
 	}
 

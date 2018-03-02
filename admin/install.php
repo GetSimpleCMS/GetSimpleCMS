@@ -49,7 +49,8 @@ $dirsArray = array(
 	GSBACKUPSPATH .'zip/',
 	GSBACKUSERSPATH,
 	GSUSERSPATH,
-	GSAUTOSAVEPATH
+	GSAUTOSAVEPATH,
+	GSDATAMENUPATH
 );
 
 // tmp-404.xml used as temporary write tester

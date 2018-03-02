@@ -4,6 +4,7 @@
  *
  * Page getters, filters, sorters
  * callables are actually (str) function names, may support actual callables in future PHP > 5.2 requirements
+ * @todo  organize by public and private methods, it is hard to figure out which are which and which are abstractions
  * 
  * @since  3.4
  * @author shawn_a
@@ -19,48 +20,13 @@
  * FILTER CORE FUNCTIONS
  * **************************************************************************** 
  *
- * definitions:
+ * glossary:
  * `PAGE` An individual page object typically a simpleXml obj but can also be an array
  * `PAGES` internal pages array, array of PAGE objects, usually the default $pagesArray cache
- * `PAGES collection` custom pages arrays, array of PAGE objects, usually a filtered array of pages
+ * `PAGE/S Collection` custom pages arrays, array of PAGE objects, usually a filtered array of pages
  * `pageId` a page unique id aka slug
  * 
  */
-
-/**
- * get PAGES
- * optionally PAGES collection , by filtering with provided filterfunction
- *
- * @since  3.4
- * @param  callable $filterFunc function name for filter callout
- * @param  mixed ... variable number of arguments to pass to filterfunc
- * @return array  new pagesarray
- */
-function getPages($filterFunc=null/*,...*/){
-	GLOBAL $pagesArray;
-
-	if(isset($filterFunc) && function_exists($filterFunc)){
-		$args    = func_get_args();
-		$args[0] = $pagesArray; // replace first argument (filterfunc) with PAGES
-		return call_user_func_array($filterFunc, $args);
-	} else return $pagesArray;
-}
-
-/**
- * get all values of a single field from PAGES, array_column
- * uses PAGES if a PAGE collection is not passed
- * 
- * @since  3.4
- * @uses  array_column, backported
- * @uses  getPages
- * @param  string $field key of fields to return
- * @param  optional PAGES collection
- * @return array      new array of fields
- */
-function getPagesFields($field,$pages = array()){
-	if(!$pages) $pages = getPages(); // use global PAGES if not provided
-	return array_column($pages,$field,'url');
-}
 
 /**
  * filter PAGES using a callback filter function on each page
@@ -101,9 +67,12 @@ function filterPageFieldFunc($pages,$func,$arg){
  * @param  mixed $arg   args for filter function
  * @return array        new pagesarray
  */
-function filterPagesFunc($pages,$func,$arg){
-	if (function_exists($func)){
-		$pages = $func($pages,$arg);
+function filterPagesFunc($pages,$filterFunc){
+	if (function_exists($filterFunc)){
+		$args = func_get_args(); // grab arguments past first 2 for output
+		unset($args[1]);
+		debugLog($args);
+		$pages = call_user_func_array($filterFunc, $args); // @todo why not call filterPageFunc() ?		
 	}
 	return $pages;
 }
@@ -153,7 +122,8 @@ function filterKeyMatch($pages,$key){
  */
 
 /**
- * filter PAGES on keys and values, using a key value comparison function 
+ * filter PAGES on keys and values, using a key value comparison function
+ * wrapper for key value match funcs
  * 
  * @since  3.4
  * @param  array    $pages PAGES collection
@@ -168,7 +138,7 @@ function filterKeyValueFunc($pages,$key,$value,$func){
 
 /**
  * filter on key value MATCHES value
- * eg. $newPages = getPages('filterKeyValueMatch','menuStatus','Y');
+ * eg. $menuPages = getPages('filterKeyValueMatch','menuStatus','Y');
  * 
  * @since 3.4
  * @param  array    $pages PAGES collection
@@ -182,7 +152,7 @@ function filterKeyValueMatch($pages,$key,$value){
 
 /**
  * filter on key value MATCHES value (case-insentitive)
- * eg. $newPages = getPages('filterKeyValueMatch','menuStatus','y');
+ * eg. $menuPages = getPages('filterKeyValueMatch','menuStatus','y');
  * 
  * @since 3.4
  * @param  array    $pages PAGES collection
@@ -196,7 +166,7 @@ function filterKeyValueMatch_i($pages,$key,$value){
 
 /**
  * filter on key value MATCHES boolean value (bool casting performed)
- * eg. $newPages = getPages('filterKeyValueMatchBool','menuStatus',true);
+ * eg. $menuPages = getPages('filterKeyValueMatchBool','menuStatus',true);
  * 
  * @since 3.4
  * @param  array    $pages PAGES collection
@@ -307,7 +277,7 @@ function filterMatchBoolCmp($a,$b){
 
 /**
  * IN VALUES comparison, $a IN values('b0','b1','b2')
- * matches $a to multiple values $b
+ * matches $a in multiple values $b
  * eg. filterKeyValueFunc($pagesArray,'menuOrder',array(1,2),'filterInValuesCmp');
  * @param  str   $a string to compare
  * @param  array $b array of values to compare
@@ -319,7 +289,7 @@ function filterInValuesCmp($a,$b){
 
 /**
  * NOT IN VALUES comparison, $a NOT IN values('b0','b1','b2')
- * matches $a to multiple values $b
+ * matches $a not in multiple values $b
  * eg. filterKeyValueFunc($pagesArray,'menuOrder',array(1,2),'filterNotInValuesCmp');
  * @param  str   $a string to compare
  * @param  array $b array of values to compare
@@ -417,20 +387,21 @@ function filterTags($pages, $tags, $case = false, $exclusive = false, $exclude =
 }
 
 /**
- * filter matching parent
+ * filter matching parent, returns only direct children of parent
  * @param  array $pages  PAGES collection
  * @param  string $parent parent slug to filter on 
  * @return array         PAGES collection
  */
 function filterParent($pages,$parent=''){
-	return filterKeyValueMatch($pages,'parent',lowercase($parent));
+	$children = getChildren($parent);
+	return getPagesMulti($children,true);
 }
 
 
 /**
  * invert a filtered page set by using it to filter PAGES
  * @param  array $pagesFiltered  a filtered PAGE collection
- * @param  array  $pages         PAGES
+ * @param  array  $pages         (optional) PAGES collection to filteragainst, else use all pages
  * @return array                 items of $pages not in $pagesFiltered
  */
 function filterInverse($pagesFiltered,$pages = array()){
@@ -438,157 +409,19 @@ function filterInverse($pagesFiltered,$pages = array()){
 	return array_diff_key($pages,$pagesFiltered);
 }
 
-/**
- * abstractions / shorthand
- * these are not for here, they are for theme_functions
- * but 
- */
-
-// function get_pages(){
-// 	return getPages();
-// }
-
-// function get_page_field_value($pageId,$field){
-// 	return returnPageField($pageId,$field);
-// }
-
-// function get_page_children($pageId){
-// 	return getPages('filterParent',$pageId);
-// }
-
-// function get_parent_slug($pageId){
-// 	return getParent($pageId);
-// }
-
-// function get_parents_slugs($pageId){
-// 	return getParents($pageId);
-// }
-
-// function get_parent_page($pageId){
-// 	return getParentPage($pageId);
-// }
-
-// function get_parents_pages($pageId){
-// 	return getParentsPages($pageId);
-// }
-
-// function get_page_path($pageId){
-// 	return getPagePath($pageId);
-// }
-
 
 /**
- * get PAGE path
- * @param  str $pageId slug of PAGE to get path to
- * @return str         path/to/pageId
+ * filter a pages collection by an array of slugs, optionally sort to match order
+ * @since  3.4
+ * @param  array $keys array of keys to keep
+ * @param  bool $sort sort filtered pages array by keys order if true
+ * @return array       pages array with only the matching pages
  */
-function getPagePath($pageId){
-	$parents = getParents($pageId);
-	if($parents) return implode('/',array_reverse($parents)) . '/' . $pageId;
-	return $pageId;
+function filterPagesSlugs($pages,$slugs,$sort = false){
+	if(!$slugs) return; // nothing to filter? then you get nothing back
+	$ary = array_intersect_key($pages,array_flip($slugs)); // filter
+	if(!$sort) return $ary;
+	return arrayMergeSort($ary,$slugs,false); // sort
 }
-
-function getPagePathField($pageId,$field){
-	$parents = getParentFields($pageId,$field);
-	if($parents) return implode('/',array_reverse($parents)) . '/' . getPageFieldValue($pageId,$field);
-	return $pageId;
-}
-
-/**
- * get PAGE parent slug
- * alias for $pagesArray['slug']['parent']
- * @param  str $pageId slug of PAGE to get parent of
- * @return str         parent of this page
- */
-function getParent($pageId){
-	$parentId  = returnPageField($pageId,'parent');
-	return (string) $parentId;
-}
-
-/**
- * get PAGE parent PAGE
- * alias for $pagesArray[$pagesArray['slug']['parent']]
- * @param  str $pageId slug of PAGE to get path for
- * @return str         parent PAGE object
- */
-function getParentPage($pageId){
-	$pagesArray = getPages();
-	$parentId   = $pagesArray[$pageId]['parent'];
-	return $pagesArray[$parentId];
-}
-
-/**
- * get PAGE parents slugs
- * returns an array of all this pages parents slugs
- * @param  str $pageId slug of child
- * @return array       array of parents slugs
- */
-function getParents($pageId){
-
-	// return getParentFields($pageId,'id'); // @todo not working
-
-	$pageparents = getPagesFields('parent');
-	$parent      = getParent($pageId);
-	$parents     = array();
-
-	if(empty($parent)) return array();
-
-	$parents[] = $parent;
-
-	while(isset($pageparents[$parent])){
-		$parent    = (string)$pageparents[$parent];
-		if(!empty($parent))	$parents[] = $parent;
-	}
-	return $parents;
-}
-
-
-function getPageFieldValue($pageId,$field){
-	return returnPageField($pageId,$field);
-}
-
-
-/**
- * get PAGE parents slugs
- * returns an array of all this pages parents slugs
- * @param  str $pageId slug of child
- * @return array       array of parents slugs
- */
-function getParentFields($pageId,$key = 'parent'){
-	$pageparents  = getPagesFields('parent');
-	$parentValues = getPagesFields($key);
-	$parent       = getParent($pageId);
-	$values       = array();
-
-	if(empty($parent)) return array();
-
-	while(isset($pageparents[$parent]) && isset($parentValues[$parent])){
-		$value    = (string)$parentValues[$parent];
-		$parent   = (string)$pageparents[$parent];
-		if(!empty($value))	$values[] = $value;
-	}
-	return $values;
-}
-
-/**
- * get page parent pages
- * returns an array of all this pages parents page-arrays
- * @param  str $pageId slug of child
- * @return array       PAGES collection of parents
- */
-function getParentsPages($pageId){
-	$pagesArray  = getPages();
-	$pageparents = getPagesFields('parent');
-	$parent      = $pageId;
-	$parents     = array();
-	while(isset($pageparents[$parent])){
-		$parent = $pageparents[$parent];
-		if(isset($pagesArray[$parent])){
-			$parents[$parent] = $pagesArray[$parent];
-		}
-	}
-	return $parents;
-}
-
 
 /*?>*/

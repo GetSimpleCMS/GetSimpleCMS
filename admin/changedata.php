@@ -27,6 +27,7 @@ if(isset($_GET['publish']) && isset($_GET['id'])){
 	else $status = publishDraft($id);
 
 	if($status){
+		pageWasPublished($id,getPageXml($id));
 		exec_action('draft-publish'); // @hook draft-publish a draft was published
 		generate_sitemap(); // regenerates sitemap
 	}
@@ -77,7 +78,7 @@ if (isset($_POST['submitted'])) {
 	if(isset($_POST['post-parent'])) 			{ $data['parent']      = $_POST['post-parent']; }
 	if(isset($_POST['post-menu'])) 				{ $data['menu']        = safe_slash_html($_POST['post-menu']); }
 	if(isset($_POST['post-menu-enable'])) 		{ $data['menuStatus']  = "Y"; } else { $menuStatus = ""; }
-	if(isset($_POST['post-menu-order'])) 		{ $data['menuOrder']   = is_numeric($_POST['post-menu-order']) ? $_POST['post-menu-order'] : "0"; }
+	if(isset($_POST['post-menu-order'])) 		{ $data['menuOrder']   = is_numeric($_POST['post-menu-order']) ? $_POST['post-menu-order'] : ""; }
 	if(isset($_POST['post-private']) ) 			{ $data['private']     = safe_slash_html($_POST['post-private']); }
 	// meta
 	if(isset($_POST['post-metak'])) 			{ $data['meta']        = $metak = safe_slash_html($_POST['post-metak']);	}
@@ -98,16 +99,19 @@ if (isset($_POST['submitted'])) {
 		// if the slug changed update children
 		if ($slugHasChanged){
 			exec_action('changedata-updateslug'); // @hook changedata-updateslug a page slug was changed
-			changeChildParents($oldslug,$url); // update childrens parent slugs to the new slug
+			pageSlugHasChanged($oldslug,$url); // update childrens parent slugs to the new slug
 			delete_page($oldslug); // backup and delete the page
 			changeDraftSlug($oldslug,$url);
 		}
+
+		// do save hooks and save to file
 		exec_action('changedata-save'); // @hook changedata-save prior to saving a page
 		exec_action('changedata-save-published'); // @hook changedata-save-published prior to saving a page
 		$xml    = exec_filter('pagesavexml',$xml); // @filter pagesavexml (obj) xml object of a page save
 		$status = savePageXml($xml);
 		exec_action('changedata-aftersave'); // @hook changedata-aftersave after a page was saved
-		
+
+		pageWasSaved($url,$xml,$pageIsNew);	// menu handler
 		// genen sitemap if published save
 		generate_sitemap();
 	}
