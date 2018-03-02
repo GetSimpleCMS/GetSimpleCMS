@@ -52,14 +52,19 @@ jQuery(document).ready(function () {
   		if (this.getQueuedFiles().length == 0) {
 			$('#loader').fadeOut(500);
 
-			// store #imageFilter selected index to restore after load
-			// var filterVal = $('#imageFilter').val();
-			
+			// if images are on and not forcethumbs, and uploading, switch to all and force thumbs on, otherwise you will not see non images being saved, which is confusing
+			// @todo flag if non images are even uploaded to restrict this edge case
+			var filterVal = $('#imageFilter').val();
+
 			// load upload page new
 			$('#maincontent').load(location.href+' #maincontent > *', function(ev){
-				// $('#imageFilter').val(filterVal);
-				// $('#imageFilter').trigger('change');
+				if(filterVal == "image" && !$("body").hasClass("forcethumbs")){
+					$("body").addClass("forcethumbs");
+					$('#imageFilter').val("all");
+				}
+				$('#imageFilter').trigger('change');
 				$(window).trigger('fileuploaded');
+ 				$.fn.initFancybox();
 			});
   		}
   	});

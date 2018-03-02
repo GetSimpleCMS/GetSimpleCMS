@@ -501,7 +501,7 @@ jQuery(document).ready(function () {
 			var filterx = $(this).val();
 			var filterTitle = $(this).find('option:selected').text();
 			$("#imageTable tbody").find("tr").hide();
-			if (filterx == 'image' || $("body#upload").hasClass("forcethumbs")) {
+			if (filterx == 'image' || $("body").hasClass("forcethumbs")) {
 				$("#imageTable").find("tr .imgthumb").show();
 			} else {
 				$("#imageTable").find("tr .imgthumb").hide();
@@ -1048,6 +1048,7 @@ jQuery(document).ready(function () {
 		$('.fancybox-title').append($(link));
 	}
 
+	$.fn.initFancybox = function(){
  	// fancybox lightbox init
  	// rel=fancybox (_i/_s)
 	if (jQuery().fancybox) {
@@ -1082,7 +1083,10 @@ jQuery(document).ready(function () {
 			scrolling: 'no'
 		}).on('click',function(e){e.preventDefault();});
 	}
- 
+ 	}
+
+ 	$.fn.initFancybox();
+
  	/* Ajax save status indicator control */
     function ajaxStatusWait(){
     	$('input[type=submit]').attr('disabled', 'disabled');
