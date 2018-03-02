@@ -5,9 +5,10 @@ DESCRIPTION
 -----------------------------------
 
 GetSimple CMS is a flatfile CMS that works fast and efficient and has 
-the best UI around.
+the best UI around, it is written in PHP.
 
 Official Website - http://get-simple.info/
+Github - https://github.com/GetSimpleCMS/GetSimpleCMS
 
 GetSimple CMS was developed by Chris Cagle [ http://chriscagle.me ]  
 It is now passionately supported and developed by a loving community.
