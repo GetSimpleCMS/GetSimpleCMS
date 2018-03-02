@@ -995,7 +995,20 @@ sup {
 }
 
 #maincontent .main .section {
-	padding-top: 40px;
+	padding-top: 20px;
+}
+
+#styleguide .section:hover {
+	margin:-1px;
+	border:1px dashed rgba(0,0,0,0.25);
+}
+
+#maincontent .main .section:after {
+	content: "\0020";
+	display: block;
+	height: 0;
+	visibility: hidden;
+	clear:both;	
 }
 
 #themecontent{
@@ -1906,6 +1919,7 @@ table.simple td.title {
 
 #footer p {
 	margin: 0 0 8px 0;
+	/*margin: 4px 3px;*/
 }
 
 #footer a:link,
@@ -2267,6 +2281,11 @@ textarea.copykit {
 	   -moz-transition-property: background-color, color, text-shadow;
 	     -o-transition-property: background-color, color, text-shadow;
 	        transition-property: background-color, color, text-shadow; 	
+}
+
+.label-reset {
+	color: white !important;
+	text-shadow: none !important;
 }
 
 div.label{

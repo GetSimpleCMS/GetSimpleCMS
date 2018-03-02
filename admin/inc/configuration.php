@@ -34,7 +34,7 @@ if (isset($_GET['redirect'])){
 
 if (!defined('GSVERSION')) define('GSVERSION', $site_version_no);
 
-$devbranch = 'feature_276_menumanager';
-$devissue = '276';
+$devbranch = 'master';
+$devissue = '467';
 
 /* ?> */
