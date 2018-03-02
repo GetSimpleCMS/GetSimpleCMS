@@ -195,7 +195,7 @@ if($jcrop){ ?>
 	    	
 	  		jcrop_container = $("#cropbox");
 
-			$(window).load(function(){
+			$(window).on('load', function(){
 				jcrop_container.Jcrop({
 					onChange: updateCoords,
 					onSelect: updateCoords,
