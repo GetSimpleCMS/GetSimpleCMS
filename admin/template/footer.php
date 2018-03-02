@@ -27,6 +27,8 @@
         <div class="clear"></div>
         <?php
             get_scripts_backend(true);
+            exec_action('footer-pre'); // INTERNAL USE ONLY!
+            echo "<!-- end #footer-pre -->";
             exec_action('footer'); 
         }
         ?>

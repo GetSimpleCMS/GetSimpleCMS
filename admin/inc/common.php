@@ -842,7 +842,7 @@ function getGSRootPath($calculate = false){
 }
 
 // debugging svn branch, set in configuration for now
-if(isDebug() && isset($devbranch)) add_action("footer","debugBranch",array($devbranch,(isset($devissue) ? $devissue : null)),1);
+if(isDebug() && isset($devbranch)) add_action("footer-pre","debugBranch",array($devbranch,(isset($devissue) ? $devissue : null)),1);
 function debugBranch($branch = 'master',$issue = null){
    	echo '<div class="border"><p><i class="fa fa-fw fa-github-square"></i><b>GITHUB BRANCH:</b> '.$branch;
    	if(isset($issue)) echo ' - <a class="label-reset label label-info" href="https://github.com/GetSimpleCMS/GetSimpleCMS/issues/'.$issue.'" target="_BLANK">GITHUB ISSUE</a>';

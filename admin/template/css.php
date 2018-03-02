@@ -1918,8 +1918,8 @@ table.simple td.title {
 }
 
 #footer p {
-	margin: 0 0 8px 0;
-	/*margin: 4px 3px;*/
+	/*margin: 0 0 8px 0;*/
+	margin: 4px 3px;
 }
 
 #footer a:link,
