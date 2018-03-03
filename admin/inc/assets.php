@@ -50,7 +50,7 @@ $VERSIONS = array(
   'codemirror'        => '5.32.0',
   'dropzone'          => '5.1.1',
   'fancybox'          => '2.1.5', // 3.2.0 available
-  'font-awesome'      => '4.7.0',
+  'font-awesome'      => '5.0.8',
   'jcrop'             => '2.0.4',
   'jquery'            => '3.2.1',
   'jqueryui'          => '1.11.4',
@@ -155,10 +155,17 @@ $GS_script_assets['jquery-mousewheel']['local']['ver']      = $VERSIONS['jquery-
  $GS_style_assets['fancybox-css']['local']['ver']  = $GS_style_assets['fancybox']['local']['ver']; // @LEGACY 3.4
 
 // font-awesome icons
- $GS_style_assets['font-awesome']['cdn']['url']    = '//netdna.bootstrapcdn.com/font-awesome/'.$VERSIONS['font-awesome'].'/css/font-awesome.min.css';
+ $GS_style_assets['font-awesome']['cdn']['url']    = 'https://use.fontawesome.com/releases/v'.$VERSIONS['font-awesome'].'/css/all.css';
  $GS_style_assets['font-awesome']['cdn']['ver']    = $VERSIONS['font-awesome'];
- $GS_style_assets['font-awesome']['local']['url']  = $ASSETPATH.'fontawesome/css/font-awesome.min.css';
+ $GS_style_assets['font-awesome']['local']['url']  = $ASSETPATH.'fontawesome/css/fontawesome-all.min.css';
  $GS_style_assets['font-awesome']['local']['ver']  = $VERSIONS['font-awesome'];
+
+// old v4
+//   'font-awesome'      => '4.7.0'
+ $GS_style_assets['font-awesome4']['cdn']['url']    = '//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css';
+ $GS_style_assets['font-awesome4']['cdn']['ver']    = $VERSIONS['font-awesome'];
+ $GS_style_assets['font-awesome4']['local']['url']  = $ASSETPATH.'fontawesome/css/font-awesome.min.css';
+ $GS_style_assets['font-awesome4']['local']['ver']  = $VERSIONS['font-awesome'];
 
 // ckeditor
 $GS_script_assets['ckeditor']['cdn']['url']        = '//cdn.ckeditor.com/'.$VERSIONS['ckeditor'].'/full/ckeditor.js';

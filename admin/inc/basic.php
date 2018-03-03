@@ -1748,6 +1748,22 @@ function uppercase($text) {
 }
 
 /**
+ * convert a string to Word Case and is multibyte-safe
+ *
+ * @since 3.4
+ *
+ * @param string $text
+ * @return string converted to UPPERCASE
+ */
+function wordcase($str) { 
+	if (function_exists('mb_convert_case')) {	
+    	$str = mb_convert_case(lowercase($str), MB_CASE_TITLE, "UTF-8"); 
+	}
+	else $str = ucwords($str);
+    return ($str); 
+}
+
+/**
  * convert string to Title Case and is multibyte-safe
  *
  * @since 3.4

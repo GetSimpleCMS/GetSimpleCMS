@@ -94,12 +94,13 @@ $GS_definitions = array(
 	'GSCDNFALLBACK'        => true,                           // (bool) if true, CDN assets queued on GSFRONT will fallback to local version
 	'GSLOGINUPGRADES'      => true,                           // (bool) if true, temporarily close front end during upgrades, must login to upgrade
 	# STYLES/UI -------------------------------------------------------------------------------------------------------------------------------------------
-	'GSTABS'               => 'pages,upload,theme,backups,plugins', // (str) csv list of page ids and order to show tabs
+	// 'GSTABS'               => 'pages,upload,theme,backups,plugins', // (str) csv list of page ids and order to show tabs
 	'GSSTYLE'              => 'wide,sbfixed',                 // (str-csv) default style modifiers
 	'GSWIDTH'              => '1024px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width
 	'GSWIDTHWIDE'          => '1366px',                       // (str) page width on backend pages defined in GSWIDEPAGES, values as above
 	'GSWIDEPAGES'          => 'theme-edit,components,snippets', // (str-csv) pages to apply GSWIDTHWIDE on
 	'GSTABICONS'           => true,                           // (bool) show icons on nav tabs
+	'GSNOCDN'              => true,                           // (bool) disable cdn for assets that have cdn urls in assets.php
 	# CHMOD --------------------------------------------------------------------------------------------------------------------------------------------
 	'GSCHMOD'              => 0644,                           // (octal) chmod mode legacy
 	'GSCHMODFILE'          => 0644,                           // (octal) chmod mode for files
@@ -743,6 +744,16 @@ function debugLogTrace($msg = '',$code = '',$cols = 100){
 	$etrace = $e->getTraceAsString();
 	$ecode  = $e->getCode() > 0 ? $e->getCode() : '';
 	debugLog("$msg\nDEBUG BACKTRACE $ecode\n".str_repeat('=', $cols)."\n".$etrace."\n".str_repeat('-', $cols));
+}
+
+/**
+ * Debug defines from an array
+ * @param array assoc of keyed values [DEFINITIONNAME] => value
+ */
+function debugDefineArray($definitions){
+	foreach($definitions as $definition => $value){
+		debugLog($definition . ": " . (defined($definition) ? getDef($definition) : ""));
+	}
 }
 
 /**
