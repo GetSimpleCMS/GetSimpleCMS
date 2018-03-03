@@ -335,7 +335,7 @@ switch (getFileExtension($template_file)) {
 				
 				<div id="theme_editing" class="well">
 				<?php 
-				echo i18n('EDITING_FILE') .":".$SITEURL.getRelPath(GSTHEMESPATH);
+				echo i18n('EDITING_FILE') .": ".$SITEURL.getRelPath(GSTHEMESPATH);
 				echo '<span id="theme_editing_file">'. ($template=="." ? "" : tsl($template)).$template_file .'</span>';
 				$content = !empty($template_file) ? read_file(GSTHEMESPATH . tsl($template) . $template_file) : ''; ?>
 				</div>
