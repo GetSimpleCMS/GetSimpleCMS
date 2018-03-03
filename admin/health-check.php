@@ -391,6 +391,14 @@ echo '<div class="bodycontent clearfix">
 				echo '</table>';
 			}
 
+			if (isDebug()) { 
+				echo '<h3 id="debuginfo">'. wordcase(i18n_r('DEBUG_MODE')) .'</h3>';
+				echo "<p>";
+				echo i18n_r('DEBUG_INFO');
+				echo '<a href="'.$debugInfoUrl.'" target="_blank">link</a>';
+				echo "</p>";
+			}
+
 			// call healthcheck-extras hook
 			exec_action('healthcheck-extras'); // @hook healthcheck-extras after health check html output
 			?>			

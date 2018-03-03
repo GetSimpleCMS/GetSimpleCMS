@@ -308,6 +308,7 @@ $i18n = array(
 "WRITABLE"                =>	"Writable",
 "NOT_WRITABLE"            =>	"Not Writable",
 "NA"                      =>	"N/A",
+"DEBUG_INFO"              =>    "Debug Mode is enabled, for more information about debug mode see ",
 
 /* 
 * For: footer.php
