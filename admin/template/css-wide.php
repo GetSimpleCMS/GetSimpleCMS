@@ -24,6 +24,11 @@ body .header{
 
 .wrapper .nav{
 	/* top header nav wrapper */
+	width:75%;
+}
+
+.wrapper .nav.secondary{
+	/* top header nav wrapper */
 	width:100%;
 }
 

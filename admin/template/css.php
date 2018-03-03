@@ -209,6 +209,15 @@ input[type="submit"] {
 	position: absolute;
 	bottom: 0;
 	left: 0;
+	width: 770px;
+}
+
+.wrapper .nav.secondary{
+	list-style: none;
+	font-size: 13px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
 	width: 960px;
 }
 
@@ -3094,6 +3103,9 @@ a.disabled:visited {
 
 .floatright {
 	float:right;
+}
+.floatleft {
+	float:left;
 }
 
 .readonly .CodeMirror > div,.readonly #theme_editing_file{
