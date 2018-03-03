@@ -201,7 +201,7 @@ jQuery(document).ready(function () {
 	function initcodemirror(){
 		// apply codemirror to class of .code_edit
 		var elem= $(".code_edit").editorFromTextarea();
-		initCmThemeSelector();
+		if(elem.get(0))initCmThemeSelector();
 	}
 
 	function initCmThemeSelector(){
