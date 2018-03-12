@@ -177,12 +177,6 @@ get_template('header');
 // check if host uses Linux (used for displaying permissions
 $isUnixHost = !hostIsWindows();
 
-function getUploadIcon($type){
-	if($type == '.') $class = 'folder';
-	else $class = getFileIconClass($type).'-o';
-	return '<span class="fa fa-fw fa-'.$class.' icon-left"></span>';
-}
-
 ?>
 
 <?php include('template/include-nav.php'); ?>

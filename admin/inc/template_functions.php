@@ -2169,54 +2169,6 @@ function dateIsToday($timestamp){
 }
 
 /**
- * returns icon classes for file extensions
- * follow font-awesome naming, can be used for other stuff however
- * uses get_fileTypeToken to get generic categories ( same as filter ), then further refines icons we have
- * 
- * @param  str $filename name of file
- * @param  string $default  default to use when no match found
- * @return str           the class
- */
-function getFileIconClass($filename = '',$default = 'file'){
-
-	$ext = $token = '';
-	if($filename !== ''){
-		$ext   = getFileExtension($filename);
-		$token = get_FileTypeToken($ext);
-	}
-
-	// generic file icons
-	$tokens = array(
-		'IMAGE'      => 'file-image',
-		'COMPRESSED' => 'file-archive',
-		'VECTOR'     => 'file-image',
-		'FLASH'      => 'file-image',
-		'VIDEO'      => 'file-video',
-		'AUDIO'      => 'file-audio',
-		'WEB'        => 'file',
-		'SCRIPT'     => 'file-code',
-		'DOCUMENT'   => 'file-text',
-		'SYSTEM'     => 'file',
-		'MISC'       => 'file'
-	);
-
-	// specific file icons
-	$iconClasses = array(
-		'pdf'    => 'file-pdf',
-		'xls'    => 'file-excel',
-		'xlsx'   => 'file-excel',
-		'doc'    => 'file-word',
-		'docx'   => 'file-word',
-		'ppt'    => 'file-powerpoint'
-	);
-
-	$iconclass = $default;
-	if(isset($tokens[$token]))    $iconclass = $tokens[$token];
-	if(isset($iconClasses[$ext])) $iconclass = $iconClasses[$ext]; // override specific
-	return $iconclass;
-}
-
-/**
  * get the filepath for a thumbnail
  * @param  str $file        filename of the thumbnail
  * @param  string $upload_path upload path
@@ -2374,6 +2326,61 @@ function getIcon($id,$class = ""){
 	if(isset($icondefinition[$id]) && empty($class)) return $icondefinition[$id];
 	if(isset($icondefinition[$id])) return str_replace("%s",$class,$icondefinition[$id]);
 	return "";
+}
+
+/**
+ * returns icon classes for file extensions
+ * follow font-awesome naming, can be used for other stuff however
+ * uses get_fileTypeToken to get generic categories ( same as filter ), then further refines icons we have
+ * 
+ * @param  str $filename name of file
+ * @param  string $default  default to use when no match found
+ * @return str           the class
+ */
+function getFileIconClass($filename = '',$default = 'MISC'){
+
+	$ext = $token = '';
+	if($filename !== ''){
+		$ext   = getFileExtension($filename);
+		$token = get_FileTypeToken($ext);
+	}
+
+	// // generic file icons
+	// $tokens = array(
+	// 	'IMAGE'      => 'image',
+	// 	'COMPRESSED' => 'archive',
+	// 	'VECTOR'     => 'image',
+	// 	'FLASH'      => 'image',
+	// 	'VIDEO'      => 'video',
+	// 	'AUDIO'      => 'audio',
+	// 	'WEB'        => 'file',
+	// 	'SCRIPT'     => 'code',
+	// 	'DOCUMENT'   => 'text',
+	// 	'SYSTEM'     => 'file',
+	// 	'MISC'       => 'file'
+	// );
+
+	// // specific file icons
+	// $iconClasses = array(
+	// 	'pdf'    => 'pdf',
+	// 	'xls'    => 'excel',
+	// 	'xlsx'   => 'excel',
+	// 	'doc'    => 'word',
+	// 	'docx'   => 'word',
+	// 	'ppt'    => 'powerpoint'
+	// );
+
+	$iconclass = getIcon("FILE_".$ext); // specific
+	if(empty($iconClass)) $iconclass = getIcon("FILE_".$token); // generic fallback
+	if(empty($iconclass)) $iconclass = getIcon("FILE_".$default);
+	return $iconclass;
+}
+
+function getUploadIcon($type){
+	if($type == '.') $class = getIcon("FILE_FOLDER");
+	else $class = getFileIconClass($type);
+	return $class." ";
+	// return '<span class="far fa-fw fa-'.$class.' icon-left"></span>';
 }
 
 /* ?> */

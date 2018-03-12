@@ -308,29 +308,49 @@ $sidemenudefinition = array(
 // @todo centralize, add getter
 $icondefinition = array(
 	'TAB_pages'        => '<i class="far fa-fw fa-list-alt"></i>',// th th-list table database align-left list-ul list-alt files-o copy
-	'TAB_edit'         => '<i class="fa fa-fw fa-edit"></i>',// edit fa-plus
-	'TAB_menu-manager' => '<i class="fa fa-fw fa-sitemap"></i>',// list
-	'TAB_upload'       => '<i class="fa fa-fw fa-copy"></i>',// upload upload-cloud-alt
-	'TAB_theme'        => '<i class="fa fa-fw fa-image"></i>',// image
-	'TAB_theme-edit'   => '<i class="fa fa-fw fa-code"></i>',// indent code
-	'TAB_components'   => '<i class="fa fa-fw fa-cubes"></i>',// cubes
-	'TAB_snippets'     => '<i class="fa fa-fw fa-quote-left"></i>',// quote-left cut cube
-	'TAB_sitemap'      => '<i class="fa fa-fw fa-map"></i>',// sitemap globe
-	'TAB_backups'      => '<i class="fa fa-fw fa-history"></i>',// history 
-	'TAB_archive'      => '<i class="fa fa-fw fa-archive"></i>',// archive file-archive
-	'TAB_plugins'      => '<i class="fa fa-fw fa-plug"></i>',// plug
-	'TAB_support'      => '<i class="fa fa-fw fa-life-ring"></i>',// first-aid med-kit
-	'TAB_health-check' => '<i class="fa fa-fw fa-medkit"></i>',// life-ring, clipboard-check
-	'TAB_log'          => '<i class="fa fa-fw fa-file-alt"></i>',// paper-plane shield
-	'TAB_settings'     => '<i class="fa fa-fw fa-cogs"></i>',// cog cogs sliders
-	'TAB_profile'      => '<i class="fa fa-fw fa-address-card"></i>', // user address-card
-	'TAB_logout'       => '<i class="fa fa-fw fa-fw fa-sign-out-alt"></i>',
-	'TAB_welcome'      => '<i class="fa fa-fw fa-user-circle icon-left"></i>',
-	'TAB_development'  => '<i class="fa fa-fw fa-flask"></i>',
-	'TAB_debugmode'    => '<i class="fa fa-fw fa-wrench"></i>',
-	'TAB_update'       => '<i class="fa fa-fw fa-lg fa-cloud-download"></i>',
-	'TAB_load'         => '<i class="fa fa-fw fa-puzzle-piece"></i> ',
-	'TAB_'             => '<i class="fa fa-fw %s"></i>'
+	'TAB_edit'         => '<i class="fas fa-fw fa-edit"></i>',// edit fa-plus
+	'TAB_menu-manager' => '<i class="fas fa-fw fa-sitemap"></i>',// list
+	'TAB_upload'       => '<i class="fas fa-fw fa-copy"></i>',// upload upload-cloud-alt
+	'TAB_theme'        => '<i class="fas fa-fw fa-image"></i>',// image
+	'TAB_theme-edit'   => '<i class="fas fa-fw fa-code"></i>',// indent code
+	'TAB_components'   => '<i class="fas fa-fw fa-cubes"></i>',// cubes
+	'TAB_snippets'     => '<i class="fas fa-fw fa-quote-left"></i>',// quote-left cut cube
+	'TAB_sitemap'      => '<i class="fas fa-fw fa-map"></i>',// sitemap globe
+	'TAB_backups'      => '<i class="fas fa-fw fa-history"></i>',// history 
+	'TAB_archive'      => '<i class="fas fa-fw fa-archive"></i>',// archive file-archive
+	'TAB_plugins'      => '<i class="fas fa-fw fa-plug"></i>',// plug
+	'TAB_support'      => '<i class="fas fa-fw fa-life-ring"></i>',// first-aid med-kit
+	'TAB_health-check' => '<i class="fas fa-fw fa-medkit"></i>',// life-ring, clipboard-check
+	'TAB_log'          => '<i class="fas fa-fw fa-file-alt"></i>',// paper-plane shield
+	'TAB_settings'     => '<i class="fas fa-fw fa-cogs"></i>',// cog cogs sliders
+	'TAB_profile'      => '<i class="fas fa-fw fa-address-card"></i>', // user address-card
+	'TAB_logout'       => '<i class="fas fa-fw fa-fw fa-sign-out-alt"></i>',
+	'TAB_welcome'      => '<i class="fas fa-fw fa-user-circle icon-left"></i>',
+	'TAB_development'  => '<i class="fas fa-fw fa-flask"></i>',
+	'TAB_debugmode'    => '<i class="fas fa-fw fa-wrench"></i>',
+	'TAB_update'       => '<i class="fas fa-fw fa-lg fa-cloud-download"></i>',
+	'TAB_load'         => '<i class="fas fa-fw fa-puzzle-piece"></i> ',
+	'TAB_'             => '<i class="fas fa-fw %s"></i>',
+	'SM_upload'        => '<i class="fas fa-fw fa-upload"></i>', // bullseye, cloud-upload-alt
+	'FILE_pdf'         => '<i class="far fa-fw fa-file-pdf"></i>',
+	'FILE_xls'         => '<i class="far fa-fw fa-file-excel"></i>',
+	'FILE_xlsx'        => '<i class="far fa-fw fa-file-excel"></i>',
+	'FILE_doc'         => '<i class="far fa-fw fa-file-word"></i>',
+	'FILE_docx'        => '<i class="far fa-fw fa-file-word"></i>',
+	'FILE_ppt'         => '<i class="far fa-fw fa-file-powerpoint></i>',
+	'FILE_css'         => '<i class="far fa-fw fa-file-code></i>',
+	'FILE_IMAGE'       => '<i class="far fa-fw fa-file-image"></i>',
+	'FILE_COMPRESSED'  => '<i class="far fa-fw fa-file-archive"></i>',
+	'FILE_VECTOR'      => '<i class="far fa-fw fa-file-image"></i>',
+	'FILE_FLASH'       => '<i class="far fa-fw fa-file-image"></i>',
+	'FILE_VIDEO'       => '<i class="far fa-fw fa-file-video"></i>',
+	'FILE_AUDIO'       => '<i class="far fa-fw fa-file-audio"></i>',
+	'FILE_WEB'         => '<i class="far fa-fw fa-file-code"></i>',
+	'FILE_SCRIPT'      => '<i class="far fa-fw fa-file-code"></i>',
+	'FILE_DOCUMENT'    => '<i class="far fa-fw fa-file-alt"></i>',
+	'FILE_SYSTEM'      => '<i class="far fa-fw fa-file"></i>',
+	'FILE_MISC'        => '<i class="far fa-fw fa-file"></i>',
+	'FILE_FOLDER'      => '<i class="fas fa-fw fa-folder"></i>'
 );
 
 /**
@@ -885,7 +905,7 @@ function getGSRootPath($calculate = false){
 // debugging svn branch, set in configuration for now
 if(isDebug() && isset($devbranch)) add_action("footer-pre","debugBranch",array($devbranch,(isset($devissue) ? $devissue : null)),1);
 function debugBranch($branch = 'master',$issue = null){
-   	echo '<div class="border"><p><i class="fa fa-fw fa-github-square"></i><b>GITHUB BRANCH:</b> ';
+   	echo '<div class="border"><p><i class="fab fa-fw fa-github-square"></i><b>GITHUB BRANCH:</b> ';
    	if(isset($branch)) echo ' <a class="label-reset label label-medium" href="https://github.com/GetSimpleCMS/GetSimpleCMS/tree/'.$branch.'" target="_BLANK">'.uppercase($branch).'</a>';
    	if(isset($issue)) echo ' <a class="label-reset label label-info" href="https://github.com/GetSimpleCMS/GetSimpleCMS/issues/'.$issue.'" target="_BLANK">GITHUB ISSUE</a>';
    	echo '</p></div><br>';
