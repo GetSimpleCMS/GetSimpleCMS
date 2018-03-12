@@ -34,7 +34,7 @@ $icondefinition = array(
 	'TAB_'    => ''
 );
 
-define('GSTABS','pages,edit,upload,theme,backups,plugins,snippets,components,settings,profile,theme-edit,menu-manager,sitemap,backups,archive,support,health-check,log'); // (str) csv list of page ids and order to show tabs
+// define('GSTABS','pages,edit,upload,theme,backups,plugins,snippets,components,settings,profile,theme-edit,menu-manager,sitemap,backups,archive,support,health-check,log'); // (str) csv list of page ids and order to show tabs
 
 $debugInfoUrl = 'http://get-simple.info/docs/debugging';
 
