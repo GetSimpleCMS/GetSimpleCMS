@@ -2362,5 +2362,18 @@ function generate_thumbnail($file, $sub_path = '', $out_file = null, $w = null, 
 	}
 }
 
+/**
+ * geticon
+ * @since  3.4
+ * @param  string $id    $icondefinitin string
+ * @param  string $class $optonal class, replaces token %s
+ * @return string        icon html
+ */
+function getIcon($id,$class = ""){
+	global $icondefinition;
+	if(isset($icondefinition[$id]) && empty($class)) return $icondefinition[$id];
+	if(isset($icondefinition[$id])) return str_replace("%s",$class,$icondefinition[$id]);
+	return "";
+}
 
 /* ?> */

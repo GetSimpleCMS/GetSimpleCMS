@@ -292,15 +292,16 @@ function create_pluginsxml($force=false){
  *
  * @param string $id ID of the link you are adding
  * @param string $txt Text to add to tabbed link
+ * @param string $icon pass in custom icons class fa-iconclass 
  */
 
-function createSideMenu($id, $txt, $action = null, $always = true){
+function createSideMenu($id, $txt, $action = null, $always = true, $icon = ""){
 	$current = false;
 	if (isset($_GET['id']) && $_GET['id'] == $id && (!$action || isset($_GET[$action]))) {
 		$current = true;
 	}
 	if ($always || $current) {
-		echo '<li id="sb_'.$id.'" class="plugin_sb"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
+		echo '<li id="sb_'.$id.'" class="plugin_sb"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.(empty($icon) ? getIcon("SM_load") : getIcon("SM_",$icon)).$txt.'</a></li>';
 	}
 }
 
@@ -314,16 +315,17 @@ function createSideMenu($id, $txt, $action = null, $always = true){
  *
  * @param string $id Id of current page
  * @param string $txt Text to add to tabbed link
- * @param string $klass class to add to a element
+ * @param string $class class to add to a element
+ * @param string $icon pass in custom icons class fa-iconclass
  */
-function createNavTab($tabname, $id, $txt, $action = null) {
+function createNavTab($tabname, $id, $txt, $action = null, $icon = "") {
 	global $plugin_info;
 	$current = false;
 	if (basename(getScriptFile()) == 'load.php') {
 		$plugin_id = @$_GET['id'];
 		if ($plugin_info[$plugin_id]['page_type'] == $tabname) $current = true;
 	}
-	echo '<li id="nav_'.$id.'" class="plugin_tab"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
+	echo '<li id="nav_'.$id.'" class="plugin_tab"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.(empty($icon) ? getIcon("TAB_load") : getIcon("TAB_",$icon)).$txt.'</a></li>';
 }
 
 /**
