@@ -33,6 +33,7 @@ $fileSizeLimitMB = toBytesShorthand(getMaxUploadSize(),'M',true);
 			<div id="queue-item-template">
 				<div class="queue-item-wrap">
 					<div class="queue-item dz-preview dz-file-preview">
+						<img data-dz-thumbnail>
 						<div class="dz-filename">
 					    	<span class="dz-process-mark"><span>&#x25ba;</span> </span>
 					    	<span class="dz-success-mark"><span>&#x2713;</span> </span>

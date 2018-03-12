@@ -73,7 +73,7 @@ jQuery(document).ready(function () {
 	// callback for remove the queue item
 	removeFromQueue = function(file){
 		var slideDuration = 600;
-		var removeDelay = 5000;
+		var removeDelay = 6000;
 		setTimeout(
 			function(){ 
 				$(file.previewElement).stop(true, true).fadeOut(slideDuration).slideUp({ duration: slideDuration, queue: false }); 
@@ -138,7 +138,10 @@ jQuery(document).ready(function () {
 			url                   : 'upload.php?path='+uploadPath,
 			uploadMultiple        : true,
 			paramName             : 'file',
-			createImageThumbnails : false,
+			createImageThumbnails : true,
+			thumbnailWidth        : 60,
+			thumbnailHeight       : 60,
+			maxThumbnailFilesize  : maxFileSize,
 			addRemoveLinks        : true,
 			dictCancelUpload      : '',
 			dictRemoveFile        : '',

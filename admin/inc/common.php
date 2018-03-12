@@ -331,7 +331,7 @@ $icondefinition = array(
 	'TAB_update'       => '<i class="fas fa-fw fa-lg fa-cloud-download"></i>',
 	'TAB_load'         => '<i class="fas fa-fw fa-puzzle-piece"></i> ',
 	'TAB_'             => '<i class="fas fa-fw %s"></i>',
-	'SM_upload'        => '<i class="fas fa-fw fa-upload"></i>', // bullseye, cloud-upload-alt
+	'SM_upload'        => '<i class="fas fa-fw fa-lg fa-upload"></i>', // bullseye, cloud-upload-alt
 	'FILE_pdf'         => '<i class="far fa-fw fa-file-pdf"></i>',
 	'FILE_xls'         => '<i class="far fa-fw fa-file-excel"></i>',
 	'FILE_xlsx'        => '<i class="far fa-fw fa-file-excel"></i>',
