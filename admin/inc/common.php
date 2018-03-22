@@ -156,23 +156,23 @@ $GS_definitions = array(
 	# DEBUGGING ----------------------------------------------------------------------------------------------------------------------------------------
 	'GSDEBUGINSTALL'       => false,                          // (bool) debug installs, prevent removal of installation files (install,setup,update)
 	'GSDEBUGINSTALLWIPE'   => false,                          // (bool) debug installs, wipes website.xml on logouts
-	'GSDEBUG'              => true,                          // (bool) output debug mode console
+	'GSDEBUG'              => true,                           // (bool) output debug mode console
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls to debuglog
-	'GSDEBUGREDIRECTS'     => false,                         // (bool) if debug mode enabled, prevent redirects for debugging
-	'GSDEBUGFILEIO'        => true,                          // (bool) debug filio operations
+	'GSDEBUGREDIRECTS'     => false,                          // (bool) if debug mode enabled, prevent redirects for debugging
+	'GSDEBUGFILEIO'        => true,                           // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
-	'GSDEBUGLOGTIME'       => true,                          // (bool) timestamp debuglog str entries
-	'GSDEBUGLOGDUR'        => true,                          // (bool) duration timestamp debuglog str entries
-	'GSDEBUGHEADERS'       => false,                         // (bool) enable header output debugging ( helpful for finding whitespace or headers already sent errors )
-	'GSDEBUGARRAYS'        => false,                         // (bool) will dump all arrays on init for debugging
+	'GSDEBUGLOGTIME'       => true,                           // (bool) timestamp debuglog str entries
+	'GSDEBUGLOGDUR'        => true,                           // (bool) duration timestamp debuglog str entries
+	'GSDEBUGHEADERS'       => false,                          // (bool) enable header output debugging ( helpful for finding whitespace or headers already sent errors )
+	'GSDEBUGARRAYS'        => false,                          // (bool) will dump all arrays on init for debugging
 	# INIT ----------------------------------------------------------------------------------------------------------------------------------------------
-	'GSSAFEMODE'           => false,                         // (bool) enable safe mode, safe mode disables plugins and components
-	'GSFORMATXML'          => true,                          // (bool) format xml files before saving them, making them more legible
+	'GSSAFEMODE'           => false,                          // (bool) enable safe mode, safe mode disables plugins and components
+	'GSFORMATXML'          => true,                           // (bool) format xml files before saving them, making them more legible
 	'GSSAFEMODE'           => false,                          // (bool) enable safe mode, safe mode disables plugins and components
 	# VARIABLES -----------------------------------------------------------------------------------------------------------------------------------------
 	'GSMETADLEN'           => 160,                            // (int) optional meta description max length enforced
 	'GSBACKUPROOT'         => false,                          // (bool) include all root files in archive backups
-	'GSAUTOMETAD'          => true,                           // (bool) auto generate meta desc from content
+	'GSAUTOMETAD'          => false,                          // (bool) auto generate meta desc from content
 	// 'GSBACKUPEXTRAS'       => '',                          // (str) testing add stuff to backup, only accepts files for now
 	# SANITY --------------------------------------------------------------------------------------------------------------------------------------------
 	# ---------------------------------------------------------------------------------------------------------------------------------------------------
