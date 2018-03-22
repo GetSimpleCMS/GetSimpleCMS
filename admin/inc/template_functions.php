@@ -2345,31 +2345,6 @@ function getFileIconClass($filename = '',$default = 'MISC'){
 		$token = get_FileTypeToken($ext);
 	}
 
-	// // generic file icons
-	// $tokens = array(
-	// 	'IMAGE'      => 'image',
-	// 	'COMPRESSED' => 'archive',
-	// 	'VECTOR'     => 'image',
-	// 	'FLASH'      => 'image',
-	// 	'VIDEO'      => 'video',
-	// 	'AUDIO'      => 'audio',
-	// 	'WEB'        => 'file',
-	// 	'SCRIPT'     => 'code',
-	// 	'DOCUMENT'   => 'text',
-	// 	'SYSTEM'     => 'file',
-	// 	'MISC'       => 'file'
-	// );
-
-	// // specific file icons
-	// $iconClasses = array(
-	// 	'pdf'    => 'pdf',
-	// 	'xls'    => 'excel',
-	// 	'xlsx'   => 'excel',
-	// 	'doc'    => 'word',
-	// 	'docx'   => 'word',
-	// 	'ppt'    => 'powerpoint'
-	// );
-
 	$iconclass = getIcon("FILE_".$ext); // specific
 	if(empty($iconClass)) $iconclass = getIcon("FILE_".$token); // generic fallback
 	if(empty($iconclass)) $iconclass = getIcon("FILE_".$default);
@@ -2380,7 +2355,6 @@ function getUploadIcon($type){
 	if($type == '.') $class = getIcon("FILE_FOLDER");
 	else $class = getFileIconClass($type);
 	return $class." ";
-	// return '<span class="far fa-fw fa-'.$class.' icon-left"></span>';
 }
 
 /* ?> */
