@@ -172,6 +172,7 @@ $GS_definitions = array(
 	# VARIABLES -----------------------------------------------------------------------------------------------------------------------------------------
 	'GSMETADLEN'           => 160,                            // (int) optional meta description max length enforced
 	'GSBACKUPROOT'         => false,                          // (bool) include all root files in archive backups
+	'GSAUTOMETAD'          => true,                           // (bool) auto generate meta desc from content
 	// 'GSBACKUPEXTRAS'       => '',                          // (str) testing add stuff to backup, only accepts files for now
 	# SANITY --------------------------------------------------------------------------------------------------------------------------------------------
 	# ---------------------------------------------------------------------------------------------------------------------------------------------------
