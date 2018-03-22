@@ -121,13 +121,15 @@ if (isset($_FILES['file'])) {
 					$fileurl   = getUploadURI($file_base,$subFolder);
 					$fileasset = 'image.php?i='.urlencode($file_base)."&path=".urlencode($subFolder);
 					echo '<div class="updated notify_success remove">'.i18n_r('FILE_SUCCESS_MSG').' [<a data-url = "'.$fileurl.'" href="'.$fileasset.'" target="_BLANK">'.i18n_r('IMG_CONTROl_PANEL').'</a>] </div>';
+					if(isset($_GET['CKEditorFuncNum'])) echo "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction(".$_GET['CKEditorFuncNum'].", '".$fileurl."', '');</script>";
 					die();
 				}
 			} else {
 				$messages[] = $filesArray[$i]["name"] .' - '.i18n_r('ERROR_UPLOAD');
 				if(requestIsAjax()){
 					header("HTTP/1.0 403");
-					echo "<div class=\"updated notify_error\">".i18n_r('ERROR_UPLOAD')."</div>";					
+					echo "<div class=\"updated notify_error\">".i18n_r('ERROR_UPLOAD')."</div>";
+					if(isset($_GET['CKEditorFuncNum'])) echo "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction(".$_GET['CKEditorFuncNum'].", '".$fileurl."', '".i18n_r('ERROR_UPLOAD')."');</script>";					
 					die();
 				}	
 			}
@@ -144,6 +146,7 @@ if (isset($_FILES['file'])) {
 			if(requestIsAjax()){
 				header("HTTP/1.0 403");
 				echo "<div class=\"updated notify_error\">".i18n_r('ERROR_UPLOAD')."</a></div>";
+				if(isset($_GET['CKEditorFuncNum'])) echo "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction(".$_GET['CKEditorFuncNum'].", '".$fileurl."', '".i18n_r('ERROR_UPLOAD')."');</script>";									
 				die();
 			}
 
