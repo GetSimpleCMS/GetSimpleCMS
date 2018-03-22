@@ -351,12 +351,12 @@ $icondefinition = array(
 	'FILE_SYSTEM'      => '<i class="far fa-fw fa-file"></i>',
 	'FILE_MISC'        => '<i class="far fa-fw fa-file"></i>',
 	'FILE_FOLDER'      => '<i class="fas fa-fw fa-folder"></i>',
-	'ICO_draft'        => '<i class="fas fa-pencil-alt"></i>',
-	'ICO_timestamp'    => '<i class="far fa-clock"></i>',
-	'ICO_backup'       => '<i class="far fa-file-archive"></i>',
-	'ICO_info'         => '<i class="far fa-info-circle"></i>',
-	'ICO_search'       => '<i class="fas fa-search"></i>',
-	'ICO_linkext'      => '<i class="fas fa-external-link-alt"></i>'
+	'ICO_draft'        => '<i class="fas fa-fw fa-pencil-alt"></i>',
+	'ICO_timestamp'    => '<i class="far fa-fw fa-clock"></i>',
+	'ICO_backup'       => '<i class="far fa-fw fa-file-archive"></i>',
+	'ICO_info'         => '<i class="far fa-fw fa-info-circle"></i>',
+	'ICO_search'       => '<i class="fas fa-fw fa-search"></i>',
+	'ICO_linkext'      => '<i class="fas fa-fw fa-external-link-alt"></i>'
 ); 
 
 /**
