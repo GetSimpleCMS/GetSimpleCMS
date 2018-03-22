@@ -29,18 +29,24 @@ exec_action('load-upload');
 $dirsSorted = $filesSorted = $foldercount = null;
 
 // force autoupload path
-if(isset($_REQUEST['autoupload']) && getDef("GSAUTOUPLOADPATH",true)) $_REQUEST['path'] = getDef("GSAUTOUPLOADPATH");
-
-if (isset($_REQUEST['path']) && !empty($_REQUEST['path'])) {
-	$path      = str_replace('../','', $_REQUEST['path']);
-	$subFolder = tsl($path);
-	$path      = tsl(GSDATAUPLOADPATH.$path);
-	// die if path is outside of uploads
-	if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
-} else { 
+if(isset($_REQUEST['autoupload']) && getDef("GSAUTOUPLOADPATH",true)){
+	$subpath   = str_replace('../','', getDef("GSAUTOUPLOADPATH"));
+	create_dir(tsl(GSDATAUPLOADPATH.tsl($subpath)));
+}
+else if (isset($_REQUEST['path']) && !empty($_REQUEST['path'])) {
+	$subpath   = str_replace('../','', $_REQUEST['path']);
+}	
+else {
 	$path      = GSDATAUPLOADPATH;
+	$subPath   = '';
 	$subFolder = '';
 }
+
+$subFolder = !empty($subpath) ? tsl($subpath) : '';
+$path      = tsl(GSDATAUPLOADPATH.$subpath);
+
+// die if path is outside of uploads
+if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
 
 /**
  * convert $_FILES array buckets into file arrays, pivot
