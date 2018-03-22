@@ -213,11 +213,11 @@ if($newdraft) $pageClass.=' newdraft';
         <!-- PUBLISHED pagestack -->
         <div class="pagestack existingpage shadow peek">
             <div style="float: left;">
-                <i class="fa fa-clock-o">&nbsp;</i><?php echo sprintf(i18n_r('LAST_SAVED'),$publishAuthor)," ",$publishPubdate;?>&nbsp;
+                <?php echo getIcon("ICO_timestamp"); echo "&nbsp;";echo sprintf(i18n_r('LAST_SAVED'),$publishAuthor)," ",$publishPubdate;?>&nbsp;
             </div>
             <div style="float:right">
                 <a href="edit.php?id=<?php echo $id;?>&amp;nodraft" class="label label-ghost label-inline">
-                    <i class="fa fa-pencil"></i>
+                    <?php echo getIcon("ICO_draft");?>
                 </a>
                 <div class="label label-ok label-inline unselectable"><?php i18n('LABEL_PUBLISHED'); ?></div>
             </div>
@@ -242,11 +242,11 @@ if($newdraft) $pageClass.=' newdraft';
         <!-- DRAFT page stack -->
         <div class="pagestack existingdraft shadow peek">
             <div style="float: left;">
-                <i class="fa fa-clock-o">&nbsp;</i><?php echo sprintf(i18n_r('DRAFT_LAST_SAVED'),$draftAuthor)," ",$draftPubdate;?>&nbsp;
+                <?php echo getIcon("ICO_timestamp"); echo "&nbsp;";echo sprintf(i18n_r('DRAFT_LAST_SAVED'),$draftAuthor)," ",$draftPubdate;?>&nbsp;
             </div>
             <div style="float:right">
                 <a href="edit.php?id=<?php echo $id;?>&amp;draft" class="label label-ghost label-inline">
-                    <i class="fa fa-pencil"></i>
+                    <?php echo getIcon("ICO_draft");?>
                 </a>
                 <div class="label secondary-lightest-back label-inline unselectable"><?php i18n('LABEL_DRAFT'); ?></div>
             </div>
@@ -266,11 +266,11 @@ if($newdraft) $pageClass.=' newdraft';
         <!-- NEWDRAFT page stack -->
         <div class="pagestack newdraft shadow nopeek">
             <div style="float: left;">
-                <i class="fa fa-info-circle">&nbsp;</i><?php i18n('PAGE_NO_DRAFT'); ?>&nbsp;
+                <?php echo getIcon("ICO_info"); echo "&nbsp;"; i18n('PAGE_NO_DRAFT'); ?>&nbsp;
             </div>
             <div style="float:right">
                 <a href="edit.php?id=<?php echo $id;?>&amp;draft" class="label label-ghost label-inline">
-                    <i class="fa fa-pencil"></i>
+                    <?php echo getIcon("ICO_draft");?>
                 </a>
                 <div class="label label-ghost label-inline unselectable"><?php i18n('LABEL_DRAFT'); ?></div>
             </div>
@@ -373,7 +373,7 @@ if($newdraft) $pageClass.=' newdraft';
                             <input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> />&nbsp;&nbsp;&nbsp;
                             <label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label>
                             <a href="navigation.php" class="viewlink" rel="fancybox" alt="<?php echo strip_tags(i18n_r('VIEW')); ?>" >
-                                <span class="fa fa-search icon-right" style="opacity:0.2"></span>
+                                <span style="opacity:0.2" class="icon-right"><?php echo getIcon("ICO_search"); ?></span>
                             </a>
                         </p>
                         <div id="menu-items">
@@ -515,14 +515,15 @@ if($newdraft) $pageClass.=' newdraft';
     <?php if($url != '') { ?>
         <p class="editfooter"><?php 
             if (!$newdraft && isset($pubDate)) { 
-                echo '<span><i class="fa fa-clock-o"></i>';
-                    echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'. (empty($author) ? i18n_r('UNKNOWN') : $author.'</em>')) .' ' . output_datetime($pubDate).'</span>';
+                echo getIcon("ICO_timestamp");
+                echo "&nbsp;";
+                echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'. (empty($author) ? i18n_r('UNKNOWN') : $author.'</em>')) .' ' . output_datetime($pubDate).'</span>';
             }
             if ( $draft && fileHasBackup(GSDATADRAFTSPATH.$url.'.xml') ) {
-                echo '<span>&bull;</span><a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
+                echo '<span>&nbsp;&nbsp;&bull;</span><a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" >'.getIcon("ICO_backup").'&nbsp;'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
             }
             else if( !$draft && fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
-                echo '<span>&bull;</span><span><a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
+                echo '<span>&nbsp;&nbsp;&bull;</span><span><a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" >'.getIcon("ICO_backup").'&nbsp;'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
             }
         ?></p>
     <?php } ?>
