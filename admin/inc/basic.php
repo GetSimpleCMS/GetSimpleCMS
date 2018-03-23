@@ -2791,7 +2791,7 @@ function getWebsiteData($returnGlobals = false){
 		else if(getDef('GSASSETSCHEMES',true) !==true) str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL);
 		else $ASSETURL = $SITEURL;
 
-		$ASSETPATH = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH,GSADMINPATH));
+		$ASSETPATH = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH,GSPATH));
 
 		// SITEURL is root relative if GSSITEURLREL is true
 		if(getDef('GSSITEURLREL')){
