@@ -159,12 +159,13 @@ $GS_definitions = array(
 	'GSDEBUG'              => true,                           // (bool) output debug mode console
 	'GSDEBUGAPI'           => false,                          // (bool) debug api calls to debuglog
 	'GSDEBUGREDIRECTS'     => false,                          // (bool) if debug mode enabled, prevent redirects for debugging
-	'GSDEBUGFILEIO'        => true,                           // (bool) debug filio operations
+	'GSDEBUGFILEIO'        => false,                           // (bool) debug filio operations
 	'GSDEBUGHOOKS'         => false,                          // (bool) debug hooks, adds callee (file,line,core) to $plugins, always true if DEBUG MODE
-	'GSDEBUGLOGTIME'       => true,                           // (bool) timestamp debuglog str entries
-	'GSDEBUGLOGDUR'        => true,                           // (bool) duration timestamp debuglog str entries
+	'GSDEBUGLOGTIME'       => false,                           // (bool) timestamp debuglog str entries
+	'GSDEBUGLOGDUR'        => false,                           // (bool) duration timestamp debuglog str entries
 	'GSDEBUGHEADERS'       => false,                          // (bool) enable header output debugging ( helpful for finding whitespace or headers already sent errors )
 	'GSDEBUGARRAYS'        => false,                          // (bool) will dump all arrays on init for debugging
+	'GSDEBUGPATHS'         => false,                          // (bool) will dump all arrays on init for debugging
 	# INIT ----------------------------------------------------------------------------------------------------------------------------------------------
 	'GSSAFEMODE'           => false,                          // (bool) enable safe mode, safe mode disables plugins and components
 	'GSFORMATXML'          => true,                           // (bool) format xml files before saving them, making them more legible
@@ -202,7 +203,7 @@ global
  $pageCacheXml,   // (obj) page cache raw xml simpleXMLobj //@todo REMOVE memory waste, not needed when not debugging
  $plugin_info,    // (array) contains registered plugin info for active and inactive plugins
  $live_plugins,   // (array) contains plugin file ids and enable status
- $plugins,        // (array) global array for storing action hook callbacks
+ $plugins,        // (array) global array for storing action hook callbacks, not used for exec_
  $pluginHooks,    // (array) global array for storing action hook callbacks hash table
  $filters,        // (array) global array for storing filter callbacks
  $pluginFilters,  // (array) global array for storing filter callbacks hash table
@@ -387,22 +388,22 @@ if(defined('GSERRORLOGENABLE') && (bool) GSERRORLOGENABLE === true){
  * Basic file inclusions
  */
 require_once('basic.php');
-if(defined("GSDEBUGHEADERS")) debugLog('headers sent: basic.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: basic.php ' . headers_sent());
 
 require_once('template_functions.php');
-if(defined("GSDEBUGHEADERS")) debugLog('headers sent: template_functions.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: template_functions.php ' . headers_sent());
 
 require_once('theme_functions.php');
-if(defined("GSDEBUGHEADERS")) debugLog('headers sent: theme_functions.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: theme_functions.php ' . headers_sent());
 
 require_once('filter_functions.php');
-if(defined("GSDEBUGHEADERS")) debugLog('headers sent: filter_functions.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: filter_functions.php ' . headers_sent());
 
 require_once('sort_functions.php');
-if(defined("GSDEBUGHEADERS")) debugLog('headers sent: sort_functions.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: sort_functions.php ' . headers_sent());
 
 require_once('logging.class.php');
-if(defined("GSDEBUGHEADERS")) debugLog('headers sent: logging.class.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: logging.class.php ' . headers_sent());
 
 include_once(GSADMININCPATH.'configuration.php');
 
@@ -487,6 +488,7 @@ GLOBAL
 // load website data from GSWEBSITEFILE (website.xml)
 extract(getWebsiteData(true));
 
+if(defined("GSDEBUGPATHS") && GSDEBUGPATHS){
 // debugging paths
 debugLog('GSBASE       = ' . GSBASE);
 debugLog('GSROOTPATH   = ' . GSROOTPATH);
@@ -501,6 +503,7 @@ debugLog('ASSETPATH    = ' . $ASSETPATH);
 debugLog('SITELANG     = ' . $SITELANG);
 debugLog('GSLANG       = ' . getDef('GSLANG'));
 // debugDie();
+}
 
 /**
  * Global user data
@@ -673,19 +676,19 @@ if(empty($ASSETPATH))    $ASSETPATH   = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH,
  * Include other files depending if they are needed or not
  */
 require_once(GSADMININCPATH.'cookie_functions.php');
-if(defined("GSDEBUGHEADERS")) debugLog('headers sent: cookie_functions.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: cookie_functions.php ' . headers_sent());
 
 require_once(GSADMININCPATH.'assets.php');
-if(defined("GSDEBUGHEADERS")) debugLog('headers sent: asset.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: asset.php ' . headers_sent());
 
 include_once(GSADMININCPATH.'plugin_functions.php');
-if(defined("GSDEBUGHEADERS")) debugLog('headers sent: plugin_functions.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: plugin_functions.php ' . headers_sent());
 
 // include core plugin for page caching, requires plugin functions for hooks
 // @todo must stay after plugin_function for now, since it requires plugin_functions
 include_once(GSADMININCPATH.'caching_functions.php');
 if(defined('GSINITPAGECACHE') && constant('GSINITPAGECACHE') == true) init_pageCache(); // in case autoloading doesnt work for a particular instance.
-if(defined("GSDEBUGHEADERS")) debugLog('headers sent: caching_functions.php ' . headers_sent());
+if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: caching_functions.php ' . headers_sent());
 
 if(getDef('GSSAFEMODE',true)) $SAFEMODE = true;
 if($SAFEMODE){
@@ -715,7 +718,7 @@ if(isset($load['plugin']) && $load['plugin']){
 			// debugLog('including plugin: ' . $file);
 			include_once(GSPLUGINPATH . $file);
 			exec_action('plugin-loaded'); // @hook plugin-loaded called after each plugin is included
-			if(defined("GSDEBUGHEADERS")) debugLog('headers sent: ' . $file . ' - ' . headers_sent());
+			if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: ' . $file . ' - ' . headers_sent());
 		}
 	}
 	exec_action('plugins-loaded'); // @hook plugins-loaded plugin files have been included
@@ -726,7 +729,7 @@ if(isset($load['plugin']) && $load['plugin']){
 		settings page since that is where its sidebar item is. */
 		if (getDef('GSEXTAPI',true)) {
 			include_once('api.plugin.php');
-			if(defined("GSDEBUGHEADERS")) debugLog('headers sent: api.plugin.php ' . headers_sent());
+			if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: api.plugin.php ' . headers_sent());
 		}
 	}
 
@@ -754,7 +757,7 @@ if(isset($load['login']) && $load['login'] && getDef('GSALLOWLOGIN',true)){ requ
 // do the template rendering
 if(GSBASE) {
 	require_once(GSADMINPATH.'base.php');
-	if(defined("GSDEBUGHEADERS")) debugLog('headers sent: base.php ' . headers_sent());
+	if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: base.php ' . headers_sent());
 }
 
 // common methods that are required before dependancy includes

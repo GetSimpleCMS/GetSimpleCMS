@@ -461,7 +461,7 @@ function remove_filter($filter_name,$hook_function){
  * @uses $filters
  *
  * @param string $script Filter name to execute
- * @param array $data
+ * @param array $data arguments for callback
  */
 function exec_filter($filter_name,$data=array()) {
 	global $filters,$pluginFilters;
@@ -691,12 +691,17 @@ function remove_hook(&$hook_hash_array, $hook_name, $hook_function){
 
 
 /**
- * Execute hook wrapper
+ * Execute hook fomr hook_hash_array ($pluginHooks)
+ * eg. $res = exec_hook($filters, $pluginFilters, $filter_name, 'exec_filter_callback', $data, 'exec_filter_complete');
+ * eg. $res = exec_hook($plugins, $pluginHooks, $hookname, 'exec_action_callback');
  * INTERNAL USE ONLY
  * @since 3.4
  * @param array $hook_array hook array
  * @param array $hook_hash_array hook hash array
  * @param string $hook_name name of hook to execute
+ * @param string $callback
+ * @param string $data
+ * @param string $complete
  * @return returns hook callback result
  */
 function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', $data = array(), $complete = '') {
@@ -705,12 +710,12 @@ function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', 
 		return;
 	}
 
-	if(!isset($hook_hash_array[$hook_name]) || !$hook_hash_array[$hook_name]) return;
-	
+	if(!isset($hook_hash_array[$hook_name]) || !$hook_hash_array[$hook_name]){
+		return;
+	}
 	// use ref to keep subarray priority sorts, in case we wanted to reuse again, 
 	// probably sorts faster when ordered also
 	$hooks = &$hook_hash_array[$hook_name];
-	// _debugLog($hooks);
 	// if there is only one hook call it, skip sort and looping
 	if(count($hooks) == 1){
 		// since we do not know the priority index key

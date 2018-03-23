@@ -3382,6 +3382,7 @@ function call_gs_func_array($callable,$args = array()){
 	}
 
 	if($valid) return call_user_func_array($callable,$args);
+	else debugLog("not callable " . $callable);
 }
 
 /**
