@@ -38,7 +38,7 @@ else if (isset($_REQUEST['path']) && !empty($_REQUEST['path'])) {
 }	
 else {
 	$path      = GSDATAUPLOADPATH;
-	$subPath   = '';
+	$subpath   = '';
 	$subFolder = '';
 }
 
