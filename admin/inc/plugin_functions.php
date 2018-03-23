@@ -44,6 +44,7 @@
  *	       'line'     => DEBUG caller line obtained from backtrace	       
  *	);
  *
+ * 	$pluginHooks[$hook_name][$priority][] = &$plugins[count($hook_array)-1]; # add ref to global plugin hook hash array
 */
 
 /**
