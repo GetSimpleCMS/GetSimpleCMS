@@ -678,6 +678,7 @@ function get_navigation($currentpage = "",$classPrefix = "") {
 	$menu = '';
 
 	global $pagesArray;
+	// $pagesArray = getPages();
 	
 	$pagesSorted = subval_sort($pagesArray,'menuOrder');
 	if (count($pagesSorted) != 0) { 

@@ -30,15 +30,15 @@
 /**
  * get PAGES
  * optionally PAGES collection , by filtering with provided filterfunction
- *
+ * @todo  should return reference to reduce memory usage and copying
  * @since  3.4
  * @param  callable $filterFunc function name for filter callout
  * @param  mixed ... variable number of arguments to pass to filterfunc
  * @return array  new pagesarray
  */
 function getPages($filterFunc=null/*,...*/){
-	GLOBAL $pagesArray;
-
+	// GLOBAL $pagesArray;
+	$pagesArray = getPagesXmlValues();
 	if(isset($filterFunc) && function_exists($filterFunc)){
 		$args    = func_get_args();
 		$args[0] = $pagesArray; // replace first argument (filterfunc) with PAGES
