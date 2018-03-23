@@ -769,6 +769,11 @@ function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', 
  */
 function exec_action_legacy($a) {
 	global $plugins;
+
+	if(!$plugins){
+		debugLog("plugins array is empty");
+		return;
+	}
 	
 	foreach ($plugins as $hook)	{
 		if ($hook['hook'] == $a) {
@@ -790,7 +795,14 @@ function exec_action_legacy($a) {
  */
 function exec_filter_legacy($script,$data=array()) {
 	global $filters;
+	
+	if(!$filters){
+		debugLog("filters array is empty");
+		return $data;
+	}
+
 	foreach ($filters as $filter)	{
+		// new array uses hook NOT filter index
 		if ((isset($filter['filter']) && $filter['filter'] == $script) || (isset($filter['hook']) && $filter['hook'] == $script)) {
 			$data = call_user_func_array($filter['function'], array($data));
 		}
