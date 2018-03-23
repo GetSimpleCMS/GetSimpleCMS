@@ -171,6 +171,7 @@ $GS_definitions = array(
 	'GSFORMATXML'          => true,                           // (bool) format xml files before saving them, making them more legible
 	'GSSAFEMODE'           => false,                          // (bool) enable safe mode, safe mode disables plugins and components
 	'GSINITPAGECACHE'      => true,                           // (bool) initPageCache in common, solves issues with lazyload via getPages, or when still using Global $pagesArray
+	'GSUSELEGACYPLUGINS'   => false,                          // (bool) use legacy plugins array for plugin hooks, some features will not work, namely priorities!
 	# VARIABLES -----------------------------------------------------------------------------------------------------------------------------------------
 	'GSMETADLEN'           => 160,                            // (int) optional meta description max length enforced
 	'GSBACKUPROOT'         => false,                          // (bool) include all root files in archive backups

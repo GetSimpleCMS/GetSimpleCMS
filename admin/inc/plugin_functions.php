@@ -293,6 +293,7 @@ function create_pluginsxml($force=false){
  *
  * @param string $id ID of the link you are adding
  * @param string $txt Text to add to tabbed link
+ * @param bool $always always show tab , else only show if current
  * @param string $icon pass in custom icons class fa-iconclass 
  */
 
@@ -314,9 +315,10 @@ function createSideMenu($id, $txt, $action = null, $always = true, $icon = ""){
  * @since 2.0
  * @uses $plugins
  *
- * @param string $id Id of current page
+ * @param string $id Id of current page for load.php?id
  * @param string $txt Text to add to tabbed link
  * @param string $class class to add to a element
+ * @param string $action query string action for load.php?&acton
  * @param string $icon pass in custom icons class fa-iconclass
  */
 function createNavTab($tabname, $id, $txt, $action = null, $icon = "") {
@@ -419,6 +421,9 @@ function remove_action($hook_name,$hook_function){
  * @param string $a Name of hook to execute
  */
 function exec_action($a) {
+
+	if(getDef("GSUSELEGACYPLUGINS",true)) return exec_action_legacy($a);
+
 	global $plugins,$pluginHooks;
  	return exec_hook($plugins, $pluginHooks, $a, 'exec_action_callback');
 }
@@ -465,6 +470,8 @@ function remove_filter($filter_name,$hook_function){
  * @param array $data arguments for callback
  */
 function exec_filter($filter_name,$data=array()) {
+	if(getDef("GSUSELEGACYPLUGINS",true))  return exec_filter_legacy($filter_name,$data);
+
 	global $filters,$pluginFilters;
  	$res = exec_hook($filters, $pluginFilters, $filter_name, 'exec_filter_callback', $data, 'exec_filter_complete');
  	return ($res === null) ? $data : $res;
@@ -748,6 +755,47 @@ function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', 
 	if(function_exists($complete)) return $complete($data);
 	return $res;
 
+}
+
+
+
+/**
+ * Execute Action
+ *
+ * @since 2.0
+ * @uses $plugins
+ *
+ * @param string $a Name of hook to execute
+ */
+function exec_action_legacy($a) {
+	global $plugins;
+	
+	foreach ($plugins as $hook)	{
+		if ($hook['hook'] == $a) {
+			call_user_func_array($hook['function'], $hook['args']);
+		}
+	}
+}
+
+/**
+ * Execute Filter
+ *
+ * Allows changing of the passed variable
+ *
+ * @since 2.0
+ * @uses $filters
+ *
+ * @param string $script Filter name to execute
+ * @param array $data
+ */
+function exec_filter_legacy($script,$data=array()) {
+	global $filters;
+	foreach ($filters as $filter)	{
+		if ((isset($filter['filter']) && $filter['filter'] == $script) || (isset($filter['hook']) && $filter['hook'] == $script)) {
+			$data = call_user_func_array($filter['function'], array($data));
+		}
+	}
+	return $data;
 }
 
 

@@ -90,7 +90,7 @@ function sortCustomIndexCallback($array,$key=null,$prepare=null){
 			else $sortvalue[$sortkey] = $prepare($page);
 		}
 	}
-	// _debugLog($sortvalue);
+	// debugLog($sortvalue);
 	return sortCustomIndex($array,$key,$sortvalue);
 }
 
