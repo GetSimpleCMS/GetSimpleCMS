@@ -2783,18 +2783,18 @@ function getWebsiteData($returnGlobals = false){
 
 		$SITEURL_ABS = $SITEURL;
 		$SITEURL_REL = getRootRelURIPath($SITEURL);
-		// $ASSETURL    = $SITEURL;
 
 		// asseturl is root relative if GSASSETURLREL is true
-		// else asseturl is scheme-less ://url if GSASSETSCHEMES is not true
+		// else if abs asseturl is scheme-less ://url if GSASSETSCHEMES is not true
+		// else absolute
 		if(getDef('GSASSETURLREL',true)) $ASSETURL = $SITEURL_REL;
-		else if(getDef('GSASSETSCHEMES',true) !==true) str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL);
+		else if(getDef('GSASSETSCHEMES',true) !==true) $ASSETURL = str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL);
 		else $ASSETURL = $SITEURL;
-
+		
 		$ASSETPATH = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH,GSPATH));
 
 		// SITEURL is root relative if GSSITEURLREL is true
-		if(getDef('GSSITEURLREL')){
+		if(getDef('GSSITEURLREL',true)){
 			$SITEURL = $SITEURL_REL;
 		}
 	}

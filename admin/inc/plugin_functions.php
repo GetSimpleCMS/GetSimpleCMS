@@ -692,12 +692,14 @@ function remove_hook(&$hook_hash_array, $hook_name, $hook_function){
 
 
 /**
- * Execute hook fomr hook_hash_array ($pluginHooks)
+ * Execute hook from hook_hash_array ($pluginHooks)
+ * Loop hook hash array, sorting by priority
+ * 
  * eg. $res = exec_hook($filters, $pluginFilters, $filter_name, 'exec_filter_callback', $data, 'exec_filter_complete');
  * eg. $res = exec_hook($plugins, $pluginHooks, $hookname, 'exec_action_callback');
  * INTERNAL USE ONLY
  * @since 3.4
- * @param array $hook_array hook array
+ * @param array $hook_array hook array ( not used )
  * @param array $hook_hash_array hook hash array
  * @param string $hook_name name of hook to execute
  * @param string $callback
@@ -711,6 +713,7 @@ function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', 
 		return;
 	}
 
+	// skip if there is no action for this hook
 	if(!isset($hook_hash_array[$hook_name]) || !$hook_hash_array[$hook_name]){
 		return;
 	}
