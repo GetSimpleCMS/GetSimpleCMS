@@ -303,7 +303,7 @@ function createSideMenu($id, $txt, $action = null, $always = true, $icon = ""){
 		$current = true;
 	}
 	if ($always || $current) {
-		echo '<li id="sb_'.$id.'" class="plugin_sb"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.(empty($icon) ? getIcon("SM_load") : getIcon("SM_",$icon)).$txt.'</a></li>';
+		echo '<li id="sb_'.$id.'" class="plugin_sb"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.(empty($icon) ? getIcon("SM_load") : getIcon("SM_",$icon))." ".$txt.'</a></li>';
 	}
 }
 
@@ -328,7 +328,7 @@ function createNavTab($tabname, $id, $txt, $action = null, $icon = "") {
 		$plugin_id = @$_GET['id'];
 		if ($plugin_info[$plugin_id]['page_type'] == $tabname) $current = true;
 	}
-	echo '<li id="nav_'.$id.'" class="plugin_tab"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.(empty($icon) ? getIcon("TAB_load") : getIcon("TAB_",$icon)).$txt.'</a></li>';
+	echo '<li id="nav_'.$id.'" class="plugin_tab"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.(empty($icon) ? getIcon("TAB_load") : getIcon("TAB_",$icon))." ".$txt.'</a></li>';
 }
 
 /**
