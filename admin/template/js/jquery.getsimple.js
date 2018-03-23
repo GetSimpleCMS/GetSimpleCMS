@@ -462,9 +462,10 @@ jQuery(document).ready(function () {
 		$("#tabs").tabs({
 			activate: function(event, ui) {
 				// set bookmarkable urls
-				var hash = ui.newTab.context.hash;
-				hash = "tab_"+hash.replace('#','');
-				window.location.replace(('' + window.location).split('#')[0] + '#' + hash);	// should not affect history
+				var elemid = ui.newPanel.attr('id');
+				// Debugger.log(elemid);
+				elemid = "tab_"+elemid.replace('#','');
+				window.location.replace(('' + window.location).split('#')[0] + '#' + elemid);	// should not affect history
 			},
 			create: function (event,ui) {
 				// set active tab from hash
