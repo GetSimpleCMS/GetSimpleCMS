@@ -1494,7 +1494,7 @@ jQuery(document).ready(function () {
 	// form watcher
 	// forms with class watch will mark page dirty and prevent leaving
     $('form.watch input,form.watch textarea,form.watch select').not(':password').not(":submit").bind('change keypress paste textInput input',function(e){
-        // Debugger.log('form changed');
+        Debugger.log('form changed');
         if($("body").hasClass('dirty')) return;
         pageIsDirty($(this));
     });

@@ -44,7 +44,7 @@ CKEDITOR.editorConfig = function( config )
 	}
 
 	var extraPlugins = new Array();
-	// extraPlugins.push('codesnippet');         // (included) enables code insertion, toolbar id 'CodeSnippet'
+	extraPlugins.push('codesnippet');         // (included) enables code insertion, toolbar id 'CodeSnippet'
 	
 	/**
 	 * testing additional plugins

@@ -46,7 +46,7 @@ $GS_asset_objects['jquery-ui'] = 'jQuery.ui';
 
 $VERSIONS = array(
   'getsimple'         =>  GSVERSION,
-  'ckeditor'          => '4.8.0',
+  'ckeditor'          => '4.9.0',
   'codemirror'        => '5.32.0',
   'dropzone'          => '5.1.1',
   'fancybox'          => '2.1.5', // 3.2.0 available
