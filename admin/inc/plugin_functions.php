@@ -244,6 +244,11 @@ function add_action($hook_name, $added_function, $args = array()) {
   
 	$bt = debug_backtrace();
 	$shift=count($bt) - 4;	// plugin name should be  
+	// call_user_func and call_user_func_array missing in php 7
+	if(version_compare(PHP_VERSION, '7.0.0', '>=')) {
+	    $shift--;
+	}
+
 	$caller = array_shift($bt);
 	$realPathName=pathinfo_filename($caller['file']);
 	$realLineNumber=$caller['line'];
@@ -251,6 +256,7 @@ function add_action($hook_name, $added_function, $args = array()) {
 		 $caller = array_shift($bt);
 		 $shift--;
 	}
+
 	$pathName= pathinfo_filename($caller['file']);
 
 	if ((isset ($live_plugins[$pathName.'.php']) && $live_plugins[$pathName.'.php']=='true') || $shift<0 ){
