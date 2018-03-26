@@ -454,13 +454,13 @@ $i18n = array(
 "FTYPE_AUDIO"             =>	"Audio",      // file-type audio
 "FTYPE_WEB"               =>	"Web",        // file-type web
 "FTYPE_DOCUMENT"          =>	"Document",   // file-type document
-"FTYPE_DOCUMENTS"         =>	"Documents",  // file-type document
 "FTYPE_SYSTEM"            =>	"System",     // file-type system file
 "FTYPE_MISC"              =>	"Misc",       // file-type Miscellaneous
 "FTYPE_IMAGE"             =>	"Image",      // file-type image
-"FTYPE_IMAGES"            =>	"Images",     // file-type image
 "FTYPE_SCRIPT"            =>	"Script",     // file-type script
-"IMAGES"                  =>	"Images",
+
+"FTYPE_IMAGES"            =>	"Images",     // LEGACY file-type image, no not use
+"FTYPE_DOCUMENTS"         =>	"Documents",  // LEGACY file-type document, do not use
 
 /* 
 * For: login_functions.php
@@ -772,7 +772,9 @@ $i18n = array(
 "VALID"                   =>    "Valid",
 "INVALID"                 =>    "Invalid",
 "INVALID_OPER"            =>    "Invalid Operation",
-"ERROR_OCCURED"           =>    "An Error has Occurred"
+"ERROR_OCCURED"           =>    "An Error has Occurred",
+"IMAGES"                  =>	"Images",
+"DOCUMENTS"               =>    "Documents"
 
 // already defined generics
 # "ENABLE"                =>    "Activate"

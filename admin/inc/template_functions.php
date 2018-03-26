@@ -556,21 +556,45 @@ function createRandomPassword($length = 8, $usecharsets = 'luds', $reuse = false
 }
 
 /**
- * File Type Category
+ * LEGACY File Type String
  *
  * Returns the category of an file based on its extension
- *
+ * @deprecated, use get_FileTypeStr for output strings, get_filetypeToken for const logic comparisons, strings have changed in 3.4 to be more consistent
  * @since 1.0
  * @uses i18n_r
  *
  * @param string $ext
- * @return string
+ * @return string variable string representation from lang file
  */
 function get_FileType($ext) {
-	$ext = lowercase($ext);	
+	$ext = lowercase($ext);
+	$token = get_FileTypeToken($ext);
+
+	// backward compatibility, use get_FileTypeToken for compares!
+	if($token == "IMAGE")     return i18n_r('FTYPE_IMAGES') .' Images'; 
+	if($token == "DOCUMENT") return i18n_r('FTYPE_DOCUMENTS');
+
+	return i18n_r('FTYPE_'.$token);
+}
+
+/**
+ * get file type string
+ * do not use for filetype logic, see get_FileTypeToken
+ * @since  3.4
+ * @param  string $ext filextention, will be auto lowercased
+ * @return string variable string representation from lang file
+ */
+function get_FileTypeStr($ext) {
+	$ext = lowercase($ext);
 	return i18n_r('FTYPE_'.get_FileTypeToken($ext));
 }
 
+/**
+ * get file type token category id
+ * @since  3.4
+ * @param  string $ext extension lowercase
+ * @return string      const token of file type
+ */
 function get_FileTypeToken($ext){
 	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'pct' || $ext == 'gif' || $ext == 'bmp' || $ext == 'png' ) {
 		return 'IMAGE';
