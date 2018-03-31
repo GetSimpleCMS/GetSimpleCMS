@@ -19,6 +19,7 @@ if( $GSSTYLE_sbfixed )          $bodyclass .= " sbfixed";
 if( $GSSTYLE_wide )             $bodyclass .= " wide";
 if( $SAFEMODE )                 $bodyclass .= " safemode";
 if( getDef("GSTHUMBSSHOW",true))$bodyclass .= " forcethumbs";
+if( getDef("GSPAGETABS",true))  $bodyclass .= " tabs";
 
 if( !$SAFEMODE && getDef('GSAJAXSAVE',true) ) $bodyclass .= " ajaxsave"; // ajaxsave enabled if GSAJAXSAVE and not SAFEMODE
 

@@ -3455,10 +3455,13 @@ kbd
 }
 
 /* prevent ui tabs fouc */
-.tab {
+body.tabs .tab {
 	display:none;
-	margin-bottom:10px;	
 }
+
+.tabs{
+	margin-bottom:10px;
+}	
 
 .tab fieldset legend{
 	display: none;

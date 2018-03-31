@@ -442,7 +442,7 @@ jQuery(document).ready(function () {
 	}
 
 	// init jq tabs custom handlers
-	if(window.tabs){
+	if(window.tabs && $("body").hasClass("tabs")){
 
 		var $tabs = new Array('page_content','page_options','page_meta');
 
@@ -924,7 +924,7 @@ jQuery(document).ready(function () {
 			// add new
 			var compdivlist = '<a id="divlist-'+compid+'" href="#section-'+compid+'" class="component clear-left comp_'+value+'">'+value+'</a>';
 			$(".compdivlist").append(compdivlist);
-		}	
+		}
 	}
 
  	/**
