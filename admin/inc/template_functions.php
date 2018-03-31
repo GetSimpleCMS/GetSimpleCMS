@@ -2081,8 +2081,9 @@ function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit',$c
 	$disabled = (bool)(string)$item->disabled;
 	$readonly = (bool)(string)$item->readonly;
 
-	$str  = '<a id="'.$item->slug.'"></a>';
+	$str  = '';
 	$str .= '<div class="compdiv codewrap" id="section-'.$id.'">';
+	$str .= '<a id="'.$item->slug.'"></a>';
 	$str .= '<table class="comptable" ><tr>';
 	$str .= '<td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="comptitle editable">'. stripslashes($item->title) .'</b></td>';
 	
