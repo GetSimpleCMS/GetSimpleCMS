@@ -2141,6 +2141,12 @@ function outputCollection($collectionid,$data,$class='item_edit',$code = ''){
 	}
 }
 
+/**
+ * output collection sidebar links
+ * @param  string
+ * @param  array
+ * @return string
+ */
 function outputCollectionTags($collectionid,$data){
 	if(!$data) return;
 	$numcomponents = count($data);
@@ -2153,6 +2159,7 @@ function outputCollectionTags($collectionid,$data){
 		$id = 0;
 		foreach($data as $item) {
 			echo '<a id="divlist-' . $id . '" href="#section-' . $id . '" class="component'.$class.' comp_'.$item->title.'">' . $item->title . '</a>';
+			// echo '<a id="divlist-' . $data->slug . '" href="#' . $data->slug . '" class="component'.$class.' comp_'.$item->title.'">' . $item->title . '</a>';
 			$id++;
 		}
 	}
