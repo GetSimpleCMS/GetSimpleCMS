@@ -2083,7 +2083,7 @@ function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit',$c
 
 	$str  = '';
 	$str .= '<div class="compdiv codewrap" id="section-'.$id.'">';
-	$str .= '<a id="'.$item->slug.'"></a>';
+	$str .= '<a id="id_'.$item->slug.'"></a>';
 	$str .= '<table class="comptable" ><tr>';
 	$str .= '<td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="comptitle editable">'. stripslashes($item->title) .'</b></td>';
 	
