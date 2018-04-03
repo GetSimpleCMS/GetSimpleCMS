@@ -2064,13 +2064,24 @@ function getEditorAttribCallout($collectionid,$class = '',$funcname = null){
 	if(function_exists($call)) return $call($class);
 }
 
+/** 
+ * get collection item html output
+ * @since 3.4
+ * @param  string $collectionid id for this kind of editor
+ * @param  string $id item id
+ * @param  obj    $item
+ * @param  string $class
+ * @param  string $code
+ * @return string
+ */
 function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit',$code = ''){
 
 	$disabled = (bool)(string)$item->disabled;
 	$readonly = (bool)(string)$item->readonly;
 
-	$str = '';
+	$str  = '';
 	$str .= '<div class="compdiv codewrap" id="section-'.$id.'">';
+	$str .= '<a id="id_'.$item->slug.'"></a>';
 	$str .= '<table class="comptable" ><tr>';
 	$str .= '<td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="comptitle editable">'. stripslashes($item->title) .'</b></td>';
 	
@@ -2090,6 +2101,13 @@ function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit',$c
 	return $str;
 }
 
+/** 
+ * get collection blank item template for insert html
+ * @param  string
+ * @param  string
+ * @param  string
+ * @return string
+ */
 function getItemTemplate($collectionid,$class = 'item_edit noeditor',$code = ''){
 	$item = array(
 		'title'    => '',
@@ -2102,6 +2120,13 @@ function getItemTemplate($collectionid,$class = 'item_edit noeditor',$code = '')
 	return getCollectionItemOutput($collectionid,'',(object)$item,$class,$code);
 }
 
+/**
+ * @param  string
+ * @param  array
+ * @param  string
+ * @param  string
+ * @return string
+ */
 function outputCollection($collectionid,$data,$class='item_edit',$code = ''){
 	if(!$data) return;
 	$id = 0;
@@ -2115,6 +2140,12 @@ function outputCollection($collectionid,$data,$class='item_edit',$code = ''){
 	}
 }
 
+/**
+ * output collection sidebar links
+ * @param  string
+ * @param  array
+ * @return string
+ */
 function outputCollectionTags($collectionid,$data){
 	if(!$data) return;
 	$numcomponents = count($data);
@@ -2127,6 +2158,7 @@ function outputCollectionTags($collectionid,$data){
 		$id = 0;
 		foreach($data as $item) {
 			echo '<a id="divlist-' . $id . '" href="#section-' . $id . '" class="component'.$class.' comp_'.$item->title.'">' . $item->title . '</a>';
+			// echo '<a id="divlist-' . $data->slug . '" href="#' . $data->slug . '" class="component'.$class.' comp_'.$item->title.'">' . $item->title . '</a>';
 			$id++;
 		}
 	}

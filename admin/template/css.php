@@ -3359,11 +3359,10 @@ kbd
 
 .CodeMirror .overlay_but_fullscrn a {
 	position: relative;
-	padding: 4px 0 0 0 ;
+	padding: 1px 0 0 0;
 	background-color: #777777;
 	border-radius: 4px;
 	color: whitesmoke;
-	font-family: FontAwesome;
 	font-size: 17px;
 	text-align: center;
 	text-decoration:none;
@@ -3371,6 +3370,7 @@ kbd
 	z-index: 10;
 	font-weight: normal;
 	opacity:.2;
+	display:block;
 /*		-webkit-transition: opacity 300ms;
 		-moz-transition: opacity 300ms;
 		-o-transition: opacity 300ms;
@@ -3455,10 +3455,13 @@ kbd
 }
 
 /* prevent ui tabs fouc */
-.tab {
+body.tabs .tab {
 	display:none;
-	margin-bottom:10px;	
 }
+
+.tabs{
+	margin-bottom:10px;
+}	
 
 .tab fieldset legend{
 	display: none;
