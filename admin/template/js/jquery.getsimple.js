@@ -205,7 +205,9 @@ function notifyError($msg) {
 }
  
 function notify($msg, $type) {
-	// if ($type == 'ok' || $type== 'success' || $type == 'warning' || $type == 'info' || $type == 'error') {
+		// Debugger.log($type+": "+$msg);
+		// alert($type+": "+$msg);
+		// if ($type == 'ok' || $type== 'success' || $type == 'warning' || $type == 'info' || $type == 'error') {
 		var $notify = $('<div style="display:none;" class="notify notify_' + $type + '"><p>' + $msg + '</p></div>').clone();
 		// check for #bodycontent if .bodycontent does not exist, ckeditor fullscreen removes it
 		if($('div.bodycontent').get(0)) var notifyelem = $('div.bodycontent').before($notify);
@@ -214,6 +216,7 @@ function notify($msg, $type) {
 		$notify.fadeIn();
 		$notify.addCloseButton();
 		$notify.notifyExpire();
+		// Debugger.log($notify);
 		return $notify;
 	// }
 	// @todo else plain
@@ -242,6 +245,9 @@ $.fn.parseNotify = function(){
 		var msg     = $(this).html();
 		var persist = $(this).hasClass('persist');
 		var remove  = $(this).hasClass('remove');
+		// Debugger.log(msg);
+		// Debugger.log(persist);
+		// Debugger.log(remove);
 
 		if($(this).hasClass('notify_success')){
 			// clear other success messages cause this is probably a repeat or redundant, also undo nonce is stale
@@ -716,7 +722,7 @@ jQuery(document).ready(function () {
 				$(response).find('div.updated').parseNotify();
 				updateNonce(response);
 				ajaxStatusComplete();
-				clearNotify('error');	
+				// clearNotify('error');
 				removeDeletedComponents();
 			}
 		});
