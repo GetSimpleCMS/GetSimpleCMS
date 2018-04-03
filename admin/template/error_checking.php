@@ -129,9 +129,11 @@
 			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_PROBLEM_DEL').'.','error');
 		if(!$dbn) break;
 		case 'comp-success':
+		case 'component-success':
 			doNotify(i18n_r('ER_COMPONENT_SAVE').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success',true);
 		if(!$dbn) break;
 		case 'comp-restored':
+		case 'component-restored':
 			doNotify(i18n_r('ER_COMPONENT_REST').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success',true);
 		if(!$dbn) break;
 		case 'snippet-success':

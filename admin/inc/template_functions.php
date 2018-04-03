@@ -1987,6 +1987,63 @@ function output_collection_item($id, $collection, $force = false, $raw = false) 
 }
 
 /**
+ * handle saving collection post
+ * @param  string $assetid collection asset id
+ * @param  string $asset   collection asset file 
+ * @return string          error reporting string
+ */
+function saveCollection($assetid,$asset){
+
+	# create backup file for undo
+	backup_datafile($asset);
+
+	if(!isset($_POST['component'])) return i18n_r("ERROR_OCCURRED");
+	
+	# start creation of top of components.xml file
+	if (count($_POST['component']) != 0) {
+		$status  = $error = "";
+		$compxml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
+
+		$compary = $_POST['component'];
+
+		if(getDef("GSCOMPSORTSAVE",true)){
+			$compary = sortKey($compary,"title");
+		}	
+
+		foreach ($compary as $component){
+			$id     = $component['id']; // unused
+			$slug   = $component['slug'];
+			$value  = $component['val'];
+			$title  = $component['title'];
+			$active = isset($component['active']) ? 0 : 1; // checkbox
+			
+			$slug = getCollectionItemSlug($slug,$title);
+			if($slug == null || empty($slug)){
+				// add corrupt data protection, prevent deleting components if something critical is missing
+				$error = 'an error occured, missing slug';
+			}
+			else {
+				if(is_object(get_collection_item($slug,$compxml))){
+					$error = sprintf(i18n_r('DUP_SLUG',"Duplicate slug - [%s]"),$slug);
+				}
+				$status = addComponentItem($compxml,$title,$value,$active,$slug); // @todo, check for problems $xml is passed by identifier
+				if(!$status) $error = i18n_r("ERROR_OCCURRED");
+			}
+				$asset = $asset;
+		}
+		if(!$error){
+			exec_action($assetid.'-save'); // @hook component-save before saving components data file
+			                               // @hook snippet-save before saving snippets data file
+			$status = XMLsave($compxml, $asset);
+			if(!$status) $error = i18n_r("ERROR_OCCURRED");
+		}
+	}
+	else $error = i18n_r("ERROR_OCCURRED");
+
+	return $error;
+}
+
+/**
  * @since  3.4
  * @deprecated
  */

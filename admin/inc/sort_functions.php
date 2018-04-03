@@ -239,6 +239,28 @@ function sortPageFunc($pages,$func=null){
 }
 
 /**
+ * strcmp comparison
+ * @param  str $a string to compare
+ * @param  str $b string to compare
+ * @return strcmp return function <0 0 0>
+ */
+function sortStriCmp($a,$b){
+	return strcmp(lowercase($a),lowercase($b));
+}
+
+
+/**
+ * slug comparison
+ * @param  str $a string to compare
+ * @param  str $b string to compare
+ * @return strcmp return function <0 0 0>
+ */
+function sortSlugiCmp($a,$b){
+	return strcmp(lowercase($a->slug),lowercase($b->slug));
+}
+
+
+/**
  * reindex PAGES
  * will reset keys from url,
  * if you have a pagesarray that lost its keys after

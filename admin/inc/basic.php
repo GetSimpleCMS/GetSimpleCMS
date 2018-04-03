@@ -759,7 +759,7 @@ function XMLsave($xml, $file) {
 	}	
 	$data = @$xml->asXML();
 	if(getDef('GSFORMATXML',true)) $data = formatXmlString($data); // format xml if config setting says so
-	$data = exec_filter('xmlsave',$data); // @filter xmlsave executed before writing string to file
+	$data    = exec_filter('xmlsave',$data); // @filter xmlsave executed before writing string to file
 	$success = save_file($file, $data); // LOCK_EX ?
 	return $success;
 }
@@ -2231,7 +2231,9 @@ function isBeta(){
  * @return bool true if ajax
  */
 function requestIsAjax(){
-	return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || isset($_REQUEST['ajax']);
+	$status = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || isset($_REQUEST['ajax']);
+	// debugLog($status);
+	return $status;
 }
 
 /**
