@@ -76,6 +76,8 @@ if (isset($_GET['undo'])) {
 
 # create components form html
 $collectionData = get_components_xml();
+// @todo sort collection data
+
 $numitems       = $collectionData ? count($collectionData) : 0;
 $pagetitle      = i18n_r('COMPONENTS');
 get_template('header');

@@ -330,6 +330,10 @@ class SimpleXMLExtended extends SimpleXMLElement{
 		return $this->getNodeType() == XML_TEXT_NODE;
 	}
 
+    public function get_parent_node(){
+        return current($this->xpath('parent::*'));
+    }
+
 }
 
 
@@ -475,7 +479,9 @@ function getXML($file,$nocdata = true) {
 	$xml = read_file($file);
 	if($xml){
 		$data = simplexml_load_string($xml, 'SimpleXMLExtended', $nocdata ? LIBXML_NOCDATA : null);
-		// debugLog($data);
+		// log errors
+		$errors = libxml_get_errors();
+		if($errors)debugLog($errors);
 		return $data;
 	}	
 }

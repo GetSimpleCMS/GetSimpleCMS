@@ -1847,7 +1847,7 @@ function get_components_xml($refresh = false){
     global $components;
     if (!$components || $refresh) {
     	$components = get_collection_items(GSCOMPONENTSFILE);
-    } 
+    }
     return $components;
 }
 
@@ -1930,17 +1930,15 @@ function snippetIsEnabled($id){
  * @uses GSDATAOTHERPATH
  * @uses getXML
  * @param  boolean $asset name of asset to get data form
- * @return components data items xmlobj
+ * @return components data items as SimpleXMLObject
  *
  */
 function get_collection_items($asset){	
 	if (file_exists(GSDATAOTHERPATH.$asset)) {
 		$data  = getXML(GSDATAOTHERPATH.$asset);
-	    $items = $data->item;
-	} else {
-	    $items = array();
+	    return $data;
 	}
-    return $items;
+    return array();
 }
 
 /**
