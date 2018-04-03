@@ -27,7 +27,6 @@ if (get_filename_id() == 'load') {
 <h1 id="sitename"><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); echo '<span class="icon"> '.getIcon("ICO_linkext").'</span>';?></a></h1>
 
 <ul class="nav secondary">
-<li id="nav_loaderimg" ><img class="toggle" id="loader" src="template/images/ajax.gif" alt="" /></li>
 <li class="rightnav" ><a class="settings first" href="settings.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SETTINGS'));?>" ><?php i18n('TAB_SETTINGS');?></a></li>
 <li class="rightnav" ><a class="support last" href="support.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SUPPORT'));?>" ><?php i18n('TAB_SUPPORT');?></a></li>
 <?php
@@ -72,8 +71,8 @@ if(isBeta() || isAlpha()) echo '<li class="rightnav"><a class="label label-ghost
 	
 	exec_action('nav-tab'); // @hook nav-tab backend after navigation tab list html output
 ?>
+<li id="nav_loaderimg"><img class="toggle" id="loader" src="template/images/ajax.gif" alt="" /></li>
 </ul>
-
 
 </div>
 </div>
