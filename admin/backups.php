@@ -47,7 +47,7 @@ $count          = "0";
 $pagesArray_tmp = array();
 $pagesSorted    = array(); 
 
-if (count($filenames) != 0) 
+if ($filenames && count($filenames) != 0) 
 { 
 	foreach ($filenames as $file) 
 	{
@@ -64,7 +64,7 @@ if (count($filenames) != 0)
 	$pagesSorted = subval_sort($pagesArray_tmp,'title');
 }
 
-if (count($pagesSorted) != 0) 
+if ($pagesSorted && count($pagesSorted) != 0) 
 { 
 	foreach ($pagesSorted as $page) 
 	{					
