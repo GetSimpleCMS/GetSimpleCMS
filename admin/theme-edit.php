@@ -259,7 +259,7 @@ function editor_compareOrder($a, $b)
  */
 function editor_recur_sort(&$array,$comparator) {
    foreach ($array as &$value) {
-      if (is_array($value['value']) and count($value['value']>1)) editor_recur_sort($value['value'],$comparator);
+      if (is_array($value['value']) and count($value['value'])>1) editor_recur_sort($value['value'],$comparator);
    }
    return @uasort($array, $comparator);
 }
