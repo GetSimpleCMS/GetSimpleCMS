@@ -3342,7 +3342,6 @@ kbd
 
 .CodeMirror .overlay_but_fullscrn a {
 	position: relative;
-	padding: 1px 0 0 0;
 	background-color: #777777;
 	border-radius: 4px;
 	color: whitesmoke;
@@ -3359,6 +3358,10 @@ kbd
 		-o-transition: opacity 300ms;
 		-ms-transition: opacity 300ms;
 	transition: opacity 300ms;*/
+}
+
+.CodeMirror .overlay_but_fullscrn i{
+	padding:2px 0;
 }
 
 .fullscreen .CodeMirror .overlay_but_fullscrn a{
