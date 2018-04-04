@@ -371,6 +371,11 @@ function addPlugindebugging(&$array){
 
 	$skip          = 1; // levels to this function, from add_action/add_filter
 	$shift         = 3; // levels to plugin include, from common.php
+	
+	// call_user_func and call_user_func_array missing in php 7
+	if(version_compare(PHP_VERSION, '7.0.0', '>=')) {
+	    $shift--;
+	}
 
 	$_bt           = debug_backtrace();
 	$bt            = array_slice($_bt,$skip,count($_bt)-$shift);
