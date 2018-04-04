@@ -213,12 +213,13 @@ input[type="submit"] {
 }
 
 .wrapper .nav.secondary{
-	list-style: none;
 	font-size: 13px;
+/*	list-style: none;
 	position: absolute;
 	bottom: 0;
 	left: 0;
-	width: 960px;
+*/	width: 960px;
+	margin: 0 0 5px 0;
 }
 
 .wrapper .nav li a {
@@ -230,14 +231,6 @@ input[type="submit"] {
 	color: <?php echo $primary_6; ?>;
 	background: <?php echo $primary_1; ?>;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.3);	
-}
-
-/* @todo noooooo */
-.wrapper .nav li a,
-.wrapper .nav li a{
-	color: <?php echo $primary_6; ?>;
-	background: <?php echo $primary_1; ?>;
-	text-shadow: 1px 1px 0 rgba(0,0,0,.3);
 }
 
 /* @todo: noooooo */
@@ -302,24 +295,34 @@ input[type="submit"] {
 	font-size: 11px;
  }
 
-.wrapper .nav li.rightnav a.first {
+.wrapper .nav li.rightnav a.first,
+.wrapper .nav li.rightnav a.last,
+.wrapper .nav li.rightnav a.center{
 	padding: 4px 10px;
 	font-weight: 100 !important;
 	text-decoration: none !important;
-	display: block;
+	/*display: block;*/
+}
+
+.wrapper .nav li.rightnav a.first {
+	/*padding: 4px 10px;	*/
 	border-radius: 0 3px 3px 0;
 	/*border-left: 1px solid <?php echo $primary_3; ?>;*/
 	margin-left:1px;
 }
 
 .wrapper .nav li.rightnav a.last {
-	padding: 4px 10px;
-	font-weight: 100;
-	text-decoration: none !important;
-	display: block;
+	/*padding: 4px 10px;*/
 	border-radius: 3px 0 0 3px;
 	margin-left:4px;
 }
+
+.wrapper .nav li.rightnav a.center {
+	padding: 4px 6px;	
+	border-radius: 0;
+	margin-left:1px;
+}
+
 
 .wrapper li.rightnav a.label {
 	padding: 3px 4px;

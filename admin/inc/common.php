@@ -336,6 +336,9 @@ $icondefinition = array(
 	'TAB_debugmode'    => '<i class="fas fa-fw fa-wrench"></i>',
 	'TAB_update'       => '<i class="fas fa-fw fa-lg fa-cloud-download"></i>',
 	'TAB_load'         => '<i class="fas fa-fw fa-puzzle-piece"></i> ',
+	// 'TABSM_settings'   => '<i class="fas fa-fw fa-cogs"></i> ',
+	// 'TABSM_support'    => '<i class="fas fa-fw fa-life-ring"></i> ',
+	'TABSM_health-check'=> '<i class="fas fa-fw fa-medkit"></i> ',
 	'TAB_'             => '<i class="fas fa-fw %s"></i>',
 	'SM_upload'        => '<i class="fas fa-fw fa-lg fa-upload"></i>', // bullseye, cloud-upload-alt
 	'FILE_pdf'         => '<i class="far fa-fw fa-file-pdf"></i>',

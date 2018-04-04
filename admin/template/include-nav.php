@@ -27,8 +27,9 @@ if (isPage('load')) {
 <h1 id="sitename"><a href="<?php echo $SITEURL; ?>" target="_blank" ><?php echo cl($SITENAME); echo '<span class="icon"> '.getIcon("ICO_linkext").'</span>';?></a></h1>
 
 <ul class="nav secondary">
-<li class="rightnav" ><a class="settings first" href="settings.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SETTINGS'));?>" ><?php i18n('TAB_SETTINGS');?></a></li>
-<li class="rightnav" ><a class="support last" href="support.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SUPPORT'));?>" ><?php i18n('TAB_SUPPORT');?></a></li>
+<li class="rightnav" ><a class="settings first" href="settings.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SETTINGS'));?>" ><?php echo getIcon("TABSM_settings"); i18n('TAB_SETTINGS');?></a></li>
+<!-- <li class="rightnav" ><a class="settings center" href="health-check.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_HEALTHCHECK'));?>" ><?php echo getIcon("TAB_health-check"); ?></a></li> -->
+<li class="rightnav" ><a class="support last" href="support.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SUPPORT'));?>" ><?php echo getIcon("TABSM_support"); i18n('TAB_SUPPORT');?></a></li>
 <?php
 
 // nav status labels
