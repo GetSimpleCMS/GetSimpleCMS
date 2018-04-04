@@ -2825,14 +2825,6 @@ h5 .crumbs, div.h5 .crumbs {
 	border: 1px solid #aaa;
 }
 
-#theme-edit #maincontent {
-	width: 100%;
-}
-
-#theme-edit #sidebar {
-	display: none;
-}
-
 #gsdebug{
 	border: 1px solid #FF9933;
 	padding: 5px;
@@ -2877,28 +2869,16 @@ a.disabled:visited {
  * Theme Editor custom layout
  */
 
-/* @todo ditch the IDs */
-#theme-edit .updated, #theme-edit .error, #theme-edit .notify {
-	/*margin: 0 15px 15px 15px;*/
+body.nosidebar #maincontent {
+	width: 100%;
 }
 
-#theme-edit #header .wrapper{
+body.nosidebar #sidebar {
+	display: none;
+}
+
+body.nosidebar #header .wrapper{
 	width:950px;
-}
-
-/* core theme override for theme editor */
-#theme-edit .wrapper{
-	/*width: 100%;*/
-	/*max-width:1680px;*/
-}
-
-#theme-edit #footer{
-	/*margin-left: 15px;*/
-	/*margin-right: 15px;*/
-}
-
-#theme-edit .bodycontent {
-	/*margin:0 15px;*/
 }
 
 #theme_edit_wrap {

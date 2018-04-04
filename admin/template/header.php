@@ -20,10 +20,11 @@ if( $GSSTYLE_wide )             $bodyclass .= " wide";
 if( $SAFEMODE )                 $bodyclass .= " safemode";
 if( getDef("GSTHUMBSSHOW",true))$bodyclass .= " forcethumbs";
 if( getDef("GSPAGETABS",true))  $bodyclass .= " tabs";
+if( isPage('theme-edit'))       $bodyclass .= " nosidebar";
 
 if( !$SAFEMODE && getDef('GSAJAXSAVE',true) ) $bodyclass .= " ajaxsave"; // ajaxsave enabled if GSAJAXSAVE and not SAFEMODE
 
-if(get_filename_id()!='index') exec_action('admin-pre-header'); // @hook admin-pre-header backend before header output
+if(!isPage('index')) exec_action('admin-pre-header'); // @hook admin-pre-header backend before header output
 
 if(!isset($pagetitle)) $pagetitle = i18n_r(get_filename_id().'_title');
 $title = $pagetitle.' &middot; '.cl($SITENAME);
@@ -82,17 +83,17 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		queue_script('gscodeeditor', GSBACK);
 	}
 
-	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGSVar('HTMLEDITOR') ){
+	if( (isPage('snippets') || isPage('edit') || isPage('backup-edit')) && getGSVar('HTMLEDITOR') ){
 		queue_script('gshtmleditor',GSBACK);
 	}
 
 	// load gsuploader
-	if( ((get_filename_id()=='upload') || (get_filename_id()=='filebrowser') || (get_filename_id()=='image')) && (getDef('GSUSEGSUPLOADER',true)) ){
+	if( (isPage('upload') || isPage('filebrowser') || isPage('image')) && (getDef('GSUSEGSUPLOADER',true)) ){
 		queue_script('gsuploader',GSBACK);
 	}
 
 	// load gscrop image editor
-	if(get_filename_id()=='image'){
+	if(isPage('image')){
 		queue_script('gscrop',GSBACK);
 		queue_style('gscrop',GSBACK);
 	}
@@ -145,7 +146,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
             echo '		var editorTheme = "'.$editor_theme."\";\n";
         }
 
-        if(get_filename_id()=='edit' && isAutoSave()){
+        if(isPage('edit') && isAutoSave()){
         	$autosaveintvl = getdef('GSAUTOSAVEINTERVAL');
         	echo "		// edit autosave\n";
         	echo '		var GSAUTOSAVEPERIOD = ' . (!is_int($autosaveintvl) ? 10 : $autosaveintvl).";\n";
@@ -179,7 +180,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
         }
 
        <?php 
-       if(get_filename_id() == 'snippets') echo "htmlEditorConfig.height = '130px';"; ?>
+       if(isPage('snippets')) echo "htmlEditorConfig.height = '130px';"; ?>
 
     </script>
 

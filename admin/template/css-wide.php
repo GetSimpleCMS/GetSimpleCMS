@@ -84,11 +84,11 @@ body .header{
 	/*margin-right:15px;*/
 }
 
-#theme-edit #header .wrapper  {
+body.nosidebar #header .wrapper  {
 	width:100%;
 }
 
-#theme-edit #maincontent .main {
+body.nosidebar #maincontent .main {
 	margin-right: 0;
 }
 

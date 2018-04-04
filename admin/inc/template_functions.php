@@ -57,6 +57,15 @@ function get_filename_id() {
 	return $file;	
 }
 
+/**
+ * is on page
+ * @since 3.4
+ * @param  string  $page pageid
+ * @return boolean       true if page
+ */
+function isPage($page){
+	return get_filename_id() === $page;
+}
 
 /**
  * Check Permissions

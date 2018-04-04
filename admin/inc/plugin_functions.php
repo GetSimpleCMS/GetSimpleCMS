@@ -63,12 +63,12 @@ function loadPluginData(){
 	// Check if data\other\plugins.xml exists 
 	if (!file_exists(GSDATAOTHERPATH.getDef('GSPLUGINSFILE'))){
 		create_pluginsxml();
-		registerInactivePlugins(get_filename_id() == 'plugins');
+		registerInactivePlugins(isPage('plugins'));
 		return true;
 	}
 
 	read_pluginsxml();  // get the live plugins into $live_plugins array
-	if(!is_frontend()) create_pluginsxml(get_filename_id() == 'plugins');  // only on backend check that plugin files have not changed, and regen
+	if(!is_frontend()) create_pluginsxml(isPage('plugins'));  // only on backend check that plugin files have not changed, and regen
 	
 	registerInactivePlugins();
 

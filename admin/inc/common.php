@@ -728,7 +728,7 @@ if(isset($load['plugin']) && $load['plugin']){
 	exec_action('plugins-loaded'); // @hook plugins-loaded plugin files have been included
 
 	// load api
-	if(get_filename_id()=='settings' || get_filename_id()=='load') {
+	if(isPage('settings') || isPage('load')) {
 		/* this core plugin only needs to be visible when you are viewing the
 		settings page since that is where its sidebar item is. */
 		if (getDef('GSEXTAPI',true)) {
