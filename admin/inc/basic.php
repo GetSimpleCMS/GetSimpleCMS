@@ -2920,7 +2920,8 @@ function getDefaultLang(){
  * @return str      str after transliteration replacement array ran on it
  */
 function doTransliteration($str){
-	if (getTransliteration() && is_array($translit=getTransliteration()) && count($translit>0)) {
+	$translit = getTransliteration();
+	if (isset($translit) && count($translit>0)) {
 		$str = str_replace(array_keys($translit),array_values($translit),$str);
 	}
 	return $str;
