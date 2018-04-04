@@ -3364,9 +3364,9 @@ kbd
 	padding:2px 0;
 }
 
-.fullscreen .CodeMirror .overlay_but_fullscrn a{
+.fullscreen .CodeMirror .overlay_but_fullscrn i{
 	font-size:27px;
-	padding: 5px 0 0 0 ;
+	padding: 2px 0;
 }
 
 .CodeMirror .overlay_but_fullscrn a.scrolled {
