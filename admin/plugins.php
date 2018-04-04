@@ -35,30 +35,6 @@ $counter     = 0;
 $table       = '';
 $needsupdate = false;
 
-
-/**
- * update plugin_info with additional info from api
- */
-function plugin_info_update(){
-	GLOBAL $plugin_info;
-
-	foreach($plugin_info as $key=>$plugin){
-		$api_data   = json_decode(get_api_details('plugin', $key.'.php',getDef('GSNOPLUGINCHECK',true)));
-		
-		// on api success
-		if (is_object($api_data) && $api_data->status == 'successful') {
-			$apiver     = $api_data->version;
-			$apipath    = $api_data->path;
-			$apiname    = $api_data->name;
-
-			$plugin_info[$key]['name']    = $apiname;
-			// $plugin_info[$key]['apiname'] = $apiname;
-			$plugin_info[$key]['apipath'] = $apipath;
-			$plugin_info[$key]['apiver']  = $apiver;
-		}
-	}
-}
-
 plugin_info_update();
 $plugin_info_sorted = subval_sort($plugin_info,'name');
 

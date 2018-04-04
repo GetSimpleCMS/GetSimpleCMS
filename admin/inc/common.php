@@ -174,6 +174,7 @@ $GS_definitions = array(
 	'GSSAFEMODE'           => false,                          // (bool) enable safe mode, safe mode disables plugins and components
 	'GSINITPAGECACHE'      => true,                           // (bool) initPageCache in common, solves issues with lazyload via getPages, or when still using Global $pagesArray
 	'GSUSELEGACYPLUGINS'   => false,                          // (bool) use legacy plugins array for plugin hooks, some features will not work, namely priorities!
+	'GSNOPLUGINCHECK'      => false,                          // (bool) perform no plugin api checks if false, api checks will be limited to 5 per run
 	# VARIABLES -----------------------------------------------------------------------------------------------------------------------------------------
 	'GSMETADLEN'           => 160,                            // (int) optional meta description max length enforced
 	'GSBACKUPROOT'         => false,                          // (bool) include all root files in archive backups

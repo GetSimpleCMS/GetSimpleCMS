@@ -97,16 +97,20 @@ function loadPluginData(){
 function registerInactivePlugins($apilookup = false){
 	GLOBAL $live_plugins,$SAFEMODE;
 	// load plugins into $plugins_info
-
+	$maxapi = 5; // api limit	
+	$cnt    = 0;
 	foreach ($live_plugins as $file=>$en) {
 		// debugLog("plugin: $file" . " exists: " . file_exists(GSPLUGINPATH . $file) ." enabled: " . $en); 
 		if ($en!=='true' || !file_exists(GSPLUGINPATH . $file) || $SAFEMODE){
 			if($apilookup){
 				// check api to get names of inactive plugins etc.
-	  $apiback = get_api_details('plugin', $file, getDef('GSNOPLUGINCHECK',true));
-		  		$response = json_decode($apiback);
-		  		if ($response and $response->status == 'successful') {
-					register_plugin( pathinfo_filename($file), $response->name, 'disabled', $response->owner, '', i18n_r('PLUGIN_DISABLED'), '', '');
+				$cached   = getDef('GSNOPLUGINCHECK',true) || $cnt>$maxapi;
+		  		$api_data = json_decode(get_api_details('plugin', $file, $cached));
+				if(is_object($api_data) && !isset($api_data->cached)) $cnt++;
+				
+				// on api success
+		  		if ($api_data and $api_data->status == 'successful') {
+					register_plugin( pathinfo_filename($file), $api_data->name, 'disabled', $api_data->owner, '', i18n_r('PLUGIN_DISABLED'), '', '');
 		  		} else {
 					register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', i18n_r('PLUGIN_DISABLED'), '', '');
 		  		}
@@ -114,6 +118,32 @@ function registerInactivePlugins($apilookup = false){
 			} else {
 				register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', i18n_r('PLUGIN_DISABLED'), '', '');
 			}  
+		}
+	}
+}
+
+/**
+ * update plugin_info with additional info from api
+ */
+function plugin_info_update(){
+	GLOBAL $plugin_info;
+	$maxapi = 5; // api limit
+	$cnt    = 0;
+	foreach($plugin_info as $key=>$plugin){
+		$cached   = getDef('GSNOPLUGINCHECK',true) || $cnt>$maxapi;
+		$api_data = json_decode(get_api_details('plugin', $key.'.php',$cached));
+		if(is_object($api_data) && !isset($api_data->cached)) $cnt++;
+
+		// on api success
+		if (is_object($api_data) && $api_data->status == 'successful') {
+			$apiver     = $api_data->version;
+			$apipath    = $api_data->path;
+			$apiname    = $api_data->name;
+
+			$plugin_info[$key]['name']    = $apiname;
+			// $plugin_info[$key]['apiname'] = $apiname;
+			$plugin_info[$key]['apipath'] = $apipath;
+			$plugin_info[$key]['apiver']  = $apiver;
 		}
 	}
 }

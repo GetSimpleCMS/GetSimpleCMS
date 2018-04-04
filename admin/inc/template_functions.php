@@ -1388,7 +1388,7 @@ function get_api_details($type='core', $args=null, $cached = false) {
 
 	# check to see if cache is available for this
 	$cachefile = md5($fetch_this_api).'.txt';
-	$cacheExpireSecs = 39600; // seconds, 11 hours
+	$cacheExpireSecs = 3 * (86400); // minutes, 3 days
 	// $cacheExpireSecs = 60; // 1 minute
 
 	if(!$nocache || $cached) debug_api_details('cache file check - ' . $fetch_this_api.' ' .$cachefile);
@@ -1406,11 +1406,12 @@ function get_api_details($type='core', $args=null, $cached = false) {
 	}
 
 	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpireSecs) < $cacheAge ) {
+		# grab the api results from the cache
 		debug_api_details('cache file time - ' . $cacheAge . ' (' . (time() - $cacheAge) . ' seconds ago)' );
-		# grab the api request from the cache
 		$data = read_file(GSCACHEPATH.$cachefile);
 		debug_api_details('returning cache file - ' . GSCACHEPATH.$cachefile);
-	} else {	
+	} 
+	else {
 		# make the api call
 		if (function_exists('curl_init') && function_exists('curl_exec') && !$nocurl) {
 
@@ -1478,20 +1479,20 @@ function get_api_details($type='core', $args=null, $cached = false) {
 				debug_api_details($data);
 				$data = end($dataparts);
 
-			}	
-
+			}
 			curl_close($ch);
-
-		} else if(ini_get('allow_url_fopen')) {  
+		}
+		else if(ini_get('allow_url_fopen')) {
 			// USE FOPEN
 			debug_api_details("using fopen");			
 			$timeout = $api_timeout / 1000; // ms to float seconds
 			// $context = stream_context_create();
 			// stream_context_set_option ( $context, array('http' => array('timeout' => $timeout)) );
 			$context = stream_context_create(array('http' => array('timeout' => $timeout))); 
-			$data = read_file($fetch_this_api,false,$context);	
+			$data = read_file($fetch_this_api,false,$context);
 			debug_api_details("fopen data: " .$data);		
-		} else {  
+		}
+		else {  
 			debug_api_details("No api methods available");						
 			debug_api_details();						
 			return;
@@ -1503,18 +1504,22 @@ function get_api_details($type='core', $args=null, $cached = false) {
 		debug_api_details('JSON:');
 		debug_api_details(print_r($response,true),'');
 
-		// if response is invalid set status to -1 error
-		// and we pass on our own data, it is also cached to prevent constant rechecking
-
-		if(!$response){
-			$data = '{"status":-1}';
+		if($response) $response->cached = true; // add cache flag
+		else{
+			// if response is invalid set status to -1 error
+			// and we pass on our own data, it is also cached to prevent constant rechecking
+			if(!$response){
+				// $response = ("status"-1,"cached"->true);
+				$response->status = -1;
+				$response->cached = true;
+			}
 		}
-		
 		debug_api_details($data);
-			save_file(GSCACHEPATH.$cachefile,$data);
+		save_file(GSCACHEPATH.$cachefile,json_encode($response));
 		debug_api_details();		
-			return $data;
-		}	
+		return $data;
+	}
+
 	debug_api_details();	
 	return $data;
 }
