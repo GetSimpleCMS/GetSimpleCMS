@@ -565,11 +565,12 @@ function get_component($id) {
  * @param string $classPrefix Prefix that gets added to the parent and slug classnames
  * @return string 
  */	
-function get_navigation($currentpage,$classPrefix = "") {
+function get_navigation($currentpage = "",$classPrefix = "") {
 
 	$menu = '';
 
-	global $pagesArray;
+	global $pagesArray,$id;
+	if(empty($currentpage)) $currentpage = $id;
 	
 	$pagesSorted = subval_sort($pagesArray,'menuOrder');
 	if (count($pagesSorted) != 0) { 
@@ -580,7 +581,7 @@ function get_navigation($currentpage,$classPrefix = "") {
 			if ($page['menuStatus'] == 'Y') { 
 				$parentClass = !empty($page['parent']) ? $classPrefix.$page['parent'] . " " : "";
 				$classes = trim( $parentClass.$classPrefix.$url_nav);
-				if ("$currentpage" == "$url_nav") $classes .= " current active";
+				if ($currentpage == $url_nav) $classes .= " current active";
 				if ($page['menu'] == '') { $page['menu'] = $page['title']; }
 				if ($page['title'] == '') { $page['title'] = $page['menu']; }
 				$menu .= '<li class="'. $classes .'"><a href="'. find_url($page['url'],$page['parent']) . '" title="'. encode_quotes(cl($page['title'])) .'">'.strip_decode($page['menu']).'</a></li>'."\n";
