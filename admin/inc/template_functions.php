@@ -1500,7 +1500,7 @@ function get_api_details($type='core', $args=null, $cached = false) {
 	
 		// debug_api_details("Duration: ".get_execution_time());	
 
-		$response = json_decode($data);		
+		$response = json_decode($data);
 		debug_api_details('JSON:');
 		debug_api_details(print_r($response,true),'');
 
@@ -1509,9 +1509,9 @@ function get_api_details($type='core', $args=null, $cached = false) {
 			// if response is invalid set status to -1 error
 			// and we pass on our own data, it is also cached to prevent constant rechecking
 			if(!$response){
-				// $response = ("status"-1,"cached"->true);
-				$response->status = -1;
-				$response->cached = true;
+				$response = array();
+				$response["status"] = -1;
+				$response["cached"] = true;
 			}
 		}
 		debug_api_details($data);
