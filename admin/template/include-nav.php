@@ -51,7 +51,7 @@ if(isBeta() || isAlpha()) echo '<li class="rightnav"><a class="label label-ghost
 
 <?php 
 	
-	$tabs    = explode(',',getDef('GSTABS'));
+	$tabs    = getDef('GSTABS',false,true);
 	// $tabs  = array_keys($sidemenudefinition); // debug all
 	$current = get_filename_id();
 	// if current tab is not in GSTABS, then set its parent tab as current

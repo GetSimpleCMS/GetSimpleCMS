@@ -378,14 +378,14 @@ $i18n = array(
 */
 "SIDE_SUPPORT_LOG"        =>	"Supp<em>o</em>rt Resources",
 "SIDE_HEALTH_CHK"         =>	"Website <em>H</em>ealth Check",
-"SIDE_DOCUMENTATION"      =>	"Wiki Documentation",
+"SIDE_DOCUMENTATION"      =>	"Wiki Documentation", // not a sidemenu
 "SIDE_VIEW_LOG"           =>	"<em>V</em>iew Logs",
 
 /* 
 * For: sidebar-theme.php
 */
 "SIDE_VIEW_SITEMAP"       =>	"<em>V</em>iew Sitemap",
-"SIDE_GEN_SITEMAP"        =>	"Generate Site<em>m</em>ap",
+"SIDE_GEN_SITEMAP"        =>	"Generate Site<em>m</em>ap", //not a sidemenu
 "SIDE_COMPONENTS"         =>	"<em>E</em>dit Components",
 "SIDE_SNIPPETS"           =>	"Edit Snippets",
 "SIDE_EDIT_THEME"         =>	"Edit T<em>h</em>eme",
@@ -406,7 +406,7 @@ $i18n = array(
 /* 
 * For: sidebar-backups.php
 */
-"SIDE_VIEW_BAK"           =>	"View Page Backup",
+"SIDE_VIEW_BAK"           =>	"View Page Backup", // not a sidemenu
 "SIDE_WEB_ARCHIVES"       =>	"<em>W</em>ebsite Archives",
 "SIDE_PAGE_BAK"           =>	"Page <em>B</em>ackups",
 

@@ -20,7 +20,7 @@ if( $GSSTYLE_wide )             $bodyclass .= " wide";
 if( $SAFEMODE )                 $bodyclass .= " safemode";
 if( getDef("GSTHUMBSSHOW",true))$bodyclass .= " forcethumbs";
 if( getDef("GSPAGETABS",true))  $bodyclass .= " tabs";
-if( isPage('theme-edit'))       $bodyclass .= " nosidebar";
+if( getDef('GSNOSIDEBAR',true) && in_array(get_filename_id(),getDef('GSNOSIDEBAR',false,true))) $bodyclass .= " nosidebar";	
 
 if( !$SAFEMODE && getDef('GSAJAXSAVE',true) ) $bodyclass .= " ajaxsave"; // ajaxsave enabled if GSAJAXSAVE and not SAFEMODE
 

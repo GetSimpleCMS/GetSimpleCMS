@@ -95,6 +95,7 @@ $GS_definitions = array(
 	'GSLOGINUPGRADES'      => true,                           // (bool) if true, temporarily close front end during upgrades, must login to upgrade
 	# STYLES/UI -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSTABS'               => 'pages,upload,theme,backups,plugins', // (str) csv list of page ids and order to show tabs
+	'GSNOSIDEBAR'          => 'theme-edit',                   // (str) csv list of page ids to hide sidebar
 	'GSSTYLE'              => 'wide,sbfixed',                 // (str-csv) default style modifiers
 	'GSWIDTH'              => '1024px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width
 	'GSWIDTHWIDE'          => '1366px',                       // (str) page width on backend pages defined in GSWIDEPAGES, values as above
@@ -288,10 +289,11 @@ $tabdefinition = array(
 	'backups'  => array('archive'),
 	'plugins'  => array(),
 	'support'  => array('health-check','log'),
-	'settings' => array('profile')
+	'settings' => array('profile'),
+	'profile'  => array('settings')
 );
 
-// sidemenu parent tabs reference
+// sidemenu page parent tabs reference
 $sidemenudefinition = array(
 	'pages'        => '',
 	'edit'         => 'pages',
@@ -309,8 +311,28 @@ $sidemenudefinition = array(
 	'health-check' => 'support',
 	'log'          => 'support',
 	'settings'     => '',
-	'profile'      => 'settings'
+	'profile'      => ''
 );
+
+$sidemenutitles = array(
+	'support'      => "SIDE_SUPPORT_LOG",
+	'health-check' => "SIDE_HEALTH_CHK",
+	'log'          => "SIDE_VIEW_LOG",
+	'sitemap'      => "SIDE_VIEW_SITEMAP",
+	'components'   => "SIDE_COMPONENTS",
+	'snippets'     => "SIDE_SNIPPETS",
+	'theme-edit'   => "SIDE_EDIT_THEME",
+	'theme'        => "SIDE_CHOOSE_THEME", // default
+	'edit'         => "SIDE_CREATE_NEW",   // default
+	'pages'        => "SIDE_VIEW_PAGES",
+	'settings'     => "SIDE_GEN_SETTINGS",
+	'profile'      => "SIDE_USER_PROFILE",
+	'archives'     => "SIDE_WEB_ARCHIVES",
+	'backups'      => "SIDE_PAGE_BAK"
+	// 'backups'      => "SIDE_VIEW_BAK", 
+	// 'docs'         => "SIDE_DOCUMENTATION",
+);
+
 
 // @todo centralize, add getter
 $icondefinition = array(
