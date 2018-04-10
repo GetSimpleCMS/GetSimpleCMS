@@ -72,24 +72,30 @@
  * This operates on the entire array and is therefore more efficient than doing
  * heavy conversions or comparisons inside a comparison callback
  * eg. 
- *   function prepare_pubDate($page,$key){
+ *   function prepare_date($page,$key){
  *       return strtotime($key);
  *   }
- *   $pagesSorted = sortCustomIndexCallback($pagesArray,'pubDate','prepare_pubDate');
- *   CONS: Will only be able to sort keyed arrays
+ *   $pagesSorted = sortCustomIndexCallback($pagesArray,'pubDate','prepare_date');
  *   
+ * CONS: Will only be able to sort keyed arrays
+ *
+ * @todo   why is preparer arg2 $item[$key] value when it is already contained inside it ( I must have added this later on ), should pass $key instead
  * @param  array $pages   input multi array
- * @param  str $key       array key to sort by
+ * @param  str $key       array key to sort by, if prepare function used key is used for arg2
  * @param  str $prepare   callback function for each subarray
  * @return array          returns array sorted by key or prepared sort index
  */
 function sortCustomIndexCallback($array,$key=null,$prepare=null){
 	$sortvalue = array();
 
+	if(!$array){
+		debugLog("sort array is empty");
+		return;
+	}
 	if(isset($prepare) && function_exists($prepare)){
-		foreach($array as $sortkey=>$page){
-			if(isset($key)) $sortvalue[$sortkey] = $prepare($page,$page[$key]);
-			else $sortvalue[$sortkey] = $prepare($page);
+		foreach($array as $sortkey=>$item){
+			if(isset($key)) $sortvalue[$sortkey] = $prepare($item,$item[$key]);
+			else $sortvalue[$sortkey] = $prepare($item);
 		}
 	}
 	// debugLog($sortvalue);
@@ -103,7 +109,7 @@ function sortCustomIndexCallback($array,$key=null,$prepare=null){
  * array['id'] = array[$key]
  * @since  3.4
  * @param  array $array     keyed multidimensional array to sort
- * @param  str   $key       (optional) sub array key to sort by
+ * @param  str   $key       (optional) sub array key to sort by, unused if sortindex supplied
  * @param  array $sortindex (optional) key value array for sorting $array
  * @param  str   $compare   (optional) comparison function
  * @return array            $array sorted by sortindex or key
@@ -327,48 +333,91 @@ function subval_sort($a,$subkey, $order='asc',$natural = true) {
 }
 
 /**
- * sorting prepare function tests
- * @todo
+ * SAMPLES for TESTING
+ * sort preparers
+ * @todo : not sure why I chose to pass in $key and $page, $page will always contain $key
+ * probably can be removed now
  */
 
 /**
- * prepare pubDate strtotime it
+ * prepare pubDate strtotime it for sorting
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
  */
-function prepare_pubDate($page,$key){
+function prepare_date($page,$key){
 	return strtotime($key);
 }
 
 /**
- * sort by menuOrder
+ * sort preparer by menuOrder
  * menu order=0 or ""  or menuStatus=Y are lowest priority
- * (!pages are saved with 0 as default for none, and are not in the menu manager)
+ * (pages are saved with 0 as default for none, and are not in the menu manager)
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
  */
 function prepare_menuOrder($page,$key){
-	if((int)$key == 0 || $page['menuStatus'] !== 'Y') return 99999;
+	$key = trim($key);
+	if(empty($key) && $page['menuStatus'] == 'Y') return 0;
+	if((int)$key == 0 && $page['menuStatus'] !== 'Y') return 99999;
 	return (int)$key;
 }
 
+
 /**
- * sort by menuOrder -> parent titles/slug title -> DESC
- * this is obviously overkill since we are heirachial anyway we only need to title sort
- * and this is not cached at all
+ * sort preparer for path titles
+ * "parenttitle parenttitle pagetitle"
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
  */
 function prepare_pagePathTitles($page,$key){
 	$menuOrder = prepare_menuOrder($page,$key);
-	// 1 parent title/parent title/slug title
+	// parent title/parent title/slug title
 	return $menuOrder .= ' ' .getPagePathField($page['url'],'title');
 }
 
+/**
+ * sort preparer parent title
+ * "parentitle pagetitle"
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
+ */
 function prepare_parentTitle($page,$key){
-	 	if ($page['parent'] != '') { 
-	 		$parentTitle = returnPageField($page['parent'], "title");
-	 		return lowercase($parentTitle .' '. $key);		
-	 	} 
-	 	else {
-	 		return lowercase($key);
-	 	}
-}
+	if ($page['parent'] != '') { 
+		$parentTitle = returnPageField($page['parent'], "title");
+		return lowercase($parentTitle .' '. $key);		
+	} 
+	else {
+		return lowercase($key);
+	}
+} 
 
+/**
+ * sort preparer for menuorder parent title
+ * menuorder parenttitle pagetitle
+ * "0 parent slug"
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
+ */
 function prepare_menuOrderParentTitle($page,$key){
 	return prepare_menuOrder($page,$page['menuOrder']) . ' ' . prepare_parentTitle($page,$key);
+}
+
+
+/**
+ * SORT WRAPPER FUNCS
+ * page sorts with predefined sort preparers
+ */
+
+function getPagesSortedByMenuTitle(){
+	return sortCustomIndexCallback(getpages(),'title','prepare_menuOrderParentTitle');
+}
+
+
+function getPagesSortedByMenu(){
+	return sortCustomIndex(getpages(),'menuOrder');
 }
