@@ -364,7 +364,7 @@ $icondefinition = array(
 	'ICO_draft'        => '<i class="fas fa-fw fa-pencil-alt"></i>',
 	'ICO_timestamp'    => '<i class="far fa-fw fa-clock"></i>',
 	'ICO_backup'       => '<i class="far fa-fw fa-file-archive"></i>',
-	'ICO_info'         => '<i class="far fa-fw fa-info-circle"></i>',
+	'ICO_info'         => '<i class="fas fa-fw fa-info-circle"></i>',
 	'ICO_search'       => '<i class="fas fa-fw fa-search"></i>',
 	'ICO_linkext'      => '<i class="fas fa-fw fa-external-link-alt"></i>'
 ); 
