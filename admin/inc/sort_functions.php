@@ -272,28 +272,6 @@ function sortSlugiCmp($a,$b){
 	return strcmp(lowercase($a->slug),lowercase($b->slug));
 }
 
-
-/**
- * reindex PAGES
- * will reset keys from url,
- * if you have a pagesarray that lost its keys after
- * using a function that does not maintain key indexes
- * @param  array  $pages PAGES, else use pagesArray
- * @return array  	     PAGES rekeyed
- */
-function reindexPages($pages = array()){
-	if(!$pages){
-		GLOBAL $pagesArray;
-		$pages = $pagesArray;
-	}	
-	reindexArray($pages,'url');
-}
-
-// use array_column with null key to rekey an array
-function reindexArray($array,$key){
-	array_column($array,null,$key);
-}
-
 /**
  * Sub-Array Sort, legacy
  * uses mutiple loops, not very optimized

@@ -395,6 +395,9 @@ if(defined('GSERRORLOGENABLE') && (bool) GSERRORLOGENABLE === true){
 /**
  * Basic file inclusions
  */
+require_once('page_functions.php');
+if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: page_functions.php ' . headers_sent());
+
 require_once('basic.php');
 if(defined("GSDEBUGHEADERS") && GSDEBUGHEADERS) debugLog('headers sent: basic.php ' . headers_sent());
 
