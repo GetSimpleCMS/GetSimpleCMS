@@ -36,8 +36,8 @@ if (isPage('load')) {
 if(isDebug()) echo '<li class="rightnav"><a class="label label-error label_4_80" href="health-check.php#debuginfo" title="'.i18n_r('DEBUG_MODE').' - '.i18n_r('ON').'"><span>'.getIcon("TAB_debugmode").'</span></a></li>';
 
 if( allowVerCheck() ) {
-	$verstatus = getVerCheck()->status;
-	if($verstatus == 0){
+	$verres = getVerCheck();
+	if(is_object($verres) && $verres->status == 0){
 		// update available newer than current
 		echo '<li class="rightnav"><a class="label label-gold" href="health-check.php" title="'.i18n_r('UPG_NEEDED').'">'.getIcon("TAB_update").'</span></a></li>';
 	}
