@@ -18,7 +18,6 @@
             // draw sidebar items if no sidebar
             $menuitems = getDef('GSNOSIDEBAR',false,true);
             $current   = get_filename_id();
-            debugLog($menuitems);
             if(in_array($current,$menuitems)){
                 GLOBAL $sidemenudefinition,$tabdefinition,$sidemenutitles; // global?
                 if(isset($sidemenudefinition[$current])){
@@ -27,7 +26,6 @@
                     if(isset($tabdefinition[$tab])){
                         echo "<p>";
                         foreach($tabdefinition[$tab] as $item){
-                            debugLog($item);
                             echo '<a href="'.$item.'.php">';
                             echo strip_tags(i18n_r($sidemenutitles[$item]));
                             echo "</a> &nbsp;•&nbsp; ";
