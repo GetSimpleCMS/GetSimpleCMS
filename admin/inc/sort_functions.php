@@ -325,3 +325,50 @@ function subval_sort($a,$subkey, $order='asc',$natural = true) {
 		return $c;
 	}
 }
+
+/**
+ * sorting prepare function tests
+ * @todo
+ */
+
+/**
+ * prepare pubDate strtotime it
+ */
+function prepare_pubDate($page,$key){
+	return strtotime($key);
+}
+
+/**
+ * sort by menuOrder
+ * menu order=0 or ""  or menuStatus=Y are lowest priority
+ * (!pages are saved with 0 as default for none, and are not in the menu manager)
+ */
+function prepare_menuOrder($page,$key){
+	if((int)$key == 0 || $page['menuStatus'] !== 'Y') return 99999;
+	return (int)$key;
+}
+
+/**
+ * sort by menuOrder -> parent titles/slug title -> DESC
+ * this is obviously overkill since we are heirachial anyway we only need to title sort
+ * and this is not cached at all
+ */
+function prepare_pagePathTitles($page,$key){
+	$menuOrder = prepare_menuOrder($page,$key);
+	// 1 parent title/parent title/slug title
+	return $menuOrder .= ' ' .getPagePathField($page['url'],'title');
+}
+
+function prepare_parentTitle($page,$key){
+	 	if ($page['parent'] != '') { 
+	 		$parentTitle = returnPageField($page['parent'], "title");
+	 		return lowercase($parentTitle .' '. $key);		
+	 	} 
+	 	else {
+	 		return lowercase($key);
+	 	}
+}
+
+function prepare_menuOrderParentTitle($page,$key){
+	return prepare_menuOrder($page,$page['menuOrder']) . ' ' . prepare_parentTitle($page,$key);
+}
