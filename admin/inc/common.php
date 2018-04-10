@@ -146,7 +146,7 @@ $GS_definitions = array(
 	# DRAFTS -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSUSEDRAFTS'          => true,                           // (bool) use page drafts
 	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else manually pass `nodraft` or `draft` qs
-	'GSDRAFTSTACKDEFAULT'  => true,                           // (bool) default page stack editing to drafts if true
+	'GSDRAFTSTACKDEFAULT'  => false,                          // (bool) default page stack editing to drafts if true
 	'GSSDRAFTSPUBLISHEDTAG'=> true,                           // (bool) show published label on non draft pages if true
 	'GSAUTOSAVE'           => true,                           // (bool) auto save enabled, disabled if false, only used for drafts currently
 	'GSAUTOSAVEINTERVAL'   => 6,                              // (int)  auto save interval in seconds,  only used for drafts currently
