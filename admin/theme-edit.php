@@ -37,7 +37,7 @@ if (isset($_GET['f']) && !empty($_GET['f'])) {
 if(isset($_POST['themesave'])){
 	$themesave = var_in($_POST['themesave']);
 	if($themesave == "default") setcookie('gs_editor_theme', '', time() - 3600); 
-	else setcookie('gs_editor_theme',$themesave);
+	else setcookie('gs_editor_theme',var_out($themesave));
 	return;
 }
 
