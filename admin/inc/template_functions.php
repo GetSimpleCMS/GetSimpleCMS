@@ -1324,8 +1324,8 @@ function get_pages_menu_dropdown($parentitem, $menu, $level, $id = null, $idleve
 				$disabled = '';
 				$idlevel = null;
 			}
-
-			$menu .= '<option '.$sel.' value="'.$page['url'] .'" '.$disabled.'>'.$dash.$page['url'].'</option>';
+			$title = $page['title'];
+			$menu .= '<option '.$sel.' value="'.$page['url'] .'" '.$disabled.'>'.$dash.$title.'</option>';
 			$menu = get_pages_menu_dropdown((string)$page['url'], $menu,$level+1, $id, $idlevel);	  	
 		}
 	}
