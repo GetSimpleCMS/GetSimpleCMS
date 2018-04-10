@@ -76,6 +76,8 @@
  *       return strtotime($key);
  *   }
  *   $pagesSorted = sortCustomIndexCallback($pagesArray,'pubDate','prepare_pubDate');
+ *   CONS: Will only be able to sort keyed arrays
+ *   
  * @param  array $pages   input multi array
  * @param  str $key       array key to sort by
  * @param  str $prepare   callback function for each subarray
@@ -100,13 +102,13 @@ function sortCustomIndexCallback($array,$key=null,$prepare=null){
  * 
  * array['id'] = array[$key]
  * @since  3.4
- * @param  array $array     multidimensional array to sort
+ * @param  array $array     keyed multidimensional array to sort
  * @param  str   $key       (optional) sub array key to sort by
  * @param  array $sortindex (optional) key value array for sorting $array
  * @param  str   $compare   (optional) comparison function
  * @return array            $array sorted by sortindex or key
  */
-function sortCustomIndex($array, $key=null, $sortindex = array(), $compare = 'strnatcmp'){	
+function sortCustomIndex($array, $key=null, $sortindex = array(), $compare = 'strnatcasecmp'){	
 	
 	if(!$sortindex && isset($key)){
 		$sortindex = array_column($array,$key,'url');
@@ -164,20 +166,24 @@ function inPlaceKeySort($array,$sort,$keyed = true){
 
 
 /**
- * sort multidimensional array by subarray
+ * sort multidimensional array by subarray key value
+ * @todo  add php 5.4 multisort(,,SORT_NATURAL)
  * @param  str $pages array
  * @param  str $key   keyname to sort by
  * @return array      sorted array
  */
-function sortKey($array,$key){
-	// return subval_sort($pagesArray,$key);
+function sortKey($array,$key, $sortfunc = "custom_strnatcasecmp"){
 	GLOBAL $sortkey;
 	$sortkey = $key;
     function custom_sort($a,$b) {
     	GLOBAL $sortkey;
        	return $a[$sortkey]>$b[$sortkey];
     }
-    uasort($array, "custom_sort");
+    function custom_strnatcasecmp($a,$b) {
+        GLOBAL $sortkey;
+        return strnatcasecmp($a[$sortkey],$b[$sortkey]);
+    }
+    uasort($array, $sortfunc);
     unset($sortkey);
     return $array;
 }
@@ -203,6 +209,7 @@ function sortParentTitle($pages){
 
 // sort by "parent-title / page-title"
 // test using multi sort 
+// @note array_multisort works normally in php 5.3, but it forces arguments to be references.
 function sortParentTitleMulti($pages){
 	$sort = array();
 	foreach($pages as $slug => $page) {
@@ -279,4 +286,42 @@ function reindexPages($pages = array()){
 // use array_column with null key to rekey an array
 function reindexArray($array,$key){
 	array_column($array,null,$key);
+}
+
+/**
+ * Sub-Array Sort, legacy
+ * uses mutiple loops, not very optimized
+ *
+ * Sorts the passed array by a subkey
+ *
+ * @since 1.0
+ *
+ * @param array $a
+ * @param string $subkey Key within the array passed you want to sort by
+ * @param string $order - order 'asc' ascending or 'desc' descending
+ * @param bool $natural - sort using a "natural order" algorithm
+ * @return array
+ */
+function subval_sort($a,$subkey, $order='asc',$natural = true) {
+	if (count($a) != 0 || (!empty($a))) { 
+		foreach($a as $k=>$v) {
+			if(isset($v[$subkey])) $b[$k] = lowercase($v[$subkey]);
+		}
+
+		if(!isset($b)) return $a;
+
+		if($natural){
+			natsort($b);
+			if($order=='desc') $b = array_reverse($b,true);	
+		} 
+		else {
+			($order=='asc')? asort($b) : arsort($b);
+		}
+		
+		foreach($b as $key=>$val) {
+			$c[$key] = $a[$key];
+		}
+
+		return $c;
+	}
 }

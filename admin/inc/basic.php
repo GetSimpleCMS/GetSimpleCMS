@@ -170,43 +170,6 @@ function sendmail($to,$subject,$message) {
 	}
 
 /**
- * Sub-Array Sort
- *
- * Sorts the passed array by a subkey
- *
- * @since 1.0
- *
- * @param array $a
- * @param string $subkey Key within the array passed you want to sort by
- * @param string $order - order 'asc' ascending or 'desc' descending
- * @param bool $natural - sort using a "natural order" algorithm
- * @return array
- */
-function subval_sort($a,$subkey, $order='asc',$natural = true) {
-	if (count($a) != 0 || (!empty($a))) { 
-		foreach($a as $k=>$v) {
-			if(isset($v[$subkey])) $b[$k] = lowercase($v[$subkey]);
-		}
-
-		if(!isset($b)) return $a;
-
-		if($natural){
-			natsort($b);
-			if($order=='desc') $b = array_reverse($b,true);	
-		} 
-		else {
-			($order=='asc')? asort($b) : arsort($b);
-		}
-		
-		foreach($b as $key=>$val) {
-			$c[$key] = $a[$key];
-		}
-
-		return $c;
-	}
-}
-
-/**
  * SimpleXMLExtended Class
  *
  * Extends the default PHP SimpleXMLElement class by 

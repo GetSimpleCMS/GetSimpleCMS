@@ -2021,8 +2021,8 @@ function saveCollection($assetid,$asset){
 		$compary = $_POST['component'];
 
 		if(getDef("GSCOMPSORTSAVE",true)){
-			$compary = sortKey($compary,"title");
-		}	
+			$compary = sortKey($compary,"title","custom_sortb");
+		}
 
 		foreach ($compary as $component){
 			$id     = $component['id']; // unused
