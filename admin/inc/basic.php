@@ -1818,7 +1818,7 @@ function check_empty_folder($folder) {
 		return false;
 	
 	while(($file = readdir($dh)) !== false) {
-		if ($file == "." && $file == "..")
+		if ($file == "." || $file == "..")
 	    		continue;
 		closedir($dh);
 		return true;
