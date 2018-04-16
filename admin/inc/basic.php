@@ -1814,8 +1814,19 @@ function defined_array($constants) {
  * @return bool true if empty
  */
 function check_empty_folder($folder) {
-	return folder_items($folder) == 0;
-			}
+	if (!($dh = opendir($folder))
+		return false;
+	
+	while(($file = readdir($dh)) !== false) {
+		if ($file == "." || $file == "..")
+	    		continue;
+		closedir($dh);
+		return true;
+	}
+	
+	closedir($dh);
+	return false;
+}
 
 
 /**
@@ -1828,7 +1839,7 @@ function check_empty_folder($folder) {
  */
 function folder_items($folder) {
 	return count(getFiles($folder));
-			}
+}
 
 /**
  * Validate a URL String
