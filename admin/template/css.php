@@ -994,10 +994,12 @@ sup {
 	font-weight: bold;
 }
 
+body#snippets #maincontent .main,body#components #maincontent .main{
+	min-height:500px;
+}
 
 /* default form css */
 #maincontent .main {
-	min-height:500px;
 	padding: 20px;
 	background: #fff;
 	border: 1px solid #c8c8c8;
