@@ -1809,23 +1809,25 @@ function defined_array($constants) {
  * Is Folder Empty
  *
  * Check to see if a folder is empty or not
- * 
+ * @todo  replace with scandir?
  * @param string $folder
  * @return bool true if empty
  */
 function check_empty_folder($folder) {
-	if (!($dh = opendir($folder))
+	if (!($dh = opendir($folder))){
 		return false;
-	
-	while(($file = readdir($dh)) !== false) {
-		if ($file == "." || $file == "..")
-	    		continue;
-		closedir($dh);
-		return true;
 	}
 	
+	$ret = true;
+	while(($file = readdir($dh)) !== false) {
+		if ($file !== "." && $file !== ".."){
+			$ret = false;
+			break;
+		}
+	}
+
 	closedir($dh);
-	return false;
+	return $ret;
 }
 
 
