@@ -1308,7 +1308,7 @@ function redirect($url,$ajax = false) {
 			echo '</noscript>';
 		}
 
-		if(headers_sent()){
+		if(headers_sent($filename, $linenum) && !$debugredirect) {
 			echo i18n_r('ERROR').": Headers already sent in ".$filename." on line ".$linenum."<br/><br/>\n\n";
 		}
 		
