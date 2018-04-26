@@ -168,7 +168,7 @@ function getPublishedPageHead($editing = true, $path = ''){
     echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav clearfix" >';
     if($editing) {
         echo '<a class="pageview" href="'. $path .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
-        if($path != '') {echo '<a class="pageclone" href="pages.php?id='. $id .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
+        if($path != '' && getDef("GSPAGECLONESHOW",true)) {echo '<a class="pageclone" href="pages.php?id='. $id .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
     }
     exec_action(get_filename_id().'-edit-nav'); 
     echo "\n</div>";
