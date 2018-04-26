@@ -178,7 +178,7 @@ input[type="submit"] {
 }
 
 /** HEADER / NAVIGATION **/
-.header {
+#header {
 	color: #FFF;
 	border-top: 1px solid <?php echo $primary_1; ?>;
 	background: <?php echo $header_base; ?>;	/* old browsers */
@@ -186,19 +186,19 @@ input[type="submit"] {
 }
 
 /* add 'gradient' to GSHEADERCLASS to reimplement */
-.header.gradient{
+#header.gradient{
 		background: -moz-linear-gradient(top, <?php echo $primary_4; ?> 0%, <?php echo $primary_2; ?> 100%);	 /* firefox */
 		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,<?php echo $primary_4; ?>), color-stop(100%,<?php echo $primary_2; ?>));	/* webkit */
 		filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='<?php echo $primary_4; ?>', endColorstr='<?php echo $primary_2; ?>',GradientType=0 );	/* ie */
 }
 
-.header .wrapper {
+#header .wrapper {
 	height: 95px;
 	position: relative;
 	border: none;
 }
 
-.header #sitename .icon{
+#header #sitename .icon{
 	font-size: 10px;
 	opacity: .5;
 }
@@ -467,7 +467,7 @@ input[type="submit"] {
 	padding: 20px;
 }
 
-.header h1 {
+#header h1 {
 	font-size: 25px;
 	font-family: Georgia, Times, Times New Roman, serif;
 	position: absolute;
@@ -476,15 +476,15 @@ input[type="submit"] {
 	left: 0;
 }
 
-.header h1 a:link,
-.header h1 a:visited,
-.header h1 a:hover {
+#header h1 a:link,
+#header h1 a:visited,
+#header h1 a:hover {
 	font-weight: normal;
 	color: <?php echo $primary_5; ?>;
 	text-decoration: none;
 }
 
-.header h1 a:hover  {
+#header h1 a:hover  {
 	color: #FFF;
 }
 
@@ -2521,10 +2521,10 @@ body#index {
 	background: #f9f9f9;
 }
 
-#index .header,
-#resetpassword .header,
-#setup .header,
-#install .header,
+#index #header,
+#resetpassword #header,
+#setup #header,
+#install #header,
 #setup .gslogo,
 #install .gslogo,
 #index .gslogo,

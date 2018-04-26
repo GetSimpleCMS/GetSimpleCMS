@@ -8,7 +8,7 @@ body{
 	margin:0 15px;
 }
 
-body .header{
+body #header{
 	margin-left: -15px;
 	padding: 0 15px;
 	margin-right: -15px;
