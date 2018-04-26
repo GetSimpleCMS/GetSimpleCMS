@@ -144,8 +144,8 @@ $GS_definitions = array(
 	'GSCODEEDITORTHEMES'   => '3024-day,3024-night,abcdef,ambiance-mobile,ambiance,base16-dark,base16-light,bespin,blackboard,cobalt,colorforth,default,dracula,duotone-dark,duotone-light,eclipse,elegant,erlang-dark,hopscotch,icecoder,isotope,lesser-dark,liquibyte,material,mbo,mdn-like,midnight,monokai,neat,neo,night,panda-syntax,paraiso-dark,paraiso-light,pastel-on-dark,railscasts,rubyblue,seti,solarized light,solarized dark,the-matrix,tomorrow-night-bright,tomorrow-night-eighties,ttcn,twilight,vibrant-ink,xq-dark,xq-light,yeti,zenburn', # themes for codemirror
 	'GSPAGETABS'           => true,                           // (bool) use tabbed interface for page edit
 	'GSCOMPSORTSAVE'       => true,                           // (bool) sort collections by title on save
-	'GSPAGECLONESHOW'      => false,                          // (bool) show clone edit nav on page edit
-	'GSPAGEVIEWSHOW'       => true,                           // (bool) show view edit nav on page edit
+	'GSEDITNAVCLONE'       => false,                          // (bool) show clone edit nav on page edit
+	'GSEDITNAVVIEW'        => true,                           // (bool) show view edit nav on page edit
 	# DRAFTS -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSUSEDRAFTS'          => true,                           // (bool) use page drafts
 	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else manually pass `nodraft` or `draft` qs
