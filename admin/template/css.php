@@ -1191,7 +1191,11 @@ label span.right a:hover {
 
 /* keep checkbox labels on same line */
 .inline input[type='checkbox']+label {
-    display: inline; 
+    display: inline;
+}
+
+.inline input[type='checkbox'] {
+	vertical-align:middle;
 }
 
 span.inline {
