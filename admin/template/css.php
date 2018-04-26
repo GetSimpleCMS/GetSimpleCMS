@@ -1273,7 +1273,7 @@ fieldset,
 
 .leftopt,.rightopt,.wideopt,
 .leftsec,.rightsec,.widesec {
-	padding:10px;
+	padding:7px 10px;
 	box-sizing: border-box;
 	transition: background-color 200ms;	
 }
