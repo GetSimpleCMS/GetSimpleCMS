@@ -102,6 +102,7 @@ $GS_definitions = array(
 	'GSWIDEPAGES'          => 'theme-edit,components,snippets', // (str-csv) pages to apply GSWIDTHWIDE on
 	'GSTABICONS'           => true,                           // (bool) show icons on nav tabs
 	'GSNOCDN'              => true,                           // (bool) disable cdn for assets that have cdn urls in assets.php
+	'GSSUPPORTLINKHC'      => false,                          // (bool) show healthcheck small nav instead of support
 	# CHMOD --------------------------------------------------------------------------------------------------------------------------------------------
 	'GSCHMOD'              => 0644,                           // (octal) chmod mode legacy
 	'GSCHMODFILE'          => 0644,                           // (octal) chmod mode for files
@@ -363,7 +364,8 @@ $icondefinition = array(
 	'TAB_load'         => '<i class="fas fa-fw fa-puzzle-piece"></i> ',
 	// 'TABSM_settings'   => '<i class="fas fa-fw fa-cogs"></i> ',
 	// 'TABSM_support'    => '<i class="fas fa-fw fa-life-ring"></i> ',
-	'TABSM_health-check'=> '<i class="fas fa-fw fa-medkit"></i> ',
+	// 'TABSM_health-check' => '<i class="fas fa-fw fa-life-ring"></i> ',
+	// 'TABSM_health-check'=> '<i class="fas fa-fw fa-medkit"></i> ',
 	'TAB_'             => '<i class="fas fa-fw %s"></i>',
 	'SM_upload'        => '<i class="fas fa-fw fa-lg fa-upload"></i>', // bullseye, cloud-upload-alt
 	'FILE_pdf'         => '<i class="far fa-fw fa-file-pdf"></i>',

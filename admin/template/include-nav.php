@@ -29,8 +29,13 @@ if (isPage('load')) {
 <ul class="nav secondary">
 <li class="rightnav" ><a class="settings first" href="settings.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SETTINGS'));?>" ><?php echo getIcon("TABSM_settings"); i18n('TAB_SETTINGS');?></a></li>
 <!-- <li class="rightnav" ><a class="settings center" href="health-check.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_HEALTHCHECK'));?>" ><?php echo getIcon("TAB_health-check"); ?></a></li> -->
-<li class="rightnav" ><a class="support last" href="support.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SUPPORT'));?>" ><?php echo getIcon("TABSM_support"); i18n('TAB_SUPPORT');?></a></li>
 <?php
+if(getDef("GSSUPPORTLINKHC",true)){ ?>
+	<li class="rightnav" ><a class="settings last" href="health-check.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_HEALTHCHECK'));?>" ><?php echo getIcon("TABSM_health-check"); i18n('TAB_HEALTH-CHECK');?></a></li>
+<?php } else {	?>
+	<li class="rightnav" ><a class="support last" href="support.php" accesskey="<?php echo find_accesskey(i18n_r('TAB_SUPPORT'));?>" ><?php echo getIcon("TABSM_support"); i18n('TAB_SUPPORT');?></a></li>
+<?php
+}
 
 // nav status labels
 if(isDebug()) echo '<li class="rightnav"><a class="label label-error label_4_80" href="health-check.php#debuginfo" title="'.i18n_r('DEBUG_MODE').' - '.i18n_r('ON').'"><span>'.getIcon("TAB_debugmode").'</span></a></li>';
