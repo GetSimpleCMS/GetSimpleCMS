@@ -205,8 +205,8 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 
 <noscript>
 	<style>
-		.tab{ display:block; clear:both;}
-		.tab fieldset legend{ display: block; }
+		body.tabs .tab{ display:block; clear:both;}
+		body.tabs .tab fieldset legend{ display: block; }
 		#cm_themeselect, #cm_themeselect_label { display:none;}
 		#theme_filemanager ul ul {
 			display: block;

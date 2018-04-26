@@ -1202,21 +1202,12 @@ label.checkbox {
 /* meta dropdown style */
 fieldset,
 #metadata_window{
-	margin: 0 2px 0 0;
+	margin: 0 2px 10px 0;
 	background: #f9f9f9;
 	border: 1px solid #e8e8e8;
 	padding: 15px 10px 5px 10px;
 	border-radius: 2px;
 	/*text-shadow: 1px 1px 0 rgba(255,255,255,.3);*/
-}
-
-
-#page_content fieldset{
-	margin:0;
-	background:none;
-	border:none;
-	padding: 5px 0;
-	border-radius: 0;
 }
 
 /*
@@ -3359,7 +3350,7 @@ body.tabs .tab {
 
 .tab fieldset legend{
 	font-size: 16px;
-	border: 1px solid #808080;
+	border: 1px solid #b5b5b5;
 	padding: 1px 10px;
 	background-color: #FFF;
 	border-radius: 3px;
