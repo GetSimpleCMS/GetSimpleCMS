@@ -44,7 +44,8 @@ if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone')
 
 init_pageCache(true,false); // force rebuild of pagecache (refresh,force)
 // getPagesXmlValues(true);
-$pagesSorted = sortCustomIndexCallback($pagesArray,'title','prepare_menuOrderParentTitle');
+// $pagesSorted = sortCustomIndexCallback($pagesArray,'title','prepare_menuOrderParentTitle');
+$pagesSorted = sortCustomIndexCallback($pagesArray,'title');
 // debugLog($pagesSorted);
 $count       = count($pagesSorted);
 $table       = get_pages_menu('','',0);
