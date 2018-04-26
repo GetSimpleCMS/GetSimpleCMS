@@ -308,6 +308,7 @@ function subval_sort($a,$subkey, $order='asc',$natural = true) {
 
 		return $c;
 	}
+	return array();
 }
 
 /**
