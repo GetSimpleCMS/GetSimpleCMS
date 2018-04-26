@@ -86,6 +86,7 @@ if(isset($_POST['submitted'])) {
 		$xmls->addChild('TEMPLATE', GSINSTALLTEMPLATE);
 		$xmls->addChild('PRETTYURLS', '');
 		$xmls->addChild('PERMALINK', '');
+		$xmls->addChild('EMAIL', $EMAIL);
 		$xmls->addChild('SITEUSR', $USR);
 		$xmls->addChild('SITEABOUT', '');
 		if (! XMLsave($xmls, GSDATAOTHERPATH . $file) ) {
