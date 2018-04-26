@@ -211,6 +211,11 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		#theme_filemanager ul ul {
 			display: block;
 		}
+
+        #tabs .ui-tabs {
+            margin-bottom:15px;
+        }
+
 	</style>
 </noscript>
 

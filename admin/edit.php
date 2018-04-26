@@ -296,12 +296,23 @@ if($newdraft) $pageClass.=' newdraft';
         <!-- TABS -->
         <div class="gsui"><!-- jqueryui gsui custom scope -->
         <div id="tabs">
-                <ul class="tab-list">
-                    <li><a href="#page_content"><span><?php i18n('CONTENT'); ?></span></a></li>
-                    <li><a href="#page_options"><span><?php i18n('OPTIONS'); ?></span></a></li>
-                    <li><a href="#page_meta"><span><?php i18n('META'); ?></span></a></li>
-                </ul>
 
+        <noscript>
+             <div class="ui-tabs ui-widget ui-corner-all">
+                <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+                    <!-- <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active" role="tab" tabindex="0" aria-controls="page_content" aria-labelledby="ui-id-1" aria-selected="true" aria-expanded="true"><a href="#page_content" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-1"><span>Content</span></a></li> -->
+                    <li class="ui-state-default ui-corner-top "><a href="#page_content" class="ui-tabs-anchor"><span><?php i18n('CONTENT'); ?></span></a></li>
+                    <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active" ><a href="#page_options" class="ui-tabs-anchor"><span><?php i18n('OPTIONS'); ?></span></a></li>
+                    <li class="ui-state-default ui-corner-top"><a href="#page_meta" class="ui-tabs-anchor"><span><?php i18n('META'); ?></span></a></li>
+                </ul>
+            </div>
+        </noscript>
+
+        <ul class="tab-list">
+            <li><a href="#page_content"><span><?php i18n('CONTENT'); ?></span></a></li>
+            <li><a href="#page_options"><span><?php i18n('OPTIONS'); ?></span></a></li>
+            <li><a href="#page_meta"><span><?php i18n('META'); ?></span></a></li>
+        </ul>
 
     <!-- ------- PAGE OPTIONS --------------------------------------------------- -->
             <div id="page_options" class="tab">
