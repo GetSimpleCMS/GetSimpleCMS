@@ -1139,6 +1139,12 @@ textarea#codetext {
 	font-size:11px;
 }	
 
+.input-note {
+	margin:0px 0 5px 0;
+	font-size:12px;
+	color:#999;
+}
+
 #menu-items span {
 	text-transform: lowercase;
 }
