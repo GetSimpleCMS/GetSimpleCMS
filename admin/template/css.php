@@ -1253,6 +1253,10 @@ fieldset,
 }
 */
 
+form p.section{
+	margin:0px 0 5px 10px;
+}
+
 .rightopt,
 .rightsec {
 	float: right;

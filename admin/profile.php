@@ -305,7 +305,7 @@ $userheading = empty($userid) ? "<span>/ ". i18n_r('NEW_USER') ."</span>" : "<sp
 				exec_action('profile-extras'); // @hook profile-extras extra profile settings
 			?>
 			
-			<p class="section" style="margin:0px 0 5px 10px;font-size:12px;color:#999;" ><?php $adding === true ? i18n('PROVIDE_PASSWORD') : i18n('ONLY_NEW_PASSWORD');?>:</p>
+			<p class="section input-note" ><?php $adding === true ? i18n('PROVIDE_PASSWORD') : i18n('ONLY_NEW_PASSWORD');?>:</p>
 			<div class="leftsec">
 				<p><label for="sitepwd" ><?php $adding === true ? i18n('PASSWORD') : i18n('NEW_PASSWORD');?>:</label><input autocomplete="off" class="text" id="sitepwd" name="sitepwd" type="password" value="" /></p>
 			</div>
