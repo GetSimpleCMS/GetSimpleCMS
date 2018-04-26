@@ -388,8 +388,10 @@ $icondefinition = array(
 	'ICO_backup'       => '<i class="far fa-fw fa-file-archive"></i>',
 	'ICO_info'         => '<i class="fas fa-fw fa-info-circle"></i>',
 	'ICO_search'       => '<i class="fas fa-fw fa-search"></i>',
-	'ICO_linkext'      => '<i class="fas fa-fw fa-external-link-alt"></i>'
-); 
+	'ICO_linkext'      => '<i class="fas fa-fw fa-external-link-alt"></i>',
+	'ICO_plugon'       => '<i class="fas fa-fw fa-lg fa-toggle-on label-ok-color"></i>',
+	'ICO_plugoff'      => '<i class="fas fa-fw fa-lg fa-toggle-off opaque30"></i>',
+);
 
 /**
  * Init debug mode

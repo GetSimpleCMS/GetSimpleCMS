@@ -866,7 +866,6 @@ h5:hover img {
 	border-top: 1px solid #eee;
 	vertical-align: top;
 	/*line-height: 20px !important;*/
-	color: #777;
 }
 
 .wrapper table td {
@@ -1795,15 +1794,6 @@ body.fullscreen .notify .close{
 	opacity: 0.2;
 }
 
-.hint {
-	color: #777;
-	-ms-word-break: break-all;
-	    word-break: break-all;
-	-webkit-hyphens: auto;
-	   -moz-hyphens: auto;
-	        hyphens: auto;
-}
-
 /* file listing table style */
 #filetypetoggle {
 	color: #999;
@@ -2517,6 +2507,7 @@ td.hc_item {
 
 
 /* plugin styles */
+.wrapper table.highlight tbody tr.enabled,
 table tr.enabled {
 	background: #fff;
 }
@@ -2526,7 +2517,7 @@ table tr.enabled {
 }
 
 table tr.disabled {
-	background: #f6f6f6;
+	background: #f3f3f3;
 }
 
 table tr.disabled td b {
@@ -2934,7 +2925,6 @@ body.nosidebar #header .wrapper{
 	margin-bottom:14px;
 }
 
-
 /*
 * {
     -webkit-backface-visibility: visible !important;
@@ -3037,62 +3027,14 @@ body.nosidebar #header .wrapper{
 		background-image: url(images/filemanager/folder-open.png);
 }
 
-/* File Extension icons*/
-.file {    background-image: url(images/filemanager/text-x-generic.png); background-repeat: no-repeat; }
-.ext- {background-image: url(images/filemanager/text-x-preview.png);}
-.ext-js {background-image: url(images/filemanager/application-javascript.png);}
-.ext-html {background-image: url(images/filemanager/text-html.png);}
-.ext-htm {background-image: url(images/filemanager/text-html.png);}
-.ext-php {background-image: url(images/filemanager/application-x-php.png);}
-.ext-css {background-image: url(images/filemanager/text-css.png);}
-.ext-theme {background-image: url(images/filemanager/preferences-desktop-theme.png);}
-.ext-wait,.ext-blank {background-image: none;}
-
-
-/* generic override modifiers classes */
-
-/* Grayscale */
-.desaturate, .dir-empty{
-		filter: gray; /* IE */
-		-moz-filter: grayscale(100%);
-		-ms-filter: grayscale(100%);
-		-o-filter: grayscale(100%); /* Not yet supported in Gecko, Opera or IE */
-		/*filter: url(resources.svg#desaturate); /* Gecko */
-		-webkit-filter: grayscale(1); /* Old WebKit */
-		-webkit-filter: grayscale(100%); /* New WebKit */
-		filter: grayscale(100%); /* Current draft standard */
+#theme_editing_file {
+	font-weight:bold;
+	padding-left: 5px;
+	font-size: 15px;
 }
+/* codemirror */
+/* CodeMirror WEBKIT SCROLLBARS */
 
-/* force text to be non selectable , for labels psuedo buttons */
-*.unselectable {
-	cursor:default;
-   -moz-user-select: none;
-   -khtml-user-select: none;
-   -webkit-user-select: none;
-   -ms-user-select: none;
-   user-select: none;
-}
-
-.notransition {
-  -webkit-transition: none !important;
-  -moz-transition: none !important;
-  -o-transition: none !important;
-  -ms-transition: none !important;
-  transition: none !important;
-}
-
-.border {
-	border-width: 1px;
-	border-style: solid;
-	border-radius: 3px;
-}
-
-.floatright {
-	float:right;
-}
-.floatleft {
-	float:left;
-}
 
 .readonly .CodeMirror > div,.readonly #theme_editing_file{
 	visibility :hidden;
@@ -3109,47 +3051,6 @@ body.nosidebar #header .wrapper{
 	opacity: .5;
 	color: gray;
 }
-
-#theme_editing_file {
-	font-weight:bold;
-	padding-left: 5px;
-	font-size: 15px;
-}
-
-.right {
-	text-align: right !important;
-}
-
-.icon-right{
-	margin-left:4px;
-}
-
-.icon-left{
-	margin-right:4px;
-}
-
-kbd
-{
-    -moz-border-radius:3px;
-    -moz-box-shadow:0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
-    -webkit-border-radius:3px;
-    -webkit-box-shadow:0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
-    background-color:#f7f7f7;
-    border:1px solid #ccc;
-    border-radius:3px;
-    box-shadow:0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
-    color:#333;
-    display:inline-block;
-    font-family:Arial,Helvetica,sans-serif;
-    font-size:11px;
-    line-height:1.4;
-    margin:0 .1em;
-    padding:.1em .6em;
-    text-shadow:0 1px 0 #fff;
-}
-
-/* codemirror */
-/* CodeMirror WEBKIT SCROLLBARS */
 
 .CodeMirror-gutter-filler, .CodeMirror-scrollbar-filler{
 	background: none !important;
@@ -3464,15 +3365,6 @@ body.tabs .tab {
 	border-radius: 3px;
 }
 
-.outline {
-	border: 1px dotted gray;
-}
-
-.shadowbox {
-	border: 1px solid #5E5E5E !important;
-	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;		
-}
-
 /* Allow Font Awesome Icons in lieu of jQuery UI and only apply when using a FA icon */
 .ui-icon[class*=" icon-"] {
     /* Remove the jQuery UI Icon */
@@ -3634,6 +3526,138 @@ table.filter.filtered .tree-expander{
 /* page stack with no peek content */
 .pagestack.nopeek:hover{
 	height:32px;
+}
+
+
+/* plugins table */
+table td.title{
+	width:165px;
+}
+
+table td.status{
+	width:60px;
+}
+
+/* generic override modifiers classes */
+
+.opaque {
+	opacity:1;
+}
+
+.opaque80 {
+	opacity:.8;
+}
+
+.opaque50 {
+	opacity:.5;
+}
+
+.opaque30 {
+	opacity:.3;
+}
+
+.hint {
+	color: #777; /* @todo replace with theme color */
+	-ms-word-break: break-all;
+	    word-break: break-all;
+	-webkit-hyphens: auto;
+	   -moz-hyphens: auto;
+	        hyphens: auto;
+}
+
+/* File Extension icons*/
+.file {    background-image: url(images/filemanager/text-x-generic.png); background-repeat: no-repeat; }
+.ext- {background-image: url(images/filemanager/text-x-preview.png);}
+.ext-js {background-image: url(images/filemanager/application-javascript.png);}
+.ext-html {background-image: url(images/filemanager/text-html.png);}
+.ext-htm {background-image: url(images/filemanager/text-html.png);}
+.ext-php {background-image: url(images/filemanager/application-x-php.png);}
+.ext-css {background-image: url(images/filemanager/text-css.png);}
+.ext-theme {background-image: url(images/filemanager/preferences-desktop-theme.png);}
+.ext-wait,.ext-blank {background-image: none;}
+
+/* Grayscale */
+.desaturate, .dir-empty{
+		filter: gray; /* IE */
+		-moz-filter: grayscale(100%);
+		-ms-filter: grayscale(100%);
+		-o-filter: grayscale(100%); /* Not yet supported in Gecko, Opera or IE */
+		/*filter: url(resources.svg#desaturate); /* Gecko */
+		-webkit-filter: grayscale(1); /* Old WebKit */
+		-webkit-filter: grayscale(100%); /* New WebKit */
+		filter: grayscale(100%); /* Current draft standard */
+}
+
+/* force text to be non selectable , for labels psuedo buttons */
+*.unselectable {
+	cursor:default;
+   -moz-user-select: none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  -ms-transition: none !important;
+  transition: none !important;
+}
+
+.border {
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 3px;
+}
+
+.floatright {
+	float:right;
+}
+.floatleft {
+	float:left;
+}
+
+.right {
+	text-align: right !important;
+}
+
+.icon-right{
+	margin-left:4px;
+}
+
+.icon-left{
+	margin-right:4px;
+}
+
+kbd
+{
+    -moz-border-radius:3px;
+    -moz-box-shadow:0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
+    -webkit-border-radius:3px;
+    -webkit-box-shadow:0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
+    background-color:#f7f7f7;
+    border:1px solid #ccc;
+    border-radius:3px;
+    box-shadow:0 1px 0 rgba(0,0,0,0.2),0 0 0 2px #fff inset;
+    color:#333;
+    display:inline-block;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:11px;
+    line-height:1.4;
+    margin:0 .1em;
+    padding:.1em .6em;
+    text-shadow:0 1px 0 #fff;
+}
+
+.outline {
+	border: 1px dotted gray;
+}
+
+.shadowbox {
+	border: 1px solid #5E5E5E !important;
+	box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;		
 }
 
 /* checkered background for transparent images */
