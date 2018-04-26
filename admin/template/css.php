@@ -1210,6 +1210,14 @@ fieldset,
 	/*text-shadow: 1px 1px 0 rgba(255,255,255,.3);*/
 }
 
+#page_content fieldset{
+	margin:0;
+	background:none;
+	border:none;
+	padding: 5px 0;
+	border-radius: 0;
+}
+
 /*
 
 .leftsec,.rightsec {
