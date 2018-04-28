@@ -1062,7 +1062,7 @@ jQuery(document).ready(function () {
 
 		// default
 		$('a[rel*=fancybox]').fancybox({
-			// type: 'ajax',
+			type: 'ajax',
 			padding: 0,
 			scrolling: 'auto'
 		});
