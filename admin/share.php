@@ -1,4 +1,6 @@
 <?php 
+$site_link_back_url = 'http://get-simple.info/'; // @tood should come from configuration.php
+
 if(isset($_GET['term'])) { 
 	$term = ( function_exists( "filter_var") ) ? filter_var ( $_GET['term'], FILTER_SANITIZE_SPECIAL_CHARS)  : htmlentities($_GET['term']);
 } 
