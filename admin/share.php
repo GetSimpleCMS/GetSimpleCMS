@@ -39,7 +39,7 @@ if ($term = '{SHARE}') {
 			</div>
 			
 			<div style="float:left;width:68px;" >	
-				<a href="//twitter.com/share" class="twitter-share-button" data-url="<?php echo $site_link_back_url; ?>" data-text="Check out GetSimple CMS!" data-count="vertical" data-via="get_simple" data-related="buydealsin:Daily Deals">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+				<a href="//twitter.com/share" class="twitter-share-button" data-url="<?php echo $site_link_back_url; ?>" data-text="Check out GetSimple CMS!" data-count="vertical" data-via="get_simple">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 			</div>
 			
 			<div style="float:left;width:55px;" >	
