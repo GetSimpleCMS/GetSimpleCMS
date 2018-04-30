@@ -318,6 +318,8 @@ if($newdraft) $pageClass.=' newdraft';
             <div id="page_options" class="tab">
                 <fieldset>
                     <legend>Page Options</legend>
+                    <?php exec_action('edit-preoptions'); //@hook edit-preoptions before page edit options html output ?> 
+
                     <div class="wideopt">
                         <p>
                             <label for="post-titlelong"><?php i18n('TITLELONG'); ?>:</label>
@@ -435,6 +437,7 @@ if($newdraft) $pageClass.=' newdraft';
             <div id="page_content" class="tab">
                 <fieldset>
                 <legend>Page Content</legend>
+                <?php exec_action('edit-precontent'); //@hook edit-precontent before page edit content html output ?> 
 
                     <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
                     <div class="codewrap"><textarea id="post-content" <?php if ($HTMLEDITOR) echo getEditorAttribCallout('pages','boxsizingBorder'); echo $SAFEMODE ? 'readonly' : ''; ?>  name="post-content"><?php echo $content;  ?></textarea></div>
@@ -457,8 +460,9 @@ if($newdraft) $pageClass.=' newdraft';
     <!-- ------- PAGE META OPTIONS --------------------------------------------------- -->
             <div id="page_meta" class="tab">
                 <fieldset>    
-                <legend>Page Meta</legend>                
-                <div class="leftopt">             
+                <legend>Page Meta</legend>
+                <?php exec_action('edit-premeta'); //@hook edit-premeta before page edit meta html output ?> 
+                <div class="leftopt">
                     <p class="inline clearfix">
                         <label for="post-metak"><?php i18n('TAG_KEYWORDS'); ?>:</label>
                         <input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" />
