@@ -580,7 +580,7 @@ function get_FileType($ext) {
 	$token = get_FileTypeToken($ext);
 
 	// backward compatibility, use get_FileTypeToken for compares!
-	if($token == "IMAGE")     return i18n_r('FTYPE_IMAGES') .' Images'; 
+	if($token == "IMAGE")    return i18n_r('IMAGES') .' Images';
 	if($token == "DOCUMENT") return i18n_r('FTYPE_DOCUMENTS');
 
 	return i18n_r('FTYPE_'.$token);
