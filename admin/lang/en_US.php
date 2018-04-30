@@ -459,7 +459,6 @@ $i18n = array(
 "FTYPE_IMAGE"             =>	"Image",      // file-type image
 "FTYPE_SCRIPT"            =>	"Script",     // file-type script
 
-"FTYPE_IMAGES"            =>	"Images",     // LEGACY file-type image, no not use
 "FTYPE_DOCUMENTS"         =>	"Documents",  // LEGACY file-type document, do not use
 
 /* 
