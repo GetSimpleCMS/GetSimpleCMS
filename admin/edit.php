@@ -319,7 +319,6 @@ if($newdraft) $pageClass.=' newdraft';
                 <fieldset>
                     <legend>Page Options</legend>
                     <?php exec_action('edit-preoptions'); //@hook edit-preoptions before page edit options html output ?> 
-
                     <div class="wideopt">
                         <p>
                             <label for="post-titlelong"><?php i18n('TITLELONG'); ?>:</label>
@@ -437,6 +436,7 @@ if($newdraft) $pageClass.=' newdraft';
             <div id="page_content" class="tab">
                 <fieldset>
                 <legend>Page Content</legend>
+                <div style="display:none;" id="metadata_window" ></div> <!-- legacy, do not use -->
                 <?php exec_action('edit-precontent'); //@hook edit-precontent before page edit content html output ?> 
 
                     <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>

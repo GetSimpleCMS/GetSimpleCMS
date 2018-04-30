@@ -1046,8 +1046,9 @@ form select.text,form textarea.text {
 	color: #333;
 	border: 1px solid #aaa;
 	padding: 3px;
-	font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-	font-size: 12px;
+	/*font-family: Arial, Helvetica Neue, Helvetica, sans-serif;*/
+	font-family: Verdana,Arial, Helvetica Neue, Helvetica, sans-serif;
+	font-size: 1.1em;
 	/*width: 510px;*/
 	width:100%;
 	border-radius: 2px;
@@ -1502,6 +1503,13 @@ button,
 	box-shadow: rgba(0,0,0, 0.06) 0 0 3px;
 	display:inline-block;
 	margin:3px 0;
+}
+
+.tab input.submit,
+.tab input[type="button"],
+.tab button,
+.tab .button {
+	padding:2px 4px;
 }
 
 input.submit:focus, 
@@ -3349,6 +3357,11 @@ body.nosidebar #header .wrapper{
 
 #tabs.ui-tabs ul.tab-list{
 	display:block;
+}
+
+#tabs ul.tab-list li{
+	font-family:Verdana,Arial,sans-serif;
+	font-size:1.1em;
 }
 
 /* jqueryui tabs specivity overrides */

@@ -482,6 +482,7 @@ jQuery(document).ready(function () {
 				}	
 			}
 		});
+		$("#tabs").tabs().removeClass('ui-widget'); // remove tabs widgets style, or else it changes all our inputs
 	}
 	// init aja xindicator
 	var loadingAjaxIndicator;
