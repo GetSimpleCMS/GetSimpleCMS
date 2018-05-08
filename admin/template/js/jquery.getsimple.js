@@ -205,7 +205,9 @@ function notifyError($msg) {
 }
  
 function notify($msg, $type) {
-	// if ($type == 'ok' || $type== 'success' || $type == 'warning' || $type == 'info' || $type == 'error') {
+		// Debugger.log($type+": "+$msg);
+		// alert($type+": "+$msg);
+		// if ($type == 'ok' || $type== 'success' || $type == 'warning' || $type == 'info' || $type == 'error') {
 		var $notify = $('<div style="display:none;" class="notify notify_' + $type + '"><p>' + $msg + '</p></div>').clone();
 		// check for #bodycontent if .bodycontent does not exist, ckeditor fullscreen removes it
 		if($('div.bodycontent').get(0)) var notifyelem = $('div.bodycontent').before($notify);
@@ -214,6 +216,7 @@ function notify($msg, $type) {
 		$notify.fadeIn();
 		$notify.addCloseButton();
 		$notify.notifyExpire();
+		// Debugger.log($notify);
 		return $notify;
 	// }
 	// @todo else plain
@@ -242,6 +245,9 @@ $.fn.parseNotify = function(){
 		var msg     = $(this).html();
 		var persist = $(this).hasClass('persist');
 		var remove  = $(this).hasClass('remove');
+		// Debugger.log(msg);
+		// Debugger.log(persist);
+		// Debugger.log(remove);
 
 		if($(this).hasClass('notify_success')){
 			// clear other success messages cause this is probably a repeat or redundant, also undo nonce is stale
@@ -442,7 +448,7 @@ jQuery(document).ready(function () {
 	}
 
 	// init jq tabs custom handlers
-	if(window.tabs){
+	if(window.tabs && $("body").hasClass("tabs")){
 
 		var $tabs = new Array('page_content','page_options','page_meta');
 
@@ -462,9 +468,10 @@ jQuery(document).ready(function () {
 		$("#tabs").tabs({
 			activate: function(event, ui) {
 				// set bookmarkable urls
-				var hash = ui.newTab.context.hash;
-				hash = "tab_"+hash.replace('#','');
-				window.location.replace(('' + window.location).split('#')[0] + '#' + hash);	// should not affect history
+				var elemid = ui.newPanel.attr('id');
+				// Debugger.log(elemid);
+				elemid = "tab_"+elemid.replace('#','');
+				window.location.replace(('' + window.location).split('#')[0] + '#' + elemid);	// should not affect history
 			},
 			create: function (event,ui) {
 				// set active tab from hash
@@ -475,6 +482,7 @@ jQuery(document).ready(function () {
 				}	
 			}
 		});
+		$("#tabs").tabs().removeClass('ui-widget'); // remove tabs widgets style, or else it changes all our inputs
 	}
 	// init aja xindicator
 	var loadingAjaxIndicator;
@@ -501,7 +509,7 @@ jQuery(document).ready(function () {
 			var filterx = $(this).val();
 			var filterTitle = $(this).find('option:selected').text();
 			$("#imageTable tbody").find("tr").hide();
-			if (filterx == 'image' || $("body#upload").hasClass("forcethumbs")) {
+			if (filterx == 'image' || $("body").hasClass("forcethumbs")) {
 				$("#imageTable").find("tr .imgthumb").show();
 			} else {
 				$("#imageTable").find("tr .imgthumb").hide();
@@ -715,7 +723,7 @@ jQuery(document).ready(function () {
 				$(response).find('div.updated').parseNotify();
 				updateNonce(response);
 				ajaxStatusComplete();
-				clearNotify('error');	
+				// clearNotify('error');
 				removeDeletedComponents();
 			}
 		});
@@ -923,7 +931,7 @@ jQuery(document).ready(function () {
 			// add new
 			var compdivlist = '<a id="divlist-'+compid+'" href="#section-'+compid+'" class="component clear-left comp_'+value+'">'+value+'</a>';
 			$(".compdivlist").append(compdivlist);
-		}	
+		}
 	}
 
  	/**
@@ -1048,13 +1056,14 @@ jQuery(document).ready(function () {
 		$('.fancybox-title').append($(link));
 	}
 
+	$.fn.initFancybox = function(){
  	// fancybox lightbox init
  	// rel=fancybox (_i/_s)
 	if (jQuery().fancybox) {
 
 		// default
 		$('a[rel*=fancybox]').fancybox({
-			// type: 'ajax',
+			type: 'ajax',
 			padding: 0,
 			scrolling: 'auto'
 		});
@@ -1065,6 +1074,8 @@ jQuery(document).ready(function () {
 				$(this).fancyboxBrowseThumb();
 			},
 			padding : 0,
+			minWidth:200,
+			minHeight:200,
 			helpers: {
 			    title: {
 			        // type: "inside"
@@ -1080,7 +1091,10 @@ jQuery(document).ready(function () {
 			scrolling: 'no'
 		}).on('click',function(e){e.preventDefault();});
 	}
- 
+ 	}
+
+ 	$.fn.initFancybox();
+
  	/* Ajax save status indicator control */
     function ajaxStatusWait(){
     	$('input[type=submit]').attr('disabled', 'disabled');
@@ -1487,7 +1501,7 @@ jQuery(document).ready(function () {
 	// form watcher
 	// forms with class watch will mark page dirty and prevent leaving
     $('form.watch input,form.watch textarea,form.watch select').not(':password').not(":submit").bind('change keypress paste textInput input',function(e){
-        // Debugger.log('form changed');
+        Debugger.log('form changed');
         if($("body").hasClass('dirty')) return;
         pageIsDirty($(this));
     });
@@ -1542,7 +1556,7 @@ jQuery(document).ready(function () {
 		$('ol.more li').reverseOrder();
 	}
 	$("ol.more").each(function () {
-		var show = 7; // how many to show
+		var show = 15; // how many to show
 		$("li:gt("+(show-1)+")", this).hide(); /* :gt() is zero-indexed */
 		if($("li:nth-child("+(show+1)+")", this)[0]) $("li:nth-child("+show+")", this).after("<li class='more'><a href='#'>More...</a></li>"); /* :nth-child() is one-indexed */
 	});
@@ -1903,14 +1917,16 @@ jQuery(document).ready(function () {
 		}
 	});
 	// create index columns
-	// if class filter exists then we expect it to have indexcolumn already
+	// if class filter exists on TR then we expect it to have indexcolumn already
+	// @todo automate filtering tables, use filter flag and use another method to determine generate indexcols(not exist)
 	$("#editpages:not('.filter') tr:has(td.pagetitle)").each(function () {
-		Debugger.log('creating index column');
+		// Debugger.log('creating index column');
 		// find all text in pagetitle td, includes show status toggle (menu item)
 		var t = $(this).find('td.pagetitle').text().toLowerCase();
-		$("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
-		this.addClass('filter');
+		$("<td class='indexColumn'></td>").hide().text(t).appendTo(this);		
 	});
+	$("#editpages").addClass('filter');
+
 	// live search
 	$("#filter-search #q").keyup(function () {
 		var s = $(this).val().toLowerCase().split(" ");

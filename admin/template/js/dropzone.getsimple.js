@@ -52,14 +52,19 @@ jQuery(document).ready(function () {
   		if (this.getQueuedFiles().length == 0) {
 			$('#loader').fadeOut(500);
 
-			// store #imageFilter selected index to restore after load
-			// var filterVal = $('#imageFilter').val();
-			
+			// if images are on and not forcethumbs, and uploading, switch to all and force thumbs on, otherwise you will not see non images being saved, which is confusing
+			// @todo flag if non images are even uploaded to restrict this edge case
+			var filterVal = $('#imageFilter').val();
+
 			// load upload page new
 			$('#maincontent').load(location.href+' #maincontent > *', function(ev){
-				// $('#imageFilter').val(filterVal);
-				// $('#imageFilter').trigger('change');
+				if(filterVal == "image" && !$("body").hasClass("forcethumbs")){
+					$("body").addClass("forcethumbs");
+					$('#imageFilter').val("all");
+				}
+				$('#imageFilter').trigger('change');
 				$(window).trigger('fileuploaded');
+ 				$.fn.initFancybox();
 			});
   		}
   	});
@@ -68,7 +73,7 @@ jQuery(document).ready(function () {
 	// callback for remove the queue item
 	removeFromQueue = function(file){
 		var slideDuration = 600;
-		var removeDelay = 5000;
+		var removeDelay = 6000;
 		setTimeout(
 			function(){ 
 				$(file.previewElement).stop(true, true).fadeOut(slideDuration).slideUp({ duration: slideDuration, queue: false }); 
@@ -133,7 +138,10 @@ jQuery(document).ready(function () {
 			url                   : 'upload.php?path='+uploadPath,
 			uploadMultiple        : true,
 			paramName             : 'file',
-			createImageThumbnails : false,
+			createImageThumbnails : true,
+			thumbnailWidth        : 60,
+			thumbnailHeight       : 60,
+			maxThumbnailFilesize  : maxFileSize,
 			addRemoveLinks        : true,
 			dictCancelUpload      : '',
 			dictRemoveFile        : '',

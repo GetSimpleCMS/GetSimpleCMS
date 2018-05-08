@@ -98,6 +98,7 @@ echo '<div class="bodycontent clearfix">
 						"curl|cURL Module|warn",
 						"gd|GD Library|warn",
 						"zip|ZipArchive|warn",
+						"zlib|Zlib|warn",
 						"SimpleXML|SimpleXML Module|error",
 					);
 		
@@ -208,7 +209,8 @@ echo '<div class="bodycontent clearfix">
 						foreach($data as $file) {
 							if( isFile($file, $path) ) {
 								$relpath = '/'.getRelPath($path);
-								echo '<tr><td class="hc_item" >'.$relpath . $file .'</td>';
+								$fsize = filesize($path . $file);
+								echo '<tr><td class="hc_item" >'.$relpath . $file .'</td><td>'.fSize($fsize).'</td>';
 								if(is_valid_xml($path . $file)){
 									echo '<td>' . i18n_r('XML_VALID').'</td><td><span class="label label-ok">'.i18n_r('OK') .'</span></td>';
 								}									
@@ -274,16 +276,22 @@ echo '<div class="bodycontent clearfix">
 						
 						$writable = checkWritable($path);
 						
+						// check if actually writable
 						if( $writable ) {
+							// optional warn if writable but chmod mismatch
 							if(!checkPermsWritable($path) && getDef('GSCHMODCHECK',true)){
-								echo '<a name="warn"></a><span class="WARNmsg">GSCONFIG ' .getChmodValue($path,true). '</span><td><span class="label label-ok" >'.i18n_r('OK').'</span></td>'; 
+								echo '<a name="warn"></a><span class="WARNmsg">GSCONFIG ' .getChmodValue($path,true). '</span><td><span class="label label-warn" >'.i18n_r('WARNING').'</span></td>'; 
 							}
 							else {
 								echo i18n_r('WRITABLE').'<td><span class="label label-ok" > '.i18n_r('OK').'</span></td>'; 
-							}	
+							}
 						} 
 						else {
-							echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('NOT_WRITABLE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 
+							if(getDef('GSCHMODCHECK',true)){
+								echo '<a name="error"></a><span class="ERRmsg">GSCONFIG ' .getChmodValue($path,true). '</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 
+							} else {
+								echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('NOT_WRITABLE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 
+							}	
 							$errorCnt++;											
 						} 
 						echo '</td></tr>';
@@ -383,6 +391,14 @@ echo '<div class="bodycontent clearfix">
 				echo '</table>';
 			}
 
+			if (isDebug()) { 
+				echo '<h3 id="debuginfo">'. wordcase(i18n_r('DEBUG_MODE')) .'</h3>';
+				echo "<p>";
+				echo i18n_r('DEBUG_INFO');
+				echo '<a href="'.$debugInfoUrl.'" target="_blank">link</a>';
+				echo "</p>";
+			}
+
 			// call healthcheck-extras hook
 			exec_action('healthcheck-extras'); // @hook healthcheck-extras after health check html output
 			?>			
@@ -401,5 +417,13 @@ echo '<div class="bodycontent clearfix">
 	</div>	
 
 </div>
+
+<?php
+$properties = array('SCRIPT_FILENAME', 'SCRIPT_NAME', 'PHP_SELF', 'REQUEST_URI');
+debugLog(sprintf("% 15s: %s<bR>\n", '__FILE__', __FILE__));
+foreach($properties as $property){
+    debugLog(sprintf('% 15s: %s', $property, $_SERVER[$property]."<bR>\n"));
+}
+?>
 
 <?php get_template('footer'); ?>

@@ -308,6 +308,7 @@ $i18n = array(
 "WRITABLE"                =>	"Writable",
 "NOT_WRITABLE"            =>	"Not Writable",
 "NA"                      =>	"N/A",
+"DEBUG_INFO"              =>    "Debug Mode is enabled, for more information about debug mode see ",
 
 /* 
 * For: footer.php
@@ -352,7 +353,7 @@ $i18n = array(
 "TAB_COMPONENTS"          =>	"Components",
 "TAB_SNIPPETS"            =>	"Snippets",
 "TAB_THEME-EDIT"          =>	"Theme Editor",
-"TAB_EDIT"                =>	"Edit",
+"TAB_EDIT"                =>	"New Page",
 "TAB_MENU-MANAGER"        =>	"Menu",
 "TAB_SITEMAP"             =>	"Sitemap",
 "TAB_BACKUPS"             =>	"Backups",
@@ -377,14 +378,14 @@ $i18n = array(
 */
 "SIDE_SUPPORT_LOG"        =>	"Supp<em>o</em>rt Resources",
 "SIDE_HEALTH_CHK"         =>	"Website <em>H</em>ealth Check",
-"SIDE_DOCUMENTATION"      =>	"Wiki Documentation",
+"SIDE_DOCUMENTATION"      =>	"Wiki Documentation", // not a sidemenu
 "SIDE_VIEW_LOG"           =>	"<em>V</em>iew Logs",
 
 /* 
 * For: sidebar-theme.php
 */
 "SIDE_VIEW_SITEMAP"       =>	"<em>V</em>iew Sitemap",
-"SIDE_GEN_SITEMAP"        =>	"Generate Site<em>m</em>ap",
+"SIDE_GEN_SITEMAP"        =>	"Generate Site<em>m</em>ap", //not a sidemenu
 "SIDE_COMPONENTS"         =>	"<em>E</em>dit Components",
 "SIDE_SNIPPETS"           =>	"Edit Snippets",
 "SIDE_EDIT_THEME"         =>	"Edit T<em>h</em>eme",
@@ -405,7 +406,7 @@ $i18n = array(
 /* 
 * For: sidebar-backups.php
 */
-"SIDE_VIEW_BAK"           =>	"View Page Backup",
+"SIDE_VIEW_BAK"           =>	"View Page Backup", // not a sidemenu
 "SIDE_WEB_ARCHIVES"       =>	"<em>W</em>ebsite Archives",
 "SIDE_PAGE_BAK"           =>	"Page <em>B</em>ackups",
 
@@ -453,13 +454,12 @@ $i18n = array(
 "FTYPE_AUDIO"             =>	"Audio",      // file-type audio
 "FTYPE_WEB"               =>	"Web",        // file-type web
 "FTYPE_DOCUMENT"          =>	"Document",   // file-type document
-"FTYPE_DOCUMENTS"         =>	"Documents",  // file-type document
 "FTYPE_SYSTEM"            =>	"System",     // file-type system file
 "FTYPE_MISC"              =>	"Misc",       // file-type Miscellaneous
 "FTYPE_IMAGE"             =>	"Image",      // file-type image
-"FTYPE_IMAGES"            =>	"Images",     // file-type image
 "FTYPE_SCRIPT"            =>	"Script",     // file-type script
-"IMAGES"                  =>	"Images",
+
+"FTYPE_DOCUMENTS"         =>	"Documents",  // LEGACY file-type document, do not use
 
 /* 
 * For: login_functions.php
@@ -512,7 +512,7 @@ $i18n = array(
 "PLUGINS_MANAGEMENT"      =>	"Plugin Management",
 "PLUGINS_INSTALLED"       =>	"plugins installed",
 "PLUGIN_DISABLED"         =>	"Disabled Plugin",
-"SHOW_PLUGINS"            =>	"Installed Plu<em>g</em>ins",
+"SHOW_PLUGINS"            =>	"Manage Plu<em>g</em>ins",
 "PLUGIN_NAME"             =>	"Plugin",
 "PLUGIN_DESC"             =>	"Description",
 "PLUGIN_VER"              =>	"Version",
@@ -771,7 +771,9 @@ $i18n = array(
 "VALID"                   =>    "Valid",
 "INVALID"                 =>    "Invalid",
 "INVALID_OPER"            =>    "Invalid Operation",
-"ERROR_OCCURED"           =>    "An Error has Occurred"
+"ERROR_OCCURED"           =>    "An Error has Occurred",
+"IMAGES"                  =>	"Images",
+"DOCUMENTS"               =>    "Documents"
 
 // already defined generics
 # "ENABLE"                =>    "Activate"

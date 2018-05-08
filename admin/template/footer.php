@@ -14,6 +14,26 @@
         include(GSADMININCPATH ."configuration.php");
         if (cookie_check()) {
             echo '<p><a href="pages.php">'.i18n_r('PAGE_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="upload.php">'.i18n_r('FILE_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="theme.php">'.i18n_r('THEME_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="backups.php">'.i18n_r('BAK_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="plugins.php">'.i18n_r('PLUGINS_MANAGEMENT').'</a> &nbsp;&bull;&nbsp; <a href="settings.php">'.i18n_r('GENERAL_SETTINGS').'</a> &nbsp;&bull;&nbsp; <a href="support.php">'.i18n_r('SUPPORT').'</a> &nbsp;&bull;&nbsp; <a href="share.php?term='.i18n_r('SHARE').'" rel="fancybox_s" >'.i18n_r('SHARE').'</a></p>';
+        
+            // draw sidebar items if no sidebar
+            $menuitems = getDef('GSNOSIDEBAR',false,true);
+            $current   = get_filename_id();
+            if(in_array($current,$menuitems)){
+                GLOBAL $sidemenudefinition,$tabdefinition,$sidemenutitles; // global?
+                if(isset($sidemenudefinition[$current])){
+                    $tab = $sidemenudefinition[$current];
+                    if(empty($tab)) $tab = $current;
+                    if(isset($tabdefinition[$tab])){
+                        echo "<p>";
+                        foreach($tabdefinition[$tab] as $item){
+                            echo '<a href="'.$item.'.php">';
+                            echo strip_tags(i18n_r($sidemenutitles[$item]));
+                            echo "</a> &nbsp;•&nbsp; ";
+                        }
+                        echo "</p>";
+                    }
+                }
+            }    
         }
 
         if(!isAuthPage()){ ?>
@@ -27,6 +47,8 @@
         <div class="clear"></div>
         <?php
             get_scripts_backend(true);
+            exec_action('footer-pre'); // INTERNAL USE ONLY!
+            echo "<!-- end #footer-pre -->";
             exec_action('footer'); 
         }
         ?>

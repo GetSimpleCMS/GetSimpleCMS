@@ -37,7 +37,7 @@ if (isset($_GET['f']) && !empty($_GET['f'])) {
 if(isset($_POST['themesave'])){
 	$themesave = var_in($_POST['themesave']);
 	if($themesave == "default") setcookie('gs_editor_theme', '', time() - 3600); 
-	else setcookie('gs_editor_theme',$themesave);
+	else setcookie('gs_editor_theme',var_out($themesave));
 	return;
 }
 
@@ -259,7 +259,7 @@ function editor_compareOrder($a, $b)
  */
 function editor_recur_sort(&$array,$comparator) {
    foreach ($array as &$value) {
-      if (is_array($value['value']) and count($value['value']>1)) editor_recur_sort($value['value'],$comparator);
+      if (is_array($value['value']) and count($value['value'])>1) editor_recur_sort($value['value'],$comparator);
    }
    return @uasort($array, $comparator);
 }
@@ -335,7 +335,7 @@ switch (getFileExtension($template_file)) {
 				
 				<div id="theme_editing" class="well">
 				<?php 
-				echo i18n('EDITING_FILE') .":".$SITEURL.getRelPath(GSTHEMESPATH);
+				echo i18n('EDITING_FILE') .": ".$SITEURL.getRelPath(GSTHEMESPATH);
 				echo '<span id="theme_editing_file">'. ($template=="." ? "" : tsl($template)).$template_file .'</span>';
 				$content = !empty($template_file) ? read_file(GSTHEMESPATH . tsl($template) . $template_file) : ''; ?>
 				</div>

@@ -167,8 +167,8 @@ function getPublishedPageHead($editing = true, $path = ''){
     if(getDef('GSUSEDRAFTS',true) && $pageExists && getDef('GSSDRAFTSPUBLISHEDTAG',true)) echo '<div class="title label label-ok unselectable">'.i18n_r('LABEL_PUBLISHED').'</div>';
     echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav clearfix" >';
     if($editing) {
-        echo '<a class="pageview" href="'. $path .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
-        if($path != '') {echo '<a class="pageclone" href="pages.php?id='. $id .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>'; }
+        if(getDef("GSEDITNAVCLONE",true)) echo '<a class="pageview" href="'. $path .'" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
+        if($path != '' && getDef("GSEDITNAVVIEW",true)) echo '<a class="pageclone" href="pages.php?id='. $id .'&amp;action=clone&amp;nonce='.get_nonce("clone","pages.php").'" >'.i18n_r('CLONE').'</a>';
     }
     exec_action(get_filename_id().'-edit-nav'); 
     echo "\n</div>";
@@ -180,7 +180,7 @@ function getDraftPageHead($editing = true, $path = ''){
     echo '<div class="title label label-draft secondary-lightest-back unselectable">'.i18n_r('LABEL_DRAFT').'</div>';
     echo '<!-- pill edit navigation -->',"\n",'<div class="edit-nav clearfix" >';
     if($editing) {
-        echo '<a class="draftview" href="'. $path . (($PRETTYURLS || $id == 'index') ? '?' : '&amp;') .'draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
+        if(getDef("GSPAGEVIEWSHOW",true)) echo '<a class="draftview" href="'. $path . (($PRETTYURLS || $id == 'index') ? '?' : '&amp;') .'draft" target="_blank" accesskey="'. find_accesskey(i18n_r('VIEW')). '" >'. i18n_r('VIEW'). '</a>';
         echo '<a class="draftpublish" href="changedata.php?publish&id='.$id.'" accesskey="'. find_accesskey(i18n_r('PUBLISH')). '" >'. i18n_r('PUBLISH'). '</a>';
     }
     exec_action(get_filename_id().'-edit-nav'); 
@@ -213,11 +213,11 @@ if($newdraft) $pageClass.=' newdraft';
         <!-- PUBLISHED pagestack -->
         <div class="pagestack existingpage shadow peek">
             <div style="float: left;">
-                <i class="fa fa-clock-o">&nbsp;</i><?php echo sprintf(i18n_r('LAST_SAVED'),$publishAuthor)," ",$publishPubdate;?>&nbsp;
+                <?php echo getIcon("ICO_timestamp"); echo "&nbsp;";echo sprintf(i18n_r('LAST_SAVED'),$publishAuthor)," ",$publishPubdate;?>&nbsp;
             </div>
             <div style="float:right">
                 <a href="edit.php?id=<?php echo $id;?>&amp;nodraft" class="label label-ghost label-inline">
-                    <i class="fa fa-pencil"></i>
+                    <?php echo getIcon("ICO_draft");?>
                 </a>
                 <div class="label label-ok label-inline unselectable"><?php i18n('LABEL_PUBLISHED'); ?></div>
             </div>
@@ -242,11 +242,11 @@ if($newdraft) $pageClass.=' newdraft';
         <!-- DRAFT page stack -->
         <div class="pagestack existingdraft shadow peek">
             <div style="float: left;">
-                <i class="fa fa-clock-o">&nbsp;</i><?php echo sprintf(i18n_r('DRAFT_LAST_SAVED'),$draftAuthor)," ",$draftPubdate;?>&nbsp;
+                <?php echo getIcon("ICO_timestamp"); echo "&nbsp;";echo sprintf(i18n_r('DRAFT_LAST_SAVED'),$draftAuthor)," ",$draftPubdate;?>&nbsp;
             </div>
             <div style="float:right">
                 <a href="edit.php?id=<?php echo $id;?>&amp;draft" class="label label-ghost label-inline">
-                    <i class="fa fa-pencil"></i>
+                    <?php echo getIcon("ICO_draft");?>
                 </a>
                 <div class="label secondary-lightest-back label-inline unselectable"><?php i18n('LABEL_DRAFT'); ?></div>
             </div>
@@ -266,11 +266,11 @@ if($newdraft) $pageClass.=' newdraft';
         <!-- NEWDRAFT page stack -->
         <div class="pagestack newdraft shadow nopeek">
             <div style="float: left;">
-                <i class="fa fa-info-circle">&nbsp;</i><?php i18n('PAGE_NO_DRAFT'); ?>&nbsp;
+                <?php echo getIcon("ICO_info"); echo "&nbsp;"; i18n('PAGE_NO_DRAFT'); ?>&nbsp;
             </div>
             <div style="float:right">
                 <a href="edit.php?id=<?php echo $id;?>&amp;draft" class="label label-ghost label-inline">
-                    <i class="fa fa-pencil"></i>
+                    <?php echo getIcon("ICO_draft");?>
                 </a>
                 <div class="label label-ghost label-inline unselectable"><?php i18n('LABEL_DRAFT'); ?></div>
             </div>
@@ -296,17 +296,29 @@ if($newdraft) $pageClass.=' newdraft';
         <!-- TABS -->
         <div class="gsui"><!-- jqueryui gsui custom scope -->
         <div id="tabs">
-                <ul class="tab-list">
-                    <li><a href="#page_content"><span><?php i18n('CONTENT'); ?></span></a></li>
-                    <li><a href="#page_options"><span><?php i18n('OPTIONS'); ?></span></a></li>
-                    <li><a href="#page_meta"><span><?php i18n('META'); ?></span></a></li>
-                </ul>
 
+        <noscript>
+             <div class="ui-tabs ui-widget ui-corner-all">
+                <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+                    <!-- <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active" role="tab" tabindex="0" aria-controls="page_content" aria-labelledby="ui-id-1" aria-selected="true" aria-expanded="true"><a href="#page_content" class="ui-tabs-anchor" role="presentation" tabindex="-1" id="ui-id-1"><span>Content</span></a></li> -->
+                    <li class="ui-state-default ui-corner-top "><a href="#page_content" class="ui-tabs-anchor"><span><?php i18n('CONTENT'); ?></span></a></li>
+                    <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active" ><a href="#page_options" class="ui-tabs-anchor"><span><?php i18n('OPTIONS'); ?></span></a></li>
+                    <li class="ui-state-default ui-corner-top"><a href="#page_meta" class="ui-tabs-anchor"><span><?php i18n('META'); ?></span></a></li>
+                </ul>
+            </div>
+        </noscript>
+
+        <ul class="tab-list">
+            <li><a href="#page_content"><span><?php i18n('CONTENT'); ?></span></a></li>
+            <li><a href="#page_options"><span><?php i18n('OPTIONS'); ?></span></a></li>
+            <li><a href="#page_meta"><span><?php i18n('META'); ?></span></a></li>
+        </ul>
 
     <!-- ------- PAGE OPTIONS --------------------------------------------------- -->
             <div id="page_options" class="tab">
                 <fieldset>
                     <legend>Page Options</legend>
+                    <?php exec_action('edit-preoptions'); //@hook edit-preoptions before page edit options html output ?> 
                     <div class="wideopt">
                         <p>
                             <label for="post-titlelong"><?php i18n('TITLELONG'); ?>:</label>
@@ -373,7 +385,7 @@ if($newdraft) $pageClass.=' newdraft';
                             <input type="checkbox" id="post-menu-enable" name="post-menu-enable" <?php echo $sel_m; ?> />&nbsp;&nbsp;&nbsp;
                             <label for="post-menu-enable" ><?php i18n('ADD_TO_MENU'); ?></label>
                             <a href="navigation.php" class="viewlink" rel="fancybox" alt="<?php echo strip_tags(i18n_r('VIEW')); ?>" >
-                                <span class="fa fa-search icon-right" style="opacity:0.2"></span>
+                                <span style="opacity:0.2" class="icon-right"><?php echo getIcon("ICO_search"); ?></span>
                             </a>
                         </p>
                         <div id="menu-items">
@@ -417,16 +429,18 @@ if($newdraft) $pageClass.=' newdraft';
                     <?php exec_action('edit-extras'); //@hook edit-extras legacy alias for edit-options, after page edit options html output ?>        
                     <?php exec_action('edit-options'); //@hook edit-options after page edit options html output ?>        
                 </fieldset>
-            </div> 
+            </div>
             <!-- / END PAGE OPTIONS -->
 
     <!-- ------- PAGE CONTENT --------------------------------------------------- -->            
             <div id="page_content" class="tab">
                 <fieldset>
                 <legend>Page Content</legend>
+                <div style="display:none;" id="metadata_window" ></div> <!-- legacy, do not use -->
+                <?php exec_action('edit-precontent'); //@hook edit-precontent before page edit content html output ?> 
 
                     <label for="post-content" style="display:none;"><?php i18n('LABEL_PAGEBODY'); ?></label>
-                    <div class="codewrap"><textarea id="post-content" <?php echo getEditorAttribCallout('pages','boxsizingBorder'); echo $SAFEMODE ? 'readonly' : ''; ?>  name="post-content"><?php echo $content;  ?></textarea></div>
+                    <div class="codewrap"><textarea id="post-content" <?php if ($HTMLEDITOR) echo getEditorAttribCallout('pages','boxsizingBorder'); echo $SAFEMODE ? 'readonly' : ''; ?>  name="post-content"><?php echo $content;  ?></textarea></div>
 
                 <?php exec_action('edit-content'); //@hook edit-content after page edit content html output ?> 
 
@@ -446,15 +460,16 @@ if($newdraft) $pageClass.=' newdraft';
     <!-- ------- PAGE META OPTIONS --------------------------------------------------- -->
             <div id="page_meta" class="tab">
                 <fieldset>    
-                <legend>Page Meta</legend>                
-                <div class="leftopt">             
+                <legend>Page Meta</legend>
+                <?php exec_action('edit-premeta'); //@hook edit-premeta before page edit meta html output ?> 
+                <div class="leftopt">
                     <p class="inline clearfix">
                         <label for="post-metak"><?php i18n('TAG_KEYWORDS'); ?>:</label>
                         <input class="text short" id="post-metak" name="post-metak" type="text" value="<?php echo $metak; ?>" />
                     </p>
                     <p class="clearfix">
                         <label for="post-metad" class="clearfix"><?php i18n('META_DESC'); ?>: <span class="countdownwrap"><strong class="countdown" ></strong> <?php i18n('REMAINING'); ?></span></label>
-                        <textarea class="text short charlimit" data-maxLength='155' id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
+                        <textarea class="text short charlimit" data-maxLength='<?php echo getDef('GSMETADLEN'); ?>' id="post-metad" name="post-metad" ><?php echo $metad; ?></textarea>
                     </p>
                 </div>    
                 <div class="rightopt">
@@ -515,14 +530,15 @@ if($newdraft) $pageClass.=' newdraft';
     <?php if($url != '') { ?>
         <p class="editfooter"><?php 
             if (!$newdraft && isset($pubDate)) { 
-                echo '<span><i class="fa fa-clock-o"></i>';
-                    echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'. (empty($author) ? i18n_r('UNKNOWN') : $author.'</em>')) .' ' . output_datetime($pubDate).'</span>';
+                echo getIcon("ICO_timestamp");
+                echo "&nbsp;";
+                echo sprintf(($draft ? i18n_r('DRAFT_LAST_SAVED') : i18n_r('LAST_SAVED')), '<em>'. (empty($author) ? i18n_r('UNKNOWN') : $author.'</em>')) .' ' . output_datetime($pubDate).'</span>';
             }
             if ( $draft && fileHasBackup(GSDATADRAFTSPATH.$url.'.xml') ) {
-                echo '<span>&bull;</span><a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
+                echo '<span>&nbsp;&nbsp;&bull;</span><a href="backup-edit.php?p=view&amp;draft&amp;id='.$url.'" target="_blank" >'.getIcon("ICO_backup").'&nbsp;'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
             }
             else if( !$draft && fileHasBackup(GSDATAPAGESPATH.$url.'.xml') ) {
-                echo '<span>&bull;</span><span><a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" ><i class="fa fa-file-archive-o"></i>'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
+                echo '<span>&nbsp;&nbsp;&bull;</span><span><a href="backup-edit.php?p=view&amp;id='.$url.'" target="_blank" >'.getIcon("ICO_backup").'&nbsp;'.i18n_r('BACKUP_AVAILABLE').'</a></span>';
             }
         ?></p>
     <?php } ?>

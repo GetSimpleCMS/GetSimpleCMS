@@ -86,6 +86,7 @@ if(isset($_POST['submitted'])) {
 		$xmls->addChild('TEMPLATE', GSINSTALLTEMPLATE);
 		$xmls->addChild('PRETTYURLS', '');
 		$xmls->addChild('PERMALINK', '');
+		$xmls->addChild('EMAIL', $EMAIL);
 		$xmls->addChild('SITEUSR', $USR);
 		$xmls->addChild('SITEABOUT', '');
 		if (! XMLsave($xmls, GSDATAOTHERPATH . $file) ) {
@@ -209,7 +210,7 @@ get_template('header');
 				echo '<div class="error">'. $err .'</div>';
 			}
 			if ($random != ''){
-				echo '<div class="updated">'.i18n_r('NOTE_USERNAME').' <b>'. stripslashes($_POST['user']) .'</b> '.i18n_r('NOTE_PASSWORD').' <b>'. $random .'</b> &nbsp&raquo;&nbsp; <a href="support.php?updated=2">'.i18n_r('EMAIL_LOGIN').'</a></div>';
+				echo '<div class="updated">'.i18n_r('NOTE_USERNAME').'<b> '. stripslashes($_POST['user']) .'</b></br> '.i18n_r('NOTE_PASSWORD').' <b>'. $random .'</b></br> &nbsp&raquo;&nbsp; <a href="support.php?updated=2">'.i18n_r('EMAIL_LOGIN').'</a></div>';				
 				$_POST = null;
 			}
 

@@ -28,6 +28,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 	
 	$sourcePath = str_replace('/', DIRECTORY_SEPARATOR, GSROOTPATH);
 	if (!class_exists ( 'ZipArchive' , false)) {
+		debugLog("ziparchive not installed, falling back to ziparchive.php");
 		include('inc/ZipArchive.php'); // include zip archive shim
 	}
 	// attempt to use ziparchve class to create archive
@@ -41,12 +42,14 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 			    	);
 		
 		foreach($iter as $element) {
-		    /* @var $element SplFileInfo */
-		    $dir = str_replace($sourcePath, '', $element->getPath()) . DIRECTORY_SEPARATOR;
-		    if ( strstr($dir, $GSADMIN.DIRECTORY_SEPARATOR ) || strstr($dir, 'backups'.DIRECTORY_SEPARATOR )) {
-  				#don't archive these folders admin, backups, ..
-				} else if ($element->getFilename() != '..') { // FIX: if added to ignore parent directories
+		    /* @var $element SplFileInfo */		
+		    $dir = str_replace($sourcePath, '', $element->getPath().DIRECTORY_SEPARATOR); // strip root path
+			// debugLog($sourcePath." - ".$element->getPath()." - ".$dir);
+		    if ( strstr($dir, $GSADMIN.DIRECTORY_SEPARATOR ) || strstr($dir, 'backups'.DIRECTORY_SEPARATOR )) {}
+			else if(empty($dir) && !getDef('GSBACKUPROOT',true)){}
+			else if ($element->getFilename() != '..') { // FIX: if added to ignore parent directories
 				  if ($element->isDir()) {
+				  	 debugLog($dir);
 				     $archiv->addEmptyDir($dir);
 			    } elseif ($element->isFile()) {
 			        $file         = $element->getPath() .
@@ -55,7 +58,7 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 			        // add file to archive 
 			        $archiv->addFile($file, $fileInArchiv);
 			    }
-			  }
+			}
 		}
 
 		// check if file exists, close will fail if bad file added, addfile always returns true
@@ -64,9 +67,9 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		
 		// @todo testing custom extra files, will need a iter wrapper to get dirs, will add extra files to root
 		if(getDef('GSBACKUPEXTRAS',true)){
-			$extras = explode(',',getDef('GSBACKUPEXTRAS'));
-			foreach($extras as $extra){		
-				if(file_exists($extra)) $archiv->addFile($extra,basename($extra));
+			$extras = getDef('GSBACKUPEXTRAS',false,true);
+			foreach($extras as $extra){
+				if(file_exists($extra)) $archiv->addFile($extra);
 			}
 		}
 
@@ -78,14 +81,17 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 		}
 		
 	} else {
+		debugLog("ziparchive class failed");
 		// ziparchive non existant
-		$zipcreated = false;	
+		$zipcreated = false;
 	}
 	if (!$zipcreated) {
+		debugLog("ziparchive create failed");
 		// fallback to exec tar -cvzf
 		$zipcreated = archive_targz();
 	}
 	if (!$zipcreated) {
+		debugLog("ziparchive exec create failed");
 		// nothing worked, I give up
 		redirect('archive.php?nozip');
 	} 

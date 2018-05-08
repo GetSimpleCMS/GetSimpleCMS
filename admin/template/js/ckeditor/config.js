@@ -5,7 +5,7 @@
 CKEDITOR.editorConfig = function( config )
 {
 	// Define changes to default configuration here.
-	config.skin                        = 'getsimple'; // clone of moono color
+	config.skin                        = 'getsimple'; // clone of moono
 	
 	config.defaultLanguage             = 'en';
 	config.resize_dir                  = 'vertical'; // vertical resize
@@ -44,7 +44,7 @@ CKEDITOR.editorConfig = function( config )
 	}
 
 	var extraPlugins = new Array();
-	extraPlugins.push('codesnippet');         // (included) enables code insertion, toolbar id 'CodeSnippet'
+	// extraPlugins.push('codesnippet');         // (included) enables code insertion, toolbar id 'CodeSnippet'
 	
 	/**
 	 * testing additional plugins
@@ -57,7 +57,8 @@ CKEDITOR.editorConfig = function( config )
 	/*
 	 * testing ckeditor drag drop image uploading
 	 * PLUGINS NOT INCLUDED
-	 * /
+	 */
+	
 	// config.uploadUrl = "../admin/upload.php";
 	// extraPlugins.push('uploadimage');         // testing drag drop uploads 
 	// extraPlugins.push('uploadwidget');        // dependancy

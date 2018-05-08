@@ -72,25 +72,33 @@
  * This operates on the entire array and is therefore more efficient than doing
  * heavy conversions or comparisons inside a comparison callback
  * eg. 
- *   function prepare_pubDate($page,$key){
+ *   function prepare_date($page,$key){
  *       return strtotime($key);
  *   }
- *   $pagesSorted = sortCustomIndexCallback($pagesArray,'pubDate','prepare_pubDate');
+ *   $pagesSorted = sortCustomIndexCallback($pagesArray,'pubDate','prepare_date');
+ *   
+ * CONS: Will only be able to sort keyed arrays
+ *
+ * @todo   why is preparer arg2 $item[$key] value when it is already contained inside it ( I must have added this later on ), should pass $key instead
  * @param  array $pages   input multi array
- * @param  str $key       array key to sort by
+ * @param  str $key       array key to sort by, if prepare function used key is used for arg2
  * @param  str $prepare   callback function for each subarray
  * @return array          returns array sorted by key or prepared sort index
  */
 function sortCustomIndexCallback($array,$key=null,$prepare=null){
 	$sortvalue = array();
 
+	if(!$array){
+		debugLog("sort array is empty");
+		return;
+	}
 	if(isset($prepare) && function_exists($prepare)){
-		foreach($array as $sortkey=>$page){
-			if(isset($key)) $sortvalue[$sortkey] = $prepare($page,$page[$key]);
-			else $sortvalue[$sortkey] = $prepare($page);
+		foreach($array as $sortkey=>$item){
+			if(isset($key)) $sortvalue[$sortkey] = $prepare($item,$item[$key]);
+			else $sortvalue[$sortkey] = $prepare($item);
 		}
 	}
-	// _debugLog($sortvalue);
+	// debugLog($sortvalue);
 	return sortCustomIndex($array,$key,$sortvalue);
 }
 
@@ -100,13 +108,13 @@ function sortCustomIndexCallback($array,$key=null,$prepare=null){
  * 
  * array['id'] = array[$key]
  * @since  3.4
- * @param  array $array     multidimensional array to sort
- * @param  str   $key       (optional) sub array key to sort by
+ * @param  array $array     keyed multidimensional array to sort
+ * @param  str   $key       (optional) sub array key to sort by, unused if sortindex supplied
  * @param  array $sortindex (optional) key value array for sorting $array
  * @param  str   $compare   (optional) comparison function
  * @return array            $array sorted by sortindex or key
  */
-function sortCustomIndex($array, $key=null, $sortindex = array(), $compare = 'strnatcmp'){	
+function sortCustomIndex($array, $key=null, $sortindex = array(), $compare = 'strnatcasecmp'){	
 	
 	if(!$sortindex && isset($key)){
 		$sortindex = array_column($array,$key,'url');
@@ -164,20 +172,24 @@ function inPlaceKeySort($array,$sort,$keyed = true){
 
 
 /**
- * sort multidimensional array by subarray
+ * sort multidimensional array by subarray key value
+ * @todo  add php 5.4 multisort(,,SORT_NATURAL)
  * @param  str $pages array
  * @param  str $key   keyname to sort by
  * @return array      sorted array
  */
-function sortKey($array,$key){
-	// return subval_sort($pagesArray,$key);
+function sortKey($array,$key, $sortfunc = "custom_strnatcasecmp"){
 	GLOBAL $sortkey;
 	$sortkey = $key;
     function custom_sort($a,$b) {
     	GLOBAL $sortkey;
        	return $a[$sortkey]>$b[$sortkey];
     }
-    uasort($array, "custom_sort");
+    function custom_strnatcasecmp($a,$b) {
+        GLOBAL $sortkey;
+        return strnatcasecmp($a[$sortkey],$b[$sortkey]);
+    }
+    uasort($array, $sortfunc);
     unset($sortkey);
     return $array;
 }
@@ -203,6 +215,7 @@ function sortParentTitle($pages){
 
 // sort by "parent-title / page-title"
 // test using multi sort 
+// @note array_multisort works normally in php 5.3, but it forces arguments to be references.
 function sortParentTitleMulti($pages){
 	$sort = array();
 	foreach($pages as $slug => $page) {
@@ -239,22 +252,151 @@ function sortPageFunc($pages,$func=null){
 }
 
 /**
- * reindex PAGES
- * will reset keys from url,
- * if you have a pagesarray that lost its keys after
- * using a function that does not maintain key indexes
- * @param  array  $pages PAGES, else use pagesArray
- * @return array  	     PAGES rekeyed
+ * strcmp comparison
+ * @param  str $a string to compare
+ * @param  str $b string to compare
+ * @return strcmp return function <0 0 0>
  */
-function reindexPages($pages = array()){
-	if(!$pages){
-		GLOBAL $pagesArray;
-		$pages = $pagesArray;
-	}	
-	reindexArray($pages,'url');
+function sortStriCmp($a,$b){
+	return strcmp(lowercase($a),lowercase($b));
 }
 
-// use array_column with null key to rekey an array
-function reindexArray($array,$key){
-	array_column($array,null,$key);
+
+/**
+ * slug comparison
+ * @param  str $a string to compare
+ * @param  str $b string to compare
+ * @return strcmp return function <0 0 0>
+ */
+function sortSlugiCmp($a,$b){
+	return strcmp(lowercase($a->slug),lowercase($b->slug));
+}
+
+/**
+ * Sub-Array Sort, legacy
+ * uses mutiple loops, not very optimized
+ *
+ * Sorts the passed array by a subkey
+ *
+ * @since 1.0
+ *
+ * @param array $a
+ * @param string $subkey Key within the array passed you want to sort by
+ * @param string $order - order 'asc' ascending or 'desc' descending
+ * @param bool $natural - sort using a "natural order" algorithm
+ * @return array
+ */
+function subval_sort($a,$subkey, $order='asc',$natural = true) {
+	if (count($a) != 0 || (!empty($a))) { 
+		foreach($a as $k=>$v) {
+			if(isset($v[$subkey])) $b[$k] = lowercase($v[$subkey]);
+		}
+
+		if(!isset($b)) return $a;
+
+		if($natural){
+			natsort($b);
+			if($order=='desc') $b = array_reverse($b,true);	
+		} 
+		else {
+			($order=='asc')? asort($b) : arsort($b);
+		}
+		
+		foreach($b as $key=>$val) {
+			$c[$key] = $a[$key];
+		}
+
+		return $c;
+	}
+	return array();
+}
+
+/**
+ * SAMPLES for TESTING
+ * sort preparers
+ * @todo : not sure why I chose to pass in $key and $page, $page will always contain $key
+ * probably can be removed now
+ */
+
+/**
+ * prepare pubDate strtotime it for sorting
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
+ */
+function prepare_date($page,$key){
+	return strtotime($key);
+}
+
+/**
+ * sort preparer by menuOrder
+ * menu order=0 or ""  or menuStatus=Y are lowest priority
+ * (pages are saved with 0 as default for none, and are not in the menu manager)
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
+ */
+function prepare_menuOrder($page,$key){
+	$key = trim($key);
+	if(empty($key) && $page['menuStatus'] == 'Y') return 0;
+	if((int)$key == 0 && $page['menuStatus'] !== 'Y') return 99999;
+	return (int)$key;
+}
+
+
+/**
+ * sort preparer for path titles
+ * "parenttitle parenttitle pagetitle"
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
+ */
+function prepare_pagePathTitles($page,$key){
+	$menuOrder = prepare_menuOrder($page,$key);
+	// parent title/parent title/slug title
+	return $menuOrder .= ' ' .getPagePathField($page['url'],'title');
+}
+
+/**
+ * sort preparer parent title
+ * "parentitle pagetitle"
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
+ */
+function prepare_parentTitle($page,$key){
+	if ($page['parent'] != '') { 
+		$parentTitle = returnPageField($page['parent'], "title");
+		return lowercase($parentTitle .' '. $key);		
+	} 
+	else {
+		return lowercase($key);
+	}
+} 
+
+/**
+ * sort preparer for menuorder parent title
+ * menuorder parenttitle pagetitle
+ * "0 parent slug"
+ * @param  array $page page array
+ * @param  str   $key  key of field
+ * @return str         prepared string
+ */
+function prepare_menuOrderParentTitle($page,$key){
+	return prepare_menuOrder($page,$page['menuOrder']) . ' ' . prepare_parentTitle($page,$key);
+}
+
+
+/**
+ * SORT WRAPPER FUNCS
+ * page sorts with predefined sort preparers
+ */
+
+function getPagesSortedByMenuTitle(){
+	return sortCustomIndexCallback(getpages(),'title','prepare_menuOrderParentTitle');
+}
+
+
+function getPagesSortedByMenu(){
+	return sortCustomIndex(getpages(),'menuOrder');
 }

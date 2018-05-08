@@ -35,30 +35,6 @@ $counter     = 0;
 $table       = '';
 $needsupdate = false;
 
-
-/**
- * update plugin_info with additional info from api
- */
-function plugin_info_update(){
-	GLOBAL $plugin_info;
-
-	foreach($plugin_info as $key=>$plugin){
-		$api_data   = json_decode(get_api_details('plugin', $key.'.php',getDef('GSNOPLUGINCHECK',true)));
-		
-		// on api success
-		if (is_object($api_data) && $api_data->status == 'successful') {
-			$apiver     = $api_data->version;
-			$apipath    = $api_data->path;
-			$apiname    = $api_data->name;
-
-			$plugin_info[$key]['name']    = $apiname;
-			// $plugin_info[$key]['apiname'] = $apiname;
-			$plugin_info[$key]['apipath'] = $apipath;
-			$plugin_info[$key]['apiver']  = $apiver;
-		}
-	}
-}
-
 plugin_info_update();
 $plugin_info_sorted = subval_sort($plugin_info,'name');
 
@@ -69,13 +45,15 @@ foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
 	$pluginver  = $plugininfo['version'] == 'disabled' ? 0 : $plugininfo['version'];
 
 	if (pluginIsActive($pluginid)) {
-		$cls_Enabled  = 'hidden';
+		// $cls_Enabled  = 'hidden';
 		$cls_Disabled = '';
 		$trclass      = 'enabled';
+		$icon         = '<a href="plugins.php?set='.$pluginid.$setNonce.'" title="'.i18n_r('DISABLE').'">'.getIcon("ICO_plugon").'</a>';
 	} else {
 		$cls_Enabled  = '';
-		$cls_Disabled = 'hidden';
+		// $cls_Disabled = 'hidden';
 		$trclass      = 'disabled';
+		$icon         = getIcon("ICO_plugoff");
 	}
 
 	// get extend api for this plugin filename
@@ -98,7 +76,7 @@ foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
 	}
 
 	$table .= '<tr id="tr-'.$counter.'" class="'.$trclass.'" >';
-	$table .= '<td style="width:150px" class="break" ><b>'.$plugin_title.'</b></td>';
+	$table .= '<td class="title break" >'.$icon.'&nbsp;&nbsp;<b>'.$plugin_title.'</b></td>';
 	$table .= '<td class="break"><span>'.$plugininfo['description'].'</span>'; // desc empty if inactive
 
 	// if plugin is active, show what we know from register_plugin, version , author
@@ -106,10 +84,10 @@ foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
 		$table .= '<span><br /><b>'.i18n_r('PLUGIN_VER') .' '. $pluginver.'</b> &mdash; '.i18n_r('AUTHOR').': <a href="'.$plugininfo['author_url'].'" target="_blank">'.$plugininfo['author'].'</a></span>';
 	}
 
-  	$table.= $updatelink.'</td><td style="width:60px;" class="status" >
-  		<a href="plugins.php?set='.$pluginid.$setNonce.'" class="toggleEnable '.$cls_Enabled.'" style="padding: 1px 3px;" title="'.i18n_r('ENABLE').': '.$plugininfo['name'] .'" >'.i18n_r('ENABLE').'</a>
-  		<a href="plugins.php?set='.$pluginid.$setNonce.'" class="cancel toggleEnable '.$cls_Disabled.'" title="'.i18n_r('DISABLE').': '.$plugininfo['name'] .'" >'.i18n_r('DISABLE').'</a>
-  	</td>';
+  	$table.= $updatelink.'</td><td class="status" >';
+	if(!pluginIsActive($pluginid)) $table.= '<a href="plugins.php?set='.$pluginid.$setNonce.'" class="toggleEnable '.$cls_Enabled.'" style="padding: 1px 3px;" title="'.i18n_r('ENABLE').': '.$plugininfo['name'] .'" >'.i18n_r('ENABLE').'</a>';
+	else $table.= '<a href="plugins.php?set='.$pluginid.$setNonce.'" class="cancel toggleEnable '.$cls_Disabled.'" title="'.i18n_r('DISABLE').': '.$plugininfo['name'] .'" >'.i18n_r('DISABLE').'</a>';
+  	$table .= '</td>';
 
 	$table .= "</tr>\n";
 	$counter++;

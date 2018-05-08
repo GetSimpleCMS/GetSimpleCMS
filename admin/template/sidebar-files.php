@@ -33,6 +33,7 @@ $fileSizeLimitMB = toBytesShorthand(getMaxUploadSize(),'M',true);
 			<div id="queue-item-template">
 				<div class="queue-item-wrap">
 					<div class="queue-item dz-preview dz-file-preview">
+						<img data-dz-thumbnail>
 						<div class="dz-filename">
 					    	<span class="dz-process-mark"><span>&#x25ba;</span> </span>
 					    	<span class="dz-success-mark"><span>&#x2713;</span> </span>
@@ -55,7 +56,7 @@ $fileSizeLimitMB = toBytesShorthand(getMaxUploadSize(),'M',true);
 	</li>
 
 	<li id="gs-dropzone" class="uploaddropzone dispupload">
-		<i class="fa fa-fw fa-upload unselectable"></i>
+		<?php echo getIcon("SM_upload"); ?>
 		<span class="dz-message unselectable"><?php i18n('DROP_FILES'); ?></span>
 	</li>
 	

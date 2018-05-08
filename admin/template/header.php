@@ -19,10 +19,12 @@ if( $GSSTYLE_sbfixed )          $bodyclass .= " sbfixed";
 if( $GSSTYLE_wide )             $bodyclass .= " wide";
 if( $SAFEMODE )                 $bodyclass .= " safemode";
 if( getDef("GSTHUMBSSHOW",true))$bodyclass .= " forcethumbs";
+if( getDef("GSPAGETABS",true))  $bodyclass .= " tabs";
+if( getDef('GSNOSIDEBAR',true) && in_array(get_filename_id(),getDef('GSNOSIDEBAR',false,true))) $bodyclass .= " nosidebar";	
 
 if( !$SAFEMODE && getDef('GSAJAXSAVE',true) ) $bodyclass .= " ajaxsave"; // ajaxsave enabled if GSAJAXSAVE and not SAFEMODE
 
-if(get_filename_id()!='index') exec_action('admin-pre-header'); // @hook admin-pre-header backend before header output
+if(!isPage('index')) exec_action('admin-pre-header'); // @hook admin-pre-header backend before header output
 
 if(!isset($pagetitle)) $pagetitle = i18n_r(get_filename_id().'_title');
 $title = $pagetitle.' &middot; '.cl($SITENAME);
@@ -81,26 +83,25 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 		queue_script('gscodeeditor', GSBACK);
 	}
 
-	// load gshtmleditor
-	if( ((get_filename_id()=='snippets') || (get_filename_id()=='edit') || (get_filename_id()=='backup-edit')) && getGlobal('HTMLEDITOR')){
+	if( (isPage('snippets') || isPage('edit') || isPage('backup-edit')) && getGSVar('HTMLEDITOR') ){
 		queue_script('gshtmleditor',GSBACK);
 	}
 
 	// load gsuploader
-	if( ((get_filename_id()=='upload') || (get_filename_id()=='filebrowser') || (get_filename_id()=='image')) && (getDef('GSUSEGSUPLOADER',true)) ){
+	if( (isPage('upload') || isPage('filebrowser') || isPage('image')) && (getDef('GSUSEGSUPLOADER',true)) ){
 		queue_script('gsuploader',GSBACK);
 	}
 
 	// load gscrop image editor
-	if(get_filename_id()=='image'){
+	if(isPage('image')){
 		queue_script('gscrop',GSBACK);
 		queue_style('gscrop',GSBACK);
 	}
 	
     // HTMLEDITOR INIT
     // ckeditor contentsCss(editor.css) from theme
-    if (file_exists(GSTHEMESPATH .getGlobal('TEMPLATE')."/editor.css")) {
-        $CKEcontentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGlobal('TEMPLATE').'/editor.css';
+    if (file_exists(GSTHEMESPATH .getGSVar('TEMPLATE')."/editor.css")) {
+        $CKEcontentsCss = $SITEURL.getRelPath(GSTHEMESPATH).getGSVar('TEMPLATE').'/editor.css';
     }
     // ckeditor contentsCss(contents.css) override from user
     if (file_exists(GSTHEMESPATH .getDef('GSEDITORCSSFILE'))) {
@@ -145,7 +146,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
             echo '		var editorTheme = "'.$editor_theme."\";\n";
         }
 
-        if(get_filename_id()=='edit' && isAutoSave()){
+        if(isPage('edit') && isAutoSave()){
         	$autosaveintvl = getdef('GSAUTOSAVEINTERVAL');
         	echo "		// edit autosave\n";
         	echo '		var GSAUTOSAVEPERIOD = ' . (!is_int($autosaveintvl) ? 10 : $autosaveintvl).";\n";
@@ -162,14 +163,14 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
         }
 
         var htmlEditorConfig = {
-            language                     : '<?php echo getGlobal('EDLANG'); ?>',
+            language                     : '<?php echo getGSVar('EDLANG'); ?>',
 <?php       if(!empty($CKEcontentsCss)) echo "contentsCss                   : '$CKEcontentsCss',"; ?>
 <?php       if(!empty($CKEconfigjs))    echo "customConfig                  : '$CKEconfigjs',"; ?>
 <?php       if(!empty($CKEstyleSet))    echo "stylesSet                     : '$CKEstyleSet',"; ?>
-            height                       : '<?php echo getGlobal('EDHEIGHT'); ?>',
-            baseHref                     : '<?php echo getGlobal('SITEURL'); ?>'
-            <?php if(getGlobal('EDTOOL')) echo ",toolbar: " . returnJsArray(getGlobal('EDTOOL')); ?>
-<?php       if(getGlobal('EDOPTIONS')) echo ','.trim(getGlobal('EDOPTIONS')); ?>
+            height                       : '<?php echo getGSVar('EDHEIGHT'); ?>',
+            baseHref                     : '<?php echo getGSVar('SITEURL'); ?>'
+            <?php if(getGSVar('EDTOOL')) echo ",toolbar: " . returnJsArray(getGSVar('EDTOOL')); ?>
+<?php       if(getGSVar('EDOPTIONS')) echo ','.trim(getGSVar('EDOPTIONS')); ?>
 			<?php if(getDef("GSCKETSTAMP",true)) echo ",timestamp : '".getDef("GSCKETSTAMP") . "'\n"; ?>
         };
 
@@ -179,7 +180,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
         }
 
        <?php 
-       if(get_filename_id() == 'snippets') echo "htmlEditorConfig.height = '130px';"; ?>
+       if(isPage('snippets')) echo "htmlEditorConfig.height = '130px';"; ?>
 
     </script>
 
@@ -204,12 +205,26 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 
 <noscript>
 	<style>
-		.tab{ display:block; clear:both;}
-		.tab fieldset legend{ display: block; }
+		body.tabs .tab{ display:block; clear:both;}
+		body.tabs .tab fieldset legend{ display: block; }
 		#cm_themeselect, #cm_themeselect_label { display:none;}
 		#theme_filemanager ul ul {
 			display: block;
 		}
+
+        #tabs .ui-tabs {
+            margin-bottom:15px;
+        }
+
+		#page_content fieldset{
+			margin: 0 2px 10px 0;
+			background: #f9f9f9;
+			border: 1px solid #e8e8e8;
+			padding: 15px 10px 5px 10px;
+			border-radius: 2px;
+			/*text-shadow: 1px 1px 0 rgba(255,255,255,.3);*/
+		}
+
 	</style>
 </noscript>
 

@@ -11,8 +11,8 @@
  */
 
  	// do not use these alerts if ajax requests as they will not be seen, and interfere with other alerts
-	if ( !requestIsAjax() && $SAFEMODE == 1 ) {
-		if(getDef('GSSAFEMODE',true)) doNotify(i18n_r('ER_SAFEMODE'),'error',true);
+	if ( !requestIsAjax() && $SAFEMODE) {
+		if(getDef('GSSAFEMODE',true)) doNotify(i18n_r('ER_SAFEMODE'),'error',true); // cannot disable if set via gsconfig
 		else doNotify(i18n_r('ER_SAFEMODE').', <a href="?safemodeoff">'.i18n_r('DISABLE').'</a>','error',true);
 	}
 
@@ -129,9 +129,11 @@
 			doNotify('<b>'.i18n_r('ERROR').':</b> '.i18n_r('ER_PROBLEM_DEL').'.','error');
 		if(!$dbn) break;
 		case 'comp-success':
+		case 'component-success':
 			doNotify(i18n_r('ER_COMPONENT_SAVE').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success',true);
 		if(!$dbn) break;
 		case 'comp-restored':
+		case 'component-restored':
 			doNotify(i18n_r('ER_COMPONENT_REST').'. <a href="components.php?undo&nonce='.get_nonce("undo").'">'.i18n_r('UNDO').'</a>','success',true);
 		if(!$dbn) break;
 		case 'snippet-success':

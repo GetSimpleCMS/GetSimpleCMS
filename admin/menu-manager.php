@@ -96,7 +96,7 @@ get_template('header');
 							var cat = $(this).attr('rel');
 							order = order+','+cat;
 						});
-						$('[name=menuOrder]').val(order);
+						$('[name=menuOrder]').val(order).change(); // set val, fire change for form watcher
 					}
 				});
 				$("#menu-order").disableSelection();

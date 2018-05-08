@@ -44,6 +44,7 @@
  *	       'line'     => DEBUG caller line obtained from backtrace	       
  *	);
  *
+ * 	$pluginHooks[$hook_name][$priority][] = &$plugins[count($hook_array)-1]; # add ref to global plugin hook hash array
 */
 
 /**
@@ -62,12 +63,12 @@ function loadPluginData(){
 	// Check if data\other\plugins.xml exists 
 	if (!file_exists(GSDATAOTHERPATH.getDef('GSPLUGINSFILE'))){
 		create_pluginsxml();
-		registerInactivePlugins(get_filename_id() == 'plugins');
+		registerInactivePlugins(isPage('plugins'));
 		return true;
 	}
 
 	read_pluginsxml();  // get the live plugins into $live_plugins array
-	if(!is_frontend()) create_pluginsxml(get_filename_id() == 'plugins');  // only on backend check that plugin files have not changed, and regen
+	if(!is_frontend()) create_pluginsxml(isPage('plugins'));  // only on backend check that plugin files have not changed, and regen
 	
 	registerInactivePlugins();
 
@@ -96,16 +97,20 @@ function loadPluginData(){
 function registerInactivePlugins($apilookup = false){
 	GLOBAL $live_plugins,$SAFEMODE;
 	// load plugins into $plugins_info
-
+	$maxapi = 5; // api limit	
+	$cnt    = 0;
 	foreach ($live_plugins as $file=>$en) {
 		// debugLog("plugin: $file" . " exists: " . file_exists(GSPLUGINPATH . $file) ." enabled: " . $en); 
 		if ($en!=='true' || !file_exists(GSPLUGINPATH . $file) || $SAFEMODE){
 			if($apilookup){
 				// check api to get names of inactive plugins etc.
-	  $apiback = get_api_details('plugin', $file, getDef('GSNOPLUGINCHECK',true));
-		  		$response = json_decode($apiback);
-		  		if ($response and $response->status == 'successful') {
-					register_plugin( pathinfo_filename($file), $response->name, 'disabled', $response->owner, '', i18n_r('PLUGIN_DISABLED'), '', '');
+				$cached   = getDef('GSNOPLUGINCHECK',true) || $cnt>$maxapi;
+		  		$api_data = json_decode(get_api_details('plugin', $file, $cached));
+				if(is_object($api_data) && !isset($api_data->cached)) $cnt++;
+				
+				// on api success
+		  		if ($api_data and $api_data->status == 'successful') {
+					register_plugin( pathinfo_filename($file), $api_data->name, 'disabled', $api_data->owner, '', i18n_r('PLUGIN_DISABLED'), '', '');
 		  		} else {
 					register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', i18n_r('PLUGIN_DISABLED'), '', '');
 		  		}
@@ -113,6 +118,32 @@ function registerInactivePlugins($apilookup = false){
 			} else {
 				register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', i18n_r('PLUGIN_DISABLED'), '', '');
 			}  
+		}
+	}
+}
+
+/**
+ * update plugin_info with additional info from api
+ */
+function plugin_info_update(){
+	GLOBAL $plugin_info;
+	$maxapi = 5; // api limit
+	$cnt    = 0;
+	foreach($plugin_info as $key=>$plugin){
+		$cached   = getDef('GSNOPLUGINCHECK',true) || $cnt>$maxapi;
+		$api_data = json_decode(get_api_details('plugin', $key.'.php',$cached));
+		if(is_object($api_data) && !isset($api_data->cached)) $cnt++;
+
+		// on api success
+		if (is_object($api_data) && $api_data->status == 'successful') {
+			$apiver     = $api_data->version;
+			$apipath    = $api_data->path;
+			$apiname    = $api_data->name;
+
+			$plugin_info[$key]['name']    = $apiname;
+			// $plugin_info[$key]['apiname'] = $apiname;
+			$plugin_info[$key]['apipath'] = $apipath;
+			$plugin_info[$key]['apiver']  = $apiver;
 		}
 	}
 }
@@ -292,15 +323,17 @@ function create_pluginsxml($force=false){
  *
  * @param string $id ID of the link you are adding
  * @param string $txt Text to add to tabbed link
+ * @param bool $always always show tab , else only show if current
+ * @param string $icon pass in custom icons class fa-iconclass 
  */
 
-function createSideMenu($id, $txt, $action = null, $always = true){
+function createSideMenu($id, $txt, $action = null, $always = true, $icon = ""){
 	$current = false;
 	if (isset($_GET['id']) && $_GET['id'] == $id && (!$action || isset($_GET[$action]))) {
 		$current = true;
 	}
 	if ($always || $current) {
-		echo '<li id="sb_'.$id.'" class="plugin_sb"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
+		echo '<li id="sb_'.$id.'" class="plugin_sb"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.(empty($icon) ? getIcon("SM_load") : getIcon("SM_",$icon))." ".$txt.'</a></li>';
 	}
 }
 
@@ -312,18 +345,20 @@ function createSideMenu($id, $txt, $action = null, $always = true){
  * @since 2.0
  * @uses $plugins
  *
- * @param string $id Id of current page
+ * @param string $id Id of current page for load.php?id
  * @param string $txt Text to add to tabbed link
- * @param string $klass class to add to a element
+ * @param string $class class to add to a element
+ * @param string $action query string action for load.php?&acton
+ * @param string $icon pass in custom icons class fa-iconclass
  */
-function createNavTab($tabname, $id, $txt, $action = null) {
+function createNavTab($tabname, $id, $txt, $action = null, $icon = "") {
 	global $plugin_info;
 	$current = false;
 	if (basename(getScriptFile()) == 'load.php') {
 		$plugin_id = @$_GET['id'];
 		if ($plugin_info[$plugin_id]['page_type'] == $tabname) $current = true;
 	}
-	echo '<li id="nav_'.$id.'" class="plugin_tab"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
+	echo '<li id="nav_'.$id.'" class="plugin_tab"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.(empty($icon) ? getIcon("TAB_load") : getIcon("TAB_",$icon))." ".$txt.'</a></li>';
 }
 
 /**
@@ -366,6 +401,11 @@ function addPlugindebugging(&$array){
 
 	$skip          = 1; // levels to this function, from add_action/add_filter
 	$shift         = 3; // levels to plugin include, from common.php
+	
+	// call_user_func and call_user_func_array missing in php 7
+	if(version_compare(PHP_VERSION, '7.0.0', '>=')) {
+	    $shift--;
+	}
 
 	$_bt           = debug_backtrace();
 	$bt            = array_slice($_bt,$skip,count($_bt)-$shift);
@@ -416,6 +456,9 @@ function remove_action($hook_name,$hook_function){
  * @param string $a Name of hook to execute
  */
 function exec_action($a) {
+
+	if(getDef("GSUSELEGACYPLUGINS",true)) return exec_action_legacy($a);
+
 	global $plugins,$pluginHooks;
  	return exec_hook($plugins, $pluginHooks, $a, 'exec_action_callback');
 }
@@ -459,9 +502,11 @@ function remove_filter($filter_name,$hook_function){
  * @uses $filters
  *
  * @param string $script Filter name to execute
- * @param array $data
+ * @param array $data arguments for callback
  */
 function exec_filter($filter_name,$data=array()) {
+	if(getDef("GSUSELEGACYPLUGINS",true))  return exec_filter_legacy($filter_name,$data);
+
 	global $filters,$pluginFilters;
  	$res = exec_hook($filters, $pluginFilters, $filter_name, 'exec_filter_callback', $data, 'exec_filter_complete');
  	return ($res === null) ? $data : $res;
@@ -629,20 +674,20 @@ function prepareHookCallbackArgs($hook,$args){
  * @param int $priority order of execution of hook, lower numbers execute earlier
  */
 function add_hook(&$hook_array, &$hook_hash_array, $hook_name, $hook_function, $args = array(), $priority = null, $expectedargs = 0) {
-	
-	if(isset($priority) && !is_int($priority)){
+	$_priority = $priority; // copy arg, so backtrace does not reflect current value, see PHP7 changes
+	if(isset($_priority) && !is_int($_priority)){
 		debugLog(__FUNCTION__ . ': invalid priority');
-		$priority = null;
+		$_priority = null;
 	}
 
-	if($priority === 0) $priority = 1; # fixup 0 
-	clamp($priority,1,10,10); # clamp priority, min:1, max:10, default:10
+	if($_priority === 0) $_priority = 1; # fixup 0 
+	clamp($_priority,1,10,10); # clamp priority, min:1, max:10, default:10
 
 	$hook = array(
 		'hook'     => $hook_name,
 		'function' => $hook_function,
 		'args'     => (array) $args,
-		'priority' => $priority,
+		'priority' => $_priority,
 		'numargs'  => $expectedargs,
 	);
 	addPlugindebugging($hook); # add debug info , file, line, core
@@ -689,12 +734,19 @@ function remove_hook(&$hook_hash_array, $hook_name, $hook_function){
 
 
 /**
- * Execute hook wrapper
+ * Execute hook from hook_hash_array ($pluginHooks)
+ * Loop hook hash array, sorting by priority
+ * 
+ * eg. $res = exec_hook($filters, $pluginFilters, $filter_name, 'exec_filter_callback', $data, 'exec_filter_complete');
+ * eg. $res = exec_hook($plugins, $pluginHooks, $hookname, 'exec_action_callback');
  * INTERNAL USE ONLY
  * @since 3.4
- * @param array $hook_array hook array
+ * @param array $hook_array hook array ( not used )
  * @param array $hook_hash_array hook hash array
  * @param string $hook_name name of hook to execute
+ * @param string $callback
+ * @param string $data
+ * @param string $complete
  * @return returns hook callback result
  */
 function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', $data = array(), $complete = '') {
@@ -703,12 +755,13 @@ function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', 
 		return;
 	}
 
-	if(!isset($hook_hash_array[$hook_name]) || !$hook_hash_array[$hook_name]) return;
-	
+	// skip if there is no action for this hook
+	if(!isset($hook_hash_array[$hook_name]) || !$hook_hash_array[$hook_name]){
+		return;
+	}
 	// use ref to keep subarray priority sorts, in case we wanted to reuse again, 
 	// probably sorts faster when ordered also
 	$hooks = &$hook_hash_array[$hook_name];
-	// _debugLog($hooks);
 	// if there is only one hook call it, skip sort and looping
 	if(count($hooks) == 1){
 		// since we do not know the priority index key
@@ -737,6 +790,59 @@ function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', 
 	if(function_exists($complete)) return $complete($data);
 	return $res;
 
+}
+
+
+
+/**
+ * Execute Action
+ *
+ * @since 2.0
+ * @uses $plugins
+ *
+ * @param string $a Name of hook to execute
+ */
+function exec_action_legacy($a) {
+	global $plugins;
+
+	if(!$plugins){
+		debugLog("plugins array is empty");
+		return;
+	}
+	
+	foreach ($plugins as $hook)	{
+		if ($hook['hook'] == $a) {
+			call_user_func_array($hook['function'], $hook['args']);
+		}
+	}
+}
+
+/**
+ * Execute Filter
+ *
+ * Allows changing of the passed variable
+ *
+ * @since 2.0
+ * @uses $filters
+ *
+ * @param string $script Filter name to execute
+ * @param array $data
+ */
+function exec_filter_legacy($script,$data=array()) {
+	global $filters;
+	
+	if(!$filters){
+		debugLog("filters array is empty");
+		return $data;
+	}
+
+	foreach ($filters as $filter)	{
+		// new array uses hook NOT filter index
+		if ((isset($filter['filter']) && $filter['filter'] == $script) || (isset($filter['hook']) && $filter['hook'] == $script)) {
+			$data = call_user_func_array($filter['function'], array($data));
+		}
+	}
+	return $data;
 }
 
 

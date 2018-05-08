@@ -8,7 +8,7 @@ body{
 	margin:0 15px;
 }
 
-body .header{
+body #header{
 	margin-left: -15px;
 	padding: 0 15px;
 	margin-right: -15px;
@@ -23,6 +23,11 @@ body .header{
 <?php echo $widepagecss; ?>
 
 .wrapper .nav{
+	/* top header nav wrapper */
+	width:75%;
+}
+
+.wrapper .nav.secondary{
 	/* top header nav wrapper */
 	width:100%;
 }
@@ -79,11 +84,11 @@ body .header{
 	/*margin-right:15px;*/
 }
 
-#theme-edit #header .wrapper  {
+body.nosidebar #header .wrapper  {
 	width:100%;
 }
 
-#theme-edit #maincontent .main {
+body.nosidebar #maincontent .main {
 	margin-right: 0;
 }
 

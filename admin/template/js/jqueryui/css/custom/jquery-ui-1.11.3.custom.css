@@ -843,14 +843,14 @@ body .ui-tooltip {
 	font-family: Verdana,Arial,sans-serif;
 	font-size: 1em;
 }
-.gsui .ui-widget-content {
+/*.gsui .ui-widget-content {
 	border: 1px solid #aaaaaa;
 	background: #ffffff url("images/ui-bg_flat_75_ffffff_40x100.png") 50% 50% repeat-x;
 	color: #222222;
 }
 .gsui .ui-widget-content a {
 	color: #222222;
-}
+}*/
 .gsui .ui-widget-header {
 	border: 1px solid #aaaaaa;
 	background: #cccccc url("images/ui-bg_flat_75_cccccc_40x100.png") 50% 50% repeat-x;

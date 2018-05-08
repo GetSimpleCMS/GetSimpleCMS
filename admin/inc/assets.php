@@ -46,13 +46,13 @@ $GS_asset_objects['jquery-ui'] = 'jQuery.ui';
 
 $VERSIONS = array(
   'getsimple'         =>  GSVERSION,
-  'ckeditor'          => '4.7.3',
-  'codemirror'        => '5.1.0', // 5.31.0
+  'ckeditor'          => '4.9.0',
+  'codemirror'        => '5.32.0',
   'dropzone'          => '5.1.1',
   'fancybox'          => '2.1.5', // 3.2.0 available
-  'font-awesome'      => '4.7.0',
+  'font-awesome'      => '5.0.8',
   'jcrop'             => '2.0.4',
-  'jquery'            => '2.2.4',
+  'jquery'            => '3.2.1',
   'jqueryui'          => '1.11.4',
   'jqueryuicss'       => '1.11.3',
   'jquery-mousewheel' => '3.1.13',
@@ -86,7 +86,7 @@ $GS_script_assets['getsimple']['local']['url']     = $ASSETPATH.'js/jquery.getsi
 $GS_script_assets['getsimple']['local']['ver']     = $VERSIONS['getsimple'];
 
 // lazyload (lazy loading assets js/css)
-$GS_script_assets['lazyload']['local']['url']      = $ASSETPATH.'js/lazyload/lazyload.js';
+$GS_script_assets['lazyload']['local']['url']      = $ASSETPATH.'js/lazyload/lazyload.min.js';
 $GS_script_assets['lazyload']['local']['ver']      = $VERSIONS['lazyload'];
 
 // gstree (collpaseble heirarchy table tree) 
@@ -94,15 +94,15 @@ $GS_script_assets['gstree']['local']['url']        = $ASSETPATH.'js/jquery.gstre
 $GS_script_assets['gstree']['local']['ver']        = $VERSIONS['getsimple'];
 
 // spin (ajax spinners)
-$GS_script_assets['spin']['local']['url']          = $ASSETPATH.'js/spin/spin.js';
+$GS_script_assets['spin']['local']['url']          = $ASSETPATH.'js/spin/spin.min.js';
 $GS_script_assets['spin']['local']['ver']          = $VERSIONS['spin'];
 
 // dropzone (ajax/html uploader w drag and drop)
-$GS_script_assets['dropzone']['local']['url']      = $ASSETPATH.'js/dropzone/dropzone.js';
+$GS_script_assets['dropzone']['local']['url']      = $ASSETPATH.'js/dropzone/dropzone.min.js';
 $GS_script_assets['dropzone']['local']['ver']      = $VERSIONS['dropzone'];
 
 // jcrop
-$GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/Jcrop.js';
+$GS_script_assets['jcrop']['local']['url']        = $ASSETPATH.'js/jcrop/Jcrop.min.js';
 $GS_script_assets['jcrop']['local']['ver']        = $VERSIONS['jcrop'];
 $GS_script_assets['jcrop']['queue']['style']      = 'jcrop';
 
@@ -133,9 +133,9 @@ $GS_script_assets['scrolltofixed']['local']['url'] = $ASSETPATH.'js/scrolltofixe
 $GS_script_assets['scrolltofixed']['local']['ver'] = $VERSIONS['scrolltofixed'];
 
 // codemirror
-$GS_script_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror-compressed.js';
+$GS_script_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror.min.js';
 $GS_script_assets['codemirror']['local']['ver']    = $VERSIONS['codemirror'];
- $GS_style_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror.css';
+ $GS_style_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror.min.css';
  $GS_style_assets['codemirror']['local']['ver']    = $VERSIONS['codemirror'];
 
 // fancybox
@@ -155,10 +155,17 @@ $GS_script_assets['jquery-mousewheel']['local']['ver']      = $VERSIONS['jquery-
  $GS_style_assets['fancybox-css']['local']['ver']  = $GS_style_assets['fancybox']['local']['ver']; // @LEGACY 3.4
 
 // font-awesome icons
- $GS_style_assets['font-awesome']['cdn']['url']    = '//netdna.bootstrapcdn.com/font-awesome/'.$VERSIONS['font-awesome'].'/css/font-awesome.min.css';
+ $GS_style_assets['font-awesome']['cdn']['url']    = 'https://use.fontawesome.com/releases/v'.$VERSIONS['font-awesome'].'/css/all.css';
  $GS_style_assets['font-awesome']['cdn']['ver']    = $VERSIONS['font-awesome'];
- $GS_style_assets['font-awesome']['local']['url']  = $ASSETPATH.'fontawesome/css/font-awesome.min.css';
+ $GS_style_assets['font-awesome']['local']['url']  = $ASSETPATH.'fontawesome/css/fontawesome-all.min.css';
  $GS_style_assets['font-awesome']['local']['ver']  = $VERSIONS['font-awesome'];
+
+// old v4
+//   'font-awesome'      => '4.7.0'
+ $GS_style_assets['font-awesome4']['cdn']['url']    = '//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css';
+ $GS_style_assets['font-awesome4']['cdn']['ver']    = $VERSIONS['font-awesome'];
+ $GS_style_assets['font-awesome4']['local']['url']  = $ASSETPATH.'fontawesome/css/font-awesome.min.css';
+ $GS_style_assets['font-awesome4']['local']['ver']  = $VERSIONS['font-awesome'];
 
 // ckeditor
 $GS_script_assets['ckeditor']['cdn']['url']        = '//cdn.ckeditor.com/'.$VERSIONS['ckeditor'].'/full/ckeditor.js';

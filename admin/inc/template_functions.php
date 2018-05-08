@@ -57,6 +57,15 @@ function get_filename_id() {
 	return $file;	
 }
 
+/**
+ * is on page
+ * @since 3.4
+ * @param  string  $page pageid
+ * @return boolean       true if page
+ */
+function isPage($page){
+	return get_filename_id() === $page;
+}
 
 /**
  * Check Permissions
@@ -245,7 +254,7 @@ function backup_datafile($filepath){
 	$bakfilepath = getBackupFilePath($filepath);
 	$bakpath = dirname($bakfilepath);
  	// recusive create dirs
-	create_dir($bakpath,true);
+	create_dir($bakpath,getDef('GSCHMODDIR'),true);
 	return copy_file($filepath,$bakfilepath);
 }
 
@@ -556,21 +565,45 @@ function createRandomPassword($length = 8, $usecharsets = 'luds', $reuse = false
 }
 
 /**
- * File Type Category
+ * LEGACY File Type String
  *
  * Returns the category of an file based on its extension
- *
+ * @deprecated, use get_FileTypeStr for output strings, get_filetypeToken for const logic comparisons, strings have changed in 3.4 to be more consistent
  * @since 1.0
  * @uses i18n_r
  *
  * @param string $ext
- * @return string
+ * @return string variable string representation from lang file
  */
 function get_FileType($ext) {
-	$ext = lowercase($ext);	
+	$ext = lowercase($ext);
+	$token = get_FileTypeToken($ext);
+
+	// backward compatibility, use get_FileTypeToken for compares!
+	if($token == "IMAGE")    return i18n_r('IMAGES') .' Images';
+	if($token == "DOCUMENT") return i18n_r('FTYPE_DOCUMENTS');
+
+	return i18n_r('FTYPE_'.$token);
+}
+
+/**
+ * get file type string
+ * do not use for filetype logic, see get_FileTypeToken
+ * @since  3.4
+ * @param  string $ext filextention, will be auto lowercased
+ * @return string variable string representation from lang file
+ */
+function get_FileTypeStr($ext) {
+	$ext = lowercase($ext);
 	return i18n_r('FTYPE_'.get_FileTypeToken($ext));
 }
 
+/**
+ * get file type token category id
+ * @since  3.4
+ * @param  string $ext extension lowercase
+ * @return string      const token of file type
+ */
 function get_FileTypeToken($ext){
 	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'pct' || $ext == 'gif' || $ext == 'bmp' || $ext == 'png' ) {
 		return 'IMAGE';
@@ -719,7 +752,15 @@ function is_valid_xml($file) {
  * @return string
  */
 function generate_salt() {
-	return substr(sha1(mt_rand()),0,22);
+  if(version_compare(PHP_VERSION, '5.3.0') >= 0 && function_exists("openssl_random_pseudo_bytes")){
+    return bin2hex(openssl_random_pseudo_bytes(16));
+  }else{
+     /* Known to be terribly insecure. Default seeded with an cryptographically
+      * insecure, 32 bit integer, and PHP versions prior to 5.3 lack built in access
+      * to secure random.
+      */
+     return sha1(mt_rand());
+  }
 }
 
 /**
@@ -1075,9 +1116,9 @@ function getParentsSlugHashTable($pages = array(), $useref = true){
 		$pageId = isset($page['url']) ? $page['url'] : null;
 		
 		if(!empty($parent)){
-			if (isset($ary[$parent])) $ary[$parent]['children'][] = $page['url'];
-			else $ary[$parent] = array('id'=>$parent,'children'=>array($page['url']));
-		} 
+			if (isset($ary[$parent])) $ary[$parent]['children'][$page['url']] = ($useref ? $page : $page['url']);
+			else $ary[$parent] = array('id'=>$parent,'children'=>array($page['url'] => ($useref ? $page : $page['url']) ) );
+		}
 		// else $ary[] = array('id'=>$page['url']);
 	}
 
@@ -1283,8 +1324,8 @@ function get_pages_menu_dropdown($parentitem, $menu, $level, $id = null, $idleve
 				$disabled = '';
 				$idlevel = null;
 			}
-
-			$menu .= '<option '.$sel.' value="'.$page['url'] .'" '.$disabled.'>'.$dash.$page['url'].'</option>';
+			$title = $page['title'];
+			$menu .= '<option '.$sel.' value="'.$page['url'] .'" '.$disabled.'>'.$dash.$title.'</option>';
 			$menu = get_pages_menu_dropdown((string)$page['url'], $menu,$level+1, $id, $idlevel);	  	
 		}
 	}
@@ -1315,6 +1356,7 @@ function get_api_details($type='core', $args=null, $cached = false) {
 	GLOBAL $debugApi,$nocache,$nocurl;
 
 	include(GSADMININCPATH.'configuration.php');
+	// $nocache = true;
 
 	if($cached){
 		debug_api_details("API REQEUSTS DISABLED, using cache files only");
@@ -1346,13 +1388,14 @@ function get_api_details($type='core', $args=null, $cached = false) {
 
 	# check to see if cache is available for this
 	$cachefile = md5($fetch_this_api).'.txt';
-	$cacheExpire = 39600; // 11 minutes
+	$cacheExpireSecs = 3 * (86400); // minutes, 3 days
+	// $cacheExpireSecs = 60; // 1 minute
 
 	if(!$nocache || $cached) debug_api_details('cache file check - ' . $fetch_this_api.' ' .$cachefile);
 	else debug_api_details('cache check: disabled');
 
 	$cacheAge = file_exists(GSCACHEPATH.$cachefile) ? filemtime(GSCACHEPATH.$cachefile) : '';
-	debug_api_details('cache age: ' . output_datetime($cacheAge));
+	debug_api_details('cache file tstamp: ' . output_datetime($cacheAge,true));
 
 
 	// api disabled and no cache file exists
@@ -1362,12 +1405,13 @@ function get_api_details($type='core', $args=null, $cached = false) {
 		return '{"status":-1}';
 	}
 
-	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpire) < $cacheAge ) {
-		debug_api_details('cache file time - ' . $cacheAge . ' (' . (time() - $cacheAge) . ')' );
-		# grab the api request from the cache
+	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpireSecs) < $cacheAge ) {
+		# grab the api results from the cache
+		debug_api_details('cache file time - ' . $cacheAge . ' (' . (time() - $cacheAge) . ' seconds ago)' );
 		$data = read_file(GSCACHEPATH.$cachefile);
 		debug_api_details('returning cache file - ' . GSCACHEPATH.$cachefile);
-	} else {	
+	} 
+	else {
 		# make the api call
 		if (function_exists('curl_init') && function_exists('curl_exec') && !$nocurl) {
 
@@ -1391,16 +1435,25 @@ function get_api_details($type='core', $args=null, $cached = false) {
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_URL, $fetch_this_api);
 
+			curl_setopt($ch, CURLOPT_FAILONERROR, true);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+
 			if($debugApi){
-				// $verbose = fopen(GSDATAOTHERPATH .'logs/curllog.txt', 'w+');			
-				$verbose = tmpfile();				
-				// curl_setopt($ch, CURLOPT_WRITEHEADER, $verbose );
+
+				$curllog = false;
+				if($curllog){
+					$verbose = fopen(GSDATAOTHERPATH .'logs/curllog.txt', 'w+');
+					curl_setopt($ch, CURLOPT_WRITEHEADER, $verbose );
+				}	
+				else $verbose = tmpfile();				
+
 				curl_setopt($ch, CURLOPT_HEADER, true); 
 				curl_setopt($ch, CURLOPT_VERBOSE, true);
-				curl_setopt($ch, CURLOPT_STDERR, $verbose );
-				curl_setopt($ch, CURLINFO_HEADER_OUT, true);								
+				curl_setopt($ch, CURLOPT_STDERR, $verbose ); // @todo not actually logging errors
+				curl_setopt($ch, CURLINFO_HEADER_OUT, true);							
 			}
-				
+
 			$data = curl_exec($ch);
 
 			if($debugApi){
@@ -1408,12 +1461,12 @@ function get_api_details($type='core', $args=null, $cached = false) {
 				debug_api_details("curl version: ");
 				debug_api_details(print_r(curl_version(),true));	
 			
-				debug_api_details("curl info:");
+				debug_api_details("curl info: ");
 				debug_api_details(print_r(curl_getinfo($ch),true));
 			
 				if (!$data) {
-					debug_api_details("curl error number:" .curl_errno($ch));
-					debug_api_details("curl error:" . curl_error($ch));
+					debug_api_details("curl error number: " .curl_errno($ch));
+					debug_api_details("curl error: " . curl_error($ch));
 				}
 
 				debug_api_details("curl Verbose: ");
@@ -1426,20 +1479,20 @@ function get_api_details($type='core', $args=null, $cached = false) {
 				debug_api_details($data);
 				$data = end($dataparts);
 
-			}	
-
+			}
 			curl_close($ch);
-
-		} else if(ini_get('allow_url_fopen')) {  
+		}
+		else if(ini_get('allow_url_fopen')) {
 			// USE FOPEN
 			debug_api_details("using fopen");			
 			$timeout = $api_timeout / 1000; // ms to float seconds
 			// $context = stream_context_create();
 			// stream_context_set_option ( $context, array('http' => array('timeout' => $timeout)) );
 			$context = stream_context_create(array('http' => array('timeout' => $timeout))); 
-			$data = read_file($fetch_this_api,false,$context);	
+			$data = read_file($fetch_this_api,false,$context);
 			debug_api_details("fopen data: " .$data);		
-		} else {  
+		}
+		else {  
 			debug_api_details("No api methods available");						
 			debug_api_details();						
 			return;
@@ -1447,22 +1500,26 @@ function get_api_details($type='core', $args=null, $cached = false) {
 	
 		// debug_api_details("Duration: ".get_execution_time());	
 
-		$response = json_decode($data);		
+		$response = json_decode($data);
 		debug_api_details('JSON:');
 		debug_api_details(print_r($response,true),'');
 
-		// if response is invalid set status to -1 error
-		// and we pass on our own data, it is also cached to prevent constant rechecking
-
-		if(!$response){
-			$data = '{"status":-1}';
+		if($response) $response->cached = true; // add cache flag
+		else{
+			// if response is invalid set status to -1 error
+			// and we pass on our own data, it is also cached to prevent constant rechecking
+			if(!$response){
+				$response = array();
+				$response["status"] = -1;
+				$response["cached"] = true;
+			}
 		}
-		
 		debug_api_details($data);
-			save_file(GSCACHEPATH.$cachefile,$data);
+		save_file(GSCACHEPATH.$cachefile,json_encode($response));
 		debug_api_details();		
-			return $data;
-		}	
+		return $data;
+	}
+
 	debug_api_details();	
 	return $data;
 }
@@ -1727,6 +1784,9 @@ function strIsMultibyte($str){
  * @return string      return well formed html , with open tags being closed and incomplete open tags removed
  */
 function cleanHtml($str,$strip_tags = array()){
+	
+	if(empty($str)) return $str;
+
 	// setup encoding, required for proper dom loading
 	// @note
 	// $dom_document = new DOMDocument('1.0', 'utf-8'); // this does not deal with transcoding issues, loadhtml will treat string as ISO-8859-1 unless the doc specifies it 
@@ -1801,7 +1861,7 @@ function get_components_xml($refresh = false){
     global $components;
     if (!$components || $refresh) {
     	$components = get_collection_items(GSCOMPONENTSFILE);
-    } 
+    }
     return $components;
 }
 
@@ -1884,17 +1944,15 @@ function snippetIsEnabled($id){
  * @uses GSDATAOTHERPATH
  * @uses getXML
  * @param  boolean $asset name of asset to get data form
- * @return components data items xmlobj
+ * @return components data items as SimpleXMLObject
  *
  */
 function get_collection_items($asset){	
 	if (file_exists(GSDATAOTHERPATH.$asset)) {
 		$data  = getXML(GSDATAOTHERPATH.$asset);
-	    $items = $data->item;
-	} else {
-	    $items = array();
+	    return $data;
 	}
-    return $items;
+    return array();
 }
 
 /**
@@ -1940,6 +1998,63 @@ function output_collection_item($id, $collection, $force = false, $raw = false) 
 
 	if(!$raw) eval("?>" . strip_decode($item->value) . "<?php ");
 	else echo strip_decode($item->value);
+}
+
+/**
+ * handle saving collection post
+ * @param  string $assetid collection asset id
+ * @param  string $asset   collection asset file 
+ * @return string          error reporting string
+ */
+function saveCollection($assetid,$asset){
+
+	# create backup file for undo
+	backup_datafile($asset);
+
+	if(!isset($_POST['component'])) return i18n_r("ERROR_OCCURRED");
+	
+	# start creation of top of components.xml file
+	if (count($_POST['component']) != 0) {
+		$status  = $error = "";
+		$compxml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
+
+		$compary = $_POST['component'];
+
+		if(getDef("GSCOMPSORTSAVE",true)){
+			$compary = sortKey($compary,"title","custom_sortb");
+		}
+
+		foreach ($compary as $component){
+			$id     = $component['id']; // unused
+			$slug   = $component['slug'];
+			$value  = $component['val'];
+			$title  = $component['title'];
+			$active = isset($component['active']) ? 0 : 1; // checkbox
+			
+			$slug = getCollectionItemSlug($slug,$title);
+			if($slug == null || empty($slug)){
+				// add corrupt data protection, prevent deleting components if something critical is missing
+				$error = 'an error occured, missing slug';
+			}
+			else {
+				if(is_object(get_collection_item($slug,$compxml))){
+					$error = sprintf(i18n_r('DUP_SLUG',"Duplicate slug - [%s]"),$slug);
+				}
+				$status = addComponentItem($compxml,$title,$value,$active,$slug); // @todo, check for problems $xml is passed by identifier
+				if(!$status) $error = i18n_r("ERROR_OCCURRED");
+			}
+				$asset = $asset;
+		}
+		if(!$error){
+			exec_action($assetid.'-save'); // @hook component-save before saving components data file
+			                               // @hook snippet-save before saving snippets data file
+			$status = XMLsave($compxml, $asset);
+			if(!$status) $error = i18n_r("ERROR_OCCURRED");
+		}
+	}
+	else $error = i18n_r("ERROR_OCCURRED");
+
+	return $error;
 }
 
 /**
@@ -2020,13 +2135,24 @@ function getEditorAttribCallout($collectionid,$class = '',$funcname = null){
 	if(function_exists($call)) return $call($class);
 }
 
+/** 
+ * get collection item html output
+ * @since 3.4
+ * @param  string $collectionid id for this kind of editor
+ * @param  string $id item id
+ * @param  obj    $item
+ * @param  string $class
+ * @param  string $code
+ * @return string
+ */
 function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit',$code = ''){
 
 	$disabled = (bool)(string)$item->disabled;
 	$readonly = (bool)(string)$item->readonly;
 
-	$str = '';
+	$str  = '';
 	$str .= '<div class="compdiv codewrap" id="section-'.$id.'">';
+	$str .= '<a id="id_'.$item->slug.'"></a>';
 	$str .= '<table class="comptable" ><tr>';
 	$str .= '<td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="comptitle editable">'. stripslashes($item->title) .'</b></td>';
 	
@@ -2046,6 +2172,13 @@ function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit',$c
 	return $str;
 }
 
+/** 
+ * get collection blank item template for insert html
+ * @param  string
+ * @param  string
+ * @param  string
+ * @return string
+ */
 function getItemTemplate($collectionid,$class = 'item_edit noeditor',$code = ''){
 	$item = array(
 		'title'    => '',
@@ -2058,6 +2191,13 @@ function getItemTemplate($collectionid,$class = 'item_edit noeditor',$code = '')
 	return getCollectionItemOutput($collectionid,'',(object)$item,$class,$code);
 }
 
+/**
+ * @param  string
+ * @param  array
+ * @param  string
+ * @param  string
+ * @return string
+ */
 function outputCollection($collectionid,$data,$class='item_edit',$code = ''){
 	if(!$data) return;
 	$id = 0;
@@ -2071,6 +2211,12 @@ function outputCollection($collectionid,$data,$class='item_edit',$code = ''){
 	}
 }
 
+/**
+ * output collection sidebar links
+ * @param  string
+ * @param  array
+ * @return string
+ */
 function outputCollectionTags($collectionid,$data){
 	if(!$data) return;
 	$numcomponents = count($data);
@@ -2083,6 +2229,7 @@ function outputCollectionTags($collectionid,$data){
 		$id = 0;
 		foreach($data as $item) {
 			echo '<a id="divlist-' . $id . '" href="#section-' . $id . '" class="component'.$class.' comp_'.$item->title.'">' . $item->title . '</a>';
+			// echo '<a id="divlist-' . $data->slug . '" href="#' . $data->slug . '" class="component'.$class.' comp_'.$item->title.'">' . $item->title . '</a>';
 			$id++;
 		}
 	}
@@ -2144,54 +2291,6 @@ function addComponentItem($xml,$title,$value,$active,$slug = null){
  */
 function dateIsToday($timestamp){
 	return date('Ymd') == date('Ymd', strtotime($timestamp));
-}
-
-/**
- * returns icon classes for file extensions
- * follow font-awesome naming, can be used for other stuff however
- * uses get_fileTypeToken to get generic categories ( same as filter ), then further refines icons we have
- * 
- * @param  str $filename name of file
- * @param  string $default  default to use when no match found
- * @return str           the class
- */
-function getFileIconClass($filename = '',$default = 'file'){
-
-	$ext = $token = '';
-	if($filename !== ''){
-		$ext   = getFileExtension($filename);
-		$token = get_FileTypeToken($ext);
-	}
-
-	// generic file icons
-	$tokens = array(
-		'IMAGE'      => 'file-image',
-		'COMPRESSED' => 'file-archive',
-		'VECTOR'     => 'file-image',
-		'FLASH'      => 'file-image',
-		'VIDEO'      => 'file-video',
-		'AUDIO'      => 'file-audio',
-		'WEB'        => 'file',
-		'SCRIPT'     => 'file-code',
-		'DOCUMENT'   => 'file-text',
-		'SYSTEM'     => 'file',
-		'MISC'       => 'file'
-	);
-
-	// specific file icons
-	$iconClasses = array(
-		'pdf'    => 'file-pdf',
-		'xls'    => 'file-excel',
-		'xlsx'   => 'file-excel',
-		'doc'    => 'file-word',
-		'docx'   => 'file-word',
-		'ppt'    => 'file-powerpoint'
-	);
-
-	$iconclass = $default;
-	if(isset($tokens[$token]))    $iconclass = $tokens[$token];
-	if(isset($iconClasses[$ext])) $iconclass = $iconClasses[$ext]; // override specific
-	return $iconclass;
 }
 
 /**
@@ -2340,5 +2439,47 @@ function generate_thumbnail($file, $sub_path = '', $out_file = null, $w = null, 
 	}
 }
 
+/**
+ * geticon
+ * @since  3.4
+ * @param  string $id    $icondefinitin string
+ * @param  string $class $optonal class, replaces token %s
+ * @return string        icon html
+ */
+function getIcon($id,$class = ""){
+	global $icondefinition;
+	if(isset($icondefinition[$id]) && empty($class)) return $icondefinition[$id];
+	if(isset($icondefinition[$id])) return str_replace("%s",$class,$icondefinition[$id]);
+	return "";
+}
+
+/**
+ * returns icon classes for file extensions
+ * follow font-awesome naming, can be used for other stuff however
+ * uses get_fileTypeToken to get generic categories ( same as filter ), then further refines icons we have
+ * 
+ * @param  str $filename name of file
+ * @param  string $default  default to use when no match found
+ * @return str           the class
+ */
+function getFileIconClass($filename = '',$default = 'MISC'){
+
+	$ext = $token = '';
+	if($filename !== ''){
+		$ext   = getFileExtension($filename);
+		$token = get_FileTypeToken($ext);
+	}
+
+	$iconclass = getIcon("FILE_".$ext); // specific
+	if(empty($iconClass)) $iconclass = getIcon("FILE_".$token); // generic fallback
+	if(empty($iconclass)) $iconclass = getIcon("FILE_".$default);
+	return $iconclass;
+}
+
+function getUploadIcon($type){
+	if($type == '.') $class = getIcon("FILE_FOLDER");
+	else $class = getFileIconClass($type);
+	return $class." ";
+}
 
 /* ?> */

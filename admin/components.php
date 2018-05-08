@@ -18,55 +18,22 @@ exec_action('load-components');
 
 # variable settings
 $update = $table = $list = '';
+$asset  = GSDATAOTHERPATH.GSCOMPONENTSFILE;
+$id     = "component";
 
 # check to see if form was submitted
 if (isset($_POST['submitted'])){
-
-	check_for_csrf("modify_components");
-
-	# create backup file for undo
-	backup_datafile(GSDATAOTHERPATH.GSCOMPONENTSFILE);
-	
-	# start creation of top of components.xml file
-	if (count($_POST['component']) != 0) {
-		$status = $error = null;
-		$compxml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
-		
-		foreach ($_POST['component'] as $component)	{
-			$id     = $component['id']; // unused
-			$slug   = $component['slug'];
-			$value  = $component['val'];
-			$title  = $component['title'];
-			$active = isset($component['active']) ? 0 : 1; // checkbox
-			
-			$slug = getCollectionItemSlug($slug,$title);
-			if($slug == null){
-				// add corrupt data protection, prevent deleting components if something critical is missing
-				$error = 'an error occured, missing slug';
-			}
-			else {
-				if(is_object(get_collection_item($slug,$compxml))){
-					$error = sprintf(i18n_r('DUP_SLUG',"Duplicate slug - [%s]"),$slug);
-				}
-				$status = addComponentItem($compxml,$title,$value,$active,$slug); // @todo, check for problems $xml is passed by identifier
-				if(!$status) $error = i18n_r("ERROR_OCCURRED");
-			}
-		}
-		if(!$error){
-			exec_action('component-save'); // @hook component-save before saving components data file
-			$status = XMLsave($compxml, GSDATAOTHERPATH.GSCOMPONENTSFILE);
-			if(!$status) $error = i18n_r("ERROR_OCCURRED");
-			get_components_xml(true);
-		}	
-	}
-	$update = empty($error) ? 'comp-success' : 'error';
+	check_for_csrf("modify_".$id);
+	$error  = saveCollection($id,$asset);
+	$update = empty($error) ? $id.'-success' : 'error';
+	if(!$error) get_components_xml(true);
 }
 
 # if undo was invoked
 if (isset($_GET['undo'])) { 
 	
 	# perform the undo
-	restore_datafile(GSDATAOTHERPATH.GSCOMPONENTSFILE);
+	restore_datafile($asset);
 	check_for_csrf("undo");
 	if(!requestIsAjax()) redirect('components.php?upd=comp-restored'); // redirect to prevent refresh undos
 	// undos are not ajax, ??	
@@ -97,7 +64,7 @@ include('template/include-nav.php'); ?>
 			<?php exec_action(get_filename_id().'-body'); ?>
 			<form id="compEditForm" class="manyinputs watch" action="<?php myself(); ?>" method="post" accept-charset="utf-8" >
 				<input type="hidden" id="id" value="<?php echo $numitems; ?>" />
-				<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_components"); ?>" />
+				<input type="hidden" id="nonce" name="nonce" value="<?php echo get_nonce("modify_component"); ?>" />
 
 				<div id="divTxt"></div>
 				<?php outputCollection('components',$collectionData,'','get_component'); ?>

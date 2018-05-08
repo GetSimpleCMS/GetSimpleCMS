@@ -170,43 +170,6 @@ function sendmail($to,$subject,$message) {
 	}
 
 /**
- * Sub-Array Sort
- *
- * Sorts the passed array by a subkey
- *
- * @since 1.0
- *
- * @param array $a
- * @param string $subkey Key within the array passed you want to sort by
- * @param string $order - order 'asc' ascending or 'desc' descending
- * @param bool $natural - sort using a "natural order" algorithm
- * @return array
- */
-function subval_sort($a,$subkey, $order='asc',$natural = true) {
-	if (count($a) != 0 || (!empty($a))) { 
-		foreach($a as $k=>$v) {
-			if(isset($v[$subkey])) $b[$k] = lowercase($v[$subkey]);
-		}
-
-		if(!isset($b)) return $a;
-
-		if($natural){
-			natsort($b);
-			if($order=='desc') $b = array_reverse($b,true);	
-		} 
-		else {
-			($order=='asc')? asort($b) : arsort($b);
-		}
-		
-		foreach($b as $key=>$val) {
-			$c[$key] = $a[$key];
-		}
-
-		return $c;
-	}
-}
-
-/**
  * SimpleXMLExtended Class
  *
  * Extends the default PHP SimpleXMLElement class by 
@@ -330,6 +293,10 @@ class SimpleXMLExtended extends SimpleXMLElement{
 		return $this->getNodeType() == XML_TEXT_NODE;
 	}
 
+    public function get_parent_node(){
+        return current($this->xpath('parent::*'));
+    }
+
 }
 
 
@@ -432,12 +399,33 @@ function get_execution_time($reset=false)
 	GLOBAL $microtime_start;
 		if($reset) $microtime_start = null;
 		
-		if($microtime_start === null)
-		{
-				$microtime_start = microtime(true);
-				return 0.0; 
-		}    
-		return round(microtime(true) - $microtime_start,5); 
+	if($microtime_start === null)
+	{
+		$microtime_start = microtime(true);
+		return 0.0;
+	}
+	// return (microtime(true) - $microtime_start);
+	$microtime_last = microtime(true);
+	return round($microtime_last - $microtime_start,3); 
+}
+
+
+/**
+ * execution timer
+ * 
+ * @since 3.2
+ * @uses $microtime_start
+ * 
+ * @param bool $reset resets global to timestamp
+ * @return 
+ */
+function get_execution_duration($reset=true){
+	GLOBAL $microtime_last,$microtime_start;
+	if($microtime_start === null) $microtime_last = $microtime_start;	
+	$microtime = microtime(true);
+	$ret = round($microtime - $microtime_last,3); 
+	if($reset) $microtime_last = $microtime;
+	return $ret;
 }
 
 /**
@@ -454,9 +442,15 @@ function getXML($file,$nocdata = true) {
 	$xml = read_file($file);
 	if($xml){
 		$data = simplexml_load_string($xml, 'SimpleXMLExtended', $nocdata ? LIBXML_NOCDATA : null);
-		// debugLog($data);
+		// log errors
+		$errors = libxml_get_errors();
+		if($errors)debugLog($errors);
 		return $data;
 	}	
+}
+
+function getPageFilename($id, $draft = false){
+	return ($draft ? GSDATADRAFTSPATH : GSDATAPAGESPATH) . $id .'.xml';
 }
 
 /**
@@ -467,7 +461,7 @@ function getXML($file,$nocdata = true) {
  * @return xml     xml object
  */
 function getPageXML($id,$nocdata = true){
-	return getXML(GSDATAPAGESPATH.$id.'.xml',$nocdata);
+	return getXML(getPageFilename($id),$nocdata);
 }
 
 /**
@@ -478,7 +472,7 @@ function getPageXML($id,$nocdata = true){
  * @return xml     xml object
  */
 function getDraftXML($id,$nocdata = true){
-	return getXML(GSDATADRAFTSPATH.$id.'.xml',$nocdata);
+	return getXML(getPageFilename($id,true),$nocdata);
 }
 
 /**
@@ -728,7 +722,7 @@ function XMLsave($xml, $file) {
 	}	
 	$data = @$xml->asXML();
 	if(getDef('GSFORMATXML',true)) $data = formatXmlString($data); // format xml if config setting says so
-	$data = exec_filter('xmlsave',$data); // @filter xmlsave executed before writing string to file
+	$data    = exec_filter('xmlsave',$data); // @filter xmlsave executed before writing string to file
 	$success = save_file($file, $data); // LOCK_EX ?
 	return $success;
 }
@@ -774,7 +768,7 @@ function delete_folder($path){
  * @return bool success
  */
 function save_file($file,$data=''){
-	$status = file_put_contents($file,$data) !== false; // returns num bytes written, FALSE on failure
+	$status = file_put_contents(trim($file),$data) !== false; // returns num bytes written, FALSE on failure
 	fileLog(__FUNCTION__,$status,$file);
 	if(getDef('GSDOCHMOD',true)) $chmodstatus = gs_chmod($file); // currently ignoring chmod failures
 	return $status;
@@ -960,10 +954,11 @@ function formatDate($format, $timestamp = null, $uselocale = true) {
  *
  * @since 3.4
  * @param  str $dt Date/Time String
+ * @param boolean $unixtime	is $dt string unixtimestamp, skips strtotime
  * @return str
  */
-function output_time($dt = null) {
-	if(isset($dt)) $dt = strtotime($dt);
+function output_time($dt = null, $unixtime = false) {
+	if(isset($dt) && !$unixtime) $dt = strtotime($dt);
 	if(getTimeFormat()) return formatDate(getTimeFormat(),$dt);
 }
 
@@ -972,12 +967,13 @@ function output_time($dt = null) {
  *
  * @since 1.0
  * @param string $dt Date/Time string
+ * @param boolean $unixtime	is $dt string unixtimestamp, skips strtotime
  * @return string
  */
-function output_datetime($dt = null) {
-	if(isset($dt)) $dt = strtotime($dt);
+function output_datetime($dt = null, $unixtime = false) {
+	if(isset($dt) && !$unixtime) $dt = strtotime($dt);
 	if(getDateTimeFormat()) return formatDate(getDateTimeFormat(),$dt);
-	}
+}
 
 /**
  * Date only Output using locale
@@ -1074,6 +1070,25 @@ if(!function_exists('in_arrayi')) {
 	}
 }
 
+/** 
+ * LEGACY, alias for getPageUrl
+ * @deprecated
+ */
+function find_url($slug, $parent = '', $type = null) {
+	return(getPageUrl($slug,true,$type));
+}
+
+/**
+ * get url for page, cached or regenerated
+ * @since 3.4
+ * @param  str  $slug      slug to get url for 
+ * @param  boolean $cached get from pagecache or regenerate
+ * @param  str $type       get specific type, full or relative
+ * @return str             permalink string
+ */	
+function getPageUrl($slug, $cached = true, $type = null){
+	return generate_url($slug);
+}
 
 /**
  * Creates Standard URL for Pages
@@ -1090,32 +1105,35 @@ if(!function_exists('in_arrayi')) {
  * @param string $absolute force absolute siteurl
  * @return string
  */
-function generate_url($slug, $absolute = false){
+function generate_url($slug, $absolute = false, $pathdata = null){
 	global $PRETTYURLS;
 	global $PERMALINK;
 
 	// force slug to string in case a simpleXml object was passed ( from a page obj for example)
-	$slug   = (string) $slug;
-	$delim  = getDef('GSTOKENDELIM');
-
+	$slug = (string) $slug;
 	if(empty($slug)) return; // empty slug
 
-	$path   = tsl(getSiteURL($absolute));
-	$url    = $path; // var to build url into
+	$path = tsl(getSiteURL($absolute));
+	$url  = $path; // var to build url into
 
+	// not index
 	if($slug != getDef('GSINDEXSLUG')){
 		if ($PRETTYURLS == '1'){
-			$url .= generate_permalink($slug);
+			$url .= generate_permalink($slug,null,$pathdata);
+		} 
+		else if (!empty($PERMALINK)){
+			$url .= generate_permalink($slug,$PERMALINK,$pathadta);
 		}
 		else $url .= 'index.php?id='.$slug;
 	}
-
 	$url = exec_filter('generate_url',$url); // @filter generate_url (str) for generating urls after processing, for use with custom tokens etc
 	return $url;
 }
 
 /**
- * generate permalink url from tokenized permalink structure
+ * generate permalinks urls from tokenized permalink structure
+ * INTERNAL, use generate_url() wrapper
+ * 
  * uses a very basic str_replace based token replacer, not a parser
  * TOKENS (%tokenid%)
  *  %path% - path heirarchy to slug
@@ -1124,29 +1142,26 @@ function generate_url($slug, $absolute = false){
  *
  * supports prettyurl or any other permalink structure
  * eg. ?id=%slug%&parent=%parent%&path=%path%
- * 
+ * @since  3.4
  * @param  (str) $slug      slug to resolve permalink for	
- * @param  (str) $permalink (optional) permalink structure
+ * @param  (str) $permalink permalink structure, falls back to GSDEFAULTPERMALINK if null
+ * @param  (array) $data 	(optional) pass in pathing data override keys 'parents','parent'
+ * @param  (array) $pathdata (optional) pass in path data so it we do not need any callouts or dependancies to generate ( prevents loops on init or setup )
  * @return (str)            	
  */
-function generate_permalink($slug, $permalink = null){
-	GLOBAL $PERMALINK;
-	
+function generate_permalink($slug, $permalink = null, $pathdata = null){	
 	$slug = (string) $slug;
-
-	if(!isset($permalink)){
-		$plink = $PERMALINK;
-		if(empty($PERMALINK)) $plink = getDef('GSDEFAULTPERMALINK');
+	if(!isset($permalink) || empty($permalink)){
+		$plink = getDef('GSDEFAULTPERMALINK');
 	} else $plink = $permalink;
-
 	// replace PATH token
 	if(containsToken('path',$plink)){
 		// remove PARENT tokens if path, since it would be pointless and probably accidental
 		// leaving in for now lets not make assumptions
 		// $plink = replaceToken('parent','',$plink);
-		$pagepath = getParents($slug);
-		if($pagepath){
-			$pagepath = implode('/',array_reverse($pagepath));
+		$pagepath = isset($pathdata,$pathdata['parents']) ? $pathdata['parents'] : getParents($slug);
+		if(isset($pagepath)){
+			$pagepath = no_tsl(implode('/',array_reverse($pagepath))); // build path and remove trailing slash
 			$plink    = replaceToken('path', $pagepath, $plink);		
 		} else {
 			// page has no parents, remove token
@@ -1156,7 +1171,7 @@ function generate_permalink($slug, $permalink = null){
 
 	// replace PARENT token
 	if(containsToken('parent',$plink)){
-		$parent = getParent($slug);
+		$parent = isset($pathdata,$pathdata['parent']) ? $pathdata['parent'] : getParent($slug);
 		$plink  = replaceToken('parent', $parent, $plink);
 	}
 	
@@ -1168,19 +1183,6 @@ function generate_permalink($slug, $permalink = null){
 	// debugLog($url);
 	// debugLog($plink);
 	return no_lsl($plink);
-}
-
-/** 
- * LEGACY alias for generate_url, defaults to relative now
- * @deprecated
- */
-function find_url($slug, $parent = '', $type = null) {
-	// parent is ignored
-	if(!isset($type)){
-		if(!getDef('GSSITEURLREL',true)) $type = "full"; # only default to full if not GSSITEURLREL
-		else $type = "relative";
-	}	
-	return generate_url($slug, $type == 'full');
 }
 
 /**
@@ -1306,7 +1308,7 @@ function redirect($url,$ajax = false) {
 			echo '</noscript>';
 		}
 
-		if(headers_sent()){
+		if(headers_sent($filename, $linenum) && !$debugredirect) {
 			echo i18n_r('ERROR').": Headers already sent in ".$filename." on line ".$linenum."<br/><br/>\n\n";
 		}
 		
@@ -1316,8 +1318,8 @@ function redirect($url,$ajax = false) {
 			if (isDebug()){
 				debugLog(debug_backtrace());
 				outputDebugLog();
-				}
 			}
+		}
 		
 		echo "</body></html>";
 	}
@@ -1356,8 +1358,9 @@ function i18n($name, $echo=true, $default = true) {
 	}
 	else return;
 
-	return echoReturn($myVar,$echo);
-	}
+	if(!$echo) return $myVar;
+	echo $myVar;
+}
 
 /**
  * Return i18n
@@ -1714,6 +1717,22 @@ function uppercase($text) {
 }
 
 /**
+ * convert a string to Word Case and is multibyte-safe
+ *
+ * @since 3.4
+ *
+ * @param string $text
+ * @return string converted to UPPERCASE
+ */
+function wordcase($str) { 
+	if (function_exists('mb_convert_case')) {	
+    	$str = mb_convert_case(lowercase($str), MB_CASE_TITLE, "UTF-8"); 
+	}
+	else $str = ucwords($str);
+    return ($str); 
+}
+
+/**
  * convert string to Title Case and is multibyte-safe
  *
  * @since 3.4
@@ -1790,13 +1809,26 @@ function defined_array($constants) {
  * Is Folder Empty
  *
  * Check to see if a folder is empty or not
- * 
+ * @todo  replace with scandir?
  * @param string $folder
  * @return bool true if empty
  */
 function check_empty_folder($folder) {
-	return folder_items($folder) == 0;
-			}
+	if (!($dh = opendir($folder))){
+		return false;
+	}
+	
+	$ret = true;
+	while(($file = readdir($dh)) !== false) {
+		if ($file !== "." && $file !== ".."){
+			$ret = false;
+			break;
+		}
+	}
+
+	closedir($dh);
+	return $ret;
+}
 
 
 /**
@@ -1809,7 +1841,7 @@ function check_empty_folder($folder) {
  */
 function folder_items($folder) {
 	return count(getFiles($folder));
-			}
+}
 
 /**
  * Validate a URL String
@@ -2122,16 +2154,20 @@ function directoryToMultiArray($dir,$recursive = true,$exts = null,$exclude = fa
 
 /**
  * Returns definition safely
+ * All definition calls should use this as a wrapper, 
+ * so it can be changed in the future from definitions to a file based config
  * 
  * @since 3.1.3
  * 
  * @param str $id 
  * @param bool $isbool treat definition as boolean and cast it
- * @return * returns definition or null if not defined
+ * @param bool $iscsv  treat definition as array and explode csv
+ * @return mixed       returns definition or null if not defined
  */
-function getDef($id,$isbool = false){
+function getDef($id, $isbool = false, $iscsv = false){
 	if( defined($id) ) {
 		if($isbool) return (bool) constant($id);
+		if($iscsv)  return explode(',',constant($id)); // explode csv @todo trim whitespace, would prevent valid spaces
 		return constant($id);
 	}
 }
@@ -2171,7 +2207,9 @@ function isBeta(){
  * @return bool true if ajax
  */
 function requestIsAjax(){
-	return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || isset($_REQUEST['ajax']);
+	$status = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') || isset($_REQUEST['ajax']);
+	// debugLog($status);
+	return $status;
 }
 
 /**
@@ -2396,6 +2434,15 @@ function getRootRelURIPath($url){
   return $url;
 }
 
+/**
+ * GS get global wrapper
+ * @since 3.4
+ * @param  str $var name of var
+ * @return mixed    getsimple global variable
+ */
+function getGSVar($var){
+	return getGlobal($var);
+}
 
 /**
  * returns a global, easier inline usage of readonly globals
@@ -2415,7 +2462,7 @@ function getGlobal($var) {
  *
  * @since 3.4
  */
-function getPageGlobal($var){
+function getGSPageVar($var){
 	return getGlobal($var);
 }
 
@@ -2720,18 +2767,18 @@ function getWebsiteData($returnGlobals = false){
 
 		$SITEURL_ABS = $SITEURL;
 		$SITEURL_REL = getRootRelURIPath($SITEURL);
-		// $ASSETURL    = $SITEURL;
 
 		// asseturl is root relative if GSASSETURLREL is true
-		// else asseturl is scheme-less ://url if GSASSETSCHEMES is not true
+		// else if abs asseturl is scheme-less ://url if GSASSETSCHEMES is not true
+		// else absolute
 		if(getDef('GSASSETURLREL',true)) $ASSETURL = $SITEURL_REL;
-		else if(getDef('GSASSETSCHEMES',true) !==true) str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL);
+		else if(getDef('GSASSETSCHEMES',true) !==true) $ASSETURL = str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL);
 		else $ASSETURL = $SITEURL;
-
-		$ASSETPATH = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH,GSADMINPATH));
+		
+		$ASSETPATH = $ASSETURL.tsl(getRelPath(GSADMINTPLPATH,GSPATH));
 
 		// SITEURL is root relative if GSSITEURLREL is true
-		if(getDef('GSSITEURLREL')){
+		if(getDef('GSSITEURLREL',true)){
 			$SITEURL = $SITEURL_REL;
 		}
 	}
@@ -2849,7 +2896,7 @@ function getDefaultLang(){
  * @return str      str after transliteration replacement array ran on it
  */
 function doTransliteration($str){
-	if (getTransliteration() && is_array($translit=getTransliteration()) && count($translit>0)) {
+	if (getTransliteration() && is_array($translit=getTransliteration()) && count($translit)>0) {
 		$str = str_replace(array_keys($translit),array_values($translit),$str);
 	}
 	return $str;
@@ -2861,6 +2908,7 @@ function doTransliteration($str){
  */
 function outputDebugLog(){
 	global $GS_debug;
+    debugLog("DEBUGLOG END");	
 	echo '<h2>'.i18n_r('DEBUG_CONSOLE').'</h2><div id="gsdebug">';
 	echo '<pre>';
 	foreach ($GS_debug as $log){
@@ -2903,7 +2951,7 @@ function getMaxUploadSize(){
  * @return str
  */
 function getSiteURL($absolute = false){
-	return $absolute ? getGlobal('SITEURL_ABS') : getGlobal('SITEURL');
+	return $absolute ? getGSVar('SITEURL_ABS') : getGSVar('SITEURL');
 }
 
 /**
@@ -2984,6 +3032,18 @@ function safemodefail($action = '',$url = ''){
  * these are not backports! however
  * 
  */
+
+/**
+ * array diff from 2 arrays, returns both diffs not just one
+ * @since  3.4
+ * @param  array $array1 first array
+ * @param  array $array2 second array
+ * @return array         diff array, elements missing from either array are included
+ */
+function array_diff_dual($array1,$array2){
+	return array_merge(array_diff($array1, $array2), array_diff($array2, $array1));
+}
+
 
 /**
  * filter an array using a callback function on subarrays
@@ -3306,6 +3366,7 @@ function call_gs_func_array($callable,$args = array()){
 	}
 
 	if($valid) return call_user_func_array($callable,$args);
+	else debugLog("not callable " . $callable);
 }
 
 /**

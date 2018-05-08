@@ -29,18 +29,24 @@ exec_action('load-upload');
 $dirsSorted = $filesSorted = $foldercount = null;
 
 // force autoupload path
-if(isset($_REQUEST['autoupload']) && getDef("GSAUTOUPLOADPATH",true)) $_REQUEST['path'] = getDef("GSAUTOUPLOADPATH");
-
-if (isset($_REQUEST['path']) && !empty($_REQUEST['path'])) {
-	$path      = str_replace('../','', $_REQUEST['path']);
-	$subFolder = tsl($path);
-	$path      = tsl(GSDATAUPLOADPATH.$path);
-	// die if path is outside of uploads
-	if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
-} else { 
+if(isset($_REQUEST['autoupload']) && getDef("GSAUTOUPLOADPATH",true)){
+	$subpath   = str_replace('../','', getDef("GSAUTOUPLOADPATH"));
+	create_dir(tsl(GSDATAUPLOADPATH.tsl($subpath)));
+}
+else if (isset($_REQUEST['path']) && !empty($_REQUEST['path'])) {
+	$subpath   = str_replace('../','', $_REQUEST['path']);
+}	
+else {
 	$path      = GSDATAUPLOADPATH;
+	$subpath   = '';
 	$subFolder = '';
 }
+
+$subFolder = !empty($subpath) ? tsl($subpath) : '';
+$path      = tsl(GSDATAUPLOADPATH.$subpath);
+
+// die if path is outside of uploads
+if(!path_is_safe($path,GSDATAUPLOADPATH)) die();
 
 /**
  * convert $_FILES array buckets into file arrays, pivot
@@ -115,13 +121,15 @@ if (isset($_FILES['file'])) {
 					$fileurl   = getUploadURI($file_base,$subFolder);
 					$fileasset = 'image.php?i='.urlencode($file_base)."&path=".urlencode($subFolder);
 					echo '<div class="updated notify_success remove">'.i18n_r('FILE_SUCCESS_MSG').' [<a data-url = "'.$fileurl.'" href="'.$fileasset.'" target="_BLANK">'.i18n_r('IMG_CONTROl_PANEL').'</a>] </div>';
+					if(isset($_GET['CKEditorFuncNum'])) echo "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction(".$_GET['CKEditorFuncNum'].", '".$fileurl."', '');</script>";
 					die();
 				}
 			} else {
 				$messages[] = $filesArray[$i]["name"] .' - '.i18n_r('ERROR_UPLOAD');
 				if(requestIsAjax()){
 					header("HTTP/1.0 403");
-					echo "<div class=\"updated notify_error\">".i18n_r('ERROR_UPLOAD')."</div>";					
+					echo "<div class=\"updated notify_error\">".i18n_r('ERROR_UPLOAD')."</div>";
+					if(isset($_GET['CKEditorFuncNum'])) echo "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction(".$_GET['CKEditorFuncNum'].", '".$fileurl."', '".i18n_r('ERROR_UPLOAD')."');</script>";					
 					die();
 				}	
 			}
@@ -138,6 +146,7 @@ if (isset($_FILES['file'])) {
 			if(requestIsAjax()){
 				header("HTTP/1.0 403");
 				echo "<div class=\"updated notify_error\">".i18n_r('ERROR_UPLOAD')."</a></div>";
+				if(isset($_GET['CKEditorFuncNum'])) echo "<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction(".$_GET['CKEditorFuncNum'].", '".$fileurl."', '".i18n_r('ERROR_UPLOAD')."');</script>";									
 				die();
 			}
 
@@ -176,12 +185,6 @@ get_template('header');
 
 // check if host uses Linux (used for displaying permissions
 $isUnixHost = !hostIsWindows();
-
-function getUploadIcon($type){
-	if($type == '.') $class = 'folder';
-	else $class = getFileIconClass($type).'-o';
-	return '<span class="fa fa-fw fa-'.$class.' icon-left"></span>';
-}
 
 ?>
 

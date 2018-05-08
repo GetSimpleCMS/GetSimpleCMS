@@ -244,8 +244,9 @@ function initckeditor(){
     var editors = $(".html_edit").htmlEditorFromTextarea();
     // Debugger.log(editors);
 
-    // @tddo backwards compatibility for i18n, set global editor to first editor
-    // editor = $(editors[0]).data('htmleditor'); // hack in single editor, config.js and legacy uses this
+    // @todo backwards compatibility for i18n, set global editor to first editor
+    editor = $(editors[0]).data('htmleditor'); // hack in single editor, config.js and legacy uses this
+    changeEditor = editor; // hack for simpletabs ( it assigns to early )
 }
 
 // filebrowser handlers

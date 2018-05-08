@@ -38,6 +38,7 @@ get_template('header');
 	
 	<div id="maincontent">
 		<div class="main">
+		<?php exec_action(get_filename_id().'-body'); ?>
 		<?php if(empty($log_name)){
 			echo '<h3 class="floated">'.i18n_r('VIEW_LOG_FILE').'</h3><div class="clear"></div>';
 			echo '<ul>';
@@ -51,7 +52,6 @@ get_template('header');
 				<a href="deletefile.php?log=<?php echo $log_name; ?>&action=delete&nonce=<?php echo get_nonce("delete","deletefile.php"); ?>" accesskey="<?php echo find_accesskey(i18n_r('CLEAR_ALL_DATA'));?>" title="<?php i18n('CLEAR_ALL_DATA');?> <?php echo $log_name; ?>?" /><?php i18n('CLEAR_THIS_LOG');?></a>
 				<?php exec_action(get_filename_id().'-edit-nav'); ?>
 			</div>		
-			<?php exec_action(get_filename_id().'-body'); ?>
 			
 			<?php if (!$log_data){
 				 echo '<p><em>'.i18n_r('LOG_FILE_EMPTY').'</em></p>'; 

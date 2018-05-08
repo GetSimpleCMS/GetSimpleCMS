@@ -201,7 +201,7 @@ jQuery(document).ready(function () {
 	function initcodemirror(){
 		// apply codemirror to class of .code_edit
 		var elem= $(".code_edit").editorFromTextarea();
-		initCmThemeSelector();
+		if(elem.get(0))initCmThemeSelector();
 	}
 
 	function initCmThemeSelector(){
@@ -276,7 +276,7 @@ jQuery(document).ready(function () {
 		// if no button create it and add to editor
 		if(button.length === 0){
 			buttonhtml = $('<div class="overlay_but_fullscrn"></div>');
-			button = $('<a href="javascript:void(0)"><i class="fa fa-fw fa-arrows-alt"></i></a>').appendTo(buttonhtml);
+			button = $('<a href="javascript:void(0)"><i class="fa fa-fw fa-expand-arrows-alt"></i></a>').appendTo(buttonhtml);
 			buttoncont = buttonhtml.appendTo(cmwrapper);
 			button.on('click', cm,function(e){
 				toggleFullscreen(e.data);
