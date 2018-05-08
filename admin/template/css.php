@@ -1048,7 +1048,7 @@ form select.text,form textarea.text {
 	padding: 3px;
 	/*font-family: Arial, Helvetica Neue, Helvetica, sans-serif;*/
 	font-family: Verdana,Arial, Helvetica Neue, Helvetica, sans-serif;
-	font-size: 1.1em;
+	font-size: 1.0em;
 	/*width: 510px;*/
 	width:100%;
 	border-radius: 2px;
