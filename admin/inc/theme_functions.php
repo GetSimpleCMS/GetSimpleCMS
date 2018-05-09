@@ -70,7 +70,7 @@ function get_page_meta_keywords($echo=true) {
 }
 
 /**
- * get page tags as unordred list or array
+ * get page tags as unordered list or array
  * @since  3.4
  * @param bool $echo Optional, default is true. False will 'return' value
  * @param  bool $asarray if echo is false and asarray is true, returns an array of tags
@@ -575,7 +575,7 @@ function get_component($id, $force = false, $raw = false) {
  * See if a component exists
  * @since 3.4
  * @param  str $id component id
- * @param  bool disabled include disabled snippets 
+ * @param  bool disabled include disabled components 
  * @return bool
  */
 function component_exists($id, $disabled = false){
