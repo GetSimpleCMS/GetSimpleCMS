@@ -2629,7 +2629,7 @@ function setOldLocale($category = LC_ALL){
  * set a new locale from i18n
  */
 function setNewLocale($category = LC_ALL){
-	GLOBAL $NEWLCOALE;
+	GLOBAL $NEWLOCALE;
 	setOldLocale();
 	$NEWLOCALE = setCustomLocale(getLocaleConfig(),$category);
 	return $NEWLOCALE;
