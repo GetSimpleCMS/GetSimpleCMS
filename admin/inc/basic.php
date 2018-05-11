@@ -310,7 +310,7 @@ class SimpleXMLExtended extends SimpleXMLElement{
  *
  * @param string $file
  * @param string $path
- * @param string $type Optiona, default is 'xml'
+ * @param string $type Optional, default is 'xml'
  * @return bool
  */
 function isFile($file, $path, $type = 'xml') {
@@ -677,8 +677,8 @@ function pageExists($id){
 }
 
 /**
- * prepare a slug to gs standads
- * sanitizes, performs translist for filename, truncates to GSFILENAMEMAX
+ * prepare a slug to gs standards
+ * sanitizes, performs translit for filename, truncates to GSFILENAMEMAX
  *
  * @since  3.4
  * @param  str $slug slug to normalize
@@ -728,7 +728,7 @@ function XMLsave($xml, $file) {
 }
 
 /**
- * create a director or path
+ * create a directory or path
  *
  * @since 3.4
  * @todo normalize slashes for windows, apache works fine, iis might not
@@ -1330,7 +1330,7 @@ function redirect($url,$ajax = false) {
 /**
  * Display i18n
  *
- * Displays the default language's tranlation, but if it 
+ * Displays the default language's translation, but if it 
  * does not exist, it falls back to $default if set, else GSMERGELANG else {token}.
  *
  * @since 3.0
@@ -2104,7 +2104,7 @@ function directoryToArray($directory, $recursive = true) {
 }
 
 /**
- * Return a directory of files and folders with heirarchy and additional data
+ * Return a directory of files and folders with hierarchy and additional data
  *
  * @since 3.1.3
  *
@@ -2224,7 +2224,7 @@ function arrayIsMultid($ary){
 
 /**
  * normalizes str or array inputs to js array strings, always returns js array string syntax
- * used for ckeditro toolbar arrays for the most part
+ * used for ckeditor toolbar arrays for the most part
  * 
  * @since 3.3.2
  * @param mixed $var string or array var to convert to js array syntax
@@ -2458,7 +2458,7 @@ function getGlobal($var) {
 /** 
  * returns a page global
  * currently an alias for getGlobal, 
- * used specificly for globals used in theme_function for front end current page vars
+ * used specifically for globals used in theme_functions for front end current page vars
  *
  * @since 3.4
  */
