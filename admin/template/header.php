@@ -5,7 +5,7 @@
  * @package GetSimple
  */
  
-global $SITENAME, $SITEURL;
+global $SITENAME, $SITEURL, $uploadifyfolder;
 
 $GSSTYLE         = getDef('GSSTYLE') ? GSSTYLE : '';
 $GSSTYLE_sbfixed = in_array('sbfixed',explode(',',$GSSTYLE));
@@ -17,6 +17,10 @@ if( $GSSTYLE_wide )    $bodyclass .= " wide";
 $bodyclass .="\"";
 
 if(get_filename_id()!='index') exec_action('admin-pre-header');
+
+/* Find (renamed) uploadify* folder. This is only called below and in sidebar-files.php : */
+$files = glob(GSADMINPATH.DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR.'uploadify*');
+$uploadifyfolder = basename($files[0]);
 
 ?>
 <!DOCTYPE html>
@@ -40,7 +44,7 @@ if(get_filename_id()!='index') exec_action('admin-pre-header');
 
 	<!--[if lt IE 9]><script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js" ></script><![endif]-->
 	<?php if( ((get_filename_id()=='upload') || (get_filename_id()=='image')) && (!getDef('GSNOUPLOADIFY',true)) ) { ?>
-	<script type="text/javascript" src="template/js/uploadify/jquery.uploadify.js?v=3.0"></script>
+	<script type="text/javascript" src="template/js/<?php echo $uploadifyfolder; ?>/jquery.uploadify.js?v=3.0"></script>
 	<?php } ?>
 	<?php if(get_filename_id()=='image') { ?>
 	<script type="text/javascript" src="template/js/jcrop/jquery.Jcrop.min.js"></script>

@@ -147,7 +147,7 @@ if(isset($_POST['submitted'])) {
 				$err .= sprintf(i18n_r('MOVE_TEMPCONFIG_ERROR'), 'temp.gsconfig.php', 'gsconfig.php') . '<br />';
 			}
 		}
-		
+
 		# send email to new administrator
 		$subject  = $site_full_name .' '. i18n_r('EMAIL_COMPLETE');
 		$message .= '<p>'.i18n_r('EMAIL_USERNAME') . ': <strong>'. stripslashes($_POST['user']).'</strong>';
@@ -155,6 +155,16 @@ if(isset($_POST['submitted'])) {
 		$message .= '<br>'. i18n_r('EMAIL_LOGIN') .': <a href="'.$SITEURL.$GSADMIN.'/">'.$SITEURL.$GSADMIN.'/</a></p>';
 		$message .= '<p><em>'. i18n_r('EMAIL_THANKYOU') .' '.$site_full_name.'!</em></p>';
 		$status   = sendmail($EMAIL,$subject,$message);
+
+		# rename uploadify folder
+		$jspath = GSADMINPATH.'template'.DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR;
+		if (is_dir($jspath.'uploadify')) {
+			$name = 'uploadify-'.substr(md5(rand()), rand(0,9), 22);
+			if (!@rename($jspath.'uploadify', $jspath.$name)) {
+				$err .= '<strong>'.i18n_r('WARNING').':</strong> Unable to rename folder: <em>'.(defined('GSADMIN') ? GSADMIN : 'admin').'/template/js/uploadify</em>';
+			}
+		}
+
 		# activate default plugins
 		change_plugin('anonymous_data.php',true);
 		change_plugin('InnovationPlugin.php',true);
