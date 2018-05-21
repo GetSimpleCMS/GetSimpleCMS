@@ -1119,10 +1119,11 @@ function generate_url($slug, $absolute = false, $pathdata = null){
 	// not index
 	if($slug != getDef('GSINDEXSLUG')){
 		if ($PRETTYURLS == '1'){
-			$url .= generate_permalink($slug,null,$pathdata);
-		} 
-		else if (!empty($PERMALINK)){
-			$url .= generate_permalink($slug,$PERMALINK,$pathadta);
+			if (!empty($PERMALINK)){
+				$url .= generate_permalink($slug,$PERMALINK,$pathdata);
+			} else {
+				$url .= generate_permalink($slug,null,$pathdata);
+			}
 		}
 		else $url .= 'index.php?id='.$slug;
 	}
