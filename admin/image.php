@@ -86,7 +86,7 @@ function breadcrumbs($path,$root = ''){
 
 	$paths = explode('/',$paths);
 	$pathlink = $root;
-	$array = '';
+	$array = array();
 	foreach($paths as $crumb){
 		$pathlink .= $crumb.'/';
 		$array[] ='<a href="'.$pathlink.'">'.$crumb.'</a>';
