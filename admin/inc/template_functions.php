@@ -2123,6 +2123,9 @@ function getDefaultCodeEditorAttr($class){
  * get editor attributes for textareas
  * If func name not provided , we will attempt to get a function name from 'GS'.uppercase($collectionid).'ATTRIB'
  * eg. GSSNIPPETSATTRIB which it will execute and use for inserting into the textarea
+ * @since  3.4
+ * @uses  GSSNIPPETSATTRIB
+ * @uses  GSCOMPONENTSATTRIB
  * @param  str $collectionid id for this kind of editor
  * @param  string $class        extra classes
  * @param  str $funcname     function name to call to get attributes

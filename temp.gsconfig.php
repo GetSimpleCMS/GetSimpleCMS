@@ -124,4 +124,25 @@ define('GSSUPPRESSERRORS',true);
 # GS can format its xml files before saving them if you require human readable source for them
 # define('GSFORMATXML',true);
 
+# enable page drafts
+# define('GSUSEDRAFTS',true);
+
+# enable editing theme root files in theme editor
+# define('GSTHEMEEDITROOT',true);
+
+
+/**
+ * GS 3.3 legacy appearance, disabled stuff added in 3.4 ( mostly )
+'GSTABICONS'           => false,              // (bool) show icons on nav tabs
+'GSTABS'               => 'pages,upload,theme,backups,plugins', // (str) csv list of page ids and order to show tabs
+'GSWIDEPAGES'          => '',                 // (str-csv) pages to apply GSWIDTHWIDE on
+'GSSTYLE'              => '',                 // (str-csv) default style modifiers
+'GSAJAXSAVE'           => false,              // (bool) use ajax for saving themes, components, and pages
+'GSPAGETABS'           => false,              // (bool) use tabbed interface for page edit ( no page options toggle when off )
+'GSUSEDRAFTS'          => false,              // (bool) use page drafts
+'GSTHUMBSSHOW'         => false,              // (bool) always show thumbnails
+'GSSNIPPETSATTRIB'     => '',                 // (str) callback funcname for htmleditors used to init htmleditor
+'GSCOMPONENTSATTRIB'   => '',                 // (str) callback funcname for codeeditors used to init codeeditor
+ */
+
 ?>
