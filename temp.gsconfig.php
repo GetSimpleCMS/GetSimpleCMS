@@ -59,7 +59,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === basename(__FILE__)) {
 #define('GSEDITORLANG', 'en');
 
 // WYSIWYG Editor Options
-#define('GSEDITOROPTIONS', '');
+//eg. define('GSEDITOROPTIONS',"skin: 'moonocolor',enterMode: CKEDITOR.ENTER_BR,shiftEnterMode : CKEDITOR.ENTER_P");
+# define('GSEDITOROPTIONS',"");
 
 // Set email from address
 #define('GSFROMEMAIL', 'noreply@get-simple.info');
@@ -114,9 +115,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === basename(__FILE__)) {
 // enable editing theme root files in theme editor
 # define('GSTHEMEEDITROOT',true);
 
-// custom (str) csv list of page ids and order to show tabs
-#define('GSTABS','pages,upload,theme,backups,plugins,snippets,components')
-
+// custom nav tabs list (str) csv list of page ids and their order( tabs missing will still be accessible in the footer )
+#define('GSTABS','pages,upload,theme,theme-edit,snippets,components,backups,plugins,log,health-check')
 
 /**
  * DO NOT EDIT BELOW THIS LINE
@@ -134,6 +134,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === basename(__FILE__)) {
 'GSSNIPPETSATTRIB'     => '',                 // (str) callback funcname for htmleditors used to init htmleditor
 'GSCOMPONENTSATTRIB'   => '',                 // (str) callback funcname for codeeditors used to init codeeditor
 'GSHEADERCLASS'        => 'gradient',         // (str) custom class to add to header eg. `gradient` to add 3.3 gradients back
+'GSEDITOROPTIONS'      => "skin: 'moonocolor'" // moonocolor skin has not been updated in a long time
  */
 
 ?>

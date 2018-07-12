@@ -6,6 +6,7 @@ CKEDITOR.editorConfig = function( config )
 {
 	// Define changes to default configuration here.
 	config.skin                        = 'getsimple'; // clone of moono
+	// config.skin                        = 'moonocolor'; // clone of moono
 	
 	config.defaultLanguage             = 'en';
 	config.resize_dir                  = 'vertical'; // vertical resize

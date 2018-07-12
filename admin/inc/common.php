@@ -95,11 +95,11 @@ $GS_definitions = array(
 	'GSLOGINUPGRADES'      => true,                           // (bool) if true, temporarily close front end during upgrades, must login to upgrade
 	'GSSANITIZEECHO'       => true,                           // (bool) sanitize out put of echoreturn
 	# STYLES/UI -------------------------------------------------------------------------------------------------------------------------------------------
-	'GSTABS'               => 'pages,upload,theme,backups,plugins', // (str) csv list of page ids and order to show tabs
+	'GSTABS'               => 'pages,upload,theme,snippets,components,backups,plugins', // (str) csv list of page ids and order to show tabs
 	'GSNOSIDEBAR'          => 'theme-edit',                   // (str) csv list of page ids to hide sidebar
 	'GSSTYLE'              => 'wide,sbfixed',                 // (str-csv) default style modifiers
-	'GSWIDTH'              => '1024px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width
-	'GSWIDTHWIDE'          => '1366px',                       // (str) page width on backend pages defined in GSWIDEPAGES, values as above
+	'GSWIDTH'              => '1366px',                       // (str) pagewidth on backend,(max-width), null,'none',''  for 100% width
+	'GSWIDTHWIDE'          => '1920px',                       // (str) page width on backend pages defined in GSWIDEPAGES, values as above
 	'GSWIDEPAGES'          => 'theme-edit,components,snippets', // (str-csv) pages to apply GSWIDTHWIDE on
 	'GSTABICONS'           => true,                           // (bool) show icons on nav tabs
 	'GSNOCDN'              => true,                           // (bool) disable cdn for assets that have cdn urls in assets.php
