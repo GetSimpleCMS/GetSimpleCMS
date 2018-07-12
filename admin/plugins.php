@@ -53,7 +53,7 @@ foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
 		$cls_Enabled  = '';
 		// $cls_Disabled = 'hidden';
 		$trclass      = 'disabled';
-		$icon         = getIcon("ICO_plugoff");
+		$icon         = '<span style="cursor: not-allowed;">'.getIcon("ICO_plugoff").'</span>';
 	}
 
 	// get extend api for this plugin filename
