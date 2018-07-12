@@ -111,6 +111,7 @@ if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ){
 
 	// set max width for wide pages using custom wide width
 	foreach($widepages as $pageid){
+		$pageid = trim($pageid);
 		$widepagecss.= "#$pageid .wrapper {max-width: $width_wide;}\n";
 	}
 

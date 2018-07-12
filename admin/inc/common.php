@@ -76,7 +76,7 @@ $GS_definitions = array(
 	'GSSUPERUSER'          => '',                             // (str) userid for superuser, defaults to website data/global $SITEUSR if it exists
 	'GSDEFAULTPAGE'        => 'pages.php',                    // (str) Default backend index page
 	'GSHEADERCLASS'        => '',                             // (str) custom class to add to header eg. `gradient` to add 3.3 gradients back
-	'GSHTTPPREFIX'         => '',                             // (str) http slug prefix GSHTTPPREFIX.GSSLUGxx
+	'GSHTTPPREFIX'         => '',                             // (str) http slug prefix for error page slugs, GSHTTPPREFIX.GSSLUGx
 	'GSSLUGNOTFOUND'       => '404',                          // (str) http slug for not found
 	'GSSLUGPRIVATE'        => '403',                          // (str) http slug for private pages
 	'GSADMIN'              => 'admin',                        // (str) admin foldername
@@ -170,6 +170,7 @@ $GS_definitions = array(
 	'GSCOMPSORTSAVE'       => true,                           // (bool) sort collections by title on save
 	'GSEDITNAVCLONE'       => false,                          // (bool) show clone edit nav on page edit
 	'GSEDITNAVVIEW'        => true,                           // (bool) show view edit nav on page edit
+	'GSNOHIGHLIGHT'        => false,                          // (bool) disabled code mirror
 	# DRAFTS -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSUSEDRAFTS'          => false,                          // (bool) use page drafts
 	'GSUSEPAGESTACK'       => true,                           // (bool) use page stacks for drafts, else manually pass `nodraft` or `draft` qs

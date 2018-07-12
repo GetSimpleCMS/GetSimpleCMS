@@ -66,6 +66,7 @@ if(isBeta() || isAlpha()) echo '<li class="rightnav"><a class="label label-ghost
 
 	if($tabs){
 		foreach($tabs as $tab){
+			$tab = trim($tab);
 			if(empty($tab)) continue;
 			$tabtitle = i18n_r('TAB_'.uppercase($tab));
 			$class = $tab == $current ? ' current' : '';

@@ -2157,7 +2157,6 @@ function directoryToMultiArray($dir,$recursive = true,$exts = null,$exclude = fa
  * Returns definition safely
  * All definition calls should use this as a wrapper, 
  * so it can be changed in the future from definitions to a file based config
- * 
  * @since 3.1.3
  * 
  * @param str $id 
@@ -2168,7 +2167,7 @@ function directoryToMultiArray($dir,$recursive = true,$exts = null,$exclude = fa
 function getDef($id, $isbool = false, $iscsv = false){
 	if( defined($id) ) {
 		if($isbool) return (bool) constant($id);
-		if($iscsv)  return explode(',',constant($id)); // explode csv @todo trim whitespace, would prevent valid spaces
+		if($iscsv)  return explode(',',constant($id)); // explode csv @todo trim whitespace, but would prevent valid spaces
 		return constant($id);
 	}
 }
