@@ -2105,7 +2105,7 @@ jQuery(document).ready(function () {
 
 	// add tree folding to tree tables
 	// addTableTree(minrows,mindepth,headerdepth)
-	$('table.tree').addTableTree(1,1,1);
+	$('table.tree').addTableTree(GS.treeminrow,GS.treemindepth,GS.treeminheader);
 
 	// allow clicking on current sidebar menus
 	$('#sidebar .current').on('click',function(e){

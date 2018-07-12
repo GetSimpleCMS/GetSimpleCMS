@@ -133,6 +133,11 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
         GS.debug   = <?php echo isDebug() === true ? 'true' : 'false'; ?> ;
         GS.siteurl = '<?php echo $SITEURL; ?>';
         GS.uploads = '<?php echo tsl($SITEURL).getRelPath(GSDATAUPLOADPATH); ?>';
+        
+        // gs tree defaults for page tree
+        GS.treeminrow    = 10;
+        GS.treemindepth  = 2;
+        GS.treeminheader = 2;
 
 		var uploadSession = '<?php echo $SESSIONHASH; ?>';
 		var uploadPath    = '<?php echo (isset($_GET['path'])) ? $_GET['path'] : ""; ?>';
