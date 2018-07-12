@@ -2076,17 +2076,19 @@ th.file_size,th.file_date,th.file_perms {
 .uploaddropzone {
 	display: none;
 	border: 2px dashed <?php echo $primary_1 ?>;
-	border-radius: 2px;
+	border-radius: 3px;
 	margin: 8px 0 5px 15px !important;
 	text-align: center;
-	height: 40px;
-	line-height: 40px;
+	/*height: 60px;*/
+	/*line-height: 40px;*/
 	font-weight: bold;
 	font-size: 14px;
 	color: <?php echo $primary_1 ?>;
 	font-family: sans-serif;
 	opacity: .5;
 	transition: opacity 300ms;
+	cursor:pointer;
+	padding:14px 0;
 }
 
 .uploaddropzone i.fa {
@@ -2113,6 +2115,13 @@ th.file_size,th.file_date,th.file_perms {
 	font-size: 10px;
 	padding: 8px 15px;
 	width: 190px;
+	max-height:100px;
+}
+
+/* needed for svg, thumbnails not calculated properly by dz */
+.queue-item-wrap .queue-item img {
+	max-height:60px;
+	max-width:60px;
 }
 
 /* special overrides for non templated remove links */
@@ -3616,7 +3625,7 @@ table td.status{
 
 /* force text to be non selectable , for labels psuedo buttons */
 *.unselectable {
-	cursor:default;
+	/*cursor:default;*/
    -moz-user-select: none;
    -khtml-user-select: none;
    -webkit-user-select: none;

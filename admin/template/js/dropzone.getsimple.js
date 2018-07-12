@@ -2,7 +2,7 @@ jQuery(document).ready(function () {
 
 	// init sidebar config object for dropzone
 	dropzoneSidebarConfig = {
-		clickable: '#fileuploadlink',
+		clickable: '.fileuploadlink',
 		fallback              : 
 			function(){
 				$('.snav').removeClass('dropzoneenabled');

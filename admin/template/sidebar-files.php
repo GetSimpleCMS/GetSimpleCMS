@@ -23,7 +23,7 @@ $fileSizeLimitMB = toBytesShorthand(getMaxUploadSize(),'M',true);
 	?>
 	
 	<li class="upload dispupload">
-		<a style="margin-left:0" id="fileuploadlink" href="#">
+		<a style="margin-left:0" id="fileuploadlink" class="fileuploadlink" href="#">
 			<span><?php echo i18n_r('UPLOADIFY_BUTTON'); ?></span>
 			<span class="touch"><?php echo i18n_r('UPLOAD'); ?></span>
 		</a>
@@ -55,7 +55,7 @@ $fileSizeLimitMB = toBytesShorthand(getMaxUploadSize(),'M',true);
 
 	</li>
 
-	<li id="gs-dropzone" class="uploaddropzone dispupload">
+	<li id="gs-dropzone" class="uploaddropzone dispupload fileuploadlink">
 		<?php echo getIcon("SM_upload"); ?>
 		<span class="dz-message unselectable"><?php i18n('DROP_FILES'); ?></span>
 	</li>
