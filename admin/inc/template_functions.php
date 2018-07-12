@@ -1034,8 +1034,7 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	$menu .= '<tr id="tr-'.$page['url'] .'" class="'.$class.'" data-depth="'.$level.'">';
 
 	$pagetitle = $pagemenustatus = $pageprivate = $pagedraft = $pageindex = '';
-
-
+	// @todo should strip_decode from xml then escape and sanitize on output, xml read should be normalized with decode
 	if ($page['title'] == '' )        { $pagetitle       = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>';} else { $pagetitle = $page['title']; }
 	if ($page['menuStatus'] != '' )   { $pagemenustatus  = ' <span class="label label-ghost">'.i18n_r('MENUITEM_SUBTITLE').'</span>'; }
 	if ($page['private'] != '' )      { $pageprivate     = ' <span class="label label-ghost">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } 
@@ -1043,7 +1042,7 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	if ($page['url'] == getDef('GSINDEXSLUG'))     { $pageindex       = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; }
 	if(dateIsToday($page['pubDate'])) { $pagepubdate     = ' <span class="datetoday">'. output_date($page['pubDate']) . '</span>';} else { $pagepubdate = '<span>'. output_date($page['pubDate']) . "</span>";}
 
-	$menu .= '<td class="pagetitle break">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. cl($pagetitle) .'</a>';
+	$menu .= '<td class="pagetitle break">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. var_out($pagetitle,"string") .'</a>';
 	$menu .= '<div class="showstatus toggle" >'. $pageindex .  $pagedraft . $pageprivate . $pagemenustatus .'</div></td>'; // keywords used for filtering
 	$menu .= '<td style="width:80px;text-align:right;" ><span>'.$pagepubdate.'</span></td>';
 	$menu .= '<td class="secondarylink" >';
@@ -1061,7 +1060,7 @@ function getPagesRow($page,$level,$index,$parent,$children){
 	$menu .= '<td class="indexColumn hidden">'.strip_tags(lowercase($pagetitle . $pageindex . $pagemenustatus . $pageprivate .$pagedraft)) .'</div></td>'; // keywords used for filtering
 	$menu .= '<td class="tagColumn hidden">'.str_replace(',',' ',$page['meta']) . '</div></td>'; // keywords used for filtering
 	
-	$menu .= '</tr>';
+	$menu .= "</tr>\n";
 	return $menu;
 }
 

@@ -93,6 +93,7 @@ $GS_definitions = array(
 	'GSNOFRAMEDEFAULT'     => 'SAMEORIGIN',                   // (string) GSNOFRAME X-Frame-Options default value
 	'GSCDNFALLBACK'        => true,                           // (bool) if true, CDN assets queued on GSFRONT will fallback to local version
 	'GSLOGINUPGRADES'      => true,                           // (bool) if true, temporarily close front end during upgrades, must login to upgrade
+	'GSSANITIZEECHO'       => true,                           // (bool) sanitize out put of echoreturn
 	# STYLES/UI -------------------------------------------------------------------------------------------------------------------------------------------
 	'GSTABS'               => 'pages,upload,theme,backups,plugins', // (str) csv list of page ids and order to show tabs
 	'GSNOSIDEBAR'          => 'theme-edit',                   // (str) csv list of page ids to hide sidebar

@@ -57,7 +57,9 @@ if (isset($_POST['submitted'])) {
 	$overwrite      = !$pageIsNew && !$slugHasChanged;         # flag, overwrite an existing slug
 
 	// setup title
-	$title = safe_slash_html($_POST['post-title']);
+	$title = $_POST['post-title'];
+	$title = xss_clean($title);
+	$title = safe_slash_html($title);
 
 	// if attempting to change index throw ER_CANNOT_INDEX
 	if ($slugHasChanged && $oldslug === 'index') redirect("edit.php?id=". urlencode($oldslug) ."&upd=edit-index&type=edit");

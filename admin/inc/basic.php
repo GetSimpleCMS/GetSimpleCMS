@@ -2475,6 +2475,7 @@ function getGSPageVar($var){
  */
 function echoReturn($str,$echo = true){
 	if (!$echo) return $str;
+	if(getDef("GSSANITIZEECHO",true)) $str = var_out($str);	
 	echo $str;
 }
 
