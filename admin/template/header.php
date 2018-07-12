@@ -49,7 +49,7 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
 	// build theme selector
 	$themeselector = '<select id="cm_themeselect">\n<option>default</option>';
 	foreach($cm_themes as $theme){
-		$themeselector .= "<option>$theme</option>";
+		$themeselector .= "<option>".trim($theme)."</option>";
 	}
 	$themeselector .= '</select>';
 
