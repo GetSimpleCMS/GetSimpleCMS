@@ -3566,7 +3566,7 @@ table.filter.filtered .tree-expander{
 
 /* plugins table */
 table td.title{
-	width:165px;
+	width:200px;
 }
 
 table td.status{
