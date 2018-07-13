@@ -14,6 +14,10 @@
 	<title>GetSimple Default Admin</title>
 	<author>Chris Cagle</author>
 	<link>http://www.cagintranet.com/</link>
+	<header>
+		<!-- header background -->
+		<base>#415A66</base>
+	</header>	
 	<primary>
 		<darkest>
 			<!-- tab hover background, link hover -->

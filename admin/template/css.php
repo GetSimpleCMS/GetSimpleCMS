@@ -229,7 +229,7 @@ input[type="submit"] {
 	display: block;
 	border-radius: 5px 5px 0 0;
 	color: <?php echo $primary_6; ?>;
-	background: <?php echo $primary_1; ?>;
+	background-color: <?php echo $primary_1; ?>;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.3);	
 }
 
@@ -263,6 +263,7 @@ input[type="submit"] {
 #load	.wrapper .support li a.support,*/
 #load .wrapper .nav li a.current,
 #loadtab .wrapper .nav li a.current,
+#header .wrapper .nav li a.current,
 .wrapper .nav li a.current {
 	color: <?php echo $primary_1; ?>;
 	background: #f6f6f6;
@@ -279,7 +280,7 @@ input[type="submit"] {
 .wrapper .nav li a:focus,
 .wrapper .nav li a:hover{
 	color: #FFF;
-	background: <?php echo $primary_0; ?>;
+	background-color: <?php echo $primary_0; ?>;
 	text-shadow: 1px 1px 0 rgba(0,0,0,.4);
 }
 

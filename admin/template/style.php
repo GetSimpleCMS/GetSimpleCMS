@@ -101,25 +101,29 @@ echo "/* label alphas */\n";
 echo $labelAlphas;
 
 // if GSTYLEWIDE ( default )
-if( isset($_GET['s']) and in_array('wide',explode(',',$_GET['s'])) ){
-	$width       = getDef('GSWIDTH');                  // get page width
-	$width_wide  = getDef('GSWIDTHWIDE');              // get wide page width
-	$widepages   = explode(',',getDef('GSWIDEPAGES')); // get ids of pages that are wide
-	$widepagecss = '';
+if( isset($_GET['s'])){
+  if(in_array('wide',explode(',',$_GET['s'])) ){
+		$width       = getDef('GSWIDTH');                  // get page width
+		$width_wide  = getDef('GSWIDTHWIDE');              // get wide page width
+		$widepages   = explode(',',getDef('GSWIDEPAGES')); // get ids of pages that are wide
+		$widepagecss = '';
 
-	if($width =='0' or $width == '') $width = 'none'; // allow for no max-width
+		if($width =='0' or $width == '') $width = 'none'; // allow for no max-width
 
-	// set max width for wide pages using custom wide width
-	foreach($widepages as $pageid){
-		$pageid = trim($pageid);
-		$widepagecss.= "#$pageid .wrapper {max-width: $width_wide;}\n";
+		// set max width for wide pages using custom wide width
+		foreach($widepages as $pageid){
+			$pageid = trim($pageid);
+			$widepagecss.= "#$pageid .wrapper {max-width: $width_wide;}\n";
+		}
+		include('css-wide.php');
 	}
-
-	include('css-wide.php');
+	if(in_array('trans',explode(',',$_GET['s']))){
+		include('css-trans.php');
+	}
 }
-
 // include custom theme/admin.css if exists
 if(file_exists(GSTHEMESPATH.getDef('GSCSSCUSTOMFILE')) && getDef('GSCSSCUSTOMENABLE',true)) include(GSTHEMESPATH.getDef('GSCSSCUSTOMFILE'));
+
 
 // You can include your own css here
 exec_action('style-save'); // @hook style-save called after css files are included before cache is saved

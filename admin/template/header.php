@@ -12,11 +12,13 @@ GLOBAL $SITENAME, $SITEURL, $GSADMIN, $themeselector, $pagetitle, $SESSIONHASH, 
 $GSSTYLE         = getDef('GSSTYLE') ? GSSTYLE : '';
 $GSSTYLE_sbfixed = in_array('sbfixed',explode(',',$GSSTYLE));
 $GSSTYLE_wide    = in_array('wide',explode(',',$GSSTYLE));
+$GSSTYLE_trans   = in_array('trans',explode(',',$GSSTYLE));
 
 // set up body classes
 $bodyclass='';
 if( $GSSTYLE_sbfixed )          $bodyclass .= " sbfixed";
 if( $GSSTYLE_wide )             $bodyclass .= " wide";
+if( $GSSTYLE_trans )            $bodyclass .= " trans";
 if( $SAFEMODE )                 $bodyclass .= " safemode";
 if( getDef("GSTHUMBSSHOW",true))$bodyclass .= " forcethumbs";
 if( getDef("GSPAGETABS",true))  $bodyclass .= " tabs";
