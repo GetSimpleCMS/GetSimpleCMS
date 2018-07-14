@@ -85,14 +85,14 @@
  * @param  str $prepare   callback function for each subarray
  * @return array          returns array sorted by key or prepared sort index
  */
-function sortCustomIndexCallback($array,$key=null,$prepare=null){
+function sortCustomIndexCallback($array,$key=null,$prepare=""){
 	$sortvalue = array();
 
 	if(!$array){
 		debugLog("sort array is empty");
 		return;
 	}
-	if(isset($prepare) && function_exists($prepare)){
+	if(!empty($prepare) && function_exists($prepare)){
 		foreach($array as $sortkey=>$item){
 			if(isset($key)) $sortvalue[$sortkey] = $prepare($item,$item[$key]);
 			else $sortvalue[$sortkey] = $prepare($item);
