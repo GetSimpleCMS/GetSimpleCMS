@@ -167,7 +167,7 @@ get_template('header');
 			
 			# check to see if there is a core update needed
 			$verdata   = getVerCheck();
-			$verstatus = $verdata->status || '';
+			$verstatus = $verdata->status;
 			
 			if ($verstatus == '0') {
 				$ver = '<span class="ERRmsg" >'. i18n_r('UPG_NEEDED') .' <b>'.$apikey->latest .'</b><br /><a href="'.$site_link_back_url.'download" target="_blank" >'. i18n_r('DOWNLOAD').'</a></span>';
