@@ -2020,7 +2020,7 @@ function saveCollection($assetid,$asset){
 		$compary = $_POST['component'];
 
 		if(getDef("GSCOMPSORTSAVE",true)){
-			$compary = sortKey($compary,"title","custom_sortb");
+			$compary = sortKey($compary,"title","custom_sort");
 		}
 
 		foreach ($compary as $component){
