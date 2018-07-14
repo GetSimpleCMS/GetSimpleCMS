@@ -2022,7 +2022,7 @@ jQuery(document).ready(function () {
 					$("#new-folder").find("form").hide();
 					$('#createfolder').show();
 					counter = parseInt($("#pg_counter").text(),10);
-					$("#pg_counter").html(counter++);
+					$("#pg_counter").html(counter+1);
 					$("tr." + escape(newfolder) + " td").css("background-color", "#F9F8B6");
 					loadingAjaxIndicator.fadeOut();
 				});
