@@ -53,7 +53,7 @@ foreach ($plugin_info_sorted as $pluginid=>$plugininfo) {
 		$cls_Enabled  = '';
 		// $cls_Disabled = 'hidden';
 		$trclass      = 'disabled';
-		$icon         = '<a href="plugins.php?set='.$pluginid.$setNonce.'" title="'.i18n_r('DISABLE').'">'.getIcon("ICO_plugoff").'</a>;
+		$icon         = '<a href="plugins.php?set='.$pluginid.$setNonce.'" title="'.i18n_r('DISABLE').'">'.getIcon("ICO_plugoff").'</a>';
 	}
 
 	// get extend api for this plugin filename
