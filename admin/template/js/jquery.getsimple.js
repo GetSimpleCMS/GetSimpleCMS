@@ -1850,12 +1850,17 @@ jQuery(document).ready(function () {
 		}
 	}
 
-	save_all_editors = function(){
+	save_all_editors = function(){		
 		console.log("saving code editors");
 		save_codeeditors();
 		console.log("saving html editors");		
 		save_htmleditors();
+		$(window).trigger('saveAllEditors');	
 	}
+
+	// $(window).on('saveAllEditors',function(e){
+	// 	Debugger.log("saveAllEditors Emitted");
+	// });
 
 	// save all editors
 	save_codeeditors = function(){
