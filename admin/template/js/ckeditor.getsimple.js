@@ -241,7 +241,7 @@ function cke_editorisinline(editor){
 }
 function initckeditor(){
     // apply ckeditor to class of .html_edit
-    var editors = $(".html_edit :not(.custom)").htmlEditorFromTextarea();
+    var editors = $(".html_edit").not(".custom").htmlEditorFromTextarea();
     // Debugger.log(editors);
 
     // @todo backwards compatibility for i18n, set global editor to first editor
