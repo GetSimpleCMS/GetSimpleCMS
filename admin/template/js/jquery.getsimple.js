@@ -1859,7 +1859,6 @@ jQuery(document).ready(function () {
 
 	// save all editors
 	save_codeeditors = function(){
-		// Debugger.log(theme);
 		$('.code_edit').each(function(i, textarea){
 			var editor = $(textarea).data('editor');
 			// Debugger.log(editor);
@@ -1871,19 +1870,17 @@ jQuery(document).ready(function () {
 
 	// save all editors
 	save_htmleditors = function(){
-		// Debugger.log(theme);
 		$('.html_edit').each(function(i, textarea){
 			var editor = $(textarea).data('htmleditor');
 			// Debugger.log(editor);
 			if(editor) {
-				editor.updateElement(); 
+				editor.updateElement();
 			}
 		});		
 	};
 
 	// save all editors
 	save_inlinehtmleditors = function(){
-		// Debugger.log(theme);
 		$('[contenteditable="true"]').each(function(i,elem){
 			Debugger.log($(elem).prop('id'));
 			var id = $(this).prop('id');
