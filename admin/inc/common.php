@@ -116,7 +116,7 @@ $GS_definitions = array(
 	'GSALLOWDOWNLOADS'     => true,                           // (bool) allow using downloads.php to download files from /uploads and backups/zip
 	'GSPROFILEALLOWADD'    => false,                          // (bool) allow superuser to add new users
 	'GSPROFILEALLOWEDIT'   => false,                          // (bool) allow superuser to edit other users
-	'GSEXECANON'           => false,                          // (bool) allow callbacks to be anonymous closures, security implications
+	'GSEXECANON'           => true,                           // (bool) allow callbacks to be anonymous closures, security implications
 	# ALLOW/UPLOADS ------------------------------------------------------------------------------------------------------------------------------------
 	'GSALLOWUPLOADS'       => true,                           // (bool) allow upload files
 	'GSALLOWUPLOADCREATE'  => true,                           // (bool) allow upload folder creation
