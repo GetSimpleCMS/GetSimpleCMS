@@ -403,7 +403,7 @@ function addPlugindebugging(&$array){
 	$shift         = 3; // levels to plugin include, from common.php
 	
 	// call_user_func and call_user_func_array missing in php 7
-	if(version_compare(PHP_VERSION, '7.0.0', '>=')) {
+	if(getDef('GSBTFIX',true) && version_compare(PHP_VERSION, '7.0.0', '>=')) {
 	    $shift--;
 	}
 
