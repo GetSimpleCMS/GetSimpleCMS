@@ -15,7 +15,7 @@ $GSSTYLE_wide    = in_array('wide',explode(',',$GSSTYLE));
 $GSSTYLE_trans   = in_array('trans',explode(',',$GSSTYLE));
 
 // set up body classes
-$bodyclass='';
+$bodyclass= "gs-" . GSVERSION;
 if( $GSSTYLE_sbfixed )          $bodyclass .= " sbfixed";
 if( $GSSTYLE_wide )             $bodyclass .= " wide";
 if( $GSSTYLE_trans )            $bodyclass .= " trans";
