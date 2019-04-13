@@ -56,7 +56,6 @@ $VERSIONS = array(
   'jqueryui'          => '1.11.4',
   'jqueryuicss'       => '1.11.3',
   'jquery-mousewheel' => '3.1.13',
-  'scrolltofixed'     => '1.0.8',
   'spin'              => '2.3.2',
   'lazyload'          => '0.0.1'
 );
@@ -127,10 +126,6 @@ $GS_script_assets['jquery-ui']['local']['url']     = $ASSETPATH.'js/jqueryui/js/
 $GS_script_assets['jquery-ui']['local']['ver']     = $VERSIONS['jqueryui'];
  $GS_style_assets['jquery-ui']['local']['url']     = $ASSETPATH.'js/jqueryui/css/'.$jqueryuitheme.'/jquery-ui-'.$VERSIONS['jqueryuicss'].'.custom.css';
  $GS_style_assets['jquery-ui']['local']['ver']     = $VERSIONS['jqueryui'];
-
-// scrolltofixed
-$GS_script_assets['scrolltofixed']['local']['url'] = $ASSETPATH.'js/scrolltofixed/jquery-scrolltofixed.js';
-$GS_script_assets['scrolltofixed']['local']['ver'] = $VERSIONS['scrolltofixed'];
 
 // codemirror
 $GS_script_assets['codemirror']['local']['url']    = $ASSETPATH.'js/codemirror/lib/codemirror.min.js';
@@ -215,7 +210,6 @@ preRegisterScript('codemirror',   '',   false , $infooter);
 preRegisterScript('dropzone',     '',   false , $infooter);
 preRegisterScript('fancybox',     '',   false , $infooter);
 preRegisterScript('jquery-mousewheel',     '',   false , $infooter);
-preRegisterScript('scrolltofixed','',   false , $infooter);
 
 // gs aliases
 preRegisterScript('gshtmleditor', $GS_script_assets['gsckeditor'],     false , $infooter);
@@ -240,7 +234,6 @@ queue_script('lazyload'      , GSBACK);
 queue_script('spin'          , GSBACK);
 queue_script('gstree'        , GSBACK);
 queue_script('fancybox'      , GSBACK);
-queue_script('scrolltofixed' , GSBACK);
 
 queue_style('fancybox'       , GSBACK);
 queue_style('jquery-ui'      , GSBACK);

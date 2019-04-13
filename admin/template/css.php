@@ -593,11 +593,10 @@ h5:hover img {
 	float: right;
 }
 
-#sidebar.fixed{
-	transition: top .2s ease-out;
-		-webkit-transition: top .2s ease-in-out;
-		-moz-transition: top .2s ease-in-out;
-		-o-transition: top .2s ease-in-out;
+body.sbfixed #sidebar {
+	position: sticky;
+	position: -webkit-sticky;
+	top: 20px;
 }
 
 #components.sbfixed #sidebar{
