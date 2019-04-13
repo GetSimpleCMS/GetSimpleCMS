@@ -1055,6 +1055,10 @@ form select.text,form textarea.text {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+	background-color: #f6f6f6;
+		-webkit-box-shadow: rgba(0,0,0,.1) 0 2px 3px inset;
+		-moz-box-shadow: rgba(0,0,0,.1) 0 2px 3px inset;
+	box-shadow: rgba(0,0,0,.1) 0 2px 3px inset;
 }
 
 form input.text:focus,
@@ -1063,9 +1067,16 @@ form textarea.text:focus,
 #post-content:focus {
 	outline: none;
 	border: 1px solid #666 !important;
-		-moz-box-shadow: rgba(0,0,0, 0.10) 0 0 6px;
-		-webkit-box-shadow: rgba(0,0,0, 0.10) 0 0 6px;
-	box-shadow: rgba(0,0,0, 0.10) 0 0 6px;
+		-moz-box-shadow:
+			rgba(0,0,0, 0.10) 0 0 6px,
+			rgba(0,0,0,.05) 0 2px 3px inset;
+		-webkit-box-shadow:
+			rgba(0,0,0, 0.10) 0 0 6px,
+			rgba(0,0,0,.05) 0 2px 3px inset;
+	box-shadow:
+		rgba(0,0,0, 0.10) 0 0 6px,
+		rgba(0,0,0,.05) 0 2px 3px inset;
+	background: #fff;
 }
 
 form input.text.error,
@@ -1107,6 +1118,9 @@ form select.text:disabled,
 form textarea.text:disabled {
 	color: #808080;
 	background: #eeeeee;
+		-moz-box-shadow: none;
+		-webkit-box-shadow: none;
+	box-shadow: none;
 }
 
 form input[readonly], form select[readonly], form textarea[readonly] {
