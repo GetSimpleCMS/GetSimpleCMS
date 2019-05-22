@@ -195,7 +195,7 @@ if (isset($_POST['submitted'])) {
 			if(!$status) redirect("edit.php?id=". $url ."&upd=edit-error&type=edit"); 
 
 			if ($_POST['redirectto']!='') {
-				$redirect_url = $_POST['redirectto'];
+				$redirect_url = $_POST['redirectto']; // @todo sanitize redirects, not sure what this is for, js sets pages.php always?
 			} else {
 				$redirect_url = 'edit.php';
 			}
