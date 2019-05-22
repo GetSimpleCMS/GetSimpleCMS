@@ -25,11 +25,7 @@ $api_url            = 'http://get-simple.info/api/start/v3.php';
 # $api_timeout        = 800; // time in ms defaults to 500
 # $debugApi           = true;
 
-if (isset($_GET['redirect'])){
-	$cookie_redirect = $_GET['redirect'];
-} else {	
-	$cookie_redirect = 'pages.php';
-}
+$cookie_redirect = 'pages.php';
 
 if (!defined('GSVERSION')) define('GSVERSION', $site_version_no);
 
