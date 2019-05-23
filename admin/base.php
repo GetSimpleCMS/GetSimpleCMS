@@ -30,7 +30,7 @@ if(previewingDraft()){
 }
 else if(pageExists($id)) {
 	// apply page data if page id exists
-	$data_index = getPageXml($id);
+	$data_index = getPageXml($id); // @todo nomralize to use page arrays for data_index, will fail if we try to read this from cache, expects XML
 }
 
 // filter to modify data_index obj
