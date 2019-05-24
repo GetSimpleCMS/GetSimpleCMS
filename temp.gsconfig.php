@@ -46,7 +46,7 @@ define('GSDONOTPING', 1);
 #define('GSCANONICAL', 1);
 
 # Use Uploadify to upload files?
-#define('GSNOUPLOADIFY', 1);
+#define('GSNOUPLOADIFY', 0); // 0 to reenable uploadify ( uploadify is outdated flash based and has known xss exploits! USE AT OWN RISK )
 
 # WYSIWYG editor height (default 500)
 #define('GSEDITORHEIGHT', '400');
