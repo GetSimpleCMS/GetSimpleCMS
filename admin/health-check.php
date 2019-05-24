@@ -100,6 +100,7 @@ echo '<div class="bodycontent clearfix">
 						"zip|ZipArchive|warn",
 						"zlib|Zlib|warn",
 						"SimpleXML|SimpleXML Module|error",
+						"imagick|ImageMagick|info"
 					);
 		
 					foreach ($apacheModules as $module) {
@@ -109,6 +110,9 @@ echo '<div class="bodycontent clearfix">
 						if  (in_arrayi($mId, $php_modules)) {
 							echo '<tr><td class="hc_item">'.$mTitle.'</td><td>'.i18n_r('INSTALLED').'</td><td><span class="label label-ok">'.i18n_r('OK').'</span></td></tr>';
 						} 
+						else if($mAlert == "info"){
+							echo '<tr><td class="hc_item">'.$mTitle.'</td><td><span class="INFOmsg">'.i18n_r('NOT_INSTALLED').'</span></td><td><span class="label label-info">'.i18n_r('INFO').'</span></td></tr>';
+						}
 						else if($mAlert == "warn"){
 							echo '<tr><td class="hc_item">'.$mTitle.'</td><td><span class="WARNmsg">'.i18n_r('NOT_INSTALLED').'</span></td><td><span class="label label-warn">'.i18n_r('WARNING').'</span></td></tr>';
 						}

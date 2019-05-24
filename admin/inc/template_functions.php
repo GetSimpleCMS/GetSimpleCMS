@@ -2418,6 +2418,7 @@ function generate_thumbnail($file, $sub_path = '', $out_file = null, $w = null, 
 	require_once('imagemanipulation.php');
 	$objImage = new ImageManipulation($upload_folder.$file);
 	if ( $objImage->imageok ) {
+		// debugLog(array("Generating Image",$upload_folder.$file));
 		if($upscale) $objImage->setUpscale(); // allow magnification
 		if($quality) $objImage->setQuality($quality); // set quality for jpg or png
 		if(isset($output_format)) $objImage->setOutputFormat($output_format); // setoutput format, ignored if out_file specifies extension
@@ -2437,6 +2438,7 @@ function generate_thumbnail($file, $sub_path = '', $out_file = null, $w = null, 
 		$objImage->save($thumb_file, $show);
 		return $objImage;
 	} else {
+		// debugLog(array("Generating Image SKIPPED, not an image",$upload_folder.$file));
 		return false;
 	}
 }
