@@ -52,7 +52,7 @@ class ImageManipulation {
      *
      * @param string $imgFile The image filename.
      */
-	public function ImageManipulation($imgfile)
+    public function __construct($imgfile)
 	{
 
 		$imageinfo = getimagesize($imgfile);
