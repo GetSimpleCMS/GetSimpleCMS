@@ -359,9 +359,12 @@ $isUnixHost = !hostIsWindows();
 			
 			echo '<tr class="all '.$upload['type'].'" >';
 			echo '<td class="imgthumb" >';
+			
+			$linktarget = "";
 
-			// handle images
+			// HANDLE IMAGES
 			if ($upload['type'] == 'image') {
+			// if ($upload['type'] == 'image' || $upload['type'] == 'vector' ) {
 				$gallery           = 'rel="fancybox_i"';
 				$pathlink          = 'image.php?i='.rawurlencode($upload['name']).'&amp;path='.$subFolder;
 				$thumbLink         = $urlPath.'thumbsm.'.$upload['name'];
@@ -390,15 +393,17 @@ $isUnixHost = !hostIsWindows();
 				$thumbnailLink     = '<span class="inline"><a href="'.tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'" class="browseselect label label-ghost thumblinkexternal" data-id="thumblinkexternal" data-fileurl="'.getRelPath(GSTHUMBNAILPATH).$thumbLinkExternal.'">'.i18n_r('THUMBNAIL').'</a>';
 				$thumbnailLink    .= $thumbnaillightbox."</span>";
 
-			} else {
-				// other files
+			} 
+			else {
+			// OTHER FILES
 				$gallery      = '';
 				$controlpanel = '';
 				$pathlink     = tsl($SITEURL).getRelPath($path) . $upload['name'];
+				$linktarget       = "_BLANK";
 			}
 			
 			// name column linked
-			echo '</td><td class="break">'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" class="browseselect primarylink" data-id="primarylink" data-fileurl="'.$primarylink.'">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
+			echo '</td><td class="break">'.getUploadIcon($upload['name']).'<a title="'.i18n_r('VIEW_FILE').': '. htmlspecialchars($upload['name']) .'" href="'. $pathlink .'" target="'.$linktarget.'" class="browseselect primarylink" data-id="primarylink" data-fileurl="'.$primarylink.'">'.htmlspecialchars($upload['name']) .'</a>'.$thumbnailLink.'</td>';
 			
 			// size column
 			echo '<td class="file_size right"><span>'. $upload['size'] .'</span></td>';
