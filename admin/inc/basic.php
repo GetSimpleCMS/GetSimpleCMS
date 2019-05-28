@@ -538,15 +538,15 @@ function redirect($url) {
 	}	
 
 	if (!headers_sent($filename, $linenum)) {
-    header('Location: '.$url);
+    header('Location: '.var_out($url,"url"));
   } else {
     echo "<html><head><title>".i18n_r('REDIRECT')."</title></head><body>";
     if ( !isDebug() ) {
 	    echo '<script type="text/javascript">';
-	    echo 'window.location.href="'.$url.'";';
+	    echo 'window.location.href="'.var_out($url,"url").'";'; // @todo sanitize url
 	    echo '</script>';
 	    echo '<noscript>';
-	    echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
+	    echo '<meta http-equiv="refresh" content="0;url='.var_out($url,"url").'" />';
 	    echo '</noscript>';
 	  }
     echo i18n_r('ERROR').": Headers already sent in ".$filename." on line ".$linenum."\n";

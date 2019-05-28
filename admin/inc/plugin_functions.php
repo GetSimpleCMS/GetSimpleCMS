@@ -245,7 +245,7 @@ function add_action($hook_name, $added_function, $args = array()) {
 	$bt = debug_backtrace();
 	$shift=count($bt) - 4;	// plugin name should be  
 	// call_user_func and call_user_func_array missing in php 7
-	if(version_compare(PHP_VERSION, '7.0.0', '>=')) {
+	if(getDef('GSBTFIX',true) && version_compare(PHP_VERSION, '7.0.0', '>=')) {
 	    $shift--;
 	}
 

@@ -90,7 +90,11 @@ if(!is_frontend()){
 	}
 }
 
+
+
 // definition defaults
+
+if(!defined('GSNOUPLOADIFY')) define('GSNOUPLOADIFY',1); // disabled uploadify by default see https://github.com/GetSimpleCMS/GetSimpleCMS/issues/1266
 
 if(!defined('GSUPLOADSLC'))	define('GSUPLOADSLC',true);
 
