@@ -28,7 +28,7 @@ if(!isset($log_name) || !filepath_is_safe($log_file,$log_path)) $log_data = fals
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && strlen($log_name)>0) {
 	
 	if(isset($log_data)){
-		redirect('support.php?error='.urlencode(i18n_r('LOG_FILE_EMPTY')));
+		redirect('support.php?error='.i18n_r('LOG_FILE_EMPTY'));			
 	}
 	// check for csrf
 	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
