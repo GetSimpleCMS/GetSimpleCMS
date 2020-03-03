@@ -73,6 +73,20 @@ function filterPagesFunc($pages,$func,$arg){
 	return $pages;
 }
 
+/**
+ * filter a pages collection by an array of slugs, optionally sort to match order
+ * @since  3.4
+ * @param  array $keys array of keys to keep
+ * @param  bool $sort sort filtered pages array by keys order if true
+ * @return array       pages array with only the matching pages
+ */
+function filterPagesSlugs($pages,$slugs,$sort = false){
+	if(!$slugs) return; // nothing to filter? then you get nothing back
+	$ary = array_intersect_key($pages,array_flip($slugs)); // filter
+	if(!$sort) return $ary;
+	return arrayMergeSort($ary,$slugs,false); // sort
+}
+
 
 /**
  * **************************************************************************** 
