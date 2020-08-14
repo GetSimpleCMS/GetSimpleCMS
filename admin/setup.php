@@ -220,9 +220,9 @@ get_template('header');
 			<form action="<?php myself(); ?>" class="entersubmit" method="post" accept-charset="utf-8" >
 				<input name="siteurl" type="hidden" value="<?php echo $fullpath; ?>" />
 				<input name="lang" type="hidden" value="<?php echo $LANG; ?>" />
-				<p><label for="sitename" ><?php i18n('LABEL_WEBSITE'); ?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php if(isset($_POST['sitename'])) { echo $_POST['sitename']; } ?>" /></p>
-				<p><label for="user" ><?php i18n('LABEL_USERNAME'); ?>:</label><input class="text" name="user" id="user" type="text" value="<?php if(isset($_POST['user'])) { echo $_POST['user']; } ?>" /></p>
-				<p><label for="email" ><?php i18n('LABEL_EMAIL'); ?>:</label><input class="text" name="email" id="email" type="email" value="<?php if(isset($_POST['email'])) { echo $_POST['email']; } ?>" /></p>
+				<p><label for="sitename" ><?php i18n('LABEL_WEBSITE'); ?>:</label><input class="text" id="sitename" name="sitename" type="text" value="<?php if(isset($_POST['sitename'])) { echo htmlentities($_POST['sitename'], ENT_QUOTES, 'UTF-8'); } ?>" /></p>
+				<p><label for="user" ><?php i18n('LABEL_USERNAME'); ?>:</label><input class="text" name="user" id="user" type="text" value="<?php if(isset($_POST['user'])) { echo htmlentities($_POST['user'], ENT_QUOTES, 'UTF-8'); } ?>" /></p>
+				<p><label for="email" ><?php i18n('LABEL_EMAIL'); ?>:</label><input class="text" name="email" id="email" type="email" value="<?php if(isset($_POST['email'])) { echo htmlentities($_POST['email'], ENT_QUOTES, 'UTF-8'); } ?>" /></p>
 				<p><input class="submit" type="submit" name="submitted" value="<?php i18n('LABEL_INSTALL'); ?>" /></p>
 			</form>
 		</div>
