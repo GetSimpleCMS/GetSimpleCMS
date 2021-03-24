@@ -30,7 +30,7 @@ $path = (isset($_GET['path'])) ? $_GET['path'] : "";
 			'buttonText'	: '". i18n_r('UPLOADIFY_BUTTON') ."',
 			'buttonCursor'	: 'pointer',
 			'uploader'		: 'upload-uploadify.php',
-			'swf'			: 'template/js/uploadify/uploadify.swf',
+			'swf'			: 'template/js/". $uploadifyfolder ."/uploadify.swf',
 			'multi'			: true,
 			'auto'			: true,
 			'height'		: '25',
