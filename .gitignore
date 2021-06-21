@@ -2,6 +2,7 @@
 *.project
 *.settings
 *.sublime-*
-lib/*
+*.orig
+/lib
 
 thumbs.db

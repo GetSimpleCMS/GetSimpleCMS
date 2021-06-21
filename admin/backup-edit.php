@@ -7,33 +7,38 @@
  * @package GetSimple
  * @subpackage Backups
  */
- 
+
 # setup
 $load['plugin'] = true;
 include('inc/common.php');
-$userid = login_cookie_check();
+login_cookie_check();
+
+exec_action('load-backup-edit');
 
 # get page url to display
 if ($_GET['id'] != '') {
-	$id = $_GET['id'];
-	$file = $id .".bak.xml";
-	$path = GSBACKUPSPATH .'pages/';
-	
+	$id   = $_GET['id'];
+	$file = getBackupName($id,'xml');
+
+	$draft = isset($_GET['draft']); // (bool) using draft pages
+	if($draft) $path = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/drafts/
+	else $path = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/
+
 	if(!filepath_is_safe($path.$file,$path)) die();
 
-	$data = getXML($path . $file);
-	$title = htmldecode($data->title);
-	$pubDate = $data->pubDate;
-	$parent = $data->parent;
-	$metak = htmldecode($data->meta);
-	$metad = htmldecode($data->metad);
-	$url = $data->url;
-	$content = htmldecode($data->content);
-	$private = $data->private;
-	$template = $data->template;
-	$menu = htmldecode($data->menu);
+	$data       = getXML($path . $file);
+	$title      = htmldecode($data->title);
+	$pubDate    = $data->pubDate;
+	$parent     = $data->parent;
+	$metak      = htmldecode($data->meta);
+	$metad      = htmldecode($data->metad);
+	$url        = $data->url;
+	$content    = htmldecode($data->content);
+	$private    = $data->private;
+	$template   = $data->template;
+	$menu       = htmldecode($data->menu);
 	$menuStatus = $data->menuStatus;
-	$menuOrder = $data->menuOrder;
+	$menuOrder  = $data->menuOrder;
 } else {
 	redirect('backups.php?upd=bak-err');
 }
@@ -49,65 +54,76 @@ if ($_GET['p'] != '') {
 }
 
 if ($p == 'delete') {
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "delete", "backup-edit.php")) {
-			die("CSRF detected!");
-		}
-	}
-	delete_bak($id);
-	redirect("backups.php?upd=bak-success&id=".$id);
-} 
-
-elseif ($p == 'restore') {
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "restore", "backup-edit.php")) {
-			die("CSRF detected!");	
-		}
-	}
-	if (isset($_GET['new'])) {
-		updateSlugs($_GET['new'], $id);
-		restore_bak($id);
-		$existing = GSDATAPAGESPATH . $_GET['new'] .".xml";
-		$bakfile = GSBACKUPSPATH."pages/". $_GET['new'] .".bak.xml";
-		if(!filepath_is_safe($existing,GSDATAPAGESPATH)) die();
-		copy($existing, $bakfile);
-		unlink($existing);
-		redirect("edit.php?id=". $id ."&old=".$_GET['new']."&upd=edit-success&type=restore");
-	} else {
-		restore_bak($id);
-		redirect("edit.php?id=". $id ."&upd=edit-success&type=restore");
-	}
-	
-	
+	// deleting page backup
+	check_for_csrf("delete","backup-edit.php");
+	if($draft) $status = delete_draft_backup($id) ? 'success' : 'err';
+	else $status = delete_page_backup($id) ? 'success' : 'err';
+	redirect("backups.php?upd=bak-".$status."&id=".$id);
 }
 
-get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &raquo; '.i18n_r('VIEWPAGE_TITLE')); 
+elseif ($p == 'restore') {
+	// restoring page backup
+	check_for_csrf("restore", "backup-edit.php");
+	$redirect = "";
+	
+	if($draft){
+		$success = restore_draft($id);   // restore old slug file
+		// generate_sitemap(); // regenerates sitemap, we do not need to do this for drafts.
+		exec_action('draft-restore'); // @hook draft-restore fired when a draft is restored
+		redirect("edit.php?id=". $id ."&upd-draft&upd=edit-success&type=restore");
+	}
+
+	if (isset($_GET['new'])) {
+		$newid = $_GET['new'];
+        // @todo traversal protect $newid
+		// Undo slug change, restore page by old slug id
+		changeChildParents($newid, $id); // update parents and children
+		$success = restore_page($id);    // restore old slug file
+		restore_draft($id);              // restore draft
+		delete_draft($newid);            // delete live new slug draft
+		delete_page($newid);             // backup and delete live new slug file
+		$redirect = ("edit.php?id=". $id ."&nodraft&old=".$_GET['new']."&upd=edit-success&type=restore");
+	} else {
+		$success = restore_page($id);    // restore old slug file
+		$redirect = ("edit.php?id=". $id ."&nodraft&upd=edit-success&type=restore");
+	}
+	
+	if($success){
+		generate_sitemap(); // regenerates sitemap
+		exec_action('page-restore');     // @hook page-restore fird when a page is restored
+		if($redirect) redirect($redirect);
+	}
+	else {
+		$error = i18n_r('RESTOREERROR');
+	}
+}
+
+$pagetitle = i18n_r('BAK_MANAGEMENT').' &middot; '.i18n_r('VIEWPAGE_TITLE');
+get_template('header');
+
+$draftqs = $draft ? '&amp;draft' : '';
 
 ?>
-	
+
 <?php include('template/include-nav.php'); ?>
 
 <div class="bodycontent clearfix">
-	
+
 	<div id="maincontent">
 		<div class="main" >
-		<h3 class="floated"><?php i18n('BACKUP_OF');?> &lsquo;<em><?php echo $url; ?></em>&rsquo;</h3>
-		
-		<div class="edit-nav" >
-			 <a href="backup-edit.php?p=restore&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" 
+		<h3 class="floated"><?php i18n('BACKUP');?> <span> / <?php echo $url; ?></span></h3>
+		<?php if($draft){ ?><div class="title label secondary-lightest-back label-inline"><?php i18n('LABEL_DRAFT'); ?></div> <?php } ?>
+		<div class="edit-nav clearfix" >
+			 <a href="backup-edit.php?p=restore<?php echo $draftqs; ?>&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("restore", "backup-edit.php"); ?>" 
 			 	accesskey="<?php echo find_accesskey(i18n_r('ASK_RESTORE'));?>" ><?php i18n('ASK_RESTORE');?></a> 
-			 <a href="backup-edit.php?p=delete&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" 
+			 <a href="backup-edit.php?p=delete<?php echo $draftqs; ?>&amp;id=<?php echo var_out($id); ?>&amp;nonce=<?php echo get_nonce("delete", "backup-edit.php"); ?>" 
 			 	title="<?php i18n('DELETEPAGE_TITLE'); ?>: <?php echo var_out($title); ?>?" 
 			 	id="delback" 
 			 	accesskey="<?php echo find_accesskey(i18n_r('ASK_DELETE'));?>" 
 			 	class="delconfirm noajax" ><?php i18n('ASK_DELETE');?></a>
-			<div class="clear"></div>
+			<?php exec_action(get_filename_id().'-edit-nav'); ?>
 		</div>
-		
+		<?php exec_action(get_filename_id().'-body'); ?>				
 		<table class="simple highlight" >
 		<tr><td class="title" ><?php i18n('PAGE_TITLE');?>:</td><td><b><?php echo cl($title); ?></b> <?php echo $private; ?></td></tr>
 		<tr><td class="title" ><?php i18n('BACKUP_OF');?>:</td><td>
@@ -117,7 +133,7 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 			} 
 			?>
 		</td></tr>
-		<tr><td class="title" ><?php i18n('DATE');?>:</td><td><?php echo lngDate($pubDate); ?></td></tr>
+		<tr><td class="title" ><?php i18n('DATE');?>:</td><td><?php echo output_datetime($pubDate); ?></td></tr>
 		<tr><td class="title" ><?php i18n('TAG_KEYWORDS');?>:</td><td><em><?php echo $metak; ?></em></td></tr>
 		<tr><td class="title" ><?php i18n('META_DESC');?>:</td><td><em><?php echo $metad; ?></em></td></tr>
 		<tr><td class="title" ><?php i18n('MENU_TEXT');?>:</td><td><?php echo $menu; ?></td></tr>
@@ -134,19 +150,15 @@ get_template('header', cl($SITENAME).' &raquo; '. i18n_r('BAK_MANAGEMENT').' &ra
 		<script type="text/javascript">
 		<?php if(getDef("GSCKETSTAMP",true)) echo "CKEDITOR.timestamp = '".getDef("GSCKETSTAMP") . "';\n"; ?>
 		var editor = CKEDITOR.replace( 'codetext', {
-			skin : 'getsimple',
-			language : '<?php echo $EDLANG; ?>',
-			defaultLanguage : '<?php echo $EDLANG; ?>',
+			language        : '<?php echo $EDLANG; ?>',
 			<?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
-				$fullpath = suggest_site_path();
+				$fullpath = $SITEURL;
 			?>
-			contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
+			contentsCss     : '<?php echo $fullpath.getRelPath(GSTHEMESPATH).$TEMPLATE; ?>/editor.css',
 			<?php } ?>
-			entities : false,
-			// uiColor : '#FFFFFF',
-			height: '<?php echo $EDHEIGHT; ?>',
-			baseHref : '<?php echo $SITEURL; ?>',
-			toolbar : [['Source']],
+			height          : '<?php echo $EDHEIGHT; ?>',
+			baseHref        : '<?php echo $SITEURL; ?>',
+			toolbar         : [['Source']],
 			removePlugins: 'image,link,elementspath,resize'
 		});
 		// set editor to read only mode

@@ -1,7 +1,7 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /****************************************************
 *
-* @File: 			functions.php
+* @File: 		functions.php
 * @Package:		GetSimple
 * @Action:		Innovation theme for GetSimple CMS
 *
@@ -22,7 +22,7 @@ function Innovation_Parent_Link($name) {
 		$title = $p->title;
 		$parent = $p->parent;
 		$slug = $p->slug;
-		echo '<a href="'. find_url($name,'') .'">'. $title .'</a> &nbsp;&nbsp;&#149;&nbsp;&nbsp; ';
+		echo '<a href="'. find_url($name,'') .'">'. $title .'</a> &nbsp;&nbsp;&bull;&nbsp;&nbsp; ';
 	}
 }
 
