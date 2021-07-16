@@ -2032,27 +2032,6 @@ jQuery(document).ready(function () {
 		});
 		return false;
 	});
- 
-	function scrollsidebar(){
-		var elem = $('body.sbfixed #sidebar');
-
-		if(!jQuery().scrollToFixed || !elem[0]){
-			// Debugger.log("sbfixed not enabled or scrolltofixed not loaded");
-			return;
-		}
-
-		elem.scrollToFixed({ 
-			marginTop: 15,
-			limit: function(){ return $('#footer').offset().top - elem.outerHeight(true) - 15 ;} ,
-			postUnfixed: function(){$(this).addClass('fixed') ;},
-			postFixed: function(){$(this).removeClass('fixed') ;},
-			postAbsolute: function(){$(this).removeClass('fixed') ;},
-
-		});
-	}
-
-	// initialize fixed sidebar
-	scrollsidebar();
 
 	// CTRL+s ajax save hotkey listener
 	// CTRL+SHIFT+s ajax save bypass
