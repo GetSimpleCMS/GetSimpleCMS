@@ -1412,7 +1412,7 @@ function i18n_merge($plugin, $language=null) {
  * @param string $globali18n
  * @return bool
  */
-function i18n_merge_impl($plugin = '', $lang, &$globali18n) {
+function i18n_merge_impl($plugin, $lang, &$globali18n) {
 
 	$i18n = array(); // local from file
 	if(!isset($globali18n)) $globali18n = array(); //global ref to $i18n
@@ -2501,7 +2501,7 @@ function clamp(&$var,$min=null,$max=null,$default=null){
  * @param $value   reference
  * @param $default default value to set
  */
-function setDefault(&$var = '',$default){
+function setDefault(&$var,$default){
 	if(!isset($var) || empty($var)) $var = $default;
 }
 
