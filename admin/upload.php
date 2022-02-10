@@ -175,12 +175,12 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
 					}
 				}
 				$filesSorted = subval_sort($filesArray,'name');
-       $dirSorted = subval_sort($dirsArray,'name');
+				$dirSorted = subval_sort($dirsArray,'name');
 			}
 			echo '<div class="edit-nav" >';
 			echo '<select id="imageFilter">';
 			echo '<option value="All">'.i18n_r('SHOW_ALL').'</option>';
-			if (count((array)$filesSorted) > 0) {
+			if (count((array)$filesSorted) > 0) { 
 				foreach ((array)$filesSorted as $filter) {
 					$filterArr[] = $filter['type'];
 				}

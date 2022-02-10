@@ -122,7 +122,7 @@ $LANG_header = preg_replace('/(?:(?<=([a-z]{2}))).*/', '', $LANG);
 
 	echo '<table class="highlight" id="imageTable">';
 
-	if (count((array)$dirsSorted) != 0) {       
+	if (count((array)$dirsSorted) != 0) {        
 		foreach ((array)$dirsSorted as $upload) {
 			echo '<tr class="All" >';  
 			echo '<td class="" colspan="5">';
