@@ -441,7 +441,7 @@ function get_execution_duration($reset=true){
 function getXML($file,$nocdata = true) {
 	$xml = read_file($file);
 	if($xml){
-		$data = simplexml_load_string($xml, 'SimpleXMLExtended', $nocdata ? LIBXML_NOCDATA : null);
+		$data = simplexml_load_string($xml, 'SimpleXMLExtended', $nocdata ? LIBXML_NOCDATA : 0);
 		// log errors
 		$errors = libxml_get_errors();
 		if($errors)debugLog($errors);
@@ -1458,7 +1458,7 @@ function i18n_merge_impl($plugin, $lang, &$globali18n) {
  * @return string
  */
 function safe_slash_html($text) {
-	if (get_magic_quotes_gpc()==0) {
+	if (gs_get_magic_quotes_gpc()==0) {
 		$text = addslashes(htmlspecialchars($text, ENT_QUOTES, 'UTF-8'));
 	} else {
 		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
@@ -1521,7 +1521,7 @@ function getRegexUnicode($id = null){
  * @return string
  */
 function safe_strip_decode($text) {
-	if (get_magic_quotes_gpc()==0) {
+	if (gs_get_magic_quotes_gpc()==0) {
 		$text = htmlspecialchars_decode($text, ENT_QUOTES);
 	} else {
 		$text = stripslashes(htmlspecialchars_decode($text, ENT_QUOTES));

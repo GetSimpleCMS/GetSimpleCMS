@@ -312,17 +312,20 @@ function var_out($var,$filter = "special"){
 		if($filter == "full") return htmlspecialchars($var, ENT_QUOTES);
 	}
 
-	if(function_exists( "filter_var") ){
+    if(function_exists( "filter_var") && ($filter !== "string" )){
 		$aryFilter = array(
-			"string"  => FILTER_SANITIZE_STRING,
 			"int"     => FILTER_SANITIZE_NUMBER_INT,
 			"float"   => FILTER_SANITIZE_NUMBER_FLOAT,
 			"url"     => FILTER_SANITIZE_URL,
 			"email"   => FILTER_SANITIZE_EMAIL,
 			"special" => FILTER_SANITIZE_SPECIAL_CHARS,
+			"full"    => FILTER_SANITIZE_FULL_SPECIAL_CHARS
 		);
 		if(isset($aryFilter[$filter])) return filter_var( $var, $aryFilter[$filter]);
 		return filter_var( $var, FILTER_SANITIZE_SPECIAL_CHARS);
+	}
+	else if ($filter === "string") {
+		return htmlspecialchars($var);
 	}
 	else {
 		return htmlentities($var);
@@ -337,6 +340,10 @@ function var_in($var,$filter = 'special'){
 function validImageFilename($file){
 	$image_exts = array('jpg','jpeg','gif','png');
 	return in_array(getFileExtension($file),$image_exts);
+}
+
+function gs_get_magic_quotes_gpc(){
+	return false;
 }
 
 /* ?> */
