@@ -2276,7 +2276,8 @@ function hasModRewrite(){
 	if ( function_exists('apache_get_modules') ) {
 		if(in_arrayi('mod_rewrite',apache_get_modules()) ) {	
 			return true;
-		}	
+		}
+		else return false;
 	}
 }
 
