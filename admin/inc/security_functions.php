@@ -342,4 +342,8 @@ function validImageFilename($file){
 	return in_array(getFileExtension($file),$image_exts);
 }
 
+function gs_get_magic_quotes_gpc(){
+	return false;
+}
+
 /* ?> */

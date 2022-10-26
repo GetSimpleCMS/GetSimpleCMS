@@ -70,7 +70,7 @@ if(isset($_POST['submitsave'])){
 
 	# save edited template file
 	$filename = $_POST['edited_file'];
-	$FileContents = get_magic_quotes_gpc() ? stripslashes($_POST['content']) : $_POST['content'];
+	$FileContents = gs_get_magic_quotes_gpc() ? stripslashes($_POST['content']) : $_POST['content'];
 	// prevent traversal
 	if(!filepath_is_safe(GSTHEMESPATH . $filename,GSTHEMESPATH)) die(i18n_r('INVALID_OPER'));
 	$status = save_file(GSTHEMESPATH . $filename,$FileContents);
