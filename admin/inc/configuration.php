@@ -18,7 +18,7 @@ $cookie_login       = 'index.php'; // login redirect
 $cookie_time        = '10800';  // in seconds, 3 hours
 $cookie_path        = '/';         // cookie path
 $cookie_domain      = '';          // cookie domain
-$cookie_secure      = null;        // cookie secure only
+$cookie_secure      = false;        // cookie secure only
 $cookie_httponly    = true;        // cookie http only
 
 $api_url            = 'http://get-simple.info/api/start/v3.php';
