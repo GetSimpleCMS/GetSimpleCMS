@@ -17,7 +17,7 @@ $cookie_name        = lowercase($name_url_clean) .'_cookie_'. $ver_no_clean; // 
 $cookie_login       = 'index.php'; // login redirect
 $cookie_time        = '10800';  // in seconds, 3 hours
 $cookie_path        = '/';         // cookie path
-$cookie_domain      = null;        // cookie domain
+$cookie_domain      = '';          // cookie domain
 $cookie_secure      = null;        // cookie secure only
 $cookie_httponly    = true;        // cookie http only
 

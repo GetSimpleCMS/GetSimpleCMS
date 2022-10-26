@@ -441,7 +441,7 @@ function get_execution_duration($reset=true){
 function getXML($file,$nocdata = true) {
 	$xml = read_file($file);
 	if($xml){
-		$data = simplexml_load_string($xml, 'SimpleXMLExtended', $nocdata ? LIBXML_NOCDATA : null);
+		$data = simplexml_load_string($xml, 'SimpleXMLExtended', $nocdata ? LIBXML_NOCDATA : 0);
 		// log errors
 		$errors = libxml_get_errors();
 		if($errors)debugLog($errors);
