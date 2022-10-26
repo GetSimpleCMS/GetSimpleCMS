@@ -657,6 +657,7 @@ debugLog("TIMEZONE: " . $TIMEZONE);
 
 
 // Debug useful globals
+$processUser = posix_getpwuid(posix_geteuid());
 $dump = array(
 // 'dataw'        => $dataw,
 // 'datau'        => $datau,
@@ -684,8 +685,10 @@ $dump = array(
 'EDLANG'       => $EDLANG,
 'EDHEIGHT'     => $EDHEIGHT,
 'OLDLOCALE'    => $OLDLOCALE,
-'NEWLOCALE'    => $NEWLOCALE
+'NEWLOCALE'    => $NEWLOCALE,
 // '_SERVER'      => $_SERVER,
+'PHPUSER'       => get_current_user(),
+'PHPUSER_ALT'   => $processUser['name']
 );
 // debugLog($dump);
 
