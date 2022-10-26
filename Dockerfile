@@ -8,4 +8,5 @@ service apache2 restart
 ADD ./ /var/www/html
 RUN chmod -R 777 data
 RUN chmod -R 777 backups
+RUN chmod -R 777 theme
 EXPOSE 8080
