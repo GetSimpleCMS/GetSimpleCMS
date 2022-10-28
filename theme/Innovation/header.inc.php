@@ -1,7 +1,7 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /****************************************************
 *
-* @File: 			header.inc.php
+* @File: 		header.inc.php
 * @Package:		GetSimple
 * @Action:		Innovation theme for GetSimple CMS
 *
@@ -17,8 +17,6 @@
 
   <title><?php get_page_clean_title(); ?> - <?php get_site_name(); ?></title>
 	
-	<meta name="robots" content="index, follow">
-
 	<link href='//fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
 	<link href="<?php get_theme_url(); ?>/assets/css/reset.css" rel="stylesheet">
 	<link href="<?php get_theme_url(); ?>/style.css?v=<?php echo get_site_version(); ?>" rel="stylesheet">
@@ -57,7 +55,7 @@
 		<!-- breadcrumbs: only show when NOT on homepage -->
 		<p class="breadcrumbs" >
 			<span class="wrapper">
-				<a href="<?php get_site_url(); ?>">Home</a> &nbsp;&nbsp;&#149;&nbsp;&nbsp; <?php Innovation_Parent_Link(get_parent(FALSE)); ?> <b><?php get_page_clean_title(); ?></b>
+				<a href="<?php get_site_url(); ?>">Home</a> &nbsp;&nbsp;&bull;&nbsp;&nbsp; <?php Innovation_Parent_Link(get_parent(FALSE)); ?> <b><?php get_page_clean_title(); ?></b>
 			</span>
 		</p>
 		

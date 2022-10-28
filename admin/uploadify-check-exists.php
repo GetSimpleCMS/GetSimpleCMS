@@ -1,21 +1,5 @@
 <?php
 /**
- * Upload Folder Checker Ajax
- *
- * Return true if the file exists
- *
- * @author Ronnie Garcia
- * @package GetSimple
- * @subpackage Files
+ * @deprecated uploadify-check-exists.php removed in version 3.4.0
  */
- 
-include('inc/common.php');
-login_cookie_check();
-
-$path = (isset($_GET['path'])) ? $_GET['path'] . "/" : "";
-$name = clean_img_name($_POST['filename']);
-if (file_exists(GSDATAUPLOADPATH .$path . $name)) {
-	echo 1;
-} else {
-	echo 0;
-}
+?>

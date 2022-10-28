@@ -13,79 +13,45 @@ $load['plugin'] = true;
 
 // Include common.php
 include('inc/common.php');
+login_cookie_check();
+
+exec_action('load-pages');
 
 // Variable settings
-login_cookie_check();
-$id      =  isset($_GET['id']) ? $_GET['id'] : null;
-$ptype   = isset($_GET['type']) ? $_GET['type'] : null; 
+
+// inputs for error_checking
+$id      = isset($_GET['id']) ? var_in($_GET['id']) : null;
+$ptype   = isset($_GET['type']) ? var_in($_GET['type']) : null;
+
 $path    = GSDATAPAGESPATH;
 $counter = '0';
 $table   = '';
 
-# clone attempt happening
+// cloning a page
 if ( isset($_GET['action']) && isset($_GET['id']) && $_GET['action'] == 'clone') {
-	
-	// check for csrf
-	if (!defined('GSNOCSRF') || (GSNOCSRF == FALSE) ) {
-		$nonce = $_GET['nonce'];
-		if(!check_nonce($nonce, "clone", "pages.php")) {
-			die("CSRF detected!");	
-		}
-	}
 
-	# check to not overwrite
-	$count = 1;
-	$newfile = GSDATAPAGESPATH . $_GET['id'] ."-".$count.".xml";
-	if (file_exists($newfile)) {
-		while ( file_exists($newfile) ) {
-			$count++;
-			$newfile = GSDATAPAGESPATH . $_GET['id'] ."-".$count.".xml";
-		}
-	}
-	$newurl = $_GET['id'] .'-'. $count;
-	
-	# do the copy
-	$status = copy($path.$_GET['id'].'.xml', $path.$newurl.'.xml');
-	if ($status) {
-		$newxml = getXML($path.$newurl.'.xml');
-		$newxml->url = $newurl;
-		$newxml->title = $newxml->title.' ['.i18n_r('COPY').']';
-		$newxml->pubDate = date('r');
-		$status = XMLsave($newxml, $path.$newurl.'.xml');
-		if ($status) {
-			create_pagesxml('true');
-			header('Location: pages.php?upd=clone-success&id='.$newurl);
-		} else {
-			$error = sprintf(i18n_r('CLONE_ERROR'), $_GET['id']);
-			header('Location: pages.php?error='.$error);
-		}
+	check_for_csrf("clone", "pages.php");
+
+	$status = clone_page($_GET['id']);
+	if ($status !== false) {
+		exec_action('page-clone'); // @hook page-clone page was cloned
+		redirect('pages.php?upd=clone-success&id='.$status);
 	} else {
-		$error = sprintf(i18n_r('CLONE_ERROR'), $_GET['id']);
-		header('Location: pages.php?error='.$error);
+		$error = sprintf(i18n_r('CLONE_ERROR'), var_out($_GET['id']));
+		redirect('pages.php?error='.$error);
 	}
 }
 
+init_pageCache(true,false); // force rebuild of pagecache (refresh,force)
+// getPagesXmlValues(true);
+// $pagesSorted = sortCustomIndexCallback($pagesArray,'title','prepare_menuOrderParentTitle');
+$pagesSorted = sortCustomIndexCallback($pagesArray,'title');
+// debugLog($pagesSorted);
+$count       = count($pagesSorted);
+$table       = get_pages_menu('','',0);
+$pagetitle   = i18n_r('PAGE_MANAGEMENT');
 
-getPagesXmlValues(true);
-
-$count = 0;
-foreach ($pagesArray as $page) {
-	if ($page['parent'] != '') { 
-		$parentTitle = returnPageField($page['parent'], "title");
-		$sort = $parentTitle .' '. $page['title'];		
-		$sort = $parentTitle .' '. $page['title'];
-	} else {
-		$sort = $page['title'];
-	}
-	$page = array_merge($page, array('sort' => $sort));
-	$pagesArray_tmp[$count] = $page;
-	$count++;
-}
-// $pagesArray = $pagesArray_tmp;
-$pagesSorted = subval_sort($pagesArray_tmp,'sort');
-$table = get_pages_menu('','',0);
-
-get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT')); 
+get_template('header');
 
 ?>
 
@@ -94,19 +60,22 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('PAGE_MANAGEMENT'));
 <div class="bodycontent clearfix">
 	
 	<div id="maincontent">
-	<?php exec_action('pages-main'); ?>
+	<?php exec_action('pages-main'); // @hook pages-main before pages main html output ?>
 		<div class="main">
 			<h3 class="floated"><?php i18n('PAGE_MANAGEMENT'); ?></h3>
 			<div class="edit-nav clearfix" >
-				<a href="#" id="filtertable" accesskey="<?php echo find_accesskey(i18n_r('FILTER'));?>" ><?php i18n('FILTER'); ?></a>
-				<a href="#" id="show-characters" accesskey="<?php echo find_accesskey(i18n_r('TOGGLE_STATUS'));?>" ><?php i18n('TOGGLE_STATUS'); ?></a>
+				<a href="javascript:void(0)" id="filtertable" accesskey="<?php echo find_accesskey(i18n_r('FILTER'));?>" ><?php i18n('FILTER'); ?></a>
+				<a href="javascript:void(0)" id="show-characters" accesskey="<?php echo find_accesskey(i18n_r('TOGGLE_STATUS'));?>" ><?php i18n('TOGGLE_STATUS'); ?></a>
+				<?php exec_action(get_filename_id().'-edit-nav'); ?>
 			</div>
 			<div id="filter-search">
 				<form><input type="text" autocomplete="off" class="text" id="q" placeholder="<?php echo strip_tags(lowercase(i18n_r('FILTER'))); ?>..." /> &nbsp; <a href="pages.php" class="cancel"><?php i18n('CANCEL'); ?></a></form>
 			</div>
-			
-			<table id="editpages" class="edittable highlight paginate">
-				<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th><th></th></tr>
+			<?php exec_action(get_filename_id().'-body'); ?>		
+			<table id="editpages" class="edittable highlight striped paginate tree filter">
+				<thead>
+					<tr><th><?php i18n('PAGE_TITLE'); ?></th><th style="text-align:right;" ><?php i18n('DATE'); ?></th><th></th><th></th></tr>
+				</thead>					
 				<?php echo $table; ?>
 			</table>
 			<p><em><b><span id="pg_counter"><?php echo $count; ?></span></b> <?php i18n('TOTAL_PAGES'); ?></em></p>

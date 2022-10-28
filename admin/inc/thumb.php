@@ -3,6 +3,8 @@ include('common.php');
 login_cookie_check();
 
 /**
+ * ONLY AVAILABLE IF AUTHENTICATED
+ * 
  * Thumbnail Image Generator
  *
  * REQUIREMENTS:
@@ -12,35 +14,38 @@ login_cookie_check();
  *
  * Parameters:
  * - src - path to source image
- * - dest - path to thumb (where to save it)
- * - x - max width
- * - y - max height
+ * - dest - path to thumb (where to save it) optional if output to browser
+ * - w or x - max width
+ * - h or y- max height
  * - q - quality (applicable only to JPG, 1 to 100, 100 - best)
- * - t - thumb type. "-1" - same as source, 1 = GIF, 2 = JPG, 3 = PNG
+ * - t - thumb type. "-1" - same as source, 1 = GIF, 2 = JPG, 3 = PNG, ignored if dest extension exists
  * - f - save to file (1) or output to browser (0).
- *
+ * - json - return image in json object including obj info and base64 image
+ * - c - crop options, 0 = left/top, 1 = center, 2 = right/bottom ( only maked sense with w=h square images )
+ * 
  * Sample usage: 
  * 1. save thumb on server: 
- * http://www.zubrag.com/thumb.php?src=test.jpg&dest=thumb.jpg&x=100&y=50
+ * thumb.php?src=test.jpg&dest=thumb.jpg&x=100&y=50
  * 2. output thumb to browser:
- * http://www.zubrag.com/thumb.php?src=test.jpg&x=50&y=50&f=0
+ * thumb.php?src=test.jpg&x=50&y=50&f=0
  *
- * @link //www.zubrag.com/scripts/
  * @version 1.3
  *
  * @package GetSimple
  * @subpackage Images
+*  @example http://127.0.0.1/getsimple/admin/inc/thumb.php?src=test/image.jpg&dest=test/thumbsm.image.jpg&f=1&w=80&h=160
  */ 
 
 // Below are default values (if parameter is not passed)
 
-// save to file (true) or output to browser (false)
+// output and save to file (true)
+// output to browser only (false)
 $save_to_file = true;
 
 // Quality for JPEG and PNG.
 // 0 (worst quality, smaller file) to 100 (best quality, bigger file)
 // Note: PNG quality is only supported starting PHP 5.1.2
-$image_quality = 65;
+$image_quality = 75;
 
 // resulting image type (1 = GIF, 2 = JPG, 3 = PNG)
 // enter code of the image type if you want override it
@@ -48,27 +53,15 @@ $image_quality = 65;
 $image_type = -1;
 
 // maximum thumb side size
-$max_x = 65;
-$max_y = 130;
+$max_x = null;
+$max_y = null;
 
 // cut image before resizing. Set to 0 to skip this.
 $cut_x = 0;
 $cut_y = 0;
 
-// Folder where source images are stored (thumbnails will be generated from these images).
-// MUST end with slash.
-$images_folder = GSDATAUPLOADPATH;
-
-// Folder to save thumbnails, full path from the root folder, MUST end with slash.
-// Only needed if you save generated thumbnails on the server.
-// Sample for windows:     c:/wwwroot/thumbs/
-// Sample for unix/linux:  /home/site.com/htdocs/thumbs/
-$thumbs_folder = GSTHUMBNAILPATH;
-
-
-///////////////////////////////////////////////////
-/////////////// DO NOT EDIT BELOW
-///////////////////////////////////////////////////
+// auto crop image square, fit 1=left/top, 2=center, 3=right/bottom
+$crop = null;
 
 $to_name = '';
 
@@ -86,7 +79,8 @@ else {
 if (isset($_REQUEST['dest'])) {
   $to_name = str_replace('../','', urldecode($_REQUEST['dest']));
 }
-else if ($save_to_file) {
+
+if ($save_to_file && (!isset($to_name) || empty($to_name))) {
   die("Thumbnail file name must be specified.");
 }
 
@@ -95,7 +89,7 @@ if (isset($_REQUEST['q'])) {
 }
 
 if (isset($_REQUEST['t'])) {
-  $image_type = intval($_REQUEST['t']);
+  $image_type = $_REQUEST['t'];
 }
 
 if (isset($_REQUEST['x'])) {
@@ -106,43 +100,88 @@ if (isset($_REQUEST['y'])) {
   $max_y = intval($_REQUEST['y']);
 }
 
-$path_parts = pathinfo($from_name);
-
-// travesal protection
-if(!filepath_is_safe(GSDATAUPLOADPATH.$from_name,GSDATAUPLOADPATH,true)) die('invalid src image');
-if(!path_is_safe(GSTHUMBNAILPATH.dirname($to_name),GSTHUMBNAILPATH,true)) die('invalid dest image');
-
-if (!file_exists($images_folder)) die('Images folder does not exist (update $images_folder in the script)');
-if ($save_to_file && !file_exists($thumbs_folder)) die('Thumbnails folder does not exist (update $thumbs_folder in the script)');
-
-$dirs=explode('/' ,$path_parts['dirname']);
-$folder=$thumbs_folder;
-foreach ($dirs as $dir){
-	$folder.=DIRECTORY_SEPARATOR.$dir;
-	if (!is_dir($folder)){
-		mkdir ($folder); 
-	}
+// allow w&h instead of x&y (which are confusing)
+if (isset($_REQUEST['w'])) {
+  $max_x = intval($_REQUEST['w']);
 }
 
-// Allocate all necessary memory for the image.
-// Special thanks to Alecos for providing the code.
-ini_set('memory_limit', '100M');
+if (isset($_REQUEST['h'])) {
+  $max_y = intval($_REQUEST['h']);
+}
 
-// include image processing code
-include('image.class.php');
+if(isset($_REQUEST['c'])){
+	$crop = intval($_REQUEST['c']);
+}
 
-$img = new Zubrag_image;
+// @todo cuts not implemented
+if (isset($_REQUEST['ox'])) {
+  $cut_x = intval($_REQUEST['ox']);
+}
 
-// initialize
-$img->max_x        = $max_x;
-$img->max_y        = $max_y;
-$img->cut_x        = $cut_x;
-$img->cut_y        = $cut_y;
-$img->quality      = $image_quality;
-$img->save_to_file = $save_to_file;
-$img->image_type   = $image_type;
+if (isset($_REQUEST['oy'])) {
+  $cut_y = intval($_REQUEST['oy']);
+}
 
-// generate thumbnail
-$img->GenerateThumbFile($images_folder . $from_name, $thumbs_folder . $to_name);
+$path_parts = pathinfo($from_name);
 
-?>
+
+$file     = basename($from_name);
+$sub_path = tsl(dirname($from_name));
+$outfile  = $save_to_file ? basename($to_name) : null;
+
+// if empty do not resize
+if(empty($max_y)) $max_y = null;
+if(empty($max_x)) $max_x = null;
+
+// debugLog($file);
+// debugLog($sub_path);
+// debugLog($outfile);
+
+// travesal protection
+if(!filepath_is_safe(GSDATAUPLOADPATH.$sub_path.$file,GSDATAUPLOADPATH,true)) die('invalid src image');
+if(!path_is_safe(GSTHUMBNAILPATH.dirname($to_name),GSTHUMBNAILPATH,true)) die('invalid dest image');
+
+// Debugging Request
+// returns the imagemanipulation object json encoded, 
+// add base64 encoded image data ['data']
+// add filesize ['bytes']
+// add url to image if it was saved ['url']
+if(isset($_REQUEST['debug']) || isset($_REQUEST['json'])){
+    ob_start();
+    // $outfile = null;
+}
+
+// @todo: if needing to save as attachement from post, might need this else second request might be made with post data missing
+// header('Content-Disposition: Attachment;filename='.$outfile);
+$image = generate_thumbnail($file, $sub_path, $outfile, $max_x, $max_y, $crop, $image_quality, $show = true, $image_type);
+
+if(isset($_REQUEST['debug']) || isset($_REQUEST['json'])){
+    $output = ob_get_contents(); // get the image as a string in a variable
+    ob_end_clean(); //Turn off output buffering and clean it
+    header("Content-Type: text/json");
+    
+    // add filesize and base64 encoded image
+    $image->image['bytes'] = strlen($output); // size in bytes
+    $image->imagedata = base64_encode($output);
+    
+    // remove resources and filepaths
+    unset($image->image['src']);
+    unset($image->image['des']);
+    unset($image->image['srcfile']);
+    unset($image->image['outfile']);
+
+    // $image->image['debuglog'] = strip_tags($GS_DEBUG);;
+
+    // add url to thumbnail
+    if(isset($image->image['outfile'])) 
+        $image->image['thumb_url'] = getThumbnailURI($outfile,$sub_path,'');
+    
+    // echo "<pre>",print_r($image->image,true),"</pre>";
+    
+    // json encode
+    echo json_encode($image);
+}
+
+exit;
+
+/* ?> */

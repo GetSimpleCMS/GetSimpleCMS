@@ -38,9 +38,7 @@ function get_template($name, $title='** Change Me - Default Page Title **') {
  * @return string
  */
 function filename_id() {
-	$path = myself(FALSE);
-	$file = basename($path,".php");	
-	echo "id=\"". $file ."\"";	
+	echo "id=\"". get_filename_id() ."\"";	
 }
 
 /**
@@ -60,30 +58,13 @@ function get_filename_id() {
 }
 
 /**
- * Delete Pages File
- *
- * Deletes pages data file afer making backup
- *
- * @since 1.0
- * @uses GSBACKUPSPATH
- * @uses GSDATAPAGESPATH
- *
- * @param string $id File ID to delete
+ * is on page
+ * @since 3.4
+ * @param  string  $page pageid
+ * @return boolean       true if page
  */
-function delete_file($id) {
-
-	$bakfilepath = GSBACKUPSPATH . 'pages' . DIRECTORY_SEPARATOR;
-	$bakfile = $bakfilepath . $id .'.bak.xml';
-
-	$filepath = GSDATAPAGESPATH;
-	$file = $filepath . $id .'.xml';
-
-	if(filepath_is_safe($file,$filepath)){
-		$successbak = copy($file, $bakfile);
-		$successdel = unlink($file);
-		if($successdel && $successbak) return 'success';
-	}
-	return 'error';
+function isPage($page){
+	return get_filename_id() === $page;
 }
 
 /**
@@ -96,10 +77,31 @@ function delete_file($id) {
  * @param string $path File and/or path
  */
 function check_perms($path) { 
-  clearstatcache(); 
-  $configmod = substr(sprintf('%o', fileperms($path)), -4);  
-	return $configmod;
-} 
+    clearstatcache(); 
+    if(!file_exists($path)) return false;  
+    $configmod = substr(sprintf('%o', fileperms($path)), -4);  
+    return $configmod;
+}
+
+
+/**
+ * converts octal modes to flags
+ * 
+ * @param string $ModeOctal octal string of permissions 3 or 4 digits 644 2755
+ * @return string of moed flags  e.g. 'rw-r--r--' or 'rwxr-sr-x'
+ */
+function ModeOctal2rwx($ModeOctal) {
+    if ( ! preg_match("/[0-7]{3,4}/", $ModeOctal) )
+        die("wrong octal mode in ModeOctal2rwx('<TT>$ModeOctal</TT>')");
+	$Moctal = ((strlen($ModeOctal)==3)?"0":"").$ModeOctal;    // assume default 0
+	$Mode3  = substr($Moctal,-3);    // trailing 3 digits, no sticky bits considered
+	$RWX    = array ('---','--x','-w-','-wx','r--','r-x','rw-','rwx');    // dumb,huh?
+    $Mrwx = $RWX[$Mode3[0]].$RWX[$Mode3[1]].$RWX[$Mode3[2]];    // concatenate
+    if (preg_match("/[1357]/", $Moctal[0])) $Mrwx[8] = ($Mrwx[8]=="-")?"T":"t";
+    if (preg_match("/[2367]/", $Moctal[0])) $Mrwx[5] = ($Mrwx[5]=="-")?"S":"s";
+    if (preg_match("/[4567]/", $Moctal[0])) $Mrwx[2] = ($Mrwx[2]=="-")?"S":"s";
+    return $Mrwx;
+}
 
 /**
  * Delete Zip File
@@ -108,17 +110,33 @@ function check_perms($path) {
  * @uses GSBACKUPSPATH
  *
  * @param string $id Zip filename to delete
- * @return string
+ * @return bool succces
  */
 function delete_zip($id) { 
 	$filepath = GSBACKUPSPATH . 'zip' . DIRECTORY_SEPARATOR;
 	$file = $filepath . $id;
 
 	if(filepath_is_safe($file,$filepath)){
-		$success =  unlink($file);
-		if($success) return 'success';
+		return delete_file($file);
 	}
-	return 'error';
+} 
+
+/**
+ * Delete Log File
+ *
+ * @since 3.4
+ * @uses GSDATAOTHERPATH
+ *
+ * @param string $id log filename to delete
+ * @return bool success
+ */
+function delete_logfile($id) { 
+	$filepath = GSDATAOTHERPATH.'logs/';
+	$file     = $filepath . $id;
+
+	if(filepath_is_safe($file,$filepath)){
+		return delete_file($file);
+	}
 } 
 
 /**
@@ -130,25 +148,45 @@ function delete_zip($id) {
  *
  * @param string $id Uploaded filename to delete
  * @param string $path Path to uploaded file folder
- * @return string
+ * @return bool success
  */
 function delete_upload($id, $path = "") { 
 	$filepath = GSDATAUPLOADPATH . $path;
 	$file =  $filepath . $id;
 
 	if(path_is_safe($filepath,GSDATAUPLOADPATH) && filepath_is_safe($file,$filepath)){
-		$status = unlink(GSDATAUPLOADPATH . $path . $id);
+		$status = delete_file(GSDATAUPLOADPATH . $path . $id);
 		if (file_exists(GSTHUMBNAILPATH.$path."thumbnail.". $id)) {
-			unlink(GSTHUMBNAILPATH.$path."thumbnail.". $id);
+			delete_file(GSTHUMBNAILPATH.$path."thumbnail.". $id);
 		}
 		if (file_exists(GSTHUMBNAILPATH.$path."thumbsm.". $id)) {
-			unlink(GSTHUMBNAILPATH.$path."thumbsm.". $id);
+			delete_file(GSTHUMBNAILPATH.$path."thumbsm.". $id);
 		}
-		if($status) return 'success';
+		return $status;
 	}	
-
-	return 'error';
 } 
+
+/**
+ * Delete Upload Directory
+ *
+ * @since 1.0
+ * @uses GSTHUMBNAILPATH
+ * @uses GSDATAUPLOADPATH
+ *
+ * @param string $path relative path to uploaded file folder
+ * @return bool success
+ */
+function delete_upload_dir($path){
+	$target = GSDATAUPLOADPATH . $path;
+	if (path_is_safe($target,GSDATAUPLOADPATH) && file_exists($target)) {
+		$status = delete_folder($target);
+		
+		// delete thumbs folder
+		if(file_exists(GSTHUMBNAILPATH . $path)) delete_dir(GSTHUMBNAILPATH . $path);
+	
+		return $status;
+} 
+}
 
 /**
  * Delete Cache Files
@@ -156,7 +194,7 @@ function delete_upload($id, $path = "") {
  * @since 3.1.3
  * @uses GSCACHEPATH
  *
- * @returns deleted count on success, null if there are any errors
+ * @return mixed deleted count on success, null if there are any errors
  */
 function delete_cache() { 
 	$cachepath = GSCACHEPATH;
@@ -165,139 +203,436 @@ function delete_cache() {
 	$success = null;
 	
 	foreach(glob($cachepath.'*.txt') as $file){
-		if(unlink($file)) $cnt++;
+		if(delete_file($file)) $cnt++;
 		else $success = false;
 	}	
 
-	if($success == false) return null;
+	if($success === false) return null;
 	return $cnt;
 } 
 
 /**
- * Delete Pages Backup File
+ * gets the backup filepath for a data file
  *
- * @since 1.0
- * @uses GSBACKUPSPATH
- *
- * @param string $id File ID to delete
- * @return string
+ * @since 3.4
+ * @param  str $filepath filepath to get backup path
+ * @return str           converted to backup filepath
  */
-function delete_bak($id) { 
-	unlink(GSBACKUPSPATH."pages/". $id .".bak.xml");
-	return 'success';
-} 
+function getBackupFilePath($filepath){
+	$pathparts = pathinfo($filepath);
+	$filename  = $pathparts['filename'];
+	$fileext   = $pathparts['extension'];
+	$dirname   = $pathparts['dirname'];
+	$bakpath   = getRelPath($dirname,GSDATAPATH);
+	$bakfilepath = GSBACKUPSPATH.$bakpath.'/'. getBackupName($filename,$fileext);
+	// debugLog(get_defined_vars());
+	return $bakfilepath;
+}
+
+function getBackupName($filename, $fileext){
+	return $filename . getDef('GSBAKFILEPREFIX') . '.' . $fileext . getDef('GSBAKFILESUFFIX');
+}
+
+function getPWDresetName($filename, $fileext){
+	return $filename . getDef('GSRESETFILEPREFIX') . '.' . $fileext . getDef('GSRESETFILESUFFIX');
+}
+
 
 /**
- * Restore Pages Backup File
+ * Create Backup of a Data File
+ * Copy file to backups, preserve paths structure
+ * Only files in GSDATAPATH can be backed up!
+ *
+ * @since 3.4
+ *
+ * @param string $filepath filepath of datafile to backup
+ * @return bool success
+ */
+function backup_datafile($filepath){
+	if(!filepath_is_safe($filepath,GSDATAPATH)) return false;
+
+	$bakfilepath = getBackupFilePath($filepath);
+	$bakpath = dirname($bakfilepath);
+ 	// recusive create dirs
+	create_dir($bakpath,getDef('GSCHMODDIR'),true);
+	return copy_file($filepath,$bakfilepath);
+}
+
+/**
+ * Restore Backup copy of a dataFile to where it belongs
+ *
+ * @since 3.4
+ *
+ * @param string $file filepath of data file to restore from backup, locked to GSDATAPATH
+ * @param  bool $delete delete the backup
+ * @return bool success
+ */
+function restore_datafile($filepath,$delete = true){
+	$bakfilepath = getBackupFilePath($filepath);
+	
+	if(!filepath_is_safe($bakfilepath,GSBACKUPSPATH)) return false;
+
+	// backup original before restoring
+	if(file_exists($filepath)){
+		rename_file($bakfilepath,$bakfilepath.'.tmp');
+		move_file($filepath,$bakfilepath);
+		$bakfilepath .= '.tmp';
+	}
+
+	if(!$delete) return copy_file($bakfilepath,$filepath);
+	return move_file($bakfilepath,$filepath);
+}
+
+/**
+ * Restore From Backup to custom destintation
+ * source locked to GSBACKUPSPATH
+ *
+ * @since 3.4
+ *
+ * @param string $backfilepath filepath to backup file
+ * @param string $destination  filepath retore to
+ * @return bool success
+ */
+function restore_backup($bakfilepath,$destination){
+	if(!filepath_is_safe($bakfilepath,GSBACKUPSPATH)) return false;
+	return copy_file($bakfilepath,$destination);
+}
+
+/**
+ * backup a page
+ *
+ * @since 3.4
+ *
+ * @param  str $id id of page to backup
+ * @return bool     success
+ */
+function backup_page($id){
+	return backup_datafile(GSDATAPAGESPATH.$id.'.xml');
+}
+
+/**
+ * backup a draft
+ *
+ * @since 3.4
+ *
+ * @param  str $id id of page to backup
+ * @return bool     success
+ */
+function backup_draft($id){
+	return backup_datafile(GSDATADRAFTSPATH.$id.'.xml');
+}
+
+/**
+ * Restore a page from backup
+ *
+ * @since 3.4
+ *
+ * @param  str $id id of page
+ * @return bool     success
+ */
+function restore_page($id){
+	return restore_datafile(GSDATAPAGESPATH.$id.'.xml');
+}
+
+/**
+ * Restore a page from backup
+ *
+ * @since 3.4
+ *
+ * @param  str $id id of page
+ * @return bool     success
+ */
+function restore_draft($id){
+	return restore_datafile(GSDATADRAFTSPATH.$id.'.xml');
+}
+
+/**
+ * Delete Pages File
+ *
+ * Deletes pages data file afer making backup
  *
  * @since 1.0
  * @uses GSBACKUPSPATH
  * @uses GSDATAPAGESPATH
  *
- * @param string $id File ID to restore
+ * @param string $id File ID to delete
+ * @param  bool $backup perform backup of file before deleting it
  */
-function restore_bak($id) { 
-	$file = GSBACKUPSPATH."pages/". $id .".bak.xml";
-	$newfile = GSDATAPAGESPATH . $id .".xml";
-	$tmpfile = GSBACKUPSPATH."pages/". $id .".tmp.xml";
-	if ( !file_exists($newfile) ) { 
-		copy($file, $newfile);
-		unlink($file);
-	} else {
-		copy($file, $tmpfile);
-		copy($newfile, $file);
-		copy($tmpfile, $newfile);
-		unlink($tmpfile);
+function delete_page($id, $backup = true){
+	$filepath = GSDATAPAGESPATH;
+	$file     = $filepath . $id . '.xml';
+
+	if(filepath_is_safe($file,$filepath)){
+		if($backup) backup_datafile($file);
+		return delete_file($file);
 	}
-	exec_action('page-restored');
-	generate_sitemap();
 } 
 
 /**
- * Create Random Password
+ * Delete Pages Draft File
  *
- * @since 1.0
+ * Deletes pages draft data file afer making backup
  *
- * @return string
+ * @since 3.4
+ * @uses GSBACKUPSPATH
+ * @uses GSDATADRAFTSPATH
+ *
+ * @param string $id File ID to delete
+ * @param  bool $backup perform backup of file before deleting it
  */
-function createRandomPassword() {
-    $chars = "Ayz23mFGHBxPQefgnopRScdqrTU4CXYZabstuDEhijkIJKMNVWvw56789";
-    srand((double)microtime()*1000000);
-    $i = 0;
-    $pass = '' ;
-    while ($i <= 5) {
-        $num = rand() % 33;
-        $tmp = substr($chars, $num, 1);
-        $pass = $pass . $tmp;
-        $i++;
-    }
-    return $pass;
+function delete_draft($id, $backup = true){
+	$filepath = GSDATADRAFTSPATH;
+	$file     = $filepath . $id . '.xml';
+
+	if(filepath_is_safe($file,$filepath)){
+		if($backup) backup_datafile($file);
+		return delete_file($file);
+	}
+}
+
+
+/**
+ * Clone a page
+ * Automatically names page id to next incremental copy eg. "slug-n"
+ * Clone title becomes "title [copy]""
+ *
+ * @param  str $id page id to clone
+ * @return mixed   returns new url on succcess, bool false on failure
+ */
+function clone_page($id){
+	list($cloneurl,$count) = getNextFileName(GSDATAPAGESPATH,$id.'.xml');
+	// get page and resave with new slug and title
+	$newxml = getPageXML($id);
+	$newurl = getFileName($cloneurl);
+	$newxml->url = getFileName($cloneurl);
+	$newxml->title = $newxml->title.' ['.sprintf(i18n_r('COPY_N',i18n_r('COPY')),$count).']';
+	$newxml->pubDate = date('r');
+	$status = XMLsave($newxml, GSDATAPAGESPATH.$cloneurl);
+	if($status) return $newurl;
+	return false;
 }
 
 /**
- * File Type Category
+ * get the next incremental filename
+ *
+ * @since 3.4
+ * @param  str $path path to file
+ * @param  str $file filename with extension
+ * @return array     array('newfilename.ext',count)
+ */
+function getNextFileName($path,$file){
+	$count = 1;
+	$pathparts = pathinfo($path.$file);
+	$filename  = $pathparts['filename'];
+	$fileext   = '.'.$pathparts['extension'];
+
+	$nextfilename =  $filename ."-".$count;
+	$nextfile = $path.$filename . $fileext;
+
+	if (file_exists($nextfile)) {
+		while ( file_exists($nextfile) ) {
+			$count++;
+			$nextfilename = $filename .'-'. $count;
+			$nextfile = $path . $nextfilename . $fileext;
+		}
+	}
+	return array($nextfilename.$fileext,$count);
+}
+
+/**
+ * Delete Pages Backup File
+ *
+ * @since 3.4
+ *
+ * @param string $id File ID to delete
+ * @return bool success
+ */
+function delete_page_backup($id){
+	$filepath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/						
+	$file     = $filepath . getBackupName($id,'xml');
+
+	if(filepath_is_safe($file,$filepath)){
+		return delete_file($file);
+	}
+}
+
+/**
+ * Delete Draft Backup File
+ *
+ * @since 3.4
+ *
+ * @param string $id File ID to delete
+ * @return bool success
+ */
+function delete_draft_backup($id){
+	$filepath = GSBACKUPSPATH .getRelPath(GSDATADRAFTSPATH,GSDATAPATH); // backups/pages/
+	$file = $filepath . $bakpagespath. $id .".bak.xml";
+	
+	if(filepath_is_safe($file,$filepath)){
+		return delete_file($file,$filepath);
+	}	
+}
+
+/**
+ * @deprecated 3.4 LEGACY
+ */
+function createBak($file, $filepath, $bakpath) {
+	return backup_datafile($filepath . $file);
+} 
+/**
+ * @deprecated 3.4 LEGACY
+ */
+function delete_bak($id) { 
+	return delete_page_backup($id);
+}
+/**
+ * @deprecated 3.4 LEGACY
+ */
+function restore_bak($id) {
+	restore_page($id);
+}
+/**
+ * @deprecated 3.4 LEGACY
+ */
+function undo($file, $filepath, $bakpath) {
+	return restore_datafile($filepath.$file);
+}
+
+/**
+ * generate psuedo random password
+ * excludes characters similar in appearance i,l,o,0,1
+ * using mt_rand for strong can be improved
+ *
+ * @since  3.4
+ * @param  integer $length      length of password
+ * @param  string  $usecharsets string of charsets to include
+ * @param  bool    $reuse       true, allow characters to be used more than once
+ * @param  bool    $strong     true, use mt_rand instead of array_rand
+ * @return str                  password
+ */
+function createRandomPassword($length = 8, $usecharsets = 'luds', $reuse = false, $strong = true)
+{
+	$allchars = array();
+	$password = '';
+
+	$charsets = array(
+		'l' => 'abcdefghjkmnpqrstuvwxyz', // excluding i,l,o
+		'u' => 'ABCDEFGHJKMNPQRSTUVWXYZ',
+		'd' => '23456789', // excluding 0,1
+		's' => '!@#$%&*?',
+	);
+
+	// combine charsets via usecharsets
+	$sets = array_intersect_key($charsets,array_flip(str_split($usecharsets)));
+	$numsets = count($sets);
+
+	if($numsets < 1) die('no charsets specified');
+	if($numsets > $length) die('length is to small');
+
+	// prefill password with one from each set
+	// also add set chars to all chars array
+	foreach($sets as $key => $set)
+	{
+		$setary    = str_split($set);
+		$setaryidx = $strong ? mt_rand(0, count($setary) - 1) : array_rand($setary);
+		$password .= $setary[$setaryidx];
+
+		if(!$reuse){
+			unset($setary[$setaryidx]);
+			$setary = array_values($setary); // reindex array
+    }
+		$allchars  = array_merge($allchars,$setary);
+}
+
+	// fill rest of password
+	$numchars = count($allchars);
+	for($i = 0; $i < $length - $numsets; $i++){
+		$allcharsidx = $strong ? mt_rand(0, $numchars - 1) : array_rand($allchars);
+		$password .= $allchars[$allcharsidx];
+
+		if(!$reuse){
+			unset($allchars[$allcharsidx]);
+			$allchars = array_values($allchars);
+			$numchars--;
+		}
+	}
+
+	// shuffle for good measure
+	$password = str_shuffle($password);
+
+	if(strlen($password) < $length) die('an error occured');
+	return $password;
+}
+
+/**
+ * LEGACY File Type String
  *
  * Returns the category of an file based on its extension
- *
+ * @deprecated, use get_FileTypeStr for output strings, get_filetypeToken for const logic comparisons, strings have changed in 3.4 to be more consistent
  * @since 1.0
  * @uses i18n_r
  *
  * @param string $ext
- * @return string
+ * @return string variable string representation from lang file
  */
 function get_FileType($ext) {
-
 	$ext = lowercase($ext);
-	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'pct' || $ext == 'gif' || $ext == 'bmp' || $ext == 'png' ) {
-		return i18n_r('IMAGES') .' Images';
-	} elseif ( $ext == 'zip' || $ext == 'gz' || $ext == 'rar' || $ext == 'tar' || $ext == 'z' || $ext == '7z' || $ext == 'pkg' ) {
-		return i18n_r('FTYPE_COMPRESSED');
-	} elseif ( $ext == 'ai' || $ext == 'psd' || $ext == 'eps' || $ext == 'dwg' || $ext == 'tif' || $ext == 'tiff' || $ext == 'svg' ) {
-		return i18n_r('FTYPE_VECTOR');
-	} elseif ( $ext == 'swf' || $ext == 'fla' ) {
-		return i18n_r('FTYPE_FLASH');	
-	} elseif ( $ext == 'mov' || $ext == 'mpg' || $ext == 'avi' || $ext == 'mpeg' || $ext == 'rm' || $ext == 'wmv' ) {
-		return i18n_r('FTYPE_VIDEO');
-	} elseif ( $ext == 'mp3' || $ext == 'wav' || $ext == 'wma' || $ext == 'midi' || $ext == 'mid' || $ext == 'm3u' || $ext == 'ra' || $ext == 'aif' ) {
-		return i18n_r('FTYPE_AUDIO');
-	} elseif ( $ext == 'php' || $ext == 'phps' || $ext == 'asp' || $ext == 'xml' || $ext == 'js' || $ext == 'jsp' || $ext == 'sql' || $ext == 'css' || $ext == 'htm' || $ext == 'html' || $ext == 'xhtml' || $ext == 'shtml' ) {
-		return i18n_r('FTYPE_WEB');
-	} elseif ( $ext == 'mdb' || $ext == 'accdb' || $ext == 'pdf' || $ext == 'xls' || $ext == 'xlsx' || $ext == 'csv' || $ext == 'tsv' || $ext == 'ppt' || $ext == 'pps' || $ext == 'pptx' || $ext == 'txt' || $ext == 'log' || $ext == 'dat' || $ext == 'text' || $ext == 'doc' || $ext == 'docx' || $ext == 'rtf' || $ext == 'wks' ) {
-		return i18n_r('FTYPE_DOCUMENTS');
-	} elseif ( $ext == 'exe' || $ext == 'msi' || $ext == 'bat' || $ext == 'download' || $ext == 'dll' || $ext == 'ini' || $ext == 'cab' || $ext == 'cfg' || $ext == 'reg' || $ext == 'cmd' || $ext == 'sys' ) {
-		return i18n_r('FTYPE_SYSTEM');
-	} else {
-		return i18n_r('FTYPE_MISC');
-	}
+	$token = get_FileTypeToken($ext);
+
+	// backward compatibility, use get_FileTypeToken for compares!
+	if($token == "IMAGE")    return i18n_r('IMAGES') .' Images';
+	if($token == "DOCUMENT") return i18n_r('FTYPE_DOCUMENTS');
+
+	return i18n_r('FTYPE_'.$token);
 }
 
 /**
- * Create Backup Pages File
- *
- * @since 1.0
- * @uses tsl
- *
- * @param string $file
- * @param string $filepath
- * @param string $bakpath
- * @return bool
+ * get file type string
+ * do not use for filetype logic, see get_FileTypeToken
+ * @since  3.4
+ * @param  string $ext filextention, will be auto lowercased
+ * @return string variable string representation from lang file
  */
-function createBak($file, $filepath, $bakpath) {
-	$bakfile = $bakpath . $file .".bak";
-	if ( file_exists(tsl($filepath) . $file) ) {
-		copy($filepath . $file, $bakfile);
-	}
-	
-	if ( file_exists($bakfile) ) {
-		return true;
+function get_FileTypeStr($ext) {
+	$ext = lowercase($ext);
+	return i18n_r('FTYPE_'.get_FileTypeToken($ext));
+}
+
+/**
+ * get file type token category id
+ * @since  3.4
+ * @param  string $ext extension lowercase
+ * @return string      const token of file type
+ */
+function get_FileTypeToken($ext){
+	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'pct' || $ext == 'gif' || $ext == 'bmp' || $ext == 'png' ) {
+		return 'IMAGE';
+	} elseif ( $ext == 'zip' || $ext == 'gz' || $ext == 'rar' || $ext == 'tar' || $ext == 'z' || $ext == '7z' || $ext == 'pkg' ) {
+		return 'COMPRESSED';
+	} elseif ( $ext == 'ai' || $ext == 'psd' || $ext == 'eps' || $ext == 'dwg' || $ext == 'tif' || $ext == 'tiff' || $ext == 'svg' ) {
+		return 'VECTOR';
+	} elseif ( $ext == 'swf' || $ext == 'fla' ) {
+		return 'FLASH';	
+	} elseif ( $ext == 'mov' || $ext == 'mpg' || $ext == 'avi' || $ext == 'mpeg' || $ext == 'rm' || $ext == 'wmv' || $ext == 'flv') {
+		return 'VIDEO';
+	} elseif ( $ext == 'mp3' || $ext == 'mp4' || $ext == 'wav' || $ext == 'wma' || $ext == 'midi' || $ext == 'mid' || $ext == 'm3u' || $ext == 'ra' || $ext == 'aif' ) {
+		return 'AUDIO';
+	} elseif ( $ext == 'xml' || $ext == 'css' || $ext == 'htm' || $ext == 'html' || $ext == 'xhtml' || $ext == 'shtml' ) {
+		return 'WEB';
+	} elseif ( $ext == 'phtml' || $ext == 'php' || $ext == 'php3' || $ext == 'php4' || $ext == 'php5' || $ext == 'phps' || $ext == 'asp' || $ext == 'js' || $ext == 'jsp' || $ext == 'sql') {
+		return 'SCRIPT';
+	} elseif ( $ext == 'mdb' || $ext == 'accdb' || $ext == 'pdf' || $ext == 'xls' || $ext == 'xlsx' || $ext == 'csv' || $ext == 'tsv' || $ext == 'ppt' || $ext == 'pps' || $ext == 'pptx' || $ext == 'txt' || $ext == 'log' || $ext == 'dat' || $ext == 'text' || $ext == 'doc' || $ext == 'docx' || $ext == 'rtf' || $ext == 'wks' ) {
+		return 'DOCUMENT';
+	} elseif ( $ext == 'exe' || $ext == 'msi' || $ext == 'bat' || $ext == 'download' || $ext == 'dll' || $ext == 'ini' || $ext == 'cab' || $ext == 'cfg' || $ext == 'reg' || $ext == 'cmd' || $ext == 'sys' ) {
+		return 'SYSTEM';
 	} else {
-		return false;
-	} 
+		return 'MISC';
+	}
 }
 
 /**
  * ISO Timestamp
- *
+ * @todo  unused
  * @since 1.0
  *
  * @param string $dateTime
@@ -313,100 +648,6 @@ function makeIso8601TimeStamp($dateTime) {
         $isoTS = substr($dateTime, 0, 10);
     }
     return $isoTS;
-}
-
-/**
- * Ping Sitemaps
- *
- * @since 1.0
- *
- * @param string $url_xml XML sitemap
- * @return bool
- */
-function pingGoogleSitemaps($url_xml) {
-   $status = 0;
-   $google = 'www.google.com';
-   $bing 	 = 'www.bing.com';
-   $ask 	 = 'submissions.ask.com';
-   if( $fp=@fsockopen($google, 80) ) {
-      $req =  'GET /webmasters/sitemaps/ping?sitemap=' .
-              urlencode( $url_xml ) . " HTTP/1.1\r\n" .
-              "Host: $google\r\n" .
-              "User-Agent: Mozilla/5.0 (compatible; " .
-              PHP_OS . ") PHP/" . PHP_VERSION . "\r\n" .
-              "Connection: Close\r\n\r\n";
-      fwrite( $fp, $req );
-      while( !feof($fp) ) {
-         if( @preg_match('~^HTTP/\d\.\d (\d+)~i', fgets($fp, 128), $m) ) {
-            $status = intval( $m[1] );
-            break;
-         }
-      }
-      fclose( $fp );
-   }
-   
-   if( $fp=@fsockopen($bing, 80) ) {
-      $req =  'GET /webmaster/ping.aspx?sitemap=' .
-              urlencode( $url_xml ) . " HTTP/1.1\r\n" .
-              "Host: $bing\r\n" .
-              "User-Agent: Mozilla/5.0 (compatible; " .
-              PHP_OS . ") PHP/" . PHP_VERSION . "\r\n" .
-              "Connection: Close\r\n\r\n";
-      fwrite( $fp, $req );
-      while( !feof($fp) ) {
-         if( @preg_match('~^HTTP/\d\.\d (\d+)~i', fgets($fp, 128), $m) ) {
-            $status = intval( $m[1] );
-            break;
-         }
-      }
-      fclose( $fp );
-   }
-   
-   if( $fp=@fsockopen($ask, 80) ) {
-      $req =  'GET /ping?sitemap=' .
-              urlencode( $url_xml ) . " HTTP/1.1\r\n" .
-              "Host: $ask\r\n" .
-              "User-Agent: Mozilla/5.0 (compatible; " .
-              PHP_OS . ") PHP/" . PHP_VERSION . "\r\n" .
-              "Connection: Close\r\n\r\n";
-      fwrite( $fp, $req );
-      while( !feof($fp) ) {
-         if( @preg_match('~^HTTP/\d\.\d (\d+)~i', fgets($fp, 128), $m) ) {
-            $status = intval( $m[1] );
-            break;
-         }
-      }
-      fclose( $fp );
-   }
-   
-   return( $status );
-}
-
-/**
- * Undo
- *
- * @since 1.0
- * @uses tsl
- *
- * @param string $file filename to undo
- * @param string $filepath filepath to undo
- * @param string $bakpath path to the backup file
- * @return bool
- */
-function undo($file, $filepath, $bakpath) {
-	$undo_file = $filepath . $file;
-	$bak_file  = tsl($bakpath) . $file .".bak";
-	$tmp_file = tsl($bakpath) . $file .".tmp";
-	copy($undo_file, $tmp_file); // rename original to temp shuttle
-	copy($bak_file, $undo_file); // copy backup
-	copy($tmp_file, $bak_file);  // save original as backup
-	unlink($tmp_file); 			 // remove temp shuttle file
-	
-	if (file_exists($tmp_file)) {
-		return false;
-	} else {
-		return true;
-	}
 }
 
 /**
@@ -431,7 +672,7 @@ function fSize($s) {
 
 /**
  * Validate Email Address
- *
+ * @todo  remove fallbacks, 5.2 is min
  * @since 1.0
  *
  * @param string $email 
@@ -488,33 +729,38 @@ function do_reg($text, $regex) {
 /**
  * Validate XML
  *
- * @since 1.0
- * @uses i18n_r
+ * @since 3.3.0
  * @uses getXML
  *
  * @param string $file File to validate
- * @return string
+ * @return bool
  */
-function valid_xml($file) {
+function is_valid_xml($file) {
 	$xmlv = getXML($file);
-	global $i18n;
-	if (is_object($xmlv)) {
-		return '<span class="OKmsg" >'.i18n_r('XML_VALID').' - '.i18n_r('OK').'</span>';
-	} else {
-		return '<span class="ERRmsg" >'.i18n_r('XML_INVALID').' - '.i18n_r('ERROR').'!</span>';
+	if (gettype($xmlv) !== 'object' || !in_array(get_class($xmlv),array('SimpleXMLExtended','SimpleXML'))) {
+		// debugLog($xmlv);
+		return;
 	}
+	return true;
 }
 
 /**
  * Generate Salt
+ * @todo  cryptographically weak
  *
  * Returns a new unique salt
- * @updated 3.0
- *
  * @return string
  */
 function generate_salt() {
-	return substr(sha1(mt_rand()),0,22);
+  if(version_compare(PHP_VERSION, '5.3.0') >= 0 && function_exists("openssl_random_pseudo_bytes")){
+    return bin2hex(openssl_random_pseudo_bytes(16));
+  }else{
+     /* Known to be terribly insecure. Default seeded with an cryptographically
+      * insecure, 32 bit integer, and PHP versions prior to 5.3 lack built in access
+      * to secure random.
+      */
+     return sha1(mt_rand());
+  }
 }
 
 /**
@@ -580,8 +826,8 @@ function check_menu($text) {
  * @return string
  */
 function passhash($p) {
-	if(defined('GSLOGINSALT') && GSLOGINSALT != '') { 
-		$logsalt = sha1(GSLOGINSALT);
+	if(getDef('GSLOGINSALT') && getDef('GSLOGINSALT') != '') {
+		$logsalt = sha1(getDef('GSLOGINSALT'));
 	} else { 
 		$logsalt = null; 
 	}
@@ -612,57 +858,50 @@ function get_available_pages() {
       $count = 0;
       foreach ($pagesSorted as $page) {
       	if ($page['private']!='Y'){
-        $text = (string)$page['menu'];
-        $pri = (string)$page['menuOrder'];
-        $parent = (string)$page['parent'];
-        $title = (string)$page['title'];
-        $slug = (string)$page['url'];
-        $menuStatus = (string)$page['menuStatus'];
-        $private = (string)$page['private'];
-				$pubDate = (string)$page['pubDate'];
-        
-        $url = find_url($slug,$parent);
-        
-        $specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
-        
-        $extract[] = $specific;
-      } 
+	        $text = (string)$page['menu'];
+	        $pri = (string)$page['menuOrder'];
+	        $parent = (string)$page['parent'];
+	        $title = (string)$page['title'];
+	        $slug = (string)$page['url'];
+	        $menuStatus = (string)$page['menuStatus'];
+	        $private = (string)$page['private'];
+					$pubDate = (string)$page['pubDate'];
+	        $url = find_url($slug,$parent);
+	        
+	        $specific = array("slug"=>$slug,"url"=>$url,"parent_slug"=>$parent,"title"=>$title,"menu_priority"=>$pri,"menu_text"=>$text,"menu_status"=>$menuStatus,"private"=>$private,"pub_date"=>$pubDate);
+	        $extract[] = $specific;
+		}
       } 
       return $extract;
     }
 }
-
-  
+ 
 /**
- * Update Slugs
+ * Change all direct childens parents to new parent
  *
- * @since 2.04
- * @uses $url
- * @uses GSDATAPAGESPATH
- * @uses XMLsave
- *
+ * @since 3.4
+ * @param str $parent parent slug to change
+ * @param str $newparent new slug to change to
  */
-function updateSlugs($existingUrl, $newurl=null){
+function changeChildParents($parent, $newparent=null){
 	global $pagesArray;
 	getPagesXmlValues();
-      
-      if (!$newurl){
-      	global $url;
-      } else {
-      	$url = $newurl;
-      }
-
 	foreach ($pagesArray as $page){
-		if ( $page['parent'] == $existingUrl ){
-			$thisfile = @file_get_contents(GSDATAPAGESPATH.$page['filename']);
-        		$data = simplexml_load_string($thisfile);
-            		$data->parent=$url;
-            		XMLsave($data, GSDATAPAGESPATH.$page['filename']);
-        }
-      }
+		if ( $page['parent'] == $parent ){
+			$data = getPageXML($page['url']);
+			$data->parent=$newparent;
+			XMLsave($data, GSDATAPAGESPATH.$page['filename']);
+		}
+	}
 }
 
-          
+// DEPRECATED
+//  LEGACY, uses global url
+function updateSlugs($existingUrl){
+	GLOBAL $url;
+	changeChildParents($existingUrl, $url);
+}
+
 /**
  * Get Link Menu Array
  * 
@@ -677,17 +916,11 @@ function updateSlugs($existingUrl, $newurl=null){
  * @return array menuitems title,url,parent
  */
 function get_link_menu_array($parent='', $array=array(), $level=0) {
-	
-	global $pagesSorted;
-	
-	$items=array();
-	// $pageList=array();
+	// pagesarray is sorted by file load, no specific or normalized sort order
+	// pagesSorted attempts to sort by heirarchy parent children, in alphabetic order
 
-	foreach ($pagesSorted as $page) {
-		if ($page['parent']==$parent){
-			$items[(string)$page['url']]=$page;
-		}	
-	}	
+	// @todo sort parent invalid filter
+	$items = filterParent(getPages('sortParent'),$parent);
 
 	if (count($items)>0){
 		foreach ($items as $page) {
@@ -698,17 +931,18 @@ function get_link_menu_array($parent='', $array=array(), $level=0) {
 			for ($i=0;$i<=$level-1;$i++){
 				if ($i!=$level-1){
 	  				$dash .= utf8_encode("\xA0\xA0"); // outer level
-          } else {
+				} else {
 					$dash .= '- '; // inner level
-            }   
-          } 
+				}
+			}
 			array_push($array, array( $dash . $page['title'], find_url($page['url'], $page['parent'])));
 			// recurse submenus
 			$array=get_link_menu_array((string)$page['url'], $array,$level+1);	 
-        }
-      }
+		}
+	}
+
 	return $array;
-} 
+}
 
 /**
  * List Pages Json
@@ -725,27 +959,30 @@ function get_link_menu_array($parent='', $array=array(), $level=0) {
  *
  * @returns array
  */
-function list_pages_json() {
+function list_pages_json(){	
 	GLOBAL $pagesArray,$pagesSorted;
 
 	$pagesArray_tmp = array();
 	$count = 0;
+
 	foreach ($pagesArray as $page) {
 		if ($page['parent'] != '') { 
 			$parentTitle = returnPageField($page['parent'], "title");
 			$sort = $parentTitle .' '. $page['title'];		
-			} else {
+		} else {
 			$sort = $page['title'];
-			}
+		}
+
 		$page = array_merge($page, array('sort' => $sort));
 		$pagesArray_tmp[$count] = $page;
-			$count++;
-			}
+		$count++;
+	}
+
 	$pagesSorted = subval_sort($pagesArray_tmp,'sort');
 
-	$links = exec_filter('editorlinks',get_link_menu_array());
+	$links = exec_filter('editorlinks',get_link_menu_array()); // @filter editorlinks (array) filter links array for ckeditor
 	return json_encode($links);
-		}
+}
 
 /**
  * @deprecated since 3.3.0
@@ -755,18 +992,234 @@ function ckeditor_add_page_link(){
 	echo "
 	<script type=\"text/javascript\">
 	//<![CDATA[
-	// DEPRECATED FUNCTION!
+	// ckeditor_add_page_link() DEPRECATED FUNCTION!
 	//]]>
 	</script>";
 }
 
+/**
+ * get table row for pages display
+ *
+ * @since 3.4
+ * @param  array $page   page array
+ * @param  int $level    current level
+ * @param  int $index    current index
+ * @param  int $parent   parent index
+ * @param  int $children number of children
+ * @return str           html for table row
+ */
+function getPagesRow($page,$level,$index,$parent,$children){
+
+	$indentation = $menu = '';
+
+	// indentation
+	$indent   = '<span class="tree-indent"></span>';
+	$last     = '<span class="tree-indent indent-last">&ndash;</span>';
+
+	// add indents based on level
+	$indentation .= $level > 0 ? str_repeat($indent, $level-1) : '';
+	$indentation .= $level > 0 ? $last : '';
+
+	// add indents or expanders
+	$isParent = $children > 0;
+	// add expanders in php
+	// $expander = '<span class="tree-expander tree-expander-expanded"></span>';
+	// $expander = $isParent ? $expander : '<span class="tree-indent"></span>';
+	// $indentation = $indentation . $expander;
+
+	// depth level identifiers
+	$class  = 'depth-'.$level;
+	$class .= $isParent ? ' tree-parent' : '';
+
+	$menu .= '<tr id="tr-'.$page['url'] .'" class="'.$class.'" data-depth="'.$level.'">';
+
+	$pagetitle = $pagemenustatus = $pageprivate = $pagedraft = $pageindex = '';
+	// @todo should strip_decode from xml then escape and sanitize on output, xml read should be normalized with decode
+	if ($page['title'] == '' )        { $pagetitle       = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>';} else { $pagetitle = $page['title']; }
+	if ($page['menuStatus'] != '' )   { $pagemenustatus  = ' <span class="label label-ghost">'.i18n_r('MENUITEM_SUBTITLE').'</span>'; }
+	if ($page['private'] != '' )      { $pageprivate     = ' <span class="label label-ghost">'.i18n_r('PRIVATE_SUBTITLE').'</span>'; } 
+	if (getDef('GSUSEDRAFTS') && pageHasDraft($page['url']))   { $pagedraft       = ' <span class="label label-ghost">'.lowercase(i18n_r('LABEL_DRAFT')).'</span>'; }
+	if ($page['url'] == getDef('GSINDEXSLUG'))     { $pageindex       = ' <span class="label label-ghost">'.i18n_r('HOMEPAGE_SUBTITLE').'</span>'; }
+	if(dateIsToday($page['pubDate'])) { $pagepubdate     = ' <span class="datetoday">'. output_date($page['pubDate']) . '</span>';} else { $pagepubdate = '<span>'. output_date($page['pubDate']) . "</span>";}
+
+	$menu .= '<td class="pagetitle break">'. $indentation .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($pagetitle) .'" href="edit.php?id='. $page['url'] .'" >'. var_out($pagetitle,"string") .'</a>';
+	$menu .= '<div class="showstatus toggle" >'. $pageindex .  $pagedraft . $pageprivate . $pagemenustatus .'</div></td>'; // keywords used for filtering
+	$menu .= '<td style="width:80px;text-align:right;" ><span>'.$pagepubdate.'</span></td>';
+	$menu .= '<td class="secondarylink" >';
+	$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($pagetitle) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
+	$menu .= '</td>';
+
+	// add delete buttons, exclude index page
+	if ($page['url'] != 'index' ) {
+		$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. var_out($page['title']) .'" >&times;</a></td>';
+	} else {
+		$menu .= '<td class="delete" ></td>';
+	}
+
+	// add indexcolumn and tagcolumn for filtering
+	$menu .= '<td class="indexColumn hidden">'.strip_tags(lowercase($pagetitle . $pageindex . $pagemenustatus . $pageprivate .$pagedraft)) .'</div></td>'; // keywords used for filtering
+	$menu .= '<td class="tagColumn hidden">'.str_replace(',',' ',$page['meta']) . '</div></td>'; // keywords used for filtering
+	
+	$menu .= "</tr>\n";
+	return $menu;
+}
+
+
+function getPagesRowMissing($ancestor,$level,$children){
+	$menu = '<tr id="tr-'.$ancestor.'" class="tree-error tree-parent depth-'.$level.'" data-depth="'.$level.'"><td colspan="4" class="pagetitle"><a><strong>'. $ancestor.'</strong> '.i18n_r('MISSING_PARENT').'</a>';
+	if ( fileHasBackup(GSDATAPAGESPATH.$ancestor.'.xml') ) {
+		$menu.= '&nbsp;&nbsp;&nbsp;&nbsp;<a href="backup-edit.php?p=view&amp;id='.$ancestor.'" target="_blank" >'.i18n_r('BACKUP_AVAILABLE').'</a>';
+	}
+	$menu.= "</td></tr>";
+	return $menu;
+}
+
+/**
+ * create a parent child bucket
+ *
+ * @since 3.4
+ *
+ * @param  array   $pages  pagesarray
+ * @param  boolean $useref true: use references for values, false: empty
+ * @return array   returns array keyed by parents, then keyed by url with values page refs or empty
+ */
+function getParentsHashTable($pages = array(), $useref = true){
+	$pagesArray = $pages ? $pages : getPagesXmlValues();
+	$ary        = array();
+
+	foreach($pagesArray as $key => &$page){
+		$parent = isset($page['parent']) ? $page['parent'] : '';
+		$pageId = isset($page['url']) ? $page['url'] : null;
+		if($pageId) $ary[$parent][$pageId] = $useref ? $page : '';
+	}
+
+	return $ary;
+}
+
+
+/**
+ * create a parent child bucket
+ *
+ * @since 3.4
+ *
+ * @param  array   $pages  pagesarray
+ * @param  boolean $useref true: use references for values, false: empty
+ * @return array   returns array keyed by parents, then keyed by url with values page refs or empty
+ */
+function getParentsSlugHashTable($pages = array(), $useref = true){
+	$pagesArray = $pages ? $pages : getPagesXmlValues();
+	$ary        = array();
+
+	foreach($pagesArray as $key => &$page){
+		$parent = isset($page['parent']) ? $page['parent'] : '';
+		$pageId = isset($page['url']) ? $page['url'] : null;
+		
+		if(!empty($parent)){
+			if (isset($ary[$parent])) $ary[$parent]['children'][$page['url']] = ($useref ? $page : $page['url']);
+			else $ary[$parent] = array('id'=>$parent,'children'=>array($page['url'] => ($useref ? $page : $page['url']) ) );
+		}
+		// else $ary[] = array('id'=>$page['url']);
+	}
+
+	return $ary;
+}
+
+/**
+ * gets a page array with heirachy data added to it
+ * converts pages parent adjacancy list to flat table
+ * id.[parent] -> rank[order],level[depth]
+ *
+ * @since 3.4
+ * @param  array  $mypages pages array
+ * @return array           pages array with order,depth,numchildren added
+ */
+function getPageDepths($pages=array(), $init = true){
+	static $parents;     // parent lookup table
+	// static $pages;       // pagesarray
+	static $newpages;    // new pagesarray
+	static $keys;        // track processed pageIds
+
+	static $parent; // current parent being processed
+	static $level;  // depth / indentation level
+	static $iter;   // order / weight iteration counter
+
+	$thisfunc = __FUNCTION__;
+
+	if($init){
+		$parent = ''; // current parent being processed
+		$level  = 0;  // depth / indentation level
+		$iter   = 0;  // order / weight iteration counter
+	}
+
+	if(!$keys || $init)     $keys     = array();
+	// if(!$pages || $init)    $pages    = $mypages;
+	if(!$newpages || $init) $newpages = array();
+	if(!$parents  || $init)  $parents  = getParentsHashTable($pages); // use parent child lookup table for speed
+
+
+	foreach ($parents[$parent] as $key => &$page) {
+		$iter++;
+		$keys[$key]  = '';
+
+		// assert cyclical parent child
+		if($page['parent'] == $page['url']) die("self parent ". $key);
+
+		$pageId      = (string) $key;
+		$numChildren = isset($parents[$pageId]) ? count($parents[$pageId]) : 0;
+
+		$newpages[$pageId]                = $page;
+		$newpages[$pageId]['order']       = $iter;
+		$newpages[$pageId]['depth']       = $level;
+		$newpages[$pageId]['numchildren'] = $numChildren;
+
+		if(isset($parents[$pageId])){
+			$level++;
+			$parent = $pageId;
+			$thisfunc(array(),false);
+			$level--;
+		} else $parent ='';
+	}
+
+	// do missing ancestor checks, orphans are not previously processed since they have no root
+	if($level == 0 and $parent==''){
+		// debugLog('missing ancestor check');
+		$level++;
+		$ancestors = array_diff(array_keys($parents),array_keys($keys) );
+		// debugLog($ancestors);
+
+		foreach($ancestors as $key => $ancestor){
+			if($ancestor !=='') {
+				// check again to see if it was already removed from a previous loop
+		 		if(!isset($keys[$ancestor])) {
+		 			// Add this mising page to new array, then recurse on its children
+		 			$iter++;
+					$keys[$ancestor]  = '';
+
+					$pageId      = $ancestor;
+					$numChildren = isset($parents[$pageId]) ? count($parents[$pageId]) : 0;
+
+					// this will cause issues if used for something else that tried to use a required field, since this will be missing all of them
+					// @todo add a status flag instead of null ['url'] ?
+					// @todo add full page template here , abstract page schema somewhere
+					$newpages[$pageId]                = array(); 
+					// $newpages[$pageId]['url']         = $ancestor;
+					$newpages[$pageId]['order']       = $iter;
+					$newpages[$pageId]['depth']       = $level-1;
+					$newpages[$pageId]['numchildren'] = $numChildren;
+					$parent = $ancestor;
+					$thisfunc(array(),false);
+		 		}
+		 	}
+		}
+	}
+
+	return $newpages;
+}
 
 /**
  * Recursive list of pages
  *
  * Returns a recursive list of items for the main page
- *
- * @author Mike
  *
  * @since 3.0
  * @uses $pagesSorted
@@ -777,47 +1230,39 @@ function ckeditor_add_page_link(){
  * 
  * @returns string
  */
-function get_pages_menu($parent, $menu,$level) {
+function get_pages_menu($parent = '',$menu = '',$level = '') {
 	global $pagesSorted;
 	
-	$items=array();
-	foreach ($pagesSorted as $page) {
-		if ($page['parent']==$parent){
-			$items[(string)$page['url']]=$page;
+	$pages = getPageDepths($pagesSorted); // use parent hash table for speed
+	$depth = null;
+
+	// get depth of requested parent, then get all subsequent children until we get back to our starting depth
+	foreach($pages as $key => $page){
+
+		// check for cyclical parent child and die
+		if(isset($page['parent']) && $page['parent'] === $key) die("self parent > " . $key); 
+
+		$level       = isset($page['depth']) ? $page['depth'] : 0;
+		$numChildren = isset($page['numchildren']) ? $page['numchildren'] : 0;
+
+		// if sublevel
+		if($parent !== ''){
+			// skip until we get to parent
+			if($parent !== $key && $depth === null) continue;
+
+			if($depth === null){
+			 // set sub level starting depth
+			 $depth = $page['depth']; continue;
+			}	
+			else if(($page['depth'] == $depth)) return $menu; // we are back to starting depth so stop
+			$level = $level - ($depth+1);
 		}	
-	}	
-	if (count($items)>0){
-		foreach ($items as $page) {
-		  	$dash="";
-		  	if ($page['parent'] != '') {
-	  			$page['parent'] = $page['parent']."/";
-	  		}
-			for ($i=0;$i<=$level-1;$i++){
-				if ($i!=$level-1){
-	  				$dash .= '<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>';
-				} else {
-					$dash .= '<span>&nbsp;&nbsp;&ndash;&nbsp;&nbsp;&nbsp;</span>';
-				}
-			} 
-			$menu .= '<tr id="tr-'.$page['url'] .'" >';
-			if ($page['title'] == '' ) { $page['title'] = '[No Title] &nbsp;&raquo;&nbsp; <em>'. $page['url'] .'</em>'; }
-			if ($page['menuStatus'] != '' ) { $page['menuStatus'] = ' <sup>['.i18n_r('MENUITEM_SUBTITLE').']</sup>'; } else { $page['menuStatus'] = ''; }
-			if ($page['private'] != '' ) { $page['private'] = ' <sup>['.i18n_r('PRIVATE_SUBTITLE').']</sup>'; } else { $page['private'] = ''; }
-			if ($page['url'] == 'index' ) { $homepage = ' <sup>['.i18n_r('HOMEPAGE_SUBTITLE').']</sup>'; } else { $homepage = ''; }
-			$menu .= '<td class="pagetitle">'. $dash .'<a title="'.i18n_r('EDITPAGE_TITLE').': '. var_out($page['title']) .'" href="edit.php?id='. $page['url'] .'" >'. cl($page['title']) .'</a><span class="showstatus toggle" >'. $homepage . $page['menuStatus'] . $page['private'] .'</span></td>';
-			$menu .= '<td style="width:80px;text-align:right;" ><span>'. shtDate($page['pubDate']) .'</span></td>';
-			$menu .= '<td class="secondarylink" >';
-			$menu .= '<a title="'.i18n_r('VIEWPAGE_TITLE').': '. var_out($page['title']) .'" target="_blank" href="'. find_url($page['url'],$page['parent']) .'">#</a>';
-			$menu .= '</td>';
-			if ($page['url'] != 'index' ) {
-				$menu .= '<td class="delete" ><a class="delconfirm" href="deletefile.php?id='. $page['url'] .'&amp;nonce='.get_nonce("delete", "deletefile.php").'" title="'.i18n_r('DELETEPAGE_TITLE').': '. var_out($page['title']) .'" >&times;</a></td>';
-			} else {
-				$menu .= '<td class="delete" ></td>';
-			}
-			$menu .= '</tr>';
-			$menu = get_pages_menu((string)$page['url'], $menu,$level+1);	  	
-		}
-	}
+
+		// provide special row if this is a missing parent
+		if( !isset($page['url']) ) $menu .= getPagesRowMissing($key,$level,$numChildren); // use URL check for missing parents for now
+		else $menu .= getPagesRow($page,$level,'','',$numChildren);
+  	}
+
 	return $menu;
 }
 
@@ -837,23 +1282,27 @@ function get_pages_menu($parent, $menu,$level) {
  * 
  * @returns string
  */
-function get_pages_menu_dropdown($parentitem, $menu,$level) {
+function get_pages_menu_dropdown($parentitem, $menu, $level, $id = null, $idlevel = null) {
 	
 	global $pagesSorted;
 	global $parent; 
 	
 	$items=array();
+
 	foreach ($pagesSorted as $page) {
 		if ($page['parent']==$parentitem){
 			$items[(string)$page['url']]=$page;
 		}	
 	}	
+
 	if (count($items)>0){
 		foreach ($items as $page) {
 		  	$dash="";
+
 		  	if ($page['parent'] != '') {
 	  			$page['parent'] = $page['parent']."/";
 	  		}
+
 			for ($i=0;$i<=$level-1;$i++){
 				if ($i!=$level-1){
 	  				$dash .= '<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>';
@@ -861,11 +1310,25 @@ function get_pages_menu_dropdown($parentitem, $menu,$level) {
 					$dash .= '<span>&nbsp;&nbsp;&ndash;&nbsp;&nbsp;&nbsp;</span>';
 				}
 			} 
-			if ($parent == (string)$page['url']) { $sel="selected"; } else { $sel=""; }
-			$menu .= '<option '.$sel.' value="'.$page['url'] .'" >'.$dash.$page['url'].'</option>';
-			$menu = get_pages_menu_dropdown((string)$page['url'], $menu,$level+1);	  	
+
+			if ($parent == (string)$page['url']){ $sel="selected"; } else { $sel=""; }
+			
+			// disable all children
+			$disabled = '';
+			if($id == $parentitem){
+				$idlevel = $level;
+			}
+			if($idlevel && ($level >= $idlevel)) $disabled = 'disabled';
+			if($idlevel && ($level < $idlevel)){
+				$disabled = '';
+				$idlevel = null;
+			}
+			$title = $page['title'];
+			$menu .= '<option '.$sel.' value="'.$page['url'] .'" '.$disabled.'>'.$dash.$title.'</option>';
+			$menu = get_pages_menu_dropdown((string)$page['url'], $menu,$level+1, $id, $idlevel);	  	
 		}
 	}
+
 	return $menu;
 }
 
@@ -892,6 +1355,7 @@ function get_api_details($type='core', $args=null, $cached = false) {
 	GLOBAL $debugApi,$nocache,$nocurl;
 
 	include(GSADMININCPATH.'configuration.php');
+	// $nocache = true;
 
 	if($cached){
 		debug_api_details("API REQEUSTS DISABLED, using cache files only");
@@ -923,12 +1387,14 @@ function get_api_details($type='core', $args=null, $cached = false) {
 
 	# check to see if cache is available for this
 	$cachefile = md5($fetch_this_api).'.txt';
-	$cacheExpire = 39600; // 11 minutes
+	$cacheExpireSecs = 3 * (86400); // minutes, 3 days
+	// $cacheExpireSecs = 60; // 1 minute
 
 	if(!$nocache || $cached) debug_api_details('cache file check - ' . $fetch_this_api.' ' .$cachefile);
 	else debug_api_details('cache check: disabled');
 
 	$cacheAge = file_exists(GSCACHEPATH.$cachefile) ? filemtime(GSCACHEPATH.$cachefile) : '';
+	debug_api_details('cache file tstamp: ' . output_datetime($cacheAge,true));
 
 
 	// api disabled and no cache file exists
@@ -938,18 +1404,24 @@ function get_api_details($type='core', $args=null, $cached = false) {
 		return '{"status":-1}';
 	}
 
-	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpire) < $cacheAge ) {
-		debug_api_details('cache file time - ' . $cacheAge . ' (' . (time() - $cacheAge) . ')' );
-		# grab the api request from the cache
-		$data = file_get_contents(GSCACHEPATH.$cachefile);
+	if (!$nocache && !empty($cacheAge) && (time() - $cacheExpireSecs) < $cacheAge ) {
+		# grab the api results from the cache
+		debug_api_details('cache file time - ' . $cacheAge . ' (' . (time() - $cacheAge) . ' seconds ago)' );
+		$data = read_file(GSCACHEPATH.$cachefile);
 		debug_api_details('returning cache file - ' . GSCACHEPATH.$cachefile);
-	} else {	
+	} 
+	else {
 		# make the api call
 		if (function_exists('curl_init') && function_exists('curl_exec') && !$nocurl) {
 
 			// USE CURL
 			$ch = curl_init();
 			
+			if(!$ch){
+				debug_api_details("curl init failed");
+				return;
+			}	
+
 			// define missing curlopts php<5.2.3
 			if(!defined('CURLOPT_CONNECTTIMEOUT_MS')) define('CURLOPT_CONNECTTIMEOUT_MS',156);
 			if(!defined('CURLOPT_TIMEOUT_MS')) define('CURLOPT_TIMEOUT_MS',155);			
@@ -962,16 +1434,25 @@ function get_api_details($type='core', $args=null, $cached = false) {
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_URL, $fetch_this_api);
 
+			curl_setopt($ch, CURLOPT_FAILONERROR, true);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+
 			if($debugApi){
-				// $verbose = fopen(GSDATAOTHERPATH .'logs/curllog.txt', 'w+');			
-				$verbose = tmpfile();				
-				// curl_setopt($ch, CURLOPT_WRITEHEADER, $verbose );
+
+				$curllog = false;
+				if($curllog){
+					$verbose = fopen(GSDATAOTHERPATH .'logs/curllog.txt', 'w+');
+					curl_setopt($ch, CURLOPT_WRITEHEADER, $verbose );
+				}	
+				else $verbose = tmpfile();				
+
 				curl_setopt($ch, CURLOPT_HEADER, true); 
 				curl_setopt($ch, CURLOPT_VERBOSE, true);
-				curl_setopt($ch, CURLOPT_STDERR, $verbose );
-				curl_setopt($ch, CURLINFO_HEADER_OUT, true);								
+				curl_setopt($ch, CURLOPT_STDERR, $verbose ); // @todo not actually logging errors
+				curl_setopt($ch, CURLINFO_HEADER_OUT, true);							
 			}
-				
+
 			$data = curl_exec($ch);
 
 			if($debugApi){
@@ -979,12 +1460,12 @@ function get_api_details($type='core', $args=null, $cached = false) {
 				debug_api_details("curl version: ");
 				debug_api_details(print_r(curl_version(),true));	
 			
-				debug_api_details("curl info:");
+				debug_api_details("curl info: ");
 				debug_api_details(print_r(curl_getinfo($ch),true));
 			
 				if (!$data) {
-					debug_api_details("curl error number:" .curl_errno($ch));
-					debug_api_details("curl error:" . curl_error($ch));
+					debug_api_details("curl error number: " .curl_errno($ch));
+					debug_api_details("curl error: " . curl_error($ch));
 				}
 
 				debug_api_details("curl Verbose: ");
@@ -997,52 +1478,60 @@ function get_api_details($type='core', $args=null, $cached = false) {
 				debug_api_details($data);
 				$data = end($dataparts);
 
-			}	
-
+			}
 			curl_close($ch);
-
-		} else if(ini_get('allow_url_fopen')) {  
+		}
+		else if(ini_get('allow_url_fopen')) {
 			// USE FOPEN
 			debug_api_details("using fopen");			
 			$timeout = $api_timeout / 1000; // ms to float seconds
 			// $context = stream_context_create();
 			// stream_context_set_option ( $context, array('http' => array('timeout' => $timeout)) );
 			$context = stream_context_create(array('http' => array('timeout' => $timeout))); 
-			$data = @file_get_contents($fetch_this_api,false,$context);	
+			$data = read_file($fetch_this_api,false,$context);
 			debug_api_details("fopen data: " .$data);		
-		} else {
-			debug_api_details("No api methods available");
+		}
+		else {  
+			debug_api_details("No api methods available");						
 			debug_api_details();						
 			return;
-		}	
+		}
 	
 		// debug_api_details("Duration: ".get_execution_time());	
 
-		$response = json_decode($data);		
+		$response = json_decode($data);
 		debug_api_details('JSON:');
 		debug_api_details(print_r($response,true),'');
 
-		// if response is invalid set status to -1 error
-		// and we pass on our own data, it is also cached to prevent constant rechecking
-
-		if(!$response){
-			$data = '{"status":-1}';
+		if($response) $response->cached = true; // add cache flag
+		else{
+			// if response is invalid set status to -1 error
+			// and we pass on our own data, it is also cached to prevent constant rechecking
+			if(!$response){
+				$response = array();
+				$response["status"] = -1;
+				$response["cached"] = true;
+			}
 		}
-		
 		debug_api_details($data);
-
-		file_put_contents(GSCACHEPATH.$cachefile, $data);
-		chmod(GSCACHEPATH.$cachefile, 0644);
+		save_file(GSCACHEPATH.$cachefile,json_encode($response));
 		debug_api_details();		
 		return $data;
 	}
+
 	debug_api_details();	
 	return $data;
 }
 
+/**
+ * [debug_api_details description]
+ * @param  str $msg        msg to log
+ * @param  string $prefix  prefix to log
+ * @return str             log msg
+ */
 function debug_api_details($msg = null ,$prefix = "API: "){
 	GLOBAL $debugApi;
-	if(!$debugApi) return;
+	if(!$debugApi && !getDef('GSDEBUGAPI',true)) return;
 	if(!isset($msg)) $msg = str_repeat('-',80);
 	debugLog($prefix.$msg);
 }
@@ -1067,99 +1556,89 @@ function get_gs_version() {
 /**
  * Creates Sitemap
  *
- * Creates sitemap.xml in the site's root.
+ * Creates GSSITEMAPFILE (sitemap.xml) in the site's root.
  */
 function generate_sitemap() {
-	
 	if(getDef('GSNOSITEMAP',true)) return;
 
+	global $pagesArray;
 	// Variable settings
-	global $SITEURL;
+	$SITEURL = getSiteURL(true);
 	$path = GSDATAPAGESPATH;
 	
-	global $pagesArray;
 	getPagesXmlValues(false);
 	$pagesSorted = subval_sort($pagesArray,'menuStatus');
 	
-	if (count($pagesSorted) != 0)
+	if (count($pagesSorted) > 0)
 	{ 
 		$xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset></urlset>');
 		$xml->addAttribute('xsi:schemaLocation', 'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd', 'http://www.w3.org/2001/XMLSchema-instance');
 		$xml->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 		
 		foreach ($pagesSorted as $page)
-		{	
-			if ($page['url'] != '404')
-			{		
-			if ($page['private'] != 'Y')
-			{
-				// set <loc>
-				$pageLoc = find_url($page['url'], $page['parent']);
-				
-				// set <lastmod>
-					$tmpDate = date("Y-m-d H:i:s", strtotime($page['pubDate']));
-				$pageLastMod = makeIso8601TimeStamp($tmpDate);
-				
-				// set <changefreq>
-				$pageChangeFreq = 'weekly';
-				
-				// set <priority>
-				if ($page['menuStatus'] == 'Y') {
-					$pagePriority = '1.0';
-				} else {
-					$pagePriority = '0.5';
-				}
-				
-				//add to sitemap
-				$url_item = $xml->addChild('url');
-				$url_item->addChild('loc', $pageLoc);
-				$url_item->addChild('lastmod', $pageLastMod);
-				$url_item->addChild('changefreq', $pageChangeFreq);
-				$url_item->addChild('priority', $pagePriority);
+		{
+			if ($page['url'] == '404') continue;  // exclude 404 page
+			if ($page['url'] == '403') continue;  // exclude 403 page
+			if ($page['private'] == 'Y') continue; // exclude private
+			if (isset($page['metarNoIndex']) && $page['metarNoIndex'] == '1') continue; // exclude noindex
+
+			// set <loc>
+			$pageLoc = find_url($page['url'], $page['parent'],'full');
+			// set <lastmod>
+			$tmpDate = date("Y-m-d H:i:s", strtotime($page['pubDate']));
+			$pageLastMod = makeIso8601TimeStamp($tmpDate);
+			
+			// set <changefreq>
+			$pageChangeFreq = 'weekly'; // change freq
+			
+			// set <priority>
+			// @todo withc multi menu support, which menu ? any ? add supporting functions
+			if ($page['menuStatus'] == 'Y') {
+				$pagePriority = '1.0'; // in menu priority
+			} else {
+				$pagePriority = '0.5'; // not in menu priority
 			}
-		}
+			
+			//add to sitemap
+			$url_item = $xml->addChild('url');
+			$url_item->addChild('loc', $pageLoc);
+			$url_item->addChild('lastmod', $pageLastMod);
+			$url_item->addChild('changefreq', $pageChangeFreq);
+			$url_item->addChild('priority', $pagePriority);
 		}
 		
 		//create xml file
-		$file = GSROOTPATH .'sitemap.xml';
-		$xml = exec_filter('sitemap',$xml);
-		XMLsave($xml, $file);
-		exec_action('sitemap-aftersave');
+		$file = GSROOTPATH .GSSITEMAPFILE;
+		$xml  = exec_filter('sitemap',$xml); // @filter sitemap (obj) filter the sitemap $xml obj
+
+		$status = XMLsave($xml, $file);
+		exec_action('sitemap-aftersave'); // @hook sitemap-aftersave after a sitemap data file was saved
+		#sitemap successfully created
+		return $status;
 	}
-	
-	if (!defined('GSDONOTPING')) {
-		if (file_exists(GSROOTPATH .'sitemap.xml')){
-			if( 200 === ($status=pingGoogleSitemaps($SITEURL.'sitemap.xml')))	{
-				#sitemap successfully created & pinged
-				return true;
-			} else {
-				error_log(i18n_r('SITEMAP_ERRORPING'));
-				return i18n_r('SITEMAP_ERRORPING');
+	else return true;
 			}
-		} else {
-			error_log(i18n_r('SITEMAP_ERROR'));
-			return i18n_r('SITEMAP_ERROR');
-		}
-	} else {
-		#sitemap successfully created - did not ping
-		return true;
-	}
-}
 
 
 /**
  * Creates tar.gz Archive 
  */
 function archive_targz() {
+	GLOBAL $GSADMIN;
+	
 	if(!function_exists('exec')) {
     return false;
     exit;
 	}
+
 	$timestamp = gmdate('Y-m-d-Hi_s');
 	$saved_zip_file_path = GSBACKUPSPATH.'zip/';
 	$saved_zip_file = $timestamp .'_archive.tar.gz';	
-	$script_contents = "tar -cvzf ".$saved_zip_file_path.$saved_zip_file." ".GSROOTPATH.".htaccess ".GSROOTPATH."gsconfig.php ".GSROOTPATH."data ".GSROOTPATH."plugins ".GSROOTPATH."theme ".GSROOTPATH."admin/lang > /dev/null 2>&1";
-	exec($script_contents, $output, $rc);
+	$script_contents     = "tar -cvzf ".$saved_zip_file_path.$saved_zip_file." ".GSROOTPATH.".htaccess ".GSROOTPATH.GSCONFIGFILE." ".GSROOTPATH."data ".GSROOTPATH."plugins ".GSROOTPATH."theme ".GSROOTPATH.$GSADMIN."/lang > /dev/null 2>&1";
+	
+	debugLog('archive function exec called ' . __FUNCTION__);
+	exec(escapeshellarg($script_contents), $output, $rc);
+	
 	if (file_exists($saved_zip_file_path.$saved_zip_file)) {
 		return true;
 	} else {
@@ -1190,19 +1669,41 @@ function filter_queryString($allowed = array()){
 	return $new_qstring;
 }
 
+/**
+ * returns a query string with only the allowed keys
+ * @since  3.4.0
+ * 
+ * @param  array $merge array of querystring keys to add or modify
+ * @return string built query string
+ */
+function merge_queryString($merge = array()){
+	parse_str($_SERVER['QUERY_STRING'], $query_string);
+	$query_string = array_merge($query_string,$merge);
+	$new_qstring = http_build_query($query_string,'','&amp;');
+	return $new_qstring;
+}
+
+
+/**
+ * truncate a string, multibyte safe
+ *
+ * @since 3.4
+ * @param  str $str      string to truncate
+ * @param  int $numchars number of characters to return
+ * @return str           truncated string
+ */
+function truncate($str,$numchars){
+	return getExcerpt($str,$numchars,false,'',true,false);
+}
 
 /**
  * Get String Excerpt
  *
  * @since 3.3.2
  *
- * @uses mb_strlen
- * @uses mb_strrpos
- * @uses mb_substr
- * @uses strip_tags
  * @uses strIsMultibyte
  * @uses cleanHtml
- * @uses preg_repalce PCRE compiled with "--enable-unicode-properties"
+ * @uses preg_replace PCRE compiled with "--enable-unicode-properties"
  *
  * @param string $n Optional, default is 200.
  * @param bool $striphtml Optional, default true, true will strip html from $content
@@ -1227,7 +1728,7 @@ function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = '...', $bre
 	// replaces punc with space so it handles the same for obtaining word boundary index
 	// REQUIRES that PCRE is compiled with "--enable-unicode-properties, 
 	// @todo detect or supress requirement, perhaps defined('PREG_BAD_UTF8_OFFSET_ERROR'), translit puntuation only might be an alternative
-	debugLog(defined('PREG_BAD_UTF8_OFFSET_ERROR'));
+	// debugLog(defined('PREG_BAD_UTF8_OFFSET_ERROR'));
 	if(!$break) $excerpt = preg_replace('/\n|\p{Z}|\p{P}+$/u',' ',$substr($str, 0, $len+1)); 
 
 	$lastWordBoundaryIndex = !$break ? $strrpos($excerpt, ' ') : $len;
@@ -1235,6 +1736,26 @@ function getExcerpt($str, $len = 200, $striphtml = true, $ellipsis = '...', $bre
 
 	if(!$striphtml && $cleanhtml) return trim(cleanHtml($str)) . $ellipsis;
 	return trim($str) . $ellipsis;	
+}
+
+/*
+ * wrapper for getExcerpt for specific page
+ * strip is performed but no filters are executed
+ */
+function getPageExcerpt($pageid,$len = 200, $striphtml = true, $ellipsis = '...', $break = false, $cleanhtml = true){
+	$content = returnPageContent($pageid);
+	if(getDef('GSCONTENTSTRIP',true)) $content = strip_content($content);	
+	return getExcerpt($content,$len,$striphtml,$ellipsis,$break,$cleanhtml);
+}
+
+/**
+ * PRCE compiled test
+ * test if PCRE is compiled with UTF-8 and unicode property support
+ */
+function PCRETest(){
+	if ( ! @preg_match('/^.$/u', 'ñ')) return false; // UTF-8 support
+	if ( ! @preg_match('/^\pL$/u', 'ñ')) return false; // Unicode property support (enable-unicode-properties)
+	return true;
 }
 
 /**
@@ -1252,16 +1773,19 @@ function strIsMultibyte($str){
 
 /**
  * clean Html fragments by loading and saving from DOMDocument
- * Will only clean html body fragments,unexpected results with full html doc or containing head or body
- * which are always stripped
+ * Will only clean html body fragments,unexpected results with full html doc or containing <head> or <body>
+ * it will also strip these in final result
  * 
- * @note supressing errors on libxml functions to prevent parse errors on not well-formed content
+ * @note supressing errors on libxml functions to prevent parse errors on non well-formed content
  * @since 3.3.2
  * @param  string $str string to clean up
  * @param  array $strip_tags optional elements to remove eg. array('style')
  * @return string      return well formed html , with open tags being closed and incomplete open tags removed
  */
 function cleanHtml($str,$strip_tags = array()){
+	
+	if(empty($str)) return $str;
+
 	// setup encoding, required for proper dom loading
 	// @note
 	// $dom_document = new DOMDocument('1.0', 'utf-8'); // this does not deal with transcoding issues, loadhtml will treat string as ISO-8859-1 unless the doc specifies it 
@@ -1284,5 +1808,682 @@ function cleanHtml($str,$strip_tags = array()){
 	return $html_fragment;
 }	
 
+// @todo: now that I have some structure, i can probably reduce this into some array_filter functions, depending on speed these might be easier and faster to use.
+// @todo: replace function checks with callable checks
+// but it still requires a class or __invoke to pass arguments into the callback
 
-?>
+/**
+ * get Page data for http response code
+ * 
+ * returns page xml for http response code, by checking for user page fallback to the core page
+ * 
+ * @since 3.4
+ * @param  int $code http response code
+ * @return obj       page xml
+ */
+function getHttpResponsePage($code){
+	GLOBAL $pagesArray;
+
+	if (isset($pagesArray[GSHTTPPREFIX . $code])) {
+		// use user created http response page
+		return getXml(GSDATAPAGESPATH . GSHTTPPREFIX . $code . '.xml');		
+	} elseif (file_exists(GSDATAOTHERPATH . $code . '.xml'))	{
+		// use default http response page
+		return getXml(GSDATAOTHERPATH . $code . '.xml');	
+	}	
+}
+
+/**
+ * goto the default backend entrance page
+ * determined from $_GET['redirect'] or GSDEFAULTPAGE
+ * @todo  secure redirect better from injection
+ */
+function gotoDefaultPage(){
+	if (isset($_GET['redirect'])) redirect(htmlentities($_GET['redirect']));
+	else redirect(getDef('GSDEFAULTPAGE'));
+}
+
+/**
+ * get the components xml data
+ * returns an array of xmlobjs
+ *
+ * @since 3.4
+ * 
+ * @uses components
+ * @uses GSDATAOTHERPATH
+ * @uses getXML
+ * @param  boolean $xml [description]
+ * @return components data items xmlobj
+ *
+ */
+function get_components_xml($refresh = false){
+    global $components;
+    if (!$components || $refresh) {
+    	$components = get_collection_items(GSCOMPONENTSFILE);
+    }
+    return $components;
+}
+
+/**
+ * get xml for an individual component
+ * returns an array since duplicates are possible on component slugs
+ *
+ * @since 3.4
+ *
+ * @param  str $id component id
+ * @return array of simpleXmlObj matching slug
+ */
+function get_component_xml($id){
+	return get_collection_item($id,get_components_xml());
+        }
+
+/**
+ * check if a component is enabled
+ * @since  3.4
+ * @param  str $id component id
+ * @return bool     true if not disabled
+ */
+function componentIsEnabled($id){
+	$item = get_component_xml($id);
+	if(!$item) return false;
+	return !(bool)(string) $item[0]->disabled;
+    }
+
+/**
+ * get the components xml data
+ * returns an array of xmlobjs
+ *
+ * @since 3.4
+ * 
+ * @global snippets
+ * @param  boolean $refresh refresh from file
+ * @return components data items xmlobj
+ *
+ */
+function get_snippets_xml($refresh = false){
+    global $snippets;
+    if (!$snippets || $refresh) {
+    	$snippets = get_collection_items(GSSNIPPETSFILE);
+}
+    return $snippets;
+}
+
+/**
+ * get xml for an individual component
+ * returns an array since duplicates are possible on component slugs
+ *
+ * @since 3.4
+ *
+ * @param  str $id component id
+ * @return array of simpleXmlObj matching slug
+ */
+function get_snippet_xml($id){
+	return get_collection_item($id,get_snippets_xml());
+}
+
+/**
+ * check if a snippet is enabled
+ * @since  3.4
+ * @param  str $id snippet id
+ * @return bool     true if not disabled
+ */
+function snippetIsEnabled($id){
+	$item = get_snippet_xml($id);
+	if(!$item) return false;
+	return !(bool)(string) $item[0]->disabled;
+}	
+
+
+/**
+ * get a collection of otherdata xml items
+ * returns an array of xmlobjs
+ *
+ * @since 3.4
+ * 
+ * @uses GSDATAOTHERPATH
+ * @uses getXML
+ * @param  boolean $asset name of asset to get data form
+ * @return components data items as SimpleXMLObject
+ *
+ */
+function get_collection_items($asset){	
+	if (file_exists(GSDATAOTHERPATH.$asset)) {
+		$data  = getXML(GSDATAOTHERPATH.$asset);
+	    return $data;
+	}
+    return array();
+}
+
+/**
+ * get xml for an individual otherdata item
+ * returns an array since duplicates are possible on component slugs
+ *
+ * @since 3.4
+ *
+ * @param  str $id component id
+ * @return array of simpleXmlObj matching slug
+ */
+function get_collection_item($id,$collection){
+	// normalize id to match how we save it
+	$id = to7bit($id, 'UTF-8');
+	$id = clean_url($id);
+	if(!$id) return;
+	$item = $collection->xpath("//slug[.='".$id."']/..");
+	
+	// this returns an array due to no unique slug enforcement, so we grab first one atm
+	// returning first one available
+	return count($item) > 0 ? $item[0] : null;
+}
+
+/**
+ * Output a collection item
+ *
+ * This will output the item requested. 
+ * items are parsed for PHP within them if not $raw
+ * Will only return the first component matching $id
+ *
+ * @since 3.4
+ *
+ * @param string $id This is the ID of the component you want to display
+ * @param bool $force Force return of inactive components
+ * @param bool $raw do not process php
+ */
+function output_collection_item($id, $collection, $force = false, $raw = false) {
+	$item  = get_collection_item($id,$collection); 
+	if(!$item) return;
+
+	$disabled = (bool)(string)$item->disabled;
+	if($disabled && !$force) return;
+
+	if(!$raw) eval("?>" . strip_decode($item->value) . "<?php ");
+	else echo strip_decode($item->value);
+}
+
+/**
+ * handle saving collection post
+ * @param  string $assetid collection asset id
+ * @param  string $asset   collection asset file 
+ * @return string          error reporting string
+ */
+function saveCollection($assetid,$asset){
+
+	# create backup file for undo
+	backup_datafile($asset);
+
+	if(!isset($_POST['component'])) return i18n_r("ERROR_OCCURRED");
+	
+	# start creation of top of components.xml file
+	if (count($_POST['component']) != 0) {
+		$status  = $error = "";
+		$compxml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
+
+		$compary = $_POST['component'];
+
+		if(getDef("GSCOMPSORTSAVE",true)){
+			$compary = sortKey($compary,"title","custom_sort");
+		}
+
+		foreach ($compary as $component){
+			$id     = $component['id']; // unused
+			$slug   = $component['slug'];
+			$value  = $component['val'];
+			$title  = $component['title'];
+			$active = isset($component['active']) ? 0 : 1; // checkbox
+			
+			$slug = getCollectionItemSlug($slug,$title);
+			if($slug == null || empty($slug)){
+				// add corrupt data protection, prevent deleting components if something critical is missing
+				$error = 'an error occured, missing slug';
+			}
+			else {
+				if(is_object(get_collection_item($slug,$compxml))){
+					$error = sprintf(i18n_r('DUP_SLUG',"Duplicate slug - [%s]"),$slug);
+				}
+				$status = addComponentItem($compxml,$title,$value,$active,$slug); // @todo, check for problems $xml is passed by identifier
+				if(!$status) $error = i18n_r("ERROR_OCCURRED");
+			}
+				$asset = $asset;
+		}
+		if(!$error){
+			exec_action($assetid.'-save'); // @hook component-save before saving components data file
+			                               // @hook snippet-save before saving snippets data file
+			$status = XMLsave($compxml, $asset);
+			if(!$status) $error = i18n_r("ERROR_OCCURRED");
+		}
+	}
+	else $error = i18n_r("ERROR_OCCURRED");
+
+	return $error;
+}
+
+/**
+ * @since  3.4
+ * @deprecated
+ */
+function pingGoogleSitemaps(){
+	return;
+}
+
+/**
+ * Are we previewing a draft
+ * @since  3.4
+ * @return bool returns true if pre-viewing a draft
+ */
+function previewingDraft(){
+	GLOBAL $id;
+	return isset($id) && isset($_GET['draft']) && is_logged_in() && pageHasDraft($id);
+}
+
+
+/**
+ * get htmleditor attributes for textareas
+ * @param  str $class extra classes to add to element
+ * @return str        html fragment
+ */
+function getHtmlEditorAttr($class){
+	if(getDef('GSHTMLEDITINLINE',true)) $class .= ' inline';
+ 	return ' data-htmleditautoheight="'.(getDef('GSHTMLEDITAUTOHEIGHT',true) ? 'true' : 'false').'" 
+ 	 data-htmleditcompact="'.(getDef('GSHTMLEDITCOMPACT',true) ? 'true' : 'false').'" 
+ 	 data-htmleditinline="'.(getDef('GSHTMLEDITINLINE',true) ? 'true' : 'false') .'" 
+ 	 class="html_edit '.$class.'"
+ 	 data-mode="html" ';	
+}
+
+/**
+ * get codeeditor attributes for textareas
+ * @param  str $class extra classes to add to element
+ * @return str        html fragment
+ */
+function getCodeEditorAttr($class){
+	return ' data-codeeditautoheight="'.(getDef('GSCODEEDITAUTOHEIGHT',true) ? 'true' : 'false').'" 
+	 data-codeeditcompact="'.(getDef('GSCODEEDITCOMPACT',true) ? 'true' : 'false').'" 
+	 class="code_edit '.$class.'"
+	 data-mode="php" ';
+}
+
+/**
+ * get htmlEditor attributes for content textareas
+ * @param  str $class extra classes to add to element
+ * @return str        html fragment
+ */
+function getDefaultHtmlEditorAttr($class){
+	return ' class="html_edit '.$class.'"';
+}
+
+/**
+ * get codeEditor attributes for content textareas
+ * @param  str $class extra classes to add to element
+ * @return str        html fragment
+ */
+function getDefaultCodeEditorAttr($class){
+	return ' class="code_edit '.$class.'"';
+}
+
+/**
+ * get editor attributes for textareas
+ * If func name not provided , we will attempt to get a function name from 'GS'.uppercase($collectionid).'ATTRIB'
+ * eg. GSSNIPPETSATTRIB which it will execute and use for inserting into the textarea
+ * @since  3.4
+ * @uses  GSSNIPPETSATTRIB
+ * @uses  GSCOMPONENTSATTRIB
+ * @param  str $collectionid id for this kind of editor
+ * @param  string $class        extra classes
+ * @param  str $funcname     function name to call to get attributes
+ * @return str               html fragment
+ */
+function getEditorAttribCallout($collectionid,$class = '',$funcname = null){
+	if(!$funcname) $call = getDef('GS'.uppercase($collectionid).'ATTRIB');
+	else $call = $funcname;
+	if(function_exists($call)) return $call($class);
+}
+
+/** 
+ * get collection item html output
+ * @since 3.4
+ * @param  string $collectionid id for this kind of editor
+ * @param  string $id item id
+ * @param  obj    $item
+ * @param  string $class
+ * @param  string $code
+ * @return string
+ */
+function getCollectionItemOutput($collectionid,$id,$item,$class = 'item_edit',$code = ''){
+
+	$disabled = (bool)(string)$item->disabled;
+	$readonly = (bool)(string)$item->readonly;
+
+	$str  = '';
+	$str .= '<div class="compdiv codewrap" id="section-'.$id.'">';
+	$str .= '<a id="id_'.$item->slug.'"></a>';
+	$str .= '<table class="comptable" ><tr>';
+	$str .= '<td><b title="'.i18n_r('DOUBLE_CLICK_EDIT').'" class="comptitle editable">'. stripslashes($item->title) .'</b></td>';
+	
+	if(getDef('GSSHOWCODEHINTS',true) && !empty($code))
+		$str .= '<td style="text-align:right;" ><code>&lt;?php '.$code.'(<span class="compslugcode">\''.$item->slug.'\'</span>); ?&gt;</code></td>';
+	
+	$str .= '<td class="compactive"><label class="" for="active[]" >'.i18n_r('ACTIVE').'</label>';
+	$str .= '<input type="checkbox" class="compactive" name="component['.$id.'][active]" '. (!$disabled ? 'checked="checked"' : '') .' value="'.$id.'" /></td>';
+	$str .= '<td class="delete" ><a href="javascript:void(0)" title="'.i18n_r('DELETE').' '. cl($item->title).'?" class="delcomponent" rel="'.$id.'" >&times;</a></td>';
+	$str .= '</tr></table>';
+	
+	$str .= '<textarea id="editor_'.$id.'" name="component['.$id.'][val]"'.getEditorAttribCallout($collectionid,$class).'>'. stripslashes($item->value) .'</textarea>';
+	$str .= '<input type="hidden" class="compslug" name="component['.$id.'][slug]" value="'. $item->slug .'" />';
+	$str .= '<input type="hidden" class="comptitle" name="component['.$id.'][title]" value="'. stripslashes($item->title) .'" />';
+	$str .= '<input type="hidden" class="compid" name="component['.$id.'][id]" value="'. $id .'" />';
+	$str .= '</div>';
+	return $str;
+}
+
+/** 
+ * get collection blank item template for insert html
+ * @param  string
+ * @param  string
+ * @param  string
+ * @return string
+ */
+function getItemTemplate($collectionid,$class = 'item_edit noeditor',$code = ''){
+	$item = array(
+		'title'    => '',
+		'slug'     => '',
+		'value'    => '',
+		'disabled' => '',
+		'readonly' => ''
+	);
+
+	return getCollectionItemOutput($collectionid,'',(object)$item,$class,$code);
+}
+
+/**
+ * @param  string
+ * @param  array
+ * @param  string
+ * @param  string
+ * @return string
+ */
+function outputCollection($collectionid,$data,$class='item_edit',$code = ''){
+	if(!$data) return;
+	$id = 0;
+	if (count($data) != 0) {
+		foreach ($data as $item) {
+			$table = getCollectionItemOutput($collectionid,$id,$item,$class,$code);
+			exec_action($collectionid.'-extras'); // @hook collectionid-extras called after each component html is added to $table
+			echo $table; // $table is legacy for hooks that modify the var, they should now just output html directly
+			$id++;
+		}
+	}
+}
+
+/**
+ * output collection sidebar links
+ * @param  string
+ * @param  array
+ * @return string
+ */
+function outputCollectionTags($collectionid,$data){
+	if(!$data) return;
+	$numcomponents = count($data);
+
+	echo '<div class="compdivlist">';
+
+	# create list to show on sidebar for easy access
+	$class = $numcomponents < 15 ? ' clear-left' : '';
+	if($numcomponents > 1) {
+		$id = 0;
+		foreach($data as $item) {
+			echo '<a id="divlist-' . $id . '" href="#section-' . $id . '" class="component'.$class.' comp_'.$item->title.'">' . $item->title . '</a>';
+			// echo '<a id="divlist-' . $data->slug . '" href="#' . $data->slug . '" class="component'.$class.' comp_'.$item->title.'">' . $item->title . '</a>';
+			$id++;
+		}
+	}
+
+	exec_action($collectionid.'-list-extras'); // @hook collectionid-list-extras called after component sidebar list items (tags) 		
+	echo '</div>';
+}
+
+
+/**
+ * getCollectionItemSlug
+ * get collection item slug, clean with default fallback
+ * @since  3.4
+ * @param  string $slug    slug
+ * @param  string $default fallback slug
+ * @return string          clean slug
+ */
+function getCollectionItemSlug($slug,$title = 'unknown'){
+	$slug = trim($slug);
+	if ( $slug == null || empty($slug)){
+		if (!empty($title)){
+			if(trim($title) == '') return;
+		}
+		$slug = $title;
+	}
+	$slug = prepareSlug($slug,$title);
+	if(empty($slug)) return; // errormode return null
+	return $slug;
+}
+
+function addComponentItem($xml,$title,$value,$active,$slug = null){
+		$slug = getCollectionItemSlug($slug,$title);
+		if($slug == null) return; // errormode return null
+
+		$title    = safe_slash_html($title);
+		$value    = safe_slash_html($value);
+		$disabled = $active;
+	
+		if(!is_object($xml)) $xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><item></item>');
+
+		# create the body of components.xml file
+		$component = $xml->addChild('item');
+		$c_note     = $component->addChild('title');
+		$c_note->addCData($title);
+		$component->addChild('slug', $slug);
+		$c_note     = $component->addChild('value');
+		$c_note->addCData($value);
+		$c_note     = $component->addChild('disabled');
+		$c_note->addCData($disabled);
+	// debugLog(var_dump($component->asXML()));
+	return $xml;
+}
+
+/**
+ * date is today
+ * @since 3.4
+ * @param  int $timestamp timestamp
+ * @return bool            true if timestamp is today
+ */
+function dateIsToday($timestamp){
+	return date('Ymd') == date('Ymd', strtotime($timestamp));
+}
+
+/**
+ * get the filepath for a thumbnail
+ * @param  str $file        filename of the thumbnail
+ * @param  string $upload_path upload path
+ * @param  string $type     the thumbnail type id
+ * @return str              file path to the thumbnail file
+ */
+function getThumbnailFile($file, $upload_path = '',$type = 'thumbnail'){
+	return 	GSTHUMBNAILPATH.tsl($upload_path).(!empty($type) ? '.' : '').$file;
+}
+
+/**
+ * get the url for a thumbnail
+ * @param  str $file        filename of the thumbnail
+ * @param  string $upload_path upload path
+ * @param  string $type        the thumbnail type id
+ * @return str              url to the thumbnail asset
+ */
+function getThumbnailURI($file, $upload_path = '',$type = 'thumbnail'){
+	GLOBAL $SITEURL;
+	return tsl($SITEURL).getRelPath(GSTHUMBNAILPATH).tsl($upload_path).(!empty($type) ? '.' : '').$file;
+}
+
+/**
+ * get the url for an upload file
+ * @param  str $file        filename
+ * @param  string $upload_path uploads path
+ * @return str              url for this upload file asset
+ */
+function getUploadURI($file, $upload_path = ''){
+	GLOBAL $SITEURL;
+	return tsl($SITEURL).getRelPath(GSDATAUPLOADPATH).tsl($upload_path).$file;
+}
+
+/**
+ * get array of thumbnails and info
+ * @param  string  $upload_path the upload sub path
+ * @param  string  $type        optional thumbnail type eg thumbsm, thumbnail to filter by
+ * @param  string  $filename    optional filename to filter
+ * @param  boolean $recurse     optional true: recurse into subdirectories
+ * @return array                assoc array with thumbnail attributes
+ */
+function getThumbnails($upload_path = '', $type = '', $filename = '', $recurse = false){
+	$thumbs_array = array();
+	$files = directoryToArray(GSTHUMBNAILPATH.tsl($upload_path),$recurse);
+	foreach($files as $file){
+		$split     = strpos(basename($file),'.');
+		$thumbtype = substr(basename($file),0,$split);
+		$origfile  = substr(basename($file),$split+1);
+
+		if(!empty($filename) && $filename !== $origfile) continue;
+
+		if(empty($thumbtype) || (!empty($type) && $type !==  $thumbtype)){
+			continue;
+		}
+
+		// debugLog('thumbnail ' . $file);
+		$thumb = getimagesize($file);
+		$thumb['width']       = $thumb[0]; unset($thumb[0]); 
+		$thumb['height']      = $thumb[1]; unset($thumb[1]);
+		$thumb['type']        = $thumb[2]; unset($thumb[2]);
+		$thumb['attrib']      = $thumb[3]; unset($thumb[3]);
+
+		$thumb['uploadpath']  = tsl(getRelPath($upload_path,GSTHUMBNAILPATH));
+		$thumb['primaryfile'] = GSDATAUPLOADPATH . $thumb['uploadpath'] . $origfile;
+		$thumb['filesize']    = filesize($file);
+		$thumb['primaryurl']  = getUploadURI($origfile,$thumb['uploadpath']);
+		$thumb['thumbfile']   = getThumbnailFile(basename($file),$upload_path,'');
+		$thumb['thumburl']    = getThumbnailURI(basename($file),$upload_path,'');
+		$thumb['thumbtype']   = $thumbtype;
+		
+		$thumbs_array[$upload_path.basename($file)] = $thumb;
+	}
+	return $thumbs_array;
+}
+
+
+/**
+ * Generate standard thumbnails
+ * @param  string $path path to image
+ * @param  string $name file name
+ * @uses   GD
+ */
+
+function genStdThumb($subpath,$file){
+	// set thumbnail width from GSIMAGEWIDTH
+	if (!getDef('GSIMAGEWIDTH')) {
+		$width = 200; //New width of image  	
+	} else {
+		$width = getDef('GSIMAGEWIDTH');
+	}
+
+	generate_thumbnail($file,$subpath, 'thumbnail.'.$file, $width);
+}
+
+/**
+ * generate a thumbnail
+ * @param  str  $sub_path upload path
+ * @param  str  $file     filename
+ * @param  str  $out_file outfile name, can be null if show is true
+ * @param  int  $w        desired width
+ * @param  int  $h        desired max height, optional, will limit height and adjust width accordingly
+ * @param  int  $quality  quality of image jpg and png
+ * @param  bool $show     output to browser if true
+ * @param  str $output_format optional output format, if not determining from out_file can be excusivly set (1|'GIF', 2|'JPG,'' 3|'PNG')
+ * @param  boolean $upscale  true, allows image to scale up/zoom to fit thumbnail
+ * @return bool            success
+ */
+function generate_thumbnail($file, $sub_path = '', $out_file = null, $w = null, $h = null, $crop = null, $quality = null, $show = false, $output_format = null, $upscale = false){
+	//gd check, do nothing if no gd
+	$php_modules = get_loaded_extensions();
+	if(!in_arrayi('gd', $php_modules)) return false;
+
+	$sub_path      = tsl($sub_path);
+	$upload_folder = GSDATAUPLOADPATH.$sub_path;
+	$thumb_folder  = GSTHUMBNAILPATH.$sub_path;
+	$thumb_file    = isset($out_file) && !empty($out_file) ? $thumb_folder.$out_file : '';
+
+	create_dir($thumb_folder);
+
+	require_once('imagemanipulation.php');
+	$objImage = new ImageManipulation($upload_folder.$file);
+	if ( $objImage->imageok ) {
+		// debugLog(array("Generating Image",$upload_folder.$file));
+		if($upscale) $objImage->setUpscale(); // allow magnification
+		if($quality) $objImage->setQuality($quality); // set quality for jpg or png
+		if(isset($output_format)) $objImage->setOutputFormat($output_format); // setoutput format, ignored if out_file specifies extension
+		
+		if(isset($w) && isset($h)) $objImage->setImageWidth($w,$h); // if height set scale width and height
+		elseif(isset($w)){
+			$objImage->setImageWidth($w); // if only specifiying width, scale to width only
+			// $objImage->resize($w); // constrains both dimensions to $size, same as setImageWidth($w,$w);
+		}
+		elseif(isset($h)){
+			$objImage->setImageHeight($h); // if only specifiying width, scale to width only
+		}		
+		
+		if(isset($crop)) $objImage->setAutoCrop($crop);
+
+		// die(print_r($objImage));
+		$objImage->save($thumb_file, $show);
+		return $objImage;
+	} else {
+		// debugLog(array("Generating Image SKIPPED, not an image",$upload_folder.$file));
+		return false;
+	}
+}
+
+/**
+ * geticon
+ * @since  3.4
+ * @param  string $id    $icondefinitin string
+ * @param  string $class $optonal class, replaces token %s
+ * @return string        icon html
+ */
+function getIcon($id,$class = ""){
+	global $icondefinition;
+	if(isset($icondefinition[$id]) && empty($class)) return $icondefinition[$id];
+	if(isset($icondefinition[$id])) return str_replace("%s",$class,$icondefinition[$id]);
+	return "";
+}
+
+/**
+ * returns icon classes for file extensions
+ * follow font-awesome naming, can be used for other stuff however
+ * uses get_fileTypeToken to get generic categories ( same as filter ), then further refines icons we have
+ * 
+ * @param  str $filename name of file
+ * @param  string $default  default to use when no match found
+ * @return str           the class
+ */
+function getFileIconClass($filename = '',$default = 'MISC'){
+
+	$ext = $token = '';
+	if($filename !== ''){
+		$ext   = getFileExtension($filename);
+		$token = get_FileTypeToken($ext);
+	}
+
+	$iconclass = getIcon("FILE_".$ext); // specific
+	if(empty($iconClass)) $iconclass = getIcon("FILE_".$token); // generic fallback
+	if(empty($iconclass)) $iconclass = getIcon("FILE_".$default);
+	return $iconclass;
+}
+
+function getUploadIcon($type){
+	if($type == '.') $class = getIcon("FILE_FOLDER");
+	else $class = getFileIconClass($type);
+	return $class." ";
+}
+
+/* ?> */
