@@ -239,7 +239,6 @@ echo '<div class="bodycontent clearfix">
 						// "NONEXISTANTDIR/",
 						// "NONEXISTANTFILE",
 						GSDATAOTHERPATH.getDef('GSPLUGINSFILE'),
-						GSDATAOTHERPATH.GSAUTHFILE,
 						GSDATAPAGESPATH, 
 						GSDATAOTHERPATH, 
 						GSDATAOTHERPATH.'logs/', 
@@ -251,20 +250,32 @@ echo '<div class="bodycontent clearfix">
 						GSBACKUPSPATH.getRelPath(GSDATAPAGESPATH,GSDATAPATH), // backups/pages/
 						GSBACKUPSPATH.getRelPath(GSDATAOTHERPATH,GSDATAPATH), // backups/other/
 						GSBACKUSERSPATH,
-						GSTHEMESPATH
+						GSTHEMESPATH,
+						GSADMINPATH."update.php",  // 13 check for existing
+						GSADMINPATH."install.php", // 14 check for existing
+						GSADMINPATH."setup.php"   //  15 check for existing
 					);
 
+					$index = 0;
+					$invertindex = 13; // invert check dirsArray > index, check for files that should NOT exist
+
 					foreach($dirsArray as $path){
+						$index++;
 						$relpath    = '/'.getRelPath($path);
 						$isFile     = substr($relpath, -4,1) == '.';
 						$writeOctal = getChmodValue($path);
 						if($isFile){
 							echo "<tr><td class=\"hc_item\">".i18n_r('FILE_NAME').": $relpath</td><td>";
 							if(!file_exists($path)) {
-								echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('MISSING_FILE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 							
-								$errorCnt++;				
+								if($index>$invertindex){
+									echo '<a name="error"></a><span class="INFOmsg">'.i18n_r('MISSING_FILE').'</span><td><span class="label label-info" >'.i18n_r('INFO').'</span></td>';
+								}	
+								else{
+									echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('MISSING_FILE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 							
+									$errorCnt++;			
+								}	
 								continue;
-							}	
+							}
 						}
 						else{
 							echo "<tr><td class=\"hc_item\">$relpath</td><td>";
@@ -272,10 +283,15 @@ echo '<div class="bodycontent clearfix">
 
 						$me = check_perms($path);
 						if($me == false){
-							echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('MISSING_FILE').'</span><td><span class="label label-error" >'.i18n_r('ERROR').'</span></td>'; 							
-							$errorCnt++;
-							continue;						
-						} 
+							if($index>$invertindex){
+								echo '<a name="error"></a><span class="INFOmsg">'.i18n_r('MISSING_FILE').'</span><td><span class="label label-info" >'.i18n_r('INFO').'</span></td>'; 							
+							}
+							else{
+								echo '<a name="error"></a><span class="ERRmsg">'.i18n_r('MISSING_FILE').'</span><td><span class="label label-error" >'.i18n_r('INFO').'</span></td>'; 							
+								$errorCnt++;
+							}
+							continue;
+						}
 						echo '('.ModeOctal2rwx($me) .") $me ";
 						
 						$writable = checkWritable($path);
