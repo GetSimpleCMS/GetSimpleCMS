@@ -6,3 +6,4 @@
 /lib
 
 thumbs.db
+.DS_*
