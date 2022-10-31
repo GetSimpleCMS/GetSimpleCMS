@@ -142,7 +142,8 @@ $title = $pagetitle.' &middot; '.cl($SITENAME);
         GS.treeminheader = 2;
 
 		var uploadSession = '<?php echo $SESSIONHASH; ?>';
-		var uploadPath    = '<?php echo (isset($_GET['path'])) ? $_GET['path'] : ""; ?>';
+	    	// Correction Faille XSS !!!
+		var uploadPath    = '<?php echo (isset($_GET['path'])) ? htmlspecialchars($_GET['path']) : ""; ?>';
 		var maxFileSize   = '<?php echo toBytesShorthand(getMaxUploadSize(),'M'); ?>';
 		
 		<?php
