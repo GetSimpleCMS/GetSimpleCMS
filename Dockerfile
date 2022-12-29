@@ -13,3 +13,5 @@ EXPOSE 8080
 
 COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
 RUN composer require rector/rector --dev
+
+# vendor/bin/rector process --dry-run plugins
