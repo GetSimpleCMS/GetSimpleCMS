@@ -1,0 +1,7 @@
+Allow from all
+Options All -Indexes
+
+RewriteEngine on
+# If the image file doesn't exist return the unknown file
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule (.png) unknown.png [L,QSA]

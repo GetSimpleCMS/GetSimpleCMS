@@ -15,7 +15,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     // register a single rule
     // $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
-    // $rectorConfig->import(SetList::PHP_72);
+    $rectorConfig->import(SetList::PHP_72);
     $rectorConfig->import(SetList::PHP_80);
     // define sets of rules
     //    $rectorConfig->sets([

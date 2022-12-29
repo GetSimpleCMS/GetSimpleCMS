@@ -1,0 +1,282 @@
+<?php 
+    $langCount = max(1, count($settings['languages']));
+?>
+<form id="editGallery" method="post" action="load.php?id=<?php echo $this->pluginId ?>&edit&save">
+
+    <h3><?php i18n(EG_ID.'/EDIT_HEADER') ?></h3>
+    
+    <table class="details">
+	
+		<?php if (!$settings['title-disabled']): ?>
+        <tr>
+            <td>
+                <label><?php i18n(EG_ID.'/EDIT_TITLE') ?> <img class="required" title="Field required"  src="../plugins/ExtraGallery/img/required.png"></label>
+            </td>
+            <td>
+                <?php for ($l = 0; $l < $langCount ; $l++): ?>
+                    <input name="title-<?php echo $l ?>" class="text long lang-variant lang-<?php echo $l; ?> <?php echo($l==0 ? 'active' : ''); ?>" type="text"  />
+                <?php endfor; ?>
+            </td>
+        </tr>        
+		<?php endif; ?>
+        
+        <tr>
+            <td>
+                <label><?php i18n(EG_ID.'/EDIT_NAME') ?> <img class="required" title="Field required" src="../plugins/ExtraGallery/img/required.png" /></label>
+            </td>
+            <td>
+               <input name="name" class="text long"  type="text" />
+            </td>
+        </tr>     
+    </table>
+
+	<?php if ($settings['info']): ?>
+		<div class="info">
+			<?php echo $settings['info'];  ?>
+		</div>
+	<?php endif; ?>
+    
+    <h3><?php i18n(EG_ID.'/EDIT_IMAGES_HEADER') ?></h3>
+    <table class="images">
+        <tbody>
+        <tr class="add-row">
+            <td colspan="3">
+                <button class="eg-button add" type="button"><?php i18n(EG_ID.'/EDIT_ADD') ?></button>
+            </td>
+        </tr>
+        
+        <tr class="empty-row">
+			<input type="hidden" name="filename" />			
+			
+            <td class="image" >
+				<div class="wrap" style="width: 180px; ">
+					<img class="preview-image" style="max-width: 180px;" />
+					<p class="resolution"><?php i18n(EG_ID.'/EDIT_RESOLUTION') ?> <span></span></p>
+				</div>
+            </td>
+            <td class="fields" >
+                    
+                <div class="error-info" style="display:none;"></div>
+                
+                <label><?php i18n(EG_ID.'/EDIT_FILENAME') ?></label><p class="filename"></p>
+
+                <?php if ($settings['thumbnails'][0]['enabled'] || $settings['thumbnails'][1]['enabled']): ?>
+                    <table class="thumbnails">
+                        <tr>
+                            <?php for ($i = 0; $i < 2; $i++): 
+                                $thumb = $settings['thumbnails'][$i]; 
+                            ?>
+                            <td <?php echo ($i > 0 ? 'class="second"' : ''); ?>>
+								<?php 
+									if (!$thumb['enabled']) 
+										continue;
+								?>
+                                <label><?php echo $thumb['label']; ?>: <?php echo ($thumb['required'] ? '<img class="required" title="'.i18n_r(EG_ID.'/EDIT_FIELD_REQUIRED') .'" src="../plugins/ExtraGallery/img/required.png">' : ''); ?></label>
+                                <button class="eg-button crop" type="button"><?php i18n(EG_ID.'/EDIT_CROP_BUTTON') ?></button>
+                                <button class="eg-button preview" type="button" style="display:none;" ><img src="../plugins/ExtraGallery/img/preview.svg" /> <?php i18n(EG_ID.'/EDIT_PREVIEW') ?></button>
+                                <button class="eg-button clear" type="button" style="display:none;" ><?php i18n(EG_ID.'/EDIT_CLEAR') ?></button>
+								<input type="hidden"  />
+                            </td>
+                            <?php endfor; ?>
+                        </tr>
+                    </table>
+                <?php endif; ?>
+
+                
+                <?php 
+                    for ($i = 0; $i < count($settings['fields']); $i++): 
+                        $field = $settings['fields'][$i];
+                        
+                    switch ($field['type']){
+                        case 'text':{
+                            ?>
+                            <p class="custom-field">
+                                <label><?php echo $field['label'] ?>: <?php echo ($field['required'] ? '<img class="required" title="'.i18n_r(EG_ID.'/EDIT_FIELD_REQUIRED') .'"  src="../plugins/ExtraGallery/img/required.png">' : '');?></label>
+                                <?php for ($l = 0; $l < $langCount; $l++): ?>
+                                    <input class="text string long lang-variant lang-<?php echo $l; ?> <?php echo($l==0 ? 'active' : ''); ?>" type="text" name="-<?php echo $l ?>" />
+                                <?php endfor; ?>
+                            </p> 
+                            <?php
+                            break;
+                        }    
+
+                        case 'textarea':{
+                            ?>
+                            <p class="custom-field">
+                                <label><?php echo $field['label'] ?>: <?php echo ($field['required'] ? '<img class="required" title="'.i18n_r(EG_ID.'/EDIT_FIELD_REQUIRED') .'" src="../plugins/ExtraGallery/img/required.png">' : '');?></label>
+                                
+                                <?php for ($l = 0; $l < $langCount; $l++): ?>
+                                    <textarea rows="4" class="lang-variant lang-<?php echo $l; ?> <?php echo($l==0 ? 'active' : ''); ?>" name="-<?php echo $l ?>"></textarea>
+                                <?php endfor; ?>
+                            </p> 
+                            <?php
+                            break;
+                        }      
+
+                        case 'checkbox':{
+                            ?>
+                            <p class="inline custom-field">
+                                <label><?php echo $field['label'] ?>: <?php echo ($field['required'] ? '<img class="required" title="'.i18n_r(EG_ID.'/EDIT_FIELD_REQUIRED') .'" src="../plugins/ExtraGallery/img/required.png">' : '');?></label>&nbsp;
+                                <?php for ($l = 0; $l < $langCount; $l++): ?>
+                                    <input type="checkbox" class="lang-variant lang-<?php echo $l; ?> <?php echo($l==0 ? 'active' : ''); ?>" name="-<?php echo $l ?>" />
+                                <?php endfor; ?>
+                              </p> 
+                            <?php
+                            break;
+                        }      
+
+
+                        case 'select':{
+                            ?>
+                            <p class="custom-field">
+                                <label><?php echo $field['label'] ?>: <?php echo ($field['required'] ? '<img class="required" title="'.i18n_r(EG_ID.'/EDIT_FIELD_REQUIRED') .'" src="../plugins/ExtraGallery/img/required.png">' : '');?></label>
+                                <?php for ($l = 0; $l < $langCount; $l++): ?>
+                                    <select class="text lang-variant lang-<?php echo $l; ?> <?php echo($l==0 ? 'active' : ''); ?>" name="-<?php echo $l ?>"  >
+                                        <?php for ($s = 0; $s < count($field['options']); $s++): ?>
+                                            <option value="<?php echo $field['options'][$s]; ?>"><?php echo $field['options'][$s]; ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                <?php endfor; ?>
+                            </p> 
+                            <?php
+                            break;
+                        }    
+
+                        case 'wysiwyg':{
+                            ?>
+                            <p class="custom-field">
+                                <label><?php echo $field['label'] ?>: <?php echo ($field['required'] ? '<img class="required" title="'.i18n_r(EG_ID.'/EDIT_FIELD_REQUIRED') .'" src="../plugins/ExtraGallery/img/required.png">' : '');?></label>
+                                <?php for ($l = 0; $l < $langCount; $l++): ?>
+                                    <span class="wysiwyg-status lang-variant lang-<?php echo $l; ?> <?php echo($l==0 ? 'active' : ''); ?>">b</span>
+                                <?php endfor; ?>
+  
+                                <button class="eg-button wysiwyg-edit" type="button"><?php i18n(EG_ID.'/EDIT_WYSIWYG_EDIT') ?></button>
+                                
+                                <?php for ($l = 0; $l < $langCount; $l++): ?>
+                                   <input type="hidden" class="lang-variant lang-<?php echo $l; ?>  <?php echo($l==0 ? 'active' : ''); ?>" name="-<?php echo $l; ?>" />
+                                <?php endfor; ?>
+                            </p> 
+                            <?php
+                            break;
+                        }
+                    }
+                ?>
+
+                <?php endfor; ?>
+            </td>
+            
+            <td class="delete">
+                <button class="eg-button delete" type="button" title="<?php i18n(EG_ID.'/DELETE') ?>"></button>
+                <button class="eg-button up" type="button" title="<?php i18n(EG_ID.'/EDIT_UP') ?>"></button>
+                <button class="eg-button position" type="button" title="<?php i18n(EG_ID.'/EDIT_POSITION') ?>"></button>
+                <button class="eg-button down" type="button" title="<?php i18n(EG_ID.'/EDIT_DOWN') ?>"></button>
+                
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <input type="submit" name="save" value="<?php i18n(EG_ID.'/EDIT_SAVE') ?>" class="submit" />
+    
+    <a class="cancel" href="#"><?php i18n(EG_ID.'/EDIT_CANCEL') ?></a>
+
+    <div id="positionPopup" style="display:none;">
+        <p><?php i18n(EG_ID.'/EDIT_MOVE_POSITION') ?></p>
+        <input class="text" type="text"  />
+        <button type="button" class="eg-button"><?php i18n(EG_ID.'/OK') ?></button>
+    </div>
+    
+</form>
+
+<div id="sidebarDiv" style="display:none;">
+    <?php if (count($settings['languages'])): ?>
+        <div id="langSwitch">
+            <form>
+                <label><?php i18n(EG_ID.'/EDIT_LANGUAGE') ?></label>
+                <select class="text">
+                    <?php foreach ($settings['languages'] as $lang): ?>
+                        <option value="<?php echo $lang; ?>"><?php echo $lang; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </form>
+        </div>
+    <?php endif; ?>
+    
+    <p class="unsaved"><?php i18n(EG_ID.'/EDIT_UNSAVED') ?></p>
+</div>
+
+<div id="thumbPreview" style="display:none;">
+	<p class="status resolution">
+		<?php i18n(EG_ID.'/EDIT_RESOLUTION') ?> <span></span>&nbsp;&nbsp;<span class="status scaled">(<?php i18n(EG_ID.'/EDIT_DISPLAYED_ZOOM') ?> <span></span>%)</span>
+	</p>
+	<img class="thumb" />
+</div>
+
+
+
+<div id="wysiwygDialog" class="dialog" style="display:none">
+	<div class="bar top">
+		<h3><?php i18n(EG_ID.'/EDIT_FIELD_EDITION') ?> '<span></span>'</h3>
+	</div>
+    <div class="content">
+    
+    </div>
+    <div class="bar bottom">
+		<div class="buttons">
+			<button class="eg-button ok"><?php i18n(EG_ID.'/OK') ?></button>
+			<button class="eg-button cancel"><?php i18n(EG_ID.'/CANCEL') ?></button>
+		</div>
+	</div>
+</div>
+
+
+<div id="cropDialog" class="dialog" style="display:none">
+	<div class="bar top">
+		<h3><?php i18n(EG_ID.'/EDIT_CROPPING_HEADER') ?></h3>
+		<div class="zoom-info">
+			<?php i18n(EG_ID.'/EDIT_DISPLAYED_ZOOM') ?> <span></span>%
+		</div>
+	</div>
+	
+	<div class="content">
+		<div class="table-wrapper">
+			<div class="cell">
+				<img />
+			</div>
+		</div>
+		<div class="image-error">
+			<div class="error-info">
+				<?php i18n(EG_ID.'/EDIT_DIALOG_SMALL') ?>
+			</div>
+		</div>
+	</div>
+	
+	<div class="bar bottom">
+		<div class="size-info">
+			<div class="table-wrapper">
+				<div class="row">
+					<div class="cell right"><?php i18n(EG_ID.'/EDIT_TARGET_WIDTH') ?></div>
+					<div class="cell bold" ><span></span>px</div>
+				</div>	
+				<div class="row">
+					<div class="cell right" ><?php i18n(EG_ID.'/EDIT_TARGET_HEIGHT') ?></div>
+					<div class="cell bold" ><span></span>px</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="buttons">
+			<button class="eg-button ok" disabled="disabled" ><?php i18n(EG_ID.'/EDIT_DIALOG_CROP') ?></button>
+			<button class="eg-button cancel"><?php i18n(EG_ID.'/CANCEL') ?></button>
+		</div>
+        
+        <div class="selected-small" >
+			<?php i18n(EG_ID.'/EDIT_AREA_SMALL') ?>
+		</div>
+    </div>
+</div>  
+
+<div id="wait"   >
+	<p><?php i18n(EG_ID.'/EDIT_WAIT') ?></p>
+	<img class="busy-indicator" src="../plugins/ExtraGallery/img/ajax-loader.gif"  />
+</div>

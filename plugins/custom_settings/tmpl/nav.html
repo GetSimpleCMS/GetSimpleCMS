@@ -1,0 +1,18 @@
+  <a id="cs-help" href="#" data-bind="click: showPluginInfo">?</a>
+  {{ #if: config.editPerm }}
+  <a href="#" data-bind="click: toggleMode">{{ modeLabel | i18n }}</a>
+  {{ /endif }}
+  <a href="javascript:void(0)" class="invisible-input-container" title="{{ 'cmd_export' | i18n }}">
+    <span>{{ 'cmd_export' | i18n }}</span>
+    <select id="export-tab" data-bind="onewaySelect: {
+      options: exportList, 
+      optionsText: 'label', 
+      optionsValue: 'lookup', 
+      value: 'none',
+      action: exportAsData}"></select>
+  </a>
+  <a href="javascript:void(0)" class="invisible-input-container" data-bind="click: function(data, e) { $element.getElementsByTagName('input')[0].click(); return true;}">
+    <span>{{ 'cmd_import' | i18n }}</span>
+    <input type="file" class="invisible-input" title="{{ 'cmd_import' | i18n }}" data-bind="event: { change: importData }">
+  </a>
+  <a href="javascript:void(0)" data-bind="click: saveData">{{ 'save_settings' | i18n }}</a>

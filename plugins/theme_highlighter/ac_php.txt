@@ -1,0 +1,43 @@
+ENT_COMPAT
+ENT_QUOTES
+ENT_NOQUOTES
+chr($ascii)
+echo($arg1, ...)
+explode($delimiter, $string, $limit?)
+html_entity_decode($string, $quote_style=ENT_COMPAT, $charset=)
+htmlentities($string, $quote_style=ENT_COMPAT, $charset=, $double_encode=true)
+htmlentities($string, $quote_style=ENT_COMPAT, $charset=, $double_encode=true)
+htmlspecialchars_decode ($string, $quote_style=ENT_COMPAT)
+htmlspecialchars($string, $quote_style=ENT_COMPAT, $charset=,$double_encode=true)
+implode($glue, $pieces)
+ltrim($string, $charlist=)
+ord($string)
+rtrim($string, $charlist=)
+stripos($haystack, $needle, $offset=0)
+strlen($string)
+strpos($haystack, $needle, $offset=0)
+strtolower($string)
+strtoupper($string)
+substr($string, $start, $length=)
+trim($string, $charlist=)
+
+SORT_REGULAR
+SORT_NUMERIC
+SORT_STRING
+array_filter($array, $callback=)
+array_pop(&$array)
+array_push(&$array, $var, ...)
+array_shift(&$array)
+array_unshift(&$array, $var, ...)
+ksort(&$array, $sort_flags=SORT_REGULAR) 
+krsort(&$array, $sort_flags=SORT_REGULAR) 
+rsort(&$array, $sort_flags=SORT_REGULAR) 
+sort(&$array, $sort_flags=SORT_REGULAR) 
+usort(&$array, $cmp_function)
+
+preg_match_all($pattern, $subject, &$matches, $flags=PREG_PATTERN_ORDER|PREG_SET_ORDER, $offset)
+preg_match($pattern, $subject, &$matches=, $flags=0, $offset=0)
+preg_replace($pattern, $replacement, $subject, $limit=-1, &$count)
+preg_split($pattern, $subject, $limit=-1, $flags=0)
+
+json_encode($value, $options=0)

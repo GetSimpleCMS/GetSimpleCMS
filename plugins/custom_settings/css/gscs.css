@@ -1,0 +1,194 @@
+/* general */ 
+.cs-main {  position: relative; margin-bottom: 20px; }
+#cs-code-copy { padding-left: 5px; top: 0; left: 19px; height: 13px; padding: 2px; display: inline-block; margin-left: 20px; min-width: 250px;}
+
+#cs-help { padding-left: 5px; padding-right: 5px; }
+.cs-main label, label { font-size: 1.1em; margin-bottom: 5px; }
+.cs-main.edit, .cs-toolbar { outline: none; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+.cs-main input[type="text"], .cs-main select, .cs-main textarea, #setting-search input[type="text"], #cs-code-copy { padding: 2px 4px; -moz-border-radius: 3px; -webkit-border-radius: 3px;  -o-border-radius: 3px; border-radius: 3px;  border: 1px solid #ddd; outline: none;  }
+.cs-main input[type="text"]:focus, .cs-main select:focus, .cs-main textarea:focus {outline: 1px solid #BBB !important;}
+#custom-rendering-bottom { margin-bottom: 20px; }
+/* fix for IE9- no default margin on inputs vs labels + ms-clear */
+.cs-main input[type="text"]::-ms-clear, #sidebar input[type="text"]::-ms-clear { display: none; margin-right: 3000px;}
+.cs-main input[type="radio"], .cs-main button.icon-button { margin-left: 5px; } 
+/* animation */
+@keyframes fadein {
+    from { opacity:0; }
+    to { opacity:1; }
+}
+@-moz-keyframes fadein { /* Firefox */
+    from { opacity:0; }
+    to { opacity:1; }
+}
+@-webkit-keyframes fadein { /* Safari and Chrome */
+    from { opacity:0; }
+    to { opacity:1; }
+}
+@-o-keyframes fadein { /* Opera */
+    from { opacity:0; }
+    to { opacity: 1; }
+}
+.cs-loaded #maincontent { 
+  animation: fadein 2s;
+  -moz-animation: fadein 2s; /* Firefox */
+  -webkit-animation: fadein 2s; /* Safari and Chrome */
+  -o-animation: fadein 2s; /* Opera */ 
+}
+/* toolbars */
+#expand-all .fa-minus-square { color: #CF3805;}
+.cs-toolbar button { display: block;float: left; padding: 0px;background: transparent;margin: 0px;font-size: 12px; height: 100%;border: none; outline: none; vertical-align: middle; cursor: default;}
+.cs-main .cs-toolbar button { width: 18px; }
+.cs-toolbar button i.fa { width:inherit; }
+.cs-toolbar button:last-child .fa { margin: 0 2px; font-weight: bold; }
+.cs-toolbar button:not([disabled]):hover i { color: #CF3805; }
+.cs-toolbar { background: #eee; border-radius: 3px; overflow: hidden; height: 20px; width: initial;  padding: 2px 4px;}
+#sidebar .cs-toolbar button { margin-right: 2px; }
+#sidebar .cs-toolbar button:last-child { margin-right: 0px; }
+#cs-main-toolbar { margin: 30px 0 5px; padding: 2px 4px;}
+#cs-main-toolbar.scroll-to-fixed-fixed { border-bottom: 1px solid #ccc; border-radius: 0px; margin: 0;}
+#cs-main-toolbar>span {float: right; margin-left: 5px;}
+
+/* settings */
+.setting * { box-sizing: initial; opacity: 1; transition: opacity 0.5s; }
+.edit.init .setting { opacity: 0; }
+.setting { margin-bottom: 0px; position: relative; border-bottom: 1px solid #F4F4F4; }
+.setting textarea { resize: vertical; width: 100%;  font-size: 1em;  font-family: inherit; overflow: auto; line-height: 1.2em; }
+.edit .setting .cs-toolbar { margin-right: 5px; float: left;  }
+.edit .setting { clear: both; transition: all .2s ease-in-out; -moz-transition: all .2s ease-in-out; -webkit-transition: all .2s ease-in-out; -o-transition: all .2s ease-in-out; }
+.edit .setting select { text-transform: capitalize;}
+.edit .setting.active { background: #FFA975; border: 1px solid #CF3805; border-left-width: 0px;border-right-width: 0px;}
+.edit .setting>div:nth-child(2) label { width: 39%; }
+.setting-i18n label {display: inline-block; }
+.setting-i18n, .setting.checkbox .setting-value, .setting.fancy-checkbox .setting-value, .setting.switch .setting-value { margin-top: 5px; }
+.edit .setting label:after  { content: ':'; }
+.manage .setting.fancy-radio button, .setting.fancy-checkbox i, .manage .setting.switch i { margin-top: 5px; }
+.edit .setting + .setting.active { border-bottom: 1px solid #CF3805; border-top: none; }
+.edit .setting:not(.active) + .setting.active { border-top: 1px solid #CF3805; }
+.edit .setting.active .fa-location-arrow,
+.edit .setting .fa-minus-square { color: #CF3805; }
+.manage .setting>div { display: table-cell; vertical-align: top; }
+.manage .setting>div:first-child { width:59%; padding-right: 3%; }
+.manage .setting>div:last-child:not(:first-child) { padding-bottom: 5px; text-align: right; }
+.manage .setting-descr { float: left; margin: 0; font-style: italic; color: #333; width: 100%; }
+.manage .setting-descr code {background: #eee; padding: 2px 4px;}
+.manage .setting.image { padding-bottom: 24px; }
+.manage .setting.image input { width: 100%; margin-bottom: -21px; }
+.manage .setting.image>div:last-child { padding-top: 26px; } /* browse button needs some space when image is not set */
+.manage .setting.image img { max-width: 100%; max-height: 160px; margin-top: -21px; }
+.manage .setting.image button { bottom: 34px; right: 0px; position: absolute; padding: 2px 4px;}
+/* text-indent & cursor properties required for browser which do not support input type="color" */
+.manage .setting.color .colorbox input { opacity: 0; display: block; width: 100%; height: 100%; border: none; padding: 0; margin: 0; cursor: default; text-indent: -3000px; }
+#cs-code-copy {-moz-border-radius: 3px; -o-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; white-space: nowrap; letter-spacing: -.05em; font-size: .9em; font-family: Consolas, monospace; font-weight: normal;  background: #eee;  padding: 2px 4px;  border-radius: 3px; }
+/* section titles */
+.manage .setting.section-title h3 { margin-top: 10px; margin-bottom: 10px; font-style: normal; width: 100%;}
+.manage .setting.section-title h3 i { font-size: .8em;}
+.manage .fa-code:hover { cursor: pointer; }
+.setting.image .setting-field { margin-top: 2px; }
+.setting.color .setting-field { float: right; }
+.setting .setting-field {box-sizing: border-box; float: right;}
+.setting.select .setting-field, .setting.text .setting-field, .setting.image  .setting-field { max-width: 100%; }
+.setting.text .setting-field { width: 100%; max-width: 300px; }
+.setting.color .setting-field { max-width: 220px; }
+.setting.date .setting-field { text-indent: 20px; }
+.setting.date .fa-calendar { margin-right: -17px; margin-top: 4px; }
+/* text/ textarea multilang box (manage mode) */
+div.ko-lang-box a {margin-right: 2px; text-transform: uppercase; font-size: .9em; text-decoration: none; position: relative;}
+.manage .setting { height: initial; padding: 3px 0; margin-bottom: 5px; overflow: auto; display: table; table-layout: fixed; width: 100%; }
+/* .manage .setting textarea { margin-top: -10px; }
+.manage .setting input[type="text"] {  margin-top: -10px;} */
+button.icon-button {background: transparent; border: none; outline: none;  padding: 0; }
+.ko-option span { display: inline-block; max-width: 90%; }
+.ko-option input { vertical-align: top; }
+.setting .colorbox {width: 24px; height: 19px; border: 1px solid #DDD; border-radius: 5px; float: right; margin-right: 5px;}
+
+/* The edit mode grid is focusable so that keyboard shortcuts work properly */
+.cs-main>div:focus { outline: none; }
+
+/* edit mode settings CSS */
+.setting.active .cs-toolbar { border-top-left-radius: 0px; border-bottom-left-radius: 0px; }
+.setting .setting-details { display: none; }
+.setting.expanded .setting-details { display: block; }
+.setting-bar { padding: 3px 0; overflow: hidden; width: 100%; vertical-align: middle; }
+.setting-bar span>* {vertical-align: middle; }
+.setting-bar>span:not(.cs-toolbar) { width: 32%; padding-right: 1%; float: left; display: table; }
+.setting-bar>span:first-child { width: 60px; height: 50%; padding-right: 0; }
+.setting-bar>span:last-child { padding-right: 0; width: 22.5%; }
+.setting-bar label, .setting-bar input, .setting-bar select { display: table-cell; box-sizing: border-box; }
+.setting-bar label { width: 1px; padding-right: 5px; }
+.setting-bar input, .setting-bar select { width: 100%; height: 21px;}
+.setting-details {padding: 5px 0; overflow: auto; clear:both;}
+.setting-details>div { width: 32% !important; float: left; padding: 1% 0;  }
+.setting-details>div input,  
+.setting-details>div select,
+.setting-details>div textarea { box-sizing: border-box; }
+.setting-details>div:first-child>div { overflow: hidden; padding: 3px;}
+.setting-details>div:nth-child(2):not(:last-child)  { padding: 1% 2%; }
+.setting-details>div:first-child label  { padding-left: 0px; float: left;  }
+.setting-details>div:first-child select, .setting-details>div:first-child button.icon-button, 
+.setting-details>div:first-child input { width: 50%; margin-right: 5px; float: right; padding: 2px 4px; }
+.setting-details>div:first-child input[type="checkbox"], .setting-details>div:first-child button.icon-button { width: initial; }
+.setting-details>div:last-child:not(:first-child)  { float: right; }
+.setting.textarea .setting-details .ko-lang-box { float: right; margin-bottom: -1em; }
+.setting.text .setting-details .ko-lang-box { clear: both; text-align: right; margin-right: 3px; }
+
+/* Edit mode loading spinner */
+#cs-spinner { margin-bottom: -20px; }
+#cs-spinner img { margin-right: 5px; }
+
+/* top nav */
+.invisible-input {width: 100%; position: absolute; top: -50px; left: 0; opacity: 0;}
+.invisible-input-container {overflow: hidden; position: relative;}
+.edit-nav>* { float:right; margin-left: 5px; background: initial; }
+.edit-nav a:first-child { padding-left: 5px; padding-right: 5px; }
+#cs-plugin-info a:last-child { margin-right: 50px; }
+#notification-manager #cs-translator, #notification-manager #cs-project { margin-left: 17px; }
+
+#setting-search { top: -28px; position: relative; text-align: right; }
+#setting-search i.fa-search { color: gray; right: 5px; position: relative; }
+#setting-search input { max-width: 80%; }
+#export-tab { width: 100%; position: absolute; top: 0px; left: 0px; margin-right: -7px; border-bottom-right-radius: 3px; border-top-right-radius: 3px; font-size: 1.375em;margin-top: auto;height: 1.5em;border: medium none;background: none repeat scroll 0% 0% transparent;outline: medium none; opacity: 0;cursor: pointer; text-transform: none;cursor: default; border: initial; }
+
+/* sidebar */
+#sidebar .snav li .cs-toolbar { margin-right: 0; position: relative; top: -40px; float: right; }
+#sidebar .snav li h3 { margin-left: 12px; }
+#sidebar .snav li { position: relative; color: #afc5cf;}
+#sidebar .snav li.current { color: white;}
+#sidebar .snav li a:link, #sidebar .snav li a:visited { transition: background-color .2s ease-in-out; -moz-transition: background-color .2s ease-in-out; -webkit-transition: background-color .2s ease-in-out; -o-transition: background-color .2s ease-in-out; }
+#sidebar .snav li.current a { text-shadow: 1px 1px 0px #9F2C04; margin-left: 0px; cursor: default; color: #FFF; background: #CF3805 url('../../../admin/template/images/active.png') center left no-repeat; padding-left: 26px; margin-left: 1px; }
+#sidebar .snav li input {top: 5px; left: 25px; position: absolute; background: transparent;  border: none;  outline: none; color: inherit; font-weight: bold;  font-size: 12px; width: 120px; }
+#sidebar .snav li input:focus { color: white;}
+.cs-main .manage input[type="radio"], .cs-main .manage input[type="checkbox"] { vertical-align: middle; }
+
+/* notification manager */
+#notification-manager {  position: fixed; z-index: 1001;  top: 0px;  margin-left: auto; width: 960px; }
+
+/* hide JS loading on page load */
+#maincontent, #sidebar { display: none; }
+.cs-loaded #maincontent, .cs-loaded #sidebar { display: block; }
+
+/* date picker */
+#ui-datepicker-div { background: white; border: 1px solid #eee; padding: 5px; }
+#ui-datepicker-div table { border-collapse: collapse; }
+#ui-datepicker-div td a:visited, #ui-datepicker-div td a { color: black; }
+#ui-datepicker-div td a.ui-state-active { color: red; }
+#ui-datepicker-div td { border: 1px solid #eee; width: 20px; text-align: center; }
+button.ui-datepicker-trigger { background: transparent; border: none; margin-left: -30px; border-left: 1px solid #ddd; color: #666 !important; outline: none; }
+button.ui-datepicker-trigger, button.ui-datepicker-trigger i {cursor: pointer; }
+.ui-datepicker-title { text-align: center; margin-bottom: 10px; padding-top: 3px; }
+span.ui-icon.ui-icon-circle-triangle-e, span.ui-icon.ui-icon-circle-triangle-w { display: none; }
+.ui-datepicker-next:before, .ui-datepicker-prev:before { display: block;width: 16px;text-align: center;background: #eee; font-size: 18px;font-family: FontAwesome;}
+.ui-datepicker-next:before {content: "\f0da"; float: right; }
+.ui-datepicker-prev:before {content: "\f0d9"; float: left; }
+
+/* image browser */
+#image-browser { padding: 20px; padding-top: 10px; background: #fff; border: 1px solid #c8c8c8; margin: 0 0 30px 0; box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px; -moz-box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px; -webkit-box-shadow: rgba(0,0,0, 0.06) 0px 0px 4px; position: fixed; width: 600px; top: 20%; z-index: 999; }
+#image-browser ul { list-style-type: none; padding: 0; margin: 0 !important; }
+#image-browser-cmd { clear: both; text-align: right; }
+#image-browser-cmd button, #image-browser-cmd strong { text-transform: capitalize; }
+#image-browser-cmd span { float: left; margin-top: 10px; }
+#image-browser li { margin-bottom: 5px; width: 96px; height: 96px; float: left; border: 1px solid #c8c8c8; margin-right: 5px; padding: 5px; position: relative; text-align: center; }
+#image-browser-cmd button.button:disabled { color: gray !important; }
+#image-browser li i.fa-folder { width: 50px; font-size: 50px; margin-top: 10px; margin-left: auto; color: #999; }
+.image-browser-folder span { width: 100%; display: block; text-align: center;}
+.image-browser-image img { max-width: 100%; max-height: 96px; }
+.image-browser-image.active, #image-browser li:hover { outline: 1px solid #999; cursor: pointer; }

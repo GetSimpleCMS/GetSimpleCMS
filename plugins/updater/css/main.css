@@ -1,0 +1,33 @@
+/* Actions */
+a.revert,
+a.reinstall,
+a.update,
+a.uninstall {
+    color: transparent;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+}
+
+a.revert span,
+a.reinstall span,
+a.update span,
+a.uninstall span {
+    display: none;
+}
+
+a.revert {
+    background-image: url('../images/icons/arrow_undo.png');
+}
+
+a.reinstall {
+    background-image: url('../images/icons/arrow_redo.png');
+}
+
+a.update {
+    background-image: url('../images/icons/arrow_up.png');
+}
+
+a.uninstall {
+    background-image: url('../images/icons/delete.png');
+}

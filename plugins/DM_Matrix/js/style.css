@@ -1,0 +1,75 @@
+/* tables */
+table.tablesorter {
+	font-family:arial;
+	background-color: #CDCDCD;
+	margin:10px 0pt 15px;
+	font-size: 12px;
+	width: 100%;
+	text-align: left;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+	background-color: #e6EEEE;
+	border: 1px solid #FFF;
+	font-size: 12px;
+	padding: 4px;
+}
+table.tablesorter thead tr .header {
+	background-image: url(bg.gif);
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+}
+table.tablesorter tbody td {
+	color: #3D3D3D;
+	padding: 4px;
+	background-color: #FFF;
+	vertical-align: top;
+}
+table.tablesorter tbody tr.odd td {
+	background-color:#F0F0F6;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(desc.gif);
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+background-color: #8dbdd8;
+}
+
+.question {
+	position: absolute;
+	display: inline;
+	text-align: center;
+	width: 174px;
+	height: 78px;
+	font-size: 13px;
+	line-height: 1.5em;
+	background: url('images/bubble.png') left top no-repeat;
+	padding: 10px 0 0 0;
+	text-shadow: 0px 1px 0px #fff;
+	margin-left: -7em;
+	margin-top: -6em;
+	opacity: 0;
+}
+
+.yes, .cancel {
+	margin-top: .5em;
+	margin-right: .5em;
+	cursor: pointer;
+	display: inline-block;
+	width: 63px;
+	height: 21px;
+	color: #fff;
+	text-shadow: 0px 1px 0px #000;
+	background: url('images/button.png') left top no-repeat;
+}
+
+.title {
+	font-size: 30px;
+	margin-bottom: 1.5em;
+	font-weight: bold;
+	font-style: italic;
+	text-shadow: 0px 2px 0px #fff;
+}

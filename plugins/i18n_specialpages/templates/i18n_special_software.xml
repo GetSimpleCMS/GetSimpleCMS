@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specialpage><name>software</name><title><![CDATA[Software]]></title><parent>oss</parent><tags><![CDATA[software]]></tags><slug></slug><template><![CDATA[template.php]]></template><menu></menu><headercomponent>&lt;style type="text/css"&gt;&#13;
+  .software-details {&#13;
+    float: right;&#13;
+    margin: 0 0 0 1em !important;&#13;
+    border: 1px solid #444444;&#13;
+    padding: 0 10px;&#13;
+    font-size: 90%;&#13;
+  }&#13;
+&lt;/style&gt;</headercomponent><showcomponent><![CDATA[<div class="software-details">
+  <p><b>Type</b><br/><?php get_special_field('type','-',false); ?></p>
+  <p><b>Platform</b><br/><?php get_special_field('platform','-',false); ?></p>
+  <p><b>License</b><br/><?php get_special_field('license','-',false); ?></p>
+  <?php if (return_special_field('homepage')) { ?>
+  <p><b>Home Page</b><br/><a href="<?php get_special_field('homepage','',false); ?>"><?php get_special_field('homepage','',false); ?></a></p>
+  <?php } ?>
+  <?php if (return_special_field('download')) { ?>
+  <p><b>Download</b><br/><a href="<?php get_special_field('download','',false); ?>"><?php get_special_field('download','',false); ?></a></p>
+  <?php } ?>
+</div>
+<?php get_special_field('content'); ?>]]></showcomponent><searchcomponent><![CDATA[<h3 class="search-entry-title">
+  <?php if ($showLanguage) { ?>
+  <span class="search-entry-language"><?php get_special_field('language'); ?></span>
+  <?php } ?>
+  <a href="<?php get_special_field('link','',false); ?>">
+    <?php get_special_field('title','',false); ?>
+  </a>
+</h3>
+<div class="search-entry-date">
+  Software,
+  <?php get_special_field('type', '-', false); ?>,
+  <?php get_special_field('platform', '-', false); ?> 
+  <?php if (return_special_field('homepage')) { ?>
+   &nbsp;&nbsp;&nbsp; <a href="<?php get_special_field('homepage','',false); ?>">Home page</a>
+  <?php } ?> 
+  <?php if (return_special_field('download')) { ?>
+   &nbsp;&nbsp;&nbsp; <a href="<?php get_special_field('download','',false); ?>">Download</a>
+  <?php } ?>
+</div>
+<div class="search-entry-excerpt"><?php get_special_field_excerpt('content', $numWords); ?></div>
+]]></searchcomponent><defaultcontent><![CDATA[]]></defaultcontent><fields><item><name><![CDATA[type]]></name><label><![CDATA[Type]]></label><type><![CDATA[text]]></type><index>1</index></item><item><name><![CDATA[platform]]></name><label><![CDATA[Platform]]></label><type><![CDATA[dropdown]]></type><option><![CDATA[]]></option><option><![CDATA[Windows]]></option><option><![CDATA[Mac OS X]]></option><option><![CDATA[Linux]]></option><option><![CDATA[Platform-independent]]></option><index>1</index></item><item><name><![CDATA[license]]></name><label><![CDATA[License]]></label><type><![CDATA[dropdown]]></type><option><![CDATA[]]></option><option><![CDATA[Commercial]]></option><option><![CDATA[Apache License]]></option><option><![CDATA[BSD License]]></option><option><![CDATA[GNU GPLv3]]></option><index>1</index></item><item><name><![CDATA[homepage]]></name><label><![CDATA[Home page]]></label><type><![CDATA[link]]></type></item><item><name><![CDATA[download]]></name><label><![CDATA[Download]]></label><type><![CDATA[link]]></type></item></fields></specialpage>

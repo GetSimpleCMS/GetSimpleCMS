@@ -1,0 +1,189 @@
+05/11/2015 - V. 0.6.2 (Bugfix)
+
+New:
+	- Keyboard shortcut Ctrl + S to save settings
+	- Backups of settings are now saved to backups/other/custom_settings
+Bugfixes: 
+	- Fixed: Minor JS error when changing setting type from 'section-title' to something else
+	- Fixed: Save button doesn't record a change when a property is not in the cached data, but present in current data
+	- Fixed: Checking for changes compared only to data on first load (now refreshed after every save)
+	- Fixed: FontAwesome library icons (upgraded to 4.4.0) & cleaned from corruption
+	- Fixed: sidebar toggle for lookup/ label editing not showing up
+	- Fixed: 'expanded' property shouldn't be saved to data output
+	- Fixed: bugs with multilingual settings
+	- Fixed: bugs with editing permission
+	- Fixed: Litespeed server doesn't update JSON content on save with x-www-urlencoded content-type
+	- Fixed: PHP non-object notice when admin.xml missing
+	- Fixed: Switch setting display in Manage mode showed as checkbox
+	- Fixed: Color Setting not updating when using color picker
+	- Fixed: Search works cross-tab again
+	- Fixed: broken datepicker display when imanager activated
+	- Fixed import/export bugs: incompatible export format for 'all' site tabs; tab list not updating on import in manage mode (both since 0.6)
+
+07/10/2015 - V. 0.6.1 (Bugfix)
+
+Changes:
+  - 'Save settings' button renamed to 'Save'
+Bugfixes: 
+  - Fixed: shitty image setting display
+  - Fixed: Image browser button does not gray out when it is disabled
+  - Fixed: Image browser does not reset to base folder when it is left open on a subfolder
+  - Fixed: Color picker does not open on the right color when an RGB/RGBA/webcolor/3-digit-hex or no value is set
+  - Fixed: Loading empty options array for radio/select settings causes minor JS error
+  - Fixed: Import over existing tab causes recursive error
+  - Fixed: Date setting not translated
+
+04/10/2015 - V. 0.6 (JS Renaissance)
+
+New:
+  - Smoother mode & tab transitions, setting creation
+  - New, clean code base using RequireJS & Knockout components
+  - Lookup naming conflict errors now point the user to the involved tabs/settings
+  - Edit grid and sidebar colors now fully adapt to admin.xml & GS defaults
+  - Edit mode: Added Ctrl + A keyboard shortcut to select all settings
+  - Image settings can now make use of an image browser by clicking the 'Browse' button
+  - Color settings can now make use of a color picker by clicking the color box (except IE)
+  - Added date settings with datepicker
+  - (almost) fully compatible with FlatBlue Admin Theme plugin
+Changes:
+  - Setting limit per tab increased from 64 to 100
+  - Search is now reset when changing tabs/ mode
+  - Enhanced performance for tab editing/ switching, search, manage-mode
+  - KnockoutJS dependency updated to 3.3.0 latest build (12/08/15)
+  - Enhanced setting code snippet display (through notification)
+  - Edit mode: Support for IE8 dropped
+  - Edit mode: Enhanced GSSTYLE_WIDE display in Edit mode
+  - Edit mode: Pressing SHIFT now properly toggles between the visible setting fields
+  - Edit mode: Icon radio/checkbox are now subtypes of radio & checkbox type settings
+  - Edit mode: Tab with 15+ settings are now loaded gradually to avoid page blocking in slower browsers
+Bugfixes:
+  - Fixed all minor multi-selection bugs in Edit mode
+  - Fixed potential export bugs: filename for older browsers & appropriate encoding for non-ANSI chars
+  
+07/09/2015 - V 0.5.1 (Bugfix)
+
+New:
+  - Added 'Save settings' button to top navigation
+Bugfixes:
+  - Fixed setting folding automatically when type was changed
+  - Fixed default language en_US when GS lang is not available for plugin
+  
+25/05/2015 - V. 0.5 (Cyrillic)
+
+New: 
+  - Added option to disable display of lookup code copy in Manage mode for plugins/ themes
+Changes: 
+  - More space & textarea resize for settings in Edit mode
+  - Minor CSS changes & CSS file restructured
+  - Labels in Manage mode have a title attribute which displays their (full) lookup properties
+  - Code copy fields only appear in Manage mode when hovering over the setting
+  - Added server cache refresh on plugin update
+Bugfixes: 
+  - Fixed Cyrillic char problem with custom JSON indentation function
+  - Fixed Cyrillic chars being stripped out of setting lookups
+  - Fixed 'Search..' label not translated
+  - Fixed code copy lookup tooltip in Edit mode + sidebar tooltip for label/lookup toggle
+  - Fixed wrong version in plugin registration
+  - Fixed unable to remove the last setting in a tab
+  - Fixed crappy page display on load
+  - Fixed content filter
+  - Fixed theme import not working (+not working for I18N-settings)
+
+20/05/2015 - V. 0.4 (DevChills)
+
+New:
+  - 3 new plugin hooks 'custom-settings-save', 'custom-settings-render-top', and 'custom-settings-render-bottom'
+  - Plugin version notification & download through the UI
+  - Fully automatic version update of settings for themes/ plugins
+  - Added '?' help tab with version info, links, & translator credits 
+  - Text & textarea settings can now be multilingual (with I18n plugin v.2.5.8+)
+  - Added PHP function get_i18n_setting() for multilingual settings (with I18n plugin)
+  - Added PHP function return_setting_group()
+  - It is now possible to store custom setting properties in JSON file (for checking with PHP)
+  - Renewed keyboard shortcuts
+  - When GSSTYLESBFIXED is set, the toolbar in Edit mode will sticky to the top of the window
+  - Tab options: enableReset ('Reset all settings' button) & 'enableAccessAll: false' hide tabs for users without editing permission 
+Changed:
+  - Upgrade from v0.1 no longer supported - to do this, deactivate, download v0.3, activate, then install 0.4
+  - Search filter improved (lower & uppercase)
+  - Code fields now show the bare lookup as title
+  - Tab lookups can now be set manually from the tab toolbar (tag icon)
+  - If gsconfig is set to have sticky sidebar, the toolbar in Edit mode will also be sticky
+  - Tabs may now contain any unicode characters: use at your own risk
+  - Textareas are resizeable vertically in Manage mode
+  - return_setting($tab, $setting) now returns the value instead of full setting. To return full setting, pass FALSE as third parameter
+  - Export output changed minimally
+Bugfixes:
+  - Fixed moving tab down in Edit mode causing an unrepairable bug
+  - Fixed get_setting always returning NULL when third parameter set to false
+  - Fixed get_setting with image settings to encode whitespace
+  - Fixed empty image setting returning broken image if link is not set (now empty string)
+  - Fixed empty options being saved for color setting
+  - Fixed return_setting returning entire tab when setting wasn't found (now NULL)
+  - Fixed notifications not appearing above sidebar when sidebar is set to sticky in gsconfig
+  - Fixed 'Section Title' input & empty value image placeholder name not being translated
+  - Fixed (% setting %) content filter not correctly outputting HTML tags
+  - Removed 2 non-blocking JS errors
+
+15/04/2015 - V. 0.3 (Critical fix)
+
+New: 
+  - Multi User plugin integration (v1.8.2 onwards)
+  - Added image & color input fields
+  - Added section title fields
+  - Theme settings can now use the shorter tab name 'theme' instead of 'theme_settings', eg get_setting('theme','setting')
+  - Links in descriptions become automatically clickable in 'Manage' mode
+  - Added per-tab search filter for settings (lookup/ label)
+  - Added language German & Spanish (fourth & fifth languages, so might need revision)
+Changed:
+  - Removed 'custom-settings-init' hook (unreliable)
+  - Except for import/ export/ multiselect, now fully compatible with IE8 (previously only Manage mode)
+Bugfixes:
+  - 'KO site settings' replaced as title with 'GS Custom Settings' (in UI)
+  - Eliminated minor JS 'input focus' error
+  - Import & Export buttons now also available to users who cannot access Edit mode (backup purposes)
+  - Fixed (% setting: tab/setting %) (now same as get_setting instead of return_setting)
+  - Fixed text settings not saving when value hasn't been set
+  - Fixed security token being sent with data (no longer)
+  - Fixed return_setting returning entire setting when asked for absent property (now returns NULL)
+  - Fixed loose checking bug returning entire setting for option inputs instead of value only when value is 0
+
+30/03/2015 - V. 0.2 (Beta)
+
+New:
+  - Fully translatable, (almost) no hard-coded values anymore
+  - Github repo at http://webketje.github.io/gs-custom-settings (issue tracking)
+  - Complete UI overhaul, including:
+    - tab/setting actions moved to one toolbar to unclutter the UI
+    - opening a tab in edit mode is the same as in manage mode (used to be through icon)
+    - Settings can now be batch selected/(re)moved/added
+    - settings keyboard functionality (Ctrl, Shift for multiselect &amp; Delete)
+  - Import &amp; export data directly from the UI as backup/ transfer to other site.
+  - Export tab directly to JSON for plugin/theme dev with custom settings.
+  - Enhanced, translatable notification manager
+  - Theme developers can now register their custom settings, i18n-enabled.
+  - Plugin developers can now register their custom settings, i18n-enabled.
+  - Added security token check to AJAX filehandler.
+  - Added PHP API with variable caching for better performance 
+  - Permissions can be restricted per user by adding a <ko_edit>false</ko_edit> node to the user.xml
+  - Added languages French, Dutch.
+Changed:
+  - Removed the ability to view all tabs in one (performance)
+  - Plugin folder ko_base deleted, all contents moved into one folder
+  - Renamed plugin more appropriately to 'Custom settings' as the focus and intent shifted away from original design.
+  - Added readme.md to ZIP package with some basic instructions
+  - Setting lookups 'tokens' must now be set manually
+  - Settings in the plugin's PHP functions must now be retrieved with function($tab, $setting) instead of 'tab/setting'
+Bugfixes:
+  - Fixed array dereferencing issues. Plugin should now be compatible with PHP 5.2+
+  - Fixed .htaccess for settings data. No longer accessible through browser/ HTTP requests (safer)
+  - Fixed 'switch' input saving empty options array
+  - Fixed moving a tab up or down causing settings' tab field to be changed
+  - Fixed plugin not loading default language in case language file is missing
+  - Clicking labels now automatically moves focus to the relevant inputs
+  - JSON data is now formatted properly when saved, both through Javascript and PHP
+  - Buttons in sidebar now properly disabled when unusable
+  
+18/02/2014 - V. 0.1 (Alpha)
+
+Initial launch

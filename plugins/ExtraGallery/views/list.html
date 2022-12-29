@@ -1,0 +1,37 @@
+<div id="list">
+	<h3><?php echo $settings['tab-label'] ?></h3>
+	<table class="highlight">
+		<thead>
+			<tr>
+				<?php if (!$settings['title-disabled']):?>
+					<th><?php i18n(EG_ID.'/LIST_TITLE') ?></th>
+				<?php endif; ?>
+				<th><?php i18n(EG_ID.'/LIST_NAME') ?></th>
+				<th><?php i18n(EG_ID.'/LIST_NO_ITEMS') ?></th>
+				<th class="narrow"></th>
+			</tr>
+		</thead>	
+		
+		<tbody>
+			<?php if (!count($galleries)): ?>
+				<tr>
+					<td colspan="4"><?php i18n(EG_ID.'/LIST_NO_ROWS') ?></td>
+				</tr>
+			<?php else: ?>
+			
+				<?php foreach ($galleries as $name => $gal): ?>
+					<tr>
+						<?php if (!$settings['title-disabled']):?>
+							<td><?php echo htmlspecialchars($gal['title'][0]); ?></td>
+						<?php endif; ?>
+						<td><a class="name" href="load.php?id=<?php echo $this->pluginId ?>&edit&name=<?php echo $gal['name']; ?>"><?php echo $gal['name']; ?></a></td>
+						<td><?php echo count($gal['items']); ?></td>
+						<td class="narrow"><button class="eg-button delete" type="button" title="<?php i18n(EG_ID.'/DELETE') ?>"></button></td>
+					</tr>
+				<?php endforeach; ?>
+			
+			<?php endif; ?>
+		</tbody>
+	</table>
+
+</div>

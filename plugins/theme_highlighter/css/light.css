@@ -1,0 +1,23 @@
+body .cm-s-default span.cm-keyword {color: #708;}
+body .cm-s-default span.cm-atom {color: #219;}
+body .cm-s-default span.cm-number {color: #164;}
+body .cm-s-default span.cm-def {color: #00f;}
+body .cm-s-default span.cm-variable {color: black;}
+body .cm-s-default span.cm-variable-2 {color: #05a;}
+body .cm-s-default span.cm-variable-3 {color: #0a5;}
+body .cm-s-default span.cm-property {color: black;}
+body .cm-s-default span.cm-operator {color: black;}
+body .cm-s-default span.cm-comment {color: #a50;}
+body .cm-s-default span.cm-string {color: #a11;}
+body .cm-s-default span.cm-meta {color: #555;}
+body .cm-s-default span.cm-error {color: #f00;}
+body .cm-s-default span.cm-qualifier {color: #555;}
+body .cm-s-default span.cm-builtin {color: #30a;}
+body .cm-s-default span.cm-bracket {color: #cc7;}
+body .cm-s-default span.cm-tag {color: #170;}
+body .cm-s-default span.cm-attribute {color: #00c;}
+
+body .cm-s-default span.cm-function {color: #219;}
+body .cm-s-default span.cm-function-2 {color: #219; font-weight:bold;}
+body .cm-s-default span.cm-function-3 {color: #219; font-weight:bold;}
+

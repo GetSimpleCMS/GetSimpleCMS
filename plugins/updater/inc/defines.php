@@ -1,0 +1,22 @@
+<?php
+define('UPDATER_SHORTNAME', 'updater');
+define('UPDATER_NAME', i18n_r(UPDATER_SHORTNAME.'/PLUGIN_NAME'));
+define('UPDATER_DESCRIPTION', i18n_r(UPDATER_SHORTNAME.'/PLUGIN_DESCRIPTION'));
+define('UPDATER_VERSION', '1.0.1');
+define('UPDATER_AUTHOR', 'Reed Murphy');
+define('UPDATER_URL', 'http://www.reedmurphy.net/');
+define('UPDATER_TABNAME', 'plugins');
+define('UPDATER_ACTION_MAIN', 'updater_action_admin');
+
+define('UPDATER_ROOTPATH', GSPLUGINPATH . UPDATER_SHORTNAME . "/");
+define('UPDATER_PAGESPATH', UPDATER_ROOTPATH . "pages/");
+define('UPDATER_TEMPPATH', GSDATAOTHERPATH . UPDATER_SHORTNAME . "/temp/");
+define('UPDATER_XMLPATH', GSDATAOTHERPATH . UPDATER_SHORTNAME . "/xml/");
+define('UPDATER_PLUGIN_BACKUP_PATH', GSBACKUPSPATH . UPDATER_SHORTNAME . "/plugins/");
+
+define('UPDATER_PLUGINURL', $SITEURL.'plugins/'.UPDATER_SHORTNAME.'/');
+define('UPDATER_CSSURL', UPDATER_PLUGINURL.'css/');
+define('UPDATER_JSURL', UPDATER_PLUGINURL.'js/');
+define('UPDATER_IMGURL', UPDATER_PLUGINURL.'images/');
+
+define('UPDATER_GETSIMPLE_LATEST_URL', 'http://get-simple.info/latest');

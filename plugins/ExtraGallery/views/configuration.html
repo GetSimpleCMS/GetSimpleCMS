@@ -1,0 +1,218 @@
+<form id="configForm" method="post" action="load.php?id=<?php echo $this->pluginId ?>&conf">
+
+    <div class="section">
+        <h3><?php echo $this->pluginTitleFull. ' '. i18n_r(EG_ID.'/CONF_HEADER') ?></h3>
+        <table class="settings">
+            <tbody>   
+
+                <tr>
+                    <td>
+                        <label><?php i18n(EG_ID.'/CONF_TAB_LABEL') ?></label>
+                    </td>    
+                    <td>
+                        <input class="string text" type="text" name="tab-label" value="<?php echo $settings['tab-label'] ?>" />
+                    </td>   
+                </tr>     
+                
+                <tr>
+                    <td>
+                        <label ><?php i18n(EG_ID.'/CONF_DISABLE_TITLE') ?></label>
+                    </td>    
+                    <td>
+                        <input type="checkbox" name="title-disabled" <?php echo ($settings['title-disabled'] ? 'checked="checked"' : '') ?> />
+                    </td>   
+                </tr>     
+                
+                <tr>
+                    <td>
+                        <label ><?php i18n(EG_ID.'/CONF_LANGUAGES') ?></label>
+                        <p class="hint"><?php i18n(EG_ID.'/CONF_LANGUAGES_HINT') ?></p>
+                    </td>    
+                    <td>
+                        <input class="string text" type="text" name="languages" value="<?php echo implode(',',$settings['languages']) ?>" />
+                    </td>   
+                </tr> 
+
+				<tr>
+                    <td>
+                        <label ><?php i18n(EG_ID.'/CONF_INFO') ?></label>
+                        <p class="hint"><?php i18n(EG_ID.'/CONF_INFO_HINT') ?></p>
+                    </td>    
+                    <td>
+						<textarea name="info" rows="4"><?php echo $settings['info']; ?></textarea>
+                    </td>   
+                </tr>   
+
+				<tr>
+                    <td>
+                        <label ><?php i18n(EG_ID.'/CONF_REQUIRED_WIDTH') ?></label>
+                        <p class="hint"><?php i18n(EG_ID.'/CONF_REQUIRED_WIDTH_HINT') ?></p>
+                    </td>    
+                    <td>
+						<select class="text" name="required-width-comparator" >
+							<option value="gte">&gt;=</option>
+							<option value="=">=</option>
+							<option value="lte">&lt;=</option>
+							<option value="range"><?php i18n(EG_ID.'/CONF_RANGE') ?></option>
+						</select>
+						
+						<input type="text" name="required-width" class="integer text"  value="<?php echo $settings['required-width']; ?>"  />
+						
+						<div class="ranges" style="display:none;">
+							<input type="hidden" name="required-width-ranges"  value="<?php echo $settings['required-width-ranges']; ?>"  />
+							<div class="range-row" style="display:none;">
+								<label><?php i18n(EG_ID.'/CONF_FROM') ?></label><input type="text" class="integer text" />
+								<label><?php i18n(EG_ID.'/CONF_TO') ?></label><input type="text" class="integer text" />
+								<button class="eg-button delete" type="button" title="<?php i18n(EG_ID.'/DELETE') ?>"></button>
+							</div>
+							<button class="eg-button add" type="button" ><?php i18n(EG_ID.'/CONF_ADD') ?></button>
+						</div>
+                    </td>   
+                </tr>  	
+
+				<tr>
+                    <td>
+                        <label ><?php i18n(EG_ID.'/CONF_REQUIRED_HEIGHT') ?></label>
+                        <p class="hint"><?php i18n(EG_ID.'/CONF_REQUIRED_HEIGHT_HINT') ?></p>
+                    </td>    
+                    <td>
+						<select class="text" name="required-height-comparator" >
+							<option value="gte">&gt;=</option>
+							<option value="=">=</option>
+							<option value="lte">&lt;=</option>
+							<option value="range"><?php i18n(EG_ID.'/CONF_RANGE') ?></option>
+						</select>
+						<input type="text"  name="required-height" class="integer text" value="<?php echo $settings['required-height']; ?>"  />
+						
+						<div class="ranges" style="display:none;">
+							<input type="hidden" name="required-height-ranges"  value="<?php echo $settings['required-height-ranges']; ?>"  />
+							<div class="range-row" style="display:none;">
+								<label><?php i18n(EG_ID.'/CONF_FROM') ?></label><input type="text" class="integer text" />
+								<label><?php i18n(EG_ID.'/CONF_TO') ?></label><input type="text" class="integer text" />
+								<button class="eg-button delete" type="button" title="<?php i18n(EG_ID.'/DELETE') ?>"></button>
+							</div>
+							<button class="eg-button add" type="button" ><?php i18n(EG_ID.'/CONF_ADD') ?></button>
+						</div>
+                    </td>   
+                </tr>       
+         
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="section">
+        <h3><?php i18n(EG_ID.'/CONF_FIELDS') ?></h3>
+        <table class="fields">
+            <thead>
+                <tr>
+                    <th><?php i18n(EG_ID.'/CONF_NAME') ?></th>
+                    <th><?php i18n(EG_ID.'/CONF_LABEL') ?></th>
+                    <th><?php i18n(EG_ID.'/CONF_TYPE') ?></th>
+                    <th class="required"><?php i18n(EG_ID.'/CONF_REQUIRED') ?></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="display:none;">
+                    <td></td>    
+                    <td>
+                        <input class="text" type="text" name="label" />
+                    </td>     
+                    <td>
+                        <select class="text" name="type">
+                            <option value="text"><?php i18n(EG_ID.'/CONF_TYPE_TEXT') ?></option>
+                            <option value="textarea"><?php i18n(EG_ID.'/CONF_TYPE_TEXTAREA') ?></option>
+                            <option value="select"><?php i18n(EG_ID.'/CONF_TYPE_SELECT') ?></option>
+                            <option value="checkbox"><?php i18n(EG_ID.'/CONF_TYPE_CHECKBOX') ?></option>
+                            <option value="wysiwyg"><?php i18n(EG_ID.'/CONF_TYPE_WYSIWYG') ?></option>
+                        </select>
+                        <div class="options">
+                            <label><?php i18n(EG_ID.'/CONF_TYPE_OPTIONS') ?></label>
+                            <textarea  name="options" rows="3"></textarea>
+                        </div>
+                    </td>      
+                    <td class="required">
+                        <input type="checkbox" name="required" />
+                    </td>             
+
+                    <td>
+                        <button class="eg-button delete" type="button" title="<?php i18n(EG_ID.'/DELETE') ?>"></button>
+                    </td>         
+                </tr>           
+            </tbody>
+        </table>    
+        <button id="add" class="eg-button" type="button"><?php i18n(EG_ID.'/CONF_ADD_FIELD') ?></button>
+    </div>
+    
+    <input type="submit" name="save" value="<?php i18n(EG_ID.'/CONF_SAVE_SETTINGS'); ?>" class="submit" />
+
+</form>
+
+
+<div class="section thumbnail" style="display:none;">
+    <h3></h3>
+    <table class="settings">
+        <tbody>
+            <tr>
+                <td>
+                    <label ><?php i18n(EG_ID.'/CONF_ENABLED') ?></label>
+                </td>    
+                <td>
+                    <input type="checkbox" name="enabled"   />
+                </td>         
+            </tr>       
+
+            <tr>
+                <td>
+                    <label for=""><?php i18n(EG_ID.'/CONF_REQUIRED') ?></label>
+                </td>    
+                <td>
+                    <input type="checkbox" name="required"  />
+                </td>   
+            </tr>      
+            <tr>
+                <td>
+                    <label><?php i18n(EG_ID.'/CONF_LABEL') ?></label>
+                    <p class="hint"><?php i18n(EG_ID.'/CONF_LABEL_HINT') ?></p>
+                </td>    
+                <td>
+                    <input class="string text" type="text" name="label" />
+                </td>   
+            </tr>     
+
+            <tr>
+                <td>
+                    <label ><?php i18n(EG_ID.'/CONF_WIDTH') ?></label>
+                    <p class="hint"><?php i18n(EG_ID.'/CONF_WIDTH_HINT') ?></p>
+                </td>    
+                <td>
+                    <input class="integer text" type="text" name="width" />
+                </td>   
+            </tr>        
+
+            <tr>
+                <td>
+                    <label ><?php i18n(EG_ID.'/CONF_HEIGHT') ?></label>
+                    <p class="hint"><?php i18n(EG_ID.'/CONF_HEIGHT_HINT') ?></p>
+                </td>    
+                <td>
+                    <input class="integer text" type="text" name="height" />
+                </td>   
+            </tr>        
+ 
+
+			<tr>
+                <td>
+                    <label ><?php i18n(EG_ID.'/CONF_AUTOCROP_TYPE') ?></label>
+                    <p class="hint"><?php i18n(EG_ID.'/CONF_AUTOCROP_TYPE_HINT') ?></p>
+                </td>    
+                <td>
+					<select class="text" name="auto-crop">
+						<option value=""><?php i18n(EG_ID.'/CONF_AUTOCROP_NONE') ?></option>
+						<option value="fill"><?php i18n(EG_ID.'/CONF_AUTOCROP_FILL') ?></option>
+					</select>
+                </td>   
+            </tr>     
+        </tbody>
+    </table>
+</div>
