@@ -180,7 +180,7 @@ function return_pagify_navigation($numPages, $pageNum=0, $link=null, $link1=null
         preg_match('/^([^\?]*[^\?\/])(\/?(\?.*)?)$/', $link1, $match);
         $link = htmlspecialchars($match[1].PAGIFY_SEPARATOR.'%PAGE%'.@$match[2]);
       } else {
-        $link .= strpos($link1,'?') === false ? '?page=%PAGE%' : '&page=%PAGE%';
+        $link .= !str_contains($link1,'?') ? '?page=%PAGE%' : '&page=%PAGE%';
       }
     }
     $link = htmlspecialchars($link);

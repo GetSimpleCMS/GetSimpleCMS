@@ -18,7 +18,7 @@ class I18nGalleryFrontend {
       }
     }
     $link = function_exists('find_i18n_url') ? find_i18n_url($url,$parent) : find_url($url,$parent);
-    if ($tags) $link .= (strpos($link,'?') !== false ? '&' : '?').'imagetags='.urlencode($tags);
+    if ($tags) $link .= (str_contains($link,'?') ? '&' : '?').'imagetags='.urlencode($tags);
     if (isset($thumb)) {
       $item = @$gallery['items'][$thumb];
       if (!$item) $item = $gallery['items'][0];
@@ -44,7 +44,7 @@ class I18nGalleryFrontend {
     }  
     $pic = @$gallery['pic'];
     if (!$ignoreQuery && isset($_GET['pic']) && !$i18n_gallery_pic_used) {
-      if (strpos($_GET['pic'],':') === false) {
+      if (!str_contains($_GET['pic'],':')) {
         $pic = intval($_GET['pic']);
         $i18n_gallery_pic_used = true;
       } else if (substr($_GET['pic'],0,strrpos($_GET['pic'],':')) == $gallery['name']) {

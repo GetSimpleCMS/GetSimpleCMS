@@ -96,7 +96,7 @@ class GdReflectionLib
 		{
             $rgb 			= $this->hex2rgb($borderColor, false);
             $colorToPaint 	= imagecolorallocate($this->workingImage, $rgb[0], $rgb[1], $rgb[2]);
-			
+
             imageline($this->workingImage, 0, 0, $width, 0, $colorToPaint); //top line
             imageline($this->workingImage, 0, $height, $width, $height, $colorToPaint); //bottom line
             imageline($this->workingImage, 0, 0, 0, $height, $colorToPaint); //left line
@@ -154,11 +154,11 @@ class GdReflectionLib
 	protected function hex2rgb ($hex, $asString = false) 
 	{
         // strip off any leading #
-        if (0 === strpos($hex, '#')) 
+        if (str_starts_with($hex, '#')) 
 		{
            $hex = substr($hex, 1);
         } 
-		elseif (0 === strpos($hex, '&H')) 
+		elseif (str_starts_with($hex, '&H')) 
 		{
            $hex = substr($hex, 2);
         }

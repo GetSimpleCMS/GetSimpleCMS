@@ -2,7 +2,6 @@
 
 class HitcountReader {
   
-  private $maxItems;
   private $unit;
   private $minDate;
   private $maxDate;
@@ -13,8 +12,7 @@ class HitcountReader {
   private $visits;
   
   // $from and $to in format 'yyyyMMdd'
-  public function __construct($from=null, $to=null, $maxItems=60) {
-    $this->maxItems = $maxItems;
+  public function __construct($from=null, $to=null, private $maxItems=60) {
     $lines = @file(GSDATAOTHERPATH . HITCOUNT_INDEX_DIR . 'index_dates.txt');
     $this->fromDate = $this->minDate = mktime(0,0,0,substr($lines[0],4,2),substr($lines[0],6,2),substr(@$lines[0],0,4));
     $this->toDate = $this->maxDate = mktime(0,0,0,substr($lines[1],4,2),substr($lines[1],6,2),substr(@$lines[1],0,4));

@@ -48,11 +48,11 @@ add_action('theme-header','external_comments_header',array());
 function external_comments_header() {
   global $external_comments_conf, $data_index;
 
-  if (strpos($data_index->content, '(% external_comments %)') !== false && $external_comments_conf['provider'] == 'facebook') {
+  if (str_contains($data_index->content, '(% external_comments %)') && $external_comments_conf['provider'] == 'facebook') {
     echo '<meta property="fb:admins" content="' . $external_comments_conf['shortname'] . '" />'."\n";
   }
   
-  if (strpos($data_index->content, '(% external_comments %)') !== false && $external_comments_conf['provider'] == 'vk') {
+  if (str_contains($data_index->content, '(% external_comments %)') && $external_comments_conf['provider'] == 'vk') {
     echo '<script src="http://userapi.com/js/api/openapi.js" type="text/javascript" charset="windows-1251"></script>'."\n";
   }
 }

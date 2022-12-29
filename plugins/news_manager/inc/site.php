@@ -235,7 +235,7 @@ function nm_reset_options($pagetype='') {
     # extract settings
     foreach(preg_split('~\R~', $NMSETTING['customsettings']) as $line) {
       $line = trim($line);
-      if ($line && strpos($line,'#') !== 0 && strpos($line,'//') !== 0) { // exclude empty and commented lines
+      if ($line && !str_starts_with($line, '#') && !str_starts_with($line, '//')) { // exclude empty and commented lines
         $arr = explode(' ',preg_replace("/[[:blank:]]+/"," ",$line));
         if (count($arr) > 1) {
           if (in_array($arr[0], array('main','single','archive','tag','search')))

@@ -132,7 +132,7 @@ function nm_generate_htaccess() {
   $page =  '';
   # format prefix and page directions
   if ($NMPAGEURL != 'index') {
-    if ( nm_get_parent() != '' && ($PERMALINK == '' || strpos($PERMALINK,'%parent%') !== false || strpos($PERMALINK,'%parents%') !== false) ) {
+    if ( nm_get_parent() != '' && ($PERMALINK == '' || str_contains($PERMALINK,'%parent%') || str_contains($PERMALINK,'%parents%')) ) {
       $prefix = nm_get_parent().'/'.$NMPAGEURL.'/';
     } else {
       $prefix = $NMPAGEURL.'/';

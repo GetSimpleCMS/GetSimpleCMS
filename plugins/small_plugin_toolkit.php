@@ -219,15 +219,14 @@ function SPT_footer(){
  * Check POST data for Simple-form.
  *
  * @access private
- * @param mixed $data
  * @return void
  */
-function SPT_check_post($data){// If simple form was submitted. Update the database.
+function SPT_check_post(mixed $data){// If simple form was submitted. Update the database.
 	global ${$data};
 	if(isset($_POST[$data.'-submit'])){
 		$new_data = array();
 		foreach($_POST as $k=>$v){
-			if(strpos($k, $data.'-')!== false){
+			if(str_contains($k, $data.'-')){
 				$take = str_replace($data.'-', '', $k);
 				$new_data[$take] = $v;}}
 	${$data}['FORM'] = $new_data;
@@ -272,7 +271,7 @@ function Toolkit_load($item=false){// Load requested information.
  * @param mixed $item
  * @return void
  */
-function Toolkit_array($array,$item){// Search a multidimensional array for key name. Return array with all matches.
+function Toolkit_array(mixed $array,mixed $item){// Search a multidimensional array for key name. Return array with all matches.
 	global $TEMPSEARCH;
 	$TEMPSEARCH = NULL;
 	if(is_array($array)){
@@ -297,7 +296,7 @@ function SPT_array_search($array,$item){
  * @param mixed $array
  * @return void
  */
-function Toolkit_print($array){// Prints off an array in a pre field.
+function Toolkit_print(mixed $array){// Prints off an array in a pre field.
 	echo '<pre>';
 	print_r($array);
 	echo '</pre>';
@@ -364,7 +363,7 @@ function Toolkit_form($data_name,$title,$data_array){
  * @param mixed $request
  * @return $return
  */
-function Toolkit_element($data,$request){// Make an element.
+function Toolkit_element(mixed $data,mixed $request){// Make an element.
 	$type = $request['type'];
 	$name = $request['name'];
 	if(isset($request['value'])){$value=$request['value'];}else{$value=NULL;}
@@ -540,7 +539,7 @@ function Toolkit_token($template=false){// Manually set a token for template sea
  * @param mixed $search
  * @return $match
  */
-function Toolkit_page($search){
+function Toolkit_page(mixed $search){
 	$text = strtolower($search);
 	$deny = array('content','pubdate','title','url','meta','metad','menu','menuorder','menustatus','template','parent','content','private','author','cdata'); // Every page has these. So don't search for this string.
 	if(in_array($text, $deny)){ return false; }
@@ -600,16 +599,13 @@ function SPT_nav_tab(){
 
 
 //			=======FILTER CONTENT FOR PLUGIN CALLS=======
-
-
 /**
  * Grabs :["thing"]: calls from within content. Calls a filter for each one found.
  *
  * @access private
- * @param mixed $text
  * @return $repair
  */
-function SPT_filter_content($text){
+function SPT_filter_content(mixed $text){
 	Toolkit_token();
 
 	$data = explode(':', $text);// Filtering for this code:  :["myitem"]:

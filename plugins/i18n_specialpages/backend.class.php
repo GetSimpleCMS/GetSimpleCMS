@@ -155,7 +155,7 @@ class I18nSpecialPagesBackend {
       // modify existing Link dialog
       CKEDITOR.on( 'dialogDefinition', function( ev ) {
         if ((ev.editor != <?php echo $editorvar; ?>) || (ev.data.name != 'link')) return;
-    
+
         // Overrides definition.
         var definition = ev.data.definition;
         definition.onFocus = CKEDITOR.tools.override(definition.onFocus, function(original) {
@@ -166,11 +166,11 @@ class I18nSpecialPagesBackend {
               }
           };
         });
-    
+
         // Overrides linkType definition.
         var infoTab = definition.getContents('info');
         var content = getById(infoTab.elements, 'linkType');
-    
+
         content.items.unshift(['Link to local page', 'localPage']);
         content['default'] = 'localPage';
         infoTab.elements.push({
@@ -231,7 +231,7 @@ class I18nSpecialPagesBackend {
           }
         };
       });
-    <?php
+<?php
   }
   
   public static function outputCKEditorJS($fieldname, $editorvar, $width=730, $height=500) {

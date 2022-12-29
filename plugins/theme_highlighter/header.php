@@ -1,4 +1,4 @@
-    <link type="text/css" rel="stylesheet" href="../plugins/theme_highlighter/css/codemirror.css">
+<link type="text/css" rel="stylesheet" href="../plugins/theme_highlighter/css/codemirror.css">
     <script type="text/javascript" src="../plugins/theme_highlighter/js/codemirror.js"></script>
     <script type="text/javascript" src="../plugins/theme_highlighter/js/xml.js"></script>
     <script type="text/javascript" src="../plugins/theme_highlighter/js/javascript.js"></script>

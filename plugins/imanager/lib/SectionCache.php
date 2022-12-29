@@ -95,7 +95,7 @@ class SectionCache {
 		$path = self::path();
 		try {
 			$num = CacheFile::removeAll($path, true);
-		} catch(Exception $e) {
+		} catch(Exception) {
 			$num = 0;
 		}
 		return $num;
@@ -130,7 +130,6 @@ class ImCacheFile
 	const maxCacheFiles = 999;
 
 	protected $path;
-	protected $primaryID = '';
 	protected $secondaryID = '';
 	protected $cacheTimeSeconds = 0;
 	protected $globalExpireFile = '';
@@ -138,7 +137,7 @@ class ImCacheFile
 	protected $chmodFile = 0666;
 	protected $chmodDir = 0755;
 
-	public function __construct($path, $id, $cacheTimeSeconds)
+	public function __construct($path, protected $primaryID, $cacheTimeSeconds)
 	{
 		$path = rtrim($path, '/') . '/';
 		$this->globalExpireFile = $path . self::globalExpireFilename;
@@ -152,8 +151,6 @@ class ImCacheFile
 		if(is_file($this->globalExpireFile)) {
 			$this->globalExpireTime = @filemtime($this->globalExpireFile);
 		}
-
-		$this->primaryID = $id;
 		$this->cacheTimeSeconds = (int) $cacheTimeSeconds;
 	}
 

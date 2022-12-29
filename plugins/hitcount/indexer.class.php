@@ -154,7 +154,7 @@ class HitcountIndexer {
           }
           # referer
           if (preg_match('#^https?://([^/]+)(:\d+)?/#', $referer, $match)) {
-            if (strpos($match[1],'.') === false || preg_match('#^(127\.|10\.|192\.168\.)#',$match[1]) ||
+            if (!str_contains($match[1],'.') || preg_match('#^(127\.|10\.|192\.168\.)#',$match[1]) ||
                 preg_match('#^172\.(16|17|18|19|2\d|30|31)\.#',$match[1])) {
               $val['referer'] = '(private)';    
               $namesAndValues['referer (private)'] = 1;

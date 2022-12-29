@@ -127,27 +127,27 @@ function filupn_ga_is_backend() {
 
 
 function filupn_ga_admin_process() {
-    
+
     global $filupn_ga_data_file;
-    
+
     // Check for submitted data
     if( isset( $_POST['submit'] ) ) {
-        
+
         // Save submitted data
-        
+
         $filupn_ga_submitted_data['property_id'] = $_POST['property_id'];
-        
+
         $filupn_ga_submitted_data['remember_when_not_logged_in'] = 'off';
         if( isset( $_POST['remember_when_not_logged_in'] ) ) $filupn_ga_submitted_data['remember_when_not_logged_in'] = $_POST['remember_when_not_logged_in'];
-        
+
         $result = filupn_ga_save_settings( $filupn_ga_submitted_data );
-        
+
     }
-    
+
     $filupn_ga_settings = filupn_ga_read_settings();
-    
+
     echo '<h3>Google Analytics Settings</h3>';
-    
+
     if( isset( $result ) ) {
         if( $result == true ) { 
             echo '<p class="updated">Settings saved.</p>';
@@ -155,25 +155,25 @@ function filupn_ga_admin_process() {
             echo '<p class="error">Error saving data. Check permissions.</p>';
         }
     }
-        
+
     // filupn_ga_cookie_debug();
-    
+
     ?>
     <form method="post" action="<?php echo $_SERVER ['REQUEST_URI']; ?>">
-        
+
         <p><label for="property_id">Your Google Analytics Property ID
             <br />(UA-XXXXXXXX-X)</label>
             <input name="property_id" id="property_id" class="text" value="<?php echo $filupn_ga_settings['property_id']; ?>" style="width: 100px;" /></p>
-        
+
         <p><input type="checkbox" <?php if( $filupn_ga_settings['remember_when_not_logged_in'] == 'on' ) echo 'checked="checked" '; ?>name="remember_when_not_logged_in" id="remember_when_not_logged_in" style="float:left;margin-right:5px;position:relative;top:2px;" />
             <label for="remember_when_not_logged_in">Remember me when logged out of GetSimple and don't add tracking code</label></p>
-        
+
         <p><input type="submit" id="submit" class="submit" value="<?php i18n('BTN_SAVESETTINGS'); ?>" name="submit" /></p>
     </form>
-    
+
     <p><a href="http://philipnewcomer.net/getsimple-plugins/google-analytics/#findmyid" target="_new">How do I find my Google Analytics property ID?</a></p>
-    
-    <?php
+
+<?php
 }
 
 

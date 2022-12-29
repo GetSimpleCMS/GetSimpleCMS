@@ -78,7 +78,7 @@ if (!class_exists('fileUtils')) {
         }
       }
       // eat all non-essential whitespace in the input as we do our own here and it would only mess up our process
-      else if ($outOfQuotes && false !== strpos(" \t\r\n", $char)) {
+      else if ($outOfQuotes && str_contains(" \t\r\n", $char)) {
         continue;
       }
       // Add the character to the result string

@@ -63,14 +63,6 @@ abstract class ThumbBase
 	 */
 	protected $hasError;
 	/**
-	 * The name of the file we're manipulating
-	 * 
-	 * This must include the path to the file (absolute paths recommended)
-	 * 
-	 * @var string
-	 */
-	protected $fileName;
-	/**
 	 * What the file format is (mime-type)
 	 * 
 	 * @var string
@@ -82,30 +74,32 @@ abstract class ThumbBase
 	 * @var bool
 	 */
 	protected $remoteImage;
-	/**
-	 * Whether or not the current image is an actual file, or the raw file data
-	 *
-	 * By "raw file data" it's meant that we're actually passing the result of something
-	 * like file_get_contents() or perhaps from a database blob
-	 * 
-	 * @var bool
-	 */
-	protected $isDataStream;
 	
 	/**
-	 * Class constructor
-	 * 
-	 * @return ThumbBase
-	 */
-	public function __construct ($fileName, $isDataStream = false)
+  * Class constructor
+  *
+  * @return ThumbBase
+  * @param string $fileName
+  * @param bool $isDataStream
+  */
+ public function __construct (/**
+  * The name of the file we're manipulating
+  *
+  * This must include the path to the file (absolute paths recommended)
+  */
+ protected $fileName, /**
+  * Whether or not the current image is an actual file, or the raw file data
+  *
+  * By "raw file data" it's meant that we're actually passing the result of something
+  * like file_get_contents() or perhaps from a database blob
+  */
+ protected $isDataStream = false)
 	{
 		$this->imported				= array();
 		$this->importedFunctions	= array();
 		$this->errorMessage			= null;
 		$this->hasError				= false;
-		$this->fileName				= $fileName;
 		$this->remoteImage			= false;
-		$this->isDataStream			= $isDataStream;
 		
 		$this->fileExistsAndReadable();
 	}
@@ -136,7 +130,7 @@ abstract class ThumbBase
 		// the new object to import
 		$newImport 			= new $object();
 		// the name of the new object (class name)
-		$importName			= get_class($newImport);
+		$importName			= $newImport::class;
 		// the new functions to import
 		$importFunctions 	= get_class_methods($newImport);
 		

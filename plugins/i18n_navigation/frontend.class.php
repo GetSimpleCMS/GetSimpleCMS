@@ -26,7 +26,7 @@ class I18nNavigationFrontend {
       while ($filename = readdir($dir_handle)) {
         if (strrpos($filename,'.xml') === strlen($filename)-4 && !is_dir(GSDATAPAGESPATH . $filename)) {
           $data = getXML(GSDATAPAGESPATH . $filename);
-          if (strpos($filename,'_') !== false) {
+          if (str_contains($filename,'_')) {
             $pos = strpos($data->url,'_');
             $url = substr($data->url,0,$pos);
             $lang = substr($data->url,$pos+1);
@@ -348,22 +348,14 @@ class I18nNavigationFrontend {
 
 class I18nNavigationItem {
   
-  private $item;
-  private $classes;
   private $text;
   private $title;
-  private $showTitles;
-  private $component;
   private $deflang = null;
   private $data = array();
   
-  public function __construct($item, $classes, $text, $title, $showTitles, $component) {
-    $this->item = $item;
-    $this->classes = $classes;
+  public function __construct(private $item, private $classes, $text, $title, private $showTitles, private $component) {
     $this->text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
     $this->title = html_entity_decode($title, ENT_QUOTES, 'UTF-8');
-    $this->showTitles = $showTitles;
-    $this->component = $component;
     $this->deflang = function_exists('return_i18n_default_language') ? return_i18n_default_language() : null;
   }
   

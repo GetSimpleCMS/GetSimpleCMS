@@ -104,7 +104,7 @@ class lessc {
 		$url = $this->compileValue($this->lib_e($str));
 
 		// don't import if it ends in css
-		if (substr_compare($url, '.css', -4, 4) === 0) return false;
+		if (str_ends_with($url, '.css')) return false;
 
 		$realPath = $this->findImport($url);
 
@@ -1501,15 +1501,14 @@ class lessc {
 	}
 
 	// make something string like into a string
-	protected function coerceString($value) {
-		switch ($value[0]) {
-		case "string":
-			return $value;
-		case "keyword":
-			return array("string", "", array($value[1]));
-		}
-		return null;
-	}
+	protected function coerceString($value)
+ {
+     return match ($value[0]) {
+         "string" => $value,
+         "keyword" => array("string", "", array($value[1])),
+         default => null,
+     };
+ }
 
 	// turn list of length 1 into value type
 	protected function flattenList($value) {
@@ -1871,7 +1870,7 @@ class lessc {
 	 * @param bool $force Force rebuild?
 	 * @return array lessphp cache structure
 	 */
-	public function cachedCompile($in, $force = false) {
+	public function cachedCompile(mixed $in, $force = false) {
 		// assume no root
 		$root = null;
 

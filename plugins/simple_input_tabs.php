@@ -835,115 +835,101 @@ function SIT_text($words){//									Translate the request into the language.
 *	---------------------------------------------------------------------------------*/
 function SIT_internal_language(){
 global $SIT_I18N_LOCAL, $LANG;
-switch ($LANG)
-{
-// TRANSLATE ME!!
-case '': // insert language "name" ie: en_US for english.
-$SIT_I18N_LOCAL = array(
-// Nice little message in the source code
-'SIT_ADDED' => '',
-//name of default tab!
-'DEFAULT_TAB' => '',
-// Welcome messages that appear when new pages and/or tabs are opened.
-'WELCOME_NEW_PAGE' => '',
-'WELCOME_PAGE_BLURB' => '',
-'WELCOME_TAB_BLURB' => '',
-//error messages
-'ERROR404' => '',
-'TAB_RETURN_PROBLEM' => '',
-'DUPLICATE_TABS' => '',
-'ILLEGAL_TABS' => '',
-//helpful messages
-'WILL_SAVE'			=> '',
-'CURRENTLY_EDITING' => '',
-'CHANGE_TEMPLATE' => '',
-'TAB_SECTION_NAME' => '',
-'PREVIEW_BUTTON' => '',
-// preview page
-'SECTION_CODE' => '',
-'REPLACE_CODE' => ''
-);
-break;
+$SIT_I18N_LOCAL = match ($LANG) {
+    '' => array(
+    // Nice little message in the source code
+    'SIT_ADDED' => '',
+    //name of default tab!
+    'DEFAULT_TAB' => '',
+    // Welcome messages that appear when new pages and/or tabs are opened.
+    'WELCOME_NEW_PAGE' => '',
+    'WELCOME_PAGE_BLURB' => '',
+    'WELCOME_TAB_BLURB' => '',
+    //error messages
+    'ERROR404' => '',
+    'TAB_RETURN_PROBLEM' => '',
+    'DUPLICATE_TABS' => '',
+    'ILLEGAL_TABS' => '',
+    //helpful messages
+    'WILL_SAVE'			=> '',
+    'CURRENTLY_EDITING' => '',
+    'CHANGE_TEMPLATE' => '',
+    'TAB_SECTION_NAME' => '',
+    'PREVIEW_BUTTON' => '',
+    // preview page
+    'SECTION_CODE' => '',
+    'REPLACE_CODE' => ''
+    ),
+    'es_ES' => array(
+    // Nice little message in the source code
+    'SIT_ADDED'		=>	'Agregado por el plugin de Simple Input Tabs',
+    //name of default tab!
+    'DEFAULT_TAB'		=>	'Principal',
+    // Welcome messages that appear when new pages and/or tabs are opened.
+    'WELCOME_NEW_PAGE'	=>	'&iexcl;Bienvenidos a la nueva p&aacute;gina!',
+    'WELCOME_PAGE_BLURB'	=>	'Quita este texto y a&ntilde;ade tu propio contenido aqu&iacute;. En la parte inferior hay unas pesta&ntilde;as que ya tienen nombres. &Uacute;salas para agregar contenido a las diferentes &aacute;reas de tu p&aacute;gina web. No te olvides de a&ntilde;adir un t&iacute;tulo a tu p&aacute;gina, arriba.',
+    'WELCOME_TAB_BLURB'	=>	'A&ntilde;adir el contenido de la secci&oacute;n:',
+    //error messages
+    'ERROR404' 		=>	' Error 404: No se ha encontrado el contenido solicitado.',
+    'TAB_RETURN_PROBLEM' 	=>	'Hubo un problema con tu solicitud.',
+    'DUPLICATE_TABS' 	=>	' La plantilla que has seleccionado tiene pesta&ntilde;as duplicadas con el mismo nombre.',
+    'ILLEGAL_TABS' 		=>	'Hay una o m&aacute;s pesta&ntilde;as de tu plantilla que utilizan caracteres no v&aacute;lidos. Han permanecido ocultas.',
+    //helpful messages
+    'WILL_SAVE'		=>	'Cuando hagas clic en una pesta&ntilde;a de la parte superior, se guardar&aacute; y cambiar&aacute;n las entradas.',
+    'CURRENTLY_EDITING'	=>	'Est&aacute;s editando el archivo:',
+    'CHANGE_TEMPLATE'	=>	'Si cambias la plantilla de p&aacute;gina, tendr&aacute;s que guardar para actualizar tus pesta&ntilde;as.',
+    'TAB_SECTION_NAME'	=>	'El contenido de esta pesta&ntilde;a va en:',
+    'PREVIEW_BUTTON'	=>'Mostrar ubicaciones de pesta&ntilde;as.',
+    'SOURCE_MODE'		=>	'No se pueden cambiar las pesta&ntilde;as en el c&oacute;digo de fuente.',
+    // preview page
+    'SECTION_CODE'		=>	' Esta secci&oacute;n predomina el c&oacute;digo:',
+    'REPLACE_CODE'		=>	'Para un funcionamiento correcto, debes cambiar el c&oacute;digo a:',
+    // Settings page
+    'JAVA_TABS'		=>	'Responsive Tabs (Top)',
+    'TOP_BUTTONS'		=>	'Top Tabs (Buttons)',
+    'BOTTOM_BUTTONS'	=>	'Bottom Tabs (Buttons)',
+    'TAB_STYLE'		=>	'Tab Style - <b style="font-weight:100">Choose location and type of Tabs to display.</b>',
+    'DEFAULT_TOGGLE'	=>	'Hide Default Content - <b style="font-weight:100">Tick the box if you do not want fresh pages to have default content.</b>',
+    'ERROR_TOGGLE'		=>	'Toggle Content Errors - <b style="font-weight:100">Toggle 404 errors occurring when there is no content.</b>',
+    'TOP_CONTENT'		=>	'Top Content - <b style="font-weight:100">Allow plugins to place content above your extra tabs.</b>',
+    'BOTTOM_CONTENT'	=>	'Bottom Content - <b style="font-weight:100">Allow plugins to access content area below your extra tabs.</b>',
+    'CANNOT_FIND'		=>	'Simple Input Tabs cannot find the plugin Small Plugin Toolkit. It is required to operate.'
+    ),
+    default => array(
+    // Nice little message in the source code
+    'SIT_ADDED'		=>	'Added by the Simple Input Tabs Plugin',
+    //name of default tab!
+    'DEFAULT_TAB'		=>	'main',
+    // Welcome messages that appear when new pages and/or tabs are opened.
+    'WELCOME_NEW_PAGE'	=>	'Welcome to your new page!',
+    'WELCOME_PAGE_BLURB'	=>	'Remove this text and add your content here. Use named tabs to add content to different areas of your web page. Don\'t forget to add a title to your page, above.',
+    'WELCOME_TAB_BLURB'	=>	'Add your content to the section:',
+    //error messages
+    'ERROR404'		=>	'Error 404: Content requested was not found.',
+    'TAB_RETURN_PROBLEM'	=>	'There was a problem with your Tab request.',
+    'DUPLICATE_TABS'	=>	'Your selected Template has duplicate Tabs of the same name.',
+    'ILLEGAL_TABS'		=>	'There are one or more Tabs in your template that use illegal characters. They have been hidden.',
+    //helpful messages
+    'WILL_SAVE'		=>	'Clicking a Tab above will SAVE and switch inputs.',
+    'CURRENTLY_EDITING'	=>	'You are currently editing:',
+    'CHANGE_TEMPLATE' 	=>	'If you change the Page Template, you will need to SAVE in order for your Tabs to update.',
+    'TAB_SECTION_NAME' 	=>	'Content for this Tab goes in:',
+    'PREVIEW_BUTTON' 	=>	'Display Tab Locations.',
+    'SOURCE_MODE'		=>	'Cannot change tabs in source mode.',
+    // preview page
+    'SECTION_CODE'		=>	'This section is populated by the code:',
+    'REPLACE_CODE'		=>	'For proper functionality you should change the code to:',
+    // Settings page
+    'JAVA_TABS'		=>	'Responsive Tabs (Top)',
+    'TOP_BUTTONS'		=>	'Top Tabs (Buttons)',
+    'BOTTOM_BUTTONS'	=>	'Bottom Tabs (Buttons)',
+    'TAB_STYLE'		=>	'Tab Style - <b style="font-weight:100">Choose location and type of Tabs to display.</b>',
+    'DEFAULT_TOGGLE'	=>	'Hide Default Content - <b style="font-weight:100">Tick the box if you do not want fresh pages to have default content.</b>',
+    'ERROR_TOGGLE'		=>	'Toggle Content Errors - <b style="font-weight:100">Toggle 404 errors occurring when there is no content.</b>',
+    'TOP_CONTENT'		=>	'Top Content - <b style="font-weight:100">Allow plugins to place content above your extra tabs.</b>',
+    'BOTTOM_CONTENT'	=>	'Bottom Content - <b style="font-weight:100">Allow plugins to access content area below your extra tabs.</b>',
+    'CANNOT_FIND'		=>	'Simple Input Tabs cannot find the plugin Small Plugin Toolkit. It is required to operate.'
 
-// Spanish
-// Translated by islander. Thank you.
-
-case 'es_ES': // insert language "name" ie: en_US for english.
-$SIT_I18N_LOCAL = array(
-// Nice little message in the source code
-'SIT_ADDED'		=>	'Agregado por el plugin de Simple Input Tabs',
-//name of default tab!
-'DEFAULT_TAB'		=>	'Principal',
-// Welcome messages that appear when new pages and/or tabs are opened.
-'WELCOME_NEW_PAGE'	=>	'&iexcl;Bienvenidos a la nueva p&aacute;gina!',
-'WELCOME_PAGE_BLURB'	=>	'Quita este texto y a&ntilde;ade tu propio contenido aqu&iacute;. En la parte inferior hay unas pesta&ntilde;as que ya tienen nombres. &Uacute;salas para agregar contenido a las diferentes &aacute;reas de tu p&aacute;gina web. No te olvides de a&ntilde;adir un t&iacute;tulo a tu p&aacute;gina, arriba.',
-'WELCOME_TAB_BLURB'	=>	'A&ntilde;adir el contenido de la secci&oacute;n:',
-//error messages
-'ERROR404' 		=>	' Error 404: No se ha encontrado el contenido solicitado.',
-'TAB_RETURN_PROBLEM' 	=>	'Hubo un problema con tu solicitud.',
-'DUPLICATE_TABS' 	=>	' La plantilla que has seleccionado tiene pesta&ntilde;as duplicadas con el mismo nombre.',
-'ILLEGAL_TABS' 		=>	'Hay una o m&aacute;s pesta&ntilde;as de tu plantilla que utilizan caracteres no v&aacute;lidos. Han permanecido ocultas.',
-//helpful messages
-'WILL_SAVE'		=>	'Cuando hagas clic en una pesta&ntilde;a de la parte superior, se guardar&aacute; y cambiar&aacute;n las entradas.',
-'CURRENTLY_EDITING'	=>	'Est&aacute;s editando el archivo:',
-'CHANGE_TEMPLATE'	=>	'Si cambias la plantilla de p&aacute;gina, tendr&aacute;s que guardar para actualizar tus pesta&ntilde;as.',
-'TAB_SECTION_NAME'	=>	'El contenido de esta pesta&ntilde;a va en:',
-'PREVIEW_BUTTON'	=>'Mostrar ubicaciones de pesta&ntilde;as.',
-'SOURCE_MODE'		=>	'No se pueden cambiar las pesta&ntilde;as en el c&oacute;digo de fuente.',
-// preview page
-'SECTION_CODE'		=>	' Esta secci&oacute;n predomina el c&oacute;digo:',
-'REPLACE_CODE'		=>	'Para un funcionamiento correcto, debes cambiar el c&oacute;digo a:',
-// Settings page
-'JAVA_TABS'		=>	'Responsive Tabs (Top)',
-'TOP_BUTTONS'		=>	'Top Tabs (Buttons)',
-'BOTTOM_BUTTONS'	=>	'Bottom Tabs (Buttons)',
-'TAB_STYLE'		=>	'Tab Style - <b style="font-weight:100">Choose location and type of Tabs to display.</b>',
-'DEFAULT_TOGGLE'	=>	'Hide Default Content - <b style="font-weight:100">Tick the box if you do not want fresh pages to have default content.</b>',
-'ERROR_TOGGLE'		=>	'Toggle Content Errors - <b style="font-weight:100">Toggle 404 errors occurring when there is no content.</b>',
-'TOP_CONTENT'		=>	'Top Content - <b style="font-weight:100">Allow plugins to place content above your extra tabs.</b>',
-'BOTTOM_CONTENT'	=>	'Bottom Content - <b style="font-weight:100">Allow plugins to access content area below your extra tabs.</b>',
-'CANNOT_FIND'		=>	'Simple Input Tabs cannot find the plugin Small Plugin Toolkit. It is required to operate.'
-);
-break;
-
-// ENGLISH
-default:
-$SIT_I18N_LOCAL = array(
-// Nice little message in the source code
-'SIT_ADDED'		=>	'Added by the Simple Input Tabs Plugin',
-//name of default tab!
-'DEFAULT_TAB'		=>	'main',
-// Welcome messages that appear when new pages and/or tabs are opened.
-'WELCOME_NEW_PAGE'	=>	'Welcome to your new page!',
-'WELCOME_PAGE_BLURB'	=>	'Remove this text and add your content here. Use named tabs to add content to different areas of your web page. Don\'t forget to add a title to your page, above.',
-'WELCOME_TAB_BLURB'	=>	'Add your content to the section:',
-//error messages
-'ERROR404'		=>	'Error 404: Content requested was not found.',
-'TAB_RETURN_PROBLEM'	=>	'There was a problem with your Tab request.',
-'DUPLICATE_TABS'	=>	'Your selected Template has duplicate Tabs of the same name.',
-'ILLEGAL_TABS'		=>	'There are one or more Tabs in your template that use illegal characters. They have been hidden.',
-//helpful messages
-'WILL_SAVE'		=>	'Clicking a Tab above will SAVE and switch inputs.',
-'CURRENTLY_EDITING'	=>	'You are currently editing:',
-'CHANGE_TEMPLATE' 	=>	'If you change the Page Template, you will need to SAVE in order for your Tabs to update.',
-'TAB_SECTION_NAME' 	=>	'Content for this Tab goes in:',
-'PREVIEW_BUTTON' 	=>	'Display Tab Locations.',
-'SOURCE_MODE'		=>	'Cannot change tabs in source mode.',
-// preview page
-'SECTION_CODE'		=>	'This section is populated by the code:',
-'REPLACE_CODE'		=>	'For proper functionality you should change the code to:',
-// Settings page
-'JAVA_TABS'		=>	'Responsive Tabs (Top)',
-'TOP_BUTTONS'		=>	'Top Tabs (Buttons)',
-'BOTTOM_BUTTONS'	=>	'Bottom Tabs (Buttons)',
-'TAB_STYLE'		=>	'Tab Style - <b style="font-weight:100">Choose location and type of Tabs to display.</b>',
-'DEFAULT_TOGGLE'	=>	'Hide Default Content - <b style="font-weight:100">Tick the box if you do not want fresh pages to have default content.</b>',
-'ERROR_TOGGLE'		=>	'Toggle Content Errors - <b style="font-weight:100">Toggle 404 errors occurring when there is no content.</b>',
-'TOP_CONTENT'		=>	'Top Content - <b style="font-weight:100">Allow plugins to place content above your extra tabs.</b>',
-'BOTTOM_CONTENT'	=>	'Bottom Content - <b style="font-weight:100">Allow plugins to access content area below your extra tabs.</b>',
-'CANNOT_FIND'		=>	'Simple Input Tabs cannot find the plugin Small Plugin Toolkit. It is required to operate.'
-
-);
-break;
-}
+    ),
+};
 }	/*-------------------------------------------------------------------------------*/

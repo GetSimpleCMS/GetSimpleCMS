@@ -11,7 +11,7 @@
   $is_ajax = !isset($params['ajax']) || $params['ajax'];
   $live = $is_ajax && isset($params['live']) && $params['live'];
   $url = function_exists('find_i18n_url') ? find_i18n_url($slug,null) : find_url($slug,null);
-  $method = strpos($url,'?') !== false ? 'POST' : 'GET'; // with GET the parameters are not submitted!
+  $method = str_contains($url,'?') ? 'POST' : 'GET'; // with GET the parameters are not submitted!
   $language = isset($params['lang']) ? $params['lang'] : null;
   $placeholderText = @$params['PLACEHOLDER'];
 

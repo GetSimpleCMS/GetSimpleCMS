@@ -100,7 +100,7 @@ function nm_get_languages() {
  * @return date formatted according to $NMLANG (if strftime)
  */
 function nm_get_date($format, $timestamp) {
-  if (strpos($format, '%') !== false) {
+  if (str_contains($format, '%')) {
 
     # strftime format
     
@@ -128,12 +128,12 @@ function nm_get_date($format, $timestamp) {
       }
     }
     
-    $alt = strpos($format, '%EB') !== false;
+    $alt = str_contains($format, '%EB');
     if ($alt) {
       $format = str_replace('%EB', '%B', $format);
       $custom = !empty($months_alt);
     } else {
-      $custom = !empty($months) && strpos($format, '%B') !== false;
+      $custom = !empty($months) && str_contains($format, '%B');
     }
       
     $locale = setlocale(LC_TIME, 0);
@@ -190,7 +190,7 @@ function nm_get_url($query=false) {
   $str = '';
   $parent = nm_get_parent();
   $url = find_url($NMPAGEURL, $parent);
-  if (strpos($url, '%parents%/') !== false) // I18N plugin's placeholder for multilevel URLs
+  if (str_contains($url, '%parents%/')) // I18N plugin's placeholder for multilevel URLs
     $url = str_replace('%parents%/', (empty($parent) ? '' : $parent.'/'), $url);
   if ($query) {
     switch($query) {
@@ -215,7 +215,7 @@ function nm_get_url($query=false) {
       if (substr($url, -1) != '/')
         $str = '/' . $str;
     } else {
-      $str = (strpos($url,'?') === false)? '?' : '&amp;';
+      $str = (!str_contains($url,'?'))? '?' : '&amp;';
       $str .= $query.'=';
     }
   }
@@ -258,7 +258,7 @@ function nm_get_image_url($pic, $width=null, $height=null, $crop=null, $default=
     if (!isset($crop)) $crop = $nmoption['imagecrop'];
     $pos = strpos($pic, '/data/uploads/');
     $uploads = ($pos !== false || !strpos($pic, '://'));
-    if ($uploads || strpos($pic, '/data/thumbs/') !== false) {
+    if ($uploads || str_contains($pic, '/data/thumbs/')) {
       if ($pos !== false)
         $pic = substr($pic, $pos+14);
       $w = $width ? '&w='.$width : '';
@@ -606,7 +606,7 @@ function nm_update_extend_cache() {
 function nm_switch_template_file($tempfile) {
   global $template_file, $TEMPLATE;
   # no path traversal and template exists
-  if (strpos(realpath(GSTHEMESPATH.$TEMPLATE."/".$tempfile), realpath(GSTHEMESPATH.$TEMPLATE."/")) === 0 && file_exists(GSTHEMESPATH.$TEMPLATE."/".$tempfile))
+  if (str_starts_with(realpath(GSTHEMESPATH.$TEMPLATE."/".$tempfile), realpath(GSTHEMESPATH.$TEMPLATE."/")) && file_exists(GSTHEMESPATH.$TEMPLATE."/".$tempfile))
     $template_file = $tempfile;
 }
 

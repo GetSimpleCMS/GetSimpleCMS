@@ -15,7 +15,7 @@ _debugLog('defaults',$sa_dev_settings);
 
 if(isset($_POST['sa_dev_settings'])){
 	$input = $_POST['sa_dev_settings'];
-	
+
 	foreach($sa_dev_settings as $key => &$setting){
 		if( isset($input[$key]) ) $setting = $input[$key];
 	}

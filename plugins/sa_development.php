@@ -67,7 +67,7 @@ $sa_purl     =  $sa_url;                  //author website
 $sa_pdesc    =  'SA Development Suite';   //Plugin description
 $sa_ptype    =  '';                       //page type - on which admin tab to display
 $sa_pfunc    =  '';                       //main function (administration)
-  
+
 # register plugin
 register_plugin($thisfile,$sa_pname,$sa_pversion,$sa_pauthor,$sa_url,$sa_pdesc,$sa_ptype,$sa_pfunc);
 
@@ -76,7 +76,7 @@ require_once('sa_development/hooks.php');
 require_once('sa_development/sa_dev_functions.php');
 
 if(sa_dev_getconfig('disablexdebug')) xdebug_overload_var_dump(false); // disable xdebug
-  
+
 
 if(SA_DEBUG==true){
   error_reporting(E_ALL);
@@ -174,7 +174,7 @@ function sa_initHookDebug(){
   if(sa_bmarkingHooks()){
     # debugTitle('Debugging Hooks');
   }
-  
+
   if(sa_showingHooks() || sa_bmarkingHooks()){
     foreach($FRONT_END_HOOKS as $key=>$value){
       if($SA_DEV_GLOBALS['bmark_hooks_front']) add_action($key, 'sa_bmark_hook_debug',array($key));
@@ -209,21 +209,21 @@ function sa_initFilterDebug(){
 
 function sa_debugMenu(){ // outputs the dev menu
   GLOBAL $SA_DEV_GLOBALS, $SA_DEV_BUTTONS;
-    
+
   $site = pageIsFrontend() ? 'front' : 'back';
   $sitecode = pageIsFrontend() ? 'f' : 'b';
   $sh = '?'.get_toggleqstring('show_hooks_'.$site,'sa_sh'.$sitecode).'#sa_debug_title';
   $bh = '?'.get_toggleqstring('bmark_hooks_'.$site,'sa_bh'.$sitecode).'#sa_debug_title';
   $lh = '?'.get_toggleqstring('live_hooks','sa_lh').'#sa_debug_title';
   $pd = '?'.get_toggleqstring('php_dump','sa_php').'#sa_debug_title';
-  
+
   $reset = sa_dev_qstring('sa_sh'.$sitecode);
   $reset = '?'.sa_dev_qstring('sa_bh'.$sitecode,null,$reset);
-    
+
   # debugLog($reset);
   # debugLog($sh);
   # debugLog($bh);
-   
+
   $local_menu = array();
   $local_menu[] = array('title'=>'Reset','url'=> $reset);
   $local_menu[] = array('title'=>'Show Hooks','url'=> $sh,'on'=>$SA_DEV_GLOBALS['show_hooks_'.$site],'about'=>'Show hooks on page');
@@ -239,7 +239,7 @@ function sa_debugMenu(){ // outputs the dev menu
     echo sa_dev_makebuttons($SA_DEV_BUTTONS,true,10);
   }
   echo '</ul></div>';
-  
+
 }
 
 function sa_dev_makebuttons($buttons,$custom=false,$startid = 0){ // creates individual dev buttons
@@ -247,7 +247,7 @@ function sa_dev_makebuttons($buttons,$custom=false,$startid = 0){ // creates ind
   $classon = '_on';
   $classcustom = '_custom';
   $id = $startid;
-  
+
   foreach($buttons as $button){
     $class = 'class="sa_dev';
     $about = $button['title'];
@@ -257,7 +257,7 @@ function sa_dev_makebuttons($buttons,$custom=false,$startid = 0){ // creates ind
     $buttonstr.='<li><a id="dev_but_'.$id.'" '.$class.'" href="'.$button['url'].'" title="'.$about.'">'.$button['title'].'</a></li>';
     $id++;
   }
-  
+
   return $buttonstr;
 }
 
@@ -272,7 +272,7 @@ function sa_dev_executeheader(){ // assigns assets to queue or header
   GLOBAL $PLUGIN_ID, $PLUGINPATH, $owner;
 
   # debugLog("sa_dev_executeheader");
-  
+
   $regscript = $owner."register_script";
   $regstyle  = $owner."register_style";
   $quescript = $owner."queue_script";
@@ -288,19 +288,19 @@ function sa_logRequests(){
   if(isset($_POST) and count($_POST) > 0){
     _debuglog('PHP $_POST variables',$_POST);
   }
-  
+
   if(isset($_GET) and count($_GET) > 0){
     _debuglog('PHP $_GET variables',$_GET);
   }
-  
+
 }
 
 function sa_debugConsole(){  // Display the log
   global $GS_debug,$stopwatch,$sa_console_sent,$sa_phperr_init,$SA_CM_THEME,$overridexdebug;
-  
+
   if(!$sa_console_sent){
     sa_logRequests();
-    
+
     if(sa_liveHooks()){
       # debugTitle('Debugging Hooks');
       sa_dumpLiveHooks();
@@ -313,17 +313,17 @@ function sa_debugConsole(){  // Display the log
 
     sa_finalCallout();
   }
-  
+
   # // tie to debugmode deprecated
   # if(defined('GSDEBUG') and !pageIsFrontend()) return;
-    
+
     echo '<script type="text/javascript">'."\n";
     echo '(function ($) {';
     echo 'jQuery(document).ready(function() {'."\n";
     echo '$("h2:contains(\''. i18n_r('DEBUG_CONSOLE') .'\'):not(\'#sa_debug_header\')").remove();';
-    
+
     $collapse = true;
-    
+
     if($collapse){
       echo '
           //toggle the componenet with class msg_body
@@ -332,7 +332,7 @@ function sa_debugConsole(){  // Display the log
             if($(this).next().next(".sa_collapse").css("display")=="none"){
               $(this).next(".sa_expand").removeClass("sa_icon_closed").addClass("sa_icon_open");
             }
-            
+
             $(this).next().next(".sa_collapse").slideToggle(200,function(){
               if($(this).css("display")=="none"){
                   $(this).prev(".sa_expand").removeClass("sa_icon_open").addClass("sa_icon_closed");
@@ -340,7 +340,7 @@ function sa_debugConsole(){  // Display the log
             });
           });
       ';
-        
+
     echo "
       function collapseAll(){
         $('.sa_collapse').hide();
@@ -370,7 +370,7 @@ function sa_debugConsole(){  // Display the log
     }
     echo '<div id="sa_gsdebug-wrapper" class="fullwidth">
     <div class="sa_gsdebug-wrap">';
-    
+
     if(!$sa_console_sent){
       echo '
       <span id="sa_debug_sig"><a href="http://tablatronix.com/getsimple-cms/sa-dev-plugin" target="_blank">sa_development</a></span>
@@ -378,7 +378,7 @@ function sa_debugConsole(){  // Display the log
       ';
       echo sa_debugMenu();
     }
-    
+
     echo "\n";
     echo'<div id="sa_gsdebug" class="cm-s-'.sa_dev_getconfig('theme').'">';
     // echo'<div id="float"><div class="marker"></div></div>';
@@ -388,7 +388,7 @@ function sa_debugConsole(){  // Display the log
     if(!$sa_console_sent){
       echo 'GS Debug mode is: ' . ((defined('GSDEBUG') and GSDEBUG == 1) ? '<span class="cm-tag"><b>ON</b></span>' : '<span class="cm-error"><b>OFF</b></span>') . '<br />';
       echo 'PHP Error Level: <small><span class="cm-comment">(' . $sa_phperr_init . ') ' .error_level_tostring($sa_phperr_init,'|') . "</span></small>";
-      
+
       // XDEBUG WARNINGS
       $xdebugstate = xdebug_overload_var_dump();
       if($xdebugstate){
@@ -427,7 +427,7 @@ function sa_debugConsole(){  // Display the log
     }
     echo '</pre>';
     echo '</div>';
-    
+
     if($sa_console_sent != true){
       echo '
         <div id="sa_debug_footer">
@@ -461,7 +461,7 @@ function sa_echo_filter($unfiltered,$args = array()){
   // gs does not pass args to filters, so this is empty
   // would be nice to add this feature to core
   // find another way to enumerate the current filter I have forgotten atm
-  
+
   $filterid = $args[0];
   // _debugLog(__FUNCTION__, $filterid);
 
@@ -510,13 +510,13 @@ XML;
   );
 
   if(isset($filtercontent[$filterid])){
-    if( is_object($filtercontent[$filterid]) && get_class($filtercontent[$filterid]) == 'SimpleXMLElement')  sxml_append($unfiltered,$filtercontent[$filterid]);
+    if( is_object($filtercontent[$filterid]) && $filtercontent[$filterid]::class == 'SimpleXMLElement')  sxml_append($unfiltered,$filtercontent[$filterid]);
     else $unfiltered .= " " .$filtercontent[$filterid];
     // _debugLog($unfiltered);
     return $unfiltered;
   }
   else return $unfiltered;
-  
+
 }
 
 // HOOK DEBUGGING
@@ -541,19 +541,19 @@ function sa_bmark_hook_print($hook_id){
 class StopWatch {
     public $total;
     public $time;
-    
+
     public function __construct() {
         $this->total = $this->time = microtime(true);
     }
-    
+
     public function clock() {
         return -$this->time + ($this->time = microtime(true));
     }
-    
+
     public function elapsed() {
         return round(microtime(true) - $this->total,6);
     }
-    
+
     public function reset() {
         $this->total=$this->time=microtime(true);
     }
@@ -627,9 +627,9 @@ function vdump($args,$func = null){
     local_debug($func);
 
     GLOBAL $debugLogFunc,$overridexdebug;
-    
+
     $debugstr = ''; // for local debugging because we can create infinite loops by using debuglog inside debuglogs
-    
+
     if(isset($args) and gettype($args)!='array'){
       die('args missing');
       $args = func_get_args();
@@ -637,23 +637,23 @@ function vdump($args,$func = null){
     }else{
       $numargs = count($args);
     }
-    
+
     // ! backtrace arguments are passed by reference !
     // todo: make this totally safe with no chance of modifying arguments. make copies of everything
-    
+
     $backtrace = debug_backtrace();
     local_debug("<h2>bt </h2><pre>".print_r($backtrace,true)."</pre>");
-    
+
     $dlfuncname = isset($func) ? $func : $debugLogFunc;
     local_debug("<h2>bt function</h2><pre>".print_r($dlfuncname,true)."</pre>");
-    
+
     $lineidx =  sadev_btGetFuncIndex($backtrace,$dlfuncname);
     local_debug("<h2>bt lineindex</h2><pre>".print_r($lineidx,true)."</pre>");
-    
+
     if(!isset($lineidx)) $lineidx = 1;
     $funcname = $backtrace[$lineidx]['function'];
     local_debug("<h2>bt funcname</h2><pre>".print_r($funcname,true)."</pre>");
-    
+
     $file = isset($backtrace[$lineidx]['file']) ? $backtrace[$lineidx]['file'] : __FILE__; // php bug
     local_debug("<h2>bt file</h2><pre>".print_r($file,true)."</pre>");
     // @todo: handle evald code eg. [file] => /hsphere/local/home/salverso/tablatronix.com/getsimple_dev/plugins/i18n_base/frontend.class.php(127) : eval()'d code
@@ -664,7 +664,7 @@ function vdump($args,$func = null){
 
     if($line > 0) $codeline = $code!=false ? trim($code[$line-1]) : 'anon function call';
     else $codeline = '';
-    
+
     local_debug("<h2>bt code</h2><pre>".print_r($codeline,true)."</pre>");
     local_debug("hr");
     /* Finding our originating call in the backtrace so we can extract the code line and argument nesting depth
@@ -681,7 +681,7 @@ function vdump($args,$func = null){
      *  makes nesting predictable, even if it adds more levels.
      *  It is possible I am simply missing something here that is obvious.
      */
-    
+
     // reduce array depth and adjust arg count
     if($lineidx>1){
       for($i=0;$i<$lineidx-1;$i++){
@@ -689,24 +689,24 @@ function vdump($args,$func = null){
       }
       $numargs = count($args);  // redo numargs, else it will stay the 1 from func_get_args
     }
-        
+
     $arg1 = isset($args[0]) ? $args[0] : ''; // avoids constant isset checking in some logic below.
     // todo: breaks nulls
-    
+
     #$argnames = preg_replace('/'. __FUNCTION__ .'\((.*)\)\s?;/',"$1",$codeline);
     $argstr = preg_replace('/.*'.$funcname.'\((.*)\)\s?;.*/',"$1",$codeline);
     $argnames = array();
     $argnames = sa_parseFuncArgs($argstr);
     $argn = 0;
-    
+
     # debugLog(print_r($argstr,true));
     # debugLog(print_r($argnames,true));
-    
+
     $collapsestr= '<span class="sa_expand sa_icon_open"></span><span class="sa_collapse">';
     $bmark_str = bmark_line();
     $str = "";
-    
-    if($numargs > 1 and gettype($arg1)=='string' and !empty($arg1) and ( gettype($args[1])!='string' or strpos($argnames[1],'$') === 0)){
+
+    if($numargs > 1 and gettype($arg1)=='string' and !empty($arg1) and ( gettype($args[1])!='string' or str_starts_with($argnames[1], '$'))){
       // if a string and more arguments, we treat first argumentstring as title, and shift it off the arg array
       $str.=('<span class="titlebar special" title="(' . sa_get_path_rel($file) . ' ' . $line . ')">'.htmlspecialchars($arg1).$bmark_str.'</span>');
       array_shift($args);
@@ -719,7 +719,7 @@ function vdump($args,$func = null){
       $str.=('<span class="titlebar array object multi"' . sa_get_titlebar($file,$line, sa_get_codeline($line,$codeline) ) );
       $str.= $collapsestr;
     }
-    elseif($numargs == 1 and gettype($arg1)=='string' and strpos($argnames[0],'$') === false){
+    elseif($numargs == 1 and gettype($arg1)=='string' and !str_contains($argnames[0],'$')){
       // if string debug, basic echo, todo: this also catches functions oops
       $str=('<span class="string" title="(' . sa_get_path_rel($file) . ' ' . $line . ')">'.htmlspecialchars($arg1, ENT_QUOTES, 'UTF-8').'</span>');
       $str.= '<span>';
@@ -739,7 +739,7 @@ function vdump($args,$func = null){
       $str.="<span class='divider cm-comment'></span>";
     }
       ob_start();
-      
+
       if(!is_array($args)) return; // how the does this happen?
       foreach ($args as $arg){
         # if($argn > 0) print("\n");
@@ -748,7 +748,7 @@ function vdump($args,$func = null){
           if(gettype($arg) == 'array' and count($arg)>0) $str.= "\n"; // push array contents to new line
         }
 
-        
+
         // prevent xdebugs var_dump overload from ruining output, tmp disable and restore
         $xdebugstate = xdebug_overload_var_dump();
         if($xdebugstate && $overridexdebug) xdebug_overload_var_dump(false);
@@ -756,22 +756,22 @@ function vdump($args,$func = null){
         var_dump($arg);
 
         $dump = ob_get_clean();
-        
+
         if(xdebug_overload_var_dump()) $str .= $dump; // safety in case xdebug could not be disabled
         else $str .= htmlspecialchars($dump,ENT_NOQUOTES);
-        
+
         if($overridexdebug) xdebug_overload_var_dump($xdebugstate); // restore xdebug
-        
+
         $argn++;
       }
 
    // cannot use this as it contains partial html from the collapse and headers from above
    #  debugLog("default output: " . $str."<br/>");
-    
+
     $str = sa_dev_highlighting($str);
     $str = trim($str);
     return nl2br($str).'</span>';
-    
+
     // debug with backtrace output
     // return nl2br($str).'<br>'.nl2br(sa_debug_backtrace(null,$backtrace)).'</span>';
     // return nl2br($str).'</span><pre>'.nl2br(print_r($backtrace,true)).'</pre>';
@@ -784,7 +784,7 @@ function local_debug($msg){
 function sa_dev_highlighting($str){
     // added &? to datatypes for new reference output from var_dump
     // indented are for print_r outputs
-    
+
     $str = preg_replace('/"('.PHP_EOL.')"/', urlencode(PHP_EOL), $str); // remove newlines when values
 
     $str = preg_replace('/=&gt;(\s+)/', ' &gt; ', $str); // remove whitespace
@@ -814,7 +814,7 @@ function sa_dev_highlighting($str){
     $str = str_replace('&amp;bool(true)',                                      "<!-- 19 --><span class='cm-variable-2'>bool&bull;</span><span class='cm-number'><b>true</b></span>", $str);  // &bool(true)
     $str = preg_replace('/}\n/',                                               "<!-- 20 --></span>\n<span class='cm-bracket'>}</span>\n", $str); // closing ) bracket
       $str = preg_replace('/\)\n/',                                            "<!-- 21 --></span>\n<span class='cm-bracket'>)</span>\n", $str); // closing } bracket
-    
+
     $str = str_replace("\n\n","\n",$str);
     # if($argn == 1) $str = str_replace("\n","",$str);
     return $str;
@@ -827,34 +827,34 @@ function sa_dev_ErrorHandler($errno, $errstr='', $errfile='', $errline='',$errco
     GLOBAL $sa_phperr_init;
 
     # _debugLog(error_reporting(),$errno, $errstr, $errfile, $errline);
-    
+
     /*  Of particular note is that error_reporting() value will be 0 if
      *  the statement that caused the error was prepended by the @ error-control operator.
      */
-    
+
     $errorReporting = error_reporting();
-    
+
     // handle supressed errors
     $debugSuppressed  = sa_dev_getconfig('showsuppressederrors');
-    
+
     $showingSuppressed = false; // flag
-    
+
     if((defined('GSDEBUG') and GSDEBUG == 1) and $debugSuppressed == true){
       #$errorReporting = -1;
       #$errno=0;
       $showingSuppressed = true;
       $errno = 0;
     }
-    
+
     // _debugLog(error_reporting(),$errno, $errstr, $errfile, $errline);
-    
+
     // Ignore if error reporting is off, unless parse error
     if (!($errorReporting & $errno) and $errno!=E_PARSE and $showingSuppressed != true) {
         // This error code is not included in error_reporting
         // unless parse error , then we want user to know
         return;
     }
-    
+
     // check if function has been called by an exception
     if(func_num_args() == 5) {
         // called by trigger_error()
@@ -874,7 +874,7 @@ function sa_dev_ErrorHandler($errno, $errstr='', $errfile='', $errline='',$errco
         // $backtrace = $exc->getTrace();
         // _debugLog($backtrace);
     }
-    
+
     $errorType = array(
                0                => '@SUPPRESSED',           // 0
                E_ERROR          => 'ERROR',                 // 1
@@ -898,23 +898,23 @@ function sa_dev_ErrorHandler($errno, $errstr='', $errfile='', $errline='',$errco
     } else {
         $err = 'CAUGHT EXCEPTION';
     }
-    
+
     $out = '';
     /* Don't execute PHP internal error handler */
     $collapsestr = '<span class="sa_expand sa_icon_open"></span><span class="sa_collapse">';
     $str = '<span class="ERROR"><span class="titlebar '.strtolower($err).'" title="(' . sa_get_path_rel($errfile) . ' ' . $errline . ')">PHP '.$err.bmark_line().'</span>'; 
     $str.= $collapsestr;
     $err = sa_debug_handler($errno, $errstr, $errfile, $errline, $errcontext);
-    
+
     $out .= $str.$err;
-    
+
     $backtraceall = sa_dev_getconfig('showerrorbacktracealways'); // @todo OPTION if false will not backtrace notices
     if( ($errno!== E_USER_NOTICE and $errno!== E_NOTICE and $errno !== 0) or $backtraceall == true){
       $out .= '<div><span class="cm-default"><b>Backtrace</b></span><span class="cm-tag"> &rarr; </span></div>';
       $backtrace = nl2br(sa_debug_backtrace(2)); // skip level = 2,  skipping sa_debug_backtrace(), sa_dev_errorhandler()
       $out .= $backtrace == '' ? 'backtrace not available' : $backtrace;
     }
-    
+
     $out .= '</span>';
     debugLog($out);
     $showerrorcontext = sa_dev_getconfig('showerrorcontext'); // @todo OPTION show error context, array of all variables in scope when error occured
@@ -932,7 +932,7 @@ function sa_dev_ErrorHandler($errno, $errstr='', $errfile='', $errline='',$errco
         default:
           # exit();
     }
-    
+
     return true;
 }
 
@@ -970,7 +970,7 @@ function sa_emptyDoc($error){
   } else {
     $errorclass='';
   }
-  
+
   if(!$sa_console_sent){
     echo '<!DOCTYPE html>
       <html lang="en">
@@ -993,7 +993,7 @@ function sa_emptyDoc($error){
   }else {
     sa_debugConsole();
   }
-    
+
 }
 
 if(sa_user_is_admin()){
@@ -1043,19 +1043,15 @@ function sa_getErrorReporting()
 }
 
 function sa_setErrorReporting($int = 0){
-  // credit to feroz Zahid @ php.net
-  
-  // set PHP error reporting
-  switch($int) {
-    case 0: error_reporting(0); break;                                          # 0 - Turn off all error reporting
-    case 1: error_reporting(E_ERROR | E_WARNING | E_PARSE); break;              # 1 - Running error
-    case 2: error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE); break;   # 2 - Running errors + notices
-    case 3: error_reporting(E_ALL ^ (E_NOTICE | E_WARNING)); break;             # 3 - All errors except notices and warnings
-    case 4: error_reporting(E_ALL ^ E_NOTICE); break;                           # 4 - All errors except notices
-    case 5: error_reporting(E_ALL); break;                                      # 5 - All errors
-    default:
-        error_reporting(E_ALL);                                                 # DEFAULT to all errors
-    }
+  match ($int) {
+      0 => error_reporting(0),
+      1 => error_reporting(E_ERROR | E_WARNING | E_PARSE),
+      2 => error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE),
+      3 => error_reporting(E_ALL ^ (E_NOTICE | E_WARNING)),
+      4 => error_reporting(E_ALL ^ E_NOTICE),
+      5 => error_reporting(E_ALL),
+      default => error_reporting(E_ALL),
+  };
 }
 
 function sa_getErrorChanged(){
@@ -1077,7 +1073,7 @@ function sa_settings_extras(){
   @fixed: @float(NAN 
   @fixed: @float(INF
   @fixed: @todo: backtrace does not show current function shows last include and stops
-  
+
   @fixed: xdebug takes over var_dump, fucks it all up, disabling durign var_dump, @todo: make a function wrapper fo use anytime.
   @todo: automatic timestamp detection, detect unixtime strings and show time formatted
   @todo: auto colors highlighting and html syntax highlighting, rgb, and #hex, edtect html and run html highlight on it.

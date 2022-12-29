@@ -210,12 +210,12 @@ class Model
 
 		if(!is_string($cat)) return false;
 
-		if(false !== strpos($cat, '='))
+		if(str_contains($cat, '='))
 		{
 			$data = explode('=', $cat, 2);
 			$key = strtolower(trim($data[0]));
 			$val = trim($data[1]);
-			if(false !== strpos($key, ' '))
+			if(str_contains($key, ' '))
 				return false;
 
 			if($key != 'name')
@@ -529,7 +529,7 @@ class Model
 		// process custom Fieldtype settings
 		foreach($input as $key => $value)
 		{
-			if(strpos($key, 'custom-') !== false)
+			if(str_contains($key, 'custom-'))
 			{
 				$fieldkey = str_replace('custom-', '', $key);
 				$currfield->configs->$fieldkey = $value;

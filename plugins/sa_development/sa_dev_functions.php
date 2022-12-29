@@ -230,13 +230,13 @@ function sa_get_bt_arg(&$arg) { // retreives backtrace arguments
         $arr = (array)$arg;
         $args = array();
         foreach($arr as $key => $value) {
-            if (strpos($key, chr(0)) !== false) {
+            if (str_contains($key, chr(0))) {
                 $key = '';    // Private variable found
             }
             $args[] =  '['.$key.'] => '.sa_get_bt_arg($value);
         }
 
-        $arg = get_class($arg) . ' Object ('.implode(',', $args).')';
+        $arg = $arg::class . ' Object ('.implode(',', $args).')';
     }
 }
 

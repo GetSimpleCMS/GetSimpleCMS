@@ -40,7 +40,7 @@ function sa_hc_init(){
 	foreach($compnames as $compname){
 		$compname = (string)$compname;
 		
-		if(strpos($compname,'hook_') === false) continue;		
+		if(!str_contains($compname,'hook_')) continue;		
 		$compname = substr($compname,5);
 		
 		add_action($compname,'sa_hc_exec_component',array('hook_'.$compname));	

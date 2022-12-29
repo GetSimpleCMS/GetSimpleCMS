@@ -67,28 +67,28 @@ switch($_GET['mode']){
 		try {
 			if (!filepath_is_safe(GSDATAUPLOADPATH.$img, GSDATAUPLOADPATH))
 				throw new Exception('Source image not exists!');
-			
+
 			$sourcePath = GSDATAUPLOADPATH.$img;
-			
+
 			//file exists and its modification date is older than source
 			$cachedExists = file_exists(EG_ADMINTHUMBS . $img) && @filemtime($sourcePath) <= filemtime(EG_ADMINTHUMBS . $img);
-			
+
 			if ($cachedExists){
 				$sourcePath = EG_ADMINTHUMBS . $img;
 			}
 
 			$t = new EGImage($sourcePath);
-			
+
 			if (!$cachedExists){
 				$t->resize(180, 120, 'fit', true);
-				
+
 				if ( !file_exists(dirname(EG_ADMINTHUMBS . $img)) ){ //directory not exists, prepare one, requsivly
 					mkdir(dirname(EG_ADMINTHUMBS . $img), 0755, true);
 				}
-				
+
 				$t->save(EG_ADMINTHUMBS . $img, 92);
 			}
-			
+
 			$t->render(172800); //two days
 		} catch (Exception $e) {
 			EGImage::renderError( $e->getMessage(), 180, 120 );

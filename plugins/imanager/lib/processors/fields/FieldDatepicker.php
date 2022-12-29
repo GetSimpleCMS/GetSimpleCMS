@@ -30,27 +30,14 @@ class FieldDatepicker implements FieldInterface
 		$value = '';
 		if(!empty($this->value))
 		{
-			switch($format)
-			{
-				case 'dd-mm-yy':
-					$value = date('d-m-Y', $this->value);
-					break;
-				case 'yy/mm/dd':
-					$value = date('Y/m/d', $this->value);
-					break;
-				case 'dd/mm/yy':
-					$value = date('d/m/Y', $this->value);
-					break;
-				case 'yy.mm.dd':
-					$value = date('Y.m.d', $this->value);
-					break;
-				case 'dd.mm.yy':
-					$value = date('d.m.Y', $this->value);
-					break;
-				default:
-					$value = date('Y-m-d', $this->value);
-					break;
-			}
+			$value = match ($format) {
+       'dd-mm-yy' => date('d-m-Y', $this->value),
+       'yy/mm/dd' => date('Y/m/d', $this->value),
+       'dd/mm/yy' => date('d/m/Y', $this->value),
+       'yy.mm.dd' => date('Y.m.d', $this->value),
+       'dd.mm.yy' => date('d.m.Y', $this->value),
+       default => date('Y-m-d', $this->value),
+   };
 		}
 
 		$output = $this->tpl->render($textfield, array(

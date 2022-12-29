@@ -1,6 +1,6 @@
 <?php
 global $xml, $url;
-if (strpos($url,'_') === false) {
+if (!str_contains($url,'_')) {
   $parent = $_POST['post-parent'];
   $after = $_POST['post-menu-order'];
   $pages = return_i18n_pages();

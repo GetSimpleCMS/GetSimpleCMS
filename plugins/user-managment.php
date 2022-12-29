@@ -728,7 +728,7 @@ function mmManageUsersForm()
 			transparent;
 		}
 	</style>
-	
+
 
   <!-- Below is the 'Table Headers' For The user data -->
 	<h3 class="floated"><?php i18n('user-managment/TITLE'); ?></h3>
@@ -740,7 +740,7 @@ function mmManageUsersForm()
 			<a href="#" ONCLICK="decision('<?php i18n('user-managment/UPDATESURE'); ?>', 'load.php?id=user-managment&download_id=133')"><?php i18n('user-managment/UPDATE'); ?></a>
 		</p>
 	</div>
-	
+
 	<table class="user_table">
 	<tr>
 		<th>Username:</th>
@@ -835,7 +835,7 @@ function mmManageUsersForm()
 		$editchecked = "checked";
 	}
 	else {$editchecked = "";}
-	
+
 	//Html Editor
 	if ($xml->HTMLEDITOR == "") 
 	{
@@ -858,14 +858,14 @@ function mmManageUsersForm()
 	//Below is the User Data
 
 ?>
-   
+
 	<script language="javascript">
 		function decision(message, url){
 			if(confirm(message)) location.href = url;
 		}
 	</script>
-	 
-	   
+
+
 	<tr class="user_tr">
 		<td>
 			&nbsp;<?php echo $xml->USR; ?>
@@ -885,15 +885,15 @@ function mmManageUsersForm()
 
 	<!-- Begin 'Edit User' Form -->
 	<form method="post" action="load.php?id=user-managment">
-	
+
 	<!-- Edit Username -->
 	<tr class="hide-div<?php echo $xml->USR; ?> user_sub_tr" style="">
-	
+
 		<td style="">
 			<label for="users_name"><?php i18n('user-managment/USERS_NAME'); ?></label>
 			<input class="text" id="users_name" name="users_name" type="text" value="<?php echo $xml->USERSNAME; ?>" />
 		</td>
-		
+
 		<!-- Edit Email -->
 		<td style="">
 			<br/>
@@ -905,7 +905,7 @@ function mmManageUsersForm()
 			<br/>
 			<input name="usereditor" id="usereditor" type="checkbox" <?php echo $cchecked; ?> />
 		</td>
-		
+
 	<!-- Change Password -->
 	</tr>
 	<tr class="hide-div<?php echo $xml->USR; ?> user_sub_tr" style="">
@@ -934,7 +934,7 @@ function mmManageUsersForm()
 			</select>
 		</td>
 	</tr>
-     
+
 	<tr class="hide-div<?php echo $xml->USR; ?> user_sub_tr" style="">
 		<td colspan="4" height="16">
 			<div style="padding-top:5px;padding-bottom:10px;">
@@ -951,7 +951,7 @@ function mmManageUsersForm()
 			<h3 style=""><?php i18n('user-managment/PERM') ?></h3>
 		</td>
 	</tr>
-				
+
 	<tr class="hide-div<?php echo $xml->USR; ?> user_sub_tr" style="">
 		<td colspan="4">
 		<div class="perm_div"><label><?php i18n('user-managment/PAGES'); ?></label>
@@ -1022,7 +1022,7 @@ function mmManageUsersForm()
 	</div>
 	<input type="hidden" name="nano" value="<?php echo $xml->PWD; ?>"/><input type="hidden" name="usernamec" value="<?php echo $xml->USR; ?>"/>
 	</form>
- 
+
 
 
 <?php
@@ -1033,7 +1033,7 @@ echo '<script type="text/javascript">';
   foreach (glob($dir) as $file) {
       $xml = simplexml_load_file($file) or die("Unable to load XML file!");
 	  ?>
-	  
+
       $(".edit-user<?php echo $xml->USR; ?>").click(function () {
 		  $(".edit-user<?php echo $xml->USR; ?>").slideUp();         
 		  $(".hide-user<?php echo $xml->USR; ?>").slideDown();        

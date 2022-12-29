@@ -19,7 +19,7 @@ if ($EDTOOL == 'advanced') {
   ]";
 } elseif ($EDTOOL == 'basic') {
   $TOOLBAR = "[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']]";
-} elseif (strpos($EDTOOL, '[') === false) {
+} elseif (!str_contains($EDTOOL, '[')) {
   $TOOLBAR = "'$EDTOOL'";
 } else {
   $TOOLBAR = "[$EDTOOL]";

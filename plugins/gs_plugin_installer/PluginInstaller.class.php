@@ -10,12 +10,10 @@ class PluginInstaller
 {
 
     protected $plugins;
-    protected $cache_path;
 
 
-    public function __construct($cache_path)
+    public function __construct(protected $cache_path)
     {
-        $this->cache_path = $cache_path;
     }
 
 
@@ -66,7 +64,7 @@ class PluginInstaller
      * @param mixed $data array to save as json
      * @param string $file the filepath of the cache file.
      */
-    function saveCache($data, $file = false)
+    function saveCache(mixed $data, $file = false)
     {
         if (!$file) $file = $this->cache_path;
 
@@ -314,7 +312,7 @@ class PluginInstaller
      * Sets the path to the cache file
      * @param mixed $cache_path path to cache file (absolute path)
      */
-    public function setCachePath($cache_path)
+    public function setCachePath(mixed $cache_path)
     {
         $this->cache_path = $cache_path;
     }

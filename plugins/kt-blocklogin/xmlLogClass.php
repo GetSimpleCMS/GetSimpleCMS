@@ -80,7 +80,7 @@ static function kt_create_class($ktip , $ktiptime) {
 	try{
 		return new xmlLogClass($ktip , $ktiptime);
 	}
-	catch (xmlLogClassError $e){
+	catch (xmlLogClassError){
 		return false;
 	}
 }

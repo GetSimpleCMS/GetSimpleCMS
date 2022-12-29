@@ -42,15 +42,33 @@ add_filter('content','add_toc');
 $SA_TOC_DEBUG = false;
 
 $allowargs = array(
-  'depth' => create_function('$input', 'return filter_var(intval($input), FILTER_VALIDATE_INT, array(1,6));' ),
-  'class' => create_function('$input', 'return filter_var($input, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);'),
-  'asc'   => create_function('$input', 'return true;'),
-  'abs'   => create_function('$input', 'return true;'),
-  'ul'    => create_function('$input', 'return true;'),
-  'ol'    => create_function('$input', 'return true;'),
-  'notoc' => create_function('$input', 'return true;'),
-  'debug' => create_function('$input', 'return true;'),
-  'demo'  => create_function('$input', 'return true;'),
+  'depth' => function ($input) {
+      return filter_var(intval($input), FILTER_VALIDATE_INT, array(1, 6));
+  },
+  'class' => function ($input) {
+      return filter_var($input, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+  },
+  'asc'   => function ($input) {
+      return true;
+  },
+  'abs'   => function ($input) {
+      return true;
+  },
+  'ul'    => function ($input) {
+      return true;
+  },
+  'ol'    => function ($input) {
+      return true;
+  },
+  'notoc' => function ($input) {
+      return true;
+  },
+  'debug' => function ($input) {
+      return true;
+  },
+  'demo'  => function ($input) {
+      return true;
+  },
 );
 
 define('SA_TOC_TRIGGER', 'sa_toc');

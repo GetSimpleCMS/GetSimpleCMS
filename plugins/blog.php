@@ -1019,7 +1019,7 @@ function savePost()
 function blog_display_posts() 
 {
 	GLOBAL $content;
-	
+
 	$Blog = new Blog;
 	$slug = base64_encode(return_page_slug());
 	$blog_slug = base64_encode($Blog->getSettingsData("blogurl"));
@@ -1065,7 +1065,7 @@ function blog_display_posts()
 		{
 			show_all_blog_posts();
 		}
-		
+
 		$content = ob_get_contents();
     ob_end_clean();		
 	}

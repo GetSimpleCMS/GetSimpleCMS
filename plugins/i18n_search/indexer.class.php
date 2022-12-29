@@ -4,8 +4,6 @@ class I18nSearchPageItem {
   
   static private $isi18n;
   static private $defaultLanguage;
-
-  private $data;
   private $defdata = null; // data of default language
   private $id;
   private $language = '';
@@ -16,27 +14,26 @@ class I18nSearchPageItem {
   private $content = '';
   private $fields = array();
 
-  public function __construct($pagedata) {
+  public function __construct(private $data) {
     if (!isset(self::$isi18n)) {
       self::$isi18n = function_exists('i18n_init');
       self::$defaultLanguage = function_exists('return_i18n_default_language') ? return_i18n_default_language() : '';
     }
-    $this->data = $pagedata;
     if (!self::$isi18n) {
-      $this->id = (string) $pagedata->url;
-    } else if (($pos = strpos((string) $pagedata->url,'_')) === false) {
-      $this->id = (string) $pagedata->url;
+      $this->id = (string) $data->url;
+    } else if (($pos = strpos((string) $data->url,'_')) === false) {
+      $this->id = (string) $data->url;
       $this->language = self::$defaultLanguage;
     } else {
-      $this->id = substr((string) $pagedata->url, 0, $pos);
-      $this->language = substr((string) $pagedata->url, $pos+1);
+      $this->id = substr((string) $data->url, 0, $pos);
+      $this->language = substr((string) $data->url, $pos+1);
     }
-    $metak = stripslashes(html_entity_decode($pagedata->meta, ENT_QUOTES, 'UTF-8'));
+    $metak = stripslashes(html_entity_decode($data->meta, ENT_QUOTES, 'UTF-8'));
     $this->tags = preg_split("/\s*,\s*/", trim($metak), -1, PREG_SPLIT_NO_EMPTY);
-    $this->title = html_entity_decode(stripslashes(htmlspecialchars_decode($pagedata->title)), ENT_QUOTES, 'UTF-8');
-    $this->content = html_entity_decode(strip_tags(stripslashes(htmlspecialchars_decode($pagedata->content))), ENT_QUOTES, 'UTF-8');
-    $this->pubDate = strtotime((string) $pagedata->pubDate);
-    $this->creDate = isset($pagedata->creDate) ? @strtotime((string) $pagedata->creDate) : $this->pubDate;
+    $this->title = html_entity_decode(stripslashes(htmlspecialchars_decode($data->title)), ENT_QUOTES, 'UTF-8');
+    $this->content = html_entity_decode(strip_tags(stripslashes(htmlspecialchars_decode($data->content))), ENT_QUOTES, 'UTF-8');
+    $this->pubDate = strtotime((string) $data->pubDate);
+    $this->creDate = isset($data->creDate) ? @strtotime((string) $data->creDate) : $this->pubDate;
   }
   
   public function __get($name) {
@@ -66,12 +63,10 @@ class I18nSearchPageItem {
       $this->defdata = getXML(GSDATAPAGESPATH . $this->id . '.xml');
       if (!$this->defdata) return null;
     }
-    switch ($name) {
-      case 'menuOrder': 
-        return (int) $this->defdata->$name;
-      default:
-        return (string) $this->defdata->$name;
-    }
+    return match ($name) {
+        'menuOrder' => (int) $this->defdata->$name,
+        default => (string) $this->defdata->$name,
+    };
   }
   
   public function addTags($fieldname, $tagarray) {

@@ -31,7 +31,7 @@ class I18nSearchViewer {
           die;
         } else {
           $href = function_exists('find_i18n_url') ? find_i18n_url($url,$parent) : find_url($url,$parent);
-          $href .= (strpos($url,'?') === false ? '?' : '&').$params['name'];
+          $href .= (!str_contains($url,'?') ? '?' : '&').$params['name'];
           self::$rssHeaders[] = '<link rel="alternate" type="application/rss+xml" title="'.htmlspecialchars(@$params['title']).'" href="'.htmlspecialchars($href).'" />';
         }
       }
@@ -46,7 +46,7 @@ class I18nSearchViewer {
     global $url, $parent, $SITEURL;
     if (!@$params['name']) return;
     $href = function_exists('find_i18n_url') ? find_i18n_url($url,$parent) : find_url($url,$parent);
-    $href .= (strpos($url,'?') === false ? '?' : '&').$params['name'];
+    $href .= (!str_contains($url,'?') ? '?' : '&').$params['name'];
     echo '<a href="'.htmlspecialchars($href).'"><img src="'.$SITEURL.'plugins/i18n_search/images/rss.gif" alt="rss" width="12" height="12"/> '.htmlspecialchars(@$params['title']).'</a>';
   }
   

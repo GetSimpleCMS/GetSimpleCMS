@@ -171,7 +171,7 @@ function simpledir_display($contents)
     }
     
     //check for directory traversal attempt and scrub to base directory
-    if (strpos(realpath($simpledir_dir),$simpledir_conf['dirpath']) !== 0)
+    if (!str_starts_with(realpath($simpledir_dir), $simpledir_conf['dirpath']))
       $simpledir_dir = $simpledir_conf['dirpath'];
 
     //rebuild clean param for links

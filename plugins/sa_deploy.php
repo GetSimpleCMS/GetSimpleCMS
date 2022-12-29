@@ -223,7 +223,7 @@ function doDeploy($type = 'branch', $typeid = "master", $key = '', $exc = array(
 	    "files"   => array("tip.zip","deploy.php","lastcommit.hash","deploy.conf","data.hash","sa_deploy.php","gsconfig.php",".htaccess"),
 	    "folders" => array("backups","plugins","data","sa_deploy")
 	);
-	
+
 	$deployconfig = array(
 		'username'   => $SA_DEPLOY_USERNAME,
 		'password'   => '',

@@ -341,7 +341,7 @@ if (!class_exists('customSettings')) {
       if ($prop === NULL)
         $prop = 'value';
       foreach ($tabToSearch as $setting) {
-        if (strpos(@$setting['lookup'], $group) !== FALSE) {
+        if (str_contains(@$setting['lookup'], $group)) {
           if ($prop === FALSE) {
             $result[str_replace($group . '_', '', @$setting['lookup'])] = $setting;
           } else if (isset($setting[$prop]))

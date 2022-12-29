@@ -380,25 +380,23 @@ class ItemMapper
 
 
 	/**
-	 * Returns a total number of given items
-	 *
-	 * @param array $items
-	 *
-	 * @return int
-	 */
-	public function countItems(array $items=array())
+  * Returns a total number of given items
+  *
+  *
+  * @return int
+  */
+ public function countItems(array $items=array())
 	{$locitems = !empty($items) ? $items : $this->items; return count($locitems);}
 
 
 	/**
-	 * Get single item
-	 *
-	 * @param $stat - Selector
-	 * @param array $items
-	 *
-	 * @return bool|mixed
-	 */
-	public function getItem($stat, array $items=array())
+  * Get single item
+  *
+  * @param $stat - Selector
+  *
+  * @return bool|mixed
+  */
+ public function getItem($stat, array $items=array())
 	{
 		$locitems = !empty($items) ? $items : $this->items;
 
@@ -415,7 +413,7 @@ class ItemMapper
 
 		// all parameter have to match the data
 		$treads = array();
-		if(false !== strpos($stat, '&&'))
+		if(str_contains($stat, '&&'))
 		{
 			$treads = explode('&&', $stat, 2);
 			$parts[] = trim($treads[0]);
@@ -434,7 +432,7 @@ class ItemMapper
 				return !empty($arr) ? reset($arr) : false;
 			}
 			// only one parameter have to match the data
-		} elseif(false !== strpos($stat, '||'))
+		} elseif(str_contains($stat, '||'))
 		{
 			$treads = explode('||', $stat, 2);
 			$parts[] = trim($treads[0]);
@@ -456,18 +454,17 @@ class ItemMapper
 
 
 	/**
-	 * Find matching item - Finds an item belonging to one category (returns exactly one result)
-	 *
-	 * @param $stat – A search selector: (name=Item Name) for example
-	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
-	 *                           to specific categories (NOTE: The specifying category id's could speed up the
-	 *                           searsh process!)
-	 *
-	 * @param array $limit_ids
-	 *
-	 * @return bool|mixed
-	 */
-	public function findItem($stat, array $limit_ids = array())
+  * Find matching item - Finds an item belonging to one category (returns exactly one result)
+  *
+  * @param $stat – A search selector: (name=Item Name) for example
+  * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
+  *                           to specific categories (NOTE: The specifying category id's could speed up the
+  *                           searsh process!)
+  *
+  *
+  * @return bool|mixed
+  */
+ public function findItem($stat, array $limit_ids = array())
 	{
 		$mapper = imanager()->getCategoryMapper();
 		if(!empty($limit_ids))
@@ -490,16 +487,14 @@ class ItemMapper
 
 
 	/**
-	 * Find matching items - Finds all items belonging to one category (returns matching items of a category)
-	 *
-	 * @param $stat – A search selector: (name=Item Name) for example
-	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
-	 *                           to specific categories (NOTE: The specifying category id's could speed up the
-	 *                           searsh process!)
-	 *
-	 * @return array|bool
-	 */
-	public function findItems($stat, array $limit_ids = array())
+  * Find matching items - Finds all items belonging to one category (returns matching items of a category)
+  *
+  * @param $stat – A search selector: (name=Item Name) for example
+  * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
+  *                           to specific categories (NOTE: The specifying category id's could speed up the
+  *                           searsh process!)
+  */
+ public function findItems($stat, array $limit_ids = array()): array|bool
 	{
 		$mapper = imanager()->getCategoryMapper();
 		if(!empty($limit_ids))
@@ -522,16 +517,14 @@ class ItemMapper
 
 
 	/**
-	 * Find all matching items - Finds all items of all categories (returns matching items of all categories)
-	 *
-	 * @param $stat – A search selector: (name=Item Name) for example
-	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
-	 *                           to specific categories (NOTE: The specifying category id's could speed up the
-	 *                           searsh process!)
-	 *
-	 * @return array|bool
-	 */
-	public function findAll($stat, array $limit_ids = array())
+  * Find all matching items - Finds all items of all categories (returns matching items of all categories)
+  *
+  * @param $stat – A search selector: (name=Item Name) for example
+  * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
+  *                           to specific categories (NOTE: The specifying category id's could speed up the
+  *                           searsh process!)
+  */
+ public function findAll($stat, array $limit_ids = array()): array|bool
 	{
 		$allItems = array();
 		$count = 0;
@@ -608,7 +601,7 @@ class ItemMapper
 		// ***** HIER ENDET DER TESTBEREICH *****
 
 
-		if(false !== strpos($stat, '&&'))
+		if(str_contains($stat, '&&'))
 		{
 			$treads = explode('&&', $stat, 2);
 			$parts[] = trim($treads[0]);
@@ -632,7 +625,7 @@ class ItemMapper
 				return $arr;
 			}
 			// only one parameter have to match the data
-		} elseif(false !== strpos($stat, '||'))
+		} elseif(str_contains($stat, '||'))
 		{
 			$treads = explode('||', $stat, 2);
 			$parts[] = trim($treads[0]);
@@ -712,7 +705,7 @@ class ItemMapper
 	 * @param array $items
 	 * @return boolean|array of objects of type Item
 	 */
-	public function filterItems($filterby, $option,  $offset=0, $length=0, array $items=array())
+	public function filterItems($filterby, $option,  $offset=0, $length=0, array $items=array()): bool|array
 	{
 		// reset offset
 		$offset = ($offset > 0) ? $offset-1 : $offset;
@@ -778,13 +771,12 @@ class ItemMapper
 
 
 	/**
-	 * Deletes an item
-	 *
-	 * @param Item $item
-	 * @param reinitialize flag $re
-	 * @return bool
-	 */
-	public function destroyItem(Item $item, $re = false)
+  * Deletes an item
+  *
+  * @param reinitialize flag $re
+  * @return bool
+  */
+ public function destroyItem(Item $item, $re = false)
 	{
 		if(file_exists(IM_ITEM_DIR.$item->get('id').'.'.$item->get('categoryid').IM_ITEM_FILE_SUFFIX))
 		{
@@ -800,7 +792,7 @@ class ItemMapper
 
 	protected function separateItem(array $items, $stat)
 	{
-		if (false !== strpos($stat, '='))
+		if (str_contains($stat, '='))
 		{
 			$data = explode('=', $stat, 2);
 			$key = strtolower(trim($data[0]));
@@ -820,7 +812,7 @@ class ItemMapper
 				$pat = '/'.strtolower(trim(str_replace('%', '', $val))).'/';
 			}
 
-			if(false !== strpos($key, ' ')) return false;
+			if(str_contains($key, ' ')) return false;
 
 			// Searching for the name and other simple attributs
 			if($key == 'id' || $key == 'name' || $key == 'label' || $key == 'position' || $key == 'active'
@@ -859,12 +851,12 @@ class ItemMapper
 
 		foreach($pattern as $pkey => $pval)
 		{
-			if(false !== strpos($stat, $pval))
+			if(str_contains($stat, $pval))
 			{
 				$data = explode($pval, $stat, 2);
 				$key = strtolower(trim($data[0]));
 				$val = trim($data[1]);
-				if(false !== strpos($key, ' '))
+				if(str_contains($key, ' '))
 					return false;
 
 				$num = substr_count($val, '%');
@@ -1006,12 +998,11 @@ class ItemMapper
 
 
 	/**
-	 * Reverse the array of items
-	 *
-	 * @param array $itemcontainer An array of objects
-	 * @return boolean|array
-	 */
-	public function reverseItems($itemcontainer)
+  * Reverse the array of items
+  *
+  * @param array $itemcontainer An array of objects
+  */
+ public function reverseItems($itemcontainer): bool|array
 	{
 		if(!is_array($itemcontainer)) return false;
 		return array_reverse($itemcontainer);
@@ -1019,12 +1010,11 @@ class ItemMapper
 
 
 	/**
-	 * Revise keys of the array of items and changes these into real item id's
-	 *
-	 * @param array $itemcontainer An array of objects
-	 * @return boolean|array
-	 */
-	public function reviseItemIds($itemcontainer)
+  * Revise keys of the array of items and changes these into real item id's
+  *
+  * @param array $itemcontainer An array of objects
+  */
+ public function reviseItemIds($itemcontainer): bool|array
 	{
 		if(!is_array($itemcontainer)) return false;
 		$result = array();

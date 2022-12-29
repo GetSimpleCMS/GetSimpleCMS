@@ -13,7 +13,7 @@
       if (strrpos($filename,'.xml') === strlen($filename)-4 && !is_dir(GSDATAPAGESPATH . $filename) && !preg_match($files_to_ignore, $filename)) {
 			  $data = getXML(GSDATAPAGESPATH . $filename);
         $url = (string) $data->url;
-        if ($is_i18n && strpos($url,'_') !== false) {
+        if ($is_i18n && str_contains($url,'_')) {
           $lang = substr($url, strpos($url,'_')+1);
           $url = substr($url, 0, strpos($url,'_'));
           if (!in_array($lang, $languages)) $languages[] = $lang;

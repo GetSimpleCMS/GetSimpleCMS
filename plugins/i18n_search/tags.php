@@ -70,7 +70,7 @@
   if (@$slug) {
     $pagedata = getXML(GSDATAPAGESPATH . $slug . '.xml');
     $link = function_exists('find_i18n_url') ? find_i18n_url($slug, (string) $pagedata->parent) : find_url($slug, (string) $pagedata->parent);
-    $link .= (strpos($link,'?') !== false ? '&' : '?') . 'tags=';
+    $link .= (str_contains($link,'?') ? '&' : '?') . 'tags=';
   }
   foreach ($alltags as $tag => &$urls) {
     if (substr($tag,0,1) == '_') continue;

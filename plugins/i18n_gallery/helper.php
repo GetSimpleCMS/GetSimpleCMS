@@ -82,7 +82,7 @@ function i18n_gallery_page_url() {
 function i18n_gallery_pic_link($gallery, $pic, $echo=true) {
   if ($pic >= 0) $pic = -$pic-1;
   $link = i18n_gallery_page_url(true);
-  $link .= strpos($link,'?') === false ? '?' : '&';
+  $link .= !str_contains($link,'?') ? '?' : '&';
   foreach ($_GET as $key => $value) if ($key != 'pic' && $key != 'id') $link .= $key.'='.urlencode($value).'&'; 
   $link .= 'pic='.urlencode($gallery['name']).':'.$pic; 
   if ($echo) echo str_replace('&','&amp;',$link); else return $link;
@@ -106,7 +106,7 @@ function i18n_gallery_thumbfile($filename, $w, $h, $c) {
 
 function i18n_gallery_back_link($echo=true) {
   $link = i18n_gallery_page_url(true);
-  $link .= strpos($link,'?') === false ? '?' : '&';
+  $link .= !str_contains($link,'?') ? '?' : '&';
   foreach ($_GET as $key => $value) if ($key != 'pic' && $key != 'id') $link .= $key.'='.urlencode($value).'&'; 
   if ($echo) echo str_replace('&','&amp;',$link); else return $link;
 }

@@ -171,7 +171,7 @@ if (!function_exists('i18n_search_archive')) {
     if ($showPaging && $numpages > 1) {
       // determine link
       $link = function_exists('get_i18n_page_url') ? get_i18n_page_url(true) : get_page_url(true);
-      $link .= (strpos($link,'?') !== false ? '&' : '?');
+      $link .= (str_contains($link,'?') ? '&' : '?');
       if (@$_REQUEST['tags']) $link .= 'tags='.urlencode(@$_REQUEST['tags']) . '&';
       if (@$_REQUEST['words']) $link .= 'words='.urlencode(@$_REQUEST['words']) . '&';
       $link1 = substr($link, 0, -1);

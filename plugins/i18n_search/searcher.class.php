@@ -3,7 +3,7 @@
 # class representing an excerpt of an HTML content
 # using the object in a string context will return the excerpt (as will obj->text)
 # obj->more will return true, if there is more content
-class I18nSearchExcerpt {
+class I18nSearchExcerpt implements \Stringable {
   
   private $text = '';
   private $more = false;
@@ -63,16 +63,15 @@ class I18nSearchExcerpt {
   }
   
   public function __get($name) {
-    switch ($name) {
-      case 'text': return $this->text;
-      case 'more': return $this->more;
-      case 'moreText':
-      case 'moretext': return $this->moreText;
-      default: return null;
-    }
+    return match ($name) {
+        'text' => $this->text,
+        'more' => $this->more,
+        'moreText', 'moretext' => $this->moreText,
+        default => null,
+    };
   }
   
-  public function __toString() {
+  public function __toString(): string {
     return $this->text . $this->moreText;
   }
 }
@@ -82,33 +81,22 @@ class I18nSearchResultItem {
 
   private static $defaultLanguage = null;
 
-  private $id;
-  private $language;
-  private $creDate;
-  private $pubDate;
-  private $score;
-
-  public function __construct($id,$language,$creDate,$pubDate,$score) {
+  public function __construct(private $id,private $language,private $creDate,private $pubDate,private $score) {
     if (self::$defaultLanguage === null) {
       self::$defaultLanguage = function_exists('return_i18n_default_language') ? return_i18n_default_language() : '';
     }
-    $this->id = $id;
-    $this->language = $language;
-    $this->creDate = $creDate;
-    $this->pubDate = $pubDate;
-    $this->score = $score;
   }  
   
   public function __get($name) {
-    switch ($name) {
-      case 'id': return $this->id;
-      case 'fullId': return $this->id . ($this->language && $this->language != self::$defaultLanguage ? '_'.$this->language : '');
-      case 'language': return $this->language;
-      case 'creDate': return $this->creDate;
-      case 'pubDate': return $this->pubDate;
-      case 'score': return $this->score;
-      default: return $this->get($name);
-    }
+    return match ($name) {
+        'id' => $this->id,
+        'fullId' => $this->id . ($this->language && $this->language != self::$defaultLanguage ? '_'.$this->language : ''),
+        'language' => $this->language,
+        'creDate' => $this->creDate,
+        'pubDate' => $this->pubDate,
+        'score' => $this->score,
+        default => $this->get($name),
+    };
   }
   
   public function __isset($name) {
@@ -192,12 +180,10 @@ class I18nSearchResultPage extends I18nSearchResultItem {
       $this->defdata = getXML(GSDATAPAGESPATH . $this->id . '.xml');
       if (!$this->defdata) return null;
     }
-    switch ($name) {
-      case 'menuOrder': 
-        return (int) $this->defdata->$name;
-      default:
-        return (string) $this->defdata->$name;
-    }
+    return match ($name) {
+        'menuOrder' => (int) $this->defdata->$name,
+        default => (string) $this->defdata->$name,
+    };
   }
 
 }
@@ -207,7 +193,6 @@ class I18nSearcher {
   
   private $tags = null;
   private $words = null;
-  private $language = null;
   private $transliteration = null;
   
   # for sorting
@@ -243,7 +228,7 @@ class I18nSearcher {
     return $tags;
   }
 
-  private function __construct($tags=null, $words=null, $order=null, $language=null) {
+  private function __construct($tags=null, $words=null, $order=null, private $language=null) {
     if (file_exists(GSDATAOTHERPATH.I18N_SEARCH_SETTINGS_FILE)) {
       $data = getXML(GSDATAOTHERPATH.I18N_SEARCH_SETTINGS_FILE);
       if (isset($data->transliteration) && (string) $data->transliteration) {
@@ -260,7 +245,6 @@ class I18nSearcher {
     }
     $this->tags = is_array($tags) ? $tags : (trim($tags) != '' ? preg_split("/\s+/", trim($tags)) : array());
     $this->words = is_array($words) ? $words : (trim($words) != '' ? preg_split("/\s+/", trim($words)) : array());
-    $this->language = $language;
     $order = trim($order);
     if (substr($order,0,1) == '+' || substr($order,0,1) == '-') {
       $this->sort_order = substr($order,0,1);
@@ -494,13 +478,13 @@ class I18nSearcher {
         }
         if (!$vetoed) $filteredresults[] = $item;
       }
-      switch ($this->sort_field) {
-        case 'url': usort($filteredresults, array($this,'compare_url')); break;
-        case 'date': usort($filteredresults, array($this,'compare_date')); break;
-        case 'created': usort($filteredresults, array($this,'compare_created')); break;
-        case 'score': usort($filteredresults, array($this,'compare_score')); break;
-        default: usort($filteredresults, array($this,'compare_field'));
-      }
+      match ($this->sort_field) {
+          'url' => usort($filteredresults, array($this,'compare_url')),
+          'date' => usort($filteredresults, array($this,'compare_date')),
+          'created' => usort($filteredresults, array($this,'compare_created')),
+          'score' => usort($filteredresults, array($this,'compare_score')),
+          default => usort($filteredresults, array($this,'compare_field')),
+      };
       if ($this->sort_order == '-') {
         $filteredresults = array_reverse($filteredresults);
       }

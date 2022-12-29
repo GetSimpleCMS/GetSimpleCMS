@@ -150,25 +150,25 @@ function file_mra_is_backend() {
 
 
 function file_mra_admin_process() {
-    
+
     global $file_mra_data_file;
-    
+
     // Check for submitted data
     if( isset( $_POST['submit'] ) ) {
-        
+
         // Save submitted data
-        
+
         $file_mra_submitted_data['main_color'] = $_POST['main_color'];
 		$file_mra_submitted_data['sidebar'] = $_POST['sidebar'];
 		$file_mra_submitted_data['layout'] = $_POST['layout'];
         $result = file_mra_save_settings( $file_mra_submitted_data );
-        
+
     }
-    
+
     $file_mra_settings = file_mra_read_settings();
-    
+
     echo '<h3>Modern Admin Settings</h3>';
-    
+
     if( isset( $result ) ) {
         if( $result == true ) { 
             echo '<p class="updated" style="width: 100%; background: #DFF8D9; border: none; padding: 10px; color: #777">Settings saved.</p>';
@@ -176,18 +176,18 @@ function file_mra_admin_process() {
             echo '<p class="error">Error saving data. Check permissions.</p>';
         }
     }
-        
+
     // file_mra_cookie_debug();
- 
+
     ?> 
     <form method="post" class="modern_admin2" action="<?php echo $_SERVER ['REQUEST_URI']; ?>"onSubmit="window.location.reload()">
-      
+
        <label>Select or enter color code</label><br><small>Example: 000</small>
-       
+
        <p>
         <input id="colorpickerField1" name="main_color" class="text" value="<?php echo $file_mra_settings['main_color']; ?>" style="width: 100px;" />
        </p>
-       
+
        <p>
        <label>Layout Type</label>
        <select name="layout" value="<?php echo $file_mra_settings['layout']; ?>">
@@ -196,8 +196,8 @@ function file_mra_admin_process() {
           <option value="Full Width">Full Width Layout</option>
         </select>
         </p>
-        
-       
+
+
        <p>
         <label>Sidebar Position</label>
         <select name="sidebar" value="<?php echo $file_mra_settings['sidebar']; ?>">
@@ -206,22 +206,22 @@ function file_mra_admin_process() {
          <option value="Sidebar Right">Sidebar Right</option>
         </select>  
        </p>
-       
-        
+
+
        <div style="clear:both; height: 10px"></div>
        <p>
          <input type="submit" id="submit" class="submit" value="<?php i18n('BTN_SAVESETTINGS'); ?>" name="submit" />
        </p>
-       
+
     </form>
-     
+
     <h3>Current color: #<?php echo $file_mra_settings['main_color']; ?>
      <span id="color-selector" style="display: inline-block; height: 20px; width: 20px; background: #<?php echo $file_mra_settings['main_color']; ?>"></span>
     </h3>
      <h3>Current layout: <?php echo $file_mra_settings['layout']; ?></h3>
      <h3>Current sidebar position: <?php echo $file_mra_settings['sidebar']; ?></h3>
-      
-    <?php
+
+<?php
 } 
 
 

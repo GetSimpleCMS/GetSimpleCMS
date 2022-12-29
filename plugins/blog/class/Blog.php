@@ -167,7 +167,7 @@ class Blog
 			}
 			elseif($filter == 'tags')
 			{
-				if(strpos($post['tags'], $value) !== false)
+				if(str_contains($post['tags'], $value))
 				{
 					$filtered_posts[$count] = $post;
 				}

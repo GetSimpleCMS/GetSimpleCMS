@@ -21,7 +21,7 @@ $imagedir = $datadir . 'uploads/';
 if (strpos($infile,'/data/thumbs/')) {
   $imagedir = $datadir . 'thumbs/';
   $infile = substr($infile,strpos($infile,'/data/thumbs/')+13);
-  if (strpos(basename($infile), PREFIX) === 0) die('Image not allowed!');
+  if (str_starts_with(basename($infile), PREFIX)) die('Image not allowed!');
 } else {
   if ($gsthumb) {
     $pos = strrpos($infile, '/');
@@ -36,7 +36,7 @@ if (strpos($infile,'/data/thumbs/')) {
     }
   }
 }
-if (strpos(dirname(realpath($imagedir.$infile)), realpath($imagedir)) !== 0) die('Invalid path!');
+if (!str_starts_with(dirname(realpath($imagedir.$infile)), realpath($imagedir))) die('Invalid path!');
 if (!$maxWidth && !$maxHeight) {
   $info = @getimagesize($imagedir.$infile);
   if (!$info) die('File not found or not an image!');
