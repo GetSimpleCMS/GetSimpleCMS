@@ -4,6 +4,7 @@
 *.sublime-*
 *.orig
 /lib
-
+/data/cache
+/data/other
 thumbs.db
 .DS_*
