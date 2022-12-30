@@ -70,7 +70,7 @@ function nm_show_archive($archive, $filter=true) {
  * @return true if posts shown
  * @since 3.3
  */
-function nm_show_tag_archive($tag=null, $archive, $filter=true) {
+function nm_show_tag_archive($tag=null, $archive=null, $filter=true) {
   global $NMSETTING;
   $archives = nm_get_archives($NMSETTING['archivesby'], $tag);
   if (array_key_exists($archive, $archives)) {
@@ -235,7 +235,7 @@ function nm_reset_options($pagetype='') {
     # extract settings
     foreach(preg_split('~\R~', $NMSETTING['customsettings']) as $line) {
       $line = trim($line);
-      if ($line && !str_starts_with($line, '#') && !str_starts_with($line, '//')) { // exclude empty and commented lines
+      if ($line && strpos($line,'#') !== 0 && strpos($line,'//') !== 0) { // exclude empty and commented lines
         $arr = explode(' ',preg_replace("/[[:blank:]]+/"," ",$line));
         if (count($arr) > 1) {
           if (in_array($arr[0], array('main','single','archive','tag','search')))

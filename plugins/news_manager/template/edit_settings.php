@@ -173,7 +173,7 @@
     <textarea style="height:150px" name="customsettings" id="customsettings"><?php echo htmlspecialchars($NMSETTING['customsettings'],ENT_NOQUOTES); ?></textarea>
   </p>
 
-  <?php if ( $PRETTYURLS == 1 && (!$PERMALINK || !str_contains($PERMALINK,'?')) )  { ?>
+  <?php if ( $PRETTYURLS == 1 && (!$PERMALINK || strpos($PERMALINK,'?') === false) )  { ?>
   <p class="inline">
     <input name="pretty-urls" id="pretty-urls" type="checkbox" <?php if ($NMPRETTYURLS == 'Y') echo 'checked'; ?> />&nbsp;
     <label for="pretty-urls"><?php i18n('news_manager/PRETTY_URLS'); ?></label> -

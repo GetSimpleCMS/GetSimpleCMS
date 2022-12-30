@@ -100,7 +100,7 @@ function nm_get_languages() {
  * @return date formatted according to $NMLANG (if strftime)
  */
 function nm_get_date($format, $timestamp) {
-  if (str_contains($format, '%')) {
+  if (strpos($format, '%') !== false) {
 
     # strftime format
     
@@ -128,12 +128,12 @@ function nm_get_date($format, $timestamp) {
       }
     }
     
-    $alt = str_contains($format, '%EB');
+    $alt = strpos($format, '%EB') !== false;
     if ($alt) {
       $format = str_replace('%EB', '%B', $format);
       $custom = !empty($months_alt);
     } else {
-      $custom = !empty($months) && str_contains($format, '%B');
+      $custom = !empty($months) && strpos($format, '%B') !== false;
     }
       
     $locale = setlocale(LC_TIME, 0);
@@ -190,7 +190,7 @@ function nm_get_url($query=false) {
   $str = '';
   $parent = nm_get_parent();
   $url = find_url($NMPAGEURL, $parent);
-  if (str_contains($url, '%parents%/')) // I18N plugin's placeholder for multilevel URLs
+  if (strpos($url, '%parents%/') !== false) // I18N plugin's placeholder for multilevel URLs
     $url = str_replace('%parents%/', (empty($parent) ? '' : $parent.'/'), $url);
   if ($query) {
     switch($query) {
@@ -215,7 +215,7 @@ function nm_get_url($query=false) {
       if (substr($url, -1) != '/')
         $str = '/' . $str;
     } else {
-      $str = (!str_contains($url,'?'))? '?' : '&amp;';
+      $str = (strpos($url,'?') === false)? '?' : '&amp;';
       $str .= $query.'=';
     }
   }
@@ -258,7 +258,7 @@ function nm_get_image_url($pic, $width=null, $height=null, $crop=null, $default=
     if (!isset($crop)) $crop = $nmoption['imagecrop'];
     $pos = strpos($pic, '/data/uploads/');
     $uploads = ($pos !== false || !strpos($pic, '://'));
-    if ($uploads || str_contains($pic, '/data/thumbs/')) {
+    if ($uploads || strpos($pic, '/data/thumbs/') !== false) {
       if ($pos !== false)
         $pic = substr($pic, $pos+14);
       $w = $width ? '&w='.$width : '';
@@ -329,7 +329,7 @@ function nm_rename_file($oldfile,$newfile) {
 function nm_create_slug($str) {
   global $i18n;
   $str = trim($str);
-  if (isset($i18n['TRANSLITERATION']) && is_array($translit=$i18n['TRANSLITERATION']) && count($translit>0)) {
+  if (isset($i18n['TRANSLITERATION']) && is_array($translit=$i18n['TRANSLITERATION']) && !empty($translit)) {
     $str = str_replace(array_keys($translit),array_values($translit),$str);
   }
   $str = to7bit($str, 'UTF-8');
@@ -420,7 +420,7 @@ function nm_make_excerpt($content, $len=200, $ellipsis='', $break=false) {
       if ($break)
         $content = mb_substr($content, 0, $len, 'UTF-8');
       else
-        $content = mb_substr($content, 0, mb_strrpos(mb_substr($content, 0, $len+1, 'UTF-8'), ' ', 'UTF-8'), 'UTF-8');
+        $content = mb_substr($content, 0, mb_strrpos(mb_substr($content, 0, $len+1, 'UTF-8'), ' ', 0, 'UTF-8'), 'UTF-8');
       $content .= $ellipsis;
     }
   } else {
@@ -606,7 +606,7 @@ function nm_update_extend_cache() {
 function nm_switch_template_file($tempfile) {
   global $template_file, $TEMPLATE;
   # no path traversal and template exists
-  if (str_starts_with(realpath(GSTHEMESPATH.$TEMPLATE."/".$tempfile), realpath(GSTHEMESPATH.$TEMPLATE."/")) && file_exists(GSTHEMESPATH.$TEMPLATE."/".$tempfile))
+  if (strpos(realpath(GSTHEMESPATH.$TEMPLATE."/".$tempfile), realpath(GSTHEMESPATH.$TEMPLATE."/")) === 0 && file_exists(GSTHEMESPATH.$TEMPLATE."/".$tempfile))
     $template_file = $tempfile;
 }
 

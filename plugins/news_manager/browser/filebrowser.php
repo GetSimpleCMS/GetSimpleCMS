@@ -12,7 +12,7 @@ if (!$loggedin) die('Not logged in');
 if (isset($_GET['path'])) {
   $subPath = preg_replace('/\.+\//','',$_GET['path']);
   $path = "../../../data/uploads/".$subPath;
-  if (!str_starts_with(realpath($path), realpath(GSDATAUPLOADPATH))) die(); // no path traversal
+  if (strpos(realpath($path), realpath(GSDATAUPLOADPATH)) !== 0) die(); // no path traversal
 } else {
   $subPath = "";
   $path = "../../../data/uploads/";

@@ -6,5 +6,6 @@
 /lib
 /data/cache
 /data/other
+backups/
 thumbs.db
 .DS_*

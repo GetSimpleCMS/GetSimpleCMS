@@ -71,7 +71,7 @@ if ($imageinputpos > 0) {
   </a>
   <div class="clear"></div>
 </div>
-<form class="largeform watch" id="edit" action="load.php?id=news_manager" method="post" accept-charset="utf-8">
+<form class="largeform" id="edit" action="load.php?id=news_manager" method="post" accept-charset="utf-8">
   <?php
   if (!$newpost)
     echo '<input name="current-slug" type="hidden" value="',$slug,'" />';
@@ -130,7 +130,7 @@ if ($imageinputpos > 0) {
     <textarea name="post-content"><?php echo $content; ?></textarea>
   </p>
   <?php if ($imageinputpos == 4) echo $imageinputcode; ?>
-  <p id="submit_line">
+  <p>
     <input name="post" type="submit" class="submit" value="<?php i18n('news_manager/SAVE_POST'); ?>" />
     &nbsp;&nbsp;<?php i18n('news_manager/OR'); ?>&nbsp;&nbsp;
     <a href="load.php?id=news_manager&amp;cancel" class="cancel"><?php i18n('news_manager/CANCEL'); ?></a>

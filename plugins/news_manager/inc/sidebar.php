@@ -15,7 +15,7 @@ function nm_list_recent() {
   $posts = nm_get_posts_default();
   if (!empty($posts)) {
     echo '<ul class="nm_recent">',"\n";
-    $posts = array_slice($posts, 0, $NMRECENTPOSTS, true);
+    $posts = array_slice($posts, 0, intval($NMRECENTPOSTS), true);
     foreach ($posts as $post) {
       $url = nm_get_url('post') . $post->slug;
       $title = stripslashes($post->title);

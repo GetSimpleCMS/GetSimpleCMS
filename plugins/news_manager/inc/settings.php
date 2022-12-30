@@ -70,7 +70,7 @@ function nm_save_settings() {
   $NMSETTING['imagealt'] = isset($_POST['imagealt']);
   $NMSETTING['imagelink'] = isset($_POST['imagelink']);
   $NMSETTING['enablecustomsettings'] = isset($_POST['enablecustomsettings']);
-  $NMSETTING['customsettings'] = get_magic_quotes_gpc()==0 ? $_POST['customsettings'] : stripslashes($_POST['customsettings']);
+  $NMSETTING['customsettings'] = !function_exists('get_magic_quotes_gpc') || get_magic_quotes_gpc()==0 ? $_POST['customsettings'] : stripslashes($_POST['customsettings']);
   # write settings to file
   if (nm_settings_to_xml()) {
     nm_generate_sitemap();
@@ -132,7 +132,7 @@ function nm_generate_htaccess() {
   $page =  '';
   # format prefix and page directions
   if ($NMPAGEURL != 'index') {
-    if ( nm_get_parent() != '' && ($PERMALINK == '' || str_contains($PERMALINK,'%parent%') || str_contains($PERMALINK,'%parents%')) ) {
+    if ( nm_get_parent() != '' && ($PERMALINK == '' || strpos($PERMALINK,'%parent%') !== false || strpos($PERMALINK,'%parents%') !== false) ) {
       $prefix = nm_get_parent().'/'.$NMPAGEURL.'/';
     } else {
       $prefix = $NMPAGEURL.'/';
