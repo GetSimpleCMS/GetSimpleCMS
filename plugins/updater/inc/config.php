@@ -29,7 +29,7 @@ $updater_config = array(
         )
     ),
     "getsimple_ignore" => array(
-        "theme", "backups", "data", "robots.txt", "temp.gsconfig.php", "temp.htaccess",
+        "theme", "backups", "data", "robots.txt", "temp.gsconfig.php", "temp.htaccess"
     ),
     "getsimple_known" => array(
         "admin" => array("is_dir" => true),
