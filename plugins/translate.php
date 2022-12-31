@@ -2,7 +2,7 @@
 /*
 Plugin Name: Translate
 Description: Everybody can translate GetSimple!
-Version: 0.4
+Version: 1.0
 Author: Martin Vlcek
 Author URI: http://mvlcek.bplaced.net
 */
@@ -14,7 +14,7 @@ $thisfile = basename(__FILE__, ".php");
 register_plugin(
 	$thisfile, 
 	'Translate', 	
-	'0.4', 		
+	'1.0', 		
 	'Martin Vlcek',
 	'http://mvlcek.bplaced.net', 
 	'Everybody can translate GetSimple!',
@@ -23,8 +23,10 @@ register_plugin(
 );
 
 # i18n
-@include_once(GSPLUGINPATH.'i18n_common/common.php');
 i18n_merge('translate') || i18n_merge('translate', 'en_US');
+if (basename($_SERVER['PHP_SELF']) == 'load.php' && @$_GET['id'] == 'translate') {
+  @session_start();
+}
 
 # activate filter
 add_action('plugins-sidebar', 'createSideMenu', array($thisfile, i18n_r('translate/TRANSLATE_VIEW')));

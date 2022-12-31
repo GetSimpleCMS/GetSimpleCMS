@@ -204,9 +204,10 @@ $(function () {
 		dataType: 'json',
 		context: $('#fileupload')[0]
 	}).always(function (result) {
-		//console.log(result.responseText);
+		//console.log(result);
 		$(this).removeClass('fileupload-processing');
 	}).done(function (result) {
+		//console.log(result);
 		$(this).fileupload('option', 'done')
 			.call(this, $.Event('done'), {result: result});
 	});

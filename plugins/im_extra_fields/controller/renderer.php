@@ -232,7 +232,16 @@ class Renderer
 				'load.php?id=imanager&edit='.$this->processor->curitem->id.'&catsender=1&cat='.$this->processor->curcat->id));
 		}
 
+		// Item id available?
+		$idrow = '';
+		if(!empty($this->processor->curitem->id)) {
+			$idrow = $this->tpl->render($this->itemInfo, array(
+				'catid' => $this->processor->curitem->categoryid,
+				'id' => $this->processor->curitem->id));
+		}
+
 		$output = $this->tpl->render($this->inputsArounder, array(
+				'itemidrow' => $idrow,
 				'fields' => $tplfields,
 				'imlink' => $imlink,
 				'timestamp' => $timestamp,

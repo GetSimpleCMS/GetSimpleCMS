@@ -2,6 +2,7 @@
 
 class HitcountReader {
   
+  private $maxItems;
   private $unit;
   private $minDate;
   private $maxDate;
@@ -11,8 +12,13 @@ class HitcountReader {
   private $hits;
   private $visits;
   
+  private $maxValues;
+  private $totalHits;
+  
   // $from and $to in format 'yyyyMMdd'
-  public function __construct($from=null, $to=null, private $maxItems=60) {
+  public function __construct($from=null, $to=null, $maxItems=60) {
+  	$this->maxValues = defined('HITCOUNT_MAX_VALUES') ? HITCOUNT_MAX_VALUES : 250;
+    $this->maxItems = $maxItems;
     $lines = @file(GSDATAOTHERPATH . HITCOUNT_INDEX_DIR . 'index_dates.txt');
     $this->fromDate = $this->minDate = mktime(0,0,0,substr($lines[0],4,2),substr($lines[0],6,2),substr(@$lines[0],0,4));
     $this->toDate = $this->maxDate = mktime(0,0,0,substr($lines[1],4,2),substr($lines[1],6,2),substr(@$lines[1],0,4));
@@ -29,6 +35,7 @@ class HitcountReader {
       $this->toDate = $this->maxDate;
     }
     $this->hits = array();
+    $this->totalHits = array();
     $this->visits = array();
     $days = round(($this->toDate - $this->fromDate)/(3600*24))+1;
     if ($days <= $this->maxItems) {
@@ -161,14 +168,19 @@ class HitcountReader {
           foreach ($names as $name => $values) {
             if (isset($data[$name])) {
               foreach ($data[$name] as $value => &$hv) {
-                if (isset($hv[2*$day])) $this->hits[$name][$value][$index] = @$this->hits[$name][$value][$index] + $hv[2*$day];
+              	if (isset($hv[2*$day])) {
+              		$this->hits[$name][$value][$index] = @$this->hits[$name][$value][$index] + $hv[2*$day];
+              		$this->totalHits[$name][$value] = @$this->totalHits[$name][$value] + $hv[2*$day];
+              	}
                 if (isset($hv[2*$day+1])) $this->visits[$name][$value][$index] = @$this->visits[$name][$value][$index] + $hv[2*$day+1];
               }
             }
           }
         }
+        $this->removeSmallestValues();
       }
     }
+    $this->removeZeroValues();
   }
   
   private function readMonths($names) {
@@ -182,13 +194,46 @@ class HitcountReader {
         foreach ($names as $name => $values) {
           if (isset($data[$name])) {
             foreach ($data[$name] as $value => &$hv) {
-              if (isset($hv[0])) $this->hits[$name][$value][$index] = @$this->hits[$name][$value][$index] + $hv[0];
+            	if (isset($hv[0])) {
+            		$this->hits[$name][$value][$index] = @$this->hits[$name][$value][$index] + $hv[0];
+            		$this->totalHits[$name][$value] = @$this->totalHits[$name][$value] + $hv[0];
+            	}
               if (isset($hv[1])) $this->visits[$name][$value][$index] = @$this->visits[$name][$value][$index] + $hv[1];
             }
           }
         }
+        $this->removeSmallestValues();
       }
     }
+    $this->removeZeroValues();
+  }
+  
+  private function removeSmallestValues() {
+  	foreach ($this->totalHits as $name => &$values) {
+  		asort($values);
+  		$i = 0;
+  		foreach (array_reverse($values) as $value => $num) {
+  			if ($i > $this->maxValues) {
+  				unset($this->totalHits[$name][$value]);
+  				unset($this->hits[$name][$value]);
+  				unset($this->visits[$name][$value]);
+  			}
+  			$i++;
+  		}
+  	}
+  }
+  
+  private function removeZeroValues() {
+  	foreach ($this->totalHits as $name => &$values) {
+  		asort($values);
+  		foreach (array_reverse($values) as $value => $num) {
+  			if ($num <= 0) {
+  				unset($this->totalHits[$name][$value]);
+  				unset($this->hits[$name][$value]);
+  				unset($this->visits[$name][$value]);
+  			}
+  		}
+  	}
   }
   
   private function calculateAllSummaries() {

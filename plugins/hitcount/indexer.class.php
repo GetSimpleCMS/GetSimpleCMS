@@ -1,19 +1,30 @@
 <?php
 
 global $hitcount_ua_browsers, $hitcount_ua_systems, $hitcount_durations, $hitcount_robots_pattern;
-$hitcount_ua_browsers = array("firefox", "msie", "opera mini", "opera", "chrome", "safari",
+$hitcount_ua_browsers = array("firefox", "msie", "opera mini", "opera", "chrome", "chromium", "edge", "safari",
                     "seamonkey", "konqueror", "netscape", "netfront",
                     "gecko", "navigator", "mosaic", "lynx", "amaya",
                     "omniweb", "avant", "camino", "flock", "aol", "mozilla");
-$hitcount_ua_systems = array('windows nt 5.0' => array('Windows','2000'), 'windows nt 5.1' => array('Windows','XP'),
-                    'windows nt 5.2' => array('Windows','XP'), 'windows nt 6.0' => array('Windows','Vista'),
-                    'windows nt 6.1' => array('Windows','7'), 'windows nt' => array('Windows','NT'), 
-                    'windows|win32' => array('Windows',''), 
-                    'android ([\d\.]+)' => array('Android',''),
-                    '(?:ipod|iphone|ipad).*([\d\._]+)?\s+like mac os x' => array('iOS',''),
-                    'mac os x (\d+[\._]\d+)' => array('Mac OS X',''),
-                    'ubuntu/([\d\.]+)' => array('Ubuntu',''), 'linux' => array('Linux',''), 
-                    'j2me' => array('J2ME',''), 'midp' => array('J2ME',''));
+$hitcount_ua_systems = array(
+		'windows 95|win95|windows_95' => array('Windows', '95'),
+		'windows 98|win98' => array('Windows', '98'),
+		'windows nt 5.0' => array('Windows','2000'),
+		'windows nt 5.1' => array('Windows','XP'),
+		'windows nt 5.2' => array('Windows','XP'),
+		'windows nt 6.0' => array('Windows','Vista'),
+		'windows nt 6.1' => array('Windows','7'),
+		'windows nt 6.2' => array('Windows', '8'),
+		'windows nt 10' => array('Windows', '10'),
+		'windows nt' => array('Windows','NT'),
+		'windows|win32' => array('Windows',''),
+		'android ([\d\.]+)' => array('Android',''),
+		'(?:ipod|iphone|ipad).*([\d\._]+)?\s+like mac os x' => array('iOS',''),
+		'mac os x (\d+[\._]\d+)' => array('Mac OS X',''),
+		'ubuntu/([\d\.]+)' => array('Ubuntu',''),
+		'open bsd' => array('Open BSD', ''),
+		'linux' => array('Linux',''),
+		'j2me' => array('J2ME',''),
+		'midp' => array('J2ME',''));
 $hitcount_durations = array(
   array('max' =>   30, 'text' => '_DUR_00030'),
   array('max' =>   60, 'text' => '_DUR_00060'),
@@ -28,8 +39,7 @@ $hitcount_durations = array(
   array('max' => 3600, 'text' => '_DUR_03600'),
   array('max' =>    0, 'text' => '_DUR_99999')
 );
-$hitcount_robots_pattern = '/bot|spider|crawler|curl|slurp|aboundex|^$/i';
-
+$hitcount_robots_pattern = '/bot|spider|crawler|curl|slurp|aboundex|ia_archiver|teoma|^$/i';
 
 class HitcountIndexer {
   
@@ -85,6 +95,9 @@ class HitcountIndexer {
         $country = substr($parts[1],$pos+1);
       }
       $slug = $parts[2];
+      if ($slug === '404') {
+      	continue;
+      }
       $referer = $parts[3];
       $ua = trim($parts[4]);
       if (!$day || $until <= $time) {
@@ -154,7 +167,7 @@ class HitcountIndexer {
           }
           # referer
           if (preg_match('#^https?://([^/]+)(:\d+)?/#', $referer, $match)) {
-            if (!str_contains($match[1],'.') || preg_match('#^(127\.|10\.|192\.168\.)#',$match[1]) ||
+            if (strpos($match[1],'.') === false || preg_match('#^(127\.|10\.|192\.168\.)#',$match[1]) ||
                 preg_match('#^172\.(16|17|18|19|2\d|30|31)\.#',$match[1])) {
               $val['referer'] = '(private)';    
               $namesAndValues['referer (private)'] = 1;

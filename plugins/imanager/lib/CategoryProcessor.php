@@ -9,19 +9,24 @@ class CategoryProcessor
 {
 	public $is_cat_valid;
 	public $is_cat_exist;
+	private $category;
 
-	public function __construct(private CategoryMapper &$category)
+	public function __construct(CategoryMapper &$category)
 	{
+		// initialise categories
+		$this->category = $category;
+
 		if(self::isCategoryValid())
 		{
 			$this->is_cat_exist = true;
 		} else
 		{
-			if($this->category->countCategories() && $this->category->countCategories() > 0)
+			$count = $this->category->countCategories();
+			if($count > 0)
 			{
 				$this->is_cat_exist = true;
 				$cur = current($this->category->categories);
-				$this->setCategory($cur->get('id'));
+				$this->setCategory($cur->id);
 			} else
 			{
 				$this->is_cat_exist = false;

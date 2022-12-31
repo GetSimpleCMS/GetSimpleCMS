@@ -1,1 +1,1 @@
-<span class="paginator-disabled"><i class="fa fa-chevron-right"></i></span>
+<span class="paginator-disabled">NEXT</span>

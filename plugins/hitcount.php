@@ -2,8 +2,8 @@
 /*
 Plugin Name: HitCount
 Description: Counts page hits and visitors
-Version: 2.1.3
-Author: Martin Vlcek (c) 2011
+Version: 2.2.1
+Author: Martin Vlcek (c) 2011 - 2020
 Author URI: http://mvlcek.bplaced.net
 
 Public functions:
@@ -38,7 +38,7 @@ define('HITCOUNT_VISIT_DURATION', 30*60);
 register_plugin(
 	$thisfile, 
 	'HitCount', 	
-	'2.1.3', 		
+	'2.2.1', 		
 	'Martin Vlcek',
 	'http://mvlcek.bplaced.net', 
 	'Counts page hits and visitors',
@@ -64,7 +64,7 @@ if (basename($_SERVER['PHP_SELF']) == 'index.php') {
 add_action('pre-download', 'hitcount_init_download');  # requires Download Interceptor plugin
 
 # set/unset cookie to blacklist computer/browser
-if (basename($_SERVER['PHP_SELF']) == 'load.php' && $_GET['id'] == 'hitcount') {
+if (basename($_SERVER['PHP_SELF']) == 'load.php' && @$_GET['id'] == 'hitcount') {
   global $SITEURL;
   if (isset($_GET['setcookie'])) {
     setcookie(HITCOUNT_BLACKLIST_COOKIE, '1', time()+HITCOUNT_BLACKLIST_DURATION, parse_url($SITEURL, PHP_URL_PATH));
@@ -147,9 +147,16 @@ function hitcount_init($slugOrFile) {
     if (!$visit) {
       $visit = hitcount_count($hcdir . 'visits.txt');
       $country = hitcount_get_country();
-      if ($country) $visit = $visit.'/'.$country;
+      if ($country && trim($country) !== '-') $visit = $visit.'/'.$country;
     }
-    setcookie(HITCOUNT_VISIT_COOKIE, $visit, time()+HITCOUNT_VISIT_DURATION, parse_url($SITEURL, PHP_URL_PATH));
+    # setting cookie with options is not available in PHP 5.6
+    if (!@setcookie(HITCOUNT_VISIT_COOKIE, $visit, array(
+    		'expires' => time()+HITCOUNT_VISIT_DURATION, 
+    		'path' => parse_url($SITEURL, PHP_URL_PATH),
+    		'samesite' => 'Lax'))) {
+    	// hack to add samesite:
+    	setcookie(HITCOUNT_VISIT_COOKIE, $visit, time()+HITCOUNT_VISIT_DURATION, parse_url($SITEURL, PHP_URL_PATH) . '; samesite=lax');
+    }
     # hits
     hitcount_count($hcdir . 'hits_' . preg_replace('/[^A-Za-z0-9\.-]+/','_',$slugOrFile) . '.txt');
     # log
@@ -207,24 +214,35 @@ function hitcount_is_blacklisted() {
 
 function hitcount_get_country() {
   if (file_exists(GSDATAOTHERPATH.'ip2country.txt')) {
-    $ip = sprintf('%010u', ip2long($_SERVER['REMOTE_ADDR']));
+  	$addr = $_SERVER['REMOTE_ADDR'];
+  	$ip = sprintf("%032s", lowercase(ip6hex($addr)));
     $fp = fopen(GSDATAOTHERPATH.'ip2country.txt', "r");
+    $iplen = 32;
+    $linelen = $iplen*2 + 6;
     $min = 0;
-    $max = (int) (filesize(GSDATAOTHERPATH.'ip2country.txt') / 26) - 1;
-    while ($max > $min) {
+    $max = (int) (filesize(GSDATAOTHERPATH.'ip2country.txt') / $linelen) - 1;
+    while ($max >= $min) {
       $cur = (int) (($min + $max) / 2);
-      fseek($fp, $cur*26);
-      $entry = fgets($fp, 24+1);
-      if ($ip < substr($entry,0,10)) {
+      fseek($fp, $cur*$linelen);
+      $entry = fgets($fp, $linelen);
+      if (strcmp($ip, substr($entry,0,$iplen)) < 0) {
         $max = $cur-1;
-      } else if ($ip > substr($entry,11,10)) {
+      } else if (strcmp($ip, substr($entry,$iplen+1,$iplen)) > 0) {
         $min = $cur+1;
       } else {
-        return substr($entry,22,2);
+        return trim(substr($entry,$iplen*2+2,2));
       }
     }
   }
   return null;
 }
 
-
+function ip6hex($ip4or6) {
+	if (strpos($ip4or6, ':') === false) {
+		return sprintf('ffff%08x', ip2long($ip4or6));
+	} else {
+		$ip6hex = '';
+		foreach (unpack('H*', inet_pton($ip4or6)) as $hex) $ip6hex .= $hex;
+		return $ip6hex;
+	}
+}

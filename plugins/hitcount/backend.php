@@ -34,6 +34,7 @@
   }
   $from = @$_REQUEST['from'];
   $to = @$_REQUEST['to'];
+  $periodParams = ($from ? '&from='.$from : '') . ($to ? '&to='.$to : '');
   # read data
   $reader = new HitcountReader($from, $to);
   $reader->read($names);
@@ -43,9 +44,7 @@
   $hits = $reader->getHits();
   $visits = $reader->getVisits();
   # export link
-  $exportParams = 'tab='.$currTab;
-  if ($from) $exportParams .= '&from='.$from;
-  if ($to) $exportParams .= '&to='.$to;
+  $exportParams = 'tab='.$currTab.$periodParams;
   if ($details) $exportParams .= '&details';
   # calculate maximum
   $maxHits = $maxVisits = 0;
@@ -100,18 +99,18 @@
   <h3 class="floated" style="float:left"><?php i18n('hitcount/TITLE_'.strtoupper($currTab)); ?></h3>
   <div class="edit-nav">
     <?php foreach (array('country','lang','browser','os','duration','referer','slug') as $tab) { ?>
-    <a href="load.php?id=hitcount&amp;tab=<?php echo $tab; ?>&amp;reset" <?php if ($currTab == $tab) echo 'class="current"'; ?> >
+    <a href="load.php?id=hitcount&amp;tab=<?php echo $tab.$periodParams; ?>&amp;reset" <?php if ($currTab == $tab) echo 'class="current"'; ?> >
       <?php i18n('hitcount/TAB_'.strtoupper($tab)); ?>
     </a>
     <?php } ?>
-    <div class=\"clear\" style="clear:both"></div>
+    <div class="clear" style="clear:both"></div>
   </div>
   <div id="chart" style="width:100%;height:250px;margin-bottom:10px"></div>
   <form action="load.php?id=hitcount&amp;tab=<?php echo $currTab; ?>" method="POST">
     <input type="hidden" name="from" value=""/>
     <input type="hidden" name="to" value=""/>
     <input type="text" name="fromDate" id="fromDate" value="" style="float:left;width:80px;margin-bottom:5px;"/>
-    <div id="dateRange" style="float:left;width:440px;margin:5px 15px;"> &nbsp; </div>
+    <div id="dateRange" style="float:left;width:420px;margin:5px 15px;"> &nbsp; </div>
     <input type="text" name="toDate" id="toDate" value="" style="float:right;width:80px;margin-bottom:5px;"/>
     <input type="checkbox" name="relative" value="on" <?php if ($relative) echo 'checked="checked"'; ?> style="clear:both;float:left;margin:5px 5px 5px 0;"/>
     <div style="float:left;margin:5px 40px 5px 0;"><?php i18n('hitcount/RELATIVE'); ?></div>
@@ -165,10 +164,12 @@
       </tbody>  
     </table>
     <?php if ($currTab == 'country') { ?>
-    <p>This script uses the IP-to-Country Database provided by 
-      <a href="http://www.webhosting.info">WebHosting.Info</a>,
-      available from <a href="http://ip-to-country.webhosting.info">http://ip-to-country.webhosting.info</a>.
+    <p>This plugin uses a ip-to-country database available on various sites, e.g. 
+      <a href="https://lite.ip2location.com/">IP2LOCATION lite</a>.
+      The download link must be specified in gsconfig.php, e.g.: 
     </p>
+    <?php $downloadLink = defined('HITCOUNT_URL') ? HITCOUNT_URL : 'https://www.ip2location.com/download/?token=MY_TOKEN&amp;file=DB1LITEIPV6'; ?>
+    <p><code>define('HITCOUNT_URL', '<?php echo htmlspecialchars($downloadLink); ?>');</code></p>
     <div style="display:none;position:fixed;top:0;left:0">
       <div id="countries-dialog">
         <embed id="svg" src="<?php echo $SITEURL; ?>plugins/hitcount/svg/countries.svg" style="width:920px;height:460px" />
@@ -200,10 +201,12 @@
                   g = 245 - Math.floor(130*v/max);
                   c = "rgb("+r+","+g+","+b+")";
                   e.setAttribute("fill", c);
-                  e.setAttribute("title", value+" - "+titles[value]+": "+v+" ("+p+"%)");
+                  var title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                  title.textContent = value+" - "+titles[value]+": "+v+" ("+p+"%)"
+                  e.appendChild(title);
                 } else {
                   e.setAttribute("fill", '#FFFFFF');
-                  e.setAttribute("title", '');
+                  while (e.lastChild) e.removeChild(e.lastChild);
                 }
               }              
             }
@@ -230,8 +233,10 @@
     <p class="submitline">
       <a class="cancel" href="load.php?id=hitcount&amp;reindex"><?php i18n('hitcount/REINDEX'); ?></a>
       &nbsp;
+      <?php if (defined('HITCOUNT_URL')) {?>
       <a class="cancel" href="load.php?id=hitcount&amp;download"><?php i18n('hitcount/DOWNLOAD_IP2COUNTRY'); ?></a>
       &nbsp;
+      <?php } ?>
       <?php if ($isBlacklisted) { ?>
         <a class="cancel" href="load.php?id=hitcount&amp;delcookie"><?php i18n('hitcount/DEL_COOKIE'); ?></a>
       <?php } else { ?>

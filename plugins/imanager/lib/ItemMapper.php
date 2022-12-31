@@ -1,5 +1,5 @@
 <?php
-class ItemMapper
+class ItemMapper extends Allocator
 {
 	/**
 	 * @var array of the objects of type Item
@@ -8,7 +8,7 @@ class ItemMapper
 	/**
 	 * @var string filter by node
 	 */
-	private $filterby;
+	protected $filterby;
 	/**
 	 * @var boolean indicates to searchig field values
 	 */
@@ -101,7 +101,7 @@ class ItemMapper
 							}
 							if(empty($new_field->value) && !empty($new_field->default))
 							{
-								$new_field->value = (string) $new_field->default;
+								$new_field->value = (string)$new_field->default;
 							}
 						}
 					}
@@ -118,23 +118,22 @@ class ItemMapper
 	 * A limited init method, very useful when you wish to select only one or a few items
 	 *
 	 * @param integer $catid  - Category ID to be searched through
-	 * @param integer $from   - Define start index for the loop
-	 * @param integer $too    - Define max number of items in selected array
+	 * @param integer $from   - Define start id index for the loop
+	 * @param integer $limit    - Define max id of items in selected array
 	 */
-	public function limitedInit($catid, $from, $too=null)
+	public function limitedInit($catid, $index, $limit=0)
 	{
 		// nitialize the fields class
 		$fc = new FieldMapper();
 		$fc->init($catid);
 		$this->items = array();
 
-		if(is_null($too)){$too = ($from+1);}
-
-
-		for($i = $from; $i < $too; $i++)
+		if($limit == 0) $limit = ($index+1);
+		else $limit++;
+		for($i = $index; $i < $limit; $i++)
 		{
 			$res = glob(IM_ITEM_DIR.$i.'.'.$catid.IM_ITEM_FILE_SUFFIX, GLOB_NOSORT);
-			if(empty($res)) return false;
+			if(empty($res)) continue;
 			$file = $res[0];
 
 			$base = basename($file, IM_ITEM_FILE_SUFFIX);
@@ -291,7 +290,7 @@ class ItemMapper
 
 	/**
 	 * Initializes all items and made them available in ImItem::$items array
-	 * NOTE: Could be slow and memory intensive with high data volumes
+	 * NOTE: Could be extrem slow and memory intensive with high data volumes
 	 *
 	 * @return bool|mixed
 	 */
@@ -338,7 +337,7 @@ class ItemMapper
 
 					foreach($xml->field as $fieldkey => $field)
 					{
-						if( $new_field->get('id') == $field->id)
+						if( $new_field->id == $field->id)
 						{
 							$inputClassName = 'Input'.ucfirst($new_field->type);
 							$InputType = new $inputClassName($fc->fields[$name]);
@@ -372,7 +371,7 @@ class ItemMapper
 					$item->fields->$name = $new_field;
 				}
 
-				$this->items[$catid][$item->get('id')] = $item;
+				$this->items[$catid][$item->id] = $item;
 			}
 		}
 		$this->total = count($this->items);
@@ -380,40 +379,46 @@ class ItemMapper
 
 
 	/**
-  * Returns a total number of given items
-  *
-  *
-  * @return int
-  */
- public function countItems(array $items=array())
-	{$locitems = !empty($items) ? $items : $this->items; return count($locitems);}
+	 * Returns a total number of given items
+	 *
+	 * @param array $items
+	 *
+	 * @return int
+	 */
+	public function countItems(array $items=array())
+	{return !empty($items) ? count($items) : count($this->items);}
 
 
 	/**
-  * Get single item
-  *
-  * @param $stat - Selector
-  *
-  * @return bool|mixed
-  */
- public function getItem($stat, array $items=array())
+	 * Count all items in a category, it is best to use this method, not init() then countItems()
+	 */
+	public function quickCount($catid)
+	{
+		return count(glob(IM_ITEM_DIR.'*.'.$catid.IM_ITEM_FILE_SUFFIX, GLOB_NOSORT));
+	}
+
+
+	/**
+	 * Get single item
+	 *
+	 * @param $stat - Selector
+	 * @param array $items
+	 *
+	 * @return bool|mixed
+	 */
+	public function getItem($stat, array $items=array())
 	{
 		$locitems = !empty($items) ? $items : $this->items;
 
 		// nothing to select
-		if(empty($items))
-		{
-			if(!$this->countItems() || $this->countItems() <= 0)
-				return false;
-		}
+		if(empty($items)) { if(!$this->countItems() || $this->countItems() <= 0) return false;}
 
 		// just id was entered
-		if(is_numeric($stat))
-			return !empty($locitems[(int) $stat]) ? $locitems[(int) $stat] : false;
+		if(is_numeric($stat)) return !empty($locitems[$stat]) ? $locitems[$stat] : false;
 
 		// all parameter have to match the data
 		$treads = array();
-		if(str_contains($stat, '&&'))
+		if(false !== strpos($stat, '&&'))
 		{
 			$treads = explode('&&', $stat, 2);
 			$parts[] = trim($treads[0]);
@@ -432,7 +437,7 @@ class ItemMapper
 				return !empty($arr) ? reset($arr) : false;
 			}
 			// only one parameter have to match the data
-		} elseif(str_contains($stat, '||'))
+		} elseif(false !== strpos($stat, '||'))
 		{
 			$treads = explode('||', $stat, 2);
 			$parts[] = trim($treads[0]);
@@ -454,17 +459,18 @@ class ItemMapper
 
 
 	/**
-  * Find matching item - Finds an item belonging to one category (returns exactly one result)
-  *
-  * @param $stat – A search selector: (name=Item Name) for example
-  * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
-  *                           to specific categories (NOTE: The specifying category id's could speed up the
-  *                           searsh process!)
-  *
-  *
-  * @return bool|mixed
-  */
- public function findItem($stat, array $limit_ids = array())
+	 * Find matching item - Finds an item belonging to one category (returns exactly one result)
+	 *
+	 * @param $stat – A search selector: (name=Item Name) for example
+	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
+	 *                           to specific categories (NOTE: The specifying category id's could speed up the
+	 *                           searsh process!)
+	 *
+	 * @param array $limit_ids
+	 *
+	 * @return bool|mixed
+	 */
+	public function findItem($stat, array $limit_ids = array())
 	{
 		$mapper = imanager()->getCategoryMapper();
 		if(!empty($limit_ids))
@@ -487,14 +493,16 @@ class ItemMapper
 
 
 	/**
-  * Find matching items - Finds all items belonging to one category (returns matching items of a category)
-  *
-  * @param $stat – A search selector: (name=Item Name) for example
-  * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
-  *                           to specific categories (NOTE: The specifying category id's could speed up the
-  *                           searsh process!)
-  */
- public function findItems($stat, array $limit_ids = array()): array|bool
+	 * Find matching items - Finds all items belonging to one category (returns matching items of a category)
+	 *
+	 * @param $stat – A search selector: (name=Item Name) for example
+	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
+	 *                           to specific categories (NOTE: The specifying category id's could speed up the
+	 *                           searsh process!)
+	 *
+	 * @return array|bool
+	 */
+	public function findItems($stat, array $limit_ids = array())
 	{
 		$mapper = imanager()->getCategoryMapper();
 		if(!empty($limit_ids))
@@ -517,14 +525,16 @@ class ItemMapper
 
 
 	/**
-  * Find all matching items - Finds all items of all categories (returns matching items of all categories)
-  *
-  * @param $stat – A search selector: (name=Item Name) for example
-  * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
-  *                           to specific categories (NOTE: The specifying category id's could speed up the
-  *                           searsh process!)
-  */
- public function findAll($stat, array $limit_ids = array()): array|bool
+	 * Find all matching items - Finds all items of all categories (returns matching items of all categories)
+	 *
+	 * @param $stat – A search selector: (name=Item Name) for example
+	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
+	 *                           to specific categories (NOTE: The specifying category id's could speed up the
+	 *                           searsh process!)
+	 *
+	 * @return array|bool
+	 */
+	public function findAll($stat, array $limit_ids = array())
 	{
 		$allItems = array();
 		$count = 0;
@@ -601,7 +611,7 @@ class ItemMapper
 		// ***** HIER ENDET DER TESTBEREICH *****
 
 
-		if(str_contains($stat, '&&'))
+		if(false !== strpos($stat, '&&'))
 		{
 			$treads = explode('&&', $stat, 2);
 			$parts[] = trim($treads[0]);
@@ -625,7 +635,7 @@ class ItemMapper
 				return $arr;
 			}
 			// only one parameter have to match the data
-		} elseif(str_contains($stat, '||'))
+		} elseif(false !== strpos($stat, '||'))
 		{
 			$treads = explode('||', $stat, 2);
 			$parts[] = trim($treads[0]);
@@ -705,7 +715,7 @@ class ItemMapper
 	 * @param array $items
 	 * @return boolean|array of objects of type Item
 	 */
-	public function filterItems($filterby, $option,  $offset=0, $length=0, array $items=array()): bool|array
+	public function filterItems($filterby='position', $option='asc',  $offset=0, $length=0, array $items=array())
 	{
 		// reset offset
 		$offset = ($offset > 0) ? $offset-1 : $offset;
@@ -748,7 +758,7 @@ class ItemMapper
 		{
 			$this->filterby = $filterby;
 			usort($itemcontainer, array($this, 'sortObjects'));
-			// sorte DESCENDING
+			// sort DESCENDING
 			if(strtolower($option) != 'asc') $itemcontainer = $this->reverseItems($itemcontainer);
 			$itemcontainer = $this->reviseItemIds($itemcontainer);
 
@@ -771,18 +781,19 @@ class ItemMapper
 
 
 	/**
-  * Deletes an item
-  *
-  * @param reinitialize flag $re
-  * @return bool
-  */
- public function destroyItem(Item $item, $re = false)
+	 * Deletes an item
+	 *
+	 * @param Item $item
+	 * @param reinitialize flag $re
+	 * @return bool
+	 */
+	public function destroyItem(Item $item, $re = false)
 	{
-		if(file_exists(IM_ITEM_DIR.$item->get('id').'.'.$item->get('categoryid').IM_ITEM_FILE_SUFFIX))
+		if(file_exists(IM_ITEM_DIR.$item->id.'.'.$item->categoryid.IM_ITEM_FILE_SUFFIX))
 		{
-			unlink(IM_ITEM_DIR.$item->get('id').'.'.$item->get('categoryid').IM_ITEM_FILE_SUFFIX);
+			unlink(IM_ITEM_DIR.$item->id.'.'.$item->categoryid.IM_ITEM_FILE_SUFFIX);
 			// reinitialize items
-			if($re) $this->init($item->get('categoryid'));
+			if($re) $this->init($item->categoryid);
 			return true;
 		}
 		return false;
@@ -792,7 +803,7 @@ class ItemMapper
 
 	protected function separateItem(array $items, $stat)
 	{
-		if (str_contains($stat, '='))
+		if (false !== strpos($stat, '='))
 		{
 			$data = explode('=', $stat, 2);
 			$key = strtolower(trim($data[0]));
@@ -812,7 +823,7 @@ class ItemMapper
 				$pat = '/'.strtolower(trim(str_replace('%', '', $val))).'/';
 			}
 
-			if(str_contains($key, ' ')) return false;
+			if(false !== strpos($key, ' ')) return false;
 
 			// Searching for the name and other simple attributs
 			if($key == 'id' || $key == 'name' || $key == 'label' || $key == 'position' || $key == 'active'
@@ -820,12 +831,9 @@ class ItemMapper
 			{
 				foreach($items as $itemkey => $item)
 				{
-					if(strtolower($item->$key) == strtolower($val) && !$pat)
-						return $item;
-					elseif($pat && preg_match($pat, strtolower($item->$key)))
-						return $item;
+					if(!$pat && strtolower($item->{$key}) == strtolower($val)) return $item;
+					elseif($pat && preg_match($pat, strtolower($item->{$key}))) return $item;
 				}
-
 				return false;
 			}
 			// searching for field in complex value types
@@ -833,10 +841,8 @@ class ItemMapper
 			{
 				foreach($item->fields as $fieldkey => $fieldval)
 				{
-					if(!empty($fieldval->value) && $fieldkey == $key && $fieldval->value == $val)
-						return $item;
-					elseif(!empty($fieldval->value) && $pat && preg_match($pat, strtolower($fieldval->value)))
-						return $item;
+					if(!empty($fieldval->value) && $fieldkey == $key && $fieldval->value == $val) return $item;
+					elseif(!empty($fieldval->value) && $pat && preg_match($pat, strtolower($fieldval->value))) return $item;
 				}
 			}
 		}
@@ -851,12 +857,12 @@ class ItemMapper
 
 		foreach($pattern as $pkey => $pval)
 		{
-			if(str_contains($stat, $pval))
+			if(false !== strpos($stat, $pval))
 			{
 				$data = explode($pval, $stat, 2);
 				$key = strtolower(trim($data[0]));
 				$val = trim($data[1]);
-				if(str_contains($key, ' '))
+				if(false !== strpos($key, ' '))
 					return false;
 
 				$num = substr_count($val, '%');
@@ -873,77 +879,74 @@ class ItemMapper
 
 				}
 
-				// searching for the name and other simple attributs
+				// Searching for value in item attributes
 				if($key == 'name' || $key == 'label' || $key == 'position' || $key == 'active'
 					|| $key == 'created' || $key == 'updated')
 				{
 					foreach($items as $itemkey => $item)
 					{
-						if(!isset($item->$key)) continue;
+						if(!isset($item->{$key})) continue;
 
 						if($pkey == 0)
 						{
-							if($item->$key < $val) continue;
+							if($item->{$key} < $val) continue;
 						} elseif($pkey == 1)
 						{
-							if($item->$key > $val) continue;
+							if($item->{$key} > $val) continue;
 						} elseif($pkey == 2)
 						{
-							if($item->$key == $val) continue;
+							if($item->{$key} == $val) continue;
 						} elseif($pkey == 3)
 						{
-							if($item->$key <= $val) continue;
+							if($item->{$key} <= $val) continue;
 						} elseif($pkey == 4)
 						{
-							if($item->$key >= $val) continue;
+							if($item->{$key} >= $val) continue;
 						} elseif($pkey == 5)
 						{
-							if($item->$key != $val && !$pat) {
+							if($item->{$key} != $val && !$pat) {
 
 								continue;
 							}
-							elseif($pat && !preg_match($pat, strtolower($item->$key))){
+							elseif($pat && !preg_match($pat, strtolower($item->{$key}))){
 								continue;
 							}
 						}
 
-
-						$res[$item->get('id')] = $item;
+						$res[$item->id] = $item;
 					}
 
-				// Searching for fields in complex value types
+				// Searching for the value in complex field types
 				} else
 				{
 					foreach($items as $itemkey => $item)
 					{
 						foreach($item->fields as $fieldkey => $fieldval)
 						{
-							if(!isset($item->fields->$key->value)) continue;
+							if(!isset($item->fields->{$key}->value)) continue;
 
 							if($pkey == 0)
 							{
-								if($item->fields->$key->value < $val) continue;
+								if($item->fields->{$key}->value < $val) continue;
 							} elseif($pkey == 1)
 							{
-								if($item->fields->$key->value > $val) continue;
+								if($item->fields->{$key}->value > $val) continue;
 							} elseif($pkey == 2)
 							{
-								if($item->fields->$key->value == $val) continue;
+								if($item->fields->{$key}->value == $val) continue;
 							} elseif($pkey == 3)
 							{
-								if($item->fields->$key->value <= $val) continue;
+								if($item->fields->{$key}->value <= $val) continue;
 							} elseif($pkey == 4)
 							{
-								if($item->fields->$key->value >= $val) continue;
+								if($item->fields->{$key}->value >= $val) continue;
 							}elseif($pkey == 5)
 							{
-								if($item->fields->$key->value != $val && !$pat)
-									continue;
-								elseif($pat && !preg_match($pat, strtolower($item->fields->$key->value)))
-									continue;
+								if(!$pat && $item->fields->{$key}->value != $val) continue;
+								elseif($pat && !preg_match($pat, strtolower($item->fields->{$key}->value))) continue;
 							}
 
-							$res[$item->get('id')] = $item;
+							$res[$item->id] = $item;
 
 						}
 					}
@@ -964,7 +967,7 @@ class ItemMapper
 	 * @param $a $b objects to be sorted
 	 * @return boolean
 	 */
-	private function sortObjects($a, $b)
+	protected function sortObjects($a, $b)
 	{
 		if(!$this->fieldflag)
 		{
@@ -998,11 +1001,12 @@ class ItemMapper
 
 
 	/**
-  * Reverse the array of items
-  *
-  * @param array $itemcontainer An array of objects
-  */
- public function reverseItems($itemcontainer): bool|array
+	 * Reverse the array of items
+	 *
+	 * @param array $itemcontainer An array of objects
+	 * @return boolean|array
+	 */
+	public function reverseItems($itemcontainer)
 	{
 		if(!is_array($itemcontainer)) return false;
 		return array_reverse($itemcontainer);
@@ -1010,16 +1014,17 @@ class ItemMapper
 
 
 	/**
-  * Revise keys of the array of items and changes these into real item id's
-  *
-  * @param array $itemcontainer An array of objects
-  */
- public function reviseItemIds($itemcontainer): bool|array
+	 * Revise keys of the array of items and changes these into real item id's
+	 *
+	 * @param array $itemcontainer An array of objects
+	 * @return boolean|array
+	 */
+	public function reviseItemIds($itemcontainer)
 	{
 		if(!is_array($itemcontainer)) return false;
 		$result = array();
 		foreach($itemcontainer as $val)
-			$result[$val->get('id')] = $val;
+			$result[$val->id] = $val;
 		return $result;
 	}
 
@@ -1036,8 +1041,8 @@ class ItemMapper
 	{
 
 		$tpl = imanager()->getTemplateEngine();
+		if(is_null($tpl->templates)) $tpl->init();
 		$config = imanager('config');
-
 		$pagination = $tpl->getTemplates('pagination');
 		$tpls['wrapper'] = !empty($argtpls['wrapper']) ? $argtpls['wrapper'] : $tpl->getTemplate('wrapper', $pagination);
 		$tpls['prev'] = !empty($argtpls['prev']) ? $argtpls['prev'] : $tpl->getTemplate('prev', $pagination);
@@ -1054,11 +1059,11 @@ class ItemMapper
 
 		$page = (!empty($params['page']) ? $params['page'] : (isset($_GET['page']) ? (int) $_GET['page'] : 1));
 		$params['items'] = !empty($params['count']) ? $params['count'] : $this->total;
-		$pageurl = !empty($params['pageurl']) ? $params['pageurl'] : 'page=';
+
+		$pageurl = !empty($params['pageurl']) ? $params['pageurl'] : '?page=';
 		$start = !empty($params['start']) ? $params['start'] : 1; // todo: remove it
 
-		$maxitemperpage = ((int) $config->backend->maxitemperpage > 0) ?
-			$config->backend->maxitemperpage : 20;
+		$maxitemperpage = ((int) $config->backend->maxitemperpage > 0) ? $config->backend->maxitemperpage : 20;
 		$limit = !empty($params['limit']) ? $params['limit'] : $config->backend->maxitemperpage;
 		$adjacents = !empty($params['adjacents']) ? $params['adjacents'] : 3;
 		$lastpage = !empty($params['lastpage']) ? $params['lastpage'] : ceil($params['items'] / $limit);
@@ -1072,7 +1077,7 @@ class ItemMapper
 			return $tpl->render($tpls['wrapper'], array('value' => ''), true);
 
 		$output = '';
-
+		// $pageurl . '1'
 		if($page > 1)
 			$output .= $tpl->render($tpls['prev'], array('href' => $pageurl . $prev), true);
 		else
@@ -1088,12 +1093,13 @@ class ItemMapper
 					$output .= $tpl->render($tpls['central_inactive'], array('counter' => $counter), true);
 				} else
 				{
+					// $pageurl . '1'
 					$output .= $tpl->render($tpls['central'], array(
-							'href' => $pageurl . $counter, 'counter' => $counter), true
+							'href' => ($counter > 1) ? $pageurl . $counter : $pageurl . '1', 'counter' => $counter), true
 					);
 				}
 			}
-			// enough pages to hide some
+		// enough pages to hide some
 		} elseif($lastpage > 5 + ($adjacents * 2))
 		{
 			// vclose to beginning; only hide later pages
@@ -1152,7 +1158,7 @@ class ItemMapper
 			//close to end; only hide early pages
 			else
 			{
-				// first
+				// first ($pageurl . '1')
 				$output .= $tpl->render($tpls['first'], array('href' => $pageurl . '1'), true);
 				// second
 				$output .= $tpl->render($tpls['second'], array('href' => $pageurl . '2', 'counter' => '2'), true);

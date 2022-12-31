@@ -1,32 +1,44 @@
 <?php
-class FieldChunk implements FieldInterface
+
+class FieldChunk extends FieldLongtext implements FieldInterface
 {
-	public $properties;
-	protected $tpl;
-
-	public function __construct(TemplateEngine $tpl)
-	{
-		$this->tpl = $tpl;
-		$this->name = null;
-		$this->class = null;
-		$this->id = null;
-		$this->value = null;
-		$this->style = null;
-		$this->configs = new stdClass();
+	/**
+	 * FieldChunk constructor.
+	 *
+	 * @param TemplateEngine $tpl
+	 */
+	public function __construct(TemplateEngine $tpl) {
+		parent::__construct($tpl);
 	}
 
-
-	public function render($sanitize=false)
+	/**
+	 * Renders the field markup
+	 *
+	 * @param bool $sanitize
+	 *
+	 * @return bool|Template
+	 */
+	public function render($sanitize = false)
 	{
-		if(is_null($this->name))
-			return false;
+		if(is_null($this->name)) { return false; }
 
-		/*$output = new Template();
-
-		$output->content = $this->value;*/
-		return  $this->value;
+		$output = $this->tpl->render($this->value, array(
+			'value' => $this->sanitize($this->value)), true, array()
+		);
+		return $output;
 	}
 
+	/**
+	 * This method used for sanitizing output
+	 *
+	 * @param $value
+	 *
+	 * @return mixed
+	 */
+	protected function sanitize($value) { return base64_encode(mb_substr($value, 0, $this->maxLen)); }
+
+	/**
+	 * Make the field configurable
+	 */
 	public function getConfigFieldtype(){}
-
 }

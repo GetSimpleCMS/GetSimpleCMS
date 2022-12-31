@@ -1,6 +1,8 @@
 <?php
+// Manager
+include(GSPLUGINPATH.'imanager/lib/Manager.php');
 
-class ItemManager extends Model
+class ItemManager extends Manager
 {
 	/**
 	 * Just for counting ItemManager instances
@@ -99,7 +101,7 @@ class ItemManager extends Model
 		} else {
 			self::$categoryMapper = $this->getCategoryMapper();
 			$tarCat = self::$categoryMapper->getCategory($cat);
-			self::$itemMapper->init((int) $tarCat->id);
+			self::$itemMapper->init((int)$tarCat->id);
 			//if(empty($stat)) return self::$itemMapper->items;
 			return self::$itemMapper->getItems($stat, $offset, $length, $items);
 		}
@@ -113,7 +115,8 @@ class ItemManager extends Model
 	}
 
 	/**
-	 * Some deprecated accessor calls, just for backward compatibility reasons
+	 * Some deprecated accessor calls, just for backward compatibility reasons.
+	 * Please do not use these any more.
 	 */
 	public function newTemplate($name=''){return new Template($name='');}
 	public function getCategoryClass(){return $this->getCategoryMapper();}

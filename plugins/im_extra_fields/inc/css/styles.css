@@ -17,5 +17,19 @@
 }
 
 #itemContent {
-	/*display: none;*/
+	margin-bottom: 10px;
+}
+
+.itemInfo {
+	background-color: #f7f7f7;
+}
+
+.itemInfo p {
+	margin-bottom: 2px;
+	padding: 3px;
+	font-size: 10px;
+	border: solid 1px #e7e7e7;
+}
+.fieldsArounder>p {
+	margin-top: 10px;
 }

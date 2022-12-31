@@ -35,7 +35,7 @@ class ThemeSettingsBackend {
         $settings = ThemeSettings::getSchema($theme, $_POST['schema']);
       }
       foreach ($_POST as $key => $value) {
-		if (!in_array($key, array('save', 'apply'))) {
+        if (!in_array($key, array('save', 'apply'))) {
           $settings[$key] = $value;
         }
       }
@@ -58,9 +58,31 @@ class ThemeSettingsBackend {
   
   public static function showSettings($theme) {
     $settings = ThemeSettings::getSettings($theme);
+    // integration with I18N plugin:
+    if (function_exists('return_i18n_available_languages')) {
+    	$languages = return_i18n_available_languages();
+    	if (count($languages) > 1) {
+	    	$deflanguage = return_i18n_default_language();
+    	} else {
+    		$languages = null;
+    	}
+    } else {
+    	$languages = null;
+    }
 ?>
-    <h3><?php i18n('theme_settings/SETTINGS_TITLE'); ?></h3>
-    <form method="post" id="themeSettingsForm" action="load.php?id=theme_settings">
+    <h3 class="floated" style="float:left"><?php i18n('theme_settings/SETTINGS_TITLE'); ?></h3>
+    <?php if ($languages) { ?>
+  	<div id="themeSettingsLanguages" class="edit-nav" style="display:none">
+   		<p>
+    		<?php foreach (array_reverse($languages) as $lang) {?>
+   			<a href="<?php echo '#'.$lang; ?>" class="<?php echo $lang . ($lang == $deflanguage ? ' current' : ''); ?>" onclick="setLanguage('<?php echo $lang; ?>')">
+   				<?php echo $lang; ?>
+   			</a>
+ 	  		<?php } ?>
+ 	  	</p>
+   	</div>
+   	<?php } ?>
+    <form method="post" id="themeSettingsForm" action="load.php?id=theme_settings" style="clear:both">
       <?php self::includeSettings($theme, $settings); ?>
       <div class="clear"></div>
       <p id="submitline">
@@ -70,6 +92,43 @@ class ThemeSettingsBackend {
         &nbsp;&nbsp; <?php i18n('OR'); ?> &nbsp;&nbsp;
         <a class="cancel" href="theme.php"><?php i18n('CANCEL'); ?></a>
       </p>
+      <?php if ($languages) { ?>
+      <script type="text/javascript">
+        var languages = <?php echo json_encode($languages); ?>;
+        var deflanguage = <?php echo json_encode($deflanguage); ?>;
+        var settings = <?php echo json_encode($settings); ?>;
+      	function setLanguage(lang) {
+          $('#themeSettingsLanguages a').removeClass('current');
+          $('#themeSettingsLanguages a.'+lang).addClass('current');
+          $('#themeSettingsForm .i18n').hide();
+          $('#themeSettingsForm .i18n.'+lang).show();
+      	}
+      	$(function() {
+          var found = false; 
+	      	$('#themeSettingsForm .i18n').each(function(i, elem) {
+		      	found = true;
+	          $elem = $(elem);
+						for (var i=0; i<languages.length; i++) {
+							var lang = languages[i];
+							if (lang !== deflanguage) {
+								var name = $elem.attr('name');
+								var value = settings[name+'_'+lang];
+								$elem.clone().addClass(lang)
+								  .attr('id',$elem.attr('id')+'_'+lang)
+								  .attr('name',name+'_'+lang)
+								  .css('display','none')
+								  .val(value ? value : '')
+								  .insertAfter($elem);
+							}
+						}
+						$elem.addClass(deflanguage);
+	      	});
+	      	if (found) {
+		      	$('#themeSettingsLanguages').css('display','block');
+	      	}
+      	});
+      </script>
+      <?php } ?>
     </form>
 <?php    
   }

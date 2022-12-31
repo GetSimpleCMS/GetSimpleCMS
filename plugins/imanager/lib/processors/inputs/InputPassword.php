@@ -1,79 +1,174 @@
 <?php
+
 class InputPassword implements InputInterface
 {
+	/**
+	 * @var stdClass - The vield value object
+	 */
 	protected $values;
+
+	/**
+	 * @var Field object
+	 */
 	protected $field;
 
+	/**
+	 * @var int
+	 */
+	protected $maxLen = 255;
+
+	/**
+	 * @var int - default value, if it wasn't defined in field settings menu
+	 */
+	protected $minLen = 0;
+
+	/**
+	 * @var bool - default value if it wasn't defined in field settings menu
+	 */
+	protected $required = false;
+
+	/**
+	 * @var null
+	 */
+    public $confirm = null;
+
+	/**
+	 * @var null
+	 */
+    public $salt = null;
+
+	/**
+	 * @var null
+	 */
+    public $password = null;
+
+	/**
+	 * InputPassword constructor.
+	 *
+	 * @param Field $field
+	 */
 	public function __construct(Field $field)
 	{
+		/**
+		 * Set the field object
+		 */
 		$this->field = $field;
-		$this->values = new stdClass();
+
+		/**
+		 * Init field value and set it to null
+		 */
+		$this->values = new \stdClass();
 		$this->values->value = null;
-		$this->confirm = null;
+		$this->values->salt = null;
+
+		/**
+		 * Set password & salt to empty string
+		 */
 		$this->password = '';
 		$this->salt = '';
-		$this->values->salt = null;
+
+		/**
+		 * Set local config values if these are set in the field settings (IM-Menu)
+		 */
+		if($this->field->required) {
+			$this->required = true;
+		}
+
+		if($this->field->minimum) {
+			$this->minLen = $this->field->minimum;
+		}
+
+		if($this->field->maximum) {
+			$this->maxLen = $this->field->maximum;
+		}
 	}
 
-	public function prepareInput($value, $sanitize=false)
+	/**
+	 * This method checks the field inputs and sets the field contents.
+	 * If an error occurs, the method returns an error code.
+	 *
+	 * @param $value
+	 * @param bool $sanitize
+	 *
+	 * @return int|stdClass
+	 */
+	public function prepareInput($value, $sanitize = false)
 	{
 		$value = trim($value);
 		$this->confirm = trim($this->confirm);
-		// check input required
-		if(!empty($this->field->required) && $this->field->required == 1)
-		{
-			if(empty($value) || empty($this->confirm))
-				return self::ERR_REQUIRED;
-		}
 
-		if((!empty($value) && empty($this->confirm)) ||
-			(!empty($this->confirm) && empty($value)))
-		{
-			return self::ERR_INCOMPLETED;
-
-		} elseif (empty($value) && empty($this->confirm))
-		{
+		// Set empty or default value, the input isn't required
+		if(empty($value) && empty($this->confirm) && !$this->required) {
 			$this->values->salt = $this->salt;
 			$this->values->value = $this->password;
 			return $this->values;
 		}
 
+		// Check input required
+		if($this->required && (empty($value) && empty($this->confirm))) {
+			return self::ERR_REQUIRED;
+		}
+
+		// Input incompleted
+		if(empty($value) || empty($this->confirm)) {
+			return self::ERR_INCOMPLETED;
+		}
+
 		// check differences
-		if($value != $this->confirm)
+		if(strcmp($value, $this->confirm) !== 0) {
 			return self::ERR_COMPARISON;
-
-		// check min value
-		if(!empty($this->field->minimum) && $this->field->minimum > 0)
-		{
-			if(strlen($value) < intval($this->field->minimum))
-				return self::ERR_MIN_VALUE;
-		}
-		// check input max value
-		if(!empty($this->field->maximum) && $this->field->maximum > 0)
-		{
-			if(strlen($value) > intval($this->field->maximum))
-				return self::ERR_MAX_VALUE;
 		}
 
+		// Check min value length
+		if($this->minLen > 0) {
+			if(mb_strlen($value) < (int) $this->minLen) { return self::ERR_MIN_VALUE; }
+		}
+
+		// Check max value length
+		if($this->maxLen > 0) {
+			if(mb_strlen($value) > (int) $this->maxLen) { return self::ERR_MAX_VALUE; }
+		}
+
+		// Build salt string
+		// Note, since 2.4.4 salt is no longer used, but is still retained for compatibility reasons.
 		$this->values->salt = $this->randomString();
-		$this->values->value = sha1($value . $this->values->salt);
+		// Create hashed pass
+		//$this->values->value = sha1($value . $this->values->salt);
+		$this->values->value = password_hash($value, PASSWORD_DEFAULT);
+		// Set confirmed flag
 		$this->field->setProtected('confirmed', true);
+
 		return $this->values;
 	}
 
-	public function prepareOutput(){return $this->values;}
+	/**
+	 * The method that is called when initiating item content
+	 * and is relevant for setting the field content.
+	 * However, since we do not require any special formatting
+	 * of the output, we can accept the value 1 to 1 here.
+	 *
+	 * @return stdClass
+	 */
+	public function prepareOutput(){ return $this->values; }
 
+	// O_o what is this used for?
+	public function checkInput($pass, $confirm){ return self::SUCCESS; }
 
-	public function checkInput($pass, $confirm){return self::SUCCESS;}
-
-
+	/**
+	 * Random string generator
+	 *
+	 * @param int $length
+	 *
+	 * @return string
+	 */
 	public function randomString($length = 10)
 	{
 		$characters = '0123456*789abcdefg$hijk#lmnopqrstuvwxyzABC+EFGHIJKLMNOPQRSTUVW@XYZ';
 		$charactersLength = strlen($characters);
 		$randomString = '';
-		for($i = 0; $i < $length; $i++)
+		for($i = 0; $i < $length; $i++) {
 			$randomString .= $characters[rand(0, $charactersLength - 1)];
+		}
 		return $randomString;
 	}
 }

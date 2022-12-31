@@ -68,6 +68,15 @@ EOD;
 
 
 /**
+ * Item-ID row
+ */
+$this->itemInfo =
+<<<EOD
+	<div class="itemInfo"><p>Category: [[catid]] | Item: [[id]]</p></div>
+EOD;
+
+
+/**
  * Options template
  */
 $this->selectOption =
@@ -82,12 +91,22 @@ EOD;
 $this->inputsArounder =
 <<<EOD
 		<div class="fieldsArounder">
+			[[itemidrow]]
 			[[fields]]
 			[[imlink]]
 			<input type="hidden" name="timestamp" value="[[timestamp]]">
 			<input type="hidden" name="itemid" value="[[itemid]]">
 			<input type="hidden" name="categoryid" value="[[categoryid]]">
 		</div>
+		<script>
+			$(function() {
+				for(var i in CKEDITOR.instances) {
+					CKEDITOR.instances[i].on('change', function() {
+						if(this.name != 'post-content') { this.updateElement(); }
+					});
+				}
+			});
+		</script>
 EOD;
 
 

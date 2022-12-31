@@ -2,41 +2,56 @@
 
 class MsgReporter
 {
+	public static $plugin = 'imanager';
+	public static $dir = 'imanager';
+	private static $mergedLang=null;
 	private static $_msgs=array();
 	private static $error_code;
 	private static $error=false;
 
 	public static function setClause($name, array $var=array(), $error=false, $dir=false)
 	{
-		i18n_merge('imanager') || i18n_merge('imanager','en_US');
-		$dir = !empty($dir) ? $dir.'/' : 'imanager/';
+		if(!self::$mergedLang) {
+			self::$mergedLang = true;
+			i18n_merge(self::$plugin) || i18n_merge(self::$plugin,'en_US');
+		}
+		$dir = !empty($dir) ? $dir.'/' : self::$dir.'/';
 		$o = i18n_r($dir . $name);
 		if(empty($var))
 		{
 			if($error) {
 				self::setError();
-				self::$_msgs[] = '<li class="error">'.$o.'</li>';
+				self::$_msgs[] = '<li class="im-error">'.$o.'<a class="close" href="javascript:void(0)"><i class="fa fa-times"></i></a></li>';
 			} else {
-				self::$_msgs[] = '<li class="notify">'.$o.'</li>';
+				self::$_msgs[] = '<li class="im-notify">'.$o.'<a class="close" href="javascript:void(0)"><i class="fa fa-times"></i></a></li>';
 			}
 			return;
 		}
-		foreach($var as $key => $value)
-		{
-			if($error) {
-				self::setError();
-				$o = '<li class="error">'.preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $value, $o).'</li>';
-			} else {
-				$o = '<li class="notify">'.preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $value, $o).'</li>';
+
+
+		if($error) {
+			foreach($var as $key => $value) {
+				$o = preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $value, $o);
 			}
+			self::setError();
+			$o = '<li class="im-error">'.$o.'<a class="close" href="javascript:void(0)"><i class="fa fa-times"></i></a></li>';
+		} else {
+			foreach($var as $key => $value) {
+				$o = preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $value, $o);
+			}
+			$o = '<li class="im-notify">'.$o.'<a class="close" href="javascript:void(0)"><i class="fa fa-times"></i></a></li>';
 		}
+
 		self::$_msgs[] = $o;
 	}
 
 	public static function getClause($name, array $var=array(), $dir=false)
 	{
-		i18n_merge('imanager') || i18n_merge('imanager','en_US');
-		$dir = !empty($dir) ? $dir.'/' : 'imanager/';
+		if(!self::$mergedLang) {
+			self::$mergedLang = true;
+			i18n_merge(self::$plugin) || i18n_merge(self::$plugin,'en_US');
+		}
+		$dir = !empty($dir) ? $dir.'/' : self::$dir.'/';
 		$o = i18n_r($dir . $name);
 		if(empty($var))
 			return $o;
@@ -45,12 +60,18 @@ class MsgReporter
 		return $o;
 	}
 
+	public static function removeClauseByValue($value)
+	{
+		$key = array_search($value, self::$_msgs);
+		if($key !== false) unset(self::$_msgs[$key]);
+	}
+
 	public static function setError(){self::$error=true;}
 	public static function setCode($val){self::$error_code = (int) $val; self::$error=true;}
 
-	public static function msgs(){return (self::$_msgs);}
-	public static function isError(){return (self::$error);}
-	public static function errorCode(){return (self::$error_code);}
+	public static function msgs() {return self::$_msgs;}
+	public static function isError(){return self::$error;}
+	public static function errorCode(){return self::$error_code;}
 
 	public static function buildMsg()
 	{
@@ -58,7 +79,7 @@ class MsgReporter
 		$msg = self::msgs();
 		if(!empty($msg))
 			foreach($msg as $val) $o .= $val;
-		return '<ul class="msgs">'.$o.'</ul>';
+		return '<ul class="im-msgs msgs">'.$o.'</ul>';
 	}
 }
 ?>

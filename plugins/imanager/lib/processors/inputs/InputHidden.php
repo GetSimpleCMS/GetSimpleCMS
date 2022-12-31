@@ -1,24 +1,30 @@
 <?php
-class InputHidden implements InputInterface
-{
-	protected $values;
-	protected $field;
+/**
+ * Currently fully inherited from InputText
+ */
+class InputHidden extends InputText implements InputInterface {
 
-	public function __construct(Field $field)
-	{
-		$this->field = $field;
-		$this->values = new stdClass();
-		$this->values->value = null;
+	/**
+	 * InputHidden constructor.
+	 *
+	 * @param Field $field
+	 */
+	public function __construct(Field $field) {
+		parent::__construct($field);
 	}
 
-	/* Kontrolliert den Input beim speichern des Wertes  */
-	public function prepareInput($value, $sanitize=false)
-	{
-		$this->values->value = empty($sanitize) ? $value : $this->sanitize($value);
-		return $this->values;
+	/**
+	 * This method checks the field inputs and sets the field contents.
+	 * If an error occurs, the method returns an error code.
+	 *
+	 * @param $value
+	 * @param bool $sanitize
+	 *
+	 * @return int|stdClass
+	 */
+	public function prepareInput($value, $sanitize = false) {
+		return parent::prepareInput($value, $sanitize);
 	}
 
-	public function prepareOutput(){return $this->values;}
-
-	protected function sanitize($value){return imanager('sanitizer')->text($value);}
+	public function prepareOutput(){ return $this->values; }
 }

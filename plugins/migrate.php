@@ -1,8 +1,9 @@
 <?php
+$migrate_ver = '0.4';
 /*
 Plugin Name: Migrate site
 Description: Migrate site to another domain
-Version: 0.1
+Version: 0.4
 Author: Andrejus Semionovas
 Author URI: http://pigios-svetaines.eu/
 */
@@ -12,13 +13,13 @@ i18n_merge('migrate') || i18n_merge('migrate','en_US');
 # get correct id for plugin
 $thisfile = basename(__FILE__, ".php");
 
-global $SITEURL;
+global $SITEURL, $migrate_ver;
 
 # register plugin
 register_plugin(
 	$thisfile,							//Plugin id
 	'Migrate site ',					//Plugin name
-	'0.1',								//Plugin version
+	$migrate_ver,								//Plugin version
 	'Andrejus Semionovas',				//Plugin author 
 	'http://pigios-svetaines.eu',		//author website
 	'Migrate site to another domain',	//Plugin description
@@ -97,7 +98,7 @@ fieldset {
 }
 </style>
 <?php	
-	global $content, $SITEURL;
+	global $content, $SITEURL, $migrate_ver;
 	if(isset($_POST['do_replace']) && $_POST['do_replace']) {
 		if(isset($_POST['xml_replace']) && $_POST['xml_replace'] == 0) {
 			xml_replace($_POST['exist_name'], $_POST['new_name'], 0);
@@ -116,7 +117,7 @@ fieldset {
 		unset($_POST['file_delete']);
 	}
 ?>
-	<h3 class="floated" style="float:left;margin-bottom: 20px;"><?php i18n('migrate/TITLE'); ?></h3>
+	<h3 class="floated" style="float:left;margin-bottom: 20px;"><?php i18n('migrate/TITLE'); ?><span style="margin-left: 16px;">ver. <?php echo $migrate_ver; ?></span></h3>
 	<form action="<?php echo htmlspecialchars($_SERVER['REQUEST_URI']); ?>" method="post" class="migrate" name="migrate">
 		<fieldset class="container widesec">
 			<div class="inner-divs">
@@ -189,8 +190,6 @@ fieldset {
 			jQuery(".fancy-message").hide('slow');
 		}, 20000);
 	});
-	
-	
 </script>
 <?php
 	$dir_arch = GSPLUGINPATH.'migrate/arch';
@@ -232,7 +231,7 @@ fieldset {
 	}
 }
 function replaceXMLdata($xml, $element, $repl_string){
-	/* Handle empty Taggs for storage */
+	//* Handle empty Taggs for storage *//
 	foreach($xml->children() as $child) {
 		$var_empt = $child->getName();
 		$var_emp = $child;
@@ -240,7 +239,7 @@ function replaceXMLdata($xml, $element, $repl_string){
 			$xml->$var_empt = '';
 		}
     }
-	/* Replace old node data with new one */
+	//* Replace old node data with new one *//
 	$new_child = $xml->addChild($element);
 	$domReplace = dom_import_simplexml($new_child);
 	$no   = $domReplace->ownerDocument;
@@ -253,29 +252,46 @@ function replaceXMLdata($xml, $element, $repl_string){
 
 function xml_replace($exist_name, $new_name, $mode=1, $alls=false) {
 	$dir = GSROOTPATH.'data/pages';
-
 	if (is_dir($dir)) {
     if ($dh = opendir($dir)) {
 		$total = 0;
+		$spec_total = 0;
 		$files_change = 0;
 		$no_modified = 0;
+		$spec_count = 0;
         while (($file = readdir($dh)) !== false) {
-            if($file == "." ||  $file == ".." || is_dir($dir.'/'.$file) || $file == ".htaccess") { continue; }
+            if($file == "." ||  $file == ".." || is_dir($dir.'/'.$file) || $file == ".htaccess")
+			{ continue; }
 			else {
 				$ext = substr($file, strrpos($file, '.') + 1);
 				if(in_array($ext, array("xml","XML"))) {
 					$file_xml = simplexml_load_file(GSROOTPATH.'data/pages/'.$file);
+					if(isset($file_xml->special)) {		//Special fields replacing
+						foreach ($file_xml->children() as $child) {
+							$node_name = $child->getName();
+							if($node_name == "content") continue;
+							$spec_content = $file_xml->$node_name;
+							if (strpos($spec_content, $exist_name) !== false) {
+								$spec_nr = str_ireplace($exist_name, $new_name, $spec_content);
+								$file_xml->$node_name = $spec_nr;
+								$spec_count++;
+							}
+						}
+					}
 					$file_content = $file_xml->content;
 					$str_nr = str_ireplace($exist_name, $new_name, $file_content, $count);
-					if($count>0 || $alls == 1) {
+					if($count>0 || $alls == 1 || $spec_count>0) {
 						if($count>0) {
 							$total += $count;
+							$files_change = $files_change + 1;
+						} elseif($spec_count>0) {
+							$spec_total += $spec_count;
 							$files_change = $files_change + 1;
 						}
 						else { $no_modified = $no_modified + 1; }
 						if(!is_dir(GSPLUGINPATH.'migrate/mods')) {
 							if ( ! @mkdir(GSPLUGINPATH.'migrate/mods', 0777, true) ) {
-								die('Failed to create folder...');
+								die('Failed to create folder: '.GSPLUGINPATH.'migrate/mods. Line: '.__LINE__);
 								return false;
 							}
 						}
@@ -283,34 +299,129 @@ function xml_replace($exist_name, $new_name, $mode=1, $alls=false) {
 						if($mode == 1) XMLsave($file_xml, GSPLUGINPATH.'migrate/mods/'.$file);
 						if($mode == 0) XMLsave($file_xml, GSROOTPATH.'data/pages/'.$file);
 					}
+					
 				}
 			}
-        } 
-        closedir($dh);
-
-		$file_xml = simplexml_load_file(GSROOTPATH.'data/other/website.xml');
-		$file_content = $file_xml->SITEURL;
+        }
+		closedir($dh);
+		//***** News Manager support *****//
+		$news = 0;
+		$img_count = 0;
+		$dirm = GSROOTPATH.'data/posts';
+		if (is_dir($dirm)) {
+			if ($dhm = opendir($dirm)) {
+				while (($file = readdir($dhm)) !== false) {
+					if($file == "." ||  $file == ".." || is_dir($dir.'/'.$file) || $file == ".htaccess") {
+						continue;
+					} else {
+						$ext = substr($file, strrpos($file, '.') + 1);
+						if(in_array($ext, array("xml","XML"))) {
+							$file_xml = simplexml_load_file($dirm.'/'.$file);
+							if(isset($file_xml->image)) {
+								foreach ($file_xml->children() as $child) {
+									$node_name = $child->getName();
+									if($node_name == "image") {
+										$img_url = $file_xml->$node_name;
+										if (strpos($img_url, $exist_name) !== false) {
+											$img_nr = str_ireplace($exist_name, $new_name, $img_url);
+											$file_xml->$node_name = $img_nr;
+											$img_count++;
+										}
+									}
+								}
+							}
+							if(isset($file_xml->content)) {
+								$file_content = $file_xml->content;
+								$str_nr = str_ireplace($exist_name, $new_name, $file_content, $img_count);
+								if($img_count>0 || $alls == 1) {
+									if($img_count>0) {
+										$news += $img_count;
+										$files_change = $files_change + 1;
+									} else { $no_modified = $no_modified + 1; }
+									if(!is_dir(GSPLUGINPATH.'migrate/mods/data')) {
+										if ( ! @mkdir(GSPLUGINPATH.'migrate/mods/data', 0777, true) ) {
+											die('Failed to create folder: '.GSPLUGINPATH.'migrate/mods/data. Line: '.__LINE__);
+											return false;
+										}
+									}
+									if(!is_dir(GSPLUGINPATH.'migrate/mods/data/posts')) {
+										if ( ! @mkdir(GSPLUGINPATH.'migrate/mods/data/posts', 0777, true) ) {
+											die('Failed to create folder: '.GSPLUGINPATH.'migrate/mods/data/posts. Line: '.__LINE__);
+											return false;
+										}
+									}
+									$file_xml = replaceXMLdata($file_xml, 'content', $str_nr);
+									if($mode == 1) {
+										if(!is_dir(GSPLUGINPATH.'migrate/mods/data')) {
+											if ( ! @mkdir(GSPLUGINPATH.'migrate/mods/data', 0777, true) ) {
+												die('Failed to create folder: '.GSPLUGINPATH.'migrate/mods/data. Line: '.__LINE__);
+												return false;
+											}
+										}
+										if(!is_dir(GSPLUGINPATH.'migrate/mods/data/posts')) {
+											if ( ! @mkdir(GSPLUGINPATH.'migrate/mods/data/posts', 0777, true) ) {
+												die('Failed to create folder: '.GSPLUGINPATH.'migrate/mods/data/posts. Line: '.__LINE__);
+												return false;
+											}
+										}
+										XMLsave($file_xml, GSPLUGINPATH.'migrate/mods/data/posts/'.$file);
+									}
+									if($mode == 0) XMLsave($file_xml, GSROOTPATH.'data/posts/'.$file);
+								}
+							}
+						}
+					}
+				}
+				closedir($dhm);
+			}
+		}
 		
-		$str_nr = str_ireplace($exist_name, $new_name, $file_content, $countw);
-
-		$file_xml = replaceXMLdata($file_xml, 'SITEURL', $str_nr);
 		if(!is_dir(GSPLUGINPATH.'migrate/mods')) {
 			if ( ! @mkdir(GSPLUGINPATH.'migrate/mods', 0777, true) ) {
-				die('Failed to create folder...');
+				die('Failed to create folder: '.SPLUGINPATH.'migrate/mods. Line: '.__LINE__);
 				return false;
 			}
 		}
-		if($mode == 1) $file_xml->saveXML(GSPLUGINPATH.'migrate/mods/website.xml');
-		if($mode == 0) $file_xml->saveXML(GSROOTPATH.'data/other/website.xml');
+		//* Changes for Website XML file *//
+		$file_xml = simplexml_load_file(GSROOTPATH.'data/other/website.xml');
+		$file_content = $file_xml->SITEURL;
+		$str_nr = str_ireplace($exist_name, $new_name, $file_content, $countw);
 		if($countw>0) {
+			$file_xml = replaceXMLdata($file_xml, 'SITEURL', $str_nr);
+			if($mode == 1) $file_xml->saveXML(GSPLUGINPATH.'migrate/mods/website.xml');
+			if($mode == 0) $file_xml->saveXML(GSROOTPATH.'data/other/website.xml');
 			$total += $countw;
 			$files_change = $files_change + 1;
 		}
 		
+		//* Changes for Random Content XML file *//
+		if(file_exists(GSDATAOTHERPATH . 'random_content.xml')) {	
+			$category_file = getXML(GSDATAOTHERPATH . 'random_content.xml');
+			$xml = new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
+			foreach($category_file->category as $category) {
+				$c_atts= $category->attributes();
+				$c_child = $xml->addChild('category');
+				$c_child->addAttribute('name', $c_atts['name']);
+				$c_child->addAttribute('limit', $c_atts['limit']);
+				foreach($category->content as $content)	{
+					$replace = str_ireplace($exist_name, $new_name, $content, $countr);
+					$atts= $content->attributes();
+					$child = $c_child->addChild('content');
+					$child->addAttribute('title', $atts['title']);
+					$child->addCData($replace);
+				}
+			}
+			if($countr>0) {
+				if($mode == 1) XMLsave($xml, GSPLUGINPATH.'migrate/mods/random_content.xml');
+				if($mode == 0) XMLsave($xml, GSDATAOTHERPATH . 'random_content.xml');
+				$total += $countr;
+				$files_change = $files_change + 1;
+			}
+		}
 		if($total > 0 && $mode == 1) {
 			if(!is_dir(GSPLUGINPATH.'migrate/arch')) {
 				if ( ! @mkdir(GSPLUGINPATH.'migrate/arch', 0777, true) ) {
-					die('Failed to create folder...');
+					die('Failed to create folder: '.GSPLUGINPATH.'migrate/arch. Line: '.__LINE__);
 					return false;
 				}
 				$myfile = fopen(GSPLUGINPATH.'migrate/arch/'.'.htaccess', 'w') or die('Unable to open file!');
@@ -318,57 +429,104 @@ function xml_replace($exist_name, $new_name, $mode=1, $alls=false) {
 				fclose($myfile);
 			}
 			$timestamp = gmdate('Y-m-d-Hi');
-					$zipcreated = true;
-
-					set_time_limit (0);
-					ini_set("memory_limit","800M"); 
-					$new_domain = str_replace(array("http://", "https://", "/", "."), array("","","_","_"), $new_name);
-					$zip_path = GSPLUGINPATH.'migrate/arch/'.$new_domain.'_'.$timestamp .'.zip';
-					$sourcePath = str_replace('/', DIRECTORY_SEPARATOR, GSPLUGINPATH.'migrate/mods/');
-					if (!class_exists ( 'ZipArchive' , false)) {
-						include('inc/ZipArchive.php');
-					}
-					if (class_exists ( 'ZipArchive' , false)) {
-						
-						$zip = new ZipArchive();
-						$result = $zip->open($zip_path, ZipArchive::CREATE);
-;
-						if ($result === TRUE && is_readable(GSPLUGINPATH.'migrate/mods')) {
-							foreach (new DirectoryIterator(GSPLUGINPATH.'migrate/mods') as $fileInfo) {
-								if(!$fileInfo->isDot()) {
-									if($fileInfo->getFilename() != 'website.xml') {
-										if (($zip->addFile ($fileInfo->getPathname(), "data/pages/".$fileInfo->getFilename())) === TRUE) {
-											$theoreticaly_added = TRUE;
-										}
+			$zipcreated = true;
+			set_time_limit (0);
+			ini_set("memory_limit","800M"); 
+			$new_domain = str_replace(array("http://", "https://", "/", ".", ":"), array("","","_","_","_"), $new_name);
+			$zip_path = GSPLUGINPATH.'migrate/arch/'.$new_domain.'_'.$timestamp .'.zip';
+			$sourcePath = str_replace('/', DIRECTORY_SEPARATOR, GSPLUGINPATH.'migrate/mods/');
+			if (!class_exists ( 'ZipArchive' , false)) {
+				include('inc/ZipArchive.php');
+			}
+			if (class_exists ( 'ZipArchive' , false)) {
+				$zip = new ZipArchive();
+				$result = $zip->open($zip_path, ZipArchive::CREATE);
+				if ($result === TRUE) {
+					if(is_readable(GSPLUGINPATH.'migrate/mods')) {
+						foreach (new DirectoryIterator(GSPLUGINPATH.'migrate/mods') as $fileInfo) {
+							if(!$fileInfo->isDot() && !$fileInfo->isDir()) {
+								if($fileInfo->getFilename() != 'website.xml' && $fileInfo->getFilename() != 'random_content.xml') {
+									if (($zip->addFile ($fileInfo->getPathname(), "data/pages/".$fileInfo->getFilename())) === TRUE) {
+										$theoreticaly_added = TRUE;
 									}
-									if($fileInfo->getFilename() == 'website.xml') {
-										if (($zip->addFile ($fileInfo->getPathname(), "data/other/".$fileInfo->getFilename())) === TRUE) {
-											$theoreticaly_added = TRUE;
-										}
+								}
+								if($fileInfo->getFilename() == 'website.xml' || $fileInfo->getFilename() == 'random_content.xml') {
+									if (($zip->addFile ($fileInfo->getPathname(), "data/other/".$fileInfo->getFilename())) === TRUE) {
+										$theoreticaly_added = TRUE;
 									}
 								}
 							}
 						}
-						$status = $zip->close();
 					}
-					else { ?>
-						<div class="fancy-message" style="border: 1px solid; padding: 20px 10px 10px 10px; border-radius: 4px; margin-bottom: 20px; background: #DFF0D8; color: #3C8C8F;"><p><?php i18n('migrate/ZIP_NOT'); ?></p></div><?php
+					if(is_readable(GSPLUGINPATH.'migrate/mods/data/other/news_manager')) {
+						foreach (new DirectoryIterator(GSPLUGINPATH.'migrate/mods/data/other/news_manager') as $fileInfo) {
+							if(!$fileInfo->isDot() && !$fileInfo->isDir()) {
+								if (($zip->addFile ($fileInfo->getPathname(), "data/other/news_manager/".$fileInfo->getFilename())) === TRUE) {
+									$theoreticaly_added = TRUE;
+								}
+							}
+						}
 					}
-			if (is_readable(GSPLUGINPATH.'migrate/mods')) {
-				foreach (new DirectoryIterator(GSPLUGINPATH.'migrate/mods') as $fileInfo) {
+					if(is_readable(GSPLUGINPATH.'migrate/mods/data/posts')) {
+						foreach (new DirectoryIterator(GSPLUGINPATH.'migrate/mods/data/posts') as $fileInfo) {
+							if(!$fileInfo->isDot() && !$fileInfo->isDir()) {
+								if (($zip->addFile ($fileInfo->getPathname(), "data/posts/".$fileInfo->getFilename())) === TRUE) {
+									$theoreticaly_added = TRUE;
+								}
+							}
+						}
+					}
+				} else { ?>
+					<div class="fancy-message" style="border: 1px solid; padding: 20px 10px 10px 10px; border-radius: 4px; margin-bottom: 20px; background: #DFF0D8; color: #3C8C8F;"><p><?php i18n('migrate/ZIP_NOT_OPEN'); ?></p></div><?php
+				}
+				$status = $zip->close();
+				if(!$status) { ?>
+					<div class="fancy-message" style="border: 1px solid; padding: 20px 10px 10px 10px; border-radius: 4px; margin-bottom: 20px; background: #DFF0D8; color: #3C8C8F;"><p><?php i18n('migrate/ZIP_NOT_CLOSE'); ?></p></div><?php
+				}
+			}
+			else { ?>
+				<div class="fancy-message" style="border: 1px solid; padding: 20px 10px 10px 10px; border-radius: 4px; margin-bottom: 20px; background: #DFF0D8; color: #3C8C8F;"><p><?php i18n('migrate/ZIP_NOT'); ?></p></div><?php
+			}
+			if (is_readable(GSPLUGINPATH.'migrate/mods/data/other/news_manager')) {
+				foreach (new DirectoryIterator(GSPLUGINPATH.'migrate/mods/data/other/news_manager') as $fileInfo) {
 					if(!$fileInfo->isDot()) {
 						unlink($fileInfo->getPathname());
 					}
 				}
-
+				rmdir(GSPLUGINPATH.'migrate/mods/data/other/news_manager');
+				
+			}
+			
+			if (is_readable(GSPLUGINPATH.'migrate/mods/data/posts')) {
+				foreach (new DirectoryIterator(GSPLUGINPATH.'migrate/mods/data/posts') as $fileInfo) {
+					if(!$fileInfo->isDot()) {
+						unlink($fileInfo->getPathname());
+					}
+				}
+				rmdir(GSPLUGINPATH.'migrate/mods/data/posts');
+			}
+			if (is_readable(GSPLUGINPATH.'migrate/mods/data/other/')) {
+				rmdir(GSPLUGINPATH.'migrate/mods/data/other');
+			}
+			
+			if (is_readable(GSPLUGINPATH.'migrate/mods')) {
+				foreach (new DirectoryIterator(GSPLUGINPATH.'migrate/mods') as $fileInfo) {
+					if(!$fileInfo->isDot() && !$fileInfo->isDir()) {
+						unlink($fileInfo->getPathname());
+					}
+				}
+			}
+			if (is_readable(GSPLUGINPATH.'migrate/mods/data')) {
+				rmdir(GSPLUGINPATH.'migrate/mods/data');
 			}
 			if($status && $theoreticaly_added) { ?>
-				<div class="fancy-message" style="border: 1px solid; padding: 20px 10px 10px 10px; border-radius: 4px; margin-bottom: 20px; background: #DFF0D8; color: #3C8C8F;"><p><?php i18n('migrate/ARCH_FILE'); i18n('migrate/ALL_REPLACE'); echo $total; i18n('migrate/ALL_FILES'); echo $files_change; (isset($no_modified) && !empty($no_modified) && $no_modified!=$total?i18n('migrate/TOTAL_FILES'):''); echo (isset($no_modified) && !empty($no_modified) && $no_modified!=$total?$no_modified:''); ?></p></div><?php
+				<div class="fancy-message" style="border: 1px solid; padding: 20px 10px 10px 10px; border-radius: 4px; margin-bottom: 20px; background: #DFF0D8; color: #3C8C8F;"><p><?php i18n('migrate/ARCH_FILE'); i18n('migrate/ALL_REPLACE'); echo $total; i18n('migrate/ALL_FILES'); echo $files_change; (isset($spec_total) && !empty($spec_total)?i18n('migrate/ALL_SPEC_ITEMS'):''); echo (isset($spec_total) && !empty($spec_total)?$spec_total:''); echo ((isset($news) && $news>0)?i18n('migrate/ALL_NM_ITEMS'):''); echo ((isset($news) && $news>0)?$news:''); (isset($no_modified) && !empty($no_modified) && $no_modified!=$total?i18n('migrate/TOTAL_FILES'):''); echo (isset($no_modified) && !empty($no_modified) && $no_modified!=$total?$no_modified:''); ?></p></div><?php
 			}
 		}
 		if($mode == 0) { ?>
-				<div class="fancy-message" style="border: 1px solid; padding: 20px 10px 10px 10px; border-radius: 4px; margin-bottom: 20px; background: #DFF0D8; color: #3C8C8F;"><p><?php i18n('migrate/REPL_FILE'); ?><?php i18n('migrate/ALL_REPLACE'); echo $total; i18n('migrate/ALL_FILES'); echo $files_change; ?></p></div><?php
+				<div class="fancy-message" style="border: 1px solid; padding: 20px 10px 10px 10px; border-radius: 4px; margin-bottom: 20px; background: #DFF0D8; color: #3C8C8F;"><p><?php i18n('migrate/REPL_FILE'); ?><?php i18n('migrate/ALL_REPLACE'); echo $total; i18n('migrate/ALL_FILES'); echo $files_change; (isset($spec_total) && !empty($spec_total)?i18n('migrate/ALL_SPEC_ITEMS'):''); echo (isset($spec_total) && !empty($spec_total)?$spec_total:''); echo (isset($news) && $news>0?i18n('migrate/ALL_NM_ITEMS'):''); echo (isset($news) && $news>0?$news:''); ?></p></div><?php
 		}
+		if (is_readable(GSDATAOTHERPATH . 'news_manager/posts.xml')) @unlink(GSDATAOTHERPATH . 'news_manager/posts.xml');
     } else { ?>
 		<div class="fancy-message" style="border: 1px solid; padding: 20px 10px 10px 10px; border-radius: 4px; margin-bottom: 20px; background: #F2DEDE; color: #A94442;"><p><?php i18n('migrate/NOT_DIR_ACCESS'); echo $dir; ?></p></div><?php
 	}

@@ -1,24 +1,27 @@
 <?php
-class FieldLongtext implements FieldInterface
-{
-	public $properties;
-	protected $tpl;
 
-	public function __construct(TemplateEngine $tpl)
-	{
-		$this->tpl = $tpl;
-		$this->name = null;
-		$this->class = null;
-		$this->id = null;
-		$this->value = null;
-		$this->configs = new stdClass();
+class FieldLongtext extends FieldText implements FieldInterface
+{
+	/**
+	 * @var int
+	 * MEDIUMTEXT 16,777,215 bytes ~16MB
+	 */
+	protected $maxLen = 16777215;
+
+	public function __construct(TemplateEngine $tpl) {
+		parent::__construct($tpl);
 	}
 
-
-	public function render($sanitize=false)
+	/**
+	 * Renders the field markup
+	 *
+	 * @param bool $sanitize
+	 *
+	 * @return bool|Template
+	 */
+	public function render($sanitize = false)
 	{
-		if(is_null($this->name))
-			return false;
+		if(is_null($this->name)) { return false; }
 
 		$itemeditor = $this->tpl->getTemplates('field');
 		$textfield = $this->tpl->getTemplate('longtext', $itemeditor);
@@ -26,11 +29,21 @@ class FieldLongtext implements FieldInterface
 				'name' => $this->name,
 				'class' => $this->class,
 				'id' => $this->id,
-				'value' => !empty($sanitize) ? $this->sanitize($this->value) : $this->value), true, array()
+				'value' => ($sanitize) ? $this->sanitize($this->value) : $this->value), true, array()
 		);
 		return $output;
 	}
-	protected function sanitize($value){return imanager('sanitizer')->textarea($value);}
 
+	/**
+	 * This method used for sanitizing output
+	 *
+	 */
+	protected function sanitize($value) {
+		return imanager('sanitizer')->textarea($value, array('maxLength' => $this->maxLen));
+	}
+
+	/**
+	 * Make the field configurable
+	 */
 	public function getConfigFieldtype(){}
 }

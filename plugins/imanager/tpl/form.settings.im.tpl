@@ -1,13 +1,13 @@
 <div class="manager-wrapper">
 <form class="largeform" action="load.php?id=imanager&settings&settings_edit" method="post" accept-charset="utf-8">
 	<div class="im-tabs">
-		<ul class="tab-links">
+		<ul class="im-tab-links">
 			<li class="active"><a href="#tab1">[[lang/general_settings]]</a></li>
 			<li><a href="#tab2">[[lang/admin_settings]]</a></li>
 		</ul>
 
 		<div class="tab-content">
-			<div id="tab1" class="tab active">
+			<div id="tab1" class="im-tab active">
 				<h3 class="menuglava">[[lang/general_settings]]</h3>
 				[[lang/general_settings_tab_text]]
 				<div class="fieldarea">
@@ -61,7 +61,7 @@
 
 			</div>
 
-			<div id="tab2" class="tab">
+			<div id="tab2" class="im-tab">
 				<h3 class="menuglava">[[lang/admin_settings]]</h3>
 				[[lang/backend_settings_tab_text]]
 				<div class="fieldarea">
@@ -239,12 +239,12 @@
 
 			</div>
 
-			<div id="tab3" class="tab">
+			<div id="tab3" class="im-tab">
 				<p>Tab #3 content goes here!</p>
 				<p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum ri.</p>
 			</div>
 
-			<div id="tab4" class="tab">
+			<div id="tab4" class="im-tab">
 				<p>Tab #4 content goes here!</p>
 				<p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum risus ornare mollis. In hac habitasse platea dictumst. Ut euismod tempus hendrerit. Morbi ut adipiscing nisi. Etiam rutrum sodales gravida! Aliquam tellus orci, iaculis vel.</p>
 			</div>
@@ -253,7 +253,7 @@
 	</div>
 	<script type="text/javascript">
 	$(document).ready(function() {
-		$('.im-tabs .tab-links a').on('click', function(e)  {
+		$('.im-tabs .im-tab-links a').on('click', function(e)  {
 			var currentAttrValue = jQuery(this).attr('href');
 
 			// Show/Hide Tabs

@@ -1,25 +1,69 @@
 <?php
+
 class FieldText implements FieldInterface
 {
+	/**
+	 * @var array
+	 */
 	public $properties;
+
+	/**
+	 * @var TemplateEngine
+	 */
 	protected $tpl;
 
+	/**
+	 * @var null
+	 */
+	public $name = null;
+
+	/**
+	 * @var null
+	 */
+	public $class = null;
+
+	/**
+	 * @var null
+	 */
+	public $id = null;
+
+	/**
+	 * @var null
+	 */
+	public $value = null;
+
+	/**
+	 * @var null
+	 */
+	public $style = null;
+
+	/**
+	 * @var int
+	 * TEXT 65,535 bytes ~64kb
+	 */
+	protected $maxLen = 65535;
+
+	/**
+	 * FieldText constructor.
+	 *
+	 * @param TemplateEngine $tpl
+	 */
 	public function __construct(TemplateEngine $tpl)
 	{
 		$this->tpl = $tpl;
-		$this->name = null;
-		$this->class = null;
-		$this->id = null;
-		$this->value = null;
-		$this->style = null;
-		$this->configs = new stdClass();
+		$this->configs = new \stdClass();
 	}
 
-
-	public function render($sanitize=false)
+	/**
+	 * Renders the field markup
+	 *
+	 * @param bool $sanitize
+	 *
+	 * @return bool|Template
+	 */
+	public function render($sanitize = false)
 	{
-		if(is_null($this->name))
-			return false;
+		if(is_null($this->name)) { return false; }
 
 		$itemeditor = $this->tpl->getTemplates('field');
 		$textfield = $this->tpl->getTemplate('text', $itemeditor);
@@ -28,11 +72,25 @@ class FieldText implements FieldInterface
 				'class' => $this->class,
 				'style' => !empty($this->style) ? ' style="'.$this->style.'" ' : '',
 				'id' => $this->id,
-				'value' => !empty($sanitize) ? $this->sanitize($this->value) : $this->value), true, array()
+				'value' => ($sanitize) ? $this->sanitize($this->value) : $this->value), true, array()
 		);
 		return $output;
 	}
-	protected function sanitize($value){return imanager('sanitizer')->text($value);}
 
+	/**
+	 * This method renders the field value when you insert it into:
+	 * <input value="<value>" ...
+	 *
+	 * @param $value
+	 *
+	 * @return mixed
+	 */
+	protected function sanitize($value) {
+		return imanager('sanitizer')->text($value, array('maxLength' => $this->maxLen));
+	}
+
+	/**
+	 * Configurable settings
+	 */
 	public function getConfigFieldtype(){}
 }

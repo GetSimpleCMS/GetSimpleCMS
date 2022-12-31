@@ -16,7 +16,7 @@
 		</div>
 		<div class="fieldarea">
 			<label for="position">[[lang/position]]</label>
-			<div class="field-wrapper"><input id="position" name="position" type="number" value="[[position]]" /></div>
+			<div class="field-wrapper"><input id="position" name="itempos" type="number" value="[[position]]" /></div>
 		</div>
 		<div class="fieldarea">
 			<label for="active">[[lang/enabled]]</label>

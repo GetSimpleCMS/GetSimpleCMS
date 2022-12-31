@@ -1,4 +1,3 @@
 [[head]]
 [[msg]]
 [[content]]
-

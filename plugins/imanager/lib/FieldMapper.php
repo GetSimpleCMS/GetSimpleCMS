@@ -59,12 +59,12 @@ class FieldMapper
 				if((int) $field->id == (int) $stat)
 					return $field;
 
-		if (str_contains($stat, '='))
+		if (false !== strpos($stat, '='))
 		{
 			$data = explode('=', $stat, 2);
 			$key = strtolower(trim($data[0]));
 			$val = trim($data[1]);
-			if(str_contains($key, ' '))
+			if(false !== strpos($key, ' '))
 				return false;
 
 			// searching for the name
@@ -96,11 +96,12 @@ class FieldMapper
 		{$locfields = !empty($fields) ? $fields : $this->fields; return count($locfields);}
 
 	/**
-  * Deletes a field of category
-  *
-  * @return bool
-  */
- public function destroyField(Field $field, $save=true)
+	 * Deletes a field of category
+	 *
+	 * @param Field $field
+	 * @return bool
+	 */
+	public function destroyField(Field $field, $save=true)
 	{
 		if($save) $this->recreateFieldsFile($field);
 
@@ -179,7 +180,7 @@ class FieldMapper
 	 * @param array $fields
 	 * @return boolean|array of objects of type Field
 	 */
-	public function filterFields($filterby, $key, array $fields=array()): bool|array
+	public function filterFields($filterby, $key, array $fields=array())
 	{
 
 		$locfields = !empty($fields) ? $fields : $this->fields;
@@ -230,11 +231,12 @@ class FieldMapper
 
 
 	/**
-  * Reverse the array of fields
-  *
-  * @param array $fieldcontainer An array of objects
-  */
- public function reverseFields($fieldcontainer): bool|array
+	 * Reverse the array of fields
+	 *
+	 * @param array $fieldcontainer An array of objects
+	 * @return boolean|array
+	 */
+	public function reverseFields($fieldcontainer)
 	{
 		if(!is_array($fieldcontainer)) return false;
 		return array_reverse($fieldcontainer);
@@ -242,11 +244,12 @@ class FieldMapper
 
 
 	/**
-  * Revise keys of the array of fields and changes these into real field Ids
-  *
-  * @param array $fieldcontainer An array of objects
-  */
- public function reviseFieldIds($fieldcontainer): bool|array
+	 * Revise keys of the array of fields and changes these into real field Ids
+	 *
+	 * @param array $fieldcontainer An array of objects
+	 * @return boolean|array
+	 */
+	public function reviseFieldIds($fieldcontainer)
 	{
 		if(!is_array($fieldcontainer)) return false;
 		$result = array();

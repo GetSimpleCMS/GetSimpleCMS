@@ -1,1 +1,1 @@
-<a class="paginator-left" href="[[href]]"><i class="fa fa-chevron-left"></i></a>
+<a class="paginator-left" href="[[href]]">PREV</a>

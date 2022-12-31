@@ -1,43 +1,57 @@
 <?php
-class InputLongtext implements InputInterface
+
+class InputLongtext extends InputText implements InputInterface
 {
-	protected $values;
-	protected $field;
+	/**
+	 * @var int
+	 * MEDIUMTEXT 16,777,215 bytes ~16MB
+	 */
+	protected $maxLen = 16777215;
 
-	public function __construct(Field $field)
-	{
-		$this->field = $field;
-		$this->values = new stdClass();
-		$this->values->value = null;
+	/**
+	 * InputLongtext constructor.
+	 *
+	 * @param Field $field
+	 */
+	public function __construct(Field $field) {
+		parent::__construct($field);
 	}
 
-	/* Kontrolliert den Input beim speichern des Wertes  */
-	public function prepareInput($value, $sanitize=false)
-	{
-		$this->values->value = !empty($sanitize) ? $this->sanitize($value) : $value;
-		// check input required
-		if(!empty($this->field->required) && $this->field->required == 1)
-		{
-
-			if(empty($this->values->value))
-				return self::ERR_REQUIRED;
-		}
-		// check min value
-		if(!empty($this->field->minimum) && $this->field->minimum > 0)
-		{
-			if(strlen($this->values->value) < intval($this->field->minimum))
-				return self::ERR_MIN_VALUE;
-		}
-		// check input max value
-		if(!empty($this->field->maximum) && $this->field->maximum > 0)
-		{
-			if(strlen($this->values->value) > intval($this->field->maximum))
-				return self::ERR_MAX_VALUE;
-		}
-		return $this->values;
+	/**
+	 * This method checks the field inputs and sets the field contents.
+	 * If an error occurs, the method returns an error code.
+	 *
+	 * @param $value
+	 * @param bool $sanitize
+	 *
+	 * @return int|stdClass
+	 */
+	public function prepareInput($value, $sanitize = false) {
+		return parent::prepareInput($value, $sanitize);
 	}
 
-	public function prepareOutput(){return $this->values;}
+	/**
+	 * The method that is called when initiating item content
+	 * and is relevant for setting the field content.
+	 * However, since we do not require any special formatting
+	 * of the output, we can accept the value 1 to 1 here.
+	 *
+	 * @return stdClass
+	 */
+	public function prepareOutput() { return $this->values; }
 
-	protected function sanitize($value){return imanager('sanitizer')->text($value);}
+	/**
+	 * This is the method used for sanitizing.
+	 * ItemManager' Sanitizer method "textarea" will be used for this.
+	 *
+	 * @param $value
+	 *
+	 * @return mixed
+	 */
+	protected function sanitize($value)
+	{
+		return imanager('sanitizer')->textarea(
+			$value, array('maxLength' => $this->maxLen)
+		);
+	}
 }

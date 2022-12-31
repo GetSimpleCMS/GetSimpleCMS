@@ -24,8 +24,7 @@ class InputFileupload implements InputInterface
 
 	public function prepareInput($value, $sanitize=false)
 	{
-		if(!file_exists($value))
-			return $this->values;
+		if(!file_exists($value)) { return $this->values; }
 
 		$temp_arr = array();
 

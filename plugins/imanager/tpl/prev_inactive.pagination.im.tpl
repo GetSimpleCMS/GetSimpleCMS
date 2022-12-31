@@ -1,1 +1,1 @@
-<span class="paginator-disabled"><i class="fa fa-chevron-left"></i></span>
+<span class="paginator-disabled">PREV</span>

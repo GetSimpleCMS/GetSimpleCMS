@@ -8,13 +8,13 @@
  *
  */
 
-class Sanitizer implements \Stringable {
+class Sanitizer {
 
 	/**
 	 * May be passed to pageName for the $beautify param, see pageName for details.
 	 *
 	 */
-	//const translate = 2;
+	const translate = 2;
 
 	/**
 	 * Caches the status of multibyte support.
@@ -95,7 +95,7 @@ class Sanitizer implements \Stringable {
 
 		// remove leading or trailing dashes, underscores, dots
 		if($beautify) {
-			if(!str_contains($extras, $replacementChar)) $extras .= $replacementChar;
+			if(strpos($extras, $replacementChar) === false) $extras .= $replacementChar;
 			$value = trim($value, $extras);
 		}
 
@@ -118,7 +118,7 @@ class Sanitizer implements \Stringable {
 	 * @return string
 	 *
 	 */
-	public function name($value, bool|int $beautify = false, $maxLength = 128, $replacement = '_', $options = array()) {
+	public function name($value, $beautify = false, $maxLength = 128, $replacement = '_', $options = array()) {
 
 		if(!empty($options['allowedExtras']) && is_array($options['allowedExtras'])) {
 			$allowedExtras = $options['allowedExtras'];
@@ -134,7 +134,7 @@ class Sanitizer implements \Stringable {
 
 			$hasExtras = false;
 			foreach($allowedExtras as $c) {
-				$hasExtras = str_contains($value, $c);
+				$hasExtras = strpos($value, $c) !== false;
 				if($hasExtras) break;
 			}
 
@@ -148,11 +148,11 @@ class Sanitizer implements \Stringable {
 				if(empty($options['allowDoubledReplacement'])) {
 					// replace double'd replacements
 					$r = "$replacement$replacement";
-					if(str_contains($value, $r)) $value = preg_replace('/' . $r . '+/', $replacement, $value);
+					if(strpos($value, $r) !== false) $value = preg_replace('/' . $r . '+/', $replacement, $value);
 				}
 
 				// replace double dots
-				if(str_contains($value, '..')) $value = preg_replace('/\.\.+/', '.', $value);
+				if(strpos($value, '..') !== false) $value = preg_replace('/\.\.+/', '.', $value);
 			}
 
 			if(strlen($value) > $maxLength) $value = substr($value, 0, $maxLength);
@@ -172,7 +172,7 @@ class Sanitizer implements \Stringable {
 	 * @return string|array Return string if given a string for $value, returns array if given an array for $value
 	 *
 	 */
-	public function names(string|array $value, $delimeter = ' ', $allowedExtras = array('-', '_', '.'), $replacementChar = '_', $beautify = false): string|array {
+	public function names($value, $delimeter = ' ', $allowedExtras = array('-', '_', '.'), $replacementChar = '_', $beautify = false) {
 		$isArray = false;
 		if(is_array($value)) {
 			$isArray = true;
@@ -213,7 +213,7 @@ class Sanitizer implements \Stringable {
 	 * @return string
 	 *
 	 */
-	public function fieldName($value, bool|int $beautify = false, $maxLength = 128) {
+	public function fieldName($value, $beautify = false, $maxLength = 128) {
 		return $this->nameFilter($value, array('_'), '_', $beautify, $maxLength);
 	}
 
@@ -228,7 +228,7 @@ class Sanitizer implements \Stringable {
 	 * @return string
 	 *
 	 */
-	public function templateName($value, bool|int $beautify = false, $maxLength = 128) {
+	public function templateName($value, $beautify = false, $maxLength = 128) {
 		return $this->nameFilter($value, array('_', '-'), '-', $beautify, $maxLength);
 	}
 
@@ -245,7 +245,7 @@ class Sanitizer implements \Stringable {
 	 * @return string
 	 *
 	 */
-	public function pageName($value, bool|int $beautify = false, $maxLength = 128) {
+	public function pageName($value, $beautify = false, $maxLength = 128) {
 		return strtolower($this->name($value, $beautify, $maxLength, '-'));
 	}
 
@@ -286,7 +286,7 @@ class Sanitizer implements \Stringable {
 	 * @return string
 	 *
 	 */
-	public function filename($value, bool|int $beautify = false, $maxLength = 128) {
+	public function filename($value, $beautify = false, $maxLength = 128) {
 
 		if(!is_string($value)) return '';
 		$value = basename($value);
@@ -330,7 +330,7 @@ class Sanitizer implements \Stringable {
 	 * @return bool|string Returns false if invalid, actual path (string) if valid.
 	 *
 	 */
-	public function path($value, int|array $options = array()): bool|string {
+	public function path($value, $options = array()) {
 		if(!is_string($value)) return false;
 		if(is_int($options)) $options = array('maxLength' => $options);
 		$defaults = array(
@@ -340,8 +340,8 @@ class Sanitizer implements \Stringable {
 		$options = array_merge($defaults, $options);
 		if(DIRECTORY_SEPARATOR != '/') $value = str_replace(DIRECTORY_SEPARATOR, '/', $value);
 		if(strlen($value) > $options['maxLength']) return false;
-		if(str_contains($value, '/./') || str_contains($value, '//')) return false;
-		if(!$options['allowDotDot'] && str_contains($value, '..')) return false;
+		if(strpos($value, '/./') !== false || strpos($value, '//') !== false) return false;
+		if(!$options['allowDotDot'] && strpos($value, '..') !== false) return false;
 		if(!preg_match('{^[-_./a-z0-9]+$}iD', $value)) return false;
 		return $value;
 	}
@@ -363,11 +363,11 @@ class Sanitizer implements \Stringable {
 		);
 		$value = $this->name($value, $beautify, $maxLength, '-', $options);
 		// disallow double slashes
-		while(str_contains($value, '//')) $value = str_replace('//', '/', $value);
+		while(strpos($value, '//') !== false) $value = str_replace('//', '/', $value);
 		// disallow relative paths
-		while(str_contains($value, '..')) $value = str_replace('..', '.', $value);
+		while(strpos($value, '..') !== false) $value = str_replace('..', '.', $value);
 		// disallow names that start with a period
-		while(str_contains($value, '/.')) $value = str_replace('/.', '/', $value);
+		while(strpos($value, '/.') !== false) $value = str_replace('/.', '/', $value);
 		return $value;
 	}
 
@@ -423,7 +423,7 @@ class Sanitizer implements \Stringable {
 		if(!is_string($value)) $value = $this->string($value);
 
 		if(!$options['multiLine']) {
-			if(str_contains($value, "\r")) {
+			if(strpos($value, "\r") !== false) {
 				$value = str_replace("\r", "\n", $value); // normalize to LF
 			}
 			$pos = strpos($value, "\n");
@@ -487,7 +487,7 @@ class Sanitizer implements \Stringable {
 		if(!isset($options['maxBytes'])) $options['maxBytes'] = $options['maxLength'] * 3;
 
 		// convert \r\n to just \n
-		if(empty($options['allowCRLF']) && str_contains($value, "\r\n")) $value = str_replace("\r\n", "\n", $value);
+		if(empty($options['allowCRLF']) && strpos($value, "\r\n") !== false) $value = str_replace("\r\n", "\n", $value);
 
 		return $this->text($value, $options);
 	}
@@ -519,7 +519,7 @@ class Sanitizer implements \Stringable {
 	 * @todo add TLD validation
 	 *
 	 */
-	public function url($value, bool|array $options = array()) {
+	public function url($value, $options = array()) {
 
 		$defaultOptions = array(
 			'allowRelative' => true,
@@ -567,7 +567,7 @@ class Sanitizer implements \Stringable {
 		}
 
 		// separate scheme+domain+path from query string temporarily
-		if(str_contains($value, '?')) {
+		if(strpos($value, '?') !== false) {
 			list($domainPath, $queryString) = explode('?', $value);
 			if(!$options['allowQuerystring']) $queryString = '';
 		} else {
@@ -575,7 +575,7 @@ class Sanitizer implements \Stringable {
 			$queryString = '';
 		}
 
-		$pathIsEncoded = str_contains($domainPath, '%');
+		$pathIsEncoded = strpos($domainPath, '%') !== false;
 		if($pathIsEncoded || filter_var($domainPath, FILTER_SANITIZE_URL) !== $domainPath) {
 			// the domain and/or path contains extended characters not supported by FILTER_SANITIZE_URL
 			// Example: https://de.wikipedia.org/wiki/Linkshänder
@@ -583,7 +583,7 @@ class Sanitizer implements \Stringable {
 			// Example: https://de.wikipedia.org/wiki/Linksh%C3%A4nder
 			// we convert the URL to be FILTER_SANITIZE_URL compatible
 			// if already encoded, first remove encoding: 
-			if(str_contains($domainPath, '%')) $domainPath = rawurldecode($domainPath);
+			if(strpos($domainPath, '%') !== false) $domainPath = rawurldecode($domainPath);
 			// Next, encode it, for example: https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FLinksh%C3%A4nder
 			$domainPath = rawurlencode($domainPath);
 			// restore characters allowed in domain/path
@@ -599,7 +599,7 @@ class Sanitizer implements \Stringable {
 		if(!$scheme) {
 			// URL is missing scheme/protocol, or is local/relative
 
-			if(str_contains($value, '://')) {
+			if(strpos($value, '://') !== false) {
 				// apparently there is an attempted, but unrecognized scheme, so remove it
 				$value = preg_replace('!^[^?]*?://!', '', $value);
 			}
@@ -620,7 +620,7 @@ class Sanitizer implements \Stringable {
 				} else if($options['allowQuerystring']) {
 					// we'll construct a fake domain so we can use FILTER_VALIDATE_URL rules
 					$fake = 'http://ItemManager.com/';
-					$slash = str_starts_with($value, '/') ? '/' : '';
+					$slash = strpos($value, '/') === 0 ? '/' : '';
 					$value = $fake . ltrim($value, '/');
 					$value = $this->filterValidateURL($value, $options);
 					$value = str_replace($fake, $slash, $value);
@@ -646,7 +646,7 @@ class Sanitizer implements \Stringable {
 				/** @noinspection PhpUnusedLocalVariableInspection */
 				list($tel, $num) = explode(':', $value);
 				$value = 'tel:';
-				if(str_starts_with($num, '+')) $value .= '+';
+				if(strpos($num, '+') === 0) $value .= '+';
 				$value .= preg_replace('/[^\d]/', '', $num);
 			}
 		} else {
@@ -656,14 +656,14 @@ class Sanitizer implements \Stringable {
 
 		if($pathIsEncoded && strlen($value)) {
 			// restore to non-encoded, UTF-8 version 
-			if(str_contains('?', $value)) {
+			if(strpos('?', $value) !== false) {
 				list($domainPath, $queryString) = explode('?', $value);
 			} else {
 				$domainPath = $value;
 				$queryString = '';
 			}
 			$domainPath = rawurldecode($domainPath);
-			if(str_contains($domainPath, '%')) {
+			if(strpos($domainPath, '%') !== false) {
 				$domainPath = preg_replace('/%[0-9ABCDEF]{1,2}/i', '', $domainPath);
 				$domainPath = str_replace('%', '', $domainPath);
 			}
@@ -713,7 +713,7 @@ class Sanitizer implements \Stringable {
 		if(!function_exists('idn_to_ascii') || !function_exists('idn_to_utf8')) return $url;
 
 		// extract scheme
-		if(str_contains($_url, '//')) {
+		if(strpos($_url, '//') !== false) {
 			list($scheme, $_url) = explode('//', $_url, 2);
 			$scheme .= '//';
 		} else {
@@ -729,13 +729,13 @@ class Sanitizer implements \Stringable {
 			$rest = '';
 		}
 
-		if(str_contains($domain, '%')) {
+		if(strpos($domain, '%') !== false) {
 			// domain is URL encoded
 			$domain = rawurldecode($domain);
 		}
 
 		// extract port, if present, and prepend to $rest
-		if(str_contains($domain, ':') && preg_match('/^([^:]+):(\d+)$/', $domain, $matches)) {
+		if(strpos($domain, ':') !== false && preg_match('/^([^:]+):(\d+)$/', $domain, $matches)) {
 			$domain = $matches[1];
 			$rest = ":$matches[2]$rest";
 		}
@@ -803,13 +803,13 @@ class Sanitizer implements \Stringable {
 		$value = trim($value, "\"'");
 
 		// if an apostrophe is present, value must be quoted
-		if(str_contains($value, "'")) $needsQuotes = true;
+		if(strpos($value, "'") !== false) $needsQuotes = true;
 
 		// if commas are present, then the selector needs to be quoted
-		if(str_contains($value, ',')) $needsQuotes = true;
+		if(strpos($value, ',') !== false) $needsQuotes = true;
 
 		// disallow double quotes -- remove any if they are present
-		if(str_contains($value, '"')) $value = str_replace('"', '', $value);
+		if(strpos($value, '"') !== false) $value = str_replace('"', '', $value);
 
 		// selector value is limited to 100 chars
 		if(strlen($value) > $maxLength) {
@@ -838,7 +838,7 @@ class Sanitizer implements \Stringable {
 			$value = preg_replace('/[^[:alnum:]\pL\pN\pP\pM\p{Sm}\p{Sc}\p{Sk} \'\/]/u', ' ', $value);
 
 			// disallow ampersands from beginning entity sequences
-			if(str_contains($value, '&')) $value = str_replace('&', '& ', $value);
+			if(strpos($value, '&') !== false) $value = str_replace('&', '& ', $value);
 
 			// replace multiple space characters in sequence with just 1
 			$value = preg_replace('/\s\s+/u', ' ', $value);
@@ -872,7 +872,7 @@ class Sanitizer implements \Stringable {
 	 * @return string
 	 *
 	 */
-	public function entities($str, int|bool $flags = ENT_QUOTES, $encoding = 'UTF-8', $doubleEncode = true) {
+	public function entities($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $doubleEncode = true) {
 		if(!is_string($str)) $str = $this->string($str);
 		return htmlentities($str, $flags, $encoding, $doubleEncode);
 	}
@@ -886,7 +886,7 @@ class Sanitizer implements \Stringable {
 	 * @return string
 	 *
 	 */
-	public function entities1($str, int|bool $flags = ENT_QUOTES, $encoding = 'UTF-8') {
+	public function entities1($str, $flags = ENT_QUOTES, $encoding = 'UTF-8') {
 		if(!is_string($str)) $str = $this->string($str);
 		return htmlentities($str, $flags, $encoding, false);
 	}
@@ -921,7 +921,7 @@ class Sanitizer implements \Stringable {
 	 * @return string
 	 *
 	 */
-	public function entitiesMarkdown($str, array|bool|int $options = array()) {
+	public function entitiesMarkdown($str, $options = array()) {
 
 		if($options === true || (is_int($options) && $options > 0)) {
 			$markdown = $this->wire('modules')->get('TextformatterMarkdownExtra');
@@ -955,22 +955,22 @@ class Sanitizer implements \Stringable {
 			$str = preg_replace('/\[(.+?)\]\(([^)]+)\)/', $linkMarkup, $str);
 		}
 
-		if(str_contains($str, '**') && in_array('strong', $options['allow']) && !in_array('strong', $options['disallow'])) {
+		if(strpos($str, '**') !== false && in_array('strong', $options['allow']) && !in_array('strong', $options['disallow'])) {
 			// strong
 			$str = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $str);
 		}
 
-		if(str_contains($str, '*') && in_array('em', $options['allow']) && !in_array('em', $options['disallow'])) {
+		if(strpos($str, '*') !== false && in_array('em', $options['allow']) && !in_array('em', $options['disallow'])) {
 			// em
 			$str = preg_replace('/\*([^*\n]+)\*/', '<em>$1</em>', $str);
 		}
 
-		if(str_contains($str, "`") && in_array('code', $options['allow']) && !in_array('code', $options['disallow'])) {
+		if(strpos($str, "`") !== false && in_array('code', $options['allow']) && !in_array('code', $options['disallow'])) {
 			// code
 			$str = preg_replace('/`+([^`]+)`+/', '<code>$1</code>', $str);
 		}
 
-		if(str_contains($str, '~~') && in_array('s', $options['allow']) && !in_array('s', $options['disallow'])) {
+		if(strpos($str, '~~') !== false && in_array('s', $options['allow']) && !in_array('s', $options['disallow'])) {
 			// strikethrough
 			$str = preg_replace('/~~(.+?)~~/', '<s>$1</s>', $str);
 		}
@@ -992,7 +992,7 @@ class Sanitizer implements \Stringable {
 	 * @return string
 	 *
 	 */
-	public function unentities($str, int|bool $flags = ENT_QUOTES, $encoding = 'UTF-8') {
+	public function unentities($str, $flags = ENT_QUOTES, $encoding = 'UTF-8') {
 		if(!is_string($str)) $str = $this->string($str);
 		return html_entity_decode($str, $flags, $encoding);
 	}
@@ -1064,7 +1064,7 @@ class Sanitizer implements \Stringable {
 			if(method_exists($value, '__toString')) {
 				$value = (string) $value;
 			} else {
-				$value = $value::class;
+				$value = get_class($value);
 			}
 		} else if(is_null($value)) {
 			$value = "";
@@ -1097,7 +1097,7 @@ class Sanitizer implements \Stringable {
 	 * @return string|int|null
 	 *
 	 */
-	public function date(string|int $value, $format = null, array $options = array()) {
+	public function date($value, $format = null, array $options = array()) {
 		$defaults = array(
 			'returnFormat' => $format, // date format to return in, if different from $dateFormat
 			'min' => '', // Minimum date allowed (in $dateFormat format, or a unix timestamp) 
@@ -1144,20 +1144,22 @@ class Sanitizer implements \Stringable {
 	}
 
 	/*************************************************************************************************************************
-  * NUMBER SANITIZERS
-  *
-  */
- /**
-  * Sanitized an integer (unsigned, unless you specify a negative minimum value)
-  *
-  * @param array $options Optionally specify any one or more of the following to modify behavior:
-  * 	- min (int|null) Minimum allowed value (default=0)
-  *  - max (int|null) Maximum allowed value (default=PHP_INT_MAX)
-  * 	- blankValue (mixed) Value that you want to use when provided value is null or blank string (default=0)
-  * @return int Returns integer, or specified blankValue (which doesn't necessarily have to be an integer)
-  *
-  */
- public function int(mixed $value, array $options = array()) {
+	 * NUMBER SANITIZERS
+	 *
+	 */
+
+	/**
+	 * Sanitized an integer (unsigned, unless you specify a negative minimum value)
+	 *
+	 * @param mixed $value
+	 * @param array $options Optionally specify any one or more of the following to modify behavior:
+	 * 	- min (int|null) Minimum allowed value (default=0)
+	 *  - max (int|null) Maximum allowed value (default=PHP_INT_MAX)
+	 * 	- blankValue (mixed) Value that you want to use when provided value is null or blank string (default=0)
+	 * @return int Returns integer, or specified blankValue (which doesn't necessarily have to be an integer)
+	 *
+	 */
+	public function int($value, array $options = array()) {
 		$defaults = array(
 			'min' => 0,
 			'max' => PHP_INT_MAX,
@@ -1189,38 +1191,40 @@ class Sanitizer implements \Stringable {
 	 * @return int
 	 *
 	 */
-	public function intUnsigned(mixed $value, array $options = array()) {
+	public function intUnsigned($value, array $options = array()) {
 		return $this->int($value, $options);
 	}
 
 	/**
-  * Sanitize to signed integer (negative or positive)
-  *
-  * @param array $options Optionally specify any one or more of the following to modify behavior:
-  * 	- min (int|null) Minimum allowed value (default=negative PHP_INT_MAX)
-  *  - max (int|null) Maximum allowed value (default=PHP_INT_MAX)
-  * 	- blankValue (mixed) Value that you want to use when provided value is null or blank string (default=0)
-  * @return int
-  *
-  */
- public function intSigned(mixed $value, array $options = array()) {
+	 * Sanitize to signed integer (negative or positive)
+	 *
+	 * @param mixed $value
+	 * @param array $options Optionally specify any one or more of the following to modify behavior:
+	 * 	- min (int|null) Minimum allowed value (default=negative PHP_INT_MAX)
+	 *  - max (int|null) Maximum allowed value (default=PHP_INT_MAX)
+	 * 	- blankValue (mixed) Value that you want to use when provided value is null or blank string (default=0)
+	 * @return int
+	 *
+	 */
+	public function intSigned($value, array $options = array()) {
 		if(!isset($options['min'])) $options['min'] = PHP_INT_MAX * -1;
 		return $this->int($value, $options);
 	}
 
 	/**
-  * Sanitize to floating point value
-  *
-  * @param array $options Optionally specify one or more options in an associative array:
-  * 	- precision (int|null): Optional number of digits to round to (default=null)
-  * 	- mode (int): Mode to use for rounding precision (default=PHP_ROUND_HALF_UP);
-  * 	- blankValue (null|int|string|float): Value to return (whether float or non-float) if provided $value is an empty non-float (default=0.0)
-  * 	- min (float|null): Minimum allowed value, excluding blankValue (default=null)
-  * 	- max (float|null): Maximum allowed value, excluding blankValue (default=null)
-  * @return float
-  *
-  */
- public function float(float|string|int $value, array $options = array()) {
+	 * Sanitize to floating point value
+	 *
+	 * @param float|string|int $value
+	 * @param array $options Optionally specify one or more options in an associative array:
+	 * 	- precision (int|null): Optional number of digits to round to (default=null)
+	 * 	- mode (int): Mode to use for rounding precision (default=PHP_ROUND_HALF_UP);
+	 * 	- blankValue (null|int|string|float): Value to return (whether float or non-float) if provided $value is an empty non-float (default=0.0)
+	 * 	- min (float|null): Minimum allowed value, excluding blankValue (default=null)
+	 * 	- max (float|null): Maximum allowed value, excluding blankValue (default=null)
+	 * @return float
+	 *
+	 */
+	public function float($value, array $options = array()) {
 
 		$defaults = array(
 			'precision' => null, // Optional number of digits to round to 
@@ -1239,7 +1243,7 @@ class Sanitizer implements \Stringable {
 
 			$str = trim($value);
 			$prepend = '';
-			if(str_starts_with($str, '-')) {
+			if(strpos($str, '-') === 0) {
 				$prepend = '-';
 				$str = ltrim($str, '-');
 			}
@@ -1334,7 +1338,7 @@ class Sanitizer implements \Stringable {
 				if(method_exists($value, '__toString')) {
 					$value = (string) $value;
 				} else {
-					$value = array($value::class);
+					$value = array(get_class($value));
 				}
 			}
 			if(is_string($value)) {
@@ -1396,26 +1400,28 @@ class Sanitizer implements \Stringable {
 	}
 
 	/**
-  * Return $value if it exists in $allowedValues, or null if it doesn't
-  *
-  * @param array $allowedValues Whitelist of option values that are allowed
-  * @return string|int|null
-  *
-  */
- public function option(string|int $value, array $allowedValues) {
+	 * Return $value if it exists in $allowedValues, or null if it doesn't
+	 *
+	 * @param string|int $value
+	 * @param array $allowedValues Whitelist of option values that are allowed
+	 * @return string|int|null
+	 *
+	 */
+	public function option($value, array $allowedValues) {
 		$key = array_search($value, $allowedValues);
 		if($key === false) return null;
 		return $allowedValues[$key];
 	}
 
 	/**
-  * Return given values that that also exist in $allowedValues whitelist
-  *
-  * @param array $allowedValues Whitelist of option values that are allowed
-  * @return array
-  *
-  */
- public function options(array $values, array $allowedValues) {
+	 * Return given values that that also exist in $allowedValues whitelist
+	 *
+	 * @param array $values
+	 * @param array $allowedValues Whitelist of option values that are allowed
+	 * @return array
+	 *
+	 */
+	public function options(array $values, array $allowedValues) {
 		$a = array();
 		foreach($values as $value) {
 			$key = array_search($value, $allowedValues);
@@ -1564,7 +1570,7 @@ class Sanitizer implements \Stringable {
 	}
 
 
-	public function __toString(): string {
+	public function __toString() {
 		return "Sanitizer";
 	}
 

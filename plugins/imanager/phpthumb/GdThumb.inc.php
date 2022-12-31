@@ -94,20 +94,23 @@ class GdThumb extends ThumbBase
 	public function __construct ($fileName, $options = array(), $isDataStream = false)
 	{
 		parent::__construct($fileName, $isDataStream);
-
+		
 		$this->determineFormat();
-
+		
 		if ($this->isDataStream === false)
 		{
 			$this->verifyFormatCompatiblity();
 		}
-
+		
 		switch ($this->format)
 		{
 			case 'GIF':
 				$this->oldImage = imagecreatefromgif($this->fileName);
 				break;
 			case 'JPG':
+				$this->oldImage = imagecreatefromjpeg($this->fileName);
+				break;
+			case 'JPEG':
 				$this->oldImage = imagecreatefromjpeg($this->fileName);
 				break;
 			case 'PNG':
@@ -117,15 +120,15 @@ class GdThumb extends ThumbBase
 				$this->oldImage = imagecreatefromstring($this->fileName);
 				break;
 		}
-
+	
 		$this->currentDimensions = array
 		(
 			'width' 	=> imagesx($this->oldImage),
 			'height'	=> imagesy($this->oldImage)
 		);
-
+		
 		$this->setOptions($options);
-
+		
 		// TODO: Port gatherImageMeta to a separate function that can be called to extract exif data
 	}
 	
@@ -634,7 +637,7 @@ class GdThumb extends ThumbBase
 	 */
 	public function save ($fileName, $format = null)
 	{
-		$validFormats = array('GIF', 'JPG', 'PNG');
+		$validFormats = array('GIF', 'JPG', 'JPEG', 'PNG');
 		$format = ($format !== null) ? strtoupper($format) : $this->format;
 		
 		if (!in_array($format, $validFormats))
@@ -663,12 +666,21 @@ class GdThumb extends ThumbBase
 			}
 		}
 		
-		match ($format) {
-      'GIF' => imagegif($this->oldImage, $fileName),
-      'JPG' => imagejpeg($this->oldImage, $fileName, $this->options['jpegQuality']),
-      'PNG' => imagepng($this->oldImage, $fileName),
-      default => $this,
-  };
+		switch ($format) 
+		{
+			case 'GIF':
+				imagegif($this->oldImage, $fileName);
+				break;
+			case 'JPG':
+				imagejpeg($this->oldImage, $fileName, $this->options['jpegQuality']);
+				break;
+			case 'JPEG':
+				imagejpeg($this->oldImage, $fileName, $this->options['jpegQuality']);
+				break;
+			case 'PNG':
+				imagepng($this->oldImage, $fileName);
+				break;
+		}
 		
 		return $this;
 	}
@@ -1106,12 +1118,20 @@ class GdThumb extends ThumbBase
 		$isCompatible 	= true;
 		$gdInfo			= gd_info();
 		
-		$isCompatible = match ($this->format) {
-      'GIF' => $gdInfo['GIF Create Support'],
-      'JPG' => (isset($gdInfo['JPG Support']) || isset($gdInfo['JPEG Support'])) ? true : false,
-      'PNG' => $gdInfo[$this->format . ' Support'],
-      default => false,
-  };
+		switch ($this->format)
+		{
+			case 'GIF':
+				$isCompatible = $gdInfo['GIF Create Support'];
+				break;
+			case 'JPG':
+				$isCompatible = (isset($gdInfo['JPG Support']) || isset($gdInfo['JPEG Support'])) ? true : false;
+				break;
+			case 'PNG':
+				$isCompatible = $gdInfo[$this->format . ' Support'];
+				break;
+			default:
+				$isCompatible = false;
+		}
 		
 		if (!$isCompatible)
 		{

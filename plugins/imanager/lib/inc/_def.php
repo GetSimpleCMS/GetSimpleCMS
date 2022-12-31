@@ -1,11 +1,14 @@
 <?php
 define('IM_NAME', !empty($thisfile) ? $thisfile : '');
+define('IM_VERSION', 246);
+define('IM_VERSION_GS', '2.4.6');
 define('IM_SOURCE_DIR', GSPLUGINPATH.'imanager/lib/');
 define('ITEMDATA', GSDATAPATH.'imanager/');
 define('IM_CATEGORY_DIR', ITEMDATA.'categories/');
 define('IM_ITEM_DIR', ITEMDATA.'items/');
 define('IM_SETTINGS_DIR', ITEMDATA.'settings/');
 define('IM_FIELDS_DIR', ITEMDATA.'fields/');
+define('IM_BUFFER_CACHE_DIR', ITEMDATA.'cache/buffers/');
 define('IM_SECTIONS_CACHE_DIR', ITEMDATA.'cache/sections/');
 define('IM_UPLOAD_DIR', GSDATAUPLOADPATH.'imanager/');
 define('IM_TEMPLATE_DIR', GSPLUGINPATH.'imanager/tpl/');

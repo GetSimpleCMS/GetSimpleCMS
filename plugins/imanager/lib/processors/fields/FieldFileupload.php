@@ -1,28 +1,36 @@
 <?php
-class FieldFileupload implements FieldInterface
-{
-	public $properties;
-	protected $tpl;
 
-	public function __construct(TemplateEngine $tpl)
-	{
+class FieldFileupload extends FieldText implements FieldInterface
+{
+
+	public $realid = null;
+
+	public $categoryid = null;
+
+	public $itemid = null;
+
+	public $timestamp = null;
+
+	/**
+	 * FieldFileupload constructor.
+	 *
+	 * @param TemplateEngine $tpl
+	 */
+	public function __construct(TemplateEngine $tpl) {
+		parent::__construct($tpl);
 		$this->tpl = & $tpl;
-		$this->name = null;
-		$this->class = null;
-		$this->id = null;
-		$this->realid = null;
-		$this->value = null;
-		$this->categoryid = null;
-		$this->itemid = null;
-		$this->timestamp = null;
-		$this->configs = new stdClass();
 	}
 
-
-	public function render($sanitize=false)
+	/**
+	 * Renders the field markup
+	 *
+	 * @param bool $sanitize
+	 *
+	 * @return bool|Template
+	 */
+	public function render($sanitize = false)
 	{
-		if(is_null($this->name))
-			return false;
+		if(is_null($this->name)) { return false; }
 
 		$itemeditor = $this->tpl->getTemplates('field');
 		$field = $this->tpl->getTemplate('fileupload', $itemeditor);
@@ -43,17 +51,19 @@ class FieldFileupload implements FieldInterface
 		return $output;
 	}
 
+	/**
+	 * Render config menu
+	 */
 	public function getConfigFieldtype()
 	{
-		/* ok, get our dropdown field, infotext and area templates */
 		$tpltext = $this->tpl->getTemplate('text', $this->tpl->getTemplates('field'));
 		$tplinfotext = $this->tpl->getTemplate('infotext', $this->tpl->getTemplates('itemeditor'));
 		$tplarea = $this->tpl->getTemplate('fieldarea', $this->tpl->getTemplates('itemeditor'));
 
-		// let's load accepted value
+		// Accepted file types
 		$accept_types = isset($this->configs->accept_types) ? $this->configs->accept_types : '';
 
-		// render textfied <input name="[[name]]" type="text" class="[[class]]" id="[[id]]" value="[[value]]"[[style]]/>
+		// Render textfied <input name="[[name]]" type="text" class="[[class]]" id="[[id]]" value="[[value]]">
 		$textfied = $this->tpl->render($tpltext, array(
 				// NOTE: The PREFIX must always be used as a part of the field name
 				'name' => self::PREFIX . 'accept_types',
@@ -69,7 +79,7 @@ class FieldFileupload implements FieldInterface
 					Accepted file types separated by pipe, example: gif|jpe?g|png|pdf')
 		);
 
-		// let's merge the pieces and return the output
+		// Return merged template parts
 		return $this->tpl->render($tplarea, array(
 				'fieldid' =>  '',
 				'label' => 'Enter accepted file types here',

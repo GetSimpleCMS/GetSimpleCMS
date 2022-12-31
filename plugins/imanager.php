@@ -2,15 +2,15 @@
 if(!isset($_SESSION)){session_start();}
 if(!isset($_SESSION['cat']) || is_null($_SESSION['cat'])) $_SESSION['cat'] = null;
 
-// get correct id for plugin
+// get correct id for the plugin
 $thisfile = basename(__FILE__, '.php');
-// paths & file constants definitions
+// include path & file constants
 include($thisfile.'/lib/inc/_def.php');
 
 register_plugin(
 	$thisfile,
 	'ItemManager',
-	'2.3.5',
+	IM_VERSION_GS,
 	'Juri Ehret',
 	'http://ehret-studio.com',
 	'A simple flat-file framework for GetSimple-CMS',
@@ -22,23 +22,23 @@ register_plugin(
 add_action('admin-pre-header', 'ajaxGetLists');
 add_action('nav-tab', 'createNavTab', array($thisfile, $thisfile, 'Manager'));
 //add_action($thisfile.'-sidebar', 'im_render_backend', array('sidebar'));
-/* i18n search stuff, not currently in use
-add_action('search-index', 'i18nSearchImIndex');
-add_filter('search-item', 'i18nSearchImItem');
-add_filter('search-display', 'i18nSearchImDisplay'); */
-/* include your own CSS for beautiful manager style */
-register_style('jqui', IM_SITE_URL.'plugins/'.$thisfile.'/upload/js/jquery-ui/jquery-ui.css',  GSVERSION, 'screen');
-register_style('imstyle', IM_SITE_URL.'plugins/'.$thisfile.'/css/im-styles.css', GSVERSION, 'screen');
-register_style('blueimp',  IM_SITE_URL.'plugins/'.$thisfile.'/css/blueimp-gallery.min.css', GSVERSION, 'screen');
-register_style('imstylefonts', IM_SITE_URL.'plugins/'.$thisfile.'/css/fonts/font-awesome/css/font-awesome.min.css', GSVERSION, 'screen');
-queue_style('jqui', GSBACK);
-queue_style('imstyle', GSBACK);
-queue_style('imstylefonts', GSBOTH);
-queue_style('blueimp', GSBACK);
+register_style('imstyle', IM_SITE_URL.'plugins/'.$thisfile.'/css/im-styles.css',
+	GSVERSION, 'screen');
+register_style('jqdatepicker', IM_SITE_URL.'plugins/'.$thisfile.'/css/jq-datepicker.css',
+	GSVERSION, 'screen');
+register_style('blueimp',  IM_SITE_URL.'plugins/'.$thisfile.'/css/blueimp-gallery.min.css',
+	GSVERSION, 'screen');
+register_style('imstylefonts', IM_SITE_URL.'plugins/'.$thisfile
+	.'/css/fonts/font-awesome/css/font-awesome.min.css', GSVERSION, 'screen');
+register_script('immain', IM_SITE_URL."plugins/$thisfile/js/main.js", IM_VERSION, true);
 
-// model
-include(GSPLUGINPATH.'imanager/lib/Model.php');
-// manager
+queue_style('imstyle', GSBACK);
+queue_style('jqdatepicker', GSBACK);
+queue_style('imstylefonts', GSBACK);
+queue_style('blueimp', GSBACK);
+queue_script('immain', GSBACK);
+
+// ItemManager
 include(GSPLUGINPATH.'imanager/lib/ItemManager.php');
 
 /**
@@ -56,7 +56,9 @@ function imanager($name='')
 }
 
 /**
- * Loads ItemManager's backend, executed inside admin panel only
+ * Loads and renders ItemManager's backend
+ * (executed inside admin panel only)
+ *
  */
 function im_render_backend($arg=null)
 {
@@ -64,7 +66,9 @@ function im_render_backend($arg=null)
 	if(is_null($arg))
 	{
 		// check whether the user inside admin panel
-		(!defined('IN_GS') && empty($_GET['id']) && $_GET['id'] != IM_NAME) or define('IS_ADMIN_PANEL', true);
+		if(defined('IN_GS') && !empty($_GET['id']) && $_GET['id'] == IM_NAME) {
+			defined('IS_ADMIN_PANEL') or define('IS_ADMIN_PANEL', true);
+		}
 		if($im === null) $im = imanager();
 		if(defined('IS_ADMIN_PANEL'))
 		{
@@ -83,31 +87,34 @@ function im_render_backend($arg=null)
 	}
 }
 
+/**
+ * Ajax call before rendering the admin headers
+ */
 function ajaxGetLists()
 {
 	global $im;
 	if(isset($_GET['getcatlist']) || isset($_GET['getitemlist']))
 	{
-		(!defined('IN_GS') && empty($_GET['id']) && $_GET['id'] != IM_NAME) or define('IS_ADMIN_PANEL', true);
+		// check whether the user inside admin panel
+		if(defined('IN_GS') && !empty($_GET['id']) && $_GET['id'] == IM_NAME) {
+			define('IS_ADMIN_PANEL', true);
+		}
 		if($im === null) $im = imanager();
 		if(defined('IS_ADMIN_PANEL'))
 		{
 			(!$im->config->injectActions) or $im->setActions();
-			$im->admin->init();
-			echo $im->admin->display();
+			if(!$im->config->hiddeAdmin)
+			{
+				$im->admin->init();
+				echo $im->admin->display();
+			}
 			exit();
 		}
-
 	}
 }
 
 /**
- * Deprecated ItemManager's call, just for backward compatibility
+ * Deprecated ItemManager's call for backward compatibility only
  */
-class IManager extends ItemManager {
-
-	public function __construct() {
-		parent::__construct();
-	}
-}
+class IManager extends ItemManager { public function __construct() { parent::__construct(); } }
 ?>

@@ -60,11 +60,12 @@ class CategoryMapper
 
 
 	/**
-  * Returns the number of categories
-  *
-  * @return int
-  */
- public function countCategories(array $categories=array())
+	 * Returns the number of categories
+	 *
+	 * @param array $categories
+	 * @return int
+	 */
+	public function countCategories(array $categories=array())
 	{return count($cat = !empty($categories) ? $categories : $this->categories);}
 
 
@@ -81,7 +82,7 @@ class CategoryMapper
 	 * @param array $categories
 	 * @return boolean|object of the type Category
 	 */
-	public function getCategory($stat, array $categories=array()): bool|object
+	public function getCategory($stat, array $categories=array())
 	{
 
 		$loccat = !empty($categories) ? $categories : $this->categories;
@@ -102,12 +103,12 @@ class CategoryMapper
 			return !empty($loccat[(int) $stat]) ? $loccat[(int) $stat] : false;
 
 			// stat is a string
-		} elseif (str_contains($stat, '='))
+		} elseif (false !== strpos($stat, '='))
 		{
 			$data = explode('=', $stat, 2);
 			$key = strtolower(trim($data[0]));
 			$val = trim($data[1]);
-			if(str_contains($key, ' '))
+			if(false !== strpos($key, ' '))
 				return false;
 
 			// id
@@ -127,20 +128,21 @@ class CategoryMapper
 
 
 	/**
-  * Returns the array of objects of the type Category, by a comparison of values
-  * NOTE: However if no $categories argument is passed to the function, the categories
-  * must already be in the buffer: ImCategory::$categories. Call the ImCategory::init()
-  * method before to assign the categories to the buffer.
-  *
-  * You can sort categories by using any node
-  * Sample sortng by "position":
-  * ImCategory::filterCategories('position', 'DESC', $your_categories_array)
-  *
-  * @param string $filterby
-  * @param string $key
-  * @param array $categories
-  */
- public function getCategories($stat, $offset=0, $length=0, array $categories=array()): bool|array
+	 * Returns the array of objects of the type Category, by a comparison of values
+	 * NOTE: However if no $categories argument is passed to the function, the categories
+	 * must already be in the buffer: ImCategory::$categories. Call the ImCategory::init()
+	 * method before to assign the categories to the buffer.
+	 *
+	 * You can sort categories by using any node
+	 * Sample sortng by "position":
+	 * ImCategory::filterCategories('position', 'DESC', $your_categories_array)
+	 *
+	 * @param string $filterby
+	 * @param string $key
+	 * @param array $categories
+	 * @return boolean|array
+	 */
+	public function getCategories($stat, $offset=0, $length=0, array $categories=array())
 	{
 		// reset offset
 		$offset = ($offset > 0) ? $offset-1 : $offset;
@@ -159,7 +161,7 @@ class CategoryMapper
 
 		foreach($pattern as $pkey => $pval)
 		{
-			if(str_contains($stat, $pval))
+			if(false !== strpos($stat, $pval))
 			{
 
 				$data = explode($pval, $stat, 2);
@@ -169,7 +171,7 @@ class CategoryMapper
 				else
 					$val = trim($data[1]);
 
-				if(str_contains($key, ' '))
+				if(false !== strpos($key, ' '))
 					return false;
 
 				foreach($loccat as $cat_id => $c)
@@ -228,7 +230,7 @@ class CategoryMapper
 	 * @param array $categories
 	 * @return boolean|array of objects of the type Category
 	 */
-	public function filterCategories($filterby, $key, $offset=0, $length=0, array $categories=array()): bool|array
+	public function filterCategories($filterby, $key, $offset=0, $length=0, array $categories=array())
 	{
 		// reset offset
 		$offset = ($offset > 0) ? $offset-1 : $offset;
@@ -271,11 +273,12 @@ class CategoryMapper
 
 
 	/**
-  * Deletes the category
-  *
-  * @return bool
-  */
- public function destroyCategory(Category $cat)
+	 * Deletes the category
+	 *
+	 * @param Category $cat
+	 * @return bool
+	 */
+	public function destroyCategory(Category $cat)
 	{
 		if(file_exists(IM_CATEGORY_DIR . $cat->get('id') . IM_CATEGORY_FILE_SUFFIX))
 			return unlink(IM_CATEGORY_DIR . $cat->get('id') . IM_CATEGORY_FILE_SUFFIX);
@@ -284,11 +287,12 @@ class CategoryMapper
 
 
 	/**
-  * Reverse the array of categoriies
-  *
-  * @param array $catcontainer An array of objects
-  */
- public function reverseCategories($catcontainer): bool|array
+	 * Reverse the array of categoriies
+	 *
+	 * @param array $catcontainer An array of objects
+	 * @return boolean|array
+	 */
+	public function reverseCategories($catcontainer)
 	{
 		if(!is_array($catcontainer)) return false;
 		return array_reverse($catcontainer);
@@ -296,11 +300,12 @@ class CategoryMapper
 
 
 	/**
-  * Revise keys of the array of categories and changes these into real category Ids
-  *
-  * @param array $catcontainer An array of objects
-  */
- public function reviseCatIds($catcontainer): bool|array
+	 * Revise keys of the array of categories and changes these into real category Ids
+	 *
+	 * @param array $catcontainer An array of objects
+	 * @return boolean|array
+	 */
+	public function reviseCatIds($catcontainer)
 	{
 		if(!is_array($catcontainer)) return false;
 		$result = array();

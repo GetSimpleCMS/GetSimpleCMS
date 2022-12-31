@@ -11,15 +11,23 @@ class TemplateEngine
 	 */
 	private $tplpath;
 
+	/**
+	 * @param string $plugin
+	 */
+	private $plugin;
 
-	public function __construct($path=''){$this->tplpath = !empty($path) ? $path : IM_TEMPLATE_DIR;}
+	public function __construct($path='') {
+		$this->tplpath = !empty($path) ? $path : IM_TEMPLATE_DIR;
+		$this->plugin = 'imanager';
+	}
 
 	/**
 	 * Initializes all the templates and made them available in ImTplEngine::$templates
 	 */
-	public function init($path='')
+	public function init($path='', $plugin = '')
 	{
 		$this->tplpath = !empty($path) ? $path : $this->tplpath;
+		$this->plugin = !empty($plugin) ? $plugin : 'imanager';
 		$templates = array();
 		foreach (glob($this->tplpath . '*' . IM_TEMPLATE_FILE_SUFFIX) as $file)
 		{
@@ -38,11 +46,12 @@ class TemplateEngine
 
 
 	/**
-  * Returns the number of templates
-  *
-  * @return int
-  */
- public function countTemplates(array $templates=array())
+	 * Returns the number of templates
+	 *
+	 * @param array $templates
+	 * @return int
+	 */
+	public function countTemplates(array $templates=array())
 	{return count(!empty($templates) ? $templates : $this->templates);}
 
 
@@ -60,7 +69,7 @@ class TemplateEngine
 	 * @param array $templates
 	 * @return boolean|object of the type Template
 	 */
-	public function getTemplate($stat, array $templates=array()): bool|object
+	public function getTemplate($stat, array $templates=array())
 	{
 		$loctpl = !empty($templates) ? $templates : $this->templates;
 		// nothing to select
@@ -70,13 +79,13 @@ class TemplateEngine
 				return false;
 		}
 
-		if(str_contains($stat, '='))
+		if(false !== strpos($stat, '='))
 		{
 			$data = explode('=', $stat, 2);
 			$key = strtolower(trim($data[0]));
 			$val = trim($data[1]);
 
-			if(str_contains($key, ' '))
+			if(false !== strpos($key, ' '))
 				return false;
 
 			foreach($loctpl as $tpl_id => $t)
@@ -101,19 +110,20 @@ class TemplateEngine
 
 
 	/**
-  * Returns an array of object of type Template
-  * NOTE: However if no $templates argument is passed to the function, the templates
-  * must already be in the buffer: ImTplEngine::$templates. Call the ImTplEngine::init()
-  * method before to assign the templates to the buffer.
-  *
-  * You can get all templates by a membership
-  * Example, to get all templates with "general" membership, you can do the following:
-  * ImTplEngine::getTemplates('general', $your_template_array)
-  *
-  * @param string $stat
-  * @param array $templates An array of Template objects
-  */
- public function getTemplates($stat, array $templates=array()): bool|array
+	 * Returns an array of object of type Template
+	 * NOTE: However if no $templates argument is passed to the function, the templates
+	 * must already be in the buffer: ImTplEngine::$templates. Call the ImTplEngine::init()
+	 * method before to assign the templates to the buffer.
+	 *
+	 * You can get all templates by a membership
+	 * Example, to get all templates with "general" membership, you can do the following:
+	 * ImTplEngine::getTemplates('general', $your_template_array)
+	 *
+	 * @param string $stat
+	 * @param array $templates An array of Template objects
+	 * @return boolean|array
+	 */
+	public function getTemplates($stat, array $templates=array())
 	{
 
 		$loctpl = !empty($templates) ? $templates : $this->templates;
@@ -126,13 +136,13 @@ class TemplateEngine
 
 		$tplcontainer = array();
 
-		if(str_contains($stat, '='))
+		if(false !== strpos($stat, '='))
 		{
 			$data = explode('=', $stat, 2);
 			$key = strtolower(trim($data[0]));
 			$val = trim($data[1]);
 
-			if(str_contains($key, ' '))
+			if(false !== strpos($key, ' '))
 				return false;
 
 			foreach($loctpl as $tpl_id => $t)
@@ -163,22 +173,25 @@ class TemplateEngine
 
 
 	/**
-  * Unset a given array of Template objects
-  */
- public function destroyTemplates(array $templates=array())
+	 * Unset a given array of Template objects
+	 * @param array $templates
+	 */
+	public function destroyTemplates(array $templates=array())
 	{$tpls=!empty($templates) ? $templates : $this->templates;unset($tpls);}
 
 
 	/**
-  * Renders template by replacing $tvs and optionally language $lvs by setting the $lflag to true.
-  * You can use $clean flag to delete the tvs left in template
-  *
-  * @param $template (object | string)
-  * @param bool $lflag
-  * @param bool $clean
-  * @return Template object
-  */
- public function render($template, array $tvs=array(),
+	 * Renders template by replacing $tvs and optionally language $lvs by setting the $lflag to true.
+	 * You can use $clean flag to delete the tvs left in template
+	 *
+	 * @param $template (object | string)
+	 * @param array $tvs
+	 * @param bool $lflag
+	 * @param array $lvs
+	 * @param bool $clean
+	 * @return Template object
+	 */
+	public function render($template, array $tvs=array(),
 						   $lflag=false, array $lvs=array(), $clean=false
 	){
 
@@ -197,6 +210,7 @@ class TemplateEngine
 			foreach($tvs as $key => $val)
 				$tpl->content = preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $val, $tpl->content);
 
+
 		if($clean) return preg_replace('%\[\[(.*)\]\]%', '', $tpl->content);
 
 		return $tpl->content;
@@ -214,8 +228,8 @@ class TemplateEngine
 
 		if(empty($lvs))
 		{
-			$lvs = $this->imI18n('imanager');
-			if(!$lvs) $lvs = $this->imI18n('imanager','en_US');
+			$lvs = $this->imI18n($this->plugin);
+			if(!$lvs) $lvs = $this->imI18n($this->plugin,'en_US');
 		}
 		if(empty($lvs)) return false;
 
@@ -229,12 +243,13 @@ class TemplateEngine
 
 
 	/**
-  * Returns language array by plugin name and curent system language
-  *
-  * @param $plugin
-  * @param null $language
-  */
- private function imI18n($plugin, $language=null): array|bool
+	 * Returns language array by plugin name and curent system language
+	 *
+	 * @param $plugin
+	 * @param null $language
+	 * @return array|bool
+	 */
+	private function imI18n($plugin, $language=null)
 	{
 		$l = array();
 		if($this->imPrepI18n($plugin, $language ? $language : IM_LANGUAGE, $l))
@@ -278,13 +293,15 @@ class TemplateEngine
  */
 class Template
 {
+	public $name;
 	protected $file;
 	protected $filename;
 	protected $member;
 	public $content;
 
-	public function __construct(public $name='')
+	public function __construct($name='')
 	{
+		$this->name = $name;
 		$this->file = '';
 		$this->filename = '';
 		$this->content = '';

@@ -1,31 +1,37 @@
 <?php
-class InputDropdown implements InputInterface
+
+class InputDropdown extends InputText implements InputInterface
 {
-	protected $values;
-	protected $field;
-
-	public function __construct(Field $field)
-	{
-		$this->field = $field;
-		$this->values = new stdClass();
-		$this->values->value = null;
+	/**
+	 * InputDropdown constructor.
+	 *
+	 * @param Field $field
+	 */
+	public function __construct(Field $field) {
+		parent::__construct($field);
 	}
 
-	public function prepareInput($value, $sanitize=false)
-	{
-		$this->values->value = empty($sanitize) ? $value : $this->sanitize($value);
-		// check input required
-		if(!empty($this->field->required) && $this->field->required == 1)
-		{
-
-			if(empty($this->values->value))
-				return self::ERR_REQUIRED;
-		}
-
-		return $this->values;
+	/**
+	 * This method checks the field inputs and sets the field contents.
+	 * If an error occurs, the method returns an error code.
+	 *
+	 * @param $value
+	 * @param bool $sanitize
+	 *
+	 * @return int|stdClass
+	 */
+	public function prepareInput($value, $sanitize = false) {
+		return parent::prepareInput($value, $sanitize);
 	}
 
-	public function prepareOutput(){return $this->values;}
+	/**
+	 * The method that is called when initiating item content
+	 * and is relevant for setting the field content.
+	 * However, since we do not require any special formatting
+	 * of the output, we can accept the value 1 to 1 here.
+	 *
+	 * @return stdClass
+	 */
+	public function prepareOutput(){ return $this->values; }
 
-	protected function sanitize($value){return imanager('sanitizer')->text($value);}
 }
