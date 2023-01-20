@@ -21,7 +21,7 @@ function genStdThumb($path,$name){
 
 	$ext = lowercase(pathinfo($name,PATHINFO_EXTENSION));	
 	
-	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' )	{
+	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' || $ext == 'webp' )	{
 		
 		$thumbsPath = GSTHUMBNAILPATH.$path;
 		
@@ -51,6 +51,9 @@ function genStdThumb($path,$name){
 			case "gif":
 					$image = imagecreatefromgif($targetFile);
 			break;
+			case "webp":
+					$image = imagecreatefromwebp($targetFile);
+			break;
 			default:
 					return;
 			break;
@@ -69,7 +72,7 @@ function genStdThumb($path,$name){
 	if($bool)	{	
 		$thumbnailFile = $thumbsPath . "thumbnail." . $name;
 		
-	    switch(lowercase(substr($targetFile, -3))) {
+	    switch(lowercase(pathinfo($targetFile)['extension'])) {
 	        case "jpg":
 	            $bool2 = imagejpeg($picture,$thumbnailFile,85);
 	        break;
@@ -78,6 +81,9 @@ function genStdThumb($path,$name){
 	        break;
 	        case "gif":
 	            imagegif($picture,$thumbnailFile);
+	        break;
+	        case "webp":
+	            imagewebp($picture,$thumbnailFile,85);
 	        break;
 	    }
 	}
@@ -148,6 +154,10 @@ class ImageManipulation {
 			//GIF
 			$this->image["format"] = "GIF";
 			$this->image["src"]    = ImageCreateFromGif($imgfile);
+		} elseif( $this->image["format"] == "WEBP" ){
+			//WEBP
+			$this->image["format"] = "WEBP";
+			$this->image["src"]    = ImageCreateFromWEBP($imgfile);
 		} elseif ( $this->image["format"] == "WBMP" ){
 			//WBMP
 			$this->image["format"] = "WBMP";
@@ -256,6 +266,9 @@ class ImageManipulation {
 		} elseif ( $this->image["format"] == "GIF" ) {
 			//GIF
 			imageGIF($this->image["des"]);
+		} elseif ( $this->image["format"] == "WEBP" ) {
+			//WEBP
+			imageWEBP($this->image["des"], "", $this->image["quality"]);
 		} elseif ( $this->image["format"] == "WBMP" ) {
 			//WBMP
 			imageWBMP($this->image["des"]);
@@ -301,6 +314,9 @@ class ImageManipulation {
 		} elseif ( $this->image["format"] == "GIF" ) {
 			//GIF
 			imageGIF($this->image["des"], $save);
+		} elseif ( $this->image["format"] == "WEBP" ) {
+			//WEBP
+			imageWEBP($this->image["des"], $save, $this->image["quality"]);
 		} elseif ( $this->image["format"] == "WBMP" ) {
 			//WBMP
 			imageWBMP($this->image["des"], $save);

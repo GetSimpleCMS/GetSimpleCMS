@@ -248,7 +248,7 @@ function createRandomPassword() {
 function get_FileType($ext) {
 
 	$ext = lowercase($ext);
-	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'pct' || $ext == 'gif' || $ext == 'bmp' || $ext == 'png' ) {
+	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'pct' || $ext == 'gif' || $ext == 'bmp' || $ext == 'png' || $ext == 'webp' ) {
 		return i18n_r('IMAGES') .' Images';
 	} elseif ( $ext == 'zip' || $ext == 'gz' || $ext == 'rar' || $ext == 'tar' || $ext == 'z' || $ext == '7z' || $ext == 'pkg' ) {
 		return i18n_r('FTYPE_COMPRESSED');

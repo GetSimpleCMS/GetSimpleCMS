@@ -16,7 +16,7 @@ login_cookie_check();
  * - x - max width
  * - y - max height
  * - q - quality (applicable only to JPG, 1 to 100, 100 - best)
- * - t - thumb type. "-1" - same as source, 1 = GIF, 2 = JPG, 3 = PNG
+ * - t - thumb type. "-1" - same as source, 1 = GIF, 2 = JPG, 3 = PNG, 18 = WEBP
  * - f - save to file (1) or output to browser (0).
  *
  * Sample usage: 
@@ -42,7 +42,7 @@ $save_to_file = true;
 // Note: PNG quality is only supported starting PHP 5.1.2
 $image_quality = 65;
 
-// resulting image type (1 = GIF, 2 = JPG, 3 = PNG)
+// resulting image type (1 = GIF, 2 = JPG, 3 = PNG, 18 = WEBP)
 // enter code of the image type if you want override it
 // or set it to -1 to determine automatically
 $image_type = -1;

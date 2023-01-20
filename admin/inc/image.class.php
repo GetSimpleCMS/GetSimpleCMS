@@ -81,6 +81,18 @@ class Zubrag_image {
           }
         }
         break;
+        case 18:
+          if ($this->save_to_file) {
+            header("Content-type: image/webp");
+            $res = ImageWEBP($im,$filename,$this->quality);
+            $res = ImageWEBP($im,NULL,$this->quality);
+          }
+          else {
+            header("Content-type: image/webp");
+            $res = ImageWEBP($im,$filename,$this->quality);
+            $res = ImageWEBP($im,NULL,$this->quality);
+          }
+        break;
     }
  
     return $res;
@@ -98,6 +110,9 @@ class Zubrag_image {
        break;
      case 3:
        $im = ImageCreateFromPNG($filename);
+       break;
+     case 18:
+       $im = ImageCreateFromWEBP($filename);
        break;
     }
     return $im;
@@ -128,7 +143,7 @@ class Zubrag_image {
     if (!file_exists($from_name)) die("Source image does not exist!");
     
     // get source image size (width/height/type)
-    // orig_img_type 1 = GIF, 2 = JPG, 3 = PNG
+    // orig_img_type 1 = GIF, 2 = JPG, 3 = PNG, 18 = WEBP
     list($orig_x, $orig_y, $orig_img_type, $img_sizes) = @GetImageSize($from_name);
 
     // cut image if specified by user
@@ -139,6 +154,7 @@ class Zubrag_image {
     $this->image_type = ($this->image_type != -1 ? $this->image_type : $orig_img_type);
  
     // check for allowed image types
+    if($orig_img_type !== 18)
     if ($orig_img_type < 1 or $orig_img_type > 3) die("Image type not supported");
  
     if ($orig_x > $this->max_x or $orig_y > $this->max_y) {
@@ -171,6 +187,10 @@ class Zubrag_image {
             break;
           case 3:
               header("Content-type: image/png");
+              readfile($from_name);
+            break;
+          case 18:
+              header("Content-type: image/webp");
               readfile($from_name);
             break;
         }
