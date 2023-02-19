@@ -61,7 +61,7 @@ header .breadcrumbs a:hover {
 
 /* HEADER: logo */
 header #logo {
-	position:absolute;
+	position:relative;
 	top:20px;
 	left:0;
 	font-size:35px;
