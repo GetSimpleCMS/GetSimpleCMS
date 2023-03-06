@@ -137,9 +137,6 @@ https://github.com/enyo/dropzone
 fontawesome  
 http://fontawesome.io/
 
-bigspotteddog/scrolltofixed  
-https://github.com/bigspotteddog/ScrollToFixed
-
 dropzonejs  
 http://www.dropzonejs.com/
 
