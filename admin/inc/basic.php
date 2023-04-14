@@ -2942,7 +2942,10 @@ function getMaxUploadSize(){
 	$max_upload   = toBytes(ini_get('upload_max_filesize'));
 	$max_post     = toBytes(ini_get('post_max_size'));
 	$memory_limit = toBytes(ini_get('memory_limit'));
-	$upload_mb    = min($max_upload, $max_post, $memory_limit);
+	if($max_post == 0)
+		$upload_mb = min($max_upload, $memory_limit);
+	else
+		$upload_mb = min($max_upload, $max_post, $memory_limit);
 	return $upload_mb;
 }
 
