@@ -120,7 +120,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	}
 	
 	
-	# rename old wesbite.xml
+	# rename old website.xml
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_website.xml')) {
 		$status = rename(GSDATAOTHERPATH .'website.xml', GSDATAOTHERPATH .'_legacy_website.xml');
 		if (!$status) {
@@ -165,7 +165,16 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 		}
 	}
 	/* end update */
-} 
+}
+
+# rename uploadify folder
+$jspath = GSADMINPATH.'template'.DIRECTORY_SEPARATOR.'js'.DIRECTORY_SEPARATOR;
+if (is_dir($jspath.'uploadify')) {
+  $name = 'uploadify-'.substr(md5(rand()), rand(0,9), 22);
+	if (!@rename($jspath.'uploadify', $jspath.$name)) {
+		$message .= msgError('Unable to rename folder: <em>'.(defined('GSADMIN') ? GSADMIN : 'admin').'/template/js/uploadify</em>');
+	}
+}
 
 // redirect to health check or login and show updated notice
 $redirect = cookie_check() ? "health-check.php?updated=1" : "index.php?updated=1";
