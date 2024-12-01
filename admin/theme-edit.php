@@ -54,6 +54,7 @@ if((isset($_POST['submitsave']))){
 	
 	# save edited template file
 	$SavedFile = $_POST['edited_file'];
+	if(!filepath_is_safe($themepath.$SavedFile,GSTHEMESPATH,true)) die();	
 	$FileContents = get_magic_quotes_gpc() ? stripslashes($_POST['content']) : $_POST['content'];	
 	$fh = fopen(GSTHEMESPATH . $SavedFile, 'w') or die("can't open file");
 	fwrite($fh, $FileContents);

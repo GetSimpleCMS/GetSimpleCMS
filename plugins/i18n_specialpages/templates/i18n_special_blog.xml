@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specialpage><name>blog</name><title><![CDATA[Blog]]></title><parent>blog</parent><tags><![CDATA[blog]]></tags><slug>blog-%Y%m%d-%H%M</slug><template><![CDATA[template.php]]></template><menu>f</menu><headercomponent></headercomponent><searchcomponent><![CDATA[<h3 class="search-entry-title">
+  <?php if ($showLanguage) { ?>
+  <span class="search-entry-language"><?php get_special_field('language'); ?></span>
+  <?php } ?>
+  <a href="<?php get_special_field('link','',false); ?>">
+    <?php get_special_field('title','',false); ?>
+  </a>
+</h3>
+<div class="search-entry-date">
+  <?php get_special_field_date('creDate', $dateFormat); ?> by
+  <?php # this assumes that a page named like the user id exists (with parent page 'users'): ?>
+  <a href="<?php echo find_url(return_special_field('user'),'users'); ?>"><?php get_special_field('user','',false); ?></a>
+</div>
+<div class="search-entry-excerpt"><?php get_special_field_excerpt('content', $numWords); ?></div>
+]]></searchcomponent><defaultcontent><![CDATA[]]></defaultcontent><fields/></specialpage>

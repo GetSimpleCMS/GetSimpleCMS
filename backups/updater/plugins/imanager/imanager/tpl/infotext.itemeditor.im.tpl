@@ -1,0 +1,1 @@
+<p class="field-info">[[infotext]]</p>

@@ -1,0 +1,9 @@
+@CHARSET "UTF-8";
+#kt-display-table{
+	height: 450px;
+	overflow: scroll;
+}
+
+#kt-display-table  td:nth-child(2){
+	text-align: center;
+}

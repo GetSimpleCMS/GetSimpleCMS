@@ -1,0 +1,40 @@
+<?php 
+    $pluginId = EG_ID;
+
+?>
+
+<div id="extraBrowser"  
+	data-confirm="<?php i18n($pluginId.'/EB_CONFIRM_LEAVE') ?>"
+	data-url="../plugins/ExtraGallery/extraBrowser/?nonce=<?php echo get_nonce("browser", "ExtraBrowser"); ?>"
+	>
+
+	<div class="bar top">
+		<h3><?php i18n($pluginId.'/EB_HEADER') ?></h3>
+		
+		<div class="path">
+			<div class="h5">
+				<span><?php i18n($pluginId.'/EB_CURRENT_PATH') ?></span>
+				<div class="container"></div>
+			</div>
+		</div>		
+	</div>
+	
+	<div class="content">
+		<div class="html"></div>
+		<img class="busy-indicator" src="../plugins/ExtraGallery/img/ajax-loader.gif" />
+	</div>
+	
+	<div class="bar bottom">
+		<div class="selection">
+			<?php i18n($pluginId.'/EB_NUMBER_SELECTED') ?>&nbsp;&nbsp;<span>0</span>
+			<button><?php i18n($pluginId.'/EB_SELECT_ALL') ?></button>
+		</div>
+
+		
+		<div class="buttons">
+			<button class="ok" disabled="disabled"><?php i18n($pluginId.'/EB_ADD') ?></button>
+			<button class="cancel"><?php i18n($pluginId.'/EB_CANCEL') ?></button>
+		</div>
+    </div>
+
+</div>

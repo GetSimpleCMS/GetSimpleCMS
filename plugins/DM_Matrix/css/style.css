@@ -1,0 +1,238 @@
+/* Component containers
+----------------------------------*/
+.ui-widget { font-family: "Helvetica Neue", Arial,sans-serif; font-size: 1.3em; }
+.ui-widget .ui-widget { font-size: 1em; } /* RCD */
+/*RCD .ui-widget .ui-widget { font-size: 1em; }*/
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: "Helvetica Neue", Arial,sans-serif; font-size: 1.1em; }
+.ui-widget-content { border: 1px solid #d2e4ea; background-color: #ffffff; color: #222222; }
+/*RCD .ui-widget-content a { color: #222222; }*/
+.ui-widget-header { border: 1px solid #d2e4ea; background-color: #d2e4ea; font-weight: bold; }
+.ui-widget-header a { color: #2f4248; }
+.ui-button{padding:5px;}
+/****************************************************************************************
+ * Theme specific Inputfield module overrides
+ *
+ */
+
+.wrapper #maincontent ul, .wrapper #maincontent ol {
+	margin: 0 0 20px 0px;
+}
+
+    .fields,
+    .fields li,
+    .fields input,
+    .fields select,
+    .fields textarea {
+        font-size: 12px; 
+    }
+
+    .fields .ui-widget-content {
+        padding: 1em; 
+    }
+
+    .fields .ui-widget-header {
+        padding: 0.25em 0 0.25em 1em; 
+    }
+
+        .fields .fieldstateToggle span.ui-icon {
+            float: right; 
+            padding-right: 0.25em; 
+        }
+
+    .fields li > .ui-widget-content > p {
+        margin-top: 0; 
+    }
+
+    .fields > li {
+        display: block;
+        margin: 1.5em 0;
+        clear: both; 
+    }
+        .fields > li.fieldsubmit,
+        .fields > li.InputfieldWrapper,
+        .fields > li.InputfieldHidden {
+        }
+
+    .fields > li .notes {
+        margin-bottom: 0; 
+    }
+
+    .fields .InputfieldHidden {
+        display: none; 
+    }
+
+    .fields .Inputfieldsubmit,
+    .fields .InputfieldButton {
+        clear: none; 
+    }
+        .fields .Inputfieldsubmit .ui-widget-content,
+        .fields .InputfieldButton .ui-widget-content {
+            padding: 0; 
+            background: none; 
+            border: none; 
+        }
+
+        .fields .Inputfieldsubmit .ui-widget-header,
+        .fields .InputfieldButton .ui-widget-header {
+            display: none; 
+        }
+
+        .ui-button {
+            font-size: 1em; 
+            margin: 0 1em 0 0; 
+            padding: 3px 9px; 
+            cursor: pointer; 
+        }
+
+        a .ui-button {
+            display: block;
+        }
+
+    .fields .InputfieldCheckboxes input,
+    .fields .InputfieldRadios input {
+        margin-right: 0.25em; 
+    }
+        .fields .InputfieldCheckboxes li,
+        .fields .InputfieldRadios li {
+            margin: 0; 
+        }
+
+    .fields .InputfieldCheckbox {
+    }
+        .fields .InputfieldCheckbox .notes {
+            margin-top: 1em; 
+        }
+
+
+    .fields label {
+        display: block;
+    }
+
+    .fields textarea, 
+    .InputfieldMaxWidth {
+        width: 99%; 
+    }
+
+    .fields .fieldstateToggle {
+        cursor: pointer;
+    }
+
+        .fields > .fieldstateCollapsed {
+        }
+
+            .fields > .fieldstateCollapsed .ui-widget-header {
+                opacity: 0.6; 
+            }
+            .fields > .fieldstateCollapsed .ui-widget-header:hover {
+                opacity: 1.0; 
+            }
+
+            .fields > .fieldstateCollapsed .ui-widget-content {
+                display: none;
+            }
+
+            .fields > .fieldstateCollapsed .fieldstateToggle {
+            }
+
+    .InputfieldPageNameURL {
+        font-family: Monaco, Courier, Monaco, monospace; 
+    }
+.formerror{
+	border-radius: 2px;
+	background: #FFFBCC;
+	background: -moz-linear-gradient(top, #FFFBCC 0%, #FFFBC1 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFBCC), color-stop(100%,#FFFBC1));
+	line-height: 22px;
+	padding: 0;
+	margin-bottom: 20px;
+	color: #900;
+	border-color: #C00;
+}
+
+.ui-button .ui-icon.mtrx_dbadd {
+    background-image: url('../images/add.png');
+    width: 16;
+    height: 16; 
+}
+
+#pager{
+  margin-top:10px;
+}
+
+textarea .ckeditor{
+	width: 635px;
+height: 420px;
+line-height: 18px;
+text-align: left;
+color: #333;
+border: 1px solid #AAA;
+padding: 5px;
+font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+font-size: 12px;
+border-radius: 2px;
+border-image: initial;
+}
+
+
+/* apply getsimple ckeditor skin styles to all ckeditor instances */
+.cke_top {
+	border-bottom:1px solid #999 !important;
+	background:#eeeeee !important;
+	background: -moz-linear-gradient(top, #eeeeee, #e2e2e2) !important;
+	background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#e2e2e2)) !important;
+}
+.cke_bottom {
+	border-top:1px solid #eee !important;
+	background:#f6f6f6 !important;
+}
+.cke_top .cke_toolbar {
+	margin:2px 0 0px 2px !important;
+	background:transparent !important;	
+}
+.cke_top .cke_toolbox, .cke_top .cke_toolgroup {background:transparent !important;	}
+
+.cke_skin_getsimple {
+	border:1px solid #999;
+	-moz-border-radius: 4px 4px 0 0;
+	-khtml-border-radius: 4px 4px 0 0;
+	-webkit-border-radius: 4px 4px 0 0;
+	border-radius:4px 4px 0 0;
+	overflow:hidden;
+}
+
+
+.question {
+	position: absolute;
+	display: inline;
+	text-align: center;
+	width: 174px;
+	height: 78px;
+	font-size: 13px;
+	line-height: 1.5em;
+	background: url('../images/bubble.png') left top no-repeat;
+	padding: 10px 0 0 0;
+	text-shadow: 0px 1px 0px #fff;
+	margin-left: -7em;
+	margin-top: -6em;
+	opacity: 0;
+}
+
+.yes, .cancel {
+	margin-top: .5em;
+	margin-right: .5em;
+	cursor: pointer;
+	display: inline-block;
+	width: 63px;
+	height: 21px;
+	color: #fff;
+	text-shadow: 0px 1px 0px #000;
+	background: url('../images/button.png') left top no-repeat;
+}
+
+.title {
+	font-size: 30px;
+	margin-bottom: 1.5em;
+	font-weight: bold;
+	font-style: italic;
+	text-shadow: 0px 2px 0px #fff;
+}

@@ -1,0 +1,21 @@
+<?php
+define('IM_NAME', !empty($thisfile) ? $thisfile : '');
+define('IM_SOURCE_DIR', GSPLUGINPATH.'imanager/lib/');
+define('ITEMDATA', GSDATAPATH.'imanager/');
+define('IM_CATEGORY_DIR', ITEMDATA.'categories/');
+define('IM_ITEM_DIR', ITEMDATA.'items/');
+define('IM_SETTINGS_DIR', ITEMDATA.'settings/');
+define('IM_FIELDS_DIR', ITEMDATA.'fields/');
+define('IM_SECTIONS_CACHE_DIR', ITEMDATA.'cache/sections/');
+define('IM_UPLOAD_DIR', GSDATAUPLOADPATH.'imanager/');
+define('IM_TEMPLATE_DIR', GSPLUGINPATH.'imanager/tpl/');
+define('IM_IMAGE_UPLOAD_DIR', GSDATAPATH.'uploads/imanager/');
+define('IM_BACKUP_DIR', GSBACKUPSPATH.'other/imanager/');
+define('IM_CONFIG_FILE', IM_SETTINGS_DIR.'config.im.xml');
+define('IM_FIELDS_FILE_SUFFIX', '.im.fields.xml');
+define('IM_CATEGORY_FILE_SUFFIX', '.im.cat.xml');
+define('IM_TEMPLATE_FILE_SUFFIX', '.im.tpl');
+define('IM_ITEM_FILE_SUFFIX', '.im.item.xml');
+define('IM_SITE_URL', $SITEURL);
+define('IM_LANGUAGE', $LANG);
+define('IMTITLE', 'ItemManager');

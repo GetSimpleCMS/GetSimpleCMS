@@ -1,0 +1,71 @@
+#
+# GetSimple CMS htaccess ROOT file
+# apache 2.4 
+#
+
+# The following require certain allow overrides, 
+# if getting 500 error comment them out one by one 
+# can be resolved in apache httpd.conf to ensure security alternatives
+
+# override charset
+AddDefaultCharset UTF-8
+
+# prevent directory listings
+Options -Indexes
+
+# Follow symbolink links, This is required for rewrites on some hosts
+Options +FollowSymLinks
+
+# Set the default handler.
+DirectoryIndex index.php
+
+# blocks direct access to the XML files - they hold all the data!
+<Files ~ "\.xml$">
+	<IfModule !mod_authz_core.c>
+		Deny from all
+	</IfModule>
+	<IfModule mod_access_compat.c>
+		Deny from all
+	</IfModule>
+	<IfModule mod_authz_core.c>
+		<IfModule !mod_access_compat.c>
+			Require all denied
+		</IfModule>
+	</IfModule>	
+</Files>
+
+<Files sitemap.xml>
+	<IfModule !mod_authz_core.c>
+		Allow from all
+	</IfModule>
+	<IfModule mod_access_compat.c>
+		Allow from all
+	</IfModule>
+	<IfModule mod_authz_core.c>
+		<IfModule !mod_access_compat.c>
+			Require all granted
+		</IfModule>
+	</IfModule>	
+</Files>
+
+# handle rewrites for fancy urls
+<IfModule mod_rewrite.c>
+ RewriteEngine on
+
+ # Usually RewriteBase is just '/', but 
+ # replace it with your subdirectory path
+ RewriteBase **PATH**
+
+ # News Manager:
+ RewriteRule ^**PREFIX**tag/([^/.]+)/archive/([^/.]+)/?$ index.php?**PAGE**tag=$1&archive=$2 [L]
+ RewriteRule ^**PREFIX**tag/([^/.]+)/page/([^/.]+)/?$ index.php?**PAGE**tag=$1&page=$2 [L]
+ RewriteRule ^**PREFIX**tag/([^/.]+)/?$ index.php?**PAGE**tag=$1 [L]
+ RewriteRule ^**PREFIX**post/([^/.]+)/?$ index.php?**PAGE**post=$1 [L]
+ RewriteRule ^**PREFIX**page/([^/.]+)/?$ index.php?**PAGE**page=$1 [L]
+ RewriteRule ^**PREFIX**archive/([^/.]+)/?$ index.php?**PAGE**archive=$1 [L]
+ # end News Manager
+
+ RewriteCond %{REQUEST_FILENAME} !-f
+ RewriteCond %{REQUEST_FILENAME} !-d
+ RewriteRule /?([A-Za-z0-9_-]+)/?$ index.php?id=$1 [QSA,L]
+</IfModule>

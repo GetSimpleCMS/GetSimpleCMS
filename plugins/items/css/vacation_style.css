@@ -1,0 +1,181 @@
+/* Controls Labels - Mostly For 2 Columns Of Propert Info Below Description */
+.label {
+    font-weight:bold;
+    font-size:15px;
+  }
+
+/* '.m_spec' Related Elements - Below Relate to the container around everything fromt the top of the page to the property description
+
+Container for the 1 row of property information above the description and below the 3 propert images */
+  .m_spec_container {
+    text-align:left;
+    width:700px;
+    height:265px;
+  }
+  .m_spec_container table {
+    padding:10px 0px 10px 0px;
+  }
+  .m_pic {
+    width:230px;
+    height:auto;
+    max-height:195px;
+    border:1px solid white;
+    padding:1px;
+  }
+
+/* Rezizes The Three Property Images */
+  .resize_img {
+    height:195px;
+    background-color:white;
+  }
+
+
+  .m_spec {
+    height:22px;
+    padding-top:3px;
+    float:left;
+    padding-right:20px;
+    font-weight:normal !important;
+  }
+
+/* '.b_spec' Related Classes Below - Controls The Text Links Below Three Property Images */
+    .b_spec {
+    height:15px;
+    padding-top:0px;
+    float:left;
+    padding-right:20px;
+    font-weight:normal !important;
+    font-size:14px;
+    padding:0px;
+    background-image:url(http://idxco.com/images/icons/templateA/moreInfo.png);
+    background-repeat:no-repeat;
+    padding-left:16px;
+    background-position:bottom left;
+    margin-bottom:18px;
+  }
+      .b_specschedule {
+    height:15px;
+    padding-top:0px;
+    float:left;
+    padding-right:20px;
+    margin-left:32px;
+    font-weight:normal !important;
+    font-size:14px;
+    padding:0px;
+    background-image:url(http://idxco.com/images/icons/templateA/schedule.png);
+    background-repeat:no-repeat;
+    padding-left:16px;
+    background-position:bottom left
+  }
+        .b_specmap {
+    height:15px;
+    padding-top:0px;
+    float:left;
+    padding-right:20px;
+    margin-left:32px;
+    font-weight:normal !important;
+    font-size:14px;
+    padding:0px;
+    background-image:url(http://idxco.com/images/icons/templateA/vtour.png);
+    background-repeat:no-repeat;
+    padding-left:16px;
+    background-position:bottom left
+  }
+  .b_spec a:hover{
+    color:  #061a33
+  }
+
+/* Controlls house icon and address */
+  .IDX-detailsAddressBox {
+    padding-left: 24px;
+    font-weight: bold;
+    height: 23px;
+    overflow: hidden;
+    background-image: url('http://idxco.com/images/icons/templateA/house.png');
+    background-repeat: no-repeat;
+    font-size: 18px;
+  }
+    .IDX-detailsAddressBox span {
+    font-weight: bold;
+    font-size: 22px;
+  }
+  .price {
+    clear:left;
+    font-size:20px;
+    padding-top:0px;
+    font-weight:normal
+  }
+  .info_box {
+    width:698px;
+    height:18px;
+    background-color:#fcf8df;
+    border-top:1px solid #FFE04E;
+    border-bottom: 1px solid #FFE04E;
+    padding:5px
+  }
+   .bottom__spec {
+    height:15px;
+    padding:3px;
+    padding-top:0px;
+    float:left;
+    text-align:left;
+    padding-right:20px;
+    font-weight:normal;
+    font-size:14px;
+    padding:0px;
+    background-repeat:no-repeat;
+    padding-left:16px;
+    background-position:bottom left;
+    margin-bottom:18px;
+  }
+  .labelb{
+   font-weight:bold !important;
+  }
+    #flight td{
+   max-width:200px;
+ }
+ .whiteborder {
+   border:1px solid white;
+   padding:1px;
+ }
+
+ .share_this {
+   width:70px;
+   height:18px;
+   float:left;
+   margin-top:0px;
+   margin-left:30px;
+ }
+
+ .vacation_property_info {
+   width:700px;
+   height:auto;
+   clear:left;
+   padding-top:10px
+ }
+
+  .vacation_property_info h2{
+   text-align:left;
+ }
+
+   .vacation_property_info p{
+   font-size:14px;
+   text-align:left;
+ }
+
+#left_col {
+   width:230px;
+   height:auto;
+   float:left;
+   text-align:left;
+   margin-top:10px;
+   margin-left:5px;
+ }
+
+ #right_col {
+   width:230px;
+   border-bottom-style:auto;
+   float:left;
+   text-align:left;
+   margin-top:10px;
+ }

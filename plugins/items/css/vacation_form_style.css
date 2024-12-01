@@ -1,0 +1,114 @@
+/* This Stylesheet Controls The Form And Part Of The Calendar Layout
+   !For Vacation Rentals Details Pages!
+*/
+
+/* All '#flight' related elements control the calendar */
+#flight, .active, #calroot {
+	-moz-border-radius:4px;
+}
+
+#flight {
+	font-family:sans-serif;
+	background:#333 url(images/h80.png);
+	height:56px;
+	padding:12px 0 12px 30px;
+	color:#ddd;
+	font-size:11px;
+	width:520px;
+	margin:0 auto;
+	-moz-box-shadow:0 0 10px #666;
+	-webkit-box-shadow:0 0 10px #666;
+}
+
+#flight label {
+	float:left;
+	width:215px;
+	display:block;
+	padding:6px;
+	border:1px solid transparent;
+	margin-right:30px;
+}
+
+#flight .active {
+	background-color:#fff;
+	color:#333;
+	border:1px solid #ccc;
+	border-bottom:0;
+}
+
+.active input {
+	color:#333;
+	text-shadow:none;
+}
+
+/* date input */
+.date {
+	float:left;
+	display:block;
+	border:0;
+	background-color:transparent;
+	font-size:18px;
+	color:#fff;
+	text-shadow:0 0 1px #000;
+	width:200px;
+	cursor:pointer;
+        margin-top:3px;
+}
+
+/* date input trigger element */
+.caltrigger {
+	display:block;
+	width:30px;
+	height:32px;
+	float:left;
+	background:url(images/icon.jpg) no-repeat 0 0;
+	margin-top:-8px;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+}
+
+.active .caltrigger {
+	background-position: 0 -32px; }
+
+/* Controls The Left Calendar Icon */
+#left_calendar_input_div {
+      width:205px;
+      height:32px;
+      background-image:url(http://static.flowplayer.org/tools/demos/dateinput/css/icon.jpg);
+      background-position:top right;
+      background-repeat:no-repeat;
+      float:left;
+}
+
+/* Controls The Right Calendar Icon */
+#right_calendar_input_div {
+      width:205px;
+      height:32px;
+      background-image:url(http://static.flowplayer.org/tools/demos/dateinput/css/icon.jpg);
+      background-position:top right;
+      background-repeat:no-repeat;
+      float:left;
+      margin-left:65px;
+}
+
+.calendar_input_div_p {
+      margin:0px;
+      padding:0px;
+      margin-toP:-8px;
+      font-family: sans-serif;
+      font-size: 11px;
+      color: #DDD;
+      text-align:center;
+}
+
+/* Table Wrapper Around Actual Form Fields (Not Calendar) */
+.form_table {
+    width:220px;
+    margin-top:74px;
+}
+
+/* Controls The '.Success' division which contains the message shown via ajax after form has been succesfully submitted and sent out */
+.success {
+    display: none;
+    font-size:15px;
+}

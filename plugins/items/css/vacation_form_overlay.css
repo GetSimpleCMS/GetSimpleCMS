@@ -1,0 +1,32 @@
+    #calroot {
+         z-index:10000
+    }
+    #custom {
+		background-image:url(http://static.flowplayer.org/img/commerce/box-512.png);
+		width:512px;
+		height:531px;
+		padding:0px;
+	}
+	#custom div.close {
+		right:-15px;
+		top:-10px;
+	}
+	.overlay_div {
+		background-image:url(http://static.flowplayer.org/img/overlay/petrol.png);
+		color:#fff;
+	}
+	#apple {
+		background-image:url(http://static.flowplayer.org/img/overlay/apple.png);
+		color:#fff;
+		padding:50px 70px;
+	}
+    #ui-datepicker-div {
+      z-index:10000
+    }
+
+    .overlay_div h1{
+        margin:0px;
+        color:white;
+        width:90%
+    }
+

@@ -1,0 +1,1 @@
+<input name="[[name]]" type="text" class="[[class]]" id="[[id]]" value="[[value]]"[[style]]/>

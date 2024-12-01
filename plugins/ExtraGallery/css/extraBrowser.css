@@ -1,0 +1,245 @@
+#extraBrowser button,
+#extraBrowser [type="button"]{
+	font-family: inherit; /* for FF */
+}
+#extraBrowser button::-moz-focus-inner,
+#extraBrowser [type="button"]::-moz-focus-inner,
+#extraBrowser input::-moz-focus-inner{
+    border:0;
+    padding:0;
+}
+
+#extraBrowser,
+#extraBrowser *{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box; 
+    box-sizing: border-box; 
+}
+
+
+#extraBrowser{
+	display:none;
+	position: fixed;
+	z-index: 9900;
+	background-color: #FFFFFF;
+	border: 1px solid black; 
+	box-shadow:10px 10px 20px #000000;
+	-moz-box-shadow:10px 10px 20px #000000;
+	-webkit-box-shadow:10px 10px 20px #000000;
+}
+
+#extraBrowser .content{
+	position: absolute;
+ 	top:110px; 
+ 	bottom:80px; 
+	right: 20px;
+	left: 20px;
+	overflow: auto;
+}
+
+#extraBrowser .content .busy-indicator{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -21px;
+	margin-top: -5px;
+}
+
+#extraBrowser .content .message{
+	position: absolute;
+	top: 30px;
+	width: 100%;
+	text-align: center;
+	font-size: 16px;
+}
+
+#extraBrowser .content ul{
+	margin: 0; /* reset */
+	list-style-type: none;
+/* 	margin: 0 auto; */
+}
+
+#extraBrowser .content ul li{
+	position: relative;
+	border: 6px solid #FFFFFF;
+	border-bottom-width: 6px;
+	border-top: none;
+	border-left: none;
+	display: inline-block;
+	padding: 6px;
+	background-color: #ECECEC;
+	width: 198px;
+	
+	-webkit-transition: all 0.2s;
+    -moz-transition: all 0.2s;
+    -ms-transition: all 0.2s;
+    -o-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+#extraBrowser .content ul li .selected-icon{
+	visibility: hidden;
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	width: 20px;
+	height: 20px;
+	background-image: url('../img/selected.png');
+    
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    -o-transition: none;
+    transition: all 0.2s;
+}
+
+#extraBrowser .content ul li.folder{
+	cursor: pointer;
+}
+
+#extraBrowser .content ul li:hover{
+	background-color: #FFFFD5;
+}
+
+#extraBrowser .content ul li.selected .selected-icon{
+	visibility: visible;
+}
+
+#extraBrowser .content ul li.selected{
+	background-color: #FFE0D7;
+}
+
+#extraBrowser .content ul li .img{
+	width: 180px;
+	height: 120px;
+	line-height: 120px;
+	text-align: center;
+	margin-bottom: 3px;
+}
+
+#extraBrowser .content ul li .img img{
+	vertical-align: middle;
+}
+
+#extraBrowser .content ul li .details,
+#extraBrowser .content ul li .filename{
+	font-size: 11px;
+	width: 100%;
+	text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#extraBrowser .content ul li .details{
+	color: #737373;
+}
+
+#extraBrowser .bar{
+	position: absolute;
+	right: 0;
+	left: 0;
+}
+
+
+#extraBrowser .bar.top {
+    top: 0;
+}
+
+#extraBrowser .bar.top h3{
+	display: inline-block;
+	margin: 0;
+	margin-left: 20px;
+	line-height: 55px;
+}
+
+#extraBrowser .bar.top .path{
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#extraBrowser .bar.top .path .container{
+	display:inline-block;
+}
+
+#extraBrowser .bar.top .path .h5{
+    margin: 0;
+} 
+
+
+#extraBrowser .bar.bottom{
+    height: 60px;
+	bottom: 0;
+	border-top: 1px solid #E2E2E2;
+}
+
+#extraBrowser .bar.bottom .selection{
+	margin-left: 20px;
+	line-height: 60px;
+}
+
+#extraBrowser .bar.bottom .selection span{
+	font-weight: bold;
+}
+
+#extraBrowser .bar.bottom .selection button{
+	margin-left: 20px;
+}
+
+#extraBrowser button{
+    display: inline-block;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+    
+    color: #FFF;
+    border: 1px solid #888888;
+    background-color: #999999;
+    font-size: 11px;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.196);
+    line-height: 18px;
+    padding: 1px 6px; 
+    
+    -webkit-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    -ms-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    transition: all 0.4s;
+    
+    box-shadow: rgba(0,0,0, 0.2) 0px 0px 3px;
+    -moz-box-shadow: rgba(0,0,0, 0.2) 0px 0px 3px;
+    -webkit-box-shadow: rgba(0,0,0, 0.2) 0px 0px 3px;
+
+}
+
+#extraBrowser button:hover{
+    background-color: #D94136;
+    color: #FFFFFF;
+}
+
+#extraBrowser .buttons{
+	position: absolute;
+	bottom: 0;
+	right: 20px;
+	line-height: 60px;
+}
+ 
+#extraBrowser button[disabled],
+#extraBrowser button:disabled{
+	opacity: 0.5;
+}
+
+#extraBrowser button[disabled]:hover,
+#extraBrowser button:disabled:hover{
+	cursor: auto;
+    border: 1px solid #888888;
+    background-color: #999999;
+} 
+
+ 
+
+
+#extraBrowser .buttons button:first-child{
+    margin-right: 10px;
+}

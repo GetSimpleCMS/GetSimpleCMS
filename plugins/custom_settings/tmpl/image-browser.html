@@ -1,0 +1,25 @@
+<div id="image-browser" data-bind="css: {hidden: !active() }" class="hidden">
+  <div class="h5 clearfix crumbs">/ 
+    {{ #foreach: folderPath }}
+    <a href="javascript:void(0)" data-bind="click: $component.setFolder">{{ $data }}</a> / 
+    {{ /endforeach }}
+  </div>
+  <ul data-bind="template: { foreach: activeDir().children, name: function(item) { return 'ib-' + (item.folder ? 'folder' : 'img'); }}">
+  </ul>
+  <div id="image-browser-cmd">
+    <span><strong style="margin-right: 10px;">{{ 'input_image' | i18n }}:</strong>{{ activeImgN }}</span>
+    <button type="button" class="button" data-bind="click: set, attr: { disabled: !activeImg() }">{{ 'OK' | i18n }}</button>
+    <button type="button" class="button" data-bind="click: dispose">{{ 'CANCEL' | i18n }}</button>
+  </div>
+  <script type="text/template" id="ib-folder">
+    <li class="image-browser-folder" data-bind="click: $component.setFolder">
+      <i class="fa fa-folder"></i>
+      <span>{{ folder }}</span>
+    </li>
+  </script>
+  <script type="text/template" id="ib-img">
+    <li class="image-browser-image" data-bind="click: $parent.selectImg, event: {mouseout: $parent.resetImgName, mouseover: $parent.setImgName }, css: { 'active': $parent.isActiveImg($data) }">
+      <img src="{{ path }}">
+    </li>
+  </script>
+</div>

@@ -1,0 +1,18 @@
+<li>
+  <h3>{{ 'label_edit_tabs' | i18n }}</h3>
+</li>
+<li>
+  <span class="cs-toolbar">
+    <button disabled="{{ disable.add }}"  title="{{ 'tab_add' | i18n }}"  data-bind="click: insertBefore"><i class="fa fa-plus"></i></button>
+    <button disabled="{{ disable.del }}"  title="{{ 'tab_del' | i18n }}"  data-bind="click: remove">      <i class="fa fa-close"></i></button>
+    <button disabled="{{ disable.up }}"   title="{{ 'tab_up'  | i18n }}"  data-bind="click: moveUp">      <i class="fa fa-arrow-up"></i></button>
+    <button disabled="{{ disable.down }}" title="{{ 'tab_down'| i18n }}"  data-bind="click: moveDown">    <i class="fa fa-arrow-down"></i></button>
+    <button disabled="{{ disable.del }}"  title="{{ 'tab_prop'| i18n }}"  data-bind="click: toggleProp">  <i class="fa fa-tag fa-rotate-180"></i></button>
+  </span>
+</li>
+{{ #foreach: items }}
+<li class="{{ $parent.tabClass($index) }}">
+  <a href="{{ $parent.tabHash($data) }}" data-bind="click: $parent.select" tabindex="-1">&nbsp;</a>
+  <input type="text" value="{{ data[$parent.activeProp()] }}" data-bind="event: {focus: $parent.select}">
+</li>
+{{ /foreach }}

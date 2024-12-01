@@ -1,0 +1,2 @@
+<?xml version="1.0"?>
+<channel><item><name>_routes</name><id>0</id><maxrecords>0</maxrecords><field type="int" tableview="1" cacheindex="1" description="id Field" label="">id</field><field type="text" tableview="" cacheindex="" description="" label="">route</field><field type="text" tableview="" cacheindex="" description="" label="">rewrite</field></item></channel>

@@ -1,0 +1,540 @@
+/* Prevent text selection while mouse dragging.
+   (See: http://blog.herdhound.com/2012/02/prevent-text-selection-during-mousemove.html) */
+.unselectable * {
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-o-user-select: none;
+user-select: none;
+}
+
+
+/* Meltdown Wrap
+=======================================================================*/
+
+.meltdown_wrap {
+	position: relative;
+	margin-bottom: 10px;
+	padding: 0 5px;
+	background: #c8c8c8;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+/* Allow the margins to collapse with the other childrens of .meltdown_wrap: */
+.meltdown_topmargin {
+	margin-bottom: 5px;
+}
+.meltdown_bottommargin {
+	margin-top: 5px;
+}
+
+/* Meltdown Font Icons
+=======================================================================*/
+
+@font-face {
+	font-family: 'meltdown';
+	src:url('../fonts/meltdown.eot');
+	src:url('../fonts/meltdown.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/meltdown.woff') format('woff'),
+		url('../fonts/meltdown.ttf') format('truetype'),
+		url('../fonts/meltdown.svg#meltdown') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* Use the following CSS code if you want to use data attributes for inserting your icons */
+[data-icon]:before {
+	font-family: 'meltdown';
+	content: attr(data-icon);
+	speak: none;
+	font-weight: normal;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Use the following CSS code if you want to have a class per icon */
+/*
+Instead of a list of all class selectors,
+you can use the generic selector below, but it's slower:
+[class*="meltdown-icon-"]:before {
+*/
+.meltdown-icon-eye-open:before, .meltdown-icon-eye-close:before, .meltdown-icon-table:before, .meltdown-icon-bold:before, .meltdown-icon-italic:before, .meltdown-icon-list-ol:before, .meltdown-icon-list-ul:before, .meltdown-icon-link:before, .meltdown-icon-code:before, .meltdown-icon-picture:before, .meltdown-icon-quote:before, .meltdown-icon-help:before, .meltdown-icon-code-block:before, .meltdown-icon-return:before, .meltdown-icon-footnote:before, .meltdown-icon-hr:before, .meltdown-icon-caret-down:before, .meltdown-icon-add-to-list:before {
+	font-family: 'meltdown';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+}
+.meltdown-icon-eye-open:before {
+	content: "\73";
+}
+.meltdown-icon-eye-close:before {
+	content: "\68";
+}
+.meltdown-icon-table:before {
+	content: "\74";
+}
+.meltdown-icon-bold:before {
+	content: "\62";
+}
+.meltdown-icon-italic:before {
+	content: "\69";
+}
+.meltdown-icon-list-ol:before {
+	content: "\31";
+}
+.meltdown-icon-list-ul:before {
+	content: "\2a";
+}
+.meltdown-icon-link:before {
+	content: "\6c";
+}
+.meltdown-icon-code:before {
+	content: "\3c";
+}
+.meltdown-icon-picture:before {
+	content: "\70";
+}
+.meltdown-icon-quote:before {
+	content: "\22";
+}
+.meltdown-icon-help:before {
+	content: "\3f";
+}
+.meltdown-icon-code-block:before {
+	content: "\5b";
+}
+.meltdown-icon-return:before {
+	content: "\72";
+}
+.meltdown-icon-footnote:before {
+	content: "\66";
+}
+.meltdown-icon-hr:before {
+	content: "\5f";
+}
+.meltdown-icon-caret-down:before {
+	content: "\76";
+}
+.meltdown-icon-add-to-list:before {
+	content: "\2b";
+}
+
+
+/* Meltdown Editor
+=======================================================================*/
+
+.meltdown_editor-wrap {
+}
+
+.meltdown_editor-deco {
+	border: 1px solid #a8a8a8;
+	padding: 5px;
+	background: #fff;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+.meltdown_editor-deco.focus {
+	border-color: #5c8cd0;
+}
+
+.meltdown_editor {
+	display: block;	/* Removes the bottom space. */
+	margin: 0;
+	border: 0;
+	width: 100%;
+	resize: vertical;
+	min-height: 15px;
+}
+
+.meltdown_editor {
+	outline: none;
+}
+
+
+/* Resize handle
+=======================================================================*/
+
+
+.sidebyside .meltdown_preview-wrap2 {
+	position: relative;
+	padding-left: 8px;
+}
+.meltdown_resizehandle {
+	text-align: center;
+	margin: -2px 0 -5px;
+	font-size: 12px;
+}
+.meltdown_resizehandle > span:before {
+	content: "•";
+	color: #686868;
+}
+
+.meltdown_resizehandle-horiz {
+	cursor: auto;
+}
+.meltdown_resizehandle-vert {
+	cursor: row-resize;
+}
+
+
+/* Meltdown Toolbar
+=======================================================================*/
+
+.meltdown_bar {
+	position: relative;
+	padding: 5px 0;
+	margin: 0 0 3px;
+	height: 24px;
+	border: 1px solid #a8a8a8;
+	background: #fff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #ffffff 0%,#e5e5e5 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+ul.meltdown_controls {
+	float: left;
+	width: 100%;
+	margin: 0 !important;
+	padding: 0 !important;
+	list-style: none;
+}
+li.meltdown_controlbutton {
+	position: relative;
+	float: left;
+	margin: 0 0 0 5px;
+	padding: 0;
+}
+.meltdown_controls li.meltdown_control-preview { float: right; margin-right: 5px; }
+li.meltdown_controlbutton > span {
+	float: left;
+	padding: 6px;
+	line-height: 1em;
+	height: 12px;
+	min-width: 12px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	color: #333;
+	font-weight: bold;
+	font-size: 12px;
+	cursor: pointer;
+}
+.meltdown_controls li.meltdown_controlsep > span {
+	min-width: 1px;
+	width: 1px;
+	background-color: #ccc;
+	padding-right: 0;
+	padding-left: 0;
+	cursor: auto;
+}
+li.meltdown_controlbutton:hover > span,
+li.meltdown_controlbutton:focus > span {
+	color: #06c;
+}
+.meltdown_controls li.meltdown_control-bold > span,
+.meltdown_controls li.meltdown_control-italics > span,
+.meltdown_controls li.meltdown_control-ul > span,
+.meltdown_controls li.meltdown_control-ol > span,
+.meltdown_controls li.meltdown_control-hr > span,
+.meltdown_controls li.meltdown_control-table > span,
+.meltdown_controls li.meltdown_control-preview > span,
+.meltdown_controls li.meltdown_control-link > span,
+.meltdown_controls li.meltdown_control-img > span,
+.meltdown_controls li.meltdown_control-blockquote > span,
+.meltdown_controls li.meltdown_control-codeblock > span,
+.meltdown_controls li.meltdown_control-code > span,
+.meltdown_controls li.meltdown_control-footnote > span,
+.meltdown_controls li.meltdown_controlgroup-kitchenSink > span {
+	height: 12px;
+	position: relative;
+	text-indent: -9000em;
+	width: 12px;
+}
+.meltdown_controls li.meltdown_control-bold > span:before,
+.meltdown_controls li.meltdown_control-italics > span:before,
+.meltdown_controls li.meltdown_control-ul > span:before,
+.meltdown_controls li.meltdown_control-ol > span:before,
+.meltdown_controls li.meltdown_control-hr > span:before,
+.meltdown_controls li.meltdown_control-table > span:before,
+.meltdown_controls li.meltdown_control-preview > span:before,
+.meltdown_controls li.meltdown_control-link > span:before,
+.meltdown_controls li.meltdown_control-img > span:before,
+.meltdown_controls li.meltdown_control-blockquote > span:before,
+.meltdown_controls li.meltdown_control-codeblock > span:before,
+.meltdown_controls li.meltdown_control-code > span:before,
+.meltdown_controls li.meltdown_control-footnote > span:before,
+.meltdown_controls li.meltdown_controlgroup-kitchenSink > span:before {
+	position: absolute;
+		left: 4px;
+		top: 4px;
+	font-family: 'meltdown';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 16px;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	text-indent: 0;
+}
+/* Resize and reposition Bold */
+.meltdown_controls li.meltdown_control-bold > span:before {
+	content: "\62";
+	font-size: 12px;
+	left: 7px;
+	top: 7px;
+}
+/* Resize and reposition Italics */
+.meltdown_controls li.meltdown_control-italics > span:before {
+	content: "\69";
+	font-size: 12px;
+	left: 8px;
+	top: 7px;
+}
+.meltdown_controls li.meltdown_control-ul > span:before {
+	content: "\2a";
+}
+.meltdown_controls li.meltdown_control-ol > span:before {
+	content: "\31";
+}
+.meltdown_controls li.meltdown_control-table > span:before {
+	content: "\74";
+}
+.meltdown_controls li.meltdown_control-preview > span:before {
+	content: "\73";
+}
+.meltdown_wrap.openpreview .meltdown_controls li.meltdown_control-preview > span:before {
+	content: "\68"; /* Toggle to Closed Eye */
+	color: #06c;
+}
+.meltdown_controls li.meltdown_controlgroup-kitchenSink > span:before {
+	content: "\2b";
+}
+.meltdown_controls li.meltdown_control-link > span:before {
+	content: "\6c";
+}
+.meltdown_controls li.meltdown_control-img > span:before {
+	content: "\70";
+}
+.meltdown_controls li.meltdown_control-blockquote > span:before {
+	content: "\22";
+}
+.meltdown_controls li.meltdown_control-codeblock > span:before {
+	content: "\5b";
+}
+.meltdown_controls li.meltdown_control-code > span:before {
+	content: "\3c";
+}
+.meltdown_controls li.meltdown_control-footnote > span:before {
+	content: "\66";
+}
+.meltdown_controls li.meltdown_control-hr > span:before {
+	content: "\5f";
+}
+
+li.meltdown_controlgroup ul {
+	position: absolute;
+		left: 0;
+		top: 24px;
+	margin: 0 !important;
+	padding: 5px !important;
+	min-width: 100%;
+	background: #fff;
+	border: 1px solid #a8a8a8;
+	list-style: none;
+	-webkit-box-shadow: 0 3px 10px rgba(0,0,0,.2);
+	-moz-box-shadow: 0 3px 10px rgba(0,0,0,.2);
+	box-shadow: 0 3px 10px rgba(0,0,0,.2);
+	-webkit-background-clip: padding-box;
+	-moz-background-clip: padding;
+	background-clip: padding-box;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+.meltdown_controls li.meltdown_controlgroup-kitchenSink > ul {
+	width: 120px;
+}
+li.meltdown_controlgroup-open > span {
+	color: #06c;
+}
+.meltdown_controls li.meltdown_controlgroup i.meltdown-icon-caret-down {
+	
+}
+li.meltdown_controlgroup li {
+	float: none;
+	margin: 0;
+}
+.meltdown_controls li.meltdown_controlgroup-kitchenSink li { float: left; margin-left: 5px; }
+li.meltdown_controlgroup li span { display: block; float: none; }
+
+.meltdown_controlbutton.disabled > span,
+li.meltdown_controlbutton.disabled:hover > span,
+li.meltdown_controlbutton.disabled:focus > span {
+	color: grey;
+	cursor: not-allowed;
+}
+
+.meltdown_controlbutton.overflowedControl {
+	display: none;
+}
+
+
+/* Meltdown Preview
+=======================================================================*/
+
+.meltdown_preview-wrap {
+	overflow: hidden;	/* Prevent resizeHandle's negative margins from adding extra pixels to the height. */
+}
+
+.meltdown_preview-header {
+	display: block;
+	padding: 2px 5px;
+	font-size: 11px;
+	font-weight: bold;
+	color: #666;
+	text-transform: uppercase;
+	text-align: center;
+	border: 1px solid #a8a8a8;
+	border-bottom-color: #ccc;
+	background: #eeeeee; /* Old browsers */
+	background: -moz-linear-gradient(top, #eeeeee 0%, #eeeeee 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eeeeee), color-stop(100%,#eeeeee)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #eeeeee 0%,#eeeeee 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #eeeeee 0%,#eeeeee 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #eeeeee 0%,#eeeeee 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #eeeeee 0%,#eeeeee 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 ); /* IE6-9 */
+	-webkit-border-top-left-radius: 3px;
+	-webkit-border-top-right-radius: 3px;
+	-moz-border-radius-topleft: 3px;
+	-moz-border-radius-topright: 3px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.meltdown_preview {
+	border: 1px solid #a8a8a8;
+	border-top: 0;
+	padding: 5px;
+	overflow: auto;
+	background: #fff;
+	-webkit-border-bottom-right-radius: 3px;
+	-webkit-border-bottom-left-radius: 3px;
+	-moz-border-radius-bottomright: 3px;
+	-moz-border-radius-bottomleft: 3px;
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+	resize: vertical;
+	min-height: 15px;
+}
+
+
+/* HeightsManaged
+=======================================================================*/
+
+.meltdown_wrap.heightsManaged {
+	resize: vertical;
+}
+
+.meltdown_wrap.heightsManaged .meltdown_editor {
+	resize: none;
+}
+
+.meltdown_wrap.heightsManaged .meltdown_preview {
+	resize: none;
+}
+
+
+/* Sidebyside
+=======================================================================*/
+
+.meltdown_wrap.sidebyside .meltdown_editor-wrap,
+.meltdown_wrap.sidebyside .meltdown_preview-wrap {
+	display: table-cell;
+	vertical-align: top;
+}
+
+.sidebyside .meltdown_resizehandle {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 10px;
+	margin: 0;
+}
+.sidebyside .meltdown_resizehandle > span {
+	position: absolute;
+	top: 50%;
+	left: 2px;
+	margin-top: -4px;
+}
+
+.sidebyside .meltdown_resizehandle-vert {
+	cursor: auto;
+}
+.sidebyside .meltdown_resizehandle-horiz {
+	cursor: col-resize;
+}
+
+
+/* Fullscreen
+=======================================================================*/
+
+.meltdown_wrap.fullscreen {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: auto !important;
+	height: auto !important;
+	margin: 0;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+	z-index: 1000;
+	resize: none;
+}
+
+
+/* element_resize_detection.js
+   Source: http://www.backalleycoder.com/2013/03/18/cross-browser-event-based-element-resize-detection/
+=======================================================================*/
+
+.resize-triggers {
+	visibility: hidden;
+}
+.resize-triggers, .resize-triggers > div, .contract-trigger:before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+.resize-triggers > div {
+  background: #eee;
+  overflow: auto;
+}
+.contract-trigger:before {
+  width: 200%;
+  height: 200%;
+}

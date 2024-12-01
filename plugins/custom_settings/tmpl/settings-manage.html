@@ -1,0 +1,3 @@
+<div data-bind="foreach: {data: items, afterRender: function() { $root.state.searchFilter.valueHasMutated(); }}">
+  {{ #template: template.manage /}}
+</div>

@@ -1,0 +1,168 @@
+/* Component containers
+----------------------------------*/
+.ui-widget { font-family: "Helvetica Neue", Arial,sans-serif; font-size: 1.3em; }
+.ui-widget .ui-widget { font-size: 1em; } /* RCD */
+/*RCD .ui-widget .ui-widget { font-size: 1em; }*/
+.ui-widget input, .ui-widget select, .ui-widget textarea { font-family: "Helvetica Neue", Arial,sans-serif; font-size: 1.1em; }
+.ui-widget-content { border: 1px solid #d2e4ea; background-color: #ffffff; color: #222222; }
+/*RCD .ui-widget-content a { color: #222222; }*/
+.ui-widget-header { border: 1px solid #d2e4ea; background-color: #d2e4ea; color: #2f4248; font-weight: bold; }
+.ui-widget-header a { color: #2f4248; }
+/****************************************************************************************
+ * Theme specific Inputfield module overrides
+ *
+ */
+
+.wrapper #maincontent ul, .wrapper #maincontent ol {
+	margin: 0 0 20px 0px;
+}
+
+    .fields,
+    .fields li,
+    .fields input,
+    .fields select,
+    .fields textarea {
+        font-size: 12px; 
+    }
+
+    .fields .ui-widget-content {
+        padding: 1em; 
+    }
+
+    .fields .ui-widget-header {
+        padding: 0.25em 0 0.25em 1em; 
+    }
+
+        .fields .fieldstateToggle span.ui-icon {
+            float: right; 
+            padding-right: 0.25em; 
+        }
+
+    .fields li > .ui-widget-content > p {
+        margin-top: 0; 
+    }
+
+    .fields > li {
+        display: block;
+        margin: 1.5em 0;
+        clear: both; 
+    }
+        .fields > li.fieldsubmit,
+        .fields > li.InputfieldWrapper,
+        .fields > li.InputfieldHidden {
+        }
+
+    .fields > li .notes {
+        margin-bottom: 0; 
+    }
+
+    .fields .InputfieldHidden {
+        display: none; 
+    }
+
+    .fields .Inputfieldsubmit,
+    .fields .InputfieldButton {
+        clear: none; 
+    }
+        .fields .Inputfieldsubmit .ui-widget-content,
+        .fields .InputfieldButton .ui-widget-content {
+            padding: 0; 
+            background: none; 
+            border: none; 
+        }
+
+        .fields .Inputfieldsubmit .ui-widget-header,
+        .fields .InputfieldButton .ui-widget-header {
+            display: none; 
+        }
+
+        .ui-button {
+            font-size: 1em; 
+            margin: 0 1em 0 0; 
+            padding: 3px 9px; 
+            cursor: pointer; 
+        }
+
+        a .ui-button {
+            display: block;
+        }
+
+    .fields .InputfieldCheckboxes input,
+    .fields .InputfieldRadios input {
+        margin-right: 0.25em; 
+    }
+        .fields .InputfieldCheckboxes li,
+        .fields .InputfieldRadios li {
+            margin: 0; 
+        }
+
+    .fields .InputfieldCheckbox {
+    }
+        .fields .InputfieldCheckbox .notes {
+            margin-top: 1em; 
+        }
+
+
+    .fields label {
+        display: block;
+    }
+
+    .fields textarea, 
+    .InputfieldMaxWidth {
+        width: 99%; 
+    }
+
+    .fields .fieldstateToggle {
+        cursor: pointer;
+    }
+
+        .fields > .fieldstateCollapsed {
+        }
+
+            .fields > .fieldstateCollapsed .ui-widget-header {
+                opacity: 0.6; 
+            }
+            .fields > .fieldstateCollapsed .ui-widget-header:hover {
+                opacity: 1.0; 
+            }
+
+            .fields > .fieldstateCollapsed .ui-widget-content {
+                display: none;
+            }
+
+            .fields > .fieldstateCollapsed .fieldstateToggle {
+            }
+
+    .InputfieldPageNameURL {
+        font-family: Monaco, Courier, Monaco, monospace; 
+    }
+.formerror{
+	border-radius: 2px;
+	background: #FFFBCC;
+	background: -moz-linear-gradient(top, #FFFBCC 0%, #FFFBC1 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFBCC), color-stop(100%,#FFFBC1));
+	line-height: 22px;
+	padding: 0;
+	margin-bottom: 20px;
+	color: #900;
+	border-color: #C00;
+}
+
+.ui-button .ui-icon.mtrx_dbadd {
+    background-image: url('../images/add.png');
+    width: 16;
+    height: 16; 
+}
+
+#pager{
+  margin-top:10px;
+}
+
+.ui-widget {
+    font-size: .9em !important;
+}
+
+.ui-button-text {
+  padding-bottom:0em !important;
+  padding-top:0em !important;
+}

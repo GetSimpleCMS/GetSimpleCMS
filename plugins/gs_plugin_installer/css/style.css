@@ -1,0 +1,48 @@
+#plugin_table .description {
+    display: block;
+    min-height: 45px; /* so when we are hovering the description wont shrink */
+    max-height: 45px;
+    overflow-y: hidden;
+    transition: max-height .8s;
+}
+
+/* When hovering the table row, show the entire description */
+#plugin_table tr td .description:hover {
+    max-height: 5000px; /* Workaround for transition issues with height: auto; */
+    transition: max-height .8s;
+}
+
+.edit-nav button {
+    line-height: 14px !important;
+    background-color: #182227;
+    color: #ccc;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, .2);
+    transition: all .10s ease-in-out;
+    -webkit-transition: all .10s ease-in-out;
+    -moz-transition: all .10s ease-in-out;
+    -o-transition: all .10s ease-in-out;
+    font-size: 10px;
+    text-transform: uppercase;
+    display: block;
+    padding: 3px 10px;
+    float: right;
+    margin: 0 0 0 5px;
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    background-repeat: no-repeat;
+    background-position: 94% center;
+    border: 0;
+}
+
+.edit-nav button:hover {
+    cursor: pointer;
+    background-color: #CF3805;
+    color: #FFF;
+    font-weight: bold;
+    text-decoration: none;
+    line-height: 14px !important;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, .2);
+}

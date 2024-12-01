@@ -1,0 +1,1 @@
+<textarea name="[[name]]" class="[[class]]" id="[[id]]" >[[value]]</textarea>

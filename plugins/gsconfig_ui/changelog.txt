@@ -1,0 +1,24 @@
+27/05/2015 - V. 0.2.1
+
+Bugfixes:
+	- Fixed potential problems with SALT's & admin dir getting mixed up
+	- Fixed absence of redirect when changing admin dir name
+
+25/05/2015 - V. 0.2
+
+New: 
+  - Added GS constants to descriptions
+  - Added language fr_FR
+  - Added license, readme, changelog
+Changes:
+  - Moved Custom toolbar & salt generators inline
+Bugfixes: 
+  - Fixed I18n merging (now multilang capable)
+  - Fixed errors with custom toolbar generator toggle icon
+  - Fixed custom toolbar generator styling with GSSTYLEWIDE
+  - Fixed potential issues with missing file_exists checks
+  - Fixed broken link in plugin description
+
+20/05/2015  - V. 0.1 (Alpha)
+
+Initial launch

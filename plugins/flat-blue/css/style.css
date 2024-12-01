@@ -1,0 +1,277 @@
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic);
+ 
+/*
+Original Plugin Name: Modern UI Admin CSS for GetSimple
+Original Description: CSS used with the Custom Admin CSS plugin for GetSimple
+             to make the admin section nicer to look at.
+Original Version: 1.2.6
+Original Author: Marcel
+Original Aurhor URI: turi.co
+
+########################
+Modified by: PhireWare
+Version 1.0
+########################
+
+
+*/
+ 
+/*-----------------------------------------------------------------------------
+  1/3. Change the three following colors using same value to re-theme
+-----------------------------------------------------------------------------*/
+h3.floated, #index h3, #resetpassword h3,
+.wrapper a:link, .wrapper a:visited, #footer .footer-left a:hover {
+  color: #367fa9;
+}
+.header, .edit-nav a:link, .edit-nav a:visited, input.submit,
+input.submit:focus, input.submit:hover, .uploadifyProgressBar,
+body#index, body#resetpassword {
+  background-color: #367fa9;
+}
+input.text:focus, select.text:focus, textarea.text:focus {
+  border-color: #367fa9;
+}
+ 
+/*------------------------------------------------------------------------------
+  2/3. Toggle these two floats if you want to swap the side bar position
+------------------------------------------------------------------------------*/
+#sidebar { float: left; }
+#maincontent, .updated, .error, .notify { float: left; /* left: 200px; */}
+ 
+ 
+/*------------------------------------------------------------------------------
+  3/3. Finally, for custom admin CSS to work on the login page,
+  add the following line to "plugins/custom-admin-css.php" after line 25:
+
+    add_action('index-login', 'gscacss_showcss');
+
+  All done, enjoy!
+------------------------------------------------------------------------------*/
+ 
+/* General Elements: */
+* { text-shadow:none !important; }
+html { height:100%; overflow:auto; }
+body { color:#222; background: #ecf0f5; font:400 14px/1.4 'Source Sans Pro', 'Helvetica Nue', sans-serif;}
+h1, h2, h3, h3.floated { color:#999; font:300 32px/1.2 'Source Sans Pro', 'Helvetica Nue', sans-serif; }
+h3 em { font-style:normal; border-bottom:1px dotted #ccc; }
+h5, div.h5 { background:#f8f8f8; border:1px solid #d4d4d4; }
+li { margin:0 0 .25em; }
+pre, code { color:green; }
+a, input.submit { -o-transition:.2s; -moz-transition:.2s; -webkit-transition:.2s; transition:.2s; }
+ 
+/* Form Elements: */
+form label { color:#666; font:400 14px/1.2 'Source Sans Pro', 'Helvetica Nue', sans-serif; }
+form input.text, form select.text, form textarea { font:400 13px/1.2 'Source Sans Pro', 'Helvetica Nue', sans-serif; }
+form input.title { font-size:18px; }
+input.submit, input.submit:focus,
+input.submit:hover, input.submit:active { color:#fff !important; border:0; height:30px; min-width:6em; outline:0; border-radius:0; box-shadow:none; padding:3px 12px; background-image:none; font:400 14px/1.2 'Roboto', 'segoe ui', sans-serif; }
+input.submit:focus, input.submit:hover { cursor:default; opacity:.9; }
+input.submit:active { opacity:1; background:#212121 !important; }
+ 
+.wrapper { /* position:relative; */ width: auto;}
+.wrapper p { /* margin:0 0 1em; */ line-height:inherit; }
+.wrapper table { width:100%; font-size:14px; }
+.wrapper table th { color:#888; font-weight:400 !important; }
+.wrapper table td span.OKmsg { color:#090; }
+.wrapper a:link, .wrapper a:visited { font-weight:400; }
+.wrapper a:hover, .wrapper a:active { color:#212121; text-decoration:none; }
+ 
+.header { margin:0; border-top:0; filter:none; background-image:none; position: fixed; height: 61px; top: 0; left: 0; right: 0; z-index: 1000;}
+.header .wrapper { height:60px; margin-left: 15px; margin-right: 15px;}
+.header h1 { top:12px; color:#fff; width: 180px; font: 400 20px/1.4 'Source Sans Pro', 'Helvetica Nue', sans-serif; }
+.header h1 a { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.header h1 a:link, .header h1 a:visited { color:#fff; display: block; /* margin-left: 15px; */}
+.header h1 a:active { top:1px; position:relative; }
+.header h1 a:after { display: block; color:rgba(255,255,255,.5); content: "GetSimple CMS"; font:400 11px/1.4 'Source Sans Pro', 'Helvetica Nue', sans-serif; }
+.header h1:hover a:after { content: "Visit site \2192"; }
+ 
+#sidebar .snav:before {border-top: solid 1px #fff;}
+
+.wrapper .nav { right:0; left: 185px; width:auto; padding-top:30px; font-size:16px; background-color: #367fa9;}
+.wrapper .nav li { margin:0; }
+.wrapper .nav li a { padding:5px 15px; border-radius:0; }
+.wrapper .nav li a:link, .wrapper .nav li a:visited { background:transparent; color:rgba(255,255,255,.75); }
+.wrapper .nav li a:hover, .wrapper .nav li a:focus, .wrapper .nav li a:active { color:#fff; background:rgba(0,0,0,.15); }
+.wrapper .nav li.rightnav { margin:0 1px 0 0; }
+.wrapper .nav .rightnav a { bottom:-9px; position:relative; text-transform:uppercase; }
+.wrapper .nav .rightnav a:link, .wrapper .nav .rightnav a:visited { border-radius:0 !important; background:transparent; }
+.wrapper .nav .rightnav a:hover, .wrapper .nav .rightnav a:focus { background:rgba(0,0,0,.2); }
+.nav li .info,
+.nav li .warning { border:0; width:14px; height:14px; cursor:default; overflow:hidden; background:#fc3; border-radius:100%; margin:1.75em 0 0 -1.25em; }
+.wrapper #pill { z-index:20; /* margin-right: 15px; */ /* position: absolute; */ /* left: -15px; */ /* top: 61px; */ /* width: 200px; */}
+.wrapper #pill li a:link, .wrapper #pill li a:visited { color:#fff; background:rgba(0,0,0,.2); }
+.wrapper #pill li a:hover, .wrapper #pill li a:focus, .wrapper #pill li a:active { background:rgba(0,0,0,.5); }
+.wrapper #pill li.leftnav a, .wrapper .nav li.rightnav a.first { border-left-color:transparent; }
+.wrapper #pill li.leftnav a:hover { background:#c33; }
+/* The way the current tab in the primary nav is selected is pretty ridiculous. Oh well... */
+#edit .wrapper .nav li a.pages, #pages .wrapper .nav li a.pages, #menu-manager .wrapper .nav li a.pages, #plugins .wrapper .nav li a.plugins,
+#settings .wrapper .nav li a.settings, #components .wrapper .nav li a.theme, #theme .wrapper .nav li a.theme, #sitemap .wrapper .nav li a.theme,
+#theme-edit .wrapper .nav li a.theme, #navigation .wrapper .nav li a.theme, #upload .wrapper .nav li a.files, #image .wrapper .nav li a.files,
+#backups .wrapper .nav li a.backups, #support .wrapper .nav li a.support, #log .wrapper .nav li a.support, #health-check .wrapper .nav li a.support,
+#backup-edit .wrapper .nav li a.backups, #archive .wrapper .nav li a.backups, #load .wrapper .pages li a.pages, #load .wrapper .plugins li a.plugins,
+#load .wrapper .settings li a.settings, #load .wrapper .theme li a.theme, #load .wrapper .files li a.files, #load .wrapper .backups li a.backups,
+#load .wrapper .support li a.support, #load .wrapper .nav li a.current, #loadtab .wrapper .nav li a.current { color:#222; box-shadow:none; background: #ecf0f5; font-weight:400 !important; }
+ 
+/* I18N Gallery: Clear the styles set for the following selector in "plugins/i18n_gallery/header.php" */
+#loadtab .wrapper .nav li a.i18n_gallery_selected { color:#222; background:#fff; -moz-box-shadow:none; font-weight:400 !important; }
+ 
+#maincontent { width: auto; height: auto; position: absolute; right: 0px; left: 200px; bottom: 46px; top: 61px; overflow: auto;}
+#maincontent .main, #themecontent { box-shadow:none; min-height:20em; height: auto; position: relative; /* left: 200px; */ right: 0; bottom: 46px; top: 0; padding: 15px 15px; margin: 15px; border: 1px solid #eee; border-top:0; border-radius: 3px;   background: #ffffff;   border-top: 3px solid #3c8dbc;   margin-bottom: 20px;   /* width: 100%; */   box-shadow: 0 1px 1px rgba(0,0,0,0.1);}
+#maincontent .main pre { color:green; margin:1em 0; padding:0; }
+ 
+.edit-nav a { font-size:10px !important; border-radius:0; }
+.edit-nav a:link, .edit-nav a:visited { color:#fff !important; padding:.35em .65em; line-height:1 !important; }
+.edit-nav a:hover, #sidebar .edit-nav a:hover { opacity:.8; }
+.edit-nav a.current, .edit-nav a:active { opacity:1; background-color:#212121 !important; }
+.edit-nav em { font-style:normal; border-bottom:1px dotted #999; }
+ 
+#filter-search { text-align:center; }
+.updated, .error, .notify { width: 165px; text-align:center; /* background:#fff; */ margin:-1px 0 1px; border:1px solid #d4d4d4; /* border: 1px; */ /* border-bottom:0; */ padding-top: 10px; padding-bottom: 10px; margin-bottom: 15px; position: fixed; right: 28px; left: 5px; z-index: 1000; bottom: 0px; /* -webkit-transition: all 2s ease-in-out; */   -moz-transition: all 2s ease-in-out;   -ms-transition: all 2s ease-in-out;   -o-transition: all 2s ease-in-out;   /* transition: all 2s ease-in-out; */ /* opacity: 0; */}
+.updated p, .error p, .notify p { /* padding:.5em; */ /* margin:10px 30px 0; */ /* background:#ffe; */ /* border:1px solid #e6db55; */ }
+.error p { color:#900; border-color:#c00; background:#f9dfdd; }
+.notify_ok p { color: #090; border-color: #0c0; background: #f0ffed; }
+.updated { color:#222; /* position: fixed; */}
+.wrapper table.highlight tr:hover { background-color:#ffe !important; }
+ 
+#sidebar { width:200px; height: auto; margin:-1px 0 0; padding: 0; background: #222d32; position: fixed; bottom: 0; top: 62px !important;}
+#sidebar .snav { font-size:13px; padding-top: 15px;}
+#sidebar .snav li { margin:0; }
+#sidebar .snav li a { padding:.5em 1em; border-radius:0; font-weight:400; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+#sidebar .snav li a:link, #sidebar .snav li a:visited { margin:0; color: #B8C7CF; background:none; -webkit-transition:background-color .2s; transition:background-color .2s; padding: 12px 5px 12px 15px; border-left: 3px solid transparent;}
+#sidebar .snav li a:hover, #sidebar .snav li a:focus { margin:0; background: #1e282c; border-left-color: #3c8dbc; color: #fff;}
+#sidebar .snav li a.current, #sidebar .snav li a.current:hover { color: #fff; border-radius:0; padding-left:15px; background: #1e282c !important; border-left-color: #3c8dbc;}
+ 
+#sidebar #js_submit_line { margin:0; text-align:center; padding:0 0 10px; }
+#pagechangednotify, #autosavenotify { padding:1em 0; color:#666; font-size:11px; text-align:center; }
+#pagechangednotify { color:#c33; }
+ 
+#sidebar .snav li.upload { border-radius:0; margin-left:0; background:none;}
+#uploadify { height:30px !important; }
+.uploadifyButton { color: #fff; border-radius:0; font-weight:400; font-size:13px; background:none; padding: 0px 0px 0px 0px;}
+.uploadify:hover .uploadifyButton { color:#111; background:#e7e7e7; }
+.uploadifyQueue { background:#444; }
+.uploadifyQueueItem { width:170px; }
+.uploadifyError { color:#c33 !important; }
+.uploadifyError .uploadifyProgressBar { background-color:#c33 !important; }
+#sb_filesize { padding:0 15px; }
+ 
+/* I18N Custom Fields: Tidy checkboxes, align them inline left */
+#metadata_window input[type=checkbox] { width:auto; float:left; top:.25em; position:relative; margin-right:.5em !important; }
+
+#footer { color:#f6f6f6; position: fixed; margin:0; border-top:1px solid #d4d4d4; z-index: 1200; background: #fff;   padding: 15px;   color: #333;   border-top: 1px solid #eee; right: 0; left: 200px; width: auto; bottom: 0px; font-size: 12px; height: 16px;}
+#footer p { margin:0; }
+#footer .footer-left { opacity:.5; width:760px; float:right; text-align: right; }
+#footer a {  text-decoration:none; }
+#footer a:link, #footer a:visited { color:#999; }
+#footer .gslogo, #footer a[rel=facybox_s] { display:none; }
+#footer .footer-left p:last-child { top: 15px; left:15px; color: #333; width:13.5em; height:1.4em; overflow:hidden; text-align:left; position:absolute; }
+#footer .footer-left, .tree-tgl { -webkit-transition:opacity .5s ease-in .5s; transition:opacity .5s ease-in .5s; }
+#footer:hover .footer-left, .tree-tgl:hover { opacity:1; -webkit-transition:opacity .5s ease-out .25s; transition:opacity .5s ease-out .25s; }
+ 
+/* Login/Password Reset pages */
+#index *, #resetpassword * { box-sizing:border-box; left: 0px; overflow: visible;}
+#index h3, #resetpassword h3 { text-align:center; font:300 24px/1.2 'Source Sans Pro', 'Helvetica Nue', sans-serif; }
+#index h3:after, #resetpassword h3:after { display: block; color:rgba(0,0,0,.4); margin-top: .5em; content: "GetSimple CMS"; font:400 14px/1.4 'Source Sans Pro', 'Helvetica Nue', sans-serif; }
+#index .wrapper a:link, #index .wrapper a:visited,
+#resetpassword .wrapper a:link, #resetpassword .wrapper a:visited { color:#888; }
+#index form input.text, #resetpassword form input.text { width:100%; }
+#index .wrapper, #resetpassword .wrapper { width:auto; }
+#index .error, #resetpassword .updated { border:0; width:402px; float:none; background:none; }
+#index #maincontent .main, #resetpassword #maincontent .main { border:0; width:320px; text-align:center; border-radius:0; background:#f5f5f5 none; box-shadow:rgba(0, 0, 0, 0.2) 0 5px 10px 2px; }
+#index #maincontent form b, #resetpassword form b { color:#888; float:left; font-weight:400; }
+#index #footer, #resetpassword #footer { display:none; }
+/* A little excessive, oh well  */
+@-webkit-keyframes fadeInDown { 0%{opacity:0} 50%{opacity:0;-webkit-transform:translateY(-20px)} 100%{opacity:1;-webkit-transform:translateY(0)} }
+@keyframes fadeInDown { 0%{opacity:0} 50%{opacity:0;transform:translateY(-20px)} 100%{opacity:1;transform:translateY(0)} }
+#index #maincontent .main, #resetpassword #maincontent .main { -webkit-animation:fadeInDown 1s ease-out; animation:fadeInDown 1s ease-out; /* width: 100px; */ /* overflow: visible; */ padding: 25px;}
+ 
+/* Monokai styles for CodeMirror */
+#maincontent .CodeMirror pre { color:#fff; margin:0; }
+#maincontent .cm-s-default .CodeMirror-gutter-text pre {color: #75715e;}
+.cm-s-default {background: #272822; color: #f8f8f2;}
+.cm-s-default div.CodeMirror-selected {background: #49483E !important;}
+.cm-s-default .CodeMirror-gutter {background: #272822; border-right: 0px;}
+.cm-s-default .CodeMirror-cursor {border-left: 1px solid #f8f8f0 !important;}
+.cm-s-default span.cm-keyword {color: #f92672;}
+.cm-s-default span.cm-atom {color: #ae81ff;}
+.cm-s-default span.cm-number {color: #ae81ff;}
+.cm-s-default span.cm-def {color: #fd971f;}
+.cm-s-default span.cm-variable {color: #a6e22e;}
+.cm-s-default span.cm-variable-2 {color: #9effff;}
+.cm-s-default span.cm-property, .cm-s-default span.cm-attribute {color: #a6e22e;}
+.cm-s-default span.cm-operator {color: #fff;}
+.cm-s-default span.cm-comment {color: #8d8d81;}
+.cm-s-default span.cm-string {color: #e6db74;}
+.cm-s-default span.cm-string-2 {color: #fff;}
+.cm-s-default span.cm-meta {color: #fff;}
+.cm-s-default span.cm-error {background: #f92672; color: #f8f8f0;}
+.cm-s-default span.cm-qualifier {color: #fff;}
+.cm-s-default span.cm-builtin {color: #fff;}
+.cm-s-default span.cm-bracket {color: #f8f8f2;}
+.cm-s-default span.cm-tag {color: #f92672;}
+.cm-s-default span.cm-attribute {color: #fff;}
+.cm-s-default span.cm-link {color: #ae81ff;}
+.cm-s-default .CodeMirror-matchingbracket { color: #6c6 !important; }
+ 
+/* Custom Admin CSS page tweaks  */
+tr.custom-css { display:none; }
+textarea#custom_css { width:98%; padding:1%; outline:0; color:#f8f8f2; background:#272822; white-space:nowrap; font:13px/1.4 consolas, monospace !important; }
+form[action*="custom-admin-css"]:before { color:#c33; display:block; margin:0 0 1em; content:"This form sometimes has issues with encoding which breaks the CSS so I usually just edit the file directly, located at '/data/uploads/custom-css/custom-style.css'."; }
+ 
+/* Custom stuff for myself
+   For I18N Navigation, requires wrapping the 3 links that appear above the page list in <div class="tree-tgl">...</div>.
+   Can be found in /plugins/i18n_base/pages.php starting near line 130.
+*/
+.tree-tgl { opacity:.25; margin:1em 0; font-size:11px; text-align:center; white-space:nowrap; }
+.tree-tgl a.cancel { color:#999 !important; padding:.25em .75em; text-decoration:none; }
+.tree-tgl a.cancel:hover { color:#000 !important; background:none !important; }
+
+.largeform {
+	/* margin-top: 50px; */
+}
+ 
+#theme-edit {
+	width: 90%;
+}
+
+p.backuplink {
+	border: 1px solid #eee;
+	margin: 0px;
+}
+
+#pill {
+	color: #000
+}
+
+#index{
+	background-color: #000;
+}
+
+#sidebar .uploadform {
+	color: #fff;
+}
+.wrapper table td span {
+  font-size: 13px;
+  color: #777;
+}
+
+/* WIP: Elastic layout
+.wrapper { width:99%; min-width:960px; }
+.wrapper .nav { width:99%; }
+.wrapper .nav li:first
+*/
+
+div.rightseccal{
+float: left;
+width: 70%;
+padding-bottom: 5px;
+}
+
+div.leftseccal{
+float: left;
+width: 30%;
+padding-bottom: 5px;
+}
+.padded_label{
+	padding-top: 8px;
+}

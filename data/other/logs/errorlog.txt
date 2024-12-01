@@ -1,0 +1,569 @@
+[30-Dec-2022 17:05:42 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getCode() on int in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:06:08 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getCode() on int in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:06:11 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getCode() on int in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:06:14 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getCode() on int in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:06:17 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getCode() on int in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:06:45 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getCode() on int in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:06:57 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getCode() on int in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:06:58 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getCode() on int in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:06:59 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getCode() on int in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:07:07 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getCode() on int in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:07:19 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getMessage() on int in /var/www/html/plugins/sa_development.php:870
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 870
+[30-Dec-2022 17:09:10 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getMessage() on int in /var/www/html/plugins/sa_development.php:870
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 870
+[30-Dec-2022 17:09:12 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getMessage() on int in /var/www/html/plugins/sa_development.php:870
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 870
+[30-Dec-2022 17:09:12 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getMessage() on int in /var/www/html/plugins/sa_development.php:870
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 870
+[30-Dec-2022 17:09:23 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getMessage() on int in /var/www/html/plugins/sa_development.php:871
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 871
+[30-Dec-2022 17:10:30 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getCode() on int in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:11:00 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getCode() on int in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:11:02 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getCode() on int in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:11:20 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getTrace() on int in /var/www/html/plugins/sa_development.php:870
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 870
+[30-Dec-2022 17:11:23 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getTrace() on int in /var/www/html/plugins/sa_development.php:870
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 870
+[30-Dec-2022 17:11:24 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getTrace() on int in /var/www/html/plugins/sa_development.php:870
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 870
+[30-Dec-2022 17:11:24 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getTrace() on int in /var/www/html/plugins/sa_development.php:870
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 870
+[30-Dec-2022 17:11:24 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getTrace() on int in /var/www/html/plugins/sa_development.php:870
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 870
+[30-Dec-2022 17:11:25 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getTrace() on int in /var/www/html/plugins/sa_development.php:870
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 870
+[30-Dec-2022 17:11:35 UTC] PHP Fatal error:  Uncaught Error: Call to a member function getTrace() on int in /var/www/html/plugins/sa_development.php:870
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 870
+[30-Dec-2022 17:12:10 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "exc" in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:12:12 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "exc" in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:12:29 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "exc" in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:12:36 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "exc" in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:12:37 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "exc" in /var/www/html/plugins/sa_development.php:869
+Stack trace:
+#0 [internal function]: sa_dev_ErrorHandler(2, 'file_get_conten...', '/var/www/html/p...', 52)
+#1 /var/www/html/plugins/updater/inc/status.php(52): file_get_contents('/var/www/html/b...')
+#2 /var/www/html/plugins/updater/inc/status.php(31): updater_get_plugin_status('simpledir.php')
+#3 /var/www/html/plugins/updater/inc/status.php(5): updater_get_all_plugin_status()
+#4 /var/www/html/plugins/updater/pages/status.php(2): updater_get_status()
+#5 /var/www/html/plugins/updater/inc/admin.php(29): require('/var/www/html/p...')
+#6 /var/www/html/plugins/updater.php(72): updater_render_page('status')
+#7 /var/www/html/admin/inc/basic.php(3370): updater_action_admin()
+#8 /var/www/html/admin/load.php(40): call_gs_func_array('updater_action_...')
+#9 {main}
+  thrown in /var/www/html/plugins/sa_development.php on line 869
+[30-Dec-2022 17:24:59 UTC] PHP Deprecated:  Required parameter $archive follows optional parameter $tag in /var/www/html/plugins/news_manager/inc/site.php on line 73
+[30-Dec-2022 17:25:08 UTC] PHP Deprecated:  Required parameter $archive follows optional parameter $tag in /var/www/html/plugins/news_manager/inc/site.php on line 73
+[30-Dec-2022 17:25:09 UTC] PHP Deprecated:  Required parameter $archive follows optional parameter $tag in /var/www/html/plugins/news_manager/inc/site.php on line 73
+[30-Dec-2022 17:25:09 UTC] PHP Deprecated:  Required parameter $archive follows optional parameter $tag in /var/www/html/plugins/news_manager/inc/site.php on line 73
+[30-Dec-2022 17:25:16 UTC] PHP Deprecated:  Required parameter $archive follows optional parameter $tag in /var/www/html/plugins/news_manager/inc/site.php on line 73
+[31-Dec-2022 12:16:59 America/Chicago] PHP Warning:  scandir(/var/www/html/data/other/custom_settings/): Failed to open directory: No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:16:59 America/Chicago] PHP Warning:  scandir(): (errno 2): No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:16:59 America/Chicago] PHP Fatal error:  Uncaught TypeError: array_diff(): Argument #1 ($array) must be of type array, bool given in /var/www/html/plugins/custom_settings/customsettings.class.php:607
+Stack trace:
+#0 /var/www/html/plugins/custom_settings/customsettings.class.php(607): array_diff(false, Array)
+#1 /var/www/html/plugins/custom_settings.php(14): customSettings::upgrade()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/admin/plugins.php(15): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:17:00 America/Chicago] PHP Warning:  scandir(/var/www/html/data/other/custom_settings/): Failed to open directory: No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:17:00 America/Chicago] PHP Warning:  scandir(): (errno 2): No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:17:00 America/Chicago] PHP Fatal error:  Uncaught TypeError: array_diff(): Argument #1 ($array) must be of type array, bool given in /var/www/html/plugins/custom_settings/customsettings.class.php:607
+Stack trace:
+#0 /var/www/html/plugins/custom_settings/customsettings.class.php(607): array_diff(false, Array)
+#1 /var/www/html/plugins/custom_settings.php(14): customSettings::upgrade()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/admin/plugins.php(15): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:17:03 America/Chicago] PHP Warning:  scandir(/var/www/html/data/other/custom_settings/): Failed to open directory: No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:17:03 America/Chicago] PHP Warning:  scandir(): (errno 2): No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:17:03 America/Chicago] PHP Fatal error:  Uncaught TypeError: array_diff(): Argument #1 ($array) must be of type array, bool given in /var/www/html/plugins/custom_settings/customsettings.class.php:607
+Stack trace:
+#0 /var/www/html/plugins/custom_settings/customsettings.class.php(607): array_diff(false, Array)
+#1 /var/www/html/plugins/custom_settings.php(14): customSettings::upgrade()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/admin/plugins.php(15): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:31:09 America/Chicago] PHP Warning:  scandir(/var/www/html/data/other/custom_settings/): Failed to open directory: No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:31:09 America/Chicago] PHP Warning:  scandir(): (errno 2): No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:31:09 America/Chicago] PHP Fatal error:  Uncaught TypeError: array_diff(): Argument #1 ($array) must be of type array, bool given in /var/www/html/plugins/custom_settings/customsettings.class.php:607
+Stack trace:
+#0 /var/www/html/plugins/custom_settings/customsettings.class.php(607): array_diff(false, Array)
+#1 /var/www/html/plugins/custom_settings.php(14): customSettings::upgrade()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/admin/plugins.php(15): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:31:12 America/Chicago] PHP Warning:  scandir(/var/www/html/data/other/custom_settings/): Failed to open directory: No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:31:12 America/Chicago] PHP Warning:  scandir(): (errno 2): No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:31:12 America/Chicago] PHP Fatal error:  Uncaught TypeError: array_diff(): Argument #1 ($array) must be of type array, bool given in /var/www/html/plugins/custom_settings/customsettings.class.php:607
+Stack trace:
+#0 /var/www/html/plugins/custom_settings/customsettings.class.php(607): array_diff(false, Array)
+#1 /var/www/html/plugins/custom_settings.php(14): customSettings::upgrade()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/admin/plugins.php(15): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:31:12 America/Chicago] PHP Warning:  scandir(/var/www/html/data/other/custom_settings/): Failed to open directory: No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:31:12 America/Chicago] PHP Warning:  scandir(): (errno 2): No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:31:12 America/Chicago] PHP Fatal error:  Uncaught TypeError: array_diff(): Argument #1 ($array) must be of type array, bool given in /var/www/html/plugins/custom_settings/customsettings.class.php:607
+Stack trace:
+#0 /var/www/html/plugins/custom_settings/customsettings.class.php(607): array_diff(false, Array)
+#1 /var/www/html/plugins/custom_settings.php(14): customSettings::upgrade()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/index.php(29): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:31:13 America/Chicago] PHP Warning:  scandir(/var/www/html/data/other/custom_settings/): Failed to open directory: No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:31:13 America/Chicago] PHP Warning:  scandir(): (errno 2): No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:31:13 America/Chicago] PHP Fatal error:  Uncaught TypeError: array_diff(): Argument #1 ($array) must be of type array, bool given in /var/www/html/plugins/custom_settings/customsettings.class.php:607
+Stack trace:
+#0 /var/www/html/plugins/custom_settings/customsettings.class.php(607): array_diff(false, Array)
+#1 /var/www/html/plugins/custom_settings.php(14): customSettings::upgrade()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/index.php(29): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:31:46 America/Chicago] PHP Fatal error:  Uncaught TypeError: count(): Argument #1 ($value) must be of type Countable|array, null given in /var/www/html/plugins/ExtraGallery/EGSettings.php:56
+Stack trace:
+#0 /var/www/html/plugins/ExtraGallery/EGBack.php(46): EGSettings::load(0, true)
+#1 /var/www/html/plugins/ExtraGallery.php(20): EGBack->init()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/admin/plugins.php(15): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/ExtraGallery/EGSettings.php on line 56
+[31-Dec-2022 12:31:49 America/Chicago] PHP Fatal error:  Uncaught TypeError: count(): Argument #1 ($value) must be of type Countable|array, null given in /var/www/html/plugins/ExtraGallery/EGSettings.php:56
+Stack trace:
+#0 /var/www/html/plugins/ExtraGallery/EGBack.php(46): EGSettings::load(0, true)
+#1 /var/www/html/plugins/ExtraGallery.php(20): EGBack->init()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/admin/plugins.php(15): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/ExtraGallery/EGSettings.php on line 56
+[31-Dec-2022 12:31:52 America/Chicago] PHP Fatal error:  Uncaught TypeError: count(): Argument #1 ($value) must be of type Countable|array, null given in /var/www/html/plugins/ExtraGallery/EGSettings.php:56
+Stack trace:
+#0 /var/www/html/plugins/ExtraGallery/EGBack.php(46): EGSettings::load(0, true)
+#1 /var/www/html/plugins/ExtraGallery.php(20): EGBack->init()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/admin/load.php(14): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/ExtraGallery/EGSettings.php on line 56
+[31-Dec-2022 12:31:54 America/Chicago] PHP Fatal error:  Uncaught TypeError: count(): Argument #1 ($value) must be of type Countable|array, null given in /var/www/html/plugins/ExtraGallery/EGSettings.php:56
+Stack trace:
+#0 /var/www/html/plugins/ExtraGallery/EGBack.php(46): EGSettings::load(0, true)
+#1 /var/www/html/plugins/ExtraGallery.php(20): EGBack->init()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/admin/load.php(14): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/ExtraGallery/EGSettings.php on line 56
+[31-Dec-2022 12:32:37 America/Chicago] PHP Warning:  mkdir(): File exists in /var/www/html/plugins/DM_Matrix/include/DM_matrix_functions.php on line 12
+[31-Dec-2022 12:32:37 America/Chicago] PHP Warning:  session_start(): Session cannot be started after headers have already been sent in /var/www/html/plugins/imanager.php on line 2
+[31-Dec-2022 12:32:54 America/Chicago] PHP Warning:  scandir(/var/www/html/data/other/custom_settings/): Failed to open directory: No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:32:54 America/Chicago] PHP Warning:  scandir(): (errno 2): No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:32:54 America/Chicago] PHP Fatal error:  Uncaught TypeError: array_diff(): Argument #1 ($array) must be of type array, bool given in /var/www/html/plugins/custom_settings/customsettings.class.php:607
+Stack trace:
+#0 /var/www/html/plugins/custom_settings/customsettings.class.php(607): array_diff(false, Array)
+#1 /var/www/html/plugins/custom_settings.php(14): customSettings::upgrade()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/admin/plugins.php(15): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:32:55 America/Chicago] PHP Warning:  scandir(/var/www/html/data/other/custom_settings/): Failed to open directory: No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:32:55 America/Chicago] PHP Warning:  scandir(): (errno 2): No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:32:55 America/Chicago] PHP Fatal error:  Uncaught TypeError: array_diff(): Argument #1 ($array) must be of type array, bool given in /var/www/html/plugins/custom_settings/customsettings.class.php:607
+Stack trace:
+#0 /var/www/html/plugins/custom_settings/customsettings.class.php(607): array_diff(false, Array)
+#1 /var/www/html/plugins/custom_settings.php(14): customSettings::upgrade()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/admin/plugins.php(15): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:32:58 America/Chicago] PHP Warning:  scandir(/var/www/html/data/other/custom_settings/): Failed to open directory: No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:32:58 America/Chicago] PHP Warning:  scandir(): (errno 2): No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:32:58 America/Chicago] PHP Fatal error:  Uncaught TypeError: array_diff(): Argument #1 ($array) must be of type array, bool given in /var/www/html/plugins/custom_settings/customsettings.class.php:607
+Stack trace:
+#0 /var/www/html/plugins/custom_settings/customsettings.class.php(607): array_diff(false, Array)
+#1 /var/www/html/plugins/custom_settings.php(14): customSettings::upgrade()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/admin/plugins.php(15): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:33:00 America/Chicago] PHP Warning:  scandir(/var/www/html/data/other/custom_settings/): Failed to open directory: No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:33:00 America/Chicago] PHP Warning:  scandir(): (errno 2): No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:33:00 America/Chicago] PHP Fatal error:  Uncaught TypeError: array_diff(): Argument #1 ($array) must be of type array, bool given in /var/www/html/plugins/custom_settings/customsettings.class.php:607
+Stack trace:
+#0 /var/www/html/plugins/custom_settings/customsettings.class.php(607): array_diff(false, Array)
+#1 /var/www/html/plugins/custom_settings.php(14): customSettings::upgrade()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/admin/plugins.php(15): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:33:01 America/Chicago] PHP Warning:  scandir(/var/www/html/data/other/custom_settings/): Failed to open directory: No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:33:01 America/Chicago] PHP Warning:  scandir(): (errno 2): No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:33:01 America/Chicago] PHP Fatal error:  Uncaught TypeError: array_diff(): Argument #1 ($array) must be of type array, bool given in /var/www/html/plugins/custom_settings/customsettings.class.php:607
+Stack trace:
+#0 /var/www/html/plugins/custom_settings/customsettings.class.php(607): array_diff(false, Array)
+#1 /var/www/html/plugins/custom_settings.php(14): customSettings::upgrade()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/admin/plugins.php(15): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:33:01 America/Chicago] PHP Warning:  scandir(/var/www/html/data/other/custom_settings/): Failed to open directory: No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:33:01 America/Chicago] PHP Warning:  scandir(): (errno 2): No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:33:01 America/Chicago] PHP Fatal error:  Uncaught TypeError: array_diff(): Argument #1 ($array) must be of type array, bool given in /var/www/html/plugins/custom_settings/customsettings.class.php:607
+Stack trace:
+#0 /var/www/html/plugins/custom_settings/customsettings.class.php(607): array_diff(false, Array)
+#1 /var/www/html/plugins/custom_settings.php(14): customSettings::upgrade()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/index.php(29): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:33:02 America/Chicago] PHP Warning:  scandir(/var/www/html/data/other/custom_settings/): Failed to open directory: No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:33:02 America/Chicago] PHP Warning:  scandir(): (errno 2): No such file or directory in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607
+[31-Dec-2022 12:33:02 America/Chicago] PHP Fatal error:  Uncaught TypeError: array_diff(): Argument #1 ($array) must be of type array, bool given in /var/www/html/plugins/custom_settings/customsettings.class.php:607
+Stack trace:
+#0 /var/www/html/plugins/custom_settings/customsettings.class.php(607): array_diff(false, Array)
+#1 /var/www/html/plugins/custom_settings.php(14): customSettings::upgrade()
+#2 /var/www/html/admin/inc/common.php(785): include_once('/var/www/html/p...')
+#3 /var/www/html/index.php(29): include('/var/www/html/a...')
+#4 {main}
+  thrown in /var/www/html/plugins/custom_settings/customsettings.class.php on line 607

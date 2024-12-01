@@ -1,0 +1,27 @@
+<div id="cs-spinner" data-bind="visible: showLoader">
+  <img src="../plugins/custom_settings/spinner.gif">
+  {{ 'prop_loading' | i18n }}
+</div>
+<div id="cs-main-toolbar" class="cs-toolbar">
+    <button type="button" disabled="{{ disable.select }}" title="{{ 'prop_select_all' | i18n }}" class="{{ selectButtonActive }}" data-bind="click: selectAll">
+      <i class="fa fa-fw fa-location-arrow"></i>
+    </button>
+    <button type="button" disabled="{{ disable.expand }}" title="{{ 'prop_expand_all' | i18n }}" class="{{ expandButtonActive }}" data-bind="click: expandAll">
+      <i class="{{ 'fa fa-fw fa-' + (allExpanded() ? 'minus' : 'plus') + '-square'}}"></i>
+    </button>
+    <button type="button" disabled="{{ disable.add }}"  title="{{ 'prop_add' | i18n }}"  data-bind="click: insertBefore"><i class="fa fa-fw fa-plus"></i></button>
+    <button type="button" disabled="{{ disable.del }}"  title="{{ 'prop_del' | i18n }}"  data-bind="click: remove"><i class="fa fa-fw fa-close"></i></button>
+    <button type="button" disabled="{{ disable.up }}"   title="{{ 'prop_up' | i18n }}"   data-bind="click: moveUp"><i class="fa fa-fw fa-arrow-up"></i></button>
+    <button type="button" disabled="{{ disable.down }}" title="{{ 'prop_down' | i18n }}" data-bind="click: moveDown"><i class="fa fa-fw fa-arrow-down"></i></button>
+    <span>
+      <span>{{ 'cmd_export_as' | i18n }}</span>
+      <select style="padding: 0;" data-bind="event: {change: $root.exportAsDev }">
+        <option value="none" selected="true">&nbsp;</option>
+        <option value="theme">{{ 'label_theme' | i18n }}</option>
+        <option value="plugin">{{ 'label_plugin' | i18n }}</option>
+      </select>
+    </span>
+</div>
+<div data-bind="foreach: {data: items, afterAdd: animateInsertion, beforeRemove: animateRemoval}, event: {keydown: keyHandler }" tabindex="999">
+  {{ #template: template.edit /}}
+</div>
