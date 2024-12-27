@@ -8,6 +8,7 @@ service apache2 restart
 
 ADD ./ /var/www/html
 COPY ./ /var/www/html
+# stubborn due to .lock file ?
 COPY composer.json /var/www/html
 RUN chmod -R 777 data
 RUN chmod -R 777 backups
@@ -19,7 +20,5 @@ COPY --from=composer/composer:latest-bin /composer /usr/local/bin/composer
 RUN composer require rector/rector --dev
 
 # docker build --no-cache . -t gs_rector
-
 # vendor/bin/rector list-rules --output-format json > rector_rules_out.json
 # vendor/bin/rector process --dry-run plugins
-
