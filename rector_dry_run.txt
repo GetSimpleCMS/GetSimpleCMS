@@ -1,0 +1,5275 @@
+
+121 files with changes
+======================
+
+1) plugins/extend-download/markdown.php:906
+
+    ---------- begin diff ----------
+@@ @@
+ 		if ($matches[2] == '-' && preg_match('{^-(?: |$)}', $matches[1]))
+ 			return $matches[0];
+
+-		$level = $matches[2]{0} == '=' ? 1 : 2;
++		$level = $matches[2][0] == '=' ? 1 : 2;
+ 		$block = "<h$level>".$this->runSpanGamut($matches[1])."</h$level>";
+ 		return "\n" . $this->hashBlock($block) . "\n\n";
+ 	}
+@@ @@
+ 				} else {
+ 					# Other closing marker: close one em or strong and
+ 					# change current token state to match the other
+-					$token_stack[0] = str_repeat($token{0}, 3-$token_len);
++					$token_stack[0] = str_repeat($token[0], 3-$token_len);
+ 					$tag = $token_len == 2 ? "strong" : "em";
+ 					$span = $text_stack[0];
+ 					$span = $this->runSpanGamut($span);
+@@ @@
+ 				} else {
+ 					# Reached opening three-char emphasis marker. Push on token 
+ 					# stack; will be handled by the special condition above.
+-					$em = $token{0};
++					$em = $token[0];
+ 					$strong = "$em$em";
+ 					array_unshift($token_stack, $token);
+ 					array_unshift($text_stack, '');
+@@ @@
+ 	# Handle $token provided by parseSpan by determining its nature and 
+ 	# returning the corresponding value that should replace it.
+ 	#
+-		switch ($token{0}) {
++		switch ($token[0]) {
+ 			case "\\":
+-				return $this->hashPart("&#". ord($token{1}). ";");
++				return $this->hashPart("&#". ord($token[1]). ";");
+ 			case "`":
+ 				# Search for end marker in remaining text.
+ 				if (preg_match('/^(.*?[^`])'.preg_quote($token).'(?!`)(.*)$/sm', 
+@@ @@
+ 	# regular expression.
+ 	#
+ 		if (function_exists($this->utf8_strlen)) return;
+-		$this->utf8_strlen = function ($text) use ($m) {
+-      return preg_match_all("/[\\x00-\\xBF]|[\\xC0-\\xFF][\\x80-\\xBF]*/", $text, $m);
+-  };
++		$this->utf8_strlen = fn($text) => preg_match_all("/[\\x00-\\xBF]|[\\xC0-\\xFF][\\x80-\\xBF]*/", $text, $m);
+ 	}
+    ----------- end diff -----------
+
+Applied rules:
+ * CurlyToSquareBracketArrayStringRector (https://www.php.net/manual/en/migration74.deprecated.php)
+ * ClosureToArrowFunctionRector (https://wiki.php.net/rfc/arrow_functions_v2)
+
+
+2) plugins/extend-download.php:121
+
+    ---------- begin diff ----------
+@@ @@
+ 		$my_plugin_id = $id; // replace this with yours
+
+ 		$apiback = file_get_contents('http://get-simple.info/api/extend/?id='.$my_plugin_id);
+-		$response = json_decode($apiback);
++		$response = json_decode($apiback, null, 512, JSON_THROW_ON_ERROR);
+ 		if ($response->status == 'successful') 
+ 		{
+ 			// Successful api response sent back. 
+@@ @@
+ 	{
+ 		$apiback = file_get_contents('http://get-simple.info/api/extend/all.php');
+ 		$json = preg_replace('/:\s*\'(([^\']|\\\\\')*)\'\s*([},])/e', "':'.json_encode(stripslashes('$1')).'$3'", $apiback);
+-		$json = json_decode($apiback, TRUE);
++		$json = json_decode($apiback, TRUE, 512, JSON_THROW_ON_ERROR);
+ 		return $json;
+ 	}
+ 		
+@@ @@
+ 	}
+ 	
+ }
+-?>
++?>
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+3) plugins/custom_settings/filehandler.class.php:31
+
+    ---------- begin diff ----------
+@@ @@
+     public static function indentJSON($json)
+     {
+     if (!is_string($json)) {
+-      $json = json_encode($json);
++      $json = json_encode($json, JSON_THROW_ON_ERROR);
+     }
+     $result      = '';
+     $pos         = 0;               // indentation level
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+4) plugins/custom_settings/customsettings.handler.php:17
+
+    ---------- begin diff ----------
+@@ @@
+             echo customSettings::loadPluginInfo();
+             break;
+           case 'loadImageBrowser':
+-            echo json_encode(GSutils::getImageUploads(GSDATAUPLOADPATH));
++            echo json_encode(GSutils::getImageUploads(GSDATAUPLOADPATH), JSON_THROW_ON_ERROR);
+             break;
+           case 'getI18NFile':
+             echo customSettings::i18nMerge();
+             break;
+           case 'getDataFile':
+-            echo json_encode($custom_settings);
++            echo json_encode($custom_settings, JSON_THROW_ON_ERROR);
+             break;
+           case 'saveData':
+-            $custom_settings = array('data' => json_decode($data, TRUE));
++            $custom_settings = array('data' => json_decode($data, TRUE, 512, JSON_THROW_ON_ERROR));
+             $custom_settings_dictionary = customSettings::mapAllSettings();
+             customSettings::saveAllSettings($custom_settings);
+             break;
+@@ @@
+     }
+   } else 
+     
+-    die(json_encode($_REQUEST));
++    die(json_encode($_REQUEST, JSON_THROW_ON_ERROR));
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+5) plugins/custom_settings/customsettings.class.php:2
+
+    ---------- begin diff ----------
+@@ @@
+
+   class customSettings {
+     
+-    private static $devMode = false;
+-    private static $defaultJSON = '{"site": []}';
++    private static false $devMode = false;
++    private static string $defaultJSON = '{"site": []}';
+     public static $version = '0.6.2';    
+     
+     //////////////////////////////////////////////////////////////////////////
+@@ @@
+       $result = array();
+       if (!file_exists($path))
+         self::createDataSubfolder();
+-      $content = json_decode(file_get_contents($path), TRUE);
++      $content = json_decode(file_get_contents($path), TRUE, 512, JSON_THROW_ON_ERROR);
+       foreach ($content['site'] as $tab) {
+         $result[$tab['tab']['lookup']] = $tab;
+       }
+@@ @@
+           $defContents = file_get_contents($pluginDefs);
+           if (!file_exists($pluginData)) {
+             file_put_contents($pluginData, $defContents);  
+-            $contents = json_decode($defContents, TRUE);
++            $contents = json_decode($defContents, TRUE, 512, JSON_THROW_ON_ERROR);
+           } else {
+-            $contents = json_decode(file_get_contents($pluginData), TRUE);
++            $contents = json_decode(file_get_contents($pluginData), TRUE, 512, JSON_THROW_ON_ERROR);
+           }
+-          $defContents = json_decode($defContents, TRUE);
++          $defContents = json_decode($defContents, TRUE, 512, JSON_THROW_ON_ERROR);
+           self::versionUpdate($contents, $defContents);
+           if (file_exists(GSPLUGINPATH . $pluginName . '/lang/' . $LANG . '.json')) {
+             // map setting indexes to a lookup dictionary for easy value assignment
+@@ @@
+             for ($i = 0; $i < count($contents['settings']); $i++)
+               $dictionary[$contents['settings'][$i]['lookup']] = $i;
+               
+-            $pluginLang = json_decode(file_get_contents(GSPLUGINPATH . $pluginName . '/lang/' . $LANG . '.json'), TRUE);
++            $pluginLang = json_decode(file_get_contents(GSPLUGINPATH . $pluginName . '/lang/' . $LANG . '.json'), TRUE, 512, JSON_THROW_ON_ERROR);
+             foreach ($pluginLang['strings'] as $string => $translation) {
+               $prop = substr($string, strrpos($string, '_') + 1);
+               $setting = substr($string, 0, strlen($string) - (strlen($prop) + 1));
+@@ @@
+           $defContents = file_get_contents($themeDefs);
+         if (!file_exists($themeDataPath)) {
+           file_put_contents($themeDataPath, $defContents);
+-          $contents = json_decode($defContents, TRUE);
++          $contents = json_decode($defContents, TRUE, 512, JSON_THROW_ON_ERROR);
+         } else
+-          $contents = json_decode(file_get_contents($themeDataPath), TRUE);
+-        $defContents = json_decode($defContents, TRUE);
++          $contents = json_decode(file_get_contents($themeDataPath), TRUE, 512, JSON_THROW_ON_ERROR);
++        $defContents = json_decode($defContents, TRUE, 512, JSON_THROW_ON_ERROR);
+         self::versionUpdate($contents, $defContents);
+         // output expected by JS files
+         $file = array('theme_settings'=>array(
+@@ @@
+           
+         // handle lang
+         if (file_exists($themeDir . 'lang/' . $LANG . '.json')) {
+-          $jsonLangFile = json_decode(file_get_contents($themeDir . 'lang/' . $LANG . '.json'), TRUE);
++          $jsonLangFile = json_decode(file_get_contents($themeDir . 'lang/' . $LANG . '.json'), TRUE, 512, JSON_THROW_ON_ERROR);
+           foreach ($jsonLangFile['strings'] as $string => $translation) {
+             $prop = substr($string, strrpos($string, '_') + 1);
+             $setting = substr($string, 0, strlen($string) - (strlen($prop) + 1));
+@@ @@
+       } else {
+         if (file_exists(GSTHEMESPATH . $TEMPLATE . '/settings.json')) {
+           $defContents = file_get_contents(GSTHEMESPATH . $TEMPLATE . '/settings.json'); // default theme settings
+-          $defContentsPHP = json_decode($defContents, TRUE);
++          $defContentsPHP = json_decode($defContents, TRUE, 512, JSON_THROW_ON_ERROR);
+           file_put_contents($themeDataPath, $defContents);
+           $file = array('theme_settings'=>array(
+             'settings' => $defContentsPHP['settings'],
+@@ @@
+       // A little bit confusing, so: first iterate over $custom_settings and assign tab lookup
+       // to the result, nothing special here.
+       if ($beh === 'blek') {
+-      echo json_encode($custom_settings);
++      echo json_encode($custom_settings, JSON_THROW_ON_ERROR);
+       return;
+       }
+       foreach ($custom_settings['data'] as $tab) {
+@@ @@
+     public static function loadPluginInfo() 
+     {
+       $pluginInfoJSON = file_get_contents('http://get-simple.info/api/extend/?id=913');
+-      $pluginInfo = json_decode($pluginInfoJSON, TRUE);
++      $pluginInfo = json_decode($pluginInfoJSON, TRUE, 512, JSON_THROW_ON_ERROR);
+       if ($pluginInfo['status'] === 'successful')
+         return $pluginInfoJSON;
+     }
+@@ @@
+         'id'          => 'custom_settings',
+         'template'    => strtolower((string)$TEMPLATE)
+       );
+-      $output = htmlspecialchars(json_encode($conf), ENT_COMPAT, 'UTF-8');
++      $output = htmlspecialchars(json_encode($conf, JSON_THROW_ON_ERROR), ENT_COMPAT, 'UTF-8');
+       return $output;
+     }
+     
+@@ @@
+       $path = GSPLUGINPATH . 'custom_settings/lang/' . $LANG . '.json';
+       if (!file_exists(GSPLUGINPATH . 'custom_settings/lang/' . $LANG . '.json'))
+         $path = GSPLUGINPATH . 'custom_settings/lang/en_US.json';
+-      $f = json_decode(file_get_contents($path), TRUE);
++      $f = json_decode(file_get_contents($path), TRUE, 512, JSON_THROW_ON_ERROR);
+       return $f['strings'];
+     }
+     
+@@ @@
+       $path = GSPLUGINPATH . 'custom_settings/lang/' . $LANG . '.json';
+       if (!file_exists($path))
+         $path = GSPLUGINPATH . 'custom_settings/lang/en_US.json';
+-      $file = json_decode(file_get_contents($path), TRUE);
++      $file = json_decode(file_get_contents($path), TRUE, 512, JSON_THROW_ON_ERROR);
+       $file['strings']['SETTINGS_UPDATED'] = $i18n['SETTINGS_UPDATED'];
+       $file['strings']['OK'] = $i18n['OK'];
+       $file['strings']['CANCEL'] = $i18n['CANCEL'];
+       $file['strings']['BTN_SAVESETTINGS'] = $i18n['BTN_SAVESETTINGS'];
+       $file['strings']['traductors'] = $file['meta']['traductors'];
+-      return json_encode($file['strings']);
++      return json_encode($file['strings'], JSON_THROW_ON_ERROR);
+     }
+     
+     public static function upgrade() 
+@@ @@
+       $flag = false;
+       foreach ($files as $file) {
+         $data = file_get_contents($path . $file);
+-        $data = json_decode($data, TRUE);
++        $data = json_decode($data, TRUE, 512, JSON_THROW_ON_ERROR);
+         $tabs = array(&$data);
+           if (array_key_exists('site', $data) )
+             $tabs = &$data['site'];
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * TypedPropertyFromAssignsRector
+
+
+6) plugins/blog/uploader/server/php.php:66
+
+    ---------- begin diff ----------
+@@ @@
+     }
+     
+     class qqFileUploader {
+-        private $allowedExtensions = array();
++        private array $allowedExtensions = array();
+         private $sizeLimit;
+-        private $file;
++        private \qqUploadedFileXhr|\qqUploadedFileForm|bool|null $file = null;
+     
+         function __construct(array $allowedExtensions = array(), $sizeLimit = '10M'){        
+             $allowedExtensions = array_map("strtolower", $allowedExtensions);
+@@ @@
+     $uploader = new qqFileUploader($allowedExtensions, $sizeLimit);
+     $result = $uploader->handleUpload('../../../../data/uploads/');
+     // to pass data through iframe you will need to encode all html tags
+-    echo htmlspecialchars(json_encode($result), ENT_NOQUOTES);
++    echo htmlspecialchars(json_encode($result, JSON_THROW_ON_ERROR), ENT_NOQUOTES);
+ }
+ else
+ {
+     die("You do not have permission to access this script. Your IP has been reported to the site admin.");
+-}  
++}
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * TypedPropertyFromAssignsRector
+
+
+7) plugins/anonymous_data.php:91
+
+    ---------- begin diff ----------
+@@ @@
+ 		$preview_data->addChild('timezone', $TIMEZONE);
+ 		$preview_data->addChild('php_version', PHP_VERSION);
+ 		$preview_data->addChild('server_type', PHP_OS);
+-		$preview_data->addChild('modules_missing', json_encode($missing_modules));
++		$preview_data->addChild('modules_missing', json_encode($missing_modules, JSON_THROW_ON_ERROR));
+ 		$preview_data->addChild('number_pages', folder_items(GSDATAPAGESPATH)-1);
+ 		$preview_data->addChild('number_plugins', count($live_plugins));
+ 		$preview_data->addChild('number_files', count(glob_recursive(GSDATAUPLOADPATH.'*')));
+@@ @@
+
+ 	<?php
+
+-}
++}
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+8) plugins/GoogleAnalytics.php:56
+
+    ---------- begin diff ----------
+@@ @@
+         $cookie_time = 0;
+     }
+     
+-    setcookie( 'GOOGLE_ANALYTICS_DISABLED', '1', $cookie_time, $filupn_ga_settings['site_root'] );
++    setcookie( 'GOOGLE_ANALYTICS_DISABLED', '1', ['expires' => $cookie_time, 'path' => $filupn_ga_settings['site_root']] );
+ }
+
+ function filupn_ga_deletecookie() {
+     global $filupn_ga_settings;
+-    setcookie( 'GOOGLE_ANALYTICS_DISABLED', false, time()-3600, $filupn_ga_settings['site_root'] );
++    setcookie( 'GOOGLE_ANALYTICS_DISABLED', false, ['expires' => time()-3600, 'path' => $filupn_ga_settings['site_root']] );
+ }
+
+ function filupn_ga_add_code() {
+    ----------- end diff -----------
+
+Applied rules:
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+
+
+9) plugins/ExtraGallery/views/editJS.php:51
+
+    ---------- begin diff ----------
+@@ @@
+         isErrorMessage = '<?php echo $isErrorMessage ?>';
+         
+         
+-	var settings = <?php echo json_encode($settings) ?>,
++	var settings = <?php echo json_encode($settings, JSON_THROW_ON_ERROR) ?>,
+         unsavedChanges = false,
+ 		waitingThumbCount = 0,  //counter that shows for how many thumbnail creating were waiting
+ 		isWaiting = false; //is currently waiting for end of operations, 
+@@ @@
+     }
+         
+     <?php if ($mode == 'edit'): ?>
+-         var galleryData = <?php echo json_encode($galleryData); ?>;
++         var galleryData = <?php echo json_encode($galleryData, JSON_THROW_ON_ERROR); ?>;
+     <?php endif; ?>
+     
+     var langLength = Math.max(1, settings['languages'].length);
+@@ @@
+ 	
+ 	
+
+-});
++});
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+10) plugins/ExtraGallery/views/configurationJS.php:7
+
+    ---------- begin diff ----------
+@@ @@
+         $emptyRangeRow = $configForm.find('.range-row').first(),
+         $emptyThumnailSettings = $('.section.thumbnail');
+         
+-	var settingsData = <?php echo json_encode($settings) ?>
++	var settingsData = <?php echo json_encode($settings, JSON_THROW_ON_ERROR) ?>
+         
+     var fieldsData = settingsData['fields'];
+
+@@ @@
+
+
+    
+-});
++});
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+11) plugins/ExtraGallery/ajax/index.php:39
+
+    ---------- begin diff ----------
+@@ @@
+         
+         if (EGGallery::delete($instance, $name)){
+             EGTools::cleanUnusedThumbs();
+-            echo json_encode(1);
++            echo json_encode(1, JSON_THROW_ON_ERROR);
+         }
+         else
+-            echo json_encode(0);
++            echo json_encode(0, JSON_THROW_ON_ERROR);
+
+ 		break;
+ 	}	
+@@ @@
+         $name = $_GET['name']; //gall name
+         
+         if (EGGallery::validateGalleryName($instance, $name)){
+-            echo json_encode(1);
++            echo json_encode(1, JSON_THROW_ON_ERROR);
+         }
+         else{
+-            echo json_encode(0);
++            echo json_encode(0, JSON_THROW_ON_ERROR);
+         }
+ 		break;
+ 	}		
+@@ @@
+                 $t->save(EG_THUMBS . $targetImg, 95);
+             }
+             
+-            echo json_encode($targetImg);
++            echo json_encode($targetImg, JSON_THROW_ON_ERROR);
+             
+         } catch (Exception $e) {
+-			echo json_encode(array('error' => $e->getMessage()));
++			echo json_encode(array('error' => $e->getMessage()), JSON_THROW_ON_ERROR);
+ 		}
+ 		break;
+ 	}
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+12) plugins/ExtraGallery/EGStorage.php:4
+
+    ---------- begin diff ----------
+@@ @@
+     * This is for internal storage format, used by backend
+     */
+ 	//flags that all galleries are loaded, by instance in key
+-	private static $_internalAllLoadedByInstance = array();
++	private static array $_internalAllLoadedByInstance = array();
+ 	//storage for all galleries in internal format 
+     //$_internalGalleries[instanceNum][galleryname]
+-	private static $_internalGalleries = array();
++	private static array $_internalGalleries = array();
+     
+     
+     /* 
+@@ @@
+     */
+     //storage for galleries converted for frontend,
+     //$_externalGalleries[instanceNum][languageindex][galleryname]
+-	private static $_externalGalleries = array(); 
++	private static array $_externalGalleries = array(); 
+     //flags that all galleries are loaded, by instance in key
+     //_externalAllLoadedByInstance[instanceNum][languageIndex]
+-	private static $_externalAllLoadedByInstance = array();
++	private static array $_externalAllLoadedByInstance = array();
+ 	  
+ 	//returns array of galleries when name is null or specified gallery, null when not exists
+ 	public static function returnGallery($name = null, $instanceNum = 0) {
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyFromAssignsRector
+
+
+13) plugins/ExtraGallery/EGSettings.php:1
+
+    ---------- begin diff ----------
+@@ @@
+ class EGSettings {
+
+ 	//stores settings, key as instance name in array
+-    private static $_settingsStorage = array();
++    private static array $_settingsStorage = array();
+
+-    private static $_allowedTypes = array('text', 'textarea', 'wysiwyg', 'checkbox', 'select');
++    private static array $_allowedTypes = array('text', 'textarea', 'wysiwyg', 'checkbox', 'select');
+
+
+ 	/*
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyFromAssignsRector
+
+
+14) plugins/ExtraGallery/EGBack.php:9
+
+    ---------- begin diff ----------
+@@ @@
+     public $settings;
+     
+     //this is used to control when more then one instance of plugin exists
+-    private static $_uploadsDeletionControlled = false;
++    private static bool $_uploadsDeletionControlled = false;
+
+     public function __construct($id) { 
+         $this->pluginId = $id;
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyFromAssignsRector
+
+
+15) plugins/imanager/lib/processors/inputs/InputLongtext.php:5
+
+    ---------- begin diff ----------
+@@ @@
+ 	 * @var int
+ 	 * MEDIUMTEXT 16,777,215 bytes ~16MB
+ 	 */
+-	protected $maxLen = 16777215;
++	protected $maxLen = 16_777_215;
+
+ 	/**
+ 	 * InputLongtext constructor.
+@@ @@
+ 	}
+
+ 	/**
+-	 * This method checks the field inputs and sets the field contents.
+-	 * If an error occurs, the method returns an error code.
+-	 *
+-	 * @param $value
+-	 * @param bool $sanitize
+-	 *
+-	 * @return int|stdClass
+-	 */
+-	public function prepareInput($value, $sanitize = false) {
++  * This method checks the field inputs and sets the field contents.
++  * If an error occurs, the method returns an error code.
++  *
++  * @param $value
++  * @param bool $sanitize
++  */
++ public function prepareInput($value, $sanitize = false): int|\stdClass {
+ 		return parent::prepareInput($value, $sanitize);
+ 	}
+    ----------- end diff -----------
+
+Applied rules:
+ * AddLiteralSeparatorToNumberRector (https://wiki.php.net/rfc/numeric_literal_separator)
+ * UnionTypesRector
+
+
+16) plugins/imanager/lib/processors/fields/FieldText.php:43
+
+    ---------- begin diff ----------
+@@ @@
+ 	protected $maxLen = 65535;
+
+ 	/**
+-	 * FieldText constructor.
+-	 *
+-	 * @param TemplateEngine $tpl
+-	 */
+-	public function __construct(TemplateEngine $tpl)
++  * FieldText constructor.
++  */
++ public function __construct(TemplateEngine $tpl)
+ 	{
+ 		$this->tpl = $tpl;
+ 		$this->configs = new \stdClass();
+@@ @@
+ 	}
+
+ 	/**
+-	 * Renders the field markup
+-	 *
+-	 * @param bool $sanitize
+-	 *
+-	 * @return bool|Template
+-	 */
+-	public function render($sanitize = false)
++  * Renders the field markup
++  *
++  * @param bool $sanitize
++  */
++ public function render($sanitize = false): bool|\Template
+ 	{
+ 		if(is_null($this->name)) { return false; }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClassPropertyAssignToConstructorPromotionRector (https://wiki.php.net/rfc/constructor_promotion https://github.com/php/php-src/pull/5291)
+ * MixedTypeRector
+ * UnionTypesRector
+
+
+17) plugins/i18n_gallery/overview.php:65
+
+    ---------- begin diff ----------
+@@ @@
+     <script type="text/javascript">
+       $(function() {
+ <?php if (isset($msg)) { ?>
+-        $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg); ?>+'</div>');
++        $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg, JSON_THROW_ON_ERROR); ?>+'</div>');
+ 	      $(".updated, .error").fadeOut(500).fadeIn(500);
+ <?php } ?>
+       });
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+18) plugins/i18n_gallery/gallery.class.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ class I18nGallery {
+   
+-  private static $settings = null;
+-  private static $plugins = null;
++  private static ?array $settings = null;
++  private static ?array $plugins = null;
+   
+   
+   public static function getSettings($reload=false) {
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyFromAssignsRector
+
+
+19) plugins/i18n_gallery/edit.php:208
+
+    ---------- begin diff ----------
+@@ @@
+ <?php 
+   $i = 0;
+   if (count(@$gallery['items']) > 0) foreach ($gallery['items'] as $item) { 
+-    if ($item['size'] >= 1000000) {
++    if ($item['size'] >= 1_000_000) {
+       $s = ceil($item['size'] / 1024 / 1024) . ' MB';
+     } else if ($item['size'] >= 1000) {
+       $s = ceil($item['size'] / 1024) . ' kB';
+@@ @@
+         });
+ <?php } ?>
+ <?php if (isset($msg)) { ?>
+-        $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg); ?>+'</div>');
++        $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg, JSON_THROW_ON_ERROR); ?>+'</div>');
+ 	      $(".updated, .error").fadeOut(500).fadeIn(500);
+ <?php } ?>
+       });
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * AddLiteralSeparatorToNumberRector (https://wiki.php.net/rfc/numeric_literal_separator)
+
+
+20) plugins/i18n_gallery/configure.php:120
+
+    ---------- begin diff ----------
+@@ @@
+       $('#post-thumbwidth, #post-thumbheight').change(changeThumbSize);
+       changeThumbSize();
+ <?php if (isset($msg)) { ?>
+-      $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg); ?>+'</div>');
++      $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg, JSON_THROW_ON_ERROR); ?>+'</div>');
+       $(".updated, .error").fadeOut(500).fadeIn(500);
+ <?php } ?>
+     });
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+21) plugins/i18n_gallery/browser/imagebrowser.php:283
+
+    ---------- begin diff ----------
+@@ @@
+       <?php // foreach ($metadata as &$m) if (!@$m['title']) $m['title'] = basename($m['url']); ?>
+       <script type='text/javascript'>
+         // <![CDATA[
+-        var metadata = <?php echo json_encode($metadata); ?>;
++        var metadata = <?php echo json_encode($metadata, JSON_THROW_ON_ERROR); ?>;
+         function submitLink(i) {
+           var item = metadata[i];
+           if(window.opener){
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+22) plugins/i18n_customfields/edit.php:17
+
+    ---------- begin diff ----------
+@@ @@
+       $link = find_i18n_url($page['url'], $page['parent'], $lang ? $lang : return_i18n_default_language());
+       $pages[] = array($text, $link);
+     }
+-    return json_encode($pages);
++    return json_encode($pages, JSON_THROW_ON_ERROR);
+   } else {
+     return list_pages_json();
+   }
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+23) plugins/i18n_customfields/configure.php:160
+
+    ---------- begin diff ----------
+@@ @@
+     });
+     renumberCustomFields();
+ <?php if (@$msg) { ?>
+-    $('div.bodycontent').before('<div class="updated" style="display:block;">'+<?php echo json_encode($msg); ?>+'</div>');
++    $('div.bodycontent').before('<div class="updated" style="display:block;">'+<?php echo json_encode($msg, JSON_THROW_ON_ERROR); ?>+'</div>');
+ <?php } ?>
+   });
+ </script>
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+24) plugins/i18n_customfields/browser/pagebrowser.php:72
+
+    ---------- begin diff ----------
+@@ @@
+ 	<script type='text/javascript'>
+ 	function submitLink(url,parent) {
+ 		if (window.opener){
+-			window.opener.<?php echo $func; ?>(<?php echo json_encode($sitepath); ?> + (parent ? parent + "/" : "") + url);
++			window.opener.<?php echo $func; ?>(<?php echo json_encode($sitepath, JSON_THROW_ON_ERROR); ?> + (parent ? parent + "/" : "") + url);
+ 		}
+ 		window.close();
+ 	}
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+25) plugins/i18n_customfields.php:44
+
+    ---------- begin diff ----------
+@@ @@
+
+ if (!i18n_customfields_is_frontend() && i18n_customfields_gsversion() == '3.0') {
+   // workaround for GetSimple 3.0:
+-  if (isset($_COOKIE['GS_ADMIN_USERNAME'])) setcookie('GS_ADMIN_USERNAME', $_COOKIE['GS_ADMIN_USERNAME'], 0, '/');
++  if (isset($_COOKIE['GS_ADMIN_USERNAME'])) setcookie('GS_ADMIN_USERNAME', $_COOKIE['GS_ADMIN_USERNAME'], ['expires' => 0, 'path' => '/']);
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+
+
+26) plugins/i18n_base/sitemap.php:12
+
+    ---------- begin diff ----------
+@@ @@
+   $url = 'theme.php?err=' . urlencode($result);
+ }
+ echo $result;
+-echo '<script type="text/javascript">window.location = '.json_encode($url).';</script>';
++echo '<script type="text/javascript">window.location = '.json_encode($url, JSON_THROW_ON_ERROR).';</script>';
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+27) plugins/i18n_base/pages.php:233
+
+    ---------- begin diff ----------
+@@ @@
+ 			<p><em><b><span id="pg_counter"><?php echo $counter; ?></span></b> <?php echo i18n_r('TOTAL_PAGES'); ?></em></p>
+       <script type="text/javascript">
+         // <![CDATA[
+-        var tags = <?php echo json_encode($tags); ?>;
++        var tags = <?php echo json_encode($tags, JSON_THROW_ON_ERROR); ?>;
+         function filterPages() {
+           var s = $.trim($('#filter').val()).toLowerCase();
+           if (s == '' || s == ':') {
+@@ @@
+           filterPages();
+           $('#filter').focus();
+ <?php if (isset($msg)) { ?>
+-          $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg); ?>+'</div>');
++          $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg, JSON_THROW_ON_ERROR); ?>+'</div>');
+ <?php } ?>
+         });
+         // ]]>
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+28) plugins/i18n_base/frontend.class.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ class I18nFrontend {
+   
+-  private static $initialized = false;
+-  private static $languages = null;
++  private static bool $initialized = false;
++  private static ?array $languages = null;
+   
+   public static function getDefaultLanguage() {
+     require_once(GSPLUGINPATH.'i18n_base/basic.class.php');
+@@ @@
+   public static function init() {
+     if (self::$initialized) return;
+     if (isset($_GET[I18N_SET_LANGUAGE_PARAM])) {
+-      setcookie(I18N_LANGUAGE_COOKIE, $_GET[I18N_SET_LANGUAGE_PARAM], 0, '/');
++      setcookie(I18N_LANGUAGE_COOKIE, $_GET[I18N_SET_LANGUAGE_PARAM], ['expires' => 0, 'path' => '/']);
+     }
+     $languages = self::getLanguages();
+     self::$initialized = true;
+    ----------- end diff -----------
+
+Applied rules:
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ * TypedPropertyFromAssignsRector
+
+
+29) plugins/i18n_base/editextras.php:11
+
+    ---------- begin diff ----------
+@@ @@
+   // <![CDATA[
+   $(function() {
+ <?php if (isset($_GET['id'])) { ?>
+-    $('.edit-nav a[target=_blank]').attr('href', <?php echo json_encode($viewlink); ?>);
++    $('.edit-nav a[target=_blank]').attr('href', <?php echo json_encode($viewlink, JSON_THROW_ON_ERROR); ?>);
+ <?php } ?>
+ <?php if (!$id && isset($_GET['newid'])) { ?>
+-    $('#post-id').val(<?php echo json_encode($_GET['newid']); ?>);
++    $('#post-id').val(<?php echo json_encode($_GET['newid'], JSON_THROW_ON_ERROR); ?>);
+ <?php } ?>
+ <?php if (!$id && isset($_GET['title'])) { ?>
+-    $('#post-title').val(<?php echo json_encode($_GET['title']); ?>);
++    $('#post-title').val(<?php echo json_encode($_GET['title'], JSON_THROW_ON_ERROR); ?>);
+ <?php } ?>
+ <?php if (!$id && isset($_GET['metak'])) { ?>
+-    $('#post-metak').val(<?php echo json_encode($_GET['metak']); ?>);
++    $('#post-metak').val(<?php echo json_encode($_GET['metak'], JSON_THROW_ON_ERROR); ?>);
+ <?php } ?>
+ <?php if (!$id && isset($_GET['metad'])) { ?>
+-    $('#post-metad').val(<?php echo json_encode($_GET['metad']); ?>);
++    $('#post-metad').val(<?php echo json_encode($_GET['metad'], JSON_THROW_ON_ERROR); ?>);
+ <?php } ?>
+   });
+   // ]]>
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+30) plugins/hitcount/reader.class.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ class HitcountReader {
+   
+-  private $maxItems;
+-  private $unit;
+-  private $minDate;
+-  private $maxDate;
+-  private $fromDate;
+-  private $toDate;
+-  private $dates;
+-  private $hits;
+-  private $visits;
++  private ?string $unit = null;
++  private int|bool|null $minDate = null;
++  private int|bool|null $maxDate = null;
++  private int|bool $fromDate;
++  private int|bool $toDate;
++  private ?array $dates = null;
++  private array $hits;
++  private array $visits;
+   
+   private $maxValues;
+-  private $totalHits;
++  private array $totalHits;
+   
+   // $from and $to in format 'yyyyMMdd'
+-  public function __construct($from=null, $to=null, $maxItems=60) {
++  public function __construct($from=null, $to=null, private $maxItems=60) {
+   	$this->maxValues = defined('HITCOUNT_MAX_VALUES') ? HITCOUNT_MAX_VALUES : 250;
+-    $this->maxItems = $maxItems;
+     $lines = @file(GSDATAOTHERPATH . HITCOUNT_INDEX_DIR . 'index_dates.txt');
+     $this->fromDate = $this->minDate = mktime(0,0,0,substr($lines[0],4,2),substr($lines[0],6,2),substr(@$lines[0],0,4));
+     $this->toDate = $this->maxDate = mktime(0,0,0,substr($lines[1],4,2),substr($lines[1],6,2),substr(@$lines[1],0,4));
+    ----------- end diff -----------
+
+Applied rules:
+ * ClassPropertyAssignToConstructorPromotionRector (https://wiki.php.net/rfc/constructor_promotion https://github.com/php/php-src/pull/5291)
+ * TypedPropertyFromAssignsRector
+
+
+31) plugins/hitcount/indexer.class.php:166
+
+    ---------- begin diff ----------
+@@ @@
+           }
+           # referer
+           if (preg_match('#^https?://([^/]+)(:\d+)?/#', $referer, $match)) {
+-            if (strpos($match[1],'.') === false || preg_match('#^(127\.|10\.|192\.168\.)#',$match[1]) ||
++            if (!str_contains($match[1],'.') || preg_match('#^(127\.|10\.|192\.168\.)#',$match[1]) ||
+                 preg_match('#^172\.(16|17|18|19|2\d|30|31)\.#',$match[1])) {
+               $val['referer'] = '(private)';    
+               $namesAndValues['referer (private)'] = 1;
+@@ @@
+     @closedir($dir);
+   }
+   
+-}
++}
+    ----------- end diff -----------
+
+Applied rules:
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+
+
+32) plugins/hitcount/country.class.php:122
+
+    ---------- begin diff ----------
+@@ @@
+   }
+   
+   private static function outputProgress($s) {
+-    echo '<script type="text/javascript">$("#progress").text('.json_encode($s).');</script>'."\r\n";
++    echo '<script type="text/javascript">$("#progress").text('.json_encode($s, JSON_THROW_ON_ERROR).');</script>'."\r\n";
+     flush();
+   }
+   
+   private static function redirect($link) {
+-    echo '<script type="text/javascript">window.location = '.json_encode($link).';</script>';
++    echo '<script type="text/javascript">window.location = '.json_encode($link, JSON_THROW_ON_ERROR).';</script>';
+     die;
+   }
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+33) plugins/hitcount/backend.php:176
+
+    ---------- begin diff ----------
+@@ @@
+           // <![CDATA[
+           var svg; 
+           //var colors = ['#FFFFFF','#BDE3C4','#A4DBAE','#8CD199','#78C787','#61BA72','#4EAA5F','#3F924E','#2E7E3C','#266A32','#1D5226'];
+-          var hits = <?php echo json_encode($hits['country']); ?>;
+-          var visits = <?php echo json_encode($visits['country']); ?>;
+-          var titles = <?php echo json_encode($titles); ?>;
++          var hits = <?php echo json_encode($hits['country'], JSON_THROW_ON_ERROR); ?>;
++          var visits = <?php echo json_encode($visits['country'], JSON_THROW_ON_ERROR); ?>;
++          var titles = <?php echo json_encode($titles, JSON_THROW_ON_ERROR); ?>;
+           function setupSVG() {
+             svg = document.getElementById("svg").getSVGDocument();
+             colorizeSVG(hits,"total");
+@@ @@
+     }
+   }
+   HitcountViewer::drawChart('chart',$series,$dates,$unit,i18n_r('hitcount/'.strtoupper($type)).($relative?' (%)':''));
+-  
++
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+34) plugins/hitcount.php:57
+
+    ---------- begin diff ----------
+@@ @@
+   add_action('header', 'hitcount_header');
+   if (hitcount_gsversion() == '3.0') {
+     // workaround for GetSimple 3.0:
+-    if (isset($_COOKIE['GS_ADMIN_USERNAME'])) setcookie('GS_ADMIN_USERNAME', $_COOKIE['GS_ADMIN_USERNAME'], 0, '/');
++    if (isset($_COOKIE['GS_ADMIN_USERNAME'])) setcookie('GS_ADMIN_USERNAME', $_COOKIE['GS_ADMIN_USERNAME'], ['expires' => 0, 'path' => '/']);
+   }
+ }
+ add_action('pre-download', 'hitcount_init_download');  # requires Download Interceptor plugin
+@@ @@
+ if (basename($_SERVER['PHP_SELF']) == 'load.php' && @$_GET['id'] == 'hitcount') {
+   global $SITEURL;
+   if (isset($_GET['setcookie'])) {
+-    setcookie(HITCOUNT_BLACKLIST_COOKIE, '1', time()+HITCOUNT_BLACKLIST_DURATION, parse_url($SITEURL, PHP_URL_PATH));
++    setcookie(HITCOUNT_BLACKLIST_COOKIE, '1', ['expires' => time()+HITCOUNT_BLACKLIST_DURATION, 'path' => parse_url($SITEURL, PHP_URL_PATH)]);
+   } else if (isset($_GET['delcookie'])) {
+-    setcookie(HITCOUNT_BLACKLIST_COOKIE, '', time()-3600, parse_url($SITEURL, PHP_URL_PATH));
++    setcookie(HITCOUNT_BLACKLIST_COOKIE, '', ['expires' => time()-3600, 'path' => parse_url($SITEURL, PHP_URL_PATH)]);
+   }
+ }
+
+@@ @@
+     		'path' => parse_url($SITEURL, PHP_URL_PATH),
+     		'samesite' => 'Lax'))) {
+     	// hack to add samesite:
+-    	setcookie(HITCOUNT_VISIT_COOKIE, $visit, time()+HITCOUNT_VISIT_DURATION, parse_url($SITEURL, PHP_URL_PATH) . '; samesite=lax');
++    	setcookie(HITCOUNT_VISIT_COOKIE, $visit, ['expires' => time()+HITCOUNT_VISIT_DURATION, 'path' => parse_url($SITEURL, PHP_URL_PATH) . '; samesite=lax']);
+     }
+     # hits
+     hitcount_count($hcdir . 'hits_' . preg_replace('/[^A-Za-z0-9\.-]+/','_',$slugOrFile) . '.txt');
+@@ @@
+ }
+
+ function ip6hex($ip4or6) {
+-	if (strpos($ip4or6, ':') === false) {
++	if (!str_contains($ip4or6, ':')) {
+ 		return sprintf('ffff%08x', ip2long($ip4or6));
+ 	} else {
+ 		$ip6hex = '';
+@@ @@
+ 		foreach (unpack('H*', inet_pton($ip4or6)) as $hex) $ip6hex .= $hex;
+ 		return $ip6hex;
+ 	}
+-}
++}
+    ----------- end diff -----------
+
+Applied rules:
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+
+
+35) plugins/gs_plugin_installer/PluginInstaller.class.php:43
+
+    ---------- begin diff ----------
+@@ @@
+             } else {
+                 // If the cache is fresh enough, we just load the data from it instead.
+                 $cachedata = file_get_contents($this->cache_path);
+-                $this->plugins = json_decode($cachedata);
++                $this->plugins = json_decode($cachedata, null, 512, JSON_THROW_ON_ERROR);
+             }
+         } else {
+             // We have no cache file, fetch from API
+@@ @@
+     {
+         if (!$file) $file = $this->cache_path;
+
+-        $data = json_encode($data);
++        $data = json_encode($data, JSON_THROW_ON_ERROR);
+
+         $cache_directory = dirname($file);
+
+@@ @@
+             $json = file_get_contents($url);
+         }
+
+-        $data = json_decode($json);
++        $data = json_decode($json, null, 512, JSON_THROW_ON_ERROR);
+
+         return $data;
+     }
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+36) plugins/imanager/lib/processors/inputs/InputSlug.php:16
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * This method checks the field inputs and sets the field contents.
+-	 * If an error occurs, the method returns an error code.
+-	 *
+-	 * @param $value
+-	 * @param bool $sanitize
+-	 *
+-	 * @return int|stdClass
+-	 */
+-	public function prepareInput($value, $sanitize = false)
++  * This method checks the field inputs and sets the field contents.
++  * If an error occurs, the method returns an error code.
++  *
++  * @param $value
++  * @param bool $sanitize
++  */
++ public function prepareInput($value, $sanitize = false): int|\stdClass
+ 	{
+ 		// Set empty value, the input isn't required
+ 		if(empty($value) && !$this->required) {
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+37) plugins/imanager/lib/processors/inputs/InputPassword.php:42
+
+    ---------- begin diff ----------
+@@ @@
+     public $password = null;
+
+ 	/**
+-	 * InputPassword constructor.
+-	 *
+-	 * @param Field $field
+-	 */
+-	public function __construct(Field $field)
++  * InputPassword constructor.
++  */
++ public function __construct(Field $field)
+ 	{
+ 		/**
+ 		 * Set the field object
+@@ @@
+ 	}
+
+ 	/**
+-	 * This method checks the field inputs and sets the field contents.
+-	 * If an error occurs, the method returns an error code.
+-	 *
+-	 * @param $value
+-	 * @param bool $sanitize
+-	 *
+-	 * @return int|stdClass
+-	 */
+-	public function prepareInput($value, $sanitize = false)
++  * This method checks the field inputs and sets the field contents.
++  * If an error occurs, the method returns an error code.
++  *
++  * @param $value
++  * @param bool $sanitize
++  */
++ public function prepareInput($value, $sanitize = false): int|\stdClass
+ 	{
+ 		$value = trim($value);
+ 		$this->confirm = trim($this->confirm);
+    ----------- end diff -----------
+
+Applied rules:
+ * ClassPropertyAssignToConstructorPromotionRector (https://wiki.php.net/rfc/constructor_promotion https://github.com/php/php-src/pull/5291)
+ * MixedTypeRector
+ * UnionTypesRector
+
+
+38) plugins/imanager/lib/processors/inputs/InputMoney.php:16
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * This method checks the field inputs and sets the field contents.
+-	 * If an error occurs, the method returns an error code.
+-	 *
+-	 * @param $value
+-	 * @param bool $sanitize
+-	 *
+-	 * @return int|stdClass
+-	 */
+-	public function prepareInput($value, $sanitize = false)
++  * This method checks the field inputs and sets the field contents.
++  * If an error occurs, the method returns an error code.
++  *
++  * @param $value
++  * @param bool $sanitize
++  */
++ public function prepareInput($value, $sanitize = false): int|\stdClass
+ 	{
+ 		// Set empty value, the input isn't required
+ 		if(empty($value) && !$this->required) {
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+39) plugins/imanager/lib/processors/inputs/InputHidden.php:13
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * This method checks the field inputs and sets the field contents.
+-	 * If an error occurs, the method returns an error code.
+-	 *
+-	 * @param $value
+-	 * @param bool $sanitize
+-	 *
+-	 * @return int|stdClass
+-	 */
+-	public function prepareInput($value, $sanitize = false) {
++  * This method checks the field inputs and sets the field contents.
++  * If an error occurs, the method returns an error code.
++  *
++  * @param $value
++  * @param bool $sanitize
++  */
++ public function prepareInput($value, $sanitize = false): int|\stdClass {
+ 		return parent::prepareInput($value, $sanitize);
+ 	}
+
+ 	public function prepareOutput(){ return $this->values; }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+40) plugins/imanager/lib/processors/inputs/InputFilepicker.php:11
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * This method checks the field inputs and sets the field contents.
+-	 * If an error occurs, the method returns an error code.
+-	 *
+-	 * @param $value
+-	 * @param bool $sanitize
+-	 *
+-	 * @return int|stdClass
+-	 */
+-	public function prepareInput($value, $sanitize = false) {
++  * This method checks the field inputs and sets the field contents.
++  * If an error occurs, the method returns an error code.
++  *
++  * @param $value
++  * @param bool $sanitize
++  */
++ public function prepareInput($value, $sanitize = false): int|\stdClass {
+ 		return parent::prepareInput($value, $sanitize);
+ 	}
+
+ 	public function prepareOutput(){ return $this->values; }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+41) plugins/imanager/lib/processors/inputs/InputEditor.php:11
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * This method checks the field inputs and sets the field contents.
+-	 * If an error occurs, the method returns an error code.
+-	 *
+-	 * @param $value
+-	 * @param bool $sanitize
+-	 *
+-	 * @return int|stdClass
+-	 */
+-	public function prepareInput($value, $sanitize = false) {
++  * This method checks the field inputs and sets the field contents.
++  * If an error occurs, the method returns an error code.
++  *
++  * @param $value
++  * @param bool $sanitize
++  */
++ public function prepareInput($value, $sanitize = false): int|\stdClass {
+ 		return parent::prepareInput($value, $sanitize);
+ 	}
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+42) plugins/imanager/lib/processors/inputs/InputDropdown.php:11
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * This method checks the field inputs and sets the field contents.
+-	 * If an error occurs, the method returns an error code.
+-	 *
+-	 * @param $value
+-	 * @param bool $sanitize
+-	 *
+-	 * @return int|stdClass
+-	 */
+-	public function prepareInput($value, $sanitize = false) {
++  * This method checks the field inputs and sets the field contents.
++  * If an error occurs, the method returns an error code.
++  *
++  * @param $value
++  * @param bool $sanitize
++  */
++ public function prepareInput($value, $sanitize = false): int|\stdClass {
+ 		return parent::prepareInput($value, $sanitize);
+ 	}
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+43) plugins/imanager/lib/processors/inputs/InputDatepicker.php:16
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * This method checks the field inputs and sets the field contents.
+-	 * If an error occurs, the method returns an error code.
+-	 *
+-	 * @param $value
+-	 * @param bool $sanitize
+-	 *
+-	 * @return int|stdClass
+-	 */
+-	public function prepareInput($value, $sanitize = false)
++  * This method checks the field inputs and sets the field contents.
++  * If an error occurs, the method returns an error code.
++  *
++  * @param $value
++  * @param bool $sanitize
++  */
++ public function prepareInput($value, $sanitize = false): int|\stdClass
+ 	{
+ 		$this->values = parent::prepareInput($value, $sanitize);
+ 		if($this->values->value) {
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+44) plugins/imanager/lib/processors/inputs/InputChunk.php:11
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * This method checks the field inputs and sets the field contents.
+-	 * If an error occurs, the method returns an error code.
+-	 *
+-	 * @param $value
+-	 * @param bool $sanitize
+-	 *
+-	 * @return int|stdClass
+-	 */
+-	public function prepareInput($value, $sanitize = false) {
++  * This method checks the field inputs and sets the field contents.
++  * If an error occurs, the method returns an error code.
++  *
++  * @param $value
++  * @param bool $sanitize
++  */
++ public function prepareInput($value, $sanitize = false): int|\stdClass {
+ 		return parent::prepareInput(base64_decode($value), false);
+ 	}
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+45) plugins/imanager/lib/processors/inputs/InputCheckbox.php:11
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * This method checks the field inputs and sets the field contents.
+-	 * If an error occurs, the method returns an error code.
+-	 *
+-	 * @param $value
+-	 * @param bool $sanitize
+-	 *
+-	 * @return int|stdClass
+-	 */
+-	public function prepareInput($value, $sanitize = false)
++  * This method checks the field inputs and sets the field contents.
++  * If an error occurs, the method returns an error code.
++  *
++  * @param $value
++  * @param bool $sanitize
++  */
++ public function prepareInput($value, $sanitize = false): int|\stdClass
+ 	{
+ 		// Set empty value, the input isn't required
+ 		if(empty($value) && !$this->required) {
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+46) plugins/imanager/lib/processors/fields/FieldSlug.php:15
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * Renders the field markup
+-	 *
+-	 * @param bool $sanitize
+-	 *
+-	 * @return bool|Template
+-	 */
+-	public function render($sanitize = false) {
++  * Renders the field markup
++  *
++  * @param bool $sanitize
++  */
++ public function render($sanitize = false): bool|\Template {
+ 		return parent::render(true);
+ 	}
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+47) plugins/imanager/lib/processors/fields/FieldPassword.php:11
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * Renders the field markup
+-	 *
+-	 * @param bool $sanitize
+-	 *
+-	 * @return bool|Template
+-	 */
+-	public function render($sanitize = false)
++  * Renders the field markup
++  *
++  * @param bool $sanitize
++  */
++ public function render($sanitize = false): bool|\Template
+ 	{
+ 		if(is_null($this->name)) { return false; }
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+48) plugins/imanager/lib/processors/fields/FieldMoney.php:11
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * Renders the field markup
+-	 *
+-	 * @param bool $sanitize
+-	 *
+-	 * @return bool|Template
+-	 */
+-	public function render($sanitize = false)
++  * Renders the field markup
++  *
++  * @param bool $sanitize
++  */
++ public function render($sanitize = false): bool|\Template
+ 	{
+ 		if(is_null($this->name)) { return false; }
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+49) plugins/imanager/lib/processors/fields/FieldLongtext.php:5
+
+    ---------- begin diff ----------
+@@ @@
+ 	 * @var int
+ 	 * MEDIUMTEXT 16,777,215 bytes ~16MB
+ 	 */
+-	protected $maxLen = 16777215;
++	protected $maxLen = 16_777_215;
+
+ 	public function __construct(TemplateEngine $tpl) {
+ 		parent::__construct($tpl);
+    ----------- end diff -----------
+
+Applied rules:
+ * AddLiteralSeparatorToNumberRector (https://wiki.php.net/rfc/numeric_literal_separator)
+
+
+50) plugins/imanager/lib/processors/fields/FieldFileupload.php:21
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * Renders the field markup
+-	 *
+-	 * @param bool $sanitize
+-	 *
+-	 * @return bool|Template
+-	 */
+-	public function render($sanitize = false)
++  * Renders the field markup
++  *
++  * @param bool $sanitize
++  */
++ public function render($sanitize = false): bool|\Template
+ 	{
+ 		if(is_null($this->name)) { return false; }
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+51) plugins/imanager/lib/processors/fields/FieldFilepicker.php:11
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * Renders the field markup
+-	 *
+-	 * @param bool $sanitize
+-	 *
+-	 * @return bool|Template
+-	 */
+-	public function render($sanitize = false)
++  * Renders the field markup
++  *
++  * @param bool $sanitize
++  */
++ public function render($sanitize = false): bool|\Template
+ 	{
+ 		if(is_null($this->name)) { return false; }
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+52) plugins/imanager/lib/processors/fields/FieldEditor.php:11
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * Renders the field markup
+-	 *
+-	 * @param bool $sanitize
+-	 *
+-	 * @return bool|Template
+-	 */
+-	public function render($sanitize = false)
++  * Renders the field markup
++  *
++  * @param bool $sanitize
++  */
++ public function render($sanitize = false): bool|\Template
+ 	{
+ 		if(is_null($this->name)) { return false; }
+
+@@ @@
+ 				$link = find_i18n_url($page['url'], $page['parent'], $lang ? $lang : return_i18n_default_language());
+ 				$pages[] = array($text, $link);
+ 			}
+-			return json_encode($pages);
++			return json_encode($pages, JSON_THROW_ON_ERROR);
+ 		} else {
+ 			return list_pages_json();
+ 		}
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * UnionTypesRector
+
+
+53) plugins/imanager/lib/processors/fields/FieldDropdown.php:16
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * Renders the field markup
+-	 *
+-	 * @param bool $sanitize
+-	 *
+-	 * @return bool|Template
+-	 */
+-	public function render($sanitize = false)
++  * Renders the field markup
++  *
++  * @param bool $sanitize
++  */
++ public function render($sanitize = false): bool|\Template
+ 	{
+ 		if(is_null($this->name)) { return false; }
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+54) plugins/imanager/lib/processors/fields/FieldDatepicker.php:16
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * Renders the field markup
+-	 *
+-	 * @param bool $sanitize
+-	 *
+-	 * @return bool|string|Template
+-	 */
+-	public function render($sanitize = false)
++  * Renders the field markup
++  *
++  * @param bool $sanitize
++  */
++ public function render($sanitize = false): bool|string|\Template
+ 	{
+ 		if(is_null($this->name)) { return false; }
+
+@@ @@
+
+ 		$value = '';
+ 		if(!empty($this->value)) {
+-			switch($format) {
+-				case 'dd-mm-yy':
+-					$value = @date('d-m-Y', $this->value);
+-					break;
+-				case 'yy/mm/dd':
+-					$value = @date('Y/m/d', $this->value);
+-					break;
+-				case 'dd/mm/yy':
+-					$value = @date('d/m/Y', $this->value);
+-					break;
+-				case 'yy.mm.dd':
+-					$value = @date('Y.m.d', $this->value);
+-					break;
+-				case 'dd.mm.yy':
+-					$value = @date('d.m.Y', $this->value);
+-					break;
+-				default:
+-					$value = @date('Y-m-d', $this->value);
+-					break;
+-			}
++			$value = match ($format) {
++       'dd-mm-yy' => @date('d-m-Y', $this->value),
++       'yy/mm/dd' => @date('Y/m/d', $this->value),
++       'dd/mm/yy' => @date('d/m/Y', $this->value),
++       'yy.mm.dd' => @date('Y.m.d', $this->value),
++       'dd.mm.yy' => @date('d.m.Y', $this->value),
++       default => @date('Y-m-d', $this->value),
++   };
+ 		}
+
+ 		$output = $this->tpl->render($textfield, array(
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+ * ChangeSwitchToMatchRector (https://wiki.php.net/rfc/match_expression_v2)
+
+
+55) plugins/imanager/lib/processors/fields/FieldChunk.php:11
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * Renders the field markup
+-	 *
+-	 * @param bool $sanitize
+-	 *
+-	 * @return bool|Template
+-	 */
+-	public function render($sanitize = false)
++  * Renders the field markup
++  *
++  * @param bool $sanitize
++  */
++ public function render($sanitize = false): bool|\Template
+ 	{
+ 		if(is_null($this->name)) { return false; }
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+56) plugins/i18n_specialpages/conf_edit.php:568
+
+    ---------- begin diff ----------
+@@ @@
+       $('#ed_textarea').dialog('close');
+     });
+ <?php if (@$msg) { ?>
+-    $('div.bodycontent').before('<div class="<?php echo @$success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg); ?>+'</div>');
++    $('div.bodycontent').before('<div class="<?php echo @$success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg, JSON_THROW_ON_ERROR); ?>+'</div>');
+     $(".updated, .error").fadeOut(500).fadeIn(500);
+ <?php } ?>
+   });
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+57) plugins/i18n_specialpages/browser/pagebrowser.php:71
+
+    ---------- begin diff ----------
+@@ @@
+ 	<script type='text/javascript'>
+ 	function submitLink(url,parent) {
+ 		if (window.opener){
+-			window.opener.<?php echo $func; ?>(<?php echo json_encode($sitepath); ?> + (parent ? parent + "/" : "") + url);
++			window.opener.<?php echo $func; ?>(<?php echo json_encode($sitepath, JSON_THROW_ON_ERROR); ?> + (parent ? parent + "/" : "") + url);
+ 		}
+ 		window.close();
+ 	}
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+58) plugins/i18n_specialpages/backend.class.php:20
+
+    ---------- begin diff ----------
+@@ @@
+       </head>
+       <body>
+         <a href="<? echo htmlspecialchars($link); ?>">Continue to I18N Special Pages ...</a>
+-        <script type="text/javascript">window.location = <?php echo json_encode($link); ?></script>
++        <script type="text/javascript">window.location = <?php echo json_encode($link, JSON_THROW_ON_ERROR); ?></script>
+       </body>
+       </html>
+       <?php
+@@ @@
+       $toolbar = GSEDITORTOOL;
+     }
+     ?>
+-    <?php echo $editorvar; ?> = CKEDITOR.replace(<?php echo json_encode($fieldname); ?>, {
++    <?php echo $editorvar; ?> = CKEDITOR.replace(<?php echo json_encode($fieldname, JSON_THROW_ON_ERROR); ?>, {
+           skin : 'getsimple',
+           forcePasteAsPlainText : true,
+           language : '<?php echo $EDLANG; ?>',
+@@ @@
+         $link = find_i18n_url($page['url'], $page['parent'], $lang ? $lang : return_i18n_default_language());
+         $pages[] = array($text, $link);
+       }
+-      return json_encode($pages);
++      return json_encode($pages, JSON_THROW_ON_ERROR);
+     } else {
+       return list_pages_json();
+     }
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+59) plugins/i18n_specialpages.php:85
+
+    ---------- begin diff ----------
+@@ @@
+   
+   if (i18n_specialpages_gsversion() == '3.0') {
+     // workaround for GetSimple 3.0:
+-    if (isset($_COOKIE['GS_ADMIN_USERNAME'])) setcookie('GS_ADMIN_USERNAME', $_COOKIE['GS_ADMIN_USERNAME'], 0, '/');
++    if (isset($_COOKIE['GS_ADMIN_USERNAME'])) setcookie('GS_ADMIN_USERNAME', $_COOKIE['GS_ADMIN_USERNAME'], ['expires' => 0, 'path' => '/']);
+   }
+ } else {
+   # front end
+    ----------- end diff -----------
+
+Applied rules:
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+
+
+60) plugins/i18n_search/viewer.class.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ class I18nSearchViewer {
+   
+-  private static $rssHeaders = array();
++  private static array $rssHeaders = array();
+   
+   # ===== PUBLIC FUNCTIONS =====
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyFromAssignsRector
+
+
+61) plugins/i18n_search/searchresults.php:13
+
+    ---------- begin diff ----------
+@@ @@
+       }
+     }
+     $newitems = array();
+-    foreach ($groups as $group) $newitems = array_merge($newitems, $group);
++    foreach ($groups as $group) $newitems = [...$newitems, ...$group];
+     return $newitems;
+   }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ArraySpreadInsteadOfArrayMergeRector (https://wiki.php.net/rfc/spread_operator_for_array)
+
+
+62) plugins/i18n_search/searchform.php:45
+
+    ---------- begin diff ----------
+@@ @@
+       $('.tags').show();
+       $('.tags .tag').click(function(e) {
+         var $form = $(e.target).closest('form');
+-        var tags = <?php echo json_encode($addTags); ?>;
++        var tags = <?php echo json_encode($addTags, JSON_THROW_ON_ERROR); ?>;
+         $(e.target).toggleClass('selected');
+         $form.find('.tags .tag.selected').each(function() { tags += ' '+$(this).text().replace(' ','_'); });
+         $form.find('[name=tags]').val(tags);
+@@ @@
+         } else {
+           $.ajax({
+             url:<?php echo json_encode($SITEURL.'plugins/i18n_search/ajax/tags4tags.php'); ?>, 
+-            data:{tags:tags<?php if ($reqlangs !== null) echo ', langs:'.json_encode($reqlangs); ?>},
++            data:{tags:tags<?php if ($reqlangs !== null) echo ', langs:'.json_encode($reqlangs, JSON_THROW_ON_ERROR); ?>},
+             success:function(data,textStatus,jqXHR) {
+               $form.find('.tags .tag').each(function() { 
+                 if (data[$(this).text().replace(' ','_')] > 0) $(this).removeClass('unavailable'); else $(this).addClass('unavailable')
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+63) plugins/i18n_search/searcher.class.php:4
+
+    ---------- begin diff ----------
+@@ @@
+ # obj->more will return true, if there is more content
+ class I18nSearchExcerpt implements \Stringable {
+   
+-  private $text = '';
+-  private $more = false;
+-  private $moreText = '';
++  private string $text = '';
++  private bool $more = false;
++  private string $moreText = '';
+   
+   # the length can be a positive number for the number of words
+   # or a positive number followed by 'p' or 'pm' for the number of paragraphs (pm: add a <p>...</p> if there is more)
+@@ @@
+ # the search class
+ class I18nSearcher {
+   
+-  private $tags = null;
+-  private $words = null;
+-  private $transliteration = null;
++  private bool|array|null $tags = null;
++  private bool|array|null $words = null;
++  private ?array $transliteration = null;
+   
+   # for sorting
+-  private $sort_field = null;
+-  private $sort_order = '+';
++  private ?string $sort_field = null;
++  private string $sort_order = '+';
+   
+   public static function &search($tags=null, $words=null, $order=null, $lang=null) {
+     $results = array();
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyFromAssignsRector
+
+
+64) plugins/i18n_search/marker.class.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ class I18nSearchMarker {
+   
+-  private static $words = null;
++  private static ?array $words = null;
+   
+   public static function getWords() {
+     if (self::$words !== null) return self::$words;
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyFromAssignsRector
+
+
+65) plugins/i18n_search/indexer.class.php:1
+
+    ---------- begin diff ----------
+@@ @@
+ # a class representing a page during the indexing
+ class I18nSearchPageItem {
+   
+-  static private $isi18n;
++  static private ?bool $isi18n = null;
+   static private $defaultLanguage;
+   private $defdata = null; // data of default language
+-  private $id;
++  private ?string $id = null;
+   private $language = '';
+-  private $tags = array();
+-  private $creDate;
+-  private $pubDate;
+-  private $title = '';
+-  private $content = '';
+-  private $fields = array();
++  private array|bool $tags = array();
++  private int|bool $creDate;
++  private int|bool $pubDate;
++  private string $title = '';
++  private string $content = '';
++  private array $fields = array();
+
+   public function __construct(private $data) {
+     if (!isset(self::$isi18n)) {
+@@ @@
+ // the indexer
+ class I18nSearchIndexer {
+
+-  static private $instance = null;
+-  static private $ismb = false; 
+-  static private $isi18n = false;
++  static private ?\I18nSearchIndexer $instance = null;
++  static private bool $ismb = false; 
++  static private bool $isi18n = false;
+   static private $defaultLanguage;
+   
+-  private $tags = array();  // $tags[$tag]["$id_$language"] = 1
+-  private $words = array(); // $words[$word]["$id_$language"] = num
+-  private $dates = array(); // $dates["$id_$language"] = "$pubDate $creDate"
+-  private $itemTags = array(); // $itemTags["$id_$language"] = array("tag1", ...)
++  private array $tags = array();  // $tags[$tag]["$id_$language"] = 1
++  private array $words = array(); // $words[$word]["$id_$language"] = num
++  private array $dates = array(); // $dates["$id_$language"] = "$pubDate $creDate"
++  private array $itemTags = array(); // $itemTags["$id_$language"] = array("tag1", ...)
+
+-  private $tagWeight = I18N_TAG_WEIGHT;
+-  private $titleWeight = I18N_TITLE_WEIGHT;
+-  private $contentWeight = I18N_CONTENT_WEIGHT;
+-  private $tagMode = I18N_TAGS_LANG_OR_DEFLANG;
++  private int $tagWeight = I18N_TAG_WEIGHT;
++  private int $titleWeight = I18N_TITLE_WEIGHT;
++  private int $contentWeight = I18N_CONTENT_WEIGHT;
++  private int $tagMode = I18N_TAGS_LANG_OR_DEFLANG;
+   
+   public static function index() {
+     if (!self::$instance) {
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyFromAssignsRector
+
+
+66) plugins/i18n_search/configure.php:120
+
+    ---------- begin diff ----------
+@@ @@
+   <script type="text/javascript">
+     $(function() {
+ <?php if (isset($msg)) { ?>
+-      $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg); ?>+'</div>');
++      $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg, JSON_THROW_ON_ERROR); ?>+'</div>');
+ <?php } ?>
+     });
+   </script>
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+67) plugins/i18n_search/ajax/tags4tags.php:46
+
+    ---------- begin diff ----------
+@@ @@
+   }
+   fclose($f);
+ }
+-echo json_encode($remainingtags);
++echo json_encode($remainingtags, JSON_THROW_ON_ERROR);
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+68) plugins/i18n_navigation/structure.php:401
+
+    ---------- begin diff ----------
+@@ @@
+         $('#editnav input.modifyable').blur(finishEdit);
+         $('#navlang').change(changeLanguage);
+ <?php if (isset($msg)) { ?>
+-        $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg); ?>+'</div>');
++        $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg, JSON_THROW_ON_ERROR); ?>+'</div>');
+ 	      $(".updated, .error").fadeOut(500).fadeIn(500);
+ <?php } ?>
+       });
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+69) plugins/i18n_navigation/frontend.class.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ class I18nNavigationFrontend {
+
+-  private static $pages = null;
++  private static ?array $pages = null;
+
+   public static function redirectIfLink() {
+     if (function_exists('return_custom_field')) {
+@@ @@
+
+ class I18nNavigationItem {
+   
+-  private $text;
+-  private $title;
++  private string $text;
++  private string $title;
+   private $deflang = null;
+-  private $data = array();
++  private array $data = array();
+   
+   public function __construct(private $item, private $classes, $text, $title, private $showTitles, private $component) {
+     $this->text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyFromAssignsRector
+
+
+70) plugins/i18n_navigation/editorinit.php:24
+
+    ---------- begin diff ----------
+@@ @@
+     for (var i=0; i<infoTab.elements.length; i++) {
+       var element = infoTab.elements[i];
+       if ('id' in element && element.id == 'localPageOptions') {
+-        element.children[0].items = <?php echo json_encode($pages); ?>;
++        element.children[0].items = <?php echo json_encode($pages, JSON_THROW_ON_ERROR); ?>;
+       }
+     }
+   });
+@@ @@
+ </script>
+ <?php
+   }
+-?> 
++?>
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+71) plugins/i18n_navigation/editextras.php:17
+
+    ---------- begin diff ----------
+@@ @@
+   if ($siblings) $myindex = array_search($url, $siblings); else $myindex = false;
+   $after = $myindex !== false && $myindex > 0 ? $siblings[$myindex-1] : '';
+ ?>
+-  var after = <?php echo json_encode($after); ?>;
++  var after = <?php echo json_encode($after, JSON_THROW_ON_ERROR); ?>;
+   function changeParent() {
+     $parent = $('#post-parent').val();
+ <?php
+@@ @@
+         if ($children[$i] != $url) $options .= '<option value="'.$children[$i].'">'.$pages[$children[$i]]['title'].'</option>';
+       }
+ ?>
+-    } else if ($parent == <?php echo json_encode($page['url']); ?>) {
++    } else if ($parent == <?php echo json_encode($page['url'], JSON_THROW_ON_ERROR); ?>) {
+        $('#post-menu-order').empty().html(<?php echo json_encode($firstoption.$options); ?>);
+ <?php
+     }
+@@ @@
+   }
+ ?>
+     } else {
+-       $('#post-menu-order').empty().html(<?php echo json_encode($firstoption); ?>);
++       $('#post-menu-order').empty().html(<?php echo json_encode($firstoption, JSON_THROW_ON_ERROR); ?>);
+     } 
+     $('#post-menu-order').val(after);     
+   }
+@@ @@
+       }
+     }
+   }
+-  var tags = <?php echo json_encode($tags); ?>;
++  var tags = <?php echo json_encode($tags, JSON_THROW_ON_ERROR); ?>;
+   $(function() {
+     $fParent = $('#post-parent');
+     $fParent.empty();
+@@ @@
+       $('#post-menu').prev().remove();
+       $('#post-menu').prev().remove();
+       $('#post-menu').prev().remove();
+-      $('#post-menu').before('<span style="text-transform:none"><label for="post-menu">' + <?php echo json_encode(i18n_r('MENU_TEXT')); ?> + '</label></span>');
++      $('#post-menu').before('<span style="text-transform:none"><label for="post-menu">' + <?php echo json_encode(i18n_r('MENU_TEXT'), JSON_THROW_ON_ERROR); ?> + '</label></span>');
+       $('#post-menu-order').attr('style','clear:both;').addClass('short');
+-      $('#post-menu-order').before('<span style="text-transform:none;float:left;"><label for="post-menu">' + <?php echo json_encode(i18n_r('i18n_navigation/INSERT_AFTER')); ?> + '</label></span>');
++      $('#post-menu-order').before('<span style="text-transform:none;float:left;"><label for="post-menu">' + <?php echo json_encode(i18n_r('i18n_navigation/INSERT_AFTER'), JSON_THROW_ON_ERROR); ?> + '</label></span>');
+     } else if ($('div.leftopt').size() > 0) { // GetSimple 3.0
+       $('label[for=post-menu-enable]').nextUntil('input').remove();
+       $('#menu-items').css('height','auto');
+@@ @@
+       $('#post-menu').prev().remove();
+       $('#post-menu').prev().remove();
+       $('#post-menu').prev().remove();
+-      $('#post-menu').before('<label for="post-menu">' + <?php echo json_encode(i18n_r('MENU_TEXT')); ?> + '</label>');
++      $('#post-menu').before('<label for="post-menu">' + <?php echo json_encode(i18n_r('MENU_TEXT'), JSON_THROW_ON_ERROR); ?> + '</label>');
+       $('#post-menu-order').attr('style','').addClass('short');
+-      $('#post-menu-order').before('<label for="post-menu">' + <?php echo json_encode(i18n_r('i18n_navigation/INSERT_AFTER')); ?> + '</label>');
++      $('#post-menu-order').before('<label for="post-menu">' + <?php echo json_encode(i18n_r('i18n_navigation/INSERT_AFTER'), JSON_THROW_ON_ERROR); ?> + '</label>');
+     } else {
+       $a = $('#post-menu-enable').closest('td').find('a');
+       $a.after($a.html());
+       $a.remove();
+-      $('#post-menu').closest('div').find('span').empty().html(<?php echo json_encode(i18n_r('MENU_TEXT')); ?>);
++      $('#post-menu').closest('div').find('span').empty().html(<?php echo json_encode(i18n_r('MENU_TEXT'), JSON_THROW_ON_ERROR); ?>);
+       $('#post-menu').attr('style','').after(<?php echo json_encode('<br /><span>'.i18n_r('i18n_navigation/INSERT_AFTER').'</span>'); ?>);
+       $('#post-menu-order').attr('style','').before('<br />');
+     }
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+72) plugins/i18n_gallery/plugin_supersized.php:127
+
+    ---------- begin diff ----------
+@@ @@
+ $first = true;
+ foreach ($gallery['items'] as $item) { 
+ ?>
+-          <?php if (!$first) echo ', '; ?>{ image: <?php echo json_encode(i18n_gallery_image_link($gallery,$item,false)); ?>, title: <?php echo json_encode(@$item["_title"]); ?>, thumb:<?php echo json_encode(i18n_gallery_thumb_link($gallery,$item,false)); ?>, url: <?php echo json_encode(i18n_gallery_site_link()); ?> }
++          <?php if (!$first) echo ', '; ?>{ image: <?php echo json_encode(i18n_gallery_image_link($gallery,$item,false), JSON_THROW_ON_ERROR); ?>, title: <?php echo json_encode(@$item["_title"], JSON_THROW_ON_ERROR); ?>, thumb:<?php echo json_encode(i18n_gallery_thumb_link($gallery,$item,false), JSON_THROW_ON_ERROR); ?>, url: <?php echo json_encode(i18n_gallery_site_link(), JSON_THROW_ON_ERROR); ?> }
+ <?php 
+   $first = false;
+ } 
+@@ @@
+ ?>
+ 				]
+ <?php foreach ($gallery as $key => $value) if (substr($key,0,2) == 'x-') { ?>
+-          ,<?php echo substr($key,2); ?>: <?php echo preg_match('/^(null|true|false|\d+)$/',$value) ? $value : json_encode($value); ?>
++          ,<?php echo substr($key,2); ?>: <?php echo preg_match('/^(null|true|false|\d+)$/',$value) ? $value : json_encode($value, JSON_THROW_ON_ERROR); ?>
+ <?php } ?>
+       }); 
+     });
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+73) plugins/i18n_gallery/plugin_prettyphoto.php:227
+
+    ---------- begin diff ----------
+@@ @@
+         <?php i18n_gallery_replace_nojs_links($gallery, '$sel'); ?>
+         $sel.prettyPhoto({
+ <?php if (i18n_gallery_check($gallery,'autostart',false) && $pic == null) echo "autoplay_slideshow: true, "; ?>
+-<?php if (@$gallery['theme']) echo "theme: ".json_encode($gallery['theme']).", "; ?>
++<?php if (@$gallery['theme']) echo "theme: ".json_encode($gallery['theme'], JSON_THROW_ON_ERROR).", "; ?>
+ <?php if (intval(@$gallery['interval'])) echo "slideshow: ".intval(@$gallery['interval']).", "; ?>
+           social_tools: false
+ <?php foreach ($gallery as $key => $value) if (substr($key,0,2) == 'x-') { ?>
+-          ,<?php echo substr($key,2); ?>: <?php echo preg_match('/^(null|true|false|\d+)$/',$value) ? $value : json_encode($value); ?>
++          ,<?php echo substr($key,2); ?>: <?php echo preg_match('/^(null|true|false|\d+)$/',$value) ? $value : json_encode($value, JSON_THROW_ON_ERROR); ?>
+ <?php } ?>
+         });
+ <?php if (i18n_gallery_is_goto_image($pic)) { ?>
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+74) plugins/i18n_gallery/plugin_fancybox.php:214
+
+    ---------- begin diff ----------
+@@ @@
+ <?php } ?>          
+           cyclic: true
+ <?php foreach ($gallery as $key => $value) if (substr($key,0,2) == 'x-') { ?>
+-          ,<?php echo substr($key,2); ?>: <?php echo preg_match('/^(null|true|false|\d+)$/',$value) ? $value : json_encode($value); ?>
++          ,<?php echo substr($key,2); ?>: <?php echo preg_match('/^(null|true|false|\d+)$/',$value) ? $value : json_encode($value, JSON_THROW_ON_ERROR); ?>
+ <?php } ?>
+         });
+ <?php if (i18n_gallery_is_goto_image($pic)) { ?>
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+75) plugins/i18n_gallery/plugin_cycle.php:320
+
+    ---------- begin diff ----------
+@@ @@
+       $('.gallery-cycle.gallery-<?php echo $id; ?> .gallery-control').empty();
+ 		  $('.gallery-cycle.gallery-<?php echo $id; ?> .gallery-container').cycle({ 
+         slideExpr: '.gallery-slide',
+-		    fx: <?php echo @$gallery['effect'] ? json_encode($gallery['effect']) : 'scrollLeft'; ?>, 
++		    fx: <?php echo @$gallery['effect'] ? json_encode($gallery['effect'], JSON_THROW_ON_ERROR) : 'scrollLeft'; ?>, 
+ 		    speed: 1000,
+ 		    timeout: <?php echo @$gallery['interval'] ? intval(@$gallery['interval']) : 5000; ?>,
+ 		    pause: 1,
+@@ @@
+         },
+ <?php } ?>
+ <?php foreach ($gallery as $key => $value) if (substr($key,0,2) == 'x-') { ?>
+-        <?php echo substr($key,2); ?>: <?php echo preg_match('/^(null|true|false|\d+)$/',$value) ? $value : json_encode($value); ?>,
++        <?php echo substr($key,2); ?>: <?php echo preg_match('/^(null|true|false|\d+)$/',$value) ? $value : json_encode($value, JSON_THROW_ON_ERROR); ?>,
+ <?php } ?>
+ 		    pager:  '.gallery-cycle.gallery-<?php echo $id; ?> .gallery-control',
+ 		    pagerAnchorBuilder: function(idx, slide) { return '<a href="#">'+<?php echo $navtype == 'numbers' ? '(idx+1)' : "'&#149;'"; ?>+'</a>'; }
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+76) plugins/imanager/phpthumb/thumb_plugins/gd_reflection.inc.php:95
+
+    ---------- begin diff ----------
+@@ @@
+ 		{
+             $rgb 			= $this->hex2rgb($borderColor, false);
+             $colorToPaint 	= imagecolorallocate($this->workingImage, $rgb[0], $rgb[1], $rgb[2]);
+-			
++
+             imageline($this->workingImage, 0, 0, $width, 0, $colorToPaint); //top line
+             imageline($this->workingImage, 0, $height, $width, $height, $colorToPaint); //bottom line
+             imageline($this->workingImage, 0, 0, 0, $height, $colorToPaint); //left line
+@@ @@
+ 	protected function hex2rgb ($hex, $asString = false) 
+ 	{
+         // strip off any leading #
+-        if (0 === strpos($hex, '#')) 
++        if (str_starts_with($hex, '#')) 
+ 		{
+            $hex = substr($hex, 1);
+         } 
+-		elseif (0 === strpos($hex, '&H')) 
++		elseif (str_starts_with($hex, '&H')) 
+ 		{
+            $hex = substr($hex, 2);
+         }
+@@ @@
+ }
+
+ $pt = PhpThumb::getInstance();
+-$pt->registerPlugin('GdReflectionLib', 'gd');
++$pt->registerPlugin('GdReflectionLib', 'gd');
+    ----------- end diff -----------
+
+Applied rules:
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+
+
+77) plugins/imanager/phpthumb/ThumbBase.inc.php:62
+
+    ---------- begin diff ----------
+@@ @@
+ 	 */
+ 	protected $hasError;
+ 	/**
+-	 * The name of the file we're manipulating
+-	 * 
+-	 * This must include the path to the file (absolute paths recommended)
+-	 * 
+-	 * @var string
+-	 */
+-	protected $fileName;
+-	/**
+ 	 * What the file format is (mime-type)
+ 	 * 
+ 	 * @var string
+@@ @@
+ 	 * @var bool
+ 	 */
+ 	protected $remoteImage;
+-	/**
+-	 * Whether or not the current image is an actual file, or the raw file data
+-	 *
+-	 * By "raw file data" it's meant that we're actually passing the result of something
+-	 * like file_get_contents() or perhaps from a database blob
+-	 * 
+-	 * @var bool
+-	 */
+-	protected $isDataStream;
+ 	
+ 	/**
+-	 * Class constructor
+-	 * 
+-	 * @return ThumbBase
+-	 */
+-	public function __construct ($fileName, $isDataStream = false)
++  * Class constructor
++  *
++  * @return ThumbBase
++  * @param string $fileName
++  * @param bool $isDataStream
++  */
++ public function __construct (/**
++  * The name of the file we're manipulating
++  *
++  * This must include the path to the file (absolute paths recommended)
++  */
++ protected $fileName, /**
++  * Whether or not the current image is an actual file, or the raw file data
++  *
++  * By "raw file data" it's meant that we're actually passing the result of something
++  * like file_get_contents() or perhaps from a database blob
++  */
++ protected $isDataStream = false)
+ 	{
+ 		$this->imported				= array();
+ 		$this->importedFunctions	= array();
+ 		$this->errorMessage			= null;
+ 		$this->hasError				= false;
+-		$this->fileName				= $fileName;
+ 		$this->remoteImage			= false;
+-		$this->isDataStream			= $isDataStream;
+ 		
+ 		$this->fileExistsAndReadable();
+ 	}
+@@ @@
+ 		// the new object to import
+ 		$newImport 			= new $object();
+ 		// the name of the new object (class name)
+-		$importName			= get_class($newImport);
++		$importName			= $newImport::class;
+ 		// the new functions to import
+ 		$importFunctions 	= get_class_methods($newImport);
+    ----------- end diff -----------
+
+Applied rules:
+ * ClassPropertyAssignToConstructorPromotionRector (https://wiki.php.net/rfc/constructor_promotion https://github.com/php/php-src/pull/5291)
+ * ClassOnObjectRector (https://wiki.php.net/rfc/class_name_literal_on_object)
+
+
+78) plugins/imanager/phpthumb/GdThumb.inc.php:93
+
+    ---------- begin diff ----------
+@@ @@
+ 	public function __construct ($fileName, $options = array(), $isDataStream = false)
+ 	{
+ 		parent::__construct($fileName, $isDataStream);
+-		
++
+ 		$this->determineFormat();
+-		
++
+ 		if ($this->isDataStream === false)
+ 		{
+ 			$this->verifyFormatCompatiblity();
+ 		}
+-		
++
+ 		switch ($this->format)
+ 		{
+ 			case 'GIF':
+@@ @@
+ 				$this->oldImage = imagecreatefromstring($this->fileName);
+ 				break;
+ 		}
+-	
++
+ 		$this->currentDimensions = array
+ 		(
+ 			'width' 	=> imagesx($this->oldImage),
+ 			'height'	=> imagesy($this->oldImage)
+ 		);
+-		
++
+ 		$this->setOptions($options);
+-		
++
+ 		// TODO: Port gatherImageMeta to a separate function that can be called to extract exif data
+ 	}
+ 	
+@@ @@
+ 			}
+ 		}
+ 		
+-		switch ($format) 
+-		{
+-			case 'GIF':
+-				imagegif($this->oldImage, $fileName);
+-				break;
+-			case 'JPG':
+-				imagejpeg($this->oldImage, $fileName, $this->options['jpegQuality']);
+-				break;
+-			case 'JPEG':
+-				imagejpeg($this->oldImage, $fileName, $this->options['jpegQuality']);
+-				break;
+-			case 'PNG':
+-				imagepng($this->oldImage, $fileName);
+-				break;
+-		}
++		match ($format) {
++      'GIF' => imagegif($this->oldImage, $fileName),
++      'JPG' => imagejpeg($this->oldImage, $fileName, $this->options['jpegQuality']),
++      'JPEG' => imagejpeg($this->oldImage, $fileName, $this->options['jpegQuality']),
++      'PNG' => imagepng($this->oldImage, $fileName),
++      default => $this,
++  };
+ 		
+ 		return $this;
+ 	}
+@@ @@
+ 		$isCompatible 	= true;
+ 		$gdInfo			= gd_info();
+ 		
+-		switch ($this->format)
+-		{
+-			case 'GIF':
+-				$isCompatible = $gdInfo['GIF Create Support'];
+-				break;
+-			case 'JPG':
+-				$isCompatible = (isset($gdInfo['JPG Support']) || isset($gdInfo['JPEG Support'])) ? true : false;
+-				break;
+-			case 'PNG':
+-				$isCompatible = $gdInfo[$this->format . ' Support'];
+-				break;
+-			default:
+-				$isCompatible = false;
+-		}
++		$isCompatible = match ($this->format) {
++      'GIF' => $gdInfo['GIF Create Support'],
++      'JPG' => (isset($gdInfo['JPG Support']) || isset($gdInfo['JPEG Support'])) ? true : false,
++      'PNG' => $gdInfo[$this->format . ' Support'],
++      default => false,
++  };
+ 		
+ 		if (!$isCompatible)
+ 		{
+    ----------- end diff -----------
+
+Applied rules:
+ * ChangeSwitchToMatchRector (https://wiki.php.net/rfc/match_expression_v2)
+
+
+79) plugins/items/browser/pagebrowser.php:72
+
+    ---------- begin diff ----------
+@@ @@
+ 	<script type='text/javascript'>
+ 	function submitLink(url,parent) {
+ 		if (window.opener){
+-			window.opener.<?php echo $func; ?>(<?php echo json_encode($sitepath); ?> + (parent ? parent + "/" : "") + url);
++			window.opener.<?php echo $func; ?>(<?php echo json_encode($sitepath, JSON_THROW_ON_ERROR); ?> + (parent ? parent + "/" : "") + url);
+ 		}
+ 		window.close();
+ 	}
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+80) plugins/imanager/upload/server/php/UploadHandler.php:200
+
+    ---------- begin diff ----------
+@@ @@
+     }
+
+     protected function initialize() {
+-        switch ($this->get_server_var('REQUEST_METHOD')) {
+-            case 'OPTIONS':
+-            case 'HEAD':
+-                $this->head();
+-                break;
+-            case 'GET':
+-                $this->get($this->options['print_response']);
+-                break;
+-            case 'PATCH':
+-            case 'PUT':
+-            case 'POST':
+-                $this->post($this->options['print_response']);
+-                break;
+-            case 'DELETE':
+-                $this->delete($this->options['print_response']);
+-                break;
+-            default:
+-                $this->header('HTTP/1.1 405 Method Not Allowed');
+-        }
++        match ($this->get_server_var('REQUEST_METHOD')) {
++            'OPTIONS', 'HEAD' => $this->head(),
++            'GET' => $this->get($this->options['print_response']),
++            'PATCH', 'PUT', 'POST' => $this->post($this->options['print_response']),
++            'DELETE' => $this->delete($this->options['print_response']),
++            default => $this->header('HTTP/1.1 405 Method Not Allowed'),
++        };
+     }
+
+     protected function get_full_url() {
+@@ @@
+     }
+
+     protected function get_query_separator($url) {
+-        return strpos($url, '?') === false ? '?' : '&';
++        return !str_contains($url, '?') ? '?' : '&';
+     }
+
+     protected function get_download_url($file_name, $version = null, $direct = false) {
+@@ @@
+     protected function fix_file_extension($file_path, $name, $size, $type, $error,
+             $index, $content_range) {
+         // Add missing file extension for known image types:
+-        if (strpos($name, '.') === false &&
++        if (!str_contains($name, '.') &&
+                 preg_match('/^image\/(gif|jpe?g|png)/', $type, $matches)) {
+             $name .= '.'.$matches[1];
+         }
+@@ @@
+     }
+
+     protected function get_file_type($file_path) {
+-        switch (strtolower(pathinfo($file_path, PATHINFO_EXTENSION))) {
+-            case 'jpeg':
+-            case 'jpg':
+-                return 'image/jpeg';
+-            case 'png':
+-                return 'image/png';
+-            case 'gif':
+-                return 'image/gif';
+-            default:
+-                return '';
+-        }
++        return match (strtolower(pathinfo($file_path, PATHINFO_EXTENSION))) {
++            'jpeg', 'jpg' => 'image/jpeg',
++            'png' => 'image/png',
++            'gif' => 'image/gif',
++            default => '',
++        };
+     }
+
+     protected function download() {
+@@ @@
+
+     protected function send_content_type_header() {
+         $this->header('Vary: Accept');
+-        if (strpos($this->get_server_var('HTTP_ACCEPT'), 'application/json') !== false) {
++        if (str_contains($this->get_server_var('HTTP_ACCEPT'), 'application/json')) {
+             $this->header('Content-type: application/json');
+         } else {
+             $this->header('Content-type: text/plain');
+@@ @@
+     public function generate_response($content, $print_response = true) {
+         $this->response = $content;
+         if ($print_response) {
+-            $json = json_encode($content);
++            $json = json_encode($content, JSON_THROW_ON_ERROR);
+             $redirect = stripslashes($this->get_query_param('redirect'));
+             if ($redirect) {
+                 $this->header('Location: '.sprintf($redirect, rawurlencode($json)));
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+ * ChangeSwitchToMatchRector (https://wiki.php.net/rfc/match_expression_v2)
+
+
+81) plugins/imanager/lib/processors/fields/FieldCheckbox.php:11
+
+    ---------- begin diff ----------
+@@ @@
+ 	}
+
+ 	/**
+-	 * Renders the field markup
+-	 *
+-	 * @param bool $sanitize
+-	 *
+-	 * @return bool|Template
+-	 */
+-	public function render($sanitize = false)
++  * Renders the field markup
++  *
++  * @param bool $sanitize
++  */
++ public function render($sanitize = false): bool|\Template
+ 	{
+ 		if(is_null($this->name)) { return false; }
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+
+
+82) plugins/imanager/lib/TemplateEngine.php:45
+
+    ---------- begin diff ----------
+@@ @@
+
+
+ 	/**
+-	 * Returns the number of templates
+-	 *
+-	 * @param array $templates
+-	 * @return int
+-	 */
+-	public function countTemplates(array $templates=array())
++  * Returns the number of templates
++  *
++  * @return int
++  */
++ public function countTemplates(array $templates=array())
+ 	{return count(!empty($templates) ? $templates : $this->templates);}
+
+
+@@ @@
+ 	 * @param array $templates
+ 	 * @return boolean|object of the type Template
+ 	 */
+-	public function getTemplate($stat, array $templates=array())
++	public function getTemplate($stat, array $templates=array()): bool|object
+ 	{
+ 		$loctpl = !empty($templates) ? $templates : $this->templates;
+ 		// nothing to select
+@@ @@
+ 				return false;
+ 		}
+
+-		if(false !== strpos($stat, '='))
++		if(str_contains($stat, '='))
+ 		{
+ 			$data = explode('=', $stat, 2);
+ 			$key = strtolower(trim($data[0]));
+ 			$val = trim($data[1]);
+
+-			if(false !== strpos($key, ' '))
++			if(str_contains($key, ' '))
+ 				return false;
+
+ 			foreach($loctpl as $tpl_id => $t)
+@@ @@
+
+
+ 	/**
+-	 * Returns an array of object of type Template
+-	 * NOTE: However if no $templates argument is passed to the function, the templates
+-	 * must already be in the buffer: ImTplEngine::$templates. Call the ImTplEngine::init()
+-	 * method before to assign the templates to the buffer.
+-	 *
+-	 * You can get all templates by a membership
+-	 * Example, to get all templates with "general" membership, you can do the following:
+-	 * ImTplEngine::getTemplates('general', $your_template_array)
+-	 *
+-	 * @param string $stat
+-	 * @param array $templates An array of Template objects
+-	 * @return boolean|array
+-	 */
+-	public function getTemplates($stat, array $templates=array())
++  * Returns an array of object of type Template
++  * NOTE: However if no $templates argument is passed to the function, the templates
++  * must already be in the buffer: ImTplEngine::$templates. Call the ImTplEngine::init()
++  * method before to assign the templates to the buffer.
++  *
++  * You can get all templates by a membership
++  * Example, to get all templates with "general" membership, you can do the following:
++  * ImTplEngine::getTemplates('general', $your_template_array)
++  *
++  * @param string $stat
++  * @param array $templates An array of Template objects
++  */
++ public function getTemplates($stat, array $templates=array()): bool|array
+ 	{
+
+ 		$loctpl = !empty($templates) ? $templates : $this->templates;
+@@ @@
+
+ 		$tplcontainer = array();
+
+-		if(false !== strpos($stat, '='))
++		if(str_contains($stat, '='))
+ 		{
+ 			$data = explode('=', $stat, 2);
+ 			$key = strtolower(trim($data[0]));
+ 			$val = trim($data[1]);
+
+-			if(false !== strpos($key, ' '))
++			if(str_contains($key, ' '))
+ 				return false;
+
+ 			foreach($loctpl as $tpl_id => $t)
+@@ @@
+
+
+ 	/**
+-	 * Unset a given array of Template objects
+-	 * @param array $templates
+-	 */
+-	public function destroyTemplates(array $templates=array())
++  * Unset a given array of Template objects
++  */
++ public function destroyTemplates(array $templates=array())
+ 	{$tpls=!empty($templates) ? $templates : $this->templates;unset($tpls);}
+
+
+ 	/**
+-	 * Renders template by replacing $tvs and optionally language $lvs by setting the $lflag to true.
+-	 * You can use $clean flag to delete the tvs left in template
+-	 *
+-	 * @param $template (object | string)
+-	 * @param array $tvs
+-	 * @param bool $lflag
+-	 * @param array $lvs
+-	 * @param bool $clean
+-	 * @return Template object
+-	 */
+-	public function render($template, array $tvs=array(),
++  * Renders template by replacing $tvs and optionally language $lvs by setting the $lflag to true.
++  * You can use $clean flag to delete the tvs left in template
++  *
++  * @param $template (object | string)
++  * @param bool $lflag
++  * @param bool $clean
++  * @return Template object
++  */
++ public function render($template, array $tvs=array(),
+ 						   $lflag=false, array $lvs=array(), $clean=false
+ 	){
+
+@@ @@
+
+ 		foreach($lvs as $key => $val)
+ 		{
+-			if(strpos($key, $tpl) !== true)
++			if(strpos($key, (string) $tpl) !== true)
+ 				$tpl = preg_replace('%\[\[( *)'.$key.'( *)\]\]%', $val, $tpl);
+ 		}
+ 		return $tpl;
+@@ @@
+
+
+ 	/**
+-	 * Returns language array by plugin name and curent system language
+-	 *
+-	 * @param $plugin
+-	 * @param null $language
+-	 * @return array|bool
+-	 */
+-	private function imI18n($plugin, $language=null)
++  * Returns language array by plugin name and curent system language
++  *
++  * @param $plugin
++  * @param null $language
++  */
++ private function imI18n($plugin, $language=null): array|bool
+ 	{
+ 		$l = array();
+ 		if($this->imPrepI18n($plugin, $language ? $language : IM_LANGUAGE, $l))
+@@ @@
+  */
+ class Template
+ {
+-	public $name;
+ 	protected $file;
+ 	protected $filename;
+ 	protected $member;
+ 	public $content;
+
+-	public function __construct($name='')
++	public function __construct(public $name='')
+ 	{
+-		$this->name = $name;
+ 		$this->file = '';
+ 		$this->filename = '';
+ 		$this->content = '';
+@@ @@
+
+ 	//public function push(Template $val){ $this->content = $val->content;}
+ 	//public function push($val){ $this->content .= $val;}
+-}
++}
+    ----------- end diff -----------
+
+Applied rules:
+ * StringifyStrNeedlesRector (https://wiki.php.net/rfc/deprecations_php_7_3#string_search_functions_with_integer_needle)
+ * ClassPropertyAssignToConstructorPromotionRector (https://wiki.php.net/rfc/constructor_promotion https://github.com/php/php-src/pull/5291)
+ * MixedTypeRector
+ * UnionTypesRector
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+
+
+83) plugins/imanager/lib/SectionCache.php:94
+
+    ---------- begin diff ----------
+@@ @@
+ 		$path = self::path();
+ 		try {
+ 			$num = CacheFile::removeAll($path, true);
+-		} catch(Exception $e) {
++		} catch(Exception) {
+ 			$num = 0;
+ 		}
+ 		return $num;
+@@ @@
+ 	const maxCacheFiles = 999;
+
+ 	protected $path;
+-	protected $primaryID = '';
+ 	protected $secondaryID = '';
+ 	protected $cacheTimeSeconds = 0;
+ 	protected $globalExpireFile = '';
+@@ @@
+ 	protected $chmodFile = 0666;
+ 	protected $chmodDir = 0755;
+
+-	public function __construct($path, $id, $cacheTimeSeconds)
++	public function __construct($path, protected $primaryID, $cacheTimeSeconds)
+ 	{
+ 		$path = rtrim($path, '/') . '/';
+ 		$this->globalExpireFile = $path . self::globalExpireFilename;
+@@ @@
+ 		if(is_file($this->globalExpireFile)) {
+ 			$this->globalExpireTime = @filemtime($this->globalExpireFile);
+ 		}
+-
+-		$this->primaryID = $id;
+ 		$this->cacheTimeSeconds = (int) $cacheTimeSeconds;
+ 	}
+
+@@ @@
+ 			"Cache files older than this file are considered expired. " . date('m.d.Y H:i:s');
+ 		@file_put_contents($this->globalExpireFile, $note, LOCK_EX);
+ 	}
+-}
++}
+    ----------- end diff -----------
+
+Applied rules:
+ * RemoveUnusedVariableInCatchRector (https://wiki.php.net/rfc/non-capturing_catches)
+ * ClassPropertyAssignToConstructorPromotionRector (https://wiki.php.net/rfc/constructor_promotion https://github.com/php/php-src/pull/5291)
+ * MixedTypeRector
+
+
+84) plugins/imanager/lib/Sanitizer.php:7
+
+    ---------- begin diff ----------
+@@ @@
+  *
+  */
+
+-class Sanitizer {
++class Sanitizer implements \Stringable {
+
+ 	/**
+ 	 * May be passed to pageName for the $beautify param, see pageName for details.
+@@ @@
+
+ 		// remove leading or trailing dashes, underscores, dots
+ 		if($beautify) {
+-			if(strpos($extras, $replacementChar) === false) $extras .= $replacementChar;
++			if(!str_contains($extras, $replacementChar)) $extras .= $replacementChar;
+ 			$value = trim($value, $extras);
+ 		}
+
+@@ @@
+ 	 * @return string
+ 	 *
+ 	 */
+-	public function name($value, $beautify = false, $maxLength = 128, $replacement = '_', $options = array()) {
++	public function name($value, bool|int $beautify = false, $maxLength = 128, $replacement = '_', $options = array()) {
+
+ 		if(!empty($options['allowedExtras']) && is_array($options['allowedExtras'])) {
+ 			$allowedExtras = $options['allowedExtras'];
+@@ @@
+
+ 			$hasExtras = false;
+ 			foreach($allowedExtras as $c) {
+-				$hasExtras = strpos($value, $c) !== false;
++				$hasExtras = str_contains($value, $c);
+ 				if($hasExtras) break;
+ 			}
+
+@@ @@
+ 				if(empty($options['allowDoubledReplacement'])) {
+ 					// replace double'd replacements
+ 					$r = "$replacement$replacement";
+-					if(strpos($value, $r) !== false) $value = preg_replace('/' . $r . '+/', $replacement, $value);
++					if(str_contains($value, $r)) $value = preg_replace('/' . $r . '+/', $replacement, $value);
+ 				}
+
+ 				// replace double dots
+-				if(strpos($value, '..') !== false) $value = preg_replace('/\.\.+/', '.', $value);
++				if(str_contains($value, '..')) $value = preg_replace('/\.\.+/', '.', $value);
+ 			}
+
+ 			if(strlen($value) > $maxLength) $value = substr($value, 0, $maxLength);
+@@ @@
+ 	 * @return string|array Return string if given a string for $value, returns array if given an array for $value
+ 	 *
+ 	 */
+-	public function names($value, $delimeter = ' ', $allowedExtras = array('-', '_', '.'), $replacementChar = '_', $beautify = false) {
++	public function names(string|array $value, $delimeter = ' ', $allowedExtras = array('-', '_', '.'), $replacementChar = '_', $beautify = false): string|array {
+ 		$isArray = false;
+ 		if(is_array($value)) {
+ 			$isArray = true;
+@@ @@
+ 	 * @return string
+ 	 *
+ 	 */
+-	public function fieldName($value, $beautify = false, $maxLength = 128) {
++	public function fieldName($value, bool|int $beautify = false, $maxLength = 128) {
+ 		return $this->nameFilter($value, array('_'), '_', $beautify, $maxLength);
+ 	}
+
+@@ @@
+ 	 * @return string
+ 	 *
+ 	 */
+-	public function templateName($value, $beautify = false, $maxLength = 128) {
++	public function templateName($value, bool|int $beautify = false, $maxLength = 128) {
+ 		return $this->nameFilter($value, array('_', '-'), '-', $beautify, $maxLength);
+ 	}
+
+@@ @@
+ 	 * @return string
+ 	 *
+ 	 */
+-	public function pageName($value, $beautify = false, $maxLength = 128) {
++	public function pageName($value, bool|int $beautify = false, $maxLength = 128) {
+ 		return strtolower($this->name($value, $beautify, $maxLength, '-'));
+ 	}
+
+@@ @@
+ 	 * @return string
+ 	 *
+ 	 */
+-	public function filename($value, $beautify = false, $maxLength = 128) {
++	public function filename($value, bool|int $beautify = false, $maxLength = 128) {
+
+ 		if(!is_string($value)) return '';
+ 		$value = basename($value);
+@@ @@
+ 	 * @return bool|string Returns false if invalid, actual path (string) if valid.
+ 	 *
+ 	 */
+-	public function path($value, $options = array()) {
++	public function path($value, int|array $options = array()): bool|string {
+ 		if(!is_string($value)) return false;
+ 		if(is_int($options)) $options = array('maxLength' => $options);
+ 		$defaults = array(
+@@ @@
+ 		$options = array_merge($defaults, $options);
+ 		if(DIRECTORY_SEPARATOR != '/') $value = str_replace(DIRECTORY_SEPARATOR, '/', $value);
+ 		if(strlen($value) > $options['maxLength']) return false;
+-		if(strpos($value, '/./') !== false || strpos($value, '//') !== false) return false;
+-		if(!$options['allowDotDot'] && strpos($value, '..') !== false) return false;
++		if(str_contains($value, '/./') || str_contains($value, '//')) return false;
++		if(!$options['allowDotDot'] && str_contains($value, '..')) return false;
+ 		if(!preg_match('{^[-_./a-z0-9]+$}iD', $value)) return false;
+ 		return $value;
+ 	}
+@@ @@
+ 		);
+ 		$value = $this->name($value, $beautify, $maxLength, '-', $options);
+ 		// disallow double slashes
+-		while(strpos($value, '//') !== false) $value = str_replace('//', '/', $value);
++		while(str_contains($value, '//')) $value = str_replace('//', '/', $value);
+ 		// disallow relative paths
+-		while(strpos($value, '..') !== false) $value = str_replace('..', '.', $value);
++		while(str_contains($value, '..')) $value = str_replace('..', '.', $value);
+ 		// disallow names that start with a period
+-		while(strpos($value, '/.') !== false) $value = str_replace('/.', '/', $value);
++		while(str_contains($value, '/.')) $value = str_replace('/.', '/', $value);
+ 		return $value;
+ 	}
+
+@@ @@
+ 		if(!is_string($value)) $value = $this->string($value);
+
+ 		if(!$options['multiLine']) {
+-			if(strpos($value, "\r") !== false) {
++			if(str_contains($value, "\r")) {
+ 				$value = str_replace("\r", "\n", $value); // normalize to LF
+ 			}
+ 			$pos = strpos($value, "\n");
+@@ @@
+ 		if(!isset($options['maxBytes'])) $options['maxBytes'] = $options['maxLength'] * 3;
+
+ 		// convert \r\n to just \n
+-		if(empty($options['allowCRLF']) && strpos($value, "\r\n") !== false) $value = str_replace("\r\n", "\n", $value);
++		if(empty($options['allowCRLF']) && str_contains($value, "\r\n")) $value = str_replace("\r\n", "\n", $value);
+
+ 		return $this->text($value, $options);
+ 	}
+@@ @@
+ 	 * @todo add TLD validation
+ 	 *
+ 	 */
+-	public function url($value, $options = array()) {
++	public function url($value, bool|array $options = array()) {
+
+ 		$defaultOptions = array(
+ 			'allowRelative' => true,
+@@ @@
+ 		}
+
+ 		// separate scheme+domain+path from query string temporarily
+-		if(strpos($value, '?') !== false) {
++		if(str_contains($value, '?')) {
+ 			list($domainPath, $queryString) = explode('?', $value);
+ 			if(!$options['allowQuerystring']) $queryString = '';
+ 		} else {
+@@ @@
+ 			$queryString = '';
+ 		}
+
+-		$pathIsEncoded = strpos($domainPath, '%') !== false;
++		$pathIsEncoded = str_contains($domainPath, '%');
+ 		if($pathIsEncoded || filter_var($domainPath, FILTER_SANITIZE_URL) !== $domainPath) {
+ 			// the domain and/or path contains extended characters not supported by FILTER_SANITIZE_URL
+ 			// Example: https://de.wikipedia.org/wiki/Linkshänder
+@@ @@
+ 			// Example: https://de.wikipedia.org/wiki/Linksh%C3%A4nder
+ 			// we convert the URL to be FILTER_SANITIZE_URL compatible
+ 			// if already encoded, first remove encoding: 
+-			if(strpos($domainPath, '%') !== false) $domainPath = rawurldecode($domainPath);
++			if(str_contains($domainPath, '%')) $domainPath = rawurldecode($domainPath);
+ 			// Next, encode it, for example: https%3A%2F%2Fde.wikipedia.org%2Fwiki%2FLinksh%C3%A4nder
+ 			$domainPath = rawurlencode($domainPath);
+ 			// restore characters allowed in domain/path
+@@ @@
+ 		if(!$scheme) {
+ 			// URL is missing scheme/protocol, or is local/relative
+
+-			if(strpos($value, '://') !== false) {
++			if(str_contains($value, '://')) {
+ 				// apparently there is an attempted, but unrecognized scheme, so remove it
+ 				$value = preg_replace('!^[^?]*?://!', '', $value);
+ 			}
+@@ @@
+ 				} else if($options['allowQuerystring']) {
+ 					// we'll construct a fake domain so we can use FILTER_VALIDATE_URL rules
+ 					$fake = 'http://ItemManager.com/';
+-					$slash = strpos($value, '/') === 0 ? '/' : '';
++					$slash = str_starts_with($value, '/') ? '/' : '';
+ 					$value = $fake . ltrim($value, '/');
+ 					$value = $this->filterValidateURL($value, $options);
+ 					$value = str_replace($fake, $slash, $value);
+@@ @@
+ 				/** @noinspection PhpUnusedLocalVariableInspection */
+ 				list($tel, $num) = explode(':', $value);
+ 				$value = 'tel:';
+-				if(strpos($num, '+') === 0) $value .= '+';
++				if(str_starts_with($num, '+')) $value .= '+';
+ 				$value .= preg_replace('/[^\d]/', '', $num);
+ 			}
+ 		} else {
+@@ @@
+
+ 		if($pathIsEncoded && strlen($value)) {
+ 			// restore to non-encoded, UTF-8 version 
+-			if(strpos('?', $value) !== false) {
++			if(str_contains('?', $value)) {
+ 				list($domainPath, $queryString) = explode('?', $value);
+ 			} else {
+ 				$domainPath = $value;
+@@ @@
+ 				$queryString = '';
+ 			}
+ 			$domainPath = rawurldecode($domainPath);
+-			if(strpos($domainPath, '%') !== false) {
++			if(str_contains($domainPath, '%')) {
+ 				$domainPath = preg_replace('/%[0-9ABCDEF]{1,2}/i', '', $domainPath);
+ 				$domainPath = str_replace('%', '', $domainPath);
+ 			}
+@@ @@
+ 		if(!function_exists('idn_to_ascii') || !function_exists('idn_to_utf8')) return $url;
+
+ 		// extract scheme
+-		if(strpos($_url, '//') !== false) {
++		if(str_contains($_url, '//')) {
+ 			list($scheme, $_url) = explode('//', $_url, 2);
+ 			$scheme .= '//';
+ 		} else {
+@@ @@
+ 			$rest = '';
+ 		}
+
+-		if(strpos($domain, '%') !== false) {
++		if(str_contains($domain, '%')) {
+ 			// domain is URL encoded
+ 			$domain = rawurldecode($domain);
+ 		}
+
+ 		// extract port, if present, and prepend to $rest
+-		if(strpos($domain, ':') !== false && preg_match('/^([^:]+):(\d+)$/', $domain, $matches)) {
++		if(str_contains($domain, ':') && preg_match('/^([^:]+):(\d+)$/', $domain, $matches)) {
+ 			$domain = $matches[1];
+ 			$rest = ":$matches[2]$rest";
+ 		}
+@@ @@
+ 		$value = trim($value, "\"'");
+
+ 		// if an apostrophe is present, value must be quoted
+-		if(strpos($value, "'") !== false) $needsQuotes = true;
++		if(str_contains($value, "'")) $needsQuotes = true;
+
+ 		// if commas are present, then the selector needs to be quoted
+-		if(strpos($value, ',') !== false) $needsQuotes = true;
++		if(str_contains($value, ',')) $needsQuotes = true;
+
+ 		// disallow double quotes -- remove any if they are present
+-		if(strpos($value, '"') !== false) $value = str_replace('"', '', $value);
++		if(str_contains($value, '"')) $value = str_replace('"', '', $value);
+
+ 		// selector value is limited to 100 chars
+ 		if(strlen($value) > $maxLength) {
+@@ @@
+ 			$value = preg_replace('/[^[:alnum:]\pL\pN\pP\pM\p{Sm}\p{Sc}\p{Sk} \'\/]/u', ' ', $value);
+
+ 			// disallow ampersands from beginning entity sequences
+-			if(strpos($value, '&') !== false) $value = str_replace('&', '& ', $value);
++			if(str_contains($value, '&')) $value = str_replace('&', '& ', $value);
+
+ 			// replace multiple space characters in sequence with just 1
+ 			$value = preg_replace('/\s\s+/u', ' ', $value);
+@@ @@
+ 	 * @return string
+ 	 *
+ 	 */
+-	public function entities($str, $flags = ENT_QUOTES, $encoding = 'UTF-8', $doubleEncode = true) {
++	public function entities($str, int|bool $flags = ENT_QUOTES, $encoding = 'UTF-8', $doubleEncode = true) {
+ 		if(!is_string($str)) $str = $this->string($str);
+ 		return htmlentities($str, $flags, $encoding, $doubleEncode);
+ 	}
+@@ @@
+ 	 * @return string
+ 	 *
+ 	 */
+-	public function entities1($str, $flags = ENT_QUOTES, $encoding = 'UTF-8') {
++	public function entities1($str, int|bool $flags = ENT_QUOTES, $encoding = 'UTF-8') {
+ 		if(!is_string($str)) $str = $this->string($str);
+ 		return htmlentities($str, $flags, $encoding, false);
+ 	}
+@@ @@
+ 	 * @return string
+ 	 *
+ 	 */
+-	public function entitiesMarkdown($str, $options = array()) {
++	public function entitiesMarkdown($str, array|bool|int $options = array()) {
+
+ 		if($options === true || (is_int($options) && $options > 0)) {
+ 			$markdown = $this->wire('modules')->get('TextformatterMarkdownExtra');
+@@ @@
+ 			$str = preg_replace('/\[(.+?)\]\(([^)]+)\)/', $linkMarkup, $str);
+ 		}
+
+-		if(strpos($str, '**') !== false && in_array('strong', $options['allow']) && !in_array('strong', $options['disallow'])) {
++		if(str_contains($str, '**') && in_array('strong', $options['allow']) && !in_array('strong', $options['disallow'])) {
+ 			// strong
+ 			$str = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $str);
+ 		}
+
+-		if(strpos($str, '*') !== false && in_array('em', $options['allow']) && !in_array('em', $options['disallow'])) {
++		if(str_contains($str, '*') && in_array('em', $options['allow']) && !in_array('em', $options['disallow'])) {
+ 			// em
+ 			$str = preg_replace('/\*([^*\n]+)\*/', '<em>$1</em>', $str);
+ 		}
+
+-		if(strpos($str, "`") !== false && in_array('code', $options['allow']) && !in_array('code', $options['disallow'])) {
++		if(str_contains($str, "`") && in_array('code', $options['allow']) && !in_array('code', $options['disallow'])) {
+ 			// code
+ 			$str = preg_replace('/`+([^`]+)`+/', '<code>$1</code>', $str);
+ 		}
+
+-		if(strpos($str, '~~') !== false && in_array('s', $options['allow']) && !in_array('s', $options['disallow'])) {
++		if(str_contains($str, '~~') && in_array('s', $options['allow']) && !in_array('s', $options['disallow'])) {
+ 			// strikethrough
+ 			$str = preg_replace('/~~(.+?)~~/', '<s>$1</s>', $str);
+ 		}
+@@ @@
+ 	 * @return string
+ 	 *
+ 	 */
+-	public function unentities($str, $flags = ENT_QUOTES, $encoding = 'UTF-8') {
++	public function unentities($str, int|bool $flags = ENT_QUOTES, $encoding = 'UTF-8') {
+ 		if(!is_string($str)) $str = $this->string($str);
+ 		return html_entity_decode($str, $flags, $encoding);
+ 	}
+@@ @@
+ 			if(method_exists($value, '__toString')) {
+ 				$value = (string) $value;
+ 			} else {
+-				$value = get_class($value);
++				$value = $value::class;
+ 			}
+ 		} else if(is_null($value)) {
+ 			$value = "";
+@@ @@
+ 	 * @return string|int|null
+ 	 *
+ 	 */
+-	public function date($value, $format = null, array $options = array()) {
++	public function date(string|int $value, $format = null, array $options = array()) {
+ 		$defaults = array(
+ 			'returnFormat' => $format, // date format to return in, if different from $dateFormat
+ 			'min' => '', // Minimum date allowed (in $dateFormat format, or a unix timestamp) 
+@@ @@
+ 	}
+
+ 	/*************************************************************************************************************************
+-	 * NUMBER SANITIZERS
+-	 *
+-	 */
+-
+-	/**
+-	 * Sanitized an integer (unsigned, unless you specify a negative minimum value)
+-	 *
+-	 * @param mixed $value
+-	 * @param array $options Optionally specify any one or more of the following to modify behavior:
+-	 * 	- min (int|null) Minimum allowed value (default=0)
+-	 *  - max (int|null) Maximum allowed value (default=PHP_INT_MAX)
+-	 * 	- blankValue (mixed) Value that you want to use when provided value is null or blank string (default=0)
+-	 * @return int Returns integer, or specified blankValue (which doesn't necessarily have to be an integer)
+-	 *
+-	 */
+-	public function int($value, array $options = array()) {
++  * NUMBER SANITIZERS
++  *
++  */
++ /**
++  * Sanitized an integer (unsigned, unless you specify a negative minimum value)
++  *
++  * @param array $options Optionally specify any one or more of the following to modify behavior:
++  * 	- min (int|null) Minimum allowed value (default=0)
++  *  - max (int|null) Maximum allowed value (default=PHP_INT_MAX)
++  * 	- blankValue (mixed) Value that you want to use when provided value is null or blank string (default=0)
++  * @return int Returns integer, or specified blankValue (which doesn't necessarily have to be an integer)
++  *
++  */
++ public function int(mixed $value, array $options = array()) {
+ 		$defaults = array(
+ 			'min' => 0,
+ 			'max' => PHP_INT_MAX,
+@@ @@
+ 	 * @return int
+ 	 *
+ 	 */
+-	public function intUnsigned($value, array $options = array()) {
++	public function intUnsigned(mixed $value, array $options = array()) {
+ 		return $this->int($value, $options);
+ 	}
+
+ 	/**
+-	 * Sanitize to signed integer (negative or positive)
+-	 *
+-	 * @param mixed $value
+-	 * @param array $options Optionally specify any one or more of the following to modify behavior:
+-	 * 	- min (int|null) Minimum allowed value (default=negative PHP_INT_MAX)
+-	 *  - max (int|null) Maximum allowed value (default=PHP_INT_MAX)
+-	 * 	- blankValue (mixed) Value that you want to use when provided value is null or blank string (default=0)
+-	 * @return int
+-	 *
+-	 */
+-	public function intSigned($value, array $options = array()) {
++  * Sanitize to signed integer (negative or positive)
++  *
++  * @param array $options Optionally specify any one or more of the following to modify behavior:
++  * 	- min (int|null) Minimum allowed value (default=negative PHP_INT_MAX)
++  *  - max (int|null) Maximum allowed value (default=PHP_INT_MAX)
++  * 	- blankValue (mixed) Value that you want to use when provided value is null or blank string (default=0)
++  * @return int
++  *
++  */
++ public function intSigned(mixed $value, array $options = array()) {
+ 		if(!isset($options['min'])) $options['min'] = PHP_INT_MAX * -1;
+ 		return $this->int($value, $options);
+ 	}
+
+ 	/**
+-	 * Sanitize to floating point value
+-	 *
+-	 * @param float|string|int $value
+-	 * @param array $options Optionally specify one or more options in an associative array:
+-	 * 	- precision (int|null): Optional number of digits to round to (default=null)
+-	 * 	- mode (int): Mode to use for rounding precision (default=PHP_ROUND_HALF_UP);
+-	 * 	- blankValue (null|int|string|float): Value to return (whether float or non-float) if provided $value is an empty non-float (default=0.0)
+-	 * 	- min (float|null): Minimum allowed value, excluding blankValue (default=null)
+-	 * 	- max (float|null): Maximum allowed value, excluding blankValue (default=null)
+-	 * @return float
+-	 *
+-	 */
+-	public function float($value, array $options = array()) {
++  * Sanitize to floating point value
++  *
++  * @param array $options Optionally specify one or more options in an associative array:
++  * 	- precision (int|null): Optional number of digits to round to (default=null)
++  * 	- mode (int): Mode to use for rounding precision (default=PHP_ROUND_HALF_UP);
++  * 	- blankValue (null|int|string|float): Value to return (whether float or non-float) if provided $value is an empty non-float (default=0.0)
++  * 	- min (float|null): Minimum allowed value, excluding blankValue (default=null)
++  * 	- max (float|null): Maximum allowed value, excluding blankValue (default=null)
++  * @return float
++  *
++  */
++ public function float(float|string|int $value, array $options = array()) {
+
+ 		$defaults = array(
+ 			'precision' => null, // Optional number of digits to round to 
+@@ @@
+
+ 			$str = trim($value);
+ 			$prepend = '';
+-			if(strpos($str, '-') === 0) {
++			if(str_starts_with($str, '-')) {
+ 				$prepend = '-';
+ 				$str = ltrim($str, '-');
+ 			}
+@@ @@
+ 				if(method_exists($value, '__toString')) {
+ 					$value = (string) $value;
+ 				} else {
+-					$value = array(get_class($value));
++					$value = array($value::class);
+ 				}
+ 			}
+ 			if(is_string($value)) {
+@@ @@
+ 				$hasDelimiter = null;
+ 				$delimiters = is_null($options['delimiter']) ? $options['delimiters'] : array($options['delimiter']);
+ 				foreach($delimiters as $delimiter) {
+-					if(strpos($value, $delimiter)) {
++					if(strpos($value, (string) $delimiter)) {
+ 						$hasDelimiter = $delimiter;
+ 						break;
+ 					}
+@@ @@
+ 	}
+
+ 	/**
+-	 * Return $value if it exists in $allowedValues, or null if it doesn't
+-	 *
+-	 * @param string|int $value
+-	 * @param array $allowedValues Whitelist of option values that are allowed
+-	 * @return string|int|null
+-	 *
+-	 */
+-	public function option($value, array $allowedValues) {
++  * Return $value if it exists in $allowedValues, or null if it doesn't
++  *
++  * @param array $allowedValues Whitelist of option values that are allowed
++  * @return string|int|null
++  *
++  */
++ public function option(string|int $value, array $allowedValues) {
+ 		$key = array_search($value, $allowedValues);
+ 		if($key === false) return null;
+ 		return $allowedValues[$key];
+@@ @@
+ 	}
+
+ 	/**
+-	 * Return given values that that also exist in $allowedValues whitelist
+-	 *
+-	 * @param array $values
+-	 * @param array $allowedValues Whitelist of option values that are allowed
+-	 * @return array
+-	 *
+-	 */
+-	public function options(array $values, array $allowedValues) {
++  * Return given values that that also exist in $allowedValues whitelist
++  *
++  * @param array $allowedValues Whitelist of option values that are allowed
++  * @return array
++  *
++  */
++ public function options(array $values, array $allowedValues) {
+ 		$a = array();
+ 		foreach($values as $value) {
+ 			$key = array_search($value, $allowedValues);
+@@ @@
+ 	}
+
+
+-	public function __toString() {
++	public function __toString(): string {
+ 		return "Sanitizer";
+ 	}
+    ----------- end diff -----------
+
+Applied rules:
+ * StringifyStrNeedlesRector (https://wiki.php.net/rfc/deprecations_php_7_3#string_search_functions_with_integer_needle)
+ * StringableForToStringRector (https://wiki.php.net/rfc/stringable)
+ * ClassOnObjectRector (https://wiki.php.net/rfc/class_name_literal_on_object)
+ * MixedTypeRector
+ * UnionTypesRector
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+
+
+85) plugins/imanager/lib/MsgReporter.php:3
+
+    ---------- begin diff ----------
+@@ @@
+ {
+ 	public static $plugin = 'imanager';
+ 	public static $dir = 'imanager';
+-	private static $mergedLang=null;
+-	private static $_msgs=array();
+-	private static $error_code;
+-	private static $error=false;
++	private static ?bool $mergedLang=null;
++	private static array $_msgs=array();
++	private static ?int $error_code = null;
++	private static bool $error=false;
+
+ 	public static function setClause($name, array $var=array(), $error=false, $dir=false)
+ 	{
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyFromAssignsRector
+
+
+86) plugins/imanager/lib/Manager.php:214
+
+    ---------- begin diff ----------
+@@ @@
+
+ 		if(!is_string($cat)) return false;
+
+-		if(false !== strpos($cat, '='))
++		if(str_contains($cat, '='))
+ 		{
+ 			$data = explode('=', $cat, 2);
+ 			$key = strtolower(trim($data[0]));
+ 			$val = trim($data[1]);
+-			if(false !== strpos($key, ' ')) return false;
++			if(str_contains($key, ' ')) return false;
+ 			if($key != 'name') return false;
+ 			$cat = $val;
+ 		}
+@@ @@
+ 		// process custom Fieldtype settings
+ 		foreach($input as $key => $value)
+ 		{
+-			if(strpos($key, 'custom-') !== false)
++			if(str_contains($key, 'custom-'))
+ 			{
+ 				$fieldkey = str_replace('custom-', '', $key);
+ 				$currfield->configs->$fieldkey = $value;
+@@ @@
+
+
+ 	/**
+-	 * Delete chached image files that starting with *_filename.* for example
+-	 *
+-	 * @param Item $item
+-	 */
+-	public function cleanUpCachedFiles(Item $item)
++  * Delete chached image files that starting with *_filename.* for example
++  */
++ public function cleanUpCachedFiles(Item $item)
+ 	{
+ 		$fieldinput = IM_IMAGE_UPLOAD_DIR.(int)$item->id.'.'.$item->categoryid.'/';
+ 		if(!file_exists($fieldinput.'config.xml')) {return;}
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+
+
+87) plugins/imanager/lib/ItemMapper.php:11
+
+    ---------- begin diff ----------
+@@ @@
+ 	/**
+ 	 * @var boolean indicates to searchig field values
+ 	 */
+-	private $fieldflag = false;
++	private bool $fieldflag = false;
+
+ 	public $total = 0;
+
+@@ @@
+
+
+ 	/**
+-	 * Returns a total number of given items
+-	 *
+-	 * @param array $items
+-	 *
+-	 * @return int
+-	 */
+-	public function countItems(array $items=array())
++  * Returns a total number of given items
++  *
++  *
++  * @return int
++  */
++ public function countItems(array $items=array())
+ 	{return !empty($items) ? count($items) : count($this->items);}
+
+
+@@ @@
+
+
+ 	/**
+-	 * Get single item
+-	 *
+-	 * @param $stat - Selector
+-	 * @param array $items
+-	 *
+-	 * @return bool|mixed
+-	 */
+-	public function getItem($stat, array $items=array())
++  * Get single item
++  *
++  * @param $stat - Selector
++  *
++  * @return bool|mixed
++  */
++ public function getItem($stat, array $items=array())
+ 	{
+ 		$locitems = !empty($items) ? $items : $this->items;
+
+@@ @@
+
+ 		// all parameter have to match the data
+ 		$treads = array();
+-		if(false !== strpos($stat, '&&'))
++		if(str_contains($stat, '&&'))
+ 		{
+ 			$treads = explode('&&', $stat, 2);
+ 			$parts[] = trim($treads[0]);
+@@ @@
+ 				return !empty($arr) ? reset($arr) : false;
+ 			}
+ 			// only one parameter have to match the data
+-		} elseif(false !== strpos($stat, '||'))
++		} elseif(str_contains($stat, '||'))
+ 		{
+ 			$treads = explode('||', $stat, 2);
+ 			$parts[] = trim($treads[0]);
+@@ @@
+
+
+ 	/**
+-	 * Find matching item - Finds an item belonging to one category (returns exactly one result)
+-	 *
+-	 * @param $stat – A search selector: (name=Item Name) for example
+-	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
+-	 *                           to specific categories (NOTE: The specifying category id's could speed up the
+-	 *                           searsh process!)
+-	 *
+-	 * @param array $limit_ids
+-	 *
+-	 * @return bool|mixed
+-	 */
+-	public function findItem($stat, array $limit_ids = array())
++  * Find matching item - Finds an item belonging to one category (returns exactly one result)
++  *
++  * @param $stat – A search selector: (name=Item Name) for example
++  * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
++  *                           to specific categories (NOTE: The specifying category id's could speed up the
++  *                           searsh process!)
++  *
++  *
++  * @return bool|mixed
++  */
++ public function findItem($stat, array $limit_ids = array())
+ 	{
+ 		$mapper = imanager()->getCategoryMapper();
+ 		if(!empty($limit_ids))
+@@ @@
+
+
+ 	/**
+-	 * Find matching items - Finds all items belonging to one category (returns matching items of a category)
+-	 *
+-	 * @param $stat – A search selector: (name=Item Name) for example
+-	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
+-	 *                           to specific categories (NOTE: The specifying category id's could speed up the
+-	 *                           searsh process!)
+-	 *
+-	 * @return array|bool
+-	 */
+-	public function findItems($stat, array $limit_ids = array())
++  * Find matching items - Finds all items belonging to one category (returns matching items of a category)
++  *
++  * @param $stat – A search selector: (name=Item Name) for example
++  * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
++  *                           to specific categories (NOTE: The specifying category id's could speed up the
++  *                           searsh process!)
++  */
++ public function findItems($stat, array $limit_ids = array()): array|bool
+ 	{
+ 		$mapper = imanager()->getCategoryMapper();
+ 		if(!empty($limit_ids))
+@@ @@
+
+
+ 	/**
+-	 * Find all matching items - Finds all items of all categories (returns matching items of all categories)
+-	 *
+-	 * @param $stat – A search selector: (name=Item Name) for example
+-	 * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
+-	 *                           to specific categories (NOTE: The specifying category id's could speed up the
+-	 *                           searsh process!)
+-	 *
+-	 * @return array|bool
+-	 */
+-	public function findAll($stat, array $limit_ids = array())
++  * Find all matching items - Finds all items of all categories (returns matching items of all categories)
++  *
++  * @param $stat – A search selector: (name=Item Name) for example
++  * @param array $limit_ids – An optional parameter array, with category id's, to restrict the search process
++  *                           to specific categories (NOTE: The specifying category id's could speed up the
++  *                           searsh process!)
++  */
++ public function findAll($stat, array $limit_ids = array()): array|bool
+ 	{
+ 		$allItems = array();
+ 		$count = 0;
+@@ @@
+ 		// ***** HIER ENDET DER TESTBEREICH *****
+
+
+-		if(false !== strpos($stat, '&&'))
++		if(str_contains($stat, '&&'))
+ 		{
+ 			$treads = explode('&&', $stat, 2);
+ 			$parts[] = trim($treads[0]);
+@@ @@
+ 				return $arr;
+ 			}
+ 			// only one parameter have to match the data
+-		} elseif(false !== strpos($stat, '||'))
++		} elseif(str_contains($stat, '||'))
+ 		{
+ 			$treads = explode('||', $stat, 2);
+ 			$parts[] = trim($treads[0]);
+@@ @@
+ 	 * @param array $items
+ 	 * @return boolean|array of objects of type Item
+ 	 */
+-	public function filterItems($filterby='position', $option='asc',  $offset=0, $length=0, array $items=array())
++	public function filterItems($filterby='position', $option='asc',  $offset=0, $length=0, array $items=array()): bool|array
+ 	{
+ 		// reset offset
+ 		$offset = ($offset > 0) ? $offset-1 : $offset;
+@@ @@
+
+
+ 	/**
+-	 * Deletes an item
+-	 *
+-	 * @param Item $item
+-	 * @param reinitialize flag $re
+-	 * @return bool
+-	 */
+-	public function destroyItem(Item $item, $re = false)
++  * Deletes an item
++  *
++  * @param reinitialize flag $re
++  * @return bool
++  */
++ public function destroyItem(Item $item, $re = false)
+ 	{
+ 		if(file_exists(IM_ITEM_DIR.$item->id.'.'.$item->categoryid.IM_ITEM_FILE_SUFFIX))
+ 		{
+@@ @@
+
+ 	protected function separateItem(array $items, $stat)
+ 	{
+-		if (false !== strpos($stat, '='))
++		if (str_contains($stat, '='))
+ 		{
+ 			$data = explode('=', $stat, 2);
+ 			$key = strtolower(trim($data[0]));
+@@ @@
+ 				$pat = '/'.strtolower(trim(str_replace('%', '', $val))).'/';
+ 			}
+
+-			if(false !== strpos($key, ' ')) return false;
++			if(str_contains($key, ' ')) return false;
+
+ 			// Searching for the name and other simple attributs
+ 			if($key == 'id' || $key == 'name' || $key == 'label' || $key == 'position' || $key == 'active'
+@@ @@
+
+ 		foreach($pattern as $pkey => $pval)
+ 		{
+-			if(false !== strpos($stat, $pval))
++			if(str_contains($stat, $pval))
+ 			{
+ 				$data = explode($pval, $stat, 2);
+ 				$key = strtolower(trim($data[0]));
+ 				$val = trim($data[1]);
+-				if(false !== strpos($key, ' '))
++				if(str_contains($key, ' '))
+ 					return false;
+
+ 				$num = substr_count($val, '%');
+@@ @@
+
+
+ 	/**
+-	 * Reverse the array of items
+-	 *
+-	 * @param array $itemcontainer An array of objects
+-	 * @return boolean|array
+-	 */
+-	public function reverseItems($itemcontainer)
++  * Reverse the array of items
++  *
++  * @param array $itemcontainer An array of objects
++  */
++ public function reverseItems($itemcontainer): bool|array
+ 	{
+ 		if(!is_array($itemcontainer)) return false;
+ 		return array_reverse($itemcontainer);
+@@ @@
+
+
+ 	/**
+-	 * Revise keys of the array of items and changes these into real item id's
+-	 *
+-	 * @param array $itemcontainer An array of objects
+-	 * @return boolean|array
+-	 */
+-	public function reviseItemIds($itemcontainer)
++  * Revise keys of the array of items and changes these into real item id's
++  *
++  * @param array $itemcontainer An array of objects
++  */
++ public function reviseItemIds($itemcontainer): bool|array
+ 	{
+ 		if(!is_array($itemcontainer)) return false;
+ 		$result = array();
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+ * TypedPropertyFromAssignsRector
+
+
+88) plugins/imanager/lib/FieldMapper.php:58
+
+    ---------- begin diff ----------
+@@ @@
+ 				if((int) $field->id == (int) $stat)
+ 					return $field;
+
+-		if (false !== strpos($stat, '='))
++		if (str_contains($stat, '='))
+ 		{
+ 			$data = explode('=', $stat, 2);
+ 			$key = strtolower(trim($data[0]));
+ 			$val = trim($data[1]);
+-			if(false !== strpos($key, ' '))
++			if(str_contains($key, ' '))
+ 				return false;
+
+ 			// searching for the name
+@@ @@
+ 		{$locfields = !empty($fields) ? $fields : $this->fields; return count($locfields);}
+
+ 	/**
+-	 * Deletes a field of category
+-	 *
+-	 * @param Field $field
+-	 * @return bool
+-	 */
+-	public function destroyField(Field $field, $save=true)
++  * Deletes a field of category
++  *
++  * @return bool
++  */
++ public function destroyField(Field $field, $save=true)
+ 	{
+ 		if($save) $this->recreateFieldsFile($field);
+
+@@ @@
+ 	 * @param array $fields
+ 	 * @return boolean|array of objects of type Field
+ 	 */
+-	public function filterFields($filterby, $key, array $fields=array())
++	public function filterFields($filterby, $key, array $fields=array()): bool|array
+ 	{
+
+ 		$locfields = !empty($fields) ? $fields : $this->fields;
+@@ @@
+
+
+ 	/**
+-	 * Reverse the array of fields
+-	 *
+-	 * @param array $fieldcontainer An array of objects
+-	 * @return boolean|array
+-	 */
+-	public function reverseFields($fieldcontainer)
++  * Reverse the array of fields
++  *
++  * @param array $fieldcontainer An array of objects
++  */
++ public function reverseFields($fieldcontainer): bool|array
+ 	{
+ 		if(!is_array($fieldcontainer)) return false;
+ 		return array_reverse($fieldcontainer);
+@@ @@
+
+
+ 	/**
+-	 * Revise keys of the array of fields and changes these into real field Ids
+-	 *
+-	 * @param array $fieldcontainer An array of objects
+-	 * @return boolean|array
+-	 */
+-	public function reviseFieldIds($fieldcontainer)
++  * Revise keys of the array of fields and changes these into real field Ids
++  *
++  * @param array $fieldcontainer An array of objects
++  */
++ public function reviseFieldIds($fieldcontainer): bool|array
+ 	{
+ 		if(!is_array($fieldcontainer)) return false;
+ 		$result = array();
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+
+
+89) plugins/imanager/lib/CategoryProcessor.php:8
+
+    ---------- begin diff ----------
+@@ @@
+ {
+ 	public $is_cat_valid;
+ 	public $is_cat_exist;
+-	private $category;
+
+-	public function __construct(CategoryMapper &$category)
++	public function __construct(private CategoryMapper &$category)
+ 	{
+-		// initialise categories
+-		$this->category = $category;
+-
+ 		if(self::isCategoryValid())
+ 		{
+ 			$this->is_cat_exist = true;
+    ----------- end diff -----------
+
+Applied rules:
+ * ClassPropertyAssignToConstructorPromotionRector (https://wiki.php.net/rfc/constructor_promotion https://github.com/php/php-src/pull/5291)
+
+
+90) plugins/imanager/lib/CategoryMapper.php:59
+
+    ---------- begin diff ----------
+@@ @@
+
+
+ 	/**
+-	 * Returns the number of categories
+-	 *
+-	 * @param array $categories
+-	 * @return int
+-	 */
+-	public function countCategories(array $categories=array())
++  * Returns the number of categories
++  *
++  * @return int
++  */
++ public function countCategories(array $categories=array())
+ 	{return count($cat = !empty($categories) ? $categories : $this->categories);}
+
+
+@@ @@
+ 	 * @param array $categories
+ 	 * @return boolean|object of the type Category
+ 	 */
+-	public function getCategory($stat, array $categories=array())
++	public function getCategory($stat, array $categories=array()): bool|object
+ 	{
+
+ 		$loccat = !empty($categories) ? $categories : $this->categories;
+@@ @@
+ 			return !empty($loccat[(int) $stat]) ? $loccat[(int) $stat] : false;
+
+ 			// stat is a string
+-		} elseif (false !== strpos($stat, '='))
++		} elseif (str_contains($stat, '='))
+ 		{
+ 			$data = explode('=', $stat, 2);
+ 			$key = strtolower(trim($data[0]));
+ 			$val = trim($data[1]);
+-			if(false !== strpos($key, ' '))
++			if(str_contains($key, ' '))
+ 				return false;
+
+ 			// id
+@@ @@
+
+
+ 	/**
+-	 * Returns the array of objects of the type Category, by a comparison of values
+-	 * NOTE: However if no $categories argument is passed to the function, the categories
+-	 * must already be in the buffer: ImCategory::$categories. Call the ImCategory::init()
+-	 * method before to assign the categories to the buffer.
+-	 *
+-	 * You can sort categories by using any node
+-	 * Sample sortng by "position":
+-	 * ImCategory::filterCategories('position', 'DESC', $your_categories_array)
+-	 *
+-	 * @param string $filterby
+-	 * @param string $key
+-	 * @param array $categories
+-	 * @return boolean|array
+-	 */
+-	public function getCategories($stat, $offset=0, $length=0, array $categories=array())
++  * Returns the array of objects of the type Category, by a comparison of values
++  * NOTE: However if no $categories argument is passed to the function, the categories
++  * must already be in the buffer: ImCategory::$categories. Call the ImCategory::init()
++  * method before to assign the categories to the buffer.
++  *
++  * You can sort categories by using any node
++  * Sample sortng by "position":
++  * ImCategory::filterCategories('position', 'DESC', $your_categories_array)
++  *
++  * @param string $filterby
++  * @param string $key
++  * @param array $categories
++  */
++ public function getCategories($stat, $offset=0, $length=0, array $categories=array()): bool|array
+ 	{
+ 		// reset offset
+ 		$offset = ($offset > 0) ? $offset-1 : $offset;
+@@ @@
+
+ 		foreach($pattern as $pkey => $pval)
+ 		{
+-			if(false !== strpos($stat, $pval))
++			if(str_contains($stat, $pval))
+ 			{
+
+ 				$data = explode($pval, $stat, 2);
+@@ @@
+ 				else
+ 					$val = trim($data[1]);
+
+-				if(false !== strpos($key, ' '))
++				if(str_contains($key, ' '))
+ 					return false;
+
+ 				foreach($loccat as $cat_id => $c)
+@@ @@
+ 	 * @param array $categories
+ 	 * @return boolean|array of objects of the type Category
+ 	 */
+-	public function filterCategories($filterby, $key, $offset=0, $length=0, array $categories=array())
++	public function filterCategories($filterby, $key, $offset=0, $length=0, array $categories=array()): bool|array
+ 	{
+ 		// reset offset
+ 		$offset = ($offset > 0) ? $offset-1 : $offset;
+@@ @@
+
+
+ 	/**
+-	 * Deletes the category
+-	 *
+-	 * @param Category $cat
+-	 * @return bool
+-	 */
+-	public function destroyCategory(Category $cat)
++  * Deletes the category
++  *
++  * @return bool
++  */
++ public function destroyCategory(Category $cat)
+ 	{
+ 		if(file_exists(IM_CATEGORY_DIR . $cat->get('id') . IM_CATEGORY_FILE_SUFFIX))
+ 			return unlink(IM_CATEGORY_DIR . $cat->get('id') . IM_CATEGORY_FILE_SUFFIX);
+@@ @@
+
+
+ 	/**
+-	 * Reverse the array of categoriies
+-	 *
+-	 * @param array $catcontainer An array of objects
+-	 * @return boolean|array
+-	 */
+-	public function reverseCategories($catcontainer)
++  * Reverse the array of categoriies
++  *
++  * @param array $catcontainer An array of objects
++  */
++ public function reverseCategories($catcontainer): bool|array
+ 	{
+ 		if(!is_array($catcontainer)) return false;
+ 		return array_reverse($catcontainer);
+@@ @@
+
+
+ 	/**
+-	 * Revise keys of the array of categories and changes these into real category Ids
+-	 *
+-	 * @param array $catcontainer An array of objects
+-	 * @return boolean|array
+-	 */
+-	public function reviseCatIds($catcontainer)
++  * Revise keys of the array of categories and changes these into real category Ids
++  *
++  * @param array $catcontainer An array of objects
++  */
++ public function reviseCatIds($catcontainer): bool|array
+ 	{
+ 		if(!is_array($catcontainer)) return false;
+ 		$result = array();
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+
+
+91) plugins/imanager/lib/Allocator.php:71
+
+    ---------- begin diff ----------
+@@ @@
+ 		} elseif($num == 2) {
+ 			$pat = '/'.strtolower(trim(str_replace('%', '', $val))).'/';
+ 		}
+-		if(false !== strpos($key, ' ')) return false;
++		if(str_contains($key, ' ')) return false;
+ 		// Searching for entered value
+ 		foreach($this->simpleItems as $itemkey => $item) {
+ 			if(!$pat && strtolower($item->{$key}) == strtolower($val)) return $item;
+@@ @@
+ 		// all parameter have to match the data
+ 		$treads = array();
+
+-		if(false !== strpos($stat, '&&'))
++		if(str_contains($stat, '&&'))
+ 		{
+ 			$treads = explode('&&', $stat, 2);
+ 			$parts[] = trim($treads[0]);
+@@ @@
+ 				return $arr;
+ 			}
+ 			// only one parameter have to match the data
+-		} elseif(false !== strpos($stat, '||'))
++		} elseif(str_contains($stat, '||'))
+ 		{
+ 			$treads = explode('||', $stat, 2);
+ 			$parts[] = trim($treads[0]);
+@@ @@
+ 	 * @param array $items
+ 	 * @return boolean|array of objects of type Item
+ 	 */
+-	public function filterSimpleItems($filterby='position', $option='asc',  $offset=0, $length=0, array $items=array())
++	public function filterSimpleItems($filterby='position', $option='asc',  $offset=0, $length=0, array $items=array()): bool|array
+ 	{
+ 		// reset offset
+ 		$offset = ($offset > 0) ? (int) $offset-1 : (int) $offset;
+@@ @@
+
+ 		foreach($pattern as $pkey => $pval)
+ 		{
+-			if(false === strpos($stat, $pval)) continue;
++			if(!str_contains($stat, $pval)) continue;
+
+ 			$data = explode($pval, $stat, 2);
+ 			$key = strtolower(trim($data[0]));
+ 			$val = trim($data[1]);
+-			if(false !== strpos($key, ' ')) return false;
++			if(str_contains($key, ' ')) return false;
+
+ 			$num = substr_count($val, '%');
+ 			$pat = false;
+    ----------- end diff -----------
+
+Applied rules:
+ * UnionTypesRector
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+
+
+92) plugins/im_extra_fields/controller/renderer.php:46
+
+    ---------- begin diff ----------
+@@ @@
+ 	 */
+ 	public function renderBody()
+ 	{
+-		$output = json_decode($this->renderItemFields());
++		$output = json_decode($this->renderItemFields(), null, 512, JSON_THROW_ON_ERROR);
+ 		return $this->imanager->getTemplateEngine()->render($this->editorBody, array(
+ 				'inputs' => (!empty($output->status) ? $output->output : '')
+ 			)
+@@ @@
+ 		$this->tpl = $this->imanager->getTemplateEngine();
+
+ 		if(isset($_POST['epcatid']) && $_POST['epcatid'] < 0) {
+-			return json_encode(array('output' => $this->tpl->render($this->deleteInput), 'status' => false));
++			return json_encode(array('output' => $this->tpl->render($this->deleteInput), 'status' => false), JSON_THROW_ON_ERROR);
+ 		} elseif(empty($this->processor->curcat->id)) {
+ 			return json_encode(array('output' => '', 'status' => false));
+ 		}
+@@ @@
+ 				'categoryid'  => $this->processor->curcat->id
+ 			), true, array()
+ 		);
+-		return json_encode(array('output' => $output, 'status' => 1));
++		return json_encode(array('output' => $output, 'status' => 1), JSON_THROW_ON_ERROR);
+ 	}
+
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+93) plugins/i18n_specialpages/specialpages.class.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ class I18nSpecialPages {
+   
+-  private static $settings = null;
+-  private static $complete = false;
+-  private static $fields = null;
++  private static ?array $settings = null;
++  private static bool $complete = false;
++  private static ?array $fields = null;
+   private static $item = null;
+   
+   public static function getSettings($name=null) {
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyFromAssignsRector
+
+
+94) plugins/i18n_specialpages/pages.php:223
+
+    ---------- begin diff ----------
+@@ @@
+       </p>
+       <script type="text/javascript">
+         // <![CDATA[
+-        var tags = <?php echo json_encode($tags); ?>;
++        var tags = <?php echo json_encode($tags, JSON_THROW_ON_ERROR); ?>;
+         function filterPages() {
+           var s = $.trim($('#filter').val()).toLowerCase();
+           if (s == '' || s == ':') {
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+95) plugins/i18n_specialpages/edit.php:149
+
+    ---------- begin diff ----------
+@@ @@
+   if (@$spdef['slug']) {
+     if (!$id && !@$_GET['newid']) {
+       $slug = strftime($spdef['slug']);
+-      echo "$('#post-id').val(".json_encode($slug).").closest('p').hide();\r\n";
++      echo "$('#post-id').val(".json_encode($slug, JSON_THROW_ON_ERROR).").closest('p').hide();\r\n";
+     } else {
+       echo "$('#post-id').closest('p').hide();\r\n";
+     }
+@@ @@
+   }
+   if (@$spdef['parent']) {
+     $parent = $spdef['parent'];
+-    echo "if ($('#post-parent').val(".json_encode($parent).").val() == ".json_encode($parent).") $('#post-parent').closest('p').hide();\r\n"; 
++    echo "if ($('#post-parent').val(".json_encode($parent, JSON_THROW_ON_ERROR).").val() == ".json_encode($parent, JSON_THROW_ON_ERROR).") $('#post-parent').closest('p').hide();\r\n"; 
+   }
+   if (@$spdef['tags'] && !$id) {
+     $tags = $spdef['tags'];
+-    echo "$('#post-metak').val(".json_encode($tags).");\r\n";
++    echo "$('#post-metak').val(".json_encode($tags, JSON_THROW_ON_ERROR).");\r\n";
+   }
+   if (@$spdef['template']) {
+     $template = $spdef['template'];
+-    echo "if ($('#post-template').val(".json_encode($template).").val() == ".json_encode($template).") $('#post-template').closest('p').hide();\r\n"; 
++    echo "if ($('#post-template').val(".json_encode($template, JSON_THROW_ON_ERROR).").val() == ".json_encode($template, JSON_THROW_ON_ERROR).") $('#post-template').closest('p').hide();\r\n"; 
+   }
+   $m = @$spdef['menu'];
+   if (($m || $m == '0') && $isI18N) {
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+96) plugins/i18n_specialpages/conf_overview.php:68
+
+    ---------- begin diff ----------
+@@ @@
+     <script type="text/javascript">
+       $(function() {
+ <?php if (isset($msg)) { ?>
+-        $('div.bodycontent').before('<div class="<?php echo @$success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg); ?>+'</div>');
++        $('div.bodycontent').before('<div class="<?php echo @$success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg, JSON_THROW_ON_ERROR); ?>+'</div>');
+         $(".updated, .error").fadeOut(500).fadeIn(500);
+ <?php } ?>
+       });
+     </script>
+-  
++
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+97) plugins/user-managment.php:609
+
+    ---------- begin diff ----------
+@@ @@
+ 					$my_plugin_id = $id; // replace this with yours
+
+ 					$apiback = file_get_contents('http://get-simple.info/api/extend/?id='.$my_plugin_id);
+-					$response = json_decode($apiback);
++					$response = json_decode($apiback, null, 512, JSON_THROW_ON_ERROR);
+ 					if ($response->status == 'successful') {
+ 							// Successful api response sent back. 
+ 							$get_field_data = $response->$get_field;
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+98) plugins/uploader/server/php.php:59
+
+    ---------- begin diff ----------
+@@ @@
+ }
+
+ class qqFileUploader {
+-    private $allowedExtensions = array();
+-    private $file;
++    private array $allowedExtensions = array();
++    private \qqUploadedFileXhr|\qqUploadedFileForm|bool|null $file = null;
+
+-    function __construct(array $allowedExtensions = array(), private $sizeLimit = 10485760){        
++    function __construct(array $allowedExtensions = array(), private $sizeLimit = 10_485_760){        
+         $allowedExtensions = array_map("strtolower", $allowedExtensions);
+             
+         $this->allowedExtensions = $allowedExtensions;
+@@ @@
+ $uploader = new qqFileUploader($allowedExtensions, $sizeLimit);
+ $result = $uploader->handleUpload('../../../data/uploads/items/');
+ // to pass data through iframe you will need to encode all html tags
+-echo htmlspecialchars(json_encode($result), ENT_NOQUOTES);
++echo htmlspecialchars(json_encode($result, JSON_THROW_ON_ERROR), ENT_NOQUOTES);
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * AddLiteralSeparatorToNumberRector (https://wiki.php.net/rfc/numeric_literal_separator)
+ * TypedPropertyFromAssignsRector
+
+
+99) plugins/updater/inc/status.php:8
+
+    ---------- begin diff ----------
+@@ @@
+ function updater_get_getsimple_status() {
+     $data = get_api_details();
+     if($data) {
+-        $apikey = json_decode($data);
++        $apikey = json_decode($data, null, 512, JSON_THROW_ON_ERROR);
+         $latest_ver = $apikey->latest;
+         $ok = ($apikey->status >= 1);
+     } else {
+@@ @@
+         $status['backup'] = False;
+     }
+
+-    $api_data = json_decode(get_api_details('plugin', $plugin_file));
++    $api_data = json_decode(get_api_details('plugin', $plugin_file), null, 512, JSON_THROW_ON_ERROR);
+     if ($api_data && $api_data->status == "successful") {
+         $status['name'] = $api_data->name;
+         $status['latest'] = $api_data->version;
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+100) plugins/translate/translate.php:79
+
+    ---------- begin diff ----------
+@@ @@
+     $url = "https://www.transifex.net/api/2/project/getsimple_".$plugin."/resource/lang/";
+     $handle = @fopen($url, 'r', false, $ctx);
+     if ($handle) {
+-      $result = json_decode(stream_get_contents($handle));
++      $result = json_decode(stream_get_contents($handle), null, 512, JSON_THROW_ON_ERROR);
+       $sourcelang = $result->source_language_code;
+       $url = "https://www.transifex.net/api/2/project/getsimple_".$plugin."/resource/lang/stats/";
+       $handle = @fopen($url, 'r', false, $ctx);
+       if ($handle) {
+-        $result = json_decode(stream_get_contents($handle));
++        $result = json_decode(stream_get_contents($handle), null, 512, JSON_THROW_ON_ERROR);
+         $result->$sourcelang->source = true;
+         return $result;
+       }
+@@ @@
+     $handle = @fopen($url, 'r', false, $ctx);
+     if ($handle) {
+       $json = stream_get_contents($handle);
+-      $result = json_decode($json);
++      $result = json_decode($json, null, 512, JSON_THROW_ON_ERROR);
+       $content = "?>".trim($result->content);
+       if (substr($content,-2) == '?>') $content .= '<?php';
+       eval($content);
+@@ @@
+     $opts = array('http' => array('method'=>'PUT',
+         'header'=>'Authorization: Basic '.base64_encode("$username:$password")."\r\n".
+                   'Content-Type: application/json',
+-        'content'=>json_encode(array('content'=>$content))
++        'content'=>json_encode(array('content'=>$content), JSON_THROW_ON_ERROR)
+     ));
+     $ctx = stream_context_create($opts);
+     $handle = @fopen($url, 'r', false, $ctx);
+@@ @@
+     <script type="text/javascript">
+       $(function() {
+ <?php if (isset($msg)) { ?>
+-        $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg); ?>+'</div>');
++        $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg, JSON_THROW_ON_ERROR); ?>+'</div>');
+ 	      $(".updated, .error").fadeOut(500).fadeIn(500);
+ <?php } ?>
+       });
+@@ @@
+           $textarea.val($textarea.attr('title')).focus();
+         });
+ <?php if (isset($msg)) { ?>
+-        $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg); ?>+'</div>');
++        $('div.bodycontent').before('<div class="<?php echo $success ? 'updated' : 'error'; ?>" style="display:block;">'+<?php echo json_encode($msg, JSON_THROW_ON_ERROR); ?>+'</div>');
+ 	      $(".updated, .error").fadeOut(500).fadeIn(500);
+ <?php } ?>
+       });
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * ParenthesizeNestedTernaryRector (https://www.php.net/manual/en/migration74.deprecated.php)
+
+
+101) plugins/theme_settings/settings.class.php:1
+
+    ---------- begin diff ----------
+@@ @@
+
+ class ThemeSettings {
+
+-  private static $settings = array();
++  private static array $settings = array();
+
+   public static function getCurrentTheme() {
+     global $TEMPLATE;
+    ----------- end diff -----------
+
+Applied rules:
+ * TypedPropertyFromAssignsRector
+
+
+102) plugins/theme_settings/backend.class.php:93
+
+    ---------- begin diff ----------
+@@ @@
+       </p>
+       <?php if ($languages) { ?>
+       <script type="text/javascript">
+-        var languages = <?php echo json_encode($languages); ?>;
+-        var deflanguage = <?php echo json_encode($deflanguage); ?>;
+-        var settings = <?php echo json_encode($settings); ?>;
++        var languages = <?php echo json_encode($languages, JSON_THROW_ON_ERROR); ?>;
++        var deflanguage = <?php echo json_encode($deflanguage, JSON_THROW_ON_ERROR); ?>;
++        var settings = <?php echo json_encode($settings, JSON_THROW_ON_ERROR); ?>;
+       	function setLanguage(lang) {
+           $('#themeSettingsLanguages a').removeClass('current');
+           $('#themeSettingsLanguages a.'+lang).addClass('current');
+@@ @@
+     include_once(GSTHEMESPATH.$theme.'/settings.php');
+   }
+   
+-}
++}
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * MixedTypeRector
+
+
+103) plugins/theme_highlighter/footer.php:143
+
+    ---------- begin diff ----------
+@@ @@
+           $category = trim(substr($line,2));
+         } else if ($line != '' && (!$category || $category == 'GetSimple' || ($pos = strpos($line,'(')) === false || function_exists(substr($line,0,$pos)))) {
+           if (!$first) echo ",\r\n        "; else $first = false;
+-          echo '{ mode:'.json_encode($type).', text:'.json_encode($line).', category:'.json_encode($category).' }';
++          echo '{ mode:'.json_encode($type, JSON_THROW_ON_ERROR).', text:'.json_encode($line, JSON_THROW_ON_ERROR).', category:'.json_encode($category, JSON_THROW_ON_ERROR).' }';
+         }
+       }
+       fclose($f);
+@@ @@
+         $line = trim($line);
+         if ($line != '' && substr($line,0,2) != '//' && preg_match('/^([$A-Za-z0-9_]+)/', $line, $matches)) {
+           if (!$first) echo ",\r\n        "; else $first = false;
+-          echo json_encode($matches[1]) . ':' . json_encode($style);
++          echo json_encode($matches[1], JSON_THROW_ON_ERROR) . ':' . json_encode($style, JSON_THROW_ON_ERROR);
+         }
+       }
+       fclose($f);
+@@ @@
+
+       $(function() {
+         $('#colorpicker div').farbtastic('#color');
+-        $(<?php echo json_encode($selector); ?>).each(function(i,textarea) {
++        $(<?php echo json_encode($selector, JSON_THROW_ON_ERROR); ?>).each(function(i,textarea) {
+           var editor = CodeMirror.fromTextArea(textarea, {
+             lineNumbers: true,
+             matchBrackets: true,
+-            mode: { name:<?php echo json_encode($mode); ?>, styles:hl },
++            mode: { name:<?php echo json_encode($mode, JSON_THROW_ON_ERROR); ?>, styles:hl },
+             indentUnit: 2,
+             indentWithTabs: true,
+             enterMode: "keep",
+@@ @@
+ <?php if ($mode == 'css') { ?>
+         $('#colorpicker div').farbtastic('#color');
+ <?php } ?>
+-        $(<?php echo json_encode($selector); ?>).each(function(i,textarea) {
++        $(<?php echo json_encode($selector, JSON_THROW_ON_ERROR); ?>).each(function(i,textarea) {
+           var editor = CodeMirror.fromTextArea(textarea, {
+             lineNumbers: true,
+             matchBrackets: true,
+-            mode: <?php echo json_encode($mode); ?>,
++            mode: <?php echo json_encode($mode, JSON_THROW_ON_ERROR); ?>,
+             indentUnit: 2,
+             indentWithTabs: true,
+             enterMode: "keep",
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * MixedTypeRector
+
+
+104) plugins/small_plugin_toolkit.php:163
+
+    ---------- begin diff ----------
+@@ @@
+ $SPT_XML = SPT_legacy('xml');
+ if(file_exists(SPT_CONFIG)){
+ 	$SPT_filecontents = file_get_contents(SPT_CONFIG);
+-	$SPT_CONFIG = json_decode($SPT_filecontents,true);}
++	$SPT_CONFIG = json_decode($SPT_filecontents,true, 512, JSON_THROW_ON_ERROR);}
+ else{
+ 	if($SPT_XML){
+ 		$SPT_CONFIG = $SPT_XML; }
+@@ @@
+ 		foreach($list as $reg){
+ 			global ${$reg};
+ 			$SPT_CONFIG[$user][$reg] = ${$reg};}}
+-	$data = json_encode($SPT_CONFIG);
++	$data = json_encode($SPT_CONFIG, JSON_THROW_ON_ERROR);
+ 	file_put_contents(SPT_CONFIG, $data);
+ }
+ function SPT_index_posttemplate(){
+@@ @@
+ 	$function_calls_found = array();
+ 	$try_data_find_data = explode('||#search-items#||', $page_data);// Break up processed page.
+         foreach($try_data_find_data as $request){
+-			$string = json_decode($request,true);
++			$string = json_decode($request,true, 512, JSON_THROW_ON_ERROR);
+ 			if(is_array($string)){
+ 				$function_calls_found[] = $string;
+ 			}}
+@@ @@
+
+ 		echo '||#search-items#||{"'.$name.'":'.json_encode($info).'}||#search-items#||';}
+ */
+-		echo '||#search-items#||'.json_encode($arglist).'||#search-items#||';}
++		echo '||#search-items#||'.json_encode($arglist, JSON_THROW_ON_ERROR).'||#search-items#||';}
+ }
+
+
+@@ @@
+ 	foreach($files as $check){
+ 		if(substr($check,-4)=='.xml'){
+ 			$data = file_get_contents($directory.$check);
+-			$test = stripos($data, $search);
++			$test = stripos($data, (string) $search);
+ 			if($test){
+ 				$match[] = array($check,$test);}}
+ 	}
+@@ @@
+ 	$repair = array_shift($data);
+ 	$last = false;
+ 	foreach($data as $info){
+-		$try = json_decode($info);
++		$try = json_decode($info, null, 512, JSON_THROW_ON_ERROR);
+ 		if(is_array($try)){
+ 			$filter = array_shift($try);
+ 			$temp = exec_filter($filter.'-exec',$try);
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * StringifyStrNeedlesRector (https://wiki.php.net/rfc/deprecations_php_7_3#string_search_functions_with_integer_needle)
+ * MixedTypeRector
+
+
+105) plugins/simple_input_tabs.php:388
+
+    ---------- begin diff ----------
+@@ @@
+ 	<?php if($SIT_CONFIG['tab-location'] == 1){ ?>
+ //	php our variables into javascript for JAVATABS tm!
+ 	currentTab = "<?php echo $SIT_LAST_TAB; ?>";
+-	pageData = <?php echo json_encode($SIT_RAW_CONTENT_DATA); ?>; //			Inital data.
+-	defaultTabData = <?php echo json_encode($SIT_TAB_LIST); ?>;//				Tab name and custom default data.
++	pageData = <?php echo json_encode($SIT_RAW_CONTENT_DATA, JSON_THROW_ON_ERROR); ?>; //			Inital data.
++	defaultTabData = <?php echo json_encode($SIT_TAB_LIST, JSON_THROW_ON_ERROR); ?>;//				Tab name and custom default data.
+ 	changeEditor = CKEDITOR.instances["post-content"];//					Set editor
+ 	defaultTabContent = <?php if(!$SIT_CONFIG['default-content']){echo 'true';}else{echo 'false';} ?>;
+
+@@ @@
+ 	//									Store raw content data for retrieval later.
+ 	echo '<input type="hidden" id="old-page-content" name="old-page-content" value="'.safe_slash_html($content).'">';
+ 	//									tabs default content.
+-	echo '<input type="hidden" id="default-tab-content" name="default-tab-content" value=\''.json_encode($SIT_TAB_LIST).'\'>';
++	echo '<input type="hidden" id="default-tab-content" name="default-tab-content" value=\''.json_encode($SIT_TAB_LIST, JSON_THROW_ON_ERROR).'\'>';
+
+ 	$SIT_RAW_CONTENT_DATA = SIT_content_scan($content);//					Extract the data from the page xml file.
+ 	$newData = NULL;
+@@ @@
+ *	Parse the content data. Return values from ||] ... [||
+ *	---------------------------------------------------------------------------------*/
+ function SIT_content_scan($string){
+-$json_attempt = json_decode($string,true); // try json first.
++$json_attempt = json_decode($string,true, 512, JSON_THROW_ON_ERROR); // try json first.
+ if(is_array($json_attempt)){ return $json_attempt; }
+ $string_array = explode('||', $string);//							Break up our string.
+ $content = NULL;//										Set an empty data variable. Lets fill it!
+@@ @@
+ 			$_POST['old-page-content'] = stripslashes($_POST["old-page-content"]);
+ 			$_POST['default-tab-content'] = stripslashes($_POST['default-tab-content']);}
+
+-		$tab_default_content = json_decode($_POST['default-tab-content'],true); //	Get tabs default content.
++		$tab_default_content = json_decode($_POST['default-tab-content'],true, 512, JSON_THROW_ON_ERROR); //	Get tabs default content.
+ 		$tab_def_name = SIT_text('DEFAULT_TAB');
+ 		$new_information = (string)$xml->content[0];//					Pull out the newly entered information.
+ 		$old_information = SIT_content_scan($_POST['old-page-content']);//		Original page information.
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * MixedTypeRector
+
+
+106) plugins/sa_toolbar.php:116
+
+    ---------- begin diff ----------
+@@ @@
+
+ function satb_setTbCookie(){
+     // set cookie to 180 days
+-    setcookie('GS_ADMIN_TOOLBAR', 1, time() + 15552000,'/');
++    setcookie('GS_ADMIN_TOOLBAR', 1, ['expires' => time() + 15_552_000, 'path' => '/']);
+ }
+
+ function satb_clearTbCookie(){
+-    setcookie('GS_ADMIN_TOOLBAR', 'null', time() - 3600,'/');   
++    setcookie('GS_ADMIN_TOOLBAR', 'null', ['expires' => time() - 3600, 'path' => '/']);   
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ * AddLiteralSeparatorToNumberRector (https://wiki.php.net/rfc/numeric_literal_separator)
+ * MixedTypeRector
+
+
+107) plugins/sa_toc_anchors.php:41
+
+    ---------- begin diff ----------
+@@ @@
+ $SA_TOC_DEBUG = false;
+
+ $allowargs = array(
+-  'depth' => function ($input) {
+-      return filter_var(intval($input), FILTER_VALIDATE_INT, array(1, 6));
+-  },
+-  'class' => function ($input) {
+-      return filter_var($input, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+-  },
+-  'asc'   => function ($input) {
+-      return true;
+-  },
+-  'abs'   => function ($input) {
+-      return true;
+-  },
+-  'ul'    => function ($input) {
+-      return true;
+-  },
+-  'ol'    => function ($input) {
+-      return true;
+-  },
+-  'notoc' => function ($input) {
+-      return true;
+-  },
+-  'debug' => function ($input) {
+-      return true;
+-  },
+-  'demo'  => function ($input) {
+-      return true;
+-  },
++  'depth' => fn($input) => filter_var(intval($input), FILTER_VALIDATE_INT, array(1, 6)),
++  'class' => fn($input) => filter_var($input, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW),
++  'asc'   => fn($input) => true,
++  'abs'   => fn($input) => true,
++  'ul'    => fn($input) => true,
++  'ol'    => fn($input) => true,
++  'notoc' => fn($input) => true,
++  'debug' => fn($input) => true,
++  'demo'  => fn($input) => true,
+ );
+
+ define('SA_TOC_TRIGGER', 'sa_toc');
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector (https://wiki.php.net/rfc/arrow_functions_v2)
+ * MixedTypeRector
+
+
+108) plugins/sa_deploy.php:185
+
+    ---------- begin diff ----------
+@@ @@
+ function getReleases(){
+ 	$config = getConfig();
+ 	$data = Api::call('releases', getConfig() );
+-	$data = json_decode($data,true);
++	$data = json_decode($data,true, 512, JSON_THROW_ON_ERROR);
+ 	// debugLog($data);
+ 	return $data;
+ }
+@@ @@
+ function getBranches(){
+ 	$config = getConfig();
+ 	$data = Api::call('branches', getConfig() );
+-	$data = json_decode($data,true);
++	$data = json_decode($data,true, 512, JSON_THROW_ON_ERROR);
+ 	// debugLog($data);
+ 	return $data;
+ }
+@@ @@
+ 	$config = getConfig();
+
+ 	$data = Api::call('tags', getConfig() );
+-	$data = json_decode($data,true);
++	$data = json_decode($data,true, 512, JSON_THROW_ON_ERROR);
+ 	// debugLog($data);
+ 	return $data;
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * MixedTypeRector
+
+
+109) plugins/pageoptions_auto_open.php:49
+
+    ---------- begin diff ----------
+@@ @@
+   if (isset($_COOKIE['no-autoopen'])) $closed = explode(',', $_COOKIE['no-autoopen']);
+   foreach ($closed as $i => $id) if ($id == $oldId || $id == $newId) unset($closed[$i]);
+   if (@$_POST['autoopen-status'] == 0) $closed[] = $newId;
+-  setcookie('no-autoopen', implode(',', $closed), time()+365*24*3600);
++  setcookie('no-autoopen', implode(',', $closed), ['expires' => time()+365*24*3600]);
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ * MixedTypeRector
+
+
+110) plugins/news_manager/template/edit_settings.php:172
+
+    ---------- begin diff ----------
+@@ @@
+     <textarea style="height:150px" name="customsettings" id="customsettings"><?php echo htmlspecialchars($NMSETTING['customsettings'],ENT_NOQUOTES); ?></textarea>
+   </p>
+
+-  <?php if ( $PRETTYURLS == 1 && (!$PERMALINK || strpos($PERMALINK,'?') === false) )  { ?>
++  <?php if ( $PRETTYURLS == 1 && (!$PERMALINK || !str_contains($PERMALINK,'?')) )  { ?>
+   <p class="inline">
+     <input name="pretty-urls" id="pretty-urls" type="checkbox" <?php if ($NMPRETTYURLS == 'Y') echo 'checked'; ?> />&nbsp;
+     <label for="pretty-urls"><?php i18n('news_manager/PRETTY_URLS'); ?></label> -
+    ----------- end diff -----------
+
+Applied rules:
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+
+
+111) plugins/news_manager/template/ckeditor.php:18
+
+    ---------- begin diff ----------
+@@ @@
+   ]";
+ } elseif ($EDTOOL == 'basic') {
+   $TOOLBAR = "[['Bold', 'Italic', 'Underline', 'NumberedList', 'BulletedList', 'JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock', 'Link', 'Unlink', 'Image', 'RemoveFormat', 'Source']]";
+-} elseif (strpos($EDTOOL, '[') === false) {
++} elseif (!str_contains($EDTOOL, '[')) {
+   $TOOLBAR = "'$EDTOOL'";
+ } else {
+   $TOOLBAR = "[$EDTOOL]";
+    ----------- end diff -----------
+
+Applied rules:
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+
+
+112) plugins/news_manager/inc/site.php:234
+
+    ---------- begin diff ----------
+@@ @@
+     # extract settings
+     foreach(preg_split('~\R~', $NMSETTING['customsettings']) as $line) {
+       $line = trim($line);
+-      if ($line && strpos($line,'#') !== 0 && strpos($line,'//') !== 0) { // exclude empty and commented lines
++      if ($line && !str_starts_with($line, '#') && !str_starts_with($line, '//')) { // exclude empty and commented lines
+         $arr = explode(' ',preg_replace("/[[:blank:]]+/"," ",$line));
+         if (count($arr) > 1) {
+           if (in_array($arr[0], array('main','single','archive','tag','search')))
+    ----------- end diff -----------
+
+Applied rules:
+ * MixedTypeRector
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+
+
+113) plugins/news_manager/inc/settings.php:131
+
+    ---------- begin diff ----------
+@@ @@
+   $page =  '';
+   # format prefix and page directions
+   if ($NMPAGEURL != 'index') {
+-    if ( nm_get_parent() != '' && ($PERMALINK == '' || strpos($PERMALINK,'%parent%') !== false || strpos($PERMALINK,'%parents%') !== false) ) {
++    if ( nm_get_parent() != '' && ($PERMALINK == '' || str_contains($PERMALINK,'%parent%') || str_contains($PERMALINK,'%parents%')) ) {
+       $prefix = nm_get_parent().'/'.$NMPAGEURL.'/';
+     } else {
+       $prefix = $NMPAGEURL.'/';
+    ----------- end diff -----------
+
+Applied rules:
+ * MixedTypeRector
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+
+
+114) plugins/news_manager/inc/functions.php:99
+
+    ---------- begin diff ----------
+@@ @@
+  * @return date formatted according to $NMLANG (if strftime)
+  */
+ function nm_get_date($format, $timestamp) {
+-  if (strpos($format, '%') !== false) {
++  if (str_contains($format, '%')) {
+
+     # strftime format
+     
+@@ @@
+       }
+     }
+     
+-    $alt = strpos($format, '%EB') !== false;
++    $alt = str_contains($format, '%EB');
+     if ($alt) {
+       $format = str_replace('%EB', '%B', $format);
+       $custom = !empty($months_alt);
+     } else {
+-      $custom = !empty($months) && strpos($format, '%B') !== false;
++      $custom = !empty($months) && str_contains($format, '%B');
+     }
+       
+     $locale = setlocale(LC_TIME, 0);
+@@ @@
+   $str = '';
+   $parent = nm_get_parent();
+   $url = find_url($NMPAGEURL, $parent);
+-  if (strpos($url, '%parents%/') !== false) // I18N plugin's placeholder for multilevel URLs
++  if (str_contains($url, '%parents%/')) // I18N plugin's placeholder for multilevel URLs
+     $url = str_replace('%parents%/', (empty($parent) ? '' : $parent.'/'), $url);
+   if ($query) {
+     switch($query) {
+@@ @@
+       if (substr($url, -1) != '/')
+         $str = '/' . $str;
+     } else {
+-      $str = (strpos($url,'?') === false)? '?' : '&amp;';
++      $str = (!str_contains($url,'?'))? '?' : '&amp;';
+       $str .= $query.'=';
+     }
+   }
+@@ @@
+     if (!isset($crop)) $crop = $nmoption['imagecrop'];
+     $pos = strpos($pic, '/data/uploads/');
+     $uploads = ($pos !== false || !strpos($pic, '://'));
+-    if ($uploads || strpos($pic, '/data/thumbs/') !== false) {
++    if ($uploads || str_contains($pic, '/data/thumbs/')) {
+       if ($pos !== false)
+         $pic = substr($pic, $pos+14);
+       $w = $width ? '&w='.$width : '';
+@@ @@
+     <script type="text/javascript">
+       $(function() {
+         $('div.bodycontent').before('<div class="<?php echo $error ? 'error' : 'updated'; ?>" style="display:block;">'+
+-          <?php echo json_encode($msg); ?>+'</div>');
++          <?php echo json_encode($msg, JSON_THROW_ON_ERROR); ?>+'</div>');
+         $(".updated, .error").fadeOut(500).fadeIn(500);
+       });
+     </script>
+@@ @@
+ function nm_switch_template_file($tempfile) {
+   global $template_file, $TEMPLATE;
+   # no path traversal and template exists
+-  if (strpos(realpath(GSTHEMESPATH.$TEMPLATE."/".$tempfile), realpath(GSTHEMESPATH.$TEMPLATE."/")) === 0 && file_exists(GSTHEMESPATH.$TEMPLATE."/".$tempfile))
++  if (str_starts_with(realpath(GSTHEMESPATH.$TEMPLATE."/".$tempfile), realpath(GSTHEMESPATH.$TEMPLATE."/")) && file_exists(GSTHEMESPATH.$TEMPLATE."/".$tempfile))
+     $template_file = $tempfile;
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * FunctionArgumentDefaultValueReplacerRector (https://php.watch/versions/8.1/version_compare-operator-restrictions)
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * MixedTypeRector
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+
+
+115) plugins/news_manager/browser/pic.php:20
+
+    ---------- begin diff ----------
+@@ @@
+ if (strpos($infile,'/data/thumbs/')) {
+   $imagedir = $datadir . 'thumbs/';
+   $infile = substr($infile,strpos($infile,'/data/thumbs/')+13);
+-  if (strpos(basename($infile), PREFIX) === 0) die('Image not allowed!');
++  if (str_starts_with(basename($infile), PREFIX)) die('Image not allowed!');
+ } else {
+   if ($gsthumb) {
+     $pos = strrpos($infile, '/');
+@@ @@
+     }
+   }
+ }
+-if (strpos(dirname(realpath($imagedir.$infile)), realpath($imagedir)) !== 0) die('Invalid path!');
++if (!str_starts_with(dirname(realpath($imagedir.$infile)), realpath($imagedir))) die('Invalid path!');
+ if (!$maxWidth && !$maxHeight) {
+   $info = @getimagesize($imagedir.$infile);
+   if (!$info) die('File not found or not an image!');
+    ----------- end diff -----------
+
+Applied rules:
+ * MixedTypeRector
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+
+
+116) plugins/news_manager/browser/filebrowser.php:11
+
+    ---------- begin diff ----------
+@@ @@
+ if (isset($_GET['path'])) {
+   $subPath = preg_replace('/\.+\//','',$_GET['path']);
+   $path = "../../../data/uploads/".$subPath;
+-  if (strpos(realpath($path), realpath(GSDATAUPLOADPATH)) !== 0) die(); // no path traversal
++  if (!str_starts_with(realpath($path), realpath(GSDATAUPLOADPATH))) die(); // no path traversal
+ } else {
+   $subPath = "";
+   $path = "../../../data/uploads/";
+    ----------- end diff -----------
+
+Applied rules:
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+
+
+117) plugins/migrate.php:270
+
+    ---------- begin diff ----------
+@@ @@
+ 							$node_name = $child->getName();
+ 							if($node_name == "content") continue;
+ 							$spec_content = $file_xml->$node_name;
+-							if (strpos($spec_content, $exist_name) !== false) {
++							if (str_contains($spec_content, $exist_name)) {
+ 								$spec_nr = str_ireplace($exist_name, $new_name, $spec_content);
+ 								$file_xml->$node_name = $spec_nr;
+ 								$spec_count++;
+@@ @@
+ 									$node_name = $child->getName();
+ 									if($node_name == "image") {
+ 										$img_url = $file_xml->$node_name;
+-										if (strpos($img_url, $exist_name) !== false) {
++										if (str_contains($img_url, $exist_name)) {
+ 											$img_nr = str_ireplace($exist_name, $new_name, $img_url);
+ 											$file_xml->$node_name = $img_nr;
+ 											$img_count++;
+    ----------- end diff -----------
+
+Applied rules:
+ * MixedTypeRector
+ * StrContainsRector (https://externals.io/message/108562 https://github.com/php/php-src/pull/5179)
+
+
+118) plugins/less/lessc.inc.php:100
+
+    ---------- begin diff ----------
+@@ @@
+         $url = $this->compileValue($this->lib_e($str));
+
+         // don't import if it ends in css
+-        if (substr_compare($url, '.css', -4, 4) === 0) return false;
++        if (str_ends_with($url, '.css')) return false;
+
+         $realPath = $this->findImport($url);
+
+@@ @@
+         $comments = array();
+
+         foreach ($lines as $line) {
+-            if (strpos($line, '/*') === 0) {
++            if (str_starts_with($line, '/*')) {
+                 $comments[] = $line;
+                 continue;
+             }
+@@ @@
+             array_splice($unique, array_search($line, $unique), 0, $comments);
+             $comments = array();
+         }
+-        return array_merge($unique, $comments);
++        return [...$unique, ...$comments];
+     }
+
+     protected function sortProps($props, $split = false) {
+@@ @@
+             case "assign":
+                 $stack[] = $prop;
+                 if (isset($prop[1][0]) && $prop[1][0] == $this->vPrefix) {
+-                    $vars = array_merge($vars, $stack);
++                    $vars = [...$vars, ...$stack];
+                 } else {
+-                    $other = array_merge($other, $stack);
++                    $other = [...$other, ...$stack];
+                 }
+                 $stack = array();
+                 break;
+@@ @@
+                 $id = self::$nextImportId++;
+                 $prop[] = $id;
+                 $stack[] = $prop;
+-                $imports = array_merge($imports, $stack);
++                $imports = [...$imports, ...$stack];
+                 $other[] = array("import_mixin", $id);
+                 $stack = array();
+                 break;
+             default:
+                 $stack[] = $prop;
+-                $other = array_merge($other, $stack);
++                $other = [...$other, ...$stack];
+                 $stack = array();
+                 break;
+             }
+         }
+-        $other = array_merge($other, $stack);
++        $other = [...$other, ...$stack];
+
+         if ($split) {
+-            return array(array_merge($imports, $vars), $other);
++            return array([...$imports, ...$vars], $other);
+         } else {
+-            return array_merge($imports, $vars, $other);
++            return [...$imports, ...$vars, ...$other];
+         }
+     }
+
+@@ @@
+                     if ($suffix !== null &&
+                         $subProp[0] == "assign" &&
+                         is_string($subProp[1]) &&
+-                        $subProp[1]{0} != $this->vPrefix
++                        $subProp[1][0] != $this->vPrefix
+                     ) {
+                         $subProp[2] = array(
+                             'list', ' ',
+@@ @@
+     }
+
+     // make something string like into a string
+-    protected function coerceString($value) {
+-        switch ($value[0]) {
+-        case "string":
+-            return $value;
+-        case "keyword":
+-            return array("string", "", array($value[1]));
+-        }
+-        return null;
++    protected function coerceString($value)
++    {
++        return match ($value[0]) {
++            "string" => $value,
++            "keyword" => array("string", "", array($value[1])),
++            default => null,
++        };
+     }
+
+     // turn list of length 1 into value type
+@@ @@
+         $this->pushEnv();
+         $parser = new lessc_parser($this, __METHOD__);
+         foreach ($args as $name => $strValue) {
+-            if ($name{0} !== '@') {
++            if ($name[0] !== '@') {
+                 $name = '@' . $name;
+             }
+             $parser->count = 0;
+@@ @@
+      * @param bool $force Force rebuild?
+      * @return array lessphp cache structure
+      */
+-    public function cachedCompile($in, $force = false) {
++    public function cachedCompile(mixed $in, $force = false) {
+         // assume no root
+         $root = null;
+
+@@ @@
+                 $hidden = true;
+                 if (!isset($block->args)) {
+                     foreach ($block->tags as $tag) {
+-                        if (!is_string($tag) || $tag{0} != $this->lessc->mPrefix) {
++                        if (!is_string($tag) || $tag[0] != $this->lessc->mPrefix) {
+                             $hidden = false;
+                             break;
+                         }
+@@ @@
+     protected function fixTags($tags) {
+         // move @ tags out of variable namespace
+         foreach ($tags as &$tag) {
+-            if ($tag{0} == $this->lessc->vPrefix)
++            if ($tag[0] == $this->lessc->vPrefix)
+                 $tag[0] = $this->lessc->mPrefix;
+         }
+         return $tags;
+    ----------- end diff -----------
+
+Applied rules:
+ * CurlyToSquareBracketArrayStringRector (https://www.php.net/manual/en/migration74.deprecated.php)
+ * ArraySpreadInsteadOfArrayMergeRector (https://wiki.php.net/rfc/spread_operator_for_array)
+ * MixedTypeRector
+ * StrEndsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ * StrStartsWithRector (https://wiki.php.net/rfc/add_str_starts_with_and_ends_with_functions)
+ * ChangeSwitchToMatchRector (https://wiki.php.net/rfc/match_expression_v2)
+
+
+119) plugins/kt-blocklogin/xmlLogClass.php:4
+
+    ---------- begin diff ----------
+@@ @@
+
+ class xmlLogClass{
+  private $oldflag = false;
+- private $createdflag = false;
++ private bool $createdflag = false;
+  private $domhandle = false;
+  private $ip2check = false;
+- private $ip2checktime = false;
++ private false $ip2checktime = false;
+
+  /**
+   * Create a lock file
+@@ @@
+ 		if ( ($userid == $USR) && ($password == $PASSWD) ) {
+ 			$this->kt_delete_file_lock();
+ 			create_cookie();
+-			setcookie('GS_ADMIN_USERNAME', $USR, time() + 3600,'/');
++			setcookie('GS_ADMIN_USERNAME', $USR, ['expires' => time() + 3600, 'path' => '/']);
+ 			exec_action('successful-login-end');
+ 			redirect($cookie_redirect);
+ 		}
+    ----------- end diff -----------
+
+Applied rules:
+ * SetCookieRector (https://www.php.net/setcookie https://wiki.php.net/rfc/same-site-cookie)
+ * TypedPropertyFromAssignsRector
+
+
+120) plugins/items/uploader/server/php.php:59
+
+    ---------- begin diff ----------
+@@ @@
+ }
+
+ class qqFileUploader {
+-    private $allowedExtensions = array();
+-    private $file;
++    private array $allowedExtensions = array();
++    private \qqUploadedFileXhr|\qqUploadedFileForm|bool|null $file = null;
+
+-    function __construct(array $allowedExtensions = array(), private $sizeLimit = 10485760){        
++    function __construct(array $allowedExtensions = array(), private $sizeLimit = 10_485_760){        
+         $allowedExtensions = array_map("strtolower", $allowedExtensions);
+             
+         $this->allowedExtensions = $allowedExtensions;
+@@ @@
+ $uploader = new qqFileUploader($allowedExtensions, $sizeLimit);
+ $result = $uploader->handleUpload('../../../../data/uploads/items/');
+ // to pass data through iframe you will need to encode all html tags
+-echo htmlspecialchars(json_encode($result), ENT_NOQUOTES);
++echo htmlspecialchars(json_encode($result, JSON_THROW_ON_ERROR), ENT_NOQUOTES);
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+ * AddLiteralSeparatorToNumberRector (https://wiki.php.net/rfc/numeric_literal_separator)
+ * TypedPropertyFromAssignsRector
+
+
+121) plugins/items/configure-2.php:139
+
+    ---------- begin diff ----------
+@@ @@
+     });
+     renumberCustomFields();
+ <?php if (@$msg) { ?>
+-    $('div.bodycontent').before('<div class="updated" style="display:block;">'+<?php echo json_encode($msg); ?>+'</div>');
++    $('div.bodycontent').before('<div class="updated" style="display:block;">'+<?php echo json_encode($msg, JSON_THROW_ON_ERROR); ?>+'</div>');
+ <?php } ?>
+   });
+ </script>
+    ----------- end diff -----------
+
+Applied rules:
+ * JsonThrowOnErrorRector (http://wiki.php.net/rfc/json_throw_on_error)
+
+
+ [OK] 121 files would have changed (dry-run) by Rector                                                                  
+

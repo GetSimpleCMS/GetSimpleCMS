@@ -1,0 +1,1 @@
+vendor/bin/rector process --dry-run plugins
