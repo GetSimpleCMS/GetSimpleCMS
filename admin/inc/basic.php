@@ -686,11 +686,13 @@ function i18n_merge_impl($plugin, $lang, &$globali18n) {
  * @return string
  */
 function safe_slash_html($text) {
-	if (get_magic_quotes_gpc()==0) {
+/*	if (get_magic_quotes_gpc()==0) {
 		$text = addslashes(htmlspecialchars($text, ENT_QUOTES, 'UTF-8'));
 	} else {
 		$text = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 	}
+
+	*/
 
 	return xmlFilterChars($text);
 }
@@ -847,19 +849,10 @@ function suggest_site_path($parts=false, $protocolRelative = false) {
  * @return string
  */
 function myself($echo=true) {
-	return myself_new($echo);
 	if ($echo) {
 		echo htmlentities(basename($_SERVER['PHP_SELF']), ENT_QUOTES);
 	} else {
 		return htmlentities(basename($_SERVER['PHP_SELF']), ENT_QUOTES);
-	}
-}
-
-function myself_new($echo=true) {
-	if ($echo) {
-		echo htmlentities(basename($_SERVER['SCRIPT_NAME']), ENT_QUOTES);
-	} else {
-		return htmlentities(basename($_SERVER['SCRIPT_NAME']), ENT_QUOTES);
 	}
 }
 

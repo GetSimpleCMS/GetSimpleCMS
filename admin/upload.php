@@ -175,13 +175,13 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
 					}
 				}
 				$filesSorted = subval_sort($filesArray,'name');
-        $dirsSorted = subval_sort($dirsArray,'name');
+				$dirSorted = subval_sort($dirsArray,'name');
 			}
 			echo '<div class="edit-nav" >';
 			echo '<select id="imageFilter">';
 			echo '<option value="All">'.i18n_r('SHOW_ALL').'</option>';
-			if (count($filesSorted) > 0) {
-				foreach ($filesSorted as $filter) {
+			if (count((array)$filesSorted) > 0) { 
+				foreach ((array)$filesSorted as $filter) {
 					$filterArr[] = $filter['type'];
 				}
 				if (count($filterArr) != 0) { 
@@ -232,9 +232,9 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
      }
      echo '<th style="text-align:right;">'.i18n_r('DATE').'</th>';
      echo '<th><!-- actions --></th></tr>';  
-     if (count($dirsSorted) != 0) {
+     if (count((array)$dirsSorted) != 0) {
      		$foldercount = 0;
-        foreach ($dirsSorted as $upload) {
+        foreach ((array)$dirsSorted as $upload) {
         	
         	# check to see if folder is empty
         	$directory_delete = null;
@@ -268,8 +268,8 @@ get_template('header', cl($SITENAME).' &raquo; '.i18n_r('FILE_MANAGEMENT'));
           $foldercount++;
         }
      }
-			if (count($filesSorted) != 0) { 			
-				foreach ($filesSorted as $upload) {
+			if (count((array)$filesSorted) != 0) { 			
+				foreach ((array)$filesSorted as $upload) {
 					$counter++;
 					if ($upload['type'] == i18n_r('IMAGES') .' Images') {
 						$cclass = 'iimage';
