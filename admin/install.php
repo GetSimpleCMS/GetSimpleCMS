@@ -177,9 +177,9 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') );
 				}
 				
 				if ($kill == '') {
-					echo '<tr><td>Folder Permissions</td><td><span class="OKmsg" >'.i18n_r('OK') .' - '.i18n_r('WRITABLE') .'</span></td></tr>';
+					echo '<tr><td>'.i18n_r('DIR_PERMISSIONS') .'</td><td><span class="OKmsg" >'.i18n_r('OK') .' - '.i18n_r('WRITABLE') .'</span></td></tr>';
 				}	else {
-					echo '<tr><td>Folder Permissions</td><td><span class="ERRmsg" >'.i18n_r('ERROR') .' - '.i18n_r('NOT_WRITABLE') .'</span></td></tr>';
+					echo '<tr><td>'.i18n_r('DIR_PERMISSIONS') .'</td><td><span class="ERRmsg" >'.i18n_r('ERROR') .' - '.i18n_r('NOT_WRITABLE') .'</span></td></tr>';
 				}
 				
 				if  (in_arrayi('curl', $php_modules) ) {
