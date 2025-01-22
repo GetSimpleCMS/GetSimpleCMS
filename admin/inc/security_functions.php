@@ -276,6 +276,6 @@ function var_out($var,$filter = "special"){
 }
 
 function validImageFilename($file){
-	$image_exts = array('jpg','jpeg','gif','png');
+	$image_exts = array('jpg','jpeg','gif','png','webp');
 	return in_array(getFileExtension($file),$image_exts);
 }
