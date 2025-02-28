@@ -1,6 +1,9 @@
 GetSimple Content Management System
 =========================================
 
+discord https://discord.gg/56hYyG4
+
+
 DESCRIPTION
 -----------------------------------
 
