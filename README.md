@@ -10,7 +10,7 @@ the best UI around, it is written in PHP.
 Official Website - http://get-simple.info/
 Github - https://github.com/GetSimpleCMS/GetSimpleCMS
 
-GetSimple CMS was developed by Chris Cagle [ http://chriscagle.me ]  
+GetSimple CMS was developed by Chris Cagle
 It is now passionately supported and developed by a loving community.
 
 
