@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /*
  * Application Programming Interface Plugin
  * 
@@ -64,7 +64,7 @@ class API_Request {
 	 */
 	public function settings_read() {
 		if($this->auth()) {
-			$settings = getXML(GSDATAOTHERPATH.'website.xml');
+			$settings = getXML(GSDATAOTHERPATH.GSWEBSITEFILE);
 			$wrapper = array('status' => 'success', 'message' => 'settings_read ok', 'response' => $settings);
 			return json_encode($wrapper);
 		}
@@ -103,16 +103,17 @@ class API_Request {
 	 * @return bool
 	 */
 	public function page_save() {
+		$bakpagespath = GSBACKUPSPATH .getRelPath(GSDATAPAGESPATH,GSDATAPATH); // backups/pages/					
 		if($this->auth()) {
 			$id = (string)$this->xml->data->slug;
-			$thisfile = GSDATAPAGESPATH.$id.'.xml';
+			$thisfile = GSDATAPAGESPATH.getBackupName($id,'xml');
 			if (file_exists($thisfile)) {
 				$page = getXML($thisfile);
 				$page->content = safe_slash_html($this->xml->data->content);
 				$page->title = safe_slash_html($this->xml->data->title);
 				$page->pubDate = date('r');
-				$bakfile = GSBACKUPSPATH."pages/". $id .".bak.xml";
-				copy($thisfile, $bakfile);
+				$bakfile = $bakpagespath.getBackupName($id,'xml');
+				copy_file($thisfile, $bakfile);
 				$status = XMLsave($page, $thisfile);
 				if ($status) {
 					touch($thisfile);
@@ -137,6 +138,7 @@ class API_Request {
 		if($this->auth()) {
 			$patho = (string)$this->xml->data->path;
 			$path = tsl(GSDATAUPLOADPATH . $patho);
+			$url = tsl($SITEURL.getRelPath(GSDATAUPLOADPATH).$patho);
 			$filesArray = array();
 			$count =0;
 			global $SITEURL;
@@ -153,7 +155,7 @@ class API_Request {
 					    $filesArray[$count]['type'] = 'folder';
 						} else {
 							$filesArray[$count]['type'] = 'file';
-							$filesArray[$count]['url'] = tsl($SITEURL.'data/uploads/'.$patho).$file;
+							$filesArray[$count]['url'] = $url.$file;
 								$ext = pathinfo($file,PATHINFO_EXTENSION);
 								$extention = get_FileType($ext);
 							$filesArray[$count]['category'] = $extention;
@@ -175,4 +177,5 @@ class API_Request {
 	}
 	
 } // end of class
-?>
+
+/* ?> */

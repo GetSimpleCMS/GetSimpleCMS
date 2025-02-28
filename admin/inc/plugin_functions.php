@@ -6,154 +6,226 @@
  * @subpackage Plugin-Functions
  */
 
-$plugins          = array();  // used for option names
-$plugins_info     = array();
-$filters          = array();
-$live_plugins     = array();  // used for enablie/disable functions
-$GS_scripts       = array();  // used for queing Scripts
-$GS_styles        = array();  // used for queing Styles
-
-// constants
-// asseturl is scheme-less ://url if GSASSETSCHEMES is not true
-$ASSETURL = getDef('GSASSETSCHEMES',true) !==true ? str_replace(parse_url($SITEURL, PHP_URL_SCHEME).':', '', $SITEURL) : $SITEURL;
-
-if (!defined('GSFRONT')) define('GSFRONT',1);
-if (!defined('GSBACK'))  define('GSBACK',2);
-if (!defined('GSBOTH'))  define('GSBOTH',3);
-
-$GS_script_assets = array(); // defines asset scripts
-$GS_style_assets  = array();  // defines asset styles
-
-$GS_asset_objects = array(); // holds asset js object names
-$GS_asset_objects['jquery']    = 'jQuery';
-$GS_asset_objects['jquery-ui'] = 'jQuery.ui'; 
-
-// jquery
-$jquery_ver    = '1.7.1';
-$jquery_ui_ver = '1.8.17';
-
-$GS_script_assets['jquery']['cdn']['url']      = '//ajax.googleapis.com/ajax/libs/jquery/'.$jquery_ver.'/jquery.min.js';
-$GS_script_assets['jquery']['cdn']['ver']      = $jquery_ver;
-
-$GS_script_assets['jquery']['local']['url']    = $ASSETURL.$GSADMIN.'/template/js/jquery.min.js';
-$GS_script_assets['jquery']['local']['ver']    = $jquery_ver;
-
-// jquery-ui
-$GS_script_assets['jquery-ui']['cdn']['url']   = '//ajax.googleapis.com/ajax/libs/jqueryui/'.$jquery_ui_ver.'/jquery-ui.min.js';
-$GS_script_assets['jquery-ui']['cdn']['ver']   = $jquery_ui_ver;
-
-$GS_script_assets['jquery-ui']['local']['url'] = $ASSETURL.$GSADMIN.'/template/js/jquery-ui.min.js';
-$GS_script_assets['jquery-ui']['local']['ver'] = $jquery_ui_ver;
-
-// misc
-$GS_script_assets['fancybox']['local']['url']  = $ASSETURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.pack.js';
-$GS_script_assets['fancybox']['local']['ver']  = '2.0.4';
-
-$GS_style_assets['fancybox']['local']['url']   =  $ASSETURL.$GSADMIN.'/template/js/fancybox/jquery.fancybox.css';
-$GS_style_assets['fancybox']['local']['ver']   = '2.0.4';
-
-// scrolltofixed
-$GS_script_assets['scrolltofixed']['local']['url']   =  $ASSETURL.$GSADMIN.'/template/js/jquery-scrolltofixed.js';
-$GS_script_assets['scrolltofixed']['local']['ver']   = '0.0.1';
-
 /**
- * Register shared javascript/css scripts for loading into the header
- */
-if (!getDef('GSNOCDN',true)){
-	register_script('jquery', $GS_script_assets['jquery']['cdn']['url'], $GS_script_assets['jquery']['cdn']['ver'], FALSE);
-	register_script('jquery-ui',$GS_script_assets['jquery-ui']['cdn']['url'],$GS_script_assets['jquery-ui']['cdn']['ver'],FALSE);
-} else {
-	register_script('jquery', $GS_script_assets['jquery']['local']['url'], $GS_script_assets['jquery']['local']['ver'], FALSE);
-	register_script('jquery-ui',$GS_script_assets['jquery-ui']['local']['url'],$GS_script_assets['jquery-ui']['local']['ver'],FALSE);
-}
-register_script('fancybox', $GS_script_assets['fancybox']['local']['url'], $GS_script_assets['fancybox']['local']['ver'],FALSE);
-register_style('fancybox-css', $GS_style_assets['fancybox']['local']['url'], $GS_style_assets['fancybox']['local']['ver'], 'screen');
-
-register_script('scrolltofixed', $GS_script_assets['scrolltofixed']['local']['url'], $GS_script_assets['scrolltofixed']['local']['ver'],FALSE);
-
-/**
- * Queue our scripts and styles for the backend
- */
-queue_script('jquery', GSBACK);
-queue_script('jquery-ui', GSBACK);
-queue_script('fancybox', GSBACK);
-
-queue_style('fancybox-css',GSBACK);
-
-/**
- * Include any plugins, depending on where the referring 
- * file that calls it we need to set the correct paths. 
+ * 
+ * 	global array for storing all plugins greated from plugins register_plugin() call
+ *  	$live_plugins[$id] = (bool) enabled
+ *
+ *	    $plugin_info[$id] = array(
+ *	       'name'        => $name,
+ *	       'version'     => $ver,
+ *	       'author'      => $auth,
+ *	       'author_url'  => $auth_url,
+ *	       'description' => $desc,
+ *	       'page_type'   => $type,
+ *	       'load_data'   => $loaddata
+ *	    );
+ *
+ *
+ *	global array for storing action hook callbacks
+ *	    $plugins[] = array(
+ *	       'hook'     => hookname,
+ *	       'function' => callback function name,
+ *	       'args'     => (array) arguments to pass to function,
+ *	       'priority' => priority order to execute hook,
+ *	       'file'     => DEBUG caller filename obtained from backtrace,
+ *	       'line'     => DEBUG caller line obtained from backtrace
+ *	    );
+ *
+ *
+ *	global array for storing filter callbacks
+ *	   $filters[] = array(
+ *	       'filter'   => filtername,
+ *	       'function' => callback function name,
+ *	       'args'     => (array) arguments for callback,
+ *         'priority' => priority order to execute filter,
+ *	       'active'   => (bool) is processing anti-self-looping flag
+ *	       'file'     => DEBUG caller filename obtained from backtrace,
+ *	       'line'     => DEBUG caller line obtained from backtrace	       
+ *	);
+ *
+ * 	$pluginHooks[$hook_name][$priority][] = &$plugins[count($hook_array)-1]; # add ref to global plugin hook hash array
 */
-if (file_exists(GSPLUGINPATH)){
-	$pluginfiles = getFiles(GSPLUGINPATH);
-} 
 
-$pluginsLoaded=false;
+/**
+ * Initialize plugins data
+ * create GSPLUGINSFILE if not exist
+ * else load in plugins and register the inactive ones
+ *
+ * @since  3.4
+*/
+function loadPluginData(){
+	GLOBAL $live_plugins, $plugin_info, $live_plugins;
 
+	$live_plugins = array();
+	$plugin_info  = array();
 
-// Check if data\other\plugins.xml exists 
-if (!file_exists(GSDATAOTHERPATH."plugins.xml")){
-   create_pluginsxml();
-} 
+	// Check if data\other\plugins.xml exists 
+	if (!file_exists(GSDATAOTHERPATH.getDef('GSPLUGINSFILE'))){
+		create_pluginsxml();
+		registerInactivePlugins(isPage('plugins'));
+		return true;
+	}
 
-read_pluginsxml();        // get the live plugins into $live_plugins array
+	read_pluginsxml();  // get the live plugins into $live_plugins array
+	if(!is_frontend()) create_pluginsxml(isPage('plugins'));  // only on backend check that plugin files have not changed, and regen
+	
+	registerInactivePlugins();
 
-if(!is_frontend()) create_pluginsxml();      // check that plugins have not been removed or added to the directory
+	if(getDef('GSPLUGINORDER',true)){
+		$reorderplugins = explode(',',getDef('GSPLUGINORDER'));
+		debugLog("reorder plugins".print_r($reorderplugins,true));
+		$reorderplugins = array_reverse($reorderplugins);
+		foreach($reorderplugins as $reorderplugin){
+			$live_plugins=array($reorderplugin=>$live_plugins[$reorderplugin]) + $live_plugins; 
+		}
+	}
 
-// load each of the plugins
-foreach ($live_plugins as $file=>$en) {
-  $pluginsLoaded=true;
-  # debugLog("plugin: $file" . " exists: " . file_exists(GSPLUGINPATH . $file) ." enabled: " . $en); 
-  if ($en=='true' && file_exists(GSPLUGINPATH . $file)){
-	require_once(GSPLUGINPATH . $file);
-  } else {
-	if(!is_frontend() and get_filename_id() == 'plugins'){
-	  $apiback = get_api_details('plugin', $file, getDef('GSNOPLUGINCHECK',true));
-	  $response = json_decode($apiback);
-	  if ($response and $response->status == 'successful') {
-		register_plugin( pathinfo_filename($file), $file, 'disabled', $response->owner, '', i18n_r('PLUGIN_DISABLED'), '', '');
-	  } else {
-		register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', i18n_r('PLUGIN_DISABLED'), '', '');
-	  }
-	} else {
-		register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', i18n_r('PLUGIN_DISABLED'), '', '');
-	}  
-  }
+	return true;
+}
+
+/**
+ * register the plugins that are not enabled
+ * api checks are only done on plugins page
+ *
+ * @todo disabled plugins have a version of (str) 'disabled', should be 0 or null, leaving alone for now for legacy support
+ *
+ * @since 3.4
+ * @uses $live_plugins;
+ * @param  bool $apilookup lookup filename in api to get name and desc
+ */
+function registerInactivePlugins($apilookup = false){
+	GLOBAL $live_plugins,$SAFEMODE;
+	// load plugins into $plugins_info
+	$maxapi = 5; // api limit	
+	$cnt    = 0;
+	foreach ($live_plugins as $file=>$en) {
+		// debugLog("plugin: $file" . " exists: " . file_exists(GSPLUGINPATH . $file) ." enabled: " . $en); 
+		if ($en!=='true' || !file_exists(GSPLUGINPATH . $file) || $SAFEMODE){
+			if($apilookup){
+				// check api to get names of inactive plugins etc.
+				$cached   = getDef('GSNOPLUGINCHECK',true) || $cnt>$maxapi;
+		  		$api_data = json_decode(get_api_details('plugin', $file, $cached));
+				if(is_object($api_data) && !isset($api_data->cached)) $cnt++;
+				
+				// on api success
+		  		if ($api_data and $api_data->status == 'successful') {
+					register_plugin( pathinfo_filename($file), $api_data->name, 'disabled', $api_data->owner, '', i18n_r('PLUGIN_DISABLED'), '', '');
+		  		} else {
+					register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', i18n_r('PLUGIN_DISABLED'), '', '');
+		  		}
+
+			} else {
+				register_plugin( pathinfo_filename($file), $file, 'disabled', 'Unknown', '', i18n_r('PLUGIN_DISABLED'), '', '');
+			}  
+		}
+	}
+}
+
+/**
+ * update plugin_info with additional info from api
+ */
+function plugin_info_update(){
+	GLOBAL $plugin_info;
+	$maxapi = 5; // api limit
+	$cnt    = 0;
+	foreach($plugin_info as $key=>$plugin){
+		$cached   = getDef('GSNOPLUGINCHECK',true) || $cnt>$maxapi;
+		$api_data = json_decode(get_api_details('plugin', $key.'.php',$cached));
+		if(is_object($api_data) && !isset($api_data->cached)) $cnt++;
+
+		// on api success
+		if (is_object($api_data) && $api_data->status == 'successful') {
+			$apiver     = $api_data->version;
+			$apipath    = $api_data->path;
+			$apiname    = $api_data->name;
+
+			$plugin_info[$key]['name']    = $apiname;
+			// $plugin_info[$key]['apiname'] = $apiname;
+			$plugin_info[$key]['apipath'] = $apipath;
+			$plugin_info[$key]['apiver']  = $apiver;
+		}
+	}
 }
 
 /**
  * change_plugin
  * 
  * Enable/Disable a plugin
- *
+ * NOTE THAT LIVE_PLUGINS USES STRINGS `true` `false`
+ * 
  * @since 2.04
  * @uses $live_plugins
  *
- * @param $name
- * @param $active bool default=null, sets plugin active | inactive else toggle
+ * @param str  $pluginid pluginid
+ * @param bool $active default=null, sets plugin active or inactive, default=toggle
+ * @return bool returns $active state, null on errors
  */
-function change_plugin($name,$active=null){
-  global $live_plugins;   
-	 if (isset($live_plugins[$name])){
-	
-	  // set plugin active | inactive
-	  if(isset($active) and is_bool($active)) {
-		$live_plugins[$name] = $active ? 'true' : 'false';	  		
-		create_pluginsxml(true);
-		return;
-	  }
+function change_plugin($pluginid,$active=null){
+	// toggles if $active was not specified (null)
+	if(is_null($active)) $active = !pluginIsActive($pluginid); // invert
 
-	  // else we toggle
-	  if ($live_plugins[$name]=="true"){
-		$live_plugins[$name]="false";
-	  } else {
-		$live_plugins[$name]="true";
-	  }
+	// update plugin state
+	$status = setPluginState($pluginid,$active);
+	if(!isset($status)) return; // save failed, do no hooks
 
-	  create_pluginsxml(true);
-	}
+	return $active; // return final state of plugin active
 }
 
+/**
+ * set a plugins active state 
+ * wrapper for setting plugins active inactive, since it uses string booleans and is confusing
+ * @since  3.4
+ * @param string $pluginid accepts pluginid or plugin filename, normalizes to filename
+ * @param mixed $state    accepts true, false, 'true', 'false'
+ */
+function setPluginState($pluginid,$state){
+	global $live_plugins;
+
+	$pluginid = pathinfo_filename($pluginid).'.php'; // normalize to pluginid
+	if(!pluginIsInstalled($pluginid)) return; // plugin id not found
+	
+	$state = strToBool($state);
+
+	// save string bools
+	if($state) $live_plugins[$pluginid] = 'true';
+	else $live_plugins[$pluginid] = 'false';
+
+	$status = create_pluginsxml(true);
+	// do hooks
+	if($state === true) exec_action('plugin-activate'); // @hook plugin-activate a plugin was activated
+	else exec_action('plugin-deactivate'); // @hook plugin-deactivate a plugin was deactivated
+
+	// debugDie($live_plugins);
+
+	return $status;
+}
+
+/**
+ * check if a plugin is installed
+ * @since  3.4
+ * @param  string $pluginid pluginid
+ * @return bool             true if plugin is found in live_plugins array
+ */
+function pluginIsInstalled($pluginid){
+	GLOBAL $live_plugins;
+	$pluginid = pathinfo_filename($pluginid).'.php'; // normalize to pluginid
+	return(isset($live_plugins[$pluginid])); // plugin id not found
+}
+
+/**
+ * check if a plugin is active
+ * determine if a plugin is active
+ *
+ * @since 3.4
+ * @param  string $pluginid
+ * @return bool   returns true if active
+ */
+function pluginIsActive($pluginid){
+	GLOBAL $live_plugins;
+	$pluginid = pathinfo_filename($pluginid).'.php'; // normalize to pluginid		
+	return isset($live_plugins[$pluginid]) && ($live_plugins[$pluginid] == 'true' || $live_plugins[$pluginid] === true);
+}
 
 /**
  * read_pluginsxml
@@ -162,131 +234,83 @@ function change_plugin($name,$active=null){
  *
  * @since 2.04
  * @uses $live_plugins
+ * @param obj $data pass in xml data instead of using plugins.xml file load
  *
  */
-function read_pluginsxml(){
-  global $live_plugins;   
+function read_pluginsxml($data = null){
+  	global $live_plugins;   
    
-  $data = getXML(GSDATAOTHERPATH . "plugins.xml");
-  if($data){
-  	$componentsec = $data->item;
-	  if (count($componentsec) != 0) {
-			foreach ($componentsec as $component) {
-			  $live_plugins[trim((string)$component->plugin)]=trim((string)$component->enabled);
+	if(!$data) $data = getXML(GSDATAOTHERPATH . getDef('GSPLUGINSFILE'));
+	if($data){
+   		$live_plugins= array(); // clean live_plugins
+		$pluginitem = $data->item;
+		if (count($pluginitem) != 0) {
+			foreach ($pluginitem as $plugin) {
+			  $live_plugins[trim((string)$plugin->plugin)]=trim((string)$plugin->enabled);
 			}
-	  }
-	}
+		}
+
+		return true;
+	} 
 }
 
 
 /**
  * create_pluginsxml
  * 
- * If the plugins.xml file does not exists, read in each plugin 
- * and add it to the file. 
- * read_pluginsxml() is called again to repopulate $live_plugins
+ * Read in each plugin php file and add it to the plugins.xml file.
+ * read_pluginsxml() is called to populate $live_plugins
+ *
+ * Does nothing if force is false and no file diff found
+ * @todo  if this gets called before live plugins is loaded it will wipe your activated plugin state
  *
  * @since 2.04
  * @uses $live_plugins
  *
+ * @param  bool $force force an update of plugins.xml regardless of diff check
+ *
  */
 function create_pluginsxml($force=false){
-  global $live_plugins;   
-  if (file_exists(GSPLUGINPATH)){
-	$pluginfiles = getFiles(GSPLUGINPATH);
-  }
-  $phpfiles = array();
-  foreach ($pluginfiles as $fi) {
-	if (lowercase(pathinfo($fi, PATHINFO_EXTENSION))=='php') {
-	  $phpfiles[] = $fi;
+	GLOBAL $live_plugins;
+
+	$pluginfiles = array();
+	$success     = false;
+
+	if (file_exists(GSPLUGINPATH)){
+		$pluginfiles = getFiles(GSPLUGINPATH,'php');
 	}
-  }
-  if (!$force) {
-	$livekeys = array_keys($live_plugins);
-	if (count(array_diff($livekeys, $phpfiles))>0 || count(array_diff($phpfiles, $livekeys))>0) {
-	  $force = true;
-	}
-  }
-  if ($force) {
-	$xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>'); 
-	foreach ($phpfiles as $fi) {
-	  $plugins = $xml->addChild('item');  
-	  $p_note = $plugins->addChild('plugin');
-	  $p_note->addCData($fi);
-	  $p_note = $plugins->addChild('enabled');
-	  if (isset($live_plugins[(string)$fi])){
-		$p_note->addCData($live_plugins[(string)$fi]);     
-	  } else {
-		 $p_note->addCData('false'); 
-	  } 
-	}
-	XMLsave($xml, GSDATAOTHERPATH."plugins.xml");  
-	read_pluginsxml();
-  }
+	else return; // plugin files path issue
 
-}
-
-
-/**
- * Add Action
- *
- * @since 2.0
- * @uses $plugins
- * @uses $live_plugins
- *
- * @param string $hook_name
- * @param string $added_function
- * @param array $args
- */
-function add_action($hook_name, $added_function, $args = array()) {
-	global $plugins;
-	global $live_plugins; 
-  
-	$bt = debug_backtrace();
-	$shift=count($bt) - 4;	// plugin name should be  
-	$caller = array_shift($bt);
-	$realPathName=pathinfo_filename($caller['file']);
-	$realLineNumber=$caller['line'];
-	while ($shift > 0) {
-		 $caller = array_shift($bt);
-		 $shift--;
-	}
-	$pathName= pathinfo_filename($caller['file']);
-
-	if ((isset ($live_plugins[$pathName.'.php']) && $live_plugins[$pathName.'.php']=='true') || $shift<0 ){
-		if ($realPathName!=$pathName) {
-			$pathName=$realPathName;
-			$lineNumber=$realLineNumber;
-		} else {
-			$lineNumber=$caller['line'];
-		}
-		
-		$plugins[] = array(
-			'hook' => $hook_name,
-			'function' => $added_function,
-			'args' => (array) $args,
-			'file' => $pathName.'.php',
-		'line' => $caller['line']
-		);
-	  } 
-}
-
-/**
- * Execute Action
- *
- * @since 2.0
- * @uses $plugins
- *
- * @param string $a Name of hook to execute
- */
-function exec_action($a) {
-	global $plugins;
-	
-	foreach ($plugins as $hook)	{
-		if ($hook['hook'] == $a) {
-			call_user_func_array($hook['function'], $hook['args']);
+	if (!$force) {
+		$livekeys = array_keys($live_plugins);
+		// check for file diff and use force to regen if count differs @todo better detection than just count
+		if (count(array_diff($livekeys, $pluginfiles))>0 || count(array_diff($pluginfiles, $livekeys))>0) {
+	  		$force = true;
 		}
 	}
+
+	// create plugins.xml if missing or updating
+	if ($force) {
+		$xml = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><channel></channel>');
+		foreach ($pluginfiles as $fi) {
+			$plugins = $xml->addChild('item');
+			$p_note  = $plugins->addChild('plugin');
+			$p_note->addCData($fi);
+			$p_note  = $plugins->addChild('enabled');
+
+			// check live_plugins and set enables
+			if (isset($live_plugins[(string)$fi])){
+				$p_note->addCData($live_plugins[(string)$fi]);
+			} else {
+				$p_note->addCData('false');
+			}
+		}
+
+		$success = XMLsave($xml, GSDATAOTHERPATH.getDef('GSPLUGINSFILE'));
+		read_pluginsxml($xml);
+	}
+
+	return $success;
 }
 
 /**
@@ -299,16 +323,18 @@ function exec_action($a) {
  *
  * @param string $id ID of the link you are adding
  * @param string $txt Text to add to tabbed link
+ * @param bool $always always show tab , else only show if current
+ * @param string $icon pass in custom icons class fa-iconclass 
  */
 
-function createSideMenu($id, $txt, $action=null, $always=true){
-  $current = false;
-  if (isset($_GET['id']) && $_GET['id'] == $id && (!$action || isset($_GET[$action]))) {
-	$current = true;
-  }
-  if ($always || $current) {
-	echo '<li id="sb_'.$id.'" class="plugin_sb"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
-  }
+function createSideMenu($id, $txt, $action = null, $always = true, $icon = ""){
+	$current = false;
+	if (isset($_GET['id']) && $_GET['id'] == $id && (!$action || isset($_GET[$action]))) {
+		$current = true;
+	}
+	if ($always || $current) {
+		echo '<li id="sb_'.$id.'" class="plugin_sb"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.(empty($icon) ? getIcon("SM_load") : getIcon("SM_",$icon))." ".$txt.'</a></li>';
+	}
 }
 
 /**
@@ -319,18 +345,20 @@ function createSideMenu($id, $txt, $action=null, $always=true){
  * @since 2.0
  * @uses $plugins
  *
- * @param string $id Id of current page
+ * @param string $id Id of current page for load.php?id
  * @param string $txt Text to add to tabbed link
- * @param string $klass class to add to a element
+ * @param string $class class to add to a element
+ * @param string $action query string action for load.php?&acton
+ * @param string $icon pass in custom icons class fa-iconclass
  */
-function createNavTab($tabname, $id, $txt, $action=null) {
-  global $plugin_info;
-  $current = false;
-  if (basename($_SERVER['PHP_SELF']) == 'load.php') {
-	$plugin_id = @$_GET['id'];
-	if ($plugin_info[$plugin_id]['page_type'] == $tabname) $current = true;
-  }
-  echo '<li id="nav_'.$id.'" class="plugin_tab"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.$txt.'</a></li>';
+function createNavTab($tabname, $id, $txt, $action = null, $icon = "") {
+	global $plugin_info;
+	$current = false;
+	if (basename(getScriptFile()) == 'load.php') {
+		$plugin_id = @$_GET['id'];
+		if ($plugin_info[$plugin_id]['page_type'] == $tabname) $current = true;
+	}
+	echo '<li id="nav_'.$id.'" class="plugin_tab"><a href="load.php?id='.$id.($action ? '&amp;'.$action : '').'" '.($current ? 'class="current"' : '').' >'.(empty($icon) ? getIcon("TAB_load") : getIcon("TAB_",$icon))." ".$txt.'</a></li>';
 }
 
 /**
@@ -344,46 +372,449 @@ function createNavTab($tabname, $id, $txt, $action=null) {
  * @param string $ver Optional, default is null. 
  * @param string $auth Optional, default is null. 
  * @param string $auth_url Optional, default is null. 
- * @param string $desc Optional, default is null. 
+ * @param string $desc Optional, default is null.
  * @param string $type Optional, default is null. This is the page type your plugin is classifying itself
- * @param string $loaddata Optional, default is null. This is the function that run on load
+ * @param string $loaddata Optional, default is null. This is the callback funcname to run on load.php
  */
-function register_plugin($id, $name, $ver=null, $auth=null, $auth_url=null, $desc=null, $type=null, $loaddata=null) {
+function register_plugin($id, $name, $version=null, $author=null, $author_url=null, $description=null, $type=null, $loaddata=null) {
 	global $plugin_info;
-	
-	$plugin_info[$id] = array(
-	  'name' => $name,
-	  'version' => $ver,
-	  'author' => $auth,
-	  'author_url' => $auth_url,
-	  'description' => $desc,
-	  'page_type' => $type,
-	  'load_data' => $loaddata
-	);
 
+	$plugin_info[$id] = array(
+		'name'        => $name,
+		'version'     => $version,
+		'author'      => $author,
+		'author_url'  => $author_url,
+		'description' => $description,
+		'page_type'   => $type,
+		'load_data'   => $loaddata
+	);
 }
 
+/**
+ * adds plugin debugging info to plugin action arrays
+ * add caller file and line #, normalizes to plugin origin file
+ */
+function addPlugindebugging(&$array){
+	GLOBAl $live_plugins;
+
+	if( !(getDef('GSDEBUGHOOKS') || isDebug()) ) return;
+
+	$skip          = 1; // levels to this function, from add_action/add_filter
+	$shift         = 3; // levels to plugin include, from common.php
+	
+	// call_user_func and call_user_func_array missing in php 7
+	if(getDef('GSBTFIX',true) && version_compare(PHP_VERSION, '7.0.0', '>=')) {
+	    $shift--;
+	}
+
+	$_bt           = debug_backtrace();
+	$bt            = array_slice($_bt,$skip,count($_bt)-$shift);
+	$caller        = array_pop($bt); // last bactrace is the originator plugin file
+	// if we ever load plugins some other way or chained, then we will have to use a loop to find it
+	$pathName      = pathinfo_filename($caller['file']);
+	$lineNumber    = $caller['line'];
+	
+	$array['file'] = $pathName.'.php';
+	$array['line'] = $lineNumber;
+	$array['core'] = !isset($live_plugins[$array['file']]);
+}
+
+/**
+ * Add Action
+ *
+ * @since 2.0
+ * @uses $plugins
+ * @uses $pluginHooks
+ *
+ * @param string $hook_name
+ * @param string $added_function
+ * @param array $args
+ * @param int $priority order of execution of hook, lower numbers execute earlier
+ */
+function add_action($hook_name, $added_function, $args = array(), $priority = null) {
+	GLOBAL $plugins, $pluginHooks; 
+	return add_hook($plugins, $pluginHooks, $hook_name, $added_function, $args, $priority);
+}
+
+/**
+ * remove an action
+ * @since 3.4
+ * @param string $hook_name id of action
+ * @param string $hook_function function to remove
+ */
+function remove_action($hook_name,$hook_function){
+	GLOBAL $pluginHooks;
+	return remove_hook($pluginHooks,$hook_name,$hook_function);
+}
+
+/**
+ * Execute Action
+ *
+ * @since 2.0
+ * @uses $plugins
+ *
+ * @param string $a Name of hook to execute
+ */
+function exec_action($a) {
+
+	if(getDef("GSUSELEGACYPLUGINS",true)) return exec_action_legacy($a);
+
+	global $plugins,$pluginHooks;
+ 	return exec_hook($plugins, $pluginHooks, $a, 'exec_action_callback');
+}
+
+function exec_action_callback($hook){
+	return call_gs_func_array($hook['function'], $hook['args']);
+}
 
 /**
  * Add Filter
  *
  * @since 2.0
  * @uses $filters
- * @uses $live_plugins
- *
- * @param string $id Id of current page
- * @param string $txt Text to add to tabbed link
+ * @param str $filter_name id of filter
+ * @param str $added_function callable function name
+ * @param array $args arguments for $added_function
+ * @param int $priority order of execution of hook, lower numbers execute earlier
  */
-function add_filter($filter_name, $added_function) {
-  global $filters;
-  global $live_plugins;   
-  $bt = debug_backtrace();
-  $caller = array_shift($bt);
-  $pathName= pathinfo_filename($caller['file']);
-	$filters[] = array(
-		'filter' => $filter_name,
-		'function' => $added_function
+function add_filter($filter_name, $added_function, $args = array(), $priority = null) {
+  	global $filters, $pluginFilters;
+	return add_hook($filters, $pluginFilters, $filter_name, $added_function, $args, $priority);
+}
+
+/**
+ * remove a filter
+ * @since 3.4
+ * @param string $hook_name id of action
+ * @param string $hook_function function to remove
+ */
+function remove_filter($filter_name,$hook_function){
+	GLOBAL $pluginFilters;
+	return remove_hook($pluginFilters,$filter_name,$hook_function);
+}
+
+/**
+ * Execute Filter
+ *
+ * Allows changing of the passed variable
+ *
+ * @since 2.0
+ * @uses $filters
+ *
+ * @param string $script Filter name to execute
+ * @param array $data arguments for callback
+ */
+function exec_filter($filter_name,$data=array()) {
+	if(getDef("GSUSELEGACYPLUGINS",true))  return exec_filter_legacy($filter_name,$data);
+
+	global $filters,$pluginFilters;
+ 	$res = exec_hook($filters, $pluginFilters, $filter_name, 'exec_filter_callback', $data, 'exec_filter_complete');
+ 	return ($res === null) ? $data : $res;
+}
+
+function exec_filter_callback($hook,&$data=array()){
+	if(!pluginhookstat('filter',$hook['hook'])) return $data; // skip
+	$data = call_user_func_array($hook['function'], array_merge(array($data),$hook['args']));
+	pluginhookstat('filter',$hook['hook'],false);
+	return $data;
+}
+
+function exec_filter_complete($data=array()){
+	return $data;
+}
+
+/**
+ * Add Security Filter
+ *
+ * @since 3.4
+ * @uses $secfilters
+ * @uses $securityFilters
+ * @param str $filter_name id of filter
+ * @param str $added_function callable function name
+ * @param array $args arguments for $added_function
+ * @param int $priority order of execution of hook, lower numbers execute earlier
+ */
+function add_secfilter($filter_name, $added_function, $args = array(), $priority = null, $numexpectedargs = 1) {
+  	global $secfilters, $securityFilters;
+	return add_hook($secfilters, $securityFilters, $filter_name, $added_function, $args, $priority, $numexpectedargs);  	
+}
+
+
+/**
+ * remove a security filter
+ * @since 3.4
+ * @param string $filter_name id of action
+ * @param string $hook_function function to remove
+ */
+function remove_secfilter($filter_name,$hook_function){
+	GLOBAL $secFilters;
+	return remove_hook($secFilters, $filter_name, $hook_function);
+}
+
+/**
+ * Execute Security Filter
+ *
+ * Allows changing of the passed variable
+ *
+ * @since 2.0
+ * @uses $filters
+ *
+ * @param string $script Filter name to execute
+ * @param array $data
+ */
+function exec_secfilter($filter_name, $result = true) {
+	global $secfilters,$securityFilters;
+	$args      = prepareHookExecArgs($args = func_get_args());
+ 	$newresult = exec_hook($secfilters, $securityFilters, $filter_name, 'exec_secfilter_callback', $args, 'exec_secfilter_complete');
+ 	return is_bool($newresult) ? $newresult : $result;
+}
+
+function exec_secfilter_callback($hook,&$data=array()){
+	$result    = &$data[0]; // last result or exec result reference
+	$args      = prepareHookCallbackArgs($hook,$data);
+	$newresult = call_user_func_array($hook['function'], $args);
+	$result    = is_bool($newresult) ? $newresult : $result;
+}
+
+function exec_secfilter_complete($data=array()){
+	return $data[0];
+}
+
+
+/**
+ * hook helper functions
+ */
+
+
+/**
+ * plugin hook call stat bucket
+ * bumps call count and sets or clears active flag for cyclical loop checks
+ * @todo  could make active an active call count and allow nested filters by count, say allow 1 instead of none if it was desirable
+ * @since  3.4
+ * @param  str  $id     hook type id
+ * @param  str  $hook   hook name
+ * @param  boolean $active mark active
+ * @return bool          false if start already flagged
+ */
+function pluginhookstat($id,$hook,$active = true){
+	global $plugincallstats;
+
+	if(!isset($plugincallstats[$id])) $plugincallstats[$id] = array();
+	if(!isset($plugincallstats[$id][$hook])){
+		$plugincallstats[$id][$hook] = array();
+		$plugincallstats[$id][$hook]['active'] = false;
+		$plugincallstats[$id][$hook]['cnt'] = 0;
+	}
+
+	// closing call
+	if(!$active){
+		$plugincallstats[$id][$hook]['active'] === false;
+		return false;
+	}
+
+	// open call, loop flag
+	if(isset($plugincallstats[$id][$hook]['active']) && $plugincallstats[$id][$hook]['active'] === true) return false;
+	
+    // set active
+	$plugincallstats[$id][$hook]['active'] == true;
+
+	// bump call count
+	$plugincallstats[$id][$hook]['cnt']++;
+	// debugLog($plugincallstats);
+	return true;
+}
+
+/**
+ * prepare arguments for hook exec by removing required arguments
+ * @param  array  $args    args array
+ * @param  integer $numargs number of non optional arguments
+ * @return array           arrguemnts array with required arguments sliced off
+ */
+function prepareHookExecArgs($args,$numargs = 1){
+	if(count($args) > $numargs){
+		$args = array_slice($args,$numargs);
+	}
+	return $args;
+}
+
+/**
+ * prepare hook arguments for callbacks
+ * based on $hook['numargs'] build arguments for callback
+ * exec arguments are padded or truncated as per numargs
+ * return a new array of the two combined with exec args prepended `[execnumargs + hook['args']]`
+ * if numargs is negative, exec args will be appended instead `[hook['args'] + execnumargs]`
+ * 
+ * @since  3.4
+ * @param  array $hook hook item array
+ * @param  array $args argument array for hook
+ * @return array new array of arguments
+ */
+function prepareHookCallbackArgs($hook,$args){
+	// get number of expected args, 
+	// pad or truncate, and then merge the two	
+	$callbacknumargs = (int)$hook['numargs'];
+	$args = array_pad($args,abs($callbacknumargs),'');
+	$args = array_slice($args,0,abs($callbacknumargs));
+	debugLog($callbacknumargs);
+	debugLog($args);
+	// combine exec args and user args
+	$args = $callbacknumargs < 0 ? array_merge($hook['args'],$args) : array_merge($args,$hook['args']);
+	return $args;
+}
+
+/**
+ * Add generic hook wrapper
+ * FOR INTERNAL USE
+ * @since 3.4
+ * @param array $hook_array array for hooks
+ * @param array $hook_hash_array array for hooks hash
+ * @param string $hook_name if of hook action
+ * @param string $hook_function callable function
+ * @param array $args arguments to pass to $hook_function
+ * @param int $priority order of execution of hook, lower numbers execute earlier
+ */
+function add_hook(&$hook_array, &$hook_hash_array, $hook_name, $hook_function, $args = array(), $priority = null, $expectedargs = 0) {
+	$_priority = $priority; // copy arg, so backtrace does not reflect current value, see PHP7 changes
+	if(isset($_priority) && !is_int($_priority)){
+		debugLog(__FUNCTION__ . ': invalid priority');
+		$_priority = null;
+	}
+
+	if($_priority === 0) $_priority = 1; # fixup 0 
+	clamp($_priority,1,10,10); # clamp priority, min:1, max:10, default:10
+
+	$hook = array(
+		'hook'     => $hook_name,
+		'function' => $hook_function,
+		'args'     => (array) $args,
+		'priority' => $_priority,
+		'numargs'  => $expectedargs,
 	);
+	addPlugindebugging($hook); # add debug info , file, line, core
+	$hook_array[] = $hook; # add to global plugins
+	$hook_hash_array[$hook_name][$priority][] = &$hook_array[count($hook_array)-1]; # add ref to global plugin hook hash array
+}
+
+/**
+ * remove an generic hook wrapper
+ * FOR INTERNAL USE
+ * @since 3.4
+ * @param array  $hook_hash_array hook array
+ * @param string $hook_name
+ * @param string $hook_function
+ */
+function remove_hook(&$hook_hash_array, $hook_name, $hook_function){
+	// loop priorities
+	foreach($hook_hash_array[$hook_name] as $prioritykey => $hooks){
+		// loop hook arrays
+		foreach($hooks as $hookkey => $hook){
+
+			// check all hooks for our function
+			if($hook['function'] == $hook_function){
+				
+				// set hook array ref to null
+				$hook_hash_array[$hook_name][$prioritykey][$hookkey] = null;
+				// unset hook hash array
+				unset($hook_hash_array[$hook_name][$prioritykey][$hookkey]);
+
+				// remove priority array if empty
+				if(count($hook_hash_array[$hook_name][$prioritykey]) == 0)
+					unset($hook_hash_array[$hook_name][$prioritykey]);
+				
+				// remove hook array if empty
+				if(count($hook_hash_array[$hook_name]) == 0)
+					unset($hook_hash_array[$hook_name]);
+
+				// debugLog('removing hook: '. $hook_name);
+				return true;
+			}
+		}
+	}
+}
+
+
+/**
+ * Execute hook from hook_hash_array ($pluginHooks)
+ * Loop hook hash array, sorting by priority
+ * 
+ * eg. $res = exec_hook($filters, $pluginFilters, $filter_name, 'exec_filter_callback', $data, 'exec_filter_complete');
+ * eg. $res = exec_hook($plugins, $pluginHooks, $hookname, 'exec_action_callback');
+ * INTERNAL USE ONLY
+ * @since 3.4
+ * @param array $hook_array hook array ( not used )
+ * @param array $hook_hash_array hook hash array
+ * @param string $hook_name name of hook to execute
+ * @param string $callback
+ * @param string $data
+ * @param string $complete
+ * @return returns hook callback result
+ */
+function exec_hook(&$hook_array, &$hook_hash_array, $hook_name, $callback = '', $data = array(), $complete = '') {
+	if(!$hook_array || !$hook_hash_array){
+		// debugLog('hook array is empty');
+		return;
+	}
+
+	// skip if there is no action for this hook
+	if(!isset($hook_hash_array[$hook_name]) || !$hook_hash_array[$hook_name]){
+		return;
+	}
+	// use ref to keep subarray priority sorts, in case we wanted to reuse again, 
+	// probably sorts faster when ordered also
+	$hooks = &$hook_hash_array[$hook_name];
+	// if there is only one hook call it, skip sort and looping
+	if(count($hooks) == 1){
+		// since we do not know the priority index key
+		// reset priority array to first element, then use current
+		if(count(current(reset($hooks))) == 1){
+			$hook = current($hooks);
+			if(!isset($hook) || !isset($hook[0])) return;
+			$res = $callback($hook[0],$data);
+			// if callback call it
+			if(function_exists($complete)) return $complete($data);
+			return $res;		
+		}
+	}
+
+	// @todo possible optimization , no need to always sort unless hook was added
+	ksort($hooks);
+
+	foreach ($hooks as $priority){
+		foreach($priority as $hook){
+			if(!isset($hook)) continue;
+			$res = $callback($hook,$data);
+		}
+	}
+
+	// if complete handler call it
+	if(function_exists($complete)) return $complete($data);
+	return $res;
+
+}
+
+
+
+/**
+ * Execute Action
+ *
+ * @since 2.0
+ * @uses $plugins
+ *
+ * @param string $a Name of hook to execute
+ */
+function exec_action_legacy($a) {
+	global $plugins;
+
+	if(!$plugins){
+		debugLog("plugins array is empty");
+		return;
+	}
+	
+	foreach ($plugins as $hook)	{
+		if ($hook['hook'] == $a) {
+			call_user_func_array($hook['function'], $hook['args']);
+		}
+	}
 }
 
 /**
@@ -397,271 +828,22 @@ function add_filter($filter_name, $added_function) {
  * @param string $script Filter name to execute
  * @param array $data
  */
-function exec_filter($script,$data=array()) {
+function exec_filter_legacy($script,$data=array()) {
 	global $filters;
+	
+	if(!$filters){
+		debugLog("filters array is empty");
+		return $data;
+	}
+
 	foreach ($filters as $filter)	{
-		if ($filter['filter'] == $script) {
+		// new array uses hook NOT filter index
+		if ((isset($filter['filter']) && $filter['filter'] == $script) || (isset($filter['hook']) && $filter['hook'] == $script)) {
 			$data = call_user_func_array($filter['function'], array($data));
 		}
 	}
 	return $data;
 }
 
-/**
- * Register Script
- *
- * Register a script to include in Themes
- *
- * @since 3.1
- * @uses $GS_scripts
- *
- * @param string $handle name for the script
- * @param string $src location of the src for loading
- * @param string $ver script version
- * @param boolean $in_footer load the script in the footer if true
- */
-function register_script($handle, $src, $ver, $in_footer=FALSE){
-	global $GS_scripts;
-	$GS_scripts[$handle] = array(
-	  'name' => $handle,
-	  'src' => $src,
-	  'ver' => $ver,
-	  'in_footer' => $in_footer,
-	  'where' => 0
-	);
-}
 
-/**
- * De-Register Script
- *
- * Deregisters a script
- *
- * @since 3.1
- * @uses $GS_scripts
- *
- * @param string $handle name for the script to remove
- */
-function deregister_script($handle){
-	global $GS_scripts;
-	if (array_key_exists($handle, $GS_scripts)){
-		unset($GS_scripts[$handle]);
-	}
-}
-
-/**
- * Queue Script
- *
- * Queue a script for loading
- *
- * @since 3.1
- * @uses $GS_scripts
- *
- * @param string $handle name for the script to load
- */
-function queue_script($handle,$where){
-	global $GS_scripts;
-	if (array_key_exists($handle, $GS_scripts)){
-		$GS_scripts[$handle]['load']=true;
-		$GS_scripts[$handle]['where']=$GS_scripts[$handle]['where'] | $where;
-	}
-}
-
-/**
- * De-Queue Script
- *
- * Remove a queued script
- *
- * @since 3.1
- * @uses $GS_scripts
- *
- * @param string $handle name for the script to load
- */
-function dequeue_script($handle, $where){
-	global $GS_scripts;
-	if (array_key_exists($handle, $GS_scripts)){
-		$GS_scripts[$handle]['load']=false;
-		$GS_scripts[$handle]['where']=$GS_scripts[$handle]['where'] & ~ $where;
-	}
-}
-
-/**
- * Get Scripts
- *
- * Echo and load scripts
- *
- * @since 3.1
- * @uses $GS_scripts
- *
- * @param boolean $footer Load only script with footer flag set
- */
-function get_scripts_frontend($footer=FALSE){
-	global $GS_scripts;
-	if (!$footer){
-		get_styles_frontend();
-	}
-	foreach ($GS_scripts as $script){
-		if ($script['where'] & GSFRONT ){
-			if (!$footer){
-				if ($script['load']==TRUE && $script['in_footer']==FALSE ){
-					 echo "\t<script src=\"".$script['src'].'?v='.$script['ver']."\"></script>\n";
-					 cdn_fallback($script);		 					 
-				}
-			} else {
-				if ($script['load']==TRUE && $script['in_footer']==TRUE ){
-					 echo "\t<script src=\"".$script['src'].'?v='.$script['ver']."\"></script>\n";
-					 cdn_fallback($script);		 					 
-				}
-			}
-		}
-	}
-}
-
-/**
- * Get Scripts
- *
- * Echo and load scripts
- *
- * @since 3.1
- * @uses $GS_scripts
- *
- * @param boolean $footer Load only script with footer flag set
- */
-function get_scripts_backend($footer=FALSE){
-	global $GS_scripts;
-	if (!$footer){
-		get_styles_backend();
-	}
-
-	# debugLog($GS_scripts);
-	foreach ($GS_scripts as $script){
-		if ($script['where'] & GSBACK ){	
-			if (!$footer){
-				if ($script['load']==TRUE && $script['in_footer']==FALSE ){
-					 echo "\t<script src=\"".$script['src'].'?v='.$script['ver']."\"></script>\n";
-					 cdn_fallback($script);		 
-				}
-			} else {
-				if ($script['load']==TRUE && $script['in_footer']==TRUE ){
-					 echo "\t<script src=\"".$script['src'].'?v='.$script['ver']."\"></script>\n";
-					 cdn_fallback($script);		 					 
-				}
-			}
-		}
-	}
-}
-
-/**
- * Add javascript for cdn fallback to local
- * get_scripts_backend helper
- * @param  array $script gsscript array
- */
-function cdn_fallback($script){
-	GLOBAL $GS_script_assets, $GS_asset_objects;	
-	if (getDef('GSNOCDN',true)) return; // if nocdn skip
-	if($script['name'] == 'jquery' || $script['name'] == 'jquery-ui'){
-		echo "\t<script>";
-		echo "window.".$GS_asset_objects[$script['name']]." || ";
-		echo "document.write('<!-- CDN FALLING BACK --><script src=\"".$GS_script_assets[$script['name']]['local']['url'].'?v='.$GS_script_assets[$script['name']]['local']['ver']."\"><\/script>');";
-		echo "</script>\n";
-	}					
-}
-
-/**
- * Queue Style
- *
- * Queue a Style for loading
- *
- * @since 3.1
- * @uses $GS_styles
- *
- * @param string $handle name for the Style to load
- */
-function queue_style($handle,$where=1){
-	global $GS_styles;
-	if (array_key_exists($handle, $GS_styles)){
-		$GS_styles[$handle]['load']=true;
-		$GS_styles[$handle]['where']=$GS_styles[$handle]['where'] | $where;
-	}
-}
-
-/**
- * De-Queue Style
- *
- * Remove a queued Style
- *
- * @since 3.1
- * @uses $GS_styles
- *
- * @param string $handle name for the Style to load
- */
-function dequeue_style($handle,$where){
-	global $GS_styles;
-	if (array_key_exists($handle, $GS_styles)){
-		$GS_styles[$handle]['load']=false;
-		$GS_styles[$handle]['where']=$GS_styles[$handle]['where'] & ~$where;
-	}
-}
-
-/**
- * Register Style
- *
- * Register a Style to include in Themes
- *
- * @since 3.1
- * @uses $GS_scripts
- *
- * @param string $handle name for the Style
- * @param string $src location of the src for loading
- * @param string $ver Style version
- * @param string $media load the Style in the footer if true
- */
-function register_style($handle, $src, $ver, $media){
-	global $GS_styles;
-	$GS_styles[$handle] = array(
-	  'name' => $handle,
-	  'src' => $src,
-	  'ver' => $ver,
-	  'media' => $media,
-	  'where' => 0
-	);	
-}
-
-/**
- * Get Styles Frontend
- * 
- * Echo and load Styles in the Theme header
- *
- * @since 3.1
- * @uses $GS_styles
- *
- */
-function get_styles_frontend(){
-	global $GS_styles;
-	foreach ($GS_styles as $style){
-		if ($style['where'] & GSFRONT ){
-				if ($style['load']==TRUE){
-					echo "\t".'<link href="'.$style['src'].'?v='.$style['ver'].'" rel="stylesheet" media="'.$style['media']."\">\n";
-				}
-		}
-	}
-}
-/**
- * Get Styles Backend
- *
- * Echo and load Styles on Admin
- *
- * @since 3.1
- * @uses $GS_styles
- *
- */
-function get_styles_backend(){
-	global $GS_styles;
-	foreach ($GS_styles as $style){
-		if ($style['where'] & GSBACK ){
-				if ($style['load']==TRUE){
-					echo "\t".'<link href="'.$style['src'].'?v='.$style['ver'].'" rel="stylesheet" media="'.$style['media']."\">\n";
-				}
-		}
-	}
-}
-?>
+/* ?> */

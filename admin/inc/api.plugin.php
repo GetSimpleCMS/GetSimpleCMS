@@ -1,4 +1,4 @@
-<?php
+<?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /*
 Plugin Name: GetSimple API
 Description: Connect to your site from an external application 
@@ -90,7 +90,7 @@ function gsapi_display_cp() {
 		<code id="apicode">
 			<?php echo $api->key; ?>
 			<input type="hidden" name="apikey" value="<?php echo $api->key; ?>" />
-		</code> &nbsp;&nbsp; <small><a href="#" rel="regenerate" ><?php i18n('API_REGENKEY'); ?></a></small>
+		</code> &nbsp;&nbsp; <small><a href="javascript:void(0)" rel="regenerate" ><?php i18n('API_REGENKEY'); ?></a></small>
 	</p>
 	<div class="toggle" id="regeneratewrap"  >
 		<p><strong><?php i18n('API_CONFIRM'); ?></strong><br /><?php i18n('API_REGEN_DISCLAIMER'); ?> <a href="#" class="cancel" rel="regenerate" ><?php i18n('CANCEL'); ?></a></p>
@@ -102,3 +102,5 @@ function gsapi_display_cp() {
 
 	<?php
 }
+
+/* ?> */

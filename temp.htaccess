@@ -19,11 +19,14 @@ Options +FollowSymLinks
 DirectoryIndex index.php
 
 # blocks direct access to the XML files - they hold all the data!
-<Files ~ "\.xml$">
+# excludes, sitemap, browserconfig, crossdomain
+<FilesMatch "(?<!sitemap|browserconfig|crossdomain)\.xml$">
 	<IfModule !mod_authz_core.c>
+   		Order allow,deny
 		Deny from all
 	</IfModule>
 	<IfModule mod_access_compat.c>
+   		Order allow,deny
 		Deny from all
 	</IfModule>
 	<IfModule mod_authz_core.c>
@@ -31,24 +34,14 @@ DirectoryIndex index.php
 			Require all denied
 		</IfModule>
 	</IfModule>	
-</Files>
-
-<Files sitemap.xml>
-	<IfModule !mod_authz_core.c>
-		Allow from all
-	</IfModule>
-	<IfModule mod_access_compat.c>
-		Allow from all
-	</IfModule>
-	<IfModule mod_authz_core.c>
-		<IfModule !mod_access_compat.c>
-			Require all granted
-		</IfModule>
-	</IfModule>	
-</Files>
+</FilesMatch>
 
 # handle rewrites for fancy urls
 <IfModule mod_rewrite.c>
+
+	# Tell PHP that the mod_rewrite module is ENABLED.
+	SetEnv HTTP_MOD_REWRITE On
+
 	RewriteEngine on
 
 	# Usually RewriteBase is just '/', but 

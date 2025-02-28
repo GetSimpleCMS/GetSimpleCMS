@@ -11,7 +11,6 @@
 // Setup inclusions
 $load['plugin'] = true;
 
-
 // Include common.php
 include('inc/common.php');
 login_cookie_check();
@@ -19,10 +18,7 @@ login_cookie_check();
 // check validity of request
 if ($_REQUEST['s'] === $SESSIONHASH) {
 	
-	
-	# fix from hameau 
-	//$timestamp = date('Y-m-d-Hi');
-	$timestamp = gmdate('Y-m-d-Hi_s');
+	$timestamp  = gmdate('Y-m-d-Hi_s');
 	$zipcreated = true;
 	
 	set_time_limit (0);
@@ -32,11 +28,12 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 	
 	$sourcePath = str_replace('/', DIRECTORY_SEPARATOR, GSROOTPATH);
 	if (!class_exists ( 'ZipArchive' , false)) {
-		include('inc/ZipArchive.php');
+		debugLog("ziparchive not installed, falling back to ziparchive.php");
+		include('inc/ZipArchive.php'); // include zip archive shim
 	}
+	// attempt to use ziparchve class to create archive
 	if (class_exists ( 'ZipArchive' , false)) {
-	
-		$archiv = new ZipArchive();
+		$archiv  = new ZipArchive();
 		$archiv->open($saved_zip_file, ZipArchive::CREATE);
 		$dirIter = new RecursiveDirectoryIterator($sourcePath);
 		$iter = new RecursiveIteratorIterator($dirIter,
@@ -45,12 +42,14 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 			    	);
 		
 		foreach($iter as $element) {
-		    /* @var $element SplFileInfo */
-		    $dir = str_replace($sourcePath, '', $element->getPath()) . DIRECTORY_SEPARATOR;
-		    if ( strstr($dir, $GSADMIN.DIRECTORY_SEPARATOR ) || strstr($dir, 'backups'.DIRECTORY_SEPARATOR )) {
-  				#don't archive these folders
-				} else if ($element->getFilename() != '..') { // FIX: if added to ignore parent directories
+		    /* @var $element SplFileInfo */		
+		    $dir = str_replace($sourcePath, '', $element->getPath().DIRECTORY_SEPARATOR); // strip root path
+			// debugLog($sourcePath." - ".$element->getPath()." - ".$dir);
+		    if ( strstr($dir, $GSADMIN.DIRECTORY_SEPARATOR ) || strstr($dir, 'backups'.DIRECTORY_SEPARATOR )) {}
+			else if(empty($dir) && !getDef('GSBACKUPROOT',true)){}
+			else if ($element->getFilename() != '..') { // FIX: if added to ignore parent directories
 				  if ($element->isDir()) {
+				  	 debugLog($dir);
 				     $archiv->addEmptyDir($dir);
 			    } elseif ($element->isFile()) {
 			        $file         = $element->getPath() .
@@ -59,28 +58,47 @@ if ($_REQUEST['s'] === $SESSIONHASH) {
 			        // add file to archive 
 			        $archiv->addFile($file, $fileInArchiv);
 			    }
-			  }
+			}
 		}
+
+		// check if file exists, close will fail if bad file added, addfile always returns true
+		if(file_exists(GSROOTPATH.'.htaccess'))    $archiv->addFile(GSROOTPATH.'.htaccess', '.htaccess' );
+		if(file_exists(GSROOTPATH.'gsconfig.php')) $archiv->addFile(GSROOTPATH.'gsconfig.php', 'gsconfig.php' );
 		
-		$archiv->addFile(GSROOTPATH.'.htaccess', '.htaccess' );
-		$archiv->addFile(GSROOTPATH.'gsconfig.php', 'gsconfig.php' );
-		
-		// save and close 
+		// @todo testing custom extra files, will need a iter wrapper to get dirs, will add extra files to root
+		if(getDef('GSBACKUPEXTRAS',true)){
+			$extras = getDef('GSBACKUPEXTRAS',false,true);
+			foreach($extras as $extra){
+				if(file_exists($extra)) $archiv->addFile($extra);
+			}
+		}
+
+		// attempt to save and close
 		$status = $archiv->close();
 		if (!$status) {
+			//ziparchive failed
 			$zipcreated = false;
 		}
 		
 	} else {
-		$zipcreated = false;	
+		debugLog("ziparchive class failed");
+		// ziparchive non existant
+		$zipcreated = false;
 	}
 	if (!$zipcreated) {
+		debugLog("ziparchive create failed");
+		// fallback to exec tar -cvzf
 		$zipcreated = archive_targz();
 	}
 	if (!$zipcreated) {
+		debugLog("ziparchive exec create failed");
+		// nothing worked, I give up
 		redirect('archive.php?nozip');
 	} 
 	
+	// @todo losing error handling and debugging here due to redirects
+	// need some reporting to find old zip issues that are hard to reproduce
+
 	// redirect back to archive page with a success
 	redirect('archive.php?done');
 

@@ -12,7 +12,7 @@ $thisfile_innov=basename(__FILE__, ".php");
 $innovation_file=GSDATAOTHERPATH .'InnovationSettings.xml';
 
 # add in this plugin's language file
-i18n_merge($thisfile_innov) || i18n_merge($thisfile_innov, 'en_US');
+i18n_merge($thisfile_innov) || i18n_merge($thisfile_innov, GSDEFAULTLANG);
 
 # register plugin
 register_plugin(

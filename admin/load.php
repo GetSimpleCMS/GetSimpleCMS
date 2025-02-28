@@ -24,7 +24,8 @@ if (empty($_GET['id']) || !isset($plugin_info[$_GET['id']])) {
 # include the plugin
 $plugin_id = $_GET['id'];
 
-get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name']); 
+if(!isset($pagetitle)) $pagetitle = $plugin_info[$plugin_id]['name'];
+get_template('header');
 
 ?>
 	
@@ -34,11 +35,10 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
 	
 	<div id="maincontent">
 		<div class="main">
-
 		<?php 
-			call_user_func_array($plugin_info[$plugin_id]['load_data'],array()); 
+			// callback
+			call_gs_func_array($plugin_info[$plugin_id]['load_data']);
 		?>
-
 		</div>
 	</div>
 	
@@ -51,7 +51,9 @@ get_template('header', cl($SITENAME).' &raquo; '. $plugin_info[$plugin_id]['name
         <?php exec_action($plugin_info[$plugin_id]['page_type']."-sidebar"); ?>
       </ul>
     <?php
-      }
+	}
+	// call sidebar extra hook for plugin page_type
+	exec_action($plugin_info[$plugin_id]['page_type']."-sidebar-extra");     
     ?>
   </div>
 

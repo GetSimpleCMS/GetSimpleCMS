@@ -8,6 +8,24 @@
  * @subpackage Init
  */
 
+
+function check_php_requirements(){
+	$kill = false;
+	$php_required_exts = array('xml','simplexml','dom','json');
+
+	$php_modules = get_loaded_extensions();
+	$php_modules = array_map('strtolower', $php_modules);
+	foreach($php_required_exts as $ext){
+		if(!in_array($ext, $php_modules )){
+			echo("PHP $ext extension NOT INSTALLED<br/>\n");
+			$kill = 1;
+		}
+	}
+	if($kill) die('Getsimple Install Cannot Continue');
+}
+check_php_requirements();
+
+
 $load['plugin'] = true;
 include('inc/common.php');
 
@@ -22,18 +40,27 @@ $message = null;
 
 $create_dirs = array(
 	GSCACHEPATH,
-	GSAUTOSAVEPATH
+	GSAUTOSAVEPATH,
+	GSBACKUPSPATH, 
+	GSBACKUPSPATH . getRelPath(GSDATAOTHERPATH,GSDATAPATH), // backups/other/
+	GSBACKUPSPATH . getRelPath(GSDATAPAGESPATH,GSDATAPATH), // backups/pages/
+	GSBACKUSERSPATH,
+	GSBACKUPSPATH .'zip/'	
 );
 
+// files to be created
 $create_files = array();
 
+// deprecatd files to be removed
 $delete_files = array(
 	GSADMININCPATH.'xss.php',
 	GSADMININCPATH.'nonce.php',
 	GSADMININCPATH.'install.php',
 	GSADMINPATH.'load-ajax.php',
 	GSADMINPATH.'cron.php',
-	GSADMINPATH.'loadtab.php'
+	GSADMINPATH.'loadtab.php',
+	GSADMINPATH.'upload-uploadify.php',
+	GSADMINPATH.'uploadify-check-exists.php'
 );
 
 
@@ -45,29 +72,43 @@ function msgError($msg){
 	return '<div class="notify notify_error">'.$msg.'</div>';
 }
 
+# create default 404.xml page
+$init = GSDATAOTHERPATH.GSHTTPPREFIX.'404.xml';
+$temp = GSADMININCPATH.'tmp/tmp-404.xml'; 
+if (! file_exists($init)) {
+	if(copy_file($temp,$init)) $message.= msgOK(sprintf(i18n_r('COPY_SUCCESS'),'tmp/404.xml'));
+	else $message.= msgError(sprintf(i18n_r('COPY_FAILURE'),'tmp/404.xml'));
+}
+
+# create default 403.xml page
+$init = GSDATAOTHERPATH.GSHTTPPREFIX.'403.xml';
+$temp = GSADMININCPATH.'tmp/tmp-403.xml'; 
+if (! file_exists($init)) {
+	if(copy_file($temp,$init)) $message.= msgOK(sprintf(i18n_r('COPY_SUCCESS'),'tmp/403.xml'));
+	else $message.= msgError(sprintf(i18n_r('COPY_FAILURE'),'tmp/403.xml'));
+}
+
 /* create new folders */
 foreach($create_dirs as $dir){
-	if (!file_exists($dir)) {  	
-		if (defined('GSCHMOD')) { 
-		 $chmod_value = GSCHMOD; 
-		} else {
-		 $chmod_value = 0755;
-		}
-		$status = mkdir($dir, $chmod_value);
+	if (!file_exists($dir)) {
+		$status = create_dir($dir);
 		if($status) $message.= msgOK(sprintf(i18n_r('FOLDER_CREATED'),$dir));
 		else $error.= msgError(i18n_r('ERROR_CREATING_FOLDER') . "<br /> - $dir");
 	}
 }
 
+# remove the pages.php plugin if it exists.
+if (file_exists(GSPLUGINPATH.'pages.php'))	{
+	delete_file(GSPLUGINPATH.'pages.php');
+}
 
 /* check for legacy version of user.xml */
+/* check and perform 2.x - 3.x upgrade */
 if (file_exists(GSDATAOTHERPATH .'user.xml')) {
-	
 	
 	# make new users folder
 	if (!file_exists(GSUSERSPATH)) {
-		$status = mkdir(GSUSERSPATH, 0777);
-		chmod(GSUSERSPATH, 0777);
+		$status = create_dir(GSUSERSPATH);
 		if (!$status) { 
 			$error .= msgError('Unable to create the folder /data/users/');	
 		} else {
@@ -77,8 +118,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 
 	# make new backup users folder
 	if (!file_exists(GSBACKUSERSPATH)) {
-		$status = mkdir(GSBACKUSERSPATH, 0777);
-		chmod(GSBACKUSERSPATH, 0777);
+		$status = create_dir(GSBACKUSERSPATH);
 		if (!$status) {
 			$error .= msgError('Unable to create the folder /backup/users/');	
 		} else {
@@ -87,20 +127,21 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	}
 
 	# get $USR data
-	$datau = getXML(GSDATAOTHERPATH .'user.xml');
-	$datac = getXML(GSDATAOTHERPATH .'cp_settings.xml');
-	$dataw = getXML(GSDATAOTHERPATH .'website.xml');
-	$USR = _id(stripslashes($datau->USR));
-	$EMAIL = $datau->EMAIL;
-	$PASSWD = $datau->PWD;
+	$datau      = getXML(GSDATAOTHERPATH .'user.xml');
+	$datac      = getXML(GSDATAOTHERPATH .'cp_settings.xml');
+	$dataw      = getXML(GSDATAOTHERPATH .GSWEBSITEFILE);
+	
+	$USR        = _id(stripslashes($datau->USR));
+	$EMAIL      = $datau->EMAIL;
+	$PASSWD     = $datau->PWD;
 	$HTMLEDITOR = $datac->HTMLEDITOR;
 	$PRETTYURLS = $datac->PRETTYURLS;
-	$PERMALINK = $datac->PERMALINK;
-	$TIMEZONE = $datac->TIMEZONE;
-	$LANG = $datac->LANG;
-	$SITENAME = stripslashes($dataw->SITENAME);
-	$SITEURL = $dataw->SITEURL;
-	$TEMPLATE = $dataw->TEMPLATE;
+	$PERMALINK  = $datac->PERMALINK;
+	$TIMEZONE   = $datac->TIMEZONE;
+	$LANG       = $datac->LANG;
+	$SITENAME   = stripslashes($dataw->SITENAME);
+	$SITEURL    = $dataw->SITEURL;
+	$TEMPLATE   = $dataw->TEMPLATE;
 	
 	
 	# creating new user file
@@ -112,17 +153,16 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	$xml->addChild('TIMEZONE', $TIMEZONE);
 	$xml->addChild('LANG', $LANG);
 	$status = XMLsave($xml, GSUSERSPATH . _id($USR) .'.xml');	
-	chmod(GSUSERSPATH . _id($USR) .'.xml', 0777);
+	gs_chmod(GSUSERSPATH . _id($USR) .'.xml');
 	if (!$status) {
 		$error .= msgError('Unable to create new  '._id($USR).'.xml file!');	
 	} else {
 		$message .= msgOK('Created new '._id($USR).'.xml file');
 	}
 	
-	
 	# rename old wesbite.xml
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_website.xml')) {
-		$status = rename(GSDATAOTHERPATH .'website.xml', GSDATAOTHERPATH .'_legacy_website.xml');
+		$status = rename_file(GSDATAOTHERPATH .'website.xml', GSDATAOTHERPATH .'_legacy_website.xml');
 		if (!$status) {
 			$error .= msgError('Unable to rename website.xml to _legacy_website.xml');	
 		} else {
@@ -137,17 +177,17 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	$xml->addChild('TEMPLATE', $TEMPLATE);
 	$xml->addChild('PRETTYURLS', $PRETTYURLS);
 	$xml->addChild('PERMALINK', $PERMALINK);
-	$status = XMLsave($xml, GSDATAOTHERPATH .'website.xml');	
+	$status = XMLsave($xml, GSDATAOTHERPATH .GSWEBSITEFILE);	
 	if (!$status) {
-		$error .= msgError('Unable to update website.xml file!');	
+		$error .= msgError('Unable to update '.GSWEBSITEFILE.' file!');	
 	} else {
-		$message .= msgOK('Created updated website.xml file');
+		$message .= msgOK('Created updated '.GSWEBSITEFILE.' file');
 	}
 	
 	
 	# rename old user.xml
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_user.xml')) {
-		$status = rename(GSDATAOTHERPATH .'user.xml', GSDATAOTHERPATH .'_legacy_user.xml');
+		$status = rename_file(GSDATAOTHERPATH .'user.xml', GSDATAOTHERPATH .'_legacy_user.xml');
 		if (!$status) {
 			$error .= msgError('Unable to rename user.xml to _legacy_user.xml');	
 		} else {
@@ -157,7 +197,7 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 
 	# rename old cp_settings.xml
 	if (!file_exists(GSDATAOTHERPATH .'_legacy_cp_settings.xml')) {
-		$status = rename(GSDATAOTHERPATH .'cp_settings.xml', GSDATAOTHERPATH .'_legacy_cp_settings.xml');
+		$status = rename_file(GSDATAOTHERPATH .'cp_settings.xml', GSDATAOTHERPATH .'_legacy_cp_settings.xml');
 		if (!$status) {
 			$error .= msgError('Unable to rename cp_settings.xml to _legacy_cp_settings.xml');	
 		} else {
@@ -166,6 +206,19 @@ if (file_exists(GSDATAOTHERPATH .'user.xml')) {
 	}
 	/* end update */
 } 
+
+// 3.4.0
+// update new permalink setting, if permalink, enable pretty urls toggle
+$dataw       = getXML(GSDATAOTHERPATH .GSWEBSITEFILE);
+$permalink   = trim((string) $dataw->PERMALINK);
+$fileversion = trim((string) $dataw->GSVERSION);
+if($fileversion!='3.4.0'){
+	if(!empty($permalink)) $dataw->editAddChild('PRETTYURLS', '1');
+	$dataw->editAddChild('GSVERSION', '3.4.0');
+}
+if (!XMLsave($dataw, GSDATAOTHERPATH . GSWEBSITEFILE) ) {
+	$error .= i18n_r('CHMOD_ERROR');
+}
 
 // redirect to health check or login and show updated notice
 $redirect = cookie_check() ? "health-check.php?updated=1" : "index.php?updated=1";
@@ -180,7 +233,8 @@ $redirect = cookie_check() ? "health-check.php?updated=2" : "index.php?updated=2
 if(isset($error)) $message.= i18n_r('ER_REQ_PROC_FAIL');
 else $message.= "<p><div class=\"notify notify_ok\">".i18n_r('SITE_UPDATED')."</div></p>";
 
-get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE')); 
+$pagetitle = $site_full_name.' &middot; '. i18n_r('SYSTEM_UPDATE');
+get_template('header');
 
 ?>
 	
@@ -188,7 +242,6 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('SYSTEM_UPDATE'));
 </div> 
 </div><!-- Closes header -->
 <div class="wrapper">
-	<?php // include('template/error_checking.php'); ?>
 	
 	<div id="maincontent">
 		<div class="main" >

@@ -8,8 +8,22 @@
  * @subpackage Installation
  */
 
-$php_modules = get_loaded_extensions();
-if(!in_array('simplexml', array_map('strtolower', $php_modules)) ) die('PHP SimpleXML Module NOT INSTALLED');
+function check_php_requirements(){
+	GLOBAL $php_modules;
+	$kill = false;
+	$php_required_exts = array('xml','simplexml','dom','json');
+
+	$php_modules = get_loaded_extensions();
+	$php_modules = array_map('strtolower', $php_modules);
+	foreach($php_required_exts as $ext){
+		if(!in_array($ext, $php_modules )){
+			echo("PHP $ext extension NOT INSTALLED<br/>\n");
+			$kill = 1;
+		}
+	}
+	if($kill) die('Getsimple Install Cannot Continue');
+}
+check_php_requirements();
 
 $kill = '';
 
@@ -25,39 +39,41 @@ $dirsArray = array(
 	GSDATAPATH, 
 	GSCACHEPATH,
 	GSDATAOTHERPATH, 
-	GSDATAOTHERPATH.'logs/', 
-	GSDATAPAGESPATH, 
+	GSDATAOTHERPATH .'logs/', 
+	GSDATAPAGESPATH,
 	GSDATAUPLOADPATH, 
 	GSTHUMBNAILPATH, 
 	GSBACKUPSPATH, 
-	GSBACKUPSPATH.'other/', 
-	GSBACKUPSPATH.'pages/',
-	GSBACKUPSPATH.'zip/',
+	GSBACKUPSPATH . getRelPath(GSDATAOTHERPATH,GSDATAPATH), // backups/other/
+	GSBACKUPSPATH . getRelPath(GSDATAPAGESPATH,GSDATAPATH), // backups/pages/
+	GSBACKUPSPATH .'zip/',
 	GSBACKUSERSPATH,
 	GSUSERSPATH,
-	GSDATAPAGESPATH.'autosave/'
+	GSAUTOSAVEPATH
 );
 
+// tmp-404.xml used as temporary write tester
+// removed afterwards
 foreach ($dirsArray as $dir) {
 	$tmpfile = GSADMININCPATH.'tmp/tmp-404.xml';
 	if (file_exists($dir)) {
-		chmod($dir, 0755);
-		$result_755 = copy($tmpfile, $dir .'tmp.tmp');
+		gs_chmod($dir, 0755);
+		$result_755 = copy_file($tmpfile, $dir .'tmp.tmp');
 		
 		if (!$result_755) {
-			chmod($dir, 0777);
-			$result_777 = copy($tmpfile, $dir .'tmp.tmp');
+			gs_chmod($dir, 0777);
+			$result_777 = copy_file($tmpfile, $dir .'tmp.tmp');
 			
 			if (!$result_777) {
 				$kill = i18n_r('CHMOD_ERROR');
 			}
 		}
 	} else {
-		mkdir($dir, 0755);
-		$result_755 = copy($tmpfile, $dir .'tmp.tmp');
+		create_dir($dir, 0755);
+		$result_755 = copy_file($tmpfile, $dir .'tmp.tmp');
 		if (!$result_755) {
-			chmod($dir, 0777);
-			$result_777 = copy($tmpfile, $dir .'tmp.tmp');
+			gs_chmod($dir, 0777);
+			$result_777 = copy_file($tmpfile, $dir .'tmp.tmp');
 			
 			if (!$result_777) {
 				$kill = i18n_r('CHMOD_ERROR');
@@ -66,7 +82,7 @@ foreach ($dirsArray as $dir) {
 	}
 	
 	if (file_exists($dir .'tmp.tmp')) {
-		unlink($dir .'tmp.tmp');
+		delete_file($dir .'tmp.tmp');
 	}
 }
 
@@ -74,7 +90,7 @@ foreach ($dirsArray as $dir) {
 // get available language files
 $filenames = getFiles(GSLANGPATH);
 
-if ($LANG == '') { $LANG = 'en_US'; }
+if ($LANG == '') { $LANG = GSDEFAULTLANG; }
 
 foreach ($filenames as $lfile) {
 	if( is_file(GSLANGPATH . $lfile) && $lfile != "." && $lfile != ".." ) {
@@ -102,10 +118,10 @@ if (count($lang_array) == 1) {
 }
 
 # salt value generation
-$api_file = GSDATAOTHERPATH.'authorization.xml';
+$api_file = GSDATAOTHERPATH.GSAUTHFILE;
 
 if (! file_exists($api_file)) {
-	if (defined('GSUSECUSTOMSALT')) {
+	if (getDef('GSUSECUSTOMSALT')) {
 		$saltval = sha1(GSUSECUSTOMSALT);
 	} else {
 		$saltval = generate_salt();
@@ -126,7 +142,8 @@ if(empty($APIKEY)){
 		$kill = i18n_r('CHMOD_ERROR');
 }
 
-get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') ); 
+$pagetitle = $site_full_name.' &middot; '. i18n_r('INSTALLATION');
+get_template('header');
 
 ?>
 	
@@ -149,22 +166,17 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') );
 			<?php
 			
 			# check to see if there is a core update needed
-			$data = get_api_details();
-			if ($data)	{
-				$apikey = json_decode($data);
-				$verstatus = $apikey->status;
-			}	else {
-				$verstatus = null;
-			}
+			$verdata   = getVerCheck();
+			$verstatus = $verdata->status;
 			
 			if ($verstatus == '0') {
-				$ver = '<span class="ERRmsg" >'. i18n_r('UPG_NEEDED') .' <b>'.$apikey->latest .'</b><br /><a href="http://get-simple.info/download" target="_blank" >'. i18n_r('DOWNLOAD').'</a></span>';
+				$ver = '<span class="ERRmsg" >'. i18n_r('UPG_NEEDED') .' <b>'.$apikey->latest .'</b><br /><a href="'.$site_link_back_url.'download" target="_blank" >'. i18n_r('DOWNLOAD').'</a></span>';
 			} elseif ($verstatus == '1') {
 				$ver = '<span class="OKmsg" ><b>'.$site_version_no.'</b> - '. i18n_r('LATEST_VERSION').'</span>';
 			} elseif ($verstatus == '2') {
-				$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - '. i18n_r('BETA').'</span>';
+				$ver = '<span class="WARNmsg" ><b>'.$site_version_no.'</b> - '. (isAlpha() ? i18n_r('ALPHA_TITLE') : i18n_r('BETA_TITLE')).'</span>';
 			} else {
-				$ver = '<span class="WARNmsg" >'. i18n_r('CANNOT_CHECK') .' <b>'.$site_version_no.'</b><br /><a href="http://get-simple.info/download/" target="_blank" >'. i18n_r('DOWNLOAD').'</a></span>';
+				$ver = '<span class="WARNmsg" >'. i18n_r('CANNOT_CHECK') .' <b>'.$site_version_no.'</b><br /><a href="'.$site_link_back_url.'download/" target="_blank" >'. i18n_r('DOWNLOAD').'</a></span>';
 			}
 			?>
 			<tr><td style="width:380px;" ><?php echo $site_full_name; ?> <?php i18n_r('VERSION'); ?></td><td><?php echo $ver; ?></td></tr>
@@ -177,9 +189,9 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') );
 				}
 				
 				if ($kill == '') {
-					echo '<tr><td>Folder Permissions</td><td><span class="OKmsg" >'.i18n_r('OK') .' - '.i18n_r('WRITABLE') .'</span></td></tr>';
+					echo '<tr><td>Folder Permissions</td><td><span class="OKmsg" >'.i18n_r('WRITABLE') .' - '.i18n_r('OK') .'</span></td></tr>';
 				}	else {
-					echo '<tr><td>Folder Permissions</td><td><span class="ERRmsg" >'.i18n_r('ERROR') .' - '.i18n_r('NOT_WRITABLE') .'</span></td></tr>';
+					echo '<tr><td>Folder Permissions</td><td><span class="ERRmsg" >'.i18n_r('NOT_WRITABLE') .' - '.i18n_r('ERROR') .'</span></td></tr>';
 				}
 				
 				if  (in_arrayi('curl', $php_modules) ) {
@@ -218,7 +230,7 @@ get_template('header', $site_full_name.' &raquo; '. i18n_r('INSTALLATION') );
 						echo '<tr><td>Apache Mod Rewrite</td><td><span class="OKmsg" >'.i18n_r('INSTALLED').' - '.i18n_r('OK').'</span></td></tr>';
 					}
 				} else {
-					if (!defined('GSNOAPACHECHECK') || GSNOAPACHECHECK == false) {
+					if (!getDef('GSNOAPACHECHECK') || GSNOAPACHECHECK == false) {
 						echo '<tr><td>Apache web server</td><td><span class="WARNmsg" >'.$_SERVER['SERVER_SOFTWARE'].' - <b>'.i18n_r('WARNING').'</b></span></td></tr>';
 					}
 				}

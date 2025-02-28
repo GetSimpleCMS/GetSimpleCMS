@@ -1,7 +1,7 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 /****************************************************
 *
-* @File: 			template.php
+* @File: 		template.php
 * @Package:		GetSimple
 * @Action:		Innovation theme for GetSimple CMS
 *
@@ -27,7 +27,7 @@ include('header.inc.php');
 				
 				<!-- page footer -->
 				<div class="footer">
-					<p>Published on <time datetime="<?php get_page_date('Y-m-d'); ?>" pubdate><?php get_page_date('F jS, Y'); ?></time></p>
+				<p>Published on <time datetime="<?php get_page_date('Y-m-d'); ?>"><?php get_page_date('F jS, Y'); ?></time></p>
 				</div>
 			</section>
 			

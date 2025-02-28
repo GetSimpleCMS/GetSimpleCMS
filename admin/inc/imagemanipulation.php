@@ -1,98 +1,11 @@
 <?php if(!defined('IN_GS')){ die('you cannot load this page directly.'); }
 
-/**
- * Generate standard thumbnails
- * @param  string $path path to image
- * @param  string $name file name
- * @uses   GD
- */
-
-function genStdThumb($path,$name){
-
-	//gd check
-	$php_modules = get_loaded_extensions();
-	if(!in_arrayi('gd', $php_modules)) return;
-
-	if (!defined('GSIMAGEWIDTH')) {
-		$width = 200; //New width of image  	
-	} else {
-		$width = GSIMAGEWIDTH;
-	}
-
-	$ext = lowercase(pathinfo($name,PATHINFO_EXTENSION));	
-	
-	if ($ext == 'jpg' || $ext == 'jpeg' || $ext == 'gif' || $ext == 'png' )	{
-		
-		$thumbsPath = GSTHUMBNAILPATH.$path;
-		
-		if (!(file_exists($thumbsPath))) {
-			if (defined('GSCHMOD')) { 
-				$chmod_value = GSCHMOD; 
-			} else {
-				$chmod_value = 0755;
-			}
-			mkdir($thumbsPath, $chmod_value);
-		}
-	}
-
-	$targetFile = GSDATAUPLOADPATH.$path.$name;
-	
-	//thumbnail for post
-	$imgsize = getimagesize($targetFile);
-		
-	switch($ext){
-			case "jpeg":
-			case "jpg":
-					$image = imagecreatefromjpeg($targetFile);    
-			break;
-			case "png":
-					$image = imagecreatefrompng($targetFile);
-			break;
-			case "gif":
-					$image = imagecreatefromgif($targetFile);
-			break;
-			default:
-					return;
-			break;
-	}
-		
-	$height = $imgsize[1]/$imgsize[0]*$width; //This maintains proportions
-	
-	$src_w = $imgsize[0];
-	$src_h = $imgsize[1];
-	
-	$picture = imagecreatetruecolor($width, $height);
-	imagealphablending($picture, false);
-	imagesavealpha($picture, true);
-	$bool = imagecopyresampled($picture, $image, 0, 0, 0, 0, $width, $height, $src_w, $src_h); 
-	
-	if($bool)	{	
-		$thumbnailFile = $thumbsPath . "thumbnail." . $name;
-		
-	    switch(lowercase(substr($targetFile, -3))) {
-	        case "jpg":
-	            $bool2 = imagejpeg($picture,$thumbnailFile,85);
-	        break;
-	        case "png":
-	            imagepng($picture,$thumbnailFile);
-	        break;
-	        case "gif":
-	            imagegif($picture,$thumbnailFile);
-	        break;
-	    }
-	}
-	
-	imagedestroy($picture);
-	imagedestroy($image);
-
-	return true;
-}
-
 
 /**
- * ImageManipulation
+ * ImageManipulation Class
  *
  * @author 	  Tech @ Talk In Code
+ * @modified http://getsimple-cms.info
  * @link http://www.talkincode.com/
  * @version   1.0
  * @copyright 2009 Talk In Code
@@ -110,8 +23,11 @@ class ImageManipulation {
 	 * @var array
 	 */
 	public $image = array('targetx'=>0, 
-							'targety'=>0,
-							'quality'=>75);
+						  'targety'=>0,
+						  'quality'=>75,
+						  'pngquality'=>6,
+						  'upscale'=>false
+						);
 	
 	/**
 	 * A boolean value to detect if an image has not been created. This
@@ -121,7 +37,14 @@ class ImageManipulation {
 	 * @var boolean
 	 */
 	public $imageok = false;
-	
+
+
+	public function __destruct() { 
+		if(isset($this->image['des']) && is_resource($this->image['des'])) { 
+			imagedestroy($this->image['des']); 
+		}
+	}
+
     /**
      * Contructor method. Will create a new image from the target file.
 	 * Accepts an image filename as a string. Method also works out how
@@ -129,11 +52,15 @@ class ImageManipulation {
      *
      * @param string $imgFile The image filename.
      */
-	public function ImageManipulation($imgfile)
+    public function __construct($imgfile)
 	{
+
+		$imageinfo = getimagesize($imgfile);
+		// debugLog($imageinfo);
+		
 		//detect image format
-		$this->image["format"] = preg_replace("/.*\.(.*)$/", "\\1", $imgfile);
-		$this->image["format"] = strtoupper($this->image["format"]);
+		//@todo: abstract use mime, and realpathparts not regex
+		$this->image["format"] = $this->getFileImageType($imgfile);
 		
 		// convert image into usable format.
 		if ( $this->image["format"] == "JPG" || $this->image["format"] == "JPEG" ) {
@@ -154,15 +81,48 @@ class ImageManipulation {
 			$this->image["src"]    = ImageCreateFromWBMP($imgfile);
 		} else {
 			//DEFAULT
+			$this->imageok = false;
 			return false;
 		}
 
 		// Image is ok
 		$this->imageok = true;
-		
+
 		// Work out image size
-		$this->image["sizex"]  = imagesx($this->image["src"]);
-		$this->image["sizey"] = imagesy($this->image["src"]);
+		$this->image['srcfile']  = $imgfile;
+		$this->image['sizex']    = $imageinfo[0];
+		$this->image['sizey']    = $imageinfo[1];
+
+		$this->image['channels'] = $imageinfo[2];
+		$this->image['bits']     = $imageinfo['bits'];
+		$this->image['mime']     = $imageinfo['mime'];
+		$this->image['width']    = $this->image["sizex"];
+		$this->image['height']   = $this->image["sizey"];
+		$this->image["ratio"]    = $this->getRatio();
+	}
+
+	public function getImageMemory($adjust = 1.8){
+		$image_width    = $this->image['width'];
+		$image_height   = $this->image['height'];
+		$image_bits     = $this->image['bits'];
+		$image_channels = 4; // pngs do not calculate properly, stick to 4
+		
+		// bpp = (bitdepth) * (channels)
+		// bits = (height) * (width) * (bpp)
+		// bytes = bits / 8
+		$size = round( ($image_width * $image_height * ($image_bits * $image_channels) / 8) ); 
+		$cropsize = 0;
+
+		if($this->crop == true){
+			// $size = $size*2;
+			list($image_width,$image_height) = $this->getCropSize();
+			$cropsize += round( ($image_width * $image_height * ($image_bits * $image_channels) / 8) );
+		}
+
+		// print_r('src:'.toBytesShorthand($size,'m',true)."<br>");
+		// print_r('crop:'.toBytesShorthand($cropsize,'m',true)."<br>");
+		$size = $size + $cropsize;
+		return $size = $size * $adjust;
 	}
 
     /**
@@ -170,12 +130,15 @@ class ImageManipulation {
 	 * is worked out depending on the value of the height.
      *
      * @param int $height The height of the image.
+     * @param int $max optional The max width of the image
      */
-	public function setImageHeight($height=100)
+	public function setImageHeight($height=100, $max = null)
 	{
 		//height
-		$this->image["sizey_thumb"] = $height;
-		$this->image["sizex_thumb"]  = ($this->image["sizey_thumb"]/$this->image["sizey"])*$this->image["sizex"];
+		$this->image["sizey_thumb"]  = (int) $height;
+		$this->image["sizex_thumb"]  = round($height*$this->image['ratio']);
+
+		if($max) $this->max($max,0);
 	}
 	
     /**
@@ -183,12 +146,15 @@ class ImageManipulation {
 	 * is worked out depending on the value of the width.
      *
      * @param int $size The width of the image.
+     * @param int $max optional The max height of the image
      */
-	public function setImageWidth($width=100)
+	public function setImageWidth($width=100, $max = null)
 	{
 		//width
-		$this->image["sizex_thumb"]  = $width;
-		$this->image["sizey_thumb"] = ($this->image["sizex_thumb"]/$this->image["sizex"])*$this->image["sizey"];
+		$this->image["sizex_thumb"]  = (int) $width;
+		$this->image["sizey_thumb"]  = round($width/$this->image['ratio']);
+
+		if($max) $this->max(0,$max);
 	}
 
 	/**
@@ -199,18 +165,54 @@ class ImageManipulation {
      */
 	public function resize($size=100)
 	{
-		if ( $this->image["sizex"] >= $this->image["sizey"] ) {
-			$this->image["sizex_thumb"]  = $size;
-			$this->image["sizey_thumb"] = ($this->image["sizex_thumb"]/$this->image["sizex"])*$this->image["sizey"];
-		} else {
-			$this->image["sizey_thumb"] = $size;
-			$this->image["sizex_thumb"]  = ($this->image["sizey_thumb"]/$this->image["sizey"])*$this->image["sizex"];
+		$ratio = $this->image["ratio"];
+		// debugLog($ratio);
+		if($ratio > 1){
+			$this->image["orientation"] = 'landscape';
+			$this->image["sizex_thumb"] = (int) $size;			
+			$this->image["sizey_thumb"] = round($size/$ratio);
 		}
+		else if($ratio < 1){
+			$this->image["orientation"] = 'portrait';		
+			$this->image["sizex_thumb"] = round($size*$ratio);			
+			$this->image["sizey_thumb"] = (int) $size;			
+		}
+		else if($ratio == 1){
+			$this->image["orientation"] = 'square';
+			$this->image["sizex_thumb"] = $this->image["sizey_thumb"] = (int) $size;
+		}
+		// debugLog(print_r($this->image,true));
+	}
+
+	/**
+	 * set thumb dimensions maximum values 
+	 * when using setWidth or setHeight, this lets you set max values for opposites
+	 * will recaculate thumb size to fit in these threshholds		
+	 * @param  integer $x
+	 * @param  integer $y
+	 */
+	public function max($x,$y = 0){
+		if($y>0 && $this->image["sizey_thumb"] > $y){
+			// debugLog('maxy');
+			$this->image["sizey_thumb"] = $y;
+			$this->image["sizex_thumb"] = round($y*$this->image['ratio']);
+		}
+		else if($x>0 && $this->image["sizex_thumb"] > $x){
+			// debugLog('maxx');
+			$this->image["sizex_thumb"] = $x;
+			$this->image["sizey_thumb"] = round($x/$this->image['ratio']);
+		}
+	}
+
+	public function getRatio()
+	{
+		if(isset($this->image['ratio'])) return $this->image['ratio'];
+		return $this->image["sizex"] / $this->image["sizey"];
 	}
 
 	/**
      * This method sets the cropping values of the image. Be sure
-	 * to set the height and with of the image if you want the
+	 * to set the height and width of the image if you want the
 	 * image to be a certain size after cropping.
      *
      * @param int $x The x coordinates to start cropping from.
@@ -220,10 +222,85 @@ class ImageManipulation {
      */
 	public function setCrop($x, $y, $w, $h)
 	{
-		$this->image["targetx"] = $x;
-		$this->image["targety"] = $y;
-		$this->image["sizex"] = $w;
-		$this->image["sizey"] = $h;
+		$this->image['crop']    = true;
+		$this->image["targetx"] = (int)$x;
+		$this->image["targety"] = (int)$y;
+		$this->image["sizex"]   = (int)$w;
+		$this->image["sizey"]   = (int)$h;
+	}
+
+	/**
+	 * auto crop to square, fill
+	 * 
+	 * since we use one operation for resizing and cropping, cropping is done on original canvas size
+	 * cropping must occur after resize operations, because we override/modify thumb dimensions, this also allows us to recaculate them if needed
+	 * @todo  We could modify this to defer this part until the actual copyresampled occurs if its a problem, or modify resize operations to use crop dimensions instead
+	 *        , add fit by adding larger crop size than original, we also need to make background color optional
+	 * @param integer $crop crop align 0=left/top, 1=center, 2=right/bottom
+	 */
+	public function setAutoCrop($crop = 1){
+
+		// image is already square, no crop
+		if($this->image['ratio'] == 1) return;
+
+		$this->image['cropautotype'] = $crop;
+
+		switch($crop) {
+			case 0: $offset = 0; // left/top
+			break;
+			case 1: $offset = $this->getCropOffset() / 2; // center
+			break;
+			case 2: $offset = $this->getCropOffset(); // right/bottom
+			break;
+			return;
+		}
+
+		if($this->image['ratio'] > 1){
+			// cropping a landscape image
+			$this->setCrop($offset,0,$this->image['height'],$this->image['height']);
+			if(isset($this->image['sizey_thumb'])) $this->image['sizey_thumb'] = $this->image['sizex_thumb'];
+		}
+		else {
+			//cropping a portrait image
+			$this->setCrop(0,$offset,$this->image['width'],$this->image['width']);
+			if(isset($this->image['sizex_thumb'])) $this->image['sizex_thumb'] = $this->image['sizey_thumb'];
+		}
+
+		// $this->image['ratio'] = 1; // hack to allow setting resize after crop
+	}
+
+	/**
+	 * gets the ratio diff for cropping, more pixel accuate than using ratio math
+	 */
+	public function getCropOffset(){
+		if($this->image['ratio'] > 1){
+			return $this->image['width'] - $this->image['height'];
+		}
+		else {
+			return $this->image['height'] - $this->image['width'];
+		}
+	}
+
+	public function getCropSize(){
+		if($this->crop == true){
+			$width  = $this->image['sizex'] - $this->image['targetx'];
+			$height = $this->image['sizey'] - $this->image['targety'];
+			return array($width,$height);
+		}
+	}
+
+	/**
+	 * set Upscale
+	 * @param bool $bool true:allow thumbs to be scaled up to fit if original is smaller
+	 */
+	public function setUpscale($bool = true){
+		$this->image['upscale'] = $bool;
+	}
+
+	public function setQuality($quality = 75){
+		// debugLog("setting quality: " . $quality);
+		$this->setJpegQuality($quality);
+		$this->setPngQuality($quality);
 	}
 	
 	/**
@@ -233,8 +310,74 @@ class ImageManipulation {
      */
 	public function setJpegQuality($quality=75)
 	{
-		//jpeg quality
 		$this->image["quality"] = $quality;
+	}
+
+	/**
+     * Sets the PNG output quality.
+     *
+     * @param int $quality The quality of the PNG image.
+     */
+	public function setPngQuality($quality=0)
+	{
+        if (PHP_VERSION >= '5.1.2') {		
+        	$quality = 9 - min( round($this->image['quality'] / 10), 9 );	
+			$this->image["pngquality"] = $quality;
+		}	
+	}
+
+	public function setOutputFormat($format){
+		$enum = array(1 => 'GIF', 2 => 'JPG', 3 => 'PNG', 4 => 'WBMP');
+		if(is_int($format) && isset($enum[$format])){
+			$format = $enum[$format];
+		}
+		if(!in_array($format,$enum)) return false;
+		$this->image["format_out"] = strtoupper($format);
+	}
+	
+	/**
+     * Private method to run the imagecopyresampled() function with the parameters that have been set up.
+	 * This method is used by the save() and show() methods.
+	 * 
+	 * change ImageCreateTrueColor to ImageCreate if your GD not supported ImageCreateTrueColor function
+     */
+	private function createResampledImage()
+	{
+		if ( isset($this->image["sizex_thumb"]) && isset($this->image["sizey_thumb"]) ) {	
+			// check if thumb is not larger than original	
+			if ( $this->image['upscale'] || ($this->image["sizex_thumb"] < $this->image["sizex"] && $this->image["sizey_thumb"] < $this->image["sizey"]) ) {		
+				// do thumbnail
+				$this->image["des"] = ImageCreateTrueColor($this->image["sizex_thumb"], $this->image["sizey_thumb"]);
+				$this->preserveAlpha();
+				imagecopyresampled($this->image["des"], $this->image["src"], 0, 0, $this->image["targetx"], $this->image["targety"], $this->image["sizex_thumb"], $this->image["sizey_thumb"], $this->image["sizex"], $this->image["sizey"]);
+				return;
+			}
+		}
+		$this->image["des"] = ImageCreateTrueColor($this->image["sizex"], $this->image["sizey"]);
+		$this->preserveAlpha();
+		imagecopyresampled($this->image["des"], $this->image["src"], 0, 0, $this->image["targetx"], $this->image["targety"], $this->image["sizex"], $this->image["sizey"], $this->image["sizex"], $this->image["sizey"]);
+			
+	}
+	
+	/**
+	 * preserve alpha channel
+	 * @return boolean true:enable transparency alpha blending
+	 */
+	private function preserveAlpha($bool=true){
+		imagealphablending($this->image["des"], !$bool);
+		imagesavealpha($this->image["des"], $bool);		
+	}
+
+	/**
+	 * attempt to get the image type from the file extension
+	 * @param  str $file filename
+	 * @return str       image type PNG,JPG ...
+	 */
+	private function getFileImageType($file){
+		$format  = preg_replace("/.*\.(.*)$/", "\\1", $file);
+		$format  = strtoupper($format);
+		if(!in_array($format,array('GIF','PNG','JPG','JPEG','WBMP'))) return '';
+		return $format;
 	}
 
 	/**
@@ -242,70 +385,85 @@ class ImageManipulation {
      */
 	public function show()
 	{
-		//show thumb
-		header("Content-Type: image/".$this->image["format"]);
+		$this->save("",true);
+	}
 
-		$this->createResampledImage();
-		
-		if ( $this->image["format"]=="JPG" || $this->image["format"]=="JPEG" ) {
-			//JPEG
-			imageJPEG($this->image["des"], "", $this->image["quality"]);
-		} elseif ( $this->image["format"] == "PNG" ) {
-			//PNG
-			imagePNG($this->image["des"]);
-		} elseif ( $this->image["format"] == "GIF" ) {
-			//GIF
-			imageGIF($this->image["des"]);
-		} elseif ( $this->image["format"] == "WBMP" ) {
-			//WBMP
-			imageWBMP($this->image["des"]);
-		}
-	}
-	
-	/**
-     * Private method to run the imagecopyresampled() function with the parameters that have been set up.
-	 * This method is used by the save() and show() methods.
-     */
-	private function createResampledImage()
-	{
-		/* change ImageCreateTrueColor to ImageCreate if your GD not supported ImageCreateTrueColor function*/
-		if ( isset($this->image["sizex_thumb"]) && isset($this->image["sizey_thumb"]) ) {		
-			$this->image["des"] = ImageCreateTrueColor($this->image["sizex_thumb"], $this->image["sizey_thumb"]);
-			imagecopyresampled($this->image["des"], $this->image["src"], 0, 0, $this->image["targetx"], $this->image["targety"], $this->image["sizex_thumb"], $this->image["sizey_thumb"], $this->image["sizex"], $this->image["sizey"]);
-		} else {
-			$this->image["des"] = ImageCreateTrueColor($this->image["sizex"], $this->image["sizey"]);
-			imagecopyresampled($this->image["des"], $this->image["src"], 0, 0, $this->image["targetx"], $this->image["targety"], $this->image["sizex"], $this->image["sizey"], $this->image["sizex"], $this->image["sizey"]);
-		}	
-	}
-	
 	/**
      * Saves the image to a given filename, if no filename is given then a default is created.
 	 *
 	 * @param string $save The new image filename.
      */	
-	public function save($save="")
+	public function save($file=null, $show = false)
 	{
-		//save thumb
-		if ( empty($save) ) {
-			$save = strtolower("./thumb.".$this->image["format"]);
-		}
-		header("Content-Type: image/".$this->image["format"]);
-		$this->createResampledImage();
 
-		if ( $this->image["format"] == "JPG" || $this->image["format"] == "JPEG" ) {
-			//JPEG
-			imageJPEG($this->image["des"], $save, $this->image["quality"]);
-		} elseif ( $this->image["format"] == "PNG" ) {
-			//PNG
-			imagePNG($this->image["des"], $save);
-		} elseif ( $this->image["format"] == "GIF" ) {
-			//GIF
-			imageGIF($this->image["des"], $save);
-		} elseif ( $this->image["format"] == "WBMP" ) {
-			//WBMP
-			imageWBMP($this->image["des"], $save);
+		// debugDie(print_r($this,true));
+
+		if(isset($file) && empty($file)) $file = null;
+		$showsave = $show && isset($file);
+
+		if(isset($this->image['format_out'])) $format = $this->image["format_out"];
+		else{
+			// get type from save filename or filein 
+			$format = $this->getFileImageType($file);
+			if($format == '') $format = $this->image["format"];
+			$this->image["format_out"] = $format;
+		}
+
+		if($show){
+			// if showing output headers
+			header("Content-Type: image/".$format);
+		} else {
+			if(empty($file)) {
+				$this->image['success'] = false;
+				return false;
+			}
 		}
 		
-		header("Content-Type: text/html");
+		$this->image['outfile'] = $file;
+
+		$success = false;
+		$this->createResampledImage();
+
+		// If $file is null these will output images instead of saving them
+		if ( $format == "GIF" ) {
+			// GIF
+			// gif might not supported in certain versions of GD
+			if(function_exists('imageGIF')){
+				$success = imageGIF($this->image["des"], $file);
+			}
+			else {
+				$success = false;
+				debugLog(__FUNCTION__ . 'unsupported output format: ' . $format);
+				$this->image['success'] = $success; 
+				return $success;
+			}
+		}
+		elseif ($format == "JPG" || $format == "JPEG" ) {
+			// JPEG
+			$success = imageJPEG($this->image["des"], $file, $this->image["quality"]);
+		}
+		elseif ( $format == "PNG" ) {
+			// PNG
+			$success = imagePNG($this->image["des"], $file, $this->image["pngquality"]);
+		}
+		elseif ( $format == "WBMP" ) {
+			// WBMP
+			$success = imageWBMP($this->image["des"], $file);
+		}
+		else{
+			$success = false;
+			debugLog(__FUNCTION__ . 'invalid output format');
+			$this->image['success'] = $success;
+			return $success;
+		}
+
+		$this->image['success'] = $success;
+		
+		// if saved and we also want to show, readfile
+		if($showsave) readfile($this->image['outfile']);
+
+		return $success;
 	}
 }
+
+/* ?> */
