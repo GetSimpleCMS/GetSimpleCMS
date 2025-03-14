@@ -361,15 +361,15 @@ if($newdraft) $pageClass.=' newdraft';
                                 
                                 // handle 'no parents' correctly
                                 if ($parent == '') { 
-                                    $none='selected';
-                                    $noneText='< '.i18n_r('NO_PARENT').' >'; 
+                                    $none = ' selected="select"';
+                                    $noneText = '&laquo; ' . i18n_r('NO_PARENT') . ' &raquo;';
                                 } else { 
                                     $none=null; 
-                                    $noneText='< '.i18n_r('NO_PARENT').' >'; 
+                                    $noneText = '&laquo; ' . i18n_r('NO_PARENT') . ' &raquo;';
                                 }
                                 
                                 // Create base option
-                                echo '<option '.$none.' value="" >'.$noneText.'</option>';
+                                echo '<option'.$none.' value="">'.$noneText.'</option>';
                                 echo $ret;
                                 ?>
                             </select>
