@@ -6,6 +6,7 @@
 /lib
 /data/cache
 /data/other
+/data*/
 backups/
 extend/
 thumbs.db
