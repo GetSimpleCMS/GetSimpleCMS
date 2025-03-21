@@ -340,7 +340,7 @@ function cache_url($url, $nocache = FALSE) {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         $data = curl_exec($ch);
-        debugLog($data['message']);
+        # if($data) debugLog($data);
 
 		if (!$data) {
 			debug_api_details("curl error number:" .curl_errno($ch));

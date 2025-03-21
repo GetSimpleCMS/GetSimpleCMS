@@ -865,12 +865,14 @@ function sa_dev_ErrorHandler($errno, $errstr='', $errfile='', $errline='',$errco
 
     }else {
         // caught exception
-        $exc     = func_get_arg(0);
-        $errno   = $exc->getCode();
-        $errstr  = $exc->getMessage();
-        $errfile = $exc->getFile();
-        $errline = $exc->getLine();
-
+        $exc     = func_get_arg(0); #@todo: fix non obj return, typedef $exc
+        debugLog(is_object($exc));
+        if(is_object($exc)){
+          $errno   = $exc->getCode();
+          $errstr  = $exc->getMessage();
+          $errfile = $exc->getFile();
+          $errline = $exc->getLine();
+        }
         // $backtrace = $exc->getTrace();
         // _debugLog($backtrace);
     }
