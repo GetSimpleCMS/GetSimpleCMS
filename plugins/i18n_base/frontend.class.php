@@ -211,7 +211,7 @@ class I18nFrontend {
     }
     $keywords = array();
     $tags = preg_split("/\s*,\s*/", stripslashes(htmlspecialchars_decode($metak, ENT_QUOTES)));
-    if (count($tags) > 0) foreach ($tags as $tag) if (substr(trim($tag),0,1) != '_') $keywords[] = trim($tag);
+    if ($tags && count($tags) > 0) foreach ($tags as $tag) if (substr(trim($tag),0,1) != '_') $keywords[] = trim($tag);
     
     if (!$omit || !in_array('description',$omit)) echo '<meta name="description" content="'.htmlspecialchars(trim($description)).'" />'."\n";
     if (!$omit || !in_array('keywords',$omit)) echo '<meta name="keywords" content="'.htmlspecialchars(implode(', ',$keywords)).'" />'."\n";

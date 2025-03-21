@@ -216,7 +216,7 @@ class I18nNavigationFrontend {
             'currentpath' => in_array($childurl, $breadcrumbs),
             'current' => ($childurl == $currenturl),
             'children' => $children,
-            'haschildren' => $showChildren ? count($children) > 0 : self::hasChildren($childurl, $show)
+            'haschildren' => $showChildren && is_array($children) ? count($children) > 0 : self::hasChildren($childurl, $show)
           );
         }
       }
