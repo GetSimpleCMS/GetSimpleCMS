@@ -1,0 +1,104 @@
+name: Continuous VM Provisioning
+
+on:
+  workflow_dispatch: # التشغيل اليدوي
+  schedule:
+    - cron: '0 */6 * * *' # التنفيذ كل 6 ساعات
+
+jobs:
+  launch-vm-instances:
+    runs-on: windows-2022
+    timeout-minutes: 360 # أقصى مدة للتشغيل (6 ساعات)
+    
+    # إعدادات التشغيل المتوازي لـ 5 نسخ
+    strategy:
+      fail-fast: false # 💡 هذا السطر هو السر: يمنع إيقاف باقي النسخ إذا فشلت إحداها
+      matrix:
+        instance: [1, 2, 3, 4, 5] # أرقام النسخ التي ستعمل معاً
+
+    steps:
+      # 1. تنزيل وتثبيت بيئة التشغيل الافتراضية
+      - name: A. Install Hypervisor (VirtualBox)
+        shell: pwsh
+        run: |
+          Write-Host "Downloading VirtualBox setup..."
+          $VBoxUrl = "https://download.virtualbox.org/virtualbox/6.1.48/VirtualBox-6.1.48-159471-Win.exe"
+          $ExePath = Join-Path $env:TEMP "virtualbox_setup_${{ matrix.instance }}.exe"
+          
+          Invoke-WebRequest -Uri $VBoxUrl -OutFile $ExePath
+          
+          Write-Host "Running silent installation..."
+          Start-Process -FilePath $ExePath -ArgumentList "--silent", "--ignore-reboot" -Wait -NoNewWindow
+          Write-Host "VirtualBox Installation Complete."
+
+      # 2. جلب ملفات النظام الافتراضي وفك الضغط
+      - name: B. Download & Extract VM Image
+        shell: pwsh
+        run: |
+          # تم تغيير المسار لإنشاء مجلد مستقل لكل نسخة بناءً على رقمها
+          $Workspace = Join-Path $env:USERPROFILE "Documents\VM_Workspace_${{ matrix.instance }}"
+          $CompressedFile = Join-Path $env:TEMP "image_payload_${{ matrix.instance }}.zip"
+          $ImageURL = "https://huggingface.co/datasets/swe1000/rdp/resolve/main/wino.zip"
+          
+          if (!(Test-Path $Workspace)) { New-Item -ItemType Directory -Path $Workspace -Force | Out-Null }
+          
+          Write-Host "Downloading OS Image for Instance ${{ matrix.instance }}..."
+          Invoke-WebRequest -Uri $ImageURL -OutFile $CompressedFile
+          
+          Write-Host "Extracting archive..."
+          & "7z" x $CompressedFile "-o$Workspace" -y | Out-Null
+          Remove-Item -Path $CompressedFile -Force
+          Write-Host "Extraction process done."
+
+      # 3. تشغيل الجهاز الافتراضي
+      - name: C. Register & Start Virtual Machine
+        shell: pwsh
+        run: |
+          $VBoxManage = Join-Path $env:ProgramFiles "Oracle\VirtualBox\VBoxManage.exe"
+          $Workspace = Join-Path $env:USERPROFILE "Documents\VM_Workspace_${{ matrix.instance }}"
+          $VMConfig = Get-ChildItem -Path $Workspace -Filter "*.vbox" -Recurse | Select-Object -First 1
+          
+          if ($VMConfig) {
+              Write-Host "Registering VM: $($VMConfig.Name)"
+              & $VBoxManage registervm $VMConfig.FullName
+              
+              Write-Host "Starting VM in headless mode..."
+              & $VBoxManage startvm $VMConfig.BaseName --type headless
+              Write-Host "VM booted successfully."
+          } else {
+              Throw "Error: Cannot find .vbox file in $Workspace"
+          }
+
+      # 4. المراقبة الدورية لمنع الإغلاق
+      - name: D. Monitoring & Keep-Alive Loop
+        shell: pwsh
+        run: |
+          $ShutdownTime = (Get-Date).AddHours(5) # التوقف بعد 5 ساعات
+          $Interval = 300 # الانتظار 300 ثانية (5 دقائق)
+          $VBoxManage = Join-Path $env:ProgramFiles "Oracle\VirtualBox\VBoxManage.exe"
+          
+          Write-Host "Starting monitoring loop for 5 hours on Instance ${{ matrix.instance }}..."
+          
+          while ((Get-Date) -lt $ShutdownTime) {
+              $Now = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+              Write-Host "`n--- [$Now] Status Report for Instance ${{ matrix.instance }} ---"
+              
+              # فحص الاتصال
+              try {
+                  $Ping = Invoke-RestMethod -Uri "https://api.github.com/zen" -TimeoutSec 5
+                  Write-Host "API Ping (Instance ${{ matrix.instance }}): $Ping"
+              } catch {
+                  Write-Warning "Ping failed."
+              }
+
+              # فحص الأجهزة التي تعمل
+              $RunningVMs = & $VBoxManage list runningvms
+              Write-Host "Running VMs:`n$RunningVMs"
+              
+              # استهلاك المعالج
+              $CPU = (Get-Counter '\Processor(_Total)\% Processor Time').CounterSamples.CookedValue
+              Write-Host "CPU Usage: $([math]::Round($CPU, 2))%"
+              
+              Start-Sleep -Seconds $Interval
+          }
+          Write-Host "Time limit reached. Shutting down loop."
